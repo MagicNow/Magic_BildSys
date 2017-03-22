@@ -1,0 +1,43 @@
+{
+  "name": "Starterl3",
+  "version": "1.0.0",
+  "homepage": "https://bitbucket.com/studiobravo/starterl3",
+  "moduleType": [
+    "node"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "jquery#^1",
+    "jquery-ui": "~1.10.4",
+    "bootstrap": "~3.3.5",
+    "bootswatch": "~3.3.5",
+    "font-awesome-bower": "~4.6.3",
+    "datatables": "~1.10.7",
+    "datatables-bootstrap3-plugin": "~0.4.0",
+    "jquery-colorbox": "~1.6.1",
+    "flag-sprites": "~1.1.1",
+    "metisMenu": "~1.1.3",
+    "datatables-responsive": "~1.0.3",
+    "select2": ">=3.5.4",
+    "summernote": ">=0.6.16",
+    "Justified-Gallery": "3.6.0",
+    "mustache": "2.2.1",
+    "select2":"4.0.3",
+    "modernizr":"2.8.3",
+    "bootstrap-datepicker":"1.6.1",
+    "jquery-mask-plugin":"1.14.0",
+    "sweetalert":"1.1.3",
+    "fullcalendar":"v2.9.1",
+    "adminlte":"2.3.6",
+    "ionicons":"2.0.1",
+    "iCheck":"1.0.2"
+  }
+}
