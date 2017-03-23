@@ -6,11 +6,27 @@
         var oTable = null;
 
         $('#initial_date').bind('change', function () {
-            $("#dataTableBuilder").DataTable().draw();
+            putSession();
         });
 
         $('#final_date').bind('change', function () {
-            $("#dataTableBuilder").DataTable().draw();
+            putSession();
         });
+
+        function putSession() {
+            var initial_date = $('#initial_date').val();
+            var final_date = $('#final_date').val();
+            $.ajax({
+                url: "/admin/putsession",
+                data: {
+                    initial_date: initial_date,
+                    final_date: final_date
+                }
+            }).done(function (json) {
+                if(json.success){
+                    $("#dataTableBuilder").DataTable().draw();
+                }
+            });
+        }
     </script>
 @endsection

@@ -23,6 +23,8 @@ Route::group(['middleware' => 'admin', 'prefix' => 'admin'], function () {
     Route::get('/', 'Admin\HomeController@index');
 
     Route::resource('users', 'Admin\UserController');
+
+    Route::get('/putsession', 'Admin\PutSessionController@putSession');
 });
 
 
