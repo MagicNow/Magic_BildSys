@@ -28,5 +28,9 @@
                 }
             });
         }
+
+        function addFilters() {
+            console.log('Filters');
+        }
     </script>
 @endsection

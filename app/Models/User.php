@@ -54,6 +54,15 @@ class User extends Authenticatable
         'password' => 'required',
     ];
     
+    public static $filters = [
+        'name' => 'Nome',
+        'email' => 'E-mail',
+        'active' => 'Ativo',
+        'admin' => 'Administrador',
+        'created_at' => 'Criado em',
+        'updated_at' => 'Atualizado em'
+    ];
+    
     /**
      * The attributes that should be hidden for arrays.
      *

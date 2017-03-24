@@ -6,6 +6,7 @@ use App\DataTables\UserDataTable;
 use App\Http\Requests\Admin;
 use App\Http\Requests\Admin\CreateUserRequest;
 use App\Http\Requests\Admin\UpdateUserRequest;
+use App\Models\User;
 use App\Repositories\Admin\UserRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
@@ -29,7 +30,8 @@ class UserController extends AppBaseController
      */
     public function index(UserDataTable $userDataTable)
     {
-        return $userDataTable->render('admin.users.index');
+        $filters = User::$filters;
+        return $userDataTable->render('admin.users.index', compact('filters'));
     }
 
     /**
