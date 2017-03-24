@@ -55,12 +55,12 @@ class User extends Authenticatable
     ];
     
     public static $filters = [
-        'name' => 'Nome',
-        'email' => 'E-mail',
-        'active' => 'Ativo',
-        'admin' => 'Administrador',
-        'created_at' => 'Criado em',
-        'updated_at' => 'Atualizado em'
+        'name:string' => 'Nome',
+        'email:string' => 'E-mail',
+        'active:boolean' => 'Ativo',
+        'admin:boolean' => 'Administrador',
+        'created_at:date' => 'Criado em',
+        'updated_at:date' => 'Atualizado em'
     ];
     
     /**

@@ -36,6 +36,8 @@
                     </button>
                 </div>
 
+                <div id="block_fields"></div>
+
                 <!-- Modal -->
                 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                     <div class="modal-dialog" role="document">
@@ -47,8 +49,9 @@
                             <div class="modal-body">
                                 @foreach($filters as $field => $filter)
                                     <p>
-                                        <label class="cb" style="cursor: pointer;">
-                                            <input type="checkbox" name="filters[]" value="{{$field}}" checked/> {{$filter}}
+                                        <input class="cb_filter" type="checkbox" value="{{$field}}" checked/>
+                                        <label style="cursor: pointer;" class="cb_filter_label">
+                                            {{$filter}}
                                         </label>
                                     </p>
                                 @endforeach

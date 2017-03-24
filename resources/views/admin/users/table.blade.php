@@ -30,7 +30,28 @@
         }
 
         function addFilters() {
-            console.log('Filters');
+            var cb_filter = $('.cb_filter');
+            var cb_filter_label = $('.cb_filter_label');
+            var filters = [];
+            for( i=0; i < cb_filter.length; i++ ) {
+                if(cb_filter[i].value.split(':')[1] == 'string'){
+                    $('#block_fields').append('\
+                        <div class="row form-group col-md-12">\
+                            <div class="col-md-6">\
+                                <label>'+cb_filter_label[i].innerHTML+'</label>\
+                                <input type="text" name="filters['+cb_filter[i].value.split(':')[0]+']" class="form-control">\
+                            </div>\
+                            <div class="col-md-6" style="margin-top: 25px;">\
+                                <select class="form-control">\
+                                    <option value="between">Entre</option>\
+                                    <option value="start">Começa com</option>\
+                                    <option value="end">Termina com</option>\
+                                </select>\
+                            </div>\
+                        </div>\
+                    ');
+                }
+            }
         }
     </script>
 @endsection
