@@ -51,6 +51,20 @@
                         </div>\
                     ');
                 }
+
+                if(cb_filter[i].value.split(':')[1] == 'date'){
+                    $('#block_fields').append('\
+                        <div class="row form-group col-md-12">\
+                            <div class="col-md-6">\
+                                <label>'+cb_filter_label[i].innerHTML+'</label>\
+                                <input type="date" value="{{date("Y-m-d")}}" name="filters['+cb_filter[i].value.split(':')[0]+'_initial]" class="form-control">\
+                            </div>\
+                            <div class="col-md-6" style="margin-top: 25px;">\
+                                <input type="date" value="{{date("Y-m-d")}}" name="filters['+cb_filter[i].value.split(':')[0]+'_final]" class="form-control">\
+                            </div>\
+                        </div>\
+                    ');
+                }
             }
         }
     </script>
