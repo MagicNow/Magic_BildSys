@@ -24,7 +24,7 @@ Route::group(['middleware' => 'admin', 'prefix' => 'admin'], function () {
 
     Route::resource('users', 'Admin\UserController');
 
-    Route::get('/putsession', 'Admin\PutSessionController@putSession');
+    Route::get('/putsession', 'Admin\CodesController@putSession');
 });
 
 

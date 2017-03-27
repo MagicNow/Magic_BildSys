@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 
-class PutSessionController extends AppBaseController
+class CodesController extends AppBaseController
 {
     public function putSession(Request $request){
 

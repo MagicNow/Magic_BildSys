@@ -35,7 +35,7 @@ var paths = {
     'sweetalert':  vendors + '/sweetalert/dist/',
     'fullcalendar':  vendors + '/fullcalendar/dist/',
     'moment':  vendors + '/moment/',
-
+    'bootstrap3_typeahead':  vendors + '/bootstrap-3-typeahead/',
 };
 
 elixir.config.sourcemaps = false;
@@ -146,6 +146,7 @@ elixir(function(mix) {
         paths.select2 + 'js/select2.js',
         paths.select2 + 'js/i18n/pt-BR.js',
         paths.sweetalert + 'sweetalert.min.js',
+        paths.bootstrap3_typeahead + 'bootstrap3-typeahead.js',
         'bootstrap-dataTables-paging.js',
         'dataTables.bootstrap.js',
         'datatables.fnReloadAjax.js',
