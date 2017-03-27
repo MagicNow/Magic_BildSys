@@ -34,6 +34,7 @@
             var cb_filter_label = $('.cb_filter_label');
             var filters = [];
             for( i=0; i < cb_filter.length; i++ ) {
+
                 if(cb_filter[i].value.split(':')[1] == 'string'){
                     $('#block_fields').append('\
                         <div class="row form-group col-md-12">\
@@ -77,7 +78,42 @@
                         </div>\
                     ');
                 }
+
+                if(cb_filter[i].value.split(':')[1] == 'integer'){
+                    var what = "'"+cb_filter[i].value.split(':')[0]+'_final'+"'";
+
+                    $('#block_fields').append('\
+                        <div class="row form-group col-md-12">\
+                            <div class="col-md-3">\
+                            <label>'+cb_filter_label[i].innerHTML+'</label>\
+                                <input type="number" name="filters['+cb_filter[i].value.split(':')[0]+'_initial]" class="form-control">\
+                            </div>\
+                            <div class="col-md-3" style="margin-top: 25px;">\
+                                <input type="number" name="filters['+cb_filter[i].value.split(':')[0]+'_final]" id="'+cb_filter[i].value.split(':')[0]+'_final" class="form-control">\
+                            </div>\
+                            <div class="col-md-6" style="margin-top: 25px;">\
+                                <select class="form-control" onchange="filterFieldInteger(this.value, '+what+')">\
+                                    <option value="between">Entre</option>\
+                                    <option value="bigger">Maior que</option>\
+                                    <option value="smaller">Menor que</option>\
+                                    <option value="bigger_equal">Maior ou igual que</option>\
+                                    <option value="smaller_equal">Menor ou igual que</option>\
+                                </select>\
+                            </div>\
+                        </div>\
+                    ');
+                }
+
             }
         }
+
+        function filterFieldInteger(value, what){
+            if(value == 'between'){
+                $('#'+what).css('display', '').val('');
+            }else{
+                $('#'+what).css('display', 'none').val('');
+            }
+        }
+
     </script>
 @endsection
