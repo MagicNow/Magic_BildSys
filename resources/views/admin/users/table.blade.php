@@ -1,5 +1,6 @@
-{!! $dataTable->table(['width' => '100%','class'=>'table table-striped table-hover'], true) !!}
-
+<div class="form-group col-md-12">
+    {!! $dataTable->table(['width' => '100%','class'=>'table table-striped table-hover'], true) !!}
+</div>
 @section('scripts')
     {!! $dataTable->scripts() !!}
     <script type="text/javascript">
@@ -102,6 +103,36 @@
                             </div>\
                         </div>\
                     ');
+                }
+
+                if(cb_filter[i].value.split(':')[1] == 'foreign_key'){
+                    var label = cb_filter_label[i].innerHTML;
+//                  Exemplo
+//                  'user_id:foreign_key:User:name:id' => 'Usuário'
+                    $.ajax({
+                        url: "/admin/getForeignKey",
+                        data: {
+                            foreign_key: cb_filter[i].value.split(':')[0],
+                            model: cb_filter[i].value.split(':')[2],
+                            field_value: cb_filter[i].value.split(':')[3],
+                            field_key: cb_filter[i].value.split(':')[4]
+                        }
+                    }).done(function (json) {
+                        if(json.success == true && json.foreign_key){
+                            var options = '';
+                            $.each(json.foreign_key, function( index, value ) {
+                                options += '<option value="'+index+'">'+value+'</option>';
+                            });
+                            $('#block_fields').append('\
+                                <div class="form-group col-md-6" style="width: 48.8%;">\
+                                    <label>'+label+'</label>\
+                                    <select class="form-control">\
+                                        <option value="">Selecione</option>' + options + '\
+                                    </select>\
+                                </div>\
+                            ');
+                        }
+                    });
                 }
 
             }
