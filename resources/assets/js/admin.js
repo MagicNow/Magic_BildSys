@@ -15,14 +15,17 @@ $(function () {
 
 var oTable = null;
 
-function putSession() {
+function putSession(filters) {
     var initial_date = $('#initial_date').val();
     var final_date = $('#final_date').val();
+    filters = JSON.parse(JSON.stringify(eval("(" + filters + ")")));
+    
     $.ajax({
         url: "/admin/putsession",
         data: {
-            initial_date: initial_date,
-            final_date: final_date
+            'initial_date' : initial_date,
+            'final_date' : final_date,
+            'filters' : filters
         }
     }).done(function (json) {
         if(json.success){
@@ -44,13 +47,13 @@ function addFilters() {
                 <div class="row form-group col-md-12">\
                     <div class="col-md-3">\
                     <label>'+cb_filter_label[i].innerHTML+'</label>\
-                        <input type="number" name="filters['+cb_filter[i].value.split(':')[0]+'_initial]" class="form-control">\
+                        <input type="number" id="'+cb_filter[i].value.split(':')[0]+'_initial" class="form-control filters">\
                     </div>\
                     <div class="col-md-3" style="margin-top: 25px;">\
-                        <input type="number" name="filters['+cb_filter[i].value.split(':')[0]+'_final]" id="'+cb_filter[i].value.split(':')[0]+'_final" class="form-control">\
+                        <input type="number" id="'+cb_filter[i].value.split(':')[0]+'_final" class="form-control filters">\
                     </div>\
                     <div class="col-md-6" style="margin-top: 25px;">\
-                        <select class="form-control" onchange="filterFieldInteger(this.value, '+what+')">\
+                        <select class="form-control filters" name="'+cb_filter[i].value.split(':')[0]+'_option" onchange="filterFieldInteger(this.value, '+what+')">\
                             <option value="between">Entre</option>\
                             <option value="bigger">Maior que</option>\
                             <option value="smaller">Menor que</option>\
@@ -64,7 +67,7 @@ function addFilters() {
             $('#block_fields').append('\
                 <div class="form-group col-md-6" style="width: 48.8%;">\
                     <label>'+cb_filter_label[i].innerHTML+'</label>\
-                    <select class="form-control">\
+                    <select class="form-control filters" id="'+cb_filter[i].value.split(':')[0]+'">\
                         <option value="1">Sim</option>\
                         <option value="0">Não</option>\
                     </select>\
@@ -91,7 +94,7 @@ function addFilters() {
                     $('#block_fields').append('\
                         <div class="form-group col-md-6" style="width: 48.8%;">\
                             <label>'+label+'</label>\
-                            <select class="form-control">\
+                            <select class="form-control filters" id="'+cb_filter[i].value.split(':')[0]+'">\
                                 <option value="">Selecione</option>' + options + '\
                             </select>\
                         </div>\
@@ -109,22 +112,22 @@ function addFilters() {
                 <div class="row form-group col-md-12">\
                     <div class="col-md-6">\
                         <label>'+cb_filter_label[i].innerHTML+'</label>\
-                        <input type="date" value="'+date_actual+'" name="filters['+cb_filter[i].value.split(':')[0]+'_initial]" class="form-control">\
+                        <input type="date" value="'+date_actual+'" id="'+cb_filter[i].value.split(':')[0]+'_initial" class="form-control filters">\
                     </div>\
                     <div class="col-md-6" style="margin-top: 25px;">\
-                        <input type="date" value="'+date_actual+'" name="filters['+cb_filter[i].value.split(':')[0]+'_final]" class="form-control">\
+                        <input type="date" value="'+date_actual+'" id="'+cb_filter[i].value.split(':')[0]+'_final" class="form-control filters">\
                     </div>\
                 </div>\
             ');
         }else{
             $('#block_fields').append('\
-                        <div class="row form-group col-md-12">\
+                <div class="row form-group col-md-12">\
                     <div class="col-md-6">\
                         <label>'+cb_filter_label[i].innerHTML+'</label>\
-                        <input type="text" name="filters['+cb_filter[i].value.split(':')[0]+']" class="form-control">\
+                        <input type="text" id="'+cb_filter[i].value.split(':')[0]+'" class="form-control filters" onkeyup="teste(this)">\
                     </div>\
                     <div class="col-md-6" style="margin-top: 25px;">\
-                        <select class="form-control">\
+                        <select class="form-control filters" id="'+cb_filter[i].value.split(':')[0]+'_option">\
                             <option value="between">Entre</option>\
                             <option value="start">Começa com</option>\
                             <option value="end">Termina com</option>\
@@ -135,6 +138,7 @@ function addFilters() {
         }
 
     }
+    addFilterFields();
 }
 
 function filterFieldInteger(value, what){
@@ -143,4 +147,17 @@ function filterFieldInteger(value, what){
     }else{
         $('#'+what).css('display', 'none').val('');
     }
+}
+
+function addFilterFields() {
+    var filters_fields = $('.filters');
+    var filters = '';
+    
+    for( i=0; i < filters_fields.length; i++ ) {
+        filters += '"'+filters_fields[i].id+'" : "'+filters_fields[i].value+'",';
+    }
+
+    filters = '{'+filters+'}';
+    
+    putSession(filters);
 }

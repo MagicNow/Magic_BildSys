@@ -10,6 +10,10 @@ class CodesController extends AppBaseController
 {
     public function putSession(Request $request){
 
+        foreach ($request->filters as $key => $value) {
+            session()->put($key, $value);
+        }
+
         session()->put('initial_date', $request->initial_date);
         session()->put('final_date', $request->final_date);
         
