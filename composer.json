@@ -1,6 +1,6 @@
 {
-    "name": "studiobravo/starterl3",
-    "description": "Starter em Laravel 5.3",
+    "name": "fcmoreno/bild-sys",
+    "description": "Sistema de controle de compras em obras da BILD",
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "type": "project",
@@ -20,7 +20,7 @@
         "yajra/laravel-datatables-oracle": "~6.0",
         "barryvdh/laravel-ide-helper": "^2.1",
         "infyomlabs/laravel-generator": "5.3.x-dev",
-        "laravelcollective/html": "dev-master",
+        "laravelcollective/html": "5.3.*",
         "infyomlabs/adminlte-templates": "5.3.x-dev",
         "infyomlabs/swagger-generator": "dev-master",
         "jlapp/swaggervel": "dev-master",
