@@ -10,8 +10,11 @@ class CodesController extends AppBaseController
 {
     public function putSession(Request $request){
 
-        foreach ($request->filters as $key => $value) {
-            session()->put($key, $value);
+        if($request->filters){
+            session()->put('filters', $request->filters);
+            foreach ($request->filters as $key => $value) {
+                session()->put($key, $value);
+            }
         }
 
         session()->put('initial_date', $request->initial_date);
@@ -42,3 +45,4 @@ class CodesController extends AppBaseController
         return response()->json(['success' => $success, 'foreign_key' => $foreign_key]);
     }
 }
+

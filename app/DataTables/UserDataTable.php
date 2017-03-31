@@ -3,6 +3,7 @@
 namespace App\DataTables;
 
 use App\Models\User;
+use App\Repositories\CodeRepository;
 use Form;
 use Illuminate\Support\Facades\DB;
 use Yajra\Datatables\Services\DataTable;
@@ -32,16 +33,8 @@ class UserDataTable extends DataTable
     {
         $users = User::query();
 
-        $initial_date = session()->get('initial_date');
-        $final_date = session()->get('final_date');
-        
-        if($initial_date){
-            $users->where(DB::raw('DATE(created_at)'), '>=' , $initial_date);
-        }
+        CodeRepository::filter($users);
 
-        if($final_date){
-            $users->where(DB::raw('DATE(created_at)'), '<=' ,$final_date);
-        }
         return $this->applyScopes($users);
     }
 
