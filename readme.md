@@ -3,18 +3,26 @@
 SYS - Será um sistema que fará toda a gerência de cronograma, previsão orçamentária e gastos reais de cada empreendimento do cliente Bild.
 O sistema funcionará em PHP com MySQL, sendo implantado pelos profissionais e na infraestrutura do próprio cliente.
 O sistema conterá 6 módulos principais, sendo eles:
+
 * Compras;
+
 * Contratos/Aprovações;
+
 * Medição de Mão de Obra/Contrato;
+
 * Gerencial Dashboard/Relatório;
+
 * Controle de obra;
+
 * Pré orçamento / OI / OI+OD;
+
 O sistema SYS será um sistema que integrará informações do ERP MEGA, porém mantendo o mínimo de dependência. Além disso, teremos um módulo de medição na obra em formato adaptativo ou app mobile, para informar os dados da obra no momento exato e no andar que está sendo avaliado.
 
 
 
+----------------------------------------------------
 
-Com generators
+Generators
 
 ##Custom Table Name
 
