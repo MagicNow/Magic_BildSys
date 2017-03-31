@@ -63353,7 +63353,7 @@ function addFilters() {
                             <option value="smaller">Menor que</option>\
                             <option value="bigger_equal">Maior ou igual que</option>\
                             <option value="smaller_equal">Menor ou igual que</option>\
-                            <option value="equal">Menor ou igual que</option>\
+                            <option value="equal">Igual</option>\
                         </select>\
                     </div>\
                 </div>\
@@ -63370,7 +63370,8 @@ function addFilters() {
             ');
         }else if(cb_filter[i].value.split('|')[1] == 'foreign_key'){
             var label = cb_filter_label[i].innerHTML;
-            var value = cb_filter_label[i].value;
+            var value = cb_filter[i].value;
+            
             $.ajax({
                 url: "/admin/getForeignKey",
                 data: {
@@ -63389,7 +63390,7 @@ function addFilters() {
                     $('#block_fields').append('\
                         <div class="form-group col-md-6" style="width: 48.8%;">\
                             <label>'+label+'</label>\
-                            <select class="form-control filters" id="'+value+'">\
+                            <select class="form-control filters" id="'+value+'" onchange="addFilterFields()">\
                                 <option value="">Selecione</option>' + options + '\
                             </select>\
                         </div>\

@@ -19,7 +19,7 @@ class CodeRepository
         }
 
         $filters = session()->get('filters');
-        
+
         if($filters){
             foreach ($filters as $field => $value){
                 $explode = explode('|', $field);
@@ -48,7 +48,7 @@ class CodeRepository
                 }else if($explode[1] == 'boolean'){
                     $query->where($explode[0], $value);
                 }else if($explode[1] == 'foreign_key'){
-
+                    $query->where($explode[0], $value);
                 }else if($explode[1] == 'date_initial'){
                     $query->where(DB::raw('DATE('.$explode[0].')'), '>=', $value);
                 }else if($explode[1] == 'date_final'){
