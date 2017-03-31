@@ -13,6 +13,9 @@ $(function () {
     });
 });
 
+$(function () {
+    putSession(); 
+});
 var oTable = null;
 
 function putSession(filters) {
@@ -140,8 +143,8 @@ function addFilters() {
                 </div>\
             ');
         }
-        addFilterFields();
     }
+    addFilterFields();
 }
 
 function filterFieldInteger(value, what){
