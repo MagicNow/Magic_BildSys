@@ -11,16 +11,15 @@ class CodeRepository
         $final_date = session()->get('final_date');
 
         if($initial_date){
-            $query->where(DB::raw('DATE(created_at)'), '>=' , $initial_date);
+            $query->where(DB::raw('DATE(created_at)'), '>=', $initial_date);
         }
 
         if($final_date){
-            $query->where(DB::raw('DATE(created_at)'), '<=' ,$final_date);
+            $query->where(DB::raw('DATE(created_at)'), '<=', $final_date);
         }
 
-//        dd(session()->get('filters'));
-
         $filters = session()->get('filters');
+//        dd($filters);
         if($filters){
             foreach ($filters as $field => $value){
                 $explode = explode('|', $field);
@@ -31,8 +30,10 @@ class CodeRepository
 
                 }else if($explode[1] == 'foreign_key'){
 
-                }else if($explode[1] == 'date'){
-
+                }else if($explode[1] == 'date_initial'){
+                    $query->where(DB::raw('DATE('.$explode[0].')'), '>=', $value);
+                }else if($explode[1] == 'date_final'){
+                    $query->where(DB::raw('DATE('.$explode[0].')'), '<=', $value);
                 }else if($explode[1] == 'string'){
                     if(array_key_exists($field.'_option', $filters)){
                         if($filters[$field.'_option'] == 'between'){

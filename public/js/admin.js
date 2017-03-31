@@ -63407,10 +63407,10 @@ function addFilters() {
                 <div class="row form-group col-md-12">\
                     <div class="col-md-6">\
                         <label>'+cb_filter_label[i].innerHTML+'</label>\
-                        <input type="date" value="'+date_actual+'" id="'+cb_filter[i].value+'_initial" class="form-control filters">\
+                        <input type="date" value="'+date_actual+'" id="'+cb_filter[i].value+'_initial" class="form-control filters" onchange="addFilterFields()">\
                     </div>\
                     <div class="col-md-6" style="margin-top: 25px;">\
-                        <input type="date" value="'+date_actual+'" id="'+cb_filter[i].value+'_final" class="form-control filters">\
+                        <input type="date" value="'+date_actual+'" id="'+cb_filter[i].value+'_final" class="form-control filters" onchange="addFilterFields()">\
                     </div>\
                 </div>\
             ');
