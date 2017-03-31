@@ -63335,19 +63335,19 @@ function addFilters() {
     for( i=0; i < cb_filter.length; i++ ) {
 
         if(cb_filter[i].value.split('|')[1] == 'integer'){
-            var what = "'"+cb_filter[i].value+'_final'+"'";
+            var what = "'select_integer_"+cb_filter[i].value.split('|')[0]+"'";
 
             $('#block_fields').append('\
                 <div class="row form-group col-md-12">\
                     <div class="col-md-3">\
                     <label>'+cb_filter_label[i].innerHTML+'</label>\
-                        <input type="number" id="'+cb_filter[i].value+'_initial" class="form-control filters">\
+                        <input type="number" id="'+cb_filter[i].value+'" class="form-control filters" onkeyup="addFilterFields()">\
                     </div>\
                     <div class="col-md-3" style="margin-top: 25px;">\
-                        <input type="number" id="'+cb_filter[i].value+'_final" class="form-control filters">\
+                        <input type="number" id="'+cb_filter[i].value+'_final" class="form-control filters select_integer_'+cb_filter[i].value.split('|')[0]+'" onkeyup="addFilterFields()">\
                     </div>\
                     <div class="col-md-6" style="margin-top: 25px;">\
-                        <select class="form-control filters" name="'+cb_filter[i].value+'_option" onchange="filterFieldInteger(this.value, '+what+')">\
+                        <select class="form-control filters" id="'+cb_filter[i].value+'_option" onchange="filterFieldInteger(this.value, '+what+')">\
                             <option value="between">Entre</option>\
                             <option value="bigger">Maior que</option>\
                             <option value="smaller">Menor que</option>\
@@ -63437,10 +63437,11 @@ function addFilters() {
 
 function filterFieldInteger(value, what){
     if(value == 'between'){
-        $('#'+what).css('display', '').val('');
+        $('.'+what).css('display', '').val('');
     }else{
-        $('#'+what).css('display', 'none').val('');
+        $('.'+what).css('display', 'none').val('');
     }
+    addFilterFields();
 }
 
 function addFilterFields() {

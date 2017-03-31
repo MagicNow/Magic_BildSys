@@ -19,13 +19,32 @@ class CodeRepository
         }
 
         $filters = session()->get('filters');
-//        dd($filters);
+        
         if($filters){
             foreach ($filters as $field => $value){
                 $explode = explode('|', $field);
-
+                
                 if($explode[1] == 'integer') {
-
+                    if(array_key_exists($field.'_option', $filters)){
+                        if($filters[$field.'_option'] == 'between'){
+                            if(array_key_exists($field.'_final', $filters)){
+                                $query->where(function ($q) use($explode, $value, $filters, $field) {
+                                    $q->where($explode[0], '>=' ,$value);
+                                    $q->where($explode[0], '<=' ,$filters[$field.'_final']);
+                                });
+                            }
+                        }else if($filters[$field.'_option'] == 'bigger'){
+                            $query->where($explode[0], '>' , $value);
+                        }else if($filters[$field.'_option'] == 'smaller'){
+                            $query->where($explode[0], '<', $value);
+                        }else if($filters[$field.'_option'] == 'bigger_equal'){
+                            $query->where($explode[0], '>=', $value);
+                        }else if($filters[$field.'_option'] == 'smaller_equal'){
+                            $query->where($explode[0], '<=', $value);
+                        }else if($filters[$field.'_option'] == 'equal'){
+                            $query->where($explode[0], $value);
+                        }
+                    }
                 }else if($explode[1] == 'boolean'){
                     $query->where($explode[0], $value);
                 }else if($explode[1] == 'foreign_key'){
