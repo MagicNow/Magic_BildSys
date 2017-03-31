@@ -20,13 +20,13 @@
                 <!--Data inicial -->
                 <div class="form-group col-md-5">
                     {!! Form::label('initial_date', 'Data inicial') !!}
-                    {!! Form::date('initial_date', session()->get('initial_date') ? session()->get('initial_date') : date('Y-m-d'), ['class' => 'form-control']) !!}
+                    {!! Form::date('initial_date', session()->get('initial_date') ? session()->get('initial_date') : date('Y-m-d'), ['class' => 'form-control', 'onchange' => 'putSession()']) !!}
                 </div>
 
                 <!--Data final -->
                 <div class="form-group col-md-5">
                     {!! Form::label('final_date', 'Data final') !!}
-                    {!! Form::date('final_date', session()->get('final_date')? session()->get('final_date') : date('Y-m-d', strtotime('+1 week', strtotime(date('Y-m-d')))), ['class' => 'form-control']) !!}
+                    {!! Form::date('final_date', session()->get('final_date')? session()->get('final_date') : date('Y-m-d', strtotime('+1 week', strtotime(date('Y-m-d')))), ['class' => 'form-control', 'onchange' => 'putSession()']) !!}
                 </div>
 
                 <!--Data final -->

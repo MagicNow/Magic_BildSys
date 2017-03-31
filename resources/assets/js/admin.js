@@ -74,7 +74,7 @@ function addFilters() {
             $('#block_fields').append('\
                 <div class="form-group col-md-6" style="width: 48.8%;">\
                     <label>'+cb_filter_label[i].innerHTML+'</label>\
-                    <select class="form-control filters" id="'+cb_filter[i].value+'">\
+                    <select class="form-control filters" id="'+cb_filter[i].value+'" onchange="addFilterFields()">\
                         <option value="1">Sim</option>\
                         <option value="0">Não</option>\
                     </select>\

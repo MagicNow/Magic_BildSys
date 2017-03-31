@@ -3,13 +3,4 @@
 </div>
 @section('scripts')
     {!! $dataTable->scripts() !!}
-    <script type="text/javascript">
-        $('#initial_date').bind('change', function () {
-            putSession();
-        });
-
-        $('#final_date').bind('change', function () {
-            putSession();
-        });
-    </script>
 @endsection

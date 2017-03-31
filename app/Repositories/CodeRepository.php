@@ -27,7 +27,7 @@ class CodeRepository
                 if($explode[1] == 'integer') {
 
                 }else if($explode[1] == 'boolean'){
-
+                    $query->where($explode[0], $value);
                 }else if($explode[1] == 'foreign_key'){
 
                 }else if($explode[1] == 'date_initial'){
