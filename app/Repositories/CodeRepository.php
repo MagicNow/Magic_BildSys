@@ -22,7 +22,7 @@ class CodeRepository
 
         if($filters){
             foreach ($filters as $field => $value){
-                $explode = explode('|', $field);
+                $explode = explode('-', $field);
                 
                 if($explode[1] == 'integer') {
                     if(array_key_exists($field.'_option', $filters)){

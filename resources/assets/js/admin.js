@@ -44,10 +44,22 @@ function addFilters() {
     var cb_filter = $('.cb_filter');
     var cb_filter_label = $('.cb_filter_label');
     var filters = [];
+    $('#block_fields').addClass('thumbnail').append('\
+    <div class="col-md-12 page-header">\
+        <div class="col-md-11">\
+            <h2>Filtros</h2>\
+        </div>\
+        <div class="col-md-1" style="padding-top: 15px;">\
+            <button type="button" class="btn btn-default" onclick="minimizeFilters();">\
+                    <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>\
+            </button>\
+        </div>\
+    </div>\
+    ');
+    
     for( i=0; i < cb_filter.length; i++ ) {
-
-        if(cb_filter[i].value.split('|')[1] == 'integer'){
-            var what = "'select_integer_"+cb_filter[i].value.split('|')[0]+"'";
+        if(cb_filter[i].value.split('-')[1] == 'integer'){
+            var what = "'select_integer_"+cb_filter[i].value.split('-')[0]+"'";
 
             $('#block_fields').append('\
                 <div class="row form-group col-md-12">\
@@ -56,7 +68,7 @@ function addFilters() {
                         <input type="number" id="'+cb_filter[i].value+'" class="form-control filters" onkeyup="addFilterFields()">\
                     </div>\
                     <div class="col-md-3" style="margin-top: 25px;">\
-                        <input type="number" id="'+cb_filter[i].value+'_final" class="form-control filters select_integer_'+cb_filter[i].value.split('|')[0]+'" onkeyup="addFilterFields()">\
+                        <input type="number" id="'+cb_filter[i].value+'_final" class="form-control filters select_integer_'+cb_filter[i].value.split('-')[0]+'" onkeyup="addFilterFields()">\
                     </div>\
                     <div class="col-md-6" style="margin-top: 25px;">\
                         <select class="form-control filters" id="'+cb_filter[i].value+'_option" onchange="filterFieldInteger(this.value, '+what+')">\
@@ -70,7 +82,19 @@ function addFilters() {
                     </div>\
                 </div>\
             ');
-        }else if(cb_filter[i].value.split('|')[1] == 'boolean'){
+
+            var value_integer_option = document.getElementById(cb_filter[i].value+'_option').options[document.getElementById(cb_filter[i].value+'_option').selectedIndex].text;
+            var value_integer_initial = $('#'+cb_filter[i].value).val();
+            var value_integer_final = $('#'+cb_filter[i].value+'_final').val();
+
+            if(value_integer_option == 'Entre'){
+                msg = value_integer_option + value_integer_initial + ' e ' + value_integer_final;
+            }else{
+                msg = value_integer_option + value_integer_initial;
+            }
+
+            $('#block_fields_minimize').append('<label>'+cb_filter_label[i].innerHTML.replace(/\s+$/, '')+':</label><span> '+msg+' </span>');
+        }else if(cb_filter[i].value.split('-')[1] == 'boolean'){
             $('#block_fields').append('\
                 <div class="form-group col-md-6" style="width: 48.8%;">\
                     <label>'+cb_filter_label[i].innerHTML+'</label>\
@@ -80,17 +104,20 @@ function addFilters() {
                     </select>\
                 </div>\
             ');
-        }else if(cb_filter[i].value.split('|')[1] == 'foreign_key'){
+
+            $('#block_fields_minimize').append('<label>'+cb_filter_label[i].innerHTML.replace(/\s+$/, '')+':</label><span> '+document.getElementById(cb_filter[i].value).options[document.getElementById(cb_filter[i].value).selectedIndex].text+' </span>');
+
+        }else if(cb_filter[i].value.split('-')[1] == 'foreign_key'){
             var label = cb_filter_label[i].innerHTML;
             var value = cb_filter[i].value;
             
             $.ajax({
                 url: "/admin/getForeignKey",
                 data: {
-                    foreign_key: cb_filter[i].value.split('|')[0],
-                    model: cb_filter[i].value.split('|')[2],
-                    field_value: cb_filter[i].value.split('|')[3],
-                    field_key: cb_filter[i].value.split('|')[4]
+                    foreign_key: cb_filter[i].value.split('-')[0],
+                    model: cb_filter[i].value.split('-')[2],
+                    field_value: cb_filter[i].value.split('-')[3],
+                    field_key: cb_filter[i].value.split('-')[4]
                 }
             }).done(function (json) {
                 if(json.success == true && json.foreign_key){
@@ -109,13 +136,14 @@ function addFilters() {
                     ');
                 }
             });
-        }else if(cb_filter[i].value.split('|')[1] == 'date'){
+            $('#block_fields_minimize').append('<label>'+label.replace(/\s+$/, '')+':</label><span> '+document.getElementById(value).options[document.getElementById(value).selectedIndex].text+' </span>');
+        }else if(cb_filter[i].value.split('-')[1] == 'date'){
             date = new Date();
             day = ("0" + (date.getDate())).slice(-2);
             month = ("0" + (date.getMonth() + 1)).slice(-2);
             year = date.getFullYear();
             date_actual = year+'-'+month+'-'+day;
-                
+
             $('#block_fields').append('\
                 <div class="row form-group col-md-12">\
                     <div class="col-md-6">\
@@ -127,6 +155,27 @@ function addFilters() {
                     </div>\
                 </div>\
             ');
+
+            value_date_initial = new Date($('#'+cb_filter[i].value+'_initial').val());
+            value_day_initial = ("0" + (date.getDate())).slice(-2);
+            value_month_initial = ("0" + (date.getMonth() + 1)).slice(-2);
+            value_year_initial = date.getFullYear();
+            value_date_initial = day+'/'+month+'/'+year;
+
+            value_date_final = new Date($('#'+cb_filter[i].value+'_final').val());
+            value_day_final = ("0" + (date.getDate())).slice(-2);
+            value_month_final = ("0" + (date.getMonth() + 1)).slice(-2);
+            value_year_final = date.getFullYear();
+            value_date_final = day+'/'+month+'/'+year;
+            
+            if(value_date_initial != value_date_final){
+                msg = 'Entre' + value_date_initial + ' e ' + value_date_final;
+            }else{
+                msg = value_date_initial;
+            }
+
+            $('#block_fields_minimize').append('<label>'+cb_filter_label[i].innerHTML.replace(/\s+$/, '')+':</label><span> '+msg+' </span>');
+
         }else{
             $('#block_fields').append('\
                 <div class="row form-group col-md-12">\
@@ -143,6 +192,10 @@ function addFilters() {
                     </div>\
                 </div>\
             ');
+            
+            var value_string = $('#'+cb_filter[i].value).val();
+            
+            $('#block_fields_minimize').append('<label>'+cb_filter_label[i].innerHTML.replace(/\s+$/, '')+':</label><span> '+value_string+' </span>');
         }
     }
     addFilterFields();
@@ -168,4 +221,14 @@ function addFilterFields() {
     filters = '{'+filters+'}';
     
     putSession(filters);
+}
+
+function minimizeFilters() {
+    $('#block_fields_minimize').css('display', '');
+    $('#block_fields').toggle('slow');
+}
+
+function maximizeFilters() {
+    $('#block_fields_minimize').css('display', 'none');
+    $('#block_fields').toggle('slow');
 }

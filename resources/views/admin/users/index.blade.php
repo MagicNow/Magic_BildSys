@@ -36,7 +36,12 @@
                     </button>
                 </div>
 
-                <div id="block_fields"></div>
+                <div id="block_fields" class="col-md-12" style="margin-bottom: 20px"></div>
+                <div id="block_fields_minimize" class="col-md-12 thumbnail" style="margin-bottom: 20px;display: none;">
+                    <button type="button" class="btn btn-default" onclick="maximizeFilters();">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                    </button>
+                </div>
 
                 <!-- Modal -->
                 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
