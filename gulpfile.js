@@ -114,7 +114,7 @@ elixir(function(mix) {
         paths.fontawesome + '/css/font-awesome.css',
         // paths.bootswatch + '/bootstrap.css',
         paths.adminlte + '/css/AdminLTE.css',
-        paths.adminlte + '/css/skins/skin-green-light.css',
+        paths.adminlte + '/css/skins/skin-yellow-light.css',
         paths.ionicons + '/css/ionicons.css',
         paths.colorbox + '/example3/colorbox.css',
         paths.dataTables + '/css/dataTables.bootstrap.css',

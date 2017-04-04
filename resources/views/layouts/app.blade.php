@@ -9,15 +9,22 @@
 
 </head>
 
-<body class="skin-green-light sidebar-mini">
+<body class="skin-yellow-light sidebar-mini">
 @if (!Auth::guest())
     <div class="wrapper">
         <!-- Main Header -->
         <header class="main-header">
 
-            <!-- Logo -->
-            <a href="#" class="logo">
-                <b>{{ env('APP_TITLE') }}</b>
+            <a href="{{ url('') }}" class="logo">
+                <!-- mini logo for sidebar mini 50x50 pixels -->
+                <span class="logo-mini">
+                    <img src="{{ asset('img/logo_bild.png') }}" style="max-height: 50px;">
+                </span>
+                <!-- logo for regular state and mobile devices -->
+                <span class="logo-lg">
+                    <img src="{{ asset('img/logo_bild.png') }}" style="max-height: 50px;">
+                    SYS
+                </span>
             </a>
 
             <!-- Header Navbar -->
