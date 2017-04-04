@@ -10,22 +10,29 @@
 | to using a Closure or controller method. Build something great!
 |
 */
-
-Route::get('/', function () {
-    return view('welcome');
-});
-
-
 Auth::routes();
 
-Route::group(['middleware' => 'admin', 'prefix' => 'admin'], function () {
-    Route::get('/home', 'Admin\HomeController@index');
-    Route::get('/', 'Admin\HomeController@index');
+$router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($router) {
 
-    Route::resource('users', 'Admin\UserController');
+    $router->get('/', 'HomeController@index');
 
-    Route::get('/putsession', 'Admin\CodesController@putSession');
-    Route::get('/getForeignKey', 'Admin\CodesController@getForeignKey');
+    $router->resource('ordemDeCompras', 'OrdemDeCompraController');
+
+    $router->get('compras', 'OrdemDeCompraController@compras');
+
+
+    Route::group(['middleware' => 'admin', 'prefix' => 'admin'], function () {
+        Route::get('/home', 'Admin\HomeController@index');
+        Route::get('/', 'Admin\HomeController@index');
+
+        Route::resource('users', 'Admin\UserController');
+
+        Route::get('/putsession', 'Admin\CodesController@putSession');
+        Route::get('/getForeignKey', 'Admin\CodesController@getForeignKey');
+    });
+
+
+
 });
 
 

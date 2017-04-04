@@ -8,10 +8,11 @@
     <link rel="stylesheet" href="/css/admin.css">
     <link rel="shortcut icon" href="{{ asset('img/favicon.png') }}">
     <link rel="icon" href="{{ asset('img/favicon.png') }}" />
+
 </head>
 
 <body class="skin-yellow-light sidebar-mini">
-@if (!Auth::guest())
+
     <div class="wrapper">
         <!-- Main Header -->
         <header class="main-header">
@@ -198,7 +199,7 @@
         </header>
 
         <!-- Left side column. contains the logo and sidebar -->
-        @include('layouts.sidebar')
+        @include('layouts.front_sidebar')
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
             @yield('content')
@@ -210,52 +211,6 @@
         </footer>
 
     </div>
-@else
-    <nav class="navbar navbar-default navbar-static-top">
-        <div class="container">
-            <div class="navbar-header">
-
-                <!-- Collapsed Hamburger -->
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                        data-target="#app-navbar-collapse">
-                    <span class="sr-only">Toggle Navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-
-                <!-- Branding Image -->
-                <a class="navbar-brand" href="{!! url('/') !!}">
-                    {{ env('APP_TITLE') }}
-                </a>
-            </div>
-
-            <div class="collapse navbar-collapse" id="app-navbar-collapse">
-                <!-- Left Side Of Navbar -->
-                <ul class="nav navbar-nav">
-                    <li><a href="{!! url('/home') !!}">Home</a></li>
-                </ul>
-
-                <!-- Right Side Of Navbar -->
-                <ul class="nav navbar-nav navbar-right">
-                    <!-- Authentication Links -->
-                    <li><a href="{!! url('/login') !!}">Acesso</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <div id="page-content-wrapper">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-lg-12">
-                    @yield('content')
-                </div>
-            </div>
-        </div>
-    </div>
-    @endif
-
     <script src="/js/admin.js"></script>
 
     @yield('scripts')
