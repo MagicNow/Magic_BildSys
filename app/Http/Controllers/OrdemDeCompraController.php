@@ -6,6 +6,7 @@ use App\DataTables\OrdemDeCompraDataTable;
 use App\Http\Requests;
 use App\Http\Requests\CreateOrdemDeCompraRequest;
 use App\Http\Requests\UpdateOrdemDeCompraRequest;
+use App\Models\Obra;
 use App\Repositories\OrdemDeCompraRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
@@ -147,5 +148,11 @@ class OrdemDeCompraController extends AppBaseController
         Flash::success('Ordem De Compra '.trans('common.deleted').' '.trans('common.successfully').'.');
 
         return redirect(route('ordemDeCompras.index'));
+    }
+
+    public function compras()
+    {
+        $obras = Obra::pluck('nome','id')->toArray();
+        return view('ordem_de_compras.compras', compact('obras'));
     }
 }
