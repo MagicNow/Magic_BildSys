@@ -30,6 +30,7 @@ Route::group(['middleware' => 'admin', 'prefix' => 'admin'], function () {
     #importação de planilhas dinâmicas
     Route::get('import/', ['as'=> 'admin.import.index', 'uses' => 'Admin\ImportController@index']);
     Route::post('import/importar', ['as'=> 'admin.import.importar', 'uses' => 'Admin\ImportController@import']);
+    Route::post('import/importar/checkIn', ['as'=> 'admin.import.checkIn', 'uses' => 'Admin\ImportController@checkIn']);
 });
 
 

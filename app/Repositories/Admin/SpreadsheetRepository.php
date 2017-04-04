@@ -47,12 +47,14 @@ class SpreadsheetRepository
                                     $cabecalho[str_slug($valor, '_')] = $index;
                                 }
                                 dd($cabecalho);
-                            } else {
-                                $line++;
+                                return view('admin.import.checkIn', compact('cabecalho'));
+                            }
+//                            else {
+//                                $line++;
 
                                 # processo de planilha aqui
 
-                            }
+//                            }
                             // do stuff with the row
                         }
                     }
