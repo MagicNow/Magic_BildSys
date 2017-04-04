@@ -17,13 +17,14 @@ use Symfony\Component\HttpFoundation\Request;
 class ImportController extends AppBaseController
 {
     public function index(){
-
         $modulos = Modulo::pluck('nome','id')->toArray();
         return view('admin.import.index', compact('modulos'));
     }
 
     public function import(Request $request){
-        SpreadsheetRepository::Spreadsheet($request->file, $request->modulo_id);
-    }
 
+        $retorno = SpreadsheetRepository::Spreadsheet($request->file, $request->modulo_id);
+        return view('admin.import.checkIn', compact('retorno'));
+
+    }
 }

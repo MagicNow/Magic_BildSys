@@ -8,6 +8,7 @@
 
 namespace App\Repositories\Admin;
 
+use App\Models\Orcamento;
 use Box\Spout\Common\Type;
 use Box\Spout\Reader\ReaderFactory;
 use Flash;
@@ -46,23 +47,14 @@ class SpreadsheetRepository
                                 foreach ($row as $index => $valor) {
                                     $cabecalho[str_slug($valor, '_')] = $index;
                                 }
-                                dd($cabecalho);
-                                return view('admin.import.checkIn', compact('cabecalho'));
+                                $columns = Orcamento::$relation;
+                                return ['cabecalho' => $cabecalho, 'colunas' => $columns];
                             }
-//                            else {
-//                                $line++;
-
-                                # processo de planilha aqui
-
-//                            }
-                            // do stuff with the row
                         }
                     }
                     $folha++;
                 }
                 $reader->close();
-
-                return view('admin.planilhas.import');
             }
 
             \Flash::error('Escolha um arquivo');
@@ -72,5 +64,4 @@ class SpreadsheetRepository
 //            return Redirect::back();
 //        }
     }
-
 }

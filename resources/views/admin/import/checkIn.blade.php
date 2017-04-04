@@ -6,9 +6,56 @@
     </section>
     <div class="content">
         <div class="clearfix"></div>
-
         @include('flash::message')
+        <div class="panel panel-danger">
+            <div class="panel-body"></div>
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped table-hover table-condensed">
+                        <thead>
+                        <tr>
+                            <th>Colunas importadas</th>
+                            <th>Relação</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach($retorno['cabecalho'] as $column => $value)
+                            <tr>
+                                <th scope="row">{{$column}}</th>
+                                <td>
+                                    <select>
+                                        <option value=""> --</option>
+                                        @foreach($retorno['colunas'] as $column => $value)
+                                        <option value="{{$column}}">{{$column}} - {{$value}}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
 
-
+                            </tr>
+                        @endforeach
+                        </tbody>
+                </table>
+            </div>
+            <div class="form-group pull-right">
+                <button type="submit" class="btn btn-warning">Processar</button>
+            </div>
+        </div>
     </div>
 @endsection
+@section('scripts')
+    <script type="text/javascript">
+        $(document).ready(function($) {
+            var $selects = $('select');
+            $selects.on('change', function() {
+                var $select = $(this),
+                        $options = $selects.not($select).find('option'),
+                        selectedText = $select.children('option:selected').val();
+
+                var $optionsToDisable = $options.filter(function() {
+                    return $(this).val() == selectedText;
+                });
+
+                $optionsToDisable.prop('disabled', true);
+            });
+        });
+    </script>
+@stop
