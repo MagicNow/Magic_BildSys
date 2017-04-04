@@ -57,8 +57,8 @@
                             <div class="modal-body">
                                 @foreach($filters as $field => $filter)
                                     <p>
-                                        <input class="cb_filter" type="checkbox" value="{{$field}}" checked/>
-                                        <label style="cursor: pointer;" class="cb_filter_label">
+                                        <input class="cb_filter" type="checkbox" id="{{$field}}" value="{{$field}}" checked/>
+                                        <label for="{{$field}}" style="cursor: pointer;" class="cb_filter_label">
                                             {{$filter}}
                                         </label>
                                     </p>
