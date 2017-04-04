@@ -150,32 +150,34 @@ function addFilters() {
             year = date.getFullYear();
             date_actual = year+'-'+month+'-'+day;
 
+            var row_date = "'row_"+cb_filter[i].value+"'";
+            
             $('#block_fields').append('\
                 <div class="row form-group col-md-12">\
                     <div class="col-md-6">\
                         <label>'+cb_filter_label[i].innerHTML+'</label>\
-                        <input type="date" value="'+date_actual+'" id="'+cb_filter[i].value+'_initial" class="form-control filters" onchange="addFilterFields()">\
+                        <input type="date" value="'+date_actual+'" id="'+cb_filter[i].value+'_initial" name="'+cb_filter[i].value+'" class="form-control filters" onchange="addFilterFields('+row_date+', this.value, \'date\', this.name)">\
                     </div>\
                     <div class="col-md-6" style="margin-top: 25px;">\
-                        <input type="date" value="'+date_actual+'" id="'+cb_filter[i].value+'_final" class="form-control filters" onchange="addFilterFields()">\
+                        <input type="date" value="'+date_actual+'" id="'+cb_filter[i].value+'_final" name="'+cb_filter[i].value+'" class="form-control filters" onchange="addFilterFields('+row_date+', this.value, \'date\', this.name)">\
                     </div>\
                 </div>\
             ');
 
-            value_date_initial = new Date($('#'+cb_filter[i].value+'_initial').val());
-            value_day_initial = ("0" + (date.getDate())).slice(-2);
-            value_month_initial = ("0" + (date.getMonth() + 1)).slice(-2);
-            value_year_initial = date.getFullYear();
-            value_date_initial = day+'/'+month+'/'+year;
+            value_date_initial = new Date($('#'+cb_filter[i].value+'_initial').val().replace(/-/g, ','));
+            value_day_initial = ("0" + (value_date_initial.getDate())).slice(-2);
+            value_month_initial = ("0" + (value_date_initial.getMonth() + 1)).slice(-2);
+            value_year_initial = value_date_initial.getFullYear();
+            value_date_initial = value_day_initial+'/'+value_month_initial+'/'+value_year_initial;
 
-            value_date_final = new Date($('#'+cb_filter[i].value+'_final').val());
-            value_day_final = ("0" + (date.getDate())).slice(-2);
-            value_month_final = ("0" + (date.getMonth() + 1)).slice(-2);
-            value_year_final = date.getFullYear();
-            value_date_final = day+'/'+month+'/'+year;
+            value_date_final = new Date($('#'+cb_filter[i].value+'_final').val().replace(/-/g, ','));
+            value_day_final = ("0" + (value_date_final.getDate())).slice(-2);
+            value_month_final = ("0" + (value_date_final.getMonth() + 1)).slice(-2);
+            value_year_final = value_date_final.getFullYear();
+            value_date_final = value_day_final+'/'+value_month_final+'/'+value_year_final;
             
             if(value_date_initial != value_date_final){
-                msg = 'Entre' + value_date_initial + ' e ' + value_date_final;
+                msg = 'Entre ' + value_date_initial + ' e ' + value_date_final;
             }else{
                 msg = value_date_initial;
             }
@@ -233,7 +235,24 @@ function addFilterFields(target_id, value, type, element_id) {
         element_value = document.getElementById(element_id).options[document.getElementById(element_id).selectedIndex].text;
         $('#'+target_id).html(element_value+' ');
     }else if(type == 'date'){
+        value_date_initial = new Date($('#'+element_id+'_initial').val().replace(/-/g, ','));
+        value_day_initial = ("0" + (value_date_initial.getDate())).slice(-2);
+        value_month_initial = ("0" + (value_date_initial.getMonth() + 1)).slice(-2);
+        value_year_initial = value_date_initial.getFullYear();
+        value_date_initial = value_day_initial+'/'+value_month_initial+'/'+value_year_initial;
+
+        value_date_final = new Date($('#'+element_id+'_final').val().replace(/-/g, ','));
+        value_day_final = ("0" + (value_date_final.getDate())).slice(-2);
+        value_month_final = ("0" + (value_date_final.getMonth() + 1)).slice(-2);
+        value_year_final = value_date_final.getFullYear();
+        value_date_final = value_day_final+'/'+value_month_final+'/'+value_year_final;
         
+        if(value_date_initial != value_date_final){
+            msg = 'Entre ' + value_date_initial + ' e ' + value_date_final;
+        }else{
+            msg = value_date_initial;
+        }
+        $('#'+target_id).html(msg+' ');
     }else if(type == 'boolean'){
         element_value = document.getElementById(element_id).options[document.getElementById(element_id).selectedIndex].text;
         $('#'+target_id).html(element_value+' ');
