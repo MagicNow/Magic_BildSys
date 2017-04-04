@@ -21,6 +21,8 @@ class CreateContratoInsumosTable extends Migration
             $table->decimal('qtd', 19, 2);
             $table->decimal('valor_unitario', 19, 2);
             $table->decimal('valor_total', 19, 2);
+            $table->softDeletes();
+            $table->timestamps();
 
 
             $table->foreign('contrato_id')

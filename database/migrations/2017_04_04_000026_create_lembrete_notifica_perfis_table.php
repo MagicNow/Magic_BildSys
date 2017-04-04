@@ -18,6 +18,8 @@ class CreateLembreteNotificaPerfisTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('lembrete_id');
             $table->unsignedInteger('perfil_id');
+            $table->timestamps();
+            $table->softDeletes();
 
 
             $table->foreign('lembrete_id')
