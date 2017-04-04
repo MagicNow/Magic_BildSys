@@ -25,6 +25,7 @@ Route::group(['middleware' => 'admin', 'prefix' => 'admin'], function () {
     Route::resource('users', 'Admin\UserController');
 
     Route::get('/putsession', 'Admin\CodesController@putSession');
+    Route::get('/checksession', 'Admin\CodesController@checkSession');
     Route::get('/getForeignKey', 'Admin\CodesController@getForeignKey');
 });
 

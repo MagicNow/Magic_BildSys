@@ -63302,7 +63302,8 @@ $(function () {
 });
 
 $(function () {
-    putSession(); 
+    putSession();
+    checkSession();
 });
 var oTable = null;
 
@@ -63313,7 +63314,7 @@ function putSession(filters) {
     if(filters){
         filters_json = JSON.parse(JSON.stringify(eval("(" + filters + ")")));
     }
-    
+
     $.ajax({
         url: "/admin/putsession",
         data: {
@@ -63572,4 +63573,17 @@ function minimizeFilters() {
 function maximizeFilters() {
     $('#block_fields_thumbnail').css('display', 'none');
     $('#block_fields').toggle('slow');
+}
+
+function checkSession() {
+    $.ajax({
+        url: "/admin/checksession"
+    }).done(function (json) {
+        if(json.success){
+            $.each(json.filters, function (index, value) {
+                $('#'+index).prop('checked', true).parent().addClass('checked');
+                addFilters();
+            });
+        }
+    });
 }

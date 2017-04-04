@@ -44,5 +44,16 @@ class CodesController extends AppBaseController
 
         return response()->json(['success' => $success, 'foreign_key' => $foreign_key]);
     }
+
+    public function checkSession(){
+
+        $filters = session()->get('filters');
+        $success = false;
+        
+        if($filters){
+            $success = true;
+        }
+        return response()->json(['success' => $success, 'filters' => $filters]);
+    }
 }
 
