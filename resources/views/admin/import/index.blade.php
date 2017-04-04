@@ -25,11 +25,6 @@
                                 {!! Form::file('file', array('id' => 'file', 'class' => 'form-control', 'required'=>'required')) !!}
                                 <span class="help-block">{{ $errors->first('file', ':message') }}</span>
                             </div>
-                            {{--<div class="col-sm-6 text-right">--}}
-                                {{--<a href="{{ URL::to('/') }}" class="btn btn-default">Cancelar</a>--}}
-                                {{--<button type="submit" class="btn btn-success">Importar</button>--}}
-                            {{--</div>--}}
-                                    <!-- Submit Field -->
                             <div class="form-group col-sm-12 text-right">
                                 <a href="{{URL::to('/')}}" class="btn btn-default"><i class="fa fa-times"></i>  {{ ucfirst( trans('common.cancel') )}}</a>
                                 {!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save') ), ['class' => 'btn btn-warning', 'type'=>'submit']) !!}
