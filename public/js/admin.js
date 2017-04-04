@@ -63348,18 +63348,19 @@ function addFilters() {
     for( i=0; i < cb_filter.length; i++ ) {
         if(cb_filter[i].value.split('-')[1] == 'integer'){
             var what = "'select_integer_"+cb_filter[i].value.split('-')[0]+"'";
+            var row_integer = "'row_"+cb_filter[i].value+"'";
 
             $('#block_fields').append('\
                 <div class="row form-group col-md-12">\
                     <div class="col-md-3">\
                     <label>'+cb_filter_label[i].innerHTML+'</label>\
-                        <input type="number" id="'+cb_filter[i].value+'" class="form-control filters" onkeyup="addFilterFields()">\
+                        <input type="number" id="'+cb_filter[i].value+'" class="form-control filters" onkeyup="addFilterFields('+row_integer+', this.value, \'integer\', this.id)">\
                     </div>\
                     <div class="col-md-3" style="margin-top: 25px;">\
-                        <input type="number" id="'+cb_filter[i].value+'_final" class="form-control filters select_integer_'+cb_filter[i].value.split('-')[0]+'" onkeyup="addFilterFields()">\
+                        <input type="number" id="'+cb_filter[i].value+'_final" name="'+cb_filter[i].value+'" class="form-control filters select_integer_'+cb_filter[i].value.split('-')[0]+'" onkeyup="addFilterFields('+row_integer+', this.value, \'integer\', this.name)">\
                     </div>\
                     <div class="col-md-6" style="margin-top: 25px;">\
-                        <select class="form-control filters" id="'+cb_filter[i].value+'_option" onchange="filterFieldInteger(this.value, '+what+')">\
+                        <select class="form-control filters" id="'+cb_filter[i].value+'_option" name="'+cb_filter[i].value+'" onchange="filterFieldInteger(this.value, '+what+'); addFilterFields('+row_integer+', this.value, \'integer\', this.name)">\
                             <option value="between">Entre</option>\
                             <option value="bigger">Maior que</option>\
                             <option value="smaller">Menor que</option>\
@@ -63376,12 +63377,12 @@ function addFilters() {
             var value_integer_final = $('#'+cb_filter[i].value+'_final').val();
 
             if(value_integer_option == 'Entre'){
-                msg = value_integer_option + value_integer_initial + ' e ' + value_integer_final;
+                msg = value_integer_option + ' ' + value_integer_initial + ' e ' + value_integer_final;
             }else{
-                msg = value_integer_option + value_integer_initial;
+                msg = value_integer_option + ' ' + value_integer_initial;
             }
 
-            $('#block_fields_minimize').append('<label>'+cb_filter_label[i].innerHTML.replace(/\s+$/, '')+':</label><span> '+msg+' </span>');
+            $('#block_fields_minimize').append('<label>'+cb_filter_label[i].innerHTML.replace(/\s+$/, '')+':</label><span  id="row_'+cb_filter[i].value+'"> '+msg+' </span>');
         }else if(cb_filter[i].value.split('-')[1] == 'boolean'){
             var row_boolean = "'row_"+cb_filter[i].value+"'";
             
@@ -63506,7 +63507,16 @@ function filterFieldInteger(value, what){
 
 function addFilterFields(target_id, value, type, element_id) {
     if(type == 'integer'){
+        var value_integer_option = document.getElementById(element_id+'_option').options[document.getElementById(element_id+'_option').selectedIndex].text;
+        var value_integer_initial = $('#'+element_id).val();
+        var value_integer_final = $('#'+element_id+'_final').val();
         
+        if(value_integer_option == 'Entre'){
+            msg = value_integer_option + ' ' + value_integer_initial + ' e ' + value_integer_final;
+        }else{
+            msg = value_integer_option + ' ' + value_integer_initial;
+        }
+        $('#'+target_id).html(msg+' ');
     }else if(type == 'foreign_key'){
         element_value = document.getElementById(element_id).options[document.getElementById(element_id).selectedIndex].text;
         $('#'+target_id).html(element_value+' ');
