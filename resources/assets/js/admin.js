@@ -138,6 +138,8 @@ function addFilters() {
             });
             $('#block_fields_minimize').append('<label>'+label.replace(/\s+$/, '')+':</label><span> '+document.getElementById(value).options[document.getElementById(value).selectedIndex].text+' </span>');
         }else if(cb_filter[i].value.split('-')[1] == 'date'){
+            var row_date = "'row_"+cb_filter[i].value+"'";
+
             date = new Date();
             day = ("0" + (date.getDate())).slice(-2);
             month = ("0" + (date.getMonth() + 1)).slice(-2);
@@ -174,14 +176,15 @@ function addFilters() {
                 msg = value_date_initial;
             }
 
-            $('#block_fields_minimize').append('<label>'+cb_filter_label[i].innerHTML.replace(/\s+$/, '')+':</label><span> '+msg+' </span>');
+            $('#block_fields_minimize').append('<label>'+cb_filter_label[i].innerHTML.replace(/\s+$/, '')+':</label><span id="row_'+cb_filter[i].value+'"> '+msg+' </span>');
 
         }else{
+            var row_string = "'row_"+cb_filter[i].value+"'";
             $('#block_fields').append('\
                 <div class="row form-group col-md-12">\
                     <div class="col-md-6">\
                         <label>'+cb_filter_label[i].innerHTML+'</label>\
-                        <input type="text" id="'+cb_filter[i].value+'" class="form-control filters" onkeyup="addFilterFields()">\
+                        <input type="text" id="'+cb_filter[i].value+'" class="form-control filters" onkeyup="addFilterFields('+row_string+', this.value, \'string\')">\
                     </div>\
                     <div class="col-md-6" style="margin-top: 25px;">\
                         <select class="form-control filters" id="'+cb_filter[i].value+'_option" onchange="addFilterFields()">\
@@ -195,7 +198,7 @@ function addFilters() {
             
             var value_string = $('#'+cb_filter[i].value).val();
             
-            $('#block_fields_minimize').append('<label>'+cb_filter_label[i].innerHTML.replace(/\s+$/, '')+':</label><span> '+value_string+' </span>');
+            $('#block_fields_minimize').append('<label>'+cb_filter_label[i].innerHTML.replace(/\s+$/, '')+':</label><span id="row_'+cb_filter[i].value+'"> '+value_string+' </span>');
         }
     }
     addFilterFields();
@@ -210,7 +213,13 @@ function filterFieldInteger(value, what){
     addFilterFields();
 }
 
-function addFilterFields() {
+function addFilterFields(id, value, type) {
+    if(type == 'teste'){
+        
+    }else{
+        $('#'+id).html(value+' ');
+    }
+    
     var filters_fields = $('.filters');
     var filters = '';
     
