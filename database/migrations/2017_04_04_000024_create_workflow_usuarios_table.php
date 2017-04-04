@@ -16,7 +16,7 @@ class CreateWorkflowUsuariosTable extends Migration
         Schema::create('workflow_usuarios', function (Blueprint $table) {
             
             $table->increments('id');
-            $table->integer('user_id');
+            $table->unsignedInteger('user_id');
             $table->unsignedInteger('workflow_alcada_id');
 
             $table->foreign('user_id')

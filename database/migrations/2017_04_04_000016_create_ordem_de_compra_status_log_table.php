@@ -19,7 +19,7 @@ class CreateOrdemDeCompraStatusLogTable extends Migration
             $table->unsignedInteger('oc_status_id');
             $table->unsignedInteger('ordem_de_compra_id');
             $table->timestamp('created_at')->nullable();
-            $table->integer('user_id')->nullable();
+            $table->unsignedInteger('user_id')->nullable();
 
             $table->foreign('user_id')
                 ->references('id')->on('users')

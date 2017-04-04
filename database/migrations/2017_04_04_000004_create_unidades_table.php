@@ -15,7 +15,8 @@ class CreateUnidadesTable extends Migration
     {
         Schema::create('unidades', function (Blueprint $table) {
             
-            $table->increments('sigla');
+            $table->string('sigla',5);
+            $table->primary('sigla');
             $table->string('descricao');
         });
     }

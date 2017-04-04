@@ -19,7 +19,7 @@ class CreateWorkflowAprovacoesTable extends Migration
             $table->unsignedInteger('workflow_alcada_id');
             $table->integer('aprovavel_id');
             $table->string('aprovavel_type');
-            $table->integer('user_id');
+            $table->unsignedInteger('user_id');
             $table->tinyInteger('aprovado');
             $table->string('created_at', 45)->nullable();
             $table->unsignedInteger('workflow_reprovacao_motivo_id')->nullable();
