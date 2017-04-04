@@ -63388,7 +63388,7 @@ function addFilters() {
             $('#block_fields').append('\
                 <div class="form-group col-md-6" style="width: 48.8%;">\
                     <label>'+cb_filter_label[i].innerHTML+'</label>\
-                    <select class="form-control filters" id="'+cb_filter[i].value+'" onchange="addFilterFields('+row_boolean+', this.value, \'boolean\')">\
+                    <select class="form-control filters" id="'+cb_filter[i].value+'" onchange="addFilterFields('+row_boolean+', this.value, \'boolean\', this.id)">\
                         <option value="1">Sim</option>\
                         <option value="0">Não</option>\
                     </select>\
@@ -63400,6 +63400,7 @@ function addFilters() {
         }else if(cb_filter[i].value.split('-')[1] == 'foreign_key'){
             var label = cb_filter_label[i].innerHTML;
             var value = cb_filter[i].value;
+            var row_foreign_key = "'row_"+cb_filter[i].value+"'";
             
             $.ajax({
                 url: "/admin/getForeignKey",
@@ -63419,14 +63420,16 @@ function addFilters() {
                     $('#block_fields').append('\
                         <div class="form-group col-md-6" style="width: 48.8%;">\
                             <label>'+label+'</label>\
-                            <select class="form-control filters" id="'+value+'" onchange="addFilterFields()">\
+                            <select class="form-control filters" id="'+value+'" onchange="addFilterFields('+row_foreign_key+', this.value, \'foreign_key\', this.id)">\
                                 <option value="">Selecione</option>' + options + '\
                             </select>\
                         </div>\
                     ');
+
+                    $('#block_fields_minimize').append('<label>'+label.replace(/\s+$/, '')+':</label><span id="row_'+value+'"> '+document.getElementById(value).options[document.getElementById(value).selectedIndex].text+' </span>');
                 }
             });
-            $('#block_fields_minimize').append('<label>'+label.replace(/\s+$/, '')+':</label><span> '+document.getElementById(value).options[document.getElementById(value).selectedIndex].text+' </span>');
+        
         }else if(cb_filter[i].value.split('-')[1] == 'date'){
             date = new Date();
             day = ("0" + (date.getDate())).slice(-2);
@@ -63501,17 +63504,19 @@ function filterFieldInteger(value, what){
     addFilterFields();
 }
 
-function addFilterFields(id, value, type) {
-    if(type == 'teste'){
+function addFilterFields(target_id, value, type, element_id) {
+    if(type == 'integer'){
+        
+    }else if(type == 'foreign_key'){
+        element_value = document.getElementById(element_id).options[document.getElementById(element_id).selectedIndex].text;
+        $('#'+target_id).html(element_value+' ');
+    }else if(type == 'date'){
         
     }else if(type == 'boolean'){
-        if(value == 1){
-            $('#'+id).html('Sim ');
-        }else{
-            $('#'+id).html('Não ');
-        }
+        element_value = document.getElementById(element_id).options[document.getElementById(element_id).selectedIndex].text;
+        $('#'+target_id).html(element_value+' ');
     }else{
-        $('#'+id).html(value+' ');
+        $('#'+target_id).html(value+' ');
     }
     
     var filters_fields = $('.filters');
