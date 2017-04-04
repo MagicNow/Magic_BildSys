@@ -16,7 +16,6 @@ class CreateOrdemDeComprasTable extends Migration
         Schema::create('ordem_de_compras', function (Blueprint $table) {
             
             $table->increments('id');
-            $table->string('created_at', 45);
             $table->unsignedInteger('oc_status_id');
             $table->unsignedInteger('obra_id');
             $table->tinyInteger('aprovado')->nullable();
