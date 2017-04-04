@@ -37,10 +37,13 @@
                 </div>
 
                 <div id="block_fields" class="col-md-12" style="margin-bottom: 20px"></div>
-                <div id="block_fields_minimize" class="col-md-12 thumbnail" style="margin-bottom: 20px;display: none;">
-                    <button type="button" class="btn btn-default" onclick="maximizeFilters();">
-                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                    </button>
+                <div id="block_fields_thumbnail" class="col-md-12 thumbnail" style="margin-bottom: 20px;display: none;">
+                    <div id="block_fields_minimize" class="col-md-11"></div>
+                    <div class="col-md-1">
+                        <button type="button" class="btn btn-default" onclick="maximizeFilters();">
+                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Modal -->

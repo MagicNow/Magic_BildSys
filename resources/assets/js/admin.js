@@ -224,11 +224,11 @@ function addFilterFields() {
 }
 
 function minimizeFilters() {
-    $('#block_fields_minimize').css('display', '');
+    $('#block_fields_thumbnail').css('display', '');
     $('#block_fields').toggle('slow');
 }
 
 function maximizeFilters() {
-    $('#block_fields_minimize').css('display', 'none');
+    $('#block_fields_thumbnail').css('display', 'none');
     $('#block_fields').toggle('slow');
 }
