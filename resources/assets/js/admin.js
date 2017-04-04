@@ -95,17 +95,19 @@ function addFilters() {
 
             $('#block_fields_minimize').append('<label>'+cb_filter_label[i].innerHTML.replace(/\s+$/, '')+':</label><span> '+msg+' </span>');
         }else if(cb_filter[i].value.split('-')[1] == 'boolean'){
+            var row_boolean = "'row_"+cb_filter[i].value+"'";
+            
             $('#block_fields').append('\
                 <div class="form-group col-md-6" style="width: 48.8%;">\
                     <label>'+cb_filter_label[i].innerHTML+'</label>\
-                    <select class="form-control filters" id="'+cb_filter[i].value+'" onchange="addFilterFields()">\
+                    <select class="form-control filters" id="'+cb_filter[i].value+'" onchange="addFilterFields('+row_boolean+', this.value, \'boolean\')">\
                         <option value="1">Sim</option>\
                         <option value="0">Não</option>\
                     </select>\
                 </div>\
             ');
 
-            $('#block_fields_minimize').append('<label>'+cb_filter_label[i].innerHTML.replace(/\s+$/, '')+':</label><span> '+document.getElementById(cb_filter[i].value).options[document.getElementById(cb_filter[i].value).selectedIndex].text+' </span>');
+            $('#block_fields_minimize').append('<label>'+cb_filter_label[i].innerHTML.replace(/\s+$/, '')+':</label><span id="row_'+cb_filter[i].value+'"> '+document.getElementById(cb_filter[i].value).options[document.getElementById(cb_filter[i].value).selectedIndex].text+' </span>');
 
         }else if(cb_filter[i].value.split('-')[1] == 'foreign_key'){
             var label = cb_filter_label[i].innerHTML;
@@ -138,8 +140,6 @@ function addFilters() {
             });
             $('#block_fields_minimize').append('<label>'+label.replace(/\s+$/, '')+':</label><span> '+document.getElementById(value).options[document.getElementById(value).selectedIndex].text+' </span>');
         }else if(cb_filter[i].value.split('-')[1] == 'date'){
-            var row_date = "'row_"+cb_filter[i].value+"'";
-
             date = new Date();
             day = ("0" + (date.getDate())).slice(-2);
             month = ("0" + (date.getMonth() + 1)).slice(-2);
@@ -216,6 +216,12 @@ function filterFieldInteger(value, what){
 function addFilterFields(id, value, type) {
     if(type == 'teste'){
         
+    }else if(type == 'boolean'){
+        if(value == 1){
+            $('#'+id).html('Sim ');
+        }else{
+            $('#'+id).html('Não ');
+        }
     }else{
         $('#'+id).html(value+' ');
     }
