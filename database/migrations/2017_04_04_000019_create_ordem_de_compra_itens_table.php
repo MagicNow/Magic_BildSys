@@ -36,6 +36,10 @@ class CreateOrdemDeCompraItensTable extends Migration
             $table->tinyInteger('emergencial')->default('0');
             $table->date('sugestao_data_uso')->nullable();
             $table->unsignedInteger('sugestao_contrato_id')->nullable();
+            $table->unsignedInteger('user_id');
+
+            $table->softDeletes();
+            $table->timestamps();
 
 
             $table->foreign('ordem_de_compra_id')
@@ -43,6 +47,11 @@ class CreateOrdemDeCompraItensTable extends Migration
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
 
+            $table->foreign('user_id')
+                ->references('id')->on('users')
+                ->onDelete('restrict')
+                ->onUpdate('cascade');
+            
             $table->foreign('obra_id')
                 ->references('id')->on('obras')
                 ->onDelete('cascade')

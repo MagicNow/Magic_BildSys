@@ -20,8 +20,16 @@ class CreateOrdemDeComprasTable extends Migration
             $table->unsignedInteger('oc_status_id');
             $table->unsignedInteger('obra_id');
             $table->tinyInteger('aprovado')->nullable();
+            $table->softDeletes();
+            $table->timestamps();
+            $table->unsignedInteger('user_id');
 
 
+            $table->foreign('user_id')
+                ->references('id')->on('users')
+                ->onDelete('restrict')
+                ->onUpdate('cascade');
+            
             $table->foreign('oc_status_id')
                 ->references('id')->on('oc_status')
                 ->onDelete('cascade')

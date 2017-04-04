@@ -20,6 +20,8 @@ class CreatePlanejamentoComprasTable extends Migration
             $table->unsignedInteger('grupo_id')->nullable();
             $table->unsignedInteger('servico_id')->nullable();
             $table->string('codigo_insumo', 45)->nullable();
+            $table->softDeletes();
+            $table->timestamps();
 
 
             $table->foreign('grupo_id')
