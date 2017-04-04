@@ -13,3 +13,7 @@
 <li class="{{ Request::is('users*') ? 'active' : '' }}">
     <a href="{!! route('users.index') !!}"><i class="fa fa-users"></i><span>Users</span></a>
 </li>
+
+<li class="{{ Request::is('import*') ? 'active' : '' }}">
+    <a href="{!! route('admin.import.index') !!}"><i class="fa fa-users"></i><span>Importação</span></a>
+</li>

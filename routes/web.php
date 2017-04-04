@@ -26,6 +26,10 @@ Route::group(['middleware' => 'admin', 'prefix' => 'admin'], function () {
 
     Route::get('/putsession', 'Admin\CodesController@putSession');
     Route::get('/getForeignKey', 'Admin\CodesController@getForeignKey');
+
+    #importação de planilhas dinâmicas
+    Route::get('import/', ['as'=> 'admin.import.index', 'uses' => 'Admin\ImportController@index']);
+    Route::post('import/importar', ['as'=> 'admin.import.importar', 'uses' => 'Admin\ImportController@import']);
 });
 
 
