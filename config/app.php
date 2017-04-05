@@ -183,6 +183,9 @@ return [
         App\Providers\RouteServiceProvider::class,
         Creativeorange\Gravatar\GravatarServiceProvider::class,
 
+        Artesaos\Defender\Providers\DefenderServiceProvider::class,
+        KennedyTedesco\Validation\ValidationServiceProvider::class,
+        Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
     ],
 
     /*
@@ -233,6 +236,9 @@ return [
         'Html' => Collective\Html\HtmlFacade::class,
         'Flash' => Laracasts\Flash\Flash::class,
         'Gravatar' => Creativeorange\Gravatar\Facades\Gravatar::class,
+
+        'Defender' => \Artesaos\Defender\Facades\Defender::class,
+        'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class,
     ],
 
 ];
