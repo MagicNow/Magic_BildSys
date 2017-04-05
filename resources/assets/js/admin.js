@@ -171,6 +171,12 @@ function addFilters(filters_session) {
                 </div>\
             ');
 
+                var value_session_date_initial = filters_session[cb_filter[i].value+'_initial'] ? filters_session[cb_filter[i].value+'_initial'] : date_actual;
+                var value_session_date_final = filters_session[cb_filter[i].value+'_final'] ? filters_session[cb_filter[i].value+'_final'] : date_actual;
+
+                $('#'+cb_filter[i].value+'_initial').val(value_session_date_initial);
+                $('#'+cb_filter[i].value+'_final').val(value_session_date_final);
+                
                 value_date_initial = new Date($('#' + cb_filter[i].value + '_initial').val().replace(/-/g, ','));
                 value_day_initial = ("0" + (value_date_initial.getDate())).slice(-2);
                 value_month_initial = ("0" + (value_date_initial.getMonth() + 1)).slice(-2);
