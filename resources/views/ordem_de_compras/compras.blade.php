@@ -12,19 +12,19 @@
 
             <div class="box-body">
                 <div class="row">
-                    <div class="col-md-8">
-                        {!! Form::select('obra_id', [''=>'Obra...']+$obras, null, ['class'=>'form-control']) !!}
+                    <div class="col-md-6">
+                        {!! Form::select('obra_id', [''=>'Obra...']+$obras, null, ['class'=>'form-control', 'onchange'=>'atualizaCalendario(this.value);']) !!}
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <a href="{{ url('comprar') }}" class="btn btn-success btn-block"><i class="fa fa-shopping-cart"></i> Comprar</a>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <a href="{{ url('ordemDeCompras') }}" class="btn btn-primary btn-block"><i class="fa fa-shopping-basket"></i> Ordens de Compra</a>
                     </div>
                 </div>
 
                 <div class="row">
-                    <div class="col-md-8">
+                    <div class="col-md-6">
                         <div class="page-header">
 
                             <div class="pull-right form-inline">
@@ -46,7 +46,7 @@
 
                         <div id="calendar"></div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <h3>Lembretes</h3>
                         <div id="eventlist">
 
@@ -59,8 +59,13 @@
 @endsection
 @section('scripts')
 <script type="text/javascript">
+    var calendar = null;
+    function atualizaCalendario(obra_id) {
+        calendar.setOptions({events_source: '{{ url('planejamentos/lembretes') }}'+(obra_id>0?'?obra_id='+obra_id:'') });
+        calendar.view();
+    }
     $(function(){
-        var calendar = $('#calendar').calendar({
+        calendar = $('#calendar').calendar({
             language: 'pt-BR',
             view: 'month',
             tmpl_path: 'tmpls/',
@@ -75,7 +80,7 @@
 
                 $.each(events, function(key, val) {
                     $(document.createElement('li'))
-                            .html('<a href="' + val.url + '">' + val.title + '</a>')
+                            .html( (val.url!='#'?'<a href="' + val.url + '">':'') + val.inicio +': '+ val.title + (val.url!='#'?'</a>':'') )
                             .appendTo(list);
                 });
             },
@@ -89,17 +94,9 @@
                     general: 'label'
                 }
             },
+            weekbox:false,
 //            tmpl_path: "/tmpls/",
-            events_source: function () {
-                return [{
-                "id": 293,
-                "title": "Event 1",
-                "url": "http://example.com",
-                "class": "event-important",
-                "start": {{ DateTime::createFromFormat('Y-m-d',date('Y-m-d'))->format('u') }}, // Milliseconds
-                "end": {{ DateTime::createFromFormat('Y-m-d',date('Y-m-d'))->format('u') }} // Milliseconds
-                }]
-            }
+            events_source: '{{ url('planejamentos/lembretes') }}'
         });
 
         $('.btn-group button[data-calendar-nav]').each(function() {

@@ -15,10 +15,13 @@ Auth::routes();
 $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($router) {
 
     $router->get('/', 'HomeController@index');
+    $router->get('/home', 'HomeController@index');
 
     $router->resource('ordemDeCompras', 'OrdemDeCompraController');
 
     $router->get('compras', 'OrdemDeCompraController@compras');
+    
+    $router->get('planejamentos/lembretes', 'PlanejamentoController@lembretes');
 
 
     Route::group(['middleware' => 'admin', 'prefix' => 'admin'], function () {
@@ -31,8 +34,4 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         Route::get('/getForeignKey', 'Admin\CodesController@getForeignKey');
     });
 
-
-
 });
-
-
