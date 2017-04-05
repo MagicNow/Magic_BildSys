@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: Raul
- * Date: 04/04/2017
- * Time: 12:14
+ * Date: 05/04/2017
+ * Time: 14:07
  */
 
 namespace App\Models;
@@ -11,16 +11,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Modulo extends Model
+class Planilha extends Model
 {
-    public $table = 'modulos';
-
-    const CREATED_AT = 'created_at';
-    const UPDATED_AT = 'updated_at';
+    public $table = 'planilhas';
 
     public $fillable = [
         'id',
-        'nome'
+        'user_id',
+        'arquivo',
+        'json',
+        'status'
     ];
 
     /**
@@ -30,7 +30,10 @@ class Modulo extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'nome' => 'string'
+        'arquivo' => 'string',
+        'json' => 'string',
+        'status' => 'string'
+
     ];
 
     /**

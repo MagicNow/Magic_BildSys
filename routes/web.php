@@ -31,6 +31,7 @@ Route::group(['middleware' => 'admin', 'prefix' => 'admin'], function () {
     Route::get('import/', ['as'=> 'admin.import.index', 'uses' => 'Admin\ImportController@index']);
     Route::post('import/importar', ['as'=> 'admin.import.importar', 'uses' => 'Admin\ImportController@import']);
     Route::get('import/importar/checkIn', ['as'=> 'admin.import.checkIn', 'uses' => 'Admin\ImportController@checkIn']);
+    Route::post('import/importar/save', ['as'=> 'admin.import.save', 'uses' => 'Admin\ImportController@save']);
 });
 
 

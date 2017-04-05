@@ -9,6 +9,8 @@
         @include('flash::message')
         <div class="panel panel-danger">
             <div class="panel-body"></div>
+            <!-- INICIO form -->
+            {!! Form::open(['route' => 'admin.import.save', 'method'=>'post']) !!}
             <div class="table-responsive">
                 <table class="table table-bordered table-striped table-hover table-condensed">
                         <thead>
@@ -18,18 +20,13 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($retorno['cabecalho'] as $column => $value)
+                        @foreach($retorno['cabecalho'] as $column => $indice)
                             <tr>
-                                <th scope="row">{{$column}}</th>
+                                <th scope="row">{{$column}}
+                                </th>
                                 <td>
-                                    <select>
-                                        <option value=""> --</option>
-                                        @foreach($retorno['colunas'] as $column => $value)
-                                        <option value="{{$column}}">{{$column}} - {{$value}}</option>
-                                        @endforeach
-                                    </select>
+                                    {!! Form::select($indice, [''=>'Escolha' ]+$colunasbd, null, ['class' => 'form-control']) !!}
                                 </td>
-
                             </tr>
                         @endforeach
                         </tbody>
@@ -38,6 +35,8 @@
             <div class="form-group pull-right">
                 <button type="submit" class="btn btn-warning">Processar</button>
             </div>
+            <!-- FIM form -->
+            {!! Form::close() !!}
         </div>
     </div>
 @endsection

@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class ModulosTableSeeder extends Seeder
+class TipoOrcamentoTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -12,7 +12,7 @@ class ModulosTableSeeder extends Seeder
 
     public function run()
     {
-        DB::table('modulos')->delete();
+        DB::table('orcamento_tipos')->delete();
 
         $items = [
             [
@@ -21,7 +21,7 @@ class ModulosTableSeeder extends Seeder
         ];
 
         foreach ($items as $item) {
-            \App\Models\Modulo::create($item);
+            \App\Models\TipoOrcamento::create($item);
         }
     }
 }

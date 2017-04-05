@@ -97,11 +97,7 @@ class Orcamento extends Model
         'qtd_total' => 'decimal',
         'preco_unitario' => 'decimal',
         'preco_total' => 'decimal',
-        'porcentagem_orcamento' => 'decimal',
-        'orcamento_tipo_id' => 'integer',
-        'subgrupo1_id' => 'integer',
-        'subgrupo2_id' => 'integer',
-        'subgrupo3_id' => 'integer'
+        'porcentagem_orcamento' => 'decimal'
     ];
 
     /**
