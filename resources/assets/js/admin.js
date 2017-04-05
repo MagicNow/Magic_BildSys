@@ -41,11 +41,14 @@ function putSession(filters) {
     });
 }
 
-function addFilters() {
+function addFilters(filters_session) {
     var cb_filter = $('.cb_filter');
     var cb_filter_label = $('.cb_filter_label');
     var filters = [];
     
+    if(!filters_session){
+        filters_session = [];
+    }
     $('.filter_added').remove();
     
     $('#block_fields').addClass('thumbnail').append('\
@@ -190,6 +193,7 @@ function addFilters() {
 
             } else {
                 var row_string = "'row_" + cb_filter[i].value + "'";
+                
                 $('#block_fields').append('\
                 <div class="row form-group col-md-12 filter_added">\
                     <div class="col-md-6">\
@@ -206,9 +210,13 @@ function addFilters() {
                 </div>\
             ');
 
-                var value_string = $('#' + cb_filter[i].value).val();
+                var value_session_string = filters_session[cb_filter[i].value] ? filters_session[cb_filter[i].value] : '';
+                var value_session_string_option = filters_session[cb_filter[i].value+'_option'] ? filters_session[cb_filter[i].value+'_option'] : 'between';
+                
+                $('#'+cb_filter[i].value).val(value_session_string);
+                $('#'+cb_filter[i].value+'_option').val(value_session_string_option);
 
-                $('#block_fields_minimize').append('<label class="filter_added">' + cb_filter_label[i].innerHTML.replace(/\s+$/, '') + ':</label><span id="row_' + cb_filter[i].value + '" class="filter_added"> ' + value_string + ' </span>');
+                $('#block_fields_minimize').append('<label class="filter_added">' + cb_filter_label[i].innerHTML.replace(/\s+$/, '') + ':</label><span id="row_' + cb_filter[i].value + '" class="filter_added"> ' + value_session_string + ' </span>');
             }
         }
     }
@@ -273,7 +281,7 @@ function addFilterFields(target_id, value, type, element_id) {
     }
 
     filters = '{'+filters+'}';
-    
+
     putSession(filters);
 }
 
@@ -293,9 +301,10 @@ function checkSession() {
     }).done(function (json) {
         if(json.success){
             $.each(json.filters, function (index, value) {
-                $('#'+index).prop('checked', true).parent().addClass('checked');
-                addFilters();
+                $('#check_'+index).prop('checked', true).parent().addClass('checked');
+                $('#check_'+index.replace('_initial', '')).prop('checked', true).parent().addClass('checked');
             });
+            addFilters(json.filters);
         }
     });
 }

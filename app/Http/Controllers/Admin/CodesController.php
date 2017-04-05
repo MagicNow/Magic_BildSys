@@ -48,6 +48,7 @@ class CodesController extends AppBaseController
     public function checkSession(){
 
         $filters = session()->get('filters');
+        
         $success = false;
         
         if($filters){
