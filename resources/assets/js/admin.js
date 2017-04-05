@@ -146,6 +146,11 @@ function addFilters(filters_session) {
                             </select>\
                         </div>\
                     ');
+
+                        var value_session_foreign_key = filters_session[value] ? filters_session[value] : '';
+
+                        $('#'+value).val(value_session_foreign_key);
+                        
                         $('#block_fields_minimize').append('<label class="filter_added">' + label.replace(/\s+$/, '') + ':</label><span id="row_' + value + '" class="filter_added"> ' + document.getElementById(value).options[document.getElementById(value).selectedIndex].text + ' </span>');
                     }
                 });
