@@ -17,10 +17,9 @@ class CreatePlanilhasTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedInteger('tipo_orcamento_id');
-            $table->foreign('tipo_orcamento_id')->references('id')->on('orcamento_tipos')->onDelete('cascade')->onUpdate('cascade');
             $table->string('arquivo')->nullable();
-            $table->longText('json')->nullable();
+            $table->longText('colunas_json')->nullable();
+            $table->longText('parametros_json')->nullable();
             $table->string('status')->nullable();
             $table->timestamps();
         });

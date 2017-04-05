@@ -11,6 +11,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\AppBaseController;
 use App\Models\Modulo;
+use App\Models\Obra;
 use App\Models\Planilha;
 use App\Models\TipoOrcamento;
 use App\Repositories\Admin\SpreadsheetRepository;
@@ -19,14 +20,18 @@ use Symfony\Component\HttpFoundation\Request;
 class ImportController extends AppBaseController
 {
     public function index(){
-        $modulos = TipoOrcamento::pluck('nome','id')->toArray();
-        return view('admin.import.index', compact('modulos'));
+        $obras = Obra::pluck('nome','id')->toArray();
+        $orcamento_tipos = TipoOrcamento::pluck('nome','id')->toArray();
+        return view('admin.import.index', compact('orcamento_tipos','obras'));
     }
 
-    public function import(Request $request){
+    public function import(Request $request)
+    {
+        $file = $request->except('obra_id','modulo_id','tipo_orcamento_id');
+        $input = $request->except('_token','file');
+        $parametros = json_encode($input);
 
-        $retorno = SpreadsheetRepository::Spreadsheet($request->file, $request->modulo_id);
-        dd($retorno);
+        $retorno = SpreadsheetRepository::Spreadsheet($file, $parametros);
 
         foreach ($retorno['colunas'] as $coluna => $type ) {
             $colunasbd[$coluna] = $coluna . ' - ' . $type;
@@ -39,9 +44,10 @@ class ImportController extends AppBaseController
         $input = $request->except('_token');
         $json = json_encode($input);
 
-        $planilha = Planilha::where('user_id', \Auth::id())->first();
+        $planilha = Planilha::orderBy('id','desc')->get();
+        $planilha = $planilha->where('user_id', \Auth::id())->first();
         if($planilha) {
-            $planilha->json = $json;
+            $planilha->colunas_json = $json;
             $planilha->update();
         }
         SpreadsheetRepository::SpreadsheetProcess($planilha);

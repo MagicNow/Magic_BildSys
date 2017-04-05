@@ -16,8 +16,16 @@
                 <div class="panel-body">
                     <div class="col-md-10">
                         <div class="form-group">
+                            {!! Form::label('obra_id', 'Obra:') !!}
+                            {!! Form::select('obra_id', [''=>'Escolha' ]+$obras, null, ['class' => 'form-control']) !!}
+                        </div>
+                        <div class="form-group">
                             {!! Form::label('modulo_id', 'Módulo:') !!}
-                            {!! Form::select('modulo_id', [''=>'Escolha' ]+$modulos, null, ['class' => 'form-control']) !!}
+                            {!! Form::select('modulo_id', ['' => 'Escolha', 1=>'Orçamentos'], null, ['class' => 'form-control', 'onchange' => 'selectType(this.value)']) !!}
+                        </div>
+                        <div id="tipo_orcamento" class="form-group" style="display:none">
+                            {!! Form::label('tipo_orcamento_id', 'Tipo Orçamento:') !!}
+                            {!! Form::select('tipo_orcamento_id', ['' => 'Escolha']+$orcamento_tipos, null, ['class' => 'form-control']) !!}
                         </div>
                         <label><h5 style="color:#ff9800">Apenas planilhas no formato <strong class="label label-info"> .csv </strong></h5></label>
                         <div class="row" style="margin-bottom: 20px">
@@ -37,4 +45,15 @@
 
         {!! Form::close() !!}
     </div>
+@endsection
+@section('scripts')
+    <script type="text/javascript">
+        function selectType($valor){
+            if($valor == 1){
+                $('#tipo_orcamento').css('display', '');
+            }else {
+                $('#tipo_orcamento').css('display', 'none');
+            }
+        }
+    </script>
 @endsection

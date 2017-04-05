@@ -14,25 +14,24 @@ use Box\Spout\Common\Type;
 use Box\Spout\Reader\ReaderFactory;
 use Flash;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Storage;
 
 class SpreadsheetRepository
 {
-    public static function Spreadsheet($spreadsheet, $type){
+    public static function Spreadsheet($spreadsheet, $parametros){
         try{
             /* Verifica se foi selecionado algum arquivo e salva na tabela *planilhas* */
-            if ($spreadsheet) {
+            if ($spreadsheet['file']) {
                 # Pegando nome do arquivo
-                $nome = str_slug($spreadsheet->getClientOriginalName());
+                $nome = str_slug($spreadsheet['file']->getClientOriginalName());
                 # pegando nome e contatenando com extensão e rand
-                $nome =  substr($nome,0,strlen($nome)-3).rand(1000, 99999).'.'.$spreadsheet->getClientOriginalExtension();
+                $nome =  substr($nome,0,strlen($nome)-3).rand(1000, 99999).'.'.$spreadsheet['file']->getClientOriginalExtension();
                 # Salvando o arquivo na pasta storage/app/public
-                $destinationPath = $spreadsheet->storeAs('public/planilhas', $nome);
+                $destinationPath = $spreadsheet['file']->storeAs('public/planilhas', $nome);
 
                 $planilha = new Planilha();
                 $planilha->user_id = \Auth::id();
                 $planilha->arquivo = $destinationPath;
-                $planilha->tipo_orcamento_id = $type;
+                $planilha->parametros_json = $parametros;
                 $planilha->save();
 
 
@@ -91,10 +90,10 @@ class SpreadsheetRepository
                         $line++;
                         $erro = 0;
 
-                        $json_decode = json_decode($planilha->json);
-//                        dd($json_decode);
+                        $colunas = json_decode($planilha->colunas_json);
+//                        dd($colunas);
                         \DB::beginTransaction();
-                        foreach ($json_decode as $chave => $value) {
+                        foreach ($colunas as $chave => $value) {
                             if($value) {
                                 switch ($chave) {
                                     case Orcamento::$relation[$value] == 'string' :
@@ -108,6 +107,7 @@ class SpreadsheetRepository
                                             }
                                         }
                                         break;
+
                                     case Orcamento::$relation[$value] == 'decimal' :
                                         if (is_float($row[$chave])) {
                                             $final[$value] = $row[$chave];
@@ -119,6 +119,7 @@ class SpreadsheetRepository
                                             }
                                         }
                                         break;
+
                                     case Orcamento::$relation[$value] == 'integer' :
                                         if (is_int($row[$chave])) {
                                             $final[$value] = $row[$chave];
@@ -132,12 +133,13 @@ class SpreadsheetRepository
                                         break;
                                 }
                             }
-
-                            $orcamento = Orcamento::create($final);
-
+                            $parametros = json_decode($planilha->parametros_json);
+                            foreach ($parametros as $indice => $valor) {
+                                $final[$indice] = $valor ;
+                            }
 
                         }
-                        dd($final);
+                        $orcamento = Orcamento::create($final);
                         if($erro == 0) {
                             \DB::commit();
                         }else{
