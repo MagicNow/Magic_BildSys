@@ -116,6 +116,10 @@ function addFilters(filters_session) {
                 </div>\
             ');
 
+                var value_session_boolean = filters_session[cb_filter[i].value] ? filters_session[cb_filter[i].value] : 1;
+
+                $('#'+cb_filter[i].value).val(value_session_boolean);
+
                 $('#block_fields_minimize').append('<label class="filter_added">' + cb_filter_label[i].innerHTML.replace(/\s+$/, '') + ':</label><span id="row_' + cb_filter[i].value + '" class="filter_added"> ' + document.getElementById(cb_filter[i].value).options[document.getElementById(cb_filter[i].value).selectedIndex].text + ' </span>');
 
             } else if (cb_filter[i].value.split('-')[1] == 'foreign_key') {
