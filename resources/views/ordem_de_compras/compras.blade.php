@@ -16,10 +16,12 @@
                         {!! Form::select('obra_id', [''=>'Obra...']+$obras, null, ['class'=>'form-control', 'onchange'=>'atualizaCalendario(this.value);']) !!}
                     </div>
                     <div class="col-md-3">
-                        <a href="{{ url('comprar') }}" class="btn btn-success btn-block"><i class="fa fa-shopping-cart"></i> Comprar</a>
+                        <a href="{{ url('comprar') }}" class="btn btn-success btn-block"><i
+                                    class="fa fa-shopping-cart"></i> Comprar</a>
                     </div>
                     <div class="col-md-3">
-                        <a href="{{ url('ordemDeCompras') }}" class="btn btn-primary btn-block"><i class="fa fa-shopping-basket"></i> Ordens de Compra</a>
+                        <a href="{{ url('ordemDeCompras') }}" class="btn btn-primary btn-block"><i
+                                    class="fa fa-shopping-basket"></i> Ordens de Compra</a>
                     </div>
                 </div>
 
@@ -58,60 +60,60 @@
     </div>
 @endsection
 @section('scripts')
-<script type="text/javascript">
-    var calendar = null;
-    function atualizaCalendario(obra_id) {
-        calendar.setOptions({events_source: '{{ url('planejamentos/lembretes') }}'+(obra_id>0?'?obra_id='+obra_id:'') });
-        calendar.view();
-    }
-    $(function(){
-        calendar = $('#calendar').calendar({
-            language: 'pt-BR',
-            view: 'month',
-            tmpl_path: 'tmpls/',
-            tmpl_cache: false,
-            day: '{{ date('Y-m-d') }}',
-            onAfterEventsLoad: function(events) {
-                if(!events) {
-                    return;
-                }
-                var list = $('#eventlist');
-                list.html('');
+    <script type="text/javascript">
+        var calendar = null;
+        function atualizaCalendario(obra_id) {
+            calendar.setOptions({events_source: '{{ url('planejamentos/lembretes') }}' + (obra_id > 0 ? '?obra_id=' + obra_id : '')});
+            calendar.view();
+        }
+        $(function () {
+            calendar = $('#calendar').calendar({
+                language: 'pt-BR',
+                view: 'month',
+                tmpl_path: 'tmpls/',
+                tmpl_cache: false,
+                day: '{{ date('Y-m-d') }}',
+                onAfterEventsLoad: function (events) {
+                    if (!events) {
+                        return;
+                    }
+                    var list = $('#eventlist');
+                    list.html('');
 
-                $.each(events, function(key, val) {
-                    $(document.createElement('li'))
-                            .html( (val.url!='#'?'<a href="' + val.url + '">':'') + val.inicio +': '+ val.title + (val.url!='#'?'</a>':'') )
-                            .appendTo(list);
-                });
-            },
-            onAfterViewLoad: function(view) {
-                $('.page-header h3').text(this.getTitle());
-                $('.btn-group button').removeClass('active');
-                $('button[data-calendar-view="' + view + '"]').addClass('active');
-            },
-            classes: {
-                months: {
-                    general: 'label'
-                }
-            },
-            weekbox:false,
+                    $.each(events, function (key, val) {
+                        $(document.createElement('li'))
+                                .html((val.url != '#' ? '<a href="' + val.url + '">' : '') + val.inicio + ': ' + val.title + (val.url != '#' ? '</a>' : ''))
+                                .appendTo(list);
+                    });
+                },
+                onAfterViewLoad: function (view) {
+                    $('.page-header h3').text(this.getTitle());
+                    $('.btn-group button').removeClass('active');
+                    $('button[data-calendar-view="' + view + '"]').addClass('active');
+                },
+                classes: {
+                    months: {
+                        general: 'label'
+                    }
+                },
+                weekbox: false,
 //            tmpl_path: "/tmpls/",
-            events_source: '{{ url('planejamentos/lembretes') }}'
-        });
+                events_source: '{{ url('planejamentos/lembretes') }}'
+            });
 
-        $('.btn-group button[data-calendar-nav]').each(function() {
-            var $this = $(this);
-            $this.click(function() {
-                calendar.navigate($this.data('calendar-nav'));
+            $('.btn-group button[data-calendar-nav]').each(function () {
+                var $this = $(this);
+                $this.click(function () {
+                    calendar.navigate($this.data('calendar-nav'));
+                });
+            });
+
+            $('.btn-group button[data-calendar-view]').each(function () {
+                var $this = $(this);
+                $this.click(function () {
+                    calendar.view($this.data('calendar-view'));
+                });
             });
         });
-
-        $('.btn-group button[data-calendar-view]').each(function() {
-            var $this = $(this);
-            $this.click(function() {
-                calendar.view($this.data('calendar-view'));
-            });
-        });
-    });
-</script>
+    </script>
 @stop
