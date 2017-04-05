@@ -63332,14 +63332,14 @@ function putSession(filters) {
 function addFilters(filters_session) {
     var cb_filter = $('.cb_filter');
     var cb_filter_label = $('.cb_filter_label');
-    var filters = [];
+    var block_fields = $('#block_fields');
     
     if(!filters_session){
         filters_session = [];
     }
     $('.filter_added').remove();
     
-    $('#block_fields').addClass('thumbnail').append('\
+    block_fields.addClass('thumbnail').append('\
     <div class="col-md-12 page-header filter_added">\
             <div class="col-md-11">\
             <h2>Filtros</h2>\
@@ -63358,7 +63358,7 @@ function addFilters(filters_session) {
                 var what = "'select_integer_" + cb_filter[i].value.split('-')[0] + "'";
                 var row_integer = "'row_" + cb_filter[i].value + "'";
 
-                $('#block_fields').append('\
+                block_fields.append('\
                 <div class="row form-group col-md-12 filter_added">\
                     <div class="col-md-3">\
                     <label>' + cb_filter_label[i].innerHTML + '</label>\
@@ -63408,7 +63408,7 @@ function addFilters(filters_session) {
             } else if (cb_filter[i].value.split('-')[1] == 'boolean') {
                 var row_boolean = "'row_" + cb_filter[i].value + "'";
 
-                $('#block_fields').append('\
+                block_fields.append('\
                 <div class="form-group col-md-6 filter_added" style="width: 48.8%;">\
                     <label>' + cb_filter_label[i].innerHTML + '</label>\
                     <select class="form-control filters" id="' + cb_filter[i].value + '" onchange="addFilterFields(' + row_boolean + ', this.value, \'boolean\', this.id)">\
@@ -63444,7 +63444,7 @@ function addFilters(filters_session) {
                             options += '<option value="' + index + '">' + value + '</option>';
                         });
 
-                        $('#block_fields').append('\
+                        block_fields.append('\
                         <div class="form-group col-md-6 filter_added" style="width: 48.8%;">\
                             <label>' + label + '</label>\
                             <select class="form-control filters" id="' + value + '" onchange="addFilterFields(' + row_foreign_key + ', this.value, \'foreign_key\', this.id)">\
@@ -63470,7 +63470,7 @@ function addFilters(filters_session) {
 
                 var row_date = "'row_" + cb_filter[i].value + "'";
 
-                $('#block_fields').append('\
+                block_fields.append('\
                 <div class="row form-group col-md-12 filter_added">\
                     <div class="col-md-6">\
                         <label>' + cb_filter_label[i].innerHTML + '</label>\
@@ -63511,7 +63511,7 @@ function addFilters(filters_session) {
             } else {
                 var row_string = "'row_" + cb_filter[i].value + "'";
                 
-                $('#block_fields').append('\
+                block_fields.append('\
                 <div class="row form-group col-md-12 filter_added">\
                     <div class="col-md-6">\
                         <label>' + cb_filter_label[i].innerHTML + '</label>\
