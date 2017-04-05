@@ -13,3 +13,7 @@
 <li class="{{ Request::is('users*') ? 'active' : '' }}">
     <a href="{!! route('users.index') !!}"><i class="fa fa-users"></i><span>Users</span></a>
 </li>
+<li class="{{ Request::is('grupos*') ? 'active' : '' }}">
+    <a href="{!! route('grupos.index') !!}"><i class="fa fa-edit"></i><span>Grupos</span></a>
+</li>
+
