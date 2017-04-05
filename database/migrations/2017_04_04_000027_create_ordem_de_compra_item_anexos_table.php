@@ -18,6 +18,8 @@ class CreateOrdemDeCompraItemAnexosTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('ordem_de_compra_item_id');
             $table->string('arquivo');
+            $table->softDeletes();
+            $table->timestamps();
 
 
             $table->foreign('ordem_de_compra_item_id')

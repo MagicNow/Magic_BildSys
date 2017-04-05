@@ -3,12 +3,13 @@
 @section('body')
     <body class="hold-transition login-page">
         <div class="login-box">
-            <div class="login-logo">
-                <a href="{{ url('/home') }}"><b>{{ env('APP_TITLE') }} </b></a>
-            </div>
+
 
             <!-- /.login-logo -->
             <div class="login-box-body">
+                <div class="login-logo">
+                    <a href="{{ url('/') }}"> <img src="{{ asset('img/logo_bild_sys.png') }}" style="margin: auto" class="img-responsive"></a>
+                </div>
                 <p class="login-box-msg">{{ ucfirst( trans('common.sign-in-to-start-your-session') )}}</p>
 
                 <form method="post" action="{{ url('/login') }}">

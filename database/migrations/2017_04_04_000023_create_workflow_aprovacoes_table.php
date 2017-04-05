@@ -21,9 +21,10 @@ class CreateWorkflowAprovacoesTable extends Migration
             $table->string('aprovavel_type');
             $table->unsignedInteger('user_id');
             $table->tinyInteger('aprovado');
-            $table->string('created_at', 45)->nullable();
             $table->unsignedInteger('workflow_reprovacao_motivo_id')->nullable();
             $table->text('justificativa')->nullable();
+            $table->softDeletes();
+            $table->timestamps();
 
 
             $table->foreign('user_id')

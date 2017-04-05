@@ -20,7 +20,7 @@ class CreateGruposTable extends Migration
             $table->string('nome');
             $table->unsignedInteger('grupo_id')->nullable();
             $table->softDeletes();
-            $table->nullableTimestamps();
+            $table->timestamps();
 
 
             $table->foreign('grupo_id')
