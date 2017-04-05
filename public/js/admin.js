@@ -63380,6 +63380,20 @@ function addFilters(filters_session) {
                 </div>\
             ');
 
+                var value_session_integer = filters_session[cb_filter[i].value] ? filters_session[cb_filter[i].value] : '';
+                var value_session_integer_final = filters_session[cb_filter[i].value+'_final'] ? filters_session[cb_filter[i].value+'_final'] : '';
+                var value_session_integer_option = filters_session[cb_filter[i].value+'_option'] ? filters_session[cb_filter[i].value+'_option'] : 'between';
+
+                $('#'+cb_filter[i].value).val(value_session_integer);
+                $('#'+cb_filter[i].value+'_final').val(value_session_integer_final);
+                $('#'+cb_filter[i].value+'_option').val(value_session_integer_option);
+
+                if(value_session_integer_option == 'between'){
+                    $('#'+cb_filter[i].value+'_final').css('display', '');
+                }else{
+                    $('#'+cb_filter[i].value+'_final').css('display', 'none');
+                }
+                
                 var value_integer_option = document.getElementById(cb_filter[i].value + '_option').options[document.getElementById(cb_filter[i].value + '_option').selectedIndex].text;
                 var value_integer_initial = $('#' + cb_filter[i].value).val();
                 var value_integer_final = $('#' + cb_filter[i].value + '_final').val();

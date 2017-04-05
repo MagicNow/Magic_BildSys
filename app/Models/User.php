@@ -61,7 +61,7 @@ class User extends Authenticatable
         'admin-boolean' => 'Administrador',
         'created_at-date' => 'Criado em',
         'updated_at-date' => 'Atualizado em',
-//        'valor-integer' => 'Valor'
+        'valor-integer' => 'Valor'
 //        'user_id-foreign_key-User-name-id' => 'Usuário'
     ];
     
