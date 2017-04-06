@@ -71,7 +71,7 @@
                         </div>
                     </div>
                 </div>
-                @include('admin.users.table')
+                @include('admin.manage.users.table')
             </div>
         </div>
     </div>

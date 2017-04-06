@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Artesaos\Defender\Traits\HasDefender;
+
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
@@ -11,13 +13,15 @@ class User extends Authenticatable
 {
     use Notifiable;
     use SoftDeletes;
+    use HasDefender;
 
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
-
     protected $dates = ['deleted_at'];
 
+    // Fields that you do NOT want to audit.
+    protected $dontKeepAuditOf = ['password'];
 
     public $fillable = [
         'name',
@@ -50,10 +54,10 @@ class User extends Authenticatable
      */
     public static $rules = [
         'name' => 'required',
-        'email' => 'required',
+        'email' => 'required|unique:users',
         'password' => 'required',
     ];
-    
+
     public static $filters = [
         'name-string' => 'Nome',
         'email-string' => 'E-mail',
@@ -64,7 +68,7 @@ class User extends Authenticatable
 //        'valor-integer' => 'Valor'
 //        'user_id-foreign_key-User-name-id' => 'Usuário'
     ];
-    
+
     /**
      * The attributes that should be hidden for arrays.
      *
