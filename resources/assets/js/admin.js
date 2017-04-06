@@ -33,14 +33,17 @@ Vue.http.options.root = window.root;
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-function loading(bool) {
-    if (bool) {
-        $('body').removeClass('loaded');
-        //$(
-        // '#loader-wrapper').show();
-    } else {
-        $('body').addClass('loaded');
-        //$('#loader-wrapper').hide();
+function startLoading(){
+    if(!$('.loader').length){
+        $('body').append('<div class="loader"></div>');
+    }
+}
+
+function stopLoading(){
+    if($('.loader').length) {
+        $('.loader').fadeToggle(function () {
+            $(this).remove();
+        });
     }
 }
 

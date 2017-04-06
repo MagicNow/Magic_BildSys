@@ -105,7 +105,7 @@
     </div>
 @endsection
 
-@section('last-scripts')
+@section('scripts')
     <script>
 
         new Vue({
@@ -152,7 +152,7 @@
                 loadData: function (page) {
                     this.success = '';
                     this.error = '';
-                    loading(true);
+                    startLoading();
                     this.$http.get('/api/permissions', {
                         params: { page: page }
                     }).then(function(resp) {
@@ -164,7 +164,7 @@
                             this.permissions = response.data;
                             this.pagination = response;
                         }
-                        loading(false)
+                        stopLoading();
                     });
                 },
                 resetPermission: function() {
@@ -179,17 +179,17 @@
                     self.success = '';
 
                     event.preventDefault();
-                    loading(true);
+                    startLoading();
                     self.$http.post('/api/permissions/store', {
                         permission: self.permission
                     }).then(function(resp) {
                         self.loadData(self.pagination.current_page);
                         self.resetPermission();
                         self.success = resp.body.success;
-                        loading(false);
+                        stopLoading();
                     }, function(error_resp){
                         self.error = error_resp.body.error;
-                        loading(false);
+                        stopLoading();
                     });
                 },
                 editPermission: function(permission) {

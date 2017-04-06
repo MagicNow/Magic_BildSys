@@ -203,7 +203,7 @@
                 this.success = '';
                 this.error = '';
 
-                loading(true);
+                startLoading();
                 this.$http.get('/api/roles', {
                     params: { page: page }
                 }).then(function(resp) {
@@ -216,7 +216,7 @@
                         this.pagination = response;
 
                     }
-                    loading(false)
+                    stopLoading();
                  });
             },
             resetRole: function() {
@@ -230,7 +230,7 @@
                 self.error = '';
                 self.success = '';
 
-                loading(true);
+                startLoading();
 
                 event.preventDefault();
                 self.$http.post('/api/roles/store', {
@@ -239,10 +239,10 @@
                     self.loadRoles(self.pagination.current_page);
                     self.resetRole();
                     self.success = resp.body.success;
-                    loading(false);
+                    stopLoading();
                 }, function(error_resp){
                     self.error = error_resp.body.error;
-                    loading(false);
+                    stopLoading();
                 });
             },
             editRole: function(role) {

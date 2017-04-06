@@ -73387,20 +73387,52 @@ j,k,i=function(a){j=e+1;k=l(g,"row",{attr:{r:j}});for(var b=0,c=a.length;b<c;b++
 c.customize&&c.customize(d);v(d);a.setAction("excel");a.setFileName(r(c));a.setSheetData(d);s(a,"")},extension:".xlsx"});i.ext.buttons.pdfFlash=f.extend({},t,{className:"buttons-pdf buttons-flash",text:function(a){return a.i18n("buttons.pdf","PDF")},action:function(a,b,d,c){var a=c._flash,e=b.buttons.exportData(c.exportOptions),g=b.table().node().offsetWidth,f=b.columns(c.columns).indexes().map(function(a){return b.column(a).header().offsetWidth/g});a.setAction("pdf");a.setFileName(r(c));s(a,JSON.stringify({title:r(c,
 !1),message:"function"==typeof c.message?c.message(b,d,c):c.message,colWidth:f.toArray(),orientation:c.orientation,size:c.pageSize,header:c.header?e.header:null,footer:c.footer?e.footer:null,body:e.body}))},extension:".pdf",orientation:"portrait",pageSize:"A4",message:"",newline:"\n"});return i.Buttons});
 
-/**
+/**Vue.http.interceptors.push((request, next) => {
+    console.log('Vue.http.interceptors.push');
+const token =  window.jwt_token;
+const hasAuthHeader = request.headers.has('Authorization')
+request.headers.set('X-CSRF-TOKEN', $("[name='csrf-token']").attr('content'))
+if (token && !hasAuthHeader) {
+    request.headers.set('Authorization', 'Bearer ' + token)
+}
+next((response) => {
+    console.log('Vue.http.interceptors.push.response');
+if (response.status === 401 && response.data.error === 'invalid_token') {
+    return refreshToken(request);
+}
+})
+});
+
+function refreshToken(request)
+{
+    console.log('refreshToken');
+    this.$http.post('/api/auth/refresh-token', {
+        params: { }
+    }).then(function(resp) {
+        window.jwt_token = resp.body;
+        Vue.http.headers.common['Authorization'] = 'Bearer ' + resp.body;
+    });
+}
+
+Vue.http.headers.common['X-CSRF-TOKEN'] = $("[name='csrf-token']").attr('content');
+Vue.http.headers.common['Authorization'] = 'Bearer ' + window.jwt_token;
+Vue.http.options.root = window.root;
  * First we will load all of this project's JavaScript dependencies which
  * include Vue and Vue Resource. This gives a great starting point for
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-function loading(bool) {
-    if (bool) {
-        $('body').removeClass('loaded');
-        //$(
-        // '#loader-wrapper').show();
-    } else {
-        $('body').addClass('loaded');
-        //$('#loader-wrapper').hide();
+function startLoading(){
+    if(!$('.loader').length){
+        $('body').append('<div class="loader"></div>');
+    }
+}
+
+function stopLoading(){
+    if($('.loader').length) {
+        $('.loader').fadeToggle(function () {
+            $(this).remove();
+        });
     }
 }
 
