@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class Insumo
@@ -12,16 +11,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Insumo extends Model
 {
-    use SoftDeletes;
 
     public $table = 'insumos';
-    
-    const CREATED_AT = 'created_at';
-    const UPDATED_AT = 'updated_at';
 
-
-    protected $dates = ['deleted_at'];
-
+    public $timestamps = false;
 
     public $fillable = [
         'nome',

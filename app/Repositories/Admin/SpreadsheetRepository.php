@@ -8,8 +8,11 @@
 
 namespace App\Repositories\Admin;
 
+use App\Models\Grupo;
+use App\Models\Insumo;
 use App\Models\Orcamento;
 use App\Models\Planilha;
+use App\Models\Servico;
 use Box\Spout\Common\Type;
 use Box\Spout\Reader\ReaderFactory;
 use Flash;
@@ -28,6 +31,7 @@ class SpreadsheetRepository
                 # Salvando o arquivo na pasta storage/app/public
                 $destinationPath = $spreadsheet['file']->storeAs('public/planilhas', $nome);
 
+                # save table spreadsheet
                 $planilha = new Planilha();
                 $planilha->user_id = \Auth::id();
                 $planilha->arquivo = $destinationPath;
@@ -81,6 +85,21 @@ class SpreadsheetRepository
         $reader->open(str_replace('public','storage/app/',public_path()).$planilha->arquivo);
 
         $folha = 0;
+        $erro = 0;
+        $mensagens_erro = [];
+        \DB::beginTransaction();
+
+        $param = [];
+        foreach(json_decode($planilha->parametros_json) as $parametro_key => $parametro_value){
+            $param[$parametro_key] = $parametro_value;
+        }
+
+        $orcamento_ativos = Orcamento::where('ativo', 1)
+            ->where('obra_id', $param['obra_id'])
+            ->where('orcamento_tipo_id',$param['orcamento_tipo_id'])
+            ->update(['ativo'=>0]);
+
+
         foreach ($reader->getSheetIterator() as $sheet) {
             if ($folha === 0) {
                 $linha = 0;
@@ -88,49 +107,57 @@ class SpreadsheetRepository
                     $linha++;
                     if ($linha > 1) {
                         $line++;
-                        $erro = 0;
+                        $final = [];
 
                         $colunas = json_decode($planilha->colunas_json);
 //                        dd($colunas);
-                        \DB::beginTransaction();
                         foreach ($colunas as $chave => $value) {
                             if($value) {
-                                switch ($chave) {
-                                    case Orcamento::$relation[$value] == 'string' :
-                                        if (is_string($row[$chave])) {
-                                            $final[$value] = $row[$chave];
-                                        } else {
-                                            if((string) ($row[$chave])) {
-                                                $final[$value] = (string)($row[$chave]);
+                                if($row[$chave]) {
+                                    switch (Orcamento::$relation[$value]) {
+                                        case 'string' :
+                                            if (is_string($row[$chave])) {
+                                                $final[$value] = $row[$chave];
                                             } else {
-                                                $erro = 1;
+                                                if ($row[$chave]) {
+                                                    $final[$value] = (string)($row[$chave]);
+                                                } else {
+                                                    $erro = 1;
+                                                    $mensagens_erro[] = 'O campo ' . $value . ' não é do tipo STRING';;
+                                                }
                                             }
-                                        }
-                                        break;
+                                            break;
 
-                                    case Orcamento::$relation[$value] == 'decimal' :
-                                        if (is_float($row[$chave])) {
-                                            $final[$value] = $row[$chave];
-                                        } else {
-                                            if(floatval($row[$chave])) {
-                                                $final[$value] = floatval($row[$chave]);
+                                        case 'decimal' :
+                                            if (is_float($row[$chave])) {
+                                                $final[$value] = str_replace(",",".",$row[$chave]);
                                             } else {
-                                                $erro = 1;
+                                                if ($row[$chave]) {
+                                                    $final[$value] =  floatval(str_replace(",", ".", str_replace(".", "", $row[$chave])));
+                                                } else {
+                                                    $erro = 1;
+                                                    $mensagens_erro[] = 'O campo ' . $value . ' não é do tipo DECIMAL';
+                                                }
                                             }
-                                        }
-                                        break;
+                                            break;
 
-                                    case Orcamento::$relation[$value] == 'integer' :
-                                        if (is_int($row[$chave])) {
-                                            $final[$value] = $row[$chave];
-                                        } else {
-                                            if((int) ($row[$chave])) {
-                                                $final[$value] = (int) ($row[$chave]);
+                                        case 'integer' :
+                                            if (is_int($row[$chave])) {
+                                                $final[$value] = $row[$chave];
                                             } else {
-                                                $erro = 1;
+                                                if ($row[$chave]) {
+                                                    $final[$value] = (int)($row[$chave]);
+                                                } else {
+                                                    $erro = 1;
+                                                    $mensagens_erro[] = 'O campo ' . $value . ' não é do tipo INTEGER';
+//                                                $mensagens_erro[] = 'LINHA:'.$line.' - O campo '.$value.' não é do tipo INTEGER';
+                                                }
                                             }
-                                        }
-                                        break;
+                                            break;
+                                        default:
+                                            $final[$value] = $row[$chave];
+                                            break;
+                                    }
                                 }
                             }
                             $parametros = json_decode($planilha->parametros_json);
@@ -139,18 +166,96 @@ class SpreadsheetRepository
                             }
 
                         }
-                        $orcamento = Orcamento::create($final);
-                        if($erro == 0) {
-                            \DB::commit();
-                        }else{
-                            \DB::rollBack();
+                        #quebrar codigo insumo explode(separar os pontos)
+                        if($final['codigo_insumo']) {
+                            $codigo_insumo = explode(".", $final['codigo_insumo']);
+                            $codigo_grupo = $codigo_insumo[0];
+                            $codigo_subgrupo1 = $codigo_insumo[0] . '.' . $codigo_insumo[1];
+                            $codigo_subgrupo2 = $codigo_insumo[0] . '.' . $codigo_insumo[1] . '.' . $codigo_insumo[2];
+                            $codigo_subgrupo3 = $codigo_insumo[0] . '.' . $codigo_insumo[1] . '.' . $codigo_insumo[2] . '.' . $codigo_insumo[3];
+                            $codigo_servico = $codigo_insumo[0] . '.' . $codigo_insumo[1] . '.' . $codigo_insumo[2] . '.' . $codigo_insumo[3] . '.' . $codigo_insumo[4];
+                            $codigo_insumo = $codigo_insumo[5];
                         }
+
+                        # query verificar se existe grupo_id = obra
+                        $grupo = Grupo::where('codigo', $codigo_grupo)->first();
+                        if($grupo) {
+                            $final['grupo_id'] = $grupo->id;
+                        }else{
+                            $erro = 1;
+                            $mensagens_erro[] = 'grupo não foi encontrado: ' . $codigo_grupo;
+                        }
+
+                        # query verificar se existe subgrupo1_id
+                        $subgrupo1 = Grupo::where('codigo', $codigo_subgrupo1)->first();
+                        if($subgrupo1) {
+                            $final['subgrupo1_id'] = $subgrupo1->id;
+                        }else{
+                            $erro = 1;
+                            $mensagens_erro[] = 'subgrupo1 não foi encontrado: ' . $codigo_subgrupo1;
+                        }
+
+                        # query verificar se existe subgrupo2_id
+                        $subgrupo2 = Grupo::where('codigo', $codigo_subgrupo2)->first();
+                        if($subgrupo2) {
+                            $final['subgrupo2_id'] = $subgrupo2->id;
+                        }else{
+                            $erro = 1;
+                            $mensagens_erro[] = 'subgrupo2 não foi encontrado: ' . $codigo_subgrupo2;
+                        }
+
+                        # query verificar se existe subgrupo3_id
+                        $subgrupo3 = Grupo::where('codigo', $codigo_subgrupo3)->first();
+                        if($subgrupo3) {
+                            $final['subgrupo3_id'] = $subgrupo3->id;
+                        }else{
+                            $erro = 1;
+                            $mensagens_erro[] = 'subgrupo3 não foi encontrado: ' . $codigo_subgrupo3;
+                        }
+
+                        # query verificar se existe servico_id
+                        $servico = Servico::where('codigo', $codigo_servico)->first();
+                        if($servico) {
+                            $final['servico_id'] = $servico->id;
+                        }else{
+                            $erro = 1;
+                            $mensagens_erro[] = 'serviço não foi encontrado: ' . $codigo_servico;
+                        }
+
+                        # query verificar se existe insumo_id
+                        $insumo = Insumo::where('codigo', $codigo_insumo)->first();
+                        if($servico) {
+                            $final['insumo_id'] = $insumo->id;
+                        }else{
+                            $erro = 1;
+                            $mensagens_erro[] = 'insumo não foi encontrado: ' . $codigo_insumo;
+                        }
+
+                        $final['user_id'] = \Auth::user()->id;
+//                        dd($final);
+                        # save data table budget
+                        $orcamento = Orcamento::create($final);
                     }
                 }
             }
             $folha++;
         }
+
+        # finnish transaction
+        if($erro == 0) {
+            \DB::commit();
+        }else{
+            \DB::rollBack();
+        }
+        # close reader
         $reader->close();
+
+
+        if($mensagens_erro){
+            return ['error' => $mensagens_erro, 'success' => false];
+        }else{
+            return ['error' => false, 'success' => true];
+        }
 
     }
 }

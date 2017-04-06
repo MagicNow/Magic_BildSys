@@ -13,8 +13,7 @@ class Orcamento extends Model
 {
     public $table = 'orcamentos';
 
-    const CREATED_AT = 'created_at';
-    const UPDATED_AT = 'updated_at';
+    public $timestamps = false;
 
     public $fillable = [
         'obra_id',
@@ -43,7 +42,8 @@ class Orcamento extends Model
         'ativo',
         'subgrupo1_id',
         'subgrupo2_id',
-        'subgrupo3_id'
+        'subgrupo3_id',
+        'user_id'
     ];
 
     /**
@@ -75,7 +75,6 @@ class Orcamento extends Model
     public static $relation = [
         'codigo_insumo' => 'string',
         'unidade_sigla' => 'string',
-        'referencia_preco' => 'string',
         'obs' => 'text',
         'coeficiente' => 'decimal',
         'indireto' => 'decimal',
@@ -90,7 +89,8 @@ class Orcamento extends Model
         'qtd_total' => 'decimal',
         'preco_unitario' => 'decimal',
         'preco_total' => 'decimal',
-        'porcentagem_orcamento' => 'decimal'
+        'porcentagem_orcamento' => 'decimal',
+        'referencia_preco' => 'string'
     ];
 
     /**
@@ -99,7 +99,8 @@ class Orcamento extends Model
      * @var array
      */
     public static $rules = [
-        
+        'unidade_sigla' => 'required',
+        'codigo_insumo' => 'required'
     ];
 
     /**
@@ -131,7 +132,7 @@ class Orcamento extends Model
      **/
     public function orcamentoTipo()
     {
-        return $this->belongsTo(\App\Models\OrcamentoTipo::class);
+        return $this->belongsTo(\App\Models\TipoOrcamento::class);
     }
 
     /**

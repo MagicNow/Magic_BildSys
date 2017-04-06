@@ -12,6 +12,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\AppBaseController;
 use App\Models\Modulo;
 use App\Models\Obra;
+use App\Models\Orcamento;
 use App\Models\Planilha;
 use App\Models\TipoOrcamento;
 use App\Repositories\Admin\SpreadsheetRepository;
@@ -27,8 +28,9 @@ class ImportController extends AppBaseController
 
     public function import(Request $request)
     {
-        $file = $request->except('obra_id','modulo_id','tipo_orcamento_id');
+        $file = $request->except('obra_id','modulo_id','orcamento_tipo_id');
         $input = $request->except('_token','file');
+
         $parametros = json_encode($input);
 
         $retorno = SpreadsheetRepository::Spreadsheet($file, $parametros);
@@ -42,6 +44,14 @@ class ImportController extends AppBaseController
 
     public function save(Request $request){
         $input = $request->except('_token');
+
+        # verifica na tabela final os campos obrigatorios e verificar
+//        $rules = Orcamento::$rules;
+//        foreach ($input as $item) {
+//        }
+//        unset($input[0]);
+//        dd($rules,$input);
+
         $json = json_encode($input);
 
         $planilha = Planilha::orderBy('id','desc')->get();
@@ -50,7 +60,12 @@ class ImportController extends AppBaseController
             $planilha->colunas_json = $json;
             $planilha->update();
         }
-        SpreadsheetRepository::SpreadsheetProcess($planilha);
+        $retorno = SpreadsheetRepository::SpreadsheetProcess($planilha);
+
+        if($retorno){
+            # envia pra view
+            return view('admin.import.index', compact('retorno'));
+        }
 
     }
 }
