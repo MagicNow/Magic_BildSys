@@ -4,6 +4,14 @@
     "prod": "gulp --production",
     "dev": "gulp watch"
   },
+  "babel": {
+    "presets": [
+      "es2015"
+    ],
+    "plugins": [
+      "transform-vue-jsx"
+    ]
+  },
   "devDependencies": {
     "bootstrap-sass": "^3.3.7",
     "gulp": "^3.9.1",
@@ -13,8 +21,9 @@
     "laravel-elixir-vue": "^0.1.4",
     "laravel-elixir-webpack-official": "^1.0.2",
     "lodash": "^4.14.0",
+    "mustache": "^2.2.1",
     "vue": "^1.0.26",
-    "vue-resource": "^0.9.3",
-    "mustache": "^2.2.1"
+    "vue-pagination-2": "^0.2.72",
+    "vue-resource": "^0.9.3"
   }
 }

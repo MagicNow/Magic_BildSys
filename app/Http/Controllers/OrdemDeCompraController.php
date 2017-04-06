@@ -155,4 +155,8 @@ class OrdemDeCompraController extends AppBaseController
         $obras = Obra::pluck('nome','id')->toArray();
         return view('ordem_de_compras.compras', compact('obras'));
     }
+
+    public function insumos(){
+        return view('ordem_de_compras.insumos');
+    }
 }

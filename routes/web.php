@@ -34,4 +34,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         Route::resource('users', 'Admin\UserController');
     });
 
+
+    $router->get('compras/insumos', 'OrdemDeCompraController@insumos');
+
 });
