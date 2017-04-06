@@ -26,7 +26,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->resource('ordemDeCompras', 'OrdemDeCompraController');
 
     $router->get('compras', 'OrdemDeCompraController@compras');
-
+    $router->get('obras_insumos', 'OrdemDeCompraController@obrasInsumos');
     $router->get('planejamentos/lembretes', 'PlanejamentoController@lembretes');
 
 

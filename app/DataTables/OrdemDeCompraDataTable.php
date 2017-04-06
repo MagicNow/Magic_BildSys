@@ -28,7 +28,6 @@ class OrdemDeCompraDataTable extends DataTable
     public function query()
     {
         $ordemDeCompras = OrdemDeCompra::query();
-
         return $this->applyScopes($ordemDeCompras);
     }
 
