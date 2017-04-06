@@ -18,11 +18,18 @@ class CreateLembretesTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('lembrete_tipo_id');
             $table->unsignedInteger('planejamento_id');
+            $table->unsignedInteger('user_id');
             $table->string('nome');
             $table->integer('dias_prazo_minimo');
             $table->integer('dias_prazo_maximo')->nullable();
-            $table->timestamp('created_at')->nullable();
+            $table->softDeletes();
+            $table->timestamps();
 
+
+            $table->foreign('user_id')
+                ->references('id')->on('users')
+                ->onDelete('restrict')
+                ->onUpdate('cascade');
 
             $table->foreign('planejamento_id')
                 ->references('id')->on('planejamentos')

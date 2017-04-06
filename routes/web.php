@@ -18,18 +18,26 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::group(['middleware' => 'admin', 'prefix' => 'admin'], function () {
-    Route::get('/home', 'Admin\HomeController@index');
-    Route::get('/', 'Admin\HomeController@index');
+$router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($router) {
 
-    Route::resource('users', 'Admin\UserController');
+    $router->get('/', 'HomeController@index');
+    $router->get('/home', 'HomeController@index');
 
-    Route::get('/putsession', 'Admin\CodesController@putSession');
-    Route::get('/checksession', 'Admin\CodesController@checkSession');
-    Route::get('/getForeignKey', 'Admin\CodesController@getForeignKey');
+    $router->resource('ordemDeCompras', 'OrdemDeCompraController');
+
+    $router->get('compras', 'OrdemDeCompraController@compras');
+
+    $router->get('planejamentos/lembretes', 'PlanejamentoController@lembretes');
+
+
+    Route::group(['middleware' => 'admin', 'prefix' => 'admin'], function () {
+        Route::get('/home', 'Admin\HomeController@index');
+        Route::get('/', 'Admin\HomeController@index');
+        Route::get('/putsession', 'Admin\CodesController@putSession');
+        Route::get('/checksession', 'Admin\CodesController@checkSession');
+        Route::get('/getForeignKey', 'Admin\CodesController@getForeignKey');
+
+        Route::resource('users', 'Admin\UserController');
+    });
+
 });
-
-
-
-
-Route::resource('grupos', 'GrupoController');

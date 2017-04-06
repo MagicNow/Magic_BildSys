@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 /**
  * Class Grupo
  * @package App\Models
- * @version April 5, 2017, 3:26 pm BRT
+ * @version April 5, 2017, 6:38 pm BRT
  */
 class Grupo extends Model
 {
@@ -50,43 +50,8 @@ class Grupo extends Model
         
     ];
 
-    public static $filters = [
-        'name-string' => 'Nome',
-        'email-string' => 'E-mail',
-        'active-boolean' => 'Ativo',
-        'admin-boolean' => 'Administrador',
-        'created_at-date' => 'Criado em',
-        'updated_at-date' => 'Atualizado em',
-//        'valor-integer' => 'Valor'
-//        'user_id-foreign_key-User-name-id' => 'Usuário'
-    ];
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     **/
-    public function orcamentos()
-    {
-        return $this->hasMany(\App\Models\Orcamento::class);
-    }
-
-
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     **/
-    public function ordemDeCompraItens()
-    {
-        return $this->hasMany(\App\Models\OrdemDeCompraIten::class);
-    }
-
-
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     **/
-    public function planejamentoCompras()
-    {
-        return $this->hasMany(\App\Models\PlanejamentoCompra::class);
+    public function grupo(){
+        return $this->belongsTo(Grupo::class);
     }
 
     /**
@@ -94,6 +59,80 @@ class Grupo extends Model
      **/
     public function servicos()
     {
-        return $this->hasMany(\App\Models\Servico::class);
+        return $this->hasMany(Servico::class);
     }
+
+//    /**
+//     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+//     **/
+//    public function orcamentos()
+//    {
+//        return $this->hasMany(\App\Models\Orcamento::class);
+//    }
+//
+//    /**
+//     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+//     **/
+//    public function subgrupo1_orcamentos()
+//    {
+//        return $this->hasMany(\App\Models\Orcamento::class, 'subgrupo1_id');
+//    }
+//
+//    /**
+//     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+//     **/
+//    public function subgrupo2_orcamentos()
+//    {
+//        return $this->hasMany(\App\Models\Orcamento::class, 'subgrupo2_id');
+//    }
+//
+//    /**
+//     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+//     **/
+//    public function subgrupo3_orcamentos()
+//    {
+//        return $this->hasMany(\App\Models\Orcamento::class, 'subgrupo3_id');
+//    }
+//
+//    /**
+//     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+//     **/
+//    public function ordemDeCompraItens()
+//    {
+//        return $this->hasMany(\App\Models\OrdemDeCompraItem::class);
+//    }
+//
+//    /**
+//     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+//     **/
+//    public function subgrupo1_ordemDeCompraItens()
+//    {
+//        return $this->hasMany(\App\Models\OrdemDeCompraItem::class,'subgrupo1_id');
+//    }
+//
+//    /**
+//     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+//     **/
+//    public function subgrupo2_ordemDeCompraItens()
+//    {
+//        return $this->hasMany(\App\Models\OrdemDeCompraItem::class,'subgrupo2_id');
+//    }
+//
+//    /**
+//     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+//     **/
+//    public function subgrupo3_ordemDeCompraItens()
+//    {
+//        return $this->hasMany(\App\Models\OrdemDeCompraItem::class,'subgrupo3_id');
+//    }
+//
+//    /**
+//     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+//     **/
+//    public function planejamentoCompras()
+//    {
+//        return $this->hasMany(\App\Models\PlanejamentoCompra::class);
+//    }
+
+
 }

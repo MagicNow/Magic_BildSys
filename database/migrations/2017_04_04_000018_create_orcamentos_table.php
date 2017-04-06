@@ -26,7 +26,7 @@ class CreateOrcamentosTable extends Migration
             $table->decimal('indireto', 19, 2)->nullable();
             $table->decimal('terreo_externo_solo', 19, 2)->nullable();
             $table->decimal('terreo_externo_estrutura', 19, 2)->nullable();
-            $table->decimal('terrreo_interno', 19, 2)->nullable();
+            $table->decimal('terreo_interno', 19, 2)->nullable();
             $table->decimal('primeiro_pavimento', 19, 2)->nullable();
             $table->decimal('segundo_ao_penultimo', 19, 2)->nullable();
             $table->decimal('cobertura_ultimo_piso', 19, 2)->nullable();
@@ -43,7 +43,13 @@ class CreateOrcamentosTable extends Migration
             $table->unsignedInteger('subgrupo1_id');
             $table->unsignedInteger('subgrupo2_id');
             $table->unsignedInteger('subgrupo3_id');
+            $table->unsignedInteger('user_id');
 
+
+            $table->foreign('user_id')
+                ->references('id')->on('users')
+                ->onDelete('restrict')
+                ->onUpdate('cascade');
 
             $table->foreign('obra_id')
                 ->references('id')->on('obras')
