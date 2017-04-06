@@ -27,8 +27,7 @@
         "doctrine/dbal": "~2.3",
         "creativeorange/gravatar": "^1.0",
         "artesaos/defender": "^0.6.2",
-        "kennedytedesco/validation": "~3.0",
-        "tymon/jwt-auth": "^0.5.10"
+        "kennedytedesco/validation": "~3.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

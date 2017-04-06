@@ -171,7 +171,7 @@ return [
         Collective\Html\HtmlServiceProvider::class,
         Laracasts\Flash\FlashServiceProvider::class,
         Prettus\Repository\Providers\RepositoryServiceProvider::class,
-        \InfyOm\Generator\InfyOmGeneratorServiceProvider::class,
+        InfyOm\Generator\InfyOmGeneratorServiceProvider::class,
         InfyOm\AdminLTETemplates\AdminLTETemplatesServiceProvider::class,
         /*
          * Application Service Providers...
@@ -185,7 +185,6 @@ return [
 
         Artesaos\Defender\Providers\DefenderServiceProvider::class,
         KennedyTedesco\Validation\ValidationServiceProvider::class,
-        Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
     ],
 
     /*
@@ -238,7 +237,6 @@ return [
         'Gravatar' => Creativeorange\Gravatar\Facades\Gravatar::class,
 
         'Defender' => \Artesaos\Defender\Facades\Defender::class,
-        'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class,
     ],
 
 ];

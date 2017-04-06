@@ -10,6 +10,8 @@
         <li><a href="index2.html"><i class="fa fa-circle-o"></i> Dashboard v2</a></li>
     </ul>
 </li>
-<li class="{{ Request::is('users*') ? 'active' : '' }}">
-    <a href="{!! route('users.index') !!}"><i class="fa fa-users"></i><span>Users</span></a>
-</li>
+@if(Defender::canDo('users.list'))
+    <li class="{{ Request::is('users*') ? 'active' : '' }}">
+        <a href="{!! route('manage.index') !!}"><i class="fa fa-users"></i><span>Controle de Acesso</span></a>
+    </li>
+@endif

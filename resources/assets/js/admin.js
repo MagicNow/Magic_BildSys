@@ -1,6 +1,49 @@
-/**
- * Created by rafael on 16/09/16.
+/**Vue.http.interceptors.push((request, next) => {
+    console.log('Vue.http.interceptors.push');
+const token =  window.jwt_token;
+const hasAuthHeader = request.headers.has('Authorization')
+request.headers.set('X-CSRF-TOKEN', $("[name='csrf-token']").attr('content'))
+if (token && !hasAuthHeader) {
+    request.headers.set('Authorization', 'Bearer ' + token)
+}
+next((response) => {
+    console.log('Vue.http.interceptors.push.response');
+if (response.status === 401 && response.data.error === 'invalid_token') {
+    return refreshToken(request);
+}
+})
+});
+
+function refreshToken(request)
+{
+    console.log('refreshToken');
+    this.$http.post('/api/auth/refresh-token', {
+        params: { }
+    }).then(function(resp) {
+        window.jwt_token = resp.body;
+        Vue.http.headers.common['Authorization'] = 'Bearer ' + resp.body;
+    });
+}
+
+Vue.http.headers.common['X-CSRF-TOKEN'] = $("[name='csrf-token']").attr('content');
+Vue.http.headers.common['Authorization'] = 'Bearer ' + window.jwt_token;
+Vue.http.options.root = window.root;
+ * First we will load all of this project's JavaScript dependencies which
+ * include Vue and Vue Resource. This gives a great starting point for
+ * building robust, powerful web applications using Vue and Laravel.
  */
+
+function loading(bool) {
+    if (bool) {
+        $('body').removeClass('loaded');
+        //$(
+        // '#loader-wrapper').show();
+    } else {
+        $('body').addClass('loaded');
+        //$('#loader-wrapper').hide();
+    }
+}
+
 $(function () {
     $('input').iCheck({
         checkboxClass: 'icheckbox_square-green',
@@ -11,6 +54,7 @@ $(function () {
     $('form').submit(function (evento) {
         $('.box.box-primary').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
     });
+
 });
 
 $(function () {
