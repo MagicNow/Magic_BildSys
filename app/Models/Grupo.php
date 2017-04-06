@@ -50,13 +50,16 @@ class Grupo extends Model
         
     ];
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     **/
-    public function orcamentos()
-    {
-        return $this->hasMany(\App\Models\Orcamento::class);
-    }
+    public static $filters = [
+        'name-string' => 'Nome',
+        'email-string' => 'E-mail',
+        'active-boolean' => 'Ativo',
+        'admin-boolean' => 'Administrador',
+        'created_at-date' => 'Criado em',
+        'updated_at-date' => 'Atualizado em',
+//        'valor-integer' => 'Valor'
+//        'user_id-foreign_key-User-name-id' => 'Usuário'
+    ];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -66,21 +69,7 @@ class Grupo extends Model
         return $this->hasMany(\App\Models\Orcamento::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     **/
-    public function orcamentos()
-    {
-        return $this->hasMany(\App\Models\Orcamento::class);
-    }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     **/
-    public function orcamentos()
-    {
-        return $this->hasMany(\App\Models\Orcamento::class);
-    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -90,29 +79,7 @@ class Grupo extends Model
         return $this->hasMany(\App\Models\OrdemDeCompraIten::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     **/
-    public function ordemDeCompraItens()
-    {
-        return $this->hasMany(\App\Models\OrdemDeCompraIten::class);
-    }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     **/
-    public function ordemDeCompraItens()
-    {
-        return $this->hasMany(\App\Models\OrdemDeCompraIten::class);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     **/
-    public function ordemDeCompraItens()
-    {
-        return $this->hasMany(\App\Models\OrdemDeCompraIten::class);
-    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
