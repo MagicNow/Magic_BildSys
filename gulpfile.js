@@ -36,6 +36,8 @@ var paths = {
     'fullcalendar':  vendors + '/fullcalendar/dist/',
     'moment':  vendors + '/moment/',
     'bootstrap3_typeahead':  vendors + '/bootstrap-3-typeahead/',
+    'bootstrap_calendar':  vendors + '/bootstrap-calendar/',
+    'underscore':  vendors + '/underscore/'
 };
 
 elixir.config.sourcemaps = false;
@@ -67,6 +69,8 @@ elixir(function(mix) {
     // Copy flag resources
     mix.copy('resources/vendor/flag-sprites/dist/css/flag-sprites.min.css', 'public/css/flags.css');
     mix.copy('resources/vendor/flag-sprites/dist/img/flags.png', 'public/img/flags.png');
+
+    mix.copy('resources/vendor/bootstrap-calendar/tmpls/**', 'public/tmpls');
     
 
     // Merge Site CSSs.
@@ -114,7 +118,7 @@ elixir(function(mix) {
         paths.fontawesome + '/css/font-awesome.css',
         // paths.bootswatch + '/bootstrap.css',
         paths.adminlte + '/css/AdminLTE.css',
-        paths.adminlte + '/css/skins/skin-green-light.css',
+        paths.adminlte + '/css/skins/skin-yellow-light.css',
         paths.ionicons + '/css/ionicons.css',
         paths.colorbox + '/example3/colorbox.css',
         paths.dataTables + '/css/dataTables.bootstrap.css',
@@ -125,6 +129,7 @@ elixir(function(mix) {
         paths.jqueryui + '/themes/base/minified/jquery-ui.min.css',
         paths.sweetalert + 'sweetalert.css',
         paths.icheck + '/skins/square/green.css',
+        paths.bootstrap_calendar + '/css/calendar.css',
         '../js/datatables/css/buttons.dataTables.min.css',
         'admin.css',
     ], 'public/css/admin.css');
@@ -147,6 +152,9 @@ elixir(function(mix) {
         paths.select2 + 'js/i18n/pt-BR.js',
         paths.sweetalert + 'sweetalert.min.js',
         paths.bootstrap3_typeahead + 'bootstrap3-typeahead.js',
+        paths.underscore + '/underscore.js',
+        paths.bootstrap_calendar + '/js/calendar.js',
+        paths.bootstrap_calendar + '/js/language/pt-BR.js',
         'bootstrap-dataTables-paging.js',
         'dataTables.bootstrap.js',
         'datatables.fnReloadAjax.js',

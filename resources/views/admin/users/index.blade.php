@@ -36,7 +36,15 @@
                     </button>
                 </div>
 
-                <div id="block_fields"></div>
+                <div id="block_fields" class="col-md-12" style="margin-bottom: 20px"></div>
+                <div id="block_fields_thumbnail" class="col-md-12 thumbnail" style="margin-bottom: 20px;display: none;">
+                    <div id="block_fields_minimize" class="col-md-11"></div>
+                    <div class="col-md-1">
+                        <button type="button" class="btn btn-default" onclick="maximizeFilters();">
+                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                </div>
 
                 <!-- Modal -->
                 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -49,8 +57,8 @@
                             <div class="modal-body">
                                 @foreach($filters as $field => $filter)
                                     <p>
-                                        <input class="cb_filter" type="checkbox" value="{{$field}}" checked/>
-                                        <label style="cursor: pointer;" class="cb_filter_label">
+                                        <input class="cb_filter" type="checkbox" id="check_{{$field}}" value="{{$field}}"/>
+                                        <label for="check_{{$field}}" style="cursor: pointer;" class="cb_filter_label">
                                             {{$filter}}
                                         </label>
                                     </p>
