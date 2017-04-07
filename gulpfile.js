@@ -1,4 +1,4 @@
-require('laravel-elixir-vue');
+require('laravel-elixir-vue-2');
 var gulp = require('gulp');
 var bower = require('gulp-bower');
 var elixir = require('laravel-elixir');
@@ -122,8 +122,8 @@ elixir(function(mix) {
         paths.sweetalert + 'sweetalert.min.js',
         paths.moment + 'moment.js',
         paths.moment + '/locale/pt-br.js',
-        paths.fullcalendar + 'fullcalendar.js',
-        paths.fullcalendar + 'lang/pt-br.js',
+        // paths.fullcalendar + 'fullcalendar.js',
+        // paths.fullcalendar + 'lang/pt-br.js',
         'site.js'
     ], 'public/js/site.js');
 
@@ -167,12 +167,12 @@ elixir(function(mix) {
         paths.select2 + 'js/select2.js',
         paths.select2 + 'js/i18n/pt-BR.js',
         paths.sweetalert + 'sweetalert.min.js',
-        paths.bootstrap3_typeahead + 'bootstrap3-typeahead.js',
+        // paths.bootstrap3_typeahead + 'bootstrap3-typeahead.js',
         paths.underscore + '/underscore.js',
         paths.bootstrap_calendar + '/js/calendar.js',
         paths.bootstrap_calendar + '/js/language/pt-BR.js',
-        paths.vue + 'vue.js',
-        paths.vue_resource + 'vue-resource.js',
+        // paths.vue + 'vue.js',
+        // paths.vue_resource + 'vue-resource.js',
         'bootstrap-dataTables-paging.js',
         'dataTables.bootstrap.js',
         'datatables.fnReloadAjax.js',

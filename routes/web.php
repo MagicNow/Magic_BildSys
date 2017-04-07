@@ -133,5 +133,9 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     });
 
     $router->get('compras/insumos', 'OrdemDeCompraController@insumos');
+    $router->get('compras/insumos/lista', 'OrdemDeCompraController@insumosLista');
+
+    $router->get('obras_insumos', 'OrdemDeCompraController@obrasInsumos');
+    $router->get('insumos_json', 'OrdemDeCompraController@insumosJson');
 });
 

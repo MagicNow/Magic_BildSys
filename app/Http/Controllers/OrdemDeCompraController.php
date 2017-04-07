@@ -6,10 +6,13 @@ use App\DataTables\OrdemDeCompraDataTable;
 use App\Http\Requests;
 use App\Http\Requests\CreateOrdemDeCompraRequest;
 use App\Http\Requests\UpdateOrdemDeCompraRequest;
+use App\Models\Insumo;
 use App\Models\Obra;
 use App\Repositories\OrdemDeCompraRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Response;
 
 class OrdemDeCompraController extends AppBaseController
@@ -158,5 +161,20 @@ class OrdemDeCompraController extends AppBaseController
 
     public function insumos(){
         return view('ordem_de_compras.insumos');
+    }
+
+    public function insumosLista(Request $request){
+        $insumos = Insumo::join('insumo_servico', 'insumo_servico.insumo_id','=','insumos.id')
+            ->join('servicos','servicos.id','=','insumo_servico.servico_id')
+            ->select([
+                'insumos.id',
+                'insumos.codigo',
+                'insumos.nome as descricao',
+                'servicos.nome as servico',
+                'servicos.grupo_id',
+                DB::raw("'<a href=\"#\" class=\"btn btn-link\"><i class=\"fa fa-plus\" aria=\"hidden\"></i></a>' as `#`")
+            ])
+        ->paginate( $request->get('paginate',10) );
+        return $insumos;
     }
 }
