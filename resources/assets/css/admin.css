@@ -83,3 +83,32 @@ th, label{
     z-index: 99990;
     background: url('/img/loading.svg') 50% 50% no-repeat rgba(10, 10, 10, 0.5);
 }
+
+.head-table {
+    background-color: #474747 !important;
+    color: #fff !important;
+}
+
+.row-table {
+    border: solid 1px #dddddd !important;
+}
+
+.green {
+    color: #7ed321 !important;
+}
+
+.orange {
+    color: #f6a623 !important;
+}
+
+.red {
+    color: #eb0000 !important;
+}
+
+.grey {
+    color: #9b9b9b !important;
+}
+
+.blue {
+    color: #4990e2 !important;
+}
