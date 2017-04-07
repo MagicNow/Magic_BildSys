@@ -10,6 +10,11 @@
 | to using a Closure or controller method. Build something great!
 |
 */
+
+$router->get('/', function () {
+    return view('welcome');
+});
+
 Auth::routes();
 
 $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($router) {
@@ -20,17 +25,18 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->resource('ordemDeCompras', 'OrdemDeCompraController');
 
     $router->get('compras', 'OrdemDeCompraController@compras');
-    
+
     $router->get('planejamentos/lembretes', 'PlanejamentoController@lembretes');
 
-
-    Route::group(['middleware' => 'admin', 'prefix' => 'admin'], function () {
+    $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:dashboard.access']], function () use ($router) {
         Route::get('/home', 'Admin\HomeController@index');
         Route::get('/', 'Admin\HomeController@index');
+
+        Route::resource('users', 'Admin\UserController');
+
         Route::get('/putsession', 'Admin\CodesController@putSession');
         Route::get('/checksession', 'Admin\CodesController@checkSession');
         Route::get('/getForeignKey', 'Admin\CodesController@getForeignKey');
-        Route::resource('users', 'Admin\UserController');
 
         #importação de planilhas dinâmicas
         Route::get('import/', ['as'=> 'admin.import.index', 'uses' => 'Admin\ImportController@index']);
@@ -38,7 +44,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         Route::get('import/importar/checkIn', ['as'=> 'admin.import.checkIn', 'uses' => 'Admin\ImportController@checkIn']);
         Route::post('import/importar/save', ['as'=> 'admin.import.save', 'uses' => 'Admin\ImportController@save']);
 
-        Route::group(['middleware' => 'needsPermission:users.list'], function() use ($router) {
+        $router->group(['middleware' => 'needsPermission:users.list'], function() use ($router) {
             #Manage ACL
             $router->get('/manage', [
                 'as' => 'manage.index',
