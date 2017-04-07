@@ -10,110 +10,111 @@
         @include('adminlte-templates::common.errors')
         <div class="box box-primary">
 
-            <div class="box-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        {!! Form::select('obra_id', [''=>'Obra...']+$obras, null, ['class'=>'form-control', 'onchange'=>'atualizaCalendario(this.value);']) !!}
-                    </div>
-                    <div class="col-md-3">
-                        <a href="{{ url('comprar') }}" class="btn btn-success btn-block"><i
-                                    class="fa fa-shopping-cart"></i> Comprar</a>
-                    </div>
-                    <div class="col-md-3">
-                        <a href="{{ url('ordemDeCompras') }}" class="btn btn-primary btn-block"><i
-                                    class="fa fa-shopping-basket"></i> Ordens de Compra</a>
-                    </div>
-                </div>
+            <div class="box-body" id='app'>
 
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="page-header">
-
-                            <div class="pull-right form-inline">
-                                <div class="btn-group">
-                                    <button class="btn btn-primary" data-calendar-nav="prev"><< Anterior</button>
-                                    <button class="btn btn-default" data-calendar-nav="today">Hoje</button>
-                                    <button class="btn btn-primary" data-calendar-nav="next">Próximo >></button>
-                                </div>
-                                <div class="btn-group">
-                                    <button class="btn btn-warning" data-calendar-view="year">Ano</button>
-                                    <button class="btn btn-warning active" data-calendar-view="month">Mês</button>
-                                    <button class="btn btn-warning" data-calendar-view="week">Semana</button>
-                                    <button class="btn btn-warning" data-calendar-view="day">Dia</button>
-                                </div>
-                            </div>
-
-                            <h3></h3>
+                <!-- Roles list -->
+                <div class="col-sm-12" id="roles-list-container">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">
+                                <span class="glyphicon glyphicon-align-justify"></span>
+                                Obras Insumos
+                            </h3>
                         </div>
+                        {{--<div class="panel-body" v-show="dados.length > 0">--}}
+                            <tabela api-url="/insumos_json" v-bind:colunas="[{campo_db: 'id', label: 'identificador'},{campo_db: 'nome', label: 'nomezinho'}]">
+                        {{--</div>--}}
+                        {{--<div class="panel-footer" v-show="dados.length > 0">--}}
+                            {{--@include('vendor.pagination.vue-pagination')--}}
+                        {{--</div>--}}
 
-                        <div id="calendar"></div>
-                    </div>
-                    <div class="col-md-6">
-                        <h3>Lembretes</h3>
-                        <div id="eventlist">
-
+                        {{--<div class="panel-body" v-show="dados.length === 0">--}}
+                        <span class="text-danger text-center">
+                            <strong>Não há papéis registrados</strong>
+                        </span>
                         </div>
                     </div>
                 </div>
+                <!--/Roles list -->
             </div>
         </div>
     </div>
 @endsection
 @section('scripts')
-    <script type="text/javascript">
-        var calendar = null;
-        function atualizaCalendario(obra_id) {
-            calendar.setOptions({events_source: '{{ url('planejamentos/lembretes') }}' + (obra_id > 0 ? '?obra_id=' + obra_id : '')});
-            calendar.view();
-        }
-        $(function () {
-            calendar = $('#calendar').calendar({
-                language: 'pt-BR',
-                view: 'month',
-                tmpl_path: 'tmpls/',
-                tmpl_cache: false,
-                day: '{{ date('Y-m-d') }}',
-                onAfterEventsLoad: function (events) {
-                    if (!events) {
-                        return;
-                    }
-                    var list = $('#eventlist');
-                    list.html('');
-
-                    $.each(events, function (key, val) {
-                        $(document.createElement('li'))
-                            .html((val.url != '#' ? '<a href="' + val.url + '">' : '') + val.inicio + ': ' + val.title + (val.url != '#' ? '</a>' : ''))
-                            .appendTo(list);
-                    });
-                },
-                onAfterViewLoad: function (view) {
-                    $('.page-header h3').text(this.getTitle());
-                    $('.btn-group button').removeClass('active');
-                    $('button[data-calendar-view="' + view + '"]').addClass('active');
-                },
-                classes: {
-                    months: {
-                        general: 'label'
-                    }
-                },
-                weekbox: false,
-//            tmpl_path: "/tmpls/",
-                events_source: '{{ url('planejamentos/lembretes') }}'
-            });
-
-            $('.btn-group button[data-calendar-nav]').each(function () {
-                var $this = $(this);
-                $this.click(function () {
-                    calendar.navigate($this.data('calendar-nav'));
-                });
-            });
-
-            $('.btn-group button[data-calendar-view]').each(function () {
-                var $this = $(this);
-                $this.click(function () {
-                    calendar.view($this.data('calendar-view'));
-                });
-            });
-        });
+    <script type="text/javascript" src="js/table.js"></script>
+    <script>
+//        new Vue({
+//            el: '#app',
+//            data: {
+//                insumos: [],
+//                success: '',
+//                error: '',
+//                pagination: {
+//                    total: 0,
+//                    per_page: 10,
+//                    from: 1,
+//                    to: 0,
+//                    current_page: 1
+//                },
+//                offset: 4
+//            },
+//            computed: {
+//                isActived: function () {
+//                    return this.pagination.current_page;
+//                },
+//                pagesNumber: function () {
+//                    if (!this.pagination.to) {
+//                        return [];
+//                    }
+//                    var from = this.pagination.current_page - this.offset;
+//                    if (from < 1) {
+//                        from = 1;
+//                    }
+//                    var to = from + (this.offset * 2);
+//                    if (to >= this.pagination.last_page) {
+//                        to = this.pagination.last_page;
+//                    }
+//                    var pagesArray = [];
+//                    while (from <= to) {
+//                        pagesArray.push(from);
+//                        from++;
+//                    }
+//                    return pagesArray;
+//                }
+//            },
+//            methods: {
+//                exists: function(permissionObj) {
+//                    var keyNames = this.role.permissions.map(function(item) { return item["name"]; });
+//                    return $.inArray( permissionObj.name, keyNames );
+//                },
+//                loadInsumos: function (page) {
+//                    this.success = '';
+//                    this.error = '';
+//
+//                    startLoading();
+//                    this.$http.get('/insumos_json', {
+//                        params: { page: page, planejamento_id: 1 }
+//                    }).then(function(resp) {
+//                        if(typeof resp.data == 'object') {
+//                            this.insumos = resp.data.data;
+//                            console.log(this.insumos[0]['nome']);
+//                            this.pagination = resp.data;
+//                        } else if (typeof resp.data =='string') {
+//                            var response=jQuery.parseJSON(resp.data);
+//                            this.insumos      = response.data;
+//                            this.pagination = response;
+//                        }
+//                        stopLoading();
+//                    });
+//                },
+//                changePage: function (page) {
+//                    this.pagination.current_page = page;
+//                    this.loadInsumos(page);
+//                }
+//            },
+//            created: function() {
+//                this.loadInsumos(1);
+//            }
+//        });
     </script>
 @stop

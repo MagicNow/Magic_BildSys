@@ -7,6 +7,7 @@ use App\Http\Requests;
 use App\Http\Requests\CreateOrdemDeCompraRequest;
 use App\Http\Requests\UpdateOrdemDeCompraRequest;
 use App\Models\Grupo;
+use Illuminate\Pagination\Paginator;
 use App\Models\Insumo;
 use App\Models\Obra;
 use App\Repositories\OrdemDeCompraRepository;
@@ -160,6 +161,11 @@ class OrdemDeCompraController extends AppBaseController
         return view('ordem_de_compras.compras', compact('obras'));
     }
 
+    public function obrasInsumos(Request $request)
+    {
+        return view('ordem_de_compras.obras_insumos');
+    }
+
     /**
      * Tela que traz os insumos de uma tarefa especifica de uma obra.
      *
@@ -169,14 +175,12 @@ class OrdemDeCompraController extends AppBaseController
      *
      * @return Response
      */
-    public function obrasInsumos(Request $request)
+    public function insumosJson(Request $request)
     {
         $planejamento_compras = DB::table('planejamento_compras')
             ->select('grupo_id','servico_id','codigo_insumo')
             ->where('planejamento_compras.planejamento_id',$request->planejamento_id)
             ->get();
-
-
 
         $servicos = array();
         $grupos = array();
@@ -201,16 +205,19 @@ class OrdemDeCompraController extends AppBaseController
             }
         }
 
-        $insumos_cod = Insumo::join('planejamento_compras','planejamento_compras.codigo_insumo','=','insumos.codigo')
+        $insumos_cod = Insumo::join('orcamentos','insumos.id','=','orcamentos.insumo_id')
+            ->whereIn('orcamentos.codigo_insumo',$codigo)
             ->select([
                 'insumos.id',
                 'insumos.nome',
                 'insumos.unidade_sigla',
                 'insumos.codigo',
-                'planejamento_compras.grupo_id',
-                'planejamento_compras.servico_id'
-            ])
-            ->whereIn('insumos.codigo',$codigo);
+                'orcamentos.grupo_id',
+                'orcamentos.servico_id',
+                'orcamentos.qtd_total',
+                'orcamentos.preco_total'
+            ]);
+
 
 
         $insumos_servicos = Insumo::join('orcamentos','insumos.id','=','orcamentos.insumo_id')
@@ -221,7 +228,9 @@ class OrdemDeCompraController extends AppBaseController
                 'insumos.unidade_sigla',
                 'insumos.codigo',
                 'orcamentos.grupo_id',
-                'orcamentos.servico_id'
+                'orcamentos.servico_id',
+                'orcamentos.qtd_total',
+                'orcamentos.preco_total'
             ]);
 
 
@@ -236,12 +245,30 @@ class OrdemDeCompraController extends AppBaseController
                 'insumos.unidade_sigla',
                 'insumos.codigo',
                 'orcamentos.grupo_id',
-                'orcamentos.servico_id'
+                'orcamentos.servico_id',
+                'orcamentos.qtd_total',
+                'orcamentos.preco_total'
             ])
             ->union($insumos_cod)
             ->union($insumos_servicos)
             ->get();
 
-        $grupos = Grupo::pluck('nome', 'id')->toArray();
+        $insumos =$this->paginate($insumos,10);
+
+        return response()->json($insumos, 200);
+
+
     }
+
+    protected function paginate($items, $perPage = 12){
+        $currentPage = \Illuminate\Pagination\LengthAwarePaginator::resolveCurrentPage();
+        $currentPageItems = $items->slice(($currentPage - 1) * $perPage, $perPage, true);
+        return new \Illuminate\Pagination\LengthAwarePaginator(
+            $currentPageItems,
+            count($items),
+            $perPage
+        );
+    }
+
 }
+
