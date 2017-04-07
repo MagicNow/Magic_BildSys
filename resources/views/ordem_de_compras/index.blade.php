@@ -12,12 +12,6 @@
         <div class="clearfix"></div>
         <div class="box box-primary">
             <div class="box-body">
-                <div class="form-group col-md-2">
-                    <a href="" data-toggle="modal" data-target="#myModal" class="black">
-                        Adicionar filtros <i class="fa fa-filter" aria-hidden="true"></i>
-                    </a>
-                </div>
-
                 <div id="block_fields" class="col-md-12" style="margin-bottom: 20px"></div>
                 <div id="block_fields_thumbnail" class="col-md-12 thumbnail" style="margin-bottom: 20px;display: none;">
                     <div id="block_fields_minimize" class="col-md-11"></div>
@@ -52,6 +46,32 @@
                         </div>
                     </div>
                 </div>
+
+                <ol class="breadcrumb" style="margin-bottom: 0px;">
+                    <li style="padding-right: 420px;">
+                        <a href="#"><i class="fa fa-search" aria-hidden="true"></i> Procurar ordem</a>
+                    </li>
+                    <li>
+                        <a href="#">Hoje</a>
+                    </li>
+                    <li>
+                        <a href="#">7 dias</a>
+                    </li>
+                    <li>
+                        <a href="#">15 dias</a>
+                    </li>
+                    <li>
+                        <a href="#">30 dias</a>
+                    </li>
+                    <li>
+                        <a href="#">Outro periodo</a>
+                    </li>
+                    <li>
+                        <a href="" data-toggle="modal" data-target="#myModal" class="grey">
+                            Adicionar filtros <i class="fa fa-filter" aria-hidden="true"></i>
+                        </a>
+                    </li>
+                </ol>
 
                 <table class="table">
                     <thead class="head-table">
