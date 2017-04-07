@@ -22,7 +22,10 @@
                             </h3>
                         </div>
                         {{--<div class="panel-body" v-show="dados.length > 0">--}}
-                            <tabela api-url="/insumos_json" v-bind:colunas="[{campo_db: 'id', label: 'identificador'},{campo_db: 'nome', label: 'nomezinho'}]">
+                            <tabela
+                                    api-url="/insumos_json"
+                                    v-bind:colunas="[{campo_db: 'id', label: 'identificador'},{campo_db: 'nome', label: 'nomezinho'}]">
+                            </tabela>
                         {{--</div>--}}
                         {{--<div class="panel-footer" v-show="dados.length > 0">--}}
                             {{--@include('vendor.pagination.vue-pagination')--}}
@@ -41,8 +44,11 @@
     </div>
 @endsection
 @section('scripts')
-    <script type="text/javascript" src="js/table.js"></script>
-    <script>
+    <script src="{{ asset('js/app.js') }}" type="text/javascript"></script>
+    <script type="text/javascript">
+        new Vue({
+            el: '#app'
+        });
 //        new Vue({
 //            el: '#app',
 //            data: {

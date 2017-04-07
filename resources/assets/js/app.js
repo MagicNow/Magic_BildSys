@@ -15,4 +15,9 @@ require('./bootstrap');
 
 Vue.component('example', require('./components/Example.vue'));
 
+Vue.component('tabela', require('./components/tabela.vue'));
+
 Vue.component('generic-grid',require('./components/generic-grid.vue'));
+
+
+
