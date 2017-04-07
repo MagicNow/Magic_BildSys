@@ -6,20 +6,8 @@ use Illuminate\Support\Facades\DB;
 
 class CodeRepository
 {
-    public static function filter($query){
-        $initial_date = session()->get('initial_date');
-        $final_date = session()->get('final_date');
-
-        if($initial_date){
-            $query->where(DB::raw('DATE(created_at)'), '>=', $initial_date);
-        }
-
-        if($final_date){
-            $query->where(DB::raw('DATE(created_at)'), '<=', $final_date);
-        }
-
-        $filters = session()->get('filters');
-
+    public static function filter($query, $filters)
+    {
         if($filters){
             foreach ($filters as $field => $value){
                 $explode = explode('-', $field);
