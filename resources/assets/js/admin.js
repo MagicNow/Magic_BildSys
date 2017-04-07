@@ -1,6 +1,17 @@
-/**
- * Created by rafael on 16/09/16.
- */
+function startLoading(){
+    if(!$('.loader').length){
+        $('body').append('<div class="loader"></div>');
+    }
+}
+
+function stopLoading(){
+    if($('.loader').length) {
+        $('.loader').fadeToggle(function () {
+            $(this).remove();
+        });
+    }
+}
+
 $(function () {
     $('input').iCheck({
         checkboxClass: 'icheckbox_square-green',
@@ -11,6 +22,7 @@ $(function () {
     $('form').submit(function (evento) {
         $('.box.box-primary').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
     });
+
 });
 
 $(function () {

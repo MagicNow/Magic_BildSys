@@ -10,7 +10,6 @@ namespace App\Http\Controllers\Admin;
 
 
 use App\Http\Controllers\AppBaseController;
-use App\Models\Modulo;
 use App\Models\Obra;
 use App\Models\Orcamento;
 use App\Models\Planilha;
