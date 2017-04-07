@@ -16,3 +16,25 @@ use Illuminate\Http\Request;
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:api');
+
+// Fetch all roles
+Route::get('roles', [
+    'as' => 'manage.roles',
+    'uses' => 'RolesController@index'
+]);
+Route::post('roles/store',[
+    'as' => 'manage.roles.store',
+    'uses' => 'RolesController@store'
+]);
+
+Route::get('permissions', [
+    'as' => 'manage.permissions',
+    'uses' => 'PermissionsController@index'
+]);
+Route::post('permissions/store', [
+    'as' => 'manage.permissions.store',
+    'uses' =>'PermissionsController@store'
+]);
+
+Route::post('users', 'UsersController@index');
+Route::post('users/{id}', 'UsersController@show');

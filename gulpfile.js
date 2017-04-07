@@ -37,7 +37,9 @@ var paths = {
     'moment':  vendors + '/moment/',
     'bootstrap3_typeahead':  vendors + '/bootstrap-3-typeahead/',
     'bootstrap_calendar':  vendors + '/bootstrap-calendar/',
-    'underscore':  vendors + '/underscore/'
+    'underscore':  vendors + '/underscore/',
+    'vue':  vendors + '/vue/dist/',
+    'vue_resource':  vendors + '/vue-resource/dist/'
 };
 
 elixir.config.sourcemaps = false;
@@ -71,7 +73,7 @@ elixir(function(mix) {
     mix.copy('resources/vendor/flag-sprites/dist/img/flags.png', 'public/img/flags.png');
 
     mix.copy('resources/vendor/bootstrap-calendar/tmpls/**', 'public/tmpls');
-    
+
 
     // Merge Site CSSs.
     mix.styles([
@@ -155,6 +157,8 @@ elixir(function(mix) {
         paths.underscore + '/underscore.js',
         paths.bootstrap_calendar + '/js/calendar.js',
         paths.bootstrap_calendar + '/js/language/pt-BR.js',
+        paths.vue + 'vue.js',
+        paths.vue_resource + 'vue-resource.js',
         'bootstrap-dataTables-paging.js',
         'dataTables.bootstrap.js',
         'datatables.fnReloadAjax.js',

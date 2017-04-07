@@ -18,7 +18,7 @@ class UserDataTable extends DataTable
     {
         return $this->datatables
             ->eloquent($this->query())
-            ->addColumn('action', 'admin.users.datatables_actions')
+            ->addColumn('action', 'admin.manage.users.datatables_actions')
             ->editColumn('active', '{!! $active?\'<i class="fa fa-check text-success"></i>\':\'<i class="fa fa-times text-danger"></i>\' !!}')
             ->editColumn('admin', '{!! $admin?\'<i class="fa fa-check text-success"></i>\':\'<i class="fa fa-times text-danger"></i>\' !!}')
             ->make(true);

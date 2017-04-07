@@ -25,7 +25,9 @@
         "infyomlabs/swagger-generator": "dev-master",
         "jlapp/swaggervel": "dev-master",
         "doctrine/dbal": "~2.3",
-        "creativeorange/gravatar": "^1.0"
+        "creativeorange/gravatar": "^1.0",
+        "artesaos/defender": "^0.6.2",
+        "kennedytedesco/validation": "~3.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
