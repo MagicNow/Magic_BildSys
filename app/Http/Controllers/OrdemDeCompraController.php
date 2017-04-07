@@ -61,7 +61,7 @@ class OrdemDeCompraController extends AppBaseController
 
         $ordemDeCompra = $this->ordemDeCompraRepository->create($input);
 
-        Flash::success('Ordem De Compra ' . trans('common.saved') . ' ' . trans('common.successfully') . '.');
+        Flash::success('Ordem De Compra '.trans('common.saved').' '.trans('common.successfully').'.');
 
         return redirect(route('ordemDeCompras.index'));
     }
@@ -78,7 +78,7 @@ class OrdemDeCompraController extends AppBaseController
         $ordemDeCompra = $this->ordemDeCompraRepository->findWithoutFail($id);
 
         if (empty($ordemDeCompra)) {
-            Flash::error('Ordem De Compra ' . trans('common.not-found'));
+            Flash::error('Ordem De Compra '.trans('common.not-found'));
 
             return redirect(route('ordemDeCompras.index'));
         }
@@ -98,7 +98,7 @@ class OrdemDeCompraController extends AppBaseController
         $ordemDeCompra = $this->ordemDeCompraRepository->findWithoutFail($id);
 
         if (empty($ordemDeCompra)) {
-            Flash::error('Ordem De Compra ' . trans('common.not-found'));
+            Flash::error('Ordem De Compra '.trans('common.not-found'));
 
             return redirect(route('ordemDeCompras.index'));
         }
@@ -109,7 +109,7 @@ class OrdemDeCompraController extends AppBaseController
     /**
      * Update the specified OrdemDeCompra in storage.
      *
-     * @param  int $id
+     * @param  int              $id
      * @param UpdateOrdemDeCompraRequest $request
      *
      * @return Response
@@ -119,14 +119,14 @@ class OrdemDeCompraController extends AppBaseController
         $ordemDeCompra = $this->ordemDeCompraRepository->findWithoutFail($id);
 
         if (empty($ordemDeCompra)) {
-            Flash::error('Ordem De Compra ' . trans('common.not-found'));
+            Flash::error('Ordem De Compra '.trans('common.not-found'));
 
             return redirect(route('ordemDeCompras.index'));
         }
 
         $ordemDeCompra = $this->ordemDeCompraRepository->update($request->all(), $id);
 
-        Flash::success('Ordem De Compra ' . trans('common.updated') . ' ' . trans('common.successfully') . '.');
+        Flash::success('Ordem De Compra '.trans('common.updated').' '.trans('common.successfully').'.');
 
         return redirect(route('ordemDeCompras.index'));
     }
@@ -143,27 +143,31 @@ class OrdemDeCompraController extends AppBaseController
         $ordemDeCompra = $this->ordemDeCompraRepository->findWithoutFail($id);
 
         if (empty($ordemDeCompra)) {
-            Flash::error('Ordem De Compra ' . trans('common.not-found'));
+            Flash::error('Ordem De Compra '.trans('common.not-found'));
 
             return redirect(route('ordemDeCompras.index'));
         }
 
         $this->ordemDeCompraRepository->delete($id);
 
-        Flash::success('Ordem De Compra ' . trans('common.deleted') . ' ' . trans('common.successfully') . '.');
+        Flash::success('Ordem De Compra '.trans('common.deleted').' '.trans('common.successfully').'.');
 
         return redirect(route('ordemDeCompras.index'));
     }
 
     public function compras()
     {
-        $obras = Obra::pluck('nome', 'id')->toArray();
+        $obras = Obra::pluck('nome','id')->toArray();
         return view('ordem_de_compras.compras', compact('obras'));
     }
 
     public function obrasInsumos(Request $request)
     {
         return view('ordem_de_compras.obras_insumos');
+    }
+
+    public function insumos(){
+        return view('ordem_de_compras.insumos');
     }
 
     /**

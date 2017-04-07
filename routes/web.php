@@ -73,11 +73,6 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
                 'uses' => 'Admin\Manage\UsersController@edit'
             ])->middleware("needsPermission:users.edit");
 
-            $router->patch('/manage/users/{users}/edit', [
-                'as' => 'manage.users.update',
-                'uses' => 'Admin\Manage\UsersController@update'
-            ])->middleware("needsPermission:users.edit");
-
             $router->patch('/manage/users/{users}/deactivate', [
                 'as' => 'manage.users.deactivate',
                 'uses' => 'Admin\Manage\UsersController@deactivate'
@@ -138,4 +133,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
 
         });
     });
+
+    $router->get('compras/insumos', 'OrdemDeCompraController@insumos');
 });
+

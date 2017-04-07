@@ -1,4 +1,4 @@
-// require('laravel-elixir-vue');
+require('laravel-elixir-vue');
 var gulp = require('gulp');
 var bower = require('gulp-bower');
 var elixir = require('laravel-elixir');
@@ -74,6 +74,20 @@ elixir(function(mix) {
 
     mix.copy('resources/vendor/bootstrap-calendar/tmpls/**', 'public/tmpls');
 
+
+    Elixir.webpack.mergeConfig({
+        module: {
+            loaders: [{
+                test: /\.jsx?$/,
+                loader: 'babel',
+                exclude: /node_modules(?!\/(vue-tables-2|vue-pagination-2))\//
+            }]
+        }
+    });
+
+    mix.sass('app.scss')
+        .webpack('app.js')
+        .copy('node_modules/bootstrap-sass/assets/fonts/bootstrap/','public/fonts/bootstrap');
 
     // Merge Site CSSs.
     mix.styles([

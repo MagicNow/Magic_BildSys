@@ -15,6 +15,4 @@ require('./bootstrap');
 
 Vue.component('example', require('./components/Example.vue'));
 
-const app = new Vue({
-    el: 'body'
-});
+Vue.component('generic-grid',require('./components/generic-grid.vue'));
