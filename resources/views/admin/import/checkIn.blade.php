@@ -7,7 +7,7 @@
     <div class="content">
         <div class="clearfix"></div>
         @include('flash::message')
-        <div class="panel panel-danger">
+        <div class="box box-primary">
             <div class="panel-body"></div>
             <!-- INICIO form -->
             {!! Form::open(['route' => 'admin.import.save', 'method'=>'post']) !!}

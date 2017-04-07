@@ -18,5 +18,5 @@
 @endif
 
 <li class="{{ Request::is('import*') ? 'active' : '' }}">
-    <a href="{!! route('admin.import.index') !!}"><i class="fa fa-users"></i><span>Importação</span></a>
+    <a href="{!! route('admin.import.index') !!}"><i class="glyphicon glyphicon-cloud-upload"></i><span>Importação</span></a>
 </li>

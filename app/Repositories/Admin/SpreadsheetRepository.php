@@ -20,6 +20,14 @@ use Illuminate\Support\Facades\Redirect;
 
 class SpreadsheetRepository
 {
+    /**
+     *  MÉTODO Spreadsheet:
+        Responsável por fazer a primeira leitura da planilha e percorrer o cabeçalho,
+         retornando-o para o controller onde será salvo no banco de dados em formato JSON.
+     * @param $spreadsheet = Variável responsável por informar a planilha que foi inserido pelo usuário.
+     * @param $parametros = Variável responsável por informar os parametros enviado pelo usuário.
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public static function Spreadsheet($spreadsheet, $parametros){
         try{
             /* Verifica se foi selecionado algum arquivo e salva na tabela *planilhas* */
@@ -57,7 +65,9 @@ class SpreadsheetRepository
                                 foreach ($row as $index => $valor) {
                                     $cabecalho[str_slug($valor, '_')] = $index;
                                 }
+                                # Pegando as colunas que foi informado no MODEL orçamento variável = $relation
                                 $columns = Orcamento::$relation;
+                                # Retornando para o controller o $cabeçalho da planilha e $colunas do banco de dados.
                                 return ['cabecalho' => $cabecalho, 'colunas' => $columns];
                             }
                         }
@@ -75,6 +85,14 @@ class SpreadsheetRepository
         }
     }
 
+    /**
+     * MÉTODO EXECUTADO POR FILA DE PROCESSAMENTO.
+     * MÉTODO SpreadsheetProcess:
+     * Responsável por percorrer os campos selecionados linha a linha onde será feito todas as validações de DECIMAL, INTEGER, STRING.
+     * Caso ocorrer erro nas validações imediatamente será feito um ROLLBACK.
+     * @param $planilha
+     * @throws \Box\Spout\Common\Exception\UnsupportedTypeException
+     */
     public static function SpreadsheetProcess($planilha)
     {
         $line = 1;
@@ -233,7 +251,6 @@ class SpreadsheetRepository
                             $mensagens_erro[] = 'Insumo - Código: ' . $codigo_insumo . ' não foi encontrado.';
                         }
 
-                        $final['user_id'] = \Auth::user()->id;
 //                        dd($final);
                         # save data table budget
                         if($erro == 0) {
@@ -245,7 +262,7 @@ class SpreadsheetRepository
             $folha++;
         }
 
-        # finnish transaction
+        # finish transaction
         if($erro == 0) {
             \DB::commit();
         }else{
@@ -255,11 +272,11 @@ class SpreadsheetRepository
         $reader->close();
 
 
-        if($mensagens_erro){
-            return ['error' => $mensagens_erro, 'success' => false];
-        }else{
-            return ['error' => false, 'success' => true];
-        }
+//        if($mensagens_erro){
+//            return ['error' => $mensagens_erro, 'success' => false];
+//        }else{
+//            return ['error' => false, 'success' => true];
+//        }
 
     }
 }

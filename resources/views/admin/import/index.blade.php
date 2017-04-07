@@ -1,28 +1,24 @@
 @extends('layouts.app')
 
 @section('content')
-    @if(!isset($retorno))
     <section class="content-header">
         <h1 class="pull-left">Importação de planilhas</h1>
     </section>
     <div class="content">
         <div class="clearfix"></div>
-
         @include('flash::message')
-
-        {!! Form::open(['route' => 'admin.import.importar', 'files'=>true]) !!}
-
-        <fieldset style="margin-top:10px;">
-            <div class="panel panel-default">
+        <div class="box box-primary">
+            {!! Form::open(['route' => 'admin.import.importar', 'files'=>true]) !!}
+            <fieldset style="margin-top:10px;">
                 <div class="panel-body">
                     <div class="col-md-10">
                         <div class="form-group">
                             {!! Form::label('obra_id', 'Obra:') !!}
-                            {!! Form::select('obra_id', [''=>'Escolha' ]+$obras, null, ['class' => 'form-control']) !!}
+                            {!! Form::select('obra_id', [''=>'Escolha' ]+$obras, null, ['class' => 'form-control', 'required'=>'required']) !!}
                         </div>
                         <div class="form-group">
                             {!! Form::label('modulo_id', 'Módulo:') !!}
-                            {!! Form::select('modulo_id', ['' => 'Escolha', 1=>'Orçamentos'], null, ['class' => 'form-control', 'onchange' => 'selectType(this.value)']) !!}
+                            {!! Form::select('modulo_id', ['' => 'Escolha', 1=>'Orçamentos'], null, ['class' => 'form-control','required'=>'required', 'onchange' => 'selectType(this.value)']) !!}
                         </div>
                         <div id="tipo_orcamento" class="form-group" style="display:none">
                             {!! Form::label('orcamento_tipo_id', 'Tipo Orçamento:') !!}
@@ -41,41 +37,10 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </fieldset>
-
-        {!! Form::close() !!}
-    </div>
-    @else
-        @if($retorno['error'] > 0)
-        <div class="panel panel-danger">
-            <div class="panel-heading"><h3 class="panel-title">Erros de importação</h3></div>
-            <div class="panel-body"></div>
-            <div class="">
-                <table class="table table-bordered table-striped table-hover table-condensed">
-                    <tbody>
-                    @foreach($retorno['error'] as $row)
-                        <tr>
-                            <td>{{ $row }}</td>
-                        </tr>
-                    @endforeach
-                    </tbody>
-                </table>
-                <!-- fazer download de planilha com erro -->
-                <div class="row">
-                    <a href="/admin/import" class="btn btn-sm  btn-primary btn-block">
-                        <span class="fa fa-reply"></span>
-                        Voltar e tentar importar novamente
-                    </a>
-                </div>
-            </div>
+            </fieldset>
+            {!! Form::close() !!}
         </div>
-        @else
-            <div>
-                <p class="bg-success">Dados importados com sucesso!</p>
-            </div>
-        @endif
-    @endif
+    </div>
 @endsection
 @section('scripts')
     <script type="text/javascript">
