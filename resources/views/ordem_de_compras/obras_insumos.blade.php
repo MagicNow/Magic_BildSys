@@ -47,6 +47,7 @@
     <script src="{{ asset('js/app.js') }}" type="text/javascript"></script>
     <script type="text/javascript">
         new Vue({
+            
             el: '#app'
         });
 //        new Vue({
