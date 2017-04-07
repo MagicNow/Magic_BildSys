@@ -6,15 +6,15 @@ use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * Class OrdemDeCompra
+ * Class OrdemDeCompraStatusLog
  * @package App\Models
- * @version April 4, 2017, 5:25 pm BRT
+ * @version April 7, 2017, 11:44 am BRT
  */
-class OrdemDeCompra extends Model
+class OrdemDeCompraStatusLog extends Model
 {
     use SoftDeletes;
 
-    public $table = 'ordem_de_compras';
+    public $table = 'ordem_de_compra_status_log';
     
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
@@ -25,8 +25,8 @@ class OrdemDeCompra extends Model
 
     public $fillable = [
         'oc_status_id',
-        'obra_id',
-        'aprovado'
+        'ordem_de_compra_id',
+        'user_id'
     ];
 
     /**
@@ -37,7 +37,8 @@ class OrdemDeCompra extends Model
     protected $casts = [
         'id' => 'integer',
         'oc_status_id' => 'integer',
-        'obra_id' => 'integer'
+        'ordem_de_compra_id' => 'integer',
+        'user_id' => 'integer'
     ];
 
     /**
@@ -52,32 +53,24 @@ class OrdemDeCompra extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function obra()
-    {
-        return $this->belongsTo(\App\Models\Obra::class);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     **/
     public function ocStatus()
     {
         return $this->belongsTo(\App\Models\OcStatus::class);
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function ordemDeCompraItens()
+    public function ordemDeCompra()
     {
-        return $this->hasMany(\App\Models\OrdemDeCompraItens::class);
+        return $this->belongsTo(\App\Models\OrdemDeCompra::class);
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function ordemDeCompraStatusLogs()
+    public function user()
     {
-        return $this->hasMany(\App\Models\OrdemDeCompraStatusLog::class);
+        return $this->belongsTo(\App\Models\User::class);
     }
 }
