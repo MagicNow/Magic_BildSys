@@ -64,7 +64,7 @@
                 <!-- fazer download de planilha com erro -->
                 <div class="row">
                     <a href="/admin/import" class="btn btn-sm  btn-primary btn-block">
-                        <span class="glyphicon glyphicon-save"></span>
+                        <span class="fa fa-reply"></span>
                         Voltar e tentar importar novamente
                     </a>
                 </div>

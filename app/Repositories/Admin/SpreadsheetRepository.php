@@ -178,12 +178,14 @@ class SpreadsheetRepository
                         }
 
                         # query verificar se existe grupo_id = obra
-                        $grupo = Grupo::where('codigo', $codigo_grupo)->first();
+
+//                        # verifico esse ($codigo_grupo) ou ($param['obra_id']) ?
+                        $grupo = Grupo::where('codigo', $param['obra_id'])->first();
                         if($grupo) {
                             $final['grupo_id'] = $grupo->id;
                         }else{
                             $erro = 1;
-                            $mensagens_erro[] = 'grupo não foi encontrado: ' . $codigo_grupo;
+                            $mensagens_erro[] = 'grupo - Código: ' . $param['obra_id'] . ' não foi encontrado.';
                         }
 
                         # query verificar se existe subgrupo1_id
@@ -192,7 +194,7 @@ class SpreadsheetRepository
                             $final['subgrupo1_id'] = $subgrupo1->id;
                         }else{
                             $erro = 1;
-                            $mensagens_erro[] = 'subgrupo1 não foi encontrado: ' . $codigo_subgrupo1;
+                            $mensagens_erro[] = 'subgrupo1 - Código: ' . $codigo_subgrupo1 . ' não foi encontrado.';
                         }
 
                         # query verificar se existe subgrupo2_id
@@ -201,7 +203,7 @@ class SpreadsheetRepository
                             $final['subgrupo2_id'] = $subgrupo2->id;
                         }else{
                             $erro = 1;
-                            $mensagens_erro[] = 'subgrupo2 não foi encontrado: ' . $codigo_subgrupo2;
+                            $mensagens_erro[] = 'subgrupo2 - Código: ' . $codigo_subgrupo2 . ' não foi encontrado.';
                         }
 
                         # query verificar se existe subgrupo3_id
@@ -210,7 +212,7 @@ class SpreadsheetRepository
                             $final['subgrupo3_id'] = $subgrupo3->id;
                         }else{
                             $erro = 1;
-                            $mensagens_erro[] = 'subgrupo3 não foi encontrado: ' . $codigo_subgrupo3;
+                            $mensagens_erro[] = 'subgrupo3 - Código: ' . $codigo_subgrupo3 . ' não foi encontrado.';
                         }
 
                         # query verificar se existe servico_id
@@ -219,7 +221,7 @@ class SpreadsheetRepository
                             $final['servico_id'] = $servico->id;
                         }else{
                             $erro = 1;
-                            $mensagens_erro[] = 'serviço não foi encontrado: ' . $codigo_servico;
+                            $mensagens_erro[] = 'Serviço - Código: ' . $codigo_servico . ' não foi encontrado.';
                         }
 
                         # query verificar se existe insumo_id
@@ -228,13 +230,15 @@ class SpreadsheetRepository
                             $final['insumo_id'] = $insumo->id;
                         }else{
                             $erro = 1;
-                            $mensagens_erro[] = 'insumo não foi encontrado: ' . $codigo_insumo;
+                            $mensagens_erro[] = 'Insumo - Código: ' . $codigo_insumo . ' não foi encontrado.';
                         }
 
                         $final['user_id'] = \Auth::user()->id;
 //                        dd($final);
                         # save data table budget
-                        $orcamento = Orcamento::create($final);
+                        if($erro == 0) {
+                            $orcamento = Orcamento::create($final);
+                        }
                     }
                 }
             }
