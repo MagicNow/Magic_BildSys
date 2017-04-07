@@ -15,6 +15,7 @@ use App\Models\Orcamento;
 use App\Models\Planilha;
 use App\Models\TipoOrcamento;
 use App\Repositories\Admin\SpreadsheetRepository;
+use Illuminate\Support\Facades\Redirect;
 use Symfony\Component\HttpFoundation\Request;
 
 class ImportController extends AppBaseController
@@ -43,15 +44,35 @@ class ImportController extends AppBaseController
 
     public function save(Request $request){
         $input = $request->except('_token');
+        $json = json_encode(array_filter($input));
+//        $required = null;
+//        $result = [];
 
-        # verifica na tabela final os campos obrigatorios e verificar
 //        $rules = Orcamento::$rules;
-//        foreach ($input as $item) {
+//        foreach($rules as $chave => $value){
+//            $required = $chave;
 //        }
-//        unset($input[0]);
-//        dd($rules,$input);
+//
+//        foreach (json_decode($json) as $key => $val) {
+//            if($required == $val){
+//                $result[$key] = $val;
+//                unset($result[$key]);
+//            }else{
+//                $result[$key] = $val;
+//            }
+//        }
+//        dd($result);
 
-        $json = json_encode($input);
+
+//        $codigo_insumo = in_array('codigo_insumo', $input);
+//        $unidade_sigla = in_array('unidade_sigla', $input);
+//
+//        if(!$codigo_insumo && !$unidade_sigla){
+//            \Flash::error('Obrigátorio selecionar os campos: codigo_insumo e unidade_sigla');
+//            return Redirect('/admin/import');
+//        }
+
+//        dd($json);
 
         $planilha = Planilha::orderBy('id','desc')->get();
         $planilha = $planilha->where('user_id', \Auth::id())->first();
