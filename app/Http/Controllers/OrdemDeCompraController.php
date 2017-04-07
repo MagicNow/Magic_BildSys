@@ -7,6 +7,7 @@ use App\Http\Requests;
 use App\Http\Requests\CreateOrdemDeCompraRequest;
 use App\Http\Requests\UpdateOrdemDeCompraRequest;
 use App\Models\Obra;
+use App\Models\OrdemDeCompra;
 use App\Repositories\OrdemDeCompraRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
@@ -30,7 +31,9 @@ class OrdemDeCompraController extends AppBaseController
      */
     public function index(OrdemDeCompraDataTable $ordemDeCompraDataTable)
     {
-        return $ordemDeCompraDataTable->render('ordem_de_compras.index');
+        $filters = OrdemDeCompra::$filters;
+        
+        return $ordemDeCompraDataTable->render('ordem_de_compras.index', compact('filters'));
     }
 
     /**

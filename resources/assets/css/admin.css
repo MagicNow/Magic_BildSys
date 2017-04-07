@@ -112,3 +112,32 @@ th, label{
 .blue {
     color: #4990e2 !important;
 }
+
+.black {
+    color: #4a4a4a !important;
+}
+
+.button-green {
+    background-color: #7ed321 !important;
+    border-color: #7ed321 !important;
+}
+
+.button-red {
+    background-color: #eb0000 !important;
+    border-color: #eb0000 !important;
+}
+
+a {
+    color: #4a4a4a;
+}
+
+a:hover, a:focus {
+    color: #9b9b9b;
+}
+
+body {
+    font-family: Raleway;
+    font-size: 14px;
+    font-weight: 600;
+    color: #4a4a4a;
+}

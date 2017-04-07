@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Requests;
 use App\Repositories\API\ListagemOCRepository;
-use App\Http\Controllers\AppBaseController;
+
 use Flash;
 use Response;
 
@@ -30,7 +30,7 @@ class ListagemOCController extends AppBaseController
      */
     public function index()
     {
-        $listagem_oc = $this->listagemOCRepository->paginate(10);
+        $listagem_oc = $this->listagemOCRepository->with('permissions')->paginate(10);
 
         return response()->json($listagem_oc, 200);
     }
