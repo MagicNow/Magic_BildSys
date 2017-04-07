@@ -85,63 +85,83 @@ th, label{
 }
 
 .head-table {
-    background-color: #474747 !important;
-    color: #fff !important;
+    background-color: #474747;
+    color: #fff;
 }
 
 .row-table {
-    border: solid 1px #dddddd !important;
+    border: solid 1px #dddddd;
+    text-align: center;
 }
 
 .green {
-    color: #7ed321 !important;
+    color: #7ed321;
 }
 
 .orange {
-    color: #f6a623 !important;
+    color: #f6a623;
 }
 
 .red {
-    color: #eb0000 !important;
+    color: #eb0000;
 }
 
 .grey {
-    color: #9b9b9b !important;
+    color: #9b9b9b;
 }
 
 .blue {
-    color: #4990e2 !important;
+    color: #4990e2;
 }
 
 .black {
-    color: #4a4a4a !important;
+    color: #4a4a4a;
 }
 
 .button-green {
-    background-color: #7ed321 !important;
-    border-color: #7ed321 !important;
+    background-color: #7ed321;
+    border-color: #7ed321;
+}
+
+.button-large-green {
+    background-color: #7ed321;
+    border-color: #7ed321;
+    width: 201px;
+    height: 45px;
+    margin-top: 30px;
+    margin-bottom: 30px;
 }
 
 .button-red {
-    background-color: #eb0000 !important;
-    border-color: #eb0000 !important;
+    background-color: #eb0000;
+    border-color: #eb0000;
+}
+
+.button-large-red {
+    background-color: #eb0000;
+    border-color: #eb0000;
+    width: 201px;
+    height: 45px;
+    margin-top: 30px;
+    margin-bottom: 30px;
 }
 
 .breadcrumb > li + li:before {
-    content: "|\00a0" !important;
+    content: "|\00a0";
 }
 
 .title {
-    font-size: 26px !important;
-    font-weight: bold !important;
-    text-align: left !important;
-    color: #474747 !important;
+    font-size: 26px;
+    font-weight: bold;
+    text-align: left;
+    color: #474747;
     margin-top: 30px;
     margin-bottom: 30px;
 }
 
 .table {
-    background-color: #ffffff !important;
+    background-color: #ffffff;
+    text-align: center;
 }
 
 .content-wrapper {
@@ -153,16 +173,16 @@ th, label{
 }
 
 a {
-    color: #9b9b9b !important;
+    color: #9b9b9b;
 }
 
 a:hover, a:focus {
-    color: #4a4a4a !important;
+    color: #4a4a4a;
 }
 
 body {
-    font-family: Raleway !important;
-    font-size: 14px !important;
-    font-weight: 600 !important;
-    color: #4a4a4a !important;
+    font-family: Raleway;
+    font-size: 14px;
+    font-weight: 600;
+    color: #4a4a4a;
 }

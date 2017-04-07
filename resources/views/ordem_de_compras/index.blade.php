@@ -2,9 +2,19 @@
 
 @section('content')
     <div class="modal-header">
-        <span class="pull-left title">
-            <i class="fa fa-arrow-left" aria-hidden="true"></i> Ordens de compra
-        </span>
+        <div class="col-md-12">
+            <div class="col-md-9">
+                <span class="pull-left title">
+                    <i class="fa fa-arrow-left" aria-hidden="true"></i> Ordens de compra
+                </span>
+            </div>
+
+            <div class="col-md-3">
+                <button type="button" class="btn btn-success button-large-green" data-dismiss="modal">
+                    Comprar insumos
+                </button>
+            </div>
+        </div>
     </div>
     <div class="content">
         <div class="clearfix"></div>
@@ -44,7 +54,7 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-danger button-red" data-dismiss="modal">Cancelar
                             </button>
-                            <button type="button" class="btn btn-primary button-green" data-dismiss="modal"
+                            <button type="button" class="btn btn-success button-green" data-dismiss="modal"
                                     onclick="addFilters()">Adicionar
                             </button>
                         </div>
@@ -53,7 +63,7 @@
             </div>
 
             <ol class="breadcrumb" style="margin-bottom: 0px;">
-                <li style="padding-right: 420px;">
+                <li class="col-md-6">
                     <a href="#"><i class="fa fa-search" aria-hidden="true"></i> Procurar ordem</a>
                 </li>
                 <li>
