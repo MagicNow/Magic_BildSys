@@ -84,31 +84,39 @@ th, label{
     background: url('/img/loading.svg') 50% 50% no-repeat rgba(10, 10, 10, 0.5);
 }
 
-.head-table {
-    background-color: #474747 !important;
-    color: #fff !important;
+/*Estilos do UX*/
+
+.table > thead > tr > th {
+    background-color: #474747;
+    border: solid 1px #dddddd;
+    color: #fff;
 }
 
-.row-table {
-    border: solid 1px #dddddd !important;
+.table > thead > tr > td.active, .table > tbody > tr > td.active, .table > tfoot > tr > td.active, .table > thead > tr > th.active, .table > tbody > tr > th.active, .table > tfoot > tr > th.active, .table > thead > tr.active > td, .table > tbody > tr.active > td, .table > tfoot > tr.active > td, .table > thead > tr.active > th, .table > tbody > tr.active > th, .table > tfoot > tr.active > th {
+    background-color: #111;
 }
 
-.green {
-    color: #7ed321 !important;
+th.active .arrow {
+    opacity: 1;
 }
 
-.orange {
-    color: #f6a623 !important;
+.arrow {
+    display: inline-block;
+    vertical-align: middle;
+    width: 0;
+    height: 0;
+    margin-left: 5px;
+    opacity: 0.66;
 }
 
-.red {
-    color: #eb0000 !important;
+.arrow.asc {
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-bottom: 4px solid #fff;
 }
 
-.grey {
-    color: #9b9b9b !important;
-}
-
-.blue {
-    color: #4990e2 !important;
+.arrow.dsc {
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 4px solid #fff;
 }

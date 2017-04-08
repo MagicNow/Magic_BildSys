@@ -3,18 +3,20 @@
         <thead>
         <tr>
             <th v-for="key in columns"
-            @click="sortBy(key)"
+            @click="(key != '#'? sortBy(key): null)"
             :class="{ active: sortKey == key }">
-            {{ key | capitalize }}
-            <span class="arrow" :class="sortOrders[key] > 0 ? 'asc' : 'dsc'">
+                <span v-if="key != '#'">
+                    {{ key | capitalize }}
+                </span>
+
+            <span v-if="key != '#'" class="arrow" :class="sortOrders[key] > 0 ? 'asc' : 'dsc'">
       </span>
             </th>
         </tr>
         </thead>
         <tbody>
         <tr v-for="entry in filteredData">
-            <td v-for="key in columns">
-                {{entry[key]}}
+            <td v-for="key in columns" v-html="entry[key]">
             </td>
         </tr>
         </tbody>

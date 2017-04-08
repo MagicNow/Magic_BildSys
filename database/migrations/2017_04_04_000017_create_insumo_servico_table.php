@@ -16,16 +16,16 @@ class CreateInsumoServicoTable extends Migration
         Schema::create('insumo_servico', function (Blueprint $table) {
             
             $table->increments('id');
-            $table->unsignedInteger('servicos_id');
-            $table->unsignedInteger('insumos_id');
+            $table->unsignedInteger('servico_id');
+            $table->unsignedInteger('insumo_id');
 
 
-            $table->foreign('servicos_id')
+            $table->foreign('servico_id')
                 ->references('id')->on('servicos')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
 
-            $table->foreign('insumos_id')
+            $table->foreign('insumo_id')
                 ->references('id')->on('insumos')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
