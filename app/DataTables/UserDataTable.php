@@ -5,6 +5,7 @@ namespace App\DataTables;
 use App\Models\User;
 use App\Repositories\CodeRepository;
 use Form;
+use Request;
 use Illuminate\Support\Facades\DB;
 use Yajra\Datatables\Services\DataTable;
 
@@ -31,9 +32,10 @@ class UserDataTable extends DataTable
      */
     public function query()
     {
+
         $users = User::query();
 
-        CodeRepository::filter($users);
+        CodeRepository::filter($users, Request::all());
 
         return $this->applyScopes($users);
     }
