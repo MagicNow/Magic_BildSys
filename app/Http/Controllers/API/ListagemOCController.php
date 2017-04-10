@@ -21,7 +21,7 @@ class ListagemOCController extends AppBaseController
     {
         $listagem_oc = OrdemDeCompra::query();
 
-        CodeRepository::filter($listagem_oc, $request->all());
+        $listagem_oc = CodeRepository::filter($listagem_oc, $request->all());
 
         $listagem_oc = $listagem_oc
             ->select('ordem_de_compras.id', 'obras.nome as obra', 'users.name as usuario', 'oc_status.nome as situacao')
