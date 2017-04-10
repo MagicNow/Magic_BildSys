@@ -6,8 +6,8 @@
             </span>
     </a>
     <ul class="treeview-menu">
-        <li class="{{ Request::is('ordemDeCompras*') ? 'active' : '' }}">
-            <a href="{!! route('ordemDeCompras.index') !!}">
+        <li class="{{ Request::is('ordens-de-compras*') ? 'active' : '' }}">
+            <a href="{!! route('ordens-de-compras.index') !!}">
                 <i class="fa fa-list-alt"></i> Listagem de OC
             </a>
         </li>
