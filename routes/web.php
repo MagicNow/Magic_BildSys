@@ -25,6 +25,8 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->resource('ordens-de-compras', 'OrdemDeCompraController');
 
     $router->get('compras', 'OrdemDeCompraController@compras');
+    $router->get('obras_insumos', 'OrdemDeCompraController@obrasInsumos');
+    $router->get('insumos_json', 'OrdemDeCompraController@insumosJson');
 
     $router->get('planejamentos/lembretes', 'PlanejamentoController@lembretes');
 
@@ -67,11 +69,6 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             $router->get('/manage/users/{users}/edit', [
                 'as' => 'manage.users.edit',
                 'uses' => 'Admin\Manage\UsersController@edit'
-            ])->middleware("needsPermission:users.edit");
-
-            $router->patch('/manage/users/{users}/edit', [
-                'as' => 'manage.users.update',
-                'uses' => 'Admin\Manage\UsersController@update'
             ])->middleware("needsPermission:users.edit");
 
             $router->patch('/manage/users/{users}/deactivate', [
@@ -134,4 +131,11 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
 
         });
     });
+
+    $router->get('compras/insumos', 'OrdemDeCompraController@insumos');
+    $router->get('compras/insumos/lista', 'OrdemDeCompraController@insumosLista');
+
+    $router->get('obras_insumos', 'OrdemDeCompraController@obrasInsumos');
+    $router->get('insumos_json', 'OrdemDeCompraController@insumosJson');
 });
+

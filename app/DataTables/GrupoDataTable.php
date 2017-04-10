@@ -2,11 +2,11 @@
 
 namespace App\DataTables;
 
-use App\Models\OrdemDeCompra;
+use App\Models\Grupo;
 use Form;
 use Yajra\Datatables\Services\DataTable;
 
-class OrdemDeCompraDataTable extends DataTable
+class GrupoDataTable extends DataTable
 {
 
     /**
@@ -16,6 +16,7 @@ class OrdemDeCompraDataTable extends DataTable
     {
         return $this->datatables
             ->eloquent($this->query())
+            ->addColumn('action', 'grupos.datatables_actions')
             ->make(true);
     }
 
@@ -26,8 +27,9 @@ class OrdemDeCompraDataTable extends DataTable
      */
     public function query()
     {
-        $ordemDeCompras = OrdemDeCompra::query();
-        return $this->applyScopes($ordemDeCompras);
+        $grupos = Grupo::query();
+
+        return $this->applyScopes($grupos);
     }
 
     /**
@@ -39,6 +41,7 @@ class OrdemDeCompraDataTable extends DataTable
     {
         return $this->builder()
             ->columns($this->getColumns())
+            ->addAction(['width' => '10%'])
             ->ajax('')
             ->parameters([
                 'initComplete' => 'function () {
@@ -88,9 +91,9 @@ class OrdemDeCompraDataTable extends DataTable
     private function getColumns()
     {
         return [
-            'oc_status_id' => ['name' => 'oc_status_id', 'data' => 'oc_status_id'],
-            'obra_id' => ['name' => 'obra_id', 'data' => 'obra_id'],
-            'aprovado' => ['name' => 'aprovado', 'data' => 'aprovado']
+            'codigo' => ['name' => 'codigo', 'data' => 'codigo'],
+            'nome' => ['name' => 'nome', 'data' => 'nome'],
+            'grupo_id' => ['name' => 'grupo_id', 'data' => 'grupo_id']
         ];
     }
 
@@ -101,6 +104,6 @@ class OrdemDeCompraDataTable extends DataTable
      */
     protected function filename()
     {
-        return 'ordemDeCompras';
+        return 'grupos';
     }
 }
