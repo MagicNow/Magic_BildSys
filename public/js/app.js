@@ -28953,54 +28953,5 @@ Vue.component('generic-grid', _genericGrid2.default);
 
 Vue.component('generic-paginator', _genericPaginator2.default);
 
-var app = new Vue({
-    el: '#root',
-    components: {
-        GenericGrid: _genericGrid2.default,
-        GenericPaginator: _genericPaginator2.default
-    },
-    data: {
-        searchQuery: '',
-        gridColumns: ['codigo', 'descricao', 'servico', '#'],
-        gridData: [],
-        pagination: {
-            total: 0,
-            per_page: 12, // required
-            current_page: 1, // required
-            last_page: 0, // required
-            from: 1,
-            to: 12 // required
-        },
-        paginationOptions: {
-            offset: 4,
-            previousText: 'Anterior',
-            nextText: 'Proxima',
-            alwaysShowPrevNext: true
-        }
-    },
-    methods: {
-        loadData: function loadData() {
-            var options = {
-                params: {
-                    paginate: this.pagination.per_page,
-                    page: this.pagination.current_page
-                }
-            };
-            $.getJSON('/compras/insumos/lista', options.params, function (response) {
-                app.gridData = response.data;
-                app.pagination.total = response.total;
-                app.pagination.last_page = response.last_page;
-                app.pagination.current_page = response.current_page;
-                app.pagination.from = response.from;
-                app.pagination.to = response.to;
-            });
-        }
-    },
-
-    created: function created() {
-        this.loadData();
-    }
-});
-
 /***/ }
 /******/ ]);
