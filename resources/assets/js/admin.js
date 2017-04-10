@@ -34,14 +34,15 @@ function addFilters(query_string) {
     var cb_filter = $('.cb_filter');
     var cb_filter_label = $('.cb_filter_label');
     var block_fields = $('#block_fields');
-    
+    var filters_add = false;
+
     if(!query_string){
         query_string = [];
     }
     $('.filter_added').remove();
-    
+
     block_fields.addClass('thumbnail').append('\
-    <div class="col-md-12 page-header filter_added">\
+    <div class="col-md-12 page-header filter_added" id="filters_add">\
             <div class="col-md-11">\
             <h2>Filtros</h2>\
         </div>\
@@ -52,7 +53,7 @@ function addFilters(query_string) {
         </div>\
     </div>\
     ');
-    
+
     for( i=0; i < cb_filter.length; i++ ) {
         if(cb_filter[i].checked) {
             if (cb_filter[i].value.split('-')[1] == 'integer') {
@@ -106,6 +107,7 @@ function addFilters(query_string) {
                 }
 
                 $('#block_fields_minimize').append('<label class="filter_added">' + cb_filter_label[i].innerHTML.replace(/\s+$/, '') + ':</label><span id="row_' + cb_filter[i].value + '" class="filter_added"> ' + msg + ' </span>');
+                filters_add = true;
             } else if (cb_filter[i].value.split('-')[1] == 'boolean') {
                 var row_boolean = "'row_" + cb_filter[i].value + "'";
 
@@ -124,6 +126,7 @@ function addFilters(query_string) {
                 $('#'+cb_filter[i].value).val(value_session_boolean);
 
                 $('#block_fields_minimize').append('<label class="filter_added">' + cb_filter_label[i].innerHTML.replace(/\s+$/, '') + ':</label><span id="row_' + cb_filter[i].value + '" class="filter_added"> ' + document.getElementById(cb_filter[i].value).options[document.getElementById(cb_filter[i].value).selectedIndex].text + ' </span>');
+                filters_add = true;
 
             } else if (cb_filter[i].value.split('-')[1] == 'foreign_key') {
                 var label = cb_filter_label[i].innerHTML;
@@ -159,6 +162,7 @@ function addFilters(query_string) {
                         $('#'+value).val(value_session_foreign_key);
                         
                         $('#block_fields_minimize').append('<label class="filter_added">' + label.replace(/\s+$/, '') + ':</label><span id="row_' + value + '" class="filter_added"> ' + document.getElementById(value).options[document.getElementById(value).selectedIndex].text + ' </span>');
+                        filters_add = true;
                     }
                 });
 
@@ -208,6 +212,7 @@ function addFilters(query_string) {
                 }
 
                 $('#block_fields_minimize').append('<label class="filter_added">' + cb_filter_label[i].innerHTML.replace(/\s+$/, '') + ':</label><span id="row_' + cb_filter[i].value + '" class="filter_added"> ' + msg + ' </span>');
+                filters_add = true;
 
             } else {
                 var row_string = "'row_" + cb_filter[i].value + "'";
@@ -235,8 +240,15 @@ function addFilters(query_string) {
                 $('#'+cb_filter[i].value+'_option').val(value_session_string_option);
 
                 $('#block_fields_minimize').append('<label class="filter_added">' + cb_filter_label[i].innerHTML.replace(/\s+$/, '') + ':</label><span id="row_' + cb_filter[i].value + '" class="filter_added"> ' + value_session_string + ' </span>');
+                filters_add = true;
             }
         }
+    }
+
+    if(!filters_add){
+        $('#filters_add').remove();
+        block_fields.removeClass('thumbnail');
+        history.pushState("", document.title, '' + window.location.href.split("?")[0]);
     }
     addFilterFields();
 }
@@ -284,7 +296,7 @@ function addFilterFields(target_id, value, type, element_id) {
     
     var filters_fields = $('.filters');
     var filters = '';
-    
+
     for( i=0; i < filters_fields.length; i++ ) {
         filters += ''+filters_fields[i].id+'='+filters_fields[i].value+'&';
     }
