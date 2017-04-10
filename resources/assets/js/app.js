@@ -14,39 +14,66 @@ require('./bootstrap');
 
 // Vue.component('example', require('./components/Example.vue'));
 
-Vue.component('generic-grid',require('./components/generic-grid.vue'));
+// Vue.component('generic-grid',require('./components/generic-grid.vue'));
 
-Vue.component('generic-paginator',require('./components/generic-paginator.vue'));
+import GenericGrid from './components/generic-grid.vue'
 
-var VueTables = require('vue-tables-2');
-Vue.use(VueTables.ClientTable, {
-    compileTemplates: true,
-    highlightMatches: true,
-    pagination: {
-        dropdown:true,
-        chunk:5
-    },
-    filterByColumn: true,
-    texts: {
-        filter: "Search:"
-    },
-    datepickerOptions: {
-        showDropdowns: true
-    }
-});
+Vue.component('generic-grid', GenericGrid);
+
+// Vue.component('generic-paginator',require('./components/generic-paginator.vue'));
+
+import GenericPaginator from './components/generic-paginator.vue'
+
+Vue.component('generic-paginator', GenericPaginator);
+
 const app = new Vue({
-    el: '#app',
+    el: '#root',
+    components: {
+        GenericGrid,
+        GenericPaginator
+    },
     data: {
-        columns: ['id','name','age'],
-        tableData: [
-            {id:1, name:"John",age:"20"},
-            {id:2, name:"Jane",age:"24"},
-            {id:3, name:"Susan",age:"16"},
-            {id:4, name:"Chris",age:"55"},
-            {id:5, name:"Dan",age:"40"}
+        searchQuery: '',
+        gridColumns: ['codigo', 'descricao', 'servico', '#'],
+        gridData: [
+
         ],
-        options: {
-            // see the options API
+        pagination: {
+            total: 0,
+            per_page: 12,    // required
+            current_page: 1, // required
+            last_page: 0,    // required
+            from: 1,
+            to: 12           // required
+        },
+        paginationOptions: {
+            offset: 4,
+            previousText: 'Anterior',
+            nextText: 'Proxima',
+            alwaysShowPrevNext: true
         }
+    },
+    methods:{
+        loadData(){
+            let options = {
+                params: {
+                    paginate: this.pagination.per_page,
+                    page: this.pagination.current_page,
+                    /* additional parameters */
+                }
+            };
+            $.getJSON('/compras/insumos/lista', options.params, function (response) {
+                app.gridData = response.data;
+                app.pagination.total = response.total;
+                app.pagination.last_page = response.last_page;
+                app.pagination.current_page = response.current_page;
+                app.pagination.from = response.from;
+                app.pagination.to = response.to;
+            });
+        }
+    }
+    ,
+    created: function () {
+        this.loadData();
     }
 });
