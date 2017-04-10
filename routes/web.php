@@ -45,6 +45,11 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         Route::post('import/importar/save', ['as'=> 'admin.import.save', 'uses' => 'Admin\ImportController@save']);
         Route::get('import/importar/selecionaCampos', 'Admin\ImportController@selecionaCampos');
 
+        # Verifica Notificações
+        Route::post('verifyNotification', 'Admin\HomeController@verifyNotifications');
+        # Update Notificações visualizadas
+        Route::get('updateNotification/{id}', 'Admin\NotificacaoController@updateNotification');
+
         $router->group(['middleware' => 'needsPermission:users.list'], function() use ($router) {
             #Manage ACL
             $router->get('/manage', [
