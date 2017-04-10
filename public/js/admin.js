@@ -74517,33 +74517,7 @@ $(function () {
 
 });
 
-$(function () {
-    putSession();
-    checkSession();
-});
 var oTable = null;
-
-function putSession(filters) {
-    var initial_date = $('#initial_date').val();
-    var final_date = $('#final_date').val();
-    var filters_json = null;
-    if(filters){
-        filters_json = JSON.parse(JSON.stringify(eval("(" + filters + ")")));
-    }
-
-    $.ajax({
-        url: "/admin/putsession",
-        data: {
-            'initial_date' : initial_date,
-            'final_date' : final_date,
-            'filters' : filters_json
-        }
-    }).done(function (json) {
-        if(json.success){
-            $("#dataTableBuilder").DataTable().draw();
-        }
-    });
-}
 
 function addFilters(filters_session) {
     var cb_filter = $('.cb_filter');
@@ -74756,15 +74730,6 @@ function addFilters(filters_session) {
     addFilterFields();
 }
 
-function filterFieldInteger(value, what){
-    if(value == 'between'){
-        $('.'+what).css('display', '').val('');
-    }else{
-        $('.'+what).css('display', 'none').val('');
-    }
-    addFilterFields();
-}
-
 function addFilterFields(target_id, value, type, element_id) {
     if(type == 'integer'){
         var value_integer_option = document.getElementById(element_id+'_option').options[document.getElementById(element_id+'_option').selectedIndex].text;
@@ -74810,13 +74775,24 @@ function addFilterFields(target_id, value, type, element_id) {
     var filters = '';
     
     for( i=0; i < filters_fields.length; i++ ) {
-        filters += '"'+filters_fields[i].id+'" : "'+filters_fields[i].value+'",';
+        filters += ''+filters_fields[i].id+'='+filters_fields[i].value+'&';
     }
 
-    filters = '{'+filters+'}';
+    filters = '?'+filters;
+    filters = filters.substring(0,(filters.length - 1));
 
-    putSession(filters);
+    history.pushState("", document.title, '' + filters);
 }
+
+function filterFieldInteger(value, what){
+    if(value == 'between'){
+        $('.'+what).css('display', '').val('');
+    }else{
+        $('.'+what).css('display', 'none').val('');
+    }
+    addFilterFields();
+}
+
 
 function minimizeFilters() {
     $('#block_fields_thumbnail').css('display', '');
@@ -74826,18 +74802,4 @@ function minimizeFilters() {
 function maximizeFilters() {
     $('#block_fields_thumbnail').css('display', 'none');
     $('#block_fields').toggle('slow');
-}
-
-function checkSession() {
-    $.ajax({
-        url: "/admin/checksession"
-    }).done(function (json) {
-        if(json.success){
-            $.each(json.filters, function (index, value) {
-                $('#check_'+index).prop('checked', true).parent().addClass('checked');
-                $('#check_'+index.replace('_initial', '')).prop('checked', true).parent().addClass('checked');
-            });
-            addFilters(json.filters);
-        }
-    });
 }

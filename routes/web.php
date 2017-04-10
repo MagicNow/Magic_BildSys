@@ -33,10 +33,8 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         Route::get('/', 'Admin\HomeController@index');
 
         Route::resource('users', 'Admin\UserController');
-
-        Route::get('/putsession', 'Admin\CodesController@putSession');
-        Route::get('/checksession', 'Admin\CodesController@checkSession');
-        Route::get('/getForeignKey', 'Admin\CodesController@getForeignKey');
+        
+        Route::get('/getForeignKey', 'CodesController@getForeignKey');
 
         $router->group(['middleware' => 'needsPermission:users.list'], function() use ($router) {
             #Manage ACL
