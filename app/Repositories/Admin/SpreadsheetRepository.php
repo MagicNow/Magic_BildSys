@@ -13,6 +13,8 @@ use App\Models\Insumo;
 use App\Models\Orcamento;
 use App\Models\Planilha;
 use App\Models\Servico;
+use App\Models\User;
+use App\Notifications\PlanilhaProcessamento;
 use Box\Spout\Common\Type;
 use Box\Spout\Reader\ReaderFactory;
 use Flash;
@@ -105,6 +107,7 @@ class SpreadsheetRepository
         $folha = 0;
         $erro = 0;
         $mensagens_erro = [];
+        $final = [];
         \DB::beginTransaction();
 
         $param = [];
@@ -125,7 +128,6 @@ class SpreadsheetRepository
                     $linha++;
                     if ($linha > 1) {
                         $line++;
-                        $final = [];
 
                         $colunas = json_decode($planilha->colunas_json);
 //                        dd($colunas);
@@ -255,6 +257,9 @@ class SpreadsheetRepository
                         # save data table budget
                         if($erro == 0) {
                             $orcamento = Orcamento::create($final);
+                        }else{
+                            // estourar loop
+                            $erro = 1;
                         }
                     }
                 }
@@ -271,12 +276,9 @@ class SpreadsheetRepository
         # close reader
         $reader->close();
 
-
-//        if($mensagens_erro){
-//            return ['error' => $mensagens_erro, 'success' => false];
-//        }else{
-//            return ['error' => false, 'success' => true];
-//        }
-
+        $user = User::find($final['user_id']);
+        if($user){
+            $user->notify(new PlanilhaProcessamento(['success'=>!count($mensagens_erro),'error'=>$mensagens_erro]));
+        }
     }
 }
