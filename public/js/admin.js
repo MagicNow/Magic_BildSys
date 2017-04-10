@@ -74517,15 +74517,18 @@ $(function () {
 
 });
 
+$(function () {
+   verifyQueryString();
+});
 var oTable = null;
 
-function addFilters(filters_session) {
+function addFilters(query_string) {
     var cb_filter = $('.cb_filter');
     var cb_filter_label = $('.cb_filter_label');
     var block_fields = $('#block_fields');
     
-    if(!filters_session){
-        filters_session = [];
+    if(!query_string){
+        query_string = [];
     }
     $('.filter_added').remove();
     
@@ -74570,9 +74573,9 @@ function addFilters(filters_session) {
                 </div>\
             ');
 
-                var value_session_integer = filters_session[cb_filter[i].value] ? filters_session[cb_filter[i].value] : '';
-                var value_session_integer_final = filters_session[cb_filter[i].value+'_final'] ? filters_session[cb_filter[i].value+'_final'] : '';
-                var value_session_integer_option = filters_session[cb_filter[i].value+'_option'] ? filters_session[cb_filter[i].value+'_option'] : 'between';
+                var value_session_integer = query_string[cb_filter[i].value] ? query_string[cb_filter[i].value] : '';
+                var value_session_integer_final = query_string[cb_filter[i].value+'_final'] ? query_string[cb_filter[i].value+'_final'] : '';
+                var value_session_integer_option = query_string[cb_filter[i].value+'_option'] ? query_string[cb_filter[i].value+'_option'] : 'between';
 
                 $('#'+cb_filter[i].value).val(value_session_integer);
                 $('#'+cb_filter[i].value+'_final').val(value_session_integer_final);
@@ -74608,7 +74611,7 @@ function addFilters(filters_session) {
                 </div>\
             ');
 
-                var value_session_boolean = filters_session[cb_filter[i].value] ? filters_session[cb_filter[i].value] : 1;
+                var value_session_boolean = query_string[cb_filter[i].value] ? query_string[cb_filter[i].value] : 1;
 
                 $('#'+cb_filter[i].value).val(value_session_boolean);
 
@@ -74643,7 +74646,7 @@ function addFilters(filters_session) {
                         </div>\
                     ');
 
-                        var value_session_foreign_key = filters_session[value] ? filters_session[value] : '';
+                        var value_session_foreign_key = query_string[value] ? query_string[value] : '';
 
                         $('#'+value).val(value_session_foreign_key);
                         
@@ -74672,8 +74675,8 @@ function addFilters(filters_session) {
                 </div>\
             ');
 
-                var value_session_date_initial = filters_session[cb_filter[i].value+'_initial'] ? filters_session[cb_filter[i].value+'_initial'] : date_actual;
-                var value_session_date_final = filters_session[cb_filter[i].value+'_final'] ? filters_session[cb_filter[i].value+'_final'] : date_actual;
+                var value_session_date_initial = query_string[cb_filter[i].value+'_initial'] ? query_string[cb_filter[i].value+'_initial'] : date_actual;
+                var value_session_date_final = query_string[cb_filter[i].value+'_final'] ? query_string[cb_filter[i].value+'_final'] : date_actual;
 
                 $('#'+cb_filter[i].value+'_initial').val(value_session_date_initial);
                 $('#'+cb_filter[i].value+'_final').val(value_session_date_final);
@@ -74717,8 +74720,8 @@ function addFilters(filters_session) {
                 </div>\
             ');
 
-                var value_session_string = filters_session[cb_filter[i].value] ? filters_session[cb_filter[i].value] : '';
-                var value_session_string_option = filters_session[cb_filter[i].value+'_option'] ? filters_session[cb_filter[i].value+'_option'] : 'between';
+                var value_session_string = query_string[cb_filter[i].value] ? query_string[cb_filter[i].value] : '';
+                var value_session_string_option = query_string[cb_filter[i].value+'_option'] ? query_string[cb_filter[i].value+'_option'] : 'between';
                 
                 $('#'+cb_filter[i].value).val(value_session_string);
                 $('#'+cb_filter[i].value+'_option').val(value_session_string_option);
@@ -74802,4 +74805,20 @@ function minimizeFilters() {
 function maximizeFilters() {
     $('#block_fields_thumbnail').css('display', 'none');
     $('#block_fields').toggle('slow');
+}
+
+function verifyQueryString() {
+    var result = {}, keyValuePairs = location.search.slice(1).split("&");
+    keyValuePairs.forEach(function(keyValuePair) {
+        keyValuePair = keyValuePair.split('=');
+        result[decodeURIComponent(keyValuePair[0])] = decodeURIComponent(keyValuePair[1]) || '';
+    });
+
+    if(Object.keys(result).length){
+        $.each(result, function (index, value) {
+            $('#check_'+index).prop('checked', true).parent().addClass('checked');
+            $('#check_'+index.replace('_initial', '')).prop('checked', true).parent().addClass('checked');
+        });
+        addFilters(result);
+    }
 }
