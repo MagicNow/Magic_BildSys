@@ -272,7 +272,7 @@ class OrdemDeCompraController extends AppBaseController
             ->union($insumos_servicos)
             ->get();
 
-        $insumos =$this->paginate($insumos,10);
+        $insumos =$this->paginate($insumos,1);
 
         return response()->json($insumos, 200);
 

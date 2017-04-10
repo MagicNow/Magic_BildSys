@@ -18,6 +18,9 @@ Vue.component('generic-grid',require('./components/generic-grid.vue'));
 
 Vue.component('generic-paginator',require('./components/generic-paginator.vue'));
 
+Vue.component('tabela',require('./components/tabela.vue'));
+
+
 var VueTables = require('vue-tables-2');
 Vue.use(VueTables.ClientTable, {
     compileTemplates: true,
