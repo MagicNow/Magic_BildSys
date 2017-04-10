@@ -252,31 +252,49 @@ class OrdemDeCompraController extends AppBaseController
                 'orcamentos.preco_total'
             ]);
 
-
-        $insumos = Insumo::join('orcamentos','insumos.id','=','orcamentos.insumo_id')
+        if(isset($request->orderkey)){
+            $insumos = Insumo::join('orcamentos','insumos.id','=','orcamentos.insumo_id')
                 ->whereIn('orcamentos.grupo_id',$grupos,'or')
                 ->whereIn('orcamentos.subgrupo1_id',$grupos,'or')
                 ->whereIn('orcamentos.subgrupo2_id',$grupos,'or')
                 ->whereIn('orcamentos.subgrupo3_id',$grupos,'or')
-            ->select([
-                'insumos.id',
-                'insumos.nome',
-                'insumos.unidade_sigla',
-                'insumos.codigo',
-                'orcamentos.grupo_id',
-                'orcamentos.servico_id',
-                'orcamentos.qtd_total',
-                'orcamentos.preco_total'
-            ])
-            ->union($insumos_cod)
-            ->union($insumos_servicos)
-            ->get();
+                ->select([
+                    'insumos.id',
+                    'insumos.nome',
+                    'insumos.unidade_sigla',
+                    'insumos.codigo',
+                    'orcamentos.grupo_id',
+                    'orcamentos.servico_id',
+                    'orcamentos.qtd_total',
+                    'orcamentos.preco_total'
+                ])
+                ->union($insumos_cod)
+                ->union($insumos_servicos)
+                ->orderBy($request->orderkey, $request->order)
+                ->get();
+        }else{
+            $insumos = Insumo::join('orcamentos','insumos.id','=','orcamentos.insumo_id')
+                ->whereIn('orcamentos.grupo_id',$grupos,'or')
+                ->whereIn('orcamentos.subgrupo1_id',$grupos,'or')
+                ->whereIn('orcamentos.subgrupo2_id',$grupos,'or')
+                ->whereIn('orcamentos.subgrupo3_id',$grupos,'or')
+                ->select([
+                    'insumos.id',
+                    'insumos.nome',
+                    'insumos.unidade_sigla',
+                    'insumos.codigo',
+                    'orcamentos.grupo_id',
+                    'orcamentos.servico_id',
+                    'orcamentos.qtd_total',
+                    'orcamentos.preco_total'
+                ])
+                ->union($insumos_cod)
+                ->union($insumos_servicos)
+                ->get();
+        }
 
-        $insumos =$this->paginate($insumos,1);
-
+        $insumos =$this->paginate($insumos,10);
         return response()->json($insumos, 200);
-
-
     }
 
     protected function paginate($items, $perPage = 12){

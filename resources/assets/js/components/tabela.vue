@@ -3,8 +3,14 @@
         <table class="table">
             <thead class="head-table">
             <tr>
-                <th class="row-table" v-for="item in head">
+                <th class="row-table"
+                    v-for="item in head"
+                    @click="sortTable(item)"
+                >
                     {{ item }}
+                    <span>
+                        <i class="fa fa-arrow-down" aria-hidden="true"></i>
+                    </span>
                 </th>
             </tr>
             </thead>
@@ -14,7 +20,10 @@
             </tr>
             </tbody>
         </table>
-        <generic-paginator :pagination="pagination" :callback="loadData" :options="paginationOptions"></generic-paginator>
+        <div class="text-center">
+            <generic-paginator :pagination="pagination" :callback="loadData"
+                               :options="paginationOptions"></generic-paginator>
+        </div>
     </div>
 </template>
 <script>
@@ -23,18 +32,23 @@
             apiUrl: {
                 required: true
             },
-            params: [],
+            params: {
+                type: Object
+            },
             actions: [],
             colunas: ''
         },
-        data:function() {
-            return{
+        data: function () {
+            var sortOrders = {}
+            for (var j in this.chaves){
+                sortOrders[this.colunas[j]] = 1
+            }
+            return {
                 head: [],
                 chaves: [],
                 dados: [],
                 success: '',
                 error: '',
-                planejamento_id:'',
                 pagination: {
                     type: Object
                 },
@@ -44,19 +58,39 @@
                     nextText: 'Proxima',
                     alwaysShowPrevNext: false
                 },
+                sortKey: '',
+                sortOrders: sortOrders
             }
         },
         computed: {
 
         },
         methods: {
+            sortTable: function(item){
+                if (typeof this.colunas[0] == 'undefined' || this.colunas[0].length == 0) {
+
+                }else{
+                    Array.prototype.getIndexBy = function (name, value) {
+                        for (var i = 0; i < this.length; i++) {
+                            if (this[i][name] == value) {
+                                return i;
+                            }
+                        }
+                        return -1;
+                    }
+                    var a = this.colunas[this.colunas.getIndexBy("label", item)]
+                    this.params.orderkey = a.campo_db;
+                    this.params.order= 'desc';
+                    this.loadData();
+                }
+            },
             getHeader: function () {
-                if(this.colunas != null){
-                    for(var j in this.colunas){
+                if (this.colunas != null) {
+                    for (var j in this.colunas) {
                         this.head.push(this.colunas[j].label);
                         this.chaves.push(this.colunas[j].campo_db)
                     }
-                }else{
+                } else {
                     this.head = Object.keys(this.dados[0]);
                     this.chaves = Object.keys(this.dados[0]);
                 }
@@ -73,30 +107,25 @@
                 return decodeURIComponent(results[2].replace(/\+/g, " "));
             },
             loadData: function () {
-                let options = {
-                    params: {
-                        paginate: this.pagination.per_page,
-                        page: this.pagination.current_page,
-                        planejamento_id: 1
-                    }
-                };
+                this.params.paginate = this.pagination.per_page;
+                this.params.page = this.pagination.current_page;
                 this.success = '';
                 this.error = '';
                 startLoading();
-                this.$http.get('/insumos_json', {
-                    params: options.params
+                this.$http.get(this.apiUrl, {
+                    params: this.params
                 }).then(function (resp) {
                     if (typeof resp.data == 'object') {
                         this.dados = resp.data.data;
                         this.pagination = resp.data;
-                        if(typeof this.head == 'undefined' || this.head.length == 0){
+                        if (typeof this.head == 'undefined' || this.head.length == 0) {
                             this.getHeader();
                         }
                     } else if (typeof resp.data == 'string') {
                         var response = jQuery.parseJSON(resp.data);
                         this.dados = response.data;
                         this.pagination = response;
-                        if(typeof this.head == 'undefined' || this.head.length == 0){
+                        if (typeof this.head == 'undefined' || this.head.length == 0) {
                             this.getHeader();
                         }
                     }
