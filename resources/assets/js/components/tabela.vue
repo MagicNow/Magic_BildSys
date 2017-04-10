@@ -3,7 +3,8 @@
         <table class="table">
             <thead class="head-table">
             <tr>
-                <th class="row-table" v-for="item in head"
+                <th class="row-table"
+                    v-for="item in head"
                     @click="sortTable(item)"
                 >
                     {{ item }}
@@ -38,7 +39,7 @@
             colunas: ''
         },
         data: function () {
-            var sortOrders = {};
+            var sortOrders = {}
             for (var j in this.chaves){
                 sortOrders[this.colunas[j]] = 1
             }
@@ -77,14 +78,10 @@
                         }
                         return -1;
                     }
-                    var data = tv[tv.getIndexBy("id", 2)]
-                    Object.prototype.getKey = function(value) {
-                        var object = this;
-                        return Object.keys(object).find(key => object[key] === value);
-                    };
-                    console.log(this.colunas);
-                    console.log(item);
-                    console.log(this.colunas.getKey(item));
+                    var a = this.colunas[this.colunas.getIndexBy("label", item)]
+                    this.params.orderkey = a.campo_db;
+                    this.params.order= 'desc';
+                    this.loadData();
                 }
             },
             getHeader: function () {
@@ -104,7 +101,7 @@
                 }
                 name = name.replace(/[\[\]]/g, "\\$&");
                 var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-                        results = regex.exec(url);
+                    results = regex.exec(url);
                 if (!results) return null;
                 if (!results[2]) return '';
                 return decodeURIComponent(results[2].replace(/\+/g, " "));

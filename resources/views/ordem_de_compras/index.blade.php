@@ -29,8 +29,19 @@
             @include('layouts.filters')
             <tabela
                 api-url="/api/listagem-ordens-de-compras"
+                v-bind:params="{}"
                 v-bind:colunas="[{campo_db: 'id', label: 'identificador'},{campo_db: 'oc_status_id', label: 'status'},{campo_db: 'obra_id', label: 'obra'},{campo_db: 'aprovado', label: 'aprovado'},{campo_db: 'user_id', label: 'usuario'}]">
             </tabela>
         </div>
     </div>
+@endsection
+
+@section('scripts')
+    <script src="{{ asset('js/app.js') }}" type="text/javascript"></script>
+
+    <script>
+        const app = new Vue({
+            el: '#app'
+        });
+    </script>
 @endsection
