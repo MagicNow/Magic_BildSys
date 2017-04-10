@@ -8,15 +8,40 @@
                     @click="sortTable(item)"
                 >
                     {{ item }}
-                    <span>
-                        <i class="fa fa-arrow-down" aria-hidden="true"></i>
+                    <span v-if="order == 'asc'">
+                        <i class="fa fa-chevron-down" aria-hidden="true"></i>
+                    </span>
+                    <span v-else>
+                        <i class="fa fa-chevron-up" aria-hidden="true"></i>
                     </span>
                 </th>
+                <th v-if="actions.status != undefined" class="row-table">Status</th>
+                <th v-if="actions.detalhe != undefined" class="row-table">Detalhe</th>
+                <th v-if="actions.aprovar != undefined" class="row-table">Aprovar</th>
+                <th v-if="actions.reprovar != undefined" class="row-table">Reprovar</th>
+                <th v-if="actions.troca != undefined" class="row-table">Troca</th>
             </tr>
             </thead>
             <tbody>
             <tr v-for="dado in dados">
                 <td class="row-table" v-for="chave in chaves">{{dado[chave]}}</td>
+                <td class="row-table" v-if="actions.status != undefined">
+                    <i v-if="dado['status'] == 0" class="fa fa-circle green"></i>
+                    <i v-if="dado['status'] == 1" class="fa fa-circle red"></i>
+                    <i v-if="dado['status'] == -1" class="fa fa-circle orange"></i>
+                </td>
+                <td class="row-table" v-if="actions.detalhe != undefined">
+                    <a v-bind:href="dado['caminho']+'/'+dado['id']"><i class="fa fa-eye"></i></a>
+                </td>
+                <td class="row-table" v-if="actions.aprovar != undefined" @click="aprovar(dado['id'])">
+                    <i class="glyphicon glyphicon-ok grey"></i>
+                </td>
+                <td class="row-table" v-if="actions.reprovar != undefined" @click="reprovar(dado['id'])">
+                    <i class="fa fa-times grey"></i>
+                </td>
+                <td class="row-table" v-if="actions.troca != undefined">
+                    <i class="fa fa-exchange grey"></i>
+                </td>
             </tr>
             </tbody>
         </table>
@@ -35,14 +60,18 @@
             params: {
                 type: Object
             },
-            actions: [],
+            actions: {
+                status: '',
+                troca: '',
+                adicionar: '',
+                detalhe: '',
+                aprovar: '',
+                reprovar: '',
+                troca: ''
+            },
             colunas: ''
         },
         data: function () {
-            var sortOrders = {}
-            for (var j in this.chaves){
-                sortOrders[this.colunas[j]] = 1
-            }
             return {
                 head: [],
                 chaves: [],
@@ -58,15 +87,26 @@
                     nextText: 'Proxima',
                     alwaysShowPrevNext: false
                 },
-                sortKey: '',
-                sortOrders: sortOrders
+                order: 'asc'
             }
         },
         computed: {
 
         },
         methods: {
+            aprovar: function(id){
+
+            },
+            reprovar: function (id) {
+
+            },
             sortTable: function(item){
+                if(this.order.localeCompare('desc')==0 || this.order.localeCompare('')==0){
+                    this.order = 'asc';
+                }else{
+                    this.order = 'desc';
+                }
+
                 if (typeof this.colunas[0] == 'undefined' || this.colunas[0].length == 0) {
 
                 }else{
@@ -80,7 +120,7 @@
                     }
                     var a = this.colunas[this.colunas.getIndexBy("label", item)]
                     this.params.orderkey = a.campo_db;
-                    this.params.order= 'desc';
+                    this.params.order= this.order;
                     this.loadData();
                 }
             },
@@ -133,7 +173,8 @@
                 });
             },
         },
-        mounted: function () {
+        created: function () {
+            console.log(this.actions.status);
             this.loadData();
         }
     }

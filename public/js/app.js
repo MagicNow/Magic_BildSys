@@ -797,6 +797,31 @@ module.exports = __vue_exports__
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ exports["default"] = {
     props: {
@@ -806,16 +831,18 @@ module.exports = __vue_exports__
         params: {
             type: Object
         },
-        actions: [],
+        actions: {
+            status: '',
+            troca: '',
+            adicionar: '',
+            detalhe: '',
+            aprovar: '',
+            reprovar: '',
+            troca: ''
+        },
         colunas: ''
     },
     data: function () {
-        var this$1 = this;
-
-        var sortOrders = {}
-        for (var j in this.chaves){
-            sortOrders[this$1.colunas[j]] = 1
-        }
         return {
             head: [],
             chaves: [],
@@ -831,8 +858,7 @@ module.exports = __vue_exports__
                 nextText: 'Proxima',
                 alwaysShowPrevNext: false
             },
-            sortKey: '',
-            sortOrders: sortOrders
+            order: 'asc'
         }
     },
     computed: {
@@ -840,6 +866,12 @@ module.exports = __vue_exports__
     },
     methods: {
         sortTable: function(item){
+            if(this.order.localeCompare('desc')==0 || this.order.localeCompare('')==0){
+                this.order = 'asc';
+            }else{
+                this.order = 'desc';
+            }
+
             if (typeof this.colunas[0] == 'undefined' || this.colunas[0].length == 0) {
 
             }else{
@@ -855,7 +887,7 @@ module.exports = __vue_exports__
                 }
                 var a = this.colunas[this.colunas.getIndexBy("label", item)]
                 this.params.orderkey = a.campo_db;
-                this.params.order= 'desc';
+                this.params.order= this.order;
                 this.loadData();
             }
         },
@@ -910,7 +942,8 @@ module.exports = __vue_exports__
             });
         },
     },
-    mounted: function () {
+    created: function () {
+        console.log(this.actions.status);
         this.loadData();
     }
 };
@@ -939,7 +972,7 @@ exports = module.exports = __webpack_require__(0)();
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -18096,7 +18129,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "table"
   }, [_c('thead', {
     staticClass: "head-table"
-  }, [_c('tr', _vm._l((_vm.head), function(item) {
+  }, [_c('tr', [_vm._l((_vm.head), function(item) {
     return _c('th', {
       staticClass: "row-table",
       on: {
@@ -18104,13 +18137,61 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
           _vm.sortTable(item)
         }
       }
-    }, [_vm._v("\n                " + _vm._s(item) + "\n                "), _vm._m(0, true)])
-  }))]), _vm._v(" "), _c('tbody', _vm._l((_vm.dados), function(dado) {
-    return _c('tr', _vm._l((_vm.chaves), function(chave) {
+    }, [_vm._v("\n                " + _vm._s(item) + "\n                "), (_vm.order == 'asc') ? _c('span', [_c('i', {
+      staticClass: "fa fa-chevron-down",
+      attrs: {
+        "aria-hidden": "true"
+      }
+    })]) : _c('span', [_c('i', {
+      staticClass: "fa fa-chevron-up",
+      attrs: {
+        "aria-hidden": "true"
+      }
+    })])])
+  }), _vm._v(" "), (_vm.actions.status != undefined) ? _c('th', {
+    staticClass: "row-table"
+  }, [_vm._v("Status")]) : _vm._e(), _vm._v(" "), (_vm.actions.detalhe != undefined) ? _c('th', {
+    staticClass: "row-table"
+  }, [_vm._v("Detalhe")]) : _vm._e(), _vm._v(" "), (_vm.actions.aprovar != undefined) ? _c('th', {
+    staticClass: "row-table"
+  }, [_vm._v("Aprovar")]) : _vm._e(), _vm._v(" "), (_vm.actions.reprovar != undefined) ? _c('th', {
+    staticClass: "row-table"
+  }, [_vm._v("Reprovar")]) : _vm._e(), _vm._v(" "), (_vm.actions.troca != undefined) ? _c('th', {
+    staticClass: "row-table"
+  }, [_vm._v("Troca")]) : _vm._e()], 2)]), _vm._v(" "), _c('tbody', _vm._l((_vm.dados), function(dado) {
+    return _c('tr', [_vm._l((_vm.chaves), function(chave) {
       return _c('td', {
         staticClass: "row-table"
       }, [_vm._v(_vm._s(dado[chave]))])
-    }))
+    }), _vm._v(" "), (_vm.actions.status != undefined) ? _c('td', {
+      staticClass: "row-table"
+    }, [(dado['status'] == 0) ? _c('i', {
+      staticClass: "fa fa-circle green"
+    }) : _vm._e(), _vm._v(" "), (dado['status'] == 1) ? _c('i', {
+      staticClass: "fa fa-circle red"
+    }) : _vm._e(), _vm._v(" "), (dado['status'] == -1) ? _c('i', {
+      staticClass: "fa fa-circle orange"
+    }) : _vm._e()]) : _vm._e(), _vm._v(" "), (_vm.actions.detalhe != undefined) ? _c('td', {
+      staticClass: "row-table"
+    }, [_c('a', {
+      attrs: {
+        "href": dado['caminho'] + '/' + dado['id']
+      }
+    }, [_c('i', {
+      staticClass: "fa fa-eye"
+    })])]) : _vm._e(), _vm._v(" "), (_vm.actions.aprovar != undefined) ? _c('td', {
+      staticClass: "row-table"
+    }, [_c('i', {
+      staticClass: "glyphicon glyphicon-ok grey"
+    })]) : _vm._e(), _vm._v(" "), (_vm.actions.reprovar != undefined) ? _c('td', {
+      staticClass: "row-table"
+    }, [_c('i', {
+      staticClass: "fa fa-times grey"
+    })]) : _vm._e(), _vm._v(" "), (_vm.actions.troca != undefined) ? _c('td', {
+      staticClass: "row-table"
+    }, [_c('i', {
+      staticClass: "fa fa-exchange grey"
+    })]) : _vm._e()], 2)
   }))]), _vm._v(" "), _c('div', {
     staticClass: "text-center"
   }, [_c('generic-paginator', {
@@ -18120,14 +18201,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "options": _vm.paginationOptions
     }
   })], 1)])
-},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('span', [_c('i', {
-    staticClass: "fa fa-arrow-down",
-    attrs: {
-      "aria-hidden": "true"
-    }
-  })])
-}]}
+},staticRenderFns: []}
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
