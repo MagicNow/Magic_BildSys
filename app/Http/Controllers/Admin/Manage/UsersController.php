@@ -296,4 +296,12 @@ class UsersController extends AppBaseController
 
     }
 
+    public function busca(Request $request){
+        return User::select([
+            'id',
+            'name'
+        ])
+            ->where('name','like', '%'.$request->q.'%')->paginate();
+    }
+
 }

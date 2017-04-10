@@ -61953,6 +61953,13 @@ function stopLoading(){
 }
 
 $(function () {
+    $(".select2").select2({
+        theme:'bootstrap',
+
+        placeholder:"-",
+        language: "pt-BR",
+    });
+
     $('input').iCheck({
         checkboxClass: 'icheckbox_square-green',
         radioClass: 'iradio_square-green',
