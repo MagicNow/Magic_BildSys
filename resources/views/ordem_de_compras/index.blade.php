@@ -30,7 +30,7 @@
             <tabela
                 api-url="/api/listagem-ordens-de-compras"
                 v-bind:params="{}"
-                v-bind:colunas="[{campo_db: 'id', label: 'identificador'},{campo_db: 'oc_status_id', label: 'status'},{campo_db: 'obra_id', label: 'obra'},{campo_db: 'aprovado', label: 'aprovado'},{campo_db: 'user_id', label: 'usuario'}]">
+                v-bind:colunas="[{campo_db: 'id', label: 'núm. o.c'},{campo_db: 'obra', label: 'obra'},{campo_db: 'usuario', label: 'usuário'},{campo_db: 'oc_status_id', label: 'status'},{campo_db: 'situacao', label: 'situação'},{campo_db: 'user_id', label: 'detalhe'}]">
             </tabela>
         </div>
     </div>
