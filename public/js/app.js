@@ -822,6 +822,9 @@ module.exports = __vue_exports__
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ exports["default"] = {
     props: {
@@ -865,6 +868,12 @@ module.exports = __vue_exports__
 
     },
     methods: {
+        aprovar: function(id){
+
+        },
+        reprovar: function (id) {
+
+        },
         sortTable: function(item){
             if(this.order.localeCompare('desc')==0 || this.order.localeCompare('')==0){
                 this.order = 'asc';
@@ -915,7 +924,20 @@ module.exports = __vue_exports__
             if (!results[2]) return '';
             return decodeURIComponent(results[2].replace(/\+/g, " "));
         },
+        getParametersUrl: function(){
+            var this$1 = this;
+
+            var search = window.location.href.substr(window.location.href.indexOf("?") + 1);
+            search = search?JSON.parse('{"' + search.replace(/&/g, '","').replace(/=/g,'":"') + '"}',
+                function(key, value) { return key===""?value:decodeURIComponent(value) }):{}
+
+            for (var key in search) {
+                this$1.params[key] = search[key];
+            }
+            console.log(this.params);
+        },
         loadData: function () {
+            this.getParametersUrl();
             this.params.paginate = this.pagination.per_page;
             this.params.page = this.pagination.current_page;
             this.success = '';
@@ -943,7 +965,6 @@ module.exports = __vue_exports__
         },
     },
     created: function () {
-        console.log(this.actions.status);
         this.loadData();
     }
 };
@@ -972,7 +993,7 @@ exports = module.exports = __webpack_require__(0)();
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -18125,7 +18146,7 @@ if (false) {
 /***/ function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', [_c('table', {
+  return _c('div', [_c('div'), _vm._v(" "), _c('table', {
     staticClass: "table"
   }, [_c('thead', {
     staticClass: "head-table"
@@ -18180,11 +18201,21 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }, [_c('i', {
       staticClass: "fa fa-eye"
     })])]) : _vm._e(), _vm._v(" "), (_vm.actions.aprovar != undefined) ? _c('td', {
-      staticClass: "row-table"
+      staticClass: "row-table",
+      on: {
+        "click": function($event) {
+          _vm.aprovar(dado['id'])
+        }
+      }
     }, [_c('i', {
       staticClass: "glyphicon glyphicon-ok grey"
     })]) : _vm._e(), _vm._v(" "), (_vm.actions.reprovar != undefined) ? _c('td', {
-      staticClass: "row-table"
+      staticClass: "row-table",
+      on: {
+        "click": function($event) {
+          _vm.reprovar(dado['id'])
+        }
+      }
     }, [_c('i', {
       staticClass: "fa fa-times grey"
     })]) : _vm._e(), _vm._v(" "), (_vm.actions.troca != undefined) ? _c('td', {

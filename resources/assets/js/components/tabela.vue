@@ -1,5 +1,8 @@
 <template>
     <div>
+        <div>
+
+        </div>
         <table class="table">
             <thead class="head-table">
             <tr>
@@ -146,7 +149,16 @@
                 if (!results[2]) return '';
                 return decodeURIComponent(results[2].replace(/\+/g, " "));
             },
+            getParametersUrl: function(){
+                var search = window.location.href.substr(window.location.href.indexOf("?") + 1);
+                search = search?JSON.parse('{"' + search.replace(/&/g, '","').replace(/=/g,'":"') + '"}',
+                    function(key, value) { return key===""?value:decodeURIComponent(value) }):{}
+                for (var key in search) {
+                    this.params[key] = search[key];
+                }
+            },
             loadData: function () {
+                this.getParametersUrl();
                 this.params.paginate = this.pagination.per_page;
                 this.params.page = this.pagination.current_page;
                 this.success = '';
@@ -174,7 +186,6 @@
             },
         },
         created: function () {
-            console.log(this.actions.status);
             this.loadData();
         }
     }

@@ -19,7 +19,7 @@
                 {{--</tabela>--}}
                 <tabela
                         api-url="/insumos_json"
-                        v-bind:params="{planejamento_id: 1}"
+                        v-bind:params="{}"
                         v-bind:actions="{}"
                         v-bind:colunas="[{campo_db: 'id', label: 'identificador'},{campo_db: 'nome', label: 'nomezinho'}]">
                 </tabela>
