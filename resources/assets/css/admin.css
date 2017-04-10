@@ -120,3 +120,8 @@ th.active .arrow {
     border-right: 4px solid transparent;
     border-top: 4px solid #fff;
 }
+
+.btn-success{
+    background-color: #7ed321;
+    border-color: #7ed321;
+}

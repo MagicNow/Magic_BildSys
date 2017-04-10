@@ -5,3 +5,7 @@
 <li class="{{ Request::is('ordemDeCompras*') ? 'active' : '' }}">
     <a href="{!! route('ordemDeCompras.index') !!}"><i class="fa fa-shopping-basket"></i><span>OrdemDeCompras</span></a>
 </li>
+
+<li class="{{ Request::is('retroalimentacaoObras*') ? 'active' : '' }}">
+    <a href="{!! route('retroalimentacaoObras.create') !!}"><i class="fa fa-undo"></i><span>Retroalimentação</span></a>
+</li>
