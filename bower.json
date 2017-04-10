@@ -38,6 +38,8 @@
     "adminlte": "2.3.6",
     "ionicons": "2.0.1",
     "iCheck": "1.0.2",
-    "bootstrap-calendar": "^0.2.5"
+    "bootstrap-calendar": "^0.2.5",
+    "vue": "v2.2.6",
+    "select2-bootstrap-theme": "^0.1.0-beta.9"
   }
 }

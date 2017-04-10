@@ -29,6 +29,11 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('planejamentos/lembretes', 'PlanejamentoController@lembretes');
 
     $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:dashboard.access']], function () use ($router) {
+
+        $router->resource('workflowReprovacaoMotivos', 'OrdemDeCompraController');
+
+        $router->get('users/busca', 'Admin\Manage\UsersController@busca');
+
         Route::get('/home', 'Admin\HomeController@index');
         Route::get('/', 'Admin\HomeController@index');
 
@@ -81,11 +86,6 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             $router->get('/manage/users/{users}/edit', [
                 'as' => 'manage.users.edit',
                 'uses' => 'Admin\Manage\UsersController@edit'
-            ])->middleware("needsPermission:users.edit");
-
-            $router->patch('/manage/users/{users}/edit', [
-                'as' => 'manage.users.update',
-                'uses' => 'Admin\Manage\UsersController@update'
             ])->middleware("needsPermission:users.edit");
 
             $router->patch('/manage/users/{users}/deactivate', [
@@ -147,7 +147,33 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             ])->middleware("needsPermission:permissions.create");
 
         });
-    });
-});
 
+        $router->group(['prefix' => 'workflow'], function () use ($router) {
+
+            $router->get('reprovacao-motivos', ['as'=> 'admin.workflowReprovacaoMotivos.index', 'uses' => 'Admin\WorkflowReprovacaoMotivoController@index']);
+            $router->post('reprovacao-motivos', ['as'=> 'admin.workflowReprovacaoMotivos.store', 'uses' => 'Admin\WorkflowReprovacaoMotivoController@store']);
+            $router->get('reprovacao-motivos/create', ['as'=> 'admin.workflowReprovacaoMotivos.create', 'uses' => 'Admin\WorkflowReprovacaoMotivoController@create']);
+            $router->put('reprovacao-motivos/{workflowReprovacaoMotivos}', ['as'=> 'admin.workflowReprovacaoMotivos.update', 'uses' => 'Admin\WorkflowReprovacaoMotivoController@update']);
+            $router->patch('reprovacao-motivos/{workflowReprovacaoMotivos}', ['as'=> 'admin.workflowReprovacaoMotivos.update', 'uses' => 'Admin\WorkflowReprovacaoMotivoController@update']);
+            $router->delete('reprovacao-motivos/{workflowReprovacaoMotivos}', ['as'=> 'admin.workflowReprovacaoMotivos.destroy', 'uses' => 'Admin\WorkflowReprovacaoMotivoController@destroy']);
+            $router->get('reprovacao-motivos/{workflowReprovacaoMotivos}', ['as'=> 'admin.workflowReprovacaoMotivos.show', 'uses' => 'Admin\WorkflowReprovacaoMotivoController@show']);
+            $router->get('reprovacao-motivos/{workflowReprovacaoMotivos}/edit', ['as'=> 'admin.workflowReprovacaoMotivos.edit', 'uses' => 'Admin\WorkflowReprovacaoMotivoController@edit']);
+
+            Route::get('workflow-alcadas', ['as'=> 'admin.workflowAlcadas.index', 'uses' => 'Admin\WorkflowAlcadaController@index']);
+            Route::post('workflow-alcadas', ['as'=> 'admin.workflowAlcadas.store', 'uses' => 'Admin\WorkflowAlcadaController@store']);
+            Route::get('workflow-alcadas/create', ['as'=> 'admin.workflowAlcadas.create', 'uses' => 'Admin\WorkflowAlcadaController@create']);
+            Route::put('workflow-alcadas/{workflowAlcadas}', ['as'=> 'admin.workflowAlcadas.update', 'uses' => 'Admin\WorkflowAlcadaController@update']);
+            Route::patch('workflow-alcadas/{workflowAlcadas}', ['as'=> 'admin.workflowAlcadas.update', 'uses' => 'Admin\WorkflowAlcadaController@update']);
+            Route::delete('workflow-alcadas/{workflowAlcadas}', ['as'=> 'admin.workflowAlcadas.destroy', 'uses' => 'Admin\WorkflowAlcadaController@destroy']);
+            Route::get('workflow-alcadas/{workflowAlcadas}', ['as'=> 'admin.workflowAlcadas.show', 'uses' => 'Admin\WorkflowAlcadaController@show']);
+            Route::get('workflow-alcadas/{workflowAlcadas}/edit', ['as'=> 'admin.workflowAlcadas.edit', 'uses' => 'Admin\WorkflowAlcadaController@edit']);
+
+        });
+    });
+
+    $router->get('compras/insumos', 'OrdemDeCompraController@insumos');
+    $router->get('compras/insumos/lista', 'OrdemDeCompraController@insumosLista');
+    $router->get('obras_insumos', 'OrdemDeCompraController@obrasInsumos');
+    $router->get('insumos_json', 'OrdemDeCompraController@insumosJson');
+});
 

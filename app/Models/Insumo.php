@@ -16,6 +16,7 @@ class Insumo extends Model
 
     public $timestamps = false;
 
+
     public $fillable = [
         'nome',
         'unidade_sigla',

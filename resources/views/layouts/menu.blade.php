@@ -20,3 +20,16 @@
 <li class="{{ Request::is('import*') ? 'active' : '' }}">
     <a href="{!! route('admin.import.index') !!}"><i class="glyphicon glyphicon-cloud-upload"></i><span>Importação</span></a>
 </li>
+
+<li class="active treeview">
+    <a href="#">
+        <i class="fa fa-check-square"></i> <span>Workflow</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+    </a>
+    <ul class="treeview-menu">
+        <li class="{{ Request::is('admin/workflow/workflow-alcadas*') ? 'active' : '' }}"><a href="{!! route('admin.workflowAlcadas.index') !!}"><i class="fa fa-list-ol"></i><span>Alçadas</span></a></li>
+        <li class="{{ Request::is('admin/workflow/reprovacao-motivos*') ? 'active' : '' }}"><a href="{!! route('admin.workflowReprovacaoMotivos.index') !!}"><i class="fa fa-ban"></i> Motivos de Reprovação</a></li>
+    </ul>
+</li>

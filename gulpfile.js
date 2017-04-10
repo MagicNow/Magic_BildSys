@@ -1,4 +1,4 @@
-// require('laravel-elixir-vue');
+require('laravel-elixir-vue-2');
 var gulp = require('gulp');
 var bower = require('gulp-bower');
 var elixir = require('laravel-elixir');
@@ -29,6 +29,7 @@ var paths = {
     'justifiedGallery':  vendors + '/Justified-Gallery/dist/',
     'mustache':  vendors + '/mustache/',
     'select2':  vendors + '/select2/dist/',
+    'select2theme': vendors + '/select2-bootstrap-theme/dist/',
     'modernizr':  vendors + '/modernizr/',
     'bootstrapdatepicker':  vendors + '/bootstrap-datepicker/dist/',
     'jquerymaskplugin':  vendors + '/jquery-mask-plugin/dist/',
@@ -75,6 +76,20 @@ elixir(function(mix) {
     mix.copy('resources/vendor/bootstrap-calendar/tmpls/**', 'public/tmpls');
 
 
+    Elixir.webpack.mergeConfig({
+        module: {
+            loaders: [{
+                test: /\.jsx?$/,
+                loader: 'babel',
+                exclude: /node_modules(?!\/(vue-tables-2|vue-pagination-2))\//
+            }]
+        }
+    });
+
+    mix.sass('app.scss')
+        .webpack('app.js')
+        .copy('node_modules/bootstrap-sass/assets/fonts/bootstrap/','public/fonts/bootstrap');
+
     // Merge Site CSSs.
     mix.styles([
         paths.bootstrap + '/css/bootstrap.css',
@@ -108,8 +123,8 @@ elixir(function(mix) {
         paths.sweetalert + 'sweetalert.min.js',
         paths.moment + 'moment.js',
         paths.moment + '/locale/pt-br.js',
-        paths.fullcalendar + 'fullcalendar.js',
-        paths.fullcalendar + 'lang/pt-br.js',
+        // paths.fullcalendar + 'fullcalendar.js',
+        // paths.fullcalendar + 'lang/pt-br.js',
         'site.js'
     ], 'public/js/site.js');
 
@@ -128,6 +143,7 @@ elixir(function(mix) {
         // paths.metisMenu + '/metisMenu.css',
         paths.summernote + '/summernote.css',
         paths.select2 + '/css/select2.css',
+        paths.select2theme + 'select2-bootstrap.css',
         paths.jqueryui + '/themes/base/minified/jquery-ui.min.css',
         paths.sweetalert + 'sweetalert.css',
         paths.icheck + '/skins/square/green.css',
@@ -153,12 +169,12 @@ elixir(function(mix) {
         paths.select2 + 'js/select2.js',
         paths.select2 + 'js/i18n/pt-BR.js',
         paths.sweetalert + 'sweetalert.min.js',
-        paths.bootstrap3_typeahead + 'bootstrap3-typeahead.js',
+        // paths.bootstrap3_typeahead + 'bootstrap3-typeahead.js',
         paths.underscore + '/underscore.js',
         paths.bootstrap_calendar + '/js/calendar.js',
         paths.bootstrap_calendar + '/js/language/pt-BR.js',
-        paths.vue + 'vue.js',
-        paths.vue_resource + 'vue-resource.js',
+        // paths.vue + 'vue.js',
+        // paths.vue_resource + 'vue-resource.js',
         'bootstrap-dataTables-paging.js',
         'dataTables.bootstrap.js',
         'datatables.fnReloadAjax.js',
