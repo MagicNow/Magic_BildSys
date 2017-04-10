@@ -16802,8 +16802,13 @@ function filter(arr, cb) {
 //         <table class="table">
 //             <thead class="head-table">
 //             <tr>
-//                 <th class="row-table" v-for="item in head">
+//                 <th class="row-table" v-for="item in head"
+//                     @click="sortTable(item)"
+//                 >
 //                     {{ item }}
+//                     <span>
+//                         <i class="fa fa-arrow-down" aria-hidden="true"></i>
+//                     </span>
 //                 </th>
 //             </tr>
 //             </thead>
@@ -16813,7 +16818,10 @@ function filter(arr, cb) {
 //             </tr>
 //             </tbody>
 //         </table>
-//         <generic-paginator :pagination="pagination" :callback="loadData" :options="paginationOptions"></generic-paginator>
+//         <div class="text-center">
+//             <generic-paginator :pagination="pagination" :callback="loadData"
+//                                :options="paginationOptions"></generic-paginator>
+//         </div>
 //     </div>
 // </template>
 // <script>
@@ -16822,42 +16830,66 @@ function filter(arr, cb) {
         apiUrl: {
             required: true
         },
-        params: [],
+        params: {
+            type: Object
+        },
         actions: [],
         colunas: ''
     },
-    data:function() {
-        return{
-            head: [],
-            chaves: [],
-            dados: [],
-            success: '',
-            error: '',
-            planejamento_id:'',
-            pagination: {
-                type: Object
-            },
-            paginationOptions: {
-                offset: 4,
-                previousText: 'Anterior',
-                nextText: 'Proxima',
-                alwaysShowPrevNext: false
-            },
-        }
+    data: {
+        roles: [],
+        success: '',
+        error: '',
+        role: {
+            name:null,
+            permissions: []
+        },
+        pagination: {
+            total: 0,
+            per_page: 10,
+            from: 1,
+            to: 0,
+            current_page: 1
+        },
+        offset: 4
     },
     computed: {
 
     },
     methods: {
+        sortTable: function(item){
+            if (typeof this.colunas[0] == 'undefined' || this.colunas[0].length == 0) {
+
+            }else{
+                Array.prototype.getIndexBy = function (name, value) {
+                    var this$1 = this;
+
+                    for (var i = 0; i < this.length; i++) {
+                        if (this$1[i][name] == value) {
+                            return i;
+                        }
+                    }
+                    return -1;
+                }
+                var data = tv[tv.getIndexBy("id", 2)]
+                Object.prototype.getKey = function(value) {
+                    var object = this;
+                    return Object.keys(object).find(function (key) { return object[key] === value; });
+                };
+                console.log(this.colunas);
+                console.log(item);
+                console.log(this.colunas.getKey(item));
+            }
+        },
         getHeader: function () {
             var this$1 = this;
 
-            if(this.colunas != null){
-                for(var j in this.colunas){
+            if (this.colunas != null) {
+                for (var j in this.colunas) {
                     this$1.head.push(this$1.colunas[j].label);
                     this$1.chaves.push(this$1.colunas[j].campo_db)
                 }
-            }else{
+            } else {
                 this.head = Object.keys(this.dados[0]);
                 this.chaves = Object.keys(this.dados[0]);
             }
@@ -16868,36 +16900,31 @@ function filter(arr, cb) {
             }
             name = name.replace(/[\[\]]/g, "\\$&");
             var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-                results = regex.exec(url);
+                    results = regex.exec(url);
             if (!results) return null;
             if (!results[2]) return '';
             return decodeURIComponent(results[2].replace(/\+/g, " "));
         },
         loadData: function () {
-            var options = {
-                params: {
-                    paginate: this.pagination.per_page,
-                    page: this.pagination.current_page,
-                    planejamento_id: 1
-                }
-            };
+            this.params.paginate = this.pagination.per_page;
+            this.params.page = this.pagination.current_page;
             this.success = '';
             this.error = '';
             startLoading();
-            this.$http.get('/insumos_json', {
-                params: options.params
+            this.$http.get(this.apiUrl, {
+                params: this.params
             }).then(function (resp) {
                 if (typeof resp.data == 'object') {
                     this.dados = resp.data.data;
                     this.pagination = resp.data;
-                    if(typeof this.head == 'undefined' || this.head.length == 0){
+                    if (typeof this.head == 'undefined' || this.head.length == 0) {
                         this.getHeader();
                     }
                 } else if (typeof resp.data == 'string') {
                     var response = jQuery.parseJSON(resp.data);
                     this.dados = response.data;
                     this.pagination = response;
-                    if(typeof this.head == 'undefined' || this.head.length == 0){
+                    if (typeof this.head == 'undefined' || this.head.length == 0) {
                         this.getHeader();
                     }
                 }
@@ -16962,7 +16989,7 @@ exports = module.exports = __webpack_require__(7)();
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -37062,7 +37089,7 @@ module.exports = "\n<nav>\n        <ul class=\"pagination\" v-if=\"pagination.la
 /* 171 */
 /***/ function(module, exports) {
 
-module.exports = "\n<div>\n    <table class=\"table\">\n        <thead class=\"head-table\">\n        <tr>\n            <th class=\"row-table\" v-for=\"item in head\">\n                {{ item }}\n            </th>\n        </tr>\n        </thead>\n        <tbody>\n        <tr v-for=\"dado in dados\">\n            <td class=\"row-table\" v-for=\"chave in chaves\">{{dado[chave]}}</td>\n        </tr>\n        </tbody>\n    </table>\n    <generic-paginator :pagination=\"pagination\" :callback=\"loadData\" :options=\"paginationOptions\"></generic-paginator>\n</div>\n";
+module.exports = "\n<div>\n    <table class=\"table\">\n        <thead class=\"head-table\">\n        <tr>\n            <th class=\"row-table\" v-for=\"item in head\"\n                @click=\"sortTable(item)\"\n            >\n                {{ item }}\n                <span>\n                    <i class=\"fa fa-arrow-down\" aria-hidden=\"true\"></i>\n                </span>\n            </th>\n        </tr>\n        </thead>\n        <tbody>\n        <tr v-for=\"dado in dados\">\n            <td class=\"row-table\" v-for=\"chave in chaves\">{{dado[chave]}}</td>\n        </tr>\n        </tbody>\n    </table>\n    <div class=\"text-center\">\n        <generic-paginator :pagination=\"pagination\" :callback=\"loadData\"\n                           :options=\"paginationOptions\"></generic-paginator>\n    </div>\n</div>\n";
 
 /***/ },
 /* 172 */
