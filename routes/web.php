@@ -22,7 +22,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('/', 'HomeController@index');
     $router->get('/home', 'HomeController@index');
 
-    $router->resource('ordens-de-compras', 'OrdemDeCompraController');
+    $router->resource('ordemDeCompras', 'OrdemDeCompraController');
 
     $router->resource('retroalimentacaoObras', 'RetroalimentacaoObraController');
 
