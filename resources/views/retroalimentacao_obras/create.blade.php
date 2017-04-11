@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.front')
 
 @section('content')
     {!! Form::open(['route' => 'retroalimentacaoObras.store']) !!}
