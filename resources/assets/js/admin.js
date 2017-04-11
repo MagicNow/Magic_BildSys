@@ -33,7 +33,7 @@ $(function () {
 });
 
 $(function () {
-   verifyQueryString();
+   // verifyQueryString();
 });
 var oTable = null;
 

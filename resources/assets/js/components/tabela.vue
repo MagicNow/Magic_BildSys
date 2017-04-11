@@ -30,31 +30,31 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-                            <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="addFilters()">Adicionar</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="addFi   lters()">Adicionar</button>
                         </div>
                     </div>
                 </div>
             </div>
 
             <ol class="breadcrumb" style="margin-bottom: 0px;">
-                <li class="col-md-6">
-                    <a href="#"><i class="fa fa-search" aria-hidden="true"></i> Procurar</a>
-                </li>
-                <li>
-                    <a href="#">Hoje</a>
-                </li>
-                <li>
-                    <a href="#">7 dias</a>
-                </li>
-                <li>
-                    <a href="#">15 dias</a>
-                </li>
-                <li>
-                    <a href="#">30 dias</a>
-                </li>
-                <li>
-                    <a href="#">Outro periodo</a>
-                </li>
+                <!--<li class="col-md-6">-->
+                    <!--<a href="#"><i class="fa fa-search" aria-hidden="true"></i> Procurar</a>-->
+                <!--</li>-->
+                <!--<li>-->
+                    <!--<a href="#">Hoje</a>-->
+                <!--</li>-->
+                <!--<li>-->
+                    <!--<a href="#">7 dias</a>-->
+                <!--</li>-->
+                <!--<li>-->
+                    <!--<a href="#">15 dias</a>-->
+                <!--</li>-->
+                <!--<li>-->
+                    <!--<a href="#">30 dias</a>-->
+                <!--</li>-->
+                <!--<li>-->
+                    <!--<a href="#">Outro periodo</a>-->
+                <!--</li>-->
                 <li>
                     <a href="" data-toggle="modal" data-target="#myModal" class="grey">
                         Adicionar filtros <i class="fa fa-filter" aria-hidden="true"></i>
@@ -108,7 +108,7 @@
                     <td class="row-table" v-if="actions.troca != undefined">
                         <i class="fa fa-exchange grey"></i>
                     </td>
-                    <td @click="adicionar(dado['id'])" class="row-table" v-if="actions.adicionar != undefined">
+                    <td @click="adicionar(dado)" class="row-table" v-if="actions.adicionar != undefined">
                         <i class="fa fa-plus grey"></i>
                     </td>
                 </tr>
@@ -138,6 +138,7 @@
             params: {
                 type: Object
             },
+            apiAdicionar: '',
             actions: {
                 status: '',
                 troca: '',
@@ -175,8 +176,11 @@
 
             },
             //Método da action adicionar onClick
-            adicionar: function(id){
+            adicionar: function(item){
+                this.$http.post(this.apiAdicionar, item)
+                    .then(function (resp) {
 
+                    })
             },
             //Método da action reprovar onClick
             reprovar: function (id) {

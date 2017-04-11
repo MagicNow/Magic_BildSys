@@ -11,9 +11,9 @@
                 </div>
                 <div class="col-md-6 text-right">
                     <div class="col-md-4 text-right">
-                        <button type="button" class="btn btn-success button-large-green" data-dismiss="modal">
+                        <a href="{{url('compras/'.$planejamento_id.'/insumos')}}" type="button" class="btn btn-success button-large-green" data-dismiss="modal">
                             Incluir Insumo
-                        </button>
+                        </a>
                     </div>
                     <div class="col-md-4 text-right">
                         <button type="button" class="btn btn-success button-large-green" data-dismiss="modal">
@@ -48,8 +48,8 @@
             {{-->--}}
             {{--</tabela>--}}
             <tabela
-                    api-url="/insumos_json"
-                    api-filtros="/obras_insumos_filter"
+                    api-url="/compras/{{$planejamento_id}}/obrasInsumosJson"
+                    api-filtros="/compras/{{$planejamento_id}}/obrasInsumosFilters"
                     v-bind:params="{@if (isset($planejamento_id)) planejamento_id: {{$planejamento_id}} @endif }"
                     v-bind:actions="{filtros: true, troca: true, adicionar: true}"
                     v-bind:colunas="[

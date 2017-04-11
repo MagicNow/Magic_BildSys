@@ -27,9 +27,6 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->resource('retroalimentacaoObras', 'RetroalimentacaoObraController');
 
     $router->get('compras', 'OrdemDeCompraController@compras');
-    $router->get('obras_insumos', 'OrdemDeCompraController@obrasInsumos');
-    $router->get('obras_insumos_filter', 'OrdemDeCompraController@obrasInsumosFilters');
-    $router->get('insumos_json', 'OrdemDeCompraController@insumosJson');
 
     $router->get('planejamentos/lembretes', 'PlanejamentoController@lembretes');
 
@@ -174,9 +171,17 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         });
     });
 
-    $router->get('compras/insumos', 'OrdemDeCompraController@insumos');
-    $router->get('compras/insumos/lista', 'OrdemDeCompraController@insumosLista');
-    $router->get('obras_insumos', 'OrdemDeCompraController@obrasInsumos');
-    $router->get('insumos_json', 'OrdemDeCompraController@insumosJson');
+    /**
+     * TO-DO Criar grupo com prefixo de compras
+     */
+    $router->get('compras/{planejamento}/insumos', 'OrdemDeCompraController@insumos');
+    $router->get('compras/{planejamento}/insumosJson', 'OrdemDeCompraController@insumosJson');
+    $router->get('compras/{planejamento}/insumosFilters', 'OrdemDeCompraController@insumosFilters');
+    $router->post('compras/{planejamento}/insumosAdd', 'OrdemDeCompraController@insumosAdd');
+
+    $router->get('compras/{planejamento}/obrasInsumos', 'OrdemDeCompraController@obrasInsumos');
+    $router->get('compras/{planejamento}/obrasInsumosFilters', 'OrdemDeCompraController@obrasInsumosFilters');
+    $router->get('compras/{planejamento}/obrasInsumosJson', 'OrdemDeCompraController@obrasInsumosJson');
+
 });
 

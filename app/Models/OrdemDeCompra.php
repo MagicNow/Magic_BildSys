@@ -51,9 +51,13 @@ class OrdemDeCompra extends Model
         'updated_at-date' => 'Atualizado em'
     ];
 
-    public static $filters_insumos = [
+    public static $filters_obras_insumos = [
         'grupo_id-foreign_key-Grupo-nome-id' => 'Grupo',
         'nome-string' => 'Nome'
+    ];
+
+    public static $filters_insumos = [
+        'servicos_id-foreign_key-Servico-nome-id' => 'Servico'
     ];
 
     /**

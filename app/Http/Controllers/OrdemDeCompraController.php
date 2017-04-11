@@ -8,6 +8,7 @@ use App\Http\Requests\CreateOrdemDeCompraRequest;
 use App\Http\Requests\UpdateOrdemDeCompraRequest;
 use App\Models\Insumo;
 use App\Models\Grupo;
+use App\Models\Planejamento;
 use App\Repositories\CodeRepository;
 use function foo\func;
 use Illuminate\Pagination\Paginator;
@@ -167,23 +168,44 @@ class OrdemDeCompraController extends AppBaseController
     }
 
 
-    public function insumos(){
-        return view('ordem_de_compras.insumos');
+    public function insumos(Planejamento $planejamento){
+        return view('ordem_de_compras.insumos', compact('planejamento'));
     }
 
-    public function insumosLista(Request $request){
-        $insumos = Insumo::join('insumo_servico', 'insumo_servico.insumo_id','=','insumos.id')
-            ->join('servicos','servicos.id','=','insumo_servico.servico_id')
+    public function insumosFilters(){
+        $filters = OrdemDeCompra::$filters_insumos;
+        return response()->json($filters);
+    }
+
+    public function insumosJson(Request $request){
+        //Query para utilização dos filtros
+        $insumo_query = Insumo::query();
+        $insumos = $insumo_query->join('insumo_servico', 'insumo_servico.insumos_id','=','insumos.id')
+            ->join('servicos','servicos.id','=','insumo_servico.servicos_id')
             ->select([
                 'insumos.id',
-                'insumos.codigo',
+                'insumos.codigo as insumo_cod',
+                'insumos.unidade_sigla',
                 'insumos.nome as descricao',
                 'servicos.nome as servico',
-                'servicos.grupo_id',
-                DB::raw("'<a href=\"#\" class=\"btn btn-link\"><i class=\"fa fa-plus\" aria=\"hidden\"></i></a>' as `#`")
-            ])
-        ->paginate( $request->get('paginate',10) );
-        return $insumos;
+                'servicos.codigo as cod_servico',
+                'servicos.grupo_id'
+            ]);
+
+        if(isset($request->orderkey)){
+            $insumos->orderBy($request->orderkey, $request->order);
+        }
+
+        //Aplica filtro do Jhonatan
+
+        $insumos = CodeRepository::filter($insumos, $request->all());
+
+        return response()->json($insumos->paginate(10), 200);
+    }
+
+    public function insumosAdd(Request $request)
+    {
+        dd($request->all());
     }
 
     /**
@@ -193,9 +215,9 @@ class OrdemDeCompraController extends AppBaseController
      *
      * @return Render View
      */
-    public function obrasInsumos(Request $request)
+    public function obrasInsumos(Request $request, Planejamento $planejamento)
     {
-        $planejamento_id = $request->planejamento_id;
+        $planejamento_id = $planejamento->id;
         return view('ordem_de_compras.obras_insumos', compact('planejamento_id'));
     }
 
@@ -206,7 +228,7 @@ class OrdemDeCompraController extends AppBaseController
      * @return Json
      */
     public function obrasInsumosFilters(){
-        $filters = OrdemDeCompra::$filters_insumos;
+        $filters = OrdemDeCompra::$filters_obras_insumos;
         return response()->json($filters);
     }
 
@@ -219,12 +241,12 @@ class OrdemDeCompraController extends AppBaseController
      *
      * @return Json
      */
-    public function insumosJson(Request $request)
+    public function obrasInsumosJson(Request $request, Planejamento $planejamento)
     {
         //Pega a tarefa(planejamento)
         $planejamento_compras = DB::table('planejamento_compras')
             ->select('grupo_id','servico_id','codigo_insumo')
-            ->where('planejamento_compras.planejamento_id',$request->planejamento_id)
+            ->where('planejamento_compras.planejamento_id',$planejamento->id)
             ->get();
 
         //Criar arrays dos insumos do planejamento de compras por servicos grupos ou codigo do insumo
