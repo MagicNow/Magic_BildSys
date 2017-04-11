@@ -17,8 +17,8 @@
     </li>
 @endif
 
-<li class="{{ Request::is('import*') ? 'active' : '' }}">
-    <a href="{!! route('admin.import.index') !!}"><i class="glyphicon glyphicon-cloud-upload"></i><span>Importação</span></a>
+<li class="{{ Request::is('orcamento*') ? 'active' : '' }}">
+    <a href="{!! route('admin.orcamento.index') !!}"><i class="glyphicon glyphicon-cloud-upload"></i><span>Importação</span></a>
 </li>
 
 <li class="active treeview">

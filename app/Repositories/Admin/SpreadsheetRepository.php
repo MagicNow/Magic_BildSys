@@ -278,7 +278,7 @@ class SpreadsheetRepository
 
         $user = User::find($final['user_id']);
         if($user){
-            $user->notify(new PlanilhaProcessamento(['success'=>!count($mensagens_erro),'error'=>$mensagens_erro]));
+            $user->notify(new PlanilhaProcessamento(['success'=>!count($mensagens_erro),'error'=>array_unique($mensagens_erro)]));
         }
     }
 }

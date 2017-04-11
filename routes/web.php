@@ -46,11 +46,11 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         Route::get('/getForeignKey', 'Admin\CodesController@getForeignKey');
 
         #importação de planilhas dinâmicas
-        Route::get('import/', ['as'=> 'admin.import.index', 'uses' => 'Admin\ImportController@index']);
-        Route::post('import/importar', ['as'=> 'admin.import.importar', 'uses' => 'Admin\ImportController@import']);
-        Route::get('import/importar/checkIn', ['as'=> 'admin.import.checkIn', 'uses' => 'Admin\ImportController@checkIn']);
-        Route::post('import/importar/save', ['as'=> 'admin.import.save', 'uses' => 'Admin\ImportController@save']);
-        Route::get('import/importar/selecionaCampos', 'Admin\ImportController@selecionaCampos');
+        Route::get('orcamento/', ['as'=> 'admin.orcamento.index', 'uses' => 'Admin\OrcamentoController@index']);
+        Route::post('orcamento/importar', ['as'=> 'admin.orcamento.importar', 'uses' => 'Admin\OrcamentoController@import']);
+        Route::get('orcamento/importar/checkIn', ['as'=> 'admin.orcamento.checkIn', 'uses' => 'Admin\OrcamentoController@checkIn']);
+        Route::post('orcamento/importar/save', ['as'=> 'admin.orcamento.save', 'uses' => 'Admin\OrcamentoController@save']);
+        Route::get('orcamento/importar/selecionaCampos', 'Admin\OrcamentoController@selecionaCampos');
 
         # Verifica Notificações
         Route::post('verifyNotification', 'Admin\HomeController@verifyNotifications');

@@ -6,10 +6,10 @@
     </section>
     <div class="content">
         <div class="clearfix"></div>
-        @include('flash::message')
         <div class="box box-primary">
-            {!! Form::open(['route' => 'admin.import.importar', 'files'=>true]) !!}
-            <fieldset style="margin-top:10px;">
+            @include('flash::message')
+            {!! Form::open(['route' => 'admin.orcamento.importar', 'files'=>true]) !!}
+            <fieldset style="margin-top:10px; min-width: 1px;">
                 <div class="panel-body">
                     <div class="col-md-10">
                         <div class="form-group">

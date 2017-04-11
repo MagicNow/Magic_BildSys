@@ -19,7 +19,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Flash;
 
-class ImportController extends AppBaseController
+class OrcamentoController extends AppBaseController
 {
     /**
      * $obras = Buscando chave e valor para fazer o combobox da view
@@ -29,7 +29,7 @@ class ImportController extends AppBaseController
     public function index(){
         $obras = Obra::pluck('nome','id')->toArray();
         $orcamento_tipos = TipoOrcamento::pluck('nome','id')->toArray();
-        return view('admin.import.index', compact('orcamento_tipos','obras'));
+        return view('admin.orcamento.index', compact('orcamento_tipos','obras'));
     }
 
     /**
@@ -62,7 +62,7 @@ class ImportController extends AppBaseController
         \Session::put('retorno', $retorno);
         \Session::put('colunasbd', $colunasbd);
 
-        return redirect('/admin/import/importar/selecionaCampos');
+        return redirect('/admin/orcamento/importar/selecionaCampos');
     }
 
     /**
@@ -74,7 +74,7 @@ class ImportController extends AppBaseController
 
         $retorno = $request->session()->get('retorno');
         $colunasbd = $request->session()->get('colunasbd');
-        return view('admin.import.checkIn', compact('retorno','colunasbd'));
+        return view('admin.orcamento.checkIn', compact('retorno','colunasbd'));
     }
 
     /*
@@ -111,6 +111,6 @@ class ImportController extends AppBaseController
 
         # Mensagem que será exibida para o usuário avisando que a importação foi adicionada na fila e será processada.
         Flash::warning('Importação incluida na FILA. Ao concluir o processamento enviaremos um ALERTA!');
-        return redirect('admin/import');
+        return redirect('admin/orcamento');
     }
 }
