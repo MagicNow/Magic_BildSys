@@ -14,7 +14,7 @@ require('./bootstrap');
 
 // Vue.component('example', require('./components/Example.vue'));
 
-Vue.component('generic-grid',require('./components/generic-grid.vue'));
+// Vue.component('generic-grid',require('./components/generic-grid.vue'));
 
 Vue.component('generic-paginator',require('./components/generic-paginator.vue'));
 

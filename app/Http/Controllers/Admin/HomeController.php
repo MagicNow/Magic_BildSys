@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Notificacao;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 
@@ -25,5 +26,19 @@ class HomeController extends AppBaseController
     public function index()
     {
         return view('admin.home');
+    }
+
+    public static function verifyNotifications(){
+        $notifications = Notificacao::where('notifiable_id', '=', \Auth::user()->id)
+            ->whereNull('read_at')
+            ->get();
+
+        foreach($notifications as $notification){
+            $data = json_decode($notification->data);
+            foreach ($data as $key => $value) {
+                $notification[$key] = $value;
+            }
+        }
+        return $notifications;
     }
 }

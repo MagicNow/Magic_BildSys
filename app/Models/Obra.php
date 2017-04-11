@@ -13,7 +13,7 @@ class Obra extends Model
 {
 
     public $table = 'obras';
-    
+
 
 
     protected $dates = [];
@@ -30,7 +30,7 @@ class Obra extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'nome' => 'string',
+        'nome' => 'string'
     ];
 
     /**
@@ -39,7 +39,7 @@ class Obra extends Model
      * @var array
      */
     public static $rules = [
-        
+
     ];
 
 //    /**

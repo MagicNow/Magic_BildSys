@@ -13,5 +13,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(UserTableSeeder::class);
         $this->call(RolesAndPermissions::class);
+        $this->call(TipoOrcamentoTableSeeder::class);
+        $this->call(WorkflowTipoTableSeeder::class);
     }
 }
