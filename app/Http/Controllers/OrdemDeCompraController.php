@@ -38,9 +38,7 @@ class OrdemDeCompraController extends AppBaseController
      */
     public function index(OrdemDeCompraDataTable $ordemDeCompraDataTable)
     {
-        $filters = OrdemDeCompra::$filters;
-        
-        return $ordemDeCompraDataTable->render('ordem_de_compras.index', compact('filters'));
+        return $ordemDeCompraDataTable->render('ordem_de_compras.index');
     }
 
     /**
@@ -315,5 +313,10 @@ class OrdemDeCompraController extends AppBaseController
         );
     }
 
+    public function filterJsonOrdemCompra(){
+        $filters = OrdemDeCompra::$filters;
+
+        return response()->json($filters);
+    }
 }
 

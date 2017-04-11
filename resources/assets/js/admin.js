@@ -42,6 +42,7 @@ function addFilters(query_string) {
     var cb_filter_label = $('.cb_filter_label');
     var block_fields = $('#block_fields');
     var filters_add = false;
+    var msg = '';
 
     if(!query_string){
         query_string = [];
@@ -60,7 +61,6 @@ function addFilters(query_string) {
         </div>\
     </div>\
     ');
-
     for( i=0; i < cb_filter.length; i++ ) {
         if(cb_filter[i].checked) {
             if (cb_filter[i].value.split('-')[1] == 'integer') {
@@ -140,38 +140,8 @@ function addFilters(query_string) {
                 var value = cb_filter[i].value;
                 var row_foreign_key = "'row_" + cb_filter[i].value + "'";
 
-                $.ajax({
-                    url: "/admin/getForeignKey",
-                    data: {
-                        foreign_key: cb_filter[i].value.split('-')[0],
-                        model: cb_filter[i].value.split('-')[2],
-                        field_value: cb_filter[i].value.split('-')[3],
-                        field_key: cb_filter[i].value.split('-')[4]
-                    }
-                }).done(function (json) {
-                    if (json.success == true && json.foreign_key) {
-                        var options = '';
-                        $.each(json.foreign_key, function (index, value) {
-                            options += '<option value="' + index + '">' + value + '</option>';
-                        });
-
-                        block_fields.append('\
-                        <div class="form-group col-md-6 filter_added" style="width: 48.8%;">\
-                            <label>' + label + '</label>\
-                            <select v-model="filtrolist" class="form-control filters" id="' + value + '" onchange="addFilterFields(' + row_foreign_key + ', this.value, \'foreign_key\', this.id)">\
-                                <option value="">Selecione</option>' + options + '\
-                            </select>\
-                        </div>\
-                    ');
-
-                        var value_session_foreign_key = query_string[value] ? query_string[value] : '';
-
-                        $('#'+value).val(value_session_foreign_key);
-                        
-                        $('#block_fields_minimize').append('<label class="filter_added">' + label.replace(/\s+$/, '') + ':</label><span id="row_' + value + '" class="filter_added"> ' + document.getElementById(value).options[document.getElementById(value).selectedIndex].text + ' </span>');
-                        filters_add = true;
-                    }
-                });
+                foreign(label, value, row_foreign_key, cb_filter[i], query_string, block_fields);
+                filters_add = true;
 
             } else if (cb_filter[i].value.split('-')[1] == 'date') {
                 date = new Date();
@@ -257,10 +227,14 @@ function addFilters(query_string) {
         block_fields.removeClass('thumbnail');
         history.pushState("", document.title, '' + window.location.href.split("?")[0]);
     }
+
     addFilterFields();
+    addQuery();
 }
 
 function addFilterFields(target_id, value, type, element_id) {
+    var msg = '';
+
     if(type == 'integer'){
         var value_integer_option = document.getElementById(element_id+'_option').options[document.getElementById(element_id+'_option').selectedIndex].text;
         var value_integer_initial = $('#'+element_id).val();
@@ -300,18 +274,7 @@ function addFilterFields(target_id, value, type, element_id) {
     }else{
         $('#'+target_id).html(value+' ');
     }
-    
-    var filters_fields = $('.filters');
-    var filters = '';
-
-    for( i=0; i < filters_fields.length; i++ ) {
-        filters += ''+filters_fields[i].id+'='+filters_fields[i].value+'&';
-    }
-
-    filters = '?'+filters;
-    filters = filters.substring(0,(filters.length - 1));
-
-    history.pushState("", document.title, '' + filters);
+    addQuery();
 }
 
 function filterFieldInteger(value, what){
@@ -348,4 +311,54 @@ function verifyQueryString() {
         });
         addFilters(result);
     }
+}
+
+function foreign(label, value, row_foreign_key, cb_filter_i, query_string, block_fields){
+    $.ajax({
+        url: "/admin/getForeignKey",
+        data: {
+            foreign_key: cb_filter_i.value.split('-')[0],
+            model: cb_filter_i.value.split('-')[2],
+            field_value: cb_filter_i.value.split('-')[3],
+            field_key: cb_filter_i.value.split('-')[4]
+        }
+    }).done(function (json) {
+        if (json.success == true && json.foreign_key) {
+            var options = '';
+            $.each(json.foreign_key, function (index, value) {
+                options += '<option value="' + index + '">' + value + '</option>';
+            });
+
+            block_fields.append('\
+                        <div class="form-group col-md-6 filter_added" style="width: 48.8%;">\
+                            <label>' + label + '</label>\
+                            <select v-model="filtrolist" class="form-control filters" id="' + value + '" onchange="addFilterFields(' + row_foreign_key + ', this.value, \'foreign_key\', this.id)">\
+                                <option value="">Selecione</option>' + options + '\
+                            </select>\
+                        </div>\
+                    ');
+
+            var value_session_foreign_key = query_string[value] ? query_string[value] : '';
+
+            $('#'+value).val(value_session_foreign_key);
+
+            $('#block_fields_minimize').append('<label class="filter_added">' + label.replace(/\s+$/, '') + ':</label><span id="row_' + value + '" class="filter_added"> ' + document.getElementById(value).options[document.getElementById(value).selectedIndex].text + ' </span>');
+            filters_add = true;
+        }
+        addQuery();
+    });
+}
+
+function addQuery() {
+    var filters_fields = $('.filters');
+    var filters = '';
+    
+    for( i=0; i < filters_fields.length; i++ ) {
+        filters += ''+filters_fields[i].id+'='+filters_fields[i].value+'&';
+    }
+
+    filters = '?'+filters;
+    filters = filters.substring(0,(filters.length - 1));
+
+    history.pushState("", document.title, '' + filters);
 }
