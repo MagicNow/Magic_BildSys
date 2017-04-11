@@ -214,13 +214,15 @@ function addFilters(query_string) {
             }
         }
     }
-console.log(filters_add);
+
     if(!filters_add){
         $('#filters_add').remove();
         block_fields.removeClass('thumbnail');
         history.pushState("", document.title, '' + window.location.href.split("?")[0]);
     }
+
     addFilterFields();
+    addQuery();
 }
 
 function addFilterFields(target_id, value, type, element_id) {
@@ -265,18 +267,7 @@ function addFilterFields(target_id, value, type, element_id) {
     }else{
         $('#'+target_id).html(value+' ');
     }
-    
-    var filters_fields = $('.filters');
-    var filters = '';
-
-    for( i=0; i < filters_fields.length; i++ ) {
-        filters += ''+filters_fields[i].id+'='+filters_fields[i].value+'&';
-    }
-
-    filters = '?'+filters;
-    filters = filters.substring(0,(filters.length - 1));
-
-    history.pushState("", document.title, '' + filters);
+    addQuery();
 }
 
 function filterFieldInteger(value, what){
@@ -347,5 +338,20 @@ function foreign(label, value, row_foreign_key, cb_filter_i, query_string, block
 
             $('#block_fields_minimize').append('<label class="filter_added">' + label.replace(/\s+$/, '') + ':</label><span id="row_' + value + '" class="filter_added"> ' + document.getElementById(value).options[document.getElementById(value).selectedIndex].text + ' </span>');
         }
+        addQuery();
     });
+}
+
+function addQuery() {
+    var filters_fields = $('.filters');
+    var filters = '';
+    
+    for( i=0; i < filters_fields.length; i++ ) {
+        filters += ''+filters_fields[i].id+'='+filters_fields[i].value+'&';
+    }
+
+    filters = '?'+filters;
+    filters = filters.substring(0,(filters.length - 1));
+
+    history.pushState("", document.title, '' + filters);
 }
