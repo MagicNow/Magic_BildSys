@@ -62004,13 +62004,13 @@ function addFilters(query_string) {
                 <div class="row form-group col-md-12 filter_added">\
                     <div class="col-md-3">\
                     <label>' + cb_filter_label[i].innerHTML + '</label>\
-                        <input type="number" id="' + cb_filter[i].value + '" class="form-control filters" onkeyup="addFilterFields(' + row_integer + ', this.value, \'integer\', this.id)">\
+                        <input v-model="filtrolist" type="number" id="' + cb_filter[i].value + '" class="form-control filters" onkeyup="addFilterFields(' + row_integer + ', this.value, \'integer\', this.id)">\
                     </div>\
                     <div class="col-md-3" style="margin-top: 25px;">\
-                        <input type="number" id="' + cb_filter[i].value + '_final" name="' + cb_filter[i].value + '" class="form-control filters select_integer_' + cb_filter[i].value.split('-')[0] + '" onkeyup="addFilterFields(' + row_integer + ', this.value, \'integer\', this.name)">\
+                        <input v-model="filtrolist" type="number" id="' + cb_filter[i].value + '_final" name="' + cb_filter[i].value + '" class="form-control filters select_integer_' + cb_filter[i].value.split('-')[0] + '" onkeyup="addFilterFields(' + row_integer + ', this.value, \'integer\', this.name)">\
                     </div>\
                     <div class="col-md-6" style="margin-top: 25px;">\
-                        <select class="form-control filters" id="' + cb_filter[i].value + '_option" name="' + cb_filter[i].value + '" onchange="filterFieldInteger(this.value, ' + what + '); addFilterFields(' + row_integer + ', this.value, \'integer\', this.name)">\
+                        <select v-model="filtrolist" class="form-control filters" id="' + cb_filter[i].value + '_option" name="' + cb_filter[i].value + '" onchange="filterFieldInteger(this.value, ' + what + '); addFilterFields(' + row_integer + ', this.value, \'integer\', this.name)">\
                             <option value="between">Entre</option>\
                             <option value="bigger">Maior que</option>\
                             <option value="smaller">Menor que</option>\
@@ -62054,7 +62054,7 @@ function addFilters(query_string) {
                 block_fields.append('\
                 <div class="form-group col-md-6 filter_added" style="width: 48.8%;">\
                     <label>' + cb_filter_label[i].innerHTML + '</label>\
-                    <select class="form-control filters" id="' + cb_filter[i].value + '" onchange="addFilterFields(' + row_boolean + ', this.value, \'boolean\', this.id)">\
+                    <select v-model="filtrolist" class="form-control filters" id="' + cb_filter[i].value + '" onchange="addFilterFields(' + row_boolean + ', this.value, \'boolean\', this.id)">\
                         <option value="1">Sim</option>\
                         <option value="0">Não</option>\
                     </select>\
@@ -62089,10 +62089,10 @@ function addFilters(query_string) {
                 <div class="row form-group col-md-12 filter_added">\
                     <div class="col-md-6">\
                         <label>' + cb_filter_label[i].innerHTML + '</label>\
-                        <input type="date" value="' + date_actual + '" id="' + cb_filter[i].value + '_initial" name="' + cb_filter[i].value + '" class="form-control filters" onchange="addFilterFields(' + row_date + ', this.value, \'date\', this.name)">\
+                        <input v-model="filtrolist" type="date" value="' + date_actual + '" id="' + cb_filter[i].value + '_initial" name="' + cb_filter[i].value + '" class="form-control filters" onchange="addFilterFields(' + row_date + ', this.value, \'date\', this.name)">\
                     </div>\
                     <div class="col-md-6" style="margin-top: 25px;">\
-                        <input type="date" value="' + date_actual + '" id="' + cb_filter[i].value + '_final" name="' + cb_filter[i].value + '" class="form-control filters" onchange="addFilterFields(' + row_date + ', this.value, \'date\', this.name)">\
+                        <input v-model="filtrolist" type="date" value="' + date_actual + '" id="' + cb_filter[i].value + '_final" name="' + cb_filter[i].value + '" class="form-control filters" onchange="addFilterFields(' + row_date + ', this.value, \'date\', this.name)">\
                     </div>\
                 </div>\
             ');
@@ -62131,10 +62131,10 @@ function addFilters(query_string) {
                 <div class="row form-group col-md-12 filter_added">\
                     <div class="col-md-6">\
                         <label>' + cb_filter_label[i].innerHTML + '</label>\
-                        <input type="text" id="' + cb_filter[i].value + '" class="form-control filters" onkeyup="addFilterFields(' + row_string + ', this.value, \'string\')">\
+                        <input v-model="filtrolist" type="text" id="' + cb_filter[i].value + '" class="form-control filters" onkeyup="addFilterFields(' + row_string + ', this.value, \'string\')">\
                     </div>\
                     <div class="col-md-6" style="margin-top: 25px;">\
-                        <select class="form-control filters" id="' + cb_filter[i].value + '_option" onchange="addFilterFields()">\
+                        <select v-model="filtrolist" class="form-control filters" id="' + cb_filter[i].value + '_option" onchange="addFilterFields()">\
                             <option value="between">Entre</option>\
                             <option value="start">Começa com</option>\
                             <option value="end">Termina com</option>\
@@ -62255,28 +62255,28 @@ function foreign(label, value, row_foreign_key, cb_filter_i, query_string, block
             field_value: cb_filter_i.value.split('-')[3],
             field_key: cb_filter_i.value.split('-')[4]
         }
-    }).done(function (json){
+    }).done(function (json) {
         if (json.success == true && json.foreign_key) {
             var options = '';
-
             $.each(json.foreign_key, function (index, value) {
-                options += '<option value="' + index + '" selected>' + value + '</option>';
+                options += '<option value="' + index + '">' + value + '</option>';
             });
 
             block_fields.append('\
                         <div class="form-group col-md-6 filter_added" style="width: 48.8%;">\
                             <label>' + label + '</label>\
-                            <select class="form-control filters" id="' + value + '" onchange="addFilterFields(' + row_foreign_key + ', this.value, \'foreign_key\', this.id)">\
-                                ' + options + '\
+                            <select v-model="filtrolist" class="form-control filters" id="' + value + '" onchange="addFilterFields(' + row_foreign_key + ', this.value, \'foreign_key\', this.id)">\
+                                <option value="">Selecione</option>' + options + '\
                             </select>\
                         </div>\
                     ');
 
-            var value_session_foreign_key = query_string[value] ? query_string[value] : $("#"+value+" option:first").val();
+            var value_session_foreign_key = query_string[value] ? query_string[value] : '';
 
             $('#'+value).val(value_session_foreign_key);
 
             $('#block_fields_minimize').append('<label class="filter_added">' + label.replace(/\s+$/, '') + ':</label><span id="row_' + value + '" class="filter_added"> ' + document.getElementById(value).options[document.getElementById(value).selectedIndex].text + ' </span>');
+            filters_add = true;
         }
         addQuery();
     });

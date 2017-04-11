@@ -8,6 +8,8 @@ use App\Http\Requests\CreateOrdemDeCompraRequest;
 use App\Http\Requests\UpdateOrdemDeCompraRequest;
 use App\Models\Insumo;
 use App\Models\Grupo;
+use App\Repositories\CodeRepository;
+use function foo\func;
 use Illuminate\Pagination\Paginator;
 use App\Models\Obra;
 use App\Models\OrdemDeCompra;
@@ -36,9 +38,7 @@ class OrdemDeCompraController extends AppBaseController
      */
     public function index(OrdemDeCompraDataTable $ordemDeCompraDataTable)
     {
-        $filters = OrdemDeCompra::$filters;
-        
-        return $ordemDeCompraDataTable->render('ordem_de_compras.index', compact('filters'));
+        return $ordemDeCompraDataTable->render('ordem_de_compras.index');
     }
 
     /**
@@ -164,10 +164,6 @@ class OrdemDeCompraController extends AppBaseController
         return view('ordem_de_compras.compras', compact('obras'));
     }
 
-    public function obrasInsumos(Request $request)
-    {
-        return view('ordem_de_compras.obras_insumos');
-    }
 
     public function insumos(){
         return view('ordem_de_compras.insumos');
@@ -193,21 +189,47 @@ class OrdemDeCompraController extends AppBaseController
      *
      * @param  Request $request ->planejamento_id
      *
-     * @filters Request $request->grupo_id
+     * @return Render View
+     */
+    public function obrasInsumos(Request $request)
+    {
+        $planejamento_id = $request->planejamento_id;
+        return view('ordem_de_compras.obras_insumos', compact('planejamento_id'));
+    }
+
+    /**
+     * Método que retorna a lista de filtros aplicaveis a obras insumos.
      *
-     * @return Response
+     *
+     * @return Json
+     */
+    public function obrasInsumosFilters(){
+        $filters = OrdemDeCompra::$filters_insumos;
+        return response()->json($filters);
+    }
+
+    /**
+     * Método que retorna a lista de insumos de uma tarefa como json.
+     *
+     * @param  Request $request ->planejamento_id
+     *
+     * @filters obrasInsumosFilters()
+     *
+     * @return Json
      */
     public function insumosJson(Request $request)
     {
+        //Pega a tarefa(planejamento)
         $planejamento_compras = DB::table('planejamento_compras')
             ->select('grupo_id','servico_id','codigo_insumo')
             ->where('planejamento_compras.planejamento_id',$request->planejamento_id)
             ->get();
 
+        //Criar arrays dos insumos do planejamento de compras por servicos grupos ou codigo do insumo
         $servicos = array();
         $grupos = array();
         $codigo = array();
-
+        //Popula arrays
         foreach ($planejamento_compras as $planejamento)
         {
             $flag_cod = false;
@@ -227,40 +249,21 @@ class OrdemDeCompraController extends AppBaseController
             }
         }
 
-        $insumos_cod = Insumo::join('orcamentos','insumos.id','=','orcamentos.insumo_id')
-            ->whereIn('orcamentos.codigo_insumo',$codigo)
-            ->select([
-                'insumos.id',
-                'insumos.nome',
-                'insumos.unidade_sigla',
-                'insumos.codigo',
-                'orcamentos.grupo_id',
-                'orcamentos.servico_id',
-                'orcamentos.qtd_total',
-                'orcamentos.preco_total'
-            ]);
+        //Query para utilização dos filtros
+        $insumo_query = Insumo::query();
 
-
-
-        $insumos_servicos = Insumo::join('orcamentos','insumos.id','=','orcamentos.insumo_id')
-            ->whereIn('orcamentos.servico_id',$servicos)
-            ->select([
-                'insumos.id',
-                'insumos.nome',
-                'insumos.unidade_sigla',
-                'insumos.codigo',
-                'orcamentos.grupo_id',
-                'orcamentos.servico_id',
-                'orcamentos.qtd_total',
-                'orcamentos.preco_total'
-            ]);
-
-        if(isset($request->orderkey)){
-            $insumos = Insumo::join('orcamentos','insumos.id','=','orcamentos.insumo_id')
-                ->whereIn('orcamentos.grupo_id',$grupos,'or')
-                ->whereIn('orcamentos.subgrupo1_id',$grupos,'or')
-                ->whereIn('orcamentos.subgrupo2_id',$grupos,'or')
-                ->whereIn('orcamentos.subgrupo3_id',$grupos,'or')
+        //Testa a ordenação
+        if(isset($request->orderkey)) {
+            //Traz os resultados filtrados pelos arrays criados
+            $insumos = $insumo_query->join('orcamentos', 'insumos.id', '=', 'orcamentos.insumo_id')
+                ->where(function ($query) use($codigo, $grupos, $servicos) {
+                    $query->whereIn('orcamentos.codigo_insumo', $codigo, 'or')
+                        ->whereIn('orcamentos.servico_id', $servicos, 'or')
+                        ->whereIn('orcamentos.grupo_id', $grupos, 'or')
+                        ->whereIn('orcamentos.subgrupo1_id', $grupos, 'or')
+                        ->whereIn('orcamentos.subgrupo2_id', $grupos, 'or')
+                        ->whereIn('orcamentos.subgrupo3_id', $grupos, 'or');
+                })
                 ->select([
                     'insumos.id',
                     'insumos.nome',
@@ -270,17 +273,18 @@ class OrdemDeCompraController extends AppBaseController
                     'orcamentos.servico_id',
                     'orcamentos.qtd_total',
                     'orcamentos.preco_total'
-                ])
-                ->union($insumos_cod)
-                ->union($insumos_servicos)
-                ->orderBy($request->orderkey, $request->order)
-                ->get();
+                ])->orderBy($request->orderkey, $request->order);
         }else{
-            $insumos = Insumo::join('orcamentos','insumos.id','=','orcamentos.insumo_id')
-                ->whereIn('orcamentos.grupo_id',$grupos,'or')
-                ->whereIn('orcamentos.subgrupo1_id',$grupos,'or')
-                ->whereIn('orcamentos.subgrupo2_id',$grupos,'or')
-                ->whereIn('orcamentos.subgrupo3_id',$grupos,'or')
+            //Traz os resultados filtrados pelos arrays criados
+            $insumos = $insumo_query->join('orcamentos', 'insumos.id', '=', 'orcamentos.insumo_id')
+                ->where(function ($query) use($codigo, $grupos, $servicos) {
+                    $query->whereIn('orcamentos.codigo_insumo', $codigo, 'or')
+                        ->whereIn('orcamentos.servico_id', $servicos, 'or')
+                        ->whereIn('orcamentos.grupo_id', $grupos, 'or')
+                        ->whereIn('orcamentos.subgrupo1_id', $grupos, 'or')
+                        ->whereIn('orcamentos.subgrupo2_id', $grupos, 'or')
+                        ->whereIn('orcamentos.subgrupo3_id', $grupos, 'or');
+                })
                 ->select([
                     'insumos.id',
                     'insumos.nome',
@@ -290,16 +294,15 @@ class OrdemDeCompraController extends AppBaseController
                     'orcamentos.servico_id',
                     'orcamentos.qtd_total',
                     'orcamentos.preco_total'
-                ])
-                ->union($insumos_cod)
-                ->union($insumos_servicos)
-                ->get();
+                ]);
         }
+        //Aplica filtro do Jhonatan
+        $insumos = CodeRepository::filter($insumos, $request->all());
 
-        $insumos =$this->paginate($insumos,10);
-        return response()->json($insumos, 200);
+        return response()->json($insumos->paginate(10), 200);
     }
 
+    //Metodo de paginacao manual caso necessario
     protected function paginate($items, $perPage = 12){
         $currentPage = \Illuminate\Pagination\LengthAwarePaginator::resolveCurrentPage();
         $currentPageItems = $items->slice(($currentPage - 1) * $perPage, $perPage, true);
@@ -310,5 +313,10 @@ class OrdemDeCompraController extends AppBaseController
         );
     }
 
+    public function filterJsonOrdemCompra(){
+        $filters = OrdemDeCompra::$filters;
+
+        return response()->json($filters);
+    }
 }
 
