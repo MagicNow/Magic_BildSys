@@ -18,9 +18,6 @@ Vue.component('generic-grid',require('./components/generic-grid.vue'));
 
 Vue.component('generic-paginator',require('./components/generic-paginator.vue'));
 
-Vue.component('tabela',require('./components/tabela.vue'));
+import Tabela from './components/tabela.vue'
 
-
-const app = new Vue({
-    el: '#app',
-});
+Vue.component('tabela', Tabela);

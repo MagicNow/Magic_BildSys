@@ -825,12 +825,87 @@ module.exports = __vue_exports__
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ exports["default"] = {
     props: {
         apiUrl: {
             required: true
         },
+        apiFiltros:'',
         params: {
             type: Object
         },
@@ -852,6 +927,7 @@ module.exports = __vue_exports__
             dados: [],
             success: '',
             error: '',
+            filtros: [],
             pagination: {
                 type: Object
             },
@@ -864,42 +940,48 @@ module.exports = __vue_exports__
             order: 'asc'
         }
     },
-    computed: {
-
-    },
     methods: {
+        //Método da action aprovar onClick
         aprovar: function(id){
 
         },
+        //Método da action adicionar onClick
+        adicionar: function(id){
+
+        },
+        //Método da action reprovar onClick
         reprovar: function (id) {
 
         },
+        //Mètodo de ordenação de tabela
         sortTable: function(item){
+            Array.prototype.getIndexBy = function (name, value) {
+                var this$1 = this;
+
+                for (var i = 0; i < this.length; i++) {
+                    if (this$1[i][name] == value) {
+                        return i;
+                    }
+                }
+                return -1;
+            }
             if(this.order.localeCompare('desc')==0 || this.order.localeCompare('')==0){
                 this.order = 'asc';
             }else{
                 this.order = 'desc';
             }
-
-            if (typeof this.colunas[0] == 'undefined' || this.colunas[0].length == 0) {
-
+            if (typeof this.colunas == 'undefined' || this.colunas[0].length == 0) {
+                this.params.orderkey = item;
+                this.params.order= this.order;
+                this.loadData();
             }else{
-                Array.prototype.getIndexBy = function (name, value) {
-                    var this$1 = this;
-
-                    for (var i = 0; i < this.length; i++) {
-                        if (this$1[i][name] == value) {
-                            return i;
-                        }
-                    }
-                    return -1;
-                }
                 var a = this.colunas[this.colunas.getIndexBy("label", item)]
                 this.params.orderkey = a.campo_db;
                 this.params.order= this.order;
                 this.loadData();
             }
         },
+        //Método para preencher a header da table e para criar array de chaves
         getHeader: function () {
             var this$1 = this;
 
@@ -909,10 +991,13 @@ module.exports = __vue_exports__
                     this$1.chaves.push(this$1.colunas[j].campo_db)
                 }
             } else {
-                this.head = Object.keys(this.dados[0]);
-                this.chaves = Object.keys(this.dados[0]);
+                if(this.dados.length >0){
+                    this.head = Object.keys(this.dados[0]);
+                    this.chaves = Object.keys(this.dados[0]);
+                }
             }
         },
+        //Método auxiliar de pegar parametro único da url
         getParameterByName: function (name, url) {
             if (!url) {
                 url = window.location.href;
@@ -924,25 +1009,35 @@ module.exports = __vue_exports__
             if (!results[2]) return '';
             return decodeURIComponent(results[2].replace(/\+/g, " "));
         },
+        //Método auxiliar de pegar todos parametros da url
         getParametersUrl: function(){
             var this$1 = this;
 
             var search = window.location.href.substr(window.location.href.indexOf("?") + 1);
-            search = search?JSON.parse('{"' + search.replace(/&/g, '","').replace(/=/g,'":"') + '"}',
-                function(key, value) { return key===""?value:decodeURIComponent(value) }):{}
-
-            for (var key in search) {
-                this$1.params[key] = search[key];
+            if(search.indexOf('http') === -1){
+                search = search?JSON.parse('{"' + search.replace(/&/g, '","').replace(/=/g,'":"') + '"}',
+                    function(key, value) { return key===""?value:decodeURIComponent(value) }):{}
+                for (var key in search) {
+                    this$1.params[key] = search[key];
+                }
             }
-            console.log(this.params);
         },
+        //Carrega os filtros disponiveis (linkado com o filtro do jhonatan)
+        loadFilters: function () {
+            this.$http.get(this.apiFiltros)
+                .then(function (resp) {
+                    if(typeof resp.body == 'object'){
+                        this.filtros = resp.body;
+                    }
+            })
+        },
+        //Faz a requisição dos dados e também funciona como callback do generic pagination
         loadData: function () {
             this.getParametersUrl();
             this.params.paginate = this.pagination.per_page;
             this.params.page = this.pagination.current_page;
             this.success = '';
             this.error = '';
-            startLoading();
             this.$http.get(this.apiUrl, {
                 params: this.params
             }).then(function (resp) {
@@ -960,11 +1055,24 @@ module.exports = __vue_exports__
                         this.getHeader();
                     }
                 }
+                //Para animação loader
                 stopLoading();
             });
         },
     },
     created: function () {
+        //Inicia Animação
+        startLoading();
+        //Bind dos filtros
+        $('body').on('change','.filter_added',function () {
+            this.loadData();
+        }.bind(this));
+        $('body').on('keyup','.filter_added',function () {
+            this.loadData();
+        }.bind(this));
+
+        //Inicia mètodos principais
+        this.loadFilters();
         this.loadData();
     }
 };
@@ -993,7 +1101,7 @@ exports = module.exports = __webpack_require__(0)();
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -18146,7 +18254,51 @@ if (false) {
 /***/ function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', [_c('div'), _vm._v(" "), _c('table', {
+  return _c('div', [(_vm.actions.filtros != undefined) ? _c('div', [_c('div', {
+    staticClass: "col-md-12",
+    staticStyle: {
+      "margin-bottom": "20px"
+    },
+    attrs: {
+      "id": "block_fields"
+    }
+  }), _vm._v(" "), _vm._m(0), _vm._v(" "), _c('div', {
+    staticClass: "modal fade",
+    attrs: {
+      "id": "myModal",
+      "tabindex": "-1",
+      "role": "dialog",
+      "aria-labelledby": "myModalLabel"
+    }
+  }, [_c('div', {
+    staticClass: "modal-dialog",
+    attrs: {
+      "role": "document"
+    }
+  }, [_c('div', {
+    staticClass: "modal-content"
+  }, [_vm._m(1), _vm._v(" "), _c('div', {
+    staticClass: "modal-body"
+  }, _vm._l((_vm.filtros), function(filtro, campo) {
+    return _c('p', [_c('input', {
+      staticClass: "cb_filter",
+      attrs: {
+        "type": "checkbox",
+        "id": 'check_' + campo
+      },
+      domProps: {
+        "value": campo
+      }
+    }), _vm._v(" "), _c('label', {
+      staticClass: "cb_filter_label",
+      staticStyle: {
+        "cursor": "pointer"
+      },
+      attrs: {
+        "for": 'check_' + campo
+      }
+    }, [_vm._v("\n                                " + _vm._s(filtro) + "\n                            ")])])
+  })), _vm._v(" "), _vm._m(2)])])]), _vm._v(" "), _vm._m(3)]) : _vm._e(), _vm._v(" "), (_vm.dados.length > 0) ? _c('div', [_c('table', {
     staticClass: "table"
   }, [_c('thead', {
     staticClass: "head-table"
@@ -18158,7 +18310,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
           _vm.sortTable(item)
         }
       }
-    }, [_vm._v("\n                " + _vm._s(item) + "\n                "), (_vm.order == 'asc') ? _c('span', [_c('i', {
+    }, [_vm._v("\n                    " + _vm._s(item) + "\n                    "), (_vm.order == 'asc') ? _c('span', [_c('i', {
       staticClass: "fa fa-chevron-down",
       attrs: {
         "aria-hidden": "true"
@@ -18179,7 +18331,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "row-table"
   }, [_vm._v("Reprovar")]) : _vm._e(), _vm._v(" "), (_vm.actions.troca != undefined) ? _c('th', {
     staticClass: "row-table"
-  }, [_vm._v("Troca")]) : _vm._e()], 2)]), _vm._v(" "), _c('tbody', _vm._l((_vm.dados), function(dado) {
+  }, [_vm._v("Troca")]) : _vm._e(), _vm._v(" "), (_vm.actions.adicionar != undefined) ? _c('th', {
+    staticClass: "row-table"
+  }, [_vm._v("Adicionar")]) : _vm._e()], 2)]), _vm._v(" "), _c('tbody', _vm._l((_vm.dados), function(dado) {
     return _c('tr', [_vm._l((_vm.chaves), function(chave) {
       return _c('td', {
         staticClass: "row-table"
@@ -18222,6 +18376,15 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       staticClass: "row-table"
     }, [_c('i', {
       staticClass: "fa fa-exchange grey"
+    })]) : _vm._e(), _vm._v(" "), (_vm.actions.adicionar != undefined) ? _c('td', {
+      staticClass: "row-table",
+      on: {
+        "click": function($event) {
+          _vm.adicionar(dado['id'])
+        }
+      }
+    }, [_c('i', {
+      staticClass: "fa fa-plus grey"
     })]) : _vm._e()], 2)
   }))]), _vm._v(" "), _c('div', {
     staticClass: "text-center"
@@ -18231,8 +18394,124 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "callback": _vm.loadData,
       "options": _vm.paginationOptions
     }
-  })], 1)])
-},staticRenderFns: []}
+  })], 1)]) : _c('div', [_vm._v("\n        Não há dados\n    ")])])
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "col-md-12 thumbnail",
+    staticStyle: {
+      "margin-bottom": "20px",
+      "display": "none"
+    },
+    attrs: {
+      "id": "block_fields_thumbnail"
+    }
+  }, [_c('div', {
+    staticClass: "col-md-11",
+    attrs: {
+      "id": "block_fields_minimize"
+    }
+  }), _vm._v(" "), _c('div', {
+    staticClass: "col-md-1"
+  }, [_c('button', {
+    staticClass: "btn btn-default",
+    attrs: {
+      "type": "button",
+      "onclick": "maximizeFilters();"
+    }
+  }, [_c('span', {
+    staticClass: "glyphicon glyphicon-plus",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  })])])])
+},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "modal-header"
+  }, [_c('button', {
+    staticClass: "close",
+    attrs: {
+      "type": "button",
+      "data-dismiss": "modal",
+      "aria-label": "Close"
+    }
+  }, [_c('span', {
+    attrs: {
+      "aria-hidden": "true"
+    }
+  }, [_vm._v("×")])]), _vm._v(" "), _c('h4', {
+    staticClass: "modal-title",
+    attrs: {
+      "id": "myModalLabel"
+    }
+  }, [_vm._v("Adicionar filtros")])])
+},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "modal-footer"
+  }, [_c('button', {
+    staticClass: "btn btn-danger",
+    attrs: {
+      "type": "button",
+      "data-dismiss": "modal"
+    }
+  }, [_vm._v("Cancelar")]), _vm._v(" "), _c('button', {
+    staticClass: "btn btn-primary",
+    attrs: {
+      "type": "button",
+      "data-dismiss": "modal",
+      "onclick": "addFilters()"
+    }
+  }, [_vm._v("Adicionar")])])
+},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('ol', {
+    staticClass: "breadcrumb",
+    staticStyle: {
+      "margin-bottom": "0px"
+    }
+  }, [_c('li', {
+    staticClass: "col-md-6"
+  }, [_c('a', {
+    attrs: {
+      "href": "#"
+    }
+  }, [_c('i', {
+    staticClass: "fa fa-search",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  }), _vm._v(" Procurar")])]), _vm._v(" "), _c('li', [_c('a', {
+    attrs: {
+      "href": "#"
+    }
+  }, [_vm._v("Hoje")])]), _vm._v(" "), _c('li', [_c('a', {
+    attrs: {
+      "href": "#"
+    }
+  }, [_vm._v("7 dias")])]), _vm._v(" "), _c('li', [_c('a', {
+    attrs: {
+      "href": "#"
+    }
+  }, [_vm._v("15 dias")])]), _vm._v(" "), _c('li', [_c('a', {
+    attrs: {
+      "href": "#"
+    }
+  }, [_vm._v("30 dias")])]), _vm._v(" "), _c('li', [_c('a', {
+    attrs: {
+      "href": "#"
+    }
+  }, [_vm._v("Outro periodo")])]), _vm._v(" "), _c('li', [_c('a', {
+    staticClass: "grey",
+    attrs: {
+      "href": "",
+      "data-toggle": "modal",
+      "data-target": "#myModal"
+    }
+  }, [_vm._v("\n                    Adicionar filtros "), _c('i', {
+    staticClass: "fa fa-filter",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  })])])])
+}]}
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
@@ -29310,6 +29589,12 @@ module.exports = function(module) {
 "use strict";
 'use strict';
 
+var _tabela = __webpack_require__(6);
+
+var _tabela2 = _interopRequireDefault(_tabela);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 /**
  * First we will load all of this project's JavaScript dependencies which
  * include Vue and Vue Resource. This gives a great starting point for
@@ -29329,11 +29614,7 @@ Vue.component('generic-grid', __webpack_require__(4));
 
 Vue.component('generic-paginator', __webpack_require__(5));
 
-Vue.component('tabela', __webpack_require__(6));
-
-var app = new Vue({
-  el: '#app'
-});
+Vue.component('tabela', _tabela2.default);
 
 /***/ }
 /******/ ]);

@@ -22,10 +22,11 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('/', 'HomeController@index');
     $router->get('/home', 'HomeController@index');
 
-    $router->resource('ordemDeCompras', 'OrdemDeCompraController');
+    $router->resource('ordens-de-compras', 'OrdemDeCompraController');
 
     $router->get('compras', 'OrdemDeCompraController@compras');
     $router->get('obras_insumos', 'OrdemDeCompraController@obrasInsumos');
+    $router->get('obras_insumos_filter', 'OrdemDeCompraController@obrasInsumosFilters');
     $router->get('insumos_json', 'OrdemDeCompraController@insumosJson');
 
     $router->get('planejamentos/lembretes', 'PlanejamentoController@lembretes');
@@ -35,10 +36,8 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         Route::get('/', 'Admin\HomeController@index');
 
         Route::resource('users', 'Admin\UserController');
-
-        Route::get('/putsession', 'Admin\CodesController@putSession');
-        Route::get('/checksession', 'Admin\CodesController@checkSession');
-        Route::get('/getForeignKey', 'Admin\CodesController@getForeignKey');
+        
+        Route::get('/getForeignKey', 'CodesController@getForeignKey');
 
         $router->group(['middleware' => 'needsPermission:users.list'], function() use ($router) {
             #Manage ACL

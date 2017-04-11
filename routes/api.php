@@ -37,9 +37,7 @@ Route::post('permissions/store', [
 ]);
 
 // OrdemDeCompras
-Route::get('listagem-ordem-de-compras', [
-    'uses' => 'ListagemOCController@index'
-]);
+Route::get('/listagem-ordens-de-compras', 'ListagemOCController@index');
 
 Route::post('users', 'UsersController@index');
 Route::post('users/{id}', 'UsersController@show');

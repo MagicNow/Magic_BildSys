@@ -26,45 +26,23 @@ $(function () {
 });
 
 $(function () {
-    putSession();
-    checkSession();
+   verifyQueryString();
 });
 var oTable = null;
 
-function putSession(filters) {
-    var initial_date = $('#initial_date').val();
-    var final_date = $('#final_date').val();
-    var filters_json = null;
-    if(filters){
-        filters_json = JSON.parse(JSON.stringify(eval("(" + filters + ")")));
-    }
-
-    $.ajax({
-        url: "/admin/putsession",
-        data: {
-            'initial_date' : initial_date,
-            'final_date' : final_date,
-            'filters' : filters_json
-        }
-    }).done(function (json) {
-        if(json.success){
-            $("#dataTableBuilder").DataTable().draw();
-        }
-    });
-}
-
-function addFilters(filters_session) {
+function addFilters(query_string) {
     var cb_filter = $('.cb_filter');
     var cb_filter_label = $('.cb_filter_label');
     var block_fields = $('#block_fields');
-    
-    if(!filters_session){
-        filters_session = [];
+    var filters_add = false;
+
+    if(!query_string){
+        query_string = [];
     }
     $('.filter_added').remove();
-    
+
     block_fields.addClass('thumbnail').append('\
-    <div class="col-md-12 page-header filter_added">\
+    <div class="col-md-12 page-header filter_added" id="filters_add">\
             <div class="col-md-11">\
             <h2>Filtros</h2>\
         </div>\
@@ -75,7 +53,7 @@ function addFilters(filters_session) {
         </div>\
     </div>\
     ');
-    
+
     for( i=0; i < cb_filter.length; i++ ) {
         if(cb_filter[i].checked) {
             if (cb_filter[i].value.split('-')[1] == 'integer') {
@@ -86,13 +64,13 @@ function addFilters(filters_session) {
                 <div class="row form-group col-md-12 filter_added">\
                     <div class="col-md-3">\
                     <label>' + cb_filter_label[i].innerHTML + '</label>\
-                        <input type="number" id="' + cb_filter[i].value + '" class="form-control filters" onkeyup="addFilterFields(' + row_integer + ', this.value, \'integer\', this.id)">\
+                        <input v-model="filtrolist" type="number" id="' + cb_filter[i].value + '" class="form-control filters" onkeyup="addFilterFields(' + row_integer + ', this.value, \'integer\', this.id)">\
                     </div>\
                     <div class="col-md-3" style="margin-top: 25px;">\
-                        <input type="number" id="' + cb_filter[i].value + '_final" name="' + cb_filter[i].value + '" class="form-control filters select_integer_' + cb_filter[i].value.split('-')[0] + '" onkeyup="addFilterFields(' + row_integer + ', this.value, \'integer\', this.name)">\
+                        <input v-model="filtrolist" type="number" id="' + cb_filter[i].value + '_final" name="' + cb_filter[i].value + '" class="form-control filters select_integer_' + cb_filter[i].value.split('-')[0] + '" onkeyup="addFilterFields(' + row_integer + ', this.value, \'integer\', this.name)">\
                     </div>\
                     <div class="col-md-6" style="margin-top: 25px;">\
-                        <select class="form-control filters" id="' + cb_filter[i].value + '_option" name="' + cb_filter[i].value + '" onchange="filterFieldInteger(this.value, ' + what + '); addFilterFields(' + row_integer + ', this.value, \'integer\', this.name)">\
+                        <select v-model="filtrolist" class="form-control filters" id="' + cb_filter[i].value + '_option" name="' + cb_filter[i].value + '" onchange="filterFieldInteger(this.value, ' + what + '); addFilterFields(' + row_integer + ', this.value, \'integer\', this.name)">\
                             <option value="between">Entre</option>\
                             <option value="bigger">Maior que</option>\
                             <option value="smaller">Menor que</option>\
@@ -104,9 +82,9 @@ function addFilters(filters_session) {
                 </div>\
             ');
 
-                var value_session_integer = filters_session[cb_filter[i].value] ? filters_session[cb_filter[i].value] : '';
-                var value_session_integer_final = filters_session[cb_filter[i].value+'_final'] ? filters_session[cb_filter[i].value+'_final'] : '';
-                var value_session_integer_option = filters_session[cb_filter[i].value+'_option'] ? filters_session[cb_filter[i].value+'_option'] : 'between';
+                var value_session_integer = query_string[cb_filter[i].value] ? query_string[cb_filter[i].value] : '';
+                var value_session_integer_final = query_string[cb_filter[i].value+'_final'] ? query_string[cb_filter[i].value+'_final'] : '';
+                var value_session_integer_option = query_string[cb_filter[i].value+'_option'] ? query_string[cb_filter[i].value+'_option'] : 'between';
 
                 $('#'+cb_filter[i].value).val(value_session_integer);
                 $('#'+cb_filter[i].value+'_final').val(value_session_integer_final);
@@ -129,24 +107,26 @@ function addFilters(filters_session) {
                 }
 
                 $('#block_fields_minimize').append('<label class="filter_added">' + cb_filter_label[i].innerHTML.replace(/\s+$/, '') + ':</label><span id="row_' + cb_filter[i].value + '" class="filter_added"> ' + msg + ' </span>');
+                filters_add = true;
             } else if (cb_filter[i].value.split('-')[1] == 'boolean') {
                 var row_boolean = "'row_" + cb_filter[i].value + "'";
 
                 block_fields.append('\
                 <div class="form-group col-md-6 filter_added" style="width: 48.8%;">\
                     <label>' + cb_filter_label[i].innerHTML + '</label>\
-                    <select class="form-control filters" id="' + cb_filter[i].value + '" onchange="addFilterFields(' + row_boolean + ', this.value, \'boolean\', this.id)">\
+                    <select v-model="filtrolist" class="form-control filters" id="' + cb_filter[i].value + '" onchange="addFilterFields(' + row_boolean + ', this.value, \'boolean\', this.id)">\
                         <option value="1">Sim</option>\
                         <option value="0">Não</option>\
                     </select>\
                 </div>\
             ');
 
-                var value_session_boolean = filters_session[cb_filter[i].value] ? filters_session[cb_filter[i].value] : 1;
+                var value_session_boolean = query_string[cb_filter[i].value] ? query_string[cb_filter[i].value] : 1;
 
                 $('#'+cb_filter[i].value).val(value_session_boolean);
 
                 $('#block_fields_minimize').append('<label class="filter_added">' + cb_filter_label[i].innerHTML.replace(/\s+$/, '') + ':</label><span id="row_' + cb_filter[i].value + '" class="filter_added"> ' + document.getElementById(cb_filter[i].value).options[document.getElementById(cb_filter[i].value).selectedIndex].text + ' </span>');
+                filters_add = true;
 
             } else if (cb_filter[i].value.split('-')[1] == 'foreign_key') {
                 var label = cb_filter_label[i].innerHTML;
@@ -171,17 +151,18 @@ function addFilters(filters_session) {
                         block_fields.append('\
                         <div class="form-group col-md-6 filter_added" style="width: 48.8%;">\
                             <label>' + label + '</label>\
-                            <select class="form-control filters" id="' + value + '" onchange="addFilterFields(' + row_foreign_key + ', this.value, \'foreign_key\', this.id)">\
+                            <select v-model="filtrolist" class="form-control filters" id="' + value + '" onchange="addFilterFields(' + row_foreign_key + ', this.value, \'foreign_key\', this.id)">\
                                 <option value="">Selecione</option>' + options + '\
                             </select>\
                         </div>\
                     ');
 
-                        var value_session_foreign_key = filters_session[value] ? filters_session[value] : '';
+                        var value_session_foreign_key = query_string[value] ? query_string[value] : '';
 
                         $('#'+value).val(value_session_foreign_key);
                         
                         $('#block_fields_minimize').append('<label class="filter_added">' + label.replace(/\s+$/, '') + ':</label><span id="row_' + value + '" class="filter_added"> ' + document.getElementById(value).options[document.getElementById(value).selectedIndex].text + ' </span>');
+                        filters_add = true;
                     }
                 });
 
@@ -198,16 +179,16 @@ function addFilters(filters_session) {
                 <div class="row form-group col-md-12 filter_added">\
                     <div class="col-md-6">\
                         <label>' + cb_filter_label[i].innerHTML + '</label>\
-                        <input type="date" value="' + date_actual + '" id="' + cb_filter[i].value + '_initial" name="' + cb_filter[i].value + '" class="form-control filters" onchange="addFilterFields(' + row_date + ', this.value, \'date\', this.name)">\
+                        <input v-model="filtrolist" type="date" value="' + date_actual + '" id="' + cb_filter[i].value + '_initial" name="' + cb_filter[i].value + '" class="form-control filters" onchange="addFilterFields(' + row_date + ', this.value, \'date\', this.name)">\
                     </div>\
                     <div class="col-md-6" style="margin-top: 25px;">\
-                        <input type="date" value="' + date_actual + '" id="' + cb_filter[i].value + '_final" name="' + cb_filter[i].value + '" class="form-control filters" onchange="addFilterFields(' + row_date + ', this.value, \'date\', this.name)">\
+                        <input v-model="filtrolist" type="date" value="' + date_actual + '" id="' + cb_filter[i].value + '_final" name="' + cb_filter[i].value + '" class="form-control filters" onchange="addFilterFields(' + row_date + ', this.value, \'date\', this.name)">\
                     </div>\
                 </div>\
             ');
 
-                var value_session_date_initial = filters_session[cb_filter[i].value+'_initial'] ? filters_session[cb_filter[i].value+'_initial'] : date_actual;
-                var value_session_date_final = filters_session[cb_filter[i].value+'_final'] ? filters_session[cb_filter[i].value+'_final'] : date_actual;
+                var value_session_date_initial = query_string[cb_filter[i].value+'_initial'] ? query_string[cb_filter[i].value+'_initial'] : date_actual;
+                var value_session_date_final = query_string[cb_filter[i].value+'_final'] ? query_string[cb_filter[i].value+'_final'] : date_actual;
 
                 $('#'+cb_filter[i].value+'_initial').val(value_session_date_initial);
                 $('#'+cb_filter[i].value+'_final').val(value_session_date_final);
@@ -231,6 +212,7 @@ function addFilters(filters_session) {
                 }
 
                 $('#block_fields_minimize').append('<label class="filter_added">' + cb_filter_label[i].innerHTML.replace(/\s+$/, '') + ':</label><span id="row_' + cb_filter[i].value + '" class="filter_added"> ' + msg + ' </span>');
+                filters_add = true;
 
             } else {
                 var row_string = "'row_" + cb_filter[i].value + "'";
@@ -239,10 +221,10 @@ function addFilters(filters_session) {
                 <div class="row form-group col-md-12 filter_added">\
                     <div class="col-md-6">\
                         <label>' + cb_filter_label[i].innerHTML + '</label>\
-                        <input type="text" id="' + cb_filter[i].value + '" class="form-control filters" onkeyup="addFilterFields(' + row_string + ', this.value, \'string\')">\
+                        <input v-model="filtrolist" type="text" id="' + cb_filter[i].value + '" class="form-control filters" onkeyup="addFilterFields(' + row_string + ', this.value, \'string\')">\
                     </div>\
                     <div class="col-md-6" style="margin-top: 25px;">\
-                        <select class="form-control filters" id="' + cb_filter[i].value + '_option" onchange="addFilterFields()">\
+                        <select v-model="filtrolist" class="form-control filters" id="' + cb_filter[i].value + '_option" onchange="addFilterFields()">\
                             <option value="between">Entre</option>\
                             <option value="start">Começa com</option>\
                             <option value="end">Termina com</option>\
@@ -251,24 +233,22 @@ function addFilters(filters_session) {
                 </div>\
             ');
 
-                var value_session_string = filters_session[cb_filter[i].value] ? filters_session[cb_filter[i].value] : '';
-                var value_session_string_option = filters_session[cb_filter[i].value+'_option'] ? filters_session[cb_filter[i].value+'_option'] : 'between';
+                var value_session_string = query_string[cb_filter[i].value] ? query_string[cb_filter[i].value] : '';
+                var value_session_string_option = query_string[cb_filter[i].value+'_option'] ? query_string[cb_filter[i].value+'_option'] : 'between';
                 
                 $('#'+cb_filter[i].value).val(value_session_string);
                 $('#'+cb_filter[i].value+'_option').val(value_session_string_option);
 
                 $('#block_fields_minimize').append('<label class="filter_added">' + cb_filter_label[i].innerHTML.replace(/\s+$/, '') + ':</label><span id="row_' + cb_filter[i].value + '" class="filter_added"> ' + value_session_string + ' </span>');
+                filters_add = true;
             }
         }
     }
-    addFilterFields();
-}
 
-function filterFieldInteger(value, what){
-    if(value == 'between'){
-        $('.'+what).css('display', '').val('');
-    }else{
-        $('.'+what).css('display', 'none').val('');
+    if(!filters_add){
+        $('#filters_add').remove();
+        block_fields.removeClass('thumbnail');
+        history.pushState("", document.title, '' + window.location.href.split("?")[0]);
     }
     addFilterFields();
 }
@@ -316,15 +296,26 @@ function addFilterFields(target_id, value, type, element_id) {
     
     var filters_fields = $('.filters');
     var filters = '';
-    
+
     for( i=0; i < filters_fields.length; i++ ) {
-        filters += '"'+filters_fields[i].id+'" : "'+filters_fields[i].value+'",';
+        filters += ''+filters_fields[i].id+'='+filters_fields[i].value+'&';
     }
 
-    filters = '{'+filters+'}';
+    filters = '?'+filters;
+    filters = filters.substring(0,(filters.length - 1));
 
-    putSession(filters);
+    history.pushState("", document.title, '' + filters);
 }
+
+function filterFieldInteger(value, what){
+    if(value == 'between'){
+        $('.'+what).css('display', '').val('');
+    }else{
+        $('.'+what).css('display', 'none').val('');
+    }
+    addFilterFields();
+}
+
 
 function minimizeFilters() {
     $('#block_fields_thumbnail').css('display', '');
@@ -336,16 +327,18 @@ function maximizeFilters() {
     $('#block_fields').toggle('slow');
 }
 
-function checkSession() {
-    $.ajax({
-        url: "/admin/checksession"
-    }).done(function (json) {
-        if(json.success){
-            $.each(json.filters, function (index, value) {
-                $('#check_'+index).prop('checked', true).parent().addClass('checked');
-                $('#check_'+index.replace('_initial', '')).prop('checked', true).parent().addClass('checked');
-            });
-            addFilters(json.filters);
-        }
+function verifyQueryString() {
+    var result = {}, keyValuePairs = location.search.slice(1).split("&");
+    keyValuePairs.forEach(function(keyValuePair) {
+        keyValuePair = keyValuePair.split('=');
+        result[decodeURIComponent(keyValuePair[0])] = decodeURIComponent(keyValuePair[1]) || '';
     });
+
+    if(Object.keys(result).length){
+        $.each(result, function (index, value) {
+            $('#check_'+index).prop('checked', true).parent().addClass('checked');
+            $('#check_'+index.replace('_initial', '')).prop('checked', true).parent().addClass('checked');
+        });
+        addFilters(result);
+    }
 }
