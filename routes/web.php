@@ -22,6 +22,8 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('/', 'HomeController@index');
     $router->get('/home', 'HomeController@index');
 
+    Route::get('/getForeignKey', 'CodesController@getForeignKey');
+    
     $router->resource('ordens-de-compra', 'OrdemDeCompraController');
 
     $router->resource('retroalimentacaoObras', 'RetroalimentacaoObraController');
@@ -44,8 +46,6 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         Route::get('/', 'Admin\HomeController@index');
 
         Route::resource('users', 'Admin\UserController');
-        
-        Route::get('/getForeignKey', 'CodesController@getForeignKey');
 
         #importação de planilhas dinâmicas
         Route::get('orcamento/', ['as'=> 'admin.orcamento.index', 'uses' => 'Admin\OrcamentoController@index']);
@@ -190,13 +190,3 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('obras_insumos', 'OrdemDeCompraController@obrasInsumos');
     $router->get('insumos_json', 'OrdemDeCompraController@insumosJson');
 });
-
-
-Route::get('admin/contratoInsumos', ['as'=> 'admin.contratoInsumos.index', 'uses' => 'Admin\ContratoInsumoController@index']);
-Route::post('admin/contratoInsumos', ['as'=> 'admin.contratoInsumos.store', 'uses' => 'Admin\ContratoInsumoController@store']);
-Route::get('admin/contratoInsumos/create', ['as'=> 'admin.contratoInsumos.create', 'uses' => 'Admin\ContratoInsumoController@create']);
-Route::put('admin/contratoInsumos/{contratoInsumos}', ['as'=> 'admin.contratoInsumos.update', 'uses' => 'Admin\ContratoInsumoController@update']);
-Route::patch('admin/contratoInsumos/{contratoInsumos}', ['as'=> 'admin.contratoInsumos.update', 'uses' => 'Admin\ContratoInsumoController@update']);
-Route::delete('admin/contratoInsumos/{contratoInsumos}', ['as'=> 'admin.contratoInsumos.destroy', 'uses' => 'Admin\ContratoInsumoController@destroy']);
-Route::get('admin/contratoInsumos/{contratoInsumos}', ['as'=> 'admin.contratoInsumos.show', 'uses' => 'Admin\ContratoInsumoController@show']);
-Route::get('admin/contratoInsumos/{contratoInsumos}/edit', ['as'=> 'admin.contratoInsumos.edit', 'uses' => 'Admin\ContratoInsumoController@edit']);

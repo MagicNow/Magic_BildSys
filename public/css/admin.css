@@ -19102,3 +19102,8 @@ th.active .arrow {
     background-color: #7ed321;
     border-color: #7ed321;
 }
+
+.border-separation {
+    border-bottom: 2px solid #ccc !important;
+    margin-top: 20px;
+}

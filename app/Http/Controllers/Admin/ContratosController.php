@@ -6,6 +6,7 @@ use App\DataTables\Admin\ContratosDataTable;
 use App\Http\Requests\Admin;
 use App\Http\Requests\Admin\CreateContratosRequest;
 use App\Http\Requests\Admin\UpdateContratosRequest;
+use App\Models\Insumo;
 use App\Repositories\Admin\ContratosRepository;
 use App\Repositories\CodeRepository;
 use Flash;
@@ -40,7 +41,8 @@ class ContratosController extends AppBaseController
      */
     public function create()
     {
-        return view('admin.contratos.create');
+        $insumos = Insumo::get();
+        return view('admin.contratos.create', compact('insumos'));
     }
 
     /**
