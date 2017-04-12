@@ -16,7 +16,6 @@ class OrdemDeCompraDataTable extends DataTable
     {
         return $this->datatables
             ->eloquent($this->query())
-            ->addColumn('action', 'ordem_de_compras.datatables_actions')
             ->make(true);
     }
 
@@ -28,7 +27,6 @@ class OrdemDeCompraDataTable extends DataTable
     public function query()
     {
         $ordemDeCompras = OrdemDeCompra::query();
-
         return $this->applyScopes($ordemDeCompras);
     }
 
@@ -41,7 +39,6 @@ class OrdemDeCompraDataTable extends DataTable
     {
         return $this->builder()
             ->columns($this->getColumns())
-            ->addAction(['width' => '10%'])
             ->ajax('')
             ->parameters([
                 'initComplete' => 'function () {

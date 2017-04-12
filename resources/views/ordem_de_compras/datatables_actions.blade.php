@@ -1,9 +1,9 @@
-{!! Form::open(['route' => ['ordemDeCompras.destroy', $id], 'id'=>'formDelete'.$id, 'method' => 'delete']) !!}
+{!! Form::open(['route' => ['ordens-de-compras.destroy', $id], 'id'=>'formDelete'.$id, 'method' => 'delete']) !!}
 <div class='btn-group'>
-    <a href="{{ route('ordemDeCompras.show', $id) }}" title="{{ ucfirst( trans('common.show') )}}" class='btn btn-default btn-xs'>
+    <a href="{{ route('ordens-de-compras.show', $id) }}" title="{{ ucfirst( trans('common.show') )}}" class='btn btn-default btn-xs'>
         <i class="glyphicon glyphicon-eye-open"></i>
     </a>
-    <a href="{{ route('ordemDeCompras.edit', $id) }}" title="{{ ucfirst( trans('common.edit') )}}" class='btn btn-warning btn-xs'>
+    <a href="{{ route('ordens-de-compras.edit', $id) }}" title="{{ ucfirst( trans('common.edit') )}}" class='btn btn-warning btn-xs'>
         <i class="glyphicon glyphicon-edit"></i>
     </a>
     {!! Form::button('<i class="glyphicon glyphicon-trash"></i>', [

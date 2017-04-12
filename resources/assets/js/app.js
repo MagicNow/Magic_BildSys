@@ -16,13 +16,8 @@ require('./bootstrap');
 
 // Vue.component('generic-grid',require('./components/generic-grid.vue'));
 
-import GenericGrid from './components/generic-grid.vue'
+Vue.component('generic-paginator',require('./components/generic-paginator.vue'));
 
-Vue.component('generic-grid', GenericGrid);
+import Tabela from './components/tabela.vue'
 
-// Vue.component('generic-paginator',require('./components/generic-paginator.vue'));
-
-import GenericPaginator from './components/generic-paginator.vue'
-
-Vue.component('generic-paginator', GenericPaginator);
-
+Vue.component('tabela', Tabela);

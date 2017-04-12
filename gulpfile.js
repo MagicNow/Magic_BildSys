@@ -184,6 +184,8 @@ elixir(function(mix) {
         'datatables/buttons.html5.min.js',
         'datatables/buttons.flash.min.js',
         'admin.js',
+        'filtros-dinamicos.js',
+        'workflow.js',
     ], 'public/js/admin.js');
 
 });

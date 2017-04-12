@@ -61938,14 +61938,14 @@ j,k,i=function(a){j=e+1;k=l(g,"row",{attr:{r:j}});for(var b=0,c=a.length;b<c;b++
 c.customize&&c.customize(d);v(d);a.setAction("excel");a.setFileName(r(c));a.setSheetData(d);s(a,"")},extension:".xlsx"});i.ext.buttons.pdfFlash=f.extend({},t,{className:"buttons-pdf buttons-flash",text:function(a){return a.i18n("buttons.pdf","PDF")},action:function(a,b,d,c){var a=c._flash,e=b.buttons.exportData(c.exportOptions),g=b.table().node().offsetWidth,f=b.columns(c.columns).indexes().map(function(a){return b.column(a).header().offsetWidth/g});a.setAction("pdf");a.setFileName(r(c));s(a,JSON.stringify({title:r(c,
 !1),message:"function"==typeof c.message?c.message(b,d,c):c.message,colWidth:f.toArray(),orientation:c.orientation,size:c.pageSize,header:c.header?e.header:null,footer:c.footer?e.footer:null,body:e.body}))},extension:".pdf",orientation:"portrait",pageSize:"A4",message:"",newline:"\n"});return i.Buttons});
 
-function startLoading(){
-    if(!$('.loader').length){
+function startLoading() {
+    if (!$('.loader').length) {
         $('body').append('<div class="loader"></div>');
     }
 }
 
-function stopLoading(){
-    if($('.loader').length) {
+function stopLoading() {
+    if ($('.loader').length) {
         $('.loader').fadeToggle(function () {
             $(this).remove();
         });
@@ -61954,9 +61954,9 @@ function stopLoading(){
 
 $(function () {
     $(".select2").select2({
-        theme:'bootstrap',
+        theme: 'bootstrap',
 
-        placeholder:"-",
+        placeholder: "-",
         language: "pt-BR",
     });
 
@@ -61965,53 +61965,33 @@ $(function () {
         radioClass: 'iradio_square-green',
         increaseArea: '20%' // optional
     });
-    $('.colorbox').colorbox({ transition:"fade", width:"95%", height:"95%"});
+    $('.colorbox').colorbox({transition: "fade", width: "95%", height: "95%"});
     $('form').submit(function (evento) {
         $('.box.box-primary').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
     });
 
-});
-
-$(function () {
-    putSession();
-    checkSession();
+    $('.money').mask('0.000.000.000.000,00', {reverse: true});
 });
 var oTable = null;
 
-function putSession(filters) {
-    var initial_date = $('#initial_date').val();
-    var final_date = $('#final_date').val();
-    var filters_json = null;
-    if(filters){
-        filters_json = JSON.parse(JSON.stringify(eval("(" + filters + ")")));
-    }
+$(function () {
+    verifyQueryString();
+});
 
-    $.ajax({
-        url: "/admin/putsession",
-        data: {
-            'initial_date' : initial_date,
-            'final_date' : final_date,
-            'filters' : filters_json
-        }
-    }).done(function (json) {
-        if(json.success){
-            $("#dataTableBuilder").DataTable().draw();
-        }
-    });
-}
-
-function addFilters(filters_session) {
+function addFilters(query_string) {
     var cb_filter = $('.cb_filter');
     var cb_filter_label = $('.cb_filter_label');
     var block_fields = $('#block_fields');
+    var filters_add = false;
+    var msg = '';
 
-    if(!filters_session){
-        filters_session = [];
+    if (!query_string) {
+        query_string = [];
     }
     $('.filter_added').remove();
 
     block_fields.addClass('thumbnail').append('\
-    <div class="col-md-12 page-header filter_added">\
+    <div class="col-md-12 page-header filter_added" id="filters_add">\
             <div class="col-md-11">\
             <h2>Filtros</h2>\
         </div>\
@@ -62022,9 +62002,8 @@ function addFilters(filters_session) {
         </div>\
     </div>\
     ');
-
-    for( i=0; i < cb_filter.length; i++ ) {
-        if(cb_filter[i].checked) {
+    for (i = 0; i < cb_filter.length; i++) {
+        if (cb_filter[i].checked) {
             if (cb_filter[i].value.split('-')[1] == 'integer') {
                 var what = "'select_integer_" + cb_filter[i].value.split('-')[0] + "'";
                 var row_integer = "'row_" + cb_filter[i].value + "'";
@@ -62033,13 +62012,13 @@ function addFilters(filters_session) {
                 <div class="row form-group col-md-12 filter_added">\
                     <div class="col-md-3">\
                     <label>' + cb_filter_label[i].innerHTML + '</label>\
-                        <input type="number" id="' + cb_filter[i].value + '" class="form-control filters" onkeyup="addFilterFields(' + row_integer + ', this.value, \'integer\', this.id)">\
+                        <input v-model="filtrolist" type="number" id="' + cb_filter[i].value + '" class="form-control filters" onkeyup="addFilterFields(' + row_integer + ', this.value, \'integer\', this.id)">\
                     </div>\
                     <div class="col-md-3" style="margin-top: 25px;">\
-                        <input type="number" id="' + cb_filter[i].value + '_final" name="' + cb_filter[i].value + '" class="form-control filters select_integer_' + cb_filter[i].value.split('-')[0] + '" onkeyup="addFilterFields(' + row_integer + ', this.value, \'integer\', this.name)">\
+                        <input v-model="filtrolist" type="number" id="' + cb_filter[i].value + '_final" name="' + cb_filter[i].value + '" class="form-control filters select_integer_' + cb_filter[i].value.split('-')[0] + '" onkeyup="addFilterFields(' + row_integer + ', this.value, \'integer\', this.name)">\
                     </div>\
                     <div class="col-md-6" style="margin-top: 25px;">\
-                        <select class="form-control filters" id="' + cb_filter[i].value + '_option" name="' + cb_filter[i].value + '" onchange="filterFieldInteger(this.value, ' + what + '); addFilterFields(' + row_integer + ', this.value, \'integer\', this.name)">\
+                        <select v-model="filtrolist" class="form-control filters" id="' + cb_filter[i].value + '_option" name="' + cb_filter[i].value + '" onchange="filterFieldInteger(this.value, ' + what + '); addFilterFields(' + row_integer + ', this.value, \'integer\', this.name)">\
                             <option value="between">Entre</option>\
                             <option value="bigger">Maior que</option>\
                             <option value="smaller">Menor que</option>\
@@ -62051,18 +62030,18 @@ function addFilters(filters_session) {
                 </div>\
             ');
 
-                var value_session_integer = filters_session[cb_filter[i].value] ? filters_session[cb_filter[i].value] : '';
-                var value_session_integer_final = filters_session[cb_filter[i].value+'_final'] ? filters_session[cb_filter[i].value+'_final'] : '';
-                var value_session_integer_option = filters_session[cb_filter[i].value+'_option'] ? filters_session[cb_filter[i].value+'_option'] : 'between';
+                var value_session_integer = query_string[cb_filter[i].value] ? query_string[cb_filter[i].value] : '';
+                var value_session_integer_final = query_string[cb_filter[i].value + '_final'] ? query_string[cb_filter[i].value + '_final'] : '';
+                var value_session_integer_option = query_string[cb_filter[i].value + '_option'] ? query_string[cb_filter[i].value + '_option'] : 'between';
 
-                $('#'+cb_filter[i].value).val(value_session_integer);
-                $('#'+cb_filter[i].value+'_final').val(value_session_integer_final);
-                $('#'+cb_filter[i].value+'_option').val(value_session_integer_option);
+                $('#' + cb_filter[i].value).val(value_session_integer);
+                $('#' + cb_filter[i].value + '_final').val(value_session_integer_final);
+                $('#' + cb_filter[i].value + '_option').val(value_session_integer_option);
 
-                if(value_session_integer_option == 'between'){
-                    $('#'+cb_filter[i].value+'_final').css('display', '');
-                }else{
-                    $('#'+cb_filter[i].value+'_final').css('display', 'none');
+                if (value_session_integer_option == 'between') {
+                    $('#' + cb_filter[i].value + '_final').css('display', '');
+                } else {
+                    $('#' + cb_filter[i].value + '_final').css('display', 'none');
                 }
 
                 var value_integer_option = document.getElementById(cb_filter[i].value + '_option').options[document.getElementById(cb_filter[i].value + '_option').selectedIndex].text;
@@ -62076,61 +62055,34 @@ function addFilters(filters_session) {
                 }
 
                 $('#block_fields_minimize').append('<label class="filter_added">' + cb_filter_label[i].innerHTML.replace(/\s+$/, '') + ':</label><span id="row_' + cb_filter[i].value + '" class="filter_added"> ' + msg + ' </span>');
+                filters_add = true;
             } else if (cb_filter[i].value.split('-')[1] == 'boolean') {
                 var row_boolean = "'row_" + cb_filter[i].value + "'";
 
                 block_fields.append('\
                 <div class="form-group col-md-6 filter_added" style="width: 48.8%;">\
                     <label>' + cb_filter_label[i].innerHTML + '</label>\
-                    <select class="form-control filters" id="' + cb_filter[i].value + '" onchange="addFilterFields(' + row_boolean + ', this.value, \'boolean\', this.id)">\
+                    <select v-model="filtrolist" class="form-control filters" id="' + cb_filter[i].value + '" onchange="addFilterFields(' + row_boolean + ', this.value, \'boolean\', this.id)">\
                         <option value="1">Sim</option>\
                         <option value="0">Não</option>\
                     </select>\
                 </div>\
             ');
 
-                var value_session_boolean = filters_session[cb_filter[i].value] ? filters_session[cb_filter[i].value] : 1;
+                var value_session_boolean = query_string[cb_filter[i].value] ? query_string[cb_filter[i].value] : 1;
 
-                $('#'+cb_filter[i].value).val(value_session_boolean);
+                $('#' + cb_filter[i].value).val(value_session_boolean);
 
                 $('#block_fields_minimize').append('<label class="filter_added">' + cb_filter_label[i].innerHTML.replace(/\s+$/, '') + ':</label><span id="row_' + cb_filter[i].value + '" class="filter_added"> ' + document.getElementById(cb_filter[i].value).options[document.getElementById(cb_filter[i].value).selectedIndex].text + ' </span>');
+                filters_add = true;
 
             } else if (cb_filter[i].value.split('-')[1] == 'foreign_key') {
                 var label = cb_filter_label[i].innerHTML;
                 var value = cb_filter[i].value;
                 var row_foreign_key = "'row_" + cb_filter[i].value + "'";
 
-                $.ajax({
-                    url: "/admin/getForeignKey",
-                    data: {
-                        foreign_key: cb_filter[i].value.split('-')[0],
-                        model: cb_filter[i].value.split('-')[2],
-                        field_value: cb_filter[i].value.split('-')[3],
-                        field_key: cb_filter[i].value.split('-')[4]
-                    }
-                }).done(function (json) {
-                    if (json.success == true && json.foreign_key) {
-                        var options = '';
-                        $.each(json.foreign_key, function (index, value) {
-                            options += '<option value="' + index + '">' + value + '</option>';
-                        });
-
-                        block_fields.append('\
-                        <div class="form-group col-md-6 filter_added" style="width: 48.8%;">\
-                            <label>' + label + '</label>\
-                            <select class="form-control filters" id="' + value + '" onchange="addFilterFields(' + row_foreign_key + ', this.value, \'foreign_key\', this.id)">\
-                                <option value="">Selecione</option>' + options + '\
-                            </select>\
-                        </div>\
-                    ');
-
-                        var value_session_foreign_key = filters_session[value] ? filters_session[value] : '';
-
-                        $('#'+value).val(value_session_foreign_key);
-
-                        $('#block_fields_minimize').append('<label class="filter_added">' + label.replace(/\s+$/, '') + ':</label><span id="row_' + value + '" class="filter_added"> ' + document.getElementById(value).options[document.getElementById(value).selectedIndex].text + ' </span>');
-                    }
-                });
+                foreign(label, value, row_foreign_key, cb_filter[i], query_string, block_fields);
+                filters_add = true;
 
             } else if (cb_filter[i].value.split('-')[1] == 'date') {
                 date = new Date();
@@ -62145,19 +62097,19 @@ function addFilters(filters_session) {
                 <div class="row form-group col-md-12 filter_added">\
                     <div class="col-md-6">\
                         <label>' + cb_filter_label[i].innerHTML + '</label>\
-                        <input type="date" value="' + date_actual + '" id="' + cb_filter[i].value + '_initial" name="' + cb_filter[i].value + '" class="form-control filters" onchange="addFilterFields(' + row_date + ', this.value, \'date\', this.name)">\
+                        <input v-model="filtrolist" type="date" value="' + date_actual + '" id="' + cb_filter[i].value + '_initial" name="' + cb_filter[i].value + '" class="form-control filters" onchange="addFilterFields(' + row_date + ', this.value, \'date\', this.name)">\
                     </div>\
                     <div class="col-md-6" style="margin-top: 25px;">\
-                        <input type="date" value="' + date_actual + '" id="' + cb_filter[i].value + '_final" name="' + cb_filter[i].value + '" class="form-control filters" onchange="addFilterFields(' + row_date + ', this.value, \'date\', this.name)">\
+                        <input v-model="filtrolist" type="date" value="' + date_actual + '" id="' + cb_filter[i].value + '_final" name="' + cb_filter[i].value + '" class="form-control filters" onchange="addFilterFields(' + row_date + ', this.value, \'date\', this.name)">\
                     </div>\
                 </div>\
             ');
 
-                var value_session_date_initial = filters_session[cb_filter[i].value+'_initial'] ? filters_session[cb_filter[i].value+'_initial'] : date_actual;
-                var value_session_date_final = filters_session[cb_filter[i].value+'_final'] ? filters_session[cb_filter[i].value+'_final'] : date_actual;
+                var value_session_date_initial = query_string[cb_filter[i].value + '_initial'] ? query_string[cb_filter[i].value + '_initial'] : date_actual;
+                var value_session_date_final = query_string[cb_filter[i].value + '_final'] ? query_string[cb_filter[i].value + '_final'] : date_actual;
 
-                $('#'+cb_filter[i].value+'_initial').val(value_session_date_initial);
-                $('#'+cb_filter[i].value+'_final').val(value_session_date_final);
+                $('#' + cb_filter[i].value + '_initial').val(value_session_date_initial);
+                $('#' + cb_filter[i].value + '_final').val(value_session_date_final);
 
                 value_date_initial = new Date($('#' + cb_filter[i].value + '_initial').val().replace(/-/g, ','));
                 value_day_initial = ("0" + (value_date_initial.getDate())).slice(-2);
@@ -62178,6 +62130,7 @@ function addFilters(filters_session) {
                 }
 
                 $('#block_fields_minimize').append('<label class="filter_added">' + cb_filter_label[i].innerHTML.replace(/\s+$/, '') + ':</label><span id="row_' + cb_filter[i].value + '" class="filter_added"> ' + msg + ' </span>');
+                filters_add = true;
 
             } else {
                 var row_string = "'row_" + cb_filter[i].value + "'";
@@ -62186,10 +62139,10 @@ function addFilters(filters_session) {
                 <div class="row form-group col-md-12 filter_added">\
                     <div class="col-md-6">\
                         <label>' + cb_filter_label[i].innerHTML + '</label>\
-                        <input type="text" id="' + cb_filter[i].value + '" class="form-control filters" onkeyup="addFilterFields(' + row_string + ', this.value, \'string\')">\
+                        <input v-model="filtrolist" type="text" id="' + cb_filter[i].value + '" class="form-control filters" onkeyup="addFilterFields(' + row_string + ', this.value, \'string\')">\
                     </div>\
                     <div class="col-md-6" style="margin-top: 25px;">\
-                        <select class="form-control filters" id="' + cb_filter[i].value + '_option" onchange="addFilterFields()">\
+                        <select v-model="filtrolist" class="form-control filters" id="' + cb_filter[i].value + '_option" onchange="addFilterFields()">\
                             <option value="between">Entre</option>\
                             <option value="start">Começa com</option>\
                             <option value="end">Termina com</option>\
@@ -62198,79 +62151,80 @@ function addFilters(filters_session) {
                 </div>\
             ');
 
-                var value_session_string = filters_session[cb_filter[i].value] ? filters_session[cb_filter[i].value] : '';
-                var value_session_string_option = filters_session[cb_filter[i].value+'_option'] ? filters_session[cb_filter[i].value+'_option'] : 'between';
+                var value_session_string = query_string[cb_filter[i].value] ? query_string[cb_filter[i].value] : '';
+                var value_session_string_option = query_string[cb_filter[i].value + '_option'] ? query_string[cb_filter[i].value + '_option'] : 'between';
 
-                $('#'+cb_filter[i].value).val(value_session_string);
-                $('#'+cb_filter[i].value+'_option').val(value_session_string_option);
+                $('#' + cb_filter[i].value).val(value_session_string);
+                $('#' + cb_filter[i].value + '_option').val(value_session_string_option);
 
                 $('#block_fields_minimize').append('<label class="filter_added">' + cb_filter_label[i].innerHTML.replace(/\s+$/, '') + ':</label><span id="row_' + cb_filter[i].value + '" class="filter_added"> ' + value_session_string + ' </span>');
+                filters_add = true;
             }
         }
     }
-    addFilterFields();
-}
 
-function filterFieldInteger(value, what){
-    if(value == 'between'){
-        $('.'+what).css('display', '').val('');
-    }else{
-        $('.'+what).css('display', 'none').val('');
+    if (!filters_add) {
+        $('#filters_add').remove();
+        block_fields.removeClass('thumbnail');
+        history.pushState("", document.title, '' + window.location.href.split("?")[0]);
     }
+
     addFilterFields();
+    addQuery();
 }
 
 function addFilterFields(target_id, value, type, element_id) {
-    if(type == 'integer'){
-        var value_integer_option = document.getElementById(element_id+'_option').options[document.getElementById(element_id+'_option').selectedIndex].text;
-        var value_integer_initial = $('#'+element_id).val();
-        var value_integer_final = $('#'+element_id+'_final').val();
+    var msg = '';
 
-        if(value_integer_option == 'Entre'){
+    if (type == 'integer') {
+        var value_integer_option = document.getElementById(element_id + '_option').options[document.getElementById(element_id + '_option').selectedIndex].text;
+        var value_integer_initial = $('#' + element_id).val();
+        var value_integer_final = $('#' + element_id + '_final').val();
+
+        if (value_integer_option == 'Entre') {
             msg = value_integer_option + ' ' + value_integer_initial + ' e ' + value_integer_final;
-        }else{
+        } else {
             msg = value_integer_option + ' ' + value_integer_initial;
         }
-        $('#'+target_id).html(msg+' ');
-    }else if(type == 'foreign_key'){
+        $('#' + target_id).html(msg + ' ');
+    } else if (type == 'foreign_key') {
         element_value = document.getElementById(element_id).options[document.getElementById(element_id).selectedIndex].text;
-        $('#'+target_id).html(element_value+' ');
-    }else if(type == 'date'){
-        value_date_initial = new Date($('#'+element_id+'_initial').val().replace(/-/g, ','));
+        $('#' + target_id).html(element_value + ' ');
+    } else if (type == 'date') {
+        value_date_initial = new Date($('#' + element_id + '_initial').val().replace(/-/g, ','));
         value_day_initial = ("0" + (value_date_initial.getDate())).slice(-2);
         value_month_initial = ("0" + (value_date_initial.getMonth() + 1)).slice(-2);
         value_year_initial = value_date_initial.getFullYear();
-        value_date_initial = value_day_initial+'/'+value_month_initial+'/'+value_year_initial;
+        value_date_initial = value_day_initial + '/' + value_month_initial + '/' + value_year_initial;
 
-        value_date_final = new Date($('#'+element_id+'_final').val().replace(/-/g, ','));
+        value_date_final = new Date($('#' + element_id + '_final').val().replace(/-/g, ','));
         value_day_final = ("0" + (value_date_final.getDate())).slice(-2);
         value_month_final = ("0" + (value_date_final.getMonth() + 1)).slice(-2);
         value_year_final = value_date_final.getFullYear();
-        value_date_final = value_day_final+'/'+value_month_final+'/'+value_year_final;
+        value_date_final = value_day_final + '/' + value_month_final + '/' + value_year_final;
 
-        if(value_date_initial != value_date_final){
+        if (value_date_initial != value_date_final) {
             msg = 'Entre ' + value_date_initial + ' e ' + value_date_final;
-        }else{
+        } else {
             msg = value_date_initial;
         }
-        $('#'+target_id).html(msg+' ');
-    }else if(type == 'boolean'){
+        $('#' + target_id).html(msg + ' ');
+    } else if (type == 'boolean') {
         element_value = document.getElementById(element_id).options[document.getElementById(element_id).selectedIndex].text;
-        $('#'+target_id).html(element_value+' ');
-    }else{
-        $('#'+target_id).html(value+' ');
+        $('#' + target_id).html(element_value + ' ');
+    } else {
+        $('#' + target_id).html(value + ' ');
     }
+    addQuery();
+}
 
-    var filters_fields = $('.filters');
-    var filters = '';
-
-    for( i=0; i < filters_fields.length; i++ ) {
-        filters += '"'+filters_fields[i].id+'" : "'+filters_fields[i].value+'",';
+function filterFieldInteger(value, what) {
+    if (value == 'between') {
+        $('.' + what).css('display', '').val('');
+    } else {
+        $('.' + what).css('display', 'none').val('');
     }
-
-    filters = '{'+filters+'}';
-
-    putSession(filters);
+    addFilterFields();
 }
 
 function minimizeFilters() {
@@ -62283,21 +62237,72 @@ function maximizeFilters() {
     $('#block_fields').toggle('slow');
 }
 
-function checkSession() {
+function verifyQueryString() {
+    var result = {}, keyValuePairs = location.search.slice(1).split("&");
+    keyValuePairs.forEach(function (keyValuePair) {
+        keyValuePair = keyValuePair.split('=');
+        result[decodeURIComponent(keyValuePair[0])] = decodeURIComponent(keyValuePair[1]) || '';
+    });
+
+    if (Object.keys(result).length) {
+        $.each(result, function (index, value) {
+            $('#check_' + index).prop('checked', true).parent().addClass('checked');
+            $('#check_' + index.replace('_initial', '')).prop('checked', true).parent().addClass('checked');
+        });
+        addFilters(result);
+    }
+}
+
+function foreign(label, value, row_foreign_key, cb_filter_i, query_string, block_fields) {
     $.ajax({
-        url: "/admin/checksession"
-    }).done(function (json) {
-        if(json.success){
-            $.each(json.filters, function (index, value) {
-                $('#check_'+index).prop('checked', true).parent().addClass('checked');
-                $('#check_'+index.replace('_initial', '')).prop('checked', true).parent().addClass('checked');
-            });
-            addFilters(json.filters);
+        url: "/admin/getForeignKey",
+        data: {
+            foreign_key: cb_filter_i.value.split('-')[0],
+            model: cb_filter_i.value.split('-')[2],
+            field_value: cb_filter_i.value.split('-')[3],
+            field_key: cb_filter_i.value.split('-')[4]
         }
+    }).done(function (json) {
+        if (json.success == true && json.foreign_key) {
+            var options = '';
+            $.each(json.foreign_key, function (index, value) {
+                options += '<option value="' + index + '">' + value + '</option>';
+            });
+
+            block_fields.append('\
+                        <div class="form-group col-md-6 filter_added" style="width: 48.8%;">\
+                            <label>' + label + '</label>\
+                            <select v-model="filtrolist" class="form-control filters" id="' + value + '" onchange="addFilterFields(' + row_foreign_key + ', this.value, \'foreign_key\', this.id)">\
+                                <option value="">Selecione</option>' + options + '\
+                            </select>\
+                        </div>\
+                    ');
+
+            var value_session_foreign_key = query_string[value] ? query_string[value] : '';
+
+            $('#' + value).val(value_session_foreign_key);
+
+            $('#block_fields_minimize').append('<label class="filter_added">' + label.replace(/\s+$/, '') + ':</label><span id="row_' + value + '" class="filter_added"> ' + document.getElementById(value).options[document.getElementById(value).selectedIndex].text + ' </span>');
+            filters_add = true;
+        }
+        addQuery();
     });
 }
 
-function workflowCall(item_id, tipo_item, aprovou, elemento, motivo, justificativa_texto){
+function addQuery() {
+    var filters_fields = $('.filters');
+    var filters = '';
+
+    for (i = 0; i < filters_fields.length; i++) {
+        filters += '' + filters_fields[i].id + '=' + filters_fields[i].value + '&';
+    }
+
+    filters = '?' + filters;
+    filters = filters.substring(0, (filters.length - 1));
+
+    history.pushState("", document.title, '' + filters);
+}
+function workflowCall(item_id, tipo_item, aprovou, elemento, motivo, justificativa_texto) {
 
     $.ajax('/workflow/aprova-reprova',
         {
@@ -62332,46 +62337,17 @@ function workflowCall(item_id, tipo_item, aprovou, elemento, motivo, justificati
             });
             swal("Oops", erros, "error");
         });
-    // $.getJSON('/workflow/aprova-reprova',{
-    //         id: item_id,
-    //         tipo: tipo_item,
-    //         resposta: aprovou,
-    //         motivo_id: motivo,
-    //         justificativa: justificativa_texto
-    //     },
-    //     function (retorno) {
-    //         if(retorno.success){
-    //             if(aprovou){
-    //                 titulo = 'Aprovado';
-    //                 conteudoElemento = "";
-    //             }else{
-    //                 titulo = 'Reprovado';
-    //                 conteudoElemento = "";
-    //             }
-    //             swal( titulo ,'Sua escolha foi salva com sucesso!', "success");
-    //             $('#'+elemento).html(conteudoElemento);
-    //         }else{
-    //             erros = '';
-    //             $.each(retorno, function(index, value) {
-    //                 if(erros.length){
-    //                     erros += '<br>';
-    //                 }
-    //                 erros += value;
-    //             });
-    //             swal("Oops", erros, "error")
-    //         }
-    //     });
 }
 
 function workflowAprovaReprova(item_id, tipo_item, aprovou, elemento) {
-    if(!aprovou){
+    if (!aprovou) {
         swal({
                 title: "Reprovar este item?",
-                text: "<label for='motivo_id'>Escolha um motivo</label>"+
-                        "<select name='motivo_id' id='motivo_id' class='form-control input-lg' required='required'>"+
-                            "<option value=''>Escolha...</option>"+
-                            "<option value='1'>Pq eu quero</option>"+
-                        "</select><br><label>Escreva uma justificativa</label>: ",
+                text: "<label for='motivo_id'>Escolha um motivo</label>" +
+                "<select name='motivo_id' id='motivo_id' class='form-control input-lg' required='required'>" +
+                "<option value=''>Escolha...</option>" +
+                "<option value='1'>Pq eu quero</option>" +
+                "</select><br><label>Escreva uma justificativa</label>: ",
                 html: true,
                 type: "input",
                 showCancelButton: true,
@@ -62379,11 +62355,11 @@ function workflowAprovaReprova(item_id, tipo_item, aprovou, elemento) {
                 animation: "slide-from-top",
                 inputPlaceholder: "Justificativa",
                 showLoaderOnConfirm: true,
-                cancelButtonText:'Cancelar',
-                confirmButtonText:'Reprovar',
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Reprovar',
                 confirmButtonColor: '#DD6B55'
             },
-            function(justificativa_texto){
+            function (justificativa_texto) {
                 if (justificativa_texto === false) return false;
 
                 if (justificativa_texto === "") {
@@ -62400,19 +62376,18 @@ function workflowAprovaReprova(item_id, tipo_item, aprovou, elemento) {
 
             });
 
-    }else{
+    } else {
         swal({
-            title: "Aprovar este Item?",
-            text: "Ao confirmar não será possível voltar atrás",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonText: "Aprovar",
-            cancelButtonText:'Cancelar',
-            closeOnConfirm: false
-        },
-        function(){
-            workflowCall(item_id, tipo_item, aprovou, elemento, null, null);
-        });
+                title: "Aprovar este Item?",
+                text: "Ao confirmar não será possível voltar atrás",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Aprovar",
+                cancelButtonText: 'Cancelar',
+                closeOnConfirm: false
+            },
+            function () {
+                workflowCall(item_id, tipo_item, aprovou, elemento, null, null);
+            });
     }
-
 }

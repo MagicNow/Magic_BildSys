@@ -22,12 +22,18 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('/', 'HomeController@index');
     $router->get('/home', 'HomeController@index');
 
-    $router->get('/ordemDeCompras/detalhes/{id}', 'OrdemDeCompraController@detalhe');
-    $router->resource('ordemDeCompras', 'OrdemDeCompraController');
+
+    $router->get('/ordens-de-compra/detalhes/{id}', 'OrdemDeCompraController@detalhe');
+    $router->resource('ordens-de-compra', 'OrdemDeCompraController');
+
 
     $router->resource('retroalimentacaoObras', 'RetroalimentacaoObraController');
 
     $router->get('compras', 'OrdemDeCompraController@compras');
+    $router->get('obras_insumos', 'OrdemDeCompraController@obrasInsumos');
+    $router->get('obras_insumos_filter', 'OrdemDeCompraController@obrasInsumosFilters');
+    $router->get('filter-json-ordem-compra', 'OrdemDeCompraController@filterJsonOrdemCompra');
+    $router->get('insumos_json', 'OrdemDeCompraController@insumosJson');
 
     $router->get('planejamentos/lembretes', 'PlanejamentoController@lembretes');
 
@@ -41,17 +47,22 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         Route::get('/', 'Admin\HomeController@index');
 
         Route::resource('users', 'Admin\UserController');
+        
+        Route::get('/getForeignKey', 'CodesController@getForeignKey');
 
-        Route::get('/putsession', 'Admin\CodesController@putSession');
-        Route::get('/checksession', 'Admin\CodesController@checkSession');
-        Route::get('/getForeignKey', 'Admin\CodesController@getForeignKey');
+        #importação de planilhas de orçamentos
+        Route::get('orcamento/', ['as'=> 'admin.orcamento.index', 'uses' => 'Admin\OrcamentoController@index']);
+        Route::post('orcamento/importar', ['as'=> 'admin.orcamento.importar', 'uses' => 'Admin\OrcamentoController@import']);
+        Route::get('orcamento/importar/checkIn', ['as'=> 'admin.orcamento.checkIn', 'uses' => 'Admin\OrcamentoController@checkIn']);
+        Route::post('orcamento/importar/save', ['as'=> 'admin.orcamento.save', 'uses' => 'Admin\OrcamentoController@save']);
+        Route::get('orcamento/importar/selecionaCampos', 'Admin\OrcamentoController@selecionaCampos');
 
-        #importação de planilhas dinâmicas
-        Route::get('import/', ['as'=> 'admin.import.index', 'uses' => 'Admin\ImportController@index']);
-        Route::post('import/importar', ['as'=> 'admin.import.importar', 'uses' => 'Admin\ImportController@import']);
-        Route::get('import/importar/checkIn', ['as'=> 'admin.import.checkIn', 'uses' => 'Admin\ImportController@checkIn']);
-        Route::post('import/importar/save', ['as'=> 'admin.import.save', 'uses' => 'Admin\ImportController@save']);
-        Route::get('import/importar/selecionaCampos', 'Admin\ImportController@selecionaCampos');
+        #importação de planilhas de planejamentos
+        Route::get('planejamento/', ['as'=> 'admin.planejamento.index', 'uses' => 'Admin\PlanejamentoController@index']);
+        Route::post('planejamento/importar', ['as'=> 'admin.planejamento.importar', 'uses' => 'Admin\PlanejamentoController@import']);
+        Route::get('planejamento/importar/checkIn', ['as'=> 'admin.planejamento.checkIn', 'uses' => 'Admin\PlanejamentoController@checkIn']);
+        Route::post('planejamento/importar/save', ['as'=> 'admin.planejamento.save', 'uses' => 'Admin\PlanejamentoController@save']);
+        Route::get('planejamento/importar/selecionaCampos', 'Admin\PlanejamentoController@selecionaCampos');
 
         # Verifica Notificações
         Route::post('verifyNotification', 'Admin\HomeController@verifyNotifications');

@@ -26,6 +26,7 @@ class OrdemDeCompra extends Model
     public $fillable = [
         'oc_status_id',
         'obra_id',
+        'user_id',
         'aprovado'
     ];
 
@@ -37,7 +38,22 @@ class OrdemDeCompra extends Model
     protected $casts = [
         'id' => 'integer',
         'oc_status_id' => 'integer',
-        'obra_id' => 'integer'
+        'obra_id' => 'integer',
+        'aprovado' => 'integer',
+        'user_id' => 'integer'
+    ];
+
+    public static $filters = [
+        'obra-foreign_key-Obra-nome-id' => 'Obra',
+        'oc_status_id-foreign_key-OcStatus-nome-id' => 'Status',
+        'aprovado-boolean' => 'Aprovado',
+        'created_at-date' => 'Criado em',
+        'updated_at-date' => 'Atualizado em'
+    ];
+
+    public static $filters_insumos = [
+        'grupo_id-foreign_key-Grupo-nome-id' => 'Grupo',
+        'nome-string' => 'Nome'
     ];
 
     /**
@@ -62,15 +78,15 @@ class OrdemDeCompra extends Model
      **/
     public function obra()
     {
-        return $this->belongsTo(\App\Models\Obra::class);
+        return $this->belongsTo(Obra::class);
     }
-
+    
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
     public function ocStatus()
     {
-        return $this->belongsTo(\App\Models\OcStatus::class);
+        return $this->belongsTo(OcStatus::class);
     }
 
     /**
@@ -78,7 +94,7 @@ class OrdemDeCompra extends Model
      **/
     public function itens()
     {
-        return $this->hasMany(\App\Models\OrdemDeCompraItem::class);
+        return $this->hasMany(OrdemDeCompraItem::class);
     }
 
     /**
@@ -86,6 +102,6 @@ class OrdemDeCompra extends Model
      **/
     public function ordemDeCompraStatusLogs()
     {
-        return $this->hasMany(\App\Models\OrdemDeCompraStatusLog::class);
+        return $this->hasMany(OrdemDeCompraStatusLog::class);
     }
 }

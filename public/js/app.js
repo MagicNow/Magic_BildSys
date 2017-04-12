@@ -427,57 +427,10 @@ var __vue_exports__, __vue_options__
 var __vue_styles__ = {}
 
 /* styles */
-__webpack_require__(14)
-
-/* script */
-__vue_exports__ = __webpack_require__(6)
-
-/* template */
-var __vue_template__ = __webpack_require__(11)
-__vue_options__ = __vue_exports__ = __vue_exports__ || {}
-if (
-  typeof __vue_exports__.default === "object" ||
-  typeof __vue_exports__.default === "function"
-) {
-if (Object.keys(__vue_exports__).some(function (key) { return key !== "default" && key !== "__esModule" })) {console.error("named exports are not supported in *.vue files.")}
-__vue_options__ = __vue_exports__ = __vue_exports__.default
-}
-if (typeof __vue_options__ === "function") {
-  __vue_options__ = __vue_options__.options
-}
-__vue_options__.__file = "/Users/rafael/code/fcmoreno/bild-sys/resources/assets/js/components/generic-grid.vue"
-__vue_options__.render = __vue_template__.render
-__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-5d486e5e", __vue_options__)
-  } else {
-    hotAPI.reload("data-v-5d486e5e", __vue_options__)
-  }
-})()}
-if (__vue_options__.functional) {console.error("[vue-loader] generic-grid.vue: functional components are not supported and should be defined in plain js files using render functions.")}
-
-module.exports = __vue_exports__
-
-
-/***/ },
-/* 5 */
-/***/ function(module, exports, __webpack_require__) {
-
-var __vue_exports__, __vue_options__
-var __vue_styles__ = {}
-
-/* styles */
 __webpack_require__(15)
 
 /* script */
-__vue_exports__ = __webpack_require__(7)
+__vue_exports__ = __webpack_require__(6)
 
 /* template */
 var __vue_template__ = __webpack_require__(12)
@@ -514,91 +467,54 @@ module.exports = __vue_exports__
 
 
 /***/ },
-/* 6 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
-"use strict";
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+var __vue_exports__, __vue_options__
+var __vue_styles__ = {}
 
-/* harmony default export */ exports["default"] = {
-    props: {
-        data: Array,
-        columns: Array,
-        filterKey: String
-    },
-    data: function () {
-        var sortOrders = {}
-        this.columns.forEach(function (key) {
-            sortOrders[key] = 1
-        })
-        return {
-            sortKey: '',
-            sortOrders: sortOrders
-        }
-    },
-    computed: {
-        filteredData: function () {
-            var sortKey = this.sortKey
-            var filterKey = this.filterKey && this.filterKey.toLowerCase()
-            var order = this.sortOrders[sortKey] || 1
-            var data = this.data
-            if (filterKey) {
-                data = data.filter(function (row) {
-                    return Object.keys(row).some(function (key) {
-                        return String(row[key]).toLowerCase().indexOf(filterKey) > -1
-                    })
-                })
-            }
-            if (sortKey) {
-                data = data.slice().sort(function (a, b) {
-                    a = a[sortKey]
-                    b = b[sortKey]
-                    return (a === b ? 0 : a > b ? 1 : -1) * order
-                })
-            }
-            return data
-        }
-    },
-    filters: {
-        capitalize: function (str) {
-            return str.charAt(0).toUpperCase() + str.slice(1)
-        }
-    },
-    methods: {
-        sortBy: function (key) {
-            this.sortKey = key
-            this.sortOrders[key] = this.sortOrders[key] * -1
-        }
-    }
-};
+/* styles */
+__webpack_require__(14)
+
+/* script */
+__vue_exports__ = __webpack_require__(7)
+
+/* template */
+var __vue_template__ = __webpack_require__(11)
+__vue_options__ = __vue_exports__ = __vue_exports__ || {}
+if (
+  typeof __vue_exports__.default === "object" ||
+  typeof __vue_exports__.default === "function"
+) {
+if (Object.keys(__vue_exports__).some(function (key) { return key !== "default" && key !== "__esModule" })) {console.error("named exports are not supported in *.vue files.")}
+__vue_options__ = __vue_exports__ = __vue_exports__.default
+}
+if (typeof __vue_options__ === "function") {
+  __vue_options__ = __vue_options__.options
+}
+__vue_options__.__file = "/Users/rafael/code/fcmoreno/bild-sys/resources/assets/js/components/tabela.vue"
+__vue_options__.render = __vue_template__.render
+__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-0d8bf17a", __vue_options__)
+  } else {
+    hotAPI.reload("data-v-0d8bf17a", __vue_options__)
+  }
+})()}
+if (__vue_options__.functional) {console.error("[vue-loader] tabela.vue: functional components are not supported and should be defined in plain js files using render functions.")}
+
+module.exports = __vue_exports__
 
 
 /***/ },
-/* 7 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -718,6 +634,320 @@ module.exports = __vue_exports__
 
 
 /***/ },
+/* 7 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ exports["default"] = {
+    props: {
+        apiUrl: {
+            required: true
+        },
+        apiFiltros:'',
+        params: {
+            type: Object
+        },
+        actions: {
+            status: '',
+            troca: '',
+            adicionar: '',
+            detalhe: '',
+            aprovar: '',
+            reprovar: '',
+            troca: ''
+        },
+        colunas: ''
+    },
+    data: function () {
+        return {
+            head: [],
+            chaves: [],
+            dados: [],
+            success: '',
+            error: '',
+            filtros: [],
+            pagination: {
+                type: Object
+            },
+            paginationOptions: {
+                offset: 4,
+                previousText: 'Anterior',
+                nextText: 'Proxima',
+                alwaysShowPrevNext: false
+            },
+            order: 'asc'
+        }
+    },
+    methods: {
+        //Método da action aprovar onClick
+        aprovar: function(id){
+
+        },
+        //Método da action adicionar onClick
+        adicionar: function(id){
+
+        },
+        //Método da action reprovar onClick
+        reprovar: function (id) {
+
+        },
+        //Mètodo de ordenação de tabela
+        sortTable: function(item){
+            Array.prototype.getIndexBy = function (name, value) {
+                var this$1 = this;
+
+                for (var i = 0; i < this.length; i++) {
+                    if (this$1[i][name] == value) {
+                        return i;
+                    }
+                }
+                return -1;
+            }
+            if(this.order.localeCompare('desc')==0 || this.order.localeCompare('')==0){
+                this.order = 'asc';
+            }else{
+                this.order = 'desc';
+            }
+            if (typeof this.colunas == 'undefined' || this.colunas[0].length == 0) {
+                this.params.orderkey = item;
+                this.params.order= this.order;
+                this.loadData();
+            }else{
+                var a = this.colunas[this.colunas.getIndexBy("label", item)]
+                this.params.orderkey = a.campo_db;
+                this.params.order= this.order;
+                this.loadData();
+            }
+        },
+        //Método para preencher a header da table e para criar array de chaves
+        getHeader: function () {
+            var this$1 = this;
+
+            if (this.colunas != null) {
+                for (var j in this.colunas) {
+                    this$1.head.push(this$1.colunas[j].label);
+                    this$1.chaves.push(this$1.colunas[j].campo_db)
+                }
+            } else {
+                if(this.dados.length >0){
+                    this.head = Object.keys(this.dados[0]);
+                    this.chaves = Object.keys(this.dados[0]);
+                }
+            }
+        },
+        //Método auxiliar de pegar parametro único da url
+        getParameterByName: function (name, url) {
+            if (!url) {
+                url = window.location.href;
+            }
+            name = name.replace(/[\[\]]/g, "\\$&");
+            var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, " "));
+        },
+        //Método auxiliar de pegar todos parametros da url
+        getParametersUrl: function(){
+            var this$1 = this;
+
+            var search = window.location.href.substr(window.location.href.indexOf("?") + 1);
+            if(search.indexOf('http') === -1){
+                search = search?JSON.parse('{"' + search.replace(/&/g, '","').replace(/=/g,'":"') + '"}',
+                    function(key, value) { return key===""?value:decodeURIComponent(value) }):{}
+                for (var key in search) {
+                    this$1.params[key] = search[key];
+                }
+            }
+        },
+        //Carrega os filtros disponiveis (linkado com o filtro do jhonatan)
+        loadFilters: function () {
+            this.$http.get(this.apiFiltros)
+                .then(function (resp) {
+                    if(typeof resp.body == 'object'){
+                        this.filtros = resp.body;
+                    }
+            })
+        },
+        //Faz a requisição dos dados e também funciona como callback do generic pagination
+        loadData: function () {
+            this.getParametersUrl();
+            this.params.paginate = this.pagination.per_page;
+            this.params.page = this.pagination.current_page;
+            this.success = '';
+            this.error = '';
+            this.$http.get(this.apiUrl, {
+                params: this.params
+            }).then(function (resp) {
+                if (typeof resp.data == 'object') {
+                    this.dados = resp.data.data;
+                    this.pagination = resp.data;
+                    if (typeof this.head == 'undefined' || this.head.length == 0) {
+                        this.getHeader();
+                    }
+                } else if (typeof resp.data == 'string') {
+                    var response = jQuery.parseJSON(resp.data);
+                    this.dados = response.data;
+                    this.pagination = response;
+                    if (typeof this.head == 'undefined' || this.head.length == 0) {
+                        this.getHeader();
+                    }
+                }
+                //Para animação loader
+                stopLoading();
+            });
+        },
+    },
+    created: function () {
+        //Inicia Animação
+        startLoading();
+        //Bind dos filtros
+        $('body').on('change','.filter_added',function () {
+            this.loadData();
+        }.bind(this));
+        $('body').on('keyup','.filter_added',function () {
+            this.loadData();
+        }.bind(this));
+
+        //Inicia mètodos principais
+        this.loadFilters();
+        this.loadData();
+    }
+};
+
+
+/***/ },
 /* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -726,7 +956,7 @@ exports = module.exports = __webpack_require__(0)();
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -17841,36 +18071,268 @@ exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\
 /***/ function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('table', {
-    staticClass: "table table-bordered table-striped table-hover"
-  }, [_c('thead', [_c('tr', _vm._l((_vm.columns), function(key) {
-    return _c('th', {
-      class: {
-        active: _vm.sortKey == key
+  return _c('div', [(_vm.actions.filtros != undefined) ? _c('div', [_c('div', {
+    staticClass: "col-md-12",
+    staticStyle: {
+      "margin-bottom": "20px"
+    },
+    attrs: {
+      "id": "block_fields"
+    }
+  }), _vm._v(" "), _vm._m(0), _vm._v(" "), _c('div', {
+    staticClass: "modal fade",
+    attrs: {
+      "id": "myModal",
+      "tabindex": "-1",
+      "role": "dialog",
+      "aria-labelledby": "myModalLabel"
+    }
+  }, [_c('div', {
+    staticClass: "modal-dialog",
+    attrs: {
+      "role": "document"
+    }
+  }, [_c('div', {
+    staticClass: "modal-content"
+  }, [_vm._m(1), _vm._v(" "), _c('div', {
+    staticClass: "modal-body"
+  }, _vm._l((_vm.filtros), function(filtro, campo) {
+    return _c('p', [_c('input', {
+      staticClass: "cb_filter",
+      attrs: {
+        "type": "checkbox",
+        "id": 'check_' + campo
       },
+      domProps: {
+        "value": campo
+      }
+    }), _vm._v(" "), _c('label', {
+      staticClass: "cb_filter_label",
+      staticStyle: {
+        "cursor": "pointer"
+      },
+      attrs: {
+        "for": 'check_' + campo
+      }
+    }, [_vm._v("\n                                " + _vm._s(filtro) + "\n                            ")])])
+  })), _vm._v(" "), _vm._m(2)])])]), _vm._v(" "), _vm._m(3)]) : _vm._e(), _vm._v(" "), (_vm.dados.length > 0) ? _c('div', [_c('table', {
+    staticClass: "table"
+  }, [_c('thead', {
+    staticClass: "head-table"
+  }, [_c('tr', [_vm._l((_vm.head), function(item) {
+    return _c('th', {
+      staticClass: "row-table",
       on: {
         "click": function($event) {
-          (key != '#' ? _vm.sortBy(key) : null)
+          _vm.sortTable(item)
         }
       }
-    }, [(key != '#') ? _c('span', [_vm._v("\n                " + _vm._s(_vm._f("capitalize")(key)) + "\n            ")]) : _vm._e(), _vm._v(" "), (key != '#') ? _c('span', {
-      staticClass: "arrow",
-      class: _vm.sortOrders[key] > 0 ? 'asc' : 'dsc'
-    }) : _vm._e()])
-  }))]), _vm._v(" "), _c('tbody', _vm._l((_vm.filteredData), function(entry) {
-    return _c('tr', _vm._l((_vm.columns), function(key) {
+    }, [_vm._v("\n                    " + _vm._s(item) + "\n                    "), (_vm.order == 'asc') ? _c('span', [_c('i', {
+      staticClass: "fa fa-chevron-down",
+      attrs: {
+        "aria-hidden": "true"
+      }
+    })]) : _c('span', [_c('i', {
+      staticClass: "fa fa-chevron-up",
+      attrs: {
+        "aria-hidden": "true"
+      }
+    })])])
+  }), _vm._v(" "), (_vm.actions.status != undefined) ? _c('th', {
+    staticClass: "row-table"
+  }, [_vm._v("Status")]) : _vm._e(), _vm._v(" "), (_vm.actions.detalhe != undefined) ? _c('th', {
+    staticClass: "row-table"
+  }, [_vm._v("Detalhe")]) : _vm._e(), _vm._v(" "), (_vm.actions.aprovar != undefined) ? _c('th', {
+    staticClass: "row-table"
+  }, [_vm._v("Aprovar")]) : _vm._e(), _vm._v(" "), (_vm.actions.reprovar != undefined) ? _c('th', {
+    staticClass: "row-table"
+  }, [_vm._v("Reprovar")]) : _vm._e(), _vm._v(" "), (_vm.actions.troca != undefined) ? _c('th', {
+    staticClass: "row-table"
+  }, [_vm._v("Troca")]) : _vm._e(), _vm._v(" "), (_vm.actions.adicionar != undefined) ? _c('th', {
+    staticClass: "row-table"
+  }, [_vm._v("Adicionar")]) : _vm._e()], 2)]), _vm._v(" "), _c('tbody', _vm._l((_vm.dados), function(dado) {
+    return _c('tr', [_vm._l((_vm.chaves), function(chave) {
       return _c('td', {
-        domProps: {
-          "innerHTML": _vm._s(entry[key])
+        staticClass: "row-table"
+      }, [_vm._v(_vm._s(dado[chave]))])
+    }), _vm._v(" "), (_vm.actions.status != undefined) ? _c('td', {
+      staticClass: "row-table"
+    }, [(dado['status'] == 0) ? _c('i', {
+      staticClass: "fa fa-circle green"
+    }) : _vm._e(), _vm._v(" "), (dado['status'] == 1) ? _c('i', {
+      staticClass: "fa fa-circle red"
+    }) : _vm._e(), _vm._v(" "), (dado['status'] == -1) ? _c('i', {
+      staticClass: "fa fa-circle orange"
+    }) : _vm._e()]) : _vm._e(), _vm._v(" "), (_vm.actions.detalhe != undefined) ? _c('td', {
+      staticClass: "row-table"
+    }, [_c('a', {
+      attrs: {
+        "href": dado['caminho'] + '/' + dado['id']
+      }
+    }, [_c('i', {
+      staticClass: "fa fa-eye"
+    })])]) : _vm._e(), _vm._v(" "), (_vm.actions.aprovar != undefined) ? _c('td', {
+      staticClass: "row-table",
+      on: {
+        "click": function($event) {
+          _vm.aprovar(dado['id'])
         }
-      })
-    }))
-  }))])
-},staticRenderFns: []}
+      }
+    }, [_c('i', {
+      staticClass: "glyphicon glyphicon-ok grey"
+    })]) : _vm._e(), _vm._v(" "), (_vm.actions.reprovar != undefined) ? _c('td', {
+      staticClass: "row-table",
+      on: {
+        "click": function($event) {
+          _vm.reprovar(dado['id'])
+        }
+      }
+    }, [_c('i', {
+      staticClass: "fa fa-times grey"
+    })]) : _vm._e(), _vm._v(" "), (_vm.actions.troca != undefined) ? _c('td', {
+      staticClass: "row-table"
+    }, [_c('i', {
+      staticClass: "fa fa-exchange grey"
+    })]) : _vm._e(), _vm._v(" "), (_vm.actions.adicionar != undefined) ? _c('td', {
+      staticClass: "row-table",
+      on: {
+        "click": function($event) {
+          _vm.adicionar(dado['id'])
+        }
+      }
+    }, [_c('i', {
+      staticClass: "fa fa-plus grey"
+    })]) : _vm._e()], 2)
+  }))]), _vm._v(" "), _c('div', {
+    staticClass: "text-center"
+  }, [_c('generic-paginator', {
+    attrs: {
+      "pagination": _vm.pagination,
+      "callback": _vm.loadData,
+      "options": _vm.paginationOptions
+    }
+  })], 1)]) : _c('div', [_vm._v("\n        Não há dados\n    ")])])
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "col-md-12 thumbnail",
+    staticStyle: {
+      "margin-bottom": "20px",
+      "display": "none"
+    },
+    attrs: {
+      "id": "block_fields_thumbnail"
+    }
+  }, [_c('div', {
+    staticClass: "col-md-11",
+    attrs: {
+      "id": "block_fields_minimize"
+    }
+  }), _vm._v(" "), _c('div', {
+    staticClass: "col-md-1"
+  }, [_c('button', {
+    staticClass: "btn btn-default",
+    attrs: {
+      "type": "button",
+      "onclick": "maximizeFilters();"
+    }
+  }, [_c('span', {
+    staticClass: "glyphicon glyphicon-plus",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  })])])])
+},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "modal-header"
+  }, [_c('button', {
+    staticClass: "close",
+    attrs: {
+      "type": "button",
+      "data-dismiss": "modal",
+      "aria-label": "Close"
+    }
+  }, [_c('span', {
+    attrs: {
+      "aria-hidden": "true"
+    }
+  }, [_vm._v("×")])]), _vm._v(" "), _c('h4', {
+    staticClass: "modal-title",
+    attrs: {
+      "id": "myModalLabel"
+    }
+  }, [_vm._v("Adicionar filtros")])])
+},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "modal-footer"
+  }, [_c('button', {
+    staticClass: "btn btn-danger",
+    attrs: {
+      "type": "button",
+      "data-dismiss": "modal"
+    }
+  }, [_vm._v("Cancelar")]), _vm._v(" "), _c('button', {
+    staticClass: "btn btn-primary",
+    attrs: {
+      "type": "button",
+      "data-dismiss": "modal",
+      "onclick": "addFilters()"
+    }
+  }, [_vm._v("Adicionar")])])
+},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('ol', {
+    staticClass: "breadcrumb",
+    staticStyle: {
+      "margin-bottom": "0px"
+    }
+  }, [_c('li', {
+    staticClass: "col-md-6"
+  }, [_c('a', {
+    attrs: {
+      "href": "#"
+    }
+  }, [_c('i', {
+    staticClass: "fa fa-search",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  }), _vm._v(" Procurar")])]), _vm._v(" "), _c('li', [_c('a', {
+    attrs: {
+      "href": "#"
+    }
+  }, [_vm._v("Hoje")])]), _vm._v(" "), _c('li', [_c('a', {
+    attrs: {
+      "href": "#"
+    }
+  }, [_vm._v("7 dias")])]), _vm._v(" "), _c('li', [_c('a', {
+    attrs: {
+      "href": "#"
+    }
+  }, [_vm._v("15 dias")])]), _vm._v(" "), _c('li', [_c('a', {
+    attrs: {
+      "href": "#"
+    }
+  }, [_vm._v("30 dias")])]), _vm._v(" "), _c('li', [_c('a', {
+    attrs: {
+      "href": "#"
+    }
+  }, [_vm._v("Outro periodo")])]), _vm._v(" "), _c('li', [_c('a', {
+    staticClass: "grey",
+    attrs: {
+      "href": "",
+      "data-toggle": "modal",
+      "data-target": "#myModal"
+    }
+  }, [_vm._v("\n                    Adicionar filtros "), _c('i', {
+    staticClass: "fa fa-filter",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  })])])])
+}]}
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-5d486e5e", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-0d8bf17a", module.exports)
   }
 }
 
@@ -19522,8 +19984,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-5d486e5e!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./generic-grid.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-5d486e5e!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./generic-grid.vue");
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-0d8bf17a!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./tabela.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-0d8bf17a!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./tabela.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -28920,13 +29382,9 @@ module.exports = function(module) {
 "use strict";
 'use strict';
 
-var _genericGrid = __webpack_require__(4);
+var _tabela = __webpack_require__(5);
 
-var _genericGrid2 = _interopRequireDefault(_genericGrid);
-
-var _genericPaginator = __webpack_require__(5);
-
-var _genericPaginator2 = _interopRequireDefault(_genericPaginator);
+var _tabela2 = _interopRequireDefault(_tabela);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -28947,11 +29405,9 @@ __webpack_require__(3);
 
 // Vue.component('generic-grid',require('./components/generic-grid.vue'));
 
-Vue.component('generic-grid', _genericGrid2.default);
+Vue.component('generic-paginator', __webpack_require__(4));
 
-// Vue.component('generic-paginator',require('./components/generic-paginator.vue'));
-
-Vue.component('generic-paginator', _genericPaginator2.default);
+Vue.component('tabela', _tabela2.default);
 
 /***/ }
 /******/ ]);

@@ -20,7 +20,7 @@
                                     class="fa fa-shopping-cart"></i> Comprar</a>
                     </div>
                     <div class="col-md-3">
-                        <a href="{{ url('ordemDeCompras') }}" class="btn btn-primary btn-block"><i
+                        <a href="{{ url('ordens-de-compras') }}" class="btn btn-primary btn-block"><i
                                     class="fa fa-shopping-basket"></i> Ordens de Compra</a>
                     </div>
                 </div>

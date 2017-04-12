@@ -2,24 +2,51 @@
 
 @section('content')
     <section class="content-header">
-        <h1 class="pull-left">Ordem De Compras</h1>
-        <h1 class="pull-right">
-           <a class="btn btn-primary pull-right" style="margin-top: -10px;margin-bottom: 5px" href="{!! route('ordemDeCompras.create') !!}">
-            {{ ucfirst( trans('common.new') )}}
-           </a>
-        </h1>
+        <div class="modal-header">
+            <div class="col-md-12">
+                <div class="col-md-9">
+                <span class="pull-left title">
+                    <i class="fa fa-arrow-left" aria-hidden="true"></i> Ordens de compra
+                </span>
+                </div>
+
+                <div class="col-md-3">
+                    <button type="button" class="btn btn-success button-large-green" data-dismiss="modal">
+                        Comprar insumos
+                    </button>
+                </div>
+            </div>
+        </div>
     </section>
     <div class="content">
         <div class="clearfix"></div>
 
         @include('flash::message')
-
-        <div class="clearfix"></div>
-        <div class="box box-primary">
-            <div class="box-body">
-                    @include('ordem_de_compras.table')
-            </div>
+        @include('adminlte-templates::common.errors')
+        <div class="box-body" id='app'>
+            <tabela
+                    api-url="/api/listagem-ordens-de-compras"
+                    api-filtros="/filter-json-ordem-compra"
+                    v-bind:params="{}"
+                    v-bind:actions="{filtros: true, status: true, detalhe: true}"
+                    v-bind:colunas="[
+                    {campo_db: 'id', label: 'núm. o.c'},
+                    {campo_db: 'obra', label: 'obra'},
+                    {campo_db: 'usuario', label: 'usuário'},
+                    {campo_db: 'situacao', label: 'situação'}
+                    ]">
+            >
+            </tabela>
         </div>
     </div>
 @endsection
 
+@section('scripts')
+    <script src="{{ asset('js/app.js') }}" type="text/javascript"></script>
+
+    <script>
+        const app = new Vue({
+            el: '#app'
+        });
+    </script>
+@endsection

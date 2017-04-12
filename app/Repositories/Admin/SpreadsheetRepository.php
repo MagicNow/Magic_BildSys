@@ -11,12 +11,14 @@ namespace App\Repositories\Admin;
 use App\Models\Grupo;
 use App\Models\Insumo;
 use App\Models\Orcamento;
+use App\Models\Planejamento;
 use App\Models\Planilha;
 use App\Models\Servico;
 use App\Models\User;
 use App\Notifications\PlanilhaProcessamento;
 use Box\Spout\Common\Type;
 use Box\Spout\Reader\ReaderFactory;
+use Carbon\Carbon;
 use Flash;
 use Illuminate\Support\Facades\Redirect;
 
@@ -30,7 +32,7 @@ class SpreadsheetRepository
      * @param $parametros = Variável responsável por informar os parametros enviado pelo usuário.
      * @return \Illuminate\Http\RedirectResponse
      */
-    public static function Spreadsheet($spreadsheet, $parametros){
+    public static function Spreadsheet($spreadsheet, $parametros, $tipo){
         try{
             /* Verifica se foi selecionado algum arquivo e salva na tabela *planilhas* */
             if ($spreadsheet['file']) {
@@ -46,15 +48,21 @@ class SpreadsheetRepository
                 $planilha->user_id = \Auth::id();
                 $planilha->arquivo = $destinationPath;
                 $planilha->parametros_json = $parametros;
+                $planilha->modulo = $tipo;
                 $planilha->save();
 
 
                 $cabecalho = [];
 
-                $reader = ReaderFactory::create(Type::CSV);
-                $reader->setFieldDelimiter(';');
-                $reader->setEndOfLineCharacter("\r");
-                $reader->setEncoding('UTF-8');
+                if($tipo == 'orcamento') {
+                    $reader = ReaderFactory::create(Type::CSV);
+                    $reader->setFieldDelimiter(';');
+                    $reader->setEndOfLineCharacter("\r");
+                    $reader->setEncoding('UTF-8');
+
+                } elseif ($tipo == 'planejamento'){
+                    $reader = ReaderFactory::create(Type::XLSX);
+                }
                 $reader->open(str_replace('public','storage/app/',public_path()).$destinationPath);
 
                 $folha = 0;
@@ -67,10 +75,18 @@ class SpreadsheetRepository
                                 foreach ($row as $index => $valor) {
                                     $cabecalho[str_slug($valor, '_')] = $index;
                                 }
-                                # Pegando as colunas que foi informado no MODEL orçamento variável = $relation
-                                $columns = Orcamento::$relation;
-                                # Retornando para o controller o $cabeçalho da planilha e $colunas do banco de dados.
-                                return ['cabecalho' => $cabecalho, 'colunas' => $columns];
+
+                                if($tipo == 'orcamento') {
+                                    # Pegando as colunas que foi informado no MODEL orçamento variável = $relation
+                                    $columns = Orcamento::$relation;
+                                    # Retornando para o controller o $cabeçalho da planilha e $colunas do banco de dados.
+                                    return ['cabecalho' => $cabecalho, 'colunas' => $columns];
+                                }elseif($tipo == 'planejamento') {
+                                    # Pegando as colunas que foi informado no MODEL orçamento variável = $relation
+                                    $columns = Planejamento::$relation;
+                                    # Retornando para o controller o $cabeçalho da planilha e $colunas do banco de dados.
+                                    return ['cabecalho' => $cabecalho, 'colunas' => $columns];
+                                }
                             }
                         }
                     }
@@ -97,6 +113,17 @@ class SpreadsheetRepository
      */
     public static function SpreadsheetProcess($planilha)
     {
+        if($planilha){
+            if ($planilha->modulo == 'orcamento'){
+                SpreadsheetRepository::orcamento($planilha);
+            } elseif ($planilha->modulo == 'planejamento'){
+                SpreadsheetRepository::planejamento($planilha);
+            }
+        }
+
+    }
+
+    public static function orcamento($planilha){
         $line = 1;
         $reader = ReaderFactory::create(Type::CSV);
         $reader->setFieldDelimiter(';');
@@ -114,7 +141,6 @@ class SpreadsheetRepository
         foreach(json_decode($planilha->parametros_json) as $parametro_key => $parametro_value){
             $param[$parametro_key] = $parametro_value;
         }
-
         $orcamento_ativos = Orcamento::where('ativo', 1)
             ->where('obra_id', $param['obra_id'])
             ->where('orcamento_tipo_id',$param['orcamento_tipo_id'])
@@ -198,8 +224,6 @@ class SpreadsheetRepository
                         }
 
                         # query verificar se existe grupo_id = obra
-
-//                        # verifico esse ($codigo_grupo) ou ($param['obra_id']) ?
                         $grupo = Grupo::where('codigo', $param['obra_id'])->first();
                         if($grupo) {
                             $final['grupo_id'] = $grupo->id;
@@ -278,7 +302,126 @@ class SpreadsheetRepository
 
         $user = User::find($final['user_id']);
         if($user){
-            $user->notify(new PlanilhaProcessamento(['success'=>!count($mensagens_erro),'error'=>$mensagens_erro]));
+            $user->notify(new PlanilhaProcessamento(['success'=>!count($mensagens_erro),'error'=>array_unique($mensagens_erro)]));
+        }
+    }
+
+    public static function planejamento($planilha){
+        $line = 1;
+        $reader = ReaderFactory::create(Type::XLSX);
+        $reader->setShouldFormatDates(true);
+        $reader->open(str_replace('public','storage/app/',public_path()).$planilha->arquivo);
+
+        $folha = 0;
+        $erro = 0;
+        $mensagens_erro = [];
+        $final = [];
+        \DB::beginTransaction();
+
+        foreach ($reader->getSheetIterator() as $sheet) {
+            if ($folha === 0) {
+                $linha = 0;
+                foreach ($sheet->getRowIterator() as $row) {
+                    $linha++;
+                    if ($linha > 1) {
+                        $line++;
+
+                        $colunas = json_decode($planilha->colunas_json);
+//                        dd($colunas);
+                        foreach ($colunas as $chave => $value) {
+                            if($value) {
+                                if($row[$chave]) {
+                                    switch (Planejamento::$relation[$value]) {
+                                        case 'string' :
+                                            if (is_string($row[$chave])) {
+                                                $final[$value] = $row[$chave];
+                                            } else {
+                                                if ($row[$chave]) {
+                                                    $final[$value] = (string)($row[$chave]);
+                                                } else {
+                                                    $erro = 1;
+                                                    $mensagens_erro[] = 'O campo ' . $value . ' não é do tipo STRING';;
+                                                }
+                                            }
+                                            break;
+
+                                        case 'decimal' :
+                                            if (is_float($row[$chave])) {
+                                                $final[$value] = str_replace(",",".",$row[$chave]);
+                                            } else {
+                                                if ($row[$chave]) {
+                                                    $final[$value] =  floatval(str_replace(",", ".", str_replace(".", "", $row[$chave])));
+                                                } else {
+                                                    $erro = 1;
+                                                    $mensagens_erro[] = 'O campo ' . $value . ' não é do tipo DECIMAL';
+                                                }
+                                            }
+                                            break;
+
+                                        case 'integer' :
+                                            if (is_int($row[$chave])) {
+                                                $final[$value] = $row[$chave];
+                                            } else {
+                                                if ($row[$chave]) {
+                                                    $final[$value] = (int)($row[$chave]);
+                                                } else {
+                                                    $erro = 1;
+                                                    $mensagens_erro[] = 'O campo ' . $value . ' não é do tipo INTEGER';
+//                                                $mensagens_erro[] = 'LINHA:'.$line.' - O campo '.$value.' não é do tipo INTEGER';
+                                                }
+                                            }
+                                            break;
+                                        case 'date' :
+                                            $data_array = explode('/',$row[$chave]);
+                                            if(count($data_array)==3){
+                                                if($data_array[0] > 12){
+                                                    $final[$value] = $data_array[2].'-'.$data_array[1].'-'.$data_array[0];
+                                                } else {
+                                                    $final[$value] = $data_array[2] . '-' . $data_array[0] . '-' . $data_array[1];
+                                                }
+                                            }else{
+                                                $erro = 1;
+                                                $mensagens_erro[] = 'O campo ' . $value . ' não é do tipo DATE';
+                                            }
+                                            break;
+                                        default:
+                                            $final[$value] = $row[$chave];
+                                            break;
+                                    }
+                                }
+                            }
+                            $parametros = json_decode($planilha->parametros_json);
+                            foreach ($parametros as $indice => $valor) {
+                                $final[$indice] = $valor;
+                            }
+
+                        }
+//                        dd($final);
+                        # save data table budget
+                        if($erro == 0) {
+                            $planejamento = Planejamento::create($final);
+                        }else{
+                            // estourar loop
+                            $erro = 1;
+                        }
+                    }
+                }
+            }
+            $folha++;
+        }
+
+        # finish transaction
+        if($erro == 0) {
+            \DB::commit();
+        }else{
+            \DB::rollBack();
+        }
+        # close reader
+        $reader->close();
+
+        $user = User::find($final['user_id']);
+        if($user){
+            $user->notify(new PlanilhaProcessamento(['success'=>!count($mensagens_erro),'error'=>array_unique($mensagens_erro)]));
         }
     }
 }
