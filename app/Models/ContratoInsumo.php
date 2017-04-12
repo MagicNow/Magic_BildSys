@@ -79,6 +79,15 @@ class ContratoInsumo extends Model
         $this->attributes['valor_total'] = $result;
     }
 
+    public function getQtdAttribute($value)
+    {
+        if(strlen($value) == 4){
+            $value = '0'.$value;
+        }
+
+        return $value;
+    }
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
