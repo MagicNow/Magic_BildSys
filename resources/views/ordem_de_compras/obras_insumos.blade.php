@@ -48,7 +48,7 @@
             {{-->--}}
             {{--</tabela>--}}
             <tabela
-                    api-url="/compras/{{$planejamento->id}}/obrasInsumosJson"
+                    api-url="/compras/{{$planejamento->id}}/obrasInsumosJson/{{$insumoGrupo->id}}"
                     api-filtros="/compras/{{$planejamento->id}}/obrasInsumosFilters"
                     v-bind:params="{@if (isset($planejamento->id)) planejamento_id: {{$planejamento->id}} @endif }"
                     v-bind:actions="{filtros: true, troca: true}"

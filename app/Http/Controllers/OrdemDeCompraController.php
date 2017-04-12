@@ -8,6 +8,7 @@ use App\Http\Requests\CreateOrdemDeCompraRequest;
 use App\Http\Requests\UpdateOrdemDeCompraRequest;
 use App\Models\Insumo;
 use App\Models\Grupo;
+use App\Models\InsumoGrupo;
 use App\Models\Lembrete;
 use App\Models\Planejamento;
 use App\Models\PlanejamentoCompra;
@@ -229,13 +230,14 @@ class OrdemDeCompraController extends AppBaseController
     /**
      * Tela que traz os insumos de uma tarefa especifica de uma obra.
      *
-     * @param  Request $request ->planejamento_id
-     *
+     * @param  Request $request
+     * @param  Planejamento $planejamento
+     * @param  InsumoGrupo $insumoGrupo
      * @return Render View
      */
-    public function obrasInsumos(Request $request, Lembrete $lembrete)
+    public function obrasInsumos(Request $request, Planejamento $planejamento, InsumoGrupo $insumoGrupo)
     {
-        return view('ordem_de_compras.obras_insumos', compact('lembrete'));
+        return view('ordem_de_compras.obras_insumos', compact('planejamento', 'insumoGrupo'));
     }
 
     /**
@@ -258,37 +260,37 @@ class OrdemDeCompraController extends AppBaseController
      *
      * @return Json
      */
-    public function obrasInsumosJson(Request $request, Planejamento $planejamento)
+    public function obrasInsumosJson(Request $request, Planejamento $planejamento, InsumoGrupo $insumoGrupo)
     {
         //Pega a tarefa(planejamento)
-        $planejamento_compras = DB::table('planejamento_compras')
-            ->select('insumo_id')
-            ->where('planejamento_compras.planejamento_id',$planejamento->id)
-            ->get();
+//        $planejamento_compras = DB::table('planejamento_compras')
+//            ->select('insumo_id')
+//            ->where('planejamento_compras.planejamento_id',$planejamento->id)
+//            ->get();
 
         //Criar arrays dos insumos do planejamento de compras por servicos grupos ou codigo do insumo
-        $servicos = array();
-        $grupos = array();
-        $codigo = array();
+//        $servicos = array();
+//        $grupos = array();
+//        $codigo = array();
         //Popula arrays
-        foreach ($planejamento_compras as $planejamento)
-        {
-            $flag_cod = false;
-            if(isset($planejamento->codigo_insumo) && !empty($planejamento->codigo_insumo)){
-                $flag_cod = true;
-                $codigo[] = $planejamento->codigo_insumo;
-            }
-
-            $flag_servico = false;
-            if(isset($planejamento->servico_id) && !empty($planejamento->servico_id) && !$flag_cod){
-                $flag_servico = true;
-                $servicos[] = $planejamento->servico_id;
-            }
-
-            if(isset($planejamento->grupo_id)&& !empty($planejamento->grupo_id) && !$flag_cod && !$flag_servico){
-                $grupos[] = $planejamento->grupo_id;
-            }
-        }
+//        foreach ($planejamento_compras as $planejamento)
+//        {
+//            $flag_cod = false;
+//            if(isset($planejamento->codigo_insumo) && !empty($planejamento->codigo_insumo)){
+//                $flag_cod = true;
+//                $codigo[] = $planejamento->codigo_insumo;
+//            }
+//
+//            $flag_servico = false;
+//            if(isset($planejamento->servico_id) && !empty($planejamento->servico_id) && !$flag_cod){
+//                $flag_servico = true;
+//                $servicos[] = $planejamento->servico_id;
+//            }
+//
+//            if(isset($planejamento->grupo_id)&& !empty($planejamento->grupo_id) && !$flag_cod && !$flag_servico){
+//                $grupos[] = $planejamento->grupo_id;
+//            }
+//        }
 
         //Query para utilização dos filtros
         $insumo_query = Insumo::query();
@@ -305,53 +307,56 @@ class OrdemDeCompraController extends AppBaseController
                 'orcamentos.qtd_total',
                 'orcamentos.preco_total'
             ])
-            ->where('insumos.insumo_grupo_id',$insumo_grupo->id)
+            ->where('insumos.insumo_grupo_id',$insumoGrupo->id)
             ->where('planejamento_compras.planejamento_id', $planejamento->id);
 
         //Testa a ordenação
-        if(isset($request->orderkey)) {
-            //Traz os resultados filtrados pelos arrays criados
-            $insumos = $insumo_query->join('orcamentos', 'insumos.id', '=', 'orcamentos.insumo_id')
-                ->where(function ($query) use($codigo, $grupos, $servicos) {
-                    $query->whereIn('orcamentos.codigo_insumo', $codigo, 'or')
-                        ->whereIn('orcamentos.servico_id', $servicos, 'or')
-                        ->whereIn('orcamentos.grupo_id', $grupos, 'or')
-                        ->whereIn('orcamentos.subgrupo1_id', $grupos, 'or')
-                        ->whereIn('orcamentos.subgrupo2_id', $grupos, 'or')
-                        ->whereIn('orcamentos.subgrupo3_id', $grupos, 'or');
-                })
-                ->select([
-                    'insumos.id',
-                    'insumos.nome',
-                    'insumos.unidade_sigla',
-                    'insumos.codigo',
-                    'orcamentos.grupo_id',
-                    'orcamentos.servico_id',
-                    'orcamentos.qtd_total',
-                    'orcamentos.preco_total'
-                ])->orderBy($request->orderkey, $request->order);
-        }else{
-            //Traz os resultados filtrados pelos arrays criados
-            $insumos = $insumo_query->join('orcamentos', 'insumos.id', '=', 'orcamentos.insumo_id')
-                ->where(function ($query) use($codigo, $grupos, $servicos) {
-                    $query->whereIn('orcamentos.codigo_insumo', $codigo, 'or')
-                        ->whereIn('orcamentos.servico_id', $servicos, 'or')
-                        ->whereIn('orcamentos.grupo_id', $grupos, 'or')
-                        ->whereIn('orcamentos.subgrupo1_id', $grupos, 'or')
-                        ->whereIn('orcamentos.subgrupo2_id', $grupos, 'or')
-                        ->whereIn('orcamentos.subgrupo3_id', $grupos, 'or');
-                })
-                ->select([
-                    'insumos.id',
-                    'insumos.nome',
-                    'insumos.unidade_sigla',
-                    'insumos.codigo',
-                    'orcamentos.grupo_id',
-                    'orcamentos.servico_id',
-                    'orcamentos.qtd_total',
-                    'orcamentos.preco_total'
-                ]);
+        if(isset($request->orderkey)){
+            $insumo_query->orderBy($request->orderkey, $request->order);
         }
+//        if(isset($request->orderkey)) {
+//            //Traz os resultados filtrados pelos arrays criados
+//            $insumos = $insumo_query->join('orcamentos', 'insumos.id', '=', 'orcamentos.insumo_id')
+//                ->where(function ($query) use($codigo, $grupos, $servicos) {
+//                    $query->whereIn('orcamentos.codigo_insumo', $codigo, 'or')
+//                        ->whereIn('orcamentos.servico_id', $servicos, 'or')
+//                        ->whereIn('orcamentos.grupo_id', $grupos, 'or')
+//                        ->whereIn('orcamentos.subgrupo1_id', $grupos, 'or')
+//                        ->whereIn('orcamentos.subgrupo2_id', $grupos, 'or')
+//                        ->whereIn('orcamentos.subgrupo3_id', $grupos, 'or');
+//                })
+//                ->select([
+//                    'insumos.id',
+//                    'insumos.nome',
+//                    'insumos.unidade_sigla',
+//                    'insumos.codigo',
+//                    'orcamentos.grupo_id',
+//                    'orcamentos.servico_id',
+//                    'orcamentos.qtd_total',
+//                    'orcamentos.preco_total'
+//                ])->orderBy($request->orderkey, $request->order);
+//        }else{
+//            //Traz os resultados filtrados pelos arrays criados
+//            $insumos = $insumo_query->join('orcamentos', 'insumos.id', '=', 'orcamentos.insumo_id')
+//                ->where(function ($query) use($codigo, $grupos, $servicos) {
+//                    $query->whereIn('orcamentos.codigo_insumo', $codigo, 'or')
+//                        ->whereIn('orcamentos.servico_id', $servicos, 'or')
+//                        ->whereIn('orcamentos.grupo_id', $grupos, 'or')
+//                        ->whereIn('orcamentos.subgrupo1_id', $grupos, 'or')
+//                        ->whereIn('orcamentos.subgrupo2_id', $grupos, 'or')
+//                        ->whereIn('orcamentos.subgrupo3_id', $grupos, 'or');
+//                })
+//                ->select([
+//                    'insumos.id',
+//                    'insumos.nome',
+//                    'insumos.unidade_sigla',
+//                    'insumos.codigo',
+//                    'orcamentos.grupo_id',
+//                    'orcamentos.servico_id',
+//                    'orcamentos.qtd_total',
+//                    'orcamentos.preco_total'
+//                ]);
+//        }
         //Aplica filtro do Jhonatan
         $insumos = CodeRepository::filter($insumos, $request->all());
 
