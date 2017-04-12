@@ -11,18 +11,33 @@ use Illuminate\Support\Facades\DB;
 class PlanejamentoController extends AppBaseController
 {
     public function lembretes(Request $request){
-        $lembretes = Lembrete::join('planejamentos','planejamentos.id','=','lembretes.planejamento_id')
-            ->join('obras','obras.id','=','planejamentos.obra_id')
+        $lembretes = Lembrete::join('insumo_grupos','insumo_grupos.id','=','lembretes.insumo_grupo_id')
+            ->join('insumos','insumos.insumo_grupo_id','=','insumo_grupos.id')
+            ->join('planejamento_compras','planejamento_compras.insumo_id','=','insumos.id')
+            ->join('planejamentos', 'planejamentos.id','=','planejamento_compras.planejamento_id')
+            ->join('obras', 'obras.id','=','planejamentos.obra_id')
             ->select([
-                'lembretes.id',
                 DB::raw("CONCAT(obras.nome,' - ',planejamentos.tarefa,' - ', lembretes.nome) title"),
                 DB::raw("'event-info' as class"),
                 DB::raw("CONCAT('/compras/',planejamentos.id,'/obrasInsumos') as url"),
                 DB::raw("DATE_FORMAT(DATE_SUB(planejamentos.data, INTERVAL lembretes.`dias_prazo_minimo` DAY),'%d/%m/%Y') as inicio"),
                 DB::raw("UNIX_TIMESTAMP(DATE_SUB(planejamentos.data, INTERVAL lembretes.`dias_prazo_minimo` DAY))*1000 as start"),
                 DB::raw("UNIX_TIMESTAMP(DATE_SUB(planejamentos.data, INTERVAL lembretes.`dias_prazo_minimo` DAY))*1000 as end"),
-//                DB::raw("UNIX_TIMESTAMP(DATE_SUB(planejamentos.data, INTERVAL lembretes.`dias_prazo_maximo` DAY)) as end"),
             ]);
+
+
+//        $lembretes = Lembrete::join('planejamentos','planejamentos.id','=','lembretes.planejamento_id')
+//            ->join('obras','obras.id','=','planejamentos.obra_id')
+//            ->select([
+//                'lembretes.id',
+//                DB::raw("CONCAT(obras.nome,' - ',planejamentos.tarefa,' - ', lembretes.nome) title"),
+//                DB::raw("'event-info' as class"),
+//                DB::raw("CONCAT('/compras/',planejamentos.id,'/obrasInsumos') as url"),
+//                DB::raw("DATE_FORMAT(DATE_SUB(planejamentos.data, INTERVAL lembretes.`dias_prazo_minimo` DAY),'%d/%m/%Y') as inicio"),
+//                DB::raw("UNIX_TIMESTAMP(DATE_SUB(planejamentos.data, INTERVAL lembretes.`dias_prazo_minimo` DAY))*1000 as start"),
+//                DB::raw("UNIX_TIMESTAMP(DATE_SUB(planejamentos.data, INTERVAL lembretes.`dias_prazo_minimo` DAY))*1000 as end"),
+//                DB::raw("UNIX_TIMESTAMP(DATE_SUB(planejamentos.data, INTERVAL lembretes.`dias_prazo_maximo` DAY)) as end"),
+//            ]);
             if($request->from || $request->to){
                 if($request->from){
                     $from = date('Y-m-d',$request->from/1000);
