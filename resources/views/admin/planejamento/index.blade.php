@@ -14,9 +14,10 @@
                     <div class="col-md-10">
                         <div class="form-group">
                             {!! Form::label('obra_id', 'Obra:') !!}
-                            {!! Form::select('obra_id', [''=>'Escolha' ]+$obras, null, ['class' => 'form-control', 'required'=>'required']) !!}
+                            {!! Form::select('obra_id', [''=>'Escolha...' ]+$obras, null, ['class' => 'form-control', 'required'=>'required']) !!}
                         </div>
-                        <label><h5 style="color:#ff9800">Apenas planilhas no formato <strong class="label label-info"> .xlsx </strong></h5></label>
+                        <h4>Apenas planilhas no formato <strong class="label label-warning"> .xlsx </strong></h4></br>
+                        <h5 style="color:#000000">Planilha modelo: <strong class="label label-warning"><a href="/planejamentos.xlsx" style="color:white" target="_blank">clique aqui</a> </strong></h5>
                         <div class="row" style="margin-bottom: 20px">
                             <div class="col-sm-6 {{ $errors->has('file') ? 'has-error' : '' }}">
                                 {!! Form::file('file', array('id' => 'file', 'class' => 'form-control', 'required'=>'required')) !!}

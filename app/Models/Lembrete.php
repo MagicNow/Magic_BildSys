@@ -54,7 +54,6 @@ class Lembrete extends Model
      */
     public static $rules = [
         'lembrete_tipo_id' => 'required',
-        'user_id' => 'required',
         'nome' => 'required',
         'insumo_grupo_id' => 'required'
     ];
@@ -86,16 +85,16 @@ class Lembrete extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
-    public function lembreteNotificaPerfis()
-    {
-        return $this->hasMany(LembreteNotificaPerfi::class);
-    }
+//    public function lembreteNotificaPerfis()
+//    {
+//        return $this->hasMany(LembreteNotificaPerfi::class);
+//    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
-    public function lembreteNotificaUsuarios()
-    {
-        return $this->hasMany(LembreteNotificaUsuario::class);
-    }
+//    public function lembreteNotificaUsuarios()
+//    {
+//        return $this->hasMany(LembreteNotificaUsuario::class);
+//    }
 }

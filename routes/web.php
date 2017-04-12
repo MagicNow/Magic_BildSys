@@ -75,7 +75,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         Route::delete('lembretes/{lembretes}', ['as'=> 'admin.lembretes.destroy', 'uses' => 'Admin\LembreteController@destroy']);
         Route::get('lembretes/{lembretes}', ['as'=> 'admin.lembretes.show', 'uses' => 'Admin\LembreteController@show']);
         Route::get('lembretes/{lembretes}/edit', ['as'=> 'admin.lembretes.edit', 'uses' => 'Admin\LembreteController@edit']);
-        Route::get('lembretes/busca', ['as' => 'admin.lembretes.busca', 'uses' => 'Admin\LembreteController@busca']);
+        Route::get('lembretes/filtro/busca', ['as' => 'admin.lembretes.busca', 'uses' => 'Admin\LembreteController@busca']);
 
         $router->group(['middleware' => 'needsPermission:users.list'], function() use ($router) {
             #Manage ACL

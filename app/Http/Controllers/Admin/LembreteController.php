@@ -6,11 +6,14 @@ use App\DataTables\Admin\LembreteDataTable;
 use App\Http\Requests\Admin;
 use App\Http\Requests\Admin\CreateLembreteRequest;
 use App\Http\Requests\Admin\UpdateLembreteRequest;
+use App\Models\InsumoGrupo;
+use App\Models\Lembrete;
 use App\Models\LembreteTipo;
 use App\Repositories\Admin\LembreteRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Response;
 
 class LembreteController extends AppBaseController
@@ -42,7 +45,8 @@ class LembreteController extends AppBaseController
     public function create()
     {
         $lembrete_tipos = LembreteTipo::pluck('nome','id')->toArray();
-        return view('admin.lembretes.create', compact('lembrete_tipos'));
+        $insumo_grupos = InsumoGrupo::pluck('nome','id')->toArray();
+        return view('admin.lembretes.create', compact('lembrete_tipos','insumo_grupos'));
     }
 
     /**
@@ -55,6 +59,15 @@ class LembreteController extends AppBaseController
     public function store(CreateLembreteRequest $request)
     {
         $input = $request->all();
+        $input['user_id'] = Auth::id();
+
+        $lembreteTipo = LembreteTipo::find($input['lembrete_tipo_id']);
+        if(!$input['dias_prazo_minimo']){
+            $input['dias_prazo_minimo'] = $lembreteTipo->dias_prazo_minimo;
+        }
+        if(!$input['dias_prazo_maximo']){
+            $input['dias_prazo_maximo'] = $lembreteTipo->dias_prazo_maximo;
+        }
 
         $lembrete = $this->lembreteRepository->create($input);
 
@@ -92,6 +105,8 @@ class LembreteController extends AppBaseController
      */
     public function edit($id)
     {
+        $lembrete_tipos = LembreteTipo::pluck('nome','id')->toArray();
+        $insumo_grupos = InsumoGrupo::pluck('nome','id')->toArray();
         $lembrete = $this->lembreteRepository->findWithoutFail($id);
 
         if (empty($lembrete)) {
@@ -100,7 +115,7 @@ class LembreteController extends AppBaseController
             return redirect(route('admin.lembretes.index'));
         }
 
-        return view('admin.lembretes.edit')->with('lembrete', $lembrete);
+        return view('admin.lembretes.edit', compact('lembrete','lembrete_tipos','insumo_grupos'));
     }
 
     /**
@@ -114,14 +129,21 @@ class LembreteController extends AppBaseController
     public function update($id, UpdateLembreteRequest $request)
     {
         $lembrete = $this->lembreteRepository->findWithoutFail($id);
-
         if (empty($lembrete)) {
             Flash::error('Lembrete '.trans('common.not-found'));
 
             return redirect(route('admin.lembretes.index'));
         }
+        $input = $request->all();
+        $lembreteTipo = LembreteTipo::find($input['lembrete_tipo_id']);
+        if(!$input['dias_prazo_minimo']){
+            $input['dias_prazo_minimo'] = $lembreteTipo->dias_prazo_minimo;
+        }
+        if(!$input['dias_prazo_maximo']){
+            $input['dias_prazo_maximo'] = $lembreteTipo->dias_prazo_maximo;
+        }
 
-        $lembrete = $this->lembreteRepository->update($request->all(), $id);
+        $lembrete = $this->lembreteRepository->update($input, $id);
 
         Flash::success('Lembrete '.trans('common.updated').' '.trans('common.successfully').'.');
 
@@ -155,8 +177,8 @@ class LembreteController extends AppBaseController
     public function busca(Request $request){
         return InsumoGrupo::select([
             'id',
-            'name'
+            'nome'
         ])
-            ->where('name','like', '%'.$request->q.'%')->paginate();
+            ->where('nome','like', '%'.$request->q.'%')->paginate();
     }
 }

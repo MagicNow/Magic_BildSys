@@ -1,7 +1,7 @@
 <!-- Lembrete Tipo Id Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('lembrete_tipo_id', 'Lembrete:') !!}
-    {!! Form::select('lembrete_tipo_id',[''=>'Escolha']+$lembrete_tipos, null, ['class' => 'form-control']) !!}
+    {!! Form::select('lembrete_tipo_id',[''=>'Escolha...']+$lembrete_tipos, null, ['class' => 'form-control']) !!}
 </div>
 
 <!-- Dias Prazo Minimo Field -->
@@ -25,7 +25,7 @@
 <!-- Grupos de insumo Field -->
 <div class="form-group col-sm-12">
     {!! Form::label('insumo_grupo_id', 'Grupos:') !!}
-    {!! Form::text('insumo_grupo_id', null, ['class' => 'form-control']) !!}
+    {!! Form::select('insumo_grupo_id', ['' => 'Escolha...']+$insumo_grupos, null, ['class' => 'form-control','id'=>'insumo_grupo_id']) !!}
 </div>
 
 <!-- Submit Field -->
@@ -41,7 +41,7 @@
 
             var markup =    "<div class='select2-result-obj clearfix'>" +
                     "   <div class='select2-result-obj__meta'>" +
-                    "       <div class='select2-result-obj__title'>" + obj.name + "</div>"+
+                    "       <div class='select2-result-obj__title'>" + obj.nome + "</div>"+
                     "   </div>"+
                     "</div>";
 
@@ -50,7 +50,7 @@
 
         function formatResultSelection (obj) {
             if(obj.nome){
-                return obj.name;
+                return obj.nome;
             }
             return obj.text;
         }
@@ -61,7 +61,7 @@
                 placeholder:"-",
                 language: "pt-BR",
                 ajax: {
-                    url: "/admin/lembrete/busca",
+                    url: "/admin/lembretes/filtro/busca",
                     dataType: 'json',
                     delay: 250,
 

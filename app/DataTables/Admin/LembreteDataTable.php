@@ -17,6 +17,21 @@ class LembreteDataTable extends DataTable
         return $this->datatables
             ->eloquent($this->query())
             ->addColumn('action', 'admin.lembretes.datatables_actions')
+            ->editColumn('lembrete_tipo_id', function($obj){
+                return $obj->lembreteTipo->nome;
+            })
+            ->editColumn('user_id', function($obj){
+                return $obj->user->name;
+            })
+            ->editColumn('dias_prazo_minimo', function($obj){
+                return isset($obj->dias_prazo_minimo) ? $obj->dias_prazo_minimo . ' dias ' : '';
+            })
+            ->editColumn('dias_prazo_maximo', function($obj){
+                return isset($obj->dias_prazo_maximo) ? $obj->dias_prazo_maximo . ' dias ' : '';
+            })
+            ->editColumn('user_id', function($obj){
+                return $obj->user->name;
+            })
             ->make(true);
     }
 
@@ -91,12 +106,11 @@ class LembreteDataTable extends DataTable
     private function getColumns()
     {
         return [
-            'lembrete_tipo_id' => ['name' => 'lembrete_tipo_id', 'data' => 'lembrete_tipo_id'],
-            'planejamento_id' => ['name' => 'planejamento_id', 'data' => 'planejamento_id'],
-            'user_id' => ['name' => 'user_id', 'data' => 'user_id'],
+            'lembrete' => ['name' => 'lembrete_tipo_id', 'data' => 'lembrete_tipo_id'],
             'nome' => ['name' => 'nome', 'data' => 'nome'],
-            'dias_prazo_minimo' => ['name' => 'dias_prazo_minimo', 'data' => 'dias_prazo_minimo'],
-            'dias_prazo_maximo' => ['name' => 'dias_prazo_maximo', 'data' => 'dias_prazo_maximo']
+            'prazo_minimo' => ['name' => 'dias_prazo_minimo', 'data' => 'dias_prazo_minimo'],
+            'prazo_maximo' => ['name' => 'dias_prazo_maximo', 'data' => 'dias_prazo_maximo'],
+            'cadastrado_por' => ['name' => 'user_id', 'data' => 'user_id']
         ];
     }
 
