@@ -30,7 +30,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-                            <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="addFi   lters()">Adicionar</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="addFilters()">Adicionar</button>
                         </div>
                     </div>
                 </div>
@@ -139,6 +139,7 @@
                 type: Object
             },
             apiAdicionar: '',
+            _token: '',
             actions: {
                 status: '',
                 troca: '',
@@ -177,8 +178,15 @@
             },
             //Método da action adicionar onClick
             adicionar: function(item){
+                item['_token'] =this._token;
                 this.$http.post(this.apiAdicionar, item)
                     .then(function (resp) {
+                        window.location.reload();
+//                        if(resp.status == 200){
+//                            window.location.reload();
+//                        }else{
+//                            window.location.reload();
+//                        }
 
                     })
             },

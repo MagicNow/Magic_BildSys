@@ -769,186 +769,194 @@ module.exports = __vue_exports__
 //
 //
 
-/* harmony default export */ exports["default"] = {
-    props: {
-        apiUrl: {
-            required: true
-        },
-        apiFiltros:'',
-        params: {
-            type: Object
-        },
-        apiAdicionar: '',
-        actions: {
-            status: '',
-            troca: '',
-            adicionar: '',
-            detalhe: '',
-            aprovar: '',
-            reprovar: '',
-            troca: ''
-        },
-        colunas: ''
-    },
-    data: function () {
-        return {
-            head: [],
-            chaves: [],
-            dados: [],
-            success: '',
-            error: '',
-            filtros: [],
-            pagination: {
+    /* harmony default export */ exports["default"] = {
+        props: {
+            apiUrl: {
+                required: true
+            },
+            apiFiltros:'',
+            params: {
                 type: Object
             },
-            paginationOptions: {
-                offset: 4,
-                previousText: 'Anterior',
-                nextText: 'Proxima',
-                alwaysShowPrevNext: false
+            apiAdicionar: '',
+            _token: '',
+            actions: {
+                status: '',
+                troca: '',
+                adicionar: '',
+                detalhe: '',
+                aprovar: '',
+                reprovar: '',
+                troca: ''
             },
-            order: 'asc'
-        }
-    },
-    methods: {
-        //Método da action aprovar onClick
-        aprovar: function(id){
-
+            colunas: ''
         },
-        //Método da action adicionar onClick
-        adicionar: function(item){
-            this.$http.post(this.apiAdicionar, item)
-                .then(function (resp) {
-
-                })
+        data: function () {
+            return {
+                head: [],
+                chaves: [],
+                dados: [],
+                success: '',
+                error: '',
+                filtros: [],
+                pagination: {
+                    type: Object
+                },
+                paginationOptions: {
+                    offset: 4,
+                    previousText: 'Anterior',
+                    nextText: 'Proxima',
+                    alwaysShowPrevNext: false
+                },
+                order: 'asc'
+            }
         },
-        //Método da action reprovar onClick
-        reprovar: function (id) {
+        methods: {
+            //Método da action aprovar onClick
+            aprovar: function(id){
 
-        },
-        //Mètodo de ordenação de tabela
-        sortTable: function(item){
-            Array.prototype.getIndexBy = function (name, value) {
+            },
+            //Método da action adicionar onClick
+            adicionar: function(item){
+                item['_token'] =this._token;
+                this.$http.post(this.apiAdicionar, item)
+                    .then(function (resp) {
+                        window.location.reload();
+//                        if(resp.status == 200){
+//                            window.location.reload();
+//                        }else{
+//                            window.location.reload();
+//                        }
+
+                    })
+            },
+            //Método da action reprovar onClick
+            reprovar: function (id) {
+
+            },
+            //Mètodo de ordenação de tabela
+            sortTable: function(item){
+                Array.prototype.getIndexBy = function (name, value) {
+                    var this$1 = this;
+
+                    for (var i = 0; i < this.length; i++) {
+                        if (this$1[i][name] == value) {
+                            return i;
+                        }
+                    }
+                    return -1;
+                }
+                if(this.order.localeCompare('desc')==0 || this.order.localeCompare('')==0){
+                    this.order = 'asc';
+                }else{
+                    this.order = 'desc';
+                }
+                if (typeof this.colunas == 'undefined' || this.colunas[0].length == 0) {
+                    this.params.orderkey = item;
+                    this.params.order= this.order;
+                    this.loadData();
+                }else{
+                    var a = this.colunas[this.colunas.getIndexBy("label", item)]
+                    this.params.orderkey = a.campo_db;
+                    this.params.order= this.order;
+                    this.loadData();
+                }
+            },
+            //Método para preencher a header da table e para criar array de chaves
+            getHeader: function () {
                 var this$1 = this;
 
-                for (var i = 0; i < this.length; i++) {
-                    if (this$1[i][name] == value) {
-                        return i;
+                if (this.colunas != null) {
+                    for (var j in this.colunas) {
+                        this$1.head.push(this$1.colunas[j].label);
+                        this$1.chaves.push(this$1.colunas[j].campo_db)
+                    }
+                } else {
+                    if(this.dados.length >0){
+                        this.head = Object.keys(this.dados[0]);
+                        this.chaves = Object.keys(this.dados[0]);
                     }
                 }
-                return -1;
-            }
-            if(this.order.localeCompare('desc')==0 || this.order.localeCompare('')==0){
-                this.order = 'asc';
-            }else{
-                this.order = 'desc';
-            }
-            if (typeof this.colunas == 'undefined' || this.colunas[0].length == 0) {
-                this.params.orderkey = item;
-                this.params.order= this.order;
+            },
+            //Método auxiliar de pegar parametro único da url
+            getParameterByName: function (name, url) {
+                if (!url) {
+                    url = window.location.href;
+                }
+                name = name.replace(/[\[\]]/g, "\\$&");
+                var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                    results = regex.exec(url);
+                if (!results) return null;
+                if (!results[2]) return '';
+                return decodeURIComponent(results[2].replace(/\+/g, " "));
+            },
+            //Método auxiliar de pegar todos parametros da url
+            getParametersUrl: function(){
+                var this$1 = this;
+
+                var search = window.location.href.substr(window.location.href.indexOf("?") + 1);
+                if(search.indexOf('http') === -1){
+                    search = search?JSON.parse('{"' + search.replace(/&/g, '","').replace(/=/g,'":"') + '"}',
+                        function(key, value) { return key===""?value:decodeURIComponent(value) }):{}
+                    for (var key in search) {
+                        this$1.params[key] = search[key];
+                    }
+                }
+            },
+            //Carrega os filtros disponiveis (linkado com o filtro do jhonatan)
+            loadFilters: function () {
+                this.$http.get(this.apiFiltros)
+                    .then(function (resp) {
+                        if(typeof resp.body == 'object'){
+                            this.filtros = resp.body;
+                        }
+                })
+            },
+            //Faz a requisição dos dados e também funciona como callback do generic pagination
+            loadData: function () {
+                this.getParametersUrl();
+                this.params.paginate = this.pagination.per_page;
+                this.params.page = this.pagination.current_page;
+                this.success = '';
+                this.error = '';
+                this.$http.get(this.apiUrl, {
+                    params: this.params
+                }).then(function (resp) {
+                    if (typeof resp.data == 'object') {
+                        this.dados = resp.data.data;
+                        this.pagination = resp.data;
+                        if (typeof this.head == 'undefined' || this.head.length == 0) {
+                            this.getHeader();
+                        }
+                    } else if (typeof resp.data == 'string') {
+                        var response = jQuery.parseJSON(resp.data);
+                        this.dados = response.data;
+                        this.pagination = response;
+                        if (typeof this.head == 'undefined' || this.head.length == 0) {
+                            this.getHeader();
+                        }
+                    }
+                    //Para animação loader
+                    stopLoading();
+                });
+            },
+        },
+        created: function () {
+            //Inicia Animação
+            startLoading();
+            //Bind dos filtros
+            $('body').on('change','.filter_added',function () {
                 this.loadData();
-            }else{
-                var a = this.colunas[this.colunas.getIndexBy("label", item)]
-                this.params.orderkey = a.campo_db;
-                this.params.order= this.order;
+            }.bind(this));
+            $('body').on('keyup','.filter_added',function () {
                 this.loadData();
-            }
-        },
-        //Método para preencher a header da table e para criar array de chaves
-        getHeader: function () {
-            var this$1 = this;
+            }.bind(this));
 
-            if (this.colunas != null) {
-                for (var j in this.colunas) {
-                    this$1.head.push(this$1.colunas[j].label);
-                    this$1.chaves.push(this$1.colunas[j].campo_db)
-                }
-            } else {
-                if(this.dados.length >0){
-                    this.head = Object.keys(this.dados[0]);
-                    this.chaves = Object.keys(this.dados[0]);
-                }
-            }
-        },
-        //Método auxiliar de pegar parametro único da url
-        getParameterByName: function (name, url) {
-            if (!url) {
-                url = window.location.href;
-            }
-            name = name.replace(/[\[\]]/g, "\\$&");
-            var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-                results = regex.exec(url);
-            if (!results) return null;
-            if (!results[2]) return '';
-            return decodeURIComponent(results[2].replace(/\+/g, " "));
-        },
-        //Método auxiliar de pegar todos parametros da url
-        getParametersUrl: function(){
-            var this$1 = this;
-
-            var search = window.location.href.substr(window.location.href.indexOf("?") + 1);
-            if(search.indexOf('http') === -1){
-                search = search?JSON.parse('{"' + search.replace(/&/g, '","').replace(/=/g,'":"') + '"}',
-                    function(key, value) { return key===""?value:decodeURIComponent(value) }):{}
-                for (var key in search) {
-                    this$1.params[key] = search[key];
-                }
-            }
-        },
-        //Carrega os filtros disponiveis (linkado com o filtro do jhonatan)
-        loadFilters: function () {
-            this.$http.get(this.apiFiltros)
-                .then(function (resp) {
-                    if(typeof resp.body == 'object'){
-                        this.filtros = resp.body;
-                    }
-            })
-        },
-        //Faz a requisição dos dados e também funciona como callback do generic pagination
-        loadData: function () {
-            this.getParametersUrl();
-            this.params.paginate = this.pagination.per_page;
-            this.params.page = this.pagination.current_page;
-            this.success = '';
-            this.error = '';
-            this.$http.get(this.apiUrl, {
-                params: this.params
-            }).then(function (resp) {
-                if (typeof resp.data == 'object') {
-                    this.dados = resp.data.data;
-                    this.pagination = resp.data;
-                    if (typeof this.head == 'undefined' || this.head.length == 0) {
-                        this.getHeader();
-                    }
-                } else if (typeof resp.data == 'string') {
-                    var response = jQuery.parseJSON(resp.data);
-                    this.dados = response.data;
-                    this.pagination = response;
-                    if (typeof this.head == 'undefined' || this.head.length == 0) {
-                        this.getHeader();
-                    }
-                }
-                //Para animação loader
-                stopLoading();
-            });
-        },
-    },
-    created: function () {
-        //Inicia Animação
-        startLoading();
-        //Bind dos filtros
-        $('body').on('change','.filter_added',function () {
+            //Inicia mètodos principais
+            this.loadFilters();
             this.loadData();
-        }.bind(this));
-        $('body').on('keyup','.filter_added',function () {
-            this.loadData();
-        }.bind(this));
-
-        //Inicia mètodos principais
-        this.loadFilters();
-        this.loadData();
-    }
-};
+        }
+    };
 
 
 /***/ },
@@ -960,7 +968,7 @@ exports = module.exports = __webpack_require__(0)();
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -18279,7 +18287,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     attrs: {
       "type": "button",
       "data-dismiss": "modal",
-      "onclick": "addFi   lters()"
+      "onclick": "addFilters()"
     }
   }, [_vm._v("Adicionar")])])
 },function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -29377,8 +29385,6 @@ __webpack_require__(3);
 // Vue.component('generic-grid',require('./components/generic-grid.vue'));
 
 Vue.component('generic-paginator', __webpack_require__(4));
-
-Vue.http.headers.common['X-CSRF-TOKEN'] = document.querySelector('#token').getAttribute('value');
 
 Vue.component('tabela', _tabela2.default);
 

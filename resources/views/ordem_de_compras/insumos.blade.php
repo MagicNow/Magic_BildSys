@@ -6,7 +6,7 @@
             <div class="col-md-12">
                 <div class="col-md-8">
                     <span class="pull-left title">
-                        <i class="fa fa-arrow-left" aria-hidden="true"></i>
+                        <a href="{{ url('/compras/'.$planejamento->id.'/obrasInsumos') }}"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
                         Incluir Insumos
                     </span>
                 </div>
@@ -47,6 +47,7 @@
                     api-url="{{url('/compras/'.$planejamento->id.'/insumosJson')}}"
                     api-filtros="{{url('/compras/'.$planejamento->id.'/insumosFilters')}}"
                     api-adicionar="{{url('/compras/'.$planejamento->id.'/insumosAdd')}}"
+                    _token="{{csrf_token()}}"
                     v-bind:params="{}"
                     v-bind:actions="{filtros: true, adicionar: true}"
                     v-bind:colunas="[

@@ -174,7 +174,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     /**
      * TO-DO Criar grupo com prefixo de compras
      */
-    $router->get('compras/{planejamento}/insumos', 'OrdemDeCompraController@insumos');
+    $router->get('compras/{planejamento}/insumos', 'OrdemDeCompraController@insumos')->name('compraInsumo');
     $router->get('compras/{planejamento}/insumosJson', 'OrdemDeCompraController@insumosJson');
     $router->get('compras/{planejamento}/insumosFilters', 'OrdemDeCompraController@insumosFilters');
     $router->post('compras/{planejamento}/insumosAdd', 'OrdemDeCompraController@insumosAdd');

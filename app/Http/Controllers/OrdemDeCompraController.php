@@ -9,16 +9,17 @@ use App\Http\Requests\UpdateOrdemDeCompraRequest;
 use App\Models\Insumo;
 use App\Models\Grupo;
 use App\Models\Planejamento;
+use App\Models\PlanejamentoCompra;
 use App\Repositories\CodeRepository;
 use function foo\func;
 use Illuminate\Pagination\Paginator;
 use App\Models\Obra;
 use App\Models\OrdemDeCompra;
 use App\Repositories\OrdemDeCompraRepository;
-use Flash;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Flash;
 use Response;
 
 class OrdemDeCompraController extends AppBaseController
@@ -177,8 +178,9 @@ class OrdemDeCompraController extends AppBaseController
         return response()->json($filters);
     }
 
-    public function insumosJson(Request $request){
+    public function insumosJson(Request $request, Planejamento $planejamento){
         //Query para utilização dos filtros
+        //DB::raw(Auth::user()->admin ? '1 as admin' : '0 as admin'),
         $insumo_query = Insumo::query();
         $insumos = $insumo_query->join('insumo_servico', 'insumo_servico.insumos_id','=','insumos.id')
             ->join('servicos','servicos.id','=','insumo_servico.servicos_id')
@@ -187,9 +189,15 @@ class OrdemDeCompraController extends AppBaseController
                 'insumos.codigo as insumo_cod',
                 'insumos.unidade_sigla',
                 'insumos.nome as descricao',
+                'servicos.id as servico_id',
                 'servicos.nome as servico',
                 'servicos.codigo as cod_servico',
-                'servicos.grupo_id'
+                'servicos.grupo_id',
+                DB::raw('(SELECT TOP 1 planejamento_compras.id FROM planejamento_compras 
+                 JOIN servicos ON servicos.id = planejamento_compras.servico_id 
+                 JOIN insumos ON insumos.codigo = planejamento_compras.codigo_insumo
+                 WHERE planejamento_id ='.$planejamento->id. ')
+                 as teste')
             ]);
 
         if(isset($request->orderkey)){
@@ -203,9 +211,20 @@ class OrdemDeCompraController extends AppBaseController
         return response()->json($insumos->paginate(10), 200);
     }
 
-    public function insumosAdd(Request $request)
+    public function insumosAdd(Request $request, Planejamento $planejamento)
     {
-        dd($request->all());
+        try{
+            $planejamento_compras = new PlanejamentoCompra();
+            $planejamento_compras->planejamento_id = $planejamento->id;
+            $planejamento_compras->grupo_id = $request->grupo_id;
+            $planejamento_compras->servico_id = $request->servico_id;
+            $planejamento_compras->codigo_insumo = $request->insumo_cod;
+            $planejamento_compras->save();
+            Flash::success('Insumo adicionado com sucesso');
+            return response()->json('{response: "sucesso"}');
+        }catch (\Exception $e){
+            return $e->getMessage();
+        }
     }
 
     /**
@@ -217,8 +236,7 @@ class OrdemDeCompraController extends AppBaseController
      */
     public function obrasInsumos(Request $request, Planejamento $planejamento)
     {
-        $planejamento_id = $planejamento->id;
-        return view('ordem_de_compras.obras_insumos', compact('planejamento_id'));
+        return view('ordem_de_compras.obras_insumos', compact('planejamento'));
     }
 
     /**
