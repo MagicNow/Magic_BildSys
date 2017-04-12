@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 /**
  * Class Lembrete
  * @package App\Models
- * @version April 5, 2017, 12:30 pm BRT
+ * @version April 12, 2017, 1:53 pm BRT
  */
 class Lembrete extends Model
 {
@@ -25,11 +25,11 @@ class Lembrete extends Model
 
     public $fillable = [
         'lembrete_tipo_id',
-        'planejamento_id',
         'user_id',
         'nome',
         'dias_prazo_minimo',
-        'dias_prazo_maximo'
+        'dias_prazo_maximo',
+        'insumo_grupo_id'
     ];
 
     /**
@@ -40,11 +40,11 @@ class Lembrete extends Model
     protected $casts = [
         'id' => 'integer',
         'lembrete_tipo_id' => 'integer',
-        'planejamento_id' => 'integer',
         'user_id' => 'integer',
         'nome' => 'string',
         'dias_prazo_minimo' => 'integer',
-        'dias_prazo_maximo' => 'integer'
+        'dias_prazo_maximo' => 'integer',
+        'insumo_grupo_id' => 'integer'
     ];
 
     /**
@@ -54,24 +54,26 @@ class Lembrete extends Model
      */
     public static $rules = [
         'lembrete_tipo_id' => 'required',
-        'planejamento_id' => 'required',
-        'nome' => 'required'
+        'user_id' => 'required',
+        'nome' => 'required',
+        'dias_prazo_minimo' => 'required',
+        'insumo_grupo_id' => 'required'
     ];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function insumoGrupo()
+    {
+        return $this->belongsTo(InsumoGrupo::class);
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
     public function lembreteTipo()
     {
-        return $this->belongsTo(\App\Models\LembreteTipo::class);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     **/
-    public function planejamento()
-    {
-        return $this->belongsTo(\App\Models\Planejamento::class);
+        return $this->belongsTo(LembreteTipo::class);
     }
 
     /**
@@ -79,22 +81,22 @@ class Lembrete extends Model
      **/
     public function user()
     {
-        return $this->belongsTo(\App\Models\User::class);
+        return $this->belongsTo(User::class);
     }
 
-//    /**
-//     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-//     **/
-//    public function lembreteNotificaPerfis()
-//    {
-//        return $this->hasMany(\App\Models\LembreteNotificaPerfi::class);
-//    }
-//
-//    /**
-//     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-//     **/
-//    public function lembreteNotificaUsuarios()
-//    {
-//        return $this->hasMany(\App\Models\LembreteNotificaUsuario::class);
-//    }
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function lembreteNotificaPerfis()
+    {
+        return $this->hasMany(LembreteNotificaPerfi::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function lembreteNotificaUsuarios()
+    {
+        return $this->hasMany(LembreteNotificaUsuario::class);
+    }
 }
