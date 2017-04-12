@@ -47,12 +47,19 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         
         Route::get('/getForeignKey', 'CodesController@getForeignKey');
 
-        #importação de planilhas dinâmicas
+        #importação de planilhas de orçamentos
         Route::get('orcamento/', ['as'=> 'admin.orcamento.index', 'uses' => 'Admin\OrcamentoController@index']);
         Route::post('orcamento/importar', ['as'=> 'admin.orcamento.importar', 'uses' => 'Admin\OrcamentoController@import']);
         Route::get('orcamento/importar/checkIn', ['as'=> 'admin.orcamento.checkIn', 'uses' => 'Admin\OrcamentoController@checkIn']);
         Route::post('orcamento/importar/save', ['as'=> 'admin.orcamento.save', 'uses' => 'Admin\OrcamentoController@save']);
         Route::get('orcamento/importar/selecionaCampos', 'Admin\OrcamentoController@selecionaCampos');
+
+        #importação de planilhas de planejamentos
+        Route::get('planejamento/', ['as'=> 'admin.planejamento.index', 'uses' => 'Admin\PlanejamentoController@index']);
+        Route::post('planejamento/importar', ['as'=> 'admin.planejamento.importar', 'uses' => 'Admin\PlanejamentoController@import']);
+        Route::get('planejamento/importar/checkIn', ['as'=> 'admin.planejamento.checkIn', 'uses' => 'Admin\PlanejamentoController@checkIn']);
+        Route::post('planejamento/importar/save', ['as'=> 'admin.planejamento.save', 'uses' => 'Admin\PlanejamentoController@save']);
+        Route::get('planejamento/importar/selecionaCampos', 'Admin\PlanejamentoController@selecionaCampos');
 
         # Verifica Notificações
         Route::post('verifyNotification', 'Admin\HomeController@verifyNotifications');

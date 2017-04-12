@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: Raul
- * Date: 04/04/2017
- * Time: 11:47
+ * Date: 11/04/2017
+ * Time: 11:48
  */
 
 namespace App\Http\Controllers\Admin;
@@ -13,13 +13,12 @@ use App\Http\Controllers\AppBaseController;
 use App\Jobs\PlanilhaProcessa;
 use App\Models\Obra;
 use App\Models\Planilha;
-use App\Models\TipoOrcamento;
 use App\Repositories\Admin\SpreadsheetRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Flash;
+use Laracasts\Flash\Flash;
 
-class OrcamentoController extends AppBaseController
+class PlanejamentoController extends AppBaseController
 {
     /**
      * $obras = Buscando chave e valor para fazer o combobox da view
@@ -28,8 +27,7 @@ class OrcamentoController extends AppBaseController
      */
     public function index(){
         $obras = Obra::pluck('nome','id')->toArray();
-        $orcamento_tipos = TipoOrcamento::pluck('nome','id')->toArray();
-        return view('admin.orcamento.index', compact('orcamento_tipos','obras'));
+        return view('admin.planejamento.index', compact('obras'));
     }
 
     /**
@@ -43,8 +41,8 @@ class OrcamentoController extends AppBaseController
      */
     public function import(Request $request)
     {
-        $tipo = 'orcamento';
-        $file = $request->except('obra_id','modulo_id','orcamento_tipo_id');
+        $tipo = 'planejamento';
+        $file = $request->except('obra_id');
         $input = $request->except('_token','file');
         $input['user_id'] = Auth::id();
         $parametros = json_encode($input);
@@ -52,7 +50,6 @@ class OrcamentoController extends AppBaseController
 
         # Enviando $file e $parametros para método de leitura da planilha.
         $retorno = SpreadsheetRepository::Spreadsheet($file, $parametros, $tipo);
-
         /* Percorrendo campos retornados e enviando para a view onde o
             usuário escolhe as colunas que vão ser importadas e tipos.
         */
@@ -64,7 +61,7 @@ class OrcamentoController extends AppBaseController
         \Session::put('retorno', $retorno);
         \Session::put('colunasbd', $colunasbd);
 
-        return redirect('/admin/orcamento/importar/selecionaCampos');
+        return redirect('/admin/planejamento/importar/selecionaCampos');
     }
 
     /**
@@ -76,7 +73,7 @@ class OrcamentoController extends AppBaseController
 
         $retorno = $request->session()->get('retorno');
         $colunasbd = $request->session()->get('colunasbd');
-        return view('admin.orcamento.checkIn', compact('retorno','colunasbd'));
+        return view('admin.planejamento.checkIn', compact('retorno','colunasbd'));
     }
 
     /*
@@ -88,17 +85,17 @@ class OrcamentoController extends AppBaseController
         $json = json_encode(array_filter($input));
 
         # Validando campos obrigatórios como chave estrangeiras
-        $codigo_insumo = in_array('codigo_insumo', $input);
-        $unidade_sigla = in_array('unidade_sigla', $input);
-        if(!$codigo_insumo && !$unidade_sigla){
-            Flash::error('Os campos: codigo_insumo e unidade_sigla são obrigátorios.');
-            return back();
-        }
+//        $codigo_insumo = in_array('codigo_insumo', $input);
+//        $unidade_sigla = in_array('unidade_sigla', $input);
+//        if(!$codigo_insumo && !$unidade_sigla){
+//            Flash::error('Os campos: codigo_insumo e unidade_sigla são obrigátorios.');
+//            return back();
+//        }
 
         # Pegando todas as planilhas por ordem decrescente
         $planilha = Planilha::orderBy('id','desc')->get();
         # consulta que trás somente a ultima planilha importada pelo usuário
-        $planilha = $planilha->where('user_id', \Auth::id())->first();
+        $planilha = $planilha->where('user_id', Auth::id())->first();
         # Após encontrar a planilha, será feito um update adicionando em array os campos escolhido pelo usuário.
         if($planilha) {
             $planilha->colunas_json = $json;
@@ -113,6 +110,6 @@ class OrcamentoController extends AppBaseController
 
         # Mensagem que será exibida para o usuário avisando que a importação foi adicionada na fila e será processada.
         Flash::warning('Importação incluida na FILA. Ao concluir o processamento enviaremos um ALERTA!');
-        return redirect('admin/orcamento');
+        return redirect('admin/planejamento');
     }
 }

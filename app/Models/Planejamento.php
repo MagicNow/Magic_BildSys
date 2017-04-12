@@ -27,7 +27,9 @@ class Planejamento extends Model
         'obra_id',
         'tarefa',
         'data',
+        'data_fim',
         'prazo',
+        'resumo',
         'planejamento_id'
     ];
 
@@ -41,8 +43,25 @@ class Planejamento extends Model
         'obra_id' => 'integer',
         'tarefa' => 'string',
         'data' => 'date',
+        'data_fim' => 'date',
         'prazo' => 'integer',
+        'resumo' => 'string',
         'planejamento_id' => 'integer'
+    ];
+
+    /**
+     * The attributes that should be casted to native types.
+     *
+     * @var array
+     */
+    public static $relation = [
+        'resumo' => 'string',
+        'tarefa' => 'string',
+        'prazo' => 'integer',
+        'data' => 'date',
+        'data_fim' => 'date',
+
+
     ];
 
     /**

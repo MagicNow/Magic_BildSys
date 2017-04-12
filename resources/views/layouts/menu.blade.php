@@ -17,11 +17,31 @@
     </li>
 @endif
 
-<li class="{{ Request::is('orcamento*') ? 'active' : '' }}">
-    <a href="{!! route('admin.orcamento.index') !!}"><i class="glyphicon glyphicon-cloud-upload"></i><span>Importação</span></a>
+<li class="treeview {{ Request::is('admin/orcamento*') ? 'active' : '' }}">
+    <a href="#">
+        <i class="fa fa-balance-scale"></i> <span>Orçamento</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+    </a>
+    <ul class="treeview-menu">
+        <li class="{{ Request::is('admin/orcamento*') ? 'active' : '' }}"><a href="{!! route('admin.orcamento.index') !!}"><i class="glyphicon glyphicon-cloud-upload"></i><span>Importação</span></a></li>
+    </ul>
 </li>
 
-<li class="active treeview">
+<li class="treeview {{ Request::is('admin/planejamento*') ? 'active' : '' }}">
+    <a href="#">
+        <i class="fa fa-calendar"></i> <span>Planejamento</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+    </a>
+    <ul class="treeview-menu">
+        <li class="{{ Request::is('planejamento*') ? 'active' : '' }}"><a href="{!! route('admin.planejamento.index') !!}"><i class="glyphicon glyphicon-cloud-upload"></i><span>Importação</span></a></li>
+    </ul>
+</li>
+
+<li class="treeview {{ Request::is('admin/workflow*') ? 'active' : '' }}">
     <a href="#">
         <i class="fa fa-check-square"></i> <span>Workflow</span>
             <span class="pull-right-container">
