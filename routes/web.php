@@ -22,6 +22,8 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('/', 'HomeController@index');
     $router->get('/home', 'HomeController@index');
 
+    Route::get('/getForeignKey', 'CodesController@getForeignKey');
+    
     $router->resource('ordens-de-compra', 'OrdemDeCompraController');
 
     $router->resource('retroalimentacaoObras', 'RetroalimentacaoObraController');
@@ -44,8 +46,6 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         Route::get('/', 'Admin\HomeController@index');
 
         Route::resource('users', 'Admin\UserController');
-        
-        Route::get('/getForeignKey', 'CodesController@getForeignKey');
 
         #importação de planilhas de orçamentos
         Route::get('orcamento/', ['as'=> 'admin.orcamento.index', 'uses' => 'Admin\OrcamentoController@index']);
@@ -61,6 +61,18 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         Route::post('planejamento/importar/save', ['as'=> 'admin.planejamento.save', 'uses' => 'Admin\PlanejamentoController@save']);
         Route::get('planejamento/importar/selecionaCampos', 'Admin\PlanejamentoController@selecionaCampos');
 
+        # Contratos
+        Route::get('contratos', ['as'=> 'admin.contratos.index', 'uses' => 'Admin\ContratosController@index']);
+        Route::post('contratos', ['as'=> 'admin.contratos.store', 'uses' => 'Admin\ContratosController@store']);
+        Route::get('contratos/create', ['as'=> 'admin.contratos.create', 'uses' => 'Admin\ContratosController@create']);
+        Route::put('contratos/{contratos}', ['as'=> 'admin.contratos.update', 'uses' => 'Admin\ContratosController@update']);
+        Route::patch('contratos/{contratos}', ['as'=> 'admin.contratos.update', 'uses' => 'Admin\ContratosController@update']);
+        Route::delete('contratos/{contratos}', ['as'=> 'admin.contratos.destroy', 'uses' => 'Admin\ContratosController@destroy']);
+        Route::get('contratos/{contratos}', ['as'=> 'admin.contratos.show', 'uses' => 'Admin\ContratosController@show']);
+        Route::get('contratos/{contratos}/edit', ['as'=> 'admin.contratos.edit', 'uses' => 'Admin\ContratosController@edit']);
+        Route::get('insumo/valor_total', 'Admin\ContratosController@calcularValorTotalInsumo');
+        Route::get('insumo/delete', 'Admin\ContratosController@deleteInsumo');
+        
         # Verifica Notificações
         Route::post('verifyNotification', 'Admin\HomeController@verifyNotifications');
         # Update Notificações visualizadas
@@ -187,4 +199,3 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('obras_insumos', 'OrdemDeCompraController@obrasInsumos');
     $router->get('insumos_json', 'OrdemDeCompraController@insumosJson');
 });
-

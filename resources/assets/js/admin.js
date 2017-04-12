@@ -33,7 +33,9 @@ $(function () {
 });
 
 $(function () {
-   verifyQueryString();
+    verifyQueryString();
+    $('.money').mask('0.000.000.000.000,00', {reverse: true});
+    $('.decimal').mask('00.00');
 });
 var oTable = null;
 
@@ -315,7 +317,7 @@ function verifyQueryString() {
 
 function foreign(label, value, row_foreign_key, cb_filter_i, query_string, block_fields){
     $.ajax({
-        url: "/admin/getForeignKey",
+        url: "/getForeignKey",
         data: {
             foreign_key: cb_filter_i.value.split('-')[0],
             model: cb_filter_i.value.split('-')[2],

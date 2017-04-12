@@ -54,3 +54,7 @@
     </ul>
 </li>
 
+<li class="{{ Request::is('contratos*') ? 'active' : '' }}">
+    <a href="{!! route('admin.contratos.index') !!}"><i class="fa fa-edit"></i><span>Contratos</span></a>
+</li>
+

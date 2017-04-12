@@ -173,6 +173,7 @@ elixir(function(mix) {
         paths.underscore + '/underscore.js',
         paths.bootstrap_calendar + '/js/calendar.js',
         paths.bootstrap_calendar + '/js/language/pt-BR.js',
+        paths.jquerymaskplugin + 'jquery.mask.js',
         // paths.vue + 'vue.js',
         // paths.vue_resource + 'vue-resource.js',
         'bootstrap-dataTables-paging.js',
