@@ -54,6 +54,16 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         Route::post('orcamento/importar/save', ['as'=> 'admin.orcamento.save', 'uses' => 'Admin\OrcamentoController@save']);
         Route::get('orcamento/importar/selecionaCampos', 'Admin\OrcamentoController@selecionaCampos');
 
+        # Contratos
+        Route::get('contratos', ['as'=> 'admin.contratos.index', 'uses' => 'Admin\ContratosController@index']);
+        Route::post('contratos', ['as'=> 'admin.contratos.store', 'uses' => 'Admin\ContratosController@store']);
+        Route::get('contratos/create', ['as'=> 'admin.contratos.create', 'uses' => 'Admin\ContratosController@create']);
+        Route::put('contratos/{contratos}', ['as'=> 'admin.contratos.update', 'uses' => 'Admin\ContratosController@update']);
+        Route::patch('contratos/{contratos}', ['as'=> 'admin.contratos.update', 'uses' => 'Admin\ContratosController@update']);
+        Route::delete('contratos/{contratos}', ['as'=> 'admin.contratos.destroy', 'uses' => 'Admin\ContratosController@destroy']);
+        Route::get('contratos/{contratos}', ['as'=> 'admin.contratos.show', 'uses' => 'Admin\ContratosController@show']);
+        Route::get('contratos/{contratos}/edit', ['as'=> 'admin.contratos.edit', 'uses' => 'Admin\ContratosController@edit']);
+        
         # Verifica Notificações
         Route::post('verifyNotification', 'Admin\HomeController@verifyNotifications');
         # Update Notificações visualizadas
@@ -180,4 +190,3 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('obras_insumos', 'OrdemDeCompraController@obrasInsumos');
     $router->get('insumos_json', 'OrdemDeCompraController@insumosJson');
 });
-

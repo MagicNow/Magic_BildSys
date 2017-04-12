@@ -1,0 +1,68 @@
+<?php
+
+namespace App\Models;
+
+use Eloquent as Model;
+
+/**
+ * Class Contratos
+ * @package App\Models
+ * @version April 12, 2017, 9:34 am BRT
+ */
+class Contrato extends Model
+{
+
+    public $table = 'contratos';
+
+    public $fillable = [
+        'obra_id',
+        'data',
+        'valor',
+        'arquivo'
+    ];
+
+    /**
+     * The attributes that should be casted to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'id' => 'integer',
+        'obra_id' => 'integer',
+        'data' => 'date',
+        'arquivo' => 'string'
+    ];
+
+    /**
+     * Validation rules
+     *
+     * @var array
+     */
+    public static $rules = [
+        
+    ];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function obra()
+    {
+        return $this->belongsTo(\App\Models\Obra::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function contratoInsumos()
+    {
+        return $this->hasMany(\App\Models\ContratoInsumo::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function ordemDeCompraItens()
+    {
+        return $this->hasMany(\App\Models\OrdemDeCompraItens::class);
+    }
+}
