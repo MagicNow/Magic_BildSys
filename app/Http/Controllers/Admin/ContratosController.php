@@ -227,4 +227,24 @@ class ContratosController extends AppBaseController
 
         return response()->json(['valor_total' => $valor_total]);
     }
+
+    public function deleteInsumo(Request $request)
+    {
+        try {
+            $insumo = null;
+            if ($request->insumo) {
+                $insumo = ContratoInsumo::find($request->insumo);
+            }
+            if ($insumo) {
+                $acao = $insumo->delete();
+                $mensagem = "Insumo deletado com sucesso";
+            } else {
+                $acao = false;
+                $mensagem = "Ocorreu um erro ao deletar o insumo";
+            }
+            return response()->json(['sucesso' => $acao, 'resposta' => $mensagem]);
+        }catch (\Exception $e){
+            return $e->getMessage();
+        }
+    }
 }

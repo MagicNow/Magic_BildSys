@@ -52,7 +52,7 @@ $count_insumos = 0;
                 {!! Form::select('insumos['.$insumo->id.'][insumo_id]',[''=>'Escolha...']+ \App\Models\Insumo::pluck('nome','id')->toArray(), $insumo->insumo_id, ['class' => 'form-control','required'=>'required']) !!}
             </div>
             <div class="col-md-1" align="right" style="margin-top:25px;">
-                <button type="button" onclick="removeInsumo({{$insumo->id}})" class="btn btn btn-danger" aria-label="Close" title="Remover" >
+                <button type="button" onclick="deleteInsumo({{$insumo->id}})" class="btn btn btn-danger" aria-label="Close" title="Remover" >
                     <i class="fa fa-times"></i>
                 </button>
             </div>
@@ -151,7 +151,7 @@ $count_insumos = 0;
         function(){
             $.ajax({
                 url: "/admin/insumo/delete",
-                data: {email : what}
+                data: {insumo : what}
             }).done(function(retorno) {
                 if(retorno.sucesso){
                     removeInsumo(what);

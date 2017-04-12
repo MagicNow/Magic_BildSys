@@ -64,6 +64,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         Route::get('contratos/{contratos}', ['as'=> 'admin.contratos.show', 'uses' => 'Admin\ContratosController@show']);
         Route::get('contratos/{contratos}/edit', ['as'=> 'admin.contratos.edit', 'uses' => 'Admin\ContratosController@edit']);
         Route::get('insumo/valor_total', 'Admin\ContratosController@calcularValorTotalInsumo');
+        Route::get('insumo/delete', 'Admin\ContratosController@deleteInsumo');
         
         # Verifica Notificações
         Route::post('verifyNotification', 'Admin\HomeController@verifyNotifications');
