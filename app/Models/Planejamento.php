@@ -91,14 +91,7 @@ class Planejamento extends Model
     {
         return $this->belongsTo(\App\Models\Obra::class);
     }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     **/
-    public function lembretes()
-    {
-        return $this->hasMany(\App\Models\Lembrete::class);
-    }
+    
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

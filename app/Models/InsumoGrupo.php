@@ -6,15 +6,15 @@ use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * Class PlanejamentoCompra
+ * Class InsumoGrupo
  * @package App\Models
- * @version April 12, 2017, 1:52 pm BRT
+ * @version April 12, 2017, 1:48 pm BRT
  */
-class PlanejamentoCompra extends Model
+class InsumoGrupo extends Model
 {
     use SoftDeletes;
 
-    public $table = 'planejamento_compras';
+    public $table = 'insumo_grupos';
     
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
@@ -24,8 +24,8 @@ class PlanejamentoCompra extends Model
 
 
     public $fillable = [
-        'planejamento_id',
-        'insumo_id'
+        'codigo_identificador',
+        'nome'
     ];
 
     /**
@@ -35,8 +35,8 @@ class PlanejamentoCompra extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'planejamento_id' => 'integer',
-        'insumo_id' => 'integer'
+        'codigo_identificador' => 'string',
+        'nome' => 'string'
     ];
 
     /**
@@ -49,18 +49,18 @@ class PlanejamentoCompra extends Model
     ];
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
-    public function insumo()
+    public function insumos()
     {
-        return $this->belongsTo(\App\Models\Insumo::class);
+        return $this->hasMany(\App\Models\Insumo::class);
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
-    public function planejamento()
+    public function lembretes()
     {
-        return $this->belongsTo(\App\Models\Planejamento::class);
+        return $this->hasMany(\App\Models\Lembrete::class);
     }
 }

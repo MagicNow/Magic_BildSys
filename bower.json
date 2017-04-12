@@ -41,5 +41,8 @@
     "bootstrap-calendar": "^0.2.5",
     "vue": "v2.2.6",
     "select2-bootstrap-theme": "^0.1.0-beta.9"
+  },
+  "resolutions": {
+    "jquery": ">=1.7"
   }
 }
