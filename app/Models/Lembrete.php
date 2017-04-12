@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 /**
  * Class Lembrete
  * @package App\Models
- * @version April 12, 2017, 1:53 pm BRT
+ * @version April 5, 2017, 12:30 pm BRT
  */
 class Lembrete extends Model
 {
@@ -56,7 +56,6 @@ class Lembrete extends Model
         'lembrete_tipo_id' => 'required',
         'user_id' => 'required',
         'nome' => 'required',
-        'dias_prazo_minimo' => 'required',
         'insumo_grupo_id' => 'required'
     ];
 

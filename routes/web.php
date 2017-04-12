@@ -66,6 +66,17 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         # Update Notificações visualizadas
         Route::get('updateNotification/{id}', 'Admin\NotificacaoController@updateNotification');
 
+        # Lembretes
+        Route::get('lembretes', ['as'=> 'admin.lembretes.index', 'uses' => 'Admin\LembreteController@index']);
+        Route::post('lembretes', ['as'=> 'admin.lembretes.store', 'uses' => 'Admin\LembreteController@store']);
+        Route::get('lembretes/create', ['as'=> 'admin.lembretes.create', 'uses' => 'Admin\LembreteController@create']);
+        Route::put('lembretes/{lembretes}', ['as'=> 'admin.lembretes.update', 'uses' => 'Admin\LembreteController@update']);
+        Route::patch('lembretes/{lembretes}', ['as'=> 'admin.lembretes.update', 'uses' => 'Admin\LembreteController@update']);
+        Route::delete('lembretes/{lembretes}', ['as'=> 'admin.lembretes.destroy', 'uses' => 'Admin\LembreteController@destroy']);
+        Route::get('lembretes/{lembretes}', ['as'=> 'admin.lembretes.show', 'uses' => 'Admin\LembreteController@show']);
+        Route::get('lembretes/{lembretes}/edit', ['as'=> 'admin.lembretes.edit', 'uses' => 'Admin\LembreteController@edit']);
+        Route::get('lembretes/busca', ['as' => 'admin.lembretes.busca', 'uses' => 'Admin\LembreteController@busca']);
+
         $router->group(['middleware' => 'needsPermission:users.list'], function() use ($router) {
             #Manage ACL
             $router->get('/manage', [
@@ -187,4 +198,3 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('obras_insumos', 'OrdemDeCompraController@obrasInsumos');
     $router->get('insumos_json', 'OrdemDeCompraController@insumosJson');
 });
-
