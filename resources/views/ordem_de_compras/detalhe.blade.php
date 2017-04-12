@@ -157,12 +157,12 @@
                         ?>
                         @if($workflowAprovacao['podeAprovar'])
                             @if($workflowAprovacao['iraAprovar'])
-                                <div class="btn-group" role="group" aria-label="...">
-                                    <button type="button" onclick="alert('TODO: APROVAR ITEM {{ $item->id }}');"
+                                <div class="btn-group" role="group" id="blocoItemAprovaReprova{{ $item->id }}" aria-label="...">
+                                    <button type="button" onclick="workflowAprovaReprova({{ $item->id }},'{{ \App\Models\OrdemDeCompraItem::class }}',1,'blocoItemAprovaReprova{{ $item->id }}');"
                                             class="btn btn-default btn-lg btn-flat">
                                         <i class="fa fa-check" aria-hidden="true"></i>
                                     </button>
-                                    <button type="button" onclick="alert('TODO: REPROVAR OC {{ $item->id }}');"
+                                    <button type="button" onclick="workflowAprovaReprova({{ $item->id }},'{{ \App\Models\OrdemDeCompraItem::class }}',0, 'blocoItemAprovaReprova{{ $item->id }}');"
                                             class="btn btn-default btn-lg btn-flat">
                                         <i class="fa fa-times" aria-hidden="true"></i>
                                     </button>

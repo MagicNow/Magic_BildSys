@@ -23,7 +23,7 @@ class WorkflowAprovacaoRepository
         if (!$workflowUsuario) {
             // Já vaza
             return [
-                'podeAprovar'=>false
+                'podeAprovar' => false
             ];
         }
 
@@ -32,67 +32,111 @@ class WorkflowAprovacaoRepository
 
             // Verifica se a já é a alçada atual que o usuário está já aprovou
             $jaAprovou = $obj->aprovacoes()
-                ->where('user_id',$user->id)
-                ->where('created_at','>', $obj->updated_at)
+                ->where('user_id', $user->id)
+                ->where('created_at', '>', $obj->updated_at)
                 ->first();
-            if($jaAprovou){
+            if ($jaAprovou) {
                 return [
-                    'podeAprovar'=>true,
-                    'iraAprovar'=>false,
-                    'jaAprovou'=>true,
-                    'aprovacao'=>$jaAprovou->aprovado,
-                    'msg'=>null
+                    'podeAprovar' => true,
+                    'iraAprovar' => false,
+                    'jaAprovou' => true,
+                    'aprovacao' => $jaAprovou->aprovado,
+                    'msg' => null
                 ];
             }
 
             // Verifica se a alçada dele é a primeira
             if ($workflowUsuario->ordem === 1) {
                 return [
-                    'podeAprovar'=>true,
-                    'iraAprovar'=>true,
-                    'jaAprovou'=>false,
-                    'aprovacao'=>null,
-                    'msg'=>null
+                    'podeAprovar' => true,
+                    'iraAprovar' => true,
+                    'jaAprovou' => false,
+                    'aprovacao' => null,
+                    'msg' => null
                 ];
             }
             // Caso não é a primeira, verifica as aprovações da alçada anterior
             $workflowAlcada = WorkflowAlcada::where('workflow_alcadas.workflow_tipo_id', 1)// Tipo = Aprovação de OC
-                ->where('ordem', ($workflowUsuario->ordem-1) )
+            ->where('ordem', ($workflowUsuario->ordem - 1))
                 ->first();
 
             $usuariosAlcadaAnterior = $workflowAlcada->workflowUsuarios()->count();
 
             $aprovacoesAlcadaAnterior = $obj->aprovacoes()
-                ->where('workflow_alcada_id',$workflowAlcada->id)
-                ->where('created_at','>', $obj->updated_at)
+                ->where('workflow_alcada_id', $workflowAlcada->id)
+                ->where('created_at', '>=', $obj->updated_at)
                 ->count();
 
             // Se a quantidade de usuários é maior do que as aprovações / reprovações
-            if($usuariosAlcadaAnterior > $aprovacoesAlcadaAnterior){
+            if ($usuariosAlcadaAnterior > $aprovacoesAlcadaAnterior) {
                 return [
-                    'podeAprovar'=>true,
-                    'iraAprovar'=>false,
-                    'jaAprovou'=>false,
-                    'aprovacao'=>null,
-                    'msg'=>'Ainda falta aprovações da alçada anterior para que você possa aprovar'
+                    'podeAprovar' => true,
+                    'iraAprovar' => false,
+                    'jaAprovou' => false,
+                    'aprovacao' => null,
+                    'msg' => 'Ainda falta aprovações da alçada anterior para que você possa aprovar'
                 ];
             }
 
             return [
-                'podeAprovar'=>true,
-                'iraAprovar'=>true,
-                'jaAprovou'=>false,
-                'aprovacao'=>null,
-                'msg'=>null
+                'podeAprovar' => true,
+                'iraAprovar' => true,
+                'jaAprovou' => false,
+                'aprovacao' => null,
+                'msg' => null
             ];
         }
 
         return [
-            'podeAprovar'=>false,
-            'iraAprovar'=>false,
-            'jaAprovou'=>false,
-            'aprovacao'=>null,
-            'msg'=>'Item não encontrado'
+            'podeAprovar' => false,
+            'iraAprovar' => false,
+            'jaAprovou' => false,
+            'aprovacao' => null,
+            'msg' => 'Item não encontrado'
         ];
+    }
+
+    /**
+     * AprovaReprovaItem
+     * @param string $tipo
+     * @param integer $id
+     * @param User $user
+     * @param $resposta
+     * @param integer or null $motivo_id
+     * @param string or null $justificativa
+     * @return bool
+     */
+    public static function aprovaReprovaItem($tipo, $id, User $user, $resposta, $motivo_id = null, $justificativa = null)
+    {
+        eval('$obj = ' . $tipo . '::find(' . $id . ');');
+
+        if (!$obj) {
+            return false;
+        }
+        
+        $podeAprovar = self::verificaAprovacoes($tipo, $id, $user);
+        if (!$podeAprovar['iraAprovar']) {
+            return false;
+        }
+        
+
+        $workflowUsuario = WorkflowUsuario::select(['workflow_usuarios.*', 'workflow_alcadas.ordem'])
+            ->join('workflow_alcadas', 'workflow_alcadas.id', '=', 'workflow_usuarios.workflow_alcada_id')
+            ->where('workflow_alcadas.workflow_tipo_id', 1)// Tipo = Aprovação de OC
+            ->where('user_id', Auth::id())
+            ->first();
+
+        $workflowAprovacao = new WorkflowAprovacao([
+            'workflow_alcada_id' => $workflowUsuario->workflow_alcada_id,
+            'user_id' => Auth::id(),
+            'aprovado',
+            'workflow_reprovacao_motivo_id' => $motivo_id,
+            'justificativa' => $justificativa
+        ]);
+
+        $salvo = $obj->aprovacoes()->save($workflowAprovacao);
+
+        return $salvo;
+        
     }
 }

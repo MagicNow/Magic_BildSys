@@ -62004,12 +62004,12 @@ function addFilters(filters_session) {
     var cb_filter = $('.cb_filter');
     var cb_filter_label = $('.cb_filter_label');
     var block_fields = $('#block_fields');
-    
+
     if(!filters_session){
         filters_session = [];
     }
     $('.filter_added').remove();
-    
+
     block_fields.addClass('thumbnail').append('\
     <div class="col-md-12 page-header filter_added">\
             <div class="col-md-11">\
@@ -62022,7 +62022,7 @@ function addFilters(filters_session) {
         </div>\
     </div>\
     ');
-    
+
     for( i=0; i < cb_filter.length; i++ ) {
         if(cb_filter[i].checked) {
             if (cb_filter[i].value.split('-')[1] == 'integer') {
@@ -62064,7 +62064,7 @@ function addFilters(filters_session) {
                 }else{
                     $('#'+cb_filter[i].value+'_final').css('display', 'none');
                 }
-                
+
                 var value_integer_option = document.getElementById(cb_filter[i].value + '_option').options[document.getElementById(cb_filter[i].value + '_option').selectedIndex].text;
                 var value_integer_initial = $('#' + cb_filter[i].value).val();
                 var value_integer_final = $('#' + cb_filter[i].value + '_final').val();
@@ -62127,7 +62127,7 @@ function addFilters(filters_session) {
                         var value_session_foreign_key = filters_session[value] ? filters_session[value] : '';
 
                         $('#'+value).val(value_session_foreign_key);
-                        
+
                         $('#block_fields_minimize').append('<label class="filter_added">' + label.replace(/\s+$/, '') + ':</label><span id="row_' + value + '" class="filter_added"> ' + document.getElementById(value).options[document.getElementById(value).selectedIndex].text + ' </span>');
                     }
                 });
@@ -62158,7 +62158,7 @@ function addFilters(filters_session) {
 
                 $('#'+cb_filter[i].value+'_initial').val(value_session_date_initial);
                 $('#'+cb_filter[i].value+'_final').val(value_session_date_final);
-                
+
                 value_date_initial = new Date($('#' + cb_filter[i].value + '_initial').val().replace(/-/g, ','));
                 value_day_initial = ("0" + (value_date_initial.getDate())).slice(-2);
                 value_month_initial = ("0" + (value_date_initial.getMonth() + 1)).slice(-2);
@@ -62181,7 +62181,7 @@ function addFilters(filters_session) {
 
             } else {
                 var row_string = "'row_" + cb_filter[i].value + "'";
-                
+
                 block_fields.append('\
                 <div class="row form-group col-md-12 filter_added">\
                     <div class="col-md-6">\
@@ -62200,7 +62200,7 @@ function addFilters(filters_session) {
 
                 var value_session_string = filters_session[cb_filter[i].value] ? filters_session[cb_filter[i].value] : '';
                 var value_session_string_option = filters_session[cb_filter[i].value+'_option'] ? filters_session[cb_filter[i].value+'_option'] : 'between';
-                
+
                 $('#'+cb_filter[i].value).val(value_session_string);
                 $('#'+cb_filter[i].value+'_option').val(value_session_string_option);
 
@@ -62225,7 +62225,7 @@ function addFilterFields(target_id, value, type, element_id) {
         var value_integer_option = document.getElementById(element_id+'_option').options[document.getElementById(element_id+'_option').selectedIndex].text;
         var value_integer_initial = $('#'+element_id).val();
         var value_integer_final = $('#'+element_id+'_final').val();
-        
+
         if(value_integer_option == 'Entre'){
             msg = value_integer_option + ' ' + value_integer_initial + ' e ' + value_integer_final;
         }else{
@@ -62247,7 +62247,7 @@ function addFilterFields(target_id, value, type, element_id) {
         value_month_final = ("0" + (value_date_final.getMonth() + 1)).slice(-2);
         value_year_final = value_date_final.getFullYear();
         value_date_final = value_day_final+'/'+value_month_final+'/'+value_year_final;
-        
+
         if(value_date_initial != value_date_final){
             msg = 'Entre ' + value_date_initial + ' e ' + value_date_final;
         }else{
@@ -62260,10 +62260,10 @@ function addFilterFields(target_id, value, type, element_id) {
     }else{
         $('#'+target_id).html(value+' ');
     }
-    
+
     var filters_fields = $('.filters');
     var filters = '';
-    
+
     for( i=0; i < filters_fields.length; i++ ) {
         filters += '"'+filters_fields[i].id+'" : "'+filters_fields[i].value+'",';
     }
@@ -62295,4 +62295,124 @@ function checkSession() {
             addFilters(json.filters);
         }
     });
+}
+
+function workflowCall(item_id, tipo_item, aprovou, elemento, motivo, justificativa_texto){
+
+    $.ajax('/workflow/aprova-reprova',
+        {
+            data: {
+                id: item_id,
+                tipo: tipo_item,
+                resposta: aprovou,
+                motivo_id: motivo,
+                justificativa: justificativa_texto
+            }
+        }).done(function (retorno) {
+        if (retorno.success) {
+            if (aprovou) {
+                titulo = 'Aprovado';
+                conteudoElemento = "";
+            } else {
+                titulo = 'Reprovado';
+                conteudoElemento = "";
+            }
+            swal(titulo, 'Sua escolha foi salva com sucesso!', "success");
+            $('#' + elemento).html(conteudoElemento);
+        }
+    })
+        .fail(function (retorno) {
+            console.log(retorno.responseJSON);
+            erros = '';
+            $.each(retorno.responseJSON, function (index, value) {
+                if (erros.length) {
+                    erros += '<br>';
+                }
+                erros += value;
+            });
+            swal("Oops", erros, "error");
+        });
+    // $.getJSON('/workflow/aprova-reprova',{
+    //         id: item_id,
+    //         tipo: tipo_item,
+    //         resposta: aprovou,
+    //         motivo_id: motivo,
+    //         justificativa: justificativa_texto
+    //     },
+    //     function (retorno) {
+    //         if(retorno.success){
+    //             if(aprovou){
+    //                 titulo = 'Aprovado';
+    //                 conteudoElemento = "";
+    //             }else{
+    //                 titulo = 'Reprovado';
+    //                 conteudoElemento = "";
+    //             }
+    //             swal( titulo ,'Sua escolha foi salva com sucesso!', "success");
+    //             $('#'+elemento).html(conteudoElemento);
+    //         }else{
+    //             erros = '';
+    //             $.each(retorno, function(index, value) {
+    //                 if(erros.length){
+    //                     erros += '<br>';
+    //                 }
+    //                 erros += value;
+    //             });
+    //             swal("Oops", erros, "error")
+    //         }
+    //     });
+}
+
+function workflowAprovaReprova(item_id, tipo_item, aprovou, elemento) {
+    if(!aprovou){
+        swal({
+                title: "Reprovar este item?",
+                text: "<label for='motivo_id'>Escolha um motivo</label>"+
+                        "<select name='motivo_id' id='motivo_id' class='form-control input-lg' required='required'>"+
+                            "<option value=''>Escolha...</option>"+
+                            "<option value='1'>Pq eu quero</option>"+
+                        "</select><br><label>Escreva uma justificativa</label>: ",
+                html: true,
+                type: "input",
+                showCancelButton: true,
+                closeOnConfirm: false,
+                animation: "slide-from-top",
+                inputPlaceholder: "Justificativa",
+                showLoaderOnConfirm: true,
+                cancelButtonText:'Cancelar',
+                confirmButtonText:'Reprovar',
+                confirmButtonColor: '#DD6B55'
+            },
+            function(justificativa_texto){
+                if (justificativa_texto === false) return false;
+
+                if (justificativa_texto === "") {
+                    swal.showInputError("Escreva uma justificativa!");
+                    return false
+                }
+                motivo = $('#motivo_id').val();
+                if (motivo === "") {
+                    swal.showInputError("Escolha um motivo!");
+                    return false
+                }
+
+                workflowCall(item_id, tipo_item, aprovou, elemento, motivo, justificativa_texto);
+
+            });
+
+    }else{
+        swal({
+            title: "Aprovar este Item?",
+            text: "Ao confirmar não será possível voltar atrás",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Aprovar",
+            cancelButtonText:'Cancelar',
+            closeOnConfirm: false
+        },
+        function(){
+            workflowCall(item_id, tipo_item, aprovou, elemento, null, null);
+        });
+    }
+
 }
