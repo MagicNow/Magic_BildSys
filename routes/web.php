@@ -45,7 +45,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         Route::get('/home', 'Admin\HomeController@index');
         Route::get('/', 'Admin\HomeController@index');
 
-        Route::resource('users', 'Admin\UserController');
+        Route::resource('users', 'Admin\Manage\UsersController');
 
         #importação de planilhas de orçamentos
         Route::get('orcamento/', ['as'=> 'admin.orcamento.index', 'uses' => 'Admin\OrcamentoController@index']);
