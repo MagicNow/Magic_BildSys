@@ -40,34 +40,35 @@ $count_insumos = 0;
     </div>
 </div>
 
-@if(isset($pessoa))
-    @foreach ($pessoa->emails as $insumo )
+@if(isset($contratos))
+    @foreach ($contratos->contratoInsumos as $insumo )
         <?php
         $count_insumos = $insumo->id;
         ?>
         <div class="form-group col-md-12" id="block_insumos{{$insumo->id}}">
             {!! Form::hidden('insumos['.$insumo->id.'][id]', $insumo->id) !!}
-            <div class="col-md-11">\
-                <label>Insumo:</label>\
-                {!! Form::select('insumos['.$insumo->id.'][insumo_id]',[''=>'Escolha...']+ \App\Models\Obra::pluck('nome','id')->toArray() , null, ['class' => 'form-control','required'=>'required']) !!}
-            </div>\
-            <div class="col-md-1" align="right" style="margin-top:25px;">\
-                <button type="button" onclick="removeInsumo({{$insumo->id}})" class="btn btn btn-danger" aria-label="Close" title="Remover" >\
-                    <i class="fa fa-times"></i>\
-                </button>\
-            </div>\
-            <div class="col-md-4">\
-                <label>Quantidade:</label>\
-                <input type="number" value="{{$insumo->qtd}}" class="form-control" name="insumos[{{$insumo->id}}][qtd]" required>\
-            </div>\
-            <div class="col-md-4">\
-                <label>Valor unitário:</label>\
-                <input type="text" value="{{$insumo->valor_unitario}}" class="form-control money" name="insumos[{{$insumo->id}}][valor_unitario]" required>\
-            </div>\
-            <div class="col-md-4">\
-                <label>Valor total:</label>\
-                <input type="text" value="{{$insumo->valor_total}}" disabled class="form-control money" name="insumos[{{$insumo->id}}][valor_total]" required>\
-            </div>\
+            <div class="col-md-11">
+                <label>Insumo:</label>
+                {!! Form::select('insumos['.$insumo->id.'][insumo_id]',[''=>'Escolha...']+ \App\Models\Insumo::pluck('nome','id')->toArray(), $insumo->insumo_id, ['class' => 'form-control','required'=>'required']) !!}
+            </div>
+            <div class="col-md-1" align="right" style="margin-top:25px;">
+                <button type="button" onclick="removeInsumo({{$insumo->id}})" class="btn btn btn-danger" aria-label="Close" title="Remover" >
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+            <div class="col-md-4">
+                <label>Quantidade:</label>
+                <input type="text" value="{{$insumo->qtd}}" id="qtd_{{$insumo->id}}" class="form-control decimal" name="insumos[{{$insumo->id}}][qtd]" required onkeyup="calcularValorTotalInsumo({{$insumo->id}});">
+            </div>
+            <div class="col-md-4">
+                <label>Valor unitário:</label>
+                <input type="text" value="{{$insumo->valor_unitario}}" id="valor_unitario_{{$insumo->id}}" class="form-control money" name="insumos[{{$insumo->id}}][valor_unitario]" required onkeyup="calcularValorTotalInsumo({{$insumo->id}});">
+            </div>
+            <div class="col-md-4">
+                <label>Valor total:</label>
+                <span class="form-control" id="valor_total_span_{{$insumo->id}}">{{$insumo->valor_total}}</span>
+                <input type="hidden" value="{{$insumo->valor_total}}" id="valor_total_{{$insumo->id}}" name="insumos[{{$insumo->id}}][valor_total]">
+            </div>
             <div class="col-md-12 border-separation"></div>
         </div>
     @endforeach
@@ -109,15 +110,16 @@ $count_insumos = 0;
                                 </div>\
                                 <div class="col-md-4">\
                                     <label>Quantidade:</label>\
-                                    <input type="number" class="form-control" name="insumos['+count_insumos+'][qtd]" required>\
+                                    <input type="text" class="form-control decimal" id="qtd_'+count_insumos+'" name="insumos['+count_insumos+'][qtd]" required onkeyup="calcularValorTotalInsumo('+count_insumos+');">\
                                 </div>\
                                 <div class="col-md-4">\
                                     <label>Valor unitário:</label>\
-                                    <input type="text" class="form-control money" name="insumos['+count_insumos+'][valor_unitario]" required>\
+                                    <input type="text" class="form-control money" id="valor_unitario_'+count_insumos+'" name="insumos['+count_insumos+'][valor_unitario]" required onkeyup="calcularValorTotalInsumo('+count_insumos+');">\
                                 </div>\
                                 <div class="col-md-4">\
                                     <label>Valor total:</label>\
-                                    <input type="text" disabled class="form-control money" name="insumos['+count_insumos+'][valor_total]" required>\
+                                    <span class="form-control" id="valor_total_span_'+count_insumos+'"></span>\
+                                    <input type="hidden" id="valor_total_'+count_insumos+'" name="insumos['+count_insumos+'][valor_total]">\
                                 </div>\
                                 <div class="col-md-12 border-separation"></div>\
                             </div>';
@@ -137,27 +139,50 @@ $count_insumos = 0;
 
     function deleteInsumo(what){
         swal({
-                    title: "Você tem certeza?",
-                    text: "Você não poderá mais recuperar este registro!",
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#DD6B55",
-                    cancelButtonText: "Cancelar",
-                    confirmButtonText: "Sim, Remover",
-                    closeOnConfirm: false
-                },
-                function(){
-                    $.ajax({
-                        url: "/admin/insumo/delete",
-                        data: {email : what}
-                    }).done(function(retorno) {
-                        if(retorno.sucesso){
-                            removeInsumo(what);
-                            swal(retorno.resposta.toString());
-                        }else{
-                            swal(retorno.resposta.toString());
-                        }
-                    });
-                });
+            title: "Você tem certeza?",
+            text: "Você não poderá mais recuperar este registro!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            cancelButtonText: "Cancelar",
+            confirmButtonText: "Sim, Remover",
+            closeOnConfirm: false
+        },
+        function(){
+            $.ajax({
+                url: "/admin/insumo/delete",
+                data: {email : what}
+            }).done(function(retorno) {
+                if(retorno.sucesso){
+                    removeInsumo(what);
+                    swal(retorno.resposta.toString());
+                }else{
+                    swal(retorno.resposta.toString());
+                }
+            });
+        });
+    }
+
+    function calcularValorTotalInsumo(what) {
+        var quantidade = $('#qtd_'+what).val();
+        var valor_unitario = $('#valor_unitario_'+what).val();
+
+        $.ajax({
+            url: "/admin/insumo/valor_total",
+            data: {
+               'quantidade' : quantidade,
+               'valor_unitario' : valor_unitario
+            }
+        }).done(function(retorno) {
+            if(retorno.valor_total){
+                $('#valor_total_span_'+what).html(retorno.valor_total).addClass('money');
+                $('#valor_total_'+what).val(retorno.valor_total);
+            }else{
+                swal('Erro ao calcular o valor total');
+            }
+        });
     }
 </script>
+
+
+

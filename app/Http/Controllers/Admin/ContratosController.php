@@ -6,11 +6,13 @@ use App\DataTables\Admin\ContratosDataTable;
 use App\Http\Requests\Admin;
 use App\Http\Requests\Admin\CreateContratosRequest;
 use App\Http\Requests\Admin\UpdateContratosRequest;
+use App\Models\ContratoInsumo;
 use App\Models\Insumo;
 use App\Repositories\Admin\ContratosRepository;
 use App\Repositories\CodeRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
+use Illuminate\Http\Request;
 use Response;
 
 class ContratosController extends AppBaseController
@@ -57,11 +59,27 @@ class ContratosController extends AppBaseController
         $input = $request->except('arquivo');
 
         $contratos = $this->contratosRepository->create($input);
+        
+        if($request->arquivo) {
+            $destinationPath = CodeRepository::saveFile($request->arquivo, 'contratos/' . $contratos->id);
 
-        $destinationPath = CodeRepository::saveFile($request->arquivo, 'contratos/' . $contratos->id);
-
-        $contratos->arquivo = $destinationPath;
-        $contratos->save();
+            $contratos->arquivo = $destinationPath;
+            $contratos->save();
+        }
+        
+        if (count($request->insumos)) {
+            foreach ($request->insumos as $item) {
+                if ($item['insumo_id'] != '' && $item['qtd'] != '' && $item['valor_unitario'] != '' && $item['valor_total'] != '') {
+                    $insumo = new ContratoInsumo();
+                    $insumo->contrato_id = $contratos->id;
+                    $insumo->insumo_id = $item['insumo_id'];
+                    $insumo->qtd = $item['qtd'];
+                    $insumo->valor_unitario = $item['valor_unitario'];
+                    $insumo->valor_total = $item['valor_total'];
+                    $contratos->contratoInsumos()->save($insumo);
+                }
+            }
+        }
 
         Flash::success('Contratos '.trans('common.saved').' '.trans('common.successfully').'.');
 
@@ -105,7 +123,9 @@ class ContratosController extends AppBaseController
             return redirect(route('admin.contratos.index'));
         }
 
-        return view('admin.contratos.edit')->with('contratos', $contratos);
+        $insumos = Insumo::get();
+
+        return view('admin.contratos.edit', compact('insumos'))->with('contratos', $contratos);
     }
 
     /**
@@ -134,7 +154,34 @@ class ContratosController extends AppBaseController
         }
 
         $contratos = $this->contratosRepository->update($request->except('arquivo'), $id);
-        
+
+        if (count($request->insumos)) {
+            foreach ($request->insumos as $item) {
+                if (!isset($item['id'])) {
+                    if ($item['insumo_id'] != '' && $item['qtd'] != '' && $item['valor_unitario'] != '' && $item['valor_total'] != '') {
+                        $insumo = new ContratoInsumo();
+                        $insumo->contrato_id = $contratos->id;
+                        $insumo->insumo_id = $item['insumo_id'];
+                        $insumo->qtd = $item['qtd'];
+                        $insumo->valor_unitario = $item['valor_unitario'];
+                        $insumo->valor_total = $item['valor_total'];
+                        $contratos->contratoInsumos()->save($insumo);
+                    }
+                } else {
+                    $insumo = ContratoInsumo::find($item['id']);
+                    if ($insumo) {
+                        if ($item['insumo_id'] != '' && $item['qtd'] != '' && $item['valor_unitario'] != '' && $item['valor_total'] != '') {
+                            $insumo->contrato_id = $contratos->id;
+                            $insumo->insumo_id = $item['insumo_id'];
+                            $insumo->qtd = $item['qtd'];
+                            $insumo->valor_unitario = $item['valor_unitario'];
+                            $insumo->valor_total = $item['valor_total'];
+                            $insumo->update();
+                        }
+                    }
+                }
+            }
+        }
 
         Flash::success('Contratos '.trans('common.updated').' '.trans('common.successfully').'.');
 
@@ -167,5 +214,17 @@ class ContratosController extends AppBaseController
         Flash::success('Contratos '.trans('common.deleted').' '.trans('common.successfully').'.');
 
         return redirect(route('admin.contratos.index'));
+    }
+    
+    public function calcularValorTotalInsumo(Request $request) {
+        $pontos = array(",");
+        $value = str_replace('.','',$request->valor_unitario);
+        $valor_unitario = str_replace( $pontos, ".", $value);
+
+        $valor_total = ($request->quantidade * $valor_unitario);
+
+        $valor_total = number_format($valor_total,2,',','.');
+
+        return response()->json(['valor_total' => $valor_total]);
     }
 }

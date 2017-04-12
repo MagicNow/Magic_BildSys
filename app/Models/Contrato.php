@@ -69,7 +69,7 @@ class Contrato extends Model
      **/
     public function contratoInsumos()
     {
-        return $this->hasMany(\App\Models\ContratoInsumo::class);
+        return $this->hasMany(\App\Models\ContratoInsumo::class, 'contrato_id');
     }
 
     /**

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Admin;
+namespace App\Models;
 
 use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -51,12 +51,40 @@ class ContratoInsumo extends Model
         
     ];
 
+    public function getValorUnitarioAttribute($value)
+    {
+        return number_format($value,2,',','.');
+    }
+
+    public function setValorUnitarioAttribute($value)
+    {
+        $pontos = array(",");
+        $value = str_replace('.','',$value);
+        $result = str_replace( $pontos, ".", $value);
+
+        $this->attributes['valor_unitario'] = $result;
+    }
+
+    public function getValorTotalAttribute($value)
+    {
+        return number_format($value,2,',','.');
+    }
+
+    public function setValorTotalAttribute($value)
+    {
+        $pontos = array(",");
+        $value = str_replace('.','',$value);
+        $result = str_replace( $pontos, ".", $value);
+
+        $this->attributes['valor_total'] = $result;
+    }
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
     public function contrato()
     {
-        return $this->belongsTo(\App\Models\Admin\Contrato::class);
+        return $this->belongsTo(\App\Models\Contrato::class, 'contrato_id');
     }
 
     /**
@@ -64,6 +92,6 @@ class ContratoInsumo extends Model
      **/
     public function insumo()
     {
-        return $this->belongsTo(\App\Models\Admin\Insumo::class);
+        return $this->belongsTo(\App\Models\Insumo::class);
     }
 }
