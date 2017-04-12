@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="/css/admin.css">
     <link rel="shortcut icon" href="{{ asset('img/favicon.png') }}">
     <link rel="icon" href="{{ asset('img/favicon.png') }}" />
-
+    @yield('styles')
 </head>
 
 <body class="skin-yellow-light sidebar-mini">

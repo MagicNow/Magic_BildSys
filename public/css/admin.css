@@ -18997,4 +18997,24 @@ th.active .arrow {
 
 .btn-success{
     background-color: #7ed321;
+    border-color: #7ed321;
+}
+.title h3{
+    margin: 0px;
+}
+
+hr {
+    border-top: 1px solid #ddd;
+}
+
+.content-wrapper, .right-side {
+    background-color: #f5f5f5;
+}
+
+.panel{
+    border-radius: 0px;
+}
+
+.borda-direita{
+    border-right: solid 1px #ddd;
 }

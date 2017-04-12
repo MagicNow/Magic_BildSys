@@ -52,6 +52,14 @@ class OrdemDeCompra extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
     public function obra()
     {
         return $this->belongsTo(\App\Models\Obra::class);
@@ -68,9 +76,9 @@ class OrdemDeCompra extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
-    public function ordemDeCompraItens()
+    public function itens()
     {
-        return $this->hasMany(\App\Models\OrdemDeCompraIten::class);
+        return $this->hasMany(\App\Models\OrdemDeCompraItem::class);
     }
 
     /**

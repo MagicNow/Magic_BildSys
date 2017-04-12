@@ -6,15 +6,15 @@ use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * Class WorkflowUsuario
+ * Class OrdemDeCompraItemAnexo
  * @package App\Models
- * @version April 10, 2017, 3:08 pm BRT
+ * @version April 11, 2017, 7:24 pm BRT
  */
-class WorkflowUsuario extends Model
+class OrdemDeCompraItemAnexo extends Model
 {
     use SoftDeletes;
 
-    public $table = 'workflow_usuarios';
+    public $table = 'ordem_de_compra_item_anexos';
     
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
@@ -24,8 +24,8 @@ class WorkflowUsuario extends Model
 
 
     public $fillable = [
-        'user_id',
-        'workflow_alcada_id'
+        'ordem_de_compra_item_id',
+        'arquivo'
     ];
 
     /**
@@ -35,8 +35,8 @@ class WorkflowUsuario extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'user_id' => 'integer',
-        'workflow_alcada_id' => 'integer'
+        'ordem_de_compra_item_id' => 'integer',
+        'arquivo' => 'string'
     ];
 
     /**
@@ -51,16 +51,8 @@ class WorkflowUsuario extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function user()
+    public function ordemDeCompraIten()
     {
-        return $this->belongsTo(\App\Models\User::class);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     **/
-    public function alcada()
-    {
-        return $this->belongsTo(\App\Models\WorkflowAlcada::class);
+        return $this->belongsTo(\App\Models\OrdemDeCompraIten::class);
     }
 }

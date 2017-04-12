@@ -14,7 +14,7 @@ class Unidade extends Model
 
     public $table = 'unidades';
 
-    protected $primary = 'sigla';
+    public $primaryKey = 'sigla';
 
     public $fillable = [
         'descricao'

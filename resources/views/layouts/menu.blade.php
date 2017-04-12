@@ -21,7 +21,7 @@
     <a href="{!! route('admin.import.index') !!}"><i class="glyphicon glyphicon-cloud-upload"></i><span>Importação</span></a>
 </li>
 
-<li class="active treeview">
+<li class="treeview {{ Request::is('admin/workflow*') ? 'active' : '' }}">
     <a href="#">
         <i class="fa fa-check-square"></i> <span>Workflow</span>
             <span class="pull-right-container">
