@@ -14,17 +14,18 @@
                     <div class="col-md-10">
                         <div class="form-group">
                             {!! Form::label('obra_id', 'Obra:') !!}
-                            {!! Form::select('obra_id', [''=>'Escolha' ]+$obras, null, ['class' => 'form-control', 'required'=>'required']) !!}
+                            {!! Form::select('obra_id', [''=>'Escolha...' ]+$obras, null, ['class' => 'form-control', 'required'=>'required']) !!}
                         </div>
                         <div class="form-group">
                             {!! Form::label('modulo_id', 'Módulo:') !!}
-                            {!! Form::select('modulo_id', ['' => 'Escolha', 1=>'Orçamentos'], null, ['class' => 'form-control','required'=>'required', 'onchange' => 'selectType(this.value)']) !!}
+                            {!! Form::select('modulo_id', ['' => 'Escolha...', 1=>'Orçamentos'], null, ['class' => 'form-control','required'=>'required', 'onchange' => 'selectType(this.value)']) !!}
                         </div>
                         <div id="tipo_orcamento" class="form-group" style="display:none">
                             {!! Form::label('orcamento_tipo_id', 'Tipo Orçamento:') !!}
-                            {!! Form::select('orcamento_tipo_id', ['' => 'Escolha']+$orcamento_tipos, null, ['class' => 'form-control']) !!}
+                            {!! Form::select('orcamento_tipo_id', ['' => 'Escolha...']+$orcamento_tipos, null, ['class' => 'form-control']) !!}
                         </div>
-                        <label><h5 style="color:#ff9800">Apenas planilhas no formato <strong class="label label-info"> .csv </strong></h5></label>
+                        <h4>Apenas planilhas no formato <strong class="label label-warning"> .csv </strong></h4></br>
+                        <h5 style="color:#000000">Planilha modelo: <strong class="label label-warning"><a href="/orcamentos.csv" style="color:white" target="_blank">clique aqui</a> </strong></h5>
                         <div class="row" style="margin-bottom: 20px">
                             <div class="col-sm-6 {{ $errors->has('file') ? 'has-error' : '' }}">
                                 {!! Form::file('file', array('id' => 'file', 'class' => 'form-control', 'required'=>'required')) !!}

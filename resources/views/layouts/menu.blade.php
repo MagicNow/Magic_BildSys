@@ -38,6 +38,7 @@
     </a>
     <ul class="treeview-menu">
         <li class="{{ Request::is('planejamento*') ? 'active' : '' }}"><a href="{!! route('admin.planejamento.index') !!}"><i class="glyphicon glyphicon-cloud-upload"></i><span>Importação</span></a></li>
+        <li class="{{ Request::is('lembretes*') ? 'active' : '' }}"><a href="{!! route('admin.lembretes.index') !!}"><i class="fa fa-exclamation-circle"></i><span>Lembretes</span></a></li>
     </ul>
 </li>
 
