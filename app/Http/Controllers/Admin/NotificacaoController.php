@@ -30,6 +30,6 @@ class NotificacaoController extends AppBaseController
             $notification->read_at = date('Y-m-d H:i:s');
             $notification->update();
         }
-        return true;
+        return response()->json(['success'=>true]);
     }
 }

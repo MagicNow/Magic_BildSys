@@ -22,15 +22,20 @@
         <div class="clearfix"></div>
 
         @include('flash::message')
-
-        <div class="clearfix"></div>
-        <div class="box-body" id="app">
-
-            @include('layouts.filters')
+        @include('adminlte-templates::common.errors')
+        <div class="box-body" id='app'>
             <tabela
-                api-url="/api/listagem-ordens-de-compras"
-                v-bind:params="{}"
-                v-bind:colunas="[{campo_db: 'id', label: 'núm. o.c'},{campo_db: 'obra', label: 'obra'},{campo_db: 'usuario', label: 'usuário'},{campo_db: 'oc_status_id', label: 'status'},{campo_db: 'situacao', label: 'situação'},{campo_db: 'user_id', label: 'detalhe'}]">
+                    api-url="/api/listagem-ordens-de-compras"
+                    api-filtros="/filter-json-ordem-compra"
+                    v-bind:params="{}"
+                    v-bind:actions="{filtros: true, status: true, detalhe: true}"
+                    v-bind:colunas="[
+                    {campo_db: 'id', label: 'núm. o.c'},
+                    {campo_db: 'obra', label: 'obra'},
+                    {campo_db: 'usuario', label: 'usuário'},
+                    {campo_db: 'situacao', label: 'situação'}
+                    ]">
+            >
             </tabela>
         </div>
     </div>

@@ -20,7 +20,7 @@ class ListagemOCController extends AppBaseController
     public function index(Request $request)
     {
         $listagem_oc = OrdemDeCompra::query();
-
+        
         $listagem_oc = CodeRepository::filter($listagem_oc, $request->all());
 
         $listagem_oc = $listagem_oc
@@ -28,6 +28,7 @@ class ListagemOCController extends AppBaseController
             ->join('obras', 'obras.id', '=', 'ordem_de_compras.obra_id')
             ->join('oc_status', 'oc_status.id', '=', 'ordem_de_compras.oc_status_id')
             ->join('users', 'users.id', '=', 'ordem_de_compras.user_id')
+            ->join('orcamentos', 'orcamentos.obra_id', '=', 'obras.id')
             ->paginate(10);
 
         return response()->json($listagem_oc, 200);
