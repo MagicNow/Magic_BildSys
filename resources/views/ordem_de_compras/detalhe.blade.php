@@ -1,11 +1,7 @@
 @extends('layouts.front')
 @section('styles')
     <style type="text/css">
-        h6 {
-            font-size: 14px;
-            text-align: left;
-            color: #474747;
-        }
+
         #totalInsumos h5{
             font-weight: bold;
             color: #4a4a4a;
@@ -22,32 +18,6 @@
         }
         #totalInsumos{
             margin-bottom: 20px;
-        }
-        .highlight{
-            color: #f98d00;
-            font-weight: bold;
-        }
-        .panel table td{
-            font-size: 18px;
-        }
-        .panel table th{
-            font-size: 14px;
-        }
-        .margem-topo{
-            margin-top: 15px;
-        }
-        .label-bloco{
-            font-size: 13px;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-        .bloco-texto-conteudo{
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        .bloco-texto-linha{
-            padding: 5px 20px;
-            background-color: #f5f5f5;
         }
     </style>
 @stop
@@ -71,16 +41,53 @@
                     <a href="{!! route('retroalimentacaoObras.create') !!}" class="btn btn-default btn-lg btn-flat">
                         Retroalimentação
                     </a>
-                    <div class="btn-group" role="group" aria-label="...">
-                        <button type="button" onclick="alert('TODO: APROVAR OC {{ $ordemDeCompra->id }}');"
-                                class="btn btn-success btn-lg btn-flat">
-                            <i class="fa fa-check" aria-hidden="true"></i>
-                        </button>
-                        <button type="button" onclick="alert('TODO: REPROVAR OC {{ $ordemDeCompra->id }}');"
-                                class="btn btn-danger btn-lg btn-flat">
-                            <i class="fa fa-times" aria-hidden="true"></i>
-                        </button>
-                    </div>
+                    @if(!is_null($ordemDeCompra->aprovado))
+                        @if($ordemDeCompra->aprovado)
+                            <span class="btn-lg btn-flat text-success" title="Aprovado">
+                                <i class="fa fa-check" aria-hidden="true"></i>
+                            </span>
+                        @else
+                            <span class="text-danger btn-lg btn-flat" title="Reprovado por você">
+                                <i class="fa fa-times" aria-hidden="true"></i>
+                            </span>
+                        @endif
+                    @else
+                        @if($aprovavelTudo['podeAprovar'])
+                            @if($aprovavelTudo['iraAprovar'])
+                                <div class="btn-group" role="group" id="blocoOCAprovacao{{ $ordemDeCompra->id }}" aria-label="...">
+                                    <button type="button" title="Aprovar Todos os itens"
+                                            onclick="workflowAprovaReprova({{ $ordemDeCompra->id }},'OrdemDeCompraItem',1,'blocoOCAprovacao{{ $ordemDeCompra->id }}','OC {{ $ordemDeCompra->id }}', {{ $ordemDeCompra->id }}, 'OrdemDeCompra', 'itens');"
+                                            class="btn btn-default btn-lg btn-flat">
+                                        <i class="fa fa-check" aria-hidden="true"></i>
+                                    </button>
+                                    <button type="button" title="Reprovar Todos os itens"
+                                            onclick="workflowAprovaReprova({{ $ordemDeCompra->id }},'OrdemDeCompraItem',0, 'blocoOCAprovacao{{ $ordemDeCompra->id }}','OC {{ $ordemDeCompra->id }}', {{ $ordemDeCompra->id }}, 'OrdemDeCompra', 'itens');"
+                                            class="btn btn-default btn-lg btn-flat">
+                                        <i class="fa fa-times" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                            @else
+                                @if($aprovavelTudo['jaAprovou'])
+                                    @if($aprovavelTudo['aprovacao'])
+                                        <span class="btn-lg btn-flat text-success" title="Aprovado por você">
+                                                <i class="fa fa-check" aria-hidden="true"></i>
+                                            </span>
+                                    @else
+                                        <span class="text-danger btn-lg btn-flat" title="Reprovado por você">
+                                                <i class="fa fa-times" aria-hidden="true"></i>
+                                            </span>
+                                    @endif
+                                @else
+                                    {{--Não Aprovou ainda, pode aprovar, mas por algum motivo não irá aprovar no momento--}}
+                                    <button type="button" title="{{ $aprovavelTudo['msg'] }}"
+                                            onclick="swal('{{ $aprovavelTudo['msg'] }}','','info');"
+                                            class="btn btn-default btn-lg btn-flat">
+                                        <i class="fa fa-info" aria-hidden="true"></i>
+                                    </button>
+                                @endif
+                            @endif
+                        @endif
+                    @endif
 
                 </div>
             </div>
@@ -153,16 +160,16 @@
                         @endif
                     @else
                         <?php
-                            $workflowAprovacao = \App\Repositories\WorkflowAprovacaoRepository::verificaAprovacoes(\App\Models\OrdemDeCompraItem::class, $item->id, Auth::user());
+                            $workflowAprovacao = \App\Repositories\WorkflowAprovacaoRepository::verificaAprovacoes('OrdemDeCompraItem', $item->id, Auth::user());
                         ?>
                         @if($workflowAprovacao['podeAprovar'])
                             @if($workflowAprovacao['iraAprovar'])
                                 <div class="btn-group" role="group" id="blocoItemAprovaReprova{{ $item->id }}" aria-label="...">
-                                    <button type="button" onclick="workflowAprovaReprova({{ $item->id }},'{{ \App\Models\OrdemDeCompraItem::class }}',1,'blocoItemAprovaReprova{{ $item->id }}');"
+                                    <button type="button" onclick="workflowAprovaReprova({{ $item->id }},'OrdemDeCompraItem',1,'blocoItemAprovaReprova{{ $item->id }}','Insumo {{ $item->insumo->codigo }}',0, '', '');"
                                             class="btn btn-default btn-lg btn-flat">
                                         <i class="fa fa-check" aria-hidden="true"></i>
                                     </button>
-                                    <button type="button" onclick="workflowAprovaReprova({{ $item->id }},'{{ \App\Models\OrdemDeCompraItem::class }}',0, 'blocoItemAprovaReprova{{ $item->id }}');"
+                                    <button type="button" onclick="workflowAprovaReprova({{ $item->id }},'OrdemDeCompraItem',0, 'blocoItemAprovaReprova{{ $item->id }}','Insumo {{ $item->insumo->codigo }}',0, '', '');"
                                             class="btn btn-default btn-lg btn-flat">
                                         <i class="fa fa-times" aria-hidden="true"></i>
                                     </button>
@@ -170,15 +177,13 @@
                             @else
                                 @if($workflowAprovacao['jaAprovou'])
                                     @if($workflowAprovacao['aprovacao'])
-                                            <button type="button" disabled="disabled"
-                                                    class="btn btn-default btn-lg btn-flat">
+                                            <span class="btn-lg btn-flat text-success" title="Aprovado por você">
                                                 <i class="fa fa-check" aria-hidden="true"></i>
-                                            </button>
+                                            </span>
                                     @else
-                                            <button type="button" disabled="disabled"
-                                                    class="btn btn-default btn-lg btn-flat">
+                                            <span class="text-danger btn-lg btn-flat" title="Reprovado por você">
                                                 <i class="fa fa-times" aria-hidden="true"></i>
-                                            </button>
+                                            </span>
                                     @endif
                                 @else
                                     {{--Não Aprovou ainda, pode aprovar, mas por algum motivo não irá aprovar no momento--}}
@@ -311,3 +316,16 @@
     </div>
 </div>
 @endsection
+@section('scripts')
+<script type="text/javascript">
+    <?php
+            $options_motivos = "<option value=''>Escolha...</option>";
+            foreach($motivos_reprovacao as $motivo_id=>$motivo_nome){
+                $options_motivos .= "<option value='".$motivo_id."'>".$motivo_nome."</option>";
+            }
+    ?>
+    options_motivos = "{!! $options_motivos !!}";
+
+
+</script>
+@stop

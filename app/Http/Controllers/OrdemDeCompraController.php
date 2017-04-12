@@ -7,6 +7,7 @@ use App\Http\Requests;
 use App\Http\Requests\CreateOrdemDeCompraRequest;
 use App\Http\Requests\UpdateOrdemDeCompraRequest;
 use App\Models\Insumo;
+use App\Models\WorkflowReprovacaoMotivo;
 use App\Repositories\CodeRepository;
 use App\Models\Obra;
 use App\Models\Orcamento;
@@ -15,8 +16,10 @@ use App\Models\OrdemDeCompraItem;
 use App\Models\OrdemDeCompra;
 
 use App\Repositories\OrdemDeCompraRepository;
+use App\Repositories\WorkflowAprovacaoRepository;
 use Flash;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Response;
 
@@ -200,6 +203,8 @@ class OrdemDeCompraController extends AppBaseController
 
         $itens = collect([]);
 
+        $aprovavelTudo = WorkflowAprovacaoRepository::verificaAprovaGrupo('OrdemDeCompraItem', $ordemDeCompra->itens()->pluck('id','id')->toArray(), Auth::user() );
+
         if($ordemDeCompra->itens){
             $orcamentoInicial = Orcamento::where('orcamento_tipo_id',1)
                 ->whereIn('insumo_id', $ordemDeCompra->itens()->pluck('insumo_id','insumo_id')->toArray())
@@ -267,13 +272,18 @@ class OrdemDeCompraController extends AppBaseController
                 ->paginate(2);
         }
 
+
+        $motivos_reprovacao = WorkflowReprovacaoMotivo::pluck('nome','id')->toArray();
+
         return view('ordem_de_compras.detalhe', compact(
                 'ordemDeCompra',
                 'orcamentoInicial',
                 'realizado',
                 'totalAGastar',
                 'saldo',
-                'itens'
+                'itens',
+                'motivos_reprovacao',
+                'aprovavelTudo'
             )
         );
     }

@@ -18167,7 +18167,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       staticClass: "row-table"
     }, [_c('a', {
       attrs: {
-        "href": dado['caminho'] + '/' + dado['id']
+        "href": _vm.actions.detalhe_url + '/' + dado['id']
       }
     }, [_c('i', {
       staticClass: "fa fa-eye"

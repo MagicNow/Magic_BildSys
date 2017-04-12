@@ -191,5 +191,6 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('insumos_json', 'OrdemDeCompraController@insumosJson');
 
     $router->get('workflow/aprova-reprova', 'WorkflowController@aprovaReprova');
+    $router->get('workflow/aprova-reprova-tudo', 'WorkflowController@aprovaReprovaTudo');
 });
 
