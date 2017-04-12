@@ -2,11 +2,11 @@
 
 namespace App\DataTables\Admin;
 
-use App\Models\Contrato;
+use App\Models\Admin\ContratoInsumo;
 use Form;
 use Yajra\Datatables\Services\DataTable;
 
-class ContratosDataTable extends DataTable
+class ContratoInsumoDataTable extends DataTable
 {
 
     /**
@@ -16,16 +16,7 @@ class ContratosDataTable extends DataTable
     {
         return $this->datatables
             ->eloquent($this->query())
-            ->editColumn('arquivo',function ($obj){
-                return '<a href="'.$obj->arquivo.'" download>Baixar arquivo</a>';
-            })
-            ->editColumn('data',function ($obj){
-                return $obj->data ? with(new\Carbon\Carbon($obj->data))->format('d/m/Y') : '';
-            })
-            ->editColumn('obra_id',function ($obj){
-                return $obj->obra->nome;
-            })
-            ->addColumn('action', 'admin.contratos.datatables_actions')
+            ->addColumn('action', 'admin.contrato_insumos.datatables_actions')
             ->make(true);
     }
 
@@ -36,9 +27,9 @@ class ContratosDataTable extends DataTable
      */
     public function query()
     {
-        $contratos = Contrato::query();
+        $contratoInsumos = ContratoInsumo::query();
 
-        return $this->applyScopes($contratos);
+        return $this->applyScopes($contratoInsumos);
     }
 
     /**
@@ -100,10 +91,11 @@ class ContratosDataTable extends DataTable
     private function getColumns()
     {
         return [
-            'obra' => ['name' => 'obra_id', 'data' => 'obra_id'],
-            'data' => ['name' => 'data', 'data' => 'data'],
-            'valor' => ['name' => 'valor', 'data' => 'valor'],
-            'arquivo' => ['name' => 'arquivo', 'data' => 'arquivo']
+            'contrato_id' => ['name' => 'contrato_id', 'data' => 'contrato_id'],
+            'insumo_id' => ['name' => 'insumo_id', 'data' => 'insumo_id'],
+            'qtd' => ['name' => 'qtd', 'data' => 'qtd'],
+            'valor_unitario' => ['name' => 'valor_unitario', 'data' => 'valor_unitario'],
+            'valor_total' => ['name' => 'valor_total', 'data' => 'valor_total']
         ];
     }
 
@@ -114,6 +106,6 @@ class ContratosDataTable extends DataTable
      */
     protected function filename()
     {
-        return 'contratos';
+        return 'contratoInsumos';
     }
 }

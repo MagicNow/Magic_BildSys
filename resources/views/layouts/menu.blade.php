@@ -38,3 +38,7 @@
     <a href="{!! route('admin.contratos.index') !!}"><i class="fa fa-edit"></i><span>Contratos</span></a>
 </li>
 
+<li class="{{ Request::is('contratoInsumos*') ? 'active' : '' }}">
+    <a href="{!! route('admin.contratoInsumos.index') !!}"><i class="fa fa-edit"></i><span>Contratos insumos</span></a>
+</li>
+

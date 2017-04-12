@@ -18,7 +18,7 @@
 <!-- Arquivo Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('arquivo', 'Arquivo:') !!}
-    @if($contratos)
+    @if(@isset($contratos))
         @if($contratos->arquivo)
             <a href="{{$contratos->arquivo}}" download>Baixar arquivo</a>
         @endif
