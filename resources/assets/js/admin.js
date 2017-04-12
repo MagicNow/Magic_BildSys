@@ -33,7 +33,9 @@ $(function () {
 });
 
 $(function () {
-   verifyQueryString();
+    verifyQueryString();
+    
+    $('.money').mask('0.000.000.000.000,00', {reverse: true});
 });
 var oTable = null;
 

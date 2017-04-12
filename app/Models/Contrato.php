@@ -13,7 +13,8 @@ class Contrato extends Model
 {
 
     public $table = 'contratos';
-
+    public $timestamps = false;
+    
     public $fillable = [
         'obra_id',
         'data',
@@ -29,7 +30,6 @@ class Contrato extends Model
     protected $casts = [
         'id' => 'integer',
         'obra_id' => 'integer',
-        'data' => 'date',
         'arquivo' => 'string'
     ];
 
@@ -41,6 +41,20 @@ class Contrato extends Model
     public static $rules = [
         
     ];
+
+    public function getValorAttribute($value)
+    {
+        return number_format($value,2,',','.');
+    }
+
+    public function setValorAttribute($value)
+    {
+        $pontos = array(",");
+        $value = str_replace('.','',$value);
+        $result = str_replace( $pontos, ".", $value);
+
+        $this->attributes['valor'] = $result;
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

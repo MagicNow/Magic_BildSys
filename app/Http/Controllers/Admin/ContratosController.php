@@ -7,6 +7,7 @@ use App\Http\Requests\Admin;
 use App\Http\Requests\Admin\CreateContratosRequest;
 use App\Http\Requests\Admin\UpdateContratosRequest;
 use App\Repositories\Admin\ContratosRepository;
+use App\Repositories\CodeRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
 use Response;
@@ -51,9 +52,14 @@ class ContratosController extends AppBaseController
      */
     public function store(CreateContratosRequest $request)
     {
-        $input = $request->all();
+        $input = $request->except('arquivo');
 
         $contratos = $this->contratosRepository->create($input);
+
+        $destinationPath = CodeRepository::saveFile($request->arquivo, 'contratos/' . $contratos->id);
+
+        $contratos->arquivo = $destinationPath;
+        $contratos->save();
 
         Flash::success('Contratos '.trans('common.saved').' '.trans('common.successfully').'.');
 
@@ -118,7 +124,15 @@ class ContratosController extends AppBaseController
             return redirect(route('admin.contratos.index'));
         }
 
-        $contratos = $this->contratosRepository->update($request->all(), $id);
+        if($request->arquivo){
+            @unlink(public_path() . $contratos->arquivo);
+            $destinationPath = CodeRepository::saveFile($request->arquivo, 'contratos/' . $contratos->id);
+            $contratos->arquivo = $destinationPath;
+            $contratos->save();
+        }
+
+        $contratos = $this->contratosRepository->update($request->except('arquivo'), $id);
+        
 
         Flash::success('Contratos '.trans('common.updated').' '.trans('common.successfully').'.');
 
@@ -142,6 +156,10 @@ class ContratosController extends AppBaseController
             return redirect(route('admin.contratos.index'));
         }
 
+        if($contratos->arquivo){
+            @unlink(public_path() . $contratos->arquivo);
+        }
+        
         $this->contratosRepository->delete($id);
 
         Flash::success('Contratos '.trans('common.deleted').' '.trans('common.successfully').'.');

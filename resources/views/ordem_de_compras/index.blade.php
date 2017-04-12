@@ -42,8 +42,6 @@
 @endsection
 
 @section('scripts')
-    <script src="{{ asset('js/app.js') }}" type="text/javascript"></script>
-
     <script>
         const app = new Vue({
             el: '#app'
