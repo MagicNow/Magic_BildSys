@@ -12,7 +12,7 @@
     @yield('styles')
 </head>
 
-<body class="skin-yellow-light sidebar-mini">
+<body class="skin-yellow sidebar-mini">
 
     <div class="wrapper">
         <!-- Main Header -->

@@ -136,6 +136,7 @@ elixir(function(mix) {
         // paths.bootswatch + '/bootstrap.css',
         paths.adminlte + '/css/AdminLTE.css',
         paths.adminlte + '/css/skins/skin-yellow-light.css',
+        paths.adminlte + '/css/skins/skin-yellow.css',
         paths.ionicons + '/css/ionicons.css',
         paths.colorbox + '/example3/colorbox.css',
         paths.dataTables + '/css/dataTables.bootstrap.css',

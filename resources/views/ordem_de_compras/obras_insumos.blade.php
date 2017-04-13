@@ -10,21 +10,19 @@
                     </span>
                 </div>
                 <div class="col-md-6 text-right">
-                    <div class="col-md-4 text-right">
-                        <button type="button" class="btn btn-success button-large-green" data-dismiss="modal">
+
+                        <button type="button" class="btn btn-default btn-lg btn-flat" data-dismiss="modal">
                             Incluir Insumo
                         </button>
-                    </div>
-                    <div class="col-md-4 text-right">
-                        <button type="button" class="btn btn-success button-large-green" data-dismiss="modal">
+
+                        <button type="button" class="btn btn-success btn-lg btn-flat" data-dismiss="modal">
                             Comprar Tudo
                         </button>
-                    </div>
-                    <div class="col-md-4 text-right">
-                        <button type="button" class="btn btn-success button-large-green" data-dismiss="modal">
+
+                        <button type="button" class="btn btn-success btn-lg btn-flat" data-dismiss="modal">
                             Fechar Ordem
                         </button>
-                    </div>
+
                 </div>
             </div>
         </div>
