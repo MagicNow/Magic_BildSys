@@ -54,7 +54,7 @@
                     <a @click="loadData()" onclick="filterPeriod(30);" style="cursor: pointer">30 dias</a>
                 </li>
                 <li>
-                    <input type="number" @click="loadData()" placeholder="Outro periodo" class="form-control" style="border-color:#f5f5f5;background-color:#f5f5f5;">
+                    <input type="number" @keyup="loadData()" onkeyup="filterPeriod('outro');" id="outro" placeholder="Outro periodo" class="form-control" style="border-color:#f5f5f5;background-color:#f5f5f5;">
                 </li>
                 <li>
                     <a href="" data-toggle="modal" data-target="#myModal" class="grey">

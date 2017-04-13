@@ -18193,10 +18193,12 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     },
     attrs: {
       "type": "number",
+      "onkeyup": "filterPeriod('outro');",
+      "id": "outro",
       "placeholder": "Outro periodo"
     },
     on: {
-      "click": function($event) {
+      "keyup": function($event) {
         _vm.loadData()
       }
     }
