@@ -1,4 +1,4 @@
-
+var k = 0;
 $(function () {
     verifyQueryString();
 });
@@ -264,11 +264,14 @@ function maximizeFilters() {
 }
 
 function verifyQueryString() {
+    k =0;
     var result = {}, keyValuePairs = location.search.slice(1).split("&");
-    keyValuePairs.forEach(function(keyValuePair) {
-        keyValuePair = keyValuePair.split('=');
-        result[decodeURIComponent(keyValuePair[0])] = decodeURIComponent(keyValuePair[1]) || '';
-    });
+    if(keyValuePairs!=""){
+        keyValuePairs.forEach(function(keyValuePair) {
+            keyValuePair = keyValuePair.split('=');
+            result[decodeURIComponent(keyValuePair[0])] = decodeURIComponent(keyValuePair[1]) || '';
+        });
+    }
 
     if(Object.keys(result).length){
         $.each(result, function (index, value) {
@@ -315,6 +318,7 @@ function foreign(label, value, row_foreign_key, cb_filter_i, query_string, block
     });
 }
 
+
 function addQuery() {
     var filters_fields = $('.filters');
     var filters = '';
@@ -326,5 +330,8 @@ function addQuery() {
     filters = '?'+filters;
     filters = filters.substring(0,(filters.length - 1));
 
-    history.pushState("", document.title, '' + filters);
+    // Previnir que quando acessa fica inserindo mais de uma vez
+    if(k<1){
+        history.pushState("", document.title, '' + filters);
+    }
 }
