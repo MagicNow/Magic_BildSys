@@ -38,22 +38,22 @@
 
             <ol class="breadcrumb" style="margin-bottom: 0px;">
                 <li class="col-md-6">
-                    <a href="#"><i class="fa fa-search" aria-hidden="true"></i> Procurar</a>
+                    <a @click="loadData()" style="cursor: pointer"><i class="fa fa-search" aria-hidden="true"></i> Procurar</a>
                 </li>
                 <li>
-                    <a href="#">Hoje</a>
+                    <a @click="loadData()" style="cursor: pointer">Hoje</a>
                 </li>
                 <li>
-                    <a href="#">7 dias</a>
+                    <a @click="loadData()" style="cursor: pointer">7 dias</a>
                 </li>
                 <li>
-                    <a href="#">15 dias</a>
+                    <a @click="loadData()" style="cursor: pointer">15 dias</a>
                 </li>
                 <li>
-                    <a href="#">30 dias</a>
+                    <a @click="loadData()" style="cursor: pointer">30 dias</a>
                 </li>
                 <li>
-                    <a href="#">Outro periodo</a>
+                    <a @click="loadData()" style="cursor: pointer">Outro periodo</a>
                 </li>
                 <li>
                     <a href="" data-toggle="modal" data-target="#myModal" class="grey">
@@ -144,8 +144,7 @@
                 adicionar: '',
                 detalhe: '',
                 aprovar: '',
-                reprovar: '',
-                troca: ''
+                reprovar: ''
             },
             colunas: ''
         },
