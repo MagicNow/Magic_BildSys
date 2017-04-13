@@ -11,6 +11,20 @@ class CodeRepository
         if($filters){
             foreach ($filters as $field => $value){
                 $explode = explode('-', $field);
+
+                if(@isset($explode[0])){
+                    if($explode[0] == 'periodo'){
+                        $until_date = date("Y-m-d",strtotime("-".$filters['periodo']."Day"));
+
+                        $sql = $query->toSql();
+                        $partial_sql = str_replace('select * from `', '', $sql);
+                        $table = strstr($partial_sql, '`', true);
+
+                        $query->where(DB::raw('DATE_FORMAT('.$table.'.created_at, "%Y-%m-%d")'), '<=', date("Y-m-d"))
+                            ->where(DB::raw('DATE_FORMAT('.$table.'.created_at, "%Y-%m-%d")'), '>=', $until_date);
+                    }
+                }
+
                 if(@isset($explode[0]) && @isset($explode[1])) {
                     $filter = self::translateFields($explode[0]);
                     if ($explode[1] == 'integer') {
