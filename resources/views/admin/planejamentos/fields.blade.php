@@ -1,6 +1,6 @@
 <!-- Obra Id Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('obra_id', 'Obra Id:') !!}
+    {!! Form::label('obra_id', 'Obra:') !!}
     {!! Form::select('obra_id',[''=>'Escolha...']+$obras, null, ['class' => 'form-control']) !!}
 </div>
 
@@ -12,7 +12,7 @@
 
 <!-- Data Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('data', 'Data:') !!}
+    {!! Form::label('data', 'Data início:') !!}
     {!! Form::date('data', null, ['class' => 'form-control']) !!}
 </div>
 
@@ -36,8 +36,32 @@
 
 <!-- Grupos de insumo Field -->
 <div class="form-group col-sm-12">
-    {!! Form::label('insumo_grupo_id', 'Grupos:') !!}
-    {!! Form::select('insumo_grupo_id[]', $insumo_grupos, null, ['class' => 'form-control','id'=>'insumo_grupo_id', 'multiple'=>'multiple']) !!}
+    {!! Form::label('grupo_id', 'Grupos:') !!}
+    {!! Form::select('grupo_id', [''=>'-'], null, ['class' => 'form-control']) !!}
+</div>
+
+<!-- SubGrupos1 de insumo Field -->
+<div class="form-group col-sm-12">
+    {!! Form::label('subgrupo1_id', 'SubGrupo-1:') !!}
+    {!! Form::select('subgrupo1_id', [''=>'-'], null, ['class' => 'form-control']) !!}
+</div>
+
+<!-- SubGrupos2 de insumo Field -->
+<div class="form-group col-sm-12">
+    {!! Form::label('subgrupo2_id', 'SubGrupo-2:') !!}
+    {!! Form::select('subgrupo2_id', [''=>'-'], null, ['class' => 'form-control']) !!}
+</div>
+
+<!-- SubGrupos3 de insumo Field -->
+<div class="form-group col-sm-12">
+    {!! Form::label('subgrupo3_id', 'SubGrupo-3:') !!}
+    {!! Form::select('subgrupo3_id', [''=>'-'], null, ['class' => 'form-control']) !!}
+</div>
+
+<!-- SubGrupos4 de insumo Field -->
+<div class="form-group col-sm-12">
+    {!! Form::label('servico_id', 'Serviço:') !!}
+    {!! Form::select('servico_id', [''=>'-'], null, ['class' => 'form-control']) !!}
 </div>
 
 <!-- Submit Field -->

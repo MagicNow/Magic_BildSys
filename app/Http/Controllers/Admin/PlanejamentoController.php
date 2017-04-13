@@ -129,25 +129,6 @@ class PlanejamentoController extends AppBaseController
             return redirect(route('admin.planejamentos.index'));
         }
         $input = $request->all();
-        if($input['insumo_grupo_id']){
-            /**
-             * Select - Montando select que vai trazer o id do planejamento e insumo_grupo_id com whereIn
-             **/
-            $select = Insumo::select(\DB::raw($id), 'insumo_grupo_id')
-                ->whereIn('insumo_grupo_id', $input['insumo_grupo_id']);
-            /**
-             * Obter os parâmetros de ligação
-             **/
-            $bindings = $select->getBindings();
-            /**
-             * Concatenando o insert com select.
-             */
-            $insertQuery = 'INSERT into planejamento_compras (planejamento_id, insumo_id) '
-                . $select->toSql();
-
-            # insert com primeiro parametro é a query (INSERT and SELECT) segundo parametro Array com insumo_grupo_id
-            \DB::insert($insertQuery, $bindings);
-        }
 
         $planejamento = $this->planejamentoRepository->update($input, $id);
 
