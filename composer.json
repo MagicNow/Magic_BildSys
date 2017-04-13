@@ -28,7 +28,8 @@
         "creativeorange/gravatar": "^1.0",
         "artesaos/defender": "^0.6.2",
         "kennedytedesco/validation": "~3.0",
-        "box/spout": "^2.7"
+        "box/spout": "^2.7",
+        "yajra/laravel-oci8": "5.3.*"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

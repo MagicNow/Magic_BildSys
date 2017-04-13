@@ -79,6 +79,19 @@ return [
             'sslmode' => 'prefer',
         ],
 
+        'oracle' => [
+            'driver'        => 'oracle',
+            'tns'           => env('DB_ORACLE_TNS', '(DESCRIPTION =(ADDRESS=(PROTOCOL=TCP)(HOST=201.90.145.226)(PORT=1528))(CONNECT_DATA=(SID=megahom)))'),
+            'host'          => env('DB_ORACLE_HOST', '201.90.145.226'),
+            'port'          => env('DB_ORACLE_PORT', '1528'),
+            'database'      => env('DB_ORACLE_DATABASE', 'MGADM'),
+            'username'      => env('DB_ORACLE_USERNAME', 'SYSJURIDICO'),
+            'password'      => env('DB_ORACLE_PASSWORD', 'SYSJURIDICO'),
+            'charset'       => env('DB_ORACLE_CHARSET', ''),
+            'prefix'        => env('DB_ORACLE_PREFIX', ''),
+            'prefix_schema' => env('DB_ORACLE_SCHEMA_PREFIX', ''),
+        ],
+
     ],
 
     /*
