@@ -11,10 +11,6 @@
 |
 */
 
-$router->get('/', function () {
-    return view('welcome');
-});
-
 Auth::routes();
 
 $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($router) {
@@ -23,8 +19,10 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('/home', 'HomeController@index');
 
     Route::get('/getForeignKey', 'CodesController@getForeignKey');
-    
+
+    $router->get('/ordens-de-compra/detalhes/{id}', 'OrdemDeCompraController@detalhe');
     $router->resource('ordens-de-compra', 'OrdemDeCompraController');
+
 
     $router->resource('retroalimentacaoObras', 'RetroalimentacaoObraController');
 
@@ -209,4 +207,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('compras/insumos/lista', 'OrdemDeCompraController@insumosLista');
     $router->get('obras_insumos', 'OrdemDeCompraController@obrasInsumos');
     $router->get('insumos_json', 'OrdemDeCompraController@insumosJson');
+
+    $router->get('workflow/aprova-reprova', 'WorkflowController@aprovaReprova');
+    $router->get('workflow/aprova-reprova-tudo', 'WorkflowController@aprovaReprovaTudo');
 });

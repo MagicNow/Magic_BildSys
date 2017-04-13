@@ -169,6 +169,7 @@ elixir(function(mix) {
         paths.select2 + 'js/select2.js',
         paths.select2 + 'js/i18n/pt-BR.js',
         paths.sweetalert + 'sweetalert.min.js',
+        paths.jquerymaskplugin + 'jquery.mask.js',
         // paths.bootstrap3_typeahead + 'bootstrap3-typeahead.js',
         paths.underscore + '/underscore.js',
         paths.bootstrap_calendar + '/js/calendar.js',
@@ -185,6 +186,8 @@ elixir(function(mix) {
         'datatables/buttons.html5.min.js',
         'datatables/buttons.flash.min.js',
         'admin.js',
+        'filtros-dinamicos.js',
+        'workflow.js',
     ], 'public/js/admin.js');
 
 });

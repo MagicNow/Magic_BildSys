@@ -12,7 +12,7 @@ class TipoOrcamentoTableSeeder extends Seeder
 
     public function run()
     {
-        DB::table('orcamento_tipos')->delete();
+        \Illuminate\Support\Facades\DB::table('orcamento_tipos')->delete();
 
         $items = [
             [

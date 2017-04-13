@@ -68,17 +68,17 @@ class OrdemDeCompra extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function obra()
+    public function user()
     {
-        return $this->belongsTo(\App\Models\Obra::class);
+        return $this->belongsTo(User::class);
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function user()
+    public function obra()
     {
-        return $this->belongsTo(\App\Models\User::class);
+        return $this->belongsTo(Obra::class);
     }
     
     /**
@@ -86,15 +86,15 @@ class OrdemDeCompra extends Model
      **/
     public function ocStatus()
     {
-        return $this->belongsTo(\App\Models\OcStatus::class);
+        return $this->belongsTo(OcStatus::class);
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
-    public function ordemDeCompraItens()
+    public function itens()
     {
-        return $this->hasMany(\App\Models\OrdemDeCompraItens::class);
+        return $this->hasMany(OrdemDeCompraItem::class);
     }
 
     /**
@@ -102,6 +102,6 @@ class OrdemDeCompra extends Model
      **/
     public function ordemDeCompraStatusLogs()
     {
-        return $this->hasMany(\App\Models\OrdemDeCompraStatusLog::class);
+        return $this->hasMany(OrdemDeCompraStatusLog::class);
     }
 }

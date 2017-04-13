@@ -45,7 +45,7 @@ class InsumoGrupo extends Model
      **/
     public function insumos()
     {
-        return $this->hasMany(\App\Models\Insumo::class);
+        return $this->hasMany(Insumo::class);
     }
 
     /**
@@ -53,6 +53,6 @@ class InsumoGrupo extends Model
      **/
     public function lembretes()
     {
-        return $this->hasMany(\App\Models\Lembrete::class);
+        return $this->hasMany(Lembrete::class);
     }
 }
