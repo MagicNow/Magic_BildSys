@@ -1,33 +1,174 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Raul
- * Date: 11/04/2017
- * Time: 11:48
- */
 
 namespace App\Http\Controllers\Admin;
 
-
-use App\Http\Controllers\AppBaseController;
+use App\DataTables\Admin\PlanejamentoDataTable;
+use App\Http\Requests\Admin;
+use App\Http\Requests\Admin\CreatePlanejamentoRequest;
+use App\Http\Requests\Admin\UpdatePlanejamentoRequest;
 use App\Jobs\PlanilhaProcessa;
 use App\Models\Obra;
 use App\Models\Planilha;
+use App\Repositories\Admin\PlanejamentoRepository;
 use App\Repositories\Admin\SpreadsheetRepository;
+use Flash;
+use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Laracasts\Flash\Flash;
+use Response;
 
 class PlanejamentoController extends AppBaseController
 {
+    /** @var  PlanejamentoRepository */
+    private $planejamentoRepository;
+
+    public function __construct(PlanejamentoRepository $planejamentoRepo)
+    {
+        $this->planejamentoRepository = $planejamentoRepo;
+    }
+
+    /**
+     * Display a listing of the Planejamento.
+     *
+     * @param PlanejamentoDataTable $planejamentoDataTable
+     * @return Response
+     */
+    public function index(PlanejamentoDataTable $planejamentoDataTable)
+    {
+        return $planejamentoDataTable->render('admin.planejamentos.index');
+    }
+
+    /**
+     * Show the form for creating a new Planejamento.
+     *
+     * @return Response
+     */
+    public function create()
+    {
+        return view('admin.planejamentos.create');
+    }
+
+    /**
+     * Store a newly created Planejamento in storage.
+     *
+     * @param CreatePlanejamentoRequest $request
+     *
+     * @return Response
+     */
+    public function store(CreatePlanejamentoRequest $request)
+    {
+        $input = $request->all();
+
+        $planejamento = $this->planejamentoRepository->create($input);
+
+        Flash::success('Planejamento '.trans('common.saved').' '.trans('common.successfully').'.');
+
+        return redirect(route('admin.planejamentos.index'));
+    }
+
+    /**
+     * Display the specified Planejamento.
+     *
+     * @param  int $id
+     *
+     * @return Response
+     */
+    public function show($id)
+    {
+        $planejamento = $this->planejamentoRepository->findWithoutFail($id);
+
+        if (empty($planejamento)) {
+            Flash::error('Planejamento '.trans('common.not-found'));
+
+            return redirect(route('admin.planejamentos.index'));
+        }
+
+        return view('admin.planejamentos.show')->with('planejamento', $planejamento);
+    }
+
+    /**
+     * Show the form for editing the specified Planejamento.
+     *
+     * @param  int $id
+     *
+     * @return Response
+     */
+    public function edit($id)
+    {
+        $obras = Obra::pluck('nome','id')->toArray();
+        $planejamento = $this->planejamentoRepository->findWithoutFail($id);
+
+        if (empty($planejamento)) {
+            Flash::error('Planejamento '.trans('common.not-found'));
+
+            return redirect(route('admin.planejamentos.index'));
+        }
+
+
+        return view('admin.planejamentos.edit', compact('planejamento','obras'));
+    }
+
+    /**
+     * Update the specified Planejamento in storage.
+     *
+     * @param  int              $id
+     * @param UpdatePlanejamentoRequest $request
+     *
+     * @return Response
+     */
+    public function update($id, UpdatePlanejamentoRequest $request)
+    {
+        $planejamento = $this->planejamentoRepository->findWithoutFail($id);
+
+        if (empty($planejamento)) {
+            Flash::error('Planejamento '.trans('common.not-found'));
+
+            return redirect(route('admin.planejamentos.index'));
+        }
+
+        $planejamento = $this->planejamentoRepository->update($request->all(), $id);
+
+        Flash::success('Planejamento '.trans('common.updated').' '.trans('common.successfully').'.');
+
+        return redirect(route('admin.planejamentos.index'));
+    }
+
+    /**
+     * Remove the specified Planejamento from storage.
+     *
+     * @param  int $id
+     *
+     * @return Response
+     */
+    public function destroy($id)
+    {
+        $planejamento = $this->planejamentoRepository->findWithoutFail($id);
+
+        if (empty($planejamento)) {
+            Flash::error('Planejamento '.trans('common.not-found'));
+
+            return redirect(route('admin.planejamentos.index'));
+        }
+
+        $this->planejamentoRepository->delete($id);
+
+        Flash::success('Planejamento '.trans('common.deleted').' '.trans('common.successfully').'.');
+
+        return redirect(route('admin.planejamentos.index'));
+    }
+
+
+
+    ################################ IMPORTAÇÃO ###################################
+
     /**
      * $obras = Buscando chave e valor para fazer o combobox da view
      * $orcamento_tipos = Buscando chave e valor para fazer o combobox da view
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index(){
+    public function indexImport(){
         $obras = Obra::pluck('nome','id')->toArray();
-        return view('admin.planejamento.index', compact('obras'));
+        return view('admin.planejamentos.indexImport', compact('obras'));
     }
 
     /**
@@ -73,7 +214,7 @@ class PlanejamentoController extends AppBaseController
 
         $retorno = $request->session()->get('retorno');
         $colunasbd = $request->session()->get('colunasbd');
-        return view('admin.planejamento.checkIn', compact('retorno','colunasbd'));
+        return view('admin.planejamentos.checkIn', compact('retorno','colunasbd'));
     }
 
     /*

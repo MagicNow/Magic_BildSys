@@ -8,7 +8,7 @@
         <div class="clearfix"></div>
         <div class="box box-primary">
             @include('flash::message')
-            {!! Form::open(['route' => 'admin.planejamento.importar', 'files'=>true]) !!}
+            {!! Form::open(['route' => 'admin.planejamentos.importar', 'files'=>true]) !!}
             <fieldset style="margin-top:10px; min-width: 1px;">
                 <div class="panel-body">
                     <div class="col-md-10">

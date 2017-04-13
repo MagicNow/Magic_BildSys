@@ -53,11 +53,21 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         Route::get('orcamento/importar/selecionaCampos', 'Admin\OrcamentoController@selecionaCampos');
 
         #importação de planilhas de planejamentos
-        Route::get('planejamento/', ['as'=> 'admin.planejamento.index', 'uses' => 'Admin\PlanejamentoController@index']);
-        Route::post('planejamento/importar', ['as'=> 'admin.planejamento.importar', 'uses' => 'Admin\PlanejamentoController@import']);
-        Route::get('planejamento/importar/checkIn', ['as'=> 'admin.planejamento.checkIn', 'uses' => 'Admin\PlanejamentoController@checkIn']);
-        Route::post('planejamento/importar/save', ['as'=> 'admin.planejamento.save', 'uses' => 'Admin\PlanejamentoController@save']);
+        Route::get('planejamento/', ['as'=> 'admin.planejamentos.indexImport', 'uses' => 'Admin\PlanejamentoController@indexImport']);
+        Route::post('planejamento/importar', ['as'=> 'admin.planejamentos.importar', 'uses' => 'Admin\PlanejamentoController@import']);
+        Route::get('planejamento/importar/checkIn', ['as'=> 'admin.planejamentos.checkIn', 'uses' => 'Admin\PlanejamentoController@checkIn']);
+        Route::post('planejamento/importar/save', ['as'=> 'admin.planejamentos.save', 'uses' => 'Admin\PlanejamentoController@save']);
         Route::get('planejamento/importar/selecionaCampos', 'Admin\PlanejamentoController@selecionaCampos');
+        # Planejamentos
+        Route::get('planejamentos', ['as'=> 'admin.planejamentos.index', 'uses' => 'Admin\PlanejamentoController@index']);
+        Route::post('planejamentos', ['as'=> 'admin.planejamentos.store', 'uses' => 'Admin\PlanejamentoController@store']);
+        Route::get('planejamentos/create', ['as'=> 'admin.planejamentos.create', 'uses' => 'Admin\PlanejamentoController@create']);
+        Route::put('planejamentos/{planejamentos}', ['as'=> 'admin.planejamentos.update', 'uses' => 'Admin\PlanejamentoController@update']);
+        Route::patch('planejamentos/{planejamentos}', ['as'=> 'admin.planejamentos.update', 'uses' => 'Admin\PlanejamentoController@update']);
+        Route::delete('planejamentos/{planejamentos}', ['as'=> 'admin.planejamentos.destroy', 'uses' => 'Admin\PlanejamentoController@destroy']);
+        Route::get('planejamentos/{planejamentos}', ['as'=> 'admin.planejamentos.show', 'uses' => 'Admin\PlanejamentoController@show']);
+        Route::get('planejamentos/{planejamentos}/edit', ['as'=> 'admin.planejamentos.edit', 'uses' => 'Admin\PlanejamentoController@edit']);
+
 
         # Contratos
         Route::get('contratos', ['as'=> 'admin.contratos.index', 'uses' => 'Admin\ContratosController@index']);

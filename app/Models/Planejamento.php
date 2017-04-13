@@ -42,8 +42,6 @@ class Planejamento extends Model
         'id' => 'integer',
         'obra_id' => 'integer',
         'tarefa' => 'string',
-        'data' => 'date',
-        'data_fim' => 'date',
         'prazo' => 'integer',
         'resumo' => 'string',
         'planejamento_id' => 'integer'
@@ -73,6 +71,7 @@ class Planejamento extends Model
         'obra_id' => 'required',
         'tarefa' => 'required',
         'data' => 'required',
+        'data_fim' => 'required',
         'prazo' => 'required',
     ];
 
