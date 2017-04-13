@@ -392,7 +392,14 @@ class OrdemDeCompraController extends AppBaseController
 
         //Query pra trazer
         $insumos = $insumo_query->join('orcamentos', 'insumos.id', '=', 'orcamentos.insumo_id')
-            ->join('planejamento_compras','planejamento_compras.insumo_id','=','insumos.id')
+
+//            ->join('planejamento_compras','planejamento_compras.insumo_id','=','orcamentos.insumos.id','planejamento_compras','AND','planejamento_compras.subgrupo1_id','=','orcamentos.subgrupo1_id')
+//            ->join('planejamento_compras', function ($join){
+//                $join->on('planejamento_compras','planejamento_compras.insumo_id','=','orcamentos.insumos.id')
+//                    ->and('planejamento_compras','planejamento_compras.subgrupo1_id','=','orcamentos.subgrupo1_id')
+//                    ->and('planejamento_compras','planejamento_compras.subgrupo2_id','=','orcamentos.subgrupo2_id')
+//                    ->and('planejamento_compras','planejamento_compras.subgrupo3_id','=','orcamentos.subgrupo3_id');
+//            })
             ->select([
                 'insumos.id',
                 'insumos.nome',
@@ -402,9 +409,18 @@ class OrdemDeCompraController extends AppBaseController
                 'orcamentos.servico_id',
                 'orcamentos.qtd_total',
                 'orcamentos.preco_total'
-            ])
-            ->where('insumos.insumo_grupo_id',$insumoGrupo->id)
+            ])->leftJoin(DB::raw(
+                'JOIN planejamento_compras
+                ON planejamento_compras.insumo_id = orcamentos.insumos_id
+                AND planejamento_compras.subgrupo1_id = orcamentos.subgrupo1_id
+                AND planejamento_compras.subgrupo2_id = orcamentos.subgrupo2_id
+                AND planejamento_compras.subgrupo3_id = orcamentos.subgrupo3_id
+                AND planejamento_compras.subgrupo4_id = orcamentos.subgrupo4_id
+                '
+            ))
             ->where('planejamento_compras.planejamento_id', $planejamento->id);
+
+        dd($insumos->toSql());
 
         //Testa a ordenação
         if(isset($request->orderkey)){
