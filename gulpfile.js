@@ -136,6 +136,7 @@ elixir(function(mix) {
         // paths.bootswatch + '/bootstrap.css',
         paths.adminlte + '/css/AdminLTE.css',
         paths.adminlte + '/css/skins/skin-yellow-light.css',
+        paths.adminlte + '/css/skins/skin-yellow.css',
         paths.ionicons + '/css/ionicons.css',
         paths.colorbox + '/example3/colorbox.css',
         paths.dataTables + '/css/dataTables.bootstrap.css',
@@ -169,10 +170,12 @@ elixir(function(mix) {
         paths.select2 + 'js/select2.js',
         paths.select2 + 'js/i18n/pt-BR.js',
         paths.sweetalert + 'sweetalert.min.js',
+        paths.jquerymaskplugin + 'jquery.mask.js',
         // paths.bootstrap3_typeahead + 'bootstrap3-typeahead.js',
         paths.underscore + '/underscore.js',
         paths.bootstrap_calendar + '/js/calendar.js',
         paths.bootstrap_calendar + '/js/language/pt-BR.js',
+        paths.jquerymaskplugin + 'jquery.mask.js',
         // paths.vue + 'vue.js',
         // paths.vue_resource + 'vue-resource.js',
         'bootstrap-dataTables-paging.js',
@@ -184,6 +187,8 @@ elixir(function(mix) {
         'datatables/buttons.html5.min.js',
         'datatables/buttons.flash.min.js',
         'admin.js',
+        'filtros-dinamicos.js',
+        'workflow.js',
     ], 'public/js/admin.js');
 
 });

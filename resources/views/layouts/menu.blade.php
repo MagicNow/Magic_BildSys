@@ -37,7 +37,9 @@
             </span>
     </a>
     <ul class="treeview-menu">
-        <li class="{{ Request::is('planejamento*') ? 'active' : '' }}"><a href="{!! route('admin.planejamento.index') !!}"><i class="glyphicon glyphicon-cloud-upload"></i><span>Importação</span></a></li>
+        <li class="{{ Request::is('planejamentos*') ? 'active' : '' }}"><a href="{!! route('admin.planejamentos.index') !!}"><i class="fa fa-edit"></i><span>Planejamentos</span></a></li>
+        <li class="{{ Request::is('planejamento*') ? 'active' : '' }}"><a href="{!! route('admin.planejamentos.indexImport') !!}"><i class="glyphicon glyphicon-cloud-upload"></i><span>Importação</span></a></li>
+        <li class="{{ Request::is('lembretes*') ? 'active' : '' }}"><a href="{!! route('admin.lembretes.index') !!}"><i class="fa fa-exclamation-circle"></i><span>Lembretes</span></a></li>
     </ul>
 </li>
 
@@ -52,5 +54,9 @@
         <li class="{{ Request::is('admin/workflow/workflow-alcadas*') ? 'active' : '' }}"><a href="{!! route('admin.workflowAlcadas.index') !!}"><i class="fa fa-list-ol"></i><span>Alçadas</span></a></li>
         <li class="{{ Request::is('admin/workflow/reprovacao-motivos*') ? 'active' : '' }}"><a href="{!! route('admin.workflowReprovacaoMotivos.index') !!}"><i class="fa fa-ban"></i> Motivos de Reprovação</a></li>
     </ul>
+</li>
+
+<li class="{{ Request::is('contratos*') ? 'active' : '' }}">
+    <a href="{!! route('admin.contratos.index') !!}"><i class="fa fa-edit"></i><span>Contratos</span></a>
 </li>
 

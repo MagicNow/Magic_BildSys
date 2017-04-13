@@ -59,7 +59,7 @@ class WorkflowUsuario extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function workflowAlcada()
+    public function alcada()
     {
         return $this->belongsTo(\App\Models\WorkflowAlcada::class);
     }

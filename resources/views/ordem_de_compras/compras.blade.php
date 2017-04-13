@@ -13,14 +13,14 @@
             <div class="box-body">
                 <div class="row">
                     <div class="col-md-6">
-                        {!! Form::select('obra_id', [''=>'Obra...']+$obras, null, ['class'=>'form-control', 'onchange'=>'atualizaCalendario(this.value);']) !!}
+                        {!! Form::select('obra_id', [''=>'Obra...']+$obras, null, ['class'=>'form-control input-lg', 'onchange'=>'atualizaCalendario(this.value);']) !!}
                     </div>
                     <div class="col-md-3">
-                        <a href="{{ url('comprar') }}" class="btn btn-success btn-block"><i
+                        <a href="{{ url('/obras_insumos') }}" class="btn btn-success btn-block btn-lg btn-flat"><i
                                     class="fa fa-shopping-cart"></i> Comprar</a>
                     </div>
                     <div class="col-md-3">
-                        <a href="{{ url('ordens-de-compras') }}" class="btn btn-primary btn-block"><i
+                        <a href="{{ url('/ordens-de-compra') }}" class="btn btn-primary btn-block btn-lg btn-flat"><i
                                     class="fa fa-shopping-basket"></i> Ordens de Compra</a>
                     </div>
                 </div>

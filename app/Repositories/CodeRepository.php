@@ -72,4 +72,18 @@ class CodeRepository
             return $field;
         }
     }
+
+    public static function saveFile($file, $path)
+    {
+        try {
+            $filename = $file->getClientOriginalName();
+
+            $destinationPath = public_path() . '/appfiles/' . $path;
+            $file->move($destinationPath, $filename);
+
+            return '/appfiles/' . $path . '/' . $filename;
+        }catch (\Exception $e){
+            return $e->getMessage();
+        }
+    }
 }

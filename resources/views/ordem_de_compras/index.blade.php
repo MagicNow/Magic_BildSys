@@ -5,13 +5,19 @@
         <div class="modal-header">
             <div class="col-md-12">
                 <div class="col-md-9">
-                <span class="pull-left title">
-                    <i class="fa fa-arrow-left" aria-hidden="true"></i> Ordens de compra
-                </span>
+                    <span class="pull-left title">
+                       <h3>
+                           <button type="button" class="btn btn-link" onclick="history.go(-1);">
+                            <i class="fa fa-arrow-left" aria-hidden="true"></i>
+                           </button>
+                           <span>
+                            Detalhar Ordem de Compra</span>
+                       </h3>
+                    </span>
                 </div>
 
                 <div class="col-md-3">
-                    <button type="button" class="btn btn-success button-large-green" data-dismiss="modal">
+                    <button type="button" class="btn btn-success btn-lg" data-dismiss="modal">
                         Comprar insumos
                     </button>
                 </div>
@@ -28,7 +34,7 @@
                     api-url="/api/listagem-ordens-de-compras"
                     api-filtros="/filter-json-ordem-compra"
                     v-bind:params="{}"
-                    v-bind:actions="{filtros: true, status: true, detalhe: true}"
+                    v-bind:actions="{filtros: true, status: true, detalhe: true, detalhe_url:'{{ url('/ordens-de-compra/detalhes/') }}'}"
                     v-bind:colunas="[
                     {campo_db: 'id', label: 'núm. o.c'},
                     {campo_db: 'obra', label: 'obra'},
@@ -42,8 +48,6 @@
 @endsection
 
 @section('scripts')
-    <script src="{{ asset('js/app.js') }}" type="text/javascript"></script>
-
     <script>
         const app = new Vue({
             el: '#app'

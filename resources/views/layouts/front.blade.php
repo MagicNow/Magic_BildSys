@@ -8,10 +8,11 @@
     <link rel="stylesheet" href="/css/admin.css">
     <link rel="shortcut icon" href="{{ asset('img/favicon.png') }}">
     <link rel="icon" href="{{ asset('img/favicon.png') }}" />
-
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    @yield('styles')
 </head>
 
-<body class="skin-yellow-light sidebar-mini">
+<body class="skin-yellow sidebar-mini">
 
     <div class="wrapper">
         <!-- Main Header -->
