@@ -175,8 +175,8 @@ class OrdemDeCompraController extends AppBaseController
     }
 
 
-    public function insumos(Lembrete $lembrete){
-        return view('ordem_de_compras.insumos', compact('lembrete'));
+    public function insumos(Planejamento $planejamento, InsumoGrupo $insumoGrupo){
+        return view('ordem_de_compras.insumos', compact('planejamento', 'insumoGrupo'));
     }
 
     public function insumosFilters(){
@@ -184,7 +184,7 @@ class OrdemDeCompraController extends AppBaseController
         return response()->json($filters);
     }
 
-    public function insumosJson(Request $request, Lembrete $lembrete){
+    public function insumosJson(Request $request, Planejamento $planejamento){
         //Query para utilização dos filtros
         //DB::raw(Auth::user()->admin ? '1 as admin' : '0 as admin'),
         $insumo_query = Insumo::query();
@@ -217,14 +217,12 @@ class OrdemDeCompraController extends AppBaseController
         return response()->json($insumos->paginate(10), 200);
     }
 
-    public function insumosAdd(Request $request, Lembrete $lembrete)
+    public function insumosAdd(Request $request, Planejamento $planejamento)
     {
         try{
             $planejamento_compras = new PlanejamentoCompra();
-//            $planejamento_compras->planejamento_id = $planejamento->id;
-            $planejamento_compras->grupo_id = $request->grupo_id;
-            $planejamento_compras->servico_id = $request->servico_id;
-            $planejamento_compras->codigo_insumo = $request->insumo_cod;
+            $planejamento_compras->planejamento_id = $planejamento->id;
+            $planejamento_compras->insumo_id = $request->id;
             $planejamento_compras->save();
             Flash::success('Insumo adicionado com sucesso');
             return response()->json('{response: "sucesso"}');

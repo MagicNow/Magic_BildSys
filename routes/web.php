@@ -213,14 +213,14 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     /**
      * TO-DO Criar grupo com prefixo de compras
      */
-    $router->get('compras/{planejamento}/insumos', 'OrdemDeCompraController@insumos')->name('compraInsumo');
+    $router->get('compras/{planejamento}/insumos/{insumoGrupo}', 'OrdemDeCompraController@insumos')->name('compraInsumo');
     $router->get('compras/{planejamento}/insumosJson', 'OrdemDeCompraController@insumosJson');
     $router->get('compras/{planejamento}/insumosFilters', 'OrdemDeCompraController@insumosFilters');
     $router->post('compras/{planejamento}/insumosAdd', 'OrdemDeCompraController@insumosAdd');
 
-    $router->get('compras/{planejamento}/obrasInsumos', 'OrdemDeCompraController@obrasInsumos');
+    $router->get('compras/{planejamento}/obrasInsumos/{insumoGrupo}', 'OrdemDeCompraController@obrasInsumos');
     $router->get('compras/{planejamento}/obrasInsumosFilters', 'OrdemDeCompraController@obrasInsumosFilters');
-    $router->get('compras/{planejamento}/obrasInsumosJson/{grupoInsumo}', 'OrdemDeCompraController@obrasInsumosJson');
+    $router->get('compras/{planejamento}/obrasInsumosJson/{insumoGrupo}', 'OrdemDeCompraController@obrasInsumosJson');
 
 
     $router->get('workflow/aprova-reprova', 'WorkflowController@aprovaReprova');

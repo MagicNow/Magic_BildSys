@@ -55,7 +55,7 @@ class PlanejamentoController extends AppBaseController
             if($request->obra_id){
                 $lembretes->where('planejamentos.obra_id', $request->obra_id);
             }
-            $lembretes = $lembretes->get();
+            $lembretes = $lembretes->distinct()->get();
 
         return response()->json([
             'success'=>true,

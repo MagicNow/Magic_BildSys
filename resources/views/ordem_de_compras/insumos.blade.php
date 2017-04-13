@@ -6,7 +6,7 @@
             <div class="col-md-12">
                 <div class="col-md-8">
                     <span class="pull-left title">
-                        <a href="{{ url('/compras/'.$planejamento->id.'/obrasInsumos') }}"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
+                        <a href="{{ url('/compras/'.$planejamento->id.'/obrasInsumos/'.$insumoGrupo->id) }}"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
                         Incluir Insumos
                     </span>
                 </div>
