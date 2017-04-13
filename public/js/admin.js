@@ -62833,7 +62833,7 @@ function addQuery(period) {
     if (period !== undefined) {
         filters = filters + period;
     }
-    
+
     // Previnir que quando acessa fica inserindo mais de uma vez
     if(k<1){
         history.pushState("", document.title, '' + filters);

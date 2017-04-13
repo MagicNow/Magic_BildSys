@@ -41,7 +41,7 @@
                     <a @click="loadData()" style="cursor: pointer"><i class="fa fa-search" aria-hidden="true"></i> Procurar</a>
                 </li>
                 <li>
-                    <a @click="loadData()" style="cursor: pointer">Hoje</a>
+                    <a @click="loadData()" onclick="filterPeriod('hoje');" style="cursor: pointer">Hoje</a>
                 </li>
                 <li>
                     <a @click="loadData()" onclick="filterPeriod(7);" style="cursor: pointer">7 dias</a>

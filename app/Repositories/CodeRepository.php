@@ -14,14 +14,18 @@ class CodeRepository
 
                 if(@isset($explode[0])){
                     if($explode[0] == 'periodo'){
-                        $until_date = date("Y-m-d",strtotime("-".$filters['periodo']."Day"));
-
                         $sql = $query->toSql();
                         $partial_sql = str_replace('select * from `', '', $sql);
                         $table = strstr($partial_sql, '`', true);
+                        
+                        if($filters['periodo'] == 'hoje'){
+                            $query->where(DB::raw('DATE_FORMAT('.$table.'.created_at, "%Y-%m-%d")'), '=', date("Y-m-d"));
+                        }else{
+                            $until_date = date("Y-m-d",strtotime("-".$filters['periodo']."Day"));
 
-                        $query->where(DB::raw('DATE_FORMAT('.$table.'.created_at, "%Y-%m-%d")'), '<=', date("Y-m-d"))
-                            ->where(DB::raw('DATE_FORMAT('.$table.'.created_at, "%Y-%m-%d")'), '>=', $until_date);
+                            $query->where(DB::raw('DATE_FORMAT('.$table.'.created_at, "%Y-%m-%d")'), '<=', date("Y-m-d"))
+                                ->where(DB::raw('DATE_FORMAT('.$table.'.created_at, "%Y-%m-%d")'), '>=', $until_date);
+                        }
                     }
                 }
 

@@ -18139,6 +18139,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticStyle: {
       "cursor": "pointer"
     },
+    attrs: {
+      "onclick": "filterPeriod('hoje');"
+    },
     on: {
       "click": function($event) {
         _vm.loadData()
