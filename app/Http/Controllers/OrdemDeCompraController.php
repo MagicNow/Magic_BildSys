@@ -199,6 +199,9 @@ class OrdemDeCompraController extends AppBaseController
                 'servicos.nome as servico',
                 'servicos.codigo as cod_servico',
                 'servicos.grupo_id',
+                DB::raw('(SELECT count(id) FROM planejamento_compras 
+                WHERE planejamento_compras.insumo_id = insumos.id 
+                AND planejamento_compras.planejamento_id ='.$planejamento->id.') as adicionado')
 //                DB::raw('(SELECT TOP 1 planejamento_compras.id FROM planejamento_compras
 //                 JOIN servicos ON servicos.id = planejamento_compras.servico_id
 //                 JOIN insumos ON insumos.codigo = planejamento_compras.codigo_insumo
@@ -367,39 +370,10 @@ class OrdemDeCompraController extends AppBaseController
      */
     public function obrasInsumosJson(Request $request, Planejamento $planejamento, InsumoGrupo $insumoGrupo)
     {
-        //Pega a tarefa(planejamento)
-//        $planejamento_compras = DB::table('planejamento_compras')
-//            ->select('insumo_id')
-//            ->where('planejamento_compras.planejamento_id',$planejamento->id)
-//            ->get();
-
-        //Criar arrays dos insumos do planejamento de compras por servicos grupos ou codigo do insumo
-//        $servicos = array();
-//        $grupos = array();
-//        $codigo = array();
-        //Popula arrays
-//        foreach ($planejamento_compras as $planejamento)
-//        {
-//            $flag_cod = false;
-//            if(isset($planejamento->codigo_insumo) && !empty($planejamento->codigo_insumo)){
-//                $flag_cod = true;
-//                $codigo[] = $planejamento->codigo_insumo;
-//            }
-//
-//            $flag_servico = false;
-//            if(isset($planejamento->servico_id) && !empty($planejamento->servico_id) && !$flag_cod){
-//                $flag_servico = true;
-//                $servicos[] = $planejamento->servico_id;
-//            }
-//
-//            if(isset($planejamento->grupo_id)&& !empty($planejamento->grupo_id) && !$flag_cod && !$flag_servico){
-//                $grupos[] = $planejamento->grupo_id;
-//            }
-//        }
-
         //Query para utilização dos filtros
         $insumo_query = Insumo::query();
 
+        //Query pra trazer
         $insumos = $insumo_query->join('orcamentos', 'insumos.id', '=', 'orcamentos.insumo_id')
             ->join('planejamento_compras','planejamento_compras.insumo_id','=','insumos.id')
             ->select([
@@ -419,49 +393,6 @@ class OrdemDeCompraController extends AppBaseController
         if(isset($request->orderkey)){
             $insumo_query->orderBy($request->orderkey, $request->order);
         }
-//        if(isset($request->orderkey)) {
-//            //Traz os resultados filtrados pelos arrays criados
-//            $insumos = $insumo_query->join('orcamentos', 'insumos.id', '=', 'orcamentos.insumo_id')
-//                ->where(function ($query) use($codigo, $grupos, $servicos) {
-//                    $query->whereIn('orcamentos.codigo_insumo', $codigo, 'or')
-//                        ->whereIn('orcamentos.servico_id', $servicos, 'or')
-//                        ->whereIn('orcamentos.grupo_id', $grupos, 'or')
-//                        ->whereIn('orcamentos.subgrupo1_id', $grupos, 'or')
-//                        ->whereIn('orcamentos.subgrupo2_id', $grupos, 'or')
-//                        ->whereIn('orcamentos.subgrupo3_id', $grupos, 'or');
-//                })
-//                ->select([
-//                    'insumos.id',
-//                    'insumos.nome',
-//                    'insumos.unidade_sigla',
-//                    'insumos.codigo',
-//                    'orcamentos.grupo_id',
-//                    'orcamentos.servico_id',
-//                    'orcamentos.qtd_total',
-//                    'orcamentos.preco_total'
-//                ])->orderBy($request->orderkey, $request->order);
-//        }else{
-//            //Traz os resultados filtrados pelos arrays criados
-//            $insumos = $insumo_query->join('orcamentos', 'insumos.id', '=', 'orcamentos.insumo_id')
-//                ->where(function ($query) use($codigo, $grupos, $servicos) {
-//                    $query->whereIn('orcamentos.codigo_insumo', $codigo, 'or')
-//                        ->whereIn('orcamentos.servico_id', $servicos, 'or')
-//                        ->whereIn('orcamentos.grupo_id', $grupos, 'or')
-//                        ->whereIn('orcamentos.subgrupo1_id', $grupos, 'or')
-//                        ->whereIn('orcamentos.subgrupo2_id', $grupos, 'or')
-//                        ->whereIn('orcamentos.subgrupo3_id', $grupos, 'or');
-//                })
-//                ->select([
-//                    'insumos.id',
-//                    'insumos.nome',
-//                    'insumos.unidade_sigla',
-//                    'insumos.codigo',
-//                    'orcamentos.grupo_id',
-//                    'orcamentos.servico_id',
-//                    'orcamentos.qtd_total',
-//                    'orcamentos.preco_total'
-//                ]);
-//        }
         //Aplica filtro do Jhonatan
         $insumos = CodeRepository::filter($insumos, $request->all());
 

@@ -109,7 +109,8 @@
                         <i class="fa fa-exchange grey"></i>
                     </td>
                     <td @click="adicionar(dado)" class="row-table" v-if="actions.adicionar != undefined">
-                        <i class="fa fa-plus grey"></i>
+                        <i v-if="dado.adicionado > 0"class="fa fa-check green"></i>
+                        <i class="fa fa-plus grey" v-else></i>
                     </td>
                 </tr>
                 </tbody>
