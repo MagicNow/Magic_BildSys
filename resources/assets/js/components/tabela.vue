@@ -44,13 +44,13 @@
                     <a @click="loadData()" style="cursor: pointer">Hoje</a>
                 </li>
                 <li>
-                    <a @click="loadData()" style="cursor: pointer">7 dias</a>
+                    <a @click="loadData()" onclick="filterPeriod(7);" style="cursor: pointer">7 dias</a>
                 </li>
                 <li>
-                    <a @click="loadData()" style="cursor: pointer">15 dias</a>
+                    <a @click="loadData()" onclick="filterPeriod(15);" style="cursor: pointer">15 dias</a>
                 </li>
                 <li>
-                    <a @click="loadData()" style="cursor: pointer">30 dias</a>
+                    <a @click="loadData()" onclick="filterPeriod(30);" style="cursor: pointer">30 dias</a>
                 </li>
                 <li>
                     <a @click="loadData()" style="cursor: pointer">Outro periodo</a>

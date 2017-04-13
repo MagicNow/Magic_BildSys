@@ -63,7 +63,9 @@ class CodeRepository
 
     private static function translateFields($field){
         $fields = [
-            'obra' => 'obras.id'
+            'obra' => 'obras.id',
+            'ordem_compra_created_at' => 'ordem_de_compras.created_at',
+            'ordem_compra_updated_at' => 'ordem_de_compras.updated_at'
         ];
 
         if(@isset($fields[$field])){

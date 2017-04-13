@@ -47,8 +47,8 @@ class OrdemDeCompra extends Model
         'obra-foreign_key-Obra-nome-id' => 'Obra',
         'oc_status_id-foreign_key-OcStatus-nome-id' => 'Status',
         'aprovado-boolean' => 'Aprovado',
-        'created_at-date' => 'Criado em',
-        'updated_at-date' => 'Atualizado em'
+        'ordem_compra_created_at-date' => 'Criado em',
+        'ordem_compra_updated_at-date' => 'Atualizado em'
     ];
 
     public static $filters_insumos = [

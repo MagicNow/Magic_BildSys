@@ -18148,6 +18148,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticStyle: {
       "cursor": "pointer"
     },
+    attrs: {
+      "onclick": "filterPeriod(7);"
+    },
     on: {
       "click": function($event) {
         _vm.loadData()
@@ -18157,6 +18160,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticStyle: {
       "cursor": "pointer"
     },
+    attrs: {
+      "onclick": "filterPeriod(15);"
+    },
     on: {
       "click": function($event) {
         _vm.loadData()
@@ -18165,6 +18171,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_vm._v("15 dias")])]), _vm._v(" "), _c('li', [_c('a', {
     staticStyle: {
       "cursor": "pointer"
+    },
+    attrs: {
+      "onclick": "filterPeriod(30);"
     },
     on: {
       "click": function($event) {

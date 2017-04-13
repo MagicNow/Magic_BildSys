@@ -319,7 +319,7 @@ function foreign(label, value, row_foreign_key, cb_filter_i, query_string, block
 }
 
 
-function addQuery() {
+function addQuery(period) {
     var filters_fields = $('.filters');
     var filters = '';
 
@@ -330,8 +330,34 @@ function addQuery() {
     filters = '?'+filters;
     filters = filters.substring(0,(filters.length - 1));
 
+    if (period !== undefined) {
+        filters = filters + period;
+    }
+
     // Previnir que quando acessa fica inserindo mais de uma vez
     if(k<1){
         history.pushState("", document.title, '' + filters);
     }
+}
+
+function filterPeriod(period) {
+    var str = '';
+    var str_period = window.location.href.split("?")[1];
+
+    if(str_period !== undefined){
+        str = str_period;
+        str = str.substring(0,8);
+    }
+
+    if(str != 'periodo='){
+        if(window.location.href.split("?").length > 1){
+            period = '&periodo=' + period
+        }else{
+            period = '?periodo=' + period
+        }
+    }else{
+        period = '?periodo=' + period
+    }
+
+    addQuery(period);
 }
