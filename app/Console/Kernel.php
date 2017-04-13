@@ -2,8 +2,10 @@
 
 namespace App\Console;
 
+use App\Repositories\ImportacaoRepository;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Illuminate\Support\Facades\Log;
 
 class Kernel extends ConsoleKernel
 {
@@ -19,13 +21,22 @@ class Kernel extends ConsoleKernel
     /**
      * Define the application's command schedule.
      *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
+     * @param  \Illuminate\Console\Scheduling\Schedule $schedule
      * @return void
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
+        $schedule->call(function () {
+            Log::info('Inicio de execucao importação de grupos');
+            $importaInsumoGrupos = ImportacaoRepository::insumo_grupos();
+            Log::info('Executado script de importação de grupo', $importaInsumoGrupos);
+        })->twiceDaily(9, 18);
+
+        $schedule->call(function () {
+            Log::info('Inicio de execucao importação de Insumos');
+            $importaInsumo = ImportacaoRepository::insumos();
+            Log::info('Executado script de importação de Insumos', $importaInsumo);
+        })->twiceDaily(10, 19);
     }
 
     /**
