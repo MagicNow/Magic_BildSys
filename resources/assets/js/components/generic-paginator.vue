@@ -1,25 +1,25 @@
 <template>
     <nav>
-            <ul class="pagination" v-if="pagination.last_page > 0" :class="sizeClass">
+            <ul class="pagination-custom" v-if="pagination.last_page > 0" :class="sizeClass">
                 <li v-if="showPrevious()" :class="{ 'disabled' : pagination.current_page <= 1 }">
                     <span v-if="pagination.current_page <= 1">
-                        <span aria-hidden="true">{{ config.previousText }}</span>
+                        <span aria-hidden="true"><i class="fa fa-long-arrow-left orange" aria-hidden="true"></i></span>
                     </span>
 
                     <a href="#" v-if="pagination.current_page > 1 " :aria-label="config.ariaPrevioius" @click.prevent="changePage(pagination.current_page - 1)">
-                        <span aria-hidden="true">{{ config.previousText }}</span>
+                        <span aria-hidden="true"><i class="fa fa-long-arrow-left orange" aria-hidden="true"></i></span>
                     </a>
                 </li>
-                <li v-for="num in array" :class="{ 'active': num === pagination.current_page }">
+                <li v-for="num in array" :class="{ 'active': num === pagination.current_page }" class="page-element">
                     <a href="#" @click.prevent="changePage(num)">{{ num }}</a>
                 </li>
                 <li v-if="showNext()" :class="{ 'disabled' : pagination.current_page === pagination.last_page || pagination.last_page === 0 }">
                     <span v-if="pagination.current_page === pagination.last_page || pagination.last_page === 0">
-                        <span aria-hidden="true">{{ config.nextText }}</span>
+                        <span aria-hidden="true"></span>
                     </span>
 
                     <a href="#" v-if="pagination.current_page < pagination.last_page" :aria-label="config.ariaNext" @click.prevent="changePage(pagination.current_page + 1)">
-                        <span aria-hidden="true">{{ config.nextText }}</span>
+                        <span aria-hidden="true"><i class="fa fa-long-arrow-right orange" aria-hidden="true"></i></span>
                     </a>
                 </li>
             </ul>
@@ -114,5 +114,24 @@
 </script>
 
 <style>
+    .pagination-custom{
+        display: inline-block;
+        padding-left: 0;
+    }
 
+    .pagination-custom > li{
+        margin: 2px;
+        display: inline;
+    }
+
+    .page-element > a{
+        padding: 6px 12px;
+        border: solid 1px #979797;
+    }
+
+    .active >a{
+        color: #f98d00;
+        font-weight: bold;
+        border: solid 1px #f98d00;
+    }
 </style>
