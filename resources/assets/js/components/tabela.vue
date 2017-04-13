@@ -37,8 +37,9 @@
             </div>
 
             <ol class="breadcrumb" style="margin-bottom: 0px;">
-                <li class="col-md-6">
-                    <a @click="loadData()" style="cursor: pointer"><i class="fa fa-search" aria-hidden="true"></i> Procurar</a>
+                <li class="col-md-5">
+                    <input type="text" @click="loadData()" placeholder="Procurar" class="form-control" style="border-color:#f5f5f5;background-color:#f5f5f5;">
+                    <!--<a @click="loadData()" style="cursor: pointer"><i class="fa fa-search" aria-hidden="true"></i> Procurar</a>-->
                 </li>
                 <li>
                     <a @click="loadData()" onclick="filterPeriod('hoje');" style="cursor: pointer">Hoje</a>
@@ -53,7 +54,7 @@
                     <a @click="loadData()" onclick="filterPeriod(30);" style="cursor: pointer">30 dias</a>
                 </li>
                 <li>
-                    <a @click="loadData()" style="cursor: pointer">Outro periodo</a>
+                    <input type="number" @click="loadData()" placeholder="Outro periodo" class="form-control" style="border-color:#f5f5f5;background-color:#f5f5f5;">
                 </li>
                 <li>
                     <a href="" data-toggle="modal" data-target="#myModal" class="grey">

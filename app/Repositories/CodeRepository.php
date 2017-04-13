@@ -17,7 +17,7 @@ class CodeRepository
                         $sql = $query->toSql();
                         $partial_sql = str_replace('select * from `', '', $sql);
                         $table = strstr($partial_sql, '`', true);
-                        
+
                         if($filters['periodo'] == 'hoje'){
                             $query->where(DB::raw('DATE_FORMAT('.$table.'.created_at, "%Y-%m-%d")'), '=', date("Y-m-d"));
                         }else{

@@ -768,6 +768,7 @@ module.exports = __vue_exports__
 //
 //
 //
+//
 
 /* harmony default export */ exports["default"] = {
     props: {
@@ -955,7 +956,7 @@ exports = module.exports = __webpack_require__(0)();
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -18120,22 +18121,23 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "margin-bottom": "0px"
     }
   }, [_c('li', {
-    staticClass: "col-md-6"
-  }, [_c('a', {
+    staticClass: "col-md-5"
+  }, [_c('input', {
+    staticClass: "form-control",
     staticStyle: {
-      "cursor": "pointer"
+      "border-color": "#f5f5f5",
+      "background-color": "#f5f5f5"
+    },
+    attrs: {
+      "type": "text",
+      "placeholder": "Procurar"
     },
     on: {
       "click": function($event) {
         _vm.loadData()
       }
     }
-  }, [_c('i', {
-    staticClass: "fa fa-search",
-    attrs: {
-      "aria-hidden": "true"
-    }
-  }), _vm._v(" Procurar")])]), _vm._v(" "), _c('li', [_c('a', {
+  })]), _vm._v(" "), _c('li', [_c('a', {
     staticStyle: {
       "cursor": "pointer"
     },
@@ -18183,16 +18185,22 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.loadData()
       }
     }
-  }, [_vm._v("30 dias")])]), _vm._v(" "), _c('li', [_c('a', {
+  }, [_vm._v("30 dias")])]), _vm._v(" "), _c('li', [_c('input', {
+    staticClass: "form-control",
     staticStyle: {
-      "cursor": "pointer"
+      "border-color": "#f5f5f5",
+      "background-color": "#f5f5f5"
+    },
+    attrs: {
+      "type": "number",
+      "placeholder": "Outro periodo"
     },
     on: {
       "click": function($event) {
         _vm.loadData()
       }
     }
-  }, [_vm._v("Outro periodo")])]), _vm._v(" "), _vm._m(3)])]) : _vm._e(), _vm._v(" "), (_vm.dados.length > 0) ? _c('div', [_c('table', {
+  })]), _vm._v(" "), _vm._m(3)])]) : _vm._e(), _vm._v(" "), (_vm.dados.length > 0) ? _c('div', [_c('table', {
     staticClass: "table"
   }, [_c('thead', {
     staticClass: "head-table"
