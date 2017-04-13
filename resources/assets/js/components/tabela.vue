@@ -37,24 +37,24 @@
             </div>
 
             <ol class="breadcrumb" style="margin-bottom: 0px;">
-                <li class="col-md-6">
-                    <a href="#"><i class="fa fa-search" aria-hidden="true"></i> Procurar</a>
-                </li>
-                <li>
-                    <a href="#">Hoje</a>
-                </li>
-                <li>
-                    <a href="#">7 dias</a>
-                </li>
-                <li>
-                    <a href="#">15 dias</a>
-                </li>
-                <li>
-                    <a href="#">30 dias</a>
-                </li>
-                <li>
-                    <a href="#">Outro periodo</a>
-                </li>
+                <!--<li class="col-md-6">-->
+                    <!--<a href="#"><i class="fa fa-search" aria-hidden="true"></i> Procurar</a>-->
+                <!--</li>-->
+                <!--<li>-->
+                    <!--<a href="#">Hoje</a>-->
+                <!--</li>-->
+                <!--<li>-->
+                    <!--<a href="#">7 dias</a>-->
+                <!--</li>-->
+                <!--<li>-->
+                    <!--<a href="#">15 dias</a>-->
+                <!--</li>-->
+                <!--<li>-->
+                    <!--<a href="#">30 dias</a>-->
+                <!--</li>-->
+                <!--<li>-->
+                    <!--<a href="#">Outro periodo</a>-->
+                <!--</li>-->
                 <li>
                     <a href="" data-toggle="modal" data-target="#myModal" class="grey">
                         Adicionar filtros <i class="fa fa-filter" aria-hidden="true"></i>
@@ -108,8 +108,9 @@
                     <td class="row-table" v-if="actions.troca != undefined">
                         <i class="fa fa-exchange grey"></i>
                     </td>
-                    <td @click="adicionar(dado['id'])" class="row-table" v-if="actions.adicionar != undefined">
-                        <i class="fa fa-plus grey"></i>
+                    <td @click="adicionar(dado)" class="row-table" v-if="actions.adicionar != undefined">
+                        <i v-if="dado.adicionado > 0"class="fa fa-check green"></i>
+                        <i class="fa fa-plus grey" v-else></i>
                     </td>
                 </tr>
                 </tbody>
@@ -138,6 +139,8 @@
             params: {
                 type: Object
             },
+            apiAdicionar: '',
+            _token: '',
             actions: {
                 status: '',
                 troca: '',
@@ -175,8 +178,18 @@
 
             },
             //Método da action adicionar onClick
-            adicionar: function(id){
+            adicionar: function(item){
+                item['_token'] =this._token;
+                this.$http.post(this.apiAdicionar, item)
+                    .then(function (resp) {
+                        window.location.reload();
+//                        if(resp.status == 200){
+//                            window.location.reload();
+//                        }else{
+//                            window.location.reload();
+//                        }
 
+                    })
             },
             //Método da action reprovar onClick
             reprovar: function (id) {
