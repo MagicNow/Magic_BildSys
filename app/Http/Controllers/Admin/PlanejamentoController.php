@@ -7,6 +7,8 @@ use App\Http\Requests\Admin;
 use App\Http\Requests\Admin\CreatePlanejamentoRequest;
 use App\Http\Requests\Admin\UpdatePlanejamentoRequest;
 use App\Jobs\PlanilhaProcessa;
+use App\Models\Insumo;
+use App\Models\InsumoGrupo;
 use App\Models\Obra;
 use App\Models\Planilha;
 use App\Repositories\Admin\PlanejamentoRepository;
@@ -96,6 +98,7 @@ class PlanejamentoController extends AppBaseController
     public function edit($id)
     {
         $obras = Obra::pluck('nome','id')->toArray();
+        $insumo_grupos = InsumoGrupo::pluck('nome','id')->toArray();
         $planejamento = $this->planejamentoRepository->findWithoutFail($id);
 
         if (empty($planejamento)) {
@@ -105,7 +108,7 @@ class PlanejamentoController extends AppBaseController
         }
 
 
-        return view('admin.planejamentos.edit', compact('planejamento','obras'));
+        return view('admin.planejamentos.edit', compact('planejamento','obras','insumo_grupos'));
     }
 
     /**
@@ -125,8 +128,28 @@ class PlanejamentoController extends AppBaseController
 
             return redirect(route('admin.planejamentos.index'));
         }
+        $input = $request->all();
+        if($input['insumo_grupo_id']){
+            /**
+             * Select - Montando select que vai trazer o id do planejamento e insumo_grupo_id com whereIn
+             **/
+            $select = Insumo::select(\DB::raw($id), 'insumo_grupo_id')
+                ->whereIn('insumo_grupo_id', $input['insumo_grupo_id']);
+            /**
+             * Obter os parâmetros de ligação
+             **/
+            $bindings = $select->getBindings();
+            /**
+             * Concatenando o insert com select.
+             */
+            $insertQuery = 'INSERT into planejamento_compras (planejamento_id, insumo_id) '
+                . $select->toSql();
 
-        $planejamento = $this->planejamentoRepository->update($request->all(), $id);
+            # insert com primeiro parametro é a query (INSERT and SELECT) segundo parametro Array com insumo_grupo_id
+            \DB::insert($insertQuery, $bindings);
+        }
+
+        $planejamento = $this->planejamentoRepository->update($input, $id);
 
         Flash::success('Planejamento '.trans('common.updated').' '.trans('common.successfully').'.');
 
