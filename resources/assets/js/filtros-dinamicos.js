@@ -341,11 +341,6 @@ function addQuery(period) {
 }
 
 function filterPeriod(period) {
-
-    if(period == 'outro'){
-        period = $('#outro').val();
-    }
-
     var str = '';
     var str_period = window.location.href.split("?")[1];
 
