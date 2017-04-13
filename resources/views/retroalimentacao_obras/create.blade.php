@@ -29,8 +29,9 @@
 
     <div class="content">
         @include('adminlte-templates::common.errors')
-        <div class="col-md-8 col-xs-12 col-lg-7">
-            <div class="row">
+        <div class="row">
+
+            <div class="col-md-8 col-xs-12 col-lg-7">
 
                 @include('retroalimentacao_obras.fields')
 
