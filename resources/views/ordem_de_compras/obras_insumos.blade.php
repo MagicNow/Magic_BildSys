@@ -6,23 +6,25 @@
             <div class="col-md-12">
                 <div class="col-md-6">
                     <span class="pull-left title">
-                        <i class="fa fa-arrow-left" aria-hidden="true"></i> Comprar Insumos
+                        <a href="{{ url('/compras') }}"><i class="fa fa-arrow-left" aria-hidden="true"></i></a> Comprar Insumos
                     </span>
                 </div>
                 <div class="col-md-6 text-right">
-
-                        <button type="button" class="btn btn-default btn-lg btn-flat" data-dismiss="modal">
+                    <div class="col-md-4 text-right">
+                        <a href="{{url('compras/'.$planejamento->id.'/insumos/'.$insumoGrupo->id)}}" type="button" class="btn btn-success button-large-green" data-dismiss="modal">
                             Incluir Insumo
-                        </button>
-
-                        <button type="button" class="btn btn-success btn-lg btn-flat" data-dismiss="modal">
+                        </a>
+                    </div>
+                    <div class="col-md-4 text-right">
+                        <button type="button" class="btn btn-success button-large-green" data-dismiss="modal">
                             Comprar Tudo
                         </button>
-
-                        <button type="button" class="btn btn-success btn-lg btn-flat" data-dismiss="modal">
+                    </div>
+                    <div class="col-md-4 text-right">
+                        <button type="button" class="btn btn-success button-large-green" data-dismiss="modal">
                             Fechar Ordem
                         </button>
-
+                    </div>
                 </div>
             </div>
         </div>
@@ -46,10 +48,10 @@
             {{-->--}}
             {{--</tabela>--}}
             <tabela
-                    api-url="/insumos_json"
-                    api-filtros="/obras_insumos_filter"
-                    v-bind:params="{@if (isset($planejamento_id)) planejamento_id: {{$planejamento_id}} @endif }"
-                    v-bind:actions="{filtros: true, troca: true, adicionar: true}"
+                    api-url="/compras/{{$planejamento->id}}/obrasInsumosJson/{{$insumoGrupo->id}}"
+                    api-filtros="/compras/{{$planejamento->id}}/obrasInsumosFilters"
+                    v-bind:params="{}"
+                    v-bind:actions="{filtros: true, troca: true}"
                     v-bind:colunas="[
                         {campo_db: 'nome', label: 'insumos'},
                         {campo_db: 'qtd_total', label: 'quantidade'},
