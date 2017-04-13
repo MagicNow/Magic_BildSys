@@ -7,6 +7,8 @@ use App\Http\Requests\Admin;
 use App\Http\Requests\Admin\CreatePlanejamentoRequest;
 use App\Http\Requests\Admin\UpdatePlanejamentoRequest;
 use App\Jobs\PlanilhaProcessa;
+use App\Models\Insumo;
+use App\Models\InsumoGrupo;
 use App\Models\Obra;
 use App\Models\Planilha;
 use App\Repositories\Admin\PlanejamentoRepository;
@@ -96,6 +98,7 @@ class PlanejamentoController extends AppBaseController
     public function edit($id)
     {
         $obras = Obra::pluck('nome','id')->toArray();
+        $insumo_grupos = InsumoGrupo::pluck('nome','id')->toArray();
         $planejamento = $this->planejamentoRepository->findWithoutFail($id);
 
         if (empty($planejamento)) {
@@ -105,7 +108,7 @@ class PlanejamentoController extends AppBaseController
         }
 
 
-        return view('admin.planejamentos.edit', compact('planejamento','obras'));
+        return view('admin.planejamentos.edit', compact('planejamento','obras','insumo_grupos'));
     }
 
     /**
@@ -125,8 +128,9 @@ class PlanejamentoController extends AppBaseController
 
             return redirect(route('admin.planejamentos.index'));
         }
+        $input = $request->all();
 
-        $planejamento = $this->planejamentoRepository->update($request->all(), $id);
+        $planejamento = $this->planejamentoRepository->update($input, $id);
 
         Flash::success('Planejamento '.trans('common.updated').' '.trans('common.successfully').'.');
 

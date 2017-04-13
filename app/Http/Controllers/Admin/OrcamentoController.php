@@ -46,6 +46,26 @@ class OrcamentoController extends AppBaseController
         $tipo = 'orcamento';
         $file = $request->except('obra_id','modulo_id','orcamento_tipo_id');
         $input = $request->except('_token','file');
+        $obra_id = null;
+        $modulo_id = null;
+        $orcamento_tipo_id = null;
+
+        # Validando campos obrigatórios como chave estrangeiras
+        if($input['obra_id'] != "") {
+            $obra_id = array_key_exists('obra_id', $input);
+        }
+        if($input['modulo_id'] != "") {
+            $modulo_id = array_key_exists('modulo_id', $input);
+        }
+        if($input['orcamento_tipo_id'] != "") {
+            $orcamento_tipo_id = array_key_exists('orcamento_tipo_id', $input);
+        }
+        if(!$obra_id || !$modulo_id || !$orcamento_tipo_id){
+            Flash::error('Os campos: obra, modulo e tipo orçamento são obrigátorios.');
+            return back();
+        }
+
+
         $input['user_id'] = Auth::id();
         $parametros = json_encode($input);
         $colunasbd = [];
