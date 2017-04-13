@@ -55,6 +55,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         Route::get('planejamento/importar/checkIn', ['as'=> 'admin.planejamentos.checkIn', 'uses' => 'Admin\PlanejamentoController@checkIn']);
         Route::post('planejamento/importar/save', ['as'=> 'admin.planejamentos.save', 'uses' => 'Admin\PlanejamentoController@save']);
         Route::get('planejamento/importar/selecionaCampos', 'Admin\PlanejamentoController@selecionaCampos');
+
         # Planejamentos
         Route::get('planejamentos', ['as'=> 'admin.planejamentos.index', 'uses' => 'Admin\PlanejamentoController@index']);
         Route::post('planejamentos', ['as'=> 'admin.planejamentos.store', 'uses' => 'Admin\PlanejamentoController@store']);
@@ -64,7 +65,8 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         Route::delete('planejamentos/{planejamentos}', ['as'=> 'admin.planejamentos.destroy', 'uses' => 'Admin\PlanejamentoController@destroy']);
         Route::get('planejamentos/{planejamentos}', ['as'=> 'admin.planejamentos.show', 'uses' => 'Admin\PlanejamentoController@show']);
         Route::get('planejamentos/{planejamentos}/edit', ['as'=> 'admin.planejamentos.edit', 'uses' => 'Admin\PlanejamentoController@edit']);
-
+        Route::get('planejamentos/grupos/{id}', 'Admin\PlanejamentoController@getGrupos');
+        Route::get('planejamentos/servicos/{id}', 'Admin\PlanejamentoController@getServicos');
 
         # Contratos
         Route::get('contratos', ['as'=> 'admin.contratos.index', 'uses' => 'Admin\ContratosController@index']);

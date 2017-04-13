@@ -7,10 +7,12 @@ use App\Http\Requests\Admin;
 use App\Http\Requests\Admin\CreatePlanejamentoRequest;
 use App\Http\Requests\Admin\UpdatePlanejamentoRequest;
 use App\Jobs\PlanilhaProcessa;
+use App\Models\Grupo;
 use App\Models\Insumo;
 use App\Models\InsumoGrupo;
 use App\Models\Obra;
 use App\Models\Planilha;
+use App\Models\Servico;
 use App\Repositories\Admin\PlanejamentoRepository;
 use App\Repositories\Admin\SpreadsheetRepository;
 use Flash;
@@ -98,7 +100,7 @@ class PlanejamentoController extends AppBaseController
     public function edit($id)
     {
         $obras = Obra::pluck('nome','id')->toArray();
-        $insumo_grupos = InsumoGrupo::pluck('nome','id')->toArray();
+        $grupos = Grupo::whereNull('grupo_id')->pluck('nome','id')->toArray();
         $planejamento = $this->planejamentoRepository->findWithoutFail($id);
 
         if (empty($planejamento)) {
@@ -108,7 +110,18 @@ class PlanejamentoController extends AppBaseController
         }
 
 
-        return view('admin.planejamentos.edit', compact('planejamento','obras','insumo_grupos'));
+        return view('admin.planejamentos.edit', compact('planejamento','obras','grupos'));
+    }
+
+    public function getGrupos($id){
+        $grupo = Grupo::where('grupo_id', $id)
+            ->pluck('nome','id')->toArray();
+        return $grupo;
+    }
+    public function getServicos($id){
+        $servico = Servico::where('grupo_id', $id)
+            ->pluck('nome', 'id')->toArray();
+        return $servico;
     }
 
     /**
