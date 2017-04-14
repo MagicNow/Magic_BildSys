@@ -12,6 +12,7 @@ use App\Models\InsumoGrupo;
 use App\Models\Lembrete;
 use App\Models\Planejamento;
 use App\Models\PlanejamentoCompra;
+use App\Models\WorkflowReprovacaoMotivo;
 use App\Repositories\CodeRepository;
 use function foo\func;
 use Illuminate\Pagination\Paginator;
