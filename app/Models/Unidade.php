@@ -16,7 +16,10 @@ class Unidade extends Model
 
     public $primaryKey = 'sigla';
 
+    public $timestamps = false;
+
     public $fillable = [
+        'sigla',
         'descricao'
     ];
 

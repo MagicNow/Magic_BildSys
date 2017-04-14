@@ -16,6 +16,7 @@ class InsumoGrupo extends Model
     public $timestamps = false;
 
     public $fillable = [
+        'id',
         'codigo_identificador',
         'nome'
     ];

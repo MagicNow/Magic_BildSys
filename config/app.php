@@ -185,6 +185,7 @@ return [
 
         Artesaos\Defender\Providers\DefenderServiceProvider::class,
         KennedyTedesco\Validation\ValidationServiceProvider::class,
+        Yajra\Oci8\Oci8ServiceProvider::class,
     ],
 
     /*
