@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Eloquent as Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class Obra
@@ -11,12 +12,16 @@ use Eloquent as Model;
  */
 class Obra extends Model
 {
+    use SoftDeletes;
 
     public $table = 'obras';
 
+    const CREATED_AT = 'created_at';
+    const UPDATED_AT = 'updated_at';
 
 
-    protected $dates = [];
+    protected $dates = ['deleted_at'];
+
 
 
     public $fillable = [
@@ -39,46 +44,53 @@ class Obra extends Model
      * @var array
      */
     public static $rules = [
-
+        'nome' => 'required'
     ];
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function contratos()
+    {
+        return $this->hasMany(Contrato::class);
+    }
 
-//    /**
-//     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-//     **/
-//    public function contratos()
-//    {
-//        return $this->hasMany(\App\Models\Contrato::class);
-//    }
-//
-//    /**
-//     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-//     **/
-//    public function orcamentos()
-//    {
-//        return $this->hasMany(\App\Models\Orcamento::class);
-//    }
-//
-//    /**
-//     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-//     **/
-//    public function ordemDeCompraItens()
-//    {
-//        return $this->hasMany(\App\Models\OrdemDeCompraIten::class);
-//    }
-//
-//    /**
-//     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-//     **/
-//    public function ordemDeCompras()
-//    {
-//        return $this->hasMany(\App\Models\OrdemDeCompra::class);
-//    }
-//
-//    /**
-//     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-//     **/
-//    public function planejamentos()
-//    {
-//        return $this->hasMany(\App\Models\Planejamento::class);
-//    }
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function orcamentos()
+    {
+        return $this->hasMany(Orcamento::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function ordemDeCompraItens()
+    {
+        return $this->hasMany(OrdemDeCompraItem::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function ordemDeCompras()
+    {
+        return $this->hasMany(OrdemDeCompra::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function planejamentos()
+    {
+        return $this->hasMany(Planejamento::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function retroalimentacaoObras()
+    {
+        return $this->hasMany(RetroalimentacaoObra::class);
+    }
 }

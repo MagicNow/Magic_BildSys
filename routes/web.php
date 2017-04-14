@@ -222,19 +222,29 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         });
     });
 
-    /**
-     * TO-DO Criar grupo com prefixo de compras
-     */
-    $router->get('compras/{planejamento}/insumos/{insumoGrupo}', 'OrdemDeCompraController@insumos')->name('compraInsumo');
-    $router->get('compras/{planejamento}/insumosJson', 'OrdemDeCompraController@insumosJson');
-    $router->get('compras/{planejamento}/insumosFilters', 'OrdemDeCompraController@insumosFilters');
-    $router->post('compras/{planejamento}/insumosAdd', 'OrdemDeCompraController@insumosAdd');
+    $router->group(['prefix' => 'compras'], function () use ($router) {
+        $router->get('{planejamento}/insumos/{insumoGrupo}', 'OrdemDeCompraController@insumos')->name('compraInsumo');
+        $router->get('{planejamento}/insumosJson', 'OrdemDeCompraController@insumosJson');
+        $router->get('{planejamento}/insumosFilters', 'OrdemDeCompraController@insumosFilters');
+        $router->post('{planejamento}/insumosAdd', 'OrdemDeCompraController@insumosAdd');
 
-    $router->get('compras/{planejamento}/obrasInsumos/{insumoGrupo}', 'OrdemDeCompraController@obrasInsumos');
-    $router->get('compras/{planejamento}/obrasInsumosFilters', 'OrdemDeCompraController@obrasInsumosFilters');
-    $router->get('compras/{planejamento}/obrasInsumosJson/{insumoGrupo}', 'OrdemDeCompraController@obrasInsumosJson');
+        $router->get('{planejamento}/obrasInsumos/{insumoGrupo}', 'OrdemDeCompraController@obrasInsumos');
+        $router->get('{planejamento}/obrasInsumosFilters', 'OrdemDeCompraController@obrasInsumosFilters');
+        $router->get('{planejamento}/obrasInsumosJson/{insumoGrupo}', 'OrdemDeCompraController@obrasInsumosJson');
+    });
 
-
-    $router->get('workflow/aprova-reprova', 'WorkflowController@aprovaReprova');
-    $router->get('workflow/aprova-reprova-tudo', 'WorkflowController@aprovaReprovaTudo');
+    $router->group(['prefix' => 'workflow'], function () use ($router) {
+        $router->get('aprova-reprova', 'WorkflowController@aprovaReprova');
+        $router->get('aprova-reprova-tudo', 'WorkflowController@aprovaReprovaTudo');
+    });
 });
+
+
+Route::get('admin/obras', ['as'=> 'admin.obras.index', 'uses' => 'Admin\ObraController@index']);
+Route::post('admin/obras', ['as'=> 'admin.obras.store', 'uses' => 'Admin\ObraController@store']);
+Route::get('admin/obras/create', ['as'=> 'admin.obras.create', 'uses' => 'Admin\ObraController@create']);
+Route::put('admin/obras/{obras}', ['as'=> 'admin.obras.update', 'uses' => 'Admin\ObraController@update']);
+Route::patch('admin/obras/{obras}', ['as'=> 'admin.obras.update', 'uses' => 'Admin\ObraController@update']);
+Route::delete('admin/obras/{obras}', ['as'=> 'admin.obras.destroy', 'uses' => 'Admin\ObraController@destroy']);
+Route::get('admin/obras/{obras}', ['as'=> 'admin.obras.show', 'uses' => 'Admin\ObraController@show']);
+Route::get('admin/obras/{obras}/edit', ['as'=> 'admin.obras.edit', 'uses' => 'Admin\ObraController@edit']);
