@@ -9,7 +9,7 @@
     <link rel="icon" href="{{ asset('img/favicon.png') }}" />
 </head>
 
-<body class="skin-yellow-light sidebar-mini">
+<body class="skin-yellow sidebar-mini">
 @if (!Auth::guest())
     <div class="wrapper">
         <!-- Main Header -->
