@@ -25,7 +25,6 @@ class HomeController extends Controller
      */
     public function index()
     {
-        ImportacaoRepository::insumos();
         return view('home');
     }
 }
