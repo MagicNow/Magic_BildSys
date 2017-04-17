@@ -78,7 +78,7 @@ class OrdemDeCompraItem extends Model
      * @var array
      */
     public static $rules = [
-        
+        'sugestao_data_uso' => 'date',
     ];
 
     /**
