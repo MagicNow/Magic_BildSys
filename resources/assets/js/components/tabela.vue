@@ -38,7 +38,7 @@
 
             <ol class="breadcrumb" style="margin-bottom: 0px;">
                 <li class="col-md-5">
-                    <input type="text" @keyup="loadData()" placeholder="Procurar" class="form-control" style="border-color:#f5f5f5;background-color:#f5f5f5;">
+                    <input type="text" @keyup="loadData()" placeholder="Procurar" onkeyup="filterFind(this.value);" class="form-control" style="border-color:#f5f5f5;background-color:#f5f5f5;">
                 </li>
                 <li>
                     <a @click="loadData()" onclick="filterPeriod('hoje');" style="cursor: pointer">Hoje</a>
@@ -55,6 +55,7 @@
                 <li>
                     <input type="number" @keyup="loadData()" onkeyup="filterPeriod(this.value);" placeholder="Outro periodo" class="form-control" style="border-color:#f5f5f5;background-color:#f5f5f5;">
                 </li>
+                <input type="hidden" id="period_find" value="periodo=&procurar=">
                 <li>
                     <a href="" data-toggle="modal" data-target="#myModal" class="grey">
                         Adicionar filtros <i class="fa fa-filter" aria-hidden="true"></i>
