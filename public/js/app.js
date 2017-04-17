@@ -18130,6 +18130,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     },
     attrs: {
       "type": "text",
+      "id": "find",
       "placeholder": "Procurar",
       "onkeyup": "filterFind(this.value);"
     },
@@ -18139,10 +18140,12 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       }
     }
   })]), _vm._v(" "), _c('li', [_c('a', {
+    staticClass: "period",
     staticStyle: {
       "cursor": "pointer"
     },
     attrs: {
+      "id": "period_hoje",
       "onclick": "filterPeriod('hoje');"
     },
     on: {
@@ -18151,10 +18154,12 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       }
     }
   }, [_vm._v("Hoje")])]), _vm._v(" "), _c('li', [_c('a', {
+    staticClass: "period",
     staticStyle: {
       "cursor": "pointer"
     },
     attrs: {
+      "id": "period_7",
       "onclick": "filterPeriod(7);"
     },
     on: {
@@ -18163,10 +18168,12 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       }
     }
   }, [_vm._v("7 dias")])]), _vm._v(" "), _c('li', [_c('a', {
+    staticClass: "period",
     staticStyle: {
       "cursor": "pointer"
     },
     attrs: {
+      "id": "period_15",
       "onclick": "filterPeriod(15);"
     },
     on: {
@@ -18175,10 +18182,12 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       }
     }
   }, [_vm._v("15 dias")])]), _vm._v(" "), _c('li', [_c('a', {
+    staticClass: "period",
     staticStyle: {
       "cursor": "pointer"
     },
     attrs: {
+      "id": "period_30",
       "onclick": "filterPeriod(30);"
     },
     on: {
@@ -18194,6 +18203,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     },
     attrs: {
       "type": "number",
+      "id": "other_period",
       "onkeyup": "filterPeriod(this.value);",
       "placeholder": "Outro periodo"
     },

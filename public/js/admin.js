@@ -62777,6 +62777,12 @@ function verifyQueryString() {
         $.each(result, function (index, value) {
             $('#check_'+index).prop('checked', true).parent().addClass('checked');
             $('#check_'+index.replace('_initial', '')).prop('checked', true).parent().addClass('checked');
+            if(index == 'periodo'){
+                filterPeriod(value);
+            }
+            if(index == 'procurar'){
+                filterFind(value);
+            }
         });
         addFilters(result);
     }
@@ -62849,8 +62855,14 @@ function filterPeriod(period) {
 
     var period_value = period_find.val().replace(period_find_split[0], 'periodo='+period);
 
+    if(period != 'hoje' && period != '7' && period != '15' && period != '30'){
+        $('#other_period').val(period);
+    }
+
     period_find.val(period_value);
 
+    $('.period').css('color', '#9b9b9b');
+    $('#period_'+period).css('color', '#4a4a4a');
     addQuery();
 }
 
@@ -62862,6 +62874,7 @@ function filterFind(find) {
 
     period_find.val(find_value);
 
+    $('#find').val(find);
     addQuery();
 }
 function workflowCall(item_id, tipo_item, aprovou, elemento, motivo, justificativa_texto, pai_id, pai_obj, filhos_metodo) {
