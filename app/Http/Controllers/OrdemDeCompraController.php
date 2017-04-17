@@ -419,9 +419,13 @@ class OrdemDeCompraController extends AppBaseController
         return response()->json($filters);
     }
 
-    public function carrinho()
+    public function carrinho(Request $request)
     {
-        $ordemDeCompra = OrdemDeCompra::where('oc_status_id',1)->first();
+        $ordemDeCompra = OrdemDeCompra::where('oc_status_id',1)->where('user_id',Auth::id());
+        if($request->obra_id){
+            $ordemDeCompra->where('obra_id');
+        }
+        $ordemDeCompra = $ordemDeCompra->first();
 
         if (empty($ordemDeCompra)) {
             Flash::error('Não existe OC em aberto.');
@@ -445,7 +449,22 @@ class OrdemDeCompraController extends AppBaseController
     }
 
     public function fechaCarrinho(Request $request){
-        dd($request->all());
+        $ordemDeCompra = OrdemDeCompra::where('oc_status_id',1)->where('user_id',Auth::id());
+        if($request->obra_id){
+            $ordemDeCompra->where('obra_id');
+        }
+        $ordemDeCompra = $ordemDeCompra->first();
+
+        if (empty($ordemDeCompra)) {
+            Flash::error('Não existe OC em aberto.');
+
+            return back();
+        }
+        $ordemDeCompra->oc_status_id = 2; // Fechada
+        $ordemDeCompra->save();
+
+        Flash::success('Ordem de compra '.$ordemDeCompra->id.' Fechada!');
+        return redirect('/ordens-de-compra');
     }
     public function alteraItem($id,Request $request){
         $rules = OrdemDeCompraItem::$rules;

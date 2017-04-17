@@ -21,9 +21,9 @@
                     <button type="button" onclick="history.go(-1);" class="btn btn-default btn-lg btn-flat">
                         Esqueci um item
                     </button>
-                    <a href="{{ url('/ordens-de-compra/fechar-carrinho') }}" class="btn btn-success btn-lg btn-flat">
+                    <button type="button" onclick="fechaOC();" class="btn btn-success btn-lg btn-flat">
                         Confirmar
-                    </a>
+                    </button>
                 </div>
             </div>
         </div>
@@ -402,6 +402,23 @@
                 alteraItem( $(event.target).attr('item_id'), 'emergencial', (event.target.checked?1:0) );
             });
         });
+
+        function fechaOC() {
+            swal({
+                        title: "Finalizar esta Ordem de Compra?",
+                        text: "",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#7ed321",
+                        confirmButtonText: "Sim, já verifiquei tudo!",
+                        cancelButtonText: "Não, ainda quero validar algo.",
+                        closeOnConfirm: false
+                    },
+                    function() {
+                        document.location = '{{ url('/ordens-de-compra/fechar-carrinho') }}';
+
+                    });
+        }
 //        const app = new Vue({
 //            el: '#app'
 //        });
