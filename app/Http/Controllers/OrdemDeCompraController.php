@@ -404,50 +404,26 @@ class OrdemDeCompraController extends AppBaseController
 
         //Query pra trazer
         $insumos = $insumo_query->join('planejamento_compras', function ($join) use ($planejamento){
-                            $join->on('insumos.id', 'planejamento_compras.insumo_id')
-                                ->where('planejamento_compras.planejamento_id','=', $planejamento->id);
-                    })->join('orcamentos', 'orcamentos.insumo_id', 'insumos.id')
-                    ->select(
-                        [
-                            'insumos.id',
-                            'insumos.nome',
-                            'insumos.unidade_sigla',
-                            'insumos.codigo',
-                            'orcamentos.grupo_id',
-                            'orcamentos.servico_id',
-                            'orcamentos.qtd_total',
-                            'orcamentos.preco_total'
-                        ]
-                    );
-
-
-//        $insumos = $insumo_query->join('orcamentos', 'insumos.id', '=', 'orcamentos.insumo_id')
-//            ->join('planejamento_compras','planejamento_compras.insumo_id','=','orcamentos.insumos.id','planejamento_compras','AND','planejamento_compras.subgrupo1_id','=','orcamentos.subgrupo1_id')
-//            ->join('planejamento_compras', function ($join){
-//                $join->on('planejamento_compras','planejamento_compras.insumo_id','=','orcamentos.insumos.id')
-//                    ->and('planejamento_compras','planejamento_compras.subgrupo1_id','=','orcamentos.subgrupo1_id')
-//                    ->and('planejamento_compras','planejamento_compras.subgrupo2_id','=','orcamentos.subgrupo2_id')
-//                    ->and('planejamento_compras','planejamento_compras.subgrupo3_id','=','orcamentos.subgrupo3_id');
-//            })
-//            ->select([
-//                'insumos.id',
-//                'insumos.nome',
-//                'insumos.unidade_sigla',
-//                'insumos.codigo',
-//                'orcamentos.grupo_id',
-//                'orcamentos.servico_id',
-//                'orcamentos.qtd_total',
-//                'orcamentos.preco_total'
-//            ])->leftJoin(DB::raw(
-//                'JOIN planejamento_compras
-//                ON planejamento_compras.insumo_id = orcamentos.insumos_id
-//                AND planejamento_compras.subgrupo1_id = orcamentos.subgrupo1_id
-//                AND planejamento_compras.subgrupo2_id = orcamentos.subgrupo2_id
-//                AND planejamento_compras.subgrupo3_id = orcamentos.subgrupo3_id
-//                AND planejamento_compras.subgrupo4_id = orcamentos.subgrupo4_id
-//                '
-//            ))
-//            ->where('planejamento_compras.planejamento_id', $planejamento->id);
+            $join->on('insumos.id', 'planejamento_compras.insumo_id')
+                ->where('planejamento_compras.planejamento_id','=', $planejamento->id);
+        })->join('orcamentos', 'orcamentos.insumo_id', 'insumos.id')
+            ->select(
+                [
+                    'insumos.id',
+                    'insumos.nome',
+                    'insumos.unidade_sigla',
+                    'insumos.codigo',
+                    'orcamentos.grupo_id',
+                    'orcamentos.servico_id',
+                    'orcamentos.qtd_total',
+                    'orcamentos.preco_total',
+                    DB::raw('(SELECT count(id) FROM planejamento_compras 
+                    WHERE planejamento_compras.insumo_id = insumos.id 
+                    AND planejamento_compras.planejamento_id ='.$planejamento->id.' AND  planejamento_compras.trocado_de IS NOT NULL) as filho'),
+                    DB::raw('(SELECT count(id) FROM planejamento_compras 
+                    WHERE planejamento_compras.planejamento_id ='.$planejamento->id.' AND  planejamento_compras.trocado_de = planejamento_compras.id) as pai')
+                ]
+            )->orderBy(DB::raw(' COALESCE (planejamento_compras.id, planejamento_compras.trocado_de), planejamento_compras.trocado_de'));
 
 
         //Testa a ordenação
@@ -484,6 +460,52 @@ class OrdemDeCompraController extends AppBaseController
         return response()->json($filters);
     }
 
+    public function trocaInsumoAction(Request $request, Planejamento $planejamento,Insumo $insumo)
+    {
+        try{
+            $planejamento_pai = PlanejamentoCompra::where('insumo_id', $insumo->id)->where('planejamento_id',$planejamento->id)->first();
+            $planejamento_compras = new PlanejamentoCompra();
+            $planejamento_compras->planejamento_id = $planejamento->id;
+            $planejamento_compras->insumo_id = $request->id;
+            $planejamento_compras->codigo_estruturado = $request->cod_estruturado;
+            $planejamento_compras->grupo_id = $request->cod_grupo;
+            $planejamento_compras->subgrupo1_id = $request->cod_subgrupo1;
+            $planejamento_compras->subgrupo2_id = $request->cod_subgrupo2;
+            $planejamento_compras->subgrupo3_id = $request->cod_subgrupo3;
+            $planejamento_compras->servico_id = $request->servico_id;
+            $planejamento_compras->trocado_de = $planejamento_pai->id;
+            $planejamento_compras->save();
+            Flash::success('Insumo adicionado com sucesso');
+            return response()->json('{response: "sucesso"}');
+        }catch (\Exception $e){
+            Flash::error('Insumo adicionado com'. $e->getMessage());
+            return response()->json('{response: "error'.$e->getMessage().'"}');
+        }
+    }
+
+    public function trocaInsumosJsonFilho(Planejamento $planejamento,Insumo $insumo){
+        $insumo_query = Insumo::query();
+
+        $planejamento_pai = PlanejamentoCompra::where('insumo_id',$insumo->id)
+            ->where('planejamento_id', $planejamento->id)->first();
+        //Query pra trazer
+        $insumos = $insumo_query->join('orcamentos','orcamentos.insumo_id','=','insumos.id')
+            ->join('planejamento_compras','planejamento_compras.insumo_id','=','insumos.id')
+            ->select([
+                'insumos.id',
+                'insumos.nome',
+                'insumos.unidade_sigla',
+                'insumos.codigo',
+                'orcamentos.grupo_id',
+                'orcamentos.servico_id',
+                'orcamentos.qtd_total',
+                'orcamentos.preco_total'
+            ])
+            ->where('planejamento_compras.trocado_de',$planejamento_pai->id);
+//            ->where('planejamento_compras.trocado_de',$insumo->id);
+//            ->whereNotNull('planejamento_compras.trocado_de');
+        return response()->json($insumos->paginate(10), 200);
+    }
 
     public function trocaInsumosJsonPai(Insumo $insumo){
         $insumo_query = Insumo::query();

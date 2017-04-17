@@ -257,6 +257,8 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('compras/{planejamento}/trocaInsumos/{insumoGrupo}/insumo/{insumo}', 'OrdemDeCompraController@trocaInsumos');
     $router->get('compras/{planejamento}/trocaInsumosFilters', 'OrdemDeCompraController@trocaInsumosFilters');
     $router->get('compras/trocaInsumosJsonPai/{insumo}', 'OrdemDeCompraController@trocaInsumosJsonPai');
+    $router->get('compras/{planejamento}/trocaInsumosJsonFilho/{insumo}', 'OrdemDeCompraController@trocaInsumosJsonFilho');
+    $router->post('compras/{planejamento}/trocaInsumoAction/troca/{insumo}', 'OrdemDeCompraController@trocaInsumoAction');
 
     $router->get('workflow/aprova-reprova', 'WorkflowController@aprovaReprova');
     $router->get('workflow/aprova-reprova-tudo', 'WorkflowController@aprovaReprovaTudo');

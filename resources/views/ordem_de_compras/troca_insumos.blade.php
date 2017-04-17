@@ -11,16 +11,12 @@
                     </span>
                 </div>
                 <div class="col-md-4 text-right">
-                    <div class="col-md-6 text-right">
-                        <button type="button" class="btn btn-success button-large-green" data-dismiss="modal">
-                            Cancelar
-                        </button>
-                    </div>
-                    <div class="col-md-6 text-right">
-                        <button type="button" class="btn btn-success button-large-green" data-dismiss="modal">
-                            Confirmar
-                        </button>
-                    </div>
+                    <button type="button" class="btn btn-default btn-lg btn-flat" data-dismiss="modal">
+                        Cancelar
+                    </button>
+                    <button type="button" class="btn btn-success button-large-green" data-dismiss="modal">
+                        Confirmar
+                    </button>
                 </div>
             </div>
         </div>
@@ -43,8 +39,9 @@
             </tabela>
             Troca Por
             <tabela
-                    api-url=""
+                    api-url="{{ url('/compras/'.$planejamento->id.'/trocaInsumosJsonFilho/'.$insumo->id) }}"
                     api-filtros=""
+                    api-adicionar=""
                     v-bind:params="{}"
                     v-bind:actions="{troca: true}"
                     v-bind:colunas="[
@@ -56,9 +53,10 @@
             </tabela>
             <hr>
             <tabela
-                    api-url="/compras/{{$planejamento->id}}/insumosJson"
+                    api-url="{{url('/compras/'.$planejamento->id.'/insumosJson')}}"
                     api-filtros="{{url('/compras/'.$planejamento->id.'/insumosFilters')}}"
-                    api-adicionar=""
+                    _token="{{csrf_token()}}"
+                    api-adicionar="{{url('/compras/'.$planejamento->id.'/trocaInsumoAction/troca/'.$insumo->id)}}"
                     v-bind:params="{}"
                     v-bind:actions="{filtros: true, adicionar: true}"
                     v-bind:colunas="[

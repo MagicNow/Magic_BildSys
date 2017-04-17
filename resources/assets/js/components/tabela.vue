@@ -89,7 +89,11 @@
             </thead>
             <tbody>
                 <tr v-if="dados.length >0" v-for="dado in dados">
-                    <td class="row-table" v-for="chave in chaves">{{dado[chave]}}</td>
+
+                    <td class="row-table" v-for="(chave,index) in chaves" >
+                        <i v-if="dado['filho']>0 && dado['filho'] != undefined && index == 0" class="fa fa-share"></i>
+                        {{dado[chave]}}
+                    </td>
                     <td class="row-table" v-if="actions.status != undefined">
                         <i v-if="dado['status'] == 0" class="fa fa-circle green"></i>
                         <i v-if="dado['status'] == 1" class="fa fa-circle red"></i>
