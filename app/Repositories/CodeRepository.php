@@ -6,29 +6,42 @@ use Illuminate\Support\Facades\DB;
 
 class CodeRepository
 {
-    public static function filter($query, $filters)
+    public static function filter($query, $filters, $filters_find = [])
     {
         if($filters){
             foreach ($filters as $field => $value){
                 $explode = explode('-', $field);
 
                 if(@isset($explode[0])){
+                    $sql = $query->toSql();
+                    $partial_sql = str_replace('select * from `', '', $sql);
+                    $table = strstr($partial_sql, '`', true);
+
                     if($explode[0] == 'periodo'){
-                        $sql = $query->toSql();
-                        $partial_sql = str_replace('select * from `', '', $sql);
-                        $table = strstr($partial_sql, '`', true);
+                        if($filters['periodo'] != ''){
+                            if($filters['periodo'] == 'hoje'){
+                                $query->where(DB::raw('DATE_FORMAT('.$table.'.created_at, "%Y-%m-%d")'), '=', date("Y-m-d"));
+                            }else{
+                                $until_date = date("Y-m-d",strtotime("-".$filters['periodo']."Day"));
 
-                        if($filters['periodo'] == 'hoje'){
-                            $query->where(DB::raw('DATE_FORMAT('.$table.'.created_at, "%Y-%m-%d")'), '=', date("Y-m-d"));
-                        }else{
-                            $until_date = date("Y-m-d",strtotime("-".$filters['periodo']."Day"));
+                                $query->where(DB::raw('DATE_FORMAT('.$table.'.created_at, "%Y-%m-%d")'), '<=', date("Y-m-d"))
+                                    ->where(DB::raw('DATE_FORMAT('.$table.'.created_at, "%Y-%m-%d")'), '>=', $until_date);
+                            }
+                        }
+                    }
 
-                            $query->where(DB::raw('DATE_FORMAT('.$table.'.created_at, "%Y-%m-%d")'), '<=', date("Y-m-d"))
-                                ->where(DB::raw('DATE_FORMAT('.$table.'.created_at, "%Y-%m-%d")'), '>=', $until_date);
+                    if($explode[0] == 'procurar'){
+                        if($filters['procurar'] != '') {
+                            if (count($filters_find)) {
+                                $query->where(function ($q) use ($filters_find, $filters){
+                                    foreach ($filters_find as $find) {
+                                        $q->orWhere($find, 'LIKE', '%' . $filters['procurar'] . '%');
+                                    }
+                                });
+                            }
                         }
                     }
                 }
-
                 if(@isset($explode[0]) && @isset($explode[1])) {
                     $filter = self::translateFields($explode[0]);
                     if ($explode[1] == 'integer') {
