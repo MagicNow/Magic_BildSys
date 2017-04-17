@@ -11,6 +11,16 @@
 |
 */
 
+$router->get('/teste', function (){
+    $grupos_mega = \App\Models\MegaInsumoGrupo::select([
+        'GRU_IDE_ST_CODIGO',
+        'GRU_IN_CODIGO',
+        'GRU_ST_NOME',])
+        ->where('gru_ide_st_codigo' , '07')
+        ->first();
+    dd($grupos_mega);
+});
+
 Auth::routes();
 
 $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($router) {
@@ -55,16 +65,31 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         Route::get('planejamento/importar/checkIn', ['as'=> 'admin.planejamentos.checkIn', 'uses' => 'Admin\PlanejamentoController@checkIn']);
         Route::post('planejamento/importar/save', ['as'=> 'admin.planejamentos.save', 'uses' => 'Admin\PlanejamentoController@save']);
         Route::get('planejamento/importar/selecionaCampos', 'Admin\PlanejamentoController@selecionaCampos');
-        # Planejamentos
-        Route::get('planejamentos', ['as'=> 'admin.planejamentos.index', 'uses' => 'Admin\PlanejamentoController@index']);
-        Route::post('planejamentos', ['as'=> 'admin.planejamentos.store', 'uses' => 'Admin\PlanejamentoController@store']);
-        Route::get('planejamentos/create', ['as'=> 'admin.planejamentos.create', 'uses' => 'Admin\PlanejamentoController@create']);
-        Route::put('planejamentos/{planejamentos}', ['as'=> 'admin.planejamentos.update', 'uses' => 'Admin\PlanejamentoController@update']);
-        Route::patch('planejamentos/{planejamentos}', ['as'=> 'admin.planejamentos.update', 'uses' => 'Admin\PlanejamentoController@update']);
-        Route::delete('planejamentos/{planejamentos}', ['as'=> 'admin.planejamentos.destroy', 'uses' => 'Admin\PlanejamentoController@destroy']);
-        Route::get('planejamentos/{planejamentos}', ['as'=> 'admin.planejamentos.show', 'uses' => 'Admin\PlanejamentoController@show']);
-        Route::get('planejamentos/{planejamentos}/edit', ['as'=> 'admin.planejamentos.edit', 'uses' => 'Admin\PlanejamentoController@edit']);
 
+        $router->group(['prefix' => 'planejamentos'], function () use ($router) {
+            # Planejamentos
+            $router->get('atividade', ['as' => 'admin.planejamentos.index', 'uses' => 'Admin\PlanejamentoController@index']);
+            $router->post('atividade', ['as' => 'admin.planejamentos.store', 'uses' => 'Admin\PlanejamentoController@store']);
+            $router->get('atividade/create', ['as' => 'admin.planejamentos.create', 'uses' => 'Admin\PlanejamentoController@create']);
+            $router->put('atividade/{planejamentos}', ['as' => 'admin.planejamentos.update', 'uses' => 'Admin\PlanejamentoController@update']);
+            $router->patch('atividade/{planejamentos}', ['as' => 'admin.planejamentos.update', 'uses' => 'Admin\PlanejamentoController@update']);
+            $router->delete('atividade/{planejamentos}', ['as' => 'admin.planejamentos.destroy', 'uses' => 'Admin\PlanejamentoController@destroy']);
+            $router->get('atividade/{planejamentos}', ['as' => 'admin.planejamentos.show', 'uses' => 'Admin\PlanejamentoController@show']);
+            $router->get('atividade/{planejamentos}/edit', ['as' => 'admin.planejamentos.edit', 'uses' => 'Admin\PlanejamentoController@edit']);
+            $router->get('atividade/grupos/{id}', 'Admin\PlanejamentoController@getGrupos');
+            $router->get('atividade/servicos/{id}', 'Admin\PlanejamentoController@getServicos');
+
+            # Lembretes
+            $router->get('lembretes', ['as' => 'admin.lembretes.index', 'uses' => 'Admin\LembreteController@index']);
+            $router->post('lembretes', ['as' => 'admin.lembretes.store', 'uses' => 'Admin\LembreteController@store']);
+            $router->get('lembretes/create', ['as' => 'admin.lembretes.create', 'uses' => 'Admin\LembreteController@create']);
+            $router->put('lembretes/{lembretes}', ['as' => 'admin.lembretes.update', 'uses' => 'Admin\LembreteController@update']);
+            $router->patch('lembretes/{lembretes}', ['as' => 'admin.lembretes.update', 'uses' => 'Admin\LembreteController@update']);
+            $router->delete('lembretes/{lembretes}', ['as' => 'admin.lembretes.destroy', 'uses' => 'Admin\LembreteController@destroy']);
+            $router->get('lembretes/{lembretes}', ['as' => 'admin.lembretes.show', 'uses' => 'Admin\LembreteController@show']);
+            $router->get('lembretes/{lembretes}/edit', ['as' => 'admin.lembretes.edit', 'uses' => 'Admin\LembreteController@edit']);
+            $router->get('lembretes/filtro/busca', ['as' => 'admin.lembretes.busca', 'uses' => 'Admin\LembreteController@busca']);
+        });
 
         # Contratos
         Route::get('contratos', ['as'=> 'admin.contratos.index', 'uses' => 'Admin\ContratosController@index']);
@@ -83,16 +108,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         # Update Notificações visualizadas
         Route::get('updateNotification/{id}', 'Admin\NotificacaoController@updateNotification');
 
-        # Lembretes
-        Route::get('lembretes', ['as'=> 'admin.lembretes.index', 'uses' => 'Admin\LembreteController@index']);
-        Route::post('lembretes', ['as'=> 'admin.lembretes.store', 'uses' => 'Admin\LembreteController@store']);
-        Route::get('lembretes/create', ['as'=> 'admin.lembretes.create', 'uses' => 'Admin\LembreteController@create']);
-        Route::put('lembretes/{lembretes}', ['as'=> 'admin.lembretes.update', 'uses' => 'Admin\LembreteController@update']);
-        Route::patch('lembretes/{lembretes}', ['as'=> 'admin.lembretes.update', 'uses' => 'Admin\LembreteController@update']);
-        Route::delete('lembretes/{lembretes}', ['as'=> 'admin.lembretes.destroy', 'uses' => 'Admin\LembreteController@destroy']);
-        Route::get('lembretes/{lembretes}', ['as'=> 'admin.lembretes.show', 'uses' => 'Admin\LembreteController@show']);
-        Route::get('lembretes/{lembretes}/edit', ['as'=> 'admin.lembretes.edit', 'uses' => 'Admin\LembreteController@edit']);
-        Route::get('lembretes/filtro/busca', ['as' => 'admin.lembretes.busca', 'uses' => 'Admin\LembreteController@busca']);
+
 
         $router->group(['middleware' => 'needsPermission:users.list'], function() use ($router) {
             #Manage ACL
@@ -210,6 +226,22 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         });
     });
 
+    $router->group(['prefix' => 'compras'], function () use ($router) {
+        $router->get('{planejamento}/insumos/{insumoGrupo}', 'OrdemDeCompraController@insumos')->name('compraInsumo');
+        $router->get('{planejamento}/insumosJson', 'OrdemDeCompraController@insumosJson');
+        $router->get('{planejamento}/insumosFilters', 'OrdemDeCompraController@insumosFilters');
+        $router->post('{planejamento}/insumosAdd', 'OrdemDeCompraController@insumosAdd');
+
+        $router->get('{planejamento}/obrasInsumos/{insumoGrupo}', 'OrdemDeCompraController@obrasInsumos');
+        $router->get('{planejamento}/obrasInsumosFilters', 'OrdemDeCompraController@obrasInsumosFilters');
+        $router->get('{planejamento}/obrasInsumosJson/{insumoGrupo}', 'OrdemDeCompraController@obrasInsumosJson');
+    });
+
+    $router->group(['prefix' => 'workflow'], function () use ($router) {
+        $router->get('aprova-reprova', 'WorkflowController@aprovaReprova');
+        $router->get('aprova-reprova-tudo', 'WorkflowController@aprovaReprovaTudo');
+    });
+
     /**
      * TO-DO Criar grupo com prefixo de compras
      */
@@ -229,3 +261,13 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('workflow/aprova-reprova', 'WorkflowController@aprovaReprova');
     $router->get('workflow/aprova-reprova-tudo', 'WorkflowController@aprovaReprovaTudo');
 });
+
+
+Route::get('admin/obras', ['as'=> 'admin.obras.index', 'uses' => 'Admin\ObraController@index']);
+Route::post('admin/obras', ['as'=> 'admin.obras.store', 'uses' => 'Admin\ObraController@store']);
+Route::get('admin/obras/create', ['as'=> 'admin.obras.create', 'uses' => 'Admin\ObraController@create']);
+Route::put('admin/obras/{obras}', ['as'=> 'admin.obras.update', 'uses' => 'Admin\ObraController@update']);
+Route::patch('admin/obras/{obras}', ['as'=> 'admin.obras.update', 'uses' => 'Admin\ObraController@update']);
+Route::delete('admin/obras/{obras}', ['as'=> 'admin.obras.destroy', 'uses' => 'Admin\ObraController@destroy']);
+Route::get('admin/obras/{obras}', ['as'=> 'admin.obras.show', 'uses' => 'Admin\ObraController@show']);
+Route::get('admin/obras/{obras}/edit', ['as'=> 'admin.obras.edit', 'uses' => 'Admin\ObraController@edit']);

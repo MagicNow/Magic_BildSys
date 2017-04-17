@@ -8,17 +8,19 @@
     <link rel="stylesheet" href="/css/admin.css">
     <link rel="shortcut icon" href="{{ asset('img/favicon.png') }}">
     <link rel="icon" href="{{ asset('img/favicon.png') }}" />
-    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
     @yield('styles')
+    <style type="text/css">
+
+    </style>
 </head>
 
-<body class="skin-yellow sidebar-mini">
+<body class="skin-yellow sidebar-mini sidebar-collapse">
 
     <div class="wrapper">
         <!-- Main Header -->
         <header class="main-header">
 
-            <a href="{{ url('') }}" class="logo">
+            <a href="{{ url('') }}" class="logo hidden-xs">
                 <!-- mini logo for sidebar mini 50x50 pixels -->
                 <span class="logo-mini">
                     <img src="{{ asset('img/logo_bild_sys.png') }}" style="max-height: 50px;">
@@ -38,7 +40,7 @@
                 <!-- Navbar Right Menu -->
                 <div class="navbar-custom-menu">
                     <ul class="nav navbar-nav">
-                        <!-- Messages: style can be found in dropdown.less-->
+                        {{--<!-- Messages: style can be found in dropdown.less-->
                         <li class="dropdown messages-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                                 <i class="fa fa-envelope-o"></i>
@@ -114,12 +116,12 @@
                                 </li>
                                 <li class="footer"><a href="#">See All Messages</a></li>
                             </ul>
-                        </li>
+                        </li>--}}
 
                         <!-- Notifications: style can be found in dropdown.less -->
                         <li class="dropdown notifications-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                <i class="fa fa-bell-o"></i>
+                                <i class="fa fa-bell"></i>
                                 <span class="label label-warning">10</span>
                             </a>
                             <ul class="dropdown-menu">
@@ -164,9 +166,9 @@
                             <!-- Menu Toggle Button -->
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 <!-- The user image in the navbar-->
-                                <img src="{{ Gravatar::fallback(asset('img/user2-160x160.jpg'))->get(Auth::user()->email) }}" class="user-image" alt="User Image">
-                                <!-- hidden-xs hides the username on small devices so only the image appears. -->
                                 <span class="hidden-xs">{!! Auth::user()->name !!}</span>
+                                <!-- hidden-xs hides the username on small devices so only the image appears. -->
+                                <img src="{{ Gravatar::fallback(asset('img/user2-160x160.jpg'))->get(Auth::user()->email) }}" class="user-image" alt="User Image">
                             </a>
                             <ul class="dropdown-menu">
                                 <!-- The user image in the menu -->

@@ -19,5 +19,19 @@
                </div>
            </div>
        </div>
+
+       <div class="box box-primary">
+           <div class="box-body">
+               <div class="row">
+                   {{--{!! Form::model($planejamento, ['route' => ['admin.planejamentos.update', $planejamento->id], 'method' => 'patch']) !!}--}}
+
+                   @include('admin.planejamentos.fields_insumos')
+
+                   {{--{!! Form::close() !!}--}}
+               </div>
+           </div>
+       </div>
+
+
    </div>
 @endsection

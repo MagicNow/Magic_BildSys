@@ -37,9 +37,9 @@
             </span>
     </a>
     <ul class="treeview-menu">
-        <li class="{{ Request::is('planejamentos*') ? 'active' : '' }}"><a href="{!! route('admin.planejamentos.index') !!}"><i class="fa fa-edit"></i><span>Planejamentos</span></a></li>
-        <li class="{{ Request::is('planejamento*') ? 'active' : '' }}"><a href="{!! route('admin.planejamentos.indexImport') !!}"><i class="glyphicon glyphicon-cloud-upload"></i><span>Importação</span></a></li>
-        <li class="{{ Request::is('lembretes*') ? 'active' : '' }}"><a href="{!! route('admin.lembretes.index') !!}"><i class="fa fa-exclamation-circle"></i><span>Lembretes</span></a></li>
+        <li class="{{ Request::is('admin/planejamentos') ? 'active' : '' }}"><a href="{!! route('admin.planejamentos.index') !!}"><i class="fa fa-edit"></i><span>Planejamentos</span></a></li>
+        <li class="{{ Request::is('admin/planejamento') ? 'active' : '' }}"><a href="{!! route('admin.planejamentos.indexImport') !!}"><i class="glyphicon glyphicon-cloud-upload"></i><span>Importação</span></a></li>
+        <li class="{{ Request::is('admin/planejamentos/lembretes*') ? 'active' : '' }}"><a href="{!! route('admin.lembretes.index') !!}"><i class="fa fa-exclamation-circle"></i><span>Lembretes</span></a></li>
     </ul>
 </li>
 
@@ -56,7 +56,11 @@
     </ul>
 </li>
 
-<li class="{{ Request::is('contratos*') ? 'active' : '' }}">
+<li class="{{ Request::is('admin/contratos*') ? 'active' : '' }}">
     <a href="{!! route('admin.contratos.index') !!}"><i class="fa fa-edit"></i><span>Contratos</span></a>
+</li>
+
+<li class="{{ Request::is('admin/obras*') ? 'active' : '' }}">
+    <a href="{!! route('admin.obras.index') !!}"><i class="fa fa-building"></i><span>Obras</span></a>
 </li>
 
