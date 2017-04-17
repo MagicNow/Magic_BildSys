@@ -20,8 +20,10 @@ class ListagemOCController extends AppBaseController
     public function index(Request $request)
     {
         $listagem_oc = OrdemDeCompra::query();
-        
-        $listagem_oc = CodeRepository::filter($listagem_oc, $request->all());
+
+        $filters_find = ['ordem_de_compras.id', 'obras.nome'];
+
+        $listagem_oc = CodeRepository::filter($listagem_oc, $request->all(), $filters_find);
 
         $listagem_oc = $listagem_oc
             ->select(['ordem_de_compras.id', 'obras.nome as obra', 'users.name as usuario', 'oc_status.nome as situacao'])

@@ -62777,6 +62777,12 @@ function verifyQueryString() {
         $.each(result, function (index, value) {
             $('#check_'+index).prop('checked', true).parent().addClass('checked');
             $('#check_'+index.replace('_initial', '')).prop('checked', true).parent().addClass('checked');
+            if(index == 'periodo'){
+                filterPeriod(value);
+            }
+            if(index == 'procurar'){
+                filterFind(value);
+            }
         });
         addFilters(result);
     }
@@ -62822,18 +62828,54 @@ function foreign(label, value, row_foreign_key, cb_filter_i, query_string, block
 function addQuery() {
     var filters_fields = $('.filters');
     var filters = '';
+    var period_find = $('#period_find').val();
 
-    for( i=0; i < filters_fields.length; i++ ) {
-        filters += ''+filters_fields[i].id+'='+filters_fields[i].value+'&';
+    if(filters_fields.length > 0){
+        for( i=0; i < filters_fields.length; i++ ) {
+            filters += ''+filters_fields[i].id+'='+filters_fields[i].value+'&';
+
+            filters = '?'+filters;
+            filters = filters.substring(0,(filters.length - 1));
+
+            filters = filters + '&' + period_find;
+        }
+    }else{
+        filters = '?' + period_find;
     }
-
-    filters = '?'+filters;
-    filters = filters.substring(0,(filters.length - 1));
 
     // Previnir que quando acessa fica inserindo mais de uma vez
     if(k<1){
         history.pushState("", document.title, '' + filters);
     }
+}
+
+function filterPeriod(period) {
+    var period_find = $('#period_find');
+    var period_find_split = period_find.val().split("&");
+
+    var period_value = period_find.val().replace(period_find_split[0], 'periodo='+period);
+
+    if(period != 'hoje' && period != '7' && period != '15' && period != '30'){
+        $('#other_period').val(period);
+    }
+
+    period_find.val(period_value);
+
+    $('.period').css('color', '#9b9b9b');
+    $('#period_'+period).css('color', '#4a4a4a');
+    addQuery();
+}
+
+function filterFind(find) {
+    var period_find = $('#period_find');
+    var period_find_split = period_find.val().split("&");
+
+    var find_value = period_find.val().replace(period_find_split[1], 'procurar='+find);
+
+    period_find.val(find_value);
+
+    $('#find').val(find);
+    addQuery();
 }
 function workflowCall(item_id, tipo_item, aprovou, elemento, motivo, justificativa_texto, pai_id, pai_obj, filhos_metodo) {
 

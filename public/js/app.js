@@ -445,7 +445,7 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "/Users/rafael/code/fcmoreno/bild-sys/resources/assets/js/components/generic-paginator.vue"
+__vue_options__.__file = "/var/www/html/bild/resources/assets/js/components/generic-paginator.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
 
@@ -456,9 +456,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-67059816", __vue_options__)
+    hotAPI.createRecord("data-v-cb19233a", __vue_options__)
   } else {
-    hotAPI.reload("data-v-67059816", __vue_options__)
+    hotAPI.reload("data-v-cb19233a", __vue_options__)
   }
 })()}
 if (__vue_options__.functional) {console.error("[vue-loader] generic-paginator.vue: functional components are not supported and should be defined in plain js files using render functions.")}
@@ -492,7 +492,7 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "/Users/rafael/code/fcmoreno/bild-sys/resources/assets/js/components/tabela.vue"
+__vue_options__.__file = "/var/www/html/bild/resources/assets/js/components/tabela.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
 
@@ -503,9 +503,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-0d8bf17a", __vue_options__)
+    hotAPI.createRecord("data-v-79c5094d", __vue_options__)
   } else {
-    hotAPI.reload("data-v-0d8bf17a", __vue_options__)
+    hotAPI.reload("data-v-79c5094d", __vue_options__)
   }
 })()}
 if (__vue_options__.functional) {console.error("[vue-loader] tabela.vue: functional components are not supported and should be defined in plain js files using render functions.")}
@@ -769,6 +769,7 @@ module.exports = __vue_exports__
 //
 //
 //
+//
 
     /* harmony default export */ exports["default"] = {
         props: {
@@ -787,8 +788,7 @@ module.exports = __vue_exports__
                 adicionar: '',
                 detalhe: '',
                 aprovar: '',
-                reprovar: '',
-                troca: ''
+                reprovar: ''
             },
             colunas: ''
         },
@@ -18128,7 +18128,110 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         "for": 'check_' + campo
       }
     }, [_vm._v("\n                                " + _vm._s(filtro) + "\n                            ")])])
-  })), _vm._v(" "), _vm._m(2)])])]), _vm._v(" "), _vm._m(3)]) : _vm._e(), _vm._v(" "), (_vm.dados.length > 0) ? _c('div', [_c('table', {
+  })), _vm._v(" "), _vm._m(2)])])]), _vm._v(" "), _c('ol', {
+    staticClass: "breadcrumb",
+    staticStyle: {
+      "margin-bottom": "0px"
+    }
+  }, [_c('li', {
+    staticClass: "col-md-5"
+  }, [_c('input', {
+    staticClass: "form-control",
+    staticStyle: {
+      "border-color": "#f5f5f5",
+      "background-color": "#f5f5f5"
+    },
+    attrs: {
+      "type": "text",
+      "id": "find",
+      "placeholder": "Procurar",
+      "onkeyup": "filterFind(this.value);"
+    },
+    on: {
+      "keyup": function($event) {
+        _vm.loadData()
+      }
+    }
+  })]), _vm._v(" "), _c('li', [_c('a', {
+    staticClass: "period",
+    staticStyle: {
+      "cursor": "pointer"
+    },
+    attrs: {
+      "id": "period_hoje",
+      "onclick": "filterPeriod('hoje');"
+    },
+    on: {
+      "click": function($event) {
+        _vm.loadData()
+      }
+    }
+  }, [_vm._v("Hoje")])]), _vm._v(" "), _c('li', [_c('a', {
+    staticClass: "period",
+    staticStyle: {
+      "cursor": "pointer"
+    },
+    attrs: {
+      "id": "period_7",
+      "onclick": "filterPeriod(7);"
+    },
+    on: {
+      "click": function($event) {
+        _vm.loadData()
+      }
+    }
+  }, [_vm._v("7 dias")])]), _vm._v(" "), _c('li', [_c('a', {
+    staticClass: "period",
+    staticStyle: {
+      "cursor": "pointer"
+    },
+    attrs: {
+      "id": "period_15",
+      "onclick": "filterPeriod(15);"
+    },
+    on: {
+      "click": function($event) {
+        _vm.loadData()
+      }
+    }
+  }, [_vm._v("15 dias")])]), _vm._v(" "), _c('li', [_c('a', {
+    staticClass: "period",
+    staticStyle: {
+      "cursor": "pointer"
+    },
+    attrs: {
+      "id": "period_30",
+      "onclick": "filterPeriod(30);"
+    },
+    on: {
+      "click": function($event) {
+        _vm.loadData()
+      }
+    }
+  }, [_vm._v("30 dias")])]), _vm._v(" "), _c('li', [_c('input', {
+    staticClass: "form-control",
+    staticStyle: {
+      "border-color": "#f5f5f5",
+      "background-color": "#f5f5f5"
+    },
+    attrs: {
+      "type": "number",
+      "id": "other_period",
+      "onkeyup": "filterPeriod(this.value);",
+      "placeholder": "Outro periodo"
+    },
+    on: {
+      "keyup": function($event) {
+        _vm.loadData()
+      }
+    }
+  })]), _vm._v(" "), _c('input', {
+    attrs: {
+      "type": "hidden",
+      "id": "period_find",
+      "value": "periodo=&procurar="
+    }
+  }), _vm._v(" "), _vm._m(3)])]) : _vm._e(), _vm._v(" "), (_vm.dados.length > 0) ? _c('div', [_c('table', {
     staticClass: "table"
   }, [_c('thead', {
     staticClass: "head-table"
@@ -18294,12 +18397,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, [_vm._v("Adicionar")])])
 },function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('ol', {
-    staticClass: "breadcrumb",
-    staticStyle: {
-      "margin-bottom": "0px"
-    }
-  }, [_c('li', [_c('a', {
+  return _c('li', [_c('a', {
     staticClass: "grey",
     attrs: {
       "href": "",
@@ -18311,12 +18409,12 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     attrs: {
       "aria-hidden": "true"
     }
-  })])])])
+  })])])
 }]}
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-0d8bf17a", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-79c5094d", module.exports)
   }
 }
 
@@ -18395,7 +18493,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-67059816", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-cb19233a", module.exports)
   }
 }
 
@@ -19968,8 +20066,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-0d8bf17a!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./tabela.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-0d8bf17a!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./tabela.vue");
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-79c5094d!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./tabela.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-79c5094d!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./tabela.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -19994,8 +20092,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-67059816!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./generic-paginator.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-67059816!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./generic-paginator.vue");
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-cb19233a!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./generic-paginator.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-cb19233a!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./generic-paginator.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
