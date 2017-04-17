@@ -317,7 +317,7 @@ class SpreadsheetRepository
 
                             # query verificar se existe insumo_id
                             $insumo = Insumo::where('codigo', $codigo_insumo)->first();
-                            if ($servico) {
+                            if ($insumo) {
                                 $final['insumo_id'] = $insumo->id;
                             } else {
                                 $erro = 1;
