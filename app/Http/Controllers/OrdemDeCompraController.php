@@ -308,6 +308,7 @@ class OrdemDeCompraController extends AppBaseController
         $insumo_query = Insumo::query();
         $insumos = $insumo_query->join('insumo_servico', 'insumo_servico.insumos_id','=','insumos.id')
             ->join('servicos','servicos.id','=','insumo_servico.servicos_id')
+            ->join('orcamentos','orcamentos.insumo_id', '=', 'insumos.id')
             ->select([
                 'insumos.id',
                 'insumos.codigo as insumo_cod',
@@ -316,7 +317,11 @@ class OrdemDeCompraController extends AppBaseController
                 'servicos.id as servico_id',
                 'servicos.nome as servico',
                 'servicos.codigo as cod_servico',
-                'servicos.grupo_id',
+                'servicos.grupo_id as cod_grupo',
+                'orcamentos.codigo_insumo as cod_estruturado',
+                'orcamentos.subgrupo1_id as cod_subgrupo1',
+                'orcamentos.subgrupo2_id as cod_subgrupo2',
+                'orcamentos.subgrupo3_id as cod_subgrupo3',
                 DB::raw('(SELECT count(id) FROM planejamento_compras 
                 WHERE planejamento_compras.insumo_id = insumos.id 
                 AND planejamento_compras.planejamento_id ='.$planejamento->id.') as adicionado')
@@ -345,6 +350,12 @@ class OrdemDeCompraController extends AppBaseController
             $planejamento_compras = new PlanejamentoCompra();
             $planejamento_compras->planejamento_id = $planejamento->id;
             $planejamento_compras->insumo_id = $request->id;
+            $planejamento_compras->codigo_estruturado = $request->cod_estruturado;
+            $planejamento_compras->grupo_id = $request->cod_grupo;
+            $planejamento_compras->subgrupo1_id = $request->cod_subgrupo1;
+            $planejamento_compras->subgrupo2_id = $request->cod_subgrupo2;
+            $planejamento_compras->subgrupo3_id = $request->cod_subgrupo3;
+            $planejamento_compras->servico_id = $request->servico_id;
             $planejamento_compras->save();
             Flash::success('Insumo adicionado com sucesso');
             return response()->json('{response: "sucesso"}');
@@ -392,8 +403,25 @@ class OrdemDeCompraController extends AppBaseController
         $insumo_query = Insumo::query();
 
         //Query pra trazer
-        $insumos = $insumo_query->join('orcamentos', 'insumos.id', '=', 'orcamentos.insumo_id')
+        $insumos = $insumo_query->join('planejamento_compras', function ($join) use ($planejamento){
+                            $join->on('insumos.id', 'planejamento_compras.insumo_id')
+                                ->where('planejamento_compras.planejamento_id','=', $planejamento->id);
+                    })->join('orcamentos', 'orcamentos.insumo_id', 'insumos.id')
+                    ->select(
+                        [
+                            'insumos.id',
+                            'insumos.nome',
+                            'insumos.unidade_sigla',
+                            'insumos.codigo',
+                            'orcamentos.grupo_id',
+                            'orcamentos.servico_id',
+                            'orcamentos.qtd_total',
+                            'orcamentos.preco_total'
+                        ]
+                    );
 
+
+//        $insumos = $insumo_query->join('orcamentos', 'insumos.id', '=', 'orcamentos.insumo_id')
 //            ->join('planejamento_compras','planejamento_compras.insumo_id','=','orcamentos.insumos.id','planejamento_compras','AND','planejamento_compras.subgrupo1_id','=','orcamentos.subgrupo1_id')
 //            ->join('planejamento_compras', function ($join){
 //                $join->on('planejamento_compras','planejamento_compras.insumo_id','=','orcamentos.insumos.id')
@@ -401,27 +429,26 @@ class OrdemDeCompraController extends AppBaseController
 //                    ->and('planejamento_compras','planejamento_compras.subgrupo2_id','=','orcamentos.subgrupo2_id')
 //                    ->and('planejamento_compras','planejamento_compras.subgrupo3_id','=','orcamentos.subgrupo3_id');
 //            })
-            ->select([
-                'insumos.id',
-                'insumos.nome',
-                'insumos.unidade_sigla',
-                'insumos.codigo',
-                'orcamentos.grupo_id',
-                'orcamentos.servico_id',
-                'orcamentos.qtd_total',
-                'orcamentos.preco_total'
-            ])->leftJoin(DB::raw(
-                'JOIN planejamento_compras
-                ON planejamento_compras.insumo_id = orcamentos.insumos_id
-                AND planejamento_compras.subgrupo1_id = orcamentos.subgrupo1_id
-                AND planejamento_compras.subgrupo2_id = orcamentos.subgrupo2_id
-                AND planejamento_compras.subgrupo3_id = orcamentos.subgrupo3_id
-                AND planejamento_compras.subgrupo4_id = orcamentos.subgrupo4_id
-                '
-            ))
-            ->where('planejamento_compras.planejamento_id', $planejamento->id);
+//            ->select([
+//                'insumos.id',
+//                'insumos.nome',
+//                'insumos.unidade_sigla',
+//                'insumos.codigo',
+//                'orcamentos.grupo_id',
+//                'orcamentos.servico_id',
+//                'orcamentos.qtd_total',
+//                'orcamentos.preco_total'
+//            ])->leftJoin(DB::raw(
+//                'JOIN planejamento_compras
+//                ON planejamento_compras.insumo_id = orcamentos.insumos_id
+//                AND planejamento_compras.subgrupo1_id = orcamentos.subgrupo1_id
+//                AND planejamento_compras.subgrupo2_id = orcamentos.subgrupo2_id
+//                AND planejamento_compras.subgrupo3_id = orcamentos.subgrupo3_id
+//                AND planejamento_compras.subgrupo4_id = orcamentos.subgrupo4_id
+//                '
+//            ))
+//            ->where('planejamento_compras.planejamento_id', $planejamento->id);
 
-        dd($insumos->toSql());
 
         //Testa a ordenação
         if(isset($request->orderkey)){
