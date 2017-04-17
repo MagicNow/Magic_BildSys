@@ -306,8 +306,8 @@ class OrdemDeCompraController extends AppBaseController
     public function insumosJson(Request $request, Planejamento $planejamento){
         //Query para utilização dos filtros
         $insumo_query = Insumo::query();
-        $insumos = $insumo_query->join('insumo_servico', 'insumo_servico.insumos_id','=','insumos.id')
-            ->join('servicos','servicos.id','=','insumo_servico.servicos_id')
+        $insumos = $insumo_query->join('insumo_servico', 'insumo_servico.insumo_id','=','insumos.id')
+            ->join('servicos','servicos.id','=','insumo_servico.servico_id')
             ->join('orcamentos','orcamentos.insumo_id', '=', 'insumos.id')
             ->select([
                 'insumos.id',
@@ -325,7 +325,7 @@ class OrdemDeCompraController extends AppBaseController
                 DB::raw('(SELECT count(id) FROM planejamento_compras 
                 WHERE planejamento_compras.insumo_id = insumos.id 
                 AND planejamento_compras.planejamento_id ='.$planejamento->id.') as adicionado')
-            ]);
+            ])->where('deleted_at','=', null);
 
         if(isset($request->orderkey)){
             $insumos->orderBy($request->orderkey, $request->order);
@@ -414,16 +414,26 @@ class OrdemDeCompraController extends AppBaseController
                     'insumos.unidade_sigla',
                     'insumos.codigo',
                     'orcamentos.grupo_id',
+                    'orcamentos.subgrupo1_id',
+                    'orcamentos.subgrupo2_id',
+                    'orcamentos.subgrupo3_id',
                     'orcamentos.servico_id',
                     'orcamentos.qtd_total',
                     'orcamentos.preco_total',
+                    'orcamentos.preco_unitario',
+                    'planejamento_compras.quantidade_compra',
+                    'planejamento_compras.id as planejamento_compra_id',
                     DB::raw('(SELECT count(id) FROM planejamento_compras 
                     WHERE planejamento_compras.insumo_id = insumos.id 
-                    AND planejamento_compras.planejamento_id ='.$planejamento->id.' AND  planejamento_compras.trocado_de IS NOT NULL) as filho'),
+                    AND planejamento_compras.planejamento_id ='.$planejamento->id.' AND  planejamento_compras.insumo_pai IS NOT NULL) as filho'),
                     DB::raw('(SELECT count(id) FROM planejamento_compras 
-                    WHERE planejamento_compras.planejamento_id ='.$planejamento->id.' AND  planejamento_compras.trocado_de = planejamento_compras.id) as pai')
+                    WHERE planejamento_compras.planejamento_id ='.$planejamento->id.' AND  planejamento_compras.insumo_pai = insumos.id) as pai'),
+                    DB::raw('(SELECT count(id) FROM ordem_de_compra_itens 
+                    WHERE ordem_de_compra_itens.insumo_id = insumos.id 
+                    AND ordem_de_compra_itens.obra_id ='.$planejamento->obra_id.') as adicionado')
                 ]
-            )->orderBy(DB::raw(' COALESCE (planejamento_compras.id, planejamento_compras.trocado_de), planejamento_compras.trocado_de'));
+            )->where('deleted_at','=', null)
+            ->orderBy(DB::raw(' COALESCE (planejamento_compras.id, planejamento_compras.trocado_de), planejamento_compras.trocado_de'));
 
 
         //Testa a ordenação
@@ -435,6 +445,64 @@ class OrdemDeCompraController extends AppBaseController
 
         return response()->json($insumos->paginate(10), 200);
     }
+
+    public function removerInsumoPlanejamento(PlanejamentoCompra $planejamentoCompra)
+    {
+         PlanejamentoCompra::destroy($planejamentoCompra->id);
+         return response()->redirect()->back();
+    }
+
+
+    public function addCarrinho(Request $request, Planejamento $planejamento)
+    {
+        //Testa se tem ordem de compra aberta pro user
+        $ordem = OrdemDeCompra::where('oc_status_id', 1)
+            ->where('user_id', Auth::user()->id)
+            ->where('obra_id', $planejamento->obra_id)->first();
+
+        if($ordem){
+            $ordem_item = new OrdemDeCompraItem();
+            $ordem_item->ordem_de_compra_id = $ordem->id;
+            $ordem_item->obra_id = $planejamento->obra_id;
+            $ordem_item->codigo_insumo = $request->codigo;
+            $ordem_item->qtd = $request->quantidade_compra;
+            $ordem_item->valor_unitario = $request->preco_unitario;
+            $ordem_item->valor_total = $request->preco_total;
+            $ordem_item->grupo_id = $request->grupo_id;
+            $ordem_item->subgrupo1_id = $request->subgrupo1_id;
+            $ordem_item->subgrupo2_id = $request->subgrupo2_id;
+            $ordem_item->subgrupo3_id = $request->subgrupo3_id;
+            $ordem_item->servico_id = $request->servico_id;
+            $ordem_item->insumo_id = $request->id;
+            $ordem_item->user_id = Auth::user()->id;
+            $ordem_item->unidade_sigla = $request->unidade_sigla;
+            $ordem_item->save();
+        }else{
+            $ordem = new OrdemDeCompra();
+            $ordem->oc_status_id = 1;
+            $ordem->obra_id = $planejamento->obra_id;
+            $ordem->user_id = Auth::user()->id;
+            $ordem->save();
+
+            $ordem_item = new OrdemDeCompraItem();
+            $ordem_item->ordem_de_compra_id = $ordem->id;
+            $ordem_item->obra_id = $planejamento->obra_id;
+            $ordem_item->codigo_insumo = $request->codigo;
+            $ordem_item->qtd = $request->quantidade_compra;
+            $ordem_item->valor_unitario = $request->preco_unitario;
+            $ordem_item->valor_total = $request->preco_total;
+            $ordem_item->grupo_id = $request->grupo_id;
+            $ordem_item->subgrupo1_id = $request->subgrupo1_id;
+            $ordem_item->subgrupo2_id = $request->subgrupo2_id;
+            $ordem_item->subgrupo3_id = $request->subgrupo3_id;
+            $ordem_item->servico_id = $request->servico_id;
+            $ordem_item->insumo_id = $request->id;
+            $ordem_item->user_id = Auth::user()->id;
+            $ordem_item->unidade_sigla = $request->unidade_sigla;
+            $ordem_item->save();
+        }
+    }
+
 
     /**
      * Tela que traz as opcoes de troca de insumos.
@@ -460,6 +528,7 @@ class OrdemDeCompraController extends AppBaseController
         return response()->json($filters);
     }
 
+
     public function trocaInsumoAction(Request $request, Planejamento $planejamento,Insumo $insumo)
     {
         try{
@@ -473,7 +542,7 @@ class OrdemDeCompraController extends AppBaseController
             $planejamento_compras->subgrupo2_id = $request->cod_subgrupo2;
             $planejamento_compras->subgrupo3_id = $request->cod_subgrupo3;
             $planejamento_compras->servico_id = $request->servico_id;
-            $planejamento_compras->trocado_de = $planejamento_pai->id;
+            $planejamento_compras->insumo_pai = $insumo->id;
             $planejamento_compras->save();
             Flash::success('Insumo adicionado com sucesso');
             return response()->json('{response: "sucesso"}');
@@ -500,8 +569,8 @@ class OrdemDeCompraController extends AppBaseController
                 'orcamentos.servico_id',
                 'orcamentos.qtd_total',
                 'orcamentos.preco_total'
-            ])
-            ->where('planejamento_compras.trocado_de',$planejamento_pai->id);
+            ])->where('deleted_at','=', null)
+            ->where('planejamento_compras.insumo_pai',$insumo->id);
 //            ->where('planejamento_compras.trocado_de',$insumo->id);
 //            ->whereNotNull('planejamento_compras.trocado_de');
         return response()->json($insumos->paginate(10), 200);

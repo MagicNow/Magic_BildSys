@@ -11,12 +11,12 @@
                     </span>
                 </div>
                 <div class="col-md-4 text-right">
-                    <button type="button" class="btn btn-default btn-lg btn-flat" data-dismiss="modal">
+                    <a href="{{ url()->previous()}}" type="button" class="btn btn-default btn-lg btn-flat" data-dismiss="modal">
                         Cancelar
-                    </button>
-                    <button type="button" class="btn btn-success button-large-green" data-dismiss="modal">
+                    </a>
+                    <a href="{{ url()->previous()}}" type="button" class="btn btn-success button-large-green" data-dismiss="modal">
                         Confirmar
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>

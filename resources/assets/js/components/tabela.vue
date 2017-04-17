@@ -84,12 +84,13 @@
                 <th v-if="actions.detalhe != undefined" class="row-table">Detalhe</th>
                 <th v-if="actions.aprovar != undefined" class="row-table">Aprovar</th>
                 <th v-if="actions.reprovar != undefined" class="row-table">Reprovar</th>
+                <th v-if="actions.quantidade != undefined" class="row-table">Quantidade Compra</th>
                 <th v-if="actions.troca != undefined" class="row-table">Troca</th>
                 <th v-if="actions.adicionar != undefined" class="row-table">Adicionar</th>
             </tr>
             </thead>
             <tbody>
-                <tr v-if="dados.length >0" v-for="dado in dados">
+                <tr v-if="dados.length >0" v-for="(dado,i) in dados">
 
                     <td class="row-table" v-for="(chave,index) in chaves" >
                         <i v-if="dado['filho']>0 && dado['filho'] != undefined && index == 0" class="fa fa-share"></i>
@@ -109,13 +110,21 @@
                     <td class="row-table" v-if="actions.reprovar != undefined" @click="reprovar(dado['id'])">
                         <i class="fa fa-times grey"></i>
                     </td>
+                    <td class="row-table" v-if="actions.quantidade != undefined" @click="reprovar(dado['id'])">
+                        <input v-model="quant[i]" :placeholder="dado['quantidade_compra']">
+                    </td>
                     <td class="row-table" v-if="actions.troca != undefined">
-                        <a v-bind:href="actions.troca_url+'/'+dado['id']"><i class="fa fa-exchange grey"></i></a>
+                        <a  v-if="dado['pai']>0 && dado['pai'] != undefined" v-bind:href="actions.troca_url+'/'+dado['id']">
+                            <i class="fa fa-exchange blue"></i>
+                        </a>
+                        <a  v-if="dado['filho']>0 && dado['filho'] != undefined" v-bind:href="actions.troca_remove+'/'+dado['planejamento_compra_id']">
+                            <i class="fa fa-times red"></i>
+                        </a>
                     </td>
                     <td  class="row-table" v-if="actions.adicionar != undefined && dado.adicionado > 0">
                         <i class="fa fa-check green"></i>
                     </td>
-                    <td @click="adicionar(dado)" class="row-table" v-else-if="actions.adicionar != undefined">
+                    <td @click="adicionar(dado, i)" class="row-table" v-else-if="actions.adicionar != undefined">
                         <i class="fa fa-plus grey"></i>
                     </td>
                 </tr>
@@ -151,6 +160,7 @@
                 detalhe: '',
                 aprovar: '',
                 reprovar: '',
+                quantidade:'',
             },
             colunas: ''
         },
@@ -171,7 +181,8 @@
                     nextText: '',
                     alwaysShowPrevNext: false
                 },
-                order: 'asc'
+                order: 'asc',
+                quant: {}
             }
         },
         methods: {
@@ -180,7 +191,10 @@
 
             },
             //Método da action adicionar onClick
-            adicionar: function(item){
+            adicionar: function(item,i){
+                if(this.actions.quantidade){
+                    item['quantidade_compra'] = this.quant[i];
+                }
                 item['_token'] =this._token;
                 this.$http.post(this.apiAdicionar, item)
                     .then(function (resp) {
@@ -192,6 +206,9 @@
 //                        }
 
                     })
+            },
+            updateQuant: function (item) {
+
             },
             //Método da action reprovar onClick
             reprovar: function (id) {

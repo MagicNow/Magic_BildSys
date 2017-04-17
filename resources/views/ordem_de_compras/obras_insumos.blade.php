@@ -13,9 +13,7 @@
                     <a href="{{url('compras/'.$planejamento->id.'/insumos/'.$insumoGrupo->id)}}" type="button" class="btn btn-default btn-lg btn-flat" data-dismiss="modal">
                         Incluir Insumo
                     </a>
-                    <a type="button" class="btn btn-success btn-lg btn-flat" data-dismiss="modal">
-                        Comprar Tudo
-                    </a>
+                 
                     <a type="button" class="btn btn-success btn-lg btn-flat" data-dismiss="modal">
                         Fechar Ordem
                     </a>
@@ -44,8 +42,16 @@
             <tabela
                     api-url="/compras/{{$planejamento->id}}/obrasInsumosJson/{{$insumoGrupo->id}}"
                     api-filtros="/compras/{{$planejamento->id}}/obrasInsumosFilters"
+                    api-adicionar="/compras/{{$planejamento->id}}/addCarrinho"
+                    _token="{{csrf_token()}}"
                     v-bind:params="{}"
-                    v-bind:actions="{filtros: true, troca: true, troca_url:'{{ url('/compras/'.$planejamento->id.'/trocaInsumos/'.$insumoGrupo->id.'/insumo/') }}'}"
+                    v-bind:actions="{
+                    filtros: true,
+                    troca: true, troca_url:'{{ url('/compras/'.$planejamento->id.'/trocaInsumos/'.$insumoGrupo->id.'/insumo/') }}',
+                    troca_remove:'{{ url('/compras/removerInsumoPlanejamento') }}',
+                    quantidade: true,
+                    adicionar: true,
+                    }"
                     v-bind:colunas="[
                         {campo_db: 'nome', label: 'insumos'},
                         {campo_db: 'qtd_total', label: 'quantidade'},
