@@ -12,6 +12,7 @@
     <style type="text/css">
 
     </style>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 
 <body class="skin-yellow sidebar-mini sidebar-collapse">

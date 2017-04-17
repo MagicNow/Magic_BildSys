@@ -10,6 +10,7 @@ use App\Models\Insumo;
 use App\Models\Grupo;
 use App\Models\InsumoGrupo;
 use App\Models\Lembrete;
+use App\Models\OrdemDeCompraItemAnexo;
 use App\Models\Planejamento;
 use App\Models\PlanejamentoCompra;
 use App\Models\WorkflowReprovacaoMotivo;
@@ -29,6 +30,7 @@ use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Response;
 
 class OrdemDeCompraController extends AppBaseController
@@ -415,6 +417,96 @@ class OrdemDeCompraController extends AppBaseController
         $filters = OrdemDeCompra::$filters;
 
         return response()->json($filters);
+    }
+
+    public function carrinho()
+    {
+        $ordemDeCompra = OrdemDeCompra::where('oc_status_id',1)->first();
+
+        if (empty($ordemDeCompra)) {
+            Flash::error('Não existe OC em aberto.');
+
+            return back();
+        }
+
+        $itens = collect([]);
+
+        if($ordemDeCompra->itens){
+            $itens = OrdemDeCompraItem::where('ordem_de_compra_id', $ordemDeCompra->id)
+                ->with('insumo','unidade','anexos')
+                ->paginate(10);
+        }
+
+        return view('ordem_de_compras.carrinho', compact(
+                'ordemDeCompra',
+                'itens'
+            )
+        );
+    }
+
+    public function fechaCarrinho(Request $request){
+        dd($request->all());
+    }
+    public function alteraItem($id,Request $request){
+        $rules = OrdemDeCompraItem::$rules;
+        if(isset($rules[$request->coluna])){
+            $this->validate($request,['conteudo'=>$rules[$request->coluna] ]);
+        }
+        $ordemDeCompraItem = OrdemDeCompraItem::find($id);
+        if(!$ordemDeCompraItem){
+            return response('Item não encontrado',404)->json(['message'=>'Item não encontrado']);
+        }
+        $salvo = $ordemDeCompraItem->update([
+            $request->coluna => $request->conteudo
+        ]);
+        return response()->json(['success'=>$salvo]);
+    }
+
+    public function uploadAnexos($id, Request $request){
+        $ordemDeCompraItem = OrdemDeCompraItem::find($id);
+        if(!$ordemDeCompraItem){
+            return response('Item não encontrado',404)->json(['message'=>'Item não encontrado']);
+        }
+        $salvos = 0;
+        if(!$request->anexos) {
+            return response()->json(['success'=>false, 'error'=>'Nenhum arquivo foi enviado']);
+        }
+
+        foreach ($request->anexos as $anexo){
+            $arquivo = $anexo->storeAs(
+                'public/oc_anexos', str_replace('.'.$anexo->clientExtension(), '', $anexo->getClientOriginalName()).'_'.rand(100,10000).'.'.$anexo->clientExtension()
+            );
+            $ordemDeCompraItemAnexo = OrdemDeCompraItemAnexo::create([
+                'ordem_de_compra_item_id' => $ordemDeCompraItem->id,
+                'arquivo' =>  $arquivo
+            ]);
+            if($ordemDeCompraItemAnexo){
+                $salvos++;
+            }
+        }
+
+        $anexos = [];
+        if($ordemDeCompraItem->anexos()->count()){
+            foreach ($ordemDeCompraItem->anexos as $anexo){
+                $anexos[] = [
+                    'arquivo' => Storage::url($anexo->arquivo),
+                    'arquivo_nome' => substr($anexo->arquivo, strrpos($anexo->arquivo,'/')+1),
+                    'id'=> $anexo->id
+                ];
+            }
+        }
+        return response()->json(['success'=>($salvos?1:0), 'message'=>'Foram enviados '.$salvos.' arquivos', 'anexos'=>$anexos]);
+    }
+
+    function removerAnexo($id){
+        $remover = OrdemDeCompraItemAnexo::find($id);
+        if(!$remover){
+            return response()->json(['success'=>false, 'error'=>'Nenhum arquivo foi encontrado']);
+        }
+        if($remover->delete()){
+            return response()->json(['success'=>true]);
+        }
+        return response()->json(['success'=>false, 'error'=>'Erro ao remover']);
     }
 }
 
