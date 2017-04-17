@@ -31,6 +31,11 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     Route::get('/getForeignKey', 'CodesController@getForeignKey');
 
     $router->get('/ordens-de-compra/detalhes/{id}', 'OrdemDeCompraController@detalhe');
+    $router->get('/ordens-de-compra/carrinho', 'OrdemDeCompraController@carrinho');
+    $router->get('/ordens-de-compra/fechar-carrinho', 'OrdemDeCompraController@fechaCarrinho');
+    $router->post('/ordens-de-compra/altera-item/{id}', 'OrdemDeCompraController@alteraItem');
+    $router->post('/ordens-de-compra/upload-anexos/{id}', 'OrdemDeCompraController@uploadAnexos');
+    $router->get('/ordens-de-compra/remover-anexo/{id}', 'OrdemDeCompraController@removerAnexo');
     $router->resource('ordens-de-compra', 'OrdemDeCompraController');
 
 
@@ -93,21 +98,30 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         });
 
         # Contratos
-        Route::get('contratos', ['as'=> 'admin.contratos.index', 'uses' => 'Admin\ContratosController@index']);
-        Route::post('contratos', ['as'=> 'admin.contratos.store', 'uses' => 'Admin\ContratosController@store']);
-        Route::get('contratos/create', ['as'=> 'admin.contratos.create', 'uses' => 'Admin\ContratosController@create']);
-        Route::put('contratos/{contratos}', ['as'=> 'admin.contratos.update', 'uses' => 'Admin\ContratosController@update']);
-        Route::patch('contratos/{contratos}', ['as'=> 'admin.contratos.update', 'uses' => 'Admin\ContratosController@update']);
-        Route::delete('contratos/{contratos}', ['as'=> 'admin.contratos.destroy', 'uses' => 'Admin\ContratosController@destroy']);
-        Route::get('contratos/{contratos}', ['as'=> 'admin.contratos.show', 'uses' => 'Admin\ContratosController@show']);
-        Route::get('contratos/{contratos}/edit', ['as'=> 'admin.contratos.edit', 'uses' => 'Admin\ContratosController@edit']);
-        Route::get('insumo/valor_total', 'Admin\ContratosController@calcularValorTotalInsumo');
-        Route::get('insumo/delete', 'Admin\ContratosController@deleteInsumo');
+        $router->get('contratos', ['as'=> 'admin.contratos.index', 'uses' => 'Admin\ContratosController@index']);
+        $router->post('contratos', ['as'=> 'admin.contratos.store', 'uses' => 'Admin\ContratosController@store']);
+        $router->get('contratos/create', ['as'=> 'admin.contratos.create', 'uses' => 'Admin\ContratosController@create']);
+        $router->put('contratos/{contratos}', ['as'=> 'admin.contratos.update', 'uses' => 'Admin\ContratosController@update']);
+        $router->patch('contratos/{contratos}', ['as'=> 'admin.contratos.update', 'uses' => 'Admin\ContratosController@update']);
+        $router->delete('contratos/{contratos}', ['as'=> 'admin.contratos.destroy', 'uses' => 'Admin\ContratosController@destroy']);
+        $router->get('contratos/{contratos}', ['as'=> 'admin.contratos.show', 'uses' => 'Admin\ContratosController@show']);
+        $router->get('contratos/{contratos}/edit', ['as'=> 'admin.contratos.edit', 'uses' => 'Admin\ContratosController@edit']);
+        $router->get('insumo/valor_total', 'Admin\ContratosController@calcularValorTotalInsumo');
+        $router->get('insumo/delete', 'Admin\ContratosController@deleteInsumo');
+
+        $router->get('obras', ['as'=> 'admin.obras.index', 'uses' => 'Admin\ObraController@index']);
+        $router->post('obras', ['as'=> 'admin.obras.store', 'uses' => 'Admin\ObraController@store']);
+        $router->get('obras/create', ['as'=> 'admin.obras.create', 'uses' => 'Admin\ObraController@create']);
+        $router->put('obras/{obras}', ['as'=> 'admin.obras.update', 'uses' => 'Admin\ObraController@update']);
+        $router->patch('obras/{obras}', ['as'=> 'admin.obras.update', 'uses' => 'Admin\ObraController@update']);
+        $router->delete('obras/{obras}', ['as'=> 'admin.obras.destroy', 'uses' => 'Admin\ObraController@destroy']);
+        $router->get('obras/{obras}', ['as'=> 'admin.obras.show', 'uses' => 'Admin\ObraController@show']);
+        $router->get('obras/{obras}/edit', ['as'=> 'admin.obras.edit', 'uses' => 'Admin\ObraController@edit']);
 
         # Verifica Notificações
-        Route::post('verifyNotification', 'Admin\HomeController@verifyNotifications');
+        $router->post('verifyNotification', 'Admin\HomeController@verifyNotifications');
         # Update Notificações visualizadas
-        Route::get('updateNotification/{id}', 'Admin\NotificacaoController@updateNotification');
+        $router->get('updateNotification/{id}', 'Admin\NotificacaoController@updateNotification');
 
 
 
@@ -215,14 +229,14 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             $router->get('reprovacao-motivos/{workflowReprovacaoMotivos}', ['as'=> 'admin.workflowReprovacaoMotivos.show', 'uses' => 'Admin\WorkflowReprovacaoMotivoController@show']);
             $router->get('reprovacao-motivos/{workflowReprovacaoMotivos}/edit', ['as'=> 'admin.workflowReprovacaoMotivos.edit', 'uses' => 'Admin\WorkflowReprovacaoMotivoController@edit']);
 
-            Route::get('workflow-alcadas', ['as'=> 'admin.workflowAlcadas.index', 'uses' => 'Admin\WorkflowAlcadaController@index']);
-            Route::post('workflow-alcadas', ['as'=> 'admin.workflowAlcadas.store', 'uses' => 'Admin\WorkflowAlcadaController@store']);
-            Route::get('workflow-alcadas/create', ['as'=> 'admin.workflowAlcadas.create', 'uses' => 'Admin\WorkflowAlcadaController@create']);
-            Route::put('workflow-alcadas/{workflowAlcadas}', ['as'=> 'admin.workflowAlcadas.update', 'uses' => 'Admin\WorkflowAlcadaController@update']);
-            Route::patch('workflow-alcadas/{workflowAlcadas}', ['as'=> 'admin.workflowAlcadas.update', 'uses' => 'Admin\WorkflowAlcadaController@update']);
-            Route::delete('workflow-alcadas/{workflowAlcadas}', ['as'=> 'admin.workflowAlcadas.destroy', 'uses' => 'Admin\WorkflowAlcadaController@destroy']);
-            Route::get('workflow-alcadas/{workflowAlcadas}', ['as'=> 'admin.workflowAlcadas.show', 'uses' => 'Admin\WorkflowAlcadaController@show']);
-            Route::get('workflow-alcadas/{workflowAlcadas}/edit', ['as'=> 'admin.workflowAlcadas.edit', 'uses' => 'Admin\WorkflowAlcadaController@edit']);
+            $router->get('workflow-alcadas', ['as'=> 'admin.workflowAlcadas.index', 'uses' => 'Admin\WorkflowAlcadaController@index']);
+            $router->post('workflow-alcadas', ['as'=> 'admin.workflowAlcadas.store', 'uses' => 'Admin\WorkflowAlcadaController@store']);
+            $router->get('workflow-alcadas/create', ['as'=> 'admin.workflowAlcadas.create', 'uses' => 'Admin\WorkflowAlcadaController@create']);
+            $router->put('workflow-alcadas/{workflowAlcadas}', ['as'=> 'admin.workflowAlcadas.update', 'uses' => 'Admin\WorkflowAlcadaController@update']);
+            $router->patch('workflow-alcadas/{workflowAlcadas}', ['as'=> 'admin.workflowAlcadas.update', 'uses' => 'Admin\WorkflowAlcadaController@update']);
+            $router->delete('workflow-alcadas/{workflowAlcadas}', ['as'=> 'admin.workflowAlcadas.destroy', 'uses' => 'Admin\WorkflowAlcadaController@destroy']);
+            $router->get('workflow-alcadas/{workflowAlcadas}', ['as'=> 'admin.workflowAlcadas.show', 'uses' => 'Admin\WorkflowAlcadaController@show']);
+            $router->get('workflow-alcadas/{workflowAlcadas}/edit', ['as'=> 'admin.workflowAlcadas.edit', 'uses' => 'Admin\WorkflowAlcadaController@edit']);
 
         });
     });
@@ -269,11 +283,4 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
 });
 
 
-Route::get('admin/obras', ['as'=> 'admin.obras.index', 'uses' => 'Admin\ObraController@index']);
-Route::post('admin/obras', ['as'=> 'admin.obras.store', 'uses' => 'Admin\ObraController@store']);
-Route::get('admin/obras/create', ['as'=> 'admin.obras.create', 'uses' => 'Admin\ObraController@create']);
-Route::put('admin/obras/{obras}', ['as'=> 'admin.obras.update', 'uses' => 'Admin\ObraController@update']);
-Route::patch('admin/obras/{obras}', ['as'=> 'admin.obras.update', 'uses' => 'Admin\ObraController@update']);
-Route::delete('admin/obras/{obras}', ['as'=> 'admin.obras.destroy', 'uses' => 'Admin\ObraController@destroy']);
-Route::get('admin/obras/{obras}', ['as'=> 'admin.obras.show', 'uses' => 'Admin\ObraController@show']);
-Route::get('admin/obras/{obras}/edit', ['as'=> 'admin.obras.edit', 'uses' => 'Admin\ObraController@edit']);
+
