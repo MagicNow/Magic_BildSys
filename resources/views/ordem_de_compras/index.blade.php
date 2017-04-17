@@ -8,16 +8,15 @@
                     <span class="pull-left title">
                        <h3>
                            <button type="button" class="btn btn-link" onclick="history.go(-1);">
-                            <i class="fa fa-arrow-left" aria-hidden="true"></i>
+                                <i class="fa fa-arrow-left" aria-hidden="true"></i>
                            </button>
-                           <span>
-                            Detalhar Ordem de Compra</span>
+                           <span>Ordens de compra</span>
                        </h3>
                     </span>
                 </div>
 
                 <div class="col-md-3">
-                    <button type="button" class="btn btn-success btn-lg" data-dismiss="modal">
+                    <button type="button" class="btn btn-success btn-block btn-lg btn-flat" data-dismiss="modal">
                         Comprar insumos
                     </button>
                 </div>
