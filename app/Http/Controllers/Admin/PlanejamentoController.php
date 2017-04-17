@@ -124,6 +124,15 @@ class PlanejamentoController extends AppBaseController
         return $servico;
     }
 
+    public function insumos(Request $request){
+        $input = $request->all();
+        if($input['grupo_id']){
+
+        }
+
+        dd($input);
+    }
+
     /**
      * Update the specified Planejamento in storage.
      *

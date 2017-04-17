@@ -43,7 +43,8 @@ class Orcamento extends Model
         'subgrupo1_id',
         'subgrupo2_id',
         'subgrupo3_id',
-        'user_id'
+        'user_id',
+        'descricao'
     ];
 
     /**
@@ -64,7 +65,8 @@ class Orcamento extends Model
         'orcamento_tipo_id' => 'integer',
         'subgrupo1_id' => 'integer',
         'subgrupo2_id' => 'integer',
-        'subgrupo3_id' => 'integer'
+        'subgrupo3_id' => 'integer',
+        'descricao' => 'string',
     ];
 
     /**
@@ -74,6 +76,7 @@ class Orcamento extends Model
      */
     public static $relation = [
         'codigo_insumo' => 'string',
+        'descricao' => 'string',
         'unidade_sigla' => 'string',
         'obs' => 'text',
         'coeficiente' => 'decimal',
