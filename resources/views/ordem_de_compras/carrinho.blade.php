@@ -124,8 +124,8 @@
                                 <hr>
                                 <div class="row">
                             <span class="col-md-4 text-center  borda-direita">
-                                <label class="label-bloco col-md-3"><i class="fa fa-paperclip" aria-hidden="true"></i> Anexados</label>
-                                <small class="col-md-9" id="anexados_{{ $item->id }}">
+                                <label class="label-bloco"><i class="fa fa-paperclip" aria-hidden="true"></i> Anexados</label>
+                                <small class="row" id="anexados_{{ $item->id }}">
                                     @if($item->anexos)
                                         @foreach($item->anexos as $anexo)
                                             <div id="anexo_{{ $anexo->id }}">

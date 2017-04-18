@@ -1,5 +1,5 @@
 <div class="col-md-12 loading">
-    <h3>Relacionamento Insumos</h3>
+    <h3>Planejamento de compras</h3>
     <div class="col-md-12 thumbnail">
          <div class="col-md-12">
              <div class="caption">
@@ -33,11 +33,11 @@
                          {!! Form::label('servico_id', 'Serviço:') !!}
                          {!! Form::select('servico_id', [''=>'-'], null, ['class' => 'form-control', 'id'=>'servico_id', 'disabled'=>'disabled', 'onchange'=>'selectgrupo(this.value, null, \'servicos\');']) !!}
                      </div>
+                     <input type="hidden" name="planejamento_id" value="{{$planejamento->id}}">
 
                      <div class="col-md-3 col-md-offset-4">
                          <button type="submit" class="btn btn-primary">Adicionar relacionamento</button>
                      </div>
-
                  </div>
              </div>
          </div>
@@ -53,16 +53,16 @@
 @section('scripts')
     <script type="text/javascript">
         function selectgrupo(id, change, tipo){
-            var rota = "{{url('/admin/planejamentos/grupos')}}/";
+            var rota = "{{url('/admin/planejamentos/atividade/grupos')}}/";
             if(tipo == 'servicos'){
-                rota = "{{url('/admin/planejamentos/servicos')}}/";
+                rota = "{{url('/admin/planejamentos/atividade/servicos')}}/";
             }
             if(id){
                 $('.box.box-primary').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
                 $.ajax({
                     url: rota + id
                 }).done(function(retorno) {
-                    options = '<option>Selecione</option>';
+                    options = '<option value="">Selecione</option>';
                     $('#'+change).html(options);
                     $.each(retorno,function(index, value){
                         options += '<option value="'+index+'">'+value+'</option>';

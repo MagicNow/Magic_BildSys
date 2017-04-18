@@ -61,7 +61,7 @@
                 placeholder:"-",
                 language: "pt-BR",
                 ajax: {
-                    url: "/admin/lembretes/filtro/busca",
+                    url: "{{ route('admin.lembretes.busca') }}",
                     dataType: 'json',
                     delay: 250,
 
