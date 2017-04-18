@@ -14,6 +14,7 @@ use App\Repositories\CodeRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Response;
 
 class ContratosController extends AppBaseController
@@ -45,7 +46,7 @@ class ContratosController extends AppBaseController
     public function create()
     {
         $insumos = Insumo::get();
-        $fornecedores = MegaFornecedor::pluck('agn_st_nome','agn_pad_in_codigo')->toArray();
+        $fornecedores = [];
 
         return view('admin.contratos.create', compact('insumos', 'fornecedores'));
     }
@@ -253,8 +254,8 @@ class ContratosController extends AppBaseController
 
     public function buscaFornecedor(Request $request){
         $fornecedores = MegaFornecedor::select([
-            'agn_in_codigo',
-            'agn_st_nome'
+            'agn_in_codigo as id',
+            DB::raw("CONVERT(agn_st_nome,'UTF8','WE8ISO8859P15' ) as agn_st_nome")
         ])
             ->where('agn_st_nome','like', '%'.$request->q.'%')->paginate();
 

@@ -194,7 +194,7 @@ $count_insumos = 0;
 
         var markup =    "<div class='select2-result-obj clearfix'>" +
                 "   <div class='select2-result-obj__meta'>" +
-                "       <div class='select2-result-obj__title'>" + obj.nome + "</div>"+
+                "       <div class='select2-result-obj__title'>" + obj.agn_st_nome + "</div>"+
                 "   </div>"+
                 "</div>";
 
@@ -202,8 +202,8 @@ $count_insumos = 0;
     }
 
     function formatResultSelection (obj) {
-        if(obj.nome){
-            return obj.nome;
+        if(obj.agn_st_nome){
+            return obj.agn_st_nome;
         }
         return obj.text;
     }
