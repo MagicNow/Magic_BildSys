@@ -16,6 +16,7 @@ class TipoOrcamentoTableSeeder extends Seeder
 
         $items = [
             [
+                'id' => 1,
                 'nome' => 'Orçamento inicial'
             ]
         ];
