@@ -445,7 +445,7 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "/var/www/html/bild-sys/resources/assets/js/components/generic-paginator.vue"
+__vue_options__.__file = "/Users/rafael/code/fcmoreno/bild-sys/resources/assets/js/components/generic-paginator.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
 
@@ -456,9 +456,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-f25aa03a", __vue_options__)
+    hotAPI.createRecord("data-v-67059816", __vue_options__)
   } else {
-    hotAPI.reload("data-v-f25aa03a", __vue_options__)
+    hotAPI.reload("data-v-67059816", __vue_options__)
   }
 })()}
 if (__vue_options__.functional) {console.error("[vue-loader] generic-paginator.vue: functional components are not supported and should be defined in plain js files using render functions.")}
@@ -492,7 +492,7 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "/var/www/html/bild-sys/resources/assets/js/components/tabela.vue"
+__vue_options__.__file = "/Users/rafael/code/fcmoreno/bild-sys/resources/assets/js/components/tabela.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
 
@@ -503,9 +503,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-3f409066", __vue_options__)
+    hotAPI.createRecord("data-v-0d8bf17a", __vue_options__)
   } else {
-    hotAPI.reload("data-v-3f409066", __vue_options__)
+    hotAPI.reload("data-v-0d8bf17a", __vue_options__)
   }
 })()}
 if (__vue_options__.functional) {console.error("[vue-loader] tabela.vue: functional components are not supported and should be defined in plain js files using render functions.")}
@@ -784,6 +784,8 @@ module.exports = __vue_exports__
 //
 //
 //
+//
+//
 
     /* harmony default export */ exports["default"] = {
         props: {
@@ -835,21 +837,29 @@ module.exports = __vue_exports__
             },
             //Método da action adicionar onClick
             adicionar: function(item,i){
-                console.log(this.quant[i]);
                 if(this.actions.quantidade){
                     item['quantidade_compra'] = this.quant[i];
                 }
                 item['_token'] =this._token;
+                if(!item['quantidade_compra'] && !item['adicionado']){
+//                    swal('Insira uma quantidade!','','error');
+                    return false;
+                }
                 this.$http.post(this.apiAdicionar, item)
                     .then(function (resp) {
-                        window.location.reload();
-//                        if(resp.status == 200){
-//                            window.location.reload();
-//                        }else{
-//                            window.location.reload();
-//                        }
-
+                        if(resp.status){
+                            var titulo = 'Adicionado';
+                            if(item['adicionado']){
+                                titulo = 'Alterado';
+                            }
+                            if(item['adicionado'] && !this.quant[i]){
+                                titulo = 'Removido';
+                            }
+                            swal(titulo,'','success');
+                            this.loadData();
+                        }
                     })
+                    .bind(this)
             },
             updateQuant: function (item) {
 
@@ -1001,7 +1011,7 @@ exports = module.exports = __webpack_require__(0)();
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -18366,6 +18376,11 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         "value": (_vm.quant[i])
       },
       on: {
+        "blur": [function($event) {
+          _vm.adicionar(dado, i)
+        }, function($event) {
+          _vm.$forceUpdate()
+        }],
         "input": function($event) {
           if ($event.target.composing) { return; }
           var $$exp = _vm.quant,
@@ -18375,9 +18390,6 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
           } else {
             $$exp.splice($$idx, 1, _vm._n($event.target.value))
           }
-        },
-        "blur": function($event) {
-          _vm.$forceUpdate()
         }
       }
     })]) : _vm._e(), _vm._v(" "), (_vm.actions.troca != undefined) ? _c('td', {
@@ -18405,7 +18417,12 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }, [_c('i', {
       staticClass: "fa fa-check green"
     })]) : (_vm.actions.adicionar != undefined) ? _c('td', {
-      staticClass: "row-table",
+      staticClass: "row-table"
+    }, [_c('button', {
+      staticClass: "btn btn-xs btn-link",
+      attrs: {
+        "type": "button"
+      },
       on: {
         "click": function($event) {
           _vm.adicionar(dado, i)
@@ -18413,7 +18430,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       }
     }, [_c('i', {
       staticClass: "fa fa-plus grey"
-    })]) : _vm._e()], 2) : _c('tr', [_c('td', [_vm._v("Não há dados")])])
+    })])]) : _vm._e()], 2) : _c('tr', [_c('td', [_vm._v("Não há dados")])])
   }))]), _vm._v(" "), (_vm.pagination.last_page > 1) ? _c('div', {
     staticClass: "text-center"
   }, [_c('generic-paginator', {
@@ -18507,7 +18524,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-3f409066", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-0d8bf17a", module.exports)
   }
 }
 
@@ -18608,7 +18625,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-f25aa03a", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-67059816", module.exports)
   }
 }
 
@@ -18617,13 +18634,14 @@ if (false) {
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
+/* harmony export (binding) */ __webpack_require__.d(exports, "Url", function() { return Url; });
+/* harmony export (binding) */ __webpack_require__.d(exports, "Http", function() { return Http; });
+/* harmony export (binding) */ __webpack_require__.d(exports, "Resource", function() { return Resource; });
 /*!
- * vue-resource v1.3.0
+ * vue-resource v1.3.1
  * https://github.com/pagekit/vue-resource
  * Released under the MIT License.
  */
-
-'use strict';
 
 /**
  * Promises/A+ polyfill v1.1.4 (https://github.com/bramstein/promis)
@@ -20160,7 +20178,8 @@ if (typeof window !== 'undefined' && window.Vue) {
     window.Vue.use(plugin);
 }
 
-module.exports = plugin;
+/* harmony default export */ exports["default"] = plugin;
+
 
 
 /***/ },
@@ -20179,8 +20198,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-3f409066!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./tabela.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-3f409066!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./tabela.vue");
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-0d8bf17a!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./tabela.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-0d8bf17a!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./tabela.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -20205,8 +20224,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-f25aa03a!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./generic-paginator.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-f25aa03a!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./generic-paginator.vue");
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-67059816!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./generic-paginator.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-67059816!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./generic-paginator.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});

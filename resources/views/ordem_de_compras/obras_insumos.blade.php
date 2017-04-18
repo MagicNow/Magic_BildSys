@@ -14,7 +14,7 @@
                         Incluir Insumo
                     </a>
                  
-                    <a type="button" class="btn btn-success btn-lg btn-flat" data-dismiss="modal">
+                    <a href="{{ url('/ordens-de-compra/carrinho') }}" class="btn btn-success btn-lg btn-flat">
                         Fechar Ordem
                     </a>
                 </div>
@@ -55,7 +55,7 @@
                     v-bind:colunas="[
                         {campo_db: 'nome', label: 'insumos'},
                         {campo_db: 'qtd_total', label: 'quantidade'},
-                        {campo_db: 'preco_total', label: 'saldo'},
+                        {campo_db: 'saldo', label: 'saldo'},
                     ]"
                     >
             </tabela>

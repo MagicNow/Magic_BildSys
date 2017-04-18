@@ -111,7 +111,7 @@
                         <i class="fa fa-times grey"></i>
                     </td>
                     <td class="row-table" v-if="actions.quantidade != undefined" @click="reprovar(dado['id'])">
-                        <input v-model.number="quant[i]" type="number" v-bind:value="quant[i]">
+                        <input @blur="adicionar(dado, i)" v-model.number="quant[i]" type="number" v-bind:value="quant[i]">
                     </td>
                     <td class="row-table" v-if="actions.troca != undefined">
                         <a  v-if="dado['pai']>0 && dado['pai'] != undefined && dado['unidade_sigla'] == 'VB'" v-bind:href="actions.troca_url+'/'+dado['id'] ">
@@ -127,8 +127,10 @@
                     <td  class="row-table" v-if="actions.adicionar != undefined && dado.adicionado > 0">
                         <i class="fa fa-check green"></i>
                     </td>
-                    <td @click="adicionar(dado, i)" class="row-table" v-else-if="actions.adicionar != undefined">
-                        <i class="fa fa-plus grey"></i>
+                    <td class="row-table" v-else-if="actions.adicionar != undefined">
+                        <button @click="adicionar(dado, i)" type="button" class="btn btn-xs btn-link">
+                            <i class="fa fa-plus grey"></i>
+                        </button>
                     </td>
                 </tr>
                 <tr v-else>
@@ -195,21 +197,29 @@
             },
             //Método da action adicionar onClick
             adicionar: function(item,i){
-                console.log(this.quant[i]);
                 if(this.actions.quantidade){
                     item['quantidade_compra'] = this.quant[i];
                 }
                 item['_token'] =this._token;
+                if(!item['quantidade_compra'] && !item['adicionado']){
+//                    swal('Insira uma quantidade!','','error');
+                    return false;
+                }
                 this.$http.post(this.apiAdicionar, item)
                     .then(function (resp) {
-                        window.location.reload();
-//                        if(resp.status == 200){
-//                            window.location.reload();
-//                        }else{
-//                            window.location.reload();
-//                        }
-
+                        if(resp.status){
+                            var titulo = 'Adicionado';
+                            if(item['adicionado']){
+                                titulo = 'Alterado';
+                            }
+                            if(item['adicionado'] && !this.quant[i]){
+                                titulo = 'Removido';
+                            }
+                            swal(titulo,'','success');
+                            this.loadData();
+                        }
                     })
+                    .bind(this)
             },
             updateQuant: function (item) {
 
