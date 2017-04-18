@@ -13,7 +13,7 @@
                     <a href="{{url('compras/'.$planejamento->id.'/insumos/'.$insumoGrupo->id)}}" type="button" class="btn btn-default btn-lg btn-flat" data-dismiss="modal">
                         Incluir Insumo
                     </a>
-                 
+
                     <a type="button" class="btn btn-success btn-lg btn-flat" data-dismiss="modal">
                         Fechar Ordem
                     </a>

@@ -651,6 +651,27 @@ class OrdemDeCompraController extends AppBaseController
         );
     }
 
+    public function jsonOrdemCompraDashboard(Request $request){
+
+        $ordem_compra = OrdemDeCompra::select([
+            'ordem_de_compras.id',
+            'obras.nome',
+            'users.name'
+            ])
+            ->join('obras','obras.id','ordem_de_compras.obra_id')
+            ->join('users', 'users.id','=', 'ordem_de_compras.user_id');
+
+        if($request->type == 'created'){
+            $ordem_compra->orderBy('id', 'desc')->take(5);
+        }else{
+            $ordem_compra->where('oc_status_id', $request->type)
+                ->orderBy('id', 'desc')
+                ->take(5);
+        }
+
+        return response()->json($ordem_compra->get(), 200);
+    }
+
     public function fechaCarrinho(Request $request){
         $ordemDeCompra = OrdemDeCompra::where('oc_status_id',1)->where('user_id',Auth::id());
         if($request->obra_id){

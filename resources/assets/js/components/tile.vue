@@ -1,35 +1,15 @@
 <template>
     <div>
         <table class="element-border">
-            <thead>
-                <tr><th colspan="3">Últimas Criadas</th></tr>
+            <thead v-bind:class="[titleColor]">
+            <tr><th colspan="3" >{{title}}</th></tr>
             </thead>
             <tbody>
-                <tr>
-                    <td><span>34232</span></td>
-                    <td><span>Fábio Moreno</span></td>
-                    <td><span>Fiva Home resort</span></td>
-                </tr>
-                <tr>
-                    <td><span>34232</span></td>
-                    <td><span>Fábio Moreno</span></td>
-                    <td><span>Fiva Home resort</span></td>
-                </tr>
-                <tr>
-                    <td><span>34232</span></td>
-                    <td><span>Fábio Moreno</span></td>
-                    <td><span>Fiva Home resort</span></td>
-                </tr>
-                <tr>
-                    <td><span>34232</span></td>
-                    <td><span>Fábio Moreno</span></td>
-                    <td><span>Fiva Home resort</span></td>
-                </tr>
-                <tr>
-                    <td><span>34232</span></td>
-                    <td><span>Fábio Moreno</span></td>
-                    <td><span>Fiva Home resort</span></td>
-                </tr>
+            <tr v-if="dados.length > 0" v-for="dado in dados">
+                <td v-for="chave in chaves" v-on:click="goToDetail(dado['id'])">
+                    <span> {{dado[chave]}}</span>
+                </td>
+            </tr>
             </tbody>
         </table>
     </div>
@@ -37,19 +17,38 @@
 <script>
     export default{
         props:{
+            apiUrl:'',
             title: '',
             titleColor: '',
+            type: ''
         },
         data: function () {
             return{
-
+                dados:[],
+                chaves:[],
+                apiGet: 'compras/jsonOrdemCompraDashboard'
             }
         },
         methods: {
-
+            goToDetail:function (id) {
+                window.location.href = "http://bild.dev/ordens-de-compra/detalhes/"+id;
+            },
+            getHeader:function () {
+                if(this.dados.length >0){
+                    this.chaves = Object.keys(this.dados[0]);
+                }
+            },
+            loadData:function () {
+                this.$http.get(this.apiGet,{
+                    params:{ type: this.type}
+                }).then(function (resp){
+                    this.dados = resp.data;
+                    this.getHeader();
+                });
+            }
         },
         created:function () {
-
+            this.loadData();
         }
     }
 </script>
@@ -58,13 +57,19 @@
         width: 100%;
         border: solid 1px #dddddd;
     }
-    .element-border > thead {
-
+    .element-border > .head-grey {
         background-color: #9b9b9b;
+    }
+    .element-border > .head-red{
+        background-color: #eb0000;
+    }
+    .element-border > .head-green{
+        background-color: #7ed321;
     }
     .element-border > thead > tr > th{
         padding: 10px 0px 10px 0px;
         color: #f5f5f5;
+        font-family: Raleway;
         font-weight: bold;
         text-align: center;
     }
@@ -72,11 +77,12 @@
         background-color: white;
     }
     .element-border > tbody > tr {
+        cursor:pointer;
         height: 50px;
         border-bottom: solid 1px #dddddd;
     }
     .element-border > tbody > tr > td {
-       text-align: center;
+        text-align: center;
     }
     .element-border > tbody > tr > td >span{
         color: #474747;

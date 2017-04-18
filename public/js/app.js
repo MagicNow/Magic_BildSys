@@ -16746,15 +16746,19 @@ module.exports = __vue_exports__
 //
 //
 
-/* harmony default export */ exports["default"] = {
-    props:{
+    /* harmony default export */ exports["default"] = {
+        props:{
+            type: ''
+        },
+        data: function () {
+            return{
+                reprovados: 0,
+                aprovados: 0,
+                emAprovacao: 0,
+                apiGet: 'compras/jsonOrdemCompraDashboard',
+                mylabels: ["Ordem de Compra"],
 
-    },
-    data: function () {
-        return{
-            mylabels: ["Ocs"],
-
-            mydatasets:[
+                mydatasets:[
                 {
                     label: "Reprovadas",
                     backgroundColor: [
@@ -16764,55 +16768,110 @@ module.exports = __vue_exports__
                         'rgb(249,141,0,1)',
                     ],
                     borderWidth: 1,
-                    data: [200],
-                },
-                {
-                    label: "Em Aprovação",
-                    backgroundColor: [
-                        'rgba(249,141,0,1)'
-                    ],
-                    borderColor: [
-                        'rgb(249,141,0,1)',
-                    ],
-                    borderWidth: 1,
-                    data: [600],
-                },
-                {
-                    label: "Aprovadas",
-                    backgroundColor: [
-                        'rgba(126, 211, 33,1)'
-                    ],
-                    borderColor: [
-                        'rgb(126,211,33,1)',
-                    ],
-                    borderWidth: 1,
-                    data: [300],
-                },
-            ],
-            myoption: {
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            // Create scientific notation labels
-                            min: 0,
-                        }
-                    }]
-                },
-                legend: {
-                    display: true,
-                    position: 'bottom'
+                    data: [0],
                 }
+                ],
+                myoption: {
+                    responsive:true,
+                    maintainAspectRatio:true,
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                // Create scientific notation labels
+                                min: 0,
+                            }
+                        }]
+                    },
+                    legend: {
+                        display: true,
+                        position: 'bottom',
+                        labels: {
+                            boxWidth:10
+                        }
+                    }
+                },
+
+            }
+        },
+//        computed: {
+//            mydatasetas: {
+//                get: function () {
+//                    return this.mydatasets;
+//                },
+//                set :function() {
+//                    this.$http.get(this.apiGet,{
+//                        params: {type: 4}
+//                    }).then(function(resp){
+//                        this.mydatasets[0].data[0] = 10;
+//                        console.log(this.mydatasets);
+//                        return this.mydatasets;
+//                    });
+//                }
+//            }
+//        },
+        watch:{
+            mydatasetas :function() {
+                this.getReprovados();
+//                this.$http.get(this.apiGet,{
+//                    params: {type: 4}
+//                }).then(function(resp){
+//                    this.mydatasets[0].data[0] = 10;
+//                    console.log(this.mydatasets);
+//                    return this.mydatasets;
+//                });
+            }
+        },
+        methods: {
+            getReprovados: function () {
+                this.$http.get(this.apiGet,{
+                    params: {type: 4}
+                }).then(function(resp){
+                    this.mydatasets[0].data[0] = 10;
+                });
             },
-
+            getEmAprovacao: function () {
+                this.$http.get(this.apiGet,{
+                    params: {type: 3}
+                }).then(function(resp){
+                    this.emAprovacao = resp.data.length;
+//                    this.mydatasets.push({
+//                        label: "Em Aprovação",
+//                        backgroundColor: [
+//                            'rgba(249,141,0,1)'
+//                        ],
+//                        borderColor: [
+//                            'rgb(249,141,0,1)',
+//                        ],
+//                        borderWidth: 1,
+//                        data: [this.emAprovacao],
+//                    });
+                });
+            },
+            getAprovados: function () {
+                this.$http.get(this.apiGet,{
+                    params: {type: 5}
+                }).then(function(resp){
+                    this.aprovados = resp.data.length;
+//                    this.mydatasets.push({
+//                        label: "Aprovadas",
+//                        backgroundColor: [
+//                            'rgba(126, 211, 33,1)'
+//                        ],
+//                        borderColor: [
+//                            'rgb(126,211,33,1)',
+//                        ],
+//                        borderWidth: 1,
+//                        data: [this.aprovados],
+//                    });
+                });
+            }
+        },
+        mounted:function () {
+            this.getReprovados();
+            this.getEmAprovacao();
+            this.getAprovados();
         }
-    },
-    methods: {
-
-    },
-    created:function () {
-
-    }
-};
+    };
 
 
 /***/ },
@@ -16836,42 +16895,41 @@ module.exports = __vue_exports__
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ exports["default"] = {
     props:{
+        apiUrl:'',
         title: '',
         titleColor: '',
+        type: ''
     },
     data: function () {
         return{
-
+            dados:[],
+            chaves:[],
+            apiGet: 'compras/jsonOrdemCompraDashboard'
         }
     },
     methods: {
-
+        goToDetail:function (id) {
+            window.location.href = "http://bild.dev/ordens-de-compra/detalhes/"+id;
+        },
+        getHeader:function () {
+            if(this.dados.length >0){
+                this.chaves = Object.keys(this.dados[0]);
+            }
+        },
+        loadData:function () {
+            this.$http.get(this.apiGet,{
+                params:{ type: this.type}
+            }).then(function (resp){
+                this.dados = resp.data;
+                this.getHeader();
+            });
+        }
     },
     created:function () {
-
+        this.loadData();
     }
 };
 
@@ -29314,7 +29372,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n.element-border{\n    width: 100%;\n    border: solid 1px #dddddd;\n}\n.element-border > thead {\n\n    background-color: #9b9b9b;\n}\n.element-border > thead > tr > th{\n    padding: 10px 0px 10px 0px;\n    color: #f5f5f5;\n    font-weight: bold;\n    text-align: center;\n}\n.element-border > tbody{\n    background-color: white;\n}\n.element-border > tbody > tr {\n    height: 50px;\n    border-bottom: solid 1px #dddddd;\n}\n.element-border > tbody > tr > td {\n   text-align: center;\n}\n.element-border > tbody > tr > td >span{\n    color: #474747;\n}\n.element-border > tbody > tr > td:first-child >span {\n    color: #4a90e2;\n    padding: 5px 10px 5px 10px;\n    border-right: solid 1px #dddddd;\n}\n.element-border > tbody > tr > td:last-child > span{\n    padding: 5px 10px 5px 10px;\n    border-left: solid 1px #dddddd;\n}\n", ""]);
+exports.push([module.i, "\n.element-border{\n    width: 100%;\n    border: solid 1px #dddddd;\n}\n.element-border > .head-grey {\n    background-color: #9b9b9b;\n}\n.element-border > .head-red{\n    background-color: #eb0000;\n}\n.element-border > .head-green{\n    background-color: #7ed321;\n}\n.element-border > thead > tr > th{\n    padding: 10px 0px 10px 0px;\n    color: #f5f5f5;\n    font-family: Raleway;\n    font-weight: bold;\n    text-align: center;\n}\n.element-border > tbody{\n    background-color: white;\n}\n.element-border > tbody > tr {\n    cursor:pointer;\n    height: 50px;\n    border-bottom: solid 1px #dddddd;\n}\n.element-border > tbody > tr > td {\n    text-align: center;\n}\n.element-border > tbody > tr > td >span{\n    color: #474747;\n}\n.element-border > tbody > tr > td:first-child >span {\n    color: #4a90e2;\n    padding: 5px 10px 5px 10px;\n    border-right: solid 1px #dddddd;\n}\n.element-border > tbody > tr > td:last-child > span{\n    padding: 5px 10px 5px 10px;\n    border-left: solid 1px #dddddd;\n}\n", ""]);
 
 // exports
 
@@ -29328,7 +29386,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n.element-grafico{\n    width: 100%;\n    border: solid 1px #dddddd;\n}\n.element-grafico > thead {\n    padding: 5px 0px 5px 0px;\n    background-color: #9b9b9b;\n}\n.element-grafico > thead > tr > th{\n    padding: 10px 0px 10px 0px;\n    color: #f5f5f5;\n    font-weight: bold;\n    text-align: center;\n}\n.element-grafico > tbody{\n    background-color: white;\n}\n", ""]);
+exports.push([module.i, "\n.element-grafico{\n    width: 100%;\n    border: solid 1px #dddddd;\n}\n.element-grafico > thead {\n    padding: 5px 0px 5px 0px;\n    background-color: #474747;\n}\n.element-grafico > thead > tr > th{\n    padding: 10px 0px 10px 0px;\n    color: #f5f5f5;\n    font-weight: bold;\n    text-align: center;\n}\n.element-grafico > tbody{\n    background-color: white;\n}\n", ""]);
 
 // exports
 
@@ -46710,16 +46768,26 @@ webpackContext.id = 182;
 /***/ function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _vm._m(0)
-},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', [_c('table', {
     staticClass: "element-border"
-  }, [_c('thead', [_c('tr', [_c('th', {
+  }, [_c('thead', {
+    class: [_vm.titleColor]
+  }, [_c('tr', [_c('th', {
     attrs: {
       "colspan": "3"
     }
-  }, [_vm._v("Últimas Criadas")])])]), _vm._v(" "), _c('tbody', [_c('tr', [_c('td', [_c('span', [_vm._v("34232")])]), _vm._v(" "), _c('td', [_c('span', [_vm._v("Fábio Moreno")])]), _vm._v(" "), _c('td', [_c('span', [_vm._v("Fiva Home resort")])])]), _vm._v(" "), _c('tr', [_c('td', [_c('span', [_vm._v("34232")])]), _vm._v(" "), _c('td', [_c('span', [_vm._v("Fábio Moreno")])]), _vm._v(" "), _c('td', [_c('span', [_vm._v("Fiva Home resort")])])]), _vm._v(" "), _c('tr', [_c('td', [_c('span', [_vm._v("34232")])]), _vm._v(" "), _c('td', [_c('span', [_vm._v("Fábio Moreno")])]), _vm._v(" "), _c('td', [_c('span', [_vm._v("Fiva Home resort")])])]), _vm._v(" "), _c('tr', [_c('td', [_c('span', [_vm._v("34232")])]), _vm._v(" "), _c('td', [_c('span', [_vm._v("Fábio Moreno")])]), _vm._v(" "), _c('td', [_c('span', [_vm._v("Fiva Home resort")])])]), _vm._v(" "), _c('tr', [_c('td', [_c('span', [_vm._v("34232")])]), _vm._v(" "), _c('td', [_c('span', [_vm._v("Fábio Moreno")])]), _vm._v(" "), _c('td', [_c('span', [_vm._v("Fiva Home resort")])])])])])])
-}]}
+  }, [_vm._v(_vm._s(_vm.title))])])]), _vm._v(" "), _c('tbody', _vm._l((_vm.dados), function(dado) {
+    return (_vm.dados.length > 0) ? _c('tr', _vm._l((_vm.chaves), function(chave) {
+      return _c('td', {
+        on: {
+          "click": function($event) {
+            _vm.goToDetail(dado['id'])
+          }
+        }
+      }, [_c('span', [_vm._v(" " + _vm._s(dado[chave]))])])
+    })) : _vm._e()
+  }))])])
+},staticRenderFns: []}
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
@@ -46734,7 +46802,8 @@ if (false) {
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', [_c('table', {
     staticClass: "element-grafico"
-  }, [_vm._m(0), _vm._v(" "), _c('tbody', [_c('tr', [_c('chartjs-bar', {
+  }, [_vm._m(0), _vm._v(" "), _c('tbody', [(_vm.mydatasets[0].data[0] != undefined) ? _c('tr', [_c('chartjs-bar', {
+    ref: "ref",
     staticStyle: {
       "padding": "15px"
     },
@@ -46742,15 +46811,15 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "height": 300,
       "option": _vm.myoption,
       "labels": _vm.mylabels,
-      "datasets": _vm.mydatasets
+      "datasets": _vm.mydatasetas
     }
-  })], 1)])])])
+  })], 1) : _vm._e()])])])
 },staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('thead', [_c('tr', [_c('th', {
     attrs: {
       "colspan": "3"
     }
-  }, [_vm._v("Últimas Criadas")])])])
+  }, [_vm._v("Ordens de Compra")])])])
 }]}
 if (false) {
   module.hot.accept()
