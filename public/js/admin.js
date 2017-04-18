@@ -64746,7 +64746,7 @@ function workflowCall(item_id, tipo_item, aprovou, elemento, motivo, justificati
         }
     })
         .fail(function (retorno) {
-            console.log(retorno.responseJSON);
+            
             erros = '';
             $.each(retorno.responseJSON, function (index, value) {
                 if (erros.length) {

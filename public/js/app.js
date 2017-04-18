@@ -781,6 +781,9 @@ module.exports = __vue_exports__
 //
 //
 //
+//
+//
+//
 
     /* harmony default export */ exports["default"] = {
         props: {
@@ -832,6 +835,7 @@ module.exports = __vue_exports__
             },
             //Método da action adicionar onClick
             adicionar: function(item,i){
+                console.log(this.quant[i]);
                 if(this.actions.quantidade){
                     item['quantidade_compra'] = this.quant[i];
                 }
@@ -943,6 +947,8 @@ module.exports = __vue_exports__
                     this.$http.get(this.apiUrl, {
                         params: this.params
                     }).then(function (resp) {
+                        var this$1 = this;
+
                         if (typeof resp.data == 'object') {
                             this.dados = resp.data.data;
                             this.pagination = resp.data;
@@ -955,6 +961,11 @@ module.exports = __vue_exports__
                             this.pagination = response;
                             if (typeof this.head == 'undefined' || this.head.length == 0) {
                                 this.getHeader();
+                            }
+                        }
+                        if(this.actions.quantidade != undefined){
+                            for (var j in this.dados) {
+                               this$1.quant[j] = this$1.dados[j].quantidade_compra;
                             }
                         }
                         //Para animação loader
@@ -990,7 +1001,7 @@ exports = module.exports = __webpack_require__(0)();
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -18340,14 +18351,18 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }, [_c('input', {
       directives: [{
         name: "model",
-        rawName: "v-model",
+        rawName: "v-model.number",
         value: (_vm.quant[i]),
-        expression: "quant[i]"
+        expression: "quant[i]",
+        modifiers: {
+          "number": true
+        }
       }],
       attrs: {
-        "placeholder": dado['quantidade_compra']
+        "type": "number"
       },
       domProps: {
+        "value": _vm.quant[i],
         "value": (_vm.quant[i])
       },
       on: {
@@ -18356,26 +18371,35 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
           var $$exp = _vm.quant,
             $$idx = i;
           if (!Array.isArray($$exp)) {
-            _vm.quant[i] = $event.target.value
+            _vm.quant[i] = _vm._n($event.target.value)
           } else {
-            $$exp.splice($$idx, 1, $event.target.value)
+            $$exp.splice($$idx, 1, _vm._n($event.target.value))
           }
+        },
+        "blur": function($event) {
+          _vm.$forceUpdate()
         }
       }
     })]) : _vm._e(), _vm._v(" "), (_vm.actions.troca != undefined) ? _c('td', {
       staticClass: "row-table"
-    }, [(dado['pai'] > 0 && dado['pai'] != undefined) ? _c('a', {
+    }, [(dado['pai'] > 0 && dado['pai'] != undefined && dado['unidade_sigla'] == 'VB') ? _c('a', {
       attrs: {
         "href": _vm.actions.troca_url + '/' + dado['id']
       }
     }, [_c('i', {
       staticClass: "fa fa-exchange blue"
-    })]) : _vm._e(), _vm._v(" "), (dado['filho'] > 0 && dado['filho'] != undefined) ? _c('a', {
+    })]) : _vm._e(), _vm._v(" "), (dado['filho'] > 0 && dado['filho'] != undefined && dado['unidade_sigla'] == 'VB') ? _c('a', {
       attrs: {
         "href": _vm.actions.troca_remove + '/' + dado['planejamento_compra_id']
       }
     }, [_c('i', {
       staticClass: "fa fa-times red"
+    })]) : _vm._e(), _vm._v(" "), (dado['filho'] == 0 && dado['pai'] == 0 && dado['unidade_sigla'] == 'VB') ? _c('a', {
+      attrs: {
+        "href": _vm.actions.troca_url + '/' + dado['id']
+      }
+    }, [_c('i', {
+      staticClass: "fa fa-exchange grey"
     })]) : _vm._e()]) : _vm._e(), _vm._v(" "), (_vm.actions.adicionar != undefined && dado.adicionado > 0) ? _c('td', {
       staticClass: "row-table"
     }, [_c('i', {

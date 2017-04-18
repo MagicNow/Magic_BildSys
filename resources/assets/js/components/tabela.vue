@@ -111,14 +111,17 @@
                         <i class="fa fa-times grey"></i>
                     </td>
                     <td class="row-table" v-if="actions.quantidade != undefined" @click="reprovar(dado['id'])">
-                        <input v-model="quant[i]" :placeholder="dado['quantidade_compra']">
+                        <input v-model.number="quant[i]" type="number" v-bind:value="quant[i]">
                     </td>
                     <td class="row-table" v-if="actions.troca != undefined">
-                        <a  v-if="dado['pai']>0 && dado['pai'] != undefined" v-bind:href="actions.troca_url+'/'+dado['id']">
+                        <a  v-if="dado['pai']>0 && dado['pai'] != undefined && dado['unidade_sigla'] == 'VB'" v-bind:href="actions.troca_url+'/'+dado['id'] ">
                             <i class="fa fa-exchange blue"></i>
                         </a>
-                        <a  v-if="dado['filho']>0 && dado['filho'] != undefined" v-bind:href="actions.troca_remove+'/'+dado['planejamento_compra_id']">
+                        <a  v-if="dado['filho']>0 && dado['filho'] != undefined && dado['unidade_sigla'] == 'VB'" v-bind:href="actions.troca_remove+'/'+dado['planejamento_compra_id']">
                             <i class="fa fa-times red"></i>
+                        </a>
+                        <a  v-if="dado['filho']==0 && dado['pai']==0 && dado['unidade_sigla'] == 'VB'" v-bind:href="actions.troca_url+'/'+dado['id']">
+                            <i class="fa fa-exchange grey"></i>
                         </a>
                     </td>
                     <td  class="row-table" v-if="actions.adicionar != undefined && dado.adicionado > 0">
@@ -192,6 +195,7 @@
             },
             //Método da action adicionar onClick
             adicionar: function(item,i){
+                console.log(this.quant[i]);
                 if(this.actions.quantidade){
                     item['quantidade_compra'] = this.quant[i];
                 }
@@ -309,6 +313,11 @@
                             this.pagination = response;
                             if (typeof this.head == 'undefined' || this.head.length == 0) {
                                 this.getHeader();
+                            }
+                        }
+                        if(this.actions.quantidade != undefined){
+                            for (var j in this.dados) {
+                               this.quant[j] = this.dados[j].quantidade_compra;
                             }
                         }
                         //Para animação loader

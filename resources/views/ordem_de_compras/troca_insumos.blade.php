@@ -14,7 +14,7 @@
                     <a href="{{ url()->previous()}}" type="button" class="btn btn-default btn-lg btn-flat" data-dismiss="modal">
                         Cancelar
                     </a>
-                    <a href="{{ url()->previous()}}" type="button" class="btn btn-success button-large-green" data-dismiss="modal">
+                    <a href="{{ url()->previous()}}" type="button" class="btn btn-success btn-lg btn-flat" data-dismiss="modal">
                         Confirmar
                     </a>
                 </div>

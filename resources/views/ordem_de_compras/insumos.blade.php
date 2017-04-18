@@ -11,16 +11,15 @@
                     </span>
                 </div>
                 <div class="col-md-4 text-right">
-                    <div class="col-md-6 text-right">
-                        <button type="button" class="btn btn-success button-large-green" data-dismiss="modal">
-                            Cadastrar
-                        </button>
-                    </div>
-                    <div class="col-md-6 text-right">
-                        <button type="button" class="btn btn-success button-large-green" data-dismiss="modal">
-                            Finalizar
-                        </button>
-                    </div>
+
+                    <button type="button" class="btn btn-default btn-lg btn-flat" data-dismiss="modal">
+                        Cadastrar
+                    </button>
+
+                    <a href="{{ url()->previous()}}" type="button" class="btn btn-success btn-lg btn-flat" data-dismiss="modal">
+                        Finalizar
+                    </a>
+
                 </div>
             </div>
         </div>

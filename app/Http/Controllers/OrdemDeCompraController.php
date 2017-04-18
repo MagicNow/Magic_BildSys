@@ -326,8 +326,8 @@ class OrdemDeCompraController extends AppBaseController
                 'orcamentos.subgrupo3_id as cod_subgrupo3',
                 DB::raw('(SELECT count(id) FROM planejamento_compras 
                 WHERE planejamento_compras.insumo_id = insumos.id 
-                AND planejamento_compras.planejamento_id ='.$planejamento->id.') as adicionado')
-            ])->where('deleted_at','=', null);
+                AND planejamento_compras.planejamento_id ='.$planejamento->id.' AND planejamento_compras.deleted_at = null) as adicionado')
+            ]);
 
         if(isset($request->orderkey)){
             $insumos->orderBy($request->orderkey, $request->order);
@@ -429,10 +429,10 @@ class OrdemDeCompraController extends AppBaseController
                     WHERE planejamento_compras.insumo_id = insumos.id 
                     AND planejamento_compras.planejamento_id ='.$planejamento->id.' AND  planejamento_compras.insumo_pai IS NOT NULL) as filho'),
                     DB::raw('(SELECT count(id) FROM planejamento_compras 
-                    WHERE planejamento_compras.planejamento_id ='.$planejamento->id.' AND  planejamento_compras.insumo_pai = insumos.id) as pai'),
+                    WHERE planejamento_compras.planejamento_id ='.$planejamento->id.' AND  planejamento_compras.insumo_pai = insumos.id AND planejamento_compras.deleted_at = NULL) as pai'),
                     DB::raw('(SELECT count(id) FROM ordem_de_compra_itens 
                     WHERE ordem_de_compra_itens.insumo_id = insumos.id 
-                    AND ordem_de_compra_itens.obra_id ='.$planejamento->obra_id.') as adicionado')
+                    AND ordem_de_compra_itens.obra_id ='.$planejamento->obra_id.' ) as adicionado')
                 ]
             )->where('deleted_at','=', null)
             ->orderBy(DB::raw(' COALESCE (planejamento_compras.id, planejamento_compras.trocado_de), planejamento_compras.trocado_de'));
@@ -462,12 +462,16 @@ class OrdemDeCompraController extends AppBaseController
             ->where('user_id', Auth::user()->id)
             ->where('obra_id', $planejamento->obra_id)->first();
 
+        $planejamento_compra = PlanejamentoCompra::find($request->planejamento_compra_id);
+        $planejamento_compra->quantidade_compra = (int)$request->quantidade_compra;
+        $planejamento_compra->save();
+
         if($ordem){
             $ordem_item = new OrdemDeCompraItem();
             $ordem_item->ordem_de_compra_id = $ordem->id;
             $ordem_item->obra_id = $planejamento->obra_id;
             $ordem_item->codigo_insumo = $request->codigo;
-            $ordem_item->qtd = $request->quantidade_compra;
+            $ordem_item->qtd = (int)$request->quantidade_compra;
             $ordem_item->valor_unitario = $request->preco_unitario;
             $ordem_item->valor_total = $request->preco_total;
             $ordem_item->grupo_id = $request->grupo_id;
@@ -490,7 +494,7 @@ class OrdemDeCompraController extends AppBaseController
             $ordem_item->ordem_de_compra_id = $ordem->id;
             $ordem_item->obra_id = $planejamento->obra_id;
             $ordem_item->codigo_insumo = $request->codigo;
-            $ordem_item->qtd = $request->quantidade_compra;
+            $ordem_item->qtd = (int)$request->quantidade_compra;
             $ordem_item->valor_unitario = $request->preco_unitario;
             $ordem_item->valor_total = $request->preco_total;
             $ordem_item->grupo_id = $request->grupo_id;
@@ -579,23 +583,25 @@ class OrdemDeCompraController extends AppBaseController
     }
 
     public function trocaInsumosJsonPai(Insumo $insumo){
-        $insumo_query = Insumo::query();
+
+        $insumo = Insumo::where('id',$insumo->id);
+//        $insumo_query = Insumo::query();
 
         //Query pra trazer
-        $insumos = $insumo_query->join('orcamentos','orcamentos.insumo_id','=','insumos.id')
-            ->select([
-                'insumos.id',
-                'insumos.nome',
-                'insumos.unidade_sigla',
-                'insumos.codigo',
-                'orcamentos.grupo_id',
-                'orcamentos.servico_id',
-                'orcamentos.qtd_total',
-                'orcamentos.preco_total'
-            ])
-            ->where('insumos.id',$insumo->id);
+//        $insumos = $insumo_query->join('orcamentos','orcamentos.insumo_id','=','insumos.id')
+//            ->select([
+//                'insumos.id',
+//                'insumos.nome',
+//                'insumos.unidade_sigla',
+//                'insumos.codigo',
+//                'orcamentos.grupo_id',
+//                'orcamentos.servico_id',
+//                'orcamentos.qtd_total',
+//                'orcamentos.preco_total'
+//            ])
+//            ->where('insumos.id',$insumo->id);
 
-        return response()->json($insumos->paginate(10), 200);
+        return response()->json($insumo->paginate(10), 200);
     }
 
 
