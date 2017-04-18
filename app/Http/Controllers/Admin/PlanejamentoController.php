@@ -11,6 +11,8 @@ use App\Models\Grupo;
 use App\Models\Insumo;
 use App\Models\InsumoGrupo;
 use App\Models\Obra;
+use App\Models\Orcamento;
+use App\Models\PlanejamentoCompra;
 use App\Models\Planilha;
 use App\Models\Servico;
 use App\Repositories\Admin\PlanejamentoRepository;
@@ -124,13 +126,50 @@ class PlanejamentoController extends AppBaseController
         return $servico;
     }
 
-    public function insumos(Request $request){
-        $input = $request->all();
-        if($input['grupo_id']){
-
+    public function planejamentoCompras(Request $request){
+        $insumosOrcados = null;
+        if($request->servico_id){
+            $insumosOrcados = Orcamento::where('servico_id', $request->servico_id)
+                ->where('subgrupo3_id', $request->subgrupo3_id)
+                ->where('subgrupo2_id', $request->subgrupo2_id)
+                ->where('subgrupo1_id', $request->subgrupo1_id)
+                ->where('grupo_id', $request->grupo_id)->get();
+        }
+        if($request->subgrupo3_id){
+            $insumosOrcados = Orcamento::where('subgrupo3_id', $request->subgrupo3_id)
+                ->where('subgrupo2_id', $request->subgrupo2_id)
+                ->where('subgrupo1_id', $request->subgrupo1_id)
+                ->where('grupo_id', $request->grupo_id)->get();
+        }
+        if($request->subgrupo2_id){
+            $insumosOrcados = Orcamento::where('subgrupo2_id', $request->subgrupo2_id)
+                ->where('subgrupo1_id', $request->subgrupo1_id)
+                ->where('grupo_id', $request->grupo_id)->get();
+        }
+        if($request->subgrupo1_id){
+            $insumosOrcados = Orcamento::where('subgrupo1_id', $request->subgrupo1_id)
+                ->where('grupo_id', $request->grupo_id)->get();
+        }
+        if($request->grupo_id){
+            $insumosOrcados = Orcamento::where('grupo_id', $request->grupo_id)->get();
         }
 
-        dd($input);
+        if($insumosOrcados) {
+            foreach ($insumosOrcados as $insumosOrcado) {
+                $planejamentoCompra = new PlanejamentoCompra();
+                $planejamentoCompra->planejamento_id = $request->planejamento_id;
+                $planejamentoCompra->insumo_id = $insumosOrcado->insumo_id;
+                $planejamentoCompra->codigo_estruturado = $insumosOrcado->codigo_insumo;
+                $planejamentoCompra->grupo_id = $insumosOrcado->grupo_id;
+                $planejamentoCompra->subgrupo1_id = $insumosOrcado->subgrupo1_id;
+                $planejamentoCompra->subgrupo2_id = $insumosOrcado->subgrupo2_id;
+                $planejamentoCompra->subgrupo3_id = $insumosOrcado->subgrupo3_id;
+                $planejamentoCompra->servico_id = $insumosOrcado->servico_id;
+                $planejamentoCompra->save();
+            }
+            return Response()->json(['success' => true]);
+        }
+        return Response()->json(['success' => false, 'mensagem' => 'Não foram encontrado insumo no orçamento com os filtros passados!']);
     }
 
     /**
