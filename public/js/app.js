@@ -445,7 +445,7 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "/var/www/html/bild/resources/assets/js/components/generic-paginator.vue"
+__vue_options__.__file = "/var/www/html/bild-sys/resources/assets/js/components/generic-paginator.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
 
@@ -456,9 +456,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-cb19233a", __vue_options__)
+    hotAPI.createRecord("data-v-f25aa03a", __vue_options__)
   } else {
-    hotAPI.reload("data-v-cb19233a", __vue_options__)
+    hotAPI.reload("data-v-f25aa03a", __vue_options__)
   }
 })()}
 if (__vue_options__.functional) {console.error("[vue-loader] generic-paginator.vue: functional components are not supported and should be defined in plain js files using render functions.")}
@@ -492,7 +492,7 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "/var/www/html/bild/resources/assets/js/components/tabela.vue"
+__vue_options__.__file = "/var/www/html/bild-sys/resources/assets/js/components/tabela.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
 
@@ -503,9 +503,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-79c5094d", __vue_options__)
+    hotAPI.createRecord("data-v-3f409066", __vue_options__)
   } else {
-    hotAPI.reload("data-v-79c5094d", __vue_options__)
+    hotAPI.reload("data-v-3f409066", __vue_options__)
   }
 })()}
 if (__vue_options__.functional) {console.error("[vue-loader] tabela.vue: functional components are not supported and should be defined in plain js files using render functions.")}
@@ -770,6 +770,20 @@ module.exports = __vue_exports__
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
     /* harmony default export */ exports["default"] = {
         props: {
@@ -788,7 +802,8 @@ module.exports = __vue_exports__
                 adicionar: '',
                 detalhe: '',
                 aprovar: '',
-                reprovar: ''
+                reprovar: '',
+                quantidade:'',
             },
             colunas: ''
         },
@@ -805,11 +820,12 @@ module.exports = __vue_exports__
                 },
                 paginationOptions: {
                     offset: 4,
-                    previousText: 'Anterior',
-                    nextText: 'Proxima',
+                    previousText: '',
+                    nextText: '',
                     alwaysShowPrevNext: false
                 },
-                order: 'asc'
+                order: 'asc',
+                quant: {}
             }
         },
         methods: {
@@ -818,7 +834,11 @@ module.exports = __vue_exports__
 
             },
             //Método da action adicionar onClick
-            adicionar: function(item){
+            adicionar: function(item,i){
+                console.log(this.quant[i]);
+                if(this.actions.quantidade){
+                    item['quantidade_compra'] = this.quant[i];
+                }
                 item['_token'] =this._token;
                 this.$http.post(this.apiAdicionar, item)
                     .then(function (resp) {
@@ -830,6 +850,9 @@ module.exports = __vue_exports__
 //                        }
 
                     })
+            },
+            updateQuant: function (item) {
+
             },
             //Método da action reprovar onClick
             reprovar: function (id) {
@@ -920,26 +943,35 @@ module.exports = __vue_exports__
                 this.params.page = this.pagination.current_page;
                 this.success = '';
                 this.error = '';
-                this.$http.get(this.apiUrl, {
-                    params: this.params
-                }).then(function (resp) {
-                    if (typeof resp.data == 'object') {
-                        this.dados = resp.data.data;
-                        this.pagination = resp.data;
-                        if (typeof this.head == 'undefined' || this.head.length == 0) {
-                            this.getHeader();
+                if(this.apiUrl){
+                    this.$http.get(this.apiUrl, {
+                        params: this.params
+                    }).then(function (resp) {
+                        var this$1 = this;
+
+                        if (typeof resp.data == 'object') {
+                            this.dados = resp.data.data;
+                            this.pagination = resp.data;
+                            if (typeof this.head == 'undefined' || this.head.length == 0) {
+                                this.getHeader();
+                            }
+                        } else if (typeof resp.data == 'string') {
+                            var response = jQuery.parseJSON(resp.data);
+                            this.dados = response.data;
+                            this.pagination = response;
+                            if (typeof this.head == 'undefined' || this.head.length == 0) {
+                                this.getHeader();
+                            }
                         }
-                    } else if (typeof resp.data == 'string') {
-                        var response = jQuery.parseJSON(resp.data);
-                        this.dados = response.data;
-                        this.pagination = response;
-                        if (typeof this.head == 'undefined' || this.head.length == 0) {
-                            this.getHeader();
+                        if(this.actions.quantidade != undefined){
+                            for (var j in this.dados) {
+                               this$1.quant[j] = this$1.dados[j].quantidade_compra;
+                            }
                         }
-                    }
-                    //Para animação loader
-                    stopLoading();
-                });
+                        //Para animação loader
+                        stopLoading();
+                    });
+                }
             },
         },
         created: function () {
@@ -969,7 +1001,7 @@ exports = module.exports = __webpack_require__(0)();
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -983,7 +1015,7 @@ exports = module.exports = __webpack_require__(0)();
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n.pagination-custom{\n    display: inline-block;\n    padding-left: 0;\n}\n.pagination-custom > li{\n    margin: 2px;\n    display: inline;\n}\n.page-element > a{\n    padding: 6px 12px;\n    border: solid 1px #979797;\n}\n.active >a{\n    color: #f98d00;\n    font-weight: bold;\n    border: solid 1px #f98d00;\n}\n", ""]);
 
 // exports
 
@@ -18231,7 +18263,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "id": "period_find",
       "value": "periodo=&procurar="
     }
-  }), _vm._v(" "), _vm._m(3)])]) : _vm._e(), _vm._v(" "), (_vm.dados.length > 0) ? _c('div', [_c('table', {
+  }), _vm._v(" "), _vm._m(3)])]) : _vm._e(), _vm._v(" "), _c('table', {
     staticClass: "table"
   }, [_c('thead', {
     staticClass: "head-table"
@@ -18243,17 +18275,17 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
           _vm.sortTable(item)
         }
       }
-    }, [_vm._v("\n                    " + _vm._s(item) + "\n                    "), (_vm.order == 'asc') ? _c('span', [_c('i', {
+    }, [_vm._v("\n                " + _vm._s(item) + "\n                "), (_vm.order == 'asc' && _vm.dados.length > 1) ? _c('span', [_c('i', {
       staticClass: "fa fa-chevron-down",
       attrs: {
         "aria-hidden": "true"
       }
-    })]) : _c('span', [_c('i', {
+    })]) : (_vm.order == 'desc' && _vm.dados.length > 1) ? _c('span', [_c('i', {
       staticClass: "fa fa-chevron-up",
       attrs: {
         "aria-hidden": "true"
       }
-    })])])
+    })]) : _vm._e()])
   }), _vm._v(" "), (_vm.actions.status != undefined) ? _c('th', {
     staticClass: "row-table"
   }, [_vm._v("Status")]) : _vm._e(), _vm._v(" "), (_vm.actions.detalhe != undefined) ? _c('th', {
@@ -18262,15 +18294,19 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "row-table"
   }, [_vm._v("Aprovar")]) : _vm._e(), _vm._v(" "), (_vm.actions.reprovar != undefined) ? _c('th', {
     staticClass: "row-table"
-  }, [_vm._v("Reprovar")]) : _vm._e(), _vm._v(" "), (_vm.actions.troca != undefined) ? _c('th', {
+  }, [_vm._v("Reprovar")]) : _vm._e(), _vm._v(" "), (_vm.actions.quantidade != undefined) ? _c('th', {
+    staticClass: "row-table"
+  }, [_vm._v("Quantidade Compra")]) : _vm._e(), _vm._v(" "), (_vm.actions.troca != undefined) ? _c('th', {
     staticClass: "row-table"
   }, [_vm._v("Troca")]) : _vm._e(), _vm._v(" "), (_vm.actions.adicionar != undefined) ? _c('th', {
     staticClass: "row-table"
-  }, [_vm._v("Adicionar")]) : _vm._e()], 2)]), _vm._v(" "), _c('tbody', _vm._l((_vm.dados), function(dado) {
-    return _c('tr', [_vm._l((_vm.chaves), function(chave) {
+  }, [_vm._v("Adicionar")]) : _vm._e()], 2)]), _vm._v(" "), _c('tbody', _vm._l((_vm.dados), function(dado, i) {
+    return (_vm.dados.length > 0) ? _c('tr', [_vm._l((_vm.chaves), function(chave, index) {
       return _c('td', {
         staticClass: "row-table"
-      }, [_vm._v(_vm._s(dado[chave]))])
+      }, [(dado['filho'] > 0 && dado['filho'] != undefined && index == 0) ? _c('i', {
+        staticClass: "fa fa-share"
+      }) : _vm._e(), _vm._v("\n                    " + _vm._s(dado[chave]) + "\n                ")])
     }), _vm._v(" "), (_vm.actions.status != undefined) ? _c('td', {
       staticClass: "row-table"
     }, [(dado['status'] == 0) ? _c('i', {
@@ -18305,23 +18341,80 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       }
     }, [_c('i', {
       staticClass: "fa fa-times grey"
-    })]) : _vm._e(), _vm._v(" "), (_vm.actions.troca != undefined) ? _c('td', {
-      staticClass: "row-table"
-    }, [_c('i', {
-      staticClass: "fa fa-exchange grey"
-    })]) : _vm._e(), _vm._v(" "), (_vm.actions.adicionar != undefined) ? _c('td', {
+    })]) : _vm._e(), _vm._v(" "), (_vm.actions.quantidade != undefined) ? _c('td', {
       staticClass: "row-table",
       on: {
         "click": function($event) {
-          _vm.adicionar(dado)
+          _vm.reprovar(dado['id'])
         }
       }
-    }, [(dado.adicionado > 0) ? _c('i', {
+    }, [_c('input', {
+      directives: [{
+        name: "model",
+        rawName: "v-model.number",
+        value: (_vm.quant[i]),
+        expression: "quant[i]",
+        modifiers: {
+          "number": true
+        }
+      }],
+      attrs: {
+        "type": "number"
+      },
+      domProps: {
+        "value": _vm.quant[i],
+        "value": (_vm.quant[i])
+      },
+      on: {
+        "input": function($event) {
+          if ($event.target.composing) { return; }
+          var $$exp = _vm.quant,
+            $$idx = i;
+          if (!Array.isArray($$exp)) {
+            _vm.quant[i] = _vm._n($event.target.value)
+          } else {
+            $$exp.splice($$idx, 1, _vm._n($event.target.value))
+          }
+        },
+        "blur": function($event) {
+          _vm.$forceUpdate()
+        }
+      }
+    })]) : _vm._e(), _vm._v(" "), (_vm.actions.troca != undefined) ? _c('td', {
+      staticClass: "row-table"
+    }, [(dado['pai'] > 0 && dado['pai'] != undefined && dado['unidade_sigla'] == 'VB') ? _c('a', {
+      attrs: {
+        "href": _vm.actions.troca_url + '/' + dado['id']
+      }
+    }, [_c('i', {
+      staticClass: "fa fa-exchange blue"
+    })]) : _vm._e(), _vm._v(" "), (dado['filho'] > 0 && dado['filho'] != undefined && dado['unidade_sigla'] == 'VB') ? _c('a', {
+      attrs: {
+        "href": _vm.actions.troca_remove + '/' + dado['planejamento_compra_id']
+      }
+    }, [_c('i', {
+      staticClass: "fa fa-times red"
+    })]) : _vm._e(), _vm._v(" "), (dado['filho'] == 0 && dado['pai'] == 0 && dado['unidade_sigla'] == 'VB') ? _c('a', {
+      attrs: {
+        "href": _vm.actions.troca_url + '/' + dado['id']
+      }
+    }, [_c('i', {
+      staticClass: "fa fa-exchange grey"
+    })]) : _vm._e()]) : _vm._e(), _vm._v(" "), (_vm.actions.adicionar != undefined && dado.adicionado > 0) ? _c('td', {
+      staticClass: "row-table"
+    }, [_c('i', {
       staticClass: "fa fa-check green"
-    }) : _c('i', {
+    })]) : (_vm.actions.adicionar != undefined) ? _c('td', {
+      staticClass: "row-table",
+      on: {
+        "click": function($event) {
+          _vm.adicionar(dado, i)
+        }
+      }
+    }, [_c('i', {
       staticClass: "fa fa-plus grey"
-    })]) : _vm._e()], 2)
-  }))]), _vm._v(" "), _c('div', {
+    })]) : _vm._e()], 2) : _c('tr', [_c('td', [_vm._v("Não há dados")])])
+  }))]), _vm._v(" "), (_vm.pagination.last_page > 1) ? _c('div', {
     staticClass: "text-center"
   }, [_c('generic-paginator', {
     attrs: {
@@ -18329,7 +18422,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "callback": _vm.loadData,
       "options": _vm.paginationOptions
     }
-  })], 1)]) : _c('div', [_vm._v("\n        Não há dados\n    ")])])
+  })], 1) : _vm._e()])
 },staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
     staticClass: "col-md-12 thumbnail",
@@ -18414,7 +18507,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-79c5094d", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-3f409066", module.exports)
   }
 }
 
@@ -18424,17 +18517,13 @@ if (false) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('nav', [(_vm.pagination.last_page > 0) ? _c('ul', {
-    staticClass: "pagination",
+    staticClass: "pagination-custom",
     class: _vm.sizeClass
   }, [(_vm.showPrevious()) ? _c('li', {
     class: {
       'disabled': _vm.pagination.current_page <= 1
     }
-  }, [(_vm.pagination.current_page <= 1) ? _c('span', [_c('span', {
-    attrs: {
-      "aria-hidden": "true"
-    }
-  }, [_vm._v(_vm._s(_vm.config.previousText))])]) : _vm._e(), _vm._v(" "), (_vm.pagination.current_page > 1) ? _c('a', {
+  }, [(_vm.pagination.current_page <= 1) ? _c('span', [_vm._m(0)]) : _vm._e(), _vm._v(" "), (_vm.pagination.current_page > 1) ? _c('a', {
     attrs: {
       "href": "#",
       "aria-label": _vm.config.ariaPrevioius
@@ -18445,12 +18534,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.changePage(_vm.pagination.current_page - 1)
       }
     }
-  }, [_c('span', {
-    attrs: {
-      "aria-hidden": "true"
-    }
-  }, [_vm._v(_vm._s(_vm.config.previousText))])]) : _vm._e()]) : _vm._e(), _vm._v(" "), _vm._l((_vm.array), function(num) {
+  }, [_vm._m(1)]) : _vm._e()]) : _vm._e(), _vm._v(" "), _vm._l((_vm.array), function(num) {
     return _c('li', {
+      staticClass: "page-element",
       class: {
         'active': num === _vm.pagination.current_page
       }
@@ -18473,7 +18559,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     attrs: {
       "aria-hidden": "true"
     }
-  }, [_vm._v(_vm._s(_vm.config.nextText))])]) : _vm._e(), _vm._v(" "), (_vm.pagination.current_page < _vm.pagination.last_page) ? _c('a', {
+  })]) : _vm._e(), _vm._v(" "), (_vm.pagination.current_page < _vm.pagination.last_page) ? _c('a', {
     attrs: {
       "href": "#",
       "aria-label": _vm.config.ariaNext
@@ -18484,16 +18570,45 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.changePage(_vm.pagination.current_page + 1)
       }
     }
-  }, [_c('span', {
+  }, [_vm._m(2)]) : _vm._e()]) : _vm._e()], 2) : _vm._e()])
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('span', {
     attrs: {
       "aria-hidden": "true"
     }
-  }, [_vm._v(_vm._s(_vm.config.nextText))])]) : _vm._e()]) : _vm._e()], 2) : _vm._e()])
-},staticRenderFns: []}
+  }, [_c('i', {
+    staticClass: "fa fa-long-arrow-left orange",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  })])
+},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('span', {
+    attrs: {
+      "aria-hidden": "true"
+    }
+  }, [_c('i', {
+    staticClass: "fa fa-long-arrow-left orange",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  })])
+},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('span', {
+    attrs: {
+      "aria-hidden": "true"
+    }
+  }, [_c('i', {
+    staticClass: "fa fa-long-arrow-right orange",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  })])
+}]}
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-cb19233a", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-f25aa03a", module.exports)
   }
 }
 
@@ -18502,14 +18617,13 @@ if (false) {
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(exports, "Url", function() { return Url; });
-/* harmony export (binding) */ __webpack_require__.d(exports, "Http", function() { return Http; });
-/* harmony export (binding) */ __webpack_require__.d(exports, "Resource", function() { return Resource; });
 /*!
- * vue-resource v1.3.1
+ * vue-resource v1.3.0
  * https://github.com/pagekit/vue-resource
  * Released under the MIT License.
  */
+
+'use strict';
 
 /**
  * Promises/A+ polyfill v1.1.4 (https://github.com/bramstein/promis)
@@ -20046,8 +20160,7 @@ if (typeof window !== 'undefined' && window.Vue) {
     window.Vue.use(plugin);
 }
 
-/* harmony default export */ exports["default"] = plugin;
-
+module.exports = plugin;
 
 
 /***/ },
@@ -20066,8 +20179,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-79c5094d!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./tabela.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-79c5094d!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./tabela.vue");
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-3f409066!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./tabela.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-3f409066!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./tabela.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -20092,8 +20205,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-cb19233a!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./generic-paginator.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-cb19233a!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./generic-paginator.vue");
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-f25aa03a!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./generic-paginator.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-f25aa03a!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./generic-paginator.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});

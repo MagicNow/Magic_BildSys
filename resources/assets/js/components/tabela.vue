@@ -65,33 +65,37 @@
         </div>
         <!--FIm Bloco de filtros -->
         <!--Tabela -->
-        <div v-if="dados.length >0">
-            <table class="table">
-                <thead class="head-table">
-                <tr>
-                    <th class="row-table"
-                        v-for="item in head"
-                        @click="sortTable(item)"
-                    >
-                        {{ item }}
-                        <span v-if="order == 'asc'">
-                            <i class="fa fa-chevron-down" aria-hidden="true"></i>
-                        </span>
-                        <span v-else>
-                            <i class="fa fa-chevron-up" aria-hidden="true"></i>
-                        </span>
-                    </th>
-                    <th v-if="actions.status != undefined" class="row-table">Status</th>
-                    <th v-if="actions.detalhe != undefined" class="row-table">Detalhe</th>
-                    <th v-if="actions.aprovar != undefined" class="row-table">Aprovar</th>
-                    <th v-if="actions.reprovar != undefined" class="row-table">Reprovar</th>
-                    <th v-if="actions.troca != undefined" class="row-table">Troca</th>
-                    <th v-if="actions.adicionar != undefined" class="row-table">Adicionar</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr v-for="dado in dados">
-                    <td class="row-table" v-for="chave in chaves">{{dado[chave]}}</td>
+        <table class="table">
+            <thead class="head-table">
+            <tr>
+                <th class="row-table"
+                    v-for="item in head"
+                    @click="sortTable(item)"
+                >
+                    {{ item }}
+                    <span v-if="order == 'asc' && dados.length>1">
+                        <i class="fa fa-chevron-down" aria-hidden="true"></i>
+                    </span>
+                    <span v-else-if="order == 'desc' && dados.length>1">
+                        <i class="fa fa-chevron-up" aria-hidden="true"></i>
+                    </span>
+                </th>
+                <th v-if="actions.status != undefined" class="row-table">Status</th>
+                <th v-if="actions.detalhe != undefined" class="row-table">Detalhe</th>
+                <th v-if="actions.aprovar != undefined" class="row-table">Aprovar</th>
+                <th v-if="actions.reprovar != undefined" class="row-table">Reprovar</th>
+                <th v-if="actions.quantidade != undefined" class="row-table">Quantidade Compra</th>
+                <th v-if="actions.troca != undefined" class="row-table">Troca</th>
+                <th v-if="actions.adicionar != undefined" class="row-table">Adicionar</th>
+            </tr>
+            </thead>
+            <tbody>
+                <tr v-if="dados.length >0" v-for="(dado,i) in dados">
+
+                    <td class="row-table" v-for="(chave,index) in chaves" >
+                        <i v-if="dado['filho']>0 && dado['filho'] != undefined && index == 0" class="fa fa-share"></i>
+                        {{dado[chave]}}
+                    </td>
                     <td class="row-table" v-if="actions.status != undefined">
                         <i v-if="dado['status'] == 0" class="fa fa-circle green"></i>
                         <i v-if="dado['status'] == 1" class="fa fa-circle red"></i>
@@ -106,27 +110,37 @@
                     <td class="row-table" v-if="actions.reprovar != undefined" @click="reprovar(dado['id'])">
                         <i class="fa fa-times grey"></i>
                     </td>
-                    <td class="row-table" v-if="actions.troca != undefined">
-                        <i class="fa fa-exchange grey"></i>
+                    <td class="row-table" v-if="actions.quantidade != undefined" @click="reprovar(dado['id'])">
+                        <input v-model.number="quant[i]" type="number" v-bind:value="quant[i]">
                     </td>
-                    <td @click="adicionar(dado)" class="row-table" v-if="actions.adicionar != undefined">
-                        <i v-if="dado.adicionado > 0"class="fa fa-check green"></i>
-                        <i class="fa fa-plus grey" v-else></i>
+                    <td class="row-table" v-if="actions.troca != undefined">
+                        <a  v-if="dado['pai']>0 && dado['pai'] != undefined && dado['unidade_sigla'] == 'VB'" v-bind:href="actions.troca_url+'/'+dado['id'] ">
+                            <i class="fa fa-exchange blue"></i>
+                        </a>
+                        <a  v-if="dado['filho']>0 && dado['filho'] != undefined && dado['unidade_sigla'] == 'VB'" v-bind:href="actions.troca_remove+'/'+dado['planejamento_compra_id']">
+                            <i class="fa fa-times red"></i>
+                        </a>
+                        <a  v-if="dado['filho']==0 && dado['pai']==0 && dado['unidade_sigla'] == 'VB'" v-bind:href="actions.troca_url+'/'+dado['id']">
+                            <i class="fa fa-exchange grey"></i>
+                        </a>
+                    </td>
+                    <td  class="row-table" v-if="actions.adicionar != undefined && dado.adicionado > 0">
+                        <i class="fa fa-check green"></i>
+                    </td>
+                    <td @click="adicionar(dado, i)" class="row-table" v-else-if="actions.adicionar != undefined">
+                        <i class="fa fa-plus grey"></i>
                     </td>
                 </tr>
-                </tbody>
-            </table>
-            <div class="text-center">
-                <generic-paginator :pagination="pagination" :callback="loadData"
-                                   :options="paginationOptions"></generic-paginator>
-            </div>
+                <tr v-else>
+                    <td>Não há dados</td>
+                </tr>
+            </tbody>
+        </table>
+        <div v-if="pagination.last_page >1" class="text-center">
+            <generic-paginator :pagination="pagination" :callback="loadData"
+                               :options="paginationOptions"></generic-paginator>
         </div>
         <!-- Fim Tabela-->
-        <!-- No data -->
-        <div v-else>
-            Não há dados
-        </div>
-        <!-- Fim no data -->
     </div>
     <!-- Fim Componente tabela vue -->
 </template>
@@ -148,7 +162,8 @@
                 adicionar: '',
                 detalhe: '',
                 aprovar: '',
-                reprovar: ''
+                reprovar: '',
+                quantidade:'',
             },
             colunas: ''
         },
@@ -165,11 +180,12 @@
                 },
                 paginationOptions: {
                     offset: 4,
-                    previousText: 'Anterior',
-                    nextText: 'Proxima',
+                    previousText: '',
+                    nextText: '',
                     alwaysShowPrevNext: false
                 },
-                order: 'asc'
+                order: 'asc',
+                quant: {}
             }
         },
         methods: {
@@ -178,7 +194,11 @@
 
             },
             //Método da action adicionar onClick
-            adicionar: function(item){
+            adicionar: function(item,i){
+                console.log(this.quant[i]);
+                if(this.actions.quantidade){
+                    item['quantidade_compra'] = this.quant[i];
+                }
                 item['_token'] =this._token;
                 this.$http.post(this.apiAdicionar, item)
                     .then(function (resp) {
@@ -190,6 +210,9 @@
 //                        }
 
                     })
+            },
+            updateQuant: function (item) {
+
             },
             //Método da action reprovar onClick
             reprovar: function (id) {
@@ -274,26 +297,33 @@
                 this.params.page = this.pagination.current_page;
                 this.success = '';
                 this.error = '';
-                this.$http.get(this.apiUrl, {
-                    params: this.params
-                }).then(function (resp) {
-                    if (typeof resp.data == 'object') {
-                        this.dados = resp.data.data;
-                        this.pagination = resp.data;
-                        if (typeof this.head == 'undefined' || this.head.length == 0) {
-                            this.getHeader();
+                if(this.apiUrl){
+                    this.$http.get(this.apiUrl, {
+                        params: this.params
+                    }).then(function (resp) {
+                        if (typeof resp.data == 'object') {
+                            this.dados = resp.data.data;
+                            this.pagination = resp.data;
+                            if (typeof this.head == 'undefined' || this.head.length == 0) {
+                                this.getHeader();
+                            }
+                        } else if (typeof resp.data == 'string') {
+                            var response = jQuery.parseJSON(resp.data);
+                            this.dados = response.data;
+                            this.pagination = response;
+                            if (typeof this.head == 'undefined' || this.head.length == 0) {
+                                this.getHeader();
+                            }
                         }
-                    } else if (typeof resp.data == 'string') {
-                        var response = jQuery.parseJSON(resp.data);
-                        this.dados = response.data;
-                        this.pagination = response;
-                        if (typeof this.head == 'undefined' || this.head.length == 0) {
-                            this.getHeader();
+                        if(this.actions.quantidade != undefined){
+                            for (var j in this.dados) {
+                               this.quant[j] = this.dados[j].quantidade_compra;
+                            }
                         }
-                    }
-                    //Para animação loader
-                    stopLoading();
-                });
+                        //Para animação loader
+                        stopLoading();
+                    });
+                }
             },
         },
         created: function () {

@@ -256,6 +256,30 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->get('aprova-reprova', 'WorkflowController@aprovaReprova');
         $router->get('aprova-reprova-tudo', 'WorkflowController@aprovaReprovaTudo');
     });
+
+    /**
+     * TO-DO Criar grupo com prefixo de compras
+     */
+    $router->get('compras/{planejamento}/insumos/{insumoGrupo}', 'OrdemDeCompraController@insumos')->name('compraInsumo');
+    $router->get('compras/{planejamento}/insumosJson', 'OrdemDeCompraController@insumosJson');
+    $router->get('compras/{planejamento}/insumosFilters', 'OrdemDeCompraController@insumosFilters');
+    $router->post('compras/{planejamento}/insumosAdd', 'OrdemDeCompraController@insumosAdd');
+
+    $router->get('compras/{planejamento}/obrasInsumos/{insumoGrupo}', 'OrdemDeCompraController@obrasInsumos');
+    $router->get('compras/{planejamento}/obrasInsumosFilters', 'OrdemDeCompraController@obrasInsumosFilters');
+    $router->get('compras/{planejamento}/obrasInsumosJson/{insumoGrupo}', 'OrdemDeCompraController@obrasInsumosJson');
+
+    $router->get('compras/{planejamento}/trocaInsumos/{insumoGrupo}/insumo/{insumo}', 'OrdemDeCompraController@trocaInsumos');
+    $router->get('compras/{planejamento}/trocaInsumosFilters', 'OrdemDeCompraController@trocaInsumosFilters');
+    $router->get('compras/trocaInsumosJsonPai/{insumo}', 'OrdemDeCompraController@trocaInsumosJsonPai');
+    $router->get('compras/{planejamento}/trocaInsumosJsonFilho/{insumo}', 'OrdemDeCompraController@trocaInsumosJsonFilho');
+    $router->post('compras/{planejamento}/trocaInsumoAction/troca/{insumo}', 'OrdemDeCompraController@trocaInsumoAction');
+    $router->post('compras/{planejamento}/addCarrinho', 'OrdemDeCompraController@addCarrinho');
+    $router->get('compras/removerInsumoPlanejamento/{planejamentoCompra}', 'OrdemDeCompraController@removerInsumoPlanejamento');
+
+
+    $router->get('workflow/aprova-reprova', 'WorkflowController@aprovaReprova');
+    $router->get('workflow/aprova-reprova-tudo', 'WorkflowController@aprovaReprovaTudo');
 });
 
 

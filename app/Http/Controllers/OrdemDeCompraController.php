@@ -177,67 +177,6 @@ class OrdemDeCompraController extends AppBaseController
         return view('ordem_de_compras.compras', compact('obras'));
     }
 
-
-    public function insumos(Planejamento $planejamento, InsumoGrupo $insumoGrupo){
-        return view('ordem_de_compras.insumos', compact('planejamento', 'insumoGrupo'));
-    }
-
-    public function insumosFilters(){
-        $filters = OrdemDeCompra::$filters_insumos;
-        return response()->json($filters);
-    }
-
-    public function insumosJson(Request $request, Planejamento $planejamento){
-        //Query para utilização dos filtros
-        //DB::raw(Auth::user()->admin ? '1 as admin' : '0 as admin'),
-        $insumo_query = Insumo::query();
-        $insumos = $insumo_query->join('insumo_servico', 'insumo_servico.insumos_id','=','insumos.id')
-            ->join('servicos','servicos.id','=','insumo_servico.servicos_id')
-            ->select([
-                'insumos.id',
-                'insumos.codigo as insumo_cod',
-                'insumos.unidade_sigla',
-                'insumos.nome as descricao',
-                'servicos.id as servico_id',
-                'servicos.nome as servico',
-                'servicos.codigo as cod_servico',
-                'servicos.grupo_id',
-                DB::raw('(SELECT count(id) FROM planejamento_compras 
-                WHERE planejamento_compras.insumo_id = insumos.id 
-                AND planejamento_compras.planejamento_id ='.$planejamento->id.') as adicionado')
-//                DB::raw('(SELECT TOP 1 planejamento_compras.id FROM planejamento_compras
-//                 JOIN servicos ON servicos.id = planejamento_compras.servico_id
-//                 JOIN insumos ON insumos.codigo = planejamento_compras.codigo_insumo
-//                 WHERE planejamento_id ='.$planejamento->id. ')
-//                 as teste')
-            ]);
-
-        if(isset($request->orderkey)){
-            $insumos->orderBy($request->orderkey, $request->order);
-        }
-
-        //Aplica filtro do Jhonatan
-
-        $insumos = CodeRepository::filter($insumos, $request->all());
-
-        return response()->json($insumos->paginate(10), 200);
-    }
-
-    public function insumosAdd(Request $request, Planejamento $planejamento)
-    {
-        try{
-            $planejamento_compras = new PlanejamentoCompra();
-            $planejamento_compras->planejamento_id = $planejamento->id;
-            $planejamento_compras->insumo_id = $request->id;
-            $planejamento_compras->save();
-            Flash::success('Insumo adicionado com sucesso');
-            return response()->json('{response: "sucesso"}');
-        }catch (\Exception $e){
-            return $e->getMessage();
-        }
-    }
-
-
     public function detalhe($id)
     {
         $ordemDeCompra = $this->ordemDeCompraRepository->findWithoutFail($id);
@@ -339,6 +278,95 @@ class OrdemDeCompraController extends AppBaseController
     }
 
     /**
+     * Tela que traz a lista de insumos.
+     *
+     * @param  Planejamento $planejamento
+     * @param  InsumoGrupo $insumoGrupo
+     * @return Render View
+     */
+    public function insumos(Planejamento $planejamento, InsumoGrupo $insumoGrupo){
+        return view('ordem_de_compras.insumos', compact('planejamento', 'insumoGrupo'));
+    }
+
+    /**
+     * Carrega filtros dos insumos.
+     *
+     * @return Response Json
+     */
+    public function insumosFilters(){
+        $filters = OrdemDeCompra::$filters_insumos;
+        return response()->json($filters);
+    }
+
+    /**
+     * Tela que traz a lista de insumos.
+     *
+     * @param  Request $request
+     * @param  Planejamento $planejamento
+     * @return Response  Json
+     */
+    public function insumosJson(Request $request, Planejamento $planejamento){
+        //Query para utilização dos filtros
+        $insumo_query = Insumo::query();
+        $insumos = $insumo_query->join('insumo_servico', 'insumo_servico.insumo_id','=','insumos.id')
+            ->join('servicos','servicos.id','=','insumo_servico.servico_id')
+            ->join('orcamentos','orcamentos.insumo_id', '=', 'insumos.id')
+            ->select([
+                'insumos.id',
+                'insumos.codigo as insumo_cod',
+                'insumos.unidade_sigla',
+                'insumos.nome as descricao',
+                'servicos.id as servico_id',
+                'servicos.nome as servico',
+                'servicos.codigo as cod_servico',
+                'servicos.grupo_id as cod_grupo',
+                'orcamentos.codigo_insumo as cod_estruturado',
+                'orcamentos.subgrupo1_id as cod_subgrupo1',
+                'orcamentos.subgrupo2_id as cod_subgrupo2',
+                'orcamentos.subgrupo3_id as cod_subgrupo3',
+                DB::raw('(SELECT count(id) FROM planejamento_compras 
+                WHERE planejamento_compras.insumo_id = insumos.id 
+                AND planejamento_compras.planejamento_id ='.$planejamento->id.' AND planejamento_compras.deleted_at = null) as adicionado')
+            ]);
+
+        if(isset($request->orderkey)){
+            $insumos->orderBy($request->orderkey, $request->order);
+        }
+
+        //Aplica filtro do Jhonatan
+        $insumos = CodeRepository::filter($insumos, $request->all());
+
+        return response()->json($insumos->paginate(10), 200);
+    }
+
+    /**
+     * Adiciona insumo a lista de obras insumo.
+     *
+     * @param  Request $request
+     * @param  Planejamento $planejamento
+     * @return Response  Json
+     */
+    public function insumosAdd(Request $request, Planejamento $planejamento)
+    {
+        try{
+            $planejamento_compras = new PlanejamentoCompra();
+            $planejamento_compras->planejamento_id = $planejamento->id;
+            $planejamento_compras->insumo_id = $request->id;
+            $planejamento_compras->codigo_estruturado = $request->cod_estruturado;
+            $planejamento_compras->grupo_id = $request->cod_grupo;
+            $planejamento_compras->subgrupo1_id = $request->cod_subgrupo1;
+            $planejamento_compras->subgrupo2_id = $request->cod_subgrupo2;
+            $planejamento_compras->subgrupo3_id = $request->cod_subgrupo3;
+            $planejamento_compras->servico_id = $request->servico_id;
+            $planejamento_compras->save();
+            Flash::success('Insumo adicionado com sucesso');
+            return response()->json('{response: "sucesso"}');
+        }catch (\Exception $e){
+            return $e->getMessage();
+        }
+    }
+
+    /**
      * Tela que traz os insumos de uma tarefa especifica de uma obra.
      *
      * @param  Request $request
@@ -377,20 +405,38 @@ class OrdemDeCompraController extends AppBaseController
         $insumo_query = Insumo::query();
 
         //Query pra trazer
-        $insumos = $insumo_query->join('orcamentos', 'insumos.id', '=', 'orcamentos.insumo_id')
-            ->join('planejamento_compras','planejamento_compras.insumo_id','=','insumos.id')
-            ->select([
-                'insumos.id',
-                'insumos.nome',
-                'insumos.unidade_sigla',
-                'insumos.codigo',
-                'orcamentos.grupo_id',
-                'orcamentos.servico_id',
-                'orcamentos.qtd_total',
-                'orcamentos.preco_total'
-            ])
-            ->where('insumos.insumo_grupo_id',$insumoGrupo->id)
-            ->where('planejamento_compras.planejamento_id', $planejamento->id);
+        $insumos = $insumo_query->join('planejamento_compras', function ($join) use ($planejamento){
+            $join->on('insumos.id', 'planejamento_compras.insumo_id')
+                ->where('planejamento_compras.planejamento_id','=', $planejamento->id);
+        })->join('orcamentos', 'orcamentos.insumo_id', 'insumos.id')
+            ->select(
+                [
+                    'insumos.id',
+                    'insumos.nome',
+                    'insumos.unidade_sigla',
+                    'insumos.codigo',
+                    'orcamentos.grupo_id',
+                    'orcamentos.subgrupo1_id',
+                    'orcamentos.subgrupo2_id',
+                    'orcamentos.subgrupo3_id',
+                    'orcamentos.servico_id',
+                    'orcamentos.qtd_total',
+                    'orcamentos.preco_total',
+                    'orcamentos.preco_unitario',
+                    'planejamento_compras.quantidade_compra',
+                    'planejamento_compras.id as planejamento_compra_id',
+                    DB::raw('(SELECT count(id) FROM planejamento_compras 
+                    WHERE planejamento_compras.insumo_id = insumos.id 
+                    AND planejamento_compras.planejamento_id ='.$planejamento->id.' AND  planejamento_compras.insumo_pai IS NOT NULL) as filho'),
+                    DB::raw('(SELECT count(id) FROM planejamento_compras 
+                    WHERE planejamento_compras.planejamento_id ='.$planejamento->id.' AND  planejamento_compras.insumo_pai = insumos.id AND planejamento_compras.deleted_at = NULL) as pai'),
+                    DB::raw('(SELECT count(id) FROM ordem_de_compra_itens 
+                    WHERE ordem_de_compra_itens.insumo_id = insumos.id 
+                    AND ordem_de_compra_itens.obra_id ='.$planejamento->obra_id.' ) as adicionado')
+                ]
+            )->where('deleted_at','=', null)
+            ->orderBy(DB::raw(' COALESCE (planejamento_compras.id, planejamento_compras.trocado_de), planejamento_compras.trocado_de'));
+
 
         //Testa a ordenação
         if(isset($request->orderkey)){
@@ -401,6 +447,163 @@ class OrdemDeCompraController extends AppBaseController
 
         return response()->json($insumos->paginate(10), 200);
     }
+
+    public function removerInsumoPlanejamento(PlanejamentoCompra $planejamentoCompra)
+    {
+         PlanejamentoCompra::destroy($planejamentoCompra->id);
+         return response()->redirect()->back();
+    }
+
+
+    public function addCarrinho(Request $request, Planejamento $planejamento)
+    {
+        //Testa se tem ordem de compra aberta pro user
+        $ordem = OrdemDeCompra::where('oc_status_id', 1)
+            ->where('user_id', Auth::user()->id)
+            ->where('obra_id', $planejamento->obra_id)->first();
+
+        $planejamento_compra = PlanejamentoCompra::find($request->planejamento_compra_id);
+        $planejamento_compra->quantidade_compra = (int)$request->quantidade_compra;
+        $planejamento_compra->save();
+
+        if($ordem){
+            $ordem_item = new OrdemDeCompraItem();
+            $ordem_item->ordem_de_compra_id = $ordem->id;
+            $ordem_item->obra_id = $planejamento->obra_id;
+            $ordem_item->codigo_insumo = $request->codigo;
+            $ordem_item->qtd = (int)$request->quantidade_compra;
+            $ordem_item->valor_unitario = $request->preco_unitario;
+            $ordem_item->valor_total = $request->preco_total;
+            $ordem_item->grupo_id = $request->grupo_id;
+            $ordem_item->subgrupo1_id = $request->subgrupo1_id;
+            $ordem_item->subgrupo2_id = $request->subgrupo2_id;
+            $ordem_item->subgrupo3_id = $request->subgrupo3_id;
+            $ordem_item->servico_id = $request->servico_id;
+            $ordem_item->insumo_id = $request->id;
+            $ordem_item->user_id = Auth::user()->id;
+            $ordem_item->unidade_sigla = $request->unidade_sigla;
+            $ordem_item->save();
+        }else{
+            $ordem = new OrdemDeCompra();
+            $ordem->oc_status_id = 1;
+            $ordem->obra_id = $planejamento->obra_id;
+            $ordem->user_id = Auth::user()->id;
+            $ordem->save();
+
+            $ordem_item = new OrdemDeCompraItem();
+            $ordem_item->ordem_de_compra_id = $ordem->id;
+            $ordem_item->obra_id = $planejamento->obra_id;
+            $ordem_item->codigo_insumo = $request->codigo;
+            $ordem_item->qtd = (int)$request->quantidade_compra;
+            $ordem_item->valor_unitario = $request->preco_unitario;
+            $ordem_item->valor_total = $request->preco_total;
+            $ordem_item->grupo_id = $request->grupo_id;
+            $ordem_item->subgrupo1_id = $request->subgrupo1_id;
+            $ordem_item->subgrupo2_id = $request->subgrupo2_id;
+            $ordem_item->subgrupo3_id = $request->subgrupo3_id;
+            $ordem_item->servico_id = $request->servico_id;
+            $ordem_item->insumo_id = $request->id;
+            $ordem_item->user_id = Auth::user()->id;
+            $ordem_item->unidade_sigla = $request->unidade_sigla;
+            $ordem_item->save();
+        }
+    }
+
+
+    /**
+     * Tela que traz as opcoes de troca de insumos.
+     *
+     * @param  Insumo $insumo
+     * @param  Planejamento $planejamento
+     * @param  InsumoGrupo $insumoGrupo
+     * @return Render View
+     */
+    public function trocaInsumos(Planejamento $planejamento, InsumoGrupo $insumoGrupo, Insumo $insumo)
+    {
+        return view('ordem_de_compras.troca_insumos', compact('planejamento', 'insumoGrupo', 'insumo'));
+    }
+
+    /**
+     * Método que retorna a lista de filtros aplicaveis a  troca insumos.
+     *
+     *
+     * @return Json
+     */
+    public function trocaInsumosFilters(){
+        $filters = OrdemDeCompra::$filters_obras_insumos;
+        return response()->json($filters);
+    }
+
+
+    public function trocaInsumoAction(Request $request, Planejamento $planejamento,Insumo $insumo)
+    {
+        try{
+            $planejamento_pai = PlanejamentoCompra::where('insumo_id', $insumo->id)->where('planejamento_id',$planejamento->id)->first();
+            $planejamento_compras = new PlanejamentoCompra();
+            $planejamento_compras->planejamento_id = $planejamento->id;
+            $planejamento_compras->insumo_id = $request->id;
+            $planejamento_compras->codigo_estruturado = $request->cod_estruturado;
+            $planejamento_compras->grupo_id = $request->cod_grupo;
+            $planejamento_compras->subgrupo1_id = $request->cod_subgrupo1;
+            $planejamento_compras->subgrupo2_id = $request->cod_subgrupo2;
+            $planejamento_compras->subgrupo3_id = $request->cod_subgrupo3;
+            $planejamento_compras->servico_id = $request->servico_id;
+            $planejamento_compras->insumo_pai = $insumo->id;
+            $planejamento_compras->save();
+            Flash::success('Insumo adicionado com sucesso');
+            return response()->json('{response: "sucesso"}');
+        }catch (\Exception $e){
+            Flash::error('Insumo adicionado com'. $e->getMessage());
+            return response()->json('{response: "error'.$e->getMessage().'"}');
+        }
+    }
+
+    public function trocaInsumosJsonFilho(Planejamento $planejamento,Insumo $insumo){
+        $insumo_query = Insumo::query();
+
+        $planejamento_pai = PlanejamentoCompra::where('insumo_id',$insumo->id)
+            ->where('planejamento_id', $planejamento->id)->first();
+        //Query pra trazer
+        $insumos = $insumo_query->join('orcamentos','orcamentos.insumo_id','=','insumos.id')
+            ->join('planejamento_compras','planejamento_compras.insumo_id','=','insumos.id')
+            ->select([
+                'insumos.id',
+                'insumos.nome',
+                'insumos.unidade_sigla',
+                'insumos.codigo',
+                'orcamentos.grupo_id',
+                'orcamentos.servico_id',
+                'orcamentos.qtd_total',
+                'orcamentos.preco_total'
+            ])->where('deleted_at','=', null)
+            ->where('planejamento_compras.insumo_pai',$insumo->id);
+//            ->where('planejamento_compras.trocado_de',$insumo->id);
+//            ->whereNotNull('planejamento_compras.trocado_de');
+        return response()->json($insumos->paginate(10), 200);
+    }
+
+    public function trocaInsumosJsonPai(Insumo $insumo){
+
+        $insumo = Insumo::where('id',$insumo->id);
+//        $insumo_query = Insumo::query();
+
+        //Query pra trazer
+//        $insumos = $insumo_query->join('orcamentos','orcamentos.insumo_id','=','insumos.id')
+//            ->select([
+//                'insumos.id',
+//                'insumos.nome',
+//                'insumos.unidade_sigla',
+//                'insumos.codigo',
+//                'orcamentos.grupo_id',
+//                'orcamentos.servico_id',
+//                'orcamentos.qtd_total',
+//                'orcamentos.preco_total'
+//            ])
+//            ->where('insumos.id',$insumo->id);
+
+        return response()->json($insumo->paginate(10), 200);
+    }
+
 
     //Metodo de paginacao manual caso necessario
     protected function paginate($items, $perPage = 12){
