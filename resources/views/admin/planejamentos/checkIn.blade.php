@@ -42,19 +42,76 @@
 @endsection
 @section('scripts')
     <script type="text/javascript">
-        $(document).ready(function($) {
-            var $selects = $('select');
-            $selects.on('change', function() {
-                var $select = $(this),
-                        $options = $selects.not($select).find('option'),
-                        selectedText = $select.children('option:selected').val();
+        var masterList = [];
+        var selectedList = [];
+        $(function() {
 
-                var $optionsToDisable = $options.filter(function() {
-                    return $(this).val() == selectedText;
+
+            Array.prototype.equals = function (array) {
+                // if the other array is a falsy value, return
+                if (!array)
+                    return false;
+
+                // compare lengths - can save a lot of time
+                if (this.length != array.length)
+                    return false;
+
+                for (var i = 0, l=this.length; i < l; i++) {
+                    // Check if we have nested arrays
+                    if (this[i] instanceof Array && array[i] instanceof Array) {
+                        // recurse into the nested arrays
+                        if (!this[i].equals(array[i]))
+                            return false;
+                    }
+                    else if (this[i] != array[i]) {
+                        // Warning - two different object instances will never be equal: {x:20} != {x:20}
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            function createMasterList() {
+                masterList = [];
+                $('select').children('option').each(function() {
+                    masterList.push($(this).val());
                 });
+                masterList.shift(); //remove blank value
+            }
 
-                $optionsToDisable.prop('disabled', true);
+            createMasterList(); //used to check if all dropdown values have been selected
+
+            function updateSelectedList() {
+                selectedList = [];
+                var selectedValue;
+                $('select').each(function() {
+                    selectedValue = $(this).find('option:selected').val();
+                    if (selectedValue != "" && $.inArray(selectedValue, selectedList) == "-1") {
+                        selectedList.push(selectedValue);
+                    }
+                });
+            }
+
+            //disable the dropdown items that have already been selected
+            function disableAlreadySelected() {
+                $('option').each(function() {
+                    if ($.inArray(this.value, selectedList) != "-1") {
+                        if(!$(this).is(':checked')){
+                            $(this).attr("disabled", true);
+                        }
+                    } else {
+                        $(this).attr("disabled", false);
+                    }
+                });
+            }
+
+            $('select').on('change', function() {
+                setTimeout(function() {
+                    updateSelectedList();
+                    disableAlreadySelected();
+                }, 10);
             });
+
         });
     </script>
 @stop
