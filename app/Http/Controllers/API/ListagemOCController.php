@@ -33,25 +33,44 @@ class ListagemOCController extends AppBaseController
                     'users.name as usuario',
                     'oc_status.nome as situacao',
                     DB::raw('(
-                        SELECT
-                            SUM(qtd)
+                    SELECT 
+                        IF(igual, 0, IF(maior, 1, - 1)) AS status
+                    FROM
+                        (SELECT 
+                            IF(qtd_total = qtd_itens, 1, 0) AS igual,
+                                IF(qtd_itens > qtd_total, 1, 0) AS maior
                         FROM
-                            ordem_de_compra_itens
-                        WHERE
-                            ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id
-                        AND 
-                            ordem_de_compra_itens.deleted_at IS NULL
-                    ) AS total_comprado'),
-                    DB::raw('(
-                        SELECT
-                            SUM(qtd_total)
-                        FROM
-                            orcamentos
-                        WHERE
-                            orcamentos.obra_id = ordem_de_compras.obra_id
-                        AND
-                            orcamentos.orcamento_tipo_id = 1
-                    ) AS total_para_comprar')
+                            (SELECT 
+                            (SELECT 
+                                        SUM(orcamentos.qtd_total) AS total
+                                    FROM
+                                        ordem_de_compra_itens
+                                    INNER JOIN orcamentos ON orcamentos.obra_id = ordem_de_compra_itens.obra_id
+                                    INNER JOIN orcamentos orc_grupo ON orc_grupo.grupo_id = ordem_de_compra_itens.grupo_id
+                                    INNER JOIN orcamentos orc_subgrupo1 ON orc_subgrupo1.subgrupo1_id = ordem_de_compra_itens.subgrupo1_id
+                                    INNER JOIN orcamentos orc_subgrupo2 ON orc_subgrupo2.subgrupo2_id = ordem_de_compra_itens.subgrupo2_id
+                                    INNER JOIN orcamentos orc_subgrupo3 ON orc_subgrupo3.subgrupo3_id = ordem_de_compra_itens.subgrupo3_id
+                                    INNER JOIN orcamentos orc_servico ON orc_servico.servico_id = ordem_de_compra_itens.servico_id
+                                    INNER JOIN orcamentos orc_insumo ON orc_insumo.insumo_id = ordem_de_compra_itens.insumo_id
+                                    WHERE
+                                        orcamentos.orcamento_tipo_id = 1
+                                            AND ordem_de_compra_itens.deleted_at IS NULL) AS qtd_total,
+                                (SELECT 
+                                        SUM(ordem_de_compra_itens.qtd) AS qtd
+                                    FROM
+                                        ordem_de_compra_itens
+                                    INNER JOIN orcamentos ON orcamentos.obra_id = ordem_de_compra_itens.obra_id
+                                    INNER JOIN orcamentos orc_grupo ON orc_grupo.grupo_id = ordem_de_compra_itens.grupo_id
+                                    INNER JOIN orcamentos orc_subgrupo1 ON orc_subgrupo1.subgrupo1_id = ordem_de_compra_itens.subgrupo1_id
+                                    INNER JOIN orcamentos orc_subgrupo2 ON orc_subgrupo2.subgrupo2_id = ordem_de_compra_itens.subgrupo2_id
+                                    INNER JOIN orcamentos orc_subgrupo3 ON orc_subgrupo3.subgrupo3_id = ordem_de_compra_itens.subgrupo3_id
+                                    INNER JOIN orcamentos orc_servico ON orc_servico.servico_id = ordem_de_compra_itens.servico_id
+                                    INNER JOIN orcamentos orc_insumo ON orc_insumo.insumo_id = ordem_de_compra_itens.insumo_id
+                                    WHERE
+                                        orcamentos.orcamento_tipo_id = 1
+                                            AND ordem_de_compra_itens.deleted_at IS NULL) AS qtd_itens
+                        ) AS x) AS y
+                    ) as status')
                 ])
             ->join('obras', 'obras.id', '=', 'ordem_de_compras.obra_id')
             ->join('oc_status', 'oc_status.id', '=', 'ordem_de_compras.oc_status_id')
