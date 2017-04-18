@@ -25,19 +25,17 @@
     <section class="content-header">
         <div class="modal-header">
             <div class="col-md-12">
-                <div class="col-md-9">
-               <span class="pull-left title">
-                   <h3>
-                       <button type="button" class="btn btn-link" onclick="history.go(-1);">
-                        <i class="fa fa-arrow-left" aria-hidden="true"></i>
-                       </button>
-                       <span>
-                        Detalhar Ordem de Compra</span>
-                   </h3>
-
+                <div class="col-md-8">
+                    <span class="pull-left title">
+                        <h3>
+                            <button type="button" class="btn btn-link" onclick="history.go(-1);">
+                             <i class="fa fa-arrow-left" aria-hidden="true"></i>
+                            </button>
+                            <span>Detalhar Ordem de Compra</span>
+                        </h3>
+                    </span>
                 </div>
-
-                <div class="col-md-3 text-right">
+                <div class="col-md-4 text-right">
                     <a href="{!! route('retroalimentacaoObras.create') !!}" class="btn btn-default btn-lg btn-flat">
                         Retroalimentação
                     </a>
@@ -88,7 +86,6 @@
                             @endif
                         @endif
                     @endif
-
                 </div>
             </div>
         </div>
