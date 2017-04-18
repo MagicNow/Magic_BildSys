@@ -84,6 +84,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             $router->get('atividade/grupos/{id}', 'Admin\PlanejamentoController@getGrupos');
             $router->get('atividade/servicos/{id}', 'Admin\PlanejamentoController@getServicos');
             $router->post('atividade/insumos', ['as'=> 'admin.planejamentos.insumos', 'uses' => 'Admin\PlanejamentoController@planejamentoCompras']);
+            $router->get('atividade/planejamentocompras/{id}', 'Admin\PlanejamentoController@destroyPlanejamentoCompra');
 
             # Lembretes
             $router->get('lembretes', ['as' => 'admin.lembretes.index', 'uses' => 'Admin\LembreteController@index']);
