@@ -8,6 +8,7 @@ use App\Http\Requests\Admin\CreateContratosRequest;
 use App\Http\Requests\Admin\UpdateContratosRequest;
 use App\Models\ContratoInsumo;
 use App\Models\Insumo;
+use App\Models\MegaFornecedor;
 use App\Repositories\Admin\ContratosRepository;
 use App\Repositories\CodeRepository;
 use Flash;
@@ -44,7 +45,9 @@ class ContratosController extends AppBaseController
     public function create()
     {
         $insumos = Insumo::get();
-        return view('admin.contratos.create', compact('insumos'));
+        $fornecedores = MegaFornecedor::pluck('agn_st_nome','agn_pad_in_codigo')->toArray();
+
+        return view('admin.contratos.create', compact('insumos', 'fornecedores'));
     }
 
     /**
@@ -246,5 +249,15 @@ class ContratosController extends AppBaseController
         }catch (\Exception $e){
             return $e->getMessage();
         }
+    }
+
+    public function buscaFornecedor(Request $request){
+        $fornecedores = MegaFornecedor::select([
+            'agn_in_codigo',
+            'agn_st_nome'
+        ])
+            ->where('agn_st_nome','like', '%'.$request->q.'%')->paginate();
+
+        return $fornecedores;
     }
 }
