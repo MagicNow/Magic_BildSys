@@ -75,6 +75,8 @@ class ListagemOCController extends AppBaseController
             ->join('obras', 'obras.id', '=', 'ordem_de_compras.obra_id')
             ->join('oc_status', 'oc_status.id', '=', 'ordem_de_compras.oc_status_id')
             ->join('users', 'users.id', '=', 'ordem_de_compras.user_id')
+            ->where('ordem_de_compras.oc_status_id', '!=', 1)
+            ->where('ordem_de_compras.oc_status_id', '!=', 6)
             ->paginate(10);
 
         return response()->json($listagem_oc, 200);
