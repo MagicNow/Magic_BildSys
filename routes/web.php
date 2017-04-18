@@ -32,6 +32,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
 
     $router->get('/ordens-de-compra/detalhes/{id}', 'OrdemDeCompraController@detalhe');
     $router->get('/ordens-de-compra/carrinho', 'OrdemDeCompraController@carrinho');
+    $router->get('/ordens-de-compra/carrinho/indicar-contrato', 'OrdemDeCompraController@indicarContrato');
     $router->get('/ordens-de-compra/fechar-carrinho', 'OrdemDeCompraController@fechaCarrinho');
     $router->post('/ordens-de-compra/altera-item/{id}', 'OrdemDeCompraController@alteraItem');
     $router->post('/ordens-de-compra/upload-anexos/{id}', 'OrdemDeCompraController@uploadAnexos');

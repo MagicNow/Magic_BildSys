@@ -6,6 +6,7 @@ use App\DataTables\OrdemDeCompraDataTable;
 use App\Http\Requests;
 use App\Http\Requests\CreateOrdemDeCompraRequest;
 use App\Http\Requests\UpdateOrdemDeCompraRequest;
+use App\Models\ContratoInsumo;
 use App\Models\Insumo;
 use App\Models\Grupo;
 use App\Models\InsumoGrupo;
@@ -729,6 +730,15 @@ class OrdemDeCompraController extends AppBaseController
             return response()->json(['success'=>true]);
         }
         return response()->json(['success'=>false, 'error'=>'Erro ao remover']);
+    }
+
+    public function indicarContrato(Request $request)
+    {
+        $insumo = Insumo::where('codigo', $request->codigo_insumo)->first();
+
+        $contrato_insumo = ContratoInsumo::with('contrato')->where('insumo_id', $insumo->id)->get();
+        
+        return response()->json(['contrato_insumo' => $contrato_insumo]);
     }
 }
 

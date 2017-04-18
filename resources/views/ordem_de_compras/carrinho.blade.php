@@ -297,8 +297,43 @@
         });
 
         function indicarContrato(codigo_insumo){
-            {{--@todo Criar busca em modal de lista de contratos --}}
-            swal('Função ainda não disponível!');
+            startLoading();
+            $.ajax("{{ url('/ordens-de-compra/carrinho/indicar-contrato') }}", {
+                        data: {
+                            'codigo_insumo' : codigo_insumo
+                        },
+                        type: "GET"
+                    }
+            ).done(function (retorno) {
+                stopLoading();
+                contratos = '';
+                $.each(retorno.contrato_insumo, function (index, value) {
+                    contratos += '<p>Valor: ' + value.contrato.valor + '</p>';
+                });
+
+                swal({
+                    html:true,
+                    title: "Indicar contrato",
+                    text: contratos
+                });
+
+            }).fail(function (retorno) {
+                stopLoading();
+                erros = '';
+                $.each(retorno.responseJSON, function (index, value) {
+                    if (erros.length) {
+                        erros += '<br>';
+                    }
+                    erros += value;
+                });
+                erros = erros.replace('conteudo ','');
+                swal({
+                    html:true,
+                    title: "Oops",
+                    text: erros,
+                    type: 'error'
+                });
+            });
         }
 
         function alteraItem(item_id, campo, valor){
@@ -325,7 +360,12 @@
                     erros += value;
                 });
                 erros = erros.replace('conteudo ','');
-                swal("Oops", erros, "error");
+                swal({
+                    html:true,
+                    title: "Oops",
+                    text: erros,
+                    type: 'error'
+                });
             });
         }
 
@@ -361,7 +401,12 @@
                                 erros += value;
                             });
                             erros = erros.replace('conteudo ','');
-                            swal("Oops", erros, "error");
+                            swal({
+                                html:true,
+                                title: "Oops",
+                                text: erros,
+                                type: 'error'
+                            });
                         });
                     });
 
