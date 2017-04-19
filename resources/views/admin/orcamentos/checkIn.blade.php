@@ -10,7 +10,7 @@
             @include('flash::message')
             <div class="panel-body"></div>
             <!-- INICIO form -->
-            {!! Form::open(['route' => 'admin.orcamento.save', 'method'=>'post']) !!}
+            {!! Form::open(['route' => 'admin.orcamentos.save', 'method'=>'post']) !!}
             <div class="table-responsive">
                 <table class="table table-bordered table-striped table-hover table-condensed">
                         <thead>

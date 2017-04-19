@@ -51,7 +51,8 @@ class PlanejamentoController extends AppBaseController
      */
     public function create()
     {
-        return view('admin.planejamentos.create');
+        $obras = Obra::pluck('nome','id')->toArray();
+        return view('admin.planejamentos.create', compact('obras'));
     }
 
     /**
