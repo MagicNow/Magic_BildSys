@@ -84,6 +84,7 @@ class PlanejamentoController extends AppBaseController
     {
         $planejamento = $this->planejamentoRepository->findWithoutFail($id);
         $itens = PlanejamentoCompra::where('planejamento_id', $id)
+            ->orderBy('servico_id')
             ->paginate(10);
 
         if (empty($planejamento)) {
