@@ -45,7 +45,7 @@
                                 <i class="fa fa-check" aria-hidden="true"></i>
                             </span>
                         @else
-                            <span class="text-danger btn-lg btn-flat" title="Reprovado por você">
+                            <span class="text-danger btn-lg btn-flat" title="Reprovado">
                                 <i class="fa fa-times" aria-hidden="true"></i>
                             </span>
                         @endif

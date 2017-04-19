@@ -1025,7 +1025,7 @@ exports = module.exports = __webpack_require__(0)();
 
 
 // module
-exports.push([module.i, "\n.pagination-custom{\n    display: inline-block;\n    padding-left: 0;\n}\n.pagination-custom > li{\n    margin: 2px;\n    display: inline;\n}\n.page-element > a{\n    padding: 6px 12px;\n    border: solid 1px #979797;\n}\n.active >a{\n    color: #f98d00;\n    font-weight: bold;\n    border: solid 1px #f98d00;\n}\n", ""]);
+exports.push([module.i, "\n.pagination-custom{\n    display: inline-block;\n    padding-left: 0;\n}\n.pagination-custom > li{\n    margin: 2px;\n    display: inline;\n}\n.page-element > a{\n    padding: 6px 12px;\n    border: solid 1px #979797;\n}\n.pagination-custom .active >a{\n    color: #f98d00;\n    font-weight: bold;\n    border: solid 1px #f98d00;\n}\n", ""]);
 
 // exports
 

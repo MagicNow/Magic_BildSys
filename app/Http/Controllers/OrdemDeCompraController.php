@@ -11,6 +11,7 @@ use App\Models\Grupo;
 use App\Models\InsumoGrupo;
 use App\Models\Lembrete;
 use App\Models\OrdemDeCompraItemAnexo;
+use App\Models\OrdemDeCompraStatusLog;
 use App\Models\Planejamento;
 use App\Models\PlanejamentoCompra;
 use App\Models\WorkflowReprovacaoMotivo;
@@ -410,7 +411,14 @@ class OrdemDeCompraController extends AppBaseController
                 $join->on('insumos.id', 'planejamento_compras.insumo_id')
                 ->on('planejamento_compras.planejamento_id','=', DB::raw($planejamento->id));
             })
-            ->join('orcamentos', 'orcamentos.insumo_id', 'insumos.id')
+            ->join('orcamentos', function($join){
+                $join->on('orcamentos.insumo_id','=', 'planejamento_compras.insumo_id');
+                $join->on('orcamentos.grupo_id','=', 'planejamento_compras.grupo_id');
+                $join->on('orcamentos.subgrupo1_id','=', 'planejamento_compras.subgrupo1_id');
+                $join->on('orcamentos.subgrupo2_id','=', 'planejamento_compras.subgrupo2_id');
+                $join->on('orcamentos.subgrupo3_id','=', 'planejamento_compras.subgrupo3_id');
+                $join->on('orcamentos.servico_id','=', 'planejamento_compras.servico_id');
+            })
             ->select(
                 [
                     'insumos.id',
@@ -466,6 +474,7 @@ class OrdemDeCompraController extends AppBaseController
             ->whereNull('deleted_at')
             ->whereNotNull('orcamentos.qtd_total')
             ->whereNotNull('orcamentos.preco_total')
+            ->where('orcamentos.ativo','1')
             ->orderBy(DB::raw(' COALESCE (planejamento_compras.id, planejamento_compras.trocado_de), planejamento_compras.trocado_de'));
 
 
@@ -503,6 +512,11 @@ class OrdemDeCompraController extends AppBaseController
             $ordem->obra_id = $planejamento->obra_id;
             $ordem->user_id = Auth::user()->id;
             $ordem->save();
+            OrdemDeCompraStatusLog::create([
+                'oc_status_id'=>1,
+                'ordem_de_compra_id'=>$ordem->id,
+                'user_id'=>Auth::id()
+            ]);
         }
 
         $ordem_item = OrdemDeCompraItem::firstOrNew([
@@ -598,8 +612,8 @@ class OrdemDeCompraController extends AppBaseController
                 'orcamentos.qtd_total',
                 'orcamentos.preco_total'
             ])->where('deleted_at','=', null)
-            ->where('planejamento_compras.insumo_pai',$insumo->id);
-//            ->where('planejamento_compras.trocado_de',$insumo->id);
+            ->where('planejamento_compras.insumo_pai',$insumo->id)
+            ->where('orcamentos.ativo',1);
 //            ->whereNotNull('planejamento_compras.trocado_de');
         return response()->json($insumos->paginate(10), 200);
     }
@@ -694,6 +708,11 @@ class OrdemDeCompraController extends AppBaseController
 
         $ordemDeCompra->oc_status_id = 2; // Fechada
         $ordemDeCompra->save();
+        OrdemDeCompraStatusLog::create([
+            'oc_status_id'=>$ordemDeCompra->oc_status_id,
+            'ordem_de_compra_id'=>$ordem->id,
+            'user_id'=>Auth::id()
+        ]);
 
         // Agora altera todos os Planejamentos compra que estão ligadas à essa zerando a quantidade do pré-carrinho
         $planejamento_compras_zerar = $ordemDeCompra->itens()
