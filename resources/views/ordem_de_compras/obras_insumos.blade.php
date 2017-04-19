@@ -42,7 +42,7 @@
             <tabela
                     api-url="/compras/{{$planejamento->id}}/obrasInsumosJson/{{$insumoGrupo->id}}"
                     api-filtros="/compras/{{$planejamento->id}}/obrasInsumosFilters"
-                    api-adicionar="/compras/{{$planejamento->id}}/addCarrinho"
+                    api-adicionar="/compras/{{$planejamento->obra_id}}/{{$planejamento->id}}/addCarrinho"
                     _token="{{csrf_token()}}"
                     v-bind:params="{}"
                     v-bind:actions="{

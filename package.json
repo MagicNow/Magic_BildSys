@@ -30,5 +30,8 @@
     "vue-pagination-2": "^0.2.72",
     "vue-resource": "^1.0.3",
     "vue-tables-2": "^0.5.0"
+  },
+  "dependencies": {
+    "hchs-vue-charts": "^1.2.8"
   }
 }

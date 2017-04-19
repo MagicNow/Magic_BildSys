@@ -229,6 +229,7 @@ class OrdemDeCompraController extends AppBaseController
                                 AND OCI2.subgrupo2_id = ordem_de_compra_itens.subgrupo2_id 
                                 AND OCI2.subgrupo3_id = ordem_de_compra_itens.subgrupo3_id 
                                 AND OCI2.servico_id = ordem_de_compra_itens.servico_id 
+                                AND OCI2.obra_id = ".$ordemDeCompra->obra_id." 
                                 AND OCI2.deleted_at IS NULL
                              ) as qtd_realizada"),
                     DB::raw("(SELECT SUM( valor_total ) 
@@ -500,21 +501,25 @@ class OrdemDeCompraController extends AppBaseController
     }
 
 
-    public function addCarrinho(Request $request, Planejamento $planejamento)
+    public function addCarrinho(Request $request, Obra $obra,Planejamento $planejamento = null)
     {
         //Testa se tem ordem de compra aberta pro user
         $ordem = OrdemDeCompra::where('oc_status_id', 1)
             ->where('user_id', Auth::user()->id)
-            ->where('obra_id', $planejamento->obra_id)->first();
+            ->where('obra_id', $obra->id)->first();
 
-        $planejamento_compra = PlanejamentoCompra::find($request->planejamento_compra_id);
-        $planejamento_compra->quantidade_compra = floatval($request->quantidade_compra);
-        $planejamento_compra->save();
+        // se foi passado algum planejamento
+        if($planejamento){
+            $planejamento_compra = PlanejamentoCompra::find($request->planejamento_compra_id);
+            $planejamento_compra->quantidade_compra = floatval($request->quantidade_compra);
+            $planejamento_compra->save();
+        }
+
 
         if(!$ordem){
             $ordem = new OrdemDeCompra();
             $ordem->oc_status_id = 1;
-            $ordem->obra_id = $planejamento->obra_id;
+            $ordem->obra_id = $obra->id;
             $ordem->user_id = Auth::user()->id;
             $ordem->save();
             OrdemDeCompraStatusLog::create([
@@ -524,23 +529,37 @@ class OrdemDeCompraController extends AppBaseController
             ]);
         }
 
+        // Encontra o orçamento ativo para validar preço
+        $orcamento_ativo = Orcamento::where('insumo_id',$request->id)
+            ->where('obra_id',$obra->id)
+            ->where('grupo_id',$request->grupo_id)
+            ->where('subgrupo1_id',$request->subgrupo1_id)
+            ->where('subgrupo2_id',$request->subgrupo2_id)
+            ->where('subgrupo3_id',$request->subgrupo3_id)
+            ->where('servico_id',$request->servico_id)
+            ->where('ativo',1)
+            ->first();
+        if(!$orcamento_ativo){
+            return response()->json(['success'=>false,'error'=>'Um item de orçamento ativo deste insumo não foi encontrado.']);
+        }
+
         $ordem_item = OrdemDeCompraItem::firstOrNew([
             'ordem_de_compra_id' => $ordem->id,
-            'obra_id' => $planejamento->obra_id,
-            'codigo_insumo' => $request->codigo,
-            'valor_unitario' => $request->preco_unitario,
-            'valor_total' => $request->preco_total,
-            'grupo_id' => $request->grupo_id,
-            'subgrupo1_id' => $request->subgrupo1_id,
-            'subgrupo2_id' => $request->subgrupo2_id,
-            'subgrupo3_id' => $request->subgrupo3_id,
-            'servico_id' => $request->servico_id,
-            'insumo_id' => $request->id,
-            'unidade_sigla' => $request->unidade_sigla,
+            'obra_id' => $obra->id,
+            'codigo_insumo' => $orcamento_ativo->codigo_insumo,
+            'grupo_id' => $orcamento_ativo->grupo_id,
+            'subgrupo1_id' => $orcamento_ativo->subgrupo1_id,
+            'subgrupo2_id' => $orcamento_ativo->subgrupo2_id,
+            'subgrupo3_id' => $orcamento_ativo->subgrupo3_id,
+            'servico_id' => $orcamento_ativo->servico_id,
+            'insumo_id' => $orcamento_ativo->insumo_id,
+            'unidade_sigla' => $orcamento_ativo->unidade_sigla,
         ]);
 
         $ordem_item->user_id = Auth::user()->id;
         $ordem_item->qtd = doubleval($request->quantidade_compra);
+        $ordem_item->valor_unitario = $orcamento_ativo->preco_unitario;
+        $ordem_item->valor_total = doubleval($orcamento_ativo->preco_unitario) * doubleval($request->quantidade_compra);
         $salvo = $ordem_item->save();
         if(!doubleval($request->quantidade_compra)){
             $ordem_item->delete();

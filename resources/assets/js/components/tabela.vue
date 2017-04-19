@@ -207,7 +207,7 @@
                 }
                 this.$http.post(this.apiAdicionar, item)
                     .then(function (resp) {
-                        if(resp.status){
+                        if(resp.body.success){
                             var titulo = 'Adicionado';
                             if(item['adicionado']){
                                 titulo = 'Alterado';
@@ -217,6 +217,8 @@
                                 swal(titulo,'','success');
                             }
                             this.loadData();
+                        }else{
+                            swal('Oops',resp.body.error,'error');
                         }
                     })
                     .bind(this)
