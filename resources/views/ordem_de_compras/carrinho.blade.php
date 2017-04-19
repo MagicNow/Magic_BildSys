@@ -118,7 +118,7 @@
                                 </span>
                         <span class="col-md-2 col-sm-2 col-xs-5 text-center borda-direita">
                             <label class="label-bloco label-bloco-limitado">Indicar contrato</label>
-                            <button type="button" class="btn btn-flat btn-sm btn-default margem-botao" onclick="indicarContrato('{{ $item->insumo->codigo }}')">
+                            <button type="button" class="btn btn-flat btn-sm btn-default margem-botao" onclick="indicarContrato('{{ $item->insumo->codigo }}', '{{$item->id}}')">
                                 Selecionar
                             </button>
                         </span>
@@ -278,7 +278,7 @@
             });
         });
 
-        function indicarContrato(codigo_insumo){
+        function indicarContrato(codigo_insumo, item_id){
             startLoading();
             $.ajax("{{ url('/ordens-de-compra/carrinho/indicar-contrato') }}", {
                         data: {
@@ -292,12 +292,12 @@
                 $.each(retorno.contrato_insumo, function (index, value) {
                     contratos +=
                                  '<p style="border-bottom: 1px solid #dddddd;padding: 10px;text-align: left">' +
-                                 '<button style="padding: 10px 10px;">Indicar</button>' +
-                                    value.contrato.fornecedor_nome +
+                                 '<span class="btn btn-sm btn-success flat" style="padding: 10px 10px;" onclick="indicarContratoFecharModal(' + item_id + ', \'sugestao_contrato_id\', ' + value.contrato.id + ')">Indicar</span>' +
+                                    '<span style="margin-left: 15px;">' + value.contrato.fornecedor_nome + '</span>' +
                                     '<br>' +
                                     '<i>' +
                                         '<a href="' + value.contrato.arquivo + '" target="_blank" style="margin-left: 167px;">Ver contrato</a>' +
-                                    '<i>' +
+                                    '</i>' +
                                  '</p>';
                 });
 
@@ -481,5 +481,10 @@
 //        const app = new Vue({
 //            el: '#app'
 //        });
+
+        function indicarContratoFecharModal(item_id, campo, valor) {
+            $('.confirm').click();
+            alteraItem(item_id, campo, valor);
+        }
     </script>
 @endsection
