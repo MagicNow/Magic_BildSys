@@ -58,10 +58,10 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         Route::resource('users', 'Admin\Manage\UsersController');
 
         #importação de planilhas de orçamentos
-        Route::get('orcamento/', ['as'=> 'admin.orcamento.indexImport', 'uses' => 'Admin\OrcamentoController@indexImport']);
-        Route::post('orcamento/importar', ['as'=> 'admin.orcamento.importar', 'uses' => 'Admin\OrcamentoController@import']);
-        Route::get('orcamento/importar/checkIn', ['as'=> 'admin.orcamento.checkIn', 'uses' => 'Admin\OrcamentoController@checkIn']);
-        Route::post('orcamento/importar/save', ['as'=> 'admin.orcamento.save', 'uses' => 'Admin\OrcamentoController@save']);
+        Route::get('orcamento/', ['as'=> 'admin.orcamentos.indexImport', 'uses' => 'Admin\OrcamentoController@indexImport']);
+        Route::post('orcamento/importar', ['as'=> 'admin.orcamentos.importar', 'uses' => 'Admin\OrcamentoController@import']);
+        Route::get('orcamento/importar/checkIn', ['as'=> 'admin.orcamentos.checkIn', 'uses' => 'Admin\OrcamentoController@checkIn']);
+        Route::post('orcamento/importar/save', ['as'=> 'admin.orcamentos.save', 'uses' => 'Admin\OrcamentoController@save']);
         Route::get('orcamento/importar/selecionaCampos', 'Admin\OrcamentoController@selecionaCampos');
 
         # Orçamentos

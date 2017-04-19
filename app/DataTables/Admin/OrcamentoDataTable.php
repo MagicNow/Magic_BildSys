@@ -17,6 +17,27 @@ class OrcamentoDataTable extends DataTable
         return $this->datatables
             ->eloquent($this->query())
             ->addColumn('action', 'admin.orcamentos.datatables_actions')
+            ->editColumn('obra_id',function ($obj){
+                return $obj->obra->nome;
+            })
+            ->editColumn('insumo_id',function ($obj){
+                return $obj->insumo->nome;
+            })
+            ->editColumn('grupo_id',function ($obj){
+                return $obj->grupo->nome;
+            })
+            ->editColumn('subgrupo1_id',function ($obj){
+                return $obj->grupo1->nome;
+            })
+            ->editColumn('subgrupo2_id',function ($obj){
+                return $obj->grupo2->nome;
+            })
+            ->editColumn('subgrupo3_id',function ($obj){
+                return $obj->grupo3->nome;
+            })
+            ->editColumn('servico_id',function ($obj){
+                return $obj->servico->nome;
+            })
             ->make(true);
     }
 
@@ -91,35 +112,35 @@ class OrcamentoDataTable extends DataTable
     private function getColumns()
     {
         return [
-            'obra_id' => ['name' => 'obra_id', 'data' => 'obra_id'],
-            'codigo_insumo' => ['name' => 'codigo_insumo', 'data' => 'codigo_insumo'],
-            'insumo_id' => ['name' => 'insumo_id', 'data' => 'insumo_id'],
-            'servico_id' => ['name' => 'servico_id', 'data' => 'servico_id'],
-            'grupo_id' => ['name' => 'grupo_id', 'data' => 'grupo_id'],
-            'unidade_sigla' => ['name' => 'unidade_sigla', 'data' => 'unidade_sigla'],
-            'coeficiente' => ['name' => 'coeficiente', 'data' => 'coeficiente'],
-            'indireto' => ['name' => 'indireto', 'data' => 'indireto'],
-            'terreo_externo_solo' => ['name' => 'terreo_externo_solo', 'data' => 'terreo_externo_solo'],
-            'terreo_externo_estrutura' => ['name' => 'terreo_externo_estrutura', 'data' => 'terreo_externo_estrutura'],
-            'terreo_interno' => ['name' => 'terreo_interno', 'data' => 'terreo_interno'],
-            'primeiro_pavimento' => ['name' => 'primeiro_pavimento', 'data' => 'primeiro_pavimento'],
-            'segundo_ao_penultimo' => ['name' => 'segundo_ao_penultimo', 'data' => 'segundo_ao_penultimo'],
-            'cobertura_ultimo_piso' => ['name' => 'cobertura_ultimo_piso', 'data' => 'cobertura_ultimo_piso'],
-            'atico' => ['name' => 'atico', 'data' => 'atico'],
-            'reservatorio' => ['name' => 'reservatorio', 'data' => 'reservatorio'],
-            'qtd_total' => ['name' => 'qtd_total', 'data' => 'qtd_total'],
-            'preco_unitario' => ['name' => 'preco_unitario', 'data' => 'preco_unitario'],
-            'preco_total' => ['name' => 'preco_total', 'data' => 'preco_total'],
-            'referencia_preco' => ['name' => 'referencia_preco', 'data' => 'referencia_preco'],
-            'obs' => ['name' => 'obs', 'data' => 'obs'],
-            'porcentagem_orcamento' => ['name' => 'porcentagem_orcamento', 'data' => 'porcentagem_orcamento'],
-            'orcamento_tipo_id' => ['name' => 'orcamento_tipo_id', 'data' => 'orcamento_tipo_id'],
-            'ativo' => ['name' => 'ativo', 'data' => 'ativo'],
-            'subgrupo1_id' => ['name' => 'subgrupo1_id', 'data' => 'subgrupo1_id'],
-            'subgrupo2_id' => ['name' => 'subgrupo2_id', 'data' => 'subgrupo2_id'],
-            'subgrupo3_id' => ['name' => 'subgrupo3_id', 'data' => 'subgrupo3_id'],
-            'user_id' => ['name' => 'user_id', 'data' => 'user_id'],
-            'descricao' => ['name' => 'descricao', 'data' => 'descricao']
+            'obra' => ['name' => 'obra_id', 'data' => 'obra_id'],
+            'codigo' => ['name' => 'codigo_insumo', 'data' => 'codigo_insumo'],
+            'insumo' => ['name' => 'insumo_id', 'data' => 'insumo_id'],
+            'servico' => ['name' => 'servico_id', 'data' => 'servico_id'],
+            'sigla' => ['name' => 'unidade_sigla', 'data' => 'unidade_sigla'],
+//            'coeficiente' => ['name' => 'coeficiente', 'data' => 'coeficiente'],
+//            'indireto' => ['name' => 'indireto', 'data' => 'indireto'],
+//            'terreo_externo_solo' => ['name' => 'terreo_externo_solo', 'data' => 'terreo_externo_solo'],
+//            'terreo_externo_estrutura' => ['name' => 'terreo_externo_estrutura', 'data' => 'terreo_externo_estrutura'],
+//            'terreo_interno' => ['name' => 'terreo_interno', 'data' => 'terreo_interno'],
+//            'primeiro_pavimento' => ['name' => 'primeiro_pavimento', 'data' => 'primeiro_pavimento'],
+//            'segundo_ao_penultimo' => ['name' => 'segundo_ao_penultimo', 'data' => 'segundo_ao_penultimo'],
+//            'cobertura_ultimo_piso' => ['name' => 'cobertura_ultimo_piso', 'data' => 'cobertura_ultimo_piso'],
+//            'atico' => ['name' => 'atico', 'data' => 'atico'],
+//            'reservatorio' => ['name' => 'reservatorio', 'data' => 'reservatorio'],
+//            'qtd_total' => ['name' => 'qtd_total', 'data' => 'qtd_total'],
+//            'preco_unitario' => ['name' => 'preco_unitario', 'data' => 'preco_unitario'],
+//            'preco_total' => ['name' => 'preco_total', 'data' => 'preco_total'],
+//            'referencia_preco' => ['name' => 'referencia_preco', 'data' => 'referencia_preco'],
+//            'obs' => ['name' => 'obs', 'data' => 'obs'],
+//            'porcentagem_orcamento' => ['name' => 'porcentagem_orcamento', 'data' => 'porcentagem_orcamento'],
+//            'orcamento_tipo_id' => ['name' => 'orcamento_tipo_id', 'data' => 'orcamento_tipo_id'],
+//            'ativo' => ['name' => 'ativo', 'data' => 'ativo'],
+            'grupo' => ['name' => 'grupo_id', 'data' => 'grupo_id'],
+            'subgrupo1' => ['name' => 'subgrupo1_id', 'data' => 'subgrupo1_id'],
+            'subgrupo2' => ['name' => 'subgrupo2_id', 'data' => 'subgrupo2_id'],
+            'subgrupo3' => ['name' => 'subgrupo3_id', 'data' => 'subgrupo3_id'],
+//            'user_id' => ['name' => 'user_id', 'data' => 'user_id'],
+//            'descricao' => ['name' => 'descricao', 'data' => 'descricao']
         ];
     }
 

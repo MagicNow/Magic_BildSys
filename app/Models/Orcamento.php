@@ -151,7 +151,7 @@ class Orcamento extends Model
      **/
     public function grupo1()
     {
-        return $this->belongsTo(\App\Models\Grupo::class);
+        return $this->belongsTo(Grupo::class,'subgrupo1_id');
     }
 
     /**
@@ -159,7 +159,7 @@ class Orcamento extends Model
      **/
     public function grupo2()
     {
-        return $this->belongsTo(\App\Models\Grupo::class);
+        return $this->belongsTo(Grupo::class,'subgrupo2_id');
     }
 
     /**
@@ -167,7 +167,7 @@ class Orcamento extends Model
      **/
     public function grupo3()
     {
-        return $this->belongsTo(\App\Models\Grupo::class);
+        return $this->belongsTo(Grupo::class,'subgrupo3_id');
     }
 
     /**

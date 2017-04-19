@@ -166,7 +166,7 @@ class OrcamentoController extends AppBaseController
     public function indexImport(){
         $obras = Obra::pluck('nome','id')->toArray();
         $orcamento_tipos = TipoOrcamento::pluck('nome','id')->toArray();
-        return view('admin.orcamento.index', compact('orcamento_tipos','obras'));
+        return view('admin.orcamentos.indexImport', compact('orcamento_tipos','obras'));
     }
 
     /**
@@ -233,7 +233,7 @@ class OrcamentoController extends AppBaseController
 
         $retorno = $request->session()->get('retorno');
         $colunasbd = $request->session()->get('colunasbd');
-        return view('admin.orcamento.checkIn', compact('retorno','colunasbd'));
+        return view('admin.orcamentos.checkIn', compact('retorno','colunasbd'));
     }
 
     /*
