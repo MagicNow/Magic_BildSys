@@ -18,7 +18,7 @@
 <!-- Fornecedores Field -->
 <div class="form-group col-sm-12">
     {!! Form::label('fornecedor_cod', 'Fornecedores:') !!}
-    {!! Form::select('fornecedor_cod', ['' => 'Escolha...']+$fornecedores, null, ['class' => 'form-control','id'=>'fornecedor_cod']) !!}
+    {!! Form::select('fornecedor_cod', ['' => 'Escolha...']+$fornecedores, null, ['class' => 'form-control','id'=>'fornecedor_cod','required'=>'required']) !!}
 </div>
 
 <!-- Arquivo Field -->

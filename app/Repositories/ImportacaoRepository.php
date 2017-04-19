@@ -2,11 +2,8 @@
 
 namespace App\Repositories;
 
-
-use App\Models\Fornecedor;
 use App\Models\Insumo;
 use App\Models\InsumoGrupo;
-use App\Models\MegaFornecedor;
 use App\Models\MegaInsumo;
 use App\Models\MegaInsumoGrupo;
 use App\Models\Unidade;
@@ -76,24 +73,5 @@ class ImportacaoRepository
             }
         }
         return ['total-mega' => $grupos_mega->count(), 'total-sys' => InsumoGrupo::count()];
-    }
-
-    public static function fornecedores()
-    {
-        $fornecedores_mega = MegaFornecedor::select([
-            'agn_in_codigo',
-            'agn_st_nome'])
-            ->get();
-        foreach ($fornecedores_mega as $fornecedor_mega) {
-            try {
-                $fornecedor = Fornecedor::firstOrCreate([
-                    'codigo_identificador' => $fornecedor_mega->agn_in_codigo,
-                    'nome' => trim(utf8_encode($fornecedor_mega->agn_st_nome))
-                ]);
-            } catch (\Exception $e) {
-                Log::error('Erro ao importar o fornecedor'.$fornecedor_mega->gru_in_codigo.': '.$e->getMessage());
-            }
-        }
-        return ['total-mega' => $fornecedores_mega->count(), 'total-sys' => InsumoGrupo::count()];
     }
 }

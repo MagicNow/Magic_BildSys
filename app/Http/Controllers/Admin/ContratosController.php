@@ -129,7 +129,11 @@ class ContratosController extends AppBaseController
 
         $insumos = Insumo::get();
 
-        return view('admin.contratos.edit', compact('insumos'))->with('contratos', $contratos);
+        $fornecedores = MegaFornecedor::select(DB::raw("CONVERT(agn_st_nome,'UTF8','WE8ISO8859P15' ) as agn_st_nome"), 'agn_in_codigo')
+            ->where('agn_in_codigo', $contratos->fornecedor_cod)
+            ->pluck('agn_st_nome', 'agn_in_codigo')->toArray();
+
+        return view('admin.contratos.edit', compact('insumos', 'fornecedores'))->with('contratos', $contratos);
     }
 
     /**

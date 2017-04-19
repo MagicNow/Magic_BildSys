@@ -12,14 +12,13 @@
 */
 
 $router->get('/teste', function (){
-//    $grupos_mega = \App\Models\MegaInsumoGrupo::select([
-//        'GRU_IDE_ST_CODIGO',
-//        'GRU_IN_CODIGO',
-//        'GRU_ST_NOME',])
-//        ->where('gru_ide_st_codigo' , '07')
-//        ->first();
-//    dd($grupos_mega);
-    \App\Repositories\ImportacaoRepository::fornecedores();
+    $grupos_mega = \App\Models\MegaInsumoGrupo::select([
+        'GRU_IDE_ST_CODIGO',
+        'GRU_IN_CODIGO',
+        'GRU_ST_NOME',])
+        ->where('gru_ide_st_codigo' , '07')
+        ->first();
+    dd($grupos_mega);
 });
 
 Auth::routes();
