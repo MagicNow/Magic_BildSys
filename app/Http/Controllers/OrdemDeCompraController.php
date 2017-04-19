@@ -595,7 +595,6 @@ class OrdemDeCompraController extends AppBaseController
         return response()->json($filters);
     }
 
-
     public function trocaInsumoAction(Request $request, Planejamento $planejamento,Insumo $insumo)
     {
         try{
@@ -778,6 +777,7 @@ class OrdemDeCompraController extends AppBaseController
         Flash::success('Ordem de compra '.$ordemDeCompra->id.' Fechada!');
         return redirect('/ordens-de-compra');
     }
+
     public function alteraItem($id,Request $request){
         $rules = OrdemDeCompraItem::$rules;
         if(isset($rules[$request->coluna])){
@@ -829,7 +829,7 @@ class OrdemDeCompraController extends AppBaseController
         return response()->json(['success'=>($salvos?1:0), 'message'=>'Foram enviados '.$salvos.' arquivos', 'anexos'=>$anexos]);
     }
 
-    function removerAnexo($id){
+    public function removerAnexo($id){
         $remover = OrdemDeCompraItemAnexo::find($id);
         if(!$remover){
             return response()->json(['success'=>false, 'error'=>'Nenhum arquivo foi encontrado']);
@@ -839,7 +839,6 @@ class OrdemDeCompraController extends AppBaseController
         }
         return response()->json(['success'=>false, 'error'=>'Erro ao remover']);
     }
-
 
     public function indicarContrato(Request $request)
     {
@@ -858,7 +857,6 @@ class OrdemDeCompraController extends AppBaseController
 
         return response()->json(['sucesso' => true]);
     }
-
 
     public function dashboard(){
         $reprovados = OrdemDeCompra::select([
