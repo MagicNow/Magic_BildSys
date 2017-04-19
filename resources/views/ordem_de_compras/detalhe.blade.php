@@ -163,11 +163,13 @@
                             @if($workflowAprovacao['iraAprovar'])
                                 <div class="btn-group" role="group" id="blocoItemAprovaReprova{{ $item->id }}" aria-label="...">
                                     <button type="button" onclick="workflowAprovaReprova({{ $item->id }},'OrdemDeCompraItem',1,'blocoItemAprovaReprova{{ $item->id }}','Insumo {{ $item->insumo->codigo }}',0, '', '');"
-                                            class="btn btn-default btn-lg btn-flat">
+                                            class="btn btn-default btn-lg btn-flat"
+                                            title="Aprovar Este item">
                                         <i class="fa fa-check" aria-hidden="true"></i>
                                     </button>
                                     <button type="button" onclick="workflowAprovaReprova({{ $item->id }},'OrdemDeCompraItem',0, 'blocoItemAprovaReprova{{ $item->id }}','Insumo {{ $item->insumo->codigo }}',0, '', '');"
-                                            class="btn btn-default btn-lg btn-flat">
+                                            class="btn btn-default btn-lg btn-flat"
+                                            title="Reprovar Este item">
                                         <i class="fa fa-times" aria-hidden="true"></i>
                                     </button>
                                 </div>

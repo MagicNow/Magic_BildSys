@@ -405,7 +405,8 @@ class OrdemDeCompraController extends AppBaseController
         $insumo_query = Insumo::query();
 
         //Query pra trazer
-        $insumos = $insumo_query->join('planejamento_compras', function ($join) use ($planejamento){
+        $insumos = $insumo_query
+            ->join('planejamento_compras', function ($join) use ($planejamento){
                 $join->on('insumos.id', 'planejamento_compras.insumo_id')
                 ->on('planejamento_compras.planejamento_id','=', DB::raw($planejamento->id));
             })
@@ -647,7 +648,10 @@ class OrdemDeCompraController extends AppBaseController
     {
         $ordemDeCompra = OrdemDeCompra::where('oc_status_id',1)->where('user_id',Auth::id());
         if($request->obra_id){
-            $ordemDeCompra->where('obra_id');
+            $ordemDeCompra->where('obra_id',$request->obra_id);
+        }
+        if($request->id){
+            $ordemDeCompra->where('id',$request->id);
         }
         $ordemDeCompra = $ordemDeCompra->first();
 
@@ -675,7 +679,10 @@ class OrdemDeCompraController extends AppBaseController
     public function fechaCarrinho(Request $request){
         $ordemDeCompra = OrdemDeCompra::where('oc_status_id',1)->where('user_id',Auth::id());
         if($request->obra_id){
-            $ordemDeCompra->where('obra_id');
+            $ordemDeCompra->where('obra_id',$request->obra_id);
+        }
+        if($request->id){
+            $ordemDeCompra->where('id',$request->id);
         }
         $ordemDeCompra = $ordemDeCompra->first();
 
@@ -684,8 +691,24 @@ class OrdemDeCompraController extends AppBaseController
 
             return back();
         }
+
         $ordemDeCompra->oc_status_id = 2; // Fechada
         $ordemDeCompra->save();
+
+        // Agora altera todos os Planejamentos compra que estão ligadas à essa zerando a quantidade do pré-carrinho
+        $planejamento_compras_zerar = $ordemDeCompra->itens()
+            ->join('planejamento_compras',function($join){
+                $join->on('planejamento_compras.insumo_id','=','ordem_de_compra_itens.insumo_id');
+                $join->on('planejamento_compras.servico_id','=','ordem_de_compra_itens.servico_id');
+                $join->on('planejamento_compras.grupo_id','=','ordem_de_compra_itens.grupo_id');
+                $join->on('planejamento_compras.subgrupo1_id','=','ordem_de_compra_itens.subgrupo1_id');
+                $join->on('planejamento_compras.subgrupo2_id','=','ordem_de_compra_itens.subgrupo2_id');
+                $join->on('planejamento_compras.subgrupo3_id','=','ordem_de_compra_itens.subgrupo3_id');
+            })->pluck('planejamento_compras.id','planejamento_compras.id')->toArray();
+        if(count($planejamento_compras_zerar)){
+            PlanejamentoCompra::whereIn('id', $planejamento_compras_zerar)->update(['quantidade_compra'=>0]);
+        }
+
 
         Flash::success('Ordem de compra '.$ordemDeCompra->id.' Fechada!');
         return redirect('/ordens-de-compra');
