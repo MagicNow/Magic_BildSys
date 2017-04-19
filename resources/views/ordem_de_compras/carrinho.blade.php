@@ -290,13 +290,22 @@
                 stopLoading();
                 contratos = '';
                 $.each(retorno.contrato_insumo, function (index, value) {
-                    contratos += '<p>Valor: ' + value.contrato.valor + '</p>';
+                    contratos +=
+                                 '<p style="border-bottom: 1px solid #dddddd;padding: 10px;text-align: left">' +
+                                 '<button style="padding: 10px 10px;">Indicar</button>' +
+                                    value.contrato.fornecedor_nome +
+                                    '<br>' +
+                                    '<i>' +
+                                        '<a href="' + value.contrato.arquivo + '" target="_blank" style="margin-left: 167px;">Ver contrato</a>' +
+                                    '<i>' +
+                                 '</p>';
                 });
 
                 swal({
                     html:true,
-                    title: "Indicar contrato",
-                    text: contratos
+                    title: '<div class="modal-header">Indicar contrato</div>',
+                    text: contratos,
+                    showConfirmButton: false
                 });
 
             }).fail(function (retorno) {
