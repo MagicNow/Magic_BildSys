@@ -408,9 +408,9 @@ class OrdemDeCompraController extends AppBaseController
         //Query pra trazer
         $insumos = $insumo_query
             ->join('planejamento_compras', function ($join) use ($planejamento){
-                $join->on('insumos.id', 'planejamento_compras.insumo_id')
-                ->on('planejamento_compras.planejamento_id','=', DB::raw($planejamento->id));
+                $join->on('insumos.id', 'planejamento_compras.insumo_id');
             })
+            ->join('planejamentos','planejamentos.id','=','planejamento_compras.planejamento_id')
             ->join('orcamentos', function($join){
                 $join->on('orcamentos.insumo_id','=', 'planejamento_compras.insumo_id');
                 $join->on('orcamentos.grupo_id','=', 'planejamento_compras.grupo_id');
@@ -418,6 +418,8 @@ class OrdemDeCompraController extends AppBaseController
                 $join->on('orcamentos.subgrupo2_id','=', 'planejamento_compras.subgrupo2_id');
                 $join->on('orcamentos.subgrupo3_id','=', 'planejamento_compras.subgrupo3_id');
                 $join->on('orcamentos.servico_id','=', 'planejamento_compras.servico_id');
+                $join->on('orcamentos.obra_id','=', 'planejamentos.obra_id');
+                $join->on('orcamentos.ativo','=', DB::raw('1'));
             })
             ->select(
                 [
@@ -450,8 +452,6 @@ class OrdemDeCompraController extends AppBaseController
                     DB::raw('( 
                     orcamentos.qtd_total -
                         (
-                            planejamento_compras.quantidade_compra 
-                            +
                             IFNULL(
                                 (
                                     SELECT sum(ordem_de_compra_itens.qtd) FROM ordem_de_compra_itens 
@@ -471,10 +471,11 @@ class OrdemDeCompraController extends AppBaseController
                     ) as saldo')
                 ]
             )
-            ->whereNull('deleted_at')
+            ->whereNull('planejamento_compras.deleted_at')
             ->whereNotNull('orcamentos.qtd_total')
             ->whereNotNull('orcamentos.preco_total')
             ->where('orcamentos.ativo','1')
+            ->where('planejamento_compras.planejamento_id','=', $planejamento->id)
             ->orderBy(DB::raw(' COALESCE (planejamento_compras.id, planejamento_compras.trocado_de), planejamento_compras.trocado_de'));
 
 
