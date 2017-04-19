@@ -731,7 +731,7 @@ class OrdemDeCompraController extends AppBaseController
         $ordemDeCompra->save();
         OrdemDeCompraStatusLog::create([
             'oc_status_id'=>$ordemDeCompra->oc_status_id,
-            'ordem_de_compra_id'=>$ordem->id,
+            'ordem_de_compra_id'=>$ordemDeCompra->id,
             'user_id'=>Auth::id()
         ]);
 
