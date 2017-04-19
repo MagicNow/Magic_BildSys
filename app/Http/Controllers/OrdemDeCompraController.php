@@ -803,5 +803,15 @@ class OrdemDeCompraController extends AppBaseController
         
         return response()->json(['contrato_insumo' => $contrato_insumo]);
     }
+
+    public function removerContrato(Request $request)
+    {
+        $ordem_de_compra = OrdemDeCompraItem::find($request->item);
+        $ordem_de_compra->sugestao_contrato_id = null;
+        $ordem_de_compra->update();
+
+        return response()->json(['sucesso' => true]);
+    }
+
 }
 
