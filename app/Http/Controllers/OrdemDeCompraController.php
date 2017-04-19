@@ -229,6 +229,7 @@ class OrdemDeCompraController extends AppBaseController
                                 AND OCI2.subgrupo2_id = ordem_de_compra_itens.subgrupo2_id 
                                 AND OCI2.subgrupo3_id = ordem_de_compra_itens.subgrupo3_id 
                                 AND OCI2.servico_id = ordem_de_compra_itens.servico_id 
+                                AND OCI2.deleted_at IS NULL
                              ) as qtd_realizada"),
                     DB::raw("(SELECT SUM( valor_total ) 
                                 FROM ordem_de_compra_itens OCI2
@@ -245,19 +246,22 @@ class OrdemDeCompraController extends AppBaseController
                                 AND OCI2.subgrupo2_id = ordem_de_compra_itens.subgrupo2_id 
                                 AND OCI2.subgrupo3_id = ordem_de_compra_itens.subgrupo3_id 
                                 AND OCI2.servico_id = ordem_de_compra_itens.servico_id 
+                                AND OCI2.deleted_at IS NULL
                              ) as valor_realizado"),
                     'orcamentos.qtd_total as qtd_inicial',
                     'orcamentos.preco_total as preco_inicial',
                 ])
-                ->join('orcamentos', function ($join){
+                ->join('orcamentos', function ($join) use ($ordemDeCompra){
                     $join->on('orcamentos.insumo_id','=', 'ordem_de_compra_itens.insumo_id');
                     $join->on('orcamentos.grupo_id','=', 'ordem_de_compra_itens.grupo_id');
                     $join->on('orcamentos.subgrupo1_id','=', 'ordem_de_compra_itens.subgrupo1_id');
                     $join->on('orcamentos.subgrupo2_id','=', 'ordem_de_compra_itens.subgrupo2_id');
                     $join->on('orcamentos.subgrupo3_id','=', 'ordem_de_compra_itens.subgrupo3_id');
                     $join->on('orcamentos.servico_id','=', 'ordem_de_compra_itens.servico_id');
+                    $join->on('orcamentos.obra_id','=', DB::raw($ordemDeCompra->obra_id));
                     $join->on('orcamentos.ativo','=', DB::raw('1'));
                 })
+                ->whereNull('ordem_de_compra_itens.deleted_at')
                 ->with('insumo','unidade','anexos')
                 ->paginate(2);
         }
