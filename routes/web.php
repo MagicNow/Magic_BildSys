@@ -308,6 +308,8 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->post('compras/{planejamento}/addCarrinho', 'OrdemDeCompraController@addCarrinho');
     $router->get('compras/removerInsumoPlanejamento/{planejamentoCompra}', 'OrdemDeCompraController@removerInsumoPlanejamento');
 
+    $router->get('compras/jsonOrdemCompraDashboard','OrdemDeCompraController@jsonOrdemCompraDashboard');
+    $router->get('compras/dashboard','OrdemDeCompraController@dashboard');
 
     $router->get('workflow/aprova-reprova', 'WorkflowController@aprovaReprova');
     $router->get('workflow/aprova-reprova-tudo', 'WorkflowController@aprovaReprovaTudo');

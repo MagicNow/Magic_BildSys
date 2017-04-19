@@ -15,9 +15,16 @@ require('./bootstrap');
 // Vue.component('example', require('./components/Example.vue'));
 
 // Vue.component('generic-grid',require('./components/generic-grid.vue'));
+require('chart.js');
+require('hchs-vue-charts');
+Vue.use(VueCharts);
 
 Vue.component('generic-paginator',require('./components/generic-paginator.vue'));
 
 import Tabela from './components/tabela.vue'
+import Tile from './components/tile.vue'
+import TileGrafico from './components/tile-grafico.vue'
 
 Vue.component('tabela', Tabela);
+Vue.component('tile', Tile);
+Vue.component('tile-grafico', TileGrafico);
