@@ -58,11 +58,21 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         Route::resource('users', 'Admin\Manage\UsersController');
 
         #importação de planilhas de orçamentos
-        Route::get('orcamento/', ['as'=> 'admin.orcamento.index', 'uses' => 'Admin\OrcamentoController@index']);
-        Route::post('orcamento/importar', ['as'=> 'admin.orcamento.importar', 'uses' => 'Admin\OrcamentoController@import']);
-        Route::get('orcamento/importar/checkIn', ['as'=> 'admin.orcamento.checkIn', 'uses' => 'Admin\OrcamentoController@checkIn']);
-        Route::post('orcamento/importar/save', ['as'=> 'admin.orcamento.save', 'uses' => 'Admin\OrcamentoController@save']);
+        Route::get('orcamento/', ['as'=> 'admin.orcamentos.indexImport', 'uses' => 'Admin\OrcamentoController@indexImport']);
+        Route::post('orcamento/importar', ['as'=> 'admin.orcamentos.importar', 'uses' => 'Admin\OrcamentoController@import']);
+        Route::get('orcamento/importar/checkIn', ['as'=> 'admin.orcamentos.checkIn', 'uses' => 'Admin\OrcamentoController@checkIn']);
+        Route::post('orcamento/importar/save', ['as'=> 'admin.orcamentos.save', 'uses' => 'Admin\OrcamentoController@save']);
         Route::get('orcamento/importar/selecionaCampos', 'Admin\OrcamentoController@selecionaCampos');
+
+        # Orçamentos
+        Route::get('orcamentos', ['as'=> 'admin.orcamentos.index', 'uses' => 'Admin\OrcamentoController@index']);
+        Route::post('orcamentos', ['as'=> 'admin.orcamentos.store', 'uses' => 'Admin\OrcamentoController@store']);
+        Route::get('orcamentos/create', ['as'=> 'admin.orcamentos.create', 'uses' => 'Admin\OrcamentoController@create']);
+        Route::put('orcamentos/{orcamentos}', ['as'=> 'admin.orcamentos.update', 'uses' => 'Admin\OrcamentoController@update']);
+        Route::patch('orcamentos/{orcamentos}', ['as'=> 'admin.orcamentos.update', 'uses' => 'Admin\OrcamentoController@update']);
+        Route::delete('orcamentos/{orcamentos}', ['as'=> 'admin.orcamentos.destroy', 'uses' => 'Admin\OrcamentoController@destroy']);
+        Route::get('orcamentos/{orcamentos}', ['as'=> 'admin.orcamentos.show', 'uses' => 'Admin\OrcamentoController@show']);
+        Route::get('orcamentos/{orcamentos}/edit', ['as'=> 'admin.orcamentos.edit', 'uses' => 'Admin\OrcamentoController@edit']);
 
         #importação de planilhas de planejamentos
         Route::get('planejamento/', ['as'=> 'admin.planejamentos.indexImport', 'uses' => 'Admin\PlanejamentoController@indexImport']);
@@ -84,6 +94,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             $router->get('atividade/grupos/{id}', 'Admin\PlanejamentoController@getGrupos');
             $router->get('atividade/servicos/{id}', 'Admin\PlanejamentoController@getServicos');
             $router->post('atividade/insumos', ['as'=> 'admin.planejamentos.insumos', 'uses' => 'Admin\PlanejamentoController@planejamentoCompras']);
+            $router->get('atividade/planejamentocompras/{id}', 'Admin\PlanejamentoController@destroyPlanejamentoCompra');
 
             # Lembretes
             $router->get('lembretes', ['as' => 'admin.lembretes.index', 'uses' => 'Admin\LembreteController@index']);
@@ -239,6 +250,25 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             $router->get('workflow-alcadas/{workflowAlcadas}/edit', ['as'=> 'admin.workflowAlcadas.edit', 'uses' => 'Admin\WorkflowAlcadaController@edit']);
 
         });
+
+        $router->get('insumos', ['as'=> 'admin.insumos.index', 'uses' => 'Admin\InsumoController@index']);
+        $router->post('insumos', ['as'=> 'admin.insumos.store', 'uses' => 'Admin\InsumoController@store']);
+        $router->get('insumos/create', ['as'=> 'admin.insumos.create', 'uses' => 'Admin\InsumoController@create']);
+        $router->put('insumos/{insumos}', ['as'=> 'admin.insumos.update', 'uses' => 'Admin\InsumoController@update']);
+        $router->patch('insumos/{insumos}', ['as'=> 'admin.insumos.update', 'uses' => 'Admin\InsumoController@update']);
+        $router->delete('insumos/{insumos}', ['as'=> 'admin.insumos.destroy', 'uses' => 'Admin\InsumoController@destroy']);
+        $router->get('insumos/{insumos}', ['as'=> 'admin.insumos.show', 'uses' => 'Admin\InsumoController@show']);
+        $router->get('insumos/{insumos}/edit', ['as'=> 'admin.insumos.edit', 'uses' => 'Admin\InsumoController@edit']);
+
+        $router->get('insumoGrupos', ['as'=> 'admin.insumoGrupos.index', 'uses' => 'Admin\InsumoGrupoController@index']);
+        $router->post('insumoGrupos', ['as'=> 'admin.insumoGrupos.store', 'uses' => 'Admin\InsumoGrupoController@store']);
+        $router->get('insumoGrupos/create', ['as'=> 'admin.insumoGrupos.create', 'uses' => 'Admin\InsumoGrupoController@create']);
+        $router->put('insumoGrupos/{insumoGrupos}', ['as'=> 'admin.insumoGrupos.update', 'uses' => 'Admin\InsumoGrupoController@update']);
+        $router->patch('insumoGrupos/{insumoGrupos}', ['as'=> 'admin.insumoGrupos.update', 'uses' => 'Admin\InsumoGrupoController@update']);
+        $router->delete('insumoGrupos/{insumoGrupos}', ['as'=> 'admin.insumoGrupos.destroy', 'uses' => 'Admin\InsumoGrupoController@destroy']);
+        $router->get('insumoGrupos/{insumoGrupos}', ['as'=> 'admin.insumoGrupos.show', 'uses' => 'Admin\InsumoGrupoController@show']);
+        $router->get('insumoGrupos/{insumoGrupos}/edit', ['as'=> 'admin.insumoGrupos.edit', 'uses' => 'Admin\InsumoGrupoController@edit']);
+
     });
 
     $router->group(['prefix' => 'compras'], function () use ($router) {
@@ -278,10 +308,8 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('compras/removerInsumoPlanejamento/{planejamentoCompra}', 'OrdemDeCompraController@removerInsumoPlanejamento');
 
     $router->get('compras/jsonOrdemCompraDashboard','OrdemDeCompraController@jsonOrdemCompraDashboard');
+    $router->get('compras/dashboard','OrdemDeCompraController@dashboard');
 
     $router->get('workflow/aprova-reprova', 'WorkflowController@aprovaReprova');
     $router->get('workflow/aprova-reprova-tudo', 'WorkflowController@aprovaReprovaTudo');
 });
-
-
-

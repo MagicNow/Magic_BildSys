@@ -62,7 +62,7 @@ class Insumo extends Model
      **/
     public function unidade()
     {
-        return $this->belongsTo(Unidade::class);
+        return $this->belongsTo(Unidade::class, 'unidade_sigla');
     }
 
     /**

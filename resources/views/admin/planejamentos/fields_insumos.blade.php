@@ -1,3 +1,4 @@
+@include('flash::message')
 <div class="col-md-12 loading">
     <h3>Planejamento de compras</h3>
     <div class="col-md-12 thumbnail">
@@ -35,8 +36,8 @@
                      </div>
                      <input type="hidden" name="planejamento_id" value="{{$planejamento->id}}">
 
-                     <div class="col-md-3 col-md-offset-4">
-                         <button type="submit" class="btn btn-primary">Adicionar relacionamento</button>
+                     <div class="col-md-4 col-md-offset-4">
+                         <button type="submit" class="btn btn-primary btn-lg">Adicionar relacionamentos</button>
                      </div>
                  </div>
              </div>
@@ -44,14 +45,10 @@
     </div>
 </div>
 
-<!-- Submit Field -->
-{{--<div class="form-group col-sm-12">--}}
-    {{--{!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save') ), ['class' => 'btn btn-success pull-right', 'type'=>'submit']) !!}--}}
-    {{--<a href="{!! route('admin.planejamentos.index') !!}" class="btn btn-default"><i class="fa fa-times"></i>  {{ ucfirst( trans('common.cancel') )}}</a>--}}
-{{--</div>--}}
-
 @section('scripts')
     <script type="text/javascript">
+        $('div.alert').not('.alert-important').delay(10000).fadeOut(350);
+
         function selectgrupo(id, change, tipo){
             var rota = "{{url('/admin/planejamentos/atividade/grupos')}}/";
             if(tipo == 'servicos'){
@@ -74,7 +71,6 @@
                     $('.overlay').remove();
                 });
             }
-
         }
     </script>
 @stop

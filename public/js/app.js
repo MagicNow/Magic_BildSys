@@ -16518,6 +16518,8 @@ module.exports = __vue_exports__
 //
 //
 //
+//
+//
 
     /* harmony default export */ exports["default"] = {
         props: {
@@ -16569,21 +16571,29 @@ module.exports = __vue_exports__
             },
             //Método da action adicionar onClick
             adicionar: function(item,i){
-                console.log(this.quant[i]);
                 if(this.actions.quantidade){
                     item['quantidade_compra'] = this.quant[i];
                 }
                 item['_token'] =this._token;
+                if(!item['quantidade_compra'] && !item['adicionado']){
+//                    swal('Insira uma quantidade!','','error');
+                    return false;
+                }
                 this.$http.post(this.apiAdicionar, item)
                     .then(function (resp) {
-                        window.location.reload();
-//                        if(resp.status == 200){
-//                            window.location.reload();
-//                        }else{
-//                            window.location.reload();
-//                        }
-
+                        if(resp.status){
+                            var titulo = 'Adicionado';
+                            if(item['adicionado']){
+                                titulo = 'Alterado';
+                            }
+                            if(item['adicionado'] && !this.quant[i]){
+                                titulo = 'Removido';
+                                swal(titulo,'','success');
+                            }
+                            this.loadData();
+                        }
                     })
+                    .bind(this)
             },
             updateQuant: function (item) {
 
@@ -16745,6 +16755,7 @@ module.exports = __vue_exports__
 //
 //
 //
+//
 
     /* harmony default export */ exports["default"] = {
         props:{
@@ -16758,8 +16769,7 @@ module.exports = __vue_exports__
                 apiGet: 'compras/jsonOrdemCompraDashboard',
                 mylabels: ["Ordem de Compra"],
 
-                mydatasets:[
-                {
+                mydatasets:[{
                     label: "Reprovadas",
                     backgroundColor: [
                         'rgba(255,0,0,1)'
@@ -16768,9 +16778,8 @@ module.exports = __vue_exports__
                         'rgb(249,141,0,1)',
                     ],
                     borderWidth: 1,
-                    data: [0],
-                }
-                ],
+                    data: [],
+                }],
                 myoption: {
                     responsive:true,
                     maintainAspectRatio:true,
@@ -16793,40 +16802,19 @@ module.exports = __vue_exports__
 
             }
         },
-//        computed: {
-//            mydatasetas: {
-//                get: function () {
-//                    return this.mydatasets;
-//                },
-//                set :function() {
-//                    this.$http.get(this.apiGet,{
-//                        params: {type: 4}
-//                    }).then(function(resp){
-//                        this.mydatasets[0].data[0] = 10;
-//                        console.log(this.mydatasets);
-//                        return this.mydatasets;
-//                    });
-//                }
-//            }
-//        },
-        watch:{
-            mydatasetas :function() {
-                this.getReprovados();
-//                this.$http.get(this.apiGet,{
-//                    params: {type: 4}
-//                }).then(function(resp){
-//                    this.mydatasets[0].data[0] = 10;
-//                    console.log(this.mydatasets);
-//                    return this.mydatasets;
-//                });
-            }
+        watch: {
+            mydatasets: function (val) {
+                console.log(val);
+            },
         },
         methods: {
             getReprovados: function () {
                 this.$http.get(this.apiGet,{
                     params: {type: 4}
                 }).then(function(resp){
+                    console.log(this.mydatasets);
                     this.mydatasets[0].data[0] = 10;
+                    console.log(this.mydatasets);
                 });
             },
             getEmAprovacao: function () {
@@ -16866,10 +16854,13 @@ module.exports = __vue_exports__
                 });
             }
         },
-        mounted:function () {
+        ready: function () {
             this.getReprovados();
             this.getEmAprovacao();
             this.getAprovados();
+        },
+        mounted:function () {
+
         }
     };
 
@@ -16907,7 +16898,7 @@ module.exports = __vue_exports__
         return{
             dados:[],
             chaves:[],
-            apiGet: 'compras/jsonOrdemCompraDashboard'
+            apiGet: 'jsonOrdemCompraDashboard'
         }
     },
     methods: {
@@ -29400,7 +29391,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -29414,7 +29405,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n.pagination-custom{\n    display: inline-block;\n    padding-left: 0;\n}\n.pagination-custom > li{\n    margin: 2px;\n    display: inline;\n}\n.page-element > a{\n    padding: 6px 12px;\n    border: solid 1px #979797;\n}\n.active >a{\n    color: #f98d00;\n    font-weight: bold;\n    border: solid 1px #f98d00;\n}\n", ""]);
+exports.push([module.i, "\n.pagination-custom{\n    display: inline-block;\n    padding-left: 0;\n}\n.pagination-custom > li{\n    margin: 2px;\n    display: inline;\n}\n.page-element > a{\n    padding: 6px 12px;\n    border: solid 1px #979797;\n}\n.pagination-custom .active >a{\n    color: #f98d00;\n    font-weight: bold;\n    border: solid 1px #f98d00;\n}\n", ""]);
 
 // exports
 
@@ -46803,7 +46794,6 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   return _c('div', [_c('table', {
     staticClass: "element-grafico"
   }, [_vm._m(0), _vm._v(" "), _c('tbody', [(_vm.mydatasets[0].data[0] != undefined) ? _c('tr', [_c('chartjs-bar', {
-    ref: "ref",
     staticStyle: {
       "padding": "15px"
     },
@@ -46811,7 +46801,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "height": 300,
       "option": _vm.myoption,
       "labels": _vm.mylabels,
-      "datasets": _vm.mydatasetas
+      "datasets": _vm.mydatasets
     }
   })], 1) : _vm._e()])])])
 },staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -47083,6 +47073,11 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         "value": (_vm.quant[i])
       },
       on: {
+        "blur": [function($event) {
+          _vm.adicionar(dado, i)
+        }, function($event) {
+          _vm.$forceUpdate()
+        }],
         "input": function($event) {
           if ($event.target.composing) { return; }
           var $$exp = _vm.quant,
@@ -47092,9 +47087,6 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
           } else {
             $$exp.splice($$idx, 1, _vm._n($event.target.value))
           }
-        },
-        "blur": function($event) {
-          _vm.$forceUpdate()
         }
       }
     })]) : _vm._e(), _vm._v(" "), (_vm.actions.troca != undefined) ? _c('td', {
@@ -47122,7 +47114,12 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }, [_c('i', {
       staticClass: "fa fa-check green"
     })]) : (_vm.actions.adicionar != undefined) ? _c('td', {
-      staticClass: "row-table",
+      staticClass: "row-table"
+    }, [_c('button', {
+      staticClass: "btn btn-xs btn-link",
+      attrs: {
+        "type": "button"
+      },
       on: {
         "click": function($event) {
           _vm.adicionar(dado, i)
@@ -47130,7 +47127,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       }
     }, [_c('i', {
       staticClass: "fa fa-plus grey"
-    })]) : _vm._e()], 2) : _c('tr', [_c('td', [_vm._v("Não há dados")])])
+    })])]) : _vm._e()], 2) : _c('tr', [_c('td', [_vm._v("Não há dados")])])
   }))]), _vm._v(" "), (_vm.pagination.last_page > 1) ? _c('div', {
     staticClass: "text-center"
   }, [_c('generic-paginator', {

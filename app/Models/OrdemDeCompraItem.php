@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Class OrdemDeCompraItem
@@ -82,11 +83,18 @@ class OrdemDeCompraItem extends Model
     ];
 
     /**
+     * Tipo de Workflow, necessário para models que são aprováveis
+     *
+     * @var integer
+     */
+    public static $workflow_tipo_id = 1; // Tipo = Aprovação de OC
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
     public function grupo()
     {
-        return $this->belongsTo(\App\Models\Grupo::class);
+        return $this->belongsTo(Grupo::class);
     }
 
     /**
@@ -94,7 +102,7 @@ class OrdemDeCompraItem extends Model
      **/
     public function insumo()
     {
-        return $this->belongsTo(\App\Models\Insumo::class);
+        return $this->belongsTo(Insumo::class);
     }
 
     /**
@@ -102,7 +110,7 @@ class OrdemDeCompraItem extends Model
      **/
     public function obra()
     {
-        return $this->belongsTo(\App\Models\Obra::class);
+        return $this->belongsTo(Obra::class);
     }
 
     /**
@@ -110,7 +118,7 @@ class OrdemDeCompraItem extends Model
      **/
     public function ordemDeCompra()
     {
-        return $this->belongsTo(\App\Models\OrdemDeCompra::class);
+        return $this->belongsTo(OrdemDeCompra::class);
     }
 
     /**
@@ -118,7 +126,7 @@ class OrdemDeCompraItem extends Model
      **/
     public function servico()
     {
-        return $this->belongsTo(\App\Models\Servico::class);
+        return $this->belongsTo(Servico::class);
     }
 
     /**
@@ -126,7 +134,7 @@ class OrdemDeCompraItem extends Model
      **/
     public function subgrupo1()
     {
-        return $this->belongsTo(\App\Models\Grupo::class,'subgrupo1_id');
+        return $this->belongsTo(Grupo::class,'subgrupo1_id');
     }
 
     /**
@@ -134,7 +142,7 @@ class OrdemDeCompraItem extends Model
      **/
     public function subgrupo2()
     {
-        return $this->belongsTo(\App\Models\Grupo::class,'subgrupo2_id');
+        return $this->belongsTo(Grupo::class,'subgrupo2_id');
     }
 
     /**
@@ -142,7 +150,7 @@ class OrdemDeCompraItem extends Model
      **/
     public function subgrupo3()
     {
-        return $this->belongsTo(\App\Models\Grupo::class,'subgrupo3_id');
+        return $this->belongsTo(Grupo::class,'subgrupo3_id');
     }
 
     /**
@@ -150,7 +158,7 @@ class OrdemDeCompraItem extends Model
      **/
     public function contrato()
     {
-        return $this->belongsTo(\App\Models\Contrato::class);
+        return $this->belongsTo(Contrato::class);
     }
 
     /**
@@ -158,7 +166,7 @@ class OrdemDeCompraItem extends Model
      **/
     public function unidade()
     {
-        return $this->belongsTo(\App\Models\Unidade::class, 'unidade_sigla');
+        return $this->belongsTo(Unidade::class, 'unidade_sigla');
     }
 
     /**
@@ -166,7 +174,7 @@ class OrdemDeCompraItem extends Model
      **/
     public function user()
     {
-        return $this->belongsTo(\App\Models\User::class);
+        return $this->belongsTo(User::class);
     }
 
     /**
@@ -174,10 +182,49 @@ class OrdemDeCompraItem extends Model
      **/
     public function anexos()
     {
-        return $this->hasMany(\App\Models\OrdemDeCompraItemAnexo::class);
+        return $this->hasMany(OrdemDeCompraItemAnexo::class);
     }
+
+    // Funções da aprovação
 
     public function aprovacoes(){
         return $this->morphMany(WorkflowAprovacao::class, 'aprovavel');
+    }
+
+    public function irmaosIds(){
+        return $this->ordemDeCompra->itens()->pluck('ordem_de_compra_itens.id','ordem_de_compra_itens.id')->toArray();
+    }
+
+    public function paiEmAprovacao(){
+        $this->ordemDeCompra->update(['oc_status_id' => 3]);
+        OrdemDeCompraStatusLog::create([
+            'oc_status_id'=>$this->ordemDeCompra->oc_status_id,
+            'ordem_de_compra_id'=>$this->ordemDeCompra->id,
+            'user_id'=>Auth::id()
+        ]);
+    }
+
+    public function confereAprovacaoGeral(){
+        $qtd_itens = $this->ordemDeCompra->itens()->count();
+        $qtd_itens_aprovados = $this->ordemDeCompra->itens()->where('aprovado','1')->count();
+        $qtd_itens_sem_voto = $this->ordemDeCompra->itens()->whereNull('aprovado')->count();
+        // Verifica se todos foram aprovados
+        if($qtd_itens === $qtd_itens_aprovados){
+            $this->ordemDeCompra->update(['oc_status_id' => 5,'aprovado'=>1]);
+            OrdemDeCompraStatusLog::create([
+                'oc_status_id'=>$this->ordemDeCompra->oc_status_id,
+                'ordem_de_compra_id'=>$this->ordemDeCompra->id,
+                'user_id'=>Auth::id()
+            ]);
+        }
+        // Verifica se algum foi reprovado e todos foram votados
+        if($qtd_itens !== $qtd_itens_aprovados && $qtd_itens_sem_voto===0){
+            $this->ordemDeCompra->update(['oc_status_id' => 4,'aprovado'=>0]);
+            OrdemDeCompraStatusLog::create([
+                'oc_status_id'=>$this->ordemDeCompra->oc_status_id,
+                'ordem_de_compra_id'=>$this->ordemDeCompra->id,
+                'user_id'=>Auth::id()
+            ]);
+        }
     }
 }

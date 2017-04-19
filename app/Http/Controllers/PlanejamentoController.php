@@ -20,7 +20,7 @@ class PlanejamentoController extends AppBaseController
                 'lembretes.id',
                 DB::raw("CONCAT(obras.nome,' - ',planejamentos.tarefa,' - ', lembretes.nome) title"),
                 DB::raw("'event-info' as class"),
-                DB::raw("CONCAT('/compras/',planejamentos.id,'/obrasInsumos/',lembretes.id) as url"),
+                DB::raw("CONCAT('/compras/',planejamentos.id,'/obrasInsumos/',insumo_grupos.id) as url"),
                 DB::raw("DATE_FORMAT(DATE_SUB(planejamentos.data, INTERVAL lembretes.`dias_prazo_minimo` DAY),'%d/%m/%Y') as inicio"),
                 DB::raw("UNIX_TIMESTAMP(DATE_SUB(planejamentos.data, INTERVAL lembretes.`dias_prazo_minimo` DAY))*1000 as start"),
                 DB::raw("UNIX_TIMESTAMP(DATE_SUB(planejamentos.data, INTERVAL lembretes.`dias_prazo_minimo` DAY))*1000 as end"),

@@ -51,7 +51,8 @@ class PlanejamentoController extends AppBaseController
      */
     public function create()
     {
-        return view('admin.planejamentos.create');
+        $obras = Obra::pluck('nome','id')->toArray();
+        return view('admin.planejamentos.create', compact('obras'));
     }
 
     /**
@@ -82,6 +83,8 @@ class PlanejamentoController extends AppBaseController
     public function show($id)
     {
         $planejamento = $this->planejamentoRepository->findWithoutFail($id);
+        $itens = PlanejamentoCompra::where('planejamento_id', $id)
+            ->paginate(10);
 
         if (empty($planejamento)) {
             Flash::error('Planejamento '.trans('common.not-found'));
@@ -89,7 +92,7 @@ class PlanejamentoController extends AppBaseController
             return redirect(route('admin.planejamentos.index'));
         }
 
-        return view('admin.planejamentos.show')->with('planejamento', $planejamento);
+        return view('admin.planejamentos.show', compact('planejamento','itens'));
     }
 
     /**
@@ -128,48 +131,64 @@ class PlanejamentoController extends AppBaseController
 
     public function planejamentoCompras(Request $request){
         $insumosOrcados = null;
-        if($request->servico_id){
-            $insumosOrcados = Orcamento::where('servico_id', $request->servico_id)
+        if($request->grupo_id && $request->subgrupo1_id && $request->subgrupo2_id && $request->subgrupo3_id && $request->servico_id){
+            $insumosOrcados = Orcamento::where('grupo_id', $request->grupo_id)
+                ->where('subgrupo1_id', $request->subgrupo1_id)
+                ->where('subgrupo2_id', $request->subgrupo2_id)
                 ->where('subgrupo3_id', $request->subgrupo3_id)
+                ->where('servico_id', $request->servico_id)
+                ->get();
+        }
+        if($request->grupo_id && $request->subgrupo1_id && $request->subgrupo2_id && $request->subgrupo3_id && !$request->servico_id){
+            $insumosOrcados = Orcamento::where('grupo_id', $request->grupo_id)
+                ->where('subgrupo1_id', $request->subgrupo1_id)
                 ->where('subgrupo2_id', $request->subgrupo2_id)
-                ->where('subgrupo1_id', $request->subgrupo1_id)
-                ->where('grupo_id', $request->grupo_id)->get();
+                ->where('subgrupo3_id', $request->subgrupo3_id)
+                ->get();
         }
-        if($request->subgrupo3_id){
-            $insumosOrcados = Orcamento::where('subgrupo3_id', $request->subgrupo3_id)
+        if($request->grupo_id && $request->subgrupo1_id && $request->subgrupo2_id && !$request->subgrupo3_id && !$request->servico_id){
+            $insumosOrcados = Orcamento::where('grupo_id', $request->grupo_id)
+                ->where('subgrupo1_id', $request->subgrupo1_id)
                 ->where('subgrupo2_id', $request->subgrupo2_id)
+                ->get();
+        }
+        if($request->grupo_id && $request->subgrupo1_id && !$request->subgrupo2_id && !$request->subgrupo3_id && !$request->servico_id){
+            $insumosOrcados = Orcamento::where('grupo_id', $request->grupo_id)
                 ->where('subgrupo1_id', $request->subgrupo1_id)
-                ->where('grupo_id', $request->grupo_id)->get();
+                ->get();
         }
-        if($request->subgrupo2_id){
-            $insumosOrcados = Orcamento::where('subgrupo2_id', $request->subgrupo2_id)
-                ->where('subgrupo1_id', $request->subgrupo1_id)
-                ->where('grupo_id', $request->grupo_id)->get();
-        }
-        if($request->subgrupo1_id){
-            $insumosOrcados = Orcamento::where('subgrupo1_id', $request->subgrupo1_id)
-                ->where('grupo_id', $request->grupo_id)->get();
-        }
-        if($request->grupo_id){
-            $insumosOrcados = Orcamento::where('grupo_id', $request->grupo_id)->get();
+        if($request->grupo_id && !$request->subgrupo1_id && !$request->subgrupo2_id && !$request->subgrupo3_id && !$request->servico_id){
+            $insumosOrcados = Orcamento::where('grupo_id', $request->grupo_id)
+                ->get();
         }
 
-        if($insumosOrcados) {
+
+        if(count($insumosOrcados)) {
             foreach ($insumosOrcados as $insumosOrcado) {
-                $planejamentoCompra = new PlanejamentoCompra();
-                $planejamentoCompra->planejamento_id = $request->planejamento_id;
-                $planejamentoCompra->insumo_id = $insumosOrcado->insumo_id;
-                $planejamentoCompra->codigo_estruturado = $insumosOrcado->codigo_insumo;
-                $planejamentoCompra->grupo_id = $insumosOrcado->grupo_id;
-                $planejamentoCompra->subgrupo1_id = $insumosOrcado->subgrupo1_id;
-                $planejamentoCompra->subgrupo2_id = $insumosOrcado->subgrupo2_id;
-                $planejamentoCompra->subgrupo3_id = $insumosOrcado->subgrupo3_id;
-                $planejamentoCompra->servico_id = $insumosOrcado->servico_id;
-                $planejamentoCompra->save();
+                $cadastrado = PlanejamentoCompra::where('insumo_id',$insumosOrcado->insumo_id)
+                    ->where('planejamento_id', $request->planejamento_id)
+                    ->first();
+                if(!$cadastrado) {
+                    $planejamentoCompra = new PlanejamentoCompra();
+                    $planejamentoCompra->planejamento_id = $request->planejamento_id;
+                    $planejamentoCompra->insumo_id = $insumosOrcado->insumo_id;
+                    $planejamentoCompra->codigo_estruturado = $insumosOrcado->codigo_insumo;
+                    $planejamentoCompra->grupo_id = $insumosOrcado->grupo_id;
+                    $planejamentoCompra->subgrupo1_id = $insumosOrcado->subgrupo1_id;
+                    $planejamentoCompra->subgrupo2_id = $insumosOrcado->subgrupo2_id;
+                    $planejamentoCompra->subgrupo3_id = $insumosOrcado->subgrupo3_id;
+                    $planejamentoCompra->servico_id = $insumosOrcado->servico_id;
+                    $planejamentoCompra->save();
+                }
             }
-            return Response()->json(['success' => true]);
+
+            Flash::success('Planejamento de compras inseridos!');
+            return redirect('/admin/planejamentos/atividade/'.$request->planejamento_id);
+//            return Response()->json(['success' => true]);
         }
-        return Response()->json(['success' => false, 'mensagem' => 'Não foram encontrado insumo no orçamento com os filtros passados!']);
+        Flash::error('Não foram encontrados insumos em orçamentos com os filtros passados!');
+        return redirect('/admin/planejamentos/atividade/'.$request->planejamento_id.'/edit');
+//        return Response()->json(['success' => false, 'msg' => 'Não foram encontrado insumo no orçamento com os filtros passados!']);
     }
 
     /**
@@ -220,6 +239,24 @@ class PlanejamentoController extends AppBaseController
         Flash::success('Planejamento '.trans('common.deleted').' '.trans('common.successfully').'.');
 
         return redirect(route('admin.planejamentos.index'));
+    }
+
+    public function destroyPlanejamentoCompra($id)
+    {
+        try {
+            $planejamentoCompra = PlanejamentoCompra::find($id);
+
+            if ($planejamentoCompra) {
+                $planejamentoCompra->forceDelete();
+                return response()->json(['success' => true, 'error' => false]);
+            } else {
+                $acao = "Ocorreu um erro ao deletar o item.";
+            }
+            return response()->json(['success' => false, 'error' => $acao]);
+        }catch(\Exception $e) {
+            Flash::error($e->getMessage());
+            return redirect(route('admin.planejamentos.index'));
+        }
     }
 
 

@@ -6,7 +6,7 @@
 
 <!-- Tarefa Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('tarefa', 'Tarefa:') !!}
+    {!! Form::label('tarefa', 'Nome Tarefa:') !!}
     {!! Form::text('tarefa', null, ['class' => 'form-control']) !!}
 </div>
 

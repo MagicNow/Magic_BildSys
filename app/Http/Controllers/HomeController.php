@@ -27,33 +27,33 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $reprovados = OrdemDeCompra::select([
-            'ordem_de_compras.id',
-            'obras.nome',
-            'users.name'
-        ])            ->join('obras','obras.id','ordem_de_compras.obra_id')
-            ->join('users', 'users.id','=', 'ordem_de_compras.user_id')
-            ->where('oc_status_id', 4)->orderBy('id', 'desc')
-            ->take(5)->get();
+//        $reprovados = OrdemDeCompra::select([
+//            'ordem_de_compras.id',
+//            'obras.nome',
+//            'users.name'
+//        ])            ->join('obras','obras.id','ordem_de_compras.obra_id')
+//            ->join('users', 'users.id','=', 'ordem_de_compras.user_id')
+//            ->where('oc_status_id', 4)->orderBy('id', 'desc')
+//            ->take(5)->get();
+//
+//        $aprovados = OrdemDeCompra::select([
+//                'ordem_de_compras.id',
+//                'obras.nome',
+//                'users.name'
+//            ])            ->join('obras','obras.id','ordem_de_compras.obra_id')
+//                ->join('users', 'users.id','=', 'ordem_de_compras.user_id')
+//                ->where('oc_status_id', 5)->orderBy('id', 'desc')
+//                ->take(5)->get();
+//
+//        $emaprovacao = OrdemDeCompra::select([
+//                'ordem_de_compras.id',
+//                'obras.nome',
+//                'users.name'
+//            ])            ->join('obras','obras.id','ordem_de_compras.obra_id')
+//                ->join('users', 'users.id','=', 'ordem_de_compras.user_id')
+//                ->where('oc_status_id', 3)->orderBy('id', 'desc')
+//                ->take(5)->get();
 
-        $aprovados = OrdemDeCompra::select([
-                'ordem_de_compras.id',
-                'obras.nome',
-                'users.name'
-            ])            ->join('obras','obras.id','ordem_de_compras.obra_id')
-                ->join('users', 'users.id','=', 'ordem_de_compras.user_id')
-                ->where('oc_status_id', 5)->orderBy('id', 'desc')
-                ->take(5)->get();
-
-        $emaprovacao = OrdemDeCompra::select([
-                'ordem_de_compras.id',
-                'obras.nome',
-                'users.name'
-            ])            ->join('obras','obras.id','ordem_de_compras.obra_id')
-                ->join('users', 'users.id','=', 'ordem_de_compras.user_id')
-                ->where('oc_status_id', 3)->orderBy('id', 'desc')
-                ->take(5)->get();
-
-        return view('home',compact('reprovados', 'aprovados', 'emaprovacao'));
+        return view('home');
     }
 }

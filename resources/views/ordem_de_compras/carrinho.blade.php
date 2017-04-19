@@ -5,7 +5,7 @@
     <section class="content-header">
         <div class="modal-header">
             <div class="col-md-12">
-                <div class="col-md-9">
+                <div class="col-md-7">
                     <span class="pull-left title">
                        <h3>
                            <button type="button" class="btn btn-link" onclick="history.go(-1);">
@@ -17,7 +17,7 @@
                     </span>
                 </div>
 
-                <div class="col-md-3 text-right">
+                <div class="col-md-5 text-right">
                     <button type="button" onclick="history.go(-1);" class="btn btn-default btn-lg btn-flat">
                         Esqueci um item
                     </button>
@@ -41,12 +41,11 @@
             #carrinho ul li{
                 background-color: #ffffff;
                 border: solid 1px #dddddd;
-                padding: 20px;
+                padding: 18px;
                 margin-bottom: 12px;
                 font-size: 16px;
                 font-weight: 500;
                 color: #9b9b9b;
-                height: 65px;
             }
             #carrinho ul li .label-bloco{
                 font-size: 13px;
@@ -58,8 +57,11 @@
             }
             .label-bloco-limitado{
                 width: 72px;
-                margin-top: -5px;
-                height: 30px;
+            }
+            @media (min-width: 769px){
+                .label-bloco-limitado{
+                    margin-top: -5px;
+                }
             }
             .inputfile {
                 width: 0.1px;
@@ -69,9 +71,12 @@
                 position: absolute;
                 z-index: -1;
             }
-            .margem-botao{
-                margin-top: -15px;
+            @media (min-width: 1215px){
+                .margem-botao{
+                    margin-top: -15px;
+                }
             }
+
             .label-input-file{
                 text-transform: none;
             }
@@ -82,6 +87,12 @@
             .li-aberto{
                 height: auto !important;
             }
+            .col-xs-12, .col-xs-6, .col-xs-5, .col-xs-1{
+                margin-bottom: 5px;
+            }
+            .btn-xs{
+                overflow: hidden;
+            }
         </style>
         <div class="row">
             <div id="carrinho" class="col-md-12">
@@ -89,17 +100,29 @@
                     @foreach($itens as $item)
                         <li id="item{{ $item->id }}">
                             <div class="row">
-                                <span class="col-md-1 text-center borda-direita">{{ $item->insumo->codigo }}</span>
-                                <span class="col-md-3 text-center borda-direita">{{ $item->insumo->nome }}</span>
-                                <span class="col-md-1 text-center borda-direita">{{ $item->unidade_sigla }}</span>
-                                <span class="col-md-1 text-center borda-direita">{{ number_format($item->qtd, 2, ',','.') }}</span>
-                        <span class="col-md-2 text-center borda-direita">
+                                <span class="col-md-1 col-sm-1 col-xs-12 text-center borda-direita">
+                                    <strong class="visible-xs pull-left">Código:</strong>
+                                    {{ $item->insumo->codigo }}
+                                </span>
+                                <span class="col-md-3 col-sm-3 col-xs-12 text-center borda-direita">
+                                    <strong class="visible-xs pull-left">Insumo:</strong>
+                                    {{ $item->insumo->nome }}
+                                </span>
+                                <span class="col-md-1 col-sm-1 col-xs-12 text-center borda-direita">
+                                    <strong class="visible-xs pull-left">Unidade:</strong>
+                                    {{ $item->unidade_sigla }}
+                                </span>
+                                <span class="col-md-1 col-sm-1 col-xs-12 text-center borda-direita">
+                                    <strong class="visible-xs pull-left">Quantidade:</strong>
+                                    {{ number_format($item->qtd, 2, ',','.') }}
+                                </span>
+                        <span class="col-md-2 col-sm-2 col-xs-5 text-center borda-direita">
                             <label class="label-bloco label-bloco-limitado">Indicar contrato</label>
                             <button type="button" class="btn btn-flat btn-sm btn-default margem-botao" onclick="indicarContrato('{{ $item->insumo->codigo }}')">
                                 Selecionar
                             </button>
                         </span>
-                        <span class="col-md-3 text-center borda-direita">
+                        <span class="col-md-3 col-sm-3 col-xs-6 text-center borda-direita">
                             {!! Form::open(['url'=> url('/ordens-de-compra/upload-anexos/'.$item->id)  , 'class'=>'formAnexos', 'files'=>true]) !!}
                             {!! Form::hidden('item_id', $item->id, ['id'=>'item_id_'.$item->id]) !!}
                             <label class="label-bloco label-bloco-limitado">Anexar arquivo</label>
@@ -113,7 +136,7 @@
                             </button>
                             {!! Form::close() !!}
                         </span>
-                        <span class="col-md-1 text-center">
+                        <span class="col-md-1 col-sm-1 col-xs-1 text-center">
                             <button type="button" class="btn btn-flat btn-link"
                                     style="font-size: 18px; margin-top: -7px" onclick="showHideExtra({{ $item->id }})">
                                 <i class="icone-expandir fa fa-caret-left" aria-hidden="true"></i>
@@ -123,19 +146,19 @@
                             <div class="dados-extras" style="display: none;">
                                 <hr>
                                 <div class="row">
-                            <span class="col-md-4 text-center  borda-direita">
+                            <span class="col-md-4 col-sm-12 col-xs-12 text-center  borda-direita">
                                 <label class="label-bloco"><i class="fa fa-paperclip" aria-hidden="true"></i> Anexados</label>
                                 <small class="row" id="anexados_{{ $item->id }}">
                                     @if($item->anexos)
                                         @foreach($item->anexos as $anexo)
                                             <div id="anexo_{{ $anexo->id }}">
-                                                <span class="col-md-10">
+                                                <span class="col-md-10 col-sm-11 col-xs-10">
                                                     <a href="{{ Storage::url($anexo->arquivo) }}" class="btn btn-xs btn-flat btn-block btn-default" download target="_blank">
                                                         <i class="fa fa-download"></i> <span>{{ substr($anexo->arquivo, strrpos($anexo->arquivo,'/')+1)  }}</span>
                                                     </a>
                                                 </span>
-                                                <span class="col-md-2">
-                                                    <button type="button" onclick="removeAnexo({{ $anexo->id }});" class="btn btn-xs btn-flat btn-block btn-danger" target="_blank">
+                                                <span class="col-md-2 col-sm-1 col-xs-2 text-right">
+                                                    <button type="button" onclick="removeAnexo({{ $anexo->id }});" class="btn btn-xs btn-flat btn-danger" target="_blank">
                                                         <i class="fa fa-trash"></i>
                                                     </button>
                                                 </span>
@@ -148,13 +171,13 @@
                                 </small>
 
                             </span>
-                            <span class="col-md-4 text-center  borda-direita">
+                            <span class="col-md-4 col-sm-12 col-xs-12 text-center  borda-direita">
                                 <label class="label-bloco col-md-5">Data estimada de uso</label>
                                 <span class="col-md-7">
-                                    {!! Form::date('sugestao_data_uso['.$item->id.']', $item->sugestao_data_uso, ['class'=>'form-control', 'onChange'=>"alteraItem(".$item->id.",'sugestao_data_uso', this.value )"] ) !!}
+                                    {!! Form::date('sugestao_data_uso['.$item->id.']', $item->sugestao_data_uso, ['class'=>'form-control', 'onBlur'=>"alteraItem(".$item->id.",'sugestao_data_uso', this.value )"] ) !!}
                                 </span>
                             </span>
-                            <span class="col-md-4 text-center">
+                            <span class="col-md-4 col-sm-12 col-xs-12 text-center">
                                 {!! Form::checkbox('emergencial['.$item->id.']',1, $item->emergencial, ['class'=>'form-control ck_emergencial', 'id'=>'emergencial_'.$item->id, 'item_id'=>$item->id ] ) !!}
                                 <label class="label-bloco" for="emergencial_{{ $item->id }}">Emergencial</label>
                             </span>
@@ -162,38 +185,20 @@
                                 <hr>
 
                                 <div class="row">
-                            <span class="col-md-4 text-center borda-direita">
+                            <span class="col-md-4 col-sm-12 col-xs-12 text-center borda-direita">
                                 <label class="label-bloco">
                                     Tabela Tems
 
                                 </label>
-                                <button type="button" class="btn btn-flat btn-xs btn-warning pull-right"
-                                            style="display:none"
-                                            onclick="alteraItem({{ $item->id }},'tems', $('#tems_{{ $item->id }}').val() );$('#salvar_tems_{{ $item->id }}').hide();"
-                                            id="salvar_tems_{{ $item->id }}" title="salvar">
-                                    <i class="fa fa-save"></i>
-                                </button>
-                                {!! Form::textarea('tems['.$item->id.']', $item->tems, ['class'=>'form-control','rows'=>"4",'id'=>'tems_'.$item->id, 'onChange'=>"exibeBtn('salvar_tems_".$item->id."')"]) !!}
+                                {!! Form::textarea('tems['.$item->id.']', $item->tems, ['class'=>'form-control','rows'=>"4",'id'=>'tems_'.$item->id, 'onBlur'=>"alteraItem(". $item->id .",'tems', this.value );"]) !!}
                             </span>
-                            <span class="col-md-4 text-center borda-direita">
+                            <span class="col-md-4 col-sm-12 col-xs-12 text-center borda-direita">
                                 <label class="label-bloco">Justificativa de Compra</label>
-                                <button type="button" class="btn btn-flat btn-xs btn-warning pull-right"
-                                        style="display:none"
-                                        onclick="alteraItem({{ $item->id }},'justificativa', $('#justificativa_{{ $item->id }}').val() );$('#salvar_justificativa_{{ $item->id }}').hide();"
-                                        id="salvar_justificativa_{{ $item->id }}" title="salvar">
-                                    <i class="fa fa-save"></i>
-                                </button>
-                                {!! Form::textarea('justificativa['.$item->id.']', $item->justificativa, ['class'=>'form-control','rows'=>"4",'id'=>'justificativa_'.$item->id,'onChange'=>"exibeBtn('salvar_justificativa_".$item->id."')"]) !!}
+                                {!! Form::textarea('justificativa['.$item->id.']', $item->justificativa, ['class'=>'form-control','rows'=>"4",'id'=>'justificativa_'.$item->id,'onChange'=>"alteraItem(". $item->id .",'justificativa', this.value );"]) !!}
                             </span>
-                            <span class="col-md-4 text-center">
+                            <span class="col-md-4 col-sm-12 col-xs-12 text-center">
                                 <label class="label-bloco">Observações ao fornecedor</label>
-                                <button type="button" class="btn btn-flat btn-xs btn-warning pull-right"
-                                        style="display:none"
-                                        onclick="alteraItem({{ $item->id }},'obs', $('#obs_{{ $item->id }}').val() );$('#salvar_obs_{{ $item->id }}').hide();"
-                                        id="salvar_obs_{{ $item->id }}" title="salvar">
-                                    <i class="fa fa-save"></i>
-                                </button>
-                                {!! Form::textarea('obs['.$item->id.']', $item->obs, ['class'=>'form-control','rows'=>"4", 'id'=>'obs_'.$item->id, 'onChange'=>"exibeBtn('salvar_obs_".$item->id."')"]) !!}
+                                {!! Form::textarea('obs['.$item->id.']', $item->obs, ['class'=>'form-control','rows'=>"4", 'id'=>'obs_'.$item->id, 'onChange'=>"alteraItem(". $item->id .",'obs', this.value );"]) !!}
                             </span>
                                 </div>
                             </div>
@@ -289,9 +294,9 @@
                     }
             ).done(function (retorno) {
                 stopLoading();
-                if(retorno.success){
-                    swal('Salvo','', 'success');
-                }
+//                if(retorno.success){
+//                    swal('Salvo','', 'success');
+//                }
             }).fail(function (retorno) {
                 stopLoading();
                 erros = '';

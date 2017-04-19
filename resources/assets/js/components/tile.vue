@@ -26,7 +26,7 @@
             return{
                 dados:[],
                 chaves:[],
-                apiGet: 'compras/jsonOrdemCompraDashboard'
+                apiGet: 'jsonOrdemCompraDashboard'
             }
         },
         methods: {
