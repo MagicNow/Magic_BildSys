@@ -137,6 +137,7 @@ class PlanejamentoController extends AppBaseController
                 ->where('subgrupo2_id', $request->subgrupo2_id)
                 ->where('subgrupo3_id', $request->subgrupo3_id)
                 ->where('servico_id', $request->servico_id)
+                ->where('ativo', 1)
                 ->get();
         }
         if($request->grupo_id && $request->subgrupo1_id && $request->subgrupo2_id && $request->subgrupo3_id && !$request->servico_id){
@@ -144,21 +145,25 @@ class PlanejamentoController extends AppBaseController
                 ->where('subgrupo1_id', $request->subgrupo1_id)
                 ->where('subgrupo2_id', $request->subgrupo2_id)
                 ->where('subgrupo3_id', $request->subgrupo3_id)
+                ->where('ativo', 1)
                 ->get();
         }
         if($request->grupo_id && $request->subgrupo1_id && $request->subgrupo2_id && !$request->subgrupo3_id && !$request->servico_id){
             $insumosOrcados = Orcamento::where('grupo_id', $request->grupo_id)
                 ->where('subgrupo1_id', $request->subgrupo1_id)
                 ->where('subgrupo2_id', $request->subgrupo2_id)
+                ->where('ativo', 1)
                 ->get();
         }
         if($request->grupo_id && $request->subgrupo1_id && !$request->subgrupo2_id && !$request->subgrupo3_id && !$request->servico_id){
             $insumosOrcados = Orcamento::where('grupo_id', $request->grupo_id)
                 ->where('subgrupo1_id', $request->subgrupo1_id)
+                ->where('ativo', 1)
                 ->get();
         }
         if($request->grupo_id && !$request->subgrupo1_id && !$request->subgrupo2_id && !$request->subgrupo3_id && !$request->servico_id){
             $insumosOrcados = Orcamento::where('grupo_id', $request->grupo_id)
+                ->where('ativo', 1)
                 ->get();
         }
 
