@@ -25,7 +25,7 @@
     <section class="content-header">
         <div class="modal-header">
             <div class="col-md-12">
-                <div class="col-md-8">
+                <div class="col-md-6">
                     <span class="pull-left title">
                         <h3>
                             <button type="button" class="btn btn-link" onclick="history.go(-1);">
@@ -35,7 +35,7 @@
                         </h3>
                     </span>
                 </div>
-                <div class="col-md-4 text-right">
+                <div class="col-md-6 text-right">
                     <a href="{!! route('retroalimentacaoObras.create') !!}" class="btn btn-default btn-lg btn-flat">
                         Retroalimentação
                     </a>

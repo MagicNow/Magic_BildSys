@@ -854,8 +854,8 @@ module.exports = __vue_exports__
                             }
                             if(item['adicionado'] && !this.quant[i]){
                                 titulo = 'Removido';
+                                swal(titulo,'','success');
                             }
-                            swal(titulo,'','success');
                             this.loadData();
                         }
                     })

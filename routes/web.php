@@ -240,6 +240,25 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             $router->get('workflow-alcadas/{workflowAlcadas}/edit', ['as'=> 'admin.workflowAlcadas.edit', 'uses' => 'Admin\WorkflowAlcadaController@edit']);
 
         });
+
+        $router->get('insumos', ['as'=> 'admin.insumos.index', 'uses' => 'Admin\InsumoController@index']);
+        $router->post('insumos', ['as'=> 'admin.insumos.store', 'uses' => 'Admin\InsumoController@store']);
+        $router->get('insumos/create', ['as'=> 'admin.insumos.create', 'uses' => 'Admin\InsumoController@create']);
+        $router->put('insumos/{insumos}', ['as'=> 'admin.insumos.update', 'uses' => 'Admin\InsumoController@update']);
+        $router->patch('insumos/{insumos}', ['as'=> 'admin.insumos.update', 'uses' => 'Admin\InsumoController@update']);
+        $router->delete('insumos/{insumos}', ['as'=> 'admin.insumos.destroy', 'uses' => 'Admin\InsumoController@destroy']);
+        $router->get('insumos/{insumos}', ['as'=> 'admin.insumos.show', 'uses' => 'Admin\InsumoController@show']);
+        $router->get('insumos/{insumos}/edit', ['as'=> 'admin.insumos.edit', 'uses' => 'Admin\InsumoController@edit']);
+
+        $router->get('insumoGrupos', ['as'=> 'admin.insumoGrupos.index', 'uses' => 'Admin\InsumoGrupoController@index']);
+        $router->post('insumoGrupos', ['as'=> 'admin.insumoGrupos.store', 'uses' => 'Admin\InsumoGrupoController@store']);
+        $router->get('insumoGrupos/create', ['as'=> 'admin.insumoGrupos.create', 'uses' => 'Admin\InsumoGrupoController@create']);
+        $router->put('insumoGrupos/{insumoGrupos}', ['as'=> 'admin.insumoGrupos.update', 'uses' => 'Admin\InsumoGrupoController@update']);
+        $router->patch('insumoGrupos/{insumoGrupos}', ['as'=> 'admin.insumoGrupos.update', 'uses' => 'Admin\InsumoGrupoController@update']);
+        $router->delete('insumoGrupos/{insumoGrupos}', ['as'=> 'admin.insumoGrupos.destroy', 'uses' => 'Admin\InsumoGrupoController@destroy']);
+        $router->get('insumoGrupos/{insumoGrupos}', ['as'=> 'admin.insumoGrupos.show', 'uses' => 'Admin\InsumoGrupoController@show']);
+        $router->get('insumoGrupos/{insumoGrupos}/edit', ['as'=> 'admin.insumoGrupos.edit', 'uses' => 'Admin\InsumoGrupoController@edit']);
+
     });
 
     $router->group(['prefix' => 'compras'], function () use ($router) {
@@ -282,6 +301,5 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('workflow/aprova-reprova', 'WorkflowController@aprovaReprova');
     $router->get('workflow/aprova-reprova-tudo', 'WorkflowController@aprovaReprovaTudo');
 });
-
 
 

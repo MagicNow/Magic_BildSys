@@ -57,10 +57,18 @@
 </li>
 
 <li class="{{ Request::is('admin/contratos*') ? 'active' : '' }}">
-    <a href="{!! route('admin.contratos.index') !!}"><i class="fa fa-edit"></i><span>Contratos</span></a>
+    <a href="{!! route('admin.contratos.index') !!}"><i class="fa fa-file-text-o"></i><span>Contratos</span></a>
 </li>
 
 <li class="{{ Request::is('admin/obras*') ? 'active' : '' }}">
     <a href="{!! route('admin.obras.index') !!}"><i class="fa fa-building"></i><span>Obras</span></a>
+</li>
+
+<li class="{{ Request::is('insumos*') ? 'active' : '' }}">
+    <a href="{!! route('admin.insumos.index') !!}"><i class="fa fa-gamepad"></i><span>Insumos</span></a>
+</li>
+
+<li class="{{ Request::is('insumoGrupos*') ? 'active' : '' }}">
+    <a href="{!! route('admin.insumoGrupos.index') !!}"><i class="fa fa-th-list"></i><span>Grupos de insumos</span></a>
 </li>
 
