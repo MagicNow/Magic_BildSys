@@ -16,8 +16,8 @@
                         {!! Form::select('obra_id', [''=>'Obra...']+$obras, null, ['class'=>'form-control input-lg', 'onchange'=>'atualizaCalendario(this.value);']) !!}
                     </div>
                     <div class="col-md-3">
-                        <a href="{{ url('/obras_insumos') }}" class="btn btn-success btn-block btn-lg btn-flat"><i
-                                    class="fa fa-shopping-cart"></i> Comprar</a>
+                        <button {{--href="{{ url('/obras_insumos') }}"--}} onclick="swal('Função não disponível')" class="btn btn-success btn-block btn-lg btn-flat"><i
+                                    class="fa fa-shopping-cart"></i> Comprar</button>
                     </div>
                     <div class="col-md-3">
                         <a href="{{ url('/ordens-de-compra') }}" class="btn btn-primary btn-block btn-lg btn-flat"><i

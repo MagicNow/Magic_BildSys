@@ -1,6 +1,6 @@
 var k = 0;
 $(function () {
-    verifyQueryString();
+    // verifyQueryString();
 });
 
 function addFilters(query_string) {
