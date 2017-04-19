@@ -117,10 +117,21 @@
                                     {{ number_format($item->qtd, 2, ',','.') }}
                                 </span>
                         <span class="col-md-2 col-sm-2 col-xs-5 text-center borda-direita">
-                            <label class="label-bloco label-bloco-limitado">Indicar contrato</label>
-                            <button type="button" class="btn btn-flat btn-sm btn-default margem-botao" onclick="indicarContrato('{{ $item->insumo->codigo }}')">
-                                Selecionar
-                            </button>
+                            <div id="bloco_indicar_contrato{{ $item->id }}">
+                                @if($item->sugestao_contrato_id)
+                                    <div id="bloco_indicar_contrato_removivel{{ $item->id }}">
+                                        {{$item->contrato->fornecedor_nome}}
+                                        <button type="button" class="btn btn-flat btn-sm btn-danger glyphicon glyphicon-remove" onclick="removeContrato('{{ $item->insumo->codigo }}', '{{$item->id}}')"></button>
+                                    </div>
+                                @else
+                                    <div id="bloco_indicar_contrato_removivel{{ $item->id }}">
+                                        <label class="label-bloco label-bloco-limitado">Indicar contrato</label>
+                                        <button type="button" class="btn btn-flat btn-sm btn-default margem-botao" onclick="indicarContrato('{{ $item->insumo->codigo }}', '{{$item->id}}')">
+                                            Selecionar
+                                        </button>
+                                    </div>
+                                @endif
+                            </div>
                         </span>
                         <span class="col-md-3 col-sm-3 col-xs-6 text-center borda-direita">
                             {!! Form::open(['url'=> url('/ordens-de-compra/upload-anexos/'.$item->id)  , 'class'=>'formAnexos', 'files'=>true]) !!}
@@ -278,9 +289,54 @@
             });
         });
 
-        function indicarContrato(codigo_insumo){
-            {{--@todo Criar busca em modal de lista de contratos --}}
-            swal('Função ainda não disponível!');
+        function indicarContrato(codigo_insumo, item_id){
+            startLoading();
+            $.ajax("{{ url('/ordens-de-compra/carrinho/indicar-contrato') }}", {
+                        data: {
+                            'codigo_insumo' : codigo_insumo
+                        },
+                        type: "GET"
+                    }
+            ).done(function (retorno) {
+                stopLoading();
+                contratos = '';
+                $.each(retorno.contrato_insumo, function (index, value) {
+                    var fornecedor = "'" + value.contrato.fornecedor_nome + "'";
+                    contratos +=
+                                 '<p style="border-bottom: 1px solid #dddddd;padding: 10px;text-align: left">' +
+                                 '<span class="btn btn-sm btn-success flat" style="padding: 10px 10px;" onclick="indicarContratoFecharModal(' + item_id + ', \'sugestao_contrato_id\', ' + value.contrato.id + ', ' + fornecedor + ', '+ codigo_insumo +')">Indicar</span>' +
+                                    '<span style="margin-left: 15px;">' + value.contrato.fornecedor_nome + '</span>' +
+                                    '<br>' +
+                                    '<i>' +
+                                        '<a href="' + value.contrato.arquivo + '" target="_blank" style="margin-left: 167px;">Ver contrato</a>' +
+                                    '</i>' +
+                                 '</p>';
+                });
+
+                swal({
+                    html:true,
+                    title: '<div class="modal-header">Indicar contrato</div>',
+                    text: contratos,
+                    showConfirmButton: false
+                });
+
+            }).fail(function (retorno) {
+                stopLoading();
+                erros = '';
+                $.each(retorno.responseJSON, function (index, value) {
+                    if (erros.length) {
+                        erros += '<br>';
+                    }
+                    erros += value;
+                });
+                erros = erros.replace('conteudo ','');
+                swal({
+                    html:true,
+                    title: "Oops",
+                    text: erros,
+                    type: 'error'
+                });
+            });
         }
 
         function alteraItem(item_id, campo, valor){
@@ -307,7 +363,12 @@
                     erros += value;
                 });
                 erros = erros.replace('conteudo ','');
-                swal("Oops", erros, "error");
+                swal({
+                    html:true,
+                    title: "Oops",
+                    text: erros,
+                    type: 'error'
+                });
             });
         }
 
@@ -343,7 +404,12 @@
                                 erros += value;
                             });
                             erros = erros.replace('conteudo ','');
-                            swal("Oops", erros, "error");
+                            swal({
+                                html:true,
+                                title: "Oops",
+                                text: erros,
+                                type: 'error'
+                            });
                         });
                     });
 
@@ -427,5 +493,36 @@
 //        const app = new Vue({
 //            el: '#app'
 //        });
+
+        function indicarContratoFecharModal(item_id, campo, valor, fornecedor, codigo_insumo) {
+            $('.confirm').click();
+            alteraItem(item_id, campo, valor);
+
+            adicionarNomeFornecedorContrato(item_id, fornecedor, codigo_insumo);
+        }
+
+        function adicionarNomeFornecedorContrato(item_id, fornecedor, codigo_insumo) {
+            $('#bloco_indicar_contrato_removivel'+ item_id).remove();
+            $('#bloco_indicar_contrato'+ item_id).html('<div id="bloco_indicar_contrato_removivel' + item_id + '">' + fornecedor + ' <button type="button" class="btn btn-flat btn-sm btn-danger glyphicon glyphicon-remove" onclick="removeContrato(' + codigo_insumo + ', ' + item_id + ')"></button></div>');
+        }
+        
+        function removeContrato(codigo_insumo, item_id) {
+            $.ajax({
+                url: '/ordens-de-compra/carrinho/remove-contrato',
+                data: {
+                    item: item_id
+                }
+            }).done(function (){
+                $('#bloco_indicar_contrato_removivel'+item_id).remove();
+
+                $('#bloco_indicar_contrato' + item_id).html('<div id="bloco_indicar_contrato_removivel' + item_id + '">\
+                        <label class="label-bloco label-bloco-limitado">Indicar contrato</label>\
+                            <button type="button" class="btn btn-flat btn-sm btn-default margem-botao" onclick="indicarContrato(' + codigo_insumo + ', ' + item_id + ')">\
+                        Selecionar\
+                        </button>\
+                </div>');
+
+            });
+        }
     </script>
 @endsection

@@ -20,6 +20,7 @@ class Contrato extends Model
         'data',
         'valor',
         'fornecedor_cod',
+        'fornecedor_nome',
         'arquivo'
     ];
 
@@ -32,6 +33,7 @@ class Contrato extends Model
         'id' => 'integer',
         'obra_id' => 'integer',
         'fornecedor_cod' => 'integer',
+        'fornecedor_nome' => 'string',
         'arquivo' => 'string'
     ];
 
