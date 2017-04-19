@@ -117,6 +117,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->delete('contratos/{contratos}', ['as'=> 'admin.contratos.destroy', 'uses' => 'Admin\ContratosController@destroy']);
         $router->get('contratos/{contratos}', ['as'=> 'admin.contratos.show', 'uses' => 'Admin\ContratosController@show']);
         $router->get('contratos/{contratos}/edit', ['as'=> 'admin.contratos.edit', 'uses' => 'Admin\ContratosController@edit']);
+        $router->get('contratos/buscar/busca_fornecedores', ['as'=> 'admin.contratos.busca_fornecedores', 'uses' => 'Admin\ContratosController@buscaFornecedor']);
         $router->get('insumo/valor_total', 'Admin\ContratosController@calcularValorTotalInsumo');
         $router->get('insumo/delete', 'Admin\ContratosController@deleteInsumo');
 
