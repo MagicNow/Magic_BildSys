@@ -14,12 +14,18 @@ class InsumoDataTable extends DataTable
      */
     public function ajax()
     {
+        $query = $this->query();
         return $this->datatables
-            ->eloquent($this->query())
+            ->eloquent($this->query()
+                ->select([
+                    'insumos.id',
+                    'insumos.nome',
+                    'insumos.codigo',
+                    'insumos.unidade_sigla',
+                    'insumo_grupos.nome as grupo',
+                ])
+                ->join('insumo_grupos','insumo_grupos.id','=','insumos.insumo_grupo_id'))
             ->addColumn('action', 'admin.insumos.datatables_actions')
-            ->editColumn('insumo_grupo_id', function($obj){
-                return $obj->insumoGrupo->nome;
-            })
             ->make(true);
     }
 
@@ -97,7 +103,7 @@ class InsumoDataTable extends DataTable
             'nome' => ['name' => 'nome', 'data' => 'nome'],
             'unidade' => ['name' => 'unidade_sigla', 'data' => 'unidade_sigla'],
             'codigo' => ['name' => 'codigo', 'data' => 'codigo'],
-            'grupo' => ['name' => 'insumo_grupo_id', 'data' => 'insumo_grupo_id']
+            'grupo' => ['name' => 'insumo_grupos.nome', 'data' => 'grupo']
         ];
     }
 
