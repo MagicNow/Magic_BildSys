@@ -1,35 +1,172 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Raul
- * Date: 04/04/2017
- * Time: 11:47
- */
 
 namespace App\Http\Controllers\Admin;
 
-
-use App\Http\Controllers\AppBaseController;
+use App\DataTables\Admin\OrcamentoDataTable;
+use App\Http\Requests\Admin;
+use App\Http\Requests\Admin\CreateOrcamentoRequest;
+use App\Http\Requests\Admin\UpdateOrcamentoRequest;
 use App\Jobs\PlanilhaProcessa;
 use App\Models\Obra;
 use App\Models\Planilha;
 use App\Models\TipoOrcamento;
+use App\Repositories\Admin\OrcamentoRepository;
 use App\Repositories\Admin\SpreadsheetRepository;
+use Flash;
+use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Flash;
+use Response;
 
 class OrcamentoController extends AppBaseController
 {
+    /** @var  OrcamentoRepository */
+    private $orcamentoRepository;
+
+    public function __construct(OrcamentoRepository $orcamentoRepo)
+    {
+        $this->orcamentoRepository = $orcamentoRepo;
+    }
+
+    /**
+     * Display a listing of the Orcamento.
+     *
+     * @param OrcamentoDataTable $orcamentoDataTable
+     * @return Response
+     */
+    public function index(OrcamentoDataTable $orcamentoDataTable)
+    {
+        return $orcamentoDataTable->render('admin.orcamentos.index');
+    }
+
+    /**
+     * Show the form for creating a new Orcamento.
+     *
+     * @return Response
+     */
+    public function create()
+    {
+        return view('admin.orcamentos.create');
+    }
+
+    /**
+     * Store a newly created Orcamento in storage.
+     *
+     * @param CreateOrcamentoRequest $request
+     *
+     * @return Response
+     */
+    public function store(CreateOrcamentoRequest $request)
+    {
+        $input = $request->all();
+
+        $orcamento = $this->orcamentoRepository->create($input);
+
+        Flash::success('Orcamento '.trans('common.saved').' '.trans('common.successfully').'.');
+
+        return redirect(route('admin.orcamentos.index'));
+    }
+
+    /**
+     * Display the specified Orcamento.
+     *
+     * @param  int $id
+     *
+     * @return Response
+     */
+    public function show($id)
+    {
+        $orcamento = $this->orcamentoRepository->findWithoutFail($id);
+
+        if (empty($orcamento)) {
+            Flash::error('Orcamento '.trans('common.not-found'));
+
+            return redirect(route('admin.orcamentos.index'));
+        }
+
+        return view('admin.orcamentos.show')->with('orcamento', $orcamento);
+    }
+
+    /**
+     * Show the form for editing the specified Orcamento.
+     *
+     * @param  int $id
+     *
+     * @return Response
+     */
+    public function edit($id)
+    {
+        $orcamento = $this->orcamentoRepository->findWithoutFail($id);
+
+        if (empty($orcamento)) {
+            Flash::error('Orcamento '.trans('common.not-found'));
+
+            return redirect(route('admin.orcamentos.index'));
+        }
+
+        return view('admin.orcamentos.edit')->with('orcamento', $orcamento);
+    }
+
+    /**
+     * Update the specified Orcamento in storage.
+     *
+     * @param  int              $id
+     * @param UpdateOrcamentoRequest $request
+     *
+     * @return Response
+     */
+    public function update($id, UpdateOrcamentoRequest $request)
+    {
+        $orcamento = $this->orcamentoRepository->findWithoutFail($id);
+
+        if (empty($orcamento)) {
+            Flash::error('Orcamento '.trans('common.not-found'));
+
+            return redirect(route('admin.orcamentos.index'));
+        }
+
+        $orcamento = $this->orcamentoRepository->update($request->all(), $id);
+
+        Flash::success('Orcamento '.trans('common.updated').' '.trans('common.successfully').'.');
+
+        return redirect(route('admin.orcamentos.index'));
+    }
+
+    /**
+     * Remove the specified Orcamento from storage.
+     *
+     * @param  int $id
+     *
+     * @return Response
+     */
+    public function destroy($id)
+    {
+        $orcamento = $this->orcamentoRepository->findWithoutFail($id);
+
+        if (empty($orcamento)) {
+            Flash::error('Orcamento '.trans('common.not-found'));
+
+            return redirect(route('admin.orcamentos.index'));
+        }
+
+        $this->orcamentoRepository->delete($id);
+
+        Flash::success('Orcamento '.trans('common.deleted').' '.trans('common.successfully').'.');
+
+        return redirect(route('admin.orcamentos.index'));
+    }
+
+    ################################ IMPORTAÇÃO ###################################
+
     /**
      * $obras = Buscando chave e valor para fazer o combobox da view
      * $orcamento_tipos = Buscando chave e valor para fazer o combobox da view
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index(){
+    public function indexImport(){
         $obras = Obra::pluck('nome','id')->toArray();
         $orcamento_tipos = TipoOrcamento::pluck('nome','id')->toArray();
-        return view('admin.orcamento.index', compact('orcamento_tipos','obras'));
+        return view('admin.orcamentos.indexImport', compact('orcamento_tipos','obras'));
     }
 
     /**
@@ -96,7 +233,7 @@ class OrcamentoController extends AppBaseController
 
         $retorno = $request->session()->get('retorno');
         $colunasbd = $request->session()->get('colunasbd');
-        return view('admin.orcamento.checkIn', compact('retorno','colunasbd'));
+        return view('admin.orcamentos.checkIn', compact('retorno','colunasbd'));
     }
 
     /*

@@ -8,11 +8,13 @@ use App\Http\Requests\Admin\CreateContratosRequest;
 use App\Http\Requests\Admin\UpdateContratosRequest;
 use App\Models\ContratoInsumo;
 use App\Models\Insumo;
+use App\Models\MegaFornecedor;
 use App\Repositories\Admin\ContratosRepository;
 use App\Repositories\CodeRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Response;
 
 class ContratosController extends AppBaseController
@@ -44,7 +46,9 @@ class ContratosController extends AppBaseController
     public function create()
     {
         $insumos = Insumo::get();
-        return view('admin.contratos.create', compact('insumos'));
+        $fornecedores = [];
+
+        return view('admin.contratos.create', compact('insumos', 'fornecedores'));
     }
 
     /**
@@ -125,7 +129,11 @@ class ContratosController extends AppBaseController
 
         $insumos = Insumo::get();
 
-        return view('admin.contratos.edit', compact('insumos'))->with('contratos', $contratos);
+        $fornecedores = MegaFornecedor::select(DB::raw("CONVERT(agn_st_nome,'UTF8','WE8ISO8859P15' ) as agn_st_nome"), 'agn_in_codigo')
+            ->where('agn_in_codigo', $contratos->fornecedor_cod)
+            ->pluck('agn_st_nome', 'agn_in_codigo')->toArray();
+
+        return view('admin.contratos.edit', compact('insumos', 'fornecedores'))->with('contratos', $contratos);
     }
 
     /**
@@ -246,5 +254,15 @@ class ContratosController extends AppBaseController
         }catch (\Exception $e){
             return $e->getMessage();
         }
+    }
+
+    public function buscaFornecedor(Request $request){
+        $fornecedores = MegaFornecedor::select([
+            'agn_in_codigo as id',
+            DB::raw("CONVERT(agn_st_nome,'UTF8','WE8ISO8859P15' ) as agn_st_nome")
+        ])
+            ->where('agn_st_nome','like', '%'.$request->q.'%')->paginate();
+
+        return $fornecedores;
     }
 }

@@ -25,19 +25,17 @@
     <section class="content-header">
         <div class="modal-header">
             <div class="col-md-12">
-                <div class="col-md-9">
-               <span class="pull-left title">
-                   <h3>
-                       <button type="button" class="btn btn-link" onclick="history.go(-1);">
-                        <i class="fa fa-arrow-left" aria-hidden="true"></i>
-                       </button>
-                       <span>
-                        Detalhar Ordem de Compra</span>
-                   </h3>
-
+                <div class="col-md-6">
+                    <span class="pull-left title">
+                        <h3>
+                            <button type="button" class="btn btn-link" onclick="history.go(-1);">
+                             <i class="fa fa-arrow-left" aria-hidden="true"></i>
+                            </button>
+                            <span>Detalhar Ordem de Compra</span>
+                        </h3>
+                    </span>
                 </div>
-
-                <div class="col-md-3 text-right">
+                <div class="col-md-6 text-right">
                     <a href="{!! route('retroalimentacaoObras.create') !!}" class="btn btn-default btn-lg btn-flat">
                         Retroalimentação
                     </a>
@@ -47,7 +45,7 @@
                                 <i class="fa fa-check" aria-hidden="true"></i>
                             </span>
                         @else
-                            <span class="text-danger btn-lg btn-flat" title="Reprovado por você">
+                            <span class="text-danger btn-lg btn-flat" title="Reprovado">
                                 <i class="fa fa-times" aria-hidden="true"></i>
                             </span>
                         @endif
@@ -88,7 +86,6 @@
                             @endif
                         @endif
                     @endif
-
                 </div>
             </div>
         </div>
@@ -166,11 +163,13 @@
                             @if($workflowAprovacao['iraAprovar'])
                                 <div class="btn-group" role="group" id="blocoItemAprovaReprova{{ $item->id }}" aria-label="...">
                                     <button type="button" onclick="workflowAprovaReprova({{ $item->id }},'OrdemDeCompraItem',1,'blocoItemAprovaReprova{{ $item->id }}','Insumo {{ $item->insumo->codigo }}',0, '', '');"
-                                            class="btn btn-default btn-lg btn-flat">
+                                            class="btn btn-default btn-lg btn-flat"
+                                            title="Aprovar Este item">
                                         <i class="fa fa-check" aria-hidden="true"></i>
                                     </button>
                                     <button type="button" onclick="workflowAprovaReprova({{ $item->id }},'OrdemDeCompraItem',0, 'blocoItemAprovaReprova{{ $item->id }}','Insumo {{ $item->insumo->codigo }}',0, '', '');"
-                                            class="btn btn-default btn-lg btn-flat">
+                                            class="btn btn-default btn-lg btn-flat"
+                                            title="Reprovar Este item">
                                         <i class="fa fa-times" aria-hidden="true"></i>
                                     </button>
                                 </div>

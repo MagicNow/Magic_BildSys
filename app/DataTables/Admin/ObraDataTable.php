@@ -18,7 +18,7 @@ class ObraDataTable extends DataTable
             ->eloquent($this->query())
             ->addColumn('action', 'admin.obras.datatables_actions')
             ->editColumn('created_at', function($obj){
-                return $obj->created_at->format('d/m/Y H:i');
+                return $obj->created_at ? with(new\Carbon\Carbon($obj->created_at))->format('d/m/Y H:i') : '';
             })
             ->make(true);
     }

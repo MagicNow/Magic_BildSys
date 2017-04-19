@@ -23,11 +23,6 @@
        <div class="box box-primary">
            <div class="box-body">
                <div class="row">
-                   {{--{!! Form::model($planejamento, ['route' => ['admin.planejamentos.update', $planejamento->id], 'method' => 'patch']) !!}--}}
-
-                   {{--@include('admin.planejamentos.fields_insumos')--}}
-
-                   {{--{!! Form::close() !!}--}}
                    {!! Form::open(['route' => 'admin.planejamentos.insumos']) !!}
 
                    @include('admin.planejamentos.fields_insumos')

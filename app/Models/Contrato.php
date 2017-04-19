@@ -19,6 +19,7 @@ class Contrato extends Model
         'obra_id',
         'data',
         'valor',
+        'fornecedor_cod',
         'arquivo'
     ];
 
@@ -30,6 +31,7 @@ class Contrato extends Model
     protected $casts = [
         'id' => 'integer',
         'obra_id' => 'integer',
+        'fornecedor_cod' => 'integer',
         'arquivo' => 'string'
     ];
 

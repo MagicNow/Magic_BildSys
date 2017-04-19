@@ -8,14 +8,15 @@ class MegaFornecedor extends Eloquent
 {
     protected $connection = 'oracle';
 
+    public $primaryKey = 'agn_in_codigo';
+
     public $table = 'MGGLO.GLO_AGENTES';
     // define the sequence name used for incrementing
     // default value would be {table}_{primaryKey}_seq if not set
     protected $sequence = 'GRU_IN_CODIGO';
 
     protected $casts = [
-        'GRU_IDE_ST_CODIGO' => 'string',
-        'GRU_IN_CODIGO' => 'integer',
-        'GRU_ST_NOME' => 'string',
+        'agn_in_codigo' => 'integer',
+        'agn_st_nome' => 'string',
     ];
 }

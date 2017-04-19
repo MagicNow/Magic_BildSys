@@ -15,6 +15,12 @@
     {!! Form::text('valor', null, ['class' => 'form-control money','required'=>'required']) !!}
 </div>
 
+<!-- Fornecedores Field -->
+<div class="form-group col-sm-12">
+    {!! Form::label('fornecedor_cod', 'Fornecedores:') !!}
+    {!! Form::select('fornecedor_cod', ['' => 'Escolha...']+$fornecedores, null, ['class' => 'form-control','id'=>'fornecedor_cod','required'=>'required']) !!}
+</div>
+
 <!-- Arquivo Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('arquivo', 'Arquivo:') !!}
@@ -86,8 +92,8 @@ $count_insumos = 0;
     <a href="{!! route('admin.contratos.index') !!}" class="btn btn-default"><i class="fa fa-times"></i>  {{ ucfirst( trans('common.cancel') )}}</a>
 </div>
 
-
-<script>
+@section('scripts')
+<script type="text/javascript">
     var count_insumos = '{{$count_insumos}}';
 
     function addInsumo(){
@@ -182,7 +188,67 @@ $count_insumos = 0;
             }
         });
     }
-</script>
 
+    function formatResult (obj) {
+        if (obj.loading) return obj.text;
+
+        var markup =    "<div class='select2-result-obj clearfix'>" +
+                "   <div class='select2-result-obj__meta'>" +
+                "       <div class='select2-result-obj__title'>" + obj.agn_st_nome + "</div>"+
+                "   </div>"+
+                "</div>";
+
+        return markup;
+    }
+
+    function formatResultSelection (obj) {
+        if(obj.agn_st_nome){
+            return obj.agn_st_nome;
+        }
+        return obj.text;
+    }
+
+    $(function(){
+        $('#fornecedor_cod').select2({
+            allowClear: true,
+            placeholder:"-",
+            language: "pt-BR",
+            ajax: {
+                url: "{{ route('admin.contratos.busca_fornecedores') }}",
+                dataType: 'json',
+                delay: 250,
+
+                data: function (params) {
+                    return {
+                        q: params.term, // search term
+                        page: params.page
+                    };
+                },
+
+                processResults: function (result, params) {
+                    // parse the results into the format expected by Select2
+                    // since we are using custom formatting functions we do not need to
+                    // alter the remote JSON data, except to indicate that infinite
+                    // scrolling can be used
+                    params.page = params.page || 1;
+
+                    return {
+                        results: result.data,
+                        pagination: {
+                            more: (params.page * result.per_page) < result.total
+                        }
+                    };
+                },
+                cache: true
+            },
+            escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
+            minimumInputLength: 1,
+            templateResult: formatResult, // omitted for brevity, see the source of this page
+            templateSelection: formatResultSelection // omitted for brevity, see the source of this page
+
+        });
+    });
+</script>
+@endsection
 
 

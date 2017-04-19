@@ -2,7 +2,6 @@
 
 namespace App\Repositories;
 
-
 use App\Models\Insumo;
 use App\Models\InsumoGrupo;
 use App\Models\MegaInsumo;

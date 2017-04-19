@@ -129,7 +129,7 @@
         border: solid 1px #979797;
     }
 
-    .active >a{
+    .pagination-custom .active >a{
         color: #f98d00;
         font-weight: bold;
         border: solid 1px #f98d00;

@@ -266,13 +266,13 @@ class SpreadsheetRepository
                             }
 
                             # query verificar se existe grupo_id = obra
-                            $grupo = Grupo::where('codigo', $param['obra_id'])->first();
+                            $grupo = Grupo::where('codigo', $codigo_grupo)->first();
 
                             if ($grupo) {
                                 $final['grupo_id'] = $grupo->id;
                             } else {
                                 $erro = 1;
-                                $mensagens_erro[] = 'grupo - Código: ' . $param['obra_id'] . ' não foi encontrado.';
+                                $mensagens_erro[] = 'grupo - Código: ' . $codigo_grupo . ' não foi encontrado.';
                             }
 
                             # query verificar se existe subgrupo1_id

@@ -174,7 +174,7 @@
                             <span class="col-md-4 col-sm-12 col-xs-12 text-center  borda-direita">
                                 <label class="label-bloco col-md-5">Data estimada de uso</label>
                                 <span class="col-md-7">
-                                    {!! Form::date('sugestao_data_uso['.$item->id.']', $item->sugestao_data_uso, ['class'=>'form-control', 'onChange'=>"alteraItem(".$item->id.",'sugestao_data_uso', this.value )"] ) !!}
+                                    {!! Form::date('sugestao_data_uso['.$item->id.']', $item->sugestao_data_uso, ['class'=>'form-control', 'onBlur'=>"alteraItem(".$item->id.",'sugestao_data_uso', this.value )"] ) !!}
                                 </span>
                             </span>
                             <span class="col-md-4 col-sm-12 col-xs-12 text-center">
@@ -190,33 +190,15 @@
                                     Tabela Tems
 
                                 </label>
-                                <button type="button" class="btn btn-flat btn-xs btn-warning pull-right"
-                                            style="display:none"
-                                            onclick="alteraItem({{ $item->id }},'tems', $('#tems_{{ $item->id }}').val() );$('#salvar_tems_{{ $item->id }}').hide();"
-                                            id="salvar_tems_{{ $item->id }}" title="salvar">
-                                    <i class="fa fa-save"></i>
-                                </button>
-                                {!! Form::textarea('tems['.$item->id.']', $item->tems, ['class'=>'form-control','rows'=>"4",'id'=>'tems_'.$item->id, 'onChange'=>"exibeBtn('salvar_tems_".$item->id."')"]) !!}
+                                {!! Form::textarea('tems['.$item->id.']', $item->tems, ['class'=>'form-control','rows'=>"4",'id'=>'tems_'.$item->id, 'onBlur'=>"alteraItem(". $item->id .",'tems', this.value );"]) !!}
                             </span>
                             <span class="col-md-4 col-sm-12 col-xs-12 text-center borda-direita">
                                 <label class="label-bloco">Justificativa de Compra</label>
-                                <button type="button" class="btn btn-flat btn-xs btn-warning pull-right"
-                                        style="display:none"
-                                        onclick="alteraItem({{ $item->id }},'justificativa', $('#justificativa_{{ $item->id }}').val() );$('#salvar_justificativa_{{ $item->id }}').hide();"
-                                        id="salvar_justificativa_{{ $item->id }}" title="salvar">
-                                    <i class="fa fa-save"></i>
-                                </button>
-                                {!! Form::textarea('justificativa['.$item->id.']', $item->justificativa, ['class'=>'form-control','rows'=>"4",'id'=>'justificativa_'.$item->id,'onChange'=>"exibeBtn('salvar_justificativa_".$item->id."')"]) !!}
+                                {!! Form::textarea('justificativa['.$item->id.']', $item->justificativa, ['class'=>'form-control','rows'=>"4",'id'=>'justificativa_'.$item->id,'onChange'=>"alteraItem(". $item->id .",'justificativa', this.value );"]) !!}
                             </span>
                             <span class="col-md-4 col-sm-12 col-xs-12 text-center">
                                 <label class="label-bloco">Observações ao fornecedor</label>
-                                <button type="button" class="btn btn-flat btn-xs btn-warning pull-right"
-                                        style="display:none"
-                                        onclick="alteraItem({{ $item->id }},'obs', $('#obs_{{ $item->id }}').val() );$('#salvar_obs_{{ $item->id }}').hide();"
-                                        id="salvar_obs_{{ $item->id }}" title="salvar">
-                                    <i class="fa fa-save"></i>
-                                </button>
-                                {!! Form::textarea('obs['.$item->id.']', $item->obs, ['class'=>'form-control','rows'=>"4", 'id'=>'obs_'.$item->id, 'onChange'=>"exibeBtn('salvar_obs_".$item->id."')"]) !!}
+                                {!! Form::textarea('obs['.$item->id.']', $item->obs, ['class'=>'form-control','rows'=>"4", 'id'=>'obs_'.$item->id, 'onChange'=>"alteraItem(". $item->id .",'obs', this.value );"]) !!}
                             </span>
                                 </div>
                             </div>
@@ -347,9 +329,9 @@
                     }
             ).done(function (retorno) {
                 stopLoading();
-                if(retorno.success){
-                    swal('Salvo','', 'success');
-                }
+//                if(retorno.success){
+//                    swal('Salvo','', 'success');
+//                }
             }).fail(function (retorno) {
                 stopLoading();
                 erros = '';
