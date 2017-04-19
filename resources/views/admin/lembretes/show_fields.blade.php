@@ -26,7 +26,7 @@
 <!-- Created At Field -->
 <div class="form-group col-md-6">
     {!! Form::label('created_at', 'Data criação:') !!}
-    <p class="form-control">{!! $lembrete->created_at->format('d/m/Y H:m:s') !!}</p>
+    <p class="form-control">{!! $lembrete->created_at->format('d/m/Y H:i:s') !!}</p>
 </div>
 
 <!-- Dias Prazo Maximo Field -->
@@ -38,6 +38,6 @@
 <!-- Updated At Field -->
 <div class="form-group col-md-6">
     {!! Form::label('updated_at', 'Última alteração:') !!}
-    <p class="form-control">{!! $lembrete->updated_at->format('d/m/Y H:m:s') !!}</p>
+    <p class="form-control">{!! $lembrete->updated_at->format('d/m/Y H:i:s') !!}</p>
 </div>
 

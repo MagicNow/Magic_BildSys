@@ -80,6 +80,41 @@
             }
 
         </style>
+        <!-- Obra Id Field -->
+        <div class="form-group col-md-6">
+            {!! Form::label('obra_id', 'Obra:') !!}
+            <p class="form-control">{!! $planejamento->obra->nome !!}</p>
+        </div>
+
+        <!-- Tarefa Field -->
+        <div class="form-group col-md-6">
+            {!! Form::label('tarefa', 'Tarefa:') !!}
+            <p class="form-control">{!! $planejamento->tarefa !!}</p>
+        </div>
+
+        <!-- Data Field -->
+        <div class="form-group col-md-6">
+            {!! Form::label('data', 'Data Início:') !!}
+            <p class="form-control">{!! $planejamento->data ? with(new\Carbon\Carbon($planejamento->data))->format('d/m/Y') : '' !!}</p>
+        </div>
+
+        <!-- Data Fim Field -->
+        <div class="form-group col-md-6">
+            {!! Form::label('data_fim', 'Data Fim:') !!}
+            <p class="form-control">{!! $planejamento->data_fim ? with(new\Carbon\Carbon($planejamento->data_fim))->format('d/m/Y') : '' !!}</p>
+        </div>
+
+        <!-- Prazo Field -->
+        <div class="form-group col-md-6">
+            {!! Form::label('prazo', 'Prazo:') !!}
+            <p class="form-control">{!! $planejamento->prazo !!}</p>
+        </div>
+
+        <!-- Resumo Field -->
+        <div class="form-group col-md-6">
+            {!! Form::label('resumo', 'Resumo:') !!}
+            <p class="form-control">{!! strtoupper($planejamento->resumo) !!}</p>
+        </div>
         <div class="row">
             <div id="carrinho" class="col-md-12">
                 <ul>
