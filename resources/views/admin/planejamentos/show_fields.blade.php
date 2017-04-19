@@ -119,53 +119,55 @@
             <div id="carrinho" class="col-md-12">
                 <ul>
                     @if(count($itens))
+                        <?php $servico = null ?>
                         @foreach($itens as $item)
-                            <li id="item_{{ $item->id }}">
-                                <div class="row">
+                            @if($servico != $item->servico_id)
+                                @if($servico > 0)
+                                    <!-- fecha tabela -->
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </li>
+                                @endif
+                                <?php $servico = $item->servico_id?>
+                                <!-- cria tabela -->
+                                <li>
+                                    <div class="row">
+                                        <table class="table table-hover">
+                                            <tbody>
+                                                <h4>
+                                                    Serviço:
+                                                    <span data-toggle="tooltip" data-placement="top" title="
+                                                        {{$item->grupo->codigo.' - '.$item->grupo->nome}}<br/>
+                                                        {{$item->subgrupo1->codigo.' - '.$item->subgrupo1->nome}}<br/>
+                                                        {{$item->subgrupo2->codigo.' - '.$item->subgrupo2->nome}}<br/>
+                                                        {{$item->subgrupo3->codigo.' - '.$item->subgrupo3->nome}}<br/>
+                                                        {{$item->servico->codigo.' - '.$item->servico->nome}}
+                                                            " data-html="true">
+                                                        <strong>{{$item->servico->codigo}}</strong>
+                                                    </span>
+                                                </h4>
+                            @endif
+                            <tr id="item_{{ $item->id }}">
+                                <td>{{$item->insumo->codigo}}</td>
+                                <td>{{$item->insumo->nome}}</td>
+                                <td>
                                     <span class="pull-right text-center">
-                                    <button type="button" class="btn btn-flat btn-link"
-                                            style="font-size: 18px; margin-top: -7px"
-                                            onclick="removePlanejamentoCompra({{ $item->id }})">
-                                        <i class="text-red glyphicon glyphicon-trash" aria-hidden="true"></i>
-                                    </button>
+                                         <button type="button" class="btn btn-flat btn-link"
+                                                 style="font-size: 18px; margin-top: -7px"
+                                                 onclick="removePlanejamentoCompra({{ $item->id }})">
+                                             <i class="text-red glyphicon glyphicon-trash" aria-hidden="true"></i>
+                                         </button>
                                     </span>
-                                    <table class="table table-hover">
-                                        <tbody>
-                                        <tr>
-                                            <td>Grupo:</td>
-                                            <td>{{$item->grupo->codigo}}</td>
-                                            <td>{{$item->grupo->nome}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Subgrupo1:</td>
-                                            <td>{{$item->subgrupo1->codigo}}</td>
-                                            <td>{{$item->subgrupo1->nome}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Subgrupo2:</td>
-                                            <td>{{$item->subgrupo2->codigo}}</td>
-                                            <td>{{$item->subgrupo2->nome}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Subgrupo3:</td>
-                                            <td>{{$item->subgrupo3->codigo}}</td>
-                                            <td>{{$item->subgrupo3->nome}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Serviço:</td>
-                                            <td>{{$item->servico->codigo}}</td>
-                                            <td>{{$item->servico->nome}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Insumo:</td>
-                                            <td>{{$item->insumo->codigo}}</td>
-                                            <td>{{$item->insumo->nome}}</td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </li>
+                                </td>
+                            </tr>
                         @endforeach
+                        @if($servico)
+                                    </tbody>
+                                </table>
+                            </div>
+                        </li>
+                        @endif
                     @else
                         <div class="text-center">
                             Nenhum item foi adicionado nesse planejamento!
@@ -181,6 +183,10 @@
 @endsection
 @section('scripts')
     <script type="text/javascript">
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        });
+
         $('div.alert').not('.alert-important').delay(3000).fadeOut(350);
 
         function removePlanejamentoCompra(id) {
