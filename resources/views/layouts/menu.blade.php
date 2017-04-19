@@ -25,7 +25,8 @@
             </span>
     </a>
     <ul class="treeview-menu">
-        <li class="{{ Request::is('admin/orcamento*') ? 'active' : '' }}"><a href="{!! route('admin.orcamento.index') !!}"><i class="glyphicon glyphicon-cloud-upload"></i><span>Importação</span></a></li>
+        <li class="{{ Request::is('admin/orcamentos*') ? 'active' : '' }}"><a href="{!! route('admin.orcamentos.index') !!}"><i class="fa fa-edit"></i><span>Orçamentos</span></a></li>
+        <li class="{{ Request::is('admin/orcamento*') ? 'active' : '' }}"><a href="{!! route('admin.orcamento.indexImport') !!}"><i class="glyphicon glyphicon-cloud-upload"></i><span>Importação</span></a></li>
     </ul>
 </li>
 

@@ -58,11 +58,21 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         Route::resource('users', 'Admin\Manage\UsersController');
 
         #importação de planilhas de orçamentos
-        Route::get('orcamento/', ['as'=> 'admin.orcamento.index', 'uses' => 'Admin\OrcamentoController@index']);
+        Route::get('orcamento/', ['as'=> 'admin.orcamento.indexImport', 'uses' => 'Admin\OrcamentoController@indexImport']);
         Route::post('orcamento/importar', ['as'=> 'admin.orcamento.importar', 'uses' => 'Admin\OrcamentoController@import']);
         Route::get('orcamento/importar/checkIn', ['as'=> 'admin.orcamento.checkIn', 'uses' => 'Admin\OrcamentoController@checkIn']);
         Route::post('orcamento/importar/save', ['as'=> 'admin.orcamento.save', 'uses' => 'Admin\OrcamentoController@save']);
         Route::get('orcamento/importar/selecionaCampos', 'Admin\OrcamentoController@selecionaCampos');
+
+        # Orçamentos
+        Route::get('orcamentos', ['as'=> 'admin.orcamentos.index', 'uses' => 'Admin\OrcamentoController@index']);
+        Route::post('orcamentos', ['as'=> 'admin.orcamentos.store', 'uses' => 'Admin\OrcamentoController@store']);
+        Route::get('orcamentos/create', ['as'=> 'admin.orcamentos.create', 'uses' => 'Admin\OrcamentoController@create']);
+        Route::put('orcamentos/{orcamentos}', ['as'=> 'admin.orcamentos.update', 'uses' => 'Admin\OrcamentoController@update']);
+        Route::patch('orcamentos/{orcamentos}', ['as'=> 'admin.orcamentos.update', 'uses' => 'Admin\OrcamentoController@update']);
+        Route::delete('orcamentos/{orcamentos}', ['as'=> 'admin.orcamentos.destroy', 'uses' => 'Admin\OrcamentoController@destroy']);
+        Route::get('orcamentos/{orcamentos}', ['as'=> 'admin.orcamentos.show', 'uses' => 'Admin\OrcamentoController@show']);
+        Route::get('orcamentos/{orcamentos}/edit', ['as'=> 'admin.orcamentos.edit', 'uses' => 'Admin\OrcamentoController@edit']);
 
         #importação de planilhas de planejamentos
         Route::get('planejamento/', ['as'=> 'admin.planejamentos.indexImport', 'uses' => 'Admin\PlanejamentoController@indexImport']);
@@ -301,5 +311,3 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('workflow/aprova-reprova', 'WorkflowController@aprovaReprova');
     $router->get('workflow/aprova-reprova-tudo', 'WorkflowController@aprovaReprovaTudo');
 });
-
-
