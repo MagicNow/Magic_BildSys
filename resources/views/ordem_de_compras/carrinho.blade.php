@@ -117,10 +117,18 @@
                                     {{ number_format($item->qtd, 2, ',','.') }}
                                 </span>
                         <span class="col-md-2 col-sm-2 col-xs-5 text-center borda-direita">
-                            <label class="label-bloco label-bloco-limitado">Indicar contrato</label>
-                            <button type="button" class="btn btn-flat btn-sm btn-default margem-botao" onclick="indicarContrato('{{ $item->insumo->codigo }}', '{{$item->id}}')">
-                                Selecionar
-                            </button>
+                            <div id="bloco_indicar_contrato{{ $item->id }}">
+                                @if($item->sugestao_contrato_id)
+                                    {{$item->contrato->fornecedor_nome}}
+                                @else
+                                <div id="bloco_indicar_contrato_removivel{{ $item->id }}">
+                                    <label class="label-bloco label-bloco-limitado">Indicar contrato</label>
+                                    <button type="button" class="btn btn-flat btn-sm btn-default margem-botao" onclick="indicarContrato('{{ $item->insumo->codigo }}', '{{$item->id}}')">
+                                        Selecionar
+                                    </button>
+                                </div>
+                                @endif
+                            </div>
                         </span>
                         <span class="col-md-3 col-sm-3 col-xs-6 text-center borda-direita">
                             {!! Form::open(['url'=> url('/ordens-de-compra/upload-anexos/'.$item->id)  , 'class'=>'formAnexos', 'files'=>true]) !!}
@@ -290,9 +298,10 @@
                 stopLoading();
                 contratos = '';
                 $.each(retorno.contrato_insumo, function (index, value) {
+                    var fornecedor = "'" + value.contrato.fornecedor_nome + "'";
                     contratos +=
                                  '<p style="border-bottom: 1px solid #dddddd;padding: 10px;text-align: left">' +
-                                 '<span class="btn btn-sm btn-success flat" style="padding: 10px 10px;" onclick="indicarContratoFecharModal(' + item_id + ', \'sugestao_contrato_id\', ' + value.contrato.id + ')">Indicar</span>' +
+                                 '<span class="btn btn-sm btn-success flat" style="padding: 10px 10px;" onclick="indicarContratoFecharModal(' + item_id + ', \'sugestao_contrato_id\', ' + value.contrato.id + ', ' + fornecedor + ')">Indicar</span>' +
                                     '<span style="margin-left: 15px;">' + value.contrato.fornecedor_nome + '</span>' +
                                     '<br>' +
                                     '<i>' +
@@ -482,9 +491,16 @@
 //            el: '#app'
 //        });
 
-        function indicarContratoFecharModal(item_id, campo, valor) {
+        function indicarContratoFecharModal(item_id, campo, valor, fornecedor) {
             $('.confirm').click();
             alteraItem(item_id, campo, valor);
+
+            adicionarNomeFornecedorContrato(item_id, fornecedor);
+        }
+
+        function adicionarNomeFornecedorContrato(item_id, fornecedor) {
+            $('#bloco_indicar_contrato_removivel'+ item_id).remove();
+            $('#bloco_indicar_contrato'+ item_id).html(fornecedor);
         }
     </script>
 @endsection
