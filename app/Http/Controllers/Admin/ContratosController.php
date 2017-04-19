@@ -6,6 +6,7 @@ use App\DataTables\Admin\ContratosDataTable;
 use App\Http\Requests\Admin;
 use App\Http\Requests\Admin\CreateContratosRequest;
 use App\Http\Requests\Admin\UpdateContratosRequest;
+use App\Models\Contrato;
 use App\Models\ContratoInsumo;
 use App\Models\Insumo;
 use App\Models\MegaFornecedor;
@@ -62,8 +63,15 @@ class ContratosController extends AppBaseController
     {
         $input = $request->except('arquivo');
 
-        $contratos = $this->contratosRepository->create($input);
-        
+        $contratos = new Contrato($input);
+
+        $nome_fornecedor = MegaFornecedor::select(DB::raw("CONVERT(agn_st_nome,'UTF8','WE8ISO8859P15' ) as agn_st_nome"))
+            ->where('agn_in_codigo', $request->fornecedor_cod)
+            ->first();
+
+        $contratos->fornecedor_nome = $nome_fornecedor->agn_st_nome;
+        $contratos->save();
+
         if($request->arquivo) {
             $destinationPath = CodeRepository::saveFile($request->arquivo, 'contratos/' . $contratos->id);
 
@@ -162,6 +170,13 @@ class ContratosController extends AppBaseController
         }
 
         $contratos = $this->contratosRepository->update($request->except('arquivo'), $id);
+
+        $nome_fornecedor = MegaFornecedor::select(DB::raw("CONVERT(agn_st_nome,'UTF8','WE8ISO8859P15' ) as agn_st_nome"))
+            ->where('agn_in_codigo', $contratos->fornecedor_cod)
+            ->first();
+
+        $contratos->fornecedor_nome = $nome_fornecedor->agn_st_nome;
+        $contratos->update();
 
         if (count($request->insumos)) {
             foreach ($request->insumos as $item) {
