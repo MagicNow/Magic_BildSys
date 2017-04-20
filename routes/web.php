@@ -38,8 +38,11 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->post('/ordens-de-compra/upload-anexos/{id}', 'OrdemDeCompraController@uploadAnexos');
     $router->get('/ordens-de-compra/remover-anexo/{id}', 'OrdemDeCompraController@removerAnexo');
     $router->get('/ordens-de-compra/carrinho/remove-contrato', 'OrdemDeCompraController@removerContrato');
-    $router->resource('ordens-de-compra', 'OrdemDeCompraController');
+    $router->get('/ordens-de-compra/reabrir-ordem-de-compra/{id}', 'OrdemDeCompraController@reabrirOrdemDeCompra');
+    $router->get('/ordens-de-compra/carrinho/alterar-quantidade/{id}', 'OrdemDeCompraController@alterarQuantidade');
+    $router->get('/ordens-de-compra/carrinho/remover-item/{id}', 'OrdemDeCompraController@removerItem');
 
+    $router->resource('ordens-de-compra', 'OrdemDeCompraController');
 
     $router->resource('retroalimentacaoObras', 'RetroalimentacaoObraController');
 

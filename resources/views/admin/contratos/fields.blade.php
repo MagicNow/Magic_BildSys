@@ -64,7 +64,7 @@ $count_insumos = 0;
             </div>
             <div class="col-md-4">
                 <label>Quantidade:</label>
-                <input type="text" value="{{$insumo->qtd}}" id="qtd_{{$insumo->id}}" class="form-control decimal" name="insumos[{{$insumo->id}}][qtd]" required onkeyup="calcularValorTotalInsumo({{$insumo->id}});">
+                <input type="text" value="{{$insumo->qtd}}" id="qtd_{{$insumo->id}}" class="form-control money" name="insumos[{{$insumo->id}}][qtd]" required onkeyup="calcularValorTotalInsumo({{$insumo->id}});">
             </div>
             <div class="col-md-4">
                 <label>Valor unitário:</label>
@@ -116,7 +116,7 @@ $count_insumos = 0;
                                 </div>\
                                 <div class="col-md-4">\
                                     <label>Quantidade:</label>\
-                                    <input type="text" class="form-control decimal" id="qtd_'+count_insumos+'" name="insumos['+count_insumos+'][qtd]" required onkeyup="calcularValorTotalInsumo('+count_insumos+');">\
+                                    <input type="text" class="form-control money" id="qtd_'+count_insumos+'" name="insumos['+count_insumos+'][qtd]" required onkeyup="calcularValorTotalInsumo('+count_insumos+');">\
                                 </div>\
                                 <div class="col-md-4">\
                                     <label>Valor unitário:</label>\

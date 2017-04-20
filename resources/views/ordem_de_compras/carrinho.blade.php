@@ -98,13 +98,37 @@
             <div id="carrinho" class="col-md-12">
                 <ul>
                     @foreach($itens as $item)
+                        <?php
+                            if($item->aprovacoes()){
+                                $motivos_reprovacao = $item->aprovacoes()
+                                        ->where('aprovado', 0)
+                                        ->where('created_at', '>=', $item->updated_at)
+                                        ->orderBy('id', 'DESC')
+                                        ->get();
+                            }else{
+                                $motivos_reprovacao = [];
+                            }
+                        ?>
+                        @if(count($motivos_reprovacao))
+                            <div class="alert alert-danger" role="alert" id="alert_{{ $item->id }}">
+                                @foreach($motivos_reprovacao as $motivo_reprovacao)
+                                    @if($motivo_reprovacao->user)
+                                        Usuário: <span style="font-weight:100;">{{$motivo_reprovacao->user->name}}</span>
+                                    @endif
+                                    @if($motivo_reprovacao->workflowReprovacaoMotivo)
+                                        Motivo de reprovação: <span style="font-weight:100;">{{$motivo_reprovacao->workflowReprovacaoMotivo->nome}}</span>
+                                    @endif
+                                        Justificativa: <span style="font-weight:100;">{{$motivo_reprovacao->justificativa}}</span>
+                                @endforeach
+                            </div>
+                        @endif
                         <li id="item{{ $item->id }}">
                             <div class="row">
                                 <span class="col-md-1 col-sm-1 col-xs-12 text-center borda-direita">
                                     <strong class="visible-xs pull-left">Código:</strong>
                                     {{ $item->insumo->codigo }}
                                 </span>
-                                <span class="col-md-3 col-sm-3 col-xs-12 text-center borda-direita">
+                                <span class="col-md-2 col-sm-2 col-xs-12 text-center borda-direita">
                                     <strong class="visible-xs pull-left">Insumo:</strong>
                                     {{ $item->insumo->nome }}
                                 </span>
@@ -112,9 +136,9 @@
                                     <strong class="visible-xs pull-left">Unidade:</strong>
                                     {{ $item->unidade_sigla }}
                                 </span>
-                                <span class="col-md-1 col-sm-1 col-xs-12 text-center borda-direita">
+                                <span class="col-md-2 col-sm-2 col-xs-12 text-center borda-direita" align="center">
                                     <strong class="visible-xs pull-left">Quantidade:</strong>
-                                    {{ number_format($item->qtd, 2, ',','.') }}
+                                    <input type="text" id="find" value="{{ $item->qtd }}" onchange="alteraQtd(this.value, '{{ $item->id }}')" class="form-control money" style="border-color:#ffffff;background-color:#ffffff;text-align:center;">
                                 </span>
                         <span class="col-md-2 col-sm-2 col-xs-5 text-center borda-direita">
                             <div id="bloco_indicar_contrato{{ $item->id }}">
@@ -152,6 +176,8 @@
                                     style="font-size: 18px; margin-top: -7px" onclick="showHideExtra({{ $item->id }})">
                                 <i class="icone-expandir fa fa-caret-left" aria-hidden="true"></i>
                             </button>
+
+                            <i class="fa fa-remove" onclick="removeItem({{ $item->id }})" aria-hidden="true" style="font-size: 18px; margin-top: -7px;color: red;cursor: pointer"  data-toggle="tooltip" data-placement="top" title="Remover item"></i>
                         </span>
                             </div>
                             <div class="dados-extras" style="display: none;">
@@ -300,26 +326,32 @@
             ).done(function (retorno) {
                 stopLoading();
                 contratos = '';
+
                 $.each(retorno.contrato_insumo, function (index, value) {
                     var fornecedor = "'" + value.contrato.fornecedor_nome + "'";
                     contratos +=
-                                 '<p style="border-bottom: 1px solid #dddddd;padding: 10px;text-align: left">' +
-                                 '<span class="btn btn-sm btn-success flat" style="padding: 10px 10px;" onclick="indicarContratoFecharModal(' + item_id + ', \'sugestao_contrato_id\', ' + value.contrato.id + ', ' + fornecedor + ', '+ codigo_insumo +')">Indicar</span>' +
-                                    '<span style="margin-left: 15px;">' + value.contrato.fornecedor_nome + '</span>' +
-                                    '<br>' +
-                                    '<i>' +
-                                        '<a href="' + value.contrato.arquivo + '" target="_blank" style="margin-left: 167px;">Ver contrato</a>' +
-                                    '</i>' +
-                                 '</p>';
+                            '<p style="border-bottom: 1px solid #dddddd;padding: 10px;text-align: left">' +
+                            '<span class="btn btn-sm btn-success flat" style="padding: 10px 10px;" onclick="indicarContratoFecharModal(' + item_id + ', \'sugestao_contrato_id\', ' + value.contrato.id + ', ' + fornecedor + ', '+ codigo_insumo +')">Indicar</span>' +
+                            '<span style="margin-left: 15px;">' + value.contrato.fornecedor_nome + '</span>' +
+                            '<br>' +
+                            '<i>' +
+                            '<a href="' + value.contrato.arquivo + '" target="_blank" style="margin-left: 167px;">Ver contrato</a>' +
+                            '</i>' +
+                            '</p>';
                 });
 
-                swal({
-                    html:true,
-                    title: '<div class="modal-header">Indicar contrato</div>',
-                    text: contratos,
-                    showConfirmButton: false
-                });
-
+                if(contratos){
+                    swal({
+                        html:true,
+                        title: '<div class="modal-header">Indicar contrato</div>',
+                        text: contratos,
+                        showConfirmButton: false,
+                        showCancelButton: true,
+                        cancelButtonText: "Cancelar"
+                    });
+                }else{
+                    swal('Nenhum contrato encontrado','', 'info');
+                }
             }).fail(function (retorno) {
                 stopLoading();
                 erros = '';
@@ -521,6 +553,43 @@
                         Selecionar\
                         </button>\
                 </div>');
+                swal('Contrato removido','', 'success');
+            });
+        }
+
+        function alteraQtd(qtd, item_id) {
+            $.ajax({
+                url: '/ordens-de-compra/carrinho/alterar-quantidade/'+item_id,
+                data: {
+                    'qtd': qtd
+                }
+            }).done(function (json) {
+                if(json.success){
+                    $('#alert_'+item_id).remove();
+                    swal('Quantidade alterada','', 'success');
+                }
+            });
+        }
+
+        function removeItem(item_id) {
+            swal({
+                title: "Você tem certeza?",
+                text: "Deseja remover o item da ordem de compra?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Sim, remover!",
+                cancelButtonText: "Cancelar",
+                closeOnConfirm: false
+            },
+            function(){
+                $.ajax({
+                    url: '/ordens-de-compra/carrinho/remover-item/'+item_id,
+                }).done(function () {
+                    swal("Removido!", "O item foi removido da ordem de compra!", "success");
+                    $('#alert_'+item_id).remove();
+                    $('#item'+item_id).remove();
+                });
 
             });
         }

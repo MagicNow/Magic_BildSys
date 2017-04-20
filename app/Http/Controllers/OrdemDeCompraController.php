@@ -891,5 +891,32 @@ class OrdemDeCompraController extends AppBaseController
         return view('ordem_de_compras.dashboard',compact('reprovados', 'aprovados', 'emaprovacao'));
     }
 
+    public function reabrirOrdemDeCompra($id)
+    {
+        $ordem_de_compra = OrdemDeCompra::find($id);
+        $ordem_de_compra->oc_status_id = 1;
+        $ordem_de_compra->aprovado = null;
+        $ordem_de_compra->save();
+
+        return redirect('/ordens-de-compra/carrinho?id='.$id);
+    }
+
+    public function alterarQuantidade($id, Request $request)
+    {
+        $ordem_de_compra_item = OrdemDeCompraItem::find($id);
+        $ordem_de_compra_item->qtd = $request->qtd;
+        $ordem_de_compra_item->aprovado = null;
+        $ordem_de_compra_item->save();
+        
+        return response()->json(['success'=>true]);
+    }
+
+    public function removerItem($id)
+    {
+        $ordem_de_compra_item = OrdemDeCompraItem::find($id);
+        $ordem_de_compra_item->delete();
+        
+        return response()->json(['success'=>true]);
+    }
 }
 
