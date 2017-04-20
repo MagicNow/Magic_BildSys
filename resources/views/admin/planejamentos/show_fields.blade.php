@@ -80,15 +80,11 @@
             }
             .tooltip-inner {
                 max-width: 500px;
-                padding: 30px -21px;
-                color: #fff;
-                /* text-align: center; */
-                background-color: #000;
-                border-radius: 4px;
+                 text-align: left !important;
             }
-            .tooltip-ajuste {
-                max-width: 500px;
-            }
+            /*.tooltip-ajuste {*/
+                /*max-width: 500px;*/
+            /*}*/
 
         </style>
         <!-- Obra Id Field -->
@@ -148,7 +144,7 @@
                                             <tbody>
                                                 <h4>
                                                     Serviço:
-                                                    <span class="tooltip-ajuste" data-toggle="tooltip" data-placement="top" data-html="true" title="
+                                                    <span data-toggle="tooltip" data-placement="top" data-html="true" title="
                                                         {{$item->grupo->codigo.' - '.$item->grupo->nome}}<br/>
                                                         {{$item->subgrupo1->codigo.' - '.$item->subgrupo1->nome}}<br/>
                                                         {{$item->subgrupo2->codigo.' - '.$item->subgrupo2->nome}}<br/>
