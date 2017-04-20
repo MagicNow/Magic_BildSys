@@ -98,6 +98,30 @@
             <div id="carrinho" class="col-md-12">
                 <ul>
                     @foreach($itens as $item)
+                        <?php
+                            if($item->aprovacoes()){
+                                $motivos_reprovacao = $item->aprovacoes()
+                                        ->where('aprovado', 0)
+                                        ->where('created_at', '>=', $item->updated_at)
+                                        ->orderBy('id', 'DESC')
+                                        ->get();
+                            }else{
+                                $motivos_reprovacao = [];
+                            }
+                        ?>
+                        @if(count($motivos_reprovacao))
+                            <div class="alert alert-danger" role="alert">
+                                @foreach($motivos_reprovacao as $motivo_reprovacao)
+                                    @if($motivo_reprovacao->user)
+                                        Usuário: <span style="font-weight:100;">{{$motivo_reprovacao->user->name}}</span>
+                                    @endif
+                                    @if($motivo_reprovacao->workflowReprovacaoMotivo)
+                                        Motivo de reprovação: <span style="font-weight:100;">{{$motivo_reprovacao->workflowReprovacaoMotivo->nome}}</span>
+                                    @endif
+                                        Justificativa: <span style="font-weight:100;">{{$motivo_reprovacao->justificativa}}</span>
+                                @endforeach
+                            </div>
+                        @endif
                         <li id="item{{ $item->id }}">
                             <div class="row">
                                 <span class="col-md-1 col-sm-1 col-xs-12 text-center borda-direita">
