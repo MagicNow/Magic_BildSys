@@ -110,7 +110,7 @@
                             }
                         ?>
                         @if(count($motivos_reprovacao))
-                            <div class="alert alert-danger" role="alert">
+                            <div class="alert alert-danger" role="alert" id="alert_{{ $item->id }}">
                                 @foreach($motivos_reprovacao as $motivo_reprovacao)
                                     @if($motivo_reprovacao->user)
                                         Usuário: <span style="font-weight:100;">{{$motivo_reprovacao->user->name}}</span>
@@ -128,7 +128,7 @@
                                     <strong class="visible-xs pull-left">Código:</strong>
                                     {{ $item->insumo->codigo }}
                                 </span>
-                                <span class="col-md-3 col-sm-3 col-xs-12 text-center borda-direita">
+                                <span class="col-md-2 col-sm-2 col-xs-12 text-center borda-direita">
                                     <strong class="visible-xs pull-left">Insumo:</strong>
                                     {{ $item->insumo->nome }}
                                 </span>
@@ -136,9 +136,9 @@
                                     <strong class="visible-xs pull-left">Unidade:</strong>
                                     {{ $item->unidade_sigla }}
                                 </span>
-                                <span class="col-md-1 col-sm-1 col-xs-12 text-center borda-direita">
+                                <span class="col-md-2 col-sm-2 col-xs-12 text-center borda-direita" align="center">
                                     <strong class="visible-xs pull-left">Quantidade:</strong>
-                                    {{ number_format($item->qtd, 2, ',','.') }}
+                                    <input type="text" id="find" value="{{ $item->qtd }}" onchange="alteraQtd(this.value, '{{ $item->id }}')" class="form-control money" style="border-color:#ffffff;background-color:#ffffff;text-align:center;">
                                 </span>
                         <span class="col-md-2 col-sm-2 col-xs-5 text-center borda-direita">
                             <div id="bloco_indicar_contrato{{ $item->id }}">
@@ -546,6 +546,20 @@
                         </button>\
                 </div>');
 
+            });
+        }
+
+        function alteraQtd(qtd, item_id) {
+            $.ajax({
+                url: '/ordens-de-compra/carrinho/alterar-quantidade/'+item_id,
+                data: {
+                    'qtd': qtd
+                }
+            }).done(function (json) {
+                if(json.success){
+                    $('#alert_'+item_id).remove();
+                    swal('Quantidade alterada','', 'success');
+                }
             });
         }
     </script>

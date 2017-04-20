@@ -898,5 +898,15 @@ class OrdemDeCompraController extends AppBaseController
 
         return redirect('/ordens-de-compra/carrinho?id='.$id);
     }
+
+    public function alterarQuantidade($id, Request $request)
+    {
+        $ordem_de_compra_item = OrdemDeCompraItem::find($id);
+        $ordem_de_compra_item->qtd = $request->qtd;
+        $ordem_de_compra_item->aprovado = null;
+        $ordem_de_compra_item->save();
+        
+        return response()->json(['success'=>true]);
+    }
 }
 

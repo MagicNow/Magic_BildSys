@@ -241,10 +241,14 @@ class ContratosController extends AppBaseController
     
     public function calcularValorTotalInsumo(Request $request) {
         $pontos = array(",");
+        
         $value = str_replace('.','',$request->valor_unitario);
         $valor_unitario = str_replace( $pontos, ".", $value);
 
-        $valor_total = ($request->quantidade * $valor_unitario);
+        $value_qtd = str_replace('.','',$request->quantidade);
+        $quantidade = str_replace( $pontos, ".", $value_qtd);
+        
+        $valor_total = ($quantidade * $valor_unitario);
 
         $valor_total = number_format($valor_total,2,',','.');
 
