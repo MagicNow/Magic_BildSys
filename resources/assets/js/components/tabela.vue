@@ -103,7 +103,7 @@
                     </td>
                     <td class="row-table" v-if="actions.detalhe != undefined">
                         <a v-bind:href="actions.detalhe_url+'/'+dado['id']"><i class="fa fa-eye"></i></a>
-                        <a href="#" v-if="dado['situacao'] == 'Reprovada'">Reabrir</a>
+                        <a v-bind:href="'/ordens-de-compra/reabrir-ordem-de-compra/'+dado['id']" v-if="dado['situacao'] == 'Reprovada'">Reabrir</a>
                     </td>
                     <td class="row-table" v-if="actions.aprovar != undefined" @click="aprovar(dado['id'])">
                         <i class="glyphicon glyphicon-ok grey"></i>

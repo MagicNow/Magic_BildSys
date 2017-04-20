@@ -47003,7 +47003,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       staticClass: "fa fa-eye"
     })]), _vm._v(" "), (dado['situacao'] == 'Reprovada') ? _c('a', {
       attrs: {
-        "href": "#"
+        "href": '/ordens-de-compra/reabrir-ordem-de-compra/' + dado['id']
       }
     }, [_vm._v("Reabrir")]) : _vm._e()]) : _vm._e(), _vm._v(" "), (_vm.actions.aprovar != undefined) ? _c('td', {
       staticClass: "row-table",
