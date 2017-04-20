@@ -14,7 +14,8 @@ use Illuminate\Database\Eloquent\Model;
 class TipoOrcamento extends Model
 {
     public $table = 'orcamento_tipos';
-
+    public $timestamps = false;
+    
     public $fillable = [
         'id',
         'nome'
