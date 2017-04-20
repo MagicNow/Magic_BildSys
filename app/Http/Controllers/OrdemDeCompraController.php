@@ -208,7 +208,7 @@ class OrdemDeCompraController extends AppBaseController
             $realizado = OrdemDeCompraItem::join('ordem_de_compras','ordem_de_compras.id','=','ordem_de_compra_itens.ordem_de_compra_id')
                 ->where('ordem_de_compras.obra_id',$ordemDeCompra->obra_id)
                 ->whereIn('oc_status_id',[2,3,5])
-                ->whereIn('ordem_de_compra_itens.id',$ordemDeCompra->itens()->pluck('id','id')->toArray())
+                ->whereIn('ordem_de_compra_itens.insumo_id',$ordemDeCompra->itens()->pluck('insumo_id','insumo_id')->toArray())
                 ->sum('ordem_de_compra_itens.valor_total');
 
             $saldo = $orcamentoInicial - $realizado;
@@ -219,7 +219,7 @@ class OrdemDeCompraController extends AppBaseController
                     DB::raw("(SELECT SUM( qtd ) 
                                 FROM ordem_de_compra_itens OCI2
                                 JOIN ordem_de_compras ON ordem_de_compras.id = OCI2.ordem_de_compra_id
-                                WHERE ordem_de_compras.id = ordem_de_compra_itens.ordem_de_compra_id
+                                WHERE OCI2.insumo_id = ordem_de_compra_itens.insumo_id
                                 AND (
                                     ordem_de_compras.oc_status_id = 2
                                     OR ordem_de_compras.oc_status_id = 3
@@ -237,7 +237,7 @@ class OrdemDeCompraController extends AppBaseController
                     DB::raw("(SELECT SUM( valor_total ) 
                                 FROM ordem_de_compra_itens OCI2
                                 JOIN ordem_de_compras ON ordem_de_compras.id = OCI2.ordem_de_compra_id
-                                WHERE ordem_de_compras.id = ordem_de_compra_itens.ordem_de_compra_id
+                                WHERE OCI2.insumo_id = ordem_de_compra_itens.insumo_id
                                 AND (
                                     ordem_de_compras.oc_status_id = 2
                                     OR ordem_de_compras.oc_status_id = 3
@@ -249,6 +249,7 @@ class OrdemDeCompraController extends AppBaseController
                                 AND OCI2.subgrupo2_id = ordem_de_compra_itens.subgrupo2_id 
                                 AND OCI2.subgrupo3_id = ordem_de_compra_itens.subgrupo3_id 
                                 AND OCI2.servico_id = ordem_de_compra_itens.servico_id 
+                                AND OCI2.obra_id = ".$ordemDeCompra->obra_id." 
                                 AND OCI2.deleted_at IS NULL
                              ) as valor_realizado"),
                     'orcamentos.qtd_total as qtd_inicial',
@@ -264,7 +265,6 @@ class OrdemDeCompraController extends AppBaseController
                     $join->on('orcamentos.obra_id','=', DB::raw($ordemDeCompra->obra_id));
                     $join->on('orcamentos.ativo','=', DB::raw('1'));
                 })
-                ->whereNull('ordem_de_compra_itens.deleted_at')
                 ->with('insumo','unidade','anexos')
                 ->paginate(2);
         }
