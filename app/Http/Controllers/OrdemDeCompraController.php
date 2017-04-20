@@ -406,10 +406,16 @@ class OrdemDeCompraController extends AppBaseController
      *
      * @return Json
      */
-    public function obrasInsumosJson(Request $request, Planejamento $planejamento, InsumoGrupo $insumoGrupo)
+    public function obrasInsumosJson(Request $request, Obra $obra, Planejamento $planejamento, InsumoGrupo $insumoGrupo)
     {
         //Query para utilização dos filtros
         $insumo_query = Insumo::query();
+        if(!isset($planejamento)){
+
+        }else{
+
+        }
+
 
         //Query pra trazer
         $insumos = $insumo_query

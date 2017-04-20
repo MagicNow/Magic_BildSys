@@ -16,7 +16,7 @@ class PlanejamentoController extends AppBaseController
             ->join('planejamento_compras','planejamento_compras.insumo_id','=','insumos.id')
             ->join('planejamentos', 'planejamentos.id','=','planejamento_compras.planejamento_id')
             ->join('obras', 'obras.id','=','planejamentos.obra_id')
-            ->whereNull('planejamentos')
+            ->whereNull('planejamentos.deleted_at')
             ->select([
                 'lembretes.id',
                 DB::raw("CONCAT(obras.nome,' - ',planejamentos.tarefa,' - ', lembretes.nome) title"),

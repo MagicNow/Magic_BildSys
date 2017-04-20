@@ -298,6 +298,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('compras/{planejamento}/insumosFilters', 'OrdemDeCompraController@insumosFilters');
     $router->post('compras/{planejamento}/insumosAdd', 'OrdemDeCompraController@insumosAdd');
 
+    $router->get('compras/obrasInsumos/{obra}','OrdemDeCompraController@obrasInsumos');
     $router->get('compras/{planejamento}/obrasInsumos/{insumoGrupo}', 'OrdemDeCompraController@obrasInsumos');
     $router->get('compras/{planejamento}/obrasInsumosFilters', 'OrdemDeCompraController@obrasInsumosFilters');
     $router->get('compras/{planejamento}/obrasInsumosJson/{insumoGrupo}', 'OrdemDeCompraController@obrasInsumosJson');
