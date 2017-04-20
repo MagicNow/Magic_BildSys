@@ -73,3 +73,7 @@
     <a href="{!! route('admin.insumoGrupos.index') !!}"><i class="fa fa-th-list"></i><span>Grupos de insumos</span></a>
 </li>
 
+<li class="{{ Request::is('templatePlanilhas*') ? 'active' : '' }}">
+    <a href="{!! route('admin.templatePlanilhas.index') !!}"><i class="fa fa-edit"></i><span>Template de planilhas</span></a>
+</li>
+

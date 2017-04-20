@@ -15,6 +15,8 @@ use App\Models\Orcamento;
 use App\Models\PlanejamentoCompra;
 use App\Models\Planilha;
 use App\Models\Servico;
+use App\Models\TemplatePlanilha;
+use App\Models\TipoOrcamento;
 use App\Repositories\Admin\PlanejamentoRepository;
 use App\Repositories\Admin\SpreadsheetRepository;
 use Flash;
@@ -276,7 +278,8 @@ class PlanejamentoController extends AppBaseController
      */
     public function indexImport(){
         $obras = Obra::pluck('nome','id')->toArray();
-        return view('admin.planejamentos.indexImport', compact('obras'));
+        $templates = TemplatePlanilha::where('modulo', 'Planejamento')->pluck('nome','id')->toArray();
+        return view('admin.planejamentos.indexImport', compact('obras','templates'));
     }
 
     /**
@@ -291,8 +294,9 @@ class PlanejamentoController extends AppBaseController
     public function import(Request $request)
     {
         $tipo = 'planejamento';
-        $file = $request->except('obra_id');
+        $file = $request->except('obra_id','template_id');
         $input = $request->except('_token','file');
+        $template = $request->template_id;
         $input['user_id'] = Auth::id();
         $parametros = json_encode($input);
         $colunasbd = [];
@@ -310,7 +314,7 @@ class PlanejamentoController extends AppBaseController
         \Session::put('retorno', $retorno);
         \Session::put('colunasbd', $colunasbd);
 
-        return redirect('/admin/planejamento/importar/selecionaCampos');
+        return redirect('/admin/planejamento/importar/selecionaCampos?planilha_id='.$retorno['planilha_id'].($template?'&template_id='.$template:''));
     }
 
     /**
@@ -322,6 +326,22 @@ class PlanejamentoController extends AppBaseController
 
         $retorno = $request->session()->get('retorno');
         $colunasbd = $request->session()->get('colunasbd');
+        if($request->template_id){
+            $planilha = Planilha::find($request->planilha_id);
+            $template = TemplatePlanilha::find($request->template_id);
+            if($planilha && $template) {
+                $planilha->colunas_json = $template->colunas;
+                $planilha->save();
+
+                # Coloca processo na fila
+                dispatch(new PlanilhaProcessa($planilha));
+
+                # Mensagem que será exibida para o usuário avisando que a importação foi adicionada na fila e será processada.
+                Flash::warning('Importação incluida na FILA. Ao concluir o processamento enviaremos um ALERTA!');
+
+                return redirect('admin/planejamento');
+            }
+        }
         return view('admin.planejamentos.checkIn', compact('retorno','colunasbd'));
     }
 
@@ -341,15 +361,21 @@ class PlanejamentoController extends AppBaseController
 //            return back();
 //        }
 
-        # Pegando todas as planilhas por ordem decrescente
-        $planilha = Planilha::orderBy('id','desc')->get();
-        # consulta que trás somente a ultima planilha importada pelo usuário
-        $planilha = $planilha->where('user_id', Auth::id())->first();
+        # Pegando todas as planilhas por ordem decrescente e que trás somente a ultima planilha importada pelo usuário
+        $planilha = Planilha::where('user_id', \Auth::id())->orderBy('id','desc')->first();
         # Após encontrar a planilha, será feito um update adicionando em array os campos escolhido pelo usuário.
         if($planilha) {
             $planilha->colunas_json = $json;
-            $planilha->update();
+            $planilha->save();
         }
+
+        # Salvar os campos escolhido na primeira importação de planilha para criar um modelo de template
+        $template_orcamento = TemplatePlanilha::firstOrNew([
+            'nome' => 'Planejamento',
+            'modulo' => 'Planejamento'
+        ]);
+        $template_orcamento->colunas = $json;
+        $template_orcamento->save();
 
         # Comentário de processamento de fila iniciada
         \Log::info("Ciclo de solicitações com filas iniciada");

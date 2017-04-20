@@ -126,6 +126,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->get('insumo/valor_total', 'Admin\ContratosController@calcularValorTotalInsumo');
         $router->get('insumo/delete', 'Admin\ContratosController@deleteInsumo');
 
+        # Obras
         $router->get('obras', ['as'=> 'admin.obras.index', 'uses' => 'Admin\ObraController@index']);
         $router->post('obras', ['as'=> 'admin.obras.store', 'uses' => 'Admin\ObraController@store']);
         $router->get('obras/create', ['as'=> 'admin.obras.create', 'uses' => 'Admin\ObraController@create']);
@@ -140,6 +141,14 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         # Update Notificações visualizadas
         $router->get('updateNotification/{id}', 'Admin\NotificacaoController@updateNotification');
 
+        Route::get('templatePlanilhas', ['as'=> 'admin.templatePlanilhas.index', 'uses' => 'Admin\TemplatePlanilhaController@index']);
+        Route::post('templatePlanilhas', ['as'=> 'admin.templatePlanilhas.store', 'uses' => 'Admin\TemplatePlanilhaController@store']);
+        Route::get('templatePlanilhas/create', ['as'=> 'admin.templatePlanilhas.create', 'uses' => 'Admin\TemplatePlanilhaController@create']);
+        Route::put('templatePlanilhas/{templatePlanilhas}', ['as'=> 'admin.templatePlanilhas.update', 'uses' => 'Admin\TemplatePlanilhaController@update']);
+        Route::patch('templatePlanilhas/{templatePlanilhas}', ['as'=> 'admin.templatePlanilhas.update', 'uses' => 'Admin\TemplatePlanilhaController@update']);
+        Route::delete('templatePlanilhas/{templatePlanilhas}', ['as'=> 'admin.templatePlanilhas.destroy', 'uses' => 'Admin\TemplatePlanilhaController@destroy']);
+        Route::get('templatePlanilhas/{templatePlanilhas}', ['as'=> 'admin.templatePlanilhas.show', 'uses' => 'Admin\TemplatePlanilhaController@show']);
+        Route::get('templatePlanilhas/{templatePlanilhas}/edit', ['as'=> 'admin.templatePlanilhas.edit', 'uses' => 'Admin\TemplatePlanilhaController@edit']);
 
 
         $router->group(['middleware' => 'needsPermission:users.list'], function() use ($router) {

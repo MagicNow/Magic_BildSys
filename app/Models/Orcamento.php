@@ -78,7 +78,6 @@ class Orcamento extends Model
         'codigo_insumo' => 'string',
         'descricao' => 'string',
         'unidade_sigla' => 'string',
-        'obs' => 'text',
         'coeficiente' => 'decimal',
         'indireto' => 'decimal',
         'terreo_externo_solo' => 'decimal',
@@ -92,8 +91,9 @@ class Orcamento extends Model
         'qtd_total' => 'decimal',
         'preco_unitario' => 'decimal',
         'preco_total' => 'decimal',
-        'porcentagem_orcamento' => 'decimal',
-        'referencia_preco' => 'string'
+        'referencia_preco' => 'string',
+        'obs' => 'text',
+        'porcentagem_orcamento' => 'decimal'
     ];
 
     /**

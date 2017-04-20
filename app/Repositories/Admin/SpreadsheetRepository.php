@@ -14,6 +14,8 @@ use App\Models\Orcamento;
 use App\Models\Planejamento;
 use App\Models\Planilha;
 use App\Models\Servico;
+use App\Models\TemplatePlanilha;
+use App\Models\TipoOrcamento;
 use App\Models\User;
 use App\Notifications\PlanilhaProcessamento;
 use Box\Spout\Common\Type;
@@ -79,13 +81,16 @@ class SpreadsheetRepository
                                 if($tipo == 'orcamento') {
                                     # Pegando as colunas que foi informado no MODEL orçamento variável = $relation
                                     $columns = Orcamento::$relation;
+
+
+
                                     # Retornando para o controller o $cabeçalho da planilha e $colunas do banco de dados.
-                                    return ['cabecalho' => $cabecalho, 'colunas' => $columns];
+                                    return ['cabecalho' => $cabecalho, 'colunas' => $columns, 'planilha_id'=> $planilha->id];
                                 }elseif($tipo == 'planejamento') {
                                     # Pegando as colunas que foi informado no MODEL orçamento variável = $relation
                                     $columns = Planejamento::$relation;
                                     # Retornando para o controller o $cabeçalho da planilha e $colunas do banco de dados.
-                                    return ['cabecalho' => $cabecalho, 'colunas' => $columns];
+                                    return ['cabecalho' => $cabecalho, 'colunas' => $columns, 'planilha_id'=> $planilha->id];
                                 }
                             }
                         }

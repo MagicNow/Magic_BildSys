@@ -16,6 +16,10 @@
                             {!! Form::label('obra_id', 'Obra:') !!}
                             {!! Form::select('obra_id', [''=>'Escolha...' ]+$obras, null, ['class' => 'form-control', 'required'=>'required']) !!}
                         </div>
+                        <div class="form-group">
+                            {!! Form::label('template_id', 'Template:') !!}
+                            {!! Form::select('template_id', ['' => 'Escolha...']+$templates, null, ['class' => 'form-control']) !!}
+                        </div>
                         <h4>Apenas planilhas no formato <strong class="label label-warning"> .xlsx </strong></h4></br>
                         <h5 style="color:#000000">Planilha modelo: <strong class="label label-warning"><a href="/planejamentos.xlsx" style="color:white" target="_blank">clique aqui</a> </strong></h5>
                         <div class="row" style="margin-bottom: 20px">
