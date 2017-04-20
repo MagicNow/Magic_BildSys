@@ -908,5 +908,13 @@ class OrdemDeCompraController extends AppBaseController
         
         return response()->json(['success'=>true]);
     }
+
+    public function removerItem($id)
+    {
+        $ordem_de_compra_item = OrdemDeCompraItem::find($id);
+        $ordem_de_compra_item->delete();
+        
+        return response()->json(['success'=>true]);
+    }
 }
 
