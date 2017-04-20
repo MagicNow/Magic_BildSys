@@ -208,9 +208,10 @@ class OrdemDeCompraController extends AppBaseController
             $realizado = OrdemDeCompraItem::join('ordem_de_compras','ordem_de_compras.id','=','ordem_de_compra_itens.ordem_de_compra_id')
                 ->where('ordem_de_compras.obra_id',$ordemDeCompra->obra_id)
                 ->whereIn('oc_status_id',[2,3,5])
-                ->sum('valor_total');
+                ->whereIn('ordem_de_compra_itens.id',$ordemDeCompra->itens()->pluck('id','id')->toArray())
+                ->sum('ordem_de_compra_itens.valor_total');
 
-            $saldo = $orcamentoInicial - $totalAGastar - $realizado;
+            $saldo = $orcamentoInicial - $realizado;
 
             $itens = OrdemDeCompraItem::where('ordem_de_compra_id', $ordemDeCompra->id)
                 ->select([
@@ -436,7 +437,7 @@ class OrdemDeCompraController extends AppBaseController
             ->select(
                 [
                     'insumos.id',
-                    'insumos.nome',
+                    DB::raw("CONCAT(insumos.codigo,' - ' ,insumos.nome) as nome"),
                     'insumos.unidade_sigla',
                     'insumos.codigo',
                     'orcamentos.grupo_id',
@@ -470,6 +471,7 @@ class OrdemDeCompraController extends AppBaseController
                                     JOIN ordem_de_compras 
                                     ON ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id 
                                     AND ordem_de_compras.oc_status_id != 6 
+                                    AND ordem_de_compras.oc_status_id != 4 
                                     WHERE ordem_de_compra_itens.insumo_id = insumos.id 
                                     AND ordem_de_compra_itens.grupo_id = orcamentos.grupo_id
                                     AND ordem_de_compra_itens.subgrupo1_id = orcamentos.subgrupo1_id
