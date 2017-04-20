@@ -888,7 +888,93 @@ class OrdemDeCompraController extends AppBaseController
             ->where('oc_status_id', 3)->orderBy('id', 'desc')
             ->take(5)->get();
 
-        return view('ordem_de_compras.dashboard',compact('reprovados', 'aprovados', 'emaprovacao'));
+        $status = OrdemDeCompra::select([
+                DB::raw('(
+                        SELECT `status` FROM `ordem_de_compras` OC1
+                        JOIN (
+                            SELECT
+                            z.id,
+                            IF(z.igual , 0 , IF(z.maior , 1 , - 1)) AS STATUS
+                            FROM
+                            (
+                                    SELECT
+                                    OC2.id,
+                                    IF(qtd_total = qtd_itens , 1 , 0) AS igual ,
+                                    IF(qtd_itens > qtd_total , 1 , 0) AS maior
+                                    FROM
+                                    (
+                                        SELECT
+                                            OC3.id,
+                                            (
+                                                SELECT
+                                                    SUM(orcamentos.qtd_total) AS total
+                                                FROM
+                                                    ordem_de_compra_itens
+                                                INNER JOIN orcamentos ON orcamentos.obra_id = ordem_de_compra_itens.obra_id
+                                                    AND orcamentos.grupo_id = ordem_de_compra_itens.grupo_id
+                                                    AND orcamentos.subgrupo1_id = ordem_de_compra_itens.subgrupo1_id
+                                                    AND orcamentos.subgrupo2_id = ordem_de_compra_itens.subgrupo2_id
+                                                    AND orcamentos.subgrupo3_id = ordem_de_compra_itens.subgrupo3_id
+                                                    AND orcamentos.servico_id = ordem_de_compra_itens.servico_id
+                                                    AND orcamentos.insumo_id = ordem_de_compra_itens.insumo_id
+                                                    AND orcamentos.obra_id = ordem_de_compra_itens.obra_id
+                                                WHERE
+                                                    orcamentos.orcamento_tipo_id = 1
+                                                    AND orcamentos.ativo = 1
+                                                    AND ordem_de_compra_itens.deleted_at IS NULL
+                                                    AND ordem_de_compra_itens.ordem_de_compra_id = OC3.`id`
+                                            ) AS qtd_total ,
+                                            (
+                                                SELECT
+                                                    SUM(ordem_de_compra_itens.qtd) AS qtd
+                                                FROM
+                                                    ordem_de_compra_itens
+                                                INNER JOIN orcamentos ON orcamentos.obra_id = ordem_de_compra_itens.obra_id
+                                                    AND orcamentos.grupo_id = ordem_de_compra_itens.grupo_id
+                                                    AND orcamentos.subgrupo1_id = ordem_de_compra_itens.subgrupo1_id
+                                                    AND orcamentos.subgrupo2_id = ordem_de_compra_itens.subgrupo2_id
+                                                    AND orcamentos.subgrupo3_id = ordem_de_compra_itens.subgrupo3_id
+                                                    AND orcamentos.servico_id = ordem_de_compra_itens.servico_id
+                                                    AND orcamentos.insumo_id = ordem_de_compra_itens.insumo_id
+                                                    AND orcamentos.obra_id = ordem_de_compra_itens.obra_id
+                                                WHERE orcamentos.orcamento_tipo_id = 1 
+                                                AND ordem_de_compra_itens.deleted_at IS NULL
+                                                AND orcamentos.ativo = 1
+                                                AND ordem_de_compra_itens.ordem_de_compra_id = OC3.`id`
+                                            ) AS qtd_itens
+                                        FROM ordem_de_compras OC3
+                                    ) AS x
+                                    JOIN ordem_de_compras OC2 ON OC2.id = x.id
+                            ) AS z
+                        ) AS y ON y.id = OC1.id
+                
+                        WHERE OC1.id = `ordem_de_compras`.id
+                        LIMIT 1
+                    ) as status')
+            ])
+            ->get();
+
+        $abaixo_orcamento = 0;
+        $dentro_orcamento = 0;
+        $acima_orcamento = 0;
+
+        if(count($status)){
+            foreach ($status as $item){
+                if($item->status == -1){
+                    $abaixo_orcamento += 1;
+                }
+
+                if($item->status == 0){
+                    $dentro_orcamento += 1;
+                }
+
+                if($item->status == 1){
+                    $acima_orcamento += 1;
+                }
+            }
+        }
+
+        return view('ordem_de_compras.dashboard',compact('reprovados', 'aprovados', 'emaprovacao', 'abaixo_orcamento', 'dentro_orcamento', 'acima_orcamento'));
     }
 
     public function reabrirOrdemDeCompra($id)
