@@ -79,7 +79,7 @@ class Servico extends Model
      **/
     public function ordemDeCompraItens()
     {
-        return $this->hasMany(\App\Models\OrdemDeCompraIten::class);
+        return $this->hasMany(\App\Models\OrdemDeCompraItens::class);
     }
 
     /**

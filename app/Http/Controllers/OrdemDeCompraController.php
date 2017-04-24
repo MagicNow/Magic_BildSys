@@ -1006,41 +1006,38 @@ class OrdemDeCompraController extends AppBaseController
         return response()->json(['success'=>true]);
     }
 
-    public function detalhesServicos($ordem_id, $servico_id)
+    public function detalhesServicos($servico_id)
     {
-        $ordemDeCompra = $this->ordemDeCompraRepository->findWithoutFail($ordem_id);
+        $servico = Servico::find($servico_id);
 
-        if (empty($ordemDeCompra)) {
-            Flash::error('Ordem De Compra '.trans('common.not-found'));
-
-            return back();
+        if(isset($servico->ordemDeCompraItens)){
+            $ordemDeCompraItens = $servico->ordemDeCompraItens;
+        }else{
+            $ordemDeCompraItens = null;
         }
 
         $orcamentoInicial = $totalAGastar = $realizado = 0;
 
         $itens = collect([]);
 
-        $aprovavelTudo = WorkflowAprovacaoRepository::verificaAprovaGrupo('OrdemDeCompraItem', $ordemDeCompra->itens()->pluck('id','id')->toArray(), Auth::user() );
+        $aprovavelTudo = WorkflowAprovacaoRepository::verificaAprovaGrupo('OrdemDeCompraItem', $ordemDeCompraItens->pluck('id','id')->toArray(), Auth::user() );
 
-        if($ordemDeCompra->itens){
+        if($ordemDeCompraItens){
             $orcamentoInicial = Orcamento::where('orcamento_tipo_id',1)
-                ->whereIn('insumo_id', $ordemDeCompra->itens()->pluck('insumo_id','insumo_id')->toArray())
+                ->whereIn('insumo_id', $ordemDeCompraItens->pluck('insumo_id','insumo_id')->toArray())
                 ->where('ativo','1')
-                ->where('obra_id',$ordemDeCompra->obra_id)
                 ->sum('preco_total');
 
-            $totalAGastar = $ordemDeCompra->itens()->sum('valor_total');
+            $totalAGastar = $ordemDeCompraItens->sum('valor_total');
 
             $realizado = OrdemDeCompraItem::join('ordem_de_compras','ordem_de_compras.id','=','ordem_de_compra_itens.ordem_de_compra_id')
-                ->where('ordem_de_compras.obra_id',$ordemDeCompra->obra_id)
                 ->whereIn('oc_status_id',[2,3,5])
-                ->whereIn('ordem_de_compra_itens.insumo_id',$ordemDeCompra->itens()->pluck('insumo_id','insumo_id')->toArray())
+                ->whereIn('ordem_de_compra_itens.insumo_id',$ordemDeCompraItens->pluck('insumo_id','insumo_id')->toArray())
                 ->sum('ordem_de_compra_itens.valor_total');
 
             $saldo = $orcamentoInicial - $realizado;
 
-            $itens = OrdemDeCompraItem::where('ordem_de_compra_id', $ordemDeCompra->id)
-                ->select([
+            $itens = OrdemDeCompraItem::select([
                     'ordem_de_compra_itens.*',
                     DB::raw("(SELECT SUM( qtd ) 
                                 FROM ordem_de_compra_itens OCI2
@@ -1056,8 +1053,7 @@ class OrdemDeCompraController extends AppBaseController
                                 AND OCI2.subgrupo1_id = ordem_de_compra_itens.subgrupo1_id 
                                 AND OCI2.subgrupo2_id = ordem_de_compra_itens.subgrupo2_id 
                                 AND OCI2.subgrupo3_id = ordem_de_compra_itens.subgrupo3_id 
-                                AND OCI2.servico_id = ordem_de_compra_itens.servico_id 
-                                AND OCI2.obra_id = ".$ordemDeCompra->obra_id." 
+                                AND OCI2.servico_id = ordem_de_compra_itens.servico_id                                
                                 AND OCI2.deleted_at IS NULL
                              ) as qtd_realizada"),
                     DB::raw("(SELECT SUM( valor_total ) 
@@ -1075,26 +1071,30 @@ class OrdemDeCompraController extends AppBaseController
                                 AND OCI2.subgrupo2_id = ordem_de_compra_itens.subgrupo2_id 
                                 AND OCI2.subgrupo3_id = ordem_de_compra_itens.subgrupo3_id 
                                 AND OCI2.servico_id = ordem_de_compra_itens.servico_id 
-                                AND OCI2.obra_id = ".$ordemDeCompra->obra_id." 
                                 AND OCI2.deleted_at IS NULL
                              ) as valor_realizado"),
                     'orcamentos.qtd_total as qtd_inicial',
                     'orcamentos.preco_total as preco_inicial',
                 ])
-                ->join('orcamentos', function ($join) use ($ordemDeCompra){
+                ->join('orcamentos', function ($join) use ($ordemDeCompraItens){
                     $join->on('orcamentos.insumo_id','=', 'ordem_de_compra_itens.insumo_id');
                     $join->on('orcamentos.grupo_id','=', 'ordem_de_compra_itens.grupo_id');
                     $join->on('orcamentos.subgrupo1_id','=', 'ordem_de_compra_itens.subgrupo1_id');
                     $join->on('orcamentos.subgrupo2_id','=', 'ordem_de_compra_itens.subgrupo2_id');
                     $join->on('orcamentos.subgrupo3_id','=', 'ordem_de_compra_itens.subgrupo3_id');
                     $join->on('orcamentos.servico_id','=', 'ordem_de_compra_itens.servico_id');
-                    $join->on('orcamentos.obra_id','=', DB::raw($ordemDeCompra->obra_id));
                     $join->on('orcamentos.ativo','=', DB::raw('1'));
                 })
+                ->join('ordem_de_compras', 'ordem_de_compras.id', '=', 'ordem_de_compra_itens.ordem_de_compra_id')
                 ->with('insumo','unidade','anexos');
         }
 
-        $itens = $itens->where('ordem_de_compra_itens.servico_id', $servico_id)->paginate(2);
+        $itens = $itens->where('ordem_de_compra_itens.servico_id', $servico_id)
+            ->where(function($query){
+                $query->orWhere('ordem_de_compras.oc_status_id', 2);
+                $query->orWhere('ordem_de_compras.oc_status_id', 3);
+            })
+            ->paginate(2);
 
         $motivos_reprovacao = WorkflowReprovacaoMotivo::pluck('nome','id')->toArray();
 
@@ -1106,7 +1106,8 @@ class OrdemDeCompraController extends AppBaseController
                 'saldo',
                 'itens',
                 'motivos_reprovacao',
-                'aprovavelTudo'
+                'aprovavelTudo',
+                'servico'
             )
         );
     }

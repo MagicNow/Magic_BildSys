@@ -31,7 +31,7 @@
                             <button type="button" class="btn btn-link" onclick="history.go(-1);">
                              <i class="fa fa-arrow-left" aria-hidden="true"></i>
                             </button>
-                            <span>Detalhar Ordem de Compra</span>
+                            <span>Ordem de Compra - Detalhes Serviços</span>
                         </h3>
                     </span>
                 </div>
@@ -39,53 +39,6 @@
                     <a href="{!! route('retroalimentacaoObras.create') !!}" class="btn btn-default btn-lg btn-flat">
                         Retroalimentação
                     </a>
-                    @if(!is_null($ordemDeCompra->aprovado))
-                        @if($ordemDeCompra->aprovado)
-                            <span class="btn-lg btn-flat text-success" title="Aprovado">
-                                <i class="fa fa-check" aria-hidden="true"></i>
-                            </span>
-                        @else
-                            <span class="text-danger btn-lg btn-flat" title="Reprovado">
-                                <i class="fa fa-times" aria-hidden="true"></i>
-                            </span>
-                        @endif
-                    @else
-                        @if($aprovavelTudo['podeAprovar'])
-                            @if($aprovavelTudo['iraAprovar'])
-                                <div class="btn-group" role="group" id="blocoOCAprovacao{{ $ordemDeCompra->id }}" aria-label="...">
-                                    <button type="button" title="Aprovar Todos os itens"
-                                            onclick="workflowAprovaReprova({{ $ordemDeCompra->id }},'OrdemDeCompraItem',1,'blocoOCAprovacao{{ $ordemDeCompra->id }}','OC {{ $ordemDeCompra->id }}', {{ $ordemDeCompra->id }}, 'OrdemDeCompra', 'itens');"
-                                            class="btn btn-default btn-lg btn-flat">
-                                        <i class="fa fa-check" aria-hidden="true"></i>
-                                    </button>
-                                    <button type="button" title="Reprovar Todos os itens"
-                                            onclick="workflowAprovaReprova({{ $ordemDeCompra->id }},'OrdemDeCompraItem',0, 'blocoOCAprovacao{{ $ordemDeCompra->id }}','OC {{ $ordemDeCompra->id }}', {{ $ordemDeCompra->id }}, 'OrdemDeCompra', 'itens');"
-                                            class="btn btn-default btn-lg btn-flat">
-                                        <i class="fa fa-times" aria-hidden="true"></i>
-                                    </button>
-                                </div>
-                            @else
-                                @if($aprovavelTudo['jaAprovou'])
-                                    @if($aprovavelTudo['aprovacao'])
-                                        <span class="btn-lg btn-flat text-success" title="Aprovado por você">
-                                                <i class="fa fa-check" aria-hidden="true"></i>
-                                            </span>
-                                    @else
-                                        <span class="text-danger btn-lg btn-flat" title="Reprovado por você">
-                                                <i class="fa fa-times" aria-hidden="true"></i>
-                                            </span>
-                                    @endif
-                                @else
-                                    {{--Não Aprovou ainda, pode aprovar, mas por algum motivo não irá aprovar no momento--}}
-                                    <button type="button" title="{{ $aprovavelTudo['msg'] }}"
-                                            onclick="swal('{{ $aprovavelTudo['msg'] }}','','info');"
-                                            class="btn btn-default btn-lg btn-flat">
-                                        <i class="fa fa-info" aria-hidden="true"></i>
-                                    </button>
-                                @endif
-                            @endif
-                        @endif
-                    @endif
                 </div>
             </div>
         </div>
@@ -94,23 +47,14 @@
         <h6>Dados Informativos</h6>
         <div class="row">
             <div class="col-md-2 form-group">
-                {!! Form::label('id', 'Código da O.C.') !!}
-                <p class="form-control input-lg highlight text-center">{!! $ordemDeCompra->id !!}</p>
+                {!! Form::label('codigo', 'Código do serviço') !!}
+                <p class="form-control input-lg highlight text-center">{!! $servico->codigo !!}</p>
             </div>
 
-            <div class="col-md-4 form-group">
-                {!! Form::label('obra', 'Obra') !!}
-                <p class="form-control input-lg">{!! $ordemDeCompra->obra->nome !!}</p>
+            <div class="col-md-10 form-group">
+                {!! Form::label('servico', 'Serviço') !!}
+                <p class="form-control input-lg">{!! $servico->nome !!}</p>
             </div>
-            <div class="col-md-2 form-group">
-                {!! Form::label('created_at', 'Data de Criação') !!}
-                <p class="form-control input-lg">{!! $ordemDeCompra->created_at->format('d/m/Y') !!}</p>
-            </div>
-            <div class="col-md-4 form-group">
-                {!! Form::label('user_id', 'Responsável') !!}
-                <p class="form-control input-lg">{!! $ordemDeCompra->user->name !!}</p>
-            </div>
-
         </div>
         <hr>
         <div class="row" id="totalInsumos">
@@ -152,7 +96,9 @@
             <div class="panel panel-default">
                 <div class="panel-body">
                     <div class="col-md-10">
-                        <h4 class="highlight">{{ $item->insumo->codigo . ' - '. $item->insumo->nome }}</h4>
+                        <h4 class="highlight">{{ $item->insumo->codigo . ' - '. $item->insumo->nome }}
+                            <a href="/ordens-de-compra/detalhes/{{ $item->ordem_de_compra_id }}" style="font-size:15px;">OC: {{$item->ordem_de_compra_id . ' - Obra: '. $item->obra->nome}}</a>
+                        </h4>
                     </div>
                     <div class="col-md-2 text-right">
                         @if(!is_null($item->aprovado))
