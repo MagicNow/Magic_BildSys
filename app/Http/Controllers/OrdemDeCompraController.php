@@ -15,6 +15,7 @@ use App\Models\OrdemDeCompraItemAnexo;
 use App\Models\OrdemDeCompraStatusLog;
 use App\Models\Planejamento;
 use App\Models\PlanejamentoCompra;
+use App\Models\Servico;
 use App\Models\WorkflowReprovacaoMotivo;
 use App\Repositories\CodeRepository;
 use function foo\func;
@@ -1005,9 +1006,9 @@ class OrdemDeCompraController extends AppBaseController
         return response()->json(['success'=>true]);
     }
 
-    public function detalhesServicos($id)
+    public function detalhesServicos($ordem_id, $servico_id)
     {
-        $ordemDeCompra = $this->ordemDeCompraRepository->findWithoutFail($id);
+        $ordemDeCompra = $this->ordemDeCompraRepository->findWithoutFail($ordem_id);
 
         if (empty($ordemDeCompra)) {
             Flash::error('Ordem De Compra '.trans('common.not-found'));
@@ -1090,10 +1091,10 @@ class OrdemDeCompraController extends AppBaseController
                     $join->on('orcamentos.obra_id','=', DB::raw($ordemDeCompra->obra_id));
                     $join->on('orcamentos.ativo','=', DB::raw('1'));
                 })
-                ->with('insumo','unidade','anexos')
-                ->paginate(2);
+                ->with('insumo','unidade','anexos');
         }
 
+        $itens = $itens->where('ordem_de_compra_itens.servico_id', $servico_id)->paginate(2);
 
         $motivos_reprovacao = WorkflowReprovacaoMotivo::pluck('nome','id')->toArray();
 

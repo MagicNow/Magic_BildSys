@@ -152,7 +152,11 @@
         <div class="panel panel-default">
             <div class="panel-body">
                 <div class="col-md-10">
-                    <h4 class="highlight">{{ $item->insumo->codigo . ' - '. $item->insumo->nome }}</h4>
+                    <h4 class="highlight">{{ $item->insumo->codigo . ' - '. $item->insumo->nome }}
+                        @if($item->servico)
+                            <a href="/ordens-de-compra/detalhes-servicos/{{$ordemDeCompra->id}}/{{$item->servico->id}}" style="font-size:15px;">{{$item->servico->codigo . ' - '. $item->servico->nome}}</a>
+                        @endif
+                    </h4>
                 </div>
                 <div class="col-md-2 text-right">
                     @if(!is_null($item->aprovado))
