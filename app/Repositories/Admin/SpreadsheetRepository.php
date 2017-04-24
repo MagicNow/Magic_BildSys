@@ -58,10 +58,18 @@ class SpreadsheetRepository
                 $cabecalho = [];
 
                 if($tipo == 'orcamento') {
-                    $reader = ReaderFactory::create(Type::CSV);
-                    $reader->setFieldDelimiter(';');
-                    $reader->setEndOfLineCharacter("\r");
-                    $reader->setEncoding('UTF-8');
+                    if(strtolower($spreadsheet['file']->getClientOriginalExtension())=='csv'){
+                        $reader = ReaderFactory::create(Type::CSV);
+                        $reader->setFieldDelimiter(';');
+                        $reader->setEndOfLineCharacter("\r");
+                        $reader->setEncoding('UTF-8');
+                    }
+                    elseif(strtolower($spreadsheet['file']->getClientOriginalExtension())=='xlsx'){
+                        $reader = ReaderFactory::create(Type::XLSX);
+                    }
+                    elseif(strtolower($spreadsheet['file']->getClientOriginalExtension())=='ods'){
+                        $reader = ReaderFactory::create(Type::ODS);
+                    }
 
                 } elseif ($tipo == 'planejamento'){
                     $reader = ReaderFactory::create(Type::XLSX);
@@ -167,7 +175,7 @@ class SpreadsheetRepository
 //                        dd($colunas);
                         foreach ($colunas as $chave => $value) {
                             if($value) {
-                                if($row[$chave]) {
+                                if(isset($row[$chave]) ) {
                                     switch (Orcamento::$relation[$value]) {
                                         case 'string' :
                                             if (is_string($row[$chave])) {
