@@ -10,6 +10,7 @@ namespace App\Repositories\Admin;
 
 use App\Models\Grupo;
 use App\Models\Insumo;
+use App\Models\InsumoServico;
 use App\Models\Orcamento;
 use App\Models\Planejamento;
 use App\Models\Planilha;
@@ -328,6 +329,12 @@ class SpreadsheetRepository
                                 $erro = 1;
                                 $mensagens_erro[] = 'Insumo - Código: ' . $codigo_insumo . ' não foi encontrado.';
                             }
+
+                            #Amarra serviço ao insumo
+                            $insumo_servico = InsumoServico::firstOrCreate([
+                                'servico_id' => $servico->id,
+                                'insumo_id' => $insumo->id
+                            ]);
 
                             # save data table budget
                             if($erro == 0) {

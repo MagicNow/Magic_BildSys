@@ -10,6 +10,7 @@ use App\Jobs\PlanilhaProcessa;
 use App\Models\Grupo;
 use App\Models\Insumo;
 use App\Models\InsumoGrupo;
+use App\Models\InsumoServico;
 use App\Models\Obra;
 use App\Models\Orcamento;
 use App\Models\PlanejamentoCompra;
@@ -131,10 +132,23 @@ class PlanejamentoController extends AppBaseController
             ->pluck('nome', 'id')->toArray();
         return $servico;
     }
+    public function getServicoInsumos($id){
+        $insumoServico = InsumoServico::select(['insumos.id', 'insumos.nome', 'insumos.codigo'])
+            ->join('insumos', 'insumo_servico.insumo_id', '=', 'insumos.id')
+            ->where('servico_id', $id)
+            ->get();
+        return $insumoServico;
+    }
 
     public function planejamentoCompras(Request $request){
         $insumosOrcados = null;
-        if($request->grupo_id && $request->subgrupo1_id && $request->subgrupo2_id && $request->subgrupo3_id && $request->servico_id){
+        if($request->grupo_id && $request->subgrupo1_id && $request->subgrupo2_id && $request->subgrupo3_id && $request->servico_id && $request->insumos){
+            $insumosOrcados = Orcamento::whereIn('insumo_id', $request->insumos)
+                ->where('obra_id', $request->grupo_id)
+                ->where('ativo', 1)
+                ->get();
+        }
+        if($request->grupo_id && $request->subgrupo1_id && $request->subgrupo2_id && $request->subgrupo3_id && $request->servico_id && !$request->insumos){
             $insumosOrcados = Orcamento::where('grupo_id', $request->grupo_id)
                 ->where('subgrupo1_id', $request->subgrupo1_id)
                 ->where('subgrupo2_id', $request->subgrupo2_id)
@@ -143,7 +157,7 @@ class PlanejamentoController extends AppBaseController
                 ->where('ativo', 1)
                 ->get();
         }
-        if($request->grupo_id && $request->subgrupo1_id && $request->subgrupo2_id && $request->subgrupo3_id && !$request->servico_id){
+        if($request->grupo_id && $request->subgrupo1_id && $request->subgrupo2_id && $request->subgrupo3_id && !$request->servico_id && !$request->insumos){
             $insumosOrcados = Orcamento::where('grupo_id', $request->grupo_id)
                 ->where('subgrupo1_id', $request->subgrupo1_id)
                 ->where('subgrupo2_id', $request->subgrupo2_id)
@@ -151,26 +165,25 @@ class PlanejamentoController extends AppBaseController
                 ->where('ativo', 1)
                 ->get();
         }
-        if($request->grupo_id && $request->subgrupo1_id && $request->subgrupo2_id && !$request->subgrupo3_id && !$request->servico_id){
+        if($request->grupo_id && $request->subgrupo1_id && $request->subgrupo2_id && !$request->subgrupo3_id && !$request->servico_id && !$request->insumos){
             $insumosOrcados = Orcamento::where('grupo_id', $request->grupo_id)
                 ->where('subgrupo1_id', $request->subgrupo1_id)
                 ->where('subgrupo2_id', $request->subgrupo2_id)
                 ->where('ativo', 1)
                 ->get();
         }
-        if($request->grupo_id && $request->subgrupo1_id && !$request->subgrupo2_id && !$request->subgrupo3_id && !$request->servico_id){
+        if($request->grupo_id && $request->subgrupo1_id && !$request->subgrupo2_id && !$request->subgrupo3_id && !$request->servico_id && !$request->insumos){
             $insumosOrcados = Orcamento::where('grupo_id', $request->grupo_id)
                 ->where('subgrupo1_id', $request->subgrupo1_id)
                 ->where('ativo', 1)
                 ->get();
         }
-        if($request->grupo_id && !$request->subgrupo1_id && !$request->subgrupo2_id && !$request->subgrupo3_id && !$request->servico_id){
+        if($request->grupo_id && !$request->subgrupo1_id && !$request->subgrupo2_id && !$request->subgrupo3_id && !$request->servico_id && !$request->insumos){
             $insumosOrcados = Orcamento::where('grupo_id', $request->grupo_id)
                 ->where('ativo', 1)
                 ->get();
         }
-
-
+        
         if(count($insumosOrcados)) {
             foreach ($insumosOrcados as $insumosOrcado) {
                 $cadastrado = PlanejamentoCompra::where('insumo_id',$insumosOrcado->insumo_id)
