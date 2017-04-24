@@ -180,7 +180,7 @@ class SpreadsheetRepository
                                     switch (Orcamento::$relation[$value]) {
                                         case 'string' :
                                             if (is_string($row[$chave])) {
-                                                dd([$value,$linha,$row,trim(utf8_encode($row[$chave]))]);
+//                                                dd([$value,$linha,$row,trim(utf8_encode($row[$chave]))]);
                                                 $final[$value] = $row[$chave];
                                             } else {
                                                 if ($row[$chave]) {
@@ -341,10 +341,13 @@ class SpreadsheetRepository
                             }
 
                             #Amarra serviço ao insumo
-                            $insumo_servico = InsumoServico::firstOrCreate([
-                                'servico_id' => $servico->id,
-                                'insumo_id' => $insumo->id
-                            ]);
+                            if(isset($final['servico_id']) && isset($final['insumo_id'])){
+                                $insumo_servico = InsumoServico::firstOrCreate([
+                                    'servico_id' => $final['servico_id'],
+                                    'insumo_id' => $final['insumo_id']
+                                ]);
+                            }
+
 
                             # save data table budget
                             if($erro == 0) {
