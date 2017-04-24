@@ -27,6 +27,8 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
 
     $router->get('/', 'HomeController@index');
     $router->get('/home', 'HomeController@index');
+    # log do laravel
+    $router->get('/console/logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
 
     Route::get('/getForeignKey', 'CodesController@getForeignKey');
 

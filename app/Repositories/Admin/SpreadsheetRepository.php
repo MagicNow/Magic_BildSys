@@ -64,12 +64,12 @@ class SpreadsheetRepository
                         $reader->setEndOfLineCharacter("\r");
                         $reader->setEncoding('UTF-8');
                     }
-                    elseif(strtolower($spreadsheet['file']->getClientOriginalExtension())=='xlsx'){
-                        $reader = ReaderFactory::create(Type::XLSX);
-                    }
-                    elseif(strtolower($spreadsheet['file']->getClientOriginalExtension())=='ods'){
-                        $reader = ReaderFactory::create(Type::ODS);
-                    }
+//                    elseif(strtolower($spreadsheet['file']->getClientOriginalExtension())=='xlsx'){
+//                        $reader = ReaderFactory::create(Type::XLSX);
+//                    }
+//                    elseif(strtolower($spreadsheet['file']->getClientOriginalExtension())=='ods'){
+//                        $reader = ReaderFactory::create(Type::ODS);
+//                    }
 
                 } elseif ($tipo == 'planejamento'){
                     $reader = ReaderFactory::create(Type::XLSX);
@@ -84,7 +84,7 @@ class SpreadsheetRepository
                             $linha++;
                             if ($linha === 1) {
                                 foreach ($row as $index => $valor) {
-                                    $cabecalho[str_slug($valor, '_')] = $index;
+                                    $cabecalho[str_slug(utf8_encode($valor), '_')] = $index;
                                 }
 
                                 if($tipo == 'orcamento') {
@@ -176,9 +176,11 @@ class SpreadsheetRepository
                         foreach ($colunas as $chave => $value) {
                             if($value) {
                                 if(isset($row[$chave]) ) {
+
                                     switch (Orcamento::$relation[$value]) {
                                         case 'string' :
                                             if (is_string($row[$chave])) {
+                                                dd([$value,$linha,$row,trim(utf8_encode($row[$chave]))]);
                                                 $final[$value] = $row[$chave];
                                             } else {
                                                 if ($row[$chave]) {
