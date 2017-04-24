@@ -43,8 +43,8 @@
             {{-->--}}
             {{--</tabela>--}}
             <tabela
-                    api-url="{{url('/compras/'.$planejamento->id.'/insumosJson')}}"
-                    api-filtros="{{url('/compras/'.$planejamento->id.'/insumosFilters')}}"
+                    api-url="{{url('/compras/insumosJson?planejamento_id='.$planejamento->id)}}"
+                    api-filtros="{{url('/compras/insumosFilters')}}"
                     api-adicionar="{{url('/compras/'.$planejamento->id.'/insumosAdd')}}"
                     _token="{{csrf_token()}}"
                     v-bind:params="{}"
