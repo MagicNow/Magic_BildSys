@@ -27,6 +27,8 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
 
     $router->get('/', 'HomeController@index');
     $router->get('/home', 'HomeController@index');
+    # log do laravel
+    $router->get('/console/logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
 
     Route::get('/getForeignKey', 'CodesController@getForeignKey');
 
@@ -41,6 +43,8 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('/ordens-de-compra/reabrir-ordem-de-compra/{id}', 'OrdemDeCompraController@reabrirOrdemDeCompra');
     $router->get('/ordens-de-compra/carrinho/alterar-quantidade/{id}', 'OrdemDeCompraController@alterarQuantidade');
     $router->get('/ordens-de-compra/carrinho/remover-item/{id}', 'OrdemDeCompraController@removerItem');
+
+    $router->get('/ordens-de-compra/detalhes-servicos/{servico_id}', 'OrdemDeCompraController@detalhesServicos');
 
     $router->resource('ordens-de-compra', 'OrdemDeCompraController');
 
