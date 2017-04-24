@@ -1011,7 +1011,9 @@ class OrdemDeCompraController extends AppBaseController
         $servico = Servico::find($servico_id);
 
         if(isset($servico->ordemDeCompraItens)){
-            $ordemDeCompraItens = $servico->ordemDeCompraItens;
+            $ordemDeCompraItens = OrdemDeCompraItem::join('ordem_de_compras', 'ordem_de_compras.id', '=', 'ordem_de_compra_itens.ordem_de_compra_id')
+                ->where('ordem_de_compra_itens.servico_id', $servico_id)
+                ->whereIn('oc_status_id',[2,3,5]);
         }else{
             $ordemDeCompraItens = null;
         }
@@ -1020,7 +1022,7 @@ class OrdemDeCompraController extends AppBaseController
 
         $itens = collect([]);
 
-        $aprovavelTudo = WorkflowAprovacaoRepository::verificaAprovaGrupo('OrdemDeCompraItem', $ordemDeCompraItens->pluck('id','id')->toArray(), Auth::user() );
+        $aprovavelTudo = WorkflowAprovacaoRepository::verificaAprovaGrupo('OrdemDeCompraItem', $ordemDeCompraItens->pluck('ordem_de_compra_itens.id','ordem_de_compra_itens.id')->toArray(), Auth::user() );
 
         if($ordemDeCompraItens){
             $orcamentoInicial = Orcamento::where('orcamento_tipo_id',1)
@@ -1090,10 +1092,7 @@ class OrdemDeCompraController extends AppBaseController
         }
 
         $itens = $itens->where('ordem_de_compra_itens.servico_id', $servico_id)
-            ->where(function($query){
-                $query->orWhere('ordem_de_compras.oc_status_id', 2);
-                $query->orWhere('ordem_de_compras.oc_status_id', 3);
-            })
+            ->whereIn('oc_status_id',[2,3,5])
             ->paginate(2);
 
         $motivos_reprovacao = WorkflowReprovacaoMotivo::pluck('nome','id')->toArray();
