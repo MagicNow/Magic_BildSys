@@ -180,7 +180,6 @@ class SpreadsheetRepository
                                     switch (Orcamento::$relation[$value]) {
                                         case 'string' :
                                             if (is_string($row[$chave])) {
-//                                                dd([$value,$linha,$row,trim(utf8_encode($row[$chave]))]);
                                                 $final[$value] = trim(utf8_encode($row[$chave]));
                                             } else {
                                                 if ($row[$chave]) {
@@ -244,7 +243,7 @@ class SpreadsheetRepository
                             if(count($codigo_quebrado) === 1){
                                 Grupo::firstOrCreate([
                                     'codigo' => $final['codigo_insumo'],
-                                    'nome' => trim(utf8_encode($final['descricao']))
+                                    'nome' => $final['descricao'];
                                 ]);
                             }else {
                                 $codigo_grupo_pai = $codigo_quebrado;
@@ -253,7 +252,7 @@ class SpreadsheetRepository
                                 if($grupoPai){
                                     Grupo::firstOrCreate([
                                         'codigo' => $final['codigo_insumo'],
-                                        'nome' => trim(utf8_encode($final['descricao'])),
+                                        'nome' => $final['descricao'],
                                         'grupo_id' =>$grupoPai->id
                                     ]);
                                 }
@@ -264,7 +263,7 @@ class SpreadsheetRepository
                             if(count($codigo_quebrado) === 1){
                                 Servico::firstOrCreate([
                                     'codigo' => $final['codigo_insumo'],
-                                    'nome' => trim(utf8_encode($final['descricao']))
+                                    'nome' => $final['descricao'];
                                 ]);
                             }else {
                                 $codigo_grupo_pai = $codigo_quebrado;
@@ -273,7 +272,7 @@ class SpreadsheetRepository
                                 if($grupoPai){
                                     Servico::firstOrCreate([
                                         'codigo' => $final['codigo_insumo'],
-                                        'nome' => trim(utf8_encode($final['descricao'])),
+                                        'nome' => $final['descricao'],
                                         'grupo_id' =>$grupoPai->id
                                     ]);
                                 }
