@@ -353,7 +353,6 @@ class OrdemDeCompraController extends AppBaseController
 
         //Aplica filtro do Jhonatan
         $insumos = CodeRepository::filter($insumos, $request->all());
-
         return response()->json($insumos->paginate(10), 200);
     }
 
@@ -510,8 +509,8 @@ class OrdemDeCompraController extends AppBaseController
         ->whereNull('planejamento_compras.deleted_at')
         ->whereNotNull('orcamentos.qtd_total')
         ->whereNotNull('orcamentos.preco_total')
-        ->where('orcamentos.ativo','1')
-        ->orderBy(DB::raw(' COALESCE (planejamento_compras.id, planejamento_compras.trocado_de), planejamento_compras.trocado_de'));
+        ->where('orcamentos.ativo','1');
+
         //Testa a ordenação
         if(isset($request->orderkey)){
             $insumo_query->orderBy($request->orderkey, $request->order);
