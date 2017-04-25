@@ -6,7 +6,11 @@
             <div class="col-md-12">
                 <div class="col-md-8">
                     <span class="pull-left title">
-                        <a href="{{ url('/compras/'.$planejamento->id.'/obrasInsumos/'.$insumoGrupo->id) }}"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
+                        @if(isset($obra))
+                            <a href="{{ url('/compras/obrasInsumos?obra_id='.$obra->id) }}"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
+                        @else
+                            <a href="{{ url('/compras/obrasInsumos?planejamento_id='.$planejamento->id) }}"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
+                        @endif
                         Incluir Insumos
                     </span>
                 </div>
@@ -45,7 +49,7 @@
             <tabela
                     api-url="{{url('/compras/insumosJson?planejamento_id='.$planejamento->id)}}"
                     api-filtros="{{url('/compras/insumosFilters')}}"
-                    api-adicionar="{{url('/compras/'.$planejamento->id.'/insumosAdd')}}"
+                    api-adicionar="{{url('/compras/insumosAdd?planejamento_id='.$planejamento->id)}}"
                     _token="{{csrf_token()}}"
                     v-bind:params="{}"
                     v-bind:actions="{filtros: true, adicionar: true}"

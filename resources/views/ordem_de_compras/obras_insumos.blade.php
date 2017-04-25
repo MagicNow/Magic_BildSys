@@ -11,9 +11,15 @@
                 </div>
                 <div class="col-md-6 text-right">
                     {{--href="{{url('compras/insumos?planejamento_id='.$planejamento->id.'&insumo_grupos_id='    .$insumoGrupo->id)}}"--}}
-                    <a id="btn-incluir-insumo"  type="button" class="btn btn-default btn-lg btn-flat" data-dismiss="modal">
-                        Incluir Insumo
-                    </a>
+                    @if (isset($obra))
+                        <a id="btn-incluir-insumo"  type="button" class="btn btn-default btn-lg btn-flat" data-toggle="modal" data-target="#modalPlanejamentos">
+                            Incluir Insumo
+                        </a>
+                    @else
+                        <a id="btn-incluir-insumo"  type="button" class="btn btn-default btn-lg btn-flat" data-dismiss="modal">
+                            Incluir Insumo
+                        </a>
+                    @endif
 
                     <a href="{{ url('/ordens-de-compra/carrinho') }}" class="btn btn-success btn-lg btn-flat">
                         Fechar Ordem
@@ -41,7 +47,7 @@
             {{-->--}}
             {{--</tabela>--}}
             <tabela
-                    @if(isset($planejamento))api-url="/compras/obrasInsumosJson?planejamento_id={{$planejamento->id}}&obras_insumos_id={{$insumoGrupo->id}}"
+                    @if(isset($planejamento))api-url="/compras/obrasInsumosJson?planejamento_id={{$planejamento->id}}"
                     @else api-url="/compras/obrasInsumosJson?obra_id={{$obra->id}}"
                     @endif
                     api-filtros="/compras/obrasInsumosFilters"
@@ -52,7 +58,7 @@
                     v-bind:params="{}"
                     v-bind:actions="{
                    filtros: true,
-                   troca: true, troca_url:'{{ isset($planejamento)? url('/compras/'.$planejamento->id.'/trocaInsumos/'.$insumoGrupo->id.'/insumo/') : ''}}',
+                   troca: true, troca_url:'{{ isset($planejamento)? url('/compras/'.$planejamento->id.'/trocaInsumos/') : ''}}',
                    troca_remove:'{{ url('/compras/removerInsumoPlanejamento') }}',
                    quantidade: true,
                    adicionar: true,
@@ -65,8 +71,27 @@
             >
             </tabela>
 
-            <input type="hidden" id="e10_2" style="width:300px"/>
 
+
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="modalPlanejamentos" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Escolha um planejamento desta obra</h4>
+                </div>
+                <div class="modal-body">
+                    <select class="js-example-data-array"></select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <a id="btnGoInsumos" href="" type="button" class="btn btn-primary">Prosseguir</a>
+                </div>
+            </div>
         </div>
     </div>
 @endsection
@@ -79,19 +104,21 @@
         @if(isset($obra))
         $(document).ready(function() {
             var dados;
-            function format(item) { return item.name; };
+            var url;
             $('#btn-incluir-insumo').click(function (e) {
                 e.preventDefault();
                 $.get("{{url('planejamentosByObra')}}", {obra_id: "{{$obra->id}}"})
                     .done(function (data) {
-                        console.log(data);
-                        dados = data;
-                        $("#e10_2").select2({
-                            data:{ results: names, text: 'name' },
-                            formatSelection: format,
-                            formatResult: format
-                        });
-
+                        dados = JSON.parse(JSON.stringify(data));
+                        $(".js-example-data-array").select2({
+                            data: dados
+                        })
+                        url = '{{url("compras/insumos") }}?planejamento_id='+$(".js-example-data-array").val()+'&obra_id={{$obra->id}}';
+                        $('#btnGoInsumos').attr('href', url);
+                        $("body").on('change','.js-example-data-array', function () {
+                            url = '{{url("compras/insumos") }}?planejamento_id='+$(".js-example-data-array").val();
+                            $('#btnGoInsumos').attr('href', url);
+                        })
                     });
             })
         });

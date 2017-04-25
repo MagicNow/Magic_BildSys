@@ -295,8 +295,12 @@ class OrdemDeCompraController extends AppBaseController
      */
     public function insumos(Request $request){
         $planejamento = Planejamento::find($request->planejamento_id);
-        $insumoGrupo = InsumoGrupo::find($request->insumo_grupos_id);
-        return view('ordem_de_compras.insumos', compact('planejamento', 'insumoGrupo'));
+        if(isset($request->obra_id)){
+            $obra = Obra::find($request->obra_id);
+            return view('ordem_de_compras.insumos', compact('planejamento', 'obra'));
+        }
+
+        return view('ordem_de_compras.insumos', compact('planejamento'));
     }
 
     /**
@@ -318,7 +322,8 @@ class OrdemDeCompraController extends AppBaseController
      */
     public function insumosJson(Request $request)
     {
-        if($request->p)
+        $planejamento = Planejamento::find($request->planejamento_id);
+
         //Query para utilização dos filtros
         $insumo_query = Insumo::query();
         $insumos = $insumo_query->join('insumo_servico', 'insumo_servico.insumo_id','=','insumos.id')
@@ -359,8 +364,9 @@ class OrdemDeCompraController extends AppBaseController
      * @param  Planejamento $planejamento
      * @return Response  Json
      */
-    public function insumosAdd(Request $request, Planejamento $planejamento)
+    public function insumosAdd(Request $request)
     {
+        $planejamento = Planejamento::find($request->planejamento_id);
         try{
             $planejamento_compras = new PlanejamentoCompra();
             $planejamento_compras->planejamento_id = $planejamento->id;

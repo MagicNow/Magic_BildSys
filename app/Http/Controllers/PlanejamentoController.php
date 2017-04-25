@@ -54,7 +54,12 @@ class PlanejamentoController extends AppBaseController
 
     public function getPlanejamentosByObra(Request $request)
     {
-        $planejamentos = Planejamento::where('obra_id', $request->obra_id)->pluck('tarefa','id');
+        $planejamentos = Planejamento::join('planejamento_compras','planejamento_compras.planejamento_id','=', 'planejamentos.id')
+            ->where('obra_id', $request->obra_id)
+            ->select([
+                'planejamentos.id',
+                'planejamentos.tarefa as text'
+            ])->groupBy('planejamentos.id')->get();
         return response()->json($planejamentos);
     }
 }
