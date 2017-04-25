@@ -64,12 +64,12 @@ class SpreadsheetRepository
                         $reader->setEndOfLineCharacter("\r");
                         $reader->setEncoding('UTF-8');
                     }
-                    elseif(strtolower($spreadsheet['file']->getClientOriginalExtension())=='xlsx'){
-                        $reader = ReaderFactory::create(Type::XLSX);
-                    }
-                    elseif(strtolower($spreadsheet['file']->getClientOriginalExtension())=='ods'){
-                        $reader = ReaderFactory::create(Type::ODS);
-                    }
+//                    elseif(strtolower($spreadsheet['file']->getClientOriginalExtension())=='xlsx'){
+//                        $reader = ReaderFactory::create(Type::XLSX);
+//                    }
+//                    elseif(strtolower($spreadsheet['file']->getClientOriginalExtension())=='ods'){
+//                        $reader = ReaderFactory::create(Type::ODS);
+//                    }
 
                 } elseif ($tipo == 'planejamento'){
                     $reader = ReaderFactory::create(Type::XLSX);
@@ -84,7 +84,7 @@ class SpreadsheetRepository
                             $linha++;
                             if ($linha === 1) {
                                 foreach ($row as $index => $valor) {
-                                    $cabecalho[str_slug($valor, '_')] = $index;
+                                    $cabecalho[str_slug(utf8_encode($valor), '_')] = $index;
                                 }
 
                                 if($tipo == 'orcamento') {
@@ -169,6 +169,7 @@ class SpreadsheetRepository
                 $linha = 0;
                 foreach ($sheet->getRowIterator() as $row) {
                     $linha++;
+                    $final = [];
                     if ($linha > 1) {
                         $line++;
                         $colunas = json_decode($planilha->colunas_json);
@@ -179,13 +180,15 @@ class SpreadsheetRepository
                                     switch (Orcamento::$relation[$value]) {
                                         case 'string' :
                                             if (is_string($row[$chave])) {
-                                                $final[$value] = $row[$chave];
+//                                                dd([$value,$linha,$row,trim(utf8_encode($row[$chave]))]);
+                                                $final[$value] = trim(utf8_encode($row[$chave]));
                                             } else {
                                                 if ($row[$chave]) {
                                                     $final[$value] = (string)($row[$chave]);
                                                 } else {
-                                                    $erro = 1;
-                                                    $mensagens_erro[] = 'O campo ' . $value . ' não é do tipo STRING';;
+                                                    $final[$value] = null;
+//                                                    $erro = 1;
+//                                                    $mensagens_erro[] = 'O campo ' . $value . ' não é do tipo STRING';;
                                                 }
                                             }
                                             break;
@@ -197,8 +200,9 @@ class SpreadsheetRepository
                                                 if ($row[$chave]) {
                                                     $final[$value] =  floatval(str_replace(",", ".", str_replace(".", "", $row[$chave])));
                                                 } else {
-                                                    $erro = 1;
-                                                    $mensagens_erro[] = 'O campo ' . $value . ' não é do tipo DECIMAL';
+                                                    $final[$value] = null;
+//                                                    $erro = 1;
+//                                                    $mensagens_erro[] = 'O campo ' . $value . ' na linha ' . $line .' não é do tipo DECIMAL';
                                                 }
                                             }
                                             break;
@@ -210,14 +214,19 @@ class SpreadsheetRepository
                                                 if ($row[$chave]) {
                                                     $final[$value] = (int)($row[$chave]);
                                                 } else {
-                                                    $erro = 1;
-                                                    $mensagens_erro[] = 'O campo ' . $value . ' não é do tipo INTEGER';
+                                                    $final[$value] = null;
+//                                                    $erro = 1;
+//                                                    $mensagens_erro[] = 'O campo ' . $value . ' não é do tipo INTEGER';
 //                                                $mensagens_erro[] = 'LINHA:'.$line.' - O campo '.$value.' não é do tipo INTEGER';
                                                 }
                                             }
                                             break;
                                         default:
-                                            $final[$value] = $row[$chave];
+                                            if($row[$chave]) {
+                                                $final[$value] = $row[$chave];
+                                            }else{
+                                                $final[$value] = null;
+                                            }
                                             break;
                                     }
                                 }
@@ -229,11 +238,13 @@ class SpreadsheetRepository
 
                         }
                         $codigo_quebrado = explode(".", $final['codigo_insumo']);
+
+                        # se for grupo, subgrupo
                         if(count($codigo_quebrado) <= 4) {
                             if(count($codigo_quebrado) === 1){
                                 Grupo::firstOrCreate([
                                     'codigo' => $final['codigo_insumo'],
-                                    'nome' => trim(utf8_encode($final['descricao']))
+                                    'nome' => $final['descricao']
                                 ]);
                             }else {
                                 $codigo_grupo_pai = $codigo_quebrado;
@@ -242,17 +253,18 @@ class SpreadsheetRepository
                                 if($grupoPai){
                                     Grupo::firstOrCreate([
                                         'codigo' => $final['codigo_insumo'],
-                                        'nome' => trim(utf8_encode($final['descricao'])),
+                                        'nome' => $final['descricao'],
                                         'grupo_id' =>$grupoPai->id
                                     ]);
                                 }
                             }
                         }
-                        if(count($codigo_quebrado) == 5) {
+                        # se for serviço
+                        elseif(count($codigo_quebrado) == 5) {
                             if(count($codigo_quebrado) === 1){
                                 Servico::firstOrCreate([
                                     'codigo' => $final['codigo_insumo'],
-                                    'nome' => trim(utf8_encode($final['descricao']))
+                                    'nome' => $final['descricao']
                                 ]);
                             }else {
                                 $codigo_grupo_pai = $codigo_quebrado;
@@ -261,13 +273,14 @@ class SpreadsheetRepository
                                 if($grupoPai){
                                     Servico::firstOrCreate([
                                         'codigo' => $final['codigo_insumo'],
-                                        'nome' => trim(utf8_encode($final['descricao'])),
+                                        'nome' => $final['descricao'],
                                         'grupo_id' =>$grupoPai->id
                                     ]);
                                 }
                             }
                         }
-                        if(count($codigo_quebrado) == 6) {
+                        # se for insumo
+                        elseif(count($codigo_quebrado) == 6) {
                             #quebrar codigo insumo explode(separar os pontos)
                             if ($final['codigo_insumo']) {
                                 $codigo_insumo = explode(".", $final['codigo_insumo']);
@@ -339,10 +352,13 @@ class SpreadsheetRepository
                             }
 
                             #Amarra serviço ao insumo
-                            $insumo_servico = InsumoServico::firstOrCreate([
-                                'servico_id' => $servico->id,
-                                'insumo_id' => $insumo->id
-                            ]);
+                            if(isset($final['servico_id']) && isset($final['insumo_id'])){
+                                $insumo_servico = InsumoServico::firstOrCreate([
+                                    'servico_id' => $final['servico_id'],
+                                    'insumo_id' => $final['insumo_id']
+                                ]);
+                            }
+
 
                             # save data table budget
                             if($erro == 0) {

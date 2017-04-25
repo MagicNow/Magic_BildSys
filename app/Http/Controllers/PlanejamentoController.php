@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 
 use App\Models\Lembrete;
+use App\Models\Planejamento;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -21,7 +22,7 @@ class PlanejamentoController extends AppBaseController
                 'lembretes.id',
                 DB::raw("CONCAT(obras.nome,' - ',planejamentos.tarefa,' - ', lembretes.nome) title"),
                 DB::raw("'event-info' as class"),
-                DB::raw("CONCAT('/compras/',planejamentos.id,'/obrasInsumos/',insumo_grupos.id) as url"),
+                DB::raw("CONCAT('/compras/obrasInsumos?planejamento_id=',planejamentos.id,'&insumo_grupos_id=',insumo_grupos.id) as url"),
                 DB::raw("DATE_FORMAT(DATE_SUB(planejamentos.data, INTERVAL lembretes.`dias_prazo_minimo` DAY),'%d/%m/%Y') as inicio"),
                 DB::raw("UNIX_TIMESTAMP(DATE_SUB(planejamentos.data, INTERVAL lembretes.`dias_prazo_minimo` DAY))*1000 as start"),
                 DB::raw("UNIX_TIMESTAMP(DATE_SUB(planejamentos.data, INTERVAL lembretes.`dias_prazo_minimo` DAY))*1000 as end"),
@@ -49,5 +50,16 @@ class PlanejamentoController extends AppBaseController
             'success'=>true,
             'result'=>$lembretes
         ]);
+    }
+
+    public function getPlanejamentosByObra(Request $request)
+    {
+        $planejamentos = Planejamento::join('planejamento_compras','planejamento_compras.planejamento_id','=', 'planejamentos.id')
+            ->where('obra_id', $request->obra_id)
+            ->select([
+                'planejamentos.id',
+                'planejamentos.tarefa as text'
+            ])->groupBy('planejamentos.id')->get();
+        return response()->json($planejamentos);
     }
 }

@@ -185,6 +185,7 @@ class OrcamentoController extends AppBaseController
         $tipo = 'orcamento';
         $file = $request->except('obra_id','template_id','orcamento_tipo_id');
         $input = $request->except('_token','file');
+        $this->validate($request,['file'=>'file','obra_id'=>'required']);
         $template = $request->template_id;
         $obra_id = null;
         $orcamento_tipo_id = null;

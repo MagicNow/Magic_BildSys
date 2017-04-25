@@ -16085,7 +16085,7 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "/var/www/html/bild/resources/assets/js/components/generic-paginator.vue"
+__vue_options__.__file = "/var/www/html/bild-sys/resources/assets/js/components/generic-paginator.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
 
@@ -16096,9 +16096,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-cb19233a", __vue_options__)
+    hotAPI.createRecord("data-v-f25aa03a", __vue_options__)
   } else {
-    hotAPI.reload("data-v-cb19233a", __vue_options__)
+    hotAPI.reload("data-v-f25aa03a", __vue_options__)
   }
 })()}
 if (__vue_options__.functional) {console.error("[vue-loader] generic-paginator.vue: functional components are not supported and should be defined in plain js files using render functions.")}
@@ -16114,13 +16114,13 @@ var __vue_exports__, __vue_options__
 var __vue_styles__ = {}
 
 /* styles */
-__webpack_require__(189)
+__webpack_require__(190)
 
 /* script */
 __vue_exports__ = __webpack_require__(128)
 
 /* template */
-var __vue_template__ = __webpack_require__(184)
+var __vue_template__ = __webpack_require__(185)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -16132,7 +16132,7 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "/var/www/html/bild/resources/assets/js/components/tabela.vue"
+__vue_options__.__file = "/var/www/html/bild-sys/resources/assets/js/components/tabela.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
 
@@ -16143,9 +16143,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-79c5094d", __vue_options__)
+    hotAPI.createRecord("data-v-3f409066", __vue_options__)
   } else {
-    hotAPI.reload("data-v-79c5094d", __vue_options__)
+    hotAPI.reload("data-v-3f409066", __vue_options__)
   }
 })()}
 if (__vue_options__.functional) {console.error("[vue-loader] tabela.vue: functional components are not supported and should be defined in plain js files using render functions.")}
@@ -16161,13 +16161,13 @@ var __vue_exports__, __vue_options__
 var __vue_styles__ = {}
 
 /* styles */
-__webpack_require__(190)
+__webpack_require__(189)
 
 /* script */
 __vue_exports__ = __webpack_require__(129)
 
 /* template */
-var __vue_template__ = __webpack_require__(185)
+var __vue_template__ = __webpack_require__(184)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -16179,7 +16179,7 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "/var/www/html/bild/resources/assets/js/components/tile-grafico.vue"
+__vue_options__.__file = "/var/www/html/bild-sys/resources/assets/js/components/tile-grafico.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
 
@@ -16190,9 +16190,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-981a9be4", __vue_options__)
+    hotAPI.createRecord("data-v-2e70808e", __vue_options__)
   } else {
-    hotAPI.reload("data-v-981a9be4", __vue_options__)
+    hotAPI.reload("data-v-2e70808e", __vue_options__)
   }
 })()}
 if (__vue_options__.functional) {console.error("[vue-loader] tile-grafico.vue: functional components are not supported and should be defined in plain js files using render functions.")}
@@ -16226,7 +16226,7 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "/var/www/html/bild/resources/assets/js/components/tile.vue"
+__vue_options__.__file = "/var/www/html/bild-sys/resources/assets/js/components/tile.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
 
@@ -16237,9 +16237,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-691602d4", __vue_options__)
+    hotAPI.createRecord("data-v-042d65d4", __vue_options__)
   } else {
-    hotAPI.reload("data-v-691602d4", __vue_options__)
+    hotAPI.reload("data-v-042d65d4", __vue_options__)
   }
 })()}
 if (__vue_options__.functional) {console.error("[vue-loader] tile.vue: functional components are not supported and should be defined in plain js files using render functions.")}
@@ -16574,12 +16574,13 @@ module.exports = __vue_exports__
             adicionar: function(item,i){
                 if(this.actions.quantidade){
                     item['quantidade_compra'] = this.quant[i];
-                }
-                item['_token'] =this._token;
-                if(!item['quantidade_compra'] && !item['adicionado']){
+                    if(!item['quantidade_compra'] && !item['adicionado']){
 //                    swal('Insira uma quantidade!','','error');
-                    return false;
+                        return false;
+                    }
                 }
+
+                item['_token'] =this._token;
                 this.$http.post(this.apiAdicionar, item)
                     .then(function (resp) {
                         if(resp.body.success){
@@ -29380,7 +29381,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n.element-grafico{\n    width: 100%;\n    border: solid 1px #dddddd;\n}\n.element-grafico > thead {\n    padding: 5px 0px 5px 0px;\n    background-color: #474747;\n}\n.element-grafico > thead > tr > th{\n    padding: 10px 0px 10px 0px;\n    color: #f5f5f5;\n    font-weight: bold;\n    text-align: center;\n}\n.element-grafico > tbody{\n    background-color: white;\n}\n", ""]);
 
 // exports
 
@@ -29394,7 +29395,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n.element-grafico{\n    width: 100%;\n    border: solid 1px #dddddd;\n}\n.element-grafico > thead {\n    padding: 5px 0px 5px 0px;\n    background-color: #474747;\n}\n.element-grafico > thead > tr > th{\n    padding: 10px 0px 10px 0px;\n    color: #f5f5f5;\n    font-weight: bold;\n    text-align: center;\n}\n.element-grafico > tbody{\n    background-color: white;\n}\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -46785,12 +46786,44 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-691602d4", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-042d65d4", module.exports)
   }
 }
 
 /***/ },
 /* 184 */
+/***/ function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', [_c('table', {
+    staticClass: "element-grafico"
+  }, [_vm._m(0), _vm._v(" "), _c('tbody', [(_vm.mydatasets[0].data[0] != undefined) ? _c('tr', [_c('chartjs-bar', {
+    staticStyle: {
+      "padding": "15px"
+    },
+    attrs: {
+      "height": 300,
+      "option": _vm.myoption,
+      "labels": _vm.mylabels,
+      "datasets": _vm.mydatasets
+    }
+  })], 1) : _vm._e()])])])
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('thead', [_c('tr', [_c('th', {
+    attrs: {
+      "colspan": "3"
+    }
+  }, [_vm._v("Ordens de Compra")])])])
+}]}
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-2e70808e", module.exports)
+  }
+}
+
+/***/ },
+/* 185 */
 /***/ function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -47080,11 +47113,11 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       staticClass: "fa fa-times red"
     })]) : _vm._e(), _vm._v(" "), (dado['filho'] == 0 && dado['pai'] == 0 && dado['unidade_sigla'] == 'VB') ? _c('a', {
       attrs: {
-        "href": _vm.actions.troca_url + '/' + dado['id']
+        "href": _vm.actions.troca_url + '?insumo_pai=' + dado['id'] + '&planejamento_id=' + dado['planejamento_compra_id']
       }
     }, [_c('i', {
       staticClass: "fa fa-exchange grey"
-    })]) : _vm._e()]) : _vm._e(), _vm._v(" "), (_vm.actions.adicionar != undefined && dado.adicionado > 0) ? _c('td', {
+    })]) : _vm._e()]) : _vm._e(), _vm._v(" "), (_vm.actions.adicionar != undefined && dado['adicionado'] > 0) ? _c('td', {
       staticClass: "row-table"
     }, [_c('i', {
       staticClass: "fa fa-check green"
@@ -47196,39 +47229,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-79c5094d", module.exports)
-  }
-}
-
-/***/ },
-/* 185 */
-/***/ function(module, exports, __webpack_require__) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', [_c('table', {
-    staticClass: "element-grafico"
-  }, [_vm._m(0), _vm._v(" "), _c('tbody', [(_vm.mydatasets[0].data[0] != undefined) ? _c('tr', [_c('chartjs-bar', {
-    staticStyle: {
-      "padding": "15px"
-    },
-    attrs: {
-      "height": 300,
-      "option": _vm.myoption,
-      "labels": _vm.mylabels,
-      "datasets": _vm.mydatasets
-    }
-  })], 1) : _vm._e()])])])
-},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('thead', [_c('tr', [_c('th', {
-    attrs: {
-      "colspan": "3"
-    }
-  }, [_vm._v("Ordens de Compra")])])])
-}]}
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-981a9be4", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-3f409066", module.exports)
   }
 }
 
@@ -47329,7 +47330,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-cb19233a", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-f25aa03a", module.exports)
   }
 }
 
@@ -47338,14 +47339,13 @@ if (false) {
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(exports, "Url", function() { return Url; });
-/* harmony export (binding) */ __webpack_require__.d(exports, "Http", function() { return Http; });
-/* harmony export (binding) */ __webpack_require__.d(exports, "Resource", function() { return Resource; });
 /*!
- * vue-resource v1.3.1
+ * vue-resource v1.3.0
  * https://github.com/pagekit/vue-resource
  * Released under the MIT License.
  */
+
+'use strict';
 
 /**
  * Promises/A+ polyfill v1.1.4 (https://github.com/bramstein/promis)
@@ -48882,8 +48882,7 @@ if (typeof window !== 'undefined' && window.Vue) {
     window.Vue.use(plugin);
 }
 
-/* harmony default export */ exports["default"] = plugin;
-
+module.exports = plugin;
 
 
 /***/ },
@@ -48902,8 +48901,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-691602d4!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./tile.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-691602d4!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./tile.vue");
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-042d65d4!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./tile.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-042d65d4!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./tile.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -48928,8 +48927,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-79c5094d!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./tabela.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-79c5094d!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./tabela.vue");
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-2e70808e!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./tile-grafico.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-2e70808e!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./tile-grafico.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -48954,8 +48953,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-981a9be4!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./tile-grafico.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-981a9be4!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./tile-grafico.vue");
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-3f409066!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./tabela.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-3f409066!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./tabela.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -48980,8 +48979,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-cb19233a!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./generic-paginator.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-cb19233a!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./generic-paginator.vue");
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-f25aa03a!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./generic-paginator.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-f25aa03a!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./generic-paginator.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});

@@ -16,5 +16,6 @@ class DatabaseSeeder extends Seeder
         $this->call(TipoOrcamentoTableSeeder::class);
         $this->call(WorkflowTipoTableSeeder::class);
         $this->call(OcStatusTableSeed::class);
+        $this->call(CidadesTableSeeder::class);
     }
 }

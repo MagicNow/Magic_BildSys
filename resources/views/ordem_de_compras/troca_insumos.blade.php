@@ -6,7 +6,7 @@
             <div class="col-md-12">
                 <div class="col-md-8">
                     <span class="pull-left title">
-                        <a href="{{ url('/compras/'.$planejamento->id.'/obrasInsumos/'.$insumoGrupo->id) }}"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
+                        <a href="{{ url()->previous()}}"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
                         Trocar Insumos
                     </span>
                 </div>
@@ -39,7 +39,7 @@
             </tabela>
             Troca Por
             <tabela
-                    api-url="{{ url('/compras/'.$planejamento->id.'/trocaInsumosJsonFilho/'.$insumo->id) }}"
+                    api-url="{{ url('/compras/trocaInsumosJsonFilho?insumo_pai='.$insumo->id.'&planejamento_id='.$planejamento->id) }}"
                     api-filtros=""
                     api-adicionar=""
                     v-bind:params="{}"
@@ -53,10 +53,10 @@
             </tabela>
             <hr>
             <tabela
-                    api-url="{{url('/compras/'.$planejamento->id.'/insumosJson')}}"
-                    api-filtros="{{url('/compras/'.$planejamento->id.'/insumosFilters')}}"
+                    api-url="{{url('/compras/insumosJson?planejamento_id='.$planejamento->id)}}"
+                    api-filtros="{{url('/compras/insumosFilters')}}"
                     _token="{{csrf_token()}}"
-                    api-adicionar="{{url('/compras/'.$planejamento->id.'/trocaInsumoAction/troca/'.$insumo->id)}}"
+                    api-adicionar="{{url('/compras/trocaInsumoAction?insumo_pai='.$insumo->id.'&planejamento_id='.$planejamento->id)}}"
                     v-bind:params="{}"
                     v-bind:actions="{filtros: true, adicionar: true}"
                     v-bind:colunas="[
