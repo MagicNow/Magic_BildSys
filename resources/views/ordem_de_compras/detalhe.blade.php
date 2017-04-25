@@ -114,8 +114,8 @@
             <div class="col-md-12">
                 <div class="panel panel-default panel-body">
                     <h4 class="highlight">Timeline</h4>
-                    @if(count($avaliado_reprovado))
-                        @php  $col_md = 12 / (count($avaliado_reprovado) + 1); @endphp
+                    @if($alcadas_count)
+                        @php $col_md = 12 / ($alcadas_count + 1); @endphp
                         <h4 class="col-md-{{$col_md}} col-sm-{{$col_md}}" style="padding-right: 1px;padding-left: 1px;">
                             <span>Criação</span>
                             <div class="progress">
@@ -123,37 +123,45 @@
                                     100%
                                 </div>
                             </div>
-                        @foreach($avaliado_reprovado as $alcada => $workflow)
-                            @if($workflow['total_avaliado'] && $workflow['aprovadores'])
-                                @php
-                                    $avaliado_aprovadores = $workflow['total_avaliado'] / $workflow['aprovadores'];
-                                    $percentual_quebrado = $avaliado_aprovadores / $qtd_itens;
-                                    $percentual = $percentual_quebrado * 100;
-                                @endphp
+                        </h4>
+                        @if(count($avaliado_reprovado))
+                            @foreach($avaliado_reprovado as $alcada => $workflow)
+                                @if($workflow['total_avaliado'] && $workflow['aprovadores'])
+                                    @php
+                                        $avaliado_aprovadores = $workflow['total_avaliado'] / $workflow['aprovadores'];
+                                        $percentual_quebrado = $avaliado_aprovadores / $qtd_itens;
+                                        $percentual = $percentual_quebrado * 100;
+                                        $percentual = number_format($percentual, 0);
+                                    @endphp
 
+                                    <h4 class="col-md-{{$col_md}} col-sm-{{$col_md}}" style="padding-right: 1px;padding-left: 1px;">
+                                        <span>{{$alcada}}ª alçada</span>
+                                        @if($alcada == $alcadas_count)
+                                            <span class="pull-right">Finalizada</span>
+                                        @endif
+                                        <div class="progress">
+                                            <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="{{$percentual}}" aria-valuemin="0" aria-valuemax="100" style="width: {{$percentual}}%;">
+                                                {{$percentual}}%
+                                            </div>
+                                        </div>
+                                    </h4>
+                                @endif
+                            @endforeach
+                        @else
+                            @for($i = 1; $i <= $alcadas_count; $i ++)
                                 <h4 class="col-md-{{$col_md}} col-sm-{{$col_md}}" style="padding-right: 1px;padding-left: 1px;">
-                                    <span>{{$alcada}}ª alçada</span>
-                                    @if($alcada == count($avaliado_reprovado))
-                                        <span class="pull-right">Finalizada</span>
+                                    <span>{{$i}}ª alçada</span>
+                                    @if($i == $alcadas_count)
+                                        <span class="pull-right">{{$oc_status}}</span>
                                     @endif
                                     <div class="progress">
-                                        <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="{{$percentual}}" aria-valuemin="0" aria-valuemax="100" style="width: {{$percentual}}%;">
-                                            {{number_format($percentual, 0)}}%
+                                        <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
+                                            100%
                                         </div>
                                     </div>
                                 </h4>
-                            @endif
-                        @endforeach
-                    @else
-                        <h4 class="col-md-12 col-sm-12" style="padding-right: 1px;padding-left: 1px;">
-                            <span>Criação</span>
-                            <span class="pull-right">{{$oc_status}}</span>
-                            <div class="progress">
-                                <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
-                                    100%
-                                </div>
-                            </div>
-                        </h4>
+                            @endfor
+                        @endif
                     @endif
                 </div>
             </div>

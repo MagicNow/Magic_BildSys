@@ -198,10 +198,9 @@ class OrdemDeCompraController extends AppBaseController
         $avaliado_reprovado = [];
 
         $aprovavelTudo = WorkflowAprovacaoRepository::verificaAprovaGrupo('OrdemDeCompraItem', $ordemDeCompra->itens()->pluck('id', 'id')->toArray(), Auth::user());
-
+        $alcadas = WorkflowAlcada::where('workflow_tipo_id', 1)->get(); // Aprovação de OC
+        
         if($ordemDeCompra->oc_status_id == 3) { //Em Aprovação
-            $alcadas = WorkflowAlcada::where('workflow_tipo_id', 1)->get(); // Aprovação de OC
-
             foreach ($alcadas as $alcada) {
                 $avaliado_reprovado[$alcada->id] = WorkflowAprovacaoRepository::verificaTotalJaAprovadoReprovado(
                     'OrdemDeCompraItem',
@@ -296,6 +295,7 @@ class OrdemDeCompraController extends AppBaseController
             
         $qtd_itens = $ordemDeCompra->itens()->count();
         
+        $alcadas_count = $alcadas->count();
         return view('ordem_de_compras.detalhe', compact(
                 'ordemDeCompra',
                 'orcamentoInicial',
@@ -307,7 +307,8 @@ class OrdemDeCompraController extends AppBaseController
                 'aprovavelTudo',
                 'avaliado_reprovado',
                 'qtd_itens',
-                'oc_status'
+                'oc_status',
+                'alcadas_count'
             )
         );
     }
