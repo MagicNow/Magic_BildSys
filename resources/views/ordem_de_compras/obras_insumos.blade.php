@@ -16,7 +16,7 @@
                             Incluir Insumo
                         </a>
                     @else
-                        <a id="btn-incluir-insumo"  type="button" class="btn btn-default btn-lg btn-flat" data-dismiss="modal">
+                        <a href="{{url("compras/insumos") }}?planejamento_id={{$planejamento->id}}"  type="button" class="btn btn-default btn-lg btn-flat" data-dismiss="modal">
                             Incluir Insumo
                         </a>
                     @endif
@@ -58,7 +58,7 @@
                     v-bind:params="{}"
                     v-bind:actions="{
                    filtros: true,
-                   troca: true, troca_url:'{{ isset($planejamento)? url('/compras/'.$planejamento->id.'/trocaInsumos/') : ''}}',
+                   troca: true, troca_url:'{{ url('/compras/trocaInsumos') }}',
                    troca_remove:'{{ url('/compras/removerInsumoPlanejamento') }}',
                    quantidade: true,
                    adicionar: true,

@@ -321,11 +321,11 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('compras/obrasInsumosFilters', 'OrdemDeCompraController@obrasInsumosFilters');
     $router->get('compras/obrasInsumosJson', 'OrdemDeCompraController@obrasInsumosJson');
 
-    $router->get('compras/{planejamento}/trocaInsumos/{insumoGrupo}/insumo/{insumo}', 'OrdemDeCompraController@trocaInsumos');
+    $router->get('compras/trocaInsumos', 'OrdemDeCompraController@trocaInsumos');
     $router->get('compras/{planejamento}/trocaInsumosFilters', 'OrdemDeCompraController@trocaInsumosFilters');
     $router->get('compras/trocaInsumosJsonPai/{insumo}', 'OrdemDeCompraController@trocaInsumosJsonPai');
     $router->get('compras/{planejamento}/trocaInsumosJsonFilho/{insumo}', 'OrdemDeCompraController@trocaInsumosJsonFilho');
-    $router->post('compras/{planejamento}/trocaInsumoAction/troca/{insumo}', 'OrdemDeCompraController@trocaInsumoAction');
+    $router->post('compras/trocaInsumoAction', 'OrdemDeCompraController@trocaInsumoAction');
     $router->post('compras/{obra}/{planejamento}/addCarrinho', 'OrdemDeCompraController@addCarrinho');
     $router->post('compras/{obra}/addCarrinho', 'OrdemDeCompraController@addCarrinho');
     $router->get('compras/removerInsumoPlanejamento/{planejamentoCompra}', 'OrdemDeCompraController@removerInsumoPlanejamento');

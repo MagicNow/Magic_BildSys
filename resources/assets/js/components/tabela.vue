@@ -121,7 +121,7 @@
                         <a  v-if="dado['filho']>0 && dado['filho'] != undefined && dado['unidade_sigla'] == 'VB'" v-bind:href="actions.troca_remove+'/'+dado['planejamento_compra_id']">
                             <i class="fa fa-times red"></i>
                         </a>
-                        <a  v-if="dado['filho']==0 && dado['pai']==0 && dado['unidade_sigla'] == 'VB'" v-bind:href="actions.troca_url+'/'+dado['id']">
+                        <a  v-if="dado['filho']==0 && dado['pai']==0 && dado['unidade_sigla'] == 'VB'" v-bind:href="actions.troca_url+'?insumo_pai='+dado['id']+'&planejamento_id='+dado['planejamento_compra_id']">
                             <i class="fa fa-exchange grey"></i>
                         </a>
                     </td>

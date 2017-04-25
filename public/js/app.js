@@ -47113,7 +47113,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       staticClass: "fa fa-times red"
     })]) : _vm._e(), _vm._v(" "), (dado['filho'] == 0 && dado['pai'] == 0 && dado['unidade_sigla'] == 'VB') ? _c('a', {
       attrs: {
-        "href": _vm.actions.troca_url + '/' + dado['id']
+        "href": _vm.actions.troca_url + '?insumo_pai=' + dado['id'] + '&planejamento_id=' + dado['planejamento_compra_id']
       }
     }, [_c('i', {
       staticClass: "fa fa-exchange grey"

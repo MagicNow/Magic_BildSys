@@ -344,7 +344,7 @@ class OrdemDeCompraController extends AppBaseController
                 'orcamentos.subgrupo3_id as cod_subgrupo3',
                 DB::raw('(SELECT count(id) FROM planejamento_compras 
                 WHERE planejamento_compras.insumo_id = insumos.id 
-                AND planejamento_compras.planejamento_id ='.$planejamento->id.' AND planejamento_compras.deleted_at = null) as adicionado')
+                AND planejamento_compras.planejamento_id ='.$planejamento->id.' AND planejamento_compras.deleted_at IS NULL) as adicionado')
             ]);
 
         if(isset($request->orderkey)){
@@ -606,8 +606,10 @@ class OrdemDeCompraController extends AppBaseController
      * @param  InsumoGrupo $insumoGrupo
      * @return Render View
      */
-    public function trocaInsumos(Planejamento $planejamento, InsumoGrupo $insumoGrupo, Insumo $insumo)
+    public function trocaInsumos(Request $request)
     {
+        $insumo = Insumo::find($request->insumo_pai);
+        $planejamento = Planejamento::find($request->planejamento_id);
         return view('ordem_de_compras.troca_insumos', compact('planejamento', 'insumoGrupo', 'insumo'));
     }
 
@@ -622,10 +624,12 @@ class OrdemDeCompraController extends AppBaseController
         return response()->json($filters);
     }
 
-    public function trocaInsumoAction(Request $request, Planejamento $planejamento,Insumo $insumo)
+    public function trocaInsumoAction(Request $request)
     {
+        $planejamento = Planejamento::find($request->planejamento_id);
+        $insumo = Insumo::find($request->insumo_pai);
         try{
-            $planejamento_pai = PlanejamentoCompra::where('insumo_id', $insumo->id)->where('planejamento_id',$planejamento->id)->first();
+//            $planejamento_pai = PlanejamentoCompra::where('insumo_id', $insumo->id)->where('planejamento_id',$planejamento->id)->first();
             $planejamento_compras = new PlanejamentoCompra();
             $planejamento_compras->planejamento_id = $planejamento->id;
             $planejamento_compras->insumo_id = $request->id;
@@ -645,11 +649,11 @@ class OrdemDeCompraController extends AppBaseController
         }
     }
 
-    public function trocaInsumosJsonFilho(Planejamento $planejamento,Insumo $insumo){
+    public function trocaInsumosJsonFilho(Request $request){
+        $planejamento = Planejamento::find($request->planejamento_id);
+        $insumo = Insumo::find($request->insumo_pai);
         $insumo_query = Insumo::query();
 
-        $planejamento_pai = PlanejamentoCompra::where('insumo_id',$insumo->id)
-            ->where('planejamento_id', $planejamento->id)->first();
         //Query pra trazer
         $insumos = $insumo_query->join('orcamentos','orcamentos.insumo_id','=','insumos.id')
             ->join('planejamento_compras','planejamento_compras.insumo_id','=','insumos.id')
@@ -664,6 +668,7 @@ class OrdemDeCompraController extends AppBaseController
                 'orcamentos.preco_total'
             ])->where('deleted_at','=', null)
             ->where('planejamento_compras.insumo_pai',$insumo->id)
+            ->where('planejamento_compras.planejamento_id', $planejamento->id)
             ->where('orcamentos.ativo',1);
 //            ->whereNotNull('planejamento_compras.trocado_de');
         return response()->json($insumos->paginate(10), 200);
@@ -672,21 +677,6 @@ class OrdemDeCompraController extends AppBaseController
     public function trocaInsumosJsonPai(Insumo $insumo){
 
         $insumo = Insumo::where('id',$insumo->id);
-//        $insumo_query = Insumo::query();
-
-        //Query pra trazer
-//        $insumos = $insumo_query->join('orcamentos','orcamentos.insumo_id','=','insumos.id')
-//            ->select([
-//                'insumos.id',
-//                'insumos.nome',
-//                'insumos.unidade_sigla',
-//                'insumos.codigo',
-//                'orcamentos.grupo_id',
-//                'orcamentos.servico_id',
-//                'orcamentos.qtd_total',
-//                'orcamentos.preco_total'
-//            ])
-//            ->where('insumos.id',$insumo->id);
 
         return response()->json($insumo->paginate(10), 200);
     }
