@@ -57,7 +57,7 @@ class OrdemDeCompra extends Model
     ];
 
     public static $filters_insumos = [
-        'servicos_id-foreign_key-Servico-nome-id' => 'Servico'
+        'insumo_servico_servico_id-foreign_key-Servico-nome-id' => 'Servico'
     ];
 
     /**

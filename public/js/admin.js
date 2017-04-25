@@ -64301,7 +64301,7 @@ $(function () {
 var oTable = null;
 var k = 0;
 $(function () {
-    // verifyQueryString();
+    //verifyQueryString();
 });
 
 function addFilters(query_string) {
@@ -64626,27 +64626,45 @@ function foreign(label, value, row_foreign_key, cb_filter_i, query_string, block
 }
 
 
-function addQuery() {
-    var filters_fields = $('.filters');
-    var filters = '';
-    var period_find = $('#period_find').val();
-
-    if(filters_fields.length > 0){
-        for( i=0; i < filters_fields.length; i++ ) {
-            filters += ''+filters_fields[i].id+'='+filters_fields[i].value+'&';
-
-            filters = '?'+filters;
-            filters = filters.substring(0,(filters.length - 1));
-
-            filters = filters + '&' + period_find;
+function pegaQuerysting(){
+    var search = window.location.href.substr(window.location.href.indexOf("?") + 1);
+    console.log(search);
+    var array = [];
+    if(search.indexOf('http') === -1){
+        search = search?JSON.parse('{"' + search.replace(/&/g, '","').replace(/=/g,'":"') + '"}',
+            function(key, value) { return key===""?value:decodeURIComponent(value) }):{}
+        for (var key in search) {
+            array[key] = search[key];
         }
-    }else{
-        filters = '?' + period_find;
     }
+    return array;
+}
 
+function addQuery() {
+    var filters_array = pegaQuerysting();
+    var filters_fields = $('.filters');
+    var period_find = JSON.parse('{"'+$('#period_find').val().replace(/&/g, '","').replace(/=/g,'":"')+ '"}');
+    for(var key in period_find){
+        if(period_find[key] != ''){
+            filters_array[key] = period_find[key];
+        }
+    }
+    if(filters_fields.length > 0){
+        for( i=0; i < filters_fields.length; i++ ){
+            filters_array[filters_fields[i].id] = filters_fields[i].value;
+            // filters += ''+filters_fields[i].id+'='+filters_fields[i].value+'&';
+        }
+    }
+    var filter_string = '';
+    for (var fil in filters_array){
+        if(filters_array[fil] != ''){
+            filter_string += fil+'='+filters_array[fil]+'&';
+        }
+    }
+    filter_string = filter_string.substring(0,(filter_string.length - 1));
     // Previnir que quando acessa fica inserindo mais de uma vez
     if(k<1){
-        history.pushState("", document.title, '' + filters);
+        history.pushState("", document.title, window.location.href.split("?")[0] + '?'+ filter_string);
     }
 }
 
