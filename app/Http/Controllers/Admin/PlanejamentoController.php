@@ -111,6 +111,9 @@ class PlanejamentoController extends AppBaseController
         $obras = Obra::pluck('nome','id')->toArray();
         $grupos = Grupo::whereNull('grupo_id')->pluck('nome','id')->toArray();
         $planejamento = $this->planejamentoRepository->findWithoutFail($id);
+        $itens = PlanejamentoCompra::where('planejamento_id', $id)
+            ->orderBy('servico_id')
+            ->paginate(10);
 
         if (empty($planejamento)) {
             Flash::error('Planejamento '.trans('common.not-found'));
@@ -119,7 +122,7 @@ class PlanejamentoController extends AppBaseController
         }
 
 
-        return view('admin.planejamentos.edit', compact('planejamento','obras','grupos'));
+        return view('admin.planejamentos.edit', compact('planejamento','obras','grupos','itens'));
     }
 
     public function getGrupos($id){

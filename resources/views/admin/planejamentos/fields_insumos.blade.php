@@ -1,4 +1,41 @@
 @include('flash::message')
+<style type="text/css">
+    #carrinho ul{
+        list-style-type: none;
+        padding: 0px;
+    }
+    #carrinho ul li{
+        background-color: #ffffff;
+        border: solid 1px #dddddd;
+        padding: 18px;
+        margin-bottom: 12px;
+        font-size: 16px;
+        font-weight: 500;
+        color: #9b9b9b;
+    }
+    #carrinho ul li .label-bloco{
+        font-size: 13px;
+        font-weight: bold;
+        color: #4a4a4a;
+        line-height: 15px;
+        margin-bottom: 0px;
+        padding-bottom: 0px;
+    }
+    @media (min-width: 769px){
+        .label-bloco-limitado{
+            margin-top: -5px;
+        }
+    }
+    @media (min-width: 1215px){
+        .margem-botao{
+            margin-top: -15px;
+        }
+    }
+    .tooltip-inner {
+        max-width: 500px;
+        text-align: left !important;
+    }
+</style>
 <div class="col-md-12 loading">
     <h3>Planejamento de compras</h3>
     <div class="col-md-12 thumbnail">
@@ -46,9 +83,76 @@
          </div>
     </div>
 </div>
+    @if(isset($itens))
+    <div id="carrinho" class="col-md-12">
+        <h3>Insumos relacionados</h3>
+        <ul>
+            @if(count($itens))
+            <?php $servico = null ?>
+            @foreach($itens as $item)
+            @if($servico != $item->servico_id)
+            @if($servico > 0)
+                    <!-- fecha tabela -->
+            </tbody>
+            </table>
+    </div>
+    </li>
+    @endif
+    <?php $servico = $item->servico_id?>
+            <!-- cria tabela -->
+    <li>
+        <div class="row">
+            <table class="table table-hover">
+                <tbody>
+                <h4>
+                    Serviço:
+                                                    <span data-toggle="tooltip" data-placement="top" data-html="true" title="
+                                                        {{$item->grupo->codigo.' - '.$item->grupo->nome}}<br/>
+                                                        {{$item->subgrupo1->codigo.' - '.$item->subgrupo1->nome}}<br/>
+                                                        {{$item->subgrupo2->codigo.' - '.$item->subgrupo2->nome}}<br/>
+                                                        {{$item->subgrupo3->codigo.' - '.$item->subgrupo3->nome}}<br/>
+                                                        {{$item->servico->codigo.' - '.$item->servico->nome}}">
+                                                        <strong>{{$item->servico->codigo}}</strong>
+                                                    </span>
+                </h4>
+                @endif
+                <tr id="item_{{ $item->id }}">
+                    <td>{{$item->insumo->codigo}}</td>
+                    <td>{{$item->insumo->nome}}</td>
+                    <td>
+                                    <span class="pull-right text-center">
+                                         <button type="button" class="btn btn-flat btn-link"
+                                                 style="font-size: 18px; margin-top: -7px"
+                                                 onclick="removePlanejamentoCompra({{ $item->id }})">
+                                             <i class="text-red glyphicon glyphicon-trash" aria-hidden="true"></i>
+                                         </button>
+                                    </span>
+                    </td>
+                </tr>
+                @endforeach
+                @if($servico)
+                </tbody>
+            </table>
+        </div>
+    </li>
+    @endif
+    @else
+        <div class="text-center">
+            Nenhum item foi adicionado nesse planejamento!
+        </div>
+        @endif
+        </ul>
+</div>
+        <div class="pg text-center">
+            {{ $itens->links() }}
+        </div>
+        @endif
 
 @section('scripts')
     <script type="text/javascript">
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
         $('div.alert').not('.alert-important').delay(10000).fadeOut(350);
 
         function selectgrupo(id, change, tipo){
@@ -101,6 +205,36 @@
                 $("input:checkbox").prop('checked', $(this).prop("checked"));
             });
         });
+
+        function removePlanejamentoCompra(id) {
+            swal({
+                        title: "Remover este item?",
+                        text: "",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Sim, remover!",
+                        cancelButtonText: "Não",
+                        closeOnConfirm: false
+                    },
+                    function(){
+                        startLoading();
+                        $.ajax("{{ url('admin/planejamentos/atividade/planejamentocompras') }}/"+ id, {}
+                        ).done(function (retorno) {
+                            stopLoading();
+                            if(retorno.success){
+                                swal('Removido','', 'success');
+                                $('#item_'+id).remove();
+                            }else{
+                                swal('Oops',retorno.error, 'error');
+                            }
+                        }).fail(function (retorno) {
+                            stopLoading();
+                            error = 'Não foi possível remover o item';
+                            swal("Oops" + error, "error");
+                        });
+                    });
+        }
 
     </script>
 @stop

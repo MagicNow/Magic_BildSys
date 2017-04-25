@@ -156,6 +156,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         # Update Notificações visualizadas
         $router->get('updateNotification/{id}', 'Admin\NotificacaoController@updateNotification');
 
+        # Template de importação de planilha
         Route::get('templatePlanilhas', ['as'=> 'admin.templatePlanilhas.index', 'uses' => 'Admin\TemplatePlanilhaController@index']);
         Route::post('templatePlanilhas', ['as'=> 'admin.templatePlanilhas.store', 'uses' => 'Admin\TemplatePlanilhaController@store']);
         Route::get('templatePlanilhas/create', ['as'=> 'admin.templatePlanilhas.create', 'uses' => 'Admin\TemplatePlanilhaController@create']);
@@ -165,6 +166,15 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         Route::get('templatePlanilhas/{templatePlanilhas}', ['as'=> 'admin.templatePlanilhas.show', 'uses' => 'Admin\TemplatePlanilhaController@show']);
         Route::get('templatePlanilhas/{templatePlanilhas}/edit', ['as'=> 'admin.templatePlanilhas.edit', 'uses' => 'Admin\TemplatePlanilhaController@edit']);
 
+        # Tipo equalização tecnicas
+        Route::get('tipoEqualizacaoTecnicas', ['as'=> 'admin.tipoEqualizacaoTecnicas.index', 'uses' => 'Admin\TipoEqualizacaoTecnicaController@index']);
+        Route::post('tipoEqualizacaoTecnicas', ['as'=> 'admin.tipoEqualizacaoTecnicas.store', 'uses' => 'Admin\TipoEqualizacaoTecnicaController@store']);
+        Route::get('tipoEqualizacaoTecnicas/create', ['as'=> 'admin.tipoEqualizacaoTecnicas.create', 'uses' => 'Admin\TipoEqualizacaoTecnicaController@create']);
+        Route::put('tipoEqualizacaoTecnicas/{tipoEqualizacaoTecnicas}', ['as'=> 'admin.tipoEqualizacaoTecnicas.update', 'uses' => 'Admin\TipoEqualizacaoTecnicaController@update']);
+        Route::patch('tipoEqualizacaoTecnicas/{tipoEqualizacaoTecnicas}', ['as'=> 'admin.tipoEqualizacaoTecnicas.update', 'uses' => 'Admin\TipoEqualizacaoTecnicaController@update']);
+        Route::delete('tipoEqualizacaoTecnicas/{tipoEqualizacaoTecnicas}', ['as'=> 'admin.tipoEqualizacaoTecnicas.destroy', 'uses' => 'Admin\TipoEqualizacaoTecnicaController@destroy']);
+        Route::get('tipoEqualizacaoTecnicas/{tipoEqualizacaoTecnicas}', ['as'=> 'admin.tipoEqualizacaoTecnicas.show', 'uses' => 'Admin\TipoEqualizacaoTecnicaController@show']);
+        Route::get('tipoEqualizacaoTecnicas/{tipoEqualizacaoTecnicas}/edit', ['as'=> 'admin.tipoEqualizacaoTecnicas.edit', 'uses' => 'Admin\TipoEqualizacaoTecnicaController@edit']);
 
         $router->group(['middleware' => 'needsPermission:users.list'], function() use ($router) {
             #Manage ACL

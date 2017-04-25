@@ -80,3 +80,7 @@
     <a href="{!! route('admin.templatePlanilhas.index') !!}"><i class="fa fa-table"></i><span>Template de planilhas</span></a>
 </li>
 
+{{--<li class="{{ Request::is('tipoEqualizacaoTecnicas*') ? 'active' : '' }}">--}}
+    {{--<a href="{!! route('admin.tipoEqualizacaoTecnicas.index') !!}"><i class="fa fa-edit"></i><span>TipoEqualizacaoTecnicas</span></a>--}}
+{{--</li>--}}
+
