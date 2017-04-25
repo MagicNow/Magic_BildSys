@@ -20,6 +20,12 @@ class WorkflowReprovacaoMotivoDataTable extends DataTable
             ->editColumn('created_at', function($obj){
                 return $obj->created_at->format('d/m/Y');
             })
+            ->filterColumn('created_at', function ($query, $keyword) {
+                $query->whereRaw("DATE_FORMAT(workflow_reprovacao_motivos.created_at,'%d/%m/%Y') like ?", ["%$keyword%"]);
+            })
+            ->editColumn('tipo', function($obj){
+                return $obj->tipo=='' ? 'Todos' : $obj->tipo;
+            })
             ->make(true);
     }
 
@@ -30,7 +36,14 @@ class WorkflowReprovacaoMotivoDataTable extends DataTable
      */
     public function query()
     {
-        $workflowReprovacaoMotivos = WorkflowReprovacaoMotivo::query();
+        $workflowReprovacaoMotivos = WorkflowReprovacaoMotivo::query()
+            ->select([
+                'workflow_reprovacao_motivos.id',
+                'workflow_reprovacao_motivos.nome',
+                'workflow_reprovacao_motivos.created_at',
+                'workflow_tipos.nome as tipo',
+            ])
+        ->leftJoin('workflow_tipos','workflow_tipo_id','workflow_tipos.id');
 
         return $this->applyScopes($workflowReprovacaoMotivos);
     }
@@ -95,6 +108,7 @@ class WorkflowReprovacaoMotivoDataTable extends DataTable
     {
         return [
             'nome' => ['name' => 'nome', 'data' => 'nome'],
+            'tipo' => ['name' => 'workflow_tipos.nome', 'data' => 'tipo'],
             'cadastradoEm' => ['name' => 'created_at', 'data' => 'created_at'],
         ];
     }

@@ -310,21 +310,24 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     /**
      * TO-DO Criar grupo com prefixo de compras
      */
-    $router->get('compras/{planejamento}/insumos/{insumoGrupo}', 'OrdemDeCompraController@insumos')->name('compraInsumo');
-    $router->get('compras/{planejamento}/insumosJson', 'OrdemDeCompraController@insumosJson');
-    $router->get('compras/{planejamento}/insumosFilters', 'OrdemDeCompraController@insumosFilters');
-    $router->post('compras/{planejamento}/insumosAdd', 'OrdemDeCompraController@insumosAdd');
+    $router->get('compras/insumos', 'OrdemDeCompraController@insumos')->name('compraInsumo');
+    $router->get('compras/insumosJson', 'OrdemDeCompraController@insumosJson');
+    $router->get('compras/insumosFilters', 'OrdemDeCompraController@insumosFilters');
+    $router->post('compras/insumosAdd', 'OrdemDeCompraController@insumosAdd');
+    $router->get('planejamentosByObra', 'PlanejamentoController@getPlanejamentosByObra');
 
-    $router->get('compras/{planejamento}/obrasInsumos/{insumoGrupo}', 'OrdemDeCompraController@obrasInsumos');
-    $router->get('compras/{planejamento}/obrasInsumosFilters', 'OrdemDeCompraController@obrasInsumosFilters');
-    $router->get('compras/{planejamento}/obrasInsumosJson/{insumoGrupo}', 'OrdemDeCompraController@obrasInsumosJson');
 
-    $router->get('compras/{planejamento}/trocaInsumos/{insumoGrupo}/insumo/{insumo}', 'OrdemDeCompraController@trocaInsumos');
+    $router->get('compras/obrasInsumos','OrdemDeCompraController@obrasInsumos');
+    $router->get('compras/obrasInsumosFilters', 'OrdemDeCompraController@obrasInsumosFilters');
+    $router->get('compras/obrasInsumosJson', 'OrdemDeCompraController@obrasInsumosJson');
+
+    $router->get('compras/trocaInsumos', 'OrdemDeCompraController@trocaInsumos');
     $router->get('compras/{planejamento}/trocaInsumosFilters', 'OrdemDeCompraController@trocaInsumosFilters');
     $router->get('compras/trocaInsumosJsonPai/{insumo}', 'OrdemDeCompraController@trocaInsumosJsonPai');
     $router->get('compras/{planejamento}/trocaInsumosJsonFilho/{insumo}', 'OrdemDeCompraController@trocaInsumosJsonFilho');
-    $router->post('compras/{planejamento}/trocaInsumoAction/troca/{insumo}', 'OrdemDeCompraController@trocaInsumoAction');
+    $router->post('compras/trocaInsumoAction', 'OrdemDeCompraController@trocaInsumoAction');
     $router->post('compras/{obra}/{planejamento}/addCarrinho', 'OrdemDeCompraController@addCarrinho');
+    $router->post('compras/{obra}/addCarrinho', 'OrdemDeCompraController@addCarrinho');
     $router->get('compras/removerInsumoPlanejamento/{planejamentoCompra}', 'OrdemDeCompraController@removerInsumoPlanejamento');
 
     $router->get('compras/jsonOrdemCompraDashboard','OrdemDeCompraController@jsonOrdemCompraDashboard');
