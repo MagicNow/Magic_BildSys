@@ -17,7 +17,11 @@ class ContratosDataTable extends DataTable
         return $this->datatables
             ->eloquent($this->query())
             ->editColumn('arquivo',function ($obj){
-                return '<a href="'.$obj->arquivo.'" download>Baixar arquivo</a>';
+                if($obj->arquivo){
+                    return '<a href="'.$obj->arquivo.'" download>Baixar arquivo</a>';
+                }else{
+                    return '';
+                }
             })
             ->editColumn('data',function ($obj){
                 return $obj->data ? with(new\Carbon\Carbon($obj->data))->format('d/m/Y') : '';
