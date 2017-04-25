@@ -121,11 +121,11 @@
                         <a  v-if="dado['filho']>0 && dado['filho'] != undefined && dado['unidade_sigla'] == 'VB'" v-bind:href="actions.troca_remove+'/'+dado['planejamento_compra_id']">
                             <i class="fa fa-times red"></i>
                         </a>
-                        <a  v-if="dado['filho']==0 && dado['pai']==0 && dado['unidade_sigla'] == 'VB'" v-bind:href="actions.troca_url+'/'+dado['id']">
+                        <a  v-if="dado['filho']==0 && dado['pai']==0 && dado['unidade_sigla'] == 'VB'" v-bind:href="actions.troca_url+'?insumo_pai='+dado['id']+'&planejamento_id='+dado['planejamento_compra_id']">
                             <i class="fa fa-exchange grey"></i>
                         </a>
                     </td>
-                    <td  class="row-table" v-if="actions.adicionar != undefined && dado.adicionado > 0">
+                    <td  class="row-table" v-if="actions.adicionar != undefined && dado['adicionado'] > 0">
                         <i class="fa fa-check green"></i>
                     </td>
                     <td class="row-table" v-else-if="actions.adicionar != undefined">
@@ -200,12 +200,13 @@
             adicionar: function(item,i){
                 if(this.actions.quantidade){
                     item['quantidade_compra'] = this.quant[i];
-                }
-                item['_token'] =this._token;
-                if(!item['quantidade_compra'] && !item['adicionado']){
+                    if(!item['quantidade_compra'] && !item['adicionado']){
 //                    swal('Insira uma quantidade!','','error');
-                    return false;
+                        return false;
+                    }
                 }
+
+                item['_token'] =this._token;
                 this.$http.post(this.apiAdicionar, item)
                     .then(function (resp) {
                         if(resp.body.success){

@@ -1,4 +1,4 @@
-@extends('layouts.front')
+    @extends('layouts.front')
 
 @section('content')
     <section class="content-header">
@@ -16,8 +16,8 @@
                         {!! Form::select('obra_id', [''=>'Obra...']+$obras, null, ['class'=>'form-control input-lg', 'onchange'=>'atualizaCalendario(this.value);']) !!}
                     </div>
                     <div class="col-md-3">
-                        <button {{--href="{{ url('/obras_insumos') }}"--}} onclick="swal('Função não disponível')" class="btn btn-success btn-block btn-lg btn-flat"><i
-                                    class="fa fa-shopping-cart"></i> Comprar</button>
+                        <a id="btn-comprar-calendario" style="pointer-events: none;" href="" class="btn btn-block btn-lg btn-flat"><i
+                                    class="fa fa-shopping-cart"></i> Comprar</a>
                     </div>
                     <div class="col-md-3">
                         <a href="{{ url('/ordens-de-compra') }}" class="btn btn-primary btn-block btn-lg btn-flat"><i
@@ -63,6 +63,15 @@
     <script type="text/javascript">
         var calendar = null;
         function atualizaCalendario(obra_id) {
+           if(obra_id){
+               $("#btn-comprar-calendario").attr("href", "compras/obrasInsumos/?obra_id="+obra_id);
+               $('#btn-comprar-calendario').css('pointer-events','auto');
+               $('#btn-comprar-calendario').addClass('btn-success');
+           }else{
+               console.log('entrou');
+               $('#btn-comprar-calendario').removeClass('btn-success');
+               $('#btn-comprar-calendario').css('pointer-events','none');
+           }
             calendar.setOptions({events_source: '{{ url('planejamentos/lembretes') }}' + (obra_id > 0 ? '?obra_id=' + obra_id : '')});
             calendar.view();
         }
