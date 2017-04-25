@@ -32,9 +32,11 @@
                      <!-- SubGrupos4 de insumo Field -->
                      <div class="form-group col-sm-12">
                          {!! Form::label('servico_id', 'Serviço:') !!}
-                         {!! Form::select('servico_id', [''=>'-'], null, ['class' => 'form-control', 'id'=>'servico_id', 'disabled'=>'disabled', 'onchange'=>'selectgrupo(this.value, null, \'servicos\');']) !!}
+                         {!! Form::select('servico_id', [''=>'-'], null, ['class' => 'form-control', 'id'=>'servico_id', 'disabled'=>'disabled', 'onchange'=>'selectgrupo(this.value, null, \'servicos\'), listInsumos(this.value);']) !!}
                      </div>
                      <input type="hidden" name="planejamento_id" value="{{$planejamento->id}}">
+
+                     <div class="col-md-12" id="list-insumos"></div>
 
                      <div class="col-md-4 col-md-offset-4">
                          <button type="submit" class="btn btn-primary btn-lg">Adicionar relacionamentos</button>
@@ -72,5 +74,33 @@
                 });
             }
         }
+
+        function listInsumos(id){
+            console.log(id);
+            rota = "{{url('/admin/planejamentos/atividade/servico/insumo')}}/";
+            if(id){
+                $.ajax({
+                    url: rota + id
+                }).done(function(retorno) {
+                    list = '<label>Insumos</label>';
+                    list += '<li><input type="checkbox" id="checkAll"> <label>Selecionar todos</label></li>\
+                                </div>';
+                    $.each(retorno,function(index, value){
+                        list += '<li><input type="checkbox" id="insumo_'+ value.id +'" name="insumos[]" value="'+ value.id +'"> <label for="insumo_'+ value.id +'">' + value.codigo + ' - ' + value.nome + '</label></li>\
+                                </div>';
+                    });
+                    $('#list-insumos').html('<ul style="list-style: none">'+list+'</ul>');
+                }).fail(function() {
+                    $('.overlay').remove();
+                });
+            }
+        }
+
+        $(document).ready(function() {
+            $('#list-insumos').on('click','#checkAll', function () {
+                $("input:checkbox").prop('checked', $(this).prop("checked"));
+            });
+        });
+
     </script>
 @stop

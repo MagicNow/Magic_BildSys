@@ -85,7 +85,16 @@ class ContratoInsumo extends Model
             $value = '0'.$value;
         }
 
-        return $value;
+        return number_format($value,2,',','.');
+    }
+
+    public function setQtdAttribute($value)
+    {
+        $pontos = array(",");
+        $value = str_replace('.','',$value);
+        $result = str_replace( $pontos, ".", $value);
+
+        $this->attributes['qtd'] = $result;
     }
 
     /**

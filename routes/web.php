@@ -27,6 +27,8 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
 
     $router->get('/', 'HomeController@index');
     $router->get('/home', 'HomeController@index');
+    # log do laravel
+    $router->get('/console/logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
 
     Route::get('/getForeignKey', 'CodesController@getForeignKey');
 
@@ -38,8 +40,13 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->post('/ordens-de-compra/upload-anexos/{id}', 'OrdemDeCompraController@uploadAnexos');
     $router->get('/ordens-de-compra/remover-anexo/{id}', 'OrdemDeCompraController@removerAnexo');
     $router->get('/ordens-de-compra/carrinho/remove-contrato', 'OrdemDeCompraController@removerContrato');
-    $router->resource('ordens-de-compra', 'OrdemDeCompraController');
+    $router->get('/ordens-de-compra/reabrir-ordem-de-compra/{id}', 'OrdemDeCompraController@reabrirOrdemDeCompra');
+    $router->get('/ordens-de-compra/carrinho/alterar-quantidade/{id}', 'OrdemDeCompraController@alterarQuantidade');
+    $router->get('/ordens-de-compra/carrinho/remover-item/{id}', 'OrdemDeCompraController@removerItem');
 
+    $router->get('/ordens-de-compra/detalhes-servicos/{servico_id}', 'OrdemDeCompraController@detalhesServicos');
+
+    $router->resource('ordens-de-compra', 'OrdemDeCompraController');
 
     $router->resource('retroalimentacaoObras', 'RetroalimentacaoObraController');
 
@@ -95,6 +102,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             $router->get('atividade/{planejamentos}/edit', ['as' => 'admin.planejamentos.edit', 'uses' => 'Admin\PlanejamentoController@edit']);
             $router->get('atividade/grupos/{id}', 'Admin\PlanejamentoController@getGrupos');
             $router->get('atividade/servicos/{id}', 'Admin\PlanejamentoController@getServicos');
+            $router->get('atividade/servico/insumo/{id}', 'Admin\PlanejamentoController@getServicoInsumos');
             $router->post('atividade/insumos', ['as'=> 'admin.planejamentos.insumos', 'uses' => 'Admin\PlanejamentoController@planejamentoCompras']);
             $router->get('atividade/planejamentocompras/{id}', 'Admin\PlanejamentoController@destroyPlanejamentoCompra');
 
@@ -123,6 +131,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->get('insumo/valor_total', 'Admin\ContratosController@calcularValorTotalInsumo');
         $router->get('insumo/delete', 'Admin\ContratosController@deleteInsumo');
 
+        # Obras
         $router->get('obras', ['as'=> 'admin.obras.index', 'uses' => 'Admin\ObraController@index']);
         $router->post('obras', ['as'=> 'admin.obras.store', 'uses' => 'Admin\ObraController@store']);
         $router->get('obras/create', ['as'=> 'admin.obras.create', 'uses' => 'Admin\ObraController@create']);
@@ -137,6 +146,14 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         # Update Notificações visualizadas
         $router->get('updateNotification/{id}', 'Admin\NotificacaoController@updateNotification');
 
+        Route::get('templatePlanilhas', ['as'=> 'admin.templatePlanilhas.index', 'uses' => 'Admin\TemplatePlanilhaController@index']);
+        Route::post('templatePlanilhas', ['as'=> 'admin.templatePlanilhas.store', 'uses' => 'Admin\TemplatePlanilhaController@store']);
+        Route::get('templatePlanilhas/create', ['as'=> 'admin.templatePlanilhas.create', 'uses' => 'Admin\TemplatePlanilhaController@create']);
+        Route::put('templatePlanilhas/{templatePlanilhas}', ['as'=> 'admin.templatePlanilhas.update', 'uses' => 'Admin\TemplatePlanilhaController@update']);
+        Route::patch('templatePlanilhas/{templatePlanilhas}', ['as'=> 'admin.templatePlanilhas.update', 'uses' => 'Admin\TemplatePlanilhaController@update']);
+        Route::delete('templatePlanilhas/{templatePlanilhas}', ['as'=> 'admin.templatePlanilhas.destroy', 'uses' => 'Admin\TemplatePlanilhaController@destroy']);
+        Route::get('templatePlanilhas/{templatePlanilhas}', ['as'=> 'admin.templatePlanilhas.show', 'uses' => 'Admin\TemplatePlanilhaController@show']);
+        Route::get('templatePlanilhas/{templatePlanilhas}/edit', ['as'=> 'admin.templatePlanilhas.edit', 'uses' => 'Admin\TemplatePlanilhaController@edit']);
 
 
         $router->group(['middleware' => 'needsPermission:users.list'], function() use ($router) {

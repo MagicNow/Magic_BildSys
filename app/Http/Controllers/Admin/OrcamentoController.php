@@ -9,6 +9,7 @@ use App\Http\Requests\Admin\UpdateOrcamentoRequest;
 use App\Jobs\PlanilhaProcessa;
 use App\Models\Obra;
 use App\Models\Planilha;
+use App\Models\TemplatePlanilha;
 use App\Models\TipoOrcamento;
 use App\Repositories\Admin\OrcamentoRepository;
 use App\Repositories\Admin\SpreadsheetRepository;
@@ -166,7 +167,8 @@ class OrcamentoController extends AppBaseController
     public function indexImport(){
         $obras = Obra::pluck('nome','id')->toArray();
         $orcamento_tipos = TipoOrcamento::pluck('nome','id')->toArray();
-        return view('admin.orcamentos.indexImport', compact('orcamento_tipos','obras'));
+        $templates = TemplatePlanilha::where('modulo', 'Orçamento')->pluck('nome','id')->toArray();
+        return view('admin.orcamentos.indexImport', compact('orcamento_tipos','obras', 'templates'));
     }
 
     /**
@@ -181,23 +183,21 @@ class OrcamentoController extends AppBaseController
     public function import(Request $request)
     {
         $tipo = 'orcamento';
-        $file = $request->except('obra_id','modulo_id','orcamento_tipo_id');
+        $file = $request->except('obra_id','template_id','orcamento_tipo_id');
         $input = $request->except('_token','file');
+        $this->validate($request,['file'=>'file','obra_id'=>'required']);
+        $template = $request->template_id;
         $obra_id = null;
-        $modulo_id = null;
         $orcamento_tipo_id = null;
 
         # Validando campos obrigatórios como chave estrangeiras
         if($input['obra_id'] != "") {
             $obra_id = array_key_exists('obra_id', $input);
         }
-        if($input['modulo_id'] != "") {
-            $modulo_id = array_key_exists('modulo_id', $input);
-        }
         if($input['orcamento_tipo_id'] != "") {
             $orcamento_tipo_id = array_key_exists('orcamento_tipo_id', $input);
         }
-        if(!$obra_id || !$modulo_id || !$orcamento_tipo_id){
+        if(!$obra_id || !$orcamento_tipo_id){
             Flash::error('Os campos: obra, modulo e tipo orçamento são obrigátorios.');
             return back();
         }
@@ -221,7 +221,7 @@ class OrcamentoController extends AppBaseController
         \Session::put('retorno', $retorno);
         \Session::put('colunasbd', $colunasbd);
 
-        return redirect('/admin/orcamento/importar/selecionaCampos');
+        return redirect('/admin/orcamento/importar/selecionaCampos?planilha_id='.$retorno['planilha_id'].($template?'&template_id='.$template:''));
     }
 
     /**
@@ -229,10 +229,26 @@ class OrcamentoController extends AppBaseController
      * @param Request $request
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function selecionaCampos(Request $request){
-
+    public function selecionaCampos(Request $request)
+    {
         $retorno = $request->session()->get('retorno');
         $colunasbd = $request->session()->get('colunasbd');
+        if($request->template_id){
+            $planilha = Planilha::find($request->planilha_id);
+            $template = TemplatePlanilha::find($request->template_id);
+            if($planilha && $template) {
+                $planilha->colunas_json = $template->colunas;
+                $planilha->save();
+
+                # Coloca processo na fila
+                dispatch(new PlanilhaProcessa($planilha));
+
+                # Mensagem que será exibida para o usuário avisando que a importação foi adicionada na fila e será processada.
+                Flash::warning('Importação incluida na FILA. Ao concluir o processamento enviaremos um ALERTA!');
+
+                return redirect('admin/orcamento');
+            }
+        }
         return view('admin.orcamentos.checkIn', compact('retorno','colunasbd'));
     }
 
@@ -243,24 +259,34 @@ class OrcamentoController extends AppBaseController
     public function save(Request $request){
         $input = $request->except('_token');
         $json = json_encode(array_filter($input));
-
+//        dd($json);
         # Validando campos obrigatórios como chave estrangeiras
         $codigo_insumo = in_array('codigo_insumo', $input);
         $unidade_sigla = in_array('unidade_sigla', $input);
-        if(!$codigo_insumo && !$unidade_sigla){
-            Flash::error('Os campos: codigo_insumo e unidade_sigla são obrigátorios.');
+        $descricao = in_array('descricao', $input);
+        if(!$codigo_insumo || !$unidade_sigla || !$descricao){
+            Flash::error('Os campos: codigo_insumo, unidade_sigla e descrição são obrigátorios.');
             return back();
         }
 
-        # Pegando todas as planilhas por ordem decrescente
-        $planilha = Planilha::orderBy('id','desc')->get();
-        # consulta que trás somente a ultima planilha importada pelo usuário
-        $planilha = $planilha->where('user_id', \Auth::id())->first();
+        # Pegando todas as planilhas por ordem decrescente e que trás somente a ultima planilha importada pelo usuário
+        $planilha = Planilha::where('user_id', \Auth::id())->orderBy('id','desc')->first();
         # Após encontrar a planilha, será feito um update adicionando em array os campos escolhido pelo usuário.
         if($planilha) {
             $planilha->colunas_json = $json;
-            $planilha->update();
+            $planilha->save();
         }
+
+        # Salvar os campos escolhido na primeira importação de planilha para criar um modelo de template
+        $parametros_json = json_decode($planilha->parametros_json);
+        $orcamento = TipoOrcamento::find(intval($parametros_json->orcamento_tipo_id));
+        $template_orcamento = TemplatePlanilha::firstOrNew([
+            'nome' => $orcamento->nome,
+            'modulo' => 'Orçamento'
+        ]);
+        $template_orcamento->colunas = $json;
+        $template_orcamento->save();
+
 
         # Comentário de processamento de fila iniciada
         \Log::info("Ciclo de solicitações com filas iniciada");

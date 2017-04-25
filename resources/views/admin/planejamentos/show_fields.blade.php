@@ -78,6 +78,13 @@
             .btn-xs{
                 overflow: hidden;
             }
+            .tooltip-inner {
+                max-width: 500px;
+                 text-align: left !important;
+            }
+            /*.tooltip-ajuste {*/
+                /*max-width: 500px;*/
+            /*}*/
 
         </style>
         <!-- Obra Id Field -->
@@ -137,13 +144,12 @@
                                             <tbody>
                                                 <h4>
                                                     Serviço:
-                                                    <span data-toggle="tooltip" data-placement="top" title="
+                                                    <span data-toggle="tooltip" data-placement="top" data-html="true" title="
                                                         {{$item->grupo->codigo.' - '.$item->grupo->nome}}<br/>
                                                         {{$item->subgrupo1->codigo.' - '.$item->subgrupo1->nome}}<br/>
                                                         {{$item->subgrupo2->codigo.' - '.$item->subgrupo2->nome}}<br/>
                                                         {{$item->subgrupo3->codigo.' - '.$item->subgrupo3->nome}}<br/>
-                                                        {{$item->servico->codigo.' - '.$item->servico->nome}}
-                                                            " data-html="true">
+                                                        {{$item->servico->codigo.' - '.$item->servico->nome}}">
                                                         <strong>{{$item->servico->codigo}}</strong>
                                                     </span>
                                                 </h4>
@@ -184,7 +190,7 @@
 @section('scripts')
     <script type="text/javascript">
         $(function () {
-            $('[data-toggle="tooltip"]').tooltip()
+            $('[data-toggle="tooltip"]').tooltip();
         });
 
         $('div.alert').not('.alert-important').delay(3000).fadeOut(350);

@@ -69,7 +69,7 @@
                             <div class="element-grafico">
                                 <div class="element-head">FAROL</div>
                                 <div class="element-body">
-
+                                    <chartjs-pie :labels="labelsFarol" :datasets="datasetsFarol" :scalesdisplay="false" :height="250"></chartjs-pie>
                                 </div>
                             </div>
                         </div>
@@ -127,8 +127,22 @@
                         }
                     }
                 },
-            },
 
+                labelsFarol: ["Abaixo do orçamento", "Dentro do orçamento", "Acima do orçamento"],
+                datasetsFarol:[{
+                    data: [{{$abaixo_orcamento}}, {{$dentro_orcamento}}, {{$acima_orcamento}}],
+                    backgroundColor: [
+                        "#f6a623",
+                        "#7ed321",
+                        "#eb0000"
+                    ],
+                    hoverBackgroundColor: [
+                        "#f6a623",
+                        "#7ed321",
+                        "#eb0000"
+                    ]
+                }]
+            }
         });
     </script>
 @endsection

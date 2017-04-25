@@ -82,6 +82,24 @@ class OrdemDeCompraItem extends Model
         'sugestao_data_uso' => 'date',
     ];
 
+    public function getQtdAttribute($value)
+    {
+        if(strlen($value) == 4){
+            $value = '0'.$value;
+        }
+
+        return number_format($value,2,',','.');
+    }
+
+    public function setQtdAttribute($value)
+    {
+        $pontos = array(",");
+        $value = str_replace('.','',$value);
+        $result = str_replace( $pontos, ".", $value);
+
+        $this->attributes['qtd'] = $result;
+    }
+
     /**
      * Tipo de Workflow, necessário para models que são aprováveis
      *

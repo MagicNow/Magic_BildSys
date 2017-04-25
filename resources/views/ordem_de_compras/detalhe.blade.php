@@ -119,19 +119,31 @@
             </div>
             <div class="col-md-2 text-right borda-direita">
                 <h5>ORÇAMENTO INICIAL</h5>
-                <h4>{{ number_format($orcamentoInicial,2,',','.') }}</h4>
+                <h4>
+                    <small class="pull-left">R$</small>
+                    {{ number_format($orcamentoInicial,2,',','.') }}
+                </h4>
             </div>
-            <div class="col-md-2 text-right borda-direita">
+            <div class="col-md-2 text-right borda-direita" title="Nos itens desta O.C.">
                 <h5>TOTAL À GASTAR</h5>
-                <h4>{{ number_format($totalAGastar,2,',','.') }}</h4>
+                <h4>
+                    <small class="pull-left">R$</small>
+                    {{ number_format($totalAGastar,2,',','.') }}
+                </h4>
             </div>
-            <div class="col-md-2 text-right borda-direita">
+            <div class="col-md-2 text-right borda-direita" title="Até o momento em todos os itens desta O.C.">
                 <h5>QUANTIDADE REALIZADA</h5>
-                <h4>{{ number_format($realizado,2,',','.') }}</h4>
+                <h4>
+                    <small class="pull-left">R$</small>
+                    {{ number_format($realizado,2,',','.') }}
+                </h4>
             </div>
-            <div class="col-md-2 text-right">
+            <div class="col-md-2 text-right" title="Restante do Orçamento Inicial em relação aos itens desta O.C.">
                 <h5>SALDO</h5>
-                <h4>{{ number_format($saldo,2,',','.') }}</h4>
+                <h4>
+                    <small class="pull-left">R$</small>
+                    {{ number_format($saldo,2,',','.') }}
+                </h4>
             </div>
 
         </div>
@@ -140,7 +152,11 @@
         <div class="panel panel-default">
             <div class="panel-body">
                 <div class="col-md-10">
-                    <h4 class="highlight">{{ $item->insumo->codigo . ' - '. $item->insumo->nome }}</h4>
+                    <h4 class="highlight">{{ $item->insumo->codigo . ' - '. $item->insumo->nome }}
+                        @if($item->servico)
+                            <a href="/ordens-de-compra/detalhes-servicos/{{$item->servico->id}}" style="font-size:15px;">{{$item->servico->codigo . ' - '. $item->servico->nome}}</a>
+                        @endif
+                    </h4>
                 </div>
                 <div class="col-md-2 text-right">
                     @if(!is_null($item->aprovado))
@@ -213,11 +229,11 @@
                         <tr>
                             <td class="text-center">{{ $item->unidade_sigla . ' - '.$item->unidade->descricao }}</td>
                             <td class="text-center">{{ number_format($item->qtd_inicial, 2, ',','.') }}</td>
-                            <td class="text-center">{{ number_format($item->preco_inicial, 2, ',','.') }}</td>
-                            <td class="text-center">{{ doubleval($item->qtd_realizada) }}</td>
-                            <td class="text-center">{{ number_format( doubleval($item->valor_realizado), 2, ',','.') }}</td>
+                            <td class="text-center"><small class="pull-left">R$</small> {{ number_format($item->preco_inicial, 2, ',','.') }}</td>
+                            <td class="text-center">{{ number_format(doubleval($item->qtd_realizada), 2, ',','.') }}</td>
+                            <td class="text-center"><small class="pull-left">R$</small> {{ number_format( doubleval($item->valor_realizado), 2, ',','.') }}</td>
                             <td class="text-center">{{ number_format( $item->qtd_inicial-doubleval($item->qtd_realizada), 2, ',','.') }}</td>
-                            <td class="text-center">{{ number_format( $item->preco_inicial-doubleval($item->valor_realizado), 2, ',','.') }}</td>
+                            <td class="text-center"><small class="pull-left">R$</small> {{ number_format( $item->preco_inicial-doubleval($item->valor_realizado), 2, ',','.') }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -237,11 +253,11 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td class="text-center">{{ number_format( $item->qtd_inicial - doubleval($item->qtd_realizada) - $item->qtd, 2, ',','.') }}</td>
-                            <td class="text-center">{{ number_format( $item->preco_inicial-doubleval($item->valor_realizado), 2, ',','.') }}</td>
-                            <td class="text-center">{{ number_format($item->qtd, 2, ',','.') }}</td>
-                            <td class="text-center">{{ doubleval($item->valor_total) }}</td>
-                            <td class="text-center"><i class="fa fa-circle {{ (($item->qtd_realizada + $item->qtd) > $item->qtd_inicial) ? 'text-danger': 'text-success'  }}" aria-hidden="true"></i> </td>
+                            <td class="text-center">{{ number_format( $item->qtd_inicial - doubleval($item->qtd_realizada), 2, ',','.') }}</td>
+                            <td class="text-center"><small class="pull-left">R$</small> {{ number_format( $item->preco_inicial-doubleval($item->valor_realizado), 2, ',','.') }}</td>
+                            <td class="text-center"><strong>{{ $item->qtd }}</strong></td>
+                            <td class="text-center"><small class="pull-left">R$</small> <strong>{{ number_format(doubleval($item->valor_total), 2, ',','.') }}</strong></td>
+                            <td class="text-center"><i class="fa fa-circle {{ (($item->qtd_realizada) > $item->qtd_inicial) ? 'text-danger': 'text-success'  }}" aria-hidden="true"></i> </td>
                             <td class="text-center">{{ $item->sugestao_data_uso ? $item->sugestao_data_uso->format('d/m/Y') : ''  }}</td>
                             <td class="text-center">{!! $item->emergencial?'<strong class="text-danger"> <i class="fa fa-exclamation-circle" aria-hidden="true"></i> SIM</strong>':'NÃO' !!}</td>
                         </tr>
