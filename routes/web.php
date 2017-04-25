@@ -116,6 +116,16 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             $router->get('lembretes/{lembretes}', ['as' => 'admin.lembretes.show', 'uses' => 'Admin\LembreteController@show']);
             $router->get('lembretes/{lembretes}/edit', ['as' => 'admin.lembretes.edit', 'uses' => 'Admin\LembreteController@edit']);
             $router->get('lembretes/filtro/busca', ['as' => 'admin.lembretes.busca', 'uses' => 'Admin\LembreteController@busca']);
+
+            $router->get('tipo-lembretes', ['as'=> 'admin.lembreteTipos.index', 'uses' => 'Admin\LembreteTipoController@index']);
+            $router->post('tipo-lembretes', ['as'=> 'admin.lembreteTipos.store', 'uses' => 'Admin\LembreteTipoController@store']);
+            $router->get('tipo-lembretes/create', ['as'=> 'admin.lembreteTipos.create', 'uses' => 'Admin\LembreteTipoController@create']);
+            $router->put('tipo-lembretes/{lembreteTipos}', ['as'=> 'admin.lembreteTipos.update', 'uses' => 'Admin\LembreteTipoController@update']);
+            $router->patch('tipo-lembretes/{lembreteTipos}', ['as'=> 'admin.lembreteTipos.update', 'uses' => 'Admin\LembreteTipoController@update']);
+            $router->delete('tipo-lembretes/{lembreteTipos}', ['as'=> 'admin.lembreteTipos.destroy', 'uses' => 'Admin\LembreteTipoController@destroy']);
+            $router->get('tipo-lembretes/{lembreteTipos}', ['as'=> 'admin.lembreteTipos.show', 'uses' => 'Admin\LembreteTipoController@show']);
+            $router->get('tipo-lembretes/{lembreteTipos}/edit', ['as'=> 'admin.lembreteTipos.edit', 'uses' => 'Admin\LembreteTipoController@edit']);
+
         });
 
         # Contratos
@@ -336,3 +346,5 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('workflow/aprova-reprova', 'WorkflowController@aprovaReprova');
     $router->get('workflow/aprova-reprova-tudo', 'WorkflowController@aprovaReprovaTudo');
 });
+
+

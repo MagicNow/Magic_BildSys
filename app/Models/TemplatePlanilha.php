@@ -6,7 +6,7 @@ use Eloquent as Model;
 
 /**
  * Class TemplatePlanilha
- * @package App\Models\Admin
+ * @package App\Models
  * @version April 20, 2017, 12:33 pm BRT
  */
 class TemplatePlanilha extends Model
