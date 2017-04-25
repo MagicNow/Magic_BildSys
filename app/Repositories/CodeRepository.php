@@ -96,7 +96,8 @@ class CodeRepository
         $fields = [
             'obra' => 'obras.id',
             'ordem_compra_created_at' => 'ordem_de_compras.created_at',
-            'ordem_compra_updated_at' => 'ordem_de_compras.updated_at'
+            'ordem_compra_updated_at' => 'ordem_de_compras.updated_at',
+            'insumo_servico_servico_id' => 'insumo_servico.servico_id'
         ];
 
         if(@isset($fields[$field])){
