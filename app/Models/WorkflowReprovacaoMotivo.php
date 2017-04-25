@@ -24,7 +24,8 @@ class WorkflowReprovacaoMotivo extends Model
 
 
     public $fillable = [
-        'nome'
+        'nome',
+        'workflow_tipo_id'
     ];
 
     /**
@@ -34,7 +35,8 @@ class WorkflowReprovacaoMotivo extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'nome' => 'string'
+        'nome' => 'string',
+        'workflow_tipo_id' => 'integer',
     ];
 
     /**
@@ -43,7 +45,7 @@ class WorkflowReprovacaoMotivo extends Model
      * @var array
      */
     public static $rules = [
-        
+        'nome' => 'string',
     ];
 
     /**
@@ -52,5 +54,13 @@ class WorkflowReprovacaoMotivo extends Model
     public function workflowAprovacos()
     {
         return $this->hasMany(\App\Models\WorkflowAprovaco::class);
+    }
+
+    public function tipo(){
+        return $this->belongsTo(WorkflowTipo::class);
+    }
+
+    public function setWorkflowTipoIdAttribute($value){
+        $this->attributes['workflow_tipo_id'] = intval($value) ? $value : null;
     }
 }

@@ -13,7 +13,8 @@ class Orcamento extends Model
 {
     public $table = 'orcamentos';
 
-    public $timestamps = false;
+    const CREATED_AT = 'created_at';
+    const UPDATED_AT = 'updated_at';
 
     public $fillable = [
         'obra_id',
@@ -111,7 +112,7 @@ class Orcamento extends Model
      **/
     public function grupo()
     {
-        return $this->belongsTo(\App\Models\Grupo::class);
+        return $this->belongsTo(Grupo::class);
     }
 
     /**
@@ -119,7 +120,7 @@ class Orcamento extends Model
      **/
     public function insumo()
     {
-        return $this->belongsTo(\App\Models\Insumo::class);
+        return $this->belongsTo(Insumo::class);
     }
 
     /**
@@ -127,7 +128,7 @@ class Orcamento extends Model
      **/
     public function obra()
     {
-        return $this->belongsTo(\App\Models\Obra::class);
+        return $this->belongsTo(Obra::class);
     }
 
     /**
@@ -135,7 +136,7 @@ class Orcamento extends Model
      **/
     public function orcamentoTipo()
     {
-        return $this->belongsTo(\App\Models\TipoOrcamento::class);
+        return $this->belongsTo(TipoOrcamento::class);
     }
 
     /**
@@ -143,7 +144,7 @@ class Orcamento extends Model
      **/
     public function servico()
     {
-        return $this->belongsTo(\App\Models\Servico::class);
+        return $this->belongsTo(Servico::class);
     }
 
     /**
@@ -175,6 +176,6 @@ class Orcamento extends Model
      **/
     public function unidade()
     {
-        return $this->belongsTo(\App\Models\Unidade::class);
+        return $this->belongsTo(Unidade::class);
     }
 }
