@@ -17,26 +17,11 @@ class OrcamentoDataTable extends DataTable
         return $this->datatables
             ->eloquent($this->query())
             ->addColumn('action', 'admin.orcamentos.datatables_actions')
-            ->editColumn('obra_id',function ($obj){
-                return $obj->obra->nome;
+            ->editColumn('created_at', function($obj){
+                return $obj->created_at ? $obj->created_at->format('d/m/Y'): '';
             })
-            ->editColumn('insumo_id',function ($obj){
-                return $obj->insumo->nome;
-            })
-            ->editColumn('grupo_id',function ($obj){
-                return $obj->grupo->nome;
-            })
-            ->editColumn('subgrupo1_id',function ($obj){
-                return $obj->grupo1->nome;
-            })
-            ->editColumn('subgrupo2_id',function ($obj){
-                return $obj->grupo2->nome;
-            })
-            ->editColumn('subgrupo3_id',function ($obj){
-                return $obj->grupo3->nome;
-            })
-            ->editColumn('servico_id',function ($obj){
-                return $obj->servico->nome;
+            ->filterColumn('created_at', function ($query, $keyword) {
+                $query->whereRaw("DATE_FORMAT(orcamentos.created_at,'%d/%m/%Y') like ?", ["%$keyword%"]);
             })
             ->make(true);
     }
@@ -48,7 +33,27 @@ class OrcamentoDataTable extends DataTable
      */
     public function query()
     {
-        $orcamentos = Orcamento::query();
+        $orcamentos = Orcamento::query()
+            ->select([
+                'orcamentos.id',
+                'obras.nome as obra',
+                'orcamentos.codigo_insumo',
+                'insumos.nome as insumo',
+                'servicos.nome as servico',
+                'orcamentos.unidade_sigla',
+                'orcamentos.created_at',
+                'grupos.nome as grupo',
+                'grupos1.nome as subgrupo1',
+                'grupos2.nome as subgrupo2',
+                'grupos3.nome as subgrupo3',
+            ])
+        ->join('obras','obras.id','orcamentos.obra_id')
+        ->join('insumos','insumos.id','orcamentos.insumo_id')
+        ->join('grupos','grupos.id','orcamentos.grupo_id')
+        ->join('grupos as grupos1','grupos1.id','orcamentos.subgrupo1_id')
+        ->join('grupos as grupos2','grupos2.id','orcamentos.subgrupo2_id')
+        ->join('grupos as grupos3','grupos3.id','orcamentos.subgrupo3_id')
+        ->join('servicos','servicos.id','orcamentos.servico_id');
 
         return $this->applyScopes($orcamentos);
     }
@@ -112,10 +117,10 @@ class OrcamentoDataTable extends DataTable
     private function getColumns()
     {
         return [
-            'obra' => ['name' => 'obra_id', 'data' => 'obra_id'],
+            'obra' => ['name' => 'obras.nome', 'data' => 'obra'],
             'codigo' => ['name' => 'codigo_insumo', 'data' => 'codigo_insumo'],
-            'insumo' => ['name' => 'insumo_id', 'data' => 'insumo_id'],
-            'servico' => ['name' => 'servico_id', 'data' => 'servico_id'],
+            'insumo' => ['name' => 'insumos.nome', 'data' => 'insumo'],
+            'servico' => ['name' => 'servicos.nome', 'data' => 'servico'],
             'sigla' => ['name' => 'unidade_sigla', 'data' => 'unidade_sigla'],
 //            'coeficiente' => ['name' => 'coeficiente', 'data' => 'coeficiente'],
 //            'indireto' => ['name' => 'indireto', 'data' => 'indireto'],
@@ -135,12 +140,11 @@ class OrcamentoDataTable extends DataTable
 //            'porcentagem_orcamento' => ['name' => 'porcentagem_orcamento', 'data' => 'porcentagem_orcamento'],
 //            'orcamento_tipo_id' => ['name' => 'orcamento_tipo_id', 'data' => 'orcamento_tipo_id'],
 //            'ativo' => ['name' => 'ativo', 'data' => 'ativo'],
-            'grupo' => ['name' => 'grupo_id', 'data' => 'grupo_id'],
-            'subgrupo1' => ['name' => 'subgrupo1_id', 'data' => 'subgrupo1_id'],
-            'subgrupo2' => ['name' => 'subgrupo2_id', 'data' => 'subgrupo2_id'],
-            'subgrupo3' => ['name' => 'subgrupo3_id', 'data' => 'subgrupo3_id'],
-//            'user_id' => ['name' => 'user_id', 'data' => 'user_id'],
-//            'descricao' => ['name' => 'descricao', 'data' => 'descricao']
+            'grupo' => ['name' => 'grupos.nome', 'data' => 'grupo'],
+            'subgrupo1' => ['name' => 'grupos1.nome', 'data' => 'subgrupo1'],
+            'subgrupo2' => ['name' => 'grupos2.nome', 'data' => 'subgrupo2'],
+            'subgrupo3' => ['name' => 'grupos3.nome', 'data' => 'subgrupo3'],
+            'dataUpload' => ['name' => 'created_at', 'data' => 'created_at']
         ];
     }
 
