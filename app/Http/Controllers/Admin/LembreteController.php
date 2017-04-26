@@ -59,6 +59,17 @@ class LembreteController extends AppBaseController
     public function store(CreateLembreteRequest $request)
     {
         $input = $request->all();
+
+        if($input['dias_prazo_minimo'] < 0){
+            Flash::error('O prazo mínimo não pode ser negativo');
+            return redirect('/admin/planejamentos/lembretes/create')->withInput($input);
+        }
+
+        if($input['dias_prazo_maximo'] < 0){
+            Flash::error('O prazo máximo não pode ser negativo');
+            return redirect('/admin/planejamentos/lembretes/create')->withInput($input);
+        }
+
         $input['user_id'] = Auth::id();
 
         $lembreteTipo = LembreteTipo::find($input['lembrete_tipo_id']);
@@ -135,6 +146,17 @@ class LembreteController extends AppBaseController
             return redirect(route('admin.lembretes.index'));
         }
         $input = $request->all();
+
+        if($input['dias_prazo_minimo'] < 0){
+            Flash::error('O prazo mínimo não pode ser negativo');
+            return redirect('/admin/planejamentos/lembretes/'. $id .'/edit')->withInput($input);
+        }
+
+        if($input['dias_prazo_maximo'] < 0){
+            Flash::error('O prazo máximo não pode ser negativo');
+            return redirect('/admin/planejamentos/lembretes/'. $id .'/edit')->withInput($input);
+        }
+
         $lembreteTipo = LembreteTipo::find($input['lembrete_tipo_id']);
         if(!$input['dias_prazo_minimo']){
             $input['dias_prazo_minimo'] = $lembreteTipo->dias_prazo_minimo;

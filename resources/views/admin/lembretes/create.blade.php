@@ -13,6 +13,7 @@
             <div class="box-body">
                 <div class="row">
                     {!! Form::open(['route' => 'admin.lembretes.store']) !!}
+                        @include('flash::message')
 
                         @include('admin.lembretes.fields')
 
