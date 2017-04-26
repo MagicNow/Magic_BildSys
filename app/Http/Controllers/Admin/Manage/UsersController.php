@@ -63,6 +63,21 @@ class UsersController extends AppBaseController
      */
     public function store(CreateUserRequest $request)
     {
+        $usuario_existente_deletado = User::Where('email', '=', $request->email)
+            ->withTrashed()
+            ->whereNotNull('deleted_at')
+            ->first();
+
+        $usuario_existente = User::Where('email', '=', $request->email)
+            ->first();
+        if (isset($usuario_existente_deletado)) {
+            $usuario_existente_deletado->forceDelete();
+        }
+        if (isset($usuario_existente)) {
+            Flash::error('O campo email já esta sendo utilizado em outro cadastro');
+            return redirect('/admin/users/create')->withInput($request->except('password', 'password_confirmation'));
+        }
+
         $input = $request->all();
         $input['active'] = intval($request->get('active'));
 
