@@ -11,6 +11,7 @@ use App\Models\Insumo;
 use App\Models\Grupo;
 use App\Models\InsumoGrupo;
 use App\Models\Lembrete;
+use App\Models\ObraUser;
 use App\Models\OrdemDeCompraItemAnexo;
 use App\Models\OrdemDeCompraStatusLog;
 use App\Models\Planejamento;
@@ -176,7 +177,9 @@ class OrdemDeCompraController extends AppBaseController
 
     public function compras()
     {
-        $obras = Obra::pluck('nome','id')->toArray();
+        $user_obras = ObraUser::where('user_id', Auth::user()->id)->get();
+        $obras = Obra::whereIn('id', $user_obras->pluck('id')->toArray())->get();
+        $obras = $obras->pluck('nome','id')->toArray();
         return view('ordem_de_compras.compras', compact('obras'));
     }
 
