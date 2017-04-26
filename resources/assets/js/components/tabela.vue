@@ -20,7 +20,7 @@
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                             <h4 class="modal-title" id="myModalLabel">Adicionar filtros</h4>
                         </div>
-                        <div class="modal-body">
+                        <div class="modal-body" id="filtros-body">
                             <p v-for="(filtro, campo) in filtros">
                                 <input class="cb_filter" type="checkbox" v-bind:id="'check_'+campo" v-bind:value="campo"/>
                                 <label v-bind:for="'check_'+campo" style="cursor: pointer;" class="cb_filter_label">
@@ -191,14 +191,6 @@
                 },
                 order: 'asc',
                 quant: {}
-            }
-        },
-        computed:{
-            dadoStatus: function () {
-                if(this.dados[0]!= undefined){
-                    return (this.dados[0]['created_at'])?true:false
-
-                }
             }
         },
         methods: {

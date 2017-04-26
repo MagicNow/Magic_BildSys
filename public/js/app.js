@@ -46861,7 +46861,10 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_c('div', {
     staticClass: "modal-content"
   }, [_vm._m(1), _vm._v(" "), _c('div', {
-    staticClass: "modal-body"
+    staticClass: "modal-body",
+    attrs: {
+      "id": "filtros-body"
+    }
   }, _vm._l((_vm.filtros), function(filtro, campo) {
     return _c('p', [_c('input', {
       staticClass: "cb_filter",

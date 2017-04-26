@@ -1,9 +1,61 @@
 var k = 0;
+var filtroGlobal = [];
+
 $(function () {
     //verifyQueryString();
 });
 
+function addFilterToArray(){
+
+}
+
+function getObjectKeyIndex(obj, keyToFind) {
+    var i = 0, key;
+
+    for (key in obj) {
+        if (key == keyToFind) {
+            return i;
+        }
+        i++;
+    }
+
+    return null;
+}
+
+function addHtml(){
+
+}
+
 function addFilters(query_string) {
+    pegaQuerysting();
+    //Filtro array
+    $('#filtros-body :input').each(function (index) {
+        var type = $(this).val().split('-')[1];
+        if ($(this).is(':checked')) {
+            filtroGlobal[$( this ).val()] = '';
+            if(type == 'string'){
+                filtroGlobal[$( this ).val()+'_option'] = '';
+            }else if(type == 'integer'){
+                filtroGlobal[$( this ).val()+'_option'] = '';
+                filtroGlobal[$( this ).val()+'_final'] = '';
+            }else if(type == 'date'){
+                filtroGlobal[$( this ).val()+'_initial'] = '';
+                filtroGlobal[$( this ).val()+'_final'] = '';
+            }
+        }else{
+            delete filtroGlobal[$( this ).val()];
+            if(type == 'string'){
+                delete filtroGlobal[$( this ).val()+'_option'];
+            }else if(type == 'integer'){
+                filtroGlobal[$( this ).val()+'_option'] = '';
+                filtroGlobal[$( this ).val()+'_final'] = '';
+            }else if(type == 'date'){
+                filtroGlobal[$( this ).val()+'_initial'] = '';
+                filtroGlobal[$( this ).val()+'_final'] = '';
+            }
+        }
+    });
+
     var cb_filter = $('.cb_filter');
     var cb_filter_label = $('.cb_filter_label');
     var block_fields = $('#block_fields');
@@ -34,26 +86,27 @@ function addFilters(query_string) {
                 var row_integer = "'row_" + cb_filter[i].value + "'";
 
                 block_fields.append('\
-                <div class="row form-group col-md-12 filter_added">\
-                    <div class="col-md-3">\
-                    <label>' + cb_filter_label[i].innerHTML + '</label>\
-                        <input v-model="filtrolist" type="number" id="' + cb_filter[i].value + '" class="form-control filters" onkeyup="addFilterFields(' + row_integer + ', this.value, \'integer\', this.id)">\
+                    <div class="row form-group col-md-12 filter_added">\
+                        <div class="col-md-3">\
+                        <label>' + cb_filter_label[i].innerHTML + '</label>\
+                            <input v-model="filtrolist" type="number" id="' + cb_filter[i].value + '" class="form-control filters" onkeyup="addFilterFields(' + row_integer + ', this.value, \'integer\', this.id)">\
+                        </div>\
+                        <div class="col-md-3" style="margin-top: 25px;">\
+                            <input v-model="filtrolist" type="number" id="' + cb_filter[i].value + '_final" name="' + cb_filter[i].value + '" class="form-control filters select_integer_' + cb_filter[i].value.split('-')[0] + '" onkeyup="addFilterFields(' + row_integer + ', this.value, \'integer\', this.name)">\
+                        </div>\
+                        <div class="col-md-6" style="margin-top: 25px;">\
+                            <select v-model="filtrolist" class="form-control filters" id="' + cb_filter[i].value + '_option" name="' + cb_filter[i].value + '" onchange="filterFieldInteger(this.value, ' + what + '); addFilterFields(' + row_integer + ', this.value, \'integer\', this.name)">\
+                                <option value="">Selecione</option>\
+                                <option value="between">Entre</option>\
+                                <option value="bigger">Maior que</option>\
+                                <option value="smaller">Menor que</option>\
+                                <option value="bigger_equal">Maior ou igual que</option>\
+                                <option value="smaller_equal">Menor ou igual que</option>\
+                                <option value="equal">Igual</option>\
+                            </select>\
+                        </div>\
                     </div>\
-                    <div class="col-md-3" style="margin-top: 25px;">\
-                        <input v-model="filtrolist" type="number" id="' + cb_filter[i].value + '_final" name="' + cb_filter[i].value + '" class="form-control filters select_integer_' + cb_filter[i].value.split('-')[0] + '" onkeyup="addFilterFields(' + row_integer + ', this.value, \'integer\', this.name)">\
-                    </div>\
-                    <div class="col-md-6" style="margin-top: 25px;">\
-                        <select v-model="filtrolist" class="form-control filters" id="' + cb_filter[i].value + '_option" name="' + cb_filter[i].value + '" onchange="filterFieldInteger(this.value, ' + what + '); addFilterFields(' + row_integer + ', this.value, \'integer\', this.name)">\
-                            <option value="between">Entre</option>\
-                            <option value="bigger">Maior que</option>\
-                            <option value="smaller">Menor que</option>\
-                            <option value="bigger_equal">Maior ou igual que</option>\
-                            <option value="smaller_equal">Menor ou igual que</option>\
-                            <option value="equal">Igual</option>\
-                        </select>\
-                    </div>\
-                </div>\
-            ');
+                ');
 
                 var value_session_integer = query_string[cb_filter[i].value] ? query_string[cb_filter[i].value] : '';
                 var value_session_integer_final = query_string[cb_filter[i].value+'_final'] ? query_string[cb_filter[i].value+'_final'] : '';
@@ -168,6 +221,7 @@ function addFilters(query_string) {
                     </div>\
                     <div class="col-md-6" style="margin-top: 25px;">\
                         <select v-model="filtrolist" class="form-control filters" id="' + cb_filter[i].value + '_option" onchange="addFilterFields()">\
+                            <option value="">Selecione</option>\
                             <option value="between">Entre</option>\
                             <option value="start">Começa com</option>\
                             <option value="end">Termina com</option>\
@@ -191,7 +245,7 @@ function addFilters(query_string) {
     if(!filters_add){
         $('#filters_add').remove();
         block_fields.removeClass('thumbnail');
-        history.pushState("", document.title, '' + window.location.href.split("?")[0]);
+        //history.pushState("", document.title, '' + window.location.href.split("?")[0]);
     }
 
     addFilterFields();
@@ -327,37 +381,38 @@ function foreign(label, value, row_foreign_key, cb_filter_i, query_string, block
 
 function pegaQuerysting(){
     var search = window.location.href.substr(window.location.href.indexOf("?") + 1);
-    console.log(search);
     var array = [];
     if(search.indexOf('http') === -1){
         search = search?JSON.parse('{"' + search.replace(/&/g, '","').replace(/=/g,'":"') + '"}',
             function(key, value) { return key===""?value:decodeURIComponent(value) }):{}
         for (var key in search) {
-            array[key] = search[key];
+            filtroGlobal[key] = search[key];
         }
     }
     return array;
 }
 
 function addQuery() {
-    var filters_array = pegaQuerysting();
     var filters_fields = $('.filters');
-    var period_find = JSON.parse('{"'+$('#period_find').val().replace(/&/g, '","').replace(/=/g,'":"')+ '"}');
-    for(var key in period_find){
-        if(period_find[key] != ''){
-            filters_array[key] = period_find[key];
+    if($('#period_find').val()){
+        var period_find = JSON.parse('{"'+$('#period_find').val().replace(/&/g, '","').replace(/=/g,'":"')+ '"}');
+        for(var key in period_find){
+            if(period_find[key] != ''){
+                filtroGlobal[key] = period_find[key];
+            }
         }
     }
+
     if(filters_fields.length > 0){
         for( i=0; i < filters_fields.length; i++ ){
-            filters_array[filters_fields[i].id] = filters_fields[i].value;
+            filtroGlobal[filters_fields[i].id] = filters_fields[i].value;
             // filters += ''+filters_fields[i].id+'='+filters_fields[i].value+'&';
         }
     }
     var filter_string = '';
-    for (var fil in filters_array){
-        if(filters_array[fil] != ''){
-            filter_string += fil+'='+filters_array[fil]+'&';
+    for (var fil in filtroGlobal){
+        if(filtroGlobal[fil] != ''){
+            filter_string += fil+'='+filtroGlobal[fil]+'&';
         }
     }
     filter_string = filter_string.substring(0,(filter_string.length - 1));
@@ -386,12 +441,13 @@ function filterPeriod(period) {
 
 function filterFind(find) {
     var period_find = $('#period_find');
-    var period_find_split = period_find.val().split("&");
+    if(period_find){
+        var period_find_split = period_find.val().split("&");
+        var find_value = period_find.val().replace(period_find_split[1], 'procurar='+find);
 
-    var find_value = period_find.val().replace(period_find_split[1], 'procurar='+find);
+        period_find.val(find_value);
 
-    period_find.val(find_value);
-
-    $('#find').val(find);
+        $('#find').val(find);
+    }
     addQuery();
 }
