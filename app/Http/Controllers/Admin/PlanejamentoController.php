@@ -115,7 +115,7 @@ class PlanejamentoController extends AppBaseController
         $itens = PlanejamentoCompra::select(['planejamento_compras.grupo_id','grupos.codigo', 'grupos.nome'])
             ->join('grupos','grupos.id','=','planejamento_compras.grupo_id')
             ->where('planejamento_id', $id)
-            ->groupBy('grupo_id')
+            ->groupBy('grupo_id','grupos.codigo', 'grupos.nome')
             ->get();
 
         if (empty($planejamento)) {

@@ -181,7 +181,7 @@
                                     value.proximo+'\', \''+value.atual+'\')">'+value.codigo+' - '+value.nome+
                                     ' <i class="fa fa-plus-square pull-right" aria-hidden="true"></i>' +
                                     '</button>'+
-                                    '<ul id="obj_'+value.id+'"></ul></li>';
+                                    '<ul id="obj_'+value.atual+'_'+value.id+'"></ul></li>';
                         }else{
                             list += '<li id="item_'+value.id+'">'+value.codigo+' - '+value.nome+
                                     '<button type="button" class="btn btn-flat btn-link pull-right" style="font-size: 18px; margin-top: -7px" onclick="removePlanejamentoCompra('+value.id+')">'+
@@ -191,7 +191,11 @@
                         }
 
                     });
-                    $('#obj_'+ obj_id).html(list);
+                    if(campo == 'grupo_id') {
+                        $('#obj_' + obj_id).html(list);
+                    }else{
+                        $('#obj_'+campo+'_'+ obj_id).html(list);
+                    }
                     $('.overlay').remove();
 
                 }).fail(function() {
