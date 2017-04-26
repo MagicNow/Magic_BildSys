@@ -150,6 +150,19 @@
                                         </div>
                                     </h4>
                                 @endif
+                                @if($workflow['total_avaliado'] == 0)
+                                    <h4 class="col-md-{{$col_md}} col-sm-{{$col_md}}" style="padding-right: 1px;padding-left: 1px;">
+                                        <span>{{$alcada}}ª alçada</span>
+                                        @if($alcada == $alcadas_count)
+                                            <span class="pull-right">Finalizada</span>
+                                        @endif
+                                        <div class="progress">
+                                            <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%; color: black;">
+                                                0%
+                                            </div>
+                                        </div>
+                                    </h4>
+                                @endif
                             @endforeach
                         @else
                             @for($i = 1; $i <= $alcadas_count; $i ++)
