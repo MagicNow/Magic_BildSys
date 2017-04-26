@@ -14,6 +14,7 @@ class LembreteTipo extends Model
 
     public $table = 'lembrete_tipos';
 
+    public $timestamps = false;
 
     public $fillable = [
         'nome',
@@ -49,6 +50,6 @@ class LembreteTipo extends Model
      **/
     public function lembretes()
     {
-        return $this->hasMany(\App\Models\Lembrete::class);
+        return $this->hasMany(Lembrete::class);
     }
 }

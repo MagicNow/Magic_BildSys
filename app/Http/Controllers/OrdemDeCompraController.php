@@ -17,6 +17,7 @@ use App\Models\OrdemDeCompraStatusLog;
 use App\Models\Planejamento;
 use App\Models\PlanejamentoCompra;
 use App\Models\Servico;
+use App\Models\WorkflowAlcada;
 use App\Models\WorkflowReprovacaoMotivo;
 use App\Repositories\CodeRepository;
 use function foo\func;
@@ -197,9 +198,26 @@ class OrdemDeCompraController extends AppBaseController
 
 
         $itens = collect([]);
+        $avaliado_reprovado = [];
 
-        $aprovavelTudo = WorkflowAprovacaoRepository::verificaAprovaGrupo('OrdemDeCompraItem', $ordemDeCompra->itens()->pluck('id','id')->toArray(), Auth::user() );
+        $aprovavelTudo = WorkflowAprovacaoRepository::verificaAprovaGrupo('OrdemDeCompraItem', $ordemDeCompra->itens()->pluck('id', 'id')->toArray(), Auth::user());
+        $alcadas = WorkflowAlcada::where('workflow_tipo_id', 1)->get(); // Aprovação de OC
+        
+        if($ordemDeCompra->oc_status_id == 3) { //Em Aprovação
+            foreach ($alcadas as $alcada) {
+                $avaliado_reprovado[$alcada->id] = WorkflowAprovacaoRepository::verificaTotalJaAprovadoReprovado(
+                    'OrdemDeCompraItem',
+                    $ordemDeCompra->itens()->pluck('id', 'id')->toArray(),
+                    null,
+                    null,
+                    $alcada->id);
 
+                $avaliado_reprovado[$alcada->id] ['aprovadores'] = WorkflowAprovacaoRepository::verificaQuantidadeUsuariosAprovadores(
+                    1, // Aprovação de OC
+                    $alcada->id);
+            }
+        }
+        
         if($ordemDeCompra->itens){
             $orcamentoInicial = Orcamento::where('orcamento_tipo_id',1)
                 ->whereIn('insumo_id', $ordemDeCompra->itens()->pluck('insumo_id','insumo_id')->toArray())
@@ -276,6 +294,11 @@ class OrdemDeCompraController extends AppBaseController
 
         $motivos_reprovacao = WorkflowReprovacaoMotivo::pluck('nome','id')->toArray();
 
+        $oc_status = $ordemDeCompra->ocStatus->nome;
+            
+        $qtd_itens = $ordemDeCompra->itens()->count();
+        
+        $alcadas_count = $alcadas->count();
         return view('ordem_de_compras.detalhe', compact(
                 'ordemDeCompra',
                 'orcamentoInicial',
@@ -284,7 +307,11 @@ class OrdemDeCompraController extends AppBaseController
                 'saldo',
                 'itens',
                 'motivos_reprovacao',
-                'aprovavelTudo'
+                'aprovavelTudo',
+                'avaliado_reprovado',
+                'qtd_itens',
+                'oc_status',
+                'alcadas_count'
             )
         );
     }

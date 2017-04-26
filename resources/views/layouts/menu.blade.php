@@ -41,6 +41,9 @@
         <li class="{{ Request::is('admin/planejamentos') ? 'active' : '' }}"><a href="{!! route('admin.planejamentos.index') !!}"><i class="fa fa-edit"></i><span>Planejamentos</span></a></li>
         <li class="{{ Request::is('admin/planejamento') ? 'active' : '' }}"><a href="{!! route('admin.planejamentos.indexImport') !!}"><i class="glyphicon glyphicon-cloud-upload"></i><span>Importação</span></a></li>
         <li class="{{ Request::is('admin/planejamentos/lembretes*') ? 'active' : '' }}"><a href="{!! route('admin.lembretes.index') !!}"><i class="fa fa-exclamation-circle"></i><span>Lembretes</span></a></li>
+        <li class="{{ Request::is('admin/planejamentos/tipo-lembretes*') ? 'active' : '' }}">
+            <a href="{!! route('admin.lembreteTipos.index') !!}"><i class="fa fa-ellipsis-h"></i><span>Tipos de Lembretes</span></a>
+        </li>
     </ul>
 </li>
 
@@ -74,6 +77,10 @@
 </li>
 
 <li class="{{ Request::is('templatePlanilhas*') ? 'active' : '' }}">
-    <a href="{!! route('admin.templatePlanilhas.index') !!}"><i class="fa fa-edit"></i><span>Template de planilhas</span></a>
+    <a href="{!! route('admin.templatePlanilhas.index') !!}"><i class="fa fa-table"></i><span>Template de planilhas</span></a>
 </li>
+
+{{--<li class="{{ Request::is('tipoEqualizacaoTecnicas*') ? 'active' : '' }}">--}}
+    {{--<a href="{!! route('admin.tipoEqualizacaoTecnicas.index') !!}"><i class="fa fa-edit"></i><span>TipoEqualizacaoTecnicas</span></a>--}}
+{{--</li>--}}
 

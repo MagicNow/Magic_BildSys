@@ -3,7 +3,7 @@
 namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Models\Admin\TemplatePlanilha;
+use App\Models\TemplatePlanilha;
 
 class UpdateTemplatePlanilhaRequest extends FormRequest
 {

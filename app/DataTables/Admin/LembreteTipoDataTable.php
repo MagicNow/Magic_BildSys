@@ -2,11 +2,11 @@
 
 namespace App\DataTables\Admin;
 
-use App\Models\Contrato;
+use App\Models\LembreteTipo;
 use Form;
 use Yajra\Datatables\Services\DataTable;
 
-class ContratosDataTable extends DataTable
+class LembreteTipoDataTable extends DataTable
 {
 
     /**
@@ -16,20 +16,7 @@ class ContratosDataTable extends DataTable
     {
         return $this->datatables
             ->eloquent($this->query())
-            ->editColumn('arquivo',function ($obj){
-                if($obj->arquivo){
-                    return '<a href="'.$obj->arquivo.'" download>Baixar arquivo</a>';
-                }else{
-                    return '';
-                }
-            })
-            ->editColumn('data',function ($obj){
-                return $obj->data ? with(new\Carbon\Carbon($obj->data))->format('d/m/Y') : '';
-            })
-            ->editColumn('obra_id',function ($obj){
-                return $obj->obra->nome;
-            })
-            ->addColumn('action', 'admin.contratos.datatables_actions')
+            ->addColumn('action', 'admin.lembrete_tipos.datatables_actions')
             ->make(true);
     }
 
@@ -40,9 +27,9 @@ class ContratosDataTable extends DataTable
      */
     public function query()
     {
-        $contratos = Contrato::query();
+        $lembreteTipos = LembreteTipo::query();
 
-        return $this->applyScopes($contratos);
+        return $this->applyScopes($lembreteTipos);
     }
 
     /**
@@ -104,10 +91,9 @@ class ContratosDataTable extends DataTable
     private function getColumns()
     {
         return [
-            'obra' => ['name' => 'obra_id', 'data' => 'obra_id'],
-            'data' => ['name' => 'data', 'data' => 'data'],
-            'valor' => ['name' => 'valor', 'data' => 'valor'],
-            'arquivo' => ['name' => 'arquivo', 'data' => 'arquivo']
+            'nome' => ['name' => 'nome', 'data' => 'nome'],
+            'dias_prazo_minimo' => ['name' => 'dias_prazo_minimo', 'data' => 'dias_prazo_minimo'],
+            'dias_prazo_maximo' => ['name' => 'dias_prazo_maximo', 'data' => 'dias_prazo_maximo']
         ];
     }
 
@@ -118,6 +104,6 @@ class ContratosDataTable extends DataTable
      */
     protected function filename()
     {
-        return 'contratos';
+        return 'lembreteTipos';
     }
 }

@@ -3,9 +3,9 @@
 namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Models\TemplatePlanilha;
+use App\Models\LembreteTipo;
 
-class CreateTemplatePlanilhaRequest extends FormRequest
+class UpdateLembreteTipoRequest extends FormRequest
 {
 
     /**
@@ -25,6 +25,6 @@ class CreateTemplatePlanilhaRequest extends FormRequest
      */
     public function rules()
     {
-        return TemplatePlanilha::$rules;
+        return LembreteTipo::$rules;
     }
 }

@@ -76,9 +76,11 @@ class WorkflowAprovacaoRepository
 
             $usuariosAlcadaAnterior = $workflowAlcada->workflowUsuarios()->count();
 
+            # Busca a quantidade de aprovações q este item tem
             $aprovacoesAlcadaAnterior = $obj->aprovacoes()
                 ->where('workflow_alcada_id', $workflowAlcada->id)
                 ->where('created_at', '>=', $obj->updated_at)
+                ->where('aprovado', '=', 1)
                 ->count();
 
             // Se a quantidade de usuários é maior do que as aprovações / reprovações
@@ -293,7 +295,7 @@ class WorkflowAprovacaoRepository
         return $total_itens_a_aprovar->count();
     }
 
-    private static function verificaTotalJaAprovadoReprovado($tipo, $ids, $user = null, $item_id = null){
+    public static function verificaTotalJaAprovadoReprovado($tipo, $ids, $user = null, $item_id = null, $alcada = null){
         eval('$model= \\App\Models\\' . $tipo . '::firstOrNew([]);');
         $tabela = $model->getTable();
 
@@ -312,15 +314,23 @@ class WorkflowAprovacaoRepository
         if($item_id){
             $total_itens_aprovados_reprovados->where('workflow_aprovacoes.aprovavel_id',$item_id);
         }
+        if($alcada){
+            $total_itens_aprovados_reprovados->where('workflow_aprovacoes.workflow_alcada_id', $alcada);
+        }
         return [
             'total_avaliado' => $total_itens_aprovados_reprovados->count(),
             'total_aprovado' => $total_itens_aprovados_reprovados->where('workflow_aprovacoes.aprovado',1)->count()
         ];
     }
 
-    private static function verificaQuantidadeUsuariosAprovadores($workflow_tipo_id){
+    public static function verificaQuantidadeUsuariosAprovadores($workflow_tipo_id, $alcada = null){
         $qtd_usuarios = 0;
-        $workflow_alcadas = WorkflowAlcada::where('workflow_tipo_id',$workflow_tipo_id)->get();
+        $workflow_alcadas = WorkflowAlcada::where('workflow_tipo_id',$workflow_tipo_id);
+        if($alcada){
+            $workflow_alcadas->where('id', $alcada);
+        }
+        $workflow_alcadas = $workflow_alcadas->get();
+        
         foreach ($workflow_alcadas as $alcada){
             $qtd_usuarios += $alcada->workflowUsuarios()->count();
         }

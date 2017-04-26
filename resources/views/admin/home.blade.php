@@ -6,9 +6,9 @@
             Dashboard
             <small>Painel de controle</small>
         </h1>
-        <ol class="breadcrumb">
-            <li class="active"><a href="/"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-        </ol>
+        {{--<ol class="breadcrumb">--}}
+            {{--<li class="active"><a href="/"><i class="fa fa-dashboard"></i> Dashboard</a></li>--}}
+        {{--</ol>--}}
     </section>
     <div class="content">
         <div class="row">

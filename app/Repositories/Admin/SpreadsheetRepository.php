@@ -240,134 +240,138 @@ class SpreadsheetRepository
                         $codigo_quebrado = explode(".", $final['codigo_insumo']);
 
                         # se for grupo, subgrupo
-                        if(count($codigo_quebrado) <= 4) {
-                            if(count($codigo_quebrado) === 1){
-                                Grupo::firstOrCreate([
-                                    'codigo' => $final['codigo_insumo'],
-                                    'nome' => $final['descricao']
-                                ]);
-                            }else {
-                                $codigo_grupo_pai = $codigo_quebrado;
-                                array_pop($codigo_grupo_pai);
-                                $grupoPai = Grupo::where('codigo',  implode('.',$codigo_grupo_pai) )->first();
-                                if($grupoPai){
+                        if(strlen($codigo_quebrado[0]) <= 45) {
+                            if (count($codigo_quebrado) <= 4) {
+                                if (count($codigo_quebrado) === 1) {
+                                    # verifica se codigo insumo é inteiro
                                     Grupo::firstOrCreate([
                                         'codigo' => $final['codigo_insumo'],
-                                        'nome' => $final['descricao'],
-                                        'grupo_id' =>$grupoPai->id
+                                        'nome' => $final['descricao']
                                     ]);
+                                } else {
+                                    $codigo_grupo_pai = $codigo_quebrado;
+                                    array_pop($codigo_grupo_pai);
+                                    $grupoPai = Grupo::where('codigo', implode('.', $codigo_grupo_pai))->first();
+                                    if ($grupoPai) {
+                                        Grupo::firstOrCreate([
+                                            'codigo' => $final['codigo_insumo'],
+                                            'nome' => $final['descricao'],
+                                            'grupo_id' => $grupoPai->id
+                                        ]);
+                                    }
                                 }
-                            }
-                        }
-                        # se for serviço
-                        elseif(count($codigo_quebrado) == 5) {
-                            if(count($codigo_quebrado) === 1){
-                                Servico::firstOrCreate([
-                                    'codigo' => $final['codigo_insumo'],
-                                    'nome' => $final['descricao']
-                                ]);
-                            }else {
-                                $codigo_grupo_pai = $codigo_quebrado;
-                                array_pop($codigo_grupo_pai);
-                                $grupoPai = Grupo::where('codigo',  implode('.',$codigo_grupo_pai) )->first();
-                                if($grupoPai){
+                            } # se for serviço
+                            elseif (count($codigo_quebrado) == 5) {
+                                if (count($codigo_quebrado) === 1) {
                                     Servico::firstOrCreate([
                                         'codigo' => $final['codigo_insumo'],
-                                        'nome' => $final['descricao'],
-                                        'grupo_id' =>$grupoPai->id
+                                        'nome' => $final['descricao']
+                                    ]);
+                                } else {
+                                    $codigo_grupo_pai = $codigo_quebrado;
+                                    array_pop($codigo_grupo_pai);
+                                    $grupoPai = Grupo::where('codigo', implode('.', $codigo_grupo_pai))->first();
+                                    if ($grupoPai) {
+                                        Servico::firstOrCreate([
+                                            'codigo' => $final['codigo_insumo'],
+                                            'nome' => $final['descricao'],
+                                            'grupo_id' => $grupoPai->id
+                                        ]);
+                                    }
+                                }
+                            } # se for insumo
+                            elseif (count($codigo_quebrado) == 6) {
+                                #quebrar codigo insumo explode(separar os pontos)
+                                if ($final['codigo_insumo']) {
+                                    $codigo_insumo = explode(".", $final['codigo_insumo']);
+                                    $codigo_grupo = $codigo_insumo[0];
+                                    $codigo_subgrupo1 = $codigo_insumo[0] . '.' . $codigo_insumo[1];
+                                    $codigo_subgrupo2 = $codigo_insumo[0] . '.' . $codigo_insumo[1] . '.' . $codigo_insumo[2];
+                                    $codigo_subgrupo3 = $codigo_insumo[0] . '.' . $codigo_insumo[1] . '.' . $codigo_insumo[2] . '.' . $codigo_insumo[3];
+                                    $codigo_servico = $codigo_insumo[0] . '.' . $codigo_insumo[1] . '.' . $codigo_insumo[2] . '.' . $codigo_insumo[3] . '.' . $codigo_insumo[4];
+                                    $codigo_insumo = $codigo_insumo[5];
+                                }
+
+                                # query verificar se existe grupo_id = obra
+                                $grupo = Grupo::where('codigo', $codigo_grupo)->first();
+
+                                if ($grupo) {
+                                    $final['grupo_id'] = $grupo->id;
+                                } else {
+                                    $erro = 1;
+                                    $mensagens_erro[] = 'grupo - Código: ' . $codigo_grupo . ' não foi encontrado.';
+                                }
+
+                                # query verificar se existe subgrupo1_id
+                                $subgrupo1 = Grupo::where('codigo', $codigo_subgrupo1)->first();
+
+                                if ($subgrupo1) {
+                                    $final['subgrupo1_id'] = $subgrupo1->id;
+                                } else {
+                                    $erro = 1;
+                                    $mensagens_erro[] = 'subgrupo1 - Código: ' . $codigo_subgrupo1 . ' não foi encontrado.';
+                                }
+
+                                # query verificar se existe subgrupo2_id
+                                $subgrupo2 = Grupo::where('codigo', $codigo_subgrupo2)->first();
+
+                                if ($subgrupo2) {
+                                    $final['subgrupo2_id'] = $subgrupo2->id;
+                                } else {
+                                    $erro = 1;
+                                    $mensagens_erro[] = 'subgrupo2 - Código: ' . $codigo_subgrupo2 . ' não foi encontrado.';
+                                }
+
+                                # query verificar se existe subgrupo3_id
+                                $subgrupo3 = Grupo::where('codigo', $codigo_subgrupo3)->first();
+
+                                if ($subgrupo3) {
+                                    $final['subgrupo3_id'] = $subgrupo3->id;
+                                } else {
+                                    $erro = 1;
+                                    $mensagens_erro[] = 'subgrupo3 - Código: ' . $codigo_subgrupo3 . ' não foi encontrado.';
+                                }
+
+                                # query verificar se existe servico_id
+                                $servico = Servico::where('codigo', $codigo_servico)->first();
+
+                                if ($servico) {
+                                    $final['servico_id'] = $servico->id;
+                                } else {
+                                    $erro = 1;
+                                    $mensagens_erro[] = 'Serviço - Código: ' . $codigo_servico . ' não foi encontrado.';
+                                }
+
+                                # query verificar se existe insumo_id
+                                $insumo = Insumo::where('codigo', $codigo_insumo)->first();
+                                if ($insumo) {
+                                    $final['insumo_id'] = $insumo->id;
+                                } else {
+                                    $erro = 1;
+                                    $mensagens_erro[] = 'Insumo - Código: ' . $codigo_insumo . ' não foi encontrado.';
+                                }
+
+                                #Amarra serviço ao insumo
+                                if (isset($final['servico_id']) && isset($final['insumo_id'])) {
+                                    $insumo_servico = InsumoServico::firstOrCreate([
+                                        'servico_id' => $final['servico_id'],
+                                        'insumo_id' => $final['insumo_id']
                                     ]);
                                 }
+
+
+                                # save data table budget
+                                if ($erro == 0) {
+                                    Orcamento::create($final);
+                                } else {
+                                    // estourar loop
+                                    $erro = 1;
+                                    break;
+                                }
                             }
-                        }
-                        # se for insumo
-                        elseif(count($codigo_quebrado) == 6) {
-                            #quebrar codigo insumo explode(separar os pontos)
-                            if ($final['codigo_insumo']) {
-                                $codigo_insumo = explode(".", $final['codigo_insumo']);
-                                $codigo_grupo = $codigo_insumo[0];
-                                $codigo_subgrupo1 = $codigo_insumo[0] . '.' . $codigo_insumo[1];
-                                $codigo_subgrupo2 = $codigo_insumo[0] . '.' . $codigo_insumo[1] . '.' . $codigo_insumo[2];
-                                $codigo_subgrupo3 = $codigo_insumo[0] . '.' . $codigo_insumo[1] . '.' . $codigo_insumo[2] . '.' . $codigo_insumo[3];
-                                $codigo_servico = $codigo_insumo[0] . '.' . $codigo_insumo[1] . '.' . $codigo_insumo[2] . '.' . $codigo_insumo[3] . '.' . $codigo_insumo[4];
-                                $codigo_insumo = $codigo_insumo[5];
-                            }
-
-                            # query verificar se existe grupo_id = obra
-                            $grupo = Grupo::where('codigo', $codigo_grupo)->first();
-
-                            if ($grupo) {
-                                $final['grupo_id'] = $grupo->id;
-                            } else {
-                                $erro = 1;
-                                $mensagens_erro[] = 'grupo - Código: ' . $codigo_grupo . ' não foi encontrado.';
-                            }
-
-                            # query verificar se existe subgrupo1_id
-                            $subgrupo1 = Grupo::where('codigo', $codigo_subgrupo1)->first();
-
-                            if ($subgrupo1) {
-                                $final['subgrupo1_id'] = $subgrupo1->id;
-                            } else {
-                                $erro = 1;
-                                $mensagens_erro[] = 'subgrupo1 - Código: ' . $codigo_subgrupo1 . ' não foi encontrado.';
-                            }
-
-                            # query verificar se existe subgrupo2_id
-                            $subgrupo2 = Grupo::where('codigo', $codigo_subgrupo2)->first();
-
-                            if ($subgrupo2) {
-                                $final['subgrupo2_id'] = $subgrupo2->id;
-                            } else {
-                                $erro = 1;
-                                $mensagens_erro[] = 'subgrupo2 - Código: ' . $codigo_subgrupo2 . ' não foi encontrado.';
-                            }
-
-                            # query verificar se existe subgrupo3_id
-                            $subgrupo3 = Grupo::where('codigo', $codigo_subgrupo3)->first();
-
-                            if ($subgrupo3) {
-                                $final['subgrupo3_id'] = $subgrupo3->id;
-                            } else {
-                                $erro = 1;
-                                $mensagens_erro[] = 'subgrupo3 - Código: ' . $codigo_subgrupo3 . ' não foi encontrado.';
-                            }
-
-                            # query verificar se existe servico_id
-                            $servico = Servico::where('codigo', $codigo_servico)->first();
-
-                            if ($servico) {
-                                $final['servico_id'] = $servico->id;
-                            } else {
-                                $erro = 1;
-                                $mensagens_erro[] = 'Serviço - Código: ' . $codigo_servico . ' não foi encontrado.';
-                            }
-
-                            # query verificar se existe insumo_id
-                            $insumo = Insumo::where('codigo', $codigo_insumo)->first();
-                            if ($insumo) {
-                                $final['insumo_id'] = $insumo->id;
-                            } else {
-                                $erro = 1;
-                                $mensagens_erro[] = 'Insumo - Código: ' . $codigo_insumo . ' não foi encontrado.';
-                            }
-
-                            #Amarra serviço ao insumo
-                            if(isset($final['servico_id']) && isset($final['insumo_id'])){
-                                $insumo_servico = InsumoServico::firstOrCreate([
-                                    'servico_id' => $final['servico_id'],
-                                    'insumo_id' => $final['insumo_id']
-                                ]);
-                            }
-
-
-                            # save data table budget
-                            if($erro == 0) {
-                                Orcamento::create($final);
-                            }else{
-                              // estourar loop
-                                $erro = 1;
-                                break;
-                            }
+                        }else{
+                            $erro = 1;
+                            $mensagens_erro[] = 'Template não contém a mesma posição ou colunas da planilha importada.';
                         }
                     }
                 }
