@@ -214,12 +214,14 @@ class OrdemDeCompraItem extends Model
     }
 
     public function paiEmAprovacao(){
-        $this->ordemDeCompra->update(['oc_status_id' => 3]);
-        OrdemDeCompraStatusLog::create([
-            'oc_status_id'=>$this->ordemDeCompra->oc_status_id,
-            'ordem_de_compra_id'=>$this->ordemDeCompra->id,
-            'user_id'=>Auth::id()
-        ]);
+        if($this->ordemDeCompra->oc_status_id!=3){
+            $this->ordemDeCompra->update(['oc_status_id' => 3]);
+            OrdemDeCompraStatusLog::create([
+                'oc_status_id'=>$this->ordemDeCompra->oc_status_id,
+                'ordem_de_compra_id'=>$this->ordemDeCompra->id,
+                'user_id'=>Auth::id()
+            ]);
+        }
     }
 
     public function confereAprovacaoGeral(){
