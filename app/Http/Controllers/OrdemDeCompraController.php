@@ -403,9 +403,10 @@ class OrdemDeCompraController extends AppBaseController
             $planejamento_compras->subgrupo2_id = $request->cod_subgrupo2;
             $planejamento_compras->subgrupo3_id = $request->cod_subgrupo3;
             $planejamento_compras->servico_id = $request->servico_id;
-            $planejamento_compras->save();
+            $salvo = $planejamento_compras->save();
+            
             Flash::success('Insumo adicionado com sucesso');
-            return response()->json('{response: "sucesso"}');
+            return response()->json(['success'=>$salvo]);
         }catch (\Exception $e){
             return $e->getMessage();
         }
@@ -666,9 +667,9 @@ class OrdemDeCompraController extends AppBaseController
             $planejamento_compras->subgrupo3_id = $request->cod_subgrupo3;
             $planejamento_compras->servico_id = $request->servico_id;
             $planejamento_compras->insumo_pai = $insumo->id;
-            $planejamento_compras->save();
+            $salvo = $planejamento_compras->save();
             Flash::success('Insumo adicionado com sucesso');
-            return response()->json('{response: "sucesso"}');
+            return response()->json(['success'=>$salvo]);
         }catch (\Exception $e){
             Flash::error('Insumo adicionado com'. $e->getMessage());
             return response()->json('{response: "error'.$e->getMessage().'"}');

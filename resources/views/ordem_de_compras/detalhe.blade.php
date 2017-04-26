@@ -132,6 +132,10 @@
                                         $percentual_quebrado = $avaliado_aprovadores / $qtd_itens;
                                         $percentual = $percentual_quebrado * 100;
                                         $percentual = number_format($percentual, 0);
+
+                                        if($percentual > 100){
+                                            $percentual = 100;
+                                        }
                                     @endphp
 
                                     <h4 class="col-md-{{$col_md}} col-sm-{{$col_md}}" style="padding-right: 1px;padding-left: 1px;">
