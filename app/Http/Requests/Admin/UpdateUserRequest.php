@@ -25,7 +25,18 @@ class UpdateUserRequest extends FormRequest
      */
     public function rules()
     {
+        if($this->segment(3)!="") {
+            $user = User::find($this->segment(3));
+        }else{
+            $user = null;
+        }
+
         $rules = User::$rules;
+
+        if($user){
+            $rules['email'] = $rules['email'].$user->id;
+        }
+        
         unset($rules['password']);
         return $rules;
     }
