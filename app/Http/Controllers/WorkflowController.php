@@ -55,13 +55,15 @@ class WorkflowController extends Controller
                 $request->resposta,
                 $request->motivo_id,
                 $request->justificativa);
-            $aprovadosReprovados += $aprovaReprova;
+
+            if($aprovaReprova){
+                $aprovadosReprovados += 1;
+            }
         }
 
         if($aprovadosReprovados == 0){
             return response()->json(['success' => false, 'resposta' => 'Já não havia nenhum item à aprovar!', 'refresh'=>true]);
         }
-
 
         return response()->json(['success' => true]);
 
