@@ -7,7 +7,7 @@
     #carrinho ul li{
         background-color: #ffffff;
         border: solid 1px #dddddd;
-        padding: 18px;
+        padding: 5px;
         margin-bottom: 12px;
         font-size: 16px;
         font-weight: 500;
@@ -20,6 +20,9 @@
         line-height: 15px;
         margin-bottom: 0px;
         padding-bottom: 0px;
+    }
+    #carrinho li button {
+        text-align: left !important;
     }
     @media (min-width: 769px){
         .label-bloco-limitado{
@@ -84,69 +87,20 @@
     </div>
 </div>
     @if(isset($itens))
-    <div id="carrinho" class="col-md-12">
-        <h3>Insumos relacionados</h3>
-        <ul>
-            @if(count($itens))
-            <?php $servico = null ?>
-            @foreach($itens as $item)
-            @if($servico != $item->servico_id)
-            @if($servico > 0)
-                    <!-- fecha tabela -->
-            </tbody>
-            </table>
-    </div>
-    </li>
-    @endif
-    <?php $servico = $item->servico_id?>
-            <!-- cria tabela -->
-    <li>
-        <div class="row">
-            <table class="table table-hover">
-                <tbody>
-                <h4>
-                    Serviço:
-                                                    <span data-toggle="tooltip" data-placement="top" data-html="true" title="
-                                                        {{$item->grupo->codigo.' - '.$item->grupo->nome}}<br/>
-                                                        {{$item->subgrupo1->codigo.' - '.$item->subgrupo1->nome}}<br/>
-                                                        {{$item->subgrupo2->codigo.' - '.$item->subgrupo2->nome}}<br/>
-                                                        {{$item->subgrupo3->codigo.' - '.$item->subgrupo3->nome}}<br/>
-                                                        {{$item->servico->codigo.' - '.$item->servico->nome}}">
-                                                        <strong>{{$item->servico->codigo}}</strong>
-                                                    </span>
-                </h4>
-                @endif
-                <tr id="item_{{ $item->id }}">
-                    <td>{{$item->insumo->codigo}}</td>
-                    <td>{{$item->insumo->nome}}</td>
-                    <td>
-                                    <span class="pull-right text-center">
-                                         <button type="button" class="btn btn-flat btn-link"
-                                                 style="font-size: 18px; margin-top: -7px"
-                                                 onclick="removePlanejamentoCompra({{ $item->id }})">
-                                             <i class="text-red glyphicon glyphicon-trash" aria-hidden="true"></i>
-                                         </button>
-                                    </span>
-                    </td>
-                </tr>
+        <div id="carrinho" class="col-md-12">
+            <h3>Insumos relacionados</h3>
+            <ul>
+                @foreach($itens as $item)
+                <li>
+                    <button type="button" class="btn btn-link btn-block text-left" onclick="listInsumosRelacionados({{$item->grupo_id}}, {{$planejamento->id}}, 'subgrupo1_id', 'grupo_id')">{{$item->codigo .' - '. $item->nome}} <i class="fa fa-plus-square pull-right" aria-hidden="true"></i></button>
+                    <ul id="obj_{{$item->grupo_id}}">
+
+                    </ul>
+                </li>
                 @endforeach
-                @if($servico)
-                </tbody>
-            </table>
+            </ul>
         </div>
-    </li>
     @endif
-    @else
-        <div class="text-center">
-            Nenhum item foi adicionado nesse planejamento!
-        </div>
-        @endif
-        </ul>
-</div>
-        <div class="pg text-center">
-            {{ $itens->links() }}
-        </div>
-        @endif
 
 @section('scripts')
     <script type="text/javascript">
@@ -205,6 +159,47 @@
                 $("input:checkbox").prop('checked', $(this).prop("checked"));
             });
         });
+
+        function listInsumosRelacionados(obj_id, planejamento_id, tipo, campo){
+            $('.box.box-primary').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
+            if(obj_id && planejamento_id){
+                $.ajax("{{ url('/admin/planejamentos/atividade/servico/insumo/relacionados') }}", {
+                            data: {
+                                'id' : obj_id,
+                                'campo': campo,
+                                'planejamento_id' : planejamento_id,
+                                'tipo' : tipo
+                            },
+                            type: "GET"
+                        }
+                ).done(function(retorno) {
+                    list = '';
+                    $.each(retorno,function(index, value){
+                        if(value.atual!='insumo_id'){
+                            list += '<li><button type="button" class="btn btn-link btn-block text-left" ' +
+                                    'onclick="listInsumosRelacionados('+value.id+', {{$planejamento->id}}, \''+
+                                    value.proximo+'\', \''+value.atual+'\')">'+value.codigo+' - '+value.nome+
+                                    ' <i class="fa fa-plus-square pull-right" aria-hidden="true"></i>' +
+                                    '</button>'+
+                                    '<ul id="obj_'+value.id+'"></ul></li>';
+                        }else{
+                            list += '<li id="item_'+value.id+'">'+value.codigo+' - '+value.nome+
+                                    '<button type="button" class="btn btn-flat btn-link pull-right" style="font-size: 18px; margin-top: -7px" onclick="removePlanejamentoCompra('+value.id+')">'+
+                                    '<i class="text-red glyphicon glyphicon-trash" aria-hidden="true"></i>'+
+                                    '</button>' +
+                                    '</li>';
+                        }
+
+                    });
+                    $('#obj_'+ obj_id).html(list);
+                    $('.overlay').remove();
+
+                }).fail(function() {
+                    $('.overlay').remove();
+                });
+            }
+        }
+
 
         function removePlanejamentoCompra(id) {
             swal({
