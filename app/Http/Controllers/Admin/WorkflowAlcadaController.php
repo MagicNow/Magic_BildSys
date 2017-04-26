@@ -57,7 +57,7 @@ class WorkflowAlcadaController extends AppBaseController
 
         $workflowAlcada = $this->workflowAlcadaRepository->create($input);
 
-        Flash::success('Workflow Alcada '.trans('common.saved').' '.trans('common.successfully').'.');
+        Flash::success('Workflow Alçada '.trans('common.saved').' '.trans('common.successfully').'.');
 
         return redirect(route('admin.workflowAlcadas.index'));
     }
@@ -74,7 +74,7 @@ class WorkflowAlcadaController extends AppBaseController
         $workflowAlcada = $this->workflowAlcadaRepository->findWithoutFail($id);
 
         if (empty($workflowAlcada)) {
-            Flash::error('Workflow Alcada '.trans('common.not-found'));
+            Flash::error('Workflow Alçada '.trans('common.not-found'));
 
             return redirect(route('admin.workflowAlcadas.index'));
         }
@@ -94,7 +94,7 @@ class WorkflowAlcadaController extends AppBaseController
         $workflowAlcada = $this->workflowAlcadaRepository->findWithoutFail($id);
 
         if (empty($workflowAlcada)) {
-            Flash::error('Workflow Alcada '.trans('common.not-found'));
+            Flash::error('Workflow Alçada '.trans('common.not-found'));
 
             return redirect(route('admin.workflowAlcadas.index'));
         }
@@ -120,14 +120,14 @@ class WorkflowAlcadaController extends AppBaseController
         $workflowAlcada = $this->workflowAlcadaRepository->findWithoutFail($id);
 
         if (empty($workflowAlcada)) {
-            Flash::error('Workflow Alcada '.trans('common.not-found'));
+            Flash::error('Workflow Alçada '.trans('common.not-found'));
 
             return redirect(route('admin.workflowAlcadas.index'));
         }
 
         $workflowAlcada = $this->workflowAlcadaRepository->update($request->all(), $id);
 
-        Flash::success('Workflow Alcada '.trans('common.updated').' '.trans('common.successfully').'.');
+        Flash::success('Workflow Alçada '.trans('common.updated').' '.trans('common.successfully').'.');
 
         return redirect(route('admin.workflowAlcadas.index'));
     }
@@ -144,14 +144,14 @@ class WorkflowAlcadaController extends AppBaseController
         $workflowAlcada = $this->workflowAlcadaRepository->findWithoutFail($id);
 
         if (empty($workflowAlcada)) {
-            Flash::error('Workflow Alcada '.trans('common.not-found'));
+            Flash::error('Workflow Alçada '.trans('common.not-found'));
 
             return redirect(route('admin.workflowAlcadas.index'));
         }
 
         $this->workflowAlcadaRepository->delete($id);
 
-        Flash::success('Workflow Alcada '.trans('common.deleted').' '.trans('common.successfully').'.');
+        Flash::success('Workflow Alçada '.trans('common.deleted').' '.trans('common.successfully').'.');
 
         return redirect(route('admin.workflowAlcadas.index'));
     }

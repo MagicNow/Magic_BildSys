@@ -43,7 +43,7 @@ class Contrato extends Model
      * @var array
      */
     public static $rules = [
-        
+        'arquivo' => 'required'
     ];
 
     public function getValorAttribute($value)

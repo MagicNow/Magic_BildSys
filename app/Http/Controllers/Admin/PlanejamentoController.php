@@ -401,7 +401,7 @@ class PlanejamentoController extends AppBaseController
                 dispatch(new PlanilhaProcessa($planilha));
 
                 # Mensagem que será exibida para o usuário avisando que a importação foi adicionada na fila e será processada.
-                Flash::warning('Importação incluida na FILA. Ao concluir o processamento enviaremos um ALERTA!');
+                Flash::warning('Importação incluída na FILA. Ao concluir o processamento enviaremos um ALERTA!');
 
                 return redirect('admin/planejamento');
             }
@@ -448,7 +448,7 @@ class PlanejamentoController extends AppBaseController
         \Log::info("Ciclo de solicitações com filas finalizada");
 
         # Mensagem que será exibida para o usuário avisando que a importação foi adicionada na fila e será processada.
-        Flash::warning('Importação incluida na FILA. Ao concluir o processamento enviaremos um ALERTA!');
+        Flash::warning('Importação incluída na FILA. Ao concluir o processamento enviaremos um ALERTA!');
         return redirect('admin/planejamento');
     }
 }

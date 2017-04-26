@@ -182,9 +182,11 @@
                                 </li>
                                 <!-- Menu Footer-->
                                 <li class="user-footer">
-                                    <div class="pull-left">
-                                        <a href="/admin/users/{{ Auth::id() }}/edit" class="btn btn-primary btn-flat">Perfil</a>
-                                    </div>
+                                    @if(Auth::user()->admin)
+                                        <div class="pull-left">
+                                            <a href="/admin" class="btn btn-warning btn-flat">Administrativo</a>
+                                        </div>
+                                    @endif
                                     <div class="pull-right">
                                         <a href="{!! url('/logout') !!}" class="btn btn-danger btn-flat"
                                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
@@ -194,11 +196,6 @@
                                             {{ csrf_field() }}
                                         </form>
                                     </div>
-                                    @if(Auth::user()->admin)
-                                        <div class="text-center">
-                                            <a href="/admin" class="btn btn-warning btn-flat">Administrativo</a>
-                                        </div>
-                                    @endif
                                 </li>
                             </ul>
                         </li>
