@@ -1150,5 +1150,9 @@ class OrdemDeCompraController extends AppBaseController
             )
         );
     }
+
+    public function insumosAprovados(Request $request){
+       return view('ordem_de_compras.insumos-aprovados');
+    }
 }
 

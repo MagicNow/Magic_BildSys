@@ -79,6 +79,7 @@ class WorkflowAprovacaoRepository
             $aprovacoesAlcadaAnterior = $obj->aprovacoes()
                 ->where('workflow_alcada_id', $workflowAlcada->id)
                 ->where('created_at', '>=', $obj->updated_at)
+                ->where('aprovado', '=', 1)
                 ->count();
 
             // Se a quantidade de usuários é maior do que as aprovações / reprovações
