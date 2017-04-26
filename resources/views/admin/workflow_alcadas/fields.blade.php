@@ -48,7 +48,6 @@
     }
 
     function formatResultSelection (obj) {
-        console.log(obj);
         if(obj.name){
             return obj.name;
         }

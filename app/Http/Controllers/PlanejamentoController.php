@@ -7,6 +7,7 @@ use App\Models\Lembrete;
 use App\Models\Planejamento;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class PlanejamentoController extends AppBaseController
@@ -17,7 +18,9 @@ class PlanejamentoController extends AppBaseController
             ->join('planejamento_compras','planejamento_compras.insumo_id','=','insumos.id')
             ->join('planejamentos', 'planejamentos.id','=','planejamento_compras.planejamento_id')
             ->join('obras', 'obras.id','=','planejamentos.obra_id')
+            ->join('obra_users', 'obra_users.obra_id','=','obras.id')
             ->whereNull('planejamentos.deleted_at')
+            ->where('obra_users.user_id',Auth::user()->id)
             ->select([
                 'lembretes.id',
                 DB::raw("CONCAT(obras.nome,' - ',planejamentos.tarefa,' - ', lembretes.nome) title"),

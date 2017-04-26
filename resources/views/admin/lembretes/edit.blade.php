@@ -12,6 +12,7 @@
            <div class="box-body">
                <div class="row">
                    {!! Form::model($lembrete, ['route' => ['admin.lembretes.update', $lembrete->id], 'method' => 'patch']) !!}
+                        @include('flash::message')
 
                         @include('admin.lembretes.fields')
 

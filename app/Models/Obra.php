@@ -8,14 +8,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 /**
  * Class Obra
  * @package App\Models
- * @version April 4, 2017, 6:25 pm BRT
+ * @version April 25, 2017, 2:16 pm BRT
  */
 class Obra extends Model
 {
     use SoftDeletes;
 
     public $table = 'obras';
-
+    
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
@@ -23,9 +23,9 @@ class Obra extends Model
     protected $dates = ['deleted_at'];
 
 
-
     public $fillable = [
         'nome',
+        'cidade_id'
     ];
 
     /**
@@ -35,7 +35,8 @@ class Obra extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'nome' => 'string'
+        'nome' => 'string',
+        'cidade_id' => 'integer'
     ];
 
     /**
@@ -44,14 +45,31 @@ class Obra extends Model
      * @var array
      */
     public static $rules = [
-        'nome' => 'required'
+        
     ];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function cidade()
+    {
+        return $this->belongsTo(\App\Models\Cidade::class);
+    }
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
     public function contratos()
     {
-        return $this->hasMany(Contrato::class);
+        return $this->hasMany(\App\Models\Contrato::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function obraUsers()
+    {
+        return $this->belongsToMany(\App\Models\ObraUser::class,'obra_users','obra_id','user_id')->withPivot('deleted_at')->withTimestamps();
     }
 
     /**
@@ -59,7 +77,7 @@ class Obra extends Model
      **/
     public function orcamentos()
     {
-        return $this->hasMany(Orcamento::class);
+        return $this->hasMany(\App\Models\Orcamento::class);
     }
 
     /**
@@ -67,7 +85,7 @@ class Obra extends Model
      **/
     public function ordemDeCompraItens()
     {
-        return $this->hasMany(OrdemDeCompraItem::class);
+        return $this->hasMany(\App\Models\OrdemDeCompraIten::class);
     }
 
     /**
@@ -75,7 +93,7 @@ class Obra extends Model
      **/
     public function ordemDeCompras()
     {
-        return $this->hasMany(OrdemDeCompra::class);
+        return $this->hasMany(\App\Models\OrdemDeCompra::class);
     }
 
     /**
@@ -83,7 +101,7 @@ class Obra extends Model
      **/
     public function planejamentos()
     {
-        return $this->hasMany(Planejamento::class);
+        return $this->hasMany(\App\Models\Planejamento::class);
     }
 
     /**
@@ -91,6 +109,6 @@ class Obra extends Model
      **/
     public function retroalimentacaoObras()
     {
-        return $this->hasMany(RetroalimentacaoObra::class);
+        return $this->hasMany(\App\Models\RetroalimentacaoObra::class);
     }
 }

@@ -45,7 +45,7 @@ class WorkflowReprovacaoMotivo extends Model
      * @var array
      */
     public static $rules = [
-        'nome' => 'string',
+        'nome' => 'required',
     ];
 
     /**

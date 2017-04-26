@@ -39,7 +39,8 @@ class ObraController extends AppBaseController
      */
     public function create()
     {
-        return view('admin.obras.create');
+        $relacionados = [];
+        return view('admin.obras.create', compact('relacionados'));
     }
 
     /**
@@ -97,7 +98,11 @@ class ObraController extends AppBaseController
             return redirect(route('admin.obras.index'));
         }
 
-        return view('admin.obras.edit')->with('obra', $obra);
+        $relacionados = [];
+        $obrasUsers_ids = $obra->obraUsers()->pluck('user_id','user_id')->toArray();
+        $relacionados = User::whereIn('id', $obrasUsers_ids)->pluck('name','id')->toArray();
+
+        return view('admin.obras.edit', compact('obra', 'relacionados', 'obrasUsers_ids'));
     }
 
     /**
