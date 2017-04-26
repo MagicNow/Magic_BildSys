@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class EqualizacaoTecnicaAnexo
@@ -12,16 +11,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class EqualizacaoTecnicaAnexo extends Model
 {
-    use SoftDeletes;
-
     public $table = 'equalizacao_tecnica_anexos';
     
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
-
-
-    protected $dates = ['deleted_at'];
-
 
     public $fillable = [
         'tipo_equalizacao_tecnica_id',

@@ -42,7 +42,7 @@ class TipoEqualizacaoTecnica extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
-    public function equalizacaoTecnicaAnexos()
+    public function anexos()
     {
         return $this->hasMany(\App\Models\EqualizacaoTecnicaAnexo::class);
     }
@@ -50,9 +50,9 @@ class TipoEqualizacaoTecnica extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
-    public function equalizacaoTecnicaItens()
+    public function itens()
     {
-        return $this->hasMany(\App\Models\EqualizacaoTecnicaIten::class);
+        return $this->hasMany(\App\Models\EqualizacaoTecnicaItem::class);
     }
 
     /**
@@ -60,6 +60,6 @@ class TipoEqualizacaoTecnica extends Model
      **/
     public function qcTipoEqualizacaoTecnicas()
     {
-        return $this->hasMany(\App\Models\Admin\QcTipoEqualizacaoTecnica::class);
+        return $this->hasMany(\App\Models\QcTipoEqualizacaoTecnica::class);
     }
 }

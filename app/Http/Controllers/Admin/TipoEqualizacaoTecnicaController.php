@@ -51,7 +51,6 @@ class TipoEqualizacaoTecnicaController extends AppBaseController
      */
     public function store(CreateTipoEqualizacaoTecnicaRequest $request)
     {
-        dd($request->all());
         $input = $request->all();
 
         $this->tipoEqualizacaoTecnicaRepository->create($input);
