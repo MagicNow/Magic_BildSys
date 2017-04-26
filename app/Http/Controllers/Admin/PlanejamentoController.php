@@ -24,6 +24,7 @@ use Flash;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Response;
 
 class PlanejamentoController extends AppBaseController
@@ -111,6 +112,11 @@ class PlanejamentoController extends AppBaseController
         $obras = Obra::pluck('nome','id')->toArray();
         $grupos = Grupo::whereNull('grupo_id')->pluck('nome','id')->toArray();
         $planejamento = $this->planejamentoRepository->findWithoutFail($id);
+        $itens = PlanejamentoCompra::select(['planejamento_compras.grupo_id','grupos.codigo', 'grupos.nome'])
+            ->join('grupos','grupos.id','=','planejamento_compras.grupo_id')
+            ->where('planejamento_id', $id)
+            ->groupBy('grupo_id')
+            ->get();
 
         if (empty($planejamento)) {
             Flash::error('Planejamento '.trans('common.not-found'));
@@ -119,7 +125,7 @@ class PlanejamentoController extends AppBaseController
         }
 
 
-        return view('admin.planejamentos.edit', compact('planejamento','obras','grupos'));
+        return view('admin.planejamentos.edit', compact('planejamento','obras','grupos','itens'));
     }
 
     public function getGrupos($id){
@@ -210,6 +216,51 @@ class PlanejamentoController extends AppBaseController
         Flash::error('Não foram encontrados insumos em orçamentos com os filtros passados!');
         return redirect('/admin/planejamentos/atividade/'.$request->planejamento_id.'/edit');
 //        return Response()->json(['success' => false, 'msg' => 'Não foram encontrado insumo no orçamento com os filtros passados!']);
+    }
+
+    public function GrupoRelacionados(Request $request){
+        $proximo = '';
+        $retorno = collect([]);
+        switch($request->tipo){
+            case 'subgrupo1_id' :
+                $proximo = 'subgrupo2_id';
+                break;
+            case 'subgrupo2_id' :
+                $proximo = 'subgrupo3_id';
+                break;
+            case 'subgrupo3_id' :
+                $proximo = 'servico_id';
+                break;
+            case 'servico_id' :
+                $proximo = 'insumo_id';
+                break;
+        }
+        if($request->tipo == 'subgrupo1_id' || $request->tipo == 'subgrupo2_id' || $request->tipo == 'subgrupo3_id') {
+            #grupos
+            $retorno = PlanejamentoCompra::select(['planejamento_compras.' . $request->tipo.' as id', 'grupos.codigo', 'grupos.nome',DB::raw("'".$request->tipo."'  as atual"),DB::raw("'".$proximo."'  as proximo")])
+                ->join('grupos', 'grupos.id', '=', 'planejamento_compras.' . $request->tipo)
+                ->where('planejamento_id', $request->planejamento_id)
+                ->where('planejamento_compras.' . $request->campo, $request->id)
+                ->groupBy('planejamento_compras.' . $request->tipo, 'grupos.codigo', 'grupos.nome')
+                ->get();
+        }elseif($request->tipo == 'servico_id'){
+            #serviços
+            $retorno = PlanejamentoCompra::select(['planejamento_compras.' . $request->tipo.' as id', 'servicos.codigo', 'servicos.nome',DB::raw("'".$request->tipo."'  as atual"),DB::raw("'".$proximo."'  as proximo")])
+                ->join('servicos', 'servicos.id', '=', 'planejamento_compras.servico_id')
+                ->where('planejamento_id', $request->planejamento_id)
+                ->where('planejamento_compras.' . $request->campo, $request->id)
+                ->groupBy('planejamento_compras.' . $request->tipo, 'servicos.codigo', 'servicos.nome')
+                ->get();
+        }else{
+            #insumos
+            $retorno = PlanejamentoCompra::select(['planejamento_compras.id', 'insumos.codigo', 'insumos.nome',DB::raw("'".$request->tipo."'  as atual")])
+                ->join('insumos', 'insumos.id', '=', 'planejamento_compras.insumo_id')
+                ->where('planejamento_id', $request->planejamento_id)
+                ->where('planejamento_compras.' . $request->campo, $request->id)
+                ->groupBy('planejamento_compras.id', 'insumos.codigo', 'insumos.nome')
+                ->get();
+        }
+        return $retorno;
     }
 
     /**
