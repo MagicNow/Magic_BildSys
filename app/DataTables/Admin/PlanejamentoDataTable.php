@@ -24,7 +24,7 @@ class PlanejamentoDataTable extends DataTable
                 return $obj->data ? with(new\Carbon\Carbon($obj->data))->format('d/m/Y') : '';
             })
             ->editColumn('data_fim',function ($obj){
-                return $obj->data ? with(new\Carbon\Carbon($obj->data))->format('d/m/Y') : '';
+                return $obj->data_fim ? with(new\Carbon\Carbon($obj->data_fim))->format('d/m/Y') : '';
             })
             ->editColumn('prazo',function ($obj){
                 return $obj->prazo ? $obj->prazo . ' dias ' : '';
