@@ -93,7 +93,6 @@
             </thead>
             <tbody>
             <tr v-if="dados.length >0" v-for="(dado,i) in dados">
-
                 <td class="row-table" v-for="(chave,index) in chaves" >
                     <i v-if="dado['filho']>0 && dado['filho'] != undefined && index == 0" class="fa fa-share"></i>
                     {{dado[chave]}}
@@ -114,16 +113,16 @@
                     <i class="fa fa-times grey"></i>
                 </td>
                 <td class="row-table" v-if="actions.quantidade != undefined" @click="reprovar(dado['id'])">
-                    <input @blur="adicionar(dado, i)" v-model.number="quant[i]" type="number" v-bind:value="quant[i]">
+                    <input @blur="adicionar(dado, i)" v-model.number="quant[i]" type="number" v-bind:value="quant[i]" v-if="dado['pai'] == 0">
                 </td>
                 <td class="row-table" v-if="actions.troca != undefined">
                     <a  v-if="dado['pai']>0 && dado['pai'] != undefined && dado['unidade_sigla'] == 'VB'" v-bind:href="actions.troca_url+'/'+dado['id'] ">
                         <i class="fa fa-exchange blue"></i>
                     </a>
-                    <a  v-if="dado['filho']>0 && dado['filho'] != undefined && dado['unidade_sigla'] == 'VB'" v-bind:href="actions.troca_remove+'/'+dado['planejamento_compra_id']">
+                    <a  v-if="dado['filho']>0 && dado['filho'] != undefined" v-bind:href="actions.troca_remove+'/'+dado['planejamento_id']">
                         <i class="fa fa-times red"></i>
                     </a>
-                    <a  v-if="dado['filho']==0 && dado['pai']==0 && dado['unidade_sigla'] == 'VB'" v-bind:href="actions.troca_url+'?insumo_pai='+dado['id']+'&planejamento_id='+dado['planejamento_compra_id']">
+                    <a  v-if="dado['filho']==0 && dado['pai']==0 && dado['unidade_sigla'] == 'VB'" v-bind:href="actions.troca_url+'?insumo_pai='+dado['id']+'&planejamento_id='+dado['planejamento_id']">
                         <i class="fa fa-exchange grey"></i>
                     </a>
                 </td>

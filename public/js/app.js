@@ -16522,7 +16522,6 @@ module.exports = __vue_exports__
 //
 //
 //
-//
 
     /* harmony default export */ exports["default"] = {
         props: {
@@ -16565,14 +16564,6 @@ module.exports = __vue_exports__
                 },
                 order: 'asc',
                 quant: {}
-            }
-        },
-        computed:{
-            dadoStatus: function () {
-                if(this.dados[0]!= undefined){
-                    return (this.dados[0]['created_at'])?true:false
-
-                }
             }
         },
         methods: {
@@ -29405,7 +29396,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -47076,7 +47067,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
           _vm.reprovar(dado['id'])
         }
       }
-    }, [_c('input', {
+    }, [(dado['pai'] == 0) ? _c('input', {
       directives: [{
         name: "model",
         rawName: "v-model.number",
@@ -47110,7 +47101,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
           }
         }
       }
-    })]) : _vm._e(), _vm._v(" "), (_vm.actions.troca != undefined) ? _c('td', {
+    }) : _vm._e()]) : _vm._e(), _vm._v(" "), (_vm.actions.troca != undefined) ? _c('td', {
       staticClass: "row-table"
     }, [(dado['pai'] > 0 && dado['pai'] != undefined && dado['unidade_sigla'] == 'VB') ? _c('a', {
       attrs: {
@@ -47118,15 +47109,15 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       }
     }, [_c('i', {
       staticClass: "fa fa-exchange blue"
-    })]) : _vm._e(), _vm._v(" "), (dado['filho'] > 0 && dado['filho'] != undefined && dado['unidade_sigla'] == 'VB') ? _c('a', {
+    })]) : _vm._e(), _vm._v(" "), (dado['filho'] > 0 && dado['filho'] != undefined) ? _c('a', {
       attrs: {
-        "href": _vm.actions.troca_remove + '/' + dado['planejamento_compra_id']
+        "href": _vm.actions.troca_remove + '/' + dado['planejamento_id']
       }
     }, [_c('i', {
       staticClass: "fa fa-times red"
     })]) : _vm._e(), _vm._v(" "), (dado['filho'] == 0 && dado['pai'] == 0 && dado['unidade_sigla'] == 'VB') ? _c('a', {
       attrs: {
-        "href": _vm.actions.troca_url + '?insumo_pai=' + dado['id'] + '&planejamento_id=' + dado['planejamento_compra_id']
+        "href": _vm.actions.troca_url + '?insumo_pai=' + dado['id'] + '&planejamento_id=' + dado['planejamento_id']
       }
     }, [_c('i', {
       staticClass: "fa fa-exchange grey"
