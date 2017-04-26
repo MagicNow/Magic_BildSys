@@ -11,6 +11,7 @@ use App\Models\Insumo;
 use App\Models\Grupo;
 use App\Models\InsumoGrupo;
 use App\Models\Lembrete;
+use App\Models\ObraUser;
 use App\Models\OrdemDeCompraItemAnexo;
 use App\Models\OrdemDeCompraStatusLog;
 use App\Models\Planejamento;
@@ -177,7 +178,9 @@ class OrdemDeCompraController extends AppBaseController
 
     public function compras()
     {
-        $obras = Obra::pluck('nome','id')->toArray();
+        $user_obras = ObraUser::where('user_id', Auth::user()->id)->get();
+        $obras = Obra::whereIn('id', $user_obras->pluck('id')->toArray())->get();
+        $obras = $obras->pluck('nome','id')->toArray();
         return view('ordem_de_compras.compras', compact('obras'));
     }
 
@@ -499,11 +502,12 @@ class OrdemDeCompraController extends AppBaseController
                     'orcamentos.preco_unitario',
                     'planejamento_compras.quantidade_compra',
                     'planejamento_compras.id as planejamento_compra_id',
+                    'planejamentos.id as planejamento_id',
                     DB::raw('(SELECT count(planejamento_compras.id) FROM planejamento_compras 
                     WHERE planejamento_compras.insumo_id = insumos.id 
                     AND planejamento_compras.planejamento_id ='.(isset($planejamento)? $planejamento->id : 'planejamentos.id').' AND  planejamento_compras.insumo_pai IS NOT NULL) as filho'),
                     DB::raw('(SELECT count(planejamento_compras.id) FROM planejamento_compras 
-                    WHERE planejamento_compras.planejamento_id ='.(isset($planejamento)? $planejamento->id : 'planejamentos.id').' AND  planejamento_compras.insumo_pai = insumos.id AND planejamento_compras.deleted_at = NULL) as pai'),
+                    WHERE planejamento_compras.planejamento_id ='.(isset($planejamento)? $planejamento->id : 'planejamentos.id').' AND  planejamento_compras.insumo_pai = insumos.id AND planejamento_compras.deleted_at IS NULL) as pai'),
                     DB::raw('(SELECT count(ordem_de_compra_itens.id) FROM ordem_de_compra_itens 
                     JOIN ordem_de_compras 
                         ON ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id 
@@ -541,11 +545,13 @@ class OrdemDeCompraController extends AppBaseController
 
         //Testa a ordenação
         if(isset($request->orderkey)){
-            $insumo_query->orderBy($request->orderkey, $request->order);
+            $insumos->orderBy($request->orderkey, $request->order);
         }
+
+        $insumos->orderByRaw('COALESCE(planejamento_compras.insumo_pai, planejamento_compras.id)');
+
         //Aplica filtro do Jhonatan
         $insumos = CodeRepository::filter($insumos, $request->all());
-
         return response()->json($insumos->paginate(10), 200);
     }
 

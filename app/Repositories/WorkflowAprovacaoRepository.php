@@ -323,12 +323,13 @@ class WorkflowAprovacaoRepository
         ];
     }
 
-    public static function verificaQuantidadeUsuariosAprovadores($workflow_tipo_id, $alcada = null){
+    public static function verificaQuantidadeUsuariosAprovadores($workflow_tipo_id, $alcada = null, $obra_id = null){
         $qtd_usuarios = 0;
         $workflow_alcadas = WorkflowAlcada::where('workflow_tipo_id',$workflow_tipo_id);
         if($alcada){
             $workflow_alcadas->where('id', $alcada);
         }
+
         $workflow_alcadas = $workflow_alcadas->get();
         
         foreach ($workflow_alcadas as $alcada){
