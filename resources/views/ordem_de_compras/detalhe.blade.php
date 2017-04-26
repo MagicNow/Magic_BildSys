@@ -125,11 +125,13 @@
                             </div>
                         </h4>
                         @if(count($avaliado_reprovado))
-                            @foreach($avaliado_reprovado as $alcada => $workflow)
-                                @if($workflow['aprovadores'])
-                                    @if($workflow['total_avaliado'])
+                            @php $count = 0; @endphp
+                            @foreach($avaliado_reprovado as $alcada)
+                                @if($alcada['aprovadores'])
+                                    @php $count += 1; @endphp
+                                    @if($alcada['total_avaliado'])
                                         @php
-                                            $avaliado_aprovadores = $workflow['total_avaliado'] / $workflow['aprovadores'];
+                                            $avaliado_aprovadores = $alcada['total_avaliado'] / $alcada['aprovadores'];
                                             $percentual_quebrado = $avaliado_aprovadores / $qtd_itens;
                                             $percentual = $percentual_quebrado * 100;
                                             $percentual = number_format($percentual, 0);
@@ -140,8 +142,8 @@
                                         @endphp
 
                                         <h4 class="col-md-{{$col_md}} col-sm-{{$col_md}}" style="padding-right: 1px;padding-left: 1px;">
-                                            <span>{{$alcada}}ª alçada</span>
-                                            @if($alcada == $alcadas_count)
+                                            <span>{{$count}}ª alçada</span>
+                                            @if($count == $alcadas_count)
                                                 <span class="pull-right">Finalizada</span>
                                             @endif
                                             <div class="progress">
@@ -152,8 +154,8 @@
                                         </h4>
                                     @else
                                         <h4 class="col-md-{{$col_md}} col-sm-{{$col_md}}" style="padding-right: 1px;padding-left: 1px;">
-                                            <span>{{$alcada}}ª alçada</span>
-                                            @if($alcada == $alcadas_count)
+                                            <span>{{$count}}ª alçada</span>
+                                            @if($count == $alcadas_count)
                                                 <span class="pull-right">Finalizada</span>
                                             @endif
                                             <div class="progress">
