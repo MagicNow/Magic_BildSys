@@ -182,10 +182,10 @@
                                 </li>
                                 <!-- Menu Footer-->
                                 <li class="user-footer">
-                                    <div class="pull-left">
-                                        <a href="/admin/users/{{ Auth::id() }}/edit" class="btn btn-primary btn-flat">Pefil</a>
-                                    </div>
-                                    <div class="pull-right">
+                                    {{--<div class="pull-left">--}}
+                                        {{--<a href="/admin/users/{{ Auth::id() }}/edit" class="btn btn-primary btn-flat">Pefil</a>--}}
+                                    {{--</div>--}}
+                                    <div style="text-align: center;">
                                         <a href="{!! url('/logout') !!}" class="btn btn-danger btn-flat"
                                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                             Sair
