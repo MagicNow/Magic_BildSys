@@ -16521,6 +16521,8 @@ module.exports = __vue_exports__
 //
 //
 //
+//
+//
 
     /* harmony default export */ exports["default"] = {
         props: {
@@ -16563,6 +16565,14 @@ module.exports = __vue_exports__
                 },
                 order: 'asc',
                 quant: {}
+            }
+        },
+        computed:{
+            dadoStatus: function () {
+                if(this.dados[0]!= undefined){
+                    return (this.dados[0]['created_at'])?true:false
+
+                }
             }
         },
         methods: {
@@ -16682,7 +16692,7 @@ module.exports = __vue_exports__
                         if(typeof resp.body == 'object'){
                             this.filtros = resp.body;
                         }
-                })
+                    })
             },
             //Faz a requisição dos dados e também funciona como callback do generic pagination
             loadData: function () {
@@ -16713,7 +16723,7 @@ module.exports = __vue_exports__
                         }
                         if(this.actions.quantidade != undefined){
                             for (var j in this.dados) {
-                               this$1.quant[j] = this$1.dados[j].quantidade_compra;
+                                this$1.quant[j] = this$1.dados[j].quantidade_compra;
                             }
                         }
                         //Para animação loader
@@ -29395,7 +29405,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -46895,7 +46905,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.loadData()
       }
     }
-  })]), _vm._v(" "), _c('li', [_c('a', {
+  })]), _vm._v(" "), (_vm.dadoStatus) ? _c('div', [_c('li', [_c('a', {
     staticClass: "period",
     staticStyle: {
       "cursor": "pointer"
@@ -46974,7 +46984,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "id": "period_find",
       "value": "periodo=&procurar="
     }
-  }), _vm._v(" "), _vm._m(3)])]) : _vm._e(), _vm._v(" "), _c('table', {
+  })]) : _vm._e(), _vm._v(" "), _vm._m(3)])]) : _vm._e(), _vm._v(" "), _c('table', {
     staticClass: "table"
   }, [_c('thead', {
     staticClass: "head-table"
@@ -47017,7 +47027,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         staticClass: "row-table"
       }, [(dado['filho'] > 0 && dado['filho'] != undefined && index == 0) ? _c('i', {
         staticClass: "fa fa-share"
-      }) : _vm._e(), _vm._v("\n                    " + _vm._s(dado[chave]) + "\n                ")])
+      }) : _vm._e(), _vm._v("\n                " + _vm._s(dado[chave]) + "\n            ")])
     }), _vm._v(" "), (_vm.actions.status != undefined) ? _c('td', {
       staticClass: "row-table"
     }, [(dado['status'] == 0) ? _c('i', {

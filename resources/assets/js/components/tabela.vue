@@ -40,22 +40,24 @@
                 <li class="col-md-5">
                     <input type="text" @keyup="loadData()" id="find" placeholder="Procurar" onkeyup="filterFind(this.value);" class="form-control" style="border-color:#f5f5f5;background-color:#f5f5f5;">
                 </li>
-                <li>
-                    <a @click="loadData()" id="period_hoje" class="period" onclick="filterPeriod('hoje');" style="cursor: pointer">Hoje</a>
-                </li>
-                <li>
-                    <a @click="loadData()" id="period_7" class="period" onclick="filterPeriod(7);" style="cursor: pointer">7 dias</a>
-                </li>
-                <li>
-                    <a @click="loadData()" id="period_15" class="period" onclick="filterPeriod(15);" style="cursor: pointer">15 dias</a>
-                </li>
-                <li>
-                    <a @click="loadData()" id="period_30" class="period" onclick="filterPeriod(30);" style="cursor: pointer">30 dias</a>
-                </li>
-                <li>
-                    <input type="number" @keyup="loadData()" id="other_period" onkeyup="filterPeriod(this.value);" placeholder="Outro periodo" class="form-control" style="border-color:#f5f5f5;background-color:#f5f5f5;">
-                </li>
-                <input type="hidden" id="period_find" value="periodo=&procurar=">
+                <div v-if="dadoStatus">
+                    <li>
+                        <a @click="loadData()" id="period_hoje" class="period" onclick="filterPeriod('hoje');" style="cursor: pointer">Hoje</a>
+                    </li>
+                    <li>
+                        <a @click="loadData()" id="period_7" class="period" onclick="filterPeriod(7);" style="cursor: pointer">7 dias</a>
+                    </li>
+                    <li>
+                        <a @click="loadData()" id="period_15" class="period" onclick="filterPeriod(15);" style="cursor: pointer">15 dias</a>
+                    </li>
+                    <li>
+                        <a @click="loadData()" id="period_30" class="period" onclick="filterPeriod(30);" style="cursor: pointer">30 dias</a>
+                    </li>
+                    <li>
+                        <input type="number" @keyup="loadData()" id="other_period" onkeyup="filterPeriod(this.value);" placeholder="Outro periodo" class="form-control" style="border-color:#f5f5f5;background-color:#f5f5f5;">
+                    </li>
+                    <input type="hidden" id="period_find" value="periodo=&procurar=">
+                </div>
                 <li>
                     <a href="" data-toggle="modal" data-target="#myModal" class="grey">
                         Adicionar filtros <i class="fa fa-filter" aria-hidden="true"></i>
@@ -90,53 +92,53 @@
             </tr>
             </thead>
             <tbody>
-                <tr v-if="dados.length >0" v-for="(dado,i) in dados">
+            <tr v-if="dados.length >0" v-for="(dado,i) in dados">
 
-                    <td class="row-table" v-for="(chave,index) in chaves" >
-                        <i v-if="dado['filho']>0 && dado['filho'] != undefined && index == 0" class="fa fa-share"></i>
-                        {{dado[chave]}}
-                    </td>
-                    <td class="row-table" v-if="actions.status != undefined">
-                        <i v-if="dado['status'] == 0" class="fa fa-circle green"></i>
-                        <i v-if="dado['status'] == 1" class="fa fa-circle red"></i>
-                        <i v-if="dado['status'] == -1" class="fa fa-circle orange"></i>
-                    </td>
-                    <td class="row-table" v-if="actions.detalhe != undefined">
-                        <a v-bind:href="actions.detalhe_url+'/'+dado['id']"><i class="fa fa-eye"></i></a>
-                        <a v-bind:href="'/ordens-de-compra/reabrir-ordem-de-compra/'+dado['id']" v-if="dado['situacao'] == 'Reprovada'">Reabrir</a>
-                    </td>
-                    <td class="row-table" v-if="actions.aprovar != undefined" @click="aprovar(dado['id'])">
-                        <i class="glyphicon glyphicon-ok grey"></i>
-                    </td>
-                    <td class="row-table" v-if="actions.reprovar != undefined" @click="reprovar(dado['id'])">
-                        <i class="fa fa-times grey"></i>
-                    </td>
-                    <td class="row-table" v-if="actions.quantidade != undefined" @click="reprovar(dado['id'])">
-                        <input @blur="adicionar(dado, i)" v-model.number="quant[i]" type="number" v-bind:value="quant[i]">
-                    </td>
-                    <td class="row-table" v-if="actions.troca != undefined">
-                        <a  v-if="dado['pai']>0 && dado['pai'] != undefined && dado['unidade_sigla'] == 'VB'" v-bind:href="actions.troca_url+'/'+dado['id'] ">
-                            <i class="fa fa-exchange blue"></i>
-                        </a>
-                        <a  v-if="dado['filho']>0 && dado['filho'] != undefined && dado['unidade_sigla'] == 'VB'" v-bind:href="actions.troca_remove+'/'+dado['planejamento_compra_id']">
-                            <i class="fa fa-times red"></i>
-                        </a>
-                        <a  v-if="dado['filho']==0 && dado['pai']==0 && dado['unidade_sigla'] == 'VB'" v-bind:href="actions.troca_url+'?insumo_pai='+dado['id']+'&planejamento_id='+dado['planejamento_compra_id']">
-                            <i class="fa fa-exchange grey"></i>
-                        </a>
-                    </td>
-                    <td  class="row-table" v-if="actions.adicionar != undefined && dado['adicionado'] > 0">
-                        <i class="fa fa-check green"></i>
-                    </td>
-                    <td class="row-table" v-else-if="actions.adicionar != undefined">
-                        <button @click="adicionar(dado, i)" type="button" class="btn btn-xs btn-link">
-                            <i class="fa fa-plus grey"></i>
-                        </button>
-                    </td>
-                </tr>
-                <tr v-else>
-                    <td>Não há dados</td>
-                </tr>
+                <td class="row-table" v-for="(chave,index) in chaves" >
+                    <i v-if="dado['filho']>0 && dado['filho'] != undefined && index == 0" class="fa fa-share"></i>
+                    {{dado[chave]}}
+                </td>
+                <td class="row-table" v-if="actions.status != undefined">
+                    <i v-if="dado['status'] == 0" class="fa fa-circle green"></i>
+                    <i v-if="dado['status'] == 1" class="fa fa-circle red"></i>
+                    <i v-if="dado['status'] == -1" class="fa fa-circle orange"></i>
+                </td>
+                <td class="row-table" v-if="actions.detalhe != undefined">
+                    <a v-bind:href="actions.detalhe_url+'/'+dado['id']"><i class="fa fa-eye"></i></a>
+                    <a v-bind:href="'/ordens-de-compra/reabrir-ordem-de-compra/'+dado['id']" v-if="dado['situacao'] == 'Reprovada'">Reabrir</a>
+                </td>
+                <td class="row-table" v-if="actions.aprovar != undefined" @click="aprovar(dado['id'])">
+                    <i class="glyphicon glyphicon-ok grey"></i>
+                </td>
+                <td class="row-table" v-if="actions.reprovar != undefined" @click="reprovar(dado['id'])">
+                    <i class="fa fa-times grey"></i>
+                </td>
+                <td class="row-table" v-if="actions.quantidade != undefined" @click="reprovar(dado['id'])">
+                    <input @blur="adicionar(dado, i)" v-model.number="quant[i]" type="number" v-bind:value="quant[i]">
+                </td>
+                <td class="row-table" v-if="actions.troca != undefined">
+                    <a  v-if="dado['pai']>0 && dado['pai'] != undefined && dado['unidade_sigla'] == 'VB'" v-bind:href="actions.troca_url+'/'+dado['id'] ">
+                        <i class="fa fa-exchange blue"></i>
+                    </a>
+                    <a  v-if="dado['filho']>0 && dado['filho'] != undefined && dado['unidade_sigla'] == 'VB'" v-bind:href="actions.troca_remove+'/'+dado['planejamento_compra_id']">
+                        <i class="fa fa-times red"></i>
+                    </a>
+                    <a  v-if="dado['filho']==0 && dado['pai']==0 && dado['unidade_sigla'] == 'VB'" v-bind:href="actions.troca_url+'?insumo_pai='+dado['id']+'&planejamento_id='+dado['planejamento_compra_id']">
+                        <i class="fa fa-exchange grey"></i>
+                    </a>
+                </td>
+                <td  class="row-table" v-if="actions.adicionar != undefined && dado['adicionado'] > 0">
+                    <i class="fa fa-check green"></i>
+                </td>
+                <td class="row-table" v-else-if="actions.adicionar != undefined">
+                    <button @click="adicionar(dado, i)" type="button" class="btn btn-xs btn-link">
+                        <i class="fa fa-plus grey"></i>
+                    </button>
+                </td>
+            </tr>
+            <tr v-else>
+                <td>Não há dados</td>
+            </tr>
             </tbody>
         </table>
         <div v-if="pagination.last_page >1" class="text-center">
@@ -189,6 +191,14 @@
                 },
                 order: 'asc',
                 quant: {}
+            }
+        },
+        computed:{
+            dadoStatus: function () {
+                if(this.dados[0]!= undefined){
+                    return (this.dados[0]['created_at'])?true:false
+
+                }
             }
         },
         methods: {
@@ -302,7 +312,7 @@
                         if(typeof resp.body == 'object'){
                             this.filtros = resp.body;
                         }
-                })
+                    })
             },
             //Faz a requisição dos dados e também funciona como callback do generic pagination
             loadData: function () {
@@ -331,7 +341,7 @@
                         }
                         if(this.actions.quantidade != undefined){
                             for (var j in this.dados) {
-                               this.quant[j] = this.dados[j].quantidade_compra;
+                                this.quant[j] = this.dados[j].quantidade_compra;
                             }
                         }
                         //Para animação loader
