@@ -183,7 +183,7 @@
                                 <!-- Menu Footer-->
                                 <li class="user-footer">
                                     <div class="pull-left">
-                                        <a href="/admin/users/{{ Auth::id() }}/edit" class="btn btn-primary btn-flat">Pefil</a>
+                                        <a href="/admin/users/{{ Auth::id() }}/edit" class="btn btn-primary btn-flat">Perfil</a>
                                     </div>
                                     <div class="pull-right">
                                         <a href="{!! url('/logout') !!}" class="btn btn-danger btn-flat"
@@ -194,6 +194,11 @@
                                             {{ csrf_field() }}
                                         </form>
                                     </div>
+                                    @if(Auth::user()->admin)
+                                        <div class="text-center">
+                                            <a href="/admin" class="btn btn-warning btn-flat">Administrativo</a>
+                                        </div>
+                                    @endif
                                 </li>
                             </ul>
                         </li>
