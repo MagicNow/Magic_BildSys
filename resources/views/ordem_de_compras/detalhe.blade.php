@@ -126,42 +126,43 @@
                         </h4>
                         @if(count($avaliado_reprovado))
                             @foreach($avaliado_reprovado as $alcada => $workflow)
-                                @if($workflow['total_avaliado'] && $workflow['aprovadores'])
-                                    @php
-                                        $avaliado_aprovadores = $workflow['total_avaliado'] / $workflow['aprovadores'];
-                                        $percentual_quebrado = $avaliado_aprovadores / $qtd_itens;
-                                        $percentual = $percentual_quebrado * 100;
-                                        $percentual = number_format($percentual, 0);
+                                @if($workflow['aprovadores'])
+                                    @if($workflow['total_avaliado'])
+                                        @php
+                                            $avaliado_aprovadores = $workflow['total_avaliado'] / $workflow['aprovadores'];
+                                            $percentual_quebrado = $avaliado_aprovadores / $qtd_itens;
+                                            $percentual = $percentual_quebrado * 100;
+                                            $percentual = number_format($percentual, 0);
 
-                                        if($percentual > 100){
-                                            $percentual = 100;
-                                        }
-                                    @endphp
+                                            if($percentual > 100){
+                                                $percentual = 100;
+                                            }
+                                        @endphp
 
-                                    <h4 class="col-md-{{$col_md}} col-sm-{{$col_md}}" style="padding-right: 1px;padding-left: 1px;">
-                                        <span>{{$alcada}}ª alçada</span>
-                                        @if($alcada == $alcadas_count)
-                                            <span class="pull-right">Finalizada</span>
-                                        @endif
-                                        <div class="progress">
-                                            <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="{{$percentual}}" aria-valuemin="0" aria-valuemax="100" style="width: {{$percentual}}%;">
-                                                {{$percentual}}%
+                                        <h4 class="col-md-{{$col_md}} col-sm-{{$col_md}}" style="padding-right: 1px;padding-left: 1px;">
+                                            <span>{{$alcada}}ª alçada</span>
+                                            @if($alcada == $alcadas_count)
+                                                <span class="pull-right">Finalizada</span>
+                                            @endif
+                                            <div class="progress">
+                                                <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="{{$percentual}}" aria-valuemin="0" aria-valuemax="100" style="width: {{$percentual}}%;">
+                                                    {{$percentual}}%
+                                                </div>
                                             </div>
-                                        </div>
-                                    </h4>
-                                @endif
-                                @if($workflow['total_avaliado'] == 0)
-                                    <h4 class="col-md-{{$col_md}} col-sm-{{$col_md}}" style="padding-right: 1px;padding-left: 1px;">
-                                        <span>{{$alcada}}ª alçada</span>
-                                        @if($alcada == $alcadas_count)
-                                            <span class="pull-right">Finalizada</span>
-                                        @endif
-                                        <div class="progress">
-                                            <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%; color: black;">
-                                                0%
+                                        </h4>
+                                    @else
+                                        <h4 class="col-md-{{$col_md}} col-sm-{{$col_md}}" style="padding-right: 1px;padding-left: 1px;">
+                                            <span>{{$alcada}}ª alçada</span>
+                                            @if($alcada == $alcadas_count)
+                                                <span class="pull-right">Finalizada</span>
+                                            @endif
+                                            <div class="progress">
+                                                <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%; color: black;">
+                                                    0%
+                                                </div>
                                             </div>
-                                        </div>
-                                    </h4>
+                                        </h4>
+                                    @endif
                                 @endif
                             @endforeach
                         @else
