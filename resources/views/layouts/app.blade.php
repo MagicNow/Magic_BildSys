@@ -187,7 +187,7 @@
                                     </div>
                                     @if(Auth::user()->admin)
                                     <div class="text-center">
-                                        <a href="/admin" class="btn btn-warning btn-flat">Administrativo</a>
+                                        <a href="/" class="btn btn-warning btn-flat">Bild-sys</a>
                                     </div>
                                     @endif
                                 </li>
