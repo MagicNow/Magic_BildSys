@@ -149,6 +149,7 @@
     <!-- Fim Componente tabela vue -->
 </template>
 <script>
+    var verify = 0;
     export default{
         props: {
             apiUrl: {
@@ -336,10 +337,15 @@
                             }
                         }
                         //Para animação loader
-                        stopLoading(verifyQueryString());
+                        if(!verify){
+                            stopLoading(verifyQueryString());
+                            verify = 1;
+                        }else{
+                            stopLoading();
+                        }
                     });
                 }
-            },
+            }
         },
         created: function () {
             //Inicia Animação
