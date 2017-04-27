@@ -27,7 +27,7 @@
                     <?php $qtdItens = 0; ?>
                     @if(isset($tipoEqualizacaoTecnica))
                         @foreach($tipoEqualizacaoTecnica->itens as $item)
-                            <?php $qtdItens++; ?>
+                            <?php $qtdItens = $item->id; ?>
                             <div id="item_{{$qtdItens}}">
                                 <!-- idioma Id Field -->
                                 <div class="form-group col-sm-11">
@@ -75,7 +75,7 @@
                     @if(isset($tipoEqualizacaoTecnica))
                         <?php $qtdanexos = 0; ?>
                         @foreach($tipoEqualizacaoTecnica->anexos as $anexo)
-                            <?php $qtdanexos++; ?>
+                            <?php $qtdanexos= $anexo->id; ?>
                             <div id="arquivo_{{$qtdanexos}}">
                                 <!-- idioma Id Field -->
                                 <div class="form-group col-sm-7">

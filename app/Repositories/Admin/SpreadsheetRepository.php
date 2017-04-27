@@ -487,7 +487,23 @@ class SpreadsheetRepository
 //                        dd($final);
                         # save data table budget
                         if($erro == 0) {
-                            Planejamento::create($final);
+                            Planejamento::updateOrCreate(
+                              [
+                                  'resumo' => $final['resumo'],
+                                  'tarefa' => $final['tarefa']
+                              ],
+                              [
+                                  'resumo' => $final['resumo'],
+                                  'tarefa' => $final['tarefa'],
+                                  'obra_id' => $final['obra_id'],
+                                  'template_id' => $final['template_id'],
+                                  'user_id' => $final['user_id'],
+                                  'prazo' => $final['prazo'],
+                                  'data' => $final['data'],
+                                  'data_fim' => $final['data_fim']
+                              ]
+                            );
+//                            Planejamento::create($final);
                         }else{
                             // estourar loop
                             $erro = 1;
