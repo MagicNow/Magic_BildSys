@@ -6,6 +6,8 @@ use App\DataTables\Admin\ObraDataTable;
 use App\Http\Requests\Admin;
 use App\Http\Requests\Admin\CreateObraRequest;
 use App\Http\Requests\Admin\UpdateObraRequest;
+use App\Models\ObraUser;
+use App\Models\User;
 use App\Repositories\Admin\ObraRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
@@ -99,10 +101,11 @@ class ObraController extends AppBaseController
         }
 
         $relacionados = [];
-        $obrasUsers_ids = $obra->obraUsers()->pluck('user_id','user_id')->toArray();
-        $relacionados = User::whereIn('id', $obrasUsers_ids)->pluck('name','id')->toArray();
+        $obraUsers = ObraUser::where('obra_id',$obra->id)->pluck('user_id')->toArray();
+//        dd($obrasUsers_ids);
+        $relacionados = User::whereIn('id', $obraUsers)->pluck('name','id')->toArray();
 
-        return view('admin.obras.edit', compact('obra', 'relacionados', 'obrasUsers_ids'));
+        return view('admin.obras.edit', compact('obra', 'relacionados', 'obraUsers'));
     }
 
     /**
