@@ -62,11 +62,11 @@ function addFilters(query_string) {
             if(type == 'string'){
                 delete filtroGlobal[$( this ).val()+'_option'];
             }else if(type == 'integer'){
-                filtroGlobal[$( this ).val()+'_option'] = '';
-                filtroGlobal[$( this ).val()+'_final'] = '';
+                delete filtroGlobal[$( this ).val()+'_option'];
+                delete filtroGlobal[$( this ).val()+'_final'];
             }else if(type == 'date'){
-                filtroGlobal[$( this ).val()+'_initial'] = '';
-                filtroGlobal[$( this ).val()+'_final'] = '';
+                delete filtroGlobal[$( this ).val()+'_initial'];
+                delete filtroGlobal[$( this ).val()+'_final'];
             }
         }
     });
@@ -414,6 +414,7 @@ function pegaQuerysting(){
 }
 
 function addQuery() {
+
     var filters_fields = $('.filters');
     if($('#period_find').val()){
         var period_find = JSON.parse('{"'+$('#period_find').val().replace(/&/g, '","').replace(/=/g,'":"')+ '"}');
