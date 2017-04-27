@@ -33,7 +33,7 @@
                     api-url="/api/listagem-ordens-de-compras"
                     api-filtros="/filter-json-ordem-compra"
                     v-bind:params="{}"
-                    v-bind:actions="{filtros: true, status: true, detalhe: true, detalhe_url:'{{ url('/ordens-de-compra/detalhes/') }}'}"
+                    v-bind:actions="{filtros: true,date:true, status: true, detalhe: true, detalhe_url:'{{ url('/ordens-de-compra/detalhes/') }}'}"
                     v-bind:colunas="[
                     {campo_db: 'id', label: 'núm. o.c'},
                     {campo_db: 'obra', label: 'obra'},

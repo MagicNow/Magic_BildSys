@@ -40,23 +40,21 @@
                 <li class="col-md-5">
                     <input type="text" @keyup="loadData()" id="find" placeholder="Procurar" onkeyup="filterFind(this.value);" class="form-control" style="border-color:#f5f5f5;background-color:#f5f5f5;">
                 </li>
-                <div v-if="dadoStatus">
-                    <li>
-                        <a @click="loadData()" id="period_hoje" class="period" onclick="filterPeriod('hoje');" style="cursor: pointer">Hoje</a>
-                    </li>
-                    <li>
-                        <a @click="loadData()" id="period_7" class="period" onclick="filterPeriod(7);" style="cursor: pointer">7 dias</a>
-                    </li>
-                    <li>
-                        <a @click="loadData()" id="period_15" class="period" onclick="filterPeriod(15);" style="cursor: pointer">15 dias</a>
-                    </li>
-                    <li>
-                        <a @click="loadData()" id="period_30" class="period" onclick="filterPeriod(30);" style="cursor: pointer">30 dias</a>
-                    </li>
-                    <li>
-                        <input type="number" @keyup="loadData()" id="other_period" onkeyup="filterPeriod(this.value);" placeholder="Outro periodo" class="form-control" style="border-color:#f5f5f5;background-color:#f5f5f5;">
-                    </li>
-                </div>
+                <li v-if="actions.date != undefined">
+                    <a @click="loadData()" id="period_hoje" class="period" onclick="filterPeriod('hoje');" style="cursor: pointer">Hoje</a>
+                </li >
+                <li v-if="actions.date != undefined">
+                    <a @click="loadData()" id="period_7" class="period" onclick="filterPeriod(7);" style="cursor: pointer">7 dias</a>
+                </li>
+                <li v-if="actions.date != undefined">
+                    <a @click="loadData()" id="period_15" class="period" onclick="filterPeriod(15);" style="cursor: pointer">15 dias</a>
+                </li>
+                <li v-if="actions.date != undefined">
+                    <a @click="loadData()" id="period_30" class="period" onclick="filterPeriod(30);" style="cursor: pointer">30 dias</a>
+                </li>
+                <li v-if="actions.date != undefined">
+                    <input type="number" @keyup="loadData()" id="other_period" onkeyup="filterPeriod(this.value);" placeholder="Outro periodo" class="form-control" style="border-color:#f5f5f5;background-color:#f5f5f5;">
+                </li>
                 <input type="hidden" id="period_find" value="periodo=&procurar=">
                 <li>
                     <a href="" data-toggle="modal" data-target="#myModal" class="grey">
@@ -169,6 +167,7 @@
                 aprovar: '',
                 reprovar: '',
                 quantidade:'',
+                date:'',
             },
             colunas: ''
         },

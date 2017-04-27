@@ -16520,8 +16520,6 @@ module.exports = __vue_exports__
 //
 //
 //
-//
-//
 
     var verify = 0;
     /* harmony default export */ exports["default"] = {
@@ -16543,6 +16541,7 @@ module.exports = __vue_exports__
                 aprovar: '',
                 reprovar: '',
                 quantidade:'',
+                date:'',
             },
             colunas: ''
         },
@@ -29402,7 +29401,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -46905,7 +46904,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.loadData()
       }
     }
-  })]), _vm._v(" "), (_vm.dadoStatus) ? _c('div', [_c('li', [_c('a', {
+  })]), _vm._v(" "), (_vm.actions.date != undefined) ? _c('li', [_c('a', {
     staticClass: "period",
     staticStyle: {
       "cursor": "pointer"
@@ -46919,7 +46918,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.loadData()
       }
     }
-  }, [_vm._v("Hoje")])]), _vm._v(" "), _c('li', [_c('a', {
+  }, [_vm._v("Hoje")])]) : _vm._e(), _vm._v(" "), (_vm.actions.date != undefined) ? _c('li', [_c('a', {
     staticClass: "period",
     staticStyle: {
       "cursor": "pointer"
@@ -46933,7 +46932,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.loadData()
       }
     }
-  }, [_vm._v("7 dias")])]), _vm._v(" "), _c('li', [_c('a', {
+  }, [_vm._v("7 dias")])]) : _vm._e(), _vm._v(" "), (_vm.actions.date != undefined) ? _c('li', [_c('a', {
     staticClass: "period",
     staticStyle: {
       "cursor": "pointer"
@@ -46947,7 +46946,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.loadData()
       }
     }
-  }, [_vm._v("15 dias")])]), _vm._v(" "), _c('li', [_c('a', {
+  }, [_vm._v("15 dias")])]) : _vm._e(), _vm._v(" "), (_vm.actions.date != undefined) ? _c('li', [_c('a', {
     staticClass: "period",
     staticStyle: {
       "cursor": "pointer"
@@ -46961,7 +46960,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.loadData()
       }
     }
-  }, [_vm._v("30 dias")])]), _vm._v(" "), _c('li', [_c('input', {
+  }, [_vm._v("30 dias")])]) : _vm._e(), _vm._v(" "), (_vm.actions.date != undefined) ? _c('li', [_c('input', {
     staticClass: "form-control",
     staticStyle: {
       "border-color": "#f5f5f5",
@@ -46978,7 +46977,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.loadData()
       }
     }
-  })])]) : _vm._e(), _vm._v(" "), _c('input', {
+  })]) : _vm._e(), _vm._v(" "), _c('input', {
     attrs: {
       "type": "hidden",
       "id": "period_find",
