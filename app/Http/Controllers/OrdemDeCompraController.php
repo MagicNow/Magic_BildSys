@@ -801,14 +801,19 @@ class OrdemDeCompraController extends AppBaseController
 
             return back();
         }
-
-        $ordemDeCompra->oc_status_id = 2; // Fechada
+        OrdemDeCompraStatusLog::create([
+            'oc_status_id'=>2, // Fechado
+            'ordem_de_compra_id'=>$ordemDeCompra->id,
+            'user_id'=>Auth::id()
+        ]);
+        $ordemDeCompra->oc_status_id = 3; // Em Aprovação
         $ordemDeCompra->save();
         OrdemDeCompraStatusLog::create([
             'oc_status_id'=>$ordemDeCompra->oc_status_id,
             'ordem_de_compra_id'=>$ordemDeCompra->id,
             'user_id'=>Auth::id()
         ]);
+        // Já muda para Em Aprovação
 
         // Agora altera todos os Planejamentos compra que estão ligadas à essa zerando a quantidade do pré-carrinho
         $planejamento_compras_zerar = $ordemDeCompra->itens()

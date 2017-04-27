@@ -11,7 +11,7 @@
        <div class="box box-primary">
            <div class="box-body">
                <div class="row">
-                   {!! Form::model($tipoEqualizacaoTecnica, ['route' => ['admin.tipoEqualizacaoTecnicas.update', $tipoEqualizacaoTecnica->id], 'method' => 'patch']) !!}
+                   {!! Form::model($tipoEqualizacaoTecnica, ['route' => ['admin.tipoEqualizacaoTecnicas.update', $tipoEqualizacaoTecnica->id], 'method' => 'patch', 'files'=>true]) !!}
 
                         @include('admin.tipo_equalizacao_tecnicas.fields')
 
