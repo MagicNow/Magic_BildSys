@@ -19,13 +19,17 @@
         #totalInsumos{
             margin-bottom: 20px;
         }
+        .tooltip-inner {
+             max-width: 500px;
+             text-align: left !important;
+         }
     </style>
 @stop
 @section('content')
     <section class="content-header">
         <div class="modal-header">
             <div class="col-md-12">
-                <div class="col-md-6">
+                <div class="col-md-10">
                     <span class="pull-left title">
                         <h3>
                             <button type="button" class="btn btn-link" onclick="history.go(-1);">
@@ -35,207 +39,64 @@
                         </h3>
                     </span>
                 </div>
-                <div class="col-md-6 text-right">
-
+                <div class="col-md-2 text-right">
+                    <label>Qtd por página</label>
+                    {!! Form::select('qtd-por-pagina',[5=>'5',10=>'10',20=>'20',50=>'50',100=>'100',1000=>'1000'],Request::get('qtd-por-pagina','10'),['class'=>'form-control','onchange'=>"document.location='?qtd-por-pagina='+this.value;"]) !!}
                 </div>
             </div>
         </div>
     </section>
     <div class="content">
-
+        <table class="table table-bordered table-striped">
+            <thead>
+            <tr>
+                <th class="text-center">Obra</th>
+                <th class="text-center">O.C.</th>
+                <th class="text-center">Codigo Est.</th>
+                <th class="text-center">Insumo</th>
+                <th class="text-center">Qtd.</th>
+                <th class="text-center">SLA</th>
+                <th class="text-center">Ação</th>
+            </tr>
+            </thead>
+            <tbody>
         @foreach($itens as $item)
-        <div class="panel panel-default">
-            <div class="panel-body">
-                <div class="col-md-10">
-                    <h4 class="highlight">{{ $item->insumo->codigo . ' - '. $item->insumo->nome }}
-                        @if($item->servico)
-                            <a href="/ordens-de-compra/detalhes-servicos/{{$item->servico->id}}" style="font-size:15px;">{{$item->servico->codigo . ' - '. $item->servico->nome}}</a>
-                        @endif
-                    </h4>
-                </div>
-                <div class="col-md-2 text-right">
-                    @if(!is_null($item->aprovado))
-                        @if($item->aprovado)
-                            <button type="button" disabled="disabled"
-                                    class="btn btn-success btn-lg btn-flat">
-                                <i class="fa fa-check" aria-hidden="true"></i>
-                            </button>
-                        @else
-                            <button type="button" disabled="disabled"
-                                    class="btn btn-danger btn-lg btn-flat">
-                                <i class="fa fa-times" aria-hidden="true"></i>
-                            </button>
-                        @endif
-                    @else
-                        <?php
-                            $workflowAprovacao = \App\Repositories\WorkflowAprovacaoRepository::verificaAprovacoes('OrdemDeCompraItem', $item->id, Auth::user());
-                        ?>
-                        @if($workflowAprovacao['podeAprovar'])
-                            @if($workflowAprovacao['iraAprovar'])
-                                <div class="btn-group" role="group" id="blocoItemAprovaReprova{{ $item->id }}" aria-label="...">
-                                    <button type="button" onclick="workflowAprovaReprova({{ $item->id }},'OrdemDeCompraItem',1,'blocoItemAprovaReprova{{ $item->id }}','Insumo {{ $item->insumo->codigo }}',0, '', '');"
-                                            class="btn btn-default btn-lg btn-flat"
-                                            title="Aprovar Este item">
-                                        <i class="fa fa-check" aria-hidden="true"></i>
-                                    </button>
-                                    <button type="button" onclick="workflowAprovaReprova({{ $item->id }},'OrdemDeCompraItem',0, 'blocoItemAprovaReprova{{ $item->id }}','Insumo {{ $item->insumo->codigo }}',0, '', '');"
-                                            class="btn btn-default btn-lg btn-flat"
-                                            title="Reprovar Este item">
-                                        <i class="fa fa-times" aria-hidden="true"></i>
-                                    </button>
-                                </div>
-                            @else
-                                @if($workflowAprovacao['jaAprovou'])
-                                    @if($workflowAprovacao['aprovacao'])
-                                            <span class="btn-lg btn-flat text-success" title="Aprovado por você">
-                                                <i class="fa fa-check" aria-hidden="true"></i>
-                                            </span>
-                                    @else
-                                            <span class="text-danger btn-lg btn-flat" title="Reprovado por você">
-                                                <i class="fa fa-times" aria-hidden="true"></i>
-                                            </span>
-                                    @endif
-                                @else
-                                    {{--Não Aprovou ainda, pode aprovar, mas por algum motivo não irá aprovar no momento--}}
-                                        <button type="button" title="{{ $workflowAprovacao['msg'] }}"
-                                                onclick="swal('{{ $workflowAprovacao['msg'] }}','','info');"
-                                                class="btn btn-default btn-lg btn-flat">
-                                            <i class="fa fa-info" aria-hidden="true"></i>
-                                        </button>
-                                @endif
-                            @endif
-                        @endif
-                    @endif
-            </div>
-            <div class="col-md-12 table-responsive margem-topo">
-                <table class="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th class="text-center">Unidade Medida</th>
-                            <th class="text-center">Qtd. O. Inicial</th>
-                            <th class="text-center">Valor O. Inicial</th>
-                            <th class="text-center">Qtd. Realizada</th>
-                            <th class="text-center">Valor Realizado</th>
-                            <th class="text-center">Qtd. Restante</th>
-                            <th class="text-center">Valor Restante</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="text-center">{{ $item->unidade_sigla . ' - '.$item->unidade->descricao }}</td>
-                            <td class="text-center">{{ number_format($item->qtd_inicial, 2, ',','.') }}</td>
-                            <td class="text-center"><small class="pull-left">R$</small> {{ number_format($item->preco_inicial, 2, ',','.') }}</td>
-                            <td class="text-center">{{ number_format(doubleval($item->qtd_realizada), 2, ',','.') }}</td>
-                            <td class="text-center"><small class="pull-left">R$</small> {{ number_format( doubleval($item->valor_realizado), 2, ',','.') }}</td>
-                            <td class="text-center">{{ number_format( $item->qtd_inicial-doubleval($item->qtd_realizada), 2, ',','.') }}</td>
-                            <td class="text-center"><small class="pull-left">R$</small> {{ number_format( $item->preco_inicial-doubleval($item->valor_realizado), 2, ',','.') }}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="col-md-12 table-responsive margem-topo">
-                <table class="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th class="text-center">Qtd. Saldo</th>
-                            <th class="text-center">Valor Saldo</th>
-                            <th class="text-center">Qtd. Solicitada</th>
-                            <th class="text-center">Valor Solicitado</th>
-                            <th class="text-center">Status</th>
-                            <th class="text-center">Data de Uso</th>
-                            <th class="text-center">Emergencial</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="text-center">{{ number_format( $item->qtd_inicial - doubleval($item->qtd_realizada), 2, ',','.') }}</td>
-                            <td class="text-center"><small class="pull-left">R$</small> {{ number_format( $item->preco_inicial-doubleval($item->valor_realizado), 2, ',','.') }}</td>
-                            <td class="text-center"><strong>{{ $item->qtd }}</strong></td>
-                            <td class="text-center"><small class="pull-left">R$</small> <strong>{{ number_format(doubleval($item->valor_total), 2, ',','.') }}</strong></td>
-                            <td class="text-center"><i class="fa fa-circle {{ (($item->qtd_realizada) > $item->qtd_inicial) ? 'text-danger': 'text-success'  }}" aria-hidden="true"></i> </td>
-                            <td class="text-center">{{ $item->sugestao_data_uso ? $item->sugestao_data_uso->format('d/m/Y') : ''  }}</td>
-                            <td class="text-center">{!! $item->emergencial?'<strong class="text-danger"> <i class="fa fa-exclamation-circle" aria-hidden="true"></i> SIM</strong>':'NÃO' !!}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+        <tr>
+            <td class="text-center">{{ $item->obra->nome }}</td>
+            <td class="text-center">
+                <a href="{{ url('/ordens-de-compra/detalhes/'.$item->ordem_de_compra_id) }}"
+                                       class="btn btn-link btn-block" >{{ $item->ordem_de_compra_id }}</a>
+            </td>
+            <td class="text-center">
+                <strong  data-toggle="tooltip" data-placement="top" data-html="true"
+                         title="{{ $item->grupo->codigo .' '. $item->grupo->nome . ' <br> ' .
+                                    $item->subgrupo1->codigo .' '.$item->subgrupo1->nome . ' <br> ' .
+                                    $item->subgrupo2->codigo .' '.$item->subgrupo2->nome . ' <br> ' .
+                                    $item->subgrupo3->codigo .' '.$item->subgrupo3->nome . ' <br> ' .
+                                    $item->servico->codigo .' '.$item->servico->nome  }}">
+                    {{ $item->codigo_insumo }}
+                </strong>
+            </td>
+            <td class="text-center">{{ $item->insumo->nome }}</td>
+            <td class="text-center"><strong>{{ $item->qtd }}</strong></td>
+            <td class="text-center"><strong>{{ $item->sla?$item->sla.' dias':'' }}</strong></td>
+            <td class="text-center">
+                {!! Form::checkbox('ordem_de_compra_itens[]',$item->id, null) !!}
+            </td>
 
-            <div class="col-md-6 margem-topo borda-direita">
-                <div class="row">
-                    <div class="col-md-4 label-bloco">
-                        Justificativa de compra:
-                    </div>
-                    <div class="bloco-texto-conteudo col-md-7">
-                        {{ $item->justificativa }}
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 margem-topo">
-                <div class="col-md-4 label-bloco">
-                    Observações ao fornecedor:
-                </div>
-                <div class="bloco-texto-conteudo col-md-7">
-                    {{ $item->obs }}
-                </div>
-            </div>
-            <div class="col-md-6 margem-topo borda-direita">
-                <div class="row">
-                    <div class="col-md-4 label-bloco">
-                        Tabela TEMS:
-                    </div>
-                    <div class="bloco-texto-conteudo col-md-7">
-                        {{ $item->tems }}
-                    </div>
-
-                    <div class="col-md-4 label-bloco margem-topo">
-                        Sugestão de Contrato:
-                    </div>
-                    <div class="bloco-texto-conteudo col-md-7 margem-topo">
-                        {{ $item->sugestao_contrato_id }}
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 margem-topo">
-                @if($item->anexos)
-                <div class="col-md-4 label-bloco">
-                    Arquivos anexos:
-                </div>
-                <div class="col-md-8">
-                    <div class="row">
-                        @foreach($item->anexos as $anexo)
-                            <div class="bloco-texto-linha col-md-9">{{ substr($anexo->arquivo, strrpos($anexo->arquivo,'/')+1  )  }}</div>
-                            <div class="col-md-2">
-                                <a href="{{ Storage::url($anexo->arquivo) }}" class="btn btn-default btn-block" target="_blank" >
-                                    <i class="fa fa-eye" aria-hidden="true"></i>
-                                </a>
-                            </div>
-
-                        @endforeach
-                    </div>
-
-                </div>
-                @endif
-
-            </div>
-
-        </div>
-    </div>
+    </tr>
     @endforeach
+    </tbody>
+    </table>
     <div class="pg text-center">
-            {{ $itens->links() }}
+            {{ $itens->appends(['qtd-por-pagina' => Request::get('qtd-por-pagina',10)])->links() }}
     </div>
 </div>
 @endsection
 @section('scripts')
 <script type="text/javascript">
-    <?php
-            $options_motivos = "<option value=''>Escolha...</option>";
-            foreach($motivos_reprovacao as $motivo_id=>$motivo_nome){
-                $options_motivos .= "<option value='".$motivo_id."'>".$motivo_nome."</option>";
-            }
-    ?>
-    options_motivos = "{!! $options_motivos !!}";
-
-
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
 </script>
 @stop

@@ -17,20 +17,8 @@ class LembreteDataTable extends DataTable
         return $this->datatables
             ->eloquent($this->query())
             ->addColumn('action', 'admin.lembretes.datatables_actions')
-            ->editColumn('lembrete_tipo_id', function($obj){
-                return $obj->lembreteTipo->nome;
-            })
-            ->editColumn('user_id', function($obj){
-                return $obj->user->name;
-            })
             ->editColumn('dias_prazo_minimo', function($obj){
                 return isset($obj->dias_prazo_minimo) ? $obj->dias_prazo_minimo . ' dias ' : '';
-            })
-            ->editColumn('dias_prazo_maximo', function($obj){
-                return isset($obj->dias_prazo_maximo) ? $obj->dias_prazo_maximo . ' dias ' : '';
-            })
-            ->editColumn('user_id', function($obj){
-                return $obj->user->name;
             })
             ->make(true);
     }
@@ -42,7 +30,18 @@ class LembreteDataTable extends DataTable
      */
     public function query()
     {
-        $lembretes = Lembrete::query();
+        $lembretes = Lembrete::query()->select([
+            'lembretes.id',
+            'lembretes.nome',
+            'lembretes.dias_prazo_minimo',
+            'lembrete_tipos.nome as tipo',
+            'insumo_grupos.nome as grupo',
+            'users.name as user',
+        ])
+            ->join('lembrete_tipos','lembrete_tipos.id','lembretes.lembrete_tipo_id')
+            ->join('insumo_grupos','insumo_grupos.id','lembretes.insumo_grupo_id')
+            ->join('users','users.id','lembretes.user_id')
+        ;
 
         return $this->applyScopes($lembretes);
     }
@@ -106,11 +105,11 @@ class LembreteDataTable extends DataTable
     private function getColumns()
     {
         return [
-            'lembrete' => ['name' => 'lembrete_tipo_id', 'data' => 'lembrete_tipo_id'],
-            'nome' => ['name' => 'nome', 'data' => 'nome'],
-            'prazo_minimo' => ['name' => 'dias_prazo_minimo', 'data' => 'dias_prazo_minimo'],
-            'prazo_maximo' => ['name' => 'dias_prazo_maximo', 'data' => 'dias_prazo_maximo'],
-            'cadastrado_por' => ['name' => 'user_id', 'data' => 'user_id']
+            'tipo' => ['name' => 'lembrete_tipos.nome', 'data' => 'tipo'],
+            'nome' => ['name' => 'lembretes.nome', 'data' => 'nome'],
+            'prazo' => ['name' => 'dias_prazo_minimo', 'data' => 'dias_prazo_minimo'],
+            'grupo' => ['name' => 'dias_prazo_maximo', 'data' => 'grupo'],
+            'cadastrado_por' => ['name' => 'users.name', 'data' => 'user']
         ];
     }
 
