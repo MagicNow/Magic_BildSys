@@ -149,6 +149,7 @@
     <!-- Fim Componente tabela vue -->
 </template>
 <script>
+    var verify = 0;
     export default{
         props: {
             apiUrl: {
@@ -296,11 +297,6 @@
                     }
                 }
             },
-            checkEmptyParam: function () {
-                for (var j in this.params) {
-                    console.log("key"+j+" Value " + this.params[j]);
-                }
-            },
             //Carrega os filtros disponiveis (linkado com o filtro do jhonatan)
             loadFilters: function () {
                 this.$http.get(this.apiFiltros)
@@ -312,9 +308,7 @@
             },
             //Faz a requisição dos dados e também funciona como callback do generic pagination
             loadData: function () {
-                this.checkEmptyParam();
                 this.getParametersUrl();
-                this.checkEmptyParam();
                 this.params.paginate = this.pagination.per_page;
                 this.params.page = this.pagination.current_page;
                 this.success = '';
@@ -343,10 +337,15 @@
                             }
                         }
                         //Para animação loader
-                        stopLoading(verifyQueryString());
+                        if(!verify){
+                            stopLoading(verifyQueryString());
+                            verify = 1;
+                        }else{
+                            stopLoading();
+                        }
                     });
                 }
-            },
+            }
         },
         created: function () {
             //Inicia Animação

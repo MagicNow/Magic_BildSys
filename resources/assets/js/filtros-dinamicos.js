@@ -332,7 +332,6 @@ function maximizeFilters() {
 }
 
 function verifyQueryString() {
-
     $('input').iCheck({
         checkboxClass: 'icheckbox_square-green',
         radioClass: 'iradio_square-green',
@@ -462,13 +461,14 @@ function filterPeriod(period) {
 }
 
 function filterFind(find) {
-    var find = $('#find');
+    var period_find = $('#period_find');
 
-    if(find.val() != undefined){
-        var find_split = find.val().split("&");
-        var find_value = find.val().replace(find_split[1], 'procurar='+find);
+    if(period_find.val() != undefined){
+        var period_find_split = period_find.val().split("&");
 
-        find.val(find_value);
+        var find_value = period_find.val().replace(period_find_split[1], 'procurar='+find);
+
+        period_find.val(find_value);
 
         $('#find').val(find);
     }
