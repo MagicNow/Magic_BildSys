@@ -43,6 +43,12 @@ return [
     'sign-in' => 'acessar',
     'confirm' => 'confirmar',
     'send'=>'enviar',
-
+    'deactivate'=>'inativar',
+    'activate'=>'ativar',
+    'activated'=>'Ativado',
+    'deactivated'=>'Inativado',
+    'are-you-sure-deactivate'=>'você tem certeza que irá inativar este registro',
+    'are-you-sure-activate'=>'você tem certeza que irá ativar este registro',
+    'this-user-will-not-be-do-the-login'=>'este usuário não poderá efetuar o login com status inativo',
 
 ];

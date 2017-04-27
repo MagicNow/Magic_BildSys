@@ -332,6 +332,38 @@
             });
         }
 
+        function confirmDeactivate(frm) {
+            var formulary = $('#' + frm);
+            swal({
+                title: "{{ ucfirst( trans('common.are-you-sure-deactivate') ) }}?",
+                text: "{{ ucfirst( trans('common.this-user-will-not-be-do-the-login') ) }}!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "{{ ucfirst( trans('common.yes') ) }}, {{ ucfirst( trans('common.deactivate') ) }}!",
+                cancelButtonText: "{{ ucfirst( trans('common.cancel') ) }}",
+                closeOnConfirm: false
+            }, function () {
+                formulary.submit();
+            });
+        }
+
+        function confirmActivate(frm) {
+            var formulary = $('#' + frm);
+            swal({
+                title: "{{ ucfirst( trans('common.are-you-sure-activate') ) }}?",
+                text: "",
+                type: "success",
+                showCancelButton: true,
+                confirmButtonColor: "success",
+                confirmButtonText: "{{ ucfirst( trans('common.yes') ) }}, {{ ucfirst( trans('common.activate') ) }}!",
+                cancelButtonText: "{{ ucfirst( trans('common.cancel') ) }}",
+                closeOnConfirm: false
+            }, function () {
+                formulary.submit();
+            });
+        }
+
         function visualizedNotification($id){
             $.ajax({
                 url: "/admin/updateNotification/" + $id

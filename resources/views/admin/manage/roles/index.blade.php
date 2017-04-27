@@ -100,16 +100,16 @@
                                 </table>
                             </div>
 
-                            <button type="submit" 
-                                    class="btn btn-success ladda-button" 
+                            <button type="submit"
+                                    class="btn btn-success ladda-button"
                                     data-style="expand-right"
                                     v-bind:disabled="!role.name">
                                 <span class="ladda-label">
                                     Adicionar
                                 </span>
                             </button>
-                            <button type="button" 
-                                    class="btn btn-warning ladda-button" 
+                            <button type="button"
+                                    class="btn btn-warning ladda-button"
                                     data-style="expand-right"
                                     v-on:click="resetRole"
                                     v-bind:disabled="!role.name">
@@ -128,136 +128,137 @@
 
 @section('scripts')
     <script>
-    new Vue({
-        el: '#app',
-        data: {
-            roles: [],
-            success: '',
-            error: '',
-            role: {
-                name:null,
-                permissions: []
-            },
-            pagination: {
-                total: 0,
-                per_page: 10,
-                from: 1,
-                to: 0,
-                current_page: 1
-            },
-            offset: 4
-        },
-         computed: {
-            isActived: function () {
-                return this.pagination.current_page;
-            },
-            pagesNumber: function () {
-                if (!this.pagination.to) {
-                    return [];
-                }
-                var from = this.pagination.current_page - this.offset;
-                if (from < 1) {
-                    from = 1;
-                }
-                var to = from + (this.offset * 2);
-                if (to >= this.pagination.last_page) {
-                    to = this.pagination.last_page;
-                }
-                var pagesArray = [];
-                while (from <= to) {
-                    pagesArray.push(from);
-                    from++;
-                }
-                return pagesArray;
-            }
-        },
-        methods: {
-            exists: function(permissionObj) {
-                var keyNames = this.role.permissions.map(function(item) { return item["name"]; });
-                return $.inArray( permissionObj.name, keyNames );
-            },
-            addPermission: function() {
-                var $text  = $("#permissions option:selected").text();
-                var $value = $("#permissions option:selected").val();
 
-                if ($value == 0) {
-                    return;
-                }
-
-                var $obj = {
-                    'name': $value,
-                    'readable_name': $text
-                };
-
-                var $exists = this.exists($obj);
-                if ($exists == -1) {
-                    this.role.permissions.push($obj);
-                }
+        new Vue({
+            el: '#app',
+            data: {
+                roles: [],
+                success: '',
+                error: '',
+                role: {
+                    name:null,
+                    permissions: []
+                },
+                pagination: {
+                    total: 0,
+                    per_page: 10,
+                    from: 1,
+                    to: 0,
+                    current_page: 1
+                },
+                offset: 4
             },
-            removePermission: function(permission) {
-                this.role.permissions = this.role.permissions.filter(function(item) {
-                    return item != permission;
-                });
-            },
-            loadRoles: function (page) {
-                this.success = '';
-                this.error = '';
-
-                startLoading();
-                this.$http.get('/api/roles', {
-                    params: { page: page }
-                }).then(function(resp) {
-                    if(typeof resp.data == 'object') {
-                        this.roles      = resp.data.data;
-                        this.pagination = resp.data;
-                    } else if (typeof resp.data =='string') {
-                        var response=jQuery.parseJSON(resp.data);
-                        this.roles      = response.data;
-                        this.pagination = response;
-
+            computed: {
+                isActived: function () {
+                    return this.pagination.current_page;
+                },
+                pagesNumber: function () {
+                    if (!this.pagination.to) {
+                        return [];
                     }
-                    stopLoading();
-                 });
+                    var from = this.pagination.current_page - this.offset;
+                    if (from < 1) {
+                        from = 1;
+                    }
+                    var to = from + (this.offset * 2);
+                    if (to >= this.pagination.last_page) {
+                        to = this.pagination.last_page;
+                    }
+                    var pagesArray = [];
+                    while (from <= to) {
+                        pagesArray.push(from);
+                        from++;
+                    }
+                    return pagesArray;
+                }
             },
-            resetRole: function() {
-                this.role = {name: null, permissions: []};
-                this.success = '';
-                this.error = '';
-            },
-            saveRole: function(event) {
-                self = this;
+            methods: {
+                exists: function(permissionObj) {
+                    var keyNames = this.role.permissions.map(function(item) { return item["name"]; });
+                    return $.inArray( permissionObj.name, keyNames );
+                },
+                addPermission: function() {
+                    var $text  = $("#permissions option:selected").text();
+                    var $value = $("#permissions option:selected").val();
 
-                self.error = '';
-                self.success = '';
+                    if ($value == 0) {
+                        return;
+                    }
 
-                startLoading();
+                    var $obj = {
+                        'name': $value,
+                        'readable_name': $text
+                    };
 
-                event.preventDefault();
-                self.$http.post('/api/roles/store', {
-                    role: self.role
-                }).then(function(resp) {
-                    self.loadRoles(self.pagination.current_page);
-                    self.resetRole();
-                    self.success = resp.body.success;
-                    stopLoading();
-                }, function(error_resp){
-                    self.error = error_resp.body.error;
-                    stopLoading();
-                });
+                    var $exists = this.exists($obj);
+                    if ($exists == -1) {
+                        this.role.permissions.push($obj);
+                    }
+                },
+                removePermission: function(permission) {
+                    this.role.permissions = this.role.permissions.filter(function(item) {
+                        return item != permission;
+                    });
+                },
+                loadRoles: function (page) {
+                    this.success = '';
+                    this.error = '';
+
+                    startLoading();
+                    this.$http.get('/api/roles', {
+                        params: { page: page }
+                    }).then(function(resp) {
+                        if(typeof resp.data == 'object') {
+                            this.roles      = resp.data.data;
+                            this.pagination = resp.data;
+                        } else if (typeof resp.data =='string') {
+                            var response=jQuery.parseJSON(resp.data);
+                            this.roles      = response.data;
+                            this.pagination = response;
+
+                        }
+                        stopLoading();
+                    });
+                },
+                resetRole: function() {
+                    this.role = {name: null, permissions: []};
+                    this.success = '';
+                    this.error = '';
+                },
+                saveRole: function(event) {
+                    self = this;
+
+                    self.error = '';
+                    self.success = '';
+
+                    startLoading();
+
+                    event.preventDefault();
+                    self.$http.post('/api/roles/store', {
+                        role: self.role
+                    }).then(function(resp) {
+                        self.loadRoles(self.pagination.current_page);
+                        self.resetRole();
+                        self.success = resp.body.success;
+                        stopLoading();
+                    }, function(error_resp){
+                        self.error = error_resp.body.error;
+                        stopLoading();
+                    });
+                },
+                editRole: function(role) {
+                    self.error = '';
+                    self.success = '';
+                    this.role = role;
+                },
+                changePage: function (page) {
+                    this.pagination.current_page = page;
+                    this.loadRoles(page);
+                }
             },
-            editRole: function(role) {
-                self.error = '';
-                self.success = '';
-                this.role = role;
-            },
-            changePage: function (page) {
-                this.pagination.current_page = page;
-                this.loadRoles(page);
+            created: function() {
+                this.loadRoles(1);
             }
-        },
-        created: function() {
-            this.loadRoles(1);
-        }
-    });
+        });
     </script>
 @endsection

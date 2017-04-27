@@ -51,6 +51,7 @@ class UsersController extends AppBaseController
      */
     public function create()
     {
+        
         return view('admin.manage.users.create');
     }
 
@@ -133,7 +134,23 @@ class UsersController extends AppBaseController
             return redirect(route('manage.users'));
         }
 
-        return view('admin.manage.users.edit')->with('user', $user);
+        $user = $this->userRepository->findWithoutFail($id);
+
+        if (empty($user)) {
+            Flash::error('Usuário ' . trans('common.not-found'));
+
+            return redirect(route('manage.users'));
+        }
+
+        $roles = \DB::table("roles")->orderBy('name')->pluck('name', 'name');
+        $permissions = \DB::table("permissions")->orderBy('readable_name')->pluck('readable_name', 'name');
+
+        $roles->prepend('------ Selecione ------', 0);
+        $permissions->prepend('------ Selecione ------', 0);
+
+        return view('admin.manage.users.edit')->with('user', $user)
+            ->with('roles', $roles)
+            ->with('permissions', $permissions);
     }
 
     /**
