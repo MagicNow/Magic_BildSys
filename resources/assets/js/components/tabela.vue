@@ -56,8 +56,8 @@
                     <li>
                         <input type="number" @keyup="loadData()" id="other_period" onkeyup="filterPeriod(this.value);" placeholder="Outro periodo" class="form-control" style="border-color:#f5f5f5;background-color:#f5f5f5;">
                     </li>
-                    <input type="hidden" id="period_find" value="periodo=&procurar=">
                 </div>
+                <input type="hidden" id="period_find" value="periodo=&procurar=">
                 <li>
                     <a href="" data-toggle="modal" data-target="#myModal" class="grey">
                         Adicionar/Remover filtros <i class="fa fa-filter" aria-hidden="true"></i>
@@ -296,6 +296,11 @@
                     }
                 }
             },
+            checkEmptyParam: function () {
+                for (var j in this.params) {
+                    console.log("key"+j+" Value " + this.params[j]);
+                }
+            },
             //Carrega os filtros disponiveis (linkado com o filtro do jhonatan)
             loadFilters: function () {
                 this.$http.get(this.apiFiltros)
@@ -307,7 +312,9 @@
             },
             //Faz a requisição dos dados e também funciona como callback do generic pagination
             loadData: function () {
+                this.checkEmptyParam();
                 this.getParametersUrl();
+                this.checkEmptyParam();
                 this.params.paginate = this.pagination.per_page;
                 this.params.page = this.pagination.current_page;
                 this.success = '';

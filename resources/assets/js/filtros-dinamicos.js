@@ -232,7 +232,6 @@ function addFilters(query_string) {
 
             } else {
                 var row_string = "'row_" + cb_filter[i].value + "'";
-
                 block_fields.append('\
                 <div class="row form-group col-md-12 filter_added">\
                     <div class="col-md-6">\
@@ -434,9 +433,9 @@ function addQuery() {
     }
     var filter_string = '';
     for (var fil in filtroGlobal){
-        if(filtroGlobal[fil] != ''){
+        // if(filtroGlobal[fil] != ''){
             filter_string += fil+'='+filtroGlobal[fil]+'&';
-        }
+        // }
     }
     filter_string = filter_string.substring(0,(filter_string.length - 1));
     // Previnir que quando acessa fica inserindo mais de uma vez
