@@ -30,7 +30,8 @@ class Planejamento extends Model
         'data_fim',
         'prazo',
         'resumo',
-        'planejamento_id'
+        'planejamento_id',
+        'data_upload'
     ];
 
     /**
