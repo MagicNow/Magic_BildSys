@@ -1,11 +1,6 @@
 var k = 0;
 var filtroGlobal = [];
 
-$(function () {
-    //verifyQueryString();
-});
-
-
 function removeURLParameter(url, parameter) {
     //prefer to use l.search if you have a location/link object
     var urlparts= url.split('?');
@@ -338,12 +333,20 @@ function maximizeFilters() {
 }
 
 function verifyQueryString() {
+
+    $('input').iCheck({
+        checkboxClass: 'icheckbox_square-green',
+        radioClass: 'iradio_square-green',
+        increaseArea: '20%' // optional
+    });
+
     k =0;
-    var result = {}, keyValuePairs = location.search.slice(1).split("&");
+    var result = {};
+    keyValuePairs = location.search.slice(1).split("&");
     if(keyValuePairs!=""){
         keyValuePairs.forEach(function(keyValuePair) {
             keyValuePair = keyValuePair.split('=');
-            result[decodeURIComponent(keyValuePair[0])] = decodeURIComponent(keyValuePair[1]) || '';
+            result[decodeURIComponent(keyValuePair[0])] = decodeURIComponent(keyValuePair[1]);
         });
     }
 
@@ -421,9 +424,6 @@ function addQuery() {
                 filtroGlobal[key] = period_find[key];
             }
         }
-    }
-    if($('#find').val()){
-
     }
 
     if(filters_fields.length > 0){
