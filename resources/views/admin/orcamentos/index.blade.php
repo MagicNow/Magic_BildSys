@@ -8,7 +8,7 @@
             {{--{{ ucfirst( trans('common.new') )}}--}}
            {{--</a>--}}
             <a class="btn btn-primary pull-right" style="margin-top: -10px; margin-bottom: 5px;" href="{!! route('admin.orcamentos.indexImport') !!}">
-                Importar Planejamentos
+                Importar Orçamentos
             </a>
         </h1>
     </section>
