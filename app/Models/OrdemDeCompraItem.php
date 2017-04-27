@@ -245,4 +245,8 @@ class OrdemDeCompraItem extends Model
             ]);
         }
     }
+
+    public function qualObra(){
+        return $this->ordemDeCompra->obra_id;
+    }
 }

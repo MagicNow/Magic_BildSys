@@ -47223,7 +47223,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "data-toggle": "modal",
       "data-target": "#myModal"
     }
-  }, [_vm._v("\n                    Adicionar filtros "), _c('i', {
+  }, [_vm._v("\n                    Adicionar/Remover filtros "), _c('i', {
     staticClass: "fa fa-filter",
     attrs: {
       "aria-hidden": "true"

@@ -264,7 +264,7 @@ class WorkflowAprovacaoRepository
         }
 
         // Se não for, verifica se já é a última
-        $qtd_aprovadores = self::verificaQuantidadeUsuariosAprovadores($workflow_tipo_id);
+        $qtd_aprovadores = self::verificaQuantidadeUsuariosAprovadores($workflow_tipo_id, null, $obj->qualObra());
 
         if($qtd_aprovadores){
             // Divide a qtd de aprovações/reprovações pela quantidade de aprovadores
@@ -333,7 +333,10 @@ class WorkflowAprovacaoRepository
         $workflow_alcadas = $workflow_alcadas->get();
         
         foreach ($workflow_alcadas as $alcada){
-            $qtd_usuarios += $alcada->workflowUsuarios()->count();
+            $qtd_usuarios += $alcada->workflowUsuarios()->join('obra_users',function($join) use($obra_id){
+                $join->on('workflow_usuarios.user_id','=','obra_users.obra_id')->where('obra_users.obra_id', $obra_id);
+            })->count();
+            dd($qtd_usuarios);
         }
         
         return $qtd_usuarios;
