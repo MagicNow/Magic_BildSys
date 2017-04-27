@@ -343,7 +343,7 @@
                             }
                         }
                         //Para animação loader
-                        stopLoading();
+                        stopLoading(verifyQueryString());
                     });
                 }
             },
