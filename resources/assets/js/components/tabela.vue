@@ -60,7 +60,7 @@
                 </div>
                 <li>
                     <a href="" data-toggle="modal" data-target="#myModal" class="grey">
-                        Adicionar filtros <i class="fa fa-filter" aria-hidden="true"></i>
+                        Adicionar/Remover filtros <i class="fa fa-filter" aria-hidden="true"></i>
                     </a>
                 </li>
             </ol>

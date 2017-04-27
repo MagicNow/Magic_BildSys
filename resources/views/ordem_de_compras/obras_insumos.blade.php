@@ -70,9 +70,6 @@
                    ]"
             >
             </tabela>
-
-
-
         </div>
     </div>
 
@@ -110,15 +107,21 @@
                 $.get("{{url('planejamentosByObra')}}", {obra_id: "{{$obra->id}}"})
                     .done(function (data) {
                         dados = JSON.parse(JSON.stringify(data));
-                        $(".js-example-data-array").select2({
-                            data: dados
-                        })
-                        url = '{{url("compras/insumos") }}?planejamento_id='+$(".js-example-data-array").val()+'&obra_id={{$obra->id}}';
-                        $('#btnGoInsumos').attr('href', url);
-                        $("body").on('change','.js-example-data-array', function () {
-                            url = '{{url("compras/insumos") }}?planejamento_id='+$(".js-example-data-array").val();
+                        if(dados.length >0){
+                            $('#btnGoInsumos').show()
+                            $(".js-example-data-array").select2({
+                                data: dados
+                            })
+                            url = '{{url("compras/insumos") }}?planejamento_id='+$(".js-example-data-array").val()+'&obra_id={{$obra->id}}';
                             $('#btnGoInsumos').attr('href', url);
-                        })
+                            $("body").on('change','.js-example-data-array', function () {
+                                url = '{{url("compras/insumos") }}?planejamento_id='+$(".js-example-data-array").val();
+                                $('#btnGoInsumos').attr('href', url);
+                            })
+                        }else{
+                            $('#btnGoInsumos').hide();
+                        }
+
                     });
             })
         });

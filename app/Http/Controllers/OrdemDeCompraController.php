@@ -214,7 +214,8 @@ class OrdemDeCompraController extends AppBaseController
 
                 $avaliado_reprovado[$alcada->id] ['aprovadores'] = WorkflowAprovacaoRepository::verificaQuantidadeUsuariosAprovadores(
                     1, // Aprovação de OC
-                    $alcada->id);
+                    $alcada->id,
+                    $ordemDeCompra->obra_id);
             }
         }
         
@@ -548,7 +549,7 @@ class OrdemDeCompraController extends AppBaseController
             $insumos->orderBy($request->orderkey, $request->order);
         }
 
-        $insumos->orderByRaw('COALESCE(planejamento_compras.insumo_pai, planejamento_compras.id)');
+        $insumos->orderByRaw('COALESCE(planejamento_compras.insumo_pai, planejamento_compras.insumo_id) , planejamento_compras.insumo_pai IS NOT NULL, planejamento_compras.insumo_id');
 
         //Aplica filtro do Jhonatan
         $insumos = CodeRepository::filter($insumos, $request->all());

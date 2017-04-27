@@ -64306,8 +64306,28 @@ $(function () {
     //verifyQueryString();
 });
 
-function addFilterToArray(){
 
+function removeURLParameter(url, parameter) {
+    //prefer to use l.search if you have a location/link object
+    var urlparts= url.split('?');
+    if (urlparts.length>=2) {
+
+        var prefix= encodeURIComponent(parameter)+'=';
+        var pars= urlparts[1].split(/[&;]/g);
+
+        //reverse iteration as may be destructive
+        for (var i= pars.length; i-- > 0;) {
+            //idiom for string.startsWith
+            if (pars[i].lastIndexOf(prefix, 0) !== -1) {
+                pars.splice(i, 1);
+            }
+        }
+
+        url= urlparts[0]+'?'+pars.join('&');
+        return url;
+    } else {
+        return url;
+    }
 }
 
 function getObjectKeyIndex(obj, keyToFind) {
@@ -64703,6 +64723,9 @@ function addQuery() {
             }
         }
     }
+    if($('#find').val()){
+
+    }
 
     if(filters_fields.length > 0){
         for( i=0; i < filters_fields.length; i++ ){
@@ -64741,12 +64764,13 @@ function filterPeriod(period) {
 }
 
 function filterFind(find) {
-    var period_find = $('#period_find');
-    if(period_find){
-        var period_find_split = period_find.val().split("&");
-        var find_value = period_find.val().replace(period_find_split[1], 'procurar='+find);
+    var find = $('#find');
 
-        period_find.val(find_value);
+    if(find.val() != undefined){
+        var find_split = find.val().split("&");
+        var find_value = find.val().replace(find_split[1], 'procurar='+find);
+
+        find.val(find_value);
 
         $('#find').val(find);
     }
