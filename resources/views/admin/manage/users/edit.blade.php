@@ -17,6 +17,8 @@
                         @include('admin.manage.users.fields')
 
                    {!! Form::close() !!}
+
+                   @include('admin.manage.users.permissao')
                </div>
            </div>
        </div>

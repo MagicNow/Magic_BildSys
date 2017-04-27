@@ -70,7 +70,7 @@ class RolesController extends AppBaseController
 			return response()->json(['error' => "O campo Papel é obrigatório."], 401);
 		}
 
-		
+
 		if (!$role['name']) {
 			return response()->json(['error' => "O campo Papel já existe."], 401);
 		}
@@ -78,7 +78,7 @@ class RolesController extends AppBaseController
 		try {
 			if (isset($role['id']) AND $role['id'] > 0) {
 				$this->validate($request, [
-				    'role.name' => 'required|unique:roles,name,' . $role['id'],
+					'role.name' => 'required|unique:roles,name,' . $role['id'],
 				]);
 
 				$newRole = $this->roleRepository->update(['name' => $role['name']], $role['id']);
@@ -86,7 +86,7 @@ class RolesController extends AppBaseController
 			} else {
 
 				$validator = Validator::make($role, [
-				    'name' => 'required|unique:roles,name',
+					'name' => 'required|unique:roles,name',
 				],[
 					'name.unique' => 'Este Papel já está cadastrado.',
 				]);
@@ -103,15 +103,16 @@ class RolesController extends AppBaseController
 			}
 
 			$Role = Defender::findRole($newRole->name);
-			if ($role['id'] > 0) {
+			if (isset($role['id']) and $role['id'] > 0) {
 				DB::table("permission_role")->where('role_id', $role['id'])->delete();
 			}
+
 			foreach($permissions as $permission) {
 				$Role->attachPermission($permission);
 			}
-			
+
 			return response()->json(['success' => 'Ação efetuada com sucesso'], 201);
-			
+
 		} catch (\Exception $e) {
 			return response()->json(['error' => "Ação não efetuada\nError: " . $e->getMessage()], 401);
 		}
