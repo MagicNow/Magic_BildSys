@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\InsumosAprovadosDataTable;
 use App\DataTables\OrdemDeCompraDataTable;
 use App\Http\Requests;
 use App\Http\Requests\CreateOrdemDeCompraRequest;
@@ -1156,131 +1157,9 @@ class OrdemDeCompraController extends AppBaseController
         );
     }
 
-    public function insumosAprovados(Request $request){
+    public function insumosAprovados(InsumosAprovadosDataTable $insumosAprovadosDataTable){
 
-            /*SELECT
-        item.id ,
-        DATEDIFF(
-            SUBDATE(
-                PL.`data` , -- Data de início do Planejamento
-                INTERVAL(
-                    IFNULL(
-                        (SELECT
-                        SUM(L.dias_prazo_minimo) prazo
-                    FROM
-                        lembretes L
-                    JOIN insumo_grupos IG ON IG.id = L.insumo_grupo_id
-                    WHERE
-                        EXISTS( -- Busca apenas os Lembretes q o Insumo está no grupo
-                            SELECT
-                                1
-                            FROM
-                                insumos I
-                            WHERE
-                                I.id = item.insumo_id
-                                AND I.insumo_grupo_id = IG.id
-                        )
-                    AND L.deleted_at IS NULL) -- Subtrai a soma de todos prazos dos lembretes deste insumo
-                    ,0)
-                    +
-                    IFNULL(
-                        (SELECT SUM(dias_prazo) prazo
-                            FROM workflow_alcadas
-                            WHERE EXISTS(SELECT 1 FROM workflow_usuarios WHERE workflow_alcada_id = workflow_alcadas.id ))
-                    ,0)
-                )
-                DAY
-            ) ,
-            CURDATE()
-        ) sla
-    FROM
-        ordem_de_compra_itens item
-    JOIN ordem_de_compras OC ON OC.id = item.ordem_de_compra_id
-    JOIN planejamento_compras PC ON PC.insumo_id = item.insumo_id
-            AND PC.grupo_id = item.grupo_id
-            AND PC.subgrupo1_id = item.subgrupo1_id
-            AND PC.subgrupo2_id = item.subgrupo2_id
-            AND PC.subgrupo3_id = item.subgrupo3_id
-            AND PC.servico_id = item.servico_id
-    JOIN planejamentos PL ON PL.id = PC.planejamento_id
-    WHERE
-        OC.aprovado = 1
-        AND item.deleted_at IS NULL
-            AND NOT EXISTS(
-                SELECT
-            1
-        FROM
-            oc_item_qc_item OCQC_item
-        WHERE
-            OCQC_item.ordem_de_compra_item_id = item.id
-    )*/
-
-        $itens = OrdemDeCompraItem::select([
-                'ordem_de_compra_itens.*',
-                // -- Busca qtd dias de SLA
-                DB::raw("(
-                SELECT
-                    DATEDIFF(
-                        SUBDATE(
-                            PL.`data` , ". //-- Data de início do Planejamento
-                            "INTERVAL(
-                                IFNULL(
-                                (SELECT
-                                    SUM(L.dias_prazo_minimo) prazo
-                                FROM
-                                    lembretes L
-                                JOIN insumo_grupos IG ON IG.id = L.insumo_grupo_id
-                                WHERE
-                                    EXISTS( ". //-- Busca apenas os Lembretes q o Insumo está no grupo
-                                        "SELECT
-                                            1
-                                        FROM
-                                            insumos I
-                                        WHERE
-                                            I.id = item.insumo_id
-                                        AND I.insumo_grupo_id = IG.id
-                                    )
-                                AND L.deleted_at IS NULL) ". //-- Subtrai a soma de todos prazos dos lembretes deste insumo
-                                ",0)
-                                + ". // -- Subtrai tb os dias de workflow
-                                " IFNULL(
-                                    (SELECT SUM(dias_prazo) prazo
-                                        FROM workflow_alcadas
-                                        WHERE EXISTS(SELECT 1 FROM workflow_usuarios WHERE workflow_alcada_id = workflow_alcadas.id ))
-                                ,0)
-                            ) 
-                            DAY
-                        ) ,
-                        CURDATE()
-                    ) sla
-                FROM
-                    ordem_de_compra_itens item
-                JOIN ordem_de_compras OC ON OC.id = item.ordem_de_compra_id
-                JOIN planejamento_compras PC ON PC.insumo_id = item.insumo_id
-                AND PC.grupo_id = item.grupo_id
-                AND PC.subgrupo1_id = item.subgrupo1_id
-                AND PC.subgrupo2_id = item.subgrupo2_id
-                AND PC.subgrupo3_id = item.subgrupo3_id
-                AND PC.servico_id = item.servico_id
-                JOIN planejamentos PL ON PL.id = PC.planejamento_id
-                WHERE
-                    item.id = ordem_de_compra_itens.id
-                    AND PL.deleted_at IS NULL
-                    AND PC.deleted_at IS NULL
-                LIMIT 1    
-                ) as sla"),
-            ])
-            ->join('ordem_de_compras','ordem_de_compras.id','ordem_de_compra_itens.ordem_de_compra_id')
-            ->where('ordem_de_compras.aprovado','1')
-            ->whereNotExists(function ($query){
-                $query->select(DB::raw('1'))
-                    ->from('oc_item_qc_item')
-                    ->where('ordem_de_compra_item_id',DB::raw('ordem_de_compra_itens.id') );
-            })
-            ->with('insumo','obra','grupo','subgrupo1','subgrupo2','subgrupo3','servico')
-            ->paginate($request->get('qtd-por-pagina',10));
-
-        return view('ordem_de_compras.insumos-aprovados', compact('itens'));
+        return $insumosAprovadosDataTable->render('ordem_de_compras.insumos-aprovados');
     }
 }
 
