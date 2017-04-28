@@ -336,7 +336,6 @@ class WorkflowAprovacaoRepository
             $qtd_usuarios += $alcada->workflowUsuarios()->join('obra_users',function($join) use($obra_id){
                 $join->on('workflow_usuarios.user_id','=','obra_users.obra_id')->where('obra_users.obra_id', $obra_id);
             })->count();
-            dd($qtd_usuarios);
         }
         
         return $qtd_usuarios;
