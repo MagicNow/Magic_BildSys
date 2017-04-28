@@ -3,14 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\DataTables\RetroalimentacaoObraDataTable;
+use App\Models\Obra;
 use App\Http\Requests;
 use App\Http\Requests\CreateRetroalimentacaoObraRequest;
 use App\Http\Requests\UpdateRetroalimentacaoObraRequest;
-use App\Models\Obra;
 use App\Repositories\RetroalimentacaoObraRepository;
 use Flash;
-use App\Http\Controllers\AppBaseController;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\AppBaseController;
 use Response;
 
 class RetroalimentacaoObraController extends AppBaseController
@@ -23,6 +23,16 @@ class RetroalimentacaoObraController extends AppBaseController
         $this->retroalimentacaoObraRepository = $retroalimentacaoObraRepo;
     }
 
+    /**
+     * Display a listing of the RetroalimentacaoObra.
+     *
+     * @param RetroalimentacaoObraDataTable $retroalimentacaoObraDataTable
+     * @return Response
+     */
+    public function index(RetroalimentacaoObraDataTable $retroalimentacaoObraDataTable)
+    {
+        return $retroalimentacaoObraDataTable->render('retroalimentacao_obras.index');
+    }
 
     /**
      * Show the form for creating a new RetroalimentacaoObra.
@@ -32,7 +42,7 @@ class RetroalimentacaoObraController extends AppBaseController
     public function create()
     {
         $obras = Obra::pluck('nome','id')->toArray();
-        return view('retroalimentacao_obras.create',compact('obras'));
+        return view('retroalimentacao_obras.create', compact('obras'));
     }
 
     /**
@@ -48,8 +58,99 @@ class RetroalimentacaoObraController extends AppBaseController
         $input['user_id'] = Auth::id();
         $retroalimentacaoObra = $this->retroalimentacaoObraRepository->create($input);
 
-        Flash::success('Retroalimentação inserida '.trans('common.successfully').'.');
+        Flash::success('Retroalimentacao inserida '.trans('common.saved').' '.trans('common.successfully').'.');
 
         return redirect($request->anterior);
+    }
+
+    /**
+     * Display the specified RetroalimentacaoObra.
+     *
+     * @param  int $id
+     *
+     * @return Response
+     */
+    public function show($id)
+    {
+        $retroalimentacaoObra = $this->retroalimentacaoObraRepository->findWithoutFail($id);
+
+        if (empty($retroalimentacaoObra)) {
+            Flash::error('Retroalimentacao Obra '.trans('common.not-found'));
+
+            return redirect(route('retroalimentacaoObras.index'));
+        }
+
+        return view('retroalimentacao_obras.show')->with('retroalimentacaoObra', $retroalimentacaoObra);
+    }
+
+    /**
+     * Show the form for editing the specified RetroalimentacaoObra.
+     *
+     * @param  int $id
+     *
+     * @return Response
+     */
+    public function edit($id)
+    {
+        $retroalimentacaoObra = $this->retroalimentacaoObraRepository->findWithoutFail($id);
+        $obras = Obra::pluck('nome','id')->toArray();
+        if (empty($retroalimentacaoObra)) {
+            Flash::error('Retroalimentacao Obra '.trans('common.not-found'));
+
+            return redirect(route('retroalimentacaoObras.index'));
+        }
+
+        return view('retroalimentacao_obras.edit',compact('retroalimentacaoObra', 'obras'));
+    }
+
+    /**
+     * Update the specified RetroalimentacaoObra in storage.
+     *
+     * @param  int              $id
+     * @param UpdateRetroalimentacaoObraRequest $request
+     *
+     * @return Response
+     */
+    public function update($id, UpdateRetroalimentacaoObraRequest $request)
+    {
+        $retroalimentacaoObra = $this->retroalimentacaoObraRepository->findWithoutFail($id);
+
+        if (empty($retroalimentacaoObra)) {
+            Flash::error('Retroalimentacao Obra '.trans('common.not-found'));
+
+            return redirect(route('retroalimentacaoObras.index'));
+        }
+        $input = $request->all();
+        if(isset($input['aceite'])){
+            $input['aceite'] = 1;
+        }
+        $retroalimentacaoObra = $this->retroalimentacaoObraRepository->update($input, $id);
+        Flash::success('Retroalimentacao Obra'.trans('common.updated').' '.trans('common.successfully').'.');
+
+        return redirect(route('retroalimentacaoObras.index'));
+    }
+
+    /**
+     * Remove the specified RetroalimentacaoObra from storage.
+     *
+     * @param  int $id
+     *
+     * @return Response
+     */
+    public function destroy($id)
+    {
+        $retroalimentacaoObra = $this->retroalimentacaoObraRepository->findWithoutFail($id);
+
+        if (empty($retroalimentacaoObra)) {
+            Flash::error('Retroalimentacao Obra '.trans('common.not-found'));
+
+            return redirect(route('retroalimentacaoObras.index'));
+        }
+
+        $this->retroalimentacaoObraRepository->delete($id);
+
+        Flash::success('Retroalimentacao Obra '.trans('common.deleted').' '.trans('common.successfully').'.');
+
+        return redirect(route('retroalimentacaoObras.index'));
     }
 }

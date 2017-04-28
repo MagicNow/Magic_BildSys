@@ -47,8 +47,8 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('/ordens-de-compra/detalhes-servicos/{servico_id}', 'OrdemDeCompraController@detalhesServicos');
 
     $router->resource('ordens-de-compra', 'OrdemDeCompraController');
+    $router->get('create-realimentacao', 'RetroalimentacaoObraController@create');
 
-    $router->resource('retroalimentacaoObras', 'RetroalimentacaoObraController');
 
     $router->get('compras', 'OrdemDeCompraController@compras');
     $router->get('filter-json-ordem-compra', 'OrdemDeCompraController@filterJsonOrdemCompra');
@@ -58,6 +58,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:dashboard.access']], function () use ($router) {
 
         $router->resource('workflowReprovacaoMotivos', 'OrdemDeCompraController');
+        $router->resource('retroalimentacaoObras', 'RetroalimentacaoObraController');
 
         $router->get('users/busca', 'Admin\Manage\UsersController@busca');
 

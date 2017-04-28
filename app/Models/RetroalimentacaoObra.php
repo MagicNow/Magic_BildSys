@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 /**
  * Class RetroalimentacaoObra
  * @package App\Models
- * @version April 10, 2017, 6:03 pm BRT
+ * @version April 28, 2017, 2:53 pm BRT
  */
 class RetroalimentacaoObra extends Model
 {
@@ -26,8 +26,17 @@ class RetroalimentacaoObra extends Model
     public $fillable = [
         'obra_id',
         'user_id',
-        'nome',
-        'descricao'
+        'origem',
+        'categoria',
+        'situacao_atual',
+        'situacao_proposta',
+        'data_inclusao',
+        'acao',
+        'data_prevista',
+        'data_conclusao',
+        'status',
+        'resultado_obtido',
+        'aceite'
     ];
 
     /**
@@ -39,8 +48,16 @@ class RetroalimentacaoObra extends Model
         'id' => 'integer',
         'obra_id' => 'integer',
         'user_id' => 'integer',
-        'nome' => 'string',
-        'descricao' => 'string'
+        'origem' => 'string',
+        'categoria' => 'string',
+        'situacao_atual' => 'string',
+        'situacao_proposta' => 'string',
+        'data_inclusao' => 'date',
+        'acao' => 'string',
+        'data_prevista' => 'date',
+        'data_conclusao' => 'date',
+        'status' => 'string',
+        'resultado_obtido' => 'string'
     ];
 
     /**
@@ -49,8 +66,7 @@ class RetroalimentacaoObra extends Model
      * @var array
      */
     public static $rules = [
-        'obra_id' => 'required',
-        'nome' => 'string',
+        
     ];
 
     /**
@@ -58,7 +74,7 @@ class RetroalimentacaoObra extends Model
      **/
     public function obra()
     {
-        return $this->belongsTo(Obra::class);
+        return $this->belongsTo(\App\Models\Obra::class);
     }
 
     /**
@@ -66,6 +82,6 @@ class RetroalimentacaoObra extends Model
      **/
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(\App\Models\User::class);
     }
 }
