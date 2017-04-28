@@ -179,7 +179,7 @@ class OrdemDeCompraController extends AppBaseController
     public function compras()
     {
         $user_obras = ObraUser::where('user_id', Auth::user()->id)->get();
-        $obras = Obra::whereIn('id', $user_obras->pluck('id')->toArray())->get();
+        $obras = Obra::whereIn('id', $user_obras->pluck('obra_id')->toArray())->get();
         $obras = $obras->pluck('nome','id')->toArray();
         return view('ordem_de_compras.compras', compact('obras'));
     }

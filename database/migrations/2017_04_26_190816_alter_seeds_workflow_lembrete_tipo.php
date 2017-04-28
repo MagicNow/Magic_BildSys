@@ -13,11 +13,11 @@ class AlterSeedsWorkflowLembreteTipo extends Migration
      */
     public function up()
     {
-        $lembreteTipoSeeder = new LembreteTipoTableSeeder();
-        $lembreteTipoSeeder->run();
-
-        $workflowTipoSeeder = new WorkflowTipoTableSeeder();
-        $workflowTipoSeeder->run();
+//        $lembreteTipoSeeder = new LembreteTipoTableSeeder();
+//        $lembreteTipoSeeder->run();
+//
+//        $workflowTipoSeeder = new WorkflowTipoTableSeeder();
+//        $workflowTipoSeeder->run();
     }
 
     /**

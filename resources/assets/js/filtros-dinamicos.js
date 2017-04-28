@@ -62,11 +62,11 @@ function addFilters(query_string) {
             if(type == 'string'){
                 delete filtroGlobal[$( this ).val()+'_option'];
             }else if(type == 'integer'){
-                filtroGlobal[$( this ).val()+'_option'] = '';
-                filtroGlobal[$( this ).val()+'_final'] = '';
+                delete filtroGlobal[$( this ).val()+'_option'];
+                delete filtroGlobal[$( this ).val()+'_final'];
             }else if(type == 'date'){
-                filtroGlobal[$( this ).val()+'_initial'] = '';
-                filtroGlobal[$( this ).val()+'_final'] = '';
+                delete filtroGlobal[$( this ).val()+'_initial'];
+                delete filtroGlobal[$( this ).val()+'_final'];
             }
         }
     });
@@ -227,7 +227,6 @@ function addFilters(query_string) {
 
             } else {
                 var row_string = "'row_" + cb_filter[i].value + "'";
-
                 block_fields.append('\
                 <div class="row form-group col-md-12 filter_added">\
                     <div class="col-md-6">\
@@ -415,6 +414,7 @@ function pegaQuerysting(){
 }
 
 function addQuery() {
+
     var filters_fields = $('.filters');
     if($('#period_find').val()){
         var period_find = JSON.parse('{"'+$('#period_find').val().replace(/&/g, '","').replace(/=/g,'":"')+ '"}');
@@ -433,9 +433,9 @@ function addQuery() {
     }
     var filter_string = '';
     for (var fil in filtroGlobal){
-        if(filtroGlobal[fil] != ''){
+        // if(filtroGlobal[fil] != ''){
             filter_string += fil+'='+filtroGlobal[fil]+'&';
-        }
+        // }
     }
     filter_string = filter_string.substring(0,(filter_string.length - 1));
     // Previnir que quando acessa fica inserindo mais de uma vez
@@ -462,13 +462,14 @@ function filterPeriod(period) {
 }
 
 function filterFind(find) {
-    var find = $('#find');
+    var period_find = $('#period_find');
 
-    if(find.val() != undefined){
-        var find_split = find.val().split("&");
-        var find_value = find.val().replace(find_split[1], 'procurar='+find);
+    if(period_find.val() != undefined){
+        var period_find_split = period_find.val().split("&");
 
-        find.val(find_value);
+        var find_value = period_find.val().replace(period_find_split[1], 'procurar='+find);
+
+        period_find.val(find_value);
 
         $('#find').val(find);
     }

@@ -2,13 +2,14 @@
 
 namespace App\DataTables\Admin;
 
-use App\Models\Planejamento;
+use App\Models\Obra;
 use Form;
+use Illuminate\Support\Facades\DB;
 use Yajra\Datatables\Services\DataTable;
 
-class PlanejamentoDataTable extends DataTable
+class PlanejamentoCronogramaDataTable extends DataTable
 {
-    protected $obra = null;
+
     /**
      * @return \Illuminate\Http\JsonResponse
      */
@@ -16,24 +17,12 @@ class PlanejamentoDataTable extends DataTable
     {
         return $this->datatables
             ->eloquent($this->query())
-            ->addColumn('action', 'admin.planejamentos.datatables_actions')
-            ->editColumn('obra_id',function ($obj){
-                return $obj->obra_id ? $obj->obra->nome : '';
+            ->addColumn('action', 'admin.planejamento_cronogramas.datatables_actions')
+            ->editColumn('data_upload',function ($obj){
+                return $obj->data_upload ? with(new\Carbon\Carbon($obj->data_upload))->format('d/m/Y') : '';
             })
-            ->editColumn('data',function ($obj){
-                return $obj->data ? with(new\Carbon\Carbon($obj->data))->format('d/m/Y') : '';
-            })
-            ->filterColumn('data', function ($query, $keyword) {
-                $query->whereRaw("DATE_FORMAT(planejamentos.data,'%d/%m/%Y') like ?", ["%$keyword%"]);
-            })
-            ->editColumn('data_fim',function ($obj){
-                return $obj->data_fim ? with(new\Carbon\Carbon($obj->data_fim))->format('d/m/Y') : '';
-            })
-            ->filterColumn('data_fim', function ($query, $keyword) {
-                $query->whereRaw("DATE_FORMAT(planejamentos.data_fim,'%d/%m/%Y') like ?", ["%$keyword%"]);
-            })
-            ->editColumn('prazo',function ($obj){
-                return $obj->prazo ? $obj->prazo . ' dias ' : '';
+            ->filterColumn('data_upload', function ($query, $keyword) {
+                $query->whereRaw("EXISTS(SELECT 1 FROM planejamentos WHERE DATE_FORMAT(planejamentos.data_upload,'%d/%m/%Y') like ? AND planejamentos.obra_id = obras.id)", ["%$keyword%"]);
             })
             ->make(true);
     }
@@ -45,23 +34,26 @@ class PlanejamentoDataTable extends DataTable
      */
     public function query()
     {
-        $planejamentos = Planejamento::query()
-            ->select([
-                'planejamentos.id',
-                'obras.nome as obra',
-                'planejamentos.tarefa',
-                'planejamentos.data',
-                'planejamentos.prazo',
-                'planejamentos.data_fim',
-                'planejamentos.resumo',
-                'planejamentos.created_at'
-            ])
-        ->join('obras','obras.id','planejamentos.obra_id');
-        if($this->obra){
-            $planejamentos->where('planejamentos.obra_id', $this->obra);
-        }
+        $planejamentoCronogramas = Obra::query()
+            ->select('obras.nome','obras.id',
+                DB::raw("(select planejamentos.data_upload
+                    from planejamentos planejamentos
+                    where obras.id = planejamentos.obra_id
+                    order by data_upload DESC
+                    limit 1) as data_upload"));
 
-        return $this->applyScopes($planejamentos);
+//        dd($planejamentoCronogramas->toSql());
+
+
+//        select obras.nome as obra
+//	  ,(select planejamentos.data_upload
+//		from planejamentos planejamentos
+//		where obras.id = planejamentos.obra_id
+//		order by data_upload DESC
+//		limit 1) as data_upload
+//FROM obras
+
+        return $this->applyScopes($planejamentoCronogramas);
     }
 
     /**
@@ -115,11 +107,6 @@ class PlanejamentoDataTable extends DataTable
             ]);
     }
 
-    public function porObra($id){
-        $this->obra = $id;
-        return $this;
-    }
-
     /**
      * Get columns.
      *
@@ -128,12 +115,8 @@ class PlanejamentoDataTable extends DataTable
     private function getColumns()
     {
         return [
-            'obra' => ['name' => 'obras.nome', 'data' => 'obra'],
-            'tarefa' => ['name' => 'tarefa', 'data' => 'tarefa'],
-            'data_início' => ['name' => 'data', 'data' => 'data'],
-            'prazo' => ['name' => 'prazo', 'data' => 'prazo'],
-            'data_fim' => ['name' => 'data_fim', 'data' => 'data_fim'],
-            'resumo' => ['name' => 'resumo', 'data' => 'resumo']
+            'obra' => ['name' => 'obras.nome', 'data' => 'nome'],
+            'data Upload' => ['name' => 'data_upload', 'data' => 'data_upload']
         ];
     }
 
@@ -144,6 +127,6 @@ class PlanejamentoDataTable extends DataTable
      */
     protected function filename()
     {
-        return 'planejamentos';
+        return 'planejamentoCronogramas';
     }
 }
