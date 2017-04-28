@@ -84,3 +84,7 @@
     <a href="{!! route('admin.tipoEqualizacaoTecnicas.index') !!}"><i class="fa fa-file-audio-o"></i><span>Equalização Técnicas</span></a>
 </li>
 
+<li class="{{ Request::is('admin/retroalimentacaoObras*') ? 'active' : '' }}">
+    <a href="{!! route('retroalimentacaoObras.index') !!}"><i class="fa fa-edit"></i><span>RetroalimentacaoObras</span></a>
+</li>
+

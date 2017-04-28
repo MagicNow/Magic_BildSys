@@ -13,8 +13,11 @@ class RetroalimentacaoObraRepository extends BaseRepository
     protected $fieldSearchable = [
         'obra_id',
         'user_id',
-        'nome',
-        'descricao'
+        'origem',
+        'categoria',
+        'situacao_atual',
+        'situacao_proposta',
+        'data_inclusao'
     ];
 
     /**

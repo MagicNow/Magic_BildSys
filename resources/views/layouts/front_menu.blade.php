@@ -17,8 +17,3 @@
         <li class="{{ Request::is('compras/dashboard') ? 'active' : '' }}"><a href="{{url('compras/dashboard')}}"><i class="glyphicon glyphicon-cloud-upload"></i><span>DashBoard</span></a></li>
     </ul>
 </li>
-
-
-<li class="{{ Request::is('retroalimentacaoObras*') ? 'active' : '' }}">
-    <a href="{!! route('retroalimentacaoObras.create') !!}"><i class="fa fa-undo"></i><span>Retroalimentação</span></a>
-</li>
