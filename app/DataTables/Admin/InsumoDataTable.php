@@ -25,7 +25,7 @@ class InsumoDataTable extends DataTable
                     'insumo_grupos.nome as grupo',
                 ])
                 ->join('insumo_grupos','insumo_grupos.id','=','insumos.insumo_grupo_id'))
-            ->addColumn('action', 'admin.insumos.datatables_actions')
+            ->editColumn('action', 'admin.insumos.datatables_actions')
             ->make(true);
     }
 
@@ -50,7 +50,7 @@ class InsumoDataTable extends DataTable
     {
         return $this->builder()
             ->columns($this->getColumns())
-            ->addAction(['width' => '10%'])
+            // ->addAction(['width' => '10%'])
             ->ajax('')
             ->parameters([
                 'initComplete' => 'function () {
@@ -103,7 +103,8 @@ class InsumoDataTable extends DataTable
             'nome' => ['name' => 'nome', 'data' => 'nome'],
             'unidade' => ['name' => 'unidade_sigla', 'data' => 'unidade_sigla'],
             'codigo' => ['name' => 'codigo', 'data' => 'codigo'],
-            'grupo' => ['name' => 'insumo_grupos.nome', 'data' => 'grupo']
+            'grupo' => ['name' => 'insumo_grupos.nome', 'data' => 'grupo'],
+            'action' => ['title'          => '#', 'printable'      => false, 'width'=>'10%'],
         ];
     }
 

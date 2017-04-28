@@ -16,7 +16,7 @@ class ObrasInsumosDataTable extends DataTable
     {
         return $this->datatables
             ->eloquent($this->query())
-            ->addColumn('action', 'ordem_de_compras.datatables_actions')
+            ->editColumn('action', 'ordem_de_compras.datatables_actions')
             ->make(true);
     }
 
@@ -41,7 +41,6 @@ class ObrasInsumosDataTable extends DataTable
     {
         return $this->builder()
             ->columns($this->getColumns())
-            ->addAction(['width' => '10%'])
             ->ajax('')
             ->parameters([
                 'initComplete' => 'function () {
@@ -93,7 +92,8 @@ class ObrasInsumosDataTable extends DataTable
         return [
             'codigo' => ['name' => 'codigo', 'data' => 'codigo'],
             'nome' => ['name' => 'nome', 'data' => 'nome'],
-            'unidade_sigla' => ['name' => 'unidade_sigla', 'data' => 'unidade_sigla']
+            'unidade_sigla' => ['name' => 'unidade_sigla', 'data' => 'unidade_sigla'],
+            'action' => ['title'          => '#', 'printable'      => false, 'width'=>'10%'],
         ];
     }
 

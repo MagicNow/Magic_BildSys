@@ -18,7 +18,7 @@ class InsumosAprovadosDataTable extends DataTable
     {
         return $this->datatables
             ->eloquent($this->query())
-            ->addColumn('action', 'ordem_de_compras.insumos_aprovados_datatables_actions')
+            ->editColumn('action', 'ordem_de_compras.insumos_aprovados_datatables_actions')
             ->editColumn('codigo_insumo', function($obj){
                 return "<strong  data-toggle=\"tooltip\" data-placement=\"top\" data-html=\"true\"
                          title=\"". $obj->grupo->codigo .' '. $obj->grupo->nome . ' <br> ' .
@@ -28,6 +28,12 @@ class InsumosAprovadosDataTable extends DataTable
                                     $obj->servico->codigo .' '.$obj->servico->nome  ."\">
                      $obj->codigo_insumo
                 </strong>";
+            })
+            ->editColumn('ordem_de_compra_id', function($obj){
+                return '<a href="'.url('/ordens-de-compra/detalhes/'.$obj->ordem_de_compra_id).'">'.$obj->ordem_de_compra_id.'</a>';
+            })
+            ->filterColumn('sla', function($query){
+                
             })
             ->make(true);
     }
@@ -120,7 +126,7 @@ class InsumosAprovadosDataTable extends DataTable
     {
         return $this->builder()
             ->columns($this->getColumns())
-            ->addAction(['width' => '10%'])
+//            ->addAction(['width' => '10%'])
             ->ajax('')
             ->parameters([
                 'initComplete' => 'function () {
@@ -177,6 +183,8 @@ class InsumosAprovadosDataTable extends DataTable
             'Codigo' => ['name' => 'ordem_de_compra_itens.codigo_insumo', 'data' => 'codigo_insumo'],
             'Insumo' => ['name' => 'insumos.nome', 'data' => 'insumo_nome'],
             'qtd' => ['name' => 'ordem_de_compra_itens.qtd', 'data' => 'qtd'],
+            'sla' => ['name' => 'sla', 'data' => 'sla'],
+            'action' => ['title'          => '#', 'printable'      => false, 'width'=>'10px'],
         ];
     }
 

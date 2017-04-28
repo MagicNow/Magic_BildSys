@@ -16,7 +16,7 @@ class LembreteDataTable extends DataTable
     {
         return $this->datatables
             ->eloquent($this->query())
-            ->addColumn('action', 'admin.lembretes.datatables_actions')
+            ->editColumn('action', 'admin.lembretes.datatables_actions')
             ->editColumn('dias_prazo_minimo', function($obj){
                 return isset($obj->dias_prazo_minimo) ? $obj->dias_prazo_minimo . ' dias ' : '';
             })
@@ -55,7 +55,7 @@ class LembreteDataTable extends DataTable
     {
         return $this->builder()
             ->columns($this->getColumns())
-            ->addAction(['width' => '10%'])
+            // ->addAction(['width' => '10%'])
             ->ajax('')
             ->parameters([
                 'initComplete' => 'function () {
@@ -109,7 +109,8 @@ class LembreteDataTable extends DataTable
             'nome' => ['name' => 'lembretes.nome', 'data' => 'nome'],
             'prazo' => ['name' => 'dias_prazo_minimo', 'data' => 'dias_prazo_minimo'],
             'grupo' => ['name' => 'dias_prazo_maximo', 'data' => 'grupo'],
-            'cadastrado_por' => ['name' => 'users.name', 'data' => 'user']
+            'cadastrado_por' => ['name' => 'users.name', 'data' => 'user'],
+            'action' => ['title'          => '#', 'printable'      => false, 'width'=>'10%'],
         ];
     }
 

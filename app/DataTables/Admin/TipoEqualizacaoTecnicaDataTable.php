@@ -16,7 +16,7 @@ class TipoEqualizacaoTecnicaDataTable extends DataTable
     {
         return $this->datatables
             ->eloquent($this->query())
-            ->addColumn('action', 'admin.tipo_equalizacao_tecnicas.datatables_actions')
+            ->editColumn('action', 'admin.tipo_equalizacao_tecnicas.datatables_actions')
             ->make(true);
     }
 
@@ -41,7 +41,7 @@ class TipoEqualizacaoTecnicaDataTable extends DataTable
     {
         return $this->builder()
             ->columns($this->getColumns())
-            ->addAction(['width' => '10%'])
+            // ->addAction(['width' => '10%'])
             ->ajax('')
             ->parameters([
                 'initComplete' => 'function () {
@@ -91,7 +91,8 @@ class TipoEqualizacaoTecnicaDataTable extends DataTable
     private function getColumns()
     {
         return [
-            'nome' => ['name' => 'nome', 'data' => 'nome']
+            'nome' => ['name' => 'nome', 'data' => 'nome'],
+            'action' => ['title'          => '#', 'printable'      => false, 'width'=>'10%'],
         ];
     }
 

@@ -1,13 +1,7 @@
-<!-- Id Field -->
-<div class="form-group col-md-6">
-    {!! Form::label('id', 'Id:') !!}
-    <p class="form-control">{!! $workflowAlcada->id !!}</p>
-</div>
-
 <!-- Workflow Tipo Id Field -->
 <div class="form-group col-md-6">
     {!! Form::label('workflow_tipo_id', 'Workflow Tipo Id:') !!}
-    <p class="form-control">{!! $workflowAlcada->workflow_tipo_id !!}</p>
+    <p class="form-control">{!! $workflowAlcada->workflowTipo->nome !!}</p>
 </div>
 
 <!-- Nome Field -->
@@ -17,26 +11,24 @@
 </div>
 
 <!-- Ordem Field -->
-<div class="form-group col-md-6">
+<div class="form-group col-md-4">
     {!! Form::label('ordem', 'Ordem:') !!}
     <p class="form-control">{!! $workflowAlcada->ordem !!}</p>
 </div>
 
 <!-- Created At Field -->
-<div class="form-group col-md-6">
-    {!! Form::label('created_at', 'Created At:') !!}
-    <p class="form-control">{!! $workflowAlcada->created_at !!}</p>
+<div class="form-group col-md-4">
+    {!! Form::label('created_at', 'Criada em:') !!}
+    <p class="form-control">{!! $workflowAlcada->created_at->format('d/m/Y') !!}</p>
 </div>
 
 <!-- Updated At Field -->
-<div class="form-group col-md-6">
-    {!! Form::label('updated_at', 'Updated At:') !!}
-    <p class="form-control">{!! $workflowAlcada->updated_at !!}</p>
+<div class="form-group col-md-4">
+    {!! Form::label('updated_at', 'Atualizada em:') !!}
+    <p class="form-control">{!! $workflowAlcada->updated_at->format('d/m/Y') !!}</p>
 </div>
 
-<!-- Deleted At Field -->
-<div class="form-group col-md-6">
-    {!! Form::label('deleted_at', 'Deleted At:') !!}
-    <p class="form-control">{!! $workflowAlcada->deleted_at !!}</p>
+<div class="form-group col-sm-12">
+    {!! Form::label('workflowUsuarios', 'Usuários nesta alçada:') !!}
+    {!! Form::select('workflowUsuarios[]', $relacionados ,(!isset($workflowAlcada)? null: $workflowUsuarios_ids), ['class' => 'form-control', 'id'=>"workflowUsuarios", 'multiple'=>"multiple"]) !!}
 </div>
-

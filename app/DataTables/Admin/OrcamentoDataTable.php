@@ -16,7 +16,7 @@ class OrcamentoDataTable extends DataTable
     {
         return $this->datatables
             ->eloquent($this->query())
-            ->addColumn('action', 'admin.orcamentos.datatables_actions')
+            ->editColumn('action', 'admin.orcamentos.datatables_actions')
             ->editColumn('created_at', function($obj){
                 return $obj->created_at ? $obj->created_at->format('d/m/Y'): '';
             })
@@ -67,7 +67,7 @@ class OrcamentoDataTable extends DataTable
     {
         return $this->builder()
             ->columns($this->getColumns())
-            ->addAction(['width' => '10%'])
+            // ->addAction(['width' => '10%'])
             ->ajax('')
             ->parameters([
                 'initComplete' => 'function () {
@@ -144,7 +144,8 @@ class OrcamentoDataTable extends DataTable
             'subgrupo1' => ['name' => 'grupos1.nome', 'data' => 'subgrupo1'],
             'subgrupo2' => ['name' => 'grupos2.nome', 'data' => 'subgrupo2'],
             'subgrupo3' => ['name' => 'grupos3.nome', 'data' => 'subgrupo3'],
-            'dataUpload' => ['name' => 'created_at', 'data' => 'created_at']
+            'dataUpload' => ['name' => 'created_at', 'data' => 'created_at'],
+            'action' => ['title'          => '#', 'printable'      => false, 'width'=>'10%'],
         ];
     }
 

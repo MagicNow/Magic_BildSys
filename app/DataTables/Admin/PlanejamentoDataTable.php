@@ -16,7 +16,7 @@ class PlanejamentoDataTable extends DataTable
     {
         return $this->datatables
             ->eloquent($this->query())
-            ->addColumn('action', 'admin.planejamentos.datatables_actions')
+            ->editColumn('action', 'admin.planejamentos.datatables_actions')
             ->editColumn('obra_id',function ($obj){
                 return $obj->obra_id ? $obj->obra->nome : '';
             })
@@ -53,7 +53,7 @@ class PlanejamentoDataTable extends DataTable
     {
         return $this->builder()
             ->columns($this->getColumns())
-            ->addAction(['width' => '10%'])
+            // ->addAction(['width' => '10%'])
             ->ajax('')
             ->parameters([
                 'initComplete' => 'function () {
@@ -108,7 +108,8 @@ class PlanejamentoDataTable extends DataTable
             'data_início' => ['name' => 'data', 'data' => 'data'],
             'prazo' => ['name' => 'prazo', 'data' => 'prazo'],
             'data_fim' => ['name' => 'data_fim', 'data' => 'data_fim'],
-            'resumo' => ['name' => 'resumo', 'data' => 'resumo']
+            'resumo' => ['name' => 'resumo', 'data' => 'resumo'],
+            'action' => ['title'          => '#', 'printable'      => false, 'width'=>'10%'],
         ];
     }
 

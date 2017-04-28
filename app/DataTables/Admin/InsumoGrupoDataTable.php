@@ -16,7 +16,7 @@ class InsumoGrupoDataTable extends DataTable
     {
         return $this->datatables
             ->eloquent($this->query())
-            ->addColumn('action', 'admin.insumo_grupos.datatables_actions')
+            ->editColumn('action', 'admin.insumo_grupos.datatables_actions')
             ->make(true);
     }
 
@@ -41,7 +41,7 @@ class InsumoGrupoDataTable extends DataTable
     {
         return $this->builder()
             ->columns($this->getColumns())
-            ->addAction(['width' => '10%'])
+            // ->addAction(['width' => '10%'])
             ->ajax('')
             ->parameters([
                 'initComplete' => 'function () {
@@ -92,7 +92,8 @@ class InsumoGrupoDataTable extends DataTable
     {
         return [
             'codigo' => ['name' => 'id', 'data' => 'id'],
-            'nome' => ['name' => 'nome', 'data' => 'nome']
+            'nome' => ['name' => 'nome', 'data' => 'nome'],
+            'action' => ['title'          => '#', 'printable'      => false, 'width'=>'10%'],
         ];
     }
 

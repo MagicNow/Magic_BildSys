@@ -79,7 +79,11 @@ class WorkflowAlcadaController extends AppBaseController
             return redirect(route('admin.workflowAlcadas.index'));
         }
 
-        return view('admin.workflow_alcadas.show')->with('workflowAlcada', $workflowAlcada);
+        $relacionados = [];
+        $workflowUsuarios_ids = $workflowAlcada->workflowUsuarios()->pluck('user_id','user_id')->toArray();
+        $relacionados = User::whereIn('id', $workflowUsuarios_ids)->pluck('name','id')->toArray();
+
+        return view('admin.workflow_alcadas.show', compact('workflowAlcada', 'relacionados', 'workflowUsuarios_ids' ));
     }
 
     /**
