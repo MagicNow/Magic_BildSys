@@ -187,6 +187,7 @@ return [
         Artesaos\Defender\Providers\DefenderServiceProvider::class,
         KennedyTedesco\Validation\ValidationServiceProvider::class,
         Yajra\Oci8\Oci8ServiceProvider::class,
+        Cagartner\CorreiosConsulta\ServiceProvider::class,
     ],
 
     /*
@@ -237,8 +238,8 @@ return [
         'Html' => Collective\Html\HtmlFacade::class,
         'Flash' => Laracasts\Flash\Flash::class,
         'Gravatar' => Creativeorange\Gravatar\Facades\Gravatar::class,
-
         'Defender' => \Artesaos\Defender\Facades\Defender::class,
+        'Correios'    => Cagartner\CorreiosConsulta\Facade::class,
     ],
 
 ];

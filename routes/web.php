@@ -190,6 +190,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         Route::delete('fornecedores/{fornecedores}', ['as'=> 'admin.fornecedores.destroy', 'uses' => 'Admin\FornecedoresController@destroy']);
         Route::get('fornecedores/{fornecedores}', ['as'=> 'admin.fornecedores.show', 'uses' => 'Admin\FornecedoresController@show']);
         Route::get('fornecedores/{fornecedores}/edit', ['as'=> 'admin.fornecedores.edit', 'uses' => 'Admin\FornecedoresController@edit']);
+        Route::get('fornecedores/buscacep/{cep}', 'Admin\FornecedoresController@buscaPorCep');
 
         $router->group(['middleware' => 'needsPermission:users.list'], function() use ($router) {
             #Manage ACL

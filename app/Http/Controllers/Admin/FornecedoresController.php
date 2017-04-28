@@ -10,6 +10,7 @@ use App\Repositories\Admin\FornecedoresRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
 use Response;
+use Correios;
 
 class FornecedoresController extends AppBaseController
 {
@@ -147,5 +148,10 @@ class FornecedoresController extends AppBaseController
         Flash::success('Fornecedores '.trans('common.deleted').' '.trans('common.successfully').'.');
 
         return redirect(route('admin.fornecedores.index'));
+    }
+
+    public function buscaPorCep($cep)
+    {
+        return Correios::cep($cep);
     }
 }
