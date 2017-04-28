@@ -181,6 +181,16 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         #Cronograma por obra
         Route::get('planejamentoCronogramas', ['as'=> 'admin.planejamentoCronogramas.index', 'uses' => 'Admin\PlanejamentoCronogramaController@index']);
 
+        # Fornecedores
+        Route::get('fornecedores', ['as'=> 'admin.fornecedores.index', 'uses' => 'Admin\FornecedoresController@index']);
+        Route::post('fornecedores', ['as'=> 'admin.fornecedores.store', 'uses' => 'Admin\FornecedoresController@store']);
+        Route::get('fornecedores/create', ['as'=> 'admin.fornecedores.create', 'uses' => 'Admin\FornecedoresController@create']);
+        Route::put('fornecedores/{fornecedores}', ['as'=> 'admin.fornecedores.update', 'uses' => 'Admin\FornecedoresController@update']);
+        Route::patch('fornecedores/{fornecedores}', ['as'=> 'admin.fornecedores.update', 'uses' => 'Admin\FornecedoresController@update']);
+        Route::delete('fornecedores/{fornecedores}', ['as'=> 'admin.fornecedores.destroy', 'uses' => 'Admin\FornecedoresController@destroy']);
+        Route::get('fornecedores/{fornecedores}', ['as'=> 'admin.fornecedores.show', 'uses' => 'Admin\FornecedoresController@show']);
+        Route::get('fornecedores/{fornecedores}/edit', ['as'=> 'admin.fornecedores.edit', 'uses' => 'Admin\FornecedoresController@edit']);
+
         $router->group(['middleware' => 'needsPermission:users.list'], function() use ($router) {
             #Manage ACL
             $router->get('/manage', [

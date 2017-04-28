@@ -90,3 +90,7 @@
     <a href="{!! route('retroalimentacaoObras.index') !!}"><i class="fa fa-edit"></i><span>RetroalimentacaoObras</span></a>
 </li>
 
+{{--<li class="{{ Request::is('fornecedores*') ? 'active' : '' }}">--}}
+{{--<a href="{!! route('admin.fornecedores.index') !!}"><i class="fa fa-edit"></i><span>Fornecedores</span></a>--}}
+{{--</li>--}}
+
