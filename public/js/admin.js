@@ -62495,6 +62495,7 @@ $(function () {
 
     $('.money').mask('0.000.000.000.000,00', {reverse: true});
     $('.decimal').mask('00,00');
+    $('.cnpj').mask('99.999.999/9999-99');
 });
 
 var oTable = null;

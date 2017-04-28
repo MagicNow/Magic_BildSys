@@ -98,6 +98,168 @@ class Obra extends Model
         
     ];
 
+    public function getAreaTerrenoAttribute($value)
+    {
+        if(strlen($value) == 4){
+            $value = '0'.$value;
+        }
+
+        return number_format($value,2,',','.');
+    }
+
+    public function setAreaTerrenoAttribute($value)
+    {
+        $pontos = array(",");
+        $value = str_replace('.','',$value);
+        $result = str_replace( $pontos, ".", $value);
+
+        $this->attributes['area_terreno'] = $result;
+    }
+
+    public function getAreaPrivativaAttribute($value)
+    {
+        if(strlen($value) == 4){
+            $value = '0'.$value;
+        }
+
+        return number_format($value,2,',','.');
+    }
+
+    public function setAreaPrivativaAttribute($value)
+    {
+        $pontos = array(",");
+        $value = str_replace('.','',$value);
+        $result = str_replace( $pontos, ".", $value);
+
+        $this->attributes['area_privativa'] = $result;
+    }
+
+    public function getAreaConstruidaAttribute($value)
+    {
+        if(strlen($value) == 4){
+            $value = '0'.$value;
+        }
+
+        return number_format($value,2,',','.');
+    }
+
+    public function setAreaConstruidaAttribute($value)
+    {
+        $pontos = array(",");
+        $value = str_replace('.','',$value);
+        $result = str_replace( $pontos, ".", $value);
+
+        $this->attributes['area_construida'] = $result;
+    }
+
+    public function getEficienciaProjetoAttribute($value)
+    {
+        if(strlen($value) == 4){
+            $value = '0'.$value;
+        }
+
+        return number_format($value,2,',','.');
+    }
+
+    public function setEficienciaProjetoAttribute($value)
+    {
+        $pontos = array(",");
+        $value = str_replace('.','',$value);
+        $result = str_replace( $pontos, ".", $value);
+
+        $this->attributes['eficiencia_projeto'] = $result;
+    }
+
+    public function getNumApartamentosAttribute($value)
+    {
+        if(strlen($value) == 4){
+            $value = '0'.$value;
+        }
+
+        return number_format($value,2,',','.');
+    }
+
+    public function setNumApartamentosAttribute($value)
+    {
+        $pontos = array(",");
+        $value = str_replace('.','',$value);
+        $result = str_replace( $pontos, ".", $value);
+
+        $this->attributes['num_apartamentos'] = $result;
+    }
+
+    public function getNumTorresAttribute($value)
+    {
+        if(strlen($value) == 4){
+            $value = '0'.$value;
+        }
+
+        return number_format($value,2,',','.');
+    }
+
+    public function setNumTorresAttribute($value)
+    {
+        $pontos = array(",");
+        $value = str_replace('.','',$value);
+        $result = str_replace( $pontos, ".", $value);
+
+        $this->attributes['num_torres'] = $result;
+    }
+
+    public function getNumPavimentoTipoAttribute($value)
+    {
+        if(strlen($value) == 4){
+            $value = '0'.$value;
+        }
+
+        return number_format($value,2,',','.');
+    }
+
+    public function setNumPavimentoTipoAttribute($value)
+    {
+        $pontos = array(",");
+        $value = str_replace('.','',$value);
+        $result = str_replace( $pontos, ".", $value);
+
+        $this->attributes['num_pavimento_tipo'] = $result;
+    }
+
+    public function getIndiceBildPreAttribute($value)
+    {
+        if(strlen($value) == 4){
+            $value = '0'.$value;
+        }
+
+        return number_format($value,2,',','.');
+    }
+
+    public function setIndiceBildPreAttribute($value)
+    {
+        $pontos = array(",");
+        $value = str_replace('.','',$value);
+        $result = str_replace( $pontos, ".", $value);
+
+        $this->attributes['indice_bild_pre'] = $result;
+    }
+
+    public function getIndiceBildOiAttribute($value)
+    {
+        if(strlen($value) == 4){
+            $value = '0'.$value;
+        }
+
+        return number_format($value,2,',','.');
+    }
+
+    public function setIndiceBildOiAttribute($value)
+    {
+        $pontos = array(",");
+        $value = str_replace('.','',$value);
+        $result = str_replace( $pontos, ".", $value);
+
+        $this->attributes['indice_bild_oi'] = $result;
+    }
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/

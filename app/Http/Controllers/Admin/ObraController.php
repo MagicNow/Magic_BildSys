@@ -6,6 +6,7 @@ use App\DataTables\Admin\ObraDataTable;
 use App\Http\Requests\Admin;
 use App\Http\Requests\Admin\CreateObraRequest;
 use App\Http\Requests\Admin\UpdateObraRequest;
+use App\Models\Cidade;
 use App\Models\ObraUser;
 use App\Models\User;
 use App\Repositories\Admin\ObraRepository;
@@ -42,7 +43,9 @@ class ObraController extends AppBaseController
     public function create()
     {
         $relacionados = [];
-        return view('admin.obras.create', compact('relacionados'));
+        $cidade = [];
+
+        return view('admin.obras.create', compact('relacionados', 'cidade'));
     }
 
     /**
@@ -105,7 +108,9 @@ class ObraController extends AppBaseController
 //        dd($obrasUsers_ids);
         $relacionados = User::whereIn('id', $obraUsers)->pluck('name','id')->toArray();
 
-        return view('admin.obras.edit', compact('obra', 'relacionados', 'obraUsers'));
+        $cidade = Cidade::pluck('nome','id')->toArray();
+
+        return view('admin.obras.edit', compact('obra', 'relacionados', 'obraUsers', 'cidade'));
     }
 
     /**

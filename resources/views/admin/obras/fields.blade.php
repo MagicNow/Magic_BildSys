@@ -1,4 +1,4 @@
-<!-- Nome Field -->
+<!-- nome Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('nome', 'Nome:') !!}
     {!! Form::text('nome', null, ['class' => 'form-control']) !!}
@@ -9,6 +9,161 @@
     {!! Form::select('obraUsers[]', $relacionados ,(!isset($obra)? null: $obraUsers), ['class' => 'form-control', 'id'=>"obraUsers", 'multiple'=>"multiple"]) !!}
 </div>
 
+<!-- logo Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('logo', 'Logo:') !!}
+    {!! Form::file('logo', null, ['class' => 'form-control']) !!}
+</div>
+
+<!-- cidade_id Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('cidade_id', 'Cidade:') !!}
+    {!! Form::select('cidade_id', [''=>'Selecione um cidade']+$cidade ,(!isset($obra)? null: $obra->cidade_id), ['class' => 'form-control select2']) !!}
+</div>
+
+<!-- area_terreno Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('area_terreno', 'Área do terreno:') !!}
+    {!! Form::text('area_terreno', null, ['class' => 'form-control decimal']) !!}
+</div>
+
+<!-- area_privativa Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('area_privativa', 'Área privativa:') !!}
+    {!! Form::text('area_privativa', null, ['class' => 'form-control decimal']) !!}
+</div>
+
+<!-- area_construida Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('area_construida', 'Área construída:') !!}
+    {!! Form::text('area_construida', null, ['class' => 'form-control decimal']) !!}
+</div>
+
+<!-- eficiencia_projeto Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('eficiencia_projeto', 'Eficiencia do projeto:') !!}
+    {!! Form::text('eficiencia_projeto', null, ['class' => 'form-control decimal']) !!}
+</div>
+
+<!-- num_apartamentos Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('num_apartamentos', 'Número de apartamentos:') !!}
+    {!! Form::text('num_apartamentos', null, ['class' => 'form-control decimal']) !!}
+</div>
+
+<!-- num_torres Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('num_torres', 'Número de torres:') !!}
+    {!! Form::text('num_torres', null, ['class' => 'form-control decimal']) !!}
+</div>
+
+<!-- num_pavimento_tipo Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('num_pavimento_tipo', 'Número pavimento tipo:') !!}
+    {!! Form::text('num_pavimento_tipo', null, ['class' => 'form-control decimal']) !!}
+</div>
+
+<!-- data_inicio Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('data_inicio', 'Data de início:') !!}
+    {!! Form::date('data_inicio', @isset($obra) ? $obra->data_inicio ? $obra->data_inicio->format('Y-m-d') : null : null, ['class' => 'form-control']) !!}
+</div>
+
+<!-- data_cliente Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('data_cliente', 'Data cliente:') !!}
+    {!! Form::date('data_cliente', @isset($obra) ? $obra->data_cliente ? $obra->data_cliente->format('Y-m-d') : null : null, ['class' => 'form-control']) !!}
+</div>
+
+<!-- indice_bild_pre Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('indice_bild_pre', 'Índice BILD - Pré:') !!}
+    {!! Form::text('indice_bild_pre', null, ['class' => 'form-control decimal']) !!}
+</div>
+
+<!-- indice_bild_oi Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('indice_bild_oi', 'Índice BILD - OI:') !!}
+    {!! Form::text('indice_bild_oi', null, ['class' => 'form-control decimal']) !!}
+</div>
+
+<!-- razao_social Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('razao_social', 'Razão social:') !!}
+    {!! Form::text('razao_social', null, ['class' => 'form-control']) !!}
+</div>
+
+<!-- cnpj Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('cnpj', 'CNPJ:') !!}
+    {!! Form::text('cnpj', null, ['class' => 'form-control cnpj']) !!}
+</div>
+
+<!-- inscricao_estadual Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('inscricao_estadual', 'Inscrição estadual:') !!}
+    {!! Form::text('inscricao_estadual', null, ['class' => 'form-control']) !!}
+</div>
+
+<!-- endereco_faturamento Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('endereco_faturamento', 'Endereço de faturamento:') !!}
+    {!! Form::text('endereco_faturamento', null, ['class' => 'form-control']) !!}
+</div>
+
+<!-- endereco_obra Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('endereco_obra', 'Endereço da obra:') !!}
+    {!! Form::text('endereco_obra', null, ['class' => 'form-control']) !!}
+</div>
+
+<!-- entrega_nota_fisca_e_boleto Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('entrega_nota_fisca_e_boleto', 'Entrega de nota fiscal e boleto:') !!}
+    {!! Form::text('entrega_nota_fisca_e_boleto', null, ['class' => 'form-control']) !!}
+</div>
+
+<!-- adm_obra_nome Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('adm_obra_nome', 'Administrativo de obra - Nome:') !!}
+    {!! Form::text('adm_obra_nome', null, ['class' => 'form-control']) !!}
+</div>
+
+<!-- adm_obra_email Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('adm_obra_email', 'Administrativo de obra - Email:') !!}
+    {!! Form::text('adm_obra_email', null, ['class' => 'form-control']) !!}
+</div>
+
+<!-- eng_obra_nome Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('eng_obra_nome', 'Engenheiro obra - Nome:') !!}
+    {!! Form::text('eng_obra_nome', null, ['class' => 'form-control']) !!}
+</div>
+
+<!-- eng_obra_email Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('eng_obra_email', 'Engenheiro obra - Email:') !!}
+    {!! Form::text('eng_obra_email', null, ['class' => 'form-control']) !!}
+</div>
+
+<!-- horario_entrega_na_obra Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('horario_entrega_na_obra', 'Horário de entrega na obra:') !!}
+    {!! Form::text('horario_entrega_na_obra', null, ['class' => 'form-control']) !!}
+</div>
+
+<!-- referencias_bancarias Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('referencias_bancarias', 'Referências bancárias:') !!}
+    {!! Form::text('referencias_bancarias', null, ['class' => 'form-control']) !!}
+</div>
+
+<!-- referencias_comerciais Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('referencias_comerciais', 'Referências comerciais:') !!}
+    {!! Form::text('referencias_comerciais', null, ['class' => 'form-control']) !!}
+</div>
 
 <!-- Submit Field -->
 <div class="form-group col-sm-12">
