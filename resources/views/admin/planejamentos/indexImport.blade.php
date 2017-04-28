@@ -14,7 +14,7 @@
                     <div class="col-md-10">
                         <div class="form-group">
                             {!! Form::label('obra_id', 'Obra:') !!}
-                            {!! Form::select('obra_id', [''=>'Escolha...' ]+$obras, null, ['class' => 'form-control', 'required'=>'required']) !!}
+                            {!! Form::select('obra_id', [''=>'Escolha...' ]+$obras, isset($id) ? $id : null, ['class' => 'form-control', 'required'=>'required']) !!}
                         </div>
                         <div class="form-group">
                             {!! Form::label('template_id', 'Template:') !!}

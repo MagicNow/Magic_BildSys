@@ -344,10 +344,15 @@ class PlanejamentoController extends AppBaseController
      * $orcamento_tipos = Buscando chave e valor para fazer o combobox da view
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function indexImport(){
+    public function indexImport(Request $request){
+        $id = null;
+        if($request->id){
+            $id = $request->id;
+        }
+
         $obras = Obra::pluck('nome','id')->toArray();
         $templates = TemplatePlanilha::where('modulo', 'Planejamento')->pluck('nome','id')->toArray();
-        return view('admin.planejamentos.indexImport', compact('obras','templates'));
+        return view('admin.planejamentos.indexImport', compact('obras','templates','id'));
     }
 
     /**
