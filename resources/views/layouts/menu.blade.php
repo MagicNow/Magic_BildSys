@@ -25,22 +25,24 @@
             </span>
     </a>
     <ul class="treeview-menu">
-        <li class="{{ Request::is('admin/orcamentos*') ? 'active' : '' }}"><a href="{!! route('admin.orcamentos.index') !!}"><i class="fa fa-edit"></i><span>Orçamentos</span></a></li>
+        <li class="{{ Request::is('admin/orcamentos*') ? 'active' : '' }}"><a href="{!! route('admin.orcamentos.index') !!}"><i class="fa fa-external-link-square"></i><span>Orçamentos</span></a></li>
         <li class="{{ Request::is('admin/orcamento') ? 'active' : '' }}"><a href="{!! route('admin.orcamentos.indexImport') !!}"><i class="glyphicon glyphicon-cloud-upload"></i><span>Importação</span></a></li>
     </ul>
 </li>
 
 <li class="treeview {{ Request::is('admin/planejamento*') ? 'active' : '' }}">
     <a href="#">
-        <i class="fa fa-calendar"></i> <span>Planejamento</span>
+        <i class="fa fa-calendar"></i> <span>Cronograma de Obras</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
     </a>
     <ul class="treeview-menu">
-        <li class="{{ Request::is('admin/planejamentos') ? 'active' : '' }}"><a href="{!! route('admin.planejamentos.index') !!}"><i class="fa fa-edit"></i><span>Planejamentos</span></a></li>
+        <li class="{{ Request::is('admin/planejamentoCronogramas*') ? 'active' : '' }}"><a href="{!! route('admin.planejamentoCronogramas.index') !!}"><i class="fa fa-calendar-plus-o"></i><span>Cronograma por obra</span></a></li>
+        <li class="{{ Request::is('admin/planejamentos') ? 'active' : '' }}"><a href="{!! route('admin.planejamentos.index') !!}"><i class="fa fa-calendar-o"></i><span>Cronograma de obra</span></a></li>
         <li class="{{ Request::is('admin/planejamento') ? 'active' : '' }}"><a href="{!! route('admin.planejamentos.indexImport') !!}"><i class="glyphicon glyphicon-cloud-upload"></i><span>Importação</span></a></li>
         <li class="{{ Request::is('admin/planejamentos/lembretes*') ? 'active' : '' }}"><a href="{!! route('admin.lembretes.index') !!}"><i class="fa fa-exclamation-circle"></i><span>Lembretes</span></a></li>
+
         {{--<li class="{{ Request::is('admin/planejamentos/tipo-lembretes*') ? 'active' : '' }}">
             <a href="{!! route('admin.lembreteTipos.index') !!}"><i class="fa fa-ellipsis-h"></i><span>Tipos de Lembretes</span></a>
         </li>--}}

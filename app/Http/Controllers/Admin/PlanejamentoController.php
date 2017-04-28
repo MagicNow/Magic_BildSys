@@ -43,9 +43,13 @@ class PlanejamentoController extends AppBaseController
      * @param PlanejamentoDataTable $planejamentoDataTable
      * @return Response
      */
-    public function index(PlanejamentoDataTable $planejamentoDataTable)
+    public function index(Request $request, PlanejamentoDataTable $planejamentoDataTable)
     {
-        return $planejamentoDataTable->render('admin.planejamentos.index');
+        $id = null;
+        if($request->id){
+            $id = $request->id;
+        }
+        return $planejamentoDataTable->porObra($id)->render('admin.planejamentos.index');
     }
 
     /**
