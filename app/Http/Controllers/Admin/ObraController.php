@@ -10,6 +10,7 @@ use App\Models\Cidade;
 use App\Models\ObraUser;
 use App\Models\User;
 use App\Repositories\Admin\ObraRepository;
+use App\Repositories\CodeRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
 use Response;
@@ -57,9 +58,16 @@ class ObraController extends AppBaseController
      */
     public function store(CreateObraRequest $request)
     {
-        $input = $request->all();
+        $input = $request->except('logo');
 
         $obra = $this->obraRepository->create($input);
+
+        if($request->logo) {
+            $destinationPath = CodeRepository::saveFile($request->logo, 'obras/' . $obra->id);
+
+            $obra->logo = $destinationPath;
+            $obra->save();
+        }
 
         Flash::success('Obra '.trans('common.saved').' '.trans('common.successfully').'.');
 
@@ -131,7 +139,14 @@ class ObraController extends AppBaseController
             return redirect(route('admin.obras.index'));
         }
 
-        $obra = $this->obraRepository->update($request->all(), $id);
+        if($request->logo){
+            @unlink(public_path() . $obra->logo);
+            $destinationPath = CodeRepository::saveFile($request->logo, 'obras/' . $obra->id);
+            $obra->logo = $destinationPath;
+            $obra->save();
+        }
+
+        $obra = $this->obraRepository->update($request->except('logo'), $id);
 
         Flash::success('Obra '.trans('common.updated').' '.trans('common.successfully').'.');
 

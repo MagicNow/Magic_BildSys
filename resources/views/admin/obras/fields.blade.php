@@ -12,6 +12,11 @@
 <!-- logo Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('logo', 'Logo:') !!}
+    @if(@isset($obra))
+        @if($obra->logo)
+            <a href="{{$obra->logo}}" class="colorbox">Ver logo</a>
+        @endif
+    @endif
     {!! Form::file('logo', null, ['class' => 'form-control']) !!}
 </div>
 
