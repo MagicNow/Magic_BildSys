@@ -32,8 +32,56 @@ class InsumosAprovadosDataTable extends DataTable
             ->editColumn('ordem_de_compra_id', function($obj){
                 return '<a href="'.url('/ordens-de-compra/detalhes/'.$obj->ordem_de_compra_id).'">'.$obj->ordem_de_compra_id.'</a>';
             })
-            ->filterColumn('sla', function($query){
-                
+            ->filterColumn('sla', function($query, $keyword){
+                $query->whereRaw("(SELECT
+                    DATEDIFF(
+                        SUBDATE(
+                            PL.`data` , ". //-- Data de início do Planejamento
+                    "INTERVAL(
+                                IFNULL(
+                                (SELECT
+                                    SUM(L.dias_prazo_minimo) prazo
+                                FROM
+                                    lembretes L
+                                JOIN insumo_grupos IG ON IG.id = L.insumo_grupo_id
+                                WHERE
+                                    EXISTS( ". //-- Busca apenas os Lembretes q o Insumo está no grupo
+                    "SELECT
+                                            1
+                                        FROM
+                                            insumos I
+                                        WHERE
+                                            I.id = item.insumo_id
+                                        AND I.insumo_grupo_id = IG.id
+                                    )
+                                AND L.deleted_at IS NULL) ". //-- Subtrai a soma de todos prazos dos lembretes deste insumo
+                    ",0)
+                                + ". // -- Subtrai tb os dias de workflow
+                    " IFNULL(
+                                    (SELECT SUM(dias_prazo) prazo
+                                        FROM workflow_alcadas
+                                        WHERE EXISTS(SELECT 1 FROM workflow_usuarios WHERE workflow_alcada_id = workflow_alcadas.id ))
+                                ,0)
+                            ) 
+                            DAY
+                        ) ,
+                        CURDATE()
+                    ) sla
+                FROM
+                    ordem_de_compra_itens item
+                JOIN ordem_de_compras OC ON OC.id = item.ordem_de_compra_id
+                JOIN planejamento_compras PC ON PC.insumo_id = item.insumo_id
+                AND PC.grupo_id = item.grupo_id
+                AND PC.subgrupo1_id = item.subgrupo1_id
+                AND PC.subgrupo2_id = item.subgrupo2_id
+                AND PC.subgrupo3_id = item.subgrupo3_id
+                AND PC.servico_id = item.servico_id
+                JOIN planejamentos PL ON PL.id = PC.planejamento_id
+                WHERE
+                    item.id = ordem_de_compra_itens.id
+                    AND PL.deleted_at IS NULL
+                    AND PC.deleted_at IS NULL
+                LIMIT 1) = ?", ["$keyword"]);
             })
             ->make(true);
     }
@@ -145,9 +193,9 @@ class InsumosAprovadosDataTable extends DataTable
                         }
                     });
                 }' ,
-                "lengthChange"=> true,
-                "pageLength"=> 20,
-                'dom' => 'Bfrtip',
+//                "lengthChange"=> true,
+                "pageLength"=> 25,
+                'dom' => 'Bfrltip',
                 'scrollX' => false,
                 'language'=> [
                     "url"=> "/vendor/datatables/Portuguese-Brasil.json"

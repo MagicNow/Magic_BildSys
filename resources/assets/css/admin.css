@@ -326,3 +326,6 @@ h6 {
 .cal-year-box [class*="span"], .cal-month-box [class*="cal-cell"] {
     min-height: 70px;
 }
+.dataTables_length{
+    text-align: right;
+}
