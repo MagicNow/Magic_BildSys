@@ -1158,8 +1158,8 @@ class OrdemDeCompraController extends AppBaseController
     }
 
     public function insumosAprovados(InsumosAprovadosDataTable $insumosAprovadosDataTable){
-
-        return $insumosAprovadosDataTable->render('ordem_de_compras.insumos-aprovados');
+        $obras = Obra::pluck('nome','id')->toArray();
+        return $insumosAprovadosDataTable->render('ordem_de_compras.insumos-aprovados', compact('obras'));
     }
 }
 
