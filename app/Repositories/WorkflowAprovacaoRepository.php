@@ -264,8 +264,8 @@ class WorkflowAprovacaoRepository
         }
 
         // Se não for, verifica se já é a última
-        $qtd_aprovadores = self::verificaQuantidadeUsuariosAprovadores($workflow_tipo_id, null, $obj->qualObra());
-
+        $qtd_aprovadores = self::verificaQuantidadeUsuariosAprovadores($workflow_tipo_id, $obj->qualObra(), null);
+        
         if($qtd_aprovadores){
             // Divide a qtd de aprovações/reprovações pela quantidade de aprovadores
             $avaliacoes = $total_ja_votado['total_avaliado']/$qtd_aprovadores;
@@ -323,21 +323,52 @@ class WorkflowAprovacaoRepository
         ];
     }
 
-    public static function verificaQuantidadeUsuariosAprovadores($workflow_tipo_id, $alcada = null, $obra_id = null){
+    public static function verificaQuantidadeUsuariosAprovadores($workflow_tipo_id, $obra_id, $alcada = null){
         $qtd_usuarios = 0;
+
         $workflow_alcadas = WorkflowAlcada::where('workflow_tipo_id',$workflow_tipo_id);
+        
         if($alcada){
             $workflow_alcadas->where('id', $alcada);
         }
 
         $workflow_alcadas = $workflow_alcadas->get();
-        
-        foreach ($workflow_alcadas as $alcada){
-            $qtd_usuarios += $alcada->workflowUsuarios()->join('obra_users',function($join) use($obra_id){
-                $join->on('workflow_usuarios.user_id','=','obra_users.obra_id')->where('obra_users.obra_id', $obra_id);
-            })->count();
+
+        foreach ($workflow_alcadas as $alcadas){
+            $qtd_usuarios += $alcadas->workflowUsuarios()->join('obra_users', 'obra_users.user_id', '=', 'users.id')
+                ->where('obra_users.obra_id', $obra_id)
+                ->count();
         }
-        
+
         return $qtd_usuarios;
+    }
+
+    public static function verificaUsuariosQueFaltamAprovar($workflow_tipo_id, $obra_id, $alcada){
+
+        $usuarios_nomes = [];
+        $nomes = [];
+
+        $workflow_alcadas = WorkflowAlcada::where('workflow_tipo_id',$workflow_tipo_id)->where('id', $alcada);
+
+        $workflow_alcadas = $workflow_alcadas->get();
+
+        foreach ($workflow_alcadas as $alcadas){
+            $usuarios_nomes[] = $alcadas->workflowUsuarios()->select(['users.id','users.name'])->join('obra_users', 'obra_users.user_id', '=', 'users.id')
+                ->where('obra_users.obra_id', $obra_id)
+                ->get();
+        }
+
+        foreach ($usuarios_nomes as $usuarios) {
+            foreach ($usuarios as $usuario){
+                $workflow_aprovacao = WorkflowAprovacao::where('workflow_alcada_id', $alcada)
+                    ->where('user_id', $usuario->id)
+                    ->first();
+                if(!$workflow_aprovacao) {
+                    $nomes[] = $usuario->name;
+                }
+            }
+        }
+
+        return $nomes;
     }
 }

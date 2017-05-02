@@ -221,11 +221,16 @@ class OrdemDeCompraController extends AppBaseController
 
                 $avaliado_reprovado[$alcada->id] ['aprovadores'] = WorkflowAprovacaoRepository::verificaQuantidadeUsuariosAprovadores(
                     1, // Aprovação de OC
-                    $alcada->id,
-                    $ordemDeCompra->obra_id);
+                    $ordemDeCompra->obra_id,
+                    $alcada->id);
+
+                $avaliado_reprovado[$alcada->id] ['faltam_aprovar'] = WorkflowAprovacaoRepository::verificaUsuariosQueFaltamAprovar(
+                    1, // Aprovação de OC
+                    $ordemDeCompra->obra_id,
+                    $alcada->id);
             }
         }
-        
+
         if($ordemDeCompra->itens){
             $orcamentoInicial = Orcamento::where('orcamento_tipo_id',1)
                 ->whereIn('insumo_id', $ordemDeCompra->itens()->pluck('insumo_id','insumo_id')->toArray())
