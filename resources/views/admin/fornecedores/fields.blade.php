@@ -1,7 +1,11 @@
 <!-- Cnpj Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('cnpj', 'Cnpj:') !!}
-    {!! Form::text('cnpj', null, ['class' => 'form-control']) !!}
+    {!! Form::text('cnpj', null, ['class' => 'form-control cnpj',
+        'onblur'=>'validaCnpj(1)',
+        'required'=>'required',
+        'maxlength'=>'255',
+        'id'=>'numero1']) !!}
 </div>
 
 <!-- Nome Field -->
@@ -11,15 +15,15 @@
 </div>
 
 <!-- Situacao Cnpj Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('situacao_cnpj', 'Situacao Cnpj:') !!}
-    {!! Form::text('situacao_cnpj', null, ['class' => 'form-control']) !!}
-</div>
+{{--<div class="form-group col-sm-6">--}}
+    {{--{!! Form::label('situacao_cnpj', 'Situacao Cnpj:') !!}--}}
+    {{--{!! Form::text('situacao_cnpj', null, ['class' => 'form-control']) !!}--}}
+{{--</div>--}}
 
 <!-- Inscricao Estadual Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('inscricao_estadual', 'Inscricao Estadual:') !!}
-    {!! Form::text('inscricao_estadual', null, ['class' => 'form-control']) !!}
+    {!! Form::number('inscricao_estadual', null, ['class' => 'form-control']) !!}
 </div>
 
 <!-- Email Field -->
@@ -37,7 +41,7 @@
 <!-- Telefone Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('telefone', 'Telefone:') !!}
-    {!! Form::text('telefone', null, ['class' => 'form-control']) !!}
+    {!! Form::text('telefone', null, ['class' => 'form-control telefone']) !!}
 </div>
 
 <!-- Cep Field -->
@@ -47,15 +51,33 @@
 </div>
 
 <!-- Tipo Logradouro Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('tipo_logradouro', 'Tipo Logradouro:') !!}
-    {!! Form::text('tipo_logradouro', null, ['class' => 'form-control']) !!}
-</div>
+{{--<div class="form-group col-sm-6">--}}
+    {{--{!! Form::label('tipo_logradouro', 'Tipo Logradouro:') !!}--}}
+    {{--{!! Form::text('tipo_logradouro', null, ['class' => 'form-control']) !!}--}}
+{{--</div>--}}
 
 <!-- Logradouro Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('logradouro', 'Logradouro:') !!}
     {!! Form::text('logradouro', null, ['class' => 'form-control']) !!}
+</div>
+
+<!-- Cidade Id Field -->
+{{--<div class="form-group col-sm-6">--}}
+    {{--{!! Form::label('cidade_id', 'Cidade Id:') !!}--}}
+    {{--{!! Form::text('cidade_id', null, ['class' => 'form-control']) !!}--}}
+{{--</div>--}}
+
+<!-- Municipio Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('municipio', 'Municipio:') !!}
+    {!! Form::text('municipio', null, ['class' => 'form-control']) !!}
+</div>
+
+<!-- Estado Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('estado', 'Estado:') !!}
+    {!! Form::text('estado', null, ['class' => 'form-control']) !!}
 </div>
 
 <!-- Numero Field -->
@@ -68,24 +90,6 @@
 <div class="form-group col-sm-6">
     {!! Form::label('complemento', 'Complemento:') !!}
     {!! Form::text('complemento', null, ['class' => 'form-control']) !!}
-</div>
-
-<!-- Cidade Id Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('cidade_id', 'Cidade Id:') !!}
-    {!! Form::text('cidade_id', null, ['class' => 'form-control']) !!}
-</div>
-
-<!-- Municipio Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('municipio', 'Municipio:') !!}
-    {!! Form::text('municipio', null, ['class' => 'form-control']) !!}
-</div>
-
-<!-- Estado Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('estado', 'Estado:') !!}
-    {!! Form::text('estado', null, ['class' => 'form-control']) !!}
 </div>
 
 <!-- Submit Field -->
@@ -111,7 +115,8 @@
                             if(json.cidade){
                                 $('input[name="logradouro"]').val(json.logradouro+', ');
                                 $('input[name="estado"]').val(json.uf);
-                                $('input[name="cidade_id"]').val(json.cidade);
+                                $('input[name="municipio"]').val(json.cidade);
+//                                $('input[name="cidade_id"]').val(json.cidade);
 //                                $('input[name="bairro"]').val(json.bairro);
 //                                $('input[name="endereco"]').focus();
                             }else{

@@ -347,7 +347,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     });
 
     $router->group(['prefix' => 'compras'], function () use ($router) {
-        $router->group(['middleware' => 'needsPermission:compras.zoas'], function () use ($router) {
+        $router->group(['middleware' => 'needsPermission:compras.geral'], function () use ($router) {
             $router->get('{planejamento}/insumos/{insumoGrupo}', 'OrdemDeCompraController@insumos')->name('compraInsumo');
             $router->get('{planejamento}/insumosJson', 'OrdemDeCompraController@insumosJson');
             $router->get('{planejamento}/insumosFilters', 'OrdemDeCompraController@insumosFilters');
@@ -401,14 +401,14 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         )->validate();
         dd('@TODO pegar ids e montar novo Q.C. ',request()->get('ordem_de_compra_itens'));
     });
-});
 
-$router->get('/teste', function (){
-    $grupos_mega = \App\Models\MegaInsumoGrupo::select([
-        'GRU_IDE_ST_CODIGO',
-        'GRU_IN_CODIGO',
-        'GRU_ST_NOME',])
-        ->where('gru_ide_st_codigo' , '07')
-        ->first();
-    dd($grupos_mega);
+    $router->get('/teste', function (){
+        $grupos_mega = \App\Models\MegaInsumoGrupo::select([
+            'GRU_IDE_ST_CODIGO',
+            'GRU_IN_CODIGO',
+            'GRU_ST_NOME',])
+            ->where('gru_ide_st_codigo' , '07')
+            ->first();
+        dd($grupos_mega);
+    });
 });

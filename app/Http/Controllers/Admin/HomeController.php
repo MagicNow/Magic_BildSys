@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Notificacao;
+use App\Repositories\Admin\ValidationRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 
@@ -40,5 +41,18 @@ class HomeController extends AppBaseController
             }
         }
         return $notifications;
+    }
+
+    public function validaCnpj(Request $request){
+        $validator = ValidationRepository::validaCnpj($request->numero,$request->cpf);
+
+        $validator->validate();
+
+        // verifica se já não existe o documento com outra pessoa
+        $documentoUnico = ValidationRepository::CnpjUnico($request->numero);
+        if(!$documentoUnico){
+            return response()->json(['success'=>false,'erro'=>'CNPJ já cadastrado na base!'],422);
+        }
+        return response()->json(['success'=>true]);
     }
 }
