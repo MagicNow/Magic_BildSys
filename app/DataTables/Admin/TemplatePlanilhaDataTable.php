@@ -16,7 +16,7 @@ class TemplatePlanilhaDataTable extends DataTable
     {
         return $this->datatables
             ->eloquent($this->query())
-            ->addColumn('action', 'admin.template_planilhas.datatables_actions')
+            ->editColumn('action', 'admin.template_planilhas.datatables_actions')
             ->editColumn('colunas',function ($obj){
                 if($obj->colunas) {
                     $column = [];
@@ -50,7 +50,7 @@ class TemplatePlanilhaDataTable extends DataTable
     {
         return $this->builder()
             ->columns($this->getColumns())
-            ->addAction(['width' => '10%'])
+            // ->addAction(['width' => '10%'])
             ->ajax('')
             ->parameters([
                 'initComplete' => 'function () {
@@ -69,7 +69,7 @@ class TemplatePlanilhaDataTable extends DataTable
                         }
                     });
                 }' ,
-                'dom' => 'Bfrtip',
+                'dom' => 'Bfrltip',
                 'scrollX' => false,
                 'language'=> [
                     "url"=> "/vendor/datatables/Portuguese-Brasil.json"
@@ -102,7 +102,8 @@ class TemplatePlanilhaDataTable extends DataTable
         return [
             'nome' => ['name' => 'nome', 'data' => 'nome'],
             'modulo' => ['name' => 'modulo', 'data' => 'modulo'],
-            'colunas' => ['name' => 'colunas', 'data' => 'colunas']
+            'colunas' => ['name' => 'colunas', 'data' => 'colunas'],
+            'action' => ['title'          => '#', 'printable'      => false, 'width'=>'10%'],
         ];
     }
 

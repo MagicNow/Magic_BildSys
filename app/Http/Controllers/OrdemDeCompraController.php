@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\InsumosAprovadosDataTable;
 use App\DataTables\OrdemDeCompraDataTable;
 use App\Http\Requests;
 use App\Http\Requests\CreateOrdemDeCompraRequest;
 use App\Http\Requests\UpdateOrdemDeCompraRequest;
+use App\Models\Cidade;
 use App\Models\ContratoInsumo;
 use App\Models\Insumo;
 use App\Models\Grupo;
@@ -184,6 +186,11 @@ class OrdemDeCompraController extends AppBaseController
         return view('ordem_de_compras.compras', compact('obras'));
     }
 
+    /**
+     * Exibe os detalhes da Ordem de Compra
+     * @param $id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
+     */
     public function detalhe($id)
     {
         $ordemDeCompra = $this->ordemDeCompraRepository->findWithoutFail($id);
@@ -1162,6 +1169,56 @@ class OrdemDeCompraController extends AppBaseController
                 'servico'
             )
         );
+    }
+
+    public function insumosAprovados(InsumosAprovadosDataTable $insumosAprovadosDataTable){
+        # Traz apenas os que existem OCs aprovadas
+        $insumosAprovados =
+            OrdemDeCompraItem::join('ordem_de_compras','ordem_de_compras.id','ordem_de_compra_itens.ordem_de_compra_id')
+            ->where('ordem_de_compras.aprovado','1')
+            ->whereNotExists(function ($query){
+                $query->select(DB::raw('1'))
+                    ->from('oc_item_qc_item')
+                    ->where('ordem_de_compra_item_id',DB::raw('ordem_de_compra_itens.id') );
+            });
+
+        $cidades = Cidade::whereIn('id', $insumosAprovados->groupBy('obras.cidade_id')
+            ->join('obras','obras.id','ordem_de_compra_itens.obra_id')
+            ->pluck('obras.cidade_id', 'obras.cidade_id')
+            ->toArray())->pluck('nome','id')->toArray();
+
+        $obras = Obra::whereIn('id', $insumosAprovados->groupBy('ordem_de_compra_itens.obra_id')
+            ->pluck('ordem_de_compra_itens.obra_id', 'ordem_de_compra_itens.obra_id')
+            ->toArray())->pluck('nome','id')->toArray();
+
+        $OCs = OrdemDeCompra::whereIn('id',$insumosAprovados->groupBy('ordem_de_compra_itens.ordem_de_compra_id')
+            ->pluck('ordem_de_compra_itens.ordem_de_compra_id', 'ordem_de_compra_itens.ordem_de_compra_id')
+            ->toArray())->pluck('id','id')->toArray();
+
+        $insumoGrupos = InsumoGrupo::whereIn('id',$insumosAprovados
+                ->join('insumos', 'insumos.id','ordem_de_compra_itens.insumo_id')
+                ->groupBy('insumo_grupo_id')
+                ->pluck('insumo_grupo_id', 'insumo_grupo_id')
+                ->toArray()
+            )
+            ->pluck('nome','id')
+            ->toArray();
+
+        $insumos = Insumo::whereIn('id',$insumosAprovados
+                ->groupBy('ordem_de_compra_itens.insumo_id')
+                ->pluck('ordem_de_compra_itens.insumo_id', 'ordem_de_compra_itens.insumo_id')
+                ->toArray()
+            )
+            ->pluck('nome','id')
+            ->toArray();
+
+        $farol = [
+            'vermelho'=>'<i class="fa fa-circle text-danger" title="vermelho"></i>',
+            '11,29'=>'<i class="fa fa-circle text-warning" title="amarelo"></i>',
+            'verde'=>'<i class="fa fa-circle text-success" title="verde"></i>',
+        ];
+        return $insumosAprovadosDataTable->render('ordem_de_compras.insumos-aprovados',
+            compact('obras','OCs','insumoGrupos','insumos','cidades','farol'));
     }
 }
 

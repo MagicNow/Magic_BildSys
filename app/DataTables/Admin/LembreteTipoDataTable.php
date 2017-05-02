@@ -16,7 +16,7 @@ class LembreteTipoDataTable extends DataTable
     {
         return $this->datatables
             ->eloquent($this->query())
-            ->addColumn('action', 'admin.lembrete_tipos.datatables_actions')
+            ->editColumn('action', 'admin.lembrete_tipos.datatables_actions')
             ->make(true);
     }
 
@@ -41,7 +41,7 @@ class LembreteTipoDataTable extends DataTable
     {
         return $this->builder()
             ->columns($this->getColumns())
-            ->addAction(['width' => '10%'])
+            // ->addAction(['width' => '10%'])
             ->ajax('')
             ->parameters([
                 'initComplete' => 'function () {
@@ -60,7 +60,7 @@ class LembreteTipoDataTable extends DataTable
                         }
                     });
                 }' ,
-                'dom' => 'Bfrtip',
+                'dom' => 'Bfrltip',
                 'scrollX' => false,
                 'language'=> [
                     "url"=> "/vendor/datatables/Portuguese-Brasil.json"
@@ -93,7 +93,8 @@ class LembreteTipoDataTable extends DataTable
         return [
             'nome' => ['name' => 'nome', 'data' => 'nome'],
             'dias_prazo_minimo' => ['name' => 'dias_prazo_minimo', 'data' => 'dias_prazo_minimo'],
-            'dias_prazo_maximo' => ['name' => 'dias_prazo_maximo', 'data' => 'dias_prazo_maximo']
+            'dias_prazo_maximo' => ['name' => 'dias_prazo_maximo', 'data' => 'dias_prazo_maximo'],
+            'action' => ['title'          => '#', 'printable'      => false, 'width'=>'10%'],
         ];
     }
 

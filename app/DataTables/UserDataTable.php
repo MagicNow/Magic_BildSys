@@ -19,7 +19,7 @@ class UserDataTable extends DataTable
     {
         return $this->datatables
             ->eloquent($this->query())
-            ->addColumn('action', 'admin.manage.users.datatables_actions')
+            ->editColumn('action', 'admin.manage.users.datatables_actions')
             ->editColumn('active', '{!! $active?\'<i class="fa fa-check text-success"></i>\':\'<i class="fa fa-times text-danger"></i>\' !!}')
             ->editColumn('admin', '{!! $admin?\'<i class="fa fa-check text-success"></i>\':\'<i class="fa fa-times text-danger"></i>\' !!}')
             ->make(true);
@@ -49,7 +49,6 @@ class UserDataTable extends DataTable
     {
         return $this->builder()
             ->columns($this->getColumns())
-            ->addAction(['width' => '10%'])
             ->ajax('')
             ->parameters([
                 "initComplete" => 'function () {
@@ -102,7 +101,8 @@ class UserDataTable extends DataTable
             'nome' => ['name' => 'name', 'data' => 'name'],
             'e-mail' => ['name' => 'email', 'data' => 'email'],
             'ativo' => ['name' => 'active', 'data' => 'active'],
-            'admin' => ['name' => 'admin', 'data' => 'admin']
+            'admin' => ['name' => 'admin', 'data' => 'admin'],
+            'action' => ['title'          => '#', 'printable'      => false, 'width'=>'10%'],
         ];
     }
 

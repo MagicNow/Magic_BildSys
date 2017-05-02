@@ -13,7 +13,32 @@ class Cidade extends Model
 {
 
     public $table = 'cidades';
+    
     public $timestamps = false;
+
+    public $fillable = [
+        'nome',
+        'nome_completo',
+        'cep',
+        'uf',
+        'tipo_localidade',
+        'cidade_id'
+    ];
+
+    /**
+     * The attributes that should be casted to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'id' => 'integer',
+        'nome' => 'string',
+        'nome_completo' => 'string',
+        'cep' => 'string',
+        'uf' => 'string',
+        'tipo_localidade' => 'string',
+        'cidade_id' => 'integer'
+    ];
 
     /**
      * Validation rules
@@ -29,6 +54,14 @@ class Cidade extends Model
      **/
     public function obra()
     {
-        return $this->belongsTo(\App\Models\Obra::class);
+        return $this->belongsTo(Obra::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function fornecedores()
+    {
+        return $this->hasMany(Fornecedore::class);
     }
 }

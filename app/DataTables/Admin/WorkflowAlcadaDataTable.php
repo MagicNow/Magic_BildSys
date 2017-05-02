@@ -16,7 +16,7 @@ class WorkflowAlcadaDataTable extends DataTable
     {
         return $this->datatables
             ->eloquent($this->query())
-            ->addColumn('action', 'admin.workflow_alcadas.datatables_actions')
+            ->editColumn('action', 'admin.workflow_alcadas.datatables_actions')
             ->editColumn('workflow_tipo_id', function($obj){
                 return $obj->workflowTipo->nome;
             })
@@ -44,7 +44,6 @@ class WorkflowAlcadaDataTable extends DataTable
     {
         return $this->builder()
             ->columns($this->getColumns())
-            ->addAction(['width' => '10%'])
             ->ajax('')
             ->parameters([
                 'initComplete' => 'function () {
@@ -63,7 +62,7 @@ class WorkflowAlcadaDataTable extends DataTable
                         }
                     });
                 }' ,
-                'dom' => 'Bfrtip',
+                'dom' => 'Bfrltip',
                 'scrollX' => false,
                 'language'=> [
                     "url"=> "/vendor/datatables/Portuguese-Brasil.json"
@@ -96,7 +95,8 @@ class WorkflowAlcadaDataTable extends DataTable
         return [
             'tipo' => ['name' => 'workflow_tipo_id', 'data' => 'workflow_tipo_id'],
             'nome' => ['name' => 'nome', 'data' => 'nome'],
-            'ordem' => ['name' => 'ordem', 'data' => 'ordem']
+            'ordem' => ['name' => 'ordem', 'data' => 'ordem'],
+            'action' => ['title'          => '#', 'printable'      => false, 'width'=>'10%'],
         ];
     }
 

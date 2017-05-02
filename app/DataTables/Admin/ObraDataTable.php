@@ -16,7 +16,7 @@ class ObraDataTable extends DataTable
     {
         return $this->datatables
             ->eloquent($this->query())
-            ->addColumn('action', 'admin.obras.datatables_actions')
+            ->editColumn('action', 'admin.obras.datatables_actions')
             ->editColumn('created_at', function($obj){
                 return $obj->created_at ? with(new\Carbon\Carbon($obj->created_at))->format('d/m/Y H:i') : '';
             })
@@ -47,7 +47,7 @@ class ObraDataTable extends DataTable
     {
         return $this->builder()
             ->columns($this->getColumns())
-            ->addAction(['width' => '10%'])
+            // ->addAction(['width' => '10%'])
             ->ajax('')
             ->parameters([
                 'initComplete' => 'function () {
@@ -66,7 +66,7 @@ class ObraDataTable extends DataTable
                         }
                     });
                 }' ,
-                'dom' => 'Bfrtip',
+                'dom' => 'Bfrltip',
                 'scrollX' => false,
                 'language'=> [
                     "url"=> "/vendor/datatables/Portuguese-Brasil.json"
@@ -99,6 +99,7 @@ class ObraDataTable extends DataTable
         return [
             'nome' => ['name' => 'nome', 'data' => 'nome'],
             'cadastradaEm' => ['name' => 'created_at', 'data' => 'created_at'],
+            'action' => ['title'          => '#', 'printable'      => false, 'width'=>'10%'],
         ];
     }
 

@@ -29,7 +29,7 @@ class ContratosDataTable extends DataTable
             ->editColumn('obra_id',function ($obj){
                 return $obj->obra->nome;
             })
-            ->addColumn('action', 'admin.contratos.datatables_actions')
+            ->editColumn('action', 'admin.contratos.datatables_actions')
             ->make(true);
     }
 
@@ -54,7 +54,6 @@ class ContratosDataTable extends DataTable
     {
         return $this->builder()
             ->columns($this->getColumns())
-            ->addAction(['width' => '10%'])
             ->ajax('')
             ->parameters([
                 'initComplete' => 'function () {
@@ -73,7 +72,7 @@ class ContratosDataTable extends DataTable
                         }
                     });
                 }' ,
-                'dom' => 'Bfrtip',
+                'dom' => 'Bfrltip',
                 'scrollX' => false,
                 'language'=> [
                     "url"=> "/vendor/datatables/Portuguese-Brasil.json"
@@ -107,7 +106,8 @@ class ContratosDataTable extends DataTable
             'obra' => ['name' => 'obra_id', 'data' => 'obra_id'],
             'data' => ['name' => 'data', 'data' => 'data'],
             'valor' => ['name' => 'valor', 'data' => 'valor'],
-            'arquivo' => ['name' => 'arquivo', 'data' => 'arquivo']
+            'arquivo' => ['name' => 'arquivo', 'data' => 'arquivo'],
+            'action' => ['title'          => '#', 'printable'      => false],
         ];
     }
 
