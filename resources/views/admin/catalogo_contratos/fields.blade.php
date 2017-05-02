@@ -1,6 +1,7 @@
-<div class="form-group col-sm-6">
-    {!! Form::label('obra_id', 'Obra:') !!}
-    {!! Form::select('obra_id',[''=>'Escolha...']+ \App\Models\Obra::pluck('nome','id')->toArray() , null, ['class' => 'form-control','required'=>'required']) !!}
+<!-- Fornecedores Field -->
+<div class="form-group col-sm-12">
+    {!! Form::label('fornecedor_cod', 'Fornecedores:') !!}
+    {!! Form::select('fornecedor_cod', ['' => 'Escolha...']+$fornecedores, null, ['class' => 'form-control','id'=>'fornecedor_cod','required'=>'required']) !!}
 </div>
 
 <!-- Data Field -->
@@ -13,12 +14,6 @@
 <div class="form-group col-sm-6">
     {!! Form::label('valor', 'Valor:') !!}
     {!! Form::text('valor', null, ['class' => 'form-control money','required'=>'required']) !!}
-</div>
-
-<!-- Fornecedores Field -->
-<div class="form-group col-sm-12">
-    {!! Form::label('fornecedor_cod', 'Fornecedores:') !!}
-    {!! Form::select('fornecedor_cod', ['' => 'Escolha...']+$fornecedores, null, ['class' => 'form-control','id'=>'fornecedor_cod','required'=>'required']) !!}
 </div>
 
 <!-- Arquivo Field -->
@@ -89,7 +84,7 @@ $count_insumos = 0;
 <!-- Submit Field -->
 <div class="form-group col-sm-12">
     {!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save') ), ['class' => 'btn btn-success pull-right', 'type'=>'submit']) !!}
-    <a href="{!! route('admin.contratos.index') !!}" class="btn btn-default"><i class="fa fa-times"></i>  {{ ucfirst( trans('common.cancel') )}}</a>
+    <a href="{!! route('admin.catalogo_contratos.index') !!}" class="btn btn-default"><i class="fa fa-times"></i>  {{ ucfirst( trans('common.cancel') )}}</a>
 </div>
 
 @section('scripts')
@@ -214,7 +209,7 @@ $count_insumos = 0;
             placeholder:"-",
             language: "pt-BR",
             ajax: {
-                url: "{{ route('admin.contratos.busca_fornecedores') }}",
+                url: "{{ route('admin.catalogo_contratos.busca_fornecedores') }}",
                 dataType: 'json',
                 delay: 250,
 

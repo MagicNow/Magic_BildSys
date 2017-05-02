@@ -63,7 +63,7 @@
 </li>
 
 <li class="{{ Request::is('admin/contratos*') ? 'active' : '' }}">
-    <a href="{!! route('admin.contratos.index') !!}"><i class="fa fa-file-text-o"></i><span>Contratos</span></a>
+    <a href="{!! route('admin.catalogo_contratos.index') !!}"><i class="fa fa-file-text-o"></i><span>Contratos</span></a>
 </li>
 
 <li class="{{ Request::is('admin/obras*') ? 'active' : '' }}">

@@ -11,9 +11,9 @@
        <div class="box box-primary">
            <div class="box-body">
                <div class="row">
-                   {!! Form::model($contratos, ['route' => ['admin.contratos.update', $contratos->id], 'method' => 'patch', 'files' => true]) !!}
+                   {!! Form::model($contratos, ['route' => ['admin.catalogo_contratos.update', $contratos->id], 'method' => 'patch', 'files' => true]) !!}
 
-                        @include('admin.contratos.fields')
+                        @include('admin.catalogo_contratos.fields')
 
                    {!! Form::close() !!}
                </div>

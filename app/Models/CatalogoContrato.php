@@ -5,23 +5,31 @@ namespace App\Models;
 use Eloquent as Model;
 
 /**
- * Class Contratos
- * @package App\Models
- * @version April 12, 2017, 9:34 am BRT
+ * Class CatalogoContrato
+ * @package App\Models\Admin
+ * @version May 2, 2017, 6:01 pm BRT
  */
-class Contrato extends Model
+class CatalogoContrato extends Model
 {
 
-    public $table = 'contratos';
-    public $timestamps = false;
+    public $table = 'catalogo_contratos';
     
+    const CREATED_AT = 'created_at';
+    const UPDATED_AT = 'updated_at';
+
     public $fillable = [
-        'obra_id',
+        'fornecedor_id',
         'data',
         'valor',
+        'arquivo',
+        'periodo_inicio',
+        'periodo_termino',
+        'valor_minimo',
+        'valor_maximo',
+        'qtd_minima',
+        'qtd_maxima',
         'fornecedor_cod',
-        'fornecedor_nome',
-        'arquivo'
+        'fornecedor_nome'
     ];
 
     /**
@@ -31,10 +39,11 @@ class Contrato extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'obra_id' => 'integer',
-        'fornecedor_cod' => 'integer',
-        'fornecedor_nome' => 'string',
-        'arquivo' => 'string'
+        'fornecedor_id' => 'integer',
+        'data' => 'date',
+        'arquivo' => 'string',
+        'periodo_inicio' => 'date',
+        'periodo_termino' => 'date'
     ];
 
     /**
@@ -43,7 +52,7 @@ class Contrato extends Model
      * @var array
      */
     public static $rules = [
-        'arquivo' => 'required'
+        
     ];
 
     public function getValorAttribute($value)
@@ -73,7 +82,7 @@ class Contrato extends Model
      **/
     public function contratoInsumos()
     {
-        return $this->hasMany(\App\Models\ContratoInsumo::class, 'contrato_id');
+        return $this->hasMany(\App\Models\CatalogoContratoInsumo::class, 'catalogo_contrato_id');
     }
 
     /**
