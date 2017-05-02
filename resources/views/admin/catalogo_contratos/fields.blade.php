@@ -1,6 +1,17 @@
+<!-- Arquivo Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('arquivo', 'Arquivo:') !!}
+    @if(@isset($contratos))
+        @if($contratos->arquivo)
+            <a href="{{$contratos->arquivo}}" download>Baixar arquivo</a>
+        @endif
+    @endif
+    {!! Form::file('arquivo', null, ['class' => 'form-control']) !!}
+</div>
+
 <!-- Fornecedores Field -->
-<div class="form-group col-sm-12">
-    {!! Form::label('fornecedor_cod', 'Fornecedores:') !!}
+<div class="form-group col-sm-6">
+    {!! Form::label('fornecedor_cod', 'Fornecedor:') !!}
     {!! Form::select('fornecedor_cod', ['' => 'Escolha...']+$fornecedores, null, ['class' => 'form-control','id'=>'fornecedor_cod','required'=>'required']) !!}
 </div>
 
@@ -16,15 +27,40 @@
     {!! Form::text('valor', null, ['class' => 'form-control money','required'=>'required']) !!}
 </div>
 
-<!-- Arquivo Field -->
+<!-- Período início Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('arquivo', 'Arquivo:') !!}
-    @if(@isset($contratos))
-        @if($contratos->arquivo)
-            <a href="{{$contratos->arquivo}}" download>Baixar arquivo</a>
-        @endif
-    @endif
-    {!! Form::file('arquivo', null, ['class' => 'form-control']) !!}
+    {!! Form::label('periodo_inicio', 'Período início:') !!}
+    {!! Form::date('periodo_inicio', null, ['class' => 'form-control']) !!}
+</div>
+
+<!-- Período término Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('periodo_termino', 'Período término:') !!}
+    {!! Form::date('periodo_termino', null, ['class' => 'form-control']) !!}
+</div>
+
+<!-- Valor mínimo Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('valor_minimo', 'Valor mínimo:') !!}
+    {!! Form::text('valor_minimo', null, ['class' => 'form-control money']) !!}
+</div>
+
+<!-- Valor máximo Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('valor_maximo', 'Valor máximo:') !!}
+    {!! Form::text('valor_maximo', null, ['class' => 'form-control money']) !!}
+</div>
+
+<!-- Quantidade mínima Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('qtd_minima', 'Quantidade mínima:') !!}
+    {!! Form::text('qtd_minima', null, ['class' => 'form-control decimal']) !!}
+</div>
+
+<!-- Quantidade máxima Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('qtd_maxima', 'Quantidade máxima:') !!}
+    {!! Form::text('qtd_maxima', null, ['class' => 'form-control decimal']) !!}
 </div>
 
 <?php
