@@ -347,7 +347,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     });
 
     $router->group(['prefix' => 'compras'], function () use ($router) {
-        $router->group(['middleware' => 'needsPermission:compras.geral'], function () use ($router) {
+        $router->group(['middleware' => 'needsPermission:compras.zoas'], function () use ($router) {
             $router->get('{planejamento}/insumos/{insumoGrupo}', 'OrdemDeCompraController@insumos')->name('compraInsumo');
             $router->get('{planejamento}/insumosJson', 'OrdemDeCompraController@insumosJson');
             $router->get('{planejamento}/insumosFilters', 'OrdemDeCompraController@insumosFilters');
