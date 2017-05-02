@@ -16,8 +16,10 @@ class InsumosAprovadosDataTable extends DataTable
      */
     public function ajax()
     {
+        $query = $this->query();
+
         return $this->datatables
-            ->eloquent($this->query())
+            ->eloquent($query)
             ->editColumn('action', 'ordem_de_compras.insumos_aprovados_datatables_actions')
             ->editColumn('codigo_insumo', function($obj){
                 return "<strong  data-toggle=\"tooltip\" data-placement=\"top\" data-html=\"true\"
@@ -31,6 +33,9 @@ class InsumosAprovadosDataTable extends DataTable
             })
             ->editColumn('ordem_de_compra_id', function($obj){
                 return '<a href="'.url('/ordens-de-compra/detalhes/'.$obj->ordem_de_compra_id).'">'.$obj->ordem_de_compra_id.'</a>';
+            })
+            ->editColumn('sla', function($obj){
+                return $obj->sla.' <i class="fa fa-circle ' .($obj->sla < 10?'text-danger' : ( $obj->sla < 30 ? 'text-warning' : 'text-success') ).'" aria-hidden="true"></i>';
             })
             ->filterColumn('sla', function($query, $keyword){
                 $query->whereRaw("(SELECT
@@ -162,6 +167,126 @@ class InsumosAprovadosDataTable extends DataTable
             })
             ->with('insumo','grupo','subgrupo1','subgrupo2','subgrupo3','servico');
 
+        if($this->request()->get('obras')){
+            $query->whereIn('ordem_de_compra_itens.obra_id',$this->request()->get('obras'));
+        }
+        if($this->request()->get('ocs')){
+            $query->whereIn('ordem_de_compra_itens.ordem_de_compra_id',$this->request()->get('ocs'));
+        }
+        if($this->request()->get('insumo_grupos')){
+            $query->whereIn('insumos.insumo_grupo_id',$this->request()->get('insumo_grupos'));
+        }
+        if($this->request()->get('insumos')){
+            $query->whereIn('ordem_de_compra_itens.insumo_id',$this->request()->get('insumos'));
+        }
+        if($this->request()->get('cidades')){
+            $query->whereIn('obras.cidade_id',$this->request()->get('cidades'));
+        }
+        if($this->request()->get('farol')){
+            $query->whereIn(DB::raw("IF(
+                (
+                SELECT
+                    DATEDIFF(
+                        SUBDATE(
+                            PL.`data` , ". //-- Data de início do Planejamento
+                "INTERVAL(
+                                IFNULL(
+                                (SELECT
+                                    SUM(L.dias_prazo_minimo) prazo
+                                FROM
+                                    lembretes L
+                                JOIN insumo_grupos IG ON IG.id = L.insumo_grupo_id
+                                WHERE
+                                    EXISTS( ". //-- Busca apenas os Lembretes q o Insumo está no grupo
+                "SELECT
+                                            1
+                                        FROM
+                                            insumos I
+                                        WHERE
+                                            I.id = item.insumo_id
+                                        AND I.insumo_grupo_id = IG.id
+                                    )
+                                AND L.deleted_at IS NULL) ". //-- Subtrai a soma de todos prazos dos lembretes deste insumo
+                ",0)
+                                + ". // -- Subtrai tb os dias de workflow
+                " IFNULL(
+                                    (SELECT SUM(dias_prazo) prazo
+                                        FROM workflow_alcadas
+                                        WHERE EXISTS(SELECT 1 FROM workflow_usuarios WHERE workflow_alcada_id = workflow_alcadas.id ))
+                                ,0)
+                            ) 
+                            DAY
+                        ) ,
+                        CURDATE()
+                    ) sla
+                FROM
+                    ordem_de_compra_itens item
+                JOIN ordem_de_compras OC ON OC.id = item.ordem_de_compra_id
+                JOIN planejamento_compras PC ON PC.insumo_id = item.insumo_id
+                AND PC.grupo_id = item.grupo_id
+                AND PC.subgrupo1_id = item.subgrupo1_id
+                AND PC.subgrupo2_id = item.subgrupo2_id
+                AND PC.subgrupo3_id = item.subgrupo3_id
+                AND PC.servico_id = item.servico_id
+                JOIN planejamentos PL ON PL.id = PC.planejamento_id
+                WHERE
+                    item.id = ordem_de_compra_itens.id
+                    AND PL.deleted_at IS NULL
+                    AND PC.deleted_at IS NULL
+                LIMIT 1    
+                )<=10,'vermelho', IF( (
+                SELECT
+                    DATEDIFF(
+                        SUBDATE(
+                            PL.`data` , ". //-- Data de início do Planejamento
+                "INTERVAL(
+                                IFNULL(
+                                (SELECT
+                                    SUM(L.dias_prazo_minimo) prazo
+                                FROM
+                                    lembretes L
+                                JOIN insumo_grupos IG ON IG.id = L.insumo_grupo_id
+                                WHERE
+                                    EXISTS( ". //-- Busca apenas os Lembretes q o Insumo está no grupo
+                "SELECT
+                                            1
+                                        FROM
+                                            insumos I
+                                        WHERE
+                                            I.id = item.insumo_id
+                                        AND I.insumo_grupo_id = IG.id
+                                    )
+                                AND L.deleted_at IS NULL) ". //-- Subtrai a soma de todos prazos dos lembretes deste insumo
+                ",0)
+                                + ". // -- Subtrai tb os dias de workflow
+                " IFNULL(
+                                    (SELECT SUM(dias_prazo) prazo
+                                        FROM workflow_alcadas
+                                        WHERE EXISTS(SELECT 1 FROM workflow_usuarios WHERE workflow_alcada_id = workflow_alcadas.id ))
+                                ,0)
+                            ) 
+                            DAY
+                        ) ,
+                        CURDATE()
+                    ) sla
+                FROM
+                    ordem_de_compra_itens item
+                JOIN ordem_de_compras OC ON OC.id = item.ordem_de_compra_id
+                JOIN planejamento_compras PC ON PC.insumo_id = item.insumo_id
+                AND PC.grupo_id = item.grupo_id
+                AND PC.subgrupo1_id = item.subgrupo1_id
+                AND PC.subgrupo2_id = item.subgrupo2_id
+                AND PC.subgrupo3_id = item.subgrupo3_id
+                AND PC.servico_id = item.servico_id
+                JOIN planejamentos PL ON PL.id = PC.planejamento_id
+                WHERE
+                    item.id = ordem_de_compra_itens.id
+                    AND PL.deleted_at IS NULL
+                    AND PC.deleted_at IS NULL
+                LIMIT 1    
+                ) >30,'verde','amarelo') )") ,$this->request()->get('farol'));
+        }
+
         return $this->applyScopes($query);
     }
 
@@ -190,6 +315,16 @@ class InsumosAprovadosDataTable extends DataTable
                             .on(\'change\', function () {
                                 column.search($(this).val(), false, false, true).draw();
                             });
+                        }else{
+                            var column = this;
+                            var input = document.createElement("input");
+                            $(input).attr(\'type\',\'checkbox\');
+                            $(input).attr(\'id\',\'checkUncheckAll\');
+                            $(input).appendTo($(column.footer()).empty())
+                            .on(\'change\', function () {
+                                $(\'.item_checks\').prop("checked", $(this).prop("checked"));
+                            });
+                            $(column.footer()).addClass(\'text-center\');
                         }
                     });
                 }' ,

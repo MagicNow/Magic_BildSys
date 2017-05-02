@@ -356,6 +356,15 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
 
     $router->get('workflow/aprova-reprova', 'WorkflowController@aprovaReprova');
     $router->get('workflow/aprova-reprova-tudo', 'WorkflowController@aprovaReprovaTudo');
+
+    $router->post('quadro-de-concorrencia/criar', function (){
+        # Validação básica
+        validator(request()->all(),
+            ['ordem_de_compra_itens'=>'required'],
+            ['ordem_de_compra_itens.required'=>'É necessário escolher ao menos um item!']
+        )->validate();
+        dd('@TODO pegar ids e montar novo Q.C. ',request()->get('ordem_de_compra_itens'));
+    });
 });
 
 
