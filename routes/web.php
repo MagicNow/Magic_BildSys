@@ -65,6 +65,8 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
 
         Route::get('/home', 'Admin\HomeController@index');
         Route::get('/', 'Admin\HomeController@index');
+        # Validações de documento
+        Route::get('valida-documento', 'Admin\HomeController@validaCnpj');
 
         Route::resource('users', 'Admin\Manage\UsersController');
 
