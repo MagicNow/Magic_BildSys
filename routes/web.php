@@ -412,3 +412,6 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         dd($grupos_mega);
     });
 });
+
+
+Route::resource('quadroDeConcorrencias', 'QuadroDeConcorrenciaController');
