@@ -408,12 +408,11 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->group(['middleware' => 'needsPermission:quadroDeConcorrencias.list'], function () use ($router) {
         $router->get('quadro-de-concorrencia', ['as' => 'quadroDeConcorrencias.index', 'uses' => 'QuadroDeConcorrenciaController@index']);
         $router->post('quadro-de-concorrencia', ['as' => 'quadroDeConcorrencias.store', 'uses' => 'QuadroDeConcorrenciaController@store']);
-        $router->get('quadro-de-concorrencia/criar', ['as' => 'quadroDeConcorrencias.create', 'uses' => 'QuadroDeConcorrenciaController@create'])->middleware("needsPermission:quadroDeConcorrencias.create");
+        $router->post('quadro-de-concorrencia/criar', ['as' => 'quadroDeConcorrencias.create', 'uses' => 'QuadroDeConcorrenciaController@create'])->middleware("needsPermission:quadroDeConcorrencias.create");
         $router->put('quadro-de-concorrencia/{quadroDeConcorrencias}', ['as' => 'quadroDeConcorrencias.update', 'uses' => 'QuadroDeConcorrenciaController@update']);
         $router->patch('quadro-de-concorrencia/{quadroDeConcorrencias}', ['as' => 'quadroDeConcorrencias.update', 'uses' => 'QuadroDeConcorrenciaController@update']);
         $router->delete('quadro-de-concorrencia/{quadroDeConcorrencias}', ['as' => 'quadroDeConcorrencias.destroy', 'uses' => 'QuadroDeConcorrenciaController@destroy']);
         $router->get('quadro-de-concorrencia/{quadroDeConcorrencias}', ['as' => 'quadroDeConcorrencias.show', 'uses' => 'QuadroDeConcorrenciaController@show'])->middleware("needsPermission:quadroDeConcorrencias.view");
         $router->get('quadro-de-concorrencia/{quadroDeConcorrencias}/edit', ['as' => 'quadroDeConcorrencias.edit', 'uses' => 'QuadroDeConcorrenciaController@edit'])->middleware("needsPermission:quadroDeConcorrencias.edit");
     });
-
 });

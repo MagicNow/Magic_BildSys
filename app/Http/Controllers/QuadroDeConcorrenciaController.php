@@ -9,6 +9,8 @@ use App\Http\Requests\UpdateQuadroDeConcorrenciaRequest;
 use App\Repositories\QuadroDeConcorrenciaRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Response;
 
 class QuadroDeConcorrenciaController extends AppBaseController
@@ -37,9 +39,18 @@ class QuadroDeConcorrenciaController extends AppBaseController
      *
      * @return Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        return view('quadro_de_concorrencias.create');
+        # Validação básica
+        validator($request->all(),
+            ['ordem_de_compra_itens'=>'required'],
+            ['ordem_de_compra_itens.required'=>'É necessário escolher ao menos um item!']
+        )->validate();
+
+        # Cria QC pra ficar em aberto com os itens passados
+        $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->create(['itens'=>$request->ordem_de_compra_itens, 'user_id'=>Auth::id()]);
+        
+        return view('quadro_de_concorrencias.create',compact('quadroDeConcorrencia'));
     }
 
     /**

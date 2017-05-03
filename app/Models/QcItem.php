@@ -26,7 +26,7 @@ class QcItem extends Model
     public $fillable = [
         'quadro_de_concorrencia_id',
         'qtd',
-        'insumos_id'
+        'insumo_id'
     ];
 
     /**
@@ -37,7 +37,7 @@ class QcItem extends Model
     protected $casts = [
         'id' => 'integer',
         'quadro_de_concorrencia_id' => 'integer',
-        'insumos_id' => 'integer'
+        'insumo_id' => 'integer'
     ];
 
     /**
@@ -54,7 +54,7 @@ class QcItem extends Model
      **/
     public function insumo()
     {
-        return $this->belongsTo(\App\Models\Insumo::class);
+        return $this->belongsTo(Insumo::class);
     }
 
     /**
@@ -62,22 +62,22 @@ class QcItem extends Model
      **/
     public function quadroDeConcorrencia()
     {
-        return $this->belongsTo(\App\Models\QuadroDeConcorrencia::class);
+        return $this->belongsTo(QuadroDeConcorrencia::class);
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
-    public function ocItemQcItems()
+    public function oc_itens()
     {
-        return $this->hasMany(\App\Models\OcItemQcItem::class);
+        return $this->belongsToMany(OrdemDeCompraItem::class,'oc_item_qc_item','qc_item_id','ordem_de_compra_item_id')->withTimestamps();
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
-    public function qcItemQcFornecedors()
+    public function propostaFornecedores()
     {
-        return $this->hasMany(\App\Models\QcItemQcFornecedor::class);
+        return $this->hasMany(QcItemQcFornecedor::class);
     }
 }
