@@ -50,7 +50,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
         # Cria QC pra ficar em aberto com os itens passados
         $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->create(['itens'=>$request->ordem_de_compra_itens, 'user_id'=>Auth::id()]);
         
-        return view('quadro_de_concorrencias.create',compact('quadroDeConcorrencia'));
+        return view('quadro_de_concorrencias.edit',compact('quadroDeConcorrencia'));
     }
 
     /**

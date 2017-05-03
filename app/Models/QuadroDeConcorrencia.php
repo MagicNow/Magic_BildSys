@@ -54,7 +54,7 @@ class QuadroDeConcorrencia extends Model
      **/
     public function status()
     {
-        return $this->belongsTo(QcStatus::class);
+        return $this->belongsTo(QcStatus::class,'qc_status_id');
     }
 
     /**
