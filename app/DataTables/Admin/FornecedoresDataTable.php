@@ -93,13 +93,13 @@ class FornecedoresDataTable extends DataTable
         return [
             'nome' => ['name' => 'nome', 'data' => 'nome'],
             'cnpj' => ['name' => 'cnpj', 'data' => 'cnpj'],
-            'logradouro' => ['name' => 'logradouro', 'data' => 'logradouro'],
-            'numero' => ['name' => 'numero', 'data' => 'numero'],
-            'complemento' => ['name' => 'complemento', 'data' => 'complemento'],
+//            'logradouro' => ['name' => 'logradouro', 'data' => 'logradouro'],
+//            'numero' => ['name' => 'numero', 'data' => 'numero'],
+//            'complemento' => ['name' => 'complemento', 'data' => 'complemento'],
             'municipio' => ['name' => 'municipio', 'data' => 'municipio'],
             'estado' => ['name' => 'estado', 'data' => 'estado'],
-            'situacao_cnpj' => ['name' => 'situacao_cnpj', 'data' => 'situacao_cnpj'],
-            'inscricao_estadual' => ['name' => 'inscricao_estadual', 'data' => 'inscricao_estadual'],
+//            'situacao_cnpj' => ['name' => 'situacao_cnpj', 'data' => 'situacao_cnpj'],
+//            'inscricao_estadual' => ['name' => 'inscricao_estadual', 'data' => 'inscricao_estadual'],
             'email' => ['name' => 'email', 'data' => 'email'],
             'site' => ['name' => 'site', 'data' => 'site'],
             'telefone' => ['name' => 'telefone', 'data' => 'telefone']

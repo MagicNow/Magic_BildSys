@@ -41,9 +41,9 @@ class ValidationRepository
                 ->first();
 
             if($cadastrado) {
-                return false;
+                return true;
             }
-            return true;
+            return false;
         }
     }
 

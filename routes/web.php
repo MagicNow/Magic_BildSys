@@ -11,6 +11,18 @@
 |
 */
 
+$router->get('/teste', function (){
+    \App\Repositories\ImportacaoRepository::fornecedores();
+
+//    $grupos_mega = \App\Models\MegaInsumoGrupo::select([
+//        'GRU_IDE_ST_CODIGO',
+//        'GRU_IN_CODIGO',
+//        'GRU_ST_NOME',])
+//        ->where('gru_ide_st_codigo' , '07')
+//        ->first();
+//    dd($grupos_mega);
+});
+
 Auth::routes();
 
 ##### ADMIN #####
@@ -153,16 +165,17 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
     #Cronograma por obra
     Route::get('planejamentoCronogramas', ['as'=> 'admin.planejamentoCronogramas.index', 'uses' => 'Admin\PlanejamentoCronogramaController@index'])->middleware("needsPermission:cronograma_por_obras.list");
 
-    # Fornecedores
-    Route::get('fornecedores', ['as'=> 'admin.fornecedores.index', 'uses' => 'Admin\FornecedoresController@index']);
-    Route::post('fornecedores', ['as'=> 'admin.fornecedores.store', 'uses' => 'Admin\FornecedoresController@store']);
-    Route::get('fornecedores/create', ['as'=> 'admin.fornecedores.create', 'uses' => 'Admin\FornecedoresController@create']);
-    Route::put('fornecedores/{fornecedores}', ['as'=> 'admin.fornecedores.update', 'uses' => 'Admin\FornecedoresController@update']);
-    Route::patch('fornecedores/{fornecedores}', ['as'=> 'admin.fornecedores.update', 'uses' => 'Admin\FornecedoresController@update']);
-    Route::delete('fornecedores/{fornecedores}', ['as'=> 'admin.fornecedores.destroy', 'uses' => 'Admin\FornecedoresController@destroy']);
-    Route::get('fornecedores/{fornecedores}', ['as'=> 'admin.fornecedores.show', 'uses' => 'Admin\FornecedoresController@show']);
-    Route::get('fornecedores/{fornecedores}/edit', ['as'=> 'admin.fornecedores.edit', 'uses' => 'Admin\FornecedoresController@edit']);
-    Route::get('fornecedores/buscacep/{cep}', 'Admin\FornecedoresController@buscaPorCep');
+        # Fornecedores
+        Route::get('fornecedores', ['as'=> 'admin.fornecedores.index', 'uses' => 'Admin\FornecedoresController@index']);
+        Route::post('fornecedores', ['as'=> 'admin.fornecedores.store', 'uses' => 'Admin\FornecedoresController@store']);
+        Route::get('fornecedores/create', ['as'=> 'admin.fornecedores.create', 'uses' => 'Admin\FornecedoresController@create']);
+        Route::put('fornecedores/{fornecedores}', ['as'=> 'admin.fornecedores.update', 'uses' => 'Admin\FornecedoresController@update']);
+        Route::patch('fornecedores/{fornecedores}', ['as'=> 'admin.fornecedores.update', 'uses' => 'Admin\FornecedoresController@update']);
+        Route::delete('fornecedores/{fornecedores}', ['as'=> 'admin.fornecedores.destroy', 'uses' => 'Admin\FornecedoresController@destroy']);
+        Route::get('fornecedores/{fornecedores}', ['as'=> 'admin.fornecedores.show', 'uses' => 'Admin\FornecedoresController@show']);
+        Route::get('fornecedores/{fornecedores}/edit', ['as'=> 'admin.fornecedores.edit', 'uses' => 'Admin\FornecedoresController@edit']);
+        Route::get('fornecedores/buscacep/{cep}', 'Admin\FornecedoresController@buscaPorCep');
+        Route::get('valida-documento', 'Admin\FornecedoresController@validaCnpj');
 
     $router->group(['middleware' => 'needsPermission:users.list'], function() use ($router) {
         Route::resource('users', 'Admin\Manage\UsersController');
@@ -400,15 +413,5 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             ['ordem_de_compra_itens.required'=>'É necessário escolher ao menos um item!']
         )->validate();
         dd('@TODO pegar ids e montar novo Q.C. ',request()->get('ordem_de_compra_itens'));
-    });
-
-    $router->get('/teste', function (){
-        $grupos_mega = \App\Models\MegaInsumoGrupo::select([
-            'GRU_IDE_ST_CODIGO',
-            'GRU_IN_CODIGO',
-            'GRU_ST_NOME',])
-            ->where('gru_ide_st_codigo' , '07')
-            ->first();
-        dd($grupos_mega);
     });
 });
