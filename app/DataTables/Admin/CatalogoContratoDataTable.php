@@ -26,8 +26,8 @@ class CatalogoContratoDataTable extends DataTable
             ->editColumn('data',function ($obj){
                 return $obj->data ? with(new\Carbon\Carbon($obj->data))->format('d/m/Y') : '';
             })
-            ->editColumn('obra_id',function ($obj){
-                return $obj->obra->nome;
+            ->editColumn('fornecedor_id',function ($obj){
+                return $obj->fornecedor->nome;
             })
             ->editColumn('action', 'admin.catalogo_contratos.datatables_actions')
             ->make(true);
@@ -54,7 +54,7 @@ class CatalogoContratoDataTable extends DataTable
     {
         return $this->builder()
             ->columns($this->getColumns())
-            ->addAction(['width' => '10%'])
+            // ->addAction(['width' => '10%'])
             ->ajax('')
             ->parameters([
                 'initComplete' => 'function () {
@@ -73,7 +73,7 @@ class CatalogoContratoDataTable extends DataTable
                         }
                     });
                 }' ,
-                'dom' => 'Bfrtip',
+                'dom' => 'Bfrltip',
                 'scrollX' => false,
                 'language'=> [
                     "url"=> "/vendor/datatables/Portuguese-Brasil.json"
@@ -83,13 +83,13 @@ class CatalogoContratoDataTable extends DataTable
                     'reset',
                     'reload',
                     [
-                         'extend'  => 'collection',
-                         'text'    => '<i class="fa fa-download"></i> Export',
-                         'buttons' => [
-                             'csv',
-                             'excel',
-                             'pdf',
-                         ],
+                        'extend'  => 'collection',
+                        'text'    => '<i class="fa fa-download"></i> Export',
+                        'buttons' => [
+                            'csv',
+                            'excel',
+                            'pdf',
+                        ],
                     ],
                     'colvis'
                 ]
@@ -108,7 +108,7 @@ class CatalogoContratoDataTable extends DataTable
             'data' => ['name' => 'data', 'data' => 'data'],
             'valor' => ['name' => 'valor', 'data' => 'valor'],
             'arquivo' => ['name' => 'arquivo', 'data' => 'arquivo'],
-            'action' => ['title'          => '#', 'printable'      => false],
+            'action' => ['title' => '#', 'printable' => false],
         ];
     }
 

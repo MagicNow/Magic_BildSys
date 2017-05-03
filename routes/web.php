@@ -112,7 +112,6 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
         $router->get('contratos/{contratos}', ['as' => 'admin.catalogo_contratos.show', 'uses' => 'Admin\CatalogoContratoController@show'])->middleware("needsPermission:contratos.view");
         $router->get('contratos/{contratos}/edit', ['as' => 'admin.catalogo_contratos.edit', 'uses' => 'Admin\CatalogoContratoController@edit'])->middleware("needsPermission:contratos.edit");
         $router->get('contratos/buscar/busca_fornecedores', ['as' => 'admin.catalogo_contratos.busca_fornecedores', 'uses' => 'Admin\CatalogoContratoController@buscaFornecedor']);
-        $router->get('insumo/valor_total', 'Admin\CatalogoContratoController@calcularValorTotalInsumo');
         $router->get('insumo/delete', 'Admin\CatalogoContratoController@deleteInsumo');
     });
 

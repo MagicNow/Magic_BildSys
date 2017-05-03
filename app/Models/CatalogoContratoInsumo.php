@@ -58,21 +58,21 @@ class CatalogoContratoInsumo extends Model
         $this->attributes['valor_unitario'] = $result;
     }
 
-    public function getValorTotalAttribute($value)
+    public function getValorMaximoAttribute($value)
     {
         return number_format($value,2,',','.');
     }
 
-    public function setValorTotalAttribute($value)
+    public function setValorMaximoAttribute($value)
     {
         $pontos = array(",");
         $value = str_replace('.','',$value);
         $result = str_replace( $pontos, ".", $value);
 
-        $this->attributes['valor_total'] = $result;
+        $this->attributes['valor_maximo'] = $result;
     }
 
-    public function getQtdAttribute($value)
+    public function getPedidoMinimoAttribute($value)
     {
         if(strlen($value) == 4){
             $value = '0'.$value;
@@ -81,13 +81,31 @@ class CatalogoContratoInsumo extends Model
         return number_format($value,2,',','.');
     }
 
-    public function setQtdAttribute($value)
+    public function setPedidoMinimoAttribute($value)
     {
         $pontos = array(",");
         $value = str_replace('.','',$value);
         $result = str_replace( $pontos, ".", $value);
 
-        $this->attributes['qtd'] = $result;
+        $this->attributes['pedido_minimo'] = $result;
+    }
+
+    public function getPedidoMultiploDeAttribute($value)
+    {
+        if(strlen($value) == 4){
+            $value = '0'.$value;
+        }
+
+        return number_format($value,2,',','.');
+    }
+
+    public function setPedidoMultiploDeAttribute($value)
+    {
+        $pontos = array(",");
+        $value = str_replace('.','',$value);
+        $result = str_replace( $pontos, ".", $value);
+
+        $this->attributes['pedido_multiplo_de'] = $result;
     }
 
     /**

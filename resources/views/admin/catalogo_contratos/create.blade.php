@@ -13,6 +13,7 @@
             <div class="box-body">
                 <div class="row">
                     {!! Form::open(['route' => 'admin.catalogo_contratos.store', 'files' => true]) !!}
+                        @include('flash::message')
 
                         @include('admin.catalogo_contratos.fields')
 

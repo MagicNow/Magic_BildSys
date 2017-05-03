@@ -1,9 +1,9 @@
 <!-- Arquivo Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('arquivo', 'Arquivo:') !!}
-    @if(@isset($contratos))
-        @if($contratos->arquivo)
-            <a href="{{$contratos->arquivo}}" download>Baixar arquivo</a>
+    @if(@isset($catalogoContrato))
+        @if($catalogoContrato->arquivo)
+            <a href="{{$catalogoContrato->arquivo}}" download>Baixar arquivo</a>
         @endif
     @endif
     {!! Form::file('arquivo', null, ['class' => 'form-control']) !!}
@@ -18,7 +18,7 @@
 <!-- Data Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('data', 'Data:') !!}
-    {!! Form::date('data', null, ['class' => 'form-control','required'=>'required']) !!}
+    {!! Form::date('data', @isset($catalogoContrato) ? $catalogoContrato->data ? $catalogoContrato->data->format('Y-m-d') : null : null, ['class' => 'form-control','required'=>'required']) !!}
 </div>
 
 <!-- Valor Field -->
@@ -30,13 +30,13 @@
 <!-- Período início Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('periodo_inicio', 'Período início:') !!}
-    {!! Form::date('periodo_inicio', null, ['class' => 'form-control']) !!}
+    {!! Form::date('periodo_inicio', @isset($catalogoContrato) ? $catalogoContrato->periodo_inicio ? $catalogoContrato->periodo_inicio->format('Y-m-d') : null : null, ['class' => 'form-control']) !!}
 </div>
 
 <!-- Período término Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('periodo_termino', 'Período término:') !!}
-    {!! Form::date('periodo_termino', null, ['class' => 'form-control']) !!}
+    {!! Form::date('periodo_termino', @isset($catalogoContrato) ? $catalogoContrato->periodo_termino ? $catalogoContrato->periodo_termino->format('Y-m-d') : null : null, ['class' => 'form-control']) !!}
 </div>
 
 <!-- Valor mínimo Field -->
@@ -69,16 +69,12 @@ $count_insumos = 0;
 
 <div class="modal-header">
     <div class="col-md-12">
-        <div class="col-md-9">
-                <span class="pull-left title">
-                    Insumos
-                </span>
-        </div>
+        <h2>Insumos</h2>
     </div>
 </div>
 
-@if(isset($contratos))
-    @foreach ($contratos->contratoInsumos as $insumo )
+@if(isset($catalogoContrato))
+    @foreach ($catalogoContrato->contratoInsumos as $insumo )
         <?php
         $count_insumos = $insumo->id;
         ?>
@@ -93,18 +89,21 @@ $count_insumos = 0;
                     <i class="fa fa-times"></i>
                 </button>
             </div>
-            <div class="col-md-4">
-                <label>Quantidade:</label>
-                <input type="text" value="{{$insumo->qtd}}" id="qtd_{{$insumo->id}}" class="form-control money" name="insumos[{{$insumo->id}}][qtd]" required onkeyup="calcularValorTotalInsumo({{$insumo->id}});">
-            </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <label>Valor unitário:</label>
-                <input type="text" value="{{$insumo->valor_unitario}}" id="valor_unitario_{{$insumo->id}}" class="form-control money" name="insumos[{{$insumo->id}}][valor_unitario]" required onkeyup="calcularValorTotalInsumo({{$insumo->id}});">
+                <input type="text" value="{{$insumo->valor_unitario}}" id="valor_unitario_{{$insumo->id}}" class="form-control money" name="insumos[{{$insumo->id}}][valor_unitario]">
             </div>
-            <div class="col-md-4">
-                <label>Valor total:</label>
-                <span class="form-control" id="valor_total_span_{{$insumo->id}}">{{$insumo->valor_total}}</span>
-                <input type="hidden" value="{{$insumo->valor_total}}" id="valor_total_{{$insumo->id}}" name="insumos[{{$insumo->id}}][valor_total]">
+            <div class="col-md-3">
+                <label>Valor máximo:</label>
+                <input type="text" value="{{$insumo->valor_maximo}}" id="valor_maximo_{{$insumo->id}}" class="form-control money" name="insumos[{{$insumo->id}}][valor_maximo]">
+            </div>
+            <div class="col-md-3">
+                <label>Pedido mínimo:</label>
+                <input type="text" value="{{$insumo->pedido_minimo}}" id="pedido_minimo_{{$insumo->id}}" class="form-control decimal" name="insumos[{{$insumo->id}}][pedido_minimo]">
+            </div>
+            <div class="col-md-3">
+                <label>Pedido múltiplo de:</label>
+                <input type="text" value="{{$insumo->pedido_multiplo_de}}" id="pedido_multiplo_de_{{$insumo->id}}" class="form-control decimal" name="insumos[{{$insumo->id}}][pedido_multiplo_de]">
             </div>
             <div class="col-md-12 border-separation"></div>
         </div>
@@ -133,6 +132,7 @@ $count_insumos = 0;
         @foreach($insumos as $insumo)
             options_insumos += '<option value="{{$insumo->id}}">{{$insumo->nome}}</option>';
         @endforeach
+
         var block_insumos = '<div class="form-group col-md-12" id="block_insumos'+count_insumos+'">\
                                 <div class="col-md-11">\
                                 <label>Insumo:</label>\
@@ -145,18 +145,21 @@ $count_insumos = 0;
                                         <i class="fa fa-times"></i>\
                                     </button>\
                                 </div>\
-                                <div class="col-md-4">\
-                                    <label>Quantidade:</label>\
-                                    <input type="text" class="form-control money" id="qtd_'+count_insumos+'" name="insumos['+count_insumos+'][qtd]" required onkeyup="calcularValorTotalInsumo('+count_insumos+');">\
-                                </div>\
-                                <div class="col-md-4">\
+                                <div class="col-md-3">\
                                     <label>Valor unitário:</label>\
-                                    <input type="text" class="form-control money" id="valor_unitario_'+count_insumos+'" name="insumos['+count_insumos+'][valor_unitario]" required onkeyup="calcularValorTotalInsumo('+count_insumos+');">\
+                                    <input type="text" class="form-control money" id="valor_unitario_'+count_insumos+'" name="insumos['+count_insumos+'][valor_unitario]">\
                                 </div>\
-                                <div class="col-md-4">\
-                                    <label>Valor total:</label>\
-                                    <span class="form-control" id="valor_total_span_'+count_insumos+'"></span>\
-                                    <input type="hidden" id="valor_total_'+count_insumos+'" name="insumos['+count_insumos+'][valor_total]">\
+                                <div class="col-md-3">\
+                                    <label>Valor máximo:</label>\
+                                    <input type="text" class="form-control money" id="valor_maximo_'+count_insumos+'" name="insumos['+count_insumos+'][valor_maximo]">\
+                                </div>\
+                                <div class="col-md-3">\
+                                    <label>Pedido mínimo:</label>\
+                                    <input type="text" class="form-control decimal" id="pedido_minimo_'+count_insumos+'" name="insumos['+count_insumos+'][pedido_minimo]">\
+                                </div>\
+                                <div class="col-md-3">\
+                                    <label>Pedido múltiplo de:</label>\
+                                    <input type="text" class="form-control decimal" id="pedido_multiplo_de_'+count_insumos+'" name="insumos['+count_insumos+'][pedido_multiplo_de]">\
                                 </div>\
                                 <div class="col-md-12 border-separation"></div>\
                             </div>';

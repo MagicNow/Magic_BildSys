@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class Insumo
@@ -70,7 +69,7 @@ class Insumo extends Model
      **/
     public function contratoInsumos()
     {
-        return $this->hasMany(ContratoInsumo::class);
+        return $this->hasMany(CatalogoContratoInsumo::class);
     }
 
     /**

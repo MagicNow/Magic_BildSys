@@ -8,6 +8,7 @@ use App\Http\Requests\Admin\CreateCatalogoContratoRequest;
 use App\Http\Requests\Admin\UpdateCatalogoContratoRequest;
 use App\Models\CatalogoContratoInsumo;
 use App\Models\CatalogoContrato;
+use App\Models\Insumo;
 use App\Models\MegaFornecedor;
 use App\Repositories\Admin\CatalogoContratoRepository;
 use App\Repositories\CodeRepository;
@@ -45,7 +46,7 @@ class CatalogoContratoController extends AppBaseController
      */
     public function create()
     {
-        $insumos = CatalogoContrato::get();
+        $insumos = Insumo::get();
         $fornecedores = [];
         
         return view('admin.catalogo_contratos.create', compact('insumos', 'fornecedores'));
@@ -62,6 +63,28 @@ class CatalogoContratoController extends AppBaseController
     {
         $input = $request->except('arquivo');
 
+        if($input['periodo_termino'] < $input['periodo_inicio']){
+            Flash::error('O período de término não pode ser menor que o período de início.');
+            return redirect('/admin/contratos/create')->withInput($input);
+        }
+
+        $pontos = array(",");
+        $valor_maximo = str_replace('.','',$input['valor_maximo']);
+        $valor_maximo = str_replace( $pontos, ".", $valor_maximo);
+
+        $valor_minimo = str_replace('.','',$input['valor_minimo']);
+        $valor_minimo = str_replace( $pontos, ".", $valor_minimo);
+
+        if($valor_maximo < $valor_minimo){
+            Flash::error('O valor máximo não pode ser menor que o valor mínimo.');
+            return redirect('/admin/contratos/create')->withInput($input);
+        }
+
+        if($input['qtd_maxima'] < $input['qtd_minima']){
+            Flash::error('O quantidade máxima não pode ser menor que a quantidade mínima.');
+            return redirect('/admin/contratos/create')->withInput($input);
+        }
+
         $catalogoContrato = new CatalogoContrato($input);
 
         $nome_fornecedor = MegaFornecedor::select(DB::raw("CONVERT(agn_st_nome,'UTF8','WE8ISO8859P15' ) as agn_st_nome"))
@@ -69,6 +92,7 @@ class CatalogoContratoController extends AppBaseController
             ->first();
 
         $catalogoContrato->fornecedor_nome = $nome_fornecedor->agn_st_nome;
+        $catalogoContrato->fornecedor_id = 1;
         $catalogoContrato->save();
 
         if($request->arquivo) {
@@ -80,14 +104,15 @@ class CatalogoContratoController extends AppBaseController
 
         if (count($request->insumos)) {
             foreach ($request->insumos as $item) {
-                if ($item['insumo_id'] != '' && $item['qtd'] != '' && $item['valor_unitario'] != '' && $item['valor_total'] != '') {
-                    $insumo = new CatalogoContratoInsumo();
-                    $insumo->contrato_id = $catalogoContrato->id;
-                    $insumo->insumo_id = $item['insumo_id'];
-                    $insumo->qtd = $item['qtd'];
-                    $insumo->valor_unitario = $item['valor_unitario'];
-                    $insumo->valor_total = $item['valor_total'];
-                    $catalogoContrato->contratoInsumos()->save($insumo);
+                if ($item['insumo_id'] != '') {
+                    $contrato_insumo = new CatalogoContratoInsumo();
+                    $contrato_insumo->catalogo_contrato_id = $catalogoContrato->id;
+                    $contrato_insumo->insumo_id = $item['insumo_id'];
+                    $contrato_insumo->valor_unitario = $item['valor_unitario'];
+                    $contrato_insumo->valor_maximo = $item['valor_maximo'];
+                    $contrato_insumo->pedido_minimo = $item['pedido_minimo'];
+                    $contrato_insumo->pedido_multiplo_de = $item['pedido_multiplo_de'];
+                    $catalogoContrato->contratoInsumos()->save($contrato_insumo);
                 }
             }
         }
@@ -134,7 +159,7 @@ class CatalogoContratoController extends AppBaseController
             return redirect(route('admin.catalogo_contratos.index'));
         }
 
-        $insumos = CatalogoContrato::get();
+        $insumos = Insumo::get();
 
         $fornecedores = MegaFornecedor::select(DB::raw("CONVERT(agn_st_nome,'UTF8','WE8ISO8859P15' ) as agn_st_nome"), 'agn_in_codigo')
             ->where('agn_in_codigo', $catalogoContrato->fornecedor_cod)
@@ -161,6 +186,30 @@ class CatalogoContratoController extends AppBaseController
             return redirect(route('admin.catalogo_contratos.index'));
         }
 
+        $input = $request->all();
+
+        if($input['periodo_termino'] < $input['periodo_inicio']){
+            Flash::error('O período de término não pode ser menor que o período de início.');
+            return redirect('/admin/contratos/'.$id.'/edit')->withInput($input);
+        }
+
+        $pontos = array(",");
+        $valor_maximo = str_replace('.','',$input['valor_maximo']);
+        $valor_maximo = str_replace( $pontos, ".", $valor_maximo);
+
+        $valor_minimo = str_replace('.','',$input['valor_minimo']);
+        $valor_minimo = str_replace( $pontos, ".", $valor_minimo);
+
+        if($valor_maximo < $valor_minimo){
+            Flash::error('O valor máximo não pode ser menor que o valor mínimo.');
+            return redirect('/admin/contratos/'.$id.'/edit')->withInput($input);
+        }
+
+        if($input['qtd_maxima'] < $input['qtd_minima']){
+            Flash::error('O quantidade máxima não pode ser menor que a quantidade mínima.');
+            return redirect('/admin/contratos/'.$id.'/edit')->withInput($input);
+        }
+
         if($request->arquivo){
             @unlink(public_path() . $catalogoContrato->arquivo);
             $destinationPath = CodeRepository::saveFile($request->arquivo, 'contratos/' . $catalogoContrato->id);
@@ -180,25 +229,27 @@ class CatalogoContratoController extends AppBaseController
         if (count($request->insumos)) {
             foreach ($request->insumos as $item) {
                 if (!isset($item['id'])) {
-                    if ($item['insumo_id'] != '' && $item['qtd'] != '' && $item['valor_unitario'] != '' && $item['valor_total'] != '') {
-                        $insumo = new CatalogoContratoInsumo();
-                        $insumo->contrato_id = $catalogoContrato->id;
-                        $insumo->insumo_id = $item['insumo_id'];
-                        $insumo->qtd = $item['qtd'];
-                        $insumo->valor_unitario = $item['valor_unitario'];
-                        $insumo->valor_total = $item['valor_total'];
-                        $catalogoContrato->contratoInsumos()->save($insumo);
+                    if ($item['insumo_id'] != '') {
+                        $contrato_insumo = new CatalogoContratoInsumo();
+                        $contrato_insumo->catalogo_contrato_id = $catalogoContrato->id;
+                        $contrato_insumo->insumo_id = $item['insumo_id'];
+                        $contrato_insumo->valor_unitario = $item['valor_unitario'];
+                        $contrato_insumo->valor_maximo = $item['valor_maximo'];
+                        $contrato_insumo->pedido_minimo = $item['pedido_minimo'];
+                        $contrato_insumo->pedido_multiplo_de = $item['pedido_multiplo_de'];
+                        $catalogoContrato->contratoInsumos()->save($contrato_insumo);
                     }
                 } else {
-                    $insumo = CatalogoContratoInsumo::find($item['id']);
-                    if ($insumo) {
-                        if ($item['insumo_id'] != '' && $item['qtd'] != '' && $item['valor_unitario'] != '' && $item['valor_total'] != '') {
-                            $insumo->contrato_id = $catalogoContrato->id;
-                            $insumo->insumo_id = $item['insumo_id'];
-                            $insumo->qtd = $item['qtd'];
-                            $insumo->valor_unitario = $item['valor_unitario'];
-                            $insumo->valor_total = $item['valor_total'];
-                            $insumo->update();
+                    $contrato_insumo = CatalogoContratoInsumo::find($item['id']);
+                    if ($contrato_insumo) {
+                        if ($item['insumo_id'] != '') {
+                            $contrato_insumo->catalogo_contrato_id = $catalogoContrato->id;
+                            $contrato_insumo->insumo_id = $item['insumo_id'];
+                            $contrato_insumo->valor_unitario = $item['valor_unitario'];
+                            $contrato_insumo->valor_maximo = $item['valor_maximo'];
+                            $contrato_insumo->pedido_minimo = $item['pedido_minimo'];
+                            $contrato_insumo->pedido_multiplo_de = $item['pedido_multiplo_de'];
+                            $contrato_insumo->update();
                         }
                     }
                 }
@@ -236,22 +287,6 @@ class CatalogoContratoController extends AppBaseController
         Flash::success('Catalogo Contrato '.trans('common.deleted').' '.trans('common.successfully').'.');
 
         return redirect(route('admin.catalogo_contratos.index'));
-    }
-
-    public function calcularValorTotalInsumo(Request $request) {
-        $pontos = array(",");
-
-        $value = str_replace('.','',$request->valor_unitario);
-        $valor_unitario = str_replace( $pontos, ".", $value);
-
-        $value_qtd = str_replace('.','',$request->quantidade);
-        $quantidade = str_replace( $pontos, ".", $value_qtd);
-
-        $valor_total = ($quantidade * $valor_unitario);
-
-        $valor_total = number_format($valor_total,2,',','.');
-
-        return response()->json(['valor_total' => $valor_total]);
     }
 
     public function deleteInsumo(Request $request)
