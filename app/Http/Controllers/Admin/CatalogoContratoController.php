@@ -46,10 +46,9 @@ class CatalogoContratoController extends AppBaseController
      */
     public function create()
     {
-        $insumos = Insumo::get();
         $fornecedores = [];
         
-        return view('admin.catalogo_contratos.create', compact('insumos', 'fornecedores'));
+        return view('admin.catalogo_contratos.create', compact('fornecedores'));
     }
 
     /**
@@ -159,13 +158,11 @@ class CatalogoContratoController extends AppBaseController
             return redirect(route('admin.catalogo_contratos.index'));
         }
 
-        $insumos = Insumo::get();
-
         $fornecedores = MegaFornecedor::select(DB::raw("CONVERT(agn_st_nome,'UTF8','WE8ISO8859P15' ) as agn_st_nome"), 'agn_in_codigo')
             ->where('agn_in_codigo', $catalogoContrato->fornecedor_cod)
             ->pluck('agn_st_nome', 'agn_in_codigo')->toArray();
-
-        return view('admin.catalogo_contratos.edit', compact('insumos', 'fornecedores'))->with('catalogoContrato', $catalogoContrato);
+        
+        return view('admin.catalogo_contratos.edit', compact('fornecedores'))->with('catalogoContrato', $catalogoContrato);
     }
 
     /**
@@ -317,5 +314,15 @@ class CatalogoContratoController extends AppBaseController
             ->where('agn_st_nome','like', '%'.$request->q.'%')->paginate();
 
         return $fornecedores;
+    }
+
+    public function buscaInsumos(Request $request){
+        $insumos = Insumo::select([
+            'id',
+            'nome'
+        ])
+            ->where('nome','like', '%'.$request->q.'%')->paginate();
+
+        return $insumos;
     }
 }

@@ -82,7 +82,7 @@ $count_insumos = 0;
             {!! Form::hidden('insumos['.$insumo->id.'][id]', $insumo->id) !!}
             <div class="col-md-11">
                 <label>Insumo:</label>
-                {!! Form::select('insumos['.$insumo->id.'][insumo_id]',[''=>'Escolha...']+ \App\Models\Insumo::pluck('nome','id')->toArray(), $insumo->insumo_id, ['class' => 'form-control','required'=>'required']) !!}
+                {!! Form::select('insumos['.$insumo->id.'][insumo_id]',[''=>'Escolha...']+ \App\Models\Insumo::pluck('nome','id')->toArray(), $insumo->insumo_id, ['class' => 'form-control select2 insumo_select_'.$insumo->id,'required'=>'required', 'id' => 'insumo_select_'.$insumo->id]) !!}
             </div>
             <div class="col-md-1" align="right" style="margin-top:25px;">
                 <button type="button" onclick="deleteInsumo({{$insumo->id}})" class="btn btn btn-danger" aria-label="Close" title="Remover" >
@@ -127,18 +127,12 @@ $count_insumos = 0;
     var count_insumos = '{{$count_insumos}}';
 
     function addInsumo(){
-        var options_insumos = '';
         count_insumos++;
-        @foreach($insumos as $insumo)
-            options_insumos += '<option value="{{$insumo->id}}">{{$insumo->nome}}</option>';
-        @endforeach
 
         var block_insumos = '<div class="form-group col-md-12" id="block_insumos'+count_insumos+'">\
                                 <div class="col-md-11">\
                                 <label>Insumo:</label>\
-                                    <select class="form-control" name="insumos['+count_insumos+'][insumo_id]" required>\
-                                        <option value="" >Selecione um insumo</option>' + options_insumos + '\
-                                    </select>\
+                                    <select class="form-control insumo_select_'+count_insumos+'" id="insumo_select_'+count_insumos+'" name="insumos['+count_insumos+'][insumo_id]" required></select>\
                                 </div>\
                                 <div class="col-md-1" align="right" style="margin-top:25px;">\
                                     <button type="button" onclick="removeInsumo('+count_insumos+')" class="btn btn btn-danger" aria-label="Close" title="Remover" >\
@@ -169,6 +163,50 @@ $count_insumos = 0;
             // tempo de execucao - milissegundos
         }, 1000, function() {
             $('#insumos').append(block_insumos);
+
+            setTimeout(function() {
+                $('.insumo_select_' + count_insumos).select2({
+                    allowClear: true,
+                    placeholder: "Escolha...",
+                    language: "pt-BR",
+
+                    ajax: {
+                        url: "{{ route('admin.catalogo_contratos.busca_insumos') }}",
+                        dataType: 'json',
+                        delay: 250,
+
+                        data: function (params) {
+                            return {
+                                q: params.term, // search term
+                                page: params.page
+                            };
+                        },
+
+                        processResults: function (result, params) {
+                            // parse the results into the format expected by Select2
+                            // since we are using custom formatting functions we do not need to
+                            // alter the remote JSON data, except to indicate that infinite
+                            // scrolling can be used
+                            params.page = params.page || 1;
+
+                            return {
+                                results: result.data,
+                                pagination: {
+                                    more: (params.page * result.per_page) < result.total
+                                }
+                            };
+                        },
+                        cache: true
+                    },
+                    escapeMarkup: function (markup) {
+                        return markup;
+                    }, // let our custom formatter work
+                    minimumInputLength: 1,
+                    templateResult: formatInsumoResult, // omitted for brevity, see the source of this page
+                    templateSelection: formatInsumoResultSelection // omitted for brevity, see the source of this page
+                });
+            }, 100);
+
             $('#add_insumos').css('margin-top','25px');
         });
     }
@@ -221,6 +259,25 @@ $count_insumos = 0;
                 swal('Erro ao calcular o valor total');
             }
         });
+    }
+
+    function formatInsumoResultSelection (obj) {
+        if(obj.nome){
+            return obj.nome;
+        }
+        return obj.text;
+    }
+
+    function formatInsumoResult (obj) {
+        if (obj.loading) return obj.text;
+
+        var markup_insumo =    "<div class='select2-result-obj clearfix'>" +
+                "   <div class='select2-result-obj__meta'>" +
+                "       <div class='select2-result-obj__title'>" + obj.nome + "</div>"+
+                "   </div>"+
+                "</div>";
+
+        return markup_insumo;
     }
 
     function formatResult (obj) {
