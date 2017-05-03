@@ -103,17 +103,17 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
 
     # Contratos
     $router->group(['middleware' => 'needsPermission:contratos.list'], function () use ($router) {
-        $router->get('contratos', ['as' => 'admin.contratos.index', 'uses' => 'Admin\ContratosController@index']);
-        $router->post('contratos', ['as' => 'admin.contratos.store', 'uses' => 'Admin\ContratosController@store']);
-        $router->get('contratos/create', ['as' => 'admin.contratos.create', 'uses' => 'Admin\ContratosController@create'])->middleware("needsPermission:contratos.create");
-        $router->put('contratos/{contratos}', ['as' => 'admin.contratos.update', 'uses' => 'Admin\ContratosController@update']);
-        $router->patch('contratos/{contratos}', ['as' => 'admin.contratos.update', 'uses' => 'Admin\ContratosController@update']);
-        $router->delete('contratos/{contratos}', ['as' => 'admin.contratos.destroy', 'uses' => 'Admin\ContratosController@destroy']);
-        $router->get('contratos/{contratos}', ['as' => 'admin.contratos.show', 'uses' => 'Admin\ContratosController@show'])->middleware("needsPermission:contratos.view");
-        $router->get('contratos/{contratos}/edit', ['as' => 'admin.contratos.edit', 'uses' => 'Admin\ContratosController@edit'])->middleware("needsPermission:contratos.edit");
-        $router->get('contratos/buscar/busca_fornecedores', ['as' => 'admin.contratos.busca_fornecedores', 'uses' => 'Admin\ContratosController@buscaFornecedor']);
-        $router->get('insumo/valor_total', 'Admin\ContratosController@calcularValorTotalInsumo');
-        $router->get('insumo/delete', 'Admin\ContratosController@deleteInsumo');
+        $router->get('contratos', ['as' => 'admin.catalogo_contratos.index', 'uses' => 'Admin\CatalogoContratoController@index']);
+        $router->post('contratos', ['as' => 'admin.catalogo_contratos.store', 'uses' => 'Admin\CatalogoContratoController@store']);
+        $router->get('contratos/create', ['as' => 'admin.catalogo_contratos.create', 'uses' => 'Admin\CatalogoContratoController@create'])->middleware("needsPermission:contratos.create");
+        $router->put('contratos/{contratos}', ['as' => 'admin.catalogo_contratos.update', 'uses' => 'Admin\CatalogoContratoController@update']);
+        $router->patch('contratos/{contratos}', ['as' => 'admin.catalogo_contratos.update', 'uses' => 'Admin\CatalogoContratoController@update']);
+        $router->delete('contratos/{contratos}', ['as' => 'admin.catalogo_contratos.destroy', 'uses' => 'Admin\CatalogoContratoController@destroy']);
+        $router->get('contratos/{contratos}', ['as' => 'admin.catalogo_contratos.show', 'uses' => 'Admin\CatalogoContratoController@show'])->middleware("needsPermission:contratos.view");
+        $router->get('contratos/{contratos}/edit', ['as' => 'admin.catalogo_contratos.edit', 'uses' => 'Admin\CatalogoContratoController@edit'])->middleware("needsPermission:contratos.edit");
+        $router->get('contratos/buscar/busca_fornecedores', ['as' => 'admin.catalogo_contratos.busca_fornecedores', 'uses' => 'Admin\CatalogoContratoController@buscaFornecedor']);
+        $router->get('contratos/buscar/busca_insumos', ['as' => 'admin.catalogo_contratos.busca_insumos', 'uses' => 'Admin\CatalogoContratoController@buscaInsumos']);
+        $router->get('insumo/delete', 'Admin\CatalogoContratoController@deleteInsumo');
     });
 
     # Obras
@@ -153,16 +153,17 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
     #Cronograma por obra
     Route::get('planejamentoCronogramas', ['as'=> 'admin.planejamentoCronogramas.index', 'uses' => 'Admin\PlanejamentoCronogramaController@index'])->middleware("needsPermission:cronograma_por_obras.list");
 
-    # Fornecedores
-    Route::get('fornecedores', ['as'=> 'admin.fornecedores.index', 'uses' => 'Admin\FornecedoresController@index']);
-    Route::post('fornecedores', ['as'=> 'admin.fornecedores.store', 'uses' => 'Admin\FornecedoresController@store']);
-    Route::get('fornecedores/create', ['as'=> 'admin.fornecedores.create', 'uses' => 'Admin\FornecedoresController@create']);
-    Route::put('fornecedores/{fornecedores}', ['as'=> 'admin.fornecedores.update', 'uses' => 'Admin\FornecedoresController@update']);
-    Route::patch('fornecedores/{fornecedores}', ['as'=> 'admin.fornecedores.update', 'uses' => 'Admin\FornecedoresController@update']);
-    Route::delete('fornecedores/{fornecedores}', ['as'=> 'admin.fornecedores.destroy', 'uses' => 'Admin\FornecedoresController@destroy']);
-    Route::get('fornecedores/{fornecedores}', ['as'=> 'admin.fornecedores.show', 'uses' => 'Admin\FornecedoresController@show']);
-    Route::get('fornecedores/{fornecedores}/edit', ['as'=> 'admin.fornecedores.edit', 'uses' => 'Admin\FornecedoresController@edit']);
-    Route::get('fornecedores/buscacep/{cep}', 'Admin\FornecedoresController@buscaPorCep');
+        # Fornecedores
+        Route::get('fornecedores', ['as'=> 'admin.fornecedores.index', 'uses' => 'Admin\FornecedoresController@index']);
+        Route::post('fornecedores', ['as'=> 'admin.fornecedores.store', 'uses' => 'Admin\FornecedoresController@store']);
+        Route::get('fornecedores/create', ['as'=> 'admin.fornecedores.create', 'uses' => 'Admin\FornecedoresController@create']);
+        Route::put('fornecedores/{fornecedores}', ['as'=> 'admin.fornecedores.update', 'uses' => 'Admin\FornecedoresController@update']);
+        Route::patch('fornecedores/{fornecedores}', ['as'=> 'admin.fornecedores.update', 'uses' => 'Admin\FornecedoresController@update']);
+        Route::delete('fornecedores/{fornecedores}', ['as'=> 'admin.fornecedores.destroy', 'uses' => 'Admin\FornecedoresController@destroy']);
+        Route::get('fornecedores/{fornecedores}', ['as'=> 'admin.fornecedores.show', 'uses' => 'Admin\FornecedoresController@show']);
+        Route::get('fornecedores/{fornecedores}/edit', ['as'=> 'admin.fornecedores.edit', 'uses' => 'Admin\FornecedoresController@edit']);
+        Route::get('fornecedores/buscacep/{cep}', 'Admin\FornecedoresController@buscaPorCep');
+        Route::get('valida-documento', 'Admin\FornecedoresController@validaCnpj');
 
     $router->group(['middleware' => 'needsPermission:users.list'], function() use ($router) {
         Route::resource('users', 'Admin\Manage\UsersController');
@@ -414,4 +415,5 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->get('quadro-de-concorrencia/{quadroDeConcorrencias}', ['as' => 'quadroDeConcorrencias.show', 'uses' => 'QuadroDeConcorrenciaController@show'])->middleware("needsPermission:quadroDeConcorrencias.view");
         $router->get('quadro-de-concorrencia/{quadroDeConcorrencias}/edit', ['as' => 'quadroDeConcorrencias.edit', 'uses' => 'QuadroDeConcorrenciaController@edit'])->middleware("needsPermission:quadroDeConcorrencias.edit");
     });
+
 });

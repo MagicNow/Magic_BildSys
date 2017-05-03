@@ -2,11 +2,11 @@
 
 namespace App\DataTables\Admin;
 
-use App\Models\Contrato;
+use App\Models\CatalogoContrato;
 use Form;
 use Yajra\Datatables\Services\DataTable;
 
-class ContratosDataTable extends DataTable
+class CatalogoContratoDataTable extends DataTable
 {
 
     /**
@@ -26,10 +26,10 @@ class ContratosDataTable extends DataTable
             ->editColumn('data',function ($obj){
                 return $obj->data ? with(new\Carbon\Carbon($obj->data))->format('d/m/Y') : '';
             })
-            ->editColumn('obra_id',function ($obj){
-                return $obj->obra->nome;
+            ->editColumn('fornecedor_id',function ($obj){
+                return $obj->fornecedor->nome;
             })
-            ->editColumn('action', 'admin.contratos.datatables_actions')
+            ->editColumn('action', 'admin.catalogo_contratos.datatables_actions')
             ->make(true);
     }
 
@@ -40,9 +40,9 @@ class ContratosDataTable extends DataTable
      */
     public function query()
     {
-        $contratos = Contrato::query();
+        $catalogoContratos = CatalogoContrato::query();
 
-        return $this->applyScopes($contratos);
+        return $this->applyScopes($catalogoContratos);
     }
 
     /**
@@ -54,6 +54,7 @@ class ContratosDataTable extends DataTable
     {
         return $this->builder()
             ->columns($this->getColumns())
+            // ->addAction(['width' => '10%'])
             ->ajax('')
             ->parameters([
                 'initComplete' => 'function () {
@@ -82,13 +83,13 @@ class ContratosDataTable extends DataTable
                     'reset',
                     'reload',
                     [
-                         'extend'  => 'collection',
-                         'text'    => '<i class="fa fa-download"></i> Export',
-                         'buttons' => [
-                             'csv',
-                             'excel',
-                             'pdf',
-                         ],
+                        'extend'  => 'collection',
+                        'text'    => '<i class="fa fa-download"></i> Export',
+                        'buttons' => [
+                            'csv',
+                            'excel',
+                            'pdf',
+                        ],
                     ],
                     'colvis'
                 ]
@@ -103,11 +104,11 @@ class ContratosDataTable extends DataTable
     private function getColumns()
     {
         return [
-            'obra' => ['name' => 'obra_id', 'data' => 'obra_id'],
+            'fornecedor' => ['name' => 'fornecedor_id', 'data' => 'fornecedor_id'],
             'data' => ['name' => 'data', 'data' => 'data'],
             'valor' => ['name' => 'valor', 'data' => 'valor'],
             'arquivo' => ['name' => 'arquivo', 'data' => 'arquivo'],
-            'action' => ['title'          => '#', 'printable'      => false],
+            'action' => ['title' => '#', 'printable' => false],
         ];
     }
 
@@ -118,6 +119,6 @@ class ContratosDataTable extends DataTable
      */
     protected function filename()
     {
-        return 'contratos';
+        return 'catalogoContratos';
     }
 }

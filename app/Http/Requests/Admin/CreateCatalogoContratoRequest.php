@@ -3,9 +3,9 @@
 namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Models\Contrato;
+use App\Models\CatalogoContrato;
 
-class CreateContratosRequest extends FormRequest
+class CreateCatalogoContratoRequest extends FormRequest
 {
 
     /**
@@ -25,6 +25,6 @@ class CreateContratosRequest extends FormRequest
      */
     public function rules()
     {
-        return Contrato::$rules;
+        return CatalogoContrato::$rules;
     }
 }

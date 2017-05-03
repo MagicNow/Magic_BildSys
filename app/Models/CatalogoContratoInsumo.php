@@ -3,32 +3,25 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * Class ContratoInsumo
- * @package App\Models
- * @version April 12, 2017, 2:03 pm BRT
+ * Class CatalogoContratoInsumo
+ * @package App\Models\Admin
+ * @version May 2, 2017, 6:02 pm BRT
  */
-class ContratoInsumo extends Model
+class CatalogoContratoInsumo extends Model
 {
-    use SoftDeletes;
 
-    public $table = 'contrato_insumos';
-    
-    const CREATED_AT = 'created_at';
-    const UPDATED_AT = 'updated_at';
-
-
-    protected $dates = ['deleted_at'];
-
+    public $table = 'catalogo_contrato_insumos';
+    public $timestamps = false;
 
     public $fillable = [
-        'contrato_id',
+        'catalogo_contrato_id',
         'insumo_id',
-        'qtd',
         'valor_unitario',
-        'valor_total'
+        'valor_maximo',
+        'pedido_minimo',
+        'pedido_multiplo_de'
     ];
 
     /**
@@ -38,7 +31,7 @@ class ContratoInsumo extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'contrato_id' => 'integer',
+        'catalogo_contrato_id' => 'integer',
         'insumo_id' => 'integer'
     ];
 
@@ -65,21 +58,21 @@ class ContratoInsumo extends Model
         $this->attributes['valor_unitario'] = $result;
     }
 
-    public function getValorTotalAttribute($value)
+    public function getValorMaximoAttribute($value)
     {
         return number_format($value,2,',','.');
     }
 
-    public function setValorTotalAttribute($value)
+    public function setValorMaximoAttribute($value)
     {
         $pontos = array(",");
         $value = str_replace('.','',$value);
         $result = str_replace( $pontos, ".", $value);
 
-        $this->attributes['valor_total'] = $result;
+        $this->attributes['valor_maximo'] = $result;
     }
 
-    public function getQtdAttribute($value)
+    public function getPedidoMinimoAttribute($value)
     {
         if(strlen($value) == 4){
             $value = '0'.$value;
@@ -88,13 +81,31 @@ class ContratoInsumo extends Model
         return number_format($value,2,',','.');
     }
 
-    public function setQtdAttribute($value)
+    public function setPedidoMinimoAttribute($value)
     {
         $pontos = array(",");
         $value = str_replace('.','',$value);
         $result = str_replace( $pontos, ".", $value);
 
-        $this->attributes['qtd'] = $result;
+        $this->attributes['pedido_minimo'] = $result;
+    }
+
+    public function getPedidoMultiploDeAttribute($value)
+    {
+        if(strlen($value) == 4){
+            $value = '0'.$value;
+        }
+
+        return number_format($value,2,',','.');
+    }
+
+    public function setPedidoMultiploDeAttribute($value)
+    {
+        $pontos = array(",");
+        $value = str_replace('.','',$value);
+        $result = str_replace( $pontos, ".", $value);
+
+        $this->attributes['pedido_multiplo_de'] = $result;
     }
 
     /**
@@ -102,7 +113,7 @@ class ContratoInsumo extends Model
      **/
     public function contrato()
     {
-        return $this->belongsTo(\App\Models\Contrato::class, 'contrato_id');
+        return $this->belongsTo(\App\Models\CatalogoContratoInsumo::class, 'catalogo_contrato_id');
     }
 
     /**

@@ -11,10 +11,10 @@
        <div class="box box-primary">
            <div class="box-body">
                <div class="row">
-                   {!! Form::model($contratos, ['route' => ['admin.contratos.update', $contratos->id], 'method' => 'patch', 'files' => true]) !!}
+                   {!! Form::model($catalogoContrato, ['route' => ['admin.catalogo_contratos.update', $catalogoContrato->id], 'method' => 'patch', 'files' => true]) !!}
+                        @include('flash::message')
 
-                        @include('admin.contratos.fields')
-
+                        @include('admin.catalogo_contratos.fields')
                    {!! Form::close() !!}
                </div>
            </div>
