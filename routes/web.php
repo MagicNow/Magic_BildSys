@@ -323,7 +323,6 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('compras', 'OrdemDeCompraController@compras')->middleware("needsPermission:compras_lembretes.list");
 
     $router->group(['middleware' => 'needsPermission:ordens_de_compra.list'], function () use ($router) {
-        $router->resource('ordens-de-compra', 'OrdemDeCompraController');
 
         $router->get('/ordens-de-compra/detalhes/{id}', 'OrdemDeCompraController@detalhe')->middleware("needsPermission:ordens_de_compra.detalhes");
         $router->get('/ordens-de-compra/carrinho', 'OrdemDeCompraController@carrinho');
@@ -337,8 +336,9 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->get('/ordens-de-compra/carrinho/alterar-quantidade/{id}', 'OrdemDeCompraController@alterarQuantidade');
         $router->get('/ordens-de-compra/carrinho/remover-item/{id}', 'OrdemDeCompraController@removerItem');
         $router->get('/ordens-de-compra/insumos-aprovados', 'OrdemDeCompraController@insumosAprovados');
-
         $router->get('/ordens-de-compra/detalhes-servicos/{servico_id}', 'OrdemDeCompraController@detalhesServicos')->middleware("needsPermission:ordens_de_compra.detalhes_servicos");
+
+        $router->resource('ordens-de-compra', 'OrdemDeCompraController');
     });
 
     $router->group(['middleware' => 'needsPermission:site.dashboard'], function () use ($router) {
@@ -393,15 +393,6 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('workflow/aprova-reprova', 'WorkflowController@aprovaReprova');
     $router->get('workflow/aprova-reprova-tudo', 'WorkflowController@aprovaReprovaTudo');
 
-    $router->post('quadro-de-concorrencia/criar', function (){
-        # Validação básica
-        validator(request()->all(),
-            ['ordem_de_compra_itens'=>'required'],
-            ['ordem_de_compra_itens.required'=>'É necessário escolher ao menos um item!']
-        )->validate();
-        dd('@TODO pegar ids e montar novo Q.C. ',request()->get('ordem_de_compra_itens'));
-    });
-
     $router->get('/teste', function (){
         $grupos_mega = \App\Models\MegaInsumoGrupo::select([
             'GRU_IDE_ST_CODIGO',
@@ -411,7 +402,16 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             ->first();
         dd($grupos_mega);
     });
+
+    # Quadro de Concorrencia
+    $router->group(['middleware' => 'needsPermission:quadroDeConcorrencias.list'], function () use ($router) {
+        $router->get('quadro-de-concorrencia', ['as' => 'quadroDeConcorrencias.index', 'uses' => 'QuadroDeConcorrenciaController@index']);
+        $router->post('quadro-de-concorrencia', ['as' => 'quadroDeConcorrencias.store', 'uses' => 'QuadroDeConcorrenciaController@store']);
+        $router->get('quadro-de-concorrencia/criar', ['as' => 'quadroDeConcorrencias.create', 'uses' => 'QuadroDeConcorrenciaController@create'])->middleware("needsPermission:quadroDeConcorrencias.create");
+        $router->put('quadro-de-concorrencia/{quadroDeConcorrencias}', ['as' => 'quadroDeConcorrencias.update', 'uses' => 'QuadroDeConcorrenciaController@update']);
+        $router->patch('quadro-de-concorrencia/{quadroDeConcorrencias}', ['as' => 'quadroDeConcorrencias.update', 'uses' => 'QuadroDeConcorrenciaController@update']);
+        $router->delete('quadro-de-concorrencia/{quadroDeConcorrencias}', ['as' => 'quadroDeConcorrencias.destroy', 'uses' => 'QuadroDeConcorrenciaController@destroy']);
+        $router->get('quadro-de-concorrencia/{quadroDeConcorrencias}', ['as' => 'quadroDeConcorrencias.show', 'uses' => 'QuadroDeConcorrenciaController@show'])->middleware("needsPermission:quadroDeConcorrencias.view");
+        $router->get('quadro-de-concorrencia/{quadroDeConcorrencias}/edit', ['as' => 'quadroDeConcorrencias.edit', 'uses' => 'QuadroDeConcorrenciaController@edit'])->middleware("needsPermission:quadroDeConcorrencias.edit");
+    });
 });
-
-
-Route::resource('quadroDeConcorrencias', 'QuadroDeConcorrenciaController');

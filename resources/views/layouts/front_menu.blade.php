@@ -18,6 +18,6 @@
     </ul>
 </li>
 
-<li class="{{ Request::is('quadroDeConcorrencias*') ? 'active' : '' }}">
-    <a href="{!! route('quadroDeConcorrencias.index') !!}"><i class="fa fa-edit"></i><span>Quadro De Concorrência</span></a>
+<li class="{{ Request::is('quadro-de-concorrencia*') ? 'active' : '' }}">
+    <a href="{!! route('quadroDeConcorrencias.index') !!}"><i class="fa fa-th-large"></i> <span>Quadro De Concorrência</span> </a>
 </li>

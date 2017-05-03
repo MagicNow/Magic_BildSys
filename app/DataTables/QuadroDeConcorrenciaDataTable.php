@@ -16,7 +16,19 @@ class QuadroDeConcorrenciaDataTable extends DataTable
     {
         return $this->datatables
             ->eloquent($this->query())
-            ->addColumn('action', 'quadro_de_concorrencias.datatables_actions')
+            ->editColumn('action', 'quadro_de_concorrencias.datatables_actions')
+            ->editColumn('created_at', function($obj){
+                return $obj->created_at ? with(new\Carbon\Carbon($obj->created_at))->format('d/m/Y H:i') : '';
+            })
+            ->filterColumn('created_at', function ($query, $keyword) {
+                $query->whereRaw("DATE_FORMAT(quadro_de_concorrencias.created_at,'%d/%m/%Y') like ?", ["%$keyword%"]);
+            })
+            ->editColumn('updated_at', function($obj){
+                return $obj->updated_at ? with(new\Carbon\Carbon($obj->updated_at))->format('d/m/Y H:i') : '';
+            })
+            ->filterColumn('updated_at', function ($query, $keyword) {
+                $query->whereRaw("DATE_FORMAT(quadro_de_concorrencias.updated_at,'%d/%m/%Y') like ?", ["%$keyword%"]);
+            })
             ->make(true);
     }
 
@@ -27,7 +39,17 @@ class QuadroDeConcorrenciaDataTable extends DataTable
      */
     public function query()
     {
-        $quadroDeConcorrencias = QuadroDeConcorrencia::query();
+        $quadroDeConcorrencias = QuadroDeConcorrencia::query()
+        ->select([
+            'quadro_de_concorrencias.id',
+            'quadro_de_concorrencias.rodada_atual',
+            'quadro_de_concorrencias.created_at',
+            'quadro_de_concorrencias.updated_at',
+            'users.name as usuario',
+            'qc_status.nome as situacao'
+        ])
+        ->join('users','users.id','quadro_de_concorrencias.user_id')
+        ->join('qc_status','qc_status.id','quadro_de_concorrencias.qc_status_id');
 
         return $this->applyScopes($quadroDeConcorrencias);
     }
@@ -41,7 +63,6 @@ class QuadroDeConcorrenciaDataTable extends DataTable
     {
         return $this->builder()
             ->columns($this->getColumns())
-            ->addAction(['width' => '10%'])
             ->ajax('')
             ->parameters([
                 'initComplete' => 'function () {
@@ -91,11 +112,14 @@ class QuadroDeConcorrenciaDataTable extends DataTable
     private function getColumns()
     {
         return [
-            'user_id' => ['name' => 'user_id', 'data' => 'user_id'],
-            'qc_status_id' => ['name' => 'qc_status_id', 'data' => 'qc_status_id'],
-            'obrigacoes_fornecedor' => ['name' => 'obrigacoes_fornecedor', 'data' => 'obrigacoes_fornecedor'],
-            'obrigacoes_bild' => ['name' => 'obrigacoes_bild', 'data' => 'obrigacoes_bild'],
-            'rodada_atual' => ['name' => 'rodada_atual', 'data' => 'rodada_atual']
+            'id' => ['name' => 'quadro_de_concorrencias.id', 'data' => 'id', 'width'=>'25px'],
+            'usuario' => ['name' => 'users.name', 'data' => 'usuario'],
+            'situação' => ['name' => 'qc_status.nome', 'data' => 'situacao'],
+            'rodada_atual' => ['name' => 'rodada_atual', 'data' => 'rodada_atual'],
+            'criadoEm' => ['name' => 'created_at', 'data' => 'created_at', 'width'=>'12%'],
+            'atualizadoEm' => ['name' => 'updated_at', 'data' => 'updated_at', 'width'=>'12%'],
+            'rodada' => ['name' => 'rodada_atual', 'data' => 'rodada_atual', 'width'=>'6%'],
+            'action' => ['title'          => '#', 'printable'      => false, 'width'=>'10%'],
         ];
     }
 

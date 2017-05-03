@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class QuadroDeConcorrencia
@@ -12,16 +11,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class QuadroDeConcorrencia extends Model
 {
-    use SoftDeletes;
 
     public $table = 'quadro_de_concorrencias';
     
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
-
-
-    protected $dates = ['deleted_at'];
-
+    
 
     public $fillable = [
         'user_id',
@@ -57,9 +52,9 @@ class QuadroDeConcorrencia extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function qcStatus()
+    public function status()
     {
-        return $this->belongsTo(\App\Models\QcStatus::class);
+        return $this->belongsTo(QcStatus::class);
     }
 
     /**
@@ -67,54 +62,54 @@ class QuadroDeConcorrencia extends Model
      **/
     public function user()
     {
-        return $this->belongsTo(\App\Models\User::class);
+        return $this->belongsTo(User::class);
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
-    public function qcEqualizacaoTecnicaAnexoExtras()
+    public function equalizacaoTecnicaAnexoExtras()
     {
-        return $this->hasMany(\App\Models\QcEqualizacaoTecnicaAnexoExtra::class);
+        return $this->hasMany(QcEqualizacaoTecnicaAnexoExtra::class);
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
-    public function qcEqualizacaoTecnicaExtras()
+    public function equalizacaoTecnicaExtras()
     {
-        return $this->hasMany(\App\Models\QcEqualizacaoTecnicaExtra::class);
+        return $this->hasMany(QcEqualizacaoTecnicaExtra::class);
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
-    public function qcFornecedors()
+    public function qcFornecedores()
     {
-        return $this->hasMany(\App\Models\QcFornecedor::class);
+        return $this->hasMany(QcFornecedor::class);
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
-    public function qcItens()
+    public function itens()
     {
-        return $this->hasMany(\App\Models\QcIten::class);
+        return $this->hasMany(QcItem::class);
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
-    public function qcStatusLogs()
+    public function logs()
     {
-        return $this->hasMany(\App\Models\QcStatusLog::class);
+        return $this->hasMany(QcStatusLog::class);
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
-    public function qcTipoEqualizacaoTecnicas()
+    public function tiposEqualizacaoTecnicas()
     {
-        return $this->hasMany(\App\Models\QcTipoEqualizacaoTecnica::class);
+        return $this->hasMany(QcTipoEqualizacaoTecnica::class);
     }
 }
