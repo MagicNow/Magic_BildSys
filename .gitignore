@@ -21,6 +21,9 @@ _ide_helper.php
 /.idea
 /public/appfiles
 
+# Php cs fixer cache
+.php_cs.cache
+
 # Vim and Ctags
 tags
 tags.lock

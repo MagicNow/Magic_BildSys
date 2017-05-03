@@ -5,20 +5,19 @@ namespace App\Models;
 use Storage;
 use Eloquent as Model;
 
-/**
- * Class EqualizacaoTecnicaAnexo
- * @package App\Models
- * @version April 25, 2017, 4:31 pm BRT
- */
-class EqualizacaoTecnicaAnexo extends Model
+class QcEqualizacaoTecnicaAnexoExtra extends Model
 {
-    public $table = 'equalizacao_tecnica_anexos';
+    public $table = 'qc_equalizacao_tecnica_anexo_extra';
 
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
+
+    protected $dates = ['deleted_at'];
+
+
     public $fillable = [
-        'tipo_equalizacao_tecnica_id',
+        'quadro_de_concorrencia_id',
         'arquivo',
         'nome'
     ];
@@ -30,7 +29,7 @@ class EqualizacaoTecnicaAnexo extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'tipo_equalizacao_tecnica_id' => 'integer',
+        'quadro_de_concorrencia_id' => 'integer',
         'arquivo' => 'string',
         'nome' => 'string'
     ];
@@ -47,9 +46,9 @@ class EqualizacaoTecnicaAnexo extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function tipoEqualizacaoTecnica()
+    public function quadroDeConcorrencia()
     {
-        return $this->belongsTo(\App\Models\TipoEqualizacaoTecnica::class);
+        return $this->belongsTo(\App\Models\QuadroDeConcorrencia::class);
     }
 
     public function getUrlAttribute()

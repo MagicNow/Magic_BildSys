@@ -23,6 +23,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        Validator::extend('money', function($attribute, $value, $parameters) {
+            return is_money($value);
+        });
     }
 }

@@ -1,0 +1,151 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class QuadroDeConcorrencia extends Model
+{
+    public $table = 'quadro_de_concorrencias';
+
+    const CREATED_AT = 'created_at';
+    const UPDATED_AT = 'updated_at';
+
+
+
+    public $fillable = [
+        'user_id',
+        'qc_status_id',
+        'obrigacoes_fornecedor',
+        'obrigacoes_bild',
+        'rodada_atual'
+    ];
+
+    /**
+     * The attributes that should be casted to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'id' => 'integer',
+        'user_id' => 'integer',
+        'qc_status_id' => 'integer',
+        'obrigacoes_fornecedor' => 'string',
+        'obrigacoes_bild' => 'string',
+        'rodada_atual' => 'integer'
+    ];
+
+    /**
+     * Validation rules
+     *
+     * @var array
+     */
+    public static $rules = [
+
+    ];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     **/
+    public function equalizacoes()
+    {
+        return $this->belongsToMany(
+            TipoEqualizacaoTecnica::class,
+            'qc_tipo_equalizacao_tecnica',
+            'quadro_de_concorrencia_id',
+            'tipo_equalizacao_tecnica_id'
+        )
+        ->withPivot(['id'])
+        ->withTimestamps();
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function itens()
+    {
+        return $this->hasMany(
+            QuadroDeConcorrenciaItem::class,
+            'quadro_de_concorrencia_id'
+        );
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function equalizacoesExtras()
+    {
+        return $this->hasMany(
+            QcEqualizacaoTecnicaExtra::class,
+            'quadro_de_concorrencia_id'
+        );
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function anexos()
+    {
+        return $this->hasMany(
+            QcEqualizacaoTecnicaAnexoExtra::class,
+            'quadro_de_concorrencia_id'
+        );
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function status()
+    {
+        return $this->belongsTo(QuadroDeConcorrenciaStatus::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function qcEqualizacaoTecnicaAnexoExtras()
+    {
+        return $this->hasMany(QcEqualizacaoTecnicaAnexoExtra::class);
+    }
+
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function qcFornecedors()
+    {
+        return $this->hasMany(QcFornecedor::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function qcItens()
+    {
+        return $this->hasMany(QcIten::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function qcStatusLogs()
+    {
+        return $this->hasMany(QcStatusLog::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function qcTipoEqualizacaoTecnicas()
+    {
+        return $this->hasMany(QcTipoEqualizacaoTecnica::class);
+    }
+}

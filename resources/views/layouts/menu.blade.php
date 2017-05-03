@@ -94,3 +94,6 @@
 {{--<a href="{!! route('admin.fornecedores.index') !!}"><i class="fa fa-edit"></i><span>Fornecedores</span></a>--}}
 {{--</li>--}}
 
+<li class="{{ Request::is('quadro-de-concorrencias*') ? 'active' : '' }}">
+    <a href="{!! route('quadro-de-concorrencias.index') !!}"><i class="fa fa-edit"></i><span>QuadroDeConcorrencias</span></a>
+</li>

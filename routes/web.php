@@ -9,7 +9,7 @@
 | by your application. Just tell Laravel the URIs it should respond
 | to using a Closure or controller method. Build something great!
 |
-*/
+ */
 
 $router->get('/teste', function (){
     $grupos_mega = \App\Models\MegaInsumoGrupo::select([
@@ -325,7 +325,6 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->delete('insumoGrupos/{insumoGrupos}', ['as'=> 'admin.insumoGrupos.destroy', 'uses' => 'Admin\InsumoGrupoController@destroy']);
         $router->get('insumoGrupos/{insumoGrupos}', ['as'=> 'admin.insumoGrupos.show', 'uses' => 'Admin\InsumoGrupoController@show']);
         $router->get('insumoGrupos/{insumoGrupos}/edit', ['as'=> 'admin.insumoGrupos.edit', 'uses' => 'Admin\InsumoGrupoController@edit']);
-
     });
 
     $router->group(['prefix' => 'compras'], function () use ($router) {
@@ -381,4 +380,16 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         )->validate();
         dd('@TODO pegar ids e montar novo Q.C. ',request()->get('ordem_de_compra_itens'));
     });
+
+    $router->post(
+        '/quadro-de-concorrencias/{quadroDeConcorrencias}/informar-valor',
+        'QuadroDeConcorrenciaController@informarValorSave'
+    );
+
+    $router->get(
+        '/quadro-de-concorrencias/{quadroDeConcorrencias}/informar-valor',
+        'QuadroDeConcorrenciaController@informarValor'
+    )->name('quadro-de-concorrencias.informar-valor');
+
+    $router->resource('quadro-de-concorrencias', 'QuadroDeConcorrenciaController');
 });
