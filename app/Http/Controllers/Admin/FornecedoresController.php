@@ -7,8 +7,11 @@ use App\Http\Requests\Admin;
 use App\Http\Requests\Admin\CreateFornecedoresRequest;
 use App\Http\Requests\Admin\UpdateFornecedoresRequest;
 use App\Repositories\Admin\FornecedoresRepository;
+use App\Repositories\Admin\ValidationRepository;
+use App\Repositories\ImportacaoRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
+use Illuminate\Http\Request;
 use Response;
 use Correios;
 
@@ -153,5 +156,23 @@ class FornecedoresController extends AppBaseController
     public function buscaPorCep($cep)
     {
         return Correios::cep($cep);
+    }
+
+    public function validaCnpj(Request $request){
+        $validator = ValidationRepository::validaCnpj($request->numero,$request->cpf);
+
+        $validator->validate();
+
+        // verifica se já não existe o cnpj com outro fornecedor
+        $documentoUnico = ValidationRepository::CnpjUnico($request->numero);
+        if($documentoUnico){
+            return response()->json(['success'=>false,'erro'=>'CNPJ já cadastrado na base!'],422);
+        }else{
+            $retorno = ImportacaoRepository::fornecedores($request->numero);
+            if($retorno) {
+                return response()->json(['success' => true, 'msg'=>'Fornecedor já existente no banco MEGA e importado automaticamente', 'importado'=>1, 'fornecedor'=>$retorno]);
+            }
+        }
+        return response()->json(['success'=>true]);
     }
 }

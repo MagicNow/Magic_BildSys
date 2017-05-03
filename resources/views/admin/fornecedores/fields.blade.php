@@ -129,5 +129,67 @@
                         });
             }
         }
+
+        //CNPJ
+        function validaCnpj(qual) {
+            if($('#numero'+qual).val()!=''){
+                $.ajax({
+                    url: "/admin/valida-documento",
+                    data: {
+                        numero: $('#numero'+qual).val(),
+                        cpf: 1
+                    }
+                }).done(function(retorno) {
+                    if(retorno.importado == 1){
+                        swal({
+                                    title: retorno.msg,
+                                    text: "",
+                                    type: "success",
+                                    showCancelButton: false,
+                                    confirmButtonText: "Ok",
+                                    closeOnConfirm: false
+                                },
+                                function(){
+                                    document.location='/admin/fornecedores/'+ retorno.fornecedor.id;
+                                });
+
+                    }
+                }).fail(function(retorno) {
+                    if(retorno.responseJSON.erro){
+                        swal({
+                            title: retorno.responseJSON.erro,
+                            text: "",
+                            type: "error",
+                            showCancelButton: false,
+                            confirmButtonText: "Ok",
+                            closeOnConfirm: false
+                        },
+                        function(){
+                            swal.close();
+                            $('#numero' + qual).val('');
+                            $('#numero' + qual).focus();
+                        });
+                    }else {
+                        numero = $('#numero' + qual).val();
+                        resposta = !numero.length ? 'Nulo' : 'Inválido';
+
+                        swal({
+                            title: 'Número ' + resposta,
+                            text: "Este registro não será salvo enquanto o mesmo não for um número válido",
+                            type: "error",
+                            showCancelButton: false,
+                            confirmButtonText: "Ok",
+                            closeOnConfirm: true
+                        },
+                        function(){
+                            swal.close();
+                            $('#numero' + qual).val('');
+                            $('#numero' + qual).focus();
+                        });
+                    }
+                });
+            }
+
+        }
     </script>
 @endsection

@@ -2,8 +2,11 @@
 
 namespace App\Repositories;
 
+use App\Models\Cidade;
+use App\Models\Fornecedores;
 use App\Models\Insumo;
 use App\Models\InsumoGrupo;
+use App\Models\MegaFornecedor;
 use App\Models\MegaInsumo;
 use App\Models\MegaInsumoGrupo;
 use App\Models\Unidade;
@@ -73,5 +76,61 @@ class ImportacaoRepository
             }
         }
         return ['total-mega' => $grupos_mega->count(), 'total-sys' => InsumoGrupo::count()];
+    }
+
+    public static function fornecedores($cnpj)
+    {
+        try {
+
+            $fornecedores_mega = MegaFornecedor::select([
+                'AGN_IN_CODIGO',
+                'AGN_ST_FANTASIA',
+                'AGN_ST_NOME',
+                'UF_ST_SIGLA',
+                'AGN_ST_MUNICIPIO',
+                'TPL_ST_SIGLA',
+                'AGN_ST_LOGRADOURO',
+                'AGN_ST_NUMERO',
+                'AGN_ST_BAIRRO',
+                'AGN_ST_CEP',
+                'AGN_ST_COMPLEMENTO',
+                'AGN_ST_CGC',
+                'AGN_CH_STATUSCGC',
+                'AGN_ST_INSCRESTADUAL',
+                'AGN_ST_EMAIL',
+                'AGN_ST_URL'])
+                ->where('AGN_ST_CGC', trim($cnpj))
+                ->first();
+
+            if ($fornecedores_mega) {
+                $cidade = Cidade::where('nome', 'LIKE', '%' . $fornecedores_mega->agn_st_municipio . '%')
+                    ->first();
+
+                $fornecedor = Fornecedores::create([
+                    'codigo_mega' => trim($fornecedores_mega->agn_in_codigo),
+                    'nome' => trim(utf8_encode($fornecedores_mega->agn_st_nome)),
+                    'cnpj' => trim($fornecedores_mega->agn_st_cgc),
+                    'tipo_logradouro' => trim($fornecedores_mega->tpl_st_sigla),
+                    'logradouro' => trim(utf8_encode($fornecedores_mega->agn_st_logradouro)),
+                    'numero' => trim($fornecedores_mega->agn_st_numero),
+                    'complemento' => trim(utf8_encode($fornecedores_mega->agn_st_complemento)),
+                    'municipio' => trim(utf8_encode($fornecedores_mega->agn_st_municipio)),
+                    'estado' => trim(utf8_encode($fornecedores_mega->uf_st_sigla)),
+                    'situacao_cnpj' => trim(utf8_encode($fornecedores_mega->agn_ch_statuscgc)),
+                    'inscricao_estadual' => trim($fornecedores_mega->agn_st_inscrestadual),
+                    'email' => trim(utf8_encode($fornecedores_mega->agn_st_email)),
+                    'site' => trim(utf8_encode($fornecedores_mega->agn_st_url)),
+                    'telefone' => null,
+                    'cep' => trim(str_replace('.','',$fornecedores_mega->agn_st_cep)),
+                    'cidade_id' => isset($cidade) ? $cidade->id : null
+                ]);
+                return $fornecedor;
+            }
+        } catch (\Exception $e) {
+            Log::error('Erro ao importar insumo '. $fornecedores_mega->agn_in_codigo. ': '.$e->getMessage());
+            return false;
+        }
+
+
     }
 }
