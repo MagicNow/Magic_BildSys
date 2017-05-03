@@ -20,9 +20,6 @@ class AlterCatalogoContratrosTable extends Migration
                 ->references('id')->on('catalogo_contratos')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
-            
-            $table->integer('fornecedor_cod');
-            $table->string('fornecedor_nome');
         });
 
         Schema::table('ordem_de_compra_itens', function (Blueprint $table) {
@@ -50,11 +47,6 @@ class AlterCatalogoContratrosTable extends Migration
      */
     public function down()
     {
-        Schema::table('catalogo_contratos', function (Blueprint $table){
-            $table->dropColumn('fornecedor_cod');
-            $table->dropColumn('fornecedor_nome');
-        });
-
         Schema::create('contratos', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('obra_id');

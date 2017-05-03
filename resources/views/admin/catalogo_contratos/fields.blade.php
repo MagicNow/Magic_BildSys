@@ -12,7 +12,7 @@
 <!-- Fornecedores Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('fornecedor_cod', 'Fornecedor:') !!}
-    {!! Form::select('fornecedor_cod', ['' => 'Escolha...']+$fornecedores, null, ['class' => 'form-control','id'=>'fornecedor_cod','required'=>'required']) !!}
+    {!! Form::select('fornecedor_cod', ['' => 'Escolha...']+$fornecedores, @isset($catalogoContrato) ? $catalogoContrato->fornecedor->codigo_mega : null, ['class' => 'form-control','id'=>'fornecedor_cod','required'=>'required']) !!}
 </div>
 
 <!-- Data Field -->

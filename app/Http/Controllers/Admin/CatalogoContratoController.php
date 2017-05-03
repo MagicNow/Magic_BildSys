@@ -8,10 +8,12 @@ use App\Http\Requests\Admin\CreateCatalogoContratoRequest;
 use App\Http\Requests\Admin\UpdateCatalogoContratoRequest;
 use App\Models\CatalogoContratoInsumo;
 use App\Models\CatalogoContrato;
+use App\Models\Fornecedores;
 use App\Models\Insumo;
 use App\Models\MegaFornecedor;
 use App\Repositories\Admin\CatalogoContratoRepository;
 use App\Repositories\CodeRepository;
+use App\Repositories\ImportacaoRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
@@ -60,7 +62,7 @@ class CatalogoContratoController extends AppBaseController
      */
     public function store(CreateCatalogoContratoRequest $request)
     {
-        $input = $request->except('arquivo');
+        $input = $request->except('arquivo', 'fornecedor_cod');
 
         if($input['periodo_termino'] < $input['periodo_inicio']){
             Flash::error('O período de término não pode ser menor que o período de início.');
@@ -86,12 +88,22 @@ class CatalogoContratoController extends AppBaseController
 
         $catalogoContrato = new CatalogoContrato($input);
 
-        $nome_fornecedor = MegaFornecedor::select(DB::raw("CONVERT(agn_st_nome,'UTF8','WE8ISO8859P15' ) as agn_st_nome"))
+        $fornecedor_mega = MegaFornecedor::select(['AGN_ST_CGC'])
             ->where('agn_in_codigo', $request->fornecedor_cod)
             ->first();
 
-        $catalogoContrato->fornecedor_nome = $nome_fornecedor->agn_st_nome;
-        $catalogoContrato->fornecedor_id = 1;
+        $cnpj = $fornecedor_mega->agn_st_cgc;
+
+        $fornecedor_cadastrado = Fornecedores::where('cnpj', $cnpj)
+            ->first();
+
+        if($fornecedor_cadastrado){
+            $catalogoContrato->fornecedor_id = $fornecedor_cadastrado->id;
+        }else{
+            $fornecedor = ImportacaoRepository::fornecedores($cnpj);
+            $catalogoContrato->fornecedor_id = $fornecedor->id;
+        }
+
         $catalogoContrato->save();
 
         if($request->arquivo) {
@@ -159,7 +171,7 @@ class CatalogoContratoController extends AppBaseController
         }
 
         $fornecedores = MegaFornecedor::select(DB::raw("CONVERT(agn_st_nome,'UTF8','WE8ISO8859P15' ) as agn_st_nome"), 'agn_in_codigo')
-            ->where('agn_in_codigo', $catalogoContrato->fornecedor_cod)
+            ->where('agn_st_cgc', $catalogoContrato->fornecedor->cnpj)
             ->pluck('agn_st_nome', 'agn_in_codigo')->toArray();
         
         return view('admin.catalogo_contratos.edit', compact('fornecedores'))->with('catalogoContrato', $catalogoContrato);
@@ -214,13 +226,24 @@ class CatalogoContratoController extends AppBaseController
             $catalogoContrato->save();
         }
 
-        $catalogoContrato = $this->catalogoContratoRepository->update($request->except('arquivo'), $id);
+        $catalogoContrato = $this->catalogoContratoRepository->update($request->except('arquivo', 'fornecedor_cod'), $id);
 
-        $nome_fornecedor = MegaFornecedor::select(DB::raw("CONVERT(agn_st_nome,'UTF8','WE8ISO8859P15' ) as agn_st_nome"))
-            ->where('agn_in_codigo', $catalogoContrato->fornecedor_cod)
+        $fornecedor_mega = MegaFornecedor::select(['AGN_ST_CGC'])
+            ->where('agn_in_codigo', $request->fornecedor_cod)
             ->first();
 
-        $catalogoContrato->fornecedor_nome = $nome_fornecedor->agn_st_nome;
+        $cnpj = $fornecedor_mega->agn_st_cgc;
+
+        $fornecedor_cadastrado = Fornecedores::where('cnpj', $cnpj)
+            ->first();
+
+        if($fornecedor_cadastrado){
+            $catalogoContrato->fornecedor_id = $fornecedor_cadastrado->id;
+        }else{
+            $fornecedor = ImportacaoRepository::fornecedores($cnpj);
+            $catalogoContrato->fornecedor_id = $fornecedor->id;
+        }
+
         $catalogoContrato->update();
 
         if (count($request->insumos)) {
