@@ -140,7 +140,6 @@
                         cpf: 1
                     }
                 }).done(function(retorno) {
-                    console.log(retorno);
                     if(retorno.importado == 1){
                         swal({
                                     title: retorno.msg,
@@ -164,6 +163,11 @@
                             showCancelButton: false,
                             confirmButtonText: "Ok",
                             closeOnConfirm: false
+                        },
+                        function(){
+                            swal.close();
+                            $('#numero' + qual).val('');
+                            $('#numero' + qual).focus();
                         });
                     }else {
                         numero = $('#numero' + qual).val();
@@ -176,10 +180,12 @@
                             showCancelButton: false,
                             confirmButtonText: "Ok",
                             closeOnConfirm: true
+                        },
+                        function(){
+                            swal.close();
+                            $('#numero' + qual).val('');
+                            $('#numero' + qual).focus();
                         });
-
-                        $('#numero' + qual).val('');
-                        $('#numero' + qual).focus();
                     }
                 });
             }

@@ -173,6 +173,6 @@ class FornecedoresController extends AppBaseController
                 return response()->json(['success' => true, 'msg'=>'Fornecedor já existente no banco MEGA e importado automaticamente', 'importado'=>1, 'fornecedor'=>$retorno]);
             }
         }
-        return response()->json(['success'=>true, 'importado'=> 0]);
+        return response()->json(['success'=>true]);
     }
 }
