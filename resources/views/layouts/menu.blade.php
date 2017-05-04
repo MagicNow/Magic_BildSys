@@ -94,3 +94,7 @@
 {{--<a href="{!! route('admin.fornecedores.index') !!}"><i class="fa fa-edit"></i><span>Fornecedores</span></a>--}}
 {{--</li>--}}
 
+<li class="{{ Request::is('planejamentoOrcamentos*') ? 'active' : '' }}">
+    <a href="{!! route('admin.planejamentoOrcamentos.index') !!}"><i class="fa fa-edit"></i><span>PlanejamentoOrcamentos</span></a>
+</li>
+
