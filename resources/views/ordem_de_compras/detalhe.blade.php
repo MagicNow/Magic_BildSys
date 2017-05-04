@@ -267,9 +267,9 @@
                             <td class="text-center"></td>
                             <td class="text-center"></td>
                             <td class="text-center">
-                                <button type="button" class="btn btn-flat btn-link"
+                                <button type="button" class="btn btn-flat btn-link" title="Expandir"
                                         style="font-size: 18px; margin-top: -7px" onclick="showHideInfoExtra({{ $item->id }})">
-                                    <i id="icone-expandir{{ $item->id }}" class="fa fa-caret-left" aria-hidden="true"></i>
+                                    <i id="icone-expandir{{ $item->id }}" class="fa fa-caret-right" aria-hidden="true"></i>
                                 </button>
                             </td>
                         </tr>
@@ -470,14 +470,16 @@
         var icone_expandir = $('#icone-expandir'+qual);
         var dados_extras = $('#dados-extras'+qual);
 
-        if(icone_expandir.hasClass('fa fa-caret-left')){ //fechado
+        if(icone_expandir.hasClass('fa fa-caret-right')){ //fechado
             dados_extras.show();
-            icone_expandir.removeClass('fa-caret-left');
+            icone_expandir.parent().attr('title', 'Fechar');
+            icone_expandir.removeClass('fa-caret-right');
             icone_expandir.addClass('fa-caret-down');
-        }else{ //abertp
+        }else{ //aberto
             dados_extras.hide();
+            icone_expandir.parent().attr('title', 'Expandir');
             icone_expandir.removeClass('fa-caret-down');
-            icone_expandir.addClass('fa-caret-left');
+            icone_expandir.addClass('fa-caret-right');
         }
     }
 
