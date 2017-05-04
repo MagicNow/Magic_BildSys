@@ -18,13 +18,13 @@ class LembreteDataTable extends DataTable
         return $this->datatables
             ->eloquent($this->query())
             ->editColumn('prazo_minimo_mobilizacao', function($obj){
-                return "<input value='$obj->prazo_minimo_mobilizacao' class='form-control' type='number'>";
+                return "<input value='$obj->prazo_minimo_mobilizacao' class='form-control' type='number' onchange='incluirPrazo(3, $obj->id, this.value, \"$obj->nome\")'>";
             })
             ->editColumn('prazo_minimo_negociacao', function($obj){
-                return "<input value='$obj->prazo_minimo_negociacao' class='form-control' type='number'>";
+                return "<input value='$obj->prazo_minimo_negociacao' class='form-control' type='number' onchange='incluirPrazo(2, $obj->id, this.value, \"$obj->nome\")'>";
             })
             ->editColumn('prazo_minimo_start', function($obj){
-                return "<input value='$obj->prazo_minimo_start' class='form-control' type='number'>";
+                return "<input value='$obj->prazo_minimo_start' class='form-control' type='number' onchange='incluirPrazo(1, $obj->id, this.value, \"$obj->nome\")'>";
             })
             ->make(true);
     }
@@ -60,8 +60,7 @@ class LembreteDataTable extends DataTable
                                 AND LEM2.deleted_at IS NULL
                              ) as prazo_minimo_start"
                 ),
-            ])
-            ->leftJoin('lembretes', 'lembretes.insumo_grupo_id', '=', 'insumo_grupos.id');
+            ]);
 
         return $this->applyScopes($insumos_grupos);
     }

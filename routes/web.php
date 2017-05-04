@@ -91,6 +91,8 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
 
         # Lembretes
         $router->group(['middleware' => 'needsPermission:lembretes.list'], function () use ($router) {
+            $router->get('lembretes/data-minima', 'Admin\LembreteController@lembreteDataMinima');
+            
             $router->get('lembretes', ['as' => 'admin.lembretes.index', 'uses' => 'Admin\LembreteController@index']);
             $router->post('lembretes', ['as' => 'admin.lembretes.store', 'uses' => 'Admin\LembreteController@store']);
             $router->get('lembretes/create', ['as' => 'admin.lembretes.create', 'uses' => 'Admin\LembreteController@create'])->middleware("needsPermission:lembretes.create");
@@ -402,6 +404,8 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('planejamentosByObra', 'PlanejamentoController@getPlanejamentosByObra');
 
     $router->get('planejamentos/lembretes', 'PlanejamentoController@lembretes');
+    $router->get('planejamentos/lembretes/salvar-data-minima', 'PlanejamentoController@lembretes');
+    
 
     $router->get('workflow/aprova-reprova', 'WorkflowController@aprovaReprova');
     $router->get('workflow/aprova-reprova-tudo', 'WorkflowController@aprovaReprovaTudo');
