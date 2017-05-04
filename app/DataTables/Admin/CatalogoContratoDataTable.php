@@ -26,8 +26,15 @@ class CatalogoContratoDataTable extends DataTable
             ->editColumn('data',function ($obj){
                 return $obj->data ? with(new\Carbon\Carbon($obj->data))->format('d/m/Y') : '';
             })
-            ->editColumn('fornecedor_id',function ($obj){
-                return $obj->fornecedor->nome;
+            ->filterColumn('catalogo_contratos.data', function ($query, $keyword) {
+                $query->whereRaw("DATE_FORMAT(catalogo_contratos.data,'%d/%m/%Y') like ?", ["%$keyword%"]);
+            })
+            ->filterColumn('catalogo_contratos.valor', function ($query, $keyword) {
+                $pontos = array(",");
+                $value = str_replace('.','',$keyword);
+                $result = str_replace( $pontos, ".", $value);
+
+                $query->whereRaw("(catalogo_contratos.valor) like ?", ["%$result%"]);
             })
             ->editColumn('action', 'admin.catalogo_contratos.datatables_actions')
             ->make(true);
@@ -40,7 +47,14 @@ class CatalogoContratoDataTable extends DataTable
      */
     public function query()
     {
-        $catalogoContratos = CatalogoContrato::query();
+        $catalogoContratos = CatalogoContrato::query()->select([
+            'catalogo_contratos.id',
+            'fornecedores.nome as fornecedor',
+            'catalogo_contratos.data',
+            'catalogo_contratos.valor',
+            'catalogo_contratos.arquivo',
+        ])
+        ->join('fornecedores','catalogo_contratos.fornecedor_id','fornecedores.id');
 
         return $this->applyScopes($catalogoContratos);
     }
@@ -60,7 +74,7 @@ class CatalogoContratoDataTable extends DataTable
                 'initComplete' => 'function () {
                     max = this.api().columns().count();
                     this.api().columns().every(function (col) {
-                        if((col+1)<max){
+                        if((col+1)<(max-1)){
                             var column = this;
                             var input = document.createElement("input");
                             $(input).attr(\'placeholder\',\'Filtrar...\');
@@ -104,11 +118,11 @@ class CatalogoContratoDataTable extends DataTable
     private function getColumns()
     {
         return [
-            'fornecedor' => ['name' => 'fornecedor_id', 'data' => 'fornecedor_id'],
-            'data' => ['name' => 'data', 'data' => 'data'],
-            'valor' => ['name' => 'valor', 'data' => 'valor'],
-            'arquivo' => ['name' => 'arquivo', 'data' => 'arquivo'],
-            'action' => ['title' => '#', 'printable' => false],
+            'fornecedor' => ['name' => 'fornecedores.nome', 'data' => 'fornecedor'],
+            'data' => ['name' => 'catalogo_contratos.data', 'data' => 'data'],
+            'valor' => ['name' => 'catalogo_contratos.valor', 'data' => 'valor'],
+            'arquivo' => ['name' => 'catalogo_contratos.arquivo', 'data' => 'arquivo', 'printable' => false, 'exportable' => false],
+            'action' => ['title' => '#', 'printable' => false, 'exportable' => false],
         ];
     }
 

@@ -31,7 +31,8 @@
         "kennedytedesco/validation": "~3.0",
         "box/spout": "^2.7",
         "yajra/laravel-oci8": "5.3.*",
-        "rap2hpoutre/laravel-log-viewer": "^0.10.0"
+        "rap2hpoutre/laravel-log-viewer": "^0.10.0",
+        "barryvdh/laravel-snappy": "^0.3.3"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

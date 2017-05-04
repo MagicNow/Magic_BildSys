@@ -25,8 +25,6 @@
     </section>
     <div class="content">
         <div class="clearfix"></div>
-
-        @include('flash::message')
         @include('adminlte-templates::common.errors')
         <div class="box-body" id='app'>
             <tabela

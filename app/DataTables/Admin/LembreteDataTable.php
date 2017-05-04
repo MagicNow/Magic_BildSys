@@ -2,7 +2,8 @@
 
 namespace App\DataTables\Admin;
 
-use App\Models\Lembrete;
+use App\Models\InsumoGrupo;
+use DB;
 use Form;
 use Yajra\Datatables\Services\DataTable;
 
@@ -16,9 +17,14 @@ class LembreteDataTable extends DataTable
     {
         return $this->datatables
             ->eloquent($this->query())
-            ->editColumn('action', 'admin.lembretes.datatables_actions')
-            ->editColumn('dias_prazo_minimo', function($obj){
-                return isset($obj->dias_prazo_minimo) ? $obj->dias_prazo_minimo . ' dias ' : '';
+            ->editColumn('prazo_minimo_mobilizacao', function($obj){
+                return "<input value='$obj->prazo_minimo_mobilizacao' class='form-control' type='number' onchange='incluirPrazo(3, $obj->id, this.value, \"$obj->nome\")'>";
+            })
+            ->editColumn('prazo_minimo_negociacao', function($obj){
+                return "<input value='$obj->prazo_minimo_negociacao' class='form-control' type='number' onchange='incluirPrazo(2, $obj->id, this.value, \"$obj->nome\")'>";
+            })
+            ->editColumn('prazo_minimo_start', function($obj){
+                return "<input value='$obj->prazo_minimo_start' class='form-control' type='number' onchange='incluirPrazo(1, $obj->id, this.value, \"$obj->nome\")'>";
             })
             ->make(true);
     }
@@ -30,20 +36,33 @@ class LembreteDataTable extends DataTable
      */
     public function query()
     {
-        $lembretes = Lembrete::query()->select([
-            'lembretes.id',
-            'lembretes.nome',
-            'lembretes.dias_prazo_minimo',
-            'lembrete_tipos.nome as tipo',
-            'insumo_grupos.nome as grupo',
-            'users.name as user',
-        ])
-            ->join('lembrete_tipos','lembrete_tipos.id','lembretes.lembrete_tipo_id')
-            ->join('insumo_grupos','insumo_grupos.id','lembretes.insumo_grupo_id')
-            ->join('users','users.id','lembretes.user_id')
-        ;
+        $insumos_grupos = InsumoGrupo::query()->select([
+                'insumo_grupos.id',
+                'insumo_grupos.nome',
+                DB::raw("(SELECT LEM2.dias_prazo_minimo
+                            FROM lembretes LEM2
+                            WHERE LEM2.insumo_grupo_id = insumo_grupos.id                            
+                            AND LEM2.lembrete_tipo_id = 3
+                            AND LEM2.deleted_at IS NULL
+                         ) as prazo_minimo_mobilizacao"
+                ),
+                DB::raw("(SELECT LEM2.dias_prazo_minimo
+                                FROM lembretes LEM2
+                                WHERE LEM2.insumo_grupo_id = insumo_grupos.id                            
+                                AND LEM2.lembrete_tipo_id = 2
+                                AND LEM2.deleted_at IS NULL
+                             ) as prazo_minimo_negociacao"
+                ),
+                DB::raw("(SELECT LEM2.dias_prazo_minimo
+                                FROM lembretes LEM2
+                                WHERE LEM2.insumo_grupo_id = insumo_grupos.id                            
+                                AND LEM2.lembrete_tipo_id = 1
+                                AND LEM2.deleted_at IS NULL
+                             ) as prazo_minimo_start"
+                ),
+            ]);
 
-        return $this->applyScopes($lembretes);
+        return $this->applyScopes($insumos_grupos);
     }
 
     /**
@@ -61,7 +80,7 @@ class LembreteDataTable extends DataTable
                 'initComplete' => 'function () {
                     max = this.api().columns().count();
                     this.api().columns().every(function (col) {
-                        if((col+1)<max){
+                        if((col+3)<max){
                             var column = this;
                             var input = document.createElement("input");
                             $(input).attr(\'placeholder\',\'Filtrar...\');
@@ -105,12 +124,10 @@ class LembreteDataTable extends DataTable
     private function getColumns()
     {
         return [
-            'tipo' => ['name' => 'lembrete_tipos.nome', 'data' => 'tipo'],
-            'nome' => ['name' => 'lembretes.nome', 'data' => 'nome'],
-            'prazo' => ['name' => 'dias_prazo_minimo', 'data' => 'dias_prazo_minimo'],
-            'grupo' => ['name' => 'dias_prazo_maximo', 'data' => 'grupo'],
-            'cadastrado_por' => ['name' => 'users.name', 'data' => 'user'],
-            'action' => ['title'          => '#', 'printable'      => false, 'width'=>'10%'],
+            'grupo_insumo' => ['name' => 'insumo_grupos.nome', 'data' => 'nome'],
+            'mobilização' => ['name' => 'prazo_minimo_mobilizacao', 'data' => 'prazo_minimo_mobilizacao'],
+            'negociação' => ['name' => 'prazo_minimo_negociacao', 'data' => 'prazo_minimo_negociacao'],
+            'start' => ['name' => 'prazo_minimo_start', 'data' => 'prazo_minimo_start']
         ];
     }
 

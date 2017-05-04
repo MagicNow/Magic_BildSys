@@ -77,8 +77,22 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
             $router->get('atividade/planejamentocompras/{id}', 'Admin\PlanejamentoController@destroyPlanejamentoCompra');
         });
 
+        Route::get('planejamentoOrcamentos', ['as'=> 'admin.planejamentoOrcamentos.index', 'uses' => 'Admin\PlanejamentoOrcamentoController@index']);
+        Route::post('planejamentoOrcamentos', ['as'=> 'admin.planejamentoOrcamentos.store', 'uses' => 'Admin\PlanejamentoOrcamentoController@store']);
+        Route::get('planejamentoOrcamentos/create', ['as'=> 'admin.planejamentoOrcamentos.create', 'uses' => 'Admin\PlanejamentoOrcamentoController@create']);
+        Route::put('planejamentoOrcamentos/{planejamentoOrcamentos}', ['as'=> 'admin.planejamentoOrcamentos.update', 'uses' => 'Admin\PlanejamentoOrcamentoController@update']);
+        Route::patch('planejamentoOrcamentos/{planejamentoOrcamentos}', ['as'=> 'admin.planejamentoOrcamentos.update', 'uses' => 'Admin\PlanejamentoOrcamentoController@update']);
+        Route::delete('planejamentoOrcamentos/{planejamentoOrcamentos}', ['as'=> 'admin.planejamentoOrcamentos.destroy', 'uses' => 'Admin\PlanejamentoOrcamentoController@destroy']);
+        Route::get('planejamentoOrcamentos/{planejamentoOrcamentos}', ['as'=> 'admin.planejamentoOrcamentos.show', 'uses' => 'Admin\PlanejamentoOrcamentoController@show']);
+        Route::get('planejamentoOrcamentos/{planejamentoOrcamentos}/edit', ['as'=> 'admin.planejamentoOrcamentos.edit', 'uses' => 'Admin\PlanejamentoOrcamentoController@edit']);
+        Route::get('planejamentoOrcamentos/orcamentos/relacionados', 'Admin\PlanejamentoOrcamentoController@GrupoRelacionados');
+        Route::get('planejamentoOrcamentos/planejamento/{id}', 'Admin\PlanejamentoOrcamentoController@getPlanejamentos');
+        Route::get('planejamentoOrcamentos/orcamento/{id}', 'Admin\PlanejamentoOrcamentoController@getOrcamentos');
+
         # Lembretes
         $router->group(['middleware' => 'needsPermission:lembretes.list'], function () use ($router) {
+            $router->get('lembretes/data-minima', 'Admin\LembreteController@lembreteDataMinima');
+            
             $router->get('lembretes', ['as' => 'admin.lembretes.index', 'uses' => 'Admin\LembreteController@index']);
             $router->post('lembretes', ['as' => 'admin.lembretes.store', 'uses' => 'Admin\LembreteController@store']);
             $router->get('lembretes/create', ['as' => 'admin.lembretes.create', 'uses' => 'Admin\LembreteController@create'])->middleware("needsPermission:lembretes.create");
@@ -390,6 +404,8 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('planejamentosByObra', 'PlanejamentoController@getPlanejamentosByObra');
 
     $router->get('planejamentos/lembretes', 'PlanejamentoController@lembretes');
+    $router->get('planejamentos/lembretes/salvar-data-minima', 'PlanejamentoController@lembretes');
+    
 
     $router->get('workflow/aprova-reprova', 'WorkflowController@aprovaReprova');
     $router->get('workflow/aprova-reprova-tudo', 'WorkflowController@aprovaReprovaTudo');

@@ -3,7 +3,7 @@
 @section('content')
     <section class="content-header">
         <h1>
-            Lembrete
+            Planejamento Orcamento
         </h1>
    </section>
    <div class="content">
@@ -11,10 +11,9 @@
        <div class="box box-primary">
            <div class="box-body">
                <div class="row">
-                   {!! Form::model($lembrete, ['route' => ['admin.lembretes.update', $lembrete->id], 'method' => 'patch']) !!}
-                        @include('flash::message')
+                   {!! Form::model($planejamentoOrcamento, ['route' => ['admin.planejamentoOrcamentos.update', $planejamentoOrcamento->id], 'method' => 'patch']) !!}
 
-                        @include('admin.lembretes.fields')
+                        @include('admin.planejamento_orcamentos.fields')
 
                    {!! Form::close() !!}
                </div>
