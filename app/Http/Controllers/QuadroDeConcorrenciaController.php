@@ -18,6 +18,8 @@ use App\Repositories\QcFornecedorRepository;
 use App\Repositories\QcItemQcFornecedorRepository;
 use App\Repositories\QcFornecedorEqualizacaoCheckRepository;
 use Illuminate\Support\Facades\DB;
+use App\Repositories\DesistenciaMotivoRepository;
+use Illuminate\Support\Str;
 
 
 class QuadroDeConcorrenciaController extends AppBaseController
@@ -165,8 +167,11 @@ class QuadroDeConcorrenciaController extends AppBaseController
      *
      * @return Response
      */
-    public function informarValor($id, FornecedoresRepository $fornecedorRepository)
-    {
+    public function informarValor(
+        $id,
+        FornecedoresRepository $fornecedorRepository,
+        DesistenciaMotivoRepository $desistenciaMotivoRepository
+    ) {
         $quadro = $this->quadroDeConcorrenciaRepository
             ->with(
                 'equalizacoes.itens',
@@ -182,17 +187,43 @@ class QuadroDeConcorrenciaController extends AppBaseController
             return redirect(route('quadro-de-concorrencias.index'));
         }
 
+        $fornecedores = $fornecedorRepository
+            ->podemPreencherQuadroNaRodada($id, $quadro->rodada_atual)
+            ->pluck('nome', 'id')
+            ->prepend('Selecione um fornecedor...','')
+            ->toArray();
+
+        if(count($fornecedores) === 1) {
+            Flash::error('
+                Este quadro já foi preenchido por todos os fornecedores possíveis'
+            );
+
+            return redirect(route('quadro-de-concorrencias.index'));
+        }
+
         $equalizacoes = $quadro->equalizacoes
             ->pluck('itens')
             ->merge($quadro->equalizacoesExtras)
             ->flatten();
 
-        $anexos = $quadro->equalizacoes->pluck('anexos')->flatten();
+        $anexos = $quadro->equalizacoes
+            ->pluck('anexos')
+            ->flatten()
+            ->merge($quadro->anexos);
 
-        $fornecedores = $fornecedorRepository->pluck('nome', 'id')->toArray();
+        $motivos = $desistenciaMotivoRepository
+            ->pluck('nome', 'id')
+            ->prepend('Selecione um motivo...','')
+            ->toArray();
 
         return view('quadro_de_concorrencias.informar_valor')
-            ->with(compact('anexos', 'equalizacoes', 'quadro', 'fornecedores'));
+            ->with(compact(
+                'anexos',
+                'equalizacoes',
+                'quadro',
+                'fornecedores',
+                'motivos'
+            ));
     }
 
     /**
@@ -235,20 +266,29 @@ class QuadroDeConcorrenciaController extends AppBaseController
 
             $qcFornecedor = $qcFornecedorRepository->create($qcFornecedor);
 
-            foreach($request->equalizacoes as $check) {
-                $check['qc_fornecedor_id'] = $qcFornecedor->id;
-                $check['user_id'] = $request->user()->id;
-                $checksRepository->create($check);
-            }
+            if(!$request->reject) {
+                foreach($request->equalizacoes as $check) {
+                    $check['qc_fornecedor_id'] = $qcFornecedor->id;
+                    $check['user_id'] = $request->user()->id;
+                    $checksRepository->create($check);
+                }
 
-            foreach($request->itens as $qcItemId => $item) {
-                $item['qc_fornecedor_id'] = $qcFornecedor->id;
-                $item['user_id'] = $request->user()->id;
-                $item['qc_item_id'] = $qcItemId;
-                $item['qtd'] = (float) $item['qtd'];
-                $item['valor_unitario'] = money_to_float($item['valor_unitario']);
-                $item['valor_total'] = $item['valor_unitario'] * $item['qtd'];
-                $qcItemFornecedorRepository->create($item);
+                foreach($request->itens as $qcItemId => $item) {
+                    $item['qc_fornecedor_id'] = $qcFornecedor->id;
+                    $item['user_id'] = $request->user()->id;
+                    $item['qc_item_id'] = $qcItemId;
+
+                    $item['qtd'] = (float) $item['qtd'];
+
+                    if(Str::length($item['valor_unitario'])) {
+                        $item['valor_unitario'] = money_to_float($item['valor_unitario']);
+                        $item['valor_total'] = $item['valor_unitario'] * $item['qtd'];
+                    } else {
+                        $item['valor_unitario'] = null;
+                    }
+
+                    $qcItemFornecedorRepository->create($item);
+                }
             }
         } catch (Exception $e) {
             DB::rollback();
@@ -258,7 +298,8 @@ class QuadroDeConcorrenciaController extends AppBaseController
         }
 
         DB::commit();
-        dd('Saved!');
+        Flash::success('Dados salvos com sucesso');
 
+        return redirect()->route('quadro-de-concorrencias.index');
     }
 }

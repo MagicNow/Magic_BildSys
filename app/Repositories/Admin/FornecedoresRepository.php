@@ -35,4 +35,22 @@ class FornecedoresRepository extends BaseRepository
     {
         return Fornecedores::class;
     }
+
+    /**
+     * Retorna os fornecedores que podem preencher um certo quadro em sua rodada
+     *
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    public function podemPreencherQuadroNaRodada($quadro_id, $rodada_atual)
+    {
+        return $this->model->select('fornecedores.*')
+            ->whereDoesntHave(
+                'valoresEmQuadros',
+                function($query) use ($quadro_id, $rodada_atual) {
+                    $query->where('quadro_de_concorrencia_id', $quadro_id);
+                    $query->where('rodada', $rodada_atual);
+                }
+            )
+            ->get();
+    }
 }

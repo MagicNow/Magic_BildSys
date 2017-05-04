@@ -27,18 +27,18 @@ class QcInformarValorRequest extends FormRequest
     {
         return [
             'fornecedor_id'          => 'required|numeric',
-            'equalizacoes.*.checked' => 'required|numeric',
-            'itens.*.valor_unitario' => 'required|money',
+            'equalizacoes.*.checked' => 'required_unless:reject,1|numeric',
+            'itens.*.valor_unitario' => 'money',
         ];
     }
 
     public function messages()
     {
         return [
-            'fornecedor_id.required'          => 'Selecione um fornecedor',
-            'equalizacoes.*.checked'          => 'Cheque todos os itens de equalização tecnica',
-            'itens.*.valor_unitario.required' => 'Adicione o valor de todos os itens',
-            'itens.*.valor_unitario.money'    => 'Adiciones valores válidos nos itens',
+            'fornecedor_id.required'                 => 'Selecione um fornecedor',
+            'equalizacoes.*.checked.required_unless' => 'Cheque todos os itens de equalização tecnica',
+            'itens.*.valor_unitario.required_unless' => 'Adicione o valor de todos os itens',
+            'itens.*.valor_unitario.money'           => 'Adiciones valores válidos nos itens',
         ];
     }
 }

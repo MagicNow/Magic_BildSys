@@ -398,3 +398,5 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
 Route::resource('qcFornecedorEqualizacaoChecks', 'QcFornecedorEqualizacaoCheckController');
 
 Route::resource('qcItemQcFornecedors', 'QcItemQcFornecedorController');
+
+Route::resource('desistenciaMotivos', 'DesistenciaMotivoController');

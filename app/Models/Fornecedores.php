@@ -65,7 +65,7 @@ class Fornecedores extends Model
      * @var array
      */
     public static $rules = [
-        
+
     ];
 
     /**
@@ -84,11 +84,8 @@ class Fornecedores extends Model
         return $this->hasMany(\App\Models\CatalogoContrato::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     **/
-    public function qcFornecedors()
+    public function valoresEmQuadros()
     {
-        return $this->hasMany(\App\Models\QcFornecedor::class);
+        return $this->hasMany(\App\Models\QcFornecedor::class, 'fornecedor_id');
     }
 }

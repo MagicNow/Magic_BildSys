@@ -105,3 +105,7 @@
     <a href="{!! route('qcItemQcFornecedors.index') !!}"><i class="fa fa-edit"></i><span>QcItemQcFornecedors</span></a>
 </li>
 
+<li class="{{ Request::is('desistenciaMotivos*') ? 'active' : '' }}">
+    <a href="{!! route('desistenciaMotivos.index') !!}"><i class="fa fa-edit"></i><span>DesistenciaMotivos</span></a>
+</li>
+
