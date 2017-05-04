@@ -141,14 +141,14 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
     });
 
     # Tipo equalização tecnicas
-    Route::get('tipoEqualizacaoTecnicas', ['as'=> 'admin.tipoEqualizacaoTecnicas.index', 'uses' => 'Admin\TipoEqualizacaoTecnicaController@index']);
-    Route::post('tipoEqualizacaoTecnicas', ['as'=> 'admin.tipoEqualizacaoTecnicas.store', 'uses' => 'Admin\TipoEqualizacaoTecnicaController@store']);
-    Route::get('tipoEqualizacaoTecnicas/create', ['as'=> 'admin.tipoEqualizacaoTecnicas.create', 'uses' => 'Admin\TipoEqualizacaoTecnicaController@create']);
-    Route::put('tipoEqualizacaoTecnicas/{tipoEqualizacaoTecnicas}', ['as'=> 'admin.tipoEqualizacaoTecnicas.update', 'uses' => 'Admin\TipoEqualizacaoTecnicaController@update']);
-    Route::patch('tipoEqualizacaoTecnicas/{tipoEqualizacaoTecnicas}', ['as'=> 'admin.tipoEqualizacaoTecnicas.update', 'uses' => 'Admin\TipoEqualizacaoTecnicaController@update']);
-    Route::delete('tipoEqualizacaoTecnicas/{tipoEqualizacaoTecnicas}', ['as'=> 'admin.tipoEqualizacaoTecnicas.destroy', 'uses' => 'Admin\TipoEqualizacaoTecnicaController@destroy']);
-    Route::get('tipoEqualizacaoTecnicas/{tipoEqualizacaoTecnicas}', ['as'=> 'admin.tipoEqualizacaoTecnicas.show', 'uses' => 'Admin\TipoEqualizacaoTecnicaController@show']);
-    Route::get('tipoEqualizacaoTecnicas/{tipoEqualizacaoTecnicas}/edit', ['as'=> 'admin.tipoEqualizacaoTecnicas.edit', 'uses' => 'Admin\TipoEqualizacaoTecnicaController@edit']);
+    $router->get('tipoEqualizacaoTecnicas', ['as'=> 'admin.tipoEqualizacaoTecnicas.index', 'uses' => 'Admin\TipoEqualizacaoTecnicaController@index']);
+    $router->post('tipoEqualizacaoTecnicas', ['as'=> 'admin.tipoEqualizacaoTecnicas.store', 'uses' => 'Admin\TipoEqualizacaoTecnicaController@store']);
+    $router->get('tipoEqualizacaoTecnicas/create', ['as'=> 'admin.tipoEqualizacaoTecnicas.create', 'uses' => 'Admin\TipoEqualizacaoTecnicaController@create']);
+    $router->put('tipoEqualizacaoTecnicas/{tipoEqualizacaoTecnicas}', ['as'=> 'admin.tipoEqualizacaoTecnicas.update', 'uses' => 'Admin\TipoEqualizacaoTecnicaController@update']);
+    $router->patch('tipoEqualizacaoTecnicas/{tipoEqualizacaoTecnicas}', ['as'=> 'admin.tipoEqualizacaoTecnicas.update', 'uses' => 'Admin\TipoEqualizacaoTecnicaController@update']);
+    $router->delete('tipoEqualizacaoTecnicas/{tipoEqualizacaoTecnicas}', ['as'=> 'admin.tipoEqualizacaoTecnicas.destroy', 'uses' => 'Admin\TipoEqualizacaoTecnicaController@destroy']);
+    $router->get('tipoEqualizacaoTecnicas/{tipoEqualizacaoTecnicas}', ['as'=> 'admin.tipoEqualizacaoTecnicas.show', 'uses' => 'Admin\TipoEqualizacaoTecnicaController@show']);
+    $router->get('tipoEqualizacaoTecnicas/{tipoEqualizacaoTecnicas}/edit', ['as'=> 'admin.tipoEqualizacaoTecnicas.edit', 'uses' => 'Admin\TipoEqualizacaoTecnicaController@edit']);
 
     #Cronograma por obra
     Route::get('planejamentoCronogramas', ['as'=> 'admin.planejamentoCronogramas.index', 'uses' => 'Admin\PlanejamentoCronogramaController@index'])->middleware("needsPermission:cronograma_por_obras.list");
@@ -415,4 +415,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->get('quadro-de-concorrencia/{quadroDeConcorrencias}', ['as' => 'quadroDeConcorrencias.show', 'uses' => 'QuadroDeConcorrenciaController@show'])->middleware("needsPermission:quadroDeConcorrencias.view");
         $router->get('quadro-de-concorrencia/{quadroDeConcorrencias}/edit', ['as' => 'quadroDeConcorrencias.edit', 'uses' => 'QuadroDeConcorrenciaController@edit'])->middleware("needsPermission:quadroDeConcorrencias.edit");
     });
+
+    $router->get('tipos-equalizacoes-tecnicas/busca', 'Admin\TipoEqualizacaoTecnicaController@busca');
+    $router->get('tipos-equalizacoes-tecnicas/itens/{id}', 'Admin\TipoEqualizacaoTecnicaController@buscaItens');
 });

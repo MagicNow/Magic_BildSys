@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class QcTipoEqualizacaoTecnica
@@ -12,7 +11,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class QcTipoEqualizacaoTecnica extends Model
 {
-    use SoftDeletes;
 
     public $table = 'qc_tipo_equalizacao_tecnica';
     

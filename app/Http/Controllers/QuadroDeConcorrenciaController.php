@@ -73,23 +73,6 @@ class QuadroDeConcorrenciaController extends AppBaseController
         );
     }
 
-    /**
-     * Store a newly created QuadroDeConcorrencia in storage.
-     *
-     * @param CreateQuadroDeConcorrenciaRequest $request
-     *
-     * @return Response
-     */
-    public function store(CreateQuadroDeConcorrenciaRequest $request)
-    {
-        $input = $request->all();
-
-        $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->create($input);
-
-        Flash::success('Quadro De Concorrencia '.trans('common.saved').' '.trans('common.successfully').'.');
-
-        return redirect(route('quadroDeConcorrencias.index'));
-    }
 
     /**
      * Display the specified QuadroDeConcorrencia.
@@ -177,6 +160,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
      */
     public function update($id, UpdateQuadroDeConcorrenciaRequest $request)
     {
+        dd($request->all());
         $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->findWithoutFail($id);
 
         if (empty($quadroDeConcorrencia)) {
