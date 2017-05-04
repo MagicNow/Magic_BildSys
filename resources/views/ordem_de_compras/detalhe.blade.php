@@ -129,24 +129,24 @@
                                 $count = 0;
                             @endphp
                             @foreach($avaliado_reprovado as $alcada)
-                                @if($alcada['aprovadores'])
-                                    @php
-                                        $count += 1;
-                                        $faltam_aprovar = $alcada['faltam_aprovar'];
+                                @php
+                                    $count += 1;
+                                    $faltam_aprovar = $alcada['faltam_aprovar'];
 
-                                        if(count($faltam_aprovar) > 1){
-                                            $faltam_aprovar_texto = 'Faltam aprovar: ';
-                                        }else{
-                                            $faltam_aprovar_texto = 'Falta aprovar: ';
-                                        }
+                                    if(count($faltam_aprovar) > 1){
+                                        $faltam_aprovar_texto = 'Faltam aprovar: ';
+                                    }else{
+                                        $faltam_aprovar_texto = 'Falta aprovar: ';
+                                    }
 
-                                        if(count($faltam_aprovar)){
-                                            foreach ($faltam_aprovar as $nome_falta){
-                                                $faltam_aprovar_texto .= $nome_falta.', ';
-                                            }
+                                    if(count($faltam_aprovar)){
+                                        foreach ($faltam_aprovar as $nome_falta){
+                                            $faltam_aprovar_texto .= $nome_falta.', ';
                                         }
+                                    }
                                     $faltam_aprovar_texto = substr($faltam_aprovar_texto,0,-2);
-                                    @endphp
+                                @endphp
+                                @if($alcada['aprovadores'])
                                     @if($alcada['total_avaliado'])
                                         @php
                                             $avaliado_aprovadores = $alcada['total_avaliado'] / $alcada['aprovadores'];
@@ -183,6 +183,18 @@
                                             </div>
                                         </h4>
                                     @endif
+                                @else
+                                    <h4 class="col-md-{{$col_md}} col-sm-{{$col_md}}" style="padding-right: 1px;padding-left: 1px;">
+                                        <span>{{$count}}ª alçada</span>
+                                        @if($count == $alcadas_count)
+                                            <span class="pull-right">Finalizada</span>
+                                        @endif
+                                        <div class="progress" title="Essa alçada não possuí aprovadores" data-toggle="tooltip" data-placement="top">
+                                            <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%; color: black;">
+                                                0%
+                                            </div>
+                                        </div>
+                                    </h4>
                                 @endif
                             @endforeach
                         @else
