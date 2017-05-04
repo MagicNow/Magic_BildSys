@@ -11,8 +11,7 @@ class QcEqualizacaoTecnicaExtra extends Model
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
-    public $fillable = [
-        'quadro_de_concorrencia_id',
+    public $fillable = [ 'quadro_de_concorrencia_id',
         'nome',
         'descricao',
         'obrigatorio'
@@ -45,5 +44,10 @@ class QcEqualizacaoTecnicaExtra extends Model
     public function quadroDeConcorrencia()
     {
         return $this->belongsTo(\App\Models\QuadroDeConcorrencia::class);
+    }
+
+    public function checks()
+    {
+        return $this->morphMany(QcFornecedorEqualizacaoCheck::class, 'checkable');
     }
 }

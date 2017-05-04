@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Models\Grupo;
 
-class UpdateGrupoRequest extends FormRequest
+class QcInformarValorRequest extends FormRequest
 {
 
     /**
@@ -26,11 +26,19 @@ class UpdateGrupoRequest extends FormRequest
     public function rules()
     {
         return [
-            'equalizacoes.*.obs'     => 'required',
-            'equalizacoes.*.checked' => 'required',
-            'itens.*.obs'            => 'required',
-            'itens.*.tems'           => 'required',
-            'itens.*.valor'          => 'required|money',
+            'fornecedor_id'          => 'required|numeric',
+            'equalizacoes.*.checked' => 'required|numeric',
+            'itens.*.valor_unitario' => 'required|money',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'fornecedor_id.required'          => 'Selecione um fornecedor',
+            'equalizacoes.*.checked'          => 'Cheque todos os itens de equalização tecnica',
+            'itens.*.valor_unitario.required' => 'Adicione o valor de todos os itens',
+            'itens.*.valor_unitario.money'    => 'Adiciones valores válidos nos itens',
         ];
     }
 }

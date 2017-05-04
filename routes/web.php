@@ -393,3 +393,8 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
 
     $router->resource('quadro-de-concorrencias', 'QuadroDeConcorrenciaController');
 });
+
+
+Route::resource('qcFornecedorEqualizacaoChecks', 'QcFornecedorEqualizacaoCheckController');
+
+Route::resource('qcItemQcFornecedors', 'QcItemQcFornecedorController');

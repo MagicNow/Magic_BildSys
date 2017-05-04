@@ -4,13 +4,20 @@ namespace App\Http\Controllers;
 
 use Flash;
 use Response;
+use Exception;
 use App\Http\Requests;
 use Illuminate\Http\Request;
+use App\Http\Controllers\AppBaseController;
+use App\Http\Requests\QcInformarValorRequest;
 use App\DataTables\QuadroDeConcorrenciaDataTable;
 use App\Http\Requests\CreateQuadroDeConcorrenciaRequest;
 use App\Http\Requests\UpdateQuadroDeConcorrenciaRequest;
 use App\Repositories\QuadroDeConcorrenciaRepository;
-use App\Http\Controllers\AppBaseController;
+use App\Repositories\Admin\FornecedoresRepository;
+use App\Repositories\QcFornecedorRepository;
+use App\Repositories\QcItemQcFornecedorRepository;
+use App\Repositories\QcFornecedorEqualizacaoCheckRepository;
+use Illuminate\Support\Facades\DB;
 
 
 class QuadroDeConcorrenciaController extends AppBaseController
@@ -158,10 +165,15 @@ class QuadroDeConcorrenciaController extends AppBaseController
      *
      * @return Response
      */
-    public function informarValor($id)
+    public function informarValor($id, FornecedoresRepository $fornecedorRepository)
     {
         $quadro = $this->quadroDeConcorrenciaRepository
-            ->with('equalizacoes.itens', 'equalizacoes.anexos', 'itens.insumo')
+            ->with(
+                'equalizacoes.itens',
+                'equalizacoes.anexos',
+                'itens.insumo',
+                'itens.ordemDeCompraItens'
+            )
             ->findWithoutFail($id);
 
         if (empty($quadro)) {
@@ -177,8 +189,10 @@ class QuadroDeConcorrenciaController extends AppBaseController
 
         $anexos = $quadro->equalizacoes->pluck('anexos')->flatten();
 
+        $fornecedores = $fornecedorRepository->pluck('nome', 'id')->toArray();
+
         return view('quadro_de_concorrencias.informar_valor')
-                ->with(compact('anexos', 'equalizacoes', 'quadro'));
+            ->with(compact('anexos', 'equalizacoes', 'quadro', 'fornecedores'));
     }
 
     /**
@@ -188,8 +202,63 @@ class QuadroDeConcorrenciaController extends AppBaseController
      *
      * @return Response
      */
-    public function informarValorSave(Request $request, $id)
-    {
-        dd($request->all());
+    public function informarValorSave(
+        QcInformarValorRequest $request,
+        QcFornecedorRepository $qcFornecedorRepository,
+        QcFornecedorEqualizacaoCheckRepository $checksRepository,
+        QcItemQcFornecedorRepository $qcItemFornecedorRepository,
+        $id
+    ) {
+
+        DB::beginTransaction();
+
+        try {
+            $quadro = $this->quadroDeConcorrenciaRepository->findWithoutFail($id);
+
+            if (empty($quadro)) {
+                Flash::error('Quadro De Concorrencia '.trans('common.not-found'));
+
+                return back()->withInput();
+            }
+
+            $qcFornecedor = [
+                'quadro_de_concorrencia_id' => $id,
+                'fornecedor_id' => $request->fornecedor_id,
+                'rodada' => $quadro->rodada_atual,
+                'user_id' => $request->user()->id
+            ];
+
+            if($request->reject) {
+                $qcFornecedor['desistencia_motivo_id'] = $request->desistencia_motivo_id;
+                $qcFornecedor['desistencia_texto'] = $request->desistencia_texto;
+            }
+
+            $qcFornecedor = $qcFornecedorRepository->create($qcFornecedor);
+
+            foreach($request->equalizacoes as $check) {
+                $check['qc_fornecedor_id'] = $qcFornecedor->id;
+                $check['user_id'] = $request->user()->id;
+                $checksRepository->create($check);
+            }
+
+            foreach($request->itens as $qcItemId => $item) {
+                $item['qc_fornecedor_id'] = $qcFornecedor->id;
+                $item['user_id'] = $request->user()->id;
+                $item['qc_item_id'] = $qcItemId;
+                $item['qtd'] = (float) $item['qtd'];
+                $item['valor_unitario'] = money_to_float($item['valor_unitario']);
+                $item['valor_total'] = $item['valor_unitario'] * $item['qtd'];
+                $qcItemFornecedorRepository->create($item);
+            }
+        } catch (Exception $e) {
+            DB::rollback();
+            Flash::error('Ocorreu um erro ao salvar os dados, tente novamente');
+
+            return back()->withInput();
+        }
+
+        DB::commit();
+        dd('Saved!');
+
     }
 }

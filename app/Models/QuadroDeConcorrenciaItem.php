@@ -42,6 +42,18 @@ class QuadroDeConcorrenciaItem extends Model
 
     ];
 
+    public function ordemDeCompraItens()
+    {
+        return $this->belongsToMany(
+            OrdemDeCompraItem::class,
+            'oc_item_qc_item',
+            'qc_item_id',
+            'ordem_de_compra_item_id'
+        )
+        ->withPivot(['id'])
+        ->withTimestamps();
+    }
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
@@ -56,5 +68,29 @@ class QuadroDeConcorrenciaItem extends Model
     public function quadroDeConcorrencia()
     {
         return $this->belongsTo(\App\Models\QuadroDeConcorrencia::class);
+    }
+
+    public function getObsAttribute()
+    {
+        return $this->ordemDeCompraItens->reduce(function($carry, $item) {
+            $carry = "Obra: " . $item->obra->nome;
+            $carry .= "\nQuantidade: " . $item->qtd;
+            $carry .= "\nObs: " . $item->obs;
+            $carry .= "\n---\n";
+
+            return $carry;
+        }, "");
+    }
+
+    public function getTemsAttribute()
+    {
+        return $this->ordemDeCompraItens->reduce(function($carry, $item) {
+            $carry = "Obra: " . $item->obra->nome;
+            $carry .= "\nQuantidade: " . $item->qtd;
+            $carry .= "\nTems: " . $item->tems;
+            $carry .= "\n---\n";
+
+            return $carry;
+        }, "");
     }
 }

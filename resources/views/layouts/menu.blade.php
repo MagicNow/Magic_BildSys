@@ -97,3 +97,11 @@
 <li class="{{ Request::is('quadro-de-concorrencias*') ? 'active' : '' }}">
     <a href="{!! route('quadro-de-concorrencias.index') !!}"><i class="fa fa-edit"></i><span>QuadroDeConcorrencias</span></a>
 </li>
+<li class="{{ Request::is('qcFornecedorEqualizacaoChecks*') ? 'active' : '' }}">
+    <a href="{!! route('qcFornecedorEqualizacaoChecks.index') !!}"><i class="fa fa-edit"></i><span>QcFornecedorEqualizacaoChecks</span></a>
+</li>
+
+<li class="{{ Request::is('qcItemQcFornecedors*') ? 'active' : '' }}">
+    <a href="{!! route('qcItemQcFornecedors.index') !!}"><i class="fa fa-edit"></i><span>QcItemQcFornecedors</span></a>
+</li>
+

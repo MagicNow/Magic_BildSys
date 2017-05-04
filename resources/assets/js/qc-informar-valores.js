@@ -21,5 +21,7 @@ $(function() {
       );
 
     });
+
+    price.dispatchEvent(new Event('input'));
   });
 });
