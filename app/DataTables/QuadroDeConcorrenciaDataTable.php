@@ -20,10 +20,10 @@ class QuadroDeConcorrenciaDataTable extends DataTable
             ->editColumn('created_at', function($obj){
                 return $obj->created_at ? with(new\Carbon\Carbon($obj->created_at))->format('d/m/Y H:i') : '';
             })
-            ->filterColumn('created_at', function ($query, $keyword) {
+            ->filterColumn('quadro_de_concorrencias.created_at', function ($query, $keyword) {
                 $query->whereRaw("DATE_FORMAT(quadro_de_concorrencias.created_at,'%d/%m/%Y') like ?", ["%$keyword%"]);
             })
-            ->editColumn('updated_at', function($obj){
+            ->editColumn('quadro_de_concorrencias.updated_at', function($obj){
                 return $obj->updated_at ? with(new\Carbon\Carbon($obj->updated_at))->format('d/m/Y H:i') : '';
             })
             ->filterColumn('updated_at', function ($query, $keyword) {
@@ -116,8 +116,8 @@ class QuadroDeConcorrenciaDataTable extends DataTable
             'usuario' => ['name' => 'users.name', 'data' => 'usuario'],
             'situação' => ['name' => 'qc_status.nome', 'data' => 'situacao'],
             'rodada_atual' => ['name' => 'rodada_atual', 'data' => 'rodada_atual'],
-            'criadoEm' => ['name' => 'created_at', 'data' => 'created_at', 'width'=>'12%'],
-            'atualizadoEm' => ['name' => 'updated_at', 'data' => 'updated_at', 'width'=>'12%'],
+            'criadoEm' => ['name' => 'quadro_de_concorrencias.created_at', 'data' => 'created_at', 'width'=>'12%'],
+            'atualizadoEm' => ['name' => 'quadro_de_concorrencias.updated_at', 'data' => 'updated_at', 'width'=>'12%'],
             'rodada' => ['name' => 'rodada_atual', 'data' => 'rodada_atual', 'width'=>'6%'],
             'action' => ['title'          => '#', 'printable'      => false, 'width'=>'10%'],
         ];

@@ -6,6 +6,8 @@ use App\DataTables\QuadroDeConcorrenciaDataTable;
 use App\Http\Requests;
 use App\Http\Requests\CreateQuadroDeConcorrenciaRequest;
 use App\Http\Requests\UpdateQuadroDeConcorrenciaRequest;
+use App\Models\Fornecedores;
+use App\Models\TipoEqualizacaoTecnica;
 use App\Repositories\QuadroDeConcorrenciaRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
@@ -48,9 +50,27 @@ class QuadroDeConcorrenciaController extends AppBaseController
         )->validate();
 
         # Cria QC pra ficar em aberto com os itens passados
-        $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->create(['itens'=>$request->ordem_de_compra_itens, 'user_id'=>Auth::id()]);
+        $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->create([
+                'itens'=>$request->ordem_de_compra_itens,
+                'user_id'=>Auth::id()
+        ]);
+
+        # Relacionados
+        $fornecedoresRelacionados = [];
+
+        $qcFornecedores_ids = [];
+
+        $tiposEqualizacaoTecnicasRelacionadas = [];
+
+        $tiposEqualizacaoTecnicasRelacionadas_ids = [];
         
-        return view('quadro_de_concorrencias.edit',compact('quadroDeConcorrencia'));
+        
+        return view('quadro_de_concorrencias.edit',compact('quadroDeConcorrencia',
+            'fornecedoresRelacionados',
+            'qcFornecedores_ids',
+            'tiposEqualizacaoTecnicasRelacionadas',
+            'tiposEqualizacaoTecnicasRelacionadas_ids')
+        );
     }
 
     /**
@@ -108,7 +128,43 @@ class QuadroDeConcorrenciaController extends AppBaseController
             return redirect(route('quadroDeConcorrencias.index'));
         }
 
-        return view('quadro_de_concorrencias.edit')->with('quadroDeConcorrencia', $quadroDeConcorrencia);
+        # Relacionados
+        $fornecedoresRelacionados = [];
+
+        $qcFornecedores_ids = $quadroDeConcorrencia->qcFornecedores()
+            ->where('qc_fornecedor.rodada',$quadroDeConcorrencia->rodada_atual)
+            ->select('qc_fornecedor.fornecedor_id')
+            ->pluck('qc_fornecedor.fornecedor_id', 'qc_fornecedor.fornecedor_id')
+            ->toArray();
+
+
+        if(count($qcFornecedores_ids)){
+            $fornecedoresRelacionados = Fornecedores::whereIn('id',$qcFornecedores_ids)
+                ->pluck('nome','id')
+                ->toArray();
+        }
+
+        $tiposEqualizacaoTecnicasRelacionadas = [];
+
+        $tiposEqualizacaoTecnicasRelacionadas_ids = $quadroDeConcorrencia->tiposEqualizacaoTecnicas()
+            ->select('tipo_equalizacao_tecnica_id')
+            ->pluck('tipo_equalizacao_tecnica_id', 'tipo_equalizacao_tecnica_id')
+            ->toArray();
+
+
+        if(count($tiposEqualizacaoTecnicasRelacionadas_ids)){
+            $tiposEqualizacaoTecnicasRelacionadas = TipoEqualizacaoTecnica::whereIn(
+                'id',
+                $tiposEqualizacaoTecnicasRelacionadas_ids)
+                ->pluck('nome','id')
+                ->toArray();
+        }
+
+        return view('quadro_de_concorrencias.edit',compact('quadroDeConcorrencia',
+            'fornecedoresRelacionados',
+            'qcFornecedores_ids',
+            'tiposEqualizacaoTecnicasRelacionadas',
+            'tiposEqualizacaoTecnicasRelacionadas_ids'));
     }
 
     /**
