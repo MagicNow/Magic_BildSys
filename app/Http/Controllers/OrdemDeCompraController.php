@@ -86,7 +86,7 @@ class OrdemDeCompraController extends AppBaseController
 
         Flash::success('Ordem De Compra '.trans('common.saved').' '.trans('common.successfully').'.');
 
-        return redirect(route('ordemDeCompras.index'));
+        return redirect('/ordens-de-compra');
     }
 
     /**
@@ -103,7 +103,7 @@ class OrdemDeCompraController extends AppBaseController
         if (empty($ordemDeCompra)) {
             Flash::error('Ordem De Compra '.trans('common.not-found'));
 
-            return redirect(route('ordemDeCompras.index'));
+            return redirect('/ordens-de-compra');
         }
 
         return view('ordem_de_compras.show')->with('ordemDeCompra', $ordemDeCompra);
@@ -123,7 +123,7 @@ class OrdemDeCompraController extends AppBaseController
         if (empty($ordemDeCompra)) {
             Flash::error('Ordem De Compra '.trans('common.not-found'));
 
-            return redirect(route('ordemDeCompras.index'));
+            return redirect('/ordens-de-compra');
         }
 
         return view('ordem_de_compras.edit')->with('ordemDeCompra', $ordemDeCompra);
@@ -144,14 +144,14 @@ class OrdemDeCompraController extends AppBaseController
         if (empty($ordemDeCompra)) {
             Flash::error('Ordem De Compra '.trans('common.not-found'));
 
-            return redirect(route('ordemDeCompras.index'));
+            return redirect('/ordens-de-compra');
         }
 
         $ordemDeCompra = $this->ordemDeCompraRepository->update($request->all(), $id);
 
         Flash::success('Ordem De Compra '.trans('common.updated').' '.trans('common.successfully').'.');
 
-        return redirect(route('ordemDeCompras.index'));
+        return redirect('/ordens-de-compra');
     }
 
     /**
@@ -168,14 +168,14 @@ class OrdemDeCompraController extends AppBaseController
         if (empty($ordemDeCompra)) {
             Flash::error('Ordem De Compra '.trans('common.not-found'));
 
-            return redirect(route('ordemDeCompras.index'));
+            return redirect('/ordens-de-compra');
         }
 
         $this->ordemDeCompraRepository->delete($id);
 
         Flash::success('Ordem De Compra '.trans('common.deleted').' '.trans('common.successfully').'.');
 
-        return redirect(route('ordemDeCompras.index'));
+        return redirect('/ordens-de-compra');
     }
 
     public function compras()
@@ -301,10 +301,9 @@ class OrdemDeCompraController extends AppBaseController
                     $join->on('orcamentos.ativo','=', DB::raw('1'));
                 })
                 ->with('insumo','unidade','anexos')
-                ->paginate(2);
+                ->paginate(10);
         }
-
-
+        
         $motivos_reprovacao = WorkflowReprovacaoMotivo::pluck('nome','id')->toArray();
 
         $oc_status = $ordemDeCompra->ocStatus->nome;
