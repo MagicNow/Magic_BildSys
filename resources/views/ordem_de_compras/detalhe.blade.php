@@ -265,7 +265,7 @@
                             <td class="text-center">{{ $item->unidade_sigla }}</td>
                             <td class="text-center"><i class="fa fa-circle {{ (($item->qtd_realizada) > $item->qtd_inicial) ? 'text-danger': 'text-success'  }}" aria-hidden="true"></i> </td>
                             <td class="text-center"></td>
-                            <td class="text-center"></td>
+                            <td class="text-center">{{ $item->total ? 'Total' : 'Parcial' }}</td>
                             <td class="text-center">
                                 <button type="button" class="btn btn-flat btn-link" title="Expandir"
                                         style="font-size: 18px; margin-top: -7px" onclick="showHideInfoExtra({{ $item->id }})">
