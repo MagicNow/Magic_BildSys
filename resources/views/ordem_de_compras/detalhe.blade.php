@@ -264,7 +264,7 @@
                             <td class="text-center">{{ $item->qtd }}</td>
                             <td class="text-center">{{ $item->unidade_sigla }}</td>
                             <td class="text-center"><i class="fa fa-circle {{ (($item->qtd_realizada) > $item->qtd_inicial) ? 'text-danger': 'text-success'  }}" aria-hidden="true"></i> </td>
-                            <td class="text-center"></td>
+                            <td class="text-center"><i class="fa fa-circle {{ (($item->qtd_realizada_servico) > $item->qtd_inicial_servico) ? 'text-danger': 'text-success'  }}" aria-hidden="true"></i> </td>
                             <td class="text-center">{{ $item->total ? 'Total' : 'Parcial' }}</td>
                             <td class="text-center">
                                 <button type="button" class="btn btn-flat btn-link" title="Expandir"

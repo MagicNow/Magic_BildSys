@@ -303,7 +303,7 @@ class OrdemDeCompraController extends AppBaseController
                 ->with('insumo','unidade','anexos')
                 ->paginate(10);
         }
-        
+
         $motivos_reprovacao = WorkflowReprovacaoMotivo::pluck('nome','id')->toArray();
 
         $oc_status = $ordemDeCompra->ocStatus->nome;
@@ -1139,6 +1139,42 @@ class OrdemDeCompraController extends AppBaseController
                                 AND OCI2.servico_id = ordem_de_compra_itens.servico_id 
                                 AND OCI2.deleted_at IS NULL
                              ) as valor_realizado"),
+                DB::raw("(SELECT SUM( qtd ) 
+                                FROM ordem_de_compra_itens OCI2
+                                JOIN ordem_de_compras ON ordem_de_compras.id = OCI2.ordem_de_compra_id
+                                WHERE OCI2.insumo_id = ordem_de_compra_itens.insumo_id
+                                AND (
+                                    ordem_de_compras.oc_status_id = 2
+                                    OR ordem_de_compras.oc_status_id = 3
+                                    OR ordem_de_compras.oc_status_id = 5
+                                )
+                                AND OCI2.insumo_id = ordem_de_compra_itens.insumo_id
+                                AND OCI2.grupo_id = ordem_de_compra_itens.grupo_id 
+                                AND OCI2.subgrupo1_id = ordem_de_compra_itens.subgrupo1_id 
+                                AND OCI2.subgrupo2_id = ordem_de_compra_itens.subgrupo2_id 
+                                AND OCI2.subgrupo3_id = ordem_de_compra_itens.subgrupo3_id 
+                                AND OCI2.servico_id = ordem_de_compra_itens.servico_id                                
+                                AND OCI2.deleted_at IS NULL
+                                GROUP BY OCI2.servico_id
+                             ) as qtd_realizada_servico"),
+                    DB::raw("(SELECT SUM( valor_total ) 
+                                FROM ordem_de_compra_itens OCI2
+                                JOIN ordem_de_compras ON ordem_de_compras.id = OCI2.ordem_de_compra_id
+                                WHERE OCI2.insumo_id = ordem_de_compra_itens.insumo_id
+                                AND (
+                                    ordem_de_compras.oc_status_id = 2
+                                    OR ordem_de_compras.oc_status_id = 3
+                                    OR ordem_de_compras.oc_status_id = 5
+                                )
+                                AND OCI2.insumo_id = ordem_de_compra_itens.insumo_id
+                                AND OCI2.grupo_id = ordem_de_compra_itens.grupo_id 
+                                AND OCI2.subgrupo1_id = ordem_de_compra_itens.subgrupo1_id 
+                                AND OCI2.subgrupo2_id = ordem_de_compra_itens.subgrupo2_id 
+                                AND OCI2.subgrupo3_id = ordem_de_compra_itens.subgrupo3_id 
+                                AND OCI2.servico_id = ordem_de_compra_itens.servico_id 
+                                AND OCI2.deleted_at IS NULL
+                                GROUP BY OCI2.servico_id
+                             ) as valor_realizado_servico"),
                     'orcamentos.qtd_total as qtd_inicial',
                     'orcamentos.preco_total as preco_inicial',
                 ])
