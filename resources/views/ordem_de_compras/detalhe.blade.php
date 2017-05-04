@@ -348,8 +348,8 @@
                                     <th class="text-center">Valor O. Inicial</th>
                                     <th class="text-center">Qtd. Realizada</th>
                                     <th class="text-center">Valor Realizado</th>
-                                    <th class="text-center">Qtd. Restante</th>
-                                    <th class="text-center">Valor Restante</th>
+                                    <th class="text-center">Qtd. à Gastar</th>
+                                    <th class="text-center">Valor à Gastar</th>
                                 </tr>
                             </thead>
                             <tbody>
