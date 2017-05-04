@@ -80,7 +80,7 @@ class LembreteDataTable extends DataTable
                 'initComplete' => 'function () {
                     max = this.api().columns().count();
                     this.api().columns().every(function (col) {
-                        if((col)<max){
+                        if((col+3)<max){
                             var column = this;
                             var input = document.createElement("input");
                             $(input).attr(\'placeholder\',\'Filtrar...\');
