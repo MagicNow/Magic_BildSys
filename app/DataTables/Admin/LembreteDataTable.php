@@ -17,6 +17,15 @@ class LembreteDataTable extends DataTable
     {
         return $this->datatables
             ->eloquent($this->query())
+            ->editColumn('prazo_minimo_mobilizacao', function($obj){
+                return "<input value='$obj->prazo_minimo_mobilizacao' class='form-control' type='number'>";
+            })
+            ->editColumn('prazo_minimo_negociacao', function($obj){
+                return "<input value='$obj->prazo_minimo_negociacao' class='form-control' type='number'>";
+            })
+            ->editColumn('prazo_minimo_start', function($obj){
+                return "<input value='$obj->prazo_minimo_start' class='form-control' type='number'>";
+            })
             ->make(true);
     }
 
@@ -53,19 +62,6 @@ class LembreteDataTable extends DataTable
                 ),
             ])
             ->leftJoin('lembretes', 'lembretes.insumo_grupo_id', '=', 'insumo_grupos.id');
-
-//        $lembretes = Lembrete::query()->select([
-//            'lembretes.id',
-//            'lembretes.nome',
-//            'lembretes.dias_prazo_minimo',
-//            'lembrete_tipos.nome as tipo',
-//            'insumo_grupos.nome as grupo',
-//            'users.name as user',
-//        ])
-//            ->join('lembrete_tipos','lembrete_tipos.id','lembretes.lembrete_tipo_id')
-//            ->join('insumo_grupos','insumo_grupos.id','lembretes.insumo_grupo_id')
-//            ->join('users','users.id','lembretes.user_id')
-//        ;
 
         return $this->applyScopes($insumos_grupos);
     }
