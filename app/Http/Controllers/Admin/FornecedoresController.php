@@ -6,6 +6,7 @@ use App\DataTables\Admin\FornecedoresDataTable;
 use App\Http\Requests\Admin;
 use App\Http\Requests\Admin\CreateFornecedoresRequest;
 use App\Http\Requests\Admin\UpdateFornecedoresRequest;
+use App\Models\Fornecedor;
 use App\Repositories\Admin\FornecedoresRepository;
 use App\Repositories\Admin\ValidationRepository;
 use App\Repositories\ImportacaoRepository;
@@ -180,5 +181,15 @@ class FornecedoresController extends AppBaseController
             }
         }
         return response()->json(['success'=>true]);
+    }
+
+    public function buscaTemporarios(Request $request){
+        $fornecedores = Fornecedor::select([
+            'id',
+            "nome"
+        ])
+            ->whereNull('codigo_mega')
+            ->where('nome','like', '%'.$request->q.'%')->paginate();
+        return $fornecedores;
     }
 }

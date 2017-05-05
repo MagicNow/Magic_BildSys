@@ -28,12 +28,20 @@
                     ]) !!}
                 </div>
                 <div class="col-md-12">
-                    <button type="button" title="Cadastrar Fornecedor Temporariamente" style="margin-top: 10px"
+                    <button type="button" title="Cadastrar Fornecedor Temporariamente" style="margin-top: 5px; margin-bottom: 5px;"
                             id="cadastrarFornecedorTemporariamente"
-                            onclick="cadastraFornecedor()" class="btn btn-block btn-lg btn-flat btn-info">
+                            onclick="cadastraFornecedor()" class="btn btn-block btn-sm btn-flat btn-info">
                         <i class="fa fa-user-plus" aria-hidden="true"></i>
                         Cadastrar Temporariamente
                     </button>
+                </div>
+                <div class="col-md-12">
+                    {!! Form::select('fornecedores_temp', ['' => 'Fornecedores Temporários...'],
+                    null,
+                    [
+                        'class' => 'form-control',
+                        'id'=>'fornecedor_temp'
+                    ]) !!}
                 </div>
             </div>
         </div>
@@ -171,7 +179,7 @@
                 <div class="row">
                     <div class="form-group col-sm-9">
                         <label for="itens_nome">Nome:</label>
-                        <input class="form-control" type="text" id="item_eqt_nome" required="required"/>
+                        <input class="form-control" type="text" id="item_eqt_nome"/>
                     </div>
                     <div class="form-group col-sm-3">
                         <label for="item_eqt_obrigatorio">Obrigatório: </label>
@@ -424,6 +432,25 @@
             return obj.text;
         }
 
+        function formatResultNomeId(obj) {
+            if (obj.loading) return obj.text;
+
+            var markup = "<div class='select2-result-obj clearfix'>" +
+                    "   <div class='select2-result-obj__meta'>" +
+                    "       <div class='select2-result-obj__title'>" + obj.nome + "</div>" +
+                    "   </div>" +
+                    "</div>";
+
+            return markup;
+        }
+
+        function formatResultSelectionNomeId(obj) {
+            if (obj.nome) {
+                return obj.nome;
+            }
+            return obj.text;
+        }
+
         $(function () {
             $('#fornecedor').select2({
                 allowClear: true,
@@ -467,6 +494,50 @@
             });
             $('#fornecedor').on('select2:select', function (e) {
                 addFornecedor()
+            });
+
+            $('#fornecedor_temp').select2({
+                allowClear: true,
+                placeholder: "Fornecedores Temporários",
+                language: "pt-BR",
+                ajax: {
+                    url: "{{ route('admin.fornecedores.busca_temporarios') }}",
+                    dataType: 'json',
+                    delay: 250,
+
+                    data: function (params) {
+                        return {
+                            q: params.term, // search term
+                            page: params.page
+                        };
+                    },
+
+                    processResults: function (result, params) {
+                        // parse the results into the format expected by Select2
+                        // since we are using custom formatting functions we do not need to
+                        // alter the remote JSON data, except to indicate that infinite
+                        // scrolling can be used
+                        params.page = params.page || 1;
+
+                        return {
+                            results: result.data,
+                            pagination: {
+                                more: (params.page * result.per_page) < result.total
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                escapeMarkup: function (markup) {
+                    return markup;
+                }, // let our custom formatter work
+                minimumInputLength: 1,
+                templateResult: formatResultNomeId, // omitted for brevity, see the source of this page
+                templateSelection: formatResultSelectionNomeId // omitted for brevity, see the source of this page
+
+            });
+            $('#fornecedor_temp').on('select2:select', function (e) {
+                addFornecedorTemp();
             });
 
             $('.tiposEqT input').on('ifChecked', function (event) {
@@ -521,9 +592,47 @@
             }
         }
 
+        function addFornecedorTemp() {
+            qtdFornecedores++;
+            if($('#fornecedor_temp').val()) {
+                var nomeFornecedor = $('#fornecedor_temp').select2('data');
+
+                var qcFornecedorHTML = '<li class="list-group-item" id="qcFornecedor_id' + qtdFornecedores + '">' +
+                        '<input type="hidden" name="qcFornecedores[][fornecedor_id]" value="' + $('#fornecedor_temp').val() + '">' +
+                        nomeFornecedor[0].nome +
+                        '<button type="button" title="Remover" class="btn btn-flat btn-danger btn-xs pull-right" ' +
+                        ' onclick="removerFornecedor(' + qtdFornecedores + ',0)">' +
+                        '<i class="fa fa-trash" aria-hidden="true"></i>' +
+                        '</button>' +
+                        '</li>';
+
+                $('#fornecedor_temp').val(null).trigger("change");
+                $('#fornecedoresSelecionados').append(qcFornecedorHTML);
+                //                $('#fornecedor_temp').select2('open');
+            }
+        }
+
         function removerFornecedor(qual, qcFornecedorId) {
             if (qcFornecedorId) {
                 // Remover no banco
+                swal({
+                    title:'Deseja remover este fornecedor?',
+                    text: 'Após a remoção não será possível mais recuperar o registro.',
+                    type:'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Sim, tenho certeza!",
+                    cancelButtonText: "Não",
+                    closeOnConfirm: false
+                }, function(){
+                    $.ajax("{{ url('quadro-de-concorrencia/'.$quadroDeConcorrencia->id.'/remover-fornecedor') }}/"+qual)
+                            .success(function(retorno){
+                                $('#qcFornecedor_id' + qual).remove();
+                                swal('Removido','','success');
+                            }).fail(function (jqXHR, textStatus, errorThrown) {
+                        swal('Erro',jqXHR.responseText, 'error');
+                    });
+                });
             } else {
                 // Apenas remove o HTML
                 $('#qcFornecedor_id' + qual).remove();

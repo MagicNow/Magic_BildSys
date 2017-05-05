@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateQuadroDeConcorrenciaRequest;
 use App\Http\Requests\CreateEqualizacaoTecnicaExtraRequest;
 use App\Http\Requests\UpdateEqualizacaoTecnicaExtraRequest;
 use App\Models\QcEqualizacaoTecnicaExtra;
+use App\Models\QcFornecedor;
 use App\Repositories\QuadroDeConcorrenciaRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
@@ -230,12 +231,33 @@ class QuadroDeConcorrenciaController extends AppBaseController
         if (!$qcEqualizacaoTecnicaExtra) {
             return response()->json(['error' => 'Item não encontrado ' . trans('common.not-found')], 404);
         }
-        
+
         $qcEqualizacaoTecnicaExtra->nome = $request->nome;
         $qcEqualizacaoTecnicaExtra->descricao = $request->descricao;
         $qcEqualizacaoTecnicaExtra->obrigatorio = $request->obrigatorio;
         $qcEqualizacaoTecnicaExtra->save();
 
         return $qcEqualizacaoTecnicaExtra;
+    }
+
+    public function removerFornecedor($id, $fornecedorId)
+    {
+        $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->findWithoutFail($id);
+
+        if (empty($quadroDeConcorrencia)) {
+            if (!$request->ajax()) {
+                Flash::error('Quadro De Concorrencia ' . trans('common.not-found'));
+
+                return redirect(route('quadroDeConcorrencias.edit', $id));
+            }
+            return response()->json(['error' => 'Quadro De Concorrencia ' . trans('common.not-found')], 404);
+        }
+        $qcFornecedor = QcFornecedor::find($fornecedorId);
+
+        if (!$qcFornecedor) {
+            return response()->json(['error' => 'Item não encontrado ' . trans('common.not-found')], 404);
+        }
+
+        return response()->json(['success' => $qcFornecedor->delete()]);
     }
 }
