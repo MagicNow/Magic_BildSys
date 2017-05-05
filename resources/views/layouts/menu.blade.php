@@ -42,7 +42,7 @@
         <li class="{{ Request::is('admin/planejamentos') ? 'active' : '' }}"><a href="{!! route('admin.planejamentos.index') !!}"><i class="fa fa-calendar-o"></i><span>Cronograma de obra</span></a></li>
         <li class="{{ Request::is('admin/planejamento') ? 'active' : '' }}"><a href="{!! route('admin.planejamentos.indexImport') !!}"><i class="glyphicon glyphicon-cloud-upload"></i><span>Importação</span></a></li>
         <li class="{{ Request::is('admin/planejamentos/lembretes*') ? 'active' : '' }}"><a href="{!! route('admin.lembretes.index') !!}"><i class="fa fa-exclamation-circle"></i><span>Lembretes</span></a></li>
-
+        <li class="{{ Request::is('admin/planejamentos/planejamentoOrcamentos*') ? 'active' : '' }}"><a href="{!! route('admin.planejamentoOrcamentos.index') !!}"><i class="fa fa-exclamation-circle"></i><span>Planejamentos/Orcamentos</span></a></li>
         {{--<li class="{{ Request::is('admin/planejamentos/tipo-lembretes*') ? 'active' : '' }}">
             <a href="{!! route('admin.lembreteTipos.index') !!}"><i class="fa fa-ellipsis-h"></i><span>Tipos de Lembretes</span></a>
         </li>--}}
@@ -93,8 +93,4 @@
 {{--<li class="{{ Request::is('fornecedores*') ? 'active' : '' }}">--}}
 {{--<a href="{!! route('admin.fornecedores.index') !!}"><i class="fa fa-edit"></i><span>Fornecedores</span></a>--}}
 {{--</li>--}}
-
-<li class="{{ Request::is('planejamentoOrcamentos*') ? 'active' : '' }}">
-    <a href="{!! route('admin.planejamentoOrcamentos.index') !!}"><i class="fa fa-edit"></i><span>PlanejamentoOrcamentos</span></a>
-</li>
 

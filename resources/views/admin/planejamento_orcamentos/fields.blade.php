@@ -57,30 +57,9 @@
                         {!! Form::select('planejamento_id', [''=>'-'], null, ['class' => 'form-control', 'id'=>'planejamento_id', 'required'=>'required']) !!}
                     </div>
 
-                        <div id="carrinho" class="col-md-12">
-                            {{--<h3>Insumos do orçamento</h3>--}}
-                            {{--<ul>--}}
-                                {{--@foreach($itens as $item)--}}
-                                    {{--<li>--}}
-                                        {{--<div class="row">--}}
-                                            {{--<div class="col-md-12">--}}
-                                                {{--<div class="col-md-1">--}}
-                                                    {{--<input type="checkbox" id="insumo_{{$item->grupo_id}}" name="grupo_id" value="{{$item->grupo_id}}">--}}
-                                                {{--</div>--}}
-                                                {{--<div class="col-md-11">--}}
-                                                    {{--<button type="button" class="btn btn-link btn-block text-left" onclick="listInsumosRelacionados({{$item->grupo_id}}, 'subgrupo1_id', 'grupo_id')">{{$item->codigo .' - '. $item->nome}} <i class="fa fa-plus-square pull-right" aria-hidden="true"></i></button>--}}
-                                                    {{--<ul id="obj_{{$item->grupo_id}}"></ul>--}}
-                                                {{--</div>--}}
-                                            {{--</div>--}}
+                    <div id="carrinho" class="col-md-12"></div>
 
-                                        {{--</div>--}}
-                                    {{--</li>--}}
-                                {{--@endforeach--}}
-                            {{--</ul>--}}
-                        </div>
-
-                    <div class="col-md-4 col-md-offset-4">
-                        <button type="submit" class="btn btn-primary btn-lg">Adicionar relacionamentos</button>
+                    <div id="submit" class="col-md-4 col-md-offset-4">
                     </div>
                 </div>
             </div>
@@ -124,18 +103,25 @@
                                 '<li>' +
                                 '<div class="row">' +
                                 '<div class="col-md-12">' +
-                                '<div class="col-md-1">' +
                                 '<input type="checkbox" id="insumo_' + retorno.grupo_id + '" name="grupo_id" value="' + retorno.grupo_id + '">' +
-                                '</div>' +
-                                '<div class="col-md-11">' +
-                                '<button type="button" class="btn btn-link btn-block text-left" onclick="listInsumosRelacionados(' + retorno.grupo_id + ','+ retorno.obra_id +',\'subgrupo1_id\', \'grupo_id\')">' + retorno.codigo + ' - ' + retorno.nome + ' <i class="fa fa-plus-square pull-right" aria-hidden="true"></i></button>' +
+                                '<button type="button" class="btn btn-link text-left" ' +
+                                'onclick="listInsumosRelacionados(' + retorno.grupo_id + ','+ retorno.obra_id +',\'subgrupo1_id\', \'grupo_id\')">' + retorno.codigo + ' - ' + retorno.nome +
+                                '</button>' +
+                                '<span>'+ ((retorno.tarefa) ? '- '+ retorno.tarefa : '' ) +'</span>'+
+                                '<button type="button" class="btn btn-link pull-right" ' +
+                                'onclick="listInsumosRelacionados(' + retorno.grupo_id + ','+ retorno.obra_id +',\'subgrupo1_id\', \'grupo_id\')">' +
+                                '<i class="fa fa-plus-square pull-right" aria-hidden="true"></i>' +
+                                '</button>' +
                                 '<ul id="obj_' + retorno.grupo_id + '"></ul>' +
-                                '</div>' +
+                                '</span>' +
                                 '</div>' +
                                 '</div>' +
                                 '</li>' +
                                 '</ul>';
                         $('#carrinho').html(list);
+
+                        submit = '<button type="submit" class="btn btn-primary btn-lg">Adicionar relacionamentos</button>'
+                        $('#submit').html(submit);
                     }else{
                         list = 'Essa obras não tem orçamentos';
                         $('#carrinho').html(list);
@@ -169,12 +155,14 @@
                     $.each(retorno,function(index, value){
                         if(value.atual!='insumo_id'){
                             list += '<li> <div class="row"><div class="col-md-12">' +
-                                    '<div class="col-md-1">' +
+                                    '<div class="col-md-12">' +
                                     '<input type="checkbox" id="insumo_'+ value.id +'" name="'+value.atual+'[]" value="'+ value.id +'"> ' +
-                                    '</div>' +
-                                    '<div class="col-md-11">' +
-                                    '<button type="button" class="btn btn-link btn-block text-left" ' +
+                                    '<button type="button" class="btn btn-link text-left" ' +
                                     'onclick="listInsumosRelacionados('+value.id+','+value.obra_id+',\''+ value.proximo+'\',\''+value.atual+'\')">'+value.codigo+' - '+value.nome+
+                                    '</button>'+
+                                    '<span>'+ ((value.tarefa) ? '- ' + value.tarefa : '' ) +'</span>'+
+                                    '<button type="button" class="btn btn-link pull-right" ' +
+                                    'onclick="listInsumosRelacionados('+value.id+','+value.obra_id+',\''+ value.proximo+'\',\''+value.atual+'\')">'+
                                     ' <i class="fa fa-plus-square pull-right" aria-hidden="true"></i>' +
                                     '</button>'+
                                     '</div>' +
@@ -185,6 +173,7 @@
                                     '<div class="row">' +
                                     '<div class="col-md-12">' +
                                     '<input type="checkbox" id="insumo_'+ value.insumo_id +'" name="'+value.atual+'[]" value="'+ value.insumo_id +'"> ' +value.codigo+' - '+value.nome+
+                                    '<div>'+ ((value.tarefa) ? '<strong>TAREFA:</strong> ' + value.tarefa : '' ) +'</div>' +
                                     '</div>' +
                                     '</div>' +
                                     '</li>';
