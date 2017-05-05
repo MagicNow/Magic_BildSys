@@ -91,6 +91,6 @@
 </li>
 
 <li class="{{ Request::is('fornecedores*') ? 'active' : '' }}">
-<a href="{!! route('admin.fornecedores.index') !!}"><i class="fa fa-edit"></i><span>Fornecedores</span></a>
+<a href="{!! route('admin.fornecedores.index') !!}"><i class="fa fa-user-plus"></i><span>Fornecedores</span></a>
 </li>
 
