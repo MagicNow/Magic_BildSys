@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\DataTables\QuadroDeConcorrenciaDataTable;
 use App\Http\Requests;
 use App\Http\Requests\UpdateQuadroDeConcorrenciaRequest;
+use App\Http\Requests\CreateEqualizacaoTecnicaExtraRequest;
+use App\Http\Requests\UpdateEqualizacaoTecnicaExtraRequest;
+use App\Models\QcEqualizacaoTecnicaExtra;
 use App\Repositories\QuadroDeConcorrenciaRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
@@ -42,17 +45,17 @@ class QuadroDeConcorrenciaController extends AppBaseController
     {
         # Validação básica
         validator($request->all(),
-            ['ordem_de_compra_itens'=>'required'],
-            ['ordem_de_compra_itens.required'=>'É necessário escolher ao menos um item!']
+            ['ordem_de_compra_itens' => 'required'],
+            ['ordem_de_compra_itens.required' => 'É necessário escolher ao menos um item!']
         )->validate();
 
         # Cria QC pra ficar em aberto com os itens passados
         $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->create([
-                'itens'=>$request->ordem_de_compra_itens,
-                'user_id'=>Auth::id()
+            'itens' => $request->ordem_de_compra_itens,
+            'user_id' => Auth::id()
         ]);
-        
-        return view('quadro_de_concorrencias.edit',compact('quadroDeConcorrencia'));
+
+        return view('quadro_de_concorrencias.edit', compact('quadroDeConcorrencia'));
     }
 
 
@@ -68,7 +71,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
         $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->findWithoutFail($id);
 
         if (empty($quadroDeConcorrencia)) {
-            Flash::error('Quadro De Concorrencia '.trans('common.not-found'));
+            Flash::error('Quadro De Concorrencia ' . trans('common.not-found'));
 
             return redirect(route('quadroDeConcorrencias.index'));
         }
@@ -88,18 +91,18 @@ class QuadroDeConcorrenciaController extends AppBaseController
         $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->findWithoutFail($id);
 
         if (empty($quadroDeConcorrencia)) {
-            Flash::error('Quadro De Concorrencia '.trans('common.not-found'));
+            Flash::error('Quadro De Concorrencia ' . trans('common.not-found'));
 
             return redirect(route('quadroDeConcorrencias.index'));
         }
 
-        return view('quadro_de_concorrencias.edit',compact('quadroDeConcorrencia'));
+        return view('quadro_de_concorrencias.edit', compact('quadroDeConcorrencia'));
     }
 
     /**
      * Update the specified QuadroDeConcorrencia in storage.
      *
-     * @param  int              $id
+     * @param  int $id
      * @param UpdateQuadroDeConcorrenciaRequest $request
      *
      * @return Response
@@ -109,7 +112,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
         $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->findWithoutFail($id);
 
         if (empty($quadroDeConcorrencia)) {
-            Flash::error('Quadro De Concorrencia '.trans('common.not-found'));
+            Flash::error('Quadro De Concorrencia ' . trans('common.not-found'));
 
             return redirect(route('quadroDeConcorrencias.index'));
         }
@@ -117,7 +120,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
         $input['user_update_id'] = Auth::id();
         $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->update($input, $id);
 
-        Flash::success('Quadro De Concorrencia '.trans('common.updated').' '.trans('common.successfully').'.');
+        Flash::success('Quadro De Concorrencia ' . trans('common.updated') . ' ' . trans('common.successfully') . '.');
 
         return redirect(route('quadroDeConcorrencias.index'));
     }
@@ -134,15 +137,105 @@ class QuadroDeConcorrenciaController extends AppBaseController
         $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->findWithoutFail($id);
 
         if (empty($quadroDeConcorrencia)) {
-            Flash::error('Quadro De Concorrencia '.trans('common.not-found'));
+            Flash::error('Quadro De Concorrencia ' . trans('common.not-found'));
 
             return redirect(route('quadroDeConcorrencias.index'));
         }
 
         $this->quadroDeConcorrenciaRepository->delete($id);
 
-        Flash::success('Quadro De Concorrencia '.trans('common.deleted').' '.trans('common.successfully').'.');
+        Flash::success('Quadro De Concorrencia ' . trans('common.deleted') . ' ' . trans('common.successfully') . '.');
 
         return redirect(route('quadroDeConcorrencias.index'));
+    }
+
+    public function adicionaEqt($id, CreateEqualizacaoTecnicaExtraRequest $request)
+    {
+        $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->findWithoutFail($id);
+
+        if (empty($quadroDeConcorrencia)) {
+            if (!$request->ajax()) {
+                Flash::error('Quadro De Concorrencia ' . trans('common.not-found'));
+
+                return redirect(route('quadroDeConcorrencias.edit', $id));
+            }
+            return response()->json(['error' => 'Quadro De Concorrencia ' . trans('common.not-found')], 404);
+        }
+        $qcEqualizacaoTecnicaExtra = QcEqualizacaoTecnicaExtra::create([
+            'quadro_de_concorrencia_id' => $id,
+            'nome' => $request->nome,
+            'descricao' => $request->descricao,
+            'obrigatorio' => $request->obrigatorio
+        ]);
+
+        return $qcEqualizacaoTecnicaExtra;
+    }
+
+    public function removerEqt($id, $eqtId)
+    {
+        $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->findWithoutFail($id);
+
+        if (empty($quadroDeConcorrencia)) {
+            if (!$request->ajax()) {
+                Flash::error('Quadro De Concorrencia ' . trans('common.not-found'));
+
+                return redirect(route('quadroDeConcorrencias.edit', $id));
+            }
+            return response()->json(['error' => 'Quadro De Concorrencia ' . trans('common.not-found')], 404);
+        }
+        $qcEqualizacaoTecnicaExtra = QcEqualizacaoTecnicaExtra::find($eqtId);
+
+        if (!$qcEqualizacaoTecnicaExtra) {
+            return response()->json(['error' => 'Item não encontrado ' . trans('common.not-found')], 404);
+        }
+
+        return response()->json(['success' => $qcEqualizacaoTecnicaExtra->delete()]);
+    }
+
+    public function exibirEqt($id, $eqtId)
+    {
+        $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->findWithoutFail($id);
+
+        if (empty($quadroDeConcorrencia)) {
+            if (!$request->ajax()) {
+                Flash::error('Quadro De Concorrencia ' . trans('common.not-found'));
+
+                return redirect(route('quadroDeConcorrencias.edit', $id));
+            }
+            return response()->json(['error' => 'Quadro De Concorrencia ' . trans('common.not-found')], 404);
+        }
+        $qcEqualizacaoTecnicaExtra = QcEqualizacaoTecnicaExtra::find($eqtId);
+
+        if (!$qcEqualizacaoTecnicaExtra) {
+            return response()->json(['error' => 'Item não encontrado ' . trans('common.not-found')], 404);
+        }
+
+        return $qcEqualizacaoTecnicaExtra;
+    }
+
+    public function editarEqt($id, $eqtId, UpdateEqualizacaoTecnicaExtraRequest $request)
+    {
+        $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->findWithoutFail($id);
+
+        if (empty($quadroDeConcorrencia)) {
+            if (!$request->ajax()) {
+                Flash::error('Quadro De Concorrencia ' . trans('common.not-found'));
+
+                return redirect(route('quadroDeConcorrencias.edit', $id));
+            }
+            return response()->json(['error' => 'Quadro De Concorrencia ' . trans('common.not-found')], 404);
+        }
+
+        $qcEqualizacaoTecnicaExtra = QcEqualizacaoTecnicaExtra::find($eqtId);
+        if (!$qcEqualizacaoTecnicaExtra) {
+            return response()->json(['error' => 'Item não encontrado ' . trans('common.not-found')], 404);
+        }
+        
+        $qcEqualizacaoTecnicaExtra->nome = $request->nome;
+        $qcEqualizacaoTecnicaExtra->descricao = $request->descricao;
+        $qcEqualizacaoTecnicaExtra->obrigatorio = $request->obrigatorio;
+        $qcEqualizacaoTecnicaExtra->save();
+
+        return $qcEqualizacaoTecnicaExtra;
     }
 }

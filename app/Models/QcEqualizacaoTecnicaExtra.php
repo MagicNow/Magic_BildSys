@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 /**
  * Class QcEqualizacaoTecnicaExtra
  * @package App\Models
- * @version May 3, 2017, 3:14 pm BRT
+ * @version May 5, 2017, 11:47 am BRT
  */
 class QcEqualizacaoTecnicaExtra extends Model
 {
@@ -48,7 +48,7 @@ class QcEqualizacaoTecnicaExtra extends Model
      * @var array
      */
     public static $rules = [
-        
+        'nome' => 'required',
     ];
 
     /**

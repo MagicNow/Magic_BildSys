@@ -423,13 +423,16 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     # Quadro de Concorrencia
     $router->group(['middleware' => 'needsPermission:quadroDeConcorrencias.list'], function () use ($router) {
         $router->get('quadro-de-concorrencia', ['as' => 'quadroDeConcorrencias.index', 'uses' => 'QuadroDeConcorrenciaController@index']);
-        $router->post('quadro-de-concorrencia', ['as' => 'quadroDeConcorrencias.store', 'uses' => 'QuadroDeConcorrenciaController@store']);
         $router->post('quadro-de-concorrencia/criar', ['as' => 'quadroDeConcorrencias.create', 'uses' => 'QuadroDeConcorrenciaController@create'])->middleware("needsPermission:quadroDeConcorrencias.create");
         $router->put('quadro-de-concorrencia/{quadroDeConcorrencias}', ['as' => 'quadroDeConcorrencias.update', 'uses' => 'QuadroDeConcorrenciaController@update']);
         $router->patch('quadro-de-concorrencia/{quadroDeConcorrencias}', ['as' => 'quadroDeConcorrencias.update', 'uses' => 'QuadroDeConcorrenciaController@update']);
         $router->delete('quadro-de-concorrencia/{quadroDeConcorrencias}', ['as' => 'quadroDeConcorrencias.destroy', 'uses' => 'QuadroDeConcorrenciaController@destroy']);
         $router->get('quadro-de-concorrencia/{quadroDeConcorrencias}', ['as' => 'quadroDeConcorrencias.show', 'uses' => 'QuadroDeConcorrenciaController@show'])->middleware("needsPermission:quadroDeConcorrencias.view");
         $router->get('quadro-de-concorrencia/{quadroDeConcorrencias}/edit', ['as' => 'quadroDeConcorrencias.edit', 'uses' => 'QuadroDeConcorrenciaController@edit'])->middleware("needsPermission:quadroDeConcorrencias.edit");
+        $router->post('quadro-de-concorrencia/{quadroDeConcorrencias}/adiciona-eqt', ['as' => 'quadroDeConcorrencias.adicionaeqt', 'uses' => 'QuadroDeConcorrenciaController@adicionaEqt'])->middleware("needsPermission:quadroDeConcorrencias.create");
+        $router->get('quadro-de-concorrencia/{quadroDeConcorrencias}/remover-eqt/{eqtId}', ['as' => 'quadroDeConcorrencias.removereqt', 'uses' => 'QuadroDeConcorrenciaController@removerEqt'])->middleware("needsPermission:quadroDeConcorrencias.edit");
+        $router->get('quadro-de-concorrencia/{quadroDeConcorrencias}/exibir-eqt/{eqtId}', ['as' => 'quadroDeConcorrencias.exibireqt', 'uses' => 'QuadroDeConcorrenciaController@exibirEqt'])->middleware("needsPermission:quadroDeConcorrencias.edit");
+        $router->post('quadro-de-concorrencia/{quadroDeConcorrencias}/editar-eqt/{eqtId}', ['as' => 'quadroDeConcorrencias.editareqt', 'uses' => 'QuadroDeConcorrenciaController@editarEqt'])->middleware("needsPermission:quadroDeConcorrencias.edit");
     });
 
     $router->get('tipos-equalizacoes-tecnicas/busca', 'Admin\TipoEqualizacaoTecnicaController@busca');
