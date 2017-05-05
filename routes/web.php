@@ -333,7 +333,8 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     # log do laravel
     $router->get('/console/logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
 
-    Route::get('/getForeignKey', 'CodesController@getForeignKey');
+    $router->get('/getForeignKey', 'CodesController@getForeignKey');
+    $router->get('/busca-cidade', 'CodesController@buscaCidade');
 
     $router->get('compras', 'OrdemDeCompraController@compras')->middleware("needsPermission:compras_lembretes.list");
 

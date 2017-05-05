@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\AppBaseController;
+use App\Models\Cidade;
 use Illuminate\Http\Request;
 use Flash;
 
@@ -28,6 +29,16 @@ class CodesController extends AppBaseController
         }
 
         return response()->json(['success' => $success, 'foreign_key' => $foreign_key]);
+    }
+
+    public function buscaCidade(Request $request){
+        $cidades = Cidade::select([
+            'id',
+            'nome',
+            'uf'
+        ])
+            ->where('nome','like', '%'.$request->q.'%');
+        return $cidades->paginate();
     }
 }
 

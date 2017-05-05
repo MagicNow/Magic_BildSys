@@ -14,6 +14,7 @@ use App\Repositories\CodeRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
 use Response;
+use DB;
 
 class ObraController extends AppBaseController
 {
@@ -44,9 +45,13 @@ class ObraController extends AppBaseController
     public function create()
     {
         $relacionados = [];
-        $cidade = [];
 
-        return view('admin.obras.create', compact('relacionados', 'cidade'));
+        $cidades = Cidade::orderBy("nome_completo")
+            ->select(DB::raw('concat(nome_completo, " - ", uf) as nome_final'), 'id')
+            ->get()
+            ->pluck('nome_final', 'id');
+        
+        return view('admin.obras.create', compact('relacionados', 'cidades'));
     }
 
     /**
@@ -116,9 +121,12 @@ class ObraController extends AppBaseController
 //        dd($obrasUsers_ids);
         $relacionados = User::whereIn('id', $obraUsers)->pluck('name','id')->toArray();
 
-        $cidade = Cidade::pluck('nome','id')->toArray();
+        $cidades = Cidade::orderBy("nome_completo")
+            ->select(DB::raw('concat(nome_completo, " - ", uf) as nome_final'), 'id')
+            ->get()
+            ->pluck('nome_final', 'id');
 
-        return view('admin.obras.edit', compact('obra', 'relacionados', 'obraUsers', 'cidade'));
+        return view('admin.obras.edit', compact('obra', 'relacionados', 'obraUsers', 'cidades'));
     }
 
     /**

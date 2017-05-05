@@ -20,52 +20,52 @@
     {!! Form::file('logo', null, ['class' => 'form-control']) !!}
 </div>
 
-<!-- cidade_id Field -->
+<!-- Cidade Id Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('cidade_id', 'Cidade:') !!}
-    {!! Form::select('cidade_id', [''=>'Selecione um cidade']+$cidade ,(!isset($obra)? null: $obra->cidade_id), ['class' => 'form-control select2']) !!}
+    {!! Form::select('cidade_id', $cidades, null, ['class' => 'form-control']) !!}
 </div>
 
 <!-- area_terreno Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('area_terreno', 'Área do terreno:') !!}
-    {!! Form::text('area_terreno', null, ['class' => 'form-control decimal']) !!}
+    {!! Form::text('area_terreno', null, ['class' => 'form-control money']) !!}
 </div>
 
 <!-- area_privativa Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('area_privativa', 'Área privativa:') !!}
-    {!! Form::text('area_privativa', null, ['class' => 'form-control decimal']) !!}
+    {!! Form::text('area_privativa', null, ['class' => 'form-control money']) !!}
 </div>
 
 <!-- area_construida Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('area_construida', 'Área construída:') !!}
-    {!! Form::text('area_construida', null, ['class' => 'form-control decimal']) !!}
+    {!! Form::text('area_construida', null, ['class' => 'form-control money']) !!}
 </div>
 
 <!-- eficiencia_projeto Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('eficiencia_projeto', 'Eficiencia do projeto:') !!}
-    {!! Form::text('eficiencia_projeto', null, ['class' => 'form-control decimal']) !!}
+    {!! Form::text('eficiencia_projeto', null, ['class' => 'form-control money']) !!}
 </div>
 
 <!-- num_apartamentos Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('num_apartamentos', 'Número de apartamentos:') !!}
-    {!! Form::text('num_apartamentos', null, ['class' => 'form-control decimal']) !!}
+    {!! Form::text('num_apartamentos', null, ['class' => 'form-control money']) !!}
 </div>
 
 <!-- num_torres Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('num_torres', 'Número de torres:') !!}
-    {!! Form::text('num_torres', null, ['class' => 'form-control decimal']) !!}
+    {!! Form::text('num_torres', null, ['class' => 'form-control money']) !!}
 </div>
 
 <!-- num_pavimento_tipo Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('num_pavimento_tipo', 'Número pavimento tipo:') !!}
-    {!! Form::text('num_pavimento_tipo', null, ['class' => 'form-control decimal']) !!}
+    {!! Form::text('num_pavimento_tipo', null, ['class' => 'form-control money']) !!}
 </div>
 
 <!-- data_inicio Field -->
@@ -83,13 +83,13 @@
 <!-- indice_bild_pre Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('indice_bild_pre', 'Índice BILD - Pré:') !!}
-    {!! Form::text('indice_bild_pre', null, ['class' => 'form-control decimal']) !!}
+    {!! Form::text('indice_bild_pre', null, ['class' => 'form-control money']) !!}
 </div>
 
 <!-- indice_bild_oi Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('indice_bild_oi', 'Índice BILD - OI:') !!}
-    {!! Form::text('indice_bild_oi', null, ['class' => 'form-control decimal']) !!}
+    {!! Form::text('indice_bild_oi', null, ['class' => 'form-control money']) !!}
 </div>
 
 <!-- razao_social Field -->
@@ -197,6 +197,26 @@
             return obj.text;
         }
 
+        function formatResultCidade (obj) {
+            if (obj.loading) return obj.text;
+
+            var markup =    "<div class='select2-result-obj clearfix'>" +
+                    "   <div class='select2-result-obj__meta'>" +
+                    "       <div class='select2-result-obj__title'>" + obj.nome +' - ' + obj.uf  +
+                    "</div>"+
+                    "   </div>"+
+                    "</div>";
+
+            return markup;
+        }
+
+        function formatResultSelectionCidade (obj) {
+            if(obj.nome){
+                return obj.nome + ' - '+ obj.uf;
+            }
+            return obj.text;
+        }
+
         $(function(){
             $('#obraUsers').select2({
                 language: "pt-BR",
@@ -232,6 +252,43 @@
                 minimumInputLength: 1,
                 templateResult: formatResult, // omitted for brevity, see the source of this page
                 templateSelection: formatResultSelection // omitted for brevity, see the source of this page
+            });
+
+            $('#cidade_id').select2({
+                language: "pt-BR",
+                theme: "bootstrap",
+                placeholder: 'Digite a cidade...',
+                allowClear: true,
+                ajax: {
+                    url: "/busca-cidade",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            q: params.term, // search term
+                            page: params.page
+                        };
+                    },
+                    processResults: function (result, params) {
+                        // parse the results into the format expected by Select2
+                        // since we are using custom formatting functions we do not need to
+                        // alter the remote JSON data, except to indicate that infinite
+                        // scrolling can be used
+                        params.page = params.page || 1;
+
+                        return {
+                            results: result.data,
+                            pagination: {
+                                more: (params.page * result.per_page) < result.total
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
+                minimumInputLength: 2,
+                templateResult: formatResultCidade, // omitted for brevity, see the source of this page
+                templateSelection: formatResultSelectionCidade // omitted for brevity, see the source of this page
             });
         });
     </script>
