@@ -65,6 +65,12 @@ class ObraController extends AppBaseController
     {
         $input = $request->except('logo');
 
+        foreach ($input as $item => $value){
+            if($value == ''){
+                $input[$item] = null;
+            }
+        }
+
         $obra = $this->obraRepository->create($input);
 
         if($request->logo) {
@@ -73,6 +79,8 @@ class ObraController extends AppBaseController
             $obra->logo = $destinationPath;
             $obra->save();
         }
+
+        $obra->save();
 
         Flash::success('Obra '.trans('common.saved').' '.trans('common.successfully').'.');
 
@@ -154,7 +162,16 @@ class ObraController extends AppBaseController
             $obra->save();
         }
 
-        $obra = $this->obraRepository->update($request->except('logo'), $id);
+        $input = $request->except('logo');
+        foreach ($input as $item => $value){
+            if($value == ''){
+                $input[$item] = null;
+            }
+        }
+
+        $obra = $this->obraRepository->update($input, $id);
+
+        $obra->update();
 
         Flash::success('Obra '.trans('common.updated').' '.trans('common.successfully').'.');
 

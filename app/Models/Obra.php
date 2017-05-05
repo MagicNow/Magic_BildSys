@@ -112,7 +112,9 @@ class Obra extends Model
         $pontos = array(",");
         $value = str_replace('.','',$value);
         $result = str_replace( $pontos, ".", $value);
-
+        if($result == ''){
+            $result = null;
+        }
         $this->attributes['area_terreno'] = $result;
     }
 
@@ -130,7 +132,9 @@ class Obra extends Model
         $pontos = array(",");
         $value = str_replace('.','',$value);
         $result = str_replace( $pontos, ".", $value);
-
+        if($result == ''){
+            $result = null;
+        }
         $this->attributes['area_privativa'] = $result;
     }
 
@@ -148,7 +152,9 @@ class Obra extends Model
         $pontos = array(",");
         $value = str_replace('.','',$value);
         $result = str_replace( $pontos, ".", $value);
-
+        if($result == ''){
+            $result = null;
+        }
         $this->attributes['area_construida'] = $result;
     }
 
@@ -166,7 +172,9 @@ class Obra extends Model
         $pontos = array(",");
         $value = str_replace('.','',$value);
         $result = str_replace( $pontos, ".", $value);
-
+        if($result == ''){
+            $result = null;
+        }
         $this->attributes['eficiencia_projeto'] = $result;
     }
 
@@ -184,7 +192,9 @@ class Obra extends Model
         $pontos = array(",");
         $value = str_replace('.','',$value);
         $result = str_replace( $pontos, ".", $value);
-
+        if($result == ''){
+            $result = null;
+        }
         $this->attributes['num_apartamentos'] = $result;
     }
 
@@ -202,7 +212,9 @@ class Obra extends Model
         $pontos = array(",");
         $value = str_replace('.','',$value);
         $result = str_replace( $pontos, ".", $value);
-
+        if($result == ''){
+            $result = null;
+        }
         $this->attributes['num_torres'] = $result;
     }
 
@@ -220,7 +232,9 @@ class Obra extends Model
         $pontos = array(",");
         $value = str_replace('.','',$value);
         $result = str_replace( $pontos, ".", $value);
-
+        if($result == ''){
+            $result = null;
+        }
         $this->attributes['num_pavimento_tipo'] = $result;
     }
 
@@ -238,7 +252,9 @@ class Obra extends Model
         $pontos = array(",");
         $value = str_replace('.','',$value);
         $result = str_replace( $pontos, ".", $value);
-
+        if($result == ''){
+            $result = null;
+        }
         $this->attributes['indice_bild_pre'] = $result;
     }
 
@@ -256,7 +272,9 @@ class Obra extends Model
         $pontos = array(",");
         $value = str_replace('.','',$value);
         $result = str_replace( $pontos, ".", $value);
-
+        if($result == ''){
+            $result = null;
+        }
         $this->attributes['indice_bild_oi'] = $result;
     }
 
