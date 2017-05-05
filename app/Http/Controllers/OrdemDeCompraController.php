@@ -443,7 +443,8 @@ class OrdemDeCompraController extends AppBaseController
             return view('ordem_de_compras.obras_insumos', compact('planejamento', 'insumoGrupo'));
         }else{
             $obra = Obra::find($request->obra_id);
-            return view('ordem_de_compras.obras_insumos', compact('obra'));
+            $grupos = Grupo::whereNull('grupo_id')->pluck('nome','id')->toArray();
+            return view('ordem_de_compras.obras_insumos', compact('obra', 'grupos'));
         }
     }
 
