@@ -12,10 +12,6 @@ class QcEqualizacaoTecnicaAnexoExtra extends Model
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
-
-    protected $dates = ['deleted_at'];
-
-
     public $fillable = [
         'quadro_de_concorrencia_id',
         'arquivo',
@@ -39,9 +35,7 @@ class QcEqualizacaoTecnicaAnexoExtra extends Model
      *
      * @var array
      */
-    public static $rules = [
-
-    ];
+    public static $rules = [];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

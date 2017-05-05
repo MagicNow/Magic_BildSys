@@ -61,7 +61,7 @@ return [
     /*
      * Forbidden callback
      */
-    'forbidden_callback' => Artesaos\Defender\Handlers\ForbiddenHandler::class,
+    'forbidden_callback' => App\Handlers\ForbiddenHandler::class,
 
     /*
      * Use blade template helpers

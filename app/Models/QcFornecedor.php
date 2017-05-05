@@ -48,24 +48,21 @@ class QcFornecedor extends Model
      *
      * @var array
      */
-    public static $rules = [
-
-    ];
-
-    /**
+    public static $rules = [];
+/**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
     public function desistenciaMotivo()
     {
-        return $this->belongsTo(\App\Models\DesistenciaMotivo::class);
+        return $this->belongsTo(DesistenciaMotivo::class);
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function fornecedore()
+    public function fornecedor()
     {
-        return $this->belongsTo(\App\Models\Fornecedore::class);
+        return $this->belongsTo(Fornecedor::class);
     }
 
     /**
@@ -73,7 +70,7 @@ class QcFornecedor extends Model
      **/
     public function quadroDeConcorrencia()
     {
-        return $this->belongsTo(\App\Models\QuadroDeConcorrencia::class);
+        return $this->belongsTo(QuadroDeConcorrencia::class);
     }
 
     /**
@@ -81,7 +78,7 @@ class QcFornecedor extends Model
      **/
     public function user()
     {
-        return $this->belongsTo(\App\Models\User::class);
+        return $this->belongsTo(User::class);
     }
 
     /**
@@ -89,7 +86,7 @@ class QcFornecedor extends Model
      **/
     public function qcFornecedorEqualizacaoChecks()
     {
-        return $this->hasMany(\App\Models\QcFornecedorEqualizacaoCheck::class);
+        return $this->hasMany(QcFornecedorEqualizacaoCheck::class);
     }
 
     /**
@@ -97,6 +94,6 @@ class QcFornecedor extends Model
      **/
     public function qcItemQcFornecedors()
     {
-        return $this->hasMany(\App\Models\QcItemQcFornecedor::class);
+        return $this->hasMany(QcItemQcFornecedor::class);
     }
 }

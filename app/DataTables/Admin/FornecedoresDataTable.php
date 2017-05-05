@@ -2,7 +2,7 @@
 
 namespace App\DataTables\Admin;
 
-use App\Models\Fornecedores;
+use App\Models\Fornecedor;
 use Form;
 use Yajra\Datatables\Services\DataTable;
 
@@ -27,7 +27,7 @@ class FornecedoresDataTable extends DataTable
      */
     public function query()
     {
-        $fornecedores = Fornecedores::query();
+        $fornecedores = Fornecedor::query();
 
         return $this->applyScopes($fornecedores);
     }
@@ -91,18 +91,15 @@ class FornecedoresDataTable extends DataTable
     private function getColumns()
     {
         return [
-            'codigo_mega' => ['name' => 'codigo_mega', 'data' => 'codigo_mega'],
             'nome' => ['name' => 'nome', 'data' => 'nome'],
             'cnpj' => ['name' => 'cnpj', 'data' => 'cnpj'],
-            'tipo_logradouro' => ['name' => 'tipo_logradouro', 'data' => 'tipo_logradouro'],
-            'logradouro' => ['name' => 'logradouro', 'data' => 'logradouro'],
-            'numero' => ['name' => 'numero', 'data' => 'numero'],
-            'complemento' => ['name' => 'complemento', 'data' => 'complemento'],
-            'cidade_id' => ['name' => 'cidade_id', 'data' => 'cidade_id'],
+//            'logradouro' => ['name' => 'logradouro', 'data' => 'logradouro'],
+//            'numero' => ['name' => 'numero', 'data' => 'numero'],
+//            'complemento' => ['name' => 'complemento', 'data' => 'complemento'],
             'municipio' => ['name' => 'municipio', 'data' => 'municipio'],
             'estado' => ['name' => 'estado', 'data' => 'estado'],
-            'situacao_cnpj' => ['name' => 'situacao_cnpj', 'data' => 'situacao_cnpj'],
-            'inscricao_estadual' => ['name' => 'inscricao_estadual', 'data' => 'inscricao_estadual'],
+//            'situacao_cnpj' => ['name' => 'situacao_cnpj', 'data' => 'situacao_cnpj'],
+//            'inscricao_estadual' => ['name' => 'inscricao_estadual', 'data' => 'inscricao_estadual'],
             'email' => ['name' => 'email', 'data' => 'email'],
             'site' => ['name' => 'site', 'data' => 'site'],
             'telefone' => ['name' => 'telefone', 'data' => 'telefone']

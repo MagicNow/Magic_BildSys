@@ -11,7 +11,7 @@
             <div class="box-body">
                 <div class="row" style="padding-left: 20px">
                     @include('ordem_de_compras.show_fields')
-                    <a href="{!! route('ordemDeCompras.index') !!}" class="btn btn-default">
+                    <a href="{!! route('/ordens-de-compra') !!}" class="btn btn-default">
                        <i class="fa fa-arrow-left"></i>  {{ ucfirst( trans('common.back') )}}
                     </a>
                 </div>

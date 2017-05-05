@@ -26,7 +26,7 @@ class AlterTableFornecedoresAddColumnCep extends Migration
     public function down()
     {
         Schema::table('fornecedores', function (Blueprint $table){
-            $table->dropColumn('cep', 10);
+            $table->dropColumn('cep');
         });
     }
 }

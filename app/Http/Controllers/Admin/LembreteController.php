@@ -213,4 +213,26 @@ class LembreteController extends AppBaseController
         ])
             ->where('nome','like', '%'.$request->q.'%')->paginate();
     }
+
+    public function lembreteDataMinima(Request $request){
+        $lembrete = Lembrete::where('lembrete_tipo_id', $request->lembrete_tipo_id)
+                            ->where('insumo_grupo_id', $request->insumo_grupo_id)
+                            ->first();
+
+        if($lembrete){
+            $lembrete->dias_prazo_minimo = $request->dias_prazo_minimo;
+            $lembrete->nome = $request->nome;
+            $lembrete->user_id = Auth::id();
+            $lembrete->save();
+        }else{
+            $lembrete = new Lembrete([
+                'lembrete_tipo_id' => $request->lembrete_tipo_id,
+                'insumo_grupo_id' => $request->insumo_grupo_id,
+                'dias_prazo_minimo' => $request->dias_prazo_minimo,
+                'nome' => $request->nome,
+                'user_id' => Auth::id()
+            ]);
+            $lembrete->save();
+        }
+    }
 }

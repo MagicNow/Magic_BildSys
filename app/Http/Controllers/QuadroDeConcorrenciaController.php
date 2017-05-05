@@ -20,7 +20,7 @@ use App\Repositories\QcFornecedorEqualizacaoCheckRepository;
 use Illuminate\Support\Facades\DB;
 use App\Repositories\DesistenciaMotivoRepository;
 use Illuminate\Support\Str;
-
+use Illuminate\Support\Facades\Auth;
 
 class QuadroDeConcorrenciaController extends AppBaseController
 {
@@ -48,27 +48,21 @@ class QuadroDeConcorrenciaController extends AppBaseController
      *
      * @return Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        return view('quadro_de_concorrencias.create');
-    }
+        # Validação básica
+        validator($request->all(),
+            ['ordem_de_compra_itens'=>'required'],
+            ['ordem_de_compra_itens.required'=>'É necessário escolher ao menos um item!']
+        )->validate();
 
-    /**
-     * Store a newly created QuadroDeConcorrencia in storage.
-     *
-     * @param CreateQuadroDeConcorrenciaRequest $request
-     *
-     * @return Response
-     */
-    public function store(CreateQuadroDeConcorrenciaRequest $request)
-    {
-        $input = $request->all();
+        # Cria QC pra ficar em aberto com os itens passados
+        $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->create([
+                'itens'=>$request->ordem_de_compra_itens,
+                'user_id'=>Auth::id()
+        ]);
 
-        $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->create($input);
-
-        Flash::success('Quadro De Concorrencia '.trans('common.saved').' '.trans('common.successfully').'.');
-
-        return redirect(route('quadro-de-concorrencias.index'));
+        return view('quadro_de_concorrencias.edit',compact('quadroDeConcorrencia'));
     }
 
     /**
@@ -85,7 +79,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
         if (empty($quadroDeConcorrencia)) {
             Flash::error('Quadro De Concorrencia '.trans('common.not-found'));
 
-            return redirect(route('quadro-de-concorrencias.index'));
+            return redirect(route('quadroDeConcorrencias.index'));
         }
 
         return view('quadro_de_concorrencias.show')->with('quadroDeConcorrencia', $quadroDeConcorrencia);
@@ -105,10 +99,10 @@ class QuadroDeConcorrenciaController extends AppBaseController
         if (empty($quadroDeConcorrencia)) {
             Flash::error('Quadro De Concorrencia '.trans('common.not-found'));
 
-            return redirect(route('quadro-de-concorrencias.index'));
+            return redirect(route('quadroDeConcorrencias.index'));
         }
 
-        return view('quadro_de_concorrencias.edit')->with('quadroDeConcorrencia', $quadroDeConcorrencia);
+        return view('quadro_de_concorrencias.edit',compact('quadroDeConcorrencia'));
     }
 
     /**
@@ -126,14 +120,16 @@ class QuadroDeConcorrenciaController extends AppBaseController
         if (empty($quadroDeConcorrencia)) {
             Flash::error('Quadro De Concorrencia '.trans('common.not-found'));
 
-            return redirect(route('quadro-de-concorrencias.index'));
+            return redirect(route('quadroDeConcorrencias.index'));
         }
 
-        $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->update($request->all(), $id);
+        $input = $request->all();
+        $input['user_update_id'] = Auth::id();
+        $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->update($input, $id);
 
         Flash::success('Quadro De Concorrencia '.trans('common.updated').' '.trans('common.successfully').'.');
 
-        return redirect(route('quadro-de-concorrencias.index'));
+        return redirect(route('quadroDeConcorrencias.index'));
     }
 
     /**
@@ -150,14 +146,14 @@ class QuadroDeConcorrenciaController extends AppBaseController
         if (empty($quadroDeConcorrencia)) {
             Flash::error('Quadro De Concorrencia '.trans('common.not-found'));
 
-            return redirect(route('quadro-de-concorrencias.index'));
+            return redirect(route('quadroDeConcorrencias.index'));
         }
 
         $this->quadroDeConcorrenciaRepository->delete($id);
 
         Flash::success('Quadro De Concorrencia '.trans('common.deleted').' '.trans('common.successfully').'.');
 
-        return redirect(route('quadro-de-concorrencias.index'));
+        return redirect(route('quadroDeConcorrencias.index'));
     }
 
     /**
@@ -184,7 +180,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
         if (empty($quadro)) {
             Flash::error('Quadro De Concorrencia '.trans('common.not-found'));
 
-            return redirect(route('quadro-de-concorrencias.index'));
+            return redirect(route('quadroDeConcorrencias.index'));
         }
 
         $fornecedores = $fornecedorRepository
@@ -198,7 +194,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
                 Este quadro já foi preenchido por todos os fornecedores possíveis'
             );
 
-            return redirect(route('quadro-de-concorrencias.index'));
+            return redirect(route('quadroDeConcorrencias.index'));
         }
 
         $equalizacoes = $quadro->equalizacoes
@@ -300,6 +296,6 @@ class QuadroDeConcorrenciaController extends AppBaseController
         DB::commit();
         Flash::success('Dados salvos com sucesso');
 
-        return redirect()->route('quadro-de-concorrencias.index');
+        return redirect(route('quadroDeConcorrencias.index'));
     }
 }

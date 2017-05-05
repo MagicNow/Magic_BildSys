@@ -176,7 +176,7 @@
                         <span class="col-md-1 col-sm-1 col-xs-1 text-center">
                             <button type="button" class="btn btn-flat btn-link"
                                     style="font-size: 18px; margin-top: -7px" onclick="showHideExtra({{ $item->id }})">
-                                <i class="icone-expandir fa fa-caret-left" aria-hidden="true"></i>
+                                <i class="icone-expandir fa fa-caret-right" aria-hidden="true"></i>
                             </button>
 
                             <i class="fa fa-remove" onclick="removeItem({{ $item->id }})" aria-hidden="true" style="font-size: 18px; margin-top: -7px;color: red;cursor: pointer"  data-toggle="tooltip" data-placement="top" title="Remover item"></i>
@@ -281,12 +281,12 @@
             if(!$('#item'+qual).hasClass('li-aberto')){
                 $('#item'+qual).addClass('li-aberto');
                 $('#item'+qual+' .dados-extras').show();
-                $('#item'+qual+' .icone-expandir').removeClass('fa-caret-left');
+                $('#item'+qual+' .icone-expandir').removeClass('fa-caret-right');
                 $('#item'+qual+' .icone-expandir').addClass('fa-caret-down');
             }else{
                 $('#item'+qual).removeClass('li-aberto');
                 $('#item'+qual+' .dados-extras').hide();
-                $('#item'+qual+' .icone-expandir').addClass('fa-caret-left');
+                $('#item'+qual+' .icone-expandir').addClass('fa-caret-right');
                 $('#item'+qual+' .icone-expandir').removeClass('fa-caret-down');
             }
 

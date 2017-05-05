@@ -64314,6 +64314,15 @@ function stopLoading() {
   }
 }
 
+var mascara = function (val) {
+  return val.replace(/\D/g, '').length === 14 ? '(00) 00000-0000' : '(00) 0000-00009';
+},
+  options = {
+    onKeyPress: function (val, e, field, options) {
+      field.mask(mascara.apply({}, arguments), options);
+    }
+  };
+
 $(function () {
   $(".select2").select2({
     theme: 'bootstrap',
@@ -64335,6 +64344,8 @@ $(function () {
   $('.money').mask('0.000.000.000.000,00', {reverse: true});
   $('.decimal').mask('00,00');
   $('.cnpj').mask('99.999.999/9999-99');
+  $('.cep').mask('00000-000');
+  $('.telefone').mask(mascara, options);
 });
 
 /**
@@ -64974,8 +64985,7 @@ function workflowAprovaReprova(item_id, tipo_item, aprovou, elemento, nome, pai_
 }
 
 $(function() {
-  console.log('location.href', location.href);
-  console.log('location.href.match(/[0-9]+\/informar-valor/gi)', location.href.match(/[0-9]+\/informar-valor/gi));
+  // Somente executar na página de informar valores
   if(location.href.match(/[0-9]+\/informar-valor/gi)) {
     QcInformarValoresForm.init();
   }

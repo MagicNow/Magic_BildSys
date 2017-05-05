@@ -316,6 +316,8 @@
 
     @yield('scripts')
     <script type="text/javascript">
+        var novoObjeto = null;
+        var funcaoPosCreate = null;
         function confirmDelete(frm) {
             var formulary = $('#' + frm);
             swal({

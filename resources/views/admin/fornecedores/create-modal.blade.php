@@ -1,9 +1,9 @@
-@extends('layouts.app')
+@extends('layouts.modal')
 
 @section('content')
     <section class="content-header">
         <h1>
-            Lembrete
+            Fornecedores
         </h1>
     </section>
     <div class="content">
@@ -12,10 +12,9 @@
 
             <div class="box-body">
                 <div class="row">
-                    {!! Form::open(['route' => 'admin.lembretes.store']) !!}
-                        @include('flash::message')
+                    {!! Form::open(['route' => 'admin.fornecedores.store']) !!}
 
-                        @include('admin.lembretes.fields')
+                        @include('admin.fornecedores.fields')
 
                     {!! Form::close() !!}
                 </div>

@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.front')
 
 @section('content')
     <section class="content-header">
@@ -11,7 +11,7 @@
             <div class="box-body">
                 <div class="row" style="padding-left: 20px">
                     @include('quadro_de_concorrencias.show_fields')
-                    <a href="{!! route('quadro-de-concorrencias.index') !!}" class="btn btn-default">
+                    <a href="{!! route('quadroDeConcorrencias.index') !!}" class="btn btn-default">
                        <i class="fa fa-arrow-left"></i>  {{ ucfirst( trans('common.back') )}}
                     </a>
                 </div>

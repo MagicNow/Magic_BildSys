@@ -3,7 +3,7 @@
 @section('content')
     <section class="content-header">
         <h1>
-            Lembrete
+            Contratos
         </h1>
    </section>
    <div class="content">
@@ -11,11 +11,10 @@
        <div class="box box-primary">
            <div class="box-body">
                <div class="row">
-                   {!! Form::model($lembrete, ['route' => ['admin.lembretes.update', $lembrete->id], 'method' => 'patch']) !!}
+                   {!! Form::model($catalogoContrato, ['route' => ['admin.catalogo_contratos.update', $catalogoContrato->id], 'method' => 'patch', 'files' => true]) !!}
                         @include('flash::message')
 
-                        @include('admin.lembretes.fields')
-
+                        @include('admin.catalogo_contratos.fields')
                    {!! Form::close() !!}
                </div>
            </div>

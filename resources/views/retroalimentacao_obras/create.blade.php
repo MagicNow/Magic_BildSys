@@ -11,7 +11,7 @@
                        <i class="fa fa-arrow-left" aria-hidden="true"></i>
                    </button>
 
-                   <span>Cadastrar Retroalmentação</span>
+                   <span>Cadastrar Retroalimentação</span>
                </span>
                 </div>
 

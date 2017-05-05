@@ -63,7 +63,7 @@
 </li>
 
 <li class="{{ Request::is('admin/contratos*') ? 'active' : '' }}">
-    <a href="{!! route('admin.contratos.index') !!}"><i class="fa fa-file-text-o"></i><span>Contratos</span></a>
+    <a href="{!! route('admin.catalogo_contratos.index') !!}"><i class="fa fa-file-text-o"></i><span>Contratos</span></a>
 </li>
 
 <li class="{{ Request::is('admin/obras*') ? 'active' : '' }}">
@@ -94,18 +94,7 @@
 {{--<a href="{!! route('admin.fornecedores.index') !!}"><i class="fa fa-edit"></i><span>Fornecedores</span></a>--}}
 {{--</li>--}}
 
-<li class="{{ Request::is('quadro-de-concorrencias*') ? 'active' : '' }}">
-    <a href="{!! route('quadro-de-concorrencias.index') !!}"><i class="fa fa-edit"></i><span>QuadroDeConcorrencias</span></a>
-</li>
-<li class="{{ Request::is('qcFornecedorEqualizacaoChecks*') ? 'active' : '' }}">
-    <a href="{!! route('qcFornecedorEqualizacaoChecks.index') !!}"><i class="fa fa-edit"></i><span>QcFornecedorEqualizacaoChecks</span></a>
-</li>
-
-<li class="{{ Request::is('qcItemQcFornecedors*') ? 'active' : '' }}">
-    <a href="{!! route('qcItemQcFornecedors.index') !!}"><i class="fa fa-edit"></i><span>QcItemQcFornecedors</span></a>
-</li>
-
-<li class="{{ Request::is('desistenciaMotivos*') ? 'active' : '' }}">
-    <a href="{!! route('desistenciaMotivos.index') !!}"><i class="fa fa-edit"></i><span>DesistenciaMotivos</span></a>
+<li class="{{ Request::is('planejamentoOrcamentos*') ? 'active' : '' }}">
+    <a href="{!! route('admin.planejamentoOrcamentos.index') !!}"><i class="fa fa-edit"></i><span>PlanejamentoOrcamentos</span></a>
 </li>
 

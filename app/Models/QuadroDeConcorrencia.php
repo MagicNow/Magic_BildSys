@@ -11,8 +11,6 @@ class QuadroDeConcorrencia extends Model
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
-
-
     public $fillable = [
         'user_id',
         'qc_status_id',
@@ -40,14 +38,12 @@ class QuadroDeConcorrencia extends Model
      *
      * @var array
      */
-    public static $rules = [
-
-    ];
+    public static $rules = [ ];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      **/
-    public function equalizacoes()
+    public function tipoEqualizacaoTecnicas()
     {
         return $this->belongsToMany(
             TipoEqualizacaoTecnica::class,
@@ -55,7 +51,6 @@ class QuadroDeConcorrencia extends Model
             'quadro_de_concorrencia_id',
             'tipo_equalizacao_tecnica_id'
         )
-        ->withPivot(['id'])
         ->withTimestamps();
     }
 
@@ -97,7 +92,7 @@ class QuadroDeConcorrencia extends Model
      **/
     public function status()
     {
-        return $this->belongsTo(QuadroDeConcorrenciaStatus::class);
+        return $this->belongsTo(QcStatus::class, 'qc_status_id');
     }
 
     /**
@@ -111,16 +106,23 @@ class QuadroDeConcorrencia extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
-    public function qcEqualizacaoTecnicaAnexoExtras()
+    public function equalizacaoTecnicaAnexoExtras()
     {
         return $this->hasMany(QcEqualizacaoTecnicaAnexoExtra::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function equalizacaoTecnicaExtras()
+    {
+        return $this->hasMany(QcEqualizacaoTecnicaExtra::class);
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
-    public function qcFornecedors()
+    public function qcFornecedores()
     {
         return $this->hasMany(QcFornecedor::class);
     }
@@ -128,15 +130,7 @@ class QuadroDeConcorrencia extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
-    public function qcItens()
-    {
-        return $this->hasMany(QcIten::class);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     **/
-    public function qcStatusLogs()
+    public function logs()
     {
         return $this->hasMany(QcStatusLog::class);
     }
@@ -148,4 +142,5 @@ class QuadroDeConcorrencia extends Model
     {
         return $this->hasMany(QcTipoEqualizacaoTecnica::class);
     }
+
 }

@@ -188,6 +188,7 @@ return [
         KennedyTedesco\Validation\ValidationServiceProvider::class,
         Yajra\Oci8\Oci8ServiceProvider::class,
         Cagartner\CorreiosConsulta\ServiceProvider::class,
+        Barryvdh\Snappy\ServiceProvider::class,
     ],
 
     /*
@@ -240,6 +241,7 @@ return [
         'Gravatar' => Creativeorange\Gravatar\Facades\Gravatar::class,
         'Defender' => \Artesaos\Defender\Facades\Defender::class,
         'Correios'    => Cagartner\CorreiosConsulta\Facade::class,
+        'PDF' => Barryvdh\Snappy\Facades\SnappyPdf::class,
     ],
 
 ];
