@@ -81,11 +81,13 @@ class User extends Authenticatable
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
-
-
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new ResetPasswordNotification($token));
     }
 
+    public function fornecedor()
+    {
+        return $this->hasOne(Fornecedor::class);
+    }
 }

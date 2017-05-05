@@ -102,4 +102,9 @@ class Fornecedor extends Model
     {
         return $this->hasMany(QcFornecedor::class);
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
