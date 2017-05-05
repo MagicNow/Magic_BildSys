@@ -38,11 +38,11 @@
             </span>
     </a>
     <ul class="treeview-menu">
+        <li class="{{ Request::is('admin/planejamentos/planejamentoOrcamentos*') ? 'active' : '' }}"><a href="{!! route('admin.planejamentoOrcamentos.index') !!}"><i class="fa fa-exchange"></i><span>Planejamentos/Orcamentos</span></a></li>
         <li class="{{ Request::is('admin/planejamentoCronogramas*') ? 'active' : '' }}"><a href="{!! route('admin.planejamentoCronogramas.index') !!}"><i class="fa fa-calendar-plus-o"></i><span>Cronograma por obra</span></a></li>
         <li class="{{ Request::is('admin/planejamentos') ? 'active' : '' }}"><a href="{!! route('admin.planejamentos.index') !!}"><i class="fa fa-calendar-o"></i><span>Cronograma de obra</span></a></li>
         <li class="{{ Request::is('admin/planejamento') ? 'active' : '' }}"><a href="{!! route('admin.planejamentos.indexImport') !!}"><i class="glyphicon glyphicon-cloud-upload"></i><span>Importação</span></a></li>
         <li class="{{ Request::is('admin/planejamentos/lembretes*') ? 'active' : '' }}"><a href="{!! route('admin.lembretes.index') !!}"><i class="fa fa-exclamation-circle"></i><span>Lembretes</span></a></li>
-        <li class="{{ Request::is('admin/planejamentos/planejamentoOrcamentos*') ? 'active' : '' }}"><a href="{!! route('admin.planejamentoOrcamentos.index') !!}"><i class="fa fa-exclamation-circle"></i><span>Planejamentos/Orcamentos</span></a></li>
         {{--<li class="{{ Request::is('admin/planejamentos/tipo-lembretes*') ? 'active' : '' }}">
             <a href="{!! route('admin.lembreteTipos.index') !!}"><i class="fa fa-ellipsis-h"></i><span>Tipos de Lembretes</span></a>
         </li>--}}
@@ -83,14 +83,14 @@
 </li>
 
 <li class="{{ Request::is('tipoEqualizacaoTecnicas*') ? 'active' : '' }}">
-    <a href="{!! route('admin.tipoEqualizacaoTecnicas.index') !!}"><i class="fa fa-file-audio-o"></i><span>Equalização Técnicas</span></a>
+    <a href="{!! route('admin.tipoEqualizacaoTecnicas.index') !!}"><i class="fa fa-file-audio-o"></i><span>Equalização técnicas</span></a>
 </li>
 
 <li class="{{ Request::is('admin/retroalimentacaoObras*') ? 'active' : '' }}">
-    <a href="{!! route('retroalimentacaoObras.index') !!}"><i class="fa fa-edit"></i><span>RetroalimentacaoObras</span></a>
+    <a href="{!! route('retroalimentacaoObras.index') !!}"><i class="fa fa-edit"></i><span>Retroalimentação de obras</span></a>
 </li>
 
-{{--<li class="{{ Request::is('fornecedores*') ? 'active' : '' }}">--}}
-{{--<a href="{!! route('admin.fornecedores.index') !!}"><i class="fa fa-edit"></i><span>Fornecedores</span></a>--}}
-{{--</li>--}}
+<li class="{{ Request::is('fornecedores*') ? 'active' : '' }}">
+<a href="{!! route('admin.fornecedores.index') !!}"><i class="fa fa-edit"></i><span>Fornecedores</span></a>
+</li>
 

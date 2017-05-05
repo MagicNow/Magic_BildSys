@@ -114,13 +114,7 @@ class PlanejamentoController extends AppBaseController
     public function edit($id)
     {
         $obras = Obra::pluck('nome','id')->toArray();
-        $grupos = Grupo::whereNull('grupo_id')->pluck('nome','id')->toArray();
         $planejamento = $this->planejamentoRepository->findWithoutFail($id);
-        $itens = PlanejamentoCompra::select(['planejamento_compras.grupo_id','grupos.codigo', 'grupos.nome'])
-            ->join('grupos','grupos.id','=','planejamento_compras.grupo_id')
-            ->where('planejamento_id', $id)
-            ->groupBy('grupo_id','grupos.codigo', 'grupos.nome')
-            ->get();
 
         if (empty($planejamento)) {
             Flash::error('Planejamento '.trans('common.not-found'));
@@ -129,142 +123,7 @@ class PlanejamentoController extends AppBaseController
         }
 
 
-        return view('admin.planejamentos.edit', compact('planejamento','obras','grupos','itens'));
-    }
-
-    public function getGrupos($id){
-        $grupo = Grupo::where('grupo_id', $id)
-            ->pluck('nome','id')->toArray();
-        return $grupo;
-    }
-    public function getServicos($id){
-        $servico = Servico::where('grupo_id', $id)
-            ->pluck('nome', 'id')->toArray();
-        return $servico;
-    }
-    public function getServicoInsumos($id){
-        $insumoServico = InsumoServico::select(['insumos.id', 'insumos.nome', 'insumos.codigo'])
-            ->join('insumos', 'insumo_servico.insumo_id', '=', 'insumos.id')
-            ->where('servico_id', $id)
-            ->get();
-        return $insumoServico;
-    }
-
-    public function planejamentoCompras(Request $request){
-        $insumosOrcados = null;
-        if($request->grupo_id && $request->subgrupo1_id && $request->subgrupo2_id && $request->subgrupo3_id && $request->servico_id && $request->insumos){
-            $insumosOrcados = Orcamento::whereIn('insumo_id', $request->insumos)
-                ->where('obra_id', $request->grupo_id)
-                ->where('ativo', 1)
-                ->get();
-        }
-        if($request->grupo_id && $request->subgrupo1_id && $request->subgrupo2_id && $request->subgrupo3_id && $request->servico_id && !$request->insumos){
-            $insumosOrcados = Orcamento::where('grupo_id', $request->grupo_id)
-                ->where('subgrupo1_id', $request->subgrupo1_id)
-                ->where('subgrupo2_id', $request->subgrupo2_id)
-                ->where('subgrupo3_id', $request->subgrupo3_id)
-                ->where('servico_id', $request->servico_id)
-                ->where('ativo', 1)
-                ->get();
-        }
-        if($request->grupo_id && $request->subgrupo1_id && $request->subgrupo2_id && $request->subgrupo3_id && !$request->servico_id && !$request->insumos){
-            $insumosOrcados = Orcamento::where('grupo_id', $request->grupo_id)
-                ->where('subgrupo1_id', $request->subgrupo1_id)
-                ->where('subgrupo2_id', $request->subgrupo2_id)
-                ->where('subgrupo3_id', $request->subgrupo3_id)
-                ->where('ativo', 1)
-                ->get();
-        }
-        if($request->grupo_id && $request->subgrupo1_id && $request->subgrupo2_id && !$request->subgrupo3_id && !$request->servico_id && !$request->insumos){
-            $insumosOrcados = Orcamento::where('grupo_id', $request->grupo_id)
-                ->where('subgrupo1_id', $request->subgrupo1_id)
-                ->where('subgrupo2_id', $request->subgrupo2_id)
-                ->where('ativo', 1)
-                ->get();
-        }
-        if($request->grupo_id && $request->subgrupo1_id && !$request->subgrupo2_id && !$request->subgrupo3_id && !$request->servico_id && !$request->insumos){
-            $insumosOrcados = Orcamento::where('grupo_id', $request->grupo_id)
-                ->where('subgrupo1_id', $request->subgrupo1_id)
-                ->where('ativo', 1)
-                ->get();
-        }
-        if($request->grupo_id && !$request->subgrupo1_id && !$request->subgrupo2_id && !$request->subgrupo3_id && !$request->servico_id && !$request->insumos){
-            $insumosOrcados = Orcamento::where('grupo_id', $request->grupo_id)
-                ->where('ativo', 1)
-                ->get();
-        }
-        
-        if(count($insumosOrcados)) {
-            foreach ($insumosOrcados as $insumosOrcado) {
-                $cadastrado = PlanejamentoCompra::where('insumo_id',$insumosOrcado->insumo_id)
-                    ->where('planejamento_id', $request->planejamento_id)
-                    ->first();
-                if(!$cadastrado) {
-                    $planejamentoCompra = new PlanejamentoCompra();
-                    $planejamentoCompra->planejamento_id = $request->planejamento_id;
-                    $planejamentoCompra->insumo_id = $insumosOrcado->insumo_id;
-                    $planejamentoCompra->codigo_estruturado = $insumosOrcado->codigo_insumo;
-                    $planejamentoCompra->grupo_id = $insumosOrcado->grupo_id;
-                    $planejamentoCompra->subgrupo1_id = $insumosOrcado->subgrupo1_id;
-                    $planejamentoCompra->subgrupo2_id = $insumosOrcado->subgrupo2_id;
-                    $planejamentoCompra->subgrupo3_id = $insumosOrcado->subgrupo3_id;
-                    $planejamentoCompra->servico_id = $insumosOrcado->servico_id;
-                    $planejamentoCompra->save();
-                }
-            }
-
-            Flash::success('Planejamento de compras inseridos!');
-            return redirect('/admin/planejamentos/atividade/'.$request->planejamento_id);
-//            return Response()->json(['success' => true]);
-        }
-        Flash::error('Não foram encontrados insumos em orçamentos com os filtros passados!');
-        return redirect('/admin/planejamentos/atividade/'.$request->planejamento_id.'/edit');
-//        return Response()->json(['success' => false, 'msg' => 'Não foram encontrado insumo no orçamento com os filtros passados!']);
-    }
-
-    public function GrupoRelacionados(Request $request){
-        $proximo = '';
-        $retorno = collect([]);
-        switch($request->tipo){
-            case 'subgrupo1_id' :
-                $proximo = 'subgrupo2_id';
-                break;
-            case 'subgrupo2_id' :
-                $proximo = 'subgrupo3_id';
-                break;
-            case 'subgrupo3_id' :
-                $proximo = 'servico_id';
-                break;
-            case 'servico_id' :
-                $proximo = 'insumo_id';
-                break;
-        }
-        if($request->tipo == 'subgrupo1_id' || $request->tipo == 'subgrupo2_id' || $request->tipo == 'subgrupo3_id') {
-            #grupos
-            $retorno = PlanejamentoCompra::select(['planejamento_compras.' . $request->tipo.' as id', 'grupos.codigo', 'grupos.nome',DB::raw("'".$request->tipo."'  as atual"),DB::raw("'".$proximo."'  as proximo")])
-                ->join('grupos', 'grupos.id', '=', 'planejamento_compras.' . $request->tipo)
-                ->where('planejamento_id', $request->planejamento_id)
-                ->where('planejamento_compras.' . $request->campo, $request->id)
-                ->groupBy('planejamento_compras.' . $request->tipo, 'grupos.codigo', 'grupos.nome')
-                ->get();
-        }elseif($request->tipo == 'servico_id'){
-            #serviços
-            $retorno = PlanejamentoCompra::select(['planejamento_compras.' . $request->tipo.' as id', 'servicos.codigo', 'servicos.nome',DB::raw("'".$request->tipo."'  as atual"),DB::raw("'".$proximo."'  as proximo")])
-                ->join('servicos', 'servicos.id', '=', 'planejamento_compras.servico_id')
-                ->where('planejamento_id', $request->planejamento_id)
-                ->where('planejamento_compras.' . $request->campo, $request->id)
-                ->groupBy('planejamento_compras.' . $request->tipo, 'servicos.codigo', 'servicos.nome')
-                ->get();
-        }else{
-            #insumos
-            $retorno = PlanejamentoCompra::select(['planejamento_compras.id', 'insumos.codigo', 'insumos.nome',DB::raw("'".$request->tipo."'  as atual")])
-                ->join('insumos', 'insumos.id', '=', 'planejamento_compras.insumo_id')
-                ->where('planejamento_id', $request->planejamento_id)
-                ->where('planejamento_compras.' . $request->campo, $request->id)
-                ->groupBy('planejamento_compras.id', 'insumos.codigo', 'insumos.nome')
-                ->get();
-        }
-        return $retorno;
+        return view('admin.planejamentos.edit', compact('planejamento','obras'));
     }
 
     /**
@@ -323,7 +182,7 @@ class PlanejamentoController extends AppBaseController
             $planejamentoCompra = PlanejamentoCompra::find($id);
 
             if ($planejamentoCompra) {
-                $planejamentoCompra->forceDelete();
+                $planejamentoCompra->delete();
                 return response()->json(['success' => true, 'error' => false]);
             } else {
                 $acao = "Ocorreu um erro ao deletar o item.";

@@ -19,19 +19,5 @@
                </div>
            </div>
        </div>
-
-       <div class="box box-primary">
-           <div class="box-body">
-               <div class="row">
-                   {!! Form::open(['route' => 'admin.planejamentos.insumos']) !!}
-
-                   @include('admin.planejamentos.fields_insumos')
-
-                   {!! Form::close() !!}
-               </div>
-           </div>
-       </div>
-
-
    </div>
 @endsection

@@ -40,7 +40,7 @@
     }
 </style>
 <div class="col-md-12 loading">
-    <h3>Relacionamento de insumos</h3>
+    <h3>Relacionamento de orçamentos / planejamentos</h3>
     <div class="col-md-12 thumbnail">
         <div class="col-md-12">
             <div class="caption">
