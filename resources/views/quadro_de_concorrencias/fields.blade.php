@@ -20,8 +20,8 @@
                     {!! Form::label('qcFornecedores', 'Fornecedores:') !!}
                 </div>
                 <div class="col-md-12">
-                    {!! Form::select('fornecedores', ['' => 'Escolha...']+$fornecedoresRelacionados,
-                    isset($quadroDeConcorrencia) ? $qcFornecedores_ids : null,
+                    {!! Form::select('fornecedores', ['' => 'Escolha...'],
+                    null,
                     [
                         'class' => 'form-control',
                         'id'=>'fornecedor'
@@ -30,7 +30,7 @@
                 <div class="col-md-12">
                     <button type="button" title="Cadastrar Fornecedor Temporariamente" style="margin-top: 10px"
                             id="cadastrarFornecedorTemporariamente"
-                            onclick="cadastraFornecedor()" class="btn btn-block btn-flat btn-info">
+                            onclick="cadastraFornecedor()" class="btn btn-block btn-lg btn-flat btn-info">
                         <i class="fa fa-user-plus" aria-hidden="true"></i>
                         Cadastrar Temporariamente
                     </button>
@@ -51,7 +51,8 @@
                             $qcFornecedorCount = $qcFornecedor->id;
                             ?>
                         <li class="list-group-item" id="qcFornecedor_id{{ $qcFornecedor->id }}">
-                            <input type="hidden" id="qcFornecedores[]" value="{{ $qcFornecedor->fornecedor_id }}">
+                            <input type="hidden" name="qcFornecedores[{{ $qcFornecedor->id }}][id]" value="{{ $qcFornecedor->id }}">
+                            <input type="hidden" name="qcFornecedores[{{ $qcFornecedor->id }}][fornecedor_id]" value="{{ $qcFornecedor->fornecedor_id }}">
                             {{ $qcFornecedor->fornecedor->nome }}
                             <button type="button" class="btn btn-flat btn-danger btn-xs pull-right" title="remover"
                                     onclick="removerFornecedor({{ $qcFornecedor->id }},{{ $qcFornecedor->id }})">
@@ -98,19 +99,67 @@
                 Adicionar
             </button>
             <ul id="equalizacaoTecnicaItens" class="list-group bloco_filtro">
-
+                @if(count($quadroDeConcorrencia->tipoEqualizacaoTecnicas()->count()))
+                    @foreach($quadroDeConcorrencia->tipoEqualizacaoTecnicas as $tipoEqualizacaoTecnica)
+                        @foreach($tipoEqualizacaoTecnica->itens as $EQTitem)
+                            <li class="list-group-item eqt_{{ $tipoEqualizacaoTecnica->id }}">
+                            {{ $EQTitem->nome }}
+                            <button type="button" class="btn btn-xs btn-flat btn-default pull-right">
+                                <i class="fa fa-info-circle" title="{{ $EQTitem->descricao }}"
+                                   onclick="swal({{ $EQTitem->nome }}','{{ $EQTitem->descricao }}','info')"
+                                aria-hidden="true"></i>
+                                </button>
+                            </li>
+                        @endforeach
+                    @endforeach
+                @endif
             </ul>
         </div>
     </div>
 
 </div>
 
+<!-- Texto Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('obrigacoes_fornecedor', 'Obrigações Fornecedor:') !!}
+    {!! Form::textarea('obrigacoes_fornecedor', null, ['class' => 'form-control', 'rows'=>3]) !!}
+</div>
+<!-- Texto Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('obrigacoes_bild', 'Obrigações Fornecedor:') !!}
+    {!! Form::textarea('obrigacoes_bild', null, ['class' => 'form-control', 'rows'=>3]) !!}
+</div>
+
 @section('scripts')
     @parent
     <script type="text/javascript">
         function cadastraFornecedor() {
-            swal('!TODO Abre Cadastro de Fornecedor');
+            funcaoPosCreate = "preencheFornecedor();";
+            $.colorbox({
+                href:"{{ url('/admin/fornecedores/create?modal=1') }}",
+                iframe:true,
+                width: '90%',
+                height: '90%',
+            });
         }
+
+        function preencheFornecedor(){
+            qtdFornecedores++;
+            var nomeFornecedor = novoObjeto.nome;
+            var qcFornecedorHTML = '<li class="list-group-item" id="qcFornecedor_id'+qtdFornecedores+'">' +
+                    '<input type="hidden" name="qcFornecedores[][fornecedor_id]" value="'+novoObjeto.id+'">' +
+                    nomeFornecedor +
+                    '<button type="button" title="Remover" class="btn btn-flat btn-danger btn-xs pull-right" ' +
+                    ' onclick="removerFornecedor('+qtdFornecedores+',0)">' +
+                    '<i class="fa fa-trash" aria-hidden="true"></i>' +
+                    '</button>' +
+                    '</li>';
+
+            $('#fornecedor').val(null).trigger("change");
+            $('#fornecedoresSelecionados').append(qcFornecedorHTML);
+        }
+
+
         function addEQitem() {
             swal('!TODO Abre Cadastro de qc_equalizacao_tecnica_extras');
         }

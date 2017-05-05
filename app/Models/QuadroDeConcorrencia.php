@@ -106,10 +106,10 @@ class QuadroDeConcorrencia extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\belongsToMany
      **/
-    public function tiposEqualizacaoTecnicas()
+    public function tipoEqualizacaoTecnicas()
     {
-        return $this->hasMany(QcTipoEqualizacaoTecnica::class);
+        return $this->belongsToMany(TipoEqualizacaoTecnica::class, 'qc_tipo_equalizacao_tecnica','quadro_de_concorrencia_id','tipo_equalizacao_tecnica_id')->withTimestamps();
     }
 }

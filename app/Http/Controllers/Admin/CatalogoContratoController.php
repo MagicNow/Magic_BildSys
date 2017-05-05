@@ -8,7 +8,7 @@ use App\Http\Requests\Admin\CreateCatalogoContratoRequest;
 use App\Http\Requests\Admin\UpdateCatalogoContratoRequest;
 use App\Models\CatalogoContratoInsumo;
 use App\Models\CatalogoContrato;
-use App\Models\Fornecedores;
+use App\Models\Fornecedor;
 use App\Models\Insumo;
 use App\Models\MegaFornecedor;
 use App\Repositories\Admin\CatalogoContratoRepository;
@@ -94,7 +94,7 @@ class CatalogoContratoController extends AppBaseController
 
         $cnpj = $fornecedor_mega->agn_st_cgc;
 
-        $fornecedor_cadastrado = Fornecedores::where('cnpj', $cnpj)
+        $fornecedor_cadastrado = Fornecedor::where('cnpj', $cnpj)
             ->first();
 
         if($fornecedor_cadastrado){
@@ -234,7 +234,7 @@ class CatalogoContratoController extends AppBaseController
 
         $cnpj = $fornecedor_mega->agn_st_cgc;
 
-        $fornecedor_cadastrado = Fornecedores::where('cnpj', $cnpj)
+        $fornecedor_cadastrado = Fornecedor::where('cnpj', $cnpj)
             ->first();
 
         if($fornecedor_cadastrado){

@@ -2,7 +2,7 @@
 
 namespace App\Repositories\Admin;
 
-use App\Models\Fornecedores;
+use App\Models\Fornecedor;
 use InfyOm\Generator\Common\BaseRepository;
 
 class FornecedoresRepository extends BaseRepository
@@ -33,6 +33,6 @@ class FornecedoresRepository extends BaseRepository
      **/
     public function model()
     {
-        return Fornecedores::class;
+        return Fornecedor::class;
     }
 }

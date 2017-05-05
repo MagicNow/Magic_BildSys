@@ -84,7 +84,7 @@ class Fornecedor extends Model
      **/
     public function cidade()
     {
-        return $this->belongsTo(\App\Models\Cidade::class);
+        return $this->belongsTo(Cidade::class);
     }
 
     /**
@@ -92,7 +92,7 @@ class Fornecedor extends Model
      **/
     public function catalogoContratos()
     {
-        return $this->hasMany(\App\Models\CatalogoContrato::class);
+        return $this->hasMany(CatalogoContrato::class);
     }
 
     /**
@@ -100,6 +100,6 @@ class Fornecedor extends Model
      **/
     public function qcFornecedor()
     {
-        return $this->hasMany(\App\Models\QcFornecedor::class);
+        return $this->hasMany(QcFornecedor::class);
     }
 }

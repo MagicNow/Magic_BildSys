@@ -2,8 +2,10 @@
 
 namespace App\Repositories;
 
+use App\Models\Fornecedor;
 use App\Models\OrdemDeCompraItem;
 use App\Models\QcItem;
+use App\Models\QcStatusLog;
 use App\Models\QuadroDeConcorrencia;
 use InfyOm\Generator\Common\BaseRepository;
 
@@ -46,6 +48,13 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
         $model = parent::create($attributes);
         $this->skipPresenter($temporarySkipPresenter);
 
+        // Salva o primeiro status log
+        QcStatusLog::create([
+            'quadro_de_concorrencia_id' => $model->id,
+            'qc_status_id' => $model->qc_status_id,
+            'user_id' => $model->user_id
+        ]);
+
         // Busca e agrupa intens conforme o tipo
         $oc_itens = OrdemDeCompraItem::whereIn('id',$itens)->get();
         $qc_itens_array = [];
@@ -69,6 +78,41 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
             $qc_item->oc_itens()->sync($qc_item_array['ids']);
             
         }
+
+        return $this->parserResult($model);
+    }
+
+    public function update(array $attributes, $id)
+    {
+        if(isset($attributes['qcFornecedoresMega']) ){
+            foreach ($attributes['qcFornecedoresMega'] as $codigo_mega){
+                $fornecedor = Fornecedor::where('codigo_mega',$codigo_mega)->first();
+                if(!$fornecedor){
+                    $fornecedor = ImportacaoRepository::fornecedores($codigo_mega, 'AGN_IN_CODIGO');
+                }
+                if($fornecedor){
+                    if(!isset($attributes['qcFornecedores'])){
+                        $attributes['qcFornecedores'] = [];
+                    }
+                    $attributes['qcFornecedores'][] = ['fornecedor_id'=>$fornecedor->id,'user_id'=>$attributes['user_update_id']];
+                }
+            }
+        }
+        if(isset($attributes['qcFornecedores']) ){
+            foreach ($attributes['qcFornecedores'] as $index => $obj){
+                if(!isset($attributes['qcFornecedores'][$index]['id'])){
+                    $attributes['qcFornecedores'][$index]['user_id'] = $attributes['user_update_id'];
+                }
+            }
+        }
+        // Have to skip presenter to get a model not some data
+        $temporarySkipPresenter = $this->skipPresenter;
+        $this->skipPresenter(true);
+        $model = parent::update($attributes, $id);
+        $this->skipPresenter($temporarySkipPresenter);
+
+        $model = $this->updateRelations($model, $attributes);
+        $model->save();
 
         return $this->parserResult($model);
     }

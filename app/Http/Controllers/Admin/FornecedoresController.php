@@ -43,7 +43,11 @@ class FornecedoresController extends AppBaseController
      */
     public function create()
     {
-        return view('admin.fornecedores.create');
+        $view = 'admin.fornecedores.create';
+        if(request('modal')=='1'){
+            $view = 'admin.fornecedores.create-modal';
+        }
+        return view($view);
     }
 
     /**
@@ -57,11 +61,13 @@ class FornecedoresController extends AppBaseController
     {
         $input = $request->all();
 
-        $fornecedores = $this->fornecedoresRepository->create($input);
+        $fornecedor = $this->fornecedoresRepository->create($input);
+        if(!$request->ajax()){
+            Flash::success('Fornecedores '.trans('common.saved').' '.trans('common.successfully').'.');
 
-        Flash::success('Fornecedores '.trans('common.saved').' '.trans('common.successfully').'.');
-
-        return redirect(route('admin.fornecedores.index'));
+            return redirect(route('admin.fornecedores.index'));
+        }
+        return $fornecedor;
     }
 
     /**

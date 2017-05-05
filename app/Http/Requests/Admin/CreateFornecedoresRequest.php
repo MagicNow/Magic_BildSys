@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Models\Fornecedor;
 use Illuminate\Foundation\Http\FormRequest;
-use App\Models\Fornecedores;
 
 class CreateFornecedoresRequest extends FormRequest
 {
@@ -25,6 +25,6 @@ class CreateFornecedoresRequest extends FormRequest
      */
     public function rules()
     {
-        return Fornecedores::$rules;
+        return Fornecedor::$rules;
     }
 }

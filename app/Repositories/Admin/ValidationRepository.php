@@ -9,7 +9,7 @@
 namespace App\Repositories\Admin;
 
 
-use App\Models\Fornecedores;
+use App\Models\Fornecedor;
 
 class ValidationRepository
 {
@@ -37,7 +37,7 @@ class ValidationRepository
     public static function CnpjUnico($valor){
         if($valor) {
             $existeCnpj = null;
-            $cadastrado = Fornecedores::where('cnpj', $valor)
+            $cadastrado = Fornecedor::where('cnpj', $valor)
                 ->first();
 
             if($cadastrado) {
