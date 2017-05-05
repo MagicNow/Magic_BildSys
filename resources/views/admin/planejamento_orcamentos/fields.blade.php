@@ -128,7 +128,7 @@
                                 '<input type="checkbox" id="insumo_' + retorno.grupo_id + '" name="grupo_id" value="' + retorno.grupo_id + '">' +
                                 '</div>' +
                                 '<div class="col-md-11">' +
-                                '<button type="button" class="btn btn-link btn-block text-left" onclick="listInsumosRelacionados(' + retorno.grupo_id + ',\'subgrupo1_id\', \'grupo_id\')">' + retorno.codigo + ' - ' + retorno.nome + ' <i class="fa fa-plus-square pull-right" aria-hidden="true"></i></button>' +
+                                '<button type="button" class="btn btn-link btn-block text-left" onclick="listInsumosRelacionados(' + retorno.grupo_id + ','+ retorno.obra_id +',\'subgrupo1_id\', \'grupo_id\')">' + retorno.codigo + ' - ' + retorno.nome + ' <i class="fa fa-plus-square pull-right" aria-hidden="true"></i></button>' +
                                 '<ul id="obj_' + retorno.grupo_id + '"></ul>' +
                                 '</div>' +
                                 '</div>' +
@@ -152,12 +152,13 @@
             }
         }
 
-        function listInsumosRelacionados(obj_id, tipo, campo){
+        function listInsumosRelacionados(obj_id, obra_id, tipo, campo){
             $('.box.box-primary').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
             if(obj_id && planejamento_id){
                 $.ajax("{{ url('/admin/planejamentos/planejamentoOrcamentos/orcamentos/relacionados') }}", {
                             data: {
                                 'id' : obj_id,
+                                'obra' : obra_id,
                                 'campo': campo,
                                 'tipo' : tipo
                             },
@@ -173,7 +174,7 @@
                                     '</div>' +
                                     '<div class="col-md-11">' +
                                     '<button type="button" class="btn btn-link btn-block text-left" ' +
-                                    'onclick="listInsumosRelacionados('+value.id+',\''+ value.proximo+'\',\''+value.atual+'\')">'+value.codigo+' - '+value.nome+
+                                    'onclick="listInsumosRelacionados('+value.id+','+value.obra_id+',\''+ value.proximo+'\',\''+value.atual+'\')">'+value.codigo+' - '+value.nome+
                                     ' <i class="fa fa-plus-square pull-right" aria-hidden="true"></i>' +
                                     '</button>'+
                                     '</div>' +
@@ -183,7 +184,7 @@
                             list += '<li id="item_'+value.id+'"> ' +
                                     '<div class="row">' +
                                     '<div class="col-md-12">' +
-                                    '<input type="checkbox" id="insumo_'+ value.id +'" name="'+value.atual+'[]" value="'+ value.id +'"> ' +value.codigo+' - '+value.nome+
+                                    '<input type="checkbox" id="insumo_'+ value.insumo_id +'" name="'+value.atual+'[]" value="'+ value.insumo_id +'"> ' +value.codigo+' - '+value.nome+
                                     '</div>' +
                                     '</div>' +
                                     '</li>';
