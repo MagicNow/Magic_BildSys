@@ -170,8 +170,8 @@ class QuadroDeConcorrenciaController extends AppBaseController
     ) {
         $quadro = $this->quadroDeConcorrenciaRepository
             ->with(
-                'equalizacoes.itens',
-                'equalizacoes.anexos',
+                'tipoEqualizacaoTecnicas.itens',
+                'tipoEqualizacaoTecnicas.anexos',
                 'itens.insumo',
                 'itens.ordemDeCompraItens'
             )
@@ -197,12 +197,12 @@ class QuadroDeConcorrenciaController extends AppBaseController
             return redirect(route('quadroDeConcorrencias.index'));
         }
 
-        $equalizacoes = $quadro->equalizacoes
+        $equalizacoes = $quadro->tipoEqualizacaoTecnicas
             ->pluck('itens')
-            ->merge($quadro->equalizacoesExtras)
+            ->merge($quadro->equalizacaoTecnicaExtras)
             ->flatten();
 
-        $anexos = $quadro->equalizacoes
+        $anexos = $quadro->tipoEqualizacaoTecnicas
             ->pluck('anexos')
             ->flatten()
             ->merge($quadro->anexos);
@@ -248,19 +248,17 @@ class QuadroDeConcorrenciaController extends AppBaseController
                 return back()->withInput();
             }
 
-            $qcFornecedor = [
-                'quadro_de_concorrencia_id' => $id,
-                'fornecedor_id' => $request->fornecedor_id,
-                'rodada' => $quadro->rodada_atual,
-                'user_id' => $request->user()->id
-            ];
+            $qcFornecedor = $qcFornecedorRepository->buscarPorQuadroEFornecedor(
+                $id,
+                $request->fornecedor_id
+            );
 
             if($request->reject) {
-                $qcFornecedor['desistencia_motivo_id'] = $request->desistencia_motivo_id;
-                $qcFornecedor['desistencia_texto'] = $request->desistencia_texto;
+                $qcFornecedor->update([
+                    'desistencia_motivo_id' => $request->desistencia_motivo_id,
+                    'desistencia_texto' => $request->desistencia_texto
+                ]);
             }
-
-            $qcFornecedor = $qcFornecedorRepository->create($qcFornecedor);
 
             if(!$request->reject) {
                 foreach($request->equalizacoes as $check) {

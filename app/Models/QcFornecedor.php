@@ -49,7 +49,8 @@ class QcFornecedor extends Model
      * @var array
      */
     public static $rules = [];
-/**
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
     public function desistenciaMotivo()
@@ -92,7 +93,7 @@ class QcFornecedor extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
-    public function qcItemQcFornecedors()
+    public function itens()
     {
         return $this->hasMany(QcItemQcFornecedor::class);
     }

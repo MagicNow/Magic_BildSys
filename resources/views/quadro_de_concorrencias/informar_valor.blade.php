@@ -7,7 +7,7 @@
 
     {!!
       Form::open([
-        'route' => ['quadro-de-concorrencias.informar-valor', $quadro->id],
+        'route' => ['quadroDeConcorrencia.informar-valor', $quadro->id],
         'id' => 'informar-valores-form',
         'class' => 'content'
       ])

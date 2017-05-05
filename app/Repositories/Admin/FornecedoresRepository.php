@@ -44,11 +44,12 @@ class FornecedoresRepository extends BaseRepository
     public function podemPreencherQuadroNaRodada($quadro_id, $rodada_atual)
     {
         return $this->model->select('fornecedores.*')
-            ->whereDoesntHave(
-                'valoresEmQuadros',
+            ->whereHas(
+                'qcFornecedor',
                 function($query) use ($quadro_id, $rodada_atual) {
                     $query->where('quadro_de_concorrencia_id', $quadro_id);
                     $query->where('rodada', $rodada_atual);
+                    $query->doesntHave('itens');
                 }
             )
             ->get();
