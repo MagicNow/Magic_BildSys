@@ -2,8 +2,10 @@
 
 namespace App\DataTables;
 
-use App\Models\QuadroDeConcorrencia;
+use DB;
 use Form;
+use Auth;
+use App\Models\QuadroDeConcorrencia;
 use Yajra\Datatables\Services\DataTable;
 
 class QuadroDeConcorrenciaDataTable extends DataTable
@@ -39,6 +41,8 @@ class QuadroDeConcorrenciaDataTable extends DataTable
      */
     public function query()
     {
+        $user = Auth::user();
+
         $quadroDeConcorrencias = QuadroDeConcorrencia::query()
         ->select([
             'quadro_de_concorrencias.id',
@@ -50,6 +54,17 @@ class QuadroDeConcorrenciaDataTable extends DataTable
         ])
         ->join('users','users.id','quadro_de_concorrencias.user_id')
         ->join('qc_status','qc_status.id','quadro_de_concorrencias.qc_status_id');
+
+        if($user->fornecedor) {
+            $quadroDeConcorrencias
+                ->join('qc_fornecedor', 'qc_fornecedor.quadro_de_concorrencia_id', 'quadro_de_concorrencias.id')
+                ->leftJoin('qc_item_qc_fornecedor', 'qc_item_qc_fornecedor.qc_fornecedor_id', 'qc_fornecedor.id')
+                ->where('qc_fornecedor.fornecedor_id', $user->fornecedor->id)
+                ->whereNull('qc_item_qc_fornecedor.id')
+                ->whereNull('qc_fornecedor.desistencia_motivo_id')
+                ->whereNull('qc_fornecedor.desistencia_texto')
+                ->whereRaw('qc_fornecedor.rodada = quadro_de_concorrencias.rodada_atual');
+        }
 
         return $this->applyScopes($quadroDeConcorrencias);
     }

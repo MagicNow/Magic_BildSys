@@ -32,17 +32,21 @@
         </div>
         <div class="row">
           <div class="col-md-2">
-            <div class="form-group">
-              <label for="fornecedor_id">Fornecedor</label>
-              {!!
-                Form::select(
-                  'fornecedor_id',
-                  $fornecedores,
-                  old('fornecedor_id'),
-                  [ 'class' => 'select2 form-control' ]
-                )
-              !!}
-            </div>
+            @if(auth()->user()->fornecedor)
+              {!! Form::hidden('fornecedor_id', auth()->user()->fornecedor->id) !!}
+            @else
+              <div class="form-group">
+                <label for="fornecedor_id">Fornecedor</label>
+                {!!
+                  Form::select(
+                    'fornecedor_id',
+                    $fornecedores,
+                    old('fornecedor_id'),
+                    [ 'class' => 'select2 form-control' ]
+                  )
+                !!}
+              </div>
+            @endif
             <a href="#modal-fornecedor"
               data-toggle="modal"
               class="btn btn-primary btn-block">

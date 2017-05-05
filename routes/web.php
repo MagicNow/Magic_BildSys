@@ -425,12 +425,13 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->post(
             '/quadro-de-concorrencia/{quadroDeConcorrencias}/informar-valor',
             'QuadroDeConcorrenciaController@informarValorSave'
-        );
+        )->middleware('needsPermission:quadroDeConcorrencias.informar_valor');
 
         $router->get(
             '/quadro-de-concorrencia/{quadroDeConcorrencias}/informar-valor',
             'QuadroDeConcorrenciaController@informarValor'
-        )->name('quadroDeConcorrencia.informar-valor');
+        )->name('quadroDeConcorrencia.informar-valor')
+        ->middleware('needsPermission:quadroDeConcorrencias.informar_valor');
 
         $router->get('quadro-de-concorrencia', ['as' => 'quadroDeConcorrencias.index', 'uses' => 'QuadroDeConcorrenciaController@index']);
         $router->post('quadro-de-concorrencia', ['as' => 'quadroDeConcorrencias.store', 'uses' => 'QuadroDeConcorrenciaController@store']);

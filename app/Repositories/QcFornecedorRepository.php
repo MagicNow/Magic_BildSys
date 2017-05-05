@@ -33,8 +33,17 @@ class QcFornecedorRepository extends BaseRepository
     public function buscarPorQuadroEFornecedor($quadro_id, $fornecedor_id)
     {
         return $this->model
+            ->select('qc_fornecedor.*')
+            ->join(
+                'quadro_de_concorrencias',
+                'quadro_de_concorrencias.id',
+                'qc_fornecedor.quadro_de_concorrencia_id'
+            )
             ->where('fornecedor_id', $fornecedor_id)
             ->where('quadro_de_concorrencia_id', $quadro_id)
+            ->whereNull('desistencia_motivo_id')
+            ->whereNull('desistencia_texto')
+            ->whereRaw('quadro_de_concorrencias.rodada_atual = qc_fornecedor.rodada')
             ->first();
     }
 }

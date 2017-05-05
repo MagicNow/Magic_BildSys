@@ -168,6 +168,10 @@ class QuadroDeConcorrenciaController extends AppBaseController
         FornecedoresRepository $fornecedorRepository,
         DesistenciaMotivoRepository $desistenciaMotivoRepository
     ) {
+
+        $user = auth()->user();
+        $isFornecedor = !is_null($user->fornecedor);
+
         $quadro = $this->quadroDeConcorrenciaRepository
             ->with(
                 'tipoEqualizacaoTecnicas.itens',
@@ -183,11 +187,26 @@ class QuadroDeConcorrenciaController extends AppBaseController
             return redirect(route('quadroDeConcorrencias.index'));
         }
 
-        $fornecedores = $fornecedorRepository
-            ->podemPreencherQuadroNaRodada($id, $quadro->rodada_atual)
-            ->pluck('nome', 'id')
-            ->prepend('Selecione um fornecedor...','')
-            ->toArray();
+        if(
+            $isFornecedor &&
+            !$fornecedorRepository->podePreencherQuadroNaRodada(
+                $user->fornecedor->id,
+                $quadro->id,
+                $quadro->rodada_atual
+            )
+        ) {
+            Flash::error(
+                'Você já preencheu este quadro ou não está presente na rodada atual.'
+            );
+
+            return redirect(route('quadroDeConcorrencias.index'));
+        } else {
+            $fornecedores = $fornecedorRepository
+                ->todosQuePodemPreencherQuadroNaRodada($quadro->id, $quadro->rodada_atual)
+                ->pluck('nome', 'id')
+                ->prepend('Selecione um fornecedor...','')
+                ->toArray();
+        }
 
         if(count($fornecedores) === 1) {
             Flash::error('
