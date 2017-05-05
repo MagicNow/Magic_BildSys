@@ -28,7 +28,8 @@
                     ]) !!}
                 </div>
                 <div class="col-md-12">
-                    <button type="button" title="Cadastrar Fornecedor Temporariamente" style="margin-top: 5px; margin-bottom: 5px;"
+                    <button type="button" title="Cadastrar Fornecedor Temporariamente"
+                            style="margin-top: 5px; margin-bottom: 5px;"
                             id="cadastrarFornecedorTemporariamente"
                             onclick="cadastraFornecedor()" class="btn btn-block btn-sm btn-flat btn-info">
                         <i class="fa fa-user-plus" aria-hidden="true"></i>
@@ -103,63 +104,107 @@
             <label>
                 Equalização Técnica
             </label>
-            <button type="button" class="btn btn-flat btn-info btn-xs pull-right" onclick="addEQitem();"
-                    title="Adicionar Equalização Técnica apenas para este Q.C.">
-                <i class="fa fa-plus"></i>
-                Adicionar
-            </button>
+            <div class="btn-group pull-right">
+                <button type="button" class="btn btn-flat btn-primary btn-xs" onclick="addEQitem();"
+                        title="Adicionar Equalização Técnica apenas para este Q.C.">
+                    <i class="fa fa-plus"></i>
+                    Adicionar
+                </button>
+                <button type="button" class="btn btn-flat btn-primary btn-xs" onclick="addEQitemAnexo();"
+                        title="Adicionar Anexo para Equalização Técnica apenas para este Q.C.">
+                    <i class="fa fa-plus"></i>
+                    Adicionar Anexo
+                    <i class="fa fa-paperclip"></i>
+                </button>
+            </div>
             <ul id="equalizacaoTecnicaItens" class="list-group bloco_filtro">
                 @if(count($quadroDeConcorrencia->tipoEqualizacaoTecnicas()->count()))
                     @foreach($quadroDeConcorrencia->tipoEqualizacaoTecnicas as $tipoEqualizacaoTecnica)
                         @foreach($tipoEqualizacaoTecnica->itens as $EQTitem)
                             <li class="list-group-item eqt_{{ $tipoEqualizacaoTecnica->id }}">
-                                {!!  $EQTitem->obrigatorio ? '<i class="fa fa-exclamation text-danger" title="Obrigatório" aria-hidden="true"></i>' : '' !!}
+                                {!!  $EQTitem->obrigatorio ? '<i class="fa fa-exclamation text-danger" title="Obrigatório" aria-hidden="true"></i> &nbsp; ' : '' !!}
                                 {{ $EQTitem->nome }}
                                 <button type="button" class="btn btn-xs btn-flat btn-default pull-right">
                                     <i class="fa fa-info-circle" title="{{ $EQTitem->descricao }}"
-                                       onclick="swal({{ $EQTitem->nome }}','{{ $EQTitem->descricao }}','info')"
+                                       onclick="swal('{{ $EQTitem->nome }}','{!!  $EQTitem->obrigatorio ? " ITEM OBRIGATÓRIO \\n " : '' !!}{{ $EQTitem->descricao }}','info')"
                                        aria-hidden="true"></i>
                                 </button>
+                            </li>
+                        @endforeach
+                        @foreach($tipoEqualizacaoTecnica->anexos as $EQTitem)
+                            <li class="list-group-item eqt_{{ $tipoEqualizacaoTecnica->id }}">
+                                {{ $EQTitem->nome }}
+                                <a href="{{ Storage::url($EQTitem->arquivo) }}"
+                                   download="{{ $EQTitem->nome }}" type="button"
+                                   class="btn btn-xs btn-flat btn-default pull-right">
+                                    <i class="fa fa-paperclip" title="baixar" aria-hidden="true"></i>
+                                </a>
                             </li>
                         @endforeach
                     @endforeach
                 @endif
                 @if($quadroDeConcorrencia->equalizacaoTecnicaExtras()->count())
                     @foreach( $quadroDeConcorrencia->equalizacaoTecnicaExtras as $qcEqtExtra)
-                    <li class="list-group-item" id="eqt_custom_{{ $qcEqtExtra->id }}">
-                        <i class="fa fa-pencil-square-o text-warning" title="Apenas para esta QC" aria-hidden="true"></i>
-                        {!!  $qcEqtExtra->obrigatorio ? '<i class="fa fa-exclamation text-danger" title="Obrigatório" aria-hidden="true"></i>' : '' !!}
-                        {{ $qcEqtExtra->nome }}
-                        <div class="btn-group pull-right">
-                            <button type="button" class="btn btn-xs btn-flat btn-default">
-                                 <i class="fa fa-info-circle" title="{{ $qcEqtExtra->descricao }}"
-                                    onclick="swal('{{ $qcEqtExtra->nome }}','{{ $qcEqtExtra->descricao }}','info')"
-                                 aria-hidden="true"></i>
-                            </button>
-                            <button type="button" class="btn btn-xs btn-flat btn-warning">
-                                 <i class="fa fa-pencil" title="Editar" onclick="editarEQT({{ $qcEqtExtra->id }})"
-                                 aria-hidden="true"></i>
-                            </button>
-                            <button type="button" class="btn btn-xs btn-flat btn-danger">
-                                   <i class="fa fa-trash" title="Remover" onclick="removerEQT({{ $qcEqtExtra->id }})"
-                                   aria-hidden="true"></i>
-                            </button>
-                        </div>
-                    </li>
+                        <li class="list-group-item" id="eqt_custom_{{ $qcEqtExtra->id }}">
+                            <i class="fa fa-pencil-square-o text-warning" title="Apenas para esta QC"
+                               aria-hidden="true"></i>
+                            {!!  $qcEqtExtra->obrigatorio ? '<i class="fa fa-exclamation text-danger" title="Obrigatório" aria-hidden="true"></i> &nbsp; ' : '' !!}
+                            {{ $qcEqtExtra->nome }}
+                            <div class="btn-group pull-right">
+                                <button type="button" class="btn btn-xs btn-flat btn-default">
+                                    <i class="fa fa-info-circle" title="{{ $qcEqtExtra->descricao }}"
+                                       onclick="swal('{{ $qcEqtExtra->nome }}','{!!  $qcEqtExtra->obrigatorio ? " ITEM OBRIGATÓRIO \\n " : '' !!}{{ $qcEqtExtra->descricao }}','info')"
+                                       aria-hidden="true"></i>
+                                </button>
+                                <button type="button" class="btn btn-xs btn-flat btn-warning">
+                                    <i class="fa fa-pencil" title="Editar" onclick="editarEQT({{ $qcEqtExtra->id }})"
+                                       aria-hidden="true"></i>
+                                </button>
+                                <button type="button" class="btn btn-xs btn-flat btn-danger">
+                                    <i class="fa fa-trash" title="Remover" onclick="removerEQT({{ $qcEqtExtra->id }})"
+                                       aria-hidden="true"></i>
+                                </button>
+                            </div>
+                        </li>
+                    @endforeach
+                @endif
+                @if($quadroDeConcorrencia->equalizacaoTecnicaAnexoExtras()->count())
+                    @foreach( $quadroDeConcorrencia->equalizacaoTecnicaAnexoExtras as $qcEqtExtra)
+                        <li class="list-group-item" id="eqt_custom_anexo_{{ $qcEqtExtra->id }}">
+                            <i class="fa fa-pencil-square-o text-warning" title="Apenas para esta QC"
+                               aria-hidden="true"></i>
+                            {{ $qcEqtExtra->nome }}
+                            <div class="btn-group pull-right">
+                                <a href="{{ Storage::url($qcEqtExtra->arquivo) }}"
+                                   download="{{ $qcEqtExtra->nome }}" type="button"
+                                   class="btn btn-xs btn-flat btn-default">
+                                    <i class="fa fa-paperclip" title="baixar" aria-hidden="true"></i>
+                                </a>
+                                <button type="button" class="btn btn-xs btn-flat btn-warning">
+                                    <i class="fa fa-pencil" title="Editar"
+                                       onclick="editarEQTAnexo({{ $qcEqtExtra->id }})"
+                                       aria-hidden="true"></i>
+                                </button>
+                                <button type="button" class="btn btn-xs btn-flat btn-danger">
+                                    <i class="fa fa-trash" title="Remover"
+                                       onclick="removerEQTAnexo({{ $qcEqtExtra->id }})"
+                                       aria-hidden="true"></i>
+                                </button>
+                            </div>
+                        </li>
                     @endforeach
                 @endif
             </ul>
         </div>
     </div>
-
 </div>
 
-<!-- Texto Field -->
+<!-- Obrigações Fornecedor Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('obrigacoes_fornecedor', 'Obrigações Fornecedor:') !!}
     {!! Form::textarea('obrigacoes_fornecedor', null, ['class' => 'form-control', 'rows'=>3]) !!}
 </div>
-<!-- Texto Field -->
+<!-- Obrigações Bild Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('obrigacoes_bild', 'Obrigações Fornecedor:') !!}
     {!! Form::textarea('obrigacoes_bild', null, ['class' => 'form-control', 'rows'=>3]) !!}
@@ -210,11 +255,239 @@
     </div>
 </div>
 
+<!-- Modal Add Anexo -->
+<div class="modal fade" id="modalCadastroEQTAnexo" tabindex="-1" role="dialog"
+     aria-labelledby="modalCadastroEQTAnexoLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="modalCadastroEQTAnexoLabel"></h4>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" value="" id="item_eqt_anexo_id">
+
+
+                <div class="row">
+                    <div class="form-group col-sm-12">
+                        <label for="item_eqt_anexo_nome">Nome:</label>
+                        <input class="form-control" type="text" id="item_eqt_anexo_nome"/>
+                    </div>
+                    <div class="form-group col-sm-12">
+                        <span style="display: none" id="item_eqt_anexo_arquivo_span"></span>
+                        <input type="file" class="form-control" id="item_eqt_anexo_arquivo"
+                               name="item_eqt_anexo_arquivo">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-flat btn-default btn-lg pull-left" data-dismiss="modal">Cancelar
+                </button>
+                <button type="button" class="btn btn-flat btn-success btn-lg"
+                        id="btn_add_eq_anexo" onclick="addEQitemAnexoSave();">
+                    Adicionar
+                </button>
+                <button type="button" class="btn btn-flat btn-success btn-lg" style="display: none"
+                        id="btn_edit_eq_anexo" onclick="editEQitemAnexoSave();">
+                    Alterar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 @section('scripts')
     @parent
     <script type="text/javascript">
-        function addEQitemSave(){
+
+        // Anexo extra
+        function addEQitemAnexoSave() {
+            var formdata = new FormData();
+            formdata.append('nome', $('#item_eqt_anexo_nome').val());
+            formdata.append('_token', $('meta[name="csrf-token"]').attr('content'));
+            var item_eqt_anexo_arquivo = document.getElementById("item_eqt_anexo_arquivo");
+            if (!item_eqt_anexo_arquivo.files.length) {
+                swal('Escolha um arquivo', '', 'error');
+                item_eqt_anexo_arquivo.focus();
+                return false;
+            }
+
+            formdata.append('arquivo', item_eqt_anexo_arquivo.files[0]);
+            startLoading();
+            $.ajax({
+                type: 'POST',
+                url: "{{ url('quadro-de-concorrencia/'.$quadroDeConcorrencia->id.'/adiciona-eqt-anexo') }}",
+                data: formdata,
+                cache: false,
+                contentType: false,
+                processData: false,
+                xhr: function () {  // Custom XMLHttpRequest
+                    var myXhr = $.ajaxSettings.xhr();
+                    if (myXhr.upload) { // Avalia se tem suporte a propriedade upload
+                        myXhr.upload.addEventListener('progress', function (upl) {
+                            /* faz alguma coisa durante o progresso do upload */
+                            console.log('uploading', upl);
+                        }, false);
+                    }
+                    return myXhr;
+                }
+            }).success(function (obj) {
+                stopLoading();
+                item_eqt =
+                        '<li class="list-group-item" id="eqt_custom_anexo_' + obj.id + '">' +
+                        obj.nome +
+                        '   <div class="btn-group pull-right">' +
+                        '      <a href="/' + obj.arquivo.replace('public', 'storage') + '" ' +
+                        '      download="' + obj.nome + '" type="button" class="btn btn-xs btn-flat btn-default"> ' +
+                        '      <i class="fa fa-paperclip" title="baixar" aria-hidden="true"></i> ' +
+                        '      </a>' +
+                        '      <button type="button" class="btn btn-xs btn-flat btn-warning"> ' +
+                        '          <i class="fa fa-pencil" title="Editar" onclick="editarEQTAnexo(' + obj.id + ')" ' +
+                        '          aria-hidden="true"></i> ' +
+                        '      </button>' +
+                        '      <button type="button" class="btn btn-xs btn-flat btn-danger"> ' +
+                        '          <i class="fa fa-trash" title="Remover" onclick="removerEQTAnexo(' + obj.id + ')" ' +
+                        '          aria-hidden="true"></i> ' +
+                        '      </button>' +
+                        '   </div>' +
+                        '</li>';
+
+                $('#equalizacaoTecnicaItens').append(item_eqt);
+                $('#modalCadastroEQTAnexo').modal('hide');
+                // Limpa os dados
+                $('#item_eqt_anexo_nome').val('')
+                document.getElementById("item_eqt_anexo_arquivo").value = "";
+                $('.overlay').remove();
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                stopLoading();
+                // Optionally alert the user of an error here...
+                var textResponse = jqXHR.responseText;
+                var alertText = "Confira as mensagens abaixo:\n\n";
+                var jsonResponse = jQuery.parseJSON(textResponse);
+
+                $.each(jsonResponse, function (n, elem) {
+                    alertText = alertText + elem + "\n";
+                });
+                swal({title: "", text: alertText, type: 'error'});
+            });
+
+        }
+
+        function editEQitemAnexoSave() {
+            var formdata = new FormData();
+            formdata.append('nome', $('#item_eqt_anexo_nome').val());
+            formdata.append('_token', $('meta[name="csrf-token"]').attr('content'));
+            var item_eqt_anexo_arquivo = document.getElementById("item_eqt_anexo_arquivo");
+
+            if (item_eqt_anexo_arquivo.files.length) {
+                formdata.append('arquivo', item_eqt_anexo_arquivo.files[0]);
+            }
+
+            startLoading();
+
+            var item_eqt_id = $('#item_eqt_anexo_id').val();
+
+            $.ajax({
+                type: 'POST',
+                url: "{{ url('quadro-de-concorrencia/'.$quadroDeConcorrencia->id.'/editar-eqt-anexo') }}/" + item_eqt_id,
+                data: formdata,
+                cache: false,
+                contentType: false,
+                processData: false
+            }).success(function (obj) {
+                item_eqt = obj.nome +
+                        '   <div class="btn-group pull-right">' +
+                        '      <a href="/' + obj.arquivo.replace('public', 'storage') + '" ' +
+                        '      download="' + obj.nome + '" type="button" class="btn btn-xs btn-flat btn-default"> ' +
+                        '      <i class="fa fa-paperclip" title="baixar" aria-hidden="true"></i> ' +
+                        '      </a>' +
+                        '      <button type="button" class="btn btn-xs btn-flat btn-warning"> ' +
+                        '          <i class="fa fa-pencil" title="Editar" onclick="editarEQTAnexo(' + obj.id + ')" ' +
+                        '          aria-hidden="true"></i> ' +
+                        '      </button>' +
+                        '      <button type="button" class="btn btn-xs btn-flat btn-danger"> ' +
+                        '          <i class="fa fa-trash" title="Remover" onclick="removerEQTAnexo(' + obj.id + ')" ' +
+                        '          aria-hidden="true"></i> ' +
+                        '      </button>' +
+                        '   </div>';
+                $('#eqt_custom_anexo_' + obj.id).html(item_eqt);
+                $('#modalCadastroEQTAnexo').modal('hide');
+                // Limpa os dados
+                $('#item_eqt_anexo_nome').val('')
+                document.getElementById("item_eqt_anexo_arquivo").value = "";
+                stopLoading();
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                stopLoading();
+                // Optionally alert the user of an error here...
+                var textResponse = jqXHR.responseText;
+                var alertText = "Confira as mensagens abaixo:\n\n";
+                var jsonResponse = jQuery.parseJSON(textResponse);
+
+                $.each(jsonResponse, function (n, elem) {
+                    alertText = alertText + elem + "\n";
+                });
+                swal({title: "", text: alertText, type: 'error'});
+            });
+
+        }
+
+        function removerEQTAnexo(qual) {
+            swal({
+                title: 'Deseja remover este anexo de Equalização Técnica?',
+                text: 'Após a remoção não será possível mais recuperar o registro.',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Sim, tenho certeza!",
+                cancelButtonText: "Não",
+                closeOnConfirm: false
+            }, function () {
+                $.ajax("{{ url('quadro-de-concorrencia/'.$quadroDeConcorrencia->id.'/remover-eqt-anexo') }}/" + qual)
+                        .success(function (retorno) {
+                            $('#eqt_custom_anexo_' + qual).remove();
+                            swal('Removido', '', 'success');
+                        }).fail(function (jqXHR, textStatus, errorThrown) {
+                    swal('Erro', jqXHR.responseText, 'error');
+                });
+            });
+        }
+
+        function editarEQTAnexo(qual) {
+            $.ajax("{{ url('quadro-de-concorrencia/'.$quadroDeConcorrencia->id.'/exibir-eqt-anexo') }}/" + qual)
+                    .success(function (retorno) {
+                        $('#item_eqt_anexo_nome').val(retorno.nome);
+
+                        $('#item_eqt_anexo_arquivo_span').html('<a href="/' + retorno.arquivo.replace('public', 'storage') + '" ' +
+                                '      download="' + retorno.nome + '" type="button" class="btn btn-xs btn-flat btn-default btn-block"> ' +
+                                '      Arquivo Atual <i class="fa fa-paperclip" title="baixar" aria-hidden="true"></i> ' +
+                                '      </a>');
+                        $('#item_eqt_anexo_arquivo_span').show();
+                        $('#item_eqt_anexo_id').val(retorno.id);
+
+                        $('#btn_add_eq_anexo').hide();
+                        $('#btn_edit_eq_anexo').show();
+                        $('#modalCadastroEQTAnexoLabel').html('Editar Anexo de Equalização técnica para este Q.C.');
+                        $('#modalCadastroEQTAnexo').modal('show');
+
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                swal('Erro', jqXHR.responseText, 'error');
+            });
+        }
+
+        function addEQitemAnexo() {
+            $('#btn_add_eq_anexo').show();
+            $('#btn_edit_eq_anexo').hide();
+            $('#item_eqt_anexo_arquivo_span').hide();
+            $('#modalCadastroEQTAnexoLabel').html('Cadastrar Anexo de Equalização técnica para este Q.C.');
+            $('#modalCadastroEQTAnexo').modal('show');
+        }
+
+
+        // Item Extra
+
+        function addEQitemSave() {
             var item_eqt_nome = $('#item_eqt_nome').val();
             var item_eqt_obrigatorio = $('#item_eqt_obrigatorio').is(':checked');
             var item_eqt_descricao = $('#item_eqt_descricao').val();
@@ -224,20 +497,21 @@
                 url: "{{ url('quadro-de-concorrencia/'.$quadroDeConcorrencia->id.'/adiciona-eqt') }}",
                 data: {
                     nome: item_eqt_nome,
-                    obrigatorio: (item_eqt_obrigatorio?1:0),
+                    obrigatorio: (item_eqt_obrigatorio ? 1 : 0),
                     descricao: item_eqt_descricao,
                     _token: $('meta[name="csrf-token"]').attr('content')
                 }
             }).success(function (obj) {
                 item_eqt = '<li class="list-group-item" id="eqt_custom_' + obj.id + '"> ' +
-                        '<i class="fa fa-pencil-square-o text-warning" title="Apenas para esta QC" aria-hidden="true"></i> ' +
-                        (obj.obrigatorio ? '<i class="fa fa-exclamation text-danger" title="Obrigatório" aria-hidden="true"></i>' : '' ) +
+                        '<i class="fa fa-pencil-square-o text-warning" title="Apenas para esta QC" aria-hidden="true"></i> &nbsp;' +
+                        (obj.obrigatorio ? '<i class="fa fa-exclamation text-danger" title="Obrigatório" aria-hidden="true"></i> &nbsp; ' : '' ) +
                         obj.nome +
                         '<div class="btn-group pull-right">' +
                         '<button type="button" class="btn btn-xs btn-flat btn-default"> ' +
                         ' <i class="fa fa-info-circle" title="' +
                         obj.descricao +
-                        '" onclick="swal(\'' + obj.nome + '\',\'' + obj.descricao + '\',\'info\')" ' +
+                        '" onclick="swal(\'' + obj.nome + '\',\'' + ( parseInt(obj.obrigatorio) == 1 ? 'ITEM OBRIGATÓRIO \\n' : '') +
+                        obj.descricao + '\',\'info\')" ' +
                         ' aria-hidden="true"></i> ' +
                         ' </button>' +
                         '<button type="button" class="btn btn-xs btn-flat btn-warning"> ' +
@@ -270,7 +544,7 @@
 
         }
 
-        function editEQitemSave(){
+        function editEQitemSave() {
             var item_eqt_nome = $('#item_eqt_nome').val();
             var item_eqt_obrigatorio = $('#item_eqt_obrigatorio').is(':checked');
             var item_eqt_descricao = $('#item_eqt_descricao').val();
@@ -278,23 +552,24 @@
 
             $.ajax({
                 type: 'POST',
-                url: "{{ url('quadro-de-concorrencia/'.$quadroDeConcorrencia->id.'/editar-eqt') }}/"+item_eqt_id,
+                url: "{{ url('quadro-de-concorrencia/'.$quadroDeConcorrencia->id.'/editar-eqt') }}/" + item_eqt_id,
                 data: {
                     nome: item_eqt_nome,
-                    obrigatorio: (item_eqt_obrigatorio?1:0),
+                    obrigatorio: (item_eqt_obrigatorio ? 1 : 0),
                     descricao: item_eqt_descricao,
                     _token: $('meta[name="csrf-token"]').attr('content')
                 }
             }).success(function (obj) {
                 item_eqt =
-                        '<i class="fa fa-pencil-square-o text-warning" title="Apenas para esta QC" aria-hidden="true"></i> ' +
-                        ( parseInt(obj.obrigatorio) ? '<i class="fa fa-exclamation text-danger" title="Obrigatório" aria-hidden="true"></i>' : '' ) +
+                        '<i class="fa fa-pencil-square-o text-warning" title="Apenas para esta QC" aria-hidden="true"></i> &nbsp;' +
+                        ( parseInt(obj.obrigatorio) ? '<i class="fa fa-exclamation text-danger" title="Obrigatório" aria-hidden="true"></i> &nbsp; ' : '' ) +
                         obj.nome +
                         '<div class="btn-group pull-right">' +
                         '<button type="button" class="btn btn-xs btn-flat btn-default"> ' +
                         ' <i class="fa fa-info-circle" title="' +
                         obj.descricao +
-                        '" onclick="swal(\'' + obj.nome + '\',\'' + obj.descricao + '\',\'info\')" ' +
+                        '" onclick="swal(\'' + obj.nome + '\',\'' + ( parseInt(obj.obrigatorio) == 1 ? 'ITEM OBRIGATÓRIO \\n' : '') +
+                        obj.descricao + '\',\'info\')" ' +
                         ' aria-hidden="true"></i> ' +
                         ' </button>' +
                         '<button type="button" class="btn btn-xs btn-flat btn-warning"> ' +
@@ -306,7 +581,7 @@
                         '   aria-hidden="true"></i> ' +
                         '</button>' +
                         '</div>';
-                $('#eqt_custom_'+obj.id).html(item_eqt);
+                $('#eqt_custom_' + obj.id).html(item_eqt);
                 $('#modalCadastroEQT').modal('hide');
                 // Limpa os dados
                 $('#item_eqt_nome').val('')
@@ -330,42 +605,38 @@
 
         function removerEQT(qual) {
             swal({
-                title:'Deseja remover esta Equalização Técnica?',
+                title: 'Deseja remover esta Equalização Técnica?',
                 text: 'Após a remoção não será possível mais recuperar o registro.',
-                type:'warning',
+                type: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: "#DD6B55",
                 confirmButtonText: "Sim, tenho certeza!",
                 cancelButtonText: "Não",
                 closeOnConfirm: false
-            }, function(){
-                $.ajax("{{ url('quadro-de-concorrencia/'.$quadroDeConcorrencia->id.'/remover-eqt') }}/"+qual)
-                .success(function(retorno){
-                    $('#eqt_custom_'+qual).remove();
-                    swal('Removido','','success');
-                }).fail(function (jqXHR, textStatus, errorThrown) {
-                    swal('Erro',jqXHR.responseText, 'error');
+            }, function () {
+                $.ajax("{{ url('quadro-de-concorrencia/'.$quadroDeConcorrencia->id.'/remover-eqt') }}/" + qual)
+                        .success(function (retorno) {
+                            $('#eqt_custom_' + qual).remove();
+                            swal('Removido', '', 'success');
+                        }).fail(function (jqXHR, textStatus, errorThrown) {
+                    swal('Erro', jqXHR.responseText, 'error');
                 });
             });
         }
+
         function editarEQT(qual) {
-            $.ajax("{{ url('quadro-de-concorrencia/'.$quadroDeConcorrencia->id.'/exibir-eqt') }}/"+qual)
-                    .success(function(retorno){
-                        console.log(parseInt(retorno.obrigatorio),(parseInt(retorno.obrigatorio)?true:false), $('#item_eqt_obrigatorio').is(':checked'));
+            $.ajax("{{ url('quadro-de-concorrencia/'.$quadroDeConcorrencia->id.'/exibir-eqt') }}/" + qual)
+                    .success(function (retorno) {
                         $('#item_eqt_nome').val(retorno.nome);
-                        if(parseInt(retorno.obrigatorio)){
-                            $('#item_eqt_obrigatorio').attr('checked', true );
+                        if (parseInt(retorno.obrigatorio)) {
+                            $('#item_eqt_obrigatorio').attr('checked', true);
                             $('#item_eqt_obrigatorio').iCheck('check');
                             $('#item_eqt_obrigatorio').iCheck('update');
-                            console.log('Checar');
-                        }else{
-                            $('#item_eqt_obrigatorio').attr('checked', false );
+                        } else {
+                            $('#item_eqt_obrigatorio').attr('checked', false);
                             $('#item_eqt_obrigatorio').iCheck('uncheck');
                             $('#item_eqt_obrigatorio').iCheck('update');
-                            console.log('Deschecar');
                         }
-
-                        console.log(parseInt(retorno.obrigatorio),(parseInt(retorno.obrigatorio)?true:false), $('#item_eqt_obrigatorio').is(':checked'));
 
                         $('#item_eqt_descricao').val(retorno.descricao);
                         $('#item_eqt_id').val(retorno.id);
@@ -376,9 +647,19 @@
                         $('#modalCadastroEQT').modal('show');
 
                     }).fail(function (jqXHR, textStatus, errorThrown) {
-                swal('Erro',jqXHR.responseText, 'error');
+                swal('Erro', jqXHR.responseText, 'error');
             });
         }
+
+        function addEQitem() {
+            $('#btn_add_eq').show();
+            $('#btn_edit_eq').hide();
+            $('#modalCadastroEQTLabel').html('Cadastrar Equalização técnica para este Q.C.');
+            $('#modalCadastroEQT').modal('show');
+        }
+
+
+        // Fornecedor
 
         function cadastraFornecedor() {
             funcaoPosCreate = "preencheFornecedor();";
@@ -406,13 +687,6 @@
             $('#fornecedoresSelecionados').append(qcFornecedorHTML);
         }
 
-
-        function addEQitem() {
-            $('#btn_add_eq').show();
-            $('#btn_edit_eq').hide();
-            $('#modalCadastroEQTLabel').html('Cadastrar Equalização técnica para este Q.C.');
-            $('#modalCadastroEQT').modal('show');
-        }
         function formatResult(obj) {
             if (obj.loading) return obj.text;
 
@@ -548,7 +822,7 @@
                             if (retorno) {
                                 $.each(retorno, function (index, obj) {
                                     item_eqt = '<li class="list-group-item eqt_' + tipo_eqt_id + '">' +
-                                            (obj.obrigatorio ? '<i class="fa fa-exclamation text-danger" title="Obrigatório" aria-hidden="true"></i>' : '' ) +
+                                            (obj.obrigatorio ? '<i class="fa fa-exclamation text-danger" title="Obrigatório" aria-hidden="true"></i> &nbsp; ' : '' ) +
                                             obj.nome +
                                             '<button type="button" class="btn btn-xs btn-flat btn-default pull-right"> ' +
                                             ' <i class="fa fa-info-circle" title="' +
@@ -556,6 +830,25 @@
                                             + '" onclick="swal(\'' + obj.nome + '\',\'' + obj.descricao + '\',\'info\')" ' +
                                             ' aria-hidden="true"></i> ' +
                                             ' </button>' +
+                                            '</li>';
+                                    $('#equalizacaoTecnicaItens').append(item_eqt);
+                                });
+                            }
+
+                        })
+                        .fail(function () {
+                            swal('Erro ao buscar Tipo de Equalização Técnica', '', "error");
+                        });
+                $.getJSON("{{ url('tipos-equalizacoes-tecnicas/anexos') }}/" + tipo_eqt_id)
+                        .done(function (retorno) {
+                            if (retorno) {
+                                $.each(retorno, function (index, obj) {
+                                    item_eqt = '<li class="list-group-item eqt_' + tipo_eqt_id + '">' +
+                                            obj.nome +
+                                            '<a href="/' + obj.arquivo.replace('public', 'storage') + '" ' +
+                                            ' download="' + obj.nome + '" type="button" class="btn btn-xs btn-flat btn-default pull-right"> ' +
+                                            ' <i class="fa fa-paperclip" title="baixar" aria-hidden="true"></i> ' +
+                                            '</a>' +
                                             '</li>';
                                     $('#equalizacaoTecnicaItens').append(item_eqt);
                                 });
@@ -594,7 +887,7 @@
 
         function addFornecedorTemp() {
             qtdFornecedores++;
-            if($('#fornecedor_temp').val()) {
+            if ($('#fornecedor_temp').val()) {
                 var nomeFornecedor = $('#fornecedor_temp').select2('data');
 
                 var qcFornecedorHTML = '<li class="list-group-item" id="qcFornecedor_id' + qtdFornecedores + '">' +
@@ -616,21 +909,21 @@
             if (qcFornecedorId) {
                 // Remover no banco
                 swal({
-                    title:'Deseja remover este fornecedor?',
+                    title: 'Deseja remover este fornecedor?',
                     text: 'Após a remoção não será possível mais recuperar o registro.',
-                    type:'warning',
+                    type: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: "#DD6B55",
                     confirmButtonText: "Sim, tenho certeza!",
                     cancelButtonText: "Não",
                     closeOnConfirm: false
-                }, function(){
-                    $.ajax("{{ url('quadro-de-concorrencia/'.$quadroDeConcorrencia->id.'/remover-fornecedor') }}/"+qual)
-                            .success(function(retorno){
+                }, function () {
+                    $.ajax("{{ url('quadro-de-concorrencia/'.$quadroDeConcorrencia->id.'/remover-fornecedor') }}/" + qual)
+                            .success(function (retorno) {
                                 $('#qcFornecedor_id' + qual).remove();
-                                swal('Removido','','success');
+                                swal('Removido', '', 'success');
                             }).fail(function (jqXHR, textStatus, errorThrown) {
-                        swal('Erro',jqXHR.responseText, 'error');
+                        swal('Erro', jqXHR.responseText, 'error');
                     });
                 });
             } else {

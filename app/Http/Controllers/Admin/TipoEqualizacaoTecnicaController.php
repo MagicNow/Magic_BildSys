@@ -168,5 +168,14 @@ class TipoEqualizacaoTecnicaController extends AppBaseController
         
         return response()->json($tipoEqualizacaoTecnica->itens);
     }
+    public function buscaAnexos($id)
+    {
+        $tipoEqualizacaoTecnica = $this->tipoEqualizacaoTecnicaRepository->findWithoutFail($id);
+        if (empty($tipoEqualizacaoTecnica)) {
+            return response()->json(['error'=>'Não encontrado'],404);
+        }
+
+        return response()->json($tipoEqualizacaoTecnica->anexos);
+    }
 
 }

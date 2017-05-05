@@ -7,6 +7,9 @@ use App\Http\Requests;
 use App\Http\Requests\UpdateQuadroDeConcorrenciaRequest;
 use App\Http\Requests\CreateEqualizacaoTecnicaExtraRequest;
 use App\Http\Requests\UpdateEqualizacaoTecnicaExtraRequest;
+use App\Http\Requests\CreateEqualizacaoTecnicaAnexoExtraRequest;
+use App\Http\Requests\UpdateEqualizacaoTecnicaAnexoExtraRequest;
+use App\Models\QcEqualizacaoTecnicaAnexoExtra;
 use App\Models\QcEqualizacaoTecnicaExtra;
 use App\Models\QcFornecedor;
 use App\Repositories\QuadroDeConcorrenciaRepository;
@@ -259,5 +262,95 @@ class QuadroDeConcorrenciaController extends AppBaseController
         }
 
         return response()->json(['success' => $qcFornecedor->delete()]);
+    }
+
+    public function adicionaEqtAnexo($id, CreateEqualizacaoTecnicaAnexoExtraRequest $request)
+    {
+        $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->findWithoutFail($id);
+
+        if (empty($quadroDeConcorrencia)) {
+            if (!$request->ajax()) {
+                Flash::error('Quadro De Concorrencia ' . trans('common.not-found'));
+
+                return redirect(route('quadroDeConcorrencias.edit', $id));
+            }
+            return response()->json(['error' => 'Quadro De Concorrencia ' . trans('common.not-found')], 404);
+        }
+        $qcEqualizacaoTecnicaExtra = QcEqualizacaoTecnicaAnexoExtra::create([
+            'quadro_de_concorrencia_id' => $id,
+            'nome' => $request->nome,
+            'arquivo' => $request->arquivo->store('public/anexos'),
+        ]);
+
+        return $qcEqualizacaoTecnicaExtra;
+    }
+
+    public function removerEqtAnexo($id, $eqtId)
+    {
+        $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->findWithoutFail($id);
+
+        if (empty($quadroDeConcorrencia)) {
+            if (!$request->ajax()) {
+                Flash::error('Quadro De Concorrencia ' . trans('common.not-found'));
+
+                return redirect(route('quadroDeConcorrencias.edit', $id));
+            }
+            return response()->json(['error' => 'Quadro De Concorrencia ' . trans('common.not-found')], 404);
+        }
+        $qcEqualizacaoTecnicaAnexoExtra = QcEqualizacaoTecnicaAnexoExtra::find($eqtId);
+
+        if (!$qcEqualizacaoTecnicaAnexoExtra) {
+            return response()->json(['error' => 'Item não encontrado ' . trans('common.not-found')], 404);
+        }
+
+        return response()->json(['success' => $qcEqualizacaoTecnicaAnexoExtra->delete()]);
+    }
+
+    public function exibirEqtAnexo($id, $eqtId)
+    {
+        $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->findWithoutFail($id);
+
+        if (empty($quadroDeConcorrencia)) {
+            if (!$request->ajax()) {
+                Flash::error('Quadro De Concorrencia ' . trans('common.not-found'));
+
+                return redirect(route('quadroDeConcorrencias.edit', $id));
+            }
+            return response()->json(['error' => 'Quadro De Concorrencia ' . trans('common.not-found')], 404);
+        }
+        $qcEqualizacaoTecnicaAnexoExtra = QcEqualizacaoTecnicaAnexoExtra::find($eqtId);
+
+        if (!$qcEqualizacaoTecnicaAnexoExtra) {
+            return response()->json(['error' => 'Item não encontrado ' . trans('common.not-found')], 404);
+        }
+
+        return $qcEqualizacaoTecnicaAnexoExtra;
+    }
+
+    public function editarEqtAnexo($id, $eqtId, UpdateEqualizacaoTecnicaAnexoExtraRequest $request)
+    {
+        $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->findWithoutFail($id);
+
+        if (empty($quadroDeConcorrencia)) {
+            if (!$request->ajax()) {
+                Flash::error('Quadro De Concorrencia ' . trans('common.not-found'));
+
+                return redirect(route('quadroDeConcorrencias.edit', $id));
+            }
+            return response()->json(['error' => 'Quadro De Concorrencia ' . trans('common.not-found')], 404);
+        }
+
+        $qcEqualizacaoTecnicaAnexoExtra = QcEqualizacaoTecnicaAnexoExtra::find($eqtId);
+        if (!$qcEqualizacaoTecnicaAnexoExtra) {
+            return response()->json(['error' => 'Item não encontrado ' . trans('common.not-found')], 404);
+        }
+
+        $qcEqualizacaoTecnicaAnexoExtra->nome = $request->nome;
+        if($request->arquivo){
+            $qcEqualizacaoTecnicaAnexoExtra->arquivo = $request->arquivo->store('public/anexos');
+        }
+        $qcEqualizacaoTecnicaAnexoExtra->save();
+
+        return $qcEqualizacaoTecnicaAnexoExtra;
     }
 }

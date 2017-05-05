@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class QcEqualizacaoTecnicaAnexoExtra
@@ -12,15 +11,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class QcEqualizacaoTecnicaAnexoExtra extends Model
 {
-    use SoftDeletes;
 
     public $table = 'qc_equalizacao_tecnica_anexo_extra';
     
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
-
-
-    protected $dates = ['deleted_at'];
 
 
     public $fillable = [
@@ -47,7 +42,8 @@ class QcEqualizacaoTecnicaAnexoExtra extends Model
      * @var array
      */
     public static $rules = [
-        
+        'arquivo' => 'required',
+        'nome' => 'required'
     ];
 
     /**

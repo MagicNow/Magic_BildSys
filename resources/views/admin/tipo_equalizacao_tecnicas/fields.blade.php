@@ -76,30 +76,33 @@
                         <?php $qtdanexos = 0; ?>
                         @foreach($tipoEqualizacaoTecnica->anexos as $anexo)
                             <?php $qtdanexos= $anexo->id; ?>
-                            <div id="arquivo_{{$qtdanexos}}">
+                            <div class="row" id="arquivo_{{$qtdanexos}}">
                                 <!-- idioma Id Field -->
-                                <div class="form-group col-sm-7">
+                                <div class="form-group col-sm-11">
                                     {!! Form::label('anexos['.$qtdanexos.'][nome]', 'Nome:') !!}
                                     {!! Form::text('anexos['.$qtdanexos.'][nome]', $anexo->nome, ['class' => 'form-control']) !!}
                                 </div>
-                                <div class="form-group col-sm-7">
-                                    {!! Form::label('anexos['.$qtdanexos.'][arquivo]', 'Imagem:') !!}
-                                    {!! Form::hidden('anexos['.$qtdanexos.'][arquivo_atual]',$anexo->arquivo) !!}
-                                    {!! Form::hidden('anexos['.$qtdanexos.'][id]',$anexo->id) !!}
-                                    {!! Form::hidden('anexos['.$qtdanexos.'][tipo_equalizacao_tecnica_id]',$anexo->tipo_equalizacao_tecnica_id) !!}
-                                    <a href="{!! Storage::url($anexo->arquivo) !!}" target="_blank" title="Exibir imagem">
-                                        <img src="{!! Storage::url($anexo->arquivo) !!}" width="100">
-                                    </a>
-                                    {!! Form::file('anexos['.$qtdanexos.'][arquivo]', null, ['class' => 'form-control']) !!}
-                                </div>
-
                                 <div class="form-group col-sm-1">
                                     <button type="button" onclick="remExtra({{$qtdanexos}},'arquivo_')" class="btn btn-danger" style="margin-top: 24px" title="Remover">
                                         <i class="fa fa-times"></i>
                                     </button>
                                 </div>
-
+                                <div class="form-group col-sm-12">
+                                    {!! Form::label('anexos['.$qtdanexos.'][arquivo]', 'Anexo:') !!}
+                                    {!! Form::hidden('anexos['.$qtdanexos.'][arquivo_atual]',$anexo->arquivo) !!}
+                                    {!! Form::hidden('anexos['.$qtdanexos.'][id]',$anexo->id) !!}
+                                    {!! Form::hidden('anexos['.$qtdanexos.'][tipo_equalizacao_tecnica_id]',$anexo->tipo_equalizacao_tecnica_id) !!}
+                                    <a href="{!! Storage::url($anexo->arquivo) !!}" class="btn btn-link btn-block btn-lg" target="_blank" title="Exibir imagem">
+                                        @if(substr($anexo->arquivo,-3)=='png'||substr($anexo->arquivo,-3)=='jpg'||substr($anexo->arquivo,-3)=='gif')
+                                            <img src="{!! Storage::url($anexo->arquivo) !!}" width="100">
+                                        @else
+                                            <i class="fa fa-paperclip" aria-hidden="true"></i> {{ substr( $anexo->arquivo, strrpos($anexo->arquivo,'/')+1) }}
+                                        @endif
+                                    </a>
+                                    {!! Form::file('anexos['.$qtdanexos.'][arquivo]', null, ['class' => 'form-control','placeholder'=>'Alterar']) !!}
+                                </div>
                             </div>
+                            <hr>
                         @endforeach
                     @endif
                 </div>
