@@ -24,7 +24,6 @@
       </div>
     @endif
 
-
     <div class="box box-solid">
       <div class="box-body">
         <div class="row">
@@ -32,7 +31,7 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-md-3">
+          <div class="col-md-2">
             <div class="form-group">
               <label for="fornecedor_id">Fornecedor</label>
               {!!
@@ -55,7 +54,7 @@
               Obrigações BILD
             </a>
           </div>
-          <div class="col-md-9">
+          <div class="col-md-10">
             <div class="box box-muted box-equalizacao-tecnica">
               <div class="box-header with-border">Equalização Técnica</div>
               <div class="box-body">
@@ -132,6 +131,38 @@
                 <a href="#modal-anexos" data-toggle="modal" class="btn btn-primary">
                   Anexos
                 </a>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3 hidden">
+            <div class="form-group">
+              <div class="row">
+                <label class="col-md-5">
+                  % Mão de Obra
+                </label>
+                <div class="col-md-7">
+                  <input type="text" class="form-control decimal">
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="row">
+                <label class="col-md-5">
+                  % Material
+                </label>
+                <div class="col-md-7">
+                  <input type="text" class="form-control decimal">
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="row">
+                <label class="col-md-5">
+                  % Faturamento Direto
+                </label>
+                <div class="col-md-7">
+                  <input type="text" class="form-control decimal">
+                </div>
               </div>
             </div>
           </div>
