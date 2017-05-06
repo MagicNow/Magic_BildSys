@@ -72,7 +72,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
      *
      * @return Response
      */
-    public function show($id)
+    public function show($id, QcItensDataTable $qcItensDataTable)
     {
         $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->findWithoutFail($id);
 
@@ -81,8 +81,9 @@ class QuadroDeConcorrenciaController extends AppBaseController
 
             return redirect(route('quadroDeConcorrencias.index'));
         }
+        $show = 1;
 
-        return view('quadro_de_concorrencias.show')->with('quadroDeConcorrencia', $quadroDeConcorrencia);
+        return $qcItensDataTable->with('show', $show)->render('quadro_de_concorrencias.show', compact('quadroDeConcorrencia', 'show') );
     }
 
     /**
@@ -100,6 +101,11 @@ class QuadroDeConcorrenciaController extends AppBaseController
             Flash::error('Quadro De Concorrencia ' . trans('common.not-found'));
 
             return redirect(route('quadroDeConcorrencias.index'));
+        }
+        // Se estiver em aprovação não pode editar, redireciona para show
+        if($quadroDeConcorrencia->qc_status_id == 3){
+            Flash::error('Quadro De Concorrencia <strong>EM APROVAÇÃO</strong>, não é possível editar');
+            return redirect(route('quadroDeConcorrencias.show',$quadroDeConcorrencia->id));
         }
 
         return $qcItensDataTable->render('quadro_de_concorrencias.edit', compact('quadroDeConcorrencia') );
@@ -126,9 +132,19 @@ class QuadroDeConcorrenciaController extends AppBaseController
         $input['user_update_id'] = Auth::id();
         $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->update($input, $id);
 
-        Flash::success('Quadro De Concorrencia ' . trans('common.updated') . ' ' . trans('common.successfully') . '.');
+        if(!$request->has('fechar_qc')){
+            Flash::success('Quadro De Concorrencia ' . trans('common.updated') . ' ' . trans('common.successfully') . '.');
+        }else{
+            Flash::success('Quadro De Concorrencia colocado em aprovação.');
+        }
 
-        return redirect(route('quadroDeConcorrencias.index'));
+
+        if(!$request->has('manter')){
+            return redirect(route('quadroDeConcorrencias.index')); 
+        }else{
+            return redirect(route('quadroDeConcorrencias.edit',$quadroDeConcorrencia->id));
+        }
+        
     }
 
     /**

@@ -67,11 +67,7 @@ class QcItensDataTable extends DataTable
      */
     public function html()
     {
-        return $this->builder()
-            ->columns($this->getColumns())
-            ->ajax('')
-            ->parameters([
-                'initComplete' => 'function () {
+        $parametersinitComplete = 'function () {
                     max = this.api().columns().count();
                     this.api().columns().every(function (col) {
                         if((col+1)<max){
@@ -100,7 +96,36 @@ class QcItensDataTable extends DataTable
                             $(column.footer()).addClass(\'text-center\');
                         }
                     });
-                }' ,
+                }';
+        if($this->show){
+            $parametersinitComplete = 'function () {
+                    max = this.api().columns().count();
+                    this.api().columns().every(function (col) {
+                        var column = this;
+                        var input = document.createElement("input");
+                        $(input).attr(\'placeholder\',\'Filtrar...\');
+                        $(input).addClass(\'form-control\');
+                        $(input).addClass(\'form-control\');
+                        $(input).css(\'width\',\'100%\');
+                        $(input).appendTo($(column.footer()).empty())
+                        .on(\'change\', function () {
+                            column.search($(this).val(), false, false, true).draw();
+                        })
+                        .keydown(function(event){
+                            if(event.keyCode == 13) {
+                                event.preventDefault();
+                                column.search($(this).val(), false, false, true).draw();
+                                return false;
+                            }
+                        });
+                    });
+                }';
+        }
+        return $this->builder()
+            ->columns($this->getColumns())
+            ->ajax('')
+            ->parameters([
+                'initComplete' => $parametersinitComplete ,
 //                "lengthChange"=> true,
                 "pageLength"=> 25,
                 'dom' => 'Brltip',
@@ -133,7 +158,7 @@ class QcItensDataTable extends DataTable
      */
     protected function getColumns()
     {
-        return [
+        $columns = [
             'id' => ['name' => 'qc_itens.id', 'data' => 'id', 'width'=>'8%'],
             'Insumo' => ['name' => 'insumo_nome', 'data' => 'insumo_nome'],
             'qtd' => ['name' => 'qc_itens.qtd', 'data' => 'qtd'],
@@ -141,6 +166,10 @@ class QcItensDataTable extends DataTable
             'Obra(s)' => ['name' => 'obras', 'data' => 'obras', 'width'=>'12%'],
             'action' => ['title'          => 'Ações', 'printable'      => false, 'width'=>'30px'],
         ];
+        if($this->show){
+            unset($columns['action']);
+        }
+        return $columns;
     }
 
     /**

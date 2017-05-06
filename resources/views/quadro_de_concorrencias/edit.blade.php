@@ -17,7 +17,7 @@
     </section>
     <div class="content">
         @include('adminlte-templates::common.errors')
-        <div class="box box-primary">
+        <div class="box box-warning">
             <div class="box-body">
                 <div class="row">
                 {!! Form::model($quadroDeConcorrencia, ['route' => ['quadroDeConcorrencias.update', $quadroDeConcorrencia->id], 'method' => 'patch']) !!}
@@ -25,10 +25,26 @@
                 @include('quadro_de_concorrencias.fields')
 
                 <!-- Submit Field -->
-                    <div class="form-group col-sm-6 pull-right">
+                    <div class="form-group col-sm-6 pull-right text-right">
+
                         {!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save') ), [
-                            'class' => 'btn btn-success btn-lg pull-right btn-flat',
+                            'class' => 'btn btn-success btn-lg btn-flat',
                             'type'=>'submit']) !!}
+
+                        {!! Form::button( '<i class="fa fa-save"></i> Salvar e manter', [
+                            'class' => 'btn btn-success btn-lg btn-flat',
+                            'value' => '1',
+                            'name' => 'manter',
+                            'style' => 'margin-left:10px',
+                            'type'=>'submit']) !!}
+
+                        {!! Form::button( '<i class="fa fa-check-square"></i> Fechar e enviar para aprovação', [
+                            'class' => 'btn btn-success btn-lg btn-flat',
+                            'value' => '1',
+                            'name' => 'fechar_qc',
+                            'style' => 'margin-left:10px',
+                            'type'=>'submit']) !!}
+
 
                     </div>
 

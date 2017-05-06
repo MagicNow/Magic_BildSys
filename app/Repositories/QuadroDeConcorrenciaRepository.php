@@ -114,6 +114,23 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
         $model = $this->updateRelations($model, $attributes);
         $model->save();
 
+        if(isset($attributes['fechar_qc'])){
+            // Muda status do QC
+            $model->qc_status_id = 3; // em aprovação
+            $model->save();
+            QcStatusLog::create([
+                'quadro_de_concorrencia_id' => $model->id,
+                'qc_status_id' => 2, // Fechado
+                'user_id' => $attributes['user_update_id']
+            ]);
+
+            QcStatusLog::create([
+                'quadro_de_concorrencia_id' => $model->id,
+                'qc_status_id' => $model->qc_status_id, // Em aprovação
+                'user_id' => $attributes['user_update_id']
+            ]);
+        }
+
         return $this->parserResult($model);
     }
 

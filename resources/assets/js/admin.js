@@ -36,7 +36,7 @@ $(function () {
     });
     $('.colorbox').colorbox({transition: "fade", width: "95%", height: "95%"});
     $('form').submit(function (evento) {
-        $('.box.box-primary').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
+        $('.content').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
     });
 
     $('.money').mask('0.000.000.000.000,00', {reverse: true});
