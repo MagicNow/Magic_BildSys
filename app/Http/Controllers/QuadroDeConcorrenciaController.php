@@ -13,6 +13,7 @@ use App\Http\Requests\UpdateEqualizacaoTecnicaAnexoExtraRequest;
 use App\Models\QcEqualizacaoTecnicaAnexoExtra;
 use App\Models\QcEqualizacaoTecnicaExtra;
 use App\Models\QcFornecedor;
+use App\Models\QcItem;
 use App\Repositories\QuadroDeConcorrenciaRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
@@ -353,5 +354,62 @@ class QuadroDeConcorrenciaController extends AppBaseController
         $qcEqualizacaoTecnicaAnexoExtra->save();
 
         return $qcEqualizacaoTecnicaAnexoExtra;
+    }
+
+    public function desagrupar($QCid, $id){
+        $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->findWithoutFail($QCid);
+
+        if (empty($quadroDeConcorrencia)) {
+            return response()->json(['error' => 'Quadro De Concorrencia ' . trans('common.not-found')], 404);
+        }
+
+        $qcItem = QcItem::find($id);
+        $ordemDeCompraItens = $qcItem->oc_itens;
+
+        foreach ($ordemDeCompraItens as $ocItem){
+            $novoQcItem = QcItem::create([
+                'quadro_de_concorrencia_id'=>$quadroDeConcorrencia->id,
+                'qtd'=> $ocItem->getOriginal('qtd'),
+                'insumo_id' => $ocItem->insumo_id
+            ]);
+            $novoQcItem->oc_itens()->attach($ocItem->id);
+        }
+
+        return response()->json(['success'=>$qcItem->delete()]);
+    }
+
+    public function agrupar($QCid, Request $request){
+
+        $this->validate($request,['itens'=>'required|min:2'],['itens.min'=>'São necessários no mínimo 2 itens']);
+
+        $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->findWithoutFail($QCid);
+
+        if (empty($quadroDeConcorrencia)) {
+            return response()->json(['error' => 'Quadro De Concorrencia ' . trans('common.not-found')], 404);
+        }
+
+        $qcItens = QcItem::whereIn('id',$request->itens)->get();
+        $qcItensQtd = QcItem::whereIn('id',$request->itens)->sum('qtd');
+        $qcItem = QcItem::whereIn('id',$request->itens)->first();
+
+        // Cria o novo QCitem agrupado
+        $novoQcItem = QcItem::create([
+            'quadro_de_concorrencia_id'=>$quadroDeConcorrencia->id,
+            'qtd'=> $qcItensQtd,
+            'insumo_id' => $qcItem->insumo_id
+        ]);
+
+        // Amarra os itens de ordem de compra neste novo QC Item
+        foreach ($qcItens as $qcItem){
+            $ordemDeCompraItens = $qcItem->oc_itens;
+
+            foreach ($ordemDeCompraItens as $ocItem) {
+                $novoQcItem->oc_itens()->attach($ocItem->id);
+            }
+        }
+        // Depois de amarrados remove todos os antigos
+        $remover = QcItem::whereIn('id',$request->itens)->delete();
+
+        return response()->json(['success'=>$remover]);
     }
 }

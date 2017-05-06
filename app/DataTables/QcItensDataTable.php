@@ -94,13 +94,9 @@ class QcItensDataTable extends DataTable
                             });
                         }else{
                             var column = this;
-                            var input = document.createElement("input");
-                            $(input).attr(\'type\',\'checkbox\');
-                            $(input).attr(\'id\',\'checkUncheckAll\');
-                            $(input).appendTo($(column.footer()).empty())
-                            .on(\'change\', function () {
-                                $(\'.item_checks\').prop("checked", $(this).prop("checked"));
-                            });
+                            var input = document.createElement("div");
+                            $(input).html(\'<button type="button" class="btn btn-xs btn-warning btn-flat" title="Agrupar selecionados" onclick="agrupar()"><i class="fa fa-chain" aria-hidden="true"></i></button>\');
+                            $(input).appendTo($(column.footer()).empty());
                             $(column.footer()).addClass(\'text-center\');
                         }
                     });

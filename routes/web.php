@@ -499,6 +499,10 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
                 'as' => 'quadroDeConcorrencias.editareqtanexo',
                 'uses' => 'QuadroDeConcorrenciaController@editarEqtAnexo'
             ])->middleware("needsPermission:quadroDeConcorrencias.edit");
+        $router->get('quadro-de-concorrencia/{quadroDeConcorrencias}/desagrupar/{itemId}', 'QuadroDeConcorrenciaController@desagrupar')
+            ->middleware("needsPermission:quadroDeConcorrencias.edit");
+        $router->post('quadro-de-concorrencia/{quadroDeConcorrencias}/agrupar', 'QuadroDeConcorrenciaController@agrupar')
+            ->middleware("needsPermission:quadroDeConcorrencias.edit");
     });
 
     $router->get('tipos-equalizacoes-tecnicas/busca', 'Admin\TipoEqualizacaoTecnicaController@busca');

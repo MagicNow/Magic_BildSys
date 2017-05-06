@@ -626,3 +626,90 @@ function removerFornecedor(qual, qcFornecedorId) {
         $('#qcFornecedor_id' + qual).remove();
     }
 }
+
+// Funções de Agrupar e Desagrupar
+function desagrupar(qual) {
+    // Remover no banco
+    swal({
+        title: 'Deseja desagrupar este item?',
+        text: 'Ao desagrupar qualquer precificação de fornecedores já gravadas serão perdidas.',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Sim, tenho certeza!",
+        cancelButtonText: "Não",
+        closeOnConfirm: false
+    }, function () {
+        $.ajax("/quadro-de-concorrencia/" + quadroDeConcorrenciaId + "/desagrupar/" + qual)
+            .success(function (retorno) {
+                window.LaravelDataTables["dataTableBuilder"].draw();
+                swal('Item ' + qual + ' desagrupado', '', 'success');
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+            swal('Erro', jqXHR.responseText, 'error');
+        });
+    });
+}
+
+function agrupar() {
+    var itens_a_agrupar = [];
+    var insumo_a_agrupar = null;
+    var erro = false;
+    $('.qc_item_checks').each(function (index) {
+        if ($(this).is(':checked')) {
+            itens_a_agrupar.push($(this).val());
+            if (insumo_a_agrupar) {
+                if (insumo_a_agrupar != $(this).attr('insumo')) {
+                    swal('Não é possível agrupar itens de insumos diferentes', '', 'error');
+                    itens_a_agrupar.pop();
+                    erro = true;
+                }
+            } else {
+                insumo_a_agrupar = $(this).attr('insumo');
+            }
+        }
+    });
+    if (!erro) {
+        // Verifica qtd de itens agrupados se é maior que um
+        if (itens_a_agrupar.length <= 1) {
+            swal('Escolha um ou mais itens para agrupar','','error');
+            return false;
+        }
+        // Confirma agrupamento de itens
+        swal({
+            title: 'Deseja agrupar estes itens?',
+            text: 'Ao agrupar qualquer precificação de fornecedores já gravadas serão perdidas.',
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Sim, tenho certeza!",
+            cancelButtonText: "Não",
+            closeOnConfirm: false
+        }, function () {
+            // Manda os itens para a função de agrupar
+
+            $.ajax("/quadro-de-concorrencia/" + quadroDeConcorrenciaId + "/agrupar", {
+                type: 'POST',
+                data: {
+                    itens: itens_a_agrupar,
+
+                    _token: $('meta[name="csrf-token"]').attr('content')
+                }
+            })
+                .success(function (retorno) {
+                    window.LaravelDataTables["dataTableBuilder"].draw();
+                    swal('Itens agrupados', '', 'success');
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                var textResponse = jqXHR.responseText;
+                var alertText = "Confira as mensagens abaixo:\n\n";
+                var jsonResponse = jQuery.parseJSON(textResponse);
+
+                $.each(jsonResponse, function (n, elem) {
+                    alertText = alertText + elem + "\n";
+                });
+                swal('Erro', alertText, 'error');
+            });
+        });
+
+
+    }
+}
