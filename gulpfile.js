@@ -191,4 +191,8 @@ elixir(function(mix) {
         'workflow.js',
     ], 'public/js/admin.js');
 
+    mix.scripts([
+        'quadro-de-concorrencia.js',
+    ], 'public/js/qc.js');
+
 });

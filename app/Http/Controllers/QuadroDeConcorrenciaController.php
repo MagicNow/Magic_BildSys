@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\QcItensDataTable;
 use App\DataTables\QuadroDeConcorrenciaDataTable;
 use App\Http\Requests;
 use App\Http\Requests\UpdateQuadroDeConcorrenciaRequest;
@@ -45,7 +46,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
      *
      * @return Response
      */
-    public function create(Request $request)
+    public function create(Request $request, QcItensDataTable $qcItensDataTable)
     {
         # Validação básica
         validator($request->all(),
@@ -59,7 +60,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
             'user_id' => Auth::id()
         ]);
 
-        return view('quadro_de_concorrencias.edit', compact('quadroDeConcorrencia'));
+        return $qcItensDataTable->render('quadro_de_concorrencias.edit', compact('quadroDeConcorrencia') );
     }
 
 
@@ -90,7 +91,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
      *
      * @return Response
      */
-    public function edit($id)
+    public function edit($id, QcItensDataTable $qcItensDataTable)
     {
         $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->findWithoutFail($id);
 
@@ -100,7 +101,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
             return redirect(route('quadroDeConcorrencias.index'));
         }
 
-        return view('quadro_de_concorrencias.edit', compact('quadroDeConcorrencia'));
+        return $qcItensDataTable->render('quadro_de_concorrencias.edit', compact('quadroDeConcorrencia') );
     }
 
     /**

@@ -16085,7 +16085,7 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "/var/www/html/bild/resources/assets/js/components/generic-paginator.vue"
+__vue_options__.__file = "/Users/rafael/code/fcmoreno/bild-sys/resources/assets/js/components/generic-paginator.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
 
@@ -16096,9 +16096,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-cb19233a", __vue_options__)
+    hotAPI.createRecord("data-v-67059816", __vue_options__)
   } else {
-    hotAPI.reload("data-v-cb19233a", __vue_options__)
+    hotAPI.reload("data-v-67059816", __vue_options__)
   }
 })()}
 if (__vue_options__.functional) {console.error("[vue-loader] generic-paginator.vue: functional components are not supported and should be defined in plain js files using render functions.")}
@@ -16114,13 +16114,13 @@ var __vue_exports__, __vue_options__
 var __vue_styles__ = {}
 
 /* styles */
-__webpack_require__(189)
+__webpack_require__(188)
 
 /* script */
 __vue_exports__ = __webpack_require__(128)
 
 /* template */
-var __vue_template__ = __webpack_require__(184)
+var __vue_template__ = __webpack_require__(183)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -16132,7 +16132,7 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "/var/www/html/bild/resources/assets/js/components/tabela.vue"
+__vue_options__.__file = "/Users/rafael/code/fcmoreno/bild-sys/resources/assets/js/components/tabela.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
 
@@ -16143,9 +16143,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-79c5094d", __vue_options__)
+    hotAPI.createRecord("data-v-0d8bf17a", __vue_options__)
   } else {
-    hotAPI.reload("data-v-79c5094d", __vue_options__)
+    hotAPI.reload("data-v-0d8bf17a", __vue_options__)
   }
 })()}
 if (__vue_options__.functional) {console.error("[vue-loader] tabela.vue: functional components are not supported and should be defined in plain js files using render functions.")}
@@ -16179,7 +16179,7 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "/var/www/html/bild/resources/assets/js/components/tile-grafico.vue"
+__vue_options__.__file = "/Users/rafael/code/fcmoreno/bild-sys/resources/assets/js/components/tile-grafico.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
 
@@ -16190,9 +16190,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-981a9be4", __vue_options__)
+    hotAPI.createRecord("data-v-6537f70a", __vue_options__)
   } else {
-    hotAPI.reload("data-v-981a9be4", __vue_options__)
+    hotAPI.reload("data-v-6537f70a", __vue_options__)
   }
 })()}
 if (__vue_options__.functional) {console.error("[vue-loader] tile-grafico.vue: functional components are not supported and should be defined in plain js files using render functions.")}
@@ -16208,13 +16208,13 @@ var __vue_exports__, __vue_options__
 var __vue_styles__ = {}
 
 /* styles */
-__webpack_require__(188)
+__webpack_require__(189)
 
 /* script */
 __vue_exports__ = __webpack_require__(130)
 
 /* template */
-var __vue_template__ = __webpack_require__(183)
+var __vue_template__ = __webpack_require__(184)
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -16226,7 +16226,7 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-__vue_options__.__file = "/var/www/html/bild/resources/assets/js/components/tile.vue"
+__vue_options__.__file = "/Users/rafael/code/fcmoreno/bild-sys/resources/assets/js/components/tile.vue"
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
 
@@ -16237,9 +16237,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-691602d4", __vue_options__)
+    hotAPI.createRecord("data-v-437be3fa", __vue_options__)
   } else {
-    hotAPI.reload("data-v-691602d4", __vue_options__)
+    hotAPI.reload("data-v-437be3fa", __vue_options__)
   }
 })()}
 if (__vue_options__.functional) {console.error("[vue-loader] tile.vue: functional components are not supported and should be defined in plain js files using render functions.")}
@@ -29373,7 +29373,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n.element-border{\n    width: 100%;\n    border: solid 1px #dddddd;\n}\n.element-border > .head-grey {\n    background-color: #9b9b9b;\n}\n.element-border > .head-red{\n    background-color: #eb0000;\n}\n.element-border > .head-green{\n    background-color: #7ed321;\n}\n.element-border > thead > tr > th{\n    padding: 10px 0px 10px 0px;\n    color: #f5f5f5;\n    font-family: Raleway;\n    font-weight: bold;\n    text-align: center;\n}\n.element-border > tbody{\n    background-color: white;\n}\n.element-border > tbody > tr {\n    cursor:pointer;\n    height: 50px;\n    border-bottom: solid 1px #dddddd;\n}\n.element-border > tbody > tr > td {\n    text-align: center;\n}\n.element-border > tbody > tr > td >span{\n    color: #474747;\n}\n.element-border > tbody > tr > td:first-child >span {\n    color: #4a90e2;\n    padding: 5px 10px 5px 10px;\n    border-right: solid 1px #dddddd;\n}\n.element-border > tbody > tr > td:last-child > span{\n    padding: 5px 10px 5px 10px;\n    border-left: solid 1px #dddddd;\n}\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -29387,7 +29387,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n.element-border{\n    width: 100%;\n    border: solid 1px #dddddd;\n}\n.element-border > .head-grey {\n    background-color: #9b9b9b;\n}\n.element-border > .head-red{\n    background-color: #eb0000;\n}\n.element-border > .head-green{\n    background-color: #7ed321;\n}\n.element-border > thead > tr > th{\n    padding: 10px 0px 10px 0px;\n    color: #f5f5f5;\n    font-family: Raleway;\n    font-weight: bold;\n    text-align: center;\n}\n.element-border > tbody{\n    background-color: white;\n}\n.element-border > tbody > tr {\n    cursor:pointer;\n    height: 50px;\n    border-bottom: solid 1px #dddddd;\n}\n.element-border > tbody > tr > td {\n    text-align: center;\n}\n.element-border > tbody > tr > td >span{\n    color: #474747;\n}\n.element-border > tbody > tr > td:first-child >span {\n    color: #4a90e2;\n    padding: 5px 10px 5px 10px;\n    border-right: solid 1px #dddddd;\n}\n.element-border > tbody > tr > td:last-child > span{\n    padding: 5px 10px 5px 10px;\n    border-left: solid 1px #dddddd;\n}\n", ""]);
 
 // exports
 
@@ -46769,38 +46769,6 @@ webpackContext.id = 182;
 /***/ function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', [_c('table', {
-    staticClass: "element-border"
-  }, [_c('thead', {
-    class: [_vm.titleColor]
-  }, [_c('tr', [_c('th', {
-    attrs: {
-      "colspan": "3"
-    }
-  }, [_vm._v(_vm._s(_vm.title))])])]), _vm._v(" "), _c('tbody', _vm._l((_vm.dados), function(dado) {
-    return (_vm.dados.length > 0) ? _c('tr', _vm._l((_vm.chaves), function(chave) {
-      return _c('td', {
-        on: {
-          "click": function($event) {
-            _vm.goToDetail(dado['id'])
-          }
-        }
-      }, [_c('span', [_vm._v(" " + _vm._s(dado[chave]))])])
-    })) : _vm._e()
-  }))])])
-},staticRenderFns: []}
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-691602d4", module.exports)
-  }
-}
-
-/***/ },
-/* 184 */
-/***/ function(module, exports, __webpack_require__) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', [(_vm.actions.filtros != undefined) ? _c('div', [_c('div', {
     staticClass: "col-md-12",
     staticStyle: {
@@ -47206,7 +47174,39 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-79c5094d", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-0d8bf17a", module.exports)
+  }
+}
+
+/***/ },
+/* 184 */
+/***/ function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', [_c('table', {
+    staticClass: "element-border"
+  }, [_c('thead', {
+    class: [_vm.titleColor]
+  }, [_c('tr', [_c('th', {
+    attrs: {
+      "colspan": "3"
+    }
+  }, [_vm._v(_vm._s(_vm.title))])])]), _vm._v(" "), _c('tbody', _vm._l((_vm.dados), function(dado) {
+    return (_vm.dados.length > 0) ? _c('tr', _vm._l((_vm.chaves), function(chave) {
+      return _c('td', {
+        on: {
+          "click": function($event) {
+            _vm.goToDetail(dado['id'])
+          }
+        }
+      }, [_c('span', [_vm._v(" " + _vm._s(dado[chave]))])])
+    })) : _vm._e()
+  }))])])
+},staticRenderFns: []}
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-437be3fa", module.exports)
   }
 }
 
@@ -47238,7 +47238,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-981a9be4", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-6537f70a", module.exports)
   }
 }
 
@@ -47339,7 +47339,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-cb19233a", module.exports)
+     require("vue-hot-reload-api").rerender("data-v-67059816", module.exports)
   }
 }
 
@@ -48912,8 +48912,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-691602d4!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./tile.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-691602d4!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./tile.vue");
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-0d8bf17a!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./tabela.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-0d8bf17a!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./tabela.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -48938,8 +48938,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-79c5094d!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./tabela.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-79c5094d!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./tabela.vue");
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-437be3fa!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./tile.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-437be3fa!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./tile.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -48964,8 +48964,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-981a9be4!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./tile-grafico.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-981a9be4!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./tile-grafico.vue");
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-6537f70a!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./tile-grafico.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-6537f70a!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./tile-grafico.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -48990,8 +48990,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-cb19233a!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./generic-paginator.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-cb19233a!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./generic-paginator.vue");
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-67059816!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./generic-paginator.vue", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-67059816!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./generic-paginator.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
