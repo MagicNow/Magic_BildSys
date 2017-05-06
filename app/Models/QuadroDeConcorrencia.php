@@ -112,4 +112,50 @@ class QuadroDeConcorrencia extends Model
     {
         return $this->belongsToMany(TipoEqualizacaoTecnica::class, 'qc_tipo_equalizacao_tecnica','quadro_de_concorrencia_id','tipo_equalizacao_tecnica_id')->withTimestamps();
     }
+
+    // Funções da aprovação
+
+    /**
+     * Tipo de Workflow, necessário para models que são aprováveis
+     *
+     * @var integer
+     */
+    public static $workflow_tipo_id = 2; // Tipo = Workflow Validação de Escopo Q.C.
+
+    public function aprovacoes(){
+        return $this->morphMany(WorkflowAprovacao::class, 'aprovavel');
+    }
+
+    public function irmaosIds(){
+        return [$this->attributes['id'] => $this->attributes['id']];
+    }
+
+    public function paiEmAprovacao(){
+        return false;
+    }
+
+    public function confereAprovacaoGeral(){
+        return false;
+    }
+
+    public function qualObra(){
+        return null;
+    }
+
+    public function aprova($valor){
+        if($valor){
+            $qc_status_id = 5;
+        }else{
+            $qc_status_id = 4;
+        }
+        $this->attributes['qc_status_id'] = $qc_status_id;
+        $this->save();
+
+        QcStatusLog::create([
+            'quadro_de_concorrencia_id' => $this->attributes['id'],
+            'qc_status_id' => $this->attributes['qc_status_id'],
+            'user_id' => $this->attributes['user_id']
+        ]);
+
+    }
 }

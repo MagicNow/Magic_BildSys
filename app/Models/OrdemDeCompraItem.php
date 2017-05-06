@@ -99,13 +99,7 @@ class OrdemDeCompraItem extends Model
 
         $this->attributes['qtd'] = $result;
     }
-
-    /**
-     * Tipo de Workflow, necessário para models que são aprováveis
-     *
-     * @var integer
-     */
-    public static $workflow_tipo_id = 1; // Tipo = Aprovação de OC
+    
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -205,6 +199,13 @@ class OrdemDeCompraItem extends Model
 
     // Funções da aprovação
 
+    /**
+     * Tipo de Workflow, necessário para models que são aprováveis
+     *
+     * @var integer
+     */
+    public static $workflow_tipo_id = 1; // Tipo = Aprovação de OC
+
     public function aprovacoes(){
         return $this->morphMany(WorkflowAprovacao::class, 'aprovavel');
     }
@@ -250,5 +251,11 @@ class OrdemDeCompraItem extends Model
 
     public function qualObra(){
         return $this->ordemDeCompra->obra_id;
+    }
+
+    public function aprova($valor){
+        $this->timestamps = false;
+        $this->attributes['aprovado'] = $valor;
+        $this->save();
     }
 }

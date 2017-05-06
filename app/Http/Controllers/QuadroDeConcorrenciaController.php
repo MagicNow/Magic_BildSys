@@ -14,6 +14,7 @@ use App\Models\QcEqualizacaoTecnicaAnexoExtra;
 use App\Models\QcEqualizacaoTecnicaExtra;
 use App\Models\QcFornecedor;
 use App\Models\QcItem;
+use App\Models\WorkflowReprovacaoMotivo;
 use App\Repositories\QuadroDeConcorrenciaRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
@@ -83,7 +84,12 @@ class QuadroDeConcorrenciaController extends AppBaseController
         }
         $show = 1;
 
-        return $qcItensDataTable->with('show', $show)->render('quadro_de_concorrencias.show', compact('quadroDeConcorrencia', 'show') );
+        $motivos_reprovacao = WorkflowReprovacaoMotivo::where(function($query){
+            $query->where('workflow_tipo_id',2);
+            $query->orWhereNull('workflow_tipo_id');
+        })->pluck('nome','id')->toArray();
+
+        return $qcItensDataTable->with('show', $show)->render('quadro_de_concorrencias.show', compact('quadroDeConcorrencia', 'show', 'motivos_reprovacao') );
     }
 
     /**

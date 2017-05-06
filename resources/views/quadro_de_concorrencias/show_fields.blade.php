@@ -11,10 +11,10 @@
         border-radius: 0px !important;
     }
 </style>
+
 <!-- Fornecedores Field -->
 <div class="form-group col-sm-6">
     <div class="row">
-
         <div class="col-md-12">
             {!! Form::label('qcFornecedores[]', 'Fornecedores Adicionados') !!}
             <ul class="list-group bloco_filtro" id="fornecedoresSelecionados">

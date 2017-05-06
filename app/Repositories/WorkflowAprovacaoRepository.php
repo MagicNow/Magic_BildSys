@@ -269,20 +269,16 @@ class WorkflowAprovacaoRepository
         if($qtd_aprovadores){
             // Divide a qtd de aprovações/reprovações pela quantidade de aprovadores
             $avaliacoes = $total_ja_votado['total_avaliado']/$qtd_aprovadores;
+
             if($avaliacoes===1){
                 // Se for já salva se foi aprovado ou reprovado
-                $obj->timestamps = false;
-                $obj->aprovado = ($total_ja_votado['total_aprovado']===$total_ja_votado['total_avaliado']);
-                $obj->save();
+                $obj->aprova($total_ja_votado['total_aprovado']===$total_ja_votado['total_avaliado']);
                 // Chama função do model do item que irá verificar batendo no pai se todos os filhos foram aprovados
                 $obj->confereAprovacaoGeral();
             }
         }
 
-
-
         return $salvo;
-        
     }
     
     private static function verificaTotalaAprovar($tipo, $ids){
@@ -323,7 +319,7 @@ class WorkflowAprovacaoRepository
         ];
     }
 
-    public static function verificaQuantidadeUsuariosAprovadores($workflow_tipo_id, $obra_id, $alcada = null){
+    public static function verificaQuantidadeUsuariosAprovadores($workflow_tipo_id, $obra_id = null, $alcada = null){
         $qtd_usuarios = 0;
 
         $workflow_alcadas = WorkflowAlcada::where('workflow_tipo_id',$workflow_tipo_id);
@@ -335,15 +331,18 @@ class WorkflowAprovacaoRepository
         $workflow_alcadas = $workflow_alcadas->get();
 
         foreach ($workflow_alcadas as $alcadas){
-            $qtd_usuarios += $alcadas->workflowUsuarios()->join('obra_users', 'obra_users.user_id', '=', 'users.id')
-                ->where('obra_users.obra_id', $obra_id)
-                ->count();
+            $queryUsers = $alcadas->workflowUsuarios();
+            if($obra_id){
+                $queryUsers->join('obra_users', 'obra_users.user_id', '=', 'users.id')
+                            ->where('obra_users.obra_id', $obra_id);
+            }
+            $qtd_usuarios += $queryUsers->count();
         }
 
         return $qtd_usuarios;
     }
 
-    public static function verificaUsuariosQueFaltamAprovar($workflow_tipo_id, $obra_id, $alcada){
+    public static function verificaUsuariosQueFaltamAprovar($workflow_tipo_id, $obra_id = null, $alcada = null){
 
         $usuarios_nomes = [];
         $nomes = [];
@@ -353,9 +352,13 @@ class WorkflowAprovacaoRepository
         $workflow_alcadas = $workflow_alcadas->get();
 
         foreach ($workflow_alcadas as $alcadas){
-            $usuarios_nomes[] = $alcadas->workflowUsuarios()->select(['users.id','users.name'])->join('obra_users', 'obra_users.user_id', '=', 'users.id')
-                ->where('obra_users.obra_id', $obra_id)
-                ->get();
+            $queryNomes = $alcadas->workflowUsuarios()
+                ->select(['users.id','users.name'])
+                ->join('obra_users', 'obra_users.user_id', '=', 'users.id');
+            if($obra_id){
+                $queryNomes->where('obra_users.obra_id', $obra_id);
+            }
+            $usuarios_nomes[] = $queryNomes->get();
         }
 
         foreach ($usuarios_nomes as $usuarios) {
