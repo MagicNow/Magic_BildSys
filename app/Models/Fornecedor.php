@@ -39,7 +39,8 @@ class Fornecedor extends Model
         'email',
         'site',
         'telefone',
-        'cep'
+        'cep',
+        'user_id'
     ];
 
     /**
@@ -64,7 +65,8 @@ class Fornecedor extends Model
         'email' => 'string',
         'site' => 'string',
         'telefone' => 'string',
-        'cep' => 'string'
+        'cep' => 'string',
+        'user_id' => 'integer'
     ];
 
     /**
@@ -101,5 +103,9 @@ class Fornecedor extends Model
     public function qcFornecedor()
     {
         return $this->hasMany(QcFornecedor::class);
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class);
     }
 }
