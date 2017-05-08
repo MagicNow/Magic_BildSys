@@ -114,13 +114,13 @@
                     <input @blur="adicionar(dado, i)" v-model.number="quant[i]" type="number" v-bind:value="quant[i]" v-if="dado['pai'] == 0">
                 </td>
                 <td class="row-table" v-if="actions.troca != undefined">
-                    <a  v-if="dado['pai']>0 && dado['pai'] != undefined && dado['unidade_sigla'] == 'VB'" v-bind:href="actions.troca_url+'/'+dado['id'] ">
+                    <a  v-if="dado['pai']>0 && dado['pai'] != undefined && dado['unidade_sigla'] == 'VB' && dado['insumo_grupo_id'] == '1570'" v-bind:href="actions.troca_url+'/'+dado['id'] ">
                         <i class="fa fa-exchange blue"></i>
                     </a>
                     <a  v-if="dado['filho']>0 && dado['filho'] != undefined" v-bind:href="actions.troca_remove+'/'+dado['planejamento_id']">
                         <i class="fa fa-times red"></i>
                     </a>
-                    <a  v-if="dado['filho']==0 && dado['pai']==0 && dado['unidade_sigla'] == 'VB'" v-bind:href="actions.troca_url+'?insumo_pai='+dado['id']+'&planejamento_id='+dado['planejamento_id']">
+                    <a  v-if="dado['filho']==0 && dado['pai']==0 && dado['unidade_sigla'] == 'VB' && dado['insumo_grupo_id'] == '1570'" v-bind:href="actions.troca_url+'?insumo_pai='+dado['id']+'&planejamento_id='+dado['planejamento_id']">
                         <i class="fa fa-exchange grey"></i>
                     </a>
                 </td>

@@ -508,6 +508,7 @@ class OrdemDeCompraController extends AppBaseController
                     DB::raw("CONCAT(insumos.codigo,' - ' ,insumos.nome) as nome"),
                     'insumos.unidade_sigla',
                     'insumos.codigo',
+                    'insumos.insumo_grupo_id',
                     'orcamentos.grupo_id',
                     'orcamentos.subgrupo1_id',
                     'orcamentos.subgrupo2_id',
