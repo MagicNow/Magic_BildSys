@@ -434,4 +434,20 @@ class QuadroDeConcorrenciaController extends AppBaseController
 
         return response()->json(['success'=>$remover]);
     }
+
+    public function acao($QCid, $acao){
+        $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->findWithoutFail($QCid);
+
+        if (empty($quadroDeConcorrencia)) {
+            return response()->json(['error' => 'Quadro De Concorrencia ' . trans('common.not-found')], 404);
+        }
+
+        $acao_executada = $this->quadroDeConcorrenciaRepository->acao($acao,$QCid, Auth::id());
+        if($acao_executada[0]){
+            $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->findWithoutFail($QCid);
+            return response()->json(['success' => true,'quadroDeConcorrencia'=>$quadroDeConcorrencia,'mensagens'=>$acao_executada[1]]);
+        }else{
+            return response()->json(['error' => 'Esta ação não foi possível: ' . $acao_executada[1]], 422);
+        }
+    }
 }

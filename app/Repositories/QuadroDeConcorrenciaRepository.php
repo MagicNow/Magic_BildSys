@@ -2,11 +2,14 @@
 
 namespace App\Repositories;
 
+use App\Mail\IniciaConcorrenciaFornecedorNaoUsuario;
 use App\Models\Fornecedor;
 use App\Models\OrdemDeCompraItem;
 use App\Models\QcItem;
 use App\Models\QcStatusLog;
 use App\Models\QuadroDeConcorrencia;
+use App\Notifications\IniciaConcorrencia;
+use Illuminate\Support\Facades\Mail;
 use InfyOm\Generator\Common\BaseRepository;
 
 class QuadroDeConcorrenciaRepository extends BaseRepository
@@ -132,6 +135,56 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
         }
 
         return $this->parserResult($model);
+    }
+
+    public function acao($acao, $id, $user_id){
+        $quadroDeConcorrencia = $this->findWithoutFail($id);
+        $acao_executada = false;
+        $erro = '';
+        $mensagens = [];
+        switch ($acao){
+            // Ação para Abrir concorrência (onde enviará e-mail aos fornecedores para acessarem e lançarem os preços)
+            case 'inicia-concorrencia':
+                // Altera o status do Q.C.
+                $quadroDeConcorrencia->qc_status_id = 7;
+                $quadroDeConcorrencia->save();
+                QcStatusLog::create([
+                    'quadro_de_concorrencia_id' => $quadroDeConcorrencia->id,
+                    'qc_status_id' => $quadroDeConcorrencia->qc_status_id, // Em Concorrência
+                    'user_id' => $user_id
+                ]);
+                // Envia os avisos aos fornecedores sobre o Q.C.
+                $qcFornecedores = $quadroDeConcorrencia->qcFornecedores;
+                foreach ($qcFornecedores as $qcFornecedor){
+                    // Verifica se o fornecedor tem usuário
+                    if($qcFornecedor->fornecedor){
+                        $fornecedor = $qcFornecedor->fornecedor;
+                        $user = $fornecedor->user;
+                        if($user){
+                            //se tiver já envia uma notificação
+                            $user->notify(new IniciaConcorrencia($quadroDeConcorrencia));
+                        }else{
+                            // Se não tiver envia um e-mail para o fornecedor
+                            if(!strlen($fornecedor->email)) {
+                                $mensagens[] = 'O Fornecedor '.$fornecedor->nome.' não possui acesso e e-mail cadastrado, 
+                                                            por favor faça contato por telefone '.$fornecedor->telefone;
+                            }else{
+                                Mail::to($fornecedor->email)->send(new IniciaConcorrenciaFornecedorNaoUsuario($quadroDeConcorrencia,$fornecedor));
+                            }
+                        }
+                    }
+
+                }
+                $acao_executada = true;
+                break;
+            default:
+                $erro = 'Ação inexistente!';
+                break;
+        }
+        if(!$acao_executada){
+            return [false, $erro];
+        }
+        return [true, $mensagens];
     }
 
     /**

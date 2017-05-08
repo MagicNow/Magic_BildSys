@@ -4,12 +4,12 @@
     <section class="content-header">
         <h1>
             Quadro De Concorrencia {{ $quadroDeConcorrencia->id }}
-            <small class="label label-default pull-right">
+            <small class="label label-default pull-right margin10">
                 <i class="fa fa-clock-o"
                    aria-hidden="true"></i> {{ $quadroDeConcorrencia->created_at->format('d/m/Y H:i') }}
                 <i class="fa fa-user" aria-hidden="true"></i> {{ $quadroDeConcorrencia->user->name }}
             </small>
-            <small class="label label-info pull-right">
+            <small class="label label-info pull-right margin10" id="qc_status">
                 <i class="fa fa-circle" aria-hidden="true" style="color:{{ $quadroDeConcorrencia->status->cor }}"></i>
                 {{ $quadroDeConcorrencia->status->nome }}
             </small>
@@ -63,6 +63,10 @@
                         @endif
                     @endif
                 @endif
+            @elseif($quadroDeConcorrencia->qc_status_id==5)
+                <button type="button" class="btn btn-lg btn-success btn-flat" style="margin-left: 20px" onclick="abrirConcorrencia();">
+                    <i class="fa fa-play-circle-o " aria-hidden="true"></i> Abrir concorrência
+                </button>
             @endif
         </h1>
     </section>
@@ -88,5 +92,45 @@
         }
         ?>
         options_motivos = "{!! $options_motivos !!}";
+
+        function abrirConcorrencia(){
+            swal({
+                title: 'Deseja iniciar a concorrência?',
+                text: 'Ao iniciar a concorrência os fornecedores receberão aviso para acessar a plataforma e efetuar as propostas.',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: "#7ed321",
+                confirmButtonText: "Sim, inicie a concorrência!",
+                cancelButtonText: "Não",
+                showLoaderOnConfirm: true,
+                closeOnConfirm: false
+            }, function () {
+                $.ajax("/quadro-de-concorrencia/" + quadroDeConcorrenciaId + "/acao/inicia-concorrencia").success(function (retorno) {
+                    var texto = '';
+                    if(retorno.mensagens.length){
+                        $.each(retorno.mensagens,function(n,elem){
+                            texto = texto + elem + "\n";
+                        });
+                    }
+                    swal({
+                        title:'Concorrência iniciada!',
+                        text:texto,
+                        type: 'success'
+                    },function () {
+                        document.location.reload();
+                    });
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    var textResponse = jqXHR.responseText;
+                    var alertText = "Confira as mensagens abaixo:\n\n";
+                    var jsonResponse = jQuery.parseJSON(textResponse);
+
+                    $.each(jsonResponse, function (n, elem) {
+                        alertText = alertText + elem + "\n";
+                    });
+                    swal('Erro', alertText, 'error');
+                });
+
+            });
+        }
 </script>
 @stop
