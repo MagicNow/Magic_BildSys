@@ -565,6 +565,27 @@ class OrdemDeCompraController extends AppBaseController
 
         //Aplica filtro do Jhonatan
         $insumos = CodeRepository::filter($insumos, $request->all());
+
+        if($request->grupo){
+            $insumos->where('orcamentos.grupo_id');
+        }
+
+        if($request->subgrupo1){
+            $insumos->where('orcamentos.subgrupo1_id');
+        }
+
+        if($request->subgrupo2){
+            $insumos->where('orcamentos.subgrupo2_id');
+        }
+
+        if($request->subgrupo3){
+            $insumos->where('orcamentos.subgrupo3_id');
+        }
+
+        if($request->servico){
+            $insumos->where('orcamentos.servico_id');
+        }
+
         return response()->json($insumos->paginate(10), 200);
     }
 

@@ -217,6 +217,7 @@
                     }
 
                     history.pushState("", document.title, '/compras/obrasInsumos?obra_id={{$obra->id}}' + url_grupos);
+                    
                 }).fail(function() {
                     $('.overlay').remove();
                 });
