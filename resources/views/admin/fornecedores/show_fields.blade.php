@@ -70,6 +70,15 @@
     <p class="form-control">{!! $fornecedores->complemento !!}</p>
 </div>
 
+<div class="form-group col-sm-6">
+  <div class="checkbox">
+    <label>
+      {!! Form::checkbox('is_user', '1', $fornecedores->is_user, ['readonly', 'disabled']) !!}
+      É usuário
+    </label>
+  </div>
+</div>
+
 <!-- Situacao Cnpj Field -->
 {{--<div class="form-group col-md-6">
     {!! Form::label('situacao_cnpj', 'Situacao Cnpj:') !!}

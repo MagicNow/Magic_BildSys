@@ -5,6 +5,12 @@ namespace App\Repositories\Admin;
 use App\Models\Fornecedor;
 use InfyOm\Generator\Common\BaseRepository;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Arr;
+use App\Repositories\Admin\UserRepository;
+use Illuminate\Support\Facades\App;
+use App\Models\User;
+use App\Notifications\FornecedorAccountCreated;
+use Artesaos\Defender\Facades\Defender;
 
 class FornecedoresRepository extends BaseRepository
 {
@@ -76,8 +82,84 @@ class FornecedoresRepository extends BaseRepository
                     $query->whereNull('desistencia_texto');
                     $query->doesntHave('itens');
                 }
-            )
+        )
             ->where('fornecedores.id', $fornecedor_id)
             ->count('fornecedores.id');
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function create(array $input)
+    {
+        $fornecedor = DB::transaction(function() use ($input) {
+            $fornecedor = parent::create($input);
+
+            if(Arr::get($input, 'is_user', false)) {
+                $user = $this->createOrUpdateFornecedorUser($fornecedor);
+                $fornecedor->update(['user_id' => $user->id]);
+            }
+
+            return $fornecedor;
+        });
+
+        return $fornecedor;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function update(array $input, $id)
+    {
+        $fornecedor = DB::transaction(function() use ($input, $id)  {
+            $fornecedor = parent::update($input, $id);
+
+            $user = $this->createOrUpdateFornecedorUser(
+                $fornecedor,
+                Arr::get($input, 'is_user', false)
+            );
+
+            $fornecedor->update(['user_id' => $user->id]);
+
+            return $fornecedor;
+        });
+
+        return $fornecedor;
+    }
+
+    /**
+     * Cria um usuário pro fornecedor
+     *
+     * @return User
+     */
+    private function createOrUpdateFornecedorUser(Fornecedor $fornecedor, $active = true)
+    {
+        $userRepository = App::make(UserRepository::class);
+
+        if($fornecedor->user_id) {
+            $user = $userRepository->update([
+                'name' => $fornecedor->nome,
+                'email' => $fornecedor->email,
+                'active' => $active
+            ], $fornecedor->user_id);
+
+            return $user;
+        }
+
+        $password = str_random(8);
+
+        $user = $userRepository->create([
+            'name'     => $fornecedor->nome,
+            'email'    => $fornecedor->email,
+            'active'   => $active,
+            'admin'    => false,
+            'password' => $password
+        ]);
+
+        $user->attachRole(Defender::findRole('Fornecedor'));
+
+        $user->notify(new FornecedorAccountCreated($password));
+
+        return $user;
     }
 }

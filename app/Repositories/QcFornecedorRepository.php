@@ -43,7 +43,7 @@ class QcFornecedorRepository extends BaseRepository
             ->where('quadro_de_concorrencia_id', $quadro_id)
             ->whereNull('desistencia_motivo_id')
             ->whereNull('desistencia_texto')
-            ->whereRaw('quadro_de_concorrencias.rodada_atual = qc_fornecedor.rodada')
+            ->whereColumn('quadro_de_concorrencias.rodada_atual', 'qc_fornecedor.rodada')
             ->first();
     }
 }

@@ -62,11 +62,13 @@ class FornecedoresController extends AppBaseController
         $input = $request->all();
 
         $fornecedor = $this->fornecedoresRepository->create($input);
-        if(!$request->ajax()){
+
+        if(!$request->ajax()) {
             Flash::success('Fornecedores '.trans('common.saved').' '.trans('common.successfully').'.');
 
             return redirect(route('admin.fornecedores.index'));
         }
+
         return $fornecedor;
     }
 
@@ -171,6 +173,8 @@ class FornecedoresController extends AppBaseController
 
         // verifica se já não existe o cnpj com outro fornecedor
         $documentoUnico = ValidationRepository::CnpjUnico($request->numero);
+
+
         if($documentoUnico){
             return response()->json(['success'=>false,'erro'=>'CNPJ já cadastrado na base!'],422);
         }else{

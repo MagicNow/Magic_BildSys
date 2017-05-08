@@ -39,7 +39,8 @@ class Fornecedor extends Model
         'email',
         'site',
         'telefone',
-        'cep'
+        'cep',
+        'user_id'
     ];
 
     /**
@@ -64,7 +65,8 @@ class Fornecedor extends Model
         'email' => 'string',
         'site' => 'string',
         'telefone' => 'string',
-        'cep' => 'string'
+        'cep' => 'string',
+        'user_id' => 'integer'
     ];
 
     /**
@@ -106,5 +108,10 @@ class Fornecedor extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function getIsUserAttribute()
+    {
+        return !is_null($this->user) && $this->user->active;
     }
 }
