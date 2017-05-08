@@ -93,44 +93,5 @@
         ?>
         options_motivos = "{!! $options_motivos !!}";
 
-        function abrirConcorrencia(){
-            swal({
-                title: 'Deseja iniciar a concorrência?',
-                text: 'Ao iniciar a concorrência os fornecedores receberão aviso para acessar a plataforma e efetuar as propostas.',
-                type: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: "#7ed321",
-                confirmButtonText: "Sim, inicie a concorrência!",
-                cancelButtonText: "Não",
-                showLoaderOnConfirm: true,
-                closeOnConfirm: false
-            }, function () {
-                $.ajax("/quadro-de-concorrencia/" + quadroDeConcorrenciaId + "/acao/inicia-concorrencia").success(function (retorno) {
-                    var texto = '';
-                    if(retorno.mensagens.length){
-                        $.each(retorno.mensagens,function(n,elem){
-                            texto = texto + elem + "\n";
-                        });
-                    }
-                    swal({
-                        title:'Concorrência iniciada!',
-                        text:texto,
-                        type: 'success'
-                    },function () {
-                        document.location.reload();
-                    });
-                }).fail(function (jqXHR, textStatus, errorThrown) {
-                    var textResponse = jqXHR.responseText;
-                    var alertText = "Confira as mensagens abaixo:\n\n";
-                    var jsonResponse = jQuery.parseJSON(textResponse);
-
-                    $.each(jsonResponse, function (n, elem) {
-                        alertText = alertText + elem + "\n";
-                    });
-                    swal('Erro', alertText, 'error');
-                });
-
-            });
-        }
 </script>
 @stop

@@ -177,6 +177,17 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
                 }
                 $acao_executada = true;
                 break;
+            case 'cancelar':
+                // Altera o status do Q.C.
+                $quadroDeConcorrencia->qc_status_id = 6;
+                $quadroDeConcorrencia->save();
+                QcStatusLog::create([
+                    'quadro_de_concorrencia_id' => $quadroDeConcorrencia->id,
+                    'qc_status_id' => $quadroDeConcorrencia->qc_status_id, // Cancelado
+                    'user_id' => $user_id
+                ]);
+                $acao_executada = true;
+                break;
             default:
                 $erro = 'Ação inexistente!';
                 break;

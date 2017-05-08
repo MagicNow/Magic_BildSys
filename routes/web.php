@@ -443,7 +443,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             [
                 'as' => 'quadroDeConcorrencias.destroy',
                 'uses' => 'QuadroDeConcorrenciaController@destroy'
-            ]);
+            ])->middleware("needsPermission:quadroDeConcorrencias.delete");
         $router->get('quadro-de-concorrencia/{quadroDeConcorrencias}',
             [
                 'as' => 'quadroDeConcorrencias.show',

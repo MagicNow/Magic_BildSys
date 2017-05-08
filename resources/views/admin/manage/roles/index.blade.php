@@ -13,8 +13,74 @@
     </section>
     <div class="content" id='app'>
         <div class="row">
+            <!-- Add a new role -->
+            <div class="col-sm-12" id="add-role-container">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            Adicionar Novo Perfil
+                        </h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="alert alert-success" v-show="success">@{{ success }}</div>
+                        <div class="alert alert-danger" v-show="error">@{{ error }}</div>
+
+                        <form name="addRoleForm" id="addRoleForm" v-on:submit="saveRole($event)">
+                            <div class="form-group">
+                                <label for="role-name">Perfil</label>
+                                <input type="text" id="role-name" class="form-control" v-model="role.name" />
+                            </div>
+
+                            <div class="form-group clearfix">
+                                <label class="col-md-3 control-label">Permissão*</label>
+                                <div class="col-md-7">
+                                    {{ Form::select('permissions', $permissions, null, ['class' => 'form-control', 'id' => 'permissions']) }}
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" v-on:click="addPermission()" class="btn btn-info">
+                                        <span class="glyphicon glyphicon-plus"></span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <table class="table table-striped">
+                                    <tr v-for="permission in role.permissions">
+                                        {{--<td>@{{ permission.name }}</td>--}}
+                                        <td>@{{ permission.readable_name }}</td>
+                                        <td>
+                                            <button type="button" v-on:click="removePermission(permission)" class="btn btn-danger btn-xs">
+                                                <span class="glyphicon glyphicon-trash"></span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <button type="submit"
+                                    class="btn btn-success ladda-button"
+                                    data-style="expand-right"
+                                    v-bind:disabled="!role.name">
+                                <span class="ladda-label">
+                                    Salvar
+                                </span>
+                            </button>
+                            <button type="button"
+                                    class="btn btn-warning ladda-button"
+                                    data-style="expand-right"
+                                    v-on:click="resetRole"
+                                    v-bind:disabled="!role.name">
+                                <span class="ladda-label">
+                                    Redefinir
+                                </span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!--/Add a new role -->
             <!-- Roles list -->
-            <div class="col-sm-8" id="roles-list-container">
+            <div class="col-sm-12" id="roles-list-container">
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3 class="panel-title">
@@ -56,72 +122,6 @@
                 </div>
             </div>
             <!--/Roles list -->
-            <!-- Add a new role -->
-            <div class="col-sm-4" id="add-role-container">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">
-                            Adicionar Novo Perfil
-                        </h3>
-                    </div>
-                    <div class="panel-body">
-                        <div class="alert alert-success" v-show="success">@{{ success }}</div>
-                        <div class="alert alert-danger" v-show="error">@{{ error }}</div>
-
-                        <form name="addRoleForm" id="addRoleForm" v-on:submit="saveRole($event)">
-                            <div class="form-group">
-                                <label for="role-name">Perfil</label>
-                                <input type="text" id="role-name" class="form-control" v-model="role.name" />
-                            </div>
-
-                            <div class="form-group clearfix">
-                                <label class="col-md-3 control-label">Permissão*</label>
-                                <div class="col-md-7">
-                                    {{ Form::select('permissions', $permissions, null, ['class' => 'form-control', 'id' => 'permissions']) }}
-                                </div>
-                                <div class="col-md-2">
-                                    <button type="button" v-on:click="addPermission()" class="btn btn-info">
-                                        <span class="glyphicon glyphicon-plus"></span>
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <table class="table table-striped">
-                                    <tr v-for="permission in role.permissions">
-                                        <td>@{{ permission.name }}</td>
-                                        <td>@{{ permission.readable_name }}</td>
-                                        <td>
-                                            <button type="button" v-on:click="removePermission(permission)" class="btn btn-danger btn-xs">
-                                                <span class="glyphicon glyphicon-trash"></span>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </div>
-
-                            <button type="submit"
-                                    class="btn btn-success ladda-button"
-                                    data-style="expand-right"
-                                    v-bind:disabled="!role.name">
-                                <span class="ladda-label">
-                                    Adicionar
-                                </span>
-                            </button>
-                            <button type="button"
-                                    class="btn btn-warning ladda-button"
-                                    data-style="expand-right"
-                                    v-on:click="resetRole"
-                                    v-bind:disabled="!role.name">
-                                <span class="ladda-label">
-                                    Resetar
-                                </span>
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            <!--/Add a new role -->
         </div>
     </div>
 @endsection
