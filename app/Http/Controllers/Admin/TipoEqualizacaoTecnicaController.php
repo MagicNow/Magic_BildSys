@@ -6,6 +6,7 @@ use App\DataTables\Admin\TipoEqualizacaoTecnicaDataTable;
 use App\Http\Requests\Admin;
 use App\Http\Requests\Admin\CreateTipoEqualizacaoTecnicaRequest;
 use App\Http\Requests\Admin\UpdateTipoEqualizacaoTecnicaRequest;
+use App\Models\TipoEqualizacaoTecnica;
 use App\Repositories\Admin\TipoEqualizacaoTecnicaRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
@@ -148,4 +149,33 @@ class TipoEqualizacaoTecnicaController extends AppBaseController
 
         return redirect(route('admin.tipoEqualizacaoTecnicas.index'));
     }
+
+    public function busca(Request $request){
+        $retorno = TipoEqualizacaoTecnica::select([
+            'id',
+            'nome'
+        ])
+            ->where('nome','like', '%'.$request->q.'%');
+        return $retorno->paginate();
+    }
+    
+    public function buscaItens($id)
+    {
+        $tipoEqualizacaoTecnica = $this->tipoEqualizacaoTecnicaRepository->findWithoutFail($id);
+        if (empty($tipoEqualizacaoTecnica)) {
+            return response()->json(['error'=>'Não encontrado'],404);
+        }
+        
+        return response()->json($tipoEqualizacaoTecnica->itens);
+    }
+    public function buscaAnexos($id)
+    {
+        $tipoEqualizacaoTecnica = $this->tipoEqualizacaoTecnicaRepository->findWithoutFail($id);
+        if (empty($tipoEqualizacaoTecnica)) {
+            return response()->json(['error'=>'Não encontrado'],404);
+        }
+
+        return response()->json($tipoEqualizacaoTecnica->anexos);
+    }
+
 }

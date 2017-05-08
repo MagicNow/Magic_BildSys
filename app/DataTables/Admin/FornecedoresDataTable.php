@@ -2,7 +2,7 @@
 
 namespace App\DataTables\Admin;
 
-use App\Models\Fornecedores;
+use App\Models\Fornecedor;
 use Form;
 use Yajra\Datatables\Services\DataTable;
 
@@ -27,7 +27,7 @@ class FornecedoresDataTable extends DataTable
      */
     public function query()
     {
-        $fornecedores = Fornecedores::query();
+        $fornecedores = Fornecedor::query();
 
         return $this->applyScopes($fornecedores);
     }

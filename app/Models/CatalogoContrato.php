@@ -138,7 +138,7 @@ class CatalogoContrato extends Model
      **/
     public function fornecedor()
     {
-        return $this->belongsTo(\App\Models\Fornecedores::class);
+        return $this->belongsTo(\App\Models\Fornecedor::class);
     }
 
     /**

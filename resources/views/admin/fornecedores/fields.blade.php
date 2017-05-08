@@ -150,7 +150,15 @@
                                     closeOnConfirm: false
                                 },
                                 function(){
+                                    @if(!\Illuminate\Support\Facades\Request::get('modal'))
                                     document.location='/admin/fornecedores/'+ retorno.fornecedor.id;
+                                    @else
+                                        parent.novoObjeto = retorno.fornecedor;
+                                        setTimeout(function () {
+                                            eval('parent.'+parent.funcaoPosCreate);
+                                            parent.$.colorbox.close();
+                                        }, 10);
+                                    @endif
                                 });
 
                     }

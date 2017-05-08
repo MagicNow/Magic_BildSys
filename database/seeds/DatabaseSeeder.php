@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
         $this->call(TipoOrcamentoTableSeeder::class);
         $this->call(WorkflowTipoTableSeeder::class);
         $this->call(OcStatusTableSeed::class);
+        $this->call(QcStatusTableSeed::class);
         $this->call(CidadesTableSeeder::class);
 
         Schema::enableForeignKeyConstraints();

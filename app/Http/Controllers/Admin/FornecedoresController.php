@@ -6,6 +6,7 @@ use App\DataTables\Admin\FornecedoresDataTable;
 use App\Http\Requests\Admin;
 use App\Http\Requests\Admin\CreateFornecedoresRequest;
 use App\Http\Requests\Admin\UpdateFornecedoresRequest;
+use App\Models\Fornecedor;
 use App\Repositories\Admin\FornecedoresRepository;
 use App\Repositories\Admin\ValidationRepository;
 use App\Repositories\ImportacaoRepository;
@@ -43,7 +44,11 @@ class FornecedoresController extends AppBaseController
      */
     public function create()
     {
-        return view('admin.fornecedores.create');
+        $view = 'admin.fornecedores.create';
+        if(request('modal')=='1'){
+            $view = 'admin.fornecedores.create-modal';
+        }
+        return view($view);
     }
 
     /**
@@ -57,11 +62,13 @@ class FornecedoresController extends AppBaseController
     {
         $input = $request->all();
 
-        $fornecedores = $this->fornecedoresRepository->create($input);
+        $fornecedor = $this->fornecedoresRepository->create($input);
+        if(!$request->ajax()){
+            Flash::success('Fornecedores '.trans('common.saved').' '.trans('common.successfully').'.');
 
-        Flash::success('Fornecedores '.trans('common.saved').' '.trans('common.successfully').'.');
-
-        return redirect(route('admin.fornecedores.index'));
+            return redirect(route('admin.fornecedores.index'));
+        }
+        return $fornecedor;
     }
 
     /**
@@ -174,5 +181,15 @@ class FornecedoresController extends AppBaseController
             }
         }
         return response()->json(['success'=>true]);
+    }
+
+    public function buscaTemporarios(Request $request){
+        $fornecedores = Fornecedor::select([
+            'id',
+            "nome"
+        ])
+            ->whereNull('codigo_mega')
+            ->where('nome','like', '%'.$request->q.'%')->paginate();
+        return $fornecedores;
     }
 }

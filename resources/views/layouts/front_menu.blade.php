@@ -17,3 +17,7 @@
         <li class="{{ Request::is('compras/dashboard') ? 'active' : '' }}"><a href="{{url('compras/dashboard')}}"><i class="glyphicon glyphicon-cloud-upload"></i><span>DashBoard</span></a></li>
     </ul>
 </li>
+
+<li class="{{ Request::is('quadro-de-concorrencia*') ? 'active' : '' }}">
+    <a href="{!! route('quadroDeConcorrencias.index') !!}"><i class="fa fa-th-large"></i> <span>Quadro De Concorrência</span> </a>
+</li>

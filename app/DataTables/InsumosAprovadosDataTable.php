@@ -299,7 +299,6 @@ class InsumosAprovadosDataTable extends DataTable
     {
         return $this->builder()
             ->columns($this->getColumns())
-//            ->addAction(['width' => '10%'])
             ->ajax('')
             ->parameters([
                 'initComplete' => 'function () {

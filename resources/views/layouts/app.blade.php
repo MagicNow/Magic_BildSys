@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/css/admin.css">
     <link rel="shortcut icon" href="{{ asset('img/favicon.png') }}">
     <link rel="icon" href="{{ asset('img/favicon.png') }}" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 
 <body class="skin-yellow sidebar-mini">
@@ -316,6 +317,8 @@
 
     @yield('scripts')
     <script type="text/javascript">
+        var novoObjeto = null;
+        var funcaoPosCreate = null;
         function confirmDelete(frm) {
             var formulary = $('#' + frm);
             swal({
@@ -373,6 +376,11 @@
         $(document).ready(function()
         {
             pullData();
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
         });
 
         function pullData()

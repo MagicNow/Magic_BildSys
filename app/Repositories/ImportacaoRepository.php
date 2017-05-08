@@ -3,7 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Cidade;
-use App\Models\Fornecedores;
+use App\Models\Fornecedor;
 use App\Models\Insumo;
 use App\Models\InsumoGrupo;
 use App\Models\MegaFornecedor;
@@ -78,7 +78,13 @@ class ImportacaoRepository
         return ['total-mega' => $grupos_mega->count(), 'total-sys' => InsumoGrupo::count()];
     }
 
-    public static function fornecedores($cnpj)
+    /**
+     * Importa Fornecedor
+     * @param $param_value
+     * @param string $param_type
+     * @return bool
+     */
+    public static function fornecedores($param_value, $param_type = 'AGN_ST_CGC')
     {
         try {
 
@@ -99,14 +105,14 @@ class ImportacaoRepository
                 'AGN_ST_INSCRESTADUAL',
                 'AGN_ST_EMAIL',
                 'AGN_ST_URL'])
-                ->where('AGN_ST_CGC', trim($cnpj))
+                ->where($param_type, trim($param_value))
                 ->first();
 
             if ($fornecedores_mega) {
                 $cidade = Cidade::where('nome', 'LIKE', '%' . $fornecedores_mega->agn_st_municipio . '%')
                     ->first();
 
-                $fornecedor = Fornecedores::create([
+                $fornecedor = Fornecedor::create([
                     'codigo_mega' => trim($fornecedores_mega->agn_in_codigo),
                     'nome' => trim(utf8_encode($fornecedores_mega->agn_st_nome)),
                     'cnpj' => trim($fornecedores_mega->agn_st_cgc),

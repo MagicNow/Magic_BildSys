@@ -112,6 +112,12 @@ class RolesAndPermissions extends Seeder
             'site.dashboard' => 'Dashboard do site',
 
             'retroalimentacao.create' => 'Criação de retroaliamentação',
+
+            'quadroDeConcorrencias.list' => 'Listagem de Quadro De Concorrências',
+            'quadroDeConcorrencias.create' => 'Criação de Quadro De Concorrência',
+            'quadroDeConcorrencias.edit'   => 'Edição de Quadro De Concorrência',
+            'quadroDeConcorrencias.view'   => 'Visualização de Quadro De Concorrência',
+            'quadroDeConcorrencias.delete'   => 'Remoção Física de Quadro De Concorrência',
         ];
 
         $permissionAccess = [];

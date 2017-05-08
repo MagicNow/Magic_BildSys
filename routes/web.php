@@ -144,43 +144,44 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
 
     # Template de importação de planilha
     $router->group(['middleware' => 'needsPermission:template_planilhas.list'], function () use ($router) {
-        Route::get('templatePlanilhas', ['as' => 'admin.templatePlanilhas.index', 'uses' => 'Admin\TemplatePlanilhaController@index']);
-        Route::post('templatePlanilhas', ['as' => 'admin.templatePlanilhas.store', 'uses' => 'Admin\TemplatePlanilhaController@store']);
-        Route::get('templatePlanilhas/create', ['as' => 'admin.templatePlanilhas.create', 'uses' => 'Admin\TemplatePlanilhaController@create']);
-        Route::put('templatePlanilhas/{templatePlanilhas}', ['as' => 'admin.templatePlanilhas.update', 'uses' => 'Admin\TemplatePlanilhaController@update']);
-        Route::patch('templatePlanilhas/{templatePlanilhas}', ['as' => 'admin.templatePlanilhas.update', 'uses' => 'Admin\TemplatePlanilhaController@update']);
-        Route::delete('templatePlanilhas/{templatePlanilhas}', ['as' => 'admin.templatePlanilhas.destroy', 'uses' => 'Admin\TemplatePlanilhaController@destroy']);
-        Route::get('templatePlanilhas/{templatePlanilhas}', ['as' => 'admin.templatePlanilhas.show', 'uses' => 'Admin\TemplatePlanilhaController@show']);
-        Route::get('templatePlanilhas/{templatePlanilhas}/edit', ['as' => 'admin.templatePlanilhas.edit', 'uses' => 'Admin\TemplatePlanilhaController@edit']);
+        $router->get('templatePlanilhas', ['as' => 'admin.templatePlanilhas.index', 'uses' => 'Admin\TemplatePlanilhaController@index']);
+        $router->post('templatePlanilhas', ['as' => 'admin.templatePlanilhas.store', 'uses' => 'Admin\TemplatePlanilhaController@store']);
+        $router->get('templatePlanilhas/create', ['as' => 'admin.templatePlanilhas.create', 'uses' => 'Admin\TemplatePlanilhaController@create']);
+        $router->put('templatePlanilhas/{templatePlanilhas}', ['as' => 'admin.templatePlanilhas.update', 'uses' => 'Admin\TemplatePlanilhaController@update']);
+        $router->patch('templatePlanilhas/{templatePlanilhas}', ['as' => 'admin.templatePlanilhas.update', 'uses' => 'Admin\TemplatePlanilhaController@update']);
+        $router->delete('templatePlanilhas/{templatePlanilhas}', ['as' => 'admin.templatePlanilhas.destroy', 'uses' => 'Admin\TemplatePlanilhaController@destroy']);
+        $router->get('templatePlanilhas/{templatePlanilhas}', ['as' => 'admin.templatePlanilhas.show', 'uses' => 'Admin\TemplatePlanilhaController@show']);
+        $router->get('templatePlanilhas/{templatePlanilhas}/edit', ['as' => 'admin.templatePlanilhas.edit', 'uses' => 'Admin\TemplatePlanilhaController@edit']);
     });
 
     # Tipo equalização tecnicas
-    Route::get('tipoEqualizacaoTecnicas', ['as'=> 'admin.tipoEqualizacaoTecnicas.index', 'uses' => 'Admin\TipoEqualizacaoTecnicaController@index']);
-    Route::post('tipoEqualizacaoTecnicas', ['as'=> 'admin.tipoEqualizacaoTecnicas.store', 'uses' => 'Admin\TipoEqualizacaoTecnicaController@store']);
-    Route::get('tipoEqualizacaoTecnicas/create', ['as'=> 'admin.tipoEqualizacaoTecnicas.create', 'uses' => 'Admin\TipoEqualizacaoTecnicaController@create']);
-    Route::put('tipoEqualizacaoTecnicas/{tipoEqualizacaoTecnicas}', ['as'=> 'admin.tipoEqualizacaoTecnicas.update', 'uses' => 'Admin\TipoEqualizacaoTecnicaController@update']);
-    Route::patch('tipoEqualizacaoTecnicas/{tipoEqualizacaoTecnicas}', ['as'=> 'admin.tipoEqualizacaoTecnicas.update', 'uses' => 'Admin\TipoEqualizacaoTecnicaController@update']);
-    Route::delete('tipoEqualizacaoTecnicas/{tipoEqualizacaoTecnicas}', ['as'=> 'admin.tipoEqualizacaoTecnicas.destroy', 'uses' => 'Admin\TipoEqualizacaoTecnicaController@destroy']);
-    Route::get('tipoEqualizacaoTecnicas/{tipoEqualizacaoTecnicas}', ['as'=> 'admin.tipoEqualizacaoTecnicas.show', 'uses' => 'Admin\TipoEqualizacaoTecnicaController@show']);
-    Route::get('tipoEqualizacaoTecnicas/{tipoEqualizacaoTecnicas}/edit', ['as'=> 'admin.tipoEqualizacaoTecnicas.edit', 'uses' => 'Admin\TipoEqualizacaoTecnicaController@edit']);
+    $router->get('tipoEqualizacaoTecnicas', ['as'=> 'admin.tipoEqualizacaoTecnicas.index', 'uses' => 'Admin\TipoEqualizacaoTecnicaController@index']);
+    $router->post('tipoEqualizacaoTecnicas', ['as'=> 'admin.tipoEqualizacaoTecnicas.store', 'uses' => 'Admin\TipoEqualizacaoTecnicaController@store']);
+    $router->get('tipoEqualizacaoTecnicas/create', ['as'=> 'admin.tipoEqualizacaoTecnicas.create', 'uses' => 'Admin\TipoEqualizacaoTecnicaController@create']);
+    $router->put('tipoEqualizacaoTecnicas/{tipoEqualizacaoTecnicas}', ['as'=> 'admin.tipoEqualizacaoTecnicas.update', 'uses' => 'Admin\TipoEqualizacaoTecnicaController@update']);
+    $router->patch('tipoEqualizacaoTecnicas/{tipoEqualizacaoTecnicas}', ['as'=> 'admin.tipoEqualizacaoTecnicas.update', 'uses' => 'Admin\TipoEqualizacaoTecnicaController@update']);
+    $router->delete('tipoEqualizacaoTecnicas/{tipoEqualizacaoTecnicas}', ['as'=> 'admin.tipoEqualizacaoTecnicas.destroy', 'uses' => 'Admin\TipoEqualizacaoTecnicaController@destroy']);
+    $router->get('tipoEqualizacaoTecnicas/{tipoEqualizacaoTecnicas}', ['as'=> 'admin.tipoEqualizacaoTecnicas.show', 'uses' => 'Admin\TipoEqualizacaoTecnicaController@show']);
+    $router->get('tipoEqualizacaoTecnicas/{tipoEqualizacaoTecnicas}/edit', ['as'=> 'admin.tipoEqualizacaoTecnicas.edit', 'uses' => 'Admin\TipoEqualizacaoTecnicaController@edit']);
 
     #Cronograma por obra
-    Route::get('planejamentoCronogramas', ['as'=> 'admin.planejamentoCronogramas.index', 'uses' => 'Admin\PlanejamentoCronogramaController@index'])->middleware("needsPermission:cronograma_por_obras.list");
+    $router->get('planejamentoCronogramas', ['as'=> 'admin.planejamentoCronogramas.index', 'uses' => 'Admin\PlanejamentoCronogramaController@index'])->middleware("needsPermission:cronograma_por_obras.list");
 
-        # Fornecedores
-        Route::get('fornecedores', ['as'=> 'admin.fornecedores.index', 'uses' => 'Admin\FornecedoresController@index']);
-        Route::post('fornecedores', ['as'=> 'admin.fornecedores.store', 'uses' => 'Admin\FornecedoresController@store']);
-        Route::get('fornecedores/create', ['as'=> 'admin.fornecedores.create', 'uses' => 'Admin\FornecedoresController@create']);
-        Route::put('fornecedores/{fornecedores}', ['as'=> 'admin.fornecedores.update', 'uses' => 'Admin\FornecedoresController@update']);
-        Route::patch('fornecedores/{fornecedores}', ['as'=> 'admin.fornecedores.update', 'uses' => 'Admin\FornecedoresController@update']);
-        Route::delete('fornecedores/{fornecedores}', ['as'=> 'admin.fornecedores.destroy', 'uses' => 'Admin\FornecedoresController@destroy']);
-        Route::get('fornecedores/{fornecedores}', ['as'=> 'admin.fornecedores.show', 'uses' => 'Admin\FornecedoresController@show']);
-        Route::get('fornecedores/{fornecedores}/edit', ['as'=> 'admin.fornecedores.edit', 'uses' => 'Admin\FornecedoresController@edit']);
-        Route::get('fornecedores/buscacep/{cep}', 'Admin\FornecedoresController@buscaPorCep');
-        Route::get('valida-documento', 'Admin\FornecedoresController@validaCnpj');
+    # Fornecedores
+    $router->get('fornecedores/busca-temporarios', ['as' => 'admin.fornecedores.busca_temporarios', 'uses' => 'Admin\FornecedoresController@buscaTemporarios']);
+    $router->get('fornecedores', ['as'=> 'admin.fornecedores.index', 'uses' => 'Admin\FornecedoresController@index']);
+    $router->post('fornecedores', ['as'=> 'admin.fornecedores.store', 'uses' => 'Admin\FornecedoresController@store']);
+    $router->get('fornecedores/create', ['as'=> 'admin.fornecedores.create', 'uses' => 'Admin\FornecedoresController@create']);
+    $router->put('fornecedores/{fornecedores}', ['as'=> 'admin.fornecedores.update', 'uses' => 'Admin\FornecedoresController@update']);
+    $router->patch('fornecedores/{fornecedores}', ['as'=> 'admin.fornecedores.update', 'uses' => 'Admin\FornecedoresController@update']);
+    $router->delete('fornecedores/{fornecedores}', ['as'=> 'admin.fornecedores.destroy', 'uses' => 'Admin\FornecedoresController@destroy']);
+    $router->get('fornecedores/{fornecedores}', ['as'=> 'admin.fornecedores.show', 'uses' => 'Admin\FornecedoresController@show']);
+    $router->get('fornecedores/{fornecedores}/edit', ['as'=> 'admin.fornecedores.edit', 'uses' => 'Admin\FornecedoresController@edit']);
+    $router->get('fornecedores/buscacep/{cep}', 'Admin\FornecedoresController@buscaPorCep');
+    $router->get('valida-documento', 'Admin\FornecedoresController@validaCnpj');
 
     $router->group(['middleware' => 'needsPermission:users.list'], function() use ($router) {
-        Route::resource('users', 'Admin\Manage\UsersController');
+        $router->resource('users', 'Admin\Manage\UsersController');
 
         #Manage ACL
         $router->get('/manage', [
@@ -339,7 +340,6 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('compras', 'OrdemDeCompraController@compras')->middleware("needsPermission:compras_lembretes.list");
 
     $router->group(['middleware' => 'needsPermission:ordens_de_compra.list'], function () use ($router) {
-        $router->resource('ordens-de-compra', 'OrdemDeCompraController');
 
         $router->get('/ordens-de-compra/detalhes/{id}', 'OrdemDeCompraController@detalhe')->middleware("needsPermission:ordens_de_compra.detalhes");
         $router->get('/ordens-de-compra/carrinho', 'OrdemDeCompraController@carrinho');
@@ -353,8 +353,9 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->get('/ordens-de-compra/carrinho/alterar-quantidade/{id}', 'OrdemDeCompraController@alterarQuantidade');
         $router->get('/ordens-de-compra/carrinho/remover-item/{id}', 'OrdemDeCompraController@removerItem');
         $router->get('/ordens-de-compra/insumos-aprovados', 'OrdemDeCompraController@insumosAprovados');
-
         $router->get('/ordens-de-compra/detalhes-servicos/{servico_id}', 'OrdemDeCompraController@detalhesServicos')->middleware("needsPermission:ordens_de_compra.detalhes_servicos");
+
+        $router->resource('ordens-de-compra', 'OrdemDeCompraController');
     });
 
     $router->group(['middleware' => 'needsPermission:site.dashboard'], function () use ($router) {
@@ -411,15 +412,6 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('workflow/aprova-reprova', 'WorkflowController@aprovaReprova');
     $router->get('workflow/aprova-reprova-tudo', 'WorkflowController@aprovaReprovaTudo');
 
-    $router->post('quadro-de-concorrencia/criar', function (){
-        # Validação básica
-        validator(request()->all(),
-            ['ordem_de_compra_itens'=>'required'],
-            ['ordem_de_compra_itens.required'=>'É necessário escolher ao menos um item!']
-        )->validate();
-        dd('@TODO pegar ids e montar novo Q.C. ',request()->get('ordem_de_compra_itens'));
-    });
-    
     $router->get('/teste', function (){
         $grupos_mega = \App\Models\MegaInsumoGrupo::select([
             'GRU_IDE_ST_CODIGO',
@@ -429,4 +421,94 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             ->first();
         dd($grupos_mega);
     });
+
+    # Quadro de Concorrencia
+    $router->group(['middleware' => 'needsPermission:quadroDeConcorrencias.list'], function () use ($router) {
+        $router->get('quadro-de-concorrencia', ['as' => 'quadroDeConcorrencias.index', 'uses' => 'QuadroDeConcorrenciaController@index']);
+        $router->post('quadro-de-concorrencia/criar',
+            [
+                'as' => 'quadroDeConcorrencias.create',
+                'uses' => 'QuadroDeConcorrenciaController@create'
+            ])->middleware("needsPermission:quadroDeConcorrencias.create");
+        $router->put('quadro-de-concorrencia/{quadroDeConcorrencias}',
+            [
+                'as' => 'quadroDeConcorrencias.update',
+                'uses' => 'QuadroDeConcorrenciaController@update'
+            ]);
+        $router->patch('quadro-de-concorrencia/{quadroDeConcorrencias}',
+            [
+                'as' => 'quadroDeConcorrencias.update',
+                'uses' => 'QuadroDeConcorrenciaController@update'
+            ]);
+        $router->delete('quadro-de-concorrencia/{quadroDeConcorrencias}',
+            [
+                'as' => 'quadroDeConcorrencias.destroy',
+                'uses' => 'QuadroDeConcorrenciaController@destroy'
+            ])->middleware("needsPermission:quadroDeConcorrencias.delete");
+        $router->get('quadro-de-concorrencia/{quadroDeConcorrencias}',
+            [
+                'as' => 'quadroDeConcorrencias.show',
+                'uses' => 'QuadroDeConcorrenciaController@show'
+            ])->middleware("needsPermission:quadroDeConcorrencias.view");
+        $router->get('quadro-de-concorrencia/{quadroDeConcorrencias}/edit',
+            [
+                'as' => 'quadroDeConcorrencias.edit',
+                'uses' => 'QuadroDeConcorrenciaController@edit'
+            ])->middleware("needsPermission:quadroDeConcorrencias.edit");
+        $router->get('quadro-de-concorrencia/{quadroDeConcorrencias}/remover-fornecedor/{fornecedorId}',
+            [
+                'as' => 'quadroDeConcorrencias.removerfornecedor',
+                'uses' => 'QuadroDeConcorrenciaController@removerFornecedor'
+            ])->middleware("needsPermission:quadroDeConcorrencias.edit");
+        $router->post('quadro-de-concorrencia/{quadroDeConcorrencias}/adiciona-eqt',
+            [
+                'as' => 'quadroDeConcorrencias.adicionaeqt',
+                'uses' => 'QuadroDeConcorrenciaController@adicionaEqt'
+            ])->middleware("needsPermission:quadroDeConcorrencias.create");
+        $router->get('quadro-de-concorrencia/{quadroDeConcorrencias}/remover-eqt/{eqtId}',
+            [
+                'as' => 'quadroDeConcorrencias.removereqt',
+                'uses' => 'QuadroDeConcorrenciaController@removerEqt'
+            ])->middleware("needsPermission:quadroDeConcorrencias.edit");
+        $router->get('quadro-de-concorrencia/{quadroDeConcorrencias}/exibir-eqt/{eqtId}',
+            [
+                'as' => 'quadroDeConcorrencias.exibireqt',
+                'uses' => 'QuadroDeConcorrenciaController@exibirEqt'
+            ])->middleware("needsPermission:quadroDeConcorrencias.edit");
+        $router->post('quadro-de-concorrencia/{quadroDeConcorrencias}/editar-eqt/{eqtId}',
+            [
+                'as' => 'quadroDeConcorrencias.editareqt',
+                'uses' => 'QuadroDeConcorrenciaController@editarEqt'
+            ])->middleware("needsPermission:quadroDeConcorrencias.edit");
+        $router->post('quadro-de-concorrencia/{quadroDeConcorrencias}/adiciona-eqt-anexo',
+            [
+                'as' => 'quadroDeConcorrencias.adicionaeqtanexo',
+                'uses' => 'QuadroDeConcorrenciaController@adicionaEqtAnexo'
+            ])->middleware("needsPermission:quadroDeConcorrencias.create");
+        $router->get('quadro-de-concorrencia/{quadroDeConcorrencias}/remover-eqt-anexo/{eqtId}',
+            [
+                'as' => 'quadroDeConcorrencias.removereqtanexo',
+                'uses' => 'QuadroDeConcorrenciaController@removerEqtAnexo'
+            ])->middleware("needsPermission:quadroDeConcorrencias.edit");
+        $router->get('quadro-de-concorrencia/{quadroDeConcorrencias}/exibir-eqt-anexo/{eqtId}',
+            [
+                'as' => 'quadroDeConcorrencias.exibireqtanexo',
+                'uses' => 'QuadroDeConcorrenciaController@exibirEqtAnexo'
+            ])->middleware("needsPermission:quadroDeConcorrencias.edit");
+        $router->post('quadro-de-concorrencia/{quadroDeConcorrencias}/editar-eqt-anexo/{eqtId}',
+            [
+                'as' => 'quadroDeConcorrencias.editareqtanexo',
+                'uses' => 'QuadroDeConcorrenciaController@editarEqtAnexo'
+            ])->middleware("needsPermission:quadroDeConcorrencias.edit");
+        $router->get('quadro-de-concorrencia/{quadroDeConcorrencias}/desagrupar/{itemId}', 'QuadroDeConcorrenciaController@desagrupar')
+            ->middleware("needsPermission:quadroDeConcorrencias.edit");
+        $router->post('quadro-de-concorrencia/{quadroDeConcorrencias}/agrupar', 'QuadroDeConcorrenciaController@agrupar')
+            ->middleware("needsPermission:quadroDeConcorrencias.edit");
+        $router->get('quadro-de-concorrencia/{quadroDeConcorrencias}/acao/{acao}', 'QuadroDeConcorrenciaController@acao')
+            ->middleware("needsPermission:quadroDeConcorrencias.edit");
+    });
+
+    $router->get('tipos-equalizacoes-tecnicas/busca', 'Admin\TipoEqualizacaoTecnicaController@busca');
+    $router->get('tipos-equalizacoes-tecnicas/itens/{id}', 'Admin\TipoEqualizacaoTecnicaController@buscaItens');
+    $router->get('tipos-equalizacoes-tecnicas/anexos/{id}', 'Admin\TipoEqualizacaoTecnicaController@buscaAnexos');
 });

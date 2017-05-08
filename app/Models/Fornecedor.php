@@ -3,17 +3,25 @@
 namespace App\Models;
 
 use Eloquent as Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * Class Fornecedores
- * @package App\Models\Admin
- * @version April 28, 2017, 1:41 pm BRT
+ * Class Fornecedor
+ * @package App\Models
+ * @version May 4, 2017, 12:21 pm BRT
  */
-class Fornecedores extends Model
+class Fornecedor extends Model
 {
-    public $table = 'fornecedores';
+    use SoftDeletes;
 
-    public $timestamps = false;
+    public $table = 'fornecedores';
+    
+    const CREATED_AT = 'created_at';
+    const UPDATED_AT = 'updated_at';
+
+
+    protected $dates = ['deleted_at'];
+
 
     public $fillable = [
         'codigo_mega',
@@ -31,7 +39,8 @@ class Fornecedores extends Model
         'email',
         'site',
         'telefone',
-        'cep'
+        'cep',
+        'user_id'
     ];
 
     /**
@@ -56,7 +65,8 @@ class Fornecedores extends Model
         'email' => 'string',
         'site' => 'string',
         'telefone' => 'string',
-        'cep' => 'string'
+        'cep' => 'string',
+        'user_id' => 'integer'
     ];
 
     /**
@@ -65,7 +75,10 @@ class Fornecedores extends Model
      * @var array
      */
     public static $rules = [
-        
+        'nome' => 'required',
+        'cnpj' => 'required',
+        'email' => 'required|email',
+        'telefone' => 'required',
     ];
 
     /**
@@ -73,7 +86,7 @@ class Fornecedores extends Model
      **/
     public function cidade()
     {
-        return $this->belongsTo(\App\Models\Cidade::class);
+        return $this->belongsTo(Cidade::class);
     }
 
     /**
@@ -81,14 +94,18 @@ class Fornecedores extends Model
      **/
     public function catalogoContratos()
     {
-        return $this->hasMany(\App\Models\CatalogoContrato::class);
+        return $this->hasMany(CatalogoContrato::class);
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
-    public function qcFornecedors()
+    public function qcFornecedor()
     {
-        return $this->hasMany(\App\Models\QcFornecedor::class);
+        return $this->hasMany(QcFornecedor::class);
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class);
     }
 }
