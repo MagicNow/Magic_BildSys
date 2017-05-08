@@ -35,7 +35,10 @@ class QcEqualizacaoTecnicaAnexoExtra extends Model
      *
      * @var array
      */
-    public static $rules = [];
+    public static $rules = [
+        'arquivo' => 'required',
+        'nome' => 'required'
+    ];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

@@ -22,6 +22,9 @@ class QuadroDeConcorrenciaDataTable extends DataTable
             ->editColumn('created_at', function($obj){
                 return $obj->created_at ? with(new\Carbon\Carbon($obj->created_at))->format('d/m/Y H:i') : '';
             })
+            ->editColumn('situacao', function($obj){
+                return '<i class="fa fa-circle" aria-hidden="true" style="color:'.$obj->situacao_cor.'"></i> '.$obj->situacao;
+            })
             ->filterColumn('quadro_de_concorrencias.created_at', function ($query, $keyword) {
                 $query->whereRaw("DATE_FORMAT(quadro_de_concorrencias.created_at,'%d/%m/%Y') like ?", ["%$keyword%"]);
             })
@@ -50,7 +53,9 @@ class QuadroDeConcorrenciaDataTable extends DataTable
             'quadro_de_concorrencias.created_at',
             'quadro_de_concorrencias.updated_at',
             'users.name as usuario',
-            'qc_status.nome as situacao'
+            'qc_status.nome as situacao',
+            'qc_status.cor as situacao_cor',
+            'quadro_de_concorrencias.qc_status_id'
         ])
         ->join('users','users.id','quadro_de_concorrencias.user_id')
         ->join('qc_status','qc_status.id','quadro_de_concorrencias.qc_status_id');

@@ -19374,3 +19374,22 @@ h6 {
   height: 400px;
   overflow-y: auto;
 }
+
+.pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover,
+.pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus{
+    color: #f98d00;
+    font-weight: bold;
+    border: solid 1px #f98d00;
+    background-color: #fff;
+}
+
+.pagination > li > a{
+    padding: 6px 12px;
+    border: solid 1px #979797;
+    margin: 2px;
+}
+
+.margin10{
+    margin: 10px;
+}
+

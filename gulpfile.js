@@ -194,4 +194,8 @@ elixir(function(mix) {
 
     ], 'public/js/admin.js');
 
+    mix.scripts([
+        'quadro-de-concorrencia.js',
+    ], 'public/js/qc.js');
+
 });

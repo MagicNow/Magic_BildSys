@@ -64326,7 +64326,6 @@ var mascara = function (val) {
 $(function () {
   $(".select2").select2({
     theme: 'bootstrap',
-
     placeholder: "-",
     language: "pt-BR",
   });

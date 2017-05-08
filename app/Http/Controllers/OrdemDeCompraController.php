@@ -303,7 +303,10 @@ class OrdemDeCompraController extends AppBaseController
                 ->paginate(10);
         }
 
-        $motivos_reprovacao = WorkflowReprovacaoMotivo::pluck('nome','id')->toArray();
+        $motivos_reprovacao = WorkflowReprovacaoMotivo::where(function($query){
+            $query->where('workflow_tipo_id',1);
+            $query->orWhereNull('workflow_tipo_id');
+        })->pluck('nome','id')->toArray();
 
         $oc_status = $ordemDeCompra->ocStatus->nome;
 

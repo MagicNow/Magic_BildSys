@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class QcItem
@@ -12,15 +11,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class QcItem extends Model
 {
-    use SoftDeletes;
-
     public $table = 'qc_itens';
     
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
-
-
-    protected $dates = ['deleted_at'];
 
 
     public $fillable = [

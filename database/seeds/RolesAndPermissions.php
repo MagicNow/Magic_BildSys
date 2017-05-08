@@ -120,6 +120,7 @@ class RolesAndPermissions extends Seeder
             'quadroDeConcorrencias.edit' => 'Edição de Quadro De Concorrência',
             'quadroDeConcorrencias.view' => 'Visualização de Quadro De Concorrência',
             'quadroDeConcorrencias.informar_valor' => 'Informar valores em quadros de concorrência',
+            'quadroDeConcorrencias.delete'   => 'Remoção Física de Quadro De Concorrência',
         ];
 
         $permissionAccess = [];

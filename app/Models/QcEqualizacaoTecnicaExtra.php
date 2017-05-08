@@ -4,6 +4,11 @@ namespace App\Models;
 
 use Eloquent as Model;
 
+/**
+ * Class QcEqualizacaoTecnicaExtra
+ * @package App\Models
+ * @version May 5, 2017, 11:47 am BRT
+ */
 class QcEqualizacaoTecnicaExtra extends Model
 {
     public $table = 'qc_equalizacao_tecnica_extras';
@@ -35,7 +40,9 @@ class QcEqualizacaoTecnicaExtra extends Model
      *
      * @var array
      */
-    public static $rules = [];
+    public static $rules = [
+        'nome' => 'required',
+    ];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
