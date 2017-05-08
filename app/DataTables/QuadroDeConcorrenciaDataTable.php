@@ -47,23 +47,24 @@ class QuadroDeConcorrenciaDataTable extends DataTable
         $user = Auth::user();
 
         $quadroDeConcorrencias = QuadroDeConcorrencia::query()
-        ->select([
-            'quadro_de_concorrencias.id',
-            'quadro_de_concorrencias.rodada_atual',
-            'quadro_de_concorrencias.created_at',
-            'quadro_de_concorrencias.updated_at',
-            'users.name as usuario',
-            'qc_status.nome as situacao',
-            'qc_status.cor as situacao_cor',
-            'quadro_de_concorrencias.qc_status_id'
-        ])
-        ->join('users','users.id','quadro_de_concorrencias.user_id')
-        ->join('qc_status','qc_status.id','quadro_de_concorrencias.qc_status_id');
+            ->select([
+                'quadro_de_concorrencias.id',
+                'quadro_de_concorrencias.rodada_atual',
+                'quadro_de_concorrencias.created_at',
+                'quadro_de_concorrencias.updated_at',
+                'users.name as usuario',
+                'qc_status.nome as situacao',
+                'qc_status.cor as situacao_cor',
+                'quadro_de_concorrencias.qc_status_id'
+            ])
+            ->join('users','users.id','quadro_de_concorrencias.user_id')
+            ->join('qc_status','qc_status.id','quadro_de_concorrencias.qc_status_id');
 
         if($user->fornecedor) {
             $quadroDeConcorrencias
                 ->join('qc_fornecedor', 'qc_fornecedor.quadro_de_concorrencia_id', 'quadro_de_concorrencias.id')
                 ->leftJoin('qc_item_qc_fornecedor', 'qc_item_qc_fornecedor.qc_fornecedor_id', 'qc_fornecedor.id')
+                ->where('quadro_de_concorrencias.qc_status_id', 7)
                 ->where('qc_fornecedor.fornecedor_id', $user->fornecedor->id)
                 ->whereNull('qc_item_qc_fornecedor.id')
                 ->whereNull('qc_fornecedor.desistencia_motivo_id')
@@ -95,33 +96,33 @@ class QuadroDeConcorrenciaDataTable extends DataTable
                             $(input).addClass(\'form-control\');
                             $(input).css(\'width\',\'100%\');
                             $(input).appendTo($(column.footer()).empty())
-                            .on(\'change\', function () {
-                                column.search($(this).val(), false, false, true).draw();
-                            });
-                        }
-                    });
-                }' ,
-                'dom' => 'Bfrtip',
-                'scrollX' => false,
-                'language'=> [
-                    "url"=> "/vendor/datatables/Portuguese-Brasil.json"
-                ],
+                                .on(\'change\', function () {
+                                    column.search($(this).val(), false, false, true).draw();
+    });
+    }
+    });
+    }' ,
+        'dom' => 'Bfrtip',
+        'scrollX' => false,
+        'language'=> [
+            "url"=> "/vendor/datatables/Portuguese-Brasil.json"
+        ],
+        'buttons' => [
+            'print',
+            'reset',
+            'reload',
+            [
+                'extend'  => 'collection',
+                'text'    => '<i class="fa fa-download"></i> Export',
                 'buttons' => [
-                    'print',
-                    'reset',
-                    'reload',
-                    [
-                         'extend'  => 'collection',
-                         'text'    => '<i class="fa fa-download"></i> Export',
-                         'buttons' => [
-                             'csv',
-                             'excel',
-                             'pdf',
-                         ],
-                    ],
-                    'colvis'
-                ]
-            ]);
+                    'csv',
+                    'excel',
+                    'pdf',
+                ],
+            ],
+            'colvis'
+        ]
+    ]);
     }
 
     /**
@@ -131,16 +132,21 @@ class QuadroDeConcorrenciaDataTable extends DataTable
      */
     private function getColumns()
     {
-        return [
+        $columns = [
             'id' => ['name' => 'quadro_de_concorrencias.id', 'data' => 'id', 'width'=>'25px'],
-            'usuario' => ['name' => 'users.name', 'data' => 'usuario'],
             'situação' => ['name' => 'qc_status.nome', 'data' => 'situacao'],
             'rodada_atual' => ['name' => 'rodada_atual', 'data' => 'rodada_atual'],
-            'criadoEm' => ['name' => 'quadro_de_concorrencias.created_at', 'data' => 'created_at', 'width'=>'12%'],
             'atualizadoEm' => ['name' => 'quadro_de_concorrencias.updated_at', 'data' => 'updated_at', 'width'=>'12%'],
             'rodada' => ['name' => 'rodada_atual', 'data' => 'rodada_atual', 'width'=>'6%'],
-            'action' => ['title'          => '#', 'printable'      => false, 'width'=>'10%'],
+            'action' => ['title' => '#', 'printable' => false, 'width'=>'10%'],
         ];
+
+        if(!auth()->user()->fornecedor) {
+            $columns['usuario'] = ['name' => 'users.name', 'data' => 'usuario'];
+            $columns['criadoEm'] = ['name' => 'quadro_de_concorrencias.created_at', 'data' => 'created_at', 'width'=>'12%'];
+        }
+
+        return $columns;
     }
 
     /**

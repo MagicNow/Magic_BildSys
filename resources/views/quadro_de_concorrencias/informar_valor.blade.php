@@ -83,7 +83,11 @@
                             <div class="checkbox">
                               <label>
                                 {!!
-                                Form::checkbox("equalizacoes[{$equalizacao->id}-{$equalizacao->getTable()}][checked]", '1') !!}
+                                  Form::checkbox(
+                                    "equalizacoes[{$equalizacao->id}-{$equalizacao->getTable()}][checked]",
+                                    '1'
+                                  )
+                                !!}
                                 Obrigatório
                               </label>
                             </div>
