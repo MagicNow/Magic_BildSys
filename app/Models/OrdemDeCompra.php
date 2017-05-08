@@ -52,8 +52,7 @@ class OrdemDeCompra extends Model
     ];
 
     public static $filters_obras_insumos = [
-        'grupo_id-foreign_key-Grupo-nome-id' => 'Grupo',
-        'nome-string' => 'Nome'
+        'nome-string' => 'Nome insumo'
     ];
 
     public static $filters_insumos = [

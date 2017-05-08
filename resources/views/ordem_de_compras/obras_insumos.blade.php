@@ -29,6 +29,50 @@
         </div>
     </section>
     <div class="content">
+
+        <div class="col-md-12">
+            <div class="col-md-12 thumbnail">
+                <div class="col-md-12">
+                    <div class="caption">
+                        <div class="card-description">
+                            <!-- Grupos de insumo Field -->
+                            <div class="form-group col-sm-6" style="width:20%">
+                                {!! Form::label('grupo_id', 'Grupos:') !!}
+                                {!! Form::select('grupo_id', [''=>'-']+$grupos, null, ['class' => 'form-control', 'id'=>'grupo_id','onchange'=>'selectgrupo(this.value, \'subgrupo1_id\', \'grupos\', \'grupo\');']) !!}
+                            </div>
+
+                            <!-- SubGrupos1 de insumo Field -->
+                            <div class="form-group col-sm-6" style="width:20%">
+                                {!! Form::label('subgrupo1_id', 'SubGrupo-1:') !!}
+                                {!! Form::select('subgrupo1_id', [''=>'-'], null, ['class' => 'form-control', 'id'=>'subgrupo1_id', 'disabled'=>'disabled', 'onchange'=>'selectgrupo(this.value, \'subgrupo2_id\', \'grupos\', \'subgrupo1\');']) !!}
+                            </div>
+
+                            <!-- SubGrupos2 de insumo Field -->
+                            <div class="form-group col-sm-6" style="width:20%">
+                                {!! Form::label('subgrupo2_id', 'SubGrupo-2:') !!}
+                                {!! Form::select('subgrupo2_id', [''=>'-'], null, ['class' => 'form-control', 'id'=>'subgrupo2_id', 'disabled'=>'disabled', 'onchange'=>'selectgrupo(this.value, \'subgrupo3_id\', \'grupos\', \'subgrupo2\');']) !!}
+                            </div>
+
+                            <!-- SubGrupos3 de insumo Field -->
+                            <div class="form-group col-sm-6" style="width:20%">
+                                {!! Form::label('subgrupo3_id', 'SubGrupo-3:') !!}
+                                {!! Form::select('subgrupo3_id', [''=>'-'], null, ['class' => 'form-control', 'id'=>'subgrupo3_id', 'disabled'=>'disabled', 'onchange'=>'selectgrupo(this.value, \'servico_id\', \'servicos\', \'subgrupo3\');']) !!}
+                            </div>
+
+                            <!-- SubGrupos4 de insumo Field -->
+                            <div class="form-group col-sm-6" style="width:20%">
+                                {!! Form::label('servico_id', 'Serviço:') !!}
+                                {!! Form::select('servico_id', [''=>'-'], null, ['class' => 'form-control', 'id'=>'servico_id', 'disabled'=>'disabled', 'onchange'=>'selectgrupo(this.value, null, \'servicos\', \'servico\')']) !!}
+                            </div>
+                            <input type="hidden" name="planejamento_id" value="{{$obra->id}}">
+
+                            <div class="col-md-12" id="list-insumos"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         @include('adminlte-templates::common.errors')
         <div class="box-body" id='app'>
             {{--<tabela--}}
@@ -100,8 +144,11 @@
         });
         @if(isset($obra))
         $(document).ready(function() {
+            verificarFiltroGrupos();
             var dados;
             var url;
+            array_grupos = [];
+
             $('#btn-incluir-insumo').click(function (e) {
                 e.preventDefault();
                 $.get("{{url('planejamentosByObra')}}", {obra_id: "{{$obra->id}}"})
@@ -125,6 +172,91 @@
                     });
             })
         });
+
+        function selectgrupo(id, change, tipo, parametro){
+            var grupo = '';
+            var grupos_rota = '';
+            var url_grupos = '';
+            var rota = "{{url('/admin/planejamentos/atividade/grupos')}}/";
+            if(tipo == 'servicos'){
+                rota = "{{url('/admin/planejamentos/atividade/servicos')}}/";
+            }
+            if(id){
+                $('.box.box-primary').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
+                $.ajax({
+                    url: rota + id
+                }).done(function(retorno) {
+                    options = '<option value="">Selecione</option>';
+                    $('#'+change).html(options);
+                    $.each(retorno,function(index, value){
+                        options += '<option value="'+index+'">'+value+'</option>';
+                    });
+                    $('#'+change).html(options);
+                    $('.overlay').remove();
+                    $('#'+change).attr('disabled',false);
+
+                    grupo = '&' + parametro + '=' + id;
+                    array_grupos.push(grupo);
+
+                    $.each(array_grupos, function (index, value) {
+                        grupos_rota += value;
+                    });
+
+                    var result = {};
+                    keyValuePairs = grupos_rota.slice(1).split("&");
+                    if(keyValuePairs!=""){
+                        keyValuePairs.forEach(function(keyValuePair) {
+                            keyValuePair = keyValuePair.split('=');
+                            result[decodeURIComponent(keyValuePair[0])] = decodeURIComponent(keyValuePair[1]);
+                        });
+                    }
+
+                    if(Object.keys(result).length){
+                        $.each(result, function (index, value) {
+                            url_grupos += '&' + index + '=' + value;
+                        });
+                    }
+
+                    history.pushState("", document.title, '/compras/obrasInsumos?obra_id={{$obra->id}}' + url_grupos);
+                    app.$children[0].loadData();
+                }).fail(function() {
+                    $('.overlay').remove();
+                });
+            }
+        }
+
+        function verificarFiltroGrupos() {
+            @php
+                $grupo = \Illuminate\Support\Facades\Input::get('grupo');
+                $subgrupo1 = \Illuminate\Support\Facades\Input::get('subgrupo1');
+                $subgrupo2 = \Illuminate\Support\Facades\Input::get('subgrupo2');
+                $subgrupo3 = \Illuminate\Support\Facades\Input::get('subgrupo3');
+                $servico = \Illuminate\Support\Facades\Input::get('servico');
+            @endphp
+            @if($grupo)
+                selectgrupo('{{$grupo}}', 'subgrupo1_id', 'grupos', 'grupo');
+            @endif
+            @if($subgrupo1)
+                selectgrupo('{{$subgrupo1}}', 'subgrupo2_id', 'grupos', 'subgrupo1');
+            @endif
+            @if($subgrupo2)
+                selectgrupo('{{$subgrupo2}}', 'subgrupo3_id', 'grupos', 'subgrupo2');
+            @endif
+            @if($subgrupo3)
+                selectgrupo('{{$subgrupo3}}', 'servico_id', 'servicos', 'subgrupo3');
+            @endif
+            @if($servico)
+                selectgrupo('{{$servico}}', null, 'servicos', 'servico');
+            @endif
+
+            setTimeout(function(){
+                $('#grupo_id').val('{{$grupo}}');
+                $('#subgrupo1_id').val('{{$subgrupo1}}');
+                $('#subgrupo2_id').val('{{$subgrupo2}}');
+                $('#subgrupo3_id').val('{{$subgrupo3}}');
+                $('#servico_id').val('{{$servico}}');
+            }, 1000);
+        }
         @endif
     </script>
 @endsection
