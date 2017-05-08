@@ -144,6 +144,7 @@
         });
         @if(isset($obra))
         $(document).ready(function() {
+            verificarFiltroGrupos();
             var dados;
             var url;
             array_grupos = [];
@@ -217,11 +218,44 @@
                     }
 
                     history.pushState("", document.title, '/compras/obrasInsumos?obra_id={{$obra->id}}' + url_grupos);
-                    
+
                 }).fail(function() {
                     $('.overlay').remove();
                 });
             }
+        }
+
+        function verificarFiltroGrupos() {
+            @php
+                $grupo = \Illuminate\Support\Facades\Input::get('grupo');
+                $subgrupo1 = \Illuminate\Support\Facades\Input::get('subgrupo1');
+                $subgrupo2 = \Illuminate\Support\Facades\Input::get('subgrupo2');
+                $subgrupo3 = \Illuminate\Support\Facades\Input::get('subgrupo3');
+                $servico = \Illuminate\Support\Facades\Input::get('servico');
+            @endphp
+            @if($grupo)
+                selectgrupo('{{$grupo}}', 'subgrupo1_id', 'grupos', 'grupo');
+            @endif
+            @if($subgrupo1)
+                selectgrupo('{{$subgrupo1}}', 'subgrupo2_id', 'grupos', 'subgrupo1');
+            @endif
+            @if($subgrupo2)
+                selectgrupo('{{$subgrupo2}}', 'subgrupo3_id', 'grupos', 'subgrupo2');
+            @endif
+            @if($subgrupo3)
+                selectgrupo('{{$subgrupo3}}', 'servico_id', 'servicos', 'subgrupo3');
+            @endif
+            @if($servico)
+                selectgrupo('{{$servico}}', null, 'servicos', 'servico');
+            @endif
+
+            setTimeout(function(){
+                $('#grupo_id').val('{{$grupo}}');
+                $('#subgrupo1_id').val('{{$subgrupo1}}');
+                $('#subgrupo2_id').val('{{$subgrupo2}}');
+                $('#subgrupo3_id').val('{{$subgrupo3}}');
+                $('#servico_id').val('{{$servico}}');
+            }, 1000);
         }
         @endif
     </script>
