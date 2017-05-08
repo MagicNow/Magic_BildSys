@@ -11,6 +11,7 @@ use App\Models\QuadroDeConcorrencia;
 use App\Notifications\IniciaConcorrencia;
 use Illuminate\Support\Facades\Mail;
 use InfyOm\Generator\Common\BaseRepository;
+use App\Models\User;
 
 class QuadroDeConcorrenciaRepository extends BaseRepository
 {
@@ -205,4 +206,36 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
     {
         return QuadroDeConcorrencia::class;
     }
+
+    public function quadrosPreenchiveisPeloUsuario(User $user)
+    {
+        $query = $this->model
+            ->select([
+                'quadro_de_concorrencias.id',
+                'quadro_de_concorrencias.rodada_atual',
+                'quadro_de_concorrencias.created_at',
+                'quadro_de_concorrencias.updated_at',
+                'users.name as usuario',
+                'qc_status.nome as situacao',
+                'qc_status.cor as situacao_cor',
+                'quadro_de_concorrencias.qc_status_id'
+            ])
+            ->join('users','users.id','quadro_de_concorrencias.user_id')
+            ->join('qc_status','qc_status.id','quadro_de_concorrencias.qc_status_id')
+            ->where('quadro_de_concorrencias.qc_status_id', 7);
+
+        if($user->fornecedor) {
+            $query = $query
+                ->join('qc_fornecedor', 'qc_fornecedor.quadro_de_concorrencia_id', 'quadro_de_concorrencias.id')
+                ->leftJoin('qc_item_qc_fornecedor', 'qc_item_qc_fornecedor.qc_fornecedor_id', 'qc_fornecedor.id')
+                ->where('qc_fornecedor.fornecedor_id', $user->fornecedor->id)
+                ->whereNull('qc_item_qc_fornecedor.id')
+                ->whereNull('qc_fornecedor.desistencia_motivo_id')
+                ->whereNull('qc_fornecedor.desistencia_texto')
+                ->whereRaw('qc_fornecedor.rodada = quadro_de_concorrencias.rodada_atual');
+        }
+
+        return $query->get();
+    }
+
 }
