@@ -29,7 +29,7 @@
         </div>
     </section>
     <div class="content">
-
+        @if (isset($obra))
         <div class="col-md-12">
             <div class="col-md-12 thumbnail">
                 <div class="col-md-12">
@@ -72,7 +72,7 @@
                 </div>
             </div>
         </div>
-
+        @endif
         @include('adminlte-templates::common.errors')
         <div class="box-body" id='app'>
             {{--<tabela--}}
