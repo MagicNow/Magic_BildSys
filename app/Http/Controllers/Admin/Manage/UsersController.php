@@ -51,7 +51,7 @@ class UsersController extends AppBaseController
      */
     public function create()
     {
-        
+
         return view('admin.manage.users.create');
     }
 
@@ -71,9 +71,11 @@ class UsersController extends AppBaseController
 
         $usuario_existente = User::Where('email', '=', $request->email)
             ->first();
+
         if (isset($usuario_existente_deletado)) {
             $usuario_existente_deletado->forceDelete();
         }
+
         if (isset($usuario_existente)) {
             Flash::error('O campo email já esta sendo utilizado em outro cadastro');
             return redirect('/admin/users/create')->withInput($request->except('password', 'password_confirmation'));

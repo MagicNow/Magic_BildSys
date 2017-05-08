@@ -125,7 +125,7 @@
                         })
                         .fail(function() {
                             stopLoading();
-                            alert('CEP não encontrado!');
+                            swal('CEP não encontrado!');
                         });
             }
         }
