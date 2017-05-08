@@ -109,6 +109,7 @@
                    }"
                     v-bind:colunas="[
                        {campo_db: 'nome', label: 'insumos'},
+                       {campo_db: 'unidade_sigla', label: 'Unidade de Medida'},
                        {campo_db: 'qtd_total', label: 'quantidade'},
                        {campo_db: 'saldo', label: 'saldo'},
                    ]"
