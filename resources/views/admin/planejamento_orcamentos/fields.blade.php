@@ -48,16 +48,23 @@
                     <!-- Obras Field -->
                     <div class="form-group col-sm-12">
                         {!! Form::label('obra_id', 'Obras:') !!}
-                        {!! Form::select('obra_id', [''=>'-']+$obras, null, ['class' => 'form-control', 'id'=>'obra_id', 'required'=>'required','onchange'=>'selectPlanejamento(this.value), orcamento(this.value);']) !!}
+                        {!! Form::select('obra_id', [''=>'-']+$obras, null, ['class' => 'form-control', 'id'=>'obra_id', 'required'=>'required','onchange'=>'selectPlanejamento(this.value), orcamento(this.value), selectGrupoInsumo();']) !!}
                     </div>
 
                     <!-- Planejamentos de insumo Field -->
                     <div class="form-group col-sm-12">
                         {!! Form::label('planejamento_id', 'Planejamentos:') !!}
-                        {!! Form::select('planejamento_id', [''=>'-'], null, ['class' => 'form-control', 'id'=>'planejamento_id', 'required'=>'required']) !!}
+                        {!! Form::select('planejamento_id', [''=>'-'], null, ['class' => 'form-control select2', 'id'=>'planejamento_id', 'required'=>'required']) !!}
+                    </div>
+
+                    <!-- Grupo de insumos Field -->
+                    <div class="form-group col-sm-12">
+                        {!! Form::label('grupo_insumo_id', 'Grupo de insumos:') !!}
+                        {!! Form::select('grupo_insumo_id', [''=>'-'], null, ['class' => 'form-control select2', 'id'=>'grupo_insumo_id', 'onchange'=>'grupoInsumos(this.value)']) !!}
                     </div>
 
                     <div id="carrinho" class="col-md-12"></div>
+                    <div id="grupo_insumos" class="col-md-12"></div>
 
                     <div id="submit" class="col-md-4 col-md-offset-4">
                     </div>
@@ -84,10 +91,31 @@
                     $('#planejamento_id').html(options);
                     $('.overlay').remove();
                     $('#planejamento_id').attr('disabled',false);
+                    $('#planejamento_id').trigger('change');
                 }).fail(function() {
                     $('.overlay').remove();
                 });
             }
+        }
+
+        function selectGrupoInsumo(){
+            var rota = "{{url('/admin/planejamentos/planejamentoOrcamentos/planejamento/orcamento/insumo_grupos')}}";
+            $('.box.box-primary').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
+            $.ajax({
+                url: rota
+            }).done(function(retorno) {
+                options = '<option value="">Selecione</option>';
+                $('#grupo_insumo_id').html(options);
+                $.each(retorno,function(index, value){
+                    options += '<option value="'+index+'">'+value+'</option>';
+                });
+                $('#grupo_insumo_id').html(options);
+                $('.overlay').remove();
+                $('#grupo_insumo_id').attr('disabled',false);
+                $('#grupo_insumo_id').trigger('change');
+            }).fail(function() {
+                $('.overlay').remove();
+            });
         }
 
         function orcamento(id){
@@ -97,8 +125,9 @@
                 $.ajax({
                     url: rota + id
                 }).done(function(retorno) {
+                    list = '';
                     if(retorno) {
-                        list = '<h3>Orçamentos</h3>' +
+                        list = '<h3>Orçamento</h3>' +
                                 '<ul>' +
                                 '<li>' +
                                 '<div class="row">' +
@@ -120,7 +149,7 @@
                                 '</ul>';
                         $('#carrinho').html(list);
 
-                        submit = '<button type="submit" class="btn btn-primary btn-lg">Adicionar relacionamentos</button>'
+                        submit = '<button type="submit" class="btn btn-primary btn-lg">Adicionar relacionamentos</button>';
                         $('#submit').html(submit);
                     }else{
                         list = 'Essa obras não tem orçamentos';
@@ -194,6 +223,59 @@
                 }).fail(function() {
                     $('.overlay').remove();
                 });
+            }
+        }
+
+        function grupoInsumos(id){
+            var obra_id = $('#obra_id').val();
+            if(id){
+                $('.box.box-primary').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
+                $.ajax("{{ url('/admin/planejamentos/planejamentoOrcamentos/planejamento/orcamento/insumo/insumo_grupos') }}", {
+                            data: {
+                                'id' : id,
+                                'obra_id' : obra_id
+                            },
+                            type: "GET"
+                        }
+                ).done(function(retorno) {
+                    console.log(retorno);
+                    $('#carrinho').css('display','none');
+                    $('#grupo_insumos').css('display','');
+                    list = '';
+                    if(retorno.length > 0) {
+                        list += '<h3>Insumos</h3><li><input type="checkbox" id="checkAll"> <label>Selecionar todos</label></li>\
+                                </div>';
+                        $.each(retorno,function(index, value){
+                            list += '<li><input type="checkbox" class="grupos_insumos" id="insumo_'+ value.id +'" name="insumo_id[]" value="'+ value.id +'"> <label for="insumo_'+ value.id +'">' + value.codigo + ' - ' + value.nome + '</label></li>\
+                                </div>';
+                        });
+
+                        $('#grupo_insumos').html('<ul style="list-style: none">' +list+ '</ul>');
+
+                        submit = '<button type="submit" class="btn btn-primary btn-lg">Adicionar relacionamentos</button>';
+                        $('#submit').html(submit);
+
+                        $('#checkAll').on('ifChanged', function (event) {
+                            $(".grupos_insumos").prop('checked', $(event.target).prop("checked"));
+                            $("input").iCheck('update');
+                        });
+                    }else{
+                        list = 'O grupo não tem insumos orçados';
+                        $('#grupo_insumos').html('<ul style="list-style: none">' +list+ '</ul>');
+                    }
+                    $('input').iCheck({
+                        checkboxClass: 'icheckbox_square-green',
+                        radioClass: 'iradio_square-green',
+                        increaseArea: '20%' // optional
+                    });
+                    $('.overlay').remove();
+                }).fail(function() {
+                    $('.overlay').remove();
+                });
+            }
+            else{
+                $('#carrinho').css('display','');
+                $('#grupo_insumos').css('display','none');
             }
         }
     </script>
