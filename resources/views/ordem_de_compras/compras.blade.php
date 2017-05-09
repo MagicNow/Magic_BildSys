@@ -68,7 +68,6 @@
                $('#btn-comprar-calendario').css('pointer-events','auto');
                $('#btn-comprar-calendario').addClass('btn-success');
            }else{
-               console.log('entrou');
                $('#btn-comprar-calendario').removeClass('btn-success');
                $('#btn-comprar-calendario').css('pointer-events','none');
            }
