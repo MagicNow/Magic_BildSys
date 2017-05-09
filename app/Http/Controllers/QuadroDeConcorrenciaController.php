@@ -333,6 +333,14 @@ class QuadroDeConcorrenciaController extends AppBaseController
 
                     return back()->withInput();
                 }
+
+                $qcFornecedor->update($request->only([
+                    'nf_material',
+                    'nf_servico',
+                    'porcentagem_faturamento_direto',
+                    'porcentagem_material',
+                    'porcentagem_servico',
+                ]));
             }
 
             if(!$request->reject) {

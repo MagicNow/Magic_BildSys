@@ -25,7 +25,9 @@ class QcFornecedor extends Model
         'porcentagem_servico',
         'porcentagem_faturamento_direto',
         'desistencia_motivo_id',
-        'desistencia_texto'
+        'desistencia_texto',
+        'nf_material',
+        'nf_servico'
     ];
 
     /**
