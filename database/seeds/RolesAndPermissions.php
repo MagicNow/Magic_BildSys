@@ -138,8 +138,8 @@ class RolesAndPermissions extends Seeder
             $roleSuperuser->attachPermission($permission);
         }
 
-        $roles[1]->attachPermission(Defender::findPermission('quadroDeConcorrencias.informar_valores'));
-        $roles[1]->attachPermission(Defender::findPermission('quadroDeConcorrencias.list'));
-        $roles[1]->attachPermission(Defender::findPermission('site.dashboard'));
+//        $roles[1]->attachPermission(Defender::findPermission('quadroDeConcorrencias.informar_valores'));
+//        $roles[1]->attachPermission(Defender::findPermission('quadroDeConcorrencias.list'));
+//        $roles[1]->attachPermission(Defender::findPermission('site.dashboard'));
     }
 }
