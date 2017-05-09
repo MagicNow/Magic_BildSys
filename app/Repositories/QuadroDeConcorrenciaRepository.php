@@ -11,6 +11,7 @@ use App\Models\QuadroDeConcorrencia;
 use App\Notifications\IniciaConcorrencia;
 use Illuminate\Support\Facades\Mail;
 use InfyOm\Generator\Common\BaseRepository;
+use App\Models\User;
 
 class QuadroDeConcorrenciaRepository extends BaseRepository
 {
@@ -32,18 +33,18 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
             'user_id' => $attributes['user_id'],
             'qc_status_id' => 1,
 
-            'obrigacoes_fornecedor' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur interdum 
-            rutrum magna, eu dignissim nunc malesuada ac. Vestibulum velit libero, egestas non sapien ac, egestas 
-            bibendum massa. Donec vel luctus erat. Fusce ultrices lectus justo, a sollicitudin libero vestibulum vitae. 
-            Nullam at quam metus. Aliquam faucibus sapien vel velit tempor, congue dignissim libero viverra. Morbi 
+            'obrigacoes_fornecedor' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur interdum
+            rutrum magna, eu dignissim nunc malesuada ac. Vestibulum velit libero, egestas non sapien ac, egestas
+            bibendum massa. Donec vel luctus erat. Fusce ultrices lectus justo, a sollicitudin libero vestibulum vitae.
+            Nullam at quam metus. Aliquam faucibus sapien vel velit tempor, congue dignissim libero viverra. Morbi
             vestibulum eros eget tempor fermentum.',
 
-            'obrigacoes_bild' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur interdum 
-            rutrum magna, eu dignissim nunc malesuada ac. Vestibulum velit libero, egestas non sapien ac, egestas 
-            bibendum massa. Donec vel luctus erat. Fusce ultrices lectus justo, a sollicitudin libero vestibulum vitae. 
-            Nullam at quam metus. Aliquam faucibus sapien vel velit tempor, congue dignissim libero viverra. Morbi 
+            'obrigacoes_bild' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur interdum
+            rutrum magna, eu dignissim nunc malesuada ac. Vestibulum velit libero, egestas non sapien ac, egestas
+            bibendum massa. Donec vel luctus erat. Fusce ultrices lectus justo, a sollicitudin libero vestibulum vitae.
+            Nullam at quam metus. Aliquam faucibus sapien vel velit tempor, congue dignissim libero viverra. Morbi
             vestibulum eros eget tempor fermentum.',
-            
+
             'rodada_atual' => 1
         ];
         $temporarySkipPresenter = $this->skipPresenter;
@@ -79,7 +80,7 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
                 'insumo_id'=> $qc_item_array['insumo_id']
             ]);
             $qc_item->oc_itens()->sync($qc_item_array['ids']);
-            
+
         }
 
         return $this->parserResult($model);
@@ -166,7 +167,7 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
                         }else{
                             // Se não tiver envia um e-mail para o fornecedor
                             if(!strlen($fornecedor->email)) {
-                                $mensagens[] = 'O Fornecedor '.$fornecedor->nome.' não possui acesso e e-mail cadastrado, 
+                                $mensagens[] = 'O Fornecedor '.$fornecedor->nome.' não possui acesso e e-mail cadastrado,
                                                             por favor faça contato por telefone '.$fornecedor->telefone;
                             }else{
                                 Mail::to($fornecedor->email)->send(new IniciaConcorrenciaFornecedorNaoUsuario($quadroDeConcorrencia,$fornecedor));
@@ -205,4 +206,36 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
     {
         return QuadroDeConcorrencia::class;
     }
+
+    public function quadrosPreenchiveisPeloUsuario(User $user)
+    {
+        $query = $this->model
+            ->select([
+                'quadro_de_concorrencias.id',
+                'quadro_de_concorrencias.rodada_atual',
+                'quadro_de_concorrencias.created_at',
+                'quadro_de_concorrencias.updated_at',
+                'users.name as usuario',
+                'qc_status.nome as situacao',
+                'qc_status.cor as situacao_cor',
+                'quadro_de_concorrencias.qc_status_id'
+            ])
+            ->join('users','users.id','quadro_de_concorrencias.user_id')
+            ->join('qc_status','qc_status.id','quadro_de_concorrencias.qc_status_id')
+            ->where('quadro_de_concorrencias.qc_status_id', 7);
+
+        if($user->fornecedor) {
+            $query = $query
+                ->join('qc_fornecedor', 'qc_fornecedor.quadro_de_concorrencia_id', 'quadro_de_concorrencias.id')
+                ->leftJoin('qc_item_qc_fornecedor', 'qc_item_qc_fornecedor.qc_fornecedor_id', 'qc_fornecedor.id')
+                ->where('qc_fornecedor.fornecedor_id', $user->fornecedor->id)
+                ->whereNull('qc_item_qc_fornecedor.id')
+                ->whereNull('qc_fornecedor.desistencia_motivo_id')
+                ->whereNull('qc_fornecedor.desistencia_texto')
+                ->whereRaw('qc_fornecedor.rodada = quadro_de_concorrencias.rodada_atual');
+        }
+
+        return $query->get();
+    }
+
 }

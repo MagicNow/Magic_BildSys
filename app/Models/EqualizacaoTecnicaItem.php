@@ -12,7 +12,7 @@ use Eloquent as Model;
 class EqualizacaoTecnicaItem extends Model
 {
     public $table = 'equalizacao_tecnica_itens';
-    
+
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
@@ -41,7 +41,7 @@ class EqualizacaoTecnicaItem extends Model
      * @var array
      */
     public static $rules = [
-        
+
     ];
 
     /**
@@ -50,5 +50,10 @@ class EqualizacaoTecnicaItem extends Model
     public function tipoEqualizacaoTecnica()
     {
         return $this->belongsTo(\App\Models\TipoEqualizacaoTecnica::class);
+    }
+
+    public function checks()
+    {
+        return $this->morphMany(QcFornecedorEqualizacaoCheck::class, 'checkable');
     }
 }

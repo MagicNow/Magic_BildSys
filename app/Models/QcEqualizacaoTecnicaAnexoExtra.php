@@ -2,21 +2,15 @@
 
 namespace App\Models;
 
+use Storage;
 use Eloquent as Model;
 
-/**
- * Class QcEqualizacaoTecnicaAnexoExtra
- * @package App\Models
- * @version May 3, 2017, 3:15 pm BRT
- */
 class QcEqualizacaoTecnicaAnexoExtra extends Model
 {
-
     public $table = 'qc_equalizacao_tecnica_anexo_extra';
-    
+
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
-
 
     public $fillable = [
         'quadro_de_concorrencia_id',
@@ -52,5 +46,10 @@ class QcEqualizacaoTecnicaAnexoExtra extends Model
     public function quadroDeConcorrencia()
     {
         return $this->belongsTo(\App\Models\QuadroDeConcorrencia::class);
+    }
+
+    public function getUrlAttribute()
+    {
+        return Storage::url($this->attributes['arquivo']);
     }
 }

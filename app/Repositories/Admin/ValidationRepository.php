@@ -31,6 +31,7 @@ class ValidationRepository
         $data = array(
             $validar[$cpf] => $valor
         );
+
         return \Validator::make($data, $rules, $messages);
     }
 

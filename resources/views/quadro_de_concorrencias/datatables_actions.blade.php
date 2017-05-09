@@ -20,6 +20,13 @@
         </button>
         @endif
     @endshield
+    @shield('quadroDeConcorrencias.informar_valor')
+        @if($qc_status_id == 7)
+        <a href="{{ route('quadroDeConcorrencia.informar-valor', $id) }}" class="btn btn-xs btn-info" title="Informar valores">
+            <i class="glyphicon glyphicon-usd"></i>
+        </a>
+        @endif
+    @endshield
     @shield('quadroDeConcorrencias.delete')
         {!! Form::button('<i class="glyphicon glyphicon-trash"></i>', [
             'type' => 'button',

@@ -18,9 +18,11 @@ class RolesAndPermissions extends Seeder
         \Illuminate\Support\Facades\DB::table('permissions')->delete();
         $cargos = [
             'Administrador',
+            'Fornecedor'
         ];
 
         $roles = [];
+
         foreach ($cargos as $cargo) {
             $roles[] = Defender::createRole($cargo);
         }
@@ -115,8 +117,9 @@ class RolesAndPermissions extends Seeder
 
             'quadroDeConcorrencias.list' => 'Listagem de Quadro De Concorrências',
             'quadroDeConcorrencias.create' => 'Criação de Quadro De Concorrência',
-            'quadroDeConcorrencias.edit'   => 'Edição de Quadro De Concorrência',
-            'quadroDeConcorrencias.view'   => 'Visualização de Quadro De Concorrência',
+            'quadroDeConcorrencias.edit' => 'Edição de Quadro De Concorrência',
+            'quadroDeConcorrencias.view' => 'Visualização de Quadro De Concorrência',
+            'quadroDeConcorrencias.informar_valor' => 'Informar valores em quadros de concorrência',
             'quadroDeConcorrencias.delete'   => 'Remoção Física de Quadro De Concorrência',
         ];
 
@@ -134,5 +137,9 @@ class RolesAndPermissions extends Seeder
         {
             $roleSuperuser->attachPermission($permission);
         }
+
+        $roles[1]->attachPermission(Defender::findPermission('quadroDeConcorrencias.informar_valores'));
+        $roles[1]->attachPermission(Defender::findPermission('quadroDeConcorrencias.list'));
+        $roles[1]->attachPermission(Defender::findPermission('site.dashboard'));
     }
 }

@@ -9,7 +9,7 @@
 | by your application. Just tell Laravel the URIs it should respond
 | to using a Closure or controller method. Build something great!
 |
-*/
+ */
 
 Auth::routes();
 
@@ -92,7 +92,7 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
         # Lembretes
         $router->group(['middleware' => 'needsPermission:lembretes.list'], function () use ($router) {
             $router->get('lembretes/data-minima', 'Admin\LembreteController@lembreteDataMinima');
-            
+
             $router->get('lembretes', ['as' => 'admin.lembretes.index', 'uses' => 'Admin\LembreteController@index']);
             $router->post('lembretes', ['as' => 'admin.lembretes.store', 'uses' => 'Admin\LembreteController@store']);
             $router->get('lembretes/create', ['as' => 'admin.lembretes.create', 'uses' => 'Admin\LembreteController@create'])->middleware("needsPermission:lembretes.create");
@@ -407,7 +407,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
 
     $router->get('planejamentos/lembretes', 'PlanejamentoController@lembretes');
     $router->get('planejamentos/lembretes/salvar-data-minima', 'PlanejamentoController@lembretes');
-    
+
 
     $router->get('workflow/aprova-reprova', 'WorkflowController@aprovaReprova');
     $router->get('workflow/aprova-reprova-tudo', 'WorkflowController@aprovaReprovaTudo');
@@ -424,6 +424,17 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
 
     # Quadro de Concorrencia
     $router->group(['middleware' => 'needsPermission:quadroDeConcorrencias.list'], function () use ($router) {
+        $router->post(
+            '/quadro-de-concorrencia/{quadroDeConcorrencias}/informar-valor',
+            'QuadroDeConcorrenciaController@informarValorSave'
+        )->middleware('needsPermission:quadroDeConcorrencias.informar_valor');
+
+        $router->get(
+            '/quadro-de-concorrencia/{quadroDeConcorrencias}/informar-valor',
+            'QuadroDeConcorrenciaController@informarValor'
+        )->name('quadroDeConcorrencia.informar-valor')
+        ->middleware('needsPermission:quadroDeConcorrencias.informar_valor');
+
         $router->get('quadro-de-concorrencia', ['as' => 'quadroDeConcorrencias.index', 'uses' => 'QuadroDeConcorrenciaController@index']);
         $router->post('quadro-de-concorrencia/criar',
             [

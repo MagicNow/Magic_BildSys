@@ -189,6 +189,9 @@ elixir(function(mix) {
         'admin.js',
         'filtros-dinamicos.js',
         'workflow.js',
+        'qc-informar-valores.js',
+        'sweetalert-helper.js',
+
     ], 'public/js/admin.js');
 
     mix.scripts([

@@ -7,15 +7,14 @@ use Eloquent as Model;
 /**
  * Class QcFornecedor
  * @package App\Models
- * @version May 4, 2017, 12:19 pm BRT
+ * @version May 4, 2017, 10:16 am BRT
  */
 class QcFornecedor extends Model
 {
     public $table = 'qc_fornecedor';
-    
+
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
-
 
     public $fillable = [
         'quadro_de_concorrencia_id',
@@ -26,7 +25,9 @@ class QcFornecedor extends Model
         'porcentagem_servico',
         'porcentagem_faturamento_direto',
         'desistencia_motivo_id',
-        'desistencia_texto'
+        'desistencia_texto',
+        'nf_material',
+        'nf_servico'
     ];
 
     /**
@@ -49,9 +50,7 @@ class QcFornecedor extends Model
      *
      * @var array
      */
-    public static $rules = [
-        
-    ];
+    public static $rules = [];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -96,7 +95,7 @@ class QcFornecedor extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
-    public function qcItemQcFornecedors()
+    public function itens()
     {
         return $this->hasMany(QcItemQcFornecedor::class);
     }

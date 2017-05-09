@@ -64,8 +64,8 @@ class User extends Authenticatable
         'admin-boolean' => 'Administrador',
         'created_at-date' => 'Criado em',
         'updated_at-date' => 'Atualizado em',
-//        'valor-integer' => 'Valor'
-//        'user_id-foreign_key-User-name-id' => 'Usuário'
+        //        'valor-integer' => 'Valor'
+        //        'user_id-foreign_key-User-name-id' => 'Usuário'
     ];
 
     /**
@@ -81,11 +81,13 @@ class User extends Authenticatable
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
-
-
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new ResetPasswordNotification($token));
     }
 
+    public function fornecedor()
+    {
+        return $this->hasOne(Fornecedor::class);
+    }
 }

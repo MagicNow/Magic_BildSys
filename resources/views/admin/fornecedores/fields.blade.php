@@ -92,6 +92,15 @@
     {!! Form::text('complemento', null, ['class' => 'form-control']) !!}
 </div>
 
+<div class="form-group col-sm-6">
+  <div class="checkbox">
+    <label>
+      {!! Form::checkbox('is_user', '1') !!}
+      É usuário
+    </label>
+  </div>
+</div>
+
 <!-- Submit Field -->
 <div class="form-group col-sm-12">
     {!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save') ), ['class' => 'btn btn-success pull-right', 'type'=>'submit']) !!}

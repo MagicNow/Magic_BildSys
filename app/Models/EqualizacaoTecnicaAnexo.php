@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Storage;
 use Eloquent as Model;
 
 /**
@@ -12,7 +13,7 @@ use Eloquent as Model;
 class EqualizacaoTecnicaAnexo extends Model
 {
     public $table = 'equalizacao_tecnica_anexos';
-    
+
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
@@ -40,7 +41,7 @@ class EqualizacaoTecnicaAnexo extends Model
      * @var array
      */
     public static $rules = [
-        
+
     ];
 
     /**
@@ -49,5 +50,10 @@ class EqualizacaoTecnicaAnexo extends Model
     public function tipoEqualizacaoTecnica()
     {
         return $this->belongsTo(\App\Models\TipoEqualizacaoTecnica::class);
+    }
+
+    public function getUrlAttribute()
+    {
+        return Storage::url($this->attributes['arquivo']);
     }
 }

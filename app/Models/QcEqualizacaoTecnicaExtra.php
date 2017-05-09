@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class QcEqualizacaoTecnicaExtra
@@ -12,16 +11,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class QcEqualizacaoTecnicaExtra extends Model
 {
-    use SoftDeletes;
-
     public $table = 'qc_equalizacao_tecnica_extras';
-    
+
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
-
-
-    protected $dates = ['deleted_at'];
-
 
     public $fillable = [
         'quadro_de_concorrencia_id',
@@ -57,5 +50,10 @@ class QcEqualizacaoTecnicaExtra extends Model
     public function quadroDeConcorrencia()
     {
         return $this->belongsTo(\App\Models\QuadroDeConcorrencia::class);
+    }
+
+    public function checks()
+    {
+        return $this->morphMany(QcFornecedorEqualizacaoCheck::class, 'checkable');
     }
 }

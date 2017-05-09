@@ -6,6 +6,7 @@ use App\Models\MegaInsumo;
 use App\Repositories\ImportacaoRepository;
 use Illuminate\Http\Request;
 use App\Models\OrdemDeCompra;
+use App\Repositories\QuadroDeConcorrenciaRepository;
 
 
 class HomeController extends Controller
@@ -25,7 +26,7 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(QuadroDeConcorrenciaRepository $quadroDeConcorrenciaRepository)
     {
 //        $reprovados = OrdemDeCompra::select([
 //            'ordem_de_compras.id',
@@ -54,6 +55,10 @@ class HomeController extends Controller
 //                ->where('oc_status_id', 3)->orderBy('id', 'desc')
 //                ->take(5)->get();
 
-        return view('home');
+        return view('home', [
+            'quadros' => $quadroDeConcorrenciaRepository
+                ->quadrosPreenchiveisPeloUsuario(auth()->user())
+                ->count()
+        ]);
     }
 }

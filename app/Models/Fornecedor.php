@@ -15,13 +15,11 @@ class Fornecedor extends Model
     use SoftDeletes;
 
     public $table = 'fornecedores';
-    
+
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
-
     protected $dates = ['deleted_at'];
-
 
     public $fillable = [
         'codigo_mega',
@@ -105,7 +103,13 @@ class Fornecedor extends Model
         return $this->hasMany(QcFornecedor::class);
     }
 
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo(User::class);
+    }
+
+    public function getIsUserAttribute()
+    {
+        return !is_null($this->user) && $this->user->active;
     }
 }

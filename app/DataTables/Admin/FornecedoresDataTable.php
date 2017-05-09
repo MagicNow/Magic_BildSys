@@ -16,6 +16,11 @@ class FornecedoresDataTable extends DataTable
     {
         return $this->datatables
             ->eloquent($this->query())
+            ->addColumn('usuário', function($fornecedor) {
+                return $fornecedor->is_user
+                    ? '<i class="fa fa-check text-success"></i>'
+                    : '<i class="fa fa-times text-danger"></i>';
+            })
             ->addColumn('action', 'admin.fornecedores.datatables_actions')
             ->make(true);
     }
@@ -102,7 +107,8 @@ class FornecedoresDataTable extends DataTable
 //            'inscricao_estadual' => ['name' => 'inscricao_estadual', 'data' => 'inscricao_estadual'],
             'email' => ['name' => 'email', 'data' => 'email'],
             'site' => ['name' => 'site', 'data' => 'site'],
-            'telefone' => ['name' => 'telefone', 'data' => 'telefone']
+            'telefone' => ['name' => 'telefone', 'data' => 'telefone'],
+            'usuário' => ['name' => 'usuário', 'data' => 'usuário'],
         ];
     }
 
