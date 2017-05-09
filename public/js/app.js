@@ -16137,12 +16137,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 "use strict";
 'use strict';
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-/* styles */
-__webpack_require__(189)
-=======
 window._ = __webpack_require__(174);
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
@@ -16150,25 +16145,6 @@ window._ = __webpack_require__(174);
  * code may be modified to fit the specific needs of your application.
  */
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-/* template */
-var __vue_template__ = __webpack_require__(184)
-__vue_options__ = __vue_exports__ = __vue_exports__ || {}
-if (
-  typeof __vue_exports__.default === "object" ||
-  typeof __vue_exports__.default === "function"
-) {
-if (Object.keys(__vue_exports__).some(function (key) { return key !== "default" && key !== "__esModule" })) {console.error("named exports are not supported in *.vue files.")}
-__vue_options__ = __vue_exports__ = __vue_exports__.default
-}
-if (typeof __vue_options__ === "function") {
-  __vue_options__ = __vue_options__.options
-}
-__vue_options__.__file = "/Applications/MAMP/htdocs/bild-sys/resources/assets/js/components/generic-paginator.vue"
-__vue_options__.render = __vue_template__.render
-__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
-
-=======
 // window.$ = window.jQuery = require('jquery');
 // require('bootstrap-sass');
 
@@ -16236,7 +16212,6 @@ __vue_options__.__file = "C:\\Users\\usuario_13\\Code\\bild-sys\\resources\\asse
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
 
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 /* hot reload */
 if (false) {(function () {
   var hotAPI = require("vue-hot-reload-api")
@@ -16244,15 +16219,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-    hotAPI.createRecord("data-v-5ce4f2aa", __vue_options__)
-  } else {
-    hotAPI.reload("data-v-5ce4f2aa", __vue_options__)
-=======
     hotAPI.createRecord("data-v-6a2aba32", __vue_options__)
   } else {
     hotAPI.reload("data-v-6a2aba32", __vue_options__)
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
   }
 })()}
 if (__vue_options__.functional) {console.error("[vue-loader] generic-paginator.vue: functional components are not supported and should be defined in plain js files using render functions.")}
@@ -16268,21 +16237,13 @@ var __vue_exports__, __vue_options__
 var __vue_styles__ = {}
 
 /* styles */
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-__webpack_require__(190)
-=======
 __webpack_require__(191)
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 
 /* script */
 __vue_exports__ = __webpack_require__(178)
 
 /* template */
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-var __vue_template__ = __webpack_require__(185)
-=======
 var __vue_template__ = __webpack_require__(187)
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -16294,11 +16255,7 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-__vue_options__.__file = "/Applications/MAMP/htdocs/bild-sys/resources/assets/js/components/tabela.vue"
-=======
 __vue_options__.__file = "C:\\Users\\usuario_13\\Code\\bild-sys\\resources\\assets\\js\\components\\tabela.vue"
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
 
@@ -16309,15 +16266,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-    hotAPI.createRecord("data-v-85f163f6", __vue_options__)
-  } else {
-    hotAPI.reload("data-v-85f163f6", __vue_options__)
-=======
     hotAPI.createRecord("data-v-7ec708de", __vue_options__)
   } else {
     hotAPI.reload("data-v-7ec708de", __vue_options__)
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
   }
 })()}
 if (__vue_options__.functional) {console.error("[vue-loader] tabela.vue: functional components are not supported and should be defined in plain js files using render functions.")}
@@ -16333,21 +16284,13 @@ var __vue_exports__, __vue_options__
 var __vue_styles__ = {}
 
 /* styles */
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-__webpack_require__(188)
-=======
 __webpack_require__(192)
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 
 /* script */
 __vue_exports__ = __webpack_require__(179)
 
 /* template */
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-var __vue_template__ = __webpack_require__(183)
-=======
 var __vue_template__ = __webpack_require__(188)
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -16359,11 +16302,7 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-__vue_options__.__file = "/Applications/MAMP/htdocs/bild-sys/resources/assets/js/components/tile-grafico.vue"
-=======
 __vue_options__.__file = "C:\\Users\\usuario_13\\Code\\bild-sys\\resources\\assets\\js\\components\\tile-grafico.vue"
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
 
@@ -16374,15 +16313,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-    hotAPI.createRecord("data-v-2aec8cc6", __vue_options__)
-  } else {
-    hotAPI.reload("data-v-2aec8cc6", __vue_options__)
-=======
     hotAPI.createRecord("data-v-7fa100df", __vue_options__)
   } else {
     hotAPI.reload("data-v-7fa100df", __vue_options__)
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
   }
 })()}
 if (__vue_options__.functional) {console.error("[vue-loader] tile-grafico.vue: functional components are not supported and should be defined in plain js files using render functions.")}
@@ -16398,21 +16331,13 @@ var __vue_exports__, __vue_options__
 var __vue_styles__ = {}
 
 /* styles */
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-__webpack_require__(191)
-=======
 __webpack_require__(193)
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 
 /* script */
 __vue_exports__ = __webpack_require__(180)
 
 /* template */
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-var __vue_template__ = __webpack_require__(186)
-=======
 var __vue_template__ = __webpack_require__(189)
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 __vue_options__ = __vue_exports__ = __vue_exports__ || {}
 if (
   typeof __vue_exports__.default === "object" ||
@@ -16424,11 +16349,7 @@ __vue_options__ = __vue_exports__ = __vue_exports__.default
 if (typeof __vue_options__ === "function") {
   __vue_options__ = __vue_options__.options
 }
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-__vue_options__.__file = "/Applications/MAMP/htdocs/bild-sys/resources/assets/js/components/tile.vue"
-=======
 __vue_options__.__file = "C:\\Users\\usuario_13\\Code\\bild-sys\\resources\\assets\\js\\components\\tile.vue"
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 __vue_options__.render = __vue_template__.render
 __vue_options__.staticRenderFns = __vue_template__.staticRenderFns
 
@@ -16439,15 +16360,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-    hotAPI.createRecord("data-v-c51ddd64", __vue_options__)
-  } else {
-    hotAPI.reload("data-v-c51ddd64", __vue_options__)
-=======
     hotAPI.createRecord("data-v-dd38a332", __vue_options__)
   } else {
     hotAPI.reload("data-v-dd38a332", __vue_options__)
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
   }
 })()}
 if (__vue_options__.functional) {console.error("[vue-loader] tile.vue: functional components are not supported and should be defined in plain js files using render functions.")}
@@ -28538,216 +28453,8 @@ module.exports = convert;
 /* 173 */
 /***/ function(module, exports) {
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-module.exports = {
-	"aliceblue": [240, 248, 255],
-	"antiquewhite": [250, 235, 215],
-	"aqua": [0, 255, 255],
-	"aquamarine": [127, 255, 212],
-	"azure": [240, 255, 255],
-	"beige": [245, 245, 220],
-	"bisque": [255, 228, 196],
-	"black": [0, 0, 0],
-	"blanchedalmond": [255, 235, 205],
-	"blue": [0, 0, 255],
-	"blueviolet": [138, 43, 226],
-	"brown": [165, 42, 42],
-	"burlywood": [222, 184, 135],
-	"cadetblue": [95, 158, 160],
-	"chartreuse": [127, 255, 0],
-	"chocolate": [210, 105, 30],
-	"coral": [255, 127, 80],
-	"cornflowerblue": [100, 149, 237],
-	"cornsilk": [255, 248, 220],
-	"crimson": [220, 20, 60],
-	"cyan": [0, 255, 255],
-	"darkblue": [0, 0, 139],
-	"darkcyan": [0, 139, 139],
-	"darkgoldenrod": [184, 134, 11],
-	"darkgray": [169, 169, 169],
-	"darkgreen": [0, 100, 0],
-	"darkgrey": [169, 169, 169],
-	"darkkhaki": [189, 183, 107],
-	"darkmagenta": [139, 0, 139],
-	"darkolivegreen": [85, 107, 47],
-	"darkorange": [255, 140, 0],
-	"darkorchid": [153, 50, 204],
-	"darkred": [139, 0, 0],
-	"darksalmon": [233, 150, 122],
-	"darkseagreen": [143, 188, 143],
-	"darkslateblue": [72, 61, 139],
-	"darkslategray": [47, 79, 79],
-	"darkslategrey": [47, 79, 79],
-	"darkturquoise": [0, 206, 209],
-	"darkviolet": [148, 0, 211],
-	"deeppink": [255, 20, 147],
-	"deepskyblue": [0, 191, 255],
-	"dimgray": [105, 105, 105],
-	"dimgrey": [105, 105, 105],
-	"dodgerblue": [30, 144, 255],
-	"firebrick": [178, 34, 34],
-	"floralwhite": [255, 250, 240],
-	"forestgreen": [34, 139, 34],
-	"fuchsia": [255, 0, 255],
-	"gainsboro": [220, 220, 220],
-	"ghostwhite": [248, 248, 255],
-	"gold": [255, 215, 0],
-	"goldenrod": [218, 165, 32],
-	"gray": [128, 128, 128],
-	"green": [0, 128, 0],
-	"greenyellow": [173, 255, 47],
-	"grey": [128, 128, 128],
-	"honeydew": [240, 255, 240],
-	"hotpink": [255, 105, 180],
-	"indianred": [205, 92, 92],
-	"indigo": [75, 0, 130],
-	"ivory": [255, 255, 240],
-	"khaki": [240, 230, 140],
-	"lavender": [230, 230, 250],
-	"lavenderblush": [255, 240, 245],
-	"lawngreen": [124, 252, 0],
-	"lemonchiffon": [255, 250, 205],
-	"lightblue": [173, 216, 230],
-	"lightcoral": [240, 128, 128],
-	"lightcyan": [224, 255, 255],
-	"lightgoldenrodyellow": [250, 250, 210],
-	"lightgray": [211, 211, 211],
-	"lightgreen": [144, 238, 144],
-	"lightgrey": [211, 211, 211],
-	"lightpink": [255, 182, 193],
-	"lightsalmon": [255, 160, 122],
-	"lightseagreen": [32, 178, 170],
-	"lightskyblue": [135, 206, 250],
-	"lightslategray": [119, 136, 153],
-	"lightslategrey": [119, 136, 153],
-	"lightsteelblue": [176, 196, 222],
-	"lightyellow": [255, 255, 224],
-	"lime": [0, 255, 0],
-	"limegreen": [50, 205, 50],
-	"linen": [250, 240, 230],
-	"magenta": [255, 0, 255],
-	"maroon": [128, 0, 0],
-	"mediumaquamarine": [102, 205, 170],
-	"mediumblue": [0, 0, 205],
-	"mediumorchid": [186, 85, 211],
-	"mediumpurple": [147, 112, 219],
-	"mediumseagreen": [60, 179, 113],
-	"mediumslateblue": [123, 104, 238],
-	"mediumspringgreen": [0, 250, 154],
-	"mediumturquoise": [72, 209, 204],
-	"mediumvioletred": [199, 21, 133],
-	"midnightblue": [25, 25, 112],
-	"mintcream": [245, 255, 250],
-	"mistyrose": [255, 228, 225],
-	"moccasin": [255, 228, 181],
-	"navajowhite": [255, 222, 173],
-	"navy": [0, 0, 128],
-	"oldlace": [253, 245, 230],
-	"olive": [128, 128, 0],
-	"olivedrab": [107, 142, 35],
-	"orange": [255, 165, 0],
-	"orangered": [255, 69, 0],
-	"orchid": [218, 112, 214],
-	"palegoldenrod": [238, 232, 170],
-	"palegreen": [152, 251, 152],
-	"paleturquoise": [175, 238, 238],
-	"palevioletred": [219, 112, 147],
-	"papayawhip": [255, 239, 213],
-	"peachpuff": [255, 218, 185],
-	"peru": [205, 133, 63],
-	"pink": [255, 192, 203],
-	"plum": [221, 160, 221],
-	"powderblue": [176, 224, 230],
-	"purple": [128, 0, 128],
-	"rebeccapurple": [102, 51, 153],
-	"red": [255, 0, 0],
-	"rosybrown": [188, 143, 143],
-	"royalblue": [65, 105, 225],
-	"saddlebrown": [139, 69, 19],
-	"salmon": [250, 128, 114],
-	"sandybrown": [244, 164, 96],
-	"seagreen": [46, 139, 87],
-	"seashell": [255, 245, 238],
-	"sienna": [160, 82, 45],
-	"silver": [192, 192, 192],
-	"skyblue": [135, 206, 235],
-	"slateblue": [106, 90, 205],
-	"slategray": [112, 128, 144],
-	"slategrey": [112, 128, 144],
-	"snow": [255, 250, 250],
-	"springgreen": [0, 255, 127],
-	"steelblue": [70, 130, 180],
-	"tan": [210, 180, 140],
-	"teal": [0, 128, 128],
-	"thistle": [216, 191, 216],
-	"tomato": [255, 99, 71],
-	"turquoise": [64, 224, 208],
-	"violet": [238, 130, 238],
-	"wheat": [245, 222, 179],
-	"white": [255, 255, 255],
-	"whitesmoke": [245, 245, 245],
-	"yellow": [255, 255, 0],
-	"yellowgreen": [154, 205, 50]
-};
-
-/***/ },
-/* 177 */
-/***/ function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(1)();
-// imports
-
-
-// module
-exports.push([module.i, "\n.element-grafico{\n    width: 100%;\n    border: solid 1px #dddddd;\n}\n.element-grafico > thead {\n    padding: 5px 0px 5px 0px;\n    background-color: #474747;\n}\n.element-grafico > thead > tr > th{\n    padding: 10px 0px 10px 0px;\n    color: #f5f5f5;\n    font-weight: bold;\n    text-align: center;\n}\n.element-grafico > tbody{\n    background-color: white;\n}\n", ""]);
-
-// exports
-
-
-/***/ },
-/* 178 */
-/***/ function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(1)();
-// imports
-
-
-// module
-exports.push([module.i, "\n.pagination-custom{\n    display: inline-block;\n    padding-left: 0;\n}\n.pagination-custom > li{\n    margin: 2px;\n    display: inline;\n}\n.page-element > a{\n    padding: 6px 12px;\n    border: solid 1px #979797;\n}\n.pagination-custom .active >a{\n    color: #f98d00;\n    font-weight: bold;\n    border: solid 1px #f98d00;\n}\n", ""]);
-
-// exports
-
-
-/***/ },
-/* 179 */
-/***/ function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(1)();
-// imports
-
-
-// module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
-
-// exports
-
-
-/***/ },
-/* 180 */
-/***/ function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(1)();
-// imports
-
-
-// module
-exports.push([module.i, "\n.element-border{\n    width: 100%;\n    border: solid 1px #dddddd;\n}\n.element-border > .head-grey {\n    background-color: #9b9b9b;\n}\n.element-border > .head-red{\n    background-color: #eb0000;\n}\n.element-border > .head-green{\n    background-color: #7ed321;\n}\n.element-border > thead > tr > th{\n    padding: 10px 0px 10px 0px;\n    color: #f5f5f5;\n    font-family: Raleway;\n    font-weight: bold;\n    text-align: center;\n}\n.element-border > tbody{\n    background-color: white;\n}\n.element-border > tbody > tr {\n    cursor:pointer;\n    height: 50px;\n    border-bottom: solid 1px #dddddd;\n}\n.element-border > tbody > tr > td {\n    text-align: center;\n}\n.element-border > tbody > tr > td >span{\n    color: #474747;\n}\n.element-border > tbody > tr > td:first-child >span {\n    color: #4a90e2;\n    padding: 5px 10px 5px 10px;\n    border-right: solid 1px #dddddd;\n}\n.element-border > tbody > tr > td:last-child > span{\n    padding: 5px 10px 5px 10px;\n    border-left: solid 1px #dddddd;\n}\n", ""]);
-
-// exports
-=======
 "use strict";
 "use strict";
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 
 module.exports = {
 	"aliceblue": [240, 248, 255],
@@ -38591,491 +38298,12 @@ p.bind = function (context) {
 
 p.then = function (fulfilled, rejected) {
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', [_c('table', {
-    staticClass: "element-grafico"
-  }, [_vm._m(0), _vm._v(" "), _c('tbody', [(_vm.mydatasets[0].data[0] != undefined) ? _c('tr', [_c('chartjs-bar', {
-    staticStyle: {
-      "padding": "15px"
-    },
-    attrs: {
-      "height": 300,
-      "option": _vm.myoption,
-      "labels": _vm.mylabels,
-      "datasets": _vm.mydatasets
-    }
-  })], 1) : _vm._e()])])])
-},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('thead', [_c('tr', [_c('th', {
-    attrs: {
-      "colspan": "3"
-    }
-  }, [_vm._v("Ordens de Compra")])])])
-}]}
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-2aec8cc6", module.exports)
-  }
-}
-
-/***/ },
-/* 184 */
-/***/ function(module, exports, __webpack_require__) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('nav', [(_vm.pagination.last_page > 0) ? _c('ul', {
-    staticClass: "pagination-custom",
-    class: _vm.sizeClass
-  }, [(_vm.showPrevious()) ? _c('li', {
-    class: {
-      'disabled': _vm.pagination.current_page <= 1
-    }
-  }, [(_vm.pagination.current_page <= 1) ? _c('span', [_vm._m(0)]) : _vm._e(), _vm._v(" "), (_vm.pagination.current_page > 1) ? _c('a', {
-    attrs: {
-      "href": "#",
-      "aria-label": _vm.config.ariaPrevioius
-    },
-    on: {
-      "click": function($event) {
-        $event.preventDefault();
-        _vm.changePage(_vm.pagination.current_page - 1)
-      }
-    }
-  }, [_vm._m(1)]) : _vm._e()]) : _vm._e(), _vm._v(" "), _vm._l((_vm.array), function(num) {
-    return _c('li', {
-      staticClass: "page-element",
-      class: {
-        'active': num === _vm.pagination.current_page
-      }
-    }, [_c('a', {
-      attrs: {
-        "href": "#"
-      },
-      on: {
-        "click": function($event) {
-          $event.preventDefault();
-          _vm.changePage(num)
-        }
-      }
-    }, [_vm._v(_vm._s(num))])])
-  }), _vm._v(" "), (_vm.showNext()) ? _c('li', {
-    class: {
-      'disabled': _vm.pagination.current_page === _vm.pagination.last_page || _vm.pagination.last_page === 0
-    }
-  }, [(_vm.pagination.current_page === _vm.pagination.last_page || _vm.pagination.last_page === 0) ? _c('span', [_c('span', {
-    attrs: {
-      "aria-hidden": "true"
-    }
-  })]) : _vm._e(), _vm._v(" "), (_vm.pagination.current_page < _vm.pagination.last_page) ? _c('a', {
-    attrs: {
-      "href": "#",
-      "aria-label": _vm.config.ariaNext
-    },
-    on: {
-      "click": function($event) {
-        $event.preventDefault();
-        _vm.changePage(_vm.pagination.current_page + 1)
-      }
-    }
-  }, [_vm._m(2)]) : _vm._e()]) : _vm._e()], 2) : _vm._e()])
-},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('span', {
-    attrs: {
-      "aria-hidden": "true"
-    }
-  }, [_c('i', {
-    staticClass: "fa fa-long-arrow-left orange",
-    attrs: {
-      "aria-hidden": "true"
-    }
-  })])
-},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('span', {
-    attrs: {
-      "aria-hidden": "true"
-    }
-  }, [_c('i', {
-    staticClass: "fa fa-long-arrow-left orange",
-    attrs: {
-      "aria-hidden": "true"
-    }
-  })])
-},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('span', {
-    attrs: {
-      "aria-hidden": "true"
-    }
-  }, [_c('i', {
-    staticClass: "fa fa-long-arrow-right orange",
-    attrs: {
-      "aria-hidden": "true"
-    }
-  })])
-}]}
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-5ce4f2aa", module.exports)
-  }
-}
-
-/***/ },
-/* 185 */
-/***/ function(module, exports, __webpack_require__) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', [(_vm.actions.filtros != undefined) ? _c('div', [_c('div', {
-    staticClass: "col-md-12",
-    staticStyle: {
-      "margin-bottom": "20px"
-    },
-    attrs: {
-      "id": "block_fields"
-    }
-  }), _vm._v(" "), _vm._m(0), _vm._v(" "), _c('div', {
-    staticClass: "modal fade",
-    attrs: {
-      "id": "myModal",
-      "tabindex": "-1",
-      "role": "dialog",
-      "aria-labelledby": "myModalLabel"
-    }
-  }, [_c('div', {
-    staticClass: "modal-dialog",
-    attrs: {
-      "role": "document"
-    }
-  }, [_c('div', {
-    staticClass: "modal-content"
-  }, [_vm._m(1), _vm._v(" "), _c('div', {
-    staticClass: "modal-body",
-    attrs: {
-      "id": "filtros-body"
-    }
-  }, _vm._l((_vm.filtros), function(filtro, campo) {
-    return _c('p', [_c('input', {
-      staticClass: "cb_filter",
-      attrs: {
-        "type": "checkbox",
-        "id": 'check_' + campo
-      },
-      domProps: {
-        "value": campo
-      }
-    }), _vm._v(" "), _c('label', {
-      staticClass: "cb_filter_label",
-      staticStyle: {
-        "cursor": "pointer"
-      },
-      attrs: {
-        "for": 'check_' + campo
-      }
-    }, [_vm._v("\n                                " + _vm._s(filtro) + "\n                            ")])])
-  })), _vm._v(" "), _vm._m(2)])])]), _vm._v(" "), _c('ol', {
-    staticClass: "breadcrumb",
-    staticStyle: {
-      "margin-bottom": "0px"
-    }
-  }, [_c('li', {
-    staticClass: "col-md-5"
-  }, [_c('input', {
-    staticClass: "form-control",
-    staticStyle: {
-      "border-color": "#f5f5f5",
-      "background-color": "#f5f5f5"
-    },
-    attrs: {
-      "type": "text",
-      "id": "find",
-      "placeholder": "Procurar",
-      "onkeyup": "filterFind(this.value);"
-    },
-    on: {
-      "keyup": function($event) {
-        _vm.loadData()
-      }
-    }
-  })]), _vm._v(" "), (_vm.actions.date != undefined) ? _c('li', [_c('a', {
-    staticClass: "period",
-    staticStyle: {
-      "cursor": "pointer"
-    },
-    attrs: {
-      "id": "period_hoje",
-      "onclick": "filterPeriod('hoje');"
-    },
-    on: {
-      "click": function($event) {
-        _vm.loadData()
-      }
-    }
-  }, [_vm._v("Hoje")])]) : _vm._e(), _vm._v(" "), (_vm.actions.date != undefined) ? _c('li', [_c('a', {
-    staticClass: "period",
-    staticStyle: {
-      "cursor": "pointer"
-    },
-    attrs: {
-      "id": "period_7",
-      "onclick": "filterPeriod(7);"
-    },
-    on: {
-      "click": function($event) {
-        _vm.loadData()
-      }
-    }
-  }, [_vm._v("7 dias")])]) : _vm._e(), _vm._v(" "), (_vm.actions.date != undefined) ? _c('li', [_c('a', {
-    staticClass: "period",
-    staticStyle: {
-      "cursor": "pointer"
-    },
-    attrs: {
-      "id": "period_15",
-      "onclick": "filterPeriod(15);"
-    },
-    on: {
-      "click": function($event) {
-        _vm.loadData()
-      }
-    }
-  }, [_vm._v("15 dias")])]) : _vm._e(), _vm._v(" "), (_vm.actions.date != undefined) ? _c('li', [_c('a', {
-    staticClass: "period",
-    staticStyle: {
-      "cursor": "pointer"
-    },
-    attrs: {
-      "id": "period_30",
-      "onclick": "filterPeriod(30);"
-    },
-    on: {
-      "click": function($event) {
-        _vm.loadData()
-      }
-    }
-  }, [_vm._v("30 dias")])]) : _vm._e(), _vm._v(" "), (_vm.actions.date != undefined) ? _c('li', [_c('input', {
-    staticClass: "form-control",
-    staticStyle: {
-      "border-color": "#f5f5f5",
-      "background-color": "#f5f5f5"
-    },
-    attrs: {
-      "type": "number",
-      "id": "other_period",
-      "onkeyup": "filterPeriod(this.value);",
-      "placeholder": "Outro periodo"
-    },
-    on: {
-      "keyup": function($event) {
-        _vm.loadData()
-      }
-    }
-  })]) : _vm._e(), _vm._v(" "), _c('input', {
-    attrs: {
-      "type": "hidden",
-      "id": "period_find",
-      "value": "periodo=&procurar="
-    }
-  }), _vm._v(" "), _vm._m(3)])]) : _vm._e(), _vm._v(" "), _c('table', {
-    staticClass: "table"
-  }, [_c('thead', {
-    staticClass: "head-table"
-  }, [_c('tr', [_vm._l((_vm.head), function(item) {
-    return _c('th', {
-      staticClass: "row-table",
-      on: {
-        "click": function($event) {
-          _vm.sortTable(item)
-        }
-      }
-    }, [_vm._v("\n                " + _vm._s(item) + "\n                "), (_vm.order == 'asc' && _vm.dados.length > 1) ? _c('span', [_c('i', {
-      staticClass: "fa fa-chevron-down",
-      attrs: {
-        "aria-hidden": "true"
-      }
-    })]) : (_vm.order == 'desc' && _vm.dados.length > 1) ? _c('span', [_c('i', {
-      staticClass: "fa fa-chevron-up",
-      attrs: {
-        "aria-hidden": "true"
-      }
-    })]) : _vm._e()])
-  }), _vm._v(" "), (_vm.actions.status != undefined) ? _c('th', {
-    staticClass: "row-table"
-  }, [_vm._v("Status")]) : _vm._e(), _vm._v(" "), (_vm.actions.detalhe != undefined) ? _c('th', {
-    staticClass: "row-table"
-  }, [_vm._v("Detalhe")]) : _vm._e(), _vm._v(" "), (_vm.actions.aprovar != undefined) ? _c('th', {
-    staticClass: "row-table"
-  }, [_vm._v("Aprovar")]) : _vm._e(), _vm._v(" "), (_vm.actions.reprovar != undefined) ? _c('th', {
-    staticClass: "row-table"
-  }, [_vm._v("Reprovar")]) : _vm._e(), _vm._v(" "), (_vm.actions.quantidade != undefined) ? _c('th', {
-    staticClass: "row-table"
-  }, [_vm._v("Quantidade Compra")]) : _vm._e(), _vm._v(" "), (_vm.actions.troca != undefined) ? _c('th', {
-    staticClass: "row-table"
-  }, [_vm._v("Troca")]) : _vm._e(), _vm._v(" "), (_vm.actions.adicionar != undefined) ? _c('th', {
-    staticClass: "row-table"
-  }, [_vm._v("Adicionar")]) : _vm._e()], 2)]), _vm._v(" "), _c('tbody', _vm._l((_vm.dados), function(dado, i) {
-    return (_vm.dados.length > 0) ? _c('tr', [_vm._l((_vm.chaves), function(chave, index) {
-      return _c('td', {
-        staticClass: "row-table"
-      }, [(dado['filho'] > 0 && dado['filho'] != undefined && index == 0) ? _c('i', {
-        staticClass: "fa fa-share"
-      }) : _vm._e(), _vm._v(" "), (_vm.actions.tooltip != undefined) ? _c('span', {
-        attrs: {
-          "data-toggle": "tooltip",
-          "data-placement": "top",
-          "data-html": "true",
-          "title": '<p>' + dado['tooltip_grupo'] + '</p> <p>' + dado['tooltip_subgrupo1'] + '</p> <p>' + dado['tooltip_subgrupo2'] + '</p> <p>' + dado['tooltip_subgrupo3'] + '</p> <p>' + dado['tooltip_servico'] + '</p>'
-        }
-      }, [_vm._v("\n                    " + _vm._s(dado[chave]) + "\n                ")]) : _vm._e(), _vm._v(" "), (_vm.actions.tooltip === undefined) ? _c('span', [_vm._v("\n                    " + _vm._s(dado[chave]) + "\n                ")]) : _vm._e()])
-    }), _vm._v(" "), (_vm.actions.status != undefined) ? _c('td', {
-      staticClass: "row-table"
-    }, [(dado['status'] == 0) ? _c('i', {
-      staticClass: "fa fa-circle green"
-    }) : _vm._e(), _vm._v(" "), (dado['status'] == 1) ? _c('i', {
-      staticClass: "fa fa-circle red"
-    }) : _vm._e(), _vm._v(" "), (dado['status'] == -1) ? _c('i', {
-      staticClass: "fa fa-circle orange"
-    }) : _vm._e()]) : _vm._e(), _vm._v(" "), (_vm.actions.detalhe != undefined) ? _c('td', {
-      staticClass: "row-table"
-    }, [_c('a', {
-      attrs: {
-        "href": _vm.actions.detalhe_url + '/' + dado['id']
-      }
-    }, [_c('i', {
-      staticClass: "fa fa-eye"
-    })]), _vm._v(" "), (dado['situacao'] == 'Reprovada') ? _c('a', {
-      attrs: {
-        "href": '/ordens-de-compra/reabrir-ordem-de-compra/' + dado['id']
-      }
-    }, [_vm._v("Reabrir")]) : _vm._e()]) : _vm._e(), _vm._v(" "), (_vm.actions.aprovar != undefined) ? _c('td', {
-      staticClass: "row-table",
-      on: {
-        "click": function($event) {
-          _vm.aprovar(dado['id'])
-        }
-      }
-    }, [_c('i', {
-      staticClass: "glyphicon glyphicon-ok grey"
-    })]) : _vm._e(), _vm._v(" "), (_vm.actions.reprovar != undefined) ? _c('td', {
-      staticClass: "row-table",
-      on: {
-        "click": function($event) {
-          _vm.reprovar(dado['id'])
-        }
-      }
-    }, [_c('i', {
-      staticClass: "fa fa-times grey"
-    })]) : _vm._e(), _vm._v(" "), (_vm.actions.quantidade != undefined) ? _c('td', {
-      staticClass: "row-table",
-      on: {
-        "click": function($event) {
-          _vm.reprovar(dado['id'])
-        }
-      }
-    }, [(dado['pai'] == 0) ? _c('input', {
-      directives: [{
-        name: "model",
-        rawName: "v-model.number",
-        value: (_vm.quant[i]),
-        expression: "quant[i]",
-        modifiers: {
-          "number": true
-        }
-      }],
-      attrs: {
-        "type": "number"
-      },
-      domProps: {
-        "value": _vm.quant[i],
-        "value": (_vm.quant[i])
-      },
-      on: {
-        "blur": [function($event) {
-          _vm.adicionar(dado, i)
-        }, function($event) {
-          _vm.$forceUpdate()
-        }],
-        "input": function($event) {
-          if ($event.target.composing) { return; }
-          var $$exp = _vm.quant,
-            $$idx = i;
-          if (!Array.isArray($$exp)) {
-            _vm.quant[i] = _vm._n($event.target.value)
-          } else {
-            $$exp.splice($$idx, 1, _vm._n($event.target.value))
-          }
-        }
-      }
-    }) : _vm._e()]) : _vm._e(), _vm._v(" "), (_vm.actions.troca != undefined) ? _c('td', {
-      staticClass: "row-table"
-    }, [(dado['pai'] > 0 && dado['pai'] != undefined && dado['unidade_sigla'] == 'VB' && dado['insumo_grupo_id'] == '1570') ? _c('a', {
-      attrs: {
-        "href": _vm.actions.troca_url + '/' + dado['id']
-      }
-    }, [_c('i', {
-      staticClass: "fa fa-exchange blue"
-    })]) : _vm._e(), _vm._v(" "), (dado['filho'] > 0 && dado['filho'] != undefined) ? _c('a', {
-      attrs: {
-        "href": _vm.actions.troca_remove + '/' + dado['planejamento_id']
-      }
-    }, [_c('i', {
-      staticClass: "fa fa-times red"
-    })]) : _vm._e(), _vm._v(" "), (dado['filho'] == 0 && dado['pai'] == 0 && dado['unidade_sigla'] == 'VB' && dado['insumo_grupo_id'] == '1570') ? _c('a', {
-      attrs: {
-        "href": _vm.actions.troca_url + '?insumo_pai=' + dado['id'] + '&planejamento_id=' + dado['planejamento_id']
-      }
-    }, [_c('i', {
-      staticClass: "fa fa-exchange grey"
-    })]) : _vm._e()]) : _vm._e(), _vm._v(" "), (_vm.actions.adicionar != undefined && dado['adicionado'] > 0) ? _c('td', {
-      staticClass: "row-table"
-    }, [_c('i', {
-      staticClass: "fa fa-check green"
-    })]) : (_vm.actions.adicionar != undefined) ? _c('td', {
-      staticClass: "row-table"
-    }, [_c('button', {
-      staticClass: "btn btn-xs btn-link",
-      attrs: {
-        "type": "button"
-      },
-      on: {
-        "click": function($event) {
-          _vm.adicionar(dado, i)
-        }
-      }
-    }, [_c('i', {
-      staticClass: "fa fa-plus grey"
-    })])]) : _vm._e()], 2) : _c('tr', [_c('td', [_vm._v("Não há dados")])])
-  }))]), _vm._v(" "), (_vm.pagination.last_page > 1) ? _c('div', {
-    staticClass: "text-center"
-  }, [_c('generic-paginator', {
-    attrs: {
-      "pagination": _vm.pagination,
-      "callback": _vm.loadData,
-      "options": _vm.paginationOptions
-    }
-  })], 1) : _vm._e()])
-},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: "col-md-12 thumbnail",
-    staticStyle: {
-      "margin-bottom": "20px",
-      "display": "none"
-    },
-    attrs: {
-      "id": "block_fields_thumbnail"
-    }
-  }, [_c('div', {
-    staticClass: "col-md-11",
-    attrs: {
-      "id": "block_fields_minimize"
-=======
     if (fulfilled && fulfilled.bind && this.context) {
         fulfilled = fulfilled.bind(this.context);
     }
 
     if (rejected && rejected.bind && this.context) {
         rejected = rejected.bind(this.context);
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
     }
 
     return new PromiseObj(this.promise.then(fulfilled, rejected), this.context);
@@ -39326,47 +38554,6 @@ function expand(url, params, variables) {
     if (variables) {
         variables.push.apply(variables, tmpl.vars);
     }
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-  })])])
-}]}
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-85f163f6", module.exports)
-  }
-}
-
-/***/ },
-/* 186 */
-/***/ function(module, exports, __webpack_require__) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', [_c('table', {
-    staticClass: "element-border"
-  }, [_c('thead', {
-    class: [_vm.titleColor]
-  }, [_c('tr', [_c('th', {
-    attrs: {
-      "colspan": "3"
-    }
-  }, [_vm._v(_vm._s(_vm.title))])])]), _vm._v(" "), _c('tbody', _vm._l((_vm.dados), function(dado) {
-    return (_vm.dados.length > 0) ? _c('tr', _vm._l((_vm.chaves), function(chave) {
-      return _c('td', {
-        on: {
-          "click": function($event) {
-            _vm.goToDetail(dado['id'])
-          }
-        }
-      }, [_c('span', [_vm._v(" " + _vm._s(dado[chave]))])])
-    })) : _vm._e()
-  }))])])
-},staticRenderFns: []}
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-     require("vue-hot-reload-api").rerender("data-v-c51ddd64", module.exports)
-  }
-=======
 
     return expanded;
 }
@@ -39498,7 +38685,6 @@ function encodeValue(operator, value, key) {
     } else {
         return value;
     }
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 }
 
 function encodeReserved(str) {
@@ -43104,30 +42290,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
     Object.defineProperty(Vue.prototype, '$data', dataDef);
     Object.defineProperty(Vue.prototype, '$props', propsDef);
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-// load the styles
-var content = __webpack_require__(177);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(2)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-2aec8cc6!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./tile-grafico.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-2aec8cc6!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./tile-grafico.vue");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-=======
     Vue.prototype.$set = set;
     Vue.prototype.$delete = del;
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 
     Vue.prototype.$watch = function (expOrFn, cb, options) {
       var vm = this;
@@ -43145,27 +42309,6 @@ if(false) {
 
   /*  */
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-// load the styles
-var content = __webpack_require__(178);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(2)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-5ce4f2aa!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./generic-paginator.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-5ce4f2aa!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./generic-paginator.vue");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-=======
   // hooks to be invoked on component VNodes during patch
   var componentVNodeHooks = {
     init: function init(vnode, hydrating, parentElm, refElm) {
@@ -43178,7 +42321,6 @@ if(false) {
         componentVNodeHooks.prepatch(mountedNode, mountedNode);
       }
     },
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 
     prepatch: function prepatch(oldVnode, vnode) {
       var options = vnode.componentOptions;
@@ -43200,27 +42342,6 @@ if(false) {
       }
     },
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-// load the styles
-var content = __webpack_require__(179);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(2)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-85f163f6!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./tabela.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-85f163f6!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./tabela.vue");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-=======
     destroy: function destroy(vnode) {
       if (!vnode.componentInstance._isDestroyed) {
         if (!vnode.data.keepAlive) {
@@ -43231,7 +42352,6 @@ if(false) {
       }
     }
   };
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 
   var hooksToMerge = Object.keys(componentVNodeHooks);
 
@@ -43240,32 +42360,10 @@ if(false) {
       return;
     }
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-// load the styles
-var content = __webpack_require__(180);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(2)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-c51ddd64!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./tile.vue", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-rewriter.js?id=data-v-c51ddd64!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./tile.vue");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-=======
     var baseCtor = context.$options._base;
     if (isObject(Ctor)) {
       Ctor = baseCtor.extend(Ctor);
     }
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 
     if (typeof Ctor !== 'function') {
       {
@@ -43274,18 +42372,6 @@ if(false) {
       return;
     }
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-/* WEBPACK VAR INJECTION */(function(global) {/*!
- * Vue.js v2.3.2
- * (c) 2014-2017 Evan You
- * Released under the MIT License.
- */
-(function (global, factory) {
-	 true ? module.exports = factory() :
-	typeof define === 'function' && define.amd ? define(factory) :
-	(global.Vue = factory());
-}(this, (function () { 'use strict';
-=======
     // async component
     if (!Ctor.cid) {
       if (Ctor.resolved) {
@@ -43303,70 +42389,12 @@ if(false) {
         }
       }
     }
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 
     // resolve constructor options in case global mixins are applied after
     // component constructor creation
     resolveConstructorOptions(Ctor);
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-// these helpers produces better vm code in JS engines due to their
-// explicitness and function inlining
-function isUndef (v) {
-  return v === undefined || v === null
-}
-
-function isDef (v) {
-  return v !== undefined && v !== null
-}
-
-function isTrue (v) {
-  return v === true
-}
-
-/**
- * Check if value is primitive
- */
-function isPrimitive (value) {
-  return typeof value === 'string' || typeof value === 'number'
-}
-
-/**
- * Quick object check - this is primarily used to tell
- * Objects from primitive values when we know the value
- * is a JSON-compliant type.
- */
-function isObject (obj) {
-  return obj !== null && typeof obj === 'object'
-}
-
-var _toString = Object.prototype.toString;
-
-/**
- * Strict object type check. Only returns true
- * for plain JavaScript objects.
- */
-function isPlainObject (obj) {
-  return _toString.call(obj) === '[object Object]'
-}
-
-function isRegExp (v) {
-  return _toString.call(v) === '[object RegExp]'
-}
-
-/**
- * Convert a value to a string that is actually rendered.
- */
-function toString (val) {
-  return val == null
-    ? ''
-    : typeof val === 'object'
-      ? JSON.stringify(val, null, 2)
-      : String(val)
-}
-=======
     data = data || {};
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 
     // transform component v-model data into props & events
     if (data.model) {
@@ -43396,18 +42424,6 @@ function toString (val) {
     // merge component management hooks onto the placeholder node
     mergeHooks(data);
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-/**
- * Create a cached version of a pure function.
- */
-function cached (fn) {
-  var cache = Object.create(null);
-  return (function cachedFn (str) {
-    var hit = cache[str];
-    return hit || (cache[str] = fn(str))
-  })
-}
-=======
     // return a placeholder vnode
     var name = Ctor.options.name || tag;
     var vnode = new VNode("vue-component-" + Ctor.cid + (name ? "-" + name : ''), data, undefined, undefined, undefined, context, { Ctor: Ctor, propsData: propsData, listeners: listeners, tag: tag, children: children });
@@ -43445,7 +42461,6 @@ function cached (fn) {
     }
     return vnode;
   }
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 
   function createComponentInstanceForVnode(vnode, // we know it's MountedComponentVNode but flow doesn't
   parent, // activeInstance in lifecycle state
@@ -43512,16 +42527,6 @@ function cached (fn) {
     }
   }
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-/**
- * Merge an Array of Objects into a single Object.
- */
-function toObject (arr) {
-  var res = {};
-  for (var i = 0; i < arr.length; i++) {
-    if (arr[i]) {
-      extend(res, arr[i]);
-=======
   function extractProps(data, Ctor, tag) {
     // we are only extracting raw values here.
     // validation and default values are handled in the child
@@ -43577,7 +42582,6 @@ function toObject (arr) {
       var fromParent = data.hook[key];
       var ours = componentVNodeHooks[key];
       data.hook[key] = fromParent ? mergeHook$1(ours, fromParent) : ours;
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
     }
   }
 
@@ -43670,17 +42674,6 @@ function toObject (arr) {
     }
   }
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-/**
- * Ensure a function is called only once.
- */
-function once (fn) {
-  var called = false;
-  return function () {
-    if (!called) {
-      called = true;
-      fn.apply(this, arguments);
-=======
   function applyNS(vnode, ns) {
     vnode.ns = ns;
     if (vnode.tag === 'foreignObject') {
@@ -43694,39 +42687,11 @@ function once (fn) {
           applyNS(child, ns);
         }
       }
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
     }
   }
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-var SSR_ATTR = 'data-server-rendered';
-
-var ASSET_TYPES = [
-  'component',
-  'directive',
-  'filter'
-];
-
-var LIFECYCLE_HOOKS = [
-  'beforeCreate',
-  'created',
-  'beforeMount',
-  'mounted',
-  'beforeUpdate',
-  'updated',
-  'beforeDestroy',
-  'destroyed',
-  'activated',
-  'deactivated'
-];
-
-/*  */
-
-var config = ({
-=======
   /*  */
 
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
   /**
    * Runtime helper for rendering v-for lists.
    */
@@ -43831,21 +42796,7 @@ var config = ({
     return data;
   }
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-  /**
-   * Check if an attribute is reserved so that it cannot be used as a component
-   * prop. This is platform-dependent and may be overwritten.
-   */
-  isReservedAttr: no,
-
-  /**
-   * Check if a tag is an unknown element.
-   * Platform-dependent.
-   */
-  isUnknownElement: no,
-=======
   /*  */
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 
   /**
    * Runtime helper for rendering static trees.
@@ -43884,13 +42835,6 @@ var config = ({
     }
   }
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-  /**
-   * Exposed for legacy reasons
-   */
-  _lifecycleHooks: LIFECYCLE_HOOKS
-});
-=======
   function markStaticNode(node, key, isOnce) {
     node.isStatic = true;
     node.key = key;
@@ -43920,7 +42864,6 @@ var config = ({
       return createElement(vm, a, b, c, d, true);
     };
   }
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 
   function renderMixin(Vue) {
     Vue.prototype.$nextTick = function (fn) {
@@ -44108,121 +43051,6 @@ var config = ({
     }
   }
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-/*  */
-
-var warn = noop;
-var tip = noop;
-var formatComponentName = (null); // work around flow check
-
-{
-  var hasConsole = typeof console !== 'undefined';
-  var classifyRE = /(?:^|[-_])(\w)/g;
-  var classify = function (str) { return str
-    .replace(classifyRE, function (c) { return c.toUpperCase(); })
-    .replace(/[-_]/g, ''); };
-
-  warn = function (msg, vm) {
-    if (hasConsole && (!config.silent)) {
-      console.error("[Vue warn]: " + msg + (
-        vm ? generateComponentTrace(vm) : ''
-      ));
-    }
-  };
-
-  tip = function (msg, vm) {
-    if (hasConsole && (!config.silent)) {
-      console.warn("[Vue tip]: " + msg + (
-        vm ? generateComponentTrace(vm) : ''
-      ));
-    }
-  };
-
-  formatComponentName = function (vm, includeFile) {
-    if (vm.$root === vm) {
-      return '<Root>'
-    }
-    var name = typeof vm === 'string'
-      ? vm
-      : typeof vm === 'function' && vm.options
-        ? vm.options.name
-        : vm._isVue
-          ? vm.$options.name || vm.$options._componentTag
-          : vm.name;
-
-    var file = vm._isVue && vm.$options.__file;
-    if (!name && file) {
-      var match = file.match(/([^/\\]+)\.vue$/);
-      name = match && match[1];
-    }
-
-    return (
-      (name ? ("<" + (classify(name)) + ">") : "<Anonymous>") +
-      (file && includeFile !== false ? (" at " + file) : '')
-    )
-  };
-
-  var repeat = function (str, n) {
-    var res = '';
-    while (n) {
-      if (n % 2 === 1) { res += str; }
-      if (n > 1) { str += str; }
-      n >>= 1;
-    }
-    return res
-  };
-
-  var generateComponentTrace = function (vm) {
-    if (vm._isVue && vm.$parent) {
-      var tree = [];
-      var currentRecursiveSequence = 0;
-      while (vm) {
-        if (tree.length > 0) {
-          var last = tree[tree.length - 1];
-          if (last.constructor === vm.constructor) {
-            currentRecursiveSequence++;
-            vm = vm.$parent;
-            continue
-          } else if (currentRecursiveSequence > 0) {
-            tree[tree.length - 1] = [last, currentRecursiveSequence];
-            currentRecursiveSequence = 0;
-          }
-        }
-        tree.push(vm);
-        vm = vm.$parent;
-      }
-      return '\n\nfound in\n\n' + tree
-        .map(function (vm, i) { return ("" + (i === 0 ? '---> ' : repeat(' ', 5 + i * 2)) + (Array.isArray(vm)
-            ? ((formatComponentName(vm[0])) + "... (" + (vm[1]) + " recursive calls)")
-            : formatComponentName(vm))); })
-        .join('\n')
-    } else {
-      return ("\n\n(found in " + (formatComponentName(vm)) + ")")
-    }
-  };
-}
-
-/*  */
-
-function handleError (err, vm, info) {
-  if (config.errorHandler) {
-    config.errorHandler.call(null, err, vm, info);
-  } else {
-    {
-      warn(("Error in " + info + ": \"" + (err.toString()) + "\""), vm);
-    }
-    /* istanbul ignore else */
-    if (inBrowser && typeof console !== 'undefined') {
-      console.error(err);
-    } else {
-      throw err
-    }
-  }
-}
-
-/*  */
-/* globals MutationObserver */
-=======
   function resolveConstructorOptions(Ctor) {
     var options = Ctor.options;
     if (Ctor.super) {
@@ -44246,7 +43074,6 @@ function handleError (err, vm, info) {
     }
     return options;
   }
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 
   function resolveModifiedOptions(Ctor) {
     var modified;
@@ -44263,42 +43090,6 @@ function handleError (err, vm, info) {
     return modified;
   }
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-// Browser environment sniffing
-var inBrowser = typeof window !== 'undefined';
-var UA = inBrowser && window.navigator.userAgent.toLowerCase();
-var isIE = UA && /msie|trident/.test(UA);
-var isIE9 = UA && UA.indexOf('msie 9.0') > 0;
-var isEdge = UA && UA.indexOf('edge/') > 0;
-var isAndroid = UA && UA.indexOf('android') > 0;
-var isIOS = UA && /iphone|ipad|ipod|ios/.test(UA);
-var isChrome = UA && /chrome\/\d+/.test(UA) && !isEdge;
-
-var supportsPassive = false;
-if (inBrowser) {
-  try {
-    var opts = {};
-    Object.defineProperty(opts, 'passive', ({
-      get: function get () {
-        /* istanbul ignore next */
-        supportsPassive = true;
-      }
-    } )); // https://github.com/facebook/flow/issues/285
-    window.addEventListener('test-passive', null, opts);
-  } catch (e) {}
-}
-
-// this needs to be lazy-evaled because vue may be required before
-// vue-server-renderer can set VUE_ENV
-var _isServer;
-var isServerRendering = function () {
-  if (_isServer === undefined) {
-    /* istanbul ignore if */
-    if (!inBrowser && typeof global !== 'undefined') {
-      // detect presence of vue-server-renderer and avoid
-      // Webpack shimming the process
-      _isServer = global['process'].env.VUE_ENV === 'server';
-=======
   function dedupe(latest, sealed) {
     // compare latest and sealed to ensure lifecycle hooks won't be duplicated
     // between merges
@@ -44311,7 +43102,6 @@ var isServerRendering = function () {
         }
       }
       return res;
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
     } else {
       return latest;
     }
@@ -44324,18 +43114,11 @@ var isServerRendering = function () {
     this._init(options);
   }
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-/* istanbul ignore next */
-function isNative (Ctor) {
-  return typeof Ctor === 'function' && /native code/.test(Ctor.toString())
-}
-=======
   initMixin(Vue$3);
   stateMixin(Vue$3);
   eventsMixin(Vue$3);
   lifecycleMixin(Vue$3);
   renderMixin(Vue$3);
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 
   /*  */
 
@@ -44443,20 +43226,6 @@ function isNative (Ctor) {
     };
   }
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-  return function queueNextTick (cb, ctx) {
-    var _resolve;
-    callbacks.push(function () {
-      if (cb) {
-        try {
-          cb.call(ctx);
-        } catch (e) {
-          handleError(e, ctx, 'nextTick');
-        }
-      } else if (_resolve) {
-        _resolve(ctx);
-      }
-=======
   function initProps$1(Comp) {
     var props = Comp.options.props;
     for (var key in props) {
@@ -44499,7 +43268,6 @@ function isNative (Ctor) {
           return definition;
         }
       };
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
     });
   }
 
@@ -44532,12 +43300,6 @@ function isNative (Ctor) {
         }
       }
     }
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-    if (!cb && typeof Promise !== 'undefined') {
-      return new Promise(function (resolve, reject) {
-        _resolve = resolve;
-      })
-=======
   }
 
   function pruneCacheEntry(vnode) {
@@ -44546,7 +43308,6 @@ function isNative (Ctor) {
         callHook(vnode.componentInstance, 'deactivated');
       }
       vnode.componentInstance.$destroy();
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
     }
   }
 
@@ -44559,9 +43320,6 @@ function isNative (Ctor) {
       exclude: patternTypes
     },
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-/*  */
-=======
     created: function created() {
       this.cache = Object.create(null);
     },
@@ -44648,24 +43406,11 @@ function isNative (Ctor) {
     config._assetTypes.forEach(function (type) {
       Vue.options[type + 's'] = Object.create(null);
     });
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 
     // this is used to identify the "base" constructor to extend all plain-object
     // components with in Weex's multi-instance scenarios.
     Vue.options._base = Vue;
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-var uid = 0;
-
-/**
- * A dep is an observable that can have multiple
- * directives subscribing to it.
- */
-var Dep = function Dep () {
-  this.id = uid++;
-  this.subs = [];
-};
-=======
     extend(Vue.options.components, builtInComponents);
 
     initUse(Vue);
@@ -44673,7 +43418,6 @@ var Dep = function Dep () {
     initExtend(Vue);
     initAssetRegisters(Vue);
   }
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 
   initGlobalAPI(Vue$3);
 
@@ -44868,45 +43612,17 @@ var Dep = function Dep () {
     return elm;
   }
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-/**
- * Hooks and props are merged as arrays.
- */
-function mergeHook (
-  parentVal,
-  childVal
-) {
-  return childVal
-    ? parentVal
-      ? parentVal.concat(childVal)
-      : Array.isArray(childVal)
-        ? childVal
-        : [childVal]
-    : parentVal
-}
-
-LIFECYCLE_HOOKS.forEach(function (hook) {
-  strats[hook] = mergeHook;
-});
-=======
   function createElementNS(namespace, tagName) {
     return document.createElementNS(namespaceMap[namespace], tagName);
   }
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 
   function createTextNode(text) {
     return document.createTextNode(text);
   }
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-ASSET_TYPES.forEach(function (type) {
-  strats[type + 's'] = mergeAssets;
-});
-=======
   function createComment(text) {
     return document.createComment(text);
   }
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 
   function insertBefore(parentNode, newNode, referenceNode) {
     parentNode.insertBefore(newNode, referenceNode);
@@ -44936,21 +43652,6 @@ ASSET_TYPES.forEach(function (type) {
     node.textContent = text;
   }
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-  if (typeof child === 'function') {
-    child = child.options;
-  }
-
-  normalizeProps(child);
-  normalizeDirectives(child);
-  var extendsFrom = child.extends;
-  if (extendsFrom) {
-    parent = mergeOptions(parent, extendsFrom, vm);
-  }
-  if (child.mixins) {
-    for (var i = 0, l = child.mixins.length; i < l; i++) {
-      parent = mergeOptions(parent, child.mixins[i], vm);
-=======
   function setAttribute(node, key, val) {
     node.setAttribute(key, val);
   }
@@ -44984,7 +43685,6 @@ ASSET_TYPES.forEach(function (type) {
     },
     destroy: function destroy(vnode) {
       registerRef(vnode, true);
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
     }
   };
 
@@ -45046,41 +43746,9 @@ ASSET_TYPES.forEach(function (type) {
     return v === true;
   }
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-var simpleCheckRE = /^(String|Number|Boolean|Function|Symbol)$/;
-
-function assertType (value, type) {
-  var valid;
-  var expectedType = getType(type);
-  if (simpleCheckRE.test(expectedType)) {
-    valid = typeof value === expectedType.toLowerCase();
-  } else if (expectedType === 'Object') {
-    valid = isPlainObject(value);
-  } else if (expectedType === 'Array') {
-    valid = Array.isArray(value);
-  } else {
-    valid = value instanceof type;
-  }
-  return {
-    valid: valid,
-    expectedType: expectedType
-  }
-}
-
-/**
- * Use function string name to check built-in types,
- * because a simple equality check will fail when running
- * across different vms / iframes.
- */
-function getType (fn) {
-  var match = fn && fn.toString().match(/^\s*function (\w+)/);
-  return match ? match[1] : ''
-}
-=======
   function sameVnode(a, b) {
     return a.key === b.key && a.tag === b.tag && a.isComment === b.isComment && isDef(a.data) === isDef(b.data) && sameInputType(a, b);
   }
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 
   // Some browsers do not support dynamically changing type for <input>
   // so they need to be treated as different nodes
@@ -45094,30 +43762,6 @@ function getType (fn) {
     return typeA === typeB;
   }
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-/*  */
-
-var mark;
-var measure;
-
-{
-  var perf = inBrowser && window.performance;
-  /* istanbul ignore if */
-  if (
-    perf &&
-    perf.mark &&
-    perf.measure &&
-    perf.clearMarks &&
-    perf.clearMeasures
-  ) {
-    mark = function (tag) { return perf.mark(tag); };
-    measure = function (name, startTag, endTag) {
-      perf.measure(name, startTag, endTag);
-      perf.clearMarks(startTag);
-      perf.clearMarks(endTag);
-      perf.clearMeasures(name);
-    };
-=======
   function createKeyToOldIdx(children, beginIdx, endIdx) {
     var i, key;
     var map = {};
@@ -45128,7 +43772,6 @@ var measure;
       }
     }
     return map;
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
   }
 
   function createPatchFunction(backend) {
@@ -45191,9 +43834,6 @@ var measure;
         vnode.elm = vnode.ns ? nodeOps.createElementNS(vnode.ns, tag) : nodeOps.createElement(tag, vnode);
         setScope(vnode);
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-/*  */
-=======
         /* istanbul ignore if */
         {
           createChildren(vnode, children, insertedVnodeQueue);
@@ -45235,7 +43875,6 @@ var measure;
         }
       }
     }
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 
     function initComponent(vnode, insertedVnodeQueue) {
       if (isDef(vnode.data.pendingInsert)) {
@@ -45375,22 +44014,6 @@ var measure;
       }
     }
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-var normalizeEvent = cached(function (name) {
-  var passive = name.charAt(0) === '&';
-  name = passive ? name.slice(1) : name;
-  var once$$1 = name.charAt(0) === '~'; // Prefixed last, checked first
-  name = once$$1 ? name.slice(1) : name;
-  var capture = name.charAt(0) === '!';
-  name = capture ? name.slice(1) : name;
-  return {
-    name: name,
-    once: once$$1,
-    capture: capture,
-    passive: passive
-  }
-});
-=======
     function removeAndInvokeRemoveHook(vnode, rm) {
       if (isDef(rm) || isDef(vnode.data)) {
         var listeners = cbs.remove.length + 1;
@@ -45495,7 +44118,6 @@ var normalizeEvent = cached(function (name) {
         removeVnodes(parentElm, oldCh, oldStartIdx, oldEndIdx);
       }
     }
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 
     function patchVnode(oldVnode, vnode, insertedVnodeQueue, removeOnly) {
       if (oldVnode === vnode) {
@@ -45563,39 +44185,6 @@ var normalizeEvent = cached(function (name) {
       }
     }
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-function updateListeners (
-  on,
-  oldOn,
-  add,
-  remove$$1,
-  vm
-) {
-  var name, cur, old, event;
-  for (name in on) {
-    cur = on[name];
-    old = oldOn[name];
-    event = normalizeEvent(name);
-    if (isUndef(cur)) {
-      "development" !== 'production' && warn(
-        "Invalid handler for event \"" + (event.name) + "\": got " + String(cur),
-        vm
-      );
-    } else if (isUndef(old)) {
-      if (isUndef(cur.fns)) {
-        cur = on[name] = createFnInvoker(cur);
-      }
-      add(event.name, cur, event.once, event.capture, event.passive);
-    } else if (cur !== old) {
-      old.fns = cur;
-      on[name] = old;
-    }
-  }
-  for (name in oldOn) {
-    if (isUndef(on[name])) {
-      event = normalizeEvent(name);
-      remove$$1(event.name, oldOn[name], event.capture);
-=======
     var bailed = false;
     // list of modules that can skip create hook during hydration because they
     // are already rendered on the client or has no need for initialization
@@ -45669,7 +44258,6 @@ function updateListeners (
       } else {
         return node.nodeType === (vnode.isComment ? 8 : 3);
       }
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
     }
 
     return function patch(oldVnode, vnode, hydrating, removeOnly, parentElm, refElm) {
@@ -45737,21 +44325,6 @@ function updateListeners (
             }
           }
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-  if (isUndef(oldHook)) {
-    // no existing hook
-    invoker = createFnInvoker([wrappedHook]);
-  } else {
-    /* istanbul ignore if */
-    if (isDef(oldHook.fns) && isTrue(oldHook.merged)) {
-      // already a merged invoker
-      invoker = oldHook;
-      invoker.fns.push(wrappedHook);
-    } else {
-      // existing plain hook
-      invoker = createFnInvoker([oldHook, wrappedHook]);
-    }
-=======
           if (isDef(parentElm$1)) {
             removeVnodes(parentElm$1, [oldVnode], 0, 0);
           } else if (isDef(oldVnode.tag)) {
@@ -45763,7 +44336,6 @@ function updateListeners (
       invokeInsertHook(vnode, insertedVnodeQueue, isInitialPatch);
       return vnode.elm;
     };
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
   }
 
   /*  */
@@ -45776,102 +44348,11 @@ function updateListeners (
     }
   };
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-function extractPropsFromVNodeData (
-  data,
-  Ctor,
-  tag
-) {
-  // we are only extracting raw values here.
-  // validation and default values are handled in the child
-  // component itself.
-  var propOptions = Ctor.options.props;
-  if (isUndef(propOptions)) {
-    return
-  }
-  var res = {};
-  var attrs = data.attrs;
-  var props = data.props;
-  if (isDef(attrs) || isDef(props)) {
-    for (var key in propOptions) {
-      var altKey = hyphenate(key);
-      {
-        var keyInLowerCase = key.toLowerCase();
-        if (
-          key !== keyInLowerCase &&
-          attrs && hasOwn(attrs, keyInLowerCase)
-        ) {
-          tip(
-            "Prop \"" + keyInLowerCase + "\" is passed to component " +
-            (formatComponentName(tag || Ctor)) + ", but the declared prop name is" +
-            " \"" + key + "\". " +
-            "Note that HTML attributes are case-insensitive and camelCased " +
-            "props need to use their kebab-case equivalents when using in-DOM " +
-            "templates. You should probably use \"" + altKey + "\" instead of \"" + key + "\"."
-          );
-        }
-      }
-      checkProp(res, props, key, altKey, true) ||
-      checkProp(res, attrs, key, altKey, false);
-    }
-  }
-  return res
-}
-
-function checkProp (
-  res,
-  hash,
-  key,
-  altKey,
-  preserve
-) {
-  if (isDef(hash)) {
-    if (hasOwn(hash, key)) {
-      res[key] = hash[key];
-      if (!preserve) {
-        delete hash[key];
-      }
-      return true
-    } else if (hasOwn(hash, altKey)) {
-      res[key] = hash[altKey];
-      if (!preserve) {
-        delete hash[altKey];
-      }
-      return true
-    }
-  }
-  return false
-}
-
-/*  */
-
-// The template compiler attempts to minimize the need for normalization by
-// statically analyzing the template at compile time.
-//
-// For plain HTML markup, normalization can be completely skipped because the
-// generated render function is guaranteed to return Array<VNode>. There are
-// two cases where extra normalization is needed:
-
-// 1. When the children contains components - because a functional component
-// may return an Array instead of a single root. In this case, just a simple
-// normalization is needed - if any child is an Array, we flatten the whole
-// thing with Array.prototype.concat. It is guaranteed to be only 1-level deep
-// because functional components already normalize their own children.
-function simpleNormalizeChildren (children) {
-  for (var i = 0; i < children.length; i++) {
-    if (Array.isArray(children[i])) {
-      return Array.prototype.concat.apply([], children)
-    }
-  }
-  return children
-}
-=======
   function updateDirectives(oldVnode, vnode) {
     if (oldVnode.data.directives || vnode.data.directives) {
       _update(oldVnode, vnode);
     }
   }
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 
   function _update(oldVnode, vnode) {
     var isCreate = oldVnode === emptyNode;
@@ -45879,32 +44360,6 @@ function simpleNormalizeChildren (children) {
     var oldDirs = normalizeDirectives$1(oldVnode.data.directives, oldVnode.context);
     var newDirs = normalizeDirectives$1(vnode.data.directives, vnode.context);
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-function normalizeArrayChildren (children, nestedIndex) {
-  var res = [];
-  var i, c, last;
-  for (i = 0; i < children.length; i++) {
-    c = children[i];
-    if (isUndef(c) || typeof c === 'boolean') { continue }
-    last = res[res.length - 1];
-    //  nested
-    if (Array.isArray(c)) {
-      res.push.apply(res, normalizeArrayChildren(c, ((nestedIndex || '') + "_" + i)));
-    } else if (isPrimitive(c)) {
-      if (isDef(last) && isDef(last.text)) {
-        last.text += String(c);
-      } else if (c !== '') {
-        // convert primitive to vnode
-        res.push(createTextVNode(c));
-      }
-    } else {
-      if (isDef(c.text) && isDef(last) && isDef(last.text)) {
-        res[res.length - 1] = createTextVNode(last.text + c.text);
-      } else {
-        // default key for nested array children (likely generated by v-for)
-        if (isDef(c.tag) && isUndef(c.key) && isDef(nestedIndex)) {
-          c.key = "__vlist" + nestedIndex + "_" + i + "__";
-=======
     var dirsWithInsert = [];
     var dirsWithPostpatch = [];
 
@@ -45954,142 +44409,11 @@ function normalizeArrayChildren (children, nestedIndex) {
         if (!newDirs[key]) {
           // no longer present, unbind
           callHook$1(oldDirs[key], 'unbind', oldVnode, oldVnode, isDestroy);
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
         }
       }
     }
   }
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-function ensureCtor (comp, base) {
-  return isObject(comp)
-    ? base.extend(comp)
-    : comp
-}
-
-function resolveAsyncComponent (
-  factory,
-  baseCtor,
-  context
-) {
-  if (isTrue(factory.error) && isDef(factory.errorComp)) {
-    return factory.errorComp
-  }
-
-  if (isDef(factory.resolved)) {
-    return factory.resolved
-  }
-
-  if (isTrue(factory.loading) && isDef(factory.loadingComp)) {
-    return factory.loadingComp
-  }
-
-  if (isDef(factory.contexts)) {
-    // already pending
-    factory.contexts.push(context);
-  } else {
-    var contexts = factory.contexts = [context];
-    var sync = true;
-
-    var forceRender = function () {
-      for (var i = 0, l = contexts.length; i < l; i++) {
-        contexts[i].$forceUpdate();
-      }
-    };
-
-    var resolve = once(function (res) {
-      // cache resolved
-      factory.resolved = ensureCtor(res, baseCtor);
-      // invoke callbacks only if this is not a synchronous resolve
-      // (async resolves are shimmed as synchronous during SSR)
-      if (!sync) {
-        forceRender();
-      }
-    });
-
-    var reject = once(function (reason) {
-      "development" !== 'production' && warn(
-        "Failed to resolve async component: " + (String(factory)) +
-        (reason ? ("\nReason: " + reason) : '')
-      );
-      if (isDef(factory.errorComp)) {
-        factory.error = true;
-        forceRender();
-      }
-    });
-
-    var res = factory(resolve, reject);
-
-    if (isObject(res)) {
-      if (typeof res.then === 'function') {
-        // () => Promise
-        if (isUndef(factory.resolved)) {
-          res.then(resolve, reject);
-        }
-      } else if (isDef(res.component) && typeof res.component.then === 'function') {
-        res.component.then(resolve, reject);
-
-        if (isDef(res.error)) {
-          factory.errorComp = ensureCtor(res.error, baseCtor);
-        }
-
-        if (isDef(res.loading)) {
-          factory.loadingComp = ensureCtor(res.loading, baseCtor);
-          if (res.delay === 0) {
-            factory.loading = true;
-          } else {
-            setTimeout(function () {
-              if (isUndef(factory.resolved) && isUndef(factory.error)) {
-                factory.loading = true;
-                forceRender();
-              }
-            }, res.delay || 200);
-          }
-        }
-
-        if (isDef(res.timeout)) {
-          setTimeout(function () {
-            reject(
-              "timeout (" + (res.timeout) + "ms)"
-            );
-          }, res.timeout);
-        }
-      }
-    }
-
-    sync = false;
-    // return in case resolved synchronously
-    return factory.loading
-      ? factory.loadingComp
-      : factory.resolved
-  }
-}
-
-/*  */
-
-function getFirstComponentChild (children) {
-  if (Array.isArray(children)) {
-    for (var i = 0; i < children.length; i++) {
-      var c = children[i];
-      if (isDef(c) && isDef(c.componentOptions)) {
-        return c
-      }
-    }
-  }
-}
-
-/*  */
-
-/*  */
-
-function initEvents (vm) {
-  vm._events = Object.create(null);
-  vm._hasHookEvent = false;
-  // init parent attached events
-  var listeners = vm.$options._parentListeners;
-  if (listeners) {
-    updateComponentListeners(vm, listeners);
-=======
   var emptyModifiers = Object.create(null);
 
   function normalizeDirectives$1(dirs, vm) {
@@ -46107,7 +44431,6 @@ function initEvents (vm) {
       dir.def = resolveAsset(vm.$options, 'directives', dir.name, true);
     }
     return res;
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
   }
 
   function getRawDirName(dir) {
@@ -46170,43 +44493,11 @@ function initEvents (vm) {
       } else {
         el.setAttribute(key, key);
       }
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-    }
-    return vm
-  };
-}
-
-/*  */
-
-/**
- * Runtime helper for resolving raw children VNodes into a slot object.
- */
-function resolveSlots (
-  children,
-  context
-) {
-  var slots = {};
-  if (!children) {
-    return slots
-  }
-  var defaultSlot = [];
-  for (var i = 0, l = children.length; i < l; i++) {
-    var child = children[i];
-    // named slots should only be respected if the vnode was rendered in the
-    // same context.
-    if ((child.context === context || child.functionalContext === context) &&
-        child.data && child.data.slot != null) {
-      var name = child.data.slot;
-      var slot = (slots[name] || (slots[name] = []));
-      if (child.tag === 'template') {
-        slot.push.apply(slot, child.children);
-=======
     } else if (isEnumeratedAttr(key)) {
       el.setAttribute(key, isFalsyAttrValue(value) || value === 'false' ? 'false' : 'true');
     } else if (isXlink(key)) {
       if (isFalsyAttrValue(value)) {
         el.removeAttributeNS(xlinkNS, getXlinkProp(key));
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
       } else {
         el.setAttributeNS(xlinkNS, key, value);
       }
@@ -46400,19 +44691,9 @@ function resolveSlots (
       delete modifiers.capture;
       name = '!' + name; // mark the event as captured
     }
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-  } else if (vm._directInactive) {
-    return
-  }
-  if (vm._inactive || vm._inactive === null) {
-    vm._inactive = false;
-    for (var i = 0; i < vm.$children.length; i++) {
-      activateChildComponent(vm.$children[i]);
-=======
     if (modifiers && modifiers.once) {
       delete modifiers.once;
       name = '~' + name; // mark the event as once
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
     }
     var events;
     if (modifiers && modifiers.native) {
@@ -46444,142 +44725,6 @@ function resolveSlots (
       }
     }
   }
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-  if (vm._hasHookEvent) {
-    vm.$emit('hook:' + hook);
-  }
-}
-
-/*  */
-
-
-var MAX_UPDATE_COUNT = 100;
-
-var queue = [];
-var activatedChildren = [];
-var has = {};
-var circular = {};
-var waiting = false;
-var flushing = false;
-var index = 0;
-
-/**
- * Reset the scheduler's state.
- */
-function resetSchedulerState () {
-  queue.length = activatedChildren.length = 0;
-  has = {};
-  {
-    circular = {};
-  }
-  waiting = flushing = false;
-}
-
-/**
- * Flush both queues and run the watchers.
- */
-function flushSchedulerQueue () {
-  flushing = true;
-  var watcher, id;
-
-  // Sort queue before flush.
-  // This ensures that:
-  // 1. Components are updated from parent to child. (because parent is always
-  //    created before the child)
-  // 2. A component's user watchers are run before its render watcher (because
-  //    user watchers are created before the render watcher)
-  // 3. If a component is destroyed during a parent component's watcher run,
-  //    its watchers can be skipped.
-  queue.sort(function (a, b) { return a.id - b.id; });
-
-  // do not cache length because more watchers might be pushed
-  // as we run existing watchers
-  for (index = 0; index < queue.length; index++) {
-    watcher = queue[index];
-    id = watcher.id;
-    has[id] = null;
-    watcher.run();
-    // in dev build, check and stop circular updates.
-    if ("development" !== 'production' && has[id] != null) {
-      circular[id] = (circular[id] || 0) + 1;
-      if (circular[id] > MAX_UPDATE_COUNT) {
-        warn(
-          'You may have an infinite update loop ' + (
-            watcher.user
-              ? ("in watcher with expression \"" + (watcher.expression) + "\"")
-              : "in a component render function."
-          ),
-          watcher.vm
-        );
-        break
-      }
-    }
-  }
-
-  // keep copies of post queues before resetting state
-  var activatedQueue = activatedChildren.slice();
-  var updatedQueue = queue.slice();
-
-  resetSchedulerState();
-
-  // call component updated and activated hooks
-  callActivatedHooks(activatedQueue);
-  callUpdateHooks(updatedQueue);
-
-  // devtool hook
-  /* istanbul ignore if */
-  if (devtools && config.devtools) {
-    devtools.emit('flush');
-  }
-}
-
-function callUpdateHooks (queue) {
-  var i = queue.length;
-  while (i--) {
-    var watcher = queue[i];
-    var vm = watcher.vm;
-    if (vm._watcher === watcher && vm._isMounted) {
-      callHook(vm, 'updated');
-    }
-  }
-}
-
-/**
- * Queue a kept-alive component that was activated during patch.
- * The queue will be processed after the entire tree has been patched.
- */
-function queueActivatedComponent (vm) {
-  // setting _inactive to false here so that a render function can
-  // rely on checking whether it's in an inactive tree (e.g. router-view)
-  vm._inactive = false;
-  activatedChildren.push(vm);
-}
-
-function callActivatedHooks (queue) {
-  for (var i = 0; i < queue.length; i++) {
-    queue[i]._inactive = true;
-    activateChildComponent(queue[i], true /* true */);
-  }
-}
-
-/**
- * Push a watcher into the watcher queue.
- * Jobs with duplicate IDs will be skipped unless it's
- * pushed when the queue is being flushed.
- */
-function queueWatcher (watcher) {
-  var id = watcher.id;
-  if (has[id] == null) {
-    has[id] = true;
-    if (!flushing) {
-      queue.push(watcher);
-    } else {
-      // if already flushing, splice the watcher based on its id
-      // if already past its id, it will be run next immediately.
-      var i = queue.length - 1;
-      while (i >= 0 && queue[i].id > watcher.id) {
-        i--;
-=======
 
   function getAndRemoveAttr(el, name) {
     var val;
@@ -46590,7 +44735,6 @@ function queueWatcher (watcher) {
           list.splice(i, 1);
           break;
         }
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
       }
     }
     return val;
@@ -46744,51 +44888,6 @@ function queueWatcher (watcher) {
     var tag = el.tag;
     var type = el.attrsMap.type;
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-var isReservedProp = {
-  key: 1,
-  ref: 1,
-  slot: 1
-};
-
-function initProps (vm, propsOptions) {
-  var propsData = vm.$options.propsData || {};
-  var props = vm._props = {};
-  // cache prop keys so that future props updates can iterate using Array
-  // instead of dynamic object key enumeration.
-  var keys = vm.$options._propKeys = [];
-  var isRoot = !vm.$parent;
-  // root instance props should be converted
-  observerState.shouldConvert = isRoot;
-  var loop = function ( key ) {
-    keys.push(key);
-    var value = validateProp(key, propsOptions, propsData, vm);
-    /* istanbul ignore else */
-    {
-      if (isReservedProp[key] || config.isReservedAttr(key)) {
-        warn(
-          ("\"" + key + "\" is a reserved attribute and cannot be used as component prop."),
-          vm
-        );
-      }
-      defineReactive$$1(props, key, value, function () {
-        if (vm.$parent && !observerState.isSettingProps) {
-          warn(
-            "Avoid mutating a prop directly since the value will be " +
-            "overwritten whenever the parent component re-renders. " +
-            "Instead, use a data or computed property based on the prop's " +
-            "value. Prop being mutated: \"" + key + "\"",
-            vm
-          );
-        }
-      });
-    }
-    // static props are already proxied on the component's prototype
-    // during Vue.extend(). We only need to proxy props defined at
-    // instantiation here.
-    if (!(key in vm)) {
-      proxy(vm, "_props", key);
-=======
     {
       var dynamicType = el.attrsMap['v-bind:type'] || el.attrsMap[':type'];
       if (tag === 'input' && dynamicType) {
@@ -46815,7 +44914,6 @@ function initProps (vm, propsOptions) {
       return false;
     } else {
       warn$1("<" + el.tag + " v-model=\"" + value + "\">: " + "v-model is not supported on this element type. " + 'If you are working with contenteditable, it\'s recommended to ' + 'wrap a library dedicated for that purpose inside a custom component.');
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
     }
 
     // ensure runtime directive metadata
@@ -46871,24 +44969,10 @@ function initProps (vm, propsOptions) {
       code = "if($event.target.composing)return;" + code;
     }
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-    // component-defined computed properties are already defined on the
-    // component prototype. We only need to define computed properties defined
-    // at instantiation here.
-    if (!(key in vm)) {
-      defineComputed(vm, key, userDef);
-    } else {
-      if (key in vm.$data) {
-        warn(("The computed property \"" + key + "\" is already defined in data."), vm);
-      } else if (vm.$options.props && key in vm.$options.props) {
-        warn(("The computed property \"" + key + "\" is already defined as a prop."), vm);
-      }
-=======
     addProp(el, 'value', "(" + value + ")");
     addHandler(el, event, code, null, true);
     if (trim || number || type === 'number') {
       addHandler(el, 'blur', '$forceUpdate()');
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
     }
   }
 
@@ -46951,168 +45035,6 @@ function initProps (vm, propsOptions) {
     update: updateDOMListeners
   };
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-/*  */
-
-function initProvide (vm) {
-  var provide = vm.$options.provide;
-  if (provide) {
-    vm._provided = typeof provide === 'function'
-      ? provide.call(vm)
-      : provide;
-  }
-}
-
-function initInjections (vm) {
-  var result = resolveInject(vm.$options.inject, vm);
-  if (result) {
-    Object.keys(result).forEach(function (key) {
-      /* istanbul ignore else */
-      {
-        defineReactive$$1(vm, key, result[key], function () {
-          warn(
-            "Avoid mutating an injected value directly since the changes will be " +
-            "overwritten whenever the provided component re-renders. " +
-            "injection being mutated: \"" + key + "\"",
-            vm
-          );
-        });
-      }
-    });
-  }
-}
-
-function resolveInject (inject, vm) {
-  if (inject) {
-    // inject is :any because flow is not smart enough to figure out cached
-    // isArray here
-    var isArray = Array.isArray(inject);
-    var result = Object.create(null);
-    var keys = isArray
-      ? inject
-      : hasSymbol
-        ? Reflect.ownKeys(inject)
-        : Object.keys(inject);
-
-    for (var i = 0; i < keys.length; i++) {
-      var key = keys[i];
-      var provideKey = isArray ? key : inject[key];
-      var source = vm;
-      while (source) {
-        if (source._provided && provideKey in source._provided) {
-          result[key] = source._provided[provideKey];
-          break
-        }
-        source = source.$parent;
-      }
-    }
-    return result
-  }
-}
-
-/*  */
-
-function createFunctionalComponent (
-  Ctor,
-  propsData,
-  data,
-  context,
-  children
-) {
-  var props = {};
-  var propOptions = Ctor.options.props;
-  if (isDef(propOptions)) {
-    for (var key in propOptions) {
-      props[key] = validateProp(key, propOptions, propsData || {});
-    }
-  } else {
-    if (isDef(data.attrs)) { mergeProps(props, data.attrs); }
-    if (isDef(data.props)) { mergeProps(props, data.props); }
-  }
-  // ensure the createElement function in functional components
-  // gets a unique context - this is necessary for correct named slot check
-  var _context = Object.create(context);
-  var h = function (a, b, c, d) { return createElement(_context, a, b, c, d, true); };
-  var vnode = Ctor.options.render.call(null, h, {
-    data: data,
-    props: props,
-    children: children,
-    parent: context,
-    listeners: data.on || {},
-    injections: resolveInject(Ctor.options.inject, context),
-    slots: function () { return resolveSlots(children, context); }
-  });
-  if (vnode instanceof VNode) {
-    vnode.functionalContext = context;
-    vnode.functionalOptions = Ctor.options;
-    if (data.slot) {
-      (vnode.data || (vnode.data = {})).slot = data.slot;
-    }
-  }
-  return vnode
-}
-
-function mergeProps (to, from) {
-  for (var key in from) {
-    to[camelize(key)] = from[key];
-  }
-}
-
-/*  */
-
-// hooks to be invoked on component VNodes during patch
-var componentVNodeHooks = {
-  init: function init (
-    vnode,
-    hydrating,
-    parentElm,
-    refElm
-  ) {
-    if (!vnode.componentInstance || vnode.componentInstance._isDestroyed) {
-      var child = vnode.componentInstance = createComponentInstanceForVnode(
-        vnode,
-        activeInstance,
-        parentElm,
-        refElm
-      );
-      child.$mount(hydrating ? vnode.elm : undefined, hydrating);
-    } else if (vnode.data.keepAlive) {
-      // kept-alive components, treat as a patch
-      var mountedNode = vnode; // work around flow
-      componentVNodeHooks.prepatch(mountedNode, mountedNode);
-    }
-  },
-
-  prepatch: function prepatch (oldVnode, vnode) {
-    var options = vnode.componentOptions;
-    var child = vnode.componentInstance = oldVnode.componentInstance;
-    updateChildComponent(
-      child,
-      options.propsData, // updated props
-      options.listeners, // updated listeners
-      vnode, // new parent vnode
-      options.children // new children
-    );
-  },
-
-  insert: function insert (vnode) {
-    var context = vnode.context;
-    var componentInstance = vnode.componentInstance;
-    if (!componentInstance._isMounted) {
-      componentInstance._isMounted = true;
-      callHook(componentInstance, 'mounted');
-    }
-    if (vnode.data.keepAlive) {
-      if (context._isMounted) {
-        // vue-router#1212
-        // During updates, a kept-alive component's child components may
-        // change, so directly walking the tree here may call activated hooks
-        // on incorrect children. Instead we push them into a queue which will
-        // be processed after the whole patch process ended.
-        queueActivatedComponent(componentInstance);
-      } else {
-        activateChildComponent(componentInstance, true /* direct */);
-=======
   /*  */
 
   function updateDOMProps(oldVnode, vnode) {
@@ -47131,7 +45053,6 @@ var componentVNodeHooks = {
     for (key in oldProps) {
       if (props[key] == null) {
         elm[key] = '';
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
       }
     }
     for (key in props) {
@@ -47148,15 +45069,6 @@ var componentVNodeHooks = {
         }
       }
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-  destroy: function destroy (vnode) {
-    var componentInstance = vnode.componentInstance;
-    if (!componentInstance._isDestroyed) {
-      if (!vnode.data.keepAlive) {
-        componentInstance.$destroy();
-      } else {
-        deactivateChildComponent(componentInstance, true /* direct */);
-=======
       if (key === 'value') {
         // store value as _value as well since
         // non-string values will be stringified
@@ -47168,49 +45080,12 @@ var componentVNodeHooks = {
         }
       } else {
         elm[key] = cur;
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
       }
     }
   }
 
   // check platforms/web/util/attrs.js acceptValue
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-function createComponent (
-  Ctor,
-  data,
-  context,
-  children,
-  tag
-) {
-  if (isUndef(Ctor)) {
-    return
-  }
-
-  var baseCtor = context.$options._base;
-
-  // plain options object: turn it into a constructor
-  if (isObject(Ctor)) {
-    Ctor = baseCtor.extend(Ctor);
-  }
-
-  // if at this stage it's not a constructor or an async component factory,
-  // reject.
-  if (typeof Ctor !== 'function') {
-    {
-      warn(("Invalid Component definition: " + (String(Ctor))), context);
-    }
-    return
-  }
-
-  // async component
-  if (isUndef(Ctor.cid)) {
-    Ctor = resolveAsyncComponent(Ctor, baseCtor, context);
-    if (Ctor === undefined) {
-      // return nothing if this is indeed an async component
-      // wait for the callback to trigger parent update.
-      return
-=======
 
   function shouldUpdateValue(elm, vnode, checkVal) {
     return !elm.composing && (vnode.tag === 'option' || isDirty(elm, checkVal) || isInputChanged(elm, checkVal));
@@ -47226,7 +45101,6 @@ function createComponent (
     var modifiers = elm._vModifiers; // injected by v-model runtime
     if (modifiers && modifiers.number || elm.type === 'number') {
       return toNumber(value) !== toNumber(newVal);
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
     }
     if (modifiers && modifiers.trim) {
       return value.trim() !== newVal.trim();
@@ -47239,31 +45113,6 @@ function createComponent (
     update: updateDOMProps
   };
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-  // transform component v-model data into props & events
-  if (isDef(data.model)) {
-    transformModel(Ctor.options, data);
-  }
-
-  // extract props
-  var propsData = extractPropsFromVNodeData(data, Ctor, tag);
-
-  // functional component
-  if (isTrue(Ctor.options.functional)) {
-    return createFunctionalComponent(Ctor, propsData, data, context, children)
-  }
-
-  // extract listeners, since these needs to be treated as
-  // child component listeners instead of DOM listeners
-  var listeners = data.on;
-  // replace with listeners with .native modifier
-  data.on = data.nativeOn;
-
-  if (isTrue(Ctor.options.abstract)) {
-    // abstract components do not keep anything
-    // other than props & listeners
-    data = {};
-=======
   /*  */
 
   var parseStyleText = cached(function (cssText) {
@@ -47296,7 +45145,6 @@ function createComponent (
       return parseStyleText(bindingStyle);
     }
     return bindingStyle;
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
   }
 
   /**
@@ -47317,46 +45165,6 @@ function createComponent (
       }
     }
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-function createComponentInstanceForVnode (
-  vnode, // we know it's MountedComponentVNode but flow doesn't
-  parent, // activeInstance in lifecycle state
-  parentElm,
-  refElm
-) {
-  var vnodeComponentOptions = vnode.componentOptions;
-  var options = {
-    _isComponent: true,
-    parent: parent,
-    propsData: vnodeComponentOptions.propsData,
-    _componentTag: vnodeComponentOptions.tag,
-    _parentVnode: vnode,
-    _parentListeners: vnodeComponentOptions.listeners,
-    _renderChildren: vnodeComponentOptions.children,
-    _parentElm: parentElm || null,
-    _refElm: refElm || null
-  };
-  // check inline-template render functions
-  var inlineTemplate = vnode.data.inlineTemplate;
-  if (isDef(inlineTemplate)) {
-    options.render = inlineTemplate.render;
-    options.staticRenderFns = inlineTemplate.staticRenderFns;
-  }
-  return new vnodeComponentOptions.Ctor(options)
-}
-
-function mergeHooks (data) {
-  if (!data.hook) {
-    data.hook = {};
-  }
-  for (var i = 0; i < hooksToMerge.length; i++) {
-    var key = hooksToMerge[i];
-    var fromParent = data.hook[key];
-    var ours = componentVNodeHooks[key];
-    data.hook[key] = fromParent ? mergeHook$1(ours, fromParent) : ours;
-  }
-}
-=======
     if (styleData = normalizeStyleData(vnode.data)) {
       extend(res, styleData);
     }
@@ -47422,22 +45230,9 @@ function mergeHooks (data) {
     var style = normalizeStyleBinding(vnode.data.style) || {};
 
     vnode.data.style = style.__ob__ ? extend({}, style) : style;
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 
     var newStyle = getStyle(vnode, true);
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-// transform component v-model info (value and callback) into
-// prop and event handler respectively.
-function transformModel (options, data) {
-  var prop = (options.model && options.model.prop) || 'value';
-  var event = (options.model && options.model.event) || 'input';(data.props || (data.props = {}))[prop] = data.model.value;
-  var on = data.on || (data.on = {});
-  if (isDef(on[event])) {
-    on[event] = [data.model.callback].concat(on[event]);
-  } else {
-    on[event] = data.model.callback;
-=======
     for (name in oldStyle) {
       if (newStyle[name] == null) {
         setProp(el, name, '');
@@ -47450,7 +45245,6 @@ function transformModel (options, data) {
         setProp(el, name, cur == null ? '' : cur);
       }
     }
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
   }
 
   var style = {
@@ -47460,73 +45254,6 @@ function transformModel (options, data) {
 
   /*  */
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-// wrapper function for providing a more flexible interface
-// without getting yelled at by flow
-function createElement (
-  context,
-  tag,
-  data,
-  children,
-  normalizationType,
-  alwaysNormalize
-) {
-  if (Array.isArray(data) || isPrimitive(data)) {
-    normalizationType = children;
-    children = data;
-    data = undefined;
-  }
-  if (isTrue(alwaysNormalize)) {
-    normalizationType = ALWAYS_NORMALIZE;
-  }
-  return _createElement(context, tag, data, children, normalizationType)
-}
-
-function _createElement (
-  context,
-  tag,
-  data,
-  children,
-  normalizationType
-) {
-  if (isDef(data) && isDef((data).__ob__)) {
-    "development" !== 'production' && warn(
-      "Avoid using observed data object as vnode data: " + (JSON.stringify(data)) + "\n" +
-      'Always create fresh vnode data objects in each render!',
-      context
-    );
-    return createEmptyVNode()
-  }
-  if (!tag) {
-    // in case of component :is set to falsy value
-    return createEmptyVNode()
-  }
-  // support single function children as default scoped slot
-  if (Array.isArray(children) &&
-      typeof children[0] === 'function') {
-    data = data || {};
-    data.scopedSlots = { default: children[0] };
-    children.length = 0;
-  }
-  if (normalizationType === ALWAYS_NORMALIZE) {
-    children = normalizeChildren(children);
-  } else if (normalizationType === SIMPLE_NORMALIZE) {
-    children = simpleNormalizeChildren(children);
-  }
-  var vnode, ns;
-  if (typeof tag === 'string') {
-    var Ctor;
-    ns = config.getTagNamespace(tag);
-    if (config.isReservedTag(tag)) {
-      // platform built-in elements
-      vnode = new VNode(
-        config.parsePlatformTagName(tag), data, children,
-        undefined, undefined, context
-      );
-    } else if (isDef(Ctor = resolveAsset(context.$options, 'components', tag))) {
-      // component
-      vnode = createComponent(Ctor, data, context, children, tag);
-=======
   /**
    * Add class with compatibility for SVG since classList is not supported on
    * SVG elements in IE
@@ -47546,40 +45273,14 @@ function _createElement (
       } else {
         el.classList.add(cls);
       }
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
     } else {
       var cur = " " + (el.getAttribute('class') || '') + " ";
       if (cur.indexOf(' ' + cls + ' ') < 0) {
         el.setAttribute('class', (cur + cls).trim());
       }
     }
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-  } else {
-    // direct component options / constructor
-    vnode = createComponent(tag, data, context, children);
-  }
-  if (isDef(vnode)) {
-    if (ns) { applyNS(vnode, ns); }
-    return vnode
-  } else {
-    return createEmptyVNode()
-=======
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
   }
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-function applyNS (vnode, ns) {
-  vnode.ns = ns;
-  if (vnode.tag === 'foreignObject') {
-    // use default namespace inside foreignObject
-    return
-  }
-  if (isDef(vnode.children)) {
-    for (var i = 0, l = vnode.children.length; i < l; i++) {
-      var child = vnode.children[i];
-      if (isDef(child.tag) && isUndef(child.ns)) {
-        applyNS(child, ns);
-=======
   /**
    * Remove class with compatibility for SVG since classList is not supported on
    * SVG elements in IE
@@ -47604,7 +45305,6 @@ function applyNS (vnode, ns) {
       var tar = ' ' + cls + ' ';
       while (cur.indexOf(tar) >= 0) {
         cur = cur.replace(tar, ' ');
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
       }
       el.setAttribute('class', cur.trim());
     }
@@ -47758,31 +45458,10 @@ function applyNS (vnode, ns) {
       delays = delays.concat(delays);
     }
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-/*  */
-
-function initRender (vm) {
-  vm._vnode = null; // the root of the child tree
-  vm._staticTrees = null;
-  var parentVnode = vm.$vnode = vm.$options._parentVnode; // the placeholder node in parent tree
-  var renderContext = parentVnode && parentVnode.context;
-  vm.$slots = resolveSlots(vm.$options._renderChildren, renderContext);
-  vm.$scopedSlots = emptyObject;
-  // bind the createElement fn to this instance
-  // so that we get proper render context inside it.
-  // args order: tag, data, children, normalizationType, alwaysNormalize
-  // internal version is used by render functions compiled from templates
-  vm._c = function (a, b, c, d) { return createElement(vm, a, b, c, d, false); };
-  // normalization is always applied for the public version, used in
-  // user-written render functions.
-  vm.$createElement = function (a, b, c, d) { return createElement(vm, a, b, c, d, true); };
-}
-=======
     return Math.max.apply(null, durations.map(function (d, i) {
       return toMs(d) + toMs(delays[i]);
     }));
   }
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 
   function toMs(s) {
     return Number(s.slice(0, -1)) * 1000;
@@ -47859,29 +45538,8 @@ function initRender (vm) {
       checkDuration(explicitEnterDuration, 'enter', vnode);
     }
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-  // internal render helpers.
-  // these are exposed on the instance prototype to reduce generated render
-  // code size.
-  Vue.prototype._o = markOnce;
-  Vue.prototype._n = toNumber;
-  Vue.prototype._s = toString;
-  Vue.prototype._l = renderList;
-  Vue.prototype._t = renderSlot;
-  Vue.prototype._q = looseEqual;
-  Vue.prototype._i = looseIndexOf;
-  Vue.prototype._m = renderStatic;
-  Vue.prototype._f = resolveFilter;
-  Vue.prototype._k = checkKeyCodes;
-  Vue.prototype._b = bindObjectProps;
-  Vue.prototype._v = createTextVNode;
-  Vue.prototype._e = createEmptyVNode;
-  Vue.prototype._u = resolveScopedSlots;
-}
-=======
     var expectsCSS = css !== false && !isIE9;
     var userWantsControl = getHookArgumentsLength(enterHook);
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 
     var cb = el._enterCb = once(function () {
       if (expectsCSS) {
@@ -47899,15 +45557,6 @@ function initRender (vm) {
       el._enterCb = null;
     });
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-var uid$1 = 0;
-
-function initMixin (Vue) {
-  Vue.prototype._init = function (options) {
-    var vm = this;
-    // a uid
-    vm._uid = uid$1++;
-=======
     if (!vnode.data.show) {
       // remove pending leave element on enter by injecting an insert hook
       mergeVNodeHook(vnode.data.hook || (vnode.data.hook = {}), 'insert', function () {
@@ -47956,7 +45605,6 @@ function initMixin (Vue) {
       el._enterCb.cancelled = true;
       el._enterCb();
     }
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 
     var data = resolveTransition(vnode.data.transition);
     if (!data) {
@@ -48047,48 +45695,17 @@ function initMixin (Vue) {
     }
   }
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-function resolveModifiedOptions (Ctor) {
-  var modified;
-  var latest = Ctor.options;
-  var extended = Ctor.extendOptions;
-  var sealed = Ctor.sealedOptions;
-  for (var key in latest) {
-    if (latest[key] !== sealed[key]) {
-      if (!modified) { modified = {}; }
-      modified[key] = dedupe(latest[key], extended[key], sealed[key]);
-=======
   // only used in dev mode
   function checkDuration(val, name, vnode) {
     if (typeof val !== 'number') {
       warn("<transition> explicit " + name + " duration is not a valid number - " + "got " + JSON.stringify(val) + ".", vnode.context);
     } else if (isNaN(val)) {
       warn("<transition> explicit " + name + " duration is NaN - " + 'the duration expression might be incorrect.', vnode.context);
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
     }
   }
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-function dedupe (latest, extended, sealed) {
-  // compare latest and sealed to ensure lifecycle hooks won't be duplicated
-  // between merges
-  if (Array.isArray(latest)) {
-    var res = [];
-    sealed = Array.isArray(sealed) ? sealed : [sealed];
-    extended = Array.isArray(extended) ? extended : [extended];
-    for (var i = 0; i < latest.length; i++) {
-      // push original options and not sealed options to exclude duplicated options
-      if (extended.indexOf(latest[i]) >= 0 || sealed.indexOf(latest[i]) < 0) {
-        res.push(latest[i]);
-      }
-    }
-    return res
-  } else {
-    return latest
-=======
   function isValidDuration(val) {
     return typeof val === 'number' && !isNaN(val);
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
   }
 
   /**
@@ -48226,27 +45843,11 @@ function dedupe (latest, extended, sealed) {
     }
   }
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-    // allow further extension/mixin/plugin usage
-    Sub.extend = Super.extend;
-    Sub.mixin = Super.mixin;
-    Sub.use = Super.use;
-
-    // create asset registers, so extended classes
-    // can have their private assets too.
-    ASSET_TYPES.forEach(function (type) {
-      Sub[type] = Super[type];
-    });
-    // enable recursive self-lookup
-    if (name) {
-      Sub.options.components[name] = Sub;
-=======
   function hasNoMatchingOption(value, options) {
     for (var i = 0, l = options.length; i < l; i++) {
       if (looseEqual(getValue(options[i]), value)) {
         return false;
       }
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
     }
     return true;
   }
@@ -48272,19 +45873,6 @@ function dedupe (latest, extended, sealed) {
 
   /*  */
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-function initAssetRegisters (Vue) {
-  /**
-   * Create asset registration methods.
-   */
-  ASSET_TYPES.forEach(function (type) {
-    Vue[type] = function (
-      id,
-      definition
-    ) {
-      if (!definition) {
-        return this.options[type + 's'][id]
-=======
   // recursively search for possible transition defined inside the component root
   function locateNode(vnode) {
     return vnode.componentInstance && (!vnode.data || !vnode.data.transition) ? locateNode(vnode.componentInstance._vnode) : vnode;
@@ -48302,7 +45890,6 @@ function initAssetRegisters (Vue) {
         enter(vnode, function () {
           el.style.display = originalDisplay;
         });
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
       } else {
         el.style.display = value ? originalDisplay : 'none';
       }
@@ -48346,29 +45933,6 @@ function initAssetRegisters (Vue) {
     show: show
   };
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-function matches (pattern, name) {
-  if (typeof pattern === 'string') {
-    return pattern.split(',').indexOf(name) > -1
-  } else if (isRegExp(pattern)) {
-    return pattern.test(name)
-  }
-  /* istanbul ignore next */
-  return false
-}
-
-function pruneCache (cache, current, filter) {
-  for (var key in cache) {
-    var cachedNode = cache[key];
-    if (cachedNode) {
-      var name = getComponentName(cachedNode.componentOptions);
-      if (name && !filter(name)) {
-        if (cachedNode !== current) {
-          pruneCacheEntry(cachedNode);
-        }
-        cache[key] = null;
-      }
-=======
   /*  */
 
   // Provides transition support for a single element/component.
@@ -48400,15 +45964,9 @@ function pruneCache (cache, current, filter) {
       return getRealChild(getFirstComponentChild(compOptions.children));
     } else {
       return vnode;
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
     }
   }
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-function pruneCacheEntry (vnode) {
-  if (vnode) {
-    vnode.componentInstance.$destroy();
-=======
   function extractTransitionData(comp) {
     var data = {};
     var options = comp.$options;
@@ -48423,7 +45981,6 @@ function pruneCacheEntry (vnode) {
       data[camelize(key$1)] = listeners[key$1];
     }
     return data;
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
   }
 
   function placeholder(h, rawChild) {
@@ -48451,42 +46008,9 @@ function pruneCacheEntry (vnode) {
     render: function render(h) {
       var this$1 = this;
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-  watch: {
-    include: function include (val) {
-      pruneCache(this.cache, this._vnode, function (name) { return matches(val, name); });
-    },
-    exclude: function exclude (val) {
-      pruneCache(this.cache, this._vnode, function (name) { return !matches(val, name); });
-    }
-  },
-
-  render: function render () {
-    var vnode = getFirstComponentChild(this.$slots.default);
-    var componentOptions = vnode && vnode.componentOptions;
-    if (componentOptions) {
-      // check pattern
-      var name = getComponentName(componentOptions);
-      if (name && (
-        (this.include && !matches(this.include, name)) ||
-        (this.exclude && matches(this.exclude, name))
-      )) {
-        return vnode
-      }
-      var key = vnode.key == null
-        // same constructor may get registered as different local components
-        // so cid alone is not enough (#3269)
-        ? componentOptions.Ctor.cid + (componentOptions.tag ? ("::" + (componentOptions.tag)) : '')
-        : vnode.key;
-      if (this.cache[key]) {
-        vnode.componentInstance = this.cache[key].componentInstance;
-      } else {
-        this.cache[key] = vnode;
-=======
       var children = this.$slots.default;
       if (!children) {
         return;
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
       }
 
       // filter out text nodes (possible whitespaces)
@@ -48512,18 +46036,11 @@ function pruneCacheEntry (vnode) {
 
       var rawChild = children[0];
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-  Vue.options = Object.create(null);
-  ASSET_TYPES.forEach(function (type) {
-    Vue.options[type + 's'] = Object.create(null);
-  });
-=======
       // if this is a component root node and the component's
       // parent container node also has transition, skip.
       if (hasParentTransition(this.$vnode)) {
         return rawChild;
       }
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 
       // apply transition data to child
       // use getRealChild() to ignore abstract components e.g. keep-alive
@@ -48598,42 +46115,15 @@ function pruneCacheEntry (vnode) {
   // into the final desired state. This way in the second pass removed
   // nodes will remain where they should be.
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-Object.defineProperty(Vue$3.prototype, '$ssrContext', {
-  get: function get () {
-    return this.$vnode.ssrContext
-  }
-});
-
-Vue$3.version = '2.3.2';
-=======
   var props = extend({
     tag: String,
     moveClass: String
   }, transitionProps);
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 
   delete props.mode;
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-// these are reserved for web because they are directly compiled away
-// during template compilation
-var isReservedAttr = makeMap('style,class');
-
-// attributes that should be using props for binding
-var acceptValue = makeMap('input,textarea,option,select');
-var mustUseProp = function (tag, type, attr) {
-  return (
-    (attr === 'value' && acceptValue(tag)) && type !== 'button' ||
-    (attr === 'selected' && tag === 'option') ||
-    (attr === 'checked' && tag === 'input') ||
-    (attr === 'muted' && tag === 'video')
-  )
-};
-=======
   var TransitionGroup = {
     props: props,
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 
     render: function render(h) {
       var tag = this.tag || this.$vnode.data.tag || 'span';
@@ -48749,21 +46239,6 @@ var mustUseProp = function (tag, type, attr) {
     }
   };
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-function genClassForVnode (vnode) {
-  var data = vnode.data;
-  var parentNode = vnode;
-  var childNode = vnode;
-  while (isDef(childNode.componentInstance)) {
-    childNode = childNode.componentInstance._vnode;
-    if (childNode.data) {
-      data = mergeClassData(childNode.data, data);
-    }
-  }
-  while (isDef(parentNode = parentNode.parent)) {
-    if (parentNode.data) {
-      data = mergeClassData(data, parentNode.data);
-=======
   function callPendingCbs(c) {
     /* istanbul ignore if */
     if (c.elm._moveCb) {
@@ -48772,30 +46247,13 @@ function genClassForVnode (vnode) {
     /* istanbul ignore if */
     if (c.elm._enterCb) {
       c.elm._enterCb();
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
     }
   }
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-function mergeClassData (child, parent) {
-  return {
-    staticClass: concat(child.staticClass, parent.staticClass),
-    class: isDef(child.class)
-      ? [child.class, parent.class]
-      : parent.class
-=======
   function recordPosition(c) {
     c.data.newPos = c.elm.getBoundingClientRect();
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
   }
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-function genClassFromData (data) {
-  var dynamicClass = data.class;
-  var staticClass = data.staticClass;
-  if (isDef(staticClass) || isDef(dynamicClass)) {
-    return concat(staticClass, stringifyClass(dynamicClass))
-=======
   function applyTranslation(c) {
     var oldPos = c.data.pos;
     var newPos = c.data.newPos;
@@ -48807,7 +46265,6 @@ function genClassFromData (data) {
       s.transform = s.WebkitTransform = "translate(" + dx + "px," + dy + "px)";
       s.transitionDuration = '0s';
     }
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
   }
 
   var platformComponents = {
@@ -48815,23 +46272,6 @@ function genClassFromData (data) {
     TransitionGroup: TransitionGroup
   };
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-function stringifyClass (value) {
-  if (isUndef(value)) {
-    return ''
-  }
-  if (typeof value === 'string') {
-    return value
-  }
-  var res = '';
-  if (Array.isArray(value)) {
-    var stringified;
-    for (var i = 0, l = value.length; i < l; i++) {
-      if (isDef(value[i])) {
-        if (isDef(stringified = stringifyClass(value[i])) && stringified !== '') {
-          res += stringified + ' ';
-        }
-=======
   /*  */
 
   // install platform specific utils
@@ -48861,7 +46301,6 @@ function stringifyClass (value) {
         devtools.emit('init', Vue$3);
       } else if ("development" !== 'production' && isChrome) {
         console[console.info ? 'info' : 'log']('Download the Vue Devtools extension for a better development experience:\n' + 'https://github.com/vuejs/vue-devtools');
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
       }
     }
     if ("development" !== 'production' && config.productionTip !== false && inBrowser && typeof console !== 'undefined') {
@@ -49149,17 +46588,6 @@ function stringifyClass (value) {
         lastTag = tagName;
       }
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-function sameVnode (a, b) {
-  return (
-    a.key === b.key &&
-    a.tag === b.tag &&
-    a.isComment === b.isComment &&
-    isDef(a.data) === isDef(b.data) &&
-    sameInputType(a, b)
-  )
-}
-=======
       if (options.start) {
         options.start(tagName, attrs, unary, match.start, match.end);
       }
@@ -49189,7 +46617,6 @@ function sameVnode (a, b) {
         // If no tag name is provided, clean shop
         pos = 0;
       }
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 
       if (pos >= 0) {
         // Close all the open elements, up the stack
@@ -49397,41 +46824,6 @@ function sameVnode (a, b) {
           }
         }
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-  function reactivateComponent (vnode, insertedVnodeQueue, parentElm, refElm) {
-    var i;
-    // hack for #4339: a reactivated component with inner transition
-    // does not trigger because the inner node's created hooks are not called
-    // again. It's not ideal to involve module-specific logic in here but
-    // there doesn't seem to be a better way to do it.
-    var innerNode = vnode;
-    while (innerNode.componentInstance) {
-      innerNode = innerNode.componentInstance._vnode;
-      if (isDef(i = innerNode.data) && isDef(i = i.transition)) {
-        for (i = 0; i < cbs.activate.length; ++i) {
-          cbs.activate[i](emptyNode, innerNode);
-        }
-        insertedVnodeQueue.push(innerNode);
-        break
-      }
-    }
-    // unlike a newly created component,
-    // a reactivated keep-alive component doesn't insert itself
-    insert(parentElm, vnode.elm, refElm);
-  }
-
-  function insert (parent, elm, ref) {
-    if (isDef(parent)) {
-      if (isDef(ref)) {
-        if (ref.parentNode === parent) {
-          nodeOps.insertBefore(parent, elm, ref);
-        }
-      } else {
-        nodeOps.appendChild(parent, elm);
-      }
-    }
-  }
-=======
         // tree management
         if (!root) {
           root = element;
@@ -49471,7 +46863,6 @@ function sameVnode (a, b) {
           postTransforms[i$2](element, options);
         }
       },
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 
       end: function end() {
         // remove trailing whitespace
@@ -49589,26 +46980,6 @@ function sameVnode (a, b) {
     }
   }
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-  function removeAndInvokeRemoveHook (vnode, rm) {
-    if (isDef(rm) || isDef(vnode.data)) {
-      var i;
-      var listeners = cbs.remove.length + 1;
-      if (isDef(rm)) {
-        // we have a recursively passed down rm callback
-        // increase the listeners count
-        rm.listeners += listeners;
-      } else {
-        // directly removing
-        rm = createRmCb(vnode.elm, listeners);
-      }
-      // recursively invoke hooks on child component root node
-      if (isDef(i = vnode.componentInstance) && isDef(i = i._vnode) && isDef(i.data)) {
-        removeAndInvokeRemoveHook(i, rm);
-      }
-      for (i = 0; i < cbs.remove.length; ++i) {
-        cbs.remove[i](vnode, rm);
-=======
   function processIf(el) {
     var exp = getAndRemoveAttr(el, 'v-if');
     if (exp) {
@@ -49620,7 +46991,6 @@ function sameVnode (a, b) {
     } else {
       if (getAndRemoveAttr(el, 'v-else') != null) {
         el.else = true;
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
       }
       var elseif = getAndRemoveAttr(el, 'v-else-if');
       if (elseif) {
@@ -49796,75 +47166,9 @@ function sameVnode (a, b) {
     return map;
   }
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-    if (isUndef(oldVnode)) {
-      // empty mount (likely as component), create new root element
-      isInitialPatch = true;
-      createElm(vnode, insertedVnodeQueue, parentElm, refElm);
-    } else {
-      var isRealElement = isDef(oldVnode.nodeType);
-      if (!isRealElement && sameVnode(oldVnode, vnode)) {
-        // patch existing root node
-        patchVnode(oldVnode, vnode, insertedVnodeQueue, removeOnly);
-      } else {
-        if (isRealElement) {
-          // mounting to a real element
-          // check if this is server-rendered content and if we can perform
-          // a successful hydration.
-          if (oldVnode.nodeType === 1 && oldVnode.hasAttribute(SSR_ATTR)) {
-            oldVnode.removeAttribute(SSR_ATTR);
-            hydrating = true;
-          }
-          if (isTrue(hydrating)) {
-            if (hydrate(oldVnode, vnode, insertedVnodeQueue)) {
-              invokeInsertHook(vnode, insertedVnodeQueue, true);
-              return oldVnode
-            } else {
-              warn(
-                'The client-side rendered virtual DOM tree is not matching ' +
-                'server-rendered content. This is likely caused by incorrect ' +
-                'HTML markup, for example nesting block-level elements inside ' +
-                '<p>, or missing <tbody>. Bailing hydration and performing ' +
-                'full client-side render.'
-              );
-            }
-          }
-          // either not server-rendered, or hydration failed.
-          // create an empty node and replace it
-          oldVnode = emptyNodeAt(oldVnode);
-        }
-        // replacing existing element
-        var oldElm = oldVnode.elm;
-        var parentElm$1 = nodeOps.parentNode(oldElm);
-        createElm(
-          vnode,
-          insertedVnodeQueue,
-          // extremely rare edge case: do not insert if old element is in a
-          // leaving transition. Only happens when combining transition +
-          // keep-alive + HOCs. (#4590)
-          oldElm._leaveCb ? null : parentElm$1,
-          nodeOps.nextSibling(oldElm)
-        );
-
-        if (isDef(vnode.parent)) {
-          // component root element replaced.
-          // update parent placeholder node element, recursively
-          var ancestor = vnode.parent;
-          while (ancestor) {
-            ancestor.elm = vnode.elm;
-            ancestor = ancestor.parent;
-          }
-          if (isPatchable(vnode)) {
-            for (var i = 0; i < cbs.create.length; ++i) {
-              cbs.create[i](emptyNode, vnode.parent);
-            }
-          }
-        }
-=======
   function isForbiddenTag(el) {
     return el.tag === 'style' || el.tag === 'script' && (!el.attrsMap.type || el.attrsMap.type === 'text/javascript');
   }
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 
   var ieNSBug = /^xmlns:NS\d+/;
   var ieNSPrefix = /^NS\d+:/;
@@ -50007,21 +47311,8 @@ function sameVnode (a, b) {
 
   /*  */
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-function callHook$1 (dir, hook, vnode, oldVnode, isDestroy) {
-  var fn = dir.def && dir.def[hook];
-  if (fn) {
-    try {
-      fn(vnode.elm, dir, vnode, oldVnode, isDestroy);
-    } catch (e) {
-      handleError(e, vnode.context, ("directive " + (dir.name) + " " + hook + " hook"));
-    }
-  }
-}
-=======
   var fnExpRE = /^\s*([\w$_]+|\([^)]*?\))\s*=>|^function\s*\(/;
   var simplePathRE = /^\s*[A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*|\['.*?']|\[".*?"]|\[\d+]|\[[A-Za-z_$][\w$]*])*\s*$/;
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 
   // keyCode aliases
   var keyCodes = {
@@ -50043,40 +47334,6 @@ function callHook$1 (dir, hook, vnode, oldVnode, isDestroy) {
     return "if(" + condition + ")return null;";
   };
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-function updateAttrs (oldVnode, vnode) {
-  if (isUndef(oldVnode.data.attrs) && isUndef(vnode.data.attrs)) {
-    return
-  }
-  var key, cur, old;
-  var elm = vnode.elm;
-  var oldAttrs = oldVnode.data.attrs || {};
-  var attrs = vnode.data.attrs || {};
-  // clone observed objects, as the user probably wants to mutate it
-  if (isDef(attrs.__ob__)) {
-    attrs = vnode.data.attrs = extend({}, attrs);
-  }
-
-  for (key in attrs) {
-    cur = attrs[key];
-    old = oldAttrs[key];
-    if (old !== cur) {
-      setAttr(elm, key, cur);
-    }
-  }
-  // #4391: in IE9, setting type can reset value for input[type=radio]
-  /* istanbul ignore if */
-  if (isIE9 && attrs.value !== oldAttrs.value) {
-    setAttr(elm, 'value', attrs.value);
-  }
-  for (key in oldAttrs) {
-    if (isUndef(attrs[key])) {
-      if (isXlink(key)) {
-        elm.removeAttributeNS(xlinkNS, getXlinkProp(key));
-      } else if (!isEnumeratedAttr(key)) {
-        elm.removeAttribute(key);
-      }
-=======
   var modifierCode = {
     stop: '$event.stopPropagation();',
     prevent: '$event.preventDefault();',
@@ -50094,7 +47351,6 @@ function updateAttrs (oldVnode, vnode) {
     var res = native ? 'nativeOn:{' : 'on:{';
     for (var name in events) {
       res += "\"" + name + "\":" + genHandler(name, events[name]) + ",";
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
     }
     return res.slice(0, -1) + '}';
   }
@@ -50146,22 +47402,6 @@ function updateAttrs (oldVnode, vnode) {
     return "if(!('button' in $event)&&" + keys.map(genFilterCode).join('&&') + ")return null;";
   }
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-function updateClass (oldVnode, vnode) {
-  var el = vnode.elm;
-  var data = vnode.data;
-  var oldData = oldVnode.data;
-  if (
-    isUndef(data.staticClass) &&
-    isUndef(data.class) && (
-      isUndef(oldData) || (
-        isUndef(oldData.staticClass) &&
-        isUndef(oldData.class)
-      )
-    )
-  ) {
-    return
-=======
   function genFilterCode(key) {
     var keyVal = parseInt(key, 10);
     if (keyVal) {
@@ -50169,22 +47409,14 @@ function updateClass (oldVnode, vnode) {
     }
     var alias = keyCodes[key];
     return "_k($event.keyCode," + JSON.stringify(key) + (alias ? ',' + JSON.stringify(alias) : '') + ")";
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
   }
 
   /*  */
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-  // handle transition classes
-  var transitionClass = el._transitionClasses;
-  if (isDef(transitionClass)) {
-    cls = concat(cls, stringifyClass(transitionClass));
-=======
   function bind$1(el, dir) {
     el.wrapData = function (code) {
       return "_b(" + code + ",'" + el.tag + "'," + dir.value + (dir.modifiers && dir.modifiers.prop ? ',true' : '') + ")";
     };
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
   }
 
   /*  */
@@ -50325,60 +47557,8 @@ function updateClass (oldVnode, vnode) {
       );
     }
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-function addHandler (
-  el,
-  name,
-  value,
-  modifiers,
-  important,
-  warn
-) {
-  // warn prevent and passive modifier
-  /* istanbul ignore if */
-  if (
-    "development" !== 'production' && warn &&
-    modifiers && modifiers.prevent && modifiers.passive
-  ) {
-    warn(
-      'passive and prevent can\'t be used together. ' +
-      'Passive handler can\'t prevent default event.'
-    );
-  }
-  // check capture modifier
-  if (modifiers && modifiers.capture) {
-    delete modifiers.capture;
-    name = '!' + name; // mark the event as captured
-  }
-  if (modifiers && modifiers.once) {
-    delete modifiers.once;
-    name = '~' + name; // mark the event as once
-  }
-  /* istanbul ignore if */
-  if (modifiers && modifiers.passive) {
-    delete modifiers.passive;
-    name = '&' + name; // mark the event as passive
-  }
-  var events;
-  if (modifiers && modifiers.native) {
-    delete modifiers.native;
-    events = el.nativeEvents || (el.nativeEvents = {});
-  } else {
-    events = el.events || (el.events = {});
-  }
-  var newHandler = { value: value, modifiers: modifiers };
-  var handlers = events[name];
-  /* istanbul ignore if */
-  if (Array.isArray(handlers)) {
-    important ? handlers.unshift(newHandler) : handlers.push(newHandler);
-  } else if (handlers) {
-    events[name] = important ? [newHandler, handlers] : [handlers, newHandler];
-  } else {
-    events[name] = newHandler;
-=======
     el.forProcessed = true; // avoid recursion
     return "_l((" + exp + ")," + "function(" + alias + iterator1 + iterator2 + "){" + "return " + genElement(el) + '})';
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
   }
 
   function genData(el) {
@@ -50608,42 +47788,9 @@ function addHandler (
 
   /*  */
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-function genCheckboxModel (
-  el,
-  value,
-  modifiers
-) {
-  var number = modifiers && modifiers.number;
-  var valueBinding = getBindingAttr(el, 'value') || 'null';
-  var trueValueBinding = getBindingAttr(el, 'true-value') || 'true';
-  var falseValueBinding = getBindingAttr(el, 'false-value') || 'false';
-  addProp(el, 'checked',
-    "Array.isArray(" + value + ")" +
-      "?_i(" + value + "," + valueBinding + ")>-1" + (
-        trueValueBinding === 'true'
-          ? (":(" + value + ")")
-          : (":_q(" + value + "," + trueValueBinding + ")")
-      )
-  );
-  addHandler(el, CHECKBOX_RADIO_TOKEN,
-    "var $$a=" + value + "," +
-        '$$el=$event.target,' +
-        "$$c=$$el.checked?(" + trueValueBinding + "):(" + falseValueBinding + ");" +
-    'if(Array.isArray($$a)){' +
-      "var $$v=" + (number ? '_n(' + valueBinding + ')' : valueBinding) + "," +
-          '$$i=_i($$a,$$v);' +
-      "if($$c){$$i<0&&(" + value + "=$$a.concat($$v))}" +
-      "else{$$i>-1&&(" + value + "=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}" +
-    "}else{" + (genAssignmentCode(value, '$$c')) + "}",
-    null, true
-  );
-}
-=======
   // these keywords should not appear inside expressions, but operators like
   // typeof, instanceof and in are allowed
   var prohibitedKeywordRE = new RegExp('\\b' + ('do,if,for,let,new,try,var,case,else,with,await,break,catch,class,const,' + 'super,throw,while,yield,delete,export,import,return,switch,default,' + 'extends,finally,continue,debugger,function,arguments').split(',').join('\\b|\\b') + '\\b');
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 
   // these unary operators should not be used as property/method names
   var unaryOperatorsRE = new RegExp('\\b' + 'delete,typeof,void'.split(',').join('\\s*\\([^\\)]*\\)|\\b') + '\\s*\\([^\\)]*\\)');
@@ -50704,51 +47851,12 @@ function genCheckboxModel (
     checkIdentifier(node.iterator2, 'v-for iterator', text, errors);
   }
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-// normalize v-model event tokens that can only be determined at runtime.
-// it's important to place the event as the first in the array because
-// the whole point is ensuring the v-model callback gets called before
-// user-attached handlers.
-function normalizeEvents (on) {
-  var event;
-  /* istanbul ignore if */
-  if (isDef(on[RANGE_TOKEN])) {
-    // IE input[type=range] only supports `change` event
-    event = isIE ? 'change' : 'input';
-    on[event] = [].concat(on[RANGE_TOKEN], on[event] || []);
-    delete on[RANGE_TOKEN];
-  }
-  if (isDef(on[CHECKBOX_RADIO_TOKEN])) {
-    // Chrome fires microtasks in between click/change, leads to #4521
-    event = isChrome ? 'click' : 'change';
-    on[event] = [].concat(on[CHECKBOX_RADIO_TOKEN], on[event] || []);
-    delete on[CHECKBOX_RADIO_TOKEN];
-=======
   function checkIdentifier(ident, type, text, errors) {
     if (typeof ident === 'string' && !identRE.test(ident)) {
       errors.push("invalid " + type + " \"" + ident + "\" in expression: " + text.trim());
     }
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
   }
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-function add$1 (
-  event,
-  handler,
-  once$$1,
-  capture,
-  passive
-) {
-  if (once$$1) {
-    var oldHandler = handler;
-    var _target = target$1; // save current target element in closure
-    handler = function (ev) {
-      var res = arguments.length === 1
-        ? oldHandler(ev)
-        : oldHandler.apply(null, arguments);
-      if (res !== null) {
-        remove$2(event, handler, capture, _target);
-=======
   function checkExpression(exp, text, errors) {
     try {
       new Function("return " + exp);
@@ -50758,29 +47866,12 @@ function add$1 (
         errors.push("avoid using JavaScript keyword as property name: " + "\"" + keywordMatch[0] + "\" in expression " + text.trim());
       } else {
         errors.push("invalid expression: " + text.trim());
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
       }
     }
   }
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-  target$1.addEventListener(
-    event,
-    handler,
-    supportsPassive
-      ? { capture: capture, passive: passive }
-      : capture
-  );
-}
-=======
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 
   /*  */
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-function updateDOMListeners (oldVnode, vnode) {
-  if (isUndef(oldVnode.data.on) && isUndef(vnode.data.on)) {
-    return
-=======
   function baseCompile(template, options) {
     var ast = parse(template.trim(), options);
     optimize(ast, options);
@@ -50790,7 +47881,6 @@ function updateDOMListeners (oldVnode, vnode) {
       render: code.render,
       staticRenderFns: code.staticRenderFns
     };
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
   }
 
   function makeFunction(code, errors) {
@@ -50805,44 +47895,6 @@ function updateDOMListeners (oldVnode, vnode) {
   function createCompiler(baseOptions) {
     var functionCompileCache = Object.create(null);
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-function updateDOMProps (oldVnode, vnode) {
-  if (isUndef(oldVnode.data.domProps) && isUndef(vnode.data.domProps)) {
-    return
-  }
-  var key, cur;
-  var elm = vnode.elm;
-  var oldProps = oldVnode.data.domProps || {};
-  var props = vnode.data.domProps || {};
-  // clone observed objects, as the user probably wants to mutate it
-  if (isDef(props.__ob__)) {
-    props = vnode.data.domProps = extend({}, props);
-  }
-
-  for (key in oldProps) {
-    if (isUndef(props[key])) {
-      elm[key] = '';
-    }
-  }
-  for (key in props) {
-    cur = props[key];
-    // ignore children if the node has textContent or innerHTML,
-    // as these will throw away existing DOM nodes and cause removal errors
-    // on subsequent patches (#3360)
-    if (key === 'textContent' || key === 'innerHTML') {
-      if (vnode.children) { vnode.children.length = 0; }
-      if (cur === oldProps[key]) { continue }
-    }
-
-    if (key === 'value') {
-      // store value as _value as well since
-      // non-string values will be stringified
-      elm._value = cur;
-      // avoid resetting cursor position when value is the same
-      var strCur = isUndef(cur) ? '' : String(cur);
-      if (shouldUpdateValue(elm, vnode, strCur)) {
-        elm.value = strCur;
-=======
     function compile(template, options) {
       var finalOptions = Object.create(baseOptions);
       var errors = [];
@@ -50871,7 +47923,6 @@ function updateDOMProps (oldVnode, vnode) {
       var compiled = baseCompile(template, finalOptions);
       {
         errors.push.apply(errors, detectErrors(compiled.ast));
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
       }
       compiled.errors = errors;
       compiled.tips = tips;
@@ -50902,19 +47953,6 @@ function updateDOMProps (oldVnode, vnode) {
       // compile
       var compiled = compile(template, options);
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-function isInputChanged (elm, newVal) {
-  var value = elm.value;
-  var modifiers = elm._vModifiers; // injected by v-model runtime
-  if ((isDef(modifiers) && modifiers.number) || elm.type === 'number') {
-    return toNumber(value) !== toNumber(newVal)
-  }
-  if (isDef(modifiers) && modifiers.trim) {
-    return value.trim() !== newVal.trim()
-  }
-  return value !== newVal
-}
-=======
       // check compilation errors/tips
       {
         if (compiled.errors && compiled.errors.length) {
@@ -50928,7 +47966,6 @@ function isInputChanged (elm, newVal) {
           });
         }
       }
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 
       // turn code into functions
       var res = {};
@@ -51040,32 +48077,7 @@ function isInputChanged (elm, newVal) {
     genData: genData$2
   };
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-var cssVarRE = /^--/;
-var importantRE = /\s*!important$/;
-var setProp = function (el, name, val) {
-  /* istanbul ignore if */
-  if (cssVarRE.test(name)) {
-    el.style.setProperty(name, val);
-  } else if (importantRE.test(val)) {
-    el.style.setProperty(name, val.replace(importantRE, ''), 'important');
-  } else {
-    var normalizedName = normalize(name);
-    if (Array.isArray(val)) {
-      // Support values array created by autoprefixer, e.g.
-      // {display: ["-webkit-box", "-ms-flexbox", "flex"]}
-      // Set them one by one, and the browser will only set those it can recognize
-      for (var i = 0, len = val.length; i < len; i++) {
-        el.style[normalizedName] = val[i];
-      }
-    } else {
-      el.style[normalizedName] = val;
-    }
-  }
-};
-=======
   var modules$1 = [klass$1, style$1];
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 
   /*  */
 
@@ -51077,17 +48089,6 @@ var setProp = function (el, name, val) {
 
   /*  */
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-  if (isUndef(data.staticStyle) && isUndef(data.style) &&
-      isUndef(oldData.staticStyle) && isUndef(oldData.style)) {
-    return
-  }
-
-  var cur, name;
-  var el = vnode.elm;
-  var oldStaticStyle = oldData.staticStyle;
-  var oldStyleBinding = oldData.normalizedStyle || oldData.style || {};
-=======
   function html(el, dir) {
     if (dir.value) {
       addProp(el, 'innerHTML', "_s(" + dir.value + ")");
@@ -51099,7 +48100,6 @@ var setProp = function (el, name, val) {
     text: text,
     html: html
   };
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 
   /*  */
 
@@ -51119,41 +48119,16 @@ var setProp = function (el, name, val) {
   var ref$1 = createCompiler(baseOptions);
   var compileToFunctions = ref$1.compileToFunctions;
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-  // store normalized style under a different key for next diff
-  // make sure to clone it if it's reactive, since the user likley wants
-  // to mutate it.
-  vnode.data.normalizedStyle = isDef(style.__ob__)
-    ? extend({}, style)
-    : style;
-=======
   /*  */
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 
   var idToTemplate = cached(function (id) {
     var el = query(id);
     return el && el.innerHTML;
   });
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-  for (name in oldStyle) {
-    if (isUndef(newStyle[name])) {
-      setProp(el, name, '');
-    }
-  }
-  for (name in newStyle) {
-    cur = newStyle[name];
-    if (cur !== oldStyle[name]) {
-      // ie9 setting to null has no effect, must use empty string
-      setProp(el, name, cur == null ? '' : cur);
-    }
-  }
-}
-=======
   var mount = Vue$3.prototype.$mount;
   Vue$3.prototype.$mount = function (el, hydrating) {
     el = el && query(el);
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 
     /* istanbul ignore if */
     if (el === document.body || el === document.documentElement) {
@@ -51604,110 +48579,6 @@ var setProp = function (el, name, val) {
                 Array.prototype.getIndexBy = function (name, value) {
                     var this$1 = this;
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-  // call leave callback now
-  if (isDef(el._leaveCb)) {
-    el._leaveCb.cancelled = true;
-    el._leaveCb();
-  }
-
-  var data = resolveTransition(vnode.data.transition);
-  if (isUndef(data)) {
-    return
-  }
-
-  /* istanbul ignore if */
-  if (isDef(el._enterCb) || el.nodeType !== 1) {
-    return
-  }
-
-  var css = data.css;
-  var type = data.type;
-  var enterClass = data.enterClass;
-  var enterToClass = data.enterToClass;
-  var enterActiveClass = data.enterActiveClass;
-  var appearClass = data.appearClass;
-  var appearToClass = data.appearToClass;
-  var appearActiveClass = data.appearActiveClass;
-  var beforeEnter = data.beforeEnter;
-  var enter = data.enter;
-  var afterEnter = data.afterEnter;
-  var enterCancelled = data.enterCancelled;
-  var beforeAppear = data.beforeAppear;
-  var appear = data.appear;
-  var afterAppear = data.afterAppear;
-  var appearCancelled = data.appearCancelled;
-  var duration = data.duration;
-
-  // activeInstance will always be the <transition> component managing this
-  // transition. One edge case to check is when the <transition> is placed
-  // as the root node of a child component. In that case we need to check
-  // <transition>'s parent for appear check.
-  var context = activeInstance;
-  var transitionNode = activeInstance.$vnode;
-  while (transitionNode && transitionNode.parent) {
-    transitionNode = transitionNode.parent;
-    context = transitionNode.context;
-  }
-
-  var isAppear = !context._isMounted || !vnode.isRootInsert;
-
-  if (isAppear && !appear && appear !== '') {
-    return
-  }
-
-  var startClass = isAppear && appearClass
-    ? appearClass
-    : enterClass;
-  var activeClass = isAppear && appearActiveClass
-    ? appearActiveClass
-    : enterActiveClass;
-  var toClass = isAppear && appearToClass
-    ? appearToClass
-    : enterToClass;
-
-  var beforeEnterHook = isAppear
-    ? (beforeAppear || beforeEnter)
-    : beforeEnter;
-  var enterHook = isAppear
-    ? (typeof appear === 'function' ? appear : enter)
-    : enter;
-  var afterEnterHook = isAppear
-    ? (afterAppear || afterEnter)
-    : afterEnter;
-  var enterCancelledHook = isAppear
-    ? (appearCancelled || enterCancelled)
-    : enterCancelled;
-
-  var explicitEnterDuration = toNumber(
-    isObject(duration)
-      ? duration.enter
-      : duration
-  );
-
-  if ("development" !== 'production' && explicitEnterDuration != null) {
-    checkDuration(explicitEnterDuration, 'enter', vnode);
-  }
-
-  var expectsCSS = css !== false && !isIE9;
-  var userWantsControl = getHookArgumentsLength(enterHook);
-
-  var cb = el._enterCb = once(function () {
-    if (expectsCSS) {
-      removeTransitionClass(el, toClass);
-      removeTransitionClass(el, activeClass);
-    }
-    if (cb.cancelled) {
-      if (expectsCSS) {
-        removeTransitionClass(el, startClass);
-      }
-      enterCancelledHook && enterCancelledHook(el);
-    } else {
-      afterEnterHook && afterEnterHook(el);
-    }
-    el._enterCb = null;
-  });
-=======
                     for (var i = 0; i < this.length; i++) {
                         if (this$1[i][name] == value) {
                             return i;
@@ -51793,7 +48664,6 @@ var setProp = function (el, name, val) {
                         params: this.params
                     }).then(function (resp) {
                         var this$1 = this;
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 
                         if (typeof resp.data == 'object') {
                             this.dados = resp.data.data;
@@ -51864,23 +48734,6 @@ var setProp = function (el, name, val) {
 //
 //
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-  // call enter callback now
-  if (isDef(el._enterCb)) {
-    el._enterCb.cancelled = true;
-    el._enterCb();
-  }
-
-  var data = resolveTransition(vnode.data.transition);
-  if (isUndef(data)) {
-    return rm()
-  }
-
-  /* istanbul ignore if */
-  if (isDef(el._leaveCb) || el.nodeType !== 1) {
-    return
-  }
-=======
     /* harmony default export */ exports["default"] = {
         props:{
             type: ''
@@ -51984,7 +48837,6 @@ var setProp = function (el, name, val) {
             this.getAprovados();
         },
         mounted:function () {
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 
         }
     };
@@ -51994,11 +48846,6 @@ var setProp = function (el, name, val) {
 /* 180 */
 /***/ function(module, exports, __webpack_require__) {
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-  if ("development" !== 'production' && isDef(explicitLeaveDuration)) {
-    checkDuration(explicitLeaveDuration, 'leave', vnode);
-  }
-=======
 "use strict";
 //
 //
@@ -52016,7 +48863,6 @@ var setProp = function (el, name, val) {
 //
 //
 //
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 
 /* harmony default export */ exports["default"] = {
     props:{
@@ -52056,97 +48902,19 @@ var setProp = function (el, name, val) {
 };
 
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-  function performLeave () {
-    // the delayed leave may have already been cancelled
-    if (cb.cancelled) {
-      return
-    }
-    // record leaving element
-    if (!vnode.data.show) {
-      (el.parentNode._pending || (el.parentNode._pending = {}))[(vnode.key)] = vnode;
-    }
-    beforeLeave && beforeLeave(el);
-    if (expectsCSS) {
-      addTransitionClass(el, leaveClass);
-      addTransitionClass(el, leaveActiveClass);
-      nextFrame(function () {
-        addTransitionClass(el, leaveToClass);
-        removeTransitionClass(el, leaveClass);
-        if (!cb.cancelled && !userWantsControl) {
-          if (isValidDuration(explicitLeaveDuration)) {
-            setTimeout(cb, explicitLeaveDuration);
-          } else {
-            whenTransitionEnds(el, type, cb);
-          }
-        }
-      });
-    }
-    leave && leave(el, cb);
-    if (!expectsCSS && !userWantsControl) {
-      cb();
-    }
-  }
-}
-=======
 /***/ },
 /* 181 */
 /***/ function(module, exports, __webpack_require__) {
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 
 exports = module.exports = __webpack_require__(1)();
 // imports
 
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-/**
- * Normalize a transition hook's argument length. The hook may be:
- * - a merged hook (invoker) with the original in .fns
- * - a wrapped component method (check ._length)
- * - a plain function (.length)
- */
-function getHookArgumentsLength (fn) {
-  if (isUndef(fn)) {
-    return false
-  }
-  var invokerFns = fn.fns;
-  if (isDef(invokerFns)) {
-    // invoker
-    return getHookArgumentsLength(
-      Array.isArray(invokerFns)
-        ? invokerFns[0]
-        : invokerFns
-    )
-  } else {
-    return (fn._length || fn.length) > 1
-  }
-}
-
-function _enter (_, vnode) {
-  if (vnode.data.show !== true) {
-    enter(vnode);
-  }
-}
-
-var transition = inBrowser ? {
-  create: _enter,
-  activate: _enter,
-  remove: function remove$$1 (vnode, rm) {
-    /* istanbul ignore else */
-    if (vnode.data.show !== true) {
-      leave(vnode, rm);
-    } else {
-      rm();
-    }
-  }
-} : {};
-=======
 // module
 exports.push([module.i, "\n.pagination-custom{\n    display: inline-block;\n    padding-left: 0;\n}\n.pagination-custom > li{\n    margin: 2px;\n    display: inline;\n}\n.page-element > a{\n    padding: 6px 12px;\n    border: solid 1px #979797;\n}\n.pagination-custom .active >a{\n    color: #f98d00;\n    font-weight: bold;\n    border: solid 1px #f98d00;\n}\n", ""]);
 
 // exports
 
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 
 /***/ },
 /* 182 */
@@ -52162,61 +48930,12 @@ exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\
 // exports
 
 
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-var model$1 = {
-  inserted: function inserted (el, binding, vnode) {
-    if (vnode.tag === 'select') {
-      var cb = function () {
-        setSelected(el, binding, vnode.context);
-      };
-      cb();
-      /* istanbul ignore if */
-      if (isIE || isEdge) {
-        setTimeout(cb, 0);
-      }
-    } else if (vnode.tag === 'textarea' || el.type === 'text' || el.type === 'password') {
-      el._vModifiers = binding.modifiers;
-      if (!binding.modifiers.lazy) {
-        // Safari < 10.2 & UIWebView doesn't fire compositionend when
-        // switching focus before confirming composition choice
-        // this also fixes the issue where some browsers e.g. iOS Chrome
-        // fires "change" instead of "input" on autocomplete.
-        el.addEventListener('change', onCompositionEnd);
-        if (!isAndroid) {
-          el.addEventListener('compositionstart', onCompositionStart);
-          el.addEventListener('compositionend', onCompositionEnd);
-        }
-        /* istanbul ignore if */
-        if (isIE9) {
-          el.vmodel = true;
-        }
-      }
-    }
-  },
-  componentUpdated: function componentUpdated (el, binding, vnode) {
-    if (vnode.tag === 'select') {
-      setSelected(el, binding, vnode.context);
-      // in case the options rendered by v-for have changed,
-      // it's possible that the value is out-of-sync with the rendered options.
-      // detect such cases and filter out values that no longer has a matching
-      // option in the DOM.
-      var needReset = el.multiple
-        ? binding.value.some(function (v) { return hasNoMatchingOption(v, el.options); })
-        : binding.value !== binding.oldValue && hasNoMatchingOption(binding.value, el.options);
-      if (needReset) {
-        trigger(el, 'change');
-      }
-    }
-  }
-};
-=======
 /***/ },
 /* 183 */
 /***/ function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
 // imports
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 
 
 // module
@@ -52484,163 +49203,8 @@ function webpackContextResolve(req) {
 		throw new Error("Cannot find module '" + req + "'.");
 	return id;
 };
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-
-// in case the child is also an abstract component, e.g. <keep-alive>
-// we want to recursively retrieve the real component to be rendered
-function getRealChild (vnode) {
-  var compOptions = vnode && vnode.componentOptions;
-  if (compOptions && compOptions.Ctor.options.abstract) {
-    return getRealChild(getFirstComponentChild(compOptions.children))
-  } else {
-    return vnode
-  }
-}
-
-function extractTransitionData (comp) {
-  var data = {};
-  var options = comp.$options;
-  // props
-  for (var key in options.propsData) {
-    data[key] = comp[key];
-  }
-  // events.
-  // extract listeners and pass them directly to the transition methods
-  var listeners = options._parentListeners;
-  for (var key$1 in listeners) {
-    data[camelize(key$1)] = listeners[key$1];
-  }
-  return data
-}
-
-function placeholder (h, rawChild) {
-  if (/\d-keep-alive$/.test(rawChild.tag)) {
-    return h('keep-alive', {
-      props: rawChild.componentOptions.propsData
-    })
-  }
-}
-
-function hasParentTransition (vnode) {
-  while ((vnode = vnode.parent)) {
-    if (vnode.data.transition) {
-      return true
-    }
-  }
-}
-
-function isSameChild (child, oldChild) {
-  return oldChild.key === child.key && oldChild.tag === child.tag
-}
-
-var Transition = {
-  name: 'transition',
-  props: transitionProps,
-  abstract: true,
-
-  render: function render (h) {
-    var this$1 = this;
-
-    var children = this.$slots.default;
-    if (!children) {
-      return
-    }
-
-    // filter out text nodes (possible whitespaces)
-    children = children.filter(function (c) { return c.tag; });
-    /* istanbul ignore if */
-    if (!children.length) {
-      return
-    }
-
-    // warn multiple elements
-    if ("development" !== 'production' && children.length > 1) {
-      warn(
-        '<transition> can only be used on a single element. Use ' +
-        '<transition-group> for lists.',
-        this.$parent
-      );
-    }
-
-    var mode = this.mode;
-
-    // warn invalid mode
-    if ("development" !== 'production' &&
-        mode && mode !== 'in-out' && mode !== 'out-in') {
-      warn(
-        'invalid <transition> mode: ' + mode,
-        this.$parent
-      );
-    }
-
-    var rawChild = children[0];
-
-    // if this is a component root node and the component's
-    // parent container node also has transition, skip.
-    if (hasParentTransition(this.$vnode)) {
-      return rawChild
-    }
-
-    // apply transition data to child
-    // use getRealChild() to ignore abstract components e.g. keep-alive
-    var child = getRealChild(rawChild);
-    /* istanbul ignore if */
-    if (!child) {
-      return rawChild
-    }
-
-    if (this._leaving) {
-      return placeholder(h, rawChild)
-    }
-
-    // ensure a key that is unique to the vnode type and to this transition
-    // component instance. This key will be used to remove pending leaving nodes
-    // during entering.
-    var id = "__transition-" + (this._uid) + "-";
-    child.key = child.key == null
-      ? id + child.tag
-      : isPrimitive(child.key)
-        ? (String(child.key).indexOf(id) === 0 ? child.key : id + child.key)
-        : child.key;
-
-    var data = (child.data || (child.data = {})).transition = extractTransitionData(this);
-    var oldRawChild = this._vnode;
-    var oldChild = getRealChild(oldRawChild);
-
-    // mark v-show
-    // so that the transition module can hand over the control to the directive
-    if (child.data.directives && child.data.directives.some(function (d) { return d.name === 'show'; })) {
-      child.data.show = true;
-    }
-
-    if (oldChild && oldChild.data && !isSameChild(child, oldChild)) {
-      // replace old child transition data with fresh one
-      // important for dynamic transitions!
-      var oldData = oldChild && (oldChild.data.transition = extend({}, data));
-      // handle transition mode
-      if (mode === 'out-in') {
-        // return placeholder node and queue update when leave finishes
-        this._leaving = true;
-        mergeVNodeHook(oldData, 'afterLeave', function () {
-          this$1._leaving = false;
-          this$1.$forceUpdate();
-        });
-        return placeholder(h, rawChild)
-      } else if (mode === 'in-out') {
-        var delayedLeave;
-        var performLeave = function () { delayedLeave(); };
-        mergeVNodeHook(data, 'afterEnter', performLeave);
-        mergeVNodeHook(data, 'enterCancelled', performLeave);
-        mergeVNodeHook(oldData, 'delayLeave', function (leave) { delayedLeave = leave; });
-      }
-    }
-
-    return rawChild
-  }
-=======
 webpackContext.keys = function webpackContextKeys() {
 	return Object.keys(map);
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
@@ -52669,88 +49233,6 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         $event.preventDefault();
         _vm.changePage(_vm.pagination.current_page - 1)
       }
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-      addClass(clone, moveClass);
-      clone.style.display = 'none';
-      this.$el.appendChild(clone);
-      var info = getTransitionInfo(clone);
-      this.$el.removeChild(clone);
-      return (this._hasMove = info.hasTransform)
-    }
-  }
-};
-
-function callPendingCbs (c) {
-  /* istanbul ignore if */
-  if (c.elm._moveCb) {
-    c.elm._moveCb();
-  }
-  /* istanbul ignore if */
-  if (c.elm._enterCb) {
-    c.elm._enterCb();
-  }
-}
-
-function recordPosition (c) {
-  c.data.newPos = c.elm.getBoundingClientRect();
-}
-
-function applyTranslation (c) {
-  var oldPos = c.data.pos;
-  var newPos = c.data.newPos;
-  var dx = oldPos.left - newPos.left;
-  var dy = oldPos.top - newPos.top;
-  if (dx || dy) {
-    c.data.moved = true;
-    var s = c.elm.style;
-    s.transform = s.WebkitTransform = "translate(" + dx + "px," + dy + "px)";
-    s.transitionDuration = '0s';
-  }
-}
-
-var platformComponents = {
-  Transition: Transition,
-  TransitionGroup: TransitionGroup
-};
-
-/*  */
-
-// install platform specific utils
-Vue$3.config.mustUseProp = mustUseProp;
-Vue$3.config.isReservedTag = isReservedTag;
-Vue$3.config.isReservedAttr = isReservedAttr;
-Vue$3.config.getTagNamespace = getTagNamespace;
-Vue$3.config.isUnknownElement = isUnknownElement;
-
-// install platform runtime directives & components
-extend(Vue$3.options.directives, platformDirectives);
-extend(Vue$3.options.components, platformComponents);
-
-// install platform patch function
-Vue$3.prototype.__patch__ = inBrowser ? patch : noop;
-
-// public mount method
-Vue$3.prototype.$mount = function (
-  el,
-  hydrating
-) {
-  el = el && inBrowser ? query(el) : undefined;
-  return mountComponent(this, el, hydrating)
-};
-
-// devtools global hook
-/* istanbul ignore next */
-setTimeout(function () {
-  if (config.devtools) {
-    if (devtools) {
-      devtools.emit('init', Vue$3);
-    } else if ("development" !== 'production' && isChrome) {
-      console[console.info ? 'info' : 'log'](
-        'Download the Vue Devtools extension for a better development experience:\n' +
-        'https://github.com/vuejs/vue-devtools'
-      );
-=======
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
     }
   }, [_vm._m(1)]) : _vm._e()]) : _vm._e(), _vm._v(" "), _vm._l((_vm.array), function(num) {
     return _c('li', {
@@ -52901,54 +49383,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "placeholder": "Procurar",
       "onkeyup": "filterFind(this.value);"
     },
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-
-    chars: function chars (text) {
-      if (!currentParent) {
-        {
-          if (text === template) {
-            warnOnce(
-              'Component template requires a root element, rather than just text.'
-            );
-          } else if ((text = text.trim())) {
-            warnOnce(
-              ("text \"" + text + "\" outside root element will be ignored.")
-            );
-          }
-        }
-        return
-      }
-      // IE textarea placeholder bug
-      /* istanbul ignore if */
-      if (isIE &&
-          currentParent.tag === 'textarea' &&
-          currentParent.attrsMap.placeholder === text) {
-        return
-      }
-      var children = currentParent.children;
-      text = inPre || text.trim()
-        ? isTextTag(currentParent) ? text : decodeHTMLCached(text)
-        // only preserve whitespace if its not right after a starting tag
-        : preserveWhitespace && children.length ? ' ' : '';
-      if (text) {
-        var expression;
-        if (!inVPre && text !== ' ' && (expression = parseText(text, delimiters))) {
-          children.push({
-            type: 2,
-            expression: expression,
-            text: text
-          });
-        } else if (text !== ' ' || !children.length || children[children.length - 1].text !== ' ') {
-          children.push({
-            type: 3,
-            text: text
-          });
-        }
-=======
     on: {
       "keyup": function($event) {
         _vm.loadData()
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
       }
     }
   })]), _vm._v(" "), (_vm.actions.date != undefined) ? _c('li', [_c('a', {
@@ -53030,75 +49467,6 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "id": "period_find",
       "value": "periodo=&procurar="
     }
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-  }
-}
-
-function processComponent (el) {
-  var binding;
-  if ((binding = getBindingAttr(el, 'is'))) {
-    el.component = binding;
-  }
-  if (getAndRemoveAttr(el, 'inline-template') != null) {
-    el.inlineTemplate = true;
-  }
-}
-
-function processAttrs (el) {
-  var list = el.attrsList;
-  var i, l, name, rawName, value, modifiers, isProp;
-  for (i = 0, l = list.length; i < l; i++) {
-    name = rawName = list[i].name;
-    value = list[i].value;
-    if (dirRE.test(name)) {
-      // mark element as dynamic
-      el.hasBindings = true;
-      // modifiers
-      modifiers = parseModifiers(name);
-      if (modifiers) {
-        name = name.replace(modifierRE, '');
-      }
-      if (bindRE.test(name)) { // v-bind
-        name = name.replace(bindRE, '');
-        value = parseFilters(value);
-        isProp = false;
-        if (modifiers) {
-          if (modifiers.prop) {
-            isProp = true;
-            name = camelize(name);
-            if (name === 'innerHtml') { name = 'innerHTML'; }
-          }
-          if (modifiers.camel) {
-            name = camelize(name);
-          }
-          if (modifiers.sync) {
-            addHandler(
-              el,
-              ("update:" + (camelize(name))),
-              genAssignmentCode(value, "$event")
-            );
-          }
-        }
-        if (isProp || platformMustUseProp(el.tag, el.attrsMap.type, name)) {
-          addProp(el, name, value);
-        } else {
-          addAttr(el, name, value);
-        }
-      } else if (onRE.test(name)) { // v-on
-        name = name.replace(onRE, '');
-        addHandler(el, name, value, modifiers, false, warn$2);
-      } else { // normal directives
-        name = name.replace(dirRE, '');
-        // parse arg
-        var argMatch = name.match(argRE);
-        var arg = argMatch && argMatch[1];
-        if (arg) {
-          name = name.slice(0, -(arg.length + 1));
-        }
-        addDirective(el, name, rawName, value, arg, modifiers);
-        if ("development" !== 'production' && name === 'model') {
-          checkForAliasModel(el, value);
-=======
   }), _vm._v(" "), _vm._m(3)])]) : _vm._e(), _vm._v(" "), _c('table', {
     staticClass: "table"
   }, [_c('thead', {
@@ -53109,7 +49477,6 @@ function processAttrs (el) {
       on: {
         "click": function($event) {
           _vm.sortTable(item)
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
         }
       }
     }, [_vm._v("\n                " + _vm._s(item) + "\n                "), (_vm.order == 'asc' && _vm.dados.length > 1) ? _c('span', [_c('i', {
@@ -53165,153 +49532,11 @@ function processAttrs (el) {
       attrs: {
         "href": _vm.actions.detalhe_url + '/' + dado['id']
       }
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-      addAttr(el, name, JSON.stringify(value));
-    }
-  }
-}
-
-function checkInFor (el) {
-  var parent = el;
-  while (parent) {
-    if (parent.for !== undefined) {
-      return true
-    }
-    parent = parent.parent;
-  }
-  return false
-}
-
-function parseModifiers (name) {
-  var match = name.match(modifierRE);
-  if (match) {
-    var ret = {};
-    match.forEach(function (m) { ret[m.slice(1)] = true; });
-    return ret
-  }
-}
-
-function makeAttrsMap (attrs) {
-  var map = {};
-  for (var i = 0, l = attrs.length; i < l; i++) {
-    if (
-      "development" !== 'production' &&
-      map[attrs[i].name] && !isIE && !isEdge
-    ) {
-      warn$2('duplicate attribute: ' + attrs[i].name);
-    }
-    map[attrs[i].name] = attrs[i].value;
-  }
-  return map
-}
-
-// for script (e.g. type="x/template") or style, do not decode content
-function isTextTag (el) {
-  return el.tag === 'script' || el.tag === 'style'
-}
-
-function isForbiddenTag (el) {
-  return (
-    el.tag === 'style' ||
-    (el.tag === 'script' && (
-      !el.attrsMap.type ||
-      el.attrsMap.type === 'text/javascript'
-    ))
-  )
-}
-
-var ieNSBug = /^xmlns:NS\d+/;
-var ieNSPrefix = /^NS\d+:/;
-
-/* istanbul ignore next */
-function guardIESVGBug (attrs) {
-  var res = [];
-  for (var i = 0; i < attrs.length; i++) {
-    var attr = attrs[i];
-    if (!ieNSBug.test(attr.name)) {
-      attr.name = attr.name.replace(ieNSPrefix, '');
-      res.push(attr);
-    }
-  }
-  return res
-}
-
-function checkForAliasModel (el, value) {
-  var _el = el;
-  while (_el) {
-    if (_el.for && _el.alias === value) {
-      warn$2(
-        "<" + (el.tag) + " v-model=\"" + value + "\">: " +
-        "You are binding v-model directly to a v-for iteration alias. " +
-        "This will not be able to modify the v-for source array because " +
-        "writing to the alias is like modifying a function local variable. " +
-        "Consider using an array of objects and use v-model on an object property instead."
-      );
-    }
-    _el = _el.parent;
-  }
-}
-
-/*  */
-
-var isStaticKey;
-var isPlatformReservedTag;
-
-var genStaticKeysCached = cached(genStaticKeys$1);
-
-/**
- * Goal of the optimizer: walk the generated template AST tree
- * and detect sub-trees that are purely static, i.e. parts of
- * the DOM that never needs to change.
- *
- * Once we detect these sub-trees, we can:
- *
- * 1. Hoist them into constants, so that we no longer need to
- *    create fresh nodes for them on each re-render;
- * 2. Completely skip them in the patching process.
- */
-function optimize (root, options) {
-  if (!root) { return }
-  isStaticKey = genStaticKeysCached(options.staticKeys || '');
-  isPlatformReservedTag = options.isReservedTag || no;
-  // first pass: mark all non-static nodes.
-  markStatic$1(root);
-  // second pass: mark static roots.
-  markStaticRoots(root, false);
-}
-
-function genStaticKeys$1 (keys) {
-  return makeMap(
-    'type,tag,attrsList,attrsMap,plain,parent,children,attrs' +
-    (keys ? ',' + keys : '')
-  )
-}
-
-function markStatic$1 (node) {
-  node.static = isStatic(node);
-  if (node.type === 1) {
-    // do not make component slot content static. this avoids
-    // 1. components not able to mutate slot nodes
-    // 2. static slot content fails for hot-reloading
-    if (
-      !isPlatformReservedTag(node.tag) &&
-      node.tag !== 'slot' &&
-      node.attrsMap['inline-template'] == null
-    ) {
-      return
-    }
-    for (var i = 0, l = node.children.length; i < l; i++) {
-      var child = node.children[i];
-      markStatic$1(child);
-      if (!child.static) {
-        node.static = false;
-=======
     }, [_c('i', {
       staticClass: "fa fa-eye"
     })]), _vm._v(" "), (dado['situacao'] == 'Reprovada') ? _c('a', {
       attrs: {
         "href": '/ordens-de-compra/reabrir-ordem-de-compra/' + dado['id']
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
       }
     }, [_vm._v("Reabrir")]) : _vm._e()]) : _vm._e(), _vm._v(" "), (_vm.actions.aprovar != undefined) ? _c('td', {
       staticClass: "row-table",
@@ -53320,139 +49545,6 @@ function markStatic$1 (node) {
           _vm.aprovar(dado['id'])
         }
       }
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-    }
-    if (node.ifConditions) {
-      walkThroughConditionsBlocks(node.ifConditions, isInFor);
-    }
-  }
-}
-
-function walkThroughConditionsBlocks (conditionBlocks, isInFor) {
-  for (var i = 1, len = conditionBlocks.length; i < len; i++) {
-    markStaticRoots(conditionBlocks[i].block, isInFor);
-  }
-}
-
-function isStatic (node) {
-  if (node.type === 2) { // expression
-    return false
-  }
-  if (node.type === 3) { // text
-    return true
-  }
-  return !!(node.pre || (
-    !node.hasBindings && // no dynamic bindings
-    !node.if && !node.for && // not v-if or v-for or v-else
-    !isBuiltInTag(node.tag) && // not a built-in
-    isPlatformReservedTag(node.tag) && // not a component
-    !isDirectChildOfTemplateFor(node) &&
-    Object.keys(node).every(isStaticKey)
-  ))
-}
-
-function isDirectChildOfTemplateFor (node) {
-  while (node.parent) {
-    node = node.parent;
-    if (node.tag !== 'template') {
-      return false
-    }
-    if (node.for) {
-      return true
-    }
-  }
-  return false
-}
-
-/*  */
-
-var fnExpRE = /^\s*([\w$_]+|\([^)]*?\))\s*=>|^function\s*\(/;
-var simplePathRE = /^\s*[A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*|\['.*?']|\[".*?"]|\[\d+]|\[[A-Za-z_$][\w$]*])*\s*$/;
-
-// keyCode aliases
-var keyCodes = {
-  esc: 27,
-  tab: 9,
-  enter: 13,
-  space: 32,
-  up: 38,
-  left: 37,
-  right: 39,
-  down: 40,
-  'delete': [8, 46]
-};
-
-// #4868: modifiers that prevent the execution of the listener
-// need to explicitly return null so that we can determine whether to remove
-// the listener for .once
-var genGuard = function (condition) { return ("if(" + condition + ")return null;"); };
-
-var modifierCode = {
-  stop: '$event.stopPropagation();',
-  prevent: '$event.preventDefault();',
-  self: genGuard("$event.target !== $event.currentTarget"),
-  ctrl: genGuard("!$event.ctrlKey"),
-  shift: genGuard("!$event.shiftKey"),
-  alt: genGuard("!$event.altKey"),
-  meta: genGuard("!$event.metaKey"),
-  left: genGuard("'button' in $event && $event.button !== 0"),
-  middle: genGuard("'button' in $event && $event.button !== 1"),
-  right: genGuard("'button' in $event && $event.button !== 2")
-};
-
-function genHandlers (
-  events,
-  native,
-  warn
-) {
-  var res = native ? 'nativeOn:{' : 'on:{';
-  for (var name in events) {
-    var handler = events[name];
-    // #5330: warn click.right, since right clicks do not actually fire click events.
-    if ("development" !== 'production' &&
-        name === 'click' &&
-        handler && handler.modifiers && handler.modifiers.right
-      ) {
-      warn(
-        "Use \"contextmenu\" instead of \"click.right\" since right clicks " +
-        "do not actually fire \"click\" events."
-      );
-    }
-    res += "\"" + name + "\":" + (genHandler(name, handler)) + ",";
-  }
-  return res.slice(0, -1) + '}'
-}
-
-function genHandler (
-  name,
-  handler
-) {
-  if (!handler) {
-    return 'function(){}'
-  }
-
-  if (Array.isArray(handler)) {
-    return ("[" + (handler.map(function (handler) { return genHandler(name, handler); }).join(',')) + "]")
-  }
-
-  var isMethodPath = simplePathRE.test(handler.value);
-  var isFunctionExpression = fnExpRE.test(handler.value);
-
-  if (!handler.modifiers) {
-    return isMethodPath || isFunctionExpression
-      ? handler.value
-      : ("function($event){" + (handler.value) + "}") // inline statement
-  } else {
-    var code = '';
-    var genModifierCode = '';
-    var keys = [];
-    for (var key in handler.modifiers) {
-      if (modifierCode[key]) {
-        genModifierCode += modifierCode[key];
-        // left/right
-        if (keyCodes[key]) {
-          keys.push(key);
-=======
     }, [_c('i', {
       staticClass: "glyphicon glyphicon-ok grey"
     })]) : _vm._e(), _vm._v(" "), (_vm.actions.reprovar != undefined) ? _c('td', {
@@ -53460,7 +49552,6 @@ function genHandler (
       on: {
         "click": function($event) {
           _vm.reprovar(dado['id'])
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
         }
       }
     }, [_c('i', {
@@ -53472,334 +49563,6 @@ function genHandler (
           _vm.reprovar(dado['id'])
         }
       }
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-      parent = parent.parent;
-    }
-    if (!key) {
-      "development" !== 'production' && warn$3(
-        "v-once can only be used inside v-for that is keyed. "
-      );
-      return genElement(el)
-    }
-    return ("_o(" + (genElement(el)) + "," + (onceCount++) + (key ? ("," + key) : "") + ")")
-  } else {
-    return genStatic(el)
-  }
-}
-
-function genIf (el) {
-  el.ifProcessed = true; // avoid recursion
-  return genIfConditions(el.ifConditions.slice())
-}
-
-function genIfConditions (conditions) {
-  if (!conditions.length) {
-    return '_e()'
-  }
-
-  var condition = conditions.shift();
-  if (condition.exp) {
-    return ("(" + (condition.exp) + ")?" + (genTernaryExp(condition.block)) + ":" + (genIfConditions(conditions)))
-  } else {
-    return ("" + (genTernaryExp(condition.block)))
-  }
-
-  // v-if with v-once should generate code like (a)?_m(0):_m(1)
-  function genTernaryExp (el) {
-    return el.once ? genOnce(el) : genElement(el)
-  }
-}
-
-function genFor (el) {
-  var exp = el.for;
-  var alias = el.alias;
-  var iterator1 = el.iterator1 ? ("," + (el.iterator1)) : '';
-  var iterator2 = el.iterator2 ? ("," + (el.iterator2)) : '';
-
-  if (
-    "development" !== 'production' &&
-    maybeComponent(el) && el.tag !== 'slot' && el.tag !== 'template' && !el.key
-  ) {
-    warn$3(
-      "<" + (el.tag) + " v-for=\"" + alias + " in " + exp + "\">: component lists rendered with " +
-      "v-for should have explicit keys. " +
-      "See https://vuejs.org/guide/list.html#key for more info.",
-      true /* tip */
-    );
-  }
-
-  el.forProcessed = true; // avoid recursion
-  return "_l((" + exp + ")," +
-    "function(" + alias + iterator1 + iterator2 + "){" +
-      "return " + (genElement(el)) +
-    '})'
-}
-
-function genData (el) {
-  var data = '{';
-
-  // directives first.
-  // directives may mutate the el's other properties before they are generated.
-  var dirs = genDirectives(el);
-  if (dirs) { data += dirs + ','; }
-
-  // key
-  if (el.key) {
-    data += "key:" + (el.key) + ",";
-  }
-  // ref
-  if (el.ref) {
-    data += "ref:" + (el.ref) + ",";
-  }
-  if (el.refInFor) {
-    data += "refInFor:true,";
-  }
-  // pre
-  if (el.pre) {
-    data += "pre:true,";
-  }
-  // record original tag name for components using "is" attribute
-  if (el.component) {
-    data += "tag:\"" + (el.tag) + "\",";
-  }
-  // module data generation functions
-  for (var i = 0; i < dataGenFns.length; i++) {
-    data += dataGenFns[i](el);
-  }
-  // attributes
-  if (el.attrs) {
-    data += "attrs:{" + (genProps(el.attrs)) + "},";
-  }
-  // DOM props
-  if (el.props) {
-    data += "domProps:{" + (genProps(el.props)) + "},";
-  }
-  // event handlers
-  if (el.events) {
-    data += (genHandlers(el.events, false, warn$3)) + ",";
-  }
-  if (el.nativeEvents) {
-    data += (genHandlers(el.nativeEvents, true, warn$3)) + ",";
-  }
-  // slot target
-  if (el.slotTarget) {
-    data += "slot:" + (el.slotTarget) + ",";
-  }
-  // scoped slots
-  if (el.scopedSlots) {
-    data += (genScopedSlots(el.scopedSlots)) + ",";
-  }
-  // component v-model
-  if (el.model) {
-    data += "model:{value:" + (el.model.value) + ",callback:" + (el.model.callback) + ",expression:" + (el.model.expression) + "},";
-  }
-  // inline-template
-  if (el.inlineTemplate) {
-    var inlineTemplate = genInlineTemplate(el);
-    if (inlineTemplate) {
-      data += inlineTemplate + ",";
-    }
-  }
-  data = data.replace(/,$/, '') + '}';
-  // v-bind data wrap
-  if (el.wrapData) {
-    data = el.wrapData(data);
-  }
-  return data
-}
-
-function genDirectives (el) {
-  var dirs = el.directives;
-  if (!dirs) { return }
-  var res = 'directives:[';
-  var hasRuntime = false;
-  var i, l, dir, needRuntime;
-  for (i = 0, l = dirs.length; i < l; i++) {
-    dir = dirs[i];
-    needRuntime = true;
-    var gen = platformDirectives$1[dir.name] || baseDirectives[dir.name];
-    if (gen) {
-      // compile-time directive that manipulates AST.
-      // returns true if it also needs a runtime counterpart.
-      needRuntime = !!gen(el, dir, warn$3);
-    }
-    if (needRuntime) {
-      hasRuntime = true;
-      res += "{name:\"" + (dir.name) + "\",rawName:\"" + (dir.rawName) + "\"" + (dir.value ? (",value:(" + (dir.value) + "),expression:" + (JSON.stringify(dir.value))) : '') + (dir.arg ? (",arg:\"" + (dir.arg) + "\"") : '') + (dir.modifiers ? (",modifiers:" + (JSON.stringify(dir.modifiers))) : '') + "},";
-    }
-  }
-  if (hasRuntime) {
-    return res.slice(0, -1) + ']'
-  }
-}
-
-function genInlineTemplate (el) {
-  var ast = el.children[0];
-  if ("development" !== 'production' && (
-    el.children.length > 1 || ast.type !== 1
-  )) {
-    warn$3('Inline-template components must have exactly one child element.');
-  }
-  if (ast.type === 1) {
-    var inlineRenderFns = generate(ast, currentOptions);
-    return ("inlineTemplate:{render:function(){" + (inlineRenderFns.render) + "},staticRenderFns:[" + (inlineRenderFns.staticRenderFns.map(function (code) { return ("function(){" + code + "}"); }).join(',')) + "]}")
-  }
-}
-
-function genScopedSlots (slots) {
-  return ("scopedSlots:_u([" + (Object.keys(slots).map(function (key) { return genScopedSlot(key, slots[key]); }).join(',')) + "])")
-}
-
-function genScopedSlot (key, el) {
-  return "[" + key + ",function(" + (String(el.attrsMap.scope)) + "){" +
-    "return " + (el.tag === 'template'
-      ? genChildren(el) || 'void 0'
-      : genElement(el)) + "}]"
-}
-
-function genChildren (el, checkSkip) {
-  var children = el.children;
-  if (children.length) {
-    var el$1 = children[0];
-    // optimize single v-for
-    if (children.length === 1 &&
-        el$1.for &&
-        el$1.tag !== 'template' &&
-        el$1.tag !== 'slot') {
-      return genElement(el$1)
-    }
-    var normalizationType = checkSkip ? getNormalizationType(children) : 0;
-    return ("[" + (children.map(genNode).join(',')) + "]" + (normalizationType ? ("," + normalizationType) : ''))
-  }
-}
-
-// determine the normalization needed for the children array.
-// 0: no normalization needed
-// 1: simple normalization needed (possible 1-level deep nested array)
-// 2: full normalization needed
-function getNormalizationType (children) {
-  var res = 0;
-  for (var i = 0; i < children.length; i++) {
-    var el = children[i];
-    if (el.type !== 1) {
-      continue
-    }
-    if (needsNormalization(el) ||
-        (el.ifConditions && el.ifConditions.some(function (c) { return needsNormalization(c.block); }))) {
-      res = 2;
-      break
-    }
-    if (maybeComponent(el) ||
-        (el.ifConditions && el.ifConditions.some(function (c) { return maybeComponent(c.block); }))) {
-      res = 1;
-    }
-  }
-  return res
-}
-
-function needsNormalization (el) {
-  return el.for !== undefined || el.tag === 'template' || el.tag === 'slot'
-}
-
-function maybeComponent (el) {
-  return !isPlatformReservedTag$1(el.tag)
-}
-
-function genNode (node) {
-  if (node.type === 1) {
-    return genElement(node)
-  } else {
-    return genText(node)
-  }
-}
-
-function genText (text) {
-  return ("_v(" + (text.type === 2
-    ? text.expression // no need for () because already wrapped in _s()
-    : transformSpecialNewlines(JSON.stringify(text.text))) + ")")
-}
-
-function genSlot (el) {
-  var slotName = el.slotName || '"default"';
-  var children = genChildren(el);
-  var res = "_t(" + slotName + (children ? ("," + children) : '');
-  var attrs = el.attrs && ("{" + (el.attrs.map(function (a) { return ((camelize(a.name)) + ":" + (a.value)); }).join(',')) + "}");
-  var bind$$1 = el.attrsMap['v-bind'];
-  if ((attrs || bind$$1) && !children) {
-    res += ",null";
-  }
-  if (attrs) {
-    res += "," + attrs;
-  }
-  if (bind$$1) {
-    res += (attrs ? '' : ',null') + "," + bind$$1;
-  }
-  return res + ')'
-}
-
-// componentName is el.component, take it as argument to shun flow's pessimistic refinement
-function genComponent (componentName, el) {
-  var children = el.inlineTemplate ? null : genChildren(el, true);
-  return ("_c(" + componentName + "," + (genData(el)) + (children ? ("," + children) : '') + ")")
-}
-
-function genProps (props) {
-  var res = '';
-  for (var i = 0; i < props.length; i++) {
-    var prop = props[i];
-    res += "\"" + (prop.name) + "\":" + (transformSpecialNewlines(prop.value)) + ",";
-  }
-  return res.slice(0, -1)
-}
-
-// #3895, #4268
-function transformSpecialNewlines (text) {
-  return text
-    .replace(/\u2028/g, '\\u2028')
-    .replace(/\u2029/g, '\\u2029')
-}
-
-/*  */
-
-// these keywords should not appear inside expressions, but operators like
-// typeof, instanceof and in are allowed
-var prohibitedKeywordRE = new RegExp('\\b' + (
-  'do,if,for,let,new,try,var,case,else,with,await,break,catch,class,const,' +
-  'super,throw,while,yield,delete,export,import,return,switch,default,' +
-  'extends,finally,continue,debugger,function,arguments'
-).split(',').join('\\b|\\b') + '\\b');
-
-// these unary operators should not be used as property/method names
-var unaryOperatorsRE = new RegExp('\\b' + (
-  'delete,typeof,void'
-).split(',').join('\\s*\\([^\\)]*\\)|\\b') + '\\s*\\([^\\)]*\\)');
-
-// check valid identifier for v-for
-var identRE = /[A-Za-z_$][\w$]*/;
-
-// strip strings in expressions
-var stripStringRE = /'(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*"|`(?:[^`\\]|\\.)*\$\{|\}(?:[^`\\]|\\.)*`|`(?:[^`\\]|\\.)*`/g;
-
-// detect problematic expressions in a template
-function detectErrors (ast) {
-  var errors = [];
-  if (ast) {
-    checkNode(ast, errors);
-  }
-  return errors
-}
-
-function checkNode (node, errors) {
-  if (node.type === 1) {
-    for (var name in node.attrsMap) {
-      if (dirRE.test(name)) {
-        var value = node.attrsMap[name];
-        if (value) {
-          if (name === 'v-for') {
-            checkFor(node, ("v-for=\"" + value + "\""), errors);
-          } else if (onRE.test(name)) {
-            checkEvent(value, (name + "=\"" + value + "\""), errors);
-=======
     }, [(dado['pai'] == 0) ? _c('input', {
       directives: [{
         name: "model",
@@ -53829,7 +49592,6 @@ function checkNode (node, errors) {
             $$idx = i;
           if (!Array.isArray($$exp)) {
             _vm.quant[i] = _vm._n($event.target.value)
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
           } else {
             $$exp.splice($$idx, 1, _vm._n($event.target.value))
           }
@@ -53841,104 +49603,11 @@ function checkNode (node, errors) {
       attrs: {
         "href": _vm.actions.troca_url + '/' + dado['id']
       }
-<<<<<<< 0f260cd65848785416bdf2937dd4534ab750ccb8
-    }
-  } else if (node.type === 2) {
-    checkExpression(node.expression, node.text, errors);
-  }
-}
-
-function checkEvent (exp, text, errors) {
-  var stipped = exp.replace(stripStringRE, '');
-  var keywordMatch = stipped.match(unaryOperatorsRE);
-  if (keywordMatch && stipped.charAt(keywordMatch.index - 1) !== '$') {
-    errors.push(
-      "avoid using JavaScript unary operator as property name: " +
-      "\"" + (keywordMatch[0]) + "\" in expression " + (text.trim())
-    );
-  }
-  checkExpression(exp, text, errors);
-}
-
-function checkFor (node, text, errors) {
-  checkExpression(node.for || '', text, errors);
-  checkIdentifier(node.alias, 'v-for alias', text, errors);
-  checkIdentifier(node.iterator1, 'v-for iterator', text, errors);
-  checkIdentifier(node.iterator2, 'v-for iterator', text, errors);
-}
-
-function checkIdentifier (ident, type, text, errors) {
-  if (typeof ident === 'string' && !identRE.test(ident)) {
-    errors.push(("invalid " + type + " \"" + ident + "\" in expression: " + (text.trim())));
-  }
-}
-
-function checkExpression (exp, text, errors) {
-  try {
-    new Function(("return " + exp));
-  } catch (e) {
-    var keywordMatch = exp.replace(stripStringRE, '').match(prohibitedKeywordRE);
-    if (keywordMatch) {
-      errors.push(
-        "avoid using JavaScript keyword as property name: " +
-        "\"" + (keywordMatch[0]) + "\" in expression " + (text.trim())
-      );
-    } else {
-      errors.push(("invalid expression: " + (text.trim())));
-    }
-  }
-}
-
-/*  */
-
-function baseCompile (
-  template,
-  options
-) {
-  var ast = parse(template.trim(), options);
-  optimize(ast, options);
-  var code = generate(ast, options);
-  return {
-    ast: ast,
-    render: code.render,
-    staticRenderFns: code.staticRenderFns
-  }
-}
-
-function makeFunction (code, errors) {
-  try {
-    return new Function(code)
-  } catch (err) {
-    errors.push({ err: err, code: code });
-    return noop
-  }
-}
-
-function createCompiler (baseOptions) {
-  var functionCompileCache = Object.create(null);
-
-  function compile (
-    template,
-    options
-  ) {
-    var finalOptions = Object.create(baseOptions);
-    var errors = [];
-    var tips = [];
-    finalOptions.warn = function (msg, tip$$1) {
-      (tip$$1 ? tips : errors).push(msg);
-    };
-
-    if (options) {
-      // merge custom modules
-      if (options.modules) {
-        finalOptions.modules = (baseOptions.modules || []).concat(options.modules);
-=======
     }, [_c('i', {
       staticClass: "fa fa-exchange blue"
     })]) : _vm._e(), _vm._v(" "), (dado['filho'] > 0 && dado['filho'] != undefined) ? _c('a', {
       attrs: {
         "href": _vm.actions.troca_remove + '/' + dado['planejamento_id']
->>>>>>> BS-137 alteração no relacionamento de planejamento e orçamentos
       }
     }, [_c('i', {
       staticClass: "fa fa-times red"
