@@ -64992,13 +64992,12 @@ $(function() {
 
 var QcInformarValoresForm = {
   init: function() {
-    console.log('QcInformarValoresForm#init()');
-
     var save         = document.getElementById('save');
     var rows         = document.querySelectorAll('.js-calc-row');
     var form         = document.getElementById('informar-valores-form');
     var reject       = document.getElementById('reject');
     var motivoSelect = document.getElementById('desistencia_motivo_id');
+    var percents     = document.getElementsByClassName('js-percent');
 
     motivoSelect.classList.remove('hidden');
 
@@ -65069,6 +65068,25 @@ var QcInformarValoresForm = {
 
     save.addEventListener('click', function(event) {
       event.preventDefault();
+
+      var percentualSum = _(percents)
+          .map(_.property('value'))
+          .map(moneyToFloat)
+          .reject(_.isNaN)
+          .sum();
+
+      if(percentualSum !== 100) {
+        swal({
+          title: '',
+          text: 'As porcentagens não somam 100%',
+          type: 'error'
+        }, function() {
+          _.first(percents).focus();
+        });
+
+        return false;
+      }
+
       swal({
         title: 'Salvar preços?',
         text: 'Ao confirmar não será possível voltar atrás',
@@ -65087,19 +65105,25 @@ var QcInformarValoresForm = {
 }
 
 $(function() {
-  $('.js-sweetalert').click(function(event) {
-    event.preventDefault();
+  var buttons = document.getElementsByClassName('js-sweetalert');
 
-    var button = event.currentTarget;
+  _.each(buttons, function(button) {
+    button.addEventListener('click', function() {
+      event.preventDefault();
 
-    if(!button.dataset.message) {
-      throw new Error('Sweetalert helper without message');
-      return false;
-    }
+      var button = event.currentTarget;
 
-    swal({
-      title: button.dataset.title || button.innerText,
-      text: button.dataset.message
-    });
+      if(!button.dataset.text) {
+        console.error('Sweetalert helper without text', button)
+        return false;
+      }
+
+      var options = Object.assign({
+        title: button.innerText,
+        type: 'info',
+      }, button.dataset);
+
+      swal(options);
+    }, false);
   });
 });

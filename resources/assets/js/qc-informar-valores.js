@@ -7,13 +7,12 @@ $(function() {
 
 var QcInformarValoresForm = {
   init: function() {
-    console.log('QcInformarValoresForm#init()');
-
     var save         = document.getElementById('save');
     var rows         = document.querySelectorAll('.js-calc-row');
     var form         = document.getElementById('informar-valores-form');
     var reject       = document.getElementById('reject');
     var motivoSelect = document.getElementById('desistencia_motivo_id');
+    var percents     = document.getElementsByClassName('js-percent');
 
     motivoSelect.classList.remove('hidden');
 
@@ -84,6 +83,25 @@ var QcInformarValoresForm = {
 
     save.addEventListener('click', function(event) {
       event.preventDefault();
+
+      var percentualSum = _(percents)
+          .map(_.property('value'))
+          .map(moneyToFloat)
+          .reject(_.isNaN)
+          .sum();
+
+      if(percentualSum !== 100) {
+        swal({
+          title: '',
+          text: 'As porcentagens não somam 100%',
+          type: 'error'
+        }, function() {
+          _.first(percents).focus();
+        });
+
+        return false;
+      }
+
       swal({
         title: 'Salvar preços?',
         text: 'Ao confirmar não será possível voltar atrás',

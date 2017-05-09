@@ -187,4 +187,15 @@ class QuadroDeConcorrencia extends Model
             'user_id' => $this->attributes['user_id']
         ]);
     }
+
+    public function hasServico()
+    {
+        return $this->itens
+            ->pluck('insumo')
+            ->pluck('insumoGrupo')
+            ->pluck('nome')
+            ->contains(function($nome) {
+                return starts_with($nome, 'SERVIÇO');
+            });
+    }
 }

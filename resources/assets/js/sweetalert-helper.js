@@ -1,17 +1,23 @@
 $(function() {
-  $('.js-sweetalert').click(function(event) {
-    event.preventDefault();
+  var buttons = document.getElementsByClassName('js-sweetalert');
 
-    var button = event.currentTarget;
+  _.each(buttons, function(button) {
+    button.addEventListener('click', function() {
+      event.preventDefault();
 
-    if(!button.dataset.message) {
-      throw new Error('Sweetalert helper without message');
-      return false;
-    }
+      var button = event.currentTarget;
 
-    swal({
-      title: button.dataset.title || button.innerText,
-      text: button.dataset.message
-    });
+      if(!button.dataset.text) {
+        console.error('Sweetalert helper without text', button)
+        return false;
+      }
+
+      var options = Object.assign({
+        title: button.innerText,
+        type: 'info',
+      }, button.dataset);
+
+      swal(options);
+    }, false);
   });
 });

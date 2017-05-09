@@ -17,7 +17,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Validator::extend('money', function($attribute, $value, $parameters) {
+        Validator::extend('money', function($attributes, $value, $parameters) {
             return is_money($value);
         });
 

@@ -293,6 +293,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
             $quadro = $this->quadroDeConcorrenciaRepository->findWithoutFail($id);
 
             if (empty($quadro)) {
+                DB::rollback();
                 Flash::error('Quadro De Concorrencia '.trans('common.not-found'));
 
                 return back()->withInput();
@@ -308,6 +309,30 @@ class QuadroDeConcorrenciaController extends AppBaseController
                     'desistencia_motivo_id' => $request->desistencia_motivo_id,
                     'desistencia_texto' => $request->desistencia_texto
                 ]);
+            }
+
+            if($quadro->hasServico() && !$request->reject) {
+                $porcentagens = array_values($request->only([
+                    'porcentagem_faturamento_direto',
+                    'porcentagem_material',
+                    'porcentagem_servico',
+                ]));
+
+                $porcentagens = array_sum($porcentagens);
+
+                if($porcentagens !== 100) {
+                    DB::rollback();
+                    Flash::error('As porcentagens não somam 100%');
+
+                    return back()->withInput();
+                }
+
+                if(empty(array_filter($request->only(['nf_material', 'nf_servico'])))) {
+                    DB::rollback();
+                    Flash::error('Selecione pelo menos um tipo de nota fiscal');
+
+                    return back()->withInput();
+                }
             }
 
             if(!$request->reject) {

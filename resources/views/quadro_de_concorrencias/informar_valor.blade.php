@@ -1,17 +1,19 @@
 @extends('layouts.front')
 
 @section('content')
-    <section class="content-header">
-      <h1>Informar valores fornecedor</h1>
-    </section>
+  <section class="content-header">
+    <h1>Informar valores fornecedor</h1>
+  </section>
 
-    {!!
-      Form::open([
+  {!!
+    Form::open([
         'route' => ['quadroDeConcorrencia.informar-valor', $quadro->id],
         'id' => 'informar-valores-form',
         'class' => 'content'
       ])
     !!}
+
+    <input type="hidden" value="{{ (int) $quadro->hasServico() }}" name="has_servico">
 
     @if ($errors->count())
       <div class="alert alert-danger">
@@ -27,11 +29,7 @@
     <div class="box box-solid">
       <div class="box-body">
         <div class="row">
-          <div class="col-md-4">
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-2">
+          <div class="col-md-3">
             @if(auth()->user()->fornecedor)
               {!! Form::hidden('fornecedor_id', auth()->user()->fornecedor->id) !!}
             @else
@@ -47,22 +45,118 @@
                 !!}
               </div>
             @endif
-            <a href="#modal-fornecedor"
-              data-toggle="modal"
-              class="btn btn-primary btn-block">
-              Obrigações do Fornecedor
-            </a>
-            <a href="#modal-bild"
-              data-toggle="modal"
-              class="btn btn-primary btn-block">
-              Obrigações BILD
-            </a>
+            <p>
+              <a href="#modal-fornecedor"
+                data-toggle="modal"
+                class="btn btn-primary btn-block">
+                Obrigações do Fornecedor
+              </a>
+              <a href="#modal-bild"
+                data-toggle="modal"
+                class="btn btn-primary btn-block">
+                Obrigações BILD
+              </a>
+            </p>
+            @if($quadro->hasServico())
+            <div class="row">
+              <div class="col-md-12">
+                <div class="box box-muted">
+                  <div class="box-header with-border">
+                    Porcentagens
+                  </div>
+                  <div class="box-body">
+                    <div class="form-group">
+                      <div class="row">
+                        <label class="col-md-7">
+                          Mão de Obra
+                        </label>
+                        <div class="col-md-5">
+                          <div class="input-group">
+                            <input type="text"
+                              class="form-control decimal js-percent"
+                              value="{{ old('porcentagem_servico') }}"
+                              name="porcentagem_servico">
+                            <span class="input-group-addon">%</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="row">
+                        <label class="col-md-7">
+                          Material
+                        </label>
+                        <div class="col-md-5">
+                          <div class="input-group">
+                            <input type="text"
+                              class="form-control decimal js-percent"
+                              value="{{ old('porcentagem_material') }}"
+                              name="porcentagem_material">
+                            <span class="input-group-addon">%</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="row">
+                        <label class="col-md-7">
+                          Faturamento Direto
+                        </label>
+                        <div class="col-md-5">
+                          <div class="input-group">
+                            <input type="text"
+                              class="form-control decimal js-percent"
+                              value="{{ old('porcentagem_faturamento_direto') }}"
+                              name="porcentagem_faturamento_direto">
+                            <span class="input-group-addon">%</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="box box-mutted">
+                  <div class="box-header with-border">
+                      Tipo da Nota Fiscal
+                  </div>
+                  <div class="box-body">
+                    <div class="form-group">
+                      <div class="checkbox">
+                        <label>
+                          {!!
+                            Form::checkbox(
+                              "nf_material",
+                              '1'
+                            )
+                          !!}
+                          Material
+                        </label>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="checkbox">
+                        <label>
+                          {!!
+                            Form::checkbox(
+                              "nf_servico",
+                              '1'
+                            )
+                          !!}
+                          Serviço
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            @endif
           </div>
-          <div class="col-md-10">
+          <div class="col-md-9">
             <div class="box box-muted box-equalizacao-tecnica">
               <div class="box-header with-border">Equalização Técnica</div>
               <div class="box-body">
-                <table class="table table-responsive table-striped table-align-middle">
+                <table class="table table-responsive table-striped table-align-middle table-condensed">
                   <thead>
                     <tr>
                       <th>#</th>
@@ -74,7 +168,14 @@
                   <tbody>
                     @foreach($equalizacoes as $key =>  $equalizacao)
                       <tr>
-                        <td>{{ $key }}</td>
+                        <td>
+                          <button type="button"
+                            class="btn btn-default btn-flat btn-xs js-sweetalert"
+                            data-title="{{ $equalizacao->nome }}"
+                            data-text="{{ $equalizacao->descricao }}">
+                            <i class="fa fa-info-circle"></i>
+                          </button>
+                        </td>
                         <td>{{ $equalizacao->nome }}</td>
                         <td>
                           {!! Form::hidden("equalizacoes[{$equalizacao->id}-{$equalizacao->getTable()}][checkable_type]", $equalizacao->getTable()) !!}
@@ -142,44 +243,12 @@
               </div>
             </div>
           </div>
-          <div class="col-md-3 hidden">
-            <div class="form-group">
-              <div class="row">
-                <label class="col-md-5">
-                  % Mão de Obra
-                </label>
-                <div class="col-md-7">
-                  <input type="text" class="form-control decimal">
-                </div>
-              </div>
-            </div>
-            <div class="form-group">
-              <div class="row">
-                <label class="col-md-5">
-                  % Material
-                </label>
-                <div class="col-md-7">
-                  <input type="text" class="form-control decimal">
-                </div>
-              </div>
-            </div>
-            <div class="form-group">
-              <div class="row">
-                <label class="col-md-5">
-                  % Faturamento Direto
-                </label>
-                <div class="col-md-7">
-                  <input type="text" class="form-control decimal">
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
     <div class="box box-solid">
       <div class="box-body">
-        <table class="table table-responsive table-striped table-align-middle">
+        <table class="table table-responsive table-striped table-align-middle table-condensed">
           <thead>
             <tr>
               <th>Cod. Insumo</th>
@@ -328,5 +397,5 @@
         ]
       )
     !!}
-@endsection
+  @endsection
 

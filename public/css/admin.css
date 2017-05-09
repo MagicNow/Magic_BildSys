@@ -19371,7 +19371,7 @@ h6 {
 }
 
 .box-equalizacao-tecnica > .box-body {
-  height: 400px;
+  max-height: 435px;
   overflow-y: auto;
 }
 
