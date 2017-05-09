@@ -506,6 +506,7 @@ class OrdemDeCompraController extends AppBaseController
                 [
                     'insumos.id',
                     DB::raw("CONCAT(insumos.codigo,' - ' ,insumos.nome) as nome"),
+                    DB::raw("(orcamentos.qtd_total - planejamento_compras.quantidade_compra) as qtd_total"),
                     'insumos.unidade_sigla',
                     'insumos.codigo',
                     'insumos.insumo_grupo_id',
@@ -514,7 +515,6 @@ class OrdemDeCompraController extends AppBaseController
                     'orcamentos.subgrupo2_id',
                     'orcamentos.subgrupo3_id',
                     'orcamentos.servico_id',
-                    'orcamentos.qtd_total',
                     'orcamentos.preco_total',
                     'orcamentos.preco_unitario',
                     'planejamento_compras.quantidade_compra',
@@ -619,6 +619,8 @@ class OrdemDeCompraController extends AppBaseController
         if($request->servico){
             $insumos->where('orcamentos.servico_id');
         }
+
+        $insumos->where('orcamentos.qtd_total', '>', 0);
 
         return response()->json($insumos->paginate(10), 200);
     }
