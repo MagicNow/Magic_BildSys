@@ -4,8 +4,10 @@ namespace App\Repositories;
 
 use App\Models\Cidade;
 use App\Models\Fornecedor;
+use App\Models\Cnae;
 use App\Models\Insumo;
 use App\Models\InsumoGrupo;
+use App\Models\MegaCnae;
 use App\Models\MegaFornecedor;
 use App\Models\MegaInsumo;
 use App\Models\MegaInsumoGrupo;
@@ -15,6 +17,7 @@ use Illuminate\Support\Facades\Log;
 
 class ImportacaoRepository
 {
+    # Importação de insumos do BANCO DE DADOS BILD-SYS MEGA
     public static function insumos()
     {
         $insumos = MegaInsumo::select([
@@ -56,6 +59,7 @@ class ImportacaoRepository
         return ['total-mega' => $insumos->count(), 'total-sys' => Insumo::count()];
     }
 
+    # Importação de grupo de insumos do BANCO DE DADOS BILD-SYS MEGA
     public static function insumo_grupos()
     {
         $grupos_mega = MegaInsumoGrupo::select([
@@ -78,6 +82,7 @@ class ImportacaoRepository
         return ['total-mega' => $grupos_mega->count(), 'total-sys' => InsumoGrupo::count()];
     }
 
+
     /**
      * Importa Fornecedor
      * @param $param_value
@@ -85,6 +90,7 @@ class ImportacaoRepository
      * @return bool
      */
     public static function fornecedores($param_value, $param_type = 'AGN_ST_CGC')
+    # Importação de Fornecedores do BANCO DE DADOS BILD-SYS - MEGA
     {
         try {
 
@@ -136,7 +142,29 @@ class ImportacaoRepository
             Log::error('Erro ao importar insumo '. $fornecedores_mega->agn_in_codigo. ': '.$e->getMessage());
             return false;
         }
+    }
 
+    # Importação de CNAE do BANCO DE DADOS BILD-SYS - MEGA
+    public static function cnae_servicos(){
+        $cnae_servicos = MegaCnae::select([
+            'COS_IN_CODIGO',
+            'COS_ST_DESCRICAO'
+        ])
+            ->get();
+
+        foreach ($cnae_servicos as $servico) {
+            try {
+                Cnae::firstOrCreate([
+                    'id' => $servico->cos_in_codigo,
+                    'nome' => trim(utf8_encode($servico->cos_st_descricao))
+                ]);
+            } catch (\Exception $e) {
+                Log::error('Erro ao importar cnae '. $servico->cos_in_codigo. ': '.$e->getMessage());
+            }
+        }
+        dd(Cnae::count());
+
+        return ['total-mega' => $cnae_servicos->count(), 'total-sys' => Cnae::count()];
 
     }
 }
