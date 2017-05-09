@@ -106,6 +106,7 @@
                    troca_remove:'{{ url('/compras/removerInsumoPlanejamento') }}',
                    quantidade: true,
                    adicionar: true,
+                   tooltip: true,
                    }"
                     v-bind:colunas="[
                        {campo_db: 'nome', label: 'insumos'},

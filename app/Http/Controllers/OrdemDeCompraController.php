@@ -520,7 +520,37 @@ class OrdemDeCompraController extends AppBaseController
                     'planejamento_compras.quantidade_compra',
                     'planejamento_compras.id as planejamento_compra_id',
                     'planejamentos.id as planejamento_id',
-                    DB::raw('(SELECT count(planejamento_compras.id) FROM planejamento_compras 
+                    DB::raw('(SELECT 
+                                CONCAT(codigo, \' - \', nome)
+                            FROM
+                                grupos
+                            WHERE
+                                orcamentos.grupo_id = grupos.id) AS tooltip_grupo'),
+                    DB::raw('(SELECT 
+                                CONCAT(codigo, \' - \', nome)
+                            FROM
+                                grupos
+                            WHERE
+                                orcamentos.subgrupo1_id = grupos.id) AS tooltip_subgrupo1'),
+                    DB::raw('(SELECT 
+                                CONCAT(codigo, \' - \', nome)
+                            FROM
+                                grupos
+                            WHERE
+                                orcamentos.subgrupo2_id = grupos.id) AS tooltip_subgrupo2'),
+                    DB::raw('(SELECT 
+                                CONCAT(codigo, \' - \', nome)
+                            FROM
+                                grupos
+                            WHERE
+                                orcamentos.subgrupo3_id = grupos.id) AS tooltip_subgrupo3'),
+                    DB::raw('(SELECT 
+                                CONCAT(codigo, \' - \', nome)
+                            FROM
+                                servicos
+                            WHERE
+                                orcamentos.servico_id = servicos.id) AS tooltip_servico'),
+                    DB::raw('(SELECT count(planejamento_compras.id) FROM planejamento_compras
                     WHERE planejamento_compras.insumo_id = insumos.id 
                     AND planejamento_compras.planejamento_id ='.(isset($planejamento)? $planejamento->id : 'planejamentos.id').' AND  planejamento_compras.insumo_pai IS NOT NULL) as filho'),
                     DB::raw('(SELECT count(planejamento_compras.id) FROM planejamento_compras 

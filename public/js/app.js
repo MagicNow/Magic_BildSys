@@ -16520,6 +16520,11 @@ module.exports = __vue_exports__
 //
 //
 //
+//
+//
+//
+//
+//
 
     var verify = 0;
     /* harmony default export */ exports["default"] = {
@@ -16537,6 +16542,7 @@ module.exports = __vue_exports__
                 status: '',
                 troca: '',
                 adicionar: '',
+                tooltip: '',
                 detalhe: '',
                 aprovar: '',
                 reprovar: '',
@@ -16605,6 +16611,9 @@ module.exports = __vue_exports__
             },
             //Método da action reprovar onClick
             reprovar: function (id) {
+
+            },
+            tooltip: function(id){
 
             },
             //Mètodo de ordenação de tabela
@@ -29387,7 +29396,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -46994,7 +47003,14 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         staticClass: "row-table"
       }, [(dado['filho'] > 0 && dado['filho'] != undefined && index == 0) ? _c('i', {
         staticClass: "fa fa-share"
-      }) : _vm._e(), _vm._v("\n                " + _vm._s(dado[chave]) + "\n            ")])
+      }) : _vm._e(), _vm._v(" "), (_vm.actions.tooltip != undefined) ? _c('span', {
+        attrs: {
+          "data-toggle": "tooltip",
+          "data-placement": "top",
+          "data-html": "true",
+          "title": '<p>' + dado['tooltip_grupo'] + '</p> <p>' + dado['tooltip_subgrupo1'] + '</p> <p>' + dado['tooltip_subgrupo2'] + '</p> <p>' + dado['tooltip_subgrupo3'] + '</p> <p>' + dado['tooltip_servico'] + '</p>'
+        }
+      }, [_vm._v("\n                    " + _vm._s(dado[chave]) + "\n                ")]) : _vm._e(), _vm._v(" "), (_vm.actions.tooltip === undefined) ? _c('span', [_vm._v("\n                    " + _vm._s(dado[chave]) + "\n                ")]) : _vm._e()])
     }), _vm._v(" "), (_vm.actions.status != undefined) ? _c('td', {
       staticClass: "row-table"
     }, [(dado['status'] == 0) ? _c('i', {

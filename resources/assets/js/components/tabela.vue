@@ -91,9 +91,14 @@
             </thead>
             <tbody>
             <tr v-if="dados.length >0" v-for="(dado,i) in dados">
-                <td class="row-table" v-for="(chave,index) in chaves" >
+                <td class="row-table" v-for="(chave,index) in chaves">
                     <i v-if="dado['filho']>0 && dado['filho'] != undefined && index == 0" class="fa fa-share"></i>
-                    {{dado[chave]}}
+                    <span v-if="actions.tooltip != undefined" data-toggle="tooltip" data-placement="top" data-html="true" :title="'<p>' + dado['tooltip_grupo'] + '</p> <p>' + dado['tooltip_subgrupo1'] + '</p> <p>' + dado['tooltip_subgrupo2'] + '</p> <p>' + dado['tooltip_subgrupo3'] + '</p> <p>' + dado['tooltip_servico'] + '</p>'">
+                        {{dado[chave]}}
+                    </span>
+                    <span v-if="actions.tooltip === undefined">
+                        {{dado[chave]}}
+                    </span>
                 </td>
                 <td class="row-table" v-if="actions.status != undefined">
                     <i v-if="dado['status'] == 0" class="fa fa-circle green"></i>
@@ -163,6 +168,7 @@
                 status: '',
                 troca: '',
                 adicionar: '',
+                tooltip: '',
                 detalhe: '',
                 aprovar: '',
                 reprovar: '',
@@ -231,6 +237,9 @@
             },
             //Método da action reprovar onClick
             reprovar: function (id) {
+
+            },
+            tooltip: function(id){
 
             },
             //Mètodo de ordenação de tabela

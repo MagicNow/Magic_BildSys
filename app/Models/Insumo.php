@@ -93,7 +93,7 @@ class Insumo extends Model
      **/
     public function ordemDeCompraItens()
     {
-        return $this->hasMany(OrdemDeCompraIten::class);
+        return $this->hasMany(OrdemDeCompraItens::class);
     }
 
     /**
