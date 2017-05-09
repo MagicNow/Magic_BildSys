@@ -238,7 +238,6 @@
                             type: "GET"
                         }
                 ).done(function(retorno) {
-                    console.log(retorno);
                     $('#carrinho').css('display','none');
                     $('#grupo_insumos').css('display','');
                     list = '';

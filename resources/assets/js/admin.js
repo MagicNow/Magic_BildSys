@@ -26,6 +26,7 @@ $(function () {
     theme: 'bootstrap',
     placeholder: "-",
     language: "pt-BR",
+    allowClear: true
   });
 
   $('input').iCheck({
@@ -33,6 +34,7 @@ $(function () {
     radioClass: 'iradio_square-green',
     increaseArea: '20%' // optional
   });
+
   $('.colorbox').colorbox({transition: "fade", width: "95%", height: "95%"});
   $('form').submit(function (evento) {
     $('.box.box-primary').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');

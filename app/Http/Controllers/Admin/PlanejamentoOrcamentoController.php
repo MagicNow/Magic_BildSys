@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\DataTables\Admin\PlanejamentoOrcamentoDataTable;
 use App\Http\Requests\Admin;
+use App\Models\InsumoGrupo;
 use App\Models\Obra;
 use App\Models\Orcamento;
 use App\Models\Planejamento;
@@ -298,8 +299,32 @@ class PlanejamentoOrcamentoController extends AppBaseController
 
     public function getPlanejamentos($id){
         $planejamentos = Planejamento::where('obra_id', $id)
+            ->where('resumo', 'Sim')
             ->pluck('tarefa','id')->toArray();
         return $planejamentos;
+    }
+
+    public function getGrupoInsumos(){
+        $insumoGrupos = InsumoGrupo::pluck('nome','id')->toArray();
+        return $insumoGrupos;
+
+    }
+
+    public function getGrupoInsumoRelacionados(Request $request){
+        $insumos = Orcamento::select([
+            'orcamentos.obra_id',
+            'insumos.codigo',
+            'insumos.nome',
+            'insumos.insumo_grupo_id',
+            'insumos.id'
+        ])
+            ->join('insumos','insumos.id','=','orcamentos.insumo_id')
+            ->where('insumos.insumo_grupo_id', $request->id)
+            ->where('orcamentos.obra_id', $request->obra_id)
+            ->get();
+
+        return $insumos;
+
     }
 
     public function getOrcamentos($id){
