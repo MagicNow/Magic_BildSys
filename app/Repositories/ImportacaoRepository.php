@@ -92,7 +92,6 @@ class ImportacaoRepository
     public static function fornecedores($param_value, $param_type = 'AGN_ST_CGC')
     # Importação de Fornecedores do BANCO DE DADOS BILD-SYS - MEGA
     {
-        try {
 
             $fornecedores_mega = MegaFornecedor::select([
                 'AGN_IN_CODIGO',
@@ -113,7 +112,7 @@ class ImportacaoRepository
                 'AGN_ST_URL'])
                 ->where($param_type, trim($param_value))
                 ->first();
-
+        try {
             if ($fornecedores_mega) {
                 $cidade = Cidade::where('nome', 'LIKE', '%' . $fornecedores_mega->agn_st_municipio . '%')
                     ->first();
@@ -162,7 +161,6 @@ class ImportacaoRepository
                 Log::error('Erro ao importar cnae '. $servico->cos_in_codigo. ': '.$e->getMessage());
             }
         }
-        dd(Cnae::count());
 
         return ['total-mega' => $cnae_servicos->count(), 'total-sys' => Cnae::count()];
 
