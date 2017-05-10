@@ -40,7 +40,8 @@ var paths = {
     'bootstrap_calendar':  vendors + '/bootstrap-calendar/',
     'underscore':  vendors + '/underscore/',
     'vue':  vendors + '/vue/dist/',
-    'vue_resource':  vendors + '/vue-resource/dist/'
+    'vue_resource':  vendors + '/vue-resource/dist/',
+    'chartjs':  vendors + '/chart.js/dist/'
 };
 
 elixir.config.sourcemaps = false;
@@ -176,6 +177,7 @@ elixir(function(mix) {
         paths.bootstrap_calendar + '/js/calendar.js',
         paths.bootstrap_calendar + '/js/language/pt-BR.js',
         paths.jquerymaskplugin + 'jquery.mask.js',
+        paths.chartjs + 'Chart.min.js',
         // paths.vue + 'vue.js',
         // paths.vue_resource + 'vue-resource.js',
         'bootstrap-dataTables-paging.js',

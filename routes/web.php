@@ -435,6 +435,17 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         )->name('quadroDeConcorrencia.informar-valor')
         ->middleware('needsPermission:quadroDeConcorrencias.informar_valor');
 
+        /* $router->post( */
+        /*     '/quadro-de-concorrencia/{quadroDeConcorrencias}/avaliar', */
+        /*     'QuadroDeConcorrenciaController@avaliarSave' */
+        /* )->middleware('needsPermission:quadroDeConcorrencias.edit'); */
+
+        $router->get(
+            '/quadro-de-concorrencia/{quadroDeConcorrencias}/avaliar',
+            'QuadroDeConcorrenciaController@avaliar'
+        )->name('quadroDeConcorrencia.avaliar')
+        ->middleware('needsPermission:quadroDeConcorrencias.edit');
+
         $router->get('quadro-de-concorrencia', ['as' => 'quadroDeConcorrencias.index', 'uses' => 'QuadroDeConcorrenciaController@index']);
         $router->post('quadro-de-concorrencia/criar',
             [

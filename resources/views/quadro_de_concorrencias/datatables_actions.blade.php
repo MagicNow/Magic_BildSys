@@ -1,9 +1,11 @@
 {!! Form::open(['route' => ['quadroDeConcorrencias.destroy', $id], 'id'=>'formDelete'.$id, 'method' => 'delete']) !!}
 
 <div class='btn-group'>
-    <a href="{{ route('quadroDeConcorrencias.show', $id) }}" title="{{ ucfirst( trans('common.show') )}}" class='btn btn-default btn-xs'>
+    @shield('quadroDeConcorrencias.show')
+      <a href="{{ route('quadroDeConcorrencias.show', $id) }}" title="{{ ucfirst( trans('common.show') )}}" class='btn btn-default btn-xs'>
         <i class="glyphicon glyphicon-eye-open"></i>
-    </a>
+      </a>
+    @endshield
 
     @shield('quadroDeConcorrencias.edit')
         @if($qc_status_id!=6)
@@ -22,7 +24,7 @@
         </button>
         @endif
         @if($tem_ofertas && $qc_status_id === 7)
-          <a href="#" class="btn btn-xs btn-primary" title="Avaliar Quadro de Concorrência">
+          <a href="{{ route('quadroDeConcorrencia.avaliar', $id) }}" class="btn btn-xs btn-primary" title="Avaliar Quadro de Concorrência">
             <i class="glyphicon glyphicon-ok"></i>
           </a>
         @endif

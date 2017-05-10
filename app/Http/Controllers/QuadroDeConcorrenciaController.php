@@ -31,6 +31,7 @@ use Illuminate\Support\Facades\DB;
 use App\Repositories\DesistenciaMotivoRepository;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
+use App\DataTables\InsumoPorFornecedorDataTable;
 
 class QuadroDeConcorrenciaController extends AppBaseController
 {
@@ -50,10 +51,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
      */
     public function index(QuadroDeConcorrenciaDataTable $quadroDeConcorrenciaDataTable)
     {
-        return $quadroDeConcorrenciaDataTable->render(
-            'quadro_de_concorrencias.index',
-            ['quadroDeConcorrenciaRepository' => $this->quadroDeConcorrenciaRepository]
-        );
+        return $quadroDeConcorrenciaDataTable->render('quadro_de_concorrencias.index');
     }
 
     /**
@@ -188,6 +186,48 @@ class QuadroDeConcorrenciaController extends AppBaseController
         Flash::success('Quadro De Concorrencia ' . trans('common.deleted') . ' ' . trans('common.successfully') . '.');
 
         return redirect(route('quadroDeConcorrencias.index'));
+    }
+
+    public function avaliar(
+        $id,
+        FornecedoresRepository $fornecedorRepository,
+        DesistenciaMotivoRepository $desistenciaMotivoRepository,
+        QcFornecedorRepository $qcFornecedorRepository,
+        InsumoPorFornecedorDataTable $view
+    ) {
+        $user = Auth::user();
+
+        $isFornecedor = !is_null($user->fornecedor);
+
+        $quadro = $this->quadroDeConcorrenciaRepository
+            ->with(
+                'tipoEqualizacaoTecnicas.itens',
+                'tipoEqualizacaoTecnicas.anexos',
+                'itens.insumo',
+                'itens.ordemDeCompraItens'
+            )
+            ->findWithoutFail($id);
+
+        if (empty($quadro)) {
+            Flash::error('Quadro De Concorrencia '.trans('common.not-found'));
+
+            return redirect(route('quadroDeConcorrencias.index'));
+        }
+
+        if (!$quadro->temOfertas()) {
+            Flash::error('Você não pode avaliar um quadro de concorrência sem ofertas.');
+
+            return redirect(route('quadroDeConcorrencias.index'));
+        }
+
+        $qcFornecedores = $qcFornecedorRepository->queOfertaramNoQuadroNaRodada($id);
+
+            return $view->setQuadroDeConcorrencia($quadro)
+            ->setQcFornecedores($qcFornecedores)
+            ->render(
+                'quadro_de_concorrencias.avaliar',
+                compact('qcFornecedores', 'quadro')
+            );
     }
 
     /**

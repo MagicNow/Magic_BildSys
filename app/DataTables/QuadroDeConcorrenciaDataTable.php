@@ -149,16 +149,16 @@ class QuadroDeConcorrenciaDataTable extends DataTable
         $columns = [
             'id' => ['name' => 'quadro_de_concorrencias.id', 'data' => 'id', 'width'=>'25px'],
             'situação' => ['name' => 'qc_status.nome', 'data' => 'situacao'],
-            'rodada_atual' => ['name' => 'rodada_atual', 'data' => 'rodada_atual'],
             'atualizadoEm' => ['name' => 'quadro_de_concorrencias.updated_at', 'data' => 'updated_at', 'width'=>'12%'],
             'rodada' => ['name' => 'rodada_atual', 'data' => 'rodada_atual', 'width'=>'6%'],
-            'action' => ['title' => '#', 'printable' => false, 'width'=>'10%'],
         ];
 
         if(!auth()->user()->fornecedor) {
             $columns['usuario'] = ['name' => 'users.name', 'data' => 'usuario'];
             $columns['criadoEm'] = ['name' => 'quadro_de_concorrencias.created_at', 'data' => 'created_at', 'width'=>'12%'];
         }
+
+        $columns['action'] = ['title' => '#', 'printable' => false, 'width'=>'10%'];
 
         return $columns;
     }

@@ -15,7 +15,7 @@
 
     <input type="hidden" value="{{ (int) $quadro->hasServico() }}" name="has_servico">
 
-    @if ($errors->count())
+    @if($errors->count())
       <div class="alert alert-danger">
         <p>Por favor, corrija os seguintes problemas para enviar o formulário</p>
         <ul>
