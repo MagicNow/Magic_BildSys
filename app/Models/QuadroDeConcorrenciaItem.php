@@ -70,6 +70,11 @@ class QuadroDeConcorrenciaItem extends Model
         return $this->belongsTo(\App\Models\QuadroDeConcorrencia::class);
     }
 
+    public function ofertas()
+    {
+        return $this->hasMany(QcItemQcFornecedor::class, 'qc_item_id');
+    }
+
     public function getObsAttribute()
     {
         return $this->ordemDeCompraItens->reduce(function($carry, $item) {

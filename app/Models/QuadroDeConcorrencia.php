@@ -188,6 +188,11 @@ class QuadroDeConcorrencia extends Model
         ]);
     }
 
+    public function temOfertas()
+    {
+        return !$this->itens->pluck('ofertas')->flatten()->isEmpty();
+    }
+
     public function hasServico()
     {
         return $this->itens

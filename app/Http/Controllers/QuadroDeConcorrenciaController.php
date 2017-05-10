@@ -50,7 +50,10 @@ class QuadroDeConcorrenciaController extends AppBaseController
      */
     public function index(QuadroDeConcorrenciaDataTable $quadroDeConcorrenciaDataTable)
     {
-        return $quadroDeConcorrenciaDataTable->render('quadro_de_concorrencias.index');
+        return $quadroDeConcorrenciaDataTable->render(
+            'quadro_de_concorrencias.index',
+            ['quadroDeConcorrenciaRepository' => $this->quadroDeConcorrenciaRepository]
+        );
     }
 
     /**

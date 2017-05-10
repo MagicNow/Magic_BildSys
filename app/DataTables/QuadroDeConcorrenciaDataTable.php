@@ -55,10 +55,24 @@ class QuadroDeConcorrenciaDataTable extends DataTable
                 'users.name as usuario',
                 'qc_status.nome as situacao',
                 'qc_status.cor as situacao_cor',
-                'quadro_de_concorrencias.qc_status_id'
-            ])
-            ->join('users','users.id','quadro_de_concorrencias.user_id')
-            ->join('qc_status','qc_status.id','quadro_de_concorrencias.qc_status_id');
+                'quadro_de_concorrencias.qc_status_id',
+                DB::raw('
+                  exists (
+                    select
+                        1
+                      from
+                         `qc_item_qc_fornecedor`
+                      join
+                        `qc_fornecedor`
+                        on
+                           `qc_fornecedor`.`id` = `qc_item_qc_fornecedor`.`qc_fornecedor_id`
+                        where
+                           `quadro_de_concorrencias`.`id` = `qc_fornecedor`.`quadro_de_concorrencia_id`
+                   ) as tem_ofertas
+               ')
+           ])
+        ->join('users','users.id','quadro_de_concorrencias.user_id')
+        ->join('qc_status','qc_status.id','quadro_de_concorrencias.qc_status_id');
 
         if($user->fornecedor) {
             $quadroDeConcorrencias
