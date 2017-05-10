@@ -203,10 +203,12 @@ class PlanejamentoOrcamentoController extends AppBaseController
 			                    		GROUP BY planejamento_compras.planejamento_id) as x
 			                    		LIMIT 1
 			                    ),
-			                    (SELECT planejamentos.tarefa
+			                    (SELECT CONCAT(planejamentos.tarefa,' - ',DATE_FORMAT( planejamentos.data, '%d/%m/%Y')) as tarefa
 			                    	FROM planejamento_compras
 			                    	JOIN planejamentos ON planejamentos.id = planejamento_compras.planejamento_id
 			                    	WHERE planejamento_compras.deleted_at IS NULL
+			                    	AND ".$request->campo." = ".$request->id."
+			                    	AND planejamentos.obra_id = ".$request->obra."
 			                    	LIMIT 1),
 			                    NULL
 			                    )
@@ -248,10 +250,12 @@ class PlanejamentoOrcamentoController extends AppBaseController
 			                    		GROUP BY planejamento_compras.planejamento_id) as x
 			                    		LIMIT 1
 			                    ),
-			                    (SELECT planejamentos.tarefa
+			                    (SELECT CONCAT(planejamentos.tarefa,' - ',DATE_FORMAT( planejamentos.data, '%d/%m/%Y')) as tarefa
 			                    	FROM planejamento_compras
 			                    	JOIN planejamentos ON planejamentos.id = planejamento_compras.planejamento_id
 			                    	WHERE planejamento_compras.deleted_at IS NULL
+			                    	AND ".$request->campo." = ".$request->id."
+			                    	AND planejamentos.obra_id = ".$request->obra."
 			                    	LIMIT 1),
 			                    NULL
 			                    )
@@ -273,7 +277,7 @@ class PlanejamentoOrcamentoController extends AppBaseController
                 'insumos.codigo',
                 'insumos.nome',
                 DB::raw("'".$request->tipo."'  as atual"),
-                DB::raw("(SELECT planejamentos.tarefa
+                DB::raw("(SELECT CONCAT(planejamentos.tarefa,' - ',DATE_FORMAT( planejamentos.data, '%d/%m/%Y')) as tarefa
 			                    	FROM planejamento_compras
 			                    	JOIN planejamentos ON planejamentos.id = planejamento_compras.planejamento_id
 			                    	WHERE planejamento_compras.deleted_at IS NULL
@@ -310,6 +314,10 @@ class PlanejamentoOrcamentoController extends AppBaseController
     public function getPlanejamentos($id){
         $planejamentos = Planejamento::where('obra_id', $id)
             ->where('resumo', 'Sim')
+            ->select([
+                DB::raw("CONCAT(tarefa,' - ',DATE_FORMAT( data, '%d/%m/%Y')) as tarefa"),
+                'id'
+            ])
             ->pluck('tarefa','id')->toArray();
         return $planejamentos;
     }
