@@ -291,6 +291,7 @@ class PlanejamentoOrcamentoController extends AppBaseController
                 ->join('insumos', 'insumos.id', '=', 'orcamentos.insumo_id')
                 ->where('orcamentos.' . $request->campo, $request->id)
                 ->where('orcamentos.obra_id', $request->obra)
+                ->where('orcamentos.ativo', 1)
                 ->groupBy('orcamentos.id',
                     'orcamentos.obra_id',
                     'orcamentos.insumo_id',
