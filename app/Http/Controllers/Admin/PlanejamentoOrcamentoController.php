@@ -350,21 +350,22 @@ class PlanejamentoOrcamentoController extends AppBaseController
             ->groupBy('grupo_id','obra_id','grupos.codigo', 'grupos.nome')
             ->first();
 
-        # Montando retorno com o grupo_id setado
-        $final = Orcamento::select([
-            'orcamentos.obra_id',
-            'orcamentos.grupo_id',
-            'grupos.codigo',
-            'grupos.nome',
-            DB::raw("(	SELECT
+        if($orcamento) {
+            # Montando retorno com o grupo_id setado
+            $final = Orcamento::select([
+                'orcamentos.obra_id',
+                'orcamentos.grupo_id',
+                'grupos.codigo',
+                'grupos.nome',
+                DB::raw("(	SELECT
 			                IF
 			                (
 			                	(
 			                		SELECT
 			                			count(1)
 			                		FROM orcamentos
-			                		WHERE grupo_id = ".$orcamento->grupo_id."
-			                		AND obra_id = ".$id."
+			                		WHERE grupo_id = " . $orcamento->grupo_id . "
+			                		AND obra_id = " . $id . "
 			                	)
 			                	=
 			                	( SELECT qtd FROM
@@ -373,8 +374,8 @@ class PlanejamentoOrcamentoController extends AppBaseController
 			                			FROM planejamento_compras
                                         JOIN planejamentos ON planejamentos.id = planejamento_compras.planejamento_id
 			                            			WHERE	planejamento_compras.deleted_at IS NULL
-                                        AND grupo_id = ".$orcamento->grupo_id."
-			                    		AND planejamentos.obra_id = ".$id."
+                                        AND grupo_id = " . $orcamento->grupo_id . "
+			                    		AND planejamentos.obra_id = " . $id . "
 			                    		GROUP BY planejamento_compras.planejamento_id) as x
 			                    		LIMIT 1
 			                    ),
@@ -386,13 +387,16 @@ class PlanejamentoOrcamentoController extends AppBaseController
 			                    NULL
 			                    )
 	                    ) as tarefa"
-            )
-        ])
-            ->join('grupos','grupos.id','=','orcamentos.grupo_id')
-            ->where('orcamentos.obra_id', $id)
-            ->groupBy('grupo_id','obra_id','grupos.codigo', 'grupos.nome')
-            ->first();
+                )
+            ])
+                ->join('grupos', 'grupos.id', '=', 'orcamentos.grupo_id')
+                ->where('orcamentos.obra_id', $id)
+                ->groupBy('grupo_id', 'obra_id', 'grupos.codigo', 'grupos.nome')
+                ->first();
 
-        return $final;
+            return $final;
+        }else{
+            return $final = null;
+        }
     }
 }

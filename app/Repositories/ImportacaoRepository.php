@@ -9,6 +9,7 @@ use App\Models\Insumo;
 use App\Models\InsumoGrupo;
 use App\Models\MegaCnae;
 use App\Models\MegaFornecedor;
+use App\Models\MegaFornecedorServico;
 use App\Models\MegaInsumo;
 use App\Models\MegaInsumoGrupo;
 use App\Models\Unidade;
@@ -117,7 +118,7 @@ class ImportacaoRepository
                 $cidade = Cidade::where('nome', 'LIKE', '%' . $fornecedores_mega->agn_st_municipio . '%')
                     ->first();
 
-                $fornecedor = Fornecedor::create([
+                $fornecedor = Fornecedor::firstOrCreate([
                     'codigo_mega' => trim($fornecedores_mega->agn_in_codigo),
                     'nome' => trim(utf8_encode($fornecedores_mega->agn_st_nome)),
                     'cnpj' => trim($fornecedores_mega->agn_st_cgc),
@@ -135,12 +136,27 @@ class ImportacaoRepository
                     'cep' => trim(str_replace('.','',$fornecedores_mega->agn_st_cep)),
                     'cidade_id' => isset($cidade) ? $cidade->id : null
                 ]);
+                ImportacaoRepository::fornecedor_servicos($fornecedor->codigo_mega);
                 return $fornecedor;
             }
         } catch (\Exception $e) {
             Log::error('Erro ao importar insumo '. $fornecedores_mega->agn_in_codigo. ': '.$e->getMessage());
             return false;
         }
+    }
+
+    public static function fornecedor_servicos($param_value){
+//        dd($param_value);
+//        $servicosFornecedor = MegaFornecedorServico::select([
+//            'agn.agn_in_codigo',
+//            'agn.agn_st_fantasia',
+//            'agn.agn_st_nome',
+//            'csa.cos_in_codigo',
+//            'csa.agn_pad_in_codigo',
+//            'agn.agn_pad_in_codigo',
+//            'cse.cos_st_descricao'
+//        ])
+//        return ['success' => $servicosFornecedor];
     }
 
     # Importação de CNAE do BANCO DE DADOS BILD-SYS - MEGA
