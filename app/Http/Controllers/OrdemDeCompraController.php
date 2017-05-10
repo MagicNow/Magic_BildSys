@@ -1326,8 +1326,9 @@ class OrdemDeCompraController extends AppBaseController
      */
     public function insumosOrcamento($obra_id){
         $obra = Obra::find($obra_id);
+        $grupos = Grupo::whereNull('grupo_id')->pluck('nome','id')->toArray();
         
-        return view('ordem_de_compras.insumos_orcamento', compact('obra'));
+        return view('ordem_de_compras.insumos_orcamento', compact('obra', 'grupos'));
     }
 }
 
