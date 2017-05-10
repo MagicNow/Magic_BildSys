@@ -491,7 +491,6 @@ class OrdemDeCompraController extends AppBaseController
                 ->join('planejamentos','planejamentos.id','=','planejamento_compras.planejamento_id')
                 ->where('planejamento_compras.planejamento_id','=', $planejamento->id);
         }
-
         $insumos->join('orcamentos', function($join){
             $join->on('orcamentos.insumo_id','=', 'planejamento_compras.insumo_id');
             $join->on('orcamentos.grupo_id','=', 'planejamento_compras.grupo_id');
@@ -630,7 +629,6 @@ class OrdemDeCompraController extends AppBaseController
         PlanejamentoCompra::destroy($planejamentoCompra->id);
         return response()->redirect()->back();
     }
-
 
     public function addCarrinho(Request $request, Obra $obra,Planejamento $planejamento = null)
     {
@@ -1321,14 +1319,44 @@ class OrdemDeCompraController extends AppBaseController
 
     /**
      * Tela de inserção de insumos no orçamento.
-     * @param  Obra $obra_id
+     * @param Obra $obra_id
      * @return Render View
      */
     public function insumosOrcamento($obra_id){
-        $obra = Obra::find($obra_id);
         $grupos = Grupo::whereNull('grupo_id')->pluck('nome','id')->toArray();
         
-        return view('ordem_de_compras.insumos_orcamento', compact('obra', 'grupos'));
+        return view('ordem_de_compras.insumos_orcamento', compact('obra_id', 'grupos'));
+    }
+
+    /**
+     * Método de inserir insumo no orçamento.
+     * @param Request $request
+     * @return redirect
+     */
+    public function incluirInsumosOrcamento(Request $request){
+
+        $insumo = Insumo::find($request->insumo_id);
+        $servico = Servico::find($request->servico_id);
+
+        $orcamento = new Orcamento([
+            'obra_id' => $request->obra_id,
+            'codigo_insumo' => $servico->codigo . '.' . $insumo->codigo,
+            'insumo_id' => $request->insumo_id,
+            'servico_id' => $request->servico_id,
+            'grupo_id' => $request->grupo_id,
+            'unidade_sigla' => $insumo->unidade_sigla,
+            'qtd_total' => $request->qtd_total,
+            'orcamento_tipo_id' => 1,
+            'subgrupo1_id' => $request->subgrupo1_id,
+            'subgrupo2_id' => $request->subgrupo2_id,
+            'subgrupo3_id' => $request->subgrupo3_id,
+            'user_id' => Auth::id(),
+            'descricao' => $insumo->nome
+        ]);
+
+        $orcamento->save();
+
+        return redirect('/compras/insumos/orcamento/'.$request->obra_id)->with(['salvo' => true]);
     }
 }
 

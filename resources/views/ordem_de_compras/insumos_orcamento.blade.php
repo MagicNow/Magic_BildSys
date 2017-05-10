@@ -7,58 +7,88 @@
         </div>
     </section>
     <div class="content">
-        <div class="form-group col-sm-6">
-            {!! Form::label('insumo', 'Insumo:') !!}
-            {!! Form::select('insumo', ['' => 'Escolha...'], null, ['class' => 'form-control','id'=>'insumo','required'=>'required']) !!}
-        </div>
+        {!! Form::open(['url' => URL::to('/compras/insumos/orcamento/incluir')]) !!}
+            <div class="form-group col-sm-6">
+                {!! Form::label('insumo_id', 'Insumo:') !!}
+                {!! Form::select('insumo_id', ['' => 'Escolha...'], null, ['class' => 'form-control','id'=>'insumo','required'=>'required']) !!}
+            </div>
 
-        <div class="col-md-12">
-            <div class="col-md-12 thumbnail">
-                <div class="col-md-12">
-                    <div class="caption">
-                        <div class="card-description">
-                            <!-- Grupos de insumo Field -->
-                            <div class="form-group col-sm-6" style="width:20%">
-                                {!! Form::label('grupo_id', 'Grupos:') !!}
-                                {!! Form::select('grupo_id', [''=>'-']+$grupos, null, ['class' => 'form-control', 'id'=>'grupo_id','onchange'=>'selectgrupo(this.value, \'subgrupo1_id\', \'grupos\');']) !!}
+            <div class="form-group col-sm-6">
+                {!! Form::label('qtd_total', 'Quantidade:') !!}
+                {!! Form::text('qtd_total', null, ['class' => 'form-control money','required'=>'required']) !!}
+            </div>
+
+            <div class="col-md-12">
+                <div class="col-md-12 thumbnail">
+                    <div class="col-md-12">
+                        <div class="caption">
+                            <div class="card-description">
+                                <!-- Grupos de insumo Field -->
+                                <div class="form-group col-sm-6" style="width:20%">
+                                    {!! Form::label('grupo_id', 'Grupos:') !!}
+                                    {!! Form::select('grupo_id', [''=>'-']+$grupos, null, ['class' => 'form-control', 'id'=>'grupo_id','onchange'=>'selectgrupo(this.value, \'subgrupo1_id\', \'grupos\');', 'required']) !!}
+                                </div>
+
+                                <!-- SubGrupos1 de insumo Field -->
+                                <div class="form-group col-sm-6" style="width:20%">
+                                    {!! Form::label('subgrupo1_id', 'SubGrupo-1:') !!}
+                                    {!! Form::select('subgrupo1_id', [''=>'-'], null, ['class' => 'form-control', 'id'=>'subgrupo1_id', 'disabled'=>'disabled', 'onchange'=>'selectgrupo(this.value, \'subgrupo2_id\', \'grupos\');', 'required']) !!}
+                                </div>
+
+                                <!-- SubGrupos2 de insumo Field -->
+                                <div class="form-group col-sm-6" style="width:20%">
+                                    {!! Form::label('subgrupo2_id', 'SubGrupo-2:') !!}
+                                    {!! Form::select('subgrupo2_id', [''=>'-'], null, ['class' => 'form-control', 'id'=>'subgrupo2_id', 'disabled'=>'disabled', 'onchange'=>'selectgrupo(this.value, \'subgrupo3_id\', \'grupos\');', 'required']) !!}
+                                </div>
+
+                                <!-- SubGrupos3 de insumo Field -->
+                                <div class="form-group col-sm-6" style="width:20%">
+                                    {!! Form::label('subgrupo3_id', 'SubGrupo-3:') !!}
+                                    {!! Form::select('subgrupo3_id', [''=>'-'], null, ['class' => 'form-control', 'id'=>'subgrupo3_id', 'disabled'=>'disabled', 'onchange'=>'selectgrupo(this.value, \'servico_id\', \'servicos\');', 'required']) !!}
+                                </div>
+
+                                <!-- SubGrupos4 de insumo Field -->
+                                <div class="form-group col-sm-6" style="width:20%">
+                                    {!! Form::label('servico_id', 'Serviço:') !!}
+                                    {!! Form::select('servico_id', [''=>'-'], null, ['class' => 'form-control', 'id'=>'servico_id', 'disabled'=>'disabled', 'onchange'=>'selectgrupo(this.value, null, \'servicos\');', 'required']) !!}
+                                </div>
+                                <input type="hidden" name="obra_id" value="{{$obra_id}}">
+
+                                <div class="col-md-12" id="list-insumos"></div>
                             </div>
-
-                            <!-- SubGrupos1 de insumo Field -->
-                            <div class="form-group col-sm-6" style="width:20%">
-                                {!! Form::label('subgrupo1_id', 'SubGrupo-1:') !!}
-                                {!! Form::select('subgrupo1_id', [''=>'-'], null, ['class' => 'form-control', 'id'=>'subgrupo1_id', 'disabled'=>'disabled', 'onchange'=>'selectgrupo(this.value, \'subgrupo2_id\', \'grupos\');']) !!}
-                            </div>
-
-                            <!-- SubGrupos2 de insumo Field -->
-                            <div class="form-group col-sm-6" style="width:20%">
-                                {!! Form::label('subgrupo2_id', 'SubGrupo-2:') !!}
-                                {!! Form::select('subgrupo2_id', [''=>'-'], null, ['class' => 'form-control', 'id'=>'subgrupo2_id', 'disabled'=>'disabled', 'onchange'=>'selectgrupo(this.value, \'subgrupo3_id\', \'grupos\');']) !!}
-                            </div>
-
-                            <!-- SubGrupos3 de insumo Field -->
-                            <div class="form-group col-sm-6" style="width:20%">
-                                {!! Form::label('subgrupo3_id', 'SubGrupo-3:') !!}
-                                {!! Form::select('subgrupo3_id', [''=>'-'], null, ['class' => 'form-control', 'id'=>'subgrupo3_id', 'disabled'=>'disabled', 'onchange'=>'selectgrupo(this.value, \'servico_id\', \'servicos\');']) !!}
-                            </div>
-
-                            <!-- SubGrupos4 de insumo Field -->
-                            <div class="form-group col-sm-6" style="width:20%">
-                                {!! Form::label('servico_id', 'Serviço:') !!}
-                                {!! Form::select('servico_id', [''=>'-'], null, ['class' => 'form-control', 'id'=>'servico_id', 'disabled'=>'disabled', 'onchange'=>'selectgrupo(this.value, null, \'servicos\')']) !!}
-                            </div>
-                            <input type="hidden" name="planejamento_id" value="{{$obra->id}}">
-
-                            <div class="col-md-12" id="list-insumos"></div>
                         </div>
                     </div>
                 </div>
             </div>
+
+        <!-- Submit Field -->
+        <div class="form-group col-sm-12">
+            {!! Form::button( '<i class="fa fa-save"></i> '. 'Incluir', ['class' => 'btn btn-success pull-right', 'type'=>'submit']) !!}
+            <a href="{{URL::to('/compras/obrasInsumos?obra_id='.$obra_id)}}" class="btn btn-default"><i class="fa fa-times"></i>  {{ ucfirst( trans('common.cancel') )}}</a>
         </div>
+
+        {!! Form::close() !!}
     </div>
 @endsection
 @section('scripts')
     <script>
         $(function () {
+            @if(session('salvo'))
+                swal({
+                    title: "Insumo incluído!",
+                    text: "Deseja continuar incluindo insumos no orçamento?",
+                    type: "success",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    cancelButtonText: "Não",
+                    confirmButtonText: "Sim"
+                },
+                function(isConfirm){
+                    if (!isConfirm) {
+                        window.location = "/compras/obrasInsumos?obra_id={{$obra_id}}";
+                    }
+                });
+            @endif
             $('#insumo').select2({
                 allowClear: true,
                 placeholder: "Escolha...",
