@@ -497,7 +497,6 @@ class OrdemDeCompraController extends AppBaseController
                     'orcamentos.servico_id',
                     'orcamentos.preco_total',
                     'orcamentos.preco_unitario',
-                    DB::raw('0 as quantidade_compra'),
                     DB::raw('0 as pai'),
                     DB::raw('0 as filho'),
                     DB::raw('(SELECT 
@@ -550,7 +549,22 @@ class OrdemDeCompraController extends AppBaseController
                                 ),0
                             )
                         )
-                    ) as saldo')
+                    ) as saldo'),
+                    DB::raw('(
+                                SELECT sum(ordem_de_compra_itens.qtd) FROM ordem_de_compra_itens 
+                                JOIN ordem_de_compras 
+                                ON ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id 
+                                AND ordem_de_compras.oc_status_id != 6 
+                                AND ordem_de_compras.oc_status_id != 4 
+                                WHERE ordem_de_compra_itens.insumo_id = insumos.id 
+                                AND ordem_de_compra_itens.grupo_id = orcamentos.grupo_id
+                                AND ordem_de_compra_itens.subgrupo1_id = orcamentos.subgrupo1_id
+                                AND ordem_de_compra_itens.subgrupo2_id = orcamentos.subgrupo2_id
+                                AND ordem_de_compra_itens.subgrupo3_id = orcamentos.subgrupo3_id
+                                AND ordem_de_compra_itens.servico_id = orcamentos.servico_id
+                                AND ordem_de_compras.obra_id ='. $obra->id .' 
+          
+                    ) as quantidade_compra')
                 ]
             )
                 ->whereNotNull('orcamentos.qtd_total')
