@@ -13,6 +13,8 @@
 
 Auth::routes();
 
+$router->get('/admin/contratos/buscar/busca_insumos', ['as' => 'admin.catalogo_contratos.busca_insumos', 'uses' => 'Admin\CatalogoContratoController@buscaInsumos']);
+
 ##### ADMIN #####
 $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:dashboard.access']], function () use ($router) {
 
@@ -128,7 +130,6 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
         $router->get('contratos/{contratos}', ['as' => 'admin.catalogo_contratos.show', 'uses' => 'Admin\CatalogoContratoController@show'])->middleware("needsPermission:contratos.view");
         $router->get('contratos/{contratos}/edit', ['as' => 'admin.catalogo_contratos.edit', 'uses' => 'Admin\CatalogoContratoController@edit'])->middleware("needsPermission:contratos.edit");
         $router->get('contratos/buscar/busca_fornecedores', ['as' => 'admin.catalogo_contratos.busca_fornecedores', 'uses' => 'Admin\CatalogoContratoController@buscaFornecedor']);
-        $router->get('contratos/buscar/busca_insumos', ['as' => 'admin.catalogo_contratos.busca_insumos', 'uses' => 'Admin\CatalogoContratoController@buscaInsumos']);
         $router->get('insumo/delete', 'Admin\CatalogoContratoController@deleteInsumo');
     });
 
@@ -377,6 +378,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             $router->get('{planejamento}/obrasInsumosJson/{insumoGrupo}', 'OrdemDeCompraController@obrasInsumosJson');
 
             $router->get('insumos', 'OrdemDeCompraController@insumos')->name('compraInsumo');
+            $router->get('insumos/orcamento/{obra_id}', 'OrdemDeCompraController@insumosOrcamento');
             $router->get('insumosJson', 'OrdemDeCompraController@insumosJson');
             $router->get('insumosFilters', 'OrdemDeCompraController@insumosFilters');
             $router->post('insumosAdd', 'OrdemDeCompraController@insumosAdd');

@@ -12,7 +12,7 @@
                 <div class="col-md-6 text-right">
                     {{--href="{{url('compras/insumos?planejamento_id='.$planejamento->id.'&insumo_grupos_id='    .$insumoGrupo->id)}}"--}}
                     @if (isset($obra))
-                        <a id="btn-incluir-insumo"  type="button" class="btn btn-default btn-lg btn-flat" data-toggle="modal" data-target="#modalPlanejamentos">
+                        <a href="{{url("compras/insumos/orcamento/".$obra->id)}}" type="button" class="btn btn-default btn-lg btn-flat">
                             Incluir Insumo
                         </a>
                     @else

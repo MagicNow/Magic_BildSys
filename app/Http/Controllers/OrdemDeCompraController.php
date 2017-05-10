@@ -1318,5 +1318,16 @@ class OrdemDeCompraController extends AppBaseController
         return $insumosAprovadosDataTable->render('ordem_de_compras.insumos-aprovados',
             compact('obras','OCs','insumoGrupos','insumos','cidades','farol'));
     }
+
+    /**
+     * Tela de inserção de insumos no orçamento.
+     * @param  Obra $obra_id
+     * @return Render View
+     */
+    public function insumosOrcamento($obra_id){
+        $obra = Obra::find($obra_id);
+        
+        return view('ordem_de_compras.insumos_orcamento', compact('obra'));
+    }
 }
 
