@@ -136,7 +136,7 @@ class ImportacaoRepository
                     'cep' => trim(str_replace('.','',$fornecedores_mega->agn_st_cep)),
                     'cidade_id' => isset($cidade) ? $cidade->id : null
                 ]);
-                ImportacaoRepository::fornecedor_servicos($fornecedor->codigo_mega);
+//                ImportacaoRepository::fornecedor_servicos($fornecedor->codigo_mega);
                 return $fornecedor;
             }
         } catch (\Exception $e) {
