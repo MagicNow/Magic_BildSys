@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Models\Cidade;
 use App\Models\Fornecedor;
 use App\Models\Cnae;
+use App\Models\FornecedorServico;
 use App\Models\Insumo;
 use App\Models\InsumoGrupo;
 use App\Models\MegaCnae;
@@ -136,7 +137,7 @@ class ImportacaoRepository
                     'cep' => trim(str_replace('.','',$fornecedores_mega->agn_st_cep)),
                     'cidade_id' => isset($cidade) ? $cidade->id : null
                 ]);
-//                ImportacaoRepository::fornecedor_servicos($fornecedor->codigo_mega);
+                ImportacaoRepository::fornecedor_servicos($fornecedor->codigo_mega);
                 return $fornecedor;
             }
         } catch (\Exception $e) {
@@ -145,18 +146,39 @@ class ImportacaoRepository
         }
     }
 
-    public static function fornecedor_servicos($param_value){
-//        dd($param_value);
-//        $servicosFornecedor = MegaFornecedorServico::select([
-//            'agn.agn_in_codigo',
-//            'agn.agn_st_fantasia',
-//            'agn.agn_st_nome',
-//            'csa.cos_in_codigo',
-//            'csa.agn_pad_in_codigo',
-//            'agn.agn_pad_in_codigo',
-//            'cse.cos_st_descricao'
-//        ])
-//        return ['success' => $servicosFornecedor];
+    public static function fornecedor_servicos($param_value)
+    {
+        $fornecedor = Fornecedor::where('codigo_mega', $param_value)->first();
+
+        $fornecedorServicos = MegaFornecedorServico::select([
+            'TRF_CODSERVICOAGN.agn_in_codigo',
+            'TRF_CODSERVICOAGN.cos_in_codigo'
+
+        ])
+            ->join('mgglo.glo_agentes_id','glo_agentes_id.agn_in_codigo','=','trf_codservicoagn.agn_in_codigo')
+            ->join('mgglo.glo_agentes','glo_agentes.agn_in_codigo','=','glo_agentes_id.agn_in_codigo')
+            ->join('mgtrf.trf_codservico','trf_codservico.cos_in_codigo','=','trf_codservicoagn.cos_in_codigo')
+            ->where('glo_agentes.agn_in_codigo', $param_value)
+            ->get();
+
+        foreach ($fornecedorServicos as $servico) {
+            try {
+                $servico_cnae = Cnae::where('id', $servico->cos_in_codigo)->first();
+                if (!$servico_cnae) {
+                    ImportacaoRepository::cnae_servicos();
+                }
+
+                FornecedorServico::create([
+                    'codigo_fornecedor_id' => $fornecedor->id,
+                    'codigo_servico_id' => $servico->cos_in_codigo
+                ]);
+
+            } catch (\Exception $e) {
+                Log::error('Erro ao importar serviço '. $servico->cos_in_codigo. ': '.$e->getMessage());
+            }
+        }
+
+        return ['success' => true, 'total-sys' => count($fornecedorServicos) ];
     }
 
     # Importação de CNAE do BANCO DE DADOS BILD-SYS - MEGA

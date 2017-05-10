@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class FornecedorServico
@@ -12,20 +11,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class FornecedorServico extends Model
 {
-    use SoftDeletes;
-
     public $table = 'fornecedor_servicos';
-    
-    const CREATED_AT = 'created_at';
-    const UPDATED_AT = 'updated_at';
 
-
-    protected $dates = ['deleted_at'];
-
+    public $timestamps = false;
 
     public $fillable = [
-        'cod_fornecedor',
-        'cod_servico'
+        'codigo_fornecedor_id',
+        'codigo_servico_id'
     ];
 
     /**
@@ -35,8 +27,8 @@ class FornecedorServico extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'cod_fornecedor' => 'integer',
-        'cod_servico' => 'integer'
+        'codigo_fornecedor_id' => 'integer',
+        'codigo_servico_id' => 'integer'
     ];
 
     /**
