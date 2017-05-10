@@ -25,6 +25,8 @@ class PlanejamentoController extends AppBaseController
             ->where('obra_users.user_id', Auth::user()->id)
             ->select([
                 'lembretes.id',
+                'obras.nome as obra',
+                'planejamentos.tarefa',
                 DB::raw("GROUP_CONCAT(DISTINCT insumo_grupos.nome ORDER BY insumo_grupos.nome ASC SEPARATOR ', ') grupo"),
                 DB::raw("CONCAT(obras.nome,' - ',planejamentos.tarefa,' - ', lembretes.nome) title"),
                 DB::raw("'event-info' as class"),
@@ -284,7 +286,13 @@ class PlanejamentoController extends AppBaseController
         if ($request->obra_id) {
             $lembretes->where('planejamentos.obra_id', $request->obra_id);
         }
-        $lembretes = $lembretes->groupBy(['id','title','class','url','inicio','start','end'])->get();
+        if ($request->planejamento_id) {
+            $lembretes->where('planejamentos.id', $request->planejamento_id);
+        }
+        if ($request->insumo_grupo_id) {
+            $lembretes->where('insumos.insumo_grupo_id', $request->insumo_grupo_id);
+        }
+        $lembretes = $lembretes->groupBy(['id','obra','tarefa','title','class','url','inicio','start','end'])->get();
 
         return response()->json([
             'success' => true,
@@ -294,12 +302,14 @@ class PlanejamentoController extends AppBaseController
 
     public function getPlanejamentosByObra(Request $request)
     {
-        $planejamentos = Planejamento::join('planejamento_compras', 'planejamento_compras.planejamento_id', '=', 'planejamentos.id')
-            ->where('obra_id', $request->obra_id)
+        $planejamentos = Planejamento::where('obra_id', $request->obra_id)
+            ->where('planejamentos.tarefa','LIKE', '%'.$request->q.'%')
             ->select([
                 'planejamentos.id',
                 'planejamentos.tarefa as text'
-            ])->groupBy('planejamentos.id')->get();
-        return response()->json($planejamentos);
+            ])
+            ->where('planejamentos.resumo','Sim')
+            ->groupBy('planejamentos.id','planejamentos.tarefa');
+        return $planejamentos->paginate();
     }
 }
