@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\DataTables\InsumosAprovadosDataTable;
+use App\DataTables\LembretesHomeDataTable;
 use App\DataTables\OrdemDeCompraDataTable;
 use App\Http\Requests;
 use App\Http\Requests\CreateOrdemDeCompraRequest;
@@ -178,12 +179,13 @@ class OrdemDeCompraController extends AppBaseController
         return redirect('/ordens-de-compra');
     }
 
-    public function compras()
+    public function compras(LembretesHomeDataTable $lembretesHomeDataTable)
     {
         $user_obras = ObraUser::where('user_id', Auth::user()->id)->get();
         $obras = Obra::whereIn('id', $user_obras->pluck('obra_id')->toArray())->get();
         $obras = $obras->pluck('nome','id')->toArray();
-        return view('ordem_de_compras.compras', compact('obras'));
+        
+        return $lembretesHomeDataTable->render('ordem_de_compras.compras', compact('obras'));
     }
 
     /**
@@ -588,7 +590,8 @@ class OrdemDeCompraController extends AppBaseController
         ->whereNull('planejamento_compras.deleted_at')
         ->whereNotNull('orcamentos.qtd_total')
         ->whereNotNull('orcamentos.preco_total')
-        ->where('orcamentos.ativo','1');
+        ->where('orcamentos.ativo','1')
+        ->where('orcamentos.qtd_total','>','0');
 
         //Testa a ordenação
         if(isset($request->orderkey)){

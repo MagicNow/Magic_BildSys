@@ -13,8 +13,10 @@
             <div class="box-body">
                 <div class="row">
                     <div class="col-md-6">
+                        <label for="select_obra">Obra</label>
                         {!! Form::select('obra_id', [''=>'Obra...']+$obras, null, [
-                                                                    'class'=>'form-control input-lg',
+                                                                    'id'=>'select_obra',
+                                                                    'class'=>'form-control select2 input-lg',
                                                                     'onchange'=>'escolheObra(this.value);'
                                                                     ]) !!}
                         <div class="row">
@@ -37,20 +39,6 @@
                                                 ]) !!}
                             </div>
                         </div>
-
-                    </div>
-                    <div class="col-md-3">
-                        <a id="btn-comprar-calendario" style="pointer-events: none;" href="" class="btn btn-block btn-lg btn-flat"><i
-                                    class="fa fa-shopping-cart"></i> Comprar</a>
-                    </div>
-                    <div class="col-md-3">
-                        <a href="{{ url('/ordens-de-compra') }}" class="btn btn-primary btn-block btn-lg btn-flat"><i
-                                    class="fa fa-shopping-basket"></i> Ordens de Compra</a>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
                         <div class="page-header">
 
                             <div class="pull-right form-inline">
@@ -73,21 +61,34 @@
                         <div id="calendar"></div>
                     </div>
                     <div class="col-md-6">
-                        <h3>Lembretes</h3>
-                        <table class="table table-striped table-bordered table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Data</th>
-                                    <th>Obra</th>
-                                    <th>Tarefa</th>
-                                    <th>Grupo do Insumo</th>
-                                    <th width="10%"> </th>
-                                </tr>
-                            </thead>
-                            <tbody id="eventlist">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <a id="btn-comprar-calendario" style="pointer-events: none;" href="" class="btn btn-block btn-lg btn-flat"><i
+                                            class="fa fa-shopping-cart"></i> Comprar</a>
+                            </div>
+                            <div class="col-md-6">
+                                <a href="{{ url('/ordens-de-compra') }}" class="btn btn-primary btn-block btn-lg btn-flat"><i
+                                            class="fa fa-shopping-basket"></i> Ordens de Compra</a>
+                            </div>
 
-                            </tbody>
-                        </table>
+                            <div class="col-md-12">
+                                <h3>Lembretes</h3>
+                                @include('ordem_de_compras.lembretes-home-table')
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+
+                    </div>
+                    <div class="col-md-6">
+
 
                     </div>
                 </div>
@@ -217,17 +218,17 @@
                     var list = $('#eventlist');
                     list.html('');
 
-                    $.each(events, function (key, val) {
-                        $(document.createElement('tr'))
-                                .html(  '<td>'+val.inicio+'</td>'+
-                                        '<td>'+val.obra+'</td>'+
-                                        '<td>'+val.tarefa+'</td>'+
-                                        '<td>'+val.grupo+'</td>'+
-                                        '<td>'+(val.url != '#' ? '<a href="' + val.url + '" class="btn btn-sm btn-flat btn-primary"> ' +
-                                        ' <i class="fa fa-shopping-cart" aria-hidden="true"></i> Comprar</a>' : '')+'</td>'
-                                )
-                                .appendTo(list);
-                    });
+//                    $.each(events, function (key, val) {
+//                        $(document.createElement('tr'))
+//                                .html(  '<td>'+val.inicio+'</td>'+
+//                                        '<td>'+val.obra+'</td>'+
+//                                        '<td>'+val.tarefa+'</td>'+
+//                                        '<td>'+val.grupo+'</td>'+
+//                                        '<td>'+(val.url != '#' ? '<a href="' + val.url + '" class="btn btn-sm btn-flat btn-primary"> ' +
+//                                        ' <i class="fa fa-shopping-cart" aria-hidden="true"></i> Comprar</a>' : '')+'</td>'
+//                                )
+//                                .appendTo(list);
+//                    });
                 },
                 onAfterViewLoad: function (view) {
                     $('.page-header h3').text(this.getTitle());

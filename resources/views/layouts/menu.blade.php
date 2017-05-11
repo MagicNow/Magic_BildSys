@@ -38,7 +38,7 @@
             </span>
     </a>
     <ul class="treeview-menu">
-        <li class="{{ Request::is('admin/planejamentos/planejamentoOrcamentos*') ? 'active' : '' }}"><a href="{!! route('admin.planejamentoOrcamentos.index') !!}"><i class="fa fa-exchange"></i><span>Planejamentos/Orcamentos</span></a></li>
+        <li class="{{ Request::is('admin/planejamentos/planejamentoOrcamentos*') ? 'active' : '' }}"><a href="{!! route('admin.planejamentoOrcamentos.index') !!}"><i class="fa fa-exchange"></i><span>Tarefa/Orcamentos</span></a></li>
         <li class="{{ Request::is('admin/planejamentoCronogramas*') ? 'active' : '' }}"><a href="{!! route('admin.planejamentoCronogramas.index') !!}"><i class="fa fa-calendar-plus-o"></i><span>Cronograma por obra</span></a></li>
         <li class="{{ Request::is('admin/planejamentos') ? 'active' : '' }}"><a href="{!! route('admin.planejamentos.index') !!}"><i class="fa fa-calendar-o"></i><span>Cronograma de obra</span></a></li>
         <li class="{{ Request::is('admin/planejamento') ? 'active' : '' }}"><a href="{!! route('admin.planejamentos.indexImport') !!}"><i class="glyphicon glyphicon-cloud-upload"></i><span>Importação</span></a></li>
