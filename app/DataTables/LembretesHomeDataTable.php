@@ -168,6 +168,9 @@ class LembretesHomeDataTable extends DataTable
                             0
                         )
                     ) DAY), "%y%m%d") $1')
+            ->filterColumn('grupo', function($query, $keyword){
+                $query->whereRaw("insumo_grupos.nome LIKE ?",['%'.$keyword.'%']);
+            })
             ->make(true);
     }
 
@@ -433,6 +436,39 @@ class LembretesHomeDataTable extends DataTable
                             var input = document.createElement("input");
                             $(input).attr(\'title\',\'Para uma faixa utilize hífen(-), ex:01/01/2018-31/01/2018\');
                             $(input).attr(\'placeholder\',\'Filtrar Data...\');
+                            $(input).addClass(\'form-control\');
+                            $(input).css(\'width\',\'100%\');
+                            $(input).appendTo($(column.footer()).empty())
+                            .on(\'change\', function () {
+                                column.search($(this).val(), false, false, true).draw();
+                            });
+                        }else if(col==1){
+                            var column = this;
+                            var input = document.createElement("input");
+                            $(input).attr(\'id\',\'filtro_obra\');
+                            $(input).attr(\'placeholder\',\'Filtrar Obra...\');
+                            $(input).addClass(\'form-control\');
+                            $(input).css(\'width\',\'100%\');
+                            $(input).appendTo($(column.footer()).empty())
+                            .on(\'change\', function () {
+                                column.search($(this).val(), false, false, true).draw();
+                            });
+                        }else if(col==2){
+                            var column = this;
+                            var input = document.createElement("input");
+                            $(input).attr(\'id\',\'filtro_tarefa\');
+                            $(input).attr(\'placeholder\',\'Filtrar Tarefa...\');
+                            $(input).addClass(\'form-control\');
+                            $(input).css(\'width\',\'100%\');
+                            $(input).appendTo($(column.footer()).empty())
+                            .on(\'change\', function () {
+                                column.search($(this).val(), false, false, true).draw();
+                            });
+                        }else if(col==3){
+                            var column = this;
+                            var input = document.createElement("input");
+                            $(input).attr(\'id\',\'filtro_grupo\');
+                            $(input).attr(\'placeholder\',\'Filtrar Grupo...\');
                             $(input).addClass(\'form-control\');
                             $(input).css(\'width\',\'100%\');
                             $(input).appendTo($(column.footer()).empty())

@@ -109,11 +109,15 @@
             $("#planejamento_id").val('').change();
             obra = obra_id;
             if(obra_id){
+                $('#filtro_obra').val($('#select_obra option:selected').text()).trigger( "change" );
                 $("#btn-comprar-calendario").attr("href", "compras/obrasInsumos/?obra_id="+obra_id);
                 $('#btn-comprar-calendario').css('pointer-events','auto');
                 $('#btn-comprar-calendario').addClass('btn-success');
                 $('#planejamento_id').attr('disabled',false);
+
+                $('#select_obra option:selected').text();
             }else{
+                $('#filtro_obra').val('').trigger( "change" );
                 $('#btn-comprar-calendario').removeClass('btn-success');
                 $('#btn-comprar-calendario').css('pointer-events','none');
                 $('#planejamento_id').attr('disabled',true);
@@ -157,11 +161,21 @@
 
         function atualizaCalendarioPorTarefa(tarefa) {
             planejamento_id = tarefa;
+            if(tarefa){
+                $('#filtro_tarefa').val($('#planejamento_id option:selected').text()).trigger( "change" );
+            }else{
+                $('#filtro_tarefa').val('').trigger( "change" );
+            }
             atualizaCalendario();
         }
 
         function atualizaCalendarioPorInsumoGrupo(insumo_grupo) {
             insumo_grupo_id = insumo_grupo;
+            if(insumo_grupo){
+                $('#filtro_grupo').val($('#insumo_grupo_id option:selected').text()).trigger( "change" );
+            }else{
+                $('#filtro_grupo').val('').trigger( "change" );
+            }
             atualizaCalendario();
         }
         $(function () {
