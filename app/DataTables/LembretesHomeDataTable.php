@@ -453,7 +453,7 @@ class LembretesHomeDataTable extends DataTable
                     });
                 }' ,
 //                "lengthChange"=> true,
-                "pageLength"=> 25,
+                "pageLength"=> 5,
                 'dom' => 'Bfrltip',
                 'scrollX' => false,
                 'language'=> [
