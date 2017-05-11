@@ -65,7 +65,7 @@
                     @endif
                 @endif
             @elseif($quadroDeConcorrencia->qc_status_id==5)
-                <button type="button" class="btn btn-lg btn-success btn-flat" style="margin-left: 20px" onclick="abrirConcorrencia();">
+                <button type="button" class="btn btn-lg btn-success btn-flat" style="margin-left: 20px" onclick="abrirConcorrencia({{$quadroDeConcorrencia->id}});">
                     <i class="fa fa-play-circle-o " aria-hidden="true"></i> Abrir concorrência
                 </button>
             @endif

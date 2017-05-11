@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\QuadroDeConcorrencia;
 use Flash;
 use Response;
 use Exception;
@@ -50,7 +51,15 @@ class QuadroDeConcorrenciaController extends AppBaseController
      */
     public function index(QuadroDeConcorrenciaDataTable $quadroDeConcorrenciaDataTable)
     {
-        return $quadroDeConcorrenciaDataTable->render('quadro_de_concorrencias.index');
+        $qcs_por_status = QuadroDeConcorrencia::select([
+            'qc_status.nome',
+            'qc_status.cor',
+            DB::raw('COUNT(1) qtd')
+        ])->join('qc_status','qc_status.id','qc_status_id')
+            ->groupBy('qc_status.nome','cor')
+            ->get();
+
+        return $quadroDeConcorrenciaDataTable->render('quadro_de_concorrencias.index',compact('qcs_por_status'));
     }
 
     /**
@@ -72,7 +81,9 @@ class QuadroDeConcorrenciaController extends AppBaseController
             'user_id' => Auth::id()
         ]);
 
-        return $qcItensDataTable->render('quadro_de_concorrencias.edit', compact('quadroDeConcorrencia') );
+        return redirect(route('quadroDeConcorrencias.edit',$quadroDeConcorrencia->id));
+
+//        return $qcItensDataTable->qc($quadroDeConcorrencia->id)->render('quadro_de_concorrencias.edit', compact('quadroDeConcorrencia') );
     }
 
     /**
@@ -123,7 +134,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
             return redirect(route('quadroDeConcorrencias.show',$quadroDeConcorrencia->id));
         }
 
-        return $qcItensDataTable->render('quadro_de_concorrencias.edit', compact('quadroDeConcorrencia') );
+        return $qcItensDataTable->qc($quadroDeConcorrencia->id)->render('quadro_de_concorrencias.edit', compact('quadroDeConcorrencia') );
     }
 
     /**

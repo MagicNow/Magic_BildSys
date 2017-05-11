@@ -64,9 +64,9 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
         $qc_itens_array = [];
         foreach ($oc_itens as $oc_item){
             if(isset($qc_itens_array[$oc_item->insumo_id])){
-                $qc_itens_array[$oc_item->insumo_id]['qtd'] += floatval($oc_item->qtd);
+                $qc_itens_array[$oc_item->insumo_id]['qtd'] += floatval($oc_item->getOriginal('qtd'));
             }else{
-                $qc_itens_array[$oc_item->insumo_id]['qtd'] = floatval($oc_item->qtd);
+                $qc_itens_array[$oc_item->insumo_id]['qtd'] = floatval($oc_item->getOriginal('qtd'));
             }
             $qc_itens_array[$oc_item->insumo_id]['insumo_id'] = $oc_item->insumo_id;
             $qc_itens_array[$oc_item->insumo_id]['ids'][] = $oc_item->id;

@@ -34,7 +34,7 @@ var QcInformarValoresForm = {
         }
 
         result.innerText = floatToMoney(
-          parseFloat(amount.innerText, 10) * moneyToFloat(price.value)
+          parseFloat(moneyToFloat(amount.innerText), 10) * moneyToFloat(price.value)
         );
       });
 

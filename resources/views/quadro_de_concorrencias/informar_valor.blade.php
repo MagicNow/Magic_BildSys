@@ -251,11 +251,11 @@
         <table class="table table-responsive table-striped table-align-middle table-condensed">
           <thead>
             <tr>
-              <th>Cod. Insumo</th>
-              <th>Un</th>
+              <th>Insumo</th>
               <th>Obs. Fornecedor</th>
-              <th>Quantidade QC</th>
               <th>Tabela Tems</th>
+              <th>Quantidade</th>
+              <th>Un</th>
               <th>Valor Unitário</th>
               <th>Valor Total</th>
               <th>Obra - Cidade</th>
@@ -264,8 +264,7 @@
           <tbody>
             @foreach($quadro->itens as $item)
               <tr class="js-calc-row">
-                <td>{{ $item->insumo->codigo }}</td>
-                <td>{{ $item->insumo->unidade_sigla }}</td>
+                <td>{{ $item->insumo->nome }}</td>
                 <td>
                   {!!
                     Form::textarea(
@@ -280,10 +279,6 @@
                       ]
                     )
                   !!}
-                </td>
-                <td class="js-calc-amount">
-                  {{ $item->qtd }}
-                  {!! Form::hidden("itens[{$item->id}][qtd]", $item->qtd) !!}
                 </td>
                 <td>
                   {!!
@@ -300,6 +295,11 @@
                     )
                   !!}
                 </td>
+                <td class="js-calc-amount">
+                  {{ number_format($item->qtd,2,',','.') }}
+                  {!! Form::hidden("itens[{$item->id}][qtd]", $item->qtd) !!}
+                </td>
+                <td>{{ $item->insumo->unidade_sigla }}</td>
                 <td>
                   {!!
                     Form::text(

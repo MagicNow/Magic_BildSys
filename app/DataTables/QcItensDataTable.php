@@ -8,6 +8,12 @@ use Yajra\Datatables\Services\DataTable;
 
 class QcItensDataTable extends DataTable
 {
+    protected $quadro_de_concorrencia_id;
+
+    public function qc($id){
+        $this->quadro_de_concorrencia_id = $id;
+        return $this;
+    }
     /**
      * Display ajax response.
      *
@@ -56,6 +62,9 @@ class QcItensDataTable extends DataTable
                 DB::raw("CONCAT(insumos.codigo,' - ', insumos.nome) as insumo_nome"),
             ])
         ->join('insumos','insumos.id','qc_itens.insumo_id');
+        if($this->quadro_de_concorrencia_id){
+            $query->where('quadro_de_concorrencia_id',$this->quadro_de_concorrencia_id);
+        }
 
         return $this->applyScopes($query);
     }

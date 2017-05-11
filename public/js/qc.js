@@ -715,7 +715,10 @@ function agrupar() {
 }
 
 // Funções do Quadro de Concorrência
-function abrirConcorrencia(){
+function abrirConcorrencia(qc){
+    if(qc==0){
+        qc = quadroDeConcorrenciaId;
+    }
     swal({
         title: 'Deseja iniciar a concorrência?',
         text: 'Ao iniciar a concorrência os fornecedores receberão aviso para acessar a plataforma e efetuar as propostas.',
@@ -727,7 +730,7 @@ function abrirConcorrencia(){
         showLoaderOnConfirm: true,
         closeOnConfirm: false
     }, function () {
-        $.ajax("/quadro-de-concorrencia/" + quadroDeConcorrenciaId + "/acao/inicia-concorrencia").success(function (retorno) {
+        $.ajax("/quadro-de-concorrencia/" + qc + "/acao/inicia-concorrencia").success(function (retorno) {
             var texto = '';
             if(retorno.mensagens.length){
                 $.each(retorno.mensagens,function(n,elem){

@@ -10,7 +10,7 @@
         </a>
         @endif
         @if($qc_status_id==5)
-            <button type="button" class="btn btn-xs btn-success" onclick="abrirConcorrencia();" title="Abrir concorrência">
+            <button type="button" class="btn btn-xs btn-success" onclick="abrirConcorrencia({{$id}});" title="Abrir concorrência">
                 <i class="fa fa-play-circle-o" aria-hidden="true"></i>
             </button>
         @endif

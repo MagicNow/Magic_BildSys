@@ -34,6 +34,32 @@ class QuadroDeConcorrenciaDataTable extends DataTable
             ->filterColumn('updated_at', function ($query, $keyword) {
                 $query->whereRaw("DATE_FORMAT(quadro_de_concorrencias.updated_at,'%d/%m/%Y') like ?", ["%$keyword%"]);
             })
+            ->filterColumn('fornecedores', function($query, $keyword){
+                $query->whereRaw('(SELECT 
+                            count(1) 
+                          FROM qc_fornecedor 
+                          WHERE 
+                            quadro_de_concorrencia_id = quadro_de_concorrencias.id
+                            AND rodada = quadro_de_concorrencias.rodada_atual
+                          ) = ?',[$keyword]);
+            })
+            ->filterColumn('propostas', function($query, $keyword){
+                $query->whereRaw('(SELECT 
+                            count(1) 
+                            FROM qc_fornecedor 
+                            WHERE 
+                                quadro_de_concorrencia_id = quadro_de_concorrencias.id
+                                AND rodada = quadro_de_concorrencias.rodada_atual
+                                AND (
+                                    qc_fornecedor.desistencia_motivo_id IS NOT NULL
+                                    OR
+                                    EXISTS (
+                                        SELECT 1 FROM qc_item_qc_fornecedor
+                                        WHERE qc_fornecedor_id = qc_fornecedor.id
+                                        )
+                                    )
+                         ) = ?',[$keyword]);
+            })
             ->make(true);
     }
 
@@ -55,7 +81,29 @@ class QuadroDeConcorrenciaDataTable extends DataTable
                 'users.name as usuario',
                 'qc_status.nome as situacao',
                 'qc_status.cor as situacao_cor',
-                'quadro_de_concorrencias.qc_status_id'
+                'quadro_de_concorrencias.qc_status_id',
+                DB::raw('(SELECT 
+                            count(1) 
+                          FROM qc_fornecedor 
+                          WHERE 
+                            quadro_de_concorrencia_id = quadro_de_concorrencias.id
+                            AND rodada = quadro_de_concorrencias.rodada_atual
+                          ) as fornecedores'),
+                DB::raw('(SELECT 
+                            count(1) 
+                            FROM qc_fornecedor 
+                            WHERE 
+                                quadro_de_concorrencia_id = quadro_de_concorrencias.id
+                                AND rodada = quadro_de_concorrencias.rodada_atual
+                                AND (
+                                    qc_fornecedor.desistencia_motivo_id IS NOT NULL
+                                    OR
+                                    EXISTS (
+                                        SELECT 1 FROM qc_item_qc_fornecedor
+                                        WHERE qc_fornecedor_id = qc_fornecedor.id
+                                        )
+                                    )
+                         ) as propostas'),
             ])
             ->join('users','users.id','quadro_de_concorrencias.user_id')
             ->join('qc_status','qc_status.id','quadro_de_concorrencias.qc_status_id');
@@ -138,7 +186,9 @@ class QuadroDeConcorrenciaDataTable extends DataTable
             'rodada_atual' => ['name' => 'rodada_atual', 'data' => 'rodada_atual'],
             'atualizadoEm' => ['name' => 'quadro_de_concorrencias.updated_at', 'data' => 'updated_at', 'width'=>'12%'],
             'rodada' => ['name' => 'rodada_atual', 'data' => 'rodada_atual', 'width'=>'6%'],
-            'action' => ['title' => '#', 'printable' => false, 'width'=>'10%'],
+            'fornecedores' => ['name' => 'fornecedores', 'data' => 'fornecedores', 'width'=>'6%'],
+            'propostas' => ['name' => 'propostas', 'data' => 'propostas', 'width'=>'6%'],
+            'action' => ['searchable'=>false, 'orderable'=>false,'title' => '#', 'printable' => false, 'width'=>'10%'],
         ];
 
         if(!auth()->user()->fornecedor) {
