@@ -70,18 +70,26 @@
     <p class="form-control">{!! $fornecedores->complemento !!}</p>
 </div>
 
-<div class="form-group col-sm-6">
+<div class="form-group col-sm-12">
   <div class="checkbox">
-    <label>
+    <label style="padding-left: 0px; ">
       {!! Form::checkbox('is_user', '1', $fornecedores->is_user, ['readonly', 'disabled']) !!}
       É usuário
     </label>
   </div>
 </div>
 
-<!-- Situacao Cnpj Field -->
-{{--<div class="form-group col-md-6">
-    {!! Form::label('situacao_cnpj', 'Situacao Cnpj:') !!}
-    <p class="form-control">{!! $fornecedores->situacao_cnpj !!}</p>
-</div>--}}
+@if(isset($servicos))
+    <div class="col-md-12">
+    <h3>Serviços prestados pelo fornecedor:</h3>
+    </div>
+    <?php $qtd = 1; ?>
+    @foreach($servicos as $servico)
+        <div class="col-md-12">
+            <ul class="list-group">
+                <li class="list-group-item">{{$qtd++}} - {{$servico->nome}}</li>
+            </ul>
+        </div>
+    @endforeach
+@endif
 

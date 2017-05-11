@@ -12,7 +12,7 @@
                 <div class="col-md-6 text-right">
                     {{--href="{{url('compras/insumos?planejamento_id='.$planejamento->id.'&insumo_grupos_id='    .$insumoGrupo->id)}}"--}}
                     @if (isset($obra))
-                        <a id="btn-incluir-insumo"  type="button" class="btn btn-default btn-lg btn-flat" data-toggle="modal" data-target="#modalPlanejamentos">
+                        <a href="{{url("compras/insumos/orcamento/".$obra->id)}}" type="button" class="btn btn-default btn-lg btn-flat">
                             Incluir Insumo
                         </a>
                     @else
@@ -64,7 +64,7 @@
                                 {!! Form::label('servico_id', 'Serviço:') !!}
                                 {!! Form::select('servico_id', [''=>'-'], null, ['class' => 'form-control', 'id'=>'servico_id', 'disabled'=>'disabled', 'onchange'=>'selectgrupo(this.value, null, \'servicos\', \'servico\')']) !!}
                             </div>
-                            <input type="hidden" name="planejamento_id" value="{{$obra->id}}">
+                            <input type="hidden" name="obra_id" value="{{$obra->id}}">
 
                             <div class="col-md-12" id="list-insumos"></div>
                         </div>
@@ -91,13 +91,14 @@
             {{-->--}}
             {{--</tabela>--}}
             <tabela
-                    @if(isset($planejamento))api-url="/compras/obrasInsumosJson?planejamento_id={{$planejamento->id}}"
-                    @else api-url="/compras/obrasInsumosJson?obra_id={{$obra->id}}"
+                    @if(isset($planejamento))
+                        api-url="/compras/obrasInsumosJson?planejamento_id={{$planejamento->id}}"
+                        api-adicionar="/compras/{{$planejamento->obra_id}}/{{$planejamento->id}}/addCarrinho"
+                    @else
+                        api-url="/compras/obrasInsumosJson?obra_id={{$obra->id}}"
+                        api-adicionar="/compras/{{$obra->id}}/addCarrinho"
                     @endif
-                    api-filtros="/compras/obrasInsumosFilters"
-                    @if(isset($planejamento))api-adicionar="/compras/{{$planejamento->obra_id}}/{{$planejamento->id}}/addCarrinho"
-                    @else api-adicionar="/compras/{{$obra->id}}/addCarrinho"
-                    @endif
+                        api-filtros="/compras/obrasInsumosFilters"
                     _token="{{csrf_token()}}"
                     v-bind:params="{}"
                     v-bind:actions="{
