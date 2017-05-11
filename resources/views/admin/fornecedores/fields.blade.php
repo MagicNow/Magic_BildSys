@@ -142,6 +142,7 @@
         //CNPJ
         function validaCnpj(qual) {
             if($('#numero'+qual).val()!=''){
+                $('.box.box-primary').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
                 $.ajax({
                     url: "/admin/valida-documento",
                     data: {
@@ -171,6 +172,7 @@
                                 });
 
                     }
+                    $('.overlay').remove();
                 }).fail(function(retorno) {
                     if(retorno.responseJSON.erro){
                         swal({
@@ -204,6 +206,7 @@
                             $('#numero' + qual).focus();
                         });
                     }
+                    $('.overlay').remove();
                 });
             }
 

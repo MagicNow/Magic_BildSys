@@ -7,6 +7,7 @@ use App\Http\Requests\Admin;
 use App\Http\Requests\Admin\CreateFornecedoresRequest;
 use App\Http\Requests\Admin\UpdateFornecedoresRequest;
 use App\Models\Fornecedor;
+use App\Models\FornecedorServico;
 use App\Repositories\Admin\FornecedoresRepository;
 use App\Repositories\Admin\ValidationRepository;
 use App\Repositories\ImportacaoRepository;
@@ -84,13 +85,23 @@ class FornecedoresController extends AppBaseController
     {
         $fornecedores = $this->fornecedoresRepository->findWithoutFail($id);
 
+        $servicos = FornecedorServico::select([
+            'fornecedor_servicos.codigo_fornecedor_id',
+            'fornecedor_servicos.codigo_servico_id',
+            'servicos_cnae.nome'
+        ])
+            ->join('fornecedores','fornecedores.id','=','fornecedor_servicos.codigo_fornecedor_id')
+            ->join('servicos_cnae','servicos_cnae.id','=','fornecedor_servicos.codigo_servico_id')
+            ->where('fornecedor_servicos.codigo_fornecedor_id', $id)
+            ->get();
+
         if (empty($fornecedores)) {
             Flash::error('Fornecedores '.trans('common.not-found'));
 
             return redirect(route('admin.fornecedores.index'));
         }
 
-        return view('admin.fornecedores.show')->with('fornecedores', $fornecedores);
+        return view('admin.fornecedores.show', compact('servicos'))->with('fornecedores', $fornecedores);
     }
 
     /**
