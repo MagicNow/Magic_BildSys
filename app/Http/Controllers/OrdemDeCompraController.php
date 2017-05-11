@@ -1411,7 +1411,8 @@ class OrdemDeCompraController extends AppBaseController
      * @param Obra $obra_id
      * @return Render View
      */
-    public function insumosOrcamento($obra_id){
+    public function insumosOrcamento($obra_id)
+    {
         $grupos = Grupo::whereNull('grupo_id')->pluck('nome','id')->toArray();
         
         return view('ordem_de_compras.insumos_orcamento', compact('obra_id', 'grupos'));
@@ -1422,8 +1423,8 @@ class OrdemDeCompraController extends AppBaseController
      * @param Request $request
      * @return redirect
      */
-    public function incluirInsumosOrcamento(Request $request){
-
+    public function incluirInsumosOrcamento(Request $request)
+    {
         $insumo = Insumo::find($request->insumo_id);
         $servico = Servico::find($request->servico_id);
 
@@ -1454,14 +1455,29 @@ class OrdemDeCompraController extends AppBaseController
      * @param Request $request
      * @return true
      */
-    public function cadastrarGrupo(Request $request){
-        $grupo = new Grupo([
-            'codigo' => $request->codigo_grupo,
-            'nome' => $request->nome_grupo
-        ]);
+    public function cadastrarGrupo(Request $request)
+    {
+        $salvo = false;
+        $grupo = [];
+        if($request->codigo_grupo && $request->nome_grupo) {
+            if ($request->subgrupo_de_nome == 'servico_id') {
+                $grupo_com_cod = Grupo::find($request->subgrupo_de);
+                $grupo = new Servico([
+                    'codigo' => $grupo_com_cod->codigo . '.' . $request->codigo_grupo,
+                    'nome' => $request->nome_grupo,
+                    'grupo_id' => $request->subgrupo_de ? $request->subgrupo_de : null
+                ]);
+                $salvo = $grupo->save();
+            } else {
+                $grupo = new Grupo([
+                    'codigo' => $request->codigo_grupo ? $request->codigo_grupo : null,
+                    'nome' => $request->nome_grupo ? $request->nome_grupo : null,
+                    'grupo_id' => $request->subgrupo_de ? $request->subgrupo_de : null
+                ]);
+                $salvo = $grupo->save();
+            }
+        }
 
-        $salvo = $grupo->save();
-        
         return response()->json(['salvo' => $salvo, 'grupo' => $grupo]);
     }
 }
