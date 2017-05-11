@@ -40,7 +40,7 @@
     }
 </style>
 <div class="col-md-12 loading">
-    <h3>Relacionamento de orçamentos / planejamentos</h3>
+    <h3>Relacionamento de orçamentos / tarefas</h3>
     <div class="col-md-12 thumbnail">
         <div class="col-md-12">
             <div class="caption">
@@ -53,7 +53,7 @@
 
                     <!-- Planejamentos de insumo Field -->
                     <div class="form-group col-sm-12">
-                        {!! Form::label('planejamento_id', 'Planejamentos:') !!}
+                        {!! Form::label('planejamento_id', 'Tarefa:') !!}
                         {!! Form::select('planejamento_id', [''=>'-'], null, ['class' => 'form-control select2', 'id'=>'planejamento_id', 'required'=>'required']) !!}
                     </div>
 
@@ -62,12 +62,11 @@
                         {!! Form::label('grupo_insumo_id', 'Grupo de insumos:') !!}
                         {!! Form::select('grupo_insumo_id', [''=>'-'], null, ['class' => 'form-control select2', 'id'=>'grupo_insumo_id', 'onchange'=>'grupoInsumos(this.value)']) !!}
                     </div>
-
+                    <div class="submit col-md-4 col-md-offset-4"></div>
                     <div id="carrinho" class="col-md-12"></div>
                     <div id="grupo_insumos" class="col-md-12"></div>
 
-                    <div id="submit" class="col-md-4 col-md-offset-4">
-                    </div>
+                    <div class="submit col-md-4 col-md-offset-4"></div>
                 </div>
             </div>
         </div>
@@ -98,6 +97,25 @@
             }
         }
 
+        function selectGrupoInsumo(){
+            var rota = "{{url('/admin/planejamentos/planejamentoOrcamentos/planejamento/orcamento/insumo_grupos')}}";
+            $('.box.box-primary').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
+            $.ajax({
+                url: rota
+            }).done(function(retorno) {
+                options = '<option value="">Selecione</option>';
+                $('#grupo_insumo_id').html(options);
+                $.each(retorno,function(index, value){
+                    options += '<option value="'+index+'">'+value+'</option>';
+                });
+                $('#grupo_insumo_id').html(options);
+                $('.overlay').remove();
+                $('#grupo_insumo_id').attr('disabled',false);
+                $('#grupo_insumo_id').trigger('change');
+            }).fail(function() {
+                $('.overlay').remove();
+            });
+        }
         function selectGrupoInsumo(){
             var rota = "{{url('/admin/planejamentos/planejamentoOrcamentos/planejamento/orcamento/insumo_grupos')}}";
             $('.box.box-primary').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
@@ -149,8 +167,8 @@
                                 '</ul>';
                         $('#carrinho').html(list);
 
-                        submit = '<button type="submit" class="btn btn-primary btn-lg">Adicionar relacionamentos</button>';
-                        $('#submit').html(submit);
+                        submit = '<button type="submit" class="btn btn-primary btn-lg">Relacionar seleciionados</button>';
+                        $('.submit').html(submit);
                     }else{
                         list = 'Essa obras não tem orçamentos';
                         $('#carrinho').html(list);
