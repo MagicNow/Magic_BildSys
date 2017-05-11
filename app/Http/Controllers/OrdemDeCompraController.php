@@ -1448,5 +1448,21 @@ class OrdemDeCompraController extends AppBaseController
 
         return redirect('/compras/insumos/orcamento/'.$request->obra_id)->with(['salvo' => true]);
     }
+
+    /**
+     * Método para cadastrar novo grupo.
+     * @param Request $request
+     * @return true
+     */
+    public function cadastrarGrupo(Request $request){
+        $grupo = new Grupo([
+            'codigo' => $request->codigo_grupo,
+            'nome' => $request->nome_grupo
+        ]);
+
+        $salvo = $grupo->save();
+        
+        return response()->json(['salvo' => $salvo, 'grupo' => $grupo]);
+    }
 }
 

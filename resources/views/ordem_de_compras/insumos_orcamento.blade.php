@@ -58,6 +58,9 @@
                             </div>
                         </div>
                     </div>
+                    <a class="btn btn-info pull-right" data-toggle="modal" data-target="#cadastrarGrupo">
+                        <i class="fa fa-save"></i> Cadastrar grupo
+                    </a>
                 </div>
             </div>
 
@@ -68,6 +71,33 @@
         </div>
 
         {!! Form::close() !!}
+    </div>
+
+    <div class="modal fade" id="cadastrarGrupo" tabindex="-1" role="dialog" aria-labelledby="cadastrarGrupo">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="cadastrarGrupo">Cadastrar grupo</h4>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="codigo" class="control-label">Código:</label>
+                            <input type="text" class="form-control" id="codigo_grupo" name="codigo_grupo" maxlength="255">
+                        </div>
+                        <div class="form-group">
+                            <label for="nome" class="control-label">Nome:</label>
+                            <input type="text" class="form-control" id="nome_grupo" name="nome_grupo" maxlength="255">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar</button>
+                    <button type="button" class="btn btn-success" onclick="cadastrarGrupo();" data-dismiss="modal"><i class="fa fa-save"></i> Salvar</button>
+                </div>
+            </div>
+        </div>
     </div>
 @endsection
 @section('scripts')
@@ -172,6 +202,26 @@
                     $('.overlay').remove();
                 });
             }
+        }
+
+        function cadastrarGrupo() {
+            var codigo_grupo = $('#codigo_grupo').val();
+            var nome_grupo = $('#nome_grupo').val();
+
+            $.ajax({
+                url: '/compras/insumos/orcamento/cadastrar/grupo',
+                data: {
+                    'codigo_grupo': codigo_grupo,
+                    'nome_grupo': nome_grupo
+                }
+            }).done(function (json) {
+                if(json.salvo){
+                    if(!json.grupo.grupo_id){
+                        $('#grupo_id').append('<option value="'+json.grupo.id+'">'+json.grupo.nome+'</option>');
+                    }
+                    swal("Grupo cadastrado com sucesso!", "", "success")
+                }
+            });
         }
     </script>
 @stop
