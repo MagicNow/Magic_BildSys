@@ -488,7 +488,7 @@ class OrdemDeCompraController extends AppBaseController
                 [
                     'insumos.id',
                     DB::raw("CONCAT(insumos.codigo,' - ' ,insumos.nome) as nome"),
-                    'orcamentos.qtd_total',
+                    DB::raw("format(orcamentos.qtd_total,2,'de_DE') as qtd_total"),
                     'insumos.unidade_sigla',
                     'insumos.codigo',
                     'insumos.insumo_grupo_id',
@@ -531,7 +531,7 @@ class OrdemDeCompraController extends AppBaseController
                                 servicos
                             WHERE
                                 orcamentos.servico_id = servicos.id) AS tooltip_servico'),
-                    DB::raw('( 
+                    DB::raw('format(( 
                     orcamentos.qtd_total -
                         (
                             IFNULL(
@@ -551,7 +551,7 @@ class OrdemDeCompraController extends AppBaseController
                                 ),0
                             )
                         )
-                    ) as saldo'),
+                    ),2,\'de_DE\') as saldo'),
                     DB::raw('(
                                 SELECT sum(ordem_de_compra_itens.qtd) FROM ordem_de_compra_itens 
                                 JOIN ordem_de_compras 
@@ -594,7 +594,7 @@ class OrdemDeCompraController extends AppBaseController
                     [
                         'insumos.id',
                         DB::raw("CONCAT(insumos.codigo,' - ' ,insumos.nome) as nome"),
-                        'orcamentos.qtd_total',
+                        DB::raw("format(orcamentos.qtd_total,2,'de_DE') as qtd_total"),
                         'insumos.unidade_sigla',
                         'insumos.codigo',
                         'insumos.insumo_grupo_id',
@@ -650,7 +650,7 @@ class OrdemDeCompraController extends AppBaseController
                     WHERE ordem_de_compra_itens.insumo_id = insumos.id 
                     AND ordem_de_compra_itens.deleted_at IS NULL
                     AND ordem_de_compra_itens.obra_id ='. $planejamento->obra_id .' ) as adicionado'),
-                        DB::raw('( 
+                        DB::raw('format(( 
                     orcamentos.qtd_total -
                         (
                             IFNULL(
@@ -670,7 +670,7 @@ class OrdemDeCompraController extends AppBaseController
                                 ),0
                             )
                         )
-                    ) as saldo')
+                    ),2,\'de_DE\') as saldo'),
                     ]
                 )
                 ->whereNull('planejamento_compras.deleted_at')
