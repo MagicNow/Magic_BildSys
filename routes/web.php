@@ -446,7 +446,14 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         )->name('quadroDeConcorrencia.avaliar')
         ->middleware('needsPermission:quadroDeConcorrencias.edit');
 
+        $router->get(
+            '/quadro-de-concorrencia/{quadroDeConcorrencias}/equalizacao-tecnica/{qcFornecedor}',
+            'QuadroDeConcorrenciaController@getEqualizacaoTecnica'
+        )->name('quadroDeConcorrencia.get-equalizacao-tecnica')
+        ->middleware('needsPermission:quadroDeConcorrencias.edit');
+
         $router->get('quadro-de-concorrencia', ['as' => 'quadroDeConcorrencias.index', 'uses' => 'QuadroDeConcorrenciaController@index']);
+
         $router->post('quadro-de-concorrencia/criar',
             [
                 'as' => 'quadroDeConcorrencias.create',

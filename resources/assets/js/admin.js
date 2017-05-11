@@ -40,6 +40,9 @@ $(function () {
 
   $('.money').mask('0.000.000.000.000,00', {reverse: true});
   $('.decimal').mask('00,00');
+
+  $('.percent').mask('#00,00', {reverse: true});
+
   $('.cnpj').mask('99.999.999/9999-99');
   $('.cep').mask('00000-000');
   $('.telefone').mask(mascara, options);
@@ -68,3 +71,4 @@ function floatToMoney(number) {
 }
 
 var oTable = null;
+

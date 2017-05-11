@@ -64356,6 +64356,9 @@ $(function () {
 
   $('.money').mask('0.000.000.000.000,00', {reverse: true});
   $('.decimal').mask('00,00');
+
+  $('.percent').mask('#00,00', {reverse: true});
+
   $('.cnpj').mask('99.999.999/9999-99');
   $('.cep').mask('00000-000');
   $('.telefone').mask(mascara, options);
@@ -64384,6 +64387,7 @@ function floatToMoney(number) {
 }
 
 var oTable = null;
+
 
 var k = 0;
 var filtroGlobal = [];
@@ -65119,10 +65123,7 @@ var QcInformarValoresForm = {
 }
 
 $(function() {
-  var buttons = document.getElementsByClassName('js-sweetalert');
-
-  _.each(buttons, function(button) {
-    button.addEventListener('click', function() {
+  $(document.body).on('click', '.js-sweetalert', function(event) {
       event.preventDefault();
 
       var button = event.currentTarget;
@@ -65138,6 +65139,5 @@ $(function() {
       }, button.dataset);
 
       swal(options);
-    }, false);
   });
 });

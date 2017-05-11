@@ -362,3 +362,13 @@ h6 {
     margin: 10px;
 }
 
+.box-chart > .box-body {
+  height: 300px;
+  position: relative;
+}
+
+.box-chart > .box-body > canvas {
+  max-height: 100%;
+  width: content-box;
+  margin: auto;
+}

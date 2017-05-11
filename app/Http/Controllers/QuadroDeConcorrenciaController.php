@@ -377,13 +377,13 @@ class QuadroDeConcorrenciaController extends AppBaseController
                     return back()->withInput();
                 }
 
-                $qcFornecedor->update($request->only([
-                    'nf_material',
-                    'nf_servico',
-                    'porcentagem_faturamento_direto',
-                    'porcentagem_material',
-                    'porcentagem_servico',
-                ]));
+                $qcFornecedor->update([
+                    'nf_material' => $request->nf_material,
+                    'nf_servico' => $request->nf_servico,
+                    'porcentagem_faturamento_direto' => $request->porcentagem_faturamento_direto ?: 0,
+                    'porcentagem_material' => $request->porcentagem_material ?: 0,
+                    'porcentagem_servico' => $request->porcentagem_servico ?: 0,
+                ]);
             }
 
             if(!$request->reject) {
@@ -662,7 +662,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
 
         // Cria o novo QCitem agrupado
         $novoQcItem = QcItem::create([
-            'quadro_de_concorrencia_id'=>$quadroDeConcorrencia->id,
+            'quadro_de_concorrencia_id' => $quadroDeConcorrencia->id,
             'qtd'=> $qcItensQtd,
             'insumo_id' => $qcItem->insumo_id
         ]);
@@ -695,5 +695,31 @@ class QuadroDeConcorrenciaController extends AppBaseController
         }else{
             return response()->json(['error' => 'Esta ação não foi possível: ' . $acao_executada[1]], 422);
         }
+    }
+
+    public function getEqualizacaoTecnica(
+        $quadro,
+        $qcFornecedor,
+        Request $request,
+        QcFornecedorEqualizacaoCheckRepository $fornecedorCheckRepository
+    ) {
+        $quadro = $this->quadroDeConcorrenciaRepository
+            ->findWithoutFail($quadro);
+
+        if (empty($quadro)) {
+            if (!$request->ajax()) {
+                Flash::error('Quadro De Concorrencia ' . trans('common.not-found'));
+
+                return redirect(route('quadroDeConcorrencias.edit', $id));
+            }
+
+            return response()->json([
+                'error' => 'Quadro De Concorrencia ' . trans('common.not-found')
+            ], 404);
+        }
+
+        $checks = $fornecedorCheckRepository->porQcFornecedor($qcFornecedor);
+
+        return view('quadro_de_concorrencias.equalizacoes', compact('checks'));
     }
 }

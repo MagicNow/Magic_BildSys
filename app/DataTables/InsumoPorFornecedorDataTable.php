@@ -54,7 +54,7 @@ class InsumoPorFornecedorDataTable extends DataTable
                     ->first()
                     ->valor_total ?: 0;
 
-                $insumo[$qcFornecedor->fornecedor->nome] = float_to_money($valor);
+                $insumo[$qcFornecedor->fornecedor->nome . '||' . $qcFornecedor->id] = float_to_money($valor);
             });
 
             return $insumo;
@@ -71,7 +71,23 @@ class InsumoPorFornecedorDataTable extends DataTable
         );
 
         return array_reduce($x, function($columns, $column) {
-            $columns[$column] = ['name' => $column, 'data' => $column];
+            if($column != 'insumo') {
+                list($fornecedor, $id) = explode('||', $column);
+
+                $title = $fornecedor . '
+                    <button class="btn btn-xs btn-default btn-flat pull-right" data-qcfornecedor="' . $id . '">
+                        <i class="fa fa-info-circle"></i>
+                    </button>
+                ';
+            } else {
+                $title = $column;
+            }
+
+            $columns[$column] = [
+                'data'  => $column,
+                'name' => $column,
+                'title' => $title
+            ];
 
             return $columns;
         }, []);
