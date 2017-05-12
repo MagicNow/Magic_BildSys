@@ -796,12 +796,17 @@ class OrdemDeCompraController extends AppBaseController
             'unidade_sigla' => $orcamento_ativo->unidade_sigla,
         ]);
 
+        if($request->quantidade_compra[0] == ','){
+            $request->quantidade_compra = substr($request->quantidade_compra, 1);;
+        }
+
         $ordem_item->user_id = Auth::user()->id;
         $ordem_item->qtd = $request->quantidade_compra;
         $ordem_item->valor_unitario = $orcamento_ativo->preco_unitario;
-        $ordem_item->valor_total = doubleval($orcamento_ativo->preco_unitario) * doubleval($request->quantidade_compra);
+        $ordem_item->valor_total = $orcamento_ativo->getOriginal('preco_unitario') * money_to_float($request->quantidade_compra);
         $salvo = $ordem_item->save();
-        if(!$request->quantidade_compra){
+
+        if(!$request->quantidade_compra || $request->quantidade_compra == '0'){
             $ordem_item->delete();
         }
 
@@ -1533,7 +1538,6 @@ class OrdemDeCompraController extends AppBaseController
             ->where('insumo_id', $orcamento_ativo->insumo_id)
             ->where('unidade_sigla', $orcamento_ativo->unidade_sigla)
             ->first();
-        dd($orcamento_ativo);
 
         if($ordem_item->total == 1){
             $ordem_item->total = 0;
