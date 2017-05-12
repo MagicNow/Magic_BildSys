@@ -116,7 +116,7 @@
                     <i class="fa fa-times grey"></i>
                 </td>
                 <td class="row-table" v-if="actions.quantidade != undefined" @click="reprovar(dado['id'])">
-                    <input @blur="adicionar(dado, i)" v-model.number="quant[i]" type="number" v-bind:value="quant[i]" v-if="dado['pai'] == 0" min="0">
+                    <input @blur="adicionar(dado, i)" v-model.number="quant[i]" type="text" v-bind:value="quant[i]" v-if="dado['pai'] == 0" min="0" class="money">
                 </td>
                 <td class="row-table" v-if="actions.troca != undefined">
                     <a  v-if="dado['pai']>0 && dado['pai'] != undefined && dado['unidade_sigla'] == 'VB' && dado['insumo_grupo_id'] == '1570'" v-bind:href="actions.troca_url+'/'+dado['id'] ">

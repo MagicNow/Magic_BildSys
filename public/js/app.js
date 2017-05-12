@@ -47066,8 +47066,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
           "number": true
         }
       }],
+      staticClass: "money",
       attrs: {
-        "type": "number",
+        "type": "text",
         "min": "0"
       },
       domProps: {

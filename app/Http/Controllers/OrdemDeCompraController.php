@@ -566,7 +566,14 @@ class OrdemDeCompraController extends AppBaseController
                                 AND ordem_de_compra_itens.servico_id = orcamentos.servico_id
                                 AND ordem_de_compras.obra_id ='. $obra->id .' 
           
-                    ) as quantidade_compra')
+                    ) as quantidade_compra'),
+                    DB::raw('(SELECT count(ordem_de_compra_itens.id) FROM ordem_de_compra_itens 
+                    JOIN ordem_de_compras 
+                        ON ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id 
+                        AND ordem_de_compras.oc_status_id = 1 AND ordem_de_compras.user_id = '.Auth::id().' 
+                    WHERE ordem_de_compra_itens.insumo_id = insumos.id 
+                    AND ordem_de_compra_itens.deleted_at IS NULL
+                    AND ordem_de_compra_itens.obra_id ='. $obra->id .' ) as adicionado'),
                 ]
             )
                 ->whereNotNull('orcamentos.qtd_total')
