@@ -111,9 +111,9 @@ class CatalogoContratoInsumo extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function contrato()
+    public function catalogo()
     {
-        return $this->belongsTo(\App\Models\CatalogoContratoInsumo::class, 'catalogo_contrato_id');
+        return $this->belongsTo(CatalogoContrato::class, 'catalogo_contrato_id');
     }
 
     /**
@@ -121,6 +121,6 @@ class CatalogoContratoInsumo extends Model
      **/
     public function insumo()
     {
-        return $this->belongsTo(\App\Models\Insumo::class);
+        return $this->belongsTo(Insumo::class);
     }
 }

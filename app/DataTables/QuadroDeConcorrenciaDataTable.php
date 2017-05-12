@@ -22,6 +22,11 @@ class QuadroDeConcorrenciaDataTable extends DataTable
             ->editColumn('created_at', function($obj){
                 return $obj->created_at ? with(new\Carbon\Carbon($obj->created_at))->format('d/m/Y H:i') : '';
             })
+            ->editColumn('usuario', function($obj){
+                return $obj->usuario ?
+                    '<span class="label label-info">'.$obj->usuario.'</span>' :
+                    '<span class="label label-default"> <i class="fa fa-magic" aria-hidden="true"></i> Automático</span>';
+            })
             ->editColumn('situacao', function($obj){
                 return '<i class="fa fa-circle" aria-hidden="true" style="color:'.$obj->situacao_cor.'"></i> '.$obj->situacao;
             })
@@ -59,6 +64,9 @@ class QuadroDeConcorrenciaDataTable extends DataTable
                                         )
                                     )
                          ) = ?',[$keyword]);
+            })
+            ->filterColumn('users.name', function($query, $keyword){
+                $query->whereRaw("IFNULL(users.name,'automatico') LIKE ?",['%'.$keyword.'%']);
             })
             ->make(true);
     }
@@ -105,7 +113,7 @@ class QuadroDeConcorrenciaDataTable extends DataTable
                                     )
                          ) as propostas'),
             ])
-            ->join('users','users.id','quadro_de_concorrencias.user_id')
+            ->leftJoin('users','users.id','quadro_de_concorrencias.user_id')
             ->join('qc_status','qc_status.id','quadro_de_concorrencias.qc_status_id');
 
         if($user->fornecedor) {
