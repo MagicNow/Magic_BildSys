@@ -31,8 +31,8 @@ class CreateCompradorInsumoTable extends Migration
     public function down()
     {
         Schema::table('comprador_insumos', function(Blueprint $table) {
-            $table->dropColumn('user_id', 'user_id');
-            $table->dropColumn('insumo_id', 'insumo_id');
+            $table->dropForeign(['user_id']);
+            $table->dropForeign(['insumo_id']);
         });
 
         Schema::dropIfExists('comprador_insumos');

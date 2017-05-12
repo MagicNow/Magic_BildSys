@@ -87,7 +87,7 @@
 </li>
 
 <li class="{{ Request::is('admin/retroalimentacaoObras*') ? 'active' : '' }}">
-    <a href="{!! route('retroalimentacaoObras.index') !!}"><i class="fa fa-edit"></i><span>Retroalimentação de obras</span></a>
+    <a href="{!! route('retroalimentacaoObras.index') !!}"><i class="fa fa-magic"></i><span>Retroalimentação de obras</span></a>
 </li>
 
 <li class="{{ Request::is('fornecedores*') ? 'active' : '' }}">
@@ -95,6 +95,6 @@
 </li>
 
 <li class="{{ Request::is('compradorInsumos*') ? 'active' : '' }}">
-    <a href="{!! route('admin.compradorInsumos.index') !!}"><i class="fa fa-edit"></i><span>CompradorInsumos</span></a>
+    <a href="{!! route('admin.compradorInsumos.index') !!}"><i class="fa fa-child"></i><span>Comprador/Insumos</span></a>
 </li>
 
