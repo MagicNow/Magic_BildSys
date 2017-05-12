@@ -941,9 +941,12 @@ class OrdemDeCompraController extends AppBaseController
                 ->paginate(10);
         }
 
+        $obra_id = $ordemDeCompra->obra_id;
+
         return view('ordem_de_compras.carrinho', compact(
                 'ordemDeCompra',
-                'itens'
+                'itens',
+                'obra_id'
             )
         );
     }
@@ -1227,10 +1230,21 @@ class OrdemDeCompraController extends AppBaseController
     public function alterarQuantidade($id, Request $request)
     {
         $ordem_de_compra_item = OrdemDeCompraItem::find($id);
+        $ordem_de_compra_item->valor_total = $ordem_de_compra_item->getOriginal('valor_unitario') * money_to_float($request->qtd);
         $ordem_de_compra_item->qtd = $request->qtd;
         $ordem_de_compra_item->aprovado = null;
         $ordem_de_compra_item->save();
         
+        return response()->json(['success'=>true]);
+    }
+
+    public function alteraValorUnitario($id, Request $request)
+    {
+        $ordem_de_compra_item = OrdemDeCompraItem::find($id);
+        $ordem_de_compra_item->valor_unitario = $request->valor;
+        $ordem_de_compra_item->valor_total = $ordem_de_compra_item->getOriginal('qtd') * money_to_float($request->valor);
+        $ordem_de_compra_item->save();
+
         return response()->json(['success'=>true]);
     }
 
