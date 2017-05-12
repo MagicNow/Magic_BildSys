@@ -193,6 +193,9 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
     $router->get('compradorInsumos/{compradorInsumos}', ['as'=> 'admin.compradorInsumos.show', 'uses' => 'Admin\CompradorInsumoController@show']);
     $router->get('compradorInsumos/{compradorInsumos}/edit', ['as'=> 'admin.compradorInsumos.edit', 'uses' => 'Admin\CompradorInsumoController@edit']);
     $router->get('compradorInsumos/insumos/{id}', 'Admin\CompradorInsumoController@getInsumos');
+    $router->get('compradorInsumos/delete-bloco/view', ['as'=> 'admin.compradorInsumos.deleteblocoview', 'uses' => 'Admin\CompradorInsumoController@deleteBlocoView']);
+    $router->get('compradorInsumos/delete-bloco/view/delete', ['as'=> 'admin.compradorInsumos.deletebloco', 'uses' => 'Admin\CompradorInsumoController@deleteBloco']);
+    $router->get('compradorInsumos/delete-bloco/view/delete/{id}', 'Admin\CompradorInsumoController@buscaGrupoInsumo');
 
     $router->group(['middleware' => 'needsPermission:users.list'], function() use ($router) {
         $router->resource('users', 'Admin\Manage\UsersController');
