@@ -28,4 +28,12 @@ class QcItemQcFornecedorRepository extends BaseRepository
     {
         return QcItemQcFornecedor::class;
     }
+
+    public function findByQcItemQcFornecedor($qcItem, $qcFornecedor)
+    {
+        return $this->model
+            ->where('qc_item_id', $qcItem)
+            ->where('qc_fornecedor_id', $qcFornecedor)
+            ->firstOrFail();
+    }
 }

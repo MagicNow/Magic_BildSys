@@ -251,10 +251,10 @@
         <table class="table table-responsive table-striped table-align-middle table-condensed">
           <thead>
             <tr>
-              <th>Cod. Insumo</th>
+              <th>Insumo</th>
               <th>Un</th>
               <th>Obs. Fornecedor</th>
-              <th>Quantidade QC</th>
+              <th>Quantidade</th>
               <th>Tabela Tems</th>
               <th>Valor Unitário</th>
               <th>Valor Total</th>
@@ -264,7 +264,7 @@
           <tbody>
             @foreach($quadro->itens as $item)
               <tr class="js-calc-row">
-                <td>{{ $item->insumo->codigo }}</td>
+                <td>{{ $item->insumo->nome }}</td>
                 <td>{{ $item->insumo->unidade_sigla }}</td>
                 <td>
                   {!!

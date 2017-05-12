@@ -446,6 +446,11 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         )->name('quadroDeConcorrencia.avaliar')
         ->middleware('needsPermission:quadroDeConcorrencias.edit');
 
+        $router->post(
+            '/quadro-de-concorrencia/{quadroDeConcorrencias}/avaliar',
+            'QuadroDeConcorrenciaController@avaliarSave'
+        )->middleware('needsPermission:quadroDeConcorrencias.edit');
+
         $router->get(
             '/quadro-de-concorrencia/{quadroDeConcorrencias}/equalizacao-tecnica/{qcFornecedor}',
             'QuadroDeConcorrenciaController@getEqualizacaoTecnica'

@@ -43,9 +43,17 @@ class IniciaConcorrencia extends Notification
      */
     public function toMail($notifiable)
     {
-        return (new MailMessage)
+        if($this->quadroDeConcorrencia->rodada_atual === 1) {
+            return (new MailMessage)
                     ->subject('Novo Quadro de Concorrência ' . $this->quadroDeConcorrencia->id . ' - Bild '.date('d/m/Y') )
                     ->line('Existe um novo Quadro de Concorrência e você foi convidado à participar.')
+                    ->action('Envie sua proposta', url('/'))
+                    ->line('Agradecemos antecipadamente pela sua atenção!');
+        }
+
+        return (new MailMessage)
+                    ->subject('Nova rodada do Quadro de Concorrência ' . $this->quadroDeConcorrencia->id . ' - Bild '.date('d/m/Y') )
+                    ->line('Existe uma nova rodada neste Quadro de Concorrência e você foi convidado à participar.')
                     ->action('Envie sua proposta', url('/'))
                     ->line('Agradecemos antecipadamente pela sua atenção!');
     }

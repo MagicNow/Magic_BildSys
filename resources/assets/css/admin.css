@@ -363,12 +363,36 @@ h6 {
 }
 
 .box-chart > .box-body {
-  height: 300px;
+  height: 500px;
   position: relative;
 }
 
 .box-chart > .box-body > canvas {
-  max-height: 100%;
-  width: content-box;
-  margin: auto;
+  width: 100% !important;
+  max-width: 1000px;
+  height: auto !important
+}
+
+.sweet-alert p {
+  font-weight: 400;
+}
+.sweet-alert > p p {
+  margin-bottom: 10px;
+}
+
+.custom-alert .sa-confirm-button-container button {
+  margin: 5px;
+}
+
+.modal-full {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 10px;
+}
+
+.modal-full > .modal-content {
+  height: auto;
+  min-height: 100%;
+  border-radius: 0;
 }

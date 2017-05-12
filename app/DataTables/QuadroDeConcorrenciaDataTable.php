@@ -68,6 +68,8 @@ class QuadroDeConcorrenciaDataTable extends DataTable
                            `qc_fornecedor`.`id` = `qc_item_qc_fornecedor`.`qc_fornecedor_id`
                         where
                            `quadro_de_concorrencias`.`id` = `qc_fornecedor`.`quadro_de_concorrencia_id`
+                        and
+                           `qc_fornecedor`.`rodada` = `quadro_de_concorrencias`.`rodada_atual`
                    ) as tem_ofertas
                ')
            ])

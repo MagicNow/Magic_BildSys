@@ -193,6 +193,8 @@ elixir(function(mix) {
         'workflow.js',
         'qc-informar-valores.js',
         'sweetalert-helper.js',
+        'flat-color-generator.js',
+        'qc-avaliar.js'
 
     ], 'public/js/admin.js');
 
