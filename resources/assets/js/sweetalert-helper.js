@@ -1,8 +1,5 @@
 $(function() {
-  var buttons = document.getElementsByClassName('js-sweetalert');
-
-  _.each(buttons, function(button) {
-    button.addEventListener('click', function() {
+  $(document.body).on('click', '.js-sweetalert', function(event) {
       event.preventDefault();
 
       var button = event.currentTarget;
@@ -18,6 +15,5 @@ $(function() {
       }, button.dataset);
 
       swal(options);
-    }, false);
   });
 });

@@ -12,7 +12,7 @@ use Eloquent as Model;
 class QcItem extends Model
 {
     public $table = 'qc_itens';
-    
+
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
@@ -40,7 +40,7 @@ class QcItem extends Model
      * @var array
      */
     public static $rules = [
-        
+
     ];
 
     /**
@@ -57,6 +57,11 @@ class QcItem extends Model
     public function quadroDeConcorrencia()
     {
         return $this->belongsTo(QuadroDeConcorrencia::class);
+    }
+
+    public function ofertas()
+    {
+        return $this->belongsTo(QcItemQcFornecedor::class, 'qc_item_id');
     }
 
     /**

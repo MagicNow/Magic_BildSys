@@ -41,3 +41,18 @@ if(! function_exists('money_to_float')) {
         }
     }
 }
+
+if(! function_exists('float_to_money')) {
+    /**
+     * Transforms a float to a currency formatted string
+     *
+     * @param float $number
+     *
+     * @return string
+     */
+    function float_to_money($number, $prefix = 'R$ ')
+    {
+        return $prefix . number_format($number, 2, ',', '.');
+    }
+}
+

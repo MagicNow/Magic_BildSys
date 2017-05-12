@@ -70,10 +70,15 @@ class QuadroDeConcorrenciaItem extends Model
         return $this->belongsTo(\App\Models\QuadroDeConcorrencia::class);
     }
 
+    public function ofertas()
+    {
+        return $this->hasMany(QcItemQcFornecedor::class, 'qc_item_id');
+    }
+
     public function getObsAttribute()
     {
         return $this->ordemDeCompraItens->reduce(function($carry, $item) {
-            $carry = "Obra: " . $item->obra->nome;
+            $carry .= "Obra: " . $item->obra->nome;
             $carry .= "\nQuantidade: " . $item->qtd;
             $carry .= "\nObs: " . $item->obs;
             $carry .= "\n---\n";
@@ -85,9 +90,7 @@ class QuadroDeConcorrenciaItem extends Model
     public function getTemsAttribute()
     {
         return $this->ordemDeCompraItens->reduce(function($carry, $item) {
-            $carry = "Obra: " . $item->obra->nome;
-            $carry .= "\nQuantidade: " . $item->qtd;
-            $carry .= "\nTems: " . $item->tems;
+            $carry .= $item->tems;
             $carry .= "\n---\n";
 
             return $carry;
