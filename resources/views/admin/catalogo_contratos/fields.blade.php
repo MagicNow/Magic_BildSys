@@ -54,13 +54,13 @@
 <!-- Quantidade mínima Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('qtd_minima', 'Quantidade mínima:') !!}
-    {!! Form::text('qtd_minima', null, ['class' => 'form-control decimal']) !!}
+    {!! Form::text('qtd_minima', null, ['class' => 'form-control money']) !!}
 </div>
 
 <!-- Quantidade máxima Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('qtd_maxima', 'Quantidade máxima:') !!}
-    {!! Form::text('qtd_maxima', null, ['class' => 'form-control decimal']) !!}
+    {!! Form::text('qtd_maxima', null, ['class' => 'form-control money']) !!}
 </div>
 
 <?php
@@ -110,8 +110,8 @@ $count_insumos = 0;
     @endforeach
 @endif
 <div id="insumos"></div>
-<div id="add_insumos" class="col-md-12" style="margin-bottom:25px;margin-top:25px">
-    <span class="btn btn-info" onclick="addInsumo()">
+<div id="add_insumos" class="col-md-6 col-md-offset-3" style="margin-bottom:25px;margin-top:25px">
+    <span class="btn btn-info btn-lg btn-flat btn-block" onclick="addInsumo()">
         <i class="fa fa-plus"></i> Adicionar insumo
     </span>
 </div>

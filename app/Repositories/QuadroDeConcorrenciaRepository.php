@@ -238,4 +238,16 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
         return $query->get();
     }
 
+    public function verificaQCAutomatico(){
+        // Varre itens aprovados existe algum catalogo_contrato vigente
+
+        // Se existe verifica se as quantidades requisitadas estão dentro dos requisitos
+
+        // Se estão gera um QC automatico com os itens que são atendidos por aquele catálogo
+
+        // Após gerado, já lança os valores daquele fornecedor pelo firmado no acordo
+
+        // Finaliza o QC
+    }
+
 }

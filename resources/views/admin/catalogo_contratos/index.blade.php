@@ -2,7 +2,7 @@
 
 @section('content')
     <section class="content-header">
-        <h1 class="pull-left">Contratos</h1>
+        <h1 class="pull-left">Catálogo de Acordos</h1>
         <h1 class="pull-right">
            <a class="btn btn-primary pull-right" style="margin-top: -10px;margin-bottom: 5px" href="{!! route('admin.catalogo_contratos.create') !!}">
             {{ ucfirst( trans('common.new') )}}

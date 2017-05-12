@@ -13,7 +13,7 @@
 
 Auth::routes();
 
-$router->get('/admin/contratos/buscar/busca_insumos', ['as' => 'admin.catalogo_contratos.busca_insumos', 'uses' => 'Admin\CatalogoContratoController@buscaInsumos']);
+$router->get('/admin/catalogo-acordos/buscar/busca_insumos', ['as' => 'admin.catalogo_contratos.busca_insumos', 'uses' => 'Admin\CatalogoContratoController@buscaInsumos']);
 
 ##### ADMIN #####
 $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:dashboard.access']], function () use ($router) {
@@ -121,15 +121,15 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
 
     # Contratos
     $router->group(['middleware' => 'needsPermission:contratos.list'], function () use ($router) {
-        $router->get('contratos', ['as' => 'admin.catalogo_contratos.index', 'uses' => 'Admin\CatalogoContratoController@index']);
-        $router->post('contratos', ['as' => 'admin.catalogo_contratos.store', 'uses' => 'Admin\CatalogoContratoController@store']);
-        $router->get('contratos/create', ['as' => 'admin.catalogo_contratos.create', 'uses' => 'Admin\CatalogoContratoController@create'])->middleware("needsPermission:contratos.create");
-        $router->put('contratos/{contratos}', ['as' => 'admin.catalogo_contratos.update', 'uses' => 'Admin\CatalogoContratoController@update']);
-        $router->patch('contratos/{contratos}', ['as' => 'admin.catalogo_contratos.update', 'uses' => 'Admin\CatalogoContratoController@update']);
-        $router->delete('contratos/{contratos}', ['as' => 'admin.catalogo_contratos.destroy', 'uses' => 'Admin\CatalogoContratoController@destroy']);
-        $router->get('contratos/{contratos}', ['as' => 'admin.catalogo_contratos.show', 'uses' => 'Admin\CatalogoContratoController@show'])->middleware("needsPermission:contratos.view");
-        $router->get('contratos/{contratos}/edit', ['as' => 'admin.catalogo_contratos.edit', 'uses' => 'Admin\CatalogoContratoController@edit'])->middleware("needsPermission:contratos.edit");
-        $router->get('contratos/buscar/busca_fornecedores', ['as' => 'admin.catalogo_contratos.busca_fornecedores', 'uses' => 'Admin\CatalogoContratoController@buscaFornecedor']);
+        $router->get('catalogo-acordos', ['as' => 'admin.catalogo_contratos.index', 'uses' => 'Admin\CatalogoContratoController@index']);
+        $router->post('catalogo-acordos', ['as' => 'admin.catalogo_contratos.store', 'uses' => 'Admin\CatalogoContratoController@store']);
+        $router->get('catalogo-acordos/create', ['as' => 'admin.catalogo_contratos.create', 'uses' => 'Admin\CatalogoContratoController@create'])->middleware("needsPermission:contratos.create");
+        $router->put('catalogo-acordos/{contratos}', ['as' => 'admin.catalogo_contratos.update', 'uses' => 'Admin\CatalogoContratoController@update']);
+        $router->patch('catalogo-acordos/{contratos}', ['as' => 'admin.catalogo_contratos.update', 'uses' => 'Admin\CatalogoContratoController@update']);
+        $router->delete('catalogo-acordos/{contratos}', ['as' => 'admin.catalogo_contratos.destroy', 'uses' => 'Admin\CatalogoContratoController@destroy']);
+        $router->get('catalogo-acordos/{contratos}', ['as' => 'admin.catalogo_contratos.show', 'uses' => 'Admin\CatalogoContratoController@show'])->middleware("needsPermission:contratos.view");
+        $router->get('catalogo-acordos/{contratos}/edit', ['as' => 'admin.catalogo_contratos.edit', 'uses' => 'Admin\CatalogoContratoController@edit'])->middleware("needsPermission:contratos.edit");
+        $router->get('catalogo-acordos/buscar/busca_fornecedores', ['as' => 'admin.catalogo_contratos.busca_fornecedores', 'uses' => 'Admin\CatalogoContratoController@buscaFornecedor']);
         $router->get('insumo/delete', 'Admin\CatalogoContratoController@deleteInsumo');
     });
 
