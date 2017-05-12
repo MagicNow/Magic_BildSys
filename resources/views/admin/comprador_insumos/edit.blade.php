@@ -3,7 +3,7 @@
 @section('content')
     <section class="content-header">
         <h1>
-            Catálogo de Acordo
+            Comprador Insumo
         </h1>
    </section>
    <div class="content">
@@ -11,10 +11,10 @@
        <div class="box box-primary">
            <div class="box-body">
                <div class="row">
-                   {!! Form::model($catalogoContrato, ['route' => ['admin.catalogo_contratos.update', $catalogoContrato->id], 'method' => 'patch', 'files' => true]) !!}
-                        @include('flash::message')
+                   {!! Form::model($compradorInsumo, ['route' => ['admin.compradorInsumos.update', $compradorInsumo->id], 'method' => 'patch']) !!}
 
-                        @include('admin.catalogo_contratos.fields')
+                        @include('admin.comprador_insumos.fields')
+
                    {!! Form::close() !!}
                </div>
            </div>

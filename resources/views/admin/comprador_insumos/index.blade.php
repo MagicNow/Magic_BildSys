@@ -2,10 +2,10 @@
 
 @section('content')
     <section class="content-header">
-        <h1 class="pull-left">Catálogo de Acordos</h1>
+        <h1 class="pull-left">Comprador / insumos</h1>
         <h1 class="pull-right">
-           <a class="btn btn-primary pull-right" style="margin-top: -10px;margin-bottom: 5px" href="{!! route('admin.catalogo_contratos.create') !!}">
-            {{ ucfirst( trans('common.new') )}}
+           <a class="btn btn-primary pull-right" style="margin-top: -10px;margin-bottom: 5px" href="{!! route('admin.compradorInsumos.create') !!}">
+            Cadastrar insumos ao comprador
            </a>
         </h1>
     </section>
@@ -17,7 +17,7 @@
         <div class="clearfix"></div>
         <div class="box box-primary">
             <div class="box-body">
-                    @include('admin.catalogo_contratos.table')
+                    @include('admin.comprador_insumos.table')
             </div>
         </div>
     </div>

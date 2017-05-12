@@ -116,25 +116,6 @@
                 $('.overlay').remove();
             });
         }
-        function selectGrupoInsumo(){
-            var rota = "{{url('/admin/planejamentos/planejamentoOrcamentos/planejamento/orcamento/insumo_grupos')}}";
-            $('.box.box-primary').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
-            $.ajax({
-                url: rota
-            }).done(function(retorno) {
-                options = '<option value="">Selecione</option>';
-                $('#grupo_insumo_id').html(options);
-                $.each(retorno,function(index, value){
-                    options += '<option value="'+index+'">'+value+'</option>';
-                });
-                $('#grupo_insumo_id').html(options);
-                $('.overlay').remove();
-                $('#grupo_insumo_id').attr('disabled',false);
-                $('#grupo_insumo_id').trigger('change');
-            }).fail(function() {
-                $('.overlay').remove();
-            });
-        }
 
         function orcamento(id){
             var rota = "{{url('/admin/planejamentos/planejamentoOrcamentos/orcamento')}}/";

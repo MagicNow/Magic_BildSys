@@ -30,10 +30,12 @@ class CreateFornecedorServicosTable extends Migration
     public function down()
     {
         Schema::table('fornecedor_servicos', function(Blueprint $table) {
-            $table->dropColumn('codigo_fornecedor_id', 'codigo_fornecedor_id');
+            $table->dropForeign(['codigo_fornecedor_id']);
+            $table->dropColumn('codigo_fornecedor_id');
         });
         Schema::table('fornecedor_servicos', function(Blueprint $table) {
-            $table->dropColumn('codigo_servico_id', 'codigo_servico_id');
+            $table->dropForeign(['codigo_servico_id']);
+            $table->dropColumn('codigo_servico_id');
         });
         Schema::dropIfExists('fornecedor_servicos');
 
