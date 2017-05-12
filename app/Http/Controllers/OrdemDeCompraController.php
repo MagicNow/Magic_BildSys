@@ -982,6 +982,25 @@ class OrdemDeCompraController extends AppBaseController
         }
         $ordemDeCompra = $ordemDeCompra->first();
 
+        $ordem_itens = OrdemDeCompraItem::where('ordem_de_compra_id', $ordemDeCompra->id)
+            ->where('obra_id', $ordemDeCompra->obra_id)
+            ->get();
+
+        foreach ($ordem_itens as $item){
+            if($item->qtd == '0.00' || !$item->qtd){
+                Flash::error('A quantidade não pode ser zero.');
+                return back();
+            }
+            if($item->valor_unitario == '0.00' || !$item->valor_unitario){
+                Flash::error('O valor unitário não pode ser zero.');
+                return back();
+            }
+            if($item->valor_total == '0.00' || !$item->valor_total){
+                Flash::error('O valor total não pode ser zero.');
+                return back();
+            }
+        }
+
         if (empty($ordemDeCompra)) {
             Flash::error('Não existe OC em aberto.');
 
