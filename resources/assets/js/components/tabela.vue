@@ -87,6 +87,7 @@
                 <th v-if="actions.quantidade != undefined" class="row-table">Quantidade Compra</th>
                 <th v-if="actions.troca != undefined" class="row-table">Troca</th>
                 <th v-if="actions.adicionar != undefined" class="row-table">Adicionar</th>
+                <th v-if="actions.total_parcial != undefined" class="row-table">Total</th>
             </tr>
             </thead>
             <tbody>
@@ -137,6 +138,10 @@
                         <i class="fa fa-plus grey"></i>
                     </button>
                 </td>
+                <td class="row-table" v-if="actions.total_parcial != undefined">
+                    <input type="checkbox" @click="total_parcial(dado)" v-if="dado['total'] == 1 && dado['quantidade_compra'] != null && dado['quantidade_compra'] != '0,00'" checked>
+                    <input type="checkbox" @click="total_parcial(dado)" v-if="dado['total'] == 0 && dado['quantidade_compra'] != null && dado['quantidade_compra'] != '0,00'">
+                </td>
             </tr>
             <tr v-else>
                 <td>Não há dados</td>
@@ -163,12 +168,14 @@
                 type: Object
             },
             apiAdicionar: '',
+            apiTotalParcial: '',
             _token: '',
             actions: {
                 status: '',
                 troca: '',
                 adicionar: '',
                 tooltip: '',
+                total_parcial: '',
                 detalhe: '',
                 aprovar: '',
                 reprovar: '',
@@ -243,6 +250,14 @@
             },
             tooltip: function(id){
 
+            },
+            total_parcial: function(item){
+                item['_token'] =this._token;
+                this.$http.post(this.apiTotalParcial, item)
+                        .then(function () {
+                            this.loadData();
+                        })
+                        .bind(this)
             },
             //Mètodo de ordenação de tabela
             sortTable: function(item){

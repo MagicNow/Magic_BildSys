@@ -573,6 +573,13 @@ class OrdemDeCompraController extends AppBaseController
                     WHERE ordem_de_compra_itens.insumo_id = insumos.id 
                     AND ordem_de_compra_itens.deleted_at IS NULL
                     AND ordem_de_compra_itens.obra_id ='. $obra->id .' ) as adicionado'),
+                    DB::raw('(SELECT total FROM ordem_de_compra_itens 
+                    JOIN ordem_de_compras 
+                        ON ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id 
+                        AND ordem_de_compras.oc_status_id = 1 AND ordem_de_compras.user_id = '.Auth::id().' 
+                    WHERE ordem_de_compra_itens.insumo_id = insumos.id 
+                    AND ordem_de_compra_itens.deleted_at IS NULL
+                    AND ordem_de_compra_itens.obra_id ='. $obra->id .' ) as total'),
                 ]
             )
                 ->whereNotNull('orcamentos.qtd_total')
@@ -677,6 +684,13 @@ class OrdemDeCompraController extends AppBaseController
                             )
                         )
                     ),2,\'de_DE\') as saldo'),
+                        DB::raw('(SELECT total FROM ordem_de_compra_itens 
+                    JOIN ordem_de_compras 
+                        ON ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id 
+                        AND ordem_de_compras.oc_status_id = 1 AND ordem_de_compras.user_id = '.Auth::id().' 
+                    WHERE ordem_de_compra_itens.insumo_id = insumos.id 
+                    AND ordem_de_compra_itens.deleted_at IS NULL
+                    AND ordem_de_compra_itens.obra_id ='. $planejamento->obra_id .' ) as total'),
                     ]
                 )
                 ->whereNull('planejamento_compras.deleted_at')
@@ -1487,6 +1501,48 @@ class OrdemDeCompraController extends AppBaseController
         }
 
         return response()->json(['salvo' => $salvo, 'grupo' => $grupo]);
+    }
+
+    public function totalParcial(Request $request, Obra $obra)
+    {
+        //Testa se tem ordem de compra aberta pro user
+        $ordem = OrdemDeCompra::where('oc_status_id', 1)
+            ->where('user_id', Auth::user()->id)
+            ->where('obra_id', $obra->id)
+            ->first();
+
+        // Encontra o orçamento ativo
+        $orcamento_ativo = Orcamento::where('insumo_id',$request->id)
+            ->where('obra_id',$obra->id)
+            ->where('grupo_id',$request->grupo_id)
+            ->where('subgrupo1_id',$request->subgrupo1_id)
+            ->where('subgrupo2_id',$request->subgrupo2_id)
+            ->where('subgrupo3_id',$request->subgrupo3_id)
+            ->where('servico_id',$request->servico_id)
+            ->where('ativo',1)
+            ->first();
+
+        $ordem_item = OrdemDeCompraItem::where('ordem_de_compra_id', $ordem->id)
+            ->where('obra_id', $obra->id)
+            ->where('codigo_insumo', $orcamento_ativo->codigo_insumo)
+            ->where('grupo_id', $orcamento_ativo->grupo_id)
+            ->where('subgrupo1_id', $orcamento_ativo->subgrupo1_id)
+            ->where('subgrupo2_id', $orcamento_ativo->subgrupo2_id)
+            ->where('subgrupo3_id', $orcamento_ativo->subgrupo3_id)
+            ->where('servico_id', $orcamento_ativo->servico_id)
+            ->where('insumo_id', $orcamento_ativo->insumo_id)
+            ->where('unidade_sigla', $orcamento_ativo->unidade_sigla)
+            ->first();
+        dd($orcamento_ativo);
+
+        if($ordem_item->total == 1){
+            $ordem_item->total = 0;
+        }else{
+            $ordem_item->total = 1;
+        }
+        $ordem_item->save();
+
+        return response()->json(200);
     }
 }
 

@@ -396,6 +396,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             $router->post('trocaInsumoAction', 'OrdemDeCompraController@trocaInsumoAction');
             $router->post('{obra}/{planejamento}/addCarrinho', 'OrdemDeCompraController@addCarrinho');
             $router->post('{obra}/addCarrinho', 'OrdemDeCompraController@addCarrinho');
+            $router->post('{obra}/totalParcial', 'OrdemDeCompraController@totalParcial');
             $router->get('removerInsumoPlanejamento/{planejamentoCompra}', 'OrdemDeCompraController@removerInsumoPlanejamento');
         });
     });

@@ -97,6 +97,7 @@
                     @else
                         api-url="/compras/obrasInsumosJson?obra_id={{$obra->id}}"
                         api-adicionar="/compras/{{$obra->id}}/addCarrinho"
+                        api-total-parcial="/compras/{{$obra->id}}/totalParcial"
                     @endif
                         api-filtros="/compras/obrasInsumosFilters"
                     _token="{{csrf_token()}}"
@@ -108,6 +109,7 @@
                    quantidade: true,
                    adicionar: true,
                    tooltip: true,
+                   total_parcial: true,
                    }"
                     v-bind:colunas="[
                        {campo_db: 'nome', label: 'insumos'},
@@ -173,7 +175,7 @@
                         }
 
                     });
-            })
+            });
         });
 
         function selectgrupo(id, change, tipo, parametro){
