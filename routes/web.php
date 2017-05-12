@@ -365,6 +365,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->get('/ordens-de-compra/carrinho/remove-contrato', 'OrdemDeCompraController@removerContrato');
         $router->get('/ordens-de-compra/reabrir-ordem-de-compra/{id}', 'OrdemDeCompraController@reabrirOrdemDeCompra');
         $router->get('/ordens-de-compra/carrinho/alterar-quantidade/{id}', 'OrdemDeCompraController@alterarQuantidade');
+        $router->get('/ordens-de-compra/carrinho/alterar-valor-unitario/{id}', 'OrdemDeCompraController@alteraValorUnitario');
         $router->get('/ordens-de-compra/carrinho/remover-item/{id}', 'OrdemDeCompraController@removerItem');
         $router->get('/ordens-de-compra/insumos-aprovados', 'OrdemDeCompraController@insumosAprovados');
         $router->get('/ordens-de-compra/detalhes-servicos/{servico_id}', 'OrdemDeCompraController@detalhesServicos')->middleware("needsPermission:ordens_de_compra.detalhes_servicos");
@@ -407,6 +408,8 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             $router->post('trocaInsumoAction', 'OrdemDeCompraController@trocaInsumoAction');
             $router->post('{obra}/{planejamento}/addCarrinho', 'OrdemDeCompraController@addCarrinho');
             $router->post('{obra}/addCarrinho', 'OrdemDeCompraController@addCarrinho');
+            $router->post('{obra}/totalParcial', 'OrdemDeCompraController@totalParcial');
+            $router->post('{obra}/comprarTudo', 'OrdemDeCompraController@comprarTudo');
             $router->get('removerInsumoPlanejamento/{planejamentoCompra}', 'OrdemDeCompraController@removerInsumoPlanejamento');
         });
     });

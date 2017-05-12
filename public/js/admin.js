@@ -62532,6 +62532,36 @@ function floatToMoney(number) {
   return 'R$ ' + number.toLocaleString('pt-BR', {minimumFractionDigits: 2});
 }
 
+/**
+ * Remove tudo que não for número
+ *
+ * @param {String} string
+ *
+ * @return {Number}
+ */
+function removeNaoNumero( str )
+{
+  return parseInt( str.replace(/[\D]+/g,'') );
+}
+
+/**
+ * Tranforma o parâmetro em formato de moeda Real
+ *
+ * @param {Integer} integer
+ *
+ * @return {String}
+ */
+function formatarReal( int )
+{
+  var tmp = int+'';
+  tmp=tmp.replace(/\D/g,'');
+  tmp=tmp.replace(/(\d{1,2})$/, ',$1');
+  tmp=tmp.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
+  tmp = tmp != '' ? tmp : '';
+
+  return tmp;
+}
+
 var oTable = null;
 
 var k = 0;

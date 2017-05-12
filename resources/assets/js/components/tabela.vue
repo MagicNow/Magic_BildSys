@@ -87,6 +87,8 @@
                 <th v-if="actions.quantidade != undefined" class="row-table">Quantidade Compra</th>
                 <th v-if="actions.troca != undefined" class="row-table">Troca</th>
                 <th v-if="actions.adicionar != undefined" class="row-table">Adicionar</th>
+                <th v-if="actions.total_parcial != undefined" class="row-table">Total</th>
+                <th v-if="actions.comprar_tudo != undefined" class="row-table">#</th>
             </tr>
             </thead>
             <tbody>
@@ -116,7 +118,7 @@
                     <i class="fa fa-times grey"></i>
                 </td>
                 <td class="row-table" v-if="actions.quantidade != undefined" @click="reprovar(dado['id'])">
-                    <input @blur="adicionar(dado, i)" v-model.number="quant[i]" type="number" v-bind:value="quant[i]" v-if="dado['pai'] == 0" min="0">
+                    <input @blur="adicionar(dado, i)" v-model="quant[i]" type="text" v-bind:value="quant[i]" v-if="dado['pai'] == 0" min="0" class="money">
                 </td>
                 <td class="row-table" v-if="actions.troca != undefined">
                     <a  v-if="dado['pai']>0 && dado['pai'] != undefined && dado['unidade_sigla'] == 'VB' && dado['insumo_grupo_id'] == '1570'" v-bind:href="actions.troca_url+'/'+dado['id'] ">
@@ -136,6 +138,13 @@
                     <button @click="adicionar(dado, i)" type="button" class="btn btn-xs btn-link">
                         <i class="fa fa-plus grey"></i>
                     </button>
+                </td>
+                <td class="row-table" v-if="actions.total_parcial != undefined">
+                    <input type="checkbox" @click="total_parcial(dado)" v-if="dado['total'] == 1 && dado['quantidade_compra'] != null && dado['quantidade_compra'] != '0,00'" checked>
+                    <input type="checkbox" @click="total_parcial(dado)" v-if="dado['total'] == 0 && dado['quantidade_compra'] != null && dado['quantidade_compra'] != '0,00'">
+                </td>
+                <td class="row-table" v-if="actions.comprar_tudo != undefined">
+                    <a @click="comprar_tudo(dado)" style="cursor:pointer;">Comprar tudo</a>
                 </td>
             </tr>
             <tr v-else>
@@ -163,12 +172,16 @@
                 type: Object
             },
             apiAdicionar: '',
+            apiTotalParcial: '',
+            apiComprarTudo: '',
             _token: '',
             actions: {
                 status: '',
                 troca: '',
                 adicionar: '',
                 tooltip: '',
+                total_parcial: '',
+                comprar_tudo: '',
                 detalhe: '',
                 aprovar: '',
                 reprovar: '',
@@ -206,7 +219,9 @@
             //Método da action adicionar onClick
             adicionar: function(item,i){
                 if(this.actions.quantidade){
-                    item['quantidade_compra'] = this.quant[i];
+                    var val_number = removeNaoNumero(this.quant[i]);
+                    var val_real = formatarReal(val_number);
+                    item['quantidade_compra'] = val_real;
                     if(!item['quantidade_compra'] && !item['adicionado']){
 //                    swal('Insira uma quantidade!','','error');
                         return false;
@@ -241,6 +256,22 @@
             },
             tooltip: function(id){
 
+            },
+            comprar_tudo: function(item){
+                item['_token'] =this._token;
+                this.$http.post(this.apiComprarTudo, item)
+                        .then(function () {
+                            this.loadData();
+                        })
+                        .bind(this)
+            },
+            total_parcial: function(item){
+                item['_token'] =this._token;
+                this.$http.post(this.apiTotalParcial, item)
+                        .then(function () {
+                            this.loadData();
+                        })
+                        .bind(this)
             },
             //Mètodo de ordenação de tabela
             sortTable: function(item){

@@ -18,9 +18,9 @@
                 </div>
 
                 <div class="col-md-5 text-right">
-                    <button type="button" onclick="history.go(-1);" class="btn btn-default btn-lg btn-flat">
+                    <a href="/compras/obrasInsumos?obra_id={{$obra_id}}" class="btn btn-default btn-lg btn-flat">
                         Esqueci um item
-                    </button>
+                    </a>
                     <button type="button" onclick="fechaOC();" class="btn btn-success btn-lg btn-flat">
                         Confirmar
                     </button>
@@ -31,7 +31,6 @@
     <div class="content">
         <div class="clearfix"></div>
 
-        @include('flash::message')
         @include('adminlte-templates::common.errors')
         <style type="text/css">
             #carrinho ul{
@@ -98,7 +97,6 @@
             <div id="carrinho" class="col-md-12">
                 <ul>
                     @foreach($itens as $item)
-
                         <li id="item{{ $item->id }}">
                             <?php
                             if($item->aprovacoes()){
@@ -138,10 +136,16 @@
                                     <strong class="visible-xs pull-left">Unidade:</strong>
                                     {{ $item->unidade_sigla }}
                                 </span>
-                                <span class="col-md-2 col-sm-2 col-xs-12 text-center borda-direita" align="center">
-                                    <strong class="visible-xs pull-left">Quantidade:</strong>
+                                <span class="{{$item->valor_unitario == '0.00' ? 'col-md-1 col-sm-1' : 'col-md-2 col-sm-2'}} col-xs-12 text-center borda-direita" align="center"  {{$item->valor_unitario == '0.00' ? 'style=width:11.5%' : ''}}>
+                                    <strong>Quantidade:</strong>
                                     <input type="text" id="find" value="{{ $item->qtd }}" onchange="alteraQtd(this.value, '{{ $item->id }}')" class="form-control money" style="border-color:#ffffff;background-color:#ffffff;text-align:center;">
                                 </span>
+                                @if($item->valor_unitario == '0.00')
+                                    <span class="col-md-1 col-sm-1 col-xs-12 text-center borda-direita" align="center" style="width: 11.5%;">
+                                        <strong>Valor unitário:</strong>
+                                        <input type="text" id="find" value="{{ $item->valor_unitario }}" onchange="alteraValorUnitario(this.value, '{{ $item->id }}')" class="form-control money" style="border-color:#ffffff;background-color:#ffffff;text-align:center;">
+                                    </span>
+                                @endif
                         <span class="col-md-2 col-sm-2 col-xs-5 text-center borda-direita">
                             <div id="bloco_indicar_contrato{{ $item->id }}">
                                 @if($item->sugestao_contrato_id)
@@ -159,7 +163,7 @@
                                 @endif
                             </div>
                         </span>
-                        <span class="col-md-3 col-sm-3 col-xs-6 text-center borda-direita">
+                        <span class="col-md-3 col-sm-3 col-xs-6 text-center borda-direita" {{$item->valor_unitario == '0.00' ? 'style=width:18%' : ''}}>
                             {!! Form::open(['url'=> url('/ordens-de-compra/upload-anexos/'.$item->id)  , 'class'=>'formAnexos', 'files'=>true]) !!}
                             {!! Form::hidden('item_id', $item->id, ['id'=>'item_id_'.$item->id]) !!}
                             <label class="label-bloco label-bloco-limitado">Anexar arquivo</label>
@@ -568,7 +572,41 @@
             }).done(function (json) {
                 if(json.success){
                     $('#alert_'+item_id).remove();
-                    swal('Quantidade alterada','', 'success');
+                    swal({
+                        title: "Quantidade alterada",
+                        text: "",
+                        type: "success",
+                        showCancelButton: false,
+                        confirmButtonText: "OK",
+                        closeOnConfirm: false
+                    },
+                    function(){
+                        location.reload();
+                    });
+                }
+            });
+        }
+
+        function alteraValorUnitario(valor, item_id) {
+            $.ajax({
+                url: '/ordens-de-compra/carrinho/alterar-valor-unitario/'+item_id,
+                data: {
+                    'valor': valor
+                }
+            }).done(function (json) {
+                if(json.success){
+                    $('#alert_'+item_id).remove();
+                    swal({
+                        title: "Valor unitário alterado",
+                        text: "",
+                        type: "success",
+                        showCancelButton: false,
+                        confirmButtonText: "OK",
+                        closeOnConfirm: false
+                    },
+                    function(){
+                        location.reload();
+                    });
                 }
             });
         }

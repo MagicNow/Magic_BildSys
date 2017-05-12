@@ -16525,6 +16525,15 @@ module.exports = __vue_exports__
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
     var verify = 0;
     /* harmony default export */ exports["default"] = {
@@ -16537,12 +16546,16 @@ module.exports = __vue_exports__
                 type: Object
             },
             apiAdicionar: '',
+            apiTotalParcial: '',
+            apiComprarTudo: '',
             _token: '',
             actions: {
                 status: '',
                 troca: '',
                 adicionar: '',
                 tooltip: '',
+                total_parcial: '',
+                comprar_tudo: '',
                 detalhe: '',
                 aprovar: '',
                 reprovar: '',
@@ -16580,7 +16593,9 @@ module.exports = __vue_exports__
             //Método da action adicionar onClick
             adicionar: function(item,i){
                 if(this.actions.quantidade){
-                    item['quantidade_compra'] = this.quant[i];
+                    var val_number = removeNaoNumero(this.quant[i]);
+                    var val_real = formatarReal(val_number);
+                    item['quantidade_compra'] = val_real;
                     if(!item['quantidade_compra'] && !item['adicionado']){
 //                    swal('Insira uma quantidade!','','error');
                         return false;
@@ -16615,6 +16630,22 @@ module.exports = __vue_exports__
             },
             tooltip: function(id){
 
+            },
+            comprar_tudo: function(item){
+                item['_token'] =this._token;
+                this.$http.post(this.apiComprarTudo, item)
+                        .then(function () {
+                            this.loadData();
+                        })
+                        .bind(this)
+            },
+            total_parcial: function(item){
+                item['_token'] =this._token;
+                this.$http.post(this.apiTotalParcial, item)
+                        .then(function () {
+                            this.loadData();
+                        })
+                        .bind(this)
             },
             //Mètodo de ordenação de tabela
             sortTable: function(item){
@@ -29396,7 +29427,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -46997,7 +47028,11 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "row-table"
   }, [_vm._v("Troca")]) : _vm._e(), _vm._v(" "), (_vm.actions.adicionar != undefined) ? _c('th', {
     staticClass: "row-table"
-  }, [_vm._v("Adicionar")]) : _vm._e()], 2)]), _vm._v(" "), _c('tbody', _vm._l((_vm.dados), function(dado, i) {
+  }, [_vm._v("Adicionar")]) : _vm._e(), _vm._v(" "), (_vm.actions.total_parcial != undefined) ? _c('th', {
+    staticClass: "row-table"
+  }, [_vm._v("Total")]) : _vm._e(), _vm._v(" "), (_vm.actions.comprar_tudo != undefined) ? _c('th', {
+    staticClass: "row-table"
+  }, [_vm._v("#")]) : _vm._e()], 2)]), _vm._v(" "), _c('tbody', _vm._l((_vm.dados), function(dado, i) {
     return (_vm.dados.length > 0) ? _c('tr', [_vm._l((_vm.chaves), function(chave, index) {
       return _c('td', {
         staticClass: "row-table"
@@ -47059,15 +47094,13 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }, [(dado['pai'] == 0) ? _c('input', {
       directives: [{
         name: "model",
-        rawName: "v-model.number",
+        rawName: "v-model",
         value: (_vm.quant[i]),
-        expression: "quant[i]",
-        modifiers: {
-          "number": true
-        }
+        expression: "quant[i]"
       }],
+      staticClass: "money",
       attrs: {
-        "type": "number",
+        "type": "text",
         "min": "0"
       },
       domProps: {
@@ -47075,19 +47108,17 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         "value": (_vm.quant[i])
       },
       on: {
-        "blur": [function($event) {
+        "blur": function($event) {
           _vm.adicionar(dado, i)
-        }, function($event) {
-          _vm.$forceUpdate()
-        }],
+        },
         "input": function($event) {
           if ($event.target.composing) { return; }
           var $$exp = _vm.quant,
             $$idx = i;
           if (!Array.isArray($$exp)) {
-            _vm.quant[i] = _vm._n($event.target.value)
+            _vm.quant[i] = $event.target.value
           } else {
-            $$exp.splice($$idx, 1, _vm._n($event.target.value))
+            $$exp.splice($$idx, 1, $event.target.value)
           }
         }
       }
@@ -47129,7 +47160,39 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       }
     }, [_c('i', {
       staticClass: "fa fa-plus grey"
-    })])]) : _vm._e()], 2) : _c('tr', [_c('td', [_vm._v("Não há dados")])])
+    })])]) : _vm._e(), _vm._v(" "), (_vm.actions.total_parcial != undefined) ? _c('td', {
+      staticClass: "row-table"
+    }, [(dado['total'] == 1 && dado['quantidade_compra'] != null && dado['quantidade_compra'] != '0,00') ? _c('input', {
+      attrs: {
+        "type": "checkbox",
+        "checked": ""
+      },
+      on: {
+        "click": function($event) {
+          _vm.total_parcial(dado)
+        }
+      }
+    }) : _vm._e(), _vm._v(" "), (dado['total'] == 0 && dado['quantidade_compra'] != null && dado['quantidade_compra'] != '0,00') ? _c('input', {
+      attrs: {
+        "type": "checkbox"
+      },
+      on: {
+        "click": function($event) {
+          _vm.total_parcial(dado)
+        }
+      }
+    }) : _vm._e()]) : _vm._e(), _vm._v(" "), (_vm.actions.comprar_tudo != undefined) ? _c('td', {
+      staticClass: "row-table"
+    }, [_c('a', {
+      staticStyle: {
+        "cursor": "pointer"
+      },
+      on: {
+        "click": function($event) {
+          _vm.comprar_tudo(dado)
+        }
+      }
+    }, [_vm._v("Comprar tudo")])]) : _vm._e()], 2) : _c('tr', [_c('td', [_vm._v("Não há dados")])])
   }))]), _vm._v(" "), (_vm.pagination.last_page > 1) ? _c('div', {
     staticClass: "text-center"
   }, [_c('generic-paginator', {
