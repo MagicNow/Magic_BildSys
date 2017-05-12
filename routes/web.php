@@ -183,6 +183,17 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
     $router->get('fornecedores/buscacep/{cep}', 'Admin\FornecedoresController@buscaPorCep');
     $router->get('valida-documento', 'Admin\FornecedoresController@validaCnpj');
 
+    # Comprador de insumos
+    $router->get('compradorInsumos', ['as'=> 'admin.compradorInsumos.index', 'uses' => 'Admin\CompradorInsumoController@index']);
+    $router->post('compradorInsumos', ['as'=> 'admin.compradorInsumos.store', 'uses' => 'Admin\CompradorInsumoController@store']);
+    $router->get('compradorInsumos/create', ['as'=> 'admin.compradorInsumos.create', 'uses' => 'Admin\CompradorInsumoController@create']);
+    $router->put('compradorInsumos/{compradorInsumos}', ['as'=> 'admin.compradorInsumos.update', 'uses' => 'Admin\CompradorInsumoController@update']);
+    $router->patch('compradorInsumos/{compradorInsumos}', ['as'=> 'admin.compradorInsumos.update', 'uses' => 'Admin\CompradorInsumoController@update']);
+    $router->delete('compradorInsumos/{compradorInsumos}', ['as'=> 'admin.compradorInsumos.destroy', 'uses' => 'Admin\CompradorInsumoController@destroy']);
+    $router->get('compradorInsumos/{compradorInsumos}', ['as'=> 'admin.compradorInsumos.show', 'uses' => 'Admin\CompradorInsumoController@show']);
+    $router->get('compradorInsumos/{compradorInsumos}/edit', ['as'=> 'admin.compradorInsumos.edit', 'uses' => 'Admin\CompradorInsumoController@edit']);
+    $router->get('compradorInsumos/insumos/{id}', 'Admin\CompradorInsumoController@getInsumos');
+
     $router->group(['middleware' => 'needsPermission:users.list'], function() use ($router) {
         $router->resource('users', 'Admin\Manage\UsersController');
 
