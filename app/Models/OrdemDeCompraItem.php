@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Repositories\QuadroDeConcorrenciaRepository;
 use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
@@ -237,6 +238,7 @@ class OrdemDeCompraItem extends Model
                 'ordem_de_compra_id'=>$this->ordemDeCompra->id,
                 'user_id'=>Auth::id()
             ]);
+            QuadroDeConcorrenciaRepository::verificaQCAutomatico();
         }
         // Verifica se algum foi reprovado e todos foram votados
         if($qtd_itens !== $qtd_itens_aprovados && $qtd_itens_sem_voto===0){
