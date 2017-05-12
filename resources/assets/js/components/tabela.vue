@@ -88,6 +88,7 @@
                 <th v-if="actions.troca != undefined" class="row-table">Troca</th>
                 <th v-if="actions.adicionar != undefined" class="row-table">Adicionar</th>
                 <th v-if="actions.total_parcial != undefined" class="row-table">Total</th>
+                <th v-if="actions.comprar_tudo != undefined" class="row-table">#</th>
             </tr>
             </thead>
             <tbody>
@@ -142,6 +143,9 @@
                     <input type="checkbox" @click="total_parcial(dado)" v-if="dado['total'] == 1 && dado['quantidade_compra'] != null && dado['quantidade_compra'] != '0,00'" checked>
                     <input type="checkbox" @click="total_parcial(dado)" v-if="dado['total'] == 0 && dado['quantidade_compra'] != null && dado['quantidade_compra'] != '0,00'">
                 </td>
+                <td class="row-table" v-if="actions.comprar_tudo != undefined">
+                    <a @click="comprar_tudo(dado)" style="cursor:pointer;">Comprar tudo</a>
+                </td>
             </tr>
             <tr v-else>
                 <td>Não há dados</td>
@@ -169,6 +173,7 @@
             },
             apiAdicionar: '',
             apiTotalParcial: '',
+            apiComprarTudo: '',
             _token: '',
             actions: {
                 status: '',
@@ -176,6 +181,7 @@
                 adicionar: '',
                 tooltip: '',
                 total_parcial: '',
+                comprar_tudo: '',
                 detalhe: '',
                 aprovar: '',
                 reprovar: '',
@@ -250,6 +256,14 @@
             },
             tooltip: function(id){
 
+            },
+            comprar_tudo: function(item){
+                item['_token'] =this._token;
+                this.$http.post(this.apiComprarTudo, item)
+                        .then(function () {
+                            this.loadData();
+                        })
+                        .bind(this)
             },
             total_parcial: function(item){
                 item['_token'] =this._token;

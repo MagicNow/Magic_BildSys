@@ -16530,6 +16530,10 @@ module.exports = __vue_exports__
 //
 //
 //
+//
+//
+//
+//
 
     var verify = 0;
     /* harmony default export */ exports["default"] = {
@@ -16543,6 +16547,7 @@ module.exports = __vue_exports__
             },
             apiAdicionar: '',
             apiTotalParcial: '',
+            apiComprarTudo: '',
             _token: '',
             actions: {
                 status: '',
@@ -16550,6 +16555,7 @@ module.exports = __vue_exports__
                 adicionar: '',
                 tooltip: '',
                 total_parcial: '',
+                comprar_tudo: '',
                 detalhe: '',
                 aprovar: '',
                 reprovar: '',
@@ -16624,6 +16630,14 @@ module.exports = __vue_exports__
             },
             tooltip: function(id){
 
+            },
+            comprar_tudo: function(item){
+                item['_token'] =this._token;
+                this.$http.post(this.apiComprarTudo, item)
+                        .then(function () {
+                            this.loadData();
+                        })
+                        .bind(this)
             },
             total_parcial: function(item){
                 item['_token'] =this._token;
@@ -29413,7 +29427,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -47016,7 +47030,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "row-table"
   }, [_vm._v("Adicionar")]) : _vm._e(), _vm._v(" "), (_vm.actions.total_parcial != undefined) ? _c('th', {
     staticClass: "row-table"
-  }, [_vm._v("Total")]) : _vm._e()], 2)]), _vm._v(" "), _c('tbody', _vm._l((_vm.dados), function(dado, i) {
+  }, [_vm._v("Total")]) : _vm._e(), _vm._v(" "), (_vm.actions.comprar_tudo != undefined) ? _c('th', {
+    staticClass: "row-table"
+  }, [_vm._v("#")]) : _vm._e()], 2)]), _vm._v(" "), _c('tbody', _vm._l((_vm.dados), function(dado, i) {
     return (_vm.dados.length > 0) ? _c('tr', [_vm._l((_vm.chaves), function(chave, index) {
       return _c('td', {
         staticClass: "row-table"
@@ -47165,7 +47181,18 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
           _vm.total_parcial(dado)
         }
       }
-    }) : _vm._e()]) : _vm._e()], 2) : _c('tr', [_c('td', [_vm._v("Não há dados")])])
+    }) : _vm._e()]) : _vm._e(), _vm._v(" "), (_vm.actions.comprar_tudo != undefined) ? _c('td', {
+      staticClass: "row-table"
+    }, [_c('a', {
+      staticStyle: {
+        "cursor": "pointer"
+      },
+      on: {
+        "click": function($event) {
+          _vm.comprar_tudo(dado)
+        }
+      }
+    }, [_vm._v("Comprar tudo")])]) : _vm._e()], 2) : _c('tr', [_c('td', [_vm._v("Não há dados")])])
   }))]), _vm._v(" "), (_vm.pagination.last_page > 1) ? _c('div', {
     staticClass: "text-center"
   }, [_c('generic-paginator', {

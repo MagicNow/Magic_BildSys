@@ -98,6 +98,7 @@
                         api-url="/compras/obrasInsumosJson?obra_id={{$obra->id}}"
                         api-adicionar="/compras/{{$obra->id}}/addCarrinho"
                         api-total-parcial="/compras/{{$obra->id}}/totalParcial"
+                        api-comprar-tudo="/compras/{{$obra->id}}/comprarTudo"
                     @endif
                         api-filtros="/compras/obrasInsumosFilters"
                     _token="{{csrf_token()}}"
@@ -110,6 +111,7 @@
                    adicionar: true,
                    tooltip: true,
                    total_parcial: true,
+                   comprar_tudo: true,
                    }"
                     v-bind:colunas="[
                        {campo_db: 'nome', label: 'insumos'},

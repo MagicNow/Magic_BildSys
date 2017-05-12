@@ -1581,5 +1581,46 @@ class OrdemDeCompraController extends AppBaseController
 
         return response()->json(200);
     }
+
+    public function comprarTudo(Request $request, Obra $obra)
+    {
+        //Testa se tem ordem de compra aberta pro user
+        $ordem = OrdemDeCompra::where('oc_status_id', 1)
+            ->where('user_id', Auth::user()->id)
+            ->where('obra_id', $obra->id)->first();
+
+        // Encontra o orçamento ativo para validar preço
+        $orcamento_ativo = Orcamento::where('insumo_id',$request->id)
+            ->where('obra_id',$obra->id)
+            ->where('grupo_id',$request->grupo_id)
+            ->where('subgrupo1_id',$request->subgrupo1_id)
+            ->where('subgrupo2_id',$request->subgrupo2_id)
+            ->where('subgrupo3_id',$request->subgrupo3_id)
+            ->where('servico_id',$request->servico_id)
+            ->where('ativo',1)
+            ->first();
+
+
+        $ordem_item = OrdemDeCompraItem::firstOrNew([
+            'ordem_de_compra_id' => $ordem->id,
+            'obra_id' => $obra->id,
+            'codigo_insumo' => $orcamento_ativo->codigo_insumo,
+            'grupo_id' => $orcamento_ativo->grupo_id,
+            'subgrupo1_id' => $orcamento_ativo->subgrupo1_id,
+            'subgrupo2_id' => $orcamento_ativo->subgrupo2_id,
+            'subgrupo3_id' => $orcamento_ativo->subgrupo3_id,
+            'servico_id' => $orcamento_ativo->servico_id,
+            'insumo_id' => $orcamento_ativo->insumo_id,
+            'unidade_sigla' => $orcamento_ativo->unidade_sigla,
+        ]);
+
+        $ordem_item->user_id = Auth::user()->id;
+        $ordem_item->qtd = $ordem_item->getOriginal('qtd') + money_to_float($request->saldo);
+        $ordem_item->valor_unitario = $orcamento_ativo->preco_unitario;
+        $ordem_item->valor_total = $orcamento_ativo->getOriginal('preco_unitario') * $ordem_item->qtd;
+        $ordem_item->save();
+
+        return response()->json(200);
+    }
 }
 
