@@ -552,7 +552,7 @@ class OrdemDeCompraController extends AppBaseController
                             )
                         )
                     ),2,\'de_DE\') as saldo'),
-                    DB::raw('(
+                    DB::raw('format(( 
                                 SELECT sum(ordem_de_compra_itens.qtd) FROM ordem_de_compra_itens 
                                 JOIN ordem_de_compras 
                                 ON ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id 
@@ -565,8 +565,7 @@ class OrdemDeCompraController extends AppBaseController
                                 AND ordem_de_compra_itens.subgrupo3_id = orcamentos.subgrupo3_id
                                 AND ordem_de_compra_itens.servico_id = orcamentos.servico_id
                                 AND ordem_de_compras.obra_id ='. $obra->id .' 
-          
-                    ) as quantidade_compra'),
+                    ),2,\'de_DE\') as quantidade_compra'),
                     DB::raw('(SELECT count(ordem_de_compra_itens.id) FROM ordem_de_compra_itens 
                     JOIN ordem_de_compras 
                         ON ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id 
@@ -784,11 +783,11 @@ class OrdemDeCompraController extends AppBaseController
         ]);
 
         $ordem_item->user_id = Auth::user()->id;
-        $ordem_item->qtd = doubleval($request->quantidade_compra);
+        $ordem_item->qtd = $request->quantidade_compra;
         $ordem_item->valor_unitario = $orcamento_ativo->preco_unitario;
         $ordem_item->valor_total = doubleval($orcamento_ativo->preco_unitario) * doubleval($request->quantidade_compra);
         $salvo = $ordem_item->save();
-        if(!doubleval($request->quantidade_compra)){
+        if(!$request->quantidade_compra){
             $ordem_item->delete();
         }
 

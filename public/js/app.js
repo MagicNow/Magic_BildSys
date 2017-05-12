@@ -16580,7 +16580,10 @@ module.exports = __vue_exports__
             //Método da action adicionar onClick
             adicionar: function(item,i){
                 if(this.actions.quantidade){
-                    item['quantidade_compra'] = this.quant[i];
+                    var val_number = removeNaoNumero(this.quant[i]);
+                    var val_real = formatarReal(val_number);
+                    console.log(val_real);
+                    item['quantidade_compra'] = val_real;
                     if(!item['quantidade_compra'] && !item['adicionado']){
 //                    swal('Insira uma quantidade!','','error');
                         return false;
@@ -29396,7 +29399,7 @@ exports = module.exports = __webpack_require__(1)();
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -47059,12 +47062,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }, [(dado['pai'] == 0) ? _c('input', {
       directives: [{
         name: "model",
-        rawName: "v-model.number",
+        rawName: "v-model",
         value: (_vm.quant[i]),
-        expression: "quant[i]",
-        modifiers: {
-          "number": true
-        }
+        expression: "quant[i]"
       }],
       staticClass: "money",
       attrs: {
@@ -47076,19 +47076,17 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         "value": (_vm.quant[i])
       },
       on: {
-        "blur": [function($event) {
+        "blur": function($event) {
           _vm.adicionar(dado, i)
-        }, function($event) {
-          _vm.$forceUpdate()
-        }],
+        },
         "input": function($event) {
           if ($event.target.composing) { return; }
           var $$exp = _vm.quant,
             $$idx = i;
           if (!Array.isArray($$exp)) {
-            _vm.quant[i] = _vm._n($event.target.value)
+            _vm.quant[i] = $event.target.value
           } else {
-            $$exp.splice($$idx, 1, _vm._n($event.target.value))
+            $$exp.splice($$idx, 1, $event.target.value)
           }
         }
       }
