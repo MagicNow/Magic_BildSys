@@ -48,7 +48,7 @@
                     <!-- Obras Field -->
                     <div class="form-group col-sm-12">
                         {!! Form::label('obra_id', 'Obras:') !!}
-                        {!! Form::select('obra_id', [''=>'-']+$obras, null, ['class' => 'form-control', 'id'=>'obra_id', 'required'=>'required','onchange'=>'selectPlanejamento(this.value), orcamento(this.value), selectGrupoInsumo();']) !!}
+                        {!! Form::select('obra_id', [''=>'-']+$obras, Request::get('obra_id'), ['class' => 'form-control', 'id'=>'obra_id', 'required'=>'required','onchange'=>'selectPlanejamento(this.value), orcamento(this.value), selectGrupoInsumo();']) !!}
                     </div>
 
                     <!-- Planejamentos de insumo Field -->
@@ -96,6 +96,14 @@
                 });
             }
         }
+
+        @if(Request::get('obra_id'))
+            $(function(){
+            selectPlanejamento({{Request::get('obra_id')}});
+            orcamento({{Request::get('obra_id')}});
+            selectGrupoInsumo();
+            });
+        @endif
 
         function selectGrupoInsumo(){
             var rota = "{{url('/admin/planejamentos/planejamentoOrcamentos/planejamento/orcamento/insumo_grupos')}}";
@@ -148,7 +156,7 @@
                                 '</ul>';
                         $('#carrinho').html(list);
 
-                        submit = '<button type="submit" class="btn btn-primary btn-lg">Relacionar seleciionados</button>';
+                        submit = '<button type="submit" class="btn btn-primary btn-lg btn-flat"><i class="fa fa-link" aria-hidden="true"></i> Relacionar Selecionados</button>';
                         $('.submit').html(submit);
                     }else{
                         list = 'Essa obras não tem orçamentos';
@@ -188,7 +196,7 @@
                                     '<button type="button" class="btn btn-link text-left" ' +
                                     'onclick="listInsumosRelacionados('+value.id+','+value.obra_id+',\''+ value.proximo+'\',\''+value.atual+'\')">'+value.codigo+' - '+value.nome+
                                     '</button>'+
-                                    '<span>'+ ((value.tarefa) ? '- ' + value.tarefa : '' ) +'</span>'+
+                                    ( value.tarefa ? '<span class="label label-info"><i class="fa fa-link"></i> TAREFA:' + value.tarefa +'</span>': '' ) +
                                     '<button type="button" class="btn btn-link pull-right" ' +
                                     'onclick="listInsumosRelacionados('+value.id+','+value.obra_id+',\''+ value.proximo+'\',\''+value.atual+'\')">'+
                                     ' <i class="fa fa-plus-square pull-right" aria-hidden="true"></i>' +
@@ -201,7 +209,7 @@
                                     '<div class="row">' +
                                     '<div class="col-md-12">' +
                                     '<input type="checkbox" id="insumo_'+ value.insumo_id +'" name="'+value.atual+'[]" value="'+ value.insumo_id +'"> ' +value.codigo+' - '+value.nome+
-                                    '<div>'+ ((value.tarefa) ? '<strong>TAREFA:</strong> ' + value.tarefa : '' ) +'</div>' +
+                                    (value.tarefa ? '<span class="label label-info"><i class="fa fa-link"></i> TAREFA:'+  value.tarefa  +'</span>': '' ) +
                                     '</div>' +
                                     '</div>' +
                                     '</li>';
@@ -244,13 +252,18 @@
                         list += '<h3>Insumos</h3><li><input type="checkbox" id="checkAll"> <label>Selecionar todos</label></li>\
                                 </div>';
                         $.each(retorno,function(index, value){
-                            list += '<li><input type="checkbox" class="grupos_insumos" id="insumo_'+ value.id +'" name="insumo_id[]" value="'+ value.id +'"> <label for="insumo_'+ value.id +'">' + value.codigo + ' - ' + value.nome + '</label></li>\
-                                </div>';
+                            list += '<li><input type="checkbox" class="grupos_insumos" id="insumo_'+ value.id +
+                                    '" name="insumo_id[]" value="'+ value.id +'"> <label for="insumo_'+ value.id +'">' +
+                                    value.codigo + ' - ' + value.nome +
+                                    '</label>'+
+                                    (value.tarefa ? '<span class="label label-info"> <i class="fa fa-link"></i> TAREFA: '+value.tarefa+'</span>' : '')
+                            '</li>'+
+                            '    </div>';
                         });
 
                         $('#grupo_insumos').html('<ul style="list-style: none">' +list+ '</ul>');
 
-                        submit = '<button type="submit" class="btn btn-primary btn-lg">Adicionar relacionamentos</button>';
+                        submit = '<button type="submit" class="btn btn-primary btn-lg btn-flat"><i class="fa fa-link"></i> Relacionar Selecionados</button>';
                         $('#submit').html(submit);
 
                         $('#checkAll').on('ifChanged', function (event) {

@@ -50,44 +50,37 @@ class PlanejamentoOrcamentoController extends AppBaseController
      */
     public function store(Request $request)
     {
-//        dd($request->all());
         $insumosOrcados = collect([]);
         if($request->grupo_id) {
             $insumosOrcados = Orcamento::where('grupo_id', $request->grupo_id)
                 ->where('obra_id', $request->obra_id)
                 ->where('ativo', 1)
                 ->get();
-//            dd('grupo_id');
         }elseif($request->subgrupo1_id && !$request->grupo_id){
             $insumosOrcados = Orcamento::whereIn('subgrupo1_id', $request->subgrupo1_id)
                 ->where('obra_id', $request->obra_id)
                 ->where('ativo', 1)
                 ->get();
-//            dd('subgrupo1_id');
         }elseif($request->subgrupo2_id && !$request->subgrupo1_id && !$request->grupo_id){
             $insumosOrcados = Orcamento::whereIn('subgrupo2_id', $request->subgrupo2_id)
                 ->where('obra_id', $request->obra_id)
                 ->where('ativo', 1)
                 ->get();
-//            dd('subgrupo2_id');
         }elseif($request->subgrupo3_id && !$request->subgrupo2_id && !$request->subgrupo1_id && !$request->grupo_id){
             $insumosOrcados = Orcamento::whereIn('subgrupo3_id', $request->subgrupo3_id)
                 ->where('obra_id', $request->obra_id)
                 ->where('ativo', 1)
                 ->get();
-//            dd('subgrupo3_id');
         }elseif($request->servico_id && !$request->subgrupo3_id && !$request->subgrupo2_id && !$request->subgrupo1_id && !$request->grupo_id){
             $insumosOrcados = Orcamento::whereIn('servico_id', $request->servico_id)
                 ->where('obra_id', $request->obra_id)
                 ->where('ativo', 1)
                 ->get();
-//            dd('servico_id');
         }elseif($request->insumo_id && !$request->servico_id && !$request->subgrupo3_id && !$request->subgrupo2_id && !$request->subgrupo1_id && !$request->grupo_id){
             $insumosOrcados = Orcamento::whereIn('insumo_id', $request->insumo_id)
                 ->where('obra_id', $request->obra_id)
                 ->where('ativo', 1)
                 ->get();
-//            dd('insumo_id');
         }
 
         if(count($insumosOrcados)) {
@@ -110,10 +103,10 @@ class PlanejamentoOrcamentoController extends AppBaseController
             }
 
             Flash::success('Planejamento inserido em orçamentos!');
-            return redirect('admin/planejamentos/planejamentoOrcamentos');
+            return redirect('admin/planejamentos/planejamentoOrcamentos?obra_id='.$request->obra_id);
         }
         Flash::error('Não foram encontrados insumos em orçamentos com os filtros passados!');
-        return redirect('/admin/planejamentos/planejamentoOrcamentos');
+        return redirect('/admin/planejamentos/planejamentoOrcamentos?obra_id='.$request->obra_id);
     }
 
     /**
@@ -157,7 +150,6 @@ class PlanejamentoOrcamentoController extends AppBaseController
     }
 
     public function GrupoRelacionados(Request $request){
-//        dd($request->all());
         $proximo = '';
         $retorno = collect([]);
         switch($request->tipo){
@@ -181,38 +173,63 @@ class PlanejamentoOrcamentoController extends AppBaseController
                 'orcamentos.obra_id', 'grupos.codigo',
                 'grupos.nome',
                 DB::raw("'".$request->tipo."'  as atual"),DB::raw("'".$proximo."'  as proximo"),
-                DB::raw("(	SELECT
-			                IF
-			                (
-			                	(
-			                		SELECT
-			                			count(1)
-			                		FROM orcamentos
-			                		WHERE ".$request->campo." = ".$request->id."
-			                		AND obra_id = ".$request->obra."
-			                	)
-			                	=
-			                	( SELECT qtd FROM
-			                		(SELECT
-			                			count(1) as qtd
-			                			FROM planejamento_compras
-                                        JOIN planejamentos ON planejamentos.id = planejamento_compras.planejamento_id
-			                            			WHERE	planejamento_compras.deleted_at IS NULL
-                                        AND ".$request->campo." = ".$request->id."
-			                    		AND planejamentos.obra_id = ".$request->obra."
-			                    		GROUP BY planejamento_compras.planejamento_id) as x
-			                    		LIMIT 1
-			                    ),
-			                    (SELECT CONCAT(planejamentos.tarefa,' - ',DATE_FORMAT( planejamentos.data, '%d/%m/%Y')) as tarefa
-			                    	FROM planejamento_compras
-			                    	JOIN planejamentos ON planejamentos.id = planejamento_compras.planejamento_id
-			                    	WHERE planejamento_compras.deleted_at IS NULL
-			                    	AND ".$request->campo." = ".$request->id."
-			                    	AND planejamentos.obra_id = ".$request->obra."
-			                    	LIMIT 1),
-			                    NULL
-			                    )
-	                    ) as tarefa"
+                DB::raw("(
+                            SELECT
+                    
+                            IF(
+                                (
+                                    SELECT
+                                        count(1)
+                                    FROM
+                                        orcamentos
+                                    WHERE
+                                        ".$request->tipo." = GRU.id
+                                    AND obra_id = 4
+                                ) =(
+                                    SELECT
+                                        (
+                                            SELECT
+                                                count(1) AS qtd
+                                            FROM
+                                                planejamento_compras
+                                            JOIN planejamentos ON planejamentos.id = planejamento_compras.planejamento_id
+                                            WHERE
+                                                planejamento_compras.deleted_at IS NULL
+                                            AND ".$request->tipo." = G.id
+                                            AND planejamentos.obra_id = 4
+                                            GROUP BY
+                                                planejamento_compras.planejamento_id
+                                        LIMIT 1
+                                        ) qtd
+                                    FROM
+                                        grupos G
+                                        WHERE G.id = GRU.id
+                                    LIMIT 1
+                                ) ,
+                                (
+                                    SELECT
+                                        CONCAT(
+                                            planejamentos.tarefa ,
+                                            ' - ' ,
+                                            DATE_FORMAT(planejamentos. DATA , '%d/%m/%Y')
+                                        ) AS tarefa
+                                    FROM
+                                        planejamento_compras
+                                    JOIN planejamentos ON planejamentos.id = planejamento_compras.planejamento_id
+                                    WHERE
+                                        planejamento_compras.deleted_at IS NULL
+                                    AND ".$request->tipo." = GRU.id
+                                    AND planejamentos.obra_id = 4
+                                    LIMIT 1
+                                ) ,
+                                NULL
+                            )
+                            FROM
+                                grupos AS GRU
+                            WHERE
+                                GRU.id = orcamentos.".$request->tipo."
+                            LIMIT 1
+                        ) as tarefa"
                 )
             ])
                 ->join('grupos', 'grupos.id', '=', 'orcamentos.' . $request->tipo)
@@ -228,38 +245,61 @@ class PlanejamentoOrcamentoController extends AppBaseController
                 'servicos.nome',
                 DB::raw("'".$request->tipo."'  as atual"),
                 DB::raw("'".$proximo."'  as proximo"),
-                DB::raw("(	SELECT
-			                IF
-			                (
-			                	(
-			                		SELECT
-			                			count(1)
-			                		FROM orcamentos
-			                		WHERE ".$request->campo." = ".$request->id."
-			                		AND obra_id = ".$request->obra."
-			                	)
-			                	=
-			                	( SELECT qtd FROM
-			                		(SELECT
-			                			count(1) as qtd
-			                			FROM planejamento_compras
-                                        JOIN planejamentos ON planejamentos.id = planejamento_compras.planejamento_id
-			                            			WHERE	planejamento_compras.deleted_at IS NULL
-                                        AND ".$request->campo." = ".$request->id."
-			                    		AND planejamentos.obra_id = ".$request->obra."
-			                    		GROUP BY planejamento_compras.planejamento_id) as x
-			                    		LIMIT 1
-			                    ),
-			                    (SELECT CONCAT(planejamentos.tarefa,' - ',DATE_FORMAT( planejamentos.data, '%d/%m/%Y')) as tarefa
-			                    	FROM planejamento_compras
-			                    	JOIN planejamentos ON planejamentos.id = planejamento_compras.planejamento_id
-			                    	WHERE planejamento_compras.deleted_at IS NULL
-			                    	AND ".$request->campo." = ".$request->id."
-			                    	AND planejamentos.obra_id = ".$request->obra."
-			                    	LIMIT 1),
-			                    NULL
-			                    )
-	                    ) as tarefa"
+                DB::raw("(
+		SELECT
+
+		IF(
+			(
+				SELECT
+					count(1)
+				FROM
+					orcamentos
+				WHERE
+					servico_id = SER.id
+				AND obra_id = ".$request->obra."
+			) =(
+				SELECT
+					(
+						SELECT
+							count(1) AS qtd
+						FROM
+							planejamento_compras
+						JOIN planejamentos ON planejamentos.id = planejamento_compras.planejamento_id
+						WHERE
+							planejamento_compras.deleted_at IS NULL
+						AND servico_id = S.id
+						AND planejamentos.obra_id = ".$request->obra."
+						GROUP BY
+							planejamento_compras.planejamento_id
+					) qtd
+				FROM
+					servicos S
+					WHERE S.id = SER.id
+				LIMIT 1
+			) ,
+			(
+				SELECT
+					CONCAT(
+						planejamentos.tarefa ,
+						' - ' ,
+						DATE_FORMAT(planejamentos. DATA , '%d/%m/%Y')
+					) AS tarefa
+				FROM
+					planejamento_compras
+				JOIN planejamentos ON planejamentos.id = planejamento_compras.planejamento_id
+				WHERE
+					planejamento_compras.deleted_at IS NULL
+				AND servico_id = SER.id
+				AND planejamentos.obra_id = ".$request->obra."
+				LIMIT 1
+			) ,
+			NULL
+		)
+		FROM
+			servicos AS SER
+		WHERE
+			SER.id = orcamentos.servico_id
+	) as tarefa"
                 )
             ])
                 ->join('servicos', 'servicos.id', '=', 'orcamentos.servico_id')
@@ -334,7 +374,21 @@ class PlanejamentoOrcamentoController extends AppBaseController
             'insumos.codigo',
             'insumos.nome',
             'insumos.insumo_grupo_id',
-            'insumos.id'
+            'insumos.id',
+            DB::raw("(SELECT CONCAT( TRIM(planejamentos.tarefa),' - ',DATE_FORMAT( planejamentos.data, '%d/%m/%Y')) as tarefa
+			                    	FROM planejamento_compras
+			                    	JOIN planejamentos ON planejamentos.id = planejamento_compras.planejamento_id
+			                    	WHERE planejamento_compras.deleted_at IS NULL
+			                    	AND orcamentos.insumo_id = planejamento_compras.insumo_id
+			                    	AND planejamentos.obra_id = orcamentos.obra_id
+			                    	AND orcamentos.grupo_id = planejamento_compras.grupo_id
+			                    	AND orcamentos.subgrupo1_id = planejamento_compras.subgrupo1_id
+			                    	AND orcamentos.subgrupo2_id = planejamento_compras.subgrupo2_id
+			                    	AND orcamentos.subgrupo3_id = planejamento_compras.subgrupo3_id
+			                    	AND orcamentos.servico_id = planejamento_compras.servico_id
+			                    	LIMIT 1
+	                    ) as tarefa"
+            )
         ])
             ->join('insumos','insumos.id','=','orcamentos.insumo_id')
             ->where('insumos.insumo_grupo_id', $request->id)
