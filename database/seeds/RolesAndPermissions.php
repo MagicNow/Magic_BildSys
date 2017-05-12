@@ -102,7 +102,23 @@ class RolesAndPermissions extends Seeder
             'grupos_insumos.list' => 'Listagem de grupos de insumos',
             'grupos_insumos.view'   => 'Visualização de grupos de insumos',
 
-            //SITE
+            'tipoEqualizacaoTecnicas.list'   => 'Listagem de equalização tecnica',
+            'tipoEqualizacaoTecnicas.create'   => 'Criação de equalização tecnica',
+            'tipoEqualizacaoTecnicas.edit'   => 'Edição de equalização tecnica',
+            'tipoEqualizacaoTecnicas.delete'   => 'Remoção de equalização tecnica',
+
+            'fornecedores.list'   => 'Listagem de fornecedores',
+            'fornecedores.create'   => 'Criação de fornecedores',
+            'fornecedores.edit'   => 'Edição de fornecedores',
+            'fornecedores.delete'   => 'Remoção de fornecedores',
+
+            'compradorInsumos.list'   => 'Listagem de comprador/insumos',
+            'compradorInsumos.create'   => 'Criação de comprador/insumos',
+            'compradorInsumos.delete'   => 'Remoção de comprador/insumos',
+            'compradorInsumos.deleteBlocoView'   => 'Remoção em bloco de comprador/insumos',
+
+
+            ################# SITE ###################
             'compras_lembretes.list' => 'Listagem de compras e lembretes',
 
             'compras.geral' => 'Acesso aos módulos de compras',
