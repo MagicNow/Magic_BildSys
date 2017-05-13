@@ -146,9 +146,9 @@
                                 '<span>'+ ((retorno.tarefa) ? '- '+ retorno.tarefa : '' ) +'</span>'+
                                 '<button type="button" class="btn btn-link pull-right" ' +
                                 'onclick="listInsumosRelacionados(' + retorno.grupo_id + ','+ retorno.obra_id +',\'subgrupo1_id\', \'grupo_id\')">' +
-                                '<i class="fa fa-plus-square pull-right" aria-hidden="true"></i>' +
+                                '<i class="fa fa-plus-square pull-right"  id="ico_' + retorno.grupo_id + '" aria-hidden="true"></i>' +
                                 '</button>' +
-                                '<ul id="obj_' + retorno.grupo_id + '"></ul>' +
+                                '<ul id="obj_' + retorno.grupo_id + '" expandido="0"></ul>' +
                                 '</span>' +
                                 '</div>' +
                                 '</div>' +
@@ -175,6 +175,32 @@
         }
 
         function listInsumosRelacionados(obj_id, obra_id, tipo, campo){
+            if(campo == 'grupo_id') {
+                if($('#obj_' + obj_id).attr('expandido')=='1'){
+                    $('#obj_' + obj_id).attr('expandido','0');
+                    $('#ico_' + obj_id).addClass('fa-plus-square');
+                    $('#ico_' + obj_id).removeClass('fa-minus-square');
+                    $('#obj_' + obj_id).html('');
+                    return false;
+                }else{
+
+                    $('#ico_' + obj_id).addClass('fa-minus-square');
+                    $('#ico_' + obj_id).removeClass('fa-plus-square');
+                }
+            }else{
+                if($('#obj_'+campo+'_'+ obj_id).attr('expandido')=='1'){
+                    $('#obj_'+campo+'_'+ obj_id).attr('expandido','0');
+                    $('#ico_' + campo+'_'+ obj_id).addClass('fa-plus-square');
+                    $('#ico_' + campo+'_'+ obj_id).removeClass('fa-minus-square');
+                    $('#obj_'+campo+'_'+ obj_id).html('');
+                    return false;
+                }else{
+
+                    $('#ico_' + campo+'_'+ obj_id).addClass('fa-minus-square');
+                    $('#ico_' + campo+'_'+ obj_id).removeClass('fa-plus-square');
+                }
+            }
+
             $('.box.box-primary').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
             if(obj_id && planejamento_id){
                 $.ajax("{{ url('/admin/planejamentos/planejamentoOrcamentos/orcamentos/relacionados') }}", {
@@ -196,20 +222,24 @@
                                     '<button type="button" class="btn btn-link text-left" ' +
                                     'onclick="listInsumosRelacionados('+value.id+','+value.obra_id+',\''+ value.proximo+'\',\''+value.atual+'\')">'+value.codigo+' - '+value.nome+
                                     '</button>'+
-                                    ( value.tarefa ? '<span class="label label-info"><i class="fa fa-link"></i> TAREFA:' + value.tarefa +'</span>': '' ) +
+                                    ( value.tarefa ? '<span id="vinc_'+value.atual+'_'+ value.id +'"><span class="label label-info"><i class="fa fa-link"></i> TAREFA:' + value.tarefa +'</span> &nbsp;' +
+                                    '<button type="button" class="btn btn-danger btn-xs btn-flat" title="Desvincular" onclick="desvincular(\''+value.atual+'\','+value.id+','+value.obra_id+')">' +
+                                    '<i class="fa fa-chain-broken"></i> </button> </span>': '' ) +
                                     '<button type="button" class="btn btn-link pull-right" ' +
                                     'onclick="listInsumosRelacionados('+value.id+','+value.obra_id+',\''+ value.proximo+'\',\''+value.atual+'\')">'+
-                                    ' <i class="fa fa-plus-square pull-right" aria-hidden="true"></i>' +
+                                    ' <i class="fa fa-plus-square pull-right" id="ico_'+value.atual+'_'+value.id+'" aria-hidden="true"></i>' +
                                     '</button>'+
                                     '</div>' +
-                                    '<ul id="obj_'+value.atual+'_'+value.id+'"></ul>' +
+                                    '<ul id="obj_'+value.atual+'_'+value.id+'" expandido="0"></ul>' +
                                     ' </div></div></li>';
                         }else{
                             list += '<li id="item_'+value.id+'"> ' +
                                     '<div class="row">' +
                                     '<div class="col-md-12">' +
                                     '<input type="checkbox" id="insumo_'+ value.insumo_id +'" name="'+value.atual+'[]" value="'+ value.insumo_id +'"> ' +value.codigo+' - '+value.nome+
-                                    (value.tarefa ? '<span class="label label-info"><i class="fa fa-link"></i> TAREFA:'+  value.tarefa  +'</span>': '' ) +
+                                    (value.tarefa ? '<span id="vinc_'+value.atual+'_'+ value.id +'"><span class="label label-info"><i class="fa fa-link"></i> TAREFA:'+  value.tarefa +'</span> &nbsp;' +
+                                    '<button type="button" class="btn btn-danger btn-xs btn-flat" title="Desvincular" onclick="desvincular(\''+value.atual+'\','+value.id+','+value.obra_id+')">' +
+                                    '<i class="fa fa-chain-broken"></i> </button></span> ': '' ) +
                                     '</div>' +
                                     '</div>' +
                                     '</li>';
@@ -217,8 +247,10 @@
                     });
                     if(campo == 'grupo_id') {
                         $('#obj_' + obj_id).html(list);
+                        $('#obj_' + obj_id).attr('expandido','1');
                     }else{
                         $('#obj_'+campo+'_'+ obj_id).html(list);
+                        $('#obj_'+campo+'_'+ obj_id).attr('expandido','1');
                     }
                     $('input').iCheck({
                         checkboxClass: 'icheckbox_square-green',
@@ -231,6 +263,37 @@
                     $('.overlay').remove();
                 });
             }
+        }
+
+        function desvincular(oque,quem,obra_id){
+            swal({
+                        title: "Tem certeza que quer desvincular"+(quem!='insumo_id'?' tudo abaixo':' este item de orçamento')+"?",
+                        text: "",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Sim, Remova o relacionamento.",
+                        cancelButtonText: "Não",
+                        closeOnConfirm: false,
+                        closeOnCancel: true
+                    },
+                    function(isConfirm){
+                        if (isConfirm) {
+                            $.ajax('/admin/planejamentos/planejamentoOrcamentos/orcamentos/desvincular?campo='+oque+'&id='+quem+'&obra_id='+obra_id)
+                                    .done(function(retorno){
+                                        swal("Desvinculado!", "", "success");
+                                        $('#vinc_'+oque+'_'+quem).remove();
+                                        $('#obj_'+oque+'_'+ quem).attr('expandido','0');
+                                        $('#ico_' + oque+'_'+ quem).addClass('fa-plus-square');
+                                        $('#ico_' + oque+'_'+ quem).removeClass('fa-minus-square');
+                                        $('#obj_'+oque+'_'+ quem).html('');
+                                    })
+                                    .fail(function (retorno) {
+                                        swal("Erro ao desvincular!", "", "error");
+                                    });
+
+                        }
+                    });
         }
 
         function grupoInsumos(id){

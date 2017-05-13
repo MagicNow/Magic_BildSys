@@ -79,19 +79,20 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
             $router->get('atividade/planejamentocompras/{id}', 'Admin\PlanejamentoController@destroyPlanejamentoCompra');
         });
 
-        Route::get('planejamentoOrcamentos', ['as'=> 'admin.planejamentoOrcamentos.index', 'uses' => 'Admin\PlanejamentoOrcamentoController@index']);
-        Route::post('planejamentoOrcamentos', ['as'=> 'admin.planejamentoOrcamentos.store', 'uses' => 'Admin\PlanejamentoOrcamentoController@store']);
-        Route::get('planejamentoOrcamentos/create', ['as'=> 'admin.planejamentoOrcamentos.create', 'uses' => 'Admin\PlanejamentoOrcamentoController@create']);
-        Route::put('planejamentoOrcamentos/{planejamentoOrcamentos}', ['as'=> 'admin.planejamentoOrcamentos.update', 'uses' => 'Admin\PlanejamentoOrcamentoController@update']);
-        Route::patch('planejamentoOrcamentos/{planejamentoOrcamentos}', ['as'=> 'admin.planejamentoOrcamentos.update', 'uses' => 'Admin\PlanejamentoOrcamentoController@update']);
-        Route::delete('planejamentoOrcamentos/{planejamentoOrcamentos}', ['as'=> 'admin.planejamentoOrcamentos.destroy', 'uses' => 'Admin\PlanejamentoOrcamentoController@destroy']);
-        Route::get('planejamentoOrcamentos/{planejamentoOrcamentos}', ['as'=> 'admin.planejamentoOrcamentos.show', 'uses' => 'Admin\PlanejamentoOrcamentoController@show']);
-        Route::get('planejamentoOrcamentos/{planejamentoOrcamentos}/edit', ['as'=> 'admin.planejamentoOrcamentos.edit', 'uses' => 'Admin\PlanejamentoOrcamentoController@edit']);
-        Route::get('planejamentoOrcamentos/orcamentos/relacionados', 'Admin\PlanejamentoOrcamentoController@GrupoRelacionados');
-        Route::get('planejamentoOrcamentos/planejamento/{id}', 'Admin\PlanejamentoOrcamentoController@getPlanejamentos');
-        Route::get('planejamentoOrcamentos/orcamento/{id}', 'Admin\PlanejamentoOrcamentoController@getOrcamentos');
-        Route::get('planejamentoOrcamentos/planejamento/orcamento/insumo_grupos', 'Admin\PlanejamentoOrcamentoController@getGrupoInsumos');
-        Route::get('planejamentoOrcamentos/planejamento/orcamento/insumo/insumo_grupos', 'Admin\PlanejamentoOrcamentoController@getGrupoInsumoRelacionados');
+        $router->get('planejamentoOrcamentos', ['as'=> 'admin.planejamentoOrcamentos.index', 'uses' => 'Admin\PlanejamentoOrcamentoController@index']);
+        $router->post('planejamentoOrcamentos', ['as'=> 'admin.planejamentoOrcamentos.store', 'uses' => 'Admin\PlanejamentoOrcamentoController@store']);
+        $router->get('planejamentoOrcamentos/create', ['as'=> 'admin.planejamentoOrcamentos.create', 'uses' => 'Admin\PlanejamentoOrcamentoController@create']);
+        $router->put('planejamentoOrcamentos/{planejamentoOrcamentos}', ['as'=> 'admin.planejamentoOrcamentos.update', 'uses' => 'Admin\PlanejamentoOrcamentoController@update']);
+        $router->patch('planejamentoOrcamentos/{planejamentoOrcamentos}', ['as'=> 'admin.planejamentoOrcamentos.update', 'uses' => 'Admin\PlanejamentoOrcamentoController@update']);
+        $router->delete('planejamentoOrcamentos/{planejamentoOrcamentos}', ['as'=> 'admin.planejamentoOrcamentos.destroy', 'uses' => 'Admin\PlanejamentoOrcamentoController@destroy']);
+        $router->get('planejamentoOrcamentos/{planejamentoOrcamentos}', ['as'=> 'admin.planejamentoOrcamentos.show', 'uses' => 'Admin\PlanejamentoOrcamentoController@show']);
+        $router->get('planejamentoOrcamentos/{planejamentoOrcamentos}/edit', ['as'=> 'admin.planejamentoOrcamentos.edit', 'uses' => 'Admin\PlanejamentoOrcamentoController@edit']);
+        $router->get('planejamentoOrcamentos/orcamentos/relacionados', 'Admin\PlanejamentoOrcamentoController@GrupoRelacionados');
+        $router->get('planejamentoOrcamentos/planejamento/{id}', 'Admin\PlanejamentoOrcamentoController@getPlanejamentos');
+        $router->get('planejamentoOrcamentos/orcamento/{id}', 'Admin\PlanejamentoOrcamentoController@getOrcamentos');
+        $router->get('planejamentoOrcamentos/planejamento/orcamento/insumo_grupos', 'Admin\PlanejamentoOrcamentoController@getGrupoInsumos');
+        $router->get('planejamentoOrcamentos/planejamento/orcamento/insumo/insumo_grupos', 'Admin\PlanejamentoOrcamentoController@getGrupoInsumoRelacionados');
+        $router->get('planejamentoOrcamentos/orcamentos/desvincular', 'Admin\PlanejamentoOrcamentoController@desvincular');
 
         # Lembretes
         $router->group(['middleware' => 'needsPermission:lembretes.list'], function () use ($router) {

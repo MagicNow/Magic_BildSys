@@ -311,7 +311,7 @@ class PlanejamentoOrcamentoController extends AppBaseController
             #insumos
 
             $retorno = Orcamento::select([
-                'orcamentos.id',
+                'orcamentos.insumo_id as id',
                 'orcamentos.obra_id',
                 'orcamentos.insumo_id',
                 'insumos.codigo',
@@ -460,5 +460,18 @@ class PlanejamentoOrcamentoController extends AppBaseController
         }else{
             return $final = null;
         }
+    }
+    
+    public function desvincular(Request $request){
+        $campo = $request->campo;
+        $id = $request->id;
+        $obra_id = $request->obra_id;
+
+        $planejamentos_ids = Planejamento::where('obra_id',$obra_id)->pluck('id','id')->toArray();
+        $removidos = PlanejamentoCompra::where($campo,$id)
+            ->whereIn('planejamento_id',$planejamentos_ids)
+            ->delete();
+
+        return response()->json(['success'=>$removidos]);
     }
 }
