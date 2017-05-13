@@ -13,16 +13,16 @@
                     {{--href="{{url('compras/insumos?planejamento_id='.$planejamento->id.'&insumo_grupos_id='    .$insumoGrupo->id)}}"--}}
                     @if (isset($obra))
                         <a href="{{url("compras/insumos/orcamento/".$obra->id)}}" type="button" class="btn btn-default btn-lg btn-flat">
-                            Incluir Insumo
+                            Incluir insumo na OC
                         </a>
                     @else
                         <a href="{{url("compras/insumos") }}?planejamento_id={{$planejamento->id}}"  type="button" class="btn btn-default btn-lg btn-flat" data-dismiss="modal">
-                            Incluir Insumo
+                            Incluir insumo na OC
                         </a>
                     @endif
 
                     <a href="{{ url('/ordens-de-compra/carrinho') }}" class="btn btn-success btn-lg btn-flat">
-                        Fechar Ordem
+                        Fechar OC
                     </a>
                 </div>
             </div>
@@ -37,7 +37,7 @@
                         <div class="card-description">
                             <!-- Grupos de insumo Field -->
                             <div class="form-group col-sm-6" style="width:20%">
-                                {!! Form::label('grupo_id', 'Grupos:') !!}
+                                {!! Form::label('grupo_id', 'Obra:') !!}
                                 {!! Form::select('grupo_id', [''=>'-']+$grupos, null, ['class' => 'form-control', 'id'=>'grupo_id','onchange'=>'selectgrupo(this.value, \'subgrupo1_id\', \'grupos\', \'grupo\');']) !!}
                             </div>
 

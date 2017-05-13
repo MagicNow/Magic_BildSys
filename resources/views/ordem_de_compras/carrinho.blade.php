@@ -155,7 +155,7 @@
                                     </div>
                                 @else
                                     <div id="bloco_indicar_contrato_removivel{{ $item->id }}">
-                                        <label class="label-bloco label-bloco-limitado">Indicar contrato</label>
+                                        <label class="label-bloco label-bloco-limitado">Aditivar contrato</label>
                                         <button type="button" class="btn btn-flat btn-sm btn-default margem-botao" onclick="indicarContrato('{{ $item->insumo->codigo }}', '{{$item->id}}')">
                                             Selecionar
                                         </button>
@@ -349,7 +349,7 @@
                 if(contratos){
                     swal({
                         html:true,
-                        title: '<div class="modal-header">Indicar contrato</div>',
+                        title: '<div class="modal-header">Aditivar contrato</div>',
                         text: contratos,
                         showConfirmButton: false,
                         showCancelButton: true,
@@ -554,7 +554,7 @@
                 $('#bloco_indicar_contrato_removivel'+item_id).remove();
 
                 $('#bloco_indicar_contrato' + item_id).html('<div id="bloco_indicar_contrato_removivel' + item_id + '">\
-                        <label class="label-bloco label-bloco-limitado">Indicar contrato</label>\
+                        <label class="label-bloco label-bloco-limitado">Aditivar contrato</label>\
                             <button type="button" class="btn btn-flat btn-sm btn-default margem-botao" onclick="indicarContrato(' + codigo_insumo + ', ' + item_id + ')">\
                         Selecionar\
                         </button>\

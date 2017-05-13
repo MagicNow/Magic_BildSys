@@ -262,10 +262,10 @@
                             <th class="text-center">Código Insumo</th>
                             <th class="text-center">Insumo</th>
                             <th class="text-center">Qtd. Solicitada</th>
-                            <th class="text-center">Unidade</th>
-                            <th class="text-center">Status</th>
+                            <th class="text-center">Und</th>
+                            <th class="text-center">Status do insumo</th>
                             <th class="text-center">Status Serviço</th>
-                            <th class="text-center">Total ou Parcial</th>
+                            <th class="text-center">Acaba a obra</th>
                             <th class="text-center">#</th>
                         </tr>
                         </thead>
@@ -277,7 +277,7 @@
                             <td class="text-center">{{ $item->unidade_sigla }}</td>
                             <td class="text-center"><i class="fa fa-circle {{ (($item->qtd_realizada) > $item->qtd_inicial) ? 'text-danger': 'text-success'  }}" aria-hidden="true"></i> </td>
                             <td class="text-center"><i class="fa fa-circle {{ (($item->qtd_realizada_servico) > $item->qtd_inicial_servico) ? 'text-danger': 'text-success'  }}" aria-hidden="true"></i> </td>
-                            <td class="text-center">{{ $item->total ? 'Total' : 'Parcial' }}</td>
+                            <td class="text-center">{{ $item->total ? 'Sim' : 'Não' }}</td>
                             <td class="text-center">
                                 <button type="button" class="btn btn-flat btn-link" title="Expandir"
                                         style="font-size: 18px; margin-top: -7px" onclick="showHideInfoExtra({{ $item->id }})">
@@ -385,7 +385,6 @@
                                     <th class="text-center">Valor Saldo</th>
                                     <th class="text-center">Qtd. Solicitada</th>
                                     <th class="text-center">Valor Solicitado</th>
-                                    <th class="text-center">Status</th>
                                     <th class="text-center">Data de Uso</th>
                                     <th class="text-center">Emergencial</th>
                                 </tr>
@@ -396,7 +395,6 @@
                                     <td class="text-center"><small class="pull-left">R$</small> {{ number_format( $item->preco_inicial-doubleval($item->valor_realizado), 2, ',','.') }}</td>
                                     <td class="text-center"><strong>{{ $item->qtd }}</strong></td>
                                     <td class="text-center"><small class="pull-left">R$</small> <strong>{{ number_format(doubleval($item->valor_total), 2, ',','.') }}</strong></td>
-                                    <td class="text-center"><i class="fa fa-circle {{ (($item->qtd_realizada) > $item->qtd_inicial) ? 'text-danger': 'text-success'  }}" aria-hidden="true"></i> </td>
                                     <td class="text-center">{{ $item->sugestao_data_uso ? $item->sugestao_data_uso->format('d/m/Y') : ''  }}</td>
                                     <td class="text-center">{!! $item->emergencial?'<strong class="text-danger"> <i class="fa fa-exclamation-circle" aria-hidden="true"></i> SIM</strong>':'NÃO' !!}</td>
                                 </tr>

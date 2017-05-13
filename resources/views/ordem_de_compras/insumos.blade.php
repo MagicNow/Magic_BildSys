@@ -4,7 +4,7 @@
     <section class="content-header">
         <div class="modal-header">
             <div class="col-md-12">
-                <div class="col-md-8">
+                <div class="col-md-6">
                     <span class="pull-left title">
                         @if(isset($obra))
                             <a href="{{ url('/compras/obrasInsumos?obra_id='.$obra->id) }}"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
@@ -14,10 +14,10 @@
                         Incluir Insumos
                     </span>
                 </div>
-                <div class="col-md-4 text-right">
+                <div class="col-md-6 text-right">
 
                     <button type="button" class="btn btn-default btn-lg btn-flat" data-dismiss="modal">
-                        Cadastrar
+                        Inserir insumo no Orçamento
                     </button>
 
                     <a href="{{ url()->previous()}}" type="button" class="btn btn-success btn-lg btn-flat" data-dismiss="modal">
