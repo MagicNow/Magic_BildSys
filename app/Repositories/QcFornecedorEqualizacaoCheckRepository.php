@@ -26,4 +26,12 @@ class QcFornecedorEqualizacaoCheckRepository extends BaseRepository
     {
         return QcFornecedorEqualizacaoCheck::class;
     }
+
+    public function porQcFornecedor($qcFornecedor)
+    {
+        return $this->model
+            ->where('qc_fornecedor_id', $qcFornecedor)
+            ->get();
+    }
+
 }

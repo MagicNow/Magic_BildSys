@@ -13,9 +13,18 @@ class QcStatus extends Model
 {
 
     public $table = 'qc_status';
-    
+
     public $timestamps = false;
 
+    const ABERTO                  = 1;
+    const FECHADO                 = 2;
+    const EM_APROVACAO            = 3;
+    const REPROVADO               = 4;
+    const APROVADO                = 5;
+    const CANCELADO               = 6;
+    const EM_CONCORRENCIA         = 7;
+    const CONCORRENCIA_FINALIZADA = 8;
+    const FINALIZADO              = 9;
 
     public $fillable = [
         'nome',
@@ -39,7 +48,7 @@ class QcStatus extends Model
      * @var array
      */
     public static $rules = [
-        
+
     ];
 
     /**

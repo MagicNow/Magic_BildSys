@@ -40,19 +40,19 @@ class QuadroDeConcorrenciaDataTable extends DataTable
                 $query->whereRaw("DATE_FORMAT(quadro_de_concorrencias.updated_at,'%d/%m/%Y') like ?", ["%$keyword%"]);
             })
             ->filterColumn('fornecedores', function($query, $keyword){
-                $query->whereRaw('(SELECT 
-                            count(1) 
-                          FROM qc_fornecedor 
-                          WHERE 
+                $query->whereRaw('(SELECT
+                            count(1)
+                          FROM qc_fornecedor
+                          WHERE
                             quadro_de_concorrencia_id = quadro_de_concorrencias.id
                             AND rodada = quadro_de_concorrencias.rodada_atual
                           ) = ?',[$keyword]);
             })
             ->filterColumn('propostas', function($query, $keyword){
-                $query->whereRaw('(SELECT 
-                            count(1) 
-                            FROM qc_fornecedor 
-                            WHERE 
+                $query->whereRaw('(SELECT
+                            count(1)
+                            FROM qc_fornecedor
+                            WHERE
                                 quadro_de_concorrencia_id = quadro_de_concorrencias.id
                                 AND rodada = quadro_de_concorrencias.rodada_atual
                                 AND (
@@ -90,17 +90,17 @@ class QuadroDeConcorrenciaDataTable extends DataTable
                 'qc_status.nome as situacao',
                 'qc_status.cor as situacao_cor',
                 'quadro_de_concorrencias.qc_status_id',
-                DB::raw('(SELECT 
-                            count(1) 
-                          FROM qc_fornecedor 
-                          WHERE 
+                DB::raw('(SELECT
+                            count(1)
+                          FROM qc_fornecedor
+                          WHERE
                             quadro_de_concorrencia_id = quadro_de_concorrencias.id
                             AND rodada = quadro_de_concorrencias.rodada_atual
                           ) as fornecedores'),
-                DB::raw('(SELECT 
-                            count(1) 
-                            FROM qc_fornecedor 
-                            WHERE 
+                DB::raw('(SELECT
+                            count(1)
+                            FROM qc_fornecedor
+                            WHERE
                                 quadro_de_concorrencia_id = quadro_de_concorrencias.id
                                 AND rodada = quadro_de_concorrencias.rodada_atual
                                 AND (
@@ -112,7 +112,23 @@ class QuadroDeConcorrenciaDataTable extends DataTable
                                         )
                                     )
                          ) as propostas'),
-            ])
+                DB::raw('
+                  exists (
+                    select
+                        1
+                      from
+                         `qc_item_qc_fornecedor`
+                      join
+                        `qc_fornecedor`
+                        on
+                           `qc_fornecedor`.`id` = `qc_item_qc_fornecedor`.`qc_fornecedor_id`
+                        where
+                           `quadro_de_concorrencias`.`id` = `qc_fornecedor`.`quadro_de_concorrencia_id`
+                        and
+                           `qc_fornecedor`.`rodada` = `quadro_de_concorrencias`.`rodada_atual`
+                   ) as tem_ofertas
+               ')
+           ])
             ->leftJoin('users','users.id','quadro_de_concorrencias.user_id')
             ->join('qc_status','qc_status.id','quadro_de_concorrencias.qc_status_id');
 
@@ -191,7 +207,6 @@ class QuadroDeConcorrenciaDataTable extends DataTable
         $columns = [
             'id' => ['name' => 'quadro_de_concorrencias.id', 'data' => 'id', 'width'=>'25px'],
             'situação' => ['name' => 'qc_status.nome', 'data' => 'situacao'],
-            'rodada_atual' => ['name' => 'rodada_atual', 'data' => 'rodada_atual'],
             'atualizadoEm' => ['name' => 'quadro_de_concorrencias.updated_at', 'data' => 'updated_at', 'width'=>'12%'],
             'rodada' => ['name' => 'rodada_atual', 'data' => 'rodada_atual', 'width'=>'6%'],
             'fornecedores' => ['name' => 'fornecedores', 'data' => 'fornecedores', 'width'=>'6%'],
@@ -203,6 +218,8 @@ class QuadroDeConcorrenciaDataTable extends DataTable
             $columns['usuario'] = ['name' => 'users.name', 'data' => 'usuario'];
             $columns['criadoEm'] = ['name' => 'quadro_de_concorrencias.created_at', 'data' => 'created_at', 'width'=>'12%'];
         }
+
+        $columns['action'] = ['title' => '#', 'printable' => false, 'width'=>'10%'];
 
         return $columns;
     }

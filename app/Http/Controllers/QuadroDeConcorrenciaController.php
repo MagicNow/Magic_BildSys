@@ -12,6 +12,7 @@ use App\Http\Requests;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Requests\QcInformarValorRequest;
+use App\Http\Requests\QcAvaliarRequest;
 use App\Http\Requests\CreateQuadroDeConcorrenciaRequest;
 use App\Http\Requests\UpdateQuadroDeConcorrenciaRequest;
 use App\Http\Requests\CreateEqualizacaoTecnicaExtraRequest;
@@ -32,6 +33,11 @@ use Illuminate\Support\Facades\DB;
 use App\Repositories\DesistenciaMotivoRepository;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
+use App\DataTables\InsumoPorFornecedorDataTable;
+use App\Repositories\QcStatusLogRepository;
+use App\Notifications\IniciaConcorrencia;
+use Carbon\Carbon;
+use App\Models\QcStatus;
 
 class QuadroDeConcorrenciaController extends AppBaseController
 {
@@ -198,6 +204,161 @@ class QuadroDeConcorrenciaController extends AppBaseController
         return redirect(route('quadroDeConcorrencias.index'));
     }
 
+    public function avaliar(
+        $id,
+        FornecedoresRepository $fornecedorRepository,
+        DesistenciaMotivoRepository $desistenciaMotivoRepository,
+        QcFornecedorRepository $qcFornecedorRepository,
+        InsumoPorFornecedorDataTable $view
+    ) {
+        $user = Auth::user();
+
+        $isFornecedor = !is_null($user->fornecedor);
+
+        $quadro = $this->quadroDeConcorrenciaRepository
+            ->with(
+                'itens.insumo',
+                'itens.ordemDeCompraItens'
+            )
+            ->findWithoutFail($id);
+
+        if (empty($quadro)) {
+            Flash::error('Quadro De Concorrencia '.trans('common.not-found'));
+
+            return redirect(route('quadroDeConcorrencias.index'));
+        }
+
+        if (!$quadro->temOfertas()) {
+            Flash::error('Você não pode avaliar um quadro de concorrência sem ofertas.');
+
+            return redirect(route('quadroDeConcorrencias.index'));
+        }
+
+        $qcFornecedores = $qcFornecedorRepository->queOfertaramNoQuadroNaRodada($id);
+
+        $ofertas = $quadro->itens->reduce(function($ofertas, $item) use ($qcFornecedores) {
+            $ofertas[] = $qcFornecedores->map(function($qcFornecedor) use ($item) {
+                $oferta = $qcFornecedor->itens->where('qc_item_id', $item->id)->first();
+
+                return [
+                    'insumo_id'      => $item->insumo->id,
+                    'insumo'         => $item->insumo->nome,
+                    'fornecedor_id'  => $qcFornecedor->fornecedor_id,
+                    'valor_total'    => (float) $oferta->valor_total,
+                    'valor_unitario' => (float) $oferta->valor_unitario,
+                ];
+            })->all();
+
+            return $ofertas;
+        }, collect())
+            ->collapse()
+            ->all();
+
+        return $view->setQuadroDeConcorrencia($quadro)
+            ->setQcFornecedores($qcFornecedores)
+            ->render(
+                'quadro_de_concorrencias.avaliar',
+                compact('qcFornecedores', 'quadro', 'ofertas')
+            );
+    }
+
+    public function avaliarSave(
+        $id,
+        QcAvaliarRequest $request,
+        QcFornecedorRepository $qcFornecedorRepository,
+        QcItemQcFornecedorRepository $qcItemFornecedorRepository,
+        QcStatusLogRepository $qcStatusLogRepository
+    ) {
+        $quadro = $this->quadroDeConcorrenciaRepository
+            ->with(
+                'itens.insumo',
+                'itens.ordemDeCompraItens'
+            )
+            ->findWithoutFail($id);
+
+        if (empty($quadro)) {
+            Flash::error('Quadro De Concorrencia '.trans('common.not-found'));
+
+            return redirect(route('quadroDeConcorrencias.index'));
+        }
+
+        DB::beginTransaction();
+
+        try {
+            if($request->gerar_nova_rodada) {
+                $quadro->update(['rodada_atual' => (int) $quadro->rodada_atual + 1]);
+
+               $mensagens = collect($request->fornecedores)
+                    ->map(function($fornecedor) use ($quadro, $request) {
+                        return [
+                            'fornecedor_id' => $fornecedor,
+                            'quadro_de_concorrencia_id' => $quadro->id,
+                            'user_id' => $request->user()->id,
+                            'rodada' => $quadro->rodada_atual
+                        ];
+                    })
+                    ->map([$qcFornecedorRepository, 'create'])
+                    ->map(function($qcFornecedor) use ($quadro) {
+                        return $this->quadroDeConcorrenciaRepository->notifyFornecedor(
+                            $qcFornecedor->fornecedor,
+                            $quadro
+                        );
+                    })
+                    ->filter()
+                    ->flatten();
+
+                if(!empty($mensagens)) {
+                    Flash::warning(
+                        '<p> Quadro de Concorrência #' . $quadro->id . ' foi enviado para rodada ' . $quadro->rodada_atual . '</p>'
+                        . '<ul><li> ' . $mensagens->implode('</li><li>') . ' </li></ul>'
+                    );
+                } else {
+                    Flash::success(
+                        'Quadro de Concorrência #' . $quadro->id . ' foi enviado para rodada ' . $quadro->rodada_atual
+                    );
+                }
+
+                DB::commit();
+                return redirect(route('quadroDeConcorrencias.index'));
+            }
+
+            collect($request->vencedores)
+                ->map(function($qcItemQcFornecedorId) use ($qcItemFornecedorRepository) {
+                    return $qcItemFornecedorRepository->find($qcItemQcFornecedorId);
+                })
+                ->each(function($qcItemQcFornecedor) {
+                    $qcItemQcFornecedor->update([
+                        'vencedor' => true,
+                        'data_decisao' => Carbon::now()
+                    ]);
+                });
+
+            $quadro->update([
+                'qc_status_id' => QcStatus::CONCORRENCIA_FINALIZADA
+            ]);
+            $qcStatusLogRepository->create([
+                'qc_status_id' => QcStatus::CONCORRENCIA_FINALIZADA,
+                'quadro_de_concorrencia_id' => $quadro->id,
+                'user_id' => $request->user()->id
+            ]);
+
+        } catch (Exception $e) {
+            DB::rollback();
+            logger()->error((string) $e);
+            Flash::error('Ocorreu um erro ao salvar os dados, tente novamente');
+
+            return redirect(route('quadroDeConcorrencias.index'));
+        }
+
+        DB::commit();
+
+        Flash::success(
+            'Quadro de Concorrência #' . $quadro->id . ' foi finalizado com sucesso.'
+        );
+
+        return redirect(route('quadroDeConcorrencias.index'));
+    }
+
     /**
      * Formulário para adicionar valores do fornecedor
      *
@@ -345,13 +506,13 @@ class QuadroDeConcorrenciaController extends AppBaseController
                     return back()->withInput();
                 }
 
-                $qcFornecedor->update($request->only([
-                    'nf_material',
-                    'nf_servico',
-                    'porcentagem_faturamento_direto',
-                    'porcentagem_material',
-                    'porcentagem_servico',
-                ]));
+                $qcFornecedor->update([
+                    'nf_material' => $request->nf_material,
+                    'nf_servico' => $request->nf_servico,
+                    'porcentagem_faturamento_direto' => $request->porcentagem_faturamento_direto ?: 0,
+                    'porcentagem_material' => $request->porcentagem_material ?: 0,
+                    'porcentagem_servico' => $request->porcentagem_servico ?: 0,
+                ]);
             }
 
             if(!$request->reject) {
@@ -630,7 +791,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
 
         // Cria o novo QCitem agrupado
         $novoQcItem = QcItem::create([
-            'quadro_de_concorrencia_id'=>$quadroDeConcorrencia->id,
+            'quadro_de_concorrencia_id' => $quadroDeConcorrencia->id,
             'qtd'=> $qcItensQtd,
             'insumo_id' => $qcItem->insumo_id
         ]);
@@ -663,5 +824,31 @@ class QuadroDeConcorrenciaController extends AppBaseController
         }else{
             return response()->json(['error' => 'Esta ação não foi possível: ' . $acao_executada[1]], 422);
         }
+    }
+
+    public function getEqualizacaoTecnica(
+        $quadro,
+        $qcFornecedor,
+        Request $request,
+        QcFornecedorEqualizacaoCheckRepository $fornecedorCheckRepository
+    ) {
+        $quadro = $this->quadroDeConcorrenciaRepository
+            ->findWithoutFail($quadro);
+
+        if (empty($quadro)) {
+            if (!$request->ajax()) {
+                Flash::error('Quadro De Concorrencia ' . trans('common.not-found'));
+
+                return redirect(route('quadroDeConcorrencias.edit', $id));
+            }
+
+            return response()->json([
+                'error' => 'Quadro De Concorrencia ' . trans('common.not-found')
+            ], 404);
+        }
+
+        $checks = $fornecedorCheckRepository->porQcFornecedor($qcFornecedor);
+
+        return view('quadro_de_concorrencias.equalizacoes', compact('checks'));
     }
 }

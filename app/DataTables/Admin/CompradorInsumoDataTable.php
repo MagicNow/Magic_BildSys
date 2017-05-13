@@ -31,10 +31,12 @@ class CompradorInsumoDataTable extends DataTable
             ->select([
                 'comprador_insumos.id',
                 'users.name',
-                'insumos.nome'
+                'insumos.nome',
+                'insumo_grupos.nome as nome_grupo_insumo'
             ])
         ->join('users','users.id','=','comprador_insumos.user_id')
-        ->join('insumos','insumos.id','=','comprador_insumos.insumo_id');
+        ->join('insumos','insumos.id','=','comprador_insumos.insumo_id')
+        ->join('insumo_grupos','insumo_grupos.id','insumos.insumo_grupo_id');
 
         return $this->applyScopes($compradorInsumos);
     }
@@ -98,6 +100,7 @@ class CompradorInsumoDataTable extends DataTable
     {
         return [
             'Comprador' => ['name' => 'users.name', 'data' => 'name'],
+            'Grupo_de_insumos' => ['name' => 'insumo_grupos.nome', 'data' => 'nome_grupo_insumo'],
             'Insumos' => ['name' => 'insumos.nome', 'data' => 'nome'],
             'action' => ['title'          => '#', 'printable'      => false, 'width'=>'10%'],
         ];

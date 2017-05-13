@@ -46,4 +46,59 @@ class QcFornecedorRepository extends BaseRepository
             ->whereColumn('quadro_de_concorrencias.rodada_atual', 'qc_fornecedor.rodada')
             ->first();
     }
+
+    public function buscarPorQuadroNaRodada($quadro_id, $rodada = null)
+    {
+        return $this->model
+            ->select('qc_fornecedor.*')
+            ->join(
+                'quadro_de_concorrencias',
+                'quadro_de_concorrencias.id',
+                'qc_fornecedor.quadro_de_concorrencia_id'
+            )
+            ->where('quadro_de_concorrencia_id', $quadro_id)
+            ->whereNull('desistencia_motivo_id')
+            ->whereNull('desistencia_texto')
+            ->where(function($query) use ($rodada) {
+                if(!is_null($rodada)) {
+                    $query->where('qc_fornecedor.rodada', $rodada);
+
+                    return $query;
+                }
+
+                $query->whereColumn(
+                    'quadro_de_concorrencias.rodada_atual',
+                    'qc_fornecedor.rodada'
+                );
+            })
+            ->get();
+    }
+
+    public function queOfertaramNoQuadroNaRodada($quadro_id, $rodada = null)
+    {
+        return $this->model
+            ->select('qc_fornecedor.*')
+            ->join(
+                'quadro_de_concorrencias',
+                'quadro_de_concorrencias.id',
+                'qc_fornecedor.quadro_de_concorrencia_id'
+            )
+            ->where('quadro_de_concorrencia_id', $quadro_id)
+            ->whereNull('desistencia_motivo_id')
+            ->whereNull('desistencia_texto')
+            ->where(function($query) use ($rodada) {
+                if(!is_null($rodada)) {
+                    $query->where('qc_fornecedor.rodada', $rodada);
+
+                    return $query;
+                }
+
+                $query->whereColumn(
+                    'quadro_de_concorrencias.rodada_atual',
+                    'qc_fornecedor.rodada'
+                );
+            })
+            ->has('itens')
+            ->get();
+    }
 }

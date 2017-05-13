@@ -15,7 +15,7 @@
 
     <input type="hidden" value="{{ (int) $quadro->hasServico() }}" name="has_servico">
 
-    @if ($errors->count())
+    @if($errors->count())
       <div class="alert alert-danger">
         <p>Por favor, corrija os seguintes problemas para enviar o formulário</p>
         <ul>
@@ -67,13 +67,13 @@
                   <div class="box-body">
                     <div class="form-group">
                       <div class="row">
-                        <label class="col-md-7">
+                        <label class="col-md-6">
                           Mão de Obra
                         </label>
-                        <div class="col-md-5">
+                        <div class="col-md-6">
                           <div class="input-group">
                             <input type="text"
-                              class="form-control decimal js-percent"
+                              class="form-control percent js-percent"
                               value="{{ old('porcentagem_servico') }}"
                               name="porcentagem_servico">
                             <span class="input-group-addon">%</span>
@@ -83,13 +83,13 @@
                     </div>
                     <div class="form-group">
                       <div class="row">
-                        <label class="col-md-7">
+                        <label class="col-md-6">
                           Material
                         </label>
-                        <div class="col-md-5">
+                        <div class="col-md-6">
                           <div class="input-group">
                             <input type="text"
-                              class="form-control decimal js-percent"
+                              class="form-control percent js-percent"
                               value="{{ old('porcentagem_material') }}"
                               name="porcentagem_material">
                             <span class="input-group-addon">%</span>
@@ -99,13 +99,13 @@
                     </div>
                     <div class="form-group">
                       <div class="row">
-                        <label class="col-md-7">
+                        <label class="col-md-6">
                           Faturamento Direto
                         </label>
-                        <div class="col-md-5">
+                        <div class="col-md-6">
                           <div class="input-group">
                             <input type="text"
-                              class="form-control decimal js-percent"
+                              class="form-control percent js-percent"
                               value="{{ old('porcentagem_faturamento_direto') }}"
                               name="porcentagem_faturamento_direto">
                             <span class="input-group-addon">%</span>

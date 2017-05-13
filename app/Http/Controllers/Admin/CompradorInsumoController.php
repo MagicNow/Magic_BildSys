@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Repositories\Admin\CompradorInsumoRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
+use Illuminate\Http\Request;
 use Response;
 
 class CompradorInsumoController extends AppBaseController
@@ -162,6 +163,47 @@ class CompradorInsumoController extends AppBaseController
         Flash::success('Comprador Insumo '.trans('common.deleted').' '.trans('common.successfully').'.');
 
         return redirect(route('admin.compradorInsumos.index'));
+    }
+
+    public function deleteBlocoView()
+    {
+
+        $users = User::pluck('name','id')->toArray();
+//        $grupoInsumos = InsumoGrupo::select([
+//            'insumo_grupos.nome',
+//            'insumo_grupos.id'
+//            ])
+//            ->join('insumos','insumos.insumo_grupo_id','=', 'insumo_grupos.id')
+//            ->join('comprador_insumos','comprador_insumos.insumo_id','insumos.id')
+//            ->pluck('nome','id')->toArray();
+
+        return view('admin.comprador_insumos.blocoview', compact('users'));
+    }
+
+    public function buscaGrupoInsumo($usuario_id){
+        $grupoInsumos = InsumoGrupo::select([
+            'insumo_grupos.nome',
+            'insumo_grupos.id'
+        ])
+            ->join('insumos','insumos.insumo_grupo_id','=', 'insumo_grupos.id')
+            ->join('comprador_insumos','comprador_insumos.insumo_id','insumos.id')
+            ->where('comprador_insumos.user_id', $usuario_id)
+            ->pluck('nome','id')->toArray();
+        return $grupoInsumos;
+    }
+
+    public function deleteBloco(Request $request)
+    {
+        $removendo = CompradorInsumo::whereRaw(
+            'insumo_id IN
+                (SELECT id
+                    FROM insumos
+                    WHERE insumo_grupo_id = '.$request->grupo_insumo_id.')
+            ')
+            ->where('user_id', $request->usuario_id)
+            ->delete();
+
+        return Response()->json(['success' => $removendo]);
     }
 
     public function getInsumos($grupo_insumo_id){
