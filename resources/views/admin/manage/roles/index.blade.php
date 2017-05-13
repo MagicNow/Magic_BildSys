@@ -13,8 +13,51 @@
     </section>
     <div class="content" id='app'>
         <div class="row">
+            <!-- Roles list -->
+            <div class="col-sm-5" id="roles-list-container">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            <span class="glyphicon glyphicon-align-justify"></span>
+                            Perfis
+                        </h3>
+                    </div>
+                    <div class="panel-body" v-show="roles.length > 0">
+                        <table class="table table-bordered">
+                            <thead>
+                            <th>Id</th>
+                            <th>Perfil</th>
+                            <th>Ações</th>
+                            </thead>
+                            <tbody>
+                            <tr v-for="role in roles">
+                                <td>@{{ role.id }}</td>
+                                <td>@{{ role.name }}</td>
+                                <td class="text-center">
+                                    <div class="btn-group">
+                                        <a href="#" v-on:click="editRole(role)" class="btn btn-primary btn-xs">
+                                            <span class="glyphicon glyphicon-edit"></span>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="panel-footer" v-show="roles.length > 0">
+                        @include('vendor.pagination.vue-pagination')
+                    </div>
+
+                    <div class="panel-body" v-show="roles.length === 0">
+                        <span class="text-danger text-center">
+                            <strong>Não há papéis registrados</strong>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <!--/Roles list -->
             <!-- Add a new role -->
-            <div class="col-sm-12" id="add-role-container">
+            <div class="col-sm-7" id="add-role-container">
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3 class="panel-title">
@@ -34,7 +77,7 @@
                             <div class="form-group clearfix">
                                 <label class="col-md-3 control-label">Permissão*</label>
                                 <div class="col-md-7">
-                                    {{ Form::select('permissions', $permissions, null, ['class' => 'form-control', 'id' => 'permissions']) }}
+                                    {{ Form::select('permissions', $permissions, null, ['class' => 'form-control','multiple'=>'multiple','size'=>30, 'id' => 'permissions']) }}
                                 </div>
                                 <div class="col-md-2">
                                     <button type="button" v-on:click="addPermission()" class="btn btn-info">
@@ -79,49 +122,6 @@
                 </div>
             </div>
             <!--/Add a new role -->
-            <!-- Roles list -->
-            <div class="col-sm-12" id="roles-list-container">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">
-                            <span class="glyphicon glyphicon-align-justify"></span>
-                            Perfis
-                        </h3>
-                    </div>
-                    <div class="panel-body" v-show="roles.length > 0">
-                        <table class="table table-bordered">
-                            <thead>
-                                <th>Id</th>
-                                <th>Perfil</th>
-                                <th>Ações</th>
-                            </thead>
-                            <tbody>
-                                <tr v-for="role in roles">
-                                    <td>@{{ role.id }}</td>
-                                    <td>@{{ role.name }}</td>
-                                    <td class="text-center">
-                                        <div class="btn-group">
-                                            <a href="#" v-on:click="editRole(role)" class="btn btn-primary btn-xs">
-                                                <span class="glyphicon glyphicon-edit"></span>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="panel-footer" v-show="roles.length > 0">
-                        @include('vendor.pagination.vue-pagination')
-                    </div>
-
-                    <div class="panel-body" v-show="roles.length === 0">
-                        <span class="text-danger text-center">
-                            <strong>Não há papéis registrados</strong>
-                        </span>
-                    </div>
-                </div>
-            </div>
-            <!--/Roles list -->
         </div>
     </div>
 @endsection
@@ -178,21 +178,28 @@
                     return $.inArray( permissionObj.name, keyNames );
                 },
                 addPermission: function() {
-                    var $text  = $("#permissions option:selected").text();
-                    var $value = $("#permissions option:selected").val();
+                    var $items  = $("#permissions option:selected");
 
-                    if ($value == 0) {
+                    if ($items.length == 0) {
                         return;
                     }
 
-                    var $obj = {
-                        'name': $value,
-                        'readable_name': $text
-                    };
+                    for (var $i in $items) {
 
-                    var $exists = this.exists($obj);
-                    if ($exists == -1) {
-                        this.role.permissions.push($obj);
+                        if (typeof $items[$i] !== 'object' || typeof $items[$i].value == 'undefined') {
+                            continue;
+                        }
+
+                        var $obj = {
+                            'name': $items[$i].value,
+                            'readable_name': $items[$i].innerHTML
+                        };
+
+                        var $exists = this.exists($obj);
+                        if ($exists == -1) {
+                            this.role.permissions.push($obj);
+                        }
+
                     }
                 },
                 removePermission: function(permission) {
@@ -217,13 +224,18 @@
                             this.pagination = response;
 
                         }
+                        this.resetSelect();
                         stopLoading();
                     });
+                },
+                resetSelect: function() {
+                    $("#permissions option:selected").prop("selected", false);
                 },
                 resetRole: function() {
                     this.role = {name: null, permissions: []};
                     this.success = '';
                     this.error = '';
+                    this.resetSelect();
                 },
                 saveRole: function(event) {
                     self = this;
