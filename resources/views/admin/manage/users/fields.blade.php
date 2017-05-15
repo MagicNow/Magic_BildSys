@@ -16,6 +16,14 @@
     {!! Form::password('password', ['class' => 'form-control']) !!}
 </div>
 
+
+@if(!isset($user))
+<div class="form-group col-sm-6">
+  {!! Form::label('roles', 'Perfil') !!}
+  {!! Form::select('roles[]', $roles, null, ['class' => 'select2 form-control', 'multiple']) !!}
+</div>
+@endif
+
 <!-- Ativo Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('active', 'Ativo') !!}
@@ -28,9 +36,10 @@
 <div class="form-group col-sm-6">
     {!! Form::label('admin', 'Administrador') !!}
     <div class="form-control">
-        {!! Form::checkbox('admin', 1,null, [ 'id'=>'admin']) !!}
+        {!! Form::checkbox('admin', 1, null, [ 'id'=>'admin']) !!}
     </div>
 </div>
+
 
 <!-- Submit Field -->
 <div class="form-group col-sm-12">

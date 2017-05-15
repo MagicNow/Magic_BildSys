@@ -13,6 +13,9 @@ use Response;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Defender;
+use Artesaos\Defender\Contracts\Repositories\RoleRepository;
+use Exception;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class UsersController
@@ -49,10 +52,10 @@ class UsersController extends AppBaseController
      *
      * @return Response
      */
-    public function create()
+    public function create(RoleRepository $roleRepository)
     {
-
-        return view('admin.manage.users.create');
+        $roles = $roleRepository->getList('name', 'id');
+        return view('admin.manage.users.create', compact('roles'));
     }
 
     /**
@@ -64,6 +67,7 @@ class UsersController extends AppBaseController
      */
     public function store(CreateUserRequest $request)
     {
+
         $usuario_existente_deletado = User::Where('email', '=', $request->email)
             ->withTrashed()
             ->whereNotNull('deleted_at')
@@ -84,7 +88,21 @@ class UsersController extends AppBaseController
         $input = $request->all();
         $input['active'] = intval($request->get('active'));
 
-        $user = $this->userRepository->create($input);
+        DB::beginTransaction();
+        try {
+            $user = $this->userRepository->create($input);
+
+            $user->roles()->sync($request->roles);
+        } catch (Exception $e) {
+            DB::rollback();
+            Flash::error('Erro ao salvar dados, tente novamente');
+
+            logger()->error((string) $e);
+
+            return back()->withInput();
+        }
+
+        DB::commit();
 
         Flash::success('Usuário ' . trans('common.saved') . ' ' . trans('common.successfully') . '.');
 
@@ -176,6 +194,10 @@ class UsersController extends AppBaseController
         $input['active'] = intval($request->get('active'));
 
         $user = $this->userRepository->update($input, $id);
+
+        if(!empty($request->roles)) {
+            $user->roles->sync($request->roles);
+        }
 
         Flash::success('Usuário ' . trans('common.updated') . ' ' . trans('common.successfully') . '.');
 
