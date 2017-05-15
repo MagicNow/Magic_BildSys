@@ -37,7 +37,7 @@
                         <div class="card-description">
                             <!-- Grupos de insumo Field -->
                             <div class="form-group col-sm-6" style="width:20%">
-                                {!! Form::label('grupo_id', 'Obra:') !!}
+                                {!! Form::label('grupo_id', 'Grupo:') !!}
                                 {!! Form::select('grupo_id', [''=>'-']+$grupos, null, ['class' => 'form-control', 'id'=>'grupo_id','onchange'=>'selectgrupo(this.value, \'subgrupo1_id\', \'grupos\', \'grupo\');']) !!}
                             </div>
 
@@ -64,6 +64,7 @@
                                 {!! Form::label('servico_id', 'Serviço:') !!}
                                 {!! Form::select('servico_id', [''=>'-'], null, ['class' => 'form-control', 'id'=>'servico_id', 'disabled'=>'disabled', 'onchange'=>'selectgrupo(this.value, null, \'servicos\', \'servico\')']) !!}
                             </div>
+
                             <input type="hidden" name="obra_id" value="{{$obra->id}}">
 
                             <div class="col-md-12" id="list-insumos"></div>
@@ -71,6 +72,9 @@
                     </div>
                 </div>
             </div>
+            <a href="{{ url('ordens-de-compra/carrinho/comprar-tudo-de-tudo?obra_id='.$obra->id) }}" class="btn btn-info btn-lg btn-flat pull-right" id="comprar_tudo_de_tudo">
+                Comprar tudo de tudo
+            </a>
         </div>
         @endif
         @include('adminlte-templates::common.errors')
@@ -225,6 +229,7 @@
                     }
 
                     history.pushState("", document.title, '/compras/obrasInsumos?obra_id={{$obra->id}}' + url_grupos);
+                    $('#comprar_tudo_de_tudo').attr('href', '/ordens-de-compra/carrinho/comprar-tudo-de-tudo?obra_id={{$obra->id}}' + url_grupos);
                     app.$children[0].loadData();
                 }).fail(function() {
                     $('.overlay').remove();

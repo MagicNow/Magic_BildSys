@@ -30,9 +30,9 @@ if(! function_exists('money_to_float')) {
      * @return float
      */
     function money_to_float ($number) {
-        if (preg_match("/^[0-9]{1,3}(,?[0-9]{3})*(\.[0-9]{1,2})?$/", $number)) {
+        if (preg_match("/^(-)?[0-9]{1,3}(,?[0-9]{3})*(\.[0-9]{1,2})?$/", $number)) {
             return (float) str_replace(',', '', $number);
-        } elseif(preg_match("/^[0-9]{1,3}(\.?[0-9]{3})*(,[0-9]{1,2})?$/", $number)) {
+        } elseif(preg_match("/^(-)?[0-9]{1,3}(\.?[0-9]{3})*(,[0-9]{1,2})?$/", $number)) {
             return (float) str_replace(',', '.', str_replace('.', '', $number));
         } else {
             throw new InvalidArgumentException(
