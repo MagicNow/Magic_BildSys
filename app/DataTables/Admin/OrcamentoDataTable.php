@@ -127,7 +127,7 @@ class OrcamentoDataTable extends DataTable
             'subgrupo2' => ['name' => 'grupos2.nome', 'data' => 'subgrupo2'],
             'subgrupo3' => ['name' => 'grupos3.nome', 'data' => 'subgrupo3'],
             'dataUpload' => ['name' => 'created_at', 'data' => 'created_at'],
-            'action' => ['title'          => '#', 'printable'      => false, 'width'=>'10%'],
+            'action' => ['title' => '#', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }
 

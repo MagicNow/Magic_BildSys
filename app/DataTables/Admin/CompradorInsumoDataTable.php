@@ -68,7 +68,7 @@ class CompradorInsumoDataTable extends DataTable
                         }
                     });
                 }' ,
-                'dom' => 'Bfrtip',
+                'dom' => 'Bfrltip',
                 'scrollX' => false,
                 'language'=> [
                     "url"=> "/vendor/datatables/Portuguese-Brasil.json"
@@ -102,7 +102,7 @@ class CompradorInsumoDataTable extends DataTable
             'Comprador' => ['name' => 'users.name', 'data' => 'name'],
             'Grupo_de_insumos' => ['name' => 'insumo_grupos.nome', 'data' => 'nome_grupo_insumo'],
             'Insumos' => ['name' => 'insumos.nome', 'data' => 'nome'],
-            'action' => ['title'          => '#', 'printable'      => false, 'width'=>'10%'],
+            'action' => ['title' => '#', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }
 

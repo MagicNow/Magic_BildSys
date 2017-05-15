@@ -92,9 +92,9 @@ class LembreteTipoDataTable extends DataTable
     {
         return [
             'nome' => ['name' => 'nome', 'data' => 'nome'],
-            'dias_prazo_minimo' => ['name' => 'dias_prazo_minimo', 'data' => 'dias_prazo_minimo'],
+            'prazo_minimo_mobilizacao' => ['name' => 'prazo_minimo_mobilizacao', 'data' => 'prazo_minimo_mobilizacao'],
             'dias_prazo_maximo' => ['name' => 'dias_prazo_maximo', 'data' => 'dias_prazo_maximo'],
-            'action' => ['title'          => '#', 'printable'      => false, 'width'=>'10%'],
+            'action' => ['title' => '#', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }
 

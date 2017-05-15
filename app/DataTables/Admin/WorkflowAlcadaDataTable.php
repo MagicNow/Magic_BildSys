@@ -96,7 +96,7 @@ class WorkflowAlcadaDataTable extends DataTable
             'tipo' => ['name' => 'workflow_tipo_id', 'data' => 'workflow_tipo_id'],
             'nome' => ['name' => 'nome', 'data' => 'nome'],
             'ordem' => ['name' => 'ordem', 'data' => 'ordem'],
-            'action' => ['title'          => '#', 'printable'      => false, 'width'=>'10%'],
+            'action' => ['title' => '#', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }
 
