@@ -8,6 +8,9 @@ use App\Models\WorkflowAlcada;
 use App\Models\WorkflowAprovacao;
 use App\Models\WorkflowUsuario;
 use Illuminate\Support\Facades\DB;
+use phpDocumentor\Reflection\Types\Array_;
+use phpDocumentor\Reflection\Types\Integer;
+use phpDocumentor\Reflection\Types\String_;
 
 class WorkflowAprovacaoRepository
 {
@@ -54,7 +57,7 @@ class WorkflowAprovacaoRepository
                         'iraAprovar' => false,
                         'jaAprovou' => false,
                         'aprovacao' => null,
-                        'msg' => 'Ainda falta aprovações da alçada anterior para que você possa aprovar'
+                        'msg' => 'A alçada atual de aprovação não é a qual você pertence.'
                     ];
                 }
 
@@ -133,6 +136,13 @@ class WorkflowAprovacaoRepository
         ];
     }
 
+    /**
+     * Verifica a Alçada Atual do Aprovável
+     * @param $tipo
+     * @param $ids
+     * @param $workflow_tipo_id
+     * @return null
+     */
     public static function verificaAlcadaAtual($tipo, $ids, $workflow_tipo_id){
         // Pega a qtd de alçadas
         $workflow_alcadas = WorkflowAlcada::where('workflow_tipo_id',$workflow_tipo_id)->orderBy('ordem','ASC')->get();
@@ -165,6 +175,13 @@ class WorkflowAprovacaoRepository
 
     }
 
+    /**
+     * Verifica a aprovação do grupo completo do tipo aprovável
+     * @param $tipo
+     * @param $ids
+     * @param User $user
+     * @return array [ Boolean podeAprovar, Boolean iraAprovar, Boolean jaAprovou, Boolean/Null aprovacao, String msg ]
+     */
     public static function verificaAprovaGrupo($tipo, $ids, User $user)
     {
         eval('$workflow_tipo_id= \\App\Models\\' . $tipo . '::$workflow_tipo_id;');
@@ -195,6 +212,23 @@ class WorkflowAprovacaoRepository
 
             // Busca alçada atual
             $alcada_atual = self::verificaAlcadaAtual($tipo, $ids, $workflow_tipo_id);
+
+            $workflowUsuarioAlcadaAtual = WorkflowUsuario::select(['workflow_usuarios.*', 'workflow_alcadas.ordem'])
+                ->join('workflow_alcadas', 'workflow_alcadas.id', '=', 'workflow_usuarios.workflow_alcada_id')
+                ->where('workflow_alcadas.workflow_tipo_id', $workflow_tipo_id)// Tipo = Aprovação de OC
+                ->where('user_id', $user->id)
+                ->where('workflow_alcada_id',$alcada_atual->id )
+                ->first();
+            if (!$workflowUsuarioAlcadaAtual) {
+                // Já vaza
+                return [
+                    'podeAprovar' => false,
+                    'iraAprovar' => false,
+                    'jaAprovou' => true,
+                    'aprovacao' => null,
+                    'msg' => 'Você não é aprovador desta alçada ('.$alcada_atual->nome.')'
+                ];
+            }
 
             // Verifica se o mesmo já aprovou todas os itens
             $total_aprovados_reprovados = self::verificaTotalJaAprovadoReprovado($tipo, $ids, $user, null, $alcada_atual->id);
@@ -336,11 +370,16 @@ class WorkflowAprovacaoRepository
 
         return $salvo;
     }
-    
+
+    /**
+     * Verifica o total de itens à aprovar
+     * @param String_ $tipo
+     * @param Array $ids
+     * @return Integer
+     */
     private static function verificaTotalaAprovar($tipo, $ids){
         eval('$model= \\App\Models\\' . $tipo . '::firstOrNew([]);');
         $tabela = $model->getTable();
-
 
         eval('$total_itens_a_aprovar = \\App\Models\\' . $tipo . '::where(\''. $tabela .'.id\', \'>\', 0);');
         $total_itens_a_aprovar->whereIn($tabela.'.id', $ids);
@@ -383,6 +422,13 @@ class WorkflowAprovacaoRepository
         ];
     }
 
+    /**
+     * Verifica a quantidade de usuários aprovadores de uma alçada
+     * @param $workflow_tipo_id
+     * @param null $obra_id
+     * @param null $alcada
+     * @return int
+     */
     public static function verificaQuantidadeUsuariosAprovadores($workflow_tipo_id, $obra_id = null, $alcada = null){
         $qtd_usuarios = 0;
 
@@ -400,19 +446,28 @@ class WorkflowAprovacaoRepository
                 $queryUsers->join('obra_users', 'obra_users.user_id', '=', 'users.id')
                             ->where('obra_users.obra_id', $obra_id);
             }
+
             $qtd_usuarios += $queryUsers->count();
         }
 
         return $qtd_usuarios;
     }
 
-    public static function verificaUsuariosQueFaltamAprovar($workflow_tipo_id, $obra_id = null, $alcada = null){
+    /**
+     * Verifica 
+     * @param $tipo
+     * @param $workflow_tipo_id
+     * @param null $obra_id
+     * @param null $alcada
+     * @param null $ids
+     * @return array
+     */
+    public static function verificaUsuariosQueFaltamAprovar($tipo, $workflow_tipo_id, $obra_id = null, $alcada = null, $ids = null){
 
         $usuarios_nomes = [];
         $nomes = [];
 
         $workflow_alcada = WorkflowAlcada::where('workflow_tipo_id',$workflow_tipo_id)->where('id', $alcada)->first();
-
 
         $queryNomes = $workflow_alcada->workflowUsuarios()
             ->select(['users.id','users.name'])
@@ -422,12 +477,11 @@ class WorkflowAprovacaoRepository
         }
         $usuarios_nomes[] = $queryNomes->get();
 
+        $total_a_aprovar = self::verificaTotalaAprovar($tipo, $ids);
         foreach ($usuarios_nomes as $usuarios) {
             foreach ($usuarios as $usuario){
-                $workflow_aprovacao = WorkflowAprovacao::where('workflow_alcada_id', $alcada)
-                    ->where('user_id', $usuario->id)
-                    ->first();
-                if(!$workflow_aprovacao) {
+                $total_aprovados_reprovados = self::verificaTotalJaAprovadoReprovado($tipo, $ids, $usuario, null, $alcada);
+                if($total_aprovados_reprovados['total_avaliado']!=$total_a_aprovar) {
                     $nomes[] = $usuario->name;
                 }
             }
