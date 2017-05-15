@@ -122,7 +122,7 @@ class CatalogoContratoDataTable extends DataTable
             'data' => ['name' => 'catalogo_contratos.data', 'data' => 'data'],
             'valor' => ['name' => 'catalogo_contratos.valor', 'data' => 'valor'],
             'arquivo' => ['name' => 'catalogo_contratos.arquivo', 'data' => 'arquivo', 'printable' => false, 'exportable' => false],
-            'action' => ['title' => '#', 'printable' => false, 'exportable' => false],
+            'action' => ['title' => '#', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }
 

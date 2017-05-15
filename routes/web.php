@@ -356,6 +356,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
 
         $router->get('/ordens-de-compra/detalhes/{id}', 'OrdemDeCompraController@detalhe')->middleware("needsPermission:ordens_de_compra.detalhes");
         $router->get('/ordens-de-compra/carrinho', 'OrdemDeCompraController@carrinho');
+        $router->get('/ordens-de-compra/carrinho/comprar-tudo-de-tudo', 'OrdemDeCompraController@comprarTudoDeTudo');
         $router->get('/ordens-de-compra/carrinho/indicar-contrato', 'OrdemDeCompraController@indicarContrato');
         $router->get('/ordens-de-compra/fechar-carrinho', 'OrdemDeCompraController@fechaCarrinho');
         $router->post('/ordens-de-compra/altera-item/{id}', 'OrdemDeCompraController@alteraItem');

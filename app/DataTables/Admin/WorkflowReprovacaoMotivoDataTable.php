@@ -110,7 +110,7 @@ class WorkflowReprovacaoMotivoDataTable extends DataTable
             'nome' => ['name' => 'nome', 'data' => 'nome'],
             'tipo' => ['name' => 'workflow_tipos.nome', 'data' => 'tipo'],
             'cadastradoEm' => ['name' => 'created_at', 'data' => 'created_at'],
-            'action' => ['title'          => '#', 'printable'      => false, 'width'=>'10%'],
+            'action' => ['title' => '#', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }
 

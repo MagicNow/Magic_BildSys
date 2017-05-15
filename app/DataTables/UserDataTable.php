@@ -67,7 +67,7 @@ class UserDataTable extends DataTable
                         }
                     });
                 }' ,
-                'dom' => 'Bfrtip',
+                'dom' => 'Bfrltip',
                 'scrollX' => false,
                 'language'=> [
                     "url"=> "/vendor/datatables/Portuguese-Brasil.json"
@@ -102,7 +102,7 @@ class UserDataTable extends DataTable
             'e-mail' => ['name' => 'email', 'data' => 'email'],
             'ativo' => ['name' => 'active', 'data' => 'active'],
             'admin' => ['name' => 'admin', 'data' => 'admin'],
-            'action' => ['title'          => '#', 'printable'      => false, 'width'=>'10%'],
+            'action' => ['title' => '#', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }
 
