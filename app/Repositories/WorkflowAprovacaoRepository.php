@@ -321,12 +321,12 @@ class WorkflowAprovacaoRepository
         if (!$obj) {
             return false;
         }
-        
+
         $podeAprovar = self::verificaAprovacoes($tipo, $id, $user);
         if (!$podeAprovar['iraAprovar']) {
             return false;
         }
-        
+
 
         $workflowUsuario = WorkflowUsuario::select(['workflow_usuarios.*', 'workflow_alcadas.ordem'])
             ->join('workflow_alcadas', 'workflow_alcadas.id', '=', 'workflow_usuarios.workflow_alcada_id')
@@ -343,7 +343,7 @@ class WorkflowAprovacaoRepository
         ]);
 
         $salvo = $obj->aprovacoes()->save($workflowAprovacao);
-        
+
         // Verifica se é a primeira aprovação deste item dentre os irmãos
         $ids = $obj->irmaosIds();
         $total_ja_votado_geral = self::verificaTotalJaAprovadoReprovado($tipo,$ids);
@@ -355,7 +355,7 @@ class WorkflowAprovacaoRepository
 
         // Se não for, verifica se já é a última
         $qtd_aprovadores = self::verificaQuantidadeUsuariosAprovadores($workflow_tipo_id, $obj->qualObra(), null);
-        
+
         if($qtd_aprovadores){
             // Divide a qtd de aprovações/reprovações pela quantidade de aprovadores
             $avaliacoes = $total_ja_votado['total_avaliado']/$qtd_aprovadores;
@@ -433,7 +433,7 @@ class WorkflowAprovacaoRepository
         $qtd_usuarios = 0;
 
         $workflow_alcadas = WorkflowAlcada::where('workflow_tipo_id',$workflow_tipo_id);
-        
+
         if($alcada){
             $workflow_alcadas->where('id', $alcada);
         }
@@ -454,7 +454,7 @@ class WorkflowAprovacaoRepository
     }
 
     /**
-     * Verifica 
+     * Verifica usuários que faltam aprovar
      * @param $tipo
      * @param $workflow_tipo_id
      * @param null $obra_id
@@ -475,15 +475,14 @@ class WorkflowAprovacaoRepository
         if($obra_id){
             $queryNomes->where('obra_users.obra_id', $obra_id);
         }
-        $usuarios_nomes[] = $queryNomes->get();
+        $usuarios_nomes = $queryNomes->get();
 
         $total_a_aprovar = self::verificaTotalaAprovar($tipo, $ids);
-        foreach ($usuarios_nomes as $usuarios) {
-            foreach ($usuarios as $usuario){
-                $total_aprovados_reprovados = self::verificaTotalJaAprovadoReprovado($tipo, $ids, $usuario, null, $alcada);
-                if($total_aprovados_reprovados['total_avaliado']!=$total_a_aprovar) {
-                    $nomes[] = $usuario->name;
-                }
+
+        foreach ($usuarios_nomes as $usuario){
+            $total_aprovados_reprovados = self::verificaTotalJaAprovadoReprovado($tipo, $ids, $usuario, null, $alcada);
+            if($total_aprovados_reprovados['total_avaliado']!=$total_a_aprovar) {
+                $nomes[] = $usuario->name;
             }
         }
 
