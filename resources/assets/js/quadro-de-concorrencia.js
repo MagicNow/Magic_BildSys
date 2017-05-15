@@ -427,7 +427,7 @@ $(function () {
         placeholder: "-",
         language: "pt-BR",
         ajax: {
-            url: "/admin/contratos/buscar/busca_fornecedores",
+            url: "/admin/catalogo-acordos/buscar/busca_fornecedores",
             dataType: 'json',
             delay: 250,
 

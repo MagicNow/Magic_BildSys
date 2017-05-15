@@ -21,6 +21,7 @@ use App\Models\Planejamento;
 use App\Models\PlanejamentoCompra;
 use App\Models\Servico;
 use App\Models\WorkflowAlcada;
+use App\Models\WorkflowAprovacao;
 use App\Models\WorkflowReprovacaoMotivo;
 use App\Repositories\CodeRepository;
 use function foo\func;
@@ -232,6 +233,23 @@ class OrdemDeCompraController extends AppBaseController
                     $ordemDeCompra->obra_id,
                     $alcada->id,
                     $itens_ids);
+
+                // Data do início da  Alçada
+                if($alcada->ordem===1){
+                    $avaliado_reprovado[$alcada->id] ['data_inicio'] = $ordemDeCompra->ordemDeCompraStatusLogs()
+                                                                            ->where('oc_status_id', 2)->first()
+                                                                            ->created_at
+                                                                            ->format('d/m/Y H:i');
+                }else{
+                    $primeiro_voto = WorkflowAprovacao::where('aprovavel_type', 'App\\Models\\OrdemDeCompraItem')
+                                        ->whereIn('aprovavel_id', $itens_ids)
+                                        ->where('workflow_alcada_id',$alcada->id)
+                                        ->orderBy('id','ASC')
+                                        ->first();
+                    if($primeiro_voto){
+                        $avaliado_reprovado[$alcada->id]['data_inicio'] = $primeiro_voto->created_at->format('d/m/Y H:i');
+                    }
+                }
             }
         }
 
