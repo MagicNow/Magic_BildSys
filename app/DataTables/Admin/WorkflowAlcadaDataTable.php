@@ -4,6 +4,7 @@ namespace App\DataTables\Admin;
 
 use App\Models\WorkflowAlcada;
 use Form;
+use Illuminate\Support\Facades\DB;
 use Yajra\Datatables\Services\DataTable;
 
 class WorkflowAlcadaDataTable extends DataTable
@@ -17,9 +18,6 @@ class WorkflowAlcadaDataTable extends DataTable
         return $this->datatables
             ->eloquent($this->query())
             ->editColumn('action', 'admin.workflow_alcadas.datatables_actions')
-            ->editColumn('workflow_tipo_id', function($obj){
-                return $obj->workflowTipo->nome;
-            })
             ->make(true);
     }
 
@@ -30,7 +28,15 @@ class WorkflowAlcadaDataTable extends DataTable
      */
     public function query()
     {
-        $workflowAlcadas = WorkflowAlcada::query();
+        $workflowAlcadas = WorkflowAlcada::query()
+            ->select([
+                'workflow_tipos.nome as tipo',
+                'workflow_alcadas.id',
+                'workflow_alcadas.nome',
+                'workflow_alcadas.ordem',
+                DB::raw('(SELECT COUNT(1) FROM workflow_usuarios WU WHERE WU.workflow_alcada_id = workflow_alcadas.id) usuarios')
+            ])
+        ->join('workflow_tipos','workflow_tipos.id','workflow_tipo_id');
 
         return $this->applyScopes($workflowAlcadas);
     }
@@ -93,9 +99,10 @@ class WorkflowAlcadaDataTable extends DataTable
     private function getColumns()
     {
         return [
-            'tipo' => ['name' => 'workflow_tipo_id', 'data' => 'workflow_tipo_id'],
+            'tipo' => ['name' => 'workflow_tipos.nome', 'data' => 'tipo'],
             'nome' => ['name' => 'nome', 'data' => 'nome'],
             'ordem' => ['name' => 'ordem', 'data' => 'ordem'],
+            'usuarios' => ['name' => 'usuarios', 'data' => 'usuarios'],
             'action' => ['title'          => '#', 'printable'      => false, 'width'=>'10%'],
         ];
     }
