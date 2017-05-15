@@ -53,8 +53,18 @@ class User extends Authenticatable
      * @var array
      */
     public static $rules = [
-        'name' => 'required',
+        'name'     => 'required',
         'password' => 'required',
+        'roles.*'  => 'exists:roles,id'
+    ];
+
+    /**
+     * Validation messages
+     *
+     * @var array
+     */
+    public static $messages = [
+        'roles.*.exists'  => 'exists:roles,id'
     ];
 
     public static $filters = [
@@ -76,7 +86,6 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
-
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
