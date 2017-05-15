@@ -65,7 +65,7 @@ class PlanejamentoCronogramaDataTable extends DataTable
     {
         return $this->builder()
             ->columns($this->getColumns())
-            ->addAction(['width' => '10%'])
+//            ->addAction(['width' => '10%'])
             ->ajax('')
             ->parameters([
                 'initComplete' => 'function () {
@@ -84,7 +84,7 @@ class PlanejamentoCronogramaDataTable extends DataTable
                         }
                     });
                 }' ,
-                'dom' => 'Bfrtip',
+                'dom' => 'Bfrltip',
                 'scrollX' => false,
                 'language'=> [
                     "url"=> "/vendor/datatables/Portuguese-Brasil.json"
@@ -116,7 +116,8 @@ class PlanejamentoCronogramaDataTable extends DataTable
     {
         return [
             'obra' => ['name' => 'obras.nome', 'data' => 'nome'],
-            'data Upload' => ['name' => 'data_upload', 'data' => 'data_upload']
+            'data Upload' => ['name' => 'data_upload', 'data' => 'data_upload'],
+            'action' => ['title' => '#', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }
 

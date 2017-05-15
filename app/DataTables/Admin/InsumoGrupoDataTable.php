@@ -93,7 +93,7 @@ class InsumoGrupoDataTable extends DataTable
         return [
             'codigo' => ['name' => 'id', 'data' => 'id'],
             'nome' => ['name' => 'nome', 'data' => 'nome'],
-            'action' => ['title'          => '#', 'printable'      => false, 'width'=>'10%'],
+            'action' => ['title' => '#', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }
 

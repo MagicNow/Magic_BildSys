@@ -103,7 +103,7 @@ class WorkflowAlcadaDataTable extends DataTable
             'nome' => ['name' => 'nome', 'data' => 'nome'],
             'ordem' => ['name' => 'ordem', 'data' => 'ordem'],
             'usuarios' => ['name' => 'usuarios', 'data' => 'usuarios'],
-            'action' => ['title'          => '#', 'printable'      => false, 'width'=>'10%'],
+            'action' => ['title' => '#', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }
 
