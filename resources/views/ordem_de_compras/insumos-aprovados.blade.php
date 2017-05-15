@@ -143,11 +143,17 @@
     </section>
     <div class="content">
         @include('adminlte-templates::common.errors')
-        {!! Form::open(['url'=>'/quadro-de-concorrencia/criar','method'=>'post']) !!}
+        {!! Form::open(['url'=>(Request::has('qc')? '/quadro-de-concorrencia/'.Request::get('qc').'/adicionar' : '/quadro-de-concorrencia/criar'),'method'=>'post']) !!}
         @include('ordem_de_compras.insumos-aprovados-table')
         <div class="row" style="margin-top: 15px">
             <div class="col-md-12 text-right">
-                <button type="submit" class="btn btn-flat btn-lg btn-success">Criar Q.C.</button>
+                @if(Request::has('qc'))
+                        <a type="button" href="{{ url('/quadro-de-concorrencia/'.Request::get('qc').'/edit') }}"
+                           class="btn btn-default btn-flat btn-lg"><i class="fa fa-times"></i>
+                            Cancelar
+                        </a>
+                @endif
+                <button type="submit" class="btn btn-flat btn-lg btn-success">{{ Request::has('qc')? 'Adicionar no Q.C. '.Request::get('qc') : 'Criar Q.C.' }}</button>
             </div>
         </div>
         {!! Form::close() !!}

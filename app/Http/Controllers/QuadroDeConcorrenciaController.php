@@ -166,17 +166,53 @@ class QuadroDeConcorrenciaController extends AppBaseController
         $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->update($input, $id);
 
         if(!$request->has('fechar_qc')){
-            Flash::success('Quadro De Concorrencia ' . trans('common.updated') . ' ' . trans('common.successfully') . '.');
+            if(!$request->has('adicionar_itens')) {
+                Flash::success('Quadro De Concorrencia ' . trans('common.updated') . ' ' . trans('common.successfully') . '.');
+            }else{
+                Flash::success('Escolha os insumos para adicionar no Q.C. '.$id);
+            }
         }else{
             Flash::success('Quadro De Concorrencia colocado em aprovação.');
         }
 
 
         if(!$request->has('manter')){
-            return redirect(route('quadroDeConcorrencias.index'));
+            if(!$request->has('adicionar_itens')){
+                return redirect(route('quadroDeConcorrencias.index'));
+            }else{
+                return redirect('/ordens-de-compra/insumos-aprovados?qc='.$quadroDeConcorrencia->id);
+            }
         }else{
             return redirect(route('quadroDeConcorrencias.edit',$quadroDeConcorrencia->id));
         }
+
+    }
+
+    public function adicionar($id, UpdateQuadroDeConcorrenciaRequest $request)
+    {
+        $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->findWithoutFail($id);
+
+        if (empty($quadroDeConcorrencia)) {
+            Flash::error('Quadro De Concorrencia ' . trans('common.not-found'));
+
+            return redirect(route('quadroDeConcorrencias.index'));
+        }
+
+        $input = $request->all();
+        # Validação básica
+        validator($request->all(),
+            ['ordem_de_compra_itens' => 'required'],
+            ['ordem_de_compra_itens.required' => 'É necessário escolher ao menos um item!']
+        )->validate();
+        
+        $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->update([
+            'itens' => $request->ordem_de_compra_itens,
+            'user_update_id' => Auth::id()
+        ], $id);
+
+        Flash::success('Insumos addicionados no Q.C.');
+        
+        return redirect(route('quadroDeConcorrencias.edit',$quadroDeConcorrencia->id));
 
     }
 

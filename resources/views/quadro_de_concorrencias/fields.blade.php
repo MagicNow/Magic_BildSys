@@ -298,7 +298,15 @@
 </div>
 
 <div class="col-md-12">
-    <h3 class="pull-left">Itens</h3>
+    <h3 class="pull-left">
+        Itens
+        {!! Form::button( '<i class="fa fa-plus"></i> Adicionar insumos', [
+                                'class' => 'btn btn-primary btn-sm btn-flat',
+                                'value' => '1',
+                                'name' => 'adicionar_itens',
+                                'style' => 'margin-left:10px',
+                                'type'=>'submit']) !!}
+    </h3>
     @include('quadro_de_concorrencias.itens-table')
 </div>
 

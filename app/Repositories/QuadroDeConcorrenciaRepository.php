@@ -45,7 +45,8 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
 
         'obrigacoes_bild' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur interdum
             rutrum magna, eu dignissim nunc malesuada ac. Vestibulum velit libero, egestas non sapien ac, egestas
-            bibendum massa. Donec vel luctus erat. Fusce ultrices lectus justo, a sollicitudin libero vestibulum vitae.
+            bibendum massa. Donec vel luctus erat. Fusce ultrices lectus justo, a so
+            llicitudin libero vestibulum vitae.
             Nullam at quam metus. Aliquam faucibus sapien vel velit tempor, congue dignissim libero viverra. Morbi
             vestibulum eros eget tempor fermentum.',
 
@@ -63,34 +64,18 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
             'user_id' => $model->user_id
         ]);
 
-        // Busca e agrupa intens conforme o tipo
-        $oc_itens = OrdemDeCompraItem::whereIn('id', $itens)->get();
-        $qc_itens_array = [];
-        foreach ($oc_itens as $oc_item){
-            if(isset($qc_itens_array[$oc_item->insumo_id])){
-                $qc_itens_array[$oc_item->insumo_id]['qtd'] += floatval($oc_item->getOriginal('qtd'));
-            }else{
-                $qc_itens_array[$oc_item->insumo_id]['qtd'] = floatval($oc_item->getOriginal('qtd'));
-            }
-            $qc_itens_array[$oc_item->insumo_id]['insumo_id'] = $oc_item->insumo_id;
-            $qc_itens_array[$oc_item->insumo_id]['ids'][] = $oc_item->id;
-        }
-
-        // Cadastra os itens do quadro de concorrência
-        foreach ($qc_itens_array as $qc_item_array) {
-            $qc_item = QcItem::create([
-                'quadro_de_concorrencia_id' => $model->id,
-                'qtd' => $qc_item_array['qtd'],
-                'insumo_id'=> $qc_item_array['insumo_id']
-            ]);
-            $qc_item->oc_itens()->sync($qc_item_array['ids']);
-        }
+        $this->adicionaItens($itens, $model);
 
         return $this->parserResult($model);
     }
 
     public function update(array $attributes, $id)
     {
+        if(isset($attributes['itens'])){
+            $model = $this->findWithoutFail($id);
+            $this->adicionaItens($attributes['itens'], $model);
+            return $model;
+        }
         if (isset($attributes['qcFornecedoresMega'])) {
             foreach ($attributes['qcFornecedoresMega'] as $codigo_mega) {
                 $fornecedor = Fornecedor::where('codigo_mega', $codigo_mega)->first();
@@ -379,5 +364,31 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
                 Mail::to($fornecedor->email)->send(new IniciaConcorrenciaFornecedorNaoUsuario($quadroDeConcorrencia, $fornecedor));
             }
         }
+    }
+
+    public function adicionaItens($itens, QuadroDeConcorrencia $quadroDeConcorrencia){
+        // Busca e agrupa intens conforme o tipo
+        $oc_itens = OrdemDeCompraItem::whereIn('id', $itens)->get();
+        $qc_itens_array = [];
+        foreach ($oc_itens as $oc_item){
+            if(isset($qc_itens_array[$oc_item->insumo_id])){
+                $qc_itens_array[$oc_item->insumo_id]['qtd'] += floatval($oc_item->getOriginal('qtd'));
+            }else{
+                $qc_itens_array[$oc_item->insumo_id]['qtd'] = floatval($oc_item->getOriginal('qtd'));
+            }
+            $qc_itens_array[$oc_item->insumo_id]['insumo_id'] = $oc_item->insumo_id;
+            $qc_itens_array[$oc_item->insumo_id]['ids'][] = $oc_item->id;
+        }
+
+        // Cadastra os itens do quadro de concorrência
+        foreach ($qc_itens_array as $qc_item_array) {
+            $qc_item = QcItem::create([
+                'quadro_de_concorrencia_id' => $quadroDeConcorrencia->id,
+                'qtd' => $qc_item_array['qtd'],
+                'insumo_id'=> $qc_item_array['insumo_id']
+            ]);
+            $qc_item->oc_itens()->sync($qc_item_array['ids']);
+        }
+
     }
 }
