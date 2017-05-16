@@ -15,7 +15,7 @@ class Obra extends Model
     use SoftDeletes;
 
     public $table = 'obras';
-    
+
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
@@ -95,24 +95,24 @@ class Obra extends Model
      * @var array
      */
     public static $rules = [
-        
+
     ];
 
     public function getAreaTerrenoAttribute($value)
     {
-        if(strlen($value) == 4){
+        if (strlen($value) == 4) {
             $value = '0'.$value;
         }
 
-        return number_format($value,2,',','.');
+        return number_format($value, 2, ',', '.');
     }
 
     public function setAreaTerrenoAttribute($value)
     {
-        $pontos = array(",");
-        $value = str_replace('.','',$value);
-        $result = str_replace( $pontos, ".", $value);
-        if($result == ''){
+        $pontos = [","];
+        $value = str_replace('.', '', $value);
+        $result = str_replace($pontos, ".", $value);
+        if ($result == '') {
             $result = null;
         }
         $this->attributes['area_terreno'] = $result;
@@ -120,19 +120,19 @@ class Obra extends Model
 
     public function getAreaPrivativaAttribute($value)
     {
-        if(strlen($value) == 4){
+        if (strlen($value) == 4) {
             $value = '0'.$value;
         }
 
-        return number_format($value,2,',','.');
+        return number_format($value, 2, ',', '.');
     }
 
     public function setAreaPrivativaAttribute($value)
     {
-        $pontos = array(",");
-        $value = str_replace('.','',$value);
-        $result = str_replace( $pontos, ".", $value);
-        if($result == ''){
+        $pontos = [","];
+        $value = str_replace('.', '', $value);
+        $result = str_replace($pontos, ".", $value);
+        if ($result == '') {
             $result = null;
         }
         $this->attributes['area_privativa'] = $result;
@@ -140,19 +140,19 @@ class Obra extends Model
 
     public function getAreaConstruidaAttribute($value)
     {
-        if(strlen($value) == 4){
+        if (strlen($value) == 4) {
             $value = '0'.$value;
         }
 
-        return number_format($value,2,',','.');
+        return number_format($value, 2, ',', '.');
     }
 
     public function setAreaConstruidaAttribute($value)
     {
-        $pontos = array(",");
-        $value = str_replace('.','',$value);
-        $result = str_replace( $pontos, ".", $value);
-        if($result == ''){
+        $pontos = [","];
+        $value = str_replace('.', '', $value);
+        $result = str_replace($pontos, ".", $value);
+        if ($result == '') {
             $result = null;
         }
         $this->attributes['area_construida'] = $result;
@@ -160,19 +160,19 @@ class Obra extends Model
 
     public function getEficienciaProjetoAttribute($value)
     {
-        if(strlen($value) == 4){
+        if (strlen($value) == 4) {
             $value = '0'.$value;
         }
 
-        return number_format($value,2,',','.');
+        return number_format($value, 2, ',', '.');
     }
 
     public function setEficienciaProjetoAttribute($value)
     {
-        $pontos = array(",");
-        $value = str_replace('.','',$value);
-        $result = str_replace( $pontos, ".", $value);
-        if($result == ''){
+        $pontos = [","];
+        $value = str_replace('.', '', $value);
+        $result = str_replace($pontos, ".", $value);
+        if ($result == '') {
             $result = null;
         }
         $this->attributes['eficiencia_projeto'] = $result;
@@ -180,19 +180,19 @@ class Obra extends Model
 
     public function getNumApartamentosAttribute($value)
     {
-        if(strlen($value) == 4){
+        if (strlen($value) == 4) {
             $value = '0'.$value;
         }
 
-        return number_format($value,2,',','.');
+        return number_format($value, 2, ',', '.');
     }
 
     public function setNumApartamentosAttribute($value)
     {
-        $pontos = array(",");
-        $value = str_replace('.','',$value);
-        $result = str_replace( $pontos, ".", $value);
-        if($result == ''){
+        $pontos = [","];
+        $value = str_replace('.', '', $value);
+        $result = str_replace($pontos, ".", $value);
+        if ($result == '') {
             $result = null;
         }
         $this->attributes['num_apartamentos'] = $result;
@@ -200,19 +200,19 @@ class Obra extends Model
 
     public function getNumTorresAttribute($value)
     {
-        if(strlen($value) == 4){
+        if (strlen($value) == 4) {
             $value = '0'.$value;
         }
 
-        return number_format($value,2,',','.');
+        return number_format($value, 2, ',', '.');
     }
 
     public function setNumTorresAttribute($value)
     {
-        $pontos = array(",");
-        $value = str_replace('.','',$value);
-        $result = str_replace( $pontos, ".", $value);
-        if($result == ''){
+        $pontos = [","];
+        $value = str_replace('.', '', $value);
+        $result = str_replace($pontos, ".", $value);
+        if ($result == '') {
             $result = null;
         }
         $this->attributes['num_torres'] = $result;
@@ -220,19 +220,19 @@ class Obra extends Model
 
     public function getNumPavimentoTipoAttribute($value)
     {
-        if(strlen($value) == 4){
+        if (strlen($value) == 4) {
             $value = '0'.$value;
         }
 
-        return number_format($value,2,',','.');
+        return number_format($value, 2, ',', '.');
     }
 
     public function setNumPavimentoTipoAttribute($value)
     {
-        $pontos = array(",");
-        $value = str_replace('.','',$value);
-        $result = str_replace( $pontos, ".", $value);
-        if($result == ''){
+        $pontos = [","];
+        $value = str_replace('.', '', $value);
+        $result = str_replace($pontos, ".", $value);
+        if ($result == '') {
             $result = null;
         }
         $this->attributes['num_pavimento_tipo'] = $result;
@@ -240,19 +240,19 @@ class Obra extends Model
 
     public function getIndiceBildPreAttribute($value)
     {
-        if(strlen($value) == 4){
+        if (strlen($value) == 4) {
             $value = '0'.$value;
         }
 
-        return number_format($value,2,',','.');
+        return number_format($value, 2, ',', '.');
     }
 
     public function setIndiceBildPreAttribute($value)
     {
-        $pontos = array(",");
-        $value = str_replace('.','',$value);
-        $result = str_replace( $pontos, ".", $value);
-        if($result == ''){
+        $pontos = [","];
+        $value = str_replace('.', '', $value);
+        $result = str_replace($pontos, ".", $value);
+        if ($result == '') {
             $result = null;
         }
         $this->attributes['indice_bild_pre'] = $result;
@@ -260,19 +260,19 @@ class Obra extends Model
 
     public function getIndiceBildOiAttribute($value)
     {
-        if(strlen($value) == 4){
+        if (strlen($value) == 4) {
             $value = '0'.$value;
         }
 
-        return number_format($value,2,',','.');
+        return number_format($value, 2, ',', '.');
     }
 
     public function setIndiceBildOiAttribute($value)
     {
-        $pontos = array(",");
-        $value = str_replace('.','',$value);
-        $result = str_replace( $pontos, ".", $value);
-        if($result == ''){
+        $pontos = [","];
+        $value = str_replace('.', '', $value);
+        $result = str_replace($pontos, ".", $value);
+        if ($result == '') {
             $result = null;
         }
         $this->attributes['indice_bild_oi'] = $result;
@@ -283,7 +283,7 @@ class Obra extends Model
      **/
     public function cidade()
     {
-        return $this->belongsTo(\App\Models\Cidade::class);
+        return $this->belongsTo(Cidade::class);
     }
 
     /**
@@ -291,7 +291,7 @@ class Obra extends Model
      **/
     public function contratos()
     {
-        return $this->hasMany(\App\Models\Contrato::class);
+        return $this->hasMany(Contrato::class);
     }
 
     /**
@@ -299,7 +299,7 @@ class Obra extends Model
      **/
     public function obraUsers()
     {
-        return $this->belongsToMany(\App\Models\ObraUser::class,'obra_users','obra_id','user_id')->withPivot('deleted_at')->withTimestamps();
+        return $this->belongsToMany(ObraUser::class, 'obra_users', 'obra_id', 'user_id')->withPivot('deleted_at')->withTimestamps();
     }
 
     /**
@@ -307,7 +307,7 @@ class Obra extends Model
      **/
     public function orcamentos()
     {
-        return $this->hasMany(\App\Models\Orcamento::class);
+        return $this->hasMany(Orcamento::class);
     }
 
     /**
@@ -315,7 +315,7 @@ class Obra extends Model
      **/
     public function ordemDeCompraItens()
     {
-        return $this->hasMany(\App\Models\OrdemDeCompraIten::class);
+        return $this->hasMany(OrdemDeCompraIten::class);
     }
 
     /**
@@ -323,7 +323,7 @@ class Obra extends Model
      **/
     public function ordemDeCompras()
     {
-        return $this->hasMany(\App\Models\OrdemDeCompra::class);
+        return $this->hasMany(OrdemDeCompra::class);
     }
 
     /**
@@ -331,7 +331,7 @@ class Obra extends Model
      **/
     public function planejamentos()
     {
-        return $this->hasMany(\App\Models\Planejamento::class);
+        return $this->hasMany(Planejamento::class);
     }
 
     /**
@@ -339,6 +339,16 @@ class Obra extends Model
      **/
     public function retroalimentacaoObras()
     {
-        return $this->hasMany(\App\Models\RetroalimentacaoObra::class);
+        return $this->hasMany(RetroalimentacaoObra::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'obra_users', 'obra_id', 'user_id')
+            ->withPivot('deleted_at')
+            ->withTimestamps();
     }
 }

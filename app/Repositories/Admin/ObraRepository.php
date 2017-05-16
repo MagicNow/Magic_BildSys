@@ -21,4 +21,12 @@ class ObraRepository extends BaseRepository
     {
         return Obra::class;
     }
+
+    public function findByUser($user_id)
+    {
+        return $this->model->whereHas('users', function($query) use ($user_id) {
+            $query->where('user_id', $user_id);
+        })
+        ->get();
+    }
 }
