@@ -15,8 +15,16 @@ class SolicitacaoInsumoDataTable extends DataTable
     public function ajax()
     {
         return $this->datatables
-            ->eloquent($this->query())
-            ->addColumn('action', 'admin.solicitacao_insumos.datatables_actions')
+            ->eloquent($this->query()
+                ->select([
+                    'solicitacao_insumos.id',
+                    'solicitacao_insumos.nome',
+                    'solicitacao_insumos.codigo',
+                    'solicitacao_insumos.unidade_sigla',
+                    'insumo_grupos.nome as grupo',
+                ])
+                ->join('insumo_grupos','insumo_grupos.id','=','solicitacao_insumos.insumo_grupo_id'))
+            ->editColumn('action', 'admin.solicitacao_insumos.datatables_actions')
             ->make(true);
     }
 
@@ -41,7 +49,7 @@ class SolicitacaoInsumoDataTable extends DataTable
     {
         return $this->builder()
             ->columns($this->getColumns())
-            ->addAction(['width' => '10%'])
+//            ->addAction(['width' => '10%'])
             ->ajax('')
             ->parameters([
                 'initComplete' => 'function () {
@@ -94,7 +102,8 @@ class SolicitacaoInsumoDataTable extends DataTable
             'nome' => ['name' => 'nome', 'data' => 'nome'],
             'sigla' => ['name' => 'unidade_sigla', 'data' => 'unidade_sigla'],
             'código' => ['name' => 'codigo', 'data' => 'codigo'],
-            'grupo' => ['name' => 'insumo_grupo_id', 'data' => 'insumo_grupo_id']
+            'grupo' => ['name' => 'insumo_grupos.nome', 'data' => 'grupo'],
+            'action' => ['title' => '#', 'printable' => false, 'width'=>'10%']
         ];
     }
 
