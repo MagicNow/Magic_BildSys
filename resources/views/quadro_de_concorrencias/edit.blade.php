@@ -25,7 +25,7 @@
                 @include('quadro_de_concorrencias.fields')
 
                 <!-- Submit Field -->
-                    <div class="form-group col-sm-6 pull-right text-right">
+                    <div class="form-group col-sm-9 pull-right text-right">
 
                         {!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save') ), [
                             'class' => 'btn btn-success btn-lg btn-flat',
@@ -62,7 +62,7 @@
                         {!! Form::close() !!}
                         </div>
                     @else
-                        <div class="form-group col-sm-6 pull-left">
+                        <div class="form-group col-sm-3 pull-left">
                             <a href="{!! route('quadroDeConcorrencias.index') !!}"
                                class="btn btn-default btn-flat btn-lg"><i class="fa fa-times"></i>
                                 {{ ucfirst( trans('common.cancel') )}}

@@ -573,6 +573,12 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             ->middleware("needsPermission:quadroDeConcorrencias.edit");
         $router->get('quadro-de-concorrencia/{quadroDeConcorrencias}/acao/{acao}', 'QuadroDeConcorrenciaController@acao')
             ->middleware("needsPermission:quadroDeConcorrencias.edit");
+        $router->post('quadro-de-concorrencia/{quadroDeConcorrencias}/adicionar',
+            [
+                'as' => 'quadroDeConcorrencias.adicionar',
+                'uses' => 'QuadroDeConcorrenciaController@adicionar'
+            ])->middleware("needsPermission:quadroDeConcorrencias.edit");
+
     });
 
     $router->get('tipos-equalizacoes-tecnicas/busca', 'Admin\TipoEqualizacaoTecnicaController@busca');

@@ -21,6 +21,7 @@ use App\Models\Planejamento;
 use App\Models\PlanejamentoCompra;
 use App\Models\Servico;
 use App\Models\WorkflowAlcada;
+use App\Models\WorkflowAprovacao;
 use App\Models\WorkflowReprovacaoMotivo;
 use App\Repositories\CodeRepository;
 use function foo\func;
@@ -208,9 +209,9 @@ class OrdemDeCompraController extends AppBaseController
 
         $itens = collect([]);
         $avaliado_reprovado = [];
-
-        $aprovavelTudo = WorkflowAprovacaoRepository::verificaAprovaGrupo('OrdemDeCompraItem', $ordemDeCompra->itens()->pluck('id', 'id')->toArray(), Auth::user());
-        $alcadas = WorkflowAlcada::where('workflow_tipo_id', 1)->get(); // Aprovação de OC
+        $itens_ids = $ordemDeCompra->itens()->pluck('id', 'id')->toArray();
+        $aprovavelTudo = WorkflowAprovacaoRepository::verificaAprovaGrupo('OrdemDeCompraItem', $itens_ids, Auth::user());
+        $alcadas = WorkflowAlcada::where('workflow_tipo_id', 1)->orderBy('ordem','ASC')->get(); // Aprovação de OC
 
         if($ordemDeCompra->oc_status_id == 3) { //Em Aprovação
             foreach ($alcadas as $alcada) {
@@ -227,9 +228,28 @@ class OrdemDeCompraController extends AppBaseController
                     $alcada->id);
 
                 $avaliado_reprovado[$alcada->id] ['faltam_aprovar'] = WorkflowAprovacaoRepository::verificaUsuariosQueFaltamAprovar(
+                    'OrdemDeCompraItem',
                     1, // Aprovação de OC
                     $ordemDeCompra->obra_id,
-                    $alcada->id);
+                    $alcada->id,
+                    $itens_ids);
+
+                // Data do início da  Alçada
+                if($alcada->ordem===1){
+                    $avaliado_reprovado[$alcada->id] ['data_inicio'] = $ordemDeCompra->ordemDeCompraStatusLogs()
+                                                                            ->where('oc_status_id', 2)->first()
+                                                                            ->created_at
+                                                                            ->format('d/m/Y H:i');
+                }else{
+                    $primeiro_voto = WorkflowAprovacao::where('aprovavel_type', 'App\\Models\\OrdemDeCompraItem')
+                                        ->whereIn('aprovavel_id', $itens_ids)
+                                        ->where('workflow_alcada_id',$alcada->id)
+                                        ->orderBy('id','ASC')
+                                        ->first();
+                    if($primeiro_voto){
+                        $avaliado_reprovado[$alcada->id]['data_inicio'] = $primeiro_voto->created_at->format('d/m/Y H:i');
+                    }
+                }
             }
         }
 

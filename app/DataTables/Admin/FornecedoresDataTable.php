@@ -65,7 +65,7 @@ class FornecedoresDataTable extends DataTable
                         }
                     });
                 }' ,
-                'dom' => 'Bfrtip',
+                'dom' => 'Bfrltip',
                 'scrollX' => false,
                 'language'=> [
                     "url"=> "/vendor/datatables/Portuguese-Brasil.json"

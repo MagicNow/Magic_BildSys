@@ -99,7 +99,7 @@ class ObraDataTable extends DataTable
         return [
             'nome' => ['name' => 'nome', 'data' => 'nome'],
             'cadastradaEm' => ['name' => 'created_at', 'data' => 'created_at'],
-            'action' => ['title'          => '#', 'printable'      => false, 'width'=>'10%'],
+            'action' => ['title' => '#', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }
 
