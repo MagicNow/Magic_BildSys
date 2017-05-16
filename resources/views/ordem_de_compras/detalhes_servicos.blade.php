@@ -71,22 +71,26 @@
             <div class="col-md-2 text-right borda-direita" title="Nos itens desta O.C.">
                 <h5>TOTAL À GASTAR</h5>
                 <h4>
-                    <small class="pull-left">R$</small>
-                    {{ number_format($totalAGastar,2,',','.') }}
+                    <small class="pull-left">R$</small>0
+                    {{---  TO DO = A gastar: É a soma de todos os saldos de contratos na que apropriação, como ainda não exixte contrato gerado, tem q estar zerado--}}
+                    {{--                    {{ number_format($totalAGastar,2,',','.') }}--}}
                 </h4>
             </div>
             <div class="col-md-2 text-right borda-direita" title="Até o momento em todos os itens desta O.C.">
                 <h5>QUANTIDADE REALIZADA</h5>
                 <h4>
-                    <small class="pull-left">R$</small>
-                    {{ number_format($realizado,2,',','.') }}
+                    <small class="pull-left">R$</small>0
+                    {{---  TO DO = Realizado: São informações que virão com a entrada de NF, sendo assim, no momento não haverá informações--}}
+                    {{--                    {{ number_format($realizado,2,',','.') }}--}}
                 </h4>
             </div>
             <div class="col-md-2 text-right" title="Restante do Orçamento Inicial em relação aos itens desta O.C.">
                 <h5>SALDO</h5>
                 <h4>
                     <small class="pull-left">R$</small>
-                    {{ number_format($saldo,2,',','.') }}
+                    {{ number_format($orcamentoInicial,2,',','.') }}
+                    {{--- TO DO = Saldo: Previsto - Realizado - A gastar--}}
+                    {{--{{ number_format($saldo,2,',','.') }}--}}
                 </h4>
             </div>
 
