@@ -182,11 +182,11 @@
                                 </li>
                                 <!-- Menu Footer-->
                                 <li class="user-footer">
-                                    @if(Auth::user()->admin)
+                                    @shield('dashboard.access')
                                         <div class="pull-left">
                                             <a href="/admin" class="btn btn-warning btn-flat">Administrativo</a>
                                         </div>
-                                    @endif
+                                    @endshield
                                     <div class="pull-right">
                                         <a href="{!! url('/logout') !!}" class="btn btn-danger btn-flat"
                                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
