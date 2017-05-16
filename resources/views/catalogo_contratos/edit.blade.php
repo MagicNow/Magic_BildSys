@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.front')
 
 @section('content')
     <section class="content-header">
@@ -11,10 +11,10 @@
        <div class="box box-primary">
            <div class="box-body">
                <div class="row">
-                   {!! Form::model($catalogoContrato, ['route' => ['admin.catalogo_contratos.update', $catalogoContrato->id], 'method' => 'patch', 'files' => true]) !!}
-                        @include('flash::message')
+                   {!! Form::model($catalogoContrato, ['route' => ['catalogo_contratos.update', $catalogoContrato->id], 'method' => 'patch', 'files' => true]) !!}
 
-                        @include('admin.catalogo_contratos.fields')
+
+                        @include('catalogo_contratos.fields')
                    {!! Form::close() !!}
                </div>
            </div>
