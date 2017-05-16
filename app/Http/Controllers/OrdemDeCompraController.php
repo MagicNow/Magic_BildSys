@@ -263,10 +263,12 @@ class OrdemDeCompraController extends AppBaseController
 
                 // Data do início da  Alçada
                 if($alcada->ordem===1){
-                    $avaliado_reprovado[$alcada->id] ['data_inicio'] = $ordemDeCompra->ordemDeCompraStatusLogs()
-                                                                            ->where('oc_status_id', 2)->first()
-                                                                            ->created_at
+                    $ordem_status_log = $ordemDeCompra->ordemDeCompraStatusLogs()
+                            ->where('oc_status_id', 2)->first();
+                    if($ordem_status_log){
+                        $avaliado_reprovado[$alcada->id] ['data_inicio'] = $ordem_status_log->created_at
                                                                             ->format('d/m/Y H:i');
+                    }
                 }else{
                     $primeiro_voto = WorkflowAprovacao::where('aprovavel_type', 'App\\Models\\OrdemDeCompraItem')
                                         ->whereIn('aprovavel_id', $itens_ids)
