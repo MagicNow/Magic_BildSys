@@ -152,7 +152,7 @@ class RolesAndPermissions extends Seeder
 
         $users = User::where('id', '>', 1)->get();
         foreach ($users as $user) {
-            $user->attachPermission($permissionAccess[0]);
+            $user->attachPermission(Defender::findPermission('site.dashboard'));
         }
         // Adiciona permissões no SuperUser
         foreach ($permissionAccess as $permission)
