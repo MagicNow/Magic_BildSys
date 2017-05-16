@@ -16,7 +16,7 @@ class TipoEqualizacaoTecnicaDataTable extends DataTable
     {
         return $this->datatables
             ->eloquent($this->query())
-            ->editColumn('action', 'admin.tipo_equalizacao_tecnicas.datatables_actions')
+            ->editColumn('action', 'tipo_equalizacao_tecnicas.datatables_actions')
             ->make(true);
     }
 

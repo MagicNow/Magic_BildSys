@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
 use App\DataTables\Admin\CatalogoContratoDataTable;
 use App\Http\Requests\Admin;
@@ -38,7 +38,7 @@ class CatalogoContratoController extends AppBaseController
      */
     public function index(CatalogoContratoDataTable $catalogoContratoDataTable)
     {
-        return $catalogoContratoDataTable->render('admin.catalogo_contratos.index');
+        return $catalogoContratoDataTable->render('catalogo_contratos.index');
     }
 
     /**
@@ -50,7 +50,7 @@ class CatalogoContratoController extends AppBaseController
     {
         $fornecedores = [];
         
-        return view('admin.catalogo_contratos.create', compact('fornecedores'));
+        return view('catalogo_contratos.create', compact('fornecedores'));
     }
 
     /**
@@ -130,7 +130,7 @@ class CatalogoContratoController extends AppBaseController
         
         Flash::success('Catalogo Contrato '.trans('common.saved').' '.trans('common.successfully').'.');
 
-        return redirect(route('admin.catalogo_contratos.index'));
+        return redirect(route('catalogo_contratos.index'));
     }
 
     /**
@@ -147,10 +147,10 @@ class CatalogoContratoController extends AppBaseController
         if (empty($catalogoContrato)) {
             Flash::error('Catalogo Contrato '.trans('common.not-found'));
 
-            return redirect(route('admin.catalogo_contratos.index'));
+            return redirect(route('catalogo_contratos.index'));
         }
 
-        return view('admin.catalogo_contratos.show')->with('catalogoContrato', $catalogoContrato);
+        return view('catalogo_contratos.show')->with('catalogoContrato', $catalogoContrato);
     }
 
     /**
@@ -167,14 +167,14 @@ class CatalogoContratoController extends AppBaseController
         if (empty($catalogoContrato)) {
             Flash::error('Catalogo Contrato '.trans('common.not-found'));
 
-            return redirect(route('admin.catalogo_contratos.index'));
+            return redirect(route('catalogo_contratos.index'));
         }
 
         $fornecedores = MegaFornecedor::select(DB::raw("CONVERT(agn_st_nome,'UTF8','WE8ISO8859P15' ) as agn_st_nome"), 'agn_in_codigo')
             ->where('agn_st_cgc', $catalogoContrato->fornecedor->cnpj)
             ->pluck('agn_st_nome', 'agn_in_codigo')->toArray();
         
-        return view('admin.catalogo_contratos.edit', compact('fornecedores'))->with('catalogoContrato', $catalogoContrato);
+        return view('catalogo_contratos.edit', compact('fornecedores'))->with('catalogoContrato', $catalogoContrato);
     }
 
     /**
@@ -192,7 +192,7 @@ class CatalogoContratoController extends AppBaseController
         if (empty($catalogoContrato)) {
             Flash::error('Catalogo Contrato '.trans('common.not-found'));
 
-            return redirect(route('admin.catalogo_contratos.index'));
+            return redirect(route('catalogo_contratos.index'));
         }
 
         $input = $request->all();
@@ -278,7 +278,7 @@ class CatalogoContratoController extends AppBaseController
 
         Flash::success('Catalogo Contrato '.trans('common.updated').' '.trans('common.successfully').'.');
 
-        return redirect(route('admin.catalogo_contratos.index'));
+        return redirect(route('catalogo_contratos.index'));
     }
 
     /**
@@ -295,7 +295,7 @@ class CatalogoContratoController extends AppBaseController
         if (empty($catalogoContrato)) {
             Flash::error('Catalogo Contrato '.trans('common.not-found'));
 
-            return redirect(route('admin.catalogo_contratos.index'));
+            return redirect(route('catalogo_contratos.index'));
         }
 
         if($catalogoContrato->arquivo){
@@ -306,7 +306,7 @@ class CatalogoContratoController extends AppBaseController
 
         Flash::success('Catalogo Contrato '.trans('common.deleted').' '.trans('common.successfully').'.');
 
-        return redirect(route('admin.catalogo_contratos.index'));
+        return redirect(route('catalogo_contratos.index'));
     }
 
     public function deleteInsumo(Request $request)

@@ -1,9 +1,9 @@
-@extends('layouts.app')
+@extends('layouts.front')
 
 @section('content')
     <section class="content-header">
         <h1>
-            Catálogo de Acordo
+            Equalização Técnica
         </h1>
     </section>
     <div class="content">
@@ -12,10 +12,9 @@
 
             <div class="box-body">
                 <div class="row">
-                    {!! Form::open(['route' => 'admin.catalogo_contratos.store', 'files' => true]) !!}
-                        @include('flash::message')
+                    {!! Form::open(['route' => 'tipoEqualizacaoTecnicas.store', 'files'=>true]) !!}
 
-                        @include('admin.catalogo_contratos.fields')
+                        @include('tipo_equalizacao_tecnicas.fields')
 
                     {!! Form::close() !!}
                 </div>

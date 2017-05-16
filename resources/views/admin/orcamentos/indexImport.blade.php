@@ -7,7 +7,7 @@
     <div class="content">
         <div class="clearfix"></div>
         <div class="box box-primary">
-            @include('flash::message')
+
             {!! Form::open(['route' => 'admin.orcamentos.importar', 'files'=>true]) !!}
             <fieldset style="margin-top:10px; min-width: 1px;">
                 <div class="panel-body">

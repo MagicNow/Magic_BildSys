@@ -242,22 +242,26 @@
             <div class="col-md-2 text-right borda-direita" title="Nos itens desta O.C.">
                 <h5>TOTAL À GASTAR</h5>
                 <h4>
-                    <small class="pull-left">R$</small>
-                    {{ number_format($totalAGastar,2,',','.') }}
+                    <small class="pull-left">R$</small>0
+                    {{---  TO DO = A gastar: É a soma de todos os saldos de contratos na que apropriação, como ainda não exixte contrato gerado, tem q estar zerado--}}
+{{--                    {{ number_format($totalAGastar,2,',','.') }}--}}
                 </h4>
             </div>
             <div class="col-md-2 text-right borda-direita" title="Até o momento em todos os itens desta O.C.">
                 <h5>QUANTIDADE REALIZADA</h5>
                 <h4>
-                    <small class="pull-left">R$</small>
-                    {{ number_format($realizado,2,',','.') }}
+                    <small class="pull-left">R$</small>0
+                    {{---  TO DO = Realizado: São informações que virão com a entrada de NF, sendo assim, no momento não haverá informações--}}
+{{--                    {{ number_format($realizado,2,',','.') }}--}}
                 </h4>
             </div>
             <div class="col-md-2 text-right" title="Restante do Orçamento Inicial em relação aos itens desta O.C.">
                 <h5>SALDO</h5>
                 <h4>
                     <small class="pull-left">R$</small>
-                    {{ number_format($saldo,2,',','.') }}
+                    {{ number_format($orcamentoInicial,2,',','.') }}
+                    {{--- TO DO = Saldo: Previsto - Realizado - A gastar--}}
+                    {{--{{ number_format($saldo,2,',','.') }}--}}
                 </h4>
             </div>
 
@@ -288,9 +292,13 @@
                             <td class="text-center">{{ $item->unidade_sigla }}</td>
                             <td class="text-center"><i class="fa fa-circle {{ (($item->qtd_realizada) > $item->qtd_inicial) ? 'text-danger': 'text-success'  }}" aria-hidden="true"></i> </td>
                             <td class="text-center">
-                                <a href="/ordens-de-compra/detalhes-servicos/{{$item->servico->id}}" style="cursor:pointer;">
+                                @if($item->servico)
+                                    <a href="/ordens-de-compra/detalhes-servicos/{{$item->servico->id}}" style="cursor:pointer;">
+                                        <i class="fa fa-circle {{ (($item->qtd_realizada_servico) > $item->qtd_inicial_servico) ? 'text-danger': 'text-success'  }}" aria-hidden="true"></i>
+                                    </a>
+                                @else
                                     <i class="fa fa-circle {{ (($item->qtd_realizada_servico) > $item->qtd_inicial_servico) ? 'text-danger': 'text-success'  }}" aria-hidden="true"></i>
-                                </a>
+                                @endif
                             </td>
                             <td class="text-center">{{ $item->total ? 'Sim' : 'Não' }}</td>
                             <td class="text-center">
@@ -305,11 +313,7 @@
                 </div>
                 <div style="display: none;" id="dados-extras{{ $item->id }}">
                     <div class="col-md-10">
-                        <h4 class="highlight">{{ $item->insumo->codigo . ' - '. $item->insumo->nome }}
-                            @if($item->servico)
-                                <a href="/ordens-de-compra/detalhes-servicos/{{$item->servico->id}}" style="font-size:15px;">{{$item->servico->codigo . ' - '. $item->servico->nome}}</a>
-                            @endif
-                        </h4>
+                        <h4 class="highlight">{{ $item->insumo->codigo . ' - '. $item->insumo->nome }}</h4>
                     </div>
                     <div class="col-md-2 text-right">
                         @if(!is_null($item->aprovado))

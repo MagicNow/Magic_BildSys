@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
 use App\DataTables\Admin\TipoEqualizacaoTecnicaDataTable;
 use App\Http\Requests\Admin;
@@ -30,7 +30,7 @@ class TipoEqualizacaoTecnicaController extends AppBaseController
      */
     public function index(TipoEqualizacaoTecnicaDataTable $tipoEqualizacaoTecnicaDataTable)
     {
-        return $tipoEqualizacaoTecnicaDataTable->render('admin.tipo_equalizacao_tecnicas.index');
+        return $tipoEqualizacaoTecnicaDataTable->render('tipo_equalizacao_tecnicas.index');
     }
 
     /**
@@ -40,7 +40,7 @@ class TipoEqualizacaoTecnicaController extends AppBaseController
      */
     public function create()
     {
-        return view('admin.tipo_equalizacao_tecnicas.create');
+        return view('tipo_equalizacao_tecnicas.create');
     }
 
     /**
@@ -58,7 +58,7 @@ class TipoEqualizacaoTecnicaController extends AppBaseController
 
         Flash::success('Tipo Equalizacao Tecnica '.trans('common.saved').' '.trans('common.successfully').'.');
 
-        return redirect(route('admin.tipoEqualizacaoTecnicas.index'));
+        return redirect(route('tipoEqualizacaoTecnicas.index'));
     }
 
     /**
@@ -75,10 +75,10 @@ class TipoEqualizacaoTecnicaController extends AppBaseController
         if (empty($tipoEqualizacaoTecnica)) {
             Flash::error('Tipo Equalizacao Tecnica '.trans('common.not-found'));
 
-            return redirect(route('admin.tipoEqualizacaoTecnicas.index'));
+            return redirect(route('tipoEqualizacaoTecnicas.index'));
         }
 
-        return view('admin.tipo_equalizacao_tecnicas.show')->with('tipoEqualizacaoTecnica', $tipoEqualizacaoTecnica);
+        return view('tipo_equalizacao_tecnicas.show')->with('tipoEqualizacaoTecnica', $tipoEqualizacaoTecnica);
     }
 
     /**
@@ -95,10 +95,10 @@ class TipoEqualizacaoTecnicaController extends AppBaseController
         if (empty($tipoEqualizacaoTecnica)) {
             Flash::error('Tipo Equalizacao Tecnica '.trans('common.not-found'));
 
-            return redirect(route('admin.tipoEqualizacaoTecnicas.index'));
+            return redirect(route('tipoEqualizacaoTecnicas.index'));
         }
 
-        return view('admin.tipo_equalizacao_tecnicas.edit')->with('tipoEqualizacaoTecnica', $tipoEqualizacaoTecnica);
+        return view('tipo_equalizacao_tecnicas.edit')->with('tipoEqualizacaoTecnica', $tipoEqualizacaoTecnica);
     }
 
     /**
@@ -116,14 +116,14 @@ class TipoEqualizacaoTecnicaController extends AppBaseController
         if (empty($tipoEqualizacaoTecnica)) {
             Flash::error('Tipo Equalizacao Tecnica '.trans('common.not-found'));
 
-            return redirect(route('admin.tipoEqualizacaoTecnicas.index'));
+            return redirect(route('tipoEqualizacaoTecnicas.index'));
         }
 
         $tipoEqualizacaoTecnica = $this->tipoEqualizacaoTecnicaRepository->update($request->all(), $id);
 
         Flash::success('Tipo Equalizacao Tecnica '.trans('common.updated').' '.trans('common.successfully').'.');
 
-        return redirect(route('admin.tipoEqualizacaoTecnicas.index'));
+        return redirect(route('tipoEqualizacaoTecnicas.index'));
     }
 
     /**
@@ -140,14 +140,14 @@ class TipoEqualizacaoTecnicaController extends AppBaseController
         if (empty($tipoEqualizacaoTecnica)) {
             Flash::error('Tipo Equalizacao Tecnica '.trans('common.not-found'));
 
-            return redirect(route('admin.tipoEqualizacaoTecnicas.index'));
+            return redirect(route('tipoEqualizacaoTecnicas.index'));
         }
 
         $this->tipoEqualizacaoTecnicaRepository->delete($id);
 
         Flash::success('Tipo Equalizacao Tecnica '.trans('common.deleted').' '.trans('common.successfully').'.');
 
-        return redirect(route('admin.tipoEqualizacaoTecnicas.index'));
+        return redirect(route('tipoEqualizacaoTecnicas.index'));
     }
 
     public function busca(Request $request){
