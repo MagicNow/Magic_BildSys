@@ -1478,9 +1478,9 @@ class OrdemDeCompraController extends AppBaseController
             ->toArray();
 
         $farol = [
-            'vermelho'=>'<i class="fa fa-circle text-danger" title="vermelho"></i>',
-            '11,29'=>'<i class="fa fa-circle text-warning" title="amarelo"></i>',
-            'verde'=>'<i class="fa fa-circle text-success" title="verde"></i>',
+            'vermelho'=>'Vermelho',
+            'amarelo'=>'Amarelo',
+            'verde'=>'Verde',
         ];
         return $insumosAprovadosDataTable->render('ordem_de_compras.insumos-aprovados',
             compact('obras','OCs','insumoGrupos','insumos','cidades','farol'));
