@@ -342,9 +342,13 @@ class CatalogoContratoController extends AppBaseController
     public function buscaInsumos(Request $request){
         $insumos = Insumo::select([
             'id',
-            'nome'
+            DB::raw("CONCAT(nome, ' - ', unidade_sigla) as nome")
         ])
-            ->where('nome','like', '%'.$request->q.'%')->paginate();
+            ->where(function ($query) use($request){
+                $query->where('nome', 'like', '%' . $request->q . '%')
+                    ->orWhere('unidade_sigla','like', '%'.$request->q.'%');
+            })
+        ->paginate();
 
         return $insumos;
     }
