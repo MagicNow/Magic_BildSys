@@ -1493,7 +1493,13 @@ class OrdemDeCompraController extends AppBaseController
      */
     public function insumosOrcamento($obra_id)
     {
-        $grupos = Grupo::whereNull('grupo_id')->pluck('nome','id')->toArray();
+        $grupos = Grupo::whereNull('grupo_id')
+            ->select([
+                'id',
+                DB::raw("CONCAT(codigo, ' ', nome) as nome")
+            ])
+            ->pluck('nome','id')
+            ->toArray();
         
         return view('ordem_de_compras.insumos_orcamento', compact('obra_id', 'grupos'));
     }
