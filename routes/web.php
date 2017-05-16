@@ -362,6 +362,8 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->get('/ordens-de-compra/carrinho/alterar-valor-unitario/{id}', 'OrdemDeCompraController@alteraValorUnitario');
         $router->get('/ordens-de-compra/carrinho/remover-item/{id}', 'OrdemDeCompraController@removerItem');
         $router->get('/ordens-de-compra/detalhes-servicos/{servico_id}', 'OrdemDeCompraController@detalhesServicos')->middleware("needsPermission:ordens_de_compra.detalhes_servicos");
+        $router->get('ordens-de-compra/grupos/{id}', 'OrdemDeCompraController@getGrupos');
+        $router->get('ordens-de-compra/servicos/{id}', 'OrdemDeCompraController@getServicos');
 
         $router->resource('ordens-de-compra', 'OrdemDeCompraController');
     });

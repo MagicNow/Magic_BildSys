@@ -227,94 +227,43 @@
             });
         });
 
-        @if(isset($obra))
-        $(document).ready(function() {
-            verificarFiltroGrupos();
-            var dados;
-            var url;
-            array_grupos = [];
+        {{--@if(isset($obra))--}}
+            {{--$(document).ready(function() {--}}
+                {{--verificarFiltroGrupos();--}}
+                {{--var dados;--}}
+                {{--var url;--}}
+                {{--array_grupos = [];--}}
 
-            $('#btn-incluir-insumo').click(function (e) {
-                e.preventDefault();
-                $.get("{{url('planejamentosByObra')}}", {obra_id: "{{$obra->id}}"})
-                    .done(function (data) {
-                        dados = JSON.parse(JSON.stringify(data));
-                        if(dados.length >0){
-                            $('#btnGoInsumos').show()
-                            $(".js-example-data-array").select2({
-                                data: dados
-                            })
-                            url = '{{url("compras/insumos") }}?planejamento_id='+$(".js-example-data-array").val()+'&obra_id={{$obra->id}}';
-                            $('#btnGoInsumos').attr('href', url);
-                            $("body").on('change','.js-example-data-array', function () {
-                                url = '{{url("compras/insumos") }}?planejamento_id='+$(".js-example-data-array").val();
-                                $('#btnGoInsumos').attr('href', url);
-                            })
-                        }else{
-                            $('#btnGoInsumos').hide();
-                        }
+                {{--$('#btn-incluir-insumo').click(function (e) {--}}
+                    {{--e.preventDefault();--}}
+                    {{--$.get("{{url('planejamentosByObra')}}", {obra_id: "{{$obra->id}}"})--}}
+                        {{--.done(function (data) {--}}
+                            {{--dados = JSON.parse(JSON.stringify(data));--}}
+                            {{--if(dados.length >0){--}}
+                                {{--$('#btnGoInsumos').show()--}}
+                                {{--$(".js-example-data-array").select2({--}}
+                                    {{--data: dados--}}
+                                {{--})--}}
+                                {{--url = '{{url("compras/insumos") }}?planejamento_id='+$(".js-example-data-array").val()+'&obra_id={{$obra->id}}';--}}
+                                {{--$('#btnGoInsumos').attr('href', url);--}}
+                                {{--$("body").on('change','.js-example-data-array', function () {--}}
+                                    {{--url = '{{url("compras/insumos") }}?planejamento_id='+$(".js-example-data-array").val();--}}
+                                    {{--$('#btnGoInsumos').attr('href', url);--}}
+                                {{--})--}}
+                            {{--}else{--}}
+                                {{--$('#btnGoInsumos').hide();--}}
+                            {{--}--}}
 
-                    });
-            });
-        });
-
-        {{--function selectgrupo(id, change, tipo, parametro){--}}
-            {{--var grupo = '';--}}
-            {{--var grupos_rota = '';--}}
-            {{--var url_grupos = '';--}}
-            {{--var rota = "{{url('/admin/planejamentos/atividade/grupos')}}/";--}}
-            {{--if(tipo == 'servicos'){--}}
-                {{--rota = "{{url('/admin/planejamentos/atividade/servicos')}}/";--}}
-            {{--}--}}
-            {{--if(id){--}}
-                {{--$('.box.box-primary').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');--}}
-                {{--$.ajax({--}}
-                    {{--url: rota + id--}}
-                {{--}).done(function(retorno) {--}}
-                    {{--options = '<option value="">Selecione</option>';--}}
-                    {{--$('#'+change).html(options);--}}
-                    {{--$.each(retorno,function(index, value){--}}
-                        {{--options += '<option value="'+index+'">'+value+'</option>';--}}
-                    {{--});--}}
-                    {{--$('#'+change).html(options);--}}
-                    {{--$('.overlay').remove();--}}
-                    {{--$('#'+change).attr('disabled',false);--}}
-
-                    {{--grupo = '&' + parametro + '=' + id;--}}
-                    {{--array_grupos.push(grupo);--}}
-
-                    {{--$.each(array_grupos, function (index, value) {--}}
-                        {{--grupos_rota += value;--}}
-                    {{--});--}}
-
-                    {{--var result = {};--}}
-                    {{--keyValuePairs = grupos_rota.slice(1).split("&");--}}
-                    {{--if(keyValuePairs!=""){--}}
-                        {{--keyValuePairs.forEach(function(keyValuePair) {--}}
-                            {{--keyValuePair = keyValuePair.split('=');--}}
-                            {{--result[decodeURIComponent(keyValuePair[0])] = decodeURIComponent(keyValuePair[1]);--}}
                         {{--});--}}
-                    {{--}--}}
-
-                    {{--if(Object.keys(result).length){--}}
-                        {{--$.each(result, function (index, value) {--}}
-                            {{--url_grupos += '&' + index + '=' + value;--}}
-                        {{--});--}}
-                    {{--}--}}
-
-                    {{--history.pushState("", document.title, '/compras/obrasInsumos?obra_id={{$obra->id}}' + url_grupos);--}}
-                    {{--$('#comprar_tudo_de_tudo').attr('href', '/ordens-de-compra/carrinho/comprar-tudo-de-tudo?obra_id={{$obra->id}}' + url_grupos);--}}
-                    {{--app.$children[0].loadData();--}}
-                {{--}).fail(function() {--}}
-                    {{--$('.overlay').remove();--}}
                 {{--});--}}
-            {{--}--}}
-        {{--}--}}
+            {{--});--}}
+        {{--@endif--}}
 
         function selectgrupo(id, change, tipo){
-            var rota = "{{url('/admin/planejamentos/atividade/grupos')}}/";
+            console.log('id: ', id, 'change: ', change, 'tipo: ', tipo);
+            var rota = "{{url('ordens-de-compra/grupos')}}/";
             if(tipo == 'servicos'){
-                rota = "{{url('/admin/planejamentos/atividade/servicos')}}/";
+                rota = "{{url('ordens-de-compra/servicos')}}/";
             }
             if(id){
                 $('.box.box-primary').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
@@ -331,41 +280,15 @@
                     $('#'+change).attr('disabled',false);
                 }).fail(function() {
                 });
+            }else{
+                if(change == 'subgrupo1_id'){
+                    options = '';
+                    $('#subgrupo1_id').attr('disabled',true);
+                    $('#subgrupo2_id').attr('disabled',true);
+                    $('#subgrupo3_id').attr('disabled',true);
+                    $('#servico_id').attr('disabled',true);
+                }
             }
         }
-
-        function verificarFiltroGrupos() {
-            @php
-                $grupo = \Illuminate\Support\Facades\Input::get('grupo');
-                $subgrupo1 = \Illuminate\Support\Facades\Input::get('subgrupo1');
-                $subgrupo2 = \Illuminate\Support\Facades\Input::get('subgrupo2');
-                $subgrupo3 = \Illuminate\Support\Facades\Input::get('subgrupo3');
-                $servico = \Illuminate\Support\Facades\Input::get('servico');
-            @endphp
-            @if($grupo)
-                selectgrupo('{{$grupo}}', 'subgrupo1_id', 'grupos', 'grupo');
-            @endif
-            @if($subgrupo1)
-                selectgrupo('{{$subgrupo1}}', 'subgrupo2_id', 'grupos', 'subgrupo1');
-            @endif
-            @if($subgrupo2)
-                selectgrupo('{{$subgrupo2}}', 'subgrupo3_id', 'grupos', 'subgrupo2');
-            @endif
-            @if($subgrupo3)
-                selectgrupo('{{$subgrupo3}}', 'servico_id', 'servicos', 'subgrupo3');
-            @endif
-            @if($servico)
-                selectgrupo('{{$servico}}', null, 'servicos', 'servico');
-            @endif
-
-            setTimeout(function(){
-                $('#grupo_id').val('{{$grupo}}');
-                $('#subgrupo1_id').val('{{$subgrupo1}}');
-                $('#subgrupo2_id').val('{{$subgrupo2}}');
-                $('#subgrupo3_id').val('{{$subgrupo3}}');
-                $('#servico_id').val('{{$servico}}');
-            }, 1000);
-        }
-        @endif
     </script>
 @endsection
