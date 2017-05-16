@@ -31,8 +31,18 @@ class RolesController extends BaseController
 	 */
 	public function index()
 	{
-		$permissions = \DB::table("permissions")->orderBy('readable_name')->pluck('readable_name', 'name');
-		$permissions->prepend('------ Selecione ------', 0);
+		$permissionsObj = \DB::table("permissions")->orderBy('name')->get();
+        $permissions = [];
+        $group = '';
+		foreach ($permissionsObj as $perm){
+            $nameArray = explode('.',$perm->name);
+            $name = str_replace('_',' ', strtoupper($nameArray[0]));
+            if($name != $group){
+                $group = $name;
+            }
+            $permissions[$group][$perm->name] = $perm->readable_name;
+        }
+		$permissions[''] = '------ Selecione ------';
 
 		return view('admin.manage.roles.index', compact('permissions'));
 	}

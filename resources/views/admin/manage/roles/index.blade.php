@@ -77,7 +77,7 @@
                             <div class="form-group clearfix">
                                 <label class="col-md-3 control-label">Permissão*</label>
                                 <div class="col-md-7">
-                                    {{ Form::select('permissions', $permissions, null, ['class' => 'form-control','multiple'=>'multiple','size'=>30, 'id' => 'permissions']) }}
+                                    {{ Form::select('permissions', $permissions, null, ['class' => 'form-control select2','multiple'=>'multiple','size'=>30, 'id' => 'permissions']) }}
                                 </div>
                                 <div class="col-md-2">
                                     <button type="button" v-on:click="addPermission()" class="btn btn-info">
@@ -90,7 +90,7 @@
                                 <table class="table table-striped">
                                     <tr v-for="permission in role.permissions">
                                         {{--<td>@{{ permission.name }}</td>--}}
-                                        <td>@{{ permission.readable_name }}</td>
+                                        <td class="text-left">@{{ permission.readable_name }}</td>
                                         <td>
                                             <button type="button" v-on:click="removePermission(permission)" class="btn btn-danger btn-xs">
                                                 <span class="glyphicon glyphicon-trash"></span>
@@ -229,6 +229,7 @@
                     });
                 },
                 resetSelect: function() {
+                    $('#permissions').val(null).trigger("change");
                     $("#permissions option:selected").prop("selected", false);
                 },
                 resetRole: function() {

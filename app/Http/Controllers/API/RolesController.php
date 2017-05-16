@@ -31,7 +31,10 @@ class RolesController extends AppBaseController
 	 */
 	public function index()
 	{
-		$roles = $this->roleRepository->with('permissions')->paginate(10);
+		$roles = $this->roleRepository->with(['permissions'=>function($query){
+			$query->orderBy('name', 'ASC');
+			$query->orderBy('readable_name', 'ASC');
+		}])->paginate(10);
 
 		return response()->json($roles, 200);
 	}
