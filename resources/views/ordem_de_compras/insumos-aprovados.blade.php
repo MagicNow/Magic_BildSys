@@ -56,70 +56,61 @@
                     <div class="col-md-2">
                         <h4>Obras</h4>
                         @if(count($obras))
-                        <ul class="list-group bloco_filtro js-datatable-filter-form">
-                            @foreach($obras as $obra_id => $obra_nome)
-                                <li class="list-group-item">
-                                    {!! Form::checkbox('obras[]', $obra_id, null,['id'=>'filter_obra_'.$obra_id]) !!}
-                                    <label for="filter_obra_{{ $obra_id }}">{{ $obra_nome }}</label>
-                                </li>
-                            @endforeach
-                        </ul>
+                        <div class="js-datatable-filter-form">
+                            {!! Form::select('obras[]',$obras, null, [
+                                'class'=>'form-control select2',
+                                'multiple'=>'multiple',
+                                ]) !!}
+
+                        </div>
                         @endif
                     </div>
 
                     <div class="col-md-1">
                         <h4>O.C.s</h4>
                         @if(count($OCs))
-                            <ul class="list-group bloco_filtro js-datatable-filter-form">
-                                @foreach($OCs as $oc_id)
-                                    <li class="list-group-item">
-                                        {!! Form::checkbox('ocs[]', $oc_id, null,['id'=>'filter_oc_'.$oc_id]) !!}
-                                        <label for="filter_oc_{{ $oc_id }}">{{ $oc_id }}</label>
-                                    </li>
-                                @endforeach
-                            </ul>
+                            <div class="js-datatable-filter-form">
+                                {!! Form::select('ocs[]',$OCs, null, [
+                                'class'=>'form-control select2',
+                                'multiple'=>'multiple',
+                                ]) !!}
+                            </div>
                         @endif
                     </div>
 
                     <div class="col-md-2">
                         <h4>Grupos de Insumos</h4>
                         @if(count($insumoGrupos))
-                            <ul class="list-group bloco_filtro js-datatable-filter-form">
-                                @foreach($insumoGrupos as $insumo_grupo_id => $insumo_grupo_nome)
-                                    <li class="list-group-item">
-                                        {!! Form::checkbox('insumo_grupos[]', $insumo_grupo_id, null,['id'=>'filter_insumo_grupo_'.$insumo_grupo_id]) !!}
-                                        <label for="filter_insumo_grupo_{{ $insumo_grupo_id }}">{{ $insumo_grupo_nome }}</label>
-                                    </li>
-                                @endforeach
-                            </ul>
+                            <div class="js-datatable-filter-form">
+                                {!! Form::select('insumo_grupos[]',$insumoGrupos, null, [
+                                'class'=>'form-control select2',
+                                'multiple'=>'multiple',
+                                ]) !!}
+                            </div>
                         @endif
                     </div>
 
                     <div class="col-md-3">
                         <h4>Insumos</h4>
                         @if(count($insumos))
-                            <ul class="list-group bloco_filtro js-datatable-filter-form">
-                                @foreach($insumos as $insumo_id => $insumo_nome)
-                                    <li class="list-group-item">
-                                        {!! Form::checkbox('insumos[]', $insumo_id, null,['id'=>'filter_insumo_'.$insumo_id]) !!}
-                                        <label for="filter_insumo_{{ $insumo_id }}">{{ $insumo_nome }}</label>
-                                    </li>
-                                @endforeach
-                            </ul>
+                            <div class="js-datatable-filter-form">
+                                {!! Form::select('insumos[]',$insumos, null, [
+                                'class'=>'form-control select2',
+                                'multiple'=>'multiple',
+                                ]) !!}
+                            </div>
                         @endif
                     </div>
 
                     <div class="col-md-3">
                         <h4>Cidades</h4>
                         @if(count($cidades))
-                            <ul class="list-group bloco_filtro js-datatable-filter-form">
-                                @foreach($cidades as $cidade_id => $cidade_nome)
-                                    <li class="list-group-item">
-                                        {!! Form::checkbox('cidades[]', $cidade_id, null,['id'=>'filter_cidade_'.$cidade_id]) !!}
-                                        <label for="filter_cidade_{{ $cidade_id }}">{{ $cidade_nome }}</label>
-                                    </li>
-                                @endforeach
-                            </ul>
+                            <div class="js-datatable-filter-form">
+                                {!! Form::select('cidades[]',$cidades, null, [
+                                'class'=>'form-control select2',
+                                'multiple'=>'multiple',
+                                ]) !!}
+                            </div>
                         @endif
                     </div>
 
@@ -127,14 +118,12 @@
                     <div class="col-md-1">
                         <h4>Farol</h4>
                         @if(count($farol))
-                            <ul class="list-group bloco_filtro js-datatable-filter-form">
-                                @foreach($farol as $range => $signal)
-                                    <li class="list-group-item">
-                                        {!! Form::checkbox('farol[]', $range, null,['id'=>'filter_oc_'.str_replace(',','_',$range)]) !!}
-                                        <label for="filter_oc_{{ str_replace(',','_',$range) }}">{!! $signal !!}</label>
-                                    </li>
-                                @endforeach
-                            </ul>
+                            <div class="js-datatable-filter-form">
+                                {!! Form::select('farol[]',$farol, null, [
+                                'class'=>'form-control select2',
+                                'multiple'=>'multiple',
+                                ]) !!}
+                            </div>
                         @endif
                     </div>
                 </div>
@@ -169,6 +158,10 @@
         });
 
         $('.js-datatable-filter-form input').on('ifChanged', function(event) {
+            window.LaravelDataTables["dataTableBuilder"].draw();
+        });
+
+        $('.js-datatable-filter-form .select2').on('select2:select', function (evt) {
             window.LaravelDataTables["dataTableBuilder"].draw();
         });
 
