@@ -15,6 +15,8 @@ Auth::routes();
 
 $router->get('/admin/catalogo-acordos/buscar/busca_insumos', ['as' => 'admin.catalogo_contratos.busca_insumos', 'uses' => 'Admin\CatalogoContratoController@buscaInsumos']);
 $router->get('/admin/solicitacaoInsumos/buscar/grupos_insumos', 'Admin\SolicitacaoInsumoController@buscaGruposInsumos');
+$router->get('/compras/insumos/orcamento/solicitar-insumo/{obra_id}', 'Admin\SolicitacaoInsumoController@solicitarInsumo');
+$router->post('/compras/insumos/orcamento/solicitar-insumo/salvar/{obra_id}', 'Admin\SolicitacaoInsumoController@solicitarInsumoSalvar');
 
 ##### ADMIN #####
 $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:dashboard.access']], function () use ($router) {

@@ -22,12 +22,6 @@
     {!! Form::select('insumo_grupo_id',[]+$insumo_grupos, @isset($solicitacaoInsumo) ? $solicitacaoInsumo->insumo_grupo_id : null, ['class' => 'form-control']) !!}
 </div>
 
-<!-- Submit Field -->
-<div class="form-group col-sm-12">
-    {!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save') ), ['class' => 'btn btn-success pull-right', 'type'=>'submit']) !!}
-    <a href="{!! route('admin.solicitacaoInsumos.index') !!}" class="btn btn-default"><i class="fa fa-times"></i>  {{ ucfirst( trans('common.cancel') )}}</a>
-</div>
-
 @section('scripts')
     <script>
         $(function () {

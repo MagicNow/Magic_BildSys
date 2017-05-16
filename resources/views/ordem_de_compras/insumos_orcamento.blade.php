@@ -9,6 +9,9 @@
     <div class="content">
         {!! Form::open(['url' => URL::to('/compras/insumos/orcamento/incluir')]) !!}
             <div class="form-group col-sm-6">
+                <a href="/compras/insumos/orcamento/solicitar-insumo/{{$obra_id}}" class="btn btn-info pull-right flat" style="margin-top: -12px;">
+                    <i class="fa fa-save"></i> Solicitar novo insumo
+                </a>
                 {!! Form::label('insumo_id', 'Insumo:') !!}
                 {!! Form::select('insumo_id', ['' => 'Escolha...'], null, ['class' => 'form-control','id'=>'insumo','required'=>'required']) !!}
             </div>
@@ -27,7 +30,7 @@
                                 <div class="form-group col-sm-6" style="width:20%">
                                     {!! Form::label('grupo_id', 'Grupos:') !!}
                                     {!! Form::select('grupo_id', [''=>'-']+$grupos, null, ['class' => 'form-control', 'id'=>'grupo_id','onchange'=>'selectgrupo(this.value, \'subgrupo1_id\', \'grupos\');', 'required']) !!}
-                                    <a class="btn btn-info pull-right" data-toggle="modal" data-target="#cadastrarGrupo" style="margin-top: 20px;" onclick="atribuirGrupoId(null, 'grupo_id');">
+                                    <a class="btn btn-info pull-right flat" data-toggle="modal" data-target="#cadastrarGrupo" style="margin-top: 20px;" onclick="atribuirGrupoId(null, 'grupo_id');">
                                         <i class="fa fa-save"></i> Cadastrar Grupo
                                     </a>
                                 </div>
@@ -35,7 +38,7 @@
                                 <div class="form-group col-sm-6" style="width:20%">
                                     {!! Form::label('subgrupo1_id', 'SubGrupo-1:') !!}
                                     {!! Form::select('subgrupo1_id', [''=>'-'], null, ['class' => 'form-control', 'id'=>'subgrupo1_id', 'disabled'=>'disabled', 'onchange'=>'selectgrupo(this.value, \'subgrupo2_id\', \'grupos\');', 'required']) !!}
-                                    <a class="btn btn-info pull-right" data-toggle="modal" data-target="#cadastrarGrupo" style="margin-top: 20px; display: none;" id="cadastrar_subgrupo1_id" onclick="atribuirGrupoId('grupo_id', 'subgrupo1_id');">
+                                    <a class="btn btn-info pull-right flat" data-toggle="modal" data-target="#cadastrarGrupo" style="margin-top: 20px; display: none;" id="cadastrar_subgrupo1_id" onclick="atribuirGrupoId('grupo_id', 'subgrupo1_id');">
                                         <i class="fa fa-save"></i> Cadastrar SubGrupo-1
                                     </a>
                                 </div>
@@ -44,7 +47,7 @@
                                 <div class="form-group col-sm-6" style="width:20%">
                                     {!! Form::label('subgrupo2_id', 'SubGrupo-2:') !!}
                                     {!! Form::select('subgrupo2_id', [''=>'-'], null, ['class' => 'form-control', 'id'=>'subgrupo2_id', 'disabled'=>'disabled', 'onchange'=>'selectgrupo(this.value, \'subgrupo3_id\', \'grupos\');', 'required']) !!}
-                                    <a class="btn btn-info pull-right" data-toggle="modal" data-target="#cadastrarGrupo" style="margin-top: 20px; display: none;" id="cadastrar_subgrupo2_id" onclick="atribuirGrupoId('subgrupo1_id', 'subgrupo2_id');">
+                                    <a class="btn btn-info pull-right flat" data-toggle="modal" data-target="#cadastrarGrupo" style="margin-top: 20px; display: none;" id="cadastrar_subgrupo2_id" onclick="atribuirGrupoId('subgrupo1_id', 'subgrupo2_id');">
                                         <i class="fa fa-save"></i> Cadastrar SubGrupo-2
                                     </a>
                                 </div>
@@ -53,7 +56,7 @@
                                 <div class="form-group col-sm-6" style="width:20%">
                                     {!! Form::label('subgrupo3_id', 'SubGrupo-3:') !!}
                                     {!! Form::select('subgrupo3_id', [''=>'-'], null, ['class' => 'form-control', 'id'=>'subgrupo3_id', 'disabled'=>'disabled', 'onchange'=>'selectgrupo(this.value, \'servico_id\', \'servicos\');', 'required']) !!}
-                                    <a class="btn btn-info pull-right" data-toggle="modal" data-target="#cadastrarGrupo" style="margin-top: 20px; display: none;" id="cadastrar_subgrupo3_id" onclick="atribuirGrupoId('subgrupo2_id', 'subgrupo3_id');">
+                                    <a class="btn btn-info pull-right flat" data-toggle="modal" data-target="#cadastrarGrupo" style="margin-top: 20px; display: none;" id="cadastrar_subgrupo3_id" onclick="atribuirGrupoId('subgrupo2_id', 'subgrupo3_id');">
                                         <i class="fa fa-save"></i> Cadastrar SubGrupo-3
                                     </a>
                                 </div>
@@ -62,7 +65,7 @@
                                 <div class="form-group col-sm-6" style="width:20%">
                                     {!! Form::label('servico_id', 'Serviço:') !!}
                                     {!! Form::select('servico_id', [''=>'-'], null, ['class' => 'form-control', 'id'=>'servico_id', 'disabled'=>'disabled', 'onchange'=>'selectgrupo(this.value, null, \'servicos\');', 'required']) !!}
-                                    <a class="btn btn-info pull-right" data-toggle="modal" data-target="#cadastrarGrupo" style="margin-top: 20px; display: none;" id="cadastrar_servico_id" onclick="atribuirGrupoId('subgrupo3_id', 'servico_id');">
+                                    <a class="btn btn-info pull-right flat" data-toggle="modal" data-target="#cadastrarGrupo" style="margin-top: 20px; display: none;" id="cadastrar_servico_id" onclick="atribuirGrupoId('subgrupo3_id', 'servico_id');">
                                         <i class="fa fa-save"></i> Cadastrar Serviço
                                     </a>
                                 </div>
@@ -77,8 +80,8 @@
 
         <!-- Submit Field -->
         <div class="form-group col-sm-12">
-            {!! Form::button( '<i class="fa fa-save"></i> '. 'Incluir', ['class' => 'btn btn-success pull-right', 'type'=>'submit']) !!}
-            <a href="{{URL::to('/compras/obrasInsumos?obra_id='.$obra_id)}}" class="btn btn-default"><i class="fa fa-times"></i>  {{ ucfirst( trans('common.cancel') )}}</a>
+            {!! Form::button( '<i class="fa fa-save"></i> '. 'Incluir', ['class' => 'btn btn-success pull-right flat', 'type'=>'submit']) !!}
+            <a href="{{URL::to('/compras/obrasInsumos?obra_id='.$obra_id)}}" class="btn btn-default flat"><i class="fa fa-times"></i>  {{ ucfirst( trans('common.cancel') )}}</a>
         </div>
 
         {!! Form::close() !!}
@@ -106,8 +109,8 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar</button>
-                    <button type="button" class="btn btn-success" onclick="cadastrarGrupo();" data-dismiss="modal"><i class="fa fa-save"></i> Salvar</button>
+                    <button type="button" class="btn btn-default flat" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar</button>
+                    <button type="button" class="btn btn-success flat" onclick="cadastrarGrupo();" data-dismiss="modal"><i class="fa fa-save"></i> Salvar</button>
                 </div>
             </div>
         </div>

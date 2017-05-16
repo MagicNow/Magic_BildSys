@@ -155,12 +155,29 @@ class SolicitacaoInsumoController extends AppBaseController
     }
 
     public function buscaGruposInsumos(Request $request){
-    $insumo_grupos = InsumoGrupo::select([
-        'id',
-        'nome'
-    ])
-        ->where('nome','like', '%'.$request->q.'%')->paginate();
+        $insumo_grupos = InsumoGrupo::select([
+            'id',
+            'nome'
+        ])
+            ->where('nome','like', '%'.$request->q.'%')->paginate();
 
-    return $insumo_grupos;
-}
+        return $insumo_grupos;
+    }
+
+    public function solicitarInsumo($obra_id)
+    {
+        $insumo_grupos = [];
+        return view('admin.solicitacao_insumos.create-front', compact('insumo_grupos', 'obra_id'));
+    }
+
+    public function solicitarInsumoSalvar(CreateSolicitacaoInsumoRequest $request, $obra_id)
+    {
+        $input = $request->all();
+
+        $solicitacaoInsumo = $this->solicitacaoInsumoRepository->create($input);
+
+        Flash::success('Solicitação de insumo realizada.');
+
+        return redirect('/compras/insumos/orcamento/'.$obra_id);
+    }
 }
