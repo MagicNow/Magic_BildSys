@@ -1,4 +1,15 @@
 @extends('layouts.front')
+@section('styles')
+    <style type="text/css">
+        .tooltip-inner {
+            max-width: 500px;
+            text-align: left !important;
+        }
+        .content {
+            min-height: 170px !important;
+        }
+    </style>
+@stop
 
 @section('content')
     <section class="content-header">
@@ -36,33 +47,87 @@
                     <div class="caption">
                         <div class="card-description">
                             <!-- Grupos de insumo Field -->
+                            {{--<div class="form-group col-sm-6" style="width:20%">--}}
+                                {{--{!! Form::label('grupo_id', 'Grupo:') !!}--}}
+                                {{--{!! Form::select('grupo_id', [''=>'-']+$grupos, null, ['class' => 'form-control', 'id'=>'grupo_id','onchange'=>'selectgrupo(this.value, \'subgrupo1_id\', \'grupos\', \'grupo\');']) !!}--}}
+                            {{--</div>--}}
                             <div class="form-group col-sm-6" style="width:20%">
-                                {!! Form::label('grupo_id', 'Grupo:') !!}
-                                {!! Form::select('grupo_id', [''=>'-']+$grupos, null, ['class' => 'form-control', 'id'=>'grupo_id','onchange'=>'selectgrupo(this.value, \'subgrupo1_id\', \'grupos\', \'grupo\');']) !!}
+                                <div class="js-datatable-filter-form">
+                                    {!! Form::label('grupo_id', 'Grupo:') !!}
+                                    {!! Form::select('grupo_id',[''=>'-']+$grupos, null, [
+                                        'class'=>'form-control select2',
+                                        'id'=>'grupo_id',
+                                        'onchange'=>'selectgrupo(this.value, \'subgrupo1_id\', \'grupos\', \'grupo\');'
+                                        ]) !!}
+                                </div>
                             </div>
 
                             <!-- SubGrupos1 de insumo Field -->
+                            {{--<div class="form-group col-sm-6" style="width:20%">--}}
+                                {{--{!! Form::label('subgrupo1_id', 'SubGrupo-1:') !!}--}}
+                                {{--{!! Form::select('subgrupo1_id', [''=>'-'], null, ['class' => 'form-control', 'id'=>'subgrupo1_id', 'disabled'=>'disabled', 'onchange'=>'selectgrupo(this.value, \'subgrupo2_id\', \'grupos\', \'subgrupo1\');']) !!}--}}
+                            {{--</div>--}}
                             <div class="form-group col-sm-6" style="width:20%">
-                                {!! Form::label('subgrupo1_id', 'SubGrupo-1:') !!}
-                                {!! Form::select('subgrupo1_id', [''=>'-'], null, ['class' => 'form-control', 'id'=>'subgrupo1_id', 'disabled'=>'disabled', 'onchange'=>'selectgrupo(this.value, \'subgrupo2_id\', \'grupos\', \'subgrupo1\');']) !!}
+                                <div class="js-datatable-filter-form">
+                                    {!! Form::label('subgrupo1_id', 'SubGrupo-1:') !!}
+                                    {!! Form::select('subgrupo1_id',[''=>'-'], null, [
+                                        'class'=>'form-control select2',
+                                        'id'=>'subgrupo1_id',
+                                        'disabled'=>'disabled',
+                                        'onchange'=>'selectgrupo(this.value, \'subgrupo2_id\', \'grupos\', \'subgrupo1\');'
+                                        ]) !!}
+                                </div>
                             </div>
 
                             <!-- SubGrupos2 de insumo Field -->
+                            {{--<div class="form-group col-sm-6" style="width:20%">--}}
+                                {{--{!! Form::label('subgrupo2_id', 'SubGrupo-2:') !!}--}}
+                                {{--{!! Form::select('subgrupo2_id', [''=>'-'], null, ['class' => 'form-control', 'id'=>'subgrupo2_id', 'disabled'=>'disabled', 'onchange'=>'selectgrupo(this.value, \'subgrupo3_id\', \'grupos\', \'subgrupo2\');']) !!}--}}
+                            {{--</div>--}}
                             <div class="form-group col-sm-6" style="width:20%">
-                                {!! Form::label('subgrupo2_id', 'SubGrupo-2:') !!}
-                                {!! Form::select('subgrupo2_id', [''=>'-'], null, ['class' => 'form-control', 'id'=>'subgrupo2_id', 'disabled'=>'disabled', 'onchange'=>'selectgrupo(this.value, \'subgrupo3_id\', \'grupos\', \'subgrupo2\');']) !!}
+                                <div class="js-datatable-filter-form">
+                                    {!! Form::label('subgrupo2_id', 'SubGrupo-2:') !!}
+                                    {!! Form::select('subgrupo2_id',[''=>'-']+$grupos, null, [
+                                        'class'=>'form-control select2',
+                                        'id'=>'subgrupo2_id',
+                                        'disabled'=>'disabled',
+                                        'onchange'=>'selectgrupo(this.value, \'subgrupo3_id\', \'grupos\', \'subgrupo2\');'
+                                        ]) !!}
+                                </div>
                             </div>
 
                             <!-- SubGrupos3 de insumo Field -->
+                            {{--<div class="form-group col-sm-6" style="width:20%">--}}
+                                {{--{!! Form::label('subgrupo3_id', 'SubGrupo-3:') !!}--}}
+                                {{--{!! Form::select('subgrupo3_id', [''=>'-'], null, ['class' => 'form-control', 'id'=>'subgrupo3_id', 'disabled'=>'disabled', 'onchange'=>'selectgrupo(this.value, \'servico_id\', \'servicos\', \'subgrupo3\');']) !!}--}}
+                            {{--</div>--}}
                             <div class="form-group col-sm-6" style="width:20%">
-                                {!! Form::label('subgrupo3_id', 'SubGrupo-3:') !!}
-                                {!! Form::select('subgrupo3_id', [''=>'-'], null, ['class' => 'form-control', 'id'=>'subgrupo3_id', 'disabled'=>'disabled', 'onchange'=>'selectgrupo(this.value, \'servico_id\', \'servicos\', \'subgrupo3\');']) !!}
+                                <div class="js-datatable-filter-form">
+                                    {!! Form::label('subgrupo3_id', 'SubGrupo-3:') !!}
+                                    {!! Form::select('subgrupo3_id',[''=>'-']+$grupos, null, [
+                                        'class'=>'form-control select2',
+                                        'id'=>'subgrupo3_id',
+                                        'disabled'=>'disabled',
+                                        'onchange'=>'selectgrupo(this.value, \'servico_id\', \'servicos\', \'subgrupo3\');'
+                                        ]) !!}
+                                </div>
                             </div>
 
                             <!-- SubGrupos4 de insumo Field -->
+                            {{--<div class="form-group col-sm-6" style="width:20%">--}}
+                                {{--{!! Form::label('servico_id', 'Serviço:') !!}--}}
+                                {{--{!! Form::select('servico_id', [''=>'-'], null, ['class' => 'form-control', 'id'=>'servico_id', 'disabled'=>'disabled', 'onchange'=>'selectgrupo(this.value, null, \'servicos\', \'servico\')']) !!}--}}
+                            {{--</div>--}}
                             <div class="form-group col-sm-6" style="width:20%">
-                                {!! Form::label('servico_id', 'Serviço:') !!}
-                                {!! Form::select('servico_id', [''=>'-'], null, ['class' => 'form-control', 'id'=>'servico_id', 'disabled'=>'disabled', 'onchange'=>'selectgrupo(this.value, null, \'servicos\', \'servico\')']) !!}
+                                <div class="js-datatable-filter-form">
+                                    {!! Form::label('servico_id', 'Serviço:') !!}
+                                    {!! Form::select('servico_id',[''=>'-']+$grupos, null, [
+                                        'class'=>'form-control select2',
+                                        'id'=>'servico_id',
+                                        'disabled'=>'disabled',
+                                        'onchange'=>'selectgrupo(this.value, null, \'servicos\', \'servico\')'
+                                        ]) !!}
+                                </div>
                             </div>
 
                             <input type="hidden" name="obra_id" value="{{$obra->id}}">
@@ -78,55 +143,43 @@
         </div>
         @endif
         @include('adminlte-templates::common.errors')
-        <div class="box-body" id='app'>
+    </div>
+    <div class="content">
+            @include('ordem_de_compras.obras-insumos-table')
+    </div>
+        {{--<div class="box-body" id='app'>--}}
             {{--<tabela--}}
-            {{--api-url="/insumos_json" //required--}}
-            {{--api-filtros="/obras_insumos_filter" //opcional--}}
-            {{--Parametros necessários na consulta inicial sem filtros no estilo dict--}}
-            {{--v-bind:params="{planejamento_id : 1}"--}}
-            {{--Ações possiveis do table ver acoes em table.vue props.actions--}}
-            {{--v-bind:actions="{filtros: true, troca: true, adicionar: true}"--}}
-            {{--Colunas que devem ser listadas e seus respectivos labels--}}
-            {{--v-bind:colunas="[--}}
-            {{--{campo_db: 'nome', label: 'insumos'},--}}
-            {{--{campo_db: 'qtd_total', label: 'quantidade'},--}}
-            {{--{campo_db: 'preco_total', label: 'saldo'},--}}
-            {{--]"--}}
+                    {{--@if(isset($planejamento))--}}
+                        {{--api-url="/compras/obrasInsumosJson?planejamento_id={{$planejamento->id}}"--}}
+                        {{--api-adicionar="/compras/{{$planejamento->obra_id}}/{{$planejamento->id}}/addCarrinho"--}}
+                    {{--@else--}}
+                        {{--api-url="/compras/obrasInsumosJson?obra_id={{$obra->id}}"--}}
+                        {{--api-adicionar="/compras/{{$obra->id}}/addCarrinho"--}}
+                        {{--api-total-parcial="/compras/{{$obra->id}}/totalParcial"--}}
+                        {{--api-comprar-tudo="/compras/{{$obra->id}}/comprarTudo"--}}
+                    {{--@endif--}}
+                        {{--api-filtros="/compras/obrasInsumosFilters"--}}
+                    {{--_token="{{csrf_token()}}"--}}
+                    {{--v-bind:params="{}"--}}
+                    {{--v-bind:actions="{--}}
+                   {{--filtros: true,--}}
+                   {{--troca: true, troca_url:'{{ url('/compras/trocaInsumos') }}',--}}
+                   {{--troca_remove:'{{ url('/compras/removerInsumoPlanejamento') }}',--}}
+                   {{--quantidade: true,--}}
+                   {{--adicionar: true,--}}
+                   {{--tooltip: true,--}}
+                   {{--total_parcial: true,--}}
+                   {{--comprar_tudo: true,--}}
+                   {{--}"--}}
+                    {{--v-bind:colunas="[--}}
+                       {{--{campo_db: 'nome', label: 'insumos'},--}}
+                       {{--{campo_db: 'unidade_sigla', label: 'Unidade de Medida'},--}}
+                       {{--{campo_db: 'qtd_total', label: 'quantidade'},--}}
+                       {{--{campo_db: 'saldo', label: 'saldo'},--}}
+                   {{--]"--}}
             {{-->--}}
             {{--</tabela>--}}
-            <tabela
-                    @if(isset($planejamento))
-                        api-url="/compras/obrasInsumosJson?planejamento_id={{$planejamento->id}}"
-                        api-adicionar="/compras/{{$planejamento->obra_id}}/{{$planejamento->id}}/addCarrinho"
-                    @else
-                        api-url="/compras/obrasInsumosJson?obra_id={{$obra->id}}"
-                        api-adicionar="/compras/{{$obra->id}}/addCarrinho"
-                        api-total-parcial="/compras/{{$obra->id}}/totalParcial"
-                        api-comprar-tudo="/compras/{{$obra->id}}/comprarTudo"
-                    @endif
-                        api-filtros="/compras/obrasInsumosFilters"
-                    _token="{{csrf_token()}}"
-                    v-bind:params="{}"
-                    v-bind:actions="{
-                   filtros: true,
-                   troca: true, troca_url:'{{ url('/compras/trocaInsumos') }}',
-                   troca_remove:'{{ url('/compras/removerInsumoPlanejamento') }}',
-                   quantidade: true,
-                   adicionar: true,
-                   tooltip: true,
-                   total_parcial: true,
-                   comprar_tudo: true,
-                   }"
-                    v-bind:colunas="[
-                       {campo_db: 'nome', label: 'insumos'},
-                       {campo_db: 'unidade_sigla', label: 'Unidade de Medida'},
-                       {campo_db: 'qtd_total', label: 'quantidade'},
-                       {campo_db: 'saldo', label: 'saldo'},
-                   ]"
-            >
-            </tabela>
-        </div>
-    </div>
+        {{--</div>--}}
 
     <!-- Modal -->
     <div class="modal fade" id="modalPlanejamentos" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -150,9 +203,30 @@
 
 @section('scripts')
     <script>
-        const app = new Vue({
-            el: '#app'
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+
+            $('.js-datatable-filter-form .select2').on('select2:select', function (evt) {
+                window.LaravelDataTables["dataTableBuilder"].draw();
+            });
+
+            $('#dataTableBuilder').on('preXhr.dt', function ( e, settings, data ) {
+                $('.js-datatable-filter-form :input').each(function () {
+                    if($(this).attr('type')=='checkbox'){
+                        if(data[$(this).prop('name')]==undefined){
+                            data[$(this).prop('name')] = [];
+                        }
+                        if($(this).is(':checked')){
+                            data[$(this).prop('name')].push($(this).val());
+                        }
+
+                    }else{
+                        data[$(this).prop('name')] = $(this).val();
+                    }
+                });
+            });
         });
+
         @if(isset($obra))
         $(document).ready(function() {
             verificarFiltroGrupos();
@@ -184,10 +258,60 @@
             });
         });
 
-        function selectgrupo(id, change, tipo, parametro){
-            var grupo = '';
-            var grupos_rota = '';
-            var url_grupos = '';
+        {{--function selectgrupo(id, change, tipo, parametro){--}}
+            {{--var grupo = '';--}}
+            {{--var grupos_rota = '';--}}
+            {{--var url_grupos = '';--}}
+            {{--var rota = "{{url('/admin/planejamentos/atividade/grupos')}}/";--}}
+            {{--if(tipo == 'servicos'){--}}
+                {{--rota = "{{url('/admin/planejamentos/atividade/servicos')}}/";--}}
+            {{--}--}}
+            {{--if(id){--}}
+                {{--$('.box.box-primary').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');--}}
+                {{--$.ajax({--}}
+                    {{--url: rota + id--}}
+                {{--}).done(function(retorno) {--}}
+                    {{--options = '<option value="">Selecione</option>';--}}
+                    {{--$('#'+change).html(options);--}}
+                    {{--$.each(retorno,function(index, value){--}}
+                        {{--options += '<option value="'+index+'">'+value+'</option>';--}}
+                    {{--});--}}
+                    {{--$('#'+change).html(options);--}}
+                    {{--$('.overlay').remove();--}}
+                    {{--$('#'+change).attr('disabled',false);--}}
+
+                    {{--grupo = '&' + parametro + '=' + id;--}}
+                    {{--array_grupos.push(grupo);--}}
+
+                    {{--$.each(array_grupos, function (index, value) {--}}
+                        {{--grupos_rota += value;--}}
+                    {{--});--}}
+
+                    {{--var result = {};--}}
+                    {{--keyValuePairs = grupos_rota.slice(1).split("&");--}}
+                    {{--if(keyValuePairs!=""){--}}
+                        {{--keyValuePairs.forEach(function(keyValuePair) {--}}
+                            {{--keyValuePair = keyValuePair.split('=');--}}
+                            {{--result[decodeURIComponent(keyValuePair[0])] = decodeURIComponent(keyValuePair[1]);--}}
+                        {{--});--}}
+                    {{--}--}}
+
+                    {{--if(Object.keys(result).length){--}}
+                        {{--$.each(result, function (index, value) {--}}
+                            {{--url_grupos += '&' + index + '=' + value;--}}
+                        {{--});--}}
+                    {{--}--}}
+
+                    {{--history.pushState("", document.title, '/compras/obrasInsumos?obra_id={{$obra->id}}' + url_grupos);--}}
+                    {{--$('#comprar_tudo_de_tudo').attr('href', '/ordens-de-compra/carrinho/comprar-tudo-de-tudo?obra_id={{$obra->id}}' + url_grupos);--}}
+                    {{--app.$children[0].loadData();--}}
+                {{--}).fail(function() {--}}
+                    {{--$('.overlay').remove();--}}
+                {{--});--}}
+            {{--}--}}
+        {{--}--}}
+
+        function selectgrupo(id, change, tipo){
             var rota = "{{url('/admin/planejamentos/atividade/grupos')}}/";
             if(tipo == 'servicos'){
                 rota = "{{url('/admin/planejamentos/atividade/servicos')}}/";
@@ -197,42 +321,15 @@
                 $.ajax({
                     url: rota + id
                 }).done(function(retorno) {
+                    options = '';
                     options = '<option value="">Selecione</option>';
                     $('#'+change).html(options);
                     $.each(retorno,function(index, value){
                         options += '<option value="'+index+'">'+value+'</option>';
                     });
                     $('#'+change).html(options);
-                    $('.overlay').remove();
                     $('#'+change).attr('disabled',false);
-
-                    grupo = '&' + parametro + '=' + id;
-                    array_grupos.push(grupo);
-
-                    $.each(array_grupos, function (index, value) {
-                        grupos_rota += value;
-                    });
-
-                    var result = {};
-                    keyValuePairs = grupos_rota.slice(1).split("&");
-                    if(keyValuePairs!=""){
-                        keyValuePairs.forEach(function(keyValuePair) {
-                            keyValuePair = keyValuePair.split('=');
-                            result[decodeURIComponent(keyValuePair[0])] = decodeURIComponent(keyValuePair[1]);
-                        });
-                    }
-
-                    if(Object.keys(result).length){
-                        $.each(result, function (index, value) {
-                            url_grupos += '&' + index + '=' + value;
-                        });
-                    }
-
-                    history.pushState("", document.title, '/compras/obrasInsumos?obra_id={{$obra->id}}' + url_grupos);
-                    $('#comprar_tudo_de_tudo').attr('href', '/ordens-de-compra/carrinho/comprar-tudo-de-tudo?obra_id={{$obra->id}}' + url_grupos);
-                    app.$children[0].loadData();
                 }).fail(function() {
-                    $('.overlay').remove();
                 });
             }
         }

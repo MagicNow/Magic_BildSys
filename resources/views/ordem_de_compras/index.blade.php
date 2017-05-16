@@ -16,9 +16,9 @@
                 </div>
 
                 <div class="col-md-3">
-                    <button type="button" class="btn btn-success btn-block btn-lg btn-flat" data-dismiss="modal">
+                    <a href="/compras" type="button" class="btn btn-success btn-block btn-lg btn-flat" data-dismiss="modal">
                         Comprar insumos
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>

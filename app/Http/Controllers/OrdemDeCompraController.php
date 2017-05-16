@@ -263,10 +263,12 @@ class OrdemDeCompraController extends AppBaseController
 
                 // Data do início da  Alçada
                 if($alcada->ordem===1){
-                    $avaliado_reprovado[$alcada->id] ['data_inicio'] = $ordemDeCompra->ordemDeCompraStatusLogs()
-                                                                            ->where('oc_status_id', 2)->first()
-                                                                            ->created_at
+                    $ordem_status_log = $ordemDeCompra->ordemDeCompraStatusLogs()
+                            ->where('oc_status_id', 2)->first();
+                    if($ordem_status_log){
+                        $avaliado_reprovado[$alcada->id] ['data_inicio'] = $ordem_status_log->created_at
                                                                             ->format('d/m/Y H:i');
+                    }
                 }else{
                     $primeiro_voto = WorkflowAprovacao::where('aprovavel_type', 'App\\Models\\OrdemDeCompraItem')
                                         ->whereIn('aprovavel_id', $itens_ids)
@@ -487,19 +489,19 @@ class OrdemDeCompraController extends AppBaseController
      * @param  InsumoGrupo $insumoGrupo
      * @return Render View
      */
-    public function obrasInsumos(ComprasDataTable $comprasDataTable)
+    public function obrasInsumos(ComprasDataTable $comprasDataTable, Request $request)
     {
-//        if(isset($request->planejamento_id)){
-//            $planejamento = Planejamento::find($request->planejamento_id);
-//            $insumoGrupo = InsumoGrupo::find($request->insumo_grupos_id);
+        if(isset($request->planejamento_id)){
+            $planejamento = Planejamento::find($request->planejamento_id);
+            $insumoGrupo = InsumoGrupo::find($request->insumo_grupos_id);
 //            return view('ordem_de_compras.obras_insumos', compact('planejamento', 'insumoGrupo'));
-//        }else{
-//            $obra = Obra::find($request->obra_id);
-//            $grupos = Grupo::whereNull('grupo_id')->pluck('nome','id')->toArray();
+        }else{
+            $obra = Obra::find($request->obra_id);
+            $grupos = Grupo::whereNull('grupo_id')->pluck('nome','id')->toArray();
 //            return view('ordem_de_compras.obras_insumos', compact('obra', 'grupos'));
-//        }
+        }
 
-        return $comprasDataTable->render('ordem_de_compras.obras_insumos');
+        return $comprasDataTable->render('ordem_de_compras.obras_insumos', compact('obra','grupos','planejamento','insumoGrupo'));
     }
 
     /**
