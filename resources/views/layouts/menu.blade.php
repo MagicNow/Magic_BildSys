@@ -98,3 +98,7 @@
     <a href="{!! route('admin.compradorInsumos.index') !!}"><i class="fa fa-child"></i><span>Comprador/Insumos</span></a>
 </li>
 
+<li class="{{ Request::is('solicitacaoInsumos*') ? 'active' : '' }}">
+    <a href="{!! route('admin.solicitacaoInsumos.index') !!}"><i class="fa fa-edit"></i><span>Solicitações de insumos</span></a>
+</li>
+

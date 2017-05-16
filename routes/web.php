@@ -14,6 +14,9 @@
 Auth::routes();
 
 $router->get('/admin/catalogo-acordos/buscar/busca_insumos', ['as' => 'admin.catalogo_contratos.busca_insumos', 'uses' => 'Admin\CatalogoContratoController@buscaInsumos']);
+$router->get('/admin/solicitacaoInsumos/buscar/grupos_insumos', 'Admin\SolicitacaoInsumoController@buscaGruposInsumos');
+$router->get('/compras/insumos/orcamento/solicitar-insumo/{obra_id}', 'Admin\SolicitacaoInsumoController@solicitarInsumo');
+$router->post('/compras/insumos/orcamento/solicitar-insumo/salvar/{obra_id}', 'Admin\SolicitacaoInsumoController@solicitarInsumoSalvar');
 
 ##### ADMIN #####
 $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:dashboard.access']], function () use ($router) {
@@ -337,6 +340,14 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
         $router->get('insumoGrupos/{insumoGrupos}/edit', ['as' => 'admin.insumoGrupos.edit', 'uses' => 'Admin\InsumoGrupoController@edit']);
     });
 
+    Route::get('solicitacaoInsumos', ['as'=> 'admin.solicitacaoInsumos.index', 'uses' => 'Admin\SolicitacaoInsumoController@index']);
+    Route::post('solicitacaoInsumos', ['as'=> 'admin.solicitacaoInsumos.store', 'uses' => 'Admin\SolicitacaoInsumoController@store']);
+    Route::get('solicitacaoInsumos/create', ['as'=> 'admin.solicitacaoInsumos.create', 'uses' => 'Admin\SolicitacaoInsumoController@create']);
+    Route::put('solicitacaoInsumos/{solicitacaoInsumos}', ['as'=> 'admin.solicitacaoInsumos.update', 'uses' => 'Admin\SolicitacaoInsumoController@update']);
+    Route::patch('solicitacaoInsumos/{solicitacaoInsumos}', ['as'=> 'admin.solicitacaoInsumos.update', 'uses' => 'Admin\SolicitacaoInsumoController@update']);
+    Route::delete('solicitacaoInsumos/{solicitacaoInsumos}', ['as'=> 'admin.solicitacaoInsumos.destroy', 'uses' => 'Admin\SolicitacaoInsumoController@destroy']);
+    Route::get('solicitacaoInsumos/{solicitacaoInsumos}', ['as'=> 'admin.solicitacaoInsumos.show', 'uses' => 'Admin\SolicitacaoInsumoController@show']);
+    Route::get('solicitacaoInsumos/{solicitacaoInsumos}/edit', ['as'=> 'admin.solicitacaoInsumos.edit', 'uses' => 'Admin\SolicitacaoInsumoController@edit']);
 });
 
 ##### SITE #####
