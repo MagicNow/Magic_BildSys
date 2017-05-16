@@ -8,7 +8,7 @@
             <li class="active"><a href="/admin/manage/users"> Usuários</a></li>
         </ol>
         @include('flash::message')
-
+    <div class="content">
         <div id="user-details">
             <!-- User details -->
             <div class="row">

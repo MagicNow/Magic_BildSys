@@ -17,11 +17,9 @@
         <div role="tabpanel" class="tab-pane active" id="tab_itens">
             <fieldset class="col-sm-12" style="min-width: 300px">
                 <legend>Itens
-                    <small class="pull-right" style="font-size: 11px; margin-top: 5px;">
-                        <button type="button" class="btn btn-warning btn-xs" onclick="addItens();">
+                        <button type="button" class="btn btn-warning btn-sm btn-flat pull-right" onclick="addItens();">
                             <i class="fa fa-plus"></i> Adicionar
                         </button>
-                    </small>
                 </legend>
                 <div id="itens">
                     <?php $qtdItens = 0; ?>
@@ -65,11 +63,9 @@
         <div role="tabpanel" class="tab-pane" id="tab_anexos">
             <fieldset class="col-sm-12" style="min-width: 300px">
                 <legend>Anexos
-                    <small class="pull-right" style="font-size: 11px; margin-top: 5px;">
-                        <button type="button" class="btn btn-warning btn-xs" onclick="addAnexos();">
+                        <button type="button" class="btn btn-warning btn-sm btn-flat pull-right" onclick="addAnexos();">
                             <i class="fa fa-plus"></i> Adicionar
                         </button>
-                    </small>
                 </legend>
                 <div id="anexos">
                     @if(isset($tipoEqualizacaoTecnica))
@@ -114,8 +110,8 @@
 
 <!-- Submit Field -->
 <div class="form-group col-sm-12">
-    {!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save') ), ['class' => 'btn btn-success pull-right', 'type'=>'submit']) !!}
-    <a href="{!! route('admin.tipoEqualizacaoTecnicas.index') !!}" class="btn btn-default"><i class="fa fa-times"></i>  {{ ucfirst( trans('common.cancel') )}}</a>
+    {!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save') ), ['class' => 'btn btn-success pull-right btn-lg btn-flat', 'type'=>'submit']) !!}
+    <a href="{!! route('tipoEqualizacaoTecnicas.index') !!}" class="btn btn-default btn-lg btn-flat"><i class="fa fa-times"></i>  {{ ucfirst( trans('common.cancel') )}}</a>
 </div>
 
 @section('scripts')
