@@ -288,9 +288,13 @@
                             <td class="text-center">{{ $item->unidade_sigla }}</td>
                             <td class="text-center"><i class="fa fa-circle {{ (($item->qtd_realizada) > $item->qtd_inicial) ? 'text-danger': 'text-success'  }}" aria-hidden="true"></i> </td>
                             <td class="text-center">
-                                <a href="/ordens-de-compra/detalhes-servicos/{{$item->servico->id}}" style="cursor:pointer;">
+                                @if($item->servico)
+                                    <a href="/ordens-de-compra/detalhes-servicos/{{$item->servico->id}}" style="cursor:pointer;">
+                                        <i class="fa fa-circle {{ (($item->qtd_realizada_servico) > $item->qtd_inicial_servico) ? 'text-danger': 'text-success'  }}" aria-hidden="true"></i>
+                                    </a>
+                                @else
                                     <i class="fa fa-circle {{ (($item->qtd_realizada_servico) > $item->qtd_inicial_servico) ? 'text-danger': 'text-success'  }}" aria-hidden="true"></i>
-                                </a>
+                                @endif
                             </td>
                             <td class="text-center">{{ $item->total ? 'Sim' : 'Não' }}</td>
                             <td class="text-center">
@@ -305,11 +309,7 @@
                 </div>
                 <div style="display: none;" id="dados-extras{{ $item->id }}">
                     <div class="col-md-10">
-                        <h4 class="highlight">{{ $item->insumo->codigo . ' - '. $item->insumo->nome }}
-                            @if($item->servico)
-                                <a href="/ordens-de-compra/detalhes-servicos/{{$item->servico->id}}" style="font-size:15px;">{{$item->servico->codigo . ' - '. $item->servico->nome}}</a>
-                            @endif
-                        </h4>
+                        <h4 class="highlight">{{ $item->insumo->codigo . ' - '. $item->insumo->nome }}</h4>
                     </div>
                     <div class="col-md-2 text-right">
                         @if(!is_null($item->aprovado))
