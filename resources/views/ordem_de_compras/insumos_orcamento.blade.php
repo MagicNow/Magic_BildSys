@@ -21,68 +21,82 @@
                 {!! Form::text('qtd_total', null, ['class' => 'form-control money','required'=>'required']) !!}
             </div>
 
-            <div class="col-md-12">
-                <div class="col-md-12 thumbnail">
-                    <div class="col-md-12">
-                        <div class="caption">
-                            <div class="card-description">
-                                <!-- Grupos de insumo Field -->
-                                <div class="form-group col-sm-6" style="width:20%">
-                                    {!! Form::label('grupo_id', 'Grupos:') !!}
-                                    {!! Form::select('grupo_id', [''=>'-']+$grupos, null, ['class' => 'form-control', 'id'=>'grupo_id','onchange'=>'selectgrupo(this.value, \'subgrupo1_id\', \'grupos\');', 'required']) !!}
-                                    <a class="btn btn-info pull-right flat" data-toggle="modal" data-target="#cadastrarGrupo" style="margin-top: 20px;" onclick="atribuirGrupoId(null, 'grupo_id');">
-                                        <i class="fa fa-save"></i> Cadastrar Grupo
-                                    </a>
-                                </div>
-                                <!-- SubGrupos1 de insumo Field -->
-                                <div class="form-group col-sm-6" style="width:20%">
-                                    {!! Form::label('subgrupo1_id', 'SubGrupo-1:') !!}
-                                    {!! Form::select('subgrupo1_id', [''=>'-'], null, ['class' => 'form-control', 'id'=>'subgrupo1_id', 'disabled'=>'disabled', 'onchange'=>'selectgrupo(this.value, \'subgrupo2_id\', \'grupos\');', 'required']) !!}
-                                    <a class="btn btn-info pull-right flat" data-toggle="modal" data-target="#cadastrarGrupo" style="margin-top: 20px; display: none;" id="cadastrar_subgrupo1_id" onclick="atribuirGrupoId('grupo_id', 'subgrupo1_id');">
-                                        <i class="fa fa-save"></i> Cadastrar SubGrupo-1
-                                    </a>
-                                </div>
-
-                                <!-- SubGrupos2 de insumo Field -->
-                                <div class="form-group col-sm-6" style="width:20%">
-                                    {!! Form::label('subgrupo2_id', 'SubGrupo-2:') !!}
-                                    {!! Form::select('subgrupo2_id', [''=>'-'], null, ['class' => 'form-control', 'id'=>'subgrupo2_id', 'disabled'=>'disabled', 'onchange'=>'selectgrupo(this.value, \'subgrupo3_id\', \'grupos\');', 'required']) !!}
-                                    <a class="btn btn-info pull-right flat" data-toggle="modal" data-target="#cadastrarGrupo" style="margin-top: 20px; display: none;" id="cadastrar_subgrupo2_id" onclick="atribuirGrupoId('subgrupo1_id', 'subgrupo2_id');">
-                                        <i class="fa fa-save"></i> Cadastrar SubGrupo-2
-                                    </a>
-                                </div>
-
-                                <!-- SubGrupos3 de insumo Field -->
-                                <div class="form-group col-sm-6" style="width:20%">
-                                    {!! Form::label('subgrupo3_id', 'SubGrupo-3:') !!}
-                                    {!! Form::select('subgrupo3_id', [''=>'-'], null, ['class' => 'form-control', 'id'=>'subgrupo3_id', 'disabled'=>'disabled', 'onchange'=>'selectgrupo(this.value, \'servico_id\', \'servicos\');', 'required']) !!}
-                                    <a class="btn btn-info pull-right flat" data-toggle="modal" data-target="#cadastrarGrupo" style="margin-top: 20px; display: none;" id="cadastrar_subgrupo3_id" onclick="atribuirGrupoId('subgrupo2_id', 'subgrupo3_id');">
-                                        <i class="fa fa-save"></i> Cadastrar SubGrupo-3
-                                    </a>
-                                </div>
-
-                                <!-- SubGrupos4 de insumo Field -->
-                                <div class="form-group col-sm-6" style="width:20%">
-                                    {!! Form::label('servico_id', 'Serviço:') !!}
-                                    {!! Form::select('servico_id', [''=>'-'], null, ['class' => 'form-control', 'id'=>'servico_id', 'disabled'=>'disabled', 'onchange'=>'selectgrupo(this.value, null, \'servicos\');', 'required']) !!}
-                                    <a class="btn btn-info pull-right flat" data-toggle="modal" data-target="#cadastrarGrupo" style="margin-top: 20px; display: none;" id="cadastrar_servico_id" onclick="atribuirGrupoId('subgrupo3_id', 'servico_id');">
-                                        <i class="fa fa-save"></i> Cadastrar Serviço
-                                    </a>
-                                </div>
-                                <input type="hidden" name="obra_id" value="{{$obra_id}}">
-
-                                <div class="col-md-12" id="list-insumos"></div>
-                            </div>
+            <div class="box-body">
+                <div class="row">
+                    <!-- Grupos de insumo Field -->
+                    <div class="form-group col-sm-12">
+                        <div class="form-group col-sm-10">
+                            {!! Form::label('grupo_id', 'Grupos:') !!}
+                            {!! Form::select('grupo_id', [''=>'-']+$grupos, null, ['class' => 'form-control', 'id'=>'grupo_id','onchange'=>'selectgrupo(this.value, \'subgrupo1_id\', \'grupos\');', 'required']) !!}
                         </div>
+                        <div class="form-group col-sm-2">
+                            <a class="btn btn-info pull-right flat" data-toggle="modal" data-target="#cadastrarGrupo" style="margin-top: 20px;" onclick="atribuirGrupoId(null, 'grupo_id');">
+                                <i class="fa fa-save"></i> Cadastrar Grupo
+                            </a>
+                        </div>
+                    </div>
+                    <!-- SubGrupos1 de insumo Field -->
+                    <div class="form-group col-sm-12">
+                        <div class="form-group col-sm-10">
+                            {!! Form::label('subgrupo1_id', 'SubGrupo-1:') !!}
+                            {!! Form::select('subgrupo1_id', [''=>'-'], null, ['class' => 'form-control', 'id'=>'subgrupo1_id', 'disabled'=>'disabled', 'onchange'=>'selectgrupo(this.value, \'subgrupo2_id\', \'grupos\');', 'required']) !!}
+                        </div>
+                        <div class="form-group col-sm-2">
+                            <a class="btn btn-info pull-right flat" data-toggle="modal" data-target="#cadastrarGrupo" style="margin-top: 20px; display: none;" id="cadastrar_subgrupo1_id" onclick="atribuirGrupoId('grupo_id', 'subgrupo1_id');">
+                                <i class="fa fa-save"></i> Cadastrar SubGrupo-1
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- SubGrupos2 de insumo Field -->
+                    <div class="form-group col-sm-12">
+                        <div class="form-group col-sm-10">
+                            {!! Form::label('subgrupo2_id', 'SubGrupo-2:') !!}
+                            {!! Form::select('subgrupo2_id', [''=>'-'], null, ['class' => 'form-control', 'id'=>'subgrupo2_id', 'disabled'=>'disabled', 'onchange'=>'selectgrupo(this.value, \'subgrupo3_id\', \'grupos\');', 'required']) !!}
+                        </div>
+                        <div class="form-group col-sm-2">
+                            <a class="btn btn-info pull-right flat" data-toggle="modal" data-target="#cadastrarGrupo" style="margin-top: 20px; display: none;" id="cadastrar_subgrupo2_id" onclick="atribuirGrupoId('subgrupo1_id', 'subgrupo2_id');">
+                                <i class="fa fa-save"></i> Cadastrar SubGrupo-2
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- SubGrupos3 de insumo Field -->
+                    <div class="form-group col-sm-12">
+                        <div class="form-group col-sm-10">
+                            {!! Form::label('subgrupo3_id', 'SubGrupo-3:') !!}
+                            {!! Form::select('subgrupo3_id', [''=>'-'], null, ['class' => 'form-control', 'id'=>'subgrupo3_id', 'disabled'=>'disabled', 'onchange'=>'selectgrupo(this.value, \'servico_id\', \'servicos\');', 'required']) !!}
+                        </div>
+                        <div class="form-group col-sm-2">
+                            <a class="btn btn-info pull-right flat" data-toggle="modal" data-target="#cadastrarGrupo" style="margin-top: 20px; display: none;" id="cadastrar_subgrupo3_id" onclick="atribuirGrupoId('subgrupo2_id', 'subgrupo3_id');">
+                                <i class="fa fa-save"></i> Cadastrar SubGrupo-3
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- SubGrupos4 de insumo Field -->
+                    <div class="form-group col-sm-12">
+                        <div class="form-group col-sm-10">
+                            {!! Form::label('servico_id', 'Serviço:') !!}
+                            {!! Form::select('servico_id', [''=>'-'], null, ['class' => 'form-control', 'id'=>'servico_id', 'disabled'=>'disabled', 'onchange'=>'selectgrupo(this.value, null, \'servicos\');', 'required']) !!}
+                        </div>
+                        <div class="form-group col-sm-2">
+                            <a class="btn btn-info pull-right flat" data-toggle="modal" data-target="#cadastrarGrupo" style="margin-top: 20px; display: none;" id="cadastrar_servico_id" onclick="atribuirGrupoId('subgrupo3_id', 'servico_id');">
+                                <i class="fa fa-save"></i> Cadastrar Serviço
+                            </a>
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="obra_id" value="{{$obra_id}}">
+
+                    <div class="col-md-12" id="list-insumos"></div>
+                    <!-- Submit Field -->
+                    <div class="form-group col-sm-12">
+                        {!! Form::button( '<i class="fa fa-save"></i> '. 'Incluir', ['class' => 'btn btn-success pull-right flat', 'type'=>'submit']) !!}
+                        <a href="{{URL::to('/compras/obrasInsumos?obra_id='.$obra_id)}}" class="btn btn-default flat"><i class="fa fa-times"></i>  {{ ucfirst( trans('common.cancel') )}}</a>
                     </div>
                 </div>
             </div>
-
-        <!-- Submit Field -->
-        <div class="form-group col-sm-12">
-            {!! Form::button( '<i class="fa fa-save"></i> '. 'Incluir', ['class' => 'btn btn-success pull-right flat', 'type'=>'submit']) !!}
-            <a href="{{URL::to('/compras/obrasInsumos?obra_id='.$obra_id)}}" class="btn btn-default flat"><i class="fa fa-times"></i>  {{ ucfirst( trans('common.cancel') )}}</a>
-        </div>
 
         {!! Form::close() !!}
     </div>
@@ -147,16 +161,12 @@
 
                     data: function (params) {
                         return {
-                            q: params.term, // search term
+                            q: params.term,
                             page: params.page
                         };
                     },
 
                     processResults: function (result, params) {
-                        // parse the results into the format expected by Select2
-                        // since we are using custom formatting functions we do not need to
-                        // alter the remote JSON data, except to indicate that infinite
-                        // scrolling can be used
                         params.page = params.page || 1;
 
                         return {
@@ -170,21 +180,58 @@
                 },
                 escapeMarkup: function (markup) {
                     return markup;
-                }, // let our custom formatter work
+                },
                 minimumInputLength: 1,
-                templateResult: formatInsumoResult, // omitted for brevity, see the source of this page
-                templateSelection: formatInsumoResultSelection // omitted for brevity, see the source of this page
+                templateResult: formatResult,
+                templateSelection: formatResultSelection
+            });
+
+            $('#grupo_id').select2({
+                allowClear: true,
+                placeholder: "Escolha...",
+                language: "pt-BR",
+
+                ajax: {
+                    url: "{{url('/admin/planejamentos/atividade/grupos')}}/0",
+                    dataType: 'json',
+                    delay: 250,
+
+                    data: function (params) {
+                        return {
+                            q: params.term,
+                            page: params.page
+                        };
+                    },
+
+                    processResults: function (result, params) {
+                        params.page = params.page || 1;
+
+                        return {
+                            results: result.data,
+                            pagination: {
+                                more: (params.page * result.per_page) < result.total
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                escapeMarkup: function (markup) {
+                    return markup;
+                },
+                minimumInputLength: 1,
+                templateResult: formatResult,
+                templateSelection: formatResultSelection
             });
         });
 
-        function formatInsumoResultSelection (obj) {
+        function formatResultSelection (obj) {
             if(obj.nome){
                 return obj.nome;
             }
             return obj.text;
         }
 
-        function formatInsumoResult (obj) {
+        function formatResult (obj) {
             if (obj.loading) return obj.text;
 
             var markup_insumo =    "<div class='select2-result-obj clearfix'>" +
@@ -202,23 +249,47 @@
                 rota = "{{url('/admin/planejamentos/atividade/servicos')}}/";
             }
             if(id){
-                $('.box.box-primary').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
-                $.ajax({
-                    url: rota + id
-                }).done(function(retorno) {
-                    options = '<option value="">Selecione</option>';
-                    $('#'+change).html(options);
-                    $.each(retorno,function(index, value){
-                        options += '<option value="'+index+'">'+value+'</option>';
-                    });
-                    $('#'+change).html(options);
-                    $('.overlay').remove();
-                    $('#'+change).attr('disabled',false);
+                $('#'+change).attr('disabled',false);
+                $('#cadastrar_'+change).css('display', '');
 
-                    $('#cadastrar_'+change).css('display', '');
-                }).fail(function() {
-                    $('.overlay').remove();
-                });
+                setTimeout(function() {
+                    $('#'+change).select2({
+                        allowClear: true,
+                        placeholder: "Escolha...",
+                        language: "pt-BR",
+
+                        ajax: {
+                            url: rota + id,
+                            dataType: 'json',
+                            delay: 250,
+
+                            data: function (params) {
+                                return {
+                                    q: params.term,
+                                    page: params.page
+                                };
+                            },
+
+                            processResults: function (result, params) {
+                                params.page = params.page || 1;
+
+                                return {
+                                    results: result.data,
+                                    pagination: {
+                                        more: (params.page * result.per_page) < result.total
+                                    }
+                                };
+                            },
+                            cache: true
+                        },
+                        escapeMarkup: function (markup) {
+                            return markup;
+                        },
+                        minimumInputLength: 1,
+                        templateResult: formatResult,
+                        templateSelection: formatResultSelection
+                    });
+                }, 100);
             }
         }
 
@@ -227,7 +298,6 @@
             var nome_grupo = $('#nome_grupo').val();
             var subgrupo_de = $('#subgrupo_de').val();
             var subgrupo_de_nome = $('#subgrupo_de_nome').val();
-
             $.ajax({
                 url: '/compras/insumos/orcamento/cadastrar/grupo',
                 data: {
@@ -239,12 +309,6 @@
             }).done(function (json) {
                 if(json.salvo){
                     swal("Cadastro realizado com sucesso!", "", "success");
-
-                    if(!json.grupo.grupo_id){
-                        $('#grupo_id').append('<option value="'+json.grupo.id+'">'+json.grupo.nome+'</option>').val(json.grupo.id).change();
-                    }else{
-                        $('#'+subgrupo_de_nome).append('<option value="'+json.grupo.id+'">'+json.grupo.nome+'</option>').val(json.grupo.id).change();
-                    }
 
                     $('#codigo_grupo').val('');
                     $('#nome_grupo').val('');

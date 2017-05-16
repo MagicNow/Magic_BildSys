@@ -6,7 +6,7 @@
 
 <!-- Unidades Sigla Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('unidade_sigla', 'Sigla:') !!}
+    {!! Form::label('unidade_sigla', 'Unidade de medida:') !!}
     {!! Form::text('unidade_sigla', null, ['class' => 'form-control']) !!}
 </div>
 

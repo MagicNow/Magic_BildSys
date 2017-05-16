@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\ComprasDataTable;
 use App\DataTables\InsumosAprovadosDataTable;
 use App\DataTables\LembretesHomeDataTable;
 use App\DataTables\OrdemDeCompraDataTable;
@@ -486,17 +487,19 @@ class OrdemDeCompraController extends AppBaseController
      * @param  InsumoGrupo $insumoGrupo
      * @return Render View
      */
-    public function obrasInsumos(Request $request)
+    public function obrasInsumos(ComprasDataTable $comprasDataTable)
     {
-        if(isset($request->planejamento_id)){
-            $planejamento = Planejamento::find($request->planejamento_id);
-            $insumoGrupo = InsumoGrupo::find($request->insumo_grupos_id);
-            return view('ordem_de_compras.obras_insumos', compact('planejamento', 'insumoGrupo'));
-        }else{
-            $obra = Obra::find($request->obra_id);
-            $grupos = Grupo::whereNull('grupo_id')->pluck('nome','id')->toArray();
-            return view('ordem_de_compras.obras_insumos', compact('obra', 'grupos'));
-        }
+//        if(isset($request->planejamento_id)){
+//            $planejamento = Planejamento::find($request->planejamento_id);
+//            $insumoGrupo = InsumoGrupo::find($request->insumo_grupos_id);
+//            return view('ordem_de_compras.obras_insumos', compact('planejamento', 'insumoGrupo'));
+//        }else{
+//            $obra = Obra::find($request->obra_id);
+//            $grupos = Grupo::whereNull('grupo_id')->pluck('nome','id')->toArray();
+//            return view('ordem_de_compras.obras_insumos', compact('obra', 'grupos'));
+//        }
+
+        return $comprasDataTable->render('ordem_de_compras.obras_insumos');
     }
 
     /**
@@ -1519,7 +1522,13 @@ class OrdemDeCompraController extends AppBaseController
      */
     public function insumosOrcamento($obra_id)
     {
-        $grupos = Grupo::whereNull('grupo_id')->pluck('nome','id')->toArray();
+        $grupos = Grupo::whereNull('grupo_id')
+            ->select([
+                'id',
+                DB::raw("CONCAT(codigo, ' ', nome) as nome")
+            ])
+            ->pluck('nome','id')
+            ->toArray();
 
         return view('ordem_de_compras.insumos_orcamento', compact('obra_id', 'grupos'));
     }

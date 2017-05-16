@@ -320,18 +320,47 @@ class PlanejamentoController extends AppBaseController
         return redirect('admin/planejamento');
     }
 
-
-    public function getGrupos($id){
-        $grupo = Grupo::where('grupo_id', $id)
-            ->pluck('nome','id')->toArray();
-        return $grupo;
+    public function getGrupos(Request $request, $id)
+    {
+        if($id){
+            $grupo = Grupo::where('grupo_id', $id)
+                ->select([
+                    'id',
+                    DB::raw("CONCAT(codigo, ' ', nome) as nome")
+                ])
+                ->where(function ($query) use($request){
+                   $query->where('nome', 'like', '%' . $request->q . '%')
+                       ->orWhere('codigo','like', '%'.$request->q.'%');
+                });
+        }else {
+            $grupo = Grupo::whereNull('grupo_id')
+                ->select([
+                    'id',
+                    DB::raw("CONCAT(codigo, ' ', nome) as nome")
+                ])
+                ->where(function ($query) use($request){
+                    $query->where('nome', 'like', '%' . $request->q . '%')
+                        ->orWhere('codigo','like', '%'.$request->q.'%');
+                });
+        }
+        return $grupo->paginate();
     }
-    public function getServicos($id){
+    public function getServicos(Request $request, $id)
+    {
         $servico = Servico::where('grupo_id', $id)
-            ->pluck('nome', 'id')->toArray();
-        return $servico;
+            ->select([
+                'id',
+                DB::raw("CONCAT(codigo, ' ', nome) as nome")
+            ])
+            ->where(function ($query) use($request){
+                $query->where('nome', 'like', '%' . $request->q . '%')
+                    ->orWhere('codigo','like', '%'.$request->q.'%');
+            });
+
+        return $servico->paginate();
     }
-    public function getServicoInsumos($id){
+    public function getServicoInsumos($id)
+    {
         $insumoServico = InsumoServico::select(['insumos.id', 'insumos.nome', 'insumos.codigo'])
             ->join('insumos', 'insumo_servico.insumo_id', '=', 'insumos.id')
             ->where('servico_id', $id)
