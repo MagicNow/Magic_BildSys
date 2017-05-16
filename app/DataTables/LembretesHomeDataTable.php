@@ -182,6 +182,12 @@ class LembretesHomeDataTable extends DataTable
      */
     public function query()
     {
+        if($this->request()->exibir_por_tarefa) {
+            $url = 'CONCAT(\'/compras/obrasInsumos?planejamento_id=\',planejamentos.id) as url';
+        } else {
+            $url = 'CONCAT(\'/compras/obrasInsumos?planejamento_id=\',planejamentos.id,\'&insumo_grupos_id=\',insumo_grupos.id) as url';
+        }
+
         $query = Lembrete::join('insumo_grupos', 'insumo_grupos.id', '=', 'lembretes.insumo_grupo_id')
             ->join('insumos', 'insumos.insumo_grupo_id', '=', 'insumo_grupos.id')
             ->join('planejamento_compras', 'planejamento_compras.insumo_id', '=', 'insumos.id')
@@ -196,7 +202,7 @@ class LembretesHomeDataTable extends DataTable
                 'obras.nome as obra',
                 'planejamentos.tarefa',
                 DB::raw("GROUP_CONCAT(DISTINCT insumo_grupos.nome ORDER BY insumo_grupos.nome ASC SEPARATOR ', ') grupo"),
-                DB::raw("CONCAT('/compras/obrasInsumos?planejamento_id=',planejamentos.id,'&insumo_grupos_id=',insumo_grupos.id) as url"),
+                DB::raw($url),
                 DB::raw("DATE_FORMAT(DATE_SUB(planejamentos.data, INTERVAL (
                         IFNULL(
                             (
@@ -384,7 +390,11 @@ class LembretesHomeDataTable extends DataTable
         // Busca se existe algum item à ser comprado desta tarefa
         $query->whereRaw(PlanejamentoCompraRepository::EXISTE_ITEM_PRA_COMPRAR);
 
-        $query->groupBy(['id','obra','dias','tarefa','url','inicio']);
+        if($this->request()->exibir_por_tarefa) {
+            $query->groupBy('tarefa');
+        } else {
+            $query->groupBy(['id','obra','dias','tarefa','url','inicio']);
+        }
 
         return $this->applyScopes($query);
     }
@@ -480,17 +490,23 @@ class LembretesHomeDataTable extends DataTable
      */
     protected function getColumns()
     {
-        return [
+        $columns = [
             'data'=> ['name' => 'inicio', 'data' => 'inicio'],
             'obra'=> ['name' => 'obras.nome', 'data' => 'obra'],
             'tarefa'=> ['name' => 'planejamentos.tarefa', 'data' => 'tarefa'],
-            'Grupo'=> ['name' => 'grupo', 'data' => 'grupo'],
-            'action' => ['title'          => 'Comprar',
-                'searchable'      => false,
-                'orderable'      => false,
-                'printable'      => false,
-                'width'=>'10px'],
         ];
+
+        $columns['Grupo'] = ['name' => 'grupo', 'data' => 'grupo'];
+
+        $columns['action'] = [
+            'title'      => 'Comprar',
+            'searchable' => false,
+            'orderable'  => false,
+            'printable'  => false,
+            'width'      => '10px'
+        ];
+
+        return $columns;
     }
 
     /**
