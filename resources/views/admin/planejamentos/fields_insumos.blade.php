@@ -1,4 +1,4 @@
-@include('flash::message')
+
 <style type="text/css">
     #carrinho ul{
         list-style-type: none;

@@ -3,7 +3,7 @@
 @section('content')
     <div class="content">
 
-        @include('flash::message')
+
 
         <div id="user-details">
             <!-- User details -->

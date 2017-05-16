@@ -208,7 +208,7 @@
         @include('layouts.front_sidebar')
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
-            @include('flash::message')
+            @include( 'flash::message' )
             @yield('content')
         </div>
 

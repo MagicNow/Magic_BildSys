@@ -141,7 +141,7 @@
                 language: "pt-BR",
 
                 ajax: {
-                    url: "{{ route('admin.catalogo_contratos.busca_insumos') }}",
+                    url: "{{ route('catalogo_contratos.busca_insumos') }}",
                     dataType: 'json',
                     delay: 250,
 

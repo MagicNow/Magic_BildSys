@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.front')
 
 @section('content')
     <section class="content-header">
@@ -10,8 +10,8 @@
         <div class="box box-primary">
             <div class="box-body">
                 <div class="row" style="padding-left: 20px">
-                    @include('admin.catalogo_contratos.show_fields')
-                    <a href="{!! route('admin.catalogo_contratos.index') !!}" class="btn btn-default">
+                    @include('catalogo_contratos.show_fields')
+                    <a href="{!! route('catalogo_contratos.index') !!}" class="btn btn-default">
                        <i class="fa fa-arrow-left"></i>  {{ ucfirst( trans('common.back') )}}
                     </a>
                 </div>

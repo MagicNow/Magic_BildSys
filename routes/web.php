@@ -13,7 +13,7 @@
 
 Auth::routes();
 
-$router->get('/admin/catalogo-acordos/buscar/busca_insumos', ['as' => 'admin.catalogo_contratos.busca_insumos', 'uses' => 'Admin\CatalogoContratoController@buscaInsumos']);
+$router->get('/admin/catalogo-acordos/buscar/busca_insumos', ['as' => 'catalogo_contratos.busca_insumos', 'uses' => 'CatalogoContratoController@buscaInsumos']);
 $router->get('/admin/solicitacaoInsumos/buscar/grupos_insumos', 'Admin\SolicitacaoInsumoController@buscaGruposInsumos');
 $router->get('/compras/insumos/orcamento/solicitar-insumo/{obra_id}', 'Admin\SolicitacaoInsumoController@solicitarInsumo');
 $router->post('/compras/insumos/orcamento/solicitar-insumo/salvar/{obra_id}', 'Admin\SolicitacaoInsumoController@solicitarInsumoSalvar');
@@ -113,19 +113,7 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
         });
     });
 
-    # Contratos
-    $router->group(['middleware' => 'needsPermission:contratos.list'], function () use ($router) {
-        $router->get('catalogo-acordos', ['as' => 'admin.catalogo_contratos.index', 'uses' => 'Admin\CatalogoContratoController@index']);
-        $router->post('catalogo-acordos', ['as' => 'admin.catalogo_contratos.store', 'uses' => 'Admin\CatalogoContratoController@store']);
-        $router->get('catalogo-acordos/create', ['as' => 'admin.catalogo_contratos.create', 'uses' => 'Admin\CatalogoContratoController@create'])->middleware("needsPermission:contratos.create");
-        $router->put('catalogo-acordos/{contratos}', ['as' => 'admin.catalogo_contratos.update', 'uses' => 'Admin\CatalogoContratoController@update']);
-        $router->patch('catalogo-acordos/{contratos}', ['as' => 'admin.catalogo_contratos.update', 'uses' => 'Admin\CatalogoContratoController@update']);
-        $router->delete('catalogo-acordos/{contratos}', ['as' => 'admin.catalogo_contratos.destroy', 'uses' => 'Admin\CatalogoContratoController@destroy']);
-        $router->get('catalogo-acordos/{contratos}', ['as' => 'admin.catalogo_contratos.show', 'uses' => 'Admin\CatalogoContratoController@show'])->middleware("needsPermission:contratos.view");
-        $router->get('catalogo-acordos/{contratos}/edit', ['as' => 'admin.catalogo_contratos.edit', 'uses' => 'Admin\CatalogoContratoController@edit'])->middleware("needsPermission:contratos.edit");
-        $router->get('catalogo-acordos/buscar/busca_fornecedores', ['as' => 'admin.catalogo_contratos.busca_fornecedores', 'uses' => 'Admin\CatalogoContratoController@buscaFornecedor']);
-        $router->get('insumo/delete', 'Admin\CatalogoContratoController@deleteInsumo');
-    });
+    
 
     # Obras
     $router->group(['middleware' => 'needsPermission:obras.list'], function () use ($router) {
@@ -151,17 +139,6 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
         $router->get('templatePlanilhas/{templatePlanilhas}/edit', ['as' => 'admin.templatePlanilhas.edit', 'uses' => 'Admin\TemplatePlanilhaController@edit']);
     });
 
-    # Tipo equalização tecnicas
-    $router->group(['middleware' => 'needsPermission:tipoEqualizacaoTecnicas.list'], function () use ($router) {
-        $router->get('tipoEqualizacaoTecnicas', ['as' => 'admin.tipoEqualizacaoTecnicas.index', 'uses' => 'Admin\TipoEqualizacaoTecnicaController@index']);
-        $router->post('tipoEqualizacaoTecnicas', ['as' => 'admin.tipoEqualizacaoTecnicas.store', 'uses' => 'Admin\TipoEqualizacaoTecnicaController@store']);
-        $router->get('tipoEqualizacaoTecnicas/create', ['as' => 'admin.tipoEqualizacaoTecnicas.create', 'uses' => 'Admin\TipoEqualizacaoTecnicaController@create'])->middleware("needsPermission:tipoEqualizacaoTecnicas.create");
-        $router->put('tipoEqualizacaoTecnicas/{tipoEqualizacaoTecnicas}', ['as' => 'admin.tipoEqualizacaoTecnicas.update', 'uses' => 'Admin\TipoEqualizacaoTecnicaController@update']);
-        $router->patch('tipoEqualizacaoTecnicas/{tipoEqualizacaoTecnicas}', ['as' => 'admin.tipoEqualizacaoTecnicas.update', 'uses' => 'Admin\TipoEqualizacaoTecnicaController@update']);
-        $router->delete('tipoEqualizacaoTecnicas/{tipoEqualizacaoTecnicas}', ['as' => 'admin.tipoEqualizacaoTecnicas.destroy', 'uses' => 'Admin\TipoEqualizacaoTecnicaController@destroy'])->middleware("needsPermission:tipoEqualizacaoTecnicas.delete");
-        $router->get('tipoEqualizacaoTecnicas/{tipoEqualizacaoTecnicas}', ['as' => 'admin.tipoEqualizacaoTecnicas.show', 'uses' => 'Admin\TipoEqualizacaoTecnicaController@show']);
-        $router->get('tipoEqualizacaoTecnicas/{tipoEqualizacaoTecnicas}/edit', ['as' => 'admin.tipoEqualizacaoTecnicas.edit', 'uses' => 'Admin\TipoEqualizacaoTecnicaController@edit'])->middleware("needsPermission:tipoEqualizacaoTecnicas.edit");
-    });
     #Cronograma por obra
     $router->get('planejamentoCronogramas', ['as'=> 'admin.planejamentoCronogramas.index', 'uses' => 'Admin\PlanejamentoCronogramaController@index'])->middleware("needsPermission:cronograma_por_obras.list");
 
@@ -196,6 +173,7 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
         $router->get('compradorInsumos/delete-bloco/view/delete/{id}', 'Admin\CompradorInsumoController@buscaGrupoInsumo');
     });
 
+    # Manage users
     $router->group(['middleware' => 'needsPermission:users.list'], function() use ($router) {
         $router->resource('users', 'Admin\Manage\UsersController');
 
@@ -291,6 +269,7 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
 
     });
 
+    # Workflow
     $router->group(['prefix' => 'workflow'], function () use ($router) {
 
         $router->group(['middleware' => 'needsPermission:motivos_reprovacao.list'], function() use ($router) {
@@ -318,6 +297,7 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
 
     });
 
+    # Insumos
     $router->group(['middleware' => 'needsPermission:insumos.list'], function() use ($router) {
         $router->get('insumos', ['as' => 'admin.insumos.index', 'uses' => 'Admin\InsumoController@index']);
         $router->post('insumos', ['as' => 'admin.insumos.store', 'uses' => 'Admin\InsumoController@store']);
@@ -329,6 +309,7 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
         $router->get('insumos/{insumos}/edit', ['as' => 'admin.insumos.edit', 'uses' => 'Admin\InsumoController@edit']);
     });
 
+    # Grupo de Insumos
     $router->group(['middleware' => 'needsPermission:grupos_insumos.list'], function() use ($router) {
         $router->get('insumoGrupos', ['as' => 'admin.insumoGrupos.index', 'uses' => 'Admin\InsumoGrupoController@index']);
         $router->post('insumoGrupos', ['as' => 'admin.insumoGrupos.store', 'uses' => 'Admin\InsumoGrupoController@store']);
@@ -363,6 +344,8 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
 
     $router->get('compras', 'OrdemDeCompraController@compras')->middleware("needsPermission:compras_lembretes.list");
 
+    $router->get('/ordens-de-compra/insumos-aprovados', 'OrdemDeCompraController@insumosAprovados')
+        ->middleware("needsPermission:quadroDeConcorrencias.create");
     $router->group(['middleware' => 'needsPermission:ordens_de_compra.list'], function () use ($router) {
 
         $router->get('/ordens-de-compra/detalhes/{id}', 'OrdemDeCompraController@detalhe')->middleware("needsPermission:ordens_de_compra.detalhes");
@@ -378,11 +361,11 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->get('/ordens-de-compra/carrinho/alterar-quantidade/{id}', 'OrdemDeCompraController@alterarQuantidade');
         $router->get('/ordens-de-compra/carrinho/alterar-valor-unitario/{id}', 'OrdemDeCompraController@alteraValorUnitario');
         $router->get('/ordens-de-compra/carrinho/remover-item/{id}', 'OrdemDeCompraController@removerItem');
-        $router->get('/ordens-de-compra/insumos-aprovados', 'OrdemDeCompraController@insumosAprovados');
         $router->get('/ordens-de-compra/detalhes-servicos/{servico_id}', 'OrdemDeCompraController@detalhesServicos')->middleware("needsPermission:ordens_de_compra.detalhes_servicos");
 
         $router->resource('ordens-de-compra', 'OrdemDeCompraController');
     });
+
 
     $router->group(['middleware' => 'needsPermission:site.dashboard'], function () use ($router) {
         $router->get('compras/jsonOrdemCompraDashboard', 'OrdemDeCompraController@jsonOrdemCompraDashboard');
@@ -581,7 +564,34 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
 
     });
 
-    $router->get('tipos-equalizacoes-tecnicas/busca', 'Admin\TipoEqualizacaoTecnicaController@busca');
-    $router->get('tipos-equalizacoes-tecnicas/itens/{id}', 'Admin\TipoEqualizacaoTecnicaController@buscaItens');
-    $router->get('tipos-equalizacoes-tecnicas/anexos/{id}', 'Admin\TipoEqualizacaoTecnicaController@buscaAnexos');
+    $router->get('tipos-equalizacoes-tecnicas/busca', 'TipoEqualizacaoTecnicaController@busca');
+    $router->get('tipos-equalizacoes-tecnicas/itens/{id}', 'TipoEqualizacaoTecnicaController@buscaItens');
+    $router->get('tipos-equalizacoes-tecnicas/anexos/{id}', 'TipoEqualizacaoTecnicaController@buscaAnexos');
+
+    # Catálogo de Acordos
+    $router->group(['middleware' => 'needsPermission:catalogo_acordos.list'], function () use ($router) {
+        $router->get('catalogo-acordos', ['as' => 'catalogo_contratos.index', 'uses' => 'CatalogoContratoController@index']);
+        $router->post('catalogo-acordos', ['as' => 'catalogo_contratos.store', 'uses' => 'CatalogoContratoController@store']);
+        $router->get('catalogo-acordos/create', ['as' => 'catalogo_contratos.create', 'uses' => 'CatalogoContratoController@create'])->middleware("needsPermission:catalogo_acordos.create");
+        $router->put('catalogo-acordos/{contratos}', ['as' => 'catalogo_contratos.update', 'uses' => 'CatalogoContratoController@update']);
+        $router->patch('catalogo-acordos/{contratos}', ['as' => 'catalogo_contratos.update', 'uses' => 'CatalogoContratoController@update']);
+        $router->delete('catalogo-acordos/{contratos}', ['as' => 'catalogo_contratos.destroy', 'uses' => 'CatalogoContratoController@destroy']);
+        $router->get('catalogo-acordos/{contratos}', ['as' => 'catalogo_contratos.show', 'uses' => 'CatalogoContratoController@show'])->middleware("needsPermission:catalogo_acordos.view");
+        $router->get('catalogo-acordos/{contratos}/edit', ['as' => 'catalogo_contratos.edit', 'uses' => 'CatalogoContratoController@edit'])->middleware("needsPermission:catalogo_acordos.edit");
+        $router->get('catalogo-acordos/buscar/busca_fornecedores', ['as' => 'catalogo_contratos.busca_fornecedores', 'uses' => 'CatalogoContratoController@buscaFornecedor']);
+        $router->get('catalogo-acordos-insumo/delete', 'CatalogoContratoController@deleteInsumo');
+    });
+
+
+    # Tipo equalização tecnicas
+    $router->group(['middleware' => 'needsPermission:equalizacao_tecnicas.list'], function () use ($router) {
+        $router->get('tipoEqualizacaoTecnicas', ['as' => 'tipoEqualizacaoTecnicas.index', 'uses' => 'TipoEqualizacaoTecnicaController@index']);
+        $router->post('tipoEqualizacaoTecnicas', ['as' => 'tipoEqualizacaoTecnicas.store', 'uses' => 'TipoEqualizacaoTecnicaController@store']);
+        $router->get('tipoEqualizacaoTecnicas/create', ['as' => 'tipoEqualizacaoTecnicas.create', 'uses' => 'TipoEqualizacaoTecnicaController@create'])->middleware("needsPermission:equalizacao_tecnicas.create");
+        $router->put('tipoEqualizacaoTecnicas/{tipoEqualizacaoTecnicas}', ['as' => 'tipoEqualizacaoTecnicas.update', 'uses' => 'TipoEqualizacaoTecnicaController@update']);
+        $router->patch('tipoEqualizacaoTecnicas/{tipoEqualizacaoTecnicas}', ['as' => 'tipoEqualizacaoTecnicas.update', 'uses' => 'TipoEqualizacaoTecnicaController@update']);
+        $router->delete('tipoEqualizacaoTecnicas/{tipoEqualizacaoTecnicas}', ['as' => 'tipoEqualizacaoTecnicas.destroy', 'uses' => 'TipoEqualizacaoTecnicaController@destroy'])->middleware("needsPermission:equalizacao_tecnicas.delete");
+        $router->get('tipoEqualizacaoTecnicas/{tipoEqualizacaoTecnicas}', ['as' => 'tipoEqualizacaoTecnicas.show', 'uses' => 'TipoEqualizacaoTecnicaController@show']);
+        $router->get('tipoEqualizacaoTecnicas/{tipoEqualizacaoTecnicas}/edit', ['as' => 'tipoEqualizacaoTecnicas.edit', 'uses' => 'TipoEqualizacaoTecnicaController@edit'])->middleware("needsPermission:equalizacao_tecnicas.edit");
+    });
 });

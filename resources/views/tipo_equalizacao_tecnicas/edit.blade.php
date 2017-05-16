@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.front')
 
 @section('content')
     <section class="content-header">
@@ -11,9 +11,9 @@
        <div class="box box-primary">
            <div class="box-body">
                <div class="row">
-                   {!! Form::model($tipoEqualizacaoTecnica, ['route' => ['admin.tipoEqualizacaoTecnicas.update', $tipoEqualizacaoTecnica->id], 'method' => 'patch', 'files'=>true]) !!}
+                   {!! Form::model($tipoEqualizacaoTecnica, ['route' => ['tipoEqualizacaoTecnicas.update', $tipoEqualizacaoTecnica->id], 'method' => 'patch', 'files'=>true]) !!}
 
-                        @include('admin.tipo_equalizacao_tecnicas.fields')
+                        @include('tipo_equalizacao_tecnicas.fields')
 
                    {!! Form::close() !!}
                </div>
