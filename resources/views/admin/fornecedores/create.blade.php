@@ -14,6 +14,7 @@
                 <div class="row">
                     {!! Form::open(['route' => 'admin.fornecedores.store']) !!}
 
+                        @include( 'flash::message' )
                         @include('admin.fornecedores.fields')
 
                     {!! Form::close() !!}
