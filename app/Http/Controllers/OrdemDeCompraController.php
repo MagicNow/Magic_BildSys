@@ -848,10 +848,6 @@ class OrdemDeCompraController extends AppBaseController
             'insumo_id' => $orcamento_ativo->insumo_id,
             'unidade_sigla' => $orcamento_ativo->unidade_sigla,
         ]);
-//        dd($request->quantidade_compra);
-//        if($request->quantidade_compra[0] == ','){
-//            $request->quantidade_compra = substr($request->quantidade_compra, 1);
-//        }
 
         $ordem_item->user_id = Auth::user()->id;
         $ordem_item->qtd = $request->quantidade_compra;
@@ -1630,6 +1626,8 @@ class OrdemDeCompraController extends AppBaseController
             ->where('insumo_id', $orcamento_ativo->insumo_id)
             ->where('unidade_sigla', $orcamento_ativo->unidade_sigla)
             ->first();
+
+//        dd($ordem_item);
 
         if($ordem_item->total == 1){
             $ordem_item->total = 0;
