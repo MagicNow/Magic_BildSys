@@ -492,7 +492,6 @@ class OrdemDeCompraController extends AppBaseController
      */
     public function obrasInsumos(ComprasDataTable $comprasDataTable, Request $request)
     {
-        dd($request->all());
         if(isset($request->planejamento_id)){
             $planejamento = Planejamento::find($request->planejamento_id);
             $insumoGrupo = InsumoGrupo::find($request->insumo_grupos_id);
