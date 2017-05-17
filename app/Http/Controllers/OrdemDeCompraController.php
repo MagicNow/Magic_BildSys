@@ -492,6 +492,7 @@ class OrdemDeCompraController extends AppBaseController
      */
     public function obrasInsumos(ComprasDataTable $comprasDataTable, Request $request)
     {
+        dd($request->all());
         if(isset($request->planejamento_id)){
             $planejamento = Planejamento::find($request->planejamento_id);
             $insumoGrupo = InsumoGrupo::find($request->insumo_grupos_id);
@@ -831,6 +832,7 @@ class OrdemDeCompraController extends AppBaseController
             ->where('servico_id',$request->servico_id)
             ->where('ativo',1)
             ->first();
+
         if(!$orcamento_ativo){
             return response()->json(['success'=>false,'error'=>'Um item de orçamento ativo deste insumo não foi encontrado.']);
         }
@@ -847,10 +849,10 @@ class OrdemDeCompraController extends AppBaseController
             'insumo_id' => $orcamento_ativo->insumo_id,
             'unidade_sigla' => $orcamento_ativo->unidade_sigla,
         ]);
-
-        if($request->quantidade_compra[0] == ','){
-            $request->quantidade_compra = substr($request->quantidade_compra, 1);;
-        }
+//        dd($request->quantidade_compra);
+//        if($request->quantidade_compra[0] == ','){
+//            $request->quantidade_compra = substr($request->quantidade_compra, 1);
+//        }
 
         $ordem_item->user_id = Auth::user()->id;
         $ordem_item->qtd = $request->quantidade_compra;
@@ -858,7 +860,7 @@ class OrdemDeCompraController extends AppBaseController
         $ordem_item->valor_total = $orcamento_ativo->getOriginal('preco_unitario') * money_to_float($request->quantidade_compra);
         $salvo = $ordem_item->save();
 
-        if(!$request->quantidade_compra || $request->quantidade_compra == '0'){
+        if(!$request->quantidade_compra || $request->quantidade_compra == '0' || $request->quantidade_compra == ''){
             $ordem_item->delete();
         }
 
@@ -1873,12 +1875,5 @@ class OrdemDeCompraController extends AppBaseController
             ->pluck('nome', 'id')->toArray();
         return $servico;
     }
-//    public function getServicoInsumos($id){
-//        $insumoServico = InsumoServico::select(['insumos.id', 'insumos.nome', 'insumos.codigo'])
-//            ->join('insumos', 'insumo_servico.insumo_id', '=', 'insumos.id')
-//            ->where('servico_id', $id)
-//            ->get();
-//        return $insumoServico;
-//    }
 }
 
