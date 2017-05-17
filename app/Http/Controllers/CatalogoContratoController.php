@@ -66,7 +66,7 @@ class CatalogoContratoController extends AppBaseController
 
         if($input['periodo_termino'] < $input['periodo_inicio']){
             Flash::error('O período de término não pode ser menor que o período de início.');
-            return redirect('/admin/contratos/create')->withInput($input);
+            return redirect('/catalogo-acordos/create')->withInput($input);
         }
 
         $pontos = array(",");
@@ -78,12 +78,12 @@ class CatalogoContratoController extends AppBaseController
 
         if($valor_maximo < $valor_minimo){
             Flash::error('O valor máximo não pode ser menor que o valor mínimo.');
-            return redirect('/admin/contratos/create')->withInput($input);
+            return redirect('/catalogo-acordos/create')->withInput($input);
         }
 
         if($input['qtd_maxima'] < $input['qtd_minima']){
             Flash::error('O quantidade máxima não pode ser menor que a quantidade mínima.');
-            return redirect('/admin/contratos/create')->withInput($input);
+            return redirect('/catalogo-acordos/create')->withInput($input);
         }
 
         $catalogoContrato = new CatalogoContrato($input);
@@ -199,7 +199,7 @@ class CatalogoContratoController extends AppBaseController
 
         if($input['periodo_termino'] < $input['periodo_inicio']){
             Flash::error('O período de término não pode ser menor que o período de início.');
-            return redirect('/admin/contratos/'.$id.'/edit')->withInput($input);
+            return redirect('/catalogo-acordos/'.$id.'/edit')->withInput($input);
         }
 
         $pontos = array(",");
@@ -211,12 +211,12 @@ class CatalogoContratoController extends AppBaseController
 
         if($valor_maximo < $valor_minimo){
             Flash::error('O valor máximo não pode ser menor que o valor mínimo.');
-            return redirect('/admin/contratos/'.$id.'/edit')->withInput($input);
+            return redirect('/catalogo-acordos/'.$id.'/edit')->withInput($input);
         }
 
         if($input['qtd_maxima'] < $input['qtd_minima']){
             Flash::error('O quantidade máxima não pode ser menor que a quantidade mínima.');
-            return redirect('/admin/contratos/'.$id.'/edit')->withInput($input);
+            return redirect('/catalogo-acordos/'.$id.'/edit')->withInput($input);
         }
 
         if($request->arquivo){
