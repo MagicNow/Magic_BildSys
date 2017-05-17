@@ -856,7 +856,7 @@ class OrdemDeCompraController extends AppBaseController
         $salvo = $ordem_item->save();
 
         if(!$request->quantidade_compra || $request->quantidade_compra == '0' || $request->quantidade_compra == ''){
-            $ordem_item->delete();
+            $ordem_item->forceDelete();
         }
 
         return response()->json(['success'=>$salvo]);
@@ -872,11 +872,11 @@ class OrdemDeCompraController extends AppBaseController
      * @param  InsumoGrupo $insumoGrupo
      * @return Render View
      */
-    public function trocaInsumos(Request $request)
+    public function trocaInsumos($id)
     {
-        $insumo = Insumo::find($request->insumo_pai);
-        $planejamento = Planejamento::find($request->planejamento_id);
-        return view('ordem_de_compras.troca_insumos', compact('planejamento', 'insumoGrupo', 'insumo'));
+        $insumo = Insumo::find($id);
+        $planejamento = Planejamento::find(1);
+        return view('ordem_de_compras.troca_insumos', compact('insumo','planejamento'));
     }
 
     /**
@@ -1672,7 +1672,7 @@ class OrdemDeCompraController extends AppBaseController
         ]);
 
         $ordem_item->user_id = Auth::user()->id;
-        $ordem_item->qtd = $ordem_item->getOriginal('qtd') + money_to_float($request->saldo);
+        $ordem_item->qtd = $request->qtd_total;
         $ordem_item->valor_unitario = $orcamento_ativo->preco_unitario;
         $ordem_item->valor_total = $orcamento_ativo->getOriginal('preco_unitario') * $ordem_item->qtd;
         $ordem_item->save();
