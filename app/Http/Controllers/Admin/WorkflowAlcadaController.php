@@ -7,6 +7,7 @@ use App\Http\Requests\Admin;
 use App\Http\Requests\Admin\CreateWorkflowAlcadaRequest;
 use App\Http\Requests\Admin\UpdateWorkflowAlcadaRequest;
 use App\Models\User;
+use App\Models\WorkflowAlcada;
 use App\Repositories\Admin\WorkflowAlcadaRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
@@ -54,6 +55,23 @@ class WorkflowAlcadaController extends AppBaseController
     public function store(CreateWorkflowAlcadaRequest $request)
     {
         $input = $request->all();
+
+        $alcada_cadastrada_tipo = WorkflowAlcada::where('workflow_tipo_id', $request->workflow_tipo_id)
+            ->first();
+
+        if($alcada_cadastrada_tipo){
+            $alcada_anterior = WorkflowAlcada::where('workflow_tipo_id', $request->workflow_tipo_id)
+                ->where('ordem', ($request->ordem - 1))
+                ->first();
+
+            if(!$alcada_anterior){
+                Flash::error('Ordem inválida, não há alçadas anteriores.');
+
+                return redirect('/admin/workflow/workflow-alcadas/create');
+            }
+        }else{
+            $input['ordem'] = 1;
+        }
 
         $workflowAlcada = $this->workflowAlcadaRepository->create($input);
 
@@ -121,6 +139,16 @@ class WorkflowAlcadaController extends AppBaseController
      */
     public function update($id, UpdateWorkflowAlcadaRequest $request)
     {
+        $alcada_anterior = WorkflowAlcada::where('workflow_tipo_id', $request->workflow_tipo_id)
+                                        ->where('ordem', ($request->ordem - 1))
+                                        ->first();
+
+        if(!$alcada_anterior){
+            Flash::error('Ordem inválida, não há alçadas anteriores.');
+
+            return redirect('/admin/workflow/workflow-alcadas/'.$id.'/edit');
+        }
+
         $workflowAlcada = $this->workflowAlcadaRepository->findWithoutFail($id);
 
         if (empty($workflowAlcada)) {

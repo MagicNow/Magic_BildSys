@@ -36,7 +36,7 @@ class TipoEqualizacaoTecnica extends Model
      * @var array
      */
     public static $rules = [
-        
+        'nome' => 'required'
     ];
 
     /**
