@@ -44,9 +44,15 @@ class CompradorInsumoController extends AppBaseController
      */
     public function create()
     {
-        $grupoInsumos = InsumoGrupo::pluck('nome','id')->toArray();
-        $users = User::pluck('name','id')->toArray();
-        return view('admin.comprador_insumos.create', compact('grupoInsumos','users'));
+        $grupoInsumos = InsumoGrupo::pluck('nome', 'id')->toArray();
+
+        $users = User::whereHas('roles', function($query) {
+            $query->where('role_id', User::ROLE_SUPRIPRIMENTOS);
+        })
+        ->pluck('name', 'id')
+        ->toArray();
+
+        return view('admin.comprador_insumos.create', compact('grupoInsumos', 'users'));
     }
 
     /**
@@ -58,21 +64,22 @@ class CompradorInsumoController extends AppBaseController
      */
     public function store(CreateCompradorInsumoRequest $request)
     {
-
-        if(isset($request->insumo_id)){
-            foreach($request->insumo_id as $insumo_id){
+        if (isset($request->insumo_id)) {
+            foreach ($request->insumo_id as $insumo_id) {
                 CompradorInsumo::firstOrCreate([
                     'user_id' => $request->usuario_id,
                     'insumo_id' => $insumo_id
                 ]);
-
             }
-        }else{
+        } else {
             Flash::error('Você esqueceu de escolher os insumos!');
             return redirect(route('admin.compradorInsumos.index'));
         }
 
-        Flash::success('Relacionamento '.trans('common.saved').' '.trans('common.successfully').'.');
+        Flash::success(
+            'Relacionamento '.trans('common.saved').' '.trans('common.successfully').'.'
+        );
+
         return redirect(route('admin.compradorInsumos.index'));
     }
 
@@ -167,8 +174,7 @@ class CompradorInsumoController extends AppBaseController
 
     public function deleteBlocoView()
     {
-
-        $users = User::pluck('name','id')->toArray();
+        $users = User::pluck('name', 'id')->toArray();
 //        $grupoInsumos = InsumoGrupo::select([
 //            'insumo_grupos.nome',
 //            'insumo_grupos.id'
@@ -180,15 +186,16 @@ class CompradorInsumoController extends AppBaseController
         return view('admin.comprador_insumos.blocoview', compact('users'));
     }
 
-    public function buscaGrupoInsumo($usuario_id){
+    public function buscaGrupoInsumo($usuario_id)
+    {
         $grupoInsumos = InsumoGrupo::select([
             'insumo_grupos.nome',
             'insumo_grupos.id'
         ])
-            ->join('insumos','insumos.insumo_grupo_id','=', 'insumo_grupos.id')
-            ->join('comprador_insumos','comprador_insumos.insumo_id','insumos.id')
+            ->join('insumos', 'insumos.insumo_grupo_id', '=', 'insumo_grupos.id')
+            ->join('comprador_insumos', 'comprador_insumos.insumo_id', 'insumos.id')
             ->where('comprador_insumos.user_id', $usuario_id)
-            ->pluck('nome','id')->toArray();
+            ->pluck('nome', 'id')->toArray();
         return $grupoInsumos;
     }
 
@@ -206,12 +213,13 @@ class CompradorInsumoController extends AppBaseController
         return Response()->json(['success' => $removendo]);
     }
 
-    public function getInsumos($grupo_insumo_id){
+    public function getInsumos($grupo_insumo_id)
+    {
         $insumos = Insumo::select([
             'insumos.id',
             'insumos.nome'
         ])
-            ->join('insumo_grupos','insumo_grupos.id','=','insumos.insumo_grupo_id')
+            ->join('insumo_grupos', 'insumo_grupos.id', '=', 'insumos.insumo_grupo_id')
             ->where('insumos.insumo_grupo_id', $grupo_insumo_id)
             ->get();
 
