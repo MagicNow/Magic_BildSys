@@ -148,4 +148,14 @@ class InsumoController extends AppBaseController
 
         return redirect(route('admin.insumos.index'));
     }
+
+    public function enable($id)
+    {
+        return $this->insumoRepository->enable($id);
+    }
+
+    public function disable($id)
+    {
+        return $this->insumoRepository->disable($id);
+    }
 }

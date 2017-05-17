@@ -13,7 +13,7 @@ class Insumo extends Model
 {
 
     public $table = 'insumos';
-    
+
     public $timestamps = false;
 
     public $fillable = [
@@ -102,5 +102,13 @@ class Insumo extends Model
     public function planejamentoCompras()
     {
         return $this->hasMany(PlanejamentoCompra::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function grupo()
+    {
+        return $this->belongsTo(InsumoGrupo::class, 'insumo_grupo_id', 'id');
     }
 }

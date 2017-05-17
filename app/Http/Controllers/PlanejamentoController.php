@@ -15,6 +15,15 @@ class PlanejamentoController extends AppBaseController
 {
     public function lembretes(Request $request)
     {
+
+        if($request->exibir_por_tarefa) {
+            $title = 'CONCAT(obras.nome,\' - \',planejamentos.tarefa) title';
+            $url = 'CONCAT(\'/compras/obrasInsumos?planejamento_id=\',planejamentos.id) as url';
+        } else {
+            $title = 'CONCAT(obras.nome,\' - \',planejamentos.tarefa,\' - \', lembretes.nome) title';
+            $url = 'CONCAT(\'/compras/obrasInsumos?planejamento_id=\',planejamentos.id,\'&insumo_grupos_id=\',insumo_grupos.id) as url';
+        }
+
         $lembretes = Lembrete::join('insumo_grupos', 'insumo_grupos.id', '=', 'lembretes.insumo_grupo_id')
             ->join('insumos', 'insumos.insumo_grupo_id', '=', 'insumo_grupos.id')
             ->join('planejamento_compras', 'planejamento_compras.insumo_id', '=', 'insumos.id')
@@ -23,14 +32,14 @@ class PlanejamentoController extends AppBaseController
             ->join('obra_users', 'obra_users.obra_id', '=', 'obras.id')
             ->whereNull('planejamentos.deleted_at')
             ->where('lembretes.lembrete_tipo_id', 1)
-            ->where('obra_users.user_id', Auth::user()->id)
+            ->where('obra_users.user_id', $request->user()->id)
             ->select([
                 'planejamentos.id',
                 'obras.nome as obra',
                 'planejamentos.tarefa',
-                DB::raw("CONCAT(obras.nome,' - ',planejamentos.tarefa,' - ', lembretes.nome) title"),
+                DB::raw($title),
+                DB::raw($url),
                 DB::raw("'event-info' as class"),
-                DB::raw("CONCAT('/compras/obrasInsumos?planejamento_id=',planejamentos.id,'&insumo_grupos_id=',insumo_grupos.id) as url"),
                 DB::raw("DATE_FORMAT(DATE_SUB(planejamentos.data, INTERVAL (
                     IFNULL(
                         (
@@ -295,12 +304,20 @@ class PlanejamentoController extends AppBaseController
 
         $lembretes->whereRaw(PlanejamentoCompraRepository::EXISTE_ITEM_PRA_COMPRAR);
 
-        $lembretes->distinct('id','obra','tarefa');
-        $lembretes = $lembretes->groupBy(['id','obra','tarefa','title','class','url','inicio','start','end'])->get();
+
+        /* $lembretes->distinct('id','obra','tarefa'); */
+
+        if($request->exibir_por_tarefa) {
+            $lembretes->groupBy('tarefa');
+        } else {
+            $lembretes = $lembretes->groupBy(['id','obra','tarefa','title','class','url','inicio','start','end']);
+        }
+
+        /* dd($lembretes->get()->toArray()); */
 
         return response()->json([
             'success' => true,
-            'result' => $lembretes
+            'result' => $lembretes->get()
         ]);
     }
 
