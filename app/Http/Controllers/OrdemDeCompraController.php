@@ -491,9 +491,9 @@ class OrdemDeCompraController extends AppBaseController
      */
     public function obrasInsumos(ComprasDataTable $comprasDataTable, Request $request)
     {
+//        dd($request->all());
         if(isset($request->planejamento_id)){
             $planejamento = Planejamento::find($request->planejamento_id);
-
             $insumoGrupo = InsumoGrupo::find($request->insumo_grupos_id);
 
 //            return view('ordem_de_compras.obras_insumos', compact('planejamento', 'insumoGrupo'));
@@ -794,19 +794,20 @@ class OrdemDeCompraController extends AppBaseController
         return response()->redirect()->back();
     }
 
-    public function addCarrinho(Request $request, Obra $obra,Planejamento $planejamento = null)
+    public function addCarrinho(Request $request, Obra $obra = null ,Planejamento $planejamento = null)
     {
+        dd($request->all(), $planejamento);
         //Testa se tem ordem de compra aberta pro user
         $ordem = OrdemDeCompra::where('oc_status_id', 1)
             ->where('user_id', Auth::user()->id)
             ->where('obra_id', $obra->id)->first();
 
         // se foi passado algum planejamento
-        if(count($planejamento['attributes'])){
-            $planejamento_compra = PlanejamentoCompra::find($request->planejamento_compra_id);
-            $planejamento_compra->quantidade_compra = floatval($request->quantidade_compra);
-            $planejamento_compra->save();
-        }
+//        if(count($planejamento['attributes'])){
+//            $planejamento_compra = PlanejamentoCompra::find($request->planejamento_compra_id);
+//            $planejamento_compra->quantidade_compra = floatval($request->quantidade_compra);
+//            $planejamento_compra->save();
+//        }
 
 
         if(!$ordem){

@@ -32,6 +32,7 @@ class ComprasDataTable extends DataTable
                 }
             })
             ->editColumn('troca', function($obj){
+//                dd($obj);
                 if($obj->unidade_sigla === 'VB' && $obj->insumo_grupo_id == 1570){
                     return "<a href='/compras/trocaInsumos/$obj->id'><button type='button' class='btn btn-xs btn-link' ><i class='fa fa-exchange'></i></button></a>";
 //                    return "<button type='button' class='btn btn-xs btn-link' onclick='trocar($obj->id)'><i class='fa fa-exchange'></i></button>";
@@ -247,9 +248,12 @@ class ComprasDataTable extends DataTable
                         orcamentos.servico_id = servicos.id) AS tooltip_servico'),
                         DB::raw('(SELECT count(planejamento_compras.id) FROM planejamento_compras
                         WHERE planejamento_compras.insumo_id = insumos.id
-                        AND planejamento_compras.planejamento_id =' . $planejamento->id . ' AND  planejamento_compras.insumo_pai IS NOT NULL) as filho'),
+                        AND planejamento_compras.planejamento_id =' . $planejamento->id . '
+                        AND  planejamento_compras.insumo_pai IS NOT NULL) as filho'),
                         DB::raw('(SELECT count(planejamento_compras.id) FROM planejamento_compras
-                        WHERE planejamento_compras.planejamento_id =' . $planejamento->id . ' AND  planejamento_compras.insumo_pai = insumos.id AND planejamento_compras.deleted_at IS NULL) as pai'),
+                        WHERE planejamento_compras.planejamento_id =' . $planejamento->id . '
+                        AND  planejamento_compras.insumo_pai = insumos.id
+                        AND planejamento_compras.deleted_at IS NULL) as pai'),
 //                        DB::raw('(SELECT count(ordem_de_compra_itens.id) FROM ordem_de_compra_itens
 //                        JOIN ordem_de_compras
 //                        ON ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id
@@ -273,6 +277,8 @@ class ComprasDataTable extends DataTable
                                         AND ordem_de_compra_itens.subgrupo2_id = orcamentos.subgrupo2_id
                                         AND ordem_de_compra_itens.subgrupo3_id = orcamentos.subgrupo3_id
                                         AND ordem_de_compra_itens.servico_id = orcamentos.servico_id
+                                        AND ordem_de_compra_itens.aprovado IS NULL
+                                        AND ordem_de_compra_itens.deleted_at IS NULL
                                         AND ordem_de_compras.obra_id =' . $planejamento->obra_id . '
                                     ),0
                                 )
@@ -284,10 +290,11 @@ class ComprasDataTable extends DataTable
                         AND ordem_de_compras.oc_status_id = 1 AND ordem_de_compras.user_id = ' . Auth::id() . '
                         WHERE ordem_de_compra_itens.insumo_id = insumos.id
                         AND ordem_de_compra_itens.grupo_id = orcamentos.grupo_id
-		                AND ordem_de_compra_itens.subgrupo1_id = orcamentos.subgrupo1_id
-		                AND ordem_de_compra_itens.subgrupo2_id = orcamentos.subgrupo2_id
-		                AND ordem_de_compra_itens.subgrupo3_id = orcamentos.subgrupo3_id
-		                AND ordem_de_compra_itens.servico_id = orcamentos.servico_id
+                        AND ordem_de_compra_itens.subgrupo1_id = orcamentos.subgrupo1_id
+                        AND ordem_de_compra_itens.subgrupo2_id = orcamentos.subgrupo2_id
+                        AND ordem_de_compra_itens.subgrupo3_id = orcamentos.subgrupo3_id
+                        AND ordem_de_compra_itens.servico_id = orcamentos.servico_id
+                        AND ordem_de_compra_itens.aprovado IS NULL
                         AND ordem_de_compra_itens.deleted_at IS NULL
                         AND ordem_de_compra_itens.obra_id =' . $planejamento->obra_id . ' ) as total'),
                     ]
