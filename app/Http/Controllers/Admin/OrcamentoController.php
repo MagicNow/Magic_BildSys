@@ -198,7 +198,7 @@ class OrcamentoController extends AppBaseController
             $orcamento_tipo_id = array_key_exists('orcamento_tipo_id', $input);
         }
         if(!$obra_id || !$orcamento_tipo_id){
-            Flash::error('Os campos: obra, modulo e tipo orçamento são obrigátorios.');
+            Flash::error('Os campos: obra e tipo orçamento são obrigátorios.');
             return back();
         }
 

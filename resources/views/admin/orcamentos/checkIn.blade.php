@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
+    @include( 'flash::message' )
+
     <section class="content-header">
         <h1 class="pull-left">Validações de colunas</h1>
     </section>
