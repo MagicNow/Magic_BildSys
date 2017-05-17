@@ -113,7 +113,7 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
         });
     });
 
-    
+
 
     # Obras
     $router->group(['middleware' => 'needsPermission:obras.list'], function () use ($router) {
@@ -307,6 +307,8 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
         $router->delete('insumos/{insumos}', ['as' => 'admin.insumos.destroy', 'uses' => 'Admin\InsumoController@destroy']);
         $router->get('insumos/{insumos}', ['as' => 'admin.insumos.show', 'uses' => 'Admin\InsumoController@show'])->middleware("needsPermission:insumos.view");
         $router->get('insumos/{insumos}/edit', ['as' => 'admin.insumos.edit', 'uses' => 'Admin\InsumoController@edit']);
+        $router->post('insumos/{insumos}/enable', ['as' => 'admin.insumos.enable', 'uses' => 'Admin\InsumoController@enable'])->middleware("needsPermission:insumos.availability");
+        $router->post('insumos/{insumos}/disable', ['as' => 'admin.insumos.disable', 'uses' => 'Admin\InsumoController@disable'])->middleware("needsPermission:insumos.availability");
     });
 
     # Grupo de Insumos
@@ -319,6 +321,10 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
         $router->delete('insumoGrupos/{insumoGrupos}', ['as' => 'admin.insumoGrupos.destroy', 'uses' => 'Admin\InsumoGrupoController@destroy']);
         $router->get('insumoGrupos/{insumoGrupos}', ['as' => 'admin.insumoGrupos.show', 'uses' => 'Admin\InsumoGrupoController@show'])->middleware("needsPermission:grupos_insumos.view");
         $router->get('insumoGrupos/{insumoGrupos}/edit', ['as' => 'admin.insumoGrupos.edit', 'uses' => 'Admin\InsumoGrupoController@edit']);
+        $router->post('insumoGrupos/{insumoGrupos}/enable', ['as' => 'admin.insumoGrupos.enable', 'uses' => 'Admin\InsumoGrupoController@enable'])
+            ->middleware('needsPermission:grupos_insumos.availability');
+        $router->post('insumoGrupos/{insumoGrupos}/disable', ['as' => 'admin.insumoGrupos.disable', 'uses' => 'Admin\InsumoGrupoController@disable'])
+            ->middleware('needsPermission:grupos_insumos.availability');
     });
 
     Route::get('solicitacaoInsumos', ['as'=> 'admin.solicitacaoInsumos.index', 'uses' => 'Admin\SolicitacaoInsumoController@index']);

@@ -17,6 +17,14 @@ class InsumoGrupoDataTable extends DataTable
         return $this->datatables
             ->eloquent($this->query())
             ->editColumn('action', 'admin.insumo_grupos.datatables_actions')
+            ->editColumn('active', function($obj) {
+                $user = auth()->user();
+
+                return '<input '
+                    . ($user->hasPermission('insumos.availability') ? '' : 'disabled')
+                    . ' type="checkbox" class="js-active-grupo" name="active[]" value="'
+                    . $obj->id . '" ' . ($obj->active ? 'checked' : '') . '>';
+            })
             ->make(true);
     }
 
@@ -93,6 +101,7 @@ class InsumoGrupoDataTable extends DataTable
         return [
             'codigo' => ['name' => 'id', 'data' => 'id'],
             'nome' => ['name' => 'nome', 'data' => 'nome'],
+            'active' => ['name' => 'active', 'data' => 'active', 'title' => 'Disponível'],
             'action' => ['title' => '#', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }

@@ -22,3 +22,9 @@
         </div>
     </div>
 @endsection
+
+@section('scripts')
+  <script src="/vendor/datatables/buttons.server-side.js"></script>
+  {!! $dataTable->scripts() !!}
+  <script src="{{ asset('js/insumo-grupo-activation.js') }}"></script>
+@endsection

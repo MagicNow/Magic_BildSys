@@ -2,8 +2,9 @@
 
 namespace App\DataTables\Admin;
 
-use App\Models\Insumo;
+use DB;
 use Form;
+use App\Models\Insumo;
 use Yajra\Datatables\Services\DataTable;
 
 class InsumoDataTable extends DataTable
@@ -23,8 +24,17 @@ class InsumoDataTable extends DataTable
                     'insumos.codigo',
                     'insumos.unidade_sigla',
                     'insumo_grupos.nome as grupo',
+                    DB::raw('IF(NOT insumo_grupos.active OR NOT insumos.active, 0, 1) as active')
                 ])
-                ->join('insumo_grupos','insumo_grupos.id','=','insumos.insumo_grupo_id'))
+            ->join('insumo_grupos','insumo_grupos.id','=','insumos.insumo_grupo_id'))
+            ->editColumn('active', function($obj) {
+                $user = auth()->user();
+
+                return '<input '
+                    . ($user->hasPermission('insumos.availability') ? '' : 'disabled')
+                    . ' type="checkbox" class="js-active-insumo" name="active[]" value="'
+                    . $obj->id . '" ' . ($obj->active ? 'checked' : '') . '>';
+            })
             ->editColumn('action', 'admin.insumos.datatables_actions')
             ->make(true);
     }
@@ -54,6 +64,7 @@ class InsumoDataTable extends DataTable
             ->ajax('')
             ->parameters([
                 'initComplete' => 'function () {
+
                     max = this.api().columns().count();
                     this.api().columns().every(function (col) {
                         if((col+1)<max){
@@ -104,6 +115,7 @@ class InsumoDataTable extends DataTable
             'unidade' => ['name' => 'unidade_sigla', 'data' => 'unidade_sigla'],
             'codigo' => ['name' => 'codigo', 'data' => 'codigo'],
             'grupo' => ['name' => 'insumo_grupos.nome', 'data' => 'grupo'],
+            'active' => ['name' => 'active', 'data' => 'active', 'title' => 'Disponível'],
             'action' => ['title' => '#', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }

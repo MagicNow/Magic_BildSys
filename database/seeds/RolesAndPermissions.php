@@ -97,11 +97,13 @@ class RolesAndPermissions extends Seeder
 
             'insumos.list' => 'Listagem de insumos',
             'insumos.view'   => 'Visualização de insumos',
+            'insumos.availability'   => 'Alterar disponibilidade de insumos',
 
             'template_planilhas.list' => 'Listagem de templates de planilha',
 
             'grupos_insumos.list' => 'Listagem de grupos de insumos',
             'grupos_insumos.view'   => 'Visualização de grupos de insumos',
+            'grupos_insumos.availability'   => 'Alterar disponibilidade de grupos de insumo',
 
             'fornecedores.list'   => 'Listagem de fornecedores',
             'fornecedores.create'   => 'Criação de fornecedores',

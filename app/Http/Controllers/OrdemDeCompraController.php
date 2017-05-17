@@ -210,7 +210,6 @@ class OrdemDeCompraController extends AppBaseController
             ->pluck('tarefa', 'id')
             ->toArray();
 
-
         return $lembretesHomeDataTable->render(
             'ordem_de_compras.compras',
             compact('obras', 'grupos', 'atividades')
@@ -494,7 +493,9 @@ class OrdemDeCompraController extends AppBaseController
     {
         if(isset($request->planejamento_id)){
             $planejamento = Planejamento::find($request->planejamento_id);
+
             $insumoGrupo = InsumoGrupo::find($request->insumo_grupos_id);
+
 //            return view('ordem_de_compras.obras_insumos', compact('planejamento', 'insumoGrupo'));
         }else{
             $obra = Obra::find($request->obra_id);
