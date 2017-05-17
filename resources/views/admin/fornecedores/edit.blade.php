@@ -13,6 +13,7 @@
                <div class="row">
                    {!! Form::model($fornecedores, ['route' => ['admin.fornecedores.update', $fornecedores->id], 'method' => 'patch']) !!}
 
+                        @include( 'flash::message' )
                         @include('admin.fornecedores.fields')
 
                    {!! Form::close() !!}

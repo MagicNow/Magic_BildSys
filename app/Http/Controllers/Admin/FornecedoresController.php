@@ -8,6 +8,7 @@ use App\Http\Requests\Admin\CreateFornecedoresRequest;
 use App\Http\Requests\Admin\UpdateFornecedoresRequest;
 use App\Models\Fornecedor;
 use App\Models\FornecedorServico;
+use App\Models\User;
 use App\Repositories\Admin\FornecedoresRepository;
 use App\Repositories\Admin\ValidationRepository;
 use App\Repositories\ImportacaoRepository;
@@ -61,6 +62,23 @@ class FornecedoresController extends AppBaseController
      */
     public function store(CreateFornecedoresRequest $request)
     {
+        $usuario_existente_deletado = User::Where('email', '=', $request->email)
+            ->withTrashed()
+            ->whereNotNull('deleted_at')
+            ->first();
+
+        $usuario_existente = User::Where('email', '=', $request->email)
+            ->first();
+
+        if (isset($usuario_existente_deletado)) {
+            $usuario_existente_deletado->forceDelete();
+        }
+
+        if (isset($usuario_existente)) {
+            Flash::error('O campo email já esta sendo utilizado em outro cadastro');
+            return redirect('/admin/fornecedores/create')->withInput($request->except('password', 'password_confirmation'));
+        }
+
         $input = $request->all();
 
         $fornecedor = $this->fornecedoresRepository->create($input);
@@ -134,6 +152,25 @@ class FornecedoresController extends AppBaseController
      */
     public function update($id, UpdateFornecedoresRequest $request)
     {
+        $usuario_existente_deletado = User::Where('email', '=', $request->email)
+            ->withTrashed()
+            ->whereNotNull('deleted_at')
+            ->first();
+
+        $fornecedor_user_id = Fornecedor::find($id)->user_id;
+        $usuario_existente = User::Where('email', '=', $request->email)
+            ->where('id', '!=', $fornecedor_user_id)
+            ->first();
+
+        if (isset($usuario_existente_deletado)) {
+            $usuario_existente_deletado->forceDelete();
+        }
+
+        if (isset($usuario_existente)) {
+            Flash::error('O campo email já esta sendo utilizado em outro cadastro');
+            return redirect('/admin/fornecedores/'.$id.'/edit')->withInput($request->except('password', 'password_confirmation'));
+        }
+
         $fornecedores = $this->fornecedoresRepository->findWithoutFail($id);
 
         if (empty($fornecedores)) {
