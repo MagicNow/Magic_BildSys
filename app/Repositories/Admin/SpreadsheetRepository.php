@@ -344,8 +344,17 @@ class SpreadsheetRepository
 
                                 # query verificar se existe insumo_id
                                 $insumo = Insumo::where('codigo', $codigo_insumo)->first();
+
                                 if ($insumo) {
-                                    $final['insumo_id'] = $insumo->id;
+                                    if (!$insumo->active) {
+                                        $erro = 1;
+                                        $mensagens_erro[] = 'Insumo - Código: ' . $codigo_insumo . ' não está disponivel.';
+                                    } else if (!$insumo->grupo->active) {
+                                        $erro = 1;
+                                        $mensagens_erro[] = 'Insumo - Código: ' . $codigo_insumo . ' faz parte de um grupo indisponível.';
+                                    } else {
+                                        $final['insumo_id'] = $insumo->id;
+                                    }
                                 } else {
                                     $erro = 1;
                                     $mensagens_erro[] = 'Insumo - Código: ' . $codigo_insumo . ' não foi encontrado.';
