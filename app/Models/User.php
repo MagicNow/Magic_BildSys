@@ -18,6 +18,8 @@ class User extends Authenticatable
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
+    const ROLE_SUPRIPRIMENTOS = 2;
+
     protected $dates = ['deleted_at'];
 
     // Fields that you do NOT want to audit.
