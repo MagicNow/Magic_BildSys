@@ -25,11 +25,16 @@ class ComprasDataTable extends DataTable
                 return "<input value='$obj->quantidade_compra' class='form-control money' onblur='quantidadeCompra($obj->id, $obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, this.value)'>";
             })
             ->editColumn('total', function($obj){
-                return "<input type='checkbox' onchange='totalCompra($obj->id, $obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, this.value)'>";
+                if($obj->quantidade_compra && $obj->total === 1) {
+                    return "<input type='checkbox' checked onchange='totalCompra($obj->id, $obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, this.value)'>";
+                }elseif($obj->quantidade_compra){
+                    return "<input type='checkbox' onchange='totalCompra($obj->id, $obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, this.value)'>";
+                }
             })
             ->editColumn('troca', function($obj){
                 if($obj->unidade_sigla === 'VB' && $obj->insumo_grupo_id == 1570){
-                    return "<button type='button' class='btn btn-xs btn-link' onchange='trocar($obj->id, this.value)'><i class='fa fa-exchange'></i></button>";
+                    return "<a href='/compras/trocaInsumos/$obj->id'><button type='button' class='btn btn-xs btn-link' ><i class='fa fa-exchange'></i></button></a>";
+//                    return "<button type='button' class='btn btn-xs btn-link' onclick='trocar($obj->id)'><i class='fa fa-exchange'></i></button>";
                 }
             })
             ->editColumn('nome', function($obj){
@@ -125,6 +130,8 @@ class ComprasDataTable extends DataTable
                                     AND ordem_de_compra_itens.subgrupo2_id = orcamentos.subgrupo2_id
                                     AND ordem_de_compra_itens.subgrupo3_id = orcamentos.subgrupo3_id
                                     AND ordem_de_compra_itens.servico_id = orcamentos.servico_id
+                                    AND ordem_de_compra_itens.aprovado IS NULL
+                                    AND ordem_de_compra_itens.deleted_at IS NULL
                                     AND ordem_de_compras.obra_id ='. $obra->id .'
                                 ),0
                             )
@@ -142,6 +149,8 @@ class ComprasDataTable extends DataTable
                         AND ordem_de_compra_itens.subgrupo2_id = orcamentos.subgrupo2_id
                         AND ordem_de_compra_itens.subgrupo3_id = orcamentos.subgrupo3_id
                         AND ordem_de_compra_itens.servico_id = orcamentos.servico_id
+                        AND ordem_de_compra_itens.aprovado IS NULL
+                        AND ordem_de_compra_itens.deleted_at IS NULL
                         AND ordem_de_compras.obra_id ='. $obra->id .'
                     ),2,\'de_DE\') as quantidade_compra'),
 //                    DB::raw('(SELECT count(ordem_de_compra_itens.id) FROM ordem_de_compra_itens
@@ -161,6 +170,7 @@ class ComprasDataTable extends DataTable
                     AND ordem_de_compra_itens.subgrupo2_id = orcamentos.subgrupo2_id
                     AND ordem_de_compra_itens.subgrupo3_id = orcamentos.subgrupo3_id
                     AND ordem_de_compra_itens.servico_id = orcamentos.servico_id
+                    AND ordem_de_compra_itens.aprovado IS NULL
                     AND ordem_de_compra_itens.deleted_at IS NULL
                     AND ordem_de_compra_itens.obra_id ='. $obra->id .' ) as total'),
                 ]

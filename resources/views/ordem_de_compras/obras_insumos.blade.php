@@ -242,6 +242,38 @@
             });
         }
 
+        function comprarTudo(id, grupo_id, subgrupo1_id, subgrupo2_id, subgrupo3_id, servico_id, qtd_total){
+            $.ajax({
+                url: "{{url('/compras/'.$obra->id.'/comprarTudo')}}",
+                data: {
+                    'id' : id,
+                    'grupo_id' : grupo_id,
+                    'subgrupo1_id' : subgrupo1_id,
+                    'subgrupo2_id' : subgrupo2_id,
+                    'subgrupo3_id' : subgrupo3_id,
+                    'servico_id' : servico_id,
+                    'qtd_total' : qtd_total,
+                    '_token' : $('meta[name="csrf-token"]').attr('content')
+                },
+                type: "POST"
+            }).done(function(retorno) {
+                window.LaravelDataTables["dataTableBuilder"].draw(false);
+            });
+        }
+
+        function trocar(id){
+            console.log(id);
+            $.ajax({
+                url: "{{url('/compras/trocaInsumos')}}",
+                data: {
+                    'id' : id
+                },
+                type: "GET"
+            }).done(function(retorno) {
+                window.LaravelDataTables["dataTableBuilder"].draw(false);
+            });
+        }
+
         $(function () {
             $('[data-toggle="tooltip"]').tooltip();
 
