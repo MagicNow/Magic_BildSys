@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.front')
 
 @section('content')
     <section class="content-header">
@@ -10,8 +10,8 @@
         <div class="box box-primary">
             <div class="box-body">
                 <div class="row" style="padding-left: 20px">
-                    @include('admin.tipo_equalizacao_tecnicas.show_fields')
-                    <a href="{!! route('admin.tipoEqualizacaoTecnicas.index') !!}" class="btn btn-default">
+                    @include('tipo_equalizacao_tecnicas.show_fields')
+                    <a href="{!! route('tipoEqualizacaoTecnicas.index') !!}" class="btn btn-default">
                        <i class="fa fa-arrow-left"></i>  {{ ucfirst( trans('common.back') )}}
                     </a>
                 </div>

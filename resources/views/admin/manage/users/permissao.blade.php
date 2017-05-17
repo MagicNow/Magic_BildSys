@@ -181,7 +181,7 @@
                 <div class="form-group">
                     <label class="col-md-3 control-label">Perfil*</label>
                     <div class="col-md-9">
-                        {{ Form::select('roles', $roles, null, ['class' => 'form-control']) }}
+                        {{ Form::select('roles', $roles, null, ['class' => 'form-control', 'id'=>'rolesSelect']) }}
                     </div>
                 </div>
 
@@ -214,7 +214,7 @@
                 <div class="form-group clearfix">
                     <label class="col-md-3 control-label">Permissão*</label>
                     <div class="col-md-9">
-                        {{ Form::select('permissions', $permissions, null, ['class' => 'form-control']) }}
+                        {{ Form::select('permissions', $permissions, null, ['class' => 'form-control', 'id'=>'permissoesSelect']) }}
                     </div>
                 </div>
 

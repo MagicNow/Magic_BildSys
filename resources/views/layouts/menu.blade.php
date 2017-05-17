@@ -62,9 +62,6 @@
     </ul>
 </li>
 
-<li class="{{ Request::is('admin/catalogo-acordos*') ? 'active' : '' }}">
-    <a href="{!! route('admin.catalogo_contratos.index') !!}"><i class="fa fa-file-text-o"></i><span>Catálogo</span></a>
-</li>
 
 <li class="{{ Request::is('admin/obras*') ? 'active' : '' }}">
     <a href="{!! route('admin.obras.index') !!}"><i class="fa fa-building"></i><span>Obras</span></a>
@@ -80,10 +77,6 @@
 
 <li class="{{ Request::is('templatePlanilhas*') ? 'active' : '' }}">
     <a href="{!! route('admin.templatePlanilhas.index') !!}"><i class="fa fa-table"></i><span>Template de planilhas</span></a>
-</li>
-
-<li class="{{ Request::is('tipoEqualizacaoTecnicas*') ? 'active' : '' }}">
-    <a href="{!! route('admin.tipoEqualizacaoTecnicas.index') !!}"><i class="fa fa-file-audio-o"></i><span>Equalização técnicas</span></a>
 </li>
 
 <li class="{{ Request::is('admin/retroalimentacaoObras*') ? 'active' : '' }}">

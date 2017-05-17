@@ -16,7 +16,7 @@
     <div class="content">
         <div class="clearfix"></div>
 
-        @include('flash::message')
+
         @include('adminlte-templates::common.errors')
         <style type="text/css">
             #carrinho ul{

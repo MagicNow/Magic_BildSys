@@ -128,9 +128,7 @@ class UsersController extends AppBaseController
 
         $roles = \DB::table("roles")->orderBy('name')->pluck('name', 'name');
         $permissions = \DB::table("permissions")->orderBy('readable_name')->pluck('readable_name', 'name');
-
-        $roles->prepend('------ Selecione ------', 0);
-        $permissions->prepend('------ Selecione ------', 0);
+        
 
         return view('admin.manage.users.show')->with('user', $user)
             ->with('roles', $roles)
@@ -165,8 +163,6 @@ class UsersController extends AppBaseController
         $roles = \DB::table("roles")->orderBy('name')->pluck('name', 'name');
         $permissions = \DB::table("permissions")->orderBy('readable_name')->pluck('readable_name', 'name');
 
-        $roles->prepend('------ Selecione ------', 0);
-        $permissions->prepend('------ Selecione ------', 0);
 
         return view('admin.manage.users.edit')->with('user', $user)
             ->with('roles', $roles)
