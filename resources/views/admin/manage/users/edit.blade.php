@@ -17,7 +17,7 @@
            <div class="box-body">
                <div class="row">
                    {!! Form::model($user, ['route' => ['users.update', $user->id], 'method' => 'patch']) !!}
-                        @include('flash::message')
+
 
                         @include('admin.manage.users.fields')
 
@@ -29,3 +29,25 @@
        </div>
    </div>
 @endsection
+
+@section('scripts')
+    @parent
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#permissoesSelect").select2({
+                dropdownParent: $("#permission-modal-{{ $user->id }}"),
+                theme: 'bootstrap',
+                placeholder: "-",
+                language: "pt-BR",
+                allowClear: true
+            });
+            $("#rolesSelect").select2({
+                dropdownParent: $("#role-modal-{{ $user->id }}"),
+                theme: 'bootstrap',
+                placeholder: "-",
+                language: "pt-BR",
+                allowClear: true
+            });
+        });
+    </script>
+@stop

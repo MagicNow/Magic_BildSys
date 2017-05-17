@@ -24,7 +24,7 @@
         <h1 class="pull-left">Quadro De Concorrencias</h1>
         <h1 class="pull-right">
            <a class="btn btn-primary btn-lg btn-flat pull-right" style="margin-top: -10px;margin-bottom: 5px" href="{!! url('/ordens-de-compra/insumos-aprovados') !!}">
-           <i class="fa fa-plus"></i> Criar novo Quadro de Concorrência
+           <i class="fa fa-plus"></i> Novo Quadro de Concorrência
            </a>
         </h1>
     </section>

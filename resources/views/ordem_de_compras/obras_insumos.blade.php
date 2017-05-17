@@ -16,9 +16,9 @@
         <div class="modal-header">
             <div class="col-md-12">
                 <div class="col-md-6">
-                    <span class="pull-left title">
+                    <h3 class="pull-left title">
                         <a href="{{ url('/compras') }}"><i class="fa fa-arrow-left" aria-hidden="true"></i></a> Comprar Insumos
-                    </span>
+                    </h3>
                 </div>
                 <div class="col-md-6 text-right">
                     {{--href="{{url('compras/insumos?planejamento_id='.$planejamento->id.'&insumo_grupos_id='    .$insumoGrupo->id)}}"--}}
@@ -87,7 +87,7 @@
                             <div class="form-group col-sm-6" style="width:20%">
                                 <div class="js-datatable-filter-form">
                                     {!! Form::label('subgrupo2_id', 'SubGrupo-2:') !!}
-                                    {!! Form::select('subgrupo2_id',[''=>'-']+$grupos, null, [
+                                    {!! Form::select('subgrupo2_id',[''=>'-'], null, [
                                         'class'=>'form-control select2',
                                         'id'=>'subgrupo2_id',
                                         'disabled'=>'disabled',
@@ -104,7 +104,7 @@
                             <div class="form-group col-sm-6" style="width:20%">
                                 <div class="js-datatable-filter-form">
                                     {!! Form::label('subgrupo3_id', 'SubGrupo-3:') !!}
-                                    {!! Form::select('subgrupo3_id',[''=>'-']+$grupos, null, [
+                                    {!! Form::select('subgrupo3_id',[''=>'-'], null, [
                                         'class'=>'form-control select2',
                                         'id'=>'subgrupo3_id',
                                         'disabled'=>'disabled',
@@ -121,7 +121,7 @@
                             <div class="form-group col-sm-6" style="width:20%">
                                 <div class="js-datatable-filter-form">
                                     {!! Form::label('servico_id', 'Serviço:') !!}
-                                    {!! Form::select('servico_id',[''=>'-']+$grupos, null, [
+                                    {!! Form::select('servico_id',[''=>'-'], null, [
                                         'class'=>'form-control select2',
                                         'id'=>'servico_id',
                                         'disabled'=>'disabled',
@@ -202,9 +202,52 @@
 @endsection
 
 @section('scripts')
-    <script>
+    @parent
+    <script type="text/javascript">
+        function quantidadeCompra(id, grupo_id, subgrupo1_id, subgrupo2_id, subgrupo3_id, servico_id, value){
+            $.ajax({
+                url: "{{url('/compras/'.$obra->id.'/addCarrinho')}}",
+                data: {
+                    'id' : id,
+                    'grupo_id' : grupo_id,
+                    'subgrupo1_id' : subgrupo1_id,
+                    'subgrupo2_id' : subgrupo2_id,
+                    'subgrupo3_id' : subgrupo3_id,
+                    'servico_id' : servico_id,
+                    'quantidade_compra' : (value == '' ? 0 : value),
+                    '_token' : $('meta[name="csrf-token"]').attr('content')
+                },
+                type: "POST"
+            }).done(function(retorno) {
+                window.LaravelDataTables["dataTableBuilder"].draw(false);
+            });
+        }
+
+        function totalCompra(id, grupo_id, subgrupo1_id, subgrupo2_id, subgrupo3_id, servico_id, value){
+            $.ajax({
+                url: "{{url('/compras/'.$obra->id.'/totalParcial')}}",
+                data: {
+                    'id' : id,
+                    'grupo_id' : grupo_id,
+                    'subgrupo1_id' : subgrupo1_id,
+                    'subgrupo2_id' : subgrupo2_id,
+                    'subgrupo3_id' : subgrupo3_id,
+                    'servico_id' : servico_id,
+                    'total' : value,
+                    '_token' : $('meta[name="csrf-token"]').attr('content')
+                },
+                type: "POST"
+            }).done(function(retorno) {
+                window.LaravelDataTables["dataTableBuilder"].draw(false);
+            });
+        }
+
         $(function () {
             $('[data-toggle="tooltip"]').tooltip();
+
+            $('.js-datatable-filter-form :input').on('change', function (e) {
+                window.LaravelDataTables["dataTableBuilder"].draw();
+            });
 
             $('.js-datatable-filter-form .select2').on('select2:select', function (evt) {
                 window.LaravelDataTables["dataTableBuilder"].draw();
@@ -227,94 +270,11 @@
             });
         });
 
-        @if(isset($obra))
-        $(document).ready(function() {
-            verificarFiltroGrupos();
-            var dados;
-            var url;
-            array_grupos = [];
-
-            $('#btn-incluir-insumo').click(function (e) {
-                e.preventDefault();
-                $.get("{{url('planejamentosByObra')}}", {obra_id: "{{$obra->id}}"})
-                    .done(function (data) {
-                        dados = JSON.parse(JSON.stringify(data));
-                        if(dados.length >0){
-                            $('#btnGoInsumos').show()
-                            $(".js-example-data-array").select2({
-                                data: dados
-                            })
-                            url = '{{url("compras/insumos") }}?planejamento_id='+$(".js-example-data-array").val()+'&obra_id={{$obra->id}}';
-                            $('#btnGoInsumos').attr('href', url);
-                            $("body").on('change','.js-example-data-array', function () {
-                                url = '{{url("compras/insumos") }}?planejamento_id='+$(".js-example-data-array").val();
-                                $('#btnGoInsumos').attr('href', url);
-                            })
-                        }else{
-                            $('#btnGoInsumos').hide();
-                        }
-
-                    });
-            });
-        });
-
-        {{--function selectgrupo(id, change, tipo, parametro){--}}
-            {{--var grupo = '';--}}
-            {{--var grupos_rota = '';--}}
-            {{--var url_grupos = '';--}}
-            {{--var rota = "{{url('/admin/planejamentos/atividade/grupos')}}/";--}}
-            {{--if(tipo == 'servicos'){--}}
-                {{--rota = "{{url('/admin/planejamentos/atividade/servicos')}}/";--}}
-            {{--}--}}
-            {{--if(id){--}}
-                {{--$('.box.box-primary').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');--}}
-                {{--$.ajax({--}}
-                    {{--url: rota + id--}}
-                {{--}).done(function(retorno) {--}}
-                    {{--options = '<option value="">Selecione</option>';--}}
-                    {{--$('#'+change).html(options);--}}
-                    {{--$.each(retorno,function(index, value){--}}
-                        {{--options += '<option value="'+index+'">'+value+'</option>';--}}
-                    {{--});--}}
-                    {{--$('#'+change).html(options);--}}
-                    {{--$('.overlay').remove();--}}
-                    {{--$('#'+change).attr('disabled',false);--}}
-
-                    {{--grupo = '&' + parametro + '=' + id;--}}
-                    {{--array_grupos.push(grupo);--}}
-
-                    {{--$.each(array_grupos, function (index, value) {--}}
-                        {{--grupos_rota += value;--}}
-                    {{--});--}}
-
-                    {{--var result = {};--}}
-                    {{--keyValuePairs = grupos_rota.slice(1).split("&");--}}
-                    {{--if(keyValuePairs!=""){--}}
-                        {{--keyValuePairs.forEach(function(keyValuePair) {--}}
-                            {{--keyValuePair = keyValuePair.split('=');--}}
-                            {{--result[decodeURIComponent(keyValuePair[0])] = decodeURIComponent(keyValuePair[1]);--}}
-                        {{--});--}}
-                    {{--}--}}
-
-                    {{--if(Object.keys(result).length){--}}
-                        {{--$.each(result, function (index, value) {--}}
-                            {{--url_grupos += '&' + index + '=' + value;--}}
-                        {{--});--}}
-                    {{--}--}}
-
-                    {{--history.pushState("", document.title, '/compras/obrasInsumos?obra_id={{$obra->id}}' + url_grupos);--}}
-                    {{--$('#comprar_tudo_de_tudo').attr('href', '/ordens-de-compra/carrinho/comprar-tudo-de-tudo?obra_id={{$obra->id}}' + url_grupos);--}}
-                    {{--app.$children[0].loadData();--}}
-                {{--}).fail(function() {--}}
-                    {{--$('.overlay').remove();--}}
-                {{--});--}}
-            {{--}--}}
-        {{--}--}}
-
         function selectgrupo(id, change, tipo){
-            var rota = "{{url('/admin/planejamentos/atividade/grupos')}}/";
+            console.log('id: ', id, 'change: ', change, 'tipo: ', tipo);
+            var rota = "{{url('ordens-de-compra/grupos')}}/";
             if(tipo == 'servicos'){
-                rota = "{{url('/admin/planejamentos/atividade/servicos')}}/";
+                rota = "{{url('ordens-de-compra/servicos')}}/";
             }
             if(id){
                 $('.box.box-primary').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
@@ -331,41 +291,35 @@
                     $('#'+change).attr('disabled',false);
                 }).fail(function() {
                 });
+            }else{
+                if(change == 'subgrupo1_id'){
+                    $('#subgrupo1_id').val(null).trigger('change');
+                    $('#subgrupo2_id').val(null).trigger('change');
+                    $('#subgrupo3_id').val(null).trigger('change');
+                    $('#servico_id').val(null).trigger('change');
+
+                    $('#subgrupo1_id').attr('disabled',true);
+                    $('#subgrupo2_id').attr('disabled',true);
+                    $('#subgrupo3_id').attr('disabled',true);
+                    $('#servico_id').attr('disabled',true);
+                }else if(change == 'subgrupo2_id'){
+                    $('#subgrupo2_id').val(null).trigger('change');
+                    $('#subgrupo3_id').val(null).trigger('change');
+                    $('#servico_id').val(null).trigger('change');
+
+                    $('#subgrupo2_id').attr('disabled',true);
+                    $('#subgrupo3_id').attr('disabled',true);
+                    $('#servico_id').attr('disabled',true);
+                }else if(change == 'subgrupo3_id'){
+                    $('#subgrupo3_id').val(null).trigger('change');
+                    $('#servico_id').val(null).trigger('change');
+
+                    $('#subgrupo3_id').attr('disabled',true);
+                    $('#servico_id').attr('disabled',true);
+                }else if(change == 'servico_id'){
+                    $('#servico_id').attr('disabled',true);
+                }
             }
         }
-
-        function verificarFiltroGrupos() {
-            @php
-                $grupo = \Illuminate\Support\Facades\Input::get('grupo');
-                $subgrupo1 = \Illuminate\Support\Facades\Input::get('subgrupo1');
-                $subgrupo2 = \Illuminate\Support\Facades\Input::get('subgrupo2');
-                $subgrupo3 = \Illuminate\Support\Facades\Input::get('subgrupo3');
-                $servico = \Illuminate\Support\Facades\Input::get('servico');
-            @endphp
-            @if($grupo)
-                selectgrupo('{{$grupo}}', 'subgrupo1_id', 'grupos', 'grupo');
-            @endif
-            @if($subgrupo1)
-                selectgrupo('{{$subgrupo1}}', 'subgrupo2_id', 'grupos', 'subgrupo1');
-            @endif
-            @if($subgrupo2)
-                selectgrupo('{{$subgrupo2}}', 'subgrupo3_id', 'grupos', 'subgrupo2');
-            @endif
-            @if($subgrupo3)
-                selectgrupo('{{$subgrupo3}}', 'servico_id', 'servicos', 'subgrupo3');
-            @endif
-            @if($servico)
-                selectgrupo('{{$servico}}', null, 'servicos', 'servico');
-            @endif
-
-            setTimeout(function(){
-                $('#grupo_id').val('{{$grupo}}');
-                $('#subgrupo1_id').val('{{$subgrupo1}}');
-                $('#subgrupo2_id').val('{{$subgrupo2}}');
-                $('#subgrupo3_id').val('{{$subgrupo3}}');
-                $('#servico_id').val('{{$servico}}');
-            }, 1000);
-        }
-        @endif
     </script>
 @endsection

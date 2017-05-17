@@ -36,7 +36,7 @@ class CatalogoContratoDataTable extends DataTable
 
                 $query->whereRaw("(catalogo_contratos.valor) like ?", ["%$result%"]);
             })
-            ->editColumn('action', 'admin.catalogo_contratos.datatables_actions')
+            ->editColumn('action', 'catalogo_contratos.datatables_actions')
             ->make(true);
     }
 

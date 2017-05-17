@@ -82,7 +82,7 @@ $count_insumos = 0;
             {!! Form::hidden('insumos['.$insumo->id.'][id]', $insumo->id) !!}
             <div class="col-md-11">
                 <label>Insumo:</label>
-                {!! Form::select('insumos['.$insumo->id.'][insumo_id]',[''=>'Escolha...']+ \App\Models\Insumo::pluck('nome','id')->toArray(), $insumo->insumo_id, ['class' => 'form-control select2 insumo_select_'.$insumo->id,'required'=>'required', 'id' => 'insumo_select_'.$insumo->id]) !!}
+                {!! Form::select('insumos['.$insumo->id.'][insumo_id]',[''=>'Escolha...']+ \App\Models\Insumo::where('id',$insumo->insumo_id)->pluck('nome','id')->toArray(), $insumo->insumo_id, ['class' => 'form-control select2 insumos_existentes insumo_select_'.$insumo->id,'required'=>'required', 'id' => 'insumo_select_'.$insumo->id]) !!}
             </div>
             <div class="col-md-1" align="right" style="margin-top:25px;">
                 <button type="button" onclick="deleteInsumo({{$insumo->id}})" class="btn btn btn-danger" aria-label="Close" title="Remover" >
@@ -118,8 +118,8 @@ $count_insumos = 0;
 
 <!-- Submit Field -->
 <div class="form-group col-sm-12">
-    {!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save') ), ['class' => 'btn btn-success pull-right', 'type'=>'submit']) !!}
-    <a href="{!! route('admin.catalogo_contratos.index') !!}" class="btn btn-default"><i class="fa fa-times"></i>  {{ ucfirst( trans('common.cancel') )}}</a>
+    {!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save') ), ['class' => 'btn btn-success pull-right btn-lg btn-flat', 'type'=>'submit']) !!}
+    <a href="{!! route('catalogo_contratos.index') !!}" class="btn btn-default btn-lg btn-flat"><i class="fa fa-times"></i>  {{ ucfirst( trans('common.cancel') )}}</a>
 </div>
 
 @section('scripts')
@@ -171,7 +171,7 @@ $count_insumos = 0;
                     language: "pt-BR",
 
                     ajax: {
-                        url: "{{ route('admin.catalogo_contratos.busca_insumos') }}",
+                        url: "{{ route('catalogo_contratos.busca_insumos') }}",
                         dataType: 'json',
                         delay: 250,
 
@@ -228,7 +228,7 @@ $count_insumos = 0;
         },
         function(){
             $.ajax({
-                url: "/admin/insumo/delete",
+                url: "/catalogo-acordos-insumo/delete",
                 data: {insumo : what}
             }).done(function(retorno) {
                 if(retorno.sucesso){
@@ -238,26 +238,6 @@ $count_insumos = 0;
                     swal(retorno.resposta.toString());
                 }
             });
-        });
-    }
-
-    function calcularValorTotalInsumo(what) {
-        var quantidade = $('#qtd_'+what).val();
-        var valor_unitario = $('#valor_unitario_'+what).val();
-
-        $.ajax({
-            url: "/admin/insumo/valor_total",
-            data: {
-               'quantidade' : quantidade,
-               'valor_unitario' : valor_unitario
-            }
-        }).done(function(retorno) {
-            if(retorno.valor_total){
-                $('#valor_total_span_'+what).html(retorno.valor_total).addClass('money');
-                $('#valor_total_'+what).val(retorno.valor_total);
-            }else{
-                swal('Erro ao calcular o valor total');
-            }
         });
     }
 
@@ -300,12 +280,53 @@ $count_insumos = 0;
     }
 
     $(function(){
+        $('.insumos_existentes').select2({
+            allowClear: true,
+            placeholder: "Escolha...",
+            language: "pt-BR",
+
+            ajax: {
+                url: "{{ route('catalogo_contratos.busca_insumos') }}",
+                dataType: 'json',
+                delay: 250,
+
+                data: function (params) {
+                    return {
+                        q: params.term, // search term
+                        page: params.page
+                    };
+                },
+
+                processResults: function (result, params) {
+                    // parse the results into the format expected by Select2
+                    // since we are using custom formatting functions we do not need to
+                    // alter the remote JSON data, except to indicate that infinite
+                    // scrolling can be used
+                    params.page = params.page || 1;
+
+                    return {
+                        results: result.data,
+                        pagination: {
+                            more: (params.page * result.per_page) < result.total
+                        }
+                    };
+                },
+                cache: true
+            },
+            escapeMarkup: function (markup) {
+                return markup;
+            }, // let our custom formatter work
+            minimumInputLength: 1,
+            templateResult: formatInsumoResult, // omitted for brevity, see the source of this page
+            templateSelection: formatInsumoResultSelection // omitted for brevity, see the source of this page
+        });
+
         $('#fornecedor_cod').select2({
             allowClear: true,
             placeholder:"-",
             language: "pt-BR",
             ajax: {
-                url: "{{ route('admin.catalogo_contratos.busca_fornecedores') }}",
+                url: "{{ route('catalogo_contratos.busca_fornecedores') }}",
                 dataType: 'json',
                 delay: 250,
 

@@ -13,6 +13,7 @@
                <div class="row">
                    {!! Form::model($workflowAlcada, ['route' => ['admin.workflowAlcadas.update', $workflowAlcada->id], 'method' => 'patch']) !!}
 
+                        @include( 'flash::message' )
                         @include('admin.workflow_alcadas.fields')
 
                    {!! Form::close() !!}

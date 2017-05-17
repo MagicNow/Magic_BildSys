@@ -12,13 +12,19 @@ class RolesAndPermissions extends Seeder
      */
     public function run()
     {
+        Schema::disableForeignKeyConstraints();
         \Illuminate\Support\Facades\DB::table('permission_role')->delete();
+        \Illuminate\Support\Facades\DB::table('permission_role')->truncate();
         \Illuminate\Support\Facades\DB::table('permission_user')->delete();
+        \Illuminate\Support\Facades\DB::table('permission_user')->truncate();
         \Illuminate\Support\Facades\DB::table('roles')->delete();
+        \Illuminate\Support\Facades\DB::table('roles')->truncate();
         \Illuminate\Support\Facades\DB::table('permissions')->delete();
+        \Illuminate\Support\Facades\DB::table('permissions')->truncate();
         $cargos = [
             'Administrador',
-            'Fornecedor'
+            'Suprimentos',
+            'Fornecedor',
         ];
 
         $roles = [];
@@ -84,11 +90,6 @@ class RolesAndPermissions extends Seeder
             'motivos_reprovacao.edit'   => 'Edição de motivos de reprovação',
             'motivos_reprovacao.view'   => 'Visualização de motivos de reprovação',
 
-            'contratos.list' => 'Listagem de contratos',
-            'contratos.create' => 'Criação de contratos',
-            'contratos.edit'   => 'Edição de contratos',
-            'contratos.view'   => 'Visualização de contratos',
-
             'obras.list' => 'Listagem de obras',
             'obras.create' => 'Criação de obras',
             'obras.edit'   => 'Edição de obras',
@@ -103,11 +104,6 @@ class RolesAndPermissions extends Seeder
             'grupos_insumos.list' => 'Listagem de grupos de insumos',
             'grupos_insumos.view'   => 'Visualização de grupos de insumos',
             'grupos_insumos.availability'   => 'Alterar disponibilidade de grupos de insumo',
-
-            'tipoEqualizacaoTecnicas.list'   => 'Listagem de equalização tecnica',
-            'tipoEqualizacaoTecnicas.create'   => 'Criação de equalização tecnica',
-            'tipoEqualizacaoTecnicas.edit'   => 'Edição de equalização tecnica',
-            'tipoEqualizacaoTecnicas.delete'   => 'Remoção de equalização tecnica',
 
             'fornecedores.list'   => 'Listagem de fornecedores',
             'fornecedores.create'   => 'Criação de fornecedores',
@@ -139,6 +135,16 @@ class RolesAndPermissions extends Seeder
             'quadroDeConcorrencias.view' => 'Visualização de Quadro De Concorrência',
             'quadroDeConcorrencias.informar_valor' => 'Informar valores em quadros de concorrência',
             'quadroDeConcorrencias.delete'   => 'Remoção Física de Quadro De Concorrência',
+
+            'catalogo_acordos.list' => 'Listagem de Catálogo Acordos',
+            'catalogo_acordos.create' => 'Criação de Catálogo Acordos',
+            'catalogo_acordos.edit'   => 'Edição de Catálogo Acordos',
+            'catalogo_acordos.view'   => 'Visualização de Catálogo Acordos',
+
+            'equalizacao_tecnicas.list'   => 'Listagem de equalização tecnica',
+            'equalizacao_tecnicas.create'   => 'Criação de equalização tecnica',
+            'equalizacao_tecnicas.edit'   => 'Edição de equalização tecnica',
+            'equalizacao_tecnicas.delete'   => 'Remoção de equalização tecnica',
         ];
 
         $permissionAccess = [];
@@ -148,16 +154,37 @@ class RolesAndPermissions extends Seeder
 
         $users = User::where('id', '>', 1)->get();
         foreach ($users as $user) {
-            $user->attachPermission($permissionAccess[0]);
+            $user->attachPermission(Defender::findPermission('site.dashboard'));
         }
-
+        // Adiciona permissões no SuperUser
         foreach ($permissionAccess as $permission)
         {
             $roleSuperuser->attachPermission($permission);
         }
-
-        $roles[1]->attachPermission(Defender::findPermission('quadroDeConcorrencias.informar_valor'));
-        $roles[1]->attachPermission(Defender::findPermission('quadroDeConcorrencias.list'));
+        
+        // Permissões para Suprimentos
         $roles[1]->attachPermission(Defender::findPermission('site.dashboard'));
+        $roles[1]->attachPermission(Defender::findPermission('retroalimentacao.create'));
+        $roles[1]->attachPermission(Defender::findPermission('quadroDeConcorrencias.list'));
+        $roles[1]->attachPermission(Defender::findPermission('quadroDeConcorrencias.create'));
+        $roles[1]->attachPermission(Defender::findPermission('quadroDeConcorrencias.edit'));
+        $roles[1]->attachPermission(Defender::findPermission('quadroDeConcorrencias.view'));
+        $roles[1]->attachPermission(Defender::findPermission('quadroDeConcorrencias.informar_valor'));
+        $roles[1]->attachPermission(Defender::findPermission('catalogo_acordos.list'));
+        $roles[1]->attachPermission(Defender::findPermission('catalogo_acordos.create'));
+        $roles[1]->attachPermission(Defender::findPermission('catalogo_acordos.edit'));
+        $roles[1]->attachPermission(Defender::findPermission('catalogo_acordos.view'));
+        $roles[1]->attachPermission(Defender::findPermission('equalizacao_tecnicas.list'));
+        $roles[1]->attachPermission(Defender::findPermission('equalizacao_tecnicas.create'));
+        $roles[1]->attachPermission(Defender::findPermission('equalizacao_tecnicas.edit'));
+        $roles[1]->attachPermission(Defender::findPermission('equalizacao_tecnicas.delete'));
+        $roles[1]->attachPermission(Defender::findPermission('fornecedores.create'));
+        $roles[1]->attachPermission(Defender::findPermission('fornecedores.list'));
+
+        // Permissões para Fornecedor
+        $roles[2]->attachPermission(Defender::findPermission('quadroDeConcorrencias.informar_valor'));
+        $roles[2]->attachPermission(Defender::findPermission('quadroDeConcorrencias.list'));
+        $roles[2]->attachPermission(Defender::findPermission('site.dashboard'));
+        Schema::enableForeignKeyConstraints();
     }
 }
