@@ -16,9 +16,9 @@
         <div class="modal-header">
             <div class="col-md-12">
                 <div class="col-md-6">
-                    <span class="pull-left title">
+                    <h3 class="pull-left title">
                         <a href="{{ url('/compras') }}"><i class="fa fa-arrow-left" aria-hidden="true"></i></a> Comprar Insumos
-                    </span>
+                    </h3>
                 </div>
                 <div class="col-md-6 text-right">
                     {{--href="{{url('compras/insumos?planejamento_id='.$planejamento->id.'&insumo_grupos_id='    .$insumoGrupo->id)}}"--}}
@@ -87,7 +87,7 @@
                             <div class="form-group col-sm-6" style="width:20%">
                                 <div class="js-datatable-filter-form">
                                     {!! Form::label('subgrupo2_id', 'SubGrupo-2:') !!}
-                                    {!! Form::select('subgrupo2_id',[''=>'-']+$grupos, null, [
+                                    {!! Form::select('subgrupo2_id',[''=>'-'], null, [
                                         'class'=>'form-control select2',
                                         'id'=>'subgrupo2_id',
                                         'disabled'=>'disabled',
@@ -104,7 +104,7 @@
                             <div class="form-group col-sm-6" style="width:20%">
                                 <div class="js-datatable-filter-form">
                                     {!! Form::label('subgrupo3_id', 'SubGrupo-3:') !!}
-                                    {!! Form::select('subgrupo3_id',[''=>'-']+$grupos, null, [
+                                    {!! Form::select('subgrupo3_id',[''=>'-'], null, [
                                         'class'=>'form-control select2',
                                         'id'=>'subgrupo3_id',
                                         'disabled'=>'disabled',
@@ -121,7 +121,7 @@
                             <div class="form-group col-sm-6" style="width:20%">
                                 <div class="js-datatable-filter-form">
                                     {!! Form::label('servico_id', 'Serviço:') !!}
-                                    {!! Form::select('servico_id',[''=>'-']+$grupos, null, [
+                                    {!! Form::select('servico_id',[''=>'-'], null, [
                                         'class'=>'form-control select2',
                                         'id'=>'servico_id',
                                         'disabled'=>'disabled',
@@ -202,9 +202,33 @@
 @endsection
 
 @section('scripts')
-    <script>
+    @parent
+    <script type="text/javascript">
+        function quantidadeCompra(id, grupo_id, subgrupo1_id, subgrupo2_id, subgrupo3_id, servico_id, value){
+            $.ajax({
+                url: "{{url('/compras/'.$obra->id.'/addCarrinho')}}",
+                data: {
+                    'id' : id,
+                    'grupo_id' : grupo_id,
+                    'subgrupo1_id' : subgrupo1_id,
+                    'subgrupo2_id' : subgrupo2_id,
+                    'subgrupo3_id' : subgrupo3_id,
+                    'servico_id' : servico_id,
+                    'quantidade_compra' : (value == '' ? 0 : value),
+                    '_token' : $('meta[name="csrf-token"]').attr('content')
+                },
+                type: "POST"
+            }).done(function(retorno) {
+                window.LaravelDataTables["dataTableBuilder"].draw(false);
+            });
+        }
+
         $(function () {
             $('[data-toggle="tooltip"]').tooltip();
+
+            $('.js-datatable-filter-form :input').on('change', function (e) {
+                window.LaravelDataTables["dataTableBuilder"].draw();
+            });
 
             $('.js-datatable-filter-form .select2').on('select2:select', function (evt) {
                 window.LaravelDataTables["dataTableBuilder"].draw();
@@ -226,38 +250,6 @@
                 });
             });
         });
-
-        {{--@if(isset($obra))--}}
-            {{--$(document).ready(function() {--}}
-                {{--verificarFiltroGrupos();--}}
-                {{--var dados;--}}
-                {{--var url;--}}
-                {{--array_grupos = [];--}}
-
-                {{--$('#btn-incluir-insumo').click(function (e) {--}}
-                    {{--e.preventDefault();--}}
-                    {{--$.get("{{url('planejamentosByObra')}}", {obra_id: "{{$obra->id}}"})--}}
-                        {{--.done(function (data) {--}}
-                            {{--dados = JSON.parse(JSON.stringify(data));--}}
-                            {{--if(dados.length >0){--}}
-                                {{--$('#btnGoInsumos').show()--}}
-                                {{--$(".js-example-data-array").select2({--}}
-                                    {{--data: dados--}}
-                                {{--})--}}
-                                {{--url = '{{url("compras/insumos") }}?planejamento_id='+$(".js-example-data-array").val()+'&obra_id={{$obra->id}}';--}}
-                                {{--$('#btnGoInsumos').attr('href', url);--}}
-                                {{--$("body").on('change','.js-example-data-array', function () {--}}
-                                    {{--url = '{{url("compras/insumos") }}?planejamento_id='+$(".js-example-data-array").val();--}}
-                                    {{--$('#btnGoInsumos').attr('href', url);--}}
-                                {{--})--}}
-                            {{--}else{--}}
-                                {{--$('#btnGoInsumos').hide();--}}
-                            {{--}--}}
-
-                        {{--});--}}
-                {{--});--}}
-            {{--});--}}
-        {{--@endif--}}
 
         function selectgrupo(id, change, tipo){
             console.log('id: ', id, 'change: ', change, 'tipo: ', tipo);
@@ -282,10 +274,30 @@
                 });
             }else{
                 if(change == 'subgrupo1_id'){
-                    options = '';
+                    $('#subgrupo1_id').val(null).trigger('change');
+                    $('#subgrupo2_id').val(null).trigger('change');
+                    $('#subgrupo3_id').val(null).trigger('change');
+                    $('#servico_id').val(null).trigger('change');
+
                     $('#subgrupo1_id').attr('disabled',true);
                     $('#subgrupo2_id').attr('disabled',true);
                     $('#subgrupo3_id').attr('disabled',true);
+                    $('#servico_id').attr('disabled',true);
+                }else if(change == 'subgrupo2_id'){
+                    $('#subgrupo2_id').val(null).trigger('change');
+                    $('#subgrupo3_id').val(null).trigger('change');
+                    $('#servico_id').val(null).trigger('change');
+
+                    $('#subgrupo2_id').attr('disabled',true);
+                    $('#subgrupo3_id').attr('disabled',true);
+                    $('#servico_id').attr('disabled',true);
+                }else if(change == 'subgrupo3_id'){
+                    $('#subgrupo3_id').val(null).trigger('change');
+                    $('#servico_id').val(null).trigger('change');
+
+                    $('#subgrupo3_id').attr('disabled',true);
+                    $('#servico_id').attr('disabled',true);
+                }else if(change == 'servico_id'){
                     $('#servico_id').attr('disabled',true);
                 }
             }
