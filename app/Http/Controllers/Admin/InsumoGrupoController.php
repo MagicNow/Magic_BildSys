@@ -148,4 +148,14 @@ class InsumoGrupoController extends AppBaseController
 
         return redirect(route('admin.insumoGrupos.index'));
     }
+
+    public function enable($id)
+    {
+        return $this->insumoGrupoRepository->enable($id);
+    }
+
+    public function disable($id)
+    {
+        return $this->insumoGrupoRepository->disable($id);
+    }
 }

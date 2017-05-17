@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
+    @include( 'flash::message' )
+
     <section class="content-header">
         <h1 class="pull-left">Importar orçamentos</h1>
     </section>
@@ -18,7 +20,7 @@
                         </div>
                         <div id="tipo_orcamento" class="form-group">
                             {!! Form::label('orcamento_tipo_id', 'Tipo Orçamento:') !!}
-                            {!! Form::select('orcamento_tipo_id', ['' => 'Escolha...']+$orcamento_tipos, null, ['class' => 'form-control']) !!}
+                            {!! Form::select('orcamento_tipo_id', ['' => 'Escolha...']+$orcamento_tipos, null, ['class' => 'form-control', 'required'=>'required']) !!}
                         </div>
                         <div class="form-group">
                             {!! Form::label('template_id', 'Template:') !!}

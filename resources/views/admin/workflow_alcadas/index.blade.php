@@ -17,6 +17,7 @@
         <div class="clearfix"></div>
         <div class="box box-primary">
             <div class="box-body">
+                    @include( 'flash::message' )
                     @include('admin.workflow_alcadas.table')
             </div>
         </div>

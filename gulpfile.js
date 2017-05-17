@@ -202,4 +202,12 @@ elixir(function(mix) {
         'quadro-de-concorrencia.js',
     ], 'public/js/qc.js');
 
+    mix.scripts([
+        'insumo-activation.js',
+    ], 'public/js/insumo-activation.js');
+
+    mix.scripts([
+        'insumo-grupo-activation.js',
+    ], 'public/js/insumo-grupo-activation.js');
+
 });

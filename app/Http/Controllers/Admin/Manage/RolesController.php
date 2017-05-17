@@ -42,7 +42,7 @@ class RolesController extends BaseController
             }
             $permissions[$group][$perm->name] = $perm->readable_name;
         }
-		$permissions[''] = '------ Selecione ------';
+//		$permissions[''] = '------ Selecione ------';
 
 		return view('admin.manage.roles.index', compact('permissions'));
 	}

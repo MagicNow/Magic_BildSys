@@ -41,4 +41,14 @@ class InsumoGrupoRepository extends BaseRepository
             })
             ->get();
     }
+
+    public function enable($id)
+    {
+        return $this->update(['active' => true], $id);
+    }
+
+    public function disable($id)
+    {
+        return $this->update(['active' => false], $id);
+    }
 }

@@ -13,53 +13,69 @@
             <div class="box-body">
                 <div class="row">
                     <div class="col-md-6">
-                        <label for="select_obra">Obra</label>
-                        {!!
-                          Form::select(
-                            'obra_id',
-                            $obras,
-                            null,
-                            [
-                              'id'       => 'select_obra',
-                              'class'    => 'form-control select2 input-lg',
-                              'onchange' => 'escolheObra(this.value);'
-                            ]
-                          )
-                        !!}
+                        <div class="form-group">
+                          <label for="select_obra">Obra</label>
+                          {!!
+                            Form::select(
+                              'obra_id',
+                              $obras,
+                              null,
+                              [
+                                'id'       => 'select_obra',
+                                'class'    => 'form-control select2 input-lg',
+                                'onchange' => 'escolheObra(this.value);'
+                              ]
+                            )
+                          !!}
+                        </div>
                         <div class="row">
                             <div class="col-md-6">
-                                <label for="planejamento_id">Atividade/Tarefa</label>
-                                {!!
-                                  Form::select(
-                                    'planejamento_id',
-                                    $atividades,
-                                    null,
-                                    [
-                                      'class'    => 'form-control select2',
-                                      'onchange' => 'atualizaCalendarioPorTarefa(this.value);',
-                                      'id'       => 'planejamento_id'
-                                    ]
-                                  )
-                              !!}
+                                <div class="form-group">
+                                  <label for="planejamento_id">Atividade/Tarefa</label>
+                                  {!!
+                                    Form::select(
+                                      'planejamento_id',
+                                      $atividades,
+                                      null,
+                                      [
+                                        'class'    => 'form-control select2',
+                                        'onchange' => 'atualizaCalendarioPorTarefa(this.value);',
+                                        'id'       => 'planejamento_id'
+                                      ]
+                                    )
+                                  !!}
+                                </div>
                             </div>
                             <div class="col-md-6">
                                 <label for="planejamento_id">Grupo de Insumo</label>
-                                {!!
-                                  Form::select(
-                                    'insumo_grupo_id',
-                                    $grupos,
-                                    null,
-                                    [
-                                      'class'    => 'form-control select2',
-                                      'onchange' => 'atualizaCalendarioPorInsumoGrupo(this.value);',
-                                      'id'       => 'insumo_grupo_id'
-                                    ]
-                                  )
-                                !!}
+                                <div class="form-group">
+                                  {!!
+                                    Form::select(
+                                      'insumo_grupo_id',
+                                      $grupos,
+                                      null,
+                                      [
+                                        'class'    => 'form-control select2',
+                                        'onchange' => 'atualizaCalendarioPorInsumoGrupo(this.value);',
+                                        'id'       => 'insumo_grupo_id'
+                                      ]
+                                    )
+                                  !!}
+                                </div>
                             </div>
                         </div>
+                        <div class="form-group">
+                          <div class="checkbox">
+                            <label for="exibir_por_tarefa">
+                              <input type="checkbox"
+                                value="1"
+                                name="exibir_por_tarefa"
+                                id="exibir_por_tarefa">
+                              Exibir por tarefa
+                            </label>
+                          </div>
+                        </div>
                         <div class="page-header">
-
                             <div class="pull-right form-inline">
                                 <div class="btn-group">
                                     <button class="btn btn-primary" data-calendar-nav="prev"><< Anterior</button>
@@ -145,11 +161,6 @@
 
 
         function atualizaCalendario() {
-
-//            planejamento_id = null;
-
-//            $("#planejamento_id").val('').change();
-
             var queryString = '';
             if(parseInt(obra) > 0){
                 queryString ='?obra_id=' + obra;
@@ -199,44 +210,54 @@
         }
 
         $(function () {
-            calendar = $('#calendar').calendar({
-                language: 'pt-BR',
-                view: 'month',
-                tmpl_path: 'tmpls/',
-                tmpl_cache: false,
-                day: '{{ date('Y-m-d') }}',
-                onAfterEventsLoad: function (events) {
-                    if (!events) {
-                        return;
-                    }
-                    var list = $('#eventlist');
-                    list.html('');
+            var calendarOptions = {
+              language: 'pt-BR',
+              view: 'month',
+              tmpl_path: 'tmpls/',
+              tmpl_cache: false,
+              day: 'now',
+              onAfterEventsLoad: function (events) {
+                if (!events) {
+                  return;
+                }
+                var list = $('#eventlist');
+                list.html('');
+              },
+              onAfterViewLoad: function (view) {
+                $('.page-header h3').text(this.getTitle());
+                $('.btn-group button').removeClass('active');
+                $('button[data-calendar-view="' + view + '"]').addClass('active');
+              },
+              classes: {
+                months: {
+                  general: 'label'
+                }
+              },
+              weekbox: false,
+              events_source: '/planejamentos/lembretes'
+            };
 
-//                    $.each(events, function (key, val) {
-//                        $(document.createElement('tr'))
-//                                .html(  '<td>'+val.inicio+'</td>'+
-//                                        '<td>'+val.obra+'</td>'+
-//                                        '<td>'+val.tarefa+'</td>'+
-//                                        '<td>'+val.grupo+'</td>'+
-//                                        '<td>'+(val.url != '#' ? '<a href="' + val.url + '" class="btn btn-sm btn-flat btn-primary"> ' +
-//                                        ' <i class="fa fa-shopping-cart" aria-hidden="true"></i> Comprar</a>' : '')+'</td>'
-//                                )
-//                                .appendTo(list);
-//                    });
-                },
-                onAfterViewLoad: function (view) {
-                    $('.page-header h3').text(this.getTitle());
-                    $('.btn-group button').removeClass('active');
-                    $('button[data-calendar-view="' + view + '"]').addClass('active');
-                },
-                classes: {
-                    months: {
-                        general: 'label'
-                    }
-                },
-                weekbox: false,
-//            tmpl_path: "/tmpls/",
-                events_source: '{{ url('planejamentos/lembretes') }}'
+            var $exibirPorTarefa = $('#exibir_por_tarefa');
+
+            calendar = $('#calendar').calendar(calendarOptions);
+
+            $exibirPorTarefa.on('change ifToggled', function(event) {
+              var isChecked = $exibirPorTarefa.prop('checked');
+              var date = calendar.options.position.start.toISOString().split('T')[0];
+
+              calendar = $('#calendar').calendar(Object.assign(calendarOptions, {
+                events_source: '/planejamentos/lembretes?exibir_por_tarefa=' + (+isChecked),
+                day: date
+              }))
+
+              LaravelDataTables.dataTableBuilder.ajax.url(
+                location.pathname + '?exibir_por_tarefa=' + (+isChecked)
+              );
+              LaravelDataTables.dataTableBuilder.draw();
+              LaravelDataTables.dataTableBuilder.one('draw.dt', function() {
+                LaravelDataTables.dataTableBuilder.column('grupo:name').visible(!isChecked);
+              });
+
             });
 
             $('.btn-group button[data-calendar-nav]').each(function () {

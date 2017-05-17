@@ -14,6 +14,7 @@
                 <div class="row">
                     {!! Form::open(['route' => 'admin.workflowAlcadas.store']) !!}
 
+                        @include( 'flash::message' )
                         @include('admin.workflow_alcadas.fields')
 
                     {!! Form::close() !!}
