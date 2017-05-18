@@ -169,7 +169,7 @@ class ComprasDataTable extends DataTable
                         AND ordem_de_compra_itens.deleted_at IS NULL
                         AND ordem_de_compras.obra_id ='. $obra->id .'
                         AND ordem_de_compras.oc_status_id = 1
-                        '.($ordem ? ' AND ordem_de_compras.id ='. $ordem->id .' ': '').'
+                        '.($ordem ? ' AND ordem_de_compras.id ='. $ordem->id .' ': 'AND ordem_de_compras.id = 0').'
                     ),2,\'de_DE\') as quantidade_compra'),
                 DB::raw('(SELECT total FROM ordem_de_compra_itens
                     JOIN ordem_de_compras
@@ -188,7 +188,7 @@ class ComprasDataTable extends DataTable
                     AND ordem_de_compra_itens.aprovado IS NULL
                     AND ordem_de_compra_itens.deleted_at IS NULL
                     AND ordem_de_compras.oc_status_id = 1
-                    '.($ordem ? ' AND ordem_de_compras.id ='. $ordem->id .' ': '').'
+                    '.($ordem ? ' AND ordem_de_compras.id ='. $ordem->id .' ': 'AND ordem_de_compras.id = 0').'
                     AND ordem_de_compra_itens.obra_id ='. $obra->id .' ) as total'),
             ]
         )
