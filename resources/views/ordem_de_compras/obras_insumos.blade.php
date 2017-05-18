@@ -6,7 +6,7 @@
             text-align: left !important;
         }
         .content {
-            min-height: 170px !important;
+            min-height: 250px !important;
         }
     </style>
 @stop
@@ -40,7 +40,6 @@
         </div>
     </section>
     <div class="content">
-        @if (isset($obra))
         <div class="col-md-12">
             <div class="col-md-12 thumbnail">
                 <div class="col-md-12">
@@ -129,6 +128,26 @@
                                         ]) !!}
                                 </div>
                             </div>
+                            {{--<div class="form-group col-sm-6">--}}
+                                {{--<div class="js-datatable-filter-form">--}}
+                                    {{--{!! Form::label('planejamento_id', 'Planejamento:') !!}--}}
+                                    {{--{!! Form::select('planejamento_id',[''=>'-']+$planejamentoFiltro, null, [--}}
+                                        {{--'class'=>'form-control select2',--}}
+                                        {{--'id'=>'grupo_id',--}}
+                                        {{--'onchange'=>'selectgrupo(this.value, \'subgrupo1_id\', \'grupos\', \'grupo\');'--}}
+                                        {{--]) !!}--}}
+                                {{--</div>--}}
+                            {{--</div>--}}
+                            {{--<div class="form-group col-sm-6">--}}
+                                {{--<div class="js-datatable-filter-form">--}}
+                                    {{--{!! Form::label('insumo_grupo_id', 'Grupo de insumo:') !!}--}}
+                                    {{--{!! Form::select('insumo_grupo_id',[''=>'-']+$insumoGrupoFiltro, null, [--}}
+                                        {{--'class'=>'form-control select2',--}}
+                                        {{--'id'=>'grupo_id',--}}
+                                        {{--'onchange'=>'selectgrupo(this.value, \'subgrupo1_id\', \'grupos\', \'grupo\');'--}}
+                                        {{--]) !!}--}}
+                                {{--</div>--}}
+                            {{--</div>--}}
 
                             <input type="hidden" name="obra_id" value="{{$obra->id}}">
 
@@ -137,49 +156,17 @@
                     </div>
                 </div>
             </div>
+
             <a href="{{ url('ordens-de-compra/carrinho/comprar-tudo-de-tudo?obra_id='.$obra->id) }}" class="btn btn-info btn-lg btn-flat pull-right" id="comprar_tudo_de_tudo">
                 Comprar tudo de tudo
             </a>
         </div>
-        @endif
         @include('adminlte-templates::common.errors')
     </div>
+
     <div class="content">
             @include('ordem_de_compras.obras-insumos-table')
     </div>
-        {{--<div class="box-body" id='app'>--}}
-            {{--<tabela--}}
-                    {{--@if(isset($planejamento))--}}
-                        {{--api-url="/compras/obrasInsumosJson?planejamento_id={{$planejamento->id}}"--}}
-                        {{--api-adicionar="/compras/{{$planejamento->obra_id}}/{{$planejamento->id}}/addCarrinho"--}}
-                    {{--@else--}}
-                        {{--api-url="/compras/obrasInsumosJson?obra_id={{$obra->id}}"--}}
-                        {{--api-adicionar="/compras/{{$obra->id}}/addCarrinho"--}}
-                        {{--api-total-parcial="/compras/{{$obra->id}}/totalParcial"--}}
-                        {{--api-comprar-tudo="/compras/{{$obra->id}}/comprarTudo"--}}
-                    {{--@endif--}}
-                        {{--api-filtros="/compras/obrasInsumosFilters"--}}
-                    {{--_token="{{csrf_token()}}"--}}
-                    {{--v-bind:params="{}"--}}
-                    {{--v-bind:actions="{--}}
-                   {{--filtros: true,--}}
-                   {{--troca: true, troca_url:'{{ url('/compras/trocaInsumos') }}',--}}
-                   {{--troca_remove:'{{ url('/compras/removerInsumoPlanejamento') }}',--}}
-                   {{--quantidade: true,--}}
-                   {{--adicionar: true,--}}
-                   {{--tooltip: true,--}}
-                   {{--total_parcial: true,--}}
-                   {{--comprar_tudo: true,--}}
-                   {{--}"--}}
-                    {{--v-bind:colunas="[--}}
-                       {{--{campo_db: 'nome', label: 'insumos'},--}}
-                       {{--{campo_db: 'unidade_sigla', label: 'Unidade de Medida'},--}}
-                       {{--{campo_db: 'qtd_total', label: 'quantidade'},--}}
-                       {{--{campo_db: 'saldo', label: 'saldo'},--}}
-                   {{--]"--}}
-            {{-->--}}
-            {{--</tabela>--}}
-        {{--</div>--}}
 
     <!-- Modal -->
     <div class="modal fade" id="modalPlanejamentos" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -204,11 +191,12 @@
 @section('scripts')
     @parent
     <script type="text/javascript">
-        function quantidadeCompra(id, grupo_id, subgrupo1_id, subgrupo2_id, subgrupo3_id, servico_id, value){
+        function quantidadeCompra(id, obra_id, grupo_id, subgrupo1_id, subgrupo2_id, subgrupo3_id, servico_id, value){
             $.ajax({
                 url: "{{url('/compras/'.(isset($obra) ? $obra->id : $planejamento->id).'/addCarrinho')}}",
                 data: {
                     'id' : id,
+                    'obra_id': obra_id,
                     'grupo_id' : grupo_id,
                     'subgrupo1_id' : subgrupo1_id,
                     'subgrupo2_id' : subgrupo2_id,
@@ -223,11 +211,12 @@
             });
         }
 
-        function totalCompra(id, grupo_id, subgrupo1_id, subgrupo2_id, subgrupo3_id, servico_id, value){
+        function totalCompra(id, obra_id, grupo_id, subgrupo1_id, subgrupo2_id, subgrupo3_id, servico_id, value){
             $.ajax({
                 url: "{{url('/compras/'.(isset($obra) ? $obra->id : $planejamento->id).'/totalParcial')}}",
                 data: {
                     'id' : id,
+                    'obra_id': obra_id,
                     'grupo_id' : grupo_id,
                     'subgrupo1_id' : subgrupo1_id,
                     'subgrupo2_id' : subgrupo2_id,
@@ -242,11 +231,12 @@
             });
         }
 
-        function comprarTudo(id, grupo_id, subgrupo1_id, subgrupo2_id, subgrupo3_id, servico_id, qtd_total){
+        function comprarTudo(id, obra_id, grupo_id, subgrupo1_id, subgrupo2_id, subgrupo3_id, servico_id, qtd_total){
             $.ajax({
                 url: "{{url('/compras/'.(isset($obra) ? $obra->id : $planejamento->id).'/comprarTudo')}}",
                 data: {
                     'id' : id,
+                    'obra_id': obra_id,
                     'grupo_id' : grupo_id,
                     'subgrupo1_id' : subgrupo1_id,
                     'subgrupo2_id' : subgrupo2_id,
