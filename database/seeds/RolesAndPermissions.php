@@ -115,6 +115,10 @@ class RolesAndPermissions extends Seeder
             'compradorInsumos.delete'   => 'Remoção de comprador/insumos',
             'compradorInsumos.deleteBlocoView'   => 'Remoção em bloco de comprador/insumos',
 
+            'solicitacaoInsumos.list'   => 'Listagem de solicitação insumos',
+            'solicitacaoInsumos.create'   => 'Criação de solicitação insumo',
+            'solicitacaoInsumos.edit'   => 'Edição de solicitação insumo',
+            'solicitacaoInsumos.delete'   => 'Remoção de solicitação insumo',
 
             ################# SITE ###################
             'compras_lembretes.list' => 'Listagem de compras e lembretes',
