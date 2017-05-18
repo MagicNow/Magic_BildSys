@@ -233,7 +233,6 @@ class OrdemDeCompraController extends AppBaseController
 
         $orcamentoInicial = $totalAGastar = $realizado = 0;
 
-
         $itens = collect([]);
         $avaliado_reprovado = [];
         $itens_ids = $ordemDeCompra->itens()->pluck('id', 'id')->toArray();
@@ -283,11 +282,18 @@ class OrdemDeCompraController extends AppBaseController
         }
 
         if($ordemDeCompra->itens){
-            $orcamentoInicial = Orcamento::where('orcamento_tipo_id',1)
-                ->whereIn('insumo_id', $ordemDeCompra->itens()->pluck('insumo_id','insumo_id')->toArray())
-                ->where('ativo','1')
-                ->where('obra_id',$ordemDeCompra->obra_id)
-                ->sum('preco_total');
+            $orcamentoInicial = OrdemDeCompraItem::where('ordem_de_compra_id', $ordemDeCompra->id)
+                ->join('orcamentos', function ($join) use ($ordemDeCompra) {
+                    $join->on('orcamentos.insumo_id','=', 'ordem_de_compra_itens.insumo_id');
+                    $join->on('orcamentos.grupo_id','=', 'ordem_de_compra_itens.grupo_id');
+                    $join->on('orcamentos.subgrupo1_id','=', 'ordem_de_compra_itens.subgrupo1_id');
+                    $join->on('orcamentos.subgrupo2_id','=', 'ordem_de_compra_itens.subgrupo2_id');
+                    $join->on('orcamentos.subgrupo3_id','=', 'ordem_de_compra_itens.subgrupo3_id');
+                    $join->on('orcamentos.servico_id','=', 'ordem_de_compra_itens.servico_id');
+                    $join->on('orcamentos.obra_id','=', DB::raw($ordemDeCompra->obra_id));
+                    $join->on('orcamentos.ativo','=', DB::raw('1'));
+                })
+                ->sum('orcamentos.preco_total');
 
             $totalAGastar = $ordemDeCompra->itens()->sum('valor_total');
 
@@ -365,6 +371,7 @@ class OrdemDeCompraController extends AppBaseController
         $qtd_itens = $ordemDeCompra->itens()->count();
 
         $alcadas_count = $alcadas->count();
+
         return view('ordem_de_compras.detalhe', compact(
             'ordemDeCompra',
             'orcamentoInicial',
