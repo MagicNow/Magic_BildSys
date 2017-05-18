@@ -64363,6 +64363,12 @@ $(function () {
   $('.cnpj').mask('99.999.999/9999-99');
   $('.cep').mask('00000-000');
   $('.telefone').mask(mascara, options);
+
+  $('[data-toggle="popover"]').popover();
+
+  $(document).on('draw.dt', function() {
+    $('[data-toggle="popover"]').popover();
+  });
 });
 
 /**

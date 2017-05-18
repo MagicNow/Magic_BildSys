@@ -45,7 +45,9 @@ class Orcamento extends Model
         'subgrupo2_id',
         'subgrupo3_id',
         'user_id',
-        'descricao'
+        'descricao',
+        'trocado',
+        'orcamento_que_substitui'
     ];
 
     /**
@@ -115,8 +117,8 @@ class Orcamento extends Model
             $result = null;
         }
         $this->attributes['qtd_total'] = $result;
-    }   
-    
+    }
+
     public function getPrecoTotalAttribute($value)
     {
         if(strlen($value) == 4){

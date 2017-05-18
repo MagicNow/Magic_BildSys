@@ -306,6 +306,7 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
         $router->patch('insumos/{insumos}', ['as' => 'admin.insumos.update', 'uses' => 'Admin\InsumoController@update']);
         $router->delete('insumos/{insumos}', ['as' => 'admin.insumos.destroy', 'uses' => 'Admin\InsumoController@destroy']);
         $router->get('insumos/{insumos}', ['as' => 'admin.insumos.show', 'uses' => 'Admin\InsumoController@show'])->middleware("needsPermission:insumos.view");
+        $router->get('insumos/{insumos}/json', ['as' => 'admin.insumos.show-json', 'uses' => 'Admin\InsumoController@showJson']);
         $router->get('insumos/{insumos}/edit', ['as' => 'admin.insumos.edit', 'uses' => 'Admin\InsumoController@edit']);
         $router->post('insumos/{insumos}/enable', ['as' => 'admin.insumos.enable', 'uses' => 'Admin\InsumoController@enable'])->middleware("needsPermission:insumos.availability");
         $router->post('insumos/{insumos}/disable', ['as' => 'admin.insumos.disable', 'uses' => 'Admin\InsumoController@disable'])->middleware("needsPermission:insumos.availability");
@@ -382,6 +383,10 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
 
     $router->group(['prefix' => 'compras'], function () use ($router) {
         $router->group(['middleware' => 'needsPermission:compras.geral'], function () use ($router) {
+
+            $router->get('trocar/{ordemDeCompraItem}', 'OrdemDeCompraController@trocar')->name('compras.trocar');
+            $router->post('trocar/{ordemDeCompraItem}', 'OrdemDeCompraController@trocarSave');
+
             $router->get('{planejamento}/insumos/{insumoGrupo}', 'OrdemDeCompraController@insumos')->name('compraInsumo');
             $router->get('{planejamento}/insumosJson', 'OrdemDeCompraController@insumosJson');
             $router->get('{planejamento}/insumosFilters', 'OrdemDeCompraController@insumosFilters');

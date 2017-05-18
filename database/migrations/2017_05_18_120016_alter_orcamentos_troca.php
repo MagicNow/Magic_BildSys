@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AlterOrdemDeCompraItensTroca extends Migration
+class AlterOrcamentosTroca extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,15 @@ class AlterOrdemDeCompraItensTroca extends Migration
      */
     public function up()
     {
-        Schema::table('ordem_de_compra_itens', function($table) {
+        Schema::table('orcamentos', function($table) {
             $table->boolean('trocado')->default(0);
-            $table->unsignedInteger('item_que_substitui')->nullable()->default(NULL);
+            $table->unsignedInteger('orcamento_que_substitui')
+                ->nullable()
+                ->default(NULL);
 
-            $table->foreign('item_que_substitui')
+            $table->foreign('orcamento_que_substitui')
                 ->references('id')
-                ->on('ordem_de_compra_itens')
+                ->on('orcamentos')
                 ->onUpdate('CASCADE')
                 ->onDelete('SET NULL');
         });
@@ -32,9 +34,9 @@ class AlterOrdemDeCompraItensTroca extends Migration
      */
     public function down()
     {
-        Schema::table('ordem_de_compra_itens', function() {
+        Schema::table('orcamentos', function() {
             $table->dropColumn('trocado');
-            $table->dropColumn('item_que_substitui');
+            $table->dropColumn('orcamento_que_substitui');
         });
     }
 }
