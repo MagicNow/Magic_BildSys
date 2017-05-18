@@ -969,12 +969,16 @@ class OrdemDeCompraController extends AppBaseController
 
     public function carrinho(Request $request)
     {
+
+
         $ordemDeCompra = OrdemDeCompra::where('oc_status_id',1)->where('user_id',Auth::id());
         if($request->obra_id){
             $ordemDeCompra->where('obra_id',$request->obra_id);
         }
         if($request->id){
             $ordemDeCompra->where('id',$request->id);
+            #colocar na sessão
+            \Session::put('ordemCompra', $request->id);
         }
         $ordemDeCompra = $ordemDeCompra->first();
 
@@ -1084,6 +1088,9 @@ class OrdemDeCompraController extends AppBaseController
         if(count($planejamento_compras_zerar)){
             PlanejamentoCompra::whereIn('id', $planejamento_compras_zerar)->update(['quantidade_compra'=>0]);
         }
+
+        #limpa sessão
+        $request->session()->forget('ordemCompra');
 
 
         Flash::success('Ordem de compra '.$ordemDeCompra->id.' Fechada!');
