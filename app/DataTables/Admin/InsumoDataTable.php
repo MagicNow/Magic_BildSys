@@ -67,7 +67,7 @@ class InsumoDataTable extends DataTable
 
                     max = this.api().columns().count();
                     this.api().columns().every(function (col) {
-                        if((col+1)<max){
+                        if((col+2)<max){
                             var column = this;
                             var input = document.createElement("input");
                             $(input).attr(\'placeholder\',\'Filtrar...\');
@@ -115,7 +115,7 @@ class InsumoDataTable extends DataTable
             'unidade' => ['name' => 'unidade_sigla', 'data' => 'unidade_sigla'],
             'codigo' => ['name' => 'codigo', 'data' => 'codigo'],
             'grupo' => ['name' => 'insumo_grupos.nome', 'data' => 'grupo'],
-            'active' => ['name' => 'active', 'data' => 'active', 'title' => 'Disponível'],
+            'active' => ['name' => 'active', 'data' => 'active', 'title' => 'Disponível', 'searchable' => false],
             'action' => ['title' => '#', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }

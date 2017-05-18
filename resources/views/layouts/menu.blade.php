@@ -1,21 +1,8 @@
-{{--<li class="active treeview">--}}
-    {{--<a href="#">--}}
-        {{--<i class="fa fa-dashboard"></i> <span>Dashboard</span>--}}
-            {{--<span class="pull-right-container">--}}
-              {{--<i class="fa fa-angle-left pull-right"></i>--}}
-            {{--</span>--}}
-    {{--</a>--}}
-    {{--<ul class="treeview-menu">--}}
-        {{--<li class="active"><a href="index.html"><i class="fa fa-circle-o"></i> Dashboard v1</a></li>--}}
-        {{--<li><a href="index2.html"><i class="fa fa-circle-o"></i> Dashboard v2</a></li>--}}
-    {{--</ul>--}}
-{{--</li>--}}
-
-@if(Defender::canDo('users.list'))
+@shield('users.list')
     <li class="{{ Request::is('users*') ? 'active' : '' }}">
         <a href="{!! route('manage.index') !!}"><i class="fa fa-users"></i><span>Controle de Acesso</span></a>
     </li>
-@endif
+@endshield
 
 <li class="treeview {{ Request::is('admin/orcamento*') ? 'active' : '' }}">
     <a href="#">
@@ -25,8 +12,12 @@
             </span>
     </a>
     <ul class="treeview-menu">
-        <li class="{{ Request::is('admin/orcamentos*') ? 'active' : '' }}"><a href="{!! route('admin.orcamentos.index') !!}"><i class="fa fa-external-link-square"></i><span>Orçamentos</span></a></li>
-        <li class="{{ Request::is('admin/orcamento') ? 'active' : '' }}"><a href="{!! route('admin.orcamentos.indexImport') !!}"><i class="glyphicon glyphicon-cloud-upload"></i><span>Importação</span></a></li>
+        @shield('orcamentos.list')
+            <li class="{{ Request::is('admin/orcamentos*') ? 'active' : '' }}"><a href="{!! route('admin.orcamentos.index') !!}"><i class="fa fa-external-link-square"></i><span>Orçamentos</span></a></li>
+        @endshield
+        @shield('orcamentos.import')
+            <li class="{{ Request::is('admin/orcamento') ? 'active' : '' }}"><a href="{!! route('admin.orcamentos.indexImport') !!}"><i class="glyphicon glyphicon-cloud-upload"></i><span>Importação</span></a></li>
+        @endshield
     </ul>
 </li>
 
@@ -39,13 +30,18 @@
     </a>
     <ul class="treeview-menu">
         <li class="{{ Request::is('admin/planejamentos/planejamentoOrcamentos*') ? 'active' : '' }}"><a href="{!! route('admin.planejamentoOrcamentos.index') !!}"><i class="fa fa-exchange"></i><span>Tarefa/Orcamentos</span></a></li>
-        <li class="{{ Request::is('admin/planejamentoCronogramas*') ? 'active' : '' }}"><a href="{!! route('admin.planejamentoCronogramas.index') !!}"><i class="fa fa-calendar-plus-o"></i><span>Cronograma por obra</span></a></li>
-        <li class="{{ Request::is('admin/planejamentos') ? 'active' : '' }}"><a href="{!! route('admin.planejamentos.index') !!}"><i class="fa fa-calendar-o"></i><span>Cronograma de obra</span></a></li>
-        <li class="{{ Request::is('admin/planejamento') ? 'active' : '' }}"><a href="{!! route('admin.planejamentos.indexImport') !!}"><i class="glyphicon glyphicon-cloud-upload"></i><span>Importação</span></a></li>
-        <li class="{{ Request::is('admin/planejamentos/lembretes*') ? 'active' : '' }}"><a href="{!! route('admin.lembretes.index') !!}"><i class="fa fa-exclamation-circle"></i><span>Lembretes</span></a></li>
-        {{--<li class="{{ Request::is('admin/planejamentos/tipo-lembretes*') ? 'active' : '' }}">
-            <a href="{!! route('admin.lembreteTipos.index') !!}"><i class="fa fa-ellipsis-h"></i><span>Tipos de Lembretes</span></a>
-        </li>--}}
+        @shield('cronograma_por_obras.list')
+            <li class="{{ Request::is('admin/planejamentoCronogramas*') ? 'active' : '' }}"><a href="{!! route('admin.planejamentoCronogramas.index') !!}"><i class="fa fa-calendar-plus-o"></i><span>Cronograma por obra</span></a></li>
+        @endshield
+        @shield('cronograma_de_obras.list')
+            <li class="{{ Request::is('admin/planejamentos') ? 'active' : '' }}"><a href="{!! route('admin.planejamentos.index') !!}"><i class="fa fa-calendar-o"></i><span>Cronograma de obra</span></a></li>
+        @endshield
+        @shield('planejamento.import')
+            <li class="{{ Request::is('admin/planejamento') ? 'active' : '' }}"><a href="{!! route('admin.planejamentos.indexImport') !!}"><i class="glyphicon glyphicon-cloud-upload"></i><span>Importação</span></a></li>
+        @endshield
+        @shield('lembretes.list')
+            <li class="{{ Request::is('admin/planejamentos/lembretes*') ? 'active' : '' }}"><a href="{!! route('admin.lembretes.index') !!}"><i class="fa fa-exclamation-circle"></i><span>Lembretes</span></a></li>
+        @endshield
     </ul>
 </li>
 
@@ -57,41 +53,52 @@
             </span>
     </a>
     <ul class="treeview-menu">
-        <li class="{{ Request::is('admin/workflow/workflow-alcadas*') ? 'active' : '' }}"><a href="{!! route('admin.workflowAlcadas.index') !!}"><i class="fa fa-list-ol"></i><span>Alçadas</span></a></li>
-        <li class="{{ Request::is('admin/workflow/reprovacao-motivos*') ? 'active' : '' }}"><a href="{!! route('admin.workflowReprovacaoMotivos.index') !!}"><i class="fa fa-ban"></i> Motivos de Reprovação</a></li>
+        @shield('alcadas.list')
+            <li class="{{ Request::is('admin/workflow/workflow-alcadas*') ? 'active' : '' }}"><a href="{!! route('admin.workflowAlcadas.index') !!}"><i class="fa fa-list-ol"></i><span>Alçadas</span></a></li>
+        @endshield
+        @shield('motivos_reprovacao.list')
+            <li class="{{ Request::is('admin/workflow/reprovacao-motivos*') ? 'active' : '' }}"><a href="{!! route('admin.workflowReprovacaoMotivos.index') !!}"><i class="fa fa-ban"></i> Motivos de Reprovação</a></li>
+        @endshield
     </ul>
 </li>
 
-
-<li class="{{ Request::is('admin/obras*') ? 'active' : '' }}">
-    <a href="{!! route('admin.obras.index') !!}"><i class="fa fa-building"></i><span>Obras</span></a>
-</li>
-
-<li class="{{ Request::is('insumos*') ? 'active' : '' }}">
-    <a href="{!! route('admin.insumos.index') !!}"><i class="fa fa-gamepad"></i><span>Insumos</span></a>
-</li>
-
-<li class="{{ Request::is('insumoGrupos*') ? 'active' : '' }}">
-    <a href="{!! route('admin.insumoGrupos.index') !!}"><i class="fa fa-th-list"></i><span>Grupos de insumos</span></a>
-</li>
-
-<li class="{{ Request::is('templatePlanilhas*') ? 'active' : '' }}">
-    <a href="{!! route('admin.templatePlanilhas.index') !!}"><i class="fa fa-table"></i><span>Template de planilhas</span></a>
-</li>
-
-<li class="{{ Request::is('admin/retroalimentacaoObras*') ? 'active' : '' }}">
-    <a href="{!! route('retroalimentacaoObras.index') !!}"><i class="fa fa-magic"></i><span>Retroalimentação de obras</span></a>
-</li>
-
-<li class="{{ Request::is('fornecedores*') ? 'active' : '' }}">
-<a href="{!! route('admin.fornecedores.index') !!}"><i class="fa fa-user-plus"></i><span>Fornecedores</span></a>
-</li>
-
-<li class="{{ Request::is('compradorInsumos*') ? 'active' : '' }}">
-    <a href="{!! route('admin.compradorInsumos.index') !!}"><i class="fa fa-child"></i><span>Comprador/Insumos</span></a>
-</li>
-
-<li class="{{ Request::is('solicitacaoInsumos*') ? 'active' : '' }}">
-    <a href="{!! route('admin.solicitacaoInsumos.index') !!}"><i class="fa fa-edit"></i><span>Solicitações de insumos</span></a>
-</li>
-
+@shield('obras.list')
+    <li class="{{ Request::is('admin/obras*') ? 'active' : '' }}">
+        <a href="{!! route('admin.obras.index') !!}"><i class="fa fa-building"></i><span>Obras</span></a>
+    </li>
+@endshield
+@shield('insumos.list')
+    <li class="{{ Request::is('insumos*') ? 'active' : '' }}">
+        <a href="{!! route('admin.insumos.index') !!}"><i class="fa fa-gamepad"></i><span>Insumos</span></a>
+    </li>
+@endshield
+@shield('grupos_insumos.list')
+    <li class="{{ Request::is('insumoGrupos*') ? 'active' : '' }}">
+        <a href="{!! route('admin.insumoGrupos.index') !!}"><i class="fa fa-th-list"></i><span>Grupos de insumos</span></a>
+    </li>
+@endshield
+@shield('template_planilhas.list')
+    <li class="{{ Request::is('templatePlanilhas*') ? 'active' : '' }}">
+        <a href="{!! route('admin.templatePlanilhas.index') !!}"><i class="fa fa-table"></i><span>Template de planilhas</span></a>
+    </li>
+@endshield
+@shield('retroalimentacao.list')
+    <li class="{{ Request::is('admin/retroalimentacaoObras*') ? 'active' : '' }}">
+        <a href="{!! route('retroalimentacaoObras.index') !!}"><i class="fa fa-magic"></i><span>Retroalimentação de obras</span></a>
+    </li>
+@endshield
+@shield('fornecedores.list')
+    <li class="{{ Request::is('fornecedores*') ? 'active' : '' }}">
+    <a href="{!! route('admin.fornecedores.index') !!}"><i class="fa fa-user-plus"></i><span>Fornecedores</span></a>
+    </li>
+@endshield
+@shield('compradorInsumos.list')
+    <li class="{{ Request::is('compradorInsumos*') ? 'active' : '' }}">
+        <a href="{!! route('admin.compradorInsumos.index') !!}"><i class="fa fa-child"></i><span>Comprador/Insumos</span></a>
+    </li>
+@endshield
+@shield('solicitacaoInsumos.list')
+    <li class="{{ Request::is('solicitacaoInsumos*') ? 'active' : '' }}">
+        <a href="{!! route('admin.solicitacaoInsumos.index') !!}"><i class="fa fa-edit"></i><span>Solicitações de insumos</span></a>
+    </li>
+@endshield

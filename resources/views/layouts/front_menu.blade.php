@@ -5,7 +5,6 @@
 </li>
 @endshield
 
-@shield('ordens_de_compra.list')
 <li class="treeview {{ Request::is('ordens-de-compra*')||Request::is('compras/dashboard') ? 'active' : '' }}">
     <a href="#">
         <i class="fa fa-balance-scale"></i> <span>Ordem de Compras</span>
@@ -14,14 +13,16 @@
             </span>
     </a>
     <ul class="treeview-menu">
-        <li class="{{ Request::is('ordens-de-compra*') ? 'active' : '' }}">
-          <a href="{!! route('ordens-de-compra.index') !!}"><i class="fa fa-shopping-basket"></i><span>Ordens de compra</span></a>
-        </li>
-        <li class="{{ Request::is('compras/dashboard') ? 'active' : '' }}"><a href="{{url('compras/dashboard')}}"><i class="glyphicon glyphicon-cloud-upload"></i><span>DashBoard</span></a></li>
+        @shield('ordens_de_compra.list')
+            <li class="{{ Request::is('ordens-de-compra*') ? 'active' : '' }}">
+              <a href="{!! route('ordens-de-compra.index') !!}"><i class="fa fa-shopping-basket"></i><span>Ordens de compra</span></a>
+            </li>
+        @endshield
+        @shield('site.dashboard')
+            <li class="{{ Request::is('compras/dashboard') ? 'active' : '' }}"><a href="{{url('compras/dashboard')}}"><i class="glyphicon glyphicon-cloud-upload"></i><span>DashBoard</span></a></li>
+        @endshield
     </ul>
 </li>
-@endshield
-
 
 <li class="treeview {{ Request::is('quadro-de-concorrencia*')||Request::is('catalogo-acordos*')||Request::is('tipoEqualizacaoTecnicas*') ? 'active' : '' }}">
     <a href="#">

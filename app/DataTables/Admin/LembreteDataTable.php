@@ -125,9 +125,9 @@ class LembreteDataTable extends DataTable
     {
         return [
             'grupo_insumo' => ['name' => 'insumo_grupos.nome', 'data' => 'nome'],
-            'mobilização' => ['name' => 'prazo_minimo_mobilizacao', 'data' => 'prazo_minimo_mobilizacao'],
-            'negociação' => ['name' => 'prazo_minimo_negociacao', 'data' => 'prazo_minimo_negociacao'],
-            'start' => ['name' => 'prazo_minimo_start', 'data' => 'prazo_minimo_start']
+            'mobilização' => ['name' => 'prazo_minimo_mobilizacao', 'data' => 'prazo_minimo_mobilizacao', 'searchable' => false],
+            'negociação' => ['name' => 'prazo_minimo_negociacao', 'data' => 'prazo_minimo_negociacao', 'searchable' => false],
+            'start' => ['name' => 'prazo_minimo_start', 'data' => 'prazo_minimo_start', 'searchable' => false]
         ];
     }
 
