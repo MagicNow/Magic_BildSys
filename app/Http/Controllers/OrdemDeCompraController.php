@@ -1093,6 +1093,7 @@ class OrdemDeCompraController extends AppBaseController
         }
 
         #limpa sessão
+        $request->session()->put('ordemCompra', null);
         $request->session()->forget('ordemCompra');
 
 
