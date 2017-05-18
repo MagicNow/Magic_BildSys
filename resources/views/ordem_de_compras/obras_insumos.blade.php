@@ -206,7 +206,7 @@
     <script type="text/javascript">
         function quantidadeCompra(id, grupo_id, subgrupo1_id, subgrupo2_id, subgrupo3_id, servico_id, value){
             $.ajax({
-                url: "{{url('/compras/'.$obra->id.'/addCarrinho')}}",
+                url: "{{url('/compras/'.(isset($obra) ? $obra->id : $planejamento->id).'/addCarrinho')}}",
                 data: {
                     'id' : id,
                     'grupo_id' : grupo_id,
@@ -225,7 +225,7 @@
 
         function totalCompra(id, grupo_id, subgrupo1_id, subgrupo2_id, subgrupo3_id, servico_id, value){
             $.ajax({
-                url: "{{url('/compras/'.$obra->id.'/totalParcial')}}",
+                url: "{{url('/compras/'.(isset($obra) ? $obra->id : $planejamento->id).'/totalParcial')}}",
                 data: {
                     'id' : id,
                     'grupo_id' : grupo_id,
@@ -244,7 +244,7 @@
 
         function comprarTudo(id, grupo_id, subgrupo1_id, subgrupo2_id, subgrupo3_id, servico_id, qtd_total){
             $.ajax({
-                url: "{{url('/compras/'.$obra->id.'/comprarTudo')}}",
+                url: "{{url('/compras/'.(isset($obra) ? $obra->id : $planejamento->id).'/comprarTudo')}}",
                 data: {
                     'id' : id,
                     'grupo_id' : grupo_id,
