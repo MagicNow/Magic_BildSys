@@ -230,7 +230,7 @@
         <hr>
         <div class="row" id="totalInsumos">
             <div class="col-md-4">
-                <h6>Total de Insumos</h6>
+                <h6>Total da O.C.</h6>
             </div>
             <div class="col-md-2 text-right borda-direita">
                 <h5>ORÇAMENTO INICIAL</h5>
@@ -324,8 +324,8 @@
                                 </button>
                             @else
                                 <button type="button" disabled="disabled"
-                                        class="btn btn-danger btn-lg btn-flat">
-                                    <i class="fa fa-times" aria-hidden="true"></i>
+                                    class="btn btn-danger btn-lg btn-flat">
+                                  <i class="fa fa-times" aria-hidden="true"></i>
                                 </button>
                             @endif
                         @else
