@@ -55,7 +55,7 @@ class WorkflowAlcadaDataTable extends DataTable
                 'initComplete' => 'function () {
                     max = this.api().columns().count();
                     this.api().columns().every(function (col) {
-                        if((col+1)<max){
+                        if((col+3)<max){
                             var column = this;
                             var input = document.createElement("input");
                             $(input).attr(\'placeholder\',\'Filtrar...\');
@@ -101,8 +101,8 @@ class WorkflowAlcadaDataTable extends DataTable
         return [
             'tipo' => ['name' => 'workflow_tipos.nome', 'data' => 'tipo'],
             'nome' => ['name' => 'nome', 'data' => 'nome'],
-            'ordem' => ['name' => 'ordem', 'data' => 'ordem'],
-            'usuarios' => ['name' => 'usuarios', 'data' => 'usuarios'],
+            'ordem' => ['name' => 'ordem', 'data' => 'ordem', 'searchable' => false],
+            'usuarios' => ['name' => 'usuarios', 'data' => 'usuarios', 'searchable' => false],
             'action' => ['title' => '#', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }
