@@ -401,3 +401,10 @@ h6 {
   width: 100% !important;
   padding: 0;
 }
+
+.dataTable tfoot {
+  display: table-header-group;
+}
+#dataTableBuilder_filter{
+  float:left;
+}
