@@ -54,6 +54,9 @@ class Handler extends ExceptionHandler
 
         if ($exception instanceof \ErrorException) {
             if(!env('APP_DEBUG')){
+                if($request->ajax()){
+                    return response()->json(['false'=>1,'message'=>'Sistema em manutenção!'],500);
+                }
                 return response()->view('errors.500', [], 500);
             }
         }
