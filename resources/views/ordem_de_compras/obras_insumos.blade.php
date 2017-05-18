@@ -129,26 +129,26 @@
                                             ]) !!}
                                     </div>
                                 </div>
-                                {{--<div class="form-group col-sm-6">--}}
-                                    {{--<div class="js-datatable-filter-form">--}}
-                                        {{--{!! Form::label('planejamento_id', 'Planejamento:') !!}--}}
-                                        {{--{!! Form::select('planejamento_id',[''=>'-']+$planejamentoFiltro, null, [--}}
-                                            {{--'class'=>'form-control select2',--}}
-                                            {{--'id'=>'grupo_id',--}}
-                                            {{--'onchange'=>'selectgrupo(this.value, \'subgrupo1_id\', \'grupos\', \'grupo\');'--}}
-                                            {{--]) !!}--}}
-                                    {{--</div>--}}
-                                {{--</div>--}}
-                                {{--<div class="form-group col-sm-6">--}}
-                                    {{--<div class="js-datatable-filter-form">--}}
-                                        {{--{!! Form::label('insumo_grupo_id', 'Grupo de insumo:') !!}--}}
-                                        {{--{!! Form::select('insumo_grupo_id',[''=>'-']+$insumoGrupoFiltro, null, [--}}
-                                            {{--'class'=>'form-control select2',--}}
-                                            {{--'id'=>'grupo_id',--}}
-                                            {{--'onchange'=>'selectgrupo(this.value, \'subgrupo1_id\', \'grupos\', \'grupo\');'--}}
-                                            {{--]) !!}--}}
-                                    {{--</div>--}}
-                                {{--</div>--}}
+                                <div class="form-group col-sm-6">
+                                    <div class="js-datatable-filter-form">
+                                        {!! Form::label('planejamento_id', 'Planejamento:') !!}
+                                        {!! Form::select('planejamento_id',[''=>'-']+$planejamentoFiltro, (isset($planejamento) ? $planejamento->id : null), [
+                                            'class'=>'form-control select2',
+                                            'id'=>'grupo_id',
+                                            'onchange'=>'selectgrupo(this.value, \'subgrupo1_id\', \'grupos\', \'grupo\');'
+                                            ]) !!}
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-6">
+                                    <div class="js-datatable-filter-form">
+                                        {!! Form::label('insumo_grupos_id', 'Grupo de insumo:') !!}
+                                        {!! Form::select('insumo_grupos_id',[''=>'-']+$insumoGrupoFiltro, (isset($insumoGrupo) ? $insumoGrupo->id : null), [
+                                            'class'=>'form-control select2',
+                                            'id'=>'grupo_id',
+                                            'onchange'=>'selectgrupo(this.value, \'subgrupo1_id\', \'grupos\', \'grupo\');'
+                                            ]) !!}
+                                    </div>
+                                </div>
 
                                 <input type="hidden" name="obra_id" value="{{$obra->id}}">
 
