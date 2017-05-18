@@ -369,7 +369,9 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
     });
 
     # Retroalimentação de obras
-    $router->resource('retroalimentacaoObras', 'RetroalimentacaoObraController');
+    $router->group(['middleware' => 'needsPermission:retroalimentacao.list'], function() use ($router) {
+        $router->resource('retroalimentacaoObras', 'RetroalimentacaoObraController');
+    });
 
 });
 

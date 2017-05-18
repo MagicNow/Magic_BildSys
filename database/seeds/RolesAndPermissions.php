@@ -131,6 +131,7 @@ class RolesAndPermissions extends Seeder
 
             'site.dashboard' => 'Dashboard do site',
 
+            'retroalimentacao.list' => 'Listagem de retroaliamentação',
             'retroalimentacao.create' => 'Criação de retroaliamentação',
 
             'quadroDeConcorrencias.list' => 'Listagem de Quadro De Concorrências',
