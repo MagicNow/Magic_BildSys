@@ -1,7 +1,7 @@
 {!! Form::open(['route' => ['quadroDeConcorrencias.destroy', $id], 'id'=>'formDelete'.$id, 'method' => 'delete']) !!}
 
 <div class='btn-group'>
-    @shield('quadroDeConcorrencias.show')
+    @shield('quadroDeConcorrencias.view')
       <a href="{{ route('quadroDeConcorrencias.show', $id) }}" title="{{ ucfirst( trans('common.show') )}}" class='btn btn-default btn-xs'>
         <i class="glyphicon glyphicon-eye-open"></i>
       </a>
