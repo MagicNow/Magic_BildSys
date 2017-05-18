@@ -21,32 +21,45 @@ class ComprasDataTable extends DataTable
         return $this->datatables
             ->eloquent($this->query())
             ->addColumn('action', 'ordem_de_compras.obras-insumos-datatables-actions')
-            ->editColumn('quantidade_compra', function($obj){
+            ->editColumn('quantidade_compra', function ($obj) {
                 return "<input value='$obj->quantidade_compra' class='form-control money' onblur='quantidadeCompra($obj->id, $obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, this.value)'>";
             })
-            ->editColumn('total', function($obj){
-                if($obj->quantidade_compra && $obj->total === 1) {
+            ->editColumn('total', function ($obj) {
+                if ($obj->quantidade_compra && $obj->total === 1) {
                     return "<input type='checkbox' checked onchange='totalCompra($obj->id, $obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, this.value)'>";
-                }elseif($obj->quantidade_compra){
+                } elseif ($obj->quantidade_compra) {
                     return "<input type='checkbox' onchange='totalCompra($obj->id, $obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, this.value)'>";
                 }
             })
-            ->editColumn('troca', function($obj){
-//                dd($obj);
-                if($obj->unidade_sigla === 'VB' && $obj->insumo_grupo_id == 1570){
-                    return "<a href='/compras/trocaInsumos/$obj->id'><button type='button' class='btn btn-xs btn-link' ><i class='fa fa-exchange'></i></button></a>";
-//                    return "<button type='button' class='btn btn-xs btn-link' onclick='trocar($obj->id)'><i class='fa fa-exchange'></i></button>";
+            ->editColumn('troca', function ($obj) {
+                if($obj->substitui) {
+                    return '<button data-toggle="popover" title="Substitui Insumo" data-content="' . $obj->substitui . '" type="button" data-placement="left" class="btn btn-info btn-flat btn-xs"> <i class="fa fa-exchange"></i> </button>';
+                }
+
+                if ($obj->unidade_sigla === 'VB' && $obj->insumo_grupo_id == 1570) {
+
+                    return link_to(
+                        'compras/trocar/' . $obj->orcamento_id . '?back=' . rawurlencode(
+                            url('compras/obrasInsumos') . '?' . http_build_query(
+                                $this->request()->only(['planejamento_id', 'obra_id', 'insumo_grupo_id'])
+                            )
+                        ) ,
+                        '<i class="fa fa-exchange"></i>',
+                        [ 'class' => 'btn btn-xs btn-link btn-default btn-flat' ],
+                        null,
+                        false
+                    );
                 }
             })
-            ->editColumn('nome', function($obj){
+            ->editColumn('nome', function ($obj) {
                 return "<strong  data-toggle=\"tooltip\" data-placement=\"top\" data-html=\"true\"
                     title=\"". $obj->tooltip_grupo . ' <br> ' .
-                $obj->tooltip_subgrupo1 . ' <br> ' .
-                $obj->tooltip_subgrupo2 . ' <br> ' .
-                $obj->tooltip_subgrupo3 . ' <br> ' .
-                $obj->tooltip_servico  ."\">
+                    $obj->tooltip_subgrupo1 . ' <br> ' .
+                    $obj->tooltip_subgrupo2 . ' <br> ' .
+                    $obj->tooltip_subgrupo3 . ' <br> ' .
+                    $obj->tooltip_servico  ."\">
                     $obj->nome
-                </strong>";
+                    </strong>";
             })
             ->make(true);
     }
@@ -61,7 +74,7 @@ class ComprasDataTable extends DataTable
         $insumo_query = Insumo::query();
 
 
-        if($this->request()->get('obra_id')){
+        if ($this->request()->get('obra_id')) {
             # OBRA
             $obra = Obra::find($this->request()->get('obra_id'));
             $insumos = $insumo_query->join('orcamentos', 'orcamentos.insumo_id', '=', 'insumos.id')
@@ -73,9 +86,11 @@ class ComprasDataTable extends DataTable
                     'insumos.id',
                     DB::raw("CONCAT(insumos.codigo,' - ' ,insumos.nome) as nome"),
                     DB::raw("format(orcamentos.qtd_total,2,'de_DE') as qtd_total"),
+                    DB::raw("CONCAT(insumos_sub.codigo,' - ' ,insumos_sub.nome) as substitui"),
                     'insumos.unidade_sigla',
                     'insumos.codigo',
                     'insumos.insumo_grupo_id',
+                    'orcamentos.id as orcamento_id',
                     'orcamentos.grupo_id',
                     'orcamentos.subgrupo1_id',
                     'orcamentos.subgrupo2_id',
@@ -154,13 +169,13 @@ class ComprasDataTable extends DataTable
                         AND ordem_de_compra_itens.deleted_at IS NULL
                         AND ordem_de_compras.obra_id ='. $obra->id .'
                     ),2,\'de_DE\') as quantidade_compra'),
-//                    DB::raw('(SELECT count(ordem_de_compra_itens.id) FROM ordem_de_compra_itens
-//                    JOIN ordem_de_compras
-//                    ON ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id
-//                    AND ordem_de_compras.oc_status_id = 1 AND ordem_de_compras.user_id = '.Auth::id().'
-//                    WHERE ordem_de_compra_itens.insumo_id = insumos.id
-//                    AND ordem_de_compra_itens.deleted_at IS NULL
-//                    AND ordem_de_compra_itens.obra_id ='. $obra->id .' ) as adicionado'),
+                    //                    DB::raw('(SELECT count(ordem_de_compra_itens.id) FROM ordem_de_compra_itens
+                    //                    JOIN ordem_de_compras
+                    //                    ON ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id
+                    //                    AND ordem_de_compras.oc_status_id = 1 AND ordem_de_compras.user_id = '.Auth::id().'
+                    //                    WHERE ordem_de_compra_itens.insumo_id = insumos.id
+                    //                    AND ordem_de_compra_itens.deleted_at IS NULL
+                    //                    AND ordem_de_compra_itens.obra_id ='. $obra->id .' ) as adicionado'),
                     DB::raw('(SELECT total FROM ordem_de_compra_itens
                     JOIN ordem_de_compras
                     ON ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id
@@ -176,9 +191,10 @@ class ComprasDataTable extends DataTable
                     AND ordem_de_compra_itens.obra_id ='. $obra->id .' ) as total'),
                 ]
             )
-                ->whereNotNull('orcamentos.qtd_total')
-                ->where('orcamentos.ativo', 1);
-        }else {
+            ->whereNotNull('orcamentos.qtd_total')
+            ->where('orcamentos.trocado', 0)
+            ->where('orcamentos.ativo', 1);
+        } else {
             # PLANEJAMENTO
             $planejamento = Planejamento::find($this->request()->get('planejamento_id'));
             $insumos = $insumo_query
@@ -206,6 +222,7 @@ class ComprasDataTable extends DataTable
                         'insumos.unidade_sigla',
                         'insumos.codigo',
                         'insumos.insumo_grupo_id',
+                        'orcamentos.id as orcamento_id',
                         'orcamentos.grupo_id',
                         'orcamentos.subgrupo1_id',
                         'orcamentos.subgrupo2_id',
@@ -254,13 +271,13 @@ class ComprasDataTable extends DataTable
                         WHERE planejamento_compras.planejamento_id =' . $planejamento->id . '
                         AND  planejamento_compras.insumo_pai = insumos.id
                         AND planejamento_compras.deleted_at IS NULL) as pai'),
-//                        DB::raw('(SELECT count(ordem_de_compra_itens.id) FROM ordem_de_compra_itens
-//                        JOIN ordem_de_compras
-//                        ON ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id
-//                        AND ordem_de_compras.oc_status_id = 1 AND ordem_de_compras.user_id = ' . Auth::id() . '
-//                        WHERE ordem_de_compra_itens.insumo_id = insumos.id
-//                        AND ordem_de_compra_itens.deleted_at IS NULL
-//                        AND ordem_de_compra_itens.obra_id =' . $planejamento->obra_id . ' ) as adicionado'),
+                        //                        DB::raw('(SELECT count(ordem_de_compra_itens.id) FROM ordem_de_compra_itens
+                        //                        JOIN ordem_de_compras
+                        //                        ON ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id
+                        //                        AND ordem_de_compras.oc_status_id = 1 AND ordem_de_compras.user_id = ' . Auth::id() . '
+                        //                        WHERE ordem_de_compra_itens.insumo_id = insumos.id
+                        //                        AND ordem_de_compra_itens.deleted_at IS NULL
+                        //                        AND ordem_de_compra_itens.obra_id =' . $planejamento->obra_id . ' ) as adicionado'),
                         DB::raw('format((
                             orcamentos.qtd_total -
                             (
@@ -307,26 +324,29 @@ class ComprasDataTable extends DataTable
             $insumos->orderByRaw('COALESCE(planejamento_compras.insumo_pai, planejamento_compras.insumo_id) , planejamento_compras.insumo_pai IS NOT NULL, planejamento_compras.insumo_id');
         }
 
-        if($this->request()->get('grupo_id')){
-            if(count($this->request()->get('grupo_id')) && $this->request()->get('grupo_id')[0] != "") {
+        $insumo_query->leftJoin(DB::raw('orcamentos orcamentos_sub'),  'orcamentos_sub.id', 'orcamentos.orcamento_que_substitui');
+        $insumo_query->leftJoin(DB::raw('insumos insumos_sub'), 'insumos_sub.id', 'orcamentos_sub.insumo_id');
+
+        if ($this->request()->get('grupo_id')) {
+            if (count($this->request()->get('grupo_id')) && $this->request()->get('grupo_id')[0] != "") {
                 $insumo_query->where('orcamentos.grupo_id', $this->request()->get('grupo_id'));
             }
         }
-        if($this->request()->get('subgrupo1_id')){
-            $insumo_query->where('orcamentos.subgrupo1_id',$this->request()->get('subgrupo1_id'));
+        if ($this->request()->get('subgrupo1_id')) {
+            $insumo_query->where('orcamentos.subgrupo1_id', $this->request()->get('subgrupo1_id'));
         }
-        if($this->request()->get('subgrupo2_id')){
-            $insumo_query->where('orcamentos.subgrupo2_id',$this->request()->get('subgrupo2_id'));
+        if ($this->request()->get('subgrupo2_id')) {
+            $insumo_query->where('orcamentos.subgrupo2_id', $this->request()->get('subgrupo2_id'));
         }
-        if($this->request()->get('subgrupo3_id')){
-            $insumo_query->where('orcamentos.subgrupo3_id',$this->request()->get('subgrupo3_id'));
+        if ($this->request()->get('subgrupo3_id')) {
+            $insumo_query->where('orcamentos.subgrupo3_id', $this->request()->get('subgrupo3_id'));
         }
-        if($this->request()->get('servico_id')){
-            $insumo_query->where('orcamentos.servico_id',$this->request()->get('servico_id'));
+        if ($this->request()->get('servico_id')) {
+            $insumo_query->where('orcamentos.servico_id', $this->request()->get('servico_id'));
         }
 
-//        echo $insumo_query->toSql();
-//        die();
+        //        echo $insumo_query->toSql();
+        //        die();
 
         return $this->applyScopes($insumo_query);
     }
@@ -352,20 +372,20 @@ class ComprasDataTable extends DataTable
                             $(input).addClass(\'form-control\');
                             $(input).css(\'width\',\'100%\');
                             $(input).appendTo($(column.footer()).empty())
-                            .on(\'change\', function () {
-                                column.search($(this).val(), false, false, true).draw();
-                            });
-                        }
-                    });
-                }' ,
-                'dom' => 'Bfrltip',
-                'scrollX' => false,
-                'language'=> [
-                    "url"=> "/vendor/datatables/Portuguese-Brasil.json"
-                ],
-                'buttons' => [
-                ]
-            ]);
+                                .on(\'change\', function () {
+                                    column.search($(this).val(), false, false, true).draw();
+    });
+    }
+    });
+    }' ,
+        'dom' => 'Bfrltip',
+        'scrollX' => false,
+        'language'=> [
+            "url"=> "/vendor/datatables/Portuguese-Brasil.json"
+        ],
+        'buttons' => [
+        ]
+    ]);
     }
 
     /**

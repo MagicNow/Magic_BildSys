@@ -225,7 +225,7 @@
         });
 
         function formatResultSelection (obj) {
-            if(obj.nome){
+            if(obj.nome) {
                 return obj.nome;
             }
             return obj.text;
