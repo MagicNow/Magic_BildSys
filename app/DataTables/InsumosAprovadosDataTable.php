@@ -377,11 +377,12 @@ class InsumosAprovadosDataTable extends DataTable
         return [
             'obra' => ['name' => 'obras.nome', 'data' => 'obra'],
             'O.C.' => ['name' => 'ordem_de_compra_itens.ordem_de_compra_id', 'data' => 'ordem_de_compra_id'],
-            'Codigo' => ['name' => 'ordem_de_compra_itens.codigo_insumo', 'data' => 'codigo_insumo'],
+//            'Codigo' => ['name' => 'ordem_de_compra_itens.codigo_insumo', 'data' => 'codigo_insumo'],
             'Insumo' => ['name' => 'insumos.nome', 'data' => 'insumo_nome'],
             'qtd' => ['name' => 'ordem_de_compra_itens.qtd', 'data' => 'qtd'],
+//            'urgente' => ['name' => 'ordem_de_compra_itens.emergencial', 'data' => 'ordem_de_compra_itens.emergencial'],
             'sla' => ['name' => 'sla', 'data' => 'sla'],
-            'action' => ['title'          => '#', 'printable'      => false, 'width'=>'10px'],
+            'action' => ['title'          => 'Selecionar', 'printable'      => false, 'width'=>'10px'],
         ];
     }
 
