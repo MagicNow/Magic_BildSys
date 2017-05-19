@@ -1694,13 +1694,17 @@ class OrdemDeCompraController extends AppBaseController
         $bindings = $request->all()['bindings'];
         $query = $request->all()['query'];
 
-        //tem que remover o limit
+        //Retira do limit pra frente
+        $query = substr($query, 0,strpos($query, ' limit '));
+
         $insumos = DB::select($query,
             $bindings);
 
         foreach ($insumos as $insumo){
-            $insumo_collection = new Collection($insumo);
-            self::comprarTudoItem($insumo_collection, $insumo_collection['obra_id']);
+            if($insumo->saldo != '0,00') {
+                $insumo_collection = new Collection($insumo);
+                self::comprarTudoItem($insumo_collection, $insumo_collection['obra_id']);
+            }
         }
         
         return response()->json(200);
