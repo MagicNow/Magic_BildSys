@@ -500,7 +500,7 @@ class SpreadsheetRepository
                               [
                                   'obra_id' => $final['obra_id'],
                                   'resumo' => $final['resumo'],
-                                  'tarefa' => $final['tarefa']
+                                  'tarefa' => trim($final['tarefa'])
                               ],
                               [
                                   'user_id' => $final['user_id'],
