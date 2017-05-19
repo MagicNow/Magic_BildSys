@@ -20,7 +20,8 @@ class Insumo extends Model
         'nome',
         'unidade_sigla',
         'codigo',
-        'insumo_grupo_id'
+        'insumo_grupo_id',
+        'active'
     ];
 
     /**
