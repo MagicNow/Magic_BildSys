@@ -158,9 +158,9 @@
                     </div>
                 </div>
 
-                {{--<a href="{{ url('ordens-de-compra/carrinho/comprar-tudo-de-tudo?obra_id='.$obra->id) }}" class="btn btn-info btn-lg btn-flat pull-right" id="comprar_tudo_de_tudo">--}}
-                    {{--Comprar tudo de tudo--}}
-                {{--</a>--}}
+                <button class="btn btn-info btn-lg btn-flat pull-right" onclick="getQueryDataTable();">
+                    Comprar saldo de todos os insumos
+                </button>
             </div>
             @include('adminlte-templates::common.errors')
         </div>
@@ -344,6 +344,23 @@
                     $('#servico_id').attr('disabled',true);
                 }
             }
+        }
+
+        function getQueryDataTable() {
+            var queries = window.LaravelDataTables["dataTableBuilder"].ajax.json().queries;
+            var obj = queries[queries.length-1];
+            var bindings = obj.bindings;
+            var query = obj.query;
+
+            $.ajax({
+                method: "POST",
+                url: "/ordens-de-compra/carrinho/comprar-tudo-de-tudo",
+                data: {
+                    'bindings': bindings,
+                    'query': query,
+                    '_token': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
         }
     </script>
 @endsection
