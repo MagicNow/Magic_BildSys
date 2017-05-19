@@ -22,6 +22,8 @@ $router->get('/admin/users/busca', 'Admin\Manage\UsersController@busca');
 $router->get('/getForeignKey', 'CodesController@getForeignKey');
 $router->get('/busca-cidade', 'CodesController@buscaCidade');
 $router->get('tipos-equalizacoes-tecnicas/busca', 'TipoEqualizacaoTecnicaController@busca');
+$router->get('/compras/buscar/planejamentos', ['as' => 'buscaplanejamentos.busca_planejamento', 'uses' => 'OrdemDeCompraController@buscaPlanejamentos']);
+$router->get('/compras/buscar/insumogrupos', ['as' => 'buscainsumogrupos.busca_insumo', 'uses' => 'OrdemDeCompraController@buscaInsumoGrupos']);
 
 ##### ADMIN #####
 $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:dashboard.access']], function () use ($router) {
@@ -396,7 +398,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->get('/ordens-de-compra/detalhes/{id}', 'OrdemDeCompraController@detalhe')
             ->middleware("needsPermission:ordens_de_compra.detalhes");
         $router->get('/ordens-de-compra/carrinho', 'OrdemDeCompraController@carrinho');
-        $router->get('/ordens-de-compra/carrinho/comprar-tudo-de-tudo', 'OrdemDeCompraController@comprarTudoDeTudo');
+        $router->post('/ordens-de-compra/carrinho/comprar-tudo-de-tudo', 'OrdemDeCompraController@comprarTudoDeTudo');
         $router->get('/ordens-de-compra/carrinho/indicar-contrato', 'OrdemDeCompraController@indicarContrato');
         $router->get('/ordens-de-compra/fechar-carrinho', 'OrdemDeCompraController@fechaCarrinho');
         $router->post('/ordens-de-compra/altera-item/{id}', 'OrdemDeCompraController@alteraItem');
