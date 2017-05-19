@@ -302,10 +302,10 @@ class ComprasDataTable extends DataTable
             'unidade De Medida' => ['name' => 'unidade_sigla', 'data' => 'unidade_sigla'],
             'quantidade' => ['name' => 'orcamentos.qtd_total', 'data' => 'qtd_total'],
             'saldo' => ['name' => 'orcamentos.qtd_total', 'data' => 'saldo'],
-            'quantidade Compra' => ['name' => 'quantidade_compra', 'data' => 'quantidade_compra', 'searchable' => false],
-            'troca' => ['name' => 'troca', 'data' => 'troca', 'searchable' => false, 'orderable' => false],
-            'finaliza Obra' => ['name' => 'total', 'data' => 'total', 'searchable' => false, 'orderable' => false],
-            'action' => ['title' => '#', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
+            'quantidade Compra' => ['name' => 'quantidade_compra', 'data' => 'quantidade_compra', 'searchable' => false, 'width'=>'8%'],
+            'troca' => ['name' => 'troca', 'data' => 'troca', 'searchable' => false, 'orderable' => false, 'width'=>'5%'],
+            'finaliza Obra' => ['name' => 'total', 'data' => 'total', 'searchable' => false, 'orderable' => false, 'width'=>'5%'],
+            'action' => ['title' => '#', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'5%']
         ];
     }
 

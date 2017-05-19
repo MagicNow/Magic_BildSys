@@ -1612,10 +1612,33 @@ class OrdemDeCompraController extends AppBaseController
     public function totalParcial(Request $request, Obra $obra)
     {
         //Testa se tem ordem de compra aberta pro user
-        $ordem = OrdemDeCompra::where('oc_status_id', 1)
-            ->where('user_id', Auth::user()->id)
-            ->where('obra_id', $obra->id)
-            ->first();
+        $ordem = null;
+        if(\Session::get('ordemCompra')){
+            $ordem = OrdemDeCompra::where('id', \Session::get('ordemCompra'))
+                ->where('oc_status_id', 1)
+                ->where('user_id', Auth::user()->id)
+                ->where('obra_id', $request->obra_id)->first();
+        }else {
+            $ordem = OrdemDeCompra::where('oc_status_id', 1)
+                ->where('user_id', Auth::user()->id)
+                ->where('obra_id', $request->obra_id)->first();
+        }
+
+        if(!$ordem){
+            $ordem = new OrdemDeCompra();
+            $ordem->oc_status_id = 1;
+            $ordem->obra_id = $request->obra_id;
+            $ordem->user_id = Auth::user()->id;
+            $ordem->save();
+            OrdemDeCompraStatusLog::create([
+                'oc_status_id'=>1,
+                'ordem_de_compra_id'=>$ordem->id,
+                'user_id'=>Auth::id()
+            ]);
+
+            # Colocando na sessão
+            $request->session()->put('ordemCompra', $ordem->id);
+        }
 
         // Encontra o orçamento ativo
         $orcamento_ativo = Orcamento::where('insumo_id',$request->id)
@@ -1655,9 +1678,33 @@ class OrdemDeCompraController extends AppBaseController
     public function comprarTudo(Request $request, Obra $obra)
     {
         //Testa se tem ordem de compra aberta pro user
-        $ordem = OrdemDeCompra::where('oc_status_id', 1)
-            ->where('user_id', Auth::user()->id)
-            ->where('obra_id', $obra->id)->first();
+        $ordem = null;
+        if(\Session::get('ordemCompra')){
+            $ordem = OrdemDeCompra::where('id', \Session::get('ordemCompra'))
+                ->where('oc_status_id', 1)
+                ->where('user_id', Auth::user()->id)
+                ->where('obra_id', $request->obra_id)->first();
+        }else {
+            $ordem = OrdemDeCompra::where('oc_status_id', 1)
+                ->where('user_id', Auth::user()->id)
+                ->where('obra_id', $request->obra_id)->first();
+        }
+
+        if(!$ordem){
+            $ordem = new OrdemDeCompra();
+            $ordem->oc_status_id = 1;
+            $ordem->obra_id = $request->obra_id;
+            $ordem->user_id = Auth::user()->id;
+            $ordem->save();
+            OrdemDeCompraStatusLog::create([
+                'oc_status_id'=>1,
+                'ordem_de_compra_id'=>$ordem->id,
+                'user_id'=>Auth::id()
+            ]);
+
+            # Colocando na sessão
+            $request->session()->put('ordemCompra', $ordem->id);
+        }
 
         // Encontra o orçamento ativo para validar preço
         $orcamento_ativo = Orcamento::where('insumo_id',$request->id)
@@ -1684,10 +1731,11 @@ class OrdemDeCompraController extends AppBaseController
             'unidade_sigla' => $orcamento_ativo->unidade_sigla,
         ]);
 
+
         $ordem_item->user_id = Auth::user()->id;
         $ordem_item->qtd = $request->qtd_total;
         $ordem_item->valor_unitario = $orcamento_ativo->preco_unitario;
-        $ordem_item->valor_total = $orcamento_ativo->getOriginal('preco_unitario') * $ordem_item->qtd;
+        $ordem_item->valor_total = $orcamento_ativo->getOriginal('preco_unitario') * money_to_float($ordem_item->qtd);
         $ordem_item->save();
 
         return response()->json(200);
