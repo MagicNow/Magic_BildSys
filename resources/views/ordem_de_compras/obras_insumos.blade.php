@@ -158,9 +158,9 @@
                     </div>
                 </div>
 
-                <a href="{{ url('ordens-de-compra/carrinho/comprar-tudo-de-tudo?obra_id='.$obra->id) }}" class="btn btn-info btn-lg btn-flat pull-right" id="comprar_tudo_de_tudo">
-                    Comprar tudo de tudo
-                </a>
+                {{--<a href="{{ url('ordens-de-compra/carrinho/comprar-tudo-de-tudo?obra_id='.$obra->id) }}" class="btn btn-info btn-lg btn-flat pull-right" id="comprar_tudo_de_tudo">--}}
+                    {{--Comprar tudo de tudo--}}
+                {{--</a>--}}
             </div>
             @include('adminlte-templates::common.errors')
         </div>

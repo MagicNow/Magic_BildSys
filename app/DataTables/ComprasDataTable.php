@@ -70,8 +70,11 @@ class ComprasDataTable extends DataTable
 
         #dando prioridade a sessão
         $ordem = null;
-        if(session()->get('ordemCompra')){
-            $ordem = OrdemDeCompra::where('id', session()->get('ordemCompra'))
+//        \Session::forget('ordemCompra');
+//        \Session::flush('ordemCompra');
+//        dd(\Session::get('ordemCompra'));
+        if(\Session::get('ordemCompra')){
+            $ordem = OrdemDeCompra::where('id', \Session::get('ordemCompra'))
                 ->where('oc_status_id', 1)
                 ->where('user_id', Auth::user()->id)
                 ->where('obra_id', $obra->id)->first();
@@ -135,17 +138,21 @@ class ComprasDataTable extends DataTable
                                     SELECT sum(ordem_de_compra_itens.qtd) FROM ordem_de_compra_itens
                                     JOIN ordem_de_compras
                                     ON ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id
-                                    AND ordem_de_compras.oc_status_id != 6
-                                    AND ordem_de_compras.oc_status_id != 4
-                                    WHERE ordem_de_compra_itens.insumo_id = insumos.id
+                                    WHERE ordem_de_compra_itens.insumo_id = orcamentos.insumo_id
                                     AND ordem_de_compra_itens.grupo_id = orcamentos.grupo_id
                                     AND ordem_de_compra_itens.subgrupo1_id = orcamentos.subgrupo1_id
                                     AND ordem_de_compra_itens.subgrupo2_id = orcamentos.subgrupo2_id
                                     AND ordem_de_compra_itens.subgrupo3_id = orcamentos.subgrupo3_id
                                     AND ordem_de_compra_itens.servico_id = orcamentos.servico_id
-                                    AND ordem_de_compra_itens.aprovado IS NULL
+                                    AND (
+                                            ordem_de_compra_itens.aprovado IS NULL
+                                            OR
+                                            ordem_de_compra_itens.aprovado = 1
+                                        )
                                     AND ordem_de_compra_itens.deleted_at IS NULL
                                     AND ordem_de_compras.obra_id ='. $obra->id .'
+                                    AND ordem_de_compras.oc_status_id != 6
+                                    AND ordem_de_compras.oc_status_id != 4
                                 ),0
                             )
                         )
@@ -169,7 +176,7 @@ class ComprasDataTable extends DataTable
                         AND ordem_de_compra_itens.deleted_at IS NULL
                         AND ordem_de_compras.obra_id ='. $obra->id .'
                         AND ordem_de_compras.oc_status_id = 1
-                        '.($ordem ? ' AND ordem_de_compras.id ='. $ordem->id .' ': '').'
+                        '.($ordem ? ' AND ordem_de_compras.id ='. $ordem->id .' ': 'AND ordem_de_compras.id = 0').'
                     ),2,\'de_DE\') as quantidade_compra'),
                 DB::raw('(SELECT total FROM ordem_de_compra_itens
                     JOIN ordem_de_compras
@@ -188,7 +195,7 @@ class ComprasDataTable extends DataTable
                     AND ordem_de_compra_itens.aprovado IS NULL
                     AND ordem_de_compra_itens.deleted_at IS NULL
                     AND ordem_de_compras.oc_status_id = 1
-                    '.($ordem ? ' AND ordem_de_compras.id ='. $ordem->id .' ': '').'
+                    '.($ordem ? ' AND ordem_de_compras.id ='. $ordem->id .' ': 'AND ordem_de_compras.id = 0').'
                     AND ordem_de_compra_itens.obra_id ='. $obra->id .' ) as total'),
             ]
         )

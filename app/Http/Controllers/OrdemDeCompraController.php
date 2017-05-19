@@ -798,17 +798,17 @@ class OrdemDeCompraController extends AppBaseController
     public function addCarrinho(Request $request)
     {
         //Testa se tem ordem de compra aberta pro user
-        $ordem = OrdemDeCompra::where('oc_status_id', 1)
-            ->where('user_id', Auth::user()->id)
-            ->where('obra_id', $request->obra_id)->first();
-
-        // se foi passado algum planejamento
-//        if(count($planejamento['attributes'])){
-//            $planejamento_compra = PlanejamentoCompra::find($request->planejamento_compra_id);
-//            $planejamento_compra->quantidade_compra = floatval($request->quantidade_compra);
-//            $planejamento_compra->save();
-//        }
-
+        $ordem = null;
+        if(\Session::get('ordemCompra')){
+            $ordem = OrdemDeCompra::where('id', \Session::get('ordemCompra'))
+                ->where('oc_status_id', 1)
+                ->where('user_id', Auth::user()->id)
+                ->where('obra_id', $request->obra_id)->first();
+        }else {
+            $ordem = OrdemDeCompra::where('oc_status_id', 1)
+                ->where('user_id', Auth::user()->id)
+                ->where('obra_id', $request->obra_id)->first();
+        }
 
         if(!$ordem){
             $ordem = new OrdemDeCompra();
@@ -821,6 +821,9 @@ class OrdemDeCompraController extends AppBaseController
                 'ordem_de_compra_id'=>$ordem->id,
                 'user_id'=>Auth::id()
             ]);
+
+            # Colocando na sessão
+            $request->session()->put('ordemCompra', $ordem->id);
         }
 
         // Encontra o orçamento ativo para validar preço
@@ -977,8 +980,6 @@ class OrdemDeCompraController extends AppBaseController
         }
         if($request->id){
             $ordemDeCompra->where('id',$request->id);
-            #colocar na sessão
-            \Session::put('ordemCompra', $request->id);
         }
         $ordemDeCompra = $ordemDeCompra->first();
 
@@ -987,6 +988,8 @@ class OrdemDeCompraController extends AppBaseController
 
             return back();
         }
+        #colocar na sessão
+        $request->session()->put('ordemCompra', $ordemDeCompra->id);
 
         $itens = collect([]);
 
@@ -1090,6 +1093,7 @@ class OrdemDeCompraController extends AppBaseController
         }
 
         #limpa sessão
+        $request->session()->put('ordemCompra', null);
         $request->session()->forget('ordemCompra');
 
 
