@@ -503,9 +503,9 @@ class OrdemDeCompraController extends AppBaseController
     public function obrasInsumos(ComprasDataTable $comprasDataTable, Request $request)
     {
         $planejamento = Planejamento::find($request->planejamento_id);
-        $planejamentoFiltro = Planejamento::pluck('tarefa','id')->toArray();
+        $planejamentoFiltro = Planejamento::where('id', $request->planejamento_id)->pluck('tarefa','id')->toArray();
         $insumoGrupo = InsumoGrupo::find($request->insumo_grupos_id);
-        $insumoGrupoFiltro = InsumoGrupo::pluck('nome','id')->toArray();
+        $insumoGrupoFiltro = InsumoGrupo::where('id', $request->insumo_grupos_id)->pluck('nome','id')->toArray();
         $obra = Obra::find($request->obra_id);
         $grupos = Grupo::whereNull('grupo_id')->pluck('nome','id')->toArray();
         return $comprasDataTable->render('ordem_de_compras.obras_insumos', compact('obra','grupos','planejamento','insumoGrupo','planejamentoFiltro','insumoGrupoFiltro'));
@@ -1971,8 +1971,8 @@ class OrdemDeCompraController extends AppBaseController
         Request $request,
         OrcamentoRepository $orcamentoRepository,
         InsumoRepository $insumoRepository,
-        $orcamentoId
-    ) {
+        $orcamentoId)
+   {
         $orcamento = $orcamentoRepository->findWithoutFail($orcamentoId);
 
         if (empty($orcamento)) {
@@ -2017,6 +2017,25 @@ class OrdemDeCompraController extends AppBaseController
         Flash::success('Troca realizada com sucesso');
 
         return redirect($request->back ?: url()->previous());
-    }
+   }
+
+   public function buscaPlanejamentos(Request $request)
+   {
+       return Planejamento::select([
+           'id',
+           'tarefa'
+       ])
+           ->where('tarefa','like', '%'.$request->q.'%')->paginate();
+   }
+
+   public function buscaInsumoGrupos(Request $request)
+   {
+       return InsumoGrupo::select([
+           'id',
+           'nome'
+       ])
+           ->where('nome','like', '%'.$request->q.'%')->paginate();
+   }
+
 }
 
