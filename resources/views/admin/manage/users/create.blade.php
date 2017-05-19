@@ -14,7 +14,7 @@
                 <div class="row">
                     {!! Form::open(['route' => 'users.store']) !!}
 
-
+                        @include( 'flash::message' )
                         @include('admin.manage.users.fields')
 
                     {!! Form::close() !!}

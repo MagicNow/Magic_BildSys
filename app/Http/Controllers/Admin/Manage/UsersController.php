@@ -68,6 +68,15 @@ class UsersController extends AppBaseController
     public function store(CreateUserRequest $request)
     {
 
+        if(!$request->email){
+            Flash::error('O campo email é obrigatório');
+            return redirect('/admin/users/create')->withInput($request->except('password'));
+        }
+        if(!$request->roles){
+            Flash::error('O campo perfil é obrigatório');
+            return redirect('/admin/users/create')->withInput($request->except('password'));
+        }
+
         $usuario_existente_deletado = User::Where('email', '=', $request->email)
             ->withTrashed()
             ->whereNotNull('deleted_at')
@@ -82,7 +91,7 @@ class UsersController extends AppBaseController
 
         if (isset($usuario_existente)) {
             Flash::error('O campo email já esta sendo utilizado em outro cadastro');
-            return redirect('/admin/users/create')->withInput($request->except('password', 'password_confirmation'));
+            return redirect('/admin/users/create')->withInput($request->except('password'));
         }
 
         $input = $request->all();
@@ -179,6 +188,15 @@ class UsersController extends AppBaseController
      */
     public function update($id, UpdateUserRequest $request)
     {
+        if(!$request->email){
+            Flash::error('O campo email é obrigatório');
+            return redirect('/admin/users/create')->withInput($request->except('password'));
+        }
+        if(!$request->roles){
+            Flash::error('O campo perfil é obrigatório');
+            return redirect('/admin/users/create')->withInput($request->except('password'));
+        }
+        
         $user = $this->userRepository->findWithoutFail($id);
 
         if (empty($user)) {
