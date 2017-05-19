@@ -132,7 +132,8 @@
                                 <div class="form-group col-sm-6">
                                     <div class="js-datatable-filter-form">
                                         {!! Form::label('planejamento_id', 'Planejamento:') !!}
-                                        {!! Form::select('planejamento_id',[''=>'-']+$planejamentoFiltro, (isset($planejamento) ? $planejamento->id : null), [
+                                        {!!
+                                          Form::select('planejamento_id', $planejamentos, (isset($planejamento) ? $planejamento->id : null), [
                                             'class'=>'form-control select2',
                                             'id'=>'planejamento_id'
                                             ]) !!}
@@ -141,7 +142,8 @@
                                 <div class="form-group col-sm-6">
                                     <div class="js-datatable-filter-form">
                                         {!! Form::label('insumo_grupos_id', 'Grupo de insumo:') !!}
-                                        {!! Form::select('insumo_grupos_id',[''=>'-']+$insumoGrupoFiltro, (isset($insumoGrupo) ? $insumoGrupo->id : null), [
+                                        {!!
+                                          Form::select('insumo_grupos_id', $insumoGrupos, (isset($insumoGrupo) ? $insumoGrupo->id : null), [
                                             'class'=>'form-control select2',
                                             'id'=>'insumo_grupos_id'
                                             ]) !!}
@@ -191,7 +193,8 @@
 @section('scripts')
     @parent
     <script type="text/javascript">
-        function quantidadeCompra(id, obra_id, grupo_id, subgrupo1_id, subgrupo2_id, subgrupo3_id, servico_id, value){
+
+        function quantidadeCompra(id, obra_id, grupo_id, subgrupo1_id, subgrupo2_id, subgrupo3_id, servico_id, value) {
             $.ajax({
                 url: "{{url('/compras/'.(isset($obra) ? $obra->id : $planejamento->id).'/addCarrinho')}}",
                 data: {
@@ -317,6 +320,14 @@
         }
 
         $(function () {
+          $(document).on('draw.dt', function() {
+            $('.js-blur-on-enter').on('keypress', function(event) {
+              if(event.which === 13) {
+                event.currentTarget.blur();
+              }
+            });
+          });
+
             $('[data-toggle="tooltip"]').tooltip();
 
             $('.js-datatable-filter-form :input').on('change', function (e) {
@@ -343,79 +354,6 @@
                 });
             });
 
-            $('#planejamento_id').select2({
-                allowClear: true,
-                placeholder: "Escolha...",
-                language: "pt-BR",
-
-                ajax: {
-                    url: "{{ route('buscaplanejamentos.busca_planejamento') }}",
-                    dataType: 'json',
-                    delay: 250,
-
-                    data: function (params) {
-                        return {
-                            q: params.term,
-                            page: params.page
-                        };
-                    },
-
-                    processResults: function (result, params) {
-                        params.page = params.page || 1;
-
-                        return {
-                            results: result.data,
-                            pagination: {
-                                more: (params.page * result.per_page) < result.total
-                            }
-                        };
-                    },
-                    cache: true
-                },
-                escapeMarkup: function (markup) {
-                    return markup;
-                },
-                minimumInputLength: 1,
-                templateResult: formatResult,
-                templateSelection: formatResultSelection
-            });
-
-            $('#insumo_grupos_id').select2({
-                allowClear: true,
-                placeholder: "Escolha...",
-                language: "pt-BR",
-
-                ajax: {
-                    url: "{{ route('buscainsumogrupos.busca_insumo') }}",
-                    dataType: 'json',
-                    delay: 250,
-
-                    data: function (params) {
-                        return {
-                            q: params.term,
-                            page: params.page
-                        };
-                    },
-
-                    processResults: function (result, params) {
-                        params.page = params.page || 1;
-
-                        return {
-                            results: result.data,
-                            pagination: {
-                                more: (params.page * result.per_page) < result.total
-                            }
-                        };
-                    },
-                    cache: true
-                },
-                escapeMarkup: function (markup) {
-                    return markup;
-                },
-                minimumInputLength: 1,
-                templateResult: formatResult,
-                templateSelection: formatResultSelection
-            });
         });
 
         function formatResult (obj) {
