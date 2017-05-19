@@ -45,6 +45,7 @@ class PlanejamentoRepository extends BaseRepository
             ->where('obra_users.user_id', $user_id)
             ->whereRaw(PlanejamentoCompraRepository::EXISTE_ITEM_PRA_COMPRAR)
             ->groupBy('planejamentos.id')
+            ->orderBy('planejamentos.tarefa','ASC')
             ->get();
     }
 }
