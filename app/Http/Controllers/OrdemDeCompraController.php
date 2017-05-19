@@ -1163,7 +1163,7 @@ class OrdemDeCompraController extends AppBaseController
     {
         $insumo = Insumo::where('codigo', $request->codigo_insumo)->first();
 
-        $contrato_insumo = ContratoInsumo::with('contrato')->where('insumo_id', $insumo->id)->get();
+        $contrato_insumo = [];
 
         return response()->json(['contrato_insumo' => $contrato_insumo]);
     }
