@@ -332,9 +332,10 @@ class CatalogoContratoController extends AppBaseController
     public function buscaFornecedor(Request $request){
         $fornecedores = MegaFornecedor::select([
             'agn_in_codigo as id',
-            DB::raw("CONVERT(agn_st_nome,'UTF8','WE8ISO8859P15' ) as agn_st_nome")
+            DB::raw("CONVERT(agn_st_nome,'UTF8','WE8ISO8859P15') as agn_st_nome")
         ])
-            ->where('agn_st_nome','like', '%'.$request->q.'%')->paginate();
+        ->whereRaw("LOWER(agn_st_nome) LIKE '%' || LOWER('{$request->q}') || '%'")
+        ->paginate();
 
         return $fornecedores;
     }
