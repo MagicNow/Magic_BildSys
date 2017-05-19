@@ -502,19 +502,13 @@ class OrdemDeCompraController extends AppBaseController
      */
     public function obrasInsumos(ComprasDataTable $comprasDataTable, Request $request)
     {
-        //        dd($request->all());
-        if(isset($request->planejamento_id)){
-            $planejamento = Planejamento::find($request->planejamento_id);
-            $insumoGrupo = InsumoGrupo::find($request->insumo_grupos_id);
-
-            //            return view('ordem_de_compras.obras_insumos', compact('planejamento', 'insumoGrupo'));
-        }else{
-            $obra = Obra::find($request->obra_id);
-            $grupos = Grupo::whereNull('grupo_id')->pluck('nome','id')->toArray();
-            //            return view('ordem_de_compras.obras_insumos', compact('obra', 'grupos'));
-        }
-
-        return $comprasDataTable->render('ordem_de_compras.obras_insumos', compact('obra','grupos','planejamento','insumoGrupo'));
+        $planejamento = Planejamento::find($request->planejamento_id);
+        $planejamentoFiltro = Planejamento::pluck('tarefa','id')->toArray();
+        $insumoGrupo = InsumoGrupo::find($request->insumo_grupos_id);
+        $insumoGrupoFiltro = InsumoGrupo::pluck('nome','id')->toArray();
+        $obra = Obra::find($request->obra_id);
+        $grupos = Grupo::whereNull('grupo_id')->pluck('nome','id')->toArray();
+        return $comprasDataTable->render('ordem_de_compras.obras_insumos', compact('obra','grupos','planejamento','insumoGrupo','planejamentoFiltro','insumoGrupoFiltro'));
     }
 
     /**
@@ -805,26 +799,26 @@ class OrdemDeCompraController extends AppBaseController
         return response()->redirect()->back();
     }
 
-    public function addCarrinho(Request $request, Obra $obra = null ,Planejamento $planejamento = null)
+    public function addCarrinho(Request $request)
     {
-        dd($request->all(), $planejamento);
         //Testa se tem ordem de compra aberta pro user
-        $ordem = OrdemDeCompra::where('oc_status_id', 1)
-            ->where('user_id', Auth::user()->id)
-            ->where('obra_id', $obra->id)->first();
 
-        // se foi passado algum planejamento
-        //        if(count($planejamento['attributes'])){
-        //            $planejamento_compra = PlanejamentoCompra::find($request->planejamento_compra_id);
-        //            $planejamento_compra->quantidade_compra = floatval($request->quantidade_compra);
-        //            $planejamento_compra->save();
-        //        }
-
+        $ordem = null;
+        if(\Session::get('ordemCompra')){
+            $ordem = OrdemDeCompra::where('id', \Session::get('ordemCompra'))
+                ->where('oc_status_id', 1)
+                ->where('user_id', Auth::user()->id)
+                ->where('obra_id', $request->obra_id)->first();
+        }else {
+            $ordem = OrdemDeCompra::where('oc_status_id', 1)
+                ->where('user_id', Auth::user()->id)
+                ->where('obra_id', $request->obra_id)->first();
+        }
 
         if(!$ordem){
             $ordem = new OrdemDeCompra();
             $ordem->oc_status_id = 1;
-            $ordem->obra_id = $obra->id;
+            $ordem->obra_id = $request->obra_id;
             $ordem->user_id = Auth::user()->id;
             $ordem->save();
             OrdemDeCompraStatusLog::create([
@@ -832,11 +826,14 @@ class OrdemDeCompraController extends AppBaseController
                 'ordem_de_compra_id'=>$ordem->id,
                 'user_id'=>Auth::id()
             ]);
+
+            # Colocando na sessão
+            $request->session()->put('ordemCompra', $ordem->id);
         }
 
         // Encontra o orçamento ativo para validar preço
         $orcamento_ativo = Orcamento::where('insumo_id',$request->id)
-            ->where('obra_id',$obra->id)
+            ->where('obra_id',$request->obra_id)
             ->where('grupo_id',$request->grupo_id)
             ->where('subgrupo1_id',$request->subgrupo1_id)
             ->where('subgrupo2_id',$request->subgrupo2_id)
@@ -851,7 +848,7 @@ class OrdemDeCompraController extends AppBaseController
 
         $ordem_item = OrdemDeCompraItem::firstOrNew([
             'ordem_de_compra_id' => $ordem->id,
-            'obra_id' => $obra->id,
+            'obra_id' => $request->obra_id,
             'codigo_insumo' => $orcamento_ativo->codigo_insumo,
             'grupo_id' => $orcamento_ativo->grupo_id,
             'subgrupo1_id' => $orcamento_ativo->subgrupo1_id,
@@ -980,6 +977,8 @@ class OrdemDeCompraController extends AppBaseController
 
     public function carrinho(Request $request)
     {
+
+
         $ordemDeCompra = OrdemDeCompra::where('oc_status_id',1)->where('user_id',Auth::id());
         if($request->obra_id){
             $ordemDeCompra->where('obra_id',$request->obra_id);
@@ -994,6 +993,8 @@ class OrdemDeCompraController extends AppBaseController
 
             return back();
         }
+        #colocar na sessão
+        $request->session()->put('ordemCompra', $ordemDeCompra->id);
 
         $itens = collect([]);
 
@@ -1095,6 +1096,9 @@ class OrdemDeCompraController extends AppBaseController
         if(count($planejamento_compras_zerar)){
             PlanejamentoCompra::whereIn('id', $planejamento_compras_zerar)->update(['quantidade_compra'=>0]);
         }
+
+        #limpa sessão
+        $request->session()->forget('ordemCompra');
 
 
         Flash::success('Ordem de compra '.$ordemDeCompra->id.' Fechada!');

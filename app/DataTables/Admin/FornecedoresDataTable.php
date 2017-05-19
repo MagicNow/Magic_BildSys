@@ -46,13 +46,13 @@ class FornecedoresDataTable extends DataTable
     {
         return $this->builder()
             ->columns($this->getColumns())
-            ->addAction(['width' => '10%'])
+//            ->addAction(['width' => '10%'])
             ->ajax('')
             ->parameters([
                 'initComplete' => 'function () {
                     max = this.api().columns().count();
                     this.api().columns().every(function (col) {
-                        if((col+1)<max){
+                        if((col+2)<max){
                             var column = this;
                             var input = document.createElement("input");
                             $(input).attr(\'placeholder\',\'Filtrar...\');
@@ -108,7 +108,8 @@ class FornecedoresDataTable extends DataTable
             'email' => ['name' => 'email', 'data' => 'email'],
             'site' => ['name' => 'site', 'data' => 'site'],
             'telefone' => ['name' => 'telefone', 'data' => 'telefone'],
-            'usuário' => ['name' => 'usuário', 'data' => 'usuário'],
+            'usuário' => ['name' => 'usuário', 'data' => 'usuário', 'searchable' => false],
+            'action' => ['title' => '#', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }
 

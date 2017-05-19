@@ -32,15 +32,6 @@
     </div>
 </div>
 
-<!-- admin Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('admin', 'Administrador') !!}
-    <div class="form-control">
-        {!! Form::checkbox('admin', 1, null, [ 'id'=>'admin']) !!}
-    </div>
-</div>
-
-
 <!-- Submit Field -->
 <div class="form-group col-sm-12">
     {!! Form::submit( ucfirst( trans('common.save') ), ['class' => 'btn btn-primary']) !!}

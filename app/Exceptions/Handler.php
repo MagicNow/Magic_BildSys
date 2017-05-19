@@ -51,6 +51,16 @@ class Handler extends ExceptionHandler
             }
             return redirect()->back()->with('error', 'Token de segurança expirou, por favor tente novamente.');
         }
+
+        if ($exception instanceof \ErrorException) {
+            if(!env('APP_DEBUG')){
+                if($request->ajax()){
+                    return response()->json(['false'=>1,'message'=>'Sistema em manutenção!'],500);
+                }
+                return response()->view('errors.500', [], 500);
+            }
+        }
+
         return parent::render($request, $exception);
     }
 

@@ -30,7 +30,7 @@
     </section>
     <div class="content">
         <div class="clearfix"></div>
-
+        @shield('quadroDeConcorrencias.view')
          {{--Dashboard--}}
         <div class="box-body" id="app">
             <div class="row">
@@ -70,6 +70,7 @@
         </div>
 
         <div class="clearfix"></div>
+        @endshield
         <div class="box box-warning">
             <div class="box-body">
                     @include('quadro_de_concorrencias.table')
@@ -80,6 +81,7 @@
 @section('scripts')
     @parent
     <script>
+    @shield('quadroDeConcorrencias.view')
         const app = new Vue({
             el: '#app',
             data:{
@@ -113,5 +115,6 @@
                 }
             }
         });
+    @endshield
     </script>
 @endsection

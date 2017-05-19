@@ -4,6 +4,7 @@ namespace App\DataTables;
 
 use App\Models\Insumo;
 use App\Models\Obra;
+use App\Models\OrdemDeCompra;
 use App\Models\Planejamento;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -21,14 +22,14 @@ class ComprasDataTable extends DataTable
         return $this->datatables
             ->eloquent($this->query())
             ->addColumn('action', 'ordem_de_compras.obras-insumos-datatables-actions')
-            ->editColumn('quantidade_compra', function ($obj) {
-                return "<input value='$obj->quantidade_compra' class='form-control money' onblur='quantidadeCompra($obj->id, $obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, this.value)'>";
+            ->editColumn('quantidade_compra', function($obj){
+                return "<input value='$obj->quantidade_compra' class='form-control money' onblur='quantidadeCompra($obj->id, $obj->obra_id, $obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, this.value)'>";
             })
-            ->editColumn('total', function ($obj) {
-                if ($obj->quantidade_compra && $obj->total === 1) {
-                    return "<input type='checkbox' checked onchange='totalCompra($obj->id, $obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, this.value)'>";
-                } elseif ($obj->quantidade_compra) {
-                    return "<input type='checkbox' onchange='totalCompra($obj->id, $obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, this.value)'>";
+            ->editColumn('total', function($obj){
+                if($obj->quantidade_compra && $obj->total === 1) {
+                    return "<input type='checkbox' checked onchange='totalCompra($obj->id, $obj->obra_id, $obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, this.value)'>";
+                }elseif($obj->quantidade_compra){
+                    return "<input type='checkbox' onchange='totalCompra($obj->id, $obj->obra_id, $obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, this.value)'>";
                 }
             })
             ->editColumn('troca', function ($obj) {
@@ -72,65 +73,79 @@ class ComprasDataTable extends DataTable
     public function query()
     {
         $insumo_query = Insumo::query();
+        # OBRA
+        $obra = Obra::find($this->request()->get('obra_id'));
+        $insumos = $insumo_query->join('orcamentos', 'orcamentos.insumo_id', '=', 'insumos.id')
+            ->where('orcamentos.obra_id', $this->request()->get('obra_id'))
+            ->where('orcamentos.ativo', 1);
 
+        // Verificar se existe OC aberta deste usuário ou se ele está editando alguma OC (SESSÃO)
 
-        if ($this->request()->get('obra_id')) {
-            # OBRA
-            $obra = Obra::find($this->request()->get('obra_id'));
-            $insumos = $insumo_query->join('orcamentos', 'orcamentos.insumo_id', '=', 'insumos.id')
-                ->where('orcamentos.obra_id', $this->request()->get('obra_id'))
-                ->where('orcamentos.ativo', 1);
+        #dando prioridade a sessão
+        $ordem = null;
+//        \Session::forget('ordemCompra');
+//        \Session::flush('ordemCompra');
+//        dd(\Session::get('ordemCompra'));
+        if(\Session::get('ordemCompra')){
+            $ordem = OrdemDeCompra::where('id', \Session::get('ordemCompra'))
+                ->where('oc_status_id', 1)
+                ->where('user_id', Auth::user()->id)
+                ->where('obra_id', $obra->id)->first();
+        }else {
+            $ordem = OrdemDeCompra::where('oc_status_id', 1)
+                ->where('user_id', Auth::user()->id)
+                ->where('obra_id', $obra->id)->first();
+        }
 
-            $insumos->select(
-                [
-                    'insumos.id',
-                    DB::raw("CONCAT(insumos.codigo,' - ' ,insumos.nome) as nome"),
-                    DB::raw("format(orcamentos.qtd_total,2,'de_DE') as qtd_total"),
-                    DB::raw("CONCAT(insumos_sub.codigo,' - ' ,insumos_sub.nome) as substitui"),
-                    'insumos.unidade_sigla',
-                    'insumos.codigo',
-                    'insumos.insumo_grupo_id',
-                    'orcamentos.id as orcamento_id',
-                    'orcamentos.grupo_id',
-                    'orcamentos.subgrupo1_id',
-                    'orcamentos.subgrupo2_id',
-                    'orcamentos.subgrupo3_id',
-                    'orcamentos.servico_id',
-                    'orcamentos.preco_total',
-                    'orcamentos.preco_unitario',
-                    DB::raw('0 as pai'),
-                    DB::raw('0 as filho'),
-                    DB::raw('(SELECT
+        $insumos->select(
+            [
+                'insumos.id',
+                DB::raw("CONCAT(insumos.codigo,' - ' ,insumos.nome) as nome"),
+                DB::raw("format(orcamentos.qtd_total,2,'de_DE') as qtd_total"),
+                DB::raw("CONCAT(insumos_sub.codigo,' - ' ,insumos_sub.nome) as substitui"),
+                'orcamentos.id as orcamento_id',
+                'insumos.unidade_sigla',
+                'insumos.codigo',
+                'insumos.insumo_grupo_id',
+                'orcamentos.obra_id',
+                'orcamentos.grupo_id',
+                'orcamentos.subgrupo1_id',
+                'orcamentos.subgrupo2_id',
+                'orcamentos.subgrupo3_id',
+                'orcamentos.servico_id',
+                'orcamentos.preco_total',
+                'orcamentos.preco_unitario',
+                DB::raw('(SELECT
                     CONCAT(codigo, \' - \', nome)
                     FROM
                     grupos
                     WHERE
                     orcamentos.grupo_id = grupos.id) AS tooltip_grupo'),
-                    DB::raw('(SELECT
+                DB::raw('(SELECT
                     CONCAT(codigo, \' - \', nome)
                     FROM
                     grupos
                     WHERE
                     orcamentos.subgrupo1_id = grupos.id) AS tooltip_subgrupo1'),
-                    DB::raw('(SELECT
+                DB::raw('(SELECT
                     CONCAT(codigo, \' - \', nome)
                     FROM
                     grupos
                     WHERE
                     orcamentos.subgrupo2_id = grupos.id) AS tooltip_subgrupo2'),
-                    DB::raw('(SELECT
+                DB::raw('(SELECT
                     CONCAT(codigo, \' - \', nome)
                     FROM
                     grupos
                     WHERE
                     orcamentos.subgrupo3_id = grupos.id) AS tooltip_subgrupo3'),
-                    DB::raw('(SELECT
+                DB::raw('(SELECT
                     CONCAT(codigo, \' - \', nome)
                     FROM
                     servicos
                     WHERE
                     orcamentos.servico_id = servicos.id) AS tooltip_servico'),
-                    DB::raw('format((
+                DB::raw('format((
                         orcamentos.qtd_total -
                         (
                             IFNULL(
@@ -138,191 +153,70 @@ class ComprasDataTable extends DataTable
                                     SELECT sum(ordem_de_compra_itens.qtd) FROM ordem_de_compra_itens
                                     JOIN ordem_de_compras
                                     ON ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id
-                                    AND ordem_de_compras.oc_status_id != 6
-                                    AND ordem_de_compras.oc_status_id != 4
-                                    WHERE ordem_de_compra_itens.insumo_id = insumos.id
+                                    WHERE ordem_de_compra_itens.insumo_id = orcamentos.insumo_id
                                     AND ordem_de_compra_itens.grupo_id = orcamentos.grupo_id
                                     AND ordem_de_compra_itens.subgrupo1_id = orcamentos.subgrupo1_id
                                     AND ordem_de_compra_itens.subgrupo2_id = orcamentos.subgrupo2_id
                                     AND ordem_de_compra_itens.subgrupo3_id = orcamentos.subgrupo3_id
                                     AND ordem_de_compra_itens.servico_id = orcamentos.servico_id
-                                    AND ordem_de_compra_itens.aprovado IS NULL
+                                    AND (
+                                            ordem_de_compra_itens.aprovado IS NULL
+                                            OR
+                                            ordem_de_compra_itens.aprovado = 1
+                                        )
                                     AND ordem_de_compra_itens.deleted_at IS NULL
                                     AND ordem_de_compras.obra_id ='. $obra->id .'
+                                    AND ordem_de_compras.oc_status_id != 6
+                                    AND ordem_de_compras.oc_status_id != 4
                                 ),0
                             )
                         )
                     ),2,\'de_DE\') as saldo'),
-                    DB::raw('format((
-                        SELECT sum(ordem_de_compra_itens.qtd) FROM ordem_de_compra_itens
+                // Colocar a OC se existir em aberto ou em sessão
+                DB::raw('format((
+                        SELECT ordem_de_compra_itens.qtd FROM ordem_de_compra_itens
                         JOIN ordem_de_compras
                         ON ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id
-                        AND ordem_de_compras.oc_status_id != 6
-                        AND ordem_de_compras.oc_status_id != 4
                         WHERE ordem_de_compra_itens.insumo_id = insumos.id
                         AND ordem_de_compra_itens.grupo_id = orcamentos.grupo_id
                         AND ordem_de_compra_itens.subgrupo1_id = orcamentos.subgrupo1_id
                         AND ordem_de_compra_itens.subgrupo2_id = orcamentos.subgrupo2_id
                         AND ordem_de_compra_itens.subgrupo3_id = orcamentos.subgrupo3_id
                         AND ordem_de_compra_itens.servico_id = orcamentos.servico_id
-                        AND ordem_de_compra_itens.aprovado IS NULL
+                        AND (
+                                ordem_de_compra_itens.aprovado IS NULL
+                                OR
+                                ordem_de_compra_itens.aprovado = 0
+                            )
                         AND ordem_de_compra_itens.deleted_at IS NULL
                         AND ordem_de_compras.obra_id ='. $obra->id .'
+                        AND ordem_de_compras.oc_status_id = 1
+                        '.($ordem ? ' AND ordem_de_compras.id ='. $ordem->id .' ': 'AND ordem_de_compras.id = 0').'
                     ),2,\'de_DE\') as quantidade_compra'),
-                    //                    DB::raw('(SELECT count(ordem_de_compra_itens.id) FROM ordem_de_compra_itens
-                    //                    JOIN ordem_de_compras
-                    //                    ON ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id
-                    //                    AND ordem_de_compras.oc_status_id = 1 AND ordem_de_compras.user_id = '.Auth::id().'
-                    //                    WHERE ordem_de_compra_itens.insumo_id = insumos.id
-                    //                    AND ordem_de_compra_itens.deleted_at IS NULL
-                    //                    AND ordem_de_compra_itens.obra_id ='. $obra->id .' ) as adicionado'),
-                    DB::raw('(SELECT total FROM ordem_de_compra_itens
+                DB::raw('(SELECT total FROM ordem_de_compra_itens
                     JOIN ordem_de_compras
                     ON ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id
-                    AND ordem_de_compras.oc_status_id = 1 AND ordem_de_compras.user_id = '.Auth::id().'
                     WHERE ordem_de_compra_itens.insumo_id = insumos.id
                     AND ordem_de_compra_itens.grupo_id = orcamentos.grupo_id
                     AND ordem_de_compra_itens.subgrupo1_id = orcamentos.subgrupo1_id
                     AND ordem_de_compra_itens.subgrupo2_id = orcamentos.subgrupo2_id
                     AND ordem_de_compra_itens.subgrupo3_id = orcamentos.subgrupo3_id
                     AND ordem_de_compra_itens.servico_id = orcamentos.servico_id
+                    AND (
+                            ordem_de_compra_itens.aprovado IS NULL
+                            OR
+                            ordem_de_compra_itens.aprovado = 0
+                        )
                     AND ordem_de_compra_itens.aprovado IS NULL
                     AND ordem_de_compra_itens.deleted_at IS NULL
+                    AND ordem_de_compras.oc_status_id = 1
+                    '.($ordem ? ' AND ordem_de_compras.id ='. $ordem->id .' ': 'AND ordem_de_compras.id = 0').'
                     AND ordem_de_compra_itens.obra_id ='. $obra->id .' ) as total'),
-                ]
-            )
+            ]
+        )
             ->whereNotNull('orcamentos.qtd_total')
             ->where('orcamentos.trocado', 0)
             ->where('orcamentos.ativo', 1);
-        } else {
-            # PLANEJAMENTO
-            $planejamento = Planejamento::find($this->request()->get('planejamento_id'));
-            $insumos = $insumo_query
-                ->join('planejamento_compras', function ($join) use ($planejamento) {
-                    $join->on('insumos.id', 'planejamento_compras.insumo_id');
-                })
-                ->join('planejamentos', 'planejamentos.id', '=', 'planejamento_compras.planejamento_id')
-                ->where('planejamento_compras.planejamento_id', '=', $planejamento->id);
-
-            $insumos->join('orcamentos', function ($join) {
-                $join->on('orcamentos.insumo_id', '=', 'planejamento_compras.insumo_id');
-                $join->on('orcamentos.grupo_id', '=', 'planejamento_compras.grupo_id');
-                $join->on('orcamentos.subgrupo1_id', '=', 'planejamento_compras.subgrupo1_id');
-                $join->on('orcamentos.subgrupo2_id', '=', 'planejamento_compras.subgrupo2_id');
-                $join->on('orcamentos.subgrupo3_id', '=', 'planejamento_compras.subgrupo3_id');
-                $join->on('orcamentos.servico_id', '=', 'planejamento_compras.servico_id');
-                $join->on('orcamentos.obra_id', '=', 'planejamentos.obra_id');
-                $join->on('orcamentos.ativo', '=', DB::raw('1'));
-            })
-                ->select(
-                    [
-                        'insumos.id',
-                        DB::raw("CONCAT(insumos.codigo,' - ' ,insumos.nome) as nome"),
-                        DB::raw("format(orcamentos.qtd_total,2,'de_DE') as qtd_total"),
-                        'insumos.unidade_sigla',
-                        'insumos.codigo',
-                        'insumos.insumo_grupo_id',
-                        'orcamentos.id as orcamento_id',
-                        'orcamentos.grupo_id',
-                        'orcamentos.subgrupo1_id',
-                        'orcamentos.subgrupo2_id',
-                        'orcamentos.subgrupo3_id',
-                        'orcamentos.servico_id',
-                        'orcamentos.preco_total',
-                        'orcamentos.preco_unitario',
-                        'planejamento_compras.quantidade_compra',
-                        'planejamento_compras.id as planejamento_compra_id',
-                        'planejamentos.id as planejamento_id',
-                        DB::raw('(SELECT
-                        CONCAT(codigo, \' - \', nome)
-                        FROM
-                        grupos
-                        WHERE
-                        orcamentos.grupo_id = grupos.id) AS tooltip_grupo'),
-                        DB::raw('(SELECT
-                        CONCAT(codigo, \' - \', nome)
-                        FROM
-                        grupos
-                        WHERE
-                        orcamentos.subgrupo1_id = grupos.id) AS tooltip_subgrupo1'),
-                        DB::raw('(SELECT
-                        CONCAT(codigo, \' - \', nome)
-                        FROM
-                        grupos
-                        WHERE
-                        orcamentos.subgrupo2_id = grupos.id) AS tooltip_subgrupo2'),
-                        DB::raw('(SELECT
-                        CONCAT(codigo, \' - \', nome)
-                        FROM
-                        grupos
-                        WHERE
-                        orcamentos.subgrupo3_id = grupos.id) AS tooltip_subgrupo3'),
-                        DB::raw('(SELECT
-                        CONCAT(codigo, \' - \', nome)
-                        FROM
-                        servicos
-                        WHERE
-                        orcamentos.servico_id = servicos.id) AS tooltip_servico'),
-                        DB::raw('(SELECT count(planejamento_compras.id) FROM planejamento_compras
-                        WHERE planejamento_compras.insumo_id = insumos.id
-                        AND planejamento_compras.planejamento_id =' . $planejamento->id . '
-                        AND  planejamento_compras.insumo_pai IS NOT NULL) as filho'),
-                        DB::raw('(SELECT count(planejamento_compras.id) FROM planejamento_compras
-                        WHERE planejamento_compras.planejamento_id =' . $planejamento->id . '
-                        AND  planejamento_compras.insumo_pai = insumos.id
-                        AND planejamento_compras.deleted_at IS NULL) as pai'),
-                        //                        DB::raw('(SELECT count(ordem_de_compra_itens.id) FROM ordem_de_compra_itens
-                        //                        JOIN ordem_de_compras
-                        //                        ON ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id
-                        //                        AND ordem_de_compras.oc_status_id = 1 AND ordem_de_compras.user_id = ' . Auth::id() . '
-                        //                        WHERE ordem_de_compra_itens.insumo_id = insumos.id
-                        //                        AND ordem_de_compra_itens.deleted_at IS NULL
-                        //                        AND ordem_de_compra_itens.obra_id =' . $planejamento->obra_id . ' ) as adicionado'),
-                        DB::raw('format((
-                            orcamentos.qtd_total -
-                            (
-                                IFNULL(
-                                    (
-                                        SELECT sum(ordem_de_compra_itens.qtd) FROM ordem_de_compra_itens
-                                        JOIN ordem_de_compras
-                                        ON ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id
-                                        AND ordem_de_compras.oc_status_id != 6
-                                        AND ordem_de_compras.oc_status_id != 4
-                                        WHERE ordem_de_compra_itens.insumo_id = insumos.id
-                                        AND ordem_de_compra_itens.grupo_id = orcamentos.grupo_id
-                                        AND ordem_de_compra_itens.subgrupo1_id = orcamentos.subgrupo1_id
-                                        AND ordem_de_compra_itens.subgrupo2_id = orcamentos.subgrupo2_id
-                                        AND ordem_de_compra_itens.subgrupo3_id = orcamentos.subgrupo3_id
-                                        AND ordem_de_compra_itens.servico_id = orcamentos.servico_id
-                                        AND ordem_de_compra_itens.aprovado IS NULL
-                                        AND ordem_de_compra_itens.deleted_at IS NULL
-                                        AND ordem_de_compras.obra_id =' . $planejamento->obra_id . '
-                                    ),0
-                                )
-                            )
-                        ),2,\'de_DE\') as saldo'),
-                        DB::raw('(SELECT total FROM ordem_de_compra_itens
-                        JOIN ordem_de_compras
-                        ON ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id
-                        AND ordem_de_compras.oc_status_id = 1 AND ordem_de_compras.user_id = ' . Auth::id() . '
-                        WHERE ordem_de_compra_itens.insumo_id = insumos.id
-                        AND ordem_de_compra_itens.grupo_id = orcamentos.grupo_id
-                        AND ordem_de_compra_itens.subgrupo1_id = orcamentos.subgrupo1_id
-                        AND ordem_de_compra_itens.subgrupo2_id = orcamentos.subgrupo2_id
-                        AND ordem_de_compra_itens.subgrupo3_id = orcamentos.subgrupo3_id
-                        AND ordem_de_compra_itens.servico_id = orcamentos.servico_id
-                        AND ordem_de_compra_itens.aprovado IS NULL
-                        AND ordem_de_compra_itens.deleted_at IS NULL
-                        AND ordem_de_compra_itens.obra_id =' . $planejamento->obra_id . ' ) as total'),
-                    ]
-                )
-                ->whereNull('planejamento_compras.deleted_at')
-                ->whereNotNull('orcamentos.qtd_total')
-                ->whereNotNull('orcamentos.preco_total')
-                ->where('orcamentos.ativo', '1');
-
-            $insumos->orderByRaw('COALESCE(planejamento_compras.insumo_pai, planejamento_compras.insumo_id) , planejamento_compras.insumo_pai IS NOT NULL, planejamento_compras.insumo_id');
-        }
 
         $insumo_query->leftJoin(DB::raw('orcamentos orcamentos_sub'),  'orcamentos_sub.id', 'orcamentos.orcamento_que_substitui');
         $insumo_query->leftJoin(DB::raw('insumos insumos_sub'), 'insumos_sub.id', 'orcamentos_sub.insumo_id');
@@ -332,21 +226,47 @@ class ComprasDataTable extends DataTable
                 $insumo_query->where('orcamentos.grupo_id', $this->request()->get('grupo_id'));
             }
         }
-        if ($this->request()->get('subgrupo1_id')) {
-            $insumo_query->where('orcamentos.subgrupo1_id', $this->request()->get('subgrupo1_id'));
+
+        if($this->request()->get('subgrupo1_id')){
+            if(count($this->request()->get('subgrupo1_id')) && $this->request()->get('subgrupo1_id')[0] != "") {
+                $insumo_query->where('orcamentos.subgrupo1_id', $this->request()->get('subgrupo1_id'));
+            }
         }
-        if ($this->request()->get('subgrupo2_id')) {
-            $insumo_query->where('orcamentos.subgrupo2_id', $this->request()->get('subgrupo2_id'));
+        if($this->request()->get('subgrupo2_id')){
+            if(count($this->request()->get('subgrupo2_id')) && $this->request()->get('subgrupo2_id')[0] != "") {
+                $insumo_query->where('orcamentos.subgrupo2_id', $this->request()->get('subgrupo2_id'));
+            }
         }
-        if ($this->request()->get('subgrupo3_id')) {
-            $insumo_query->where('orcamentos.subgrupo3_id', $this->request()->get('subgrupo3_id'));
+        if($this->request()->get('subgrupo3_id')){
+            if(count($this->request()->get('subgrupo3_id')) && $this->request()->get('subgrupo3_id')[0] != "") {
+                $insumo_query->where('orcamentos.subgrupo3_id', $this->request()->get('subgrupo3_id'));
+            }
         }
-        if ($this->request()->get('servico_id')) {
-            $insumo_query->where('orcamentos.servico_id', $this->request()->get('servico_id'));
+        if($this->request()->get('servico_id')){
+            if(count($this->request()->get('servico_id')) && $this->request()->get('servico_id')[0] != "") {
+                $insumo_query->where('orcamentos.servico_id', $this->request()->get('servico_id'));
+            }
+        }
+        if($this->request()->get('planejamento_id')){
+            if(count($this->request()->get('planejamento_id')) && $this->request()->get('planejamento_id')[0] != "") {
+                $insumo_query->join('planejamento_compras', function ($join) {
+                    $join->on('planejamento_compras.grupo_id', 'orcamentos.grupo_id');
+                    $join->on('planejamento_compras.subgrupo1_id', 'orcamentos.subgrupo1_id');
+                    $join->on('planejamento_compras.subgrupo2_id', 'orcamentos.subgrupo2_id');
+                    $join->on('planejamento_compras.subgrupo3_id', 'orcamentos.subgrupo3_id');
+                    $join->on('planejamento_compras.servico_id', 'orcamentos.servico_id');
+                    $join->on('planejamento_compras.insumo_id', 'orcamentos.insumo_id');
+                })
+                    ->where('planejamento_compras.planejamento_id', $this->request()->get('planejamento_id'))
+                    ->whereNull('planejamento_compras.deleted_at');
+            }
+        }
+        if($this->request()->get('insumo_grupos_id')){
+            if(count($this->request()->get('insumo_grupos_id')) && $this->request()->get('insumo_grupos_id')[0] != "") {
+                $insumo_query->where('insumos.insumo_grupo_id', $this->request()->get('insumo_grupos_id'));
+            }
         }
 
-        //        echo $insumo_query->toSql();
-        //        die();
 
         return $this->applyScopes($insumo_query);
     }

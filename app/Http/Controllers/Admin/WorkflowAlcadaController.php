@@ -139,17 +139,19 @@ class WorkflowAlcadaController extends AppBaseController
      */
     public function update($id, UpdateWorkflowAlcadaRequest $request)
     {
-        $alcada_anterior = WorkflowAlcada::where('workflow_tipo_id', $request->workflow_tipo_id)
-                                        ->where('ordem', ($request->ordem - 1))
-                                        ->first();
-
-        if(!$alcada_anterior){
-            Flash::error('Ordem inválida, não há alçadas anteriores.');
-
-            return redirect('/admin/workflow/workflow-alcadas/'.$id.'/edit');
-        }
-
         $workflowAlcada = $this->workflowAlcadaRepository->findWithoutFail($id);
+
+        if($request->ordem != $workflowAlcada->ordem) {
+            $alcada_anterior = WorkflowAlcada::where('workflow_tipo_id', $request->workflow_tipo_id)
+                ->where('ordem', ($request->ordem - 1))
+                ->first();
+
+            if (!$alcada_anterior) {
+                Flash::error('Ordem inválida, não há alçadas anteriores.');
+
+                return redirect('/admin/workflow/workflow-alcadas/' . $id . '/edit');
+            }
+        }
 
         if (empty($workflowAlcada)) {
             Flash::error('Workflow Alçada '.trans('common.not-found'));

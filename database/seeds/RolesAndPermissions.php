@@ -115,6 +115,10 @@ class RolesAndPermissions extends Seeder
             'compradorInsumos.delete'   => 'Remoção de comprador/insumos',
             'compradorInsumos.deleteBlocoView'   => 'Remoção em bloco de comprador/insumos',
 
+            'solicitacaoInsumos.list'   => 'Listagem de solicitação insumos',
+            'solicitacaoInsumos.create'   => 'Criação de solicitação insumo',
+            'solicitacaoInsumos.edit'   => 'Edição de solicitação insumo',
+            'solicitacaoInsumos.delete'   => 'Remoção de solicitação insumo',
 
             ################# SITE ###################
             'compras_lembretes.list' => 'Listagem de compras e lembretes',
@@ -127,6 +131,7 @@ class RolesAndPermissions extends Seeder
 
             'site.dashboard' => 'Dashboard do site',
 
+            'retroalimentacao.list' => 'Listagem de retroaliamentação',
             'retroalimentacao.create' => 'Criação de retroaliamentação',
 
             'quadroDeConcorrencias.list' => 'Listagem de Quadro De Concorrências',
@@ -161,7 +166,7 @@ class RolesAndPermissions extends Seeder
         {
             $roleSuperuser->attachPermission($permission);
         }
-        
+
         // Permissões para Suprimentos
         $roles[1]->attachPermission(Defender::findPermission('site.dashboard'));
         $roles[1]->attachPermission(Defender::findPermission('retroalimentacao.create'));
@@ -179,6 +184,17 @@ class RolesAndPermissions extends Seeder
         $roles[1]->attachPermission(Defender::findPermission('equalizacao_tecnicas.edit'));
         $roles[1]->attachPermission(Defender::findPermission('equalizacao_tecnicas.delete'));
         $roles[1]->attachPermission(Defender::findPermission('fornecedores.create'));
+        $roles[1]->attachPermission(Defender::findPermission('fornecedores.list'));
+        $roles[1]->attachPermission(Defender::findPermission('compras.geral'));
+        $roles[1]->attachPermission(Defender::findPermission('compras_lembretes.list'));
+        $roles[1]->attachPermission(Defender::findPermission('ordens_de_compra.list'));
+        $roles[1]->attachPermission(Defender::findPermission('ordens_de_compra.detalhes'));
+        $roles[1]->attachPermission(Defender::findPermission('ordens_de_compra.detalhes_servicos'));
+        $roles[1]->attachPermission(Defender::findPermission('lembretes.list'));
+        $roles[1]->attachPermission(Defender::findPermission('lembretes.edit'));
+        $roles[1]->attachPermission(Defender::findPermission('compradorInsumos.list'));
+        $roles[1]->attachPermission(Defender::findPermission('compradorInsumos.create'));
+        $roles[1]->attachPermission(Defender::findPermission('obras.list'));
         $roles[1]->attachPermission(Defender::findPermission('fornecedores.list'));
 
         // Permissões para Fornecedor

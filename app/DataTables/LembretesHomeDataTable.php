@@ -183,9 +183,9 @@ class LembretesHomeDataTable extends DataTable
     public function query()
     {
         if($this->request()->exibir_por_tarefa) {
-            $url = 'CONCAT(\'/compras/obrasInsumos?planejamento_id=\',planejamentos.id) as url';
+            $url = 'CONCAT(\'/compras/obrasInsumos?planejamento_id=\',planejamentos.id,\'&obra_id=\',obras.id) as url';
         } else {
-            $url = 'CONCAT(\'/compras/obrasInsumos?planejamento_id=\',planejamentos.id,\'&insumo_grupos_id=\',insumo_grupos.id) as url';
+            $url = 'CONCAT(\'/compras/obrasInsumos?planejamento_id=\',planejamentos.id,\'&insumo_grupos_id=\',insumo_grupos.id,\'&obra_id=\',obras.id) as url';
         }
 
         $query = Lembrete::join('insumo_grupos', 'insumo_grupos.id', '=', 'lembretes.insumo_grupo_id')
@@ -195,6 +195,7 @@ class LembretesHomeDataTable extends DataTable
             ->join('obras', 'obras.id', '=', 'planejamentos.obra_id')
             ->join('obra_users', 'obra_users.obra_id', '=', 'obras.id')
             ->whereNull('planejamentos.deleted_at')
+            ->whereNull('planejamento_compras.deleted_at')
             ->where('lembretes.lembrete_tipo_id', 1)
             ->where('obra_users.user_id', Auth::user()->id)
             ->select([
