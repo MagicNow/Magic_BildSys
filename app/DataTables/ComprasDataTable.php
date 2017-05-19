@@ -26,10 +26,12 @@ class ComprasDataTable extends DataTable
                 return "<input value='$obj->quantidade_compra' class='form-control money' onblur='quantidadeCompra($obj->id, $obj->obra_id, $obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, this.value)'>";
             })
             ->editColumn('total', function($obj){
-                if($obj->quantidade_compra && $obj->total === 1) {
-                    return "<input type='checkbox' checked onchange='totalCompra($obj->id, $obj->obra_id, $obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, this.value)'>";
-                }elseif($obj->quantidade_compra){
-                    return "<input type='checkbox' onchange='totalCompra($obj->id, $obj->obra_id, $obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, this.value)'>";
+                if($obj->quantidade_compra && money_to_float($obj->saldo) > 0) {
+                    if($obj->quantidade_compra && $obj->total === 1) {
+                        return "<input type='checkbox' checked onchange='totalCompra($obj->id, $obj->obra_id, $obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, this.value)'>";
+                    }elseif($obj->quantidade_compra){
+                        return "<input type='checkbox' onchange='totalCompra($obj->id, $obj->obra_id, $obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, this.value)'>";
+                    }
                 }
             })
             ->editColumn('troca', function ($obj) {
@@ -320,10 +322,10 @@ class ComprasDataTable extends DataTable
             'unidade De Medida' => ['name' => 'unidade_sigla', 'data' => 'unidade_sigla'],
             'quantidade' => ['name' => 'orcamentos.qtd_total', 'data' => 'qtd_total'],
             'saldo' => ['name' => 'orcamentos.qtd_total', 'data' => 'saldo'],
-            'quantidade Compra' => ['name' => 'quantidade_compra', 'data' => 'quantidade_compra', 'searchable' => false],
-            'troca' => ['name' => 'troca', 'data' => 'troca', 'searchable' => false, 'orderable' => false],
-            'finaliza Obra' => ['name' => 'total', 'data' => 'total', 'searchable' => false, 'orderable' => false],
-            'action' => ['title' => '#', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
+            'quantidade Compra' => ['name' => 'quantidade_compra', 'data' => 'quantidade_compra', 'searchable' => false, 'width'=>'8%'],
+            'troca' => ['name' => 'troca', 'data' => 'troca', 'searchable' => false, 'orderable' => false, 'width'=>'5%'],
+            'finaliza Obra' => ['name' => 'total', 'data' => 'total', 'searchable' => false, 'orderable' => false, 'width'=>'5%'],
+            'action' => ['title' => '#', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'5%']
         ];
     }
 
