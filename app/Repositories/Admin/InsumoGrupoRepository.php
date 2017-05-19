@@ -39,6 +39,7 @@ class InsumoGrupoRepository extends BaseRepository
                     ->where('obra_users.user_id', $user_id)
                     ->whereRaw(PlanejamentoCompraRepository::EXISTE_ITEM_PRA_COMPRAR);
             })
+            ->orderBy('nome','ASC')
             ->get();
     }
 
