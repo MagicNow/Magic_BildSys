@@ -17,6 +17,7 @@ use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use Response;
 use Correios;
+use Illuminate\Support\Facades\DB;
 
 class FornecedoresController extends AppBaseController
 {
@@ -203,7 +204,12 @@ class FornecedoresController extends AppBaseController
             return redirect(route('admin.fornecedores.index'));
         }
 
-        $this->fornecedoresRepository->delete($id);
+        DB::transaction(function() use ($id, $fornecedores) {
+            $this->fornecedoresRepository->delete($id);
+            if($fornecedores->user) {
+                $fornecedores->user->delete();
+            }
+        });
 
         Flash::success('Fornecedores '.trans('common.deleted').' '.trans('common.successfully').'.');
 
