@@ -5,16 +5,10 @@
     <section class="content-header">
         <div class="modal-header">
             <div class="col-md-12">
-                <div class="col-md-7">
-                    <span class="pull-left title">
-                       <h3>
-                           <button type="button" class="btn btn-link" onclick="history.go(-1);">
-                            <i class="fa fa-arrow-left" aria-hidden="true"></i>
-                           </button>
-                           <span>
-                           Fechar Ordem de Compra</span>
-                       </h3>
-                    </span>
+                <div class="col-md-6">
+                    <h3 class="pull-left title">
+                        <a href="{{ url('/compras/obrasInsumos?obra_id='.$obra_id.'') }}"><i class="fa fa-arrow-left" aria-hidden="true"></i></a> Ordem de Compra
+                    </h3>
                 </div>
 
                 <div class="col-md-5 text-right">
@@ -22,7 +16,7 @@
                         Esqueci um item
                     </a>
                     <button type="button" onclick="fechaOC();" class="btn btn-success btn-lg btn-flat">
-                        Confirmar
+                        Fechar OC
                     </button>
                 </div>
             </div>
@@ -236,11 +230,11 @@
                                 {!! Form::textarea('tems['.$item->id.']', $item->tems, ['class'=>'form-control','rows'=>"4",'id'=>'tems_'.$item->id, 'onBlur'=>"alteraItem(". $item->id .",'tems', this.value );"]) !!}
                             </span>
                             <span class="col-md-4 col-sm-12 col-xs-12 text-center borda-direita">
-                                <label class="label-bloco">Justificativa de Compra</label>
+                                <label class="label-bloco">Observação interna</label>
                                 {!! Form::textarea('justificativa['.$item->id.']', $item->justificativa, ['class'=>'form-control','rows'=>"4",'id'=>'justificativa_'.$item->id,'onChange'=>"alteraItem(". $item->id .",'justificativa', this.value );"]) !!}
                             </span>
                             <span class="col-md-4 col-sm-12 col-xs-12 text-center">
-                                <label class="label-bloco">Observações ao fornecedor</label>
+                                <label class="label-bloco">Detalhamento de insumo</label>
                                 {!! Form::textarea('obs['.$item->id.']', $item->obs, ['class'=>'form-control','rows'=>"4", 'id'=>'obs_'.$item->id, 'onChange'=>"alteraItem(". $item->id .",'obs', this.value );"]) !!}
                             </span>
                                 </div>

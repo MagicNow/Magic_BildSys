@@ -28,12 +28,12 @@
                         </a>
                     @else
                         <a href="{{url("compras/insumos") }}?planejamento_id={{$planejamento->id}}"  type="button" class="btn btn-default btn-lg btn-flat" data-dismiss="modal">
-                            Incluir insumo na OC
+                            Incluir insumo no orçamento
                         </a>
                     @endif
 
                     <a href="{{ url('/ordens-de-compra/carrinho') }}" class="btn btn-success btn-lg btn-flat">
-                        Fechar OC
+                        Visualizar OC
                     </a>
                 </div>
             </div>

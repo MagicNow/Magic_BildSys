@@ -134,12 +134,12 @@
 
 <!-- Obrigações Fornecedor Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('obrigacoes_fornecedor', 'Obrigações Fornecedor:') !!}
+    {!! Form::label('obrigacoes_fornecedor', 'Detalhamento de insumo:') !!}
     {!! Form::textarea('obrigacoes_fornecedor', $quadroDeConcorrencia->obrigacoes_fornecedor, ['class' => 'form-control', 'rows'=>3, 'readonly'=>'readonly']) !!}
 </div>
 <!-- Obrigações Bild Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('obrigacoes_bild', 'Obrigações Bild:') !!}
+    {!! Form::label('obrigacoes_bild', 'Observação interna:') !!}
     {!! Form::textarea('obrigacoes_bild',  $quadroDeConcorrencia->obrigacoes_bild, ['class' => 'form-control', 'rows'=>3, 'readonly'=>'readonly']) !!}
 </div>
 
