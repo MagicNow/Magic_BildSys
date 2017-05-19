@@ -390,6 +390,8 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         ->middleware("needsPermission:compras_lembretes.list");
 
     # Ordens de compra
+    $router->get('/ordens-de-compra/insumos-aprovados', 'OrdemDeCompraController@insumosAprovados')
+        ->middleware("needsPermission:quadroDeConcorrencias.create");
     $router->group(['middleware' => 'needsPermission:ordens_de_compra.list'], function () use ($router) {
         $router->get('/ordens-de-compra/detalhes/{id}', 'OrdemDeCompraController@detalhe')
             ->middleware("needsPermission:ordens_de_compra.detalhes");
@@ -596,8 +598,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             ])->middleware("needsPermission:quadroDeConcorrencias.edit");
 
     });
-    $router->get('/ordens-de-compra/insumos-aprovados', 'OrdemDeCompraController@insumosAprovados')
-        ->middleware("needsPermission:quadroDeConcorrencias.create");
+
 
     # Catálogo de Acordos
     $router->group(['middleware' => 'needsPermission:catalogo_acordos.list'], function () use ($router) {
