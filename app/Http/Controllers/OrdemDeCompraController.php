@@ -1738,7 +1738,7 @@ class OrdemDeCompraController extends AppBaseController
             ]);
 
             # Colocando na sessão
-            Request::session()->put('ordemCompra', $ordem->id);
+            \Session::put('ordemCompra', $ordem->id);
         }
 
         // Encontra o orçamento ativo para validar preço
