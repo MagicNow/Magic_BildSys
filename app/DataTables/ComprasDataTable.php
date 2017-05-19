@@ -26,10 +26,12 @@ class ComprasDataTable extends DataTable
                 return "<input value='$obj->quantidade_compra' class='form-control money' onblur='quantidadeCompra($obj->id, $obj->obra_id, $obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, this.value)'>";
             })
             ->editColumn('total', function($obj){
-                if($obj->quantidade_compra && $obj->total === 1) {
-                    return "<input type='checkbox' checked onchange='totalCompra($obj->id, $obj->obra_id, $obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, this.value)'>";
-                }elseif($obj->quantidade_compra){
-                    return "<input type='checkbox' onchange='totalCompra($obj->id, $obj->obra_id, $obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, this.value)'>";
+                if($obj->quantidade_compra && money_to_float($obj->saldo) > 0) {
+                    if($obj->quantidade_compra && $obj->total === 1) {
+                        return "<input type='checkbox' checked onchange='totalCompra($obj->id, $obj->obra_id, $obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, this.value)'>";
+                    }elseif($obj->quantidade_compra){
+                        return "<input type='checkbox' onchange='totalCompra($obj->id, $obj->obra_id, $obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, this.value)'>";
+                    }
                 }
             })
             ->editColumn('troca', function($obj){

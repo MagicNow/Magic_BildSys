@@ -1,6 +1,6 @@
 {{--{{dd($qtd_total)}}--}}
 @if($saldo>0)
-    <button type="button" href="#" class="btn btn-ms btn-flat"
+    <button type="button" href="#" class="btn btn-xs btn-primary btn-flat"
             onclick="comprarTudo({{$id}},
                                  {{$obra_id}},
                                  {{$grupo_id}},
@@ -9,6 +9,6 @@
                                  {{$subgrupo3_id}},
                                  {{$servico_id}},
                                  '{{$qtd_total}}')">
-        Comprar saldo
+        <i class="fa fa-usd" aria-hidden="true"></i> Comprar saldo
     </button>
 @endif
