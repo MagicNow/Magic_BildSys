@@ -501,15 +501,42 @@ class OrdemDeCompraController extends AppBaseController
      * @param  InsumoGrupo $insumoGrupo
      * @return Render View
      */
-    public function obrasInsumos(ComprasDataTable $comprasDataTable, Request $request)
-    {
+    public function obrasInsumos(
+        ComprasDataTable $comprasDataTable,
+        Request $request,
+        InsumoGrupoRepository $insumoGrupoRepository,
+        PlanejamentoRepository $planejamentoRepository
+    ) {
         $planejamento = Planejamento::find($request->planejamento_id);
-        $planejamentoFiltro = Planejamento::where('id', $request->planejamento_id)->pluck('tarefa','id')->toArray();
         $insumoGrupo = InsumoGrupo::find($request->insumo_grupos_id);
-        $insumoGrupoFiltro = InsumoGrupo::where('id', $request->insumo_grupos_id)->pluck('nome','id')->toArray();
+
         $obra = Obra::find($request->obra_id);
+
         $grupos = Grupo::whereNull('grupo_id')->pluck('nome','id')->toArray();
-        return $comprasDataTable->render('ordem_de_compras.obras_insumos', compact('obra','grupos','planejamento','insumoGrupo','planejamentoFiltro','insumoGrupoFiltro'));
+
+        $insumoGrupos = $insumoGrupoRepository
+            ->comLembretesComItensDeCompraPorUsuario($request->user()->id)
+            ->pluck('nome', 'id')
+            ->prepend('', '')
+            ->toArray();
+
+        $planejamentos = $planejamentoRepository
+            ->comLembretesComItensDeCompraPorUsuario($request->user()->id)
+            ->prepend('', '')
+            ->pluck('tarefa', 'id')
+            ->toArray();
+
+        return $comprasDataTable->render(
+            'ordem_de_compras.obras_insumos',
+            compact(
+                'obra',
+                'grupos',
+                'planejamento',
+                'insumoGrupo',
+                'insumoGrupos',
+                'planejamentos'
+            )
+        );
     }
 
     /**
@@ -1706,7 +1733,7 @@ class OrdemDeCompraController extends AppBaseController
                 self::comprarTudoItem($insumo_collection, $insumo_collection['obra_id']);
             }
         }
-        
+
         return response()->json(200);
     }
 
