@@ -54,7 +54,7 @@ class InsumoPorFornecedorDataTable extends DataTable
                     ->first()
                     ->valor_total ?: 0;
 
-                $insumo[$qcFornecedor->fornecedor->nome . '||' . $qcFornecedor->id] = float_to_money($valor);
+                $insumo[str_replace('.', '*dot*',$qcFornecedor->fornecedor->nome . '||' . $qcFornecedor->id)] = float_to_money($valor);
             });
 
             return $insumo;
@@ -83,10 +83,12 @@ class InsumoPorFornecedorDataTable extends DataTable
                 $title = $column;
             }
 
-            $columns[$column] = [
+            $fornecedor = isset($fornecedor) ? $fornecedor : $column;
+
+            $columns[$fornecedor] = [
                 'data'  => $column,
-                'name' => $column,
-                'title' => $title
+                'name'  => $fornecedor,
+                'title' => str_replace('*dot*', '.', $title)
             ];
 
             return $columns;
