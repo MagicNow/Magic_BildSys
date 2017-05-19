@@ -55,12 +55,14 @@
                                 <div class="btn-group" role="group" id="blocoOCAprovacao{{ $ordemDeCompra->id }}" aria-label="...">
                                     <button type="button" title="Aprovar Todos os itens"
                                             onclick="workflowAprovaReprova({{ $ordemDeCompra->id }},'OrdemDeCompraItem',1,'blocoOCAprovacao{{ $ordemDeCompra->id }}','OC {{ $ordemDeCompra->id }}', {{ $ordemDeCompra->id }}, 'OrdemDeCompra', 'itens');"
-                                            class="btn btn-default btn-lg btn-flat">
+                                            class="btn btn-success btn-lg btn-flat">
+                                        Aprovar
                                         <i class="fa fa-check" aria-hidden="true"></i>
                                     </button>
                                     <button type="button" title="Reprovar Todos os itens"
                                             onclick="workflowAprovaReprova({{ $ordemDeCompra->id }},'OrdemDeCompraItem',0, 'blocoOCAprovacao{{ $ordemDeCompra->id }}','OC {{ $ordemDeCompra->id }}', {{ $ordemDeCompra->id }}, 'OrdemDeCompra', 'itens');"
-                                            class="btn btn-default btn-lg btn-flat">
+                                            class="btn btn-danger btn-lg btn-flat">
+                                        Reprovar
                                         <i class="fa fa-times" aria-hidden="true"></i>
                                     </button>
                                 </div>
@@ -266,8 +268,6 @@
             </div>
 
         </div>
-
-    @foreach($itens as $item)
         <div class="panel panel-default">
             <div class="panel-body">
                 <div class="col-md-12 table-responsive margem-topo">
@@ -281,10 +281,12 @@
                             <th class="text-center">Status do insumo</th>
                             <th class="text-center">Status Serviço</th>
                             <th class="text-center">Acaba a obra</th>
-                            <th class="text-center">#</th>
+                            <th class="text-center">Ação</th>
                         </tr>
                         </thead>
                         <tbody>
+    @foreach($itens as $item)
+
                         <tr>
                             <td class="text-center">{{ $item->insumo->codigo }}</td>
                             <td class="text-center">{{ $item->insumo->nome }}</td>
@@ -302,184 +304,189 @@
                             </td>
                             <td class="text-center">{{ $item->total ? 'Sim' : 'Não' }}</td>
                             <td class="text-center">
-                                <button type="button" class="btn btn-flat btn-link" title="Expandir"
-                                        style="font-size: 18px; margin-top: -7px" onclick="showHideInfoExtra({{ $item->id }})">
-                                    <i id="icone-expandir{{ $item->id }}" class="fa fa-caret-right" aria-hidden="true"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div style="display: none;" id="dados-extras{{ $item->id }}">
-                    <div class="col-md-10">
-                        <h4 class="highlight">{{ $item->insumo->codigo . ' - '. $item->insumo->nome }}</h4>
-                    </div>
-                    <div class="col-md-2 text-right">
-                        @if(!is_null($item->aprovado))
-                            @if($item->aprovado)
-                                <button type="button" disabled="disabled"
-                                        class="btn btn-success btn-lg btn-flat">
-                                    <i class="fa fa-check" aria-hidden="true"></i>
-                                </button>
-                            @else
-                                <button type="button" disabled="disabled"
-                                    class="btn btn-danger btn-lg btn-flat">
-                                  <i class="fa fa-times" aria-hidden="true"></i>
-                                </button>
-                            @endif
-                        @else
-                            <?php
-                                $workflowAprovacao = \App\Repositories\WorkflowAprovacaoRepository::verificaAprovacoes('OrdemDeCompraItem', $item->id, Auth::user());
-                            ?>
-                            @if($workflowAprovacao['podeAprovar'])
-                                @if($workflowAprovacao['iraAprovar'])
-                                    <div class="btn-group" role="group" id="blocoItemAprovaReprova{{ $item->id }}" aria-label="...">
-                                        <button type="button" onclick="workflowAprovaReprova({{ $item->id }},'OrdemDeCompraItem',1,'blocoItemAprovaReprova{{ $item->id }}','Insumo {{ $item->insumo->codigo }}',0, '', '');"
-                                                class="btn btn-default btn-lg btn-flat"
-                                                title="Aprovar Este item">
-                                            <i class="fa fa-check" aria-hidden="true"></i>
-                                        </button>
-                                        <button type="button" onclick="workflowAprovaReprova({{ $item->id }},'OrdemDeCompraItem',0, 'blocoItemAprovaReprova{{ $item->id }}','Insumo {{ $item->insumo->codigo }}',0, '', '');"
-                                                class="btn btn-default btn-lg btn-flat"
-                                                title="Reprovar Este item">
-                                            <i class="fa fa-times" aria-hidden="true"></i>
-                                        </button>
-                                    </div>
-                                @else
-                                    @if($workflowAprovacao['jaAprovou'])
-                                        @if($workflowAprovacao['aprovacao'])
-                                                <span class="btn-lg btn-flat text-success" title="Aprovado por você">
-                                                    <i class="fa fa-check" aria-hidden="true"></i>
-                                                </span>
+                                <div class="btn-group" role="group" aria-label="...">
+                                    @if(!is_null($item->aprovado))
+                                        @if($item->aprovado)
+                                            <button type="button" disabled="disabled"
+                                                    class="btn btn-success btn-sm btn-flat">
+                                                <i class="fa fa-check" aria-hidden="true"></i>
+                                            </button>
                                         @else
-                                                <span class="text-danger btn-lg btn-flat" title="Reprovado por você">
-                                                    <i class="fa fa-times" aria-hidden="true"></i>
-                                                </span>
+                                            <button type="button" disabled="disabled"
+                                                    class="btn btn-danger btn-sm btn-flat">
+                                                <i class="fa fa-times" aria-hidden="true"></i>
+                                            </button>
                                         @endif
                                     @else
-                                        {{--Não Aprovou ainda, pode aprovar, mas por algum motivo não irá aprovar no momento--}}
-                                            <button type="button" title="{{ $workflowAprovacao['msg'] }}"
-                                                    onclick="swal('{{ $workflowAprovacao['msg'] }}','','info');"
-                                                    class="btn btn-default btn-lg btn-flat">
-                                                <i class="fa fa-info" aria-hidden="true"></i>
-                                            </button>
+                                        <?php
+                                        $workflowAprovacao = \App\Repositories\WorkflowAprovacaoRepository::verificaAprovacoes('OrdemDeCompraItem', $item->id, Auth::user());
+                                        ?>
+                                        @if($workflowAprovacao['podeAprovar'])
+                                            @if($workflowAprovacao['iraAprovar'])
+                                                <div class="btn-group" role="group" id="blocoItemAprovaReprova{{ $item->id }}" aria-label="...">
+                                                    <button type="button" onclick="workflowAprovaReprova({{ $item->id }},'OrdemDeCompraItem',1,'blocoItemAprovaReprova{{ $item->id }}','Insumo {{ $item->insumo->codigo }}',0, '', '');"
+                                                            class="btn btn-success btn-sm btn-flat"
+                                                            title="Aprovar Este item">
+                                                        <i class="fa fa-check" aria-hidden="true"></i>
+                                                    </button>
+                                                    <button type="button" onclick="workflowAprovaReprova({{ $item->id }},'OrdemDeCompraItem',0, 'blocoItemAprovaReprova{{ $item->id }}','Insumo {{ $item->insumo->codigo }}',0, '', '');"
+                                                            class="btn btn-danger btn-sm btn-flat"
+                                                            title="Reprovar Este item">
+                                                        <i class="fa fa-times" aria-hidden="true"></i>
+                                                    </button>
+                                                </div>
+                                            @else
+                                                @if($workflowAprovacao['jaAprovou'])
+                                                    @if($workflowAprovacao['aprovacao'])
+                                                        <span class="btn-lg btn-flat text-success" title="Aprovado por você">
+                                                        <i class="fa fa-check" aria-hidden="true"></i>
+                                                    </span>
+                                                    @else
+                                                        <span class="text-danger btn-sm btn-flat" title="Reprovado por você">
+                                                        <i class="fa fa-times" aria-hidden="true"></i>
+                                                    </span>
+                                                    @endif
+                                                @else
+                                                    {{--Não Aprovou ainda, pode aprovar, mas por algum motivo não irá aprovar no momento--}}
+                                                    <button type="button" title="{{ $workflowAprovacao['msg'] }}"
+                                                            onclick="swal('{{ $workflowAprovacao['msg'] }}','','info');"
+                                                            class="btn btn-default btn-sm btn-flat">
+                                                        <i class="fa fa-info" aria-hidden="true"></i>
+                                                    </button>
+                                                @endif
+                                            @endif
+                                        @endif
                                     @endif
-                                @endif
-                            @endif
-                        @endif
-                    </div>
-
-                    <div class="col-md-12 table-responsive margem-topo">
-                        <table class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th class="text-center">Unidade Medida</th>
-                                    <th class="text-center">Qtd. O. Inicial</th>
-                                    <th class="text-center">Valor O. Inicial</th>
-                                    <th class="text-center">Qtd. Realizada</th>
-                                    <th class="text-center">Valor Realizado</th>
-                                    <th class="text-center">Qtd. à Gastar</th>
-                                    <th class="text-center">Valor à Gastar</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="text-center">{{ $item->unidade_sigla . ' - '.$item->unidade->descricao }}</td>
-                                    <td class="text-center">{{ number_format($item->qtd_inicial, 2, ',','.') }}</td>
-                                    <td class="text-center"><small class="pull-left">R$</small> {{ number_format($item->preco_inicial, 2, ',','.') }}</td>
-                                    <td class="text-center">{{ number_format(doubleval($item->qtd_realizada), 2, ',','.') }}</td>
-                                    <td class="text-center"><small class="pull-left">R$</small> {{ number_format( doubleval($item->valor_realizado), 2, ',','.') }}</td>
-                                    <td class="text-center">{{ number_format( $item->qtd_inicial-doubleval($item->qtd_realizada), 2, ',','.') }}</td>
-                                    <td class="text-center"><small class="pull-left">R$</small> {{ number_format( $item->preco_inicial-doubleval($item->valor_realizado), 2, ',','.') }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="col-md-12 table-responsive margem-topo">
-                        <table class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th class="text-center">Qtd. Saldo</th>
-                                    <th class="text-center">Valor Saldo</th>
-                                    <th class="text-center">Qtd. Solicitada</th>
-                                    <th class="text-center">Valor Solicitado</th>
-                                    <th class="text-center">Data de Uso</th>
-                                    <th class="text-center">Emergencial</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="text-center">{{ number_format( $item->qtd_inicial - doubleval($item->qtd_realizada), 2, ',','.') }}</td>
-                                    <td class="text-center"><small class="pull-left">R$</small> {{ number_format( $item->preco_inicial-doubleval($item->valor_realizado), 2, ',','.') }}</td>
-                                    <td class="text-center"><strong>{{ $item->qtd }}</strong></td>
-                                    <td class="text-center"><small class="pull-left">R$</small> <strong>{{ number_format(doubleval($item->valor_total), 2, ',','.') }}</strong></td>
-                                    <td class="text-center">{{ $item->sugestao_data_uso ? $item->sugestao_data_uso->format('d/m/Y') : ''  }}</td>
-                                    <td class="text-center">{!! $item->emergencial?'<strong class="text-danger"> <i class="fa fa-exclamation-circle" aria-hidden="true"></i> SIM</strong>':'NÃO' !!}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div class="col-md-6 margem-topo borda-direita">
+                                    <button type="button" class="btn btn-flat btn-sm btn-warning" title="Expandir"
+                                             onclick="showHideInfoExtra({{ $item->id }})">
+                                        <i id="icone-expandir{{ $item->id }}" class="fa fa-caret-right" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                <tr style="display: none;" id="dados-extras{{ $item->id }}">
+                    <td colspan="8">
                         <div class="row">
-                            <div class="col-md-4 label-bloco">
-                                Justificativa de compra:
-                            </div>
-                            <div class="bloco-texto-conteudo col-md-7">
-                                {{ $item->justificativa }}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 margem-topo">
-                        <div class="col-md-4 label-bloco">
-                            Observações ao fornecedor:
-                        </div>
-                        <div class="bloco-texto-conteudo col-md-7">
-                            {{ $item->obs }}
-                        </div>
-                    </div>
-                    <div class="col-md-6 margem-topo borda-direita">
-                        <div class="row">
-                            <div class="col-md-4 label-bloco">
-                                Tabela TEMS:
-                            </div>
-                            <div class="bloco-texto-conteudo col-md-7">
-                                {{ $item->tems }}
+                            <div class="col-md-12">
+                                <h4 class="highlight">{{ $item->insumo->codigo . ' - '. $item->insumo->nome }}</h4>
                             </div>
 
-                            <div class="col-md-4 label-bloco margem-topo">
-                                Sugestão de Contrato:
+                            <div class="col-md-12 table-responsive margem-topo">
+                                <table class="table table-bordered table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th class="text-center">Unidade Medida</th>
+                                        <th class="text-center">Qtd. O. Inicial</th>
+                                        <th class="text-center">Valor O. Inicial</th>
+                                        <th class="text-center">Qtd. Realizada</th>
+                                        <th class="text-center">Valor Realizado</th>
+                                        <th class="text-center">Qtd. à Gastar</th>
+                                        <th class="text-center">Valor à Gastar</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td class="text-center">{{ $item->unidade_sigla . ' - '.$item->unidade->descricao }}</td>
+                                        <td class="text-center">{{ number_format($item->qtd_inicial, 2, ',','.') }}</td>
+                                        <td class="text-center"><small class="pull-left">R$</small> {{ number_format($item->preco_inicial, 2, ',','.') }}</td>
+                                        <td class="text-center">{{ number_format(doubleval($item->qtd_realizada), 2, ',','.') }}</td>
+                                        <td class="text-center"><small class="pull-left">R$</small> {{ number_format( doubleval($item->valor_realizado), 2, ',','.') }}</td>
+                                        <td class="text-center">{{ number_format( $item->qtd_inicial-doubleval($item->qtd_realizada), 2, ',','.') }}</td>
+                                        <td class="text-center"><small class="pull-left">R$</small> {{ number_format( $item->preco_inicial-doubleval($item->valor_realizado), 2, ',','.') }}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
                             </div>
-                            <div class="bloco-texto-conteudo col-md-7 margem-topo">
-                                {{ $item->sugestao_contrato_id }}
+                            <div class="col-md-12 table-responsive margem-topo">
+                                <table class="table table-bordered table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th class="text-center">Qtd. Saldo</th>
+                                        <th class="text-center">Valor Saldo</th>
+                                        <th class="text-center">Qtd. Solicitada</th>
+                                        <th class="text-center">Valor Solicitado</th>
+                                        <th class="text-center">Data de Uso</th>
+                                        <th class="text-center">Emergencial</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td class="text-center">{{ number_format( $item->qtd_inicial - doubleval($item->qtd_realizada), 2, ',','.') }}</td>
+                                        <td class="text-center"><small class="pull-left">R$</small> {{ number_format( $item->preco_inicial-doubleval($item->valor_realizado), 2, ',','.') }}</td>
+                                        <td class="text-center"><strong>{{ $item->qtd }}</strong></td>
+                                        <td class="text-center"><small class="pull-left">R$</small> <strong>{{ number_format(doubleval($item->valor_total), 2, ',','.') }}</strong></td>
+                                        <td class="text-center">{{ $item->sugestao_data_uso ? $item->sugestao_data_uso->format('d/m/Y') : ''  }}</td>
+                                        <td class="text-center">{!! $item->emergencial?'<strong class="text-danger"> <i class="fa fa-exclamation-circle" aria-hidden="true"></i> SIM</strong>':'NÃO' !!}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
                             </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 margem-topo">
-                        @if($item->anexos)
-                        <div class="col-md-4 label-bloco">
-                            Arquivos anexos:
-                        </div>
-                        <div class="col-md-8">
-                            <div class="row">
-                                @foreach($item->anexos as $anexo)
-                                    <div class="bloco-texto-linha col-md-9">{{ substr($anexo->arquivo, strrpos($anexo->arquivo,'/')+1  )  }}</div>
-                                    <div class="col-md-2">
-                                        <a href="{{ Storage::url($anexo->arquivo) }}" class="btn btn-default btn-block" target="_blank" >
-                                            <i class="fa fa-eye" aria-hidden="true"></i>
-                                        </a>
+
+                            <div class="col-md-6 margem-topo borda-direita">
+                                <div class="row">
+                                    <div class="col-md-4 label-bloco">
+                                        Justificativa de compra:
+                                    </div>
+                                    <div class="bloco-texto-conteudo col-md-7">
+                                        {{ $item->justificativa }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 margem-topo">
+                                <div class="col-md-4 label-bloco">
+                                    Observações ao fornecedor:
+                                </div>
+                                <div class="bloco-texto-conteudo col-md-7">
+                                    {{ $item->obs }}
+                                </div>
+                            </div>
+                            <div class="col-md-6 margem-topo borda-direita">
+                                <div class="row">
+                                    <div class="col-md-4 label-bloco">
+                                        Tabela TEMS:
+                                    </div>
+                                    <div class="bloco-texto-conteudo col-md-7">
+                                        {{ $item->tems }}
                                     </div>
 
-                                @endforeach
+                                    <div class="col-md-4 label-bloco margem-topo">
+                                        Sugestão de Contrato:
+                                    </div>
+                                    <div class="bloco-texto-conteudo col-md-7 margem-topo">
+                                        {{ $item->sugestao_contrato_id }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 margem-topo">
+                                @if($item->anexos)
+                                    <div class="col-md-4 label-bloco">
+                                        Arquivos anexos:
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="row">
+                                            @foreach($item->anexos as $anexo)
+                                                <div class="bloco-texto-linha col-md-9">{{ substr($anexo->arquivo, strrpos($anexo->arquivo,'/')+1  )  }}</div>
+                                                <div class="col-md-2">
+                                                    <a href="{{ Storage::url($anexo->arquivo) }}" class="btn btn-default btn-block" target="_blank" >
+                                                        <i class="fa fa-eye" aria-hidden="true"></i>
+                                                    </a>
+                                                </div>
+
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                @endif
                             </div>
                         </div>
-                        @endif
-                    </div>
-                </div>
+                    </td>
+
+                </tr>
+
+    @endforeach
+                    </tbody>
+                </table>
             </div>
         </div>
-    @endforeach
     <div class="pg text-center">
             {{ $itens->links() }}
     </div>
