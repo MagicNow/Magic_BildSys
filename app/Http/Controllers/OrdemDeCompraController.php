@@ -28,6 +28,7 @@ use App\Models\WorkflowAprovacao;
 use App\Models\WorkflowReprovacaoMotivo;
 use App\Repositories\CodeRepository;
 use function foo\func;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\Paginator;
 use App\Models\Obra;
 use App\Models\Orcamento;
@@ -503,9 +504,9 @@ class OrdemDeCompraController extends AppBaseController
     public function obrasInsumos(ComprasDataTable $comprasDataTable, Request $request)
     {
         $planejamento = Planejamento::find($request->planejamento_id);
-        $planejamentoFiltro = Planejamento::pluck('tarefa','id')->toArray();
+        $planejamentoFiltro = Planejamento::where('id', $request->planejamento_id)->pluck('tarefa','id')->toArray();
         $insumoGrupo = InsumoGrupo::find($request->insumo_grupos_id);
-        $insumoGrupoFiltro = InsumoGrupo::pluck('nome','id')->toArray();
+        $insumoGrupoFiltro = InsumoGrupo::where('id', $request->insumo_grupos_id)->pluck('nome','id')->toArray();
         $obra = Obra::find($request->obra_id);
         $grupos = Grupo::whereNull('grupo_id')->pluck('nome','id')->toArray();
         return $comprasDataTable->render('ordem_de_compras.obras_insumos', compact('obra','grupos','planejamento','insumoGrupo','planejamentoFiltro','insumoGrupoFiltro'));
@@ -1682,23 +1683,52 @@ class OrdemDeCompraController extends AppBaseController
 
     public function comprarTudo(Request $request, Obra $obra)
     {
+        $insumo_collection =  new Collection($request->all());
+        self::comprarTudoItem($insumo_collection, $obra->id);
+
+        return response()->json(200);
+    }
+
+    public function comprarTudoDeTudo(Request $request)
+    {
+        $bindings = $request->all()['bindings'];
+        $query = $request->all()['query'];
+
+        //Retira do limit pra frente
+        $query = substr($query, 0,strpos($query, ' limit '));
+
+        $insumos = DB::select($query,
+            $bindings);
+
+        foreach ($insumos as $insumo){
+            if($insumo->quantidade_compra && money_to_float($insumo->saldo) > 0) {
+                $insumo_collection = new Collection($insumo);
+                self::comprarTudoItem($insumo_collection, $insumo_collection['obra_id']);
+            }
+        }
+        
+        return response()->json(200);
+    }
+
+    public function comprarTudoItem($request, $obra_id)
+    {
         //Testa se tem ordem de compra aberta pro user
         $ordem = null;
         if(\Session::get('ordemCompra')){
             $ordem = OrdemDeCompra::where('id', \Session::get('ordemCompra'))
                 ->where('oc_status_id', 1)
                 ->where('user_id', Auth::user()->id)
-                ->where('obra_id', $request->obra_id)->first();
+                ->where('obra_id', $request['obra_id'])->first();
         }else {
             $ordem = OrdemDeCompra::where('oc_status_id', 1)
                 ->where('user_id', Auth::user()->id)
-                ->where('obra_id', $request->obra_id)->first();
+                ->where('obra_id', $request['obra_id'])->first();
         }
 
         if(!$ordem){
             $ordem = new OrdemDeCompra();
             $ordem->oc_status_id = 1;
-            $ordem->obra_id = $request->obra_id;
+            $ordem->obra_id = $request['obra_id'];
             $ordem->user_id = Auth::user()->id;
             $ordem->save();
             OrdemDeCompraStatusLog::create([
@@ -1708,24 +1738,24 @@ class OrdemDeCompraController extends AppBaseController
             ]);
 
             # Colocando na sessão
-            $request->session()->put('ordemCompra', $ordem->id);
+            \Session::put('ordemCompra', $ordem->id);
         }
 
         // Encontra o orçamento ativo para validar preço
-        $orcamento_ativo = Orcamento::where('insumo_id',$request->id)
-            ->where('obra_id',$obra->id)
-            ->where('grupo_id',$request->grupo_id)
-            ->where('subgrupo1_id',$request->subgrupo1_id)
-            ->where('subgrupo2_id',$request->subgrupo2_id)
-            ->where('subgrupo3_id',$request->subgrupo3_id)
-            ->where('servico_id',$request->servico_id)
+        $orcamento_ativo = Orcamento::where('insumo_id',$request['id'])
+            ->where('obra_id',$obra_id)
+            ->where('grupo_id',$request['grupo_id'])
+            ->where('subgrupo1_id',$request['subgrupo1_id'])
+            ->where('subgrupo2_id',$request['subgrupo2_id'])
+            ->where('subgrupo3_id',$request['subgrupo3_id'])
+            ->where('servico_id',$request['servico_id'])
             ->where('ativo',1)
             ->first();
 
 
         $ordem_item = OrdemDeCompraItem::firstOrNew([
             'ordem_de_compra_id' => $ordem->id,
-            'obra_id' => $obra->id,
+            'obra_id' => $obra_id,
             'codigo_insumo' => $orcamento_ativo->codigo_insumo,
             'grupo_id' => $orcamento_ativo->grupo_id,
             'subgrupo1_id' => $orcamento_ativo->subgrupo1_id,
@@ -1738,194 +1768,10 @@ class OrdemDeCompraController extends AppBaseController
 
 
         $ordem_item->user_id = Auth::user()->id;
-        $ordem_item->qtd = $request->qtd_total;
+        $ordem_item->qtd = $request['qtd_total'];
         $ordem_item->valor_unitario = $orcamento_ativo->preco_unitario;
         $ordem_item->valor_total = $orcamento_ativo->getOriginal('preco_unitario') * money_to_float($ordem_item->qtd);
         $ordem_item->save();
-
-        return response()->json(200);
-    }
-
-    public function comprarTudoDeTudo(Request $request)
-    {
-        //Query para utilização dos filtros
-        $insumo_query = Insumo::query();
-
-        $insumos = $insumo_query->join('orcamentos', 'orcamentos.insumo_id', '=', 'insumos.id')
-            ->where('orcamentos.obra_id', $request->obra_id)
-            ->where('orcamentos.ativo', 1);
-
-        $insumos->select(
-            [
-                'insumos.id',
-                DB::raw("CONCAT(insumos.codigo,' - ' ,insumos.nome) as nome"),
-                DB::raw("format(orcamentos.qtd_total,2,'de_DE') as qtd_total"),
-                'insumos.unidade_sigla',
-                'insumos.codigo',
-                'insumos.insumo_grupo_id',
-                'orcamentos.grupo_id',
-                'orcamentos.subgrupo1_id',
-                'orcamentos.subgrupo2_id',
-                'orcamentos.subgrupo3_id',
-                'orcamentos.servico_id',
-                'orcamentos.preco_total',
-                'orcamentos.preco_unitario',
-                DB::raw('0 as pai'),
-                DB::raw('0 as filho'),
-                DB::raw('(SELECT
-                CONCAT(codigo, \' - \', nome)
-                FROM
-                grupos
-                WHERE
-                orcamentos.grupo_id = grupos.id) AS tooltip_grupo'),
-                DB::raw('(SELECT
-                CONCAT(codigo, \' - \', nome)
-                FROM
-                grupos
-                WHERE
-                orcamentos.subgrupo1_id = grupos.id) AS tooltip_subgrupo1'),
-                DB::raw('(SELECT
-                CONCAT(codigo, \' - \', nome)
-                FROM
-                grupos
-                WHERE
-                orcamentos.subgrupo2_id = grupos.id) AS tooltip_subgrupo2'),
-                DB::raw('(SELECT
-                CONCAT(codigo, \' - \', nome)
-                FROM
-                grupos
-                WHERE
-                orcamentos.subgrupo3_id = grupos.id) AS tooltip_subgrupo3'),
-                DB::raw('(SELECT
-                CONCAT(codigo, \' - \', nome)
-                FROM
-                servicos
-                WHERE
-                orcamentos.servico_id = servicos.id) AS tooltip_servico'),
-                DB::raw('format((
-                    orcamentos.qtd_total -
-                    (
-                        IFNULL(
-                            (
-                                SELECT sum(ordem_de_compra_itens.qtd) FROM ordem_de_compra_itens
-                                JOIN ordem_de_compras
-                                ON ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id
-                                AND ordem_de_compras.oc_status_id != 6
-                                AND ordem_de_compras.oc_status_id != 4
-                                WHERE ordem_de_compra_itens.insumo_id = insumos.id
-                                AND ordem_de_compra_itens.grupo_id = orcamentos.grupo_id
-                                AND ordem_de_compra_itens.subgrupo1_id = orcamentos.subgrupo1_id
-                                AND ordem_de_compra_itens.subgrupo2_id = orcamentos.subgrupo2_id
-                                AND ordem_de_compra_itens.subgrupo3_id = orcamentos.subgrupo3_id
-                                AND ordem_de_compra_itens.servico_id = orcamentos.servico_id
-                                AND ordem_de_compras.obra_id ='. $request->obra_id .'
-                            ),0
-                        )
-                    )
-                ),2,\'de_DE\') as saldo'),
-                DB::raw('format((
-                    SELECT sum(ordem_de_compra_itens.qtd) FROM ordem_de_compra_itens
-                    JOIN ordem_de_compras
-                    ON ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id
-                    AND ordem_de_compras.oc_status_id != 6
-                    AND ordem_de_compras.oc_status_id != 4
-                    WHERE ordem_de_compra_itens.insumo_id = insumos.id
-                    AND ordem_de_compra_itens.grupo_id = orcamentos.grupo_id
-                    AND ordem_de_compra_itens.subgrupo1_id = orcamentos.subgrupo1_id
-                    AND ordem_de_compra_itens.subgrupo2_id = orcamentos.subgrupo2_id
-                    AND ordem_de_compra_itens.subgrupo3_id = orcamentos.subgrupo3_id
-                    AND ordem_de_compra_itens.servico_id = orcamentos.servico_id
-                    AND ordem_de_compras.obra_id ='. $request->obra_id .'
-                ),2,\'de_DE\') as quantidade_compra'),
-                DB::raw('(SELECT count(ordem_de_compra_itens.id) FROM ordem_de_compra_itens
-                JOIN ordem_de_compras
-                ON ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id
-                AND ordem_de_compras.oc_status_id = 1 AND ordem_de_compras.user_id = '.Auth::id().'
-                WHERE ordem_de_compra_itens.insumo_id = insumos.id
-                AND ordem_de_compra_itens.deleted_at IS NULL
-                AND ordem_de_compra_itens.obra_id ='. $request->obra_id .' ) as adicionado'),
-                DB::raw('(SELECT total FROM ordem_de_compra_itens
-                JOIN ordem_de_compras
-                ON ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id
-                AND ordem_de_compras.oc_status_id = 1 AND ordem_de_compras.user_id = '.Auth::id().'
-                WHERE ordem_de_compra_itens.insumo_id = insumos.id
-                AND ordem_de_compra_itens.deleted_at IS NULL
-                AND ordem_de_compra_itens.obra_id ='. $request->obra_id .' ) as total'),
-            ]
-        )
-        ->whereNotNull('orcamentos.qtd_total')
-        ->where('orcamentos.ativo', 1);
-
-        //Aplica filtro do Jhonatan
-        $insumos = CodeRepository::filter($insumos, $request->all());
-
-        if($request->grupo){
-            $insumos->where('orcamentos.grupo_id');
-        }
-
-        if($request->subgrupo1){
-            $insumos->where('orcamentos.subgrupo1_id');
-        }
-
-        if($request->subgrupo2){
-            $insumos->where('orcamentos.subgrupo2_id');
-        }
-
-        if($request->subgrupo3){
-            $insumos->where('orcamentos.subgrupo3_id');
-        }
-
-        if($request->servico){
-            $insumos->where('orcamentos.servico_id');
-        }
-
-        $insumos->where('orcamentos.qtd_total', '>', 0);
-
-        //Testa se tem ordem de compra aberta pro user
-        $ordem = OrdemDeCompra::where('oc_status_id', 1)
-            ->where('user_id', Auth::user()->id)
-            ->where('obra_id', $request->obra_id)
-            ->first();
-
-        if (empty($ordem)) {
-            Flash::error('Não existe OC em aberto.');
-
-            return back();
-        }else{
-            foreach ($insumos->get() as $insumo) {
-                // Encontra o orçamento ativo
-                $orcamento_ativo = Orcamento::where('insumo_id', $insumo->id)
-                    ->where('obra_id', $request->obra_id)
-                    ->where('grupo_id', $insumo->grupo_id)
-                    ->where('subgrupo1_id', $insumo->subgrupo1_id)
-                    ->where('subgrupo2_id', $insumo->subgrupo2_id)
-                    ->where('subgrupo3_id', $insumo->subgrupo3_id)
-                    ->where('servico_id', $insumo->servico_id)
-                    ->where('ativo', 1)
-                    ->first();
-
-
-                $ordem_item = OrdemDeCompraItem::firstOrNew([
-                    'ordem_de_compra_id' => $ordem->id,
-                    'obra_id' => $request->obra_id,
-                    'codigo_insumo' => $orcamento_ativo->codigo_insumo,
-                    'grupo_id' => $orcamento_ativo->grupo_id,
-                    'subgrupo1_id' => $orcamento_ativo->subgrupo1_id,
-                    'subgrupo2_id' => $orcamento_ativo->subgrupo2_id,
-                    'subgrupo3_id' => $orcamento_ativo->subgrupo3_id,
-                    'servico_id' => $orcamento_ativo->servico_id,
-                    'insumo_id' => $orcamento_ativo->insumo_id,
-                    'unidade_sigla' => $orcamento_ativo->unidade_sigla,
-                ]);
-
-                $ordem_item->user_id = Auth::user()->id;
-                $ordem_item->qtd = $ordem_item->getOriginal('qtd') + money_to_float($insumo->saldo);
-                $ordem_item->valor_unitario = $orcamento_ativo->preco_unitario;
-                $ordem_item->valor_total = $orcamento_ativo->getOriginal('preco_unitario') * $ordem_item->qtd;
-                $ordem_item->save();
-            }
-        }
-        return redirect('/ordens-de-compra/carrinho');
     }
 
     public function getGrupos($id){
@@ -1971,8 +1817,8 @@ class OrdemDeCompraController extends AppBaseController
         Request $request,
         OrcamentoRepository $orcamentoRepository,
         InsumoRepository $insumoRepository,
-        $orcamentoId
-    ) {
+        $orcamentoId)
+   {
         $orcamento = $orcamentoRepository->findWithoutFail($orcamentoId);
 
         if (empty($orcamento)) {
@@ -2017,6 +1863,25 @@ class OrdemDeCompraController extends AppBaseController
         Flash::success('Troca realizada com sucesso');
 
         return redirect($request->back ?: url()->previous());
-    }
+   }
+
+   public function buscaPlanejamentos(Request $request)
+   {
+       return Planejamento::select([
+           'id',
+           'tarefa'
+       ])
+           ->where('tarefa','like', '%'.$request->q.'%')->paginate();
+   }
+
+   public function buscaInsumoGrupos(Request $request)
+   {
+       return InsumoGrupo::select([
+           'id',
+           'nome'
+       ])
+           ->where('nome','like', '%'.$request->q.'%')->paginate();
+   }
+
 }
 
