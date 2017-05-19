@@ -1701,7 +1701,7 @@ class OrdemDeCompraController extends AppBaseController
             $bindings);
 
         foreach ($insumos as $insumo){
-            if($insumo->saldo != '0,00') {
+            if($insumo->quantidade_compra && money_to_float($insumo->saldo) > 0) {
                 $insumo_collection = new Collection($insumo);
                 self::comprarTudoItem($insumo_collection, $insumo_collection['obra_id']);
             }
