@@ -18,7 +18,8 @@ class InsumoGrupo extends Model
     public $fillable = [
         'id',
         'codigo_identificador',
-        'nome'
+        'nome',
+        'active'
     ];
 
     /**
@@ -38,7 +39,7 @@ class InsumoGrupo extends Model
      * @var array
      */
     public static $rules = [
-        
+
     ];
 
     /**
