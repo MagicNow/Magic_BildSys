@@ -6,7 +6,7 @@
             text-align: left !important;
         }
         .content {
-            min-height: 250px !important;
+            min-height: 100px !important;
         }
     </style>
 @stop
