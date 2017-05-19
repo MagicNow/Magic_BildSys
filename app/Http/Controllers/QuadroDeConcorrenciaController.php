@@ -115,7 +115,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
             $query->orWhereNull('workflow_tipo_id');
         })->pluck('nome','id')->toArray();
 
-        return $qcItensDataTable->with('show', $show)->render('quadro_de_concorrencias.show', compact('quadroDeConcorrencia', 'show', 'motivos_reprovacao') );
+        return $qcItensDataTable->qc($quadroDeConcorrencia->id)->with('show', $show)->render('quadro_de_concorrencias.show', compact('quadroDeConcorrencia', 'show', 'motivos_reprovacao') );
     }
 
     /**
