@@ -84,22 +84,25 @@ var QcInformarValoresForm = {
     save.addEventListener('click', function(event) {
       event.preventDefault();
 
-      var percentualSum = _(percents)
+      if(percents.length) {
+        var percentualSum = _(percents)
           .map(_.property('value'))
           .map(moneyToFloat)
           .reject(_.isNaN)
           .sum();
 
-      if(percentualSum !== 100) {
-        swal({
-          title: '',
-          text: 'As porcentagens não somam 100%',
-          type: 'error'
-        }, function() {
-          _.first(percents).focus();
-        });
+        if(percentualSum !== 100) {
+          swal({
+            title: '',
+            text: 'As porcentagens não somam 100%',
+            type: 'error',
+            closeOnConfirm: true
+          }, function() {
+            _.first(percents).focus();
+          });
 
-        return false;
+          return false;
+        }
       }
 
       swal({
