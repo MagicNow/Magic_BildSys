@@ -464,6 +464,8 @@
                     'query': query,
                     '_token': $('meta[name="csrf-token"]').attr('content')
                 }
+            }).done(function () {
+                window.location.href = '/ordens-de-compra/carrinho';
             });
         }
     </script>
