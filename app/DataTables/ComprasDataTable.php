@@ -26,28 +26,43 @@ class ComprasDataTable extends DataTable
                 return "<input value='$obj->quantidade_compra' class='form-control money' onblur='quantidadeCompra($obj->id, $obj->obra_id, $obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, this.value)'>";
             })
             ->editColumn('total', function($obj){
-                if($obj->quantidade_compra && $obj->total === 1) {
-                    return "<input type='checkbox' checked onchange='totalCompra($obj->id, $obj->obra_id, $obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, this.value)'>";
-                }elseif($obj->quantidade_compra){
-                    return "<input type='checkbox' onchange='totalCompra($obj->id, $obj->obra_id, $obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, this.value)'>";
+                if($obj->quantidade_compra && money_to_float($obj->saldo) > 0) {
+                    if($obj->quantidade_compra && $obj->total === 1) {
+                        return "<input type='checkbox' checked onchange='totalCompra($obj->id, $obj->obra_id, $obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, this.value)'>";
+                    }elseif($obj->quantidade_compra){
+                        return "<input type='checkbox' onchange='totalCompra($obj->id, $obj->obra_id, $obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, this.value)'>";
+                    }
                 }
             })
-            ->editColumn('troca', function($obj){
-//                dd($obj);
-                if($obj->unidade_sigla === 'VB' && $obj->insumo_grupo_id == 1570){
-                    return "<a href='/compras/trocaInsumos/$obj->id'><button type='button' class='btn btn-xs btn-link' ><i class='fa fa-exchange'></i></button></a>";
-//                    return "<button type='button' class='btn btn-xs btn-link' onclick='trocar($obj->id)'><i class='fa fa-exchange'></i></button>";
+            ->editColumn('troca', function ($obj) {
+                if($obj->substitui) {
+                    return '<button data-toggle="popover" title="Substitui Insumo" data-content="' . $obj->substitui . '" type="button" data-placement="left" class="btn btn-info btn-flat btn-xs"> <i class="fa fa-exchange"></i> </button>';
+                }
+
+                if ($obj->unidade_sigla === 'VB' && $obj->insumo_grupo_id == 1570) {
+
+                    return link_to(
+                        'compras/trocar/' . $obj->orcamento_id . '?back=' . rawurlencode(
+                            url('compras/obrasInsumos') . '?' . http_build_query(
+                                $this->request()->only(['planejamento_id', 'obra_id', 'insumo_grupo_id'])
+                            )
+                        ) ,
+                        '<i class="fa fa-exchange"></i>',
+                        [ 'class' => 'btn btn-xs btn-link btn-default btn-flat' ],
+                        null,
+                        false
+                    );
                 }
             })
-            ->editColumn('nome', function($obj){
+            ->editColumn('nome', function ($obj) {
                 return "<strong  data-toggle=\"tooltip\" data-placement=\"top\" data-html=\"true\"
                     title=\"". $obj->tooltip_grupo . ' <br> ' .
-                $obj->tooltip_subgrupo1 . ' <br> ' .
-                $obj->tooltip_subgrupo2 . ' <br> ' .
-                $obj->tooltip_subgrupo3 . ' <br> ' .
-                $obj->tooltip_servico  ."\">
+                    $obj->tooltip_subgrupo1 . ' <br> ' .
+                    $obj->tooltip_subgrupo2 . ' <br> ' .
+                    $obj->tooltip_subgrupo3 . ' <br> ' .
+                    $obj->tooltip_servico  ."\">
                     $obj->nome
-                </strong>";
+                    </strong>";
             })
             ->make(true);
     }
@@ -89,6 +104,8 @@ class ComprasDataTable extends DataTable
                 'insumos.id',
                 DB::raw("CONCAT(insumos.codigo,' - ' ,insumos.nome) as nome"),
                 DB::raw("format(orcamentos.qtd_total,2,'de_DE') as qtd_total"),
+                DB::raw("CONCAT(insumos_sub.codigo,' - ' ,insumos_sub.nome) as substitui"),
+                'orcamentos.id as orcamento_id',
                 'insumos.unidade_sigla',
                 'insumos.codigo',
                 'insumos.insumo_grupo_id',
@@ -200,13 +217,18 @@ class ComprasDataTable extends DataTable
             ]
         )
             ->whereNotNull('orcamentos.qtd_total')
+            ->where('orcamentos.trocado', 0)
             ->where('orcamentos.ativo', 1);
 
-        if($this->request()->get('grupo_id')){
-            if(count($this->request()->get('grupo_id')) && $this->request()->get('grupo_id')[0] != "") {
+        $insumo_query->leftJoin(DB::raw('orcamentos orcamentos_sub'),  'orcamentos_sub.id', 'orcamentos.orcamento_que_substitui');
+        $insumo_query->leftJoin(DB::raw('insumos insumos_sub'), 'insumos_sub.id', 'orcamentos_sub.insumo_id');
+
+        if ($this->request()->get('grupo_id')) {
+            if (count($this->request()->get('grupo_id')) && $this->request()->get('grupo_id')[0] != "") {
                 $insumo_query->where('orcamentos.grupo_id', $this->request()->get('grupo_id'));
             }
         }
+
         if($this->request()->get('subgrupo1_id')){
             if(count($this->request()->get('subgrupo1_id')) && $this->request()->get('subgrupo1_id')[0] != "") {
                 $insumo_query->where('orcamentos.subgrupo1_id', $this->request()->get('subgrupo1_id'));
@@ -247,8 +269,6 @@ class ComprasDataTable extends DataTable
             }
         }
 
-//        echo $insumo_query->toSql();
-//        die();
 
         return $this->applyScopes($insumo_query);
     }
@@ -274,20 +294,20 @@ class ComprasDataTable extends DataTable
                             $(input).addClass(\'form-control\');
                             $(input).css(\'width\',\'100%\');
                             $(input).appendTo($(column.footer()).empty())
-                            .on(\'change\', function () {
-                                column.search($(this).val(), false, false, true).draw();
-                            });
-                        }
-                    });
-                }' ,
-                'dom' => 'Bfrltip',
-                'scrollX' => false,
-                'language'=> [
-                    "url"=> "/vendor/datatables/Portuguese-Brasil.json"
-                ],
-                'buttons' => [
-                ]
-            ]);
+                                .on(\'change\', function () {
+                                    column.search($(this).val(), false, false, true).draw();
+    });
+    }
+    });
+    }' ,
+        'dom' => 'Bfrltip',
+        'scrollX' => false,
+        'language'=> [
+            "url"=> "/vendor/datatables/Portuguese-Brasil.json"
+        ],
+        'buttons' => [
+        ]
+    ]);
     }
 
     /**
@@ -302,10 +322,10 @@ class ComprasDataTable extends DataTable
             'unidade De Medida' => ['name' => 'unidade_sigla', 'data' => 'unidade_sigla'],
             'quantidade' => ['name' => 'orcamentos.qtd_total', 'data' => 'qtd_total'],
             'saldo' => ['name' => 'orcamentos.qtd_total', 'data' => 'saldo'],
-            'quantidade Compra' => ['name' => 'quantidade_compra', 'data' => 'quantidade_compra', 'searchable' => false],
-            'troca' => ['name' => 'troca', 'data' => 'troca', 'searchable' => false, 'orderable' => false],
-            'finaliza Obra' => ['name' => 'total', 'data' => 'total', 'searchable' => false, 'orderable' => false],
-            'action' => ['title' => '#', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
+            'quantidade Compra' => ['name' => 'quantidade_compra', 'data' => 'quantidade_compra', 'searchable' => false, 'width'=>'8%'],
+            'troca' => ['name' => 'troca', 'data' => 'troca', 'searchable' => false, 'orderable' => false, 'width'=>'5%'],
+            'finaliza Obra' => ['name' => 'total', 'data' => 'total', 'searchable' => false, 'orderable' => false, 'width'=>'5%'],
+            'action' => ['title' => '#', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'5%']
         ];
     }
 

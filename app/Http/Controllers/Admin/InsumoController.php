@@ -10,6 +10,7 @@ use App\Repositories\Admin\InsumoRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
 use Response;
+use Illuminate\Http\Request;
 
 class InsumoController extends AppBaseController
 {
@@ -78,6 +79,29 @@ class InsumoController extends AppBaseController
         }
 
         return view('admin.insumos.show')->with('insumo', $insumo);
+    }
+
+    /**
+     * Display the specified Insumo.
+     *
+     * @param  int $id
+     *
+     * @return Response
+     */
+    public function showJson(Request $request, $id)
+    {
+        // Only ajax
+        abort_if(!$request->ajax(), 404);
+
+        $insumo = $this->insumoRepository->findWithoutFail($id);
+
+        if (empty($insumo)) {
+            return response()->json([
+                'error' => 'Insumo não encontrado',
+            ], 404);
+        }
+
+        return $insumo;
     }
 
     /**

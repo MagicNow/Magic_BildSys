@@ -49,7 +49,7 @@ class CatalogoContratoController extends AppBaseController
     public function create()
     {
         $fornecedores = [];
-        
+
         return view('catalogo_contratos.create', compact('fornecedores'));
     }
 
@@ -127,7 +127,7 @@ class CatalogoContratoController extends AppBaseController
                 }
             }
         }
-        
+
         Flash::success('Catalogo Contrato '.trans('common.saved').' '.trans('common.successfully').'.');
 
         return redirect(route('catalogo_contratos.index'));
@@ -173,7 +173,7 @@ class CatalogoContratoController extends AppBaseController
         $fornecedores = MegaFornecedor::select(DB::raw("CONVERT(agn_st_nome,'UTF8','WE8ISO8859P15' ) as agn_st_nome"), 'agn_in_codigo')
             ->where('agn_st_cgc', $catalogoContrato->fornecedor->cnpj)
             ->pluck('agn_st_nome', 'agn_in_codigo')->toArray();
-        
+
         return view('catalogo_contratos.edit', compact('fornecedores'))->with('catalogoContrato', $catalogoContrato);
     }
 
@@ -332,9 +332,10 @@ class CatalogoContratoController extends AppBaseController
     public function buscaFornecedor(Request $request){
         $fornecedores = MegaFornecedor::select([
             'agn_in_codigo as id',
-            DB::raw("CONVERT(agn_st_nome,'UTF8','WE8ISO8859P15' ) as agn_st_nome")
+            DB::raw("CONVERT(agn_st_nome,'UTF8','WE8ISO8859P15') as agn_st_nome")
         ])
-            ->where('agn_st_nome','like', '%'.$request->q.'%')->paginate();
+        ->whereRaw("LOWER(agn_st_nome) LIKE '%' || LOWER('{$request->q}') || '%'")
+        ->paginate();
 
         return $fornecedores;
     }
@@ -344,10 +345,14 @@ class CatalogoContratoController extends AppBaseController
             'id',
             DB::raw("CONCAT(nome, ' - ', unidade_sigla) as nome")
         ])
-            ->where(function ($query) use($request){
-                $query->where('nome', 'like', '%' . $request->q . '%')
-                    ->orWhere('unidade_sigla','like', '%'.$request->q.'%');
-            })
+        ->where(function ($query) use($request){
+            $query->where('nome', 'like', '%' . $request->q . '%')
+                ->orWhere('unidade_sigla','like', '%'.$request->q.'%');
+        })
+        ->where('active', 1)
+        ->whereHas('grupo', function($query) {
+            return $query->where('active', 1);
+        })
         ->paginate();
 
         return $insumos;

@@ -22,6 +22,8 @@ $router->get('/admin/users/busca', 'Admin\Manage\UsersController@busca');
 $router->get('/getForeignKey', 'CodesController@getForeignKey');
 $router->get('/busca-cidade', 'CodesController@buscaCidade');
 $router->get('tipos-equalizacoes-tecnicas/busca', 'TipoEqualizacaoTecnicaController@busca');
+$router->get('/compras/buscar/planejamentos', ['as' => 'buscaplanejamentos.busca_planejamento', 'uses' => 'OrdemDeCompraController@buscaPlanejamentos']);
+$router->get('/compras/buscar/insumogrupos', ['as' => 'buscainsumogrupos.busca_insumo', 'uses' => 'OrdemDeCompraController@buscaInsumoGrupos']);
 
 ##### ADMIN #####
 $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:dashboard.access']], function () use ($router) {
@@ -325,8 +327,8 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
         $router->put('insumos/{insumos}', ['as' => 'admin.insumos.update', 'uses' => 'Admin\InsumoController@update']);
         $router->patch('insumos/{insumos}', ['as' => 'admin.insumos.update', 'uses' => 'Admin\InsumoController@update']);
         $router->delete('insumos/{insumos}', ['as' => 'admin.insumos.destroy', 'uses' => 'Admin\InsumoController@destroy']);
-        $router->get('insumos/{insumos}', ['as' => 'admin.insumos.show', 'uses' => 'Admin\InsumoController@show'])
-            ->middleware("needsPermission:insumos.view");
+        $router->get('insumos/{insumos}', ['as' => 'admin.insumos.show', 'uses' => 'Admin\InsumoController@show'])->middleware("needsPermission:insumos.view");
+        $router->get('insumos/{insumos}/json', ['as' => 'admin.insumos.show-json', 'uses' => 'Admin\InsumoController@showJson']);
         $router->get('insumos/{insumos}/edit', ['as' => 'admin.insumos.edit', 'uses' => 'Admin\InsumoController@edit']);
         $router->post('insumos/{insumos}/enable', ['as' => 'admin.insumos.enable', 'uses' => 'Admin\InsumoController@enable'])
             ->middleware("needsPermission:insumos.availability");
@@ -390,6 +392,8 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         ->middleware("needsPermission:compras_lembretes.list");
 
     # Ordens de compra
+    $router->get('/ordens-de-compra/insumos-aprovados', 'OrdemDeCompraController@insumosAprovados')
+        ->middleware("needsPermission:quadroDeConcorrencias.create");
     $router->group(['middleware' => 'needsPermission:ordens_de_compra.list'], function () use ($router) {
         $router->get('/ordens-de-compra/detalhes/{id}', 'OrdemDeCompraController@detalhe')
             ->middleware("needsPermission:ordens_de_compra.detalhes");
@@ -423,6 +427,10 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     # Compras
     $router->group(['prefix' => 'compras'], function () use ($router) {
         $router->group(['middleware' => 'needsPermission:compras.geral'], function () use ($router) {
+
+            $router->get('trocar/{ordemDeCompraItem}', 'OrdemDeCompraController@trocar')->name('compras.trocar');
+            $router->post('trocar/{ordemDeCompraItem}', 'OrdemDeCompraController@trocarSave');
+
             $router->get('{planejamento}/insumos/{insumoGrupo}', 'OrdemDeCompraController@insumos')->name('compraInsumo');
             $router->get('{planejamento}/insumosJson', 'OrdemDeCompraController@insumosJson');
             $router->get('{planejamento}/insumosFilters', 'OrdemDeCompraController@insumosFilters');
@@ -592,8 +600,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             ])->middleware("needsPermission:quadroDeConcorrencias.edit");
 
     });
-    $router->get('/ordens-de-compra/insumos-aprovados', 'OrdemDeCompraController@insumosAprovados')
-        ->middleware("needsPermission:quadroDeConcorrencias.create");
+
 
     # Catálogo de Acordos
     $router->group(['middleware' => 'needsPermission:catalogo_acordos.list'], function () use ($router) {

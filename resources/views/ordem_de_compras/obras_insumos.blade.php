@@ -6,7 +6,7 @@
             text-align: left !important;
         }
         .content {
-            min-height: 250px !important;
+            min-height: 100px !important;
         }
     </style>
 @stop
@@ -134,8 +134,7 @@
                                         {!! Form::label('planejamento_id', 'Planejamento:') !!}
                                         {!! Form::select('planejamento_id',[''=>'-']+$planejamentoFiltro, (isset($planejamento) ? $planejamento->id : null), [
                                             'class'=>'form-control select2',
-                                            'id'=>'grupo_id',
-                                            'onchange'=>'selectgrupo(this.value, \'subgrupo1_id\', \'grupos\', \'grupo\');'
+                                            'id'=>'planejamento_id'
                                             ]) !!}
                                     </div>
                                 </div>
@@ -144,8 +143,7 @@
                                         {!! Form::label('insumo_grupos_id', 'Grupo de insumo:') !!}
                                         {!! Form::select('insumo_grupos_id',[''=>'-']+$insumoGrupoFiltro, (isset($insumoGrupo) ? $insumoGrupo->id : null), [
                                             'class'=>'form-control select2',
-                                            'id'=>'grupo_id',
-                                            'onchange'=>'selectgrupo(this.value, \'subgrupo1_id\', \'grupos\', \'grupo\');'
+                                            'id'=>'insumo_grupos_id'
                                             ]) !!}
                                     </div>
                                 </div>
@@ -266,34 +264,6 @@
             });
         }
 
-        $(function () {
-            $('[data-toggle="tooltip"]').tooltip();
-
-            $('.js-datatable-filter-form :input').on('change', function (e) {
-                window.LaravelDataTables["dataTableBuilder"].draw();
-            });
-
-            $('.js-datatable-filter-form .select2').on('select2:select', function (evt) {
-                window.LaravelDataTables["dataTableBuilder"].draw();
-            });
-
-            $('#dataTableBuilder').on('preXhr.dt', function ( e, settings, data ) {
-                $('.js-datatable-filter-form :input').each(function () {
-                    if($(this).attr('type')=='checkbox'){
-                        if(data[$(this).prop('name')]==undefined){
-                            data[$(this).prop('name')] = [];
-                        }
-                        if($(this).is(':checked')){
-                            data[$(this).prop('name')].push($(this).val());
-                        }
-
-                    }else{
-                        data[$(this).prop('name')] = $(this).val();
-                    }
-                });
-            });
-        });
-
         function selectgrupo(id, change, tipo){
             console.log('id: ', id, 'change: ', change, 'tipo: ', tipo);
             var rota = "{{url('ordens-de-compra/grupos')}}/";
@@ -346,9 +316,143 @@
             }
         }
 
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+
+            $('.js-datatable-filter-form :input').on('change', function (e) {
+                window.LaravelDataTables["dataTableBuilder"].draw();
+            });
+
+            $('.js-datatable-filter-form .select2').on('select2:select', function (evt) {
+                window.LaravelDataTables["dataTableBuilder"].draw();
+            });
+
+            $('#dataTableBuilder').on('preXhr.dt', function ( e, settings, data ) {
+                $('.js-datatable-filter-form :input').each(function () {
+                    if($(this).attr('type')=='checkbox'){
+                        if(data[$(this).prop('name')]==undefined){
+                            data[$(this).prop('name')] = [];
+                        }
+                        if($(this).is(':checked')){
+                            data[$(this).prop('name')].push($(this).val());
+                        }
+
+                    }else{
+                        data[$(this).prop('name')] = $(this).val();
+                    }
+                });
+            });
+
+            $('#planejamento_id').select2({
+                allowClear: true,
+                placeholder: "Escolha...",
+                language: "pt-BR",
+
+                ajax: {
+                    url: "{{ route('buscaplanejamentos.busca_planejamento') }}",
+                    dataType: 'json',
+                    delay: 250,
+
+                    data: function (params) {
+                        return {
+                            q: params.term,
+                            page: params.page
+                        };
+                    },
+
+                    processResults: function (result, params) {
+                        params.page = params.page || 1;
+
+                        return {
+                            results: result.data,
+                            pagination: {
+                                more: (params.page * result.per_page) < result.total
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                escapeMarkup: function (markup) {
+                    return markup;
+                },
+                minimumInputLength: 1,
+                templateResult: formatResult,
+                templateSelection: formatResultSelection
+            });
+
+            $('#insumo_grupos_id').select2({
+                allowClear: true,
+                placeholder: "Escolha...",
+                language: "pt-BR",
+
+                ajax: {
+                    url: "{{ route('buscainsumogrupos.busca_insumo') }}",
+                    dataType: 'json',
+                    delay: 250,
+
+                    data: function (params) {
+                        return {
+                            q: params.term,
+                            page: params.page
+                        };
+                    },
+
+                    processResults: function (result, params) {
+                        params.page = params.page || 1;
+
+                        return {
+                            results: result.data,
+                            pagination: {
+                                more: (params.page * result.per_page) < result.total
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                escapeMarkup: function (markup) {
+                    return markup;
+                },
+                minimumInputLength: 1,
+                templateResult: formatResult,
+                templateSelection: formatResultSelection
+            });
+        });
+
+        function formatResult (obj) {
+            if(obj.nome) {
+                if (obj.loading) return obj.text;
+
+                var markup = "<div class='select2-result-obj clearfix'>" +
+                "   <div class='select2-result-obj__meta'>" +
+                "       <div class='select2-result-obj__title'>" + obj.nome + "</div>" +
+                "   </div>" +
+                "</div>";
+            }else{
+                if (obj.loading) return obj.text;
+
+                var markup = "<div class='select2-result-obj clearfix'>" +
+                        "   <div class='select2-result-obj__meta'>" +
+                        "       <div class='select2-result-obj__title'>" + obj.tarefa + "</div>" +
+                        "   </div>" +
+                        "</div>";
+            }
+
+            return markup;
+        }
+
+        function formatResultSelection (obj) {
+            if(obj.nome){
+                return obj.nome;
+            }
+            if(obj.tarefa){
+                return obj.tarefa;
+            }
+            return obj.text;
+        }
+
         function getQueryDataTable() {
             var queries = window.LaravelDataTables["dataTableBuilder"].ajax.json().queries;
-            var obj = queries[queries.length-1];
+            var obj = queries[queries.length - 1];
             var bindings = obj.bindings;
             var query = obj.query;
 
