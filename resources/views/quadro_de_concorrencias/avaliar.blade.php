@@ -5,9 +5,10 @@
         <div class="col-sm-12">
             <section class="content-header">
                 <h1 class="pull-left">Avaliar Quadro de Concorrência </h1>
-                <button class="btn btn-primary pull-right btn-flat"
+                <button class="btn btn-success btn-lg pull-right btn-flat"
                         data-toggle="modal"
                         data-target="#modal-finalizar">
+                    <i class="fa fa-trophy" aria-hidden="true"></i>
                     Informar vencedor ou gerar nova rodada
                 </button>
             </section>
@@ -33,19 +34,19 @@
                             <div class="box-body">
                                 <canvas id="chart-total-fornecedor"
                                         data-labels="{{
-                    $qcFornecedores
-                      ->pluck('fornecedor')
-                      ->flatten()
-                      ->pluck('nome')
-                      ->implode('||')
-                    }}"
+                                            $qcFornecedores
+                                              ->pluck('fornecedor')
+                                              ->flatten()
+                                              ->pluck('nome')
+                                              ->implode('||')
+                                            }}"
                                         data-values="{{
-                      $qcFornecedores
-                        ->map(function($qcFornecedor) {
-                          return $qcFornecedor->itens->sum('valor_total');
-                        })
-                        ->implode('||')
-                      }}">
+                                          $qcFornecedores
+                                            ->map(function($qcFornecedor) {
+                                              return $qcFornecedor->itens->sum('valor_total');
+                                            })
+                                            ->implode('||')
+                                          }}">
                                 </canvas>
                             </div>
                         </div>
