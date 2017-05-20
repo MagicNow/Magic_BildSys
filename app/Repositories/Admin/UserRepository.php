@@ -51,4 +51,12 @@ class UserRepository extends BaseRepository
 
         return $model;
     }
+
+    public function usuariosDaObra($obraId)
+    {
+        return $this->model->whereHas('obras', function($q) use ($obraId) {
+            $q->where('obra_id', $obraId);
+        })->where('active', true)->get();
+    }
+
 }

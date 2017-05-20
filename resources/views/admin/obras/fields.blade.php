@@ -6,7 +6,7 @@
 
 <div class="form-group col-sm-6">
     {!! Form::label('obraUsers', 'Usuários nesta obra:') !!}
-    {!! Form::select('obraUsers[]', $relacionados ,(!isset($obra)? null: $obraUsers), ['class' => 'form-control', 'id'=>"obraUsers", 'multiple'=>"multiple"]) !!}
+    {!! Form::select('obraUsers[]', $relacionados , (!isset($obra )? null : $obraUsers), ['class' => 'form-control', 'id'=>"obraUsers", 'multiple'=>"multiple"]) !!}
 </div>
 
 <!-- logo Field -->

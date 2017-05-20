@@ -101,4 +101,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(Fornecedor::class);
     }
+
+    public function obras()
+    {
+        return $this->belongsToMany(Obra::class, 'obra_users', 'user_id', 'obra_id');
+    }
 }
