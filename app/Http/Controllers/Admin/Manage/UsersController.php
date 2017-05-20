@@ -137,7 +137,7 @@ class UsersController extends AppBaseController
 
         $roles = \DB::table("roles")->orderBy('name')->pluck('name', 'name');
         $permissions = \DB::table("permissions")->orderBy('readable_name')->pluck('readable_name', 'name');
-        
+
 
         return view('admin.manage.users.show')->with('user', $user)
             ->with('roles', $roles)
@@ -196,7 +196,7 @@ class UsersController extends AppBaseController
             Flash::error('O campo perfil é obrigatório');
             return redirect('/admin/users/create')->withInput($request->except('password'));
         }
-        
+
         $user = $this->userRepository->findWithoutFail($id);
 
         if (empty($user)) {
@@ -371,7 +371,7 @@ class UsersController extends AppBaseController
             'id',
             'name'
         ])
-            ->where('name','like', '%'.$request->q.'%')->paginate();
+            ->where('name','like', '%'.$request->q.'%')->where('active', true)->paginate();
     }
 
 }

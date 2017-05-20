@@ -15,6 +15,7 @@ use Flash;
 use App\Http\Controllers\AppBaseController;
 use Response;
 use DB;
+use App\Repositories\Admin\UserRepository;
 
 class ObraController extends AppBaseController
 {
@@ -50,7 +51,7 @@ class ObraController extends AppBaseController
             ->select(DB::raw('concat(nome_completo, " - ", uf) as nome_final'), 'id')
             ->get()
             ->pluck('nome_final', 'id');
-        
+
         return view('admin.obras.create', compact('relacionados', 'cidades'));
     }
 
@@ -114,7 +115,7 @@ class ObraController extends AppBaseController
      *
      * @return Response
      */
-    public function edit($id)
+    public function edit($id, UserRepository $userRepository)
     {
         $obra = $this->obraRepository->findWithoutFail($id);
 
@@ -124,10 +125,9 @@ class ObraController extends AppBaseController
             return redirect(route('admin.obras.index'));
         }
 
-        $relacionados = [];
-        $obraUsers = ObraUser::where('obra_id',$obra->id)->pluck('user_id')->toArray();
-//        dd($obrasUsers_ids);
-        $relacionados = User::whereIn('id', $obraUsers)->pluck('name','id')->toArray();
+        $relacionados = $userRepository->usuariosDaObra($id);
+        $obraUsers = $relacionados->pluck('id')->all();
+        $relacionados = $relacionados->pluck('name', 'id')->all();
 
         $cidades = Cidade::orderBy("nome_completo")
             ->select(DB::raw('concat(nome_completo, " - ", uf) as nome_final'), 'id')
