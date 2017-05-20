@@ -1,17 +1,19 @@
-{!! Form::open(['route' => ['ordens-de-compras.destroy', $id], 'id'=>'formDelete'.$id, 'method' => 'delete']) !!}
-<div class='btn-group'>
-    <a href="{{ route('ordens-de-compras.show', $id) }}" title="{{ ucfirst( trans('common.show') )}}" class='btn btn-default btn-xs'>
-        <i class="glyphicon glyphicon-eye-open"></i>
+@if(strtolower($situacao) == 'reprovada')
+    <a href="ordens-de-compra/reabrir-ordem-de-compra/{{$id}}">
+        <button type="button" class="btn btn-ms btn-flat">
+            <i class="fa fa-eye" aria-hidden="true"></i> Reabrir
+        </button>
     </a>
-    <a href="{{ route('ordens-de-compras.edit', $id) }}" title="{{ ucfirst( trans('common.edit') )}}" class='btn btn-warning btn-xs'>
-        <i class="glyphicon glyphicon-edit"></i>
+@elseif(strtolower($situacao) == 'em aberto')
+    <a href="ordens-de-compra/carrinho?id={{$id}}">
+        <button type="button" class="btn btn-ms btn-flat">
+            <i class="fa fa-eye" aria-hidden="true"></i>
+        </button>
     </a>
-    {!! Form::button('<i class="glyphicon glyphicon-trash"></i>', [
-            'type' => 'button',
-            'class' => 'btn btn-danger btn-xs',
-            'onclick' => "confirmDelete('formDelete".$id."');",
-            'title' => ucfirst(trans('common.delete'))
-        ]) !!}
-
-</div>
-{!! Form::close() !!}
+@else
+    <a href="ordens-de-compra/detalhes/{{$id}}">
+        <button type="button" class="btn btn-ms btn-flat">
+            <i class="fa fa-eye" aria-hidden="true"></i>
+        </button>
+    </a>
+@endif
