@@ -118,14 +118,14 @@ class OrcamentoDataTable extends DataTable
     {
         return [
             'obra' => ['name' => 'obras.nome', 'data' => 'obra'],
-            'codigo' => ['name' => 'codigo_insumo', 'data' => 'codigo_insumo'],
-            'insumo' => ['name' => 'insumos.nome', 'data' => 'insumo'],
-            'servico' => ['name' => 'servicos.nome', 'data' => 'servico'],
-            'sigla' => ['name' => 'unidade_sigla', 'data' => 'unidade_sigla'],
             'grupo' => ['name' => 'grupos.nome', 'data' => 'grupo'],
             'subgrupo1' => ['name' => 'grupos1.nome', 'data' => 'subgrupo1'],
             'subgrupo2' => ['name' => 'grupos2.nome', 'data' => 'subgrupo2'],
             'subgrupo3' => ['name' => 'grupos3.nome', 'data' => 'subgrupo3'],
+            'serviço' => ['name' => 'servicos.nome', 'data' => 'servico'],
+            'codigo' => ['name' => 'codigo_insumo', 'data' => 'codigo_insumo'],
+            'insumo' => ['name' => 'insumos.nome', 'data' => 'insumo'],
+            'unid De Medida' => ['name' => 'unidade_sigla', 'data' => 'unidade_sigla'],
             'dataUpload' => ['name' => 'created_at', 'data' => 'created_at'],
             'action' => ['title' => '#', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];

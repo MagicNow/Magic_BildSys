@@ -31,7 +31,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                  <label for="planejamento_id">Atividade/Tarefa</label>
+                                  <label for="planejamento_id">Tarefa</label>
                                   {!!
                                     Form::select(
                                       'planejamento_id',

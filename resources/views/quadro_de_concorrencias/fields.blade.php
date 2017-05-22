@@ -225,7 +225,7 @@
                         <input class="form-control" type="text" id="item_eqt_nome"/>
                     </div>
                     <div class="form-group col-sm-3">
-                        <label for="item_eqt_obrigatorio">Obrigatório: </label>
+                        <label for="item_eqt_obrigatorio">Estou ciente: </label>
                         <input type="checkbox" value="1" id="item_eqt_obrigatorio"><br>
                     </div>
                 </div>

@@ -497,10 +497,10 @@ class LembretesHomeDataTable extends DataTable
             'tarefa'=> ['name' => 'planejamentos.tarefa', 'data' => 'tarefa'],
         ];
 
-        $columns['Grupo'] = ['name' => 'grupo', 'data' => 'grupo'];
+        $columns['Grupo De Insumo'] = ['name' => 'grupo', 'data' => 'grupo'];
 
         $columns['action'] = [
-            'title'      => 'Comprar',
+            'title'      => 'Visualizar',
             'searchable' => false,
             'orderable'  => false,
             'printable'  => false,
