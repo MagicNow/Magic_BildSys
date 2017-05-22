@@ -44,7 +44,7 @@ class CompradorInsumoController extends AppBaseController
      */
     public function create()
     {
-        $grupoInsumos = InsumoGrupo::pluck('nome', 'id')->toArray();
+        $grupoInsumos = InsumoGrupo::where('active', true)->pluck('nome', 'id')->toArray();
 
         $users = User::whereHas('roles', function($query) {
             $query->where('role_id', User::ROLE_SUPRIPRIMENTOS);
@@ -192,10 +192,12 @@ class CompradorInsumoController extends AppBaseController
             'insumo_grupos.nome',
             'insumo_grupos.id'
         ])
-            ->join('insumos', 'insumos.insumo_grupo_id', '=', 'insumo_grupos.id')
-            ->join('comprador_insumos', 'comprador_insumos.insumo_id', 'insumos.id')
-            ->where('comprador_insumos.user_id', $usuario_id)
-            ->pluck('nome', 'id')->toArray();
+        ->join('insumos', 'insumos.insumo_grupo_id', '=', 'insumo_grupos.id')
+        ->join('comprador_insumos', 'comprador_insumos.insumo_id', 'insumos.id')
+        ->where('comprador_insumos.user_id', $usuario_id)
+        ->where('active', true)
+        ->pluck('nome', 'id')
+        ->toArray();
         return $grupoInsumos;
     }
 
@@ -221,6 +223,7 @@ class CompradorInsumoController extends AppBaseController
         ])
             ->join('insumo_grupos', 'insumo_grupos.id', '=', 'insumos.insumo_grupo_id')
             ->where('insumos.insumo_grupo_id', $grupo_insumo_id)
+            ->where('active', true)
             ->get();
 
         return $insumos;
