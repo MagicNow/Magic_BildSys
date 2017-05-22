@@ -143,7 +143,7 @@
                                 '<button type="button" class="btn btn-link text-left" ' +
                                 'onclick="listInsumosRelacionados(' + retorno.grupo_id + ','+ retorno.obra_id +',\'subgrupo1_id\', \'grupo_id\')">' + retorno.codigo + ' - ' + retorno.nome +
                                 '</button>' +
-                                '<span>'+ ((retorno.tarefa) ? '- '+ retorno.tarefa : '' ) +'</span>'+
+                                '<span>'+ ((retorno.tarefa) ? ' - '+ retorno.tarefa : '' ) +'</span>'+
                                 '<button type="button" class="btn btn-link pull-right" ' +
                                 'onclick="listInsumosRelacionados(' + retorno.grupo_id + ','+ retorno.obra_id +',\'subgrupo1_id\', \'grupo_id\')">' +
                                 '<i class="fa fa-plus-square pull-right"  id="ico_' + retorno.grupo_id + '" aria-hidden="true"></i>' +
@@ -222,7 +222,7 @@
                                     '<button type="button" class="btn btn-link text-left" ' +
                                     'onclick="listInsumosRelacionados('+value.id+','+value.obra_id+',\''+ value.proximo+'\',\''+value.atual+'\')">'+value.codigo+' - '+value.nome+
                                     '</button>'+
-                                    ( value.tarefa ? '<span id="vinc_'+value.atual+'_'+ value.id +'"><span class="label label-info"><i class="fa fa-link"></i> TAREFA:' + value.tarefa +'</span> &nbsp;' +
+                                    ( value.tarefa ? '<span id="vinc_'+value.atual+'_'+ value.id +'"><span class="label label-info"><i class="fa fa-link"></i> TAREFA: ' + value.tarefa +'</span> &nbsp;' +
                                     '<button type="button" class="btn btn-danger btn-xs btn-flat" title="Desvincular" onclick="desvincular(\''+value.atual+'\','+value.id+','+value.obra_id+')">' +
                                     '<i class="fa fa-chain-broken"></i> </button> </span>': '' ) +
                                     '<button type="button" class="btn btn-link pull-right" ' +
@@ -237,7 +237,7 @@
                                     '<div class="row">' +
                                     '<div class="col-md-12">' +
                                     '<input type="checkbox" id="insumo_'+ value.insumo_id +'" name="'+value.atual+'[]" value="'+ value.insumo_id +'"> ' +value.codigo+' - '+value.nome+
-                                    (value.tarefa ? '<span id="vinc_'+value.atual+'_'+ value.id +'"><span class="label label-info"><i class="fa fa-link"></i> TAREFA:'+  value.tarefa +'</span> &nbsp;' +
+                                    (value.tarefa ? '<span id="vinc_'+value.atual+'_'+ value.id +'"><span class="label label-info"><i class="fa fa-link"></i> TAREFA: '+  value.tarefa +'</span> &nbsp;' +
                                     '<button type="button" class="btn btn-danger btn-xs btn-flat" title="Desvincular" onclick="desvincular(\''+value.atual+'\','+value.id+','+value.obra_id+')">' +
                                     '<i class="fa fa-chain-broken"></i> </button></span> ': '' ) +
                                     '</div>' +
@@ -320,7 +320,7 @@
                                     '" name="insumo_id[]" value="'+ value.id +'"> <label for="insumo_'+ value.id +'">' +
                                     value.codigo_insumo + ' - ' + value.nome +
                                     '</label>'+
-                                    (value.tarefa ? '<span class="label label-info"> <i class="fa fa-link"></i> TAREFA: '+value.tarefa+'</span>' : '') +
+                                    (value.tarefa ? '<span class="label label-info"> <i class="fa fa-link"></i> TAREFA: ' +value.tarefa+'</span>' : '') +
                             '</li>'+
                             '    </div>';
                         });
