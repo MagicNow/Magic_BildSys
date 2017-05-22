@@ -1721,17 +1721,14 @@ class OrdemDeCompraController extends AppBaseController
 
     public function comprarTudoDeTudo(Request $request)
     {
-        $bindings = $request->all()['bindings'];
-        $query = $request->all()['query'];
-
-        //Retira do limit pra frente
-        $query = substr($query, 0,strpos($query, ' limit '));
+        $query = $request->session()->get('query['.$request->random.']');
+        $bindings = $request->session()->get('bindings['.$request->random.']');
 
         $insumos = DB::select($query,
             $bindings);
 
         foreach ($insumos as $insumo){
-            if($insumo->quantidade_compra && money_to_float($insumo->saldo) > 0) {
+            if(money_to_float($insumo->saldo) > 0) {
                 $insumo_collection = new Collection($insumo);
                 self::comprarTudoItem($insumo_collection, $insumo_collection['obra_id']);
             }

@@ -8,6 +8,7 @@ use App\Models\OrdemDeCompra;
 use App\Models\Planejamento;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 use Yajra\Datatables\Services\DataTable;
 
 class ComprasDataTable extends DataTable
@@ -64,8 +65,7 @@ class ComprasDataTable extends DataTable
                     $obj->tooltip_servico  ."\">
                     $obj->nome
                     </strong>";
-            })
-            ->make(true);
+            })->make(true);
     }
 
     /**
@@ -270,6 +270,7 @@ class ComprasDataTable extends DataTable
             }
         }
 
+        Session::put(['query['.$this->request()->get('random').']' => $insumo_query->toSql(), 'bindings['.$this->request()->get('random').']' => $insumo_query->getBindings()]);
 
         return $this->applyScopes($insumo_query);
     }
