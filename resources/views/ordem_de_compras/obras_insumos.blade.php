@@ -390,6 +390,7 @@
         }
 
         function getQueryDataTable() {
+            startLoading();
             $.ajax({
                 method: "POST",
                 url: "/ordens-de-compra/carrinho/comprar-tudo-de-tudo",
@@ -398,7 +399,10 @@
                     '_token': $('meta[name="csrf-token"]').attr('content')
                 }
             }).done(function () {
+                stopLoading();
                 window.location.href = '/ordens-de-compra/carrinho';
+            }).fail(function () {
+                stopLoading();
             });
         }
     </script>
