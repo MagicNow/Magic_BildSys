@@ -20,6 +20,13 @@
             </div>
           </a>
         </div>
+        @else
+        <div class="col-md-6 text-center">
+          <img src="/img/personagem.png" style="margin: auto" class="img-responsive">
+        </div>
+        <div class="col-md-6 text-center">
+          <img src="/img/missao-visao-valores.png" style="margin: auto"  class="img-responsive">
+        </div>
       @endif
     </div>
   </div>

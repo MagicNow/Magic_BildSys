@@ -47,6 +47,9 @@ $(function() {
   $('.money').mask('0.000.000.000.000,00', {
     reverse: true
   });
+  $('.money_3').mask('0.000.000.000.000,000', {
+    reverse: true
+  });
   $('.decimal').mask('00,00');
   $('.percent').mask('#00,00', {
     reverse: true

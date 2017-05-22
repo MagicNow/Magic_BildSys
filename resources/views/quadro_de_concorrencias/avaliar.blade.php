@@ -3,18 +3,40 @@
 @section('content')
     <div class="row">
         <div class="col-sm-12">
-            <section class="content-header">
-                <h1 class="pull-left">Avaliar Quadro de Concorrência </h1>
-                <button class="btn btn-success btn-lg pull-right btn-flat"
-                        data-toggle="modal"
-                        data-target="#modal-finalizar">
-                    <i class="fa fa-trophy" aria-hidden="true"></i>
-                    Informar vencedor ou gerar nova rodada
-                </button>
-            </section>
+          <section class="content-header">
+            <h1 class="pull-left">
+              Avaliar Quadro de Concorrência
+              <small>
+                Rodada {{ $rodadaSelecionada }}
+              </small>
+            </h1>
+            <button class="btn btn-success btn-lg pull-right btn-flat"
+              data-toggle="modal"
+              data-target="#modal-finalizar">
+              <i class="fa fa-trophy" aria-hidden="true"></i>
+              Informar vencedor ou gerar nova rodada
+            </button>
+          </section>
         </div>
     </div>
     <div class="content">
+        <div class="box box-muted">
+          <div class="box-header with-border">Exibir rodada</div>
+          <div class="box-body">
+            @foreach(range(1, $quadro->rodada_atual) as $rodada)
+              <label class="radio-inline">
+                {!!
+                  Form::radio(
+                    'rodada',
+                    $rodada, $rodada === $rodadaSelecionada,
+                    [ 'class' => 'js-change-round' ]
+                  )
+                !!}
+                Rodada {{ $rodada }} {{ $rodada === $quadro->rodada_atual ? '(atual)' : '' }}
+              </label>
+            @endforeach
+          </div>
+        </div>
         <div class="box box-muted">
             <div class="box-body">
                 {!!
@@ -54,17 +76,17 @@
                     <div class="col-md-6">
                         <div class="box box-muted box-chart">
                             <div class="box-header with-border">Insumo / Fornecedor</div>
-                            <div class="box-body">
-                                <div class="form-group">
-                                    {!!
-                                      Form::select(
-                                        'insumo',
-                                        $quadro->itens->pluck('insumo')->flatten()->pluck('nome', 'id')->toArray(),
-                                        null,
-                                        ['class' => 'select2 form-control', 'id' => 'insumo']
-                                      )
-                                    !!}
+                              <div class="box-input">
+                                  {!!
+                                    Form::select(
+                                      'insumo',
+                                      $quadro->itens->pluck('insumo')->flatten()->pluck('nome', 'id')->toArray(),
+                                      null,
+                                      ['class' => 'select2 form-control', 'id' => 'insumo']
+                                    )
+                                  !!}
                                 </div>
+                              <div class="box-body">
                                 <canvas id="chart-insumo-fornecedor"
                                         data-data='{{ json_encode($ofertas) }}'>
                                 </canvas>

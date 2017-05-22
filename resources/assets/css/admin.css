@@ -367,10 +367,10 @@ h6 {
   position: relative;
 }
 
-.box-chart > .box-body > canvas {
-  width: 100% !important;
-  max-width: 1000px;
-  height: auto !important
+.box-chart > .box-input {
+  padding: 10px;
+  width: 100%;
+  max-width: none;
 }
 
 .sweet-alert p {
