@@ -64322,22 +64322,22 @@ function startLoading() {
 
 function stopLoading() {
   if ($('.loader').length) {
-    $('.loader').fadeToggle(function () {
+    $('.loader').fadeToggle(function() {
       $(this).remove();
     });
   }
 }
 
-var mascara = function (val) {
-  return val.replace(/\D/g, '').length === 14 ? '(00) 00000-0000' : '(00) 0000-00009';
-},
+var mascara = function(val) {
+    return val.replace(/\D/g, '').length === 14 ? '(00) 00000-0000' : '(00) 0000-00009';
+  },
   options = {
-    onKeyPress: function (val, e, field, options) {
+    onKeyPress: function(val, e, field, options) {
       field.mask(mascara.apply({}, arguments), options);
     }
   };
 
-$(function () {
+$(function() {
   $(".select2").select2({
     theme: 'bootstrap',
     placeholder: "-",
@@ -64351,14 +64351,22 @@ $(function () {
     increaseArea: '20%' // optional
   });
 
-  $('.colorbox').colorbox({transition: "fade", width: "95%", height: "95%"});
-  $('form').submit(function (evento) {
+  $('.colorbox').colorbox({
+    transition: "fade",
+    width: "95%",
+    height: "95%"
+  });
+  $('form').submit(function(evento) {
     $('.box.box-primary').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
   });
 
-  $('.money').mask('0.000.000.000.000,00', {reverse: true});
+  $('.money').mask('0.000.000.000.000,00', {
+    reverse: true
+  });
   $('.decimal').mask('00,00');
-  $('.percent').mask('#00,00', {reverse: true});
+  $('.percent').mask('#00,00', {
+    reverse: true
+  });
 
   $('.cnpj').mask('99.999.999/9999-99');
   $('.cep').mask('00000-000');
@@ -64390,7 +64398,9 @@ function moneyToFloat(money) {
  * @return {String}
  */
 function floatToMoney(number) {
-  return 'R$ ' + number.toLocaleString('pt-BR', {minimumFractionDigits: 2});
+  return 'R$ ' + number.toLocaleString('pt-BR', {
+    minimumFractionDigits: 2
+  });
 }
 
 /**
@@ -64400,9 +64410,8 @@ function floatToMoney(number) {
  *
  * @return {Number}
  */
-function removeNaoNumero( str )
-{
-  return parseInt( str.replace(/[\D]+/g,'') );
+function removeNaoNumero(str) {
+  return parseInt(str.replace(/[\D]+/g, ''));
 }
 
 /**
@@ -64412,18 +64421,20 @@ function removeNaoNumero( str )
  *
  * @return {String}
  */
-function formatarReal( int )
-{
-  var tmp = int+'';
-  tmp=tmp.replace(/\D/g,'');
-  tmp=tmp.replace(/(\d{1,2})$/, ',$1');
-  tmp=tmp.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
+function formatarReal(int) {
+  var tmp = int + '';
+  tmp = tmp.replace(/\D/g, '');
+  tmp = tmp.replace(/(\d{1,2})$/, ',$1');
+  tmp = tmp.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
   tmp = tmp != '' ? tmp : '';
 
   return tmp;
 }
 
 var oTable = null;
+
+window.$body = $(document.body);
+window.$document = $(document);
 
 
 var k = 0;
