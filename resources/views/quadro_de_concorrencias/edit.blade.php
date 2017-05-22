@@ -27,18 +27,18 @@
                 <!-- Submit Field -->
                     <div class="form-group col-sm-9 pull-right text-right">
 
-                        {!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save') ), [
+                        {!! Form::button( '<i class="fa fa-save"></i> Salvar e voltar', [
                             'class' => 'btn btn-success btn-lg btn-flat',
                             'type'=>'submit']) !!}
 
-                        {!! Form::button( '<i class="fa fa-save"></i> Salvar e manter', [
+                        {!! Form::button( '<i class="fa fa-save"></i> Salvar', [
                             'class' => 'btn btn-success btn-lg btn-flat',
                             'value' => '1',
                             'name' => 'manter',
                             'style' => 'margin-left:10px',
                             'type'=>'submit']) !!}
 
-                        {!! Form::button( '<i class="fa fa-check-square"></i> Fechar e enviar para aprovação', [
+                        {!! Form::button( '<i class="fa fa-check-square"></i> Enviar para validação', [
                             'class' => 'btn btn-success btn-lg btn-flat',
                             'value' => '1',
                             'name' => 'fechar_qc',
