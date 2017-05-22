@@ -2,6 +2,7 @@
 
 namespace App\DataTables;
 
+use App\Models\InsumoGrupo;
 use App\Models\Lembrete;
 use App\User;
 use Illuminate\Support\Facades\Auth;
@@ -389,7 +390,17 @@ class LembretesHomeDataTable extends DataTable
         }
 
         // Busca se existe algum item à ser comprado desta tarefa
-        $query->whereRaw(PlanejamentoCompraRepository::existeItemParaComprar($this->request()->get('insumo_grupo_id')));
+        // Pega se existir
+        $igId = null;
+        if($this->request()->get('columns')){
+            if(isset($this->request()->get('columns')[3]['search']['value'])){
+                $insumoGrupo = InsumoGrupo::where('nome','like',$this->request()->get('columns')[3]['search']['value'])->first();
+                if($insumoGrupo){
+                    $igId = $insumoGrupo->id;
+                }
+            }
+        }
+        $query->whereRaw(PlanejamentoCompraRepository::existeItemParaComprar($this->request()->get('insumo_grupo_id', $igId)));
 
         if($this->request()->exibir_por_tarefa) {
             $query->groupBy('tarefa');
