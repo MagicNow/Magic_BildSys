@@ -512,7 +512,13 @@ class OrdemDeCompraController extends AppBaseController
 
         $obra = Obra::find($request->obra_id);
 
-        $grupos = Grupo::whereNull('grupo_id')->pluck('nome','id')->toArray();
+        $grupos = Grupo::whereNull('grupo_id')
+            ->select([
+                'id',
+                DB::raw("CONCAT(codigo, ' ', nome) as nome")
+            ])
+            ->pluck('nome','id')
+            ->toArray();
 
         $insumoGrupos = $insumoGrupoRepository
             ->comLembretesComItensDeCompraPorUsuario($request->user()->id)
@@ -1802,12 +1808,20 @@ class OrdemDeCompraController extends AppBaseController
     }
 
     public function getGrupos($id){
-        $grupo = Grupo::where('grupo_id', $id)
+        $grupo = Grupo::select([
+                'id',
+                DB::raw("CONCAT(codigo, ' ', nome) as nome")
+            ])
+            ->where('grupo_id', $id)
             ->pluck('nome','id')->toArray();
         return $grupo;
     }
     public function getServicos($id){
-        $servico = Servico::where('grupo_id', $id)
+        $servico = Servico::select([
+                'id',
+                DB::raw("CONCAT(codigo, ' ', nome) as nome")
+            ])
+            ->where('grupo_id', $id)
             ->pluck('nome', 'id')->toArray();
         return $servico;
     }
