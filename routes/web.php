@@ -641,6 +641,14 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('planejamentos/lembretes', 'PlanejamentoController@lembretes');
     $router->get('planejamentos/lembretes/salvar-data-minima', 'PlanejamentoController@lembretes');
 
+    $router->group(['middleware' => 'needsPermission:contratos.list'], function($router) {
+        $router->get(
+            'contratos',
+            ['as' => 'contratos.index', 'uses' => 'ContratoController@index']
+        );
+    });
+
+
     $router->get('/teste', function (){
 //        $grupos_mega = \App\Models\MegaInsumoGrupo::select([
 //            'GRU_IDE_ST_CODIGO',

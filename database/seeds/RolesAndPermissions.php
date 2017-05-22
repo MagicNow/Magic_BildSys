@@ -150,6 +150,8 @@ class RolesAndPermissions extends Seeder
             'equalizacao_tecnicas.create'   => 'Criação de equalização tecnica',
             'equalizacao_tecnicas.edit'   => 'Edição de equalização tecnica',
             'equalizacao_tecnicas.delete'   => 'Remoção de equalização tecnica',
+
+            'contratos.list'   => 'Listagem de contratos',
         ];
 
         $permissionAccess = [];

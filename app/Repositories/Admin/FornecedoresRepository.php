@@ -162,4 +162,9 @@ class FornecedoresRepository extends BaseRepository
 
         return $user;
     }
+
+    public function comContrato()
+    {
+        return $this->model->has('contratos')->get();
+    }
 }
