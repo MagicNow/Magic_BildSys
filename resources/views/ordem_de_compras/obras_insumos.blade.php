@@ -131,7 +131,7 @@
                                 </div>
                                 <div class="form-group col-sm-6">
                                     <div class="js-datatable-filter-form">
-                                        {!! Form::label('planejamento_id', 'Planejamento:') !!}
+                                        {!! Form::label('planejamento_id', 'Tarefa:') !!}
                                         {!!
                                           Form::select('planejamento_id', $planejamentos, (isset($planejamento) ? $planejamento->id : null), [
                                             'class'=>'form-control select2',

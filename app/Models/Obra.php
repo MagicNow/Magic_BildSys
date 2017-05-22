@@ -45,8 +45,10 @@ class Obra extends Model
         'entrega_nota_fisca_e_boleto',
         'adm_obra_nome',
         'adm_obra_email',
+        'adm_obra_telefone',
         'eng_obra_nome',
         'eng_obra_email',
+        'eng_obra_telefone',
         'horario_entrega_na_obra',
         'referencias_bancarias',
         'referencias_comerciais',
@@ -66,9 +68,9 @@ class Obra extends Model
         'area_privativa' => 'decimal',
         'area_construida' => 'decimal',
         'eficiencia_projeto' => 'decimal',
-        'num_apartamentos' => 'decimal',
-        'num_torres' => 'decimal',
-        'num_pavimento_tipo' => 'decimal',
+        'num_apartamentos' => 'integer',
+        'num_torres' => 'integer',
+        'num_pavimento_tipo' => 'integer',
         'data_inicio' => 'date',
         'data_cliente' => 'date',
         'indice_bild_pre' => 'decimal',
@@ -81,11 +83,13 @@ class Obra extends Model
         'entrega_nota_fisca_e_boleto' => 'string',
         'adm_obra_nome' => 'string',
         'adm_obra_email' => 'string',
+        'adm_obra_telefone' => 'string',
         'eng_obra_nome' => 'string',
         'eng_obra_email' => 'string',
+        'eng_obra_telefone' => 'string',
         'horario_entrega_na_obra' => 'string',
         'referencias_bancarias' => 'string',
-        'referencias_comerciais' => 'string',
+        'referencias_comerciais' => 'text',
         'logo' => 'string'
     ];
 
@@ -160,7 +164,7 @@ class Obra extends Model
 
     public function getEficienciaProjetoAttribute($value)
     {
-        if (strlen($value) == 4) {
+        if (strlen($value) == 5) {
             $value = '0'.$value;
         }
 
@@ -177,74 +181,14 @@ class Obra extends Model
         }
         $this->attributes['eficiencia_projeto'] = $result;
     }
-
-    public function getNumApartamentosAttribute($value)
-    {
-        if (strlen($value) == 4) {
-            $value = '0'.$value;
-        }
-
-        return number_format($value, 2, ',', '.');
-    }
-
-    public function setNumApartamentosAttribute($value)
-    {
-        $pontos = [","];
-        $value = str_replace('.', '', $value);
-        $result = str_replace($pontos, ".", $value);
-        if ($result == '') {
-            $result = null;
-        }
-        $this->attributes['num_apartamentos'] = $result;
-    }
-
-    public function getNumTorresAttribute($value)
-    {
-        if (strlen($value) == 4) {
-            $value = '0'.$value;
-        }
-
-        return number_format($value, 2, ',', '.');
-    }
-
-    public function setNumTorresAttribute($value)
-    {
-        $pontos = [","];
-        $value = str_replace('.', '', $value);
-        $result = str_replace($pontos, ".", $value);
-        if ($result == '') {
-            $result = null;
-        }
-        $this->attributes['num_torres'] = $result;
-    }
-
-    public function getNumPavimentoTipoAttribute($value)
-    {
-        if (strlen($value) == 4) {
-            $value = '0'.$value;
-        }
-
-        return number_format($value, 2, ',', '.');
-    }
-
-    public function setNumPavimentoTipoAttribute($value)
-    {
-        $pontos = [","];
-        $value = str_replace('.', '', $value);
-        $result = str_replace($pontos, ".", $value);
-        if ($result == '') {
-            $result = null;
-        }
-        $this->attributes['num_pavimento_tipo'] = $result;
-    }
-
+    
     public function getIndiceBildPreAttribute($value)
     {
-        if (strlen($value) == 4) {
+        if (strlen($value) == 5) {
             $value = '0'.$value;
         }
 
-        return number_format($value, 2, ',', '.');
+        return number_format($value, 3, ',', '.');
     }
 
     public function setIndiceBildPreAttribute($value)
@@ -264,7 +208,7 @@ class Obra extends Model
             $value = '0'.$value;
         }
 
-        return number_format($value, 2, ',', '.');
+        return number_format($value, 3, ',', '.');
     }
 
     public function setIndiceBildOiAttribute($value)

@@ -53,19 +53,19 @@
 <!-- num_apartamentos Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('num_apartamentos', 'Número de apartamentos:') !!}
-    {!! Form::text('num_apartamentos', null, ['class' => 'form-control money']) !!}
+    {!! Form::number('num_apartamentos', null, ['class' => 'form-control']) !!}
 </div>
 
 <!-- num_torres Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('num_torres', 'Número de torres:') !!}
-    {!! Form::text('num_torres', null, ['class' => 'form-control money']) !!}
+    {!! Form::number('num_torres', null, ['class' => 'form-control']) !!}
 </div>
 
 <!-- num_pavimento_tipo Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('num_pavimento_tipo', 'Número pavimento tipo:') !!}
-    {!! Form::text('num_pavimento_tipo', null, ['class' => 'form-control money']) !!}
+    {!! Form::number('num_pavimento_tipo', null, ['class' => 'form-control']) !!}
 </div>
 
 <!-- data_inicio Field -->
@@ -83,13 +83,13 @@
 <!-- indice_bild_pre Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('indice_bild_pre', 'Índice BILD - Pré:') !!}
-    {!! Form::text('indice_bild_pre', null, ['class' => 'form-control money']) !!}
+    {!! Form::text('indice_bild_pre', null, ['class' => 'form-control money_3']) !!}
 </div>
 
 <!-- indice_bild_oi Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('indice_bild_oi', 'Índice BILD - OI:') !!}
-    {!! Form::text('indice_bild_oi', null, ['class' => 'form-control money']) !!}
+    {!! Form::text('indice_bild_oi', null, ['class' => 'form-control money_3']) !!}
 </div>
 
 <!-- razao_social Field -->
@@ -140,6 +140,12 @@
     {!! Form::text('adm_obra_email', null, ['class' => 'form-control']) !!}
 </div>
 
+<!-- adm_obra_telefone Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('adm_obra_telefone', 'Administrativo de obra - Telefone:') !!}
+    {!! Form::text('adm_obra_telefone', null, ['class' => 'form-control telefone']) !!}
+</div>
+
 <!-- eng_obra_nome Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('eng_obra_nome', 'Engenheiro obra - Nome:') !!}
@@ -152,6 +158,12 @@
     {!! Form::text('eng_obra_email', null, ['class' => 'form-control']) !!}
 </div>
 
+<!-- eng_obra_telefone Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('eng_obra_telefone', 'Engenheiro obra - Telefone:') !!}
+    {!! Form::text('eng_obra_telefone', null, ['class' => 'form-control telefone']) !!}
+</div>
+
 <!-- horario_entrega_na_obra Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('horario_entrega_na_obra', 'Horário de entrega na obra:') !!}
@@ -159,21 +171,21 @@
 </div>
 
 <!-- referencias_bancarias Field -->
-<div class="form-group col-sm-6">
+<div class="form-group col-sm-12">
     {!! Form::label('referencias_bancarias', 'Referências bancárias:') !!}
     {!! Form::text('referencias_bancarias', null, ['class' => 'form-control']) !!}
 </div>
 
 <!-- referencias_comerciais Field -->
-<div class="form-group col-sm-6">
+<div class="form-group col-sm-12">
     {!! Form::label('referencias_comerciais', 'Referências comerciais:') !!}
-    {!! Form::text('referencias_comerciais', null, ['class' => 'form-control']) !!}
+    {!! Form::textarea('referencias_comerciais', null, ['class' => 'form-control', 'rows' => '5']) !!}
 </div>
 
 <!-- Submit Field -->
 <div class="form-group col-sm-12">
-    {!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save') ), ['class' => 'btn btn-success pull-right', 'type'=>'submit']) !!}
-    <a href="{!! route('admin.obras.index') !!}" class="btn btn-default"><i class="fa fa-times"></i>  {{ ucfirst( trans('common.cancel') )}}</a>
+    {!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save') ), ['class' => 'btn btn-success pull-right flat', 'type'=>'submit']) !!}
+    <a href="{!! route('admin.obras.index') !!}" class="btn btn-default flat"><i class="fa fa-times"></i>  {{ ucfirst( trans('common.cancel') )}}</a>
 </div>
 
 @section('scripts')

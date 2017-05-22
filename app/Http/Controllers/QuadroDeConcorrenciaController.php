@@ -204,14 +204,14 @@ class QuadroDeConcorrenciaController extends AppBaseController
             ['ordem_de_compra_itens' => 'required'],
             ['ordem_de_compra_itens.required' => 'É necessário escolher ao menos um item!']
         )->validate();
-        
+
         $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->update([
             'itens' => $request->ordem_de_compra_itens,
             'user_update_id' => Auth::id()
         ], $id);
 
         Flash::success('Insumos addicionados no Q.C.');
-        
+
         return redirect(route('quadroDeConcorrencias.edit',$quadroDeConcorrencia->id));
 
     }
@@ -242,6 +242,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
 
     public function avaliar(
         $id,
+        Request $request,
         FornecedoresRepository $fornecedorRepository,
         DesistenciaMotivoRepository $desistenciaMotivoRepository,
         QcFornecedorRepository $qcFornecedorRepository,
@@ -270,7 +271,12 @@ class QuadroDeConcorrenciaController extends AppBaseController
             return redirect(route('quadroDeConcorrencias.index'));
         }
 
-        $qcFornecedores = $qcFornecedorRepository->queOfertaramNoQuadroNaRodada($id);
+        $rodadaSelecionada = (int) $request->get('rodada', $quadro->rodada_atual);
+
+        $qcFornecedores = $qcFornecedorRepository->queOfertaramNoQuadroNaRodada(
+            $id,
+            $rodadaSelecionada
+        );
 
         $ofertas = $quadro->itens->reduce(function($ofertas, $item) use ($qcFornecedores) {
             $ofertas[] = $qcFornecedores->map(function($qcFornecedor) use ($item) {
@@ -294,7 +300,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
             ->setQcFornecedores($qcFornecedores)
             ->render(
                 'quadro_de_concorrencias.avaliar',
-                compact('qcFornecedores', 'quadro', 'ofertas')
+                compact('qcFornecedores', 'quadro', 'ofertas', 'rodadaSelecionada')
             );
     }
 

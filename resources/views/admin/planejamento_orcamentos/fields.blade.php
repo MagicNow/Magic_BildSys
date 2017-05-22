@@ -308,6 +308,7 @@
                             type: "GET"
                         }
                 ).done(function(retorno) {
+                    console.log(retorno);
                     $('#carrinho').css('display','none');
                     $('#grupo_insumos').css('display','');
                     list = '';
@@ -317,9 +318,9 @@
                         $.each(retorno,function(index, value){
                             list += '<li><input type="checkbox" class="grupos_insumos" id="insumo_'+ value.id +
                                     '" name="insumo_id[]" value="'+ value.id +'"> <label for="insumo_'+ value.id +'">' +
-                                    value.codigo + ' - ' + value.nome +
+                                    value.codigo_insumo + ' - ' + value.nome +
                                     '</label>'+
-                                    (value.tarefa ? '<span class="label label-info"> <i class="fa fa-link"></i> TAREFA: '+value.tarefa+'</span>' : '')
+                                    (value.tarefa ? '<span class="label label-info"> <i class="fa fa-link"></i> TAREFA: '+value.tarefa+'</span>' : '') +
                             '</li>'+
                             '    </div>';
                         });
