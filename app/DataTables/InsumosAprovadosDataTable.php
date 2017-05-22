@@ -103,6 +103,7 @@ class InsumosAprovadosDataTable extends DataTable
             'ordem_de_compra_itens.*',
             'obras.nome as obra',
             'insumos.nome as insumo_nome',
+            'insumos.unidade_sigla',
             // -- Busca qtd dias de SLA
             DB::raw("(
                 SELECT
@@ -376,7 +377,8 @@ class InsumosAprovadosDataTable extends DataTable
     {
         return [
             'obra' => ['name' => 'obras.nome', 'data' => 'obra'],
-            'O.C.' => ['name' => 'ordem_de_compra_itens.ordem_de_compra_id', 'data' => 'ordem_de_compra_id'],
+            'OC' => ['name' => 'ordem_de_compra_itens.ordem_de_compra_id', 'data' => 'ordem_de_compra_id'],
+            'und' => ['name' => 'unidade_sigla', 'data' => 'unidade_sigla'],
 //            'Codigo' => ['name' => 'ordem_de_compra_itens.codigo_insumo', 'data' => 'codigo_insumo'],
             'Insumo' => ['name' => 'insumos.nome', 'data' => 'insumo_nome'],
             'qtd' => ['name' => 'ordem_de_compra_itens.qtd', 'data' => 'qtd'],

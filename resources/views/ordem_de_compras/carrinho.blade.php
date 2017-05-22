@@ -512,8 +512,8 @@
                         text: "",
                         type: "warning",
                         showCancelButton: true,
-                        confirmButtonColor: "#7ed321",
-                        confirmButtonText: "Sim, já verifiquei tudo!",
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Continuar ordem de compra.",
                         cancelButtonText: "Não, ainda quero validar algo.",
                         closeOnConfirm: false
                     },
