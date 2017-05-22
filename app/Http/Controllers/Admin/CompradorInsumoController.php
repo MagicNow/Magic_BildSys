@@ -174,7 +174,11 @@ class CompradorInsumoController extends AppBaseController
 
     public function deleteBlocoView()
     {
-        $users = User::pluck('name', 'id')->toArray();
+        $users = User::whereHas('roles', function($query) {
+            $query->where('role_id', User::ROLE_SUPRIPRIMENTOS);
+        })
+            ->pluck('name', 'id')
+            ->toArray();
 //        $grupoInsumos = InsumoGrupo::select([
 //            'insumo_grupos.nome',
 //            'insumo_grupos.id'
@@ -195,7 +199,8 @@ class CompradorInsumoController extends AppBaseController
         ->join('insumos', 'insumos.insumo_grupo_id', '=', 'insumo_grupos.id')
         ->join('comprador_insumos', 'comprador_insumos.insumo_id', 'insumos.id')
         ->where('comprador_insumos.user_id', $usuario_id)
-        ->where('active', true)
+        ->where('insumos.active', true)
+        ->where('insumo_grupos.active', true)
         ->pluck('nome', 'id')
         ->toArray();
         return $grupoInsumos;
@@ -203,14 +208,17 @@ class CompradorInsumoController extends AppBaseController
 
     public function deleteBloco(Request $request)
     {
-        $removendo = CompradorInsumo::whereRaw(
-            'insumo_id IN
+        $removendo = false;
+        if($request->usuario_id && $request->grupo_insumo_id) {
+            $removendo = CompradorInsumo::whereRaw(
+                'insumo_id IN
                 (SELECT id
                     FROM insumos
-                    WHERE insumo_grupo_id = '.$request->grupo_insumo_id.')
+                    WHERE insumo_grupo_id = ' . $request->grupo_insumo_id . ')
             ')
-            ->where('user_id', $request->usuario_id)
-            ->delete();
+                ->where('user_id', $request->usuario_id)
+                ->delete();
+        }
 
         return Response()->json(['success' => $removendo]);
     }
@@ -223,7 +231,8 @@ class CompradorInsumoController extends AppBaseController
         ])
             ->join('insumo_grupos', 'insumo_grupos.id', '=', 'insumos.insumo_grupo_id')
             ->where('insumos.insumo_grupo_id', $grupo_insumo_id)
-            ->where('active', true)
+            ->where('insumos.active', true)
+            ->where('insumo_grupos.active', true)
             ->get();
 
         return $insumos;
