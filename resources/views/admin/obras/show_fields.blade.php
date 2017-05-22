@@ -4,21 +4,6 @@
     <p class="form-control">{!! $obra->nome !!}</p>
 </div>
 
-<div class="form-group col-sm-6">
-    {!! Form::label('obraUsers', 'Usuários nesta obra:') !!}
-    @if($obra->users)
-        @php $usuarios = ''; @endphp
-        @foreach($obra->users as $users)
-            @php $usuarios .= $users->name . ' - '; @endphp
-        @endforeach
-        <p class="form-control">
-            {{substr($usuarios, 0, -3)}}
-        </p>
-    @else
-        <p class="form-control"></p>
-    @endif
-</div>
-
 <!-- logo Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('logo', 'Logo:') !!}
@@ -31,8 +16,21 @@
     </p>
 </div>
 
+<div class="form-group col-sm-12">
+    {!! Form::label('obraUsers', 'Usuários nesta obra:') !!}
+    @if($obra->users)
+        @php $usuarios = ''; @endphp
+        @foreach($obra->users as $users)
+            @php $usuarios .= $users->name . ' - '; @endphp
+        @endforeach
+        {!! Form::textarea('nome', substr($usuarios, 0, -3), ['class' => 'form-control', 'rows' => '3', 'disabled']) !!}
+    @else
+        <p class="form-control"></p>
+    @endif
+</div>
+
 <!-- Cidade Id Field -->
-<div class="form-group col-sm-6">
+<div class="form-group col-sm-12">
     {!! Form::label('cidade_id', 'Cidade:') !!}
     <p class="form-control">{{ @isset($obra->cidade) ? $obra->cidade->nome_completo . ' - ' . $obra->cidade->uf : null }}</p>
 </div>
