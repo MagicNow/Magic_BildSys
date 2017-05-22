@@ -1,5 +1,5 @@
 $(function() {
-  $(document).on('draw.dt', function() {
+  $body.on('draw.dt', function() {
     $("input").iCheck({
       checkboxClass: "icheckbox_square-green",
       radioClass: "iradio_square-green",
@@ -7,8 +7,7 @@ $(function() {
     });
   });
 
-  $(document.body)
-    .on('ifToggled', '.js-active-grupo', function(event) {
+  $body.on('ifToggled', '.js-active-grupo', function(event) {
       var checkbox = event.currentTarget;
 
       if(checkbox.classList.contains('is-loading')) {
@@ -21,15 +20,8 @@ $(function() {
       var action = checkbox.checked ? 'enable' : 'disable';
       var actionPhrase = checkbox.checked ? 'disponível' : 'indisponível';
 
-      startLoading();
-
       $.post('/admin/insumoGrupos/' + checkbox.value + '/' + action)
         .done(function(grupo) {
-          swal({
-            title: '',
-            text: 'O grupo "' + grupo.nome + '" foi marcado como ' + actionPhrase,
-            type: 'success'
-          });
           checkbox.classList.remove('is-loading');
         })
         .fail(function(response) {
@@ -44,7 +36,6 @@ $(function() {
           };
 
           swal(options);
-        })
-        .always(stopLoading);
+        });
     });
 });
