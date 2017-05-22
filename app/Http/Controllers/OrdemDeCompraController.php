@@ -1519,7 +1519,10 @@ class OrdemDeCompraController extends AppBaseController
             ->whereNotExists(function ($query){
                 $query->select(DB::raw('1'))
                     ->from('oc_item_qc_item')
-                    ->where('ordem_de_compra_item_id',DB::raw('ordem_de_compra_itens.id') );
+                    ->join('qc_itens','qc_itens.id','oc_item_qc_item.qc_item_id')
+                    ->join('quadro_de_concorrencias','quadro_de_concorrencias.id','qc_itens.quadro_de_concorrencia_id')
+                    ->where('ordem_de_compra_item_id',DB::raw('ordem_de_compra_itens.id') )
+                    ->where('quadro_de_concorrencias.qc_status_id','!=','6');
             });
 
         $cidades = Cidade::whereIn('id', $insumosAprovados->groupBy('obras.cidade_id')
