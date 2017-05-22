@@ -1519,7 +1519,10 @@ class OrdemDeCompraController extends AppBaseController
             ->whereNotExists(function ($query){
                 $query->select(DB::raw('1'))
                     ->from('oc_item_qc_item')
-                    ->where('ordem_de_compra_item_id',DB::raw('ordem_de_compra_itens.id') );
+                    ->join('qc_itens','qc_itens.id','oc_item_qc_item.qc_item_id')
+                    ->join('quadro_de_concorrencias','quadro_de_concorrencias.id','qc_itens.quadro_de_concorrencia_id')
+                    ->where('ordem_de_compra_item_id',DB::raw('ordem_de_compra_itens.id') )
+                    ->where('quadro_de_concorrencias.qc_status_id','!=','6');
             });
 
         $cidades = Cidade::whereIn('id', $insumosAprovados->groupBy('obras.cidade_id')
@@ -1718,17 +1721,14 @@ class OrdemDeCompraController extends AppBaseController
 
     public function comprarTudoDeTudo(Request $request)
     {
-        $bindings = $request->all()['bindings'];
-        $query = $request->all()['query'];
-
-        //Retira do limit pra frente
-        $query = substr($query, 0,strpos($query, ' limit '));
+        $query = $request->session()->get('query['.$request->random.']');
+        $bindings = $request->session()->get('bindings['.$request->random.']');
 
         $insumos = DB::select($query,
             $bindings);
 
         foreach ($insumos as $insumo){
-            if($insumo->quantidade_compra && money_to_float($insumo->saldo) > 0) {
+            if(money_to_float($insumo->saldo) > 0) {
                 $insumo_collection = new Collection($insumo);
                 self::comprarTudoItem($insumo_collection, $insumo_collection['obra_id']);
             }

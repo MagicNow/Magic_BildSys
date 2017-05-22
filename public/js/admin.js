@@ -62483,22 +62483,22 @@ function startLoading() {
 
 function stopLoading() {
   if ($('.loader').length) {
-    $('.loader').fadeToggle(function () {
+    $('.loader').fadeToggle(function() {
       $(this).remove();
     });
   }
 }
 
-var mascara = function (val) {
-  return val.replace(/\D/g, '').length === 14 ? '(00) 00000-0000' : '(00) 0000-00009';
-},
+var mascara = function(val) {
+    return val.replace(/\D/g, '').length === 14 ? '(00) 00000-0000' : '(00) 0000-00009';
+  },
   options = {
-    onKeyPress: function (val, e, field, options) {
+    onKeyPress: function(val, e, field, options) {
       field.mask(mascara.apply({}, arguments), options);
     }
   };
 
-$(function () {
+$(function() {
   $(".select2").select2({
     theme: 'bootstrap',
     placeholder: "-",
@@ -62512,14 +62512,25 @@ $(function () {
     increaseArea: '20%' // optional
   });
 
-  $('.colorbox').colorbox({transition: "fade", width: "95%", height: "95%"});
-  $('form').submit(function (evento) {
+  $('.colorbox').colorbox({
+    transition: "fade",
+    width: "95%",
+    height: "95%"
+  });
+  $('form').submit(function(evento) {
     $('.box.box-primary').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
   });
 
-  $('.money').mask('0.000.000.000.000,00', {reverse: true});
+  $('.money').mask('0.000.000.000.000,00', {
+    reverse: true
+  });
+  $('.money_3').mask('0.000.000.000.000,000', {
+    reverse: true
+  });
   $('.decimal').mask('00,00');
-  $('.percent').mask('#00,00', {reverse: true});
+  $('.percent').mask('#00,00', {
+    reverse: true
+  });
 
   $('.cnpj').mask('99.999.999/9999-99');
   $('.cep').mask('00000-000');
@@ -62600,7 +62611,9 @@ function moneyToFloat(money) {
  * @return {String}
  */
 function floatToMoney(number) {
-  return 'R$ ' + number.toLocaleString('pt-BR', {minimumFractionDigits: 2});
+  return 'R$ ' + number.toLocaleString('pt-BR', {
+    minimumFractionDigits: 2
+  });
 }
 
 /**
@@ -62610,9 +62623,8 @@ function floatToMoney(number) {
  *
  * @return {Number}
  */
-function removeNaoNumero( str )
-{
-  return parseInt( str.replace(/[\D]+/g,'') );
+function removeNaoNumero(str) {
+  return parseInt(str.replace(/[\D]+/g, ''));
 }
 
 /**
@@ -62622,18 +62634,20 @@ function removeNaoNumero( str )
  *
  * @return {String}
  */
-function formatarReal( int )
-{
-  var tmp = int+'';
-  tmp=tmp.replace(/\D/g,'');
-  tmp=tmp.replace(/(\d{1,2})$/, ',$1');
-  tmp=tmp.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
+function formatarReal(int) {
+  var tmp = int + '';
+  tmp = tmp.replace(/\D/g, '');
+  tmp = tmp.replace(/(\d{1,2})$/, ',$1');
+  tmp = tmp.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
   tmp = tmp != '' ? tmp : '';
 
   return tmp;
 }
 
 var oTable = null;
+
+window.$body = $(document.body);
+window.$document = $(document);
 
 
 var k = 0;
@@ -63446,6 +63460,14 @@ $(function() {
 
   var modal = $('#equalizacao-tecnica');
 
+  var $changeRoundRadio = $('.js-change-round');
+
+  $changeRoundRadio.on('ifChecked', function(event) {
+    var radio = event.currentTarget;
+    startLoading();
+    location.href = [location.pathname, '?rodada=', radio.value].join('');
+  });
+
   $('[data-qcfornecedor]').on('click', function(e) {
     e.preventDefault();
     e.stopPropagation();
@@ -63467,9 +63489,6 @@ $(function() {
   var chartTotalFornecedor = document.getElementById('chart-total-fornecedor');
   var chartInsumoFornecedor = document.getElementById('chart-insumo-fornecedor');
 
-  chartTotalFornecedor.height = 440;
-  chartInsumoFornecedor.height = 400;
-
   var labels = chartTotalFornecedor.dataset.labels.split('||');
   var values = chartTotalFornecedor.dataset.values.split('||');
 
@@ -63478,13 +63497,13 @@ $(function() {
     data: {
       labels: labels,
       datasets: [{
-        label: 'Valor Total na rodada atual',
+        label: 'Valor Total na rodada selecionada',
         data: values,
         backgroundColor: _.times(labels.length, _.partial(generateFlatColor, undefined)),
       }]
     },
     options: {
-      maintainAspectRatio: true,
+      maintainAspectRatio: false,
       responsive: true,
       tooltips: {
         callbacks: {
@@ -63514,13 +63533,13 @@ $(function() {
     data: {
       labels: labels,
       datasets: [{
-        label: 'Insumo na rodada atual',
+        label: 'Insumo na rodada selecionada',
         data: _.map(ofertasDoInsumo, _.property('valor_total')),
         backgroundColor: _.times(labels.length, _.partial(generateFlatColor, undefined)),
       }]
     },
     options: {
-      maintainAspectRatio: true,
+      maintainAspectRatio: false,
       responsive: true,
       tooltips: {
         callbacks: {
@@ -63546,7 +63565,7 @@ $(function() {
     });
 
     __chartInsumoFornecedor.data.datasets[0] = {
-      label: 'Insumo na rodada atual',
+      label: 'Insumo na rodada selecionada',
       data: _.map(ofertasDoInsumo, _.property('valor_total')),
       backgroundColor: _.times(labels.length, _.partial(generateFlatColor, undefined)),
     };
@@ -63555,7 +63574,6 @@ $(function() {
 
     __chartInsumoFornecedor.update();
   });
-
 
   var formFinalizar = document.getElementById('form-finalizar');
 

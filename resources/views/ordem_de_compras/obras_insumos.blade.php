@@ -53,6 +53,7 @@
                                 {{--</div>--}}
                                 <div class="form-group col-sm-6" style="width:20%">
                                     <div class="js-datatable-filter-form">
+                                        <input type="hidden" name="random" id="random" value="{{str_random(5)}}">
                                         {!! Form::label('grupo_id', 'Grupo:') !!}
                                         {!! Form::select('grupo_id',[''=>'-']+$grupos, null, [
                                             'class'=>'form-control select2',
@@ -131,7 +132,7 @@
                                 </div>
                                 <div class="form-group col-sm-6">
                                     <div class="js-datatable-filter-form">
-                                        {!! Form::label('planejamento_id', 'Planejamento:') !!}
+                                        {!! Form::label('planejamento_id', 'Tarefa:') !!}
                                         {!!
                                           Form::select('planejamento_id', $planejamentos, (isset($planejamento) ? $planejamento->id : null), [
                                             'class'=>'form-control select2',
@@ -389,17 +390,11 @@
         }
 
         function getQueryDataTable() {
-            var queries = window.LaravelDataTables["dataTableBuilder"].ajax.json().queries;
-            var obj = queries[queries.length - 1];
-            var bindings = obj.bindings;
-            var query = obj.query;
-
             $.ajax({
                 method: "POST",
                 url: "/ordens-de-compra/carrinho/comprar-tudo-de-tudo",
                 data: {
-                    'bindings': bindings,
-                    'query': query,
+                    'random': $('#random').val(),
                     '_token': $('meta[name="csrf-token"]').attr('content')
                 }
             }).done(function () {

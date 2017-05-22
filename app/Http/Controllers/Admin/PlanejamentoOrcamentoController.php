@@ -85,7 +85,12 @@ class PlanejamentoOrcamentoController extends AppBaseController
 
         if(count($insumosOrcados)) {
             foreach ($insumosOrcados as $insumosOrcado) {
-                $cadastrado = PlanejamentoCompra::where('insumo_id',$insumosOrcado->insumo_id)
+                $cadastrado = PlanejamentoCompra::where('grupo_id',$insumosOrcado->grupo_id)
+                    ->where('subgrupo1_id',$insumosOrcado->subgrupo1_id)
+                    ->where('subgrupo2_id',$insumosOrcado->subgrupo2_id)
+                    ->where('subgrupo3_id',$insumosOrcado->subgrupo3_id)
+                    ->where('servico_id',$insumosOrcado->servico_id)
+                    ->where('insumo_id',$insumosOrcado->insumo_id)
                     ->first();
                 if($cadastrado){
                     $cadastrado->delete();
@@ -371,6 +376,7 @@ class PlanejamentoOrcamentoController extends AppBaseController
     public function getGrupoInsumoRelacionados(Request $request){
         $insumos = Orcamento::select([
             'orcamentos.obra_id',
+            'orcamentos.codigo_insumo',
             'insumos.codigo',
             'insumos.nome',
             'insumos.insumo_grupo_id',

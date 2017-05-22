@@ -104,20 +104,18 @@
             <label>
                 Equalização Técnica
             </label>
-            <div class="btn-group pull-right">
-                <button type="button" class="btn btn-flat btn-primary btn-xs" onclick="addEQitem();"
-                        title="Adicionar Equalização Técnica apenas para este Q.C.">
-                    <i class="fa fa-plus"></i>
-                    Adicionar
-                </button>
-                <button type="button" class="btn btn-flat btn-primary btn-xs" onclick="addEQitemAnexo();"
-                        title="Adicionar Anexo para Equalização Técnica apenas para este Q.C.">
-                    <i class="fa fa-plus"></i>
-                    Adicionar Anexo
-                    <i class="fa fa-paperclip"></i>
-                </button>
-            </div>
-            <ul id="equalizacaoTecnicaItens" class="list-group bloco_filtro">
+            <button type="button" class="btn btn-flat btn-primary btn-xs pull-right" onclick="addEQitem();"
+                    title="Adicionar Equalização Técnica apenas para este Q.C.">
+                <i class="fa fa-plus"></i>
+                Adicionar
+            </button>
+            <button type="button" class="btn btn-flat btn-primary btn-xs pull-right" onclick="addEQitemAnexo();"
+                    title="Adicionar Anexo para Equalização Técnica apenas para este Q.C.">
+                <i class="fa fa-plus"></i>
+                Adicionar Anexo
+                <i class="fa fa-paperclip"></i>
+            </button>
+            <ul id="equalizacaoTecnicaItens" class="list-group bloco_filtro" style="clear: both;">
                 @if(count($quadroDeConcorrencia->tipoEqualizacaoTecnicas()->count()))
                     @foreach($quadroDeConcorrencia->tipoEqualizacaoTecnicas as $tipoEqualizacaoTecnica)
                         @foreach($tipoEqualizacaoTecnica->itens as $EQTitem)
