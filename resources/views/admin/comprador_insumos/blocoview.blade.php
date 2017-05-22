@@ -110,12 +110,13 @@
                                 window.location = "{{route('admin.compradorInsumos.index')}}";
                             });
                         }else{
-                            swal('Oops','Não foi possível remover os insumos', 'error');
+                            error = 'Não foi possível remover o item, verifique se você esqueceu de marcar algum campo!';
+                            swal('Oops', error, 'error');
                         }
                     }).fail(function (retorno) {
                         stopLoading();
-                        error = 'Não foi possível remover o item';
-                        swal("Oops", "error");
+                        error = 'Não foi possível remover o item, verifique se você esqueceu de marcar algum campo!';
+                        swal("Oops", error, "error");
                     });
                 });
         }

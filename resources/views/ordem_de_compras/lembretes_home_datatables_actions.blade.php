@@ -13,6 +13,6 @@
 ?>
 <a href="{{ $url }}" class="btn btn-sm btn-flat btn-{{ $alerta }}">
     {!! $icone !!}
-    Comprar
-    <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+    Visualizar
+    <i class="fa fa-eye" aria-hidden="true"></i>
 </a>

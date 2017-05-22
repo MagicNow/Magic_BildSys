@@ -183,7 +183,7 @@
                             <div class="dados-extras" style="display: none;">
                                 <hr>
                                 <div class="row">
-                            <span class="col-md-4 col-sm-12 col-xs-12 text-center  borda-direita">
+                            <span class="col-md-8 col-sm-12 col-xs-12 text-center  borda-direita">
                                 <label class="label-bloco"><i class="fa fa-paperclip" aria-hidden="true"></i> Anexados</label>
                                 <small class="row" id="anexados_{{ $item->id }}">
                                     @if($item->anexos)
@@ -208,12 +208,12 @@
                                 </small>
 
                             </span>
-                            <span class="col-md-4 col-sm-12 col-xs-12 text-center  borda-direita">
-                                <label class="label-bloco col-md-5">Data estimada de uso</label>
-                                <span class="col-md-7">
-                                    {!! Form::date('sugestao_data_uso['.$item->id.']', $item->sugestao_data_uso, ['class'=>'form-control', 'onBlur'=>"alteraItem(".$item->id.",'sugestao_data_uso', this.value )"] ) !!}
-                                </span>
-                            </span>
+                            {{--<span class="col-md-4 col-sm-12 col-xs-12 text-center  borda-direita">--}}
+                                {{--<label class="label-bloco col-md-5">Data estimada de uso</label>--}}
+                                {{--<span class="col-md-7">--}}
+                                    {{--{!! Form::date('sugestao_data_uso['.$item->id.']', $item->sugestao_data_uso, ['class'=>'form-control', 'onBlur'=>"alteraItem(".$item->id.",'sugestao_data_uso', this.value )"] ) !!}--}}
+                                {{--</span>--}}
+                            {{--</span>--}}
                             <span class="col-md-4 col-sm-12 col-xs-12 text-center">
                                 {!! Form::checkbox('emergencial['.$item->id.']',1, $item->emergencial, ['class'=>'form-control ck_emergencial', 'id'=>'emergencial_'.$item->id, 'item_id'=>$item->id ] ) !!}
                                 <label class="label-bloco" for="emergencial_{{ $item->id }}">Emergencial</label>
