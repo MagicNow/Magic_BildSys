@@ -8,8 +8,8 @@ use InfyOm\Generator\Common\BaseRepository;
 class PlanejamentoCompraRepository extends BaseRepository
 {
 
-    const EXISTE_ITEM_PRA_COMPRAR = <<<EOLSQL
-        (
+    public static function existeItemParaComprar($insumoGrupoId = null){
+        $EXISTE_ITEM_PRA_COMPRAR = "(
             SELECT
             1
             FROM
@@ -32,15 +32,17 @@ class PlanejamentoCompraRepository extends BaseRepository
             AND orc.obra_id = P.obra_id
             LEFT JOIN ordem_de_compras ocs ON ocs.id = oci.ordem_de_compra_id
             AND ocs.oc_status_id NOT IN(1 , 4 , 6)
+            ". ($insumoGrupoId?" JOIN insumos INSUM ON INSUM.id = plc.insumo_id ": "") . "
             WHERE
             P.id = planejamentos.id
             AND plc.deleted_at IS NULL
             AND orc.qtd_total > 0
             AND IFNULL(oci.qtd , 0) < orc.qtd_total
-
+            ". ($insumoGrupoId?" AND INSUM.insumo_grupo_id = ".$insumoGrupoId." ": "") . "
             LIMIT 1
-        ) IS NOT NULL
-EOLSQL;
+        ) IS NOT NULL";
+        return $EXISTE_ITEM_PRA_COMPRAR;
+    }
 
     /**
      * @var array

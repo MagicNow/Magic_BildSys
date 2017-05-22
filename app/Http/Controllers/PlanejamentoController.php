@@ -302,7 +302,7 @@ class PlanejamentoController extends AppBaseController
             $lembretes->where('insumos.insumo_grupo_id', $request->insumo_grupo_id);
         }
 
-        $lembretes->whereRaw(PlanejamentoCompraRepository::EXISTE_ITEM_PRA_COMPRAR);
+        $lembretes->whereRaw(PlanejamentoCompraRepository::existeItemParaComprar($request->insumo_grupo_id));
 
 
         /* $lembretes->distinct('id','obra','tarefa'); */

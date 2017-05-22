@@ -389,7 +389,7 @@ class LembretesHomeDataTable extends DataTable
         }
 
         // Busca se existe algum item à ser comprado desta tarefa
-        $query->whereRaw(PlanejamentoCompraRepository::EXISTE_ITEM_PRA_COMPRAR);
+        $query->whereRaw(PlanejamentoCompraRepository::existeItemParaComprar($this->request()->get('insumo_grupo_id')));
 
         if($this->request()->exibir_por_tarefa) {
             $query->groupBy('tarefa');

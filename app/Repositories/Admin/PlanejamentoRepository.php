@@ -43,7 +43,7 @@ class PlanejamentoRepository extends BaseRepository
             ->whereNull('planejamentos.deleted_at')
             ->where('lembretes.lembrete_tipo_id', $lembrete_tipo_id)
             ->where('obra_users.user_id', $user_id)
-            ->whereRaw(PlanejamentoCompraRepository::EXISTE_ITEM_PRA_COMPRAR)
+            ->whereRaw(PlanejamentoCompraRepository::existeItemParaComprar())
             ->groupBy('planejamentos.id')
             ->orderBy('planejamentos.tarefa','ASC')
             ->get();
