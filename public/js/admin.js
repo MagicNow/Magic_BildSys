@@ -65247,6 +65247,14 @@ $(function() {
 
   var modal = $('#equalizacao-tecnica');
 
+  var $changeRoundRadio = $('.js-change-round');
+
+  $changeRoundRadio.on('ifChecked', function(event) {
+    var radio = event.currentTarget;
+    startLoading();
+    location.href = [location.pathname, '?rodada=', radio.value].join('');
+  });
+
   $('[data-qcfornecedor]').on('click', function(e) {
     e.preventDefault();
     e.stopPropagation();
@@ -65268,9 +65276,6 @@ $(function() {
   var chartTotalFornecedor = document.getElementById('chart-total-fornecedor');
   var chartInsumoFornecedor = document.getElementById('chart-insumo-fornecedor');
 
-  chartTotalFornecedor.height = 440;
-  chartInsumoFornecedor.height = 400;
-
   var labels = chartTotalFornecedor.dataset.labels.split('||');
   var values = chartTotalFornecedor.dataset.values.split('||');
 
@@ -65279,13 +65284,13 @@ $(function() {
     data: {
       labels: labels,
       datasets: [{
-        label: 'Valor Total na rodada atual',
+        label: 'Valor Total na rodada selecionada',
         data: values,
         backgroundColor: _.times(labels.length, _.partial(generateFlatColor, undefined)),
       }]
     },
     options: {
-      maintainAspectRatio: true,
+      maintainAspectRatio: false,
       responsive: true,
       tooltips: {
         callbacks: {
@@ -65315,13 +65320,13 @@ $(function() {
     data: {
       labels: labels,
       datasets: [{
-        label: 'Insumo na rodada atual',
+        label: 'Insumo na rodada selecionada',
         data: _.map(ofertasDoInsumo, _.property('valor_total')),
         backgroundColor: _.times(labels.length, _.partial(generateFlatColor, undefined)),
       }]
     },
     options: {
-      maintainAspectRatio: true,
+      maintainAspectRatio: false,
       responsive: true,
       tooltips: {
         callbacks: {
@@ -65347,7 +65352,7 @@ $(function() {
     });
 
     __chartInsumoFornecedor.data.datasets[0] = {
-      label: 'Insumo na rodada atual',
+      label: 'Insumo na rodada selecionada',
       data: _.map(ofertasDoInsumo, _.property('valor_total')),
       backgroundColor: _.times(labels.length, _.partial(generateFlatColor, undefined)),
     };
@@ -65356,7 +65361,6 @@ $(function() {
 
     __chartInsumoFornecedor.update();
   });
-
 
   var formFinalizar = document.getElementById('form-finalizar');
 
