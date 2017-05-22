@@ -27,7 +27,7 @@
                     <div class="form-group col-sm-12">
                         <div class="form-group col-sm-10">
                             {!! Form::label('grupo_id', 'Grupos:') !!}
-                            {!! Form::select('grupo_id', [''=>'-']+$grupos, null, ['class' => 'form-control', 'id'=>'grupo_id','onchange'=>'selectgrupo(this.value, \'subgrupo1_id\', \'grupos\');', 'required']) !!}
+                            {!! Form::select('grupo_id', [''=>'-']+$grupos, null, ['class' => 'form-control select2', 'id'=>'grupo_id','onchange'=>'selectgrupo(this.value, \'subgrupo1_id\', \'grupos\');', 'required']) !!}
                         </div>
                         <div class="form-group col-sm-2">
                             <a class="btn btn-info pull-right flat" data-toggle="modal" data-target="#cadastrarGrupo" style="margin-top: 20px;" onclick="atribuirGrupoId(null, 'grupo_id');">
@@ -39,7 +39,7 @@
                     <div class="form-group col-sm-12">
                         <div class="form-group col-sm-10">
                             {!! Form::label('subgrupo1_id', 'SubGrupo-1:') !!}
-                            {!! Form::select('subgrupo1_id', [''=>'-'], null, ['class' => 'form-control', 'id'=>'subgrupo1_id', 'disabled'=>'disabled', 'onchange'=>'selectgrupo(this.value, \'subgrupo2_id\', \'grupos\');', 'required']) !!}
+                            {!! Form::select('subgrupo1_id', [''=>'-'], null, ['class' => 'form-control select2', 'id'=>'subgrupo1_id', 'disabled'=>'disabled', 'onchange'=>'selectgrupo(this.value, \'subgrupo2_id\', \'grupos\');', 'required']) !!}
                         </div>
                         <div class="form-group col-sm-2">
                             <a class="btn btn-info pull-right flat" data-toggle="modal" data-target="#cadastrarGrupo" style="margin-top: 20px; display: none;" id="cadastrar_subgrupo1_id" onclick="atribuirGrupoId('grupo_id', 'subgrupo1_id');">
@@ -52,7 +52,7 @@
                     <div class="form-group col-sm-12">
                         <div class="form-group col-sm-10">
                             {!! Form::label('subgrupo2_id', 'SubGrupo-2:') !!}
-                            {!! Form::select('subgrupo2_id', [''=>'-'], null, ['class' => 'form-control', 'id'=>'subgrupo2_id', 'disabled'=>'disabled', 'onchange'=>'selectgrupo(this.value, \'subgrupo3_id\', \'grupos\');', 'required']) !!}
+                            {!! Form::select('subgrupo2_id', [''=>'-'], null, ['class' => 'form-control select2', 'id'=>'subgrupo2_id', 'disabled'=>'disabled', 'onchange'=>'selectgrupo(this.value, \'subgrupo3_id\', \'grupos\');', 'required']) !!}
                         </div>
                         <div class="form-group col-sm-2">
                             <a class="btn btn-info pull-right flat" data-toggle="modal" data-target="#cadastrarGrupo" style="margin-top: 20px; display: none;" id="cadastrar_subgrupo2_id" onclick="atribuirGrupoId('subgrupo1_id', 'subgrupo2_id');">
@@ -65,7 +65,7 @@
                     <div class="form-group col-sm-12">
                         <div class="form-group col-sm-10">
                             {!! Form::label('subgrupo3_id', 'SubGrupo-3:') !!}
-                            {!! Form::select('subgrupo3_id', [''=>'-'], null, ['class' => 'form-control', 'id'=>'subgrupo3_id', 'disabled'=>'disabled', 'onchange'=>'selectgrupo(this.value, \'servico_id\', \'servicos\');', 'required']) !!}
+                            {!! Form::select('subgrupo3_id', [''=>'-'], null, ['class' => 'form-control select2', 'id'=>'subgrupo3_id', 'disabled'=>'disabled', 'onchange'=>'selectgrupo(this.value, \'servico_id\', \'servicos\');', 'required']) !!}
                         </div>
                         <div class="form-group col-sm-2">
                             <a class="btn btn-info pull-right flat" data-toggle="modal" data-target="#cadastrarGrupo" style="margin-top: 20px; display: none;" id="cadastrar_subgrupo3_id" onclick="atribuirGrupoId('subgrupo2_id', 'subgrupo3_id');">
@@ -78,7 +78,7 @@
                     <div class="form-group col-sm-12">
                         <div class="form-group col-sm-10">
                             {!! Form::label('servico_id', 'Serviço:') !!}
-                            {!! Form::select('servico_id', [''=>'-'], null, ['class' => 'form-control', 'id'=>'servico_id', 'disabled'=>'disabled', 'onchange'=>'selectgrupo(this.value, null, \'servicos\');', 'required']) !!}
+                            {!! Form::select('servico_id', [''=>'-'], null, ['class' => 'form-control select2', 'id'=>'servico_id', 'disabled'=>'disabled', 'onchange'=>'selectgrupo(this.value, null, \'servicos\');', 'required']) !!}
                         </div>
                         <div class="form-group col-sm-2">
                             <a class="btn btn-info pull-right flat" data-toggle="modal" data-target="#cadastrarGrupo" style="margin-top: 20px; display: none;" id="cadastrar_servico_id" onclick="atribuirGrupoId('subgrupo3_id', 'servico_id');">
@@ -185,43 +185,6 @@
                 templateResult: formatResult,
                 templateSelection: formatResultSelection
             });
-
-            $('#grupo_id').select2({
-                allowClear: true,
-                placeholder: "Escolha...",
-                language: "pt-BR",
-
-                ajax: {
-                    url: "{{url('/admin/planejamentos/atividade/grupos')}}/0",
-                    dataType: 'json',
-                    delay: 250,
-
-                    data: function (params) {
-                        return {
-                            q: params.term,
-                            page: params.page
-                        };
-                    },
-
-                    processResults: function (result, params) {
-                        params.page = params.page || 1;
-
-                        return {
-                            results: result.data,
-                            pagination: {
-                                more: (params.page * result.per_page) < result.total
-                            }
-                        };
-                    },
-                    cache: true
-                },
-                escapeMarkup: function (markup) {
-                    return markup;
-                },
-                minimumInputLength: 1,
-                templateResult: formatResult,
-                templateSelection: formatResultSelection
-            });
         });
 
         function formatResultSelection (obj) {
@@ -244,52 +207,26 @@
         }
 
         function selectgrupo(id, change, tipo){
-            var rota = "{{url('/admin/planejamentos/atividade/grupos')}}/";
+            var rota = "{{url('ordens-de-compra/grupos')}}/";
             if(tipo == 'servicos'){
-                rota = "{{url('/admin/planejamentos/atividade/servicos')}}/";
+                rota = "{{url('ordens-de-compra/servicos')}}/";
             }
             if(id){
-                $('#'+change).attr('disabled',false);
-                $('#cadastrar_'+change).css('display', '');
-
-                setTimeout(function() {
-                    $('#'+change).select2({
-                        allowClear: true,
-                        placeholder: "Escolha...",
-                        language: "pt-BR",
-
-                        ajax: {
-                            url: rota + id,
-                            dataType: 'json',
-                            delay: 250,
-
-                            data: function (params) {
-                                return {
-                                    q: params.term,
-                                    page: params.page
-                                };
-                            },
-
-                            processResults: function (result, params) {
-                                params.page = params.page || 1;
-
-                                return {
-                                    results: result.data,
-                                    pagination: {
-                                        more: (params.page * result.per_page) < result.total
-                                    }
-                                };
-                            },
-                            cache: true
-                        },
-                        escapeMarkup: function (markup) {
-                            return markup;
-                        },
-                        minimumInputLength: 1,
-                        templateResult: formatResult,
-                        templateSelection: formatResultSelection
+                $('.box.box-primary').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
+                $.ajax({
+                    url: rota + id
+                }).done(function(retorno) {
+                    options = '';
+                    options = '<option value="">Selecione</option>';
+                    $('#'+change).html(options);
+                    $.each(retorno,function(index, value){
+                        options += '<option value="'+index+'">'+value+'</option>';
                     });
-                }, 100);
+                    $('#'+change).html(options);
+                    $('#'+change).attr('disabled',false);
+
+                    $('#cadastrar_'+change).css('display', '');
+                });
             }
         }
 
