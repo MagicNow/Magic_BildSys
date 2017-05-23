@@ -582,27 +582,29 @@
         }
 
         function alteraValorUnitario(valor, item_id) {
-            $.ajax({
-                url: '/ordens-de-compra/carrinho/alterar-valor-unitario/'+item_id,
-                data: {
-                    'valor': valor
-                }
-            }).done(function (json) {
-                if(json.success){
-                    $('#alert_'+item_id).remove();
-                    swal({
-                        title: "Valor unitário alterado",
-                        text: "",
-                        type: "success",
-                        showCancelButton: false,
-                        confirmButtonText: "OK",
-                        closeOnConfirm: false
-                    },
-                    function(){
-                        location.reload();
-                    });
-                }
-            });
+            if(moneyToFloat(valor) > 0) {
+                $.ajax({
+                    url: '/ordens-de-compra/carrinho/alterar-valor-unitario/' + item_id,
+                    data: {
+                        'valor': valor
+                    }
+                }).done(function (json) {
+                    if (json.success) {
+                        $('#alert_' + item_id).remove();
+                        swal({
+                                    title: "Valor unitário alterado",
+                                    text: "",
+                                    type: "success",
+                                    showCancelButton: false,
+                                    confirmButtonText: "OK",
+                                    closeOnConfirm: false
+                                },
+                                function () {
+                                    location.reload();
+                                });
+                    }
+                });
+            }
         }
 
         function removeItem(item_id) {
