@@ -1166,9 +1166,8 @@ class OrdemDeCompraController extends AppBaseController
         }
 
         foreach ($request->anexos as $anexo){
-            $arquivo = $anexo->storeAs(
-                'public/oc_anexos', str_replace('.'.$anexo->clientExtension(), '', $anexo->getClientOriginalName()).'_'.rand(100,10000).'.'.$anexo->clientExtension()
-            );
+            $arquivo = CodeRepository::saveFile($anexo, 'oc_anexos');
+                
             $ordemDeCompraItemAnexo = OrdemDeCompraItemAnexo::create([
                 'ordem_de_compra_item_id' => $ordemDeCompraItem->id,
                 'arquivo' =>  $arquivo
