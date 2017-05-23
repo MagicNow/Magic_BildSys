@@ -88,14 +88,14 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
             $router->get('atividade/planejamentocompras/{id}', 'Admin\PlanejamentoController@destroyPlanejamentoCompra');
         });
 
-        $router->get('planejamentoOrcamentos', ['as'=> 'admin.planejamentoOrcamentos.index', 'uses' => 'Admin\PlanejamentoOrcamentoController@index']);
-        $router->post('planejamentoOrcamentos', ['as'=> 'admin.planejamentoOrcamentos.store', 'uses' => 'Admin\PlanejamentoOrcamentoController@store']);
-        $router->get('planejamentoOrcamentos/create', ['as'=> 'admin.planejamentoOrcamentos.create', 'uses' => 'Admin\PlanejamentoOrcamentoController@create']);
-        $router->put('planejamentoOrcamentos/{planejamentoOrcamentos}', ['as'=> 'admin.planejamentoOrcamentos.update', 'uses' => 'Admin\PlanejamentoOrcamentoController@update']);
-        $router->patch('planejamentoOrcamentos/{planejamentoOrcamentos}', ['as'=> 'admin.planejamentoOrcamentos.update', 'uses' => 'Admin\PlanejamentoOrcamentoController@update']);
-        $router->delete('planejamentoOrcamentos/{planejamentoOrcamentos}', ['as'=> 'admin.planejamentoOrcamentos.destroy', 'uses' => 'Admin\PlanejamentoOrcamentoController@destroy']);
-        $router->get('planejamentoOrcamentos/{planejamentoOrcamentos}', ['as'=> 'admin.planejamentoOrcamentos.show', 'uses' => 'Admin\PlanejamentoOrcamentoController@show']);
-        $router->get('planejamentoOrcamentos/{planejamentoOrcamentos}/edit', ['as'=> 'admin.planejamentoOrcamentos.edit', 'uses' => 'Admin\PlanejamentoOrcamentoController@edit']);
+        $router->get('planejamentoOrcamentos', ['as' => 'admin.planejamentoOrcamentos.index', 'uses' => 'Admin\PlanejamentoOrcamentoController@index']);
+        $router->post('planejamentoOrcamentos', ['as' => 'admin.planejamentoOrcamentos.store', 'uses' => 'Admin\PlanejamentoOrcamentoController@store']);
+        $router->get('planejamentoOrcamentos/create', ['as' => 'admin.planejamentoOrcamentos.create', 'uses' => 'Admin\PlanejamentoOrcamentoController@create']);
+        $router->put('planejamentoOrcamentos/{planejamentoOrcamentos}', ['as' => 'admin.planejamentoOrcamentos.update', 'uses' => 'Admin\PlanejamentoOrcamentoController@update']);
+        $router->patch('planejamentoOrcamentos/{planejamentoOrcamentos}', ['as' => 'admin.planejamentoOrcamentos.update', 'uses' => 'Admin\PlanejamentoOrcamentoController@update']);
+        $router->delete('planejamentoOrcamentos/{planejamentoOrcamentos}', ['as' => 'admin.planejamentoOrcamentos.destroy', 'uses' => 'Admin\PlanejamentoOrcamentoController@destroy']);
+        $router->get('planejamentoOrcamentos/{planejamentoOrcamentos}', ['as' => 'admin.planejamentoOrcamentos.show', 'uses' => 'Admin\PlanejamentoOrcamentoController@show']);
+        $router->get('planejamentoOrcamentos/{planejamentoOrcamentos}/edit', ['as' => 'admin.planejamentoOrcamentos.edit', 'uses' => 'Admin\PlanejamentoOrcamentoController@edit']);
         $router->get('planejamentoOrcamentos/orcamentos/relacionados', 'Admin\PlanejamentoOrcamentoController@GrupoRelacionados');
         $router->get('planejamentoOrcamentos/planejamento/{id}', 'Admin\PlanejamentoOrcamentoController@getPlanejamentos');
         $router->get('planejamentoOrcamentos/orcamento/{id}', 'Admin\PlanejamentoOrcamentoController@getOrcamentos');
@@ -149,7 +149,7 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
     });
 
     #Cronograma por obra
-    $router->get('planejamentoCronogramas', ['as'=> 'admin.planejamentoCronogramas.index', 'uses' => 'Admin\PlanejamentoCronogramaController@index'])
+    $router->get('planejamentoCronogramas', ['as' => 'admin.planejamentoCronogramas.index', 'uses' => 'Admin\PlanejamentoCronogramaController@index'])
         ->middleware("needsPermission:cronograma_por_obras.list");
 
     # Fornecedores
@@ -191,7 +191,7 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
     });
 
     # Manage users
-    $router->group(['middleware' => 'needsPermission:users.list'], function() use ($router) {
+    $router->group(['middleware' => 'needsPermission:users.list'], function () use ($router) {
         $router->resource('users', 'Admin\Manage\UsersController');
 
         #Manage ACL
@@ -288,7 +288,7 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
 
     # Workflow
     $router->group(['prefix' => 'workflow'], function () use ($router) {
-        $router->group(['middleware' => 'needsPermission:motivos_reprovacao.list'], function() use ($router) {
+        $router->group(['middleware' => 'needsPermission:motivos_reprovacao.list'], function () use ($router) {
             $router->resource('workflowReprovacaoMotivos', 'OrdemDeCompraController');
             $router->get('reprovacao-motivos', ['as' => 'admin.workflowReprovacaoMotivos.index', 'uses' => 'Admin\WorkflowReprovacaoMotivoController@index']);
             $router->post('reprovacao-motivos', ['as' => 'admin.workflowReprovacaoMotivos.store', 'uses' => 'Admin\WorkflowReprovacaoMotivoController@store']);
@@ -303,7 +303,7 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
                 ->middleware("needsPermission:motivos_reprovacao.edit");
         });
 
-        $router->group(['middleware' => 'needsPermission:alcadas.list'], function() use ($router) {
+        $router->group(['middleware' => 'needsPermission:alcadas.list'], function () use ($router) {
             $router->get('workflow-alcadas', ['as' => 'admin.workflowAlcadas.index', 'uses' => 'Admin\WorkflowAlcadaController@index']);
             $router->post('workflow-alcadas', ['as' => 'admin.workflowAlcadas.store', 'uses' => 'Admin\WorkflowAlcadaController@store']);
             $router->get('workflow-alcadas/create', ['as' => 'admin.workflowAlcadas.create', 'uses' => 'Admin\WorkflowAlcadaController@create'])
@@ -320,7 +320,7 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
     });
 
     # Insumos
-    $router->group(['middleware' => 'needsPermission:insumos.list'], function() use ($router) {
+    $router->group(['middleware' => 'needsPermission:insumos.list'], function () use ($router) {
         $router->get('insumos', ['as' => 'admin.insumos.index', 'uses' => 'Admin\InsumoController@index']);
         $router->post('insumos', ['as' => 'admin.insumos.store', 'uses' => 'Admin\InsumoController@store']);
         $router->get('insumos/create', ['as' => 'admin.insumos.create', 'uses' => 'Admin\InsumoController@create']);
@@ -337,7 +337,7 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
     });
 
     # Grupo de Insumos
-    $router->group(['middleware' => 'needsPermission:grupos_insumos.list'], function() use ($router) {
+    $router->group(['middleware' => 'needsPermission:grupos_insumos.list'], function () use ($router) {
         $router->get('insumoGrupos', ['as' => 'admin.insumoGrupos.index', 'uses' => 'Admin\InsumoGrupoController@index']);
         $router->post('insumoGrupos', ['as' => 'admin.insumoGrupos.store', 'uses' => 'Admin\InsumoGrupoController@store']);
         $router->get('insumoGrupos/create', ['as' => 'admin.insumoGrupos.create', 'uses' => 'Admin\InsumoGrupoController@create']);
@@ -356,11 +356,11 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
     # Solicitação de Insumos
     $router->get('solicitacaoInsumos/create', ['as' => 'admin.solicitacaoInsumos.create', 'uses' => 'Admin\SolicitacaoInsumoController@create'])
         ->middleware("needsPermission:solicitacaoInsumos.create");
-    $router->group(['middleware' => 'needsPermission:solicitacaoInsumos.list'], function() use ($router) {
+    $router->group(['middleware' => 'needsPermission:solicitacaoInsumos.list'], function () use ($router) {
         $router->get('solicitacaoInsumos', ['as' => 'admin.solicitacaoInsumos.index', 'uses' => 'Admin\SolicitacaoInsumoController@index']);
         $router->post('solicitacaoInsumos', ['as' => 'admin.solicitacaoInsumos.store', 'uses' => 'Admin\SolicitacaoInsumoController@store']);
         $router->put('solicitacaoInsumos/{solicitacaoInsumos}', ['as' => 'admin.solicitacaoInsumos.update', 'uses' => 'Admin\SolicitacaoInsumoController@update'])
-        ->middleware("needsPermission:solicitacaoInsumos.edit");
+            ->middleware("needsPermission:solicitacaoInsumos.edit");
         $router->patch('solicitacaoInsumos/{solicitacaoInsumos}', ['as' => 'admin.solicitacaoInsumos.update', 'uses' => 'Admin\SolicitacaoInsumoController@update'])
             ->middleware("needsPermission:solicitacaoInsumos.edit");
         $router->delete('solicitacaoInsumos/{solicitacaoInsumos}', ['as' => 'admin.solicitacaoInsumos.destroy', 'uses' => 'Admin\SolicitacaoInsumoController@destroy'])
@@ -371,8 +371,26 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
     });
 
     # Retroalimentação de obras
-    $router->group(['middleware' => 'needsPermission:retroalimentacao.list'], function() use ($router) {
+    $router->group(['middleware' => 'needsPermission:retroalimentacao.list'], function () use ($router) {
         $router->resource('retroalimentacaoObras', 'RetroalimentacaoObraController');
+    });
+
+    # Retroalimentação de obras
+    $router->group(['prefix'=>'contratoTemplates', 'middleware' => 'needsPermission:contratoTemplates.list'], function () use ($router) {
+        $router->get('', ['as' => 'admin.contratoTemplates.index', 'uses' => 'Admin\ContratoTemplateController@index']);
+        $router->post('', ['as' => 'admin.contratoTemplates.store', 'uses' => 'Admin\ContratoTemplateController@store'])
+            ->middleware('needsPermission:contratoTemplates.create');
+        $router->get('/create', ['as' => 'admin.contratoTemplates.create', 'uses' => 'Admin\ContratoTemplateController@create'])
+            ->middleware('needsPermission:contratoTemplates.create');
+        $router->put('/{contratoTemplates}', ['as' => 'admin.contratoTemplates.update', 'uses' => 'Admin\ContratoTemplateController@update'])
+            ->middleware('needsPermission:contratoTemplates.edit');
+        $router->patch('/{contratoTemplates}', ['as' => 'admin.contratoTemplates.update', 'uses' => 'Admin\ContratoTemplateController@update'])
+            ->middleware('needsPermission:contratoTemplates.edit');
+        $router->delete('/{contratoTemplates}', ['as' => 'admin.contratoTemplates.destroy', 'uses' => 'Admin\ContratoTemplateController@destroy'])
+            ->middleware('needsPermission:contratoTemplates.delete');
+        $router->get('/{contratoTemplates}', ['as' => 'admin.contratoTemplates.show', 'uses' => 'Admin\ContratoTemplateController@show']);
+        $router->get('/{contratoTemplates}/edit', ['as' => 'admin.contratoTemplates.edit', 'uses' => 'Admin\ContratoTemplateController@edit'])
+            ->middleware('needsPermission:contratoTemplates.edit');
     });
 
 });
@@ -448,7 +466,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             $router->get('insumosFilters', 'OrdemDeCompraController@insumosFilters');
             $router->post('insumosAdd', 'OrdemDeCompraController@insumosAdd');
 
-            $router->get('obrasInsumos','OrdemDeCompraController@obrasInsumos');
+            $router->get('obrasInsumos', 'OrdemDeCompraController@obrasInsumos');
             $router->get('obrasInsumosFilters', 'OrdemDeCompraController@obrasInsumosFilters');
             $router->get('obrasInsumosJson', 'OrdemDeCompraController@obrasInsumosJson');
 
@@ -486,7 +504,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             '/quadro-de-concorrencia/{quadroDeConcorrencias}/informar-valor',
             'QuadroDeConcorrenciaController@informarValor'
         )->name('quadroDeConcorrencia.informar-valor')
-        ->middleware('needsPermission:quadroDeConcorrencias.informar_valor');
+            ->middleware('needsPermission:quadroDeConcorrencias.informar_valor');
 
         /* $router->post( */
         /*     '/quadro-de-concorrencia/{quadroDeConcorrencias}/avaliar', */
@@ -497,7 +515,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             '/quadro-de-concorrencia/{quadroDeConcorrencias}/avaliar',
             'QuadroDeConcorrenciaController@avaliar'
         )->name('quadroDeConcorrencia.avaliar')
-        ->middleware('needsPermission:quadroDeConcorrencias.edit');
+            ->middleware('needsPermission:quadroDeConcorrencias.edit');
 
         $router->post(
             '/quadro-de-concorrencia/{quadroDeConcorrencias}/avaliar',
@@ -508,7 +526,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             '/quadro-de-concorrencia/{quadroDeConcorrencias}/equalizacao-tecnica/{qcFornecedor}',
             'QuadroDeConcorrenciaController@getEqualizacaoTecnica'
         )->name('quadroDeConcorrencia.get-equalizacao-tecnica')
-        ->middleware('needsPermission:quadroDeConcorrencias.edit');
+            ->middleware('needsPermission:quadroDeConcorrencias.edit');
 
         $router->get('quadro-de-concorrencia', ['as' => 'quadroDeConcorrencias.index', 'uses' => 'QuadroDeConcorrenciaController@index']);
 
@@ -641,7 +659,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('planejamentos/lembretes', 'PlanejamentoController@lembretes');
     $router->get('planejamentos/lembretes/salvar-data-minima', 'PlanejamentoController@lembretes');
 
-    $router->get('/teste', function (){
+    $router->get('/teste', function () {
 //        $grupos_mega = \App\Models\MegaInsumoGrupo::select([
 //            'GRU_IDE_ST_CODIGO',
 //            'GRU_IN_CODIGO',

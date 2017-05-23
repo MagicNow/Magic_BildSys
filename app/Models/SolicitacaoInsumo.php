@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class SolicitacaoInsumo
- * @package App\Models\Admin
+ * @package App\Models
  * @version May 15, 2017, 3:47 pm BRT
  */
 class SolicitacaoInsumo extends Model

@@ -6,7 +6,7 @@ use Eloquent as Model;
 
 /**
  * Class CatalogoContratoInsumo
- * @package App\Models\Admin
+ * @package App\Models
  * @version May 2, 2017, 6:02 pm BRT
  */
 class CatalogoContratoInsumo extends Model

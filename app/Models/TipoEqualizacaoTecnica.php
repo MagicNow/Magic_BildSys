@@ -6,7 +6,7 @@ use Eloquent as Model;
 
 /**
  * Class TipoEqualizacaoTecnica
- * @package App\Models\Admin
+ * @package App\Models
  * @version April 25, 2017, 2:09 pm BRT
  */
 class TipoEqualizacaoTecnica extends Model

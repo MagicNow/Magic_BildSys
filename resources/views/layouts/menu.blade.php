@@ -88,17 +88,23 @@
     </li>
 @endshield
 @shield('fornecedores.list')
-    <li class="{{ Request::is('fornecedores*') ? 'active' : '' }}">
+    <li class="{{ Request::is('admin/fornecedores*') ? 'active' : '' }}">
     <a href="{!! route('admin.fornecedores.index') !!}"><i class="fa fa-user-plus"></i><span>Fornecedores</span></a>
     </li>
 @endshield
 @shield('compradorInsumos.list')
-    <li class="{{ Request::is('compradorInsumos*') ? 'active' : '' }}">
+    <li class="{{ Request::is('admin/compradorInsumos*') ? 'active' : '' }}">
         <a href="{!! route('admin.compradorInsumos.index') !!}"><i class="fa fa-child"></i><span>Comprador/Insumos</span></a>
     </li>
 @endshield
 @shield('solicitacaoInsumos.list')
-    <li class="{{ Request::is('solicitacaoInsumos*') ? 'active' : '' }}">
+    <li class="{{ Request::is('admin/solicitacaoInsumos*') ? 'active' : '' }}">
         <a href="{!! route('admin.solicitacaoInsumos.index') !!}"><i class="fa fa-edit"></i><span>Solicitações de insumos</span></a>
     </li>
 @endshield
+@shield('contratoTemplates.list')
+<li class="{{ Request::is('admin/contratoTemplates*') ? 'active' : '' }}">
+    <a href="{!! route('admin.contratoTemplates.index') !!}"><i class="fa fa-file-text-o"></i><span>Templates de Contratos</span></a>
+</li>
+@endshield
+
