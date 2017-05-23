@@ -19436,6 +19436,35 @@ h6 {
 .dataTable tfoot {
   display: table-header-group;
 }
+
 #dataTableBuilder_filter{
   float:left;
+}
+
+.with-middle > .input-group-addon.addon-middle {
+  line-height: 1.2;
+  padding-top: 9px;
+  padding-bottom: 9px;
+  border-left: 0;
+  border-right: 0;
+}
+
+.with-middle > .input-group-btn > .btn {
+  line-height: 1.45;
+}
+
+.input-date {
+  padding: 5px;
+  font-size: 11px;
+}
+
+.ui-datepicker {
+  width: auto;
+}
+.visuallyhidden {
+  position: absolute;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  height: 1px; width: 1px;
+  margin: -1px; padding: 0; border: 0;
 }

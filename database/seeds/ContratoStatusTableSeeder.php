@@ -11,7 +11,7 @@ class ContratoStatusTableSeeder extends Seeder
         Schema::disableForeignKeyConstraints();
         DB::table('contrato_status')->truncate();
 
-        DB::table('contrato_status')->insert([
+        DB::table('contrato_status')->insert([[
             'id' => ContratoStatus::EM_APROVACAO,
             'nome' => 'Em Aprovação',
             'cor' => '#DEA447'
@@ -27,7 +27,7 @@ class ContratoStatusTableSeeder extends Seeder
             'id' => ContratoStatus::AGUARDANDO,
             'nome' => 'Aguardando Liberação',
             'cor' => '#CCCCCC'
-        ]);
+        ]]);
 
         Schema::enableForeignKeyConstraints();
     }

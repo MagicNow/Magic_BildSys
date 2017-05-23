@@ -20,7 +20,14 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         View::composer('partials.filter-grupos-de-orcamento', function($view) {
-            $view->with('grupos', app(GrupoRepository::class)->pluck('nome', 'id'));
+            $view->with(
+                'grupos',
+                app(GrupoRepository::class)
+                    ->onlyFirstLevel()
+                    ->pluck('nome', 'id')
+                    ->prepend('', '')
+                    ->all()
+            );
         });
 
         Validator::extend('money', function($attributes, $value, $parameters) {

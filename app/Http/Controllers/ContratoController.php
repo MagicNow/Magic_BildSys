@@ -36,9 +36,23 @@ class ContratoController extends AppBaseController
         ObraRepository $obraRepository,
         ContratoStatusRepository $contratoStatusRepository
     ) {
-        $status = $contratoStatusRepository->pluck('nome', 'id')->all();
-        $fornecedores = $fornecedorRepository->comContrato()->pluck('nome', 'id')->all();
-        $obras = $obraRepository->comContrato()->pluck('nome', 'id')->all();
+
+        $status = $contratoStatusRepository
+            ->pluck('nome', 'id')
+            ->prepend('', '')
+            ->all();
+
+        $fornecedores = $fornecedorRepository
+            ->comContrato()
+            ->pluck('nome', 'id')
+            ->prepend('', '')
+            ->all();
+
+        $obras = $obraRepository
+            ->comContrato()
+            ->pluck('nome', 'id')
+            ->prepend('', '')
+            ->all();
 
         return $contratoDataTable->render(
             'contratos.index',
@@ -46,41 +60,6 @@ class ContratoController extends AppBaseController
         );
     }
 
-    /**
-     * Show the form for creating a new Contrato.
-     *
-     * @return Response
-     */
-    public function create()
-    {
-        return view('contratos.create');
-    }
-
-    /**
-     * Store a newly created Contrato in storage.
-     *
-     * @param CreateContratoRequest $request
-     *
-     * @return Response
-     */
-    public function store(CreateContratoRequest $request)
-    {
-        $input = $request->all();
-
-        $contrato = $this->contratoRepository->create($input);
-
-        Flash::success('Contrato '.trans('common.saved').' '.trans('common.successfully').'.');
-
-        return redirect(route('contratos.index'));
-    }
-
-    /**
-     * Display the specified Contrato.
-     *
-     * @param  int $id
-     *
-     * @return Response
-     */
     public function show($id)
     {
         $contrato = $this->contratoRepository->findWithoutFail($id);
@@ -94,14 +73,7 @@ class ContratoController extends AppBaseController
         return view('contratos.show')->with('contrato', $contrato);
     }
 
-    /**
-     * Show the form for editing the specified Contrato.
-     *
-     * @param  int $id
-     *
-     * @return Response
-     */
-    public function edit($id)
+    public function save($id)
     {
         $contrato = $this->contratoRepository->findWithoutFail($id);
 
@@ -112,54 +84,5 @@ class ContratoController extends AppBaseController
         }
 
         return view('contratos.edit')->with('contrato', $contrato);
-    }
-
-    /**
-     * Update the specified Contrato in storage.
-     *
-     * @param  int              $id
-     * @param UpdateContratoRequest $request
-     *
-     * @return Response
-     */
-    public function update($id, UpdateContratoRequest $request)
-    {
-        $contrato = $this->contratoRepository->findWithoutFail($id);
-
-        if (empty($contrato)) {
-            Flash::error('Contrato '.trans('common.not-found'));
-
-            return redirect(route('contratos.index'));
-        }
-
-        $contrato = $this->contratoRepository->update($request->all(), $id);
-
-        Flash::success('Contrato '.trans('common.updated').' '.trans('common.successfully').'.');
-
-        return redirect(route('contratos.index'));
-    }
-
-    /**
-     * Remove the specified Contrato from storage.
-     *
-     * @param  int $id
-     *
-     * @return Response
-     */
-    public function destroy($id)
-    {
-        $contrato = $this->contratoRepository->findWithoutFail($id);
-
-        if (empty($contrato)) {
-            Flash::error('Contrato '.trans('common.not-found'));
-
-            return redirect(route('contratos.index'));
-        }
-
-        $this->contratoRepository->delete($id);
-
-        Flash::success('Contrato '.trans('common.deleted').' '.trans('common.successfully').'.');
-
-        return redirect(route('contratos.index'));
     }
 }

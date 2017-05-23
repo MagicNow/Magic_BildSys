@@ -23,4 +23,9 @@ class GrupoRepository extends BaseRepository
     {
         return Grupo::class;
     }
+
+    public function onlyFirstLevel()
+    {
+        return $this->model->whereNull('grupo_id')->get();
+    }
 }

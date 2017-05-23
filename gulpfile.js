@@ -210,4 +210,16 @@ elixir(function(mix) {
         'insumo-grupo-activation.js',
     ], 'public/js/insumo-grupo-activation.js');
 
+    mix.scripts([
+        'filter-grupos.js',
+    ], 'public/js/filter-grupos.js');
+
+    mix.scripts([
+        'general-filters.js',
+    ], 'public/js/general-filters.js');
+
+    mix.scripts([
+        'filter-date.js',
+    ], 'public/js/filter-date.js');
+
 });

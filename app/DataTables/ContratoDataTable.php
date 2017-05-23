@@ -6,6 +6,7 @@ use App\Models\Contrato;
 use Yajra\Datatables\Services\DataTable;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class ContratoDataTable extends DataTable
 {
@@ -49,7 +50,68 @@ class ContratoDataTable extends DataTable
         ])
         ->join('obras', 'obras.id', 'contratos.obra_id')
         ->join('fornecedores', 'fornecedores.id', 'contratos.fornecedor_id')
-        ->join('contrato_status', 'contrato_status.id', 'contratos.contrato_status_id');
+        ->join('contrato_status', 'contrato_status.id', 'contratos.contrato_status_id')
+        ->join('contrato_itens', 'contrato_itens.contrato_id', 'contratos.id')
+        ->join('oc_item_qc_item', 'contrato_itens.qc_item_id', 'oc_item_qc_item.qc_item_id')
+        ->join('ordem_de_compra_itens', 'ordem_de_compra_itens.id', 'oc_item_qc_item.ordem_de_compra_item_id');
+
+        $request = $this->request();
+
+        if($request->fornecedor_id) {
+            $query->where('contratos.fornecedor_id', $request->fornecedor_id);
+        }
+
+        if($request->obra_id) {
+            $query->where('contratos.obra_id', $request->obra_id);
+        }
+
+        if($request->contrato_status_id) {
+            $query->where('contratos.contrato_status_id', $request->contrato_status_id);
+        }
+
+        if($request->grupo_id) {
+            $query->where('ordem_de_compra_itens.grupo_id', $request->grupo_id);
+        }
+
+        if($request->subgrupo1_id) {
+            $query->where('ordem_de_compra_itens.subgrupo1_id', $request->subgrupo1_id);
+        }
+
+        if($request->subgrupo2_id) {
+            $query->where('ordem_de_compra_itens.subgrupo2_id', $request->subgrupo2_id);
+        }
+
+        if($request->subgrupo3_id) {
+            $query->where('ordem_de_compra_itens.subgrupo3_id', $request->subgrupo3_id);
+        }
+
+        if($request->servico_id) {
+            $query->where('ordem_de_compra_itens.servico_id', $request->servico_id);
+        }
+
+        if(!is_null($request->days)) {
+            $query->whereDate(
+                'contratos.created_at',
+                '>=',
+                Carbon::now()->subDays($request->days)->toDateString()
+            );
+        }
+
+        if($request->start) {
+            $query->whereDate(
+                'contratos.created_at',
+                '>=',
+                Carbon::createFromFormat('d/m/Y', $request->start)->toDateString()
+            );
+        }
+
+        if($request->end) {
+            $query->whereDate(
+                'contratos.created_at',
+                '<=',
+                Carbon::createFromFormat('d/m/Y', $request->end)->toDateString()
+            );
+        }
 
         return $this->applyScopes($query);
     }

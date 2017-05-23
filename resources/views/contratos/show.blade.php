@@ -1,21 +1,13 @@
 @extends('layouts.front')
 
 @section('content')
-    <section class="content-header">
-        <h1>
-            Equalizacao Técnica
-        </h1>
-    </section>
-    <div class="content">
-        <div class="box box-primary">
-            <div class="box-body">
-                <div class="row" style="padding-left: 20px">
-                    @include('tipo_equalizacao_tecnicas.show_fields')
-                    <a href="{!! route('tipoEqualizacaoTecnicas.index') !!}" class="btn btn-default">
-                       <i class="fa fa-arrow-left"></i>  {{ ucfirst( trans('common.back') )}}
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
+  <section class="content-header">
+    <h1>
+      Contrato #{{ $contrato->id }}
+      <small class="label label-default pull-right margin10">
+        <i class="fa fa-circle" aria-hidden="true" style="color:{{ $contrato->status->cor }}"></i>
+        {{ $contrato->status->nome }}
+      </small>
+    </h1>
+  </section>
 @endsection

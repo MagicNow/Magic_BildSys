@@ -646,6 +646,14 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             'contratos',
             ['as' => 'contratos.index', 'uses' => 'ContratoController@index']
         );
+        $router->get(
+            'contratos/{contratos}',
+            ['as' => 'contratos.show', 'uses' => 'ContratoController@show']
+        );
+        $router->post(
+            'contratos/{contratos}',
+            ['as' => 'contratos.save', 'uses' => 'ContratoController@save']
+        );
     });
 
 

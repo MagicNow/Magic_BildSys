@@ -53,9 +53,9 @@ class Contrato extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function contratoStatus()
+    public function status()
     {
-        return $this->belongsTo(\App\Models\ContratoStatus::class);
+        return $this->belongsTo(ContratoStatus::class);
     }
 
     /**
@@ -63,7 +63,7 @@ class Contrato extends Model
      **/
     public function contratoTemplate()
     {
-        return $this->belongsTo(\App\Models\ContratoTemplate::class);
+        return $this->belongsTo(ContratoTemplate::class);
     }
 
     /**
@@ -71,7 +71,7 @@ class Contrato extends Model
      **/
     public function fornecedore()
     {
-        return $this->belongsTo(\App\Models\Fornecedore::class);
+        return $this->belongsTo(Fornecedore::class);
     }
 
     /**
@@ -79,7 +79,7 @@ class Contrato extends Model
      **/
     public function obra()
     {
-        return $this->belongsTo(\App\Models\Obra::class);
+        return $this->belongsTo(Obra::class);
     }
 
     /**
@@ -87,15 +87,15 @@ class Contrato extends Model
      **/
     public function quadroDeConcorrencia()
     {
-        return $this->belongsTo(\App\Models\QuadroDeConcorrencia::class);
+        return $this->belongsTo(QuadroDeConcorrencia::class);
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
-    public function contratoItens()
+    public function itens()
     {
-        return $this->hasMany(\App\Models\ContratoIten::class);
+        return $this->hasMany(ContratoItem::class);
     }
 
     /**
@@ -103,6 +103,6 @@ class Contrato extends Model
      **/
     public function contratoStatusLogs()
     {
-        return $this->hasMany(\App\Models\ContratoStatusLog::class);
+        return $this->hasMany(ContratoStatusLog::class);
     }
 }
