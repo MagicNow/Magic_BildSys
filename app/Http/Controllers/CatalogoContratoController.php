@@ -17,6 +17,7 @@ use App\Repositories\ImportacaoRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Response;
 use DB;
 
@@ -109,7 +110,7 @@ class CatalogoContratoController extends AppBaseController
         if($request->arquivo) {
             $destinationPath = CodeRepository::saveFile($request->arquivo, 'contratos/' . $catalogoContrato->id);
 
-            $catalogoContrato->arquivo = $destinationPath;
+            $catalogoContrato->arquivo = Storage::url($destinationPath);
             $catalogoContrato->save();
         }
 
@@ -220,9 +221,8 @@ class CatalogoContratoController extends AppBaseController
         }
 
         if($request->arquivo){
-            @unlink(public_path() . $catalogoContrato->arquivo);
             $destinationPath = CodeRepository::saveFile($request->arquivo, 'contratos/' . $catalogoContrato->id);
-            $catalogoContrato->arquivo = $destinationPath;
+            $catalogoContrato->arquivo = Storage::url($destinationPath);
             $catalogoContrato->save();
         }
 
@@ -296,10 +296,6 @@ class CatalogoContratoController extends AppBaseController
             Flash::error('Catalogo Contrato '.trans('common.not-found'));
 
             return redirect(route('catalogo_contratos.index'));
-        }
-
-        if($catalogoContrato->arquivo){
-            @unlink(public_path() . $catalogoContrato->arquivo);
         }
 
         $this->catalogoContratoRepository->delete($id);

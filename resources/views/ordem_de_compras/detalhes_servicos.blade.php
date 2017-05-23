@@ -239,7 +239,7 @@
                             </div>
 
                             <div class="col-md-4 label-bloco margem-topo">
-                                Sugestão de Contrato:
+                                Contrato aditivado:
                             </div>
                             <div class="bloco-texto-conteudo col-md-7 margem-topo">
                                 {{ $item->sugestao_contrato_id }}

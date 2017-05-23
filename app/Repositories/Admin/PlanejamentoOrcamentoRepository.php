@@ -2,7 +2,7 @@
 
 namespace App\Repositories\Admin;
 
-use App\Models\Admin\PlanejamentoOrcamento;
+use App\Models\PlanejamentoOrcamento;
 use InfyOm\Generator\Common\BaseRepository;
 
 class PlanejamentoOrcamentoRepository extends BaseRepository

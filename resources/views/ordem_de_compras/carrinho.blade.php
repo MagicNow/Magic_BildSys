@@ -1,5 +1,17 @@
 @extends('layouts.front')
 
+@section('styles')
+    <style type="text/css">
+        .tooltip-inner {
+            max-width: 500px;
+            text-align: left !important;
+        }
+        .content {
+            min-height: 100px !important;
+        }
+    </style>
+@stop
+
 @section('content')
 
     <section class="content-header">
@@ -118,11 +130,25 @@
                                 </div>
                             @endif
                             <div class="row">
-                                <span class="col-md-1 col-sm-1 col-xs-12 text-center borda-direita">
+                                <span class="col-md-1 col-sm-1 col-xs-12 text-center borda-direita" data-toggle="tooltip" data-placement="top" data-html="true"
+                                      title="{{
+                                            $item->grupo->codigo .' '. $item->grupo->nome . ' <br> ' .
+                                            $item->subgrupo1->codigo .' '.$item->subgrupo1->nome . ' <br> ' .
+                                            $item->subgrupo2->codigo .' '.$item->subgrupo2->nome . ' <br> ' .
+                                            $item->subgrupo3->codigo .' '.$item->subgrupo3->nome . ' <br> ' .
+                                            $item->servico->codigo .' '.$item->servico->nome
+                                        }}">
                                     <strong class="visible-xs pull-left">Código:</strong>
                                     {{ $item->insumo->codigo }}
                                 </span>
-                                <span class="col-md-2 col-sm-2 col-xs-12 text-center borda-direita">
+                                <span class="col-md-2 col-sm-2 col-xs-12 text-center borda-direita" data-toggle="tooltip" data-placement="top" data-html="true"
+                                      title="{{
+                                            $item->grupo->codigo .' '. $item->grupo->nome . ' <br> ' .
+                                            $item->subgrupo1->codigo .' '.$item->subgrupo1->nome . ' <br> ' .
+                                            $item->subgrupo2->codigo .' '.$item->subgrupo2->nome . ' <br> ' .
+                                            $item->subgrupo3->codigo .' '.$item->subgrupo3->nome . ' <br> ' .
+                                            $item->servico->codigo .' '.$item->servico->nome
+                                        }}">
                                     <strong class="visible-xs pull-left">Insumo:</strong>
                                     {{ $item->insumo->nome }}
                                 </span>
@@ -582,27 +608,29 @@
         }
 
         function alteraValorUnitario(valor, item_id) {
-            $.ajax({
-                url: '/ordens-de-compra/carrinho/alterar-valor-unitario/'+item_id,
-                data: {
-                    'valor': valor
-                }
-            }).done(function (json) {
-                if(json.success){
-                    $('#alert_'+item_id).remove();
-                    swal({
-                        title: "Valor unitário alterado",
-                        text: "",
-                        type: "success",
-                        showCancelButton: false,
-                        confirmButtonText: "OK",
-                        closeOnConfirm: false
-                    },
-                    function(){
-                        location.reload();
-                    });
-                }
-            });
+            if(moneyToFloat(valor) > 0) {
+                $.ajax({
+                    url: '/ordens-de-compra/carrinho/alterar-valor-unitario/' + item_id,
+                    data: {
+                        'valor': valor
+                    }
+                }).done(function (json) {
+                    if (json.success) {
+                        $('#alert_' + item_id).remove();
+                        swal({
+                                    title: "Valor unitário alterado",
+                                    text: "",
+                                    type: "success",
+                                    showCancelButton: false,
+                                    confirmButtonText: "OK",
+                                    closeOnConfirm: false
+                                },
+                                function () {
+                                    location.reload();
+                                });
+                    }
+                });
+            }
         }
 
         function removeItem(item_id) {
