@@ -285,8 +285,8 @@
                         </tr>
                         </thead>
                         <tbody>
-    @foreach($itens as $item)
 
+                    @foreach($itens as $item)
                         <tr>
                             <td class="text-center">{{ $item->insumo->codigo }}</td>
                             <td class="text-center">{{ $item->insumo->nome }}</td>
@@ -303,7 +303,7 @@
                                 @endif
                             </td>
                             <td class="text-center">{{ $item->total ? 'Sim' : 'Não' }}</td>
-                            <td class="text-center">
+                            <td class="text-center" style="width: 10%">
                                 <div class="btn-group" role="group" aria-label="...">
                                     @if(!is_null($item->aprovado))
                                         @if($item->aprovado)
@@ -364,125 +364,124 @@
                                 </div>
                             </td>
                         </tr>
-                <tr style="display: none;" id="dados-extras{{ $item->id }}">
-                    <td colspan="8">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <h4 class="highlight">{{ $item->insumo->codigo . ' - '. $item->insumo->nome }}</h4>
-                            </div>
-
-                            <div class="col-md-12 table-responsive margem-topo">
-                                <table class="table table-bordered table-striped">
-                                    <thead>
-                                    <tr>
-                                        <th class="text-center">Unidade Medida</th>
-                                        <th class="text-center">Qtd. O. Inicial</th>
-                                        <th class="text-center">Valor O. Inicial</th>
-                                        <th class="text-center">Qtd. Realizada</th>
-                                        <th class="text-center">Valor Realizado</th>
-                                        <th class="text-center">Qtd. à Gastar</th>
-                                        <th class="text-center">Valor à Gastar</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr>
-                                        <td class="text-center">{{ $item->unidade_sigla . ' - '.$item->unidade->descricao }}</td>
-                                        <td class="text-center">{{ number_format($item->qtd_inicial, 2, ',','.') }}</td>
-                                        <td class="text-center"><small class="pull-left">R$</small> {{ number_format($item->preco_inicial, 2, ',','.') }}</td>
-                                        <td class="text-center">{{ number_format(doubleval($item->qtd_realizada), 2, ',','.') }}</td>
-                                        <td class="text-center"><small class="pull-left">R$</small> {{ number_format( doubleval($item->valor_realizado), 2, ',','.') }}</td>
-                                        <td class="text-center">{{ number_format( $item->qtd_inicial-doubleval($item->qtd_realizada), 2, ',','.') }}</td>
-                                        <td class="text-center"><small class="pull-left">R$</small> {{ number_format( $item->preco_inicial-doubleval($item->valor_realizado), 2, ',','.') }}</td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="col-md-12 table-responsive margem-topo">
-                                <table class="table table-bordered table-striped">
-                                    <thead>
-                                    <tr>
-                                        <th class="text-center">Qtd. Saldo</th>
-                                        <th class="text-center">Valor Saldo</th>
-                                        <th class="text-center">Qtd. Solicitada</th>
-                                        <th class="text-center">Valor Solicitado</th>
-                                        <th class="text-center">Data de Uso</th>
-                                        <th class="text-center">Emergencial</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr>
-                                        <td class="text-center">{{ number_format( $item->qtd_inicial - doubleval($item->qtd_realizada), 2, ',','.') }}</td>
-                                        <td class="text-center"><small class="pull-left">R$</small> {{ number_format( $item->preco_inicial-doubleval($item->valor_realizado), 2, ',','.') }}</td>
-                                        <td class="text-center"><strong>{{ $item->qtd }}</strong></td>
-                                        <td class="text-center"><small class="pull-left">R$</small> <strong>{{ number_format(doubleval($item->valor_total), 2, ',','.') }}</strong></td>
-                                        <td class="text-center">{{ $item->sugestao_data_uso ? $item->sugestao_data_uso->format('d/m/Y') : ''  }}</td>
-                                        <td class="text-center">{!! $item->emergencial?'<strong class="text-danger"> <i class="fa fa-exclamation-circle" aria-hidden="true"></i> SIM</strong>':'NÃO' !!}</td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            <div class="col-md-6 margem-topo borda-direita">
+                        <tr style="display: none;" id="dados-extras{{ $item->id }}">
+                            <td colspan="8">
                                 <div class="row">
-                                    <div class="col-md-4 label-bloco">
-                                        Justificativa de compra:
-                                    </div>
-                                    <div class="bloco-texto-conteudo col-md-7">
-                                        {{ $item->justificativa }}
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 margem-topo">
-                                <div class="col-md-4 label-bloco">
-                                    Observações ao fornecedor:
-                                </div>
-                                <div class="bloco-texto-conteudo col-md-7">
-                                    {{ $item->obs }}
-                                </div>
-                            </div>
-                            <div class="col-md-6 margem-topo borda-direita">
-                                <div class="row">
-                                    <div class="col-md-4 label-bloco">
-                                        Tabela TEMS:
-                                    </div>
-                                    <div class="bloco-texto-conteudo col-md-7">
-                                        {{ $item->tems }}
+                                    <div class="col-md-12">
+                                        <h4 class="highlight">{{ $item->insumo->codigo . ' - '. $item->insumo->nome }}</h4>
                                     </div>
 
-                                    <div class="col-md-4 label-bloco margem-topo">
-                                        Sugestão de Contrato:
+                                    <div class="col-md-12 table-responsive margem-topo">
+                                        <table class="table table-bordered table-striped">
+                                            <thead>
+                                            <tr>
+                                                <th class="text-center">Unidade Medida</th>
+                                                <th class="text-center">Qtd. O. Inicial</th>
+                                                <th class="text-center">Valor O. Inicial</th>
+                                                <th class="text-center">Qtd. Realizada</th>
+                                                <th class="text-center">Valor Realizado</th>
+                                                <th class="text-center">Qtd. à Gastar</th>
+                                                <th class="text-center">Valor à Gastar</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr>
+                                                <td class="text-center">{{ $item->unidade_sigla . ' - '.$item->unidade->descricao }}</td>
+                                                <td class="text-center">{{ number_format($item->qtd_inicial, 2, ',','.') }}</td>
+                                                <td class="text-center"><small class="pull-left">R$</small> {{ number_format($item->preco_inicial, 2, ',','.') }}</td>
+                                                <td class="text-center">{{ number_format(doubleval($item->qtd_realizada), 2, ',','.') }}</td>
+                                                <td class="text-center"><small class="pull-left">R$</small> {{ number_format( doubleval($item->valor_realizado), 2, ',','.') }}</td>
+                                                <td class="text-center">{{ number_format( $item->qtd_inicial-doubleval($item->qtd_realizada), 2, ',','.') }}</td>
+                                                <td class="text-center"><small class="pull-left">R$</small> {{ number_format( $item->preco_inicial-doubleval($item->valor_realizado), 2, ',','.') }}</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
-                                    <div class="bloco-texto-conteudo col-md-7 margem-topo">
-                                        {{ $item->sugestao_contrato_id }}
+                                    <div class="col-md-12 table-responsive margem-topo">
+                                        <table class="table table-bordered table-striped">
+                                            <thead>
+                                            <tr>
+                                                <th class="text-center">Qtd. Saldo</th>
+                                                <th class="text-center">Valor Saldo</th>
+                                                <th class="text-center">Qtd. Solicitada</th>
+                                                <th class="text-center">Valor Solicitado</th>
+                                                <th class="text-center">Data de Uso</th>
+                                                <th class="text-center">Emergencial</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr>
+                                                <td class="text-center">{{ number_format( $item->qtd_inicial - doubleval($item->qtd_realizada), 2, ',','.') }}</td>
+                                                <td class="text-center"><small class="pull-left">R$</small> {{ number_format( $item->preco_inicial-doubleval($item->valor_realizado), 2, ',','.') }}</td>
+                                                <td class="text-center"><strong>{{ $item->qtd }}</strong></td>
+                                                <td class="text-center"><small class="pull-left">R$</small> <strong>{{ number_format(doubleval($item->valor_total), 2, ',','.') }}</strong></td>
+                                                <td class="text-center">{{ $item->sugestao_data_uso ? $item->sugestao_data_uso->format('d/m/Y') : ''  }}</td>
+                                                <td class="text-center">{!! $item->emergencial?'<strong class="text-danger"> <i class="fa fa-exclamation-circle" aria-hidden="true"></i> SIM</strong>':'NÃO' !!}</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 margem-topo">
-                                @if($item->anexos)
-                                    <div class="col-md-4 label-bloco">
-                                        Arquivos anexos:
-                                    </div>
-                                    <div class="col-md-8">
+
+                                    <div class="col-md-6 margem-topo borda-direita">
                                         <div class="row">
-                                            @foreach($item->anexos as $anexo)
-                                                <div class="bloco-texto-linha col-md-9">{{ substr($anexo->arquivo, strrpos($anexo->arquivo,'/')+1  )  }}</div>
-                                                <div class="col-md-2">
-                                                    <a href="{{ Storage::url($anexo->arquivo) }}" class="btn btn-default btn-block" target="_blank" >
-                                                        <i class="fa fa-eye" aria-hidden="true"></i>
-                                                    </a>
-                                                </div>
-
-                                            @endforeach
+                                            <div class="col-md-4 label-bloco">
+                                                Justificativa de compra:
+                                            </div>
+                                            <div class="bloco-texto-conteudo col-md-7">
+                                                {{ $item->justificativa }}
+                                            </div>
                                         </div>
                                     </div>
-                                @endif
-                            </div>
-                        </div>
-                    </td>
+                                    <div class="col-md-6 margem-topo">
+                                        <div class="col-md-4 label-bloco">
+                                            Observações ao fornecedor:
+                                        </div>
+                                        <div class="bloco-texto-conteudo col-md-7">
+                                            {{ $item->obs }}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 margem-topo borda-direita">
+                                        <div class="row">
+                                            <div class="col-md-4 label-bloco">
+                                                Tabela TEMS:
+                                            </div>
+                                            <div class="bloco-texto-conteudo col-md-7">
+                                                {{ $item->tems }}
+                                            </div>
 
-                </tr>
+                                            <div class="col-md-4 label-bloco margem-topo">
+                                                Contrato aditivado:
+                                            </div>
+                                            <div class="bloco-texto-conteudo col-md-7 margem-topo">
+                                                {{ $item->sugestao_contrato_id }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 margem-topo">
+                                        @if($item->anexos)
+                                            <div class="col-md-4 label-bloco">
+                                                Arquivos anexos:
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="row">
+                                                    @foreach($item->anexos as $anexo)
+                                                        <div class="bloco-texto-linha col-md-9">{{ substr($anexo->arquivo, strrpos($anexo->arquivo,'/')+1  )  }}</div>
+                                                        <div class="col-md-2">
+                                                            <a href="{{ Storage::url($anexo->arquivo) }}" class="btn btn-default btn-block" target="_blank" >
+                                                                <i class="fa fa-eye" aria-hidden="true"></i>
+                                                            </a>
+                                                        </div>
 
-    @endforeach
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </td>
+
+                        </tr>
+                    @endforeach
                     </tbody>
                 </table>
             </div>

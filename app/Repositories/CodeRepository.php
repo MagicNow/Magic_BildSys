@@ -110,12 +110,17 @@ class CodeRepository
     public static function saveFile($file, $path)
     {
         try {
-            $filename = $file->getClientOriginalName();
+            $path = str_replace('public/', '', $path);
 
-            $destinationPath = public_path() . '/appfiles/' . $path;
-            $file->move($destinationPath, $filename);
+            if($path[0] == '/'){
+                $path = substr($path, 1);
+            }
 
-            return '/appfiles/' . $path . '/' . $filename;
+            $arquivo = $file->storeAs(
+                'public/'.$path, str_slug(str_replace('.'.$file->clientExtension(), '', $file->getClientOriginalName()).'_'.rand(100,10000)).'.'.$file->clientExtension()
+            );
+            
+            return $arquivo;
         }catch (\Exception $e){
             return $e->getMessage();
         }
