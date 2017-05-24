@@ -13,7 +13,8 @@
         <div class="clearfix"></div>
         <div class="box box-primary">
             <div class="box-body">
-                    @include('admin.obras.table')
+                @include( 'flash::message' )
+                @include('admin.obras.table')
             </div>
         </div>
     </div>

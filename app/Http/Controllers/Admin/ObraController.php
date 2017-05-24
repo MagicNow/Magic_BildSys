@@ -195,6 +195,12 @@ class ObraController extends AppBaseController
             return redirect(route('admin.obras.index'));
         }
 
+        if(count($obra->ordemDeCompras)){
+            Flash::error('A obra não pode ser removida, pois tem ordens de compra.');
+
+            return redirect(route('admin.obras.index'));
+        }
+
         $this->obraRepository->delete($id);
 
         Flash::success('Obra '.trans('common.deleted').' '.trans('common.successfully').'.');
