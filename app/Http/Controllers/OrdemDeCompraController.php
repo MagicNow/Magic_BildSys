@@ -616,6 +616,8 @@ class OrdemDeCompraController extends AppBaseController
         $ordem_item->valor_unitario = $orcamento_ativo->preco_unitario;
         $ordem_item->valor_total = $orcamento_ativo->getOriginal('preco_unitario') * money_to_float($request->quantidade_compra);
 
+        $insumo = Insumo::find($orcamento_ativo->insumo_id);
+
         $tems = \DB::connection('oracle')->select('(
                        Select p.pro_tab_in_codigo,
                            p.pro_pad_in_codigo,
@@ -644,7 +646,7 @@ class OrdemDeCompraController extends AppBaseController
                                        Where dp.pro_tab_in_codigo = p.pro_tab_in_codigo
                                        And   dp.pro_pad_in_codigo = p.pro_pad_in_codigo
                                        And   dp.pro_in_codigo     = p.pro_in_codigo)
-                       And   p.pro_in_codigo = 27633
+                       And   p.pro_in_codigo = '.$insumo->codigo.'
                    )');
 
         $todos_tems = '';
