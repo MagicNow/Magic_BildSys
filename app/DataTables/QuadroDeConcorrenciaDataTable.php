@@ -219,7 +219,7 @@ class QuadroDeConcorrenciaDataTable extends DataTable
             $columns['criadoEm'] = ['name' => 'quadro_de_concorrencias.created_at', 'data' => 'created_at', 'width'=>'12%'];
         }
 
-        $columns['action'] = ['title' => '#', 'printable' => false, 'width'=>'10%'];
+        $columns['action'] = ['title' => '#', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%'];
 
         return $columns;
     }
