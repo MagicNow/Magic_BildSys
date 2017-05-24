@@ -1,8 +1,20 @@
 @extends('layouts.front')
-
+@section('styles')
+<style type="text/css">
+    textarea {
+        resize: none;
+    }
+</style>
+@stop
 @section('content')
   <section class="content-header">
-    <h1>Informar valores fornecedor</h1>
+    <h1>
+        @if(auth()->user()->fornecedor)
+            Enviar Proposta
+        @else
+            Informar valores de fornecedor
+        @endif
+    </h1>
   </section>
 
   {!!
@@ -25,42 +37,165 @@
         </ul>
       </div>
     @endif
-
-    <div class="box box-solid">
-      <div class="box-body">
-        <div class="row">
-          <div class="col-md-3">
-            @if(auth()->user()->fornecedor)
+  <div class="row">
+      <div class="col-md-6">
+          @if(auth()->user()->fornecedor)
               {!! Form::hidden('fornecedor_id', auth()->user()->fornecedor->id) !!}
-            @else
+              <h3>{{ auth()->user()->fornecedor->nome }}</h3>
+          @else
               <div class="form-group">
-                <label for="fornecedor_id">Fornecedor</label>
-                {!!
-                  Form::select(
-                    'fornecedor_id',
-                    $fornecedores,
-                    old('fornecedor_id'),
-                    [ 'class' => 'select2 form-control' ]
-                  )
-                !!}
+                  {!!
+                    Form::select(
+                      'fornecedor_id',
+                      $fornecedores,
+                      old('fornecedor_id'),
+                      [ 'class' => 'select2 form-control' ]
+                    )
+                  !!}
               </div>
-            @endif
-            <p>
-              <a href="#modal-fornecedor"
-                data-toggle="modal"
-                class="btn btn-primary btn-block">
-                Obrigações do Fornecedor
-              </a>
-              <a href="#modal-bild"
-                data-toggle="modal"
-                class="btn btn-primary btn-block">
-                Obrigações BILD
-              </a>
-            </p>
+          @endif
+      </div>
+      <div class="col-md-3">
+          <a href="#modal-fornecedor"
+             data-toggle="modal"
+             class="btn btn-link btn-block">
+              <i class="fa fa-info"></i> Obrigações do Fornecedor
+          </a>
+      </div>
+      <div class="col-md-3">
+          <a href="#modal-bild"
+             data-toggle="modal"
+             class="btn btn-link btn-block">
+              <i class="fa fa-info"></i> Obrigações BILD
+          </a>
+      </div>
+  </div>
+  <div class="box box-solid">
+      <div class="box-body">
+          <table class="table table-responsive table-striped table-align-middle table-condensed">
+              <thead>
+              <tr>
+                  <th>Obra - Cidade</th>
+                  <th>Insumo</th>
+                  <th>Obs. Fornecedor</th>
+                  <th>Quantidade</th>
+                  <th>Un</th>
+                  <th>Valor Unitário</th>
+                  <th>Valor Total</th>
+              </tr>
+              </thead>
+              <tbody>
+              @foreach($quadro->itens as $item)
+                  <tr class="js-calc-row">
+                      <td>
+                          @foreach($item->ordemDeCompraItens->pluck('obra')->flatten()->unique() as $key => $obra)
+                              {{ $obra->nome }} - {{ $obra->cidade->nome }}{{ !$loop->last ? ',' : '' }}
+                          @endforeach
+                      </td>
+                      <td>{{ $item->insumo->nome }}</td>
+                      <td>
+                          {!!
+                            Form::textarea(
+                              "itens[{$item->id}][obs]",
+                              $item->obs,
+                              [
+                                'placeholder' => 'Observação',
+                                'class' => 'form-control',
+                                'rows' => 2,
+                                'cols' => 25,
+                                'disabled' => 'disabled',
+                              ]
+                            )
+                          !!}
+                      </td>
+
+                      <td class="js-calc-amount">
+                          {{ number_format($item->qtd,2,',','.') }}
+                          {!! Form::hidden("itens[{$item->id}][qtd]", $item->qtd) !!}
+                      </td>
+                      <td>{{ $item->insumo->unidade_sigla }}</td>
+                      <td>
+                          {!!
+                            Form::text(
+                              "itens[{$item->id}][valor_unitario]",
+                              old("itens[{$item->id}][valor_unitario]"),
+                              [
+                                        'class' => 'form-control js-calc-price money',
+                              ]
+                            )
+                          !!}
+                      </td>
+                      <td class="js-calc-result">
+                          R$ 0,00
+                      </td>
+                  </tr>
+              @endforeach
+              </tbody>
+          </table>
+      </div>
+  </div>
+
+
+  <div class="row">
+          <div class="col-md-3">
+              @if($quadro->hasMaterial())
+                  <div class="box box-info">
+                      <div class="box-header with-border">
+                          Frete
+                      </div>
+                      <div class="box-body">
+                          <div class="form-group">
+                              <div class="row">
+                                  <label class="col-md-6">
+                                      Tipo de Frete
+                                  </label>
+                                  <div class="col-md-6">
+                                      <label class="radio-inline">
+                                          {!!
+                                            Form::radio(
+                                              "tipo_frete",
+                                              'CIF'
+                                            )
+                                          !!}
+                                          CIF
+                                      </label>
+                                      <label class="radio-inline">
+                                          {!!
+                                            Form::radio(
+                                              "tipo_frete",
+                                              'FOB'
+                                            )
+                                          !!}
+                                          FOB
+                                      </label>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="form-group">
+                              <div class="row">
+                                  <label class="col-md-6">
+                                      Valor
+                                  </label>
+                                  <div class="col-md-6">
+                                      <div class="input-group">
+                                          <span class="input-group-addon">R$</span>
+                                          <input type="text"
+                                                 class="form-control money"
+                                                 value="{{ old('valor_frete') }}"
+                                                 name="valor_frete">
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              @endif
+
             @if($quadro->hasServico())
             <div class="row">
               <div class="col-md-12">
-                <div class="box box-muted">
+
+                <div class="box box-primary">
                   <div class="box-header with-border">
                     Porcentagens
                   </div>
@@ -115,7 +250,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="box box-mutted">
+                <div class="box box-warning">
                   <div class="box-header with-border">
                       Tipo da Nota Fiscal
                   </div>
@@ -146,6 +281,19 @@
                         </label>
                       </div>
                     </div>
+                    <div class="form-group">
+                      <div class="checkbox">
+                        <label>
+                          {!!
+                            Form::checkbox(
+                              "nf_locacao",
+                              '1'
+                            )
+                          !!}
+                          Fatura de Locação
+                        </label>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -153,16 +301,16 @@
             @endif
           </div>
           <div class="col-md-9">
-            <div class="box box-muted box-equalizacao-tecnica">
+            <div class="box box-danger box-equalizacao-tecnica">
               <div class="box-header with-border">Equalização Técnica</div>
               <div class="box-body">
                 <table class="table table-responsive table-striped table-align-middle table-condensed">
                   <thead>
                     <tr>
-                      <th>#</th>
+                      <th width="10%">Detalhes</th>
                       <th>Item</th>
-                      <th>Sim/Não/Ciência</th>
-                      <th>Obs</th>
+                      <th width="20%">Sim/Não/Ciência</th>
+                      <th width="25%">Obs</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -173,10 +321,10 @@
                             class="btn btn-default btn-flat btn-xs js-sweetalert"
                             data-title="{{ $equalizacao->nome }}"
                             data-text="{{ $equalizacao->descricao }}">
-                            <i class="fa fa-info-circle"></i>
+                            <i class="fa fa-info-circle"></i> detalhes
                           </button>
                         </td>
-                        <td>{{ $equalizacao->nome }}</td>
+                        <td class="text-left">{{ $equalizacao->nome }}</td>
                         <td>
                           {!! Form::hidden("equalizacoes[{$equalizacao->id}-{$equalizacao->getTable()}][checkable_type]", $equalizacao->getTable()) !!}
                           {!! Form::hidden("equalizacoes[{$equalizacao->id}-{$equalizacao->getTable()}][checkable_id]", $equalizacao->id) !!}
@@ -189,7 +337,7 @@
                                     '1'
                                   )
                                 !!}
-                                Obrigatório
+                                Estou ciente
                               </label>
                             </div>
                           @else
@@ -220,15 +368,15 @@
                                 "equalizacoes[{$equalizacao->id}-{$equalizacao->getTable()}][obs]",
                                 old("equalizacoes[{$equalizacao->id}-{$equalizacao->getTable()}][obs]"),
                                 [
-                                  'placeholder' => 'Observação',
+                                  'placeholder' => 'Suas Considerações ou Observações',
                                   'class' => 'form-control',
-                                  'rows' => 3,
+                                  'rows' => 2,
                                   'cols' => 25
                                 ]
                               )
                             !!}
                           @else
-                            <span class="text-muted">#</span>
+                            <span class="text-muted"></span>
                           @endif
                         </td>
                       </tr>
@@ -236,104 +384,32 @@
                   </tbody>
                 </table>
               </div>
-              <div class="box-footer">
-                <a href="#modal-anexos" data-toggle="modal" class="btn btn-primary">
-                  Anexos
+              <div class="box-footer text-center">
+                <a href="#modal-anexos" data-toggle="modal" class="btn btn-primary btn-flat">
+                 <i class="fa fa-paperclip"></i> Exibir todos os Anexos de Equalização Técnica
                 </a>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-    <div class="box box-solid">
-      <div class="box-body">
-        <table class="table table-responsive table-striped table-align-middle table-condensed">
-          <thead>
-            <tr>
-              <th>Insumo</th>
-              <th>Obs. Fornecedor</th>
-              <th>Tabela Tems</th>
-              <th>Quantidade</th>
-              <th>Un</th>
-              <th>Valor Unitário</th>
-              <th>Valor Total</th>
-              <th>Obra - Cidade</th>
-            </tr>
-          </thead>
-          <tbody>
-            @foreach($quadro->itens as $item)
-              <tr class="js-calc-row">
-                <td>{{ $item->insumo->nome }}</td>
-                <td>
-                  {!!
-                    Form::textarea(
-                      "itens[{$item->id}][obs]",
-                      $item->obs,
-                      [
-                        'placeholder' => 'Observação',
-                        'class' => 'form-control',
-                        'rows' => 3,
-                        'cols' => 25,
-                        'disabled' => 'disabled',
-                      ]
-                    )
-                  !!}
-                </td>
-                <td>
-                  {!!
-                    Form::textarea(
-                      "itens[{$item->id}][tems]",
-                      $item->tems,
-                      [
-                        'placeholder' => 'Tems',
-                        'class' => 'form-control',
-                        'rows' => 3,
-                        'cols' => 25,
-                        'disabled' => 'disabled',
-                      ]
-                    )
-                  !!}
-                </td>
-                <td class="js-calc-amount">
-                  {{ number_format($item->qtd,2,',','.') }}
-                  {!! Form::hidden("itens[{$item->id}][qtd]", $item->qtd) !!}
-                </td>
-                <td>{{ $item->insumo->unidade_sigla }}</td>
-                <td>
-                  {!!
-                    Form::text(
-                      "itens[{$item->id}][valor_unitario]",
-                      old("itens[{$item->id}][valor_unitario]"),
-                      [
-                        'class' => 'form-control js-calc-price money',
-                      ]
-                    )
-                  !!}
-                </td>
-                <td class="js-calc-result">
-                  R$ 0,00
-                </td>
-                <td>
-                  @foreach($item->ordemDeCompraItens->pluck('obra')->flatten()->unique() as $key => $obra)
-                    {{ $obra->nome }} - {{ $obra->cidade->nome }}{{ !$loop->last ? ',' : '' }}
-                  @endforeach
-                </td>
-              </tr>
-            @endforeach
-          </tbody>
-        </table>
-      </div>
-      <div class="box-footer text-right">
-        <input type="submit"
-        class="btn btn-danger"
-        value="Rejeitar"
-        id="reject">
-        <input type="submit"
-        class="btn btn-success"
-        value="Salvar"
-        id="save">
-      </div>
+
+
+
+    <div class="row">
+        <div class="col-md-12 text-right">
+            <button type="submit"
+                    class="btn btn-success btn-flat btn-lg"
+                    value="Salvar"
+                    id="save">
+                <i class='fa fa-save'></i> Salvar
+            </button>
+            <button type="submit"
+                    class="btn btn-danger btn-flat btn-lg pull-left"
+                    value="Rejeitar"
+                    id="reject">
+                <i class='fa fa-times'></i>  Rejeitar
+            </button>
+        </div>
     </div>
     {!! Form::close() !!}
     <div class="modal fade" id="modal-anexos" tabindex="-1" role="dialog">
@@ -346,11 +422,11 @@
             <h4 class="modal-title"> Anexos </h4>
           </div>
           <div class="modal-body">
-            <ul>
+            <ul class="list-group">
               @foreach($anexos as $anexo)
-                <li>
+                <li class="list-group-item">
                   <a target="_blank" href="{{ $anexo->url }}">
-                    {{ $anexo->nome }}
+                    <i class="fa fa-paperclip"></i>  {{ $anexo->nome }}
                   </a>
                 </li>
               @endforeach

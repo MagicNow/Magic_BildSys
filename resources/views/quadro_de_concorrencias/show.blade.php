@@ -70,6 +70,19 @@
                 <button type="button" class="btn btn-lg btn-success btn-flat" style="margin-left: 20px" onclick="abrirConcorrencia({{$quadroDeConcorrencia->id}});">
                     <i class="fa fa-play-circle-o " aria-hidden="true"></i> Abrir concorrência
                 </button>
+            @elseif($quadroDeConcorrencia->qc_status_id==7)
+                @shield('quadroDeConcorrencias.informar_valor')
+                    <a href="{{ route('quadroDeConcorrencia.informar-valor', $quadroDeConcorrencia->id) }}" class="btn btn-lg btn-flat btn-info" title="Informar valores">
+                        <i class="glyphicon glyphicon-usd"></i> Lançar valores
+                    </a>
+                @endshield
+                @shield('quadroDeConcorrencias.informar_valor')
+                    @if($quadroDeConcorrencia->temOfertas())
+                        <a href="{{ route('quadroDeConcorrencia.avaliar', $quadroDeConcorrencia->id) }}" class="btn btn-lg btn-primary btn-flat" title="Avaliar Quadro de Concorrência">
+                            <i class="glyphicon glyphicon-ok"></i> Avaliar
+                        </a>
+                    @endif
+                @endshield
             @endif
         </h1>
     </section>

@@ -44,9 +44,7 @@ $(function() {
     $('.box.box-primary').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
   });
 
-  $('.money').mask('0.000.000.000.000,00', {
-    reverse: true
-  });
+  $('.money').maskMoney({allowNegative: true, thousands:'.', decimal:','});
   $('.money_3').mask('0.000.000.000.000,000', {
     reverse: true
   });

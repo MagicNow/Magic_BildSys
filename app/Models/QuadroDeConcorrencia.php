@@ -203,4 +203,15 @@ class QuadroDeConcorrencia extends Model
                 return starts_with($nome, 'SERVIÇO');
             });
     }
+
+    public function hasMaterial()
+    {
+        return $this->itens
+            ->pluck('insumo')
+            ->pluck('insumoGrupo')
+            ->pluck('nome')
+            ->contains(function($nome) {
+                return starts_with($nome, 'MATERIAL');
+            });
+    }
 }

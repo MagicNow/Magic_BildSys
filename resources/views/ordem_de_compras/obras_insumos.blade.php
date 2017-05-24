@@ -327,6 +327,7 @@
                 event.currentTarget.blur();
               }
             });
+              afterDraw();
           });
 
             $('[data-toggle="tooltip"]').tooltip();
@@ -356,6 +357,14 @@
             });
 
         });
+
+        function afterDraw(){
+
+            $(".money").maskMoney('destroy');
+
+            $('.money').maskMoney({allowNegative: true, thousands:'.', decimal:',', affixesStay: false});
+
+        }
 
         function formatResult (obj) {
             if(obj.nome) {
