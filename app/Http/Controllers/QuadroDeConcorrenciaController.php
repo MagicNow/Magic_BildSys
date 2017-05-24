@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\QuadroDeConcorrencia;
 use Flash;
+use Illuminate\Support\Facades\Log;
 use Response;
 use Exception;
 use App\DataTables\QcItensDataTable;
@@ -577,9 +578,24 @@ class QuadroDeConcorrenciaController extends AppBaseController
             if(!$request->reject) {
 
                 if($quadro->hasMaterial()){
+
+                    if(!$request->tipo_frete) {
+                        DB::rollback();
+                        Flash::error('Selecione o Tipo do Frete');
+
+                        return back()->withInput();
+                    }else{
+                        if($request->tipo_frete=='FOB' && (is_null($request->valor_frete) || floatval($request->valor_frete) == 0) ) {
+                            DB::rollback();
+                            Flash::error('O tipo de Frete FOB é necessário informar um valor');
+
+                            return back()->withInput();
+                        }
+                    }
+
                     $qcFornecedor->update([
                         'tipo_frete' => $request->tipo_frete,
-                        'valor_frete' => money_to_float($request->valor_frete),
+                        'valor_frete' => ($request->tipo_frete=='FOB'? money_to_float($request->valor_frete): 0),
                     ]);
                 }
 
@@ -608,8 +624,8 @@ class QuadroDeConcorrenciaController extends AppBaseController
             }
         } catch (Exception $e) {
             DB::rollback();
-            Flash::error('Ocorreu um erro ao salvar os dados, tente novamente');
-
+            Flash::error('Ocorreu um erro ao salvar os dados, tente novamente ');
+            Log::error('Erro ao salvar proposta de Fornecedor',[$e->getMessage().' File '.$e->getFile().' linha '.$e->getLine(),'Stack trace:'=>$e->getTraceAsString()]);
             return back()->withInput();
         }
 
