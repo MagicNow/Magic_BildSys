@@ -615,6 +615,46 @@ class OrdemDeCompraController extends AppBaseController
         $ordem_item->qtd = $request->quantidade_compra;
         $ordem_item->valor_unitario = $orcamento_ativo->preco_unitario;
         $ordem_item->valor_total = $orcamento_ativo->getOriginal('preco_unitario') * money_to_float($request->quantidade_compra);
+
+        $tems = \DB::connection('oracle')->select('(
+                       Select p.pro_tab_in_codigo,
+                           p.pro_pad_in_codigo,
+                           p.pro_in_codigo,
+                           p.pro_st_descricao,
+                           p.uni_st_unidade,
+                           p.gru_in_codigo,
+                           grp.gru_st_nome,
+                           dp.pro_st_dettecnico
+                       From mgadm.est_produtos      p,
+                            mgadm.est_detprodutos  dp,
+                            mgadm.est_grupos      grp      
+                       Where dp.pro_tab_in_codigo = p.pro_tab_in_codigo
+                       And   dp.pro_pad_in_codigo = p.pro_pad_in_codigo
+                       And   dp.pro_in_codigo     = p.pro_in_codigo
+                      
+                       And   p.gru_tab_in_codigo  = grp.gru_tab_in_codigo
+                       And   p.gru_pad_in_codigo  = grp.gru_pad_in_codigo
+                       And   p.gru_ide_st_codigo  = grp.gru_ide_st_codigo
+                       And   p.gru_in_codigo      = grp.gru_in_codigo
+                      
+                       And   grp.gru_ide_st_codigo = 07
+                           
+                       And exists (Select 1
+                                       From mgadm.est_detprodutos dp
+                                       Where dp.pro_tab_in_codigo = p.pro_tab_in_codigo
+                                       And   dp.pro_pad_in_codigo = p.pro_pad_in_codigo
+                                       And   dp.pro_in_codigo     = p.pro_in_codigo)
+                       And   p.pro_in_codigo = 27633
+                   )');
+
+        $todos_tems = '';
+
+        if(count($tems)){
+            foreach ($tems as $tem){
+                $todos_tems .= $tem->pro_st_dettecnico;
+            }
+        }
+        $ordem_item->tems = $todos_tems;
         $salvo = $ordem_item->save();
 
         if(!$request->quantidade_compra || $request->quantidade_compra == '0' || $request->quantidade_compra == ''){
@@ -729,8 +769,6 @@ class OrdemDeCompraController extends AppBaseController
 
     public function carrinho(Request $request)
     {
-
-
         $ordemDeCompra = OrdemDeCompra::where('oc_status_id',1)->where('user_id',Auth::id());
         if($request->obra_id){
             $ordemDeCompra->where('obra_id',$request->obra_id);
