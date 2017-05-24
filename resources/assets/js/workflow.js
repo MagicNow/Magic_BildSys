@@ -33,16 +33,16 @@ function workflowCall(item_id, tipo_item, aprovou, elemento, motivo, justificati
                     title: titulo,
                     text: 'Sua escolha foi salva com sucesso!',
                     type: "success",
-                    showCancelButton: false,
-                    confirmButtonColor: "#7ED32C",
-                    confirmButtonText: "Ok",
-                    closeOnConfirm: true
+                    timer: 2000,
+                    showConfirmButton: false
                 },
                 function(){
                     $('#' + elemento).html(conteudoElemento);
                     if(pai_id>0){
                         window.location.reload();
+
                     }
+                    swal.close();
                 });
 
         }else{
@@ -51,15 +51,14 @@ function workflowCall(item_id, tipo_item, aprovou, elemento, motivo, justificati
                     title: 'Oops',
                     text: retorno.resposta,
                     type: "error",
-                    showCancelButton: false,
-                    confirmButtonColor: "#7ED32C",
-                    confirmButtonText: "Ok",
-                    closeOnConfirm: true
+                    timer: 2000,
+                    showConfirmButton: false
                 },
                 function(){
                     if(retorno.refresh){
                         window.location.reload();
                     }
+                    swal.close();
                 });
 
 

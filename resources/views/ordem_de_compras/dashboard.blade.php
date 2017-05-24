@@ -47,7 +47,8 @@
                             <div class="element-grafico">
                                 <div class="element-head">ORDENS DE COMPRA</div>
                                 <div class="element-body">
-                                    <chartjs-bar :labels="{{$json_labels}}" :data="{{$json_data}}"
+                                    <chartjs-bar :datalabel="mylabel"
+                                                 :labels="{{$json_labels}}" :data="{{$json_data}}"
                                                  :beginzero="myboolean"
                                                  :backgroundcolor="mybackgroundcolor"
                                                  :bordercolor="mybordercolor"
@@ -69,7 +70,7 @@
                             <div class="element-grafico">
                                 <div class="element-head">FAROL</div>
                                 <div class="element-body">
-                                    <chartjs-pie :labels="labelsFarol" :datasets="datasetsFarol" :scalesdisplay="false" :height="250"></chartjs-pie>
+                                    <chartjs-pie :labels="labelsFarol" :datasets="datasetsFarol" :scalesdisplay="false" :option="myoption2" :height="250"></chartjs-pie>
                                 </div>
                             </div>
                         </div>
@@ -90,19 +91,20 @@
         const app = new Vue({
             el: '#app',
             data:{
+                mylabel : 'quantidade',
                 myboolean : true,
                 mybackgroundcolor : ['rgba(255,0,0,1)','rgba(249,141,0,1)','rgba(126, 211, 33,1)'],
                 mybordercolor : ['rgba(255,0,0,1)','rgba(249,141,0,1)','rgba(126, 211, 33,1)'],
                 myoption: {
                     onClick: function (event, legendItem) {
                         if(legendItem[0]._index == 0){
-                            window.location.href = "{{url('ordens-de-compra?oc_status_id-foreign_key-OcStatus-nome-id=4')}}";
+                            window.location.href = "{{url('ordens-de-compra?oc_status_id=4')}}";
                         }
                         if(legendItem[0]._index == 1){
-                            window.location.href = "{{url('ordens-de-compra?oc_status_id-foreign_key-OcStatus-nome-id=3')}}";
+                            window.location.href = "{{url('ordens-de-compra?oc_status_id=3')}}";
                         }
                         if(legendItem[0]._index == 2){
-                            window.location.href = "{{url('ordens-de-compra?oc_status_id-foreign_key-OcStatus-nome-id=5')}}";
+                            window.location.href = "{{url('ordens-de-compra?oc_status_id=5')}}";
                         }
                     },
                     responsive:true,
@@ -129,6 +131,19 @@
                 },
 
                 labelsFarol: ["Abaixo do orçamento", "Dentro do orçamento", "Acima do orçamento"],
+                myoption2: {
+                    onClick: function (event, legendItem) {
+                        if (legendItem[0]._index == 0) {
+                            window.location.href = "{{url('ordens-de-compra?status_oc=-1')}}";
+                        }
+                        if (legendItem[0]._index == 1) {
+                            window.location.href = "{{url('ordens-de-compra?status_oc=0')}}";
+                        }
+                        if (legendItem[0]._index == 2) {
+                            window.location.href = "{{url('ordens-de-compra?status_oc=1')}}";
+                        }
+                    }
+                },
                 datasetsFarol:[{
                     data: [{{$abaixo_orcamento}}, {{$dentro_orcamento}}, {{$acima_orcamento}}],
                     backgroundColor: [
