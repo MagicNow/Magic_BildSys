@@ -201,7 +201,7 @@
             clearInputs();
           })
           .fail(function() {
-            console.log(arguments);
+            swal('Ops!', 'Ocorreu um erro ao adicionar insumo na lista.', "error");
           })
           .always(stopLoading())
       });

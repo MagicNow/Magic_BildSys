@@ -389,10 +389,20 @@
                                                 <td class="text-center">{{ $item->unidade_sigla . ' - '.$item->unidade->descricao }}</td>
                                                 <td class="text-center">{{ number_format($item->qtd_inicial, 2, ',','.') }}</td>
                                                 <td class="text-center"><small class="pull-left">R$</small> {{ number_format($item->preco_inicial, 2, ',','.') }}</td>
-                                                <td class="text-center">{{ number_format(doubleval($item->qtd_realizada), 2, ',','.') }}</td>
-                                                <td class="text-center"><small class="pull-left">R$</small> {{ number_format( doubleval($item->valor_realizado), 2, ',','.') }}</td>
-                                                <td class="text-center">{{ number_format( $item->qtd_inicial-doubleval($item->qtd_realizada), 2, ',','.') }}</td>
-                                                <td class="text-center"><small class="pull-left">R$</small> {{ number_format( $item->preco_inicial-doubleval($item->valor_realizado), 2, ',','.') }}</td>
+                                                <td class="text-center">
+                                                    {{--{{ number_format(doubleval($item->qtd_realizada), 2, ',','.') }}--}} 0
+                                                </td>
+                                                <td class="text-center">
+                                                    <small class="pull-left">R$</small>
+                                                    {{--{{ number_format( doubleval($item->valor_realizado), 2, ',','.') }}--}} 0
+                                                </td>
+                                                <td class="text-center">
+                                                    {{--{{ number_format( $item->qtd_inicial-doubleval($item->qtd_realizada), 2, ',','.') }}--}} 0
+                                                </td>
+                                                <td class="text-center">
+                                                    <small class="pull-left">R$</small>
+                                                    {{--{{ number_format( $item->preco_inicial-doubleval($item->valor_realizado), 2, ',','.') }}--}} 0
+                                                </td>
                                             </tr>
                                             </tbody>
                                         </table>
@@ -411,8 +421,13 @@
                                             </thead>
                                             <tbody>
                                             <tr>
-                                                <td class="text-center">{{ number_format( $item->qtd_inicial - doubleval($item->qtd_realizada), 2, ',','.') }}</td>
-                                                <td class="text-center"><small class="pull-left">R$</small> {{ number_format( $item->preco_inicial-doubleval($item->valor_realizado), 2, ',','.') }}</td>
+                                                <td class="text-center">
+                                                    {{--{{ number_format( $item->qtd_inicial - doubleval($item->qtd_realizada), 2, ',','.') }}--}} 0
+                                                </td>
+                                                <td class="text-center">
+                                                    <small class="pull-left">R$</small>
+                                                    {{--{{ number_format( $item->preco_inicial-doubleval($item->valor_realizado), 2, ',','.') }}--}} 0
+                                                </td>
                                                 <td class="text-center"><strong>{{ $item->qtd }}</strong></td>
                                                 <td class="text-center"><small class="pull-left">R$</small> <strong>{{ number_format(doubleval($item->valor_total), 2, ',','.') }}</strong></td>
                                                 <td class="text-center">{{ $item->sugestao_data_uso ? $item->sugestao_data_uso->format('d/m/Y') : ''  }}</td>
