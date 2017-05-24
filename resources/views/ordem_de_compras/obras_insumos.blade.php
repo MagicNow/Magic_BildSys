@@ -196,23 +196,26 @@
     <script type="text/javascript">
 
         function quantidadeCompra(id, obra_id, grupo_id, subgrupo1_id, subgrupo2_id, subgrupo3_id, servico_id, value) {
-            $.ajax({
-                url: "{{url('/compras/'.(isset($obra) ? $obra->id : $planejamento->id).'/addCarrinho')}}",
-                data: {
-                    'id' : id,
-                    'obra_id': obra_id,
-                    'grupo_id' : grupo_id,
-                    'subgrupo1_id' : subgrupo1_id,
-                    'subgrupo2_id' : subgrupo2_id,
-                    'subgrupo3_id' : subgrupo3_id,
-                    'servico_id' : servico_id,
-                    'quantidade_compra' : (value == '' ? 0 : value),
-                    '_token' : $('meta[name="csrf-token"]').attr('content')
-                },
-                type: "POST"
-            }).done(function(retorno) {
-                window.LaravelDataTables["dataTableBuilder"].draw(false);
-            });
+            console.log(parseFloat(value));
+            if(parseFloat(value) != 0) {
+                $.ajax({
+                    url: "{{url('/compras/'.(isset($obra) ? $obra->id : $planejamento->id).'/addCarrinho')}}",
+                    data: {
+                        'id': id,
+                        'obra_id': obra_id,
+                        'grupo_id': grupo_id,
+                        'subgrupo1_id': subgrupo1_id,
+                        'subgrupo2_id': subgrupo2_id,
+                        'subgrupo3_id': subgrupo3_id,
+                        'servico_id': servico_id,
+                        'quantidade_compra': (value == '0,00' ? 0 : value),
+                        '_token': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    type: "POST"
+                }).done(function (retorno) {
+                    window.LaravelDataTables["dataTableBuilder"].draw(false);
+                });
+            }
         }
 
         function totalCompra(id, obra_id, grupo_id, subgrupo1_id, subgrupo2_id, subgrupo3_id, servico_id, value){
