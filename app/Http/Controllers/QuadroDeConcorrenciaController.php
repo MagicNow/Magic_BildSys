@@ -108,10 +108,11 @@ class QuadroDeConcorrenciaController extends AppBaseController
 
             return redirect(route('quadroDeConcorrencias.index'));
         }
+
         $show = 1;
 
-        $motivos_reprovacao = WorkflowReprovacaoMotivo::where(function($query){
-            $query->where('workflow_tipo_id',2);
+        $motivos_reprovacao = WorkflowReprovacaoMotivo::where(function($query) {
+            $query->where('workflow_tipo_id', 2);
             $query->orWhereNull('workflow_tipo_id');
         })->pluck('nome','id')->toArray();
 

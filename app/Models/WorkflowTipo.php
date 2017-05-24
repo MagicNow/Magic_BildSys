@@ -13,10 +13,12 @@ class WorkflowTipo extends Model
 {
 
     public $table = 'workflow_tipos';
-    
+
     public $timestamps = false;
 
-
+    const OC = 1;
+    const QC = 2;
+    const CONTRATO = 3;
 
     public $fillable = [
         'nome',
@@ -40,7 +42,7 @@ class WorkflowTipo extends Model
      * @var array
      */
     public static $rules = [
-        
+
     ];
 
     /**

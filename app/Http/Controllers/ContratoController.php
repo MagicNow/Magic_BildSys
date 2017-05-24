@@ -13,6 +13,11 @@ use Response;
 use App\Repositories\Admin\FornecedoresRepository;
 use App\Repositories\Admin\ObraRepository;
 use App\Repositories\ContratoStatusRepository;
+use Illuminate\Support\Facades\App;
+use App\Repositories\WorkflowAprovacaoRepository;
+use Illuminate\Http\Request;
+use App\Repositories\Admin\WorkflowReprovacaoMotivoRepository;
+use App\Models\WorkflowTipo;
 
 class ContratoController extends AppBaseController
 {
@@ -60,8 +65,11 @@ class ContratoController extends AppBaseController
         );
     }
 
-    public function show($id)
-    {
+    public function show(
+        $id,
+        Request $request,
+        WorkflowReprovacaoMotivoRepository $workflowReprovacaoMotivoRepository
+    ) {
         $contrato = $this->contratoRepository->findWithoutFail($id);
 
         if (empty($contrato)) {
@@ -70,19 +78,21 @@ class ContratoController extends AppBaseController
             return redirect(route('contratos.index'));
         }
 
-        return view('contratos.show')->with('contrato', $contrato);
-    }
+        $workflowAprovacao = WorkflowAprovacaoRepository::verificaAprovacoes(
+            'Contrato',
+            $contrato->id,
+            $request->user()
+        );
 
-    public function save($id)
-    {
-        $contrato = $this->contratoRepository->findWithoutFail($id);
+        $motivos = $workflowReprovacaoMotivoRepository
+            ->porTipo(WorkflowTipo::CONTRATO)
+            ->pluck('nome', 'id')
+            ->prepend('Motivos...', '')
+            ->all();
 
-        if (empty($contrato)) {
-            Flash::error('Contrato '.trans('common.not-found'));
 
-            return redirect(route('contratos.index'));
-        }
-
-        return view('contratos.edit')->with('contrato', $contrato);
+        return view('contratos.show')->with(
+            compact('contrato', 'workflowAprovacao', 'motivos')
+        );
     }
 }

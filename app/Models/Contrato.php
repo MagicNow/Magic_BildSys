@@ -26,6 +26,8 @@ class Contrato extends Model
         'arquivo'
     ];
 
+    public static $workflow_tipo_id = WorkflowTipo::CONTRATO;
+
     /**
      * The attributes that should be casted to native types.
      *
@@ -55,7 +57,7 @@ class Contrato extends Model
      **/
     public function status()
     {
-        return $this->belongsTo(ContratoStatus::class);
+        return $this->belongsTo(ContratoStatus::class, 'contrato_status_id');
     }
 
     /**
@@ -104,5 +106,44 @@ class Contrato extends Model
     public function contratoStatusLogs()
     {
         return $this->hasMany(ContratoStatusLog::class);
+    }
+
+    public function irmaosIds() {
+        return [$this->attributes['id'] => $this->attributes['id']];
+    }
+
+    public function aprovacoes()
+    {
+        return $this->morphMany(WorkflowAprovacao::class, 'aprovavel');
+    }
+
+    public function paiEmAprovacao()
+    {
+        return false;
+    }
+
+    public function confereAprovacaoGeral()
+    {
+        return false;
+    }
+
+    public function qualObra()
+    {
+        return null;
+    }
+
+    public function aprova($isAprovado)
+    {
+        $this->attributes['contrato_status_id'] = $isAprovado
+            ? ContratoStatus::APROVADO
+            : ContratoStatus::REPROVADO;
+
+        $this->save();
+
+        ContratoStatusLog::create([
+            'contrato_id' => $this->attributes['id'],
+            'contrato_status_id' => $this->attributes['contrato_status_id'],
+            'user_id' => auth()->id()
+        ]);
     }
 }

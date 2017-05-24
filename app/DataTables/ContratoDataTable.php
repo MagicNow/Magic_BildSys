@@ -27,14 +27,18 @@ class ContratoDataTable extends DataTable
             ->editColumn('valor_total', function ($contrato) {
                 return float_to_money($contrato->valor_total);
             })
+            ->editColumn('status', function($obj){
+                return '<i class="fa fa-circle" aria-hidden="true" style="color:'
+                    . $obj->status_cor
+                    . '"></i> '
+                    . $obj->status;
+            })
             ->addColumn('action', 'contratos.datatables_actions')
             ->make(true);
     }
 
     /**
      * Get the query object to be processed by dataTables.
-     *
-     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder|\Illuminate\Support\Collection
      */
     public function query()
     {
@@ -46,7 +50,8 @@ class ContratoDataTable extends DataTable
             'contratos.valor_total',
             'fornecedores.nome as fornecedor',
             'obras.nome as obra',
-            'contrato_status.nome as status'
+            'contrato_status.nome as status',
+            'contrato_status.cor as status_cor'
         ])
         ->join('obras', 'obras.id', 'contratos.obra_id')
         ->join('fornecedores', 'fornecedores.id', 'contratos.fornecedor_id')
