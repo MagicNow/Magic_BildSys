@@ -32,7 +32,7 @@
                     type: form.attr('method'),
                     url: form.attr('action'),
                     data: form.serialize()
-                }).success(function (retorno) {
+                }).done(function (retorno) {
                     parent.novoObjeto = retorno;
                     setTimeout(function () {
                         eval('parent.'+parent.funcaoPosCreate);
@@ -61,7 +61,7 @@
                     contentType: false,
                     cache: false,
                     processData: false
-                }).success(function (retorno) {
+                }).done(function (retorno) {
                     parent.novoObjeto = retorno;
                     setTimeout(function () {
                         eval('parent.'+parent.funcaoPosCreate);

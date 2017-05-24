@@ -200,7 +200,7 @@
             clicks++;
             clearInputs();
           })
-          .error(function() {
+          .fail(function() {
             console.log(arguments);
           })
           .always(stopLoading())
