@@ -393,7 +393,8 @@ class LembretesHomeDataTable extends DataTable
         // Pega se existir
         $igId = null;
         if($this->request()->get('columns')){
-            if(isset($this->request()->get('columns')[3]['search']['value'])){
+            $column = $this->request()->get('columns');
+            if(isset($column[3]['search']['value'])) {
                 $insumoGrupo = InsumoGrupo::where('nome','like',$this->request()->get('columns')[3]['search']['value'])->first();
                 if($insumoGrupo){
                     $igId = $insumoGrupo->id;
