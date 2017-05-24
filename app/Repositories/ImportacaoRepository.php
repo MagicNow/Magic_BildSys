@@ -112,7 +112,7 @@ class ImportacaoRepository
                 'AGN_ST_INSCRESTADUAL',
                 'AGN_ST_EMAIL',
                 'AGN_ST_URL'])
-                ->where($param_type, trim($param_value))
+                ->where(DB::raw('trim('.$param_type.')'), trim($param_value))
                 ->first();
         try {
             if ($fornecedores_mega) {
