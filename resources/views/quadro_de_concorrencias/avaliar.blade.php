@@ -14,7 +14,10 @@
               data-toggle="modal"
               data-target="#modal-finalizar">
               <i class="fa fa-trophy" aria-hidden="true"></i>
-              Informar vencedor ou gerar nova rodada
+              Informar vencedor
+                ou
+                <i class="fa fa-refresh" aria-hidden="true"></i>
+                Gerar nova rodada
             </button>
           </section>
         </div>
@@ -124,9 +127,13 @@
                         'id' => 'form-finalizar'
                       ])
                     !!}
-                    <div class="box box-muted collapsed-box">
+                    <div class="box box-warning collapsed-box">
                         <div class="box-header with-border">
-                            <h3 class="box-title">Nova Rodada</h3>
+                            <h3 class="box-title">
+                                <button type="button" class="btn btn-warning btn-flat btn-flat btn-lg" data-widget="collapse">
+                                    Nova Rodada
+                                </button>
+                            </h3>
                             <div class="box-tools pull-right">
                                 <button type="button" class="btn btn-box-tool" data-widget="collapse">
                                     <i class="fa fa-plus"></i>
@@ -144,22 +151,27 @@
                             @endforeach
                         </div>
                         <div class="box-footer">
-                            <button class="btn btn-default pull-right btn-sm btn-flat" id="nova-rodada">
-                                Gerar nova rodada
+                            <button class="btn btn-warning pull-right btn-lg btn-flat" id="nova-rodada">
+                                <i class="fa fa-refresh" aria-hidden="true"></i> Gerar nova rodada
                             </button>
                         </div>
                     </div>
-                    <div class="box box-muted collapsed-box">
+                    <div class="box box-success collapsed-box">
                         <div class="box-header with-border">
-                            <h3 class="box-title">Finalizar Quadro de Concorrência</h3>
+                            <h3 class="box-title">
+                                <button type="button" class="btn btn-success btn-lg btn-flat" data-widget="collapse">
+                                    Finalizar Quadro de Concorrência
+                                </button>
+                            </h3>
                             <div class="box-tools pull-right">
+
                                 <button type="button" class="btn btn-box-tool" data-widget="collapse">
                                     <i class="fa fa-plus"></i>
                                 </button>
                             </div>
                         </div>
                         <div class="box-body table-responsive">
-                            <table class="table table-striped table-align-middle text-center">
+                            <table class="table table-striped table-align-middle">
                                 <thead>
                                 <tr>
                                     <th>Insumos</th>
@@ -172,13 +184,13 @@
                                 <tbody>
                                 @foreach($quadro->itens as $item)
                                     <tr class="js-insumo-row">
-                                        <td>{{ $item->insumo->nome }}</td>
+                                        <td class="text-left">{{ $item->insumo->nome }}</td>
                                         <td>
                                             {{ float_to_money($item->qtd, '') }}
                                             {{ $item->insumo->unidade_sigla }}
                                         </td>
                                         @foreach($qcFornecedores as $qcFornecedor)
-                                            <th>
+                                            <th class="text-center">
                                                 <div class="radio">
                                                     <label>
                                                         @php
@@ -200,11 +212,29 @@
                                         @endforeach
                                     </tr>
                                 @endforeach
+                                @if($quadro->hasMaterial())
+                                <tr>
+                                    <td colspan="2" class="text-right"> <strong>Frete</strong></td>
+                                    @foreach($qcFornecedores as $qcFornecedor)
+                                        <td class="text-center">
+                                            {{ $qcFornecedor->tipo_frete }}
+                                            <div class="input-group">
+                                                <span class="input-group-addon">R$</span>
+                                                <input type="text"
+                                                       class="form-control money"
+                                                       value="{{ $qcFornecedor->valor_frete }}"
+                                                       name="valor_frete[{{$qcFornecedor->id}}]">
+                                            </div>
+                                        </td>
+                                    @endforeach
+                                </tr>
+                                @endif
                                 </tbody>
                             </table>
                         </div>
                         <div class="box-footer">
-                            <button class="btn btn-default pull-right btn-sm btn-flat" id="finalizar">
+                            <button class="btn btn-success pull-right btn-lg btn-flat" id="finalizar">
+                                <i class="fa fa-trophy" aria-hidden="true"></i>
                                 Finalizar Quadro de Concorrência
                             </button>
                         </div>

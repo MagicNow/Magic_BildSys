@@ -378,6 +378,13 @@ class QuadroDeConcorrenciaController extends AppBaseController
             $quadro->update([
                 'qc_status_id' => QcStatus::CONCORRENCIA_FINALIZADA
             ]);
+            if($request->valor_frete){
+                foreach ($request->valor_frete as $qcFornecedorId => $valor){
+                    $qcFornecedor = QcFornecedor::find($qcFornecedorId);
+                    $qcFornecedor->valor_frete = money_to_float($valor);
+                    $qcFornecedor->save();
+                }
+            }
             $qcStatusLogRepository->create([
                 'qc_status_id' => QcStatus::CONCORRENCIA_FINALIZADA,
                 'quadro_de_concorrencia_id' => $quadro->id,
@@ -541,7 +548,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
                     return back()->withInput();
                 }
 
-                if(empty(array_filter($request->only(['nf_material', 'nf_servico'])))) {
+                if(empty(array_filter($request->only(['nf_material', 'nf_servico', 'nf_locacao'])))) {
                     DB::rollback();
                     Flash::error('Selecione pelo menos um tipo de nota fiscal');
 
@@ -551,13 +558,31 @@ class QuadroDeConcorrenciaController extends AppBaseController
                 $qcFornecedor->update([
                     'nf_material' => $request->nf_material,
                     'nf_servico' => $request->nf_servico,
+                    'nf_locacao' => $request->nf_locacao,
                     'porcentagem_faturamento_direto' => $request->porcentagem_faturamento_direto ?: 0,
                     'porcentagem_material' => $request->porcentagem_material ?: 0,
                     'porcentagem_servico' => $request->porcentagem_servico ?: 0,
                 ]);
+            }elseif(!$quadro->hasServico() && !$request->reject) {
+                $qcFornecedor->update([
+                    'nf_material' => 1,
+                    'nf_servico' => 0,
+                    'nf_locacao' => 0,
+                    'porcentagem_faturamento_direto' => 0,
+                    'porcentagem_material' => 100,
+                    'porcentagem_servico' => 0,
+                ]);
             }
 
             if(!$request->reject) {
+
+                if($quadro->hasMaterial()){
+                    $qcFornecedor->update([
+                        'tipo_frete' => $request->tipo_frete,
+                        'valor_frete' => money_to_float($request->valor_frete),
+                    ]);
+                }
+
                 foreach($request->equalizacoes as $check) {
                     $check['qc_fornecedor_id'] = $qcFornecedor->id;
                     $check['user_id'] = $request->user()->id;
