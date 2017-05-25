@@ -35,11 +35,6 @@
                         </h3>
                     </span>
                 </div>
-                <div class="col-md-6 text-right">
-                    <a href="{!! route('retroalimentacaoObras.create') !!}" class="btn btn-default btn-lg btn-flat">
-                        Retroalimentação
-                    </a>
-                </div>
             </div>
         </div>
     </section>
@@ -103,60 +98,6 @@
                         <h4 class="highlight">{{ $item->insumo->codigo . ' - '. $item->insumo->nome }}
                             <a href="/ordens-de-compra/detalhes/{{ $item->ordem_de_compra_id }}" style="font-size:15px;">OC: {{$item->ordem_de_compra_id . ' - Obra: '. $item->obra->nome . ' - Responsável: '. $item->ordemDeCompra->user->name }}</a>
                         </h4>
-                    </div>
-                    <div class="col-md-2 text-right">
-                        @if(!is_null($item->aprovado))
-                            @if($item->aprovado)
-                                <button type="button" disabled="disabled"
-                                        class="btn btn-success btn-lg btn-flat">
-                                    <i class="fa fa-check" aria-hidden="true"></i>
-                                </button>
-                            @else
-                                <button type="button" disabled="disabled"
-                                        class="btn btn-danger btn-lg btn-flat">
-                                    <i class="fa fa-times" aria-hidden="true"></i>
-                                </button>
-                            @endif
-                        @else
-                            <?php
-                            $workflowAprovacao = \App\Repositories\WorkflowAprovacaoRepository::verificaAprovacoes('OrdemDeCompraItem', $item->id, Auth::user());
-                            ?>
-                            @if($workflowAprovacao['podeAprovar'])
-                                @if($workflowAprovacao['iraAprovar'])
-                                    <div class="btn-group" role="group" id="blocoItemAprovaReprova{{ $item->id }}" aria-label="...">
-                                        <button type="button" onclick="workflowAprovaReprova({{ $item->id }},'OrdemDeCompraItem',1,'blocoItemAprovaReprova{{ $item->id }}','Insumo {{ $item->insumo->codigo }}',0, '', '');"
-                                                class="btn btn-default btn-lg btn-flat"
-                                                title="Aprovar Este item">
-                                            <i class="fa fa-check" aria-hidden="true"></i>
-                                        </button>
-                                        <button type="button" onclick="workflowAprovaReprova({{ $item->id }},'OrdemDeCompraItem',0, 'blocoItemAprovaReprova{{ $item->id }}','Insumo {{ $item->insumo->codigo }}',0, '', '');"
-                                                class="btn btn-default btn-lg btn-flat"
-                                                title="Reprovar Este item">
-                                            <i class="fa fa-times" aria-hidden="true"></i>
-                                        </button>
-                                    </div>
-                                @else
-                                    @if($workflowAprovacao['jaAprovou'])
-                                        @if($workflowAprovacao['aprovacao'])
-                                            <span class="btn-lg btn-flat text-success" title="Aprovado por você">
-                                                <i class="fa fa-check" aria-hidden="true"></i>
-                                            </span>
-                                        @else
-                                            <span class="text-danger btn-lg btn-flat" title="Reprovado por você">
-                                                <i class="fa fa-times" aria-hidden="true"></i>
-                                            </span>
-                                        @endif
-                                    @else
-                                        {{--Não Aprovou ainda, pode aprovar, mas por algum motivo não irá aprovar no momento--}}
-                                        <button type="button" title="{{ $workflowAprovacao['msg'] }}"
-                                                onclick="swal('{{ $workflowAprovacao['msg'] }}','','info');"
-                                                class="btn btn-default btn-lg btn-flat">
-                                            <i class="fa fa-info" aria-hidden="true"></i>
-                                        </button>
-                                    @endif
-                                @endif
-                            @endif
-                        @endif
                     </div>
                     <div class="col-md-12 table-responsive margem-topo">
                         <table class="table table-bordered table-striped">
@@ -277,16 +218,3 @@
         </div>
     </div>
 @endsection
-@section('scripts')
-    <script type="text/javascript">
-        <?php
-                $options_motivos = "<option value=''>Escolha...</option>";
-                foreach($motivos_reprovacao as $motivo_id=>$motivo_nome){
-                    $options_motivos .= "<option value='".$motivo_id."'>".$motivo_nome."</option>";
-                }
-                ?>
-                options_motivos = "{!! $options_motivos !!}";
-
-
-    </script>
-@stop
