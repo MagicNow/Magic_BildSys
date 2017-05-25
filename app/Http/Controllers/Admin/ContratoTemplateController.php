@@ -154,4 +154,18 @@ class ContratoTemplateController extends AppBaseController
 
         return redirect(route('admin.contratoTemplates.index'));
     }
+
+    public function camposExtras($id){
+        $contratoTemplate = $this->contratoTemplateRepository->findWithoutFail($id);
+
+        if (empty($contratoTemplate)) {
+            return response()->json(['error'=>'Contrato Template '.trans('common.not-found')],404);
+        }
+        $campos_extras = [];
+        if( strlen(trim($contratoTemplate->campos_extras)) ){
+            $campos_extras = json_decode($contratoTemplate->campos_extras);
+        }
+
+        return response()->json(['campos_extras'=>$campos_extras]);
+    }
 }

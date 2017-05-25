@@ -29,11 +29,13 @@
                         <span class="col-md-4">
                            <label>Template de Contrato</label>
                         </span>
-                        <span class="col-md-8">
+                        <span class="col-md-8 text-left">
                             {!! Form::select('template['.$qcFornecedor->id.']',[''=>'Selecione...']+
                             \App\Models\ContratoTemplate::pluck('nome','id')->toArray(),null,[
-                            'class'=>'form-control select2',
-                            'required'=>'required'
+                            'class'=>'form-control select2 contratoTemplate',
+                            'required'=>'required',
+                            'id'=>'contratoTemplate'.$qcFornecedor->id,
+                            'qcFornecedor'=>$qcFornecedor->id
                             ]) !!}
                         </span>
                 </div>
@@ -41,7 +43,7 @@
             <div class="box-body">
                 <div class="col-md-6">
                     <h4>Itens do Contrato</h4>
-                    <table class="table table-striped table-hovered table-condensed">
+                    <table class="table table-striped table-hovered table-bordered table-condensed">
                         <thead>
                             <tr>
                                 <th width="70%">Insumo</th>
@@ -69,47 +71,18 @@
                         </tfoot>
                     </table>
                 </div>
-                <div class="col-md-6" id="blocoCamposExtras">
+                <div class="col-md-6" id="blocoCamposExtras{{ $qcFornecedor->id }}" style="display: none">
                     <h4>Campos Extras</h4>
-                    <ul class="list-group form-inline">
-                        <li class="list-group-item">
-                            <div class="form-group">
-                                <label for="campo[dias]">Dias</label>
-                                <input type="text" class="form-control" id="campo[dias]" placeholder="Dias">
-                            </div>
-                            <div class="form-group">
-                                <label for="campo[dias]">Número</label>
-                            </div>
-                        </li>
-                        <li class="list-group-item">
-                            <div class="form-group">
-                                <label for="campo[dias]">Dias</label>
-                                <input type="text" class="form-control" id="campo[dias]" placeholder="Dias">
-                            </div>
-                            <div class="form-group">
-                                <label for="campo[dias]">Número</label>
-                            </div>
-                        </li>
-                        <li class="list-group-item">
-                            <div class="form-group">
-                                <label for="campo[dias]">Dias</label>
-                                <input type="text" class="form-control" id="campo[dias]" placeholder="Dias">
-                            </div>
-                            <div class="form-group">
-                                <label for="campo[dias]">Número</label>
-                            </div>
-                        </li>
-                        <li class="list-group-item">
-                            <div class="form-group">
-                                <label for="campo[dias]">Dias</label>
-                                <input type="text" class="form-control" id="campo[dias]" placeholder="Dias">
-                            </div>
-                            <div class="form-group">
-                                <label for="campo[dias]">Número</label>
-                            </div>
-                        </li>
+                    <table class="table table-condensed table-hovered table-striped table-bordered">
+                        <thead>
+                            <th width="40%">Campo</th>
+                            <th width="40%">Valor</th>
+                            <th width="20%">Tipo</th>
+                        </thead>
+                        <tbody>
 
-                    </ul>
+                        </tbody>
+                    </table>
                 </div>
             </div>
             <div class="box-footer text-center">
@@ -129,6 +102,39 @@
 @endsection
 @section('scripts')
 <script type="text/javascript">
-
+    $(function () {
+        $('.contratoTemplate').on('select2:select', function (evt) {
+            var qcFornecedor = $(evt.target).attr('qcFornecedor');
+            if(parseInt($(evt.target).val())==0){
+                $('#blocoCamposExtras'+qcFornecedor).hide();
+                return false;
+            }
+            $.ajax('/contrato-template/'+$(evt.target).val()+'/campos')
+                    .done(function (retorno) {
+                        var campos = '';
+                        console.log(retorno.campos_extras);
+                        if(retorno.campos_extras){
+                            $.each(retorno.campos_extras, function(index, valor){
+                               campos += '<tr>'+
+                                        '   <td class="text-center">'+
+                                        '       <label for="'+valor.tag+'">'+valor.nome+'</label>' +
+                                        '   </td>'+
+                                        '   <td>'+
+                                        '       <input type="text" class="form-control" required="required" name="'+valor.tag+'" placeholder="'+valor.nome+'">'+
+                                        '   </td>'+
+                                        '   <td class="text-center">'+
+                                        '       <label for="'+valor.tag+'">'+valor.tipo+'</label>'+
+                                        '   </td>'+
+                                        '</tr>';
+                            });
+                        }
+                        $('#blocoCamposExtras'+qcFornecedor+' tbody').html(campos);
+                        $('#blocoCamposExtras'+qcFornecedor).show();
+                    })
+                    .fail(function (retorno) {
+                        swal('Erro', 'Houve um problema ao buscar dados do template','error');
+                    });
+        });
+    });
 </script>
 @stop
