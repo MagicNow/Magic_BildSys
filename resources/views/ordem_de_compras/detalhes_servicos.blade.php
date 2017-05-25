@@ -95,8 +95,14 @@
             <div class="panel panel-default">
                 <div class="panel-body">
                     <div class="col-md-10">
-                        <h4 class="highlight">{{ $item->insumo->codigo . ' - '. $item->insumo->nome }}
-                            <a href="/ordens-de-compra/detalhes/{{ $item->ordem_de_compra_id }}" style="font-size:15px;">OC: {{$item->ordem_de_compra_id . ' - Obra: '. $item->obra->nome . ' - Responsável: '. $item->ordemDeCompra->user->name }}</a>
+                        <h4 class="highlight">
+                            <span class="col-md-7">{{ $item->insumo->codigo . ' - '. $item->insumo->nome }}</span>
+                            @php $ordem_de_compras_ids = explode(",", $item->ordem_de_compras_ids) @endphp
+                            <ol class="breadcrumb col-md-5" style="padding: 0px;margin-bottom: 0px; background-color:transparent">
+                                @foreach($ordem_de_compras_ids as $ordem_de_compra_id)
+                                    <li><a href="/ordens-de-compra/detalhes/{{ $ordem_de_compra_id }}" style="font-size:15px;">OC: {{ $ordem_de_compra_id }} </a></li>
+                                @endforeach
+                            </ol>
                         </h4>
                     </div>
                     <div class="col-md-12 table-responsive margem-topo">
