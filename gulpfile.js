@@ -211,8 +211,8 @@ elixir(function(mix) {
     ], 'public/js/insumo-grupo-activation.js');
 
     mix.scripts([
-        'filter-grupos.js',
-    ], 'public/js/filter-grupos.js');
+        'grupos-de-orcamento.js',
+    ], 'public/js/grupos-de-orcamento.js');
 
     mix.scripts([
         'general-filters.js',
@@ -221,5 +221,9 @@ elixir(function(mix) {
     mix.scripts([
         'filter-date.js',
     ], 'public/js/filter-date.js');
+
+    mix.scripts([
+        'contrato-actions.js',
+    ], 'public/js/contrato-actions.js');
 
 });

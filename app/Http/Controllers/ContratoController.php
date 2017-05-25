@@ -18,6 +18,8 @@ use App\Repositories\WorkflowAprovacaoRepository;
 use Illuminate\Http\Request;
 use App\Repositories\Admin\WorkflowReprovacaoMotivoRepository;
 use App\Models\WorkflowTipo;
+use App\DataTables\ContratoItemDataTable;
+use App\Models\ContratoItem;
 
 class ContratoController extends AppBaseController
 {
@@ -68,7 +70,8 @@ class ContratoController extends AppBaseController
     public function show(
         $id,
         Request $request,
-        WorkflowReprovacaoMotivoRepository $workflowReprovacaoMotivoRepository
+        WorkflowReprovacaoMotivoRepository $workflowReprovacaoMotivoRepository,
+        ContratoItemDataTable $contratoItemDataTable
     ) {
         $contrato = $this->contratoRepository->findWithoutFail($id);
 
@@ -90,9 +93,47 @@ class ContratoController extends AppBaseController
             ->prepend('Motivos...', '')
             ->all();
 
+        return $contratoItemDataTable
+            ->setContrato($id)
+            ->render(
+                'contratos.show',
+                compact('contrato', 'workflowAprovacao', 'motivos')
+            );
+    }
 
-        return view('contratos.show')->with(
-            compact('contrato', 'workflowAprovacao', 'motivos')
-        );
+    public function reajustarItem(
+        $id,
+        ReajustarRequest $request,
+        ContratoItemModificacaoRepository $contratoItemModificacaoRepository
+    ) {
+        $contratoItemModificacaoRepository->reajustar($id, $request->all());
+
+        return response()->json([
+            'success' => true
+        ]);
+    }
+
+    public function distratarItem(
+        $id,
+        DistratarRequest $request,
+        ContratoItemModificacaoRepository $contratoItemModificacaoRepository
+    ) {
+        $contratoItemModificacaoRepository->distratar($id, $request->all());
+
+        return response()->json([
+            'success' => true
+        ]);
+    }
+
+    public function reapropriarItem(
+        $id,
+        ReapropriarRequest $request,
+        ContratoItemModificacaoRepository $contratoItemModificacaoRepository
+    ) {
+        $contratoItemModificacaoRepository->reapropriar($id, $request->all());
+
+        return response()->json([
+            'success' => true
+        ]);
     }
 }

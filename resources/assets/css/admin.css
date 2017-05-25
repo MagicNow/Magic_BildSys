@@ -346,20 +346,20 @@ h6 {
 
 .pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover,
 .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus{
-    color: #f98d00;
-    font-weight: bold;
-    border: solid 1px #f98d00;
-    background-color: #fff;
+  color: #f98d00;
+  font-weight: bold;
+  border: solid 1px #f98d00;
+  background-color: #fff;
 }
 
 .pagination > li > a{
-    padding: 6px 12px;
-    border: solid 1px #979797;
-    margin: 2px;
+  padding: 6px 12px;
+  border: solid 1px #979797;
+  margin: 2px;
 }
 
 .margin10{
-    margin: 10px;
+  margin: 10px;
 }
 
 .box-chart > .box-body {
@@ -436,4 +436,15 @@ h6 {
   clip: rect(0 0 0 0);
   height: 1px; width: 1px;
   margin: -1px; padding: 0; border: 0;
+}
+.tooltip-inner {
+  max-width: 500px;
+  text-align: left !important;
+}
+
+.centered-modal.in {
+    display: flex !important;
+}
+.centered-modal .modal-dialog {
+    margin: auto;
 }

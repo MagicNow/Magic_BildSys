@@ -71,9 +71,9 @@ class Contrato extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function fornecedore()
+    public function fornecedor()
     {
-        return $this->belongsTo(Fornecedore::class);
+        return $this->belongsTo(Fornecedor::class, 'fornecedor_id');
     }
 
     /**

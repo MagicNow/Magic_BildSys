@@ -12,7 +12,7 @@
   <div class="content">
     <div class="box box-muted">
       <div class="box-body">
-        @include('partials.filter-grupos-de-orcamento')
+        @include('partials.grupos-de-orcamento')
         <div class="row">
           <div class="col-sm-3">
             <h4>Data</h4>

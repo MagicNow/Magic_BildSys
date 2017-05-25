@@ -654,6 +654,27 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             'contratos/{contratos}',
             ['as' => 'contratos.save', 'uses' => 'ContratoController@save']
         );
+        $router->post(
+            'contratos/reajustar-item/{item}',
+            [
+                'as' => 'contratos.reajustar-item',
+                'uses' => 'ContratoController@reajustarItem'
+            ]
+        );
+        $router->post(
+            'contratos/reapropriar-item/{item}',
+            [
+                'as' => 'contratos.reapropriar-item',
+                'uses' => 'ContratoController@reapropriarItem'
+            ]
+        );
+        $router->post(
+            'contratos/distratar-item/{item}',
+            [
+                'as' => 'contratos.distratar-item',
+                'uses' => 'ContratoController@distratarItem'
+            ]
+        );
     });
 
 

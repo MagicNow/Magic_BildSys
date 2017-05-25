@@ -1,5 +1,6 @@
 <div class="row">
-  <div class="form-group col-sm-6" style="width:20%">
+  <div class="form-group col-sm-6"
+    style="{{ isset($full) && $full ? 'width:100%' : 'width:20%' }}">
     {!! Form::label('grupo_id', 'Grupo') !!}
     {!!
       Form::select(
@@ -14,7 +15,8 @@
       )
     !!}
   </div>
-  <div class="form-group col-sm-6" style="width:20%">
+  <div class="form-group col-sm-6"
+    style="{{ isset($full) && $full ? 'width:100%' : 'width:20%' }}">
     {!! Form::label('subgrupo1_id', 'Subgrupo 1') !!}
     {!!
       Form::select(
@@ -30,7 +32,8 @@
       )
     !!}
   </div>
-  <div class="form-group col-sm-6" style="width:20%">
+  <div class="form-group col-sm-6"
+    style="{{ isset($full) && $full ? 'width:100%' : 'width:20%' }}">
     {!! Form::label('subgrupo2_id', 'Subgrupo 2') !!}
     {!!
       Form::select(
@@ -46,7 +49,8 @@
       )
     !!}
   </div>
-  <div class="form-group col-sm-6" style="width:20%">
+  <div class="form-group col-sm-6"
+    style="{{ isset($full) && $full ? 'width:100%' : 'width:20%' }}">
     {!! Form::label('subgrupo3_id', 'Subgrupo 3') !!}
     {!!
       Form::select(
@@ -62,7 +66,8 @@
       )
     !!}
   </div>
-  <div class="form-group col-sm-6" style="width:20%">
+  <div class="form-group col-sm-6"
+    style="{{ isset($full) && $full ? 'width:100%' : 'width:20%' }}">
     {!! Form::label('servico_id', 'Serviço') !!}
     {!!
       Form::select(
@@ -81,6 +86,5 @@
 </div>
 
 @section('scripts')
-  @parent
-  <script src="{{ asset('js/filter-grupos.js') }}"></script>
-@stop
+  <script src="{{ asset('js/grupos-de-orcamento.js') }}"></script>
+@append

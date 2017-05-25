@@ -19,7 +19,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        View::composer('partials.filter-grupos-de-orcamento', function($view) {
+        View::composer('partials.grupos-de-orcamento', function($view) {
             $view->with(
                 'grupos',
                 app(GrupoRepository::class)

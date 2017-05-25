@@ -83,8 +83,9 @@ function moneyToFloat(money) {
  *
  * @return {String}
  */
-function floatToMoney(number) {
-  return 'R$ ' + number.toLocaleString('pt-BR', {
+function floatToMoney(number, prefix) {
+  prefix = prefix == undefined ? 'R$ ' : '';
+  return prefix + number.toLocaleString('pt-BR', {
     minimumFractionDigits: 2
   });
 }

@@ -3,4 +3,4 @@
 @section('scripts')
     <script src="/vendor/datatables/buttons.server-side.js"></script>
     {!! $dataTable->scripts() !!}
-@endsection
+@stop
