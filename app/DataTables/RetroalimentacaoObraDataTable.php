@@ -26,6 +26,12 @@ class RetroalimentacaoObraDataTable extends DataTable
             ->editColumn('data_inclusao',function ($obj){
                 return $obj->data_inclusao ? with(new\Carbon\Carbon($obj->data_inclusao))->format('d/m/Y') : '';
             })
+            ->editColumn('situacao_atual',function ($obj){
+                return str_limit($obj->situacao_atual, $limit = 100, $end = '...');
+            })
+            ->editColumn('situacao_proposta',function ($obj){
+                return str_limit($obj->situacao_atual, $limit = 100, $end = '...');
+            })
             ->filterColumn('data_inclusao', function ($query, $keyword) {
                 $query->whereRaw("DATE_FORMAT(retroalimentacao_obras.data_inclusao,'%d/%m/%Y') like ?", ["%$keyword%"]);
             })
