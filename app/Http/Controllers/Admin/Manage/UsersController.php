@@ -188,13 +188,10 @@ class UsersController extends AppBaseController
      */
     public function update($id, UpdateUserRequest $request)
     {
-        if(!$request->email){
+        if(!$request->email) {
             Flash::error('O campo email é obrigatório');
-            return redirect('/admin/users/create')->withInput($request->except('password'));
-        }
-        if(!$request->roles){
-            Flash::error('O campo perfil é obrigatório');
-            return redirect('/admin/users/create')->withInput($request->except('password'));
+            return back()
+                ->withInput($request->except('password'));
         }
 
         $user = $this->userRepository->findWithoutFail($id);
