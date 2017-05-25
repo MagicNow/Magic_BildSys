@@ -295,7 +295,7 @@
                             <td class="text-center"><i class="fa fa-circle {{ (($item->qtd_realizada) > $item->qtd_inicial) ? 'text-danger': 'text-success'  }}" aria-hidden="true"></i> </td>
                             <td class="text-center">
                                 @if($item->servico)
-                                    <a href="/ordens-de-compra/detalhes-servicos/{{$ordemDeCompra->id}}/{{$item->servico->id}}" style="cursor:pointer;">
+                                    <a href="/ordens-de-compra/detalhes-servicos/{{$ordemDeCompra->obra_id}}/{{$item->servico->id}}" style="cursor:pointer;">
                                         <i class="fa fa-circle {{ (($item->qtd_realizada_servico) > $item->qtd_inicial_servico) ? 'text-danger': 'text-success'  }}" aria-hidden="true"></i>
                                     </a>
                                 @else

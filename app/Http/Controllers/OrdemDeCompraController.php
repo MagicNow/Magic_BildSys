@@ -1133,51 +1133,48 @@ class OrdemDeCompraController extends AppBaseController
         return response()->json(['success'=>true]);
     }
 
-    public function detalhesServicos($ordem_de_compra_id, $servico_id)
+    public function detalhesServicos($obra_id, $servico_id)
     {
-        //servico do orçamento do codigo estruturado, todos os insumos do servico, serviço no orçamento
-// cimento e pastilha no servico 1
-// bucha e tijolo no servico 2
-        $ordemDeCompra = $this->ordemDeCompraRepository->findWithoutFail($ordem_de_compra_id);
+        $servico = Servico::find($servico_id);
 
-        if (empty($ordemDeCompra)) {
-            Flash::error('Ordem De Compra '.trans('common.not-found'));
+        if (empty($servico)) {
+            Flash::error('Serviço não encontrado');
 
             return back();
         }
 
-        $servico = Servico::find($servico_id);
+        $ordemDeCompraItens = OrdemDeCompraItem::join('ordem_de_compras', 'ordem_de_compras.id', '=', 'ordem_de_compra_itens.ordem_de_compra_id')
+            ->where('ordem_de_compra_itens.servico_id', $servico_id)
+            ->whereIn('oc_status_id',[2,3,5]);
 
         $orcamentoInicial = $totalAGastar = $realizado = 0;
 
         $itens = collect([]);
 
-        if($ordemDeCompra->itens){
-            $orcamentoInicial = OrdemDeCompraItem::where('ordem_de_compra_id', $ordem_de_compra_id)
-                ->join('orcamentos', function ($join) use ($ordemDeCompra, $servico_id) {
+        if($ordemDeCompraItens){
+            $orcamentoInicial = OrdemDeCompraItem::join('orcamentos', function ($join) use ($servico_id, $obra_id) {
                     $join->on('orcamentos.insumo_id','=', 'ordem_de_compra_itens.insumo_id');
                     $join->on('orcamentos.grupo_id','=', 'ordem_de_compra_itens.grupo_id');
                     $join->on('orcamentos.subgrupo1_id','=', 'ordem_de_compra_itens.subgrupo1_id');
                     $join->on('orcamentos.subgrupo2_id','=', 'ordem_de_compra_itens.subgrupo2_id');
                     $join->on('orcamentos.subgrupo3_id','=', 'ordem_de_compra_itens.subgrupo3_id');
                     $join->on('orcamentos.servico_id','=', DB::raw($servico_id));
-                    $join->on('orcamentos.obra_id','=', DB::raw($ordemDeCompra->obra_id));
+                    $join->on('orcamentos.obra_id','=', DB::raw($obra_id));
                     $join->on('orcamentos.ativo','=', DB::raw('1'));
                 })
                 ->sum('orcamentos.preco_total');
 
-            $totalAGastar = $ordemDeCompra->itens()->sum('valor_total');
+            $totalAGastar = $ordemDeCompraItens->sum('valor_total');
 
             $realizado = OrdemDeCompraItem::join('ordem_de_compras','ordem_de_compras.id','=','ordem_de_compra_itens.ordem_de_compra_id')
-                ->where('ordem_de_compras.obra_id',$ordemDeCompra->obra_id)
+                ->where('ordem_de_compras.obra_id',$obra_id)
                 ->whereIn('oc_status_id',[2,3,5])
-                ->whereIn('ordem_de_compra_itens.insumo_id',$ordemDeCompra->itens()->pluck('insumo_id','insumo_id')->toArray())
+                ->whereIn('ordem_de_compra_itens.insumo_id',$ordemDeCompraItens->pluck('insumo_id','insumo_id')->toArray())
                 ->sum('ordem_de_compra_itens.valor_total');
 
             $saldo = $orcamentoInicial - $realizado;
 
-            $itens = OrdemDeCompraItem::where('ordem_de_compra_id', $ordem_de_compra_id)
-                ->select([
+            $itens = OrdemDeCompraItem::select([
                     'ordem_de_compra_itens.*',
                     DB::raw("(SELECT SUM( qtd )
                     FROM ordem_de_compra_itens OCI2
@@ -1194,7 +1191,7 @@ class OrdemDeCompraController extends AppBaseController
                     AND OCI2.subgrupo2_id = ordem_de_compra_itens.subgrupo2_id
                     AND OCI2.subgrupo3_id = ordem_de_compra_itens.subgrupo3_id
                     AND OCI2.servico_id = ".$servico_id."
-                    AND OCI2.obra_id = ".$ordemDeCompra->obra_id."
+                    AND OCI2.obra_id = ".$obra_id."
                     AND OCI2.deleted_at IS NULL
                 ) as qtd_realizada"),
                     DB::raw("(SELECT SUM( valor_total )
@@ -1212,20 +1209,20 @@ class OrdemDeCompraController extends AppBaseController
                     AND OCI2.subgrupo2_id = ordem_de_compra_itens.subgrupo2_id
                     AND OCI2.subgrupo3_id = ordem_de_compra_itens.subgrupo3_id
                     AND OCI2.servico_id = ".$servico_id."
-                    AND OCI2.obra_id = ".$ordemDeCompra->obra_id."
+                    AND OCI2.obra_id = ".$obra_id."
                     AND OCI2.deleted_at IS NULL
                 ) as valor_realizado"),
                     'orcamentos.qtd_total as qtd_inicial',
                     'orcamentos.preco_total as preco_inicial',
                 ])
-                ->join('orcamentos', function ($join) use ($ordemDeCompra, $servico_id){
+                ->join('orcamentos', function ($join) use ($servico_id, $obra_id){
                     $join->on('orcamentos.insumo_id','=', 'ordem_de_compra_itens.insumo_id');
                     $join->on('orcamentos.grupo_id','=', 'ordem_de_compra_itens.grupo_id');
                     $join->on('orcamentos.subgrupo1_id','=', 'ordem_de_compra_itens.subgrupo1_id');
                     $join->on('orcamentos.subgrupo2_id','=', 'ordem_de_compra_itens.subgrupo2_id');
                     $join->on('orcamentos.subgrupo3_id','=', 'ordem_de_compra_itens.subgrupo3_id');
                     $join->on('orcamentos.servico_id','=', DB::raw($servico_id));
-                    $join->on('orcamentos.obra_id','=', DB::raw($ordemDeCompra->obra_id));
+                    $join->on('orcamentos.obra_id','=', DB::raw($obra_id));
                     $join->on('orcamentos.ativo','=', DB::raw('1'));
                 })
                 ->with('insumo','unidade','anexos')
