@@ -164,7 +164,10 @@
                                 Justificativa de compra:
                             </div>
                             <div class="bloco-texto-conteudo col-md-7">
-                                {{ $item->justificativa }}
+                                @php $justificativas = explode(",", $item->justificativas) @endphp
+                                @foreach($justificativas as $justificativa)
+                                    <p>{{ $justificativa }}</p>
+                                @endforeach
                             </div>
                         </div>
                     </div>
@@ -173,7 +176,10 @@
                             Observações ao fornecedor:
                         </div>
                         <div class="bloco-texto-conteudo col-md-7">
-                            {{ $item->obs }}
+                            @php $obs = explode(",", $item->obs) @endphp
+                            @foreach($obs as $ob)
+                                <p>{{ $ob }}</p>
+                            @endforeach
                         </div>
                     </div>
                     <div class="col-md-6 margem-topo borda-direita">
@@ -189,7 +195,10 @@
                                 Contrato aditivado:
                             </div>
                             <div class="bloco-texto-conteudo col-md-7 margem-topo">
-                                {{ $item->sugestao_contrato_id }}
+                                @php $contratos = explode(",", $item->contratos) @endphp
+                                @foreach($contratos as $contrato)
+                                    <p>{{ $contrato }}</p>
+                                @endforeach
                             </div>
                         </div>
                     </div>
@@ -200,22 +209,19 @@
                             </div>
                             <div class="col-md-8">
                                 <div class="row">
-                                    @foreach($item->anexos as $anexo)
-                                        <div class="bloco-texto-linha col-md-9">{{ substr($anexo->arquivo, strrpos($anexo->arquivo,'/')+1  )  }}</div>
+                                    @php $anexos = explode(",", $item->anexos) @endphp
+                                    @foreach($anexos as $anexo)
+                                        <div class="bloco-texto-linha col-md-9">{{ substr($anexo, strrpos($anexo,'/')+1  )  }}</div>
                                         <div class="col-md-2">
-                                            <a href="{{ Storage::url($anexo->arquivo) }}" class="btn btn-default btn-block" target="_blank" >
+                                            <a href="{{ Storage::url($anexo) }}" class="btn btn-default btn-block" target="_blank" >
                                                 <i class="fa fa-eye" aria-hidden="true"></i>
                                             </a>
                                         </div>
-
                                     @endforeach
                                 </div>
-
                             </div>
                         @endif
-
                     </div>
-
                 </div>
             </div>
         @endforeach
