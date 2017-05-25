@@ -54,6 +54,7 @@ class ContratoTemplateController extends AppBaseController
     {
         $input = $request->all();
         $input['user_id'] = Auth::id();
+        $input['campos_extras'] = json_encode($request->campos_extras);
 
         $contratoTemplate = $this->contratoTemplateRepository->create($input);
 
@@ -122,6 +123,7 @@ class ContratoTemplateController extends AppBaseController
 
         $input = $request->all();
         $input['user_id'] = Auth::id();
+        $input['campos_extras'] = json_encode($request->campos_extras);
         $contratoTemplate = $this->contratoTemplateRepository->update($input, $id);
 
         Flash::success('Contrato Template '.trans('common.updated').' '.trans('common.successfully').'.');

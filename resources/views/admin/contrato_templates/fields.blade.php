@@ -21,6 +21,71 @@
             </div>
             <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
                 <div class="panel-body">
+                    <h5>
+                        Caso desejar, pode-se criar campos para serem inseridos na hora de gerar o contrato
+                        <button type="button" onclick="addCampo();" class="btn btn-xs btn-flat btn-warning"> <i class="fa fa-plus"></i> Gerar Campo</button>
+                    </h5>
+
+                    <ul class="list-group" id="campos_extras">
+                        <?php
+                            $campos_extras_count = 0;
+                            $campos_extras = [];
+                            if(isset($contratoTemplate)){
+                                if( strlen(trim($contratoTemplate->campos_extras)) ){
+                                    $campos_extras = json_decode($contratoTemplate->campos_extras);
+                                }
+                            }
+                        ?>
+                        @if(count($campos_extras))
+                            @foreach($campos_extras as $campo_extra)
+                                <?php $campos_extras_count++; ?>
+                                <li id="campos_extras{{ $campos_extras_count }}" class="list-group-item">
+                                    <div class="row">
+                                        <span class="col-md-1 text-right">
+                                            <label>Nome:</label>
+                                        </span>
+                                        <span class="col-md-3">
+                                            <input type="hidden" name="campos_extras[{{ $campos_extras_count }}][tag]"
+                                                   id="campo_extra_tag{{ $campos_extras_count }}"
+                                                   required="required" value="{{ $campo_extra->tag }}">
+                                            <input type="text" class="form-control" value="{{ $campo_extra->nome }}"
+                                                   name="campos_extras[{{ $campos_extras_count }}][nome]"
+                                                   onkeyup="slugAndShow(1, this.value);" placeholder="Nome do Campo">
+                                        </span>
+                                        <span class="col-md-1 text-right">
+                                            <label>Tipo:</label>
+                                        </span>
+                                        <span class="col-md-2">
+                                            <select name="campos_extras[{{ $campos_extras_count }}][tipo]"
+                                                    class="form-control select2" required="required">
+                                                <option {{ $campo_extra->tipo == 'texto'? 'selected="selected"':'' }}
+                                                        value="texto">Texto</option>
+                                                <option  {{ $campo_extra->tipo == 'numero'? 'selected="selected"':'' }}
+                                                         value="numero">Número</option>
+                                                <option  {{ $campo_extra->tipo == 'data'? 'selected="selected"':'' }}
+                                                         value="data">Data</option>
+                                            </select>
+                                        </span>
+                                        <span class="col-md-1 text-right">
+                                            <label>Uso:</label>
+                                        </span>
+                                        <span class="col-md-3">
+                                            <span id="campo_extra{{ $campos_extras_count }}"
+                                                  class="label label-primary selecionavel">{{ $campo_extra->tag }}</span>
+                                        </span>
+                                        <span class="col-md-1 text-right">
+                                            <button type="button" class="btn btn-danger btn-flat"
+                                                    title="remover" onclick="removeTag({{ $campos_extras_count }});">
+                                                <i class="fa fa-times"></i>
+                                            </button>
+                                        </span>
+                                    </div>
+                                </li>
+                            @endforeach
+                        @endif
+
+                    </ul>
+
                     <h5>Para que ao gerar um contrato os dados reais sejam carregados, é necessário usar estas tags onde
                         o sistema irá substituir automaticamente.
                     </h5>
@@ -311,3 +376,79 @@
     <a href="{!! route('admin.contratoTemplates.index') !!}" class="btn btn-default"><i
                 class="fa fa-times"></i> {{ ucfirst( trans('common.cancel') )}}</a>
 </div>
+@section('scripts')
+    @parent
+    <script type="text/javascript">
+        function slugAndShow(qual, valor){
+            var valor_slug = slug(valor,'_');
+            $('#campo_extra'+qual).html('['+valor_slug.toUpperCase()+']');
+            $('#campo_extra_tag'+qual).val('['+valor_slug.toUpperCase()+']');
+        }
+        function removeTag(qual) {
+            $('#campos_extras'+qual).remove();
+        }
+        var campos_extras_count = {{ intval($campos_extras_count) }};
+        function addCampo() {
+            campos_extras_count ++;
+            $('#campos_extras').append('<li id="campos_extras'+campos_extras_count+'" class="list-group-item">'+
+                    '<div class="row">'+
+                    '<span class="col-md-1 text-right">'+
+                    '<label>Nome:</label>'+
+            '</span>'+
+            '<span class="col-md-3">'+
+                    '<input type="hidden" name="campos_extras['+campos_extras_count+'][tag]" ' +
+                    'id="campo_extra_tag'+campos_extras_count+'" required="required" value="">'+
+                    '<input type="text" class="form-control" name="campos_extras['+campos_extras_count+'][nome]" ' +
+                    'onkeyup="slugAndShow('+campos_extras_count+', this.value);" placeholder="Nome do Campo">'+
+                    '</span>'+
+                    '<span class="col-md-1 text-right">'+
+                    '<label>Tipo:</label>'+
+            '</span>'+
+            '<span class="col-md-2">'+
+                    '<select name="campos_extras['+campos_extras_count+'][tipo]" class="form-control select2" ' +
+                    ' required="required">'+
+                    '<option value="Texto">Texto</option>'+
+                    '<option value="numero">Número</option>'+
+                    '<option value="data">Data</option>'+
+                    '</select>'+
+                    '</span>'+
+                    '<span class="col-md-1 text-right">'+
+                    '<label>Uso:</label>'+
+            '</span>'+
+            '<span class="col-md-3">'+
+                    '<span id="campo_extra'+campos_extras_count+'" class="label label-primary selecionavel"></span>'+
+                    '</span>'+
+                    '<span class="col-md-1 text-right">'+
+                    '<button type="button" class="btn btn-danger btn-flat" ' +
+                    ' title="remover" onclick="removeTag('+campos_extras_count+');">'+
+                    '<i class="fa fa-times"></i>'+
+                    '</button>'+
+                    '</span>'+
+                    '</div>'+
+                    '</li>');
+
+            $("#campo_extra"+campos_extras_count).on('mouseup', function() {
+                var sel, range;
+                var el = $(this)[0];
+                if (window.getSelection && document.createRange) { //Browser compatibility
+                    sel = window.getSelection();
+                    if(sel.toString() == ''){ //no text selection
+                        window.setTimeout(function(){
+                            range = document.createRange(); //range object
+                            range.selectNodeContents(el); //sets Range
+                            sel.removeAllRanges(); //remove all ranges from selection
+                            sel.addRange(range);//add Range to a Selection.
+                        },1);
+                    }
+                }else if (document.selection) { //older ie
+                    sel = document.selection.createRange();
+                    if(sel.text == ''){ //no text selection
+                        range = document.body.createTextRange();//Creates TextRange object
+                        range.moveToElementText(el);//sets Range
+                        range.select(); //make selection.
+                    }
+                }
+            });
+        }
+    </script>
+@stop

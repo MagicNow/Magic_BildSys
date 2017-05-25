@@ -30,7 +30,8 @@ class Contrato extends Model
         'fornecedor_id',
         'valor_total',
         'contrato_template_id',
-        'arquivo'
+        'arquivo',
+        'campos_extras'
     ];
 
     /**

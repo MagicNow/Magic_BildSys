@@ -42,7 +42,8 @@ var paths = {
     'vue':  vendors + '/vue/dist/',
     'vue_resource':  vendors + '/vue-resource/dist/',
     'chartjs':  vendors + '/chart.js/dist/',
-    'jquery_maskmoney':  vendors + '/jquery-maskmoney/dist/'
+    'jquery_maskmoney':  vendors + '/jquery-maskmoney/dist/',
+    'slugify':  vendors + '/slug/'
 };
 
 elixir.config.sourcemaps = false;
@@ -180,6 +181,7 @@ elixir(function(mix) {
         paths.jquerymaskplugin + 'jquery.mask.js',
         paths.chartjs + 'Chart.min.js',
         paths.jquery_maskmoney + 'jquery.maskMoney.js',
+        paths.slugify + 'slug.js',
         // paths.vue + 'vue.js',
         // paths.vue_resource + 'vue-resource.js',
         'bootstrap-dataTables-paging.js',

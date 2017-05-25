@@ -406,7 +406,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
             'Quadro de Concorrência #' . $quadro->id . ' foi finalizado com sucesso.'
         );
 
-        return redirect(route('quadroDeConcorrencias.index'));
+        return redirect(route('quadroDeConcorrencias.gerarContrato',$quadro->id));
     }
 
     /**
@@ -933,5 +933,38 @@ class QuadroDeConcorrenciaController extends AppBaseController
         $checks = $fornecedorCheckRepository->porQcFornecedor($qcFornecedor);
 
         return view('quadro_de_concorrencias.equalizacoes', compact('checks'));
+    }
+
+    /**
+     * Gerar Contrato - Tela para especificar Template para gerar contrato
+     * @param $id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
+     */
+    public function gerarContrato($id)
+    {
+        $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->findWithoutFail($id);
+
+        if (empty($quadroDeConcorrencia)) {
+            Flash::error('Quadro De Concorrencia ' . trans('common.not-found'));
+
+            return redirect(route('quadroDeConcorrencias.index'));
+        }
+
+        $fornecedores = $quadroDeConcorrencia
+            ->qcFornecedores()
+            ->where('qc_fornecedor.rodada',$quadroDeConcorrencia->rodada_atual)
+            ->whereHas('itens', function($query){
+                $query->where('vencedor','1');
+            })
+            ->with(['itens'=> function($query){
+                $query->where('vencedor','1');
+            }])
+            ->get();
+
+        return view('quadro_de_concorrencias.gerar-contrato',compact('quadroDeConcorrencia','fornecedores'));
+    }
+    
+    public function gerarContratoSave($id, Request $request){
+        dd($request->all());
     }
 }

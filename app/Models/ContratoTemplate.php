@@ -24,7 +24,8 @@ class ContratoTemplate extends Model
     public $fillable = [
         'nome',
         'template',
-        'user_id'
+        'user_id',
+        'campos_extras'
     ];
 
     /**
@@ -36,7 +37,8 @@ class ContratoTemplate extends Model
         'id' => 'integer',
         'nome' => 'string',
         'template' => 'string',
-        'user_id' => 'integer'
+        'user_id' => 'integer',
+        'campos_extras' => 'string'
     ];
 
     /**
@@ -45,7 +47,8 @@ class ContratoTemplate extends Model
      * @var array
      */
     public static $rules = [
-        
+        'nome' => 'required',
+        'template' => 'required',
     ];
 
     /**
