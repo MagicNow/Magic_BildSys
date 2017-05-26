@@ -40,6 +40,7 @@
 
             </div>
             <div class="box-body">
+
                 <div class="row text-right form-inline">
                         <span class="col-md-4">
                            <label>Template de Contrato</label>
@@ -55,8 +56,10 @@
                         </span>
                 </div>
                 <div class="col-md-7">
-                    <h4>Itens do Contrato</h4>
-                    <table class="table table-striped table-hovered table-bordered table-condensed">
+                    @foreach($contratoItens[$qcFornecedor->id] as $obraId => $itens)
+                        @if(!isset($contratosExistentes[$qcFornecedor->id][$obraId]))
+                        <h4>Contrato Obra {{ \App\Models\Obra::find($obraId)->nome }}</h4>
+                        <table class="table table-striped table-hovered table-bordered table-condensed">
                         <thead>
                             <tr>
                                 <th width="60%">Insumo</th>
@@ -66,86 +69,70 @@
                         </thead>
 
                         <tbody>
-                        <?php
-                            $total_contrato = 0;
-                            $fatorServico = 1;
-                            $fatorMaterial = 0;
-                            $fatorFatDireto = 0;
-                            $valorMaterial = 0;
-                            $valorFaturamentoDireto = 0;
+                            <?php
+                                $frete = 0;
+                                $tem_material = false;
+                            ?>
+                            @foreach($itens as $item)
 
-                            if($quadroDeConcorrencia->hasServico()){
-                                if($qcFornecedor->porcentagem_servico < 100){
-                                    $fatorServico = $qcFornecedor->porcentagem_servico / 100;
-                                    $fatorMaterial = $qcFornecedor->porcentagem_material / 100;
-                                    $fatorFatDireto = $qcFornecedor->porcentagem_faturamento_direto / 100;
-                                }
-                            }
+                                @if(!isset($item['frete']))
+                                    <?php
+                                    if($item['tipo']=='MATERIAL'){
+                                        $tem_material = true;
+                                    }
+                                    ?>
+                                    <tr>
+                                        <td class="text-left">
+                                            <label class="label label-{{ $item['tipo']=='SERVIÇO'?'info':'primary' }}">{{ $item['tipo'] }}</label>
+                                            {{ $item['insumo']->nome }}</td>
+                                        <td class="text-right">
+                                            {{ number_format($item['qtd'],2,',','.') . ' '. $item['insumo']->unidade_sigla }}
+                                        </td>
+                                        <td class="text-right">
+                                            R$ {{ number_format($item['valor_total'],2,',','.') }}
+                                        </td>
+                                    </tr>
 
-                        ?>
-                            @foreach($qcFornecedor->itens as $item)
-                                <?php
-                                    $valor_item = $item->valor_total;
-                                    $total_contrato += $item->valor_total;
-                                    $tipo = explode(' ' ,$item->qcItem->insumo->grupo->nome);
-                                        if($fatorServico<1){
-                                            if($tipo[0]=='SERVIÇO'){
-                                                $valor_item = $valor_item * $fatorServico;
-                                                $valorMaterial += $item->valor_total * $fatorMaterial;
-                                                $valorFaturamentoDireto += $item->valor_total * $fatorFatDireto;
-                                            }
-                                        }
+                                @else
+                                    <?php $frete = $item['valor_total']; ?>
+                                @endif
 
-                                ?>
-                                <tr>
-                                    <td class="text-left">
-                                        <label class="label label-{{ $tipo[0]=='SERVIÇO'?'info':'primary' }}">{{  $tipo[0] }}</label>
-                                        {{ $item->qcItem->insumo->nome }}</td>
-                                    <td class="text-right">{{ number_format($item->qcItem->qtd,2,',','.') . ' '. $item->qcItem->insumo->unidade_sigla }}</td>
-                                    <td class="text-right">R$ {{ number_format($valor_item,2,',','.') }}</td>
-                                </tr>
                             @endforeach
-                            @if($valorMaterial>0)
-                                <?php
-                                $item = \App\Models\Insumo::where('codigo','34007')->first();
-                                ?>
-                                <tr>
-                                    <td class="text-left">
-                                        <label class="label label-primary">MATERIAL</label>
-                                        {{ $item->nome }}</td>
-                                    <td class="text-right">{{ number_format($valorMaterial,2,',','.') . ' '. $item->unidade_sigla }}</td>
-                                    <td class="text-right">R$ {{ number_format($valorMaterial,2,',','.') }}</td>
-                                </tr>
-                            @endif
-                            @if($valorFaturamentoDireto>0)
-                                <?php
-                                $item = \App\Models\Insumo::where('codigo','30019')->first();
-                                ?>
-                                <tr>
-                                    <td class="text-left">
-                                        <label class="label label-primary">MATERIAL</label>
-                                        {{ $item->nome }}</td>
-                                    <td class="text-right">{{ number_format($valorFaturamentoDireto,2,',','.') . ' '. $item->unidade_sigla }}</td>
-                                    <td class="text-right">R$ {{ number_format($valorFaturamentoDireto,2,',','.') }}</td>
-                                </tr>
-                            @endif
                             @if($quadroDeConcorrencia->hasMaterial() && $qcFornecedor->tipo_frete != 'CIF')
-                                <?php
-                                    $total_contrato += $qcFornecedor->getOriginal('valor_frete');
-                                ?>
-                                <tr>
-                                    <td colspan="2" class="text-left">Frete {{ $qcFornecedor->tipo_frete }}</td>
-                                    <td class="text-right">R$ {{ $qcFornecedor->valor_frete }}</td>
-                                </tr>
+                            <tr>
+                                <td colspan="2" class="text-left">Frete</td>
+                                <td class="text-right">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">R$</span>
+                                        <input type="text"
+                                               class="form-control text-right money"
+                                               value="{{ number_format($frete,2,',','.') }}"
+                                               onkeyup="alteraValorTotal('{{ $qcFornecedor->id.'_'. $obraId }}', this.value);"
+                                               name="valor_frete[{{$obraId}}]">
+                                    </div>
+                                </td>
+                            </tr>
                             @endif
                         </tbody>
                         <tfoot>
                             <tr class="warning">
                                 <td colspan="2" class="text-right">TOTAL</td>
-                                <td class="text-right">R$ {{ number_format($total_contrato,2,',','.') }}</td>
+                                <input type="hidden" id="total_contrato_{{ $qcFornecedor->id.'_'. $obraId }}"
+                                       value="{{ $total_contrato[$qcFornecedor->id][$obraId] }}">
+                                <td class="text-right" id="sum_total_contrato_{{ $qcFornecedor->id.'_'. $obraId }}">
+                                    R$ {{ number_format($total_contrato[$qcFornecedor->id][$obraId]+$frete,2,',','.') }}
+                                </td>
                             </tr>
                         </tfoot>
                     </table>
+                        @else
+                            <div class="alert alert-success alert-dismissible">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                <h4><i class="icon fa fa-check"></i>
+                                    Contrato Obra {{ \App\Models\Obra::find($obraId)->nome }} já gerado!</h4>
+                            </div>
+                        @endif
+                    @endforeach
                 </div>
                 <div class="col-md-5" id="blocoCamposExtras{{ $qcFornecedor->id }}" style="display: none">
                     <h4>Campos Extras</h4>
@@ -178,6 +165,10 @@
 @endsection
 @section('scripts')
 <script type="text/javascript">
+    function alteraValorTotal(qual, valor) {
+        total = parseFloat($('#total_contrato_'+qual).val()) + moneyToFloat(valor);
+        $('#sum_total_contrato_'+qual).html(floatToMoney(total));
+    }
     $(function () {
         $('.contratoTemplate').on('select2:select', function (evt) {
             var qcFornecedor = $(evt.target).attr('qcFornecedor');
@@ -192,7 +183,7 @@
                         if(retorno.campos_extras){
                             $.each(retorno.campos_extras, function(index, valor){
                                 var v_tag = valor.tag.replace('[','');
-                                v_tag = v_tag.replace(']','');
+                                v_tag = 'CAMPO_EXTRA['+ v_tag.replace(']','') + ']';
                                campos += '<tr>'+
                                         '   <td class="text-center">'+
                                         '       <label for="'+v_tag+'">'+valor.nome+'</label>' +
@@ -228,10 +219,18 @@
                     $('.overlay').remove();
                     console.log(retorno);
                     setTimeout(function () {
+                        var contratos_ids = '';
+                        $.each(retorno.contratos, function (index, contrato) {
+                            if(contratos_ids!=''){
+                                contratos_ids += ', ';
+                            }
+                            console.log(contrato);
+                            contratos_ids += contrato.id;
+                        });
                         $('#boxQcFornecedor'+retorno.qcFornecedor+' .box-body').html('<div class="alert alert-success alert-dismissible">'+
                                 '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>'+
-                        '<h4><i class="icon fa fa-check"></i> Contrato '+ retorno.contrato_id+ ' gerado!</h4>'+
-                        'Teste' +
+                        '<h4><i class="icon fa fa-check"></i> Contrato '+ contratos_ids + ' gerado!</h4>'+
+                        '' +
                         '</div>');
                         $('#boxQcFornecedor'+retorno.qcFornecedor+' .box-footer').html('<button type="button" class="btn btn-block btn-flat btn-success btn-lg">'+
                                 '<i class="fa fa-print"></i> Imprimir contrato'+

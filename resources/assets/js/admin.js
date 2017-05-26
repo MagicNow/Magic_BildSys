@@ -133,7 +133,8 @@ function moneyToFloat(money) {
  */
 function floatToMoney(number) {
   return 'R$ ' + number.toLocaleString('pt-BR', {
-    minimumFractionDigits: 2
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
   });
 }
 

@@ -28,6 +28,11 @@
             <i class="glyphicon glyphicon-ok"></i>
           </a>
         @endif
+        @if($qc_status_id === 8)
+            <a href="{{ url('/quadro-de-concorrencia/'. $id.'/gerar-contrato') }}" class="btn btn-xs btn-success" title="Gerar contrato">
+                <i class="fa fa-file-text-o"></i>
+            </a>
+        @endif
     @endshield
 
     @shield('quadroDeConcorrencias.informar_valor')
