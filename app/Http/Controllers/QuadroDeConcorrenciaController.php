@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\QuadroDeConcorrencia;
+use App\Repositories\ContratoRepository;
 use Flash;
 use Illuminate\Support\Facades\Log;
 use Response;
@@ -965,6 +966,10 @@ class QuadroDeConcorrenciaController extends AppBaseController
     }
     
     public function gerarContratoSave($id, Request $request){
-        dd($request->all());
+        // Gerar Contrato
+        $input = $request->all();
+//        $contrato = ContratoRepository::create($input);
+//        $input['contrato'] = $contrato;
+        return response()->json($input);
     }
 }

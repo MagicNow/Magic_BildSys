@@ -408,3 +408,6 @@ h6 {
 #dataTableBuilder_filter{
   float:left;
 }
+.full-width{
+  width: 100%;
+}

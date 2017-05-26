@@ -21,7 +21,10 @@ class Insumo extends Model
         'unidade_sigla',
         'codigo',
         'insumo_grupo_id',
-        'active'
+        'active',
+        'ncm_codigo',
+        'ncm_texto',
+        'ncm_codigo_texto',
     ];
 
     /**

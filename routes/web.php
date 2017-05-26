@@ -682,7 +682,8 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
 //            ->where('gru_ide_st_codigo' , '07')
 //            ->first();
 //        dd($grupos_mega);
-        $servicos = \App\Repositories\ImportacaoRepository::fornecedor_servicos(446);
-        dd($servicos);
+//        $servicos = \App\Repositories\ImportacaoRepository::fornecedor_servicos(446);
+        $insumos = \App\Repositories\ImportacaoRepository::insumos();
+        dd($insumos);
     });
 });

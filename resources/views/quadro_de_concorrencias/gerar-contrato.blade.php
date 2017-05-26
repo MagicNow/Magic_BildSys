@@ -20,17 +20,32 @@
     <div class="content">
         @foreach($fornecedores as $qcFornecedor)
         {!! Form::open(['id'=>'formFornecedor'.$qcFornecedor->id]) !!}
-        <div class="box box-solid">
+        <div class="box box-solid" id="boxQcFornecedor{{ $qcFornecedor->id }}">
+            {!! Form::hidden('qcFornecedor', $qcFornecedor->id) !!}
             <div class="box-header with-border">
-                <h3 class="box-title ">
+                <h3 class="box-title full-width">
+
                     {{ $qcFornecedor->fornecedor->nome . ' | CNPJ: '.$qcFornecedor->fornecedor->cnpj }}
+
+                    @if($quadroDeConcorrencia->hasServico())
+                        @if($qcFornecedor->porcentagem_servico<100)
+                            <span class="pull-right">
+                                <span class="label label-info">{{$qcFornecedor->porcentagem_servico}}% Serviço</span>
+                                <span class="label label-primary">{{$qcFornecedor->porcentagem_material}}% Material</span>
+                                <span class="label label-warning">{{$qcFornecedor->porcentagem_faturamento_direto}}% Fat. Direto</span>
+                            </span>
+                        @endif
+                    @endif
                 </h3>
+
+            </div>
+            <div class="box-body">
                 <div class="row text-right form-inline">
                         <span class="col-md-4">
                            <label>Template de Contrato</label>
                         </span>
                         <span class="col-md-8 text-left">
-                            {!! Form::select('template['.$qcFornecedor->id.']',[''=>'Selecione...']+
+                            {!! Form::select('contrato_template_id',[''=>'Selecione...']+
                             \App\Models\ContratoTemplate::pluck('nome','id')->toArray(),null,[
                             'class'=>'form-control select2 contratoTemplate',
                             'required'=>'required',
@@ -39,39 +54,100 @@
                             ]) !!}
                         </span>
                 </div>
-            </div>
-            <div class="box-body">
-                <div class="col-md-6">
+                <div class="col-md-7">
                     <h4>Itens do Contrato</h4>
                     <table class="table table-striped table-hovered table-bordered table-condensed">
                         <thead>
                             <tr>
-                                <th width="70%">Insumo</th>
-                                <th width="10%">Qtd.</th>
+                                <th width="60%">Insumo</th>
+                                <th width="20%">Qtd.</th>
                                 <th width="20%">Valor</th>
                             </tr>
                         </thead>
 
                         <tbody>
-                        <?php $total_contrato = 0; ?>
+                        <?php
+                            $total_contrato = 0;
+                            $fatorServico = 1;
+                            $fatorMaterial = 0;
+                            $fatorFatDireto = 0;
+                            $valorMaterial = 0;
+                            $valorFaturamentoDireto = 0;
+
+                            if($quadroDeConcorrencia->hasServico()){
+                                if($qcFornecedor->porcentagem_servico < 100){
+                                    $fatorServico = $qcFornecedor->porcentagem_servico / 100;
+                                    $fatorMaterial = $qcFornecedor->porcentagem_material / 100;
+                                    $fatorFatDireto = $qcFornecedor->porcentagem_faturamento_direto / 100;
+                                }
+                            }
+
+                        ?>
                             @foreach($qcFornecedor->itens as $item)
-                                <?php $total_contrato += $item->valor_total; ?>
+                                <?php
+                                    $valor_item = $item->valor_total;
+                                    $total_contrato += $item->valor_total;
+                                    $tipo = explode(' ' ,$item->qcItem->insumo->grupo->nome);
+                                        if($fatorServico<1){
+                                            if($tipo[0]=='SERVIÇO'){
+                                                $valor_item = $valor_item * $fatorServico;
+                                                $valorMaterial += $item->valor_total * $fatorMaterial;
+                                                $valorFaturamentoDireto += $item->valor_total * $fatorFatDireto;
+                                            }
+                                        }
+
+                                ?>
                                 <tr>
-                                    <td>{{ $item->qcItem->insumo->nome }}</td>
-                                    <td>{{ $item->qcItem->qtd . ' '. $item->qcItem->insumo->unidade_sigla }}</td>
-                                    <td>R$ {{ number_format($item->valor_total,2,',','.') }}</td>
+                                    <td class="text-left">
+                                        <label class="label label-{{ $tipo[0]=='SERVIÇO'?'info':'primary' }}">{{  $tipo[0] }}</label>
+                                        {{ $item->qcItem->insumo->nome }}</td>
+                                    <td class="text-right">{{ number_format($item->qcItem->qtd,2,',','.') . ' '. $item->qcItem->insumo->unidade_sigla }}</td>
+                                    <td class="text-right">R$ {{ number_format($valor_item,2,',','.') }}</td>
                                 </tr>
                             @endforeach
+                            @if($valorMaterial>0)
+                                <?php
+                                $item = \App\Models\Insumo::where('codigo','34007')->first();
+                                ?>
+                                <tr>
+                                    <td class="text-left">
+                                        <label class="label label-primary">MATERIAL</label>
+                                        {{ $item->nome }}</td>
+                                    <td class="text-right">{{ number_format($valorMaterial,2,',','.') . ' '. $item->unidade_sigla }}</td>
+                                    <td class="text-right">R$ {{ number_format($valorMaterial,2,',','.') }}</td>
+                                </tr>
+                            @endif
+                            @if($valorFaturamentoDireto>0)
+                                <?php
+                                $item = \App\Models\Insumo::where('codigo','30019')->first();
+                                ?>
+                                <tr>
+                                    <td class="text-left">
+                                        <label class="label label-primary">MATERIAL</label>
+                                        {{ $item->nome }}</td>
+                                    <td class="text-right">{{ number_format($valorFaturamentoDireto,2,',','.') . ' '. $item->unidade_sigla }}</td>
+                                    <td class="text-right">R$ {{ number_format($valorFaturamentoDireto,2,',','.') }}</td>
+                                </tr>
+                            @endif
+                            @if($quadroDeConcorrencia->hasMaterial() && $qcFornecedor->tipo_frete != 'CIF')
+                                <?php
+                                    $total_contrato += $qcFornecedor->getOriginal('valor_frete');
+                                ?>
+                                <tr>
+                                    <td colspan="2" class="text-left">Frete {{ $qcFornecedor->tipo_frete }}</td>
+                                    <td class="text-right">R$ {{ $qcFornecedor->valor_frete }}</td>
+                                </tr>
+                            @endif
                         </tbody>
                         <tfoot>
                             <tr class="warning">
-                                <td colspan="2" class="text-right">Total</td>
-                                <td>R$ {{ number_format($total_contrato,2,',','.') }}</td>
+                                <td colspan="2" class="text-right">TOTAL</td>
+                                <td class="text-right">R$ {{ number_format($total_contrato,2,',','.') }}</td>
                             </tr>
                         </tfoot>
                     </table>
                 </div>
-                <div class="col-md-6" id="blocoCamposExtras{{ $qcFornecedor->id }}" style="display: none">
+                <div class="col-md-5" id="blocoCamposExtras{{ $qcFornecedor->id }}" style="display: none">
                     <h4>Campos Extras</h4>
                     <table class="table table-condensed table-hovered table-striped table-bordered">
                         <thead>
@@ -115,15 +191,17 @@
                         console.log(retorno.campos_extras);
                         if(retorno.campos_extras){
                             $.each(retorno.campos_extras, function(index, valor){
+                                var v_tag = valor.tag.replace('[','');
+                                v_tag = v_tag.replace(']','');
                                campos += '<tr>'+
                                         '   <td class="text-center">'+
-                                        '       <label for="'+valor.tag+'">'+valor.nome+'</label>' +
+                                        '       <label for="'+v_tag+'">'+valor.nome+'</label>' +
                                         '   </td>'+
                                         '   <td>'+
-                                        '       <input type="text" class="form-control" required="required" name="'+valor.tag+'" placeholder="'+valor.nome+'">'+
+                                        '       <input type="text" class="form-control" required="required" name="'+v_tag+'" placeholder="'+valor.nome+'">'+
                                         '   </td>'+
                                         '   <td class="text-center">'+
-                                        '       <label for="'+valor.tag+'">'+valor.tipo+'</label>'+
+                                        '       <label for="'+v_tag+'">'+valor.tipo+'</label>'+
                                         '   </td>'+
                                         '</tr>';
                             });
@@ -134,6 +212,93 @@
                     .fail(function (retorno) {
                         swal('Erro', 'Houve um problema ao buscar dados do template','error');
                     });
+        });
+
+        $('form').submit(function (event) {
+            event.preventDefault();
+            var form = $(this);
+            $('#'+form.attr('id')+' .box.box-solid').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
+
+            if (form.attr('id') == '' || form.attr('id') != 'fupload') {
+                $.ajax({
+                    type: form.attr('method'),
+                    url: form.attr('action'),
+                    data: form.serialize()
+                }).done(function (retorno) {
+                    $('.overlay').remove();
+                    console.log(retorno);
+                    setTimeout(function () {
+                        $('#boxQcFornecedor'+retorno.qcFornecedor+' .box-body').html('<div class="alert alert-success alert-dismissible">'+
+                                '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>'+
+                        '<h4><i class="icon fa fa-check"></i> Contrato '+ retorno.contrato_id+ ' gerado!</h4>'+
+                        'Teste' +
+                        '</div>');
+                        $('#boxQcFornecedor'+retorno.qcFornecedor+' .box-footer').html('<button type="button" class="btn btn-block btn-flat btn-success btn-lg">'+
+                                '<i class="fa fa-print"></i> Imprimir contrato'+
+                        '</button>');
+                        swal({
+                                    title: 'Contrato Gerado',
+                                    text: '',
+                                    type: "success",
+                                    timer: 2000,
+                                    showConfirmButton: false
+                                },
+                                function(){
+                                    swal.close();
+                                });
+                    }, 10);
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    // Optionally alert the user of an error here...
+                    var textResponse = jqXHR.responseText;
+                    var alertText = "Confira as mensagens abaixo:\n\n";
+                    var jsonResponse = jQuery.parseJSON(textResponse);
+
+                    $.each(jsonResponse, function (n, elem) {
+                        alertText = alertText + elem + "\n";
+                    });
+                    $('.overlay').remove();
+                    swal({title: "", text: alertText, type: 'error'});
+                });
+            }
+            else {
+                var formData = new FormData(this);
+                $.ajax({
+                    type: form.attr('method'),
+                    url: form.attr('action'),
+                    data: formData,
+                    mimeType: "multipart/form-data",
+                    contentType: false,
+                    cache: false,
+                    processData: false
+                }).done(function (retorno) {
+                    $('.overlay').remove();
+                    setTimeout(function () {
+                        swal({
+                                    title: 'Contrato Gerado',
+                                    text: '',
+                                    type: "success",
+                                    timer: 2000,
+                                    showConfirmButton: false
+                                },
+                                function(){
+                                    swal.close();
+                                });
+                    }, 10);
+
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    // Optionally alert the user of an error here...
+                    var textResponse = jqXHR.responseText;
+                    var alertText = "Confira as mensagens abaixo:\n\n";
+                    var jsonResponse = jQuery.parseJSON(textResponse);
+
+                    $.each(jsonResponse, function (n, elem) {
+                        alertText = alertText + elem + "\n";
+                    });
+                    $('.overlay').remove();
+                    swal({title: "", text: alertText, type: 'error'});
+                });
+            }
+            ;
         });
     });
 </script>
