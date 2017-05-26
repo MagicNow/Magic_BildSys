@@ -842,6 +842,15 @@ class OrdemDeCompraController extends AppBaseController
             ->get();
 
         foreach ($ordem_itens as $item){
+            if(!$item->aprovado){ // Se o item não esta aprovado
+                if($item->updated_at < $ordemDeCompra->updated_at){ // Se o item for atualizado  antes da ordem de compra
+                    Flash::error('O item não foi atualizado.');
+                    return back();
+                }else{
+                    $item->aprovado = null;
+                    $item->update();
+                }
+            }
             if($item->qtd == '0.00' || !$item->qtd){
                 Flash::error('A quantidade não pode ser zero.');
                 return back();
@@ -932,6 +941,8 @@ class OrdemDeCompraController extends AppBaseController
             ]);
             if($ordemDeCompraItemAnexo){
                 $salvos++;
+                $ordemDeCompraItem->updated_at = new \DateTime();;
+                $ordemDeCompraItem->update();
             }
         }
 
