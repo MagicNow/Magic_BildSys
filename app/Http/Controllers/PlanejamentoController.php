@@ -23,8 +23,7 @@ class PlanejamentoController extends AppBaseController
             $title = 'CONCAT(obras.nome,\' - \',planejamentos.tarefa,\' - \', lembretes.nome) title';
             $url = 'CONCAT(\'/compras/obrasInsumos?planejamento_id=\',planejamentos.id,\'&insumo_grupos_id=\',insumo_grupos.id,\'&obra_id=\',obras.id) as url';
         }
-
-        \Log::info('DEBUG: ', [$request->exibir_por_tarefa]);
+        
         if(!$request->exibir_por_tarefa) {
             $lembretes = Lembrete::join('insumo_grupos', 'insumo_grupos.id', '=', 'lembretes.insumo_grupo_id')
                 ->join('insumos', 'insumos.insumo_grupo_id', '=', 'insumo_grupos.id')
