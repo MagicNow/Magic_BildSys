@@ -1548,7 +1548,8 @@ class OrdemDeCompraController extends AppBaseController
             ->where('ativo',1)
             ->first();
 
-//        if($request['insumo_grupo_id'] != 1570) {
+        $insumo = Insumo::find($orcamento_ativo->insumo_id);
+        if($insumo->insumo_grupo_id != 1570) {
             $ordem_item = OrdemDeCompraItem::firstOrNew([
                 'ordem_de_compra_id' => $ordem->id,
                 'obra_id' => $obra_id,
@@ -1561,16 +1562,15 @@ class OrdemDeCompraController extends AppBaseController
                 'insumo_id' => $orcamento_ativo->insumo_id,
                 'unidade_sigla' => $orcamento_ativo->unidade_sigla,
             ]);
-//        }
 
-        $insumo = Insumo::find($orcamento_ativo->insumo_id);
-        $ordem_item->tems = self::getTems($insumo->codigo);
+            $ordem_item->tems = self::getTems($insumo->codigo);
 
-        $ordem_item->user_id = Auth::user()->id;
-        $ordem_item->qtd = $request['qtd_total'];
-        $ordem_item->valor_unitario = $orcamento_ativo->preco_unitario;
-        $ordem_item->valor_total = $orcamento_ativo->getOriginal('preco_unitario') * money_to_float($ordem_item->qtd);
-        $ordem_item->save();
+            $ordem_item->user_id = Auth::user()->id;
+            $ordem_item->qtd = $request['qtd_total'];
+            $ordem_item->valor_unitario = $orcamento_ativo->preco_unitario;
+            $ordem_item->valor_total = $orcamento_ativo->getOriginal('preco_unitario') * money_to_float($ordem_item->qtd);
+            $ordem_item->save();
+        }
     }
 
     public function getGrupos($id){
@@ -1729,9 +1729,10 @@ class OrdemDeCompraController extends AppBaseController
            foreach ($tems as $tem){
                $todos_tems .= $tem->pro_st_dettecnico;
            }
+           $todos_tems = trim(utf8_encode($todos_tems));
        }
 
-       return trim(utf8_encode($todos_tems));
+       return $todos_tems;
    }
 }
 

@@ -189,7 +189,7 @@
 
         function quantidadeCompra(id, obra_id, grupo_id, subgrupo1_id, subgrupo2_id, subgrupo3_id, servico_id, value) {
             console.log(parseFloat(value));
-            if(parseFloat(value) != 0) {
+//            if(parseFloat(value) != 0) {
                 $.ajax({
                     url: "{{url('/compras/'.(isset($obra) ? $obra->id : $planejamento->id).'/addCarrinho')}}",
                     data: {
@@ -207,7 +207,7 @@
                 }).done(function (retorno) {
                     window.LaravelDataTables["dataTableBuilder"].draw(false);
                 });
-            }
+//            }
         }
 
         function totalCompra(id, obra_id, grupo_id, subgrupo1_id, subgrupo2_id, subgrupo3_id, servico_id, value){
