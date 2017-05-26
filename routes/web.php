@@ -490,7 +490,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     });
 
     # Retroalimentação de obras
-    $router->get('create-realimentacao', 'RetroalimentacaoObraController@create')
+    $router->get('retroalimentacao', 'RetroalimentacaoObraController@create_front')
         ->middleware("needsPermission:retroalimentacao.create");
 
     # Quadro de Concorrencia

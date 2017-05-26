@@ -1,19 +1,13 @@
 <!-- Obra Id Field -->
-{!! Form::hidden('anterior', url()->previous() ) !!}
+{!! Form::hidden('origem', url()->previous() ) !!}
 @if(Request::get('obra_id'))
     {!! Form::hidden('obra_id', Request::get('obra_id')) !!}
 @else
-    <div class="form-group col-sm-12">
+    <div class="form-group col-sm-6">
         {!! Form::label('obra_id', 'Obra:') !!}
-        {!! Form::select('obra_id',[''=>'Escolha...']+$obras, null, ['class' => 'form-control input-lg', 'required'=>'required']) !!}
+        {!! Form::select('obra_id',[''=>'Escolha...']+$obras, null, ['class' => 'form-control', 'required'=>'required']) !!}
     </div>
 @endif
-
-<!-- Origem Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('origem', 'Origem:') !!}
-    {!! Form::text('origem', null, ['class' => 'form-control']) !!}
-</div>
 
 <!-- Categoria Field -->
 <div class="form-group col-sm-6">
@@ -90,7 +84,7 @@
 
     <div class="form-group col-sm-6">
         {!! Form::label('aceite', 'Aceite:') !!}
-        {!! Form::checkbox('aceite', '1', true) !!}
+        <p>{!! Form::checkbox('aceite', '1', true) !!}</p>
     </div>
     <!-- Submit Field -->
     <div class="form-group col-sm-12">
