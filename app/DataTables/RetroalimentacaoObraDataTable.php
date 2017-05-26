@@ -27,10 +27,10 @@ class RetroalimentacaoObraDataTable extends DataTable
                 return $obj->created_at ? with(new\Carbon\Carbon($obj->created_at))->format('d/m/Y') : '';
             })
             ->editColumn('situacao_atual',function ($obj){
-                return str_limit($obj->situacao_atual, $limit = 100, $end = '...');
+                return str_limit($obj->situacao_atual, $limit = 20, $end = '...');
             })
             ->editColumn('situacao_proposta',function ($obj){
-                return str_limit($obj->situacao_atual, $limit = 100, $end = '...');
+                return str_limit($obj->situacao_proposta, $limit = 20, $end = '...');
             })
             ->filterColumn('created_at', function ($query, $keyword) {
                 $query->whereRaw("DATE_FORMAT(retroalimentacao_obras.created_at,'%d/%m/%Y') like ?", ["%$keyword%"]);
