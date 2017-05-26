@@ -1548,7 +1548,7 @@ class OrdemDeCompraController extends AppBaseController
             ->where('ativo',1)
             ->first();
 
-        if($request['insumo_grupo_id'] != 1570) {
+//        if($request['insumo_grupo_id'] != 1570) {
             $ordem_item = OrdemDeCompraItem::firstOrNew([
                 'ordem_de_compra_id' => $ordem->id,
                 'obra_id' => $obra_id,
@@ -1561,7 +1561,7 @@ class OrdemDeCompraController extends AppBaseController
                 'insumo_id' => $orcamento_ativo->insumo_id,
                 'unidade_sigla' => $orcamento_ativo->unidade_sigla,
             ]);
-        }
+//        }
 
         $insumo = Insumo::find($orcamento_ativo->insumo_id);
         $ordem_item->tems = self::getTems($insumo->codigo);
