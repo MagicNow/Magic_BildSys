@@ -1546,6 +1546,7 @@ class OrdemDeCompraController extends AppBaseController
 
     public function comprarTudoItem($request, $obra_id)
     {
+        dd($request['insumo_grupo_id']);
         //Testa se tem ordem de compra aberta pro user
         $ordem = null;
         if(\Session::get('ordemCompra')){
@@ -1586,19 +1587,20 @@ class OrdemDeCompraController extends AppBaseController
             ->where('ativo',1)
             ->first();
 
-
-        $ordem_item = OrdemDeCompraItem::firstOrNew([
-            'ordem_de_compra_id' => $ordem->id,
-            'obra_id' => $obra_id,
-            'codigo_insumo' => $orcamento_ativo->codigo_insumo,
-            'grupo_id' => $orcamento_ativo->grupo_id,
-            'subgrupo1_id' => $orcamento_ativo->subgrupo1_id,
-            'subgrupo2_id' => $orcamento_ativo->subgrupo2_id,
-            'subgrupo3_id' => $orcamento_ativo->subgrupo3_id,
-            'servico_id' => $orcamento_ativo->servico_id,
-            'insumo_id' => $orcamento_ativo->insumo_id,
-            'unidade_sigla' => $orcamento_ativo->unidade_sigla,
-        ]);
+        if($request['insumo_grupo_id'] != 1570) {
+            $ordem_item = OrdemDeCompraItem::firstOrNew([
+                'ordem_de_compra_id' => $ordem->id,
+                'obra_id' => $obra_id,
+                'codigo_insumo' => $orcamento_ativo->codigo_insumo,
+                'grupo_id' => $orcamento_ativo->grupo_id,
+                'subgrupo1_id' => $orcamento_ativo->subgrupo1_id,
+                'subgrupo2_id' => $orcamento_ativo->subgrupo2_id,
+                'subgrupo3_id' => $orcamento_ativo->subgrupo3_id,
+                'servico_id' => $orcamento_ativo->servico_id,
+                'insumo_id' => $orcamento_ativo->insumo_id,
+                'unidade_sigla' => $orcamento_ativo->unidade_sigla,
+            ]);
+        }
 
 
         $ordem_item->user_id = Auth::user()->id;
