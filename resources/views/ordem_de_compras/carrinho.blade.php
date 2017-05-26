@@ -9,16 +9,6 @@
         .content {
             min-height: 100px !important;
         }
-        .sweet-alert button.cancel{
-            background-color: #DD6B55;
-
-        }
-        .sweet-alert button.cancel:active {
-            background-color: #DD6B55;
-        }
-        .sweet-alert button.cancel:hover {
-            background-color: #DD6B55;
-        }
     </style>
 @stop
 
@@ -548,7 +538,7 @@
                         type: "warning",
                         showCancelButton: true,
                         confirmButtonColor: "#7ed321",
-                        confirmButtonText: "Continuar ordem de compra.",
+                        confirmButtonText: "Sim, continuar ordem de compra.",
                         cancelButtonText: "Não, ainda quero validar algo.",
                         closeOnConfirm: false
                     },
