@@ -137,6 +137,7 @@
         var obra = null;
         var planejamento_id = null;
         var insumo_grupo_id = null;
+        var exibir_por_tarefa = null;
 
         function escolheObra(obra_id) {
             planejamento_id = null;
@@ -182,6 +183,17 @@
                     queryString +='?';
                 }
                 queryString +='insumo_grupo_id=' + insumo_grupo_id;
+            }
+
+            var $exibirPorTarefa = $('#exibir_por_tarefa');
+            exibir_por_tarefa = $exibirPorTarefa.prop('checked');
+            if(exibir_por_tarefa > 0){
+                if(queryString.length>0){
+                    queryString +='&';
+                }else{
+                    queryString +='?';
+                }
+                queryString +='exibir_por_tarefa=' + exibir_por_tarefa;
             }
 
             calendar.setOptions({events_source: '{{ url('planejamentos/lembretes') }}' + queryString});
