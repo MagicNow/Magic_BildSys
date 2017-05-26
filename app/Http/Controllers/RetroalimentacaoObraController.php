@@ -44,6 +44,17 @@ class RetroalimentacaoObraController extends AppBaseController
         $obras = Obra::pluck('nome','id')->toArray();
         return view('retroalimentacao_obras.create', compact('obras'));
     }
+    
+    /**
+     * Show the form for creating a new RetroalimentacaoObra.
+     *
+     * @return Response
+     */
+    public function create_front()
+    {
+        $obras = Obra::pluck('nome','id')->toArray();
+        return view('retroalimentacao_obras.create_front', compact('obras'));
+    }
 
     /**
      * Store a newly created RetroalimentacaoObra in storage.
@@ -56,11 +67,12 @@ class RetroalimentacaoObraController extends AppBaseController
     {
         $input = $request->all();
         $input['user_id'] = Auth::id();
+
         $retroalimentacaoObra = $this->retroalimentacaoObraRepository->create($input);
 
-        Flash::success('Retroalimentacao inserida '.trans('common.saved').' '.trans('common.successfully').'.');
+        Flash::success('Retroalimentação inserida com sucesso.');
 
-        return redirect($request->anterior);
+        return redirect($request->origem);
     }
 
     /**

@@ -36,7 +36,7 @@
                     </span>
                 </div>
                 <div class="col-md-6 text-right">
-                    <a href="{!! route('retroalimentacaoObras.create') !!}" class="btn btn-default btn-lg btn-flat">
+                    <a href="/retroalimentacao" class="btn btn-default btn-lg btn-flat">
                         Retroalimentação
                     </a>
                     @if(!is_null($ordemDeCompra->aprovado))
