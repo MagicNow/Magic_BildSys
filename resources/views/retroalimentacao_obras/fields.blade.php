@@ -30,7 +30,7 @@
             'Orçamento'=>'Orçamento',
             'Procedimento'=>'Procedimento'
         ),
-        isset($retroalimentacaoObra)? $retroalimentacaoObra->categoria : 'Escolha',
+        isset($retroalimentacaoObra) ? $retroalimentacaoObra->categoria : 'Escolha',
         ['class' => 'form-control input-md']
     ) !!}
 </div>
@@ -47,12 +47,6 @@
     {!! Form::textarea('situacao_proposta', null, ['class' => 'form-control', 'rows' => '3']) !!}
 </div>
 
-<!-- Data Inclusao Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('data_inclusao', 'Data Inclusão:') !!}
-    {!! Form::date('data_inclusao', $retroalimentacaoObra->data_inclusao ? $retroalimentacaoObra->data_inclusao->format('Y-m-d') : null, ['class' => 'form-control']) !!}
-</div>
-
 @if (strpos(Request::path(), 'admin') !== false)
     <!-- Origem Field -->
     <div class="form-group col-sm-6">
@@ -62,12 +56,12 @@
 
     <div class="form-group col-sm-6">
         {!! Form::label('data_prevista', 'Data prevista:') !!}
-        {!! Form::date('data_prevista', $retroalimentacaoObra->data_prevista ? $retroalimentacaoObra->data_prevista->format('Y-m-d') : null, ['class' => 'form-control']) !!}
+        {!! Form::date('data_prevista', isset($retroalimentacaoObra) ? $retroalimentacaoObra->data_prevista ? $retroalimentacaoObra->data_prevista->format('Y-m-d') : null : null, ['class' => 'form-control']) !!}
     </div>
 
     <div class="form-group col-sm-6">
         {!! Form::label('data_conclusao', 'Data conclusão:') !!}
-        {!! Form::date('data_conclusao', $retroalimentacaoObra->data_conclusao ? $retroalimentacaoObra->data_conclusao->format('Y-m-d') : null, ['class' => 'form-control']) !!}
+        {!! Form::date('data_conclusao', isset($retroalimentacaoObra) ? $retroalimentacaoObra->data_conclusao ? $retroalimentacaoObra->data_conclusao->format('Y-m-d') : null : null, ['class' => 'form-control']) !!}
     </div>
 
     <div class="form-group col-sm-6">

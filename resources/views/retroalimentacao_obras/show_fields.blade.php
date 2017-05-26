@@ -1,5 +1,5 @@
 <!-- Obra Id Field -->
-<div class="form-group col-md-6">
+<div class="form-group col-md-12">
     {!! Form::label('obra_id', 'Obra:') !!}
     <p class="form-control">{!! $retroalimentacaoObra->obra->nome !!}</p>
 </div>
@@ -16,12 +16,6 @@
     <p class="form-control">{!! $retroalimentacaoObra->categoria !!}</p>
 </div>
 
-<!-- Data Inclusao Field -->
-<div class="form-group col-md-6">
-    {!! Form::label('data_inclusao', 'Data Inclusão:') !!}
-    <p class="form-control">{!! $retroalimentacaoObra->data_inclusao ? $retroalimentacaoObra->data_inclusao->format('d/m/Y') : null !!}</p>
-</div>
-
 <!-- Situacao Atual Field -->
 <div class="form-group col-md-6">
     {!! Form::label('situacao_atual', 'Situacao Atual:') !!}
@@ -36,7 +30,7 @@
 
 <!-- Created At Field -->
 <div class="form-group col-md-6">
-    {!! Form::label('created_at', 'Criado em:') !!}
+    {!! Form::label('created_at', 'Data de inclusão:') !!}
     <p class="form-control">{!! $retroalimentacaoObra->created_at->format('d/m/Y') !!}</p>
 </div>
 
