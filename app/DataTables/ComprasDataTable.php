@@ -24,8 +24,10 @@ class ComprasDataTable extends DataTable
             ->eloquent($this->query())
             ->addColumn('action', 'ordem_de_compras.obras-insumos-datatables-actions')
             ->editColumn('quantidade_compra', function($obj){
-                return "<input value='$obj->quantidade_compra' class='form-control
+                if ($obj->insumo_grupo_id != 1570) {
+                    return "<input value='$obj->quantidade_compra' class='form-control
                     js-blur-on-enter money' onblur='quantidadeCompra($obj->id, $obj->obra_id, $obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, this.value)'>";
+                }
             })
             ->editColumn('total', function($obj){
                 if($obj->quantidade_compra && money_to_float($obj->saldo) > 0) {
@@ -41,8 +43,7 @@ class ComprasDataTable extends DataTable
                     return '<button data-toggle="popover" title="Substitui Insumo" data-content="' . $obj->substitui . '" type="button" data-placement="left" class="btn btn-info btn-flat btn-xs"> <i class="fa fa-exchange"></i> </button>';
                 }
 
-                if ($obj->unidade_sigla === 'VB' && $obj->insumo_grupo_id == 1570) {
-
+                if ($obj->insumo_grupo_id == 1570) {
                     return link_to(
                         'compras/trocar/' . $obj->orcamento_id . '?back=' . rawurlencode(
                             url('compras/obrasInsumos') . '?' . http_build_query(
@@ -50,7 +51,7 @@ class ComprasDataTable extends DataTable
                             )
                         ) ,
                         '<i class="fa fa-exchange"></i>',
-                        [ 'class' => 'btn btn-xs btn-link btn-default btn-flat' ],
+                        [ 'class' => 'btn btn-ms btn-primary btn-flat' ],
                         null,
                         false
                     );
