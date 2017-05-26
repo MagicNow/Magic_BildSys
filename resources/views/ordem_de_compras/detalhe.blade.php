@@ -390,18 +390,18 @@
                                                 <td class="text-center">{{ number_format($item->qtd_inicial, 2, ',','.') }}</td>
                                                 <td class="text-center"><small class="pull-left">R$</small> {{ number_format($item->preco_inicial, 2, ',','.') }}</td>
                                                 <td class="text-center">
-                                                    {{--{{ number_format(doubleval($item->qtd_realizada), 2, ',','.') }}--}} 0
+                                                    {{ number_format(doubleval($item->qtd_realizada), 2, ',','.') }}
                                                 </td>
                                                 <td class="text-center">
                                                     <small class="pull-left">R$</small>
-                                                    {{--{{ number_format( doubleval($item->valor_realizado), 2, ',','.') }}--}} 0
+                                                    {{ number_format( doubleval($item->valor_realizado), 2, ',','.') }}
                                                 </td>
                                                 <td class="text-center">
-                                                    {{--{{ number_format( $item->qtd_inicial-doubleval($item->qtd_realizada), 2, ',','.') }}--}} 0
+                                                    {{ number_format( $item->qtd_inicial-doubleval($item->qtd_realizada), 2, ',','.') }}
                                                 </td>
                                                 <td class="text-center">
                                                     <small class="pull-left">R$</small>
-                                                    {{--{{ number_format( $item->preco_inicial-doubleval($item->valor_realizado), 2, ',','.') }}--}} 0
+                                                    {{ number_format( $item->preco_inicial-doubleval($item->valor_realizado), 2, ',','.') }}
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -422,11 +422,11 @@
                                             <tbody>
                                             <tr>
                                                 <td class="text-center">
-                                                    {{--{{ number_format( $item->qtd_inicial - doubleval($item->qtd_realizada), 2, ',','.') }}--}} 0
+                                                    {{ number_format( $item->qtd_inicial - doubleval($item->qtd_realizada), 2, ',','.') }}
                                                 </td>
                                                 <td class="text-center">
                                                     <small class="pull-left">R$</small>
-                                                    {{--{{ number_format( $item->preco_inicial-doubleval($item->valor_realizado), 2, ',','.') }}--}} 0
+                                                    {{ number_format( $item->preco_inicial-doubleval($item->valor_realizado), 2, ',','.') }}
                                                 </td>
                                                 <td class="text-center"><strong>{{ $item->qtd }}</strong></td>
                                                 <td class="text-center"><small class="pull-left">R$</small> <strong>{{ number_format(doubleval($item->valor_total), 2, ',','.') }}</strong></td>
