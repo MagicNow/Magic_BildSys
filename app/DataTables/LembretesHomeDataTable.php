@@ -184,15 +184,10 @@ class LembretesHomeDataTable extends DataTable
                         $query->whereRaw("inicio like ?", ["%$keyword%"]);
                     } else {
                         $range = explode('-', $keyword);
-                        $inicio_array = explode('/', trim($range[0]));
-                        $fim_array = explode('/', trim($range[1]));
+                        $inicio = $range[0];
+                        $fim = $range[1];
 
-                        if (count($inicio_array) == 3 && count($fim_array) == 3) {
-                            $inicio = $inicio_array[2] . '-' . $inicio_array[1] . '-' . $inicio_array[0];
-                            $fim = $fim_array[2] . '-' . $fim_array[1] . '-' . $fim_array[0];
-
-                            $query->whereRaw("inicio BETWEEN ? AND ?", [$inicio, $fim]);
-                        }
+                        $query->whereRaw("inicio BETWEEN ? AND ?", [$inicio, $fim]);
                     }
                 })
                 ->editColumn('inicio', function ($obj) {
@@ -205,6 +200,7 @@ class LembretesHomeDataTable extends DataTable
                     }
                     return '<span class="text-' . $alerta . '"> ' . $obj->inicio . '</span>';
                 })
+                ->orderColumn('inicio', 'STR_TO_DATE(inicio, \'%d/%m/%Y\')')
                 ->filterColumn('grupo', function ($query, $keyword) {
                     $query->whereRaw("insumo_grupos.nome LIKE ?", ['%' . $keyword . '%']);
                 })
