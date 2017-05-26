@@ -1508,7 +1508,6 @@ class OrdemDeCompraController extends AppBaseController
 
     public function comprarTudoItem($request, $obra_id)
     {
-        dd($request['insumo_grupo_id']);
         //Testa se tem ordem de compra aberta pro user
         $ordem = null;
         if(\Session::get('ordemCompra')){
