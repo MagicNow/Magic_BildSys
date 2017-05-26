@@ -841,6 +841,11 @@ class OrdemDeCompraController extends AppBaseController
             ->where('obra_id', $ordemDeCompra->obra_id)
             ->get();
 
+        if(!count($ordem_itens)){
+            Flash::error('A ordem de compra não possuí itens.');
+            return back();
+        }
+
         foreach ($ordem_itens as $item){
             if(!$item->aprovado){ // Se o item não esta aprovado
                 if($item->updated_at < $ordemDeCompra->updated_at){ // Se o item for atualizado  antes da ordem de compra
