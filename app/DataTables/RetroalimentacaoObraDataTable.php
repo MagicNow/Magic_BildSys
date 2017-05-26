@@ -23,8 +23,8 @@ class RetroalimentacaoObraDataTable extends DataTable
             ->editColumn('user_id', function($obj){
                 return $obj->user_nome;
             })
-            ->editColumn('data_inclusao',function ($obj){
-                return $obj->data_inclusao ? with(new\Carbon\Carbon($obj->data_inclusao))->format('d/m/Y') : '';
+            ->editColumn('created_at',function ($obj){
+                return $obj->created_at ? with(new\Carbon\Carbon($obj->created_at))->format('d/m/Y') : '';
             })
             ->editColumn('situacao_atual',function ($obj){
                 return str_limit($obj->situacao_atual, $limit = 100, $end = '...');
@@ -32,8 +32,8 @@ class RetroalimentacaoObraDataTable extends DataTable
             ->editColumn('situacao_proposta',function ($obj){
                 return str_limit($obj->situacao_atual, $limit = 100, $end = '...');
             })
-            ->filterColumn('data_inclusao', function ($query, $keyword) {
-                $query->whereRaw("DATE_FORMAT(retroalimentacao_obras.data_inclusao,'%d/%m/%Y') like ?", ["%$keyword%"]);
+            ->filterColumn('created_at', function ($query, $keyword) {
+                $query->whereRaw("DATE_FORMAT(retroalimentacao_obras.created_at,'%d/%m/%Y') like ?", ["%$keyword%"]);
             })
             ->make(true);
     }
@@ -54,7 +54,7 @@ class RetroalimentacaoObraDataTable extends DataTable
                 'retroalimentacao_obras.categoria',
                 'retroalimentacao_obras.situacao_atual',
                 'retroalimentacao_obras.situacao_proposta',
-                'retroalimentacao_obras.data_inclusao'
+                'retroalimentacao_obras.created_at'
             ])
             ->join('obras','obras.id','=', 'retroalimentacao_obras.obra_id')
             ->join('users','users.id','=', 'retroalimentacao_obras.user_id');
@@ -121,12 +121,12 @@ class RetroalimentacaoObraDataTable extends DataTable
     {
         return [
             'obra' => ['name' => 'obras.nome', 'data' => 'obra'],
-            'usuario' => ['name' => 'users.name', 'data' => 'user'],
+            'usuário' => ['name' => 'users.name', 'data' => 'user'],
             'origem' => ['name' => 'retroalimentacao_obras.origem', 'data' => 'origem'],
             'categoria' => ['name' => 'retroalimentacao_obras.categoria', 'data' => 'categoria'],
-            'situacao_atual' => ['name' => 'retroalimentacao_obras.situacao_atual', 'data' => 'situacao_atual'],
-            'situacao_proposta' => ['name' => 'retroalimentacao_obras.situacao_proposta', 'data' => 'situacao_proposta'],
-            'data_inclusao' => ['name' => 'retroalimentacao_obras.data_inclusao', 'data' => 'data_inclusao']
+            'situação_atual' => ['name' => 'retroalimentacao_obras.situacao_atual', 'data' => 'situacao_atual'],
+            'situação_proposta' => ['name' => 'retroalimentacao_obras.situacao_proposta', 'data' => 'situacao_proposta'],
+            'data_de_inclusão' => ['name' => 'retroalimentacao_obras.created_at', 'data' => 'created_at']
         ];
     }
 

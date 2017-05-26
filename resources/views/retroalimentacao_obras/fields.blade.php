@@ -47,12 +47,6 @@
     {!! Form::textarea('situacao_proposta', null, ['class' => 'form-control', 'rows' => '3']) !!}
 </div>
 
-<!-- Data Inclusao Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('data_inclusao', 'Data Inclusão:') !!}
-    {!! Form::date('data_inclusao', $retroalimentacaoObra->data_inclusao ? $retroalimentacaoObra->data_inclusao->format('Y-m-d') : null, ['class' => 'form-control']) !!}
-</div>
-
 @if (strpos(Request::path(), 'admin') !== false)
     <!-- Origem Field -->
     <div class="form-group col-sm-6">
