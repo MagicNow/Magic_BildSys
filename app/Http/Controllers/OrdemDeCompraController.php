@@ -907,6 +907,7 @@ class OrdemDeCompraController extends AppBaseController
         $request->session()->put('ordemCompra', null);
         $request->session()->forget('ordemCompra');
 
+        $ordem_itens[0]->confereAprovacaoGeral();
 
         Flash::success('Ordem de compra '.$ordemDeCompra->id.' Fechada!');
         return redirect('/ordens-de-compra');
