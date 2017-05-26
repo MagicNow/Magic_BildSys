@@ -408,3 +408,25 @@ h6 {
 #dataTableBuilder_filter{
   float:left;
 }
+
+.sweet-alert button.cancel{
+  background-color: #DD6B55 !important;
+
+}
+.sweet-alert button.cancel:active {
+  background-color: #DD6B55 !important;
+}
+.sweet-alert button.cancel:hover {
+  background-color: #DD6B55 !important;
+}
+
+.sweet-alert button.confirm{
+  background-color: #7ed321 !important;
+
+}
+.sweet-alert button.confirm:active {
+  background-color: #7ed321 !important;
+}
+.sweet-alert button.confirm:hover {
+  background-color: #7ed321 !important;
+}

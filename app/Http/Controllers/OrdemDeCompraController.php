@@ -841,7 +841,21 @@ class OrdemDeCompraController extends AppBaseController
             ->where('obra_id', $ordemDeCompra->obra_id)
             ->get();
 
+        if(!count($ordem_itens)){
+            Flash::error('A ordem de compra não possuí itens.');
+            return back();
+        }
+
         foreach ($ordem_itens as $item){
+            if(!$item->aprovado){ // Se o item não esta aprovado
+                if($item->updated_at < $ordemDeCompra->updated_at){ // Se o item for atualizado  antes da ordem de compra
+                    Flash::error('O item não foi atualizado.');
+                    return back();
+                }else{
+                    $item->aprovado = null;
+                    $item->update();
+                }
+            }
             if($item->qtd == '0.00' || !$item->qtd){
                 Flash::error('A quantidade não pode ser zero.');
                 return back();
@@ -893,6 +907,7 @@ class OrdemDeCompraController extends AppBaseController
         $request->session()->put('ordemCompra', null);
         $request->session()->forget('ordemCompra');
 
+        $ordem_itens[0]->confereAprovacaoGeral();
 
         Flash::success('Ordem de compra '.$ordemDeCompra->id.' Fechada!');
         return redirect('/ordens-de-compra');
@@ -932,6 +947,8 @@ class OrdemDeCompraController extends AppBaseController
             ]);
             if($ordemDeCompraItemAnexo){
                 $salvos++;
+                $ordemDeCompraItem->updated_at = new \DateTime();;
+                $ordemDeCompraItem->update();
             }
         }
 

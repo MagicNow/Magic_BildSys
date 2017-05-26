@@ -117,7 +117,6 @@
                             ?>
                             @if(count($motivos_reprovacao))
                                 <div class="alert alert-danger" role="alert" id="alert_{{ $item->id }}">
-                                    <i class="fa fa-times"></i>
                                     @foreach($motivos_reprovacao as $motivo_reprovacao)
                                         @if($motivo_reprovacao->user)
                                             Usuário: <span style="font-weight:bold;">{{$motivo_reprovacao->user->name}}</span>
@@ -538,8 +537,8 @@
                         text: "",
                         type: "warning",
                         showCancelButton: true,
-                        confirmButtonColor: "#DD6B55",
-                        confirmButtonText: "Continuar ordem de compra.",
+                        confirmButtonColor: "#7ed321",
+                        confirmButtonText: "Sim, continuar ordem de compra.",
                         cancelButtonText: "Não, ainda quero validar algo.",
                         closeOnConfirm: false
                     },
