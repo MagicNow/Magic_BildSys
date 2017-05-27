@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Contrato;
+use App\Models\Insumo;
 use App\Models\QuadroDeConcorrencia;
+use App\Repositories\ContratoRepository;
 use Flash;
+use Illuminate\Support\Facades\Log;
 use Response;
 use Exception;
 use App\DataTables\QcItensDataTable;
@@ -405,7 +409,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
             'Quadro de Concorrência #' . $quadro->id . ' foi finalizado com sucesso.'
         );
 
-        return redirect(route('quadroDeConcorrencias.index'));
+        return redirect(route('quadroDeConcorrencias.gerarContrato',$quadro->id));
     }
 
     /**
@@ -577,9 +581,24 @@ class QuadroDeConcorrenciaController extends AppBaseController
             if(!$request->reject) {
 
                 if($quadro->hasMaterial()){
+
+                    if(!$request->tipo_frete) {
+                        DB::rollback();
+                        Flash::error('Selecione o Tipo do Frete');
+
+                        return back()->withInput();
+                    }else{
+                        if($request->tipo_frete=='FOB' && (is_null($request->valor_frete) || floatval($request->valor_frete) == 0) ) {
+                            DB::rollback();
+                            Flash::error('O tipo de Frete FOB é necessário informar um valor');
+
+                            return back()->withInput();
+                        }
+                    }
+
                     $qcFornecedor->update([
                         'tipo_frete' => $request->tipo_frete,
-                        'valor_frete' => money_to_float($request->valor_frete),
+                        'valor_frete' => ($request->tipo_frete=='FOB'? money_to_float($request->valor_frete): 0),
                     ]);
                 }
 
@@ -608,8 +627,8 @@ class QuadroDeConcorrenciaController extends AppBaseController
             }
         } catch (Exception $e) {
             DB::rollback();
-            Flash::error('Ocorreu um erro ao salvar os dados, tente novamente');
-
+            Flash::error('Ocorreu um erro ao salvar os dados, tente novamente ');
+            Log::error('Erro ao salvar proposta de Fornecedor',[$e->getMessage().' File '.$e->getFile().' linha '.$e->getLine(),'Stack trace:'=>$e->getTraceAsString()]);
             return back()->withInput();
         }
 
@@ -917,5 +936,194 @@ class QuadroDeConcorrenciaController extends AppBaseController
         $checks = $fornecedorCheckRepository->porQcFornecedor($qcFornecedor);
 
         return view('quadro_de_concorrencias.equalizacoes', compact('checks'));
+    }
+
+    /**
+     * Gerar Contrato - Tela para especificar Template para gerar contrato
+     * @param $id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
+     */
+    public function gerarContrato($id)
+    {
+        $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->findWithoutFail($id);
+
+        if (empty($quadroDeConcorrencia)) {
+            Flash::error('Quadro De Concorrencia ' . trans('common.not-found'));
+
+            return redirect(route('quadroDeConcorrencias.index'));
+        }
+
+        $fornecedores = $quadroDeConcorrencia
+            ->qcFornecedores()
+            ->where('qc_fornecedor.rodada',$quadroDeConcorrencia->rodada_atual)
+            ->whereHas('itens', function($query){
+                $query->where('vencedor','1');
+            })
+            ->with(['itens'=> function($query){
+                $query->where('vencedor','1');
+            }])
+            ->get();
+        $contratoItens = [];
+        $total_contrato = [];
+
+        $valorMaterial = [];
+        $valorFaturamentoDireto = [];
+
+        foreach ($fornecedores as $qcFornecedor){
+            // Monta os itens do contrato
+
+            $fatorServico = 1;
+            $fatorMaterial = 0;
+            $fatorFatDireto = 0;
+            $contratoComMaterial = [];
+
+            if($quadroDeConcorrencia->hasServico()){
+                if($qcFornecedor->porcentagem_servico < 100){
+                    $fatorServico = $qcFornecedor->porcentagem_servico / 100;
+                    $fatorMaterial = $qcFornecedor->porcentagem_material / 100;
+                    $fatorFatDireto = $qcFornecedor->porcentagem_faturamento_direto / 100;
+                }
+            }
+
+            foreach ($qcFornecedor->itens as $item){
+                $valor_item = $item->valor_total;
+                $valor_item_unitario = $item->valor_unitario;
+
+                $qcItem = $item->qcItem;
+                $insumo = $qcItem->insumo;
+                $obras = $qcItem->oc_itens()->select('obra_id')->groupBy('obra_id')->get();
+
+                foreach ($obras as $obra){
+                    $obra_id = $obra->obra_id;
+
+                    // Busca a soma da qtd para esta obra
+                    $qtd = $qcItem->oc_itens()->where('obra_id',$obra_id)->sum('qtd');
+                    $valor_item = $valor_item_unitario * $qtd;
+
+                    // Inicia os contadores caso não existam
+                        if(!isset($contratoItens[$qcFornecedor->id][$obra_id])){
+                            $contratoItens[$qcFornecedor->id][$obra_id] = [];
+                        }
+                        if(!isset($total_contrato[$qcFornecedor->id][$obra_id])){
+                            $total_contrato[$qcFornecedor->id][$obra_id] = 0;
+                        }
+                        if(!isset($valorMaterial[$qcFornecedor->id][$obra_id])) {
+                            $valorMaterial[$qcFornecedor->id][$obra_id] = 0;
+                        }
+                        if(!isset($valorFaturamentoDireto[$qcFornecedor->id][$obra_id])) {
+                            $valorFaturamentoDireto[$qcFornecedor->id][$obra_id] = 0;
+                        }
+
+                    $total_contrato[$qcFornecedor->id][$obra_id] += $valor_item;
+                    $tipo = explode(' ' ,$insumo->grupo->nome);
+                    if($fatorServico<1){
+                        if($tipo[0]=='SERVIÇO'){
+                            $valorFaturamentoDireto[$qcFornecedor->id][$obra_id] += $valor_item * $fatorFatDireto;
+                            $valorMaterial[$qcFornecedor->id][$obra_id] += $valor_item * $fatorMaterial;
+                            $valor_item = $valor_item * $fatorServico;
+                            $valor_item_unitario = $item->valor_unitario * $fatorServico;
+                        }else{
+                            $contratoComMaterial[$qcFornecedor->id.'-'.$obra_id] = ['qcFornecedor'=>$qcFornecedor->id,'obraId'=>$obra_id];
+                        }
+                    }
+
+                    $contratoItens[$qcFornecedor->id][$obra_id][] = [
+                        'insumo_id'         => $insumo->id,
+                        'insumo'            => $insumo,
+                        'qc_item_id'        => $qcItem->id,
+                        'qtd'               => $qtd,
+                        'valor_unitario'    => $valor_item_unitario,
+                        'valor_total'       => $valor_item,
+                        'aprovado'          => 1,
+                        'tipo'              => $tipo[0]
+                    ];
+
+                }
+
+
+            }
+
+
+
+            $tipo_frete = 'CIF';
+            $valor_frete = 0;
+            if($quadroDeConcorrencia->hasMaterial() && $qcFornecedor->tipo_frete != 'CIF'){
+                $valor_frete = $qcFornecedor->getOriginal('valor_frete');
+                $tipo_frete = $qcFornecedor->tipo_frete;
+                // Coloca frete em todos os itens que quem material
+                foreach ($contratoComMaterial as $ccMaterial){
+                    $vl_frete = $valor_frete/count($contratoComMaterial);
+                    $contratoItens[$ccMaterial['qcFornecedor']][$ccMaterial['obraId']][] = [
+                        'valor_total'       => $vl_frete,
+                        'frete'             => true
+                    ];
+                }
+
+            }
+        }
+        foreach($valorMaterial as $qcF => $valorMat){
+            foreach($valorMat as $obraId => $vl){
+                if($vl>0){
+                    $insumo = Insumo::where('codigo','34007')->first();
+                    $contratoItens[$qcF][$obraId][] = [
+                        'insumo_id'         => $insumo->id,
+                        'insumo'            => $insumo,
+                        'qc_item_id'        => null,
+                        'qtd'               => $vl,
+                        'valor_unitario'    => 1,
+                        'valor_total'       => $vl,
+                        'aprovado'          => 1,
+                        'tipo'              => 'MATERIAL'
+                    ];
+                }
+            }
+        }
+
+        foreach ($valorFaturamentoDireto as $qcF => $fatDireto){
+            foreach ($fatDireto as $obraId => $fd){
+                if($fd>0){
+                    $insumo = Insumo::where('codigo','30019')->first();
+                    $contratoItens[$qcF][$obraId][] = [
+                        'insumo_id'         => $insumo->id,
+                        'insumo'            => $insumo,
+                        'qc_item_id'        => null,
+                        'qtd'               => $fd,
+                        'valor_unitario'    => 1,
+                        'valor_total'       => $fd,
+                        'aprovado'          => 1,
+                        'tipo'              => 'MATERIAL'
+                    ];
+                }
+            }
+        }
+
+        // Verifica se já foi gerado contrato para algum item
+        $contratosExistentes = [];
+        foreach ($total_contrato as $qcFornecedorId => $obraValores){
+            $qcF = QcFornecedor::find($qcFornecedorId);
+            foreach($obraValores as $obraId => $valorTotal){
+                $contratoExistente = Contrato::where('quadro_de_concorrencia_id', $qcF->quadro_de_concorrencia_id)
+                    ->where('fornecedor_id',$qcF->fornecedor_id)
+                    ->where('obra_id',$obraId)
+                    ->first();
+                if($contratoExistente){
+                    $contratosExistentes[$qcFornecedorId][$obraId] = $contratoExistente;
+                }
+            }
+        }
+
+        return view('quadro_de_concorrencias.gerar-contrato',
+            compact('quadroDeConcorrencia','fornecedores','contratoItens','total_contrato','contratosExistentes'));
+    }
+    
+    public function gerarContratoSave($id, Request $request){
+        // Gerar Contrato
+        $input = $request->all();
+        $retorno = ContratoRepository::criar($input);
+        if(!$retorno['success']){
+            return response()->json(['erro'=>$retorno['erro']],422);
+        }
+        $input['contratos'] = $retorno['contratos'];
+        return response()->json($input);
     }
 }

@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class ContratoItem
@@ -12,15 +11,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class ContratoItem extends Model
 {
-    use SoftDeletes;
 
     public $table = 'contrato_itens';
     
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
-
-    protected $dates = ['deleted_at'];
 
 
     public $fillable = [

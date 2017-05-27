@@ -54,6 +54,7 @@ class ContratoTemplateController extends AppBaseController
     {
         $input = $request->all();
         $input['user_id'] = Auth::id();
+        $input['campos_extras'] = json_encode($request->campos_extras);
 
         $contratoTemplate = $this->contratoTemplateRepository->create($input);
 
@@ -122,6 +123,7 @@ class ContratoTemplateController extends AppBaseController
 
         $input = $request->all();
         $input['user_id'] = Auth::id();
+        $input['campos_extras'] = json_encode($request->campos_extras);
         $contratoTemplate = $this->contratoTemplateRepository->update($input, $id);
 
         Flash::success('Contrato Template '.trans('common.updated').' '.trans('common.successfully').'.');
@@ -151,5 +153,19 @@ class ContratoTemplateController extends AppBaseController
         Flash::success('Contrato Template '.trans('common.deleted').' '.trans('common.successfully').'.');
 
         return redirect(route('admin.contratoTemplates.index'));
+    }
+
+    public function camposExtras($id){
+        $contratoTemplate = $this->contratoTemplateRepository->findWithoutFail($id);
+
+        if (empty($contratoTemplate)) {
+            return response()->json(['error'=>'Contrato Template '.trans('common.not-found')],404);
+        }
+        $campos_extras = [];
+        if( strlen(trim($contratoTemplate->campos_extras)) ){
+            $campos_extras = json_decode($contratoTemplate->campos_extras);
+        }
+
+        return response()->json(['campos_extras'=>$campos_extras]);
     }
 }

@@ -27,7 +27,15 @@ class ImportacaoRepository
             'PRO_ST_DESCRICAO',
             'GRU_IN_CODIGO',
             'UNI_ST_UNIDADE',
+            'MGADM.EST_PRODUTOS.ncm_in_codigo',
+            'NCM.ncm_st_descricao',
+            'NCM.ncm_st_extenso'
         ])
+            ->leftJoin('mgtrf.trf_ncm as NCM',function ($join){
+                $join->on('NCM.ncm_tab_in_codigo','MGADM.EST_PRODUTOS.ncm_tab_in_codigo');
+                $join->on('NCM.ncm_pad_in_codigo','MGADM.EST_PRODUTOS.ncm_pad_in_codigo');
+                $join->on('NCM.ncm_in_codigo','MGADM.EST_PRODUTOS.ncm_in_codigo');
+            })
             ->where('gru_ide_st_codigo','07')
             ->whereRaw(DB::raw(" NOT EXISTS (
                                             SELECT 1 
@@ -53,6 +61,10 @@ class ImportacaoRepository
                     'codigo' => $produto->pro_in_codigo,
                     'insumo_grupo_id' => $produto->gru_in_codigo
                 ]);
+                $insumo->ncm_codigo = $produto->ncm_in_codigo;
+                    $insumo->ncm_texto  =  trim(utf8_encode($produto->ncm_st_descricao));
+                    $insumo->ncm_codigo_texto  =  trim(utf8_encode($produto->ncm_st_extenso));
+                $insumo->save();
             } catch (\Exception $e) {
                 Log::error('Erro ao importar insumo '. $produto->pro_in_codigo. ': '.$e->getMessage());
             }
