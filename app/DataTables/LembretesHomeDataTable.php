@@ -442,18 +442,7 @@ class LembretesHomeDataTable extends DataTable
             }
 
             // Busca se existe algum item à ser comprado desta tarefa
-            // Pega se existir
-            $igId = null;
-            if ($this->request()->get('columns')) {
-                $column = $this->request()->get('columns');
-                if (isset($column[3]['search']['value'])) {
-                    $insumoGrupo = InsumoGrupo::where('nome', 'like', $this->request()->get('columns')[3]['search']['value'])->first();
-                    if ($insumoGrupo) {
-                        $igId = $insumoGrupo->id;
-                    }
-                }
-            }
-            $query->whereRaw(PlanejamentoCompraRepository::existeItemParaComprar($this->request()->get('insumo_grupo_id', $igId)));
+            $query->whereRaw(PlanejamentoCompraRepository::existeItemParaComprarComInsumoGrupo());
 
             $query->groupBy(['id', 'obra', 'dias', 'tarefa', 'url', 'inicio']);
         }else{
