@@ -231,34 +231,31 @@
         </div>
         <hr>
         <div class="row" id="totalInsumos">
-            <div class="col-md-4">
-                <h6>Total da O.C.</h6>
-            </div>
             <div class="col-md-2 text-right borda-direita">
-                <h5>ORÇAMENTO INICIAL</h5>
+                <h5 style="margin: 0px">PREVISTO NO ORÇAMENTO</h5>
                 <h4>
                     <small class="pull-left">R$</small>
                     {{ number_format($orcamentoInicial,2,',','.') }}
                 </h4>
             </div>
-            <div class="col-md-2 text-right borda-direita" title="Nos itens desta O.C.">
-                <h5>TOTAL À GASTAR</h5>
-                <h4>
-                    <small class="pull-left">R$</small>0
-                    {{---  TO DO = A gastar: É a soma de todos os saldos de contratos na que apropriação, como ainda não exixte contrato gerado, tem q estar zerado--}}
-{{--                    {{ number_format($totalAGastar,2,',','.') }}--}}
-                </h4>
-            </div>
             <div class="col-md-2 text-right borda-direita" title="Até o momento em todos os itens desta O.C.">
-                <h5>QUANTIDADE REALIZADA</h5>
+                <h5>VALOR REALIZADO</h5>
                 <h4>
-                    <small class="pull-left">R$</small>0
+                    <small class="pull-left">R$</small>0,00
                     {{---  TO DO = Realizado: São informações que virão com a entrada de NF, sendo assim, no momento não haverá informações--}}
-{{--                    {{ number_format($realizado,2,',','.') }}--}}
+                    {{--                    {{ number_format($realizado,2,',','.') }}--}}
                 </h4>
             </div>
-            <div class="col-md-2 text-right" title="Restante do Orçamento Inicial em relação aos itens desta O.C.">
-                <h5>SALDO</h5>
+            <div class="col-md-2 text-right borda-direita" title="Nos itens desta O.C.">
+                <h5>VALOR À GASTAR</h5>
+                <h4>
+                    <small class="pull-left">R$</small>0,00
+                    {{---  TO DO = A gastar: É a soma de todos os saldos de contratos na que apropriação, como ainda não exixte contrato gerado, tem q estar zerado--}}
+                    {{--                    {{ number_format($totalAGastar,2,',','.') }}--}}
+                </h4>
+            </div>
+            <div class="col-md-2 text-right borda-direita" title="Restante do Orçamento Inicial em relação aos itens desta O.C.">
+                <h5>SALDO DE ORÇAMENTO</h5>
                 <h4>
                     <small class="pull-left">R$</small>
                     {{ number_format($orcamentoInicial,2,',','.') }}
@@ -266,7 +263,20 @@
                     {{--{{ number_format($saldo,2,',','.') }}--}}
                 </h4>
             </div>
-
+            <div class="col-md-2 text-right borda-direita">
+                <h5>VALOR DA OC</h5>
+                <h4>
+                    <small class="pull-left">R$</small>
+                    {{ number_format($totalSolicitado,2,',','.') }}
+                </h4>
+            </div>
+            <div class="col-md-2 text-right">
+                <h5>SALDO DISPONÍVEL</h5>
+                <h4>
+                    <small class="pull-left">R$</small>
+                    {{ number_format(($orcamentoInicial - $totalSolicitado),2,',','.') }}
+                </h4>
+            </div>
         </div>
         <div class="panel panel-default">
             <div class="panel-body">
@@ -397,11 +407,11 @@
                                                     {{ number_format( doubleval($item->valor_realizado), 2, ',','.') }}
                                                 </td>
                                                 <td class="text-center">
-                                                    {{ number_format( $item->qtd_inicial-doubleval($item->qtd_realizada), 2, ',','.') }}
+                                                    {{--{{ number_format( $item->qtd_inicial-doubleval($item->qtd_realizada), 2, ',','.') }}--}}0,00
                                                 </td>
                                                 <td class="text-center">
                                                     <small class="pull-left">R$</small>
-                                                    {{ number_format( $item->preco_inicial-doubleval($item->valor_realizado), 2, ',','.') }}
+                                                    {{--{{ number_format( $item->preco_inicial-doubleval($item->valor_realizado), 2, ',','.') }}--}}0,00
                                                 </td>
                                             </tr>
                                             </tbody>
