@@ -25,7 +25,6 @@ class CreateContratosTable extends Migration
             $table->string('arquivo', 255)->nullable();
             $table->nullableTimestamps();
 
-
             $table->foreign('contrato_status_id')
                 ->references('id')->on('contrato_status')
                 ->onDelete('restrict')

@@ -7,6 +7,7 @@ use Yajra\Datatables\Services\DataTable;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Models\ContratoStatus;
 
 class ContratoItemDataTable extends DataTable
 {
@@ -50,6 +51,9 @@ class ContratoItemDataTable extends DataTable
     {
         $request = $this->request();
         $query = ContratoItem::query()
+            ->with(['modificacoes' => function($query) {
+                $query->where('contrato_status_id', ContratoStatus::APROVADO);
+            }])
             ->select([
                 'contrato_itens.*',
                 'insumos.codigo as insumo_codigo',

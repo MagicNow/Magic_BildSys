@@ -20,6 +20,11 @@ use App\Repositories\Admin\WorkflowReprovacaoMotivoRepository;
 use App\Models\WorkflowTipo;
 use App\DataTables\ContratoItemDataTable;
 use App\Models\ContratoItem;
+use App\Http\Requests\ReajustarRequest;
+use App\Http\Requests\DistratarRequest;
+use App\Http\Requests\ReapropriarRequest;
+use App\Repositories\ContratoItemModificacaoRepository;
+use App\Repositories\ContratoItemRepository;
 
 class ContratoController extends AppBaseController
 {
@@ -118,7 +123,7 @@ class ContratoController extends AppBaseController
         DistratarRequest $request,
         ContratoItemModificacaoRepository $contratoItemModificacaoRepository
     ) {
-        $contratoItemModificacaoRepository->distratar($id, $request->all());
+        $contratoItemModificacaoRepository->distratar($id, $request->qtd);
 
         return response()->json([
             'success' => true
@@ -127,10 +132,13 @@ class ContratoController extends AppBaseController
 
     public function reapropriarItem(
         $id,
-        ReapropriarRequest $request,
-        ContratoItemModificacaoRepository $contratoItemModificacaoRepository
+        ContratoItemRepository $contratoItemRepository,
+        ReapropriarRequest $request
     ) {
-        $contratoItemModificacaoRepository->reapropriar($id, $request->all());
+        $item = $contratoItemRepository->find($id);
+
+        http_response_code(500);
+        dd($item->qcItem->ordemDeCompraItens);
 
         return response()->json([
             'success' => true

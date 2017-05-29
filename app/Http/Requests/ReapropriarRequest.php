@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class ReajustarRequest extends FormRequest
+class ReapropriarRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,17 +25,20 @@ class ReajustarRequest extends FormRequest
     public function rules()
     {
         return [
-            'valor' => [
-                'required',
-                'money'
-            ],
+            'qtd'          => 'required',
+            'grupo_id'     => 'required',
+            'subgrupo1_id' => 'required',
+            'subgrupo2_id' => 'required',
+            'subgrupo3_id' => 'required',
+            'servico_id'   => 'required',
         ];
     }
 
     public function messages()
     {
         return [
-            'valor.required' => 'O valor é obrigatório para reajuste',
+            'qtd.required' => 'A quantidade para reapropriação é obrigatória',
+            '*.required' => 'Por favor, selecione todos os grupos da reaproriação',
         ];
     }
 }

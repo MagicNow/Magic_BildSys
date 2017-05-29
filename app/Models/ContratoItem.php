@@ -67,17 +67,17 @@ class ContratoItem extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function qcIten()
+    public function qcItem()
     {
-        return $this->belongsTo(\App\Models\QcIten::class);
+        return $this->belongsTo(QuadroDeConcorrenciaItem::class);
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
-    public function contratoItemModificacos()
+    public function modificacoes()
     {
-        return $this->hasMany(\App\Models\ContratoItemModificaco::class);
+        return $this->hasMany(ContratoItemModificacao::class);
     }
 
     /**

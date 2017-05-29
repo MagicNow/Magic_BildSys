@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class ReajustarRequest extends FormRequest
+class DistratarRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,17 +25,14 @@ class ReajustarRequest extends FormRequest
     public function rules()
     {
         return [
-            'valor' => [
-                'required',
-                'money'
-            ],
+            'qtd'   => 'required',
         ];
     }
 
     public function messages()
     {
         return [
-            'valor.required' => 'O valor é obrigatório para reajuste',
+            'qtd.required'   => 'A nova quantidade é necessária para realizar distrato',
         ];
     }
 }

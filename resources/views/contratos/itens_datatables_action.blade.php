@@ -1,4 +1,5 @@
 <button class="btn btn-default btn-xs btn-flat js-reapropriar"
+  data-item-qtd="{{ $qtd }}"
   data-item-id="{{ $id }}">
   Reapropriar
 </button>

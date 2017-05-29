@@ -18,7 +18,7 @@ $(function() {
     var selector = event.currentTarget;
     var current = parseInt(selector.dataset.inputOrder, 10);
 
-    if(selector.disabled || current === groupSelector.length) {
+    if(selector.disabled || current === groupSelector.length || !selector.value) {
       return true;
     }
 
@@ -26,8 +26,9 @@ $(function() {
 
     var next = document.querySelector('[data-input-order="' + (current + 1) + '"]');
 
-    _.each(_.range(current + 1, groupSelector.length), function(n) {
+    _.each(_.range(current + 1, groupSelector.length + 1), function(n) {
       var selector = $('[data-input-order=' + n + ']');
+
       selector.prop('disabled', true);
       selector.val(null).change();
       selector.html('');

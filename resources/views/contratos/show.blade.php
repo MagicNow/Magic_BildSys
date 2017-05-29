@@ -1,6 +1,5 @@
 @extends('layouts.front')
 
-
 @section('content')
   <section class="content-header">
     <h1>
@@ -127,7 +126,7 @@
         <button type="button" class="btn btn-danger btn-flat" data-dismiss="modal">
           Cancelar
         </button>
-        <button type="button" class="btn btn-success btn-flat">
+        <button type="button" class="btn btn-success btn-flat js-save">
           Salvar
         </button>
       </div>
@@ -205,5 +204,5 @@
   <script>
         options_motivos = document.getElementById('motivo').innerHTML;
   </script>
-  <script src="{{ asset('/js/contrato-actions.js') }}"></script>
+  <script data-token="{{ csrf_token() }}" src="{{ asset('/js/contrato-actions.js') }}"></script>
 @append

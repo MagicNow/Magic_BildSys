@@ -448,3 +448,10 @@ h6 {
 .centered-modal .modal-dialog {
     margin: auto;
 }
+.popover {
+  max-width: none;
+}
+
+.popover table {
+  margin: 0;
+}
