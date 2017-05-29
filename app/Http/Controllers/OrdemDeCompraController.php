@@ -578,6 +578,7 @@ class OrdemDeCompraController extends AppBaseController
         ]);
 
         $ordem_item->user_id = Auth::user()->id;
+        $ordem_item->total = 1;
         $ordem_item->qtd = $request->quantidade_compra;
         $ordem_item->valor_unitario = $orcamento_ativo->preco_unitario;
         $ordem_item->valor_total = $orcamento_ativo->getOriginal('preco_unitario') * money_to_float($request->quantidade_compra);
@@ -1566,7 +1567,11 @@ class OrdemDeCompraController extends AppBaseController
             $ordem_item->tems = $insumo->tems;
 
             $ordem_item->user_id = Auth::user()->id;
-            $ordem_item->qtd = $request['saldo'];
+            if($request['quantidade_comprada']){
+                $ordem_item->qtd = money_to_float($request['saldo']) + money_to_float($request['quantidade_comprada']);
+            }else{
+                $ordem_item->qtd = $request['saldo'];
+            }
             $ordem_item->valor_unitario = $orcamento_ativo->preco_unitario;
             $ordem_item->valor_total = $orcamento_ativo->getOriginal('preco_unitario') * money_to_float($ordem_item->qtd);
             $ordem_item->save();
