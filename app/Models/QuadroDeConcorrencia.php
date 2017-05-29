@@ -214,4 +214,9 @@ class QuadroDeConcorrencia extends Model
                 return starts_with($nome, 'MATERIAL');
             });
     }
+
+    public function contratos()
+    {
+        return $this->hasMany(Contrato::class);    
+    }
 }

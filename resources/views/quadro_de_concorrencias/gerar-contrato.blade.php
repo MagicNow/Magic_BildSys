@@ -40,21 +40,39 @@
 
             </div>
             <div class="box-body">
-
-                <div class="row text-right form-inline">
-                        <span class="col-md-4">
-                           <label>Template de Contrato</label>
-                        </span>
-                        <span class="col-md-8 text-left">
-                            {!! Form::select('contrato_template_id',[''=>'Selecione...']+
-                            \App\Models\ContratoTemplate::pluck('nome','id')->toArray(),null,[
-                            'class'=>'form-control select2 contratoTemplate',
-                            'required'=>'required',
-                            'id'=>'contratoTemplate'.$qcFornecedor->id,
-                            'qcFornecedor'=>$qcFornecedor->id
-                            ]) !!}
-                        </span>
-                </div>
+                @if(isset($contratosExistentes[$qcFornecedor->id]))
+                    @if(count($contratosExistentes[$qcFornecedor->id])!=count($total_contrato[$qcFornecedor->id]) )
+                        <div class="row text-right form-inline">
+                            <span class="col-md-4">
+                               <label>Template de Contrato</label>
+                            </span>
+                            <span class="col-md-8 text-left">
+                                {!! Form::select('contrato_template_id',[''=>'Selecione...']+
+                                \App\Models\ContratoTemplate::pluck('nome','id')->toArray(),null,[
+                                'class'=>'form-control select2 contratoTemplate',
+                                'required'=>'required',
+                                'id'=>'contratoTemplate'.$qcFornecedor->id,
+                                'qcFornecedor'=>$qcFornecedor->id
+                                ]) !!}
+                            </span>
+                        </div>
+                    @endif
+                @else
+                    <div class="row text-right form-inline">
+                            <span class="col-md-4">
+                               <label>Template de Contrato</label>
+                            </span>
+                            <span class="col-md-8 text-left">
+                                {!! Form::select('contrato_template_id',[''=>'Selecione...']+
+                                \App\Models\ContratoTemplate::pluck('nome','id')->toArray(),null,[
+                                'class'=>'form-control select2 contratoTemplate',
+                                'required'=>'required',
+                                'id'=>'contratoTemplate'.$qcFornecedor->id,
+                                'qcFornecedor'=>$qcFornecedor->id
+                                ]) !!}
+                            </span>
+                    </div>
+                @endif
                 <div class="col-md-7">
                     @foreach($contratoItens[$qcFornecedor->id] as $obraId => $itens)
                         @if(!isset($contratosExistentes[$qcFornecedor->id][$obraId]))
@@ -148,11 +166,21 @@
                     </table>
                 </div>
             </div>
-            <div class="box-footer text-center">
-                <button type="submit" class="btn btn-block btn-flat btn-success btn-lg">
-                    <i class="fa fa-file"></i> Gerar contrato deste fornecedor
-                </button>
-            </div>
+            @if(isset($contratosExistentes[$qcFornecedor->id]))
+                @if(count($contratosExistentes[$qcFornecedor->id])!= count($total_contrato[$qcFornecedor->id]))
+                    <div class="box-footer text-center">
+                        <button type="submit" class="btn btn-block btn-flat btn-success btn-lg">
+                            <i class="fa fa-file"></i> Gerar contrato deste fornecedor
+                        </button>
+                    </div>
+                @endif
+            @else
+                <div class="box-footer text-center">
+                    <button type="submit" class="btn btn-block btn-flat btn-success btn-lg">
+                        <i class="fa fa-file"></i> Gerar contrato deste fornecedor
+                    </button>
+                </div>
+            @endif
         </div>
         {!! Form::close() !!}
         @endforeach

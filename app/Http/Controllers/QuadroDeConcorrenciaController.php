@@ -409,7 +409,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
             'Quadro de Concorrência #' . $quadro->id . ' foi finalizado com sucesso.'
         );
 
-        return redirect(route('quadroDeConcorrencias.gerarContrato',$quadro->id));
+        return redirect(url('quadro-de-concorrencia/'.$quadro->id.'/gerar-contrato'));
     }
 
     /**
