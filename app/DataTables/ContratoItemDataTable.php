@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Models\ContratoStatus;
+use App\Models\Contrato;
 
 class ContratoItemDataTable extends DataTable
 {
@@ -17,7 +18,7 @@ class ContratoItemDataTable extends DataTable
      */
     private $contrato;
 
-    public function setContrato($contrato)
+    public function setContrato(Contrato $contrato)
     {
         $this->contrato = $contrato;
 
@@ -31,17 +32,21 @@ class ContratoItemDataTable extends DataTable
      */
     public function ajax()
     {
-        return $this->datatables
+        $datatables = $this->datatables
             ->eloquent($this->query())
-            ->addColumn('action', 'contratos.itens_datatables_action')
             ->addColumn('info', 'contratos.itens_datatables_info')
             ->editColumn('qtd', function($item) {
                 return float_to_money($item->qtd, '');
             })
             ->editColumn('valor_total', function($item) {
                 return float_to_money($item->valor_total);
-            })
-            ->make(true);
+            });
+
+        if($this->contrato->isStatus(ContratoStatus::APROVADO)) {
+            $datatables->addColumn('action', 'contratos.itens_datatables_action');
+        }
+
+        return $datatables->make(true);
     }
 
     /**
@@ -77,7 +82,7 @@ class ContratoItemDataTable extends DataTable
                 'ordem_de_compra_itens.id',
                 'oc_item_qc_item.ordem_de_compra_item_id'
             )
-            ->where('contrato_itens.contrato_id', $this->contrato);
+            ->where('contrato_itens.contrato_id', $this->contrato->id);
 
         return $this->applyScopes($query);
     }
@@ -124,7 +129,7 @@ class ContratoItemDataTable extends DataTable
      */
     protected function getColumns()
     {
-        return [
+        $columns = [
             'info' => [
                 'searchable' => false,
                 'orderable'  => false,
@@ -157,13 +162,18 @@ class ContratoItemDataTable extends DataTable
                 'name'  => 'contrato_itens.valor_total',
                 'title' => 'Total'
             ],
-            'action' => [
+        ];
+
+        if($this->contrato->isStatus(ContratoStatus::APROVADO)) {
+            $columns['action'] = [
                 'searchable' => false,
                 'orderable'  => false,
                 'printable'  => false,
                 'exportable' => false,
-            ],
-        ];
+            ];
+        }
+
+        return $columns;
     }
 
     /**

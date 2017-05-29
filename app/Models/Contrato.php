@@ -141,9 +141,16 @@ class Contrato extends Model
         $this->save();
 
         ContratoStatusLog::create([
-            'contrato_id' => $this->attributes['id'],
+            'contrato_id'        => $this->attributes['id'],
             'contrato_status_id' => $this->attributes['contrato_status_id'],
-            'user_id' => auth()->id()
+            'user_id'            => auth()->id()
         ]);
+    }
+
+    public function isStatus($status)
+    {
+        $status = is_array($status) ? $status : func_get_args();
+
+        return in_array($this->contrato_status_id, $status);
     }
 }

@@ -25,6 +25,7 @@ use App\Http\Requests\DistratarRequest;
 use App\Http\Requests\ReapropriarRequest;
 use App\Repositories\ContratoItemModificacaoRepository;
 use App\Repositories\ContratoItemRepository;
+use App\Models\ContratoStatus;
 
 class ContratoController extends AppBaseController
 {
@@ -86,11 +87,15 @@ class ContratoController extends AppBaseController
             return redirect(route('contratos.index'));
         }
 
-        $workflowAprovacao = WorkflowAprovacaoRepository::verificaAprovacoes(
-            'Contrato',
-            $contrato->id,
-            $request->user()
-        );
+        if($contrato->isStatus(ContratoStatus::EM_APROVACAO)) {
+            $workflowAprovacao = WorkflowAprovacaoRepository::verificaAprovacoes(
+                'Contrato',
+                $contrato->id,
+                $request->user()
+            );
+        }
+
+        $aprovado = $contrato->isStatus(ContratoStatus::APROVADO);
 
         $motivos = $workflowReprovacaoMotivoRepository
             ->porTipo(WorkflowTipo::CONTRATO)
@@ -99,10 +104,10 @@ class ContratoController extends AppBaseController
             ->all();
 
         return $contratoItemDataTable
-            ->setContrato($id)
+            ->setContrato($contrato)
             ->render(
                 'contratos.show',
-                compact('contrato', 'workflowAprovacao', 'motivos')
+                compact('contrato', 'workflowAprovacao', 'motivos', 'aprovado')
             );
     }
 

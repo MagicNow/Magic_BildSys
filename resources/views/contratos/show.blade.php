@@ -4,47 +4,59 @@
   <section class="content-header">
     <h1>
       Detalhes do Contrato #{{ $contrato->id }}
-      @if($workflowAprovacao['podeAprovar'])
-        @if($workflowAprovacao['iraAprovar'])
-          <span class="text-warning"> ||  Aprovação de Escopo </span>
-          <div class="btn-group" role="group" id="blocoItemAprovaReprova{{ $contrato->id }}"
-            aria-label="...">
-            <button type="button" onclick="workflowAprovaReprova({{ $contrato->id }},
-              'Contrato',1,'blocoItemAprovaReprova{{ $contrato->id }}',
-              'Contrato {{ $contrato->id }}',0, '', '');"
-              class="btn btn-success btn-lg btn-flat"
-              title="Aprovar">
-              Aprovar Contrato
-              <i class="fa fa-check" aria-hidden="true"></i>
-            </button>
-            <button type="button" onclick="workflowAprovaReprova({{ $contrato->id }},
-              'Contrato',0, 'blocoItemAprovaReprova{{ $contrato->id }}',
-              'Contrato {{ $contrato->id }}',0, '', '');"
-              class="btn btn-danger btn-lg btn-flat"
-              title="Reprovar Este item">
-              Reprovar
-              <i class="fa fa-times" aria-hidden="true"></i>
-            </button>
-          </div>
-        @else
-          @if($workflowAprovacao['jaAprovou'])
-            @if($workflowAprovacao['aprovacao'])
-              <span class="btn-lg btn-flat text-success" title="Aprovado por você">
+      @if(isset($workflowAprovacao))
+        @if($workflowAprovacao['podeAprovar'])
+          @if($workflowAprovacao['iraAprovar'])
+            <span class="text-warning"> ||  Aprovação de Escopo </span>
+            <div class="btn-group" role="group" id="blocoItemAprovaReprova{{ $contrato->id }}"
+              aria-label="...">
+              <button type="button" onclick="workflowAprovaReprova({{ $contrato->id }},
+                'Contrato',1,'blocoItemAprovaReprova{{ $contrato->id }}',
+                'Contrato {{ $contrato->id }}',0, '', '');"
+                class="btn btn-success btn-lg btn-flat"
+                title="Aprovar">
+                Aprovar Contrato
                 <i class="fa fa-check" aria-hidden="true"></i>
-              </span>
-            @else
-              <span class="text-danger btn-lg btn-flat" title="Reprovado por você">
+              </button>
+              <button type="button" onclick="workflowAprovaReprova({{ $contrato->id }},
+                'Contrato',0, 'blocoItemAprovaReprova{{ $contrato->id }}',
+                'Contrato {{ $contrato->id }}',0, '', '');"
+                class="btn btn-danger btn-lg btn-flat"
+                title="Reprovar Este item">
+                Reprovar
                 <i class="fa fa-times" aria-hidden="true"></i>
-              </span>
-            @endif
+              </button>
+            </div>
           @else
-            {{--Não Aprovou ainda, pode aprovar, mas por algum motivo não irá aprovar no momento--}}
-            <button type="button" title="{{ $workflowAprovacao['msg'] }}"
-              onclick="swal('{{ $workflowAprovacao['msg'] }}','','info');"
-              class="btn btn-default btn-lg btn-flat">
-              <i class="fa fa-info" aria-hidden="true"></i>
-            </button>
+            @if($workflowAprovacao['jaAprovou'])
+              @if($workflowAprovacao['aprovacao'])
+                <span class="btn-lg btn-flat text-success" title="Aprovado por você">
+                  <i class="fa fa-check" aria-hidden="true"></i>
+                </span>
+              @else
+                <span class="text-danger btn-lg btn-flat" title="Reprovado por você">
+                  <i class="fa fa-times" aria-hidden="true"></i>
+                </span>
+              @endif
+            @else
+              {{--Não Aprovou ainda, pode aprovar, mas por algum motivo não irá aprovar no momento--}}
+              <button type="button" title="{{ $workflowAprovacao['msg'] }}"
+                onclick="swal('{{ $workflowAprovacao['msg'] }}','','info');"
+                class="btn btn-default btn-lg btn-flat">
+                <i class="fa fa-info" aria-hidden="true"></i>
+              </button>
+            @endif
           @endif
+        @endif
+      @else
+        @if($aprovado)
+          <span class="btn-lg btn-flat text-success" title="Aprovado por você">
+            <i class="fa fa-check" aria-hidden="true"></i>
+          </span>
+        @else
+          <span class="text-danger btn-lg btn-flat" title="Reprovado por você">
+            <i class="fa fa-times" aria-hidden="true"></i>
+          </span>
         @endif
       @endif
     <small class="label label-default pull-right margin10">
