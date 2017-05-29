@@ -32,6 +32,9 @@ class RetroalimentacaoObraDataTable extends DataTable
             ->editColumn('situacao_proposta',function ($obj){
                 return str_limit($obj->situacao_proposta, $limit = 20, $end = '...');
             })
+            ->editColumn('origem',function ($obj){
+                return str_limit($obj->origem, $limit = 20, $end = '...');
+            })
             ->filterColumn('created_at', function ($query, $keyword) {
                 $query->whereRaw("DATE_FORMAT(retroalimentacao_obras.created_at,'%d/%m/%Y') like ?", ["%$keyword%"]);
             })
