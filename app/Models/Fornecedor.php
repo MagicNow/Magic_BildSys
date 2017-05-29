@@ -2,8 +2,7 @@
 
 namespace App\Models;
 
-use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Eloquent as Model; use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class Fornecedor
@@ -106,6 +105,11 @@ class Fornecedor extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function contratos()
+    {
+        return $this->hasMany(Contrato::class);
     }
 
     public function getIsUserAttribute()

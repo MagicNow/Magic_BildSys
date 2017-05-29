@@ -68,9 +68,9 @@ class ContratoItemReapropriacao extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function contratoIten()
+    public function contratoItem()
     {
-        return $this->belongsTo(\App\Models\ContratoIten::class);
+        return $this->belongsTo(ContratoItem::class);
     }
 
     /**
@@ -78,7 +78,7 @@ class ContratoItemReapropriacao extends Model
      **/
     public function grupo()
     {
-        return $this->belongsTo(\App\Models\Grupo::class);
+        return $this->belongsTo(Grupo::class);
     }
 
     /**
@@ -86,15 +86,15 @@ class ContratoItemReapropriacao extends Model
      **/
     public function insumo()
     {
-        return $this->belongsTo(\App\Models\Insumo::class);
+        return $this->belongsTo(Insumo::class);
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function ordemDeCompraIten()
+    public function ordemDeCompraItem()
     {
-        return $this->belongsTo(\App\Models\OrdemDeCompraIten::class);
+        return $this->belongsTo(OrdemDeCompraItem::class);
     }
 
     /**
@@ -102,31 +102,31 @@ class ContratoItemReapropriacao extends Model
      **/
     public function servico()
     {
-        return $this->belongsTo(\App\Models\Servico::class);
+        return $this->belongsTo(Servico::class);
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function grupo()
+    public function subgrupo1()
     {
-        return $this->belongsTo(\App\Models\Grupo::class);
+        return $this->belongsTo(Grupo::class,'subgrupo1_id');
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function grupo()
+    public function subgrupo2()
     {
-        return $this->belongsTo(\App\Models\Grupo::class);
+        return $this->belongsTo(Grupo::class,'subgrupo2_id');
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function grupo()
+    public function subgrupo3()
     {
-        return $this->belongsTo(\App\Models\Grupo::class);
+        return $this->belongsTo(Grupo::class,'subgrupo3_id');
     }
 
     /**
@@ -134,6 +134,6 @@ class ContratoItemReapropriacao extends Model
      **/
     public function user()
     {
-        return $this->belongsTo(\App\Models\User::class);
+        return $this->belongsTo(User::class);
     }
 }

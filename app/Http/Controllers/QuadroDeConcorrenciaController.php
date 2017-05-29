@@ -112,10 +112,11 @@ class QuadroDeConcorrenciaController extends AppBaseController
 
             return redirect(route('quadroDeConcorrencias.index'));
         }
+
         $show = 1;
 
-        $motivos_reprovacao = WorkflowReprovacaoMotivo::where(function($query){
-            $query->where('workflow_tipo_id',2);
+        $motivos_reprovacao = WorkflowReprovacaoMotivo::where(function($query) {
+            $query->where('workflow_tipo_id', 2);
             $query->orWhereNull('workflow_tipo_id');
         })->pluck('nome','id')->toArray();
 
@@ -409,7 +410,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
             'Quadro de Concorrência #' . $quadro->id . ' foi finalizado com sucesso.'
         );
 
-        return redirect(route('quadroDeConcorrencias.gerarContrato',$quadro->id));
+        return redirect(url('quadro-de-concorrencia/'.$quadro->id.'/gerar-contrato'));
     }
 
     /**

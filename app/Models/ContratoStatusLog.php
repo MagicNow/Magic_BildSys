@@ -3,25 +3,16 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
-/**
- * Class ContratoStatusLog
- * @package App\Models
- * @version May 18, 2017, 6:07 pm BRT
- */
 class ContratoStatusLog extends Model
 {
-    use SoftDeletes;
-
     public $table = 'contrato_status_log';
-    
-    const CREATED_AT = 'created_at';
-    const UPDATED_AT = 'updated_at';
 
+    const UPDATED_AT = null;
 
     protected $dates = ['deleted_at'];
 
+    public $timestamps = ['created_at'];
 
     public $fillable = [
         'contrato_id',
@@ -47,7 +38,7 @@ class ContratoStatusLog extends Model
      * @var array
      */
     public static $rules = [
-        
+
     ];
 
     /**

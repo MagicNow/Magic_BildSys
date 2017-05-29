@@ -152,30 +152,36 @@ class QuadroDeConcorrencia extends Model
      */
     public static $workflow_tipo_id = 2; // Tipo = Workflow Validação de Escopo Q.C.
 
-    public function aprovacoes(){
+    public function aprovacoes()
+    {
         return $this->morphMany(WorkflowAprovacao::class, 'aprovavel');
     }
 
-    public function irmaosIds(){
+    public function irmaosIds()
+    {
         return [$this->attributes['id'] => $this->attributes['id']];
     }
 
-    public function paiEmAprovacao(){
+    public function paiEmAprovacao()
+    {
         return false;
     }
 
-    public function confereAprovacaoGeral(){
+    public function confereAprovacaoGeral()
+    {
         return false;
     }
 
-    public function qualObra(){
+    public function qualObra()
+    {
         return null;
     }
 
-    public function aprova($valor){
-        if($valor){
+    public function aprova($valor)
+    {
+        if ($valor) {
             $qc_status_id = 5;
-        }else{
+        } else {
             $qc_status_id = 4;
         }
         $this->attributes['qc_status_id'] = $qc_status_id;
@@ -199,7 +205,7 @@ class QuadroDeConcorrencia extends Model
             ->pluck('insumo')
             ->pluck('insumoGrupo')
             ->pluck('nome')
-            ->contains(function($nome) {
+            ->contains(function ($nome) {
                 return starts_with($nome, 'SERVIÇO');
             });
     }
@@ -213,5 +219,10 @@ class QuadroDeConcorrencia extends Model
             ->contains(function($nome) {
                 return starts_with($nome, 'MATERIAL');
             });
+    }
+
+    public function contratos()
+    {
+        return $this->hasMany(Contrato::class);    
     }
 }

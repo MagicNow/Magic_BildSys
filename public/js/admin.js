@@ -63113,8 +63113,8 @@ function stopLoading() {
 }
 
 var mascara = function(val) {
-    return val.replace(/\D/g, '').length === 14 ? '(00) 00000-0000' : '(00) 0000-00009';
-  },
+  return val.replace(/\D/g, '').length === 14 ? '(00) 00000-0000' : '(00) 0000-00009';
+},
   options = {
     onKeyPress: function(val, e, field, options) {
       field.mask(mascara.apply({}, arguments), options);
@@ -63129,7 +63129,7 @@ $(function() {
     allowClear: true
   });
 
-  $('input').iCheck({
+  $('input:not(.btn > input)').iCheck({
     checkboxClass: 'icheckbox_square-green',
     radioClass: 'iradio_square-green',
     increaseArea: '20%' // optional
@@ -63153,14 +63153,28 @@ $(function() {
     reverse: true
   });
 
+  $('.datepicker').datepicker();
+
   $('.cnpj').mask('99.999.999/9999-99');
   $('.cep').mask('00000-000');
   $('.telefone').mask(mascara, options);
 
-  $('[data-toggle="popover"]').popover();
+  var popoverOptions = {
+    html: true,
+    content: function() {
+      var content = $(this.dataset.externalContent);
+      if(content.length) {
+        return content.html();
+      }
 
-  $(document).on('draw.dt', function() {
-    $('[data-toggle="popover"]').popover();
+      return this.dataset.content;
+    }
+  };
+
+  $('[data-toggle="popover"]').popover(popoverOptions);
+
+  $document.on('draw.dt', function() {
+    $('[data-toggle="popover"]').popover(popoverOptions);
   });
 
   $('.htmleditor').summernote({
@@ -63211,6 +63225,15 @@ $(function() {
       }
     }
   });
+
+  $document.on('click', function (e) {
+    $('[data-toggle="popover"],[data-original-title]').each(function () {
+        if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
+            (($(this).popover('hide').data('bs.popover')||{}).inState||{}).click = false  // fix for BS 3.3.6
+        }
+    });
+  });
+
 });
 
 /**
@@ -63231,8 +63254,9 @@ function moneyToFloat(money) {
  *
  * @return {String}
  */
-function floatToMoney(number) {
-  return 'R$ ' + number.toLocaleString('pt-BR', {
+function floatToMoney(number, prefix) {
+  prefix = prefix == undefined ? 'R$ ' : '';
+  return prefix + number.toLocaleString('pt-BR', {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
   });
@@ -63271,6 +63295,30 @@ var oTable = null;
 window.$body = $(document.body);
 window.$document = $(document);
 
+/* Brazilian initialisation for the jQuery UI date picker plugin. */
+/* Written by Leonildo Costa Silva (leocsilva@gmail.com). */
+jQuery(function($){
+  $.datepicker.regional['pt-BR'] = {
+    closeText: 'Fechar',
+    prevText: '&#x3c;Anterior',
+    nextText: 'Pr&oacute;ximo&#x3e;',
+    currentText: 'Hoje',
+    monthNames: ['Janeiro','Fevereiro','Mar&ccedil;o','Abril','Maio','Junho',
+      'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
+    monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun',
+      'Jul','Ago','Set','Out','Nov','Dez'],
+    dayNames: ['Domingo','Segunda-feira','Ter&ccedil;a-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sabado'],
+    dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sab'],
+    dayNamesMin: ['Dom','Seg','Ter','Qua','Qui','Sex','Sab'],
+    weekHeader: 'Sm',
+    dateFormat: 'dd/mm/yy',
+    firstDay: 0,
+    isRTL: false,
+    showMonthAfterYear: false,
+    yearSuffix: ''
+  };
+  $.datepicker.setDefaults($.datepicker.regional['pt-BR']);
+});
 
 var k = 0;
 var filtroGlobal = [];

@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
         $this->call(OcStatusTableSeed::class);
         $this->call(QcStatusTableSeed::class);
         $this->call(CidadesTableSeeder::class);
+        $this->call(ContratoStatusTableSeeder::class);
 
         Schema::enableForeignKeyConstraints();
     }

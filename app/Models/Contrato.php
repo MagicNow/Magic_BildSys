@@ -12,11 +12,9 @@ use Eloquent as Model;
 class Contrato extends Model
 {
     public $table = 'contratos';
-    
+
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
-
-
 
     public $fillable = [
         'contrato_status_id',
@@ -28,6 +26,8 @@ class Contrato extends Model
         'arquivo',
         'campos_extras'
     ];
+
+    public static $workflow_tipo_id = WorkflowTipo::CONTRATO;
 
     /**
      * The attributes that should be casted to native types.
@@ -50,15 +50,15 @@ class Contrato extends Model
      * @var array
      */
     public static $rules = [
-        
+
     ];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function contratoStatus()
+    public function status()
     {
-        return $this->belongsTo(ContratoStatus::class);
+        return $this->belongsTo(ContratoStatus::class, 'contrato_status_id');
     }
 
     /**
@@ -74,7 +74,7 @@ class Contrato extends Model
      **/
     public function fornecedor()
     {
-        return $this->belongsTo(Fornecedor::class);
+        return $this->belongsTo(Fornecedor::class, 'fornecedor_id');
     }
 
     /**
@@ -96,7 +96,7 @@ class Contrato extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
-    public function contratoItens()
+    public function itens()
     {
         return $this->hasMany(ContratoItem::class);
     }
@@ -107,5 +107,46 @@ class Contrato extends Model
     public function contratoStatusLogs()
     {
         return $this->hasMany(ContratoStatusLog::class);
+    }
+
+    // Funções de Aprovações
+
+    public function irmaosIds() {
+        return [$this->attributes['id'] => $this->attributes['id']];
+    }
+
+    public function aprovacoes()
+    {
+        return $this->morphMany(WorkflowAprovacao::class, 'aprovavel');
+    }
+
+    public function paiEmAprovacao()
+    {
+        return false;
+    }
+
+    public function confereAprovacaoGeral()
+    {
+        return false;
+    }
+
+    public function qualObra()
+    {
+        return null;
+    }
+
+    public function aprova($isAprovado)
+    {
+        $this->attributes['contrato_status_id'] = $isAprovado
+            ? ContratoStatus::APROVADO
+            : ContratoStatus::REPROVADO;
+
+        $this->save();
+
+        ContratoStatusLog::create([
+            'contrato_id' => $this->attributes['id'],
+            'contrato_status_id' => $this->attributes['contrato_status_id'],
+            'user_id' => auth()->id()
+        ]);
     }
 }

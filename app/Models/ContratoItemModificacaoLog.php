@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class ContratoItemModificacaoLog
@@ -12,16 +11,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class ContratoItemModificacaoLog extends Model
 {
-    use SoftDeletes;
-
     public $table = 'contrato_item_modificacao_log';
-    
-    const CREATED_AT = 'created_at';
-    const UPDATED_AT = 'updated_at';
 
+    const UPDATED_AT = null;
 
-    protected $dates = ['deleted_at'];
-
+    public $timestamps = ['created_at'];
 
     public $fillable = [
         'contrato_item_modificacao_id',
@@ -45,7 +39,7 @@ class ContratoItemModificacaoLog extends Model
      * @var array
      */
     public static $rules = [
-        
+
     ];
 
     /**
