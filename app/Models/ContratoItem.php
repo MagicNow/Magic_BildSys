@@ -11,14 +11,12 @@ use Eloquent as Model;
  */
 class ContratoItem extends Model
 {
-
     public $table = 'contrato_itens';
-    
+
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
-
-
-
+    
+    
     public $fillable = [
         'contrato_id',
         'insumo_id',
@@ -47,7 +45,7 @@ class ContratoItem extends Model
      * @var array
      */
     public static $rules = [
-        
+
     ];
 
     /**
@@ -69,24 +67,24 @@ class ContratoItem extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function qcIten()
+    public function qcItem()
     {
-        return $this->belongsTo(\App\Models\QcIten::class);
+        return $this->belongsTo(QuadroDeConcorrenciaItem::class);
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
-    public function contratoItemModificacos()
+    public function modificacoes()
     {
-        return $this->hasMany(\App\Models\ContratoItemModificaco::class);
+        return $this->hasMany(ContratoItemModificacao::class);
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
-    public function contratoItemReapropriacos()
+    public function contratoItemReapropriacao()
     {
-        return $this->hasMany(\App\Models\ContratoItemReapropriaco::class);
+        return $this->hasMany(ContratoItemReapropriacao::class);
     }
 }

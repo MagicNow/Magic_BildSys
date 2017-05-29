@@ -1,10 +1,6 @@
 @extends('layouts.front')
 @section('styles')
     <style type="text/css">
-        .tooltip-inner {
-            max-width: 500px;
-            text-align: left !important;
-        }
         .content {
             min-height: 100px !important;
         }

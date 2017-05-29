@@ -29,4 +29,9 @@ class ObraRepository extends BaseRepository
         })
         ->get();
     }
+
+    public function comContrato()
+    {
+        return $this->model->has('contratos')->get();
+    }
 }

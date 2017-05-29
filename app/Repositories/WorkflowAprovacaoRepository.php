@@ -45,6 +45,7 @@ class WorkflowAprovacaoRepository
                 ->where('user_id', $user->id)
                 ->where('workflow_alcadas.id',$alcada_atual->id)
                 ->first();
+
             if (!$workflowUsuario) {
                 $workflowUsuario = WorkflowUsuario::select(['workflow_usuarios.*', 'workflow_alcadas.ordem'])
                     ->join('workflow_alcadas', 'workflow_alcadas.id', '=', 'workflow_usuarios.workflow_alcada_id')
@@ -70,9 +71,10 @@ class WorkflowAprovacaoRepository
             // Verifica se a já é a alçada atual que o usuário está já aprovou
             $jaAprovou = $obj->aprovacoes()
                 ->where('user_id', $user->id)
-                ->where('created_at', '>', $obj->updated_at)
                 ->where('workflow_alcada_id', $alcada_atual->id)
                 ->first();
+
+
             if ($jaAprovou) {
                 return [
                     'podeAprovar' => true,
@@ -337,7 +339,7 @@ class WorkflowAprovacaoRepository
         $workflowAprovacao = new WorkflowAprovacao([
             'workflow_alcada_id' => $workflowUsuario->workflow_alcada_id,
             'user_id' => $user->id,
-            'aprovado'=>$resposta,
+            'aprovado'=> $resposta,
             'workflow_reprovacao_motivo_id' => intval($motivo_id)?$motivo_id:null,
             'justificativa' => strlen($justificativa)?$justificativa:null
         ]);
@@ -346,8 +348,11 @@ class WorkflowAprovacaoRepository
 
         // Verifica se é a primeira aprovação deste item dentre os irmãos
         $ids = $obj->irmaosIds();
+
         $total_ja_votado_geral = self::verificaTotalJaAprovadoReprovado($tipo,$ids);
+
         $total_ja_votado = self::verificaTotalJaAprovadoReprovado($tipo,$ids,null, $obj->id);
+
         if($total_ja_votado_geral['total_avaliado']===1){
             // Se for já altera o status do pai para Em Aprovação
             $obj->paiEmAprovacao();
@@ -356,11 +361,11 @@ class WorkflowAprovacaoRepository
         // Se não for, verifica se já é a última
         $qtd_aprovadores = self::verificaQuantidadeUsuariosAprovadores($workflow_tipo_id, $obj->qualObra(), null);
 
-        if($qtd_aprovadores){
+        if($qtd_aprovadores) {
             // Divide a qtd de aprovações/reprovações pela quantidade de aprovadores
             $avaliacoes = $total_ja_votado['total_avaliado']/$qtd_aprovadores;
 
-            if($avaliacoes===1){
+            if($avaliacoes===1) {
                 // Se for já salva se foi aprovado ou reprovado
                 $obj->aprova($total_ja_votado['total_aprovado']===$total_ja_votado['total_avaliado']);
                 // Chama função do model do item que irá verificar batendo no pai se todos os filhos foram aprovados

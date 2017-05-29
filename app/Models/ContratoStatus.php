@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class ContratoStatus
@@ -12,16 +11,41 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class ContratoStatus extends Model
 {
-    use SoftDeletes;
-
     public $table = 'contrato_status';
-    
+
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
+    /**
+     * Id do status de Em Aprovação
+     *
+     * @const int
+     */
+    const EM_APROVACAO = 1;
+
+    /**
+     * Id do status de Aprovado
+     *
+     * @const int
+     */
+    const APROVADO = 2;
+
+    /**
+     * Id do status de Reprovado
+     *
+     * @const int
+     */
+    const REPROVADO = 3;
+
+
+    /**
+     * Id do status de Reprovado
+     *
+     * @const int
+     */
+    const AGUARDANDO = 4;
 
     protected $dates = ['deleted_at'];
-
 
     public $fillable = [
         'nome',
@@ -45,7 +69,7 @@ class ContratoStatus extends Model
      * @var array
      */
     public static $rules = [
-        
+
     ];
 
     /**

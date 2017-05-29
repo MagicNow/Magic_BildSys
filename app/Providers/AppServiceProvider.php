@@ -2,11 +2,13 @@
 
 namespace App\Providers;
 
+use View;
 use Validator;
 use App\Models\EqualizacaoTecnicaItem;
 use Illuminate\Support\ServiceProvider;
 use App\Models\QcEqualizacaoTecnicaExtra;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use App\Repositories\GrupoRepository;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -17,6 +19,17 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        View::composer('partials.grupos-de-orcamento', function($view) {
+            $view->with(
+                'grupos',
+                app(GrupoRepository::class)
+                    ->onlyFirstLevel()
+                    ->pluck('nome', 'id')
+                    ->prepend('', '')
+                    ->all()
+            );
+        });
+
         Validator::extend('money', function($attributes, $value, $parameters) {
             return is_money($value);
         });

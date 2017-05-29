@@ -18,13 +18,19 @@ class WorkflowController extends Controller
             'justificativa' => 'required_with:motivo_id'
         ]);
 
-        $aprovaReprova = WorkflowAprovacaoRepository::aprovaReprovaItem($request->tipo,
-            $request->id, Auth::user(),
+        $aprovaReprova = WorkflowAprovacaoRepository::aprovaReprovaItem(
+            $request->tipo,
+            $request->id,
+            Auth::user(),
             $request->resposta,
             $request->motivo_id,
-            $request->justificativa);
+            $request->justificativa
+        );
 
-        return response()->json(['success' => $aprovaReprova, 'resposta' => $request->resposta]);
+        return response()->json([
+            'success' => $aprovaReprova,
+            'resposta' => $request->resposta
+        ]);
     }
 
     public function aprovaReprovaTudo(Request $request)

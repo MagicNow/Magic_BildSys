@@ -674,15 +674,52 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('planejamentos/lembretes', 'PlanejamentoController@lembretes');
     $router->get('planejamentos/lembretes/salvar-data-minima', 'PlanejamentoController@lembretes');
 
+    $router->group(['middleware' => 'needsPermission:contratos.list'], function($router) {
+        $router->get(
+            'contratos',
+            ['as' => 'contratos.index', 'uses' => 'ContratoController@index']
+        );
+        $router->get(
+            'contratos/{contratos}',
+            ['as' => 'contratos.show', 'uses' => 'ContratoController@show']
+        );
+        $router->post(
+            'contratos/{contratos}',
+            ['as' => 'contratos.save', 'uses' => 'ContratoController@save']
+        );
+        $router->post(
+            'contratos/reajustar-item/{item}',
+            [
+                'as' => 'contratos.reajustar-item',
+                'uses' => 'ContratoController@reajustarItem'
+            ]
+        );
+        $router->post(
+            'contratos/reapropriar-item/{item}',
+            [
+                'as' => 'contratos.reapropriar-item',
+                'uses' => 'ContratoController@reapropriarItem'
+            ]
+        );
+        $router->post(
+            'contratos/distratar-item/{item}',
+            [
+                'as' => 'contratos.distratar-item',
+                'uses' => 'ContratoController@distratarItem'
+            ]
+        );
+    });
+
+
     $router->get('/teste', function () {
-//        $grupos_mega = \App\Models\MegaInsumoGrupo::select([
-//            'GRU_IDE_ST_CODIGO',
-//            'GRU_IN_CODIGO',
-//            'GRU_ST_NOME',])
-//            ->where('gru_ide_st_codigo' , '07')
-//            ->first();
-//        dd($grupos_mega);
-//        $servicos = \App\Repositories\ImportacaoRepository::fornecedor_servicos(446);
+        //        $grupos_mega = \App\Models\MegaInsumoGrupo::select([
+        //            'GRU_IDE_ST_CODIGO',
+        //            'GRU_IN_CODIGO',
+        //            'GRU_ST_NOME',])
+        //            ->where('gru_ide_st_codigo' , '07')
+        //            ->first();
+        //        dd($grupos_mega);
+        //        $servicos = \App\Repositories\ImportacaoRepository::fornecedor_servicos(446);
         $insumos = \App\Repositories\ImportacaoRepository::insumos();
         dd($insumos);
     });

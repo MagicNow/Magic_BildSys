@@ -21,4 +21,12 @@ class WorkflowReprovacaoMotivoRepository extends BaseRepository
     {
         return WorkflowReprovacaoMotivo::class;
     }
+
+    public function porTipo($tipo_id)
+    {
+        return $this->model->where(function($query) use ($tipo_id) {
+            $query->where('workflow_tipo_id', $tipo_id);
+            $query->orWhereNull('workflow_tipo_id');
+        })->get();
+    }
 }
