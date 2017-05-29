@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Models\ContratoStatus;
 use App\Models\Contrato;
+use App\Repositories\WorkflowAprovacaoRepository;
 
 class ContratoItemDataTable extends DataTable
 {
@@ -45,7 +46,28 @@ class ContratoItemDataTable extends DataTable
             });
 
         if($this->contrato->isStatus(ContratoStatus::APROVADO)) {
-            $datatables->addColumn('action', 'contratos.itens_datatables_action');
+            $datatables->addColumn('action', function($item) {
+                $workflowAprovacao = [];
+
+                if(!$item->aprovado) {
+                    $mod = $item->modificacoes()
+                        ->where('contrato_status_id', ContratoStatus::EM_APROVACAO)
+                        ->first();
+
+                    $workflowAprovacao = WorkflowAprovacaoRepository::verificaAprovacoes(
+                        'ContratoItemModificacao',
+                        $mod->id,
+                        auth()->user()
+                    );
+
+                }
+
+                return view(
+                    'contratos.itens_datatables_action',
+                    compact('item', 'workflowAprovacao')
+                )
+                ->render();
+            });
         }
 
         return $datatables->make(true);

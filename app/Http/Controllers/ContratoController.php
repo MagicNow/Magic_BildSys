@@ -26,6 +26,7 @@ use App\Http\Requests\ReapropriarRequest;
 use App\Repositories\ContratoItemModificacaoRepository;
 use App\Repositories\ContratoItemRepository;
 use App\Models\ContratoStatus;
+use App\Models\ContratoItemModificacao;
 
 class ContratoController extends AppBaseController
 {
@@ -103,11 +104,26 @@ class ContratoController extends AppBaseController
             ->prepend('Motivos...', '')
             ->all();
 
+        $pendencias = ContratoItemModificacao::whereHas('item', function($itens) use ($id) {
+            return $itens->where('contrato_id', $id)->where('aprovado', false);
+        })
+        ->where('contrato_status_id', ContratoStatus::EM_APROVACAO)
+        ->get()
+        ->map(function($pendencia) {
+            $pendencia->workflow =  WorkflowAprovacaoRepository::verificaAprovacoes(
+                'ContratoItemModificacao',
+                $pendencia->id,
+                auth()->user()
+            );
+
+            return $pendencia;
+        });
+
         return $contratoItemDataTable
             ->setContrato($contrato)
             ->render(
                 'contratos.show',
-                compact('contrato', 'workflowAprovacao', 'motivos', 'aprovado')
+                compact('contrato', 'workflowAprovacao', 'motivos', 'aprovado', 'pendencias')
             );
     }
 

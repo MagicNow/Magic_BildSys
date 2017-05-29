@@ -42,6 +42,8 @@ class ContratoItemModificacaoRepository extends BaseRepository
                 'user_id'                      => $modificacao->user_id,
             ]);
 
+            $item->update(['aprovado' => 0]);
+
             return $modificacao;
         });
 
@@ -81,6 +83,8 @@ class ContratoItemModificacaoRepository extends BaseRepository
                 'contrato_status_id'           => ContratoStatus::EM_APROVACAO,
                 'user_id'                      => $modificacao->user_id,
             ]);
+
+            $item->update(['aprovado' => 0]);
 
             return $modificacao;
         });

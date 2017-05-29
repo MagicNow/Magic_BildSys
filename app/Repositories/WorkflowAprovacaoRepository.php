@@ -12,6 +12,7 @@ use phpDocumentor\Reflection\Types\Integer;
 use phpDocumentor\Reflection\Types\String_;
 use App\Models\WorkflowTipo;
 use App\Models\Contrato;
+use App\Models\ContratoItemModificacao;
 
 class WorkflowAprovacaoRepository
 {
@@ -180,7 +181,12 @@ class WorkflowAprovacaoRepository
             }
 
             if($workflow_tipo_id === WorkflowTipo::CONTRATO && $alcada_atual) {
-                $contrato = Contrato::whereIn('id', $ids)->first();
+                if($tipo === 'Contrato') {
+                    $contrato = Contrato::whereIn('id', $ids)->first();
+                } else {
+                    $contrato = ContratoItemModificacao::whereIn('id', $ids)->first()->item->contrato;
+                }
+
 
                 $alcada_atual = $contrato->valor_total >= $alcada_atual->valor_minimo
                     ? $alcada_atual
@@ -201,12 +207,14 @@ class WorkflowAprovacaoRepository
     public static function verificaAprovaGrupo($tipo, $ids, User $user)
     {
         eval('$workflow_tipo_id= \\App\Models\\' . $tipo . '::$workflow_tipo_id;');
+
         // Verifica se o usuário atual é um aprovador de alguma alçada
         $workflowUsuario = WorkflowUsuario::select(['workflow_usuarios.*', 'workflow_alcadas.ordem'])
             ->join('workflow_alcadas', 'workflow_alcadas.id', '=', 'workflow_usuarios.workflow_alcada_id')
             ->where('workflow_alcadas.workflow_tipo_id', $workflow_tipo_id)// Tipo = Aprovação de OC
             ->where('user_id', $user->id)
             ->first();
+
         if (!$workflowUsuario) {
             // Já vaza
             return [
@@ -232,6 +240,7 @@ class WorkflowAprovacaoRepository
                 ->where('user_id', $user->id)
                 ->where('workflow_alcada_id', $alcada_atual->id)
                 ->first();
+
             if (!$workflowUsuarioAlcadaAtual) {
                 // Já vaza
                 return [
@@ -463,7 +472,7 @@ class WorkflowAprovacaoRepository
         $workflow_alcadas = WorkflowAlcada::where('workflow_tipo_id', $workflow_tipo_id);
 
         if(WorkflowTipo::CONTRATO === $workflow_tipo_id && $ids) {
-            $contrato = Contrato::whereIn('id', $ids)->first();
+            $contrato = ContratoItemModificacao::whereIn('id', $ids)->first()->item->contrato;
             $workflow_alcadas->where('valor_minimo', '<=', $contrato->valor_total);
         }
 

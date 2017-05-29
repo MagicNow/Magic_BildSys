@@ -150,7 +150,7 @@ class QuadroDeConcorrencia extends Model
      *
      * @var integer
      */
-    public static $workflow_tipo_id = 2; // Tipo = Workflow Validação de Escopo Q.C.
+    public static $workflow_tipo_id = WorkflowTipo::QC;
 
     public function aprovacoes()
     {
