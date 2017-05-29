@@ -64,6 +64,13 @@ class ImportacaoRepository
                 $insumo->ncm_codigo = $produto->ncm_in_codigo;
                     $insumo->ncm_texto  =  trim(utf8_encode($produto->ncm_st_descricao));
                     $insumo->ncm_codigo_texto  =  trim(utf8_encode($produto->ncm_st_extenso));
+
+                $insumo->tems = self::getTems($produto->pro_in_codigo);
+
+                if($insumo->tems == ''){
+                    $insumo->tems = null;
+                }
+            
                 $insumo->save();
             } catch (\Exception $e) {
                 Log::error('Erro ao importar insumo '. $produto->pro_in_codigo. ': '.$e->getMessage());
@@ -214,5 +221,50 @@ class ImportacaoRepository
 
         return ['total-mega' => $cnae_servicos->count(), 'total-sys' => Cnae::count()];
 
+    }
+
+    public static function getTems($insumo_codigo)
+    {
+        $tems = \DB::connection('oracle')->select('(
+                       Select p.pro_tab_in_codigo,
+                           p.pro_pad_in_codigo,
+                           p.pro_in_codigo,
+                           p.pro_st_descricao,
+                           p.uni_st_unidade,
+                           p.gru_in_codigo,
+                           grp.gru_st_nome,
+                           dp.pro_st_dettecnico
+                       From mgadm.est_produtos      p,
+                            mgadm.est_detprodutos  dp,
+                            mgadm.est_grupos      grp      
+                       Where dp.pro_tab_in_codigo = p.pro_tab_in_codigo
+                       And   dp.pro_pad_in_codigo = p.pro_pad_in_codigo
+                       And   dp.pro_in_codigo     = p.pro_in_codigo
+                      
+                       And   p.gru_tab_in_codigo  = grp.gru_tab_in_codigo
+                       And   p.gru_pad_in_codigo  = grp.gru_pad_in_codigo
+                       And   p.gru_ide_st_codigo  = grp.gru_ide_st_codigo
+                       And   p.gru_in_codigo      = grp.gru_in_codigo
+                      
+                       And   grp.gru_ide_st_codigo = 07
+                           
+                       And exists (Select 1
+                                       From mgadm.est_detprodutos dp
+                                       Where dp.pro_tab_in_codigo = p.pro_tab_in_codigo
+                                       And   dp.pro_pad_in_codigo = p.pro_pad_in_codigo
+                                       And   dp.pro_in_codigo     = p.pro_in_codigo)
+                       And   p.pro_in_codigo = '.$insumo_codigo.'
+                   )');
+
+        $todos_tems = '';
+
+        if(count($tems)){
+            foreach ($tems as $tem){
+                $todos_tems .= $tem->pro_st_dettecnico;
+            }
+            $todos_tems = trim(utf8_encode($todos_tems));
+        }
+
+        return $todos_tems;
     }
 }

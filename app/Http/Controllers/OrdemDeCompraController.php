@@ -584,7 +584,7 @@ class OrdemDeCompraController extends AppBaseController
 
         $insumo = Insumo::find($orcamento_ativo->insumo_id);
 
-        $ordem_item->tems = self::getTems($insumo->codigo);
+        $ordem_item->tems = $insumo->tems;
         $salvo = $ordem_item->save();
 
         if(!$request->quantidade_compra || $request->quantidade_compra == '0' || $request->quantidade_compra == ''){
@@ -1563,7 +1563,7 @@ class OrdemDeCompraController extends AppBaseController
                 'unidade_sigla' => $orcamento_ativo->unidade_sigla,
             ]);
 
-            $ordem_item->tems = self::getTems($insumo->codigo);
+            $ordem_item->tems = $insumo->tems;
 
             $ordem_item->user_id = Auth::user()->id;
             $ordem_item->qtd = $request['qtd_total'];
@@ -1688,51 +1688,6 @@ class OrdemDeCompraController extends AppBaseController
            'nome'
        ])
            ->where('nome','like', '%'.$request->q.'%')->paginate();
-   }
-
-   public function getTems($insumo_codigo)
-   {
-       $tems = \DB::connection('oracle')->select('(
-                       Select p.pro_tab_in_codigo,
-                           p.pro_pad_in_codigo,
-                           p.pro_in_codigo,
-                           p.pro_st_descricao,
-                           p.uni_st_unidade,
-                           p.gru_in_codigo,
-                           grp.gru_st_nome,
-                           dp.pro_st_dettecnico
-                       From mgadm.est_produtos      p,
-                            mgadm.est_detprodutos  dp,
-                            mgadm.est_grupos      grp      
-                       Where dp.pro_tab_in_codigo = p.pro_tab_in_codigo
-                       And   dp.pro_pad_in_codigo = p.pro_pad_in_codigo
-                       And   dp.pro_in_codigo     = p.pro_in_codigo
-                      
-                       And   p.gru_tab_in_codigo  = grp.gru_tab_in_codigo
-                       And   p.gru_pad_in_codigo  = grp.gru_pad_in_codigo
-                       And   p.gru_ide_st_codigo  = grp.gru_ide_st_codigo
-                       And   p.gru_in_codigo      = grp.gru_in_codigo
-                      
-                       And   grp.gru_ide_st_codigo = 07
-                           
-                       And exists (Select 1
-                                       From mgadm.est_detprodutos dp
-                                       Where dp.pro_tab_in_codigo = p.pro_tab_in_codigo
-                                       And   dp.pro_pad_in_codigo = p.pro_pad_in_codigo
-                                       And   dp.pro_in_codigo     = p.pro_in_codigo)
-                       And   p.pro_in_codigo = '.$insumo_codigo.'
-                   )');
-
-       $todos_tems = '';
-
-       if(count($tems)){
-           foreach ($tems as $tem){
-               $todos_tems .= $tem->pro_st_dettecnico;
-           }
-           $todos_tems = trim(utf8_encode($todos_tems));
-       }
-
-       return $todos_tems;
    }
 }
 
