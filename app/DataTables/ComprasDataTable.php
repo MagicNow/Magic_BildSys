@@ -66,7 +66,12 @@ class ComprasDataTable extends DataTable
                     $obj->tooltip_servico  ."\">
                     $obj->nome
                     </strong>";
-            })->make(true);
+            })
+            ->editColumn('valor_total', function($obj){
+                return $obj->quantidade_compra ? number_format($obj->getOriginal('preco_unitario') * money_to_float($obj->quantidade_compra), 2,',','.') : '0,00';
+            })
+            ->make(true);
+
     }
 
     /**
@@ -326,6 +331,8 @@ class ComprasDataTable extends DataTable
             'quantidade' => ['name' => 'orcamentos.qtd_total', 'data' => 'qtd_total'],
             'saldo' => ['name' => 'orcamentos.qtd_total', 'data' => 'saldo'],
             'quantidade Compra' => ['name' => 'quantidade_compra', 'data' => 'quantidade_compra', 'searchable' => false, 'width'=>'8%'],
+            'preço Unitário' => ['name' => 'orcamentos.preco_unitario', 'data' => 'preco_unitario'],
+            'preço Total' => ['name' => 'valor_total', 'data' => 'valor_total'],
             'troca' => ['name' => 'troca', 'data' => 'troca', 'searchable' => false, 'orderable' => false, 'width'=>'5%'],
             'finaliza Obra' => ['name' => 'total', 'data' => 'total', 'searchable' => false, 'orderable' => false, 'width'=>'5%'],
             'action' => ['title' => '#', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'5%']
