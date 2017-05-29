@@ -674,35 +674,35 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('planejamentos/lembretes', 'PlanejamentoController@lembretes');
     $router->get('planejamentos/lembretes/salvar-data-minima', 'PlanejamentoController@lembretes');
 
-    $router->group(['middleware' => 'needsPermission:contratos.list'], function($router) {
+    $router->group(['prefix' => 'contratos','middleware' => 'needsPermission:contratos.list'], function($router) {
         $router->get(
-            'contratos',
+            '',
             ['as' => 'contratos.index', 'uses' => 'ContratoController@index']
         );
         $router->get(
-            'contratos/{contratos}',
+            '/{contratos}',
             ['as' => 'contratos.show', 'uses' => 'ContratoController@show']
         );
         $router->post(
-            'contratos/{contratos}',
+            '/{contratos}',
             ['as' => 'contratos.save', 'uses' => 'ContratoController@save']
         );
         $router->post(
-            'contratos/reajustar-item/{item}',
+            '/reajustar-item/{item}',
             [
                 'as' => 'contratos.reajustar-item',
                 'uses' => 'ContratoController@reajustarItem'
             ]
         );
         $router->post(
-            'contratos/reapropriar-item/{item}',
+            '/reapropriar-item/{item}',
             [
                 'as' => 'contratos.reapropriar-item',
                 'uses' => 'ContratoController@reapropriarItem'
             ]
         );
         $router->post(
-            'contratos/distratar-item/{item}',
+            '/distratar-item/{item}',
             [
                 'as' => 'contratos.distratar-item',
                 'uses' => 'ContratoController@distratarItem'

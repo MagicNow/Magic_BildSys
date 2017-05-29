@@ -148,6 +148,9 @@
                                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                                 <h4><i class="icon fa fa-check"></i>
                                     Contrato Obra {{ \App\Models\Obra::find($obraId)->nome }} já gerado!</h4>
+                                <a href="{{ route('contratos.show', $contratosExistentes[$qcFornecedor->id][$obraId]->id) }}" class="btn btn-link btn-flat btn-block">
+                                    Exibir contrato
+                                </a>
                             </div>
                         @endif
                     @endforeach
