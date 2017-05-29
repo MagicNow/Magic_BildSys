@@ -226,7 +226,7 @@
             });
         }
 
-        function comprarTudo(id, obra_id, grupo_id, subgrupo1_id, subgrupo2_id, subgrupo3_id, servico_id, qtd_total){
+        function comprarTudo(id, obra_id, grupo_id, subgrupo1_id, subgrupo2_id, subgrupo3_id, servico_id, saldo){
             $.ajax({
                 url: "{{url('/compras/'.(isset($obra) ? $obra->id : $planejamento->id).'/comprarTudo')}}",
                 data: {
@@ -237,7 +237,7 @@
                     'subgrupo2_id' : subgrupo2_id,
                     'subgrupo3_id' : subgrupo3_id,
                     'servico_id' : servico_id,
-                    'qtd_total' : qtd_total,
+                    'saldo' : saldo,
                     '_token' : $('meta[name="csrf-token"]').attr('content')
                 },
                 type: "POST"

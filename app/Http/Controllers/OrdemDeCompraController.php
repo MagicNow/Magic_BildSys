@@ -1566,7 +1566,7 @@ class OrdemDeCompraController extends AppBaseController
             $ordem_item->tems = $insumo->tems;
 
             $ordem_item->user_id = Auth::user()->id;
-            $ordem_item->qtd = $request['qtd_total'];
+            $ordem_item->qtd = $request['saldo'];
             $ordem_item->valor_unitario = $orcamento_ativo->preco_unitario;
             $ordem_item->valor_total = $orcamento_ativo->getOriginal('preco_unitario') * money_to_float($ordem_item->qtd);
             $ordem_item->save();

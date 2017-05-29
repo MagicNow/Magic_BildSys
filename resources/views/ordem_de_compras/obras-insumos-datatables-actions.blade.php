@@ -8,7 +8,7 @@
                                      {{$subgrupo2_id}},
                                      {{$subgrupo3_id}},
                                      {{$servico_id}},
-                                     '{{$qtd_total}}')">
+                                     '{{$saldo}}')">
             <i class="fa fa-usd" aria-hidden="true"></i> Comprar saldo
         </button>
     @endif
