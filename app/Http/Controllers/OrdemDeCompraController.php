@@ -236,7 +236,7 @@ class OrdemDeCompraController extends AppBaseController
             return back();
         }
 
-        $orcamentoInicial = $totalAGastar = $realizado = 0;
+        $orcamentoInicial = $totalAGastar = $realizado = $totalSolicitado = 0;
 
         $itens = collect([]);
         $avaliado_reprovado = [];
@@ -300,7 +300,7 @@ class OrdemDeCompraController extends AppBaseController
                 })
                 ->sum('orcamentos.preco_total');
 
-            $totalAGastar = $ordemDeCompra->itens()->sum('valor_total');
+            $totalSolicitado = $ordemDeCompra->itens()->sum('valor_total');
 
             $realizado = OrdemDeCompraItem::join('ordem_de_compras','ordem_de_compras.id','=','ordem_de_compra_itens.ordem_de_compra_id')
                 ->where('ordem_de_compras.obra_id',$ordemDeCompra->obra_id)
@@ -355,7 +355,8 @@ class OrdemDeCompraController extends AppBaseController
             'avaliado_reprovado',
             'qtd_itens',
             'oc_status',
-            'alcadas_count'
+            'alcadas_count',
+            'totalSolicitado'
         )
     );
     }
@@ -1093,7 +1094,7 @@ class OrdemDeCompraController extends AppBaseController
             ->where('ordem_de_compra_itens.servico_id', $servico_id)
             ->whereIn('oc_status_id',[2,3,5]);
 
-        $orcamentoInicial = $totalAGastar = $realizado = 0;
+        $orcamentoInicial = $totalAGastar = $realizado = $totalSolicitado = 0;
 
         $itens = collect([]);
 
@@ -1110,7 +1111,7 @@ class OrdemDeCompraController extends AppBaseController
                 })
                 ->sum('orcamentos.preco_total');
 
-            $totalAGastar = $ordemDeCompraItens->sum('valor_total');
+            $totalSolicitado = $ordemDeCompraItens->sum('valor_total');
 
             $realizado = OrdemDeCompraItem::join('ordem_de_compras','ordem_de_compras.id','=','ordem_de_compra_itens.ordem_de_compra_id')
                 ->where('ordem_de_compras.obra_id',$obra_id)
@@ -1276,7 +1277,8 @@ class OrdemDeCompraController extends AppBaseController
                 'totalAGastar',
                 'saldo',
                 'itens',
-                'servico'
+                'servico',
+                'totalSolicitado'
             )
         );
     }
@@ -1572,6 +1574,7 @@ class OrdemDeCompraController extends AppBaseController
             }else{
                 $ordem_item->qtd = $request['saldo'];
             }
+            $ordem_item->total = 1;
             $ordem_item->valor_unitario = $orcamento_ativo->preco_unitario;
             $ordem_item->valor_total = $orcamento_ativo->getOriginal('preco_unitario') * money_to_float($ordem_item->qtd);
             $ordem_item->save();
