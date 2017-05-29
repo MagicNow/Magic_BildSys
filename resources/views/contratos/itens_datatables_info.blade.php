@@ -2,16 +2,16 @@
 
 <div class='btn-group'>
   <a href="javascript:void(0)"
-      title="{{ $servico }}"
+      title="{{ $item->servico }}"
       data-toggle="popover"
       data-container="body"
-      data-external-content="#history-table"
+      data-external-content="#history-table-{{ $item->id }}"
       class='btn btn-default btn-xs btn-flat'>
       <i class="fa fa-history fa-fw"></i>
   </a>
 </div>
 
-<div id="history-table" class="hidden">
+<div id="history-table-{{ $item->id }}" class="hidden">
   <table class="table table-striped table-condensed">
     <thead>
       <tr>
@@ -30,7 +30,7 @@
       </tr>
     </thead>
     <tbody>
-      @foreach($modificacoes as $modificacao)
+      @foreach($item->modificacoes->toArray() as $modificacao)
       <tr>
         <td>{{ $modificacao['tipo_modificacao'] }}</td>
         <td>{{ float_to_money($modificacao['qtd_anterior'], '') }}</td>

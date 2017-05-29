@@ -34,7 +34,9 @@ class ContratoItemDataTable extends DataTable
     {
         $datatables = $this->datatables
             ->eloquent($this->query())
-            ->addColumn('info', 'contratos.itens_datatables_info')
+            ->addColumn('info', function($item) {
+                return view('contratos.itens_datatables_info', compact('item'))->render();
+            })
             ->editColumn('qtd', function($item) {
                 return float_to_money($item->qtd, '');
             })
@@ -82,7 +84,8 @@ class ContratoItemDataTable extends DataTable
                 'ordem_de_compra_itens.id',
                 'oc_item_qc_item.ordem_de_compra_item_id'
             )
-            ->where('contrato_itens.contrato_id', $this->contrato->id);
+            ->where('contrato_itens.contrato_id', $this->contrato->id)
+            ->groupBy('contrato_itens.id');
 
         return $this->applyScopes($query);
     }
