@@ -129,17 +129,6 @@
                                 </div>
                             @endif
                             <div class="row">
-                                <span class="col-md-1 col-sm-1 col-xs-12 text-center borda-direita" data-toggle="tooltip" data-placement="top" data-html="true"
-                                      title="{{
-                                            $item->grupo->codigo .' '. $item->grupo->nome . ' <br> ' .
-                                            $item->subgrupo1->codigo .' '.$item->subgrupo1->nome . ' <br> ' .
-                                            $item->subgrupo2->codigo .' '.$item->subgrupo2->nome . ' <br> ' .
-                                            $item->subgrupo3->codigo .' '.$item->subgrupo3->nome . ' <br> ' .
-                                            $item->servico->codigo .' '.$item->servico->nome
-                                        }}">
-                                    <strong class="visible-xs pull-left">Código:</strong>
-                                    {{ $item->insumo->codigo }}
-                                </span>
                                 <span class="col-md-2 col-sm-2 col-xs-12 text-center borda-direita" data-toggle="tooltip" data-placement="top" data-html="true"
                                       title="{{
                                             $item->grupo->codigo .' '. $item->grupo->nome . ' <br> ' .
@@ -149,61 +138,59 @@
                                             $item->servico->codigo .' '.$item->servico->nome
                                         }}">
                                     <strong class="visible-xs pull-left">Insumo:</strong>
-                                    {{ $item->insumo->nome }}
+                                    {{ $item->insumo->codigo }} - {{ $item->insumo->nome }}
                                 </span>
                                 <span class="col-md-1 col-sm-1 col-xs-12 text-center borda-direita">
                                     <strong class="visible-xs pull-left">Unidade:</strong>
                                     {{ $item->unidade_sigla }}
                                 </span>
-                                <span class="{{$item->valor_unitario == '0.00' ? 'col-md-1 col-sm-1' : 'col-md-2 col-sm-2'}} col-xs-12 text-center borda-direita" align="center"  {{$item->valor_unitario == '0.00' ? 'style=width:11.5%' : ''}}>
-                                    <strong>Quantidade:</strong>
+                                <span class="col-md-2 col-sm-2 col-xs-12 text-center borda-direita" align="center" style="width: 11.5%;">
+                                    <strong>Qtde:</strong>
                                     <input type="text" id="find" value="{{ $item->qtd }}" onchange="alteraQtd(this.value, '{{ $item->id }}')" class="form-control money" style="border-color:#ffffff;background-color:#ffffff;text-align:center;">
                                 </span>
-                                @if($item->valor_unitario == '0.00')
-                                    <span class="col-md-1 col-sm-1 col-xs-12 text-center borda-direita" align="center" style="width: 11.5%;">
-                                        <strong>Valor unitário:</strong>
-                                        <input type="text" id="find" value="{{ $item->valor_unitario }}" onchange="alteraValorUnitario(this.value, '{{ $item->id }}')" class="form-control money" style="border-color:#ffffff;background-color:#ffffff;text-align:center;">
-                                    </span>
-                                @endif
-                        <span class="col-md-2 col-sm-2 col-xs-5 text-center borda-direita">
-                            <div id="bloco_indicar_contrato{{ $item->id }}">
-                                @if($item->sugestao_contrato_id)
-                                    <div id="bloco_indicar_contrato_removivel{{ $item->id }}">
-                                        {{$item->contrato->fornecedor_nome}}
-                                        <button type="button" class="btn btn-flat btn-sm btn-danger glyphicon glyphicon-remove" onclick="removeContrato('{{ $item->insumo->codigo }}', '{{$item->id}}')"></button>
+                                <span class="col-md-2 col-sm-2 col-xs-12 text-center borda-direita" align="center" style="width: 11.5%;">
+                                    <strong>Total:</strong>
+                                    <p class="form-control money" style="border-color:#ffffff;background-color:#ffffff;text-align:center;">{{ $item->valor_total }}</p>
+                                </span>
+                                <span class="col-md-2 col-sm-2 col-xs-5 text-center borda-direita">
+                                    <div id="bloco_indicar_contrato{{ $item->id }}">
+                                        @if($item->sugestao_contrato_id)
+                                            <div id="bloco_indicar_contrato_removivel{{ $item->id }}">
+                                                {{$item->contrato->fornecedor_nome}}
+                                                <button type="button" class="btn btn-flat btn-sm btn-danger glyphicon glyphicon-remove" onclick="removeContrato('{{ $item->insumo->codigo }}', '{{$item->id}}')"></button>
+                                            </div>
+                                        @else
+                                            <div id="bloco_indicar_contrato_removivel{{ $item->id }}">
+                                                <label class="label-bloco label-bloco-limitado">Aditivar contrato</label>
+                                                <button type="button" class="btn btn-flat btn-sm btn-default margem-botao" onclick="indicarContrato('{{ $item->insumo->codigo }}', '{{$item->id}}')">
+                                                    Selecionar
+                                                </button>
+                                            </div>
+                                        @endif
                                     </div>
-                                @else
-                                    <div id="bloco_indicar_contrato_removivel{{ $item->id }}">
-                                        <label class="label-bloco label-bloco-limitado">Aditivar contrato</label>
-                                        <button type="button" class="btn btn-flat btn-sm btn-default margem-botao" onclick="indicarContrato('{{ $item->insumo->codigo }}', '{{$item->id}}')">
-                                            Selecionar
-                                        </button>
-                                    </div>
-                                @endif
-                            </div>
-                        </span>
-                        <span class="col-md-3 col-sm-3 col-xs-6 text-center borda-direita" {{$item->valor_unitario == '0.00' ? 'style=width:18%' : ''}}>
-                            {!! Form::open(['url'=> url('/ordens-de-compra/upload-anexos/'.$item->id)  , 'class'=>'formAnexos', 'files'=>true]) !!}
-                            {!! Form::hidden('item_id', $item->id, ['id'=>'item_id_'.$item->id]) !!}
-                            <label class="label-bloco label-bloco-limitado">Anexar arquivo</label>
-                            <input type="file" multiple data-multiple-caption="{count} arquivos escolhidos"
-                                   class="inputfile" id="anexos_{{ $item->id }}" name="anexos[]" />
-                            <label for="anexos_{{ $item->id }}" id="label_btn_anexo_{{ $item->id }}" class="btn btn-flat btn-sm btn-default margem-botao label-input-file">
-                                <span>Selecionar</span>
-                            </label>
-                            <button type="submit" class="btn btn-sm btn-primary btn-flat margem-botao" title="Enviar">
-                                <i class="fa fa-upload" aria-hidden="true"></i>
-                            </button>
-                            {!! Form::close() !!}
-                        </span>
-                        <span class="col-md-1 col-sm-1 col-xs-1 text-center">
-                            <button type="button" class="btn btn-flat btn-link"
-                                    style="font-size: 18px; margin-top: -7px" onclick="showHideExtra({{ $item->id }})">
-                                <i class="icone-expandir fa fa-caret-right" aria-hidden="true"></i>
-                            </button>
+                                </span>
+                                <span class="col-md-3 col-sm-3 col-xs-6 text-center borda-direita" {{$item->valor_unitario == '0.00' ? 'style=width:18%' : ''}}>
+                                    {!! Form::open(['url'=> url('/ordens-de-compra/upload-anexos/'.$item->id)  , 'class'=>'formAnexos', 'files'=>true]) !!}
+                                    {!! Form::hidden('item_id', $item->id, ['id'=>'item_id_'.$item->id]) !!}
+                                    <label class="label-bloco label-bloco-limitado">Anexar arquivo</label>
+                                    <input type="file" multiple data-multiple-caption="{count} arquivos escolhidos"
+                                           class="inputfile" id="anexos_{{ $item->id }}" name="anexos[]" />
+                                    <label for="anexos_{{ $item->id }}" id="label_btn_anexo_{{ $item->id }}" class="btn btn-flat btn-sm btn-default margem-botao label-input-file">
+                                        <span>Selecionar</span>
+                                    </label>
+                                    <button type="submit" class="btn btn-sm btn-primary btn-flat margem-botao" title="Enviar">
+                                        <i class="fa fa-upload" aria-hidden="true"></i>
+                                    </button>
+                                    {!! Form::close() !!}
+                                </span>
+                                <span class="col-md-1 col-sm-1 col-xs-1 text-center">
+                                    <button type="button" class="btn btn-flat btn-link"
+                                            style="font-size: 18px; margin-top: -7px" onclick="showHideExtra({{ $item->id }})">
+                                        <i class="icone-expandir fa fa-caret-right" aria-hidden="true"></i>
+                                    </button>
 
-                            <i class="fa fa-remove" onclick="removeItem({{ $item->id }})" aria-hidden="true" style="font-size: 18px; margin-top: -7px;color: red;cursor: pointer"  data-toggle="tooltip" data-placement="top" title="Remover item"></i>
-                        </span>
+                                    <i class="fa fa-remove" onclick="removeItem({{ $item->id }})" aria-hidden="true" style="font-size: 18px; margin-top: -7px;color: red;cursor: pointer"  data-toggle="tooltip" data-placement="top" title="Remover item"></i>
+                                </span>
                             </div>
                             <div class="dados-extras" style="display: none;">
                                 <hr>
@@ -604,32 +591,6 @@
                     });
                 }
             });
-        }
-
-        function alteraValorUnitario(valor, item_id) {
-            if(moneyToFloat(valor) > 0) {
-                $.ajax({
-                    url: '/ordens-de-compra/carrinho/alterar-valor-unitario/' + item_id,
-                    data: {
-                        'valor': valor
-                    }
-                }).done(function (json) {
-                    if (json.success) {
-                        $('#alert_' + item_id).remove();
-                        swal({
-                                    title: "Valor unitário alterado",
-                                    text: "",
-                                    type: "success",
-                                    showCancelButton: false,
-                                    confirmButtonText: "OK",
-                                    closeOnConfirm: false
-                                },
-                                function () {
-                                    location.reload();
-                                });
-                    }
-                });
-            }
         }
 
         function removeItem(item_id) {
