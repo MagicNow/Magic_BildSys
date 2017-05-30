@@ -56,6 +56,17 @@ class ContratoRepository extends BaseRepository
             }
         }
 
+        // Valida se o fornecedor já está cadastrado no Mega
+        if($qcFornecedor->fornecedor->codigo_mega == ''){
+
+                return [
+                    'success' => false,
+                    'contratos'=>[],
+                    'erro'=>'O Fornecedor '. $qcFornecedor->fornecedor->nome.' não está cadastrado no Mega, por favor 
+                    solicite a inclusão para que o contrato possa ser gerado'
+                ];
+
+        }
         $quadroDeConcorrencia = $qcFornecedor->quadroDeConcorrencia;
         // Monta os itens do contrato
         $primeiroItem = $qcFornecedor->itens()->where('vencedor','1')->first();
