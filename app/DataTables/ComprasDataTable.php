@@ -249,30 +249,6 @@ class ComprasDataTable extends DataTable
                     AND ordem_de_compras.oc_status_id = 1
                     '.($ordem ? ' AND ordem_de_compras.id ='. $ordem->id .' ': 'AND ordem_de_compras.id = 0').'
                     AND ordem_de_compra_itens.obra_id ='. $obra->id .' ) as total'),
-                DB::raw('(
-                            IFNULL(
-                                (
-                                    SELECT ordem_de_compra_itens.id FROM ordem_de_compra_itens
-                                    JOIN ordem_de_compras
-                                    ON ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id
-                                    WHERE ordem_de_compra_itens.insumo_id = orcamentos.insumo_id
-                                    AND ordem_de_compra_itens.grupo_id = orcamentos.grupo_id
-                                    AND ordem_de_compra_itens.subgrupo1_id = orcamentos.subgrupo1_id
-                                    AND ordem_de_compra_itens.subgrupo2_id = orcamentos.subgrupo2_id
-                                    AND ordem_de_compra_itens.subgrupo3_id = orcamentos.subgrupo3_id
-                                    AND ordem_de_compra_itens.servico_id = orcamentos.servico_id
-                                    AND (
-                                            ordem_de_compra_itens.aprovado IS NULL
-                                            OR
-                                            ordem_de_compra_itens.aprovado = 1
-                                        )
-                                    AND ordem_de_compra_itens.deleted_at IS NULL
-                                    AND ordem_de_compras.obra_id ='. $obra->id .'
-                                    AND ordem_de_compras.oc_status_id != 6
-                                    AND ordem_de_compras.oc_status_id != 4
-                                ),null
-                            )
-                    ) as ordem_de_compra_item_id'),
             ]
         )
             ->whereNotNull('orcamentos.qtd_total')
