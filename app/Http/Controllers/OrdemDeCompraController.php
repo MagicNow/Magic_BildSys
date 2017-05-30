@@ -488,7 +488,7 @@ class OrdemDeCompraController extends AppBaseController
             ->toArray();
 
         $insumoGrupos = $insumoGrupoRepository
-            ->comLembretesComItensDeCompraPorUsuario($request->user()->id)
+            ->comOrcamentoObra($request->obra_id)
             ->pluck('nome', 'id')
             ->prepend('', '')
             ->toArray();

@@ -43,6 +43,18 @@ class InsumoGrupoRepository extends BaseRepository
             ->get();
     }
 
+    public function comOrcamentoObra($obra_id)
+    {
+        return $this->model
+            ->whereHas('insumos', function($query) use ($obra_id) {
+                $query
+                    ->join('orcamentos', 'orcamentos.insumo_id', '=', 'insumos.id')
+                    ->where('orcamentos.obra_id', $obra_id);
+            })
+            ->orderBy('nome','ASC')
+            ->get();
+    }
+
     public function enable($id)
     {
         return $this->update(['active' => true], $id);

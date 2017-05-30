@@ -647,7 +647,13 @@
                 $.ajax({
                     url: '/ordens-de-compra/carrinho/remover-item/'+item_id,
                 }).done(function () {
-                    swal("Removido!", "O item foi removido da ordem de compra!", "success");
+                    swal({
+                            title: "Removido!",
+                            text: "O item foi removido da ordem de compra!",
+                            type: "success",
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
                     $('#alert_'+item_id).remove();
                     $('#item'+item_id).remove();
                 });
