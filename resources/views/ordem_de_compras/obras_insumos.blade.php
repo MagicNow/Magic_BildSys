@@ -46,7 +46,7 @@
                                         {!! Form::select('grupo_id',[''=>'-']+$grupos, null, [
                                             'class'=>'form-control select2',
                                             'id'=>'grupo_id',
-                                            'onchange'=>'selectgrupo(this.value, \'subgrupo1_id\', \'grupos\', \'grupo\');'
+                                            'onchange'=>'selectgrupo(this.value, \'subgrupo1_id\', \'grupos\', \'grupo\');filtroQueryString("grupo_id", this.value);'
                                             ]) !!}
                                     </div>
                                 </div>
@@ -63,7 +63,7 @@
                                             'class'=>'form-control select2',
                                             'id'=>'subgrupo1_id',
                                             'disabled'=>'disabled',
-                                            'onchange'=>'selectgrupo(this.value, \'subgrupo2_id\', \'grupos\', \'subgrupo1\');'
+                                            'onchange'=>'selectgrupo(this.value, \'subgrupo2_id\', \'grupos\', \'subgrupo1\');filtroQueryString("subgrupo1_id", this.value);'
                                             ]) !!}
                                     </div>
                                 </div>
@@ -80,7 +80,7 @@
                                             'class'=>'form-control select2',
                                             'id'=>'subgrupo2_id',
                                             'disabled'=>'disabled',
-                                            'onchange'=>'selectgrupo(this.value, \'subgrupo3_id\', \'grupos\', \'subgrupo2\');'
+                                            'onchange'=>'selectgrupo(this.value, \'subgrupo3_id\', \'grupos\', \'subgrupo2\');filtroQueryString("subgrupo2_id", this.value);'
                                             ]) !!}
                                     </div>
                                 </div>
@@ -97,7 +97,7 @@
                                             'class'=>'form-control select2',
                                             'id'=>'subgrupo3_id',
                                             'disabled'=>'disabled',
-                                            'onchange'=>'selectgrupo(this.value, \'servico_id\', \'servicos\', \'subgrupo3\');'
+                                            'onchange'=>'selectgrupo(this.value, \'servico_id\', \'servicos\', \'subgrupo3\');filtroQueryString("subgrupo3_id", this.value);'
                                             ]) !!}
                                     </div>
                                 </div>
@@ -114,7 +114,7 @@
                                             'class'=>'form-control select2',
                                             'id'=>'servico_id',
                                             'disabled'=>'disabled',
-                                            'onchange'=>'selectgrupo(this.value, null, \'servicos\', \'servico\')'
+                                            'onchange'=>'selectgrupo(this.value, null, \'servicos\', \'servico\');filtroQueryString("servico_id", this.value);'
                                             ]) !!}
                                     </div>
                                 </div>
@@ -135,7 +135,8 @@
                                         {!!
                                           Form::select('insumo_grupos_id', $insumoGrupos, (isset($insumoGrupo) ? $insumoGrupo->id : null), [
                                             'class'=>'form-control select2',
-                                            'id'=>'insumo_grupos_id'
+                                            'id'=>'insumo_grupos_id',
+                                            'onchange'=>'filtroQueryString("insumo_grupos_id", this.value)'
                                             ]) !!}
                                     </div>
                                 </div>
@@ -185,7 +186,6 @@
     <script type="text/javascript">
 
         function quantidadeCompra(id, obra_id, grupo_id, subgrupo1_id, subgrupo2_id, subgrupo3_id, servico_id, value) {
-            console.log(parseFloat(value));
 //            if(parseFloat(value) != 0) {
                 $.ajax({
                     url: "{{url('/compras/'.(isset($obra) ? $obra->id : $planejamento->id).'/addCarrinho')}}",
@@ -249,7 +249,6 @@
         }
 
         function trocar(id){
-            console.log(id);
             $.ajax({
                 url: "{{url('/compras/trocaInsumos')}}",
                 data: {
@@ -262,7 +261,6 @@
         }
 
         function selectgrupo(id, change, tipo){
-            console.log('id: ', id, 'change: ', change, 'tipo: ', tipo);
             var rota = "{{url('ordens-de-compra/grupos')}}/";
             if(tipo == 'servicos'){
                 rota = "{{url('ordens-de-compra/servicos')}}/";
@@ -348,7 +346,7 @@
                     }
                 });
             });
-
+            verificarFiltroGrupos();
         });
 
         function afterDraw(){
@@ -422,14 +420,57 @@
                 data[chave] = valor;
             });
 
-            // Se tem o parâmetro na url
-            if(data[nome] !== undefined){
-                parametro = query.replace(nome+'='+data[nome], nome+'='+valor); // Substitui o valor
-            }else{
-                parametro = nome+'='+valor; // Adiciona o parâmetro e o valor
-            }
+            if(valor) {
+                // Se tem o parâmetro na url
+                if (data[nome] !== undefined) {
+                    parametro = query.replace(nome + '=' + data[nome], nome + '=' + valor); // Substitui o valor
+                } else {
+                    parametro = query + '&' + nome + '=' + valor; // Adiciona o parâmetro e o valor
+                }
 
-            window.location.href = '?'+parametro; // Url com os novos parâmetros
+                history.pushState("", document.title, location.pathname+'?'+parametro);
+            }else{
+                parametro = location.search.replace('&' + nome + '=' + data[nome], '');
+                history.pushState("", document.title, location.pathname+parametro);
+            }
+        }
+
+        function verificarFiltroGrupos() {
+            @php
+                $grupo = \Illuminate\Support\Facades\Input::get('grupo_id');
+                $subgrupo1 = \Illuminate\Support\Facades\Input::get('subgrupo1_id');
+                $subgrupo2 = \Illuminate\Support\Facades\Input::get('subgrupo2_id');
+                $subgrupo3 = \Illuminate\Support\Facades\Input::get('subgrupo3_id');
+                $servico = \Illuminate\Support\Facades\Input::get('servico_id');
+            @endphp
+            @if($grupo)
+                selectgrupo('{{$grupo}}', 'subgrupo1_id', 'grupos', 'grupo');
+                $('#grupo_id').val('{{$grupo}}').trigger('change');
+            @endif
+            @if($subgrupo1)
+                selectgrupo('{{$subgrupo1}}', 'subgrupo2_id', 'grupos', 'subgrupo1');
+                setTimeout(function(){
+                    $('#subgrupo1_id').val('{{$subgrupo1}}').trigger('change');
+                }, 300);
+            @endif
+            @if($subgrupo2)
+                selectgrupo('{{$subgrupo2}}', 'subgrupo3_id', 'grupos', 'subgrupo2');
+                setTimeout(function(){
+                    $('#subgrupo2_id').val('{{$subgrupo2}}').trigger('change');
+                }, 600);
+            @endif
+            @if($subgrupo3)
+                selectgrupo('{{$subgrupo3}}', 'servico_id', 'servicos', 'subgrupo3');
+                setTimeout(function(){
+                    $('#subgrupo3_id').val('{{$subgrupo3}}').trigger('change');
+                }, 900);
+            @endif
+            @if($servico)
+                selectgrupo('{{$servico}}', null, 'servicos', 'servico');
+                setTimeout(function(){
+                    $('#servico_id').val('{{$servico}}').trigger('change');
+                }, 1200);
+            @endif
         }
     </script>
 @endsection

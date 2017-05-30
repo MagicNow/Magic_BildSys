@@ -45,11 +45,7 @@ class ComprasDataTable extends DataTable
 
                 if ($obj->insumo_grupo_id == 1570) {
                     return link_to(
-                        'compras/trocar/' . $obj->orcamento_id . '?back=' . rawurlencode(
-                            url('compras/obrasInsumos') . '?' . http_build_query(
-                                $this->request()->only(['planejamento_id', 'obra_id', 'insumo_grupo_id'])
-                            )
-                        ) ,
+                        'compras/trocar/' . $obj->orcamento_id,
                         '<i class="fa fa-exchange"></i>',
                         [ 'class' => 'btn btn-ms btn-primary btn-flat' ],
                         null,
