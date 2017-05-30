@@ -56,6 +56,7 @@ class WorkflowAprovacaoRepository
                     ->where('workflow_alcadas.workflow_tipo_id', $workflow_tipo_id)// Tipo = Aprovação de OC
                     ->where('user_id', $user->id)
                     ->first();
+
                 if ($workflowUsuario) {
                     return [
                         'podeAprovar' => true,
@@ -184,7 +185,7 @@ class WorkflowAprovacaoRepository
                 $alcada_atual_ordem = $alcada->ordem + 1;
             }
 
-            if($workflow_tipo->usa_valor_minimo && $alcada_atual) {
+            if ($workflow_tipo->usa_valor_minimo && $alcada_atual) {
                 $class = "App\\Models\\{$tipo}";
                 $item = $class::whereIn('id', $ids)->first();
 
@@ -385,6 +386,7 @@ class WorkflowAprovacaoRepository
                 $obj->paiEmAprovacao();
             }
 
+
             // Se não for, verifica se já é a última
             $qtd_aprovadores = self::verificaQuantidadeUsuariosAprovadores($workflow_tipo, $obj->qualObra(), null, $ids, $tipo);
 
@@ -484,7 +486,8 @@ class WorkflowAprovacaoRepository
 
         $workflow_alcadas = WorkflowAlcada::where('workflow_tipo_id', $workflow_tipo->id);
 
-        if($workflow_tipo->usa_valor_minimo && $ids && $tipo) {
+
+        if ($workflow_tipo->usa_valor_minimo && $ids && $tipo) {
             $class = "App\\Models\\{$tipo}";
             $model = $class::whereIn('id', $ids)->first();
             $workflow_alcadas->where('valor_minimo', '<=', $model->valor_total);
