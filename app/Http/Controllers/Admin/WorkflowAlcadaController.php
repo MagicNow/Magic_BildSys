@@ -44,7 +44,7 @@ class WorkflowAlcadaController extends AppBaseController
     {
         $relacionados = [];
 
-        $tipos = WorkflowTipo::pluck('nome', 'id')->prepend('Escolha...', '')->toArray();
+        $tipos = WorkflowTipo::all();
         $workflow_tipo_id_contrato = WorkflowTipo::CONTRATO;
 
         return view(
@@ -122,7 +122,7 @@ class WorkflowAlcadaController extends AppBaseController
         $workflowUsuarios_ids = $workflowAlcada->workflowUsuarios()->pluck('user_id','user_id')->toArray();
         $relacionados = User::whereIn('id', $workflowUsuarios_ids)->pluck('name','id')->toArray();
 
-        $tipos = WorkflowTipo::pluck('nome', 'id')->prepend('Escolha...', '')->toArray();
+        $tipos = WorkflowTipo::all();
         $workflow_tipo_id_contrato = WorkflowTipo::CONTRATO;
 
         return view(

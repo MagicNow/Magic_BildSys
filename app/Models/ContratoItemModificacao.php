@@ -14,7 +14,7 @@ class ContratoItemModificacao extends Model
 {
     public $table = 'contrato_item_modificacoes';
 
-    public static $workflow_tipo_id = WorkflowTipo::CONTRATO;
+    public static $workflow_tipo_id = WorkflowTipo::ITEM_CONTRATO;
 
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
@@ -115,12 +115,22 @@ class ContratoItemModificacao extends Model
             ? ContratoStatus::APROVADO
             : ContratoStatus::REPROVADO;
 
+        if($isAprovado) {
+            $this->item->applyChanges($this);
+            $this->item->contrato->updateTotal();
+        }
+
         $this->save();
 
         ContratoItemModificacaoLog::create([
-            'contrato_id'        => $this->attributes['id'],
-            'contrato_status_id' => $this->attributes['contrato_status_id'],
-            'user_id'            => auth()->id()
+            'contrato_item_modificacao_id' => $this->id,
+            'contrato_status_id'           => $this->contrato_status_id,
+            'user_id'                      => auth()->id()
         ]);
+    }
+
+    public function getValorTotalAttribute()
+    {
+        return (float) $this->valor_unitario_atual * (float) $this->qtd_atual;
     }
 }

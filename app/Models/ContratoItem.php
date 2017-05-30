@@ -87,4 +87,17 @@ class ContratoItem extends Model
     {
         return $this->hasMany(\App\Models\ContratoItemReapropriaco::class);
     }
+
+    public function applyChanges(ContratoItemModificacao $mod)
+    {
+        $this->aprovado       = true;
+        $this->qtd            = $mod->qtd_atual;
+        $this->valor_unitario = $mod->valor_unitario_atual;
+        $this->valor_total    = (float) $this->qtd * (float) $this->valor_unitario;
+
+        $this->save();
+
+        return $this;
+    }
+
 }

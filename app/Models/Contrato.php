@@ -153,4 +153,12 @@ class Contrato extends Model
 
         return in_array($this->contrato_status_id, $status);
     }
+
+    public function updateTotal()
+    {
+        $this->update(['valor_total' => $this->itens->sum('valor_total')]);
+
+        return $this;
+    }
+
 }

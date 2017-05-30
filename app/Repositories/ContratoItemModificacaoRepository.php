@@ -27,7 +27,7 @@ class ContratoItemModificacaoRepository extends BaseRepository
 
             $modificacao = $this->create([
                 'qtd_anterior'            => $item->qtd,
-                'qtd_atual'               => ($item->qtd + money_to_float($data['qtd'])),
+                'qtd_atual'               => ($item->qtd + money_to_float($data['qtd'] ?: 0)),
                 'valor_unitario_anterior' => $item->valor_unitario,
                 'valor_unitario_atual'    => money_to_float($data['valor']),
                 'contrato_status_id'      => ContratoStatus::EM_APROVACAO,
@@ -52,7 +52,7 @@ class ContratoItemModificacaoRepository extends BaseRepository
 
     public function distratar($id, $quantidade)
     {
-        $quantidade = money_to_float($quantidade);
+        $quantidade = money_to_float($quantidade ?: 0);
 
         $modificacao = DB::transaction(function() use ($id, $quantidade) {
             $contratoItemRepository = app(ContratoItemRepository::class);

@@ -11,7 +11,6 @@ use Eloquent as Model;
  */
 class WorkflowTipo extends Model
 {
-
     public $table = 'workflow_tipos';
 
     public $timestamps = false;
@@ -19,6 +18,7 @@ class WorkflowTipo extends Model
     const OC = 1;
     const QC = 2;
     const CONTRATO = 3;
+    const ITEM_CONTRATO = 4;
 
     public $fillable = [
         'nome',

@@ -26,7 +26,9 @@ var ErrorList = (function() {
       '<li class="list-group-item"><%= value %></li>'
     );
 
-    return template({value: value});
+    return template({
+      value: value
+    });
   };
 
   return ErrorList;
@@ -35,12 +37,12 @@ var ErrorList = (function() {
 
 var Reapropriar = (function() {
   function Reapropriar() {
-    this.modal      = document.getElementById('modal-reapropriar');
-    this.addAllBtn  = document.getElementById('add-all');
-    this.grupos     = document.querySelectorAll('.js-group-selector');
-    this.qtd        = this.modal.querySelector('[name=qtd]');
-    this.saveBtn    = this.modal.querySelector('.js-save');
-    this.id         = 0;
+    this.modal = document.getElementById('modal-reapropriar');
+    this.addAllBtn = document.getElementById('add-all');
+    this.grupos = document.querySelectorAll('.js-group-selector');
+    this.qtd = this.modal.querySelector('[name=qtd]');
+    this.saveBtn = this.modal.querySelector('.js-save');
+    this.id = 0;
     this.defaultQtd = 0;
 
 
@@ -50,10 +52,10 @@ var Reapropriar = (function() {
   }
 
   Reapropriar.prototype.reapropriar = function(event) {
-    var button      = event.currentTarget;
-    this.qtd.value  = '';
+    var button = event.currentTarget;
+    this.qtd.value = '';
     this.defaultQtd = parseFloat(button.dataset.itemQtd);
-    this.id         = button.dataset.itemId;
+    this.id = button.dataset.itemId;
 
     $(this.modal).modal('show');
   }
@@ -63,20 +65,20 @@ var Reapropriar = (function() {
   };
 
   Reapropriar.prototype.save = function() {
-    if(!this.valid()) {
+    if (!this.valid()) {
       return true;
     }
 
     var options = {
-        title: 'Reapropriar insumo?',
-        text: 'Ao confirmar não será possível voltar atrás',
-        type: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Salvar',
-        cancelButtonText: 'Cancelar',
-        closeOnConfirm: false,
-        showLoaderOnConfirm: true,
-        confirmButtonColor: '#7ED32C'
+      title: 'Reapropriar insumo?',
+      text: 'Ao confirmar não será possível voltar atrás',
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Salvar',
+      cancelButtonText: 'Cancelar',
+      closeOnConfirm: false,
+      showLoaderOnConfirm: true,
+      confirmButtonColor: '#7ED32C'
     };
 
     swal(options, this.sendData.bind(this));
@@ -102,10 +104,11 @@ var Reapropriar = (function() {
           type: 'success',
         }, function() {
           $(_this.modal).modal('hide');
+          location.reload();
         });
       })
       .fail(function(response) {
-        if(response.status === 422) {
+        if (response.status === 422) {
           var errorList = new ErrorList(response.responseJSON);
 
           swal({
@@ -126,19 +129,19 @@ var Reapropriar = (function() {
   Reapropriar.prototype.valid = function() {
     var qtd = moneyToFloat(this.qtd.value);
 
-   if(!this.qtd.value.length || moneyToFloat(this.qtd.value) === 0) {
+    if (!this.qtd.value.length || moneyToFloat(this.qtd.value) === 0) {
       swal('', 'É necessário especificar a quantidade para reapropriar', 'warning');
       return false;
     }
 
-    if(qtd > this.defaultQtd) {
+    if (qtd > this.defaultQtd) {
       swal('', 'A quantidade máxima é ' + floatToMoney(this.defaultQtd, ''), 'warning');
       return false;
     }
 
     var filled = _(this.grupos).map('value').filter(Boolean).size();
 
-    if(filled !== this.grupos.length) {
+    if (filled !== this.grupos.length) {
       swal('', 'Selecione todos os grupos para reapropriação', 'warning');
       return false;
     }
@@ -155,10 +158,10 @@ var Reapropriar = (function() {
 
 var Reajuste = (function() {
   function Reajuste() {
-    this.modal   = document.getElementById('modal-reajuste');
-    this.total   = this.modal.querySelector('[name=total]');
-    this.qtd     = this.modal.querySelector('[name=qtd]');
-    this.valor   = this.modal.querySelector('[name=valor]');
+    this.modal = document.getElementById('modal-reajuste');
+    this.total = this.modal.querySelector('[name=total]');
+    this.qtd = this.modal.querySelector('[name=qtd]');
+    this.valor = this.modal.querySelector('[name=valor]');
     this.saveBtn = this.modal.querySelector('.js-save');
     this.totalDefault = 0;
     this.id = 0;
@@ -170,12 +173,13 @@ var Reajuste = (function() {
 
   Reajuste.prototype.reajustar = function(event) {
     event.preventDefault();
-    var button        = event.currentTarget;
-    this.id           = button.dataset.itemId;
-    this.qtd.value    = '';
-    this.valor.value  = button.dataset.itemValor;
+    var button = event.currentTarget;
+    this.id = button.dataset.itemId;
+    this.qtd.value = '';
+    this.valor.value = button.dataset.itemValor;
     this.totalDefault = parseFloat(button.dataset.itemQtd);
-    this.total.value  = floatToMoney(parseFloat(button.dataset.itemQtd), '');
+    this.valorDefault = parseFloat(button.dataset.itemValor);
+    this.total.value = floatToMoney(parseFloat(button.dataset.itemQtd), '');
 
     this.valor.dispatchEvent(new Event('input'));
 
@@ -191,12 +195,11 @@ var Reajuste = (function() {
   Reajuste.prototype.save = function(event) {
     event.preventDefault();
 
-    if(!this.valid()) {
+    if (!this.valid()) {
       return false;
     }
 
-    swal(
-      {
+    swal({
         title: 'Enviar reajuste para aprovação?',
         text: 'Ao confirmar não será possível voltar atrás',
         type: 'warning',
@@ -212,13 +215,18 @@ var Reajuste = (function() {
   };
 
   Reajuste.prototype.valid = function() {
-    if(!this.valor.value.length) {
+    if (!this.valor.value.length) {
       swal('', 'É necessário enviar um valor para reajuste', 'warning');
       return false;
     }
 
-    if(moneyToFloat(this.valor.value) === 0) {
+    if (moneyToFloat(this.valor.value) === 0) {
       swal('', 'O novo valor não pode ser zero', 'warning');
+      return false;
+    }
+
+    if (moneyToFloat(this.valor.value) === this.valorDefault && !this.qtd.value) {
+      swal('', 'Você não fez nenhuma alteração para reajuste', 'warning');
       return false;
     }
 
@@ -241,10 +249,11 @@ var Reajuste = (function() {
           type: 'success',
         }, function() {
           $(_this.modal).modal('hide');
+          location.reload();
         });
       })
       .fail(function(response) {
-        if(response.status === 422) {
+        if (response.status === 422) {
           var errorList = new ErrorList(response.responseJSON);
 
           swal({
@@ -271,11 +280,11 @@ var Reajuste = (function() {
 
 var Distrato = (function() {
   function Distrato() {
-    this.modal      = document.getElementById('modal-distrato');
-    this.zerarBtn   = document.getElementById('zerar-saldo');
-    this.qtd        = this.modal.querySelector('[name="qtd"]');
-    this.saveBtn    = this.modal.querySelector('.js-save');
-    this.id         = 0
+    this.modal = document.getElementById('modal-distrato');
+    this.zerarBtn = document.getElementById('zerar-saldo');
+    this.qtd = this.modal.querySelector('[name="qtd"]');
+    this.saveBtn = this.modal.querySelector('.js-save');
+    this.id = 0
     this.defaultQtd = 0;
 
     $body.on('click', '.js-distrato', this.distratar.bind(this));
@@ -309,7 +318,7 @@ var Distrato = (function() {
   Distrato.prototype.save = function(event) {
     event.preventDefault();
 
-    if(!this.valid()) {
+    if (!this.valid()) {
       return false;
     }
 
@@ -330,15 +339,15 @@ var Distrato = (function() {
   Distrato.prototype.valid = function() {
     var qtd = moneyToFloat(this.qtd.value);
 
-    if(qtd < this.defaultQtd) {
+    if (qtd < this.defaultQtd) {
       return true;
     }
 
-    if(qtd === this.defaultQtd) {
+    if (qtd === this.defaultQtd) {
       swal('', 'A quantidade não foi alterada', 'warning');
     }
 
-    if(qtd > this.defaultQtd) {
+    if (qtd > this.defaultQtd) {
       swal('', 'A nova quantidade não pode ser maior que a atual', 'warning');
     }
 
@@ -360,10 +369,11 @@ var Distrato = (function() {
           type: 'success',
         }, function() {
           $(_this.modal).modal('hide');
+          location.reload();
         });
       })
       .fail(function(response) {
-        if(response.status === 422) {
+        if (response.status === 422) {
           var errorList = new ErrorList(response.responseJSON);
 
           swal({
