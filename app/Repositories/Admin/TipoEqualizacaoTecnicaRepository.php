@@ -63,7 +63,9 @@ class TipoEqualizacaoTecnicaRepository extends BaseRepository
                     if (isset($anexo['arquivo_atual'])) {
                         Storage::delete($anexo['arquivo_atual']);
                     }
-                    $attributes['anexos'][$index]['arquivo'] = $anexo['arquivo']->store('public/anexos');
+                    $nome = str_slug($anexo['arquivo']->getClientOriginalName());
+                    $nome =  substr($nome,0,strlen($nome)-3).rand(1000, 99999).'.'.$anexo['arquivo']->getClientOriginalExtension();
+                    $attributes['anexos'][$index]['arquivo'] = $anexo['arquivo']->storeAs('public/anexos', $nome);
                 }
                 if(isset($attributes['anexos'][$index]['arquivo_atual'])){
                     unset($attributes['anexos'][$index]['arquivo_atual']);
