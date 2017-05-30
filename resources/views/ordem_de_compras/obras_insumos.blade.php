@@ -124,7 +124,8 @@
                                         {!!
                                           Form::select('planejamento_id', $planejamentos, (isset($planejamento) ? $planejamento->id : null), [
                                             'class'=>'form-control select2',
-                                            'id'=>'planejamento_id'
+                                            'id'=>'planejamento_id',
+                                            'onchange'=>'filtroQueryString("planejamento_id", this.value)'
                                             ]) !!}
                                     </div>
                                 </div>
@@ -405,6 +406,30 @@
             }).fail(function () {
                 stopLoading();
             });
+        }
+
+        function filtroQueryString(nome, valor) {
+            var query = location.search.slice(1);
+            var partes = query.split('&');
+            var data = {};
+            var parametro = '';
+
+            // Monta array com chave valor dos parâmetros da url e seus valores
+            partes.forEach(function (parte) {
+                var chaveValor = parte.split('=');
+                var chave = chaveValor[0];
+                var valor = chaveValor[1];
+                data[chave] = valor;
+            });
+
+            // Se tem o parâmetro na url
+            if(data[nome] !== undefined){
+                parametro = query.replace(nome+'='+data[nome], nome+'='+valor); // Substitui o valor
+            }else{
+                parametro = nome+'='+valor; // Adiciona o parâmetro e o valor
+            }
+
+            window.location.href = '?'+parametro; // Url com os novos parâmetros
         }
     </script>
 @endsection
