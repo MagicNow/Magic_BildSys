@@ -583,22 +583,25 @@ class QuadroDeConcorrenciaController extends AppBaseController
 
                 if($quadro->hasMaterial()){
 
-                    if(!$request->tipo_frete) {
+                    if(!intval($request->frete_incluso) && !$request->tipo_frete) {
                         DB::rollback();
                         Flash::error('Selecione o Tipo do Frete');
 
                         return back()->withInput();
                     }else{
-                        if($request->tipo_frete=='FOB' && (is_null($request->valor_frete) || floatval($request->valor_frete) == 0) ) {
-                            DB::rollback();
-                            Flash::error('O tipo de Frete FOB é necessário informar um valor');
+                        if(!intval($request->frete_incluso)){
+                            if($request->tipo_frete=='FOB' && (is_null($request->valor_frete) || floatval($request->valor_frete) == 0) ) {
+                                DB::rollback();
+                                Flash::error('O tipo de Frete FOB é necessário informar um valor');
 
-                            return back()->withInput();
+                                return back()->withInput();
+                            }
                         }
+
                     }
 
                     $qcFornecedor->update([
-                        'tipo_frete' => $request->tipo_frete,
+                        'tipo_frete' => intval($request->frete_incluso)?'CIF': $request->tipo_frete,
                         'valor_frete' => ($request->tipo_frete=='FOB'? money_to_float($request->valor_frete): 0),
                     ]);
                 }
