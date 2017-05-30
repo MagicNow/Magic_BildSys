@@ -472,5 +472,35 @@
                 }, 1200);
             @endif
         }
+
+        function alteraValorUnitario(valor, insumo_id, grupo_id, subgrupo1_id, subgrupo2_id, subgrupo3_id, servico_id) {
+            if(moneyToFloat(valor) > 0) {
+                $.ajax({
+                    url: '/ordens-de-compra/carrinho/alterar-valor-unitario/' + insumo_id,
+                    data: {
+                        'valor': valor,
+                        'grupo_id' : grupo_id,
+                        'subgrupo1_id' : subgrupo1_id,
+                        'subgrupo2_id' : subgrupo2_id,
+                        'subgrupo3_id' : subgrupo3_id,
+                        'servico_id' : servico_id
+                    }
+                }).done(function(retorno) {
+                    window.LaravelDataTables["dataTableBuilder"].draw(false);
+                }).fail(function(retorno) {
+                    swal({
+                         title: "Valor unitário não pode ser alterado",
+                         text: "",
+                         type: "error",
+                         showCancelButton: false,
+                         confirmButtonText: "OK",
+                         closeOnConfirm: false
+                    },
+                    function () {
+                        location.reload();
+                    });
+                });
+            }
+        }
     </script>
 @endsection
