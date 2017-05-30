@@ -1064,10 +1064,19 @@ class OrdemDeCompraController extends AppBaseController
 
     public function alteraValorUnitario($id, Request $request)
     {
-        $ordem_de_compra_item = OrdemDeCompraItem::find($id);
-        $ordem_de_compra_item->valor_unitario = $request->valor;
-        $ordem_de_compra_item->valor_total = $ordem_de_compra_item->getOriginal('qtd') * money_to_float($request->valor);
-        $ordem_de_compra_item->save();
+        $orcamento = Orcamento::where('insumo_id', $id)
+            ->where('grupo_id', $request->grupo_id)
+            ->where('subgrupo1_id', $request->subgrupo1_id)
+            ->where('subgrupo2_id', $request->subgrupo2_id)
+            ->where('subgrupo3_id', $request->subgrupo3_id)
+            ->where('servico_id', $request->servico_id)
+            ->first();
+
+        if($orcamento) {
+            $orcamento->preco_unitario = money_to_float($request->valor);
+            $orcamento->preco_total = $orcamento->getOriginal('qtd_total') * money_to_float($request->valor);
+            $orcamento->save();
+        }
 
         return response()->json(['success'=>true]);
     }

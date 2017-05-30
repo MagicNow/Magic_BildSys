@@ -70,6 +70,14 @@ class ComprasDataTable extends DataTable
             ->editColumn('valor_total', function($obj){
                 return $obj->quantidade_compra ? number_format($obj->getOriginal('preco_unitario') * money_to_float($obj->quantidade_compra), 2,',','.') : '0,00';
             })
+            ->editColumn('preco_unitario', function($obj){
+                if($obj->preco_unitario == '0.00') {
+                    return "<input value='$obj->preco_unitario' class='form-control
+                    js-blur-on-enter money' onblur='alteraValorUnitario(this.value, $obj->id, $obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id)'>";
+                }else{
+                    return $obj->preco_unitario;
+                }
+            })
             ->make(true);
 
     }
@@ -241,6 +249,30 @@ class ComprasDataTable extends DataTable
                     AND ordem_de_compras.oc_status_id = 1
                     '.($ordem ? ' AND ordem_de_compras.id ='. $ordem->id .' ': 'AND ordem_de_compras.id = 0').'
                     AND ordem_de_compra_itens.obra_id ='. $obra->id .' ) as total'),
+                DB::raw('(
+                            IFNULL(
+                                (
+                                    SELECT ordem_de_compra_itens.id FROM ordem_de_compra_itens
+                                    JOIN ordem_de_compras
+                                    ON ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id
+                                    WHERE ordem_de_compra_itens.insumo_id = orcamentos.insumo_id
+                                    AND ordem_de_compra_itens.grupo_id = orcamentos.grupo_id
+                                    AND ordem_de_compra_itens.subgrupo1_id = orcamentos.subgrupo1_id
+                                    AND ordem_de_compra_itens.subgrupo2_id = orcamentos.subgrupo2_id
+                                    AND ordem_de_compra_itens.subgrupo3_id = orcamentos.subgrupo3_id
+                                    AND ordem_de_compra_itens.servico_id = orcamentos.servico_id
+                                    AND (
+                                            ordem_de_compra_itens.aprovado IS NULL
+                                            OR
+                                            ordem_de_compra_itens.aprovado = 1
+                                        )
+                                    AND ordem_de_compra_itens.deleted_at IS NULL
+                                    AND ordem_de_compras.obra_id ='. $obra->id .'
+                                    AND ordem_de_compras.oc_status_id != 6
+                                    AND ordem_de_compras.oc_status_id != 4
+                                ),null
+                            )
+                    ) as ordem_de_compra_item_id'),
             ]
         )
             ->whereNotNull('orcamentos.qtd_total')
@@ -352,7 +384,7 @@ class ComprasDataTable extends DataTable
             'saldo' => ['name' => 'orcamentos.qtd_total', 'data' => 'saldo'],
             'quantidade Compra' => ['name' => 'quantidade_compra', 'data' => 'quantidade_compra', 'searchable' => false, 'width'=>'8%'],
             'preço Unitário' => ['name' => 'orcamentos.preco_unitario', 'data' => 'preco_unitario'],
-            'preço Total' => ['name' => 'valor_total', 'data' => 'valor_total'],
+            'preço Total' => ['name' => 'valor_total', 'data' => 'valor_total', 'searchable' => false],
             'troca' => ['name' => 'troca', 'data' => 'troca', 'searchable' => false, 'orderable' => false, 'width'=>'5%'],
             'finaliza Obra' => ['name' => 'total', 'data' => 'total', 'searchable' => false, 'orderable' => false, 'width'=>'5%'],
             'action' => ['title' => '#', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'5%']
