@@ -271,6 +271,22 @@
                         </div>
                       </div>
                     </div>
+                    <div class="form-group">
+                      <div class="row">
+                        <label class="col-md-6">
+                          Locação
+                        </label>
+                        <div class="col-md-6">
+                          <div class="input-group">
+                            <input type="text"
+                              class="form-control percent js-percent"
+                              value="{{ old('porcentagem_locacao') }}"
+                              name="porcentagem_locacao">
+                            <span class="input-group-addon">%</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <div class="box box-warning">
@@ -287,7 +303,7 @@
                               '1'
                             )
                           !!}
-                          Material
+                          Material Contratada
                         </label>
                       </div>
                     </div>
@@ -297,7 +313,8 @@
                           {!!
                             Form::checkbox(
                               "nf_servico",
-                              '1'
+                              '1',
+                              old('nf_servico',true)
                             )
                           !!}
                           Serviço
@@ -500,14 +517,14 @@
 @section('scripts')
 <script type="text/javascript">
     $(function () {
-        $('input[name="frete_incluso"]').on('ifChecked', function(event){
+        $('input[name="frete_incluso"]').on('ifToggled', function(event){
             if(parseInt(event.target.value)){
                 $('.blocoFrete').hide();
             }else{
                 $('.blocoFrete').show();
             }
         });
-        $('input[name="tipo_frete"]').on('ifChecked', function(event){
+        $('input[name="tipo_frete"]').on('ifToggled', function(event){
             if(event.target.value=='CIF'){
                 $('.freteFOB').hide();
                 $('input[name="valor_frete"]').val('0');

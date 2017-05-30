@@ -30,9 +30,10 @@
                     @if($quadroDeConcorrencia->hasServico())
                         @if($qcFornecedor->porcentagem_servico<100)
                             <span class="pull-right">
-                                <span class="label label-info">{{$qcFornecedor->porcentagem_servico}}% Serviço</span>
-                                <span class="label label-primary">{{$qcFornecedor->porcentagem_material}}% Material</span>
-                                <span class="label label-warning">{{$qcFornecedor->porcentagem_faturamento_direto}}% Fat. Direto</span>
+                                <span class="label label-info">{{$qcFornecedor->porcentagem_servico }}% Serviço</span>
+                                <span class="label label-primary">{{$qcFornecedor->porcentagem_material }}% Material</span>
+                                <span class="label label-warning">{{$qcFornecedor->porcentagem_faturamento_direto }}% Fat. Direto</span>
+                                <span class="label bg-maroon-active">{{$qcFornecedor->porcentagem_locacao }}% Locação</span>
                             </span>
                         @endif
                     @endif
@@ -251,17 +252,18 @@
                     console.log(retorno);
                     setTimeout(function () {
                         var contratos_ids = '';
+                        var exibir_contratos = '';
                         $.each(retorno.contratos, function (index, contrato) {
                             if(contratos_ids!=''){
                                 contratos_ids += ', ';
                             }
-                            console.log(contrato);
+                            exibir_contratos += ' <a href="/contratos/'+contrato.id+'" target="_blank" class="btn btn-link btn-flat"> Exibir contrato '+contrato.id+' </a>';
                             contratos_ids += contrato.id;
                         });
                         $('#boxQcFornecedor'+retorno.qcFornecedor+' .box-body').html('<div class="alert alert-success alert-dismissible">'+
                                 '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>'+
                         '<h4><i class="icon fa fa-check"></i> Contrato '+ contratos_ids + ' gerado!</h4>'+
-                        '' +
+                        exibir_contratos +
                         '</div>');
                         $('#boxQcFornecedor'+retorno.qcFornecedor+' .box-footer').html('<button type="button" class="btn btn-block btn-flat btn-success btn-lg">'+
                                 '<i class="fa fa-print"></i> Imprimir contrato'+

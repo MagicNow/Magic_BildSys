@@ -23,6 +23,7 @@ class QcFornecedor extends Model
         'rodada',
         'porcentagem_material',
         'porcentagem_servico',
+        'porcentagem_locacao',
         'porcentagem_faturamento_direto',
         'desistencia_motivo_id',
         'desistencia_texto',
