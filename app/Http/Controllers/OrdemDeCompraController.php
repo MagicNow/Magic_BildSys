@@ -317,6 +317,21 @@ class OrdemDeCompraController extends AppBaseController
                     DB::raw("0 as valor_realizado"),
                     'orcamentos.qtd_total as qtd_inicial',
                     'orcamentos.preco_total as preco_inicial',
+                    DB::raw("(
+                    SELECT 
+                        SUM(orcamentos.preco_total)
+                    FROM
+                        orcamentos 
+                    WHERE
+                     orcamentos.grupo_id = ordem_de_compra_itens.grupo_id
+                    AND orcamentos.subgrupo1_id = ordem_de_compra_itens.subgrupo1_id
+                    AND orcamentos.subgrupo2_id = ordem_de_compra_itens.subgrupo2_id
+                    AND orcamentos.subgrupo3_id = ordem_de_compra_itens.subgrupo3_id
+                    AND orcamentos.servico_id = ordem_de_compra_itens.servico_id
+                    AND orcamentos.obra_id = ordem_de_compra_itens.obra_id
+                    AND orcamentos.ativo = 1
+                    
+                    ) as valor_servico")
                 ])
                 ->join('orcamentos', function ($join) use ($ordemDeCompra){
                     $join->on('orcamentos.insumo_id','=', 'ordem_de_compra_itens.insumo_id');
@@ -328,8 +343,9 @@ class OrdemDeCompraController extends AppBaseController
                     $join->on('orcamentos.obra_id','=', DB::raw($ordemDeCompra->obra_id));
                     $join->on('orcamentos.ativo','=', DB::raw('1'));
                 })
-                ->with('insumo','unidade','anexos')
-                ->paginate(10);
+                ->with('insumo','unidade','anexos');
+
+                $itens = $itens->paginate(10);
         }
 
         $motivos_reprovacao = WorkflowReprovacaoMotivo::where(function($query){
@@ -1108,16 +1124,9 @@ class OrdemDeCompraController extends AppBaseController
         $itens = collect([]);
 
         if($ordemDeCompraItens){
-            $orcamentoInicial = OrdemDeCompraItem::join('orcamentos', function ($join) use ($servico_id, $obra_id) {
-                    $join->on('orcamentos.insumo_id','=', 'ordem_de_compra_itens.insumo_id');
-                    $join->on('orcamentos.grupo_id','=', 'ordem_de_compra_itens.grupo_id');
-                    $join->on('orcamentos.subgrupo1_id','=', 'ordem_de_compra_itens.subgrupo1_id');
-                    $join->on('orcamentos.subgrupo2_id','=', 'ordem_de_compra_itens.subgrupo2_id');
-                    $join->on('orcamentos.subgrupo3_id','=', 'ordem_de_compra_itens.subgrupo3_id');
-                    $join->on('orcamentos.servico_id','=', DB::raw($servico_id));
-                    $join->on('orcamentos.obra_id','=', DB::raw($obra_id));
-                    $join->on('orcamentos.ativo','=', DB::raw('1'));
-                })
+            $orcamentoInicial = Orcamento::where('servico_id', $servico_id)
+                ->where('obra_id', $obra_id)
+                ->where('ativo', 1)
                 ->sum('orcamentos.preco_total');
 
             $totalSolicitado = $ordemDeCompraItens->sum('valor_total');
