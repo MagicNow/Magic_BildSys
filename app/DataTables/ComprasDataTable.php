@@ -68,14 +68,23 @@ class ComprasDataTable extends DataTable
                     </strong>";
             })
             ->editColumn('valor_total', function($obj){
-                return $obj->quantidade_compra ? number_format($obj->getOriginal('preco_unitario') * money_to_float($obj->quantidade_compra), 2,',','.') : '0,00';
+                return $obj->quantidade_compra ? "R$ ".number_format($obj->getOriginal('preco_unitario') * money_to_float($obj->quantidade_compra), 2,',','.') : 'R$ 0,00';
             })
             ->editColumn('preco_unitario', function($obj){
-                if($obj->preco_unitario == '0.00') {
-                    return "<input value='$obj->preco_unitario' class='form-control
-                    js-blur-on-enter money' onblur='alteraValorUnitario(this.value, $obj->id, $obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id)'>";
+                if($obj->insumo_incluido) {
+                    return "<div class='input-group'>
+                                <span class='input-group-addon'>R$</span>
+                                <input type='text' value='".number_format($obj->preco_unitario,2,',','.')."' class='form-control
+                                        js-blur-on-enter money' onblur='alteraValorUnitario(this.value,
+                                                                                            $obj->id,
+                                                                                            $obj->grupo_id,
+                                                                                            $obj->subgrupo1_id,
+                                                                                            $obj->subgrupo2_id,
+                                                                                            $obj->subgrupo3_id,
+                                                                                            $obj->servico_id)'>
+                            </div>";
                 }else{
-                    return $obj->preco_unitario;
+                    return "R$ ". $obj->preco_unitario;
                 }
             })
             ->make(true);
@@ -132,6 +141,7 @@ class ComprasDataTable extends DataTable
                 'orcamentos.servico_id',
                 'orcamentos.preco_total',
                 'orcamentos.preco_unitario',
+                'orcamentos.insumo_incluido',
                 DB::raw('(SELECT
                     CONCAT(codigo, \' - \', nome)
                     FROM

@@ -138,19 +138,19 @@
                                             $item->servico->codigo .' '.$item->servico->nome
                                         }}">
                                     <strong class="visible-xs pull-left">Insumo:</strong>
-                                    {{ $item->insumo->codigo }} - {{ $item->insumo->nome }}
-                                </span>
-                                <span class="col-md-1 col-sm-1 col-xs-12 text-center borda-direita">
-                                    <strong class="visible-xs pull-left">Unidade:</strong>
-                                    {{ $item->unidade_sigla }}
+                                    {{ $item->insumo->codigo }} - {{ $item->insumo->nome }} - {{ $item->unidade_sigla }}
                                 </span>
                                 <span class="col-md-2 col-sm-2 col-xs-12 text-center borda-direita" align="center" style="width: 11.5%;">
                                     <strong>Qtde:</strong>
                                     <input type="text" id="find" value="{{ $item->qtd }}" onchange="alteraQtd(this.value, '{{ $item->id }}')" class="form-control money">
                                 </span>
                                 <span class="col-md-2 col-sm-2 col-xs-12 text-center borda-direita" align="center" style="width: 11.5%;">
+                                    <strong>Preço unitário:</strong>
+                                    <p class="form-control money" style="border-color:#ffffff;background-color:#ffffff;text-align:center;"> R$ {{ $item->valor_unitario }}</p>
+                                </span>
+                                <span class="col-md-2 col-sm-2 col-xs-12 text-center borda-direita" align="center" style="width: 11.5%;">
                                     <strong>Total:</strong>
-                                    <p class="form-control money" style="border-color:#ffffff;background-color:#ffffff;text-align:center;">{{ $item->valor_total }}</p>
+                                    <p class="form-control money" style="border-color:#ffffff;background-color:#ffffff;text-align:center;"> R$ {{ $item->valor_total }}</p>
                                 </span>
                                 <span class="col-md-2 col-sm-2 col-xs-5 text-center borda-direita">
                                     <div id="bloco_indicar_contrato{{ $item->id }}">
@@ -169,7 +169,7 @@
                                         @endif
                                     </div>
                                 </span>
-                                <span class="col-md-3 col-sm-3 col-xs-6 text-center borda-direita" {{$item->valor_unitario == '0.00' ? 'style=width:18%' : ''}}>
+                                <span class="col-md-3 col-sm-3 col-xs-6 text-center borda-direita" style="width:18%">
                                     {!! Form::open(['url'=> url('/ordens-de-compra/upload-anexos/'.$item->id)  , 'class'=>'formAnexos', 'files'=>true]) !!}
                                     {!! Form::hidden('item_id', $item->id, ['id'=>'item_id_'.$item->id]) !!}
                                     <label class="label-bloco label-bloco-limitado">Anexar arquivo</label>
@@ -188,7 +188,6 @@
                                             style="font-size: 18px; margin-top: -7px" onclick="showHideExtra({{ $item->id }})">
                                         <i class="icone-expandir fa fa-caret-right" aria-hidden="true"></i>
                                     </button>
-
                                     <i class="fa fa-remove" onclick="removeItem({{ $item->id }})" aria-hidden="true" style="font-size: 18px; margin-top: -7px;color: red;cursor: pointer"  data-toggle="tooltip" data-placement="top" title="Remover item"></i>
                                 </span>
                             </div>
