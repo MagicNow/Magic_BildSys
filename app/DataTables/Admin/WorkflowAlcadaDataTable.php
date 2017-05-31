@@ -18,6 +18,9 @@ class WorkflowAlcadaDataTable extends DataTable
         return $this->datatables
             ->eloquent($this->query())
             ->editColumn('action', 'admin.workflow_alcadas.datatables_actions')
+            ->editColumn('valor_minimo', function($obj) {
+                return float_to_money($obj->valor_minimo);
+            })
             ->make(true);
     }
 
@@ -34,9 +37,10 @@ class WorkflowAlcadaDataTable extends DataTable
                 'workflow_alcadas.id',
                 'workflow_alcadas.nome',
                 'workflow_alcadas.ordem',
+                'workflow_alcadas.valor_minimo',
                 DB::raw('(SELECT COUNT(1) FROM workflow_usuarios WU WHERE WU.workflow_alcada_id = workflow_alcadas.id) usuarios')
             ])
-        ->join('workflow_tipos','workflow_tipos.id','workflow_tipo_id');
+            ->join('workflow_tipos','workflow_tipos.id','workflow_tipo_id');
 
         return $this->applyScopes($workflowAlcadas);
     }
@@ -102,6 +106,7 @@ class WorkflowAlcadaDataTable extends DataTable
             'tipo' => ['name' => 'workflow_tipos.nome', 'data' => 'tipo'],
             'nome' => ['name' => 'nome', 'data' => 'nome'],
             'ordem' => ['name' => 'ordem', 'data' => 'ordem', 'searchable' => false],
+            'valor_minimo' => ['name' => 'valor_minimo', 'data' => 'valor_minimo', 'searchable' => false],
             'usuarios' => ['name' => 'usuarios', 'data' => 'usuarios', 'searchable' => false],
             'action' => ['title' => '#', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];

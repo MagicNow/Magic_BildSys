@@ -58,7 +58,8 @@ class ContratoDataTable extends DataTable
         ->join('contrato_status', 'contrato_status.id', 'contratos.contrato_status_id')
         ->join('contrato_itens', 'contrato_itens.contrato_id', 'contratos.id')
         ->join('oc_item_qc_item', 'contrato_itens.qc_item_id', 'oc_item_qc_item.qc_item_id')
-        ->join('ordem_de_compra_itens', 'ordem_de_compra_itens.id', 'oc_item_qc_item.ordem_de_compra_item_id');
+        ->join('ordem_de_compra_itens', 'ordem_de_compra_itens.id', 'oc_item_qc_item.ordem_de_compra_item_id')
+        ->groupBy('contratos.id');
 
         $request = $this->request();
 

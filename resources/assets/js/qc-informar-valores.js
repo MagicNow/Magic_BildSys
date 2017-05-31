@@ -26,7 +26,6 @@ var QcInformarValoresForm = {
         var price = event.currentTarget;
         var amount = row.querySelector('.js-calc-amount');
         var result = row.querySelector('.js-calc-result');
-        console.log(price,amount,result);
 
         if(!price.value.length) {
           result.innerText = 'R$ 0,00';

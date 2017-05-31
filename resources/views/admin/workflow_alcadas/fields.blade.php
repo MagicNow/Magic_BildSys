@@ -1,7 +1,14 @@
 <!-- Workflow Tipo Id Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('workflow_tipo_id', 'Tipo:') !!}
-    {!! Form::select('workflow_tipo_id',[''=>'Escolha...']+ \App\Models\WorkflowTipo::pluck('nome','id')->toArray() , null, ['class' => 'form-control','required'=>'required']) !!}
+    {!!
+      Form::select(
+        'workflow_tipo_id',
+          $tipos,
+          null,
+          ['class' => 'form-control','required'=>'required', 'id' => 'workflow_tipo_id']
+        )
+    !!}
 </div>
 
 <!-- Nome Field -->
@@ -13,7 +20,7 @@
 <!-- Ordem Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('ordem', 'Ordem:') !!}
-    {!! Form::number('ordem', null, ['class' => 'form-control', 'required'=>'required']) !!}
+    {!! Form::number('ordem', null, ['class' => 'form-control', 'required'=>'required', 'id' => 'ordem']) !!}
 </div>
 
 <!-- Dias Prazo Field -->
@@ -26,6 +33,12 @@
     {!! Form::label('workflowUsuarios', 'Usuários nesta alçada:') !!}
     {!! Form::select('workflowUsuarios[]', $relacionados ,(!isset($workflowAlcada)? null: $workflowUsuarios_ids), ['class' => 'form-control', 'id'=>"workflowUsuarios", 'multiple'=>"multiple"]) !!}
 </div>
+
+<div class="form-group col-sm-6 hidden">
+    {!! Form::label('valor_minimo', 'Valor Mínimo') !!}
+    {!! Form::text('valor_minimo', null, ['class' => 'form-control money', 'id' => 'valor_minimo']) !!}
+</div>
+
 
 <!-- Submit Field -->
 <div class="form-group col-sm-12">
@@ -55,6 +68,22 @@
     }
 
     $(function(){
+      var tipoSelector = document.getElementById('workflow_tipo_id');
+      var valorMinimo = document.getElementById('valor_minimo');
+
+      tipoSelector.addEventListener('change', function(event) {
+        $(valorMinimo)
+          .parent()
+          .toggleClass(
+            'hidden',
+            parseInt(tipoSelector.value) !== {{ $workflow_tipo_id_contrato }}
+          );
+      });
+
+      tipoSelector.dispatchEvent(new Event('change'));
+
+
+
         $('#workflowUsuarios').select2({
             language: "pt-BR",
             theme:'bootstrap',
