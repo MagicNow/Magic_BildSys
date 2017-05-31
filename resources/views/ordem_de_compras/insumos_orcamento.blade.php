@@ -149,42 +149,6 @@
                     }
                 });
             @endif
-            $('#insumo').select2({
-                allowClear: true,
-                placeholder: "Escolha...",
-                language: "pt-BR",
-
-                ajax: {
-                    url: "{{ route('catalogo_contratos.busca_insumos') }}",
-                    dataType: 'json',
-                    delay: 250,
-
-                    data: function (params) {
-                        return {
-                            q: params.term,
-                            page: params.page
-                        };
-                    },
-
-                    processResults: function (result, params) {
-                        params.page = params.page || 1;
-
-                        return {
-                            results: result.data,
-                            pagination: {
-                                more: (params.page * result.per_page) < result.total
-                            }
-                        };
-                    },
-                    cache: true
-                },
-                escapeMarkup: function (markup) {
-                    return markup;
-                },
-                minimumInputLength: 1,
-                templateResult: formatResult,
-                templateSelection: formatResultSelection
-            });
 
             $('#grupo_id').select2({
                 allowClear: true,

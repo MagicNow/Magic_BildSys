@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class ContratoItemReapropriacao
@@ -12,16 +11,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class ContratoItemReapropriacao extends Model
 {
-    use SoftDeletes;
-
     public $table = 'contrato_item_reapropriacoes';
-    
+
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
-
-
-    protected $dates = ['deleted_at'];
-
 
     public $fillable = [
         'contrato_item_id',
@@ -62,78 +55,6 @@ class ContratoItemReapropriacao extends Model
      * @var array
      */
     public static $rules = [
-        
+
     ];
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     **/
-    public function contratoIten()
-    {
-        return $this->belongsTo(\App\Models\ContratoIten::class);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     **/
-    public function grupo()
-    {
-        return $this->belongsTo(\App\Models\Grupo::class);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     **/
-    public function insumo()
-    {
-        return $this->belongsTo(\App\Models\Insumo::class);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     **/
-    public function ordemDeCompraIten()
-    {
-        return $this->belongsTo(\App\Models\OrdemDeCompraIten::class);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     **/
-    public function servico()
-    {
-        return $this->belongsTo(\App\Models\Servico::class);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     **/
-    public function grupo()
-    {
-        return $this->belongsTo(\App\Models\Grupo::class);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     **/
-    public function grupo()
-    {
-        return $this->belongsTo(\App\Models\Grupo::class);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     **/
-    public function grupo()
-    {
-        return $this->belongsTo(\App\Models\Grupo::class);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     **/
-    public function user()
-    {
-        return $this->belongsTo(\App\Models\User::class);
-    }
 }

@@ -27,6 +27,7 @@ use App\Repositories\ContratoItemModificacaoRepository;
 use App\Repositories\ContratoItemRepository;
 use App\Models\ContratoStatus;
 use App\Models\ContratoItemModificacao;
+use App\Repositories\ContratoItemReapropriacaoRepository;
 
 class ContratoController extends AppBaseController
 {
@@ -151,15 +152,26 @@ class ContratoController extends AppBaseController
         ]);
     }
 
+    public function reapropriarItemForm(
+        $id,
+        ContratoItemRepository $contratoItemRepository
+    ) {
+        $item = $contratoItemRepository->find($id);
+
+        $itens = $item->qcItem->ordemDeCompraItens;
+
+        return view('contratos.modal-reapropriacao', compact('itens'));
+    }
+
     public function reapropriarItem(
         $id,
         ContratoItemRepository $contratoItemRepository,
+        ContratoItemReapropriacaoRepository $contratoItemReapropriacaoRepository,
         ReapropriarRequest $request
     ) {
         $item = $contratoItemRepository->find($id);
 
-        http_response_code(500);
-        dd($item->qcItem->ordemDeCompraItens);
+        $contratoItemReapropriacaoRepository->reapropriar($item, $request->all());
 
         return response()->json([
             'success' => true

@@ -40,7 +40,7 @@
                 </span>
               @endif
             @else
-              {{--Não Aprovou ainda, pode aprovar, mas por algum motivo não irá aprovar no momento--}}
+              {{-- Não Aprovou ainda, pode aprovar, mas por algum motivo não irá aprovar no momento --}}
               <button type="button" title="{{ $workflowAprovacao['msg'] }}"
                 onclick="swal('{{ $workflowAprovacao['msg'] }}','','info');"
                 class="btn btn-default btn-lg btn-flat">
@@ -114,7 +114,7 @@
   </div>
 
   <div class="modal centered-modal fade" id="modal-reapropriar" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">
@@ -123,7 +123,10 @@
           <h4 class="modal-title">Reapropriar</h4>
         </div>
         <div class="modal-body">
-          {!! Form::hidden('contrato_item_id') !!}
+          <div class="form-group">
+            <label for="orcamento_item_id">Item da Ordem de Compra</label>
+            <div id="select-item"></div>
+          </div>
           <div class="form-group">
             <label for="qtd">Quantidade</label>
             <div class="input-group">
@@ -216,8 +219,6 @@
 @endsection
 
 @section('scripts')
-  <script>
-    options_motivos = document.getElementById('motivo').innerHTML;
-  </script>
+  <script> options_motivos = document.getElementById('motivo').innerHTML; </script>
   <script data-token="{{ csrf_token() }}" src="{{ asset('/js/contrato-actions.js') }}"></script>
 @append

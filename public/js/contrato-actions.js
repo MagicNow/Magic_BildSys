@@ -1,4 +1,5 @@
 $(function() {
+  $.fn.modal.Constructor.prototype.enforceFocus = $.noop;
   Reajuste.init();
   Distrato.init();
   Reapropriar.init();
@@ -38,13 +39,22 @@ var ErrorList = (function() {
 var Reapropriar = (function() {
   function Reapropriar() {
     this.modal = document.getElementById('modal-reapropriar');
+    this.insumo = document.getElementById('insumo_id');
     this.addAllBtn = document.getElementById('add-all');
     this.grupos = document.querySelectorAll('.js-group-selector');
     this.qtd = this.modal.querySelector('[name=qtd]');
     this.saveBtn = this.modal.querySelector('.js-save');
     this.id = 0;
     this.defaultQtd = 0;
+    var _this = this;
 
+    $(this.modal).on('hide.bs.modal', function(e) {
+      $(_this.insumo).select2('destroy');
+    });
+
+    $(this.modal).on('ifToggled', '.js-ordem-de-compra-id', function(event) {
+      _this.addAllBtn.dataset.qtd = event.currentTarget.dataset.qtdMax;
+    });
 
     $body.on('click', '.js-reapropriar', this.reapropriar.bind(this));
     this.addAllBtn.addEventListener('click', this.addAll.bind(this));
@@ -54,14 +64,29 @@ var Reapropriar = (function() {
   Reapropriar.prototype.reapropriar = function(event) {
     var button = event.currentTarget;
     this.qtd.value = '';
-    this.defaultQtd = parseFloat(button.dataset.itemQtd);
     this.id = button.dataset.itemId;
+    var self = this;
 
-    $(this.modal).modal('show');
+    startLoading();
+    this.getView(this.id)
+      .always(stopLoading)
+      .done(function(html) {
+        $(self.modal).find('#select-item').html(html);
+        $(self.modal).modal('show');
+        $(self.modal).find('input[type="radio"]').iCheck({
+          checkboxClass: 'icheckbox_square-green',
+          radioClass: 'iradio_square-green',
+          increaseArea: '20%' // optional
+        });
+      });
   }
 
   Reapropriar.prototype.addAll = function(event) {
-    this.qtd.value = floatToMoney(this.defaultQtd, '');
+    this.qtd.value = floatToMoney(this.addAllBtn.dataset.qtd, '');
+  };
+
+  Reapropriar.prototype.getView = function(id) {
+    return $.get('/contratos/reapropriar-item/' + id);
   };
 
   Reapropriar.prototype.save = function() {
@@ -84,19 +109,24 @@ var Reapropriar = (function() {
     swal(options, this.sendData.bind(this));
   };
 
+  Reapropriar.prototype.getSelectedItem = function() {
+    return this.modal.querySelector('.js-ordem-de-compra-id:checked');
+  };
+
   Reapropriar.prototype.sendData = function() {
     var _this = this;
     var data = {
       _token: token,
       qtd: this.qtd.value,
+      ordem_de_compra_item_id: this.getSelectedItem().value
     };
 
-    data = _.reduce(this.grupos, function(data, grupo) {
+    var grupos = _.reduce(this.grupos, function(data, grupo) {
       data[grupo.name] = grupo.value;
       return data;
-    }, data);
+    }, {});
 
-    $.post('/contratos/reapropriar-item/' + this.id, data)
+    $.post('/contratos/reapropriar-item/' + this.id, _.merge(data, grupos))
       .done(function(response) {
         swal({
           title: 'Sucesso!',
@@ -129,17 +159,25 @@ var Reapropriar = (function() {
   Reapropriar.prototype.valid = function() {
     var qtd = moneyToFloat(this.qtd.value);
 
+    if (!this.getSelectedItem()) {
+      swal('', 'Selecione um item da ordem de compra para reapropriar', 'warning');
+      return false;
+    }
+
+    if (qtd > moneyToFloat(this.addAllBtn.dataset.qtd)) {
+      swal('', 'Neste item o máximo de reapropriação é ' + this.addAllBtn.dataset.qtd, 'warning');
+      return false;
+    }
+
     if (!this.qtd.value.length || moneyToFloat(this.qtd.value) === 0) {
       swal('', 'É necessário especificar a quantidade para reapropriar', 'warning');
       return false;
     }
 
-    if (qtd > this.defaultQtd) {
-      swal('', 'A quantidade máxima é ' + floatToMoney(this.defaultQtd, ''), 'warning');
-      return false;
-    }
-
-    var filled = _(this.grupos).map('value').filter(Boolean).size();
+    var filled = Array.from(this.grupos)
+      .map(_.property('value'))
+      .filter(Boolean)
+      .length;
 
     if (filled !== this.grupos.length) {
       swal('', 'Selecione todos os grupos para reapropriação', 'warning');
