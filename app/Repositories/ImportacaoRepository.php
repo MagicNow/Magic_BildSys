@@ -38,12 +38,12 @@ class ImportacaoRepository
         ])
         ->from('MGADM.EST_PRODUTOS PRO')
         ->leftJoin('mgtrf.trf_ncm as NCM',function ($join){
-            $join->on('NCM.ncm_tab_in_codigo','MGADM.EST_PRODUTOS.ncm_tab_in_codigo');
-            $join->on('NCM.ncm_pad_in_codigo','MGADM.EST_PRODUTOS.ncm_pad_in_codigo');
-            $join->on('NCM.ncm_in_codigo','MGADM.EST_PRODUTOS.ncm_in_codigo');
+            $join->on('NCM.ncm_tab_in_codigo','PRO.ncm_tab_in_codigo');
+            $join->on('NCM.ncm_pad_in_codigo','PRO.ncm_pad_in_codigo');
+            $join->on('NCM.ncm_in_codigo','PRO.ncm_in_codigo');
         })
+        ->leftJoin('MGTRF.TRF_CODSERVICO CSE', 'CSE.COS_IN_CODIGO', 'PRO.COS_IN_CODIGO')
         ->where('GRU_IDE_ST_CODIGO','07')
-        ->join('MGTRF.TRF_CODSERVICO CSE', 'CSE.COS_IN_CODIGO', 'PRO.COS_IN_CODIGO')
         ->whereRaw(DB::raw(" NOT EXISTS (
             SELECT 1
             FROM MGADM.EST_INATIVAPRODUTO ipr
@@ -56,6 +56,7 @@ class ImportacaoRepository
         foreach ($insumos as $produto) {
             try {
                 $unidade = Unidade::where('sigla', trim(utf8_encode($produto->uni_st_unidade)))->first();
+
                 if (!$unidade) {
                     $unidade = Unidade::create([
                         'sigla' => trim(utf8_encode($produto->uni_st_unidade)),
@@ -68,12 +69,6 @@ class ImportacaoRepository
                     'unidade_sigla'   => trim(utf8_encode($produto->uni_st_unidade)),
                     'codigo'          => $produto->pro_in_codigo,
                     'insumo_grupo_id' => $produto->gru_in_codigo,
-                ],[
-                    'aliq_irrf'       => $produto->cos_re_aliqirrf,
-                    'aliq_csll'       => $produto->cos_re_aliqcsll,
-                    'aliq_pis'        => $produto->cos_re_aliqpis,
-                    'aliq_inss'       => $produto->cos_re_aliqinss,
-                    'aliq_cofins'     => $produto->cos_re_aliqcofins,
                 ]);
                 $insumo->ncm_codigo = $produto->ncm_in_codigo;
                 $insumo->ncm_texto  =  trim(utf8_encode($produto->ncm_st_descricao));
@@ -84,6 +79,14 @@ class ImportacaoRepository
                 if($insumo->tems == ''){
                     $insumo->tems = null;
                 }
+
+                $insumo->fill([
+                    'aliq_irrf'   => $produto->cos_re_aliqirrf,
+                    'aliq_csll'   => $produto->cos_re_aliqcsll,
+                    'aliq_pis'    => $produto->cos_re_aliqpis,
+                    'aliq_inss'   => $produto->cos_re_aliqinss,
+                    'aliq_cofins' => $produto->cos_re_aliqcofins,
+                ]);
 
                 $insumo->save();
             } catch (\Exception $e) {

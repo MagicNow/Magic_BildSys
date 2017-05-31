@@ -3,6 +3,30 @@ $(function() {
   Reajuste.init();
   Distrato.init();
   Reapropriar.init();
+
+  var table = LaravelDataTables.dataTableBuilder
+
+  var visible = false;
+
+  table.on('init', function() {
+    table.button().add(5, {
+      action: function(e, dt, button, config) {
+        visible = !visible;
+
+        table.column('aliq_irrf:name').visible(visible);
+        table.column('aliq_inss:name').visible(visible);
+        table.column('aliq_pis:name').visible(visible);
+        table.column('aliq_cofins:name').visible(visible);
+        table.column('aliq_csll:name').visible(visible);
+
+        button[0].innerHTML = !visible
+          ? '<i class="fa fa-money"></i> Exibir Impostos'
+          : '<i class="fa fa-money"></i> Ocultar Impostos';
+      },
+      text: '<i class="fa fa-money"></i> Exibir Impostos'
+    });
+  })
+
 });
 
 var token = document.currentScript.dataset.token;

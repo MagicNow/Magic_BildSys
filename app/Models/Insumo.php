@@ -25,6 +25,11 @@ class Insumo extends Model
         'ncm_codigo',
         'ncm_texto',
         'ncm_codigo_texto',
+        'aliq_irrf',
+        'aliq_csll',
+        'aliq_pis',
+        'aliq_inss',
+        'aliq_cofins',
     ];
 
     /**
