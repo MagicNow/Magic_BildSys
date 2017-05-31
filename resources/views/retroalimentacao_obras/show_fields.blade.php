@@ -1,43 +1,43 @@
-<!-- Id Field -->
-<div class="form-group col-md-6">
-    {!! Form::label('id', 'Id:') !!}
-    <p class="form-control">{!! $retroalimentacaoObra->id !!}</p>
-</div>
-
 <!-- Obra Id Field -->
-<div class="form-group col-md-6">
-    {!! Form::label('obra_id', 'Obra Id:') !!}
-    <p class="form-control">{!! $retroalimentacaoObra->obra_id !!}</p>
-</div>
-
-<!-- User Id Field -->
-<div class="form-group col-md-6">
-    {!! Form::label('user_id', 'User Id:') !!}
-    <p class="form-control">{!! $retroalimentacaoObra->user_id !!}</p>
-</div>
-
-<!-- Created At Field -->
-<div class="form-group col-md-6">
-    {!! Form::label('created_at', 'Created At:') !!}
-    <p class="form-control">{!! $retroalimentacaoObra->created_at !!}</p>
-</div>
-
-<!-- Updated At Field -->
-<div class="form-group col-md-6">
-    {!! Form::label('updated_at', 'Updated At:') !!}
-    <p class="form-control">{!! $retroalimentacaoObra->updated_at !!}</p>
-</div>
-
-<!-- Deleted At Field -->
-<div class="form-group col-md-6">
-    {!! Form::label('deleted_at', 'Deleted At:') !!}
-    <p class="form-control">{!! $retroalimentacaoObra->deleted_at !!}</p>
+<div class="form-group col-md-12">
+    {!! Form::label('obra_id', 'Obra:') !!}
+    <p class="form-control">{!! $retroalimentacaoObra->obra->nome !!}</p>
 </div>
 
 <!-- Origem Field -->
-<div class="form-group col-md-6">
+<div class="form-group col-md-12">
     {!! Form::label('origem', 'Origem:') !!}
-    <p class="form-control">{!! $retroalimentacaoObra->origem !!}</p>
+    <p class="form-control"><a href="{!! $retroalimentacaoObra->origem !!}">{!! $retroalimentacaoObra->origem !!}</a></p>
+</div>
+
+<!-- Situacao Atual Field -->
+<div class="form-group col-md-6">
+    {!! Form::label('situacao_atual', 'Situação Atual:') !!}
+    {!! Form::textarea('situacao_proposta', $retroalimentacaoObra->situacao_atual, ['class' => 'form-control', 'rows' => '3', 'disabled']) !!}
+</div>
+
+<!-- Situacao Proposta Field -->
+<div class="form-group col-md-6">
+    {!! Form::label('situacao_proposta', 'Situação Proposta:') !!}
+    {!! Form::textarea('situacao_proposta', $retroalimentacaoObra->situacao_proposta, ['class' => 'form-control', 'rows' => '3', 'disabled']) !!}
+</div>
+
+<!-- Ação Field -->
+<div class="form-group col-md-6">
+    {!! Form::label('acao', 'Ação:') !!}
+    <p class="form-control">{!! $retroalimentacaoObra->acao !!}</p>
+</div>
+
+<!-- Resultado obtido Field -->
+<div class="form-group col-md-6">
+    {!! Form::label('status', 'Resultado obtido:') !!}
+    <p class="form-control">{!! $retroalimentacaoObra->resultado_obtido !!}</p>
+</div>
+
+<!-- Status Field -->
+<div class="form-group col-md-6">
+    {!! Form::label('status', 'Status:') !!}
+    <p class="form-control">{!! $retroalimentacaoObra->status !!}</p>
 </div>
 
 <!-- Categoria Field -->
@@ -46,21 +46,24 @@
     <p class="form-control">{!! $retroalimentacaoObra->categoria !!}</p>
 </div>
 
-<!-- Situacao Atual Field -->
-<div class="form-group col-md-6">
-    {!! Form::label('situacao_atual', 'Situacao Atual:') !!}
-    <p class="form-control">{!! $retroalimentacaoObra->situacao_atual !!}</p>
+<div class="form-group col-sm-6">
+{!! Form::label('data_prevista', 'Data prevista:') !!}
+{!! Form::date('data_prevista', isset($retroalimentacaoObra) ? $retroalimentacaoObra->data_prevista ? $retroalimentacaoObra->data_prevista->format('Y-m-d') : null : null, ['class' => 'form-control']) !!}
 </div>
 
-<!-- Situacao Proposta Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('data_conclusao', 'Data conclusão:') !!}
+    {!! Form::date('data_conclusao', isset($retroalimentacaoObra) ? $retroalimentacaoObra->data_conclusao ? $retroalimentacaoObra->data_conclusao->format('Y-m-d') : null : null, ['class' => 'form-control']) !!}
+</div>
+<!-- Created At Field -->
 <div class="form-group col-md-6">
-    {!! Form::label('situacao_proposta', 'Situacao Proposta:') !!}
-    <p class="form-control">{!! $retroalimentacaoObra->situacao_proposta !!}</p>
+    {!! Form::label('created_at', 'Data de inclusão:') !!}
+    <p class="form-control">{!! $retroalimentacaoObra->created_at->format('d/m/Y') !!}</p>
 </div>
 
-<!-- Data Inclusao Field -->
+<!-- Updated At Field -->
 <div class="form-group col-md-6">
-    {!! Form::label('data_inclusao', 'Data Inclusao:') !!}
-    <p class="form-control">{!! $retroalimentacaoObra->data_inclusao !!}</p>
+    {!! Form::label('updated_at', 'Atualizado em:') !!}
+    <p class="form-control">{!! $retroalimentacaoObra->updated_at->format('d/m/Y') !!}</p>
 </div>
 

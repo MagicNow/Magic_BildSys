@@ -32,8 +32,16 @@ class ImportacaoRepository
             'CSE.COS_RE_ALIQCSLL',
             'CSE.COS_RE_ALIQPIS',
             'CSE.COS_RE_ALIQCOFINS',
+            'PRO.NCM_IN_CODIGO',
+            'NCM.NCM_ST_DESCRICAO',
+            'NCM.NCM_ST_EXTENSO'
         ])
         ->from('MGADM.EST_PRODUTOS PRO')
+        ->leftJoin('mgtrf.trf_ncm as NCM',function ($join){
+            $join->on('NCM.ncm_tab_in_codigo','MGADM.EST_PRODUTOS.ncm_tab_in_codigo');
+            $join->on('NCM.ncm_pad_in_codigo','MGADM.EST_PRODUTOS.ncm_pad_in_codigo');
+            $join->on('NCM.ncm_in_codigo','MGADM.EST_PRODUTOS.ncm_in_codigo');
+        })
         ->where('GRU_IDE_ST_CODIGO','07')
         ->join('MGTRF.TRF_CODSERVICO CSE', 'CSE.COS_IN_CODIGO', 'PRO.COS_IN_CODIGO')
         ->whereRaw(DB::raw(" NOT EXISTS (
@@ -67,6 +75,17 @@ class ImportacaoRepository
                     'aliq_inss'       => $produto->cos_re_aliqinss,
                     'aliq_cofins'     => $produto->cos_re_aliqcofins,
                 ]);
+                $insumo->ncm_codigo = $produto->ncm_in_codigo;
+                $insumo->ncm_texto  =  trim(utf8_encode($produto->ncm_st_descricao));
+                $insumo->ncm_codigo_texto  =  trim(utf8_encode($produto->ncm_st_extenso));
+
+                $insumo->tems = self::getTems($produto->pro_in_codigo);
+
+                if($insumo->tems == ''){
+                    $insumo->tems = null;
+                }
+
+                $insumo->save();
             } catch (\Exception $e) {
                 Log::error('Erro ao importar insumo '. $produto->pro_in_codigo. ': '.$e->getMessage());
             }
@@ -106,9 +125,8 @@ class ImportacaoRepository
      * @return bool
      */
     public static function fornecedores($param_value, $param_type = 'AGN_ST_CGC')
-        # Importação de Fornecedores do BANCO DE DADOS BILD-SYS - MEGA
     {
-
+        # Importação de Fornecedores do BANCO DE DADOS BILD-SYS - MEGA
         $fornecedores_mega = MegaFornecedor::select([
             'AGN_IN_CODIGO',
             'AGN_ST_FANTASIA',
@@ -126,7 +144,7 @@ class ImportacaoRepository
             'AGN_ST_INSCRESTADUAL',
             'AGN_ST_EMAIL',
             'AGN_ST_URL'])
-            ->where($param_type, trim($param_value))
+            ->where(DB::raw('trim('.$param_type.')'), trim($param_value))
             ->first();
         try {
             if ($fornecedores_mega) {
@@ -216,5 +234,50 @@ class ImportacaoRepository
 
         return ['total-mega' => $cnae_servicos->count(), 'total-sys' => Cnae::count()];
 
+    }
+
+    public static function getTems($insumo_codigo)
+    {
+        $tems = \DB::connection('oracle')->select('(
+            Select p.pro_tab_in_codigo,
+            p.pro_pad_in_codigo,
+            p.pro_in_codigo,
+            p.pro_st_descricao,
+            p.uni_st_unidade,
+            p.gru_in_codigo,
+            grp.gru_st_nome,
+            dp.pro_st_dettecnico
+            From mgadm.est_produtos      p,
+            mgadm.est_detprodutos  dp,
+            mgadm.est_grupos      grp
+            Where dp.pro_tab_in_codigo = p.pro_tab_in_codigo
+            And   dp.pro_pad_in_codigo = p.pro_pad_in_codigo
+            And   dp.pro_in_codigo     = p.pro_in_codigo
+
+            And   p.gru_tab_in_codigo  = grp.gru_tab_in_codigo
+            And   p.gru_pad_in_codigo  = grp.gru_pad_in_codigo
+            And   p.gru_ide_st_codigo  = grp.gru_ide_st_codigo
+            And   p.gru_in_codigo      = grp.gru_in_codigo
+
+            And   grp.gru_ide_st_codigo = 07
+
+            And exists (Select 1
+            From mgadm.est_detprodutos dp
+            Where dp.pro_tab_in_codigo = p.pro_tab_in_codigo
+            And   dp.pro_pad_in_codigo = p.pro_pad_in_codigo
+            And   dp.pro_in_codigo     = p.pro_in_codigo)
+            And   p.pro_in_codigo = '.$insumo_codigo.'
+        )');
+
+        $todos_tems = '';
+
+        if(count($tems)){
+            foreach ($tems as $tem){
+                $todos_tems .= $tem->pro_st_dettecnico;
+            }
+            $todos_tems = trim(utf8_encode($todos_tems));
+        }
+
+        return $todos_tems;
     }
 }

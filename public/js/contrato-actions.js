@@ -52,7 +52,7 @@ var Reapropriar = (function() {
       $(_this.insumo).select2('destroy');
     });
 
-    $(this.modal).on('ifToggled', '.js-ordem-de-compra-id', function(event) {
+    $(this.modal).on('ifToggled', '.js-item-orcamento', function(event) {
       _this.addAllBtn.dataset.qtd = event.currentTarget.dataset.qtdMax;
     });
 
@@ -109,24 +109,19 @@ var Reapropriar = (function() {
     swal(options, this.sendData.bind(this));
   };
 
-  Reapropriar.prototype.getSelectedItem = function() {
-    return this.modal.querySelector('.js-ordem-de-compra-id:checked');
-  };
-
   Reapropriar.prototype.sendData = function() {
     var _this = this;
     var data = {
       _token: token,
       qtd: this.qtd.value,
-      ordem_de_compra_item_id: this.getSelectedItem().value
     };
 
-    var grupos = _.reduce(this.grupos, function(data, grupo) {
+    data = _.reduce(this.grupos, function(data, grupo) {
       data[grupo.name] = grupo.value;
       return data;
-    }, {});
+    }, data);
 
-    $.post('/contratos/reapropriar-item/' + this.id, _.merge(data, grupos))
+    $.post('/contratos/reapropriar-item/' + this.id, data)
       .done(function(response) {
         swal({
           title: 'Sucesso!',
@@ -159,11 +154,6 @@ var Reapropriar = (function() {
   Reapropriar.prototype.valid = function() {
     var qtd = moneyToFloat(this.qtd.value);
 
-    if (!this.getSelectedItem()) {
-      swal('', 'Selecione um item da ordem de compra para reapropriar', 'warning');
-      return false;
-    }
-
     if (qtd > moneyToFloat(this.addAllBtn.dataset.qtd)) {
       swal('', 'Neste item o máximo de reapropriação é ' + this.addAllBtn.dataset.qtd, 'warning');
       return false;
@@ -174,10 +164,7 @@ var Reapropriar = (function() {
       return false;
     }
 
-    var filled = Array.from(this.grupos)
-      .map(_.property('value'))
-      .filter(Boolean)
-      .length;
+    var filled = _(this.grupos).map('value').filter(Boolean).size();
 
     if (filled !== this.grupos.length) {
       swal('', 'Selecione todos os grupos para reapropriação', 'warning');

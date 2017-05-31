@@ -42,6 +42,7 @@ function workflowCall(item_id, tipo_item, aprovou, elemento, motivo, justificati
             if (pai_id > 0 || shouldReload) {
               window.location.reload();
             }
+            swal.close();
           });
 
       } else {
@@ -56,12 +57,11 @@ function workflowCall(item_id, tipo_item, aprovou, elemento, motivo, justificati
             closeOnConfirm: true
           },
           function() {
-            if (retorno.refresh || shouldReload) {
+            if (retorno.refresh) {
               window.location.reload();
             }
+            swal.close();
           });
-
-
       }
     })
     .fail(function(retorno) {

@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class ContratoTemplate
@@ -12,7 +11,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class ContratoTemplate extends Model
 {
-    use SoftDeletes;
 
     public $table = 'contrato_templates';
     
@@ -26,7 +24,8 @@ class ContratoTemplate extends Model
     public $fillable = [
         'nome',
         'template',
-        'user_id'
+        'user_id',
+        'campos_extras'
     ];
 
     /**
@@ -38,7 +37,8 @@ class ContratoTemplate extends Model
         'id' => 'integer',
         'nome' => 'string',
         'template' => 'string',
-        'user_id' => 'integer'
+        'user_id' => 'integer',
+        'campos_extras' => 'string'
     ];
 
     /**
@@ -47,7 +47,8 @@ class ContratoTemplate extends Model
      * @var array
      */
     public static $rules = [
-        
+        'nome' => 'required',
+        'template' => 'required',
     ];
 
     /**
@@ -55,7 +56,7 @@ class ContratoTemplate extends Model
      **/
     public function user()
     {
-        return $this->belongsTo(\App\Models\User::class);
+        return $this->belongsTo(User::class);
     }
 
     /**
@@ -63,6 +64,10 @@ class ContratoTemplate extends Model
      **/
     public function contratos()
     {
-        return $this->hasMany(\App\Models\Contrato::class);
+        return $this->hasMany(Contrato::class);
+    }
+
+    public function setTemplateAttribute($value){
+        $this->attributes['template'] = str_replace('\\"','"',$value);
     }
 }

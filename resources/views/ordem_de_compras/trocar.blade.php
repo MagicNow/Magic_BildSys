@@ -200,8 +200,8 @@
             clicks++;
             clearInputs();
           })
-          .error(function() {
-            console.log(arguments);
+          .fail(function() {
+            swal('Ops!', 'Ocorreu um erro ao adicionar insumo na lista.', "error");
           })
           .always(stopLoading())
       });

@@ -23,11 +23,15 @@ class QcFornecedor extends Model
         'rodada',
         'porcentagem_material',
         'porcentagem_servico',
+        'porcentagem_locacao',
         'porcentagem_faturamento_direto',
         'desistencia_motivo_id',
         'desistencia_texto',
         'nf_material',
-        'nf_servico'
+        'nf_servico',
+        'nf_locacao',
+        'tipo_frete',
+        'valor_frete',
     ];
 
     /**
@@ -42,7 +46,10 @@ class QcFornecedor extends Model
         'user_id' => 'integer',
         'rodada' => 'integer',
         'desistencia_motivo_id' => 'integer',
-        'desistencia_texto' => 'string'
+        'desistencia_texto' => 'string',
+        'nf_servico'=> 'integer',
+        'nf_material'=> 'integer',
+        'nf_locacao'=> 'integer',
     ];
 
     /**
@@ -98,5 +105,9 @@ class QcFornecedor extends Model
     public function itens()
     {
         return $this->hasMany(QcItemQcFornecedor::class);
+    }
+
+    public function getValorFreteAttribute($value){
+        return number_format($value,2,',','.');
     }
 }

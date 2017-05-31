@@ -97,7 +97,8 @@
                             ticks: {
                                 // Create scientific notation labels
                                 beginAtZero:false,
-                                stepSize:1
+                                stepSize:1,
+                                min: 0
 //                                fixedStepSize: 1
                             }
                         }]

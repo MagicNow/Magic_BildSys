@@ -55,8 +55,15 @@ class ContratoItemReapropriacao extends Model
      * @var array
      */
     public static $rules = [
-
     ];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function contratoItem()
+    {
+        return $this->belongsTo(ContratoItem::class);
+    }
 
     public function codigoServico()
     {
@@ -79,8 +86,48 @@ class ContratoItemReapropriacao extends Model
         return $this->belongsTo(Insumo::class, 'insumo_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function ordemDeCompraItem()
+    {
+        return $this->belongsTo(OrdemDeCompraItem::class);
+    }
+
     public function servico()
     {
         return $this->belongsTo(Servico::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function subgrupo1()
+    {
+        return $this->belongsTo(Grupo::class,'subgrupo1_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function subgrupo2()
+    {
+        return $this->belongsTo(Grupo::class,'subgrupo2_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function subgrupo3()
+    {
+        return $this->belongsTo(Grupo::class,'subgrupo3_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

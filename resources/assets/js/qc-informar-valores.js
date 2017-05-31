@@ -22,7 +22,7 @@ var QcInformarValoresForm = {
 
     _.each(rows, function(row) {
       var price = row.querySelector('.js-calc-price');
-      price.addEventListener('input', function(event) {
+      price.addEventListener('keyup', function(event) {
         var price = event.currentTarget;
         var amount = row.querySelector('.js-calc-amount');
         var result = row.querySelector('.js-calc-result');
@@ -38,9 +38,10 @@ var QcInformarValoresForm = {
         );
       });
 
-      price.dispatchEvent(new Event('input'));
+      price.dispatchEvent(new Event('keyup'));
     });
 
+    // Rejeitar proposta
     reject.addEventListener('click', function(event) {
       event.preventDefault();
       swal({
@@ -80,7 +81,7 @@ var QcInformarValoresForm = {
           form.submit();
         });
     });
-
+    // Salvar Valores
     save.addEventListener('click', function(event) {
       event.preventDefault();
 

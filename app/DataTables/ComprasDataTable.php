@@ -8,6 +8,7 @@ use App\Models\OrdemDeCompra;
 use App\Models\Planejamento;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 use Yajra\Datatables\Services\DataTable;
 
 class ComprasDataTable extends DataTable
@@ -23,8 +24,10 @@ class ComprasDataTable extends DataTable
             ->eloquent($this->query())
             ->addColumn('action', 'ordem_de_compras.obras-insumos-datatables-actions')
             ->editColumn('quantidade_compra', function($obj){
-                return "<input value='$obj->quantidade_compra' class='form-control
+                if ($obj->insumo_grupo_id != 1570) {
+                    return "<input value='$obj->quantidade_compra' class='form-control
                     js-blur-on-enter money' onblur='quantidadeCompra($obj->id, $obj->obra_id, $obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, this.value)'>";
+                }
             })
             ->editColumn('total', function($obj){
                 if($obj->quantidade_compra && money_to_float($obj->saldo) > 0) {
@@ -40,16 +43,11 @@ class ComprasDataTable extends DataTable
                     return '<button data-toggle="popover" title="Substitui Insumo" data-content="' . $obj->substitui . '" type="button" data-placement="left" class="btn btn-info btn-flat btn-xs"> <i class="fa fa-exchange"></i> </button>';
                 }
 
-                if ($obj->unidade_sigla === 'VB' && $obj->insumo_grupo_id == 1570) {
-
+                if ($obj->insumo_grupo_id == 1570) {
                     return link_to(
-                        'compras/trocar/' . $obj->orcamento_id . '?back=' . rawurlencode(
-                            url('compras/obrasInsumos') . '?' . http_build_query(
-                                $this->request()->only(['planejamento_id', 'obra_id', 'insumo_grupo_id'])
-                            )
-                        ) ,
+                        'compras/trocar/' . $obj->orcamento_id,
                         '<i class="fa fa-exchange"></i>',
-                        [ 'class' => 'btn btn-xs btn-link btn-default btn-flat' ],
+                        [ 'class' => 'btn btn-ms btn-primary btn-flat' ],
                         null,
                         false
                     );
@@ -65,7 +63,28 @@ class ComprasDataTable extends DataTable
                     $obj->nome
                     </strong>";
             })
+            ->editColumn('valor_total', function($obj){
+                return $obj->quantidade_compra ? "R$ ".number_format($obj->getOriginal('preco_unitario') * money_to_float($obj->quantidade_compra), 2,',','.') : 'R$ 0,00';
+            })
+            ->editColumn('preco_unitario', function($obj){
+                if($obj->insumo_incluido) {
+                    return "<div class='input-group'>
+                                <span class='input-group-addon'>R$</span>
+                                <input type='text' value='".number_format($obj->preco_unitario,2,',','.')."' class='form-control
+                                        js-blur-on-enter money' onblur='alteraValorUnitario(this.value,
+                                                                                            $obj->id,
+                                                                                            $obj->grupo_id,
+                                                                                            $obj->subgrupo1_id,
+                                                                                            $obj->subgrupo2_id,
+                                                                                            $obj->subgrupo3_id,
+                                                                                            $obj->servico_id)'>
+                            </div>";
+                }else{
+                    return "R$ ". $obj->preco_unitario;
+                }
+            })
             ->make(true);
+
     }
 
     /**
@@ -118,6 +137,7 @@ class ComprasDataTable extends DataTable
                 'orcamentos.servico_id',
                 'orcamentos.preco_total',
                 'orcamentos.preco_unitario',
+                'orcamentos.insumo_incluido',
                 DB::raw('(SELECT
                     CONCAT(codigo, \' - \', nome)
                     FROM
@@ -196,6 +216,26 @@ class ComprasDataTable extends DataTable
                         AND ordem_de_compras.oc_status_id = 1
                         '.($ordem ? ' AND ordem_de_compras.id ='. $ordem->id .' ': 'AND ordem_de_compras.id = 0').'
                     ),2,\'de_DE\') as quantidade_compra'),
+                DB::raw('format((
+                        SELECT ordem_de_compra_itens.qtd FROM ordem_de_compra_itens
+                        JOIN ordem_de_compras
+                        ON ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id
+                        WHERE ordem_de_compra_itens.insumo_id = insumos.id
+                        AND ordem_de_compra_itens.grupo_id = orcamentos.grupo_id
+                        AND ordem_de_compra_itens.subgrupo1_id = orcamentos.subgrupo1_id
+                        AND ordem_de_compra_itens.subgrupo2_id = orcamentos.subgrupo2_id
+                        AND ordem_de_compra_itens.subgrupo3_id = orcamentos.subgrupo3_id
+                        AND ordem_de_compra_itens.servico_id = orcamentos.servico_id
+                        AND (
+                                ordem_de_compra_itens.aprovado IS NULL
+                                OR
+                                ordem_de_compra_itens.aprovado = 0
+                            )
+                        AND ordem_de_compra_itens.deleted_at IS NULL
+                        AND ordem_de_compras.obra_id ='. $obra->id .'
+                        AND ordem_de_compras.oc_status_id = 1
+                        '.($ordem ? ' AND ordem_de_compras.id ='. $ordem->id .' ': 'AND ordem_de_compras.id = 0').'
+                    ),2,\'de_DE\') as quantidade_comprada'),
                 DB::raw('(SELECT total FROM ordem_de_compra_itens
                     JOIN ordem_de_compras
                     ON ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id
@@ -270,6 +310,7 @@ class ComprasDataTable extends DataTable
             }
         }
 
+        Session::put(['query['.$this->request()->get('random').']' => $insumo_query->toSql(), 'bindings['.$this->request()->get('random').']' => $insumo_query->getBindings()]);
 
         return $this->applyScopes($insumo_query);
     }
@@ -324,6 +365,8 @@ class ComprasDataTable extends DataTable
             'quantidade' => ['name' => 'orcamentos.qtd_total', 'data' => 'qtd_total'],
             'saldo' => ['name' => 'orcamentos.qtd_total', 'data' => 'saldo'],
             'quantidade Compra' => ['name' => 'quantidade_compra', 'data' => 'quantidade_compra', 'searchable' => false, 'width'=>'8%'],
+            'preço Unitário' => ['name' => 'orcamentos.preco_unitario', 'data' => 'preco_unitario'],
+            'preço Total' => ['name' => 'valor_total', 'data' => 'valor_total', 'searchable' => false],
             'troca' => ['name' => 'troca', 'data' => 'troca', 'searchable' => false, 'orderable' => false, 'width'=>'5%'],
             'finaliza Obra' => ['name' => 'total', 'data' => 'total', 'searchable' => false, 'orderable' => false, 'width'=>'5%'],
             'action' => ['title' => '#', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'5%']

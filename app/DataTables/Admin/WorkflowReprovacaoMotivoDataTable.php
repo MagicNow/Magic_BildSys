@@ -18,7 +18,7 @@ class WorkflowReprovacaoMotivoDataTable extends DataTable
             ->eloquent($this->query())
             ->editColumn('action', 'admin.workflow_reprovacao_motivos.datatables_actions')
             ->editColumn('created_at', function($obj){
-                return $obj->created_at->format('d/m/Y');
+                return $obj->created_at ? with(new\Carbon\Carbon($obj->created_at))->format('d/m/Y') : '';
             })
             ->filterColumn('created_at', function ($query, $keyword) {
                 $query->whereRaw("DATE_FORMAT(workflow_reprovacao_motivos.created_at,'%d/%m/%Y') like ?", ["%$keyword%"]);

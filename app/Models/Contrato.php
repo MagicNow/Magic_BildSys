@@ -23,7 +23,8 @@ class Contrato extends Model
         'fornecedor_id',
         'valor_total',
         'contrato_template_id',
-        'arquivo'
+        'arquivo',
+        'campos_extras'
     ];
 
     public static $workflow_tipo_id = WorkflowTipo::CONTRATO;
@@ -107,6 +108,8 @@ class Contrato extends Model
     {
         return $this->hasMany(ContratoStatusLog::class);
     }
+
+    // Funções de Aprovações
 
     public function irmaosIds() {
         return [$this->attributes['id'] => $this->attributes['id']];

@@ -47,7 +47,8 @@ class Orcamento extends Model
         'user_id',
         'descricao',
         'trocado',
-        'orcamento_que_substitui'
+        'orcamento_que_substitui',
+        'insumo_incluido'
     ];
 
     /**

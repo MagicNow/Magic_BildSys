@@ -13,6 +13,7 @@ use App\Repositories\Admin\ObraRepository;
 use App\Repositories\CodeRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
+use Illuminate\Support\Facades\Storage;
 use Response;
 use DB;
 use App\Repositories\Admin\UserRepository;
@@ -77,7 +78,7 @@ class ObraController extends AppBaseController
         if($request->logo) {
             $destinationPath = CodeRepository::saveFile($request->logo, 'obras/' . $obra->id);
 
-            $obra->logo = $destinationPath;
+            $obra->logo = Storage::url($destinationPath);
             $obra->save();
         }
 
@@ -156,9 +157,8 @@ class ObraController extends AppBaseController
         }
 
         if($request->logo){
-            @unlink(public_path() . $obra->logo);
             $destinationPath = CodeRepository::saveFile($request->logo, 'obras/' . $obra->id);
-            $obra->logo = $destinationPath;
+            $obra->logo = Storage::url($destinationPath);
             $obra->save();
         }
 
@@ -191,6 +191,12 @@ class ObraController extends AppBaseController
 
         if (empty($obra)) {
             Flash::error('Obra '.trans('common.not-found'));
+
+            return redirect(route('admin.obras.index'));
+        }
+
+        if(count($obra->ordemDeCompras)){
+            Flash::error('A obra não pode ser removida, pois tem ordens de compra.');
 
             return redirect(route('admin.obras.index'));
         }

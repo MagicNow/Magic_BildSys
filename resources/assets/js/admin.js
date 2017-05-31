@@ -45,7 +45,8 @@ $(function() {
     $('.box.box-primary').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
   });
 
-  $('.money').mask('0.000.000.000.000,00', {
+  $('.money').maskMoney({allowNegative: true, thousands:'.', decimal:','});
+  $('.money_3').mask('0.000.000.000.000,000', {
     reverse: true
   });
   $('.decimal').mask('00,00');
@@ -75,6 +76,55 @@ $(function() {
 
   $document.on('draw.dt', function() {
     $('[data-toggle="popover"]').popover(popoverOptions);
+  });
+
+  $('.htmleditor').summernote({
+    toolbar: [
+      ['style', ['style']],
+      ['font', ['bold', 'italic', 'underline', 'clear']],
+      ['color', ['color']],
+      ['para', ['ul', 'ol', 'paragraph']],
+      ['height', ['height']],
+      ['table', ['table']],
+      ['insert', ['link', 'hr','picture']],
+      ['view', ['fullscreen', 'codeview']],
+      ['help', ['help']]
+    ],
+    lang: 'pt-BR',
+    cleaner:{
+      notTime:2400, // Time to display Notifications.
+      action:'both', // both|button|paste 'button' only cleans via toolbar button, 'paste' only clean when pasting content, both does both options.
+      newline:'<br>', // Summernote's default is to use '<p><br></p>'
+      notStyle:'position:absolute;top:0;left:0;right:0', // Position of Notification
+      // icon:'<i class="note-icon">[Your Button]</i>'
+      keepHtml: false, //Remove all Html formats
+      keepClasses: false, //Remove Classes
+      badTags: ['style','script','applet','embed','noframes','noscript', 'html'], //Remove full tags with contents
+      badAttributes: ['style','start'] //Remove attributes from remaining tags
+    }
+  });
+
+  $(".selecionavel").on('mouseup', function() {
+    var sel, range;
+    var el = $(this)[0];
+    if (window.getSelection && document.createRange) { //Browser compatibility
+      sel = window.getSelection();
+      if(sel.toString() == ''){ //no text selection
+        window.setTimeout(function(){
+          range = document.createRange(); //range object
+          range.selectNodeContents(el); //sets Range
+          sel.removeAllRanges(); //remove all ranges from selection
+          sel.addRange(range);//add Range to a Selection.
+        },1);
+      }
+    }else if (document.selection) { //older ie
+      sel = document.selection.createRange();
+      if(sel.text == ''){ //no text selection
+        range = document.body.createTextRange();//Creates TextRange object
+        range.moveToElementText(el);//sets Range
+        range.select(); //make selection.
+      }
+    }
   });
 
   $document.on('click', function (e) {
@@ -108,7 +158,8 @@ function moneyToFloat(money) {
 function floatToMoney(number, prefix) {
   prefix = prefix == undefined ? 'R$ ' : '';
   return prefix + number.toLocaleString('pt-BR', {
-    minimumFractionDigits: 2
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
   });
 }
 

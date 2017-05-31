@@ -24,7 +24,7 @@ $(function() {
         modal.find('.modal-body').html(html);
         modal.modal('show');
       })
-      .error(function(x) {
+      .fail(function(x) {
         swal('Não encontrado', 'Quadro de Concorrência não econtrado.', 'error');
       })
       .always(function() {

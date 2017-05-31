@@ -130,7 +130,8 @@ class QuadroDeConcorrenciaDataTable extends DataTable
                ')
            ])
             ->leftJoin('users','users.id','quadro_de_concorrencias.user_id')
-            ->join('qc_status','qc_status.id','quadro_de_concorrencias.qc_status_id');
+            ->join('qc_status','qc_status.id','quadro_de_concorrencias.qc_status_id')
+        ->with('contratos');
 
         if($user->fornecedor) {
             $quadroDeConcorrencias
@@ -174,7 +175,7 @@ class QuadroDeConcorrenciaDataTable extends DataTable
     }
     });
     }' ,
-        'dom' => 'Bfrtip',
+        'dom' => 'Bfrltip',
         'scrollX' => false,
         'language'=> [
             "url"=> "/vendor/datatables/Portuguese-Brasil.json"
@@ -219,7 +220,7 @@ class QuadroDeConcorrenciaDataTable extends DataTable
             $columns['criadoEm'] = ['name' => 'quadro_de_concorrencias.created_at', 'data' => 'created_at', 'width'=>'12%'];
         }
 
-        $columns['action'] = ['title' => '#', 'printable' => false, 'width'=>'10%'];
+        $columns['action'] = ['title' => '#', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%'];
 
         return $columns;
     }

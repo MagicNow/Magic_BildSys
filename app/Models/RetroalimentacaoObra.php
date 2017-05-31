@@ -30,13 +30,12 @@ class RetroalimentacaoObra extends Model
         'categoria',
         'situacao_atual',
         'situacao_proposta',
-        'data_inclusao',
         'acao',
         'data_prevista',
         'data_conclusao',
-        'status',
+        'aceite',
         'resultado_obtido',
-        'aceite'
+        'status'
     ];
 
     /**
@@ -52,12 +51,12 @@ class RetroalimentacaoObra extends Model
         'categoria' => 'string',
         'situacao_atual' => 'string',
         'situacao_proposta' => 'string',
-        'data_inclusao' => 'date',
         'acao' => 'string',
         'data_prevista' => 'date',
         'data_conclusao' => 'date',
-        'status' => 'string',
-        'resultado_obtido' => 'string'
+        'aceite' => 'integer',
+        'resultado_obtido' => 'string',
+        'status' => 'string'
     ];
 
     /**
@@ -66,7 +65,7 @@ class RetroalimentacaoObra extends Model
      * @var array
      */
     public static $rules = [
-        
+        'obra_id' => 'required'
     ];
 
     /**

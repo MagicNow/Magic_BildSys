@@ -121,6 +121,11 @@ class RolesAndPermissions extends Seeder
             'solicitacaoInsumos.edit'   => 'Edição de solicitação insumo',
             'solicitacaoInsumos.delete'   => 'Remoção de solicitação insumo',
 
+            'contratoTemplates.list'   => 'Listagem de Templates de Contratos',
+            'contratoTemplates.create'   => 'Criação de Template de Contrato',
+            'contratoTemplates.edit'   => 'Edição de Template de Contrato',
+            'contratoTemplates.delete'   => 'Remoção de Template de Contrato',
+
             ################# SITE ###################
             'compras_lembretes.list' => 'Listagem de compras e lembretes',
 

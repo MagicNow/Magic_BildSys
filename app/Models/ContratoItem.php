@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class ContratoItem
@@ -16,7 +15,8 @@ class ContratoItem extends Model
 
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
-
+    
+    
     public $fillable = [
         'contrato_id',
         'insumo_id',
@@ -83,9 +83,9 @@ class ContratoItem extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
-    public function contratoItemReapropriacos()
+    public function contratoItemReapropriacao()
     {
-        return $this->hasMany(\App\Models\ContratoItemReapropriaco::class);
+        return $this->hasMany(ContratoItemReapropriacao::class);
     }
 
     public function applyChanges(ContratoItemModificacao $mod)

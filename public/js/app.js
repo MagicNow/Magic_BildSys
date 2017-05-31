@@ -16953,7 +16953,7 @@ module.exports = __vue_exports__
     },
     methods: {
         goToDetail:function (id) {
-            window.location.href = "http://bild.dev/ordens-de-compra/detalhes/"+id;
+            window.location.href = "/ordens-de-compra/detalhes/"+id;
         },
         getHeader:function () {
             if(this.dados.length >0){

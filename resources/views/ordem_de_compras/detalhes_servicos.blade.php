@@ -35,11 +35,6 @@
                         </h3>
                     </span>
                 </div>
-                <div class="col-md-6 text-right">
-                    <a href="{!! route('retroalimentacaoObras.create') !!}" class="btn btn-default btn-lg btn-flat">
-                        Retroalimentação
-                    </a>
-                </div>
             </div>
         </div>
     </section>
@@ -58,34 +53,31 @@
         </div>
         <hr>
         <div class="row" id="totalInsumos">
-            <div class="col-md-4">
-                <h6>Total de Insumos</h6>
-            </div>
             <div class="col-md-2 text-right borda-direita">
-                <h5>ORÇAMENTO INICIAL</h5>
+                <h5 style="margin: 0px">PREVISTO NO ORÇAMENTO</h5>
                 <h4>
                     <small class="pull-left">R$</small>
                     {{ number_format($orcamentoInicial,2,',','.') }}
                 </h4>
             </div>
-            <div class="col-md-2 text-right borda-direita" title="Nos itens desta O.C.">
-                <h5>TOTAL À GASTAR</h5>
-                <h4>
-                    <small class="pull-left">R$</small>0
-                    {{---  TO DO = A gastar: É a soma de todos os saldos de contratos na que apropriação, como ainda não exixte contrato gerado, tem q estar zerado--}}
-                    {{--                    {{ number_format($totalAGastar,2,',','.') }}--}}
-                </h4>
-            </div>
             <div class="col-md-2 text-right borda-direita" title="Até o momento em todos os itens desta O.C.">
-                <h5>QUANTIDADE REALIZADA</h5>
+                <h5 style="margin: -2px">COMPROMETIDO REALIZADO</h5>
                 <h4>
-                    <small class="pull-left">R$</small>0
+                    <small class="pull-left">R$</small>0,00
                     {{---  TO DO = Realizado: São informações que virão com a entrada de NF, sendo assim, no momento não haverá informações--}}
                     {{--                    {{ number_format($realizado,2,',','.') }}--}}
                 </h4>
             </div>
-            <div class="col-md-2 text-right" title="Restante do Orçamento Inicial em relação aos itens desta O.C.">
-                <h5>SALDO</h5>
+            <div class="col-md-2 text-right borda-direita" title="Nos itens desta O.C.">
+                <h5 style="margin: 0px">COMPROMETIDO À GASTAR</h5>
+                <h4>
+                    <small class="pull-left">R$</small>0,00
+                    {{---  TO DO = A gastar: É a soma de todos os saldos de contratos na que apropriação, como ainda não exixte contrato gerado, tem q estar zerado--}}
+                    {{--                    {{ number_format($totalAGastar,2,',','.') }}--}}
+                </h4>
+            </div>
+            <div class="col-md-2 text-right borda-direita" title="Restante do Orçamento Inicial em relação aos itens desta O.C.">
+                <h5>SALDO DE ORÇAMENTO</h5>
                 <h4>
                     <small class="pull-left">R$</small>
                     {{ number_format($orcamentoInicial,2,',','.') }}
@@ -93,70 +85,34 @@
                     {{--{{ number_format($saldo,2,',','.') }}--}}
                 </h4>
             </div>
-
+            <div class="col-md-2 text-right borda-direita">
+                <h5>VALOR DA OC</h5>
+                <h4>
+                    <small class="pull-left">R$</small>
+                    {{ number_format($totalSolicitado,2,',','.') }}
+                </h4>
+            </div>
+            <div class="col-md-2 text-right">
+                <h5>SALDO DISPONÍVEL</h5>
+                <h4>
+                    <small class="pull-left">R$</small>
+                    {{ number_format(($orcamentoInicial - $totalSolicitado),2,',','.') }}
+                </h4>
+            </div>
         </div>
-
         @foreach($itens as $item)
             <div class="panel panel-default">
                 <div class="panel-body">
                     <div class="col-md-10">
-                        <h4 class="highlight">{{ $item->insumo->codigo . ' - '. $item->insumo->nome }}
-                            <a href="/ordens-de-compra/detalhes/{{ $item->ordem_de_compra_id }}" style="font-size:15px;">OC: {{$item->ordem_de_compra_id . ' - Obra: '. $item->obra->nome . ' - Responsável: '. $item->ordemDeCompra->user->name }}</a>
+                        <h4 class="highlight">
+                            <span class="col-md-7">{{ $item->insumo->codigo . ' - '. $item->insumo->nome }}</span>
+                            @php $ordem_de_compras_ids = explode(",", $item->ordem_de_compras_ids) @endphp
+                            <ol class="breadcrumb col-md-5" style="padding: 0px;margin-bottom: 0px; background-color:transparent">
+                                @foreach($ordem_de_compras_ids as $ordem_de_compra_id)
+                                    <li><a href="/ordens-de-compra/detalhes/{{ $ordem_de_compra_id }}" style="font-size:15px;">OC: {{ $ordem_de_compra_id }} </a></li>
+                                @endforeach
+                            </ol>
                         </h4>
-                    </div>
-                    <div class="col-md-2 text-right">
-                        @if(!is_null($item->aprovado))
-                            @if($item->aprovado)
-                                <button type="button" disabled="disabled"
-                                        class="btn btn-success btn-lg btn-flat">
-                                    <i class="fa fa-check" aria-hidden="true"></i>
-                                </button>
-                            @else
-                                <button type="button" disabled="disabled"
-                                        class="btn btn-danger btn-lg btn-flat">
-                                    <i class="fa fa-times" aria-hidden="true"></i>
-                                </button>
-                            @endif
-                        @else
-                            <?php
-                            $workflowAprovacao = \App\Repositories\WorkflowAprovacaoRepository::verificaAprovacoes('OrdemDeCompraItem', $item->id, Auth::user());
-                            ?>
-                            @if($workflowAprovacao['podeAprovar'])
-                                @if($workflowAprovacao['iraAprovar'])
-                                    <div class="btn-group" role="group" id="blocoItemAprovaReprova{{ $item->id }}" aria-label="...">
-                                        <button type="button" onclick="workflowAprovaReprova({{ $item->id }},'OrdemDeCompraItem',1,'blocoItemAprovaReprova{{ $item->id }}','Insumo {{ $item->insumo->codigo }}',0, '', '');"
-                                                class="btn btn-default btn-lg btn-flat"
-                                                title="Aprovar Este item">
-                                            <i class="fa fa-check" aria-hidden="true"></i>
-                                        </button>
-                                        <button type="button" onclick="workflowAprovaReprova({{ $item->id }},'OrdemDeCompraItem',0, 'blocoItemAprovaReprova{{ $item->id }}','Insumo {{ $item->insumo->codigo }}',0, '', '');"
-                                                class="btn btn-default btn-lg btn-flat"
-                                                title="Reprovar Este item">
-                                            <i class="fa fa-times" aria-hidden="true"></i>
-                                        </button>
-                                    </div>
-                                @else
-                                    @if($workflowAprovacao['jaAprovou'])
-                                        @if($workflowAprovacao['aprovacao'])
-                                            <span class="btn-lg btn-flat text-success" title="Aprovado por você">
-                                                <i class="fa fa-check" aria-hidden="true"></i>
-                                            </span>
-                                        @else
-                                            <span class="text-danger btn-lg btn-flat" title="Reprovado por você">
-                                                <i class="fa fa-times" aria-hidden="true"></i>
-                                            </span>
-                                        @endif
-                                    @else
-                                        {{--Não Aprovou ainda, pode aprovar, mas por algum motivo não irá aprovar no momento--}}
-                                        <button type="button" title="{{ $workflowAprovacao['msg'] }}"
-                                                onclick="swal('{{ $workflowAprovacao['msg'] }}','','info');"
-                                                class="btn btn-default btn-lg btn-flat">
-                                            <i class="fa fa-info" aria-hidden="true"></i>
-                                        </button>
-                                    @endif
-                                @endif
-                            @endif
-                        @endif
                     </div>
                     <div class="col-md-12 table-responsive margem-topo">
                         <table class="table table-bordered table-striped">
@@ -164,11 +120,11 @@
                             <tr>
                                 <th class="text-center">Unidade Medida</th>
                                 <th class="text-center">Qtd. O. Inicial</th>
-                                <th class="text-center">Valor O. Inicial</th>
+                                <th class="text-center">PREVISTO NO ORÇAMENTO</th>
                                 <th class="text-center">Qtd. Realizada</th>
-                                <th class="text-center">Valor Realizado</th>
-                                <th class="text-center">Qtd. Restante</th>
-                                <th class="text-center">Valor Restante</th>
+                                <th class="text-center">COMPROMETIDO REALIZADO</th>
+                                <th class="text-center">Qtd. à Gastar</th>
+                                <th class="text-center">COMPROMETIDO À GASTAR</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -178,8 +134,12 @@
                                 <td class="text-center"><small class="pull-left">R$</small> {{ number_format($item->preco_inicial, 2, ',','.') }}</td>
                                 <td class="text-center">{{ number_format(doubleval($item->qtd_realizada), 2, ',','.') }}</td>
                                 <td class="text-center"><small class="pull-left">R$</small> {{ number_format( doubleval($item->valor_realizado), 2, ',','.') }}</td>
-                                <td class="text-center">{{ number_format( $item->qtd_inicial-doubleval($item->qtd_realizada), 2, ',','.') }}</td>
-                                <td class="text-center"><small class="pull-left">R$</small> {{ number_format( $item->preco_inicial-doubleval($item->valor_realizado), 2, ',','.') }}</td>
+                                <td class="text-center">
+                                    {{--{{ number_format( $item->qtd_inicial-doubleval($item->qtd_realizada), 2, ',','.') }}--}}0,00
+                                </td>
+                                <td class="text-center"><small class="pull-left">R$</small>
+                                    {{--{{ number_format( $item->preco_inicial-doubleval($item->valor_realizado), 2, ',','.') }}--}}0,00
+                                </td>
                             </tr>
                             </tbody>
                         </table>
@@ -193,7 +153,6 @@
                                 <th class="text-center">Qtd. Solicitada</th>
                                 <th class="text-center">Valor Solicitado</th>
                                 <th class="text-center">Status</th>
-                                <th class="text-center">Data de Uso</th>
                                 <th class="text-center">Emergencial</th>
                             </tr>
                             </thead>
@@ -203,8 +162,10 @@
                                 <td class="text-center"><small class="pull-left">R$</small> {{ number_format( $item->preco_inicial-doubleval($item->valor_realizado), 2, ',','.') }}</td>
                                 <td class="text-center"><strong>{{ $item->qtd }}</strong></td>
                                 <td class="text-center"><small class="pull-left">R$</small> <strong>{{ number_format(doubleval($item->valor_total), 2, ',','.') }}</strong></td>
-                                <td class="text-center"><i class="fa fa-circle {{ (($item->qtd_realizada) > $item->qtd_inicial) ? 'text-danger': 'text-success'  }}" aria-hidden="true"></i> </td>
-                                <td class="text-center">{{ $item->sugestao_data_uso ? $item->sugestao_data_uso->format('d/m/Y') : ''  }}</td>
+                                <td class="text-center">
+                                    {{--CONTA = saldo - previsto no orçamento--}}
+                                    <i class="fa fa-circle {{ (money_to_float($item->preco_inicial) - money_to_float($item->valor_realizado)) - money_to_float($item->preco_inicial) < 0 ? 'text-danger': 'text-success'  }}" aria-hidden="true"></i>
+                                </td>
                                 <td class="text-center">{!! $item->emergencial?'<strong class="text-danger"> <i class="fa fa-exclamation-circle" aria-hidden="true"></i> SIM</strong>':'NÃO' !!}</td>
                             </tr>
                             </tbody>
@@ -217,7 +178,10 @@
                                 Justificativa de compra:
                             </div>
                             <div class="bloco-texto-conteudo col-md-7">
-                                {{ $item->justificativa }}
+                                @php $justificativas = explode(",", $item->justificativas) @endphp
+                                @foreach($justificativas as $justificativa)
+                                    <p>{{ $justificativa }}</p>
+                                @endforeach
                             </div>
                         </div>
                     </div>
@@ -226,7 +190,10 @@
                             Observações ao fornecedor:
                         </div>
                         <div class="bloco-texto-conteudo col-md-7">
-                            {{ $item->obs }}
+                            @php $obs = explode(",", $item->obs) @endphp
+                            @foreach($obs as $ob)
+                                <p>{{ $ob }}</p>
+                            @endforeach
                         </div>
                     </div>
                     <div class="col-md-6 margem-topo borda-direita">
@@ -239,10 +206,13 @@
                             </div>
 
                             <div class="col-md-4 label-bloco margem-topo">
-                                Sugestão de Contrato:
+                                Contrato aditivado:
                             </div>
                             <div class="bloco-texto-conteudo col-md-7 margem-topo">
-                                {{ $item->sugestao_contrato_id }}
+                                @php $contratos = explode(",", $item->contratos) @endphp
+                                @foreach($contratos as $contrato)
+                                    <p>{{ $contrato }}</p>
+                                @endforeach
                             </div>
                         </div>
                     </div>
@@ -253,22 +223,19 @@
                             </div>
                             <div class="col-md-8">
                                 <div class="row">
-                                    @foreach($item->anexos as $anexo)
-                                        <div class="bloco-texto-linha col-md-9">{{ substr($anexo->arquivo, strrpos($anexo->arquivo,'/')+1  )  }}</div>
+                                    @php $anexos = explode(",", $item->anexos) @endphp
+                                    @foreach($anexos as $anexo)
+                                        <div class="bloco-texto-linha col-md-9">{{ substr($anexo, strrpos($anexo,'/')+1  )  }}</div>
                                         <div class="col-md-2">
-                                            <a href="{{ Storage::url($anexo->arquivo) }}" class="btn btn-default btn-block" target="_blank" >
+                                            <a href="{{ Storage::url($anexo) }}" class="btn btn-default btn-block" target="_blank" >
                                                 <i class="fa fa-eye" aria-hidden="true"></i>
                                             </a>
                                         </div>
-
                                     @endforeach
                                 </div>
-
                             </div>
                         @endif
-
                     </div>
-
                 </div>
             </div>
         @endforeach
@@ -277,16 +244,3 @@
         </div>
     </div>
 @endsection
-@section('scripts')
-    <script type="text/javascript">
-        <?php
-                $options_motivos = "<option value=''>Escolha...</option>";
-                foreach($motivos_reprovacao as $motivo_id=>$motivo_nome){
-                    $options_motivos .= "<option value='".$motivo_id."'>".$motivo_nome."</option>";
-                }
-                ?>
-                options_motivos = "{!! $options_motivos !!}";
-
-
-    </script>
-@stop

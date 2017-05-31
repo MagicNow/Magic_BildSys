@@ -68,7 +68,7 @@ class SolicitacaoInsumoDataTable extends DataTable
                         }
                     });
                 }' ,
-                'dom' => 'Bfrtip',
+                'dom' => 'Bfrltip',
                 'scrollX' => false,
                 'language'=> [
                     "url"=> "/vendor/datatables/Portuguese-Brasil.json"
@@ -103,7 +103,6 @@ class SolicitacaoInsumoDataTable extends DataTable
             'sigla' => ['name' => 'unidade_sigla', 'data' => 'unidade_sigla'],
             'código' => ['name' => 'codigo', 'data' => 'codigo'],
             'grupo' => ['name' => 'insumo_grupos.nome', 'data' => 'grupo'],
-            'action' => ['title' => '#', 'printable' => false, 'width'=>'10%'],
             'action' => ['title' => '#', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }

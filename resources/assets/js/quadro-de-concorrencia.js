@@ -29,7 +29,7 @@ function addEQitemAnexoSave() {
             }
             return myXhr;
         }
-    }).success(function (obj) {
+    }).done(function (obj) {
         stopLoading();
         item_eqt =
             '<li class="list-group-item" id="eqt_custom_anexo_' + obj.id + '">' +
@@ -92,7 +92,7 @@ function editEQitemAnexoSave() {
         cache: false,
         contentType: false,
         processData: false
-    }).success(function (obj) {
+    }).done(function (obj) {
         item_eqt = obj.nome +
             '   <div class="btn-group pull-right">' +
             '      <a href="/' + obj.arquivo.replace('public', 'storage') + '" ' +
@@ -141,7 +141,7 @@ function removerEQTAnexo(qual) {
         closeOnConfirm: false
     }, function () {
         $.ajax("/quadro-de-concorrencia/" + quadroDeConcorrenciaId + "/remover-eqt-anexo/" + qual)
-            .success(function (retorno) {
+            .done(function (retorno) {
                 $('#eqt_custom_anexo_' + qual).remove();
                 swal('Removido', '', 'success');
             }).fail(function (jqXHR, textStatus, errorThrown) {
@@ -152,7 +152,7 @@ function removerEQTAnexo(qual) {
 
 function editarEQTAnexo(qual) {
     $.ajax("/quadro-de-concorrencia/" + quadroDeConcorrenciaId + "/exibir-eqt-anexo/" + qual)
-        .success(function (retorno) {
+        .done(function (retorno) {
             $('#item_eqt_anexo_nome').val(retorno.nome);
 
             $('#item_eqt_anexo_arquivo_span').html('<a href="/' + retorno.arquivo.replace('public', 'storage') + '" ' +
@@ -197,7 +197,7 @@ function addEQitemSave() {
             descricao: item_eqt_descricao,
             _token: $('meta[name="csrf-token"]').attr('content')
         }
-    }).success(function (obj) {
+    }).done(function (obj) {
         item_eqt = '<li class="list-group-item" id="eqt_custom_' + obj.id + '"> ' +
             '<i class="fa fa-pencil-square-o text-warning" title="Apenas para esta QC" aria-hidden="true"></i> &nbsp;' +
             (obj.obrigatorio ? '<i class="fa fa-exclamation text-danger" title="Obrigatório" aria-hidden="true"></i> &nbsp; ' : '' ) +
@@ -255,7 +255,7 @@ function editEQitemSave() {
             descricao: item_eqt_descricao,
             _token: $('meta[name="csrf-token"]').attr('content')
         }
-    }).success(function (obj) {
+    }).done(function (obj) {
         item_eqt =
             '<i class="fa fa-pencil-square-o text-warning" title="Apenas para esta QC" aria-hidden="true"></i> &nbsp;' +
             ( parseInt(obj.obrigatorio) ? '<i class="fa fa-exclamation text-danger" title="Obrigatório" aria-hidden="true"></i> &nbsp; ' : '' ) +
@@ -311,7 +311,7 @@ function removerEQT(qual) {
         closeOnConfirm: false
     }, function () {
         $.ajax("/quadro-de-concorrencia/" + quadroDeConcorrenciaId + "/remover-eqt/" + qual)
-            .success(function (retorno) {
+            .done(function (retorno) {
                 $('#eqt_custom_' + qual).remove();
                 swal('Removido', '', 'success');
             }).fail(function (jqXHR, textStatus, errorThrown) {
@@ -322,7 +322,7 @@ function removerEQT(qual) {
 
 function editarEQT(qual) {
     $.ajax("/quadro-de-concorrencia/" + quadroDeConcorrenciaId + "/exibir-eqt/" + qual)
-        .success(function (retorno) {
+        .done(function (retorno) {
             $('#item_eqt_nome').val(retorno.nome);
             if (parseInt(retorno.obrigatorio)) {
                 $('#item_eqt_obrigatorio').attr('checked', true);
@@ -614,7 +614,7 @@ function removerFornecedor(qual, qcFornecedorId) {
             closeOnConfirm: false
         }, function () {
             $.ajax("/quadro-de-concorrencia/" + quadroDeConcorrenciaId + "/remover-fornecedor/" + qual)
-                .success(function (retorno) {
+                .done(function (retorno) {
                     $('#qcFornecedor_id' + qual).remove();
                     swal('Removido', '', 'success');
                 }).fail(function (jqXHR, textStatus, errorThrown) {
@@ -641,7 +641,7 @@ function desagrupar(qual) {
         closeOnConfirm: false
     }, function () {
         $.ajax("/quadro-de-concorrencia/" + quadroDeConcorrenciaId + "/desagrupar/" + qual)
-            .success(function (retorno) {
+            .done(function (retorno) {
                 window.LaravelDataTables["dataTableBuilder"].draw();
                 swal('Item ' + qual + ' desagrupado', '', 'success');
             }).fail(function (jqXHR, textStatus, errorThrown) {
@@ -695,7 +695,7 @@ function agrupar() {
                     _token: $('meta[name="csrf-token"]').attr('content')
                 }
             })
-                .success(function (retorno) {
+                .done(function (retorno) {
                     window.LaravelDataTables["dataTableBuilder"].draw();
                     swal('Itens agrupados', '', 'success');
                 }).fail(function (jqXHR, textStatus, errorThrown) {
@@ -730,7 +730,7 @@ function abrirConcorrencia(qc){
         showLoaderOnConfirm: true,
         closeOnConfirm: false
     }, function () {
-        $.ajax("/quadro-de-concorrencia/" + qc + "/acao/inicia-concorrencia").success(function (retorno) {
+        $.ajax("/quadro-de-concorrencia/" + qc + "/acao/inicia-concorrencia").done(function (retorno) {
             var texto = '';
             if(retorno.mensagens.length){
                 $.each(retorno.mensagens,function(n,elem){
@@ -770,7 +770,7 @@ function cancelarQC(qual){
         showLoaderOnConfirm: true,
         closeOnConfirm: false
     }, function () {
-        $.ajax("/quadro-de-concorrencia/" + qual + "/acao/cancelar").success(function (retorno) {
+        $.ajax("/quadro-de-concorrencia/" + qual + "/acao/cancelar").done(function (retorno) {
             var texto = '';
             if(retorno.mensagens.length){
                 $.each(retorno.mensagens,function(n,elem){

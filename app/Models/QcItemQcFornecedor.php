@@ -48,15 +48,15 @@ class QcItemQcFornecedor extends Model
      **/
     public function qcFornecedor()
     {
-        return $this->belongsTo(\App\Models\QcFornecedor::class);
+        return $this->belongsTo(QcFornecedor::class);
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function qcIten()
+    public function qcItem()
     {
-        return $this->belongsTo(\App\Models\QcIten::class);
+        return $this->belongsTo(QcItem::class);
     }
 
     /**
@@ -64,6 +64,6 @@ class QcItemQcFornecedor extends Model
      **/
     public function user()
     {
-        return $this->belongsTo(\App\Models\User::class);
+        return $this->belongsTo(User::class);
     }
 }

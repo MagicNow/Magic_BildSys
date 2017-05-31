@@ -40,12 +40,12 @@ class User extends Authenticatable
      * @var array
      */
     protected $casts = [
-        'id' => 'integer',
-        'name' => 'string',
-        'email' => 'string',
-        'password' => 'string',
-        'active' => 'integer',
-        'admin' => 'integer',
+        'id'             => 'integer',
+        'name'           => 'string',
+        'email'          => 'string',
+        'password'       => 'string',
+        'active'         => 'integer',
+        'admin'          => 'integer',
         'remember_token' => 'string'
     ];
 
@@ -57,7 +57,7 @@ class User extends Authenticatable
     public static $rules = [
         'name'     => 'required',
         'password' => 'required',
-        'roles.*'  => 'exists:roles,id'
+        'roles.*'  => 'sometimes|exists:roles,id'
     ];
 
     /**
