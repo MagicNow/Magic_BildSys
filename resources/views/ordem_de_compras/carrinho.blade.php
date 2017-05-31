@@ -146,7 +146,7 @@
                                 </span>
                                 <span class="col-md-2 col-sm-2 col-xs-12 text-center borda-direita" align="center" style="width: 11.5%;">
                                     <strong>Qtde:</strong>
-                                    <input type="text" id="find" value="{{ $item->qtd }}" onchange="alteraQtd(this.value, '{{ $item->id }}')" class="form-control money" style="border-color:#ffffff;background-color:#ffffff;text-align:center;">
+                                    <input type="text" id="find" value="{{ $item->qtd }}" onchange="alteraQtd(this.value, '{{ $item->id }}')" class="form-control money">
                                 </span>
                                 <span class="col-md-2 col-sm-2 col-xs-12 text-center borda-direita" align="center" style="width: 11.5%;">
                                     <strong>Total:</strong>
