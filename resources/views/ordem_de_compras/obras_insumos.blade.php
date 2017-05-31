@@ -436,6 +436,7 @@
         }
 
         function verificarFiltroGrupos() {
+            startLoading();
             @php
                 $grupo = \Illuminate\Support\Facades\Input::get('grupo_id');
                 $subgrupo1 = \Illuminate\Support\Facades\Input::get('subgrupo1_id');
@@ -443,34 +444,45 @@
                 $subgrupo3 = \Illuminate\Support\Facades\Input::get('subgrupo3_id');
                 $servico = \Illuminate\Support\Facades\Input::get('servico_id');
             @endphp
+
+            var tempo = 0;
+
             @if($grupo)
                 selectgrupo('{{$grupo}}', 'subgrupo1_id', 'grupos', 'grupo');
                 $('#grupo_id').val('{{$grupo}}').trigger('change');
             @endif
             @if($subgrupo1)
                 selectgrupo('{{$subgrupo1}}', 'subgrupo2_id', 'grupos', 'subgrupo1');
+                tempo = 500;
                 setTimeout(function(){
                     $('#subgrupo1_id').val('{{$subgrupo1}}').trigger('change');
-                }, 300);
+                }, 500);
             @endif
             @if($subgrupo2)
                 selectgrupo('{{$subgrupo2}}', 'subgrupo3_id', 'grupos', 'subgrupo2');
+                tempo = 1000;
                 setTimeout(function(){
                     $('#subgrupo2_id').val('{{$subgrupo2}}').trigger('change');
-                }, 600);
+                }, 1000);
             @endif
             @if($subgrupo3)
                 selectgrupo('{{$subgrupo3}}', 'servico_id', 'servicos', 'subgrupo3');
+                tempo = 1500;
                 setTimeout(function(){
                     $('#subgrupo3_id').val('{{$subgrupo3}}').trigger('change');
-                }, 900);
+                }, 1500);
             @endif
             @if($servico)
                 selectgrupo('{{$servico}}', null, 'servicos', 'servico');
+                tempo = 2000;
                 setTimeout(function(){
                     $('#servico_id').val('{{$servico}}').trigger('change');
-                }, 1200);
+                }, 2000);
             @endif
+
+            setTimeout(function(){
+                stopLoading();
+            }, tempo);
         }
 
         function alteraValorUnitario(valor, insumo_id, grupo_id, subgrupo1_id, subgrupo2_id, subgrupo3_id, servico_id) {

@@ -61,7 +61,7 @@
                 </h4>
             </div>
             <div class="col-md-2 text-right borda-direita" title="Até o momento em todos os itens desta O.C.">
-                <h5>VALOR REALIZADO</h5>
+                <h5 style="margin: -2px">COMPROMETIDO REALIZADO</h5>
                 <h4>
                     <small class="pull-left">R$</small>0,00
                     {{---  TO DO = Realizado: São informações que virão com a entrada de NF, sendo assim, no momento não haverá informações--}}
@@ -69,7 +69,7 @@
                 </h4>
             </div>
             <div class="col-md-2 text-right borda-direita" title="Nos itens desta O.C.">
-                <h5>VALOR À GASTAR</h5>
+                <h5 style="margin: 0px">COMPROMETIDO À GASTAR</h5>
                 <h4>
                     <small class="pull-left">R$</small>0,00
                     {{---  TO DO = A gastar: É a soma de todos os saldos de contratos na que apropriação, como ainda não exixte contrato gerado, tem q estar zerado--}}
@@ -120,11 +120,11 @@
                             <tr>
                                 <th class="text-center">Unidade Medida</th>
                                 <th class="text-center">Qtd. O. Inicial</th>
-                                <th class="text-center">Valor O. Inicial</th>
+                                <th class="text-center">PREVISTO NO ORÇAMENTO</th>
                                 <th class="text-center">Qtd. Realizada</th>
-                                <th class="text-center">Valor Realizado</th>
+                                <th class="text-center">COMPROMETIDO REALIZADO</th>
                                 <th class="text-center">Qtd. à Gastar</th>
-                                <th class="text-center">Valor à Gastar</th>
+                                <th class="text-center">COMPROMETIDO À GASTAR</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -153,7 +153,6 @@
                                 <th class="text-center">Qtd. Solicitada</th>
                                 <th class="text-center">Valor Solicitado</th>
                                 <th class="text-center">Status</th>
-                                <th class="text-center">Data de Uso</th>
                                 <th class="text-center">Emergencial</th>
                             </tr>
                             </thead>
@@ -163,8 +162,10 @@
                                 <td class="text-center"><small class="pull-left">R$</small> {{ number_format( $item->preco_inicial-doubleval($item->valor_realizado), 2, ',','.') }}</td>
                                 <td class="text-center"><strong>{{ $item->qtd }}</strong></td>
                                 <td class="text-center"><small class="pull-left">R$</small> <strong>{{ number_format(doubleval($item->valor_total), 2, ',','.') }}</strong></td>
-                                <td class="text-center"><i class="fa fa-circle {{ (($item->qtd_realizada) > $item->qtd_inicial) ? 'text-danger': 'text-success'  }}" aria-hidden="true"></i> </td>
-                                <td class="text-center">{{ $item->sugestao_data_uso ? $item->sugestao_data_uso->format('d/m/Y') : ''  }}</td>
+                                <td class="text-center">
+                                    {{--CONTA = saldo - previsto no orçamento--}}
+                                    <i class="fa fa-circle {{ (money_to_float($item->preco_inicial) - money_to_float($item->valor_realizado)) - money_to_float($item->preco_inicial) < 0 ? 'text-danger': 'text-success'  }}" aria-hidden="true"></i>
+                                </td>
                                 <td class="text-center">{!! $item->emergencial?'<strong class="text-danger"> <i class="fa fa-exclamation-circle" aria-hidden="true"></i> SIM</strong>':'NÃO' !!}</td>
                             </tr>
                             </tbody>
