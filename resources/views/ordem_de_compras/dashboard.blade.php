@@ -130,29 +130,19 @@
                     }
                 },
 
-                labelsFarol: ["Abaixo do orçamento", "Dentro do orçamento", "Acima do orçamento"],
+                labelsFarol: ["Dentro do orçamento", "Acima do orçamento"],
                 myoption2: {
                     onClick: function (event, legendItem) {
-                        if (legendItem[0]._index == 0) {
-                            window.location.href = "{{url('ordens-de-compra?status_oc=-1')}}";
-                        }
-                        if (legendItem[0]._index == 1) {
-                            window.location.href = "{{url('ordens-de-compra?status_oc=0')}}";
-                        }
-                        if (legendItem[0]._index == 2) {
-                            window.location.href = "{{url('ordens-de-compra?status_oc=1')}}";
-                        }
+                        window.location.href = "{{url('ordens-de-compra?status_oc=')}}"+legendItem[0]._index;
                     }
                 },
                 datasetsFarol:[{
-                    data: [{{$abaixo_orcamento}}, {{$dentro_orcamento}}, {{$acima_orcamento}}],
+                    data: [{{$dentro_orcamento}}, {{$acima_orcamento}}],
                     backgroundColor: [
-                        "#f6a623",
                         "#7ed321",
                         "#eb0000"
                     ],
                     hoverBackgroundColor: [
-                        "#f6a623",
                         "#7ed321",
                         "#eb0000"
                     ]

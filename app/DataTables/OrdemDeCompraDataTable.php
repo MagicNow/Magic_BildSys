@@ -19,9 +19,7 @@ class OrdemDeCompraDataTable extends DataTable
             ->eloquent($this->query())
             ->addColumn('action', 'ordem_de_compras.datatables_actions')
             ->editColumn('status', function($obj){
-                if($obj->status < 0){
-                    return "<h4><i class='fa fa-circle orange'></i></h4>";
-                }elseif($obj->status == 0){
+                if($obj->status <= 0){
                     return "<h4><i class='fa fa-circle green'></i></h4>";
                 }else{
                     return "<h4><i class='fa fa-circle red'></i></h4>";
@@ -117,14 +115,14 @@ class OrdemDeCompraDataTable extends DataTable
             }
         }
 
-        if($this->request()->get('status_oc') == '-1' || $this->request()->get('status_oc') == '0' || $this->request()->get('status_oc') == '1'){
+        if($this->request()->get('status_oc') == '0' || $this->request()->get('status_oc') == '1'){
             if(count($this->request()->get('status_oc')) && $this->request()->get('status_oc')[0] != "") {
                 $ordemDeCompras->where(DB::raw('(
                         SELECT `status` FROM `ordem_de_compras` OC1
                         JOIN (
                             SELECT
                             z.id,
-                            IF(z.igual , 0 , IF(z.maior , 1 , - 1)) AS STATUS
+                            IF(z.igual , 0 , IF(z.maior , 1 , 0)) AS STATUS
                             FROM
                             (
                                     SELECT

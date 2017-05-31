@@ -1033,18 +1033,13 @@ class OrdemDeCompraController extends AppBaseController
                         ) as status')
                     ])
                     ->get();
-
-        $abaixo_orcamento = 0;
+        
         $dentro_orcamento = 0;
         $acima_orcamento = 0;
 
         if(count($status)){
             foreach ($status as $item){
-                if($item->status == -1){
-                    $abaixo_orcamento += 1;
-                }
-
-                if($item->status == 0){
+                if($item->status == 0 || $item->status == -1){
                     $dentro_orcamento += 1;
                 }
 
