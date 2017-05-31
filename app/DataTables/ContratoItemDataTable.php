@@ -13,7 +13,6 @@ use App\Repositories\WorkflowAprovacaoRepository;
 
 class ContratoItemDataTable extends DataTable
 {
-
     /**
      * @var int Id do Contrato
      */

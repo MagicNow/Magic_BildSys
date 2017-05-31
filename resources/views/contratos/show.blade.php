@@ -124,7 +124,6 @@
         </div>
         <div class="modal-body">
           <div class="form-group">
-            <label for="orcamento_item_id">Item da Ordem de Compra</label>
             <div id="select-item"></div>
           </div>
           <div class="form-group">

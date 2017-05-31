@@ -195,6 +195,27 @@ class OrdemDeCompraItem extends Model
         return $this->hasMany(OrdemDeCompraItemAnexo::class);
     }
 
+    public function codigoServico()
+    {
+       $grupos = [
+            $this->grupo_id,
+            $this->subgrupo1_id,
+            $this->subgrupo2_id,
+            $this->subgrupo3_id,
+            $this->servico_id
+        ];
+
+       return implode('.', $grupos) . ' ' . $this->servico->nome;
+    }
+
+    public function reapropriacoes()
+    {
+        return $this->hasMany(
+            ContratoItemReapropriacao::class,
+            'ordem_de_compra_item_id'
+        );
+    }
+
     // Funções da aprovação
 
     /**

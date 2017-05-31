@@ -158,9 +158,12 @@ class ContratoController extends AppBaseController
     ) {
         $item = $contratoItemRepository->find($id);
 
-        $itens = $item->qcItem->ordemDeCompraItens;
+        $itens = $item->qcItem->ordemDeCompraItens()
+            ->whereDoesntHave('reapropriacoes')
+            ->get()
+            ->merge($item->reapropriacoes);
 
-        return view('contratos.modal-reapropriacao', compact('itens'));
+        return view('contratos.modal-reapropriacao', compact('itens', 'item'));
     }
 
     public function reapropriarItem(

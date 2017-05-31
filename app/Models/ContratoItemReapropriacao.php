@@ -57,4 +57,30 @@ class ContratoItemReapropriacao extends Model
     public static $rules = [
 
     ];
+
+    public function codigoServico()
+    {
+       $grupos = [
+            $this->grupo_id,
+            $this->subgrupo1_id,
+            $this->subgrupo2_id,
+            $this->subgrupo3_id,
+            $this->servico_id
+        ];
+
+       return implode('.', $grupos) . ' ' . $this->servico->nome;
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function insumo()
+    {
+        return $this->belongsTo(Insumo::class, 'insumo_id');
+    }
+
+    public function servico()
+    {
+        return $this->belongsTo(Servico::class);
+    }
 }

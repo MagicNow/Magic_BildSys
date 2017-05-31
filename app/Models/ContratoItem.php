@@ -61,7 +61,7 @@ class ContratoItem extends Model
      **/
     public function insumo()
     {
-        return $this->belongsTo(\App\Models\Insumo::class);
+        return $this->belongsTo(Insumo::class, 'insumo_id');
     }
 
     /**
@@ -98,6 +98,14 @@ class ContratoItem extends Model
         $this->save();
 
         return $this;
+    }
+
+    public function reapropriacoes()
+    {
+        return $this->hasMany(
+            ContratoItemReapropriacao::class,
+            'contrato_item_id'
+        );
     }
 
 }
