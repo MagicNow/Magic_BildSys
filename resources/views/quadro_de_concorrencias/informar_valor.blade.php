@@ -146,6 +146,29 @@
                       <div class="box-body">
                           <div class="form-group">
                               <div class="row">
+
+                                  <div class="col-md-12" style="margin-bottom: 5px">
+                                      <label class="radio-inline">
+                                          {!!
+                                            Form::radio(
+                                              "frete_incluso",
+                                              '1'
+                                            )
+                                          !!}
+                                          Incluso Valor Unit.
+                                      </label>
+                                      <label class="radio-inline">
+                                          {!!
+                                            Form::radio(
+                                              "frete_incluso",
+                                              '0'
+                                            )
+                                          !!}
+                                          Não Incluso
+                                      </label>
+                                  </div>
+                              </div>
+                              <div class="row blocoFrete" style="{{ old('frete_incluso')=='1'?'':'display: none;'  }}">
                                   <label class="col-md-6">
                                       Tipo de Frete
                                   </label>
@@ -171,7 +194,7 @@
                                   </div>
                               </div>
                           </div>
-                          <div class="form-group">
+                          <div class="form-group freteFOB" style="{{ old('tipo_frete')=='FOB'?'':'display: none;'  }}">
                               <div class="row">
                                   <label class="col-md-6">
                                       Valor
@@ -248,6 +271,22 @@
                         </div>
                       </div>
                     </div>
+                    <div class="form-group">
+                      <div class="row">
+                        <label class="col-md-6">
+                          Locação
+                        </label>
+                        <div class="col-md-6">
+                          <div class="input-group">
+                            <input type="text"
+                              class="form-control percent js-percent"
+                              value="{{ old('porcentagem_locacao') }}"
+                              name="porcentagem_locacao">
+                            <span class="input-group-addon">%</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <div class="box box-warning">
@@ -264,7 +303,7 @@
                               '1'
                             )
                           !!}
-                          Material
+                          Material Contratada
                         </label>
                       </div>
                     </div>
@@ -274,7 +313,8 @@
                           {!!
                             Form::checkbox(
                               "nf_servico",
-                              '1'
+                              '1',
+                              old('nf_servico',true)
                             )
                           !!}
                           Serviço
@@ -474,4 +514,24 @@
       )
     !!}
   @endsection
-
+@section('scripts')
+<script type="text/javascript">
+    $(function () {
+        $('input[name="frete_incluso"]').on('ifToggled', function(event){
+            if(parseInt(event.target.value)){
+                $('.blocoFrete').hide();
+            }else{
+                $('.blocoFrete').show();
+            }
+        });
+        $('input[name="tipo_frete"]').on('ifToggled', function(event){
+            if(event.target.value=='CIF'){
+                $('.freteFOB').hide();
+                $('input[name="valor_frete"]').val('0');
+            }else{
+                $('.freteFOB').show();
+            }
+        });
+    });
+</script>
+@stop

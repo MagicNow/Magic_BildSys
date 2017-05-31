@@ -15,19 +15,18 @@ class WorkflowAlcada extends Model
     use SoftDeletes;
 
     public $table = 'workflow_alcadas';
-    
+
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
-
     protected $dates = ['deleted_at'];
-
 
     public $fillable = [
         'workflow_tipo_id',
         'nome',
         'ordem',
-        'dias_prazo'
+        'dias_prazo',
+        'valor_minimo'
     ];
 
     /**
@@ -36,11 +35,11 @@ class WorkflowAlcada extends Model
      * @var array
      */
     protected $casts = [
-        'id' => 'integer',
+        'id'               => 'integer',
         'workflow_tipo_id' => 'integer',
-        'nome' => 'string',
-        'ordem' => 'integer',
-        'dias_prazo' => 'integer'
+        'nome'             => 'string',
+        'ordem'            => 'integer',
+        'dias_prazo'       => 'integer',
     ];
 
     /**
@@ -77,4 +76,12 @@ class WorkflowAlcada extends Model
     {
         return $this->belongsToMany(User::class,'workflow_usuarios','workflow_alcada_id','user_id')->withPivot('deleted_at')->withTimestamps();
     }
+
+    public function anterior()
+    {
+        return $this->where('workflow_tipo_id', $this->workflow_tipo_id)
+            ->where('ordem', $this->ordem - 1)
+            ->first();
+    }
+
 }

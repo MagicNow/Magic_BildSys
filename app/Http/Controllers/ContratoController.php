@@ -25,6 +25,8 @@ use App\Http\Requests\DistratarRequest;
 use App\Http\Requests\ReapropriarRequest;
 use App\Repositories\ContratoItemModificacaoRepository;
 use App\Repositories\ContratoItemRepository;
+use App\Models\ContratoStatus;
+use App\Models\ContratoItemModificacao;
 
 class ContratoController extends AppBaseController
 {
@@ -86,11 +88,15 @@ class ContratoController extends AppBaseController
             return redirect(route('contratos.index'));
         }
 
-        $workflowAprovacao = WorkflowAprovacaoRepository::verificaAprovacoes(
-            'Contrato',
-            $contrato->id,
-            $request->user()
-        );
+        if($contrato->isStatus(ContratoStatus::EM_APROVACAO)) {
+            $workflowAprovacao = WorkflowAprovacaoRepository::verificaAprovacoes(
+                'Contrato',
+                $contrato->id,
+                $request->user()
+            );
+        }
+
+        $aprovado = $contrato->isStatus(ContratoStatus::APROVADO);
 
         $motivos = $workflowReprovacaoMotivoRepository
             ->porTipo(WorkflowTipo::CONTRATO)
@@ -98,11 +104,26 @@ class ContratoController extends AppBaseController
             ->prepend('Motivos...', '')
             ->all();
 
+        $pendencias = ContratoItemModificacao::whereHas('item', function($itens) use ($id) {
+            return $itens->where('contrato_id', $id)->where('aprovado', false);
+        })
+        ->where('contrato_status_id', ContratoStatus::EM_APROVACAO)
+        ->get()
+        ->map(function($pendencia) {
+            $pendencia->workflow =  WorkflowAprovacaoRepository::verificaAprovacoes(
+                'ContratoItemModificacao',
+                $pendencia->id,
+                auth()->user()
+            );
+
+            return $pendencia;
+        });
+
         return $contratoItemDataTable
-            ->setContrato($id)
+            ->setContrato($contrato)
             ->render(
                 'contratos.show',
-                compact('contrato', 'workflowAprovacao', 'motivos')
+                compact('contrato', 'workflowAprovacao', 'motivos', 'aprovado', 'pendencias')
             );
     }
 

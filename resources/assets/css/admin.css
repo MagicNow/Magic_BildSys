@@ -461,7 +461,7 @@ h6 {
 }
 
 .with-middle > .input-group-addon.addon-middle {
-  line-height: 1.2;
+  line-height: 1;
   padding-top: 9px;
   padding-bottom: 9px;
   border-left: 0;
