@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Eloquent as Model;
+use App\Repositories\WorkflowAprovacaoRepository;
 
 /**
  * Class ContratoItemModificacao
@@ -13,10 +14,10 @@ class ContratoItemModificacao extends Model
 {
     public $table = 'contrato_item_modificacoes';
 
+    public static $workflow_tipo_id = WorkflowTipo::CONTRATO;
+
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
-
-    protected $dates = ['deleted_at'];
 
     public $fillable = [
         'contrato_item_id',
@@ -54,17 +55,9 @@ class ContratoItemModificacao extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function contratoIten()
+    public function status()
     {
-        return $this->belongsTo(\App\Models\ContratoIten::class);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     **/
-    public function contratoStatus()
-    {
-        return $this->belongsTo(\App\Models\ContratoStatus::class);
+        return $this->belongsTo(ContratoStatus::class);
     }
 
     /**
@@ -72,14 +65,62 @@ class ContratoItemModificacao extends Model
      **/
     public function user()
     {
-        return $this->belongsTo(\App\Models\User::class);
+        return $this->belongsTo(User::class);
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
-    public function contratoItemModificacaoLogs()
+    public function logs()
     {
-        return $this->hasMany(\App\Models\ContratoItemModificacaoLog::class);
+        return $this->hasMany(ContratoItemModificacaoLog::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function item()
+    {
+        return $this->belongsTo(ContratoItem::class, 'contrato_item_id');
+    }
+
+    public function aprovacoes()
+    {
+        return $this->morphMany(WorkflowAprovacao::class, 'aprovavel');
+    }
+
+    public function irmaosIds()
+    {
+        return [$this->attributes['id'] => $this->attributes['id']];
+    }
+
+    public function paiEmAprovacao()
+    {
+        return false;
+    }
+
+    public function confereAprovacaoGeral()
+    {
+        return false;
+    }
+
+    public function qualObra()
+    {
+        return null;
+    }
+
+    public function aprova($isAprovado)
+    {
+        $this->attributes['contrato_status_id'] = $isAprovado
+            ? ContratoStatus::APROVADO
+            : ContratoStatus::REPROVADO;
+
+        $this->save();
+
+        ContratoItemModificacaoLog::create([
+            'contrato_id'        => $this->attributes['id'],
+            'contrato_status_id' => $this->attributes['contrato_status_id'],
+            'user_id'            => auth()->id()
+        ]);
     }
 }

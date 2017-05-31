@@ -12,6 +12,7 @@ use App\Repositories\Admin\WorkflowAlcadaRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
 use Response;
+use App\Models\WorkflowTipo;
 
 class WorkflowAlcadaController extends AppBaseController
 {
@@ -42,7 +43,14 @@ class WorkflowAlcadaController extends AppBaseController
     public function create()
     {
         $relacionados = [];
-        return view('admin.workflow_alcadas.create', compact('relacionados'));
+
+        $tipos = WorkflowTipo::pluck('nome', 'id')->prepend('Escolha...', '')->toArray();
+        $workflow_tipo_id_contrato = WorkflowTipo::CONTRATO;
+
+        return view(
+            'admin.workflow_alcadas.create',
+            compact('relacionados', 'workflow_tipo_id_contrato', 'tipos')
+        );
     }
 
     /**
@@ -56,26 +64,15 @@ class WorkflowAlcadaController extends AppBaseController
     {
         $input = $request->all();
 
-        $alcada_cadastrada_tipo = WorkflowAlcada::where('workflow_tipo_id', $request->workflow_tipo_id)
-            ->first();
-
-        if($alcada_cadastrada_tipo){
-            $alcada_anterior = WorkflowAlcada::where('workflow_tipo_id', $request->workflow_tipo_id)
-                ->where('ordem', ($request->ordem - 1))
-                ->first();
-
-            if(!$alcada_anterior){
-                Flash::error('Ordem inválida, não há alçadas anteriores.');
-
-                return redirect('/admin/workflow/workflow-alcadas/create');
-            }
-        }else{
-            $input['ordem'] = 1;
+        if($input['valor_minimo']) {
+            $input['valor_minimo'] = money_to_float($input['valor_minimo']);
         }
+
+        $this->workflowAlcadaRepository->validateBusinessLogic($input);
 
         $workflowAlcada = $this->workflowAlcadaRepository->create($input);
 
-        Flash::success('Workflow Alçada '.trans('common.saved').' '.trans('common.successfully').'.');
+        Flash::success('Workflow Alçada ' . trans('common.saved') . ' ' . trans('common.successfully') . '.');
 
         return redirect(route('admin.workflowAlcadas.index'));
     }
@@ -125,8 +122,19 @@ class WorkflowAlcadaController extends AppBaseController
         $workflowUsuarios_ids = $workflowAlcada->workflowUsuarios()->pluck('user_id','user_id')->toArray();
         $relacionados = User::whereIn('id', $workflowUsuarios_ids)->pluck('name','id')->toArray();
 
+        $tipos = WorkflowTipo::pluck('nome', 'id')->prepend('Escolha...', '')->toArray();
+        $workflow_tipo_id_contrato = WorkflowTipo::CONTRATO;
 
-        return view('admin.workflow_alcadas.edit', compact('workflowAlcada', 'relacionados', 'workflowUsuarios_ids' ));
+        return view(
+            'admin.workflow_alcadas.edit',
+            compact(
+                'workflowAlcada',
+                'relacionados',
+                'workflowUsuarios_ids',
+                'tipos',
+                'workflow_tipo_id_contrato'
+            )
+        );
     }
 
     /**
@@ -139,33 +147,17 @@ class WorkflowAlcadaController extends AppBaseController
      */
     public function update($id, UpdateWorkflowAlcadaRequest $request)
     {
+        $input = $request->all();
+
         $workflowAlcada = $this->workflowAlcadaRepository->findWithoutFail($id);
 
-        $alcada_cadastrada_tipo = WorkflowAlcada::where('workflow_tipo_id', $request->workflow_tipo_id)
-            ->where('id', '!=', $id)
-            ->first();
-        
-        if($alcada_cadastrada_tipo){
-            $alcada_anterior = WorkflowAlcada::where('workflow_tipo_id', $request->workflow_tipo_id)
-                ->where('ordem', ($request->ordem - 1))
-                ->first();
+        $this->workflowAlcadaRepository->validateBusinessLogic($input, $id);
 
-            if(!$alcada_anterior){
-                Flash::error('Ordem inválida, não há alçadas anteriores.');
-
-                return redirect('/admin/workflow/workflow-alcadas/' . $id . '/edit');
-            }
-        }else{
-            $input['ordem'] = 1;
+        if($input['valor_minimo']) {
+            $input['valor_minimo'] = money_to_float($input['valor_minimo']);
         }
 
-        if (empty($workflowAlcada)) {
-            Flash::error('Workflow Alçada '.trans('common.not-found'));
-
-            return redirect(route('admin.workflowAlcadas.index'));
-        }
-
-        $workflowAlcada = $this->workflowAlcadaRepository->update($request->all(), $id);
+        $workflowAlcada = $this->workflowAlcadaRepository->update($input, $id);
 
         Flash::success('Workflow Alçada '.trans('common.updated').' '.trans('common.successfully').'.');
 
