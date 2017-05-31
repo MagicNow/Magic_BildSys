@@ -90,6 +90,7 @@ class ContratoRepository extends BaseRepository
                 $fatorServico = $qcFornecedor->porcentagem_servico / 100;
                 $fatorMaterial = $qcFornecedor->porcentagem_material / 100;
                 $fatorFatDireto = $qcFornecedor->porcentagem_faturamento_direto / 100;
+                $fatorLocacao = $qcFornecedor->porcentagem_locacao / 100;
 
                 // Se não marcou NF material, coloca o fator material como zero
                 if(!$qcFornecedor->nf_material){
@@ -97,7 +98,7 @@ class ContratoRepository extends BaseRepository
                     $fatorMaterial = 0;
                 }
                 // Se não marcou NF locacao, coloca o fator locacao como zero
-                if(!$qcFornecedor->nf_material){
+                if(!$qcFornecedor->nf_locacao){
                     $fatorServico += $fatorLocacao;
                     $fatorLocacao = 0;
                 }
@@ -219,20 +220,22 @@ class ContratoRepository extends BaseRepository
             foreach ($attributes['valor_frete'] as $obraID => $vl_frete){
 
                 $valorFrete = !is_null($vl_frete)?money_to_float($vl_frete):0;
+                if($valorFrete>0){
+                    $insumo = Insumo::where('codigo','28675')->first();
+                    $contratoItens[$obraID][] = [
+                        'insumo_id'         => $insumo->id,
+                        'qc_item_id'        => null,
+                        'qtd'               => $valorFrete,
+                        'valor_unitario'    => 1,
+                        'valor_total'       => $valorFrete,
+                        'aprovado'          => 1
+                    ];
 
-                $insumo = Insumo::where('codigo','28675')->first();
-                $contratoItens[$obraID][] = [
-                    'insumo_id'         => $insumo->id,
-                    'qc_item_id'        => null,
-                    'qtd'               => $valorFrete,
-                    'valor_unitario'    => 1,
-                    'valor_total'       => $valorFrete,
-                    'aprovado'          => 1
-                ];
+                    $contratoCampos[$obraID]['tipo_frete'] = $qcFornecedor->tipo_frete;
+                    $contratoCampos[$obraID]['valor_frete'] = $valorFrete;
+                    $contratoCampos[$obraID]['valor_total'] += $valorFrete;
+                }
 
-                $contratoCampos[$obraID]['tipo_frete'] = $qcFornecedor->tipo_frete;
-                $contratoCampos[$obraID]['valor_frete'] = $valorFrete;
-                $contratoCampos[$obraID]['valor_total'] += $valorFrete;
             }
         }
 
@@ -264,7 +267,8 @@ class ContratoRepository extends BaseRepository
                 $item['contrato_id'] = $contrato->id;
                 ContratoItem::create($item);
             }
-            $contratos[] = $contrato;
+//            $contratos[] = $contrato;
+            $contratos[] = Contrato::where('id',$contrato->id)->with('itens')->first();
         }
 
         return [

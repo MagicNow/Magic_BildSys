@@ -8,7 +8,7 @@
       @if(isset($workflowAprovacao))
         @if($workflowAprovacao['podeAprovar'])
           @if($workflowAprovacao['iraAprovar'])
-            <span class="text-warning"> ||  Aprovação de Escopo </span>
+            <span class="text-warning"> ||  Aprovação de Contrato </span>
             <div class="btn-group" role="group" id="blocoItemAprovaReprova{{ $contrato->id }}"
               aria-label="...">
               <button type="button" onclick="workflowAprovaReprova({{ $contrato->id }},

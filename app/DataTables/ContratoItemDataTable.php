@@ -96,12 +96,12 @@ class ContratoItemDataTable extends DataTable
                 ),
             ])
             ->join('insumos', 'insumos.id', 'contrato_itens.insumo_id')
-            ->join(
+            ->leftJoin(
                 'oc_item_qc_item',
                 'contrato_itens.qc_item_id',
                 'oc_item_qc_item.qc_item_id'
             )
-            ->join(
+            ->leftJoin(
                 'ordem_de_compra_itens',
                 'ordem_de_compra_itens.id',
                 'oc_item_qc_item.ordem_de_compra_item_id'
