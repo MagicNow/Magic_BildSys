@@ -45,7 +45,21 @@ class ContratoStatus extends Model
      */
     const AGUARDANDO = 4;
 
-    protected $dates = ['deleted_at'];
+
+    /**
+     * Id do status de Ativo
+     *
+     * @const int
+     */
+    const ATIVO = 5;
+
+
+    /**
+     * Id do status de Canceladp
+     *
+     * @const int
+     */
+    const CANCELADO = 6;
 
     public $fillable = [
         'nome',
