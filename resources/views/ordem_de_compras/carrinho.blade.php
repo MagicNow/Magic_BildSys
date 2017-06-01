@@ -19,7 +19,7 @@
             <div class="col-md-12">
                 <div class="col-md-6">
                     <h3 class="pull-left title">
-                        <a href="{{ url('/compras/obrasInsumos?obra_id='.$obra_id.'') }}"><i class="fa fa-arrow-left" aria-hidden="true"></i></a> Ordem de Compra
+                        <a href="javascript:history.back()"><i class="fa fa-arrow-left" aria-hidden="true"></i></a> Ordem de Compra
                     </h3>
                 </div>
 
@@ -577,17 +577,16 @@
             }).done(function (json) {
                 if(json.success){
                     $('#alert_'+item_id).remove();
-                    swal({
-                        title: "Quantidade alterada",
-                        text: "",
-                        type: "success",
-                        showCancelButton: false,
-                        confirmButtonText: "OK",
-                        closeOnConfirm: false
-                    },
-                    function(){
+//                    swal({
+//                        title: "Quantidade alterada",
+//                        text: "",
+//                        type: "success",
+//                        timer: 1000,
+//                        showConfirmButton: false
+//                    },
+//                    function(){
                         location.reload();
-                    });
+//                    });
                 }
             });
         }
