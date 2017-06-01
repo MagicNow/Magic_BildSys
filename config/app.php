@@ -242,6 +242,7 @@ return [
         'Defender' => \Artesaos\Defender\Facades\Defender::class,
         'Correios'    => Cagartner\CorreiosConsulta\Facade::class,
         'PDF' => Barryvdh\Snappy\Facades\SnappyPdf::class,
+        'SnappyImage' => Barryvdh\Snappy\Facades\SnappyImage::class,
     ],
 
 ];

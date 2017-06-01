@@ -9,6 +9,7 @@ use App\Http\Requests\UpdateContratoRequest;
 use App\Repositories\ContratoRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
+use Illuminate\Support\Facades\Storage;
 use Response;
 use App\Repositories\Admin\FornecedoresRepository;
 use App\Repositories\Admin\ObraRepository;
@@ -182,6 +183,10 @@ class ContratoController extends AppBaseController
     }
     
     public function imprimirContrato($id){
-        return ContratoRepository::geraImpressao($id);
+        $retorno = ContratoRepository::notifyFornecedor($id);
+        return response()->json($retorno);
+//        return  response()->file( storage_path('/app/public/') . str_replace('storage/', '', ContratoRepository::geraImpressao($id)) ) ;
     }
+
+
 }

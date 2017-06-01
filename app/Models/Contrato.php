@@ -132,7 +132,7 @@ class Contrato extends Model
 
     public function qualObra()
     {
-        return null;
+        return $this->attributes['obra_id'];
     }
 
     public function aprova($isAprovado)
@@ -148,6 +148,21 @@ class Contrato extends Model
             'contrato_status_id' => $this->attributes['contrato_status_id'],
             'user_id'            => auth()->id()
         ]);
+
+        // Verifica necessidade de assinar contrato e enviar ao fornecedor
+        if($this->hasServico()){
+            // Notifica Fornecedor
+        }
+    }
+
+    public function hasServico(){
+        return $this->itens
+            ->pluck('insumo')
+            ->pluck('insumoGrupo')
+            ->pluck('nome')
+            ->contains(function ($nome) {
+                return starts_with($nome, 'SERVIÇO');
+            });
     }
 
     public function isStatus($status)
