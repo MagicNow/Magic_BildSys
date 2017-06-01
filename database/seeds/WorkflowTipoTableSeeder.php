@@ -9,23 +9,30 @@ class WorkflowTipoTableSeeder extends Seeder {
         \Illuminate\Support\Facades\Schema::disableForeignKeyConstraints();
 
         \Illuminate\Support\Facades\DB::table('workflow_tipos')->delete();
-        
+        \Illuminate\Support\Facades\DB::table('workflow_tipos')->truncate();
+
         \Illuminate\Support\Facades\DB::table('workflow_tipos')
             ->insert([
                 [
-                    'id'=> 1,
-                    'nome'=> 'Workflow Aprovação de O.C.',
-                    'dias_prazo' => 7
-                ],
-                [
-                    'id'=> 2,
-                    'nome'=> 'Workflow Validação de Escopo Q.C.',
-                    'dias_prazo' => 3
-                ],
-                [
-                    'id'=> 3,
-                    'nome'=> 'Workflow Aprovação de Contrato',
-                    'dias_prazo' => 7
+                    'id'               => 1,
+                    'nome'             => 'Workflow Aprovação de O.C.',
+                    'dias_prazo'       => 7,
+                    'usa_valor_minimo' => 0,
+                ], [
+                    'id'               => 2,
+                    'nome'             => 'Workflow Validação de Escopo Q.C.',
+                    'dias_prazo'       => 3,
+                    'usa_valor_minimo' => 0,
+                ], [
+                    'id'               => 3,
+                    'nome'             => 'Workflow Aprovação de Contrato',
+                    'dias_prazo'       => 7,
+                    'usa_valor_minimo' => 1,
+                ], [
+                    'id'               => 4,
+                    'nome'             => 'Workflow Aprovação de Itens de Contrato',
+                    'dias_prazo'       => 7,
+                    'usa_valor_minimo' => 1,
                 ]
             ]);
         \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();

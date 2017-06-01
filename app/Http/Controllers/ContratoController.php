@@ -27,6 +27,7 @@ use App\Repositories\ContratoItemModificacaoRepository;
 use App\Repositories\ContratoItemRepository;
 use App\Models\ContratoStatus;
 use App\Models\ContratoItemModificacao;
+use App\Repositories\ContratoItemReapropriacaoRepository;
 
 class ContratoController extends AppBaseController
 {
@@ -151,15 +152,55 @@ class ContratoController extends AppBaseController
         ]);
     }
 
+    public function reapropriarItemForm(
+        $id,
+        ContratoItemRepository $contratoItemRepository
+    ) {
+        $item = $contratoItemRepository->find($id);
+
+        $itens = $item->qcItem->ordemDeCompraItens;
+
+        $reapropriacoes = $item->reapropriacoes;
+
+        $reapropriacoes->each(function($re) use (&$itens) {
+            if($re->ordem_de_compra_item_id) {
+                $item = $itens->where('id', $re->ordem_de_compra_item_id)->shift();
+                $item->qtd = $item->qtd - $re->qtd;
+                $item->modificado_por = true;
+                $itens->push($item);
+            }
+        });
+
+        $reapropriacoes->each(function($re) use (&$reapropriacoes) {
+            if($re->contrato_item_reapropriacao_id) {
+                $_re = $reapropriacoes->where('id', $re->contrato_item_reapropriacao_id)->shift();
+                $_re->qtd = $_re->qtd - $re->qtd;
+                $_re->modificado_por = true;
+                $reapropriacoes->push($_re);
+            }
+        });
+
+        $itens = $itens->merge($reapropriacoes)
+            ->filter(function($item) {
+                return (float) $item->qtd;
+            })
+            ->sortBy(function($item) {
+                return $item->created_at->getTimestamp();
+            });
+
+
+        return view('contratos.modal-reapropriacao', compact('itens', 'item'));
+    }
+
     public function reapropriarItem(
         $id,
         ContratoItemRepository $contratoItemRepository,
+        ContratoItemReapropriacaoRepository $contratoItemReapropriacaoRepository,
         ReapropriarRequest $request
     ) {
         $item = $contratoItemRepository->find($id);
 
-        http_response_code(500);
-        dd($item->qcItem->ordemDeCompraItens);
+        $contratoItemReapropriacaoRepository->reapropriar($item, $request->all());
 
         return response()->json([
             'success' => true

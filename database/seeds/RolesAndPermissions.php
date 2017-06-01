@@ -25,6 +25,7 @@ class RolesAndPermissions extends Seeder
             'Administrador',
             'Suprimentos',
             'Fornecedor',
+            'Planejamento'
         ];
 
         $roles = [];
@@ -156,7 +157,12 @@ class RolesAndPermissions extends Seeder
             'equalizacao_tecnicas.edit'   => 'Edição de equalização tecnica',
             'equalizacao_tecnicas.delete'   => 'Remoção de equalização tecnica',
 
-            'contratos.list'   => 'Listagem de contratos',
+            'contratos.list'        => 'Listagem de contratos',
+            'contratos.show'        => 'Visualização de contrato',
+            'contratos.distratar'   => 'Distratar item do contrato',
+            'contratos.reajustar'   => 'Reajustar item do contrato',
+            'contratos.reapropriar' => 'Reapropriar item do contrato',
+
         ];
 
         $permissionAccess = [];
@@ -168,10 +174,12 @@ class RolesAndPermissions extends Seeder
         foreach ($users as $user) {
             $user->attachPermission(Defender::findPermission('site.dashboard'));
         }
-        // Adiciona permissões no SuperUser
+
+        // Adiciona permissões no SuperUser e no Planejamento
         foreach ($permissionAccess as $permission)
         {
             $roleSuperuser->attachPermission($permission);
+            $roles[3]->attachPermission($permission);
         }
 
         // Permissões para Suprimentos
@@ -209,6 +217,7 @@ class RolesAndPermissions extends Seeder
         $roles[2]->attachPermission(Defender::findPermission('quadroDeConcorrencias.informar_valor'));
         $roles[2]->attachPermission(Defender::findPermission('quadroDeConcorrencias.list'));
         $roles[2]->attachPermission(Defender::findPermission('site.dashboard'));
+
         Schema::enableForeignKeyConstraints();
     }
 }

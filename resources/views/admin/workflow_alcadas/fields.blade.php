@@ -1,26 +1,34 @@
 <!-- Workflow Tipo Id Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('workflow_tipo_id', 'Tipo:') !!}
-    {!!
-      Form::select(
-        'workflow_tipo_id',
-          $tipos,
-          null,
-          ['class' => 'form-control','required'=>'required', 'id' => 'workflow_tipo_id']
-        )
-    !!}
+
+    <select id="workflow_tipo_id" name="workflow_tipo_id" class="form-control" required>
+      <option value="">Escolha...</option>
+      @foreach($tipos as $tipo)
+        <option
+          value="{{ $tipo->id }}"
+          @if(isset($workflowAlcada))
+            {{ old('workflow_tipo_id', $workflowAlcada->workflow_tipo_id) === $tipo->id ? 'selected' : '' }}
+          @else
+            {{ old('workflow_tipo_id') === $tipo->id ? 'selected' : '' }}
+          @endif
+          data-usa-valor-minimo="{{ $tipo->usa_valor_minimo }}">
+          {{ $tipo->nome }}
+        </option>
+      @endforeach
+    </select>
 </div>
 
 <!-- Nome Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('nome', 'Nome:') !!}
-    {!! Form::text('nome', null, ['class' => 'form-control']) !!}
+  {!! Form::label('nome', 'Nome:') !!}
+  {!! Form::text('nome', null, ['class' => 'form-control']) !!}
 </div>
 
 <!-- Ordem Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('ordem', 'Ordem:') !!}
-    {!! Form::number('ordem', null, ['class' => 'form-control', 'required'=>'required', 'id' => 'ordem']) !!}
+  {!! Form::label('ordem', 'Ordem:') !!}
+  {!! Form::number('ordem', null, ['class' => 'form-control', 'required'=>'required', 'id' => 'ordem']) !!}
 </div>
 
 <!-- Dias Prazo Field -->
@@ -38,7 +46,6 @@
     {!! Form::label('valor_minimo', 'Valor Mínimo') !!}
     {!! Form::text('valor_minimo', null, ['class' => 'form-control money', 'id' => 'valor_minimo']) !!}
 </div>
-
 
 <!-- Submit Field -->
 <div class="form-group col-sm-12">
@@ -72,17 +79,13 @@
       var valorMinimo = document.getElementById('valor_minimo');
 
       tipoSelector.addEventListener('change', function(event) {
-        $(valorMinimo)
-          .parent()
-          .toggleClass(
-            'hidden',
-            parseInt(tipoSelector.value) !== {{ $workflow_tipo_id_contrato }}
-          );
+        var option = tipoSelector.querySelector('[value="' + event.currentTarget.value + '"]');
+        var usaValorMinimo = option.dataset.usaValorMinimo === "1";
+
+        $(valorMinimo).parent().toggleClass('hidden', !usaValorMinimo);
       });
 
       tipoSelector.dispatchEvent(new Event('change'));
-
-
 
         $('#workflowUsuarios').select2({
             language: "pt-BR",

@@ -1,0 +1,29 @@
+<?php
+
+namespace App\Repositories;
+
+use App\Models\ContratoItemReapropriacao;
+use InfyOm\Generator\Common\BaseRepository;
+use App\Models\ContratoItem;
+
+class ContratoItemReapropriacaoRepository extends BaseRepository
+{
+    /**
+     * Configure the Model
+     **/
+    public function model()
+    {
+        return ContratoItemReapropriacao::class;
+    }
+
+    public function reapropriar(ContratoItem $contratoItem, $data)
+    {
+        $data['insumo_id']        = $contratoItem->qcItem->insumo_id;
+        $data['contrato_item_id'] = $contratoItem->id;
+        $data['qtd']              = money_to_float($data['qtd']);
+        $data['user_id']          = auth()->id();
+        $data['codigo_insumo']    = $contratoItem->insumo->codigo;
+
+        return $this->create($data);
+    }
+}

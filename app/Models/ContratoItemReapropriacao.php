@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class ContratoItemReapropriacao
@@ -12,20 +11,15 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class ContratoItemReapropriacao extends Model
 {
-    use SoftDeletes;
-
     public $table = 'contrato_item_reapropriacoes';
-    
+
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
-
-
-    protected $dates = ['deleted_at'];
-
 
     public $fillable = [
         'contrato_item_id',
         'ordem_de_compra_item_id',
+        'contrato_item_reapropriacao_id',
         'codigo_insumo',
         'grupo_id',
         'subgrupo1_id',
@@ -62,7 +56,6 @@ class ContratoItemReapropriacao extends Model
      * @var array
      */
     public static $rules = [
-        
     ];
 
     /**
@@ -73,12 +66,17 @@ class ContratoItemReapropriacao extends Model
         return $this->belongsTo(ContratoItem::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     **/
-    public function grupo()
+    public function codigoServico($showServico = true)
     {
-        return $this->belongsTo(Grupo::class);
+       $grupos = [
+            $this->grupo_id,
+            $this->subgrupo1_id,
+            $this->subgrupo2_id,
+            $this->subgrupo3_id,
+            $this->servico_id
+        ];
+
+       return implode('.', $grupos) . ($showServico ? (' ' . $this->servico->nome) : '');
     }
 
     /**
@@ -86,7 +84,7 @@ class ContratoItemReapropriacao extends Model
      **/
     public function insumo()
     {
-        return $this->belongsTo(Insumo::class);
+        return $this->belongsTo(Insumo::class, 'insumo_id');
     }
 
     /**
@@ -97,9 +95,6 @@ class ContratoItemReapropriacao extends Model
         return $this->belongsTo(OrdemDeCompraItem::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     **/
     public function servico()
     {
         return $this->belongsTo(Servico::class);
@@ -135,5 +130,28 @@ class ContratoItemReapropriacao extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function reapropriacoes()
+    {
+        return $this->hasMany(
+            ContratoItemReapropriacao::class,
+            'contrato_item_reapropriacao_id'
+        );
+    }
+
+    public function getQtdSobraAttribute()
+    {
+        return $this->qtd - $this->reapropriacoes->sum('qtd');
+    }
+
+    public function getQtdSobraFormattedAttribute()
+    {
+        return float_to_money($this->getQtdSobraAttribute(), '') . $this->insumo->unidade_sigla;
+    }
+
+    public function getQtdFormattedAttribute()
+    {
+        return float_to_money($this->qtd, '') . $this->insumo->unidade_sigla;
     }
 }

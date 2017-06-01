@@ -68,7 +68,7 @@ class WorkflowController extends Controller
         }
 
         if($aprovadosReprovados == 0){
-            return response()->json(['success' => false, 'resposta' => 'Já não havia nenhum item à aprovar!', 'refresh'=>true]);
+            return response()->json(['success' => false, 'resposta' => 'Já não havia nenhum item à aprovar!', 'refresh' =>true ]);
         }
 
         return response()->json(['success' => true]);

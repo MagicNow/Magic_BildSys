@@ -61,7 +61,7 @@ class ContratoItem extends Model
      **/
     public function insumo()
     {
-        return $this->belongsTo(\App\Models\Insumo::class);
+        return $this->belongsTo(Insumo::class, 'insumo_id');
     }
 
     /**
@@ -87,4 +87,25 @@ class ContratoItem extends Model
     {
         return $this->hasMany(ContratoItemReapropriacao::class);
     }
+
+    public function applyChanges(ContratoItemModificacao $mod)
+    {
+        $this->aprovado       = true;
+        $this->qtd            = $mod->qtd_atual;
+        $this->valor_unitario = $mod->valor_unitario_atual;
+        $this->valor_total    = (float) $this->qtd * (float) $this->valor_unitario;
+
+        $this->save();
+
+        return $this;
+    }
+
+    public function reapropriacoes()
+    {
+        return $this->hasMany(
+            ContratoItemReapropriacao::class,
+            'contrato_item_id'
+        );
+    }
+
 }

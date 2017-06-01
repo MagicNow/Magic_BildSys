@@ -682,32 +682,34 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->get(
             '/{contratos}',
             ['as' => 'contratos.show', 'uses' => 'ContratoController@show']
-        );
-        $router->post(
-            '/{contratos}',
-            ['as' => 'contratos.save', 'uses' => 'ContratoController@save']
-        );
+        )->middleware('needsPermission:contratos.show');
         $router->post(
             '/reajustar-item/{item}',
             [
                 'as' => 'contratos.reajustar-item',
                 'uses' => 'ContratoController@reajustarItem'
             ]
-        );
+        )->middleware('needsPermission:contratos.reajustar');
         $router->post(
             '/reapropriar-item/{item}',
             [
                 'as' => 'contratos.reapropriar-item',
                 'uses' => 'ContratoController@reapropriarItem'
             ]
-        );
+        )->middleware('needsPermission:contratos.reapropriar');
+        $router->get(
+            '/reapropriar-item/{item}',
+            [
+                'uses' => 'ContratoController@reapropriarItemForm'
+            ]
+        )->middleware('needsPermission:contratos.reapropriar');
         $router->post(
             '/distratar-item/{item}',
             [
                 'as' => 'contratos.distratar-item',
                 'uses' => 'ContratoController@distratarItem'
             ]
-        );
+        )->middleware('needsPermission:contratos.distratar');
     });
 
 

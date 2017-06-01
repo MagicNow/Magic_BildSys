@@ -12,7 +12,7 @@ use App\Repositories\QuadroDeConcorrenciaRepository;
  * @package App\Models
  * @version April 11, 2017, 2:52 pm BRT
  */
-class OrdemDeCompraItem extends Model
+class OcItem extends Model
 {
     use SoftDeletes;
 
@@ -81,24 +81,6 @@ class OrdemDeCompraItem extends Model
         'sugestao_data_uso' => 'date',
     ];
 
-    public function getQtdAttribute($value)
-    {
-        if(strlen($value) == 4){
-            $value = '0'.$value;
-        }
-
-        return number_format($value,2,',','.');
-    }
-
-    public function setQtdAttribute($value)
-    {
-        $pontos = array(",");
-        $value = str_replace('.','',$value);
-        $result = str_replace( $pontos, ".", $value);
-
-        $this->attributes['qtd'] = $result;
-    }
-
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
@@ -144,7 +126,7 @@ class OrdemDeCompraItem extends Model
      **/
     public function subgrupo1()
     {
-        return $this->belongsTo(Grupo::class,'subgrupo1_id');
+        return $this->belongsTo(Grupo::class, 'subgrupo1_id');
     }
 
     /**
@@ -152,7 +134,7 @@ class OrdemDeCompraItem extends Model
      **/
     public function subgrupo2()
     {
-        return $this->belongsTo(Grupo::class,'subgrupo2_id');
+        return $this->belongsTo(Grupo::class, 'subgrupo2_id');
     }
 
     /**
@@ -160,7 +142,7 @@ class OrdemDeCompraItem extends Model
      **/
     public function subgrupo3()
     {
-        return $this->belongsTo(Grupo::class,'subgrupo3_id');
+        return $this->belongsTo(Grupo::class, 'subgrupo3_id');
     }
 
     /**
@@ -195,9 +177,9 @@ class OrdemDeCompraItem extends Model
         return $this->hasMany(OrdemDeCompraItemAnexo::class);
     }
 
-    public function codigoServico()
+    public function codigoServico($showServico = true)
     {
-       $grupos = [
+        $grupos = [
             $this->grupo_id,
             $this->subgrupo1_id,
             $this->subgrupo2_id,
@@ -205,7 +187,7 @@ class OrdemDeCompraItem extends Model
             $this->servico_id
         ];
 
-       return implode('.', $grupos) . ' ' . $this->servico->nome;
+        return implode('.', $grupos) . ($showServico ? (' ' . $this->servico->nome) : '');
     }
 
     public function reapropriacoes()
@@ -225,16 +207,19 @@ class OrdemDeCompraItem extends Model
      */
     public static $workflow_tipo_id = 1; // Tipo = Aprovação de OC
 
-    public function aprovacoes(){
+    public function aprovacoes()
+    {
         return $this->morphMany(WorkflowAprovacao::class, 'aprovavel');
     }
 
-    public function irmaosIds(){
-        return $this->ordemDeCompra->itens()->pluck('ordem_de_compra_itens.id','ordem_de_compra_itens.id')->toArray();
+    public function irmaosIds()
+    {
+        return $this->ordemDeCompra->itens()->pluck('ordem_de_compra_itens.id', 'ordem_de_compra_itens.id')->toArray();
     }
 
-    public function paiEmAprovacao(){
-        if($this->ordemDeCompra->oc_status_id!=3){
+    public function paiEmAprovacao()
+    {
+        if ($this->ordemDeCompra->oc_status_id!=3) {
             $this->ordemDeCompra->update(['oc_status_id' => 3]);
             OrdemDeCompraStatusLog::create([
                 'oc_status_id'=>$this->ordemDeCompra->oc_status_id,
@@ -244,12 +229,13 @@ class OrdemDeCompraItem extends Model
         }
     }
 
-    public function confereAprovacaoGeral(){
+    public function confereAprovacaoGeral()
+    {
         $qtd_itens = $this->ordemDeCompra->itens()->count();
-        $qtd_itens_aprovados = $this->ordemDeCompra->itens()->where('aprovado','1')->count();
+        $qtd_itens_aprovados = $this->ordemDeCompra->itens()->where('aprovado', '1')->count();
         $qtd_itens_sem_voto = $this->ordemDeCompra->itens()->whereNull('aprovado')->count();
         // Verifica se todos foram aprovados
-        if($qtd_itens === $qtd_itens_aprovados){
+        if ($qtd_itens === $qtd_itens_aprovados) {
             $this->ordemDeCompra->update(['oc_status_id' => 5,'aprovado'=>1]);
             OrdemDeCompraStatusLog::create([
                 'oc_status_id'=>$this->ordemDeCompra->oc_status_id,
@@ -259,7 +245,7 @@ class OrdemDeCompraItem extends Model
             QuadroDeConcorrenciaRepository::verificaQCAutomatico();
         }
         // Verifica se algum foi reprovado e todos foram votados
-        if($qtd_itens !== $qtd_itens_aprovados && $qtd_itens_sem_voto===0){
+        if ($qtd_itens !== $qtd_itens_aprovados && $qtd_itens_sem_voto===0) {
             $this->ordemDeCompra->update(['oc_status_id' => 4,'aprovado'=>0]);
             OrdemDeCompraStatusLog::create([
                 'oc_status_id'=>$this->ordemDeCompra->oc_status_id,
@@ -269,13 +255,30 @@ class OrdemDeCompraItem extends Model
         }
     }
 
-    public function qualObra(){
+    public function qualObra()
+    {
         return $this->ordemDeCompra->obra_id;
     }
 
-    public function aprova($valor){
+    public function aprova($valor)
+    {
         $this->timestamps = false;
         $this->attributes['aprovado'] = $valor;
         $this->save();
+    }
+
+    public function getQtdSobraAttribute()
+    {
+        return $this->qtd - $this->reapropriacoes->sum('qtd');
+    }
+
+    public function getQtdSobraFormattedAttribute()
+    {
+        return float_to_money($this->getQtdSobraAttribute(), '') . ' ' . $this->insumo->unidade_sigla;
+    }
+
+    public function getQtdFormattedAttribute()
+    {
+        return float_to_money($this->qtd, '') . ' ' . $this->insumo->unidade_sigla;
     }
 }

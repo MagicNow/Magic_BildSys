@@ -184,7 +184,9 @@ class QuadroDeConcorrencia extends Model
         } else {
             $qc_status_id = 4;
         }
+
         $this->attributes['qc_status_id'] = $qc_status_id;
+
         $this->save();
 
         QcStatusLog::create([

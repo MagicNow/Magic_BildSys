@@ -13,7 +13,6 @@ use App\Repositories\WorkflowAprovacaoRepository;
 
 class ContratoItemDataTable extends DataTable
 {
-
     /**
      * @var int Id do Contrato
      */
@@ -33,17 +32,44 @@ class ContratoItemDataTable extends DataTable
      */
     public function ajax()
     {
+        $calc_aliq = function($type) {
+            return function($item) use($type) {
+                $value = ($item->{'aliq_' . $type} ?: 0) / 100;
+                return float_to_money($value * 100, '') . '%';
+            };
+        };
+
         $datatables = $this->datatables
             ->eloquent($this->query())
             ->addColumn('info', function($item) {
-                return view('contratos.itens_datatables_info', compact('item'))->render();
+
+                $reapropriacoes_dos_itens = $item->reapropriacoes->filter(function($re) {
+                  return is_null($re->contrato_item_reapropriacao_id) && !is_null($re->ordem_de_compra_item_id);
+                })->pluck('ordem_de_compra_item_id')->unique();
+
+                $reapropriacoes_de_reapropriacoes = $item->reapropriacoes->filter(function($re) {
+                  return $re->reapropriacoes->isNotEmpty();
+                });
+
+                return view(
+                    'contratos.itens_datatables_info',
+                    compact(
+                        'item',
+                        'reapropriacoes_dos_itens',
+                        'reapropriacoes_de_reapropriacoes'
+                    ))->render();
             })
             ->editColumn('qtd', function($item) {
-                return float_to_money($item->qtd, '');
+                return $item->qtd_formatted;
             })
             ->editColumn('valor_total', function($item) {
                 return float_to_money($item->valor_total);
-            });
+            })
+            ->editColumn('aliq_irrf', $calc_aliq('irrf'))
+            ->editColumn('aliq_inss', $calc_aliq('inss'))
+            ->editColumn('aliq_pis', $calc_aliq('pis'))
+            ->editColumn('aliq_csll', $calc_aliq('csll'))
+            ->editColumn('aliq_cofins', $calc_aliq('cofins'));
 
         if($this->contrato->isStatus(ContratoStatus::APROVADO)) {
             $datatables->addColumn('action', function($item) {
@@ -85,9 +111,14 @@ class ContratoItemDataTable extends DataTable
             }])
             ->select([
                 'contrato_itens.*',
-                'insumos.codigo as insumo_codigo',
                 'insumos.nome as insumo_nome',
                 'insumos.unidade_sigla as insumo_unidade',
+                'insumos.aliq_irrf',
+                'insumos.aliq_inss',
+                'insumos.aliq_pis',
+                'insumos.aliq_cofins',
+                'insumos.aliq_csll',
+                DB::raw('CONCAT(contrato_itens.qtd, \' \', insumos.unidade_sigla) as qtd_unidade'),
                 DB::raw('
                    (SELECT
                         CONCAT(codigo, \' - \', nome)
@@ -162,23 +193,13 @@ class ContratoItemDataTable extends DataTable
                 'exportable' => false,
                 'title'      => '#'
             ],
-            'insumo_codigo' => [
-                'data'  => 'insumo_codigo',
-                'name'  => 'insumos.codigo',
-                'title' => 'Cod. Insumo',
-            ],
             'insumo_nome' => [
                 'data'  => 'insumo_nome',
                 'name'  => 'insumos.nome',
                 'title' => 'Descrição',
             ],
-            'insumo_unidade' => [
-                'data'  => 'insumo_unidade',
-                'name'  => 'insumos.unidade_sigla',
-                'title' => 'Un',
-            ],
-            'qtd' => [
-                'data'  => 'qtd',
+            'qtd_unidade' => [
+                'data'  => 'qtd_unidade',
                 'name'  => 'contrato_itens.qtd',
                 'title' => 'Qtd'
             ],
@@ -186,6 +207,26 @@ class ContratoItemDataTable extends DataTable
                 'data'  => 'valor_total',
                 'name'  => 'contrato_itens.valor_total',
                 'title' => 'Total'
+            ],
+            'aliq_inss' => [
+                'title' => 'INSS',
+                'visible'=> false,
+                'name' => 'aliq_inss',
+            ],
+            'aliq_pis' => [
+                'title' => 'PIS',
+                'visible'=> false,
+                'name' => 'aliq_pis',
+            ],
+            'aliq_cofins' => [
+                'title' => 'COFINS',
+                'visible'=> false,
+                'name' => 'aliq_cofins',
+            ],
+            'aliq_csll' => [
+                'title' => 'CSLL',
+                'visible'=> false,
+                'name' => 'aliq_csll',
             ],
         ];
 
