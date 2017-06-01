@@ -718,6 +718,10 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
                 'uses' => 'ContratoController@distratarItem'
             ]
         );
+        $router->get(
+            '/{contratos}/editar',
+            ['as' => 'contratos.edit', 'uses' => 'ContratoController@edit']
+        );
     });
 
 

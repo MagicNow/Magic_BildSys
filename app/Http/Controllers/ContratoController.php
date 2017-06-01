@@ -184,4 +184,16 @@ class ContratoController extends AppBaseController
     public function imprimirContrato($id){
         return ContratoRepository::geraImpressao($id);
     }
+
+    public function edit($id){
+        $contrato = $this->contratoRepository->findWithoutFail($id);
+
+        if (empty($contrato)) {
+            Flash::error('Contrato '.trans('common.not-found'));
+
+            return redirect(route('contratos.index'));
+        }
+
+        return view('contratos.edit', compact('contrato'));
+    }
 }

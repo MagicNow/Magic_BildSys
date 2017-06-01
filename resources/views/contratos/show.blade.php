@@ -60,6 +60,14 @@
           </span>
         @endif
       @endif
+      @if($contrato->status->nome == 'Reprovado')
+        <a href="/contratos/{{$contrato->id}}/editar" type="button"
+           class="btn btn-warning btn-lg btn-flat"
+           title="Editar">
+          Editar
+          <i class="glyphicon glyphicon-edit" aria-hidden="true"></i>
+        </a>
+      @endif
       <small class="label label-default pull-right margin10">
         <i class="fa fa-circle"
           aria-hidden="true"
