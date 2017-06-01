@@ -43,7 +43,22 @@ class ContratoItemDataTable extends DataTable
         $datatables = $this->datatables
             ->eloquent($this->query())
             ->addColumn('info', function($item) {
-                return view('contratos.itens_datatables_info', compact('item'))->render();
+
+                $reapropriacoes_dos_itens = $item->reapropriacoes->filter(function($re) {
+                  return is_null($re->contrato_item_reapropriacao_id) && !is_null($re->ordem_de_compra_item_id);
+                })->pluck('ordem_de_compra_item_id')->unique();
+
+                $reapropriacoes_de_reapropriacoes = $item->reapropriacoes->filter(function($re) {
+                  return $re->reapropriacoes->isNotEmpty();
+                });
+
+                return view(
+                    'contratos.itens_datatables_info',
+                    compact(
+                        'item',
+                        'reapropriacoes_dos_itens',
+                        'reapropriacoes_de_reapropriacoes'
+                    ))->render();
             })
             ->editColumn('qtd', function($item) {
                 return float_to_money($item->qtd, '');

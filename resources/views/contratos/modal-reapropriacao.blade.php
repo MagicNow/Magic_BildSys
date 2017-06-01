@@ -13,18 +13,21 @@
         <td>
           {!!
             Form::radio(
-              'ordem_de_compra_item_id',
+              'item_id',
               $item->id,
               null,
               [
+                'data-column' => class_basename($item) === 'OcItem'
+                  ? 'ordem_de_compra_item_id'
+                  : 'contrato_item_reapropriacao_id',
                 'data-qtd-max' => $item->qtd,
-                'class' => 'js-ordem-de-compra-id'
+                'class' => 'js-item'
               ]
             )
           !!}
         </td>
-        <td>{{ $item->codigo_insumo }}</td>
-        <td>{{ $item->qtd . ' ' . $item->insumo->unidade_sigla}}</td>
+        <td data-toggle="tooltip" title="{{ $item->servico->nome }}" data-container="body">{{ $item->codigoServico(false) }}</td>
+        <td>{{ float_to_money($item->qtd, '') . ' ' . $item->insumo->unidade_sigla}}</td>
       </tr>
     @endforeach
   </tbody>

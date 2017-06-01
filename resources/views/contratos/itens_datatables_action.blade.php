@@ -1,9 +1,11 @@
 @if($item->aprovado)
-  <button class="btn btn-default btn-xs btn-flat js-reapropriar"
-    data-item-qtd="{{ $item->qtd }}"
-    data-item-id="{{ $item->id }}">
-    Reapropriar
-  </button>
+  @if($item->qcItem)
+    <button class="btn btn-default btn-xs btn-flat js-reapropriar"
+      data-item-qtd="{{ $item->qtd }}"
+      data-item-id="{{ $item->id }}">
+      Reapropriar
+    </button>
+  @endif
   <button class="btn btn-warning btn-xs btn-flat js-distrato"
     data-item-id="{{ $item->id }}"
     data-item-qtd="{{ $item->qtd }}">

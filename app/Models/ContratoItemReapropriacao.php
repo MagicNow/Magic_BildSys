@@ -19,6 +19,7 @@ class ContratoItemReapropriacao extends Model
     public $fillable = [
         'contrato_item_id',
         'ordem_de_compra_item_id',
+        'contrato_item_reapropriacao_id',
         'codigo_insumo',
         'grupo_id',
         'subgrupo1_id',
@@ -65,7 +66,7 @@ class ContratoItemReapropriacao extends Model
         return $this->belongsTo(ContratoItem::class);
     }
 
-    public function codigoServico()
+    public function codigoServico($showServico = true)
     {
        $grupos = [
             $this->grupo_id,
@@ -75,7 +76,7 @@ class ContratoItemReapropriacao extends Model
             $this->servico_id
         ];
 
-       return implode('.', $grupos) . ' ' . $this->servico->nome;
+       return implode('.', $grupos) . ($showServico ? (' ' . $this->servico->nome) : '');
     }
 
     /**
@@ -129,5 +130,28 @@ class ContratoItemReapropriacao extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function reapropriacoes()
+    {
+        return $this->hasMany(
+            ContratoItemReapropriacao::class,
+            'contrato_item_reapropriacao_id'
+        );
+    }
+
+    public function getQtdSobraAttribute()
+    {
+        return $this->qtd - $this->reapropriacoes->sum('qtd');
+    }
+
+    public function getQtdSobraFormattedAttribute()
+    {
+        return float_to_money($this->getQtdSobraAttribute(), '') . $this->insumo->unidade_sigla;
+    }
+
+    public function getQtdFormattedAttribute()
+    {
+        return float_to_money($this->qtd, '') . $this->insumo->unidade_sigla;
     }
 }

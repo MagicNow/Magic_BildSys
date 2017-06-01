@@ -62,21 +62,21 @@ var ErrorList = (function() {
 
 var Reapropriar = (function() {
   function Reapropriar() {
-    this.modal = document.getElementById('modal-reapropriar');
-    this.insumo = document.getElementById('insumo_id');
-    this.addAllBtn = document.getElementById('add-all');
-    this.grupos = document.querySelectorAll('.js-group-selector');
-    this.qtd = this.modal.querySelector('[name=qtd]');
-    this.saveBtn = this.modal.querySelector('.js-save');
-    this.id = 0;
+    this.modal      = document.getElementById('modal-reapropriar');
+    this.insumo     = document.getElementById('insumo_id');
+    this.addAllBtn  = document.getElementById('add-all');
+    this.grupos     = document.querySelectorAll('.js-group-selector');
+    this.qtd        = this.modal.querySelector('[name=qtd]');
+    this.saveBtn    = this.modal.querySelector('.js-save');
+    this.id         = 0;
     this.defaultQtd = 0;
-    var _this = this;
+    var _this       = this;
 
     $(this.modal).on('hide.bs.modal', function(e) {
       $(_this.insumo).select2('destroy');
     });
 
-    $(this.modal).on('ifToggled', '.js-item-orcamento', function(event) {
+    $(this.modal).on('ifToggled', '.js-item', function(event) {
       _this.addAllBtn.dataset.qtd = event.currentTarget.dataset.qtdMax;
     });
 
@@ -140,6 +140,10 @@ var Reapropriar = (function() {
       qtd: this.qtd.value,
     };
 
+    var item = this.getSelectedItem();
+
+    data[item.dataset.column] = item.value;
+
     data = _.reduce(this.grupos, function(data, grupo) {
       data[grupo.name] = grupo.value;
       return data;
@@ -175,10 +179,19 @@ var Reapropriar = (function() {
       });
   };
 
+  Reapropriar.prototype.getSelectedItem = function() {
+    return this.modal.querySelector('.js-item:checked');
+  };
+
   Reapropriar.prototype.valid = function() {
     var qtd = moneyToFloat(this.qtd.value);
 
-    if (qtd > moneyToFloat(this.addAllBtn.dataset.qtd)) {
+    if(!this.getSelectedItem()) {
+      swal('', 'Selecione o item a ser reapropriado', 'warning');
+      return false;
+    }
+
+    if (qtd > parseFloat(this.addAllBtn.dataset.qtd)) {
       swal('', 'Neste item o máximo de reapropriação é ' + this.addAllBtn.dataset.qtd, 'warning');
       return false;
     }
@@ -188,7 +201,11 @@ var Reapropriar = (function() {
       return false;
     }
 
-    var filled = _(this.grupos).map('value').filter(Boolean).size();
+    var filled = Array
+      .from(this.grupos)
+      .map(_.property('value'))
+      .filter(Boolean)
+      .length;
 
     if (filled !== this.grupos.length) {
       swal('', 'Selecione todos os grupos para reapropriação', 'warning');

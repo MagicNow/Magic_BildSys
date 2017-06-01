@@ -45,7 +45,7 @@ class QuadroDeConcorrenciaItem extends Model
     public function ordemDeCompraItens()
     {
         return $this->belongsToMany(
-            OrdemDeCompraItem::class,
+            OcItem::class,
             'oc_item_qc_item',
             'qc_item_id',
             'ordem_de_compra_item_id'

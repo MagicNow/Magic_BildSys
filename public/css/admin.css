@@ -19536,3 +19536,11 @@ h6 {
 .popover table {
   margin: 0;
 }
+
+.label-normalize {
+  font-size: inherit !important;
+  display: inline-block;
+}
+.label-normalize + .label-normalize {
+  margin-right: 5px;
+}
