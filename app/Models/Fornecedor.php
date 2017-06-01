@@ -40,6 +40,26 @@ class Fornecedor extends Model
         'user_id'
     ];
 
+    public static $campos = [
+        'codigo_mega',
+        'nome',
+        'cnpj',
+        'tipo_logradouro',
+        'logradouro',
+        'numero',
+        'complemento',
+        'cidade_id',
+        'municipio',
+        'estado',
+        'situacao_cnpj',
+        'inscricao_estadual',
+        'email',
+        'site',
+        'telefone',
+        'cep',
+        'user_id'
+    ];
+
     /**
      * The attributes that should be casted to native types.
      *

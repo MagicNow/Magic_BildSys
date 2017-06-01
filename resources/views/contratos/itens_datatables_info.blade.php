@@ -20,37 +20,39 @@
 </div>
 
 <div id="reapropriacao-{{ $item->id }}" class="hidden">
-  @if($item->qcItem->ordemDeCompraItens->pluck('reapropriacoes')->collapse()->isEmpty())
-    <p>Não foram realizadas reapropriações neste item do contrato</p>
-  @endif
+    @if($item->qcItem)
+        @if($item->qcItem->ordemDeCompraItens->pluck('reapropriacoes')->collapse()->isEmpty())
+            <p>Não foram realizadas reapropriações neste item do contrato</p>
+        @endif
 
-  @foreach($item->qcItem->ordemDeCompraItens as $ordemDeCompraItem)
-    @if($ordemDeCompraItem->reapropriacoes->isNotEmpty())
-      <div class="box box-muted">
-        <div class="box-header with-border">
-          {{ $ordemDeCompraItem->codigoServico() }}
-        </div>
-        <div class="box-body">
-            <table class="table table-striped table-condensed">
-              <thead>
-                <tr>
-                  <th>Serviço</th>
-                  <th>Quantidade</th>
-                </tr>
-              </thead>
-              <tbody>
-                @foreach($ordemDeCompraItem->reapropriacoes as $reapropriacao)
-                <tr>
-                  <td>{{ $reapropriacao->codigoServico() }}</td>
-                  <td>{{ float_to_money($reapropriacao->qtd, '') }}</td>
-                </tr>
-                @endforeach
-              </tbody>
-            </table>
-        </div>
-      </div>
+        @foreach($item->qcItem->ordemDeCompraItens as $ordemDeCompraItem)
+          @if($ordemDeCompraItem->reapropriacoes->isNotEmpty())
+            <div class="box box-muted">
+              <div class="box-header with-border">
+                {{ $ordemDeCompraItem->codigoServico() }}
+              </div>
+              <div class="box-body">
+                  <table class="table table-striped table-condensed">
+                    <thead>
+                      <tr>
+                        <th>Serviço</th>
+                        <th>Quantidade</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @foreach($ordemDeCompraItem->reapropriacoes as $reapropriacao)
+                      <tr>
+                        <td>{{ $reapropriacao->codigoServico() }}</td>
+                        <td>{{ float_to_money($reapropriacao->qtd, '') }}</td>
+                      </tr>
+                      @endforeach
+                    </tbody>
+                  </table>
+              </div>
+            </div>
+          @endif
+        @endforeach
     @endif
-  @endforeach
 </div>
 
 <div id="history-table-{{ $item->id }}" class="hidden">

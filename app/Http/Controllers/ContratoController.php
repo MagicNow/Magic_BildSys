@@ -180,4 +180,8 @@ class ContratoController extends AppBaseController
             'success' => true
         ]);
     }
+    
+    public function imprimirContrato($id){
+        return ContratoRepository::geraImpressao($id);
+    }
 }

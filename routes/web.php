@@ -680,6 +680,10 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             ['as' => 'contratos.index', 'uses' => 'ContratoController@index']
         );
         $router->get(
+            '/{contratos}/imprimir',
+            ['as' => 'contratos.imprimirContrato', 'uses' => 'ContratoController@imprimirContrato']
+        );
+        $router->get(
             '/{contratos}',
             ['as' => 'contratos.show', 'uses' => 'ContratoController@show']
         );
