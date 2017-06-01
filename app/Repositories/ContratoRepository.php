@@ -328,9 +328,14 @@ class ContratoRepository extends BaseRepository
         foreach ($contratoCampos as $campo => $valor){
             $templateRenderizado = str_replace('['.strtoupper($campo).'_CONTRATO]', $valor,$templateRenderizado );
         }
-        
         // Tenta aplicar variáveis do Template (dinâmicas)
-        /*@TODO continuar */
+        if(strlen($contrato->campos_extras)){
+            $variaveis_dinamicas = json_decode($contrato->campos_extras) ;
+            foreach ($variaveis_dinamicas as $campo => $valor){
+                $templateRenderizado = str_replace('['.strtoupper($campo).']', $valor,$templateRenderizado );
+            }
+        }
+
         echo($templateRenderizado);
     }
 }
