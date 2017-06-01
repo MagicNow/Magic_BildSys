@@ -1165,6 +1165,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
                 $contratoExistente = Contrato::where('quadro_de_concorrencia_id', $qcF->quadro_de_concorrencia_id)
                     ->where('fornecedor_id',$qcF->fornecedor_id)
                     ->where('obra_id',$obraId)
+                    ->where('contrato_status_id','!=','6')
                     ->first();
                 if($contratoExistente){
                     $contratosExistentes[$qcFornecedorId][$obraId] = $contratoExistente;

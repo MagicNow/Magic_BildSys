@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class ContratoItemReapropriacao
@@ -12,16 +11,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class ContratoItemReapropriacao extends Model
 {
-    use SoftDeletes;
-
     public $table = 'contrato_item_reapropriacoes';
-    
+
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
-
-
-    protected $dates = ['deleted_at'];
-
 
     public $fillable = [
         'contrato_item_id',
@@ -62,7 +55,6 @@ class ContratoItemReapropriacao extends Model
      * @var array
      */
     public static $rules = [
-        
     ];
 
     /**
@@ -73,12 +65,17 @@ class ContratoItemReapropriacao extends Model
         return $this->belongsTo(ContratoItem::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     **/
-    public function grupo()
+    public function codigoServico()
     {
-        return $this->belongsTo(Grupo::class);
+       $grupos = [
+            $this->grupo_id,
+            $this->subgrupo1_id,
+            $this->subgrupo2_id,
+            $this->subgrupo3_id,
+            $this->servico_id
+        ];
+
+       return implode('.', $grupos) . ' ' . $this->servico->nome;
     }
 
     /**
@@ -86,7 +83,7 @@ class ContratoItemReapropriacao extends Model
      **/
     public function insumo()
     {
-        return $this->belongsTo(Insumo::class);
+        return $this->belongsTo(Insumo::class, 'insumo_id');
     }
 
     /**
@@ -97,9 +94,6 @@ class ContratoItemReapropriacao extends Model
         return $this->belongsTo(OrdemDeCompraItem::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     **/
     public function servico()
     {
         return $this->belongsTo(Servico::class);

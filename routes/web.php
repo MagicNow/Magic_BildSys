@@ -680,6 +680,10 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             ['as' => 'contratos.index', 'uses' => 'ContratoController@index']
         );
         $router->get(
+            '/{contratos}/imprimir',
+            ['as' => 'contratos.imprimirContrato', 'uses' => 'ContratoController@imprimirContrato']
+        );
+        $router->get(
             '/{contratos}',
             ['as' => 'contratos.show', 'uses' => 'ContratoController@show']
         );
@@ -699,6 +703,12 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             [
                 'as' => 'contratos.reapropriar-item',
                 'uses' => 'ContratoController@reapropriarItem'
+            ]
+        );
+        $router->get(
+            'contratos/reapropriar-item/{item}',
+            [
+                'uses' => 'ContratoController@reapropriarItemForm'
             ]
         );
         $router->post(

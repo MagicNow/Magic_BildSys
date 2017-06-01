@@ -25,6 +25,7 @@ class RolesAndPermissions extends Seeder
             'Administrador',
             'Suprimentos',
             'Fornecedor',
+            'Planejamento'
         ];
 
         $roles = [];
@@ -168,6 +169,7 @@ class RolesAndPermissions extends Seeder
         foreach ($users as $user) {
             $user->attachPermission(Defender::findPermission('site.dashboard'));
         }
+
         // Adiciona permissões no SuperUser
         foreach ($permissionAccess as $permission)
         {
