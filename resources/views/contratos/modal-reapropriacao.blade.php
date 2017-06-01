@@ -26,8 +26,14 @@
             )
           !!}
         </td>
-        <td data-toggle="tooltip" title="{{ $item->servico->nome }}" data-container="body">{{ $item->codigoServico(false) }}</td>
-        <td>{{ float_to_money($item->qtd, '') . ' ' . $item->insumo->unidade_sigla}}</td>
+        <td class="text-left">
+          <span data-toggle="tooltip"
+            title="{{ $item->servico->nome }}"
+            data-container="body">
+            {{ $item->codigoServico(false) }}
+          </span>
+        </td>
+        <td class="text-right">{{ $item->qtd_formatted }}</td>
       </tr>
     @endforeach
   </tbody>

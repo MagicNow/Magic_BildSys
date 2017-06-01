@@ -157,7 +157,7 @@ var Reapropriar = (function() {
           type: 'success',
         }, function() {
           $(_this.modal).modal('hide');
-          location.reload();
+          LaravelDataTables.dataTableBuilder.draw();
         });
       })
       .fail(function(response) {

@@ -34,9 +34,8 @@ class ContratoItemDataTable extends DataTable
     {
         $calc_aliq = function($type) {
             return function($item) use($type) {
-                $value = $item->{'aliq_' . $type} ?: 0;
-
-                return float_to_money($value * $item->valor_total);
+                $value = ($item->{'aliq_' . $type} ?: 0) / 100;
+                return float_to_money($value * 100, '') . '%';
             };
         };
 
@@ -61,7 +60,7 @@ class ContratoItemDataTable extends DataTable
                     ))->render();
             })
             ->editColumn('qtd', function($item) {
-                return float_to_money($item->qtd, '');
+                return $item->qtd_formatted;
             })
             ->editColumn('valor_total', function($item) {
                 return float_to_money($item->valor_total);

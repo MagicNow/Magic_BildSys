@@ -1,16 +1,21 @@
 @inject('carbon', 'Carbon\Carbon')
 
 <div class='btn-group'>
-  @if($item->qcItem)
-    <a href="javascript:void(0)"
-      title="Reapropriações"
-      data-toggle="popover"
-      data-container="body"
-      data-external-content="#reapropriacao-{{ $item->id }}"
-      class='btn btn-info btn-xs btn-flat'>
-      <i class="fa fa-asterisk fa-fw"></i>
-    </a>
-  @endif
+  @shield('contratos.reapropriar')
+    @if(
+      $item->qcItem &&
+      $reapropriacoes_dos_itens->isNotEmpty()
+    )
+      <a href="javascript:void(0)"
+        title="Reapropriações"
+        data-toggle="popover"
+        data-container="body"
+        data-external-content="#reapropriacao-{{ $item->id }}"
+        class='btn btn-info btn-xs btn-flat'>
+        <i class="fa fa-asterisk fa-fw"></i>
+      </a>
+    @endif
+  @endshield
   <a href="javascript:void(0)"
     title="{{ $item->servico }} / {{ $item->insumo->nome }}"
     data-toggle="popover"
@@ -23,10 +28,6 @@
 
 @if($item->qcItem)
   <div id="reapropriacao-{{ $item->id }}" class="hidden">
-    @if($reapropriacoes_dos_itens->isEmpty() && $reapropriacoes_de_reapropriacoes->isEmpty())
-      <p>Não foram realizadas reapropriações nestes itens.</p>
-    @endif
-
     @foreach($reapropriacoes_dos_itens as $id)
       @php $ordemDeCompraItem = $item->qcItem->ordemDeCompraItens->where('id', $id)->first(); @endphp
       <div class="box box-muted">

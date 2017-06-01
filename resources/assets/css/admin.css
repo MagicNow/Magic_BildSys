@@ -513,3 +513,8 @@ h6 {
 .label-normalize + .label-normalize {
   margin-right: 5px;
 }
+.popover-content {
+  max-height: calc(100vh - 50px);
+  overflow-x: auto;
+  padding-bottom: 10px;
+}
