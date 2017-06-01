@@ -125,6 +125,9 @@ class RolesAndPermissions extends Seeder
             'contratoTemplates.edit'   => 'Edição de Template de Contrato',
             'contratoTemplates.delete'   => 'Remoção de Template de Contrato',
 
+            'configuracaoEstaticas.list'   => 'Listagem de Configuração padrão',
+            'configuracaoEstaticas.edit'   => 'Edição de Configuração padrão',
+
             ################# SITE ###################
             'compras_lembretes.list' => 'Listagem de compras e lembretes',
 

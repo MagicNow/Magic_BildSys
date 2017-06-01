@@ -62,49 +62,97 @@
     </ul>
 </li>
 
-@shield('obras.list')
-    <li class="{{ Request::is('admin/obras*') ? 'active' : '' }}">
-        <a href="{!! route('admin.obras.index') !!}"><i class="fa fa-building"></i><span>Obras</span></a>
-    </li>
-@endshield
-@shield('insumos.list')
-    <li class="{{ Request::is('insumos*') ? 'active' : '' }}">
-        <a href="{!! route('admin.insumos.index') !!}"><i class="fa fa-gamepad"></i><span>Insumos</span></a>
-    </li>
-@endshield
-@shield('grupos_insumos.list')
-    <li class="{{ Request::is('insumoGrupos*') ? 'active' : '' }}">
-        <a href="{!! route('admin.insumoGrupos.index') !!}"><i class="fa fa-th-list"></i><span>Grupos de insumos</span></a>
-    </li>
-@endshield
-@shield('template_planilhas.list')
-    <li class="{{ Request::is('templatePlanilhas*') ? 'active' : '' }}">
-        <a href="{!! route('admin.templatePlanilhas.index') !!}"><i class="fa fa-table"></i><span>Template de planilhas</span></a>
-    </li>
-@endshield
-@shield('retroalimentacao.list')
-    <li class="{{ Request::is('admin/retroalimentacaoObras*') ? 'active' : '' }}">
-        <a href="{!! route('retroalimentacaoObras.index') !!}"><i class="fa fa-magic"></i><span>Retroalimentação de obras</span></a>
-    </li>
-@endshield
+<li class="treeview {{ Request::is('admin/obras*') ||
+                       Request::is('admin/retroalimentacaoObras*')
+                       ? 'active' : '' }}">
+    <a href="#">
+        <i class="fa fa-building"></i> <span>Obra</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+    </a>
+    <ul class="treeview-menu">
+        @shield('obras.list')
+        <li class="{{ Request::is('admin/obras*') ? 'active' : '' }}">
+            <a href="{!! route('admin.obras.index') !!}"><i class="fa fa-building"></i><span>Obras</span></a>
+        </li>
+        @endshield
+
+        @shield('retroalimentacao.list')
+        <li class="{{ Request::is('admin/retroalimentacaoObras*') ? 'active' : '' }}">
+            <a href="{!! route('retroalimentacaoObras.index') !!}"><i class="fa fa-magic"></i><span>Retroalimentação de obras</span></a>
+        </li>
+        @endshield
+    </ul>
+</li>
+
+<li class="treeview {{ Request::is('admin/insumos*') ||
+                       Request::is('admin/insumoGrupos*') ||
+                       Request::is('admin/compradorInsumos*') ||
+                       Request::is('admin/solicitacaoInsumos*')
+                       ? 'active' : '' }}">
+    <a href="#">
+        <i class="fa fa-gamepad"></i> <span>Insumo</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+    </a>
+    <ul class="treeview-menu">
+        @shield('insumos.list')
+        <li class="{{ Request::is('admin/insumos*') ? 'active' : '' }}">
+            <a href="{!! route('admin.insumos.index') !!}"><i class="fa fa-gamepad"></i><span>Insumos</span></a>
+        </li>
+        @endshield
+        @shield('grupos_insumos.list')
+        <li class="{{ Request::is('admin/insumoGrupos*') ? 'active' : '' }}">
+            <a href="{!! route('admin.insumoGrupos.index') !!}"><i class="fa fa-th-list"></i><span>Grupos de insumos</span></a>
+        </li>
+        @endshield
+        @shield('compradorInsumos.list')
+        <li class="{{ Request::is('admin/compradorInsumos*') ? 'active' : '' }}">
+            <a href="{!! route('admin.compradorInsumos.index') !!}"><i class="fa fa-child"></i><span>Comprador/Insumos</span></a>
+        </li>
+        @endshield
+        @shield('solicitacaoInsumos.list')
+        <li class="{{ Request::is('admin/solicitacaoInsumos*') ? 'active' : '' }}">
+            <a href="{!! route('admin.solicitacaoInsumos.index') !!}"><i class="fa fa-edit"></i><span>Solicitações de insumos</span></a>
+        </li>
+        @endshield
+    </ul>
+</li>
+
+<li class="treeview {{ Request::is('admin/templatePlanilhas*') ||
+                       Request::is('admin/contratoTemplates*')
+                       ? 'active' : '' }}">
+    <a href="#">
+        <i class="fa fa-table"></i> <span>Templates</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+    </a>
+    <ul class="treeview-menu">
+        @shield('template_planilhas.list')
+        <li class="{{ Request::is('admin/templatePlanilhas*') ? 'active' : '' }}">
+            <a href="{!! route('admin.templatePlanilhas.index') !!}"><i class="fa fa-table"></i><span>Template de planilhas</span></a>
+        </li>
+        @endshield
+        @shield('contratoTemplates.list')
+        <li class="{{ Request::is('admin/contratoTemplates*') ? 'active' : '' }}">
+            <a href="{!! route('admin.contratoTemplates.index') !!}"><i class="fa fa-file-text-o"></i><span>Templates de Contratos</span></a>
+        </li>
+        @endshield
+    </ul>
+</li>
+
 @shield('fornecedores.list')
     <li class="{{ Request::is('admin/fornecedores*') ? 'active' : '' }}">
     <a href="{!! route('admin.fornecedores.index') !!}"><i class="fa fa-user-plus"></i><span>Fornecedores</span></a>
     </li>
 @endshield
-@shield('compradorInsumos.list')
-    <li class="{{ Request::is('admin/compradorInsumos*') ? 'active' : '' }}">
-        <a href="{!! route('admin.compradorInsumos.index') !!}"><i class="fa fa-child"></i><span>Comprador/Insumos</span></a>
+
+@shield('configuracaoEstaticas.list')
+    <li class="{{ Request::is('admin.configuracaoEstaticas*') ? 'active' : '' }}">
+        <a href="{!! route('admin.configuracaoEstaticas.index') !!}"><i class="fa fa-cog"></i><span>Configuracão padrão</span></a>
     </li>
-@endshield
-@shield('solicitacaoInsumos.list')
-    <li class="{{ Request::is('admin/solicitacaoInsumos*') ? 'active' : '' }}">
-        <a href="{!! route('admin.solicitacaoInsumos.index') !!}"><i class="fa fa-edit"></i><span>Solicitações de insumos</span></a>
-    </li>
-@endshield
-@shield('contratoTemplates.list')
-<li class="{{ Request::is('admin/contratoTemplates*') ? 'active' : '' }}">
-    <a href="{!! route('admin.contratoTemplates.index') !!}"><i class="fa fa-file-text-o"></i><span>Templates de Contratos</span></a>
-</li>
 @endshield
 

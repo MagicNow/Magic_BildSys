@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Mail\IniciaConcorrenciaFornecedorNaoUsuario;
 use App\Models\CatalogoContratoInsumo;
+use App\Models\ConfiguracaoEstatica;
 use App\Models\Fornecedor;
 use App\Models\OrdemDeCompraItem;
 use App\Models\QcFornecedor;
@@ -36,22 +37,11 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
         $attributes = [
             'user_id' => $attributes['user_id'],
             'qc_status_id' => 1,
-
-            'obrigacoes_fornecedor' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur interdum
-            rutrum magna, eu dignissim nunc malesuada ac. Vestibulum velit libero, egestas non sapien ac, egestas
-            bibendum massa. Donec vel luctus erat. Fusce ultrices lectus justo, a sollicitudin libero vestibulum vitae.
-            Nullam at quam metus. Aliquam faucibus sapien vel velit tempor, congue dignissim libero viverra. Morbi
-            vestibulum eros eget tempor fermentum.',
-
-        'obrigacoes_bild' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur interdum
-            rutrum magna, eu dignissim nunc malesuada ac. Vestibulum velit libero, egestas non sapien ac, egestas
-            bibendum massa. Donec vel luctus erat. Fusce ultrices lectus justo, a so
-            llicitudin libero vestibulum vitae.
-            Nullam at quam metus. Aliquam faucibus sapien vel velit tempor, congue dignissim libero viverra. Morbi
-            vestibulum eros eget tempor fermentum.',
-
-        'rodada_atual' => 1
+            'obrigacoes_fornecedor' => ConfiguracaoEstatica::find(1)->valor,
+            'obrigacoes_bild' => ConfiguracaoEstatica::find(2)->valor,
+            'rodada_atual' => 1
         ];
+
         $temporarySkipPresenter = $this->skipPresenter;
         $this->skipPresenter(true);
         $model = parent::create($attributes);
@@ -269,17 +259,8 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
             $quadroDeConcorrencia = QuadroDeConcorrencia::create([
                 'user_id' => null,
                 'qc_status_id' => 1,
-                'obrigacoes_fornecedor' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur interdum
-                rutrum magna, eu dignissim nunc malesuada ac. Vestibulum velit libero, egestas non sapien ac, egestas
-                bibendum massa. Donec vel luctus erat. Fusce ultrices lectus justo, a sollicitudin libero vestibulum vitae.
-                Nullam at quam metus. Aliquam faucibus sapien vel velit tempor, congue dignissim libero viverra. Morbi
-                vestibulum eros eget tempor fermentum.',
-
-                    'obrigacoes_bild' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur interdum
-                rutrum magna, eu dignissim nunc malesuada ac. Vestibulum velit libero, egestas non sapien ac, egestas
-                bibendum massa. Donec vel luctus erat. Fusce ultrices lectus justo, a sollicitudin libero vestibulum vitae.
-                Nullam at quam metus. Aliquam faucibus sapien vel velit tempor, congue dignissim libero viverra. Morbi
-                vestibulum eros eget tempor fermentum.',
+                'obrigacoes_fornecedor' => ConfiguracaoEstatica::find(1)->valor,
+                'obrigacoes_bild' => ConfiguracaoEstatica::find(2)->valor,
                 'rodada_atual' => 1
             ]);
 
