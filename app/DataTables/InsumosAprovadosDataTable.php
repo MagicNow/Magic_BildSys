@@ -40,8 +40,8 @@ class InsumosAprovadosDataTable extends DataTable
             ->filterColumn('sla', function($query, $keyword){
                 $query->whereRaw("(SELECT
                     DATEDIFF(
-                        SUBDATE(
-                            PL.`data` , ". //-- Data de início do Planejamento
+                        ADDDATE(
+                            ordem_de_compra_itens.updated_at, ". //-- Data de início do Planejamento
                     "INTERVAL(
                                 IFNULL(
                                 (SELECT
@@ -59,14 +59,9 @@ class InsumosAprovadosDataTable extends DataTable
                                             I.id = item.insumo_id
                                         AND I.insumo_grupo_id = IG.id
                                     )
-                                AND L.deleted_at IS NULL) ". //-- Subtrai a soma de todos prazos dos lembretes deste insumo
+                                AND L.deleted_at IS NULL
+                                AND L.lembrete_tipo_id = 2) ". //-- Subtrai a soma de todos prazos dos lembretes deste insumo
                     ",0)
-                                + ". // -- Subtrai tb os dias de workflow
-                    " IFNULL(
-                                    (SELECT SUM(dias_prazo) prazo
-                                        FROM workflow_alcadas
-                                        WHERE EXISTS(SELECT 1 FROM workflow_usuarios WHERE workflow_alcada_id = workflow_alcadas.id ))
-                                ,0)
                             ) 
                             DAY
                         ) ,
@@ -108,8 +103,8 @@ class InsumosAprovadosDataTable extends DataTable
             DB::raw("(
                 SELECT
                     DATEDIFF(
-                        SUBDATE(
-                            PL.`data` , ". //-- Data de início do Planejamento
+                        ADDDATE(
+                            ordem_de_compra_itens.updated_at , ". //-- Data de alteração da ordem de compras itens
                 "INTERVAL(
                                 IFNULL(
                                 (SELECT
@@ -127,14 +122,9 @@ class InsumosAprovadosDataTable extends DataTable
                                             I.id = item.insumo_id
                                         AND I.insumo_grupo_id = IG.id
                                     )
-                                AND L.deleted_at IS NULL) ". //-- Subtrai a soma de todos prazos dos lembretes deste insumo
+                                AND L.deleted_at IS NULL
+                                AND L.lembrete_tipo_id = 2) ". //-- Subtrai a soma de todos prazos dos lembretes deste insumo
                 ",0)
-                                + ". // -- Subtrai tb os dias de workflow
-                " IFNULL(
-                                    (SELECT SUM(dias_prazo) prazo
-                                        FROM workflow_alcadas
-                                        WHERE EXISTS(SELECT 1 FROM workflow_usuarios WHERE workflow_alcada_id = workflow_alcadas.id ))
-                                ,0)
                             ) 
                             DAY
                         ) ,
@@ -202,8 +192,8 @@ class InsumosAprovadosDataTable extends DataTable
                 (
                 SELECT
                     DATEDIFF(
-                        SUBDATE(
-                            PL.`data` , " . //-- Data de início do Planejamento
+                        ADDDATE(
+                            ordem_de_compra_itens.updated_at , " . //-- Data de início do Planejamento
                     "INTERVAL(
                                 IFNULL(
                                 (SELECT
@@ -221,14 +211,9 @@ class InsumosAprovadosDataTable extends DataTable
                                             I.id = item.insumo_id
                                         AND I.insumo_grupo_id = IG.id
                                     )
-                                AND L.deleted_at IS NULL) " . //-- Subtrai a soma de todos prazos dos lembretes deste insumo
+                                AND L.deleted_at IS NULL
+                                AND L.lembrete_tipo_id = 2) " . //-- Subtrai a soma de todos prazos dos lembretes deste insumo
                     ",0)
-                                + " . // -- Subtrai tb os dias de workflow
-                    " IFNULL(
-                                    (SELECT SUM(dias_prazo) prazo
-                                        FROM workflow_alcadas
-                                        WHERE EXISTS(SELECT 1 FROM workflow_usuarios WHERE workflow_alcada_id = workflow_alcadas.id ))
-                                ,0)
                             ) 
                             DAY
                         ) ,
@@ -252,8 +237,8 @@ class InsumosAprovadosDataTable extends DataTable
                 )<=0,'vermelho', IF( (
                 SELECT
                     DATEDIFF(
-                        SUBDATE(
-                            PL.`data` , " . //-- Data de início do Planejamento
+                        ADDDATE(
+                            ordem_de_compra_itens.updated_at , " . //-- Data de início do Planejamento
                     "INTERVAL(
                                 IFNULL(
                                 (SELECT
@@ -271,14 +256,9 @@ class InsumosAprovadosDataTable extends DataTable
                                             I.id = item.insumo_id
                                         AND I.insumo_grupo_id = IG.id
                                     )
-                                AND L.deleted_at IS NULL) " . //-- Subtrai a soma de todos prazos dos lembretes deste insumo
+                                AND L.deleted_at IS NULL
+                                AND L.lembrete_tipo_id = 2) " . //-- Subtrai a soma de todos prazos dos lembretes deste insumo
                     ",0)
-                                + " . // -- Subtrai tb os dias de workflow
-                    " IFNULL(
-                                    (SELECT SUM(dias_prazo) prazo
-                                        FROM workflow_alcadas
-                                        WHERE EXISTS(SELECT 1 FROM workflow_usuarios WHERE workflow_alcada_id = workflow_alcadas.id ))
-                                ,0)
                             ) 
                             DAY
                         ) ,
