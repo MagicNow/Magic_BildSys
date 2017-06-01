@@ -150,7 +150,7 @@ class OcItem extends Model
      **/
     public function contrato()
     {
-        return $this->belongsTo(CatalogoContrato::class, 'sugestao_contrato_id');
+        return $this->belongsTo(Contrato::class, 'sugestao_contrato_id');
     }
 
     /**

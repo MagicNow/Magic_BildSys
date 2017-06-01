@@ -62,7 +62,7 @@ class ContratoRepository extends BaseRepository
                 return [
                     'success' => false,
                     'contratos'=>[],
-                    'erro'=>'O Fornecedor '. $qcFornecedor->fornecedor->nome.' não está cadastrado no Mega, por favor 
+                    'erro'=>'O Fornecedor '. $qcFornecedor->fornecedor->nome.' não está cadastrado no Mega, por favor
                     solicite a inclusão para que o contrato possa ser gerado'
                 ];
 
@@ -104,7 +104,7 @@ class ContratoRepository extends BaseRepository
                 }
             }
         }
-        
+
         foreach ($qcFornecedor->itens as $item) {
             $valor_item = $item->valor_total;
             $valor_item_unitario = $item->valor_unitario;
