@@ -1078,6 +1078,20 @@ class OrdemDeCompraController extends AppBaseController
             $orcamento->save();
         }
 
+        $ordem_de_compra_item = OrdemDeCompraItem::where('insumo_id', $id)
+            ->where('grupo_id', $request->grupo_id)
+            ->where('subgrupo1_id', $request->subgrupo1_id)
+            ->where('subgrupo2_id', $request->subgrupo2_id)
+            ->where('subgrupo3_id', $request->subgrupo3_id)
+            ->where('servico_id', $request->servico_id)
+            ->first();
+
+        if($ordem_de_compra_item) {
+            $ordem_de_compra_item->valor_unitario = money_to_float($request->valor);
+            $ordem_de_compra_item->valor_total = $ordem_de_compra_item->getOriginal('qtd') * money_to_float($request->valor);
+            $ordem_de_compra_item->save();
+        }
+
         return response()->json(['success'=>true]);
     }
 
@@ -1387,7 +1401,8 @@ class OrdemDeCompraController extends AppBaseController
             'subgrupo2_id' => $request->subgrupo2_id,
             'subgrupo3_id' => $request->subgrupo3_id,
             'user_id' => Auth::id(),
-            'descricao' => $insumo->nome
+            'descricao' => $insumo->nome,
+            'insumo_incluido' => 1
         ]);
 
         $orcamento->save();

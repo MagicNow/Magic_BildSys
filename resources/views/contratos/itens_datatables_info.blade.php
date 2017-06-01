@@ -2,13 +2,55 @@
 
 <div class='btn-group'>
   <a href="javascript:void(0)"
-      title="{{ $item->servico }}"
+      title="Reapropriações"
+      data-toggle="popover"
+      data-container="body"
+      data-external-content="#reapropriacao-{{ $item->id }}"
+      class='btn btn-info btn-xs btn-flat'>
+      <i class="fa fa-asterisk fa-fw"></i>
+  </a>
+  <a href="javascript:void(0)"
+      title="{{ $item->servico }} / {{ $item->insumo->nome }}"
       data-toggle="popover"
       data-container="body"
       data-external-content="#history-table-{{ $item->id }}"
       class='btn btn-default btn-xs btn-flat'>
       <i class="fa fa-history fa-fw"></i>
   </a>
+</div>
+
+<div id="reapropriacao-{{ $item->id }}" class="hidden">
+  @if($item->qcItem->ordemDeCompraItens->pluck('reapropriacoes')->collapse()->isEmpty())
+    <p>Não foram realizadas reapropriações neste item do contrato</p>
+  @endif
+
+  @foreach($item->qcItem->ordemDeCompraItens as $ordemDeCompraItem)
+    @if($ordemDeCompraItem->reapropriacoes->isNotEmpty())
+      <div class="box box-muted">
+        <div class="box-header with-border">
+          {{ $ordemDeCompraItem->codigoServico() }}
+        </div>
+        <div class="box-body">
+            <table class="table table-striped table-condensed">
+              <thead>
+                <tr>
+                  <th>Serviço</th>
+                  <th>Quantidade</th>
+                </tr>
+              </thead>
+              <tbody>
+                @foreach($ordemDeCompraItem->reapropriacoes as $reapropriacao)
+                <tr>
+                  <td>{{ $reapropriacao->codigoServico() }}</td>
+                  <td>{{ float_to_money($reapropriacao->qtd, '') }}</td>
+                </tr>
+                @endforeach
+              </tbody>
+            </table>
+        </div>
+      </div>
+    @endif
+  @endforeach
 </div>
 
 <div id="history-table-{{ $item->id }}" class="hidden">

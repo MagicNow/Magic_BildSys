@@ -701,6 +701,12 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
                 'uses' => 'ContratoController@reapropriarItem'
             ]
         );
+        $router->get(
+            'contratos/reapropriar-item/{item}',
+            [
+                'uses' => 'ContratoController@reapropriarItemForm'
+            ]
+        );
         $router->post(
             '/distratar-item/{item}',
             [

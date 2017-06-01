@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use App\Repositories\QuadroDeConcorrenciaRepository;
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Repositories\QuadroDeConcorrenciaRepository;
 
 /**
  * Class OrdemDeCompraItem
@@ -17,13 +17,11 @@ class OrdemDeCompraItem extends Model
     use SoftDeletes;
 
     public $table = 'ordem_de_compra_itens';
-    
+
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
-
     protected $dates = ['deleted_at'];
-
 
     public $fillable = [
         'ordem_de_compra_id',
@@ -55,23 +53,23 @@ class OrdemDeCompraItem extends Model
      * @var array
      */
     protected $casts = [
-        'id' => 'integer',
-        'ordem_de_compra_id' => 'integer',
-        'obra_id' => 'integer',
-        'codigo_insumo' => 'string',
-        'obs' => 'string',
-        'justificativa' => 'string',
-        'tems' => 'string',
-        'grupo_id' => 'integer',
-        'subgrupo1_id' => 'integer',
-        'subgrupo2_id' => 'integer',
-        'subgrupo3_id' => 'integer',
-        'servico_id' => 'integer',
-        'insumo_id' => 'integer',
-        'sugestao_data_uso' => 'date',
+        'id'                   => 'integer',
+        'ordem_de_compra_id'   => 'integer',
+        'obra_id'              => 'integer',
+        'codigo_insumo'        => 'string',
+        'obs'                  => 'string',
+        'justificativa'        => 'string',
+        'tems'                 => 'string',
+        'grupo_id'             => 'integer',
+        'subgrupo1_id'         => 'integer',
+        'subgrupo2_id'         => 'integer',
+        'subgrupo3_id'         => 'integer',
+        'servico_id'           => 'integer',
+        'insumo_id'            => 'integer',
+        'sugestao_data_uso'    => 'date',
         'sugestao_contrato_id' => 'integer',
-        'user_id' => 'integer',
-        'unidade_sigla' => 'string'
+        'user_id'              => 'integer',
+        'unidade_sigla'        => 'string'
     ];
 
     /**
@@ -100,7 +98,6 @@ class OrdemDeCompraItem extends Model
 
         $this->attributes['qtd'] = $result;
     }
-    
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -196,6 +193,27 @@ class OrdemDeCompraItem extends Model
     public function anexos()
     {
         return $this->hasMany(OrdemDeCompraItemAnexo::class);
+    }
+
+    public function codigoServico()
+    {
+       $grupos = [
+            $this->grupo_id,
+            $this->subgrupo1_id,
+            $this->subgrupo2_id,
+            $this->subgrupo3_id,
+            $this->servico_id
+        ];
+
+       return implode('.', $grupos) . ' ' . $this->servico->nome;
+    }
+
+    public function reapropriacoes()
+    {
+        return $this->hasMany(
+            ContratoItemReapropriacao::class,
+            'ordem_de_compra_item_id'
+        );
     }
 
     // Funções da aprovação

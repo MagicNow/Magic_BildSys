@@ -23,31 +23,40 @@ class ImportacaoRepository
     public static function insumos()
     {
         $insumos = MegaInsumo::select([
-            'PRO_IN_CODIGO',
-            'PRO_ST_DESCRICAO',
-            'GRU_IN_CODIGO',
-            'UNI_ST_UNIDADE',
-            'MGADM.EST_PRODUTOS.ncm_in_codigo',
-            'NCM.ncm_st_descricao',
-            'NCM.ncm_st_extenso'
+            'PRO.PRO_IN_CODIGO',
+            'PRO.PRO_ST_DESCRICAO',
+            'PRO.GRU_IN_CODIGO',
+            'PRO.UNI_ST_UNIDADE',
+            'CSE.COS_RE_ALIQIRRF',
+            'CSE.COS_RE_ALIQINSS',
+            'CSE.COS_RE_ALIQCSLL',
+            'CSE.COS_RE_ALIQPIS',
+            'CSE.COS_RE_ALIQCOFINS',
+            'PRO.NCM_IN_CODIGO',
+            'NCM.NCM_ST_DESCRICAO',
+            'NCM.NCM_ST_EXTENSO'
         ])
-            ->leftJoin('mgtrf.trf_ncm as NCM',function ($join){
-                $join->on('NCM.ncm_tab_in_codigo','MGADM.EST_PRODUTOS.ncm_tab_in_codigo');
-                $join->on('NCM.ncm_pad_in_codigo','MGADM.EST_PRODUTOS.ncm_pad_in_codigo');
-                $join->on('NCM.ncm_in_codigo','MGADM.EST_PRODUTOS.ncm_in_codigo');
-            })
-            ->where('gru_ide_st_codigo','07')
-            ->whereRaw(DB::raw(" NOT EXISTS (
-                                            SELECT 1 
-                                              FROM MGADM.EST_INATIVAPRODUTO ipr
-                                              WHERE ipr.PRO_TAB_IN_CODIGO = MGADM.EST_PRODUTOS.PRO_TAB_IN_CODIGO
-                                              AND ipr.PRO_PAD_IN_CODIGO = MGADM.EST_PRODUTOS.PRO_PAD_IN_CODIGO
-                                              AND ipr.PRO_IN_CODIGO = MGADM.EST_PRODUTOS.PRO_IN_CODIGO)")
-                        )
-            ->get();
+        ->from('MGADM.EST_PRODUTOS PRO')
+        ->leftJoin('mgtrf.trf_ncm as NCM',function ($join){
+            $join->on('NCM.ncm_tab_in_codigo','PRO.ncm_tab_in_codigo');
+            $join->on('NCM.ncm_pad_in_codigo','PRO.ncm_pad_in_codigo');
+            $join->on('NCM.ncm_in_codigo','PRO.ncm_in_codigo');
+        })
+        ->leftJoin('MGTRF.TRF_CODSERVICO CSE', 'CSE.COS_IN_CODIGO', 'PRO.COS_IN_CODIGO')
+        ->where('GRU_IDE_ST_CODIGO','07')
+        ->whereRaw(DB::raw(" NOT EXISTS (
+            SELECT 1
+            FROM MGADM.EST_INATIVAPRODUTO ipr
+            WHERE ipr.PRO_TAB_IN_CODIGO = PRO.PRO_TAB_IN_CODIGO
+            AND ipr.PRO_PAD_IN_CODIGO = PRO.PRO_PAD_IN_CODIGO
+            AND ipr.PRO_IN_CODIGO = PRO.PRO_IN_CODIGO)")
+        )
+        ->get();
+
         foreach ($insumos as $produto) {
             try {
                 $unidade = Unidade::where('sigla', trim(utf8_encode($produto->uni_st_unidade)))->first();
+
                 if (!$unidade) {
                     $unidade = Unidade::create([
                         'sigla' => trim(utf8_encode($produto->uni_st_unidade)),
@@ -55,22 +64,30 @@ class ImportacaoRepository
                     ]);
                 }
 
-                $insumo = Insumo::firstOrCreate([
-                    'nome' => trim(utf8_encode($produto->pro_st_descricao)),
-                    'unidade_sigla' => trim(utf8_encode($produto->uni_st_unidade)),
-                    'codigo' => $produto->pro_in_codigo,
-                    'insumo_grupo_id' => $produto->gru_in_codigo
+                $insumo = Insumo::updateOrCreate([
+                    'nome'            => trim(utf8_encode($produto->pro_st_descricao)),
+                    'unidade_sigla'   => trim(utf8_encode($produto->uni_st_unidade)),
+                    'codigo'          => $produto->pro_in_codigo,
+                    'insumo_grupo_id' => $produto->gru_in_codigo,
                 ]);
                 $insumo->ncm_codigo = $produto->ncm_in_codigo;
-                    $insumo->ncm_texto  =  trim(utf8_encode($produto->ncm_st_descricao));
-                    $insumo->ncm_codigo_texto  =  trim(utf8_encode($produto->ncm_st_extenso));
+                $insumo->ncm_texto  =  trim(utf8_encode($produto->ncm_st_descricao));
+                $insumo->ncm_codigo_texto  =  trim(utf8_encode($produto->ncm_st_extenso));
 
                 $insumo->tems = self::getTems($produto->pro_in_codigo);
 
                 if($insumo->tems == ''){
                     $insumo->tems = null;
                 }
-            
+
+                $insumo->fill([
+                    'aliq_irrf'   => $produto->cos_re_aliqirrf,
+                    'aliq_csll'   => $produto->cos_re_aliqcsll,
+                    'aliq_pis'    => $produto->cos_re_aliqpis,
+                    'aliq_inss'   => $produto->cos_re_aliqinss,
+                    'aliq_cofins' => $produto->cos_re_aliqcofins,
+                ]);
+
                 $insumo->save();
             } catch (\Exception $e) {
                 Log::error('Erro ao importar insumo '. $produto->pro_in_codigo. ': '.$e->getMessage());
@@ -111,28 +128,27 @@ class ImportacaoRepository
      * @return bool
      */
     public static function fornecedores($param_value, $param_type = 'AGN_ST_CGC')
-    # Importação de Fornecedores do BANCO DE DADOS BILD-SYS - MEGA
     {
-
-            $fornecedores_mega = MegaFornecedor::select([
-                'AGN_IN_CODIGO',
-                'AGN_ST_FANTASIA',
-                'AGN_ST_NOME',
-                'UF_ST_SIGLA',
-                'AGN_ST_MUNICIPIO',
-                'TPL_ST_SIGLA',
-                'AGN_ST_LOGRADOURO',
-                'AGN_ST_NUMERO',
-                'AGN_ST_BAIRRO',
-                'AGN_ST_CEP',
-                'AGN_ST_COMPLEMENTO',
-                'AGN_ST_CGC',
-                'AGN_CH_STATUSCGC',
-                'AGN_ST_INSCRESTADUAL',
-                'AGN_ST_EMAIL',
-                'AGN_ST_URL'])
-                ->where(DB::raw('trim('.$param_type.')'), trim($param_value))
-                ->first();
+        # Importação de Fornecedores do BANCO DE DADOS BILD-SYS - MEGA
+        $fornecedores_mega = MegaFornecedor::select([
+            'AGN_IN_CODIGO',
+            'AGN_ST_FANTASIA',
+            'AGN_ST_NOME',
+            'UF_ST_SIGLA',
+            'AGN_ST_MUNICIPIO',
+            'TPL_ST_SIGLA',
+            'AGN_ST_LOGRADOURO',
+            'AGN_ST_NUMERO',
+            'AGN_ST_BAIRRO',
+            'AGN_ST_CEP',
+            'AGN_ST_COMPLEMENTO',
+            'AGN_ST_CGC',
+            'AGN_CH_STATUSCGC',
+            'AGN_ST_INSCRESTADUAL',
+            'AGN_ST_EMAIL',
+            'AGN_ST_URL'])
+            ->where(DB::raw('trim('.$param_type.')'), trim($param_value))
+            ->first();
         try {
             if ($fornecedores_mega) {
                 $cidade = Cidade::where('nome', 'LIKE', '%' . $fornecedores_mega->agn_st_municipio . '%')
@@ -174,11 +190,11 @@ class ImportacaoRepository
             'TRF_CODSERVICOAGN.cos_in_codigo'
 
         ])
-            ->join('mgglo.glo_agentes_id','glo_agentes_id.agn_in_codigo','=','trf_codservicoagn.agn_in_codigo')
-            ->join('mgglo.glo_agentes','glo_agentes.agn_in_codigo','=','glo_agentes_id.agn_in_codigo')
-            ->join('mgtrf.trf_codservico','trf_codservico.cos_in_codigo','=','trf_codservicoagn.cos_in_codigo')
-            ->where('glo_agentes.agn_in_codigo', $param_value)
-            ->get();
+        ->join('mgglo.glo_agentes_id','glo_agentes_id.agn_in_codigo','=','trf_codservicoagn.agn_in_codigo')
+        ->join('mgglo.glo_agentes','glo_agentes.agn_in_codigo','=','glo_agentes_id.agn_in_codigo')
+        ->join('mgtrf.trf_codservico','trf_codservico.cos_in_codigo','=','trf_codservicoagn.cos_in_codigo')
+        ->where('glo_agentes.agn_in_codigo', $param_value)
+        ->get();
 
         foreach ($fornecedorServicos as $servico) {
             try {
@@ -206,7 +222,7 @@ class ImportacaoRepository
             'COS_IN_CODIGO',
             'COS_ST_DESCRICAO'
         ])
-            ->get();
+        ->get();
 
         foreach ($cnae_servicos as $servico) {
             try {
@@ -226,35 +242,35 @@ class ImportacaoRepository
     public static function getTems($insumo_codigo)
     {
         $tems = \DB::connection('oracle')->select('(
-                       Select p.pro_tab_in_codigo,
-                           p.pro_pad_in_codigo,
-                           p.pro_in_codigo,
-                           p.pro_st_descricao,
-                           p.uni_st_unidade,
-                           p.gru_in_codigo,
-                           grp.gru_st_nome,
-                           dp.pro_st_dettecnico
-                       From mgadm.est_produtos      p,
-                            mgadm.est_detprodutos  dp,
-                            mgadm.est_grupos      grp      
-                       Where dp.pro_tab_in_codigo = p.pro_tab_in_codigo
-                       And   dp.pro_pad_in_codigo = p.pro_pad_in_codigo
-                       And   dp.pro_in_codigo     = p.pro_in_codigo
-                      
-                       And   p.gru_tab_in_codigo  = grp.gru_tab_in_codigo
-                       And   p.gru_pad_in_codigo  = grp.gru_pad_in_codigo
-                       And   p.gru_ide_st_codigo  = grp.gru_ide_st_codigo
-                       And   p.gru_in_codigo      = grp.gru_in_codigo
-                      
-                       And   grp.gru_ide_st_codigo = 07
-                           
-                       And exists (Select 1
-                                       From mgadm.est_detprodutos dp
-                                       Where dp.pro_tab_in_codigo = p.pro_tab_in_codigo
-                                       And   dp.pro_pad_in_codigo = p.pro_pad_in_codigo
-                                       And   dp.pro_in_codigo     = p.pro_in_codigo)
-                       And   p.pro_in_codigo = '.$insumo_codigo.'
-                   )');
+            Select p.pro_tab_in_codigo,
+            p.pro_pad_in_codigo,
+            p.pro_in_codigo,
+            p.pro_st_descricao,
+            p.uni_st_unidade,
+            p.gru_in_codigo,
+            grp.gru_st_nome,
+            dp.pro_st_dettecnico
+            From mgadm.est_produtos      p,
+            mgadm.est_detprodutos  dp,
+            mgadm.est_grupos      grp
+            Where dp.pro_tab_in_codigo = p.pro_tab_in_codigo
+            And   dp.pro_pad_in_codigo = p.pro_pad_in_codigo
+            And   dp.pro_in_codigo     = p.pro_in_codigo
+
+            And   p.gru_tab_in_codigo  = grp.gru_tab_in_codigo
+            And   p.gru_pad_in_codigo  = grp.gru_pad_in_codigo
+            And   p.gru_ide_st_codigo  = grp.gru_ide_st_codigo
+            And   p.gru_in_codigo      = grp.gru_in_codigo
+
+            And   grp.gru_ide_st_codigo = 07
+
+            And exists (Select 1
+            From mgadm.est_detprodutos dp
+            Where dp.pro_tab_in_codigo = p.pro_tab_in_codigo
+            And   dp.pro_pad_in_codigo = p.pro_pad_in_codigo
+            And   dp.pro_in_codigo     = p.pro_in_codigo)
+            And   p.pro_in_codigo = '.$insumo_codigo.'
+        )');
 
         $todos_tems = '';
 

@@ -38,6 +38,8 @@ class WorkflowAlcadaRepository extends BaseRepository
             ->where('id', '!=', $id)
             ->get();
 
+        $workflowTipo = WorkflowTipo::find($input['workflow_tipo_id']);
+
         if(!empty(@$input['valor_minimo'])) {
             $input['valor_minimo'] = money_to_float($input['valor_minimo']);
         }
@@ -53,7 +55,7 @@ class WorkflowAlcadaRepository extends BaseRepository
                 }
             }
 
-            if($input['workflow_tipo_id'] == WorkflowTipo::CONTRATO) {
+            if($workflowTipo->usa_valor_minimo) {
                 $alcada_igual = $alcadas->where('valor_minimo', $input['valor_minimo'])->first();
 
                 if($alcada_igual) {
@@ -78,7 +80,7 @@ class WorkflowAlcadaRepository extends BaseRepository
         } else {
             $input['ordem'] = 1;
 
-            if($input['workflow_tipo_id'] == WorkflowTipo::CONTRATO && $input['valor_minimo'] > 0) {
+            if($workflowTipo->usa_valor_minimo && $input['valor_minimo'] > 0) {
                 Flash::error(
                     'É necessário que a primeira alçada tenha valor mínimo de R$0,00'
                 );
