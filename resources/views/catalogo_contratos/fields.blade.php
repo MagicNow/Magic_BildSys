@@ -205,6 +205,9 @@ $count_insumos = 0;
                     templateResult: formatInsumoResult, // omitted for brevity, see the source of this page
                     templateSelection: formatInsumoResultSelection // omitted for brevity, see the source of this page
                 });
+
+                $('.money').maskMoney({allowNegative: true, thousands:'.', decimal:','});
+
             }, 100);
 
             $('#add_insumos').css('margin-top','25px');
