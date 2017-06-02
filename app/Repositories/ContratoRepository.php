@@ -2,13 +2,18 @@
 
 namespace App\Repositories;
 
+use App\Mail\ContratoServicoFornecedorNaoUsuario;
 use App\Models\Contrato;
 use App\Models\ContratoItem;
 use App\Models\Fornecedor;
 use App\Models\Insumo;
 use App\Models\Obra;
 use App\Models\QcFornecedor;
+use App\Notifications\NotificaFornecedorContratoServico;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use InfyOm\Generator\Common\BaseRepository;
+use \PDF;
 
 class ContratoRepository extends BaseRepository
 {
@@ -279,8 +284,17 @@ class ContratoRepository extends BaseRepository
         ];
     }
 
+    /**
+     * Gera a impressão do Contrato aplicando as variáveis
+     * Retorna o local do arquivo gerado
+     * @param $id
+     * @return string
+     */
     public static function geraImpressao($id){
         $contrato = Contrato::find($id);
+        if(!$contrato){
+            return null;
+        }
 
         $template = $contrato->contratoTemplate;
         
@@ -328,9 +342,58 @@ class ContratoRepository extends BaseRepository
         foreach ($contratoCampos as $campo => $valor){
             $templateRenderizado = str_replace('['.strtoupper($campo).'_CONTRATO]', $valor,$templateRenderizado );
         }
-        
         // Tenta aplicar variáveis do Template (dinâmicas)
-        /*@TODO continuar */
-        echo($templateRenderizado);
+        if(strlen($contrato->campos_extras)){
+            $variaveis_dinamicas = json_decode($contrato->campos_extras) ;
+            foreach ($variaveis_dinamicas as $campo => $valor){
+                $templateRenderizado = str_replace('['.strtoupper($campo).']', $valor,$templateRenderizado );
+            }
+        }
+        if(is_file(base_path().'/storage/app/public/contratos/contrato_'.$contrato->id.'.pdf')){
+            unlink(base_path().'/storage/app/public/contratos/contrato_'.$contrato->id.'.pdf');
+        }
+        PDF::loadHTML(utf8_decode($templateRenderizado))->setPaper('a4')->setOrientation('portrait')->save( base_path().'/storage/app/public/contratos/contrato_'.$contrato->id.'.pdf');
+        return 'contratos/contrato_'.$contrato->id.'.pdf';
+    }
+
+    public static function notifyFornecedor($id)
+    {
+        $contrato = Contrato::find($id);
+        if(!$contrato){
+            return [
+                'success'=>false, 
+                'messages'=>[
+                    'O contrato não foi encontrado!'
+                ]
+            ];
+        }
+        
+        $arquivo = self::geraImpressao($id);
+        $fornecedor = $contrato->fornecedor;
+        $mensagens = [];
+        
+        if ($user = $fornecedor->user) {
+            //se tiver já envia uma notificação
+            $user->notify(new NotificaFornecedorContratoServico($contrato, $arquivo));
+            return [
+                'success'=>true
+            ];
+        } else {
+            // Se não tiver envia um e-mail para o fornecedor
+            if (!strlen($fornecedor->email)) {
+                $mensagens[] = 'O Fornecedor ' . $fornecedor->nome . ' não possui acesso e e-mail cadastrado,
+                    <a href="'.Storage::url($arquivo).'" target="_blank">Imprima o contrato</a> e faça o fornecedor assinar.
+                    O telefone do fornecedor é ' . $fornecedor->telefone;
+                return [
+                    'success'=>true,
+                    'messages'=>$mensagens
+                ];
+            } else {
+                Mail::to($fornecedor->email)->send(new ContratoServicoFornecedorNaoUsuario($contrato, $arquivo));
+                return [
+                    'success'=>true
+                ];
+            }
+        }
     }
 }
