@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Repositories\ContratoRepository;
 use Eloquent as Model;
+use Laracasts\Flash\Flash;
 
 /**
  * Class Contrato
@@ -151,7 +153,25 @@ class Contrato extends Model
 
         // Verifica necessidade de assinar contrato e enviar ao fornecedor
         if($this->hasServico()){
+            // Muda o status
+            $this->attributes['contrato_status_id'] = 4;
+
+            $this->save();
+
+            ContratoStatusLog::create([
+                'contrato_id'        => $this->attributes['id'],
+                'contrato_status_id' => $this->attributes['contrato_status_id'],
+                'user_id'            => auth()->id()
+            ]);
             // Notifica Fornecedor
+            $retorno = ContratoRepository::notifyFornecedor($this->attributes['id']);
+            if(!$retorno['success']){
+                Flash::error($retorno['messages'][0]);
+            }else{
+                if(isset($retorno['messages'])){
+                    Flash::success($retorno['messages'][0]);
+                }
+            }
         }
     }
 

@@ -376,8 +376,7 @@ class ContratoRepository extends BaseRepository
             //se tiver já envia uma notificação
             $user->notify(new NotificaFornecedorContratoServico($contrato, $arquivo));
             return [
-                'success'=>true,
-                'messages'=>['Contrato enviado por e-mail para o fornecedor']
+                'success'=>true
             ];
         } else {
             // Se não tiver envia um e-mail para o fornecedor
@@ -392,8 +391,7 @@ class ContratoRepository extends BaseRepository
             } else {
                 Mail::to($fornecedor->email)->send(new ContratoServicoFornecedorNaoUsuario($contrato, $arquivo));
                 return [
-                    'success'=>true,
-                    'messages'=>['Contrato enviado por e-mail para o fornecedor']
+                    'success'=>true
                 ];
             }
         }
