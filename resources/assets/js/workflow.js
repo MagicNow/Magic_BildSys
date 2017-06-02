@@ -123,7 +123,8 @@ function workflowAprovaReprova(item_id, tipo_item, aprovou, elemento, nome, pai_
         confirmButtonText: "Aprovar",
         cancelButtonText: 'Cancelar',
         closeOnConfirm: false,
-        confirmButtonColor: '#7ED32C'
+        confirmButtonColor: '#7ED32C',
+        showLoaderOnConfirm: true,
       },
       function() {
         workflowCall(item_id, tipo_item, aprovou, elemento, null, null, pai_id, pai_obj, filhos_metodo, shouldReload)

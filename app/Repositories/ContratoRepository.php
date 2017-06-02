@@ -2,11 +2,18 @@
 
 namespace App\Repositories;
 
+use App\Mail\ContratoServicoFornecedorNaoUsuario;
 use App\Models\Contrato;
 use App\Models\ContratoItem;
+use App\Models\Fornecedor;
 use App\Models\Insumo;
+use App\Models\Obra;
 use App\Models\QcFornecedor;
+use App\Notifications\NotificaFornecedorContratoServico;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use InfyOm\Generator\Common\BaseRepository;
+use \PDF;
 
 class ContratoRepository extends BaseRepository
 {
@@ -275,5 +282,118 @@ class ContratoRepository extends BaseRepository
             'success' => true,
             'contratos'=>$contratos
         ];
+    }
+
+    /**
+     * Gera a impressão do Contrato aplicando as variáveis
+     * Retorna o local do arquivo gerado
+     * @param $id
+     * @return string
+     */
+    public static function geraImpressao($id){
+        $contrato = Contrato::find($id);
+        if(!$contrato){
+            return null;
+        }
+
+        $template = $contrato->contratoTemplate;
+        
+        $templateRenderizado = $template->template;
+
+        // Tenta aplicar variáveis de Obra
+        foreach (Obra::$campos as $campo){
+            $templateRenderizado = str_replace('['.strtoupper($campo).'_OBRA]', $contrato->obra->$campo,$templateRenderizado );
+        }
+        
+        // Tenta aplicar variáveis de Fornecedor
+        foreach (Fornecedor::$campos as $campo){
+            $templateRenderizado = str_replace('['.strtoupper($campo).'_FORNECEDOR]', $contrato->fornecedor->$campo,$templateRenderizado );
+        }
+        
+        // Tenta aplicar variáveis de Contrato
+
+        $tabela_itens = '<table>
+            <thead>
+                <tr>
+                    <th align="left">Descrição</th>
+                    <th width="10%" align="right">Qtd.</th>
+                    <th width="20%" align="right">Valor Unitário</th>
+                    <th width="20%" align="right">Valor Total</th>
+                </tr>     
+            </thead>
+            <tbody>';
+        foreach ($contrato->itens as $item){
+            $tabela_itens .= '<tr>';
+            $tabela_itens .= '<td>'.$item->insumo->nome.'</td>';
+            $tabela_itens .= '<td align="right">'.float_to_money($item->qtd,'').' '. $item->insumo->unidade_sigla.'</td>';
+            $tabela_itens .= '<td align="right">'.float_to_money($item->valor_unitario).'</td>';
+            $tabela_itens .= '<td align="right">'.float_to_money($item->valor_total).'</td>';
+
+            $tabela_itens .= '</tr>';
+        }
+
+        $tabela_itens .= '</tbody></table>';
+
+        $contratoCampos = [
+            'valor_total' => $contrato->valor_total,
+            'tabela_itens' => $tabela_itens
+
+        ];
+        foreach ($contratoCampos as $campo => $valor){
+            $templateRenderizado = str_replace('['.strtoupper($campo).'_CONTRATO]', $valor,$templateRenderizado );
+        }
+        // Tenta aplicar variáveis do Template (dinâmicas)
+        if(strlen($contrato->campos_extras)){
+            $variaveis_dinamicas = json_decode($contrato->campos_extras) ;
+            foreach ($variaveis_dinamicas as $campo => $valor){
+                $templateRenderizado = str_replace('['.strtoupper($campo).']', $valor,$templateRenderizado );
+            }
+        }
+        if(is_file(base_path().'/storage/app/public/contratos/contrato_'.$contrato->id.'.pdf')){
+            unlink(base_path().'/storage/app/public/contratos/contrato_'.$contrato->id.'.pdf');
+        }
+        PDF::loadHTML(utf8_decode($templateRenderizado))->setPaper('a4')->setOrientation('portrait')->save( base_path().'/storage/app/public/contratos/contrato_'.$contrato->id.'.pdf');
+        return 'contratos/contrato_'.$contrato->id.'.pdf';
+    }
+
+    public static function notifyFornecedor($id)
+    {
+        $contrato = Contrato::find($id);
+        if(!$contrato){
+            return [
+                'success'=>false, 
+                'messages'=>[
+                    'O contrato não foi encontrado!'
+                ]
+            ];
+        }
+        
+        $arquivo = self::geraImpressao($id);
+        $fornecedor = $contrato->fornecedor;
+        $mensagens = [];
+        
+        if ($user = $fornecedor->user) {
+            //se tiver já envia uma notificação
+            $user->notify(new NotificaFornecedorContratoServico($contrato, $arquivo));
+            return [
+                'success'=>true
+            ];
+        } else {
+            // Se não tiver envia um e-mail para o fornecedor
+            if (!strlen($fornecedor->email)) {
+                $mensagens[] = 'O Fornecedor ' . $fornecedor->nome . ' não possui acesso e e-mail cadastrado,
+                    <a href="'.Storage::url($arquivo).'" target="_blank">Imprima o contrato</a> e faça o fornecedor assinar.
+                    O telefone do fornecedor é ' . $fornecedor->telefone;
+                return [
+                    'success'=>true,
+                    'messages'=>$mensagens
+                ];
+            } else {
+                Mail::to($fornecedor->email)->send(new ContratoServicoFornecedorNaoUsuario($contrato, $arquivo));
+                return [
+                    'success'=>true
+                ];
+            }
+        }
     }
 }

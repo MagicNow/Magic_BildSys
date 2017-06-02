@@ -696,6 +696,10 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             ['as' => 'contratos.index', 'uses' => 'ContratoController@index']
         );
         $router->get(
+            '/{contratos}/imprimir',
+            ['as' => 'contratos.imprimirContrato', 'uses' => 'ContratoController@imprimirContrato']
+        );
+        $router->get(
             '/{contratos}',
             ['as' => 'contratos.show', 'uses' => 'ContratoController@show']
         )->middleware('needsPermission:contratos.show');
@@ -726,6 +730,15 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
                 'uses' => 'ContratoController@distratarItem'
             ]
         )->middleware('needsPermission:contratos.distratar');
+        
+        $router->get(
+            '/{contratos}/editar',
+            ['as' => 'contratos.edit', 'uses' => 'ContratoController@edit']
+        );
+        $router->patch(
+            '/{contratos}/update',
+            ['as' => 'contratos.update', 'uses' => 'ContratoController@update']
+        );
     });
 
 

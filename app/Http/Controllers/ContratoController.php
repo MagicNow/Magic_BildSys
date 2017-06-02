@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 use App\DataTables\ContratoDataTable;
 use App\Http\Requests;
-use App\Http\Requests\CreateContratoRequest;
-use App\Http\Requests\UpdateContratoRequest;
+use App\Models\WorkflowAprovacao;
 use App\Repositories\ContratoRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
+use Illuminate\Support\Facades\Storage;
 use Response;
 use App\Repositories\Admin\FornecedoresRepository;
 use App\Repositories\Admin\ObraRepository;
@@ -53,17 +53,20 @@ class ContratoController extends AppBaseController
     ) {
 
         $status = $contratoStatusRepository
+            ->orderBy('nome', 'ASC')
             ->pluck('nome', 'id')
             ->prepend('', '')
             ->all();
 
         $fornecedores = $fornecedorRepository
+            ->orderBy('nome', 'ASC')
             ->comContrato()
             ->pluck('nome', 'id')
             ->prepend('', '')
             ->all();
 
         $obras = $obraRepository
+            ->orderBy('nome', 'ASC')
             ->comContrato()
             ->pluck('nome', 'id')
             ->prepend('', '')
@@ -205,5 +208,64 @@ class ContratoController extends AppBaseController
         return response()->json([
             'success' => true
         ]);
+    }
+    
+    public function imprimirContrato($id){
+        return  response()->file( storage_path('/app/public/') . str_replace('storage/', '', ContratoRepository::geraImpressao($id)) ) ;
+    }
+
+
+    public function edit($id)
+    {
+        $contrato = $this->contratoRepository->findWithoutFail($id);
+
+        if (empty($contrato)) {
+            Flash::error('Contrato '.trans('common.not-found'));
+
+            return redirect(route('contratos.index'));
+        }
+
+        return view('contratos.edit', compact('contrato'));
+    }    
+    
+    public function update($id, Request $request)
+    {
+        $contrato = $this->contratoRepository->findWithoutFail($id);
+
+        $type_resposta = 'info';
+        $resposta = 'Contrato não modificado.';
+
+        if (empty($contrato)) {
+            Flash::error('Contrato '.trans('common.not-found'));
+
+            return redirect(route('contratos.index'));
+        }
+
+        $workflow_aprovacao = WorkflowAprovacao::where('aprovavel_type', 'App\Models\Contrato')
+            ->where('aprovavel_id', $contrato->id)
+            ->first();
+
+        if(count($request->quantidade)){
+            foreach($request->quantidade as $item){
+                $contrato_item = ContratoItem::find($item['id']);
+                if ($contrato_item && $item['qtd'] != '' && $contrato_item->qtd != money_to_float($item['qtd']) && $workflow_aprovacao) {
+                    $contrato_item->qtd = money_to_float($item['qtd']);
+                    $contrato_item->valor_total = money_to_float($item['qtd']) * money_to_float($contrato_item->valor_unitario);
+                    $contrato_item->update();
+
+                    $contrato->contrato_status_id = 1;
+                    $contrato->update();
+
+                    $workflow_aprovacao->delete();
+
+                    $type_resposta = 'success';
+                    $resposta = 'Contrato em aprovação.';
+                }
+            }
+        }
+
+        Flash::$type_resposta($resposta);
+
+        return redirect(route('contratos.index'));
     }
 }
