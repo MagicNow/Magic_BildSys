@@ -270,7 +270,7 @@
 @endsection
 
 @section('scripts')
-    <script src="{{ asset('/js/carrinho.js') }}">
+    <script src="{{ asset('/js/carrinho.js') }}"></script>
     <script type="text/javascript">
         $.ajaxSetup({
             headers: {

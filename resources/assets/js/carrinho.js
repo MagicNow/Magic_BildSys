@@ -5,6 +5,7 @@ $(function() {
 var Carrinho = {
   init: function() {
     $('.js-aditivar').on('click', this.selecionarContrato.bind(this));
+    $('.js-remove-contrato').on('click', this.removerContrato.bind(this));
   },
 
   alterarItem: function(id, column, value) {
@@ -26,9 +27,51 @@ var Carrinho = {
       });
   },
 
+  removerContrato: function(event) {
+    startLoading();
+    var ajax = $.get('/ordens-de-compra/carrinho/remove-contrato', {
+      item: event.currentTarget.dataset.item
+    });
+
+    ajax.always(stopLoading);
+    ajax.done(function(response) {
+      location.reload();
+    });
+    ajax.fail(function(xhr) {
+      swal({
+        title: 'Ops!',
+        text: 'Ocorreu um erro ao remover indicação',
+        type: 'error',
+      });
+    });
+  },
+
   iframeLoaded: function(event) {
     var iframe = event.currentTarget;
-    $(iframe).contents().on('click', '.js-indicar', this.indicarContrato.bind(this));
+    var iframeWindow = iframe.contentWindow;
+    var $contents = $(iframe).contents();
+
+
+    $contents
+      .on('click', '.js-indicar', this.indicarContrato.bind(this));
+
+    iframeWindow.LaravelDataTables.dataTableBuilder
+      .on('draw', this.verifyIfTableIsEmpty.bind(this));
+  },
+
+  verifyIfTableIsEmpty: function(event) {
+    var iframeWindow = event.currentTarget.ownerDocument.defaultView;
+    var table = iframeWindow.LaravelDataTables.dataTableBuilder;
+
+    if(!table.data().length) {
+      swal({
+        title: '',
+        text: 'Não há contratos disponíveis para serem aditivados por esse insumo.',
+        type: 'info',
+      }, function() {
+        $.colorbox.close();
+      })
+    }
   },
 
   indicarContrato: function(event) {
