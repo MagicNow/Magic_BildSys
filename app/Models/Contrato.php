@@ -152,7 +152,7 @@ class Contrato extends Model
         ]);
 
         // Verifica necessidade de assinar contrato e enviar ao fornecedor
-        if($this->hasServico()){
+        if($this->hasServico() && $isAprovado){
             // Muda o status
             $this->attributes['contrato_status_id'] = 4;
 
