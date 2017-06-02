@@ -254,7 +254,7 @@ class OrdemDeCompraController extends AppBaseController
                     $alcada->id);
 
                 $avaliado_reprovado[$alcada->id] ['aprovadores'] = WorkflowAprovacaoRepository::verificaQuantidadeUsuariosAprovadores(
-                    1, // Aprovação de OC
+                    WorkflowTipo::find(WorkflowTipo::OC), // Aprovação de OC
                     $ordemDeCompra->obra_id,
                     $alcada->id);
 
@@ -318,10 +318,10 @@ class OrdemDeCompraController extends AppBaseController
                     'orcamentos.qtd_total as qtd_inicial',
                     'orcamentos.preco_total as preco_inicial',
                     DB::raw("(
-                    SELECT 
+                    SELECT
                         SUM(orcamentos.preco_total)
                     FROM
-                        orcamentos 
+                        orcamentos
                     WHERE
                      orcamentos.grupo_id = ordem_de_compra_itens.grupo_id
                     AND orcamentos.subgrupo1_id = ordem_de_compra_itens.subgrupo1_id
@@ -330,7 +330,7 @@ class OrdemDeCompraController extends AppBaseController
                     AND orcamentos.servico_id = ordem_de_compra_itens.servico_id
                     AND orcamentos.obra_id = ordem_de_compra_itens.obra_id
                     AND orcamentos.ativo = 1
-                    
+
                     ) as valor_servico")
                 ])
                 ->join('orcamentos', function ($join) use ($ordemDeCompra){
@@ -886,7 +886,7 @@ class OrdemDeCompraController extends AppBaseController
 
         foreach ($request->anexos as $anexo){
             $arquivo = CodeRepository::saveFile($anexo, 'oc_anexos');
-                
+
             $ordemDeCompraItemAnexo = OrdemDeCompraItemAnexo::create([
                 'ordem_de_compra_item_id' => $ordemDeCompraItem->id,
                 'arquivo' =>  $arquivo
@@ -1033,7 +1033,7 @@ class OrdemDeCompraController extends AppBaseController
                         ) as status')
                     ])
                     ->get();
-        
+
         $dentro_orcamento = 0;
         $acima_orcamento = 0;
 
