@@ -218,7 +218,7 @@ class RolesAndPermissions extends Seeder
         $roles[1]->attachPermission(Defender::findPermission('fornecedores.list'));
         $roles[1]->attachPermission(Defender::findPermission('configuracaoEstaticas.list'));
         $roles[1]->attachPermission(Defender::findPermission('configuracaoEstaticas.edit'));
-        $roles[1]->attachPermission(Defender::findPermission('configuracaoEstaticas.view'));
+        $roles[1]->attachPermission(Defender::findPermission('configuracaoEstaticas.show'));
 
         // Permissões para Fornecedor
         $roles[2]->attachPermission(Defender::findPermission('quadroDeConcorrencias.informar_valor'));
