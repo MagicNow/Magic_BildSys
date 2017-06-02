@@ -52,7 +52,7 @@ class QcItensDataTable extends DataTable
                 DB::raw('(SELECT COUNT(1) FROM oc_item_qc_item WHERE qc_item_id = qc_itens.id) as oci_qtd'),
                 DB::raw("(
                             SELECT GROUP_CONCAT(DISTINCT obras.nome ORDER BY obras.nome ASC SEPARATOR ', ')
-                            FROM oc_item_qc_item 
+                            FROM oc_item_qc_item
                             JOIN ordem_de_compra_itens OCI ON OCI.id = oc_item_qc_item.ordem_de_compra_item_id
                             JOIN obras on obras.id = OCI.obra_id
                             WHERE qc_item_id = qc_itens.id
@@ -100,7 +100,8 @@ class QcItensDataTable extends DataTable
                         }else{
                             var column = this;
                             var input = document.createElement("div");
-                            $(input).html(\'<button type="button" class="btn btn-xs btn-warning btn-flat" title="Agrupar selecionados" onclick="agrupar()"><i class="fa fa-chain" aria-hidden="true"></i></button>\');
+                            $(input).append(\'<button type="button" class="btn btn-xs btn-warning btn-flat" title="Agrupar selecionados" onclick="agrupar()"><i class="fa fa-chain" aria-hidden="true"></i></button>\');
+                            $(input).append(\'<button type="button" class="btn btn-xs btn-danger btn-flat" title="Remover selecionados" onclick="remover()"><i class="fa fa-trash" aria-hidden="true"></i></button>\');
                             $(input).appendTo($(column.footer()).empty());
                             $(column.footer()).addClass(\'text-center\');
                         }
