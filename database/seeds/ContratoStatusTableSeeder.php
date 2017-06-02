@@ -27,7 +27,16 @@ class ContratoStatusTableSeeder extends Seeder
             'id' => ContratoStatus::AGUARDANDO,
             'nome' => 'Aguardando Liberação',
             'cor' => '#CCCCCC'
-        ]]);
+        ], [
+            'id' => ContratoStatus::ATIVO,
+            'nome' => 'Ativo',
+            'cor' => '#008d4c'
+        ], [
+            'id' => ContratoStatus::CANCELADO,
+            'nome' => 'Cancelado',
+            'cor' => '#dd4b39'
+        ]
+        ]);
 
         Schema::enableForeignKeyConstraints();
     }

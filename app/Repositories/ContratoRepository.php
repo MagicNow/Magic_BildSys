@@ -4,7 +4,9 @@ namespace App\Repositories;
 
 use App\Models\Contrato;
 use App\Models\ContratoItem;
+use App\Models\Fornecedor;
 use App\Models\Insumo;
+use App\Models\Obra;
 use App\Models\QcFornecedor;
 use InfyOm\Generator\Common\BaseRepository;
 
@@ -275,5 +277,60 @@ class ContratoRepository extends BaseRepository
             'success' => true,
             'contratos'=>$contratos
         ];
+    }
+
+    public static function geraImpressao($id){
+        $contrato = Contrato::find($id);
+
+        $template = $contrato->contratoTemplate;
+        
+        $templateRenderizado = $template->template;
+
+        // Tenta aplicar variáveis de Obra
+        foreach (Obra::$campos as $campo){
+            $templateRenderizado = str_replace('['.strtoupper($campo).'_OBRA]', $contrato->obra->$campo,$templateRenderizado );
+        }
+        
+        // Tenta aplicar variáveis de Fornecedor
+        foreach (Fornecedor::$campos as $campo){
+            $templateRenderizado = str_replace('['.strtoupper($campo).'_FORNECEDOR]', $contrato->fornecedor->$campo,$templateRenderizado );
+        }
+        
+        // Tenta aplicar variáveis de Contrato
+
+        $tabela_itens = '<table>
+            <thead>
+                <tr>
+                    <th align="left">Descrição</th>
+                    <th width="10%" align="right">Qtd.</th>
+                    <th width="20%" align="right">Valor Unitário</th>
+                    <th width="20%" align="right">Valor Total</th>
+                </tr>     
+            </thead>
+            <tbody>';
+        foreach ($contrato->itens as $item){
+            $tabela_itens .= '<tr>';
+            $tabela_itens .= '<td>'.$item->insumo->nome.'</td>';
+            $tabela_itens .= '<td align="right">'.float_to_money($item->qtd,'').' '. $item->insumo->unidade_sigla.'</td>';
+            $tabela_itens .= '<td align="right">'.float_to_money($item->valor_unitario).'</td>';
+            $tabela_itens .= '<td align="right">'.float_to_money($item->valor_total).'</td>';
+
+            $tabela_itens .= '</tr>';
+        }
+
+        $tabela_itens .= '</tbody></table>';
+
+        $contratoCampos = [
+            'valor_total' => $contrato->valor_total,
+            'tabela_itens' => $tabela_itens
+
+        ];
+        foreach ($contratoCampos as $campo => $valor){
+            $templateRenderizado = str_replace('['.strtoupper($campo).'_CONTRATO]', $valor,$templateRenderizado );
+        }
+        
+        // Tenta aplicar variáveis do Template (dinâmicas)
+        /*@TODO continuar */
+        echo($templateRenderizado);
     }
 }

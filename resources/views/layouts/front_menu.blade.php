@@ -47,6 +47,11 @@
             <a href="{!! route('tipoEqualizacaoTecnicas.index') !!}"><i class="fa fa-file-audio-o"></i><span>Equalização técnicas</span></a>
         </li>
         @endshield
+        @shield('contratos.list')
+        <li class="{{ Request::is('contratos*') ? 'active' : '' }}">
+            <a href="{!! route('contratos.index') !!}"><i class="fa fa-clone"></i><span>Contratos</span></a>
+        </li>
+        @endshield
     </ul>
 </li>
 
