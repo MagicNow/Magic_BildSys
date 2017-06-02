@@ -51,6 +51,7 @@ use App\Repositories\Admin\InsumoGrupoRepository;
 use App\Repositories\Admin\PlanejamentoRepository;
 use App\Repositories\Admin\OrcamentoRepository;
 use App\Repositories\Admin\InsumoRepository;
+use App\Models\WorkflowTipo;
 
 class OrdemDeCompraController extends AppBaseController
 {
