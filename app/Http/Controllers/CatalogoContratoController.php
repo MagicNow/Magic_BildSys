@@ -173,7 +173,8 @@ class CatalogoContratoController extends AppBaseController
 
         $fornecedores = MegaFornecedor::select(DB::raw("CONVERT(agn_st_nome,'UTF8','WE8ISO8859P15' ) as agn_st_nome"), 'agn_in_codigo')
             ->where('agn_st_cgc', $catalogoContrato->fornecedor->cnpj)
-            ->pluck('agn_st_nome', 'agn_in_codigo')->toArray();
+            ->pluck('agn_st_nome', 'agn_in_codigo')
+            ->toArray();
 
         return view('catalogo_contratos.edit', compact('fornecedores'))->with('catalogoContrato', $catalogoContrato);
     }

@@ -27,6 +27,7 @@ class ObraRepository extends BaseRepository
         return $this->model->whereHas('users', function($query) use ($user_id) {
             $query->where('user_id', $user_id);
         })
+        ->orderBy('nome','ASC')
         ->get();
     }
 

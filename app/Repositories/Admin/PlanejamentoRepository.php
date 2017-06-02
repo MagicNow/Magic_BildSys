@@ -3,6 +3,7 @@
 namespace App\Repositories\Admin;
 
 use App\Models\Planejamento;
+use Illuminate\Support\Facades\DB;
 use InfyOm\Generator\Common\BaseRepository;
 use App\Models\Lembrete;
 
@@ -45,7 +46,7 @@ class PlanejamentoRepository extends BaseRepository
             ->where('obra_users.user_id', $user_id)
             ->whereRaw(PlanejamentoCompraRepository::existeItemParaComprar())
             ->groupBy('planejamentos.id')
-            ->orderBy('planejamentos.tarefa','ASC')
+            ->orderBy(DB::raw('trim(tarefa)'),'ASC')
             ->get();
     }
 }

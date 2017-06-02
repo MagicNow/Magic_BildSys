@@ -52,17 +52,20 @@ class ContratoController extends AppBaseController
     ) {
 
         $status = $contratoStatusRepository
+            ->orderBy('nome', 'ASC')
             ->pluck('nome', 'id')
             ->prepend('', '')
             ->all();
 
         $fornecedores = $fornecedorRepository
+            ->orderBy('nome', 'ASC')
             ->comContrato()
             ->pluck('nome', 'id')
             ->prepend('', '')
             ->all();
 
         $obras = $obraRepository
+            ->orderBy('nome', 'ASC')
             ->comContrato()
             ->pluck('nome', 'id')
             ->prepend('', '')
