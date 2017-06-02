@@ -87,6 +87,24 @@
     </section>
 
     <div class="content">
+        @if($contrato->contrato_status_id == 4 )
+        {!! Form::open(['url'=>'/contratos/'.$contrato->id.'/envia-contrato', 'files'=> true ]) !!}
+            <div class="box box-warning">
+                <div class="box-header with-border">
+                    Enviar contrato assinado
+                </div>
+                <div class="box-body">
+                    <div class="col-md-10">
+                        {!! Form::file('arquivo',['class'=>'form-control']) !!}
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-flat btn-success btn-block"><i class="fa fa-upload"></i> Enviar e Liberar</button>
+                    </div>
+                </div>
+            </div>
+        {!! Form::close() !!}
+        @endif
+
         <div class="row">
             <div class="col-sm-4">
                 <div class="box box-muted">
