@@ -258,7 +258,6 @@ class ComprasDataTable extends DataTable
             ]
         )
             ->whereNotNull('orcamentos.qtd_total')
-            ->where('orcamentos.trocado', 0)
             ->where('orcamentos.ativo', 1);
 
         $insumo_query->leftJoin(DB::raw('orcamentos orcamentos_sub'),  'orcamentos_sub.id', 'orcamentos.orcamento_que_substitui');
