@@ -43,6 +43,10 @@ use App\Notifications\IniciaConcorrencia;
 use Carbon\Carbon;
 use App\Models\QcStatus;
 use App\Repositories\QuadroDeConcorrenciaItemRepository;
+use App\Models\ContratoItemModificacaoLog;
+use App\Models\ContratoItemModificacao;
+use App\Models\ContratoItem;
+use App\Models\ContratoStatus;
 
 class QuadroDeConcorrenciaController extends AppBaseController
 {
@@ -368,7 +372,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
                 return redirect(route('quadroDeConcorrencias.index'));
             }
 
-            collect($request->vencedores)
+            $vencedores = collect($request->vencedores)
                 ->map(function ($qcItemQcFornecedorId) use ($qcItemFornecedorRepository) {
                     return $qcItemFornecedorRepository->find($qcItemQcFornecedorId);
                 })
@@ -382,6 +386,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
             $quadro->update([
                 'qc_status_id' => QcStatus::CONCORRENCIA_FINALIZADA
             ]);
+
             if ($request->valor_frete) {
                 foreach ($request->valor_frete as $qcFornecedorId => $valor) {
                     $valor = !is_null($valor)?money_to_float($valor):0;
@@ -390,17 +395,62 @@ class QuadroDeConcorrenciaController extends AppBaseController
                     $qcFornecedor->save();
                 }
             }
+
             $qcStatusLogRepository->create([
                 'qc_status_id' => QcStatus::CONCORRENCIA_FINALIZADA,
                 'quadro_de_concorrencia_id' => $quadro->id,
                 'user_id' => $request->user()->id
             ]);
+
+            $qcItensAditivos = $quadro->itens->load('ordemDeCompraItens')
+                    ->map(function($qcItem) {
+                        $qcItem->contratos = $qcItem->ordemDeCompraItens
+                            ->pluck('sugestao_contrato_id');
+
+                        return $qcItem;
+                    })
+                    ->reject(function($qcItem) {
+                        return $qcItem->contratos->isEmpty();
+                    });
+
+            $qcItensAditivos->each(function($qcItem) use ($vencedores) {
+                $qcItem->contratos->each(function($contrato_id) use ($qcItem, $vencedores) {
+                    $contrato = Contrato::find($contrato_id);
+                    $vencedor = $vencedores->where('qc_item_id', $qcItem->id)->first();
+                    $contratoItem = ContratoItem::create([
+                        'qc_item_id'     => $qcItem->id,
+                        'insumo_id'      => $qcItem->insumo_id,
+                        'qtd'            => $qcItem->ordemDeCompraItens->where('obra_id', $contrato->obra_id)->sum('qtd'),
+                        'valor_unitario' => $vencedor->valor_unitario,
+                        'valor_total'    => $vencedor->valor_total,
+                        'aprovado'       => 0,
+                        'contrato_id'    => $contrato->id,
+                    ]);
+
+                    $mod = ContratoItemModificacao::create([
+                        'contrato_item_id'        => $contratoItem->id,
+                        'qtd_anterior'            => 0,
+                        'qtd_atual'               => $contratoItem->qtd,
+                        'valor_unitario_anterior' => 0,
+                        'valor_unitario_atual'    => $contratoItem->valor_unitario,
+                        'contrato_status_id'      => ContratoStatus::EM_APROVACAO,
+                        'tipo_modificacao'        => 'Aditivo',
+                        'user_id'                 => auth()->id()
+                    ]);
+
+                    ContratoItemModificacaoLog::create([
+                        'contrato_item_modificacao_id' => $mod->id,
+                        'contrato_status_id'           => $mod->contrato_status_id
+                    ]);
+                });
+            });
+
         } catch (Exception $e) {
             DB::rollback();
             logger()->error((string) $e);
             Flash::error('Ocorreu um erro ao salvar os dados, tente novamente');
 
-            return redirect(route('quadroDeConcorrencias.index'));
+            return back();
         }
 
         DB::commit();
@@ -603,10 +653,12 @@ class QuadroDeConcorrenciaController extends AppBaseController
                     ]);
                 }
 
-                foreach ($request->equalizacoes as $check) {
-                    $check['qc_fornecedor_id'] = $qcFornecedor->id;
-                    $check['user_id'] = $request->user()->id;
-                    $checksRepository->create($check);
+                if(!empty($request->equalizacoes)) {
+                    foreach ($request->equalizacoes as $check) {
+                        $check['qc_fornecedor_id'] = $qcFornecedor->id;
+                        $check['user_id'] = $request->user()->id;
+                        $checksRepository->create($check);
+                    }
                 }
 
                 foreach ($request->itens as $qcItemId => $item) {
@@ -966,6 +1018,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
                 $query->where('vencedor', '1');
             }])
             ->get();
+
         $contratoItens = [];
         $total_contrato = [];
 
@@ -1153,9 +1206,14 @@ class QuadroDeConcorrenciaController extends AppBaseController
         foreach ($total_contrato as $qcFornecedorId => $obraValores) {
             $qcF = QcFornecedor::find($qcFornecedorId);
             foreach ($obraValores as $obraId => $valorTotal) {
-                $contratoExistente = Contrato::where('quadro_de_concorrencia_id', $qcF->quadro_de_concorrencia_id)
-                    ->where('fornecedor_id', $qcF->fornecedor_id)
+                $contratoExistente = Contrato::where('fornecedor_id', $qcF->fornecedor_id)
                     ->where('obra_id', $obraId)
+                    ->where(function($query) use ($qcF) {
+                        $query->where('quadro_de_concorrencia_id', $qcF->quadro_de_concorrencia_id);
+                        $query->orWhereHas('itens', function($query) use ($qcF) {
+                            $query->whereIn('qc_item_id', $qcF->itens->pluck('qc_item_id')->all());
+                        });
+                    })
                     ->first();
                 if ($contratoExistente) {
                     $contratosExistentes[$qcFornecedorId][$obraId] = $contratoExistente;

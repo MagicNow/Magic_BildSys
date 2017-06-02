@@ -344,91 +344,97 @@
             <div class="box box-danger box-equalizacao-tecnica">
               <div class="box-header with-border">Equalização Técnica</div>
               <div class="box-body">
-                <table class="table table-responsive table-striped table-align-middle table-condensed">
-                  <thead>
-                    <tr>
-                      <th width="10%">Detalhes</th>
-                      <th>Item</th>
-                      <th width="20%">Sim/Não/Ciência</th>
-                      <th width="25%">Obs</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    @foreach($equalizacoes as $key =>  $equalizacao)
-                      <tr>
-                        <td>
-                          <button type="button"
-                            class="btn btn-default btn-flat btn-xs js-sweetalert"
-                            data-title="{{ $equalizacao->nome }}"
-                            data-text="{{ $equalizacao->descricao }}">
-                            <i class="fa fa-info-circle"></i> detalhes
-                          </button>
-                        </td>
-                        <td class="text-left">{{ $equalizacao->nome }}</td>
-                        <td>
-                          {!! Form::hidden("equalizacoes[{$equalizacao->id}-{$equalizacao->getTable()}][checkable_type]", $equalizacao->getTable()) !!}
-                          {!! Form::hidden("equalizacoes[{$equalizacao->id}-{$equalizacao->getTable()}][checkable_id]", $equalizacao->id) !!}
-                          @if($equalizacao->obrigatorio)
-                            <div class="checkbox">
-                              <label>
+                @if($equalizacoes->isEmpty())
+                    <p>Sem equalizações técnicas no Quadro de Concorrência</p>
+                @else
+                    <table class="table table-responsive table-striped table-align-middle table-condensed">
+                      <thead>
+                        <tr>
+                          <th width="10%">Detalhes</th>
+                          <th>Item</th>
+                          <th width="20%">Sim/Não/Ciência</th>
+                          <th width="25%">Obs</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @foreach($equalizacoes as $key =>  $equalizacao)
+                          <tr>
+                            <td>
+                              <button type="button"
+                                class="btn btn-default btn-flat btn-xs js-sweetalert"
+                                data-title="{{ $equalizacao->nome }}"
+                                data-text="{{ $equalizacao->descricao }}">
+                                <i class="fa fa-info-circle"></i> detalhes
+                              </button>
+                            </td>
+                            <td class="text-left">{{ $equalizacao->nome }}</td>
+                            <td>
+                              {!! Form::hidden("equalizacoes[{$equalizacao->id}-{$equalizacao->getTable()}][checkable_type]", $equalizacao->getTable()) !!}
+                              {!! Form::hidden("equalizacoes[{$equalizacao->id}-{$equalizacao->getTable()}][checkable_id]", $equalizacao->id) !!}
+                              @if($equalizacao->obrigatorio)
+                                <div class="checkbox">
+                                  <label>
+                                    {!!
+                                      Form::checkbox(
+                                        "equalizacoes[{$equalizacao->id}-{$equalizacao->getTable()}][checked]",
+                                        '1'
+                                      )
+                                    !!}
+                                    Estou ciente
+                                  </label>
+                                </div>
+                              @else
+                                <label class="radio-inline">
+                                  {!!
+                                    Form::radio(
+                                      "equalizacoes[{$equalizacao->id}-{$equalizacao->getTable()}][checked]",
+                                      '1'
+                                    )
+                                  !!}
+                                  Sim
+                                </label>
+                                <label class="radio-inline">
+                                  {!!
+                                    Form::radio(
+                                      "equalizacoes[{$equalizacao->id}-{$equalizacao->getTable()}][checked]",
+                                      '0'
+                                    )
+                                  !!}
+                                  Não
+                                </label>
+                              @endif
+                            </td>
+                            <td>
+                              @if(!$equalizacao->obrigatorio)
                                 {!!
-                                  Form::checkbox(
-                                    "equalizacoes[{$equalizacao->id}-{$equalizacao->getTable()}][checked]",
-                                    '1'
+                                  Form::textarea(
+                                    "equalizacoes[{$equalizacao->id}-{$equalizacao->getTable()}][obs]",
+                                    old("equalizacoes[{$equalizacao->id}-{$equalizacao->getTable()}][obs]"),
+                                    [
+                                      'placeholder' => 'Suas Considerações ou Observações',
+                                      'class' => 'form-control',
+                                      'rows' => 2,
+                                      'cols' => 25
+                                    ]
                                   )
                                 !!}
-                                Estou ciente
-                              </label>
-                            </div>
-                          @else
-                            <label class="radio-inline">
-                              {!!
-                                Form::radio(
-                                  "equalizacoes[{$equalizacao->id}-{$equalizacao->getTable()}][checked]",
-                                  '1'
-                                )
-                              !!}
-                              Sim
-                            </label>
-                            <label class="radio-inline">
-                              {!!
-                                Form::radio(
-                                  "equalizacoes[{$equalizacao->id}-{$equalizacao->getTable()}][checked]",
-                                  '0'
-                                )
-                              !!}
-                              Não
-                            </label>
-                          @endif
-                        </td>
-                        <td>
-                          @if(!$equalizacao->obrigatorio)
-                            {!!
-                              Form::textarea(
-                                "equalizacoes[{$equalizacao->id}-{$equalizacao->getTable()}][obs]",
-                                old("equalizacoes[{$equalizacao->id}-{$equalizacao->getTable()}][obs]"),
-                                [
-                                  'placeholder' => 'Suas Considerações ou Observações',
-                                  'class' => 'form-control',
-                                  'rows' => 2,
-                                  'cols' => 25
-                                ]
-                              )
-                            !!}
-                          @else
-                            <span class="text-muted"></span>
-                          @endif
-                        </td>
-                      </tr>
-                    @endforeach
-                  </tbody>
-                </table>
+                              @else
+                                <span class="text-muted"></span>
+                              @endif
+                            </td>
+                          </tr>
+                        @endforeach
+                      </tbody>
+                    </table>
+                @endif
               </div>
+              @if($anexos->isNotEmpty())
               <div class="box-footer text-center">
                 <a href="#modal-anexos" data-toggle="modal" class="btn btn-primary btn-flat">
                  <i class="fa fa-paperclip"></i> Exibir todos os Anexos de Equalização Técnica
                 </a>
               </div>
+              @endif
             </div>
           </div>
         </div>
@@ -525,13 +531,14 @@
             }
         });
         $('input[name="tipo_frete"]').on('ifToggled', function(event){
-            if(event.target.value=='CIF'){
+            if(event.target.value=='CIF') {
                 $('.freteFOB').hide();
                 $('input[name="valor_frete"]').val('0');
-            }else{
+            } else {
                 $('.freteFOB').show();
             }
         });
+        $('input[name="frete_incluso"]:checked, input[name="tipo_frete"]:checked').trigger('ifToggled');
     });
 </script>
 @stop

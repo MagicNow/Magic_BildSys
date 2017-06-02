@@ -7,6 +7,7 @@ use Yajra\Datatables\Services\DataTable;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Models\ContratoStatus;
 
 class ContratoDataTable extends DataTable
 {
@@ -75,6 +76,14 @@ class ContratoDataTable extends DataTable
         ->groupBy('contratos.id');
 
         $request = $this->request();
+
+        if($request->obra) {
+            $query->where('contratos.obra_id', $request->obra);
+            $query->whereIn('contratos.contrato_status_id', [
+                ContratoStatus::APROVADO,
+                ContratoStatus::ATIVO
+            ]);
+        }
 
         if($request->fornecedor_id) {
             $query->where('contratos.fornecedor_id', $request->fornecedor_id);

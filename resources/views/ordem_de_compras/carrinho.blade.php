@@ -159,7 +159,7 @@
                                                 {{$item->contrato->fornecedor->nome}}
                                                 <button type="button"
                                                     class="btn btn-flat btn-xs btn-danger js-remove-contrato"
-                                                    data-item="{{ $item->id }}">
+                                                    data-item="{{ $item->id }}" >
                                                     <i class="fa fa-times fa-fw"></i>
                                                 </button>
                                             </div>
@@ -167,9 +167,10 @@
                                             <div id="bloco_indicar_contrato_removivel{{ $item->id }}">
                                                 <label class="label-bloco label-bloco-limitado">Aditivar contrato</label>
                                                 <button type="button"
-                                                  class="btn btn-flat btn-sm btn-default margem-botao js-aditivar"
-                                                  data-insumo="{{ $item->insumo_id }}"
-                                                  data-item="{{ $item->id }}">
+                                                    class="btn btn-flat btn-sm btn-default margem-botao js-aditivar"
+                                                    data-insumo="{{ $item->insumo_id }}"
+                                                    data-obra="{{ $item->obra_id }}"
+                                                    data-item="{{ $item->id }}">
                                                     Selecionar
                                                 </button>
                                             </div>
