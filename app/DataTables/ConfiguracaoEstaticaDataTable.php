@@ -1,6 +1,6 @@
 <?php
 
-namespace App\DataTables\Admin;
+namespace App\DataTables;
 
 use App\Models\ConfiguracaoEstatica;
 use Form;
@@ -16,7 +16,7 @@ class ConfiguracaoEstaticaDataTable extends DataTable
     {
         return $this->datatables
             ->eloquent($this->query())
-            ->addColumn('action', 'admin.configuracao_estaticas.datatables_actions')
+            ->addColumn('action', 'configuracao_estaticas.datatables_actions')
             ->make(true);
     }
 

@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.front')
 
 @section('content')
     <section class="content-header">
@@ -12,9 +12,9 @@
 
             <div class="box-body">
                 <div class="row">
-                    {!! Form::open(['route' => 'admin.configuracaoEstaticas.store']) !!}
+                    {!! Form::open(['route' => 'configuracaoEstaticas.store']) !!}
 
-                        @include('admin.configuracao_estaticas.fields')
+                        @include('configuracao_estaticas.fields')
 
                     {!! Form::close() !!}
                 </div>

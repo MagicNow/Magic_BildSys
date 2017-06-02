@@ -49,6 +49,11 @@
             <a href="{!! route('contratos.index') !!}"><i class="fa fa-clone"></i><span>Contratos</span></a>
         </li>
         @endshield
+        @shield('configuracaoEstaticas.list')
+        <li class="{{ Request::is('configuracaoEstaticas*') ? 'active' : '' }}">
+            <a href="{!! route('configuracaoEstaticas.index') !!}"><i class="fa fa-cog"></i><span>Informação de obrigações</span></a>
+        </li>
+        @endshield
     </ul>
 </li>
 
