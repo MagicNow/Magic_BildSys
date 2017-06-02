@@ -53,6 +53,7 @@ use App\Repositories\Admin\OrcamentoRepository;
 use App\Repositories\Admin\InsumoRepository;
 use App\Repositories\ContratoRepository;
 use App\DataTables\ContratoDataTable;
+use App\Models\WorkflowTipo;
 
 class OrdemDeCompraController extends AppBaseController
 {
@@ -256,7 +257,7 @@ class OrdemDeCompraController extends AppBaseController
                     $alcada->id);
 
                 $avaliado_reprovado[$alcada->id] ['aprovadores'] = WorkflowAprovacaoRepository::verificaQuantidadeUsuariosAprovadores(
-                    1, // Aprovação de OC
+                    WorkflowTipo::find(WorkflowTipo::OC), // Aprovação de OC
                     $ordemDeCompra->obra_id,
                     $alcada->id);
 

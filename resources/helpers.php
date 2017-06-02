@@ -34,6 +34,8 @@ if(! function_exists('money_to_float')) {
             return (float) str_replace(',', '', $number);
         } elseif(preg_match("/^(-)?[0-9]{1,3}(\.?[0-9]{3})*(,[0-9]{1,2})?$/", $number)) {
             return (float) str_replace(',', '.', str_replace('.', '', $number));
+        } elseif(is_null($number)) {
+            return (float) 0;
         } else {
             throw new InvalidArgumentException(
                 'The parameter is not a valid money string. Ex.: 100.00, 100,00, 1.000,00, 1,000.00'
