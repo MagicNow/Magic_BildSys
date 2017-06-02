@@ -19549,3 +19549,7 @@ h6 {
   overflow-x: auto;
   padding-bottom: 10px;
 }
+
+.dt-buttons {
+  float: left;
+}

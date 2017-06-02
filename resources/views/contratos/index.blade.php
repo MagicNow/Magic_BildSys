@@ -1,4 +1,4 @@
-@extends((!isset($isModal) && !$isModal)? 'layouts.front' : 'layouts.modal')
+@extends((!isset($isModal) || !$isModal)? 'layouts.front' : 'layouts.modal')
 
 @section('scripts')
   @parent
@@ -10,7 +10,7 @@
     <h1>Contratos</h1>
   </section>
   <div class="content">
-    @if(!isset($isModal) && !$isModal)
+    @if(!isset($isModal) || !$isModal)
     <div class="box box-muted">
       <div class="box-body">
         @include('partials.grupos-de-orcamento')

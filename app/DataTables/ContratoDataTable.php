@@ -147,6 +147,22 @@ class ContratoDataTable extends DataTable
             ->ajax('')
             ->addAction(['width' => '80px'])
             ->parameters([
+                'initComplete' => 'function () {
+                    max = this.api().columns().count();
+                    this.api().columns().every(function (col) {
+                        if((col+1)<max){
+                            var column = this;
+                            var input = document.createElement("input");
+                            $(input).attr(\'placeholder\',\'Filtrar...\');
+                            $(input).addClass(\'form-control\');
+                            $(input).css(\'width\',\'100%\');
+                            $(input).appendTo($(column.footer()).empty())
+                            .on(\'change\', function () {
+                                column.search($(this).val(), false, false, true).draw();
+                            });
+                        }
+                    });
+                }' ,
                 'dom' => 'Blfrtip',
                 'scrollX' => false,
                 'language'=> [
