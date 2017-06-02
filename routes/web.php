@@ -722,6 +722,10 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             '/{contratos}/editar',
             ['as' => 'contratos.edit', 'uses' => 'ContratoController@edit']
         );
+        $router->patch(
+            '/{contratos}/update',
+            ['as' => 'contratos.update', 'uses' => 'ContratoController@update']
+        );
     });
 
 
