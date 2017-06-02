@@ -270,6 +270,12 @@ class QuadroDeConcorrenciaController extends AppBaseController
             return redirect(route('quadroDeConcorrencias.index'));
         }
 
+        if ($quadro->qc_status_id != 7) {
+            Flash::error('Quadro De Concorrencia deve estar EM CONCORRÊNCIA para ser avaliado!');
+
+            return redirect(route('quadroDeConcorrencias.index'));
+        }
+
         if (!$quadro->temOfertas()) {
             Flash::error('Você não pode avaliar um quadro de concorrência sem ofertas.');
 
@@ -441,6 +447,12 @@ class QuadroDeConcorrenciaController extends AppBaseController
 
         if (empty($quadro)) {
             Flash::error('Quadro De Concorrencia '.trans('common.not-found'));
+
+            return redirect(route('quadroDeConcorrencias.index'));
+        }
+
+        if ($quadro->qc_status_id != 7) {
+            Flash::error('Quadro De Concorrencia deve estar EM CONCORRÊNCIA para lançar valores!');
 
             return redirect(route('quadroDeConcorrencias.index'));
         }

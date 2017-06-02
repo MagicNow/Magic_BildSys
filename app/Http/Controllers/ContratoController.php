@@ -8,6 +8,7 @@ use App\Models\WorkflowAprovacao;
 use App\Repositories\ContratoRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
+use Illuminate\Support\Facades\Storage;
 use Response;
 use App\Repositories\Admin\FornecedoresRepository;
 use App\Repositories\Admin\ObraRepository;
@@ -210,8 +211,9 @@ class ContratoController extends AppBaseController
     }
     
     public function imprimirContrato($id){
-        return ContratoRepository::geraImpressao($id);
+        return  response()->file( storage_path('/app/public/') . str_replace('storage/', '', ContratoRepository::geraImpressao($id)) ) ;
     }
+
 
     public function edit($id)
     {
