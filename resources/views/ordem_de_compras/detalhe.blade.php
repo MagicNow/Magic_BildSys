@@ -284,10 +284,10 @@
                     <table class="table table-bordered table-striped">
                         <thead>
                         <tr>
-                            <th class="text-center">Código Insumo</th>
-                            <th class="text-center">Insumo</th>
+                            <th class="text-center">Código do insumo</th>
+                            <th class="text-center">Descrição do insumo</th>
                             <th class="text-center">Qntd da O.C.</th>
-                            <th class="text-center">Und</th>
+                            <th class="text-center">Und de medida</th>
                             <th class="text-center">Status do valor do insumo</th>
                             <th class="text-center">Status Serviço</th>
                             <th class="text-center">Acaba a obra</th>
@@ -298,7 +298,17 @@
 
                     @foreach($itens as $item)
                         <tr>
-                            <td class="text-center">{{ $item->insumo->codigo }}</td>
+                            <td class="text-center">
+                                <span data-toggle="tooltip" data-placement="right" data-html="true"
+                                    title="
+                                        {{$item->grupo->codigo.' - '.$item->grupo->nome}}<br/>
+                                        {{$item->subgrupo1->codigo.' - '.$item->subgrupo1->nome}}<br/>
+                                        {{$item->subgrupo2->codigo.' - '.$item->subgrupo2->nome}}<br/>
+                                        {{$item->subgrupo3->codigo.' - '.$item->subgrupo3->nome}}<br/>
+                                        {{$item->servico->codigo.' - '.$item->servico->nome}}
+                                    ">
+                                {{ $item->insumo->codigo }}</span>
+                            </td>
                             <td class="text-center">{{ $item->insumo->nome }}</td>
                             <td class="text-center">{{ $item->qtd }}</td>
                             <td class="text-center">{{ $item->unidade_sigla }}</td>

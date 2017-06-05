@@ -100,145 +100,59 @@
                 </h4>
             </div>
         </div>
-        @foreach($itens as $item)
-            <div class="panel panel-default">
-                <div class="panel-body">
-                    <div class="col-md-10">
-                        <h4 class="highlight">
-                            <span class="col-md-7">{{ $item->insumo->codigo . ' - '. $item->insumo->nome }}</span>
-                            @php $ordem_de_compras_ids = explode(",", $item->ordem_de_compras_ids) @endphp
-                            <ol class="breadcrumb col-md-5" style="padding: 0px;margin-bottom: 0px; background-color:transparent">
-                                @foreach($ordem_de_compras_ids as $ordem_de_compra_id)
-                                    <li><a href="/ordens-de-compra/detalhes/{{ $ordem_de_compra_id }}" style="font-size:15px;">OC: {{ $ordem_de_compra_id }} </a></li>
-                                @endforeach
-                            </ol>
-                        </h4>
-                    </div>
-                    <div class="col-md-12 table-responsive margem-topo">
-                        <table class="table table-bordered table-striped">
-                            <thead>
-                            <tr>
-                                <th class="text-center">Unidade Medida</th>
-                                <th class="text-center">Qntd previsto no orçamento</th>
-                                <th class="text-center">Valor previsto no orçamento</th>
-                                <th class="text-center">Qntd comprometida realizada</th>
-                                <th class="text-center">Valor comprometido realizado</th>
-                                <th class="text-center">Qntd compremetida à gastar</th>
-                                <th class="text-center">Valor comprometido à gastar</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td class="text-center">{{ $item->unidade_sigla . ' - '.$item->unidade->descricao }}</td>
-                                <td class="text-center">{{ number_format($item->qtd_inicial, 2, ',','.') }}</td>
-                                <td class="text-center"><small class="pull-left">R$</small> {{ number_format($item->preco_inicial, 2, ',','.') }}</td>
-                                <td class="text-center">{{ number_format(doubleval($item->qtd_realizada), 2, ',','.') }}</td>
-                                <td class="text-center"><small class="pull-left">R$</small> {{ number_format( doubleval($item->valor_realizado), 2, ',','.') }}</td>
-                                <td class="text-center">
-                                    {{--{{ number_format( $item->qtd_inicial-doubleval($item->qtd_realizada), 2, ',','.') }}--}}0,00
-                                </td>
-                                <td class="text-center"><small class="pull-left">R$</small>
-                                    {{--{{ number_format( $item->preco_inicial-doubleval($item->valor_realizado), 2, ',','.') }}--}}0,00
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="col-md-12 table-responsive margem-topo">
-                        <table class="table table-bordered table-striped">
-                            <thead>
-                            <tr>
-                                <th class="text-center">Saldo de qntd do orçamento</th>
-                                <th class="text-center">Saldo de valor do orçamento</th>
-                                <th class="text-center">Qntd da O.C.</th>
-                                <th class="text-center">Valor da O.C.</th>
-                                <th class="text-center">Status do valor do insumo</th>
-                                <th class="text-center">Emergencial</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td class="text-center">{{ number_format( $item->qtd_inicial - doubleval($item->qtd_realizada), 2, ',','.') }}</td>
-                                <td class="text-center"><small class="pull-left">R$</small> {{ number_format( $item->preco_inicial-doubleval($item->valor_realizado), 2, ',','.') }}</td>
-                                <td class="text-center"><strong>{{ $item->qtd }}</strong></td>
-                                <td class="text-center"><small class="pull-left">R$</small> <strong>{{ number_format(doubleval($item->valor_total), 2, ',','.') }}</strong></td>
-                                <td class="text-center">
-                                    {{--CONTA = saldo - previsto no orçamento--}}
-                                    <i class="fa fa-circle {{ (money_to_float($item->preco_inicial) - money_to_float($item->valor_realizado)) - money_to_float($item->preco_inicial) < 0 ? 'red': 'green'  }}" aria-hidden="true"></i>
-                                </td>
-                                <td class="text-center">{!! $item->emergencial?'<strong class="text-danger"> <i class="fa fa-exclamation-circle" aria-hidden="true"></i> SIM</strong>':'NÃO' !!}</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="col-md-12 table-responsive margem-topo">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                        <tr>
+                            <th class="text-center">Código do insumo</th>
+                            <th class="text-center">Descrição do insumo</th>
+                            <th class="text-center">Und de medida</th>
+                            <th class="text-center">Valor previsto no orçamento</th>
+                            <th class="text-center">Valor comprometido realizado</th>
+                            <th class="text-center">Valor comprometido à gastar</th>
+                            <th class="text-center">Saldo de orçamento</th>
+                            <th class="text-center">Valor da O.C.</th>
+                            <th class="text-center">Saldo disponível</th>
+                        </tr>
+                        </thead>
+                        <tbody>
 
-                    <div class="col-md-6 margem-topo borda-direita">
-                        <div class="row">
-                            <div class="col-md-4 label-bloco">
-                                Justificativa de compra:
-                            </div>
-                            <div class="bloco-texto-conteudo col-md-7">
-                                @php $justificativas = explode(",", $item->justificativas) @endphp
-                                @foreach($justificativas as $justificativa)
-                                    <p>{{ $justificativa }}</p>
-                                @endforeach
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 margem-topo">
-                        <div class="col-md-4 label-bloco">
-                            Observações ao fornecedor:
-                        </div>
-                        <div class="bloco-texto-conteudo col-md-7">
-                            @php $obs = explode(",", $item->obs) @endphp
-                            @foreach($obs as $ob)
-                                <p>{{ $ob }}</p>
-                            @endforeach
-                        </div>
-                    </div>
-                    <div class="col-md-6 margem-topo borda-direita">
-                        <div class="row">
-                            <div class="col-md-4 label-bloco">
-                                Tabela TEMS:
-                            </div>
-                            <div class="bloco-texto-conteudo col-md-7">
-                                {{ $item->tems }}
-                            </div>
-
-                            <div class="col-md-4 label-bloco margem-topo">
-                                Contrato aditivado:
-                            </div>
-                            <div class="bloco-texto-conteudo col-md-7 margem-topo">
-                                @php $contratos = explode(",", $item->contratos) @endphp
-                                @foreach($contratos as $contrato)
-                                    <p>{{ $contrato }}</p>
-                                @endforeach
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 margem-topo">
-                        @if($item->anexos)
-                            <div class="col-md-4 label-bloco">
-                                Arquivos anexos:
-                            </div>
-                            <div class="col-md-8">
-                                <div class="row">
-                                    @php $anexos = explode(",", $item->anexos) @endphp
-                                    @foreach($anexos as $anexo)
-                                        <div class="bloco-texto-linha col-md-9">{{ substr($anexo, strrpos($anexo,'/')+1  )  }}</div>
-                                        <div class="col-md-2">
-                                            <a href="{{ Storage::url($anexo) }}" class="btn btn-default btn-block" target="_blank" >
-                                                <i class="fa fa-eye" aria-hidden="true"></i>
-                                            </a>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            </div>
-                        @endif
-                    </div>
+                        @foreach($itens as $item)
+                            <tr>
+                                <td class="text-center">{{ $item->insumo->codigo }}</td>
+                                <td class="text-center">{{ $item->insumo->nome }}</td>
+                                <td class="text-center">{{ $item->unidade_sigla }}</td>
+                                <td class="text-center">
+                                    <small class="pull-left">R$</small>
+                                    {{ number_format($item->preco_inicial, 2, ',','.') }}
+                                </td>
+                                <td class="text-center">
+                                    <small class="pull-left">R$</small>
+                                    {{ number_format( doubleval($item->valor_realizado), 2, ',','.') }}
+                                </td>
+                                <td class="text-center">
+                                    <small class="pull-left">R$</small>0,00
+                                </td>
+                                <td class="text-center">
+                                    <small class="pull-left">R$</small>
+                                    {{ number_format( $item->preco_inicial-doubleval($item->valor_realizado), 2, ',','.') }}
+                                </td>
+                                <td class="text-center">
+                                    <small class="pull-left">R$</small> <strong>{{ number_format(doubleval($item->valor_total), 2, ',','.') }}</strong>
+                                </td>
+                                <td class="text-center">
+                                    <small class="pull-left">R$</small>
+                                    {{ number_format( $item->preco_inicial-doubleval($item->valor_realizado)-doubleval($item->valor_total), 2, ',','.') }}
+                                </td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
                 </div>
             </div>
-        @endforeach
+        </div>
         <div class="pg text-center">
             {{ $itens->links() }}
         </div>
