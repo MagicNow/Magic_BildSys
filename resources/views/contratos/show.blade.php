@@ -83,11 +83,18 @@
                    style="color:{{ $contrato->status->cor }}"></i>
                 {{ $contrato->status->nome }}
             </small>
+
+            @if($contrato->contrato_status_id == 5 && $contrato->hasServico() )
+                <a href="{{ Storage::url($contrato->arquivo) }}" download="contrato_{{ $contrato->id }}.pdf" target="_blank"
+                   class="btn btn-lg btn-flat btn-success pull-right" title="Imprimir Contrato assinado pelo fornecedor">
+                    <i class="fa fa-print"></i>
+                </a>
+            @endif
         </h1>
     </section>
 
     <div class="content">
-        @if($contrato->contrato_status_id == 4 )
+        @if($contrato->contrato_status_id == 4 || (is_null($contrato->arquivo) && $contrato->contrato_status_id == 5)  )
         {!! Form::open(['url'=>'/contratos/'.$contrato->id.'/envia-contrato', 'files'=> true ]) !!}
             <div class="box box-warning">
                 <div class="box-header with-border">
@@ -98,7 +105,7 @@
                         {!! Form::file('arquivo',['class'=>'form-control']) !!}
                     </div>
                     <div class="col-md-2">
-                        <button type="submit" class="btn btn-flat btn-success btn-block"><i class="fa fa-upload"></i> Enviar e Liberar</button>
+                        <button type="submit" class="btn btn-flat btn-success btn-block"><i class="fa fa-upload"></i> Enviar {{ $contrato->contrato_status_id == 4? ' e Liberar':'' }}</button>
                     </div>
                 </div>
             </div>
