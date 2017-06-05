@@ -100,61 +100,9 @@
                 </h4>
             </div>
         </div>
-        <div class="panel panel-default">
-            <div class="panel-body">
-                <div class="col-md-12 table-responsive margem-topo">
-                    <table class="table table-bordered table-striped">
-                        <thead>
-                        <tr>
-                            <th class="text-center">Código do insumo</th>
-                            <th class="text-center">Descrição do insumo</th>
-                            <th class="text-center">Und de medida</th>
-                            <th class="text-center">Valor previsto no orçamento</th>
-                            <th class="text-center">Valor comprometido realizado</th>
-                            <th class="text-center">Valor comprometido à gastar</th>
-                            <th class="text-center">Saldo de orçamento</th>
-                            <th class="text-center">Valor da O.C.</th>
-                            <th class="text-center">Saldo disponível</th>
-                        </tr>
-                        </thead>
-                        <tbody>
 
-                        @foreach($itens as $item)
-                            <tr>
-                                <td class="text-center">{{ $item->insumo->codigo }}</td>
-                                <td class="text-center">{{ $item->insumo->nome }}</td>
-                                <td class="text-center">{{ $item->unidade_sigla }}</td>
-                                <td class="text-center">
-                                    <small class="pull-left">R$</small>
-                                    {{ number_format($item->preco_inicial, 2, ',','.') }}
-                                </td>
-                                <td class="text-center">
-                                    <small class="pull-left">R$</small>
-                                    {{ number_format( doubleval($item->valor_realizado), 2, ',','.') }}
-                                </td>
-                                <td class="text-center">
-                                    <small class="pull-left">R$</small>0,00
-                                </td>
-                                <td class="text-center">
-                                    <small class="pull-left">R$</small>
-                                    {{ number_format( $item->preco_inicial-doubleval($item->valor_realizado), 2, ',','.') }}
-                                </td>
-                                <td class="text-center">
-                                    <small class="pull-left">R$</small> <strong>{{ number_format(doubleval($item->valor_total), 2, ',','.') }}</strong>
-                                </td>
-                                <td class="text-center">
-                                    <small class="pull-left">R$</small>
-                                    {{ number_format( $item->preco_inicial-doubleval($item->valor_realizado)-doubleval($item->valor_total), 2, ',','.') }}
-                                </td>
-                            </tr>
-                        @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="pg text-center">
-            {{ $itens->links() }}
+        <div class="content">
+            @include('ordem_de_compras.obras-insumos-table')
         </div>
     </div>
 @endsection
