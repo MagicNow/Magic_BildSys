@@ -32,8 +32,8 @@ class ContratoItemDataTable extends DataTable
      */
     public function ajax()
     {
-        $calc_aliq = function($type) {
-            return function($item) use($type) {
+        $calc_aliq = function ($type) {
+            return function ($item) use ($type) {
                 $value = ($item->{'aliq_' . $type} ?: 0) / 100;
                 return float_to_money($value * 100, '') . '%';
             };
@@ -41,28 +41,43 @@ class ContratoItemDataTable extends DataTable
 
         $datatables = $this->datatables
             ->eloquent($this->query())
-            ->addColumn('info', function($item) {
+            ->addColumn('info', function ($item) {
+                $item->load(['modificacoes' => function ($query) {
+                    return $query->where('contrato_status_id', ContratoStatus::APROVADO);
+                }]);
 
-                $reapropriacoes_dos_itens = $item->reapropriacoes->filter(function($re) {
-                  return is_null($re->contrato_item_reapropriacao_id) && !is_null($re->ordem_de_compra_item_id);
+                $reapropriacoes_dos_itens = $item->reapropriacoes->filter(function ($re) {
+                    return is_null($re->contrato_item_reapropriacao_id) && !is_null($re->ordem_de_compra_item_id);
                 })->pluck('ordem_de_compra_item_id')->unique();
 
-                $reapropriacoes_de_reapropriacoes = $item->reapropriacoes->filter(function($re) {
-                  return $re->reapropriacoes->isNotEmpty();
+                $reapropriacoes_de_reapropriacoes = $item->reapropriacoes->filter(function ($re) {
+                    return $re->reapropriacoes->isNotEmpty();
                 });
+
+                $reprovado = false;
+                $workflow = false;
+                $lastMod = $item->modificacoes()->orderBy('created_at', 'desc')->first();
+
+                if($lastMod->contrato_status_id === ContratoStatus::REPROVADO) {
+                    $reprovado = $lastMod;
+                    $workflow = $lastMod->aprovacoes()->orderBy('created_at', 'desc')->first();
+                }
 
                 return view(
                     'contratos.itens_datatables_info',
                     compact(
                         'item',
                         'reapropriacoes_dos_itens',
-                        'reapropriacoes_de_reapropriacoes'
-                    ))->render();
+                        'reapropriacoes_de_reapropriacoes',
+                        'reprovado',
+                        'workflow'
+                    ))
+                    ->render();
             })
-            ->editColumn('qtd', function($item) {
+            ->editColumn('qtd', function ($item) {
                 return $item->qtd_formatted;
             })
-            ->editColumn('valor_total', function($item) {
+            ->editColumn('valor_total', function ($item) {
                 return float_to_money($item->valor_total);
             })
             ->editColumn('aliq_irrf', $calc_aliq('irrf'))
@@ -71,26 +86,34 @@ class ContratoItemDataTable extends DataTable
             ->editColumn('aliq_csll', $calc_aliq('csll'))
             ->editColumn('aliq_cofins', $calc_aliq('cofins'));
 
-        if($this->contrato->isStatus(ContratoStatus::APROVADO)) {
-            $datatables->addColumn('action', function($item) {
+        if ($this->contrato->isStatus(ContratoStatus::APROVADO)) {
+            $datatables->addColumn('action', function ($item) {
                 $workflowAprovacao = [];
 
-                if(!$item->aprovado) {
+                if (!$item->aprovado) {
                     $mod = $item->modificacoes()
                         ->where('contrato_status_id', ContratoStatus::EM_APROVACAO)
                         ->first();
 
-                    $workflowAprovacao = WorkflowAprovacaoRepository::verificaAprovacoes(
-                        'ContratoItemModificacao',
-                        $mod->id,
-                        auth()->user()
-                    );
+                    if (!is_null($mod)) {
+                        $workflowAprovacao = WorkflowAprovacaoRepository::verificaAprovacoes(
+                            'ContratoItemModificacao',
+                            $mod->id,
+                            auth()->user()
+                        );
+                    }
+                }
 
+                $reprovado = false;
+                $lastMod = $item->modificacoes()->orderBy('created_at', 'desc')->first();
+
+                if($lastMod->contrato_status_id === ContratoStatus::REPROVADO && !$item->aprovado) {
+                    $reprovado = $lastMod;
                 }
 
                 return view(
                     'contratos.itens_datatables_action',
-                    compact('item', 'workflowAprovacao')
+                    compact('item', 'workflowAprovacao', 'reprovado')
                 )
                 ->render();
             });
@@ -106,7 +129,7 @@ class ContratoItemDataTable extends DataTable
     {
         $request = $this->request();
         $query = ContratoItem::query()
-            ->with(['modificacoes' => function($query) {
+            ->with(['modificacoes' => function ($query) {
                 $query->where('contrato_status_id', ContratoStatus::APROVADO);
             }])
             ->select([
@@ -127,6 +150,7 @@ class ContratoItemDataTable extends DataTable
                 ),
             ])
             ->join('insumos', 'insumos.id', 'contrato_itens.insumo_id')
+            ->join('contrato_item_modificacoes', 'contrato_itens.id', 'contrato_item_modificacoes.contrato_item_id')
             ->leftJoin(
                 'oc_item_qc_item',
                 'contrato_itens.qc_item_id',
@@ -154,6 +178,22 @@ class ContratoItemDataTable extends DataTable
             ->columns($this->getColumns())
             ->ajax('')
             ->parameters([
+                'initComplete' => 'function () {
+                    max = this.api().columns().count();
+                    this.api().columns().every(function (col) {
+                        if((col+1)<max){
+                            var column = this;
+                            var input = document.createElement("input");
+                            $(input).attr(\'placeholder\',\'Filtrar...\');
+                            $(input).addClass(\'form-control\');
+                            $(input).css(\'width\',\'100%\');
+                            $(input).appendTo($(column.footer()).empty())
+                            .on(\'change\', function () {
+                                column.search($(this).val(), false, false, true).draw();
+                            });
+                        }
+                    });
+                }' ,
                 'order' => [],
                 'dom' => 'Blfrtip',
                 'scrollX' => false,
@@ -230,7 +270,7 @@ class ContratoItemDataTable extends DataTable
             ],
         ];
 
-        if($this->contrato->isStatus(ContratoStatus::APROVADO)) {
+        if ($this->contrato->isStatus(ContratoStatus::APROVADO)) {
             $columns['action'] = [
                 'searchable' => false,
                 'orderable'  => false,

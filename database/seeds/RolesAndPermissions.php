@@ -159,6 +159,7 @@ class RolesAndPermissions extends Seeder
 
             'contratos.list'        => 'Listagem de contratos',
             'contratos.show'        => 'Visualização de contrato',
+            'contratos.edit'        => 'Editar contrato',
             'contratos.distratar'   => 'Distratar item do contrato',
             'contratos.reajustar'   => 'Reajustar item do contrato',
             'contratos.reapropriar' => 'Reapropriar item do contrato',

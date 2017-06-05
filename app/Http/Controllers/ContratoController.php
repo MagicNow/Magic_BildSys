@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\DataTables\ContratoDataTable;
 use App\Http\Requests;
+use App\Http\Requests\CreateContratoRequest;
+use App\Http\Requests\EditarItemRequest;
+use App\Http\Requests\UpdateContratoRequest;
 use App\Models\ContratoStatusLog;
 use App\Models\WorkflowAprovacao;
 use App\Repositories\CodeRepository;
@@ -211,11 +214,23 @@ class ContratoController extends AppBaseController
             'success' => true
         ]);
     }
-    
+
+    public function editarItem(
+        $id,
+        ContratoItemRepository $contratoItemRepository,
+        EditarItemRequest $request
+    ) {
+
+        $contratoItemRepository->editarAditivo($id, $request->all());
+
+        return response()->json([
+            'success' => true
+        ]);
+    }
+
     public function imprimirContrato($id){
         return  response()->file( storage_path('/app/public/') . str_replace('storage/', '', ContratoRepository::geraImpressao($id)) ) ;
     }
-
 
     public function edit($id)
     {
@@ -228,8 +243,8 @@ class ContratoController extends AppBaseController
         }
 
         return view('contratos.edit', compact('contrato'));
-    }    
-    
+    }
+
     public function update($id, Request $request)
     {
         $contrato = $this->contratoRepository->findWithoutFail($id);

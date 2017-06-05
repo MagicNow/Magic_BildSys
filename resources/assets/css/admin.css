@@ -518,3 +518,15 @@ h6 {
   overflow-x: auto;
   padding-bottom: 10px;
 }
+
+.dt-buttons {
+  float: left;
+}
+
+.dataTables_length {
+  float: left;
+}
+
+.dataTables_filter {
+  float: right !important;
+}

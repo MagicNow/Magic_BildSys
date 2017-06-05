@@ -42,6 +42,7 @@ class WorkflowAprovacaoRepository
             // Busca alçada atual
             $alcada_atual = self::verificaAlcadaAtual($tipo, $ids, $workflow_tipo);
 
+
             // Verifica se o usuário atual é um aprovador de alguma alçada
             $workflowUsuario = WorkflowUsuario::select(['workflow_usuarios.*', 'workflow_alcadas.ordem'])
                 ->join('workflow_alcadas', 'workflow_alcadas.id', '=', 'workflow_usuarios.workflow_alcada_id')
@@ -49,6 +50,7 @@ class WorkflowAprovacaoRepository
                 ->where('user_id', $user->id)
                 ->where('workflow_alcadas.id', $alcada_atual->id)
                 ->first();
+
 
             if (!$workflowUsuario) {
                 $workflowUsuario = WorkflowUsuario::select(['workflow_usuarios.*', 'workflow_alcadas.ordem'])
@@ -73,11 +75,13 @@ class WorkflowAprovacaoRepository
                 ];
             }
 
+
             // Verifica se a já é a alçada atual que o usuário está já aprovou
             $jaAprovou = $obj->aprovacoes()
                 ->where('user_id', $user->id)
                 ->where('workflow_alcada_id', $alcada_atual->id)
                 ->first();
+
 
             if ($jaAprovou) {
                 return [
@@ -106,6 +110,7 @@ class WorkflowAprovacaoRepository
                 ->first();
 
             $usuariosAlcadaAnterior = $workflowAlcada->workflowUsuarios()->count();
+
 
             # Busca a quantidade de aprovações q este item tem
             $aprovacoesAlcadaAnterior = $obj->aprovacoes()
@@ -394,7 +399,7 @@ class WorkflowAprovacaoRepository
                 // Divide a qtd de aprovações/reprovações pela quantidade de aprovadores
                 $avaliacoes = $total_ja_votado['total_avaliado'] / $qtd_aprovadores;
 
-                if ($avaliacoes === 1) {
+                if ($avaliacoes === 1 || !$workflowAprovacao->aprovado) {
                     // Se for já salva se foi aprovado ou reprovado
                     $obj->aprova($total_ja_votado['total_aprovado'] === $total_ja_votado['total_avaliado']);
 
@@ -485,7 +490,6 @@ class WorkflowAprovacaoRepository
         $qtd_usuarios = 0;
 
         $workflow_alcadas = WorkflowAlcada::where('workflow_tipo_id', $workflow_tipo->id);
-
 
         if ($workflow_tipo->usa_valor_minimo && $ids && $tipo) {
             $class = "App\\Models\\{$tipo}";

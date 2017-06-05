@@ -156,13 +156,21 @@
                                     <div id="bloco_indicar_contrato{{ $item->id }}">
                                         @if($item->sugestao_contrato_id)
                                             <div id="bloco_indicar_contrato_removivel{{ $item->id }}">
-                                                {{$item->contrato->fornecedor_nome}}
-                                                <button type="button" class="btn btn-flat btn-sm btn-danger glyphicon glyphicon-remove" onclick="removeContrato('{{ $item->insumo->codigo }}', '{{$item->id}}')"></button>
+                                                {{$item->contrato->fornecedor->nome}}
+                                                <button type="button"
+                                                    class="btn btn-flat btn-xs btn-danger js-remove-contrato"
+                                                    data-item="{{ $item->id }}" >
+                                                    <i class="fa fa-times fa-fw"></i>
+                                                </button>
                                             </div>
                                         @else
                                             <div id="bloco_indicar_contrato_removivel{{ $item->id }}">
                                                 <label class="label-bloco label-bloco-limitado">Aditivar contrato</label>
-                                                <button type="button" class="btn btn-flat btn-sm btn-default margem-botao" onclick="indicarContrato('{{ $item->insumo->codigo }}', '{{$item->id}}')">
+                                                <button type="button"
+                                                    class="btn btn-flat btn-sm btn-default margem-botao js-aditivar"
+                                                    data-insumo="{{ $item->insumo_id }}"
+                                                    data-obra="{{ $item->obra_id }}"
+                                                    data-item="{{ $item->id }}">
                                                     Selecionar
                                                 </button>
                                             </div>
@@ -255,22 +263,6 @@
                 </ul>
             </div>
         </div>
-
-        {{--<div class="box-body" id='app'>--}}
-            {{--<tabela--}}
-                    {{--api-url="/api/listagem-ordens-de-compras"--}}
-                    {{--api-filtros="/filter-json-ordem-compra"--}}
-                    {{--v-bind:params="{}"--}}
-                    {{--v-bind:actions="{filtros: true, status: true, detalhe: true, detalhe_url:'{{ url('/ordens-de-compra/detalhes/') }}'}"--}}
-                    {{--v-bind:colunas="[--}}
-                    {{--{campo_db: 'id', label: 'núm. o.c'},--}}
-                    {{--{campo_db: 'obra', label: 'obra'},--}}
-                    {{--{campo_db: 'usuario', label: 'usuário'},--}}
-                    {{--{campo_db: 'situacao', label: 'situação'}--}}
-                    {{--]">--}}
-            {{-->--}}
-            {{--</tabela>--}}
-        {{--</div>--}}
     </div>
 
     <div class="pg text-center">
@@ -279,6 +271,7 @@
 @endsection
 
 @section('scripts')
+    <script src="{{ asset('/js/carrinho.js') }}"></script>
     <script type="text/javascript">
         $.ajaxSetup({
             headers: {
@@ -334,20 +327,19 @@
                         },
                         type: "GET"
                     }
-            ).done(function (retorno) {
+            ).done(function (response) {
                 stopLoading();
-                contratos = '';
+                var contratos = '';
 
-                $.each(retorno.contrato_insumo, function (index, value) {
-                    var fornecedor = "'" + value.contrato.fornecedor_nome + "'";
+                _.each(response, function (contrato) {
+                    var fornecedor = "'" + contrato.fornecedor.nome + "'";
                     contratos +=
                             '<p style="border-bottom: 1px solid #dddddd;padding: 10px;text-align: left">' +
-                            '<span class="btn btn-sm btn-success flat" style="padding: 10px 10px;" onclick="indicarContratoFecharModal(' + item_id + ', \'sugestao_contrato_id\', ' + value.contrato.id + ', ' + fornecedor + ', '+ codigo_insumo +')">Indicar</span>' +
-                            '<span style="margin-left: 15px;">' + value.contrato.fornecedor_nome + '</span>' +
-                            '<br>' +
-                            '<i>' +
-                            '<a href="' + value.contrato.arquivo + '" target="_blank" style="margin-left: 167px;">Ver contrato</a>' +
-                            '</i>' +
+                            '<span class="btn btn-sm btn-success flat" onclick="indicarContratoFecharModal(' + item_id +
+                            ', \'sugestao_contrato_id\', ' + contrato.id + ', ' + fornecedor + ', '+ codigo_insumo +')">Indicar</span>' +
+                            '<span style="margin-left: 15px;">' + contrato.fornecedor.nome + '</span>' +
+                            '<a href="/contratos/' + contrato.id + '" target="_blank" ' +
+                              'class="center-block text-center"><i>Ver contrato</i></a>' +
                             '</p>';
                 });
 
@@ -533,9 +525,6 @@
 
                     });
         }
-//        const app = new Vue({
-//            el: '#app'
-//        });
 
         function indicarContratoFecharModal(item_id, campo, valor, fornecedor, codigo_insumo) {
             $('.confirm').click();
@@ -548,7 +537,7 @@
             $('#bloco_indicar_contrato_removivel'+ item_id).remove();
             $('#bloco_indicar_contrato'+ item_id).html('<div id="bloco_indicar_contrato_removivel' + item_id + '">' + fornecedor + ' <button type="button" class="btn btn-flat btn-sm btn-danger glyphicon glyphicon-remove" onclick="removeContrato(' + codigo_insumo + ', ' + item_id + ')"></button></div>');
         }
-        
+
         function removeContrato(codigo_insumo, item_id) {
             $.ajax({
                 url: '/ordens-de-compra/carrinho/remove-contrato',

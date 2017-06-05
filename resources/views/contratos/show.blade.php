@@ -257,6 +257,41 @@
             </div>
         </div>
     </div>
+  </div>
+
+  <div class="modal centered-modal fade" id="modal-editar" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title">Editar Aditivo</h4>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="qtd">Quantidade</label>
+            {!! Form::text('qtd', null, ['class' => 'form-control money']) !!}
+          </div>
+          <div class="form-group">
+            <label for="valor">Valor</label>
+            <div class="input-group">
+              <span class="input-group-addon">R$</span>
+              {!! Form::text('valor', null, ['class' => 'form-control money']) !!}
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger btn-flat" data-dismiss="modal">
+            Cancelar
+          </button>
+          <button type="button" class="btn btn-success btn-flat js-save">
+            Salvar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 @endsection
 
 @section('scripts')

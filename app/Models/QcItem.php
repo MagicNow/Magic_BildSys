@@ -75,6 +75,14 @@ class QcItem extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
+    public function contratoItens()
+    {
+        return $this->hasMany(ContratoItem::class, 'qc_item_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
     public function propostaFornecedores()
     {
         return $this->hasMany(QcItemQcFornecedor::class);

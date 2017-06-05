@@ -7,9 +7,13 @@ use Yajra\Datatables\Services\DataTable;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Models\ContratoStatus;
 
 class ContratoDataTable extends DataTable
 {
+
+    private $isModal = false;
+
     /**
      * Display ajax response.
      *
@@ -33,7 +37,11 @@ class ContratoDataTable extends DataTable
                     . '"></i> '
                     . $obj->status;
             })
-            ->addColumn('action', 'contratos.datatables_actions')
+            ->addColumn('action', function($obj) {
+                return view('contratos.datatables_actions')
+                    ->with($obj->toArray())
+                    ->with('isModal', $this->isModal);
+            })
             ->make(true);
     }
 
@@ -56,12 +64,26 @@ class ContratoDataTable extends DataTable
         ->join('obras', 'obras.id', 'contratos.obra_id')
         ->join('fornecedores', 'fornecedores.id', 'contratos.fornecedor_id')
         ->join('contrato_status', 'contrato_status.id', 'contratos.contrato_status_id')
-        ->join('contrato_itens', 'contrato_itens.contrato_id', 'contratos.id')
-        ->join('oc_item_qc_item', 'contrato_itens.qc_item_id', 'oc_item_qc_item.qc_item_id')
+        ->join('contrato_itens', function($join) {
+            $join->on('contrato_itens.contrato_id', 'contratos.id');
+            // Excluir contratos que já constam este insumo
+            if($insumo = request('insumo')) {
+                $join->where('contrato_itens.insumo_id', '!=', $insumo);
+            }
+        })
+        ->leftJoin('oc_item_qc_item', 'contrato_itens.qc_item_id', 'oc_item_qc_item.qc_item_id')
         ->join('ordem_de_compra_itens', 'ordem_de_compra_itens.id', 'oc_item_qc_item.ordem_de_compra_item_id')
         ->groupBy('contratos.id');
 
         $request = $this->request();
+
+        if($request->obra) {
+            $query->where('contratos.obra_id', $request->obra);
+            $query->whereIn('contratos.contrato_status_id', [
+                ContratoStatus::APROVADO,
+                ContratoStatus::ATIVO
+            ]);
+        }
 
         if($request->fornecedor_id) {
             $query->where('contratos.fornecedor_id', $request->fornecedor_id);
@@ -134,6 +156,22 @@ class ContratoDataTable extends DataTable
             ->ajax('')
             ->addAction(['width' => '80px'])
             ->parameters([
+                'initComplete' => 'function () {
+                    max = this.api().columns().count();
+                    this.api().columns().every(function (col) {
+                        if((col+1)<max){
+                            var column = this;
+                            var input = document.createElement("input");
+                            $(input).attr(\'placeholder\',\'Filtrar...\');
+                            $(input).addClass(\'form-control\');
+                            $(input).css(\'width\',\'100%\');
+                            $(input).appendTo($(column.footer()).empty())
+                            .on(\'change\', function () {
+                                column.search($(this).val(), false, false, true).draw();
+                            });
+                        }
+                    });
+                }' ,
                 'dom' => 'Blfrtip',
                 'scrollX' => false,
                 'language'=> [
@@ -183,4 +221,18 @@ class ContratoDataTable extends DataTable
     {
         return 'contratodatatables_' . time();
     }
+
+    /**
+     * Setter for isModal
+     *
+     * @param bool $isModal
+     *
+     * @return ContratoDataTable
+     */
+    public function setIsModal($isModal)
+    {
+        $this->isModal = $isModal;
+        return $this;
+    }
+
 }
