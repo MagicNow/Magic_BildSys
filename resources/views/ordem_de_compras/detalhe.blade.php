@@ -232,14 +232,14 @@
         <hr>
         <div class="row" id="totalInsumos">
             <div class="col-md-2 text-right borda-direita">
-                <h5 style="margin: 0px">PREVISTO NO ORÇAMENTO</h5>
+                <h5>Valor previsto no orçamento</h5>
                 <h4>
                     <small class="pull-left">R$</small>
                     {{ number_format($orcamentoInicial,2,',','.') }}
                 </h4>
             </div>
             <div class="col-md-2 text-right borda-direita" title="Até o momento em todos os itens desta O.C.">
-                <h5 style="margin: -2px">COMPROMETIDO REALIZADO</h5>
+                <h5>Valor comprometido realizado</h5>
                 <h4>
                     <small class="pull-left">R$</small>0,00
                     {{---  TO DO = Realizado: São informações que virão com a entrada de NF, sendo assim, no momento não haverá informações--}}
@@ -247,7 +247,7 @@
                 </h4>
             </div>
             <div class="col-md-2 text-right borda-direita" title="Nos itens desta O.C.">
-                <h5 style="margin: 0px">COMPROMETIDO À GASTAR</h5>
+                <h5>Valor comprometido à gastar</h5>
                 <h4>
                     <small class="pull-left">R$</small>0,00
                     {{---  TO DO = A gastar: É a soma de todos os saldos de contratos na que apropriação, como ainda não exixte contrato gerado, tem q estar zerado--}}
@@ -284,11 +284,11 @@
                     <table class="table table-bordered table-striped">
                         <thead>
                         <tr>
-                            <th class="text-center">Código Insumo</th>
-                            <th class="text-center">Insumo</th>
-                            <th class="text-center">Qtd. Solicitada</th>
-                            <th class="text-center">Und</th>
-                            <th class="text-center">Status do insumo</th>
+                            <th class="text-center">Código do insumo</th>
+                            <th class="text-center">Descrição do insumo</th>
+                            <th class="text-center">Qntd da O.C.</th>
+                            <th class="text-center">Und de medida</th>
+                            <th class="text-center">Status do valor do insumo</th>
                             <th class="text-center">Status Serviço</th>
                             <th class="text-center">Acaba a obra</th>
                             <th class="text-center">Ação</th>
@@ -298,7 +298,17 @@
 
                     @foreach($itens as $item)
                         <tr>
-                            <td class="text-center">{{ $item->insumo->codigo }}</td>
+                            <td class="text-center">
+                                <span data-toggle="tooltip" data-placement="right" data-html="true"
+                                    title="
+                                        {{$item->grupo->codigo.' - '.$item->grupo->nome}}<br/>
+                                        {{$item->subgrupo1->codigo.' - '.$item->subgrupo1->nome}}<br/>
+                                        {{$item->subgrupo2->codigo.' - '.$item->subgrupo2->nome}}<br/>
+                                        {{$item->subgrupo3->codigo.' - '.$item->subgrupo3->nome}}<br/>
+                                        {{$item->servico->codigo.' - '.$item->servico->nome}}
+                                    ">
+                                {{ $item->insumo->codigo }}</span>
+                            </td>
                             <td class="text-center">{{ $item->insumo->nome }}</td>
                             <td class="text-center">{{ $item->qtd }}</td>
                             <td class="text-center">{{ $item->unidade_sigla }}</td>
@@ -385,12 +395,12 @@
                                             <thead>
                                             <tr>
                                                 <th class="text-center">Unidade Medida</th>
-                                                <th class="text-center">Qtd. O. Inicial</th>
-                                                <th class="text-center">PREVISTO NO ORÇAMENTO</th>
-                                                <th class="text-center">Qtd. Realizada</th>
-                                                <th class="text-center">COMPROMETIDO REALIZADO</th>
-                                                <th class="text-center">Qtd. à Gastar</th>
-                                                <th class="text-center">COMPROMETIDO À GASTAR</th>
+                                                <th class="text-center">Qntd previsto no orçamento</th>
+                                                <th class="text-center">Valor previsto no orçamento</th>
+                                                <th class="text-center">Qntd comprometida realizada</th>
+                                                <th class="text-center">Valor comprometido realizado</th>
+                                                <th class="text-center">Qntd compremetida à gastar</th>
+                                                <th class="text-center">Valor comprometido à gastar</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -420,10 +430,10 @@
                                         <table class="table table-bordered table-striped">
                                             <thead>
                                             <tr>
-                                                <th class="text-center">Qtd. Saldo</th>
-                                                <th class="text-center">Valor Saldo</th>
-                                                <th class="text-center">Qtd. Solicitada</th>
-                                                <th class="text-center">Valor Solicitado</th>
+                                                <th class="text-center">Saldo de qntd do orçamento</th>
+                                                <th class="text-center">Saldo de valor do orçamento</th>
+                                                <th class="text-center">Qntd da O.C.</th>
+                                                <th class="text-center">Valor da O.C.</th>
                                                 <th class="text-center">Emergencial</th>
                                             </tr>
                                             </thead>

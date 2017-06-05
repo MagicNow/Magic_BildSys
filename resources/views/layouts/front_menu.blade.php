@@ -4,7 +4,7 @@
     <a href="{!! url('compras') !!}"><i class="fa fa-shopping-cart "></i><span>Compras</span></a>
 </li>
 @endshield
-
+@shield('ordens_de_compra.list')
 <li class="treeview {{ Request::is('ordens-de-compra*')||Request::is('compras/dashboard') ? 'active' : '' }}">
     <a href="#">
         <i class="fa fa-balance-scale"></i> <span>Ordem de Compras</span>
@@ -13,17 +13,14 @@
             </span>
     </a>
     <ul class="treeview-menu">
-        @shield('ordens_de_compra.list')
-            <li class="{{ Request::is('ordens-de-compra*') ? 'active' : '' }}">
-              <a href="{!! route('ordens-de-compra.index') !!}"><i class="fa fa-shopping-basket"></i><span>Ordens de compra</span></a>
-            </li>
-        @endshield
-        @shield('site.dashboard')
-            <li class="{{ Request::is('compras/dashboard') ? 'active' : '' }}"><a href="{{url('compras/dashboard')}}"><i class="glyphicon glyphicon-cloud-upload"></i><span>DashBoard</span></a></li>
-        @endshield
+        <li class="{{ Request::is('ordens-de-compra*') ? 'active' : '' }}">
+          <a href="{!! route('ordens-de-compra.index') !!}"><i class="fa fa-shopping-basket"></i><span>Ordens de compra</span></a>
+        </li>
+
+        <li class="{{ Request::is('compras/dashboard') ? 'active' : '' }}"><a href="{{url('compras/dashboard')}}"><i class="glyphicon glyphicon-cloud-upload"></i><span>DashBoard</span></a></li>
     </ul>
 </li>
-
+@endshield
 <li class="treeview {{ Request::is('quadro-de-concorrencia*')||Request::is('catalogo-acordos*')||Request::is('tipoEqualizacaoTecnicas*') ? 'active' : '' }}">
     <a href="#">
         <i class="fa fa-diamond" aria-hidden="true"></i> <span>Suprimentos</span>
@@ -45,6 +42,16 @@
         @shield('catalogo_acordos.list')
         <li class="{{ Request::is('tipoEqualizacaoTecnicas*') ? 'active' : '' }}">
             <a href="{!! route('tipoEqualizacaoTecnicas.index') !!}"><i class="fa fa-file-audio-o"></i><span>Equalização técnicas</span></a>
+        </li>
+        @endshield
+        @shield('contratos.list')
+        <li class="{{ Request::is('contratos*') ? 'active' : '' }}">
+            <a href="{!! route('contratos.index') !!}"><i class="fa fa-clone"></i><span>Contratos</span></a>
+        </li>
+        @endshield
+        @shield('configuracaoEstaticas.list')
+        <li class="{{ Request::is('configuracaoEstaticas*') ? 'active' : '' }}">
+            <a href="{!! route('configuracaoEstaticas.index') !!}"><i class="fa fa-cog"></i><span>Informação de obrigações</span></a>
         </li>
         @endshield
     </ul>

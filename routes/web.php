@@ -392,23 +392,6 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
         $router->get('/{contratoTemplates}/edit', ['as' => 'admin.contratoTemplates.edit', 'uses' => 'Admin\ContratoTemplateController@edit'])
             ->middleware('needsPermission:contratoTemplates.edit');
     });
-
-    # Configuracao Estatica
-//    Route::resource('configuracaoEstaticas', 'ConfiguracaoEstaticaController');
-    $router->group(['prefix'=>'configuracaoEstaticas', 'middleware' => 'needsPermission:configuracaoEstaticas.list'], function () use ($router) {
-        $router->get('configuracaoEstaticas', ['as' => 'admin.configuracaoEstaticas.index', 'uses' => 'Admin\ConfiguracaoEstaticaController@index']);
-        $router->post('configuracaoEstaticas', ['as' => 'admin.configuracaoEstaticas.store', 'uses' => 'Admin\ConfiguracaoEstaticaController@store']);
-        $router->get('configuracaoEstaticas/create', ['as' => 'admin.configuracaoEstaticas.create', 'uses' => 'Admin\ConfiguracaoEstaticaController@create']);
-        $router->put('configuracaoEstaticas/{configuracaoEstaticas}', ['as' => 'admin.configuracaoEstaticas.update', 'uses' => 'Admin\ConfiguracaoEstaticaController@update'])
-            ->middleware('needsPermission:configuracaoEstaticas.edit');
-        $router->patch('configuracaoEstaticas/{configuracaoEstaticas}', ['as' => 'admin.configuracaoEstaticas.update', 'uses' => 'Admin\ConfiguracaoEstaticaController@update'])
-            ->middleware('needsPermission:configuracaoEstaticas.edit');
-        $router->delete('configuracaoEstaticas/{configuracaoEstaticas}', ['as' => 'admin.configuracaoEstaticas.destroy', 'uses' => 'Admin\ConfiguracaoEstaticaController@destroy']);
-        $router->get('configuracaoEstaticas/{configuracaoEstaticas}', ['as' => 'admin.configuracaoEstaticas.show', 'uses' => 'Admin\ConfiguracaoEstaticaController@show']);
-        $router->get('configuracaoEstaticas/{configuracaoEstaticas}/edit', ['as' => 'admin.configuracaoEstaticas.edit', 'uses' => 'Admin\ConfiguracaoEstaticaController@edit'])
-            ->middleware('needsPermission:configuracaoEstaticas.edit');
-    });
-
 });
 
 ##### SITE #####
@@ -703,6 +686,14 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             ['as' => 'contratos.index', 'uses' => 'ContratoController@index']
         );
         $router->get(
+            '/{contratos}/imprimir',
+            ['as' => 'contratos.imprimirContrato', 'uses' => 'ContratoController@imprimirContrato']
+        );
+        $router->post(
+            '/{contratos}/envia-contrato',
+            ['as' => 'contratos.enviaContrato', 'uses' => 'ContratoController@validaEnvioContrato']
+        );
+        $router->get(
             '/{contratos}',
             ['as' => 'contratos.show', 'uses' => 'ContratoController@show']
         )->middleware('needsPermission:contratos.show');
@@ -740,6 +731,31 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
                 'uses' => 'ContratoController@distratarItem'
             ]
         )->middleware('needsPermission:contratos.distratar');
+        
+        $router->get(
+            '/{contratos}/editar',
+            ['as' => 'contratos.edit', 'uses' => 'ContratoController@edit']
+        );
+        $router->patch(
+            '/{contratos}/update',
+            ['as' => 'contratos.update', 'uses' => 'ContratoController@update']
+        );
+    });
+
+    # Configuracao Estatica
+    $router->group(['middleware' => 'needsPermission:configuracaoEstaticas.list'], function () use ($router) {
+        $router->get('configuracaoEstaticas', ['as' => 'configuracaoEstaticas.index', 'uses' => 'ConfiguracaoEstaticaController@index']);
+        $router->post('configuracaoEstaticas', ['as' => 'configuracaoEstaticas.store', 'uses' => 'ConfiguracaoEstaticaController@store']);
+        $router->get('configuracaoEstaticas/create', ['as' => 'configuracaoEstaticas.create', 'uses' => 'ConfiguracaoEstaticaController@create']);
+        $router->put('configuracaoEstaticas/{configuracaoEstaticas}', ['as' => 'configuracaoEstaticas.update', 'uses' => 'ConfiguracaoEstaticaController@update'])
+            ->middleware('needsPermission:configuracaoEstaticas.update');
+        $router->patch('configuracaoEstaticas/{configuracaoEstaticas}', ['as' => 'configuracaoEstaticas.update', 'uses' => 'ConfiguracaoEstaticaController@update'])
+            ->middleware('needsPermission:configuracaoEstaticas.update');
+        $router->delete('configuracaoEstaticas/{configuracaoEstaticas}', ['as' => 'configuracaoEstaticas.destroy', 'uses' => 'ConfiguracaoEstaticaController@destroy']);
+        $router->get('configuracaoEstaticas/{configuracaoEstaticas}', ['as' => 'configuracaoEstaticas.show', 'uses' => 'ConfiguracaoEstaticaController@show'])
+            ->middleware('needsPermission:configuracaoEstaticas.show');
+        $router->get('configuracaoEstaticas/{configuracaoEstaticas}/edit', ['as' => 'configuracaoEstaticas.edit', 'uses' => 'ConfiguracaoEstaticaController@edit'])
+            ->middleware('needsPermission:configuracaoEstaticas.edit');
     });
 
 

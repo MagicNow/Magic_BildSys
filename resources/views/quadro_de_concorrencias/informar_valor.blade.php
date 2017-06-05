@@ -4,6 +4,9 @@
     textarea {
         resize: none;
     }
+    .radio-inline{
+        font-size: 11px;
+    }
 </style>
 @stop
 @section('content')
@@ -169,10 +172,10 @@
                                   </div>
                               </div>
                               <div class="row blocoFrete" style="{{ old('frete_incluso')=='1'?'':'display: none;'  }}">
-                                  <label class="col-md-6">
-                                      Tipo de Frete
+                                  <label class="col-md-4">
+                                      Frete Tipo
                                   </label>
-                                  <div class="col-md-6">
+                                  <div class="col-md-8">
                                       <label class="radio-inline">
                                           {!!
                                             Form::radio(
@@ -242,7 +245,7 @@
                     <div class="form-group">
                       <div class="row">
                         <label class="col-md-6">
-                          Material
+                          Material da Contratada
                         </label>
                         <div class="col-md-6">
                           <div class="input-group">
@@ -303,7 +306,7 @@
                               '1'
                             )
                           !!}
-                          Material Contratada
+                          Material
                         </label>
                       </div>
                     </div>
@@ -526,6 +529,8 @@
         $('input[name="frete_incluso"]').on('ifToggled', function(event){
             if(parseInt(event.target.value)){
                 $('.blocoFrete').hide();
+                $('.freteFOB').hide();
+                $('input[name="valor_frete"]').val('0');
             }else{
                 $('.blocoFrete').show();
             }

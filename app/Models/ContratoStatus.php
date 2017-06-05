@@ -52,7 +52,12 @@ class ContratoStatus extends Model
      */
     const ATIVO = 5;
 
-    protected $dates = ['deleted_at'];
+    /**
+     * Id do status de Cancelado
+     *
+     * @const int
+     */
+    const CANCELADO = 6;
 
     public $fillable = [
         'nome',

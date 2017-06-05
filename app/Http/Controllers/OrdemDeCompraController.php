@@ -1352,7 +1352,7 @@ class OrdemDeCompraController extends AppBaseController
 
         $obras = Obra::whereIn('id', $insumosAprovados->groupBy('ordem_de_compra_itens.obra_id')
             ->pluck('ordem_de_compra_itens.obra_id', 'ordem_de_compra_itens.obra_id')
-            ->toArray())->pluck('nome', 'id')->toArray();
+            ->toArray())->orderBy('nome', 'ASC')->pluck('nome','id')->toArray();
 
         $OCs = OrdemDeCompra::whereIn('id', $insumosAprovados->groupBy('ordem_de_compra_itens.ordem_de_compra_id')
             ->pluck('ordem_de_compra_itens.ordem_de_compra_id', 'ordem_de_compra_itens.ordem_de_compra_id')
@@ -1364,7 +1364,8 @@ class OrdemDeCompraController extends AppBaseController
             ->pluck('insumo_grupo_id', 'insumo_grupo_id')
             ->toArray()
         )
-        ->pluck('nome', 'id')
+        ->orderBy('nome', 'ASC')
+        ->pluck('nome','id')
         ->toArray();
 
         $insumos = Insumo::whereIn('id', $insumosAprovados
@@ -1372,13 +1373,14 @@ class OrdemDeCompraController extends AppBaseController
             ->pluck('ordem_de_compra_itens.insumo_id', 'ordem_de_compra_itens.insumo_id')
             ->toArray()
         )
-        ->pluck('nome', 'id')
+        ->orderBy('nome', 'ASC')
+        ->pluck('nome','id')
         ->toArray();
 
         $farol = [
-            'vermelho'=>'Vermelho',
             'amarelo'=>'Amarelo',
             'verde'=>'Verde',
+            'vermelho'=>'Vermelho',
         ];
         return $insumosAprovadosDataTable->render('ordem_de_compras.insumos-aprovados',
             compact('obras', 'OCs', 'insumoGrupos', 'insumos', 'cidades', 'farol'));
@@ -1637,7 +1639,10 @@ class OrdemDeCompraController extends AppBaseController
                 DB::raw("CONCAT(codigo, ' ', nome) as nome")
             ])
             ->where('grupo_id', $id)
-            ->pluck('nome', 'id')->toArray();
+            ->orderBy('nome', 'ASC')
+            ->pluck('nome','id')
+            ->toArray();
+
         return $grupo;
     }
     public function getServicos($id)
@@ -1647,7 +1652,10 @@ class OrdemDeCompraController extends AppBaseController
                 DB::raw("CONCAT(codigo, ' ', nome) as nome")
             ])
             ->where('grupo_id', $id)
-            ->pluck('nome', 'id')->toArray();
+            ->orderBy('nome', 'ASC')
+            ->pluck('nome', 'id')
+            ->toArray();
+
         return $servico;
     }
 
@@ -1737,8 +1745,10 @@ class OrdemDeCompraController extends AppBaseController
            'id',
            'tarefa'
        ])
-           ->where('tarefa', 'like', '%'.$request->q.'%')->paginate();
-    }
+           ->where('tarefa','like', '%'.$request->q.'%')
+           ->orderBy('tarefa', 'ASC')
+           ->paginate();
+   }
 
     public function buscaInsumoGrupos(Request $request)
     {
@@ -1746,6 +1756,8 @@ class OrdemDeCompraController extends AppBaseController
            'id',
            'nome'
        ])
-           ->where('nome', 'like', '%'.$request->q.'%')->paginate();
-    }
+           ->where('nome','like', '%'.$request->q.'%')
+           ->orderBy('nome', 'ASC')
+           ->paginate();
+   }
 }

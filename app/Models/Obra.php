@@ -55,6 +55,38 @@ class Obra extends Model
         'logo'
     ];
 
+    public static $campos = [
+        'nome',
+        'cidade_id',
+        'area_terreno',
+        'area_privativa',
+        'area_construida',
+        'eficiencia_projeto',
+        'num_apartamentos',
+        'num_torres',
+        'num_pavimento_tipo',
+        'data_inicio',
+        'data_cliente',
+        'indice_bild_pre',
+        'indice_bild_oi',
+        'razao_social',
+        'cnpj',
+        'inscricao_estadual',
+        'endereco_faturamento',
+        'endereco_obra',
+        'entrega_nota_fisca_e_boleto',
+        'adm_obra_nome',
+        'adm_obra_email',
+        'adm_obra_telefone',
+        'eng_obra_nome',
+        'eng_obra_email',
+        'eng_obra_telefone',
+        'horario_entrega_na_obra',
+        'referencias_bancarias',
+        'referencias_comerciais',
+        'logo'
+    ];
+
     /**
      * The attributes that should be casted to native types.
      *

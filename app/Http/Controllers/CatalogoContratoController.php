@@ -70,19 +70,12 @@ class CatalogoContratoController extends AppBaseController
             return redirect('/catalogo-acordos/create')->withInput($input);
         }
 
-        $pontos = array(",");
-        $valor_maximo = str_replace('.','',$input['valor_maximo']);
-        $valor_maximo = str_replace( $pontos, ".", $valor_maximo);
-
-        $valor_minimo = str_replace('.','',$input['valor_minimo']);
-        $valor_minimo = str_replace( $pontos, ".", $valor_minimo);
-
-        if($valor_maximo < $valor_minimo){
+        if(money_to_float($input['valor_maximo']) < money_to_float($input['valor_minimo'])){
             Flash::error('O valor máximo não pode ser menor que o valor mínimo.');
             return redirect('/catalogo-acordos/create')->withInput($input);
         }
 
-        if($input['qtd_maxima'] < $input['qtd_minima']){
+        if(money_to_float($input['qtd_maxima']) < money_to_float($input['qtd_minima'])){
             Flash::error('O quantidade máxima não pode ser menor que a quantidade mínima.');
             return redirect('/catalogo-acordos/create')->withInput($input);
         }
@@ -120,8 +113,8 @@ class CatalogoContratoController extends AppBaseController
                     $contrato_insumo = new CatalogoContratoInsumo();
                     $contrato_insumo->catalogo_contrato_id = $catalogoContrato->id;
                     $contrato_insumo->insumo_id = $item['insumo_id'];
-                    $contrato_insumo->valor_unitario = $item['valor_unitario'];
-                    $contrato_insumo->valor_maximo = $item['valor_maximo'];
+                    $contrato_insumo->valor_unitario = money_to_float($item['valor_unitario']);
+                    $contrato_insumo->valor_maximo = money_to_float($item['valor_maximo']);
                     $contrato_insumo->pedido_minimo = $item['pedido_minimo'];
                     $contrato_insumo->pedido_multiplo_de = $item['pedido_multiplo_de'];
                     $catalogoContrato->contratoInsumos()->save($contrato_insumo);
@@ -173,7 +166,8 @@ class CatalogoContratoController extends AppBaseController
 
         $fornecedores = MegaFornecedor::select(DB::raw("CONVERT(agn_st_nome,'UTF8','WE8ISO8859P15' ) as agn_st_nome"), 'agn_in_codigo')
             ->where('agn_st_cgc', $catalogoContrato->fornecedor->cnpj)
-            ->pluck('agn_st_nome', 'agn_in_codigo')->toArray();
+            ->pluck('agn_st_nome', 'agn_in_codigo')
+            ->toArray();
 
         return view('catalogo_contratos.edit', compact('fornecedores'))->with('catalogoContrato', $catalogoContrato);
     }
@@ -203,19 +197,12 @@ class CatalogoContratoController extends AppBaseController
             return redirect('/catalogo-acordos/'.$id.'/edit')->withInput($input);
         }
 
-        $pontos = array(",");
-        $valor_maximo = str_replace('.','',$input['valor_maximo']);
-        $valor_maximo = str_replace( $pontos, ".", $valor_maximo);
-
-        $valor_minimo = str_replace('.','',$input['valor_minimo']);
-        $valor_minimo = str_replace( $pontos, ".", $valor_minimo);
-
-        if($valor_maximo < $valor_minimo){
+        if(money_to_float($input['valor_maximo']) < money_to_float($input['valor_minimo'])){
             Flash::error('O valor máximo não pode ser menor que o valor mínimo.');
             return redirect('/catalogo-acordos/'.$id.'/edit')->withInput($input);
         }
 
-        if($input['qtd_maxima'] < $input['qtd_minima']){
+        if(money_to_float($input['qtd_maxima']) < money_to_float($input['qtd_minima'])){
             Flash::error('O quantidade máxima não pode ser menor que a quantidade mínima.');
             return redirect('/catalogo-acordos/'.$id.'/edit')->withInput($input);
         }
@@ -253,8 +240,8 @@ class CatalogoContratoController extends AppBaseController
                         $contrato_insumo = new CatalogoContratoInsumo();
                         $contrato_insumo->catalogo_contrato_id = $catalogoContrato->id;
                         $contrato_insumo->insumo_id = $item['insumo_id'];
-                        $contrato_insumo->valor_unitario = $item['valor_unitario'];
-                        $contrato_insumo->valor_maximo = $item['valor_maximo'];
+                        $contrato_insumo->valor_unitario = money_to_float($item['valor_unitario']);
+                        $contrato_insumo->valor_maximo = money_to_float($item['valor_maximo']);
                         $contrato_insumo->pedido_minimo = $item['pedido_minimo'];
                         $contrato_insumo->pedido_multiplo_de = $item['pedido_multiplo_de'];
                         $catalogoContrato->contratoInsumos()->save($contrato_insumo);

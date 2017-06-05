@@ -126,9 +126,6 @@ class RolesAndPermissions extends Seeder
             'contratoTemplates.edit'   => 'Edição de Template de Contrato',
             'contratoTemplates.delete'   => 'Remoção de Template de Contrato',
 
-            'configuracaoEstaticas.list'   => 'Listagem de Configuração padrão',
-            'configuracaoEstaticas.edit'   => 'Edição de Configuração padrão',
-
             ################# SITE ###################
             'compras_lembretes.list' => 'Listagem de compras e lembretes',
 
@@ -166,6 +163,10 @@ class RolesAndPermissions extends Seeder
             'contratos.distratar'   => 'Distratar item do contrato',
             'contratos.reajustar'   => 'Reajustar item do contrato',
             'contratos.reapropriar' => 'Reapropriar item do contrato',
+
+            'configuracaoEstaticas.list'   => 'Listagem de Configuração padrão',
+            'configuracaoEstaticas.edit'   => 'Edição de Configuração padrão',
+            'configuracaoEstaticas.show'   => 'Visualizar Configuração padrão',
 
         ];
 
@@ -216,6 +217,9 @@ class RolesAndPermissions extends Seeder
         $roles[1]->attachPermission(Defender::findPermission('compradorInsumos.create'));
         $roles[1]->attachPermission(Defender::findPermission('obras.list'));
         $roles[1]->attachPermission(Defender::findPermission('fornecedores.list'));
+        $roles[1]->attachPermission(Defender::findPermission('configuracaoEstaticas.list'));
+        $roles[1]->attachPermission(Defender::findPermission('configuracaoEstaticas.edit'));
+        $roles[1]->attachPermission(Defender::findPermission('configuracaoEstaticas.show'));
 
         // Permissões para Fornecedor
         $roles[2]->attachPermission(Defender::findPermission('quadroDeConcorrencias.informar_valor'));

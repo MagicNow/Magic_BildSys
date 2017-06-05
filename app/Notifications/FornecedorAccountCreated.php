@@ -43,9 +43,9 @@ class FornecedorAccountCreated extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject('Conta de acesso no BILD-SYS')
+            ->subject('Conta de acesso no sistema da Bild Desenvolvimento Imobiliário')
             ->greeting('Olá, ' . $notifiable->name)
-            ->line('Uma conta de acesso no BILD-SYS foi cadastrada para você')
+            ->line('Uma conta de acesso no sistema da Bild Desenvolvimento Imobiliário foi cadastrada para você')
             ->line('Você pode cadastrar com os dados:')
             ->line('Email: ' . $notifiable->email)
             ->line('Senha: ' . $this->password);
