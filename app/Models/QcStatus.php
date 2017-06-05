@@ -25,6 +25,7 @@ class QcStatus extends Model
     const EM_CONCORRENCIA         = 7;
     const CONCORRENCIA_FINALIZADA = 8;
     const FINALIZADO              = 9;
+    const REJEITADO               = 10;
 
     public $fillable = [
         'nome',

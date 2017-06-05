@@ -36,7 +36,7 @@
     @endshield
 
     @shield('quadroDeConcorrencias.informar_valor')
-        @if($qc_status_id == 7)
+        @if($qc_status_id == 7 && $fornecedores != $propostas)
         <a href="{{ route('quadroDeConcorrencia.informar-valor', $id) }}" class="btn btn-xs btn-info" title="Informar valores">
             <i class="glyphicon glyphicon-usd"></i>
         </a>

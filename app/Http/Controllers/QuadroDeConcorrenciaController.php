@@ -603,6 +603,16 @@ class QuadroDeConcorrenciaController extends AppBaseController
                     'desistencia_motivo_id' => $request->desistencia_motivo_id,
                     'desistencia_texto' => $request->desistencia_texto
                 ]);
+
+                $fornecedoresDoQc = $quadro->qcFornecedores()->count();
+                $fornecedoresQueRejeitaramQc = $quadro->qcFornecedores()
+                    ->whereNotNull('desistencia_motivo_id')
+                    ->whereNotNull('desistencia_texto')
+                    ->count();
+
+                if($fornecedoresDoQc === $fornecedoresQueRejeitaramQc) {
+                    $quadro->update(['qc_status_id' => QcStatus::REJEITADO]);
+                }
             }
 
             if ($quadro->hasServico() && !$request->reject) {
@@ -835,6 +845,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
             }
             return response()->json(['error' => 'Quadro De Concorrencia ' . trans('common.not-found')], 404);
         }
+
         $qcEqualizacaoTecnicaExtra = QcEqualizacaoTecnicaAnexoExtra::create([
             'quadro_de_concorrencia_id' => $id,
             'nome' => $request->nome,
