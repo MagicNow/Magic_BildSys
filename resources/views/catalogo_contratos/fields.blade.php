@@ -1,66 +1,7 @@
-<!-- Arquivo Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('arquivo', 'Arquivo:') !!}
-    @if(@isset($catalogoContrato))
-        @if($catalogoContrato->arquivo)
-            <a href="{{$catalogoContrato->arquivo}}" download>Baixar arquivo</a>
-        @endif
-    @endif
-    {!! Form::file('arquivo', null, ['class' => 'form-control']) !!}
-</div>
-
 <!-- Fornecedores Field -->
-<div class="form-group col-sm-6">
+<div class="form-group col-sm-12">
     {!! Form::label('fornecedor_cod', 'Fornecedor:') !!}
     {!! Form::select('fornecedor_cod', ['' => 'Escolha...']+$fornecedores, @isset($catalogoContrato) ? $catalogoContrato->fornecedor->codigo_mega : null, ['class' => 'form-control','id'=>'fornecedor_cod','required'=>'required']) !!}
-</div>
-
-<!-- Data Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('data', 'Data:') !!}
-    {!! Form::date('data', @isset($catalogoContrato) ? $catalogoContrato->data ? $catalogoContrato->data->format('Y-m-d') : null : null, ['class' => 'form-control','required'=>'required']) !!}
-</div>
-
-<!-- Valor Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('valor', 'Valor:') !!}
-    {!! Form::text('valor', null, ['class' => 'form-control money','required'=>'required']) !!}
-</div>
-
-<!-- Período início Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('periodo_inicio', 'Período início:') !!}
-    {!! Form::date('periodo_inicio', @isset($catalogoContrato) ? $catalogoContrato->periodo_inicio ? $catalogoContrato->periodo_inicio->format('Y-m-d') : null : null, ['class' => 'form-control']) !!}
-</div>
-
-<!-- Período término Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('periodo_termino', 'Período término:') !!}
-    {!! Form::date('periodo_termino', @isset($catalogoContrato) ? $catalogoContrato->periodo_termino ? $catalogoContrato->periodo_termino->format('Y-m-d') : null : null, ['class' => 'form-control']) !!}
-</div>
-
-<!-- Valor mínimo Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('valor_minimo', 'Valor mínimo:') !!}
-    {!! Form::text('valor_minimo', null, ['class' => 'form-control money']) !!}
-</div>
-
-<!-- Valor máximo Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('valor_maximo', 'Valor máximo:') !!}
-    {!! Form::text('valor_maximo', null, ['class' => 'form-control money']) !!}
-</div>
-
-<!-- Quantidade mínima Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('qtd_minima', 'Quantidade mínima:') !!}
-    {!! Form::text('qtd_minima', null, ['class' => 'form-control money']) !!}
-</div>
-
-<!-- Quantidade máxima Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('qtd_maxima', 'Quantidade máxima:') !!}
-    {!! Form::text('qtd_maxima', null, ['class' => 'form-control money']) !!}
 </div>
 
 <?php
@@ -365,5 +306,3 @@ $count_insumos = 0;
     });
 </script>
 @endsection
-
-
