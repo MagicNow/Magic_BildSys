@@ -23,6 +23,13 @@
       Reajuste
     </button>
   @endshield
+@elseif($reprovado)
+  <button class="btn btn-danger btn-xs btn-flat"
+    data-toggle="tooltip"
+    data-html="true"
+    title="<div class='text-center'>Item não adicionado ao contrato devido a reprovação. Edite o item, para nova aprovação.</div>">
+    <i class="fa fa-fw fa-hourglass-half"></i>
+  </button>
 @else
   <button class="btn btn-default btn-xs btn-flat"
     data-toggle="tooltip"

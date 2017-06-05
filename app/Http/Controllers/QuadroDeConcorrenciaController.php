@@ -286,7 +286,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
             $rodadaSelecionada
         );
 
-        $ofertas = $quadro->itens->reduce(function ($ofertas, $item) use ($qcFornecedores) {
+        $ofertas = $quadro->itens->reduce(function ($ofertas, $item) use ($qcFornecedores, $qcForItens) {
             $ofertas[] = $qcFornecedores->map(function ($qcFornecedor) use ($item) {
                 $oferta = $qcFornecedor->itens->where('qc_item_id', $item->id)->first();
 
@@ -405,7 +405,8 @@ class QuadroDeConcorrenciaController extends AppBaseController
             $qcItensAditivos = $quadro->itens->load('ordemDeCompraItens')
                     ->map(function($qcItem) {
                         $qcItem->contratos = $qcItem->ordemDeCompraItens
-                            ->pluck('sugestao_contrato_id');
+                            ->pluck('sugestao_contrato_id')
+                            ->filter();
 
                         return $qcItem;
                     })
@@ -415,8 +416,16 @@ class QuadroDeConcorrenciaController extends AppBaseController
 
             $qcItensAditivos->each(function($qcItem) use ($vencedores) {
                 $qcItem->contratos->each(function($contrato_id) use ($qcItem, $vencedores) {
+
                     $contrato = Contrato::find($contrato_id);
+
                     $vencedor = $vencedores->where('qc_item_id', $qcItem->id)->first();
+
+                    // Se o contrato sugerido não é do fornecedor vencedor, não aditivar.
+                    if((int) $contrato->fornecedor_id !== (int) $vencedor->qcFornecedor->fornecedor_id) {
+                        return true;
+                    }
+
                     $contratoItem = ContratoItem::create([
                         'qc_item_id'     => $qcItem->id,
                         'insumo_id'      => $qcItem->insumo_id,
@@ -1055,7 +1064,14 @@ class QuadroDeConcorrenciaController extends AppBaseController
                 }
             }
 
-            foreach ($qcFornecedor->itens as $item) {
+
+            $qcForItens = $qcFornecedor->itens()
+                ->whereHas('qcItem', function($query) {
+                    $query->doesntHave('contratoItens');
+                })
+                ->get();
+
+            foreach ($qcForItens as $item) {
                 $valor_item = $item->valor_total;
                 $valor_item_unitario = $item->valor_unitario;
 

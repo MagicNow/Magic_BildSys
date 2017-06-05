@@ -16,6 +16,7 @@
       </a>
     @endif
   @endshield
+  @if($item->modificacoes->isNotEmpty())
   <a href="javascript:void(0)"
     title="{{ $item->servico }} / {{ $item->insumo->nome }}"
     data-toggle="popover"
@@ -24,6 +25,17 @@
     class='btn btn-default btn-xs btn-flat'>
     <i class="fa fa-history fa-fw"></i>
   </a>
+  @endif
+  @if($reprovado)
+      <a href="javascript:void(0)"
+        title="Contém modificação reprovada"
+        data-toggle="popover"
+        data-container="body"
+        data-external-content="#reprovado-table-{{ $item->id }}"
+        class='btn btn-danger btn-xs btn-flat'>
+        <i class="fa fa-ban fa-fw"></i>
+      </a>
+  @endif
 </div>
 
 @if($item->qcItem)
@@ -117,7 +129,7 @@
       </tr>
     </thead>
     <tbody>
-      @foreach($item->modificacoes->toArray() as $modificacao)
+        @foreach($item->modificacoes as $modificacao)
         <tr>
           <td>{{ $modificacao['tipo_modificacao'] }}</td>
           <td>{{ float_to_money($modificacao['qtd_anterior'], '') }}</td>
@@ -130,3 +142,36 @@
     </tbody>
   </table>
 </div>
+
+@if($reprovado)
+<div id="reprovado-table-{{ $item->id }}" class="hidden">
+  <table class="table table-striped table-condensed">
+    <thead>
+      <tr>
+        <th></th>
+        <th colspan="2" class="text-center">Antes</th>
+        <th colspan="2" class="text-center">Depois</th>
+        <th></th>
+      </tr>
+      <tr>
+        <th>Movimentação</th>
+        <th>Quantidade</th>
+        <th>Valor</th>
+        <th>Quantidade</th>
+        <th>Valor</th>
+        <th>Data</th>
+      </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>{{ $reprovado['tipo_modificacao'] }}</td>
+      <td>{{ float_to_money($reprovado['qtd_anterior'], '') }}</td>
+      <td>{{ float_to_money($reprovado['valor_unitario_anterior'], '') }}</td>
+      <td>{{ float_to_money($reprovado['qtd_atual'], '') }}</td>
+      <td>{{ float_to_money($reprovado['valor_unitario_atual'], '') }}</td>
+      <td>{{ $reprovado->created_at->format('d/m/Y') }}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+@endif

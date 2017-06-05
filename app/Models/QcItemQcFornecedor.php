@@ -48,7 +48,7 @@ class QcItemQcFornecedor extends Model
      **/
     public function qcFornecedor()
     {
-        return $this->belongsTo(QcFornecedor::class);
+        return $this->belongsTo(QcFornecedor::class, 'qc_fornecedor_id');
     }
 
     /**
