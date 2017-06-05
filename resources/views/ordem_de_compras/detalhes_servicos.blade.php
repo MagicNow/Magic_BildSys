@@ -25,13 +25,13 @@
     <section class="content-header">
         <div class="modal-header">
             <div class="col-md-12">
-                <div class="col-md-6">
+                <div class="col-md-9">
                     <span class="pull-left title">
                         <h3>
                             <button type="button" class="btn btn-link" onclick="history.go(-1);">
                              <i class="fa fa-arrow-left" aria-hidden="true"></i>
                             </button>
-                            <span>Ordem de Compra - Detalhes Serviços</span>
+                            <span>Ordem de compra - Análise do Orçamento - Nível serviço</span>
                         </h3>
                     </span>
                 </div>
@@ -54,14 +54,14 @@
         <hr>
         <div class="row" id="totalInsumos">
             <div class="col-md-2 text-right borda-direita">
-                <h5 style="margin: 0px">PREVISTO NO ORÇAMENTO</h5>
+                <h5>Valor previsto no orçamento</h5>
                 <h4>
                     <small class="pull-left">R$</small>
                     {{ number_format($orcamentoInicial,2,',','.') }}
                 </h4>
             </div>
             <div class="col-md-2 text-right borda-direita" title="Até o momento em todos os itens desta O.C.">
-                <h5 style="margin: -2px">COMPROMETIDO REALIZADO</h5>
+                <h5>Valor comprometido realizado</h5>
                 <h4>
                     <small class="pull-left">R$</small>0,00
                     {{---  TO DO = Realizado: São informações que virão com a entrada de NF, sendo assim, no momento não haverá informações--}}
@@ -69,7 +69,7 @@
                 </h4>
             </div>
             <div class="col-md-2 text-right borda-direita" title="Nos itens desta O.C.">
-                <h5 style="margin: 0px">COMPROMETIDO À GASTAR</h5>
+                <h5>Valor comprometido à gastar</h5>
                 <h4>
                     <small class="pull-left">R$</small>0,00
                     {{---  TO DO = A gastar: É a soma de todos os saldos de contratos na que apropriação, como ainda não exixte contrato gerado, tem q estar zerado--}}
@@ -119,12 +119,12 @@
                             <thead>
                             <tr>
                                 <th class="text-center">Unidade Medida</th>
-                                <th class="text-center">Qtd. O. Inicial</th>
-                                <th class="text-center">PREVISTO NO ORÇAMENTO</th>
-                                <th class="text-center">Qtd. Realizada</th>
-                                <th class="text-center">COMPROMETIDO REALIZADO</th>
-                                <th class="text-center">Qtd. à Gastar</th>
-                                <th class="text-center">COMPROMETIDO À GASTAR</th>
+                                <th class="text-center">Qntd previsto no orçamento</th>
+                                <th class="text-center">Valor previsto no orçamento</th>
+                                <th class="text-center">Qntd comprometida realizada</th>
+                                <th class="text-center">Valor comprometido realizado</th>
+                                <th class="text-center">Qntd compremetida à gastar</th>
+                                <th class="text-center">Valor comprometido à gastar</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -148,11 +148,11 @@
                         <table class="table table-bordered table-striped">
                             <thead>
                             <tr>
-                                <th class="text-center">Qtd. Saldo</th>
-                                <th class="text-center">Valor Saldo</th>
-                                <th class="text-center">Qtd. Solicitada</th>
-                                <th class="text-center">Valor Solicitado</th>
-                                <th class="text-center">Status</th>
+                                <th class="text-center">Saldo de qntd do orçamento</th>
+                                <th class="text-center">Saldo de valor do orçamento</th>
+                                <th class="text-center">Qntd da O.C.</th>
+                                <th class="text-center">Valor da O.C.</th>
+                                <th class="text-center">Status do valor do insumo</th>
                                 <th class="text-center">Emergencial</th>
                             </tr>
                             </thead>
