@@ -159,7 +159,12 @@ class Contrato extends Model
 
     public function updateTotal()
     {
-        $this->update(['valor_total' => $this->itens->sum('valor_total')]);
+        $itens = $this->itens()->whereHas('modificacoes', function($q) {
+            $q->where('contrato_status_id', ContratoStatus::APROVADO);
+        })->get();
+
+
+        $this->update(['valor_total' => $itens->sum('valor_total')]);
 
         return $this;
     }

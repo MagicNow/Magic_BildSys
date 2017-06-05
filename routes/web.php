@@ -707,6 +707,13 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             ['as' => 'contratos.show', 'uses' => 'ContratoController@show']
         )->middleware('needsPermission:contratos.show');
         $router->post(
+            '/editar-item/{item}',
+            [
+                'as' => 'contratos.editar-item',
+                'uses' => 'ContratoController@editarItem'
+            ]
+        )->middleware('needsPermission:contratos.edit');
+        $router->post(
             '/reajustar-item/{item}',
             [
                 'as' => 'contratos.reajustar-item',

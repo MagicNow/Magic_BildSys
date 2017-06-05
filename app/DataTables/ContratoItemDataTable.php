@@ -43,7 +43,7 @@ class ContratoItemDataTable extends DataTable
             ->eloquent($this->query())
             ->addColumn('info', function ($item) {
                 $item->load(['modificacoes' => function ($query) {
-                    return $query->where('contrato_item_id', ContratoStatus::APROVADO);
+                    return $query->where('contrato_status_id', ContratoStatus::APROVADO);
                 }]);
 
                 $reapropriacoes_dos_itens = $item->reapropriacoes->filter(function ($re) {
@@ -55,10 +55,12 @@ class ContratoItemDataTable extends DataTable
                 });
 
                 $reprovado = false;
+                $workflow = false;
                 $lastMod = $item->modificacoes()->orderBy('created_at', 'desc')->first();
 
                 if($lastMod->contrato_status_id === ContratoStatus::REPROVADO) {
                     $reprovado = $lastMod;
+                    $workflow = $lastMod->aprovacoes()->orderBy('created_at', 'desc')->first();
                 }
 
                 return view(
@@ -67,7 +69,8 @@ class ContratoItemDataTable extends DataTable
                         'item',
                         'reapropriacoes_dos_itens',
                         'reapropriacoes_de_reapropriacoes',
-                        'reprovado'
+                        'reprovado',
+                        'workflow'
                     ))
                     ->render();
             })

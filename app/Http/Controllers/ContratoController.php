@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\DataTables\ContratoDataTable;
 use App\Http\Requests;
 use App\Http\Requests\CreateContratoRequest;
+use App\Http\Requests\EditarItemRequest;
 use App\Http\Requests\UpdateContratoRequest;
 use App\Repositories\ContratoRepository;
 use Flash;
@@ -201,6 +202,19 @@ class ContratoController extends AppBaseController
         $item = $contratoItemRepository->find($id);
 
         $contratoItemReapropriacaoRepository->reapropriar($item, $request->all());
+
+        return response()->json([
+            'success' => true
+        ]);
+    }
+
+    public function editarItem(
+        $id,
+        ContratoItemRepository $contratoItemRepository,
+        EditarItemRequest $request
+    ) {
+
+        $contratoItemRepository->editarAditivo($id, $request->all());
 
         return response()->json([
             'success' => true

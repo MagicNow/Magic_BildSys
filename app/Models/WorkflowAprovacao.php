@@ -15,7 +15,7 @@ class WorkflowAprovacao extends Model
     use SoftDeletes;
 
     public $table = 'workflow_aprovacoes';
-    
+
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
@@ -89,5 +89,13 @@ class WorkflowAprovacao extends Model
     public function workflowReprovacaoMotivo()
     {
         return $this->belongsTo(WorkflowReprovacaoMotivo::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function motivo()
+    {
+        return $this->belongsTo(WorkflowReprovacaoMotivo::class, 'workflow_reprovacao_motivo_id');
     }
 }
