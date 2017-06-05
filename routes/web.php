@@ -508,6 +508,13 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
                 ->middleware('needsPermission:quadroDeConcorrencias.edit');
 
             $router->post(
+                'remover-itens',
+                'QuadroDeConcorrenciaController@removerItens'
+            )
+            ->name('quadroDeConcorrencia.remover-item')
+            ->middleware('needsPermission:quadroDeConcorrencias.edit');
+
+            $router->post(
                 '/{quadroDeConcorrencias}/informar-valor',
                 'QuadroDeConcorrenciaController@informarValorSave'
             )->middleware('needsPermission:quadroDeConcorrencias.informar_valor');
@@ -682,10 +689,21 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             '/{contratos}/imprimir',
             ['as' => 'contratos.imprimirContrato', 'uses' => 'ContratoController@imprimirContrato']
         );
+        $router->post(
+            '/{contratos}/envia-contrato',
+            ['as' => 'contratos.enviaContrato', 'uses' => 'ContratoController@validaEnvioContrato']
+        );
         $router->get(
             '/{contratos}',
             ['as' => 'contratos.show', 'uses' => 'ContratoController@show']
         )->middleware('needsPermission:contratos.show');
+        $router->post(
+            '/editar-item/{item}',
+            [
+                'as' => 'contratos.editar-item',
+                'uses' => 'ContratoController@editarItem'
+            ]
+        )->middleware('needsPermission:contratos.edit');
         $router->post(
             '/reajustar-item/{item}',
             [

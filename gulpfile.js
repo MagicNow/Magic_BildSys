@@ -198,7 +198,8 @@ elixir(function(mix) {
         'qc-informar-valores.js',
         'sweetalert-helper.js',
         'flat-color-generator.js',
-        'qc-avaliar.js'
+        'qc-avaliar.js',
+        'error-list.js'
 
     ], 'public/js/admin.js');
 
@@ -229,5 +230,9 @@ elixir(function(mix) {
     mix.scripts([
         'contrato-actions.js',
     ], 'public/js/contrato-actions.js');
+
+    mix.scripts([
+        'carrinho.js',
+    ], 'public/js/carrinho.js');
 
 });

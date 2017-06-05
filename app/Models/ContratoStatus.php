@@ -45,7 +45,6 @@ class ContratoStatus extends Model
      */
     const AGUARDANDO = 4;
 
-
     /**
      * Id do status de Ativo
      *
@@ -53,9 +52,8 @@ class ContratoStatus extends Model
      */
     const ATIVO = 5;
 
-
     /**
-     * Id do status de Canceladp
+     * Id do status de Cancelado
      *
      * @const int
      */

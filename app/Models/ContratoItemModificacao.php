@@ -118,6 +118,9 @@ class ContratoItemModificacao extends Model
         if($isAprovado) {
             $this->item->applyChanges($this);
             $this->item->contrato->updateTotal();
+        } else {
+            $this->item->aprovado = !!$this->item->modificacoes()->where('contrato_status_id', ContratoStatus::APROVADO)->count();
+            $this->item->save();
         }
 
         $this->save();
