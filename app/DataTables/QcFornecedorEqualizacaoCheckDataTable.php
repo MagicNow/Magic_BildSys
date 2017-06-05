@@ -44,6 +44,7 @@ class QcFornecedorEqualizacaoCheckDataTable extends DataTable
             ->addAction(['width' => '10%'])
             ->ajax('')
             ->parameters([
+                'responsive' => 'true',
                 'initComplete' => 'function () {
                     max = this.api().columns().count();
                     this.api().columns().every(function (col) {

@@ -41,9 +41,10 @@ class GrupoDataTable extends DataTable
     {
         return $this->builder()
             ->columns($this->getColumns())
-            ->addAction(['width' => '10%'])
+            ->addAction(['width' => '10%', 'title' => 'ações', 'class' => 'all'])
             ->ajax('')
             ->parameters([
+                'responsive' => 'true',
                 'initComplete' => 'function () {
                     max = this.api().columns().count();
                     this.api().columns().every(function (col) {
@@ -94,7 +95,7 @@ class GrupoDataTable extends DataTable
             'codigo' => ['name' => 'codigo', 'data' => 'codigo'],
             'nome' => ['name' => 'nome', 'data' => 'nome'],
             'grupo_id' => ['name' => 'grupo_id', 'data' => 'grupo_id'],
-            'action' => ['title' => '#', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false],
+            'action' => ['printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false],
         ];
     }
 

@@ -571,7 +571,7 @@ class LembretesHomeDataTable extends DataTable
                                         (
                                             IFNULL((
                                                 SELECT
-                                                    SUM(oci.qtd) 
+                                                    SUM(oci.qtd)
                                                 FROM ordem_de_compra_itens oci
                                                 JOIN ordem_de_compras ocs ON ocs.id = oci.ordem_de_compra_id
                                                 WHERE
@@ -584,10 +584,10 @@ class LembretesHomeDataTable extends DataTable
                                                 AND oci.obra_id = P.obra_id
                                                 AND ocs.oc_status_id NOT IN(1 , 4 , 6)
                                             ),0) < orc.qtd_total
-                                            AND  
+                                            AND
                                             IFNULL((
                                                 SELECT
-                                                    SUM(oci.total) 
+                                                    SUM(oci.total)
                                                 FROM ordem_de_compra_itens oci
                                                 JOIN ordem_de_compras ocs ON ocs.id = oci.ordem_de_compra_id
                                                 AND ocs.oc_status_id NOT IN(1 , 4 , 6)
@@ -601,7 +601,7 @@ class LembretesHomeDataTable extends DataTable
                                                 AND oci.obra_id = P.obra_id
                                             ),0) = 0
                                         )
-                                        AND P.id = planejamentos.id 
+                                        AND P.id = planejamentos.id
                                         AND plc.deleted_at IS NULL
                                         AND orc.qtd_total > 0
                                         LIMIT 1
@@ -632,6 +632,7 @@ class LembretesHomeDataTable extends DataTable
             ->columns($this->getColumns())
             ->ajax('')
             ->parameters([
+                'responsive' => 'true',
                 'initComplete' => 'function () {
                     max = this.api().columns().count();
                     this.api().columns().every(function (col) {
@@ -725,7 +726,8 @@ class LembretesHomeDataTable extends DataTable
             'searchable' => false,
             'orderable'  => false,
             'printable'  => false,
-            'width'      => '10px'
+            'width'      => '10px',
+            'class'      => 'all'
         ];
 
         return $columns;

@@ -22,7 +22,8 @@ var paths = {
     'dataTablesBootstrap3Plugin': vendors + '/datatables-bootstrap3-plugin/media',
     'flag': vendors + '/flag-sprites/dist',
     'metisMenu': vendors + '/metisMenu/dist',
-    'datatablesResponsive': vendors + '/datatables-responsive',
+    'dt_responsive_js': vendors + '/datatables.net-responsive/js/dataTables.responsive.js',
+    'dt_responsive_css': vendors + '/datatables.net-responsive-dt/css/responsive.dataTables.css',
     'summernote': vendors + '/summernote/dist',
     'select2': vendors + '/select2/dist',
     'jqueryui':  vendors + '/jquery-ui',
@@ -142,6 +143,7 @@ elixir(function(mix) {
         paths.ionicons + '/css/ionicons.css',
         paths.colorbox + '/example3/colorbox.css',
         paths.dataTables + '/css/dataTables.bootstrap.css',
+        paths.dt_responsive_css,
         paths.dataTablesBootstrap3Plugin + '/css/datatables-bootstrap3.css',
         // paths.metisMenu + '/metisMenu.css',
         paths.summernote + '/summernote.css',
@@ -165,9 +167,9 @@ elixir(function(mix) {
         paths.colorbox + '/jquery.colorbox.js',
         paths.icheck + '/icheck.js',
         paths.dataTables + '/js/jquery.dataTables.js',
+        paths.dt_responsive_js,
         paths.dataTables + '/js/dataTables.bootstrap.js',
         paths.dataTablesBootstrap3Plugin + '/js/datatables-bootstrap3.js',
-        paths.datatablesResponsive + '/js/dataTables.responsive.js',
         paths.metisMenu + '/metisMenu.js',
         paths.summernote + '/summernote.js',
         paths.select2 + 'js/select2.js',
@@ -199,8 +201,8 @@ elixir(function(mix) {
         'sweetalert-helper.js',
         'flat-color-generator.js',
         'qc-avaliar.js',
-        'error-list.js'
-
+        'error-list.js',
+        'is-mobile.js',
     ], 'public/js/admin.js');
 
     mix.scripts([

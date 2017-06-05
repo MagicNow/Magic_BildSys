@@ -106,6 +106,7 @@ class InsumoPorFornecedorDataTable extends DataTable
             ->columns($this->getColumns())
             ->ajax('')
             ->parameters([
+                'responsive' => 'true',
                 'initComplete' => 'function () {
                     max = this.api().columns().count();
                     this.api().columns().every(function (col) {

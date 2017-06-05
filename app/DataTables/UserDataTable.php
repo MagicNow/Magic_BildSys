@@ -51,6 +51,7 @@ class UserDataTable extends DataTable
             ->columns($this->getColumns())
             ->ajax('')
             ->parameters([
+                'responsive' => 'true',
                 "initComplete" => 'function () {
                     max = this.api().columns().count();
                     this.api().columns().every(function (col) {
@@ -102,7 +103,7 @@ class UserDataTable extends DataTable
             'e-mail' => ['name' => 'email', 'data' => 'email'],
             'ativo' => ['name' => 'active', 'data' => 'active'],
             'admin' => ['name' => 'admin', 'data' => 'admin'],
-            'action' => ['title' => '#', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
+            'action' => ['title' => '#', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%', 'class' => 'all']
         ];
     }
 
