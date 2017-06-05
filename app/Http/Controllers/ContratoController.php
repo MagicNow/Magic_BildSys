@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\DataTables\ContratoDataTable;
 use App\Http\Requests;
+use App\Models\ContratoStatusLog;
 use App\Models\WorkflowAprovacao;
+use App\Repositories\CodeRepository;
 use App\Repositories\ContratoRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
@@ -267,5 +269,40 @@ class ContratoController extends AppBaseController
         Flash::$type_resposta($resposta);
 
         return redirect(route('contratos.index'));
+    }
+
+    public function validaEnvioContrato($id, Request $request){
+        $contrato = $this->contratoRepository->findWithoutFail($id);
+
+        if (empty($contrato)) {
+            Flash::error('Contrato '.trans('common.not-found'));
+            return redirect(route('contratos.index'));
+        }
+
+        if($request->arquivo){
+            $destinationPath = CodeRepository::saveFile($request->arquivo, 'contratos/' . $contrato->id);
+
+            $contrato->arquivo = $destinationPath;
+            $contrato->save();
+            $acao = 'Arquivo enviado!';
+
+
+            if($contrato->contrato_status_id==4){
+                $contrato->contrato_status_id = 5;
+                $contrato->save();
+                ContratoStatusLog::create([
+                    'contrato_id'        => $contrato->id,
+                    'contrato_status_id' => $contrato->contrato_status_id,
+                    'user_id'            => auth()->id()
+                ]);
+                $acao = 'Arquivo enviado e Contrato Liberado!';
+            }
+
+            Flash::success($acao);
+            return redirect(route('contratos.show',$contrato->id));
+        }
+
+        Flash::error('É necessário enviar um arquivo!');
+        return redirect(route('contratos.show',$contrato->id));
     }
 }
