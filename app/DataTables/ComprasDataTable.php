@@ -83,6 +83,9 @@ class ComprasDataTable extends DataTable
                     return "R$ ". $obj->preco_unitario;
                 }
             })
+            ->filterColumn('nome',function($query, $keyword){
+                $query->where(DB::raw("CONCAT(insumos.codigo,' - ' ,insumos.nome)"),'LIKE','%'.$keyword.'%');
+            })
             ->make(true);
 
     }
