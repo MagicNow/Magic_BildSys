@@ -1383,6 +1383,7 @@ class OrdemDeCompraController extends AppBaseController
 
         return view('ordem_de_compras.insumos_orcamento', compact('obra_id', 'grupos'));
     }
+    
 
     /**
      * Método de inserir insumo no orçamento.
