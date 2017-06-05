@@ -68,17 +68,38 @@ class FornecedoresController extends AppBaseController
             ->whereNotNull('deleted_at')
             ->first();
 
-        $usuario_existente = User::Where('email', '=', $request->email)
+        $fornecedor_existente_deletado = Fornecedor::Where('email', '=', $request->email)
+            ->withTrashed()
+            ->whereNotNull('deleted_at')
             ->first();
+
+//        $usuario_existente = User::Where('email', '=', $request->email)
+//            ->first();
+//
+//        $fornecedor_existente = Fornecedor::Where('email', '=', $request->email)
+//            ->first();
 
         if (isset($usuario_existente_deletado)) {
             $usuario_existente_deletado->forceDelete();
         }
-
-        if (isset($usuario_existente)) {
-            Flash::error('O campo email já esta sendo utilizado em outro cadastro');
-            return redirect('/admin/fornecedores/create')->withInput($request->except('password', 'password_confirmation'));
+        if (isset($fornecedor_existente_deletado)) {
+            $fornecedor_existente_deletado->forceDelete();
         }
+
+
+        $this->validate($request, [
+            'email' => 'unique:fornecedores|unique:users'
+        ]);
+
+//        dd($usuario_existente);
+//        if (isset($fornecedor_existente) || isset($usuario_existente)) {
+//            if(!$request->ajax()) {
+//                Flash::error('O e-mail já esta sendo utilizado em outro cadastro');
+//                return redirect('/admin/fornecedores/create')->withInput($request->except('password', 'password_confirmation'));
+//            }else{
+//                return response()->json(['error' => true, 'msg'=>'O e-mail já esta sendo utilizado em outro cadastro']);
+//            }
+//        }
 
         $input = $request->all();
 
@@ -158,19 +179,32 @@ class FornecedoresController extends AppBaseController
             ->whereNotNull('deleted_at')
             ->first();
 
-        $fornecedor_user_id = Fornecedor::find($id)->user_id;
-        $usuario_existente = User::Where('email', '=', $request->email)
-            ->where('id', '!=', $fornecedor_user_id)
+        $fornecedor_existente_deletado = Fornecedor::Where('email', '=', $request->email)
+            ->withTrashed()
+            ->whereNotNull('deleted_at')
             ->first();
+
+//        $fornecedor_user_id = Fornecedor::find($id)->user_id;
+//        $usuario_existente = User::Where('email', '=', $request->email)
+//            ->where('id', '!=', $fornecedor_user_id)
+//            ->first();
 
         if (isset($usuario_existente_deletado)) {
             $usuario_existente_deletado->forceDelete();
         }
 
-        if (isset($usuario_existente)) {
-            Flash::error('O campo email já esta sendo utilizado em outro cadastro');
-            return redirect('/admin/fornecedores/'.$id.'/edit')->withInput($request->except('password', 'password_confirmation'));
+        if (isset($fornecedor_existente_deletado)) {
+            $fornecedor_existente_deletado->forceDelete();
         }
+
+        $this->validate($request, [
+            'email' => 'unique:fornecedores|unique:users'
+        ]);
+
+//        if (isset($usuario_existente)) {
+//            Flash::error('O campo email já esta sendo utilizado em outro cadastro');
+//            return redirect('/admin/fornecedores/'.$id.'/edit')->withInput($request->except('password', 'password_confirmation'));
+//        }
 
         $fornecedores = $this->fornecedoresRepository->findWithoutFail($id);
 
