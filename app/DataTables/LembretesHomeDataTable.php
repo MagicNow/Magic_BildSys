@@ -19,7 +19,7 @@ class LembretesHomeDataTable extends DataTable
      */
     public function ajax()
     {
-        if(!$this->request()->exibir_por_tarefa) {
+        if (!$this->request()->exibir_por_tarefa) {
             return $this->datatables
                 ->eloquent($this->query())
                 ->editColumn('action', 'ordem_de_compras.lembretes_home_datatables_actions')
@@ -116,10 +116,7 @@ class LembretesHomeDataTable extends DataTable
                     ) DAY)
                     ) BETWEEN ? AND ?", [$inicio, $fim]);
                         }
-
-
                     }
-
                 })
                 ->editColumn('inicio', function ($obj) {
                     if ($obj->dias < 0) {
@@ -175,7 +172,7 @@ class LembretesHomeDataTable extends DataTable
                     $query->whereRaw("insumo_grupos.nome LIKE ?", ['%' . $keyword . '%']);
                 })
                 ->make(true);
-        }else{
+        } else {
             return $this->datatables
                 ->of($this->query())
                 ->editColumn('action', 'ordem_de_compras.lembretes_home_datatables_actions')
@@ -205,9 +202,9 @@ class LembretesHomeDataTable extends DataTable
                     $query->whereRaw("insumo_grupos.nome LIKE ?", ['%' . $keyword . '%']);
                 })
                 ->filterColumn('planejamentos.tarefa', function ($query, $keyword) {
-                    if(!$this->request()->exibir_por_tarefa){
+                    if (!$this->request()->exibir_por_tarefa) {
                         $query->whereRaw("planejamentos.tarefa LIKE ?", ['%' . $keyword . '%']);
-                    }else{
+                    } else {
                         $query->whereRaw("xpto.tarefa LIKE ?", ['%' . $keyword . '%']);
                     }
                 })
@@ -215,9 +212,9 @@ class LembretesHomeDataTable extends DataTable
                     $this->request()->exibir_por_tarefa ? 'xpto.tarefa' : 'planejamentos.tarefa')
 
                 ->filterColumn('obras.nome', function ($query, $keyword) {
-                    if(!$this->request()->exibir_por_tarefa){
+                    if (!$this->request()->exibir_por_tarefa) {
                         $query->whereRaw("obras.nome LIKE ?", ['%' . $keyword . '%']);
-                    }else{
+                    } else {
                         $query->whereRaw("xpto.obra LIKE ?", ['%' . $keyword . '%']);
                     }
                 })
@@ -234,13 +231,13 @@ class LembretesHomeDataTable extends DataTable
      */
     public function query()
     {
-        if($this->request()->exibir_por_tarefa) {
+        if ($this->request()->exibir_por_tarefa) {
             $url = 'CONCAT(\'/compras/obrasInsumos?planejamento_id=\',planejamentos.id,\'&obra_id=\',obras.id) as url';
         } else {
             $url = 'CONCAT(\'/compras/obrasInsumos?planejamento_id=\',planejamentos.id,\'&insumo_grupos_id=\',insumo_grupos.id,\'&obra_id=\',obras.id) as url';
         }
 
-        if(!$this->request()->exibir_por_tarefa) {
+        if (!$this->request()->exibir_por_tarefa) {
             $query = Lembrete::join('insumo_grupos', 'insumo_grupos.id', '=', 'lembretes.insumo_grupo_id')
                 ->join('insumos', 'insumos.insumo_grupo_id', '=', 'insumo_grupos.id')
                 ->join('planejamento_compras', 'planejamento_compras.insumo_id', '=', 'insumos.id')
@@ -445,7 +442,7 @@ class LembretesHomeDataTable extends DataTable
             $query->whereRaw(PlanejamentoCompraRepository::existeItemParaComprarComInsumoGrupo());
 
             $query->groupBy(['id', 'obra', 'dias', 'tarefa', 'url', 'inicio']);
-        }else{
+        } else {
             $query = DB::table(
                 DB::raw('(SELECT tarefa, id, obra, url, inicio, dias, grupo
                             FROM (SELECT

@@ -41,21 +41,21 @@ class LembreteDataTable extends DataTable
                 'insumo_grupos.nome',
                 DB::raw("(SELECT LEM2.dias_prazo_minimo
                             FROM lembretes LEM2
-                            WHERE LEM2.insumo_grupo_id = insumo_grupos.id                            
+                            WHERE LEM2.insumo_grupo_id = insumo_grupos.id
                             AND LEM2.lembrete_tipo_id = 3
                             AND LEM2.deleted_at IS NULL
                          ) as prazo_minimo_mobilizacao"
                 ),
                 DB::raw("(SELECT LEM2.dias_prazo_minimo
                                 FROM lembretes LEM2
-                                WHERE LEM2.insumo_grupo_id = insumo_grupos.id                            
+                                WHERE LEM2.insumo_grupo_id = insumo_grupos.id
                                 AND LEM2.lembrete_tipo_id = 2
                                 AND LEM2.deleted_at IS NULL
                              ) as prazo_minimo_negociacao"
                 ),
                 DB::raw("(SELECT LEM2.dias_prazo_minimo
                                 FROM lembretes LEM2
-                                WHERE LEM2.insumo_grupo_id = insumo_grupos.id                            
+                                WHERE LEM2.insumo_grupo_id = insumo_grupos.id
                                 AND LEM2.lembrete_tipo_id = 1
                                 AND LEM2.deleted_at IS NULL
                              ) as prazo_minimo_start"
@@ -77,7 +77,8 @@ class LembreteDataTable extends DataTable
             // ->addAction(['width' => '10%'])
             ->ajax('')
             ->parameters([
-                'initComplete' => 'function () {
+                'responsive' => 'true',
+                 'initComplete' => 'function () {
                     max = this.api().columns().count();
                     this.api().columns().every(function (col) {
                         if((col+3)<max){

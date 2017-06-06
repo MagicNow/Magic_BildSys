@@ -19847,3 +19847,15 @@ table.dataTable.dtr-inline.collapsed> tbody> tr.parent> th:first-child:before {
   }
 }
 
+/**
+ * A bootstrap column for five equal width columns in a row
+ */
+[class*="col-"].col-20 {
+  width: 20%;
+}
+
+@media only screen and (max-width: 768px) {
+  [class*="col-"].col-20 {
+    width: 100%;
+  }
+}

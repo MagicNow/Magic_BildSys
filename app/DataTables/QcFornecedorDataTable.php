@@ -44,7 +44,7 @@ class QcFornecedorDataTable extends DataTable
             ->addAction(['width' => '10%', 'class' => 'all'])
             ->ajax('')
             ->parameters([
-                'responsive' => 'true',
+                'responsive'=> 'true',
                 'initComplete' => 'function () {
                     max = this.api().columns().count();
                     this.api().columns().every(function (col) {

@@ -1,7 +1,8 @@
 require('laravel-elixir-vue-2');
-var gulp = require('gulp');
-var bower = require('gulp-bower');
-var elixir = require('laravel-elixir');
+var gulp        = require('gulp');
+var bower       = require('gulp-bower');
+var elixir      = require('laravel-elixir');
+var browserSync = require('browser-sync').create();
 
 gulp.task('bower', function() {
     return bower();
@@ -237,4 +238,10 @@ elixir(function(mix) {
         'carrinho.js',
     ], 'public/js/carrinho.js');
 
+});
+
+gulp.task('browser-sync', function() {
+    browserSync.init({
+        proxy: "bild-sys.dev"
+    });
 });

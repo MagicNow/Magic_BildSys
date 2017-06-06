@@ -328,7 +328,7 @@ class ComprasDataTable extends DataTable
             ->columns($this->getColumns())
             ->ajax('')
             ->parameters([
-                'responsive' => 'true',
+                'responsive'=> 'true',
                 'initComplete' => 'function () {
                     max = this.api().columns().count();
                     this.api().columns().every(function (col) {
@@ -372,7 +372,7 @@ class ComprasDataTable extends DataTable
             'preço Total' => ['name' => 'valor_total', 'data' => 'valor_total', 'searchable' => false],
             'troca' => ['name' => 'troca', 'data' => 'troca', 'searchable' => false, 'orderable' => false, 'width'=>'5%'],
             'finaliza Obra' => ['name' => 'total', 'data' => 'total', 'searchable' => false, 'orderable' => false, 'width'=>'5%'],
-            'action' => ['title' => '#', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'5%']
+            'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'5%']
         ];
     }
 

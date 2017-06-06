@@ -156,7 +156,7 @@ class ContratoDataTable extends DataTable
             ->ajax('')
             ->addAction(['width' => '80px', 'class' => 'all'])
             ->parameters([
-                'responsive' => 'true',
+                'responsive'=> 'true',
                 'initComplete' => 'function () {
                     max = this.api().columns().count();
                     this.api().columns().every(function (col) {

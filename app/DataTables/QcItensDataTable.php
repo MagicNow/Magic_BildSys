@@ -135,7 +135,7 @@ class QcItensDataTable extends DataTable
             ->columns($this->getColumns())
             ->ajax('')
             ->parameters([
-                'responsive' => 'true',
+                'responsive'=> 'true',
                 'initComplete' => $parametersinitComplete ,
 //                "lengthChange"=> true,
                 "pageLength"=> 25,
