@@ -1,4 +1,5 @@
 /* latin-ext */
+
 @font-face {
   font-family: 'Raleway';
   font-style: normal;
@@ -7,7 +8,9 @@
   unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
 }
 
+
 /* latin */
+
 @font-face {
   font-family: 'Raleway';
   font-style: normal;
@@ -16,15 +19,19 @@
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215;
 }
 
-th, label {
+th,
+label {
   text-transform: uppercase;
 }
+
 
 /**********************************************************
  *     typeahead.js v0.11.1 - twitter bootstrap v3.3.5    *
  **********************************************************/
 
+
 /*root typeahead class*/
+
 .twitter-typeahead {
   display: inherit !important;
   width: 100%;
@@ -34,50 +41,59 @@ th, label {
   background-color: #eeeeee !important;
 }
 
-/*Added to input that's initialized into a typeahead*/
-.twitter-typeahead .tt-input {
 
-}
+/*Added to input that's initialized into a typeahead*/
+
+.twitter-typeahead .tt-input {}
+
 
 /*Added to hint input.*/
-.twitter-typeahead .hint {
 
-}
+.twitter-typeahead .hint {}
+
 
 /*Added to menu element*/
+
 .twitter-typeahead .tt-menu {
   width: 100%;
   max-height: 500px;
   overflow-y: scroll;
   border: 1px solid #cccccc;
-
   -moz-box-shadow: 12px 14px 30px -7px #616161;
   -webkit-box-shadow: 12px 14px 30px -7px #616161;
   box-shadow: 12px 14px 30px -7px #616161;
 }
 
-/*Added to dataset elements*/
-.twitter-typeahead .tt-dataset {
 
-}
+/*Added to dataset elements*/
+
+.twitter-typeahead .tt-dataset {}
+
 
 /*dded to suggestion elements*/
+
 .twitter-typeahead .tt-suggestion {
   padding: 3px 20px;
   white-space: nowrap;
 }
 
+
 /*Added to menu element when it contains no content*/
+
 .twitter-typeahead .tt-empty {
   background-color: white;
 }
 
+
 /*Added to menu element when it is opened*/
+
 .twitter-typeahead .tt-open {
   background-color: white;
 }
 
+
 /*Added to suggestion element when menu cursor moves to said suggestion*/
+
 .twitter-typeahead .tt-suggestion:hover,
 .twitter-typeahead .tt-suggestion:focus,
 .twitter-typeahead .tt-cursor {
@@ -86,12 +102,14 @@ th, label {
   color: white;
 }
 
-/*Added to the element that wraps highlighted text*/
-.twitter-typeahead .tt-highlight {
 
-}
+/*Added to the element that wraps highlighted text*/
+
+.twitter-typeahead .tt-highlight {}
+
 
 /** Loading **/
+
 .loader {
   position: fixed;
   left: 0px;
@@ -164,7 +182,7 @@ th, label {
   margin-bottom: 30px;
 }
 
-.breadcrumb > li + li:before {
+.breadcrumb> li+ li:before {
   content: "|\00a0";
 }
 
@@ -191,7 +209,8 @@ a {
   color: #9b9b9b;
 }
 
-a:hover, a:focus {
+a:hover,
+a:focus {
   color: #4a4a4a;
 }
 
@@ -203,26 +222,27 @@ body {
   background-color: #f5f5f5;
 }
 
+
 /*Estilos do UX*/
 
-.table > thead > tr > th {
+.table> thead> tr> th {
   background-color: #474747;
   border: solid 1px #dddddd;
   color: #fff;
 }
 
-.table > thead > tr > td.active,
-.table > tbody > tr > td.active,
-.table > tfoot > tr > td.active,
-.table > thead > tr > th.active,
-.table > tbody > tr > th.active,
-.table > tfoot > tr > th.active,
-.table > thead > tr.active > td,
-.table > tbody > tr.active > td,
-.table > tfoot > tr.active > td,
-.table > thead > tr.active > th,
-.table > tbody > tr.active > th,
-.table > tfoot > tr.active > th {
+.table> thead> tr> td.active,
+.table> tbody> tr> td.active,
+.table> tfoot> tr> td.active,
+.table> thead> tr> th.active,
+.table> tbody> tr> th.active,
+.table> tfoot> tr> th.active,
+.table> thead> tr.active> td,
+.table> tbody> tr.active> td,
+.table> tfoot> tr.active> td,
+.table> thead> tr.active> th,
+.table> tbody> tr.active> th,
+.table> tfoot> tr.active> th {
   background-color: #111;
 }
 
@@ -325,7 +345,8 @@ h6 {
   height: 70px;
 }
 
-.cal-year-box [class*="span"], .cal-month-box [class*="cal-cell"] {
+.cal-year-box [class*="span"],
+.cal-month-box [class*="cal-cell"] {
   min-height: 70px;
 }
 
@@ -333,29 +354,33 @@ h6 {
   text-align: right;
 }
 
-.table-align-middle > thead > tr > th,
-.table-align-middle > tbody > tr > th,
-.table-align-middle > tfoot > tr > th,
-.table-align-middle > thead > tr > td,
-.table-align-middle > tbody > tr > td,
-.table-align-middle > tfoot > tr > td {
+.table-align-middle> thead> tr> th,
+.table-align-middle> tbody> tr> th,
+.table-align-middle> tfoot> tr> th,
+.table-align-middle> thead> tr> td,
+.table-align-middle> tbody> tr> td,
+.table-align-middle> tfoot> tr> td {
   vertical-align: middle;
 }
 
-.box-equalizacao-tecnica > .box-body {
+.box-equalizacao-tecnica> .box-body {
   max-height: 435px;
   overflow-y: auto;
 }
 
-.pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover,
-.pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus {
+.pagination> .active> a,
+.pagination> .active> span,
+.pagination> .active> a:hover,
+.pagination> .active> span:hover,
+.pagination> .active> a:focus,
+.pagination> .active> span:focus {
   color: #f98d00;
   font-weight: bold;
   border: solid 1px #f98d00;
   background-color: #fff;
 }
 
-.pagination > li > a {
+.pagination> li> a {
   padding: 6px 12px;
   border: solid 1px #979797;
   margin: 2px;
@@ -365,25 +390,27 @@ h6 {
   margin: 10px;
 }
 
-.pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus{
+.pagination> .active> span:hover,
+.pagination> .active> a:focus,
+.pagination> .active> span:focus {
   color: #f98d00;
   font-weight: bold;
   border: solid 1px #f98d00;
   background-color: #fff;
 }
 
-.pagination > li > a{
+.pagination> li> a {
   padding: 6px 12px;
   border: solid 1px #979797;
   margin: 2px;
 }
 
-.box-chart > .box-body {
+.box-chart> .box-body {
   height: 500px;
   position: relative;
 }
 
-.box-chart > .box-input {
+.box-chart> .box-input {
   padding: 10px;
   width: 100%;
   max-width: none;
@@ -393,7 +420,7 @@ h6 {
   font-weight: 400;
 }
 
-.sweet-alert > p p {
+.sweet-alert> p p {
   margin-bottom: 10px;
 }
 
@@ -408,13 +435,15 @@ h6 {
   padding: 10px;
 }
 
-.modal-full > .modal-content {
+.modal-full> .modal-content {
   height: auto;
   min-height: 100%;
   border-radius: 0;
 }
 
+
 /* Ajuste para select2 em elementos ocultos não ficar com tamanho mínimo */
+
 .select2-container {
   width: 100% !important;
   padding: 0;
@@ -456,11 +485,11 @@ h6 {
   width: 100%;
 }
 
-#dataTableBuilder_filter{
-  float:left;
+#dataTableBuilder_filter {
+  float: left;
 }
 
-.with-middle > .input-group-addon.addon-middle {
+.with-middle> .input-group-addon.addon-middle {
   line-height: 1;
   padding-top: 9px;
   padding-bottom: 9px;
@@ -468,7 +497,7 @@ h6 {
   border-right: 0;
 }
 
-.with-middle > .input-group-btn > .btn {
+.with-middle> .input-group-btn> .btn {
   line-height: 1.45;
 }
 
@@ -480,13 +509,18 @@ h6 {
 .ui-datepicker {
   width: auto;
 }
+
 .visuallyhidden {
   position: absolute;
   overflow: hidden;
   clip: rect(0 0 0 0);
-  height: 1px; width: 1px;
-  margin: -1px; padding: 0; border: 0;
+  height: 1px;
+  width: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
 }
+
 .tooltip-inner {
   max-width: 500px;
   text-align: left !important;
@@ -495,9 +529,11 @@ h6 {
 .centered-modal.in {
   display: flex !important;
 }
+
 .centered-modal .modal-dialog {
   margin: auto;
 }
+
 .popover {
   max-width: none;
 }
@@ -510,9 +546,11 @@ h6 {
   font-size: inherit !important;
   display: inline-block;
 }
-.label-normalize + .label-normalize {
+
+.label-normalize+ .label-normalize {
   margin-right: 5px;
 }
+
 .popover-content {
   max-height: calc(100vh - 50px);
   overflow-x: auto;
@@ -529,4 +567,85 @@ h6 {
 
 .dataTables_filter {
   float: right !important;
+}
+
+.dtr-title:after {
+  content: ':';
+}
+
+.dtr-data> form {
+  display: inline-block;
+}
+
+table.dataTable> tbody> tr.child ul.dtr-details {
+  width: 100%;
+}
+
+table.dataTable> tbody> tr.child {
+  padding: 0;
+  text-align: left;
+}
+
+table.dataTable> tbody> tr.child ul.dtr-details li {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+table.dataTable.dtr-inline.collapsed> tbody> tr> td.child {
+  padding: 10px 0;
+  background: #FFF;
+}
+
+.table> thead> tr> th,
+.table> tbody> tr> th,
+.table> tfoot> tr> th,
+.table> thead> tr> td,
+.table> tbody> tr> td,
+.table> tfoot> tr> td {
+  vertical-align: middle;
+}
+
+table.dataTable.dtr-inline.collapsed> tbody> tr> td:first-child:before,
+table.dataTable.dtr-inline.collapsed> tbody> tr> th:first-child:before {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-left: 5px;
+  background-color: #00c0ef;
+  border-width: 1px;
+}
+
+table.dataTable.dtr-inline.collapsed> tbody> tr.parent> td:first-child:before,
+table.dataTable.dtr-inline.collapsed> tbody> tr.parent> th:first-child:before {
+  background-color: #DD4B3A;
+}
+
+.content-header .content-header-title {
+  font-size: 24px;
+  margin: 0;
+}
+.content-header .content-header-buttons {
+  text-align: left;
+}
+
+@media only screen and (max-width: 768px) {
+  .content-header .content-header-buttons {
+    text-align: left;
+  }
+  .content-header .content-header-title {
+    margin-bottom: 10px;
+  }
+}
+
+/**
+ * A bootstrap column for five equal width columns in a row
+ */
+[class*="col-"].col-20 {
+  width: 20%;
+}
+
+@media only screen and (max-width: 768px) {
+  [class*="col-"].col-20 {
+    width: 100%;
+  }
 }

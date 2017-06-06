@@ -56,7 +56,8 @@ class WorkflowAlcadaDataTable extends DataTable
             ->columns($this->getColumns())
             ->ajax('')
             ->parameters([
-                'initComplete' => 'function () {
+                'responsive' => 'true',
+                 'initComplete' => 'function () {
                     max = this.api().columns().count();
                     this.api().columns().every(function (col) {
                         if((col+3)<max){

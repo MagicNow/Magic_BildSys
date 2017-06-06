@@ -41,9 +41,10 @@ class DesistenciaMotivoDataTable extends DataTable
     {
         return $this->builder()
             ->columns($this->getColumns())
-            ->addAction(['width' => '10%'])
+            ->addAction(['width' => '10%', 'title' => 'Ações', 'class' => 'all'])
             ->ajax('')
             ->parameters([
+                'responsive'=> 'true',
                 'initComplete' => 'function () {
                     max = this.api().columns().count();
                     this.api().columns().every(function (col) {

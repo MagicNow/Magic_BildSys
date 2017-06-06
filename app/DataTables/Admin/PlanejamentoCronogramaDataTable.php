@@ -68,7 +68,8 @@ class PlanejamentoCronogramaDataTable extends DataTable
 //            ->addAction(['width' => '10%'])
             ->ajax('')
             ->parameters([
-                'initComplete' => 'function () {
+                'responsive' => 'true',
+                 'initComplete' => 'function () {
                     max = this.api().columns().count();
                     this.api().columns().every(function (col) {
                         if((col+1)<max){
