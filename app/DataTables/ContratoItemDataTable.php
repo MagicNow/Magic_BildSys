@@ -58,7 +58,7 @@ class ContratoItemDataTable extends DataTable
                 $workflow = false;
                 $lastMod = $item->modificacoes()->orderBy('created_at', 'desc')->first();
 
-                if($lastMod->contrato_status_id === ContratoStatus::REPROVADO) {
+                if($lastMod && $lastMod->contrato_status_id === ContratoStatus::REPROVADO) {
                     $reprovado = $lastMod;
                     $workflow = $lastMod->aprovacoes()->orderBy('created_at', 'desc')->first();
                 }
@@ -150,7 +150,7 @@ class ContratoItemDataTable extends DataTable
                 ),
             ])
             ->join('insumos', 'insumos.id', 'contrato_itens.insumo_id')
-            ->join('contrato_item_modificacoes', 'contrato_itens.id', 'contrato_item_modificacoes.contrato_item_id')
+            ->leftJoin('contrato_item_modificacoes', 'contrato_itens.id', 'contrato_item_modificacoes.contrato_item_id')
             ->leftJoin(
                 'oc_item_qc_item',
                 'contrato_itens.qc_item_id',
