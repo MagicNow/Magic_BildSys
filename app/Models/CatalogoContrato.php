@@ -18,18 +18,7 @@ class CatalogoContrato extends Model
     const UPDATED_AT = 'updated_at';
 
     public $fillable = [
-        'fornecedor_id',
-        'data',
-        'valor',
-        'arquivo',
-        'periodo_inicio',
-        'periodo_termino',
-        'valor_minimo',
-        'valor_maximo',
-        'qtd_minima',
-        'qtd_maxima',
-        'fornecedor_cod',
-        'fornecedor_nome'
+        'fornecedor_id'
     ];
 
     /**
@@ -39,11 +28,7 @@ class CatalogoContrato extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'fornecedor_id' => 'integer',
-        'data' => 'date',
-        'arquivo' => 'string',
-        'periodo_inicio' => 'date',
-        'periodo_termino' => 'date'
+        'fornecedor_id' => 'integer'
     ];
 
     /**
@@ -54,84 +39,6 @@ class CatalogoContrato extends Model
     public static $rules = [
         
     ];
-
-    public function getValorAttribute($value)
-    {
-        return number_format($value,2,',','.');
-    }
-
-    public function setValorAttribute($value)
-    {
-        $pontos = array(",");
-        $value = str_replace('.','',$value);
-        $result = str_replace( $pontos, ".", $value);
-
-        $this->attributes['valor'] = $result;
-    }
-
-    public function getValorMinimoAttribute($value)
-    {
-        return number_format($value,2,',','.');
-    }
-
-    public function setValorMinimoAttribute($value)
-    {
-        $pontos = array(",");
-        $value = str_replace('.','',$value);
-        $result = str_replace( $pontos, ".", $value);
-
-        $this->attributes['valor_minimo'] = $result;
-    }
-
-    public function getValorMaximoAttribute($value)
-    {
-        return number_format($value,2,',','.');
-    }
-
-    public function setValorMaximoAttribute($value)
-    {
-        $pontos = array(",");
-        $value = str_replace('.','',$value);
-        $result = str_replace( $pontos, ".", $value);
-
-        $this->attributes['valor_maximo'] = $result;
-    }
-
-    public function getQtdMinimaAttribute($value)
-    {
-        if(strlen($value) == 4){
-            $value = '0'.$value;
-        }
-
-        return number_format($value,2,',','.');
-    }
-
-    public function setQtdMinimaAttribute($value)
-    {
-        $pontos = array(",");
-        $value = str_replace('.','',$value);
-        $result = str_replace( $pontos, ".", $value);
-
-        $this->attributes['qtd_minima'] = $result;
-    }
-
-    public function getQtdMaximaAttribute($value)
-    {
-        if(strlen($value) == 4){
-            $value = '0'.$value;
-        }
-
-        return number_format($value,2,',','.');
-    }
-
-    public function setQtdMaximaAttribute($value)
-    {
-        $pontos = array(",");
-        $value = str_replace('.','',$value);
-        $result = str_replace( $pontos, ".", $value);
-
-        $this->attributes['qtd_maxima'] = $result;
-    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

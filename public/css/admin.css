@@ -19681,6 +19681,7 @@ h6 {
 
 .sweet-alert button.confirm {
   background-color: #7ed321 !important;
+  box-shadow: none !important;
 }
 
 .sweet-alert button.confirm:active {
@@ -19858,4 +19859,19 @@ table.dataTable.dtr-inline.collapsed> tbody> tr.parent> th:first-child:before {
   [class*="col-"].col-20 {
     width: 100%;
   }
+}
+
+.sidebar-mini.sidebar-collapse .sidebar-menu > li:hover > a > span:not(.pull-right),
+.sidebar-mini.sidebar-collapse .sidebar-menu > li:hover > .treeview-menu {
+  display: block !important;
+  position: absolute;
+  width: 220px;
+  left: 50px;
+}
+
+.sidebar-mini.sidebar-collapse .sidebar-menu > li:hover > a > .pull-right-container {
+  float: right;
+  width: auto!important;
+  left: 240px!important;
+  top: 10px!important;
 }

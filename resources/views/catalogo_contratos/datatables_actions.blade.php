@@ -1,3 +1,4 @@
+{!! Form::open(['route' => ['catalogo_contratos.destroy', $id], 'id'=>'formDelete'.$id, 'method' => 'delete']) !!}
 <div class='btn-group'>
     <a href="{{ route('catalogo_contratos.edit', $id) }}" title="{{ ucfirst( trans('common.edit') )}}" class='btn btn-warning btn-xs'>
         <i class="glyphicon glyphicon-edit"></i>
@@ -9,3 +10,4 @@
             'title' => ucfirst(trans('common.delete'))
         ]) !!}
 </div>
+{!! Form::close() !!}
