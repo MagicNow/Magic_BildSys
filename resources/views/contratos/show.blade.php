@@ -4,7 +4,7 @@
 @section('content')
     <section class="content-header">
         <h1>
-            Detalhes do Contrato #{{ $contrato->id }}
+            Detalhes do Contrato #{{ $contrato->id . ' Obra '.$contrato->obra->nome }}
             @if($contrato->contrato_status_id < 4 )
                 @if(isset($workflowAprovacao))
                     @if($workflowAprovacao['podeAprovar'])
@@ -153,6 +153,12 @@
 
     <div class="hidden">
         {!! Form::select('motivo', $motivos, null, ['id' => 'motivo']) !!}
+    </div>
+
+    <div class="content">
+        <a href="{!! route('contratos.index') !!}" class="btn btn-default btn-flat btn-lg">
+            <i class="fa fa-arrow-left"></i> {{ ucfirst( trans('common.back') )}}
+        </a>
     </div>
 
     <div class="modal centered-modal fade" id="modal-reapropriar" tabindex="-1" role="dialog">

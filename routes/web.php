@@ -694,6 +694,33 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             ['as' => 'contratos.enviaContrato', 'uses' => 'ContratoController@validaEnvioContrato']
         );
         $router->get(
+            '/atualizar-valor',
+            [
+                'as' => 'contratos.atualizar-valor',
+                'uses' => 'ContratoController@atualizarValor'
+            ]
+        )->middleware('needsPermission:contratos.edit');
+        $router->post(
+            '/atualizar-valor',
+            [
+                'as' => 'contratos.atualizar-valor-save',
+                'uses' => 'ContratoController@atualizarValorSave'
+            ]
+        )->middleware('needsPermission:contratos.edit');
+        $router->get(
+            '/fornecedores-por-obras',
+            'ContratoController@pegaFornecedoresPelasObras'
+        )->middleware('needsPermission:contratos.edit');
+        $router->get(
+            '/insumos-por-fornecedor',
+            'ContratoController@insumosPorFornecedor'
+        )->middleware('needsPermission:contratos.edit');
+        $router->get(
+            '/insumo-valor',
+            'ContratoController@insumoValor'
+        )->middleware('needsPermission:contratos.edit');
+
+        $router->get(
             '/{contratos}',
             ['as' => 'contratos.show', 'uses' => 'ContratoController@show']
         )->middleware('needsPermission:contratos.show');

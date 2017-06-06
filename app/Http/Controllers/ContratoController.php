@@ -8,11 +8,15 @@ use App\Http\Requests\CreateContratoRequest;
 use App\Http\Requests\EditarItemRequest;
 use App\Http\Requests\UpdateContratoRequest;
 use App\Models\ContratoStatusLog;
+use App\Models\Fornecedor;
+use App\Models\Insumo;
+use App\Models\Obra;
 use App\Models\WorkflowAprovacao;
 use App\Repositories\CodeRepository;
 use App\Repositories\ContratoRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Response;
 use App\Repositories\Admin\FornecedoresRepository;
@@ -28,6 +32,7 @@ use App\Models\ContratoItem;
 use App\Http\Requests\ReajustarRequest;
 use App\Http\Requests\DistratarRequest;
 use App\Http\Requests\ReapropriarRequest;
+use App\Http\Requests\AtualizarValorRequest;
 use App\Repositories\ContratoItemModificacaoRepository;
 use App\Repositories\ContratoItemRepository;
 use App\Models\ContratoStatus;
@@ -55,7 +60,8 @@ class ContratoController extends AppBaseController
         FornecedoresRepository $fornecedorRepository,
         ObraRepository $obraRepository,
         ContratoStatusRepository $contratoStatusRepository
-    ) {
+    )
+    {
 
         $status = $contratoStatusRepository
             ->orderBy('nome', 'ASC')
@@ -88,16 +94,17 @@ class ContratoController extends AppBaseController
         Request $request,
         WorkflowReprovacaoMotivoRepository $workflowReprovacaoMotivoRepository,
         ContratoItemDataTable $contratoItemDataTable
-    ) {
+    )
+    {
         $contrato = $this->contratoRepository->findWithoutFail($id);
 
         if (empty($contrato)) {
-            Flash::error('Contrato '.trans('common.not-found'));
+            Flash::error('Contrato ' . trans('common.not-found'));
 
             return redirect(route('contratos.index'));
         }
 
-        if($contrato->isStatus(ContratoStatus::EM_APROVACAO)) {
+        if ($contrato->isStatus(ContratoStatus::EM_APROVACAO)) {
             $workflowAprovacao = WorkflowAprovacaoRepository::verificaAprovacoes(
                 'Contrato',
                 $contrato->id,
@@ -113,20 +120,20 @@ class ContratoController extends AppBaseController
             ->prepend('Motivos...', '')
             ->all();
 
-        $pendencias = ContratoItemModificacao::whereHas('item', function($itens) use ($id) {
+        $pendencias = ContratoItemModificacao::whereHas('item', function ($itens) use ($id) {
             return $itens->where('contrato_id', $id)->where('aprovado', false);
         })
-        ->where('contrato_status_id', ContratoStatus::EM_APROVACAO)
-        ->get()
-        ->map(function($pendencia) {
-            $pendencia->workflow =  WorkflowAprovacaoRepository::verificaAprovacoes(
-                'ContratoItemModificacao',
-                $pendencia->id,
-                auth()->user()
-            );
+            ->where('contrato_status_id', ContratoStatus::EM_APROVACAO)
+            ->get()
+            ->map(function ($pendencia) {
+                $pendencia->workflow = WorkflowAprovacaoRepository::verificaAprovacoes(
+                    'ContratoItemModificacao',
+                    $pendencia->id,
+                    auth()->user()
+                );
 
-            return $pendencia;
-        });
+                return $pendencia;
+            });
 
         return $contratoItemDataTable
             ->setContrato($contrato)
@@ -140,7 +147,8 @@ class ContratoController extends AppBaseController
         $id,
         ReajustarRequest $request,
         ContratoItemModificacaoRepository $contratoItemModificacaoRepository
-    ) {
+    )
+    {
         $contratoItemModificacaoRepository->reajustar($id, $request->all());
 
         return response()->json([
@@ -152,7 +160,8 @@ class ContratoController extends AppBaseController
         $id,
         DistratarRequest $request,
         ContratoItemModificacaoRepository $contratoItemModificacaoRepository
-    ) {
+    )
+    {
         $contratoItemModificacaoRepository->distratar($id, $request->qtd);
 
         return response()->json([
@@ -163,15 +172,16 @@ class ContratoController extends AppBaseController
     public function reapropriarItemForm(
         $id,
         ContratoItemRepository $contratoItemRepository
-    ) {
+    )
+    {
         $item = $contratoItemRepository->find($id);
 
         $itens = $item->qcItem->ordemDeCompraItens;
 
         $reapropriacoes = $item->reapropriacoes;
 
-        $reapropriacoes->each(function($re) use (&$itens) {
-            if($re->ordem_de_compra_item_id) {
+        $reapropriacoes->each(function ($re) use (&$itens) {
+            if ($re->ordem_de_compra_item_id) {
                 $item = $itens->where('id', $re->ordem_de_compra_item_id)->shift();
                 $item->qtd = $item->qtd - $re->qtd;
                 $item->modificado_por = true;
@@ -179,8 +189,8 @@ class ContratoController extends AppBaseController
             }
         });
 
-        $reapropriacoes->each(function($re) use (&$reapropriacoes) {
-            if($re->contrato_item_reapropriacao_id) {
+        $reapropriacoes->each(function ($re) use (&$reapropriacoes) {
+            if ($re->contrato_item_reapropriacao_id) {
                 $_re = $reapropriacoes->where('id', $re->contrato_item_reapropriacao_id)->shift();
                 $_re->qtd = $_re->qtd - $re->qtd;
                 $_re->modificado_por = true;
@@ -189,10 +199,10 @@ class ContratoController extends AppBaseController
         });
 
         $itens = $itens->merge($reapropriacoes)
-            ->filter(function($item) {
-                return (float) $item->qtd;
+            ->filter(function ($item) {
+                return (float)$item->qtd;
             })
-            ->sortBy(function($item) {
+            ->sortBy(function ($item) {
                 return $item->created_at->getTimestamp();
             });
 
@@ -205,7 +215,8 @@ class ContratoController extends AppBaseController
         ContratoItemRepository $contratoItemRepository,
         ContratoItemReapropriacaoRepository $contratoItemReapropriacaoRepository,
         ReapropriarRequest $request
-    ) {
+    )
+    {
         $item = $contratoItemRepository->find($id);
 
         $contratoItemReapropriacaoRepository->reapropriar($item, $request->all());
@@ -219,7 +230,8 @@ class ContratoController extends AppBaseController
         $id,
         ContratoItemRepository $contratoItemRepository,
         EditarItemRequest $request
-    ) {
+    )
+    {
 
         $contratoItemRepository->editarAditivo($id, $request->all());
 
@@ -228,8 +240,9 @@ class ContratoController extends AppBaseController
         ]);
     }
 
-    public function imprimirContrato($id){
-        return  response()->file( storage_path('/app/public/') . str_replace('storage/', '', ContratoRepository::geraImpressao($id)) ) ;
+    public function imprimirContrato($id)
+    {
+        return response()->file(storage_path('/app/public/') . str_replace('storage/', '', ContratoRepository::geraImpressao($id)));
     }
 
     public function edit($id)
@@ -237,7 +250,7 @@ class ContratoController extends AppBaseController
         $contrato = $this->contratoRepository->findWithoutFail($id);
 
         if (empty($contrato)) {
-            Flash::error('Contrato '.trans('common.not-found'));
+            Flash::error('Contrato ' . trans('common.not-found'));
 
             return redirect(route('contratos.index'));
         }
@@ -253,7 +266,7 @@ class ContratoController extends AppBaseController
         $resposta = 'Contrato não modificado.';
 
         if (empty($contrato)) {
-            Flash::error('Contrato '.trans('common.not-found'));
+            Flash::error('Contrato ' . trans('common.not-found'));
 
             return redirect(route('contratos.index'));
         }
@@ -262,8 +275,8 @@ class ContratoController extends AppBaseController
             ->where('aprovavel_id', $contrato->id)
             ->first();
 
-        if(count($request->quantidade)){
-            foreach($request->quantidade as $item){
+        if (count($request->quantidade)) {
+            foreach ($request->quantidade as $item) {
                 $contrato_item = ContratoItem::find($item['id']);
                 if ($contrato_item && $item['qtd'] != '' && $contrato_item->qtd != money_to_float($item['qtd']) && $workflow_aprovacao) {
                     $contrato_item->qtd = money_to_float($item['qtd']);
@@ -286,15 +299,16 @@ class ContratoController extends AppBaseController
         return redirect(route('contratos.index'));
     }
 
-    public function validaEnvioContrato($id, Request $request){
+    public function validaEnvioContrato($id, Request $request)
+    {
         $contrato = $this->contratoRepository->findWithoutFail($id);
 
         if (empty($contrato)) {
-            Flash::error('Contrato '.trans('common.not-found'));
+            Flash::error('Contrato ' . trans('common.not-found'));
             return redirect(route('contratos.index'));
         }
 
-        if($request->arquivo){
+        if ($request->arquivo) {
             $destinationPath = CodeRepository::saveFile($request->arquivo, 'contratos/' . $contrato->id);
 
             $contrato->arquivo = $destinationPath;
@@ -302,22 +316,94 @@ class ContratoController extends AppBaseController
             $acao = 'Arquivo enviado!';
 
 
-            if($contrato->contrato_status_id==4){
+            if ($contrato->contrato_status_id == 4) {
                 $contrato->contrato_status_id = 5;
                 $contrato->save();
                 ContratoStatusLog::create([
-                    'contrato_id'        => $contrato->id,
+                    'contrato_id' => $contrato->id,
                     'contrato_status_id' => $contrato->contrato_status_id,
-                    'user_id'            => auth()->id()
+                    'user_id' => auth()->id()
                 ]);
                 $acao = 'Arquivo enviado e Contrato Liberado!';
             }
 
             Flash::success($acao);
-            return redirect(route('contratos.show',$contrato->id));
+            return redirect(route('contratos.show', $contrato->id));
         }
 
         Flash::error('É necessário enviar um arquivo!');
-        return redirect(route('contratos.show',$contrato->id));
+        return redirect(route('contratos.show', $contrato->id));
+    }
+
+    public function atualizarValor(Request $request)
+    {
+        $obras = Obra::whereHas('contratos', function ($query) {
+            $query->where('contrato_status_id', 5);
+        })->whereHas('users', function ($query) {
+            $query->where('user_id', auth()->id());
+        })
+            ->orderBy('nome', 'ASC')
+            ->pluck('nome', 'id')
+            ->toArray();
+        return view('contratos.atualizar-valor', compact('obras'));
+    }
+
+    public function pegaFornecedoresPelasObras(Request $request)
+    {
+        $this->validate($request,['obras'=>'required|min:1']);
+        $obras = $request->obras;
+        return Fornecedor::whereHas('contratos', function ($query) use ($obras) {
+            $query->where('contrato_status_id', 5);
+            $query->whereIn('obra_id', $obras);
+        })
+            ->select([
+                'id',
+                DB::raw("CONCAT(nome,' - ',cnpj) as nome"),
+            ])
+            ->orderBy('nome', 'ASC')
+            ->paginate();
+    }
+
+    public function insumosPorFornecedor(Request $request)
+    {
+        $fornecedor_id = $request->fornecedor;
+        $obras = $request->obras;
+        return Insumo::whereHas('contratoItem', function ($query) use ($fornecedor_id, $obras) {
+            $query->join('contratos', 'contratos.id', 'contrato_itens.contrato_id');
+            $query->where('contrato_status_id', 5);
+            $query->where('fornecedor_id', $fornecedor_id);
+            $query->whereIn('obra_id', $obras);
+        })
+            ->join('contrato_itens', 'contrato_itens.insumo_id', 'insumos.id')
+            ->select([
+                'insumos.id',
+                'contrato_itens.id as contrato_item_id',
+                DB::raw("CONCAT(insumos.codigo,' - ',insumos.nome) as nome"),
+            ])
+            ->join('contratos', 'contratos.id', 'contrato_itens.contrato_id')
+            ->where('fornecedor_id', $fornecedor_id)
+            ->whereIn('obra_id', $obras)
+            ->orderBy('nome', 'ASC')
+            ->paginate();
+    }
+
+    public function insumoValor(Request $request)
+    {
+        $item_id = $request->insumo;
+        return ContratoItem::where('id', $item_id)
+            ->with('insumo')
+            ->first();
+    }
+
+    public function atualizarValorSave(AtualizarValorRequest $request,
+                                       ContratoItemModificacaoRepository $contratoItemModificacaoRepository)
+    {
+        $reajustes =  $contratoItemModificacaoRepository->reajusteFornecedor($request->fornecedor_id, $request->obra_id, $request->valor_unitario);
+        if(count($reajustes)){
+            Flash::success('Reajustes de valores criados.');
+        }else{
+            Flash::error('Nenhum reajuste foi criado.');
+        }
+        return redirect(route('contratos.index'));
     }
 }

@@ -36,7 +36,9 @@ class ContratoItem extends Model
         'id' => 'integer',
         'contrato_id' => 'integer',
         'insumo_id' => 'integer',
-        'qc_item_id' => 'integer'
+        'qc_item_id' => 'integer',
+        'valor_unitario' => 'float',
+        'valor_total' => 'float'
     ];
 
     /**
