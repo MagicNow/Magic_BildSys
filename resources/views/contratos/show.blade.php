@@ -140,6 +140,33 @@
                     </div>
                 </div>
             </div>
+            <div class="col-sm-4">
+                <div class="box box-muted">
+                    <div class="box-header with-border">
+                        Sumarização
+                    </div>
+                    <div class="box-body">
+                        <table class="table table-striped table-bordered">
+                            <tr>
+                                <th>Valor Inicial</th>
+                                <td>{{ float_to_money($valor_inicial) }}</td>
+                            </tr>
+                            <tr>
+                                <th>Valor Atual</th>
+                                <td>{{ float_to_money($contrato->valor_total) }}</td>
+                            </tr>
+                            <tr>
+                                <th>Valor Medido</th>
+                                <td>{{ float_to_money(0.00) }}</td>
+                            </tr>
+                            <tr>
+                                <th>Saldo</th>
+                                <td>{{ float_to_money($contrato->valor_total) }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="box box-muted">
             <div class="box-body">
