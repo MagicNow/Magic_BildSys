@@ -56,26 +56,8 @@ class DetalhesServicosDataTable extends DataTable
             DB::raw('0 as valor_realizado'),
             DB::raw('0 as a_gastar'),
             DB::raw('orcamentos.preco_total as saldo_orcamento'),
-            DB::raw('ordem_de_compra_itens.valor_total as valor_oc'),
-            DB::raw('(orcamentos.preco_total - ordem_de_compra_itens.valor_total) as saldo_disponivel'),
-            DB::raw("(SELECT SUM( qtd )
-                    FROM ordem_de_compra_itens OCI2
-                    JOIN ordem_de_compras ON ordem_de_compras.id = OCI2.ordem_de_compra_id
-                    WHERE OCI2.insumo_id = ordem_de_compra_itens.insumo_id
-                    AND (
-                        ordem_de_compras.oc_status_id = 2
-                        OR ordem_de_compras.oc_status_id = 3
-                        OR ordem_de_compras.oc_status_id = 5
-                    )
-                    AND OCI2.insumo_id = ordem_de_compra_itens.insumo_id
-                    AND OCI2.grupo_id = ordem_de_compra_itens.grupo_id
-                    AND OCI2.subgrupo1_id = ordem_de_compra_itens.subgrupo1_id
-                    AND OCI2.subgrupo2_id = ordem_de_compra_itens.subgrupo2_id
-                    AND OCI2.subgrupo3_id = ordem_de_compra_itens.subgrupo3_id
-                    AND OCI2.servico_id = ".$this->servico_id."
-                    AND OCI2.obra_id = ".$this->obra_id."
-                    AND OCI2.deleted_at IS NULL
-                ) as qtd")
+            DB::raw('SUM(ordem_de_compra_itens.valor_total) as valor_oc'),
+            DB::raw('(orcamentos.preco_total - ordem_de_compra_itens.valor_total) as saldo_disponivel')
         ])
             ->join('orcamentos', function ($join) {
                 $join->on('orcamentos.insumo_id','=', 'ordem_de_compra_itens.insumo_id');
@@ -83,11 +65,15 @@ class DetalhesServicosDataTable extends DataTable
                 $join->on('orcamentos.subgrupo1_id','=', 'ordem_de_compra_itens.subgrupo1_id');
                 $join->on('orcamentos.subgrupo2_id','=', 'ordem_de_compra_itens.subgrupo2_id');
                 $join->on('orcamentos.subgrupo3_id','=', 'ordem_de_compra_itens.subgrupo3_id');
-                $join->on('orcamentos.servico_id','=', DB::raw($this->servico_id));
-                $join->on('orcamentos.obra_id','=', DB::raw($this->obra_id));
+                $join->on('orcamentos.servico_id','=', 'ordem_de_compra_itens.servico_id');
+                $join->on('orcamentos.obra_id','=', 'ordem_de_compra_itens.obra_id');
                 $join->on('orcamentos.ativo','=', DB::raw('1'));
             })
-            ->groupBy('orcamentos.insumo_id');
+            ->join('ordem_de_compras', 'ordem_de_compras.id', '=', 'ordem_de_compra_itens.ordem_de_compra_id')
+            ->where('ordem_de_compra_itens.servico_id','=', DB::raw($this->servico_id))
+            ->where('ordem_de_compra_itens.obra_id','=', DB::raw($this->obra_id))
+            ->whereIn('ordem_de_compras.oc_status_id',[2,3,5])
+            ->groupBy('ordem_de_compra_itens.insumo_id');
 
         return $this->applyScopes($ordemDeCompras);
     }
