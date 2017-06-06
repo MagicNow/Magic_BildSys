@@ -97,6 +97,14 @@ class ContratoController extends AppBaseController
             return redirect(route('contratos.index'));
         }
 
+        $valor_inicial = $contrato->itens()
+            ->where('aprovado', 1)
+            ->get()
+            ->pluck('qcItem')
+            ->pluck('ordemDeCompraItens')
+            ->collapse()
+            ->sum('valor_total');
+
         if($contrato->isStatus(ContratoStatus::EM_APROVACAO)) {
             $workflowAprovacao = WorkflowAprovacaoRepository::verificaAprovacoes(
                 'Contrato',
@@ -132,7 +140,7 @@ class ContratoController extends AppBaseController
             ->setContrato($contrato)
             ->render(
                 'contratos.show',
-                compact('contrato', 'workflowAprovacao', 'motivos', 'aprovado', 'pendencias')
+                compact('contrato', 'workflowAprovacao', 'motivos', 'aprovado', 'pendencias', 'valor_inicial')
             );
     }
 

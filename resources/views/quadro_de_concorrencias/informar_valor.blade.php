@@ -74,7 +74,7 @@
       </div>
   </div>
   <div class="box box-solid">
-      <div class="box-body">
+      <div class="box-body table-responsive">
           <table class="table table-responsive table-striped table-align-middle table-condensed">
               <thead>
               <tr>

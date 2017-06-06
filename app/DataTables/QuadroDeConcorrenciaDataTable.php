@@ -159,6 +159,7 @@ class QuadroDeConcorrenciaDataTable extends DataTable
             ->columns($this->getColumns())
             ->ajax('')
             ->parameters([
+                'responsive'=> 'true',
                 'initComplete' => 'function () {
                     max = this.api().columns().count();
                     this.api().columns().every(function (col) {
@@ -212,7 +213,6 @@ class QuadroDeConcorrenciaDataTable extends DataTable
             'rodada' => ['name' => 'rodada_atual', 'data' => 'rodada_atual', 'width'=>'6%'],
             'fornecedores' => ['name' => 'fornecedores', 'data' => 'fornecedores', 'width'=>'6%'],
             'propostas' => ['name' => 'propostas', 'data' => 'propostas', 'width'=>'6%'],
-            'action' => ['searchable'=>false, 'orderable'=>false,'title' => '#', 'printable' => false, 'width'=>'10%'],
         ];
 
         if(!auth()->user()->fornecedor) {
@@ -220,7 +220,14 @@ class QuadroDeConcorrenciaDataTable extends DataTable
             $columns['criadoEm'] = ['name' => 'quadro_de_concorrencias.created_at', 'data' => 'created_at', 'width'=>'12%'];
         }
 
-        $columns['action'] = ['title' => '#', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%'];
+        $columns['action'] = [
+            'title'      => 'Ações',
+            'printable'  => false,
+            'exportable' => false,
+            'searchable' => false,
+            'orderable'  => false,
+            'class'      => 'all',
+        ];
 
         return $columns;
     }

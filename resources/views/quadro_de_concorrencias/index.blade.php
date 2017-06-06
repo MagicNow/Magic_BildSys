@@ -21,12 +21,17 @@
         }
     </style>
     <section class="content-header">
-        <h1 class="pull-left">Quadro De Concorrencias</h1>
-        <h1 class="pull-right">
-           <a class="btn btn-primary btn-lg btn-flat pull-right" style="margin-top: -10px;margin-bottom: 5px" href="{!! url('/ordens-de-compra/insumos-aprovados') !!}">
-           <i class="fa fa-plus"></i> Novo Quadro de Concorrência
-           </a>
-        </h1>
+        <div class="row">
+            <div class="col-sm-6">
+                <h1 class="content-header-title">Quadro De Concorrencias</h1>
+            </div>
+            <div class="col-sm-6 content-header-buttons">
+                <a class="btn btn-primary btn-lg btn-flat"
+                    href="{!! url('/ordens-de-compra/insumos-aprovados') !!}">
+                    <i class="fa fa-plus"></i> Novo Quadro de Concorrência
+                </a>
+            </div>
+        </div>
     </section>
     <div class="content">
         <div class="clearfix"></div>

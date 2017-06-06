@@ -63,22 +63,7 @@ class CatalogoContratoController extends AppBaseController
      */
     public function store(CreateCatalogoContratoRequest $request)
     {
-        $input = $request->except('arquivo', 'fornecedor_cod');
-
-        if($input['periodo_termino'] < $input['periodo_inicio']){
-            Flash::error('O período de término não pode ser menor que o período de início.');
-            return redirect('/catalogo-acordos/create')->withInput($input);
-        }
-
-        if(money_to_float($input['valor_maximo']) < money_to_float($input['valor_minimo'])){
-            Flash::error('O valor máximo não pode ser menor que o valor mínimo.');
-            return redirect('/catalogo-acordos/create')->withInput($input);
-        }
-
-        if(money_to_float($input['qtd_maxima']) < money_to_float($input['qtd_minima'])){
-            Flash::error('O quantidade máxima não pode ser menor que a quantidade mínima.');
-            return redirect('/catalogo-acordos/create')->withInput($input);
-        }
+        $input = $request->except('fornecedor_cod');
 
         $catalogoContrato = new CatalogoContrato($input);
 
@@ -100,13 +85,6 @@ class CatalogoContratoController extends AppBaseController
 
         $catalogoContrato->save();
 
-        if($request->arquivo) {
-            $destinationPath = CodeRepository::saveFile($request->arquivo, 'contratos/' . $catalogoContrato->id);
-
-            $catalogoContrato->arquivo = Storage::url($destinationPath);
-            $catalogoContrato->save();
-        }
-
         if (count($request->insumos)) {
             foreach ($request->insumos as $item) {
                 if ($item['insumo_id'] != '') {
@@ -117,6 +95,9 @@ class CatalogoContratoController extends AppBaseController
                     $contrato_insumo->valor_maximo = money_to_float($item['valor_maximo']);
                     $contrato_insumo->pedido_minimo = $item['pedido_minimo'];
                     $contrato_insumo->pedido_multiplo_de = $item['pedido_multiplo_de'];
+                    $contrato_insumo->qtd_maxima = $item['qtd_maxima'];
+                    $contrato_insumo->periodo_inicio = $item['periodo_inicio'];
+                    $contrato_insumo->periodo_termino = $item['periodo_termino'];
                     $catalogoContrato->contratoInsumos()->save($contrato_insumo);
                 }
             }
@@ -190,30 +171,7 @@ class CatalogoContratoController extends AppBaseController
             return redirect(route('catalogo_contratos.index'));
         }
 
-        $input = $request->all();
-
-        if($input['periodo_termino'] < $input['periodo_inicio']){
-            Flash::error('O período de término não pode ser menor que o período de início.');
-            return redirect('/catalogo-acordos/'.$id.'/edit')->withInput($input);
-        }
-
-        if(money_to_float($input['valor_maximo']) < money_to_float($input['valor_minimo'])){
-            Flash::error('O valor máximo não pode ser menor que o valor mínimo.');
-            return redirect('/catalogo-acordos/'.$id.'/edit')->withInput($input);
-        }
-
-        if(money_to_float($input['qtd_maxima']) < money_to_float($input['qtd_minima'])){
-            Flash::error('O quantidade máxima não pode ser menor que a quantidade mínima.');
-            return redirect('/catalogo-acordos/'.$id.'/edit')->withInput($input);
-        }
-
-        if($request->arquivo){
-            $destinationPath = CodeRepository::saveFile($request->arquivo, 'contratos/' . $catalogoContrato->id);
-            $catalogoContrato->arquivo = Storage::url($destinationPath);
-            $catalogoContrato->save();
-        }
-
-        $catalogoContrato = $this->catalogoContratoRepository->update($request->except('arquivo', 'fornecedor_cod'), $id);
+        $catalogoContrato = $this->catalogoContratoRepository->update($request->except('fornecedor_cod'), $id);
 
         $fornecedor_mega = MegaFornecedor::select(['AGN_ST_CGC'])
             ->where('agn_in_codigo', $request->fornecedor_cod)
@@ -244,6 +202,9 @@ class CatalogoContratoController extends AppBaseController
                         $contrato_insumo->valor_maximo = money_to_float($item['valor_maximo']);
                         $contrato_insumo->pedido_minimo = $item['pedido_minimo'];
                         $contrato_insumo->pedido_multiplo_de = $item['pedido_multiplo_de'];
+                        $contrato_insumo->qtd_maxima = $item['qtd_maxima'];
+                        $contrato_insumo->periodo_inicio = $item['periodo_inicio'];
+                        $contrato_insumo->periodo_termino = $item['periodo_termino'];
                         $catalogoContrato->contratoInsumos()->save($contrato_insumo);
                     }
                 } else {
@@ -256,6 +217,9 @@ class CatalogoContratoController extends AppBaseController
                             $contrato_insumo->valor_maximo = $item['valor_maximo'];
                             $contrato_insumo->pedido_minimo = $item['pedido_minimo'];
                             $contrato_insumo->pedido_multiplo_de = $item['pedido_multiplo_de'];
+                            $contrato_insumo->qtd_maxima = $item['qtd_maxima'];
+                            $contrato_insumo->periodo_inicio = $item['periodo_inicio'];
+                            $contrato_insumo->periodo_termino = $item['periodo_termino'];
                             $contrato_insumo->update();
                         }
                     }
