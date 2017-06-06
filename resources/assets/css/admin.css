@@ -442,6 +442,7 @@ h6 {
 
 .sweet-alert button.confirm {
   background-color: #7ed321 !important;
+  box-shadow: none !important;
 }
 
 .sweet-alert button.confirm:active {
