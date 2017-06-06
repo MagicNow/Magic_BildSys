@@ -320,6 +320,7 @@
                                 @if($item->servico)
                                     <a href="/ordens-de-compra/detalhes-servicos/{{$ordemDeCompra->obra_id}}/{{$item->servico->id}}" style="cursor:pointer;">
                                         <i class="fa fa-circle {{ (money_to_float($item->valor_servico) - money_to_float($item->valor_realizado)) - money_to_float($item->valor_servico) < 0 ? 'red': 'green'  }}" aria-hidden="true"></i>
+                                        <button class="btn btn-warning btn-sm btn-flat">Análise</button>
                                     </a>
                                 @else
                                     <i class="fa fa-circle {{ (money_to_float($item->valor_servico) - money_to_float($item->valor_realizado)) - money_to_float($item->valor_servico) < 0 ? 'red': 'green'  }}" aria-hidden="true"></i>
@@ -395,7 +396,7 @@
                                             <thead>
                                             <tr>
                                                 <th class="text-center">Unidade Medida</th>
-                                                <th class="text-center">Qntd previsto no orçamento</th>
+                                                <th class="text-center">Qntd prevista no orçamento</th>
                                                 <th class="text-center">Valor previsto no orçamento</th>
                                                 <th class="text-center">Qntd comprometida realizada</th>
                                                 <th class="text-center">Valor comprometido realizado</th>
@@ -405,7 +406,7 @@
                                             </thead>
                                             <tbody>
                                             <tr>
-                                                <td class="text-center">{{ $item->unidade_sigla . ' - '.$item->unidade->descricao }}</td>
+                                                <td class="text-center">{{ $item->unidade_sigla }}</td>
                                                 <td class="text-center">{{ number_format($item->qtd_inicial, 2, ',','.') }}</td>
                                                 <td class="text-center"><small class="pull-left">R$</small> {{ number_format($item->preco_inicial, 2, ',','.') }}</td>
                                                 <td class="text-center">
