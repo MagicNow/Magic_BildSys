@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
+
 if (! function_exists('is_money')) {
     /**
      * Validate money in US and other patterns without the prefix or sufix.
@@ -58,3 +61,10 @@ if(! function_exists('float_to_money')) {
     }
 }
 
+Collection::macro('dd', function () {
+    dd($this);
+});
+
+EloquentCollection::macro('dd', function () {
+    dd($this);
+});
