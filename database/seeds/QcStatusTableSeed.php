@@ -12,7 +12,8 @@ class QcStatusTableSeed extends Seeder
      */
     public function run()
     {
-        DB::table('qc_status')->delete();
+        Schema::disableForeignKeyConstraints();
+        DB::table('qc_status')->truncate();
 
         $items = [
             [
@@ -59,9 +60,16 @@ class QcStatusTableSeed extends Seeder
                 'id'=>9,
                 'nome' => 'Finalizada',
                 'cor' => '#66780B'
+            ],
+            [
+                'id'=>10,
+                'nome' => 'Rejeitado',
+                'cor' => '#8D2036'
             ]
         ];
 
         DB::table('qc_status')->insert($items);
+
+        Schema::enableForeignKeyConstraints();
     }
 }

@@ -42,7 +42,6 @@ class WorkflowAprovacaoRepository
             // Busca alçada atual
             $alcada_atual = self::verificaAlcadaAtual($tipo, $ids, $workflow_tipo);
 
-
             // Verifica se o usuário atual é um aprovador de alguma alçada
             $workflowUsuario = WorkflowUsuario::select(['workflow_usuarios.*', 'workflow_alcadas.ordem'])
                 ->join('workflow_alcadas', 'workflow_alcadas.id', '=', 'workflow_usuarios.workflow_alcada_id')
@@ -80,6 +79,7 @@ class WorkflowAprovacaoRepository
             $jaAprovou = $obj->aprovacoes()
                 ->where('user_id', $user->id)
                 ->where('workflow_alcada_id', $alcada_atual->id)
+                ->where('created_at', '>=', $obj->updated_at)
                 ->first();
 
 
@@ -110,7 +110,6 @@ class WorkflowAprovacaoRepository
                 ->first();
 
             $usuariosAlcadaAnterior = $workflowAlcada->workflowUsuarios()->count();
-
 
             # Busca a quantidade de aprovações q este item tem
             $aprovacoesAlcadaAnterior = $obj->aprovacoes()
