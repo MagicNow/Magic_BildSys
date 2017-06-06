@@ -198,6 +198,7 @@ class OrdemDeCompraDataTable extends DataTable
             ->columns($this->getColumns())
             ->ajax('')
             ->parameters([
+                'responsive'=> 'true',
                 'initComplete' => 'function () {
                     max = this.api().columns().count();
                     this.api().columns().every(function (col) {
@@ -237,7 +238,7 @@ class OrdemDeCompraDataTable extends DataTable
             'usuário' => ['name' => 'users.name', 'data' => 'usuario'],
             'situação' => ['name' => 'oc_status.nome', 'data' => 'situacao'],
             'status' => ['name' => 'status', 'data' => 'status', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false],
-            'action' => ['title' => 'visualizar OC', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'15%']
+            'action' => ['title' => 'visualizar OC', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'15%', 'class' => 'all']
         ];
     }
 

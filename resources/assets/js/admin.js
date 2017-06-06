@@ -82,6 +82,13 @@ $(function() {
 
   $document.on('draw.dt', function() {
     $('[data-toggle="popover"]').popover(popoverOptions);
+    if(isMobile()) {
+      $('.dataTable td > form .btn-group')
+        .removeClass('btn-group')
+        .find('.btn')
+        .removeClass('btn-xs')
+        .addClass('btn-sm');
+    }
   });
 
   $('.htmleditor').summernote({
@@ -296,4 +303,3 @@ jQuery(function($){
   };
   $.datepicker.setDefaults($.datepicker.regional['pt-BR']);
 });
-
