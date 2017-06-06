@@ -122,7 +122,7 @@ class ContratoController extends AppBaseController
             ->all();
 
         $pendencias = ContratoItemModificacao::whereHas('item', function($itens) use ($id) {
-            return $itens->where('contrato_id', $id)->where('aprovado', false);
+            return $itens->where('contrato_id', $id)->where('pendente', true);
         })
         ->where('contrato_status_id', ContratoStatus::EM_APROVACAO)
         ->get()
