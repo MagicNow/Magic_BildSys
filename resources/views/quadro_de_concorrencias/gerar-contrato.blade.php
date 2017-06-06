@@ -75,86 +75,88 @@
                     </div>
                 @endif
                 <div class="col-md-7">
-                    @foreach($contratoItens[$qcFornecedor->id] as $obraId => $itens)
-                        @if(!isset($contratosExistentes[$qcFornecedor->id][$obraId]))
-                        <h4>Contrato Obra {{ \App\Models\Obra::find($obraId)->nome }}</h4>
-                        <table class="table table-striped table-hovered table-bordered table-condensed">
-                        <thead>
-                            <tr>
-                                <th width="60%">Insumo</th>
-                                <th width="20%">Qtd.</th>
-                                <th width="20%">Valor</th>
-                            </tr>
-                        </thead>
+                    @if(count($contratoItens))
+                        @foreach($contratoItens[$qcFornecedor->id] as $obraId => $itens)
+                            @if(!isset($contratosExistentes[$qcFornecedor->id][$obraId]))
+                            <h4>Contrato Obra {{ \App\Models\Obra::find($obraId)->nome }}</h4>
+                            <table class="table table-striped table-hovered table-bordered table-condensed">
+                            <thead>
+                                <tr>
+                                    <th width="60%">Insumo</th>
+                                    <th width="20%">Qtd.</th>
+                                    <th width="20%">Valor</th>
+                                </tr>
+                            </thead>
 
-                        <tbody>
-                            <?php
-                                $frete = 0;
-                                $tem_material = false;
-                            ?>
-                            @foreach($itens as $item)
+                            <tbody>
+                                <?php
+                                    $frete = 0;
+                                    $tem_material = false;
+                                ?>
+                                @foreach($itens as $item)
 
-                                @if(!isset($item['frete']))
-                                    <?php
-                                    if($item['tipo']=='MATERIAL'){
-                                        $tem_material = true;
-                                    }
-                                    ?>
-                                    <tr>
-                                        <td class="text-left">
-                                            <label class="label label-{{ $item['tipo']=='SERVIÇO'?'info':'primary' }}">{{ $item['tipo'] }}</label>
-                                            {{ $item['insumo']->nome }}</td>
-                                        <td class="text-right">
-                                            {{ number_format($item['qtd'],2,',','.') . ' '. $item['insumo']->unidade_sigla }}
-                                        </td>
-                                        <td class="text-right">
-                                            R$ {{ number_format($item['valor_total'],2,',','.') }}
-                                        </td>
-                                    </tr>
+                                    @if(!isset($item['frete']))
+                                        <?php
+                                        if($item['tipo']=='MATERIAL'){
+                                            $tem_material = true;
+                                        }
+                                        ?>
+                                        <tr>
+                                            <td class="text-left">
+                                                <label class="label label-{{ $item['tipo']=='SERVIÇO'?'info':'primary' }}">{{ $item['tipo'] }}</label>
+                                                {{ $item['insumo']->nome }}</td>
+                                            <td class="text-right">
+                                                {{ number_format($item['qtd'],2,',','.') . ' '. $item['insumo']->unidade_sigla }}
+                                            </td>
+                                            <td class="text-right">
+                                                R$ {{ number_format($item['valor_total'],2,',','.') }}
+                                            </td>
+                                        </tr>
 
-                                @else
-                                    <?php $frete = $item['valor_total']; ?>
+                                    @else
+                                        <?php $frete = $item['valor_total']; ?>
+                                    @endif
+
+                                @endforeach
+                                @if($quadroDeConcorrencia->hasMaterial() && $qcFornecedor->tipo_frete != 'CIF')
+                                <tr>
+                                    <td colspan="2" class="text-left">Frete</td>
+                                    <td class="text-right">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">R$</span>
+                                            <input type="text"
+                                                   class="form-control text-right money"
+                                                   value="{{ number_format($frete,2,',','.') }}"
+                                                   onkeyup="alteraValorTotal('{{ $qcFornecedor->id.'_'. $obraId }}', this.value);"
+                                                   name="valor_frete[{{$obraId}}]">
+                                        </div>
+                                    </td>
+                                </tr>
                                 @endif
-
-                            @endforeach
-                            @if($quadroDeConcorrencia->hasMaterial() && $qcFornecedor->tipo_frete != 'CIF')
-                            <tr>
-                                <td colspan="2" class="text-left">Frete</td>
-                                <td class="text-right">
-                                    <div class="input-group">
-                                        <span class="input-group-addon">R$</span>
-                                        <input type="text"
-                                               class="form-control text-right money"
-                                               value="{{ number_format($frete,2,',','.') }}"
-                                               onkeyup="alteraValorTotal('{{ $qcFornecedor->id.'_'. $obraId }}', this.value);"
-                                               name="valor_frete[{{$obraId}}]">
-                                    </div>
-                                </td>
-                            </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr class="warning">
+                                    <td colspan="2" class="text-right">TOTAL</td>
+                                    <input type="hidden" id="total_contrato_{{ $qcFornecedor->id.'_'. $obraId }}"
+                                           value="{{ $total_contrato[$qcFornecedor->id][$obraId] }}">
+                                    <td class="text-right" id="sum_total_contrato_{{ $qcFornecedor->id.'_'. $obraId }}">
+                                        R$ {{ number_format($total_contrato[$qcFornecedor->id][$obraId]+$frete,2,',','.') }}
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                            @else
+                                <div class="alert alert-success alert-dismissible">
+                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                    <h4><i class="icon fa fa-check"></i>
+                                        Contrato Obra {{ \App\Models\Obra::find($obraId)->nome }} já gerado!</h4>
+                                    <a href="{{ route('contratos.show', $contratosExistentes[$qcFornecedor->id][$obraId]->id) }}" class="btn btn-link btn-flat btn-block">
+                                        Exibir contrato
+                                    </a>
+                                </div>
                             @endif
-                        </tbody>
-                        <tfoot>
-                            <tr class="warning">
-                                <td colspan="2" class="text-right">TOTAL</td>
-                                <input type="hidden" id="total_contrato_{{ $qcFornecedor->id.'_'. $obraId }}"
-                                       value="{{ $total_contrato[$qcFornecedor->id][$obraId] }}">
-                                <td class="text-right" id="sum_total_contrato_{{ $qcFornecedor->id.'_'. $obraId }}">
-                                    R$ {{ number_format($total_contrato[$qcFornecedor->id][$obraId]+$frete,2,',','.') }}
-                                </td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                        @else
-                            <div class="alert alert-success alert-dismissible">
-                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                                <h4><i class="icon fa fa-check"></i>
-                                    Contrato Obra {{ \App\Models\Obra::find($obraId)->nome }} já gerado!</h4>
-                                <a href="{{ route('contratos.show', $contratosExistentes[$qcFornecedor->id][$obraId]->id) }}" class="btn btn-link btn-flat btn-block">
-                                    Exibir contrato
-                                </a>
-                            </div>
-                        @endif
-                    @endforeach
+                        @endforeach
+                    @endif
                 </div>
                 <div class="col-md-5" id="blocoCamposExtras{{ $qcFornecedor->id }}" style="display: none">
                     <h4>Campos Extras</h4>
