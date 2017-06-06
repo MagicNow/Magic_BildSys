@@ -185,8 +185,12 @@
                                     @shield('dashboard.access')
                                         <div class="pull-left">
                                             <a href="/admin" class="btn btn-warning btn-flat">Administrativo</a>
+                                            &nbsp;
                                         </div>
                                     @endshield
+                                    <div class="pull-left">
+                                        <a href="/perfil" class="btn btn-info btn-flat">Perfil</a>
+                                    </div>
                                     <div class="pull-right">
                                         <a href="{!! url('/logout') !!}" class="btn btn-danger btn-flat"
                                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">

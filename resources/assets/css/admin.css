@@ -626,7 +626,7 @@ table.dataTable.dtr-inline.collapsed> tbody> tr.parent> th:first-child:before {
   margin: 0;
 }
 .content-header .content-header-buttons {
-  text-align: left;
+  text-align: right;
 }
 
 @media only screen and (max-width: 768px) {

@@ -397,6 +397,10 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
 ##### SITE #####
 $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($router) {
 
+    // Perfil
+    $router->get('/perfil', 'PerfilController@index');
+    $router->post('/perfil', 'PerfilController@save');
+
     # Home
     $router->get('/', 'HomeController@index');
     $router->get('/home', 'HomeController@index');
@@ -731,7 +735,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
                 'uses' => 'ContratoController@distratarItem'
             ]
         )->middleware('needsPermission:contratos.distratar');
-        
+
         $router->get(
             '/{contratos}/editar',
             ['as' => 'contratos.edit', 'uses' => 'ContratoController@edit']
