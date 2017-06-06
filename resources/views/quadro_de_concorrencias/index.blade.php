@@ -59,11 +59,25 @@
                                                  :bordercolor="{{ $json_colors }}"
                                                  :option="myoption"
                                                  :height="250"
-                                                 :datalabel="'Q.C. por status'"
-                                    ></chartjs-bar>
+                                                 :datalabel="'Q.C. por status'">
+                                    </chartjs-bar>
                                 </div>
                             </div>
                         </div>
+                        {{--<div class="col-md-4">--}}
+                            {{--<div class="element-grafico">--}}
+                                {{--<div class="element-head">FAROL</div>--}}
+                                {{--<div class="element-body">--}}
+                                    {{--<chartjs-pie :labels="labelsFarol"--}}
+                                                 {{--:datasets="datasetsFarol"--}}
+                                                 {{--:scalesdisplay="false"--}}
+                                                 {{--:option="myoption2"--}}
+                                                 {{--:height="250">--}}
+
+                                    {{--</chartjs-pie>--}}
+                                {{--</div>--}}
+                            {{--</div>--}}
+                        {{--</div>--}}
                     </div>
                 </div>
             </div>
@@ -114,6 +128,23 @@
                         }
                     }
                 }
+                {{--labelsFarol: ["Aprovados","Em concorrência", "Concorrência Finalizada"],--}}
+                {{--myoption2: {--}}
+                    {{--onClick: function (event, legendItem) {--}}
+                        {{--window.location.href = "{{url('ordens-de-compra?status_oc=')}}"+legendItem[0]._index;--}}
+                    {{--}--}}
+                {{--},--}}
+                {{--datasetsFarol:[{--}}
+                    {{--data: [10, 20, 30],--}}
+                    {{--backgroundColor: [--}}
+                        {{--"#7ed321",--}}
+                        {{--"#eb0000"--}}
+                    {{--],--}}
+                    {{--hoverBackgroundColor: [--}}
+                        {{--"#7ed321",--}}
+                        {{--"#eb0000"--}}
+                    {{--]--}}
+                {{--}]--}}
             }
         });
     @endshield
