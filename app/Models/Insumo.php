@@ -120,4 +120,8 @@ class Insumo extends Model
     {
         return $this->belongsTo(InsumoGrupo::class, 'insumo_grupo_id', 'id');
     }
+    
+    public function contratoItem(){
+        return $this->hasMany(ContratoItem::class,'insumo_id');
+    }
 }

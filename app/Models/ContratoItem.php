@@ -39,7 +39,9 @@ class ContratoItem extends Model
         'insumo_id' => 'integer',
         'qc_item_id' => 'integer',
         'pendente' => 'boolean',
-        'aprovado' => 'boolean'
+        'aprovado' => 'boolean',
+        'valor_unitario' => 'float',
+        'valor_total' => 'float',
     ];
 
     /**
