@@ -42,19 +42,28 @@ class InsumoPorFornecedorDataTable extends DataTable
         $collection = $this->quadro->itens->map(function($item) {
             return [
                 'insumo' => $item->insumo->nome,
+                'qtd' => '',
                 'insumo_id' => $item->insumo->id,
-                'qc_item_id' => $item->id
+                'qc_item_id' => $item->id,
+                'valor_unitario_calculo' => $item->ordemDeCompraItens->sortBy('valor_unitario')->first() ? $item->ordemDeCompraItens->sortBy('valor_unitario')->first()->valor_unitario : 0,
+                'valor unitário oi' => $item->ordemDeCompraItens->sortBy('valor_unitario')->first() ? float_to_money(floatval($item->ordemDeCompraItens->sortBy('valor_unitario')->first()->valor_unitario)) : 0,
+                'valor total oi' => ''
             ];
         });
 
         return $collection->map(function($insumo) {
             $this->qcFornecedores->each(function($qcFornecedor) use (&$insumo) {
-                $valor = $qcFornecedor->itens
+                 $item_fornecedor = $qcFornecedor->itens
                     ->where('qc_item_id', $insumo['qc_item_id'])
-                    ->first()
-                    ->valor_total ?: 0;
+                    ->first();
+
+                $valor = $item_fornecedor ? $item_fornecedor->valor_total : 0;
+                $qtd_comprada = $item_fornecedor ? $item_fornecedor->qtd : 0;
+                $valor_comprado_oi = $insumo['valor_unitario_calculo'] * $qtd_comprada;
 
                 $insumo[str_replace('.', '*dot*',$qcFornecedor->fornecedor->nome . '||' . $qcFornecedor->id)] = float_to_money($valor);
+                $insumo['qtd'] =  number_format($qtd_comprada, 2, ',', '.');
+                $insumo['valor total oi'] = float_to_money($valor_comprado_oi);
             });
 
             return $insumo;
@@ -66,12 +75,12 @@ class InsumoPorFornecedorDataTable extends DataTable
         $x = array_filter(
             array_keys($this->query()->first()),
             function($item) {
-                return !in_array($item, ['qc_item_id', 'insumo_id']);
+                return !in_array($item, ['qc_item_id', 'insumo_id', 'valor_unitario_calculo']);
             }
         );
 
         return array_reduce($x, function($columns, $column) {
-            if($column != 'insumo') {
+            if($column != 'insumo' && $column != 'valor unitário oi' && $column != 'qtd' && $column != 'valor total oi') {
                 list($fornecedor, $id) = explode('||', $column);
 
                 $title = $fornecedor . '
