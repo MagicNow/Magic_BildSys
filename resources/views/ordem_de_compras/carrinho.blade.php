@@ -23,12 +23,15 @@
                     </h3>
                 </div>
 
-                <div class="col-md-5 text-right">
+                <div class="col-md-6 text-right">
                     <a href="/compras/obrasInsumos?obra_id={{$obra_id}}" class="btn btn-default btn-lg btn-flat">
                         Esqueci um item
                     </a>
                     <button type="button" onclick="fechaOC();" class="btn btn-success btn-lg btn-flat">
                         Fechar OC
+                    </button>
+                    <button type="button" onclick="limparCarrinho();" class="btn btn-danger btn-lg btn-flat">
+                        Limpar carrinho
                     </button>
                 </div>
             </div>
@@ -146,11 +149,11 @@
                                 </span>
                                 <span class="col-md-2 col-sm-2 col-xs-12 text-center borda-direita" align="center" style="width: 11.5%;">
                                     <strong>Preço unitário:</strong>
-                                    <p class="form-control money" style="border-color:#ffffff;background-color:#ffffff;text-align:center;"> R$ {{ $item->valor_unitario }}</p>
+                                    <p class="form-control money" style="border-color:#ffffff;background-color:#ffffff;text-align:center;">{{ float_to_money($item->valor_unitario) }}</p>
                                 </span>
                                 <span class="col-md-2 col-sm-2 col-xs-12 text-center borda-direita" align="center" style="width: 11.5%;">
                                     <strong>Total:</strong>
-                                    <p class="form-control money" style="border-color:#ffffff;background-color:#ffffff;text-align:center;"> R$ {{ $item->valor_total }}</p>
+                                    <p class="form-control money" style="border-color:#ffffff;background-color:#ffffff;text-align:center;">{{  float_to_money($item->valor_total) }}</p>
                                 </span>
                                 <span class="col-md-2 col-sm-2 col-xs-5 text-center borda-direita">
                                     <div id="bloco_indicar_contrato{{ $item->id }}">
@@ -606,6 +609,34 @@
                     $('#item'+item_id).remove();
                 });
 
+            });
+        }
+
+        function limparCarrinho() {
+            swal({
+                title: "Remover todos os itens do carrinho?",
+                text: "",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#7ed321",
+                confirmButtonText: "Sim, remover.",
+                cancelButtonText: "Cancelar",
+                closeOnConfirm: false
+            },
+            function() {
+                $.ajax({
+                    url: '/ordens-de-compra/carrinho/limpar-carrinho/{{$ordemDeCompra->id}}'
+                }).done(function () {
+                    swal({
+                        title: "Removido!",
+                        text: "Todos os itens foram removidos da ordem de compra!",
+                        type: "success",
+                        timer: 2000,
+                        showConfirmButton: false
+                    }, function () {
+                        document.location = '{{ url('/compras/obrasInsumos?obra_id='.$obra_id) }}';
+                    });
+                });
             });
         }
     </script>

@@ -1615,5 +1615,13 @@ class OrdemDeCompraController extends AppBaseController
            ->orderBy('nome', 'ASC')
            ->paginate();
    }
+    
+    
+    public function limparCarrinho($ordem_de_compra_id){
+        $ordem_de_compra = OrdemDeCompra::find($ordem_de_compra_id);
+        $ordem_de_compra->itens()->delete();
+
+        return response()->json(['success'=>true]);
+    }
 }
 
