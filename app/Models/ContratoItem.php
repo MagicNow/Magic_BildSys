@@ -24,7 +24,8 @@ class ContratoItem extends Model
         'qtd',
         'valor_unitario',
         'valor_total',
-        'aprovado'
+        'aprovado',
+        'pendente',
     ];
 
     /**
@@ -37,8 +38,10 @@ class ContratoItem extends Model
         'contrato_id' => 'integer',
         'insumo_id' => 'integer',
         'qc_item_id' => 'integer',
+        'pendente' => 'boolean',
+        'aprovado' => 'boolean',
         'valor_unitario' => 'float',
-        'valor_total' => 'float'
+        'valor_total' => 'float',
     ];
 
     /**

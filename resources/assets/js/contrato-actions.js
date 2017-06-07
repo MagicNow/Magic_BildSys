@@ -78,7 +78,7 @@ var Reapropriar = (function() {
   }
 
   Reapropriar.prototype.addAll = function(event) {
-    this.qtd.value = floatToMoney(this.addAllBtn.dataset.qtd, '');
+    this.qtd.value = floatToMoney(parseFloat(this.addAllBtn.dataset.qtd), '');
   };
 
   Reapropriar.prototype.getView = function(id) {
@@ -214,9 +214,9 @@ var Reajuste = (function() {
     var button = event.currentTarget;
     this.id = button.dataset.itemId;
     this.qtd.value = '';
-    this.valor.value = button.dataset.itemValor;
     this.totalDefault = parseFloat(button.dataset.itemQtd);
     this.valorDefault = parseFloat(button.dataset.itemValor);
+    this.valor.value = floatToMoney(parseFloat(button.dataset.itemValor), '');
     this.total.value = floatToMoney(parseFloat(button.dataset.itemQtd), '');
 
     this.valor.dispatchEvent(new Event('input'));
@@ -339,8 +339,8 @@ var Distrato = (function() {
     var button = event.currentTarget;
 
     this.id = button.dataset.itemId;
-    this.qtd.value = button.dataset.itemQtd;
     this.defaultQtd = parseFloat(button.dataset.itemQtd);
+    this.qtd.value = floatToMoney(this.defaultQtd, '');
 
     this.qtd.dispatchEvent(new Event('input'));
 

@@ -1,4 +1,4 @@
-@if($item->aprovado)
+@if(!$item->pendente && $item->aprovado)
     @shield('contratos.reapropriar')
         @if($item->qcItem)
             <button class="btn btn-default btn-xs btn-flat js-reapropriar"
@@ -23,7 +23,19 @@
             Reajuste
         </button>
     @endshield
-@elseif($reprovado)
+@elseif($item->pendente && $item->aprovado)
+    <button class="btn btn-default btn-xs btn-flat"
+        data-toggle="tooltip"
+        title="Item com modificação pendente">
+        <i class="fa fa-fw fa-hourglass-half"></i>
+    </button>
+@elseif($item->pendente && !$item->aprovado)
+    <button class="btn btn-default btn-xs btn-flat"
+        data-toggle="tooltip"
+        title="Item em aprovação para ser adicionado ao Contrato">
+        <i class="fa fa-fw fa-hourglass-half"></i>
+    </button>
+@else
     <button class="btn btn-danger btn-xs btn-flat js-editar"
         data-toggle="tooltip"
         data-html="true"
@@ -37,12 +49,6 @@
             novamente.
         </div>
         ">
-        <i class="fa fa-fw fa-hourglass-half"></i>
-    </button>
-@else
-    <button class="btn btn-default btn-xs btn-flat"
-        data-toggle="tooltip"
-        title="Item com modificação pendente">
         <i class="fa fa-fw fa-hourglass-half"></i>
     </button>
 @endif

@@ -64,8 +64,33 @@
                                                  :bordercolor="{{ $json_colors }}"
                                                  :option="myoption"
                                                  :height="250"
-                                                 :datalabel="'Q.C. por status'"
-                                    ></chartjs-bar>
+                                                 :datalabel="'Q.C. por status'">
+                                    </chartjs-bar>
+                                </div>
+                            </div>
+                        </div>
+                        @php
+                        $json_data_usuario = $json_labels_usuario = [];
+                        foreach ($qcs_por_usuario as $qcs_usuario){
+                        $json_data_usuario[] = $qcs_usuario->qtd;
+                        $json_labels_usuario[] = $qcs_usuario->name;
+                        }
+                        $json_data_usuario = json_encode($json_data_usuario);
+                        $json_labels_usuario = json_encode($json_labels_usuario);
+                        @endphp
+{{--                        {{dd($json_labels_usuario)}}--}}
+                        {{--$qcs_por_usuario--}}
+                        <div class="col-md-4">
+                            <div class="element-grafico">
+                                <div class="element-head">Por Usuários</div>
+                                <div class="element-body">
+                                    <chartjs-pie :labels="labelsFarol"
+                                                 :datasets="datasetsFarol"
+                                                 :scalesdisplay="false"
+                                                 :option="myoption2"
+                                                 :height="250">
+
+                                    </chartjs-pie>
                                 </div>
                             </div>
                         </div>
@@ -87,7 +112,9 @@
     @parent
     <script>
     @shield('quadroDeConcorrencias.view')
-        const app = new Vue({
+        var data = {!! $json_data_usuario !!};
+        var labels = {!! $json_labels_usuario !!};
+    const app = new Vue({
             el: '#app',
             data:{
                 myboolean : false,
@@ -118,8 +145,19 @@
                             console.log(legendItem);
                         }
                     }
-                }
+                },
+                labelsFarol: labels,
+                myoption2: {
+                    onClick: function (event, legendItem) {
+                        {{--window.location.href = "{{url('ordens-de-compra?status_oc=')}}"+legendItem[0]._index;--}}
+                    }
+                },
+                datasetsFarol:[{
+                    data: data,
+                    backgroundColor: _.times(labels.length, _.partial(generateFlatColor, undefined))
+                }]
             }
+
         });
     @endshield
     </script>

@@ -60,8 +60,7 @@ class ContratoController extends AppBaseController
         FornecedoresRepository $fornecedorRepository,
         ObraRepository $obraRepository,
         ContratoStatusRepository $contratoStatusRepository
-    )
-    {
+    ) {
 
         $status = $contratoStatusRepository
             ->orderBy('nome', 'ASC')
@@ -129,8 +128,8 @@ class ContratoController extends AppBaseController
             ->prepend('Motivos...', '')
             ->all();
 
-        $pendencias = ContratoItemModificacao::whereHas('item', function ($itens) use ($id) {
-            return $itens->where('contrato_id', $id)->where('aprovado', false);
+        $pendencias = ContratoItemModificacao::whereHas('item', function($itens) use ($id) {
+            return $itens->where('contrato_id', $id)->where('pendente', true);
         })
             ->where('contrato_status_id', ContratoStatus::EM_APROVACAO)
             ->get()
