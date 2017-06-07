@@ -297,19 +297,19 @@ class ContratoRepository extends BaseRepository
         }
 
         $template = $contrato->contratoTemplate;
-        
+
         $templateRenderizado = $template->template;
 
         // Tenta aplicar variáveis de Obra
         foreach (Obra::$campos as $campo){
             $templateRenderizado = str_replace('['.strtoupper($campo).'_OBRA]', $contrato->obra->$campo,$templateRenderizado );
         }
-        
+
         // Tenta aplicar variáveis de Fornecedor
         foreach (Fornecedor::$campos as $campo){
             $templateRenderizado = str_replace('['.strtoupper($campo).'_FORNECEDOR]', $contrato->fornecedor->$campo,$templateRenderizado );
         }
-        
+
         // Tenta aplicar variáveis de Contrato
 
         $tabela_itens = '<table>
@@ -319,7 +319,7 @@ class ContratoRepository extends BaseRepository
                     <th width="10%" align="right">Qtd.</th>
                     <th width="20%" align="right">Valor Unitário</th>
                     <th width="20%" align="right">Valor Total</th>
-                </tr>     
+                </tr>
             </thead>
             <tbody>';
         foreach ($contrato->itens as $item){
@@ -361,17 +361,17 @@ class ContratoRepository extends BaseRepository
         $contrato = Contrato::find($id);
         if(!$contrato){
             return [
-                'success'=>false, 
+                'success'=>false,
                 'messages'=>[
                     'O contrato não foi encontrado!'
                 ]
             ];
         }
-        
+
         $arquivo = self::geraImpressao($id);
         $fornecedor = $contrato->fornecedor;
         $mensagens = [];
-        
+
         if ($user = $fornecedor->user) {
             //se tiver já envia uma notificação
             $user->notify(new NotificaFornecedorContratoServico($contrato, $arquivo));

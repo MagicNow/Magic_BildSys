@@ -96,4 +96,13 @@ class QuadroDeConcorrenciaItem extends Model
             return $carry;
         }, "");
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function contratoItens()
+    {
+        return $this->hasMany(ContratoItem::class, 'qc_item_id');
+    }
+
 }
