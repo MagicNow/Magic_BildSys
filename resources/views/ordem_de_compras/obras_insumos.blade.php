@@ -208,6 +208,33 @@
         }
 
         function totalCompra(id, obra_id, grupo_id, subgrupo1_id, subgrupo2_id, subgrupo3_id, servico_id, value){
+            if(value == 1){
+                swal({
+                    title: "Motivo",
+                    text: "Informe o motivo de não finalizar a obra:",
+                    type: "input",
+                    showCancelButton: true,
+                    closeOnConfirm: false,
+                    animation: "slide-from-top"
+                },
+                function(inputValue){
+                    if (inputValue === false) return false;
+
+                    if (inputValue === "") {
+                        swal.showInputError("Informe o motivo!");
+                        return false
+                    }else{
+                        ajaxTotalParcial(id, obra_id, grupo_id, subgrupo1_id, subgrupo2_id, subgrupo3_id, servico_id, value, inputValue);
+                        $('.cancel').click();
+                    }
+                });
+            } else {
+                ajaxTotalParcial(id, obra_id, grupo_id, subgrupo1_id, subgrupo2_id, subgrupo3_id, servico_id, value, null);
+            }
+            window.LaravelDataTables["dataTableBuilder"].draw(false);
+        }
+
+        function ajaxTotalParcial(id, obra_id, grupo_id, subgrupo1_id, subgrupo2_id, subgrupo3_id, servico_id, value, inputValue){
             $.ajax({
                 url: "{{url('/compras/'.(isset($obra) ? $obra->id : $planejamento->id).'/totalParcial')}}",
                 data: {
@@ -219,6 +246,7 @@
                     'subgrupo3_id' : subgrupo3_id,
                     'servico_id' : servico_id,
                     'total' : value,
+                    'motivo_nao_finaliza_obra' : inputValue,
                     '_token' : $('meta[name="csrf-token"]').attr('content')
                 },
                 type: "POST"

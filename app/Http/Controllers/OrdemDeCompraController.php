@@ -1385,8 +1385,10 @@ class OrdemDeCompraController extends AppBaseController
 
         if ($ordem_item->total == 1) {
             $ordem_item->total = 0;
+            $ordem_item->motivo_nao_finaliza_obra = $request->motivo_nao_finaliza_obra;
         } else {
             $ordem_item->total = 1;
+            $ordem_item->motivo_nao_finaliza_obra = null;
         }
         $ordem_item->save();
 
