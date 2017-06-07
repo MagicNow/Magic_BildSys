@@ -19836,7 +19836,7 @@ table.dataTable.dtr-inline.collapsed> tbody> tr.parent> th:first-child:before {
   margin: 0;
 }
 .content-header .content-header-buttons {
-  text-align: left;
+  text-align: right;
 }
 
 @media only screen and (max-width: 768px) {
@@ -19874,4 +19874,16 @@ table.dataTable.dtr-inline.collapsed> tbody> tr.parent> th:first-child:before {
   width: auto!important;
   left: 240px!important;
   top: 10px!important;
+}
+
+.select2-results__option[aria-selected=true] {
+  display: none;
+}
+
+.tooltip-inner {
+  text-align: center;
+}
+
+div.dataTables_wrapper div.dataTables_processing {
+  z-index: 100;
 }
