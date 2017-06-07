@@ -60,8 +60,7 @@ class ContratoController extends AppBaseController
         FornecedoresRepository $fornecedorRepository,
         ObraRepository $obraRepository,
         ContratoStatusRepository $contratoStatusRepository
-    )
-    {
+    ) {
 
         $status = $contratoStatusRepository
             ->orderBy('nome', 'ASC')

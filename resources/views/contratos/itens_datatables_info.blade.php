@@ -28,7 +28,7 @@
     @endif
     @if($reprovado)
         <a href="javascript:void(0)"
-            title="Contém modificação reprovada"
+            title="{{ $item->aprovado ? 'Contém modificação reprovada' : 'Item não adicionado ao contrato' }}"
             data-toggle="popover"
             data-container="body"
             data-external-content="#reprovado-table-{{ $item->id }}"
@@ -37,6 +37,46 @@
         </a>
     @endif
 </div>
+
+@if($reprovado)
+<div id="reprovado-table-{{ $item->id }}" class="hidden">
+  <table class="table table-striped table-condensed">
+    <thead>
+    <tr>
+      <th></th>
+      <th colspan="2" class="text-center">Antes</th>
+      <th colspan="2" class="text-center">Depois</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+    <tr>
+      <th>Movimentação</th>
+      <th>Quantidade</th>
+      <th>Valor</th>
+      <th>Quantidade</th>
+      <th>Valor</th>
+      <th>Data</th>
+      <th>Motivo</th>
+      <th>Justificativa</th>
+    </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{ $reprovado['tipo_modificacao'] }}</td>
+        <td>{{ float_to_money($reprovado['qtd_anterior'], '') }}</td>
+        <td>{{ float_to_money($reprovado['valor_unitario_anterior'], '') }}</td>
+        <td>{{ float_to_money($reprovado['qtd_atual'], '') }}</td>
+        <td>{{ float_to_money($reprovado['valor_unitario_atual'], '') }}</td>
+        <td>{{ $carbon->parse($reprovado['created_at'])->format('d/m/Y') }}</td>
+        <td>{{ $workflow->motivo->nome }}</td>
+        <td>{{ $workflow->justificativa }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+@endif
+
 
 @if($item->qcItem)
     <div id="reapropriacao-{{ $item->id }}" class="hidden">

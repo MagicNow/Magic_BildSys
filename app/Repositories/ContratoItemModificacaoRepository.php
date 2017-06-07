@@ -125,7 +125,7 @@ class ContratoItemModificacaoRepository extends BaseRepository
                             'user_id'                      => $modificacao->user_id,
                         ]);
 
-                        $item->update(['aprovado' => 0]);
+                        $item->update(['pendente' => 1]);
 
                         $modificacoes[] = $modificacao;
                     }

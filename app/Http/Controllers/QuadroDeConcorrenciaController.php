@@ -439,6 +439,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
                         'valor_unitario' => $vencedor->valor_unitario,
                         'valor_total'    => $vencedor->valor_total,
                         'aprovado'       => 0,
+                        'pendente'       => 1,
                         'contrato_id'    => $contrato->id,
                     ]);
 
@@ -1087,14 +1088,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
                 }
             }
 
-
-            $qcForItens = $qcFornecedor->itens()
-                ->whereHas('qcItem', function($query) {
-                    $query->doesntHave('contratoItens');
-                })
-                ->get();
-
-            foreach ($qcForItens as $item) {
+            foreach ($qcFornecedor->itens as $item) {
                 $valor_item = $item->valor_total;
                 $valor_item_unitario = $item->valor_unitario;
 
@@ -1160,7 +1154,6 @@ class QuadroDeConcorrenciaController extends AppBaseController
             }
 
 
-
             $tipo_frete = 'CIF';
             $valor_frete = 0;
             if ($quadroDeConcorrencia->hasMaterial() && $qcFornecedor->tipo_frete != 'CIF') {
@@ -1186,6 +1179,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
                 }
             }
         }
+
         foreach ($valorMaterial as $qcF => $valorMat) {
             foreach ($valorMat as $obraId => $vl) {
                 if ($vl>0) {
@@ -1242,12 +1236,13 @@ class QuadroDeConcorrenciaController extends AppBaseController
 
         // Verifica se já foi gerado contrato para algum item
         $contratosExistentes = [];
+
         foreach ($total_contrato as $qcFornecedorId => $obraValores) {
             $qcF = QcFornecedor::find($qcFornecedorId);
             foreach ($obraValores as $obraId => $valorTotal) {
                 $contratoExistente = Contrato::where('fornecedor_id', $qcF->fornecedor_id)
                     ->where('obra_id', $obraId)
-                    ->where('contrato_status_id','!=','6')
+                    ->where('contrato_status_id', '!=', ContratoStatus::CANCELADO)
                     ->where(function($query) use ($qcF) {
                         $query->where('quadro_de_concorrencia_id', $qcF->quadro_de_concorrencia_id);
                         $query->orWhereHas('itens', function($query) use ($qcF) {
@@ -1255,6 +1250,8 @@ class QuadroDeConcorrenciaController extends AppBaseController
                         });
                     })
                     ->first();
+
+
                 if ($contratoExistente) {
                     $contratosExistentes[$qcFornecedorId][$obraId] = $contratoExistente;
                 }

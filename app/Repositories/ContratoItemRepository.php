@@ -25,6 +25,7 @@ class ContratoItemRepository extends BaseRepository
             $item->qtd = money_to_float($request['qtd']);
             $item->valor_unitario = money_to_float($request['valor']);
             $item->valor_total = $item->qtd * $item->valor_unitario;
+            $item->pendente = true;
 
             $item->save();
 
