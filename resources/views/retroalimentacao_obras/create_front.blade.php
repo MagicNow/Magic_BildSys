@@ -54,7 +54,7 @@
                         <!-- Submit Field -->
                         <div class="form-group col-sm-12">
                             {!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save') ), ['class' => 'btn btn-success pull-right flat', 'type'=>'submit']) !!}
-                            <a href="{!! url('/admin/retroalimentacaoObras') !!}" class="btn btn-default flat"><i class="fa fa-times"></i>  {{ ucfirst( trans('common.cancel') )}}</a>
+                            <a href="javascript:history.go(-1);" class="btn btn-default flat"><i class="fa fa-times"></i>  {{ ucfirst( trans('common.cancel') )}}</a>
                         </div>
 
                         {!! Form::close() !!}
