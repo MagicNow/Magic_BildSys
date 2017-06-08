@@ -74,7 +74,16 @@ class QuadroDeConcorrenciaController extends AppBaseController
             ->groupBy('qc_status.nome', 'cor')
             ->get();
 
-        return $quadroDeConcorrenciaDataTable->render('quadro_de_concorrencias.index', compact('qcs_por_status'));
+        $qcs_por_usuario = QuadroDeConcorrencia::select([
+            'users.name',
+            DB::raw('COUNT(1) qtd')
+        ])->join('users', 'users.id', 'quadro_de_concorrencias.user_id')
+            ->groupBy('users.name')
+            ->get();
+
+//        dd($qcs_por_usuario);
+
+        return $quadroDeConcorrenciaDataTable->render('quadro_de_concorrencias.index', compact('qcs_por_status','qcs_por_usuario'));
     }
 
     /**

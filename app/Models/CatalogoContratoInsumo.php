@@ -62,21 +62,7 @@ class CatalogoContratoInsumo extends Model
 
         $this->attributes['valor_unitario'] = $result;
     }
-
-    public function getValorMaximoAttribute($value)
-    {
-        return number_format($value,2,',','.');
-    }
-
-    public function setValorMaximoAttribute($value)
-    {
-        $pontos = array(",");
-        $value = str_replace('.','',$value);
-        $result = str_replace( $pontos, ".", $value);
-
-        $this->attributes['valor_maximo'] = $result;
-    }
-
+    
     public function getPedidoMinimoAttribute($value)
     {
         if(strlen($value) == 4){
@@ -111,24 +97,6 @@ class CatalogoContratoInsumo extends Model
         $result = str_replace( $pontos, ".", $value);
 
         $this->attributes['pedido_multiplo_de'] = $result;
-    }
-
-    public function getQtdMaximaAttribute($value)
-    {
-        if(strlen($value) == 4){
-            $value = '0'.$value;
-        }
-
-        return number_format($value,2,',','.');
-    }
-
-    public function setQtdMaximaAttribute($value)
-    {
-        $pontos = array(",");
-        $value = str_replace('.','',$value);
-        $result = str_replace( $pontos, ".", $value);
-
-        $this->attributes['qtd_maxima'] = $result;
     }
     
 

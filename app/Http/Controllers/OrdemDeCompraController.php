@@ -1402,8 +1402,10 @@ class OrdemDeCompraController extends AppBaseController
 
         if ($ordem_item->total == 1) {
             $ordem_item->total = 0;
+            $ordem_item->motivo_nao_finaliza_obra = $request->motivo_nao_finaliza_obra;
         } else {
             $ordem_item->total = 1;
+            $ordem_item->motivo_nao_finaliza_obra = null;
         }
         $ordem_item->save();
 
@@ -1635,5 +1637,13 @@ class OrdemDeCompraController extends AppBaseController
         ->where('nome','like', '%'.$request->q.'%')
         ->orderBy('nome', 'ASC')
         ->paginate();
+   }
+
+
+    public function limparCarrinho($ordem_de_compra_id){
+        $ordem_de_compra = OrdemDeCompra::find($ordem_de_compra_id);
+        $ordem_de_compra->itens()->delete();
+
+        return response()->json(['success'=>true]);
     }
 }

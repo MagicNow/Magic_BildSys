@@ -2,6 +2,7 @@
 
 namespace App\DataTables;
 
+use App\Models\Orcamento;
 use App\Models\OrdemDeCompraItem;
 use Form;
 use Illuminate\Support\Facades\DB;
@@ -34,7 +35,11 @@ class DetalhesServicosDataTable extends DataTable
                 return '<small class="pull-left">R$</small>'.number_format( doubleval($obj->valor_oc), 2, ',','.');
             })
             ->editColumn('saldo_disponivel', function($obj){
-                return '<small class="pull-left">R$</small>'.number_format( doubleval($obj->saldo_disponivel), 2, ',','.');
+                if($obj->saldo_disponivel){
+                    return '<small class="pull-left">R$</small>'.number_format( doubleval($obj->saldo_disponivel), 2, ',','.');
+                }else {
+                    return '<small class="pull-left">R$</small>'.number_format( doubleval($obj->saldo_orcamento), 2, ',','.');
+                }
             })
             ->filterColumn('descricao',function($query, $keyword){
                 $query->where(DB::raw("CONCAT(SUBSTRING_INDEX(orcamentos.codigo_insumo, '.', -1),' - ' ,orcamentos.descricao)"),'LIKE','%'.$keyword.'%');
@@ -49,33 +54,63 @@ class DetalhesServicosDataTable extends DataTable
      */
     public function query()
     {
-        $ordemDeCompras = OrdemDeCompraItem::select([
+        $orcamentos = Orcamento::select([
             DB::raw("CONCAT(SUBSTRING_INDEX(orcamentos.codigo_insumo, '.', -1),' - ' ,orcamentos.descricao) as descricao"),
             'orcamentos.unidade_sigla',
             'orcamentos.preco_total as valor_previsto',
             DB::raw('0 as valor_realizado'),
             DB::raw('0 as a_gastar'),
             DB::raw('orcamentos.preco_total as saldo_orcamento'),
-            DB::raw('SUM(ordem_de_compra_itens.valor_total) as valor_oc'),
-            DB::raw('(orcamentos.preco_total - ordem_de_compra_itens.valor_total) as saldo_disponivel')
-        ])
-            ->join('orcamentos', function ($join) {
-                $join->on('orcamentos.insumo_id','=', 'ordem_de_compra_itens.insumo_id');
-                $join->on('orcamentos.grupo_id','=', 'ordem_de_compra_itens.grupo_id');
-                $join->on('orcamentos.subgrupo1_id','=', 'ordem_de_compra_itens.subgrupo1_id');
-                $join->on('orcamentos.subgrupo2_id','=', 'ordem_de_compra_itens.subgrupo2_id');
-                $join->on('orcamentos.subgrupo3_id','=', 'ordem_de_compra_itens.subgrupo3_id');
-                $join->on('orcamentos.servico_id','=', 'ordem_de_compra_itens.servico_id');
-                $join->on('orcamentos.obra_id','=', 'ordem_de_compra_itens.obra_id');
-                $join->on('orcamentos.ativo','=', DB::raw('1'));
-            })
-            ->join('ordem_de_compras', 'ordem_de_compras.id', '=', 'ordem_de_compra_itens.ordem_de_compra_id')
-            ->where('ordem_de_compra_itens.servico_id','=', DB::raw($this->servico_id))
-            ->where('ordem_de_compra_itens.obra_id','=', DB::raw($this->obra_id))
-            ->whereIn('ordem_de_compras.oc_status_id',[2,3,5])
-            ->groupBy('ordem_de_compra_itens.insumo_id');
+            DB::raw('
+                    (SELECT 
+                        SUM(ordem_de_compra_itens.valor_total) 
+                    FROM ordem_de_compra_itens
+                    JOIN ordem_de_compras
+                        ON ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id
+                    WHERE ordem_de_compra_itens.insumo_id = orcamentos.insumo_id
+                    AND ordem_de_compra_itens.grupo_id = orcamentos.grupo_id
+                    AND ordem_de_compra_itens.subgrupo1_id = orcamentos.subgrupo1_id
+                    AND ordem_de_compra_itens.subgrupo2_id = orcamentos.subgrupo2_id
+                    AND ordem_de_compra_itens.subgrupo3_id = orcamentos.subgrupo3_id
+                    AND ordem_de_compra_itens.servico_id = orcamentos.servico_id
+                    AND (
+                            ordem_de_compras.oc_status_id = 2
+                            OR
+                            ordem_de_compras.oc_status_id = 3                            
+                            OR
+                            ordem_de_compras.oc_status_id = 5
+                        )
+                    AND ordem_de_compra_itens.deleted_at IS NULL
+                    AND ordem_de_compra_itens.servico_id = '.$this->servico_id.'
+                    AND ordem_de_compra_itens.obra_id ='. $this->obra_id .' ) as valor_oc'),
 
-        return $this->applyScopes($ordemDeCompras);
+            DB::raw('orcamentos.preco_total - (SELECT 
+                        SUM(ordem_de_compra_itens.valor_total) 
+                    FROM ordem_de_compra_itens
+                    JOIN ordem_de_compras
+                        ON ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id
+                    WHERE ordem_de_compra_itens.insumo_id = orcamentos.insumo_id
+                    AND ordem_de_compra_itens.grupo_id = orcamentos.grupo_id
+                    AND ordem_de_compra_itens.subgrupo1_id = orcamentos.subgrupo1_id
+                    AND ordem_de_compra_itens.subgrupo2_id = orcamentos.subgrupo2_id
+                    AND ordem_de_compra_itens.subgrupo3_id = orcamentos.subgrupo3_id
+                    AND ordem_de_compra_itens.servico_id = orcamentos.servico_id
+                    AND (
+                            ordem_de_compras.oc_status_id = 2
+                            OR
+                            ordem_de_compras.oc_status_id = 3                            
+                            OR
+                            ordem_de_compras.oc_status_id = 5
+                        )
+                    AND ordem_de_compra_itens.deleted_at IS NULL
+                    AND ordem_de_compra_itens.servico_id = '.$this->servico_id.'
+                    AND ordem_de_compra_itens.obra_id ='. $this->obra_id .' ) as saldo_disponivel')
+        ])
+            ->where('servico_id','=', DB::raw($this->servico_id))
+            ->where('obra_id','=', DB::raw($this->obra_id))
+            ->groupBy('orcamentos.insumo_id');
+
+        return $this->applyScopes($orcamentos);
     }
 
     /**

@@ -326,7 +326,9 @@
                                     <i class="fa fa-circle {{ (money_to_float($item->valor_servico) - money_to_float($item->valor_realizado)) - money_to_float($item->valor_servico) < 0 ? 'red': 'green'  }}" aria-hidden="true"></i>
                                 @endif
                             </td>
-                            <td class="text-center">{{ $item->total ? 'Sim' : 'Não' }}</td>
+                            <td class="text-center">
+                                <span data-toggle="tooltip" data-placement="right" data-html="true" title="{{$item->motivo_nao_finaliza_obra}}">{{ $item->total ? 'Sim' : 'Não' }}</span>
+                            </td>
                             <td class="text-center" style="width: 10%">
                                 <div class="btn-group" role="group" aria-label="...">
                                     @if(!is_null($item->aprovado))

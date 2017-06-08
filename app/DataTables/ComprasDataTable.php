@@ -32,9 +32,9 @@ class ComprasDataTable extends DataTable
             ->editColumn('total', function($obj){
                 if($obj->quantidade_compra && money_to_float($obj->saldo) > 0) {
                     if($obj->quantidade_compra && $obj->total === 1) {
-                        return "<input type='checkbox' checked onchange='totalCompra($obj->id, $obj->obra_id, $obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, this.value)'>";
+                        return "<input type='checkbox' value='1' checked onchange='totalCompra($obj->id, $obj->obra_id, $obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, this.value)'>";
                     }elseif($obj->quantidade_compra){
-                        return "<input type='checkbox' onchange='totalCompra($obj->id, $obj->obra_id, $obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, this.value)'>";
+                        return "<input type='checkbox' value='0' data-toggle='tooltip' data-placement='top' title='$obj->motivo_nao_finaliza_obra' onchange='totalCompra($obj->id, $obj->obra_id, $obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, this.value)'>";
                     }
                 }
             })
@@ -258,6 +258,25 @@ class ComprasDataTable extends DataTable
                     AND ordem_de_compras.oc_status_id = 1
                     '.($ordem ? ' AND ordem_de_compras.id ='. $ordem->id .' ': 'AND ordem_de_compras.id = 0').'
                     AND ordem_de_compra_itens.obra_id ='. $obra->id .' ) as total'),
+                DB::raw('(SELECT motivo_nao_finaliza_obra FROM ordem_de_compra_itens
+                    JOIN ordem_de_compras
+                    ON ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id
+                    WHERE ordem_de_compra_itens.insumo_id = insumos.id
+                    AND ordem_de_compra_itens.grupo_id = orcamentos.grupo_id
+                    AND ordem_de_compra_itens.subgrupo1_id = orcamentos.subgrupo1_id
+                    AND ordem_de_compra_itens.subgrupo2_id = orcamentos.subgrupo2_id
+                    AND ordem_de_compra_itens.subgrupo3_id = orcamentos.subgrupo3_id
+                    AND ordem_de_compra_itens.servico_id = orcamentos.servico_id
+                    AND (
+                            ordem_de_compra_itens.aprovado IS NULL
+                            OR
+                            ordem_de_compra_itens.aprovado = 0
+                        )
+                    AND ordem_de_compra_itens.aprovado IS NULL
+                    AND ordem_de_compra_itens.deleted_at IS NULL
+                    AND ordem_de_compras.oc_status_id = 1
+                    '.($ordem ? ' AND ordem_de_compras.id ='. $ordem->id .' ': 'AND ordem_de_compras.id = 0').'
+                    AND ordem_de_compra_itens.obra_id ='. $obra->id .' ) as motivo_nao_finaliza_obra'),
             ]
         )
             ->whereNotNull('orcamentos.qtd_total')
