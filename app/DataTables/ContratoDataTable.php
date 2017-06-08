@@ -59,7 +59,8 @@ class ContratoDataTable extends DataTable
             'fornecedores.nome as fornecedor',
             'obras.nome as obra',
             'contrato_status.nome as status',
-            'contrato_status.cor as status_cor'
+            'contrato_status.cor as status_cor',
+            DB::raw('exists (select 1 from contrato_itens where contrato_itens.contrato_id = contratos.id and contrato_itens.pendente = 1) as tem_pendencias')
         ])
         ->join('obras', 'obras.id', 'contratos.obra_id')
         ->join('fornecedores', 'fornecedores.id', 'contratos.fornecedor_id')
@@ -204,12 +205,12 @@ class ContratoDataTable extends DataTable
     protected function getColumns()
     {
         return [
-            'id' => ['name' => 'id', 'data' => 'id', 'title' => 'N° do Contrato'],
-            'created_at' => ['name' => 'created_at', 'data' => 'created_at', 'title' => 'Data'],
-            'fornecedor' => ['name' => 'fornecedores.nome', 'data' => 'fornecedor'],
-            'obra' => ['name' => 'obras.nome', 'data' => 'obra'],
-            'valor_total' => ['name' => 'valor_total', 'data' => 'valor_total', 'title' => 'Saldo'],
-            'status' => ['name' => 'status.nome', 'data' => 'status'],
+            'id'             => ['name' => 'id', 'data' => 'id', 'title' => 'N° do Contrato'],
+            'created_at'     => ['name' => 'created_at', 'data' => 'created_at', 'title' => 'Data'],
+            'fornecedor'     => ['name' => 'fornecedores.nome', 'data' => 'fornecedor'],
+            'obra'           => ['name' => 'obras.nome', 'data' => 'obra'],
+            'valor_total'    => ['name' => 'valor_total', 'data' => 'valor_total', 'title' => 'Saldo'],
+            'status'         => ['name' => 'status.nome', 'data' => 'status'],
         ];
     }
 

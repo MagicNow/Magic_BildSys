@@ -30,20 +30,6 @@ class HomeController extends AppBaseController
         return view('admin.home');
     }
 
-    public static function verifyNotifications(){
-        $notifications = Notificacao::where('notifiable_id', '=', \Auth::user()->id)
-            ->whereNull('read_at')
-            ->get();
-
-        foreach($notifications as $notification){
-            $data = json_decode($notification->data);
-            foreach ($data as $key => $value) {
-                $notification[$key] = $value;
-            }
-        }
-        return $notifications;
-    }
-
 //    public function validaCnpj(Request $request){
 //        $validator = ValidationRepository::validaCnpj($request->numero,$request->cpf);
 //

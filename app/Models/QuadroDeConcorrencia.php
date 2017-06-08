@@ -19,6 +19,16 @@ class QuadroDeConcorrencia extends Model
         'rodada_atual'
     ];
 
+    public static $workflow_tipo_id = WorkflowTipo::QC;
+
+    public function workflowNotification()
+    {
+        return [
+            'message' => 'Você tem um novo quadro de concorrência para aprovar',
+            'link' => route('quadroDeConcorrencias.show', $this->id)
+        ];
+    }
+
     /**
      * The attributes that should be casted to native types.
      *
@@ -143,14 +153,6 @@ class QuadroDeConcorrencia extends Model
         return $this->hasMany(QcTipoEqualizacaoTecnica::class);
     }
 
-    // Funções da aprovação
-
-    /**
-     * Tipo de Workflow, necessário para models que são aprováveis
-     *
-     * @var integer
-     */
-    public static $workflow_tipo_id = WorkflowTipo::QC;
 
     public function aprovacoes()
     {
@@ -225,6 +227,6 @@ class QuadroDeConcorrencia extends Model
 
     public function contratos()
     {
-        return $this->hasMany(Contrato::class);    
+        return $this->hasMany(Contrato::class);
     }
 }

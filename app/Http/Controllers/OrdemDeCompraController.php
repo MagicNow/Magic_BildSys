@@ -55,6 +55,8 @@ use App\Repositories\Admin\InsumoRepository;
 use App\Repositories\ContratoRepository;
 use App\DataTables\ContratoDataTable;
 use App\Models\WorkflowTipo;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\WorkflowNotification;
 
 class OrdemDeCompraController extends AppBaseController
 {
@@ -322,18 +324,18 @@ class OrdemDeCompraController extends AppBaseController
                     'orcamentos.qtd_total as qtd_inicial',
                     'orcamentos.preco_total as preco_inicial',
                     DB::raw("(
-                    SELECT
+                        SELECT
                         SUM(orcamentos.preco_total)
-                    FROM
+                        FROM
                         orcamentos
-                    WHERE
-                     orcamentos.grupo_id = ordem_de_compra_itens.grupo_id
-                    AND orcamentos.subgrupo1_id = ordem_de_compra_itens.subgrupo1_id
-                    AND orcamentos.subgrupo2_id = ordem_de_compra_itens.subgrupo2_id
-                    AND orcamentos.subgrupo3_id = ordem_de_compra_itens.subgrupo3_id
-                    AND orcamentos.servico_id = ordem_de_compra_itens.servico_id
-                    AND orcamentos.obra_id = ordem_de_compra_itens.obra_id
-                    AND orcamentos.ativo = 1
+                        WHERE
+                        orcamentos.grupo_id = ordem_de_compra_itens.grupo_id
+                        AND orcamentos.subgrupo1_id = ordem_de_compra_itens.subgrupo1_id
+                        AND orcamentos.subgrupo2_id = ordem_de_compra_itens.subgrupo2_id
+                        AND orcamentos.subgrupo3_id = ordem_de_compra_itens.subgrupo3_id
+                        AND orcamentos.servico_id = ordem_de_compra_itens.servico_id
+                        AND orcamentos.obra_id = ordem_de_compra_itens.obra_id
+                        AND orcamentos.ativo = 1
 
                     ) as valor_servico")
                 ])
@@ -831,39 +833,54 @@ class OrdemDeCompraController extends AppBaseController
 
             return back();
         }
-        OrdemDeCompraStatusLog::create([
-            'oc_status_id'=>2, // Fechado
-            'ordem_de_compra_id'=>$ordemDeCompra->id,
-            'user_id'=>Auth::id()
-        ]);
-        $ordemDeCompra->oc_status_id = 3; // Em Aprovação
-        $ordemDeCompra->save();
-        OrdemDeCompraStatusLog::create([
-            'oc_status_id'=>$ordemDeCompra->oc_status_id,
-            'ordem_de_compra_id'=>$ordemDeCompra->id,
-            'user_id'=>Auth::id()
-        ]);
-        // Já muda para Em Aprovação
 
-        // Agora altera todos os Planejamentos compra que estão ligadas à essa zerando a quantidade do pré-carrinho
-        $planejamento_compras_zerar = $ordemDeCompra->itens()
-            ->join('planejamento_compras', function ($join) {
-                $join->on('planejamento_compras.insumo_id', '=', 'ordem_de_compra_itens.insumo_id');
-                $join->on('planejamento_compras.servico_id', '=', 'ordem_de_compra_itens.servico_id');
-                $join->on('planejamento_compras.grupo_id', '=', 'ordem_de_compra_itens.grupo_id');
-                $join->on('planejamento_compras.subgrupo1_id', '=', 'ordem_de_compra_itens.subgrupo1_id');
-                $join->on('planejamento_compras.subgrupo2_id', '=', 'ordem_de_compra_itens.subgrupo2_id');
-                $join->on('planejamento_compras.subgrupo3_id', '=', 'ordem_de_compra_itens.subgrupo3_id');
-            })->pluck('planejamento_compras.id', 'planejamento_compras.id')->toArray();
-        if (count($planejamento_compras_zerar)) {
-            PlanejamentoCompra::whereIn('id', $planejamento_compras_zerar)->update(['quantidade_compra'=>0]);
+        DB::beginTransaction();
+        try {
+
+            OrdemDeCompraStatusLog::create([
+                'oc_status_id'=>2, // Fechado
+                'ordem_de_compra_id'=>$ordemDeCompra->id,
+                'user_id'=>Auth::id()
+            ]);
+
+            $ordemDeCompra->oc_status_id = 3; // Em Aprovação
+            $ordemDeCompra->save();
+
+            OrdemDeCompraStatusLog::create([
+                'oc_status_id'=>$ordemDeCompra->oc_status_id,
+                'ordem_de_compra_id'=>$ordemDeCompra->id,
+                'user_id'=>Auth::id()
+            ]);
+            // Já muda para Em Aprovação
+
+            // Agora altera todos os Planejamentos compra que estão ligadas à essa zerando a quantidade do pré-carrinho
+            $planejamento_compras_zerar = $ordemDeCompra->itens()
+                ->join('planejamento_compras', function ($join) {
+                    $join->on('planejamento_compras.insumo_id', '=', 'ordem_de_compra_itens.insumo_id');
+                    $join->on('planejamento_compras.servico_id', '=', 'ordem_de_compra_itens.servico_id');
+                    $join->on('planejamento_compras.grupo_id', '=', 'ordem_de_compra_itens.grupo_id');
+                    $join->on('planejamento_compras.subgrupo1_id', '=', 'ordem_de_compra_itens.subgrupo1_id');
+                    $join->on('planejamento_compras.subgrupo2_id', '=', 'ordem_de_compra_itens.subgrupo2_id');
+                    $join->on('planejamento_compras.subgrupo3_id', '=', 'ordem_de_compra_itens.subgrupo3_id');
+                })->pluck('planejamento_compras.id', 'planejamento_compras.id')->toArray();
+            if (count($planejamento_compras_zerar)) {
+                PlanejamentoCompra::whereIn('id', $planejamento_compras_zerar)->update(['quantidade_compra'=>0]);
+            }
+
+            #limpa sessão
+            $request->session()->put('ordemCompra', null);
+            $request->session()->forget('ordemCompra');
+
+            $ordem_itens[0]->confereAprovacaoGeral();
+
+            $aprovadores = WorkflowAprovacaoRepository::usuariosDaAlcadaAtual($ordemDeCompra);
+            Notification::send($aprovadores, new WorkflowNotification($ordemDeCompra));
+        } catch(\Exception $e) {
+            DB::rollback();
+            throw $e;
         }
 
-        #limpa sessão
-        $request->session()->put('ordemCompra', null);
-        $request->session()->forget('ordemCompra');
-
-        $ordem_itens[0]->confereAprovacaoGeral();
+        DB::commit();
 
         Flash::success('Ordem de compra '.$ordemDeCompra->id.' Fechada!');
         return redirect('/ordens-de-compra');
@@ -996,64 +1013,64 @@ class OrdemDeCompraController extends AppBaseController
                     SELECT
                     z.id,
                     IF(z.igual , 0 , IF(z.maior , 1 , - 1)) AS STATUS
+                    FROM
+                    (
+                        SELECT
+                        OC2.id,
+                        IF(qtd_total = qtd_itens , 1 , 0) AS igual ,
+                        IF(qtd_itens > qtd_total , 1 , 0) AS maior
                         FROM
                         (
                             SELECT
-                            OC2.id,
-                            IF(qtd_total = qtd_itens , 1 , 0) AS igual ,
-                                IF(qtd_itens > qtd_total , 1 , 0) AS maior
-                                    FROM
-                                    (
-                                        SELECT
-                                        OC3.id,
-                                        (
-                                            SELECT
-                                            SUM(orcamentos.qtd_total) AS total
-                                            FROM
-                                            ordem_de_compra_itens
-                                            INNER JOIN orcamentos ON orcamentos.obra_id = ordem_de_compra_itens.obra_id
-                                            AND orcamentos.grupo_id = ordem_de_compra_itens.grupo_id
-                                            AND orcamentos.subgrupo1_id = ordem_de_compra_itens.subgrupo1_id
-                                            AND orcamentos.subgrupo2_id = ordem_de_compra_itens.subgrupo2_id
-                                            AND orcamentos.subgrupo3_id = ordem_de_compra_itens.subgrupo3_id
-                                            AND orcamentos.servico_id = ordem_de_compra_itens.servico_id
-                                            AND orcamentos.insumo_id = ordem_de_compra_itens.insumo_id
-                                            AND orcamentos.obra_id = ordem_de_compra_itens.obra_id
-                                            WHERE
-                                            orcamentos.orcamento_tipo_id = 1
-                                            AND orcamentos.ativo = 1
-                                            AND ordem_de_compra_itens.deleted_at IS NULL
-                                            AND ordem_de_compra_itens.ordem_de_compra_id = OC3.`id`
-                                        ) AS qtd_total ,
-                                        (
-                                            SELECT
-                                            SUM(ordem_de_compra_itens.qtd) AS qtd
-                                            FROM
-                                            ordem_de_compra_itens
-                                            INNER JOIN orcamentos ON orcamentos.obra_id = ordem_de_compra_itens.obra_id
-                                            AND orcamentos.grupo_id = ordem_de_compra_itens.grupo_id
-                                            AND orcamentos.subgrupo1_id = ordem_de_compra_itens.subgrupo1_id
-                                            AND orcamentos.subgrupo2_id = ordem_de_compra_itens.subgrupo2_id
-                                            AND orcamentos.subgrupo3_id = ordem_de_compra_itens.subgrupo3_id
-                                            AND orcamentos.servico_id = ordem_de_compra_itens.servico_id
-                                            AND orcamentos.insumo_id = ordem_de_compra_itens.insumo_id
-                                            AND orcamentos.obra_id = ordem_de_compra_itens.obra_id
-                                            WHERE orcamentos.orcamento_tipo_id = 1
-                                            AND ordem_de_compra_itens.deleted_at IS NULL
-                                            AND orcamentos.ativo = 1
-                                            AND ordem_de_compra_itens.ordem_de_compra_id = OC3.`id`
-                                        ) AS qtd_itens
-                                        FROM ordem_de_compras OC3
-                                    ) AS x
-                                    JOIN ordem_de_compras OC2 ON OC2.id = x.id
-                                ) AS z
-                            ) AS y ON y.id = OC1.id
+                            OC3.id,
+                            (
+                                SELECT
+                                SUM(orcamentos.qtd_total) AS total
+                                FROM
+                                ordem_de_compra_itens
+                                INNER JOIN orcamentos ON orcamentos.obra_id = ordem_de_compra_itens.obra_id
+                                AND orcamentos.grupo_id = ordem_de_compra_itens.grupo_id
+                                AND orcamentos.subgrupo1_id = ordem_de_compra_itens.subgrupo1_id
+                                AND orcamentos.subgrupo2_id = ordem_de_compra_itens.subgrupo2_id
+                                AND orcamentos.subgrupo3_id = ordem_de_compra_itens.subgrupo3_id
+                                AND orcamentos.servico_id = ordem_de_compra_itens.servico_id
+                                AND orcamentos.insumo_id = ordem_de_compra_itens.insumo_id
+                                AND orcamentos.obra_id = ordem_de_compra_itens.obra_id
+                                WHERE
+                                orcamentos.orcamento_tipo_id = 1
+                                AND orcamentos.ativo = 1
+                                AND ordem_de_compra_itens.deleted_at IS NULL
+                                AND ordem_de_compra_itens.ordem_de_compra_id = OC3.`id`
+                            ) AS qtd_total ,
+                            (
+                                SELECT
+                                SUM(ordem_de_compra_itens.qtd) AS qtd
+                                FROM
+                                ordem_de_compra_itens
+                                INNER JOIN orcamentos ON orcamentos.obra_id = ordem_de_compra_itens.obra_id
+                                AND orcamentos.grupo_id = ordem_de_compra_itens.grupo_id
+                                AND orcamentos.subgrupo1_id = ordem_de_compra_itens.subgrupo1_id
+                                AND orcamentos.subgrupo2_id = ordem_de_compra_itens.subgrupo2_id
+                                AND orcamentos.subgrupo3_id = ordem_de_compra_itens.subgrupo3_id
+                                AND orcamentos.servico_id = ordem_de_compra_itens.servico_id
+                                AND orcamentos.insumo_id = ordem_de_compra_itens.insumo_id
+                                AND orcamentos.obra_id = ordem_de_compra_itens.obra_id
+                                WHERE orcamentos.orcamento_tipo_id = 1
+                                AND ordem_de_compra_itens.deleted_at IS NULL
+                                AND orcamentos.ativo = 1
+                                AND ordem_de_compra_itens.ordem_de_compra_id = OC3.`id`
+                            ) AS qtd_itens
+                            FROM ordem_de_compras OC3
+                        ) AS x
+                        JOIN ordem_de_compras OC2 ON OC2.id = x.id
+                    ) AS z
+                ) AS y ON y.id = OC1.id
 
-                            WHERE OC1.id = `ordem_de_compras`.id
-                            LIMIT 1
-                        ) as status')
-                    ])
-                    ->get();
+                WHERE OC1.id = `ordem_de_compras`.id
+                LIMIT 1
+            ) as status')
+        ])
+        ->get();
 
         $dentro_orcamento = 0;
         $acima_orcamento = 0;
@@ -1496,26 +1513,26 @@ class OrdemDeCompraController extends AppBaseController
     public function getGrupos($id)
     {
         $grupo = Grupo::select([
-                'id',
-                DB::raw("CONCAT(codigo, ' ', nome) as nome")
-            ])
-            ->where('grupo_id', $id)
-            ->orderBy('nome', 'ASC')
-            ->pluck('nome','id')
-            ->toArray();
+            'id',
+            DB::raw("CONCAT(codigo, ' ', nome) as nome")
+        ])
+        ->where('grupo_id', $id)
+        ->orderBy('nome', 'ASC')
+        ->pluck('nome','id')
+        ->toArray();
 
         return $grupo;
     }
     public function getServicos($id)
     {
         $servico = Servico::select([
-                'id',
-                DB::raw("CONCAT(codigo, ' ', nome) as nome")
-            ])
-            ->where('grupo_id', $id)
-            ->orderBy('nome', 'ASC')
-            ->pluck('nome', 'id')
-            ->toArray();
+            'id',
+            DB::raw("CONCAT(codigo, ' ', nome) as nome")
+        ])
+        ->where('grupo_id', $id)
+        ->orderBy('nome', 'ASC')
+        ->pluck('nome', 'id')
+        ->toArray();
 
         return $servico;
     }
@@ -1548,28 +1565,28 @@ class OrdemDeCompraController extends AppBaseController
      *
      * @return Response
      */
-   public function trocarSave(
+    public function trocarSave(
         Request $request,
         OrcamentoRepository $orcamentoRepository,
         InsumoRepository $insumoRepository,
         $orcamentoId)
-   {
-       $orcamento = $orcamentoRepository->findWithoutFail($orcamentoId);
+    {
+        $orcamento = $orcamentoRepository->findWithoutFail($orcamentoId);
 
-       if (empty($orcamento)) {
-           Flash::error(
+        if (empty($orcamento)) {
+            Flash::error(
                 'Orcamento selecionado não encontrado'
             );
 
-           return back()->withInput();
-       }
+            return back()->withInput();
+        }
 
-       DB::beginTransaction();
+        DB::beginTransaction();
 
-       try {
-           $orcamento->update(['trocado' => 1]);
+        try {
+            $orcamento->update(['trocado' => 1]);
 
-           collect($request->data)
+            collect($request->data)
                 ->map(function ($data) use ($insumoRepository) {
                     $data['insumo'] = $insumoRepository->find($data['insumo_id']);
 
@@ -1584,45 +1601,45 @@ class OrdemDeCompraController extends AppBaseController
                     $troca->orcamento_que_substitui = $orcamento->id;
                     $troca->save();
                 });
-       } catch (Exception $e) {
-           DB::rollback();
-           Flash::error('Ocorreu um problema! Não foi possível salvar os dados.');
+        } catch (Exception $e) {
+            DB::rollback();
+            Flash::error('Ocorreu um problema! Não foi possível salvar os dados.');
 
-           logger()->error((string) $e);
+            logger()->error((string) $e);
 
-           return back();
-       }
+            return back();
+        }
 
-       DB::commit();
+        DB::commit();
 
-       Flash::success('Troca realizada com sucesso');
+        Flash::success('Troca realizada com sucesso');
 
-       return redirect($request->back ?: url()->previous());
-   }
+        return redirect($request->back ?: url()->previous());
+    }
 
     public function buscaPlanejamentos(Request $request)
     {
         return Planejamento::select([
-           'id',
-           'tarefa'
-       ])
-           ->where('tarefa','like', '%'.$request->q.'%')
-           ->orderBy('tarefa', 'ASC')
-           ->paginate();
-   }
+            'id',
+            'tarefa'
+        ])
+        ->where('tarefa','like', '%'.$request->q.'%')
+        ->orderBy('tarefa', 'ASC')
+        ->paginate();
+    }
 
     public function buscaInsumoGrupos(Request $request)
     {
         return InsumoGrupo::select([
-           'id',
-           'nome'
-       ])
-           ->where('nome','like', '%'.$request->q.'%')
-           ->orderBy('nome', 'ASC')
-           ->paginate();
+            'id',
+            'nome'
+        ])
+        ->where('nome','like', '%'.$request->q.'%')
+        ->orderBy('nome', 'ASC')
+        ->paginate();
    }
-    
-    
+
+
     public function limparCarrinho($ordem_de_compra_id){
         $ordem_de_compra = OrdemDeCompra::find($ordem_de_compra_id);
         $ordem_de_compra->itens()->delete();

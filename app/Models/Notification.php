@@ -4,16 +4,10 @@ namespace App\Models;
 
 use Eloquent as Model;
 
-/**
- * Class Notificacao
- * @package App\Models
- * @version April 10, 2017, 11:41 am BRT
- */
-class Notificacao extends Model
+class Notification extends Model
 {
-
     public $table = 'notifications';
-    
+
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
@@ -35,7 +29,7 @@ class Notificacao extends Model
         'type' => 'string',
         'notifiable_id' => 'integer',
         'notifiable_type' => 'string',
-        'data' => 'string'
+        'data' => 'object'
     ];
 
     /**
@@ -44,8 +38,6 @@ class Notificacao extends Model
      * @var array
      */
     public static $rules = [
-        
-    ];
 
-    
+    ];
 }
