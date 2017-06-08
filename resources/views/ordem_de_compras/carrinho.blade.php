@@ -28,10 +28,10 @@
                         Esqueci um item
                     </a>
                     <button type="button" onclick="fechaOC();" class="btn btn-success btn-lg btn-flat">
-                        Fechar OC
+                        Fechar O.C.
                     </button>
                     <button type="button" onclick="limparCarrinho();" class="btn btn-danger btn-lg btn-flat">
-                        Limpar carrinho
+                        Limpar O.C.
                     </button>
                 </div>
             </div>
