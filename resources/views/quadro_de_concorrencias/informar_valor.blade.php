@@ -118,15 +118,18 @@
                       </td>
                       <td>{{ $item->insumo->unidade_sigla }}</td>
                       <td>
-                          {!!
-                            Form::text(
-                              "itens[{$item->id}][valor_unitario]",
-                              old("itens[{$item->id}][valor_unitario]"),
-                              [
-                                        'class' => 'form-control js-calc-price money',
-                              ]
-                            )
-                          !!}
+                          <div class="input-group">
+                              <span class="input-group-addon" id="basic-addon1">R$</span>
+                              {!!
+                                Form::text(
+                                  "itens[{$item->id}][valor_unitario]",
+                                  old("itens[{$item->id}][valor_unitario]"),
+                                  [
+                                            'class' => 'form-control js-calc-price money',
+                                  ]
+                                )
+                              !!}
+                          </div>
                       </td>
                       <td class="js-calc-result">
                           R$ 0,00

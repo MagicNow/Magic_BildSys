@@ -32,7 +32,10 @@ $count_insumos = 0;
             </div>
             <div class="col-md-3">
                 <label>Valor unitário:</label>
-                <input type="text" value="{{$insumo->valor_unitario}}" id="valor_unitario_{{$insumo->id}}" class="form-control money" name="insumos[{{$insumo->id}}][valor_unitario]">
+                <div class="input-group">
+                    <span class="input-group-addon" id="basic-addon1">R$</span>
+                    <input type="text" value="{{$insumo->valor_unitario}}" id="valor_unitario_{{$insumo->id}}" class="form-control money" name="insumos[{{$insumo->id}}][valor_unitario]">
+                </div>
             </div>
             <div class="col-md-3">
                 <label>Pedido quantidade mínima:</label>
@@ -86,7 +89,10 @@ $count_insumos = 0;
                                 </div>\
                                 <div class="col-md-3">\
                                     <label>Valor unitário:</label>\
-                                    <input type="text" class="form-control money" id="valor_unitario_'+count_insumos+'" name="insumos['+count_insumos+'][valor_unitario]">\
+                                    <div class="input-group">\
+                                        <span class="input-group-addon" id="basic-addon1">R$</span>\
+                                        <input type="text" class="form-control money" id="valor_unitario_'+count_insumos+'" name="insumos['+count_insumos+'][valor_unitario]">\
+                                    </div>\
                                 </div>\
                                 <div class="col-md-3">\
                                     <label>Pedido quantidade mínima:</label>\
