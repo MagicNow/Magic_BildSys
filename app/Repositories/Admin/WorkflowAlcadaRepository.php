@@ -58,7 +58,7 @@ class WorkflowAlcadaRepository extends BaseRepository
             if($workflowTipo->usa_valor_minimo) {
                 $alcada_igual = $alcadas->where('valor_minimo', $input['valor_minimo'])->first();
 
-                if($alcada_igual) {
+                if($alcada_igual && $input['valor_minimo']) {
                     Flash::error('Já existe uma alçada com o valor mínimo informado');
 
                     throw new HttpResponseException(back()->withInput());
@@ -68,7 +68,7 @@ class WorkflowAlcadaRepository extends BaseRepository
                     ->where('valor_minimo', '>', $input['valor_minimo'])
                     ->first();
 
-                if($alcada_anterior_valor_maior) {
+                if($alcada_anterior_valor_maior && $input['valor_minimo']) {
                     Flash::error(
                         'Existe uma alçada anterior com um valor maior que o utilizado'
                     );
