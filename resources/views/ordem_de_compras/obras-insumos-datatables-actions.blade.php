@@ -1,5 +1,5 @@
 @if($insumo_grupo_id != 1570)
-    @if($saldo>0)
+    @if(money_to_float($saldo) > 0)
         <button type="button" href="#" class="btn btn-xs btn-primary btn-flat"
                 onclick="comprarTudo({{$id}},
                                      {{$obra_id}},
