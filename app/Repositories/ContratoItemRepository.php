@@ -6,6 +6,9 @@ use App\Models\ContratoItem;
 use InfyOm\Generator\Common\BaseRepository;
 use App\Models\ContratoStatus;
 use Illuminate\Support\Facades\DB;
+use App\Repositories\WorkflowAprovacaoRepository;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\WorkflowNotification;
 
 class ContratoItemRepository extends BaseRepository
 {
@@ -29,11 +32,19 @@ class ContratoItemRepository extends BaseRepository
 
             $item->save();
 
-            $item->modificacoes()->save($item->modificacoes->first()->replicate()->fill([
+            $mod = $item->modificacoes->first()->replicate()->fill([
                 'valor_unitario_atual' => $item->valor_unitario,
                 'qtd_atual'            => $item->qtd,
                 'contrato_status_id'   => ContratoStatus::EM_APROVACAO,
-            ]));
+                'contrato_item_id'
+            ]);
+
+            $mod->save();
+
+            $aprovadores = WorkflowAprovacaoRepository::usuariosDaAlcadaAtual($mod);
+
+            Notification::send($aprovadores, new WorkflowNotification($mod));
+
         } catch (Exception $e) {
             logger()->error((string) $e);
             DB::rollback();

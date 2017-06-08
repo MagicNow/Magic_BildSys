@@ -45,7 +45,8 @@ var paths = {
     'vue_resource':  vendors + '/vue-resource/dist/',
     'chartjs':  vendors + '/chart.js/dist/',
     'jquery_maskmoney':  vendors + '/jquery-maskmoney/dist/',
-    'slugify':  vendors + '/slug/'
+    'slugify':  vendors + '/slug/',
+    'slim_scroll':  vendors + '/jquery-slimscroll/'
 };
 
 elixir.config.sourcemaps = false;
@@ -185,6 +186,7 @@ elixir(function(mix) {
         paths.chartjs + 'Chart.min.js',
         paths.jquery_maskmoney + 'jquery.maskMoney.js',
         paths.slugify + 'slug.js',
+        paths.slim_scroll + 'jquery.slimscroll.js',
         // paths.vue + 'vue.js',
         // paths.vue_resource + 'vue-resource.js',
         'bootstrap-dataTables-paging.js',
@@ -204,6 +206,7 @@ elixir(function(mix) {
         'qc-avaliar.js',
         'error-list.js',
         'is-mobile.js',
+        'notifications.js',
     ], 'public/js/admin.js');
 
     mix.scripts([
