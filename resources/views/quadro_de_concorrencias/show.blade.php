@@ -30,7 +30,7 @@
                              aria-label="...">
                             <button type="button" onclick="workflowAprovaReprova({{ $quadroDeConcorrencia->id }},
                                     'QuadroDeConcorrencia',1,'blocoItemAprovaReprova{{ $quadroDeConcorrencia->id }}',
-                                    'Q.C. {{ $quadroDeConcorrencia->id }}',0, '', '');"
+                                    'Q.C. {{ $quadroDeConcorrencia->id }}',0, '', '', true);"
                                     class="btn btn-success btn-lg btn-flat"
                                     title="Aprovar">
                                 Aprovar Q.C.
@@ -38,7 +38,7 @@
                             </button>
                             <button type="button" onclick="workflowAprovaReprova({{ $quadroDeConcorrencia->id }},
                                     'QuadroDeConcorrencia',0, 'blocoItemAprovaReprova{{ $quadroDeConcorrencia->id }}',
-                                    'Q.C. {{ $quadroDeConcorrencia->id }}',0, '', '');"
+                                    'Q.C. {{ $quadroDeConcorrencia->id }}',0, '', '', true);"
                                     class="btn btn-danger btn-lg btn-flat"
                                     title="Reprovar Este item">
                                 Reprovar
