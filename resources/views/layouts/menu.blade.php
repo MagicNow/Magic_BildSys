@@ -150,9 +150,3 @@
     </li>
 @endshield
 
-@shield('configuracaoEstaticas.list')
-    <li class="{{ Request::is('admin.configuracaoEstaticas*') ? 'active' : '' }}">
-        <a href="{!! route('admin.configuracaoEstaticas.index') !!}"><i class="fa fa-cog"></i><span>Configuracão padrão</span></a>
-    </li>
-@endshield
-

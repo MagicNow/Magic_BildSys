@@ -3,6 +3,7 @@ $(function() {
   Reajuste.init();
   Distrato.init();
   Reapropriar.init();
+  Editar.init();
 
   var table = LaravelDataTables.dataTableBuilder
 
@@ -30,35 +31,6 @@ $(function() {
 });
 
 var token = document.currentScript.dataset.token;
-
-var ErrorList = (function() {
-  function ErrorList(errors) {
-    this.errors = errors;
-  }
-
-  ErrorList.prototype.parse = _.flow([_.values, _.flatten]);
-
-  ErrorList.prototype.toHTML = function() {
-
-    var errors = this.parse(this.errors)
-      .map(this.makeItem);
-
-    return _(['<ul class="list-group">', errors, '</ul>']).flatten().join('');
-  }
-
-  ErrorList.prototype.makeItem = function(value) {
-    var template = _.template(
-      '<li class="list-group-item"><%= value %></li>'
-    );
-
-    return template({
-      value: value
-    });
-  };
-
-  return ErrorList;
-}());
-
 
 var Reapropriar = (function() {
   function Reapropriar() {
@@ -106,7 +78,7 @@ var Reapropriar = (function() {
   }
 
   Reapropriar.prototype.addAll = function(event) {
-    this.qtd.value = floatToMoney(this.addAllBtn.dataset.qtd, '');
+    this.qtd.value = floatToMoney(parseFloat(this.addAllBtn.dataset.qtd), '');
   };
 
   Reapropriar.prototype.getView = function(id) {
@@ -242,9 +214,9 @@ var Reajuste = (function() {
     var button = event.currentTarget;
     this.id = button.dataset.itemId;
     this.qtd.value = '';
-    this.valor.value = button.dataset.itemValor;
     this.totalDefault = parseFloat(button.dataset.itemQtd);
     this.valorDefault = parseFloat(button.dataset.itemValor);
+    this.valor.value = floatToMoney(parseFloat(button.dataset.itemValor), '');
     this.total.value = floatToMoney(parseFloat(button.dataset.itemQtd), '');
 
     this.valor.dispatchEvent(new Event('input'));
@@ -367,8 +339,8 @@ var Distrato = (function() {
     var button = event.currentTarget;
 
     this.id = button.dataset.itemId;
-    this.qtd.value = button.dataset.itemQtd;
     this.defaultQtd = parseFloat(button.dataset.itemQtd);
+    this.qtd.value = floatToMoney(this.defaultQtd, '');
 
     this.qtd.dispatchEvent(new Event('input'));
 
@@ -460,3 +432,130 @@ var Distrato = (function() {
   return Distrato;
 }());
 
+var Editar = (function() {
+  function Editar() {
+    this.modal = document.getElementById('modal-editar');
+    this.qtd = this.modal.querySelector('[name=qtd]');
+    this.valor = this.modal.querySelector('[name=valor]');
+    this.saveBtn = this.modal.querySelector('.js-save');
+    this.valorDefault = 0;
+    this.qtdDefault = 0;
+    this.id = 0;
+
+    $body.on('click', '.js-editar', this.editar.bind(this));
+    this.saveBtn.addEventListener('click', this.save.bind(this));
+  }
+
+  Editar.prototype.editar = function(event) {
+    event.preventDefault();
+    var button = event.currentTarget;
+
+    this.id = button.dataset.itemId;
+    this.qtdDefault = parseFloat(button.dataset.itemQtd);
+    this.valorDefault = parseFloat(button.dataset.itemValor);
+    this.qtd.value = floatToMoney(this.qtdDefault, '');
+    this.valor.value = floatToMoney(this.valorDefault, '');
+
+    this.valor.dispatchEvent(new Event('input'));
+
+    $(this.modal).modal('show');
+  };
+
+  Editar.prototype.save = function(event) {
+    event.preventDefault();
+
+    if (!this.valid()) {
+      return false;
+    }
+
+    swal({
+        title: 'Enviar aditivo para aprovação?',
+        text: 'Ao confirmar não será possível voltar atrás',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Salvar',
+        cancelButtonText: 'Cancelar',
+        closeOnConfirm: false,
+        showLoaderOnConfirm: true,
+        confirmButtonColor: '#7ED32C'
+      },
+      this.sendData.bind(this)
+    );
+  };
+
+  Editar.prototype.valid = function() {
+    if (!this.valor.value.length) {
+      swal('', 'É necessário enviar um valor', 'warning');
+      return false;
+    }
+
+    if (moneyToFloat(this.qtd.value) === 0) {
+      swal('', 'A nova quantidade não pode ser zero', 'warning');
+      return false;
+    }
+
+    if (moneyToFloat(this.valor.value) === 0) {
+      swal('', 'O novo valor não pode ser zero', 'warning');
+      return false;
+    }
+
+    console.log('Valor:', moneyToFloat(this.valor.value), this.valorDefault);
+    console.log('qtd:', moneyToFloat(this.qtd.value), this.qtdDefault);
+
+    if ( moneyToFloat(this.valor.value) === this.valorDefault
+      && moneyToFloat(this.qtd.value) === this.qtdDefault ) {
+      swal('', 'Você não fez nenhuma alteração no aditivo', 'warning');
+      return false;
+    }
+
+    return true;
+  };
+
+  Editar.prototype.sendData = function() {
+    var _this = this;
+    var data = {
+      _token: token,
+      qtd: this.qtd.value,
+      valor: this.valor.value
+    };
+
+    if(!this.valid()) {
+      return false;
+    }
+
+    $.post('/contratos/editar-item/' + this.id, data)
+      .done(function(response) {
+        swal({
+          title: 'Sucesso!',
+          text: 'Aditivo enviado para aprovação',
+          type: 'success',
+        }, function() {
+          $(_this.modal).modal('hide');
+          location.reload();
+        });
+      })
+      .fail(function(response) {
+        if (response.status === 422) {
+          var errorList = new ErrorList(response.responseJSON);
+
+          swal({
+            title: '',
+            text: errorList.toHTML(),
+            type: 'warning',
+            customClass: 'custom-alert',
+            html: true
+          });
+
+          return true
+        }
+
+        swal('Ops!', 'Ocorreu um erro ao editar o aditivo.', 'error');
+      });
+  };
+
+  Editar.init = function() {
+    return new Editar;
+  };
+
+  return Editar;
+}());

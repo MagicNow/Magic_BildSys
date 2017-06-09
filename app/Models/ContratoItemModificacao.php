@@ -16,6 +16,14 @@ class ContratoItemModificacao extends Model
 
     public static $workflow_tipo_id = WorkflowTipo::ITEM_CONTRATO;
 
+    public function workflowNotification()
+    {
+        return [
+            'message' => "Você tem uma modificação no contrato #{$this->item->contrato_id} para aprovar",
+            'link' => route('contratos.show', $this->item->contrato_id)
+        ];
+    }
+
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
@@ -119,6 +127,8 @@ class ContratoItemModificacao extends Model
             $this->item->applyChanges($this);
             $this->item->contrato->updateTotal();
         }
+
+        $this->item->update(['pendente' => 0]);
 
         $this->save();
 

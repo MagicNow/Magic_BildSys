@@ -15,8 +15,8 @@ class ContratoItem extends Model
 
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
-    
-    
+
+
     public $fillable = [
         'contrato_id',
         'insumo_id',
@@ -24,7 +24,8 @@ class ContratoItem extends Model
         'qtd',
         'valor_unitario',
         'valor_total',
-        'aprovado'
+        'aprovado',
+        'pendente',
     ];
 
     /**
@@ -36,7 +37,11 @@ class ContratoItem extends Model
         'id' => 'integer',
         'contrato_id' => 'integer',
         'insumo_id' => 'integer',
-        'qc_item_id' => 'integer'
+        'qc_item_id' => 'integer',
+        'pendente' => 'boolean',
+        'aprovado' => 'boolean',
+        'valor_unitario' => 'float',
+        'valor_total' => 'float',
     ];
 
     /**
@@ -107,5 +112,4 @@ class ContratoItem extends Model
             'contrato_item_id'
         );
     }
-
 }

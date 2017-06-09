@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use PDF;
 use App\Mail\ContratoServicoFornecedorNaoUsuario;
 use App\Models\Contrato;
 use App\Models\ContratoItem;
@@ -13,7 +14,9 @@ use App\Notifications\NotificaFornecedorContratoServico;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use InfyOm\Generator\Common\BaseRepository;
-use \PDF;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\WorkflowNotification;
+use App\Models\ContratoStatus;
 
 class ContratoRepository extends BaseRepository
 {
@@ -69,7 +72,7 @@ class ContratoRepository extends BaseRepository
                 return [
                     'success' => false,
                     'contratos'=>[],
-                    'erro'=>'O Fornecedor '. $qcFornecedor->fornecedor->nome.' não está cadastrado no Mega, por favor 
+                    'erro'=>'O Fornecedor '. $qcFornecedor->fornecedor->nome.' não está cadastrado no Mega, por favor
                     solicite a inclusão para que o contrato possa ser gerado'
                 ];
 
@@ -111,7 +114,7 @@ class ContratoRepository extends BaseRepository
                 }
             }
         }
-        
+
         foreach ($qcFornecedor->itens as $item) {
             $valor_item = $item->valor_total;
             $valor_item_unitario = $item->valor_unitario;
@@ -208,7 +211,7 @@ class ContratoRepository extends BaseRepository
         if(count($valorLocacao)){
             foreach ($valorLocacao as $obraId => $valorLoc){
                 if($valorLoc>0){
-                    $insumo = Insumo::where('codigo','32590')->first(); // trocado temporariamente para 32590 pois o 37674 não existe
+                    $insumo = Insumo::where('codigo','37367')->first(); // trocado temporariamente para 37367 pois o 37674 não existe
                     $contratoItens[$obraId][] = [
                         'insumo_id'         => $insumo->id,
                         'qc_item_id'        => null,
@@ -262,7 +265,7 @@ class ContratoRepository extends BaseRepository
             $contratoArray['contrato_template_id'] = $attributes['contrato_template_id'];
             $contratoArray['campos_extras'] = $campos_extras;
             $contratoArray['obra_id'] = $obraId;
-            $contratoArray['contrato_status_id'] = 1; // Inicia em aprovação
+            $contratoArray['contrato_status_id'] = ContratoStatus::EM_APROVACAO;
             $contratoArray['fornecedor_id'] = $qcFornecedor->fornecedor_id;
             $contratoArray['quadro_de_concorrencia_id'] = $qcFornecedor->quadro_de_concorrencia_id;
             $contratoArray['valor_total'] = number_format($contratoArray['valor_total'],2,'.','');
@@ -278,9 +281,13 @@ class ContratoRepository extends BaseRepository
             $contratos[] = Contrato::where('id',$contrato->id)->with('itens')->first();
         }
 
+        $aprovadores = WorkflowAprovacaoRepository::usuariosDaAlcadaAtual($contrato);
+
+        Notification::send($aprovadores, new WorkflowNotification($contrato));
+
         return [
             'success' => true,
-            'contratos'=>$contratos
+            'contratos'=> $contratos
         ];
     }
 
@@ -297,19 +304,19 @@ class ContratoRepository extends BaseRepository
         }
 
         $template = $contrato->contratoTemplate;
-        
+
         $templateRenderizado = $template->template;
 
         // Tenta aplicar variáveis de Obra
         foreach (Obra::$campos as $campo){
             $templateRenderizado = str_replace('['.strtoupper($campo).'_OBRA]', $contrato->obra->$campo,$templateRenderizado );
         }
-        
+
         // Tenta aplicar variáveis de Fornecedor
         foreach (Fornecedor::$campos as $campo){
             $templateRenderizado = str_replace('['.strtoupper($campo).'_FORNECEDOR]', $contrato->fornecedor->$campo,$templateRenderizado );
         }
-        
+
         // Tenta aplicar variáveis de Contrato
 
         $tabela_itens = '<table>
@@ -319,7 +326,7 @@ class ContratoRepository extends BaseRepository
                     <th width="10%" align="right">Qtd.</th>
                     <th width="20%" align="right">Valor Unitário</th>
                     <th width="20%" align="right">Valor Total</th>
-                </tr>     
+                </tr>
             </thead>
             <tbody>';
         foreach ($contrato->itens as $item){
@@ -361,17 +368,17 @@ class ContratoRepository extends BaseRepository
         $contrato = Contrato::find($id);
         if(!$contrato){
             return [
-                'success'=>false, 
+                'success'=>false,
                 'messages'=>[
                     'O contrato não foi encontrado!'
                 ]
             ];
         }
-        
+
         $arquivo = self::geraImpressao($id);
         $fornecedor = $contrato->fornecedor;
         $mensagens = [];
-        
+
         if ($user = $fornecedor->user) {
             //se tiver já envia uma notificação
             $user->notify(new NotificaFornecedorContratoServico($contrato, $arquivo));

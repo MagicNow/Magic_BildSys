@@ -31,6 +31,14 @@ class Contrato extends Model
 
     public static $workflow_tipo_id = WorkflowTipo::CONTRATO;
 
+    public function workflowNotification()
+    {
+        return [
+            'message' => 'Você tem um contrato para aprovar',
+            'link' => route('contratos.show', $this->id)
+        ];
+    }
+
     /**
      * The attributes that should be casted to native types.
      *
@@ -113,7 +121,8 @@ class Contrato extends Model
 
     // Funções de Aprovações
 
-    public function irmaosIds() {
+    public function irmaosIds()
+    {
         return [$this->attributes['id'] => $this->attributes['id']];
     }
 
@@ -152,7 +161,7 @@ class Contrato extends Model
         ]);
 
         // Verifica necessidade de assinar contrato e enviar ao fornecedor
-        if($this->hasServico() && $isAprovado){
+        if ($this->hasServico() && $isAprovado) {
             // Muda o status
             $this->attributes['contrato_status_id'] = 4;
 
@@ -165,17 +174,18 @@ class Contrato extends Model
             ]);
             // Notifica Fornecedor
             $retorno = ContratoRepository::notifyFornecedor($this->attributes['id']);
-            if(!$retorno['success']){
+            if (!$retorno['success']) {
                 Flash::error($retorno['messages'][0]);
-            }else{
-                if(isset($retorno['messages'])){
+            } else {
+                if (isset($retorno['messages'])) {
                     Flash::success($retorno['messages'][0]);
                 }
             }
         }
     }
 
-    public function hasServico(){
+    public function hasServico()
+    {
         return $this->itens
             ->pluck('insumo')
             ->pluck('insumoGrupo')
@@ -194,9 +204,13 @@ class Contrato extends Model
 
     public function updateTotal()
     {
-        $this->update(['valor_total' => $this->itens->sum('valor_total')]);
+        $itens = $this->itens()->whereHas('modificacoes', function ($q) {
+            $q->where('contrato_status_id', ContratoStatus::APROVADO);
+        })->get();
+
+
+        $this->update(['valor_total' => $itens->sum('valor_total')]);
 
         return $this;
     }
-
 }

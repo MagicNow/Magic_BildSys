@@ -35,11 +35,11 @@
                         <div class="caption">
                             <div class="card-description">
                                 <!-- Grupos de insumo Field -->
-                                {{--<div class="form-group col-sm-6" style="width:20%">--}}
+                                {{--<div class="form-group col-sm-12 col-20">--}}
                                     {{--{!! Form::label('grupo_id', 'Grupo:') !!}--}}
                                     {{--{!! Form::select('grupo_id', [''=>'-']+$grupos, null, ['class' => 'form-control', 'id'=>'grupo_id','onchange'=>'selectgrupo(this.value, \'subgrupo1_id\', \'grupos\', \'grupo\');']) !!}--}}
                                 {{--</div>--}}
-                                <div class="form-group col-sm-6" style="width:20%">
+                                <div class="form-group col-sm-12 col-20">
                                     <div class="js-datatable-filter-form">
                                         <input type="hidden" name="random" id="random" value="{{str_random(5)}}">
                                         {!! Form::label('grupo_id', 'Grupo:') !!}
@@ -52,11 +52,11 @@
                                 </div>
 
                                 <!-- SubGrupos1 de insumo Field -->
-                                {{--<div class="form-group col-sm-6" style="width:20%">--}}
+                                {{--<div class="form-group col-sm-12 col-20">--}}
                                     {{--{!! Form::label('subgrupo1_id', 'SubGrupo-1:') !!}--}}
                                     {{--{!! Form::select('subgrupo1_id', [''=>'-'], null, ['class' => 'form-control', 'id'=>'subgrupo1_id', 'disabled'=>'disabled', 'onchange'=>'selectgrupo(this.value, \'subgrupo2_id\', \'grupos\', \'subgrupo1\');']) !!}--}}
                                 {{--</div>--}}
-                                <div class="form-group col-sm-6" style="width:20%">
+                                <div class="form-group col-sm-12 col-20">
                                     <div class="js-datatable-filter-form">
                                         {!! Form::label('subgrupo1_id', 'SubGrupo-1:') !!}
                                         {!! Form::select('subgrupo1_id',[''=>'-'], null, [
@@ -69,11 +69,11 @@
                                 </div>
 
                                 <!-- SubGrupos2 de insumo Field -->
-                                {{--<div class="form-group col-sm-6" style="width:20%">--}}
+                                {{--<div class="form-group col-sm-12 col-20">--}}
                                     {{--{!! Form::label('subgrupo2_id', 'SubGrupo-2:') !!}--}}
                                     {{--{!! Form::select('subgrupo2_id', [''=>'-'], null, ['class' => 'form-control', 'id'=>'subgrupo2_id', 'disabled'=>'disabled', 'onchange'=>'selectgrupo(this.value, \'subgrupo3_id\', \'grupos\', \'subgrupo2\');']) !!}--}}
                                 {{--</div>--}}
-                                <div class="form-group col-sm-6" style="width:20%">
+                                <div class="form-group col-sm-12 col-20">
                                     <div class="js-datatable-filter-form">
                                         {!! Form::label('subgrupo2_id', 'SubGrupo-2:') !!}
                                         {!! Form::select('subgrupo2_id',[''=>'-'], null, [
@@ -86,11 +86,11 @@
                                 </div>
 
                                 <!-- SubGrupos3 de insumo Field -->
-                                {{--<div class="form-group col-sm-6" style="width:20%">--}}
+                                {{--<div class="form-group col-sm-12 col-20">--}}
                                     {{--{!! Form::label('subgrupo3_id', 'SubGrupo-3:') !!}--}}
                                     {{--{!! Form::select('subgrupo3_id', [''=>'-'], null, ['class' => 'form-control', 'id'=>'subgrupo3_id', 'disabled'=>'disabled', 'onchange'=>'selectgrupo(this.value, \'servico_id\', \'servicos\', \'subgrupo3\');']) !!}--}}
                                 {{--</div>--}}
-                                <div class="form-group col-sm-6" style="width:20%">
+                                <div class="form-group col-sm-12 col-20">
                                     <div class="js-datatable-filter-form">
                                         {!! Form::label('subgrupo3_id', 'SubGrupo-3:') !!}
                                         {!! Form::select('subgrupo3_id',[''=>'-'], null, [
@@ -103,11 +103,11 @@
                                 </div>
 
                                 <!-- SubGrupos4 de insumo Field -->
-                                {{--<div class="form-group col-sm-6" style="width:20%">--}}
+                                {{--<div class="form-group col-sm-12 col-20">--}}
                                     {{--{!! Form::label('servico_id', 'Serviço:') !!}--}}
                                     {{--{!! Form::select('servico_id', [''=>'-'], null, ['class' => 'form-control', 'id'=>'servico_id', 'disabled'=>'disabled', 'onchange'=>'selectgrupo(this.value, null, \'servicos\', \'servico\')']) !!}--}}
                                 {{--</div>--}}
-                                <div class="form-group col-sm-6" style="width:20%">
+                                <div class="form-group col-sm-12 col-20">
                                     <div class="js-datatable-filter-form">
                                         {!! Form::label('servico_id', 'Serviço:') !!}
                                         {!! Form::select('servico_id',[''=>'-'], null, [
@@ -118,7 +118,7 @@
                                             ]) !!}
                                     </div>
                                 </div>
-                                <div class="form-group col-sm-6">
+                                <div class="form-group col-sm-12 col-20">
                                     <div class="js-datatable-filter-form">
                                         {!! Form::label('planejamento_id', 'Tarefa:') !!}
                                         {!!
@@ -129,7 +129,7 @@
                                             ]) !!}
                                     </div>
                                 </div>
-                                <div class="form-group col-sm-6">
+                                <div class="form-group col-sm-12 col-20">
                                     <div class="js-datatable-filter-form">
                                         {!! Form::label('insumo_grupos_id', 'Grupo de insumo:') !!}
                                         {!!
@@ -208,6 +208,33 @@
         }
 
         function totalCompra(id, obra_id, grupo_id, subgrupo1_id, subgrupo2_id, subgrupo3_id, servico_id, value){
+            if(value == 1){
+                swal({
+                    title: "Motivo",
+                    text: "Informe o motivo de não finalizar a obra:",
+                    type: "input",
+                    showCancelButton: true,
+                    closeOnConfirm: false,
+                    animation: "slide-from-top"
+                },
+                function(inputValue){
+                    if (inputValue === false) return false;
+
+                    if (inputValue === "") {
+                        swal.showInputError("Informe o motivo!");
+                        return false
+                    }else{
+                        ajaxTotalParcial(id, obra_id, grupo_id, subgrupo1_id, subgrupo2_id, subgrupo3_id, servico_id, value, inputValue);
+                        $('.cancel').click();
+                    }
+                });
+            } else {
+                ajaxTotalParcial(id, obra_id, grupo_id, subgrupo1_id, subgrupo2_id, subgrupo3_id, servico_id, value, null);
+            }
+            window.LaravelDataTables["dataTableBuilder"].draw(false);
+        }
+
+        function ajaxTotalParcial(id, obra_id, grupo_id, subgrupo1_id, subgrupo2_id, subgrupo3_id, servico_id, value, inputValue){
             $.ajax({
                 url: "{{url('/compras/'.(isset($obra) ? $obra->id : $planejamento->id).'/totalParcial')}}",
                 data: {
@@ -219,6 +246,7 @@
                     'subgrupo3_id' : subgrupo3_id,
                     'servico_id' : servico_id,
                     'total' : value,
+                    'motivo_nao_finaliza_obra' : inputValue,
                     '_token' : $('meta[name="csrf-token"]').attr('content')
                 },
                 type: "POST"

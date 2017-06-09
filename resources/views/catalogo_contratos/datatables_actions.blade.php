@@ -9,6 +9,5 @@
             'onclick' => "confirmDelete('formDelete".$id."');",
             'title' => ucfirst(trans('common.delete'))
         ]) !!}
-
 </div>
 {!! Form::close() !!}

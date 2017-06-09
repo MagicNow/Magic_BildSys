@@ -62,7 +62,7 @@ class InsumosAprovadosDataTable extends DataTable
                                 AND L.deleted_at IS NULL
                                 AND L.lembrete_tipo_id = 2) ". //-- Subtrai a soma de todos prazos dos lembretes deste insumo
                     ",0)
-                            ) 
+                            )
                             DAY
                         ) ,
                         CURDATE()
@@ -125,7 +125,7 @@ class InsumosAprovadosDataTable extends DataTable
                                 AND L.deleted_at IS NULL
                                 AND L.lembrete_tipo_id = 2) ". //-- Subtrai a soma de todos prazos dos lembretes deste insumo
                 ",0)
-                            ) 
+                            )
                             DAY
                         ) ,
                         CURDATE()
@@ -144,7 +144,7 @@ class InsumosAprovadosDataTable extends DataTable
                     item.id = ordem_de_compra_itens.id
                     AND PL.deleted_at IS NULL
                     AND PC.deleted_at IS NULL
-                LIMIT 1    
+                LIMIT 1
                 ) as sla"),
         ])
             ->join('ordem_de_compras','ordem_de_compras.id','ordem_de_compra_itens.ordem_de_compra_id')
@@ -214,7 +214,7 @@ class InsumosAprovadosDataTable extends DataTable
                                 AND L.deleted_at IS NULL
                                 AND L.lembrete_tipo_id = 2) " . //-- Subtrai a soma de todos prazos dos lembretes deste insumo
                     ",0)
-                            ) 
+                            )
                             DAY
                         ) ,
                         CURDATE()
@@ -233,7 +233,7 @@ class InsumosAprovadosDataTable extends DataTable
                     item.id = ordem_de_compra_itens.id
                     AND PL.deleted_at IS NULL
                     AND PC.deleted_at IS NULL
-                LIMIT 1    
+                LIMIT 1
                 )<=0,'vermelho', IF( (
                 SELECT
                     DATEDIFF(
@@ -259,7 +259,7 @@ class InsumosAprovadosDataTable extends DataTable
                                 AND L.deleted_at IS NULL
                                 AND L.lembrete_tipo_id = 2) " . //-- Subtrai a soma de todos prazos dos lembretes deste insumo
                     ",0)
-                            ) 
+                            )
                             DAY
                         ) ,
                         CURDATE()
@@ -278,7 +278,7 @@ class InsumosAprovadosDataTable extends DataTable
                     item.id = ordem_de_compra_itens.id
                     AND PL.deleted_at IS NULL
                     AND PC.deleted_at IS NULL
-                LIMIT 1    
+                LIMIT 1
                 ) >30,'verde','amarelo') )"), $this->request()->get('farol'));
             }
         }
@@ -297,6 +297,7 @@ class InsumosAprovadosDataTable extends DataTable
             ->columns($this->getColumns())
             ->ajax('')
             ->parameters([
+                'responsive'=> 'true',
                 'initComplete' => 'function () {
                     max = this.api().columns().count();
                     this.api().columns().every(function (col) {
@@ -364,7 +365,7 @@ class InsumosAprovadosDataTable extends DataTable
             'qtd' => ['name' => 'ordem_de_compra_itens.qtd', 'data' => 'qtd'],
 //            'urgente' => ['name' => 'ordem_de_compra_itens.emergencial', 'data' => 'ordem_de_compra_itens.emergencial'],
             'sla' => ['name' => 'sla', 'data' => 'sla'],
-            'action' => ['title' => 'Selecionar', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10px'],
+            'action' => ['title' => 'Selecionar', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10px', 'class' => 'all'],
         ];
     }
 

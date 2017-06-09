@@ -4,7 +4,7 @@
 @section('content')
     <section class="content-header">
         <h1>
-            Detalhes do Contrato #{{ $contrato->id }}
+            Detalhes do Contrato #{{ $contrato->id . ' Obra '.$contrato->obra->nome }}
             @if($contrato->contrato_status_id < 4 )
                 @if(isset($workflowAprovacao))
                     @if($workflowAprovacao['podeAprovar'])
@@ -83,10 +83,35 @@
                    style="color:{{ $contrato->status->cor }}"></i>
                 {{ $contrato->status->nome }}
             </small>
+
+            @if($contrato->contrato_status_id == 5 && $contrato->hasServico() )
+                <a href="{{ Storage::url($contrato->arquivo) }}" download="contrato_{{ $contrato->id }}.pdf" target="_blank"
+                   class="btn btn-lg btn-flat btn-success pull-right" title="Imprimir Contrato assinado pelo fornecedor">
+                    <i class="fa fa-print"></i>
+                </a>
+            @endif
         </h1>
     </section>
 
     <div class="content">
+        @if($contrato->contrato_status_id == 4 || (is_null($contrato->arquivo) && $contrato->contrato_status_id == 5)  )
+        {!! Form::open(['url'=>'/contratos/'.$contrato->id.'/envia-contrato', 'files'=> true ]) !!}
+            <div class="box box-warning">
+                <div class="box-header with-border">
+                    Enviar contrato assinado
+                </div>
+                <div class="box-body">
+                    <div class="col-md-10">
+                        {!! Form::file('arquivo',['class'=>'form-control']) !!}
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-flat btn-success btn-block"><i class="fa fa-upload"></i> Enviar {{ $contrato->contrato_status_id == 4? ' e Liberar':'' }}</button>
+                    </div>
+                </div>
+            </div>
+        {!! Form::close() !!}
+        @endif
+
         <div class="row">
             <div class="col-sm-4">
                 <div class="box box-muted">
@@ -115,6 +140,33 @@
                     </div>
                 </div>
             </div>
+            <div class="col-sm-4">
+                <div class="box box-muted">
+                    <div class="box-header with-border">
+                        Sumarização
+                    </div>
+                    <div class="box-body">
+                        <table class="table table-striped table-bordered">
+                            <tr>
+                                <th>Valor Inicial</th>
+                                <td>{{ float_to_money($valor_inicial) }}</td>
+                            </tr>
+                            <tr>
+                                <th>Valor Atual</th>
+                                <td>{{ float_to_money($contrato->valor_total) }}</td>
+                            </tr>
+                            <tr>
+                                <th>Valor Medido</th>
+                                <td>{{ float_to_money(0.00) }}</td>
+                            </tr>
+                            <tr>
+                                <th>Saldo</th>
+                                <td>{{ float_to_money($contrato->valor_total) }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="box box-muted">
             <div class="box-body">
@@ -128,6 +180,12 @@
 
     <div class="hidden">
         {!! Form::select('motivo', $motivos, null, ['id' => 'motivo']) !!}
+    </div>
+
+    <div class="content">
+        <a href="{!! route('contratos.index') !!}" class="btn btn-default btn-flat btn-lg">
+            <i class="fa fa-arrow-left"></i> {{ ucfirst( trans('common.back') )}}
+        </a>
     </div>
 
     <div class="modal centered-modal fade" id="modal-reapropriar" tabindex="-1" role="dialog">
@@ -232,6 +290,41 @@
             </div>
         </div>
     </div>
+  </div>
+
+  <div class="modal centered-modal fade" id="modal-editar" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title">Editar Aditivo</h4>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="qtd">Quantidade</label>
+            {!! Form::text('qtd', null, ['class' => 'form-control money']) !!}
+          </div>
+          <div class="form-group">
+            <label for="valor">Valor</label>
+            <div class="input-group">
+              <span class="input-group-addon">R$</span>
+              {!! Form::text('valor', null, ['class' => 'form-control money']) !!}
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger btn-flat" data-dismiss="modal">
+            Cancelar
+          </button>
+          <button type="button" class="btn btn-success btn-flat js-save">
+            Salvar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 @endsection
 
 @section('scripts')

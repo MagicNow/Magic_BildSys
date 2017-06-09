@@ -1,4 +1,4 @@
-@extends('layouts.front')
+@extends((!isset($isModal) || !$isModal)? 'layouts.front' : 'layouts.modal')
 
 @section('scripts')
   @parent
@@ -7,9 +7,13 @@
 
 @section('content')
   <section class="content-header">
-    <h1>Contratos</h1>
+    <h1>
+      Contratos
+      <a href="{{ url('/contratos/atualizar-valor') }}" class="btn btn-lg btn-flat btn-info pull-right"> <i class="fa fa-refresh"></i>  Atualizar valores</a>
+    </h1>
   </section>
-  <div class="content">
+  <div class="content" style="clear: both">
+    @if(!isset($isModal) || !$isModal)
     <div class="box box-muted">
       <div class="box-body">
         @include('partials.grupos-de-orcamento')
@@ -54,6 +58,7 @@
         </div>
       </div>
     </div>
+    @endif
     <div class="box box-muted">
       <div class="box-body">
         @include('contratos.table')

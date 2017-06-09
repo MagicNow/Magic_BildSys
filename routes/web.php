@@ -13,6 +13,10 @@
 
 Auth::routes();
 
+// Notifications
+$router->get('/notifications', 'NotificationController@index');
+$router->post('/notifications/{id}/mark-as-read', 'NotificationController@markAsRead');
+
 ##### Buscas #####
 $router->get('/admin/catalogo-acordos/buscar/busca_insumos', ['as' => 'catalogo_contratos.busca_insumos', 'uses' => 'CatalogoContratoController@buscaInsumos']);
 $router->get('/admin/solicitacaoInsumos/buscar/grupos_insumos', 'Admin\SolicitacaoInsumoController@buscaGruposInsumos');
@@ -31,11 +35,6 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
     # Home
     $router->get('/home', 'Admin\HomeController@index');
     $router->get('/', 'Admin\HomeController@index');
-
-    # Verifica Notificações
-    $router->post('verifyNotification', 'Admin\HomeController@verifyNotifications');
-    # Update Notificações visualizadas
-    $router->get('updateNotification/{id}', 'Admin\NotificacaoController@updateNotification');
 
     #importação de planilhas de orçamentos
     $router->group(['middleware' => 'needsPermission:orcamentos.import'], function () use ($router) {
@@ -392,27 +391,14 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
         $router->get('/{contratoTemplates}/edit', ['as' => 'admin.contratoTemplates.edit', 'uses' => 'Admin\ContratoTemplateController@edit'])
             ->middleware('needsPermission:contratoTemplates.edit');
     });
-
-    # Configuracao Estatica
-//    Route::resource('configuracaoEstaticas', 'ConfiguracaoEstaticaController');
-    $router->group(['prefix'=>'configuracaoEstaticas', 'middleware' => 'needsPermission:configuracaoEstaticas.list'], function () use ($router) {
-        $router->get('configuracaoEstaticas', ['as' => 'admin.configuracaoEstaticas.index', 'uses' => 'Admin\ConfiguracaoEstaticaController@index']);
-        $router->post('configuracaoEstaticas', ['as' => 'admin.configuracaoEstaticas.store', 'uses' => 'Admin\ConfiguracaoEstaticaController@store']);
-        $router->get('configuracaoEstaticas/create', ['as' => 'admin.configuracaoEstaticas.create', 'uses' => 'Admin\ConfiguracaoEstaticaController@create']);
-        $router->put('configuracaoEstaticas/{configuracaoEstaticas}', ['as' => 'admin.configuracaoEstaticas.update', 'uses' => 'Admin\ConfiguracaoEstaticaController@update'])
-            ->middleware('needsPermission:configuracaoEstaticas.edit');
-        $router->patch('configuracaoEstaticas/{configuracaoEstaticas}', ['as' => 'admin.configuracaoEstaticas.update', 'uses' => 'Admin\ConfiguracaoEstaticaController@update'])
-            ->middleware('needsPermission:configuracaoEstaticas.edit');
-        $router->delete('configuracaoEstaticas/{configuracaoEstaticas}', ['as' => 'admin.configuracaoEstaticas.destroy', 'uses' => 'Admin\ConfiguracaoEstaticaController@destroy']);
-        $router->get('configuracaoEstaticas/{configuracaoEstaticas}', ['as' => 'admin.configuracaoEstaticas.show', 'uses' => 'Admin\ConfiguracaoEstaticaController@show']);
-        $router->get('configuracaoEstaticas/{configuracaoEstaticas}/edit', ['as' => 'admin.configuracaoEstaticas.edit', 'uses' => 'Admin\ConfiguracaoEstaticaController@edit'])
-            ->middleware('needsPermission:configuracaoEstaticas.edit');
-    });
-
 });
 
 ##### SITE #####
 $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($router) {
+
+    // Perfil
+    $router->get('/perfil', 'PerfilController@index');
+    $router->post('/perfil', 'PerfilController@save');
 
     # Home
     $router->get('/', 'HomeController@index');
@@ -430,7 +416,8 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         ->middleware("needsPermission:quadroDeConcorrencias.create");
     $router->group(['middleware' => 'needsPermission:ordens_de_compra.list'], function () use ($router) {
         $router->get('/ordens-de-compra/detalhes/{id}', 'OrdemDeCompraController@detalhe')
-            ->middleware("needsPermission:ordens_de_compra.detalhes");
+            ->middleware("needsPermission:ordens_de_compra.detalhes")
+            ->name("ordens_de_compra.detalhes");
         $router->get('/ordens-de-compra/carrinho', 'OrdemDeCompraController@carrinho');
         $router->post('/ordens-de-compra/carrinho/comprar-tudo-de-tudo', 'OrdemDeCompraController@comprarTudoDeTudo');
         $router->get('/ordens-de-compra/carrinho/indicar-contrato', 'OrdemDeCompraController@indicarContrato');
@@ -443,6 +430,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->get('/ordens-de-compra/carrinho/alterar-quantidade/{id}', 'OrdemDeCompraController@alterarQuantidade');
         $router->get('/ordens-de-compra/carrinho/alterar-valor-unitario/{id}', 'OrdemDeCompraController@alteraValorUnitario');
         $router->get('/ordens-de-compra/carrinho/remover-item/{id}', 'OrdemDeCompraController@removerItem');
+        $router->get('/ordens-de-compra/carrinho/limpar-carrinho/{ordem_de_compra_id}', 'OrdemDeCompraController@limparCarrinho');
         $router->get('/ordens-de-compra/detalhes-servicos/{obra_id}/{servico_id}', 'OrdemDeCompraController@detalhesServicos')
             ->middleware("needsPermission:ordens_de_compra.detalhes_servicos");
         $router->get('ordens-de-compra/grupos/{id}', 'OrdemDeCompraController@getGrupos');
@@ -452,7 +440,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     });
 
 
-    # Dashboard site
+    # Dashboard site ORDEM DE COMPRA
     $router->group(['middleware' => 'needsPermission:site.dashboard'], function () use ($router) {
         $router->get('compras/jsonOrdemCompraDashboard', 'OrdemDeCompraController@jsonOrdemCompraDashboard');
         $router->get('compras/dashboard', 'OrdemDeCompraController@dashboard');
@@ -523,6 +511,13 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
                 'QuadroDeConcorrenciaController@gerarContrato'
             )->name('quadroDeConcorrencia.informar-valor')
                 ->middleware('needsPermission:quadroDeConcorrencias.edit');
+
+            $router->post(
+                'remover-itens',
+                'QuadroDeConcorrenciaController@removerItens'
+            )
+            ->name('quadroDeConcorrencia.remover-item')
+            ->middleware('needsPermission:quadroDeConcorrencias.edit');
 
             $router->post(
                 '/{quadroDeConcorrencias}/informar-valor',
@@ -645,8 +640,16 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
                     'as' => 'quadroDeConcorrencias.adicionar',
                     'uses' => 'QuadroDeConcorrenciaController@adicionar'
                 ])->middleware("needsPermission:quadroDeConcorrencias.edit");
+
+            # Dashboard site QUADRO DE CONCORRÊNCIA
+            $router->get('/view/dashboard',
+                [
+                    'as' => 'quadroDeConcorrencias.dashboard',
+                    'uses' => 'QuadroDeConcorrenciaController@dashboard'
+                ])->middleware("needsPermission:quadroDeConcorrencias.dashboard");
         }
     );
+
     # Template de Contrato
     $router->get('/contrato-template/{contratoTemplates}/campos', 'Admin\ContratoTemplateController@camposExtras');
 
@@ -699,10 +702,48 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             '/{contratos}/imprimir',
             ['as' => 'contratos.imprimirContrato', 'uses' => 'ContratoController@imprimirContrato']
         );
+        $router->post(
+            '/{contratos}/envia-contrato',
+            ['as' => 'contratos.enviaContrato', 'uses' => 'ContratoController@validaEnvioContrato']
+        );
+        $router->get(
+            '/atualizar-valor',
+            [
+                'as' => 'contratos.atualizar-valor',
+                'uses' => 'ContratoController@atualizarValor'
+            ]
+        )->middleware('needsPermission:contratos.edit');
+        $router->post(
+            '/atualizar-valor',
+            [
+                'as' => 'contratos.atualizar-valor-save',
+                'uses' => 'ContratoController@atualizarValorSave'
+            ]
+        )->middleware('needsPermission:contratos.edit');
+        $router->get(
+            '/fornecedores-por-obras',
+            'ContratoController@pegaFornecedoresPelasObras'
+        )->middleware('needsPermission:contratos.edit');
+        $router->get(
+            '/insumos-por-fornecedor',
+            'ContratoController@insumosPorFornecedor'
+        )->middleware('needsPermission:contratos.edit');
+        $router->get(
+            '/insumo-valor',
+            'ContratoController@insumoValor'
+        )->middleware('needsPermission:contratos.edit');
+
         $router->get(
             '/{contratos}',
             ['as' => 'contratos.show', 'uses' => 'ContratoController@show']
         )->middleware('needsPermission:contratos.show');
+        $router->post(
+            '/editar-item/{item}',
+            [
+                'as' => 'contratos.editar-item',
+                'uses' => 'ContratoController@editarItem'
+            ]
+        )->middleware('needsPermission:contratos.edit');
         $router->post(
             '/reajustar-item/{item}',
             [
@@ -730,7 +771,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
                 'uses' => 'ContratoController@distratarItem'
             ]
         )->middleware('needsPermission:contratos.distratar');
-        
+
         $router->get(
             '/{contratos}/editar',
             ['as' => 'contratos.edit', 'uses' => 'ContratoController@edit']
@@ -739,6 +780,22 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             '/{contratos}/update',
             ['as' => 'contratos.update', 'uses' => 'ContratoController@update']
         );
+    });
+
+    # Configuracao Estatica
+    $router->group(['middleware' => 'needsPermission:configuracaoEstaticas.list'], function () use ($router) {
+        $router->get('configuracaoEstaticas', ['as' => 'configuracaoEstaticas.index', 'uses' => 'ConfiguracaoEstaticaController@index']);
+        $router->post('configuracaoEstaticas', ['as' => 'configuracaoEstaticas.store', 'uses' => 'ConfiguracaoEstaticaController@store']);
+        $router->get('configuracaoEstaticas/create', ['as' => 'configuracaoEstaticas.create', 'uses' => 'ConfiguracaoEstaticaController@create']);
+        $router->put('configuracaoEstaticas/{configuracaoEstaticas}', ['as' => 'configuracaoEstaticas.update', 'uses' => 'ConfiguracaoEstaticaController@update'])
+            ->middleware('needsPermission:configuracaoEstaticas.update');
+        $router->patch('configuracaoEstaticas/{configuracaoEstaticas}', ['as' => 'configuracaoEstaticas.update', 'uses' => 'ConfiguracaoEstaticaController@update'])
+            ->middleware('needsPermission:configuracaoEstaticas.update');
+        $router->delete('configuracaoEstaticas/{configuracaoEstaticas}', ['as' => 'configuracaoEstaticas.destroy', 'uses' => 'ConfiguracaoEstaticaController@destroy']);
+        $router->get('configuracaoEstaticas/{configuracaoEstaticas}', ['as' => 'configuracaoEstaticas.show', 'uses' => 'ConfiguracaoEstaticaController@show'])
+            ->middleware('needsPermission:configuracaoEstaticas.show');
+        $router->get('configuracaoEstaticas/{configuracaoEstaticas}/edit', ['as' => 'configuracaoEstaticas.edit', 'uses' => 'ConfiguracaoEstaticaController@edit'])
+            ->middleware('needsPermission:configuracaoEstaticas.edit');
     });
 
 

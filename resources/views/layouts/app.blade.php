@@ -121,36 +121,18 @@
                         <li class="dropdown notifications-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                                 <i class="fa fa-bell-o"></i>
-                                {{--<span class="label label-warning">{{count($notifications)}}</span>--}}
-                                <span class="label label-success" id="count_notifications"></span>
+                                <span class="label label-success notification-counter"></span>
                             </a>
                             <ul class="dropdown-menu">
-                                {{--<li class="header">Você tem {{count($notifications)}} notificações</li>--}}
-                                <li class="header">Você tem <span id="count_notification"></span> notificações</li>
-                                <li>
-                                    <!-- inner menu: contains the actual data -->
-                                    <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 200px;"><ul class="menu" style="overflow: hidden; width: 100%; height: 200px;">
-                                            {{--@if(isset($notifications))--}}
-                                                {{--@foreach($notifications as $notification)--}}
-                                                    {{--@if($notification->success)--}}
-                                                    {{--<li>--}}
-                                                        {{--<a href="#" data-toggle="modal" data-target="#myModalsuccess" onclick="visualizedNotification('{{$notification->id}}')">--}}
-                                                            {{--<i class="fa fa-check text-green"></i> Importação com sucesso--}}
-                                                        {{--</a>--}}
-                                                    {{--</li>--}}
-                                                    {{--@elseif($notification->error)--}}
-                                                    {{--<li>--}}
-                                                        {{--<a href="#" data-toggle="modal" data-target="#myModalerror" onclick="visualizedNotification('{{$notification->id}}')">--}}
-                                                            {{--<i class="fa fa-warning text-yellow"></i> Erro na importação--}}
-                                                        {{--</a>--}}
-                                                    {{--</li>--}}
-                                                    {{--@endif--}}
-                                                {{--@endforeach--}}
-                                            {{--@endif--}}
-                                            <li id="new_notifications"></li>
-                                        </ul><div class="slimScrollBar" style="background: rgb(0, 0, 0); width: 3px; position: absolute; top: 0px; opacity: 0.4; display: block; border-radius: 7px; z-index: 99; right: 1px;"></div><div class="slimScrollRail" style="width: 3px; height: 100%; position: absolute; top: 0px; display: none; border-radius: 7px; background: rgb(51, 51, 51); opacity: 0.2; z-index: 90; right: 1px;"></div></div>
+                                <li class="header">
+                                    Você tem <span class="notification-counter"></span>
+                                    notificações
                                 </li>
-                                {{--<li class="footer"><a href="#">Todas notificações</a></li>--}}
+                                <li>
+                                    <ul class="menu">
+                                        <li id="new_notifications"></li>
+                                    </ul>
+                                </li>
                             </ul>
                         </li>
 
@@ -199,59 +181,7 @@
             </nav>
         </header>
 
-        <!-- Modal SUCCESS-->
-        <div class="modal fade" id="myModalsuccess" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="myModalLabel">Importação com sucesso</h4>
-                    </div>
-                    <div class="modal-body">
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-hover table-condensed">
-                                <tbody>
-                                    <tr>
-                                        <td>Dados importados com sucesso.</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal ERROR-->
-        <div class="modal fade" id="myModalerror" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="myModalLabel">Erros Importação</h4>
-                    </div>
-                    <div class="modal-body">
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-hover table-condensed">
-                                <tbody id="error_import">
-                                {{--@foreach($notification->error as $error)--}}
-                                    {{--<tr>--}}
-                                        {{--<td>{{ $error }}</td>--}}
-                                    {{--</tr>--}}
-                                {{--@endforeach--}}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        @include('partials.modals-importacao')
 
         <!-- Left side column. contains the logo and sidebar -->
         @include('layouts.sidebar')
@@ -364,51 +294,6 @@
                 closeOnConfirm: false
             }, function () {
                 formulary.submit();
-            });
-        }
-
-        function visualizedNotification($id){
-            $.ajax({
-                url: "/admin/updateNotification/" + $id
-            });
-        }
-
-        $(document).ready(function()
-        {
-            pullData();
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-        });
-
-        function pullData()
-        {
-            verifyNotification();
-            setTimeout(pullData,10000);
-        }
-        var token = '{{csrf_token()}}';
-        function verifyNotification()
-        {
-            $.post('/admin/verifyNotification',{_token: token}, function(data)
-            {
-                $('#count_notifications').html(data.length);
-                $('#count_notification').html(data.length);
-                $('#new_notifications').html('');
-//                $('#error_import').html('');
-                $.each(data, function(index, val) {
-                    if(val.success){
-                        $('#new_notifications').append('<a href="#" data-toggle="modal" data-target="#myModalsuccess" onclick="visualizedNotification(\''+val.id+'\');"><i class="fa fa-check text-green"></i> Importação com sucesso</a>');
-                    }else{
-                        if(val.error) {
-                            $.each(val.error, function (index, val) {
-                                $('#error_import').append('<tr><td>' + val + '</td></tr>');
-                            });
-                        }
-                        $('#new_notifications').append('<a href="#" data-toggle="modal" data-target="#myModalerror" onclick="visualizedNotification(\''+val.id+'\');"><i class="fa fa-warning text-yellow"></i> Erro na importação</a>');
-                    }
-                });
             });
         }
     </script>

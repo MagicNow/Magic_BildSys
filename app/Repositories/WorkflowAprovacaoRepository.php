@@ -13,6 +13,8 @@ use phpDocumentor\Reflection\Types\String_;
 use App\Models\WorkflowTipo;
 use App\Models\Contrato;
 use App\Models\ContratoItemModificacao;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\WorkflowNotification;
 
 class WorkflowAprovacaoRepository
 {
@@ -50,6 +52,7 @@ class WorkflowAprovacaoRepository
                 ->where('workflow_alcadas.id', $alcada_atual->id)
                 ->first();
 
+
             if (!$workflowUsuario) {
                 $workflowUsuario = WorkflowUsuario::select(['workflow_usuarios.*', 'workflow_alcadas.ordem'])
                     ->join('workflow_alcadas', 'workflow_alcadas.id', '=', 'workflow_usuarios.workflow_alcada_id')
@@ -73,11 +76,14 @@ class WorkflowAprovacaoRepository
                 ];
             }
 
+
             // Verifica se a já é a alçada atual que o usuário está já aprovou
             $jaAprovou = $obj->aprovacoes()
                 ->where('user_id', $user->id)
                 ->where('workflow_alcada_id', $alcada_atual->id)
+                ->where('created_at', '>=', $obj->updated_at)
                 ->first();
+
 
             if ($jaAprovou) {
                 return [
@@ -141,6 +147,26 @@ class WorkflowAprovacaoRepository
             'aprovacao' => null,
             'msg' => 'Item não encontrado'
         ];
+    }
+
+    /**
+     * Collection de usuários da alçada atual
+     *
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    public static function usuariosDaAlcadaAtual($model)
+    {
+        $class_name = get_class($model);
+        $alcada_atual = static::verificaAlcadaAtual(
+            class_basename($model),
+            $model->irmaosIds(),
+            WorkflowTipo::find($class_name::$workflow_tipo_id)
+        );
+
+        $user_ids = WorkflowUsuario::where('workflow_alcada_id', $alcada_atual->id)
+            ->pluck('user_id');
+
+        return User::whereIn('id', $user_ids->all())->get();
     }
 
     /**
@@ -386,7 +412,6 @@ class WorkflowAprovacaoRepository
                 $obj->paiEmAprovacao();
             }
 
-
             // Se não for, verifica se já é a última
             $qtd_aprovadores = self::verificaQuantidadeUsuariosAprovadores($workflow_tipo, $obj->qualObra(), null, $ids, $tipo);
 
@@ -394,12 +419,19 @@ class WorkflowAprovacaoRepository
                 // Divide a qtd de aprovações/reprovações pela quantidade de aprovadores
                 $avaliacoes = $total_ja_votado['total_avaliado'] / $qtd_aprovadores;
 
-                if ($avaliacoes === 1) {
+                if ($avaliacoes === 1 || !$workflowAprovacao->aprovado) {
                     // Se for já salva se foi aprovado ou reprovado
                     $obj->aprova($total_ja_votado['total_aprovado'] === $total_ja_votado['total_avaliado']);
 
                     // Chama função do model do item que irá verificar batendo no pai se todos os filhos foram aprovados
                     $obj->confereAprovacaoGeral();
+                } else {
+                    $alcada_atual = self::verificaAlcadaAtual($tipo, $ids, $workflow_tipo);
+
+                    if($alcada_atual->id != $workflowUsuario->workflow_alcada_id) {
+                        $aprovadores = self::usuariosDaAlcadaAtual($obj);
+                        Notification::send($aprovadores, new WorkflowNotification($obj));
+                    }
                 }
             }
         } catch (Exception $e) {
@@ -485,7 +517,6 @@ class WorkflowAprovacaoRepository
         $qtd_usuarios = 0;
 
         $workflow_alcadas = WorkflowAlcada::where('workflow_tipo_id', $workflow_tipo->id);
-
 
         if ($workflow_tipo->usa_valor_minimo && $ids && $tipo) {
             $class = "App\\Models\\{$tipo}";

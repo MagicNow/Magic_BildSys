@@ -17,6 +17,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use InfyOm\Generator\Common\BaseRepository;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
+use App\Models\Contrato;
+use App\Models\QcStatus;
 
 class QuadroDeConcorrenciaRepository extends BaseRepository
 {
@@ -31,9 +34,136 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
         'rodada_atual'
     ];
 
+    public static function verificaQCAutomatico()
+    {
+        // Varre itens aprovados existe algum catalogo_contrato vigente
+        $itens_aprovados_com_acordos = OrdemDeCompraItem::query()
+            ->select([
+                'ordem_de_compra_itens.insumo_id',
+                DB::raw('GROUP_CONCAT(ordem_de_compra_itens.id) oc_itens_ids'),
+                DB::raw('SUM(ordem_de_compra_itens.qtd) qtd'),
+                'catalogo_contrato_insumos.id as catalogo_contrato_insumo_id'
+            ])
+            ->join('ordem_de_compras', 'ordem_de_compras.id', 'ordem_de_compra_itens.ordem_de_compra_id')
+            ->join('obras', 'obras.id', 'ordem_de_compra_itens.obra_id')
+            ->join('insumos', 'insumos.id', 'ordem_de_compra_itens.insumo_id')
+            ->join('catalogo_contrato_insumos', 'catalogo_contrato_insumos.insumo_id', 'ordem_de_compra_itens.insumo_id')
+            ->join('catalogo_contratos', 'catalogo_contratos.id', 'catalogo_contrato_insumos.catalogo_contrato_id')
+            ->where('ordem_de_compras.aprovado', '1')
+            ->whereNotExists(function ($query) {
+                $query->select(DB::raw('1'))
+                    ->from('oc_item_qc_item')
+                    ->where('ordem_de_compra_item_id', DB::raw('ordem_de_compra_itens.id'));
+            })
+            ->where('catalogo_contratos.periodo_inicio', '<=', date('Y-m-d'))
+            ->where('catalogo_contratos.periodo_termino', '>=', date('Y-m-d'))
+            ->groupBy('ordem_de_compra_itens.insumo_id', 'catalogo_contrato_insumos.id')
+            ->get();
+
+        if (!$itens_aprovados_com_acordos->count()) {
+            return false;
+        }
+
+        // Se existe verifica se as quantidades requisitadas estão dentro dos requisitos
+        $gerar_qc_itens = [];
+        $fornecedores_ids = [];
+        foreach ($itens_aprovados_com_acordos as $item) {
+            $item_acordo = CatalogoContratoInsumo::find($item->catalogo_contrato_insumo_id);
+            // Verifica se a qtd mínima é atendidida
+            if ($item->getOriginal('qtd') >= $item_acordo->getOriginal('pedido_minimo')) {
+                // Verifica se a qtd multipla é atendida
+                if (($item->getOriginal('qtd') % floatval($item_acordo->getOriginal('pedido_multiplo_de'))) == 0) {
+                    $gerar_qc_itens[$item->insumo_id] = [
+                        'ids' => explode(',', $item->oc_itens_ids),
+                        'insumo_id' => $item->insumo_id,
+                        'qtd' => $item->getOriginal('qtd'),
+                        'fornecedor_id' => $item_acordo->catalogo->fornecedor_id,
+                        'valor' => $item_acordo->getOriginal('valor_unitario')
+                    ];
+                    $fornecedores_ids[$item_acordo->catalogo->fornecedor_id] = $item_acordo->catalogo->fornecedor_id;
+                }
+            }
+        }
+        // Se estão gera um QC automatico com os itens que são atendidos por aquele catálogo
+        if (count($gerar_qc_itens)) {
+            $quadroDeConcorrencia = QuadroDeConcorrencia::create([
+                'user_id' => null,
+                'qc_status_id' => 1,
+                'obrigacoes_fornecedor' => ConfiguracaoEstatica::find(1)->valor,
+                'obrigacoes_bild' => ConfiguracaoEstatica::find(2)->valor,
+                'rodada_atual' => 1
+            ]);
+
+            // Cadastra os itens do quadro de concorrência
+            foreach ($gerar_qc_itens as $qc_item_array) {
+                $qc_item = QcItem::create([
+                    'quadro_de_concorrencia_id' => $quadroDeConcorrencia->id,
+                    'qtd' => $qc_item_array['qtd'],
+                    'insumo_id' => $qc_item_array['insumo_id']
+                ]);
+                $qc_item->oc_itens()->sync($qc_item_array['ids']);
+            }
+
+            // Salva o primeiro status log
+            QcStatusLog::create([
+                'quadro_de_concorrencia_id' => $quadroDeConcorrencia->id,
+                'qc_status_id' => $quadroDeConcorrencia->qc_status_id,
+            ]);
+            $quadroDeConcorrencia->qc_status_id = 2;
+            QcStatusLog::create([
+                'quadro_de_concorrencia_id' => $quadroDeConcorrencia->id,
+                'qc_status_id' => $quadroDeConcorrencia->qc_status_id,
+            ]);
+
+            // Amarra os fornecedores no QC
+            foreach ($fornecedores_ids as $fornecedor_id) {
+                $qc_fornecedor = QcFornecedor::create([
+                    'quadro_de_concorrencia_id' => $quadroDeConcorrencia->id,
+                    'fornecedor_id' => $fornecedor_id,
+                    'rodada' => $quadroDeConcorrencia->rodada_atual,
+                    'nf_material' => 1
+                ]);
+            }
+
+
+            $quadroDeConcorrencia->qc_status_id = 7;
+            QcStatusLog::create([
+                'quadro_de_concorrencia_id' => $quadroDeConcorrencia->id,
+                'qc_status_id' => $quadroDeConcorrencia->qc_status_id,
+            ]);
+
+            // Após gerado, já lança os valores daqueles fornecedores pelo firmado no acordo
+            foreach ($quadroDeConcorrencia->itens as $item) {
+                $acordo_item = $gerar_qc_itens[$item->insumo_id];
+                $qc_fornecedor = QcFornecedor::where('quadro_de_concorrencia_id', $quadroDeConcorrencia->id)
+                    ->where('fornecedor_id', $acordo_item['fornecedor_id'])
+                    ->first();
+                QcItemQcFornecedor::create([
+                    'qc_item_id' => $item->id,
+                    'qc_fornecedor_id' => $qc_fornecedor->id,
+                    'qtd' => $item->getOriginal('qtd'),
+                    'valor_unitario' => $acordo_item['valor'],
+                    'valor_total' => ($acordo_item['valor'] * $item->getOriginal('qtd')),
+                    'vencedor' => 1,
+                    'data_decisao' => date('Y-m-d H:i:s')
+                ]);
+            }
+
+            // Finaliza o QC
+
+            $quadroDeConcorrencia->qc_status_id = 8;
+            QcStatusLog::create([
+                'quadro_de_concorrencia_id' => $quadroDeConcorrencia->id,
+                'qc_status_id' => $quadroDeConcorrencia->qc_status_id,
+            ]);
+            $quadroDeConcorrencia->save();
+        }
+    }
+
     public function create(array $attributes)
     {
         $itens = $attributes['itens'];
+
         $attributes = [
             'user_id' => $attributes['user_id'],
             'qc_status_id' => 1,
@@ -59,9 +189,40 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
         return $this->parserResult($model);
     }
 
+    public function adicionaItens($itens, QuadroDeConcorrencia $quadroDeConcorrencia)
+    {
+        // Busca e agrupa intens conforme o tipo
+        $oc_itens = $itens instanceof Collection
+            ? $itens
+            : OrdemDeCompraItem::whereIn('id', $itens)->get();
+
+        $qc_itens_array = [];
+        foreach ($oc_itens as $oc_item) {
+            if (isset($qc_itens_array[$oc_item->insumo_id])) {
+                $qc_itens_array[$oc_item->insumo_id]['qtd'] += floatval($oc_item->getOriginal('qtd'));
+            } else {
+                $qc_itens_array[$oc_item->insumo_id]['qtd'] = floatval($oc_item->getOriginal('qtd'));
+            }
+            $qc_itens_array[$oc_item->insumo_id]['insumo_id'] = $oc_item->insumo_id;
+            $qc_itens_array[$oc_item->insumo_id]['ids'][] = $oc_item->id;
+        }
+
+        // Cadastra os itens do quadro de concorrência
+        foreach ($qc_itens_array as $qc_item_array) {
+            $qc_item = QcItem::create([
+                'quadro_de_concorrencia_id' => $quadroDeConcorrencia->id,
+                'qtd' => $qc_item_array['qtd'],
+                'insumo_id' => $qc_item_array['insumo_id']
+            ]);
+            $qc_item->oc_itens()->sync($qc_item_array['ids']);
+        }
+    }
+
     public function update(array $attributes, $id)
     {
-        if(isset($attributes['itens'])){
+        $qc = $this->findWithoutFail($id);
+
+        if (isset($attributes['itens'])) {
             $model = $this->findWithoutFail($id);
             $this->adicionaItens($attributes['itens'], $model);
             return $model;
@@ -76,7 +237,10 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
                     if (!isset($attributes['qcFornecedores'])) {
                         $attributes['qcFornecedores'] = [];
                     }
-                    $attributes['qcFornecedores'][] = ['fornecedor_id'=>$fornecedor->id,'user_id'=>$attributes['user_update_id']];
+                    $attributes['qcFornecedores'][] = [
+                        'fornecedor_id' => $fornecedor->id,
+                        'user_id' => $attributes['user_update_id']
+                    ];
                 }
             }
         }
@@ -87,6 +251,21 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
                 }
             }
         }
+
+        if(count($attributes['qcFornecedores'])){
+            foreach ($attributes['qcFornecedores'] as $qcFornecedor){
+
+                $qcF = QcFornecedor::firstOrCreate([
+                    'fornecedor_id'=> $qcFornecedor['fornecedor_id'],
+                    'rodada'=>$qc->rodada_atual,
+                    'quadro_de_concorrencia_id'=>$qc->id
+                    ],[
+                    'user_id' => $attributes['user_update_id']
+                ]);
+            }
+            unset($attributes['qcFornecedores']);
+        }
+
         // Have to skip presenter to get a model not some data
         $temporarySkipPresenter = $this->skipPresenter;
         $this->skipPresenter(true);
@@ -124,45 +303,62 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
         $mensagens = [];
         switch ($acao) {
             // Ação para Abrir concorrência (onde enviará e-mail aos fornecedores para acessarem e lançarem os preços)
-        case 'inicia-concorrencia':
-            // Altera o status do Q.C.
-            $quadroDeConcorrencia->qc_status_id = 7;
-            $quadroDeConcorrencia->save();
-            QcStatusLog::create([
-                'quadro_de_concorrencia_id' => $quadroDeConcorrencia->id,
-                'qc_status_id' => $quadroDeConcorrencia->qc_status_id, // Em Concorrência
-                'user_id' => $user_id
-            ]);
-            // Envia os avisos aos fornecedores sobre o Q.C.
-            $qcFornecedores = $quadroDeConcorrencia->qcFornecedores;
-            foreach ($qcFornecedores as $qcFornecedor) {
-                // Verifica se o fornecedor tem usuário
-                if ($qcFornecedor->fornecedor) {
-                    $fornecedor = $qcFornecedor->fornecedor;
-                    $this->notifyFornecedor($fornecedor, $quadroDeConcorrencia);
+            case 'inicia-concorrencia':
+                // Altera o status do Q.C.
+                $quadroDeConcorrencia->qc_status_id = 7;
+                $quadroDeConcorrencia->save();
+                QcStatusLog::create([
+                    'quadro_de_concorrencia_id' => $quadroDeConcorrencia->id,
+                    'qc_status_id' => $quadroDeConcorrencia->qc_status_id, // Em Concorrência
+                    'user_id' => $user_id
+                ]);
+                // Envia os avisos aos fornecedores sobre o Q.C.
+                $qcFornecedores = $quadroDeConcorrencia->qcFornecedores;
+                foreach ($qcFornecedores as $qcFornecedor) {
+                    // Verifica se o fornecedor tem usuário
+                    if ($qcFornecedor->fornecedor) {
+                        $fornecedor = $qcFornecedor->fornecedor;
+                        $this->notifyFornecedor($fornecedor, $quadroDeConcorrencia);
+                    }
                 }
-            }
-            $acao_executada = true;
-            break;
-        case 'cancelar':
-            // Altera o status do Q.C.
-            $quadroDeConcorrencia->qc_status_id = 6;
-            $quadroDeConcorrencia->save();
-            QcStatusLog::create([
-                'quadro_de_concorrencia_id' => $quadroDeConcorrencia->id,
-                'qc_status_id' => $quadroDeConcorrencia->qc_status_id, // Cancelado
-                'user_id' => $user_id
-            ]);
-            $acao_executada = true;
-            break;
-        default:
-            $erro = 'Ação inexistente!';
-            break;
+                $acao_executada = true;
+                break;
+            case 'cancelar':
+                // Altera o status do Q.C.
+                $quadroDeConcorrencia->qc_status_id = 6;
+                $quadroDeConcorrencia->save();
+                QcStatusLog::create([
+                    'quadro_de_concorrencia_id' => $quadroDeConcorrencia->id,
+                    'qc_status_id' => $quadroDeConcorrencia->qc_status_id, // Cancelado
+                    'user_id' => $user_id
+                ]);
+                $acao_executada = true;
+                break;
+            default:
+                $erro = 'Ação inexistente!';
+                break;
         }
         if (!$acao_executada) {
             return [false, $erro];
         }
         return [true, $mensagens];
+    }
+
+    public function notifyFornecedor(Fornecedor $fornecedor, QuadroDeConcorrencia $quadroDeConcorrencia)
+    {
+        if ($user = $fornecedor->user) {
+            //se tiver já envia uma notificação
+            $user->notify(new IniciaConcorrencia($quadroDeConcorrencia));
+        } else {
+            // Se não tiver envia um e-mail para o fornecedor
+            if (!strlen($fornecedor->email)) {
+                $mensagens[] = 'O Fornecedor ' . $fornecedor->nome . ' não possui acesso e e-mail cadastrado,
+                    por favor faça contato por telefone ' . $fornecedor->telefone;
+                return $mensagens;
+            } else {
+                Mail::to($fornecedor->email)->send(new IniciaConcorrenciaFornecedorNaoUsuario($quadroDeConcorrencia, $fornecedor));
+            }
+        }
     }
 
     /**
@@ -204,172 +400,39 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
         return $query->get();
     }
 
-    public static function verificaQCAutomatico(){
-        // Varre itens aprovados existe algum catalogo_contrato vigente
-        $itens_aprovados_com_acordos = OrdemDeCompraItem::query()
-            ->select([
-                'ordem_de_compra_itens.insumo_id',
-                DB::raw('GROUP_CONCAT(ordem_de_compra_itens.id) oc_itens_ids'),
-                DB::raw('SUM(ordem_de_compra_itens.qtd) qtd'),
-                'catalogo_contrato_insumos.id as catalogo_contrato_insumo_id'
-            ])
-            ->join('ordem_de_compras','ordem_de_compras.id','ordem_de_compra_itens.ordem_de_compra_id')
-            ->join('obras','obras.id','ordem_de_compra_itens.obra_id')
-            ->join('insumos','insumos.id','ordem_de_compra_itens.insumo_id')
-            ->join('catalogo_contrato_insumos','catalogo_contrato_insumos.insumo_id','ordem_de_compra_itens.insumo_id')
-            ->join('catalogo_contratos','catalogo_contratos.id','catalogo_contrato_insumos.catalogo_contrato_id')
-            ->where('ordem_de_compras.aprovado','1')
-            ->whereNotExists(function ($query) {
-                $query->select(DB::raw('1'))
-                    ->from('oc_item_qc_item')
-                    ->where('ordem_de_compra_item_id', DB::raw('ordem_de_compra_itens.id'));
+    public function aditivarContratos(Collection $itens, $user_id)
+    {
+        $contratos = $itens->groupBy('sugestao_contrato_id');
 
-            })
-            ->where('catalogo_contratos.periodo_inicio','<=',date('Y-m-d'))
-            ->where('catalogo_contratos.periodo_termino','>=',date('Y-m-d'))
-            ->groupBy('ordem_de_compra_itens.insumo_id','catalogo_contrato_insumos.id')
-            ->get();
+        $qcs = $contratos->map(function ($itens, $contrato_id) use ($user_id) {
+            $contrato = Contrato::find($contrato_id);
 
-       if(!$itens_aprovados_com_acordos->count()){
-           return false;
-       }
-
-        // Se existe verifica se as quantidades requisitadas estão dentro dos requisitos
-        $gerar_qc_itens = [];
-        $fornecedores_ids = [];
-        foreach ($itens_aprovados_com_acordos as $item){
-            $item_acordo = CatalogoContratoInsumo::find($item->catalogo_contrato_insumo_id);
-            // Verifica se a qtd mínima é atendidida
-            if($item->getOriginal('qtd') >= $item_acordo->getOriginal('pedido_minimo') ){
-                // Verifica se a qtd multipla é atendida
-                if( ( $item->getOriginal('qtd') % floatval($item_acordo->getOriginal('pedido_multiplo_de')) ) == 0 ){
-                    $gerar_qc_itens[$item->insumo_id] = [
-                        'ids' => explode(',', $item->oc_itens_ids),
-                        'insumo_id' => $item->insumo_id,
-                        'qtd' => $item->getOriginal('qtd'),
-                        'fornecedor_id' => $item_acordo->catalogo->fornecedor_id,
-                        'valor' => $item_acordo->getOriginal('valor_unitario')
-                    ];
-                    $fornecedores_ids[$item_acordo->catalogo->fornecedor_id] = $item_acordo->catalogo->fornecedor_id;
-                }
-            }
-        }
-        // Se estão gera um QC automatico com os itens que são atendidos por aquele catálogo
-        if(count($gerar_qc_itens)){
-            $quadroDeConcorrencia = QuadroDeConcorrencia::create([
-                'user_id' => null,
-                'qc_status_id' => 1,
+            $qc = $this->model->create([
+                'user_id' => $user_id,
+                'qc_status_id' => QcStatus::ABERTO,
                 'obrigacoes_fornecedor' => ConfiguracaoEstatica::find(1)->valor,
                 'obrigacoes_bild' => ConfiguracaoEstatica::find(2)->valor,
                 'rodada_atual' => 1
             ]);
 
-            // Cadastra os itens do quadro de concorrência
-            foreach ($gerar_qc_itens as $qc_item_array){
-                $qc_item = QcItem::create([
-                    'quadro_de_concorrencia_id' => $quadroDeConcorrencia->id,
-                    'qtd' => $qc_item_array['qtd'],
-                    'insumo_id'=> $qc_item_array['insumo_id']
-                ]);
-                $qc_item->oc_itens()->sync($qc_item_array['ids']);
-            }
-
-            // Salva o primeiro status log
             QcStatusLog::create([
-                'quadro_de_concorrencia_id' => $quadroDeConcorrencia->id,
-                'qc_status_id' => $quadroDeConcorrencia->qc_status_id,
-            ]);
-            $quadroDeConcorrencia->qc_status_id = 2;
-            QcStatusLog::create([
-                'quadro_de_concorrencia_id' => $quadroDeConcorrencia->id,
-                'qc_status_id' => $quadroDeConcorrencia->qc_status_id,
+                'quadro_de_concorrencia_id' => $qc->id,
+                'qc_status_id' => $qc->qc_status_id,
+                'user_id' => $qc->user_id
             ]);
 
-            // Amarra os fornecedores no QC
-            foreach ($fornecedores_ids as $fornecedor_id){
-                $qc_fornecedor = QcFornecedor::create([
-                    'quadro_de_concorrencia_id' => $quadroDeConcorrencia->id,
-                    'fornecedor_id' => $fornecedor_id,
-                    'rodada'=>$quadroDeConcorrencia->rodada_atual,
-                    'nf_material'=>1
-                ]);
-            }
-
-
-            $quadroDeConcorrencia->qc_status_id = 7;
-            QcStatusLog::create([
-                'quadro_de_concorrencia_id' => $quadroDeConcorrencia->id,
-                'qc_status_id' => $quadroDeConcorrencia->qc_status_id,
+            QcFornecedor::create([
+                'quadro_de_concorrencia_id' => $qc->id,
+                'fornecedor_id' => $contrato->fornecedor_id,
+                'rodada' => 1,
+                'user_id' => $user_id
             ]);
 
-            // Após gerado, já lança os valores daqueles fornecedores pelo firmado no acordo
-            foreach ($quadroDeConcorrencia->itens as $item){
-                $acordo_item = $gerar_qc_itens[$item->insumo_id];
-                $qc_fornecedor = QcFornecedor::where('quadro_de_concorrencia_id',$quadroDeConcorrencia->id)
-                                    ->where('fornecedor_id', $acordo_item['fornecedor_id'] )
-                                    ->first();
-                QcItemQcFornecedor::create([
-                    'qc_item_id' => $item->id,
-                    'qc_fornecedor_id' => $qc_fornecedor->id,
-                    'qtd' => $item->getOriginal('qtd'),
-                    'valor_unitario' => $acordo_item['valor'],
-                    'valor_total' => ($acordo_item['valor']*$item->getOriginal('qtd')),
-                    'vencedor'=>1,
-                    'data_decisao'=> date('Y-m-d H:i:s')
-                ]);
-            }
+            $this->adicionaItens($itens, $qc);
 
-            // Finaliza o QC
+            return $qc;
+        });
 
-            $quadroDeConcorrencia->qc_status_id = 8;
-            QcStatusLog::create([
-                'quadro_de_concorrencia_id' => $quadroDeConcorrencia->id,
-                'qc_status_id' => $quadroDeConcorrencia->qc_status_id,
-            ]);
-            $quadroDeConcorrencia->save();
-        }
-    }
-
-    public function notifyFornecedor(Fornecedor $fornecedor, QuadroDeConcorrencia $quadroDeConcorrencia)
-    {
-        if ($user = $fornecedor->user) {
-            //se tiver já envia uma notificação
-            $user->notify(new IniciaConcorrencia($quadroDeConcorrencia));
-        } else {
-            // Se não tiver envia um e-mail para o fornecedor
-            if (!strlen($fornecedor->email)) {
-                $mensagens[] = 'O Fornecedor ' . $fornecedor->nome . ' não possui acesso e e-mail cadastrado,
-                    por favor faça contato por telefone ' . $fornecedor->telefone;
-                return $mensagens;
-            } else {
-                Mail::to($fornecedor->email)->send(new IniciaConcorrenciaFornecedorNaoUsuario($quadroDeConcorrencia, $fornecedor));
-            }
-        }
-    }
-
-    public function adicionaItens($itens, QuadroDeConcorrencia $quadroDeConcorrencia){
-        // Busca e agrupa intens conforme o tipo
-        $oc_itens = OrdemDeCompraItem::whereIn('id', $itens)->get();
-        $qc_itens_array = [];
-        foreach ($oc_itens as $oc_item){
-            if(isset($qc_itens_array[$oc_item->insumo_id])){
-                $qc_itens_array[$oc_item->insumo_id]['qtd'] += floatval($oc_item->getOriginal('qtd'));
-            }else{
-                $qc_itens_array[$oc_item->insumo_id]['qtd'] = floatval($oc_item->getOriginal('qtd'));
-            }
-            $qc_itens_array[$oc_item->insumo_id]['insumo_id'] = $oc_item->insumo_id;
-            $qc_itens_array[$oc_item->insumo_id]['ids'][] = $oc_item->id;
-        }
-
-        // Cadastra os itens do quadro de concorrência
-        foreach ($qc_itens_array as $qc_item_array) {
-            $qc_item = QcItem::create([
-                'quadro_de_concorrencia_id' => $quadroDeConcorrencia->id,
-                'qtd' => $qc_item_array['qtd'],
-                'insumo_id'=> $qc_item_array['insumo_id']
-            ]);
-            $qc_item->oc_itens()->sync($qc_item_array['ids']);
-        }
-
+        return $qcs;
     }
 }

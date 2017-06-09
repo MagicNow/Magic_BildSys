@@ -2,12 +2,16 @@
 
 namespace App\Repositories;
 
+use App\Models\ContratoItem;
 use App\Models\ContratoStatus;
 use Illuminate\Support\Facades\DB;
 use App\Models\ContratoItemModificacao;
 use InfyOm\Generator\Common\BaseRepository;
 use App\Repositories\ContratoItemRepository;
 use Illuminate\Http\Exception\HttpResponseException;
+use Illuminate\Support\Facades\Notification;
+use App\Repositories\WorkflowAprovacaoRepository;
+use App\Notifications\WorkflowNotification;
 
 class ContratoItemModificacaoRepository extends BaseRepository
 {
@@ -18,7 +22,7 @@ class ContratoItemModificacaoRepository extends BaseRepository
 
     public function reajustar($id, $data)
     {
-        $modificacao = DB::transaction(function() use ($id, $data) {
+        $modificacao = DB::transaction(function () use ($id, $data) {
             $contratoItemRepository = app(ContratoItemRepository::class);
             $modificacaoLogRepository = app(ContratoItemModificacaoLogRepository::class);
             $item = $contratoItemRepository->find($id);
@@ -42,10 +46,14 @@ class ContratoItemModificacaoRepository extends BaseRepository
                 'user_id'                      => $modificacao->user_id,
             ]);
 
-            $item->update(['aprovado' => 0]);
+            $item->update(['pendente' => 1]);
 
             return $modificacao;
         });
+
+        $aprovadores = WorkflowAprovacaoRepository::usuariosDaAlcadaAtual($modificacao);
+
+        Notification::send($aprovadores, new WorkflowNotification($modificacao));
 
         return $modificacao;
     }
@@ -54,12 +62,12 @@ class ContratoItemModificacaoRepository extends BaseRepository
     {
         $quantidade = money_to_float($quantidade ?: 0);
 
-        $modificacao = DB::transaction(function() use ($id, $quantidade) {
+        $modificacao = DB::transaction(function () use ($id, $quantidade) {
             $contratoItemRepository = app(ContratoItemRepository::class);
             $modificacaoLogRepository = app(ContratoItemModificacaoLogRepository::class);
             $item = $contratoItemRepository->find($id);
 
-            if($item->qtd < $quantidade) {
+            if ($item->qtd < $quantidade) {
                 $response = response()->json([
                     'A nova quantidade não pode ser maior que a atual'
                 ], 422);
@@ -84,11 +92,62 @@ class ContratoItemModificacaoRepository extends BaseRepository
                 'user_id'                      => $modificacao->user_id,
             ]);
 
-            $item->update(['aprovado' => 0]);
+            $item->update(['pendente' => 1]);
 
             return $modificacao;
         });
 
+        $aprovadores = WorkflowAprovacaoRepository::usuariosDaAlcadaAtual($modificacao);
+
+        Notification::send($aprovadores, new WorkflowNotification($modificacao));
+
         return $modificacao;
+    }
+
+    public function reajusteFornecedor($fornecedor_id, $obra_id, $reajustes)
+    {
+        $reajustes_criados = DB::transaction(function () use ($fornecedor_id, $obra_id, $reajustes) {
+            $modificacaoLogRepository = app(ContratoItemModificacaoLogRepository::class);
+            $modificacoes = [];
+            foreach ($reajustes as $insumo_id => $novo_valor) {
+                $itens = ContratoItem::where('insumo_id', $insumo_id)
+                    ->select('contrato_itens.*')
+                    ->join('contratos', 'contratos.id', 'contrato_itens.contrato_id')
+                    ->whereIn('contratos.obra_id', $obra_id)
+                    ->where('contratos.fornecedor_id', $fornecedor_id)
+                    ->get();
+                if ($itens->count()) {
+                    foreach ($itens as $item) {
+                        $modificacao = $this->create([
+                            'qtd_anterior'            => $item->qtd,
+                            'qtd_atual'               => $item->qtd,
+                            'valor_unitario_anterior' => $item->valor_unitario,
+                            'valor_unitario_atual'    => money_to_float($novo_valor),
+                            'contrato_status_id'      => ContratoStatus::EM_APROVACAO,
+                            'contrato_item_id'        => $item->id,
+                            'tipo_modificacao'        => 'Reajuste',
+                            'user_id'                 => auth()->id(),
+                        ]);
+
+                        $modificacaoLogRepository->create([
+                            'contrato_item_modificacao_id' => $modificacao->id,
+                            'contrato_status_id'           => ContratoStatus::EM_APROVACAO,
+                            'user_id'                      => $modificacao->user_id,
+                        ]);
+
+                        $item->update(['pendente' => 1]);
+
+                        $aprovadores = WorkflowAprovacaoRepository::usuariosDaAlcadaAtual($modificacao);
+                        Notification::send($aprovadores, new WorkflowNotification($modificacao));
+
+                        $modificacoes[] = $modificacao;
+                    }
+                }
+            }
+
+            return $modificacoes;
+        });
+
+        return $reajustes_criados;
     }
 }

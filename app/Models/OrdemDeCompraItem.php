@@ -16,6 +16,16 @@ class OrdemDeCompraItem extends Model
 {
     use SoftDeletes;
 
+    public static $workflow_tipo_id = WorkflowTipo::OC;
+
+    public function workflowNotification()
+    {
+        return [
+            'message' => 'Você tem uma ordem de compra para aprovar',
+            'link' => route('ordens_de_compra.detalhes', $this->ordem_de_compra_id)
+        ];
+    }
+
     public $table = 'ordem_de_compra_itens';
 
     const CREATED_AT = 'created_at';
@@ -83,18 +93,18 @@ class OrdemDeCompraItem extends Model
 
     public function getQtdAttribute($value)
     {
-        if(strlen($value) == 4){
+        if (strlen($value) == 4) {
             $value = '0'.$value;
         }
 
-        return number_format($value,2,',','.');
+        return number_format($value, 2, ',', '.');
     }
 
     public function setQtdAttribute($value)
     {
-        $pontos = array(",");
-        $value = str_replace('.','',$value);
-        $result = str_replace( $pontos, ".", $value);
+        $pontos = [","];
+        $value = str_replace('.', '', $value);
+        $result = str_replace($pontos, ".", $value);
 
         $this->attributes['qtd'] = $result;
     }
@@ -144,7 +154,7 @@ class OrdemDeCompraItem extends Model
      **/
     public function subgrupo1()
     {
-        return $this->belongsTo(Grupo::class,'subgrupo1_id');
+        return $this->belongsTo(Grupo::class, 'subgrupo1_id');
     }
 
     /**
@@ -152,7 +162,7 @@ class OrdemDeCompraItem extends Model
      **/
     public function subgrupo2()
     {
-        return $this->belongsTo(Grupo::class,'subgrupo2_id');
+        return $this->belongsTo(Grupo::class, 'subgrupo2_id');
     }
 
     /**
@@ -160,7 +170,7 @@ class OrdemDeCompraItem extends Model
      **/
     public function subgrupo3()
     {
-        return $this->belongsTo(Grupo::class,'subgrupo3_id');
+        return $this->belongsTo(Grupo::class, 'subgrupo3_id');
     }
 
     /**
@@ -168,7 +178,7 @@ class OrdemDeCompraItem extends Model
      **/
     public function contrato()
     {
-        return $this->belongsTo(CatalogoContrato::class, 'sugestao_contrato_id');
+        return $this->belongsTo(Contrato::class, 'sugestao_contrato_id');
     }
 
     /**
@@ -197,7 +207,7 @@ class OrdemDeCompraItem extends Model
 
     public function codigoServico()
     {
-       $grupos = [
+        $grupos = [
             $this->grupo_id,
             $this->subgrupo1_id,
             $this->subgrupo2_id,
@@ -205,7 +215,7 @@ class OrdemDeCompraItem extends Model
             $this->servico_id
         ];
 
-       return implode('.', $grupos) . ' ' . $this->servico->nome;
+        return implode('.', $grupos) . ' ' . $this->servico->nome;
     }
 
     public function reapropriacoes()
@@ -216,25 +226,19 @@ class OrdemDeCompraItem extends Model
         );
     }
 
-    // Funções da aprovação
-
-    /**
-     * Tipo de Workflow, necessário para models que são aprováveis
-     *
-     * @var integer
-     */
-    public static $workflow_tipo_id = 1; // Tipo = Aprovação de OC
-
-    public function aprovacoes(){
+    public function aprovacoes()
+    {
         return $this->morphMany(WorkflowAprovacao::class, 'aprovavel');
     }
 
-    public function irmaosIds(){
-        return $this->ordemDeCompra->itens()->pluck('ordem_de_compra_itens.id','ordem_de_compra_itens.id')->toArray();
+    public function irmaosIds()
+    {
+        return $this->ordemDeCompra->itens()->pluck('ordem_de_compra_itens.id', 'ordem_de_compra_itens.id')->toArray();
     }
 
-    public function paiEmAprovacao(){
-        if($this->ordemDeCompra->oc_status_id!=3){
+    public function paiEmAprovacao()
+    {
+        if ($this->ordemDeCompra->oc_status_id!=3) {
             $this->ordemDeCompra->update(['oc_status_id' => 3]);
             OrdemDeCompraStatusLog::create([
                 'oc_status_id'=>$this->ordemDeCompra->oc_status_id,
@@ -244,22 +248,38 @@ class OrdemDeCompraItem extends Model
         }
     }
 
-    public function confereAprovacaoGeral(){
+    public function confereAprovacaoGeral()
+    {
         $qtd_itens = $this->ordemDeCompra->itens()->count();
-        $qtd_itens_aprovados = $this->ordemDeCompra->itens()->where('aprovado','1')->count();
+        $qtd_itens_aprovados = $this->ordemDeCompra->itens()->where('aprovado', '1')->count();
         $qtd_itens_sem_voto = $this->ordemDeCompra->itens()->whereNull('aprovado')->count();
+
         // Verifica se todos foram aprovados
-        if($qtd_itens === $qtd_itens_aprovados){
-            $this->ordemDeCompra->update(['oc_status_id' => 5,'aprovado'=>1]);
+        if ($qtd_itens === $qtd_itens_aprovados) {
+
+            $this->ordemDeCompra->update(['oc_status_id' => 5,'aprovado' => 1]);
+
             OrdemDeCompraStatusLog::create([
-                'oc_status_id'=>$this->ordemDeCompra->oc_status_id,
-                'ordem_de_compra_id'=>$this->ordemDeCompra->id,
-                'user_id'=>Auth::id()
+                'oc_status_id'       => $this->ordemDeCompra->oc_status_id,
+                'ordem_de_compra_id' => $this->ordemDeCompra->id,
+                'user_id'            => Auth::id()
             ]);
+
+            $itens_aditivos = $this->ordemDeCompra
+                ->itens()
+                ->whereNotNull('sugestao_contrato_id')
+                ->get();
+
+            if($itens_aditivos->count()) {
+                app(QuadroDeConcorrenciaRepository::class)
+                    ->aditivarContratos($itens_aditivos, $this->ordemDeCompra->user_id);
+            }
+
             QuadroDeConcorrenciaRepository::verificaQCAutomatico();
         }
+
         // Verifica se algum foi reprovado e todos foram votados
-        if($qtd_itens !== $qtd_itens_aprovados && $qtd_itens_sem_voto===0){
+        if ($qtd_itens !== $qtd_itens_aprovados && $qtd_itens_sem_voto===0) {
             $this->ordemDeCompra->update(['oc_status_id' => 4,'aprovado'=>0]);
             OrdemDeCompraStatusLog::create([
                 'oc_status_id'=>$this->ordemDeCompra->oc_status_id,
@@ -269,11 +289,13 @@ class OrdemDeCompraItem extends Model
         }
     }
 
-    public function qualObra(){
+    public function qualObra()
+    {
         return $this->ordemDeCompra->obra_id;
     }
 
-    public function aprova($valor){
+    public function aprova($valor)
+    {
         $this->timestamps = false;
         $this->attributes['aprovado'] = $valor;
         $this->save();

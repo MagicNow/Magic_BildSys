@@ -21,7 +21,10 @@ class CatalogoContratoInsumo extends Model
         'valor_unitario',
         'valor_maximo',
         'pedido_minimo',
-        'pedido_multiplo_de'
+        'pedido_multiplo_de',
+        'qtd_minima',
+        'periodo_inicio',
+        'periodo_termino'
     ];
 
     /**
@@ -32,7 +35,9 @@ class CatalogoContratoInsumo extends Model
     protected $casts = [
         'id' => 'integer',
         'catalogo_contrato_id' => 'integer',
-        'insumo_id' => 'integer'
+        'insumo_id' => 'integer',
+        'periodo_inicio' => 'date',
+        'periodo_termino' => 'date'
     ];
 
     /**
@@ -57,21 +62,7 @@ class CatalogoContratoInsumo extends Model
 
         $this->attributes['valor_unitario'] = $result;
     }
-
-    public function getValorMaximoAttribute($value)
-    {
-        return number_format($value,2,',','.');
-    }
-
-    public function setValorMaximoAttribute($value)
-    {
-        $pontos = array(",");
-        $value = str_replace('.','',$value);
-        $result = str_replace( $pontos, ".", $value);
-
-        $this->attributes['valor_maximo'] = $result;
-    }
-
+    
     public function getPedidoMinimoAttribute($value)
     {
         if(strlen($value) == 4){
@@ -107,6 +98,7 @@ class CatalogoContratoInsumo extends Model
 
         $this->attributes['pedido_multiplo_de'] = $result;
     }
+    
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

@@ -23,12 +23,15 @@
                     </h3>
                 </div>
 
-                <div class="col-md-5 text-right">
+                <div class="col-md-6 text-right">
                     <a href="/compras/obrasInsumos?obra_id={{$obra_id}}" class="btn btn-default btn-lg btn-flat">
                         Esqueci um item
                     </a>
                     <button type="button" onclick="fechaOC();" class="btn btn-success btn-lg btn-flat">
-                        Fechar OC
+                        Fechar O.C.
+                    </button>
+                    <button type="button" onclick="limparCarrinho();" class="btn btn-danger btn-lg btn-flat">
+                        Limpar O.C.
                     </button>
                 </div>
             </div>
@@ -146,23 +149,31 @@
                                 </span>
                                 <span class="col-md-2 col-sm-2 col-xs-12 text-center borda-direita" align="center" style="width: 11.5%;">
                                     <strong>Preço unitário:</strong>
-                                    <p class="form-control money" style="border-color:#ffffff;background-color:#ffffff;text-align:center;"> R$ {{ $item->valor_unitario }}</p>
+                                    <p class="form-control money" style="border-color:#ffffff;background-color:#ffffff;text-align:center;">{{ float_to_money($item->valor_unitario) }}</p>
                                 </span>
                                 <span class="col-md-2 col-sm-2 col-xs-12 text-center borda-direita" align="center" style="width: 11.5%;">
                                     <strong>Total:</strong>
-                                    <p class="form-control money" style="border-color:#ffffff;background-color:#ffffff;text-align:center;"> R$ {{ $item->valor_total }}</p>
+                                    <p class="form-control money" style="border-color:#ffffff;background-color:#ffffff;text-align:center;">{{  float_to_money($item->valor_total) }}</p>
                                 </span>
                                 <span class="col-md-2 col-sm-2 col-xs-5 text-center borda-direita">
                                     <div id="bloco_indicar_contrato{{ $item->id }}">
                                         @if($item->sugestao_contrato_id)
                                             <div id="bloco_indicar_contrato_removivel{{ $item->id }}">
-                                                {{$item->contrato->fornecedor_nome}}
-                                                <button type="button" class="btn btn-flat btn-sm btn-danger glyphicon glyphicon-remove" onclick="removeContrato('{{ $item->insumo->codigo }}', '{{$item->id}}')"></button>
+                                                {{$item->contrato->fornecedor->nome}}
+                                                <button type="button"
+                                                    class="btn btn-flat btn-xs btn-danger js-remove-contrato"
+                                                    data-item="{{ $item->id }}" >
+                                                    <i class="fa fa-times fa-fw"></i>
+                                                </button>
                                             </div>
                                         @else
                                             <div id="bloco_indicar_contrato_removivel{{ $item->id }}">
                                                 <label class="label-bloco label-bloco-limitado">Aditivar contrato</label>
-                                                <button type="button" class="btn btn-flat btn-sm btn-default margem-botao" onclick="indicarContrato('{{ $item->insumo->codigo }}', '{{$item->id}}')">
+                                                <button type="button"
+                                                    class="btn btn-flat btn-sm btn-default margem-botao js-aditivar"
+                                                    data-insumo="{{ $item->insumo_id }}"
+                                                    data-obra="{{ $item->obra_id }}"
+                                                    data-item="{{ $item->id }}">
                                                     Selecionar
                                                 </button>
                                             </div>
@@ -255,22 +266,6 @@
                 </ul>
             </div>
         </div>
-
-        {{--<div class="box-body" id='app'>--}}
-            {{--<tabela--}}
-                    {{--api-url="/api/listagem-ordens-de-compras"--}}
-                    {{--api-filtros="/filter-json-ordem-compra"--}}
-                    {{--v-bind:params="{}"--}}
-                    {{--v-bind:actions="{filtros: true, status: true, detalhe: true, detalhe_url:'{{ url('/ordens-de-compra/detalhes/') }}'}"--}}
-                    {{--v-bind:colunas="[--}}
-                    {{--{campo_db: 'id', label: 'núm. o.c'},--}}
-                    {{--{campo_db: 'obra', label: 'obra'},--}}
-                    {{--{campo_db: 'usuario', label: 'usuário'},--}}
-                    {{--{campo_db: 'situacao', label: 'situação'}--}}
-                    {{--]">--}}
-            {{-->--}}
-            {{--</tabela>--}}
-        {{--</div>--}}
     </div>
 
     <div class="pg text-center">
@@ -279,6 +274,7 @@
 @endsection
 
 @section('scripts')
+    <script src="{{ asset('/js/carrinho.js') }}"></script>
     <script type="text/javascript">
         $.ajaxSetup({
             headers: {
@@ -334,20 +330,19 @@
                         },
                         type: "GET"
                     }
-            ).done(function (retorno) {
+            ).done(function (response) {
                 stopLoading();
-                contratos = '';
+                var contratos = '';
 
-                $.each(retorno.contrato_insumo, function (index, value) {
-                    var fornecedor = "'" + value.contrato.fornecedor_nome + "'";
+                _.each(response, function (contrato) {
+                    var fornecedor = "'" + contrato.fornecedor.nome + "'";
                     contratos +=
                             '<p style="border-bottom: 1px solid #dddddd;padding: 10px;text-align: left">' +
-                            '<span class="btn btn-sm btn-success flat" style="padding: 10px 10px;" onclick="indicarContratoFecharModal(' + item_id + ', \'sugestao_contrato_id\', ' + value.contrato.id + ', ' + fornecedor + ', '+ codigo_insumo +')">Indicar</span>' +
-                            '<span style="margin-left: 15px;">' + value.contrato.fornecedor_nome + '</span>' +
-                            '<br>' +
-                            '<i>' +
-                            '<a href="' + value.contrato.arquivo + '" target="_blank" style="margin-left: 167px;">Ver contrato</a>' +
-                            '</i>' +
+                            '<span class="btn btn-sm btn-success flat" onclick="indicarContratoFecharModal(' + item_id +
+                            ', \'sugestao_contrato_id\', ' + contrato.id + ', ' + fornecedor + ', '+ codigo_insumo +')">Indicar</span>' +
+                            '<span style="margin-left: 15px;">' + contrato.fornecedor.nome + '</span>' +
+                            '<a href="/contratos/' + contrato.id + '" target="_blank" ' +
+                              'class="center-block text-center"><i>Ver contrato</i></a>' +
                             '</p>';
                 });
 
@@ -533,9 +528,6 @@
 
                     });
         }
-//        const app = new Vue({
-//            el: '#app'
-//        });
 
         function indicarContratoFecharModal(item_id, campo, valor, fornecedor, codigo_insumo) {
             $('.confirm').click();
@@ -548,7 +540,7 @@
             $('#bloco_indicar_contrato_removivel'+ item_id).remove();
             $('#bloco_indicar_contrato'+ item_id).html('<div id="bloco_indicar_contrato_removivel' + item_id + '">' + fornecedor + ' <button type="button" class="btn btn-flat btn-sm btn-danger glyphicon glyphicon-remove" onclick="removeContrato(' + codigo_insumo + ', ' + item_id + ')"></button></div>');
         }
-        
+
         function removeContrato(codigo_insumo, item_id) {
             $.ajax({
                 url: '/ordens-de-compra/carrinho/remove-contrato',
@@ -617,6 +609,34 @@
                     $('#item'+item_id).remove();
                 });
 
+            });
+        }
+
+        function limparCarrinho() {
+            swal({
+                title: "Remover todos os itens do carrinho?",
+                text: "",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#7ed321",
+                confirmButtonText: "Sim, remover.",
+                cancelButtonText: "Cancelar",
+                closeOnConfirm: false
+            },
+            function() {
+                $.ajax({
+                    url: '/ordens-de-compra/carrinho/limpar-carrinho/{{$ordemDeCompra->id}}'
+                }).done(function () {
+                    swal({
+                        title: "Removido!",
+                        text: "Todos os itens foram removidos da ordem de compra!",
+                        type: "success",
+                        timer: 2000,
+                        showConfirmButton: false
+                    }, function () {
+                        document.location = '{{ url('/compras/obrasInsumos?obra_id='.$obra_id) }}';
+                    });
+                });
             });
         }
     </script>

@@ -1,7 +1,8 @@
 require('laravel-elixir-vue-2');
-var gulp = require('gulp');
-var bower = require('gulp-bower');
-var elixir = require('laravel-elixir');
+var gulp        = require('gulp');
+var bower       = require('gulp-bower');
+var elixir      = require('laravel-elixir');
+var browserSync = require('browser-sync').create();
 
 gulp.task('bower', function() {
     return bower();
@@ -22,7 +23,8 @@ var paths = {
     'dataTablesBootstrap3Plugin': vendors + '/datatables-bootstrap3-plugin/media',
     'flag': vendors + '/flag-sprites/dist',
     'metisMenu': vendors + '/metisMenu/dist',
-    'datatablesResponsive': vendors + '/datatables-responsive',
+    'dt_responsive_js': vendors + '/datatables.net-responsive/js/dataTables.responsive.js',
+    'dt_responsive_css': vendors + '/datatables.net-responsive-dt/css/responsive.dataTables.css',
     'summernote': vendors + '/summernote/dist',
     'select2': vendors + '/select2/dist',
     'jqueryui':  vendors + '/jquery-ui',
@@ -43,7 +45,8 @@ var paths = {
     'vue_resource':  vendors + '/vue-resource/dist/',
     'chartjs':  vendors + '/chart.js/dist/',
     'jquery_maskmoney':  vendors + '/jquery-maskmoney/dist/',
-    'slugify':  vendors + '/slug/'
+    'slugify':  vendors + '/slug/',
+    'slim_scroll':  vendors + '/jquery-slimscroll/'
 };
 
 elixir.config.sourcemaps = false;
@@ -142,6 +145,7 @@ elixir(function(mix) {
         paths.ionicons + '/css/ionicons.css',
         paths.colorbox + '/example3/colorbox.css',
         paths.dataTables + '/css/dataTables.bootstrap.css',
+        paths.dt_responsive_css,
         paths.dataTablesBootstrap3Plugin + '/css/datatables-bootstrap3.css',
         // paths.metisMenu + '/metisMenu.css',
         paths.summernote + '/summernote.css',
@@ -165,9 +169,9 @@ elixir(function(mix) {
         paths.colorbox + '/jquery.colorbox.js',
         paths.icheck + '/icheck.js',
         paths.dataTables + '/js/jquery.dataTables.js',
+        paths.dt_responsive_js,
         paths.dataTables + '/js/dataTables.bootstrap.js',
         paths.dataTablesBootstrap3Plugin + '/js/datatables-bootstrap3.js',
-        paths.datatablesResponsive + '/js/dataTables.responsive.js',
         paths.metisMenu + '/metisMenu.js',
         paths.summernote + '/summernote.js',
         paths.select2 + 'js/select2.js',
@@ -182,6 +186,7 @@ elixir(function(mix) {
         paths.chartjs + 'Chart.min.js',
         paths.jquery_maskmoney + 'jquery.maskMoney.js',
         paths.slugify + 'slug.js',
+        paths.slim_scroll + 'jquery.slimscroll.js',
         // paths.vue + 'vue.js',
         // paths.vue_resource + 'vue-resource.js',
         'bootstrap-dataTables-paging.js',
@@ -198,8 +203,10 @@ elixir(function(mix) {
         'qc-informar-valores.js',
         'sweetalert-helper.js',
         'flat-color-generator.js',
-        'qc-avaliar.js'
-
+        'qc-avaliar.js',
+        'error-list.js',
+        'is-mobile.js',
+        'notifications.js',
     ], 'public/js/admin.js');
 
     mix.scripts([
@@ -230,4 +237,14 @@ elixir(function(mix) {
         'contrato-actions.js',
     ], 'public/js/contrato-actions.js');
 
+    mix.scripts([
+        'carrinho.js',
+    ], 'public/js/carrinho.js');
+
+});
+
+gulp.task('browser-sync', function() {
+    browserSync.init({
+        proxy: "bild-sys.dev"
+    });
 });

@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
-use App\DataTables\Admin\ConfiguracaoEstaticaDataTable;
+use App\DataTables\ConfiguracaoEstaticaDataTable;
 use App\Http\Requests;
-use App\Http\Requests\Admin\CreateConfiguracaoEstaticaRequest;
-use App\Http\Requests\Admin\UpdateConfiguracaoEstaticaRequest;
-use App\Repositories\Admin\ConfiguracaoEstaticaRepository;
+use App\Http\Requests\CreateConfiguracaoEstaticaRequest;
+use App\Http\Requests\UpdateConfiguracaoEstaticaRequest;
+use App\Repositories\ConfiguracaoEstaticaRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
 use Response;
@@ -29,7 +29,7 @@ class ConfiguracaoEstaticaController extends AppBaseController
      */
     public function index(ConfiguracaoEstaticaDataTable $configuracaoEstaticaDataTable)
     {
-        return $configuracaoEstaticaDataTable->render('admin.configuracao_estaticas.index');
+        return $configuracaoEstaticaDataTable->render('configuracao_estaticas.index');
     }
 
     /**
@@ -39,7 +39,7 @@ class ConfiguracaoEstaticaController extends AppBaseController
      */
     public function create()
     {
-        return view('admin.configuracao_estaticas.create');
+        return view('configuracao_estaticas.create');
     }
 
     /**
@@ -57,7 +57,7 @@ class ConfiguracaoEstaticaController extends AppBaseController
 
         Flash::success('Configuracao Estatica '.trans('common.saved').' '.trans('common.successfully').'.');
 
-        return redirect(route('admin.configuracaoEstaticas.index'));
+        return redirect(route('configuracaoEstaticas.index'));
     }
 
     /**
@@ -74,10 +74,10 @@ class ConfiguracaoEstaticaController extends AppBaseController
         if (empty($configuracaoEstatica)) {
             Flash::error('Configuracao Estatica '.trans('common.not-found'));
 
-            return redirect(route('admin.configuracaoEstaticas.index'));
+            return redirect(route('configuracaoEstaticas.index'));
         }
 
-        return view('admin.configuracao_estaticas.show')->with('configuracaoEstatica', $configuracaoEstatica);
+        return view('configuracao_estaticas.show')->with('configuracaoEstatica', $configuracaoEstatica);
     }
 
     /**
@@ -94,10 +94,10 @@ class ConfiguracaoEstaticaController extends AppBaseController
         if (empty($configuracaoEstatica)) {
             Flash::error('Configuracao Estatica '.trans('common.not-found'));
 
-            return redirect(route('admin.configuracaoEstaticas.index'));
+            return redirect(route('configuracaoEstaticas.index'));
         }
 
-        return view('admin.configuracao_estaticas.edit')->with('configuracaoEstatica', $configuracaoEstatica);
+        return view('configuracao_estaticas.edit')->with('configuracaoEstatica', $configuracaoEstatica);
     }
 
     /**
@@ -115,14 +115,14 @@ class ConfiguracaoEstaticaController extends AppBaseController
         if (empty($configuracaoEstatica)) {
             Flash::error('Configuracao Estatica '.trans('common.not-found'));
 
-            return redirect(route('admin.configuracaoEstaticas.index'));
+            return redirect(route('configuracaoEstaticas.index'));
         }
 
         $configuracaoEstatica = $this->configuracaoEstaticaRepository->update($request->all(), $id);
 
         Flash::success('Configuracao Estatica '.trans('common.updated').' '.trans('common.successfully').'.');
 
-        return redirect(route('admin.configuracaoEstaticas.index'));
+        return redirect(route('configuracaoEstaticas.index'));
     }
 
     /**
@@ -139,13 +139,13 @@ class ConfiguracaoEstaticaController extends AppBaseController
         if (empty($configuracaoEstatica)) {
             Flash::error('Configuracao Estatica '.trans('common.not-found'));
 
-            return redirect(route('admin.configuracaoEstaticas.index'));
+            return redirect(route('configuracaoEstaticas.index'));
         }
 
         $this->configuracaoEstaticaRepository->delete($id);
 
         Flash::success('Configuracao Estatica '.trans('common.deleted').' '.trans('common.successfully').'.');
 
-        return redirect(route('admin.configuracaoEstaticas.index'));
+        return redirect(route('configuracaoEstaticas.index'));
     }
 }
