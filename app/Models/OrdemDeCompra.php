@@ -15,13 +15,11 @@ class OrdemDeCompra extends Model
     use SoftDeletes;
 
     public $table = 'ordem_de_compras';
-    
+
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
-
     protected $dates = ['deleted_at'];
-
 
     public $fillable = [
         'oc_status_id',
@@ -29,6 +27,21 @@ class OrdemDeCompra extends Model
         'user_id',
         'aprovado'
     ];
+
+    public static $workflow_tipo_id = WorkflowTipo::OC;
+
+    public function workflowNotification()
+    {
+        return [
+            'message' => 'Você tem uma ordem de compra para aprovar',
+            'link' => route('ordens_de_compra.detalhes', $this->id)
+        ];
+    }
+
+    public function irmaosIds()
+    {
+        return [$this->attributes['id'] => $this->attributes['id']];
+    }
 
     /**
      * The attributes that should be casted to native types.
@@ -66,7 +79,7 @@ class OrdemDeCompra extends Model
      * @var array
      */
     public static $rules = [
-        
+
     ];
 
     /**
@@ -84,7 +97,7 @@ class OrdemDeCompra extends Model
     {
         return $this->belongsTo(Obra::class);
     }
-    
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
@@ -107,5 +120,10 @@ class OrdemDeCompra extends Model
     public function ordemDeCompraStatusLogs()
     {
         return $this->hasMany(OrdemDeCompraStatusLog::class);
+    }
+
+    public function getNotificationData($param)
+    {
+        return null;
     }
 }

@@ -13,6 +13,10 @@
 
 Auth::routes();
 
+// Notifications
+$router->get('/notifications', 'NotificationController@index');
+$router->post('/notifications/{id}/mark-as-read', 'NotificationController@markAsRead');
+
 ##### Buscas #####
 $router->get('/admin/catalogo-acordos/buscar/busca_insumos', ['as' => 'catalogo_contratos.busca_insumos', 'uses' => 'CatalogoContratoController@buscaInsumos']);
 $router->get('/admin/solicitacaoInsumos/buscar/grupos_insumos', 'Admin\SolicitacaoInsumoController@buscaGruposInsumos');
@@ -31,11 +35,6 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
     # Home
     $router->get('/home', 'Admin\HomeController@index');
     $router->get('/', 'Admin\HomeController@index');
-
-    # Verifica Notificações
-    $router->post('verifyNotification', 'Admin\HomeController@verifyNotifications');
-    # Update Notificações visualizadas
-    $router->get('updateNotification/{id}', 'Admin\NotificacaoController@updateNotification');
 
     #importação de planilhas de orçamentos
     $router->group(['middleware' => 'needsPermission:orcamentos.import'], function () use ($router) {
@@ -417,7 +416,8 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         ->middleware("needsPermission:quadroDeConcorrencias.create");
     $router->group(['middleware' => 'needsPermission:ordens_de_compra.list'], function () use ($router) {
         $router->get('/ordens-de-compra/detalhes/{id}', 'OrdemDeCompraController@detalhe')
-            ->middleware("needsPermission:ordens_de_compra.detalhes");
+            ->middleware("needsPermission:ordens_de_compra.detalhes")
+            ->name("ordens_de_compra.detalhes");
         $router->get('/ordens-de-compra/carrinho', 'OrdemDeCompraController@carrinho');
         $router->post('/ordens-de-compra/carrinho/comprar-tudo-de-tudo', 'OrdemDeCompraController@comprarTudoDeTudo');
         $router->get('/ordens-de-compra/carrinho/indicar-contrato', 'OrdemDeCompraController@indicarContrato');
@@ -440,7 +440,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     });
 
 
-    # Dashboard site
+    # Dashboard site ORDEM DE COMPRA
     $router->group(['middleware' => 'needsPermission:site.dashboard'], function () use ($router) {
         $router->get('compras/jsonOrdemCompraDashboard', 'OrdemDeCompraController@jsonOrdemCompraDashboard');
         $router->get('compras/dashboard', 'OrdemDeCompraController@dashboard');
@@ -640,8 +640,16 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
                     'as' => 'quadroDeConcorrencias.adicionar',
                     'uses' => 'QuadroDeConcorrenciaController@adicionar'
                 ])->middleware("needsPermission:quadroDeConcorrencias.edit");
+
+            # Dashboard site QUADRO DE CONCORRÊNCIA
+            $router->get('/view/dashboard',
+                [
+                    'as' => 'quadroDeConcorrencias.dashboard',
+                    'uses' => 'QuadroDeConcorrenciaController@dashboard'
+                ])->middleware("needsPermission:quadroDeConcorrencias.dashboard");
         }
     );
+
     # Template de Contrato
     $router->get('/contrato-template/{contratoTemplates}/campos', 'Admin\ContratoTemplateController@camposExtras');
 

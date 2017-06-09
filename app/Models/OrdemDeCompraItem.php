@@ -16,6 +16,16 @@ class OrdemDeCompraItem extends Model
 {
     use SoftDeletes;
 
+    public static $workflow_tipo_id = WorkflowTipo::OC;
+
+    public function workflowNotification()
+    {
+        return [
+            'message' => 'Você tem uma ordem de compra para aprovar',
+            'link' => route('ordens_de_compra.detalhes', $this->ordem_de_compra_id)
+        ];
+    }
+
     public $table = 'ordem_de_compra_itens';
 
     const CREATED_AT = 'created_at';
@@ -215,15 +225,6 @@ class OrdemDeCompraItem extends Model
             'ordem_de_compra_item_id'
         );
     }
-
-    // Funções da aprovação
-
-    /**
-     * Tipo de Workflow, necessário para models que são aprováveis
-     *
-     * @var integer
-     */
-    public static $workflow_tipo_id = 1; // Tipo = Aprovação de OC
 
     public function aprovacoes()
     {

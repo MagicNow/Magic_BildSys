@@ -32,29 +32,24 @@ $count_insumos = 0;
             </div>
             <div class="col-md-3">
                 <label>Valor unitário:</label>
-                <input type="text" value="{{$insumo->valor_unitario}}" id="valor_unitario_{{$insumo->id}}" class="form-control money" name="insumos[{{$insumo->id}}][valor_unitario]">
-            </div>
-            <div class="col-md-3">
-                <label>Valor máximo:</label>
-                <input type="text" value="{{$insumo->valor_maximo}}" id="valor_maximo_{{$insumo->id}}" class="form-control money" name="insumos[{{$insumo->id}}][valor_maximo]">
+                <div class="input-group">
+                    <span class="input-group-addon" id="basic-addon1">R$</span>
+                    <input type="text" value="{{$insumo->valor_unitario}}" id="valor_unitario_{{$insumo->id}}" class="form-control money" name="insumos[{{$insumo->id}}][valor_unitario]">
+                </div>
             </div>
             <div class="col-md-3">
                 <label>Pedido quantidade mínima:</label>
                 <input type="text" value="{{$insumo->pedido_minimo}}" id="pedido_minimo_{{$insumo->id}}" class="form-control decimal" name="insumos[{{$insumo->id}}][pedido_minimo]">
             </div>
-            <div class="col-md-3">
-                <label>Pedido quantidade máxima:</label>
-                <input type="text" value="{{$insumo->qtd_maxima}}" id="qtd_maxima_{{$insumo->id}}" class="form-control decimal" name="insumos[{{$insumo->id}}][qtd_maxima]">
-            </div>
-            <div class="col-md-4">
+            <div class="col-md-2">
                 <label>Pedido múltiplo de:</label>
                 <input type="text" value="{{$insumo->pedido_multiplo_de}}" id="pedido_multiplo_de_{{$insumo->id}}" class="form-control decimal" name="insumos[{{$insumo->id}}][pedido_multiplo_de]">
             </div>
-            <div class="col-md-4">
+            <div class="col-md-2">
                 <label>Período início:</label>
                 <input type="date" value="{{$insumo->periodo_inicio ? $insumo->periodo_inicio->format('Y-m-d') : null}}" id="periodo_inicio_{{$insumo->id}}" class="form-control" name="insumos[{{$insumo->id}}][periodo_inicio]">
             </div>
-            <div class="col-md-4">
+            <div class="col-md-2">
                 <label>Período término:</label>
                 <input type="date" value="{{$insumo->periodo_termino ? $insumo->periodo_termino->format('Y-m-d') : null}}" id="periodo_termino_{{$insumo->id}}" class="form-control" name="insumos[{{$insumo->id}}][periodo_termino]">
             </div>
@@ -94,29 +89,24 @@ $count_insumos = 0;
                                 </div>\
                                 <div class="col-md-3">\
                                     <label>Valor unitário:</label>\
-                                    <input type="text" class="form-control money" id="valor_unitario_'+count_insumos+'" name="insumos['+count_insumos+'][valor_unitario]">\
-                                </div>\
-                                <div class="col-md-3">\
-                                    <label>Valor máximo:</label>\
-                                    <input type="text" class="form-control money" id="valor_maximo_'+count_insumos+'" name="insumos['+count_insumos+'][valor_maximo]">\
+                                    <div class="input-group">\
+                                        <span class="input-group-addon" id="basic-addon1">R$</span>\
+                                        <input type="text" class="form-control money" id="valor_unitario_'+count_insumos+'" name="insumos['+count_insumos+'][valor_unitario]">\
+                                    </div>\
                                 </div>\
                                 <div class="col-md-3">\
                                     <label>Pedido quantidade mínima:</label>\
                                     <input type="text" class="form-control decimal" id="pedido_minimo_'+count_insumos+'" name="insumos['+count_insumos+'][pedido_minimo]">\
                                 </div>\
-                                <div class="col-md-3">\
-                                    <label>Pedido quantidade máxima:</label>\
-                                    <input type="text" class="form-control decimal" id="qtd_maxima_'+count_insumos+'" name="insumos['+count_insumos+'][qtd_maxima]">\
-                                </div>\
-                                <div class="col-md-4">\
+                                <div class="col-md-2">\
                                     <label>Pedido múltiplo de:</label>\
                                     <input type="text" class="form-control decimal" id="pedido_multiplo_de_'+count_insumos+'" name="insumos['+count_insumos+'][pedido_multiplo_de]">\
                                 </div>\
-                                <div class="col-md-4">\
+                                <div class="col-md-2">\
                                     <label>Período início:</label>\
                                     <input type="date" class="form-control" id="periodo_inicio_'+count_insumos+'" name="insumos['+count_insumos+'][periodo_inicio]">\
                                 </div>\
-                                <div class="col-md-4">\
+                                <div class="col-md-2">\
                                     <label>Período término:</label>\
                                     <input type="date" class="form-control" id="periodo_termino_'+count_insumos+'" name="insumos['+count_insumos+'][periodo_termino]">\
                                 </div>\

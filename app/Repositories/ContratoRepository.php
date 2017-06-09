@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use PDF;
 use App\Mail\ContratoServicoFornecedorNaoUsuario;
 use App\Models\Contrato;
 use App\Models\ContratoItem;
@@ -13,7 +14,9 @@ use App\Notifications\NotificaFornecedorContratoServico;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use InfyOm\Generator\Common\BaseRepository;
-use \PDF;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\WorkflowNotification;
+use App\Models\ContratoStatus;
 
 class ContratoRepository extends BaseRepository
 {
@@ -262,7 +265,7 @@ class ContratoRepository extends BaseRepository
             $contratoArray['contrato_template_id'] = $attributes['contrato_template_id'];
             $contratoArray['campos_extras'] = $campos_extras;
             $contratoArray['obra_id'] = $obraId;
-            $contratoArray['contrato_status_id'] = 1; // Inicia em aprovação
+            $contratoArray['contrato_status_id'] = ContratoStatus::EM_APROVACAO;
             $contratoArray['fornecedor_id'] = $qcFornecedor->fornecedor_id;
             $contratoArray['quadro_de_concorrencia_id'] = $qcFornecedor->quadro_de_concorrencia_id;
             $contratoArray['valor_total'] = number_format($contratoArray['valor_total'],2,'.','');
@@ -278,9 +281,13 @@ class ContratoRepository extends BaseRepository
             $contratos[] = Contrato::where('id',$contrato->id)->with('itens')->first();
         }
 
+        $aprovadores = WorkflowAprovacaoRepository::usuariosDaAlcadaAtual($contrato);
+
+        Notification::send($aprovadores, new WorkflowNotification($contrato));
+
         return [
             'success' => true,
-            'contratos'=>$contratos
+            'contratos'=> $contratos
         ];
     }
 

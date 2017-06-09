@@ -91,11 +91,9 @@ class CatalogoContratoController extends AppBaseController
                     $contrato_insumo = new CatalogoContratoInsumo();
                     $contrato_insumo->catalogo_contrato_id = $catalogoContrato->id;
                     $contrato_insumo->insumo_id = $item['insumo_id'];
-                    $contrato_insumo->valor_unitario = money_to_float($item['valor_unitario']);
-                    $contrato_insumo->valor_maximo = money_to_float($item['valor_maximo']);
+                    $contrato_insumo->valor_unitario = $item['valor_unitario'] ? money_to_float($item['valor_unitario']) : 0;
                     $contrato_insumo->pedido_minimo = $item['pedido_minimo'];
                     $contrato_insumo->pedido_multiplo_de = $item['pedido_multiplo_de'];
-                    $contrato_insumo->qtd_maxima = $item['qtd_maxima'];
                     $contrato_insumo->periodo_inicio = $item['periodo_inicio'];
                     $contrato_insumo->periodo_termino = $item['periodo_termino'];
                     $catalogoContrato->contratoInsumos()->save($contrato_insumo);
@@ -198,11 +196,9 @@ class CatalogoContratoController extends AppBaseController
                         $contrato_insumo = new CatalogoContratoInsumo();
                         $contrato_insumo->catalogo_contrato_id = $catalogoContrato->id;
                         $contrato_insumo->insumo_id = $item['insumo_id'];
-                        $contrato_insumo->valor_unitario = money_to_float($item['valor_unitario']);
-                        $contrato_insumo->valor_maximo = money_to_float($item['valor_maximo']);
+                        $contrato_insumo->valor_unitario = $item['valor_unitario'] ? money_to_float($item['valor_unitario']) : 0;
                         $contrato_insumo->pedido_minimo = $item['pedido_minimo'];
                         $contrato_insumo->pedido_multiplo_de = $item['pedido_multiplo_de'];
-                        $contrato_insumo->qtd_maxima = $item['qtd_maxima'];
                         $contrato_insumo->periodo_inicio = $item['periodo_inicio'];
                         $contrato_insumo->periodo_termino = $item['periodo_termino'];
                         $catalogoContrato->contratoInsumos()->save($contrato_insumo);
@@ -213,11 +209,9 @@ class CatalogoContratoController extends AppBaseController
                         if ($item['insumo_id'] != '') {
                             $contrato_insumo->catalogo_contrato_id = $catalogoContrato->id;
                             $contrato_insumo->insumo_id = $item['insumo_id'];
-                            $contrato_insumo->valor_unitario = $item['valor_unitario'];
-                            $contrato_insumo->valor_maximo = $item['valor_maximo'];
+                            $contrato_insumo->valor_unitario = $item['valor_unitario'] ? money_to_float($item['valor_unitario']) : 0;
                             $contrato_insumo->pedido_minimo = $item['pedido_minimo'];
                             $contrato_insumo->pedido_multiplo_de = $item['pedido_multiplo_de'];
-                            $contrato_insumo->qtd_maxima = $item['qtd_maxima'];
                             $contrato_insumo->periodo_inicio = $item['periodo_inicio'];
                             $contrato_insumo->periodo_termino = $item['periodo_termino'];
                             $contrato_insumo->update();

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Contrato;
 use App\Models\Insumo;
+use App\Models\OrdemDeCompraItem;
 use App\Models\QuadroDeConcorrencia;
 use App\Repositories\ContratoRepository;
 use Flash;
@@ -66,24 +67,22 @@ class QuadroDeConcorrenciaController extends AppBaseController
      */
     public function index(QuadroDeConcorrenciaDataTable $quadroDeConcorrenciaDataTable)
     {
-        $qcs_por_status = QuadroDeConcorrencia::select([
-            'qc_status.nome',
-            'qc_status.cor',
-            DB::raw('COUNT(1) qtd')
-        ])->join('qc_status', 'qc_status.id', 'qc_status_id')
-            ->groupBy('qc_status.nome', 'cor')
-            ->get();
+//        $qcs_por_status = QuadroDeConcorrencia::select([
+//            'qc_status.nome',
+//            'qc_status.cor',
+//            DB::raw('COUNT(1) qtd')
+//        ])->join('qc_status', 'qc_status.id', 'qc_status_id')
+//            ->groupBy('qc_status.nome', 'cor')
+//            ->get();
+//
+//        $qcs_por_usuario = QuadroDeConcorrencia::select([
+//            'users.name',
+//            DB::raw('COUNT(1) qtd')
+//        ])->join('users', 'users.id', 'quadro_de_concorrencias.user_id')
+//            ->groupBy('users.name')
+//            ->get();
 
-        $qcs_por_usuario = QuadroDeConcorrencia::select([
-            'users.name',
-            DB::raw('COUNT(1) qtd')
-        ])->join('users', 'users.id', 'quadro_de_concorrencias.user_id')
-            ->groupBy('users.name')
-            ->get();
-
-//        dd($qcs_por_usuario);
-
-        return $quadroDeConcorrenciaDataTable->render('quadro_de_concorrencias.index', compact('qcs_por_status','qcs_por_usuario'));
+        return $quadroDeConcorrenciaDataTable->render('quadro_de_concorrencias.index');
     }
 
     /**
@@ -1302,5 +1301,150 @@ class QuadroDeConcorrenciaController extends AppBaseController
         return response()->json([
             'success' => true
         ]);
+    }
+
+    public function dashboard()
+    {
+        $qcs_por_status = QuadroDeConcorrencia::select([
+            'qc_status.nome',
+            'qc_status.cor',
+            DB::raw('COUNT(1) qtd')
+        ])->join('qc_status', 'qc_status.id', 'qc_status_id')
+            ->groupBy('qc_status.nome', 'cor')
+            ->get();
+
+        $qcs_por_usuario = QuadroDeConcorrencia::select([
+            'users.name',
+            DB::raw('COUNT(1) qtd')
+        ])->join('users', 'users.id', 'quadro_de_concorrencias.user_id')
+            ->groupBy('users.name')
+            ->get();
+
+        $qcs_por_sla = DB::table(
+                        DB::raw(
+                            "(SELECT
+		                        SUM(verde) as verde,
+		                        SUM(vermelho) as vermelho,
+		                        SUM(amarelo) as amarelo
+                                FROM (
+                                    SELECT
+                                    IF ( sla > 30, 1, 0) as verde,
+                                    IF ( sla < 0, 1, 0) as vermelho,
+                                    IF ( sla > 0 AND sla < 30, 1, 0) as amarelo,
+                                    id
+                                    FROM (
+                                        SELECT
+	                                        ordem_de_compra_itens.id,
+	                                        (
+		                                    SELECT
+			                                    DATEDIFF(
+			                                    	ADDDATE(
+			                                    		ordem_de_compra_itens.updated_at,
+			                                    		INTERVAL (
+			                                    			IFNULL(
+			                                    				(
+			                                    					SELECT
+			                                    						SUM(L.dias_prazo_minimo) prazo
+			                                    					FROM
+			                                    						lembretes L
+			                                    					JOIN insumo_grupos IG ON IG.id = L.insumo_grupo_id
+			                                    					WHERE
+			                                    						EXISTS (
+			                                    							SELECT
+			                                    								1
+			                                    							FROM
+			                                    								insumos I
+			                                    							WHERE
+			                                    								I.id = item.insumo_id
+			                                    							AND I.insumo_grupo_id = IG.id
+			                                    						)
+			                                    					AND L.deleted_at IS NULL
+			                                    					AND L.lembrete_tipo_id = 2
+			                                    				),
+			                                    				0
+			                                    			)
+			                                    		) DAY
+			                                    	),
+			                                    	CURDATE()
+			                                    ) sla
+		                                        FROM
+		                                        	ordem_de_compra_itens item
+		                                        JOIN ordem_de_compras OC ON OC.id = item.ordem_de_compra_id
+		                                        JOIN planejamento_compras PC ON PC.insumo_id = item.insumo_id
+		                                        AND PC.grupo_id = item.grupo_id
+		                                        AND PC.subgrupo1_id = item.subgrupo1_id
+		                                        AND PC.subgrupo2_id = item.subgrupo2_id
+		                                        AND PC.subgrupo3_id = item.subgrupo3_id
+		                                        AND PC.servico_id = item.servico_id
+		                                        JOIN planejamentos PL ON PL.id = PC.planejamento_id
+		                                        WHERE
+		                                        	item.id = ordem_de_compra_itens.id
+		                                        AND PL.deleted_at IS NULL
+		                                        AND PC.deleted_at IS NULL
+		                                        LIMIT 1
+	                                        ) AS sla
+                                        FROM
+                                        	ordem_de_compra_itens
+                                        INNER JOIN ordem_de_compras ON ordem_de_compras.id = ordem_de_compra_itens.ordem_de_compra_id
+                                        INNER JOIN obras ON obras.id = ordem_de_compra_itens.obra_id
+                                        INNER JOIN insumos ON insumos.id = ordem_de_compra_itens.insumo_id
+                                        WHERE
+                                        	ordem_de_compras.aprovado = 1
+                                        AND NOT EXISTS (
+	                                        SELECT
+	                                        	1
+	                                        FROM
+	                                        	oc_item_qc_item
+	                                        INNER JOIN qc_itens ON qc_itens.id = oc_item_qc_item.qc_item_id
+	                                        INNER JOIN quadro_de_concorrencias ON quadro_de_concorrencias.id = qc_itens.quadro_de_concorrencia_id
+	                                        WHERE
+	                                        	ordem_de_compra_item_id = ordem_de_compra_itens.id
+	                                        AND quadro_de_concorrencias.qc_status_id != 6
+                                        )
+                                        AND ordem_de_compra_itens.deleted_at IS NULL
+                                        ) as X
+                                    ) as Y
+                                ) as Z"
+                            )
+                        )
+                        ->get();
+
+        $qcs_por_media = DB::table(
+            DB::raw("
+                (SELECT name, ROUND(SUM(dias) / count(user_id),0) as dias
+                    FROM
+                    (
+                        SELECT quadro_de_concorrencias.id, quadro_de_concorrencias.user_id, users.name,
+                            (
+                                DATEDIFF
+                                (
+                                    (
+                                        SELECT qc_status_log.created_at
+                                        FROM qc_status_log
+                                        WHERE qc_status_log.qc_status_id = 8
+                                        AND quadro_de_concorrencias.id = qc_status_log.quadro_de_concorrencia_id
+                                        ORDER BY qc_status_log.created_at
+                                        LIMIT 1
+                                    ),
+                                    (
+                                        SELECT qc_status_log.created_at
+                                        FROM qc_status_log
+                                        WHERE qc_status_log.qc_status_id = 5
+                                        AND quadro_de_concorrencias.id = qc_status_log.quadro_de_concorrencia_id
+                                        ORDER BY qc_status_log.created_at
+                                        LIMIT 1
+                                    )
+                                )
+                            ) dias
+                        FROM quadro_de_concorrencias
+                        JOIN users ON users.id = quadro_de_concorrencias.user_id
+                        WHERE quadro_de_concorrencias.qc_status_id >= 8
+                    ) as X
+                    GROUP BY X.user_id
+                ) as Y"
+            )
+        )->get();
+
+        return view('quadro_de_concorrencias.dashboard', compact('qcs_por_status','qcs_por_usuario','qcs_por_sla','qcs_por_media'));
     }
 }

@@ -146,6 +146,7 @@ class RolesAndPermissions extends Seeder
             'quadroDeConcorrencias.view' => 'Visualização de Quadro De Concorrência',
             'quadroDeConcorrencias.informar_valor' => 'Informar valores em quadros de concorrência',
             'quadroDeConcorrencias.delete'   => 'Remoção Física de Quadro De Concorrência',
+            'quadroDeConcorrencias.dashboard'   => 'Visualização de DashBoard quadro de concorrência',
 
             'catalogo_acordos.list' => 'Listagem de Catálogo Acordos',
             'catalogo_acordos.create' => 'Criação de Catálogo Acordos',

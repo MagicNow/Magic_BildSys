@@ -30,10 +30,18 @@
                     @if($quadroDeConcorrencia->hasServico())
                         @if($qcFornecedor->porcentagem_servico<100)
                             <span class="pull-right">
-                                <span class="label label-info">{{$qcFornecedor->porcentagem_servico }}% Serviço</span>
-                                <span class="label label-primary">{{$qcFornecedor->porcentagem_material }}% Material</span>
-                                <span class="label label-warning">{{$qcFornecedor->porcentagem_faturamento_direto }}% Fat. Direto</span>
-                                <span class="label bg-maroon-active">{{$qcFornecedor->porcentagem_locacao }}% Locação</span>
+                                <span class="label label-info">
+                                    {{ float_to_money( $qcFornecedor->porcentagem_servico ?: 0, '') }}% Serviço
+                                </span>
+                                <span class="label label-primary">
+                                    {{ float_to_money($qcFornecedor->porcentagem_material ?: 0, '') }}% Material
+                                </span>
+                                <span class="label label-warning">
+                                    {{ float_to_money($qcFornecedor->porcentagem_faturamento_direto ?: 0, '') }}% Fat. Direto
+                                </span>
+                                <span class="label bg-maroon-active">
+                                    {{ float_to_money($qcFornecedor->porcentagem_locacao ?: 0, '') }}% Locação
+                                </span>
                             </span>
                         @endif
                     @endif

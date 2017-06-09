@@ -13,6 +13,8 @@ use phpDocumentor\Reflection\Types\String_;
 use App\Models\WorkflowTipo;
 use App\Models\Contrato;
 use App\Models\ContratoItemModificacao;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\WorkflowNotification;
 
 class WorkflowAprovacaoRepository
 {
@@ -145,6 +147,26 @@ class WorkflowAprovacaoRepository
             'aprovacao' => null,
             'msg' => 'Item não encontrado'
         ];
+    }
+
+    /**
+     * Collection de usuários da alçada atual
+     *
+     * @return Illuminate\Database\Eloquent\Collection
+     */
+    public static function usuariosDaAlcadaAtual($model)
+    {
+        $class_name = get_class($model);
+        $alcada_atual = static::verificaAlcadaAtual(
+            class_basename($model),
+            $model->irmaosIds(),
+            WorkflowTipo::find($class_name::$workflow_tipo_id)
+        );
+
+        $user_ids = WorkflowUsuario::where('workflow_alcada_id', $alcada_atual->id)
+            ->pluck('user_id');
+
+        return User::whereIn('id', $user_ids->all())->get();
     }
 
     /**
@@ -390,7 +412,6 @@ class WorkflowAprovacaoRepository
                 $obj->paiEmAprovacao();
             }
 
-
             // Se não for, verifica se já é a última
             $qtd_aprovadores = self::verificaQuantidadeUsuariosAprovadores($workflow_tipo, $obj->qualObra(), null, $ids, $tipo);
 
@@ -404,6 +425,13 @@ class WorkflowAprovacaoRepository
 
                     // Chama função do model do item que irá verificar batendo no pai se todos os filhos foram aprovados
                     $obj->confereAprovacaoGeral();
+                } else {
+                    $alcada_atual = self::verificaAlcadaAtual($tipo, $ids, $workflow_tipo);
+
+                    if($alcada_atual->id != $workflowUsuario->workflow_alcada_id) {
+                        $aprovadores = self::usuariosDaAlcadaAtual($obj);
+                        Notification::send($aprovadores, new WorkflowNotification($obj));
+                    }
                 }
             }
         } catch (Exception $e) {

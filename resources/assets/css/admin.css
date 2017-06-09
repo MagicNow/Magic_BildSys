@@ -671,9 +671,14 @@ table.dataTable.dtr-inline.collapsed> tbody> tr.parent> th:first-child:before {
 }
 
 .tooltip-inner {
-  text-align: center;
+  text-align: center !important;
 }
 
 div.dataTables_wrapper div.dataTables_processing {
   z-index: 100;
+}
+
+.notifications-menu .dropdown-menu {
+  width: auto !important;
+  min-width: 240px !important;
 }

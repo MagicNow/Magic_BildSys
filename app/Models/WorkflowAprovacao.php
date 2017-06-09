@@ -61,7 +61,8 @@ class WorkflowAprovacao extends Model
     ];
 
 
-    public function aprovavel(){
+    public function aprovavel()
+    {
         return $this->morphTo();
     }
 
@@ -72,8 +73,6 @@ class WorkflowAprovacao extends Model
     {
         return $this->belongsTo(User::class);
     }
-
-
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
