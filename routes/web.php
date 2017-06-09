@@ -440,7 +440,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     });
 
 
-    # Dashboard site
+    # Dashboard site ORDEM DE COMPRA
     $router->group(['middleware' => 'needsPermission:site.dashboard'], function () use ($router) {
         $router->get('compras/jsonOrdemCompraDashboard', 'OrdemDeCompraController@jsonOrdemCompraDashboard');
         $router->get('compras/dashboard', 'OrdemDeCompraController@dashboard');
@@ -640,8 +640,16 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
                     'as' => 'quadroDeConcorrencias.adicionar',
                     'uses' => 'QuadroDeConcorrenciaController@adicionar'
                 ])->middleware("needsPermission:quadroDeConcorrencias.edit");
+
+            # Dashboard site QUADRO DE CONCORRÊNCIA
+            $router->get('/view/dashboard',
+                [
+                    'as' => 'quadroDeConcorrencias.dashboard',
+                    'uses' => 'QuadroDeConcorrenciaController@dashboard'
+                ])->middleware("needsPermission:quadroDeConcorrencias.dashboard");
         }
     );
+
     # Template de Contrato
     $router->get('/contrato-template/{contratoTemplates}/campos', 'Admin\ContratoTemplateController@camposExtras');
 
