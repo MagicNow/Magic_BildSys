@@ -8,55 +8,64 @@
 $count_insumos = 0;
 ?>
 
-<div class="modal-header">
+<div class="modal-header" style="border-bottom: 2px solid #ccc !important;margin-bottom: 20px;">
     <div class="col-md-12">
         <h2>Insumos</h2>
     </div>
 </div>
 
 @if(isset($catalogoContrato))
-    @foreach ($catalogoContrato->contratoInsumos as $insumo )
-        <?php
-        $count_insumos = $insumo->id;
-        ?>
-        <div class="form-group col-md-12" id="block_insumos{{$insumo->id}}">
-            {!! Form::hidden('insumos['.$insumo->id.'][id]', $insumo->id) !!}
-            <div class="col-md-11">
-                <label>Insumo:</label>
-                {!! Form::select('insumos['.$insumo->id.'][insumo_id]',[''=>'Escolha...']+ \App\Models\Insumo::where('id',$insumo->insumo_id)->pluck('nome','id')->toArray(), $insumo->insumo_id, ['class' => 'form-control select2 insumos_existentes insumo_select_'.$insumo->id,'required'=>'required', 'id' => 'insumo_select_'.$insumo->id]) !!}
-            </div>
-            <div class="col-md-1" align="right" style="margin-top:25px;">
-                <button type="button" onclick="deleteInsumo({{$insumo->id}})" class="btn btn btn-danger" aria-label="Close" title="Remover" >
-                    <i class="fa fa-times"></i>
-                </button>
-            </div>
-            <div class="col-md-3">
-                <label>Valor unitário:</label>
-                <div class="input-group">
-                    <span class="input-group-addon" id="basic-addon1">R$</span>
-                    <input type="text" value="{{$insumo->valor_unitario}}" id="valor_unitario_{{$insumo->id}}" class="form-control money" name="insumos[{{$insumo->id}}][valor_unitario]">
+    @php $array_insumos = []; @endphp
+    @foreach ($catalogoContrato->contratoInsumos->groupBy('insumo_id') as $insumo )
+        @foreach($insumo as $item)
+            @php $count_insumos = $item->id; @endphp
+            <div class="form-group col-md-12" id="block_insumos{{$item->id}}">
+                @if(count($array_insumos))
+                    <div class="col-md-12 border-separation" {{@isset(array_count_values($array_insumos)[$item->insumo_id]) ? 'style=display:none;' : 'style=margin-bottom:20px;'}}></div>
+                @endif
+
+                {!! Form::hidden('insumos['.$item->id.'][id]', $item->id) !!}
+                <div class="col-md-11" {{in_array($item->insumo_id, $array_insumos) ? 'style=display:none;' : ''}}>
+                    <label>Insumo:</label>
+                    {!! Form::select('insumos['.$item->id.'][insumo_id]',[''=>'Escolha...']+ \App\Models\Insumo::where('id',$item->insumo_id)->pluck('nome','id')->toArray(), $item->insumo_id, ['class' => 'form-control select2 insumos_existentes insumo_select_'.$item->id,'required'=>'required', 'id' => 'insumo_select_'.$item->id]) !!}
+                </div>
+                <div class="col-md-1" align="right" style="margin-top:25px;{{in_array($item->insumo_id, $array_insumos) ? 'display:none;' : ''}}">
+                    <button type="button" onclick="deleteInsumo({{$item->id}})" class="btn btn btn-danger" aria-label="Close" title="Remover" >
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+                <div class="col-md-12 border-separation" style="border-bottom: 1px solid #d2d6de !important; margin-bottom: 20px;"></div>
+                <div class="col-md-3">
+                    <label>Valor unitário:</label>
+                    <div class="input-group">
+                        <span class="input-group-addon" id="basic-addon1">R$</span>
+                        <input type="text" value="{{$item->valor_unitario}}" id="valor_unitario_{{$item->id}}" class="form-control money" name="insumos[{{$item->id}}][valor_unitario]">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label>Pedido quantidade mínima:</label>
+                    <input type="text" value="{{$item->pedido_minimo}}" id="pedido_minimo_{{$item->id}}" class="form-control decimal" name="insumos[{{$item->id}}][pedido_minimo]">
+                </div>
+                <div class="col-md-2">
+                    <label>Pedido múltiplo de:</label>
+                    <input type="text" value="{{$item->pedido_multiplo_de}}" id="pedido_multiplo_de_{{$item->id}}" class="form-control decimal" name="insumos[{{$item->id}}][pedido_multiplo_de]">
+                </div>
+                <div class="col-md-2">
+                    <label>Período início:</label>
+                    <input type="date" value="{{$item->periodo_inicio ? $item->periodo_inicio->format('Y-m-d') : null}}" id="periodo_inicio_{{$item->id}}" class="form-control" name="insumos[{{$item->id}}][periodo_inicio]">
+                </div>
+                <div class="col-md-2">
+                    <label>Período término:</label>
+                    <input type="date" value="{{$item->periodo_termino ? $item->periodo_termino->format('Y-m-d') : null}}" id="periodo_termino_{{$item->id}}" class="form-control" name="insumos[{{$item->id}}][periodo_termino]">
                 </div>
             </div>
-            <div class="col-md-3">
-                <label>Pedido quantidade mínima:</label>
-                <input type="text" value="{{$insumo->pedido_minimo}}" id="pedido_minimo_{{$insumo->id}}" class="form-control decimal" name="insumos[{{$insumo->id}}][pedido_minimo]">
-            </div>
-            <div class="col-md-2">
-                <label>Pedido múltiplo de:</label>
-                <input type="text" value="{{$insumo->pedido_multiplo_de}}" id="pedido_multiplo_de_{{$insumo->id}}" class="form-control decimal" name="insumos[{{$insumo->id}}][pedido_multiplo_de]">
-            </div>
-            <div class="col-md-2">
-                <label>Período início:</label>
-                <input type="date" value="{{$insumo->periodo_inicio ? $insumo->periodo_inicio->format('Y-m-d') : null}}" id="periodo_inicio_{{$insumo->id}}" class="form-control" name="insumos[{{$insumo->id}}][periodo_inicio]">
-            </div>
-            <div class="col-md-2">
-                <label>Período término:</label>
-                <input type="date" value="{{$insumo->periodo_termino ? $insumo->periodo_termino->format('Y-m-d') : null}}" id="periodo_termino_{{$insumo->id}}" class="form-control" name="insumos[{{$insumo->id}}][periodo_termino]">
-            </div>
-            <div class="col-md-12 border-separation"></div>
-        </div>
+            @php $array_insumos[] = $item->insumo_id; @endphp
+        @endforeach
     @endforeach
 @endif
+
+<div class="col-md-12 border-separation"></div>
+
 <div id="insumos"></div>
 <div id="add_insumos" class="col-md-6 col-md-offset-3" style="margin-bottom:25px;margin-top:25px">
     <span class="btn btn-info btn-lg btn-flat btn-block" onclick="addInsumo()">
