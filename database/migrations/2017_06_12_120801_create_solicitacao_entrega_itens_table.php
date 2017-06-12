@@ -14,7 +14,7 @@ class CreateSolicitacaoEntregaItensTable extends Migration
     public function up()
     {
         Schema::create('solicitacao_entrega_itens', function($table) {
-            $table->increments();
+            $table->increments('id');
             $table->unsignedInteger('solicitacao_entrega_id');
             $table->unsignedInteger('contrato_item_id');
             $table->unsignedInteger('insumo_id');

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateSolicitacaoEntregaTable extends Migration
+class CreateSeStatusLogTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,21 +13,20 @@ class CreateSolicitacaoEntregaTable extends Migration
      */
     public function up()
     {
-        Schema::create('solicitacao_entregas', function($table) {
+        Schema::create('se_status_log', function($table) {
             $table->increments('id');
-            $table->unsignedInteger('contrato_id');
+            $table->unsignedInteger('solicitacao_entrega_id');
+            $table->unsignedInteger('se_status_id');
             $table->unsignedInteger('user_id');
-            $table->decimal('valor_total', 19, 2);
-            $table->boolean('habilita_faturamento')->default(0);
-            $table->timestamps();
+            $table->dateTime('created_at');
 
-            $table->foreign('contrato_id')
+            $table->foreign('se_status_id')
                 ->references('id')
-                ->on('contratos');
+                ->on('se_status');
 
-            $table->foreign('user_id')
+            $table->foreign('solicitacao_entrega_id')
                 ->references('id')
-                ->on('users');
+                ->on('solicitacao_entregas');
         });
     }
 
@@ -38,6 +37,6 @@ class CreateSolicitacaoEntregaTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('solicitacao_entregas');
+        Schema::dropIfExists('se_status_log');
     }
 }
