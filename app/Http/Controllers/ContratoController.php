@@ -414,4 +414,10 @@ class ContratoController extends AppBaseController
         }
         return redirect(route('contratos.index'));
     }
+
+    public function solicitarEntrega($contrato_id)
+    {
+        $contrato = $this->contratoRepository->find($contrato_id);
+        return view('contratos.solicitar_entrega', compact('contrato'));
+    }
 }

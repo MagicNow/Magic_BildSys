@@ -195,6 +195,17 @@ class Contrato extends Model
             });
     }
 
+    public function hasMaterial()
+    {
+        return $this->itens
+            ->pluck('insumo')
+            ->pluck('insumoGrupo')
+            ->pluck('nome')
+            ->contains(function($nome) {
+                return starts_with($nome, 'MATERIAL');
+            });
+    }
+
     public function isStatus($status)
     {
         $status = is_array($status) ? $status : func_get_args();

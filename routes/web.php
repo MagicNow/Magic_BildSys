@@ -732,11 +732,25 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             '/insumo-valor',
             'ContratoController@insumoValor'
         )->middleware('needsPermission:contratos.edit');
-
         $router->get(
             '/{contratos}',
             ['as' => 'contratos.show', 'uses' => 'ContratoController@show']
         )->middleware('needsPermission:contratos.show');
+
+        $router->get(
+            '/{contratos}/solicitar-entrega',
+            'ContratoController@solicitarEntrega'
+        )
+        ->middleware('needsPermission:contratos.solicitar_entrega')
+        ->name('contratos.solicitar-entrega');
+
+        $router->get(
+            '/solicitacao-entrega/{solicitacao_entrega}',
+            'SolicitacaoEntregaController@show'
+        )
+        ->middleware('needsPermission:contratos.solicitar_entrega')
+        ->name('contrato.solicitacao-entrega');
+
         $router->post(
             '/editar-item/{item}',
             [
