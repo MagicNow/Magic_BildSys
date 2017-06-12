@@ -15,21 +15,25 @@ $count_insumos = 0;
 </div>
 
 @if(isset($catalogoContrato))
-    @php $array_insumos = []; @endphp
+    @php
+        $array_insumos = [];
+        $botao = 1;
+    @endphp
     @foreach ($catalogoContrato->contratoInsumos->sortByDesc('id')->groupBy('insumo_id') as $insumo)
         @foreach($insumo as $item)
             @php $count_insumos = $item->id; @endphp
             <div class="form-group col-md-12" id="block_insumos{{$item->id}}">
                 @if(count($array_insumos))
                     <div class="col-md-12 border-separation" {{@isset(array_count_values($array_insumos)[$item->insumo_id]) ? 'style=display:none;' : 'style=margin-bottom:20px;'}}></div>
-                    @if(@isset(array_count_values($array_insumos)[$item->insumo_id]))
-                        <button class="btn btn-warning flat pull-right" type="button" onclick="mostrarReajustes('{{$item->id}}', 1)" id="btn_mostrar_ocultar_{{$item->id}}" title="Mostrar/Ocultar todos os reajustes">
-                            <i class="fa fa-plus" id="icon_mostrar_ocultar_{{$item->id}}"></i>
+                    @if(@isset(array_count_values($array_insumos)[$item->insumo_id]) && $botao)
+                        @php $botao = 0; @endphp
+                        <button class="btn btn-warning flat pull-right" type="button" onclick="mostrarReajustes('{{$item->insumo_id}}', 1)" id="btn_mostrar_ocultar_{{$item->insumo_id}}" title="Mostrar/Ocultar todos os reajustes">
+                            <i class="fa fa-plus" id="icon_mostrar_ocultar_{{$item->insumo_id}}"></i>
                         </button>
 
-                        <div id="bloco_mostrar_reajustes_{{$item->id}}" style="display: none;"> {{--DIV dinâmica--}}
+                        <div class="bloco_mostrar_reajustes_{{$item->insumo_id}}" style="display: none;"> {{--DIV dinâmica--}}
                     @else
-                        <div> {{--DIV dinâmica--}}
+                        <div class="bloco_mostrar_reajustes_{{$item->insumo_id}}" {{in_array($item->insumo_id, $array_insumos) ? 'style=display:none;' : ''}}> {{--DIV dinâmica--}}
                     @endif
                 @endif
 
@@ -348,11 +352,11 @@ $count_insumos = 0;
 
     function mostrarReajustes(item, mostrar) {
         if(mostrar){
-            $('#bloco_mostrar_reajustes_'+item).css('display', '');
+            $('.bloco_mostrar_reajustes_'+item).css('display', '');
             $('#btn_mostrar_ocultar_'+item).attr('onclick', 'mostrarReajustes('+item+', 0)');
             $('#icon_mostrar_ocultar_'+item).attr('class', 'fa fa-minus');
         }else{
-            $('#bloco_mostrar_reajustes_'+item).css('display', 'none');
+            $('.bloco_mostrar_reajustes_'+item).css('display', 'none');
             $('#btn_mostrar_ocultar_'+item).attr('onclick', 'mostrarReajustes('+item+', 1)');
             $('#icon_mostrar_ocultar_'+item).attr('class', 'fa fa-plus');
         }
