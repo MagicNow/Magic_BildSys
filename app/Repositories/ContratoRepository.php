@@ -211,7 +211,7 @@ class ContratoRepository extends BaseRepository
         if(count($valorLocacao)){
             foreach ($valorLocacao as $obraId => $valorLoc){
                 if($valorLoc>0){
-                    $insumo = Insumo::where('codigo','32590')->first(); // trocado temporariamente para 32590 pois o 37674 não existe
+                    $insumo = Insumo::where('codigo','37367')->first(); // trocado temporariamente para 37367 pois o 37674 não existe
                     $contratoItens[$obraId][] = [
                         'insumo_id'         => $insumo->id,
                         'qc_item_id'        => null,
