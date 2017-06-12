@@ -181,6 +181,23 @@ class QuadroDeConcorrenciaController extends AppBaseController
 
         $input = $request->all();
         $input['user_update_id'] = Auth::id();
+
+        if($request->has('abrir_concorrencia')){
+
+            if(isset($input['qcFornecedoresMega'])){
+                $fornecedores = count($input['qcFornecedores']) + count($input['qcFornecedoresMega']);
+            }else{
+                $fornecedores = count($input['qcFornecedores']);
+            }
+
+            if($fornecedores > $quadroDeConcorrencia->qcFornecedores->count()){
+                $input['qc_status_id'] = 7; // Em concorrência
+            }else{
+                Flash::error('Escolha novos fornecedores para o Q.C. '.$id);
+                return back();
+            }
+        }
+
         $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->update($input, $id);
 
         if (!$request->has('fechar_qc')) {
