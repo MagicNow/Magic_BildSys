@@ -25,10 +25,10 @@
         <section class="content-header">
             <div class="modal-header">
                 <div class="col-md-12">
-                    <div class="col-md-6">
-                    <span class="pull-left title">
-                        Dashboard
-                    </span>
+                    <div class="col-md-9">
+                        <h3 class="pull-left title">
+                            <a href="#" onclick="history.go(-1);"><i class="fa fa-arrow-left" aria-hidden="true"></i></a> Dashboard
+                        </h3>
                     </div>
                 </div>
             </div>

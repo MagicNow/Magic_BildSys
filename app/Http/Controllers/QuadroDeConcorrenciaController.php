@@ -357,17 +357,24 @@ class QuadroDeConcorrenciaController extends AppBaseController
             )
             ->findWithoutFail($id);
 
+
         if (empty($quadro)) {
             Flash::error('Quadro De Concorrencia '.trans('common.not-found'));
 
             return redirect(route('quadroDeConcorrencias.index'));
         }
 
-        DB::beginTransaction();
-
-        try {
+//        DB::beginTransaction();
+//
+//        try {
             if ($request->gerar_nova_rodada) {
+
                 $quadro->update(['rodada_atual' => (int) $quadro->rodada_atual + 1]);
+
+                #Inserir novos fornecedores que vão participar da nova RODADA
+                $input = $request->all();
+                $input['user_update_id'] = Auth::id();
+                $this->quadroDeConcorrenciaRepository->update($input, $id);
 
                 $mensagens = collect($request->fornecedores)
                     ->map(function ($fornecedor) use ($quadro, $request) {
@@ -399,7 +406,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
                     );
                 }
 
-                DB::commit();
+//                DB::commit();
                 return redirect(route('quadroDeConcorrencias.index'));
             }
 
@@ -486,15 +493,15 @@ class QuadroDeConcorrenciaController extends AppBaseController
                 });
             });
 
-        } catch (Exception $e) {
-            DB::rollback();
-            logger()->error((string) $e);
-            Flash::error('Ocorreu um erro ao salvar os dados, tente novamente');
+//        } catch (Exception $e) {
+//            DB::rollback();
+//            logger()->error((string) $e);
+//            Flash::error('Ocorreu um erro ao salvar os dados, tente novamente');
+//
+//            return back();
+//        }
 
-            return back();
-        }
-
-        DB::commit();
+//        DB::commit();
 
         Flash::success(
             'Quadro de Concorrência #' . $quadro->id . ' foi finalizado com sucesso.'
