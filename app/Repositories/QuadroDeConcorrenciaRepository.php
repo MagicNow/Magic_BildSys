@@ -55,8 +55,8 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
                     ->from('oc_item_qc_item')
                     ->where('ordem_de_compra_item_id', DB::raw('ordem_de_compra_itens.id'));
             })
-            ->where('catalogo_contratos.periodo_inicio', '<=', date('Y-m-d'))
-            ->where('catalogo_contratos.periodo_termino', '>=', date('Y-m-d'))
+//            ->where('catalogo_contratos.periodo_inicio', '<=', date('Y-m-d')) // O CAMPO FOI REMOVIDO
+//            ->where('catalogo_contratos.periodo_termino', '>=', date('Y-m-d')) // O CAMPO FOI REMOVIDO
             ->groupBy('ordem_de_compra_itens.insumo_id', 'catalogo_contrato_insumos.id')
             ->get();
 
