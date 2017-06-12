@@ -25,14 +25,22 @@ $count_insumos = 0;
                 @endif
 
                 {!! Form::hidden('insumos['.$item->id.'][id]', $item->id) !!}
-                <div class="col-md-11" {{in_array($item->insumo_id, $array_insumos) ? 'style=display:none;' : ''}}>
+                <div class="col-md-10" {{in_array($item->insumo_id, $array_insumos) ? 'style=display:none;' : ''}}>
                     <label>Insumo:</label>
                     {!! Form::select('insumos['.$item->id.'][insumo_id]',[''=>'Escolha...']+ \App\Models\Insumo::where('id',$item->insumo_id)->pluck('nome','id')->toArray(), $item->insumo_id, ['class' => 'form-control select2 insumos_existentes insumo_select_'.$item->id,'required'=>'required', 'id' => 'insumo_select_'.$item->id]) !!}
                 </div>
-                <div class="col-md-1" align="right" style="margin-top:25px;{{in_array($item->insumo_id, $array_insumos) ? 'display:none;' : ''}}">
-                    <button type="button" onclick="deleteInsumo({{$item->id}})" class="btn btn btn-danger" aria-label="Close" title="Remover" >
-                        <i class="fa fa-times"></i>
-                    </button>
+                <div class="col-md-2" style="margin-top:25px;{{in_array($item->insumo_id, $array_insumos) ? 'display:none;' : ''}}">
+                    <div class="col-md-9">
+                        <button class="col-md-12 btn btn-success flat pull-right" type="button">
+                            Reajuste
+                        </button>
+                    </div>
+
+                    <div class="col-md-3">
+                        <button type="button" onclick="deleteInsumo({{$item->id}})" class="btn btn btn-danger flat" aria-label="Close" title="Remover" >
+                            <i class="fa fa-times"></i>
+                        </button>
+                    </div>
                 </div>
                 <div class="col-md-12 border-separation" style="border-bottom: 1px solid #d2d6de !important; margin-bottom: 20px;"></div>
                 <div class="col-md-3">
