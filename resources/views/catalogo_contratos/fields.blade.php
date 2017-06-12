@@ -16,12 +16,21 @@ $count_insumos = 0;
 
 @if(isset($catalogoContrato))
     @php $array_insumos = []; @endphp
-    @foreach ($catalogoContrato->contratoInsumos->groupBy('insumo_id') as $insumo )
+    @foreach ($catalogoContrato->contratoInsumos->sortByDesc('id')->groupBy('insumo_id') as $insumo)
         @foreach($insumo as $item)
             @php $count_insumos = $item->id; @endphp
             <div class="form-group col-md-12" id="block_insumos{{$item->id}}">
                 @if(count($array_insumos))
                     <div class="col-md-12 border-separation" {{@isset(array_count_values($array_insumos)[$item->insumo_id]) ? 'style=display:none;' : 'style=margin-bottom:20px;'}}></div>
+                    @if(@isset(array_count_values($array_insumos)[$item->insumo_id]))
+                        <button class="btn btn-warning flat pull-right" type="button" onclick="mostrarReajustes('{{$item->id}}', 1)" id="btn_mostrar_ocultar_{{$item->id}}" title="Mostrar/Ocultar todos os reajustes">
+                            <i class="fa fa-plus" id="icon_mostrar_ocultar_{{$item->id}}"></i>
+                        </button>
+
+                        <div id="bloco_mostrar_reajustes_{{$item->id}}" style="display: none;"> {{--DIV dinâmica--}}
+                    @else
+                        <div> {{--DIV dinâmica--}}
+                    @endif
                 @endif
 
                 {!! Form::hidden('insumos['.$item->id.'][id]', $item->id) !!}
@@ -31,7 +40,7 @@ $count_insumos = 0;
                 </div>
                 <div class="col-md-2" style="margin-top:25px;{{in_array($item->insumo_id, $array_insumos) ? 'display:none;' : ''}}">
                     <div class="col-md-9">
-                        <button class="col-md-12 btn btn-success flat pull-right" type="button">
+                        <button class="btn btn-success flat pull-right" type="button">
                             Reajuste
                         </button>
                     </div>
@@ -66,6 +75,7 @@ $count_insumos = 0;
                     <label>Período término:</label>
                     <input type="date" value="{{$item->periodo_termino ? $item->periodo_termino->format('Y-m-d') : null}}" id="periodo_termino_{{$item->id}}" class="form-control" name="insumos[{{$item->id}}][periodo_termino]">
                 </div>
+            </div> {{--DIV dinâmica--}}
             </div>
             @php $array_insumos[] = $item->insumo_id; @endphp
         @endforeach
@@ -335,5 +345,17 @@ $count_insumos = 0;
 
         });
     });
+
+    function mostrarReajustes(item, mostrar) {
+        if(mostrar){
+            $('#bloco_mostrar_reajustes_'+item).css('display', '');
+            $('#btn_mostrar_ocultar_'+item).attr('onclick', 'mostrarReajustes('+item+', 0)');
+            $('#icon_mostrar_ocultar_'+item).attr('class', 'fa fa-minus');
+        }else{
+            $('#bloco_mostrar_reajustes_'+item).css('display', 'none');
+            $('#btn_mostrar_ocultar_'+item).attr('onclick', 'mostrarReajustes('+item+', 1)');
+            $('#icon_mostrar_ocultar_'+item).attr('class', 'fa fa-plus');
+        }
+    }
 </script>
 @endsection
