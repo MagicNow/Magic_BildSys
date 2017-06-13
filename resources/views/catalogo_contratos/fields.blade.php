@@ -44,7 +44,7 @@ $count_insumos = 0;
                 </div>
                 <div class="col-md-2" style="margin-top:25px;{{in_array($item->insumo_id, $array_insumos) ? 'display:none;' : ''}}">
                     <div class="col-md-9">
-                        <button class="btn btn-success flat pull-right" type="button">
+                        <button class="btn btn-success flat pull-right" type="button" onclick="inserirReajuste({{$item->insumo_id}})">
                             Reajuste
                         </button>
                     </div>
@@ -55,6 +55,7 @@ $count_insumos = 0;
                         </button>
                     </div>
                 </div>
+                <div id="zoas"></div>
                 <div class="col-md-12 border-separation" style="border-bottom: 1px solid #d2d6de !important; margin-bottom: 20px;"></div>
                 <div class="col-md-3">
                     <label>Valor unitário:</label>
@@ -360,6 +361,40 @@ $count_insumos = 0;
             $('#btn_mostrar_ocultar_'+item).attr('onclick', 'mostrarReajustes('+item+', 1)');
             $('#icon_mostrar_ocultar_'+item).attr('class', 'fa fa-plus');
         }
+    }
+
+    function inserirReajuste(insumo_id) {
+        count_insumos++;
+
+        var block_insumos = '<div class="form-group col-md-12" id="block_insumos'+count_insumos+'">\
+                                <div class="col-md-12 border-separation" style="border-bottom: 1px solid #d2d6de !important; margin-bottom: 20px;"></div>\
+                                <input type="hidden" value="'+insumo_id+'" name="reajuste['+count_insumos+'][insumo_id]">\
+                                <div class="col-md-3">\
+                                    <label>Valor unitário:</label>\
+                                    <div class="input-group">\
+                                        <span class="input-group-addon" id="basic-addon1">R$</span>\
+                                        <input type="text" class="form-control money" id="valor_unitario_'+count_insumos+'" name="reajuste['+count_insumos+'][valor_unitario]">\
+                                    </div>\
+                                </div>\
+                                <div class="col-md-3">\
+                                    <label>Pedido quantidade mínima:</label>\
+                                    <input type="text" class="form-control decimal" id="pedido_minimo_'+count_insumos+'" name="reajuste['+count_insumos+'][pedido_minimo]">\
+                                </div>\
+                                <div class="col-md-2">\
+                                    <label>Pedido múltiplo de:</label>\
+                                    <input type="text" class="form-control decimal" id="pedido_multiplo_de_'+count_insumos+'" name="reajuste['+count_insumos+'][pedido_multiplo_de]">\
+                                </div>\
+                                <div class="col-md-2">\
+                                    <label>Período início:</label>\
+                                    <input type="date" class="form-control" id="periodo_inicio_'+count_insumos+'" name="reajuste['+count_insumos+'][periodo_inicio]">\
+                                </div>\
+                                <div class="col-md-2">\
+                                    <label>Período término:</label>\
+                                    <input type="date" class="form-control" id="periodo_termino_'+count_insumos+'" name="reajuste['+count_insumos+'][periodo_termino]">\
+                                </div>\
+                            </div>';
+        $('#zoas').append(block_insumos);
+        $('.money').maskMoney({allowNegative: true, thousands:'.', decimal:','});
     }
 </script>
 @endsection
