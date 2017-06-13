@@ -207,12 +207,12 @@ class QuadroDeConcorrenciaDataTable extends DataTable
     private function getColumns()
     {
         $columns = [
-            'id' => ['name' => 'quadro_de_concorrencias.id', 'data' => 'id', 'width'=>'25px'],
-            'situação' => ['name' => 'qc_status.nome', 'data' => 'situacao'],
+            'id' => ['name' => 'quadro_de_concorrencias.id', 'data' => 'id', 'width'=>'5%'],
+            'situação' => ['name' => 'qc_status.nome', 'data' => 'situacao', 'width'=>'20%'],
             'atualizadoEm' => ['name' => 'quadro_de_concorrencias.updated_at', 'data' => 'updated_at', 'width'=>'12%'],
-            'rodada' => ['name' => 'rodada_atual', 'data' => 'rodada_atual', 'width'=>'6%'],
-            'fornecedores' => ['name' => 'fornecedores', 'data' => 'fornecedores', 'width'=>'6%'],
-            'propostas' => ['name' => 'propostas', 'data' => 'propostas', 'width'=>'6%'],
+            'rodada' => ['name' => 'rodada_atual', 'data' => 'rodada_atual', 'width'=>'5%'],
+            'fornecedores' => ['name' => 'fornecedores', 'data' => 'fornecedores', 'width'=>'5%'],
+            'propostas' => ['name' => 'propostas', 'data' => 'propostas', 'width'=>'5%'],
         ];
 
         if(!auth()->user()->fornecedor) {
@@ -227,6 +227,7 @@ class QuadroDeConcorrenciaDataTable extends DataTable
             'searchable' => false,
             'orderable'  => false,
             'class'      => 'all',
+            'width'      => '15%'
         ];
 
         return $columns;
