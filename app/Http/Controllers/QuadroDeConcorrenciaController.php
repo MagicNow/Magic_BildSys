@@ -364,15 +364,15 @@ class QuadroDeConcorrenciaController extends AppBaseController
             return redirect(route('quadroDeConcorrencias.index'));
         }
 
-//        DB::beginTransaction();
-//
-//        try {
+        DB::beginTransaction();
+
+        try {
             if ($request->gerar_nova_rodada) {
 
                 $quadro->update(['rodada_atual' => (int) $quadro->rodada_atual + 1]);
 
                 #Inserir novos fornecedores que vão participar da nova RODADA
-                $input = $request->all();
+                $input = $request->except('fornecedores','fornecedores_temp','gerar_nova_rodada','_token');
                 $input['user_update_id'] = Auth::id();
                 $this->quadroDeConcorrenciaRepository->update($input, $id);
 
@@ -406,7 +406,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
                     );
                 }
 
-//                DB::commit();
+                DB::commit();
                 return redirect(route('quadroDeConcorrencias.index'));
             }
 
@@ -493,15 +493,15 @@ class QuadroDeConcorrenciaController extends AppBaseController
                 });
             });
 
-//        } catch (Exception $e) {
-//            DB::rollback();
-//            logger()->error((string) $e);
-//            Flash::error('Ocorreu um erro ao salvar os dados, tente novamente');
-//
-//            return back();
-//        }
+        } catch (Exception $e) {
+            DB::rollback();
+            logger()->error((string) $e);
+            Flash::error('Ocorreu um erro ao salvar os dados, tente novamente');
 
-//        DB::commit();
+            return back();
+        }
+
+        DB::commit();
 
         Flash::success(
             'Quadro de Concorrência #' . $quadro->id . ' foi finalizado com sucesso.'
