@@ -37,7 +37,7 @@ use App\Repositories\ContratoItemModificacaoRepository;
 use App\Repositories\ContratoItemRepository;
 use App\Models\ContratoStatus;
 use App\Models\ContratoItemModificacao;
-use App\Repositories\ContratoItemReapropriacaoRepository;
+use App\Repositories\ContratoItemApropriacaoRepository;
 
 class ContratoController extends AppBaseController
 {
@@ -221,7 +221,7 @@ class ContratoController extends AppBaseController
     public function reapropriarItem(
         $id,
         ContratoItemRepository $contratoItemRepository,
-        ContratoItemReapropriacaoRepository $contratoItemReapropriacaoRepository,
+        ContratoItemApropriacaoRepository $contratoItemReapropriacaoRepository,
         ReapropriarRequest $request
     )
     {

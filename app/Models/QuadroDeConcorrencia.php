@@ -225,6 +225,19 @@ class QuadroDeConcorrencia extends Model
             });
     }
 
+    public function itensMateriais()
+    {
+        $itens = $this->itens()
+            ->whereHas('insumo', function($q) {
+                $q->whereHas('insumoGrupo', function($q) {
+                    $q->where('nome', 'like', 'MATERIAL%');
+                });
+            })
+            ->get();
+
+        return $itens;
+    }
+
     public function contratos()
     {
         return $this->hasMany(Contrato::class);

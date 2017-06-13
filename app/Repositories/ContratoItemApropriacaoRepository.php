@@ -2,18 +2,18 @@
 
 namespace App\Repositories;
 
-use App\Models\ContratoItemReapropriacao;
+use App\Models\ContratoItemApropriacao;
 use InfyOm\Generator\Common\BaseRepository;
 use App\Models\ContratoItem;
 
-class ContratoItemReapropriacaoRepository extends BaseRepository
+class ContratoItemApropriacaoRepository extends BaseRepository
 {
     /**
      * Configure the Model
      **/
     public function model()
     {
-        return ContratoItemReapropriacao::class;
+        return ContratoItemApropriacao::class;
     }
 
     public function reapropriar(ContratoItem $contratoItem, $data)

@@ -90,7 +90,7 @@ class ContratoItem extends Model
      **/
     public function contratoItemReapropriacao()
     {
-        return $this->hasMany(ContratoItemReapropriacao::class);
+        return $this->hasMany(ContratoItemApropriacao::class);
     }
 
     public function applyChanges(ContratoItemModificacao $mod)
@@ -108,7 +108,7 @@ class ContratoItem extends Model
     public function reapropriacoes()
     {
         return $this->hasMany(
-            ContratoItemReapropriacao::class,
+            ContratoItemApropriacao::class,
             'contrato_item_id'
         );
     }

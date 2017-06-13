@@ -5,13 +5,13 @@ namespace App\Models;
 use Eloquent as Model;
 
 /**
- * Class ContratoItemReapropriacao
+ * Class ContratoItemApropriacao
  * @package App\Models
  * @version May 18, 2017, 6:08 pm BRT
  */
-class ContratoItemReapropriacao extends Model
+class ContratoItemApropriacao extends Model
 {
-    public $table = 'contrato_item_reapropriacoes';
+    public $table = 'contrato_item_apropriacoes';
 
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
@@ -135,7 +135,7 @@ class ContratoItemReapropriacao extends Model
     public function reapropriacoes()
     {
         return $this->hasMany(
-            ContratoItemReapropriacao::class,
+            ContratoItemApropriacao::class,
             'contrato_item_reapropriacao_id'
         );
     }
