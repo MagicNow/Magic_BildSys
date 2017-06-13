@@ -221,6 +221,20 @@ class CatalogoContratoController extends AppBaseController
             }
         }
 
+        if(count($request->reajuste)) {
+            foreach ($request->reajuste as $reajuste) {
+                $contrato_insumo = new CatalogoContratoInsumo();
+                $contrato_insumo->catalogo_contrato_id = $catalogoContrato->id;
+                $contrato_insumo->insumo_id = $reajuste['insumo_id'];
+                $contrato_insumo->valor_unitario = $reajuste['valor_unitario'] ? money_to_float($reajuste['valor_unitario']) : 0;
+                $contrato_insumo->pedido_minimo = $reajuste['pedido_minimo'];
+                $contrato_insumo->pedido_multiplo_de = $reajuste['pedido_multiplo_de'];
+                $contrato_insumo->periodo_inicio = $reajuste['periodo_inicio'];
+                $contrato_insumo->periodo_termino = $reajuste['periodo_termino'];
+                $contrato_insumo->save();
+            }
+        }
+
         Flash::success('Catalogo Contrato '.trans('common.updated').' '.trans('common.successfully').'.');
 
         return redirect(route('catalogo_contratos.index'));
