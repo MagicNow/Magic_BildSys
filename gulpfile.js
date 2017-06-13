@@ -203,7 +203,7 @@ elixir(function(mix) {
         'qc-informar-valores.js',
         'sweetalert-helper.js',
         'flat-color-generator.js',
-        'qc-avaliar.js',
+            'qc-avaliar.js',
         'error-list.js',
         'is-mobile.js',
         'notifications.js',

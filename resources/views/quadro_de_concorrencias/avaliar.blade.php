@@ -174,11 +174,13 @@
                             <div style="margin-top: 10px;">
                                 <p>Selecione os fornecedores que permanecerão na próxima rodada:</p>
                                 @foreach($qcFornecedores as $qcFornecedor)
-                                    <label class="checkbox-inline">
-                                        <input type="checkbox" name="fornecedores[]"
-                                               value="{{ $qcFornecedor->fornecedor_id }}">
-                                        {{ $qcFornecedor->fornecedor->nome }}
-                                    </label>
+                                    <div>
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox" name="fornecedores[]"
+                                                   value="{{ $qcFornecedor->fornecedor_id }}">
+                                            {{ $qcFornecedor->fornecedor->nome }}
+                                        </label>
+                                    </div>
 
                                     <?php
                                     $qcFornecedorCount = $qcFornecedor->id;
