@@ -1599,6 +1599,11 @@ class OrdemDeCompraController extends AppBaseController
                     $troca->descricao               = $data->insumo->nome;
                     $troca->unidade_sigla           = $data->insumo->unidade_sigla;
                     $troca->orcamento_que_substitui = $orcamento->id;
+
+                    // Os valores devem estar zerados na troca
+                    $troca->preco_unitario = 0;
+                    $troca->preco_total = 0;
+
                     $troca->save();
                 });
         } catch (Exception $e) {
