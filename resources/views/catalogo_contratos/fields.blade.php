@@ -23,7 +23,7 @@ $count_insumos = 0;
         @foreach ($catalogoContrato->contratoInsumos->sortByDesc('id')->groupBy('insumo_id') as $insumo)
             @foreach($insumo as $item)
                 @php $count_insumos = $item->id; @endphp
-                <div class="form-group col-md-12" id="block_insumos{{$item->id}}">
+                <div class="form-group col-md-12 bloco_insumos_id_{{$item->insumo_id}}">
 
                     @if(count($array_insumos))
                         <div class="col-md-12 border-separation" {{@isset(array_count_values($array_insumos)[$item->insumo_id]) ? 'style=display:none;' : 'style=margin-bottom:20px;'}}></div>
@@ -217,6 +217,10 @@ $count_insumos = 0;
         $('#block_insumos'+what).slideUp('slow', function(){$('#block_insumos'+what).remove(); });
     }
 
+    function removeInsumoId(what){
+        $('.bloco_insumos_id_'+what).slideUp('slow', function(){$('.bloco_insumos_id_'+what).remove(); });
+    }
+
     function deleteInsumo(what){
         swal({
             title: "Você tem certeza?",
@@ -234,7 +238,7 @@ $count_insumos = 0;
                 data: {insumo : what}
             }).done(function(retorno) {
                 if(retorno.sucesso){
-                    removeInsumo(what);
+                    removeInsumoId(retorno.insumo_id);
                     swal(retorno.resposta.toString());
                 }else{
                     swal(retorno.resposta.toString());

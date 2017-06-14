@@ -147,7 +147,7 @@ class CatalogoContratoController extends AppBaseController
             ->where('agn_st_cgc', $catalogoContrato->fornecedor->cnpj)
             ->pluck('agn_st_nome', 'agn_in_codigo')
             ->toArray();
-
+        
         return view('catalogo_contratos.edit', compact('fornecedores'))->with('catalogoContrato', $catalogoContrato);
     }
 
@@ -283,7 +283,7 @@ class CatalogoContratoController extends AppBaseController
                 }
             }
 
-            return response()->json(['sucesso' => $acao, 'resposta' => $mensagem]);
+            return response()->json(['sucesso' => $acao, 'resposta' => $mensagem, 'insumo_id' => $catalogo_contrato_insumo->insumo_id]);
         }catch (\Exception $e){
             return $e->getMessage();
         }

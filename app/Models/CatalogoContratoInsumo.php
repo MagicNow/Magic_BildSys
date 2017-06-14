@@ -65,7 +65,9 @@ class CatalogoContratoInsumo extends Model
 
     public function setPedidoMinimoAttribute($value)
     {
-        $this->attributes['pedido_minimo'] = money_to_float($value);
+        if($value){
+            $this->attributes['pedido_minimo'] = money_to_float($value);
+        }
     }
 
     public function getPedidoMultiploDeAttribute($value)
@@ -79,7 +81,9 @@ class CatalogoContratoInsumo extends Model
 
     public function setPedidoMultiploDeAttribute($value)
     {
-        $this->attributes['pedido_multiplo_de'] = money_to_float($value);
+        if($value) {
+            $this->attributes['pedido_multiplo_de'] = money_to_float($value);
+        }
     }
     
 
