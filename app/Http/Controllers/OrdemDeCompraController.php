@@ -1573,6 +1573,8 @@ class OrdemDeCompraController extends AppBaseController
     {
         $orcamento = $orcamentoRepository->findWithoutFail($orcamentoId);
 
+        $qtd_trocada = 0;
+
         if (empty($orcamento)) {
             Flash::error(
                 'Orcamento selecionado não encontrado'
@@ -1592,7 +1594,7 @@ class OrdemDeCompraController extends AppBaseController
 
                     return (object) $data;
                 })
-                ->each(function ($data) use ($orcamento) {
+                ->each(function ($data) use ($orcamento, $qtd_trocada) {
                     $troca                          = $orcamento->replicate();
                     $troca->insumo_id               = $data->insumo->id;
                     $troca->qtd_total               = $data->qtd_total;
@@ -1606,6 +1608,17 @@ class OrdemDeCompraController extends AppBaseController
 
                     $troca->save();
                 });
+
+            // Soma toda a quantidade trocada
+            foreach ($request->data as $data) {
+                $qtd_trocada += money_to_float($data['qtd_total']);
+            }
+
+            // Subtrai a quantidade trocada do orçamento pai e atualiza o preço total com a nova quantidade
+            $orcamento->qtd_total = money_to_float($orcamento->qtd_total) - $qtd_trocada;
+            $orcamento->preco_total = money_to_float($orcamento->qtd_total) * money_to_float($orcamento->preco_unitario);
+            $orcamento->save();
+
         } catch (Exception $e) {
             DB::rollback();
             Flash::error('Ocorreu um problema! Não foi possível salvar os dados.');
