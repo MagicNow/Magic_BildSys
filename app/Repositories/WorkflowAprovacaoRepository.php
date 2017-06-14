@@ -242,6 +242,7 @@ class WorkflowAprovacaoRepository
         $workflowUsuario = WorkflowUsuario::select(['workflow_usuarios.*', 'workflow_alcadas.ordem'])
             ->join('workflow_alcadas', 'workflow_alcadas.id', '=', 'workflow_usuarios.workflow_alcada_id')
             ->where('workflow_alcadas.workflow_tipo_id', $workflow_tipo_id)// Tipo = Aprovação de OC
+            ->whereNull('workflow_alcadas.deleted_at')
             ->where('user_id', $user->id)
             ->first();
 
@@ -296,9 +297,9 @@ class WorkflowAprovacaoRepository
                     'msg' => null
                 ];
             }
-
+            
             // Verifica se a alçada dele é a primeira
-            if ($workflowUsuario->ordem === 1) {
+            if ($workflowUsuarioAlcadaAtual->ordem === 1) {
                 return [
                     'podeAprovar' => true,
                     'iraAprovar' => true,

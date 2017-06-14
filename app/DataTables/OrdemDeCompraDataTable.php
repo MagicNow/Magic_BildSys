@@ -106,6 +106,7 @@ class OrdemDeCompraDataTable extends DataTable
             ->join('obras', 'obras.id', '=', 'ordem_de_compras.obra_id')
             ->join('oc_status', 'oc_status.id', '=', 'ordem_de_compras.oc_status_id')
             ->join('users', 'users.id', '=', 'ordem_de_compras.user_id')
+            ->whereRaw('EXISTS (SELECT 1 FROM obra_users WHERE obra_users.obra_id = obras.id AND user_id=?)', auth()->id())
             ->where('ordem_de_compras.oc_status_id', '!=', 6)
             ->orderBy('ordem_de_compras.id','DESC');
 

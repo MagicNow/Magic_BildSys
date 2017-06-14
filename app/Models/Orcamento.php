@@ -71,6 +71,7 @@ class Orcamento extends Model
         'subgrupo2_id' => 'integer',
         'subgrupo3_id' => 'integer',
         'descricao' => 'string',
+        'preco_unitario' => 'decimal',
     ];
 
     /**
