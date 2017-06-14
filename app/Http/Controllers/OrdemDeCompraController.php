@@ -1573,8 +1573,6 @@ class OrdemDeCompraController extends AppBaseController
     {
         $orcamento = $orcamentoRepository->findWithoutFail($orcamentoId);
 
-        $qtd_trocada = 0;
-
         if (empty($orcamento)) {
             Flash::error(
                 'Orcamento selecionado não encontrado'
@@ -1594,7 +1592,7 @@ class OrdemDeCompraController extends AppBaseController
 
                     return (object) $data;
                 })
-                ->each(function ($data) use ($orcamento, $qtd_trocada) {
+                ->each(function ($data) use ($orcamento) {
                     $troca                          = $orcamento->replicate();
                     $troca->insumo_id               = $data->insumo->id;
                     $troca->qtd_total               = $data->qtd_total;
@@ -1607,17 +1605,44 @@ class OrdemDeCompraController extends AppBaseController
                     $troca->preco_total = 0;
 
                     $troca->save();
+
+                    // Busca a ordem de compra
+                    $ordem_de_compra = OrdemDeCompra::where('oc_status_id', 1)
+                        ->where('user_id', Auth::id())
+                        ->where('obra_id', $troca->obra_id)
+                        ->first();
+
+                    // Se nao encontrou uma ordem de compra cria
+                    if(!$ordem_de_compra){
+                        $ordem_de_compra = new OrdemDeCompra([
+                            'oc_status_id' => 1,
+                            'obra_id' => $troca->obra_id,
+                            'user_id' => Auth::id()
+                        ]);
+                        $ordem_de_compra->save();
+                    }
+
+                    // Cria uma ordem de compra item com o insumo trocado
+                    $ordem_de_compra_item = new OrdemDeCompraItem([
+                        'ordem_de_compra_id' => $ordem_de_compra->id,
+                        'obra_id' => $troca->obra_id,
+                        'codigo_insumo' => $troca->codigo_insumo,
+                        'qtd' => $troca->qtd_total,
+                        'valor_unitario' => 0,
+                        'valor_total' => 0,
+                        'grupo_id' => $troca->grupo_id,
+                        'subgrupo1_id' => $troca->subgrupo1_id,
+                        'subgrupo2_id' => $troca->subgrupo2_id,
+                        'subgrupo3_id' => $troca->subgrupo3_id,
+                        'servico_id' => $troca->servico_id,
+                        'insumo_id' => $troca->insumo_id,
+                        'user_id' => Auth::id(),
+                        'unidade_sigla' => $troca->unidade_sigla,
+                        'total' => 1
+                    ]);
+
+                    $ordem_de_compra_item->save();
                 });
-
-            // Soma toda a quantidade trocada
-            foreach ($request->data as $data) {
-                $qtd_trocada += money_to_float($data['qtd_total']);
-            }
-
-            // Subtrai a quantidade trocada do orçamento pai e atualiza o preço total com a nova quantidade
-            $orcamento->qtd_total = money_to_float($orcamento->qtd_total) - $qtd_trocada;
-            $orcamento->preco_total = money_to_float($orcamento->qtd_total) * money_to_float($orcamento->preco_unitario);
-            $orcamento->save();
 
         } catch (Exception $e) {
             DB::rollback();
