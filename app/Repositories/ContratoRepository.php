@@ -20,6 +20,7 @@ use App\Notifications\WorkflowNotification;
 use App\Models\ContratoStatus;
 use App\Models\ContratoItemApropriacao;
 use Illuminate\Support\Facades\DB;
+use App\Models\ApropriacaoLigacao;
 
 class ContratoRepository extends BaseRepository
 {
@@ -213,6 +214,8 @@ class ContratoRepository extends BaseRepository
                 ];
 
                 $contrato_item['apropriacoes'] = $ocItens->map(function ($oc_item) {
+                    $oc_item_arr = $oc_item->toArray();
+                    $oc_item_arr['qtd'] = $oc_item->getOriginal('qtd');
                     return array_only($oc_item->toArray(), [
                         'codigo_insumo',
                         'grupo_id',
@@ -249,10 +252,12 @@ class ContratoRepository extends BaseRepository
                             'aprovado'          => 1
                         ];
 
-                        $contrato_item['apropriacoes'] = $valores_atuais->map(function ($valor) {
-                            return $valor['oc_itens']->map(function ($oc_item) use ($valor) {
+                        $contrato_item['apropriacoes'] = $valores_atuais->map(function ($valor) use ($insumo) {
+                            return $valor['oc_itens']->map(function ($oc_item) use ($valor, $insumo) {
                                 $oc_item_arr = $oc_item->toArray();
-                                $oc_item_arr['qtd'] = $valor['valor_item'];
+                                $oc_item_arr['qtd'] = money_to_float($valor['valor_item']);
+                                $oc_item_arr['ligacao_id'] = $oc_item->insumo_id;
+                                $oc_item_arr['insumo_id'] = $insumo->id;
 
                                 return array_only($oc_item_arr, [
                                     'codigo_insumo',
@@ -262,6 +267,7 @@ class ContratoRepository extends BaseRepository
                                     'subgrupo3_id',
                                     'servico_id',
                                     'insumo_id',
+                                    'ligacao_id',
                                     'qtd',
                                 ]);
                             });
@@ -312,9 +318,11 @@ class ContratoRepository extends BaseRepository
                         'aprovado'          => 1
                     ];
 
-                    $contrato_item['apropriacoes'] = $ocItens->map(function ($ocItem) use ($valorApropriacao) {
+                    $contrato_item['apropriacoes'] = $ocItens->map(function ($ocItem) use ($valorApropriacao, $insumo) {
                         $oc_item_arr = $ocItem->toArray();
                         $oc_item_arr['qtd'] = $valorApropriacao;
+                        $oc_item_arr['insumo_id'] = $insumo_id;
+                        $oc_item_arr['ligacao_id'] = $ocItem->insumo_id;
 
                         return array_only($oc_item_arr, [
                             'codigo_insumo',
@@ -324,11 +332,11 @@ class ContratoRepository extends BaseRepository
                             'subgrupo3_id',
                             'servico_id',
                             'insumo_id',
+                            'ligacao_id',
                             'qtd',
                         ]);
                     })
                     ->toArray();
-
 
                     $contratoItens[$obraID][] = $contrato_item;
 
@@ -371,12 +379,23 @@ class ContratoRepository extends BaseRepository
                     $saved_item = ContratoItem::create($item);
                     if (isset($item['apropriacoes']) && count($item['apropriacoes'])) {
                         foreach ($item['apropriacoes'] as $apropriacao) {
-                            ContratoItemApropriacao::create(
+                            $apropriacao_created = ContratoItemApropriacao::create(
                                 array_merge(
                                     $apropriacao,
                                     ['contrato_item_id' => $saved_item->id]
                                 )
                             );
+                            if(isset($apropriacao['ligacao_id'])) {
+                                ApropriacaoLigacao::create(
+                                    array_merge(
+                                        $apropriacao_created->toArray(),
+                                        [
+                                            'contrato_item_apropriacao_id' => $apropriacao_created->id,
+                                            'insumo_id' => $apropriacao['ligacao_id']
+                                        ]
+                                    )
+                                );
+                            }
                         }
                     }
                 }
