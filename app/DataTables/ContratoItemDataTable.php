@@ -42,7 +42,7 @@ class ContratoItemDataTable extends DataTable
         $datatables = $this->datatables
             ->eloquent($this->query())
             ->editColumn('qtd', function ($item) {
-                return $item->qtd_formatted;
+                return float_to_money($item->qtd, '') . ' ' . $item->insumo_unidade;
             })
             ->editColumn('valor_total', function ($item) {
                 return float_to_money($item->valor_total);
@@ -116,7 +116,6 @@ class ContratoItemDataTable extends DataTable
                 'insumos.aliq_pis',
                 'insumos.aliq_cofins',
                 'insumos.aliq_csll',
-                DB::raw('CONCAT(contrato_itens.qtd, \' \', insumos.unidade_sigla) as qtd_unidade'),
                 DB::raw('
                    (SELECT
                         CONCAT(codigo, \' - \', nome)
@@ -210,9 +209,9 @@ class ContratoItemDataTable extends DataTable
                 'name'  => 'insumos.nome',
                 'title' => 'Descrição',
             ],
-            'qtd_unidade' => [
-                'data'  => 'qtd_unidade',
-                'name'  => 'contrato_itens.qtd',
+            'qtd' => [
+                'data'  => 'qtd',
+                'name'  => 'qtd',
                 'title' => 'Qtd'
             ],
             'valor_total' => [
