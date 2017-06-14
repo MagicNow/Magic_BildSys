@@ -147,7 +147,7 @@ class CatalogoContratoController extends AppBaseController
             ->where('agn_st_cgc', $catalogoContrato->fornecedor->cnpj)
             ->pluck('agn_st_nome', 'agn_in_codigo')
             ->toArray();
-
+        
         return view('catalogo_contratos.edit', compact('fornecedores'))->with('catalogoContrato', $catalogoContrato);
     }
 
@@ -191,9 +191,25 @@ class CatalogoContratoController extends AppBaseController
 
         if (count($request->insumos)) {
             foreach ($request->insumos as $item) {
-                if (!isset($item['id'])) {
+                if ($item['insumo_id'] != '') {
+                    $contrato_insumo = new CatalogoContratoInsumo();
+                    $contrato_insumo->catalogo_contrato_id = $catalogoContrato->id;
+                    $contrato_insumo->insumo_id = $item['insumo_id'];
+                    $contrato_insumo->valor_unitario = $item['valor_unitario'] ? money_to_float($item['valor_unitario']) : 0;
+                    $contrato_insumo->pedido_minimo = $item['pedido_minimo'];
+                    $contrato_insumo->pedido_multiplo_de = $item['pedido_multiplo_de'];
+                    $contrato_insumo->periodo_inicio = $item['periodo_inicio'];
+                    $contrato_insumo->periodo_termino = $item['periodo_termino'];
+                    $catalogoContrato->contratoInsumos()->save($contrato_insumo);
+                }
+            }
+        }
+
+        if (count($request->insumos_edit)) {
+            foreach ($request->insumos_edit as $item) {
+                $contrato_insumo = CatalogoContratoInsumo::find($item['id']);
+                if ($contrato_insumo) {
                     if ($item['insumo_id'] != '') {
-                        $contrato_insumo = new CatalogoContratoInsumo();
                         $contrato_insumo->catalogo_contrato_id = $catalogoContrato->id;
                         $contrato_insumo->insumo_id = $item['insumo_id'];
                         $contrato_insumo->valor_unitario = $item['valor_unitario'] ? money_to_float($item['valor_unitario']) : 0;
@@ -201,21 +217,7 @@ class CatalogoContratoController extends AppBaseController
                         $contrato_insumo->pedido_multiplo_de = $item['pedido_multiplo_de'];
                         $contrato_insumo->periodo_inicio = $item['periodo_inicio'];
                         $contrato_insumo->periodo_termino = $item['periodo_termino'];
-                        $catalogoContrato->contratoInsumos()->save($contrato_insumo);
-                    }
-                } else {
-                    $contrato_insumo = CatalogoContratoInsumo::find($item['id']);
-                    if ($contrato_insumo) {
-                        if ($item['insumo_id'] != '') {
-                            $contrato_insumo->catalogo_contrato_id = $catalogoContrato->id;
-                            $contrato_insumo->insumo_id = $item['insumo_id'];
-                            $contrato_insumo->valor_unitario = $item['valor_unitario'] ? money_to_float($item['valor_unitario']) : 0;
-                            $contrato_insumo->pedido_minimo = $item['pedido_minimo'];
-                            $contrato_insumo->pedido_multiplo_de = $item['pedido_multiplo_de'];
-                            $contrato_insumo->periodo_inicio = $item['periodo_inicio'];
-                            $contrato_insumo->periodo_termino = $item['periodo_termino'];
-                            $contrato_insumo->update();
-                        }
+                        $contrato_insumo->update();
                     }
                 }
             }
@@ -267,18 +269,21 @@ class CatalogoContratoController extends AppBaseController
     public function deleteInsumo(Request $request)
     {
         try {
-            $insumo = null;
-            if ($request->insumo) {
-                $insumo = CatalogoContratoInsumo::find($request->insumo);
+            $acao = false;
+            $mensagem = "Ocorreu um erro ao deletar o insumo";
+
+            $catalogo_contrato_insumo = CatalogoContratoInsumo::find($request->insumo);
+
+            $insumos = CatalogoContratoInsumo::where('insumo_id', $catalogo_contrato_insumo->insumo_id)->get();
+
+            if ($insumos) {
+                foreach ($insumos as $insumo){
+                    $acao = $insumo->delete();
+                    $mensagem = "Insumo deletado com sucesso";
+                }
             }
-            if ($insumo) {
-                $acao = $insumo->delete();
-                $mensagem = "Insumo deletado com sucesso";
-            } else {
-                $acao = false;
-                $mensagem = "Ocorreu um erro ao deletar o insumo";
-            }
-            return response()->json(['sucesso' => $acao, 'resposta' => $mensagem]);
+
+            return response()->json(['sucesso' => $acao, 'resposta' => $mensagem, 'insumo_id' => $catalogo_contrato_insumo->insumo_id]);
         }catch (\Exception $e){
             return $e->getMessage();
         }
