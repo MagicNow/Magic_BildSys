@@ -17,79 +17,90 @@ $count_insumos = 0;
 @if(isset($catalogoContrato))
     @php
         $array_insumos = [];
-        $botao = 1;
+        $botao_insumo_id = null;
     @endphp
-    @foreach ($catalogoContrato->contratoInsumos->sortByDesc('id')->groupBy('insumo_id') as $insumo)
-        @foreach($insumo as $item)
-            @php $count_insumos = $item->id; @endphp
-            <div class="form-group col-md-12" id="block_insumos{{$item->id}}">
-                @if(count($array_insumos))
-                    <div class="col-md-12 border-separation" {{@isset(array_count_values($array_insumos)[$item->insumo_id]) ? 'style=display:none;' : 'style=margin-bottom:20px;'}}></div>
-                    @if(@isset(array_count_values($array_insumos)[$item->insumo_id]) && $botao)
-                        @php $botao = 0; @endphp
-                        <button class="btn btn-warning flat pull-right" type="button" onclick="mostrarReajustes('{{$item->insumo_id}}', 1)" id="btn_mostrar_ocultar_{{$item->insumo_id}}" title="Mostrar/Ocultar todos os reajustes">
-                            <i class="fa fa-plus" id="icon_mostrar_ocultar_{{$item->insumo_id}}"></i>
-                        </button>
+    @if(count($catalogoContrato->contratoInsumos))
+        @foreach ($catalogoContrato->contratoInsumos->sortByDesc('id')->groupBy('insumo_id') as $insumo)
+            @foreach($insumo as $item)
+                @php $count_insumos = $item->id; @endphp
+                <div class="form-group col-md-12" id="block_insumos{{$item->id}}">
 
-                        <div class="bloco_mostrar_reajustes_{{$item->insumo_id}}" style="display: none;"> {{--DIV dinâmica--}}
-                    @else
-                        <div class="bloco_mostrar_reajustes_{{$item->insumo_id}}" {{in_array($item->insumo_id, $array_insumos) ? 'style=display:none;' : ''}}> {{--DIV dinâmica--}}
+                    @if(count($array_insumos))
+                        <div class="col-md-12 border-separation" {{@isset(array_count_values($array_insumos)[$item->insumo_id]) ? 'style=display:none;' : 'style=margin-bottom:20px;'}}></div>
+                        @if(@isset(array_count_values($array_insumos)[$item->insumo_id]) && $botao_insumo_id != $item->insumo_id)
+                            @php
+                                $botao_insumo_id = $item->insumo_id;
+                            @endphp
+                            <button class="btn btn-warning flat pull-right" type="button" onclick="mostrarReajustes('{{$item->insumo_id}}', 1)" id="btn_mostrar_ocultar_{{$item->insumo_id}}" title="Mostrar/Ocultar todos os reajustes">
+                                <i class="fa fa-plus" id="icon_mostrar_ocultar_{{$item->insumo_id}}"></i>
+                            </button>
+                        @endif
                     @endif
-                @endif
 
-                {!! Form::hidden('insumos['.$item->id.'][id]', $item->id) !!}
-                <div class="col-md-10" {{in_array($item->insumo_id, $array_insumos) ? 'style=display:none;' : ''}}>
-                    <label>Insumo:</label>
-                    {!! Form::select('insumos['.$item->id.'][insumo_id]',[''=>'Escolha...']+ \App\Models\Insumo::where('id',$item->insumo_id)->pluck('nome','id')->toArray(), $item->insumo_id, ['class' => 'form-control select2 insumos_existentes insumo_select_'.$item->id,'required'=>'required', 'id' => 'insumo_select_'.$item->id]) !!}
-                </div>
-                <div class="col-md-2" style="margin-top:25px;{{in_array($item->insumo_id, $array_insumos) ? 'display:none;' : ''}}">
-                    <div class="col-md-9">
-                        <button class="btn btn-success flat pull-right" type="button" onclick="inserirReajuste({{$item->insumo_id}})">
-                            Reajuste
-                        </button>
+                    {!! Form::hidden('insumos_edit['.$item->id.'][id]', $item->id) !!}
+                    <div class="col-md-10" {{in_array($item->insumo_id, $array_insumos) ? 'style=display:none;' : ''}}>
+                        <label>Insumo:</label>
+                        {!! Form::select('insumos_edit['.$item->id.'][insumo_id]',[''=>'Escolha...']+ \App\Models\Insumo::where('id',$item->insumo_id)->pluck('nome','id')->toArray(), $item->insumo_id, ['class' => 'form-control select2 insumos_existentes insumo_select_'.$item->id,'required'=>'required', 'id' => 'insumo_select_'.$item->id]) !!}
+                    </div>
+                    <div class="col-md-2" style="margin-top:25px;{{in_array($item->insumo_id, $array_insumos) ? 'display:none;' : ''}}">
+                        <div class="col-md-9">
+                            <button class="btn btn-success flat pull-right" type="button" onclick="inserirReajuste({{$item->insumo_id}})">
+                                Reajuste
+                            </button>
+                        </div>
+
+                        <div class="col-md-3">
+                            <button type="button" onclick="deleteInsumo({{$item->id}})" class="btn btn btn-danger flat" aria-label="Close" title="Remover" >
+                                <i class="fa fa-times"></i>
+                            </button>
+                        </div>
                     </div>
 
-                    <div class="col-md-3">
-                        <button type="button" onclick="deleteInsumo({{$item->id}})" class="btn btn btn-danger flat" aria-label="Close" title="Remover" >
-                            <i class="fa fa-times"></i>
-                        </button>
+                    <div id="reajuste_{{$item->insumo_id}}"></div>
+
+                    <div {{in_array($item->insumo_id, $array_insumos) ? 'style=display:none; class=bloco_mostrar_reajustes_'.$item->insumo_id : ''}}>
+
+                        <div class="col-md-12 border-separation" style="border-bottom: 1px solid #d2d6de !important; margin-bottom: 20px;"></div>
+
+                        <div class="col-md-3">
+                            <label>Valor unitário:</label>
+                            <div class="input-group">
+                                <span class="input-group-addon" id="basic-addon1">R$</span>
+                                <input type="text" value="{{$item->valor_unitario}}" id="valor_unitario_{{$item->id}}" class="form-control money" name="insumos_edit[{{$item->id}}][valor_unitario]">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label>Pedido quantidade mínima:</label>
+                            <input type="text" value="{{$item->pedido_minimo}}" id="pedido_minimo_{{$item->id}}" class="form-control decimal" name="insumos_edit[{{$item->id}}][pedido_minimo]">
+                        </div>
+                        <div class="col-md-2">
+                            <label>Pedido múltiplo de:</label>
+                            <input type="text" value="{{$item->pedido_multiplo_de}}" id="pedido_multiplo_de_{{$item->id}}" class="form-control decimal" name="insumos_edit[{{$item->id}}][pedido_multiplo_de]">
+                        </div>
+                        <div class="col-md-2">
+                            <label>Período início:</label>
+                            <input type="date" value="{{$item->periodo_inicio ? $item->periodo_inicio->format('Y-m-d') : null}}" id="periodo_inicio_{{$item->id}}" class="form-control" name="insumos_edit[{{$item->id}}][periodo_inicio]">
+                        </div>
+                        <div class="col-md-2">
+                            <label>Período término:</label>
+                            <input type="date" value="{{$item->periodo_termino ? $item->periodo_termino->format('Y-m-d') : null}}" id="periodo_termino_{{$item->id}}" class="form-control" name="insumos_edit[{{$item->id}}][periodo_termino]">
+                        </div>
                     </div>
                 </div>
-                <div id="zoas"></div>
-                <div class="col-md-12 border-separation" style="border-bottom: 1px solid #d2d6de !important; margin-bottom: 20px;"></div>
-                <div class="col-md-3">
-                    <label>Valor unitário:</label>
-                    <div class="input-group">
-                        <span class="input-group-addon" id="basic-addon1">R$</span>
-                        <input type="text" value="{{$item->valor_unitario}}" id="valor_unitario_{{$item->id}}" class="form-control money" name="insumos[{{$item->id}}][valor_unitario]">
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <label>Pedido quantidade mínima:</label>
-                    <input type="text" value="{{$item->pedido_minimo}}" id="pedido_minimo_{{$item->id}}" class="form-control decimal" name="insumos[{{$item->id}}][pedido_minimo]">
-                </div>
-                <div class="col-md-2">
-                    <label>Pedido múltiplo de:</label>
-                    <input type="text" value="{{$item->pedido_multiplo_de}}" id="pedido_multiplo_de_{{$item->id}}" class="form-control decimal" name="insumos[{{$item->id}}][pedido_multiplo_de]">
-                </div>
-                <div class="col-md-2">
-                    <label>Período início:</label>
-                    <input type="date" value="{{$item->periodo_inicio ? $item->periodo_inicio->format('Y-m-d') : null}}" id="periodo_inicio_{{$item->id}}" class="form-control" name="insumos[{{$item->id}}][periodo_inicio]">
-                </div>
-                <div class="col-md-2">
-                    <label>Período término:</label>
-                    <input type="date" value="{{$item->periodo_termino ? $item->periodo_termino->format('Y-m-d') : null}}" id="periodo_termino_{{$item->id}}" class="form-control" name="insumos[{{$item->id}}][periodo_termino]">
-                </div>
-            </div> {{--DIV dinâmica--}}
-            </div>
-            @php $array_insumos[] = $item->insumo_id; @endphp
+                @php $array_insumos[] = $item->insumo_id; @endphp
+            @endforeach
         @endforeach
-    @endforeach
+    @endif
 @endif
 
-<div class="col-md-12 border-separation"></div>
+@if(isset($catalogoContrato))
+    @if(count($catalogoContrato->contratoInsumos))
+        <div class="col-md-12 border-separation"></div>
+    @endif
+@endif
 
 <div id="insumos"></div>
+
 <div id="add_insumos" class="col-md-6 col-md-offset-3" style="margin-bottom:25px;margin-top:25px">
     <span class="btn btn-info btn-lg btn-flat btn-block" onclick="addInsumo()">
         <i class="fa fa-plus"></i> Adicionar insumo
@@ -105,6 +116,7 @@ $count_insumos = 0;
 @section('scripts')
 <script type="text/javascript">
     var count_insumos = '{{$count_insumos}}';
+    var count_reajuste = '{{$count_insumos}}';
 
     function addInsumo(){
         count_insumos++;
@@ -115,7 +127,7 @@ $count_insumos = 0;
                                     <select class="form-control insumo_select_'+count_insumos+'" id="insumo_select_'+count_insumos+'" name="insumos['+count_insumos+'][insumo_id]" required></select>\
                                 </div>\
                                 <div class="col-md-1" align="right" style="margin-top:25px;">\
-                                    <button type="button" onclick="removeInsumo('+count_insumos+')" class="btn btn btn-danger" aria-label="Close" title="Remover" >\
+                                    <button type="button" onclick="removeInsumo('+count_insumos+')" class="btn btn btn-danger flat" aria-label="Close" title="Remover" >\
                                         <i class="fa fa-times"></i>\
                                     </button>\
                                 </div>\
@@ -364,36 +376,36 @@ $count_insumos = 0;
     }
 
     function inserirReajuste(insumo_id) {
-        count_insumos++;
+        count_reajuste++;
 
-        var block_insumos = '<div class="form-group col-md-12" id="block_insumos'+count_insumos+'">\
+        var block_reajuste = '<div class="form-group col-md-12" id="block_reajuste'+count_reajuste+'">\
                                 <div class="col-md-12 border-separation" style="border-bottom: 1px solid #d2d6de !important; margin-bottom: 20px;"></div>\
-                                <input type="hidden" value="'+insumo_id+'" name="reajuste['+count_insumos+'][insumo_id]">\
+                                <input type="hidden" value="'+insumo_id+'" name="reajuste['+count_reajuste+'][insumo_id]">\
                                 <div class="col-md-3">\
                                     <label>Valor unitário:</label>\
                                     <div class="input-group">\
                                         <span class="input-group-addon" id="basic-addon1">R$</span>\
-                                        <input type="text" class="form-control money" id="valor_unitario_'+count_insumos+'" name="reajuste['+count_insumos+'][valor_unitario]">\
+                                        <input type="text" class="form-control money" id="valor_unitario_'+count_reajuste+'" name="reajuste['+count_reajuste+'][valor_unitario]">\
                                     </div>\
                                 </div>\
                                 <div class="col-md-3">\
                                     <label>Pedido quantidade mínima:</label>\
-                                    <input type="text" class="form-control decimal" id="pedido_minimo_'+count_insumos+'" name="reajuste['+count_insumos+'][pedido_minimo]">\
+                                    <input type="text" class="form-control decimal" id="pedido_minimo_'+count_reajuste+'" name="reajuste['+count_reajuste+'][pedido_minimo]">\
                                 </div>\
                                 <div class="col-md-2">\
                                     <label>Pedido múltiplo de:</label>\
-                                    <input type="text" class="form-control decimal" id="pedido_multiplo_de_'+count_insumos+'" name="reajuste['+count_insumos+'][pedido_multiplo_de]">\
+                                    <input type="text" class="form-control decimal" id="pedido_multiplo_de_'+count_reajuste+'" name="reajuste['+count_reajuste+'][pedido_multiplo_de]">\
                                 </div>\
                                 <div class="col-md-2">\
                                     <label>Período início:</label>\
-                                    <input type="date" class="form-control" id="periodo_inicio_'+count_insumos+'" name="reajuste['+count_insumos+'][periodo_inicio]">\
+                                    <input type="date" class="form-control" id="periodo_inicio_'+count_reajuste+'" name="reajuste['+count_reajuste+'][periodo_inicio]">\
                                 </div>\
                                 <div class="col-md-2">\
                                     <label>Período término:</label>\
-                                    <input type="date" class="form-control" id="periodo_termino_'+count_insumos+'" name="reajuste['+count_insumos+'][periodo_termino]">\
+                                    <input type="date" class="form-control" id="periodo_termino_'+count_reajuste+'" name="reajuste['+count_reajuste+'][periodo_termino]">\
                                 </div>\
                             </div>';
-        $('#zoas').append(block_insumos);
+        $('#reajuste_'+insumo_id).append(block_reajuste);
         $('.money').maskMoney({allowNegative: true, thousands:'.', decimal:','});
     }
 </script>
