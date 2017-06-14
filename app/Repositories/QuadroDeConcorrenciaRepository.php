@@ -55,8 +55,8 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
                     ->from('oc_item_qc_item')
                     ->where('ordem_de_compra_item_id', DB::raw('ordem_de_compra_itens.id'));
             })
-            ->where('catalogo_contratos.periodo_inicio', '<=', date('Y-m-d'))
-            ->where('catalogo_contratos.periodo_termino', '>=', date('Y-m-d'))
+//            ->where('catalogo_contratos.periodo_inicio', '<=', date('Y-m-d')) // O CAMPO FOI REMOVIDO
+//            ->where('catalogo_contratos.periodo_termino', '>=', date('Y-m-d')) // O CAMPO FOI REMOVIDO
             ->groupBy('ordem_de_compra_itens.insumo_id', 'catalogo_contrato_insumos.id')
             ->get();
 
@@ -253,8 +253,10 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
         }
 
         if(count($attributes['qcFornecedores'])){
+//            dd($attributes['qcFornecedores']);
             foreach ($attributes['qcFornecedores'] as $qcFornecedor){
-
+//                echo 'QCFORNECEDOR';
+//                var_dump($qcFornecedor);
                 $qcF = QcFornecedor::firstOrCreate([
                     'fornecedor_id'=> $qcFornecedor['fornecedor_id'],
                     'rodada'=>$qc->rodada_atual,
@@ -262,9 +264,12 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
                     ],[
                     'user_id' => $attributes['user_update_id']
                 ]);
+//                echo 'QCF';
+//                var_dump($qcF);
             }
             unset($attributes['qcFornecedores']);
         }
+//        dd($attributes);
 
         // Have to skip presenter to get a model not some data
         $temporarySkipPresenter = $this->skipPresenter;

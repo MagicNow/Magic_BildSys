@@ -67,7 +67,7 @@ class ComprasDataTable extends DataTable
                 return $obj->quantidade_compra ? "R$ ".number_format($obj->getOriginal('preco_unitario') * money_to_float($obj->quantidade_compra), 2,',','.') : 'R$ 0,00';
             })
             ->editColumn('preco_unitario', function($obj){
-                if($obj->insumo_incluido) {
+                if($obj->insumo_incluido || $obj->orcamento_que_substitui) {
                     return "<div class='input-group'>
                                 <span class='input-group-addon'>R$</span>
                                 <input type='text' value='".number_format($obj->preco_unitario,2,',','.')."' class='form-control
@@ -141,6 +141,7 @@ class ComprasDataTable extends DataTable
                 'orcamentos.preco_total',
                 'orcamentos.preco_unitario',
                 'orcamentos.insumo_incluido',
+                'orcamentos.orcamento_que_substitui',
                 DB::raw('(SELECT
                     CONCAT(codigo, \' - \', nome)
                     FROM

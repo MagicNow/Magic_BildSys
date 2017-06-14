@@ -571,7 +571,8 @@ class OrdemDeCompraController extends AppBaseController
             ]);
 
             # Colocando na sessão
-            $request->session()->put('ordemCompra', $ordem->id);
+//            $request->session()->put('ordemCompra', $ordem->id);
+            \Session::put('ordemCompra', $ordem->id);
         }
 
         // Encontra o orçamento ativo para validar preço
@@ -729,11 +730,16 @@ class OrdemDeCompraController extends AppBaseController
     public function carrinho(Request $request)
     {
         $ordemDeCompra = OrdemDeCompra::where('oc_status_id', 1)->where('user_id', Auth::id());
+
         if ($request->obra_id) {
             $ordemDeCompra->where('obra_id', $request->obra_id);
         }
         if ($request->id) {
             $ordemDeCompra->where('id', $request->id);
+        }else{
+            if(\Session::has('ordemCompra')) {
+                $ordemDeCompra->where('id', \Session::get('ordemCompra'));
+            }
         }
         $ordemDeCompra = $ordemDeCompra->first();
 
@@ -743,7 +749,8 @@ class OrdemDeCompraController extends AppBaseController
             return back();
         }
         #colocar na sessão
-        $request->session()->put('ordemCompra', $ordemDeCompra->id);
+//        $request->session()->put('ordemCompra', $ordemDeCompra->id);
+        \Session::put('ordemCompra', $ordemDeCompra->id);
 
         $itens = collect([]);
 
@@ -870,6 +877,8 @@ class OrdemDeCompraController extends AppBaseController
             #limpa sessão
             $request->session()->put('ordemCompra', null);
             $request->session()->forget('ordemCompra');
+            \Session::put('ordemCompra', null);
+            \Session::forget('ordemCompra');
 
             $ordem_itens[0]->confereAprovacaoGeral();
 
@@ -1372,7 +1381,8 @@ class OrdemDeCompraController extends AppBaseController
             ]);
 
             # Colocando na sessão
-            $request->session()->put('ordemCompra', $ordem->id);
+//            $request->session()->put('ordemCompra', $ordem->id);
+            \Session::put('ordemCompra', $ordem->id);
         }
 
         // Encontra o orçamento ativo
@@ -1573,6 +1583,8 @@ class OrdemDeCompraController extends AppBaseController
     {
         $orcamento = $orcamentoRepository->findWithoutFail($orcamentoId);
 
+        $qtd_trocada = 0;
+
         if (empty($orcamento)) {
             Flash::error(
                 'Orcamento selecionado não encontrado'
@@ -1592,15 +1604,31 @@ class OrdemDeCompraController extends AppBaseController
 
                     return (object) $data;
                 })
-                ->each(function ($data) use ($orcamento) {
+                ->each(function ($data) use ($orcamento, $qtd_trocada) {
                     $troca                          = $orcamento->replicate();
                     $troca->insumo_id               = $data->insumo->id;
                     $troca->qtd_total               = $data->qtd_total;
                     $troca->descricao               = $data->insumo->nome;
                     $troca->unidade_sigla           = $data->insumo->unidade_sigla;
                     $troca->orcamento_que_substitui = $orcamento->id;
+
+                    // Os valores devem estar zerados na troca
+                    $troca->preco_unitario = 0;
+                    $troca->preco_total = 0;
+
                     $troca->save();
                 });
+
+            // Soma toda a quantidade trocada
+            foreach ($request->data as $data) {
+                $qtd_trocada += money_to_float($data['qtd_total']);
+            }
+
+            // Subtrai a quantidade trocada do orçamento pai e atualiza o preço total com a nova quantidade
+            $orcamento->qtd_total = money_to_float($orcamento->qtd_total) - $qtd_trocada;
+            $orcamento->preco_total = money_to_float($orcamento->qtd_total) * money_to_float($orcamento->preco_unitario);
+            $orcamento->save();
+
         } catch (Exception $e) {
             DB::rollback();
             Flash::error('Ocorreu um problema! Não foi possível salvar os dados.');

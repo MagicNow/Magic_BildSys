@@ -181,6 +181,23 @@ class QuadroDeConcorrenciaController extends AppBaseController
 
         $input = $request->all();
         $input['user_update_id'] = Auth::id();
+
+        if($request->has('abrir_concorrencia')){
+
+            if(isset($input['qcFornecedoresMega'])){
+                $fornecedores = count($input['qcFornecedores']) + count($input['qcFornecedoresMega']);
+            }else{
+                $fornecedores = count($input['qcFornecedores']);
+            }
+
+            if($fornecedores > $quadroDeConcorrencia->qcFornecedores->count()){
+                $input['qc_status_id'] = 7; // Em concorrência
+            }else{
+                Flash::error('Escolha novos fornecedores para o Q.C. '.$id);
+                return back();
+            }
+        }
+
         $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->update($input, $id);
 
         if (!$request->has('fechar_qc')) {
@@ -340,6 +357,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
             )
             ->findWithoutFail($id);
 
+
         if (empty($quadro)) {
             Flash::error('Quadro De Concorrencia '.trans('common.not-found'));
 
@@ -350,7 +368,13 @@ class QuadroDeConcorrenciaController extends AppBaseController
 
         try {
             if ($request->gerar_nova_rodada) {
+
                 $quadro->update(['rodada_atual' => (int) $quadro->rodada_atual + 1]);
+
+                #Inserir novos fornecedores que vão participar da nova RODADA
+                $input = $request->except('fornecedores','fornecedores_temp','gerar_nova_rodada','_token');
+                $input['user_update_id'] = Auth::id();
+                $this->quadroDeConcorrenciaRepository->update($input, $id);
 
                 $mensagens = collect($request->fornecedores)
                     ->map(function ($fornecedor) use ($quadro, $request) {

@@ -250,6 +250,15 @@
                     $('#codigo_grupo').val('');
                     $('#nome_grupo').val('');
                     $('#subgrupo_de').val('');
+
+                    if(!subgrupo_de){
+                        $('#grupo_id').append('<option value="'+json.grupo.id+'">'+json.grupo.codigo+ ' ' +json.grupo.nome+'</option>');
+                    }
+                    if(subgrupo_de_nome == 'subgrupo1_id' || subgrupo_de_nome == 'subgrupo2_id' || subgrupo_de_nome == 'subgrupo3_id') {
+                        selectgrupo(subgrupo_de, subgrupo_de_nome, 'grupos')
+                    }else{
+                        selectgrupo(subgrupo_de, subgrupo_de_nome, 'servicos')
+                    }
                 }else{
                     swal("O campo código e nome são obrigatórios.", "", "info");
                 }
