@@ -184,36 +184,7 @@ class ContratoController extends AppBaseController
     {
         $item = $contratoItemRepository->find($id);
 
-        $itens = $item->qcItem->ordemDeCompraItens;
-
-        $reapropriacoes = $item->reapropriacoes;
-
-        $reapropriacoes->each(function ($re) use (&$itens) {
-            if ($re->ordem_de_compra_item_id) {
-                $item = $itens->where('id', $re->ordem_de_compra_item_id)->shift();
-                $item->qtd = $item->qtd - $re->qtd;
-                $item->modificado_por = true;
-                $itens->push($item);
-            }
-        });
-
-        $reapropriacoes->each(function ($re) use (&$reapropriacoes) {
-            if ($re->contrato_item_reapropriacao_id) {
-                $_re = $reapropriacoes->where('id', $re->contrato_item_reapropriacao_id)->shift();
-                $_re->qtd = $_re->qtd - $re->qtd;
-                $_re->modificado_por = true;
-                $reapropriacoes->push($_re);
-            }
-        });
-
-        $itens = $itens->merge($reapropriacoes)
-            ->filter(function ($item) {
-                return (float)$item->qtd;
-            })
-            ->sortBy(function ($item) {
-                return $item->created_at->getTimestamp();
-            });
-
+        $itens = $item->apropriacoes;
 
         return view('contratos.modal-reapropriacao', compact('itens', 'item'));
     }

@@ -17,10 +17,7 @@
               $item->id,
               null,
               [
-                'data-column' => class_basename($item) === 'OcItem'
-                  ? 'ordem_de_compra_item_id'
-                  : 'contrato_item_reapropriacao_id',
-                'data-qtd-max' => $item->qtd,
+                'data-qtd-max' => $item->qtd_sobra,
                 'class' => 'js-item'
               ]
             )
@@ -33,7 +30,7 @@
             {{ $item->codigoServico(false) }}
           </span>
         </td>
-        <td class="text-right">{{ $item->qtd_formatted }}</td>
+        <td class="text-right">{{ $item->qtd_sobra_formatted }}</td>
       </tr>
     @endforeach
   </tbody>

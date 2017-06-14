@@ -147,11 +147,11 @@ class ContratoItemApropriacao extends Model
 
     public function getQtdSobraFormattedAttribute()
     {
-        return float_to_money($this->getQtdSobraAttribute(), '') . $this->insumo->unidade_sigla;
+        return float_to_money($this->getQtdSobraAttribute(), '') . ' ' . $this->insumo->unidade_sigla;
     }
 
     public function getQtdFormattedAttribute()
     {
-        return float_to_money($this->qtd, '') . $this->insumo->unidade_sigla;
+        return float_to_money($this->qtd, '') . ' ' . $this->insumo->unidade_sigla;
     }
 }

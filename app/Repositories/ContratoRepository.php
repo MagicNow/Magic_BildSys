@@ -55,6 +55,7 @@ class ContratoRepository extends BaseRepository
                 $query->where('vencedor', '1');
             }])
             ->first();
+
         // Valida o valor final do frete
         if ($qcFornecedor->valor_frete > 0) {
             $soma_frete = 0;
@@ -251,7 +252,7 @@ class ContratoRepository extends BaseRepository
                         $contrato_item['apropriacoes'] = $valores_atuais->map(function ($valor) {
                             return $valor['oc_itens']->map(function ($oc_item) use ($valor) {
                                 $oc_item_arr = $oc_item->toArray();
-                                $oc_item_arr['qtd'] = ($valor['item']->valor_unitario * $oc_item->getOriginal('qtd')) * $valor['fator'];
+                                $oc_item_arr['qtd'] = $valor['valor_item'];
 
                                 return array_only($oc_item_arr, [
                                     'codigo_insumo',
@@ -363,6 +364,7 @@ class ContratoRepository extends BaseRepository
 
                 // Salva o contrato
                 $contrato = Contrato::create($contratoArray);
+
                 // Salva os itens do contrato
                 foreach ($contratoItens[$obraId] as &$item) {
                     $item['contrato_id'] = $contrato->id;

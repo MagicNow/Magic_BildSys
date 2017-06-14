@@ -16,7 +16,6 @@ class ContratoItem extends Model
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
-
     public $fillable = [
         'contrato_id',
         'insumo_id',
@@ -105,7 +104,7 @@ class ContratoItem extends Model
         return $this;
     }
 
-    public function reapropriacoes()
+    public function apropriacoes()
     {
         return $this->hasMany(
             ContratoItemApropriacao::class,

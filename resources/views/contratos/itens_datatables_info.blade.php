@@ -2,10 +2,7 @@
 
 <div class='btn-group'>
     @shield('contratos.reapropriar')
-        @if(
-            $item->qcItem &&
-            $reapropriacoes_dos_itens->isNotEmpty()
-            )
+        @if($reapropriacoes->isNotEmpty())
             <a href="javascript:void(0)"
                 title="Reapropriações"
                 data-toggle="popover"
@@ -16,19 +13,19 @@
             </a>
         @endif
     @endshield
-    @if($item->modificacoes->isNotEmpty())
-        <a href="javascript:void(0)"
-            title="{{ $item->servico }} / {{ $item->insumo->nome }}"
-            data-toggle="popover"
-            data-container="body"
-            data-external-content="#history-table-{{ $item->id }}"
-            class='btn btn-default btn-xs btn-flat'>
-            <i class="fa fa-history fa-fw"></i>
-        </a>
-    @endif
+    <a href="javascript:void(0)"
+        title="{{ $item->servico }} / {{ $item->insumo->nome }}"
+        data-toggle="popover"
+        data-container="body"
+        data-external-content="#history-table-{{ $item->id }}"
+        class='btn btn-default btn-xs btn-flat'>
+        <i class="fa fa-history fa-fw"></i>
+    </a>
     @if($reprovado)
         <a href="javascript:void(0)"
-            title="{{ $item->aprovado ? 'Contém modificação reprovada' : 'Item não adicionado ao contrato' }}"
+            title="{{ $item->aprovado
+                ? 'Contém modificação reprovada'
+                : 'Item não adicionado ao contrato' }}"
             data-toggle="popover"
             data-container="body"
             data-external-content="#reprovado-table-{{ $item->id }}"
@@ -77,44 +74,43 @@
 </div>
 @endif
 
-
-@if($item->qcItem)
-    <div id="reapropriacao-{{ $item->id }}" class="hidden">
-        @foreach($reapropriacoes_dos_itens as $id)
-            @php $ordemDeCompraItem = $item->qcItem->ordemDeCompraItens->where('id', $id)->first(); @endphp
-            <div class="box box-muted">
-                <div class="box-header with-border">
-                    {{ $ordemDeCompraItem->codigoServico() }}
-                    <span class="label label-info label-normalize">
-                        Total: {{ $ordemDeCompraItem->qtd_formatted }}
-                    </span>
-                    <span class="label label-warning label-normalize">
-                        Sobrou: {{ $ordemDeCompraItem->qtd_sobra_formatted }}
-                    </span>
-                </div>
-                <div class="box-body">
-                    <table class="table table-striped table-condensed">
-                        <thead>
-                            <tr>
-                                <th>Código</th>
-                                <th>Quantidade</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($ordemDeCompraItem->reapropriacoes as $re)
-                                <tr>
-                                    <td>{{ $re->codigoServico() }}</td>
-                                    <td>
-                                        {{ float_to_money($re->qtd, '') }} {{ $re->insumo->unidade_sigla }}
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
+<div id="reapropriacao-{{ $item->id }}" class="hidden">
+    @foreach($apropriacoes as $apropriacao)
+        <div class="box box-muted">
+            <div class="box-header with-border">
+                {{ $apropriacao->codigoServico() }}
+                <span class="label label-info label-normalize">
+                    Total: {{ $apropriacao->qtd_formatted }}
+                </span>
+                <span class="label label-warning label-normalize">
+                    Sobrou: {{ $apropriacao->qtd_sobra_formatted }}
+                </span>
             </div>
-        @endforeach
-        @foreach($reapropriacoes_de_reapropriacoes as $re)
+            <div class="box-body">
+                <table class="table table-striped table-condensed">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Quantidade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($apropriacao->reapropriacoes as $re)
+                            <tr>
+                                <td>{{ $re->codigoServico() }}</td>
+                                <td>
+                                    {{ float_to_money($re->qtd, '') }}
+                                    {{ $re->insumo->unidade_sigla }}
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    @endforeach
+    @foreach($reapropriacoes as $re)
+        @if($re->reapropriacoes->isNotEmpty())
             <div class="box box-muted">
                 <div class="box-header with-border">
                     {{ $re->codigoServico() }}
@@ -138,7 +134,8 @@
                                 <tr>
                                     <td>{{ $re->codigoServico() }}</td>
                                     <td>
-                                        {{ float_to_money($re->qtd, '') }} {{ $re->insumo->unidade_sigla }}
+                                        {{ float_to_money($re->qtd, '') }}
+                                        {{ $re->insumo->unidade_sigla }}
                                     </td>
                                 </tr>
                             @endforeach
@@ -146,39 +143,43 @@
                     </table>
                 </div>
             </div>
-        @endforeach
-    </div>
-@endif
+        @endif
+    @endforeach
+</div>
 
 <div id="history-table-{{ $item->id }}" class="hidden">
-  <table class="table table-striped table-condensed">
-    <thead>
-    <tr>
-      <th></th>
-      <th colspan="2" class="text-center">Antes</th>
-      <th colspan="2" class="text-center">Depois</th>
-      <th></th>
-    </tr>
-    <tr>
-      <th>Movimentação</th>
-      <th>Quantidade</th>
-      <th>Valor</th>
-      <th>Quantidade</th>
-      <th>Valor</th>
-      <th>Data</th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach($item->modificacoes->toArray() as $modificacao)
-      <tr>
-        <td>{{ $modificacao['tipo_modificacao'] }}</td>
-        <td>{{ float_to_money($modificacao['qtd_anterior'], '') }}</td>
-        <td>{{ float_to_money($modificacao['valor_unitario_anterior'], '') }}</td>
-        <td>{{ float_to_money($modificacao['qtd_atual'], '') }}</td>
-        <td>{{ float_to_money($modificacao['valor_unitario_atual'], '') }}</td>
-        <td>{{ $carbon->parse($modificacao['created_at'])->format('d/m/Y') }}</td>
-      </tr>
-    @endforeach
-    </tbody>
-  </table>
+    @if($item->modificacoes->isEmpty())
+        <p>Não há modificações no item de contrato</p>
+    @else
+        <table class="table table-striped table-condensed">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th colspan="2" class="text-center">Antes</th>
+                    <th colspan="2" class="text-center">Depois</th>
+                    <th></th>
+                </tr>
+                <tr>
+                    <th>Movimentação</th>
+                    <th>Quantidade</th>
+                    <th>Valor</th>
+                    <th>Quantidade</th>
+                    <th>Valor</th>
+                    <th>Data</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($item->modificacoes->toArray() as $modificacao)
+                    <tr>
+                        <td>{{ $modificacao['tipo_modificacao'] }}</td>
+                        <td>{{ float_to_money($modificacao['qtd_anterior'], '') }}</td>
+                        <td>{{ float_to_money($modificacao['valor_unitario_anterior'], '') }}</td>
+                        <td>{{ float_to_money($modificacao['qtd_atual'], '') }}</td>
+                        <td>{{ float_to_money($modificacao['valor_unitario_atual'], '') }}</td>
+                        <td>{{ $carbon->parse($modificacao['created_at'])->format('d/m/Y') }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    @endif
 </div>

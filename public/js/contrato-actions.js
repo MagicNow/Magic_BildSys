@@ -114,7 +114,7 @@ var Reapropriar = (function() {
 
     var item = this.getSelectedItem();
 
-    data[item.dataset.column] = item.value;
+    data.item_id = item.value;
 
     data = _.reduce(this.grupos, function(data, grupo) {
       data[grupo.name] = grupo.value;
