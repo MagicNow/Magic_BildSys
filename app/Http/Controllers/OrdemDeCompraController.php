@@ -607,8 +607,7 @@ class OrdemDeCompraController extends AppBaseController
         $ordem_item->total = 1;
         $ordem_item->qtd = $request->quantidade_compra;
         $ordem_item->valor_unitario = $orcamento_ativo->preco_unitario;
-        $ordem_item->valor_total = $orcamento_ativo->getOriginal('preco_unitario') * money_to_float($request->quantidade_compra);
-
+        $ordem_item->valor_total = floatval($orcamento_ativo->getOriginal('preco_unitario')) * money_to_float($request->quantidade_compra);
         $insumo = Insumo::find($orcamento_ativo->insumo_id);
 
         $ordem_item->tems = $insumo->tems;
