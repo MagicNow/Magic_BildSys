@@ -1599,6 +1599,7 @@ class OrdemDeCompraController extends AppBaseController
                     $troca->descricao               = $data->insumo->nome;
                     $troca->unidade_sigla           = $data->insumo->unidade_sigla;
                     $troca->orcamento_que_substitui = $orcamento->id;
+                    $troca->codigo_insumo           = $troca->servico->codigo.'.'.$troca->insumo->codigo;
 
                     // Os valores devem estar zerados na troca
                     $troca->preco_unitario = 0;
@@ -1626,7 +1627,7 @@ class OrdemDeCompraController extends AppBaseController
                     $ordem_de_compra_item = new OrdemDeCompraItem([
                         'ordem_de_compra_id' => $ordem_de_compra->id,
                         'obra_id' => $troca->obra_id,
-                        'codigo_insumo' => $troca->codigo_insumo,
+                        'codigo_insumo' => $troca->servico->codigo.'.'.$troca->insumo->codigo,
                         'qtd' => $troca->qtd_total,
                         'valor_unitario' => 0,
                         'valor_total' => 0,
@@ -1637,8 +1638,7 @@ class OrdemDeCompraController extends AppBaseController
                         'servico_id' => $troca->servico_id,
                         'insumo_id' => $troca->insumo_id,
                         'user_id' => Auth::id(),
-                        'unidade_sigla' => $troca->unidade_sigla,
-                        'total' => 1
+                        'unidade_sigla' => $troca->unidade_sigla
                     ]);
 
                     $ordem_de_compra_item->save();
