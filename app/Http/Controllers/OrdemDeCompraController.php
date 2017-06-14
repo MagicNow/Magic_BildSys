@@ -571,7 +571,8 @@ class OrdemDeCompraController extends AppBaseController
             ]);
 
             # Colocando na sessão
-            $request->session()->put('ordemCompra', $ordem->id);
+//            $request->session()->put('ordemCompra', $ordem->id);
+            \Session::put('ordemCompra', $ordem->id);
         }
 
         // Encontra o orçamento ativo para validar preço
@@ -606,8 +607,7 @@ class OrdemDeCompraController extends AppBaseController
         $ordem_item->total = 1;
         $ordem_item->qtd = $request->quantidade_compra;
         $ordem_item->valor_unitario = $orcamento_ativo->preco_unitario;
-        $ordem_item->valor_total = $orcamento_ativo->getOriginal('preco_unitario') * money_to_float($request->quantidade_compra);
-
+        $ordem_item->valor_total = floatval($orcamento_ativo->getOriginal('preco_unitario')) * money_to_float($request->quantidade_compra);
         $insumo = Insumo::find($orcamento_ativo->insumo_id);
 
         $ordem_item->tems = $insumo->tems;
@@ -729,11 +729,16 @@ class OrdemDeCompraController extends AppBaseController
     public function carrinho(Request $request)
     {
         $ordemDeCompra = OrdemDeCompra::where('oc_status_id', 1)->where('user_id', Auth::id());
+
         if ($request->obra_id) {
             $ordemDeCompra->where('obra_id', $request->obra_id);
         }
         if ($request->id) {
             $ordemDeCompra->where('id', $request->id);
+        }else{
+            if(\Session::has('ordemCompra')) {
+                $ordemDeCompra->where('id', \Session::get('ordemCompra'));
+            }
         }
         $ordemDeCompra = $ordemDeCompra->first();
 
@@ -743,7 +748,8 @@ class OrdemDeCompraController extends AppBaseController
             return back();
         }
         #colocar na sessão
-        $request->session()->put('ordemCompra', $ordemDeCompra->id);
+//        $request->session()->put('ordemCompra', $ordemDeCompra->id);
+        \Session::put('ordemCompra', $ordemDeCompra->id);
 
         $itens = collect([]);
 
@@ -870,6 +876,8 @@ class OrdemDeCompraController extends AppBaseController
             #limpa sessão
             $request->session()->put('ordemCompra', null);
             $request->session()->forget('ordemCompra');
+            \Session::put('ordemCompra', null);
+            \Session::forget('ordemCompra');
 
             $ordem_itens[0]->confereAprovacaoGeral();
 
@@ -1372,7 +1380,8 @@ class OrdemDeCompraController extends AppBaseController
             ]);
 
             # Colocando na sessão
-            $request->session()->put('ordemCompra', $ordem->id);
+//            $request->session()->put('ordemCompra', $ordem->id);
+            \Session::put('ordemCompra', $ordem->id);
         }
 
         // Encontra o orçamento ativo
