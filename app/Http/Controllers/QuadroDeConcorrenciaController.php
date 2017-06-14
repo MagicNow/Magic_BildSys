@@ -357,6 +357,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
             )
             ->findWithoutFail($id);
 
+
         if (empty($quadro)) {
             Flash::error('Quadro De Concorrencia '.trans('common.not-found'));
 
@@ -367,7 +368,13 @@ class QuadroDeConcorrenciaController extends AppBaseController
 
         try {
             if ($request->gerar_nova_rodada) {
+
                 $quadro->update(['rodada_atual' => (int) $quadro->rodada_atual + 1]);
+
+                #Inserir novos fornecedores que vão participar da nova RODADA
+                $input = $request->except('fornecedores','fornecedores_temp','gerar_nova_rodada','_token');
+                $input['user_update_id'] = Auth::id();
+                $this->quadroDeConcorrenciaRepository->update($input, $id);
 
                 $mensagens = collect($request->fornecedores)
                     ->map(function ($fornecedor) use ($quadro, $request) {

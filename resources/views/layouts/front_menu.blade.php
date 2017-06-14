@@ -34,6 +34,11 @@
             <a href="{!! route('quadroDeConcorrencias.index') !!}" title="Quadro De Concorrência"><i class="fa fa-th-large"></i> <span>Q.C.</span> </a>
         </li>
         @endshield
+        @shield('quadroDeConcorrencias.dashboard')
+        <li class="{{ Request::is('quadro-de-concorrencia*') ? 'active' : '' }}">
+            <a href="{!! route('quadroDeConcorrencias.dashboard') !!}"><i class="fa fa-tachometer"></i><span>DashBoard Q.C</span></a>
+        </li>
+        @endshield
         @shield('catalogo_acordos.list')
         <li class="{{ Request::is('catalogo-acordos*') ? 'active' : '' }}">
             <a href="{!! route('catalogo_contratos.index') !!}"><i class="fa fa-file-text-o"></i><span>Catálogo de Acordos</span></a>
@@ -52,11 +57,6 @@
         @shield('configuracaoEstaticas.list')
         <li class="{{ Request::is('configuracaoEstaticas*') ? 'active' : '' }}">
             <a href="{!! route('configuracaoEstaticas.index') !!}"><i class="fa fa-cog"></i><span>Informação de obrigações</span></a>
-        </li>
-        @endshield
-        @shield('quadroDeConcorrencias.dashboard')
-        <li class="{{ Request::is('quadro-de-concorrencia*') ? 'active' : '' }}">
-            <a href="{!! route('quadroDeConcorrencias.dashboard') !!}"><i class="fa fa-tachometer"></i><span>DashBoard Q.C</span></a>
         </li>
         @endshield
     </ul>

@@ -141,14 +141,53 @@
                             </div>
                         </div>
                         <div class="box-body" id="fornecedores-container">
-                            <p>Selecione os fornecedores que permanecerão na próxima rodada:</p>
-                            @foreach($qcFornecedores as $qcFornecedor)
-                                <label class="checkbox-inline">
-                                    <input type="checkbox" name="fornecedores[]"
-                                           value="{{ $qcFornecedor->fornecedor_id }}">
-                                    {{ $qcFornecedor->fornecedor->nome }}
-                                </label>
-                            @endforeach
+                            <div class="row">
+                                <div class="col-md-12">
+                                    {!! Form::label('qcFornecedores', 'Fornecedores:') !!}
+                                </div>
+                                <div class="col-md-12">
+                                    {!! Form::select('fornecedores', ['' => 'Escolha...'],
+                                    null,
+                                    [
+                                        'class' => 'form-control',
+                                        'id'=>'fornecedor'
+                                    ]) !!}
+                                </div>
+                                <div class="col-md-12">
+                                    <button type="button" title="Cadastrar Fornecedor Temporariamente"
+                                            style="margin-top: 5px; margin-bottom: 5px;"
+                                            id="cadastrarFornecedorTemporariamente"
+                                            onclick="cadastraFornecedor()" class="btn btn-block btn-sm btn-flat btn-info">
+                                        <i class="fa fa-user-plus" aria-hidden="true"></i>
+                                        Cadastrar Temporariamente
+                                    </button>
+                                </div>
+                                <div class="col-md-12">
+                                    {!! Form::select('fornecedores_temp', ['' => 'Fornecedores Temporários...'],
+                                    null,
+                                    [
+                                        'class' => 'form-control',
+                                        'id'=>'fornecedor_temp'
+                                    ]) !!}
+                                </div>
+                            </div>
+                            <div style="margin-top: 10px;">
+                                <p>Selecione os fornecedores que permanecerão na próxima rodada:</p>
+                                @foreach($qcFornecedores as $qcFornecedor)
+                                    <div>
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox" name="fornecedores[]"
+                                                   value="{{ $qcFornecedor->fornecedor_id }}">
+                                            {{ $qcFornecedor->fornecedor->nome }}
+                                        </label>
+                                    </div>
+
+                                    <?php
+                                    $qcFornecedorCount = $qcFornecedor->id;
+                                    ?>
+                                @endforeach
+                                <div id="fornecedoresSelecionados"></div>
+                            </div>
                         </div>
                         <div class="box-footer">
                             <button class="btn btn-warning pull-right btn-lg btn-flat" id="nova-rodada">
@@ -247,8 +286,250 @@
 @endsection
 
 @section('scripts')
-    <script>
+    <script type="text/javascript">
         window.urlEqualizacao = "/quadro-de-concorrencia/{{ $quadro->id }}/equalizacao-tecnica/";
+
+        var qtdFornecedores = parseInt({!! $qcFornecedorCount !!});
+        $(function() {
+            $('#fornecedor').select2({
+                allowClear: true,
+                placeholder: "-",
+                language: "pt-BR",
+                ajax: {
+                    url: "/catalogo-acordos/buscar/busca_fornecedores",
+                    dataType: 'json',
+                    delay: 250,
+
+                    data: function (params) {
+                        return {
+                            q: params.term, // search term
+                            page: params.page
+                        };
+                    },
+
+                    processResults: function (result, params) {
+                        // parse the results into the format expected by Select2
+                        // since we are using custom formatting functions we do not need to
+                        // alter the remote JSON data, except to indicate that infinite
+                        // scrolling can be used
+                        params.page = params.page || 1;
+
+                        return {
+                            results: result.data,
+                            pagination: {
+                                more: (params.page * result.per_page) < result.total
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                escapeMarkup: function (markup) {
+                    return markup;
+                }, // let our custom formatter work
+                minimumInputLength: 1,
+                templateResult: formatResult, // omitted for brevity, see the source of this page
+                templateSelection: formatResultSelection // omitted for brevity, see the source of this page
+
+            });
+
+            $('#fornecedor_temp').select2({
+                allowClear: true,
+                placeholder: "Fornecedores Temporários",
+                language: "pt-BR",
+                ajax: {
+                    url: "/admin/fornecedores/busca-temporarios",
+                    dataType: 'json',
+                    delay: 250,
+
+                    data: function (params) {
+                        return {
+                            q: params.term, // search term
+                            page: params.page
+                        };
+                    },
+
+                    processResults: function (result, params) {
+                        // parse the results into the format expected by Select2
+                        // since we are using custom formatting functions we do not need to
+                        // alter the remote JSON data, except to indicate that infinite
+                        // scrolling can be used
+                        params.page = params.page || 1;
+
+                        return {
+                            results: result.data,
+                            pagination: {
+                                more: (params.page * result.per_page) < result.total
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                escapeMarkup: function (markup) {
+                    return markup;
+                }, // let our custom formatter work
+                minimumInputLength: 1,
+                templateResult: formatResultNomeId, // omitted for brevity, see the source of this page
+                templateSelection: formatResultSelectionNomeId // omitted for brevity, see the source of this page
+
+            });
+
+            $('#fornecedor').on('select2:select', function (e) {
+                addFornecedor()
+            });
+
+            $('#fornecedor_temp').on('select2:select', function (e) {
+                addFornecedorTemp();
+            });
+        });
+
+        // Fornecedor
+        function cadastraFornecedor() {
+            funcaoPosCreate = "preencheFornecedor();";
+            $.colorbox({
+                href: "/admin/fornecedores/create?modal=1",
+                iframe: true,
+                width: '90%',
+                height: '90%'
+            });
+        }
+
+        function preencheFornecedor() {
+            qtdFornecedores++;
+            var nomeFornecedor = novoObjeto.nome;
+            var qcFornecedorHTML = '<div><label class="checkbox-inline" id="qcFornecedor_id' + qtdFornecedores + '">' +
+                    '<input type="checkbox" name="qcFornecedores[][fornecedor_id]" value="' + novoObjeto.id + '">' +
+                    nomeFornecedor +
+                    '<button type="button" title="Remover" class="btn btn-flat btn-danger btn-xs pull-right" ' +
+                    ' onclick="removerFornecedor(' + qtdFornecedores + ',0)">' +
+                    '<i class="fa fa-trash" aria-hidden="true"></i>' +
+                    '</button>' +
+                    '</label></div>';
+
+            $('#fornecedor').val(null).trigger("change");
+            $('#fornecedoresSelecionados').append(qcFornecedorHTML);
+
+            $('input').iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green',
+                increaseArea: '20%' // optional
+            });
+        }
+
+        function addFornecedor() {
+            qtdFornecedores++;
+            if ($('#fornecedor').val()) {
+                var nomeFornecedor = $('#fornecedor').select2('data');
+                var qcFornecedorHTML = '<div><label class="checkbox-inline" id="qcFornecedor_id' + qtdFornecedores + '">' +
+                        '<input type="checkbox" name="qcFornecedoresMega[]" value="' + $('#fornecedor').val() + '"> ' +
+                        nomeFornecedor[0].agn_st_nome +
+                        '<button type="button" title="Remover" class="btn btn-flat btn-danger btn-xs pull-right" ' +
+                        ' onclick="removerFornecedor(' + qtdFornecedores + ',0)">' +
+                        '<i class="fa fa-trash" aria-hidden="true"></i>' +
+                        '</button>' +
+                        '</label></div>';
+
+                $('#fornecedor').val(null).trigger("change");
+                $('#fornecedoresSelecionados').append(qcFornecedorHTML);
+                $('#fornecedor').select2('open');
+            }
+
+            $('input').iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green',
+                increaseArea: '20%' // optional
+            });
+        }
+
+        function addFornecedorTemp() {
+            qtdFornecedores++;
+            if ($('#fornecedor_temp').val()) {
+                var nomeFornecedor = $('#fornecedor_temp').select2('data');
+                var qcFornecedorHTML = '<div><label class="checkbox-inline" id="qcFornecedor_id' + qtdFornecedores + '">' +
+                        '<input type="checkbox" name="qcFornecedores[][fornecedor_id]" value="' + $('#fornecedor_temp').val() + '"> ' +
+                        nomeFornecedor[0].nome +
+                        '<button type="button" title="Remover" class="btn btn-flat btn-danger btn-xs pull-right" ' +
+                        ' onclick="removerFornecedor(' + qtdFornecedores + ',0)">' +
+                        '<i class="fa fa-trash" aria-hidden="true"></i>' +
+                        '</button>' +
+                        '</label></div>';
+
+                $('#fornecedor_temp').val(null).trigger("change");
+                $('#fornecedoresSelecionados').append(qcFornecedorHTML);
+                $('#fornecedor_temp').select2('open');
+            }
+
+            $('input').iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green',
+                increaseArea: '20%' // optional
+            });
+        }
+
+        function removerFornecedor(qual, qcFornecedorId) {
+            if (qcFornecedorId) {
+                // Remover no banco
+                swal({
+                    title: 'Deseja remover este fornecedor?',
+                    text: 'Após a remoção não será possível mais recuperar o registro.',
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Sim, tenho certeza!",
+                    cancelButtonText: "Não",
+                    closeOnConfirm: false
+                }, function() {
+                    $.ajax("/quadro-de-concorrencia/" + quadroDeConcorrenciaId + "/remover-fornecedor/" + qual)
+                            .done(function(retorno) {
+                                $('#qcFornecedor_id' + qual).remove();
+                                swal('Removido', '', 'success');
+                            }).fail(function(jqXHR, textStatus, errorThrown) {
+                        swal('Erro', jqXHR.responseText, 'error');
+                    });
+                });
+            } else {
+                // Apenas remove o HTML
+                $('#qcFornecedor_id' + qual).remove();
+            }
+        }
+
+        function formatResult(obj) {
+            if (obj.loading) return obj.text;
+
+            var markup = "<div class='select2-result-obj clearfix'>" +
+                    "   <div class='select2-result-obj__meta'>" +
+                    "       <div class='select2-result-obj__title'>" + obj.agn_st_nome + "</div>" +
+                    "   </div>" +
+                    "</div>";
+
+            return markup;
+        }
+
+        function formatResultSelection(obj) {
+            if (obj.agn_st_nome) {
+                return obj.agn_st_nome;
+            }
+            return obj.text;
+        }
+
+        function formatResultNomeId(obj) {
+            if (obj.loading) return obj.text;
+
+            var markup = "<div class='select2-result-obj clearfix'>" +
+                    "   <div class='select2-result-obj__meta'>" +
+                    "       <div class='select2-result-obj__title'>" + obj.nome + "</div>" +
+                    "   </div>" +
+                    "</div>";
+
+            return markup;
+        }
+
+        function formatResultSelectionNomeId(obj) {
+            if (obj.nome) {
+                return obj.nome;
+            }
+            return obj.text;
+        }
+
     </script>
     <script src="/vendor/datatables/buttons.server-side.js"></script>
     {!! $dataTable->scripts() !!}
