@@ -203,7 +203,7 @@ class ComprasDataTable extends DataTable
                         (
                             IFNULL(
                                 (
-                                    SELECT sum(ordem_de_compra_itens.qtd) FROM ordem_de_compra_itens
+                                    SELECT sum(ordem_de_compra_itens.valor_total) FROM ordem_de_compra_itens
                                     JOIN ordem_de_compras
                                     ON ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id
                                     WHERE 
