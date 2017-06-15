@@ -20,6 +20,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use App\Models\Contrato;
 use App\Models\QcStatus;
+use Laracasts\Flash\Flash;
 
 class QuadroDeConcorrenciaRepository extends BaseRepository
 {
@@ -254,7 +255,7 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
             }
         }
 
-        if(count($attributes['qcFornecedores'])){
+        if(isset($attributes['qcFornecedores'])){
 //            dd($attributes['qcFornecedores']);
             foreach ($attributes['qcFornecedores'] as $qcFornecedor){
 //                echo 'QCFORNECEDOR';
@@ -283,6 +284,12 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
         $model->save();
 
         if (isset($attributes['fechar_qc'])) {
+            // Verifica se existe pelo menos um item e um fornecedor
+            if(!$model->qcFornecedores()->count() || !$model->itens()->count()){
+                Flash::error('Escolha fornecedores / itens para o Q.C.');
+                return false;
+            }
+
             // Muda status do QC
             $model->qc_status_id = 3; // em aprovação
             $model->save();

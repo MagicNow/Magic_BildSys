@@ -200,6 +200,10 @@ class QuadroDeConcorrenciaController extends AppBaseController
 
         $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->update($input, $id);
 
+        if(!$quadroDeConcorrencia){
+            return back();
+        }
+
         if (!$request->has('fechar_qc')) {
             if (!$request->has('adicionar_itens')) {
                 Flash::success('Quadro De Concorrencia ' . trans('common.updated') . ' ' . trans('common.successfully') . '.');
