@@ -232,6 +232,8 @@ class ComprasDataTable extends DataTable
                                     AND ordem_de_compras.oc_status_id != 4
                                 ),0
                             )
+                            *
+                            orcamentos.preco_unitario
                         )
                     ),2,\'de_DE\') as saldo'),
                 // Colocar a OC se existir em aberto ou em sessão
