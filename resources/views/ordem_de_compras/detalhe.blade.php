@@ -242,7 +242,7 @@
                 <h5>Valor comprometido realizado</h5>
                 <h4>
                     <small class="pull-left">R$</small>0,00
-                    {{---  TO DO = Realizado: São informações que virão com a entrada de NF, sendo assim, no momento não haverá informações--}}
+                    {{---  @TODO = Realizado: São informações que virão com a entrada de NF, sendo assim, no momento não haverá informações--}}
                     {{--                    {{ number_format($realizado,2,',','.') }}--}}
                 </h4>
             </div>
@@ -250,7 +250,7 @@
                 <h5>Valor comprometido à gastar</h5>
                 <h4>
                     <small class="pull-left">R$</small>0,00
-                    {{---  TO DO = A gastar: É a soma de todos os saldos de contratos na que apropriação, como ainda não exixte contrato gerado, tem q estar zerado--}}
+                    {{---  @TODO = A gastar: É a soma de todos os saldos de contratos na que apropriação, como ainda não exixte contrato gerado, tem q estar zerado--}}
                     {{--                    {{ number_format($totalAGastar,2,',','.') }}--}}
                 </h4>
             </div>

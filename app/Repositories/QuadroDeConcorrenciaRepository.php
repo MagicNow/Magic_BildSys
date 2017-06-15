@@ -72,7 +72,9 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
             // Verifica se a qtd mínima é atendidida
             if ($item->getOriginal('qtd') >= $item_acordo->getOriginal('pedido_minimo')) {
                 // Verifica se a qtd multipla é atendida
-                if (($item->getOriginal('qtd') % floatval($item_acordo->getOriginal('pedido_multiplo_de'))) == 0) {
+                $multiplo_de = floatval($item_acordo->getOriginal('pedido_multiplo_de'));
+                $multiplo_de = $multiplo_de==0?1:$multiplo_de; // se tem acordo, o múltiplo deve ser diferente de zero
+                if (($item->getOriginal('qtd') % $multiplo_de) == 0) {
                     $gerar_qc_itens[$item->insumo_id] = [
                         'ids' => explode(',', $item->oc_itens_ids),
                         'insumo_id' => $item->insumo_id,
