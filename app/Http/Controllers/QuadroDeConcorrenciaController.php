@@ -200,6 +200,10 @@ class QuadroDeConcorrenciaController extends AppBaseController
 
         $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->update($input, $id);
 
+        if(!$quadroDeConcorrencia){
+            return back();
+        }
+
         if (!$request->has('fechar_qc')) {
             if (!$request->has('adicionar_itens')) {
                 Flash::success('Quadro De Concorrencia ' . trans('common.updated') . ' ' . trans('common.successfully') . '.');
@@ -735,11 +739,11 @@ class QuadroDeConcorrenciaController extends AppBaseController
                     if (Str::length($item['valor_unitario'])) {
                         $item['valor_unitario'] = money_to_float($item['valor_unitario']);
                         $item['valor_total'] = $item['valor_unitario'] * $item['qtd'];
-                    } else {
-                        $item['valor_unitario'] = null;
+
+                        $qcItemFornecedorRepository->create($item);
                     }
 
-                    $qcItemFornecedorRepository->create($item);
+
                 }
             }
         } catch (Exception $e) {
