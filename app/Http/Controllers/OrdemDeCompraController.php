@@ -337,7 +337,8 @@ class OrdemDeCompraController extends AppBaseController
                         AND orcamentos.obra_id = ordem_de_compra_itens.obra_id
                         AND orcamentos.ativo = 1
 
-                    ) as valor_servico")
+                    ) as valor_servico"),
+                    DB::raw("CONCAT(insumos_sub.codigo,' - ' ,insumos_sub.nome) as substitui")
                 ])
                 ->join('ordem_de_compras','ordem_de_compras.id' , 'ordem_de_compra_itens.ordem_de_compra_id')
                 ->join('orcamentos', function ($join) use ($ordemDeCompra) {
@@ -352,6 +353,9 @@ class OrdemDeCompraController extends AppBaseController
                 })
                 ->where('ordem_de_compras.obra_id',$ordemDeCompra->obra_id)
                 ->with('insumo', 'unidade', 'anexos');
+
+            $itens->leftJoin(DB::raw('orcamentos orcamentos_sub'),  'orcamentos_sub.id', 'orcamentos.orcamento_que_substitui');
+            $itens->leftJoin(DB::raw('insumos insumos_sub'), 'insumos_sub.id', 'orcamentos_sub.insumo_id');
 
             $itens = $itens->paginate(10);
         }
@@ -1133,7 +1137,9 @@ class OrdemDeCompraController extends AppBaseController
 
         if ($orcamento) {
             $orcamento->preco_unitario = money_to_float($request->valor);
-            $orcamento->preco_total = $orcamento->getOriginal('qtd_total') * money_to_float($request->valor);
+            if(!$orcamento->orcamento_que_substitui){ // Se for insumo substituído não altera o valor total
+                $orcamento->preco_total = $orcamento->getOriginal('qtd_total') * money_to_float($request->valor);
+            }
             $orcamento->save();
         }
 

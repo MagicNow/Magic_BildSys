@@ -305,7 +305,8 @@
                                         {{$item->subgrupo1->codigo.' - '.$item->subgrupo1->nome}}<br/>
                                         {{$item->subgrupo2->codigo.' - '.$item->subgrupo2->nome}}<br/>
                                         {{$item->subgrupo3->codigo.' - '.$item->subgrupo3->nome}}<br/>
-                                        {{$item->servico->codigo.' - '.$item->servico->nome}}
+                                        {{$item->servico->codigo.' - '.$item->servico->nome}}<br/>
+                                        <i class='fa fa-exchange'></i> {{$item->substitui}}
                                     ">
                                 {{ $item->insumo->codigo }}</span>
                             </td>
