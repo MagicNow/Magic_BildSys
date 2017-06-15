@@ -739,11 +739,11 @@ class QuadroDeConcorrenciaController extends AppBaseController
                     if (Str::length($item['valor_unitario'])) {
                         $item['valor_unitario'] = money_to_float($item['valor_unitario']);
                         $item['valor_total'] = $item['valor_unitario'] * $item['qtd'];
-                    } else {
-                        $item['valor_unitario'] = null;
+
+                        $qcItemFornecedorRepository->create($item);
                     }
 
-                    $qcItemFornecedorRepository->create($item);
+
                 }
             }
         } catch (Exception $e) {
