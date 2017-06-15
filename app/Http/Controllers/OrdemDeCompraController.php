@@ -1299,25 +1299,42 @@ class OrdemDeCompraController extends AppBaseController
         $insumo = Insumo::find($request->insumo_id);
         $servico = Servico::find($request->servico_id);
 
-        $orcamento = new Orcamento([
-            'obra_id' => $request->obra_id,
-            'codigo_insumo' => $servico->codigo . '.' . $insumo->codigo,
-            'insumo_id' => $request->insumo_id,
-            'servico_id' => $request->servico_id,
-            'grupo_id' => $request->grupo_id,
-            'unidade_sigla' => $insumo->unidade_sigla,
-            'preco_unitario' => 0,
-            'qtd_total' => $request->qtd_total,
-            'orcamento_tipo_id' => 1,
-            'subgrupo1_id' => $request->subgrupo1_id,
-            'subgrupo2_id' => $request->subgrupo2_id,
-            'subgrupo3_id' => $request->subgrupo3_id,
-            'user_id' => Auth::id(),
-            'descricao' => $insumo->nome,
-            'insumo_incluido' => 1
-        ]);
+        # Encontra insumo com o mesmo codigo estruturado que tentaram inserir no orçamento
+        $insumoCadastrado = Orcamento::where('obra_id', $request->obra_id)
+            ->where('grupo_id', $request->grupo_id)
+            ->where('subgrupo1_id', $request->subgrupo1_id)
+            ->where('subgrupo2_id', $request->subgrupo2_id)
+            ->where('subgrupo3_id', $request->subgrupo3_id)
+            ->where('servico_id', $request->servico_id)
+            ->where('insumo_id', $request->insumo_id)
+            ->where('ativo', 1)
+            ->first();
 
-        $orcamento->save();
+        if(!$insumoCadastrado) {
+            $orcamento = new Orcamento([
+                'obra_id' => $request->obra_id,
+                'codigo_insumo' => $servico->codigo . '.' . $insumo->codigo,
+                'insumo_id' => $request->insumo_id,
+                'servico_id' => $request->servico_id,
+                'grupo_id' => $request->grupo_id,
+                'unidade_sigla' => $insumo->unidade_sigla,
+                'preco_unitario' => 0,
+                'qtd_total' => $request->qtd_total,
+                'orcamento_tipo_id' => 1,
+                'subgrupo1_id' => $request->subgrupo1_id,
+                'subgrupo2_id' => $request->subgrupo2_id,
+                'subgrupo3_id' => $request->subgrupo3_id,
+                'user_id' => Auth::id(),
+                'descricao' => $insumo->nome,
+                'insumo_incluido' => 1
+            ]);
+            $orcamento->save();
+        }else{
+            Flash::warning(
+                'Insumo já existe nesse orçamento'
+            );
+            return back()->withInput();
+        }
 
         return redirect('/compras/insumos/orcamento/'.$request->obra_id)->with(['salvo' => true]);
     }
