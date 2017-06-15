@@ -339,6 +339,7 @@ class OrdemDeCompraController extends AppBaseController
 
                     ) as valor_servico")
                 ])
+                ->join('ordem_de_compras','ordem_de_compras.id' , 'ordem_de_compra_itens.ordem_de_compra_id')
                 ->join('orcamentos', function ($join) use ($ordemDeCompra) {
                     $join->on('orcamentos.insumo_id', '=', 'ordem_de_compra_itens.insumo_id');
                     $join->on('orcamentos.grupo_id', '=', 'ordem_de_compra_itens.grupo_id');
@@ -346,9 +347,10 @@ class OrdemDeCompraController extends AppBaseController
                     $join->on('orcamentos.subgrupo2_id', '=', 'ordem_de_compra_itens.subgrupo2_id');
                     $join->on('orcamentos.subgrupo3_id', '=', 'ordem_de_compra_itens.subgrupo3_id');
                     $join->on('orcamentos.servico_id', '=', 'ordem_de_compra_itens.servico_id');
-                    $join->on('orcamentos.obra_id', '=', DB::raw($ordemDeCompra->obra_id));
+                    $join->on('orcamentos.obra_id', '=', 'ordem_de_compras.obra_id');
                     $join->on('orcamentos.ativo', '=', DB::raw('1'));
                 })
+                ->where('ordem_de_compras.obra_id',$ordemDeCompra->obra_id)
                 ->with('insumo', 'unidade', 'anexos');
 
             $itens = $itens->paginate(10);
