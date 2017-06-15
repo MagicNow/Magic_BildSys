@@ -29,11 +29,11 @@
                             {!! Form::label('grupo_id', 'Grupos:') !!}
                             {!! Form::select('grupo_id', [''=>'-']+$grupos, null, ['class' => 'form-control select2', 'id'=>'grupo_id','onchange'=>'selectgrupo(this.value, \'subgrupo1_id\', \'grupos\');', 'required']) !!}
                         </div>
-                        <div class="form-group col-sm-2">
-                            <a class="btn btn-info pull-right flat" data-toggle="modal" data-target="#cadastrarGrupo" style="margin-top: 20px;" onclick="atribuirGrupoId(null, 'grupo_id');">
-                                <i class="fa fa-save"></i> Cadastrar Grupo
-                            </a>
-                        </div>
+                        {{--<div class="form-group col-sm-2">--}}
+                            {{--<a class="btn btn-info pull-right flat" data-toggle="modal" data-target="#cadastrarGrupo" style="margin-top: 20px;" onclick="atribuirGrupoId(null, 'grupo_id');">--}}
+                                {{--<i class="fa fa-save"></i> Cadastrar Grupo--}}
+                            {{--</a>--}}
+                        {{--</div>--}}
                     </div>
                     <!-- SubGrupos1 de insumo Field -->
                     <div class="form-group col-sm-12">

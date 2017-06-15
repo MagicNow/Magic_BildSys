@@ -1300,25 +1300,42 @@ class OrdemDeCompraController extends AppBaseController
         $insumo = Insumo::find($request->insumo_id);
         $servico = Servico::find($request->servico_id);
 
-        $orcamento = new Orcamento([
-            'obra_id' => $request->obra_id,
-            'codigo_insumo' => $servico->codigo . '.' . $insumo->codigo,
-            'insumo_id' => $request->insumo_id,
-            'servico_id' => $request->servico_id,
-            'grupo_id' => $request->grupo_id,
-            'unidade_sigla' => $insumo->unidade_sigla,
-            'preco_unitario' => 0,
-            'qtd_total' => $request->qtd_total,
-            'orcamento_tipo_id' => 1,
-            'subgrupo1_id' => $request->subgrupo1_id,
-            'subgrupo2_id' => $request->subgrupo2_id,
-            'subgrupo3_id' => $request->subgrupo3_id,
-            'user_id' => Auth::id(),
-            'descricao' => $insumo->nome,
-            'insumo_incluido' => 1
-        ]);
+        # Encontra insumo com o mesmo codigo estruturado que tentaram inserir no orçamento
+        $insumoCadastrado = Orcamento::where('obra_id', $request->obra_id)
+            ->where('grupo_id', $request->grupo_id)
+            ->where('subgrupo1_id', $request->subgrupo1_id)
+            ->where('subgrupo2_id', $request->subgrupo2_id)
+            ->where('subgrupo3_id', $request->subgrupo3_id)
+            ->where('servico_id', $request->servico_id)
+            ->where('insumo_id', $request->insumo_id)
+            ->where('ativo', 1)
+            ->first();
 
-        $orcamento->save();
+        if(!$insumoCadastrado) {
+            $orcamento = new Orcamento([
+                'obra_id' => $request->obra_id,
+                'codigo_insumo' => $servico->codigo . '.' . $insumo->codigo,
+                'insumo_id' => $request->insumo_id,
+                'servico_id' => $request->servico_id,
+                'grupo_id' => $request->grupo_id,
+                'unidade_sigla' => $insumo->unidade_sigla,
+                'preco_unitario' => 0,
+                'qtd_total' => $request->qtd_total,
+                'orcamento_tipo_id' => 1,
+                'subgrupo1_id' => $request->subgrupo1_id,
+                'subgrupo2_id' => $request->subgrupo2_id,
+                'subgrupo3_id' => $request->subgrupo3_id,
+                'user_id' => Auth::id(),
+                'descricao' => $insumo->nome,
+                'insumo_incluido' => 1
+            ]);
+            $orcamento->save();
+        }else{
+            Flash::warning(
+                'Insumo já existe nesse orçamento'
+            );
+            return back()->withInput();
+        }
 
         return redirect('/compras/insumos/orcamento/'.$request->obra_id)->with(['salvo' => true]);
     }
@@ -1584,8 +1601,6 @@ class OrdemDeCompraController extends AppBaseController
     {
         $orcamento = $orcamentoRepository->findWithoutFail($orcamentoId);
 
-        $qtd_trocada = 0;
-
         if (empty($orcamento)) {
             Flash::error(
                 'Orcamento selecionado não encontrado'
@@ -1605,30 +1620,57 @@ class OrdemDeCompraController extends AppBaseController
 
                     return (object) $data;
                 })
-                ->each(function ($data) use ($orcamento, $qtd_trocada) {
+                ->each(function ($data) use ($orcamento) {
                     $troca                          = $orcamento->replicate();
                     $troca->insumo_id               = $data->insumo->id;
                     $troca->qtd_total               = $data->qtd_total;
                     $troca->descricao               = $data->insumo->nome;
                     $troca->unidade_sigla           = $data->insumo->unidade_sigla;
                     $troca->orcamento_que_substitui = $orcamento->id;
+                    $troca->codigo_insumo           = $troca->servico->codigo.'.'.$troca->insumo->codigo;
 
                     // Os valores devem estar zerados na troca
                     $troca->preco_unitario = 0;
                     $troca->preco_total = 0;
 
                     $troca->save();
+
+                    // Busca a ordem de compra
+                    $ordem_de_compra = OrdemDeCompra::where('oc_status_id', 1)
+                        ->where('user_id', Auth::id())
+                        ->where('obra_id', $troca->obra_id)
+                        ->first();
+
+                    // Se nao encontrou uma ordem de compra cria
+                    if(!$ordem_de_compra){
+                        $ordem_de_compra = new OrdemDeCompra([
+                            'oc_status_id' => 1,
+                            'obra_id' => $troca->obra_id,
+                            'user_id' => Auth::id()
+                        ]);
+                        $ordem_de_compra->save();
+                    }
+
+                    // Cria uma ordem de compra item com o insumo trocado
+                    $ordem_de_compra_item = new OrdemDeCompraItem([
+                        'ordem_de_compra_id' => $ordem_de_compra->id,
+                        'obra_id' => $troca->obra_id,
+                        'codigo_insumo' => $troca->servico->codigo.'.'.$troca->insumo->codigo,
+                        'qtd' => $troca->qtd_total,
+                        'valor_unitario' => 0,
+                        'valor_total' => 0,
+                        'grupo_id' => $troca->grupo_id,
+                        'subgrupo1_id' => $troca->subgrupo1_id,
+                        'subgrupo2_id' => $troca->subgrupo2_id,
+                        'subgrupo3_id' => $troca->subgrupo3_id,
+                        'servico_id' => $troca->servico_id,
+                        'insumo_id' => $troca->insumo_id,
+                        'user_id' => Auth::id(),
+                        'unidade_sigla' => $troca->unidade_sigla
+                    ]);
+
+                    $ordem_de_compra_item->save();
                 });
-
-            // Soma toda a quantidade trocada
-            foreach ($request->data as $data) {
-                $qtd_trocada += money_to_float($data['qtd_total']);
-            }
-
-            // Subtrai a quantidade trocada do orçamento pai e atualiza o preço total com a nova quantidade
-            $orcamento->qtd_total = money_to_float($orcamento->qtd_total) - $qtd_trocada;
-            $orcamento->preco_total = money_to_float($orcamento->qtd_total) * money_to_float($orcamento->preco_unitario);
-            $orcamento->save();
 
         } catch (Exception $e) {
             DB::rollback();
