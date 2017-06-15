@@ -1,7 +1,13 @@
 <!-- Fornecedores Field -->
 <div class="form-group col-sm-12">
     {!! Form::label('fornecedor_cod', 'Fornecedor:') !!}
-    {!! Form::select('fornecedor_cod', ['' => 'Escolha...']+$fornecedores, @isset($catalogoContrato) ? $catalogoContrato->fornecedor->codigo_mega : null, ['class' => 'form-control','id'=>'fornecedor_cod','required'=>'required']) !!}
+    @if(isset($catalogoContrato))
+        <div class="form-control">
+            {{ $catalogoContrato->fornecedor->nome }}
+        </div>
+    @else
+        {!! Form::select('fornecedor_cod', ['' => 'Escolha...']+$fornecedores,  null, ['class' => 'form-control','id'=>'fornecedor_cod','required'=>'required']) !!}
+    @endif
 </div>
 
 <?php
@@ -37,10 +43,10 @@ $count_insumos = 0;
                         @endif
                     @endif
 
-                    {!! Form::hidden('insumos_edit['.$item->id.'][id]', $item->id) !!}
+                    {!! Form::hidden('contratoInsumos['.$item->id.'][id]', $item->id) !!}
                     <div class="col-md-10" {{in_array($item->insumo_id, $array_insumos) ? 'style=display:none;' : ''}}>
                         <label>Insumo:</label>
-                        {!! Form::select('insumos_edit['.$item->id.'][insumo_id]',[''=>'Escolha...']+ \App\Models\Insumo::where('id',$item->insumo_id)->pluck('nome','id')->toArray(), $item->insumo_id, ['class' => 'form-control select2 insumos_existentes insumo_select_'.$item->id,'required'=>'required', 'id' => 'insumo_select_'.$item->id]) !!}
+                        {!! Form::select('contratoInsumos['.$item->id.'][insumo_id]',[''=>'Escolha...']+ \App\Models\Insumo::where('id',$item->insumo_id)->pluck('nome','id')->toArray(), $item->insumo_id, ['class' => 'form-control select2 insumos_existentes insumo_select_'.$item->id,'required'=>'required', 'id' => 'insumo_select_'.$item->id]) !!}
                     </div>
                     <div class="col-md-2" style="margin-top:25px;{{in_array($item->insumo_id, $array_insumos) ? 'display:none;' : ''}}">
                         <div class="col-md-9">
@@ -66,24 +72,24 @@ $count_insumos = 0;
                             <label>Valor unitário:</label>
                             <div class="input-group">
                                 <span class="input-group-addon" id="basic-addon1">R$</span>
-                                <input type="text" value="{{$item->valor_unitario}}" id="valor_unitario_{{$item->id}}" class="form-control money" name="insumos_edit[{{$item->id}}][valor_unitario]">
+                                <input type="text" value="{{$item->valor_unitario}}" id="valor_unitario_{{$item->id}}" class="form-control money" name="contratoInsumos[{{$item->id}}][valor_unitario]">
                             </div>
                         </div>
                         <div class="col-md-3">
                             <label>Pedido quantidade mínima:</label>
-                            <input type="text" value="{{$item->pedido_minimo}}" id="pedido_minimo_{{$item->id}}" class="form-control decimal" name="insumos_edit[{{$item->id}}][pedido_minimo]">
+                            <input type="text" value="{{$item->pedido_minimo}}" id="pedido_minimo_{{$item->id}}" class="form-control decimal" name="contratoInsumos[{{$item->id}}][pedido_minimo]">
                         </div>
                         <div class="col-md-2">
                             <label>Pedido múltiplo de:</label>
-                            <input type="text" value="{{$item->pedido_multiplo_de}}" id="pedido_multiplo_de_{{$item->id}}" class="form-control decimal" name="insumos_edit[{{$item->id}}][pedido_multiplo_de]">
+                            <input type="text" value="{{$item->pedido_multiplo_de}}" id="pedido_multiplo_de_{{$item->id}}" class="form-control decimal" name="contratoInsumos[{{$item->id}}][pedido_multiplo_de]">
                         </div>
                         <div class="col-md-2">
                             <label>Período início:</label>
-                            <input type="date" value="{{$item->periodo_inicio ? $item->periodo_inicio->format('Y-m-d') : null}}" id="periodo_inicio_{{$item->id}}" class="form-control" name="insumos_edit[{{$item->id}}][periodo_inicio]">
+                            <input type="date" value="{{$item->periodo_inicio ? $item->periodo_inicio->format('Y-m-d') : null}}" id="periodo_inicio_{{$item->id}}" class="form-control" name="contratoInsumos[{{$item->id}}][periodo_inicio]">
                         </div>
                         <div class="col-md-2">
                             <label>Período término:</label>
-                            <input type="date" value="{{$item->periodo_termino ? $item->periodo_termino->format('Y-m-d') : null}}" id="periodo_termino_{{$item->id}}" class="form-control" name="insumos_edit[{{$item->id}}][periodo_termino]">
+                            <input type="date" value="{{$item->periodo_termino ? $item->periodo_termino->format('Y-m-d') : null}}" id="periodo_termino_{{$item->id}}" class="form-control" name="contratoInsumos[{{$item->id}}][periodo_termino]">
                         </div>
                     </div>
                 </div>
@@ -124,7 +130,7 @@ $count_insumos = 0;
         var block_insumos = '<div class="form-group col-md-12" id="block_insumos'+count_insumos+'">\
                                 <div class="col-md-11">\
                                 <label>Insumo:</label>\
-                                    <select class="form-control insumo_select_'+count_insumos+'" id="insumo_select_'+count_insumos+'" name="insumos['+count_insumos+'][insumo_id]" required></select>\
+                                    <select class="form-control insumo_select_'+count_insumos+'" id="insumo_select_'+count_insumos+'" name="contratoInsumos['+count_insumos+'][insumo_id]" required></select>\
                                 </div>\
                                 <div class="col-md-1" align="right" style="margin-top:25px;">\
                                     <button type="button" onclick="removeInsumo('+count_insumos+')" class="btn btn btn-danger flat" aria-label="Close" title="Remover" >\
@@ -135,24 +141,24 @@ $count_insumos = 0;
                                     <label>Valor unitário:</label>\
                                     <div class="input-group">\
                                         <span class="input-group-addon" id="basic-addon1">R$</span>\
-                                        <input type="text" class="form-control money" id="valor_unitario_'+count_insumos+'" name="insumos['+count_insumos+'][valor_unitario]">\
+                                        <input type="text" class="form-control money" id="valor_unitario_'+count_insumos+'" name="contratoInsumos['+count_insumos+'][valor_unitario]">\
                                     </div>\
                                 </div>\
                                 <div class="col-md-3">\
                                     <label>Pedido quantidade mínima:</label>\
-                                    <input type="text" class="form-control decimal" id="pedido_minimo_'+count_insumos+'" name="insumos['+count_insumos+'][pedido_minimo]">\
+                                    <input type="text" class="form-control decimal" id="pedido_minimo_'+count_insumos+'" name="contratoInsumos['+count_insumos+'][pedido_minimo]">\
                                 </div>\
                                 <div class="col-md-2">\
                                     <label>Pedido múltiplo de:</label>\
-                                    <input type="text" class="form-control decimal" id="pedido_multiplo_de_'+count_insumos+'" name="insumos['+count_insumos+'][pedido_multiplo_de]">\
+                                    <input type="text" class="form-control decimal" id="pedido_multiplo_de_'+count_insumos+'" name="contratoInsumos['+count_insumos+'][pedido_multiplo_de]">\
                                 </div>\
                                 <div class="col-md-2">\
                                     <label>Período início:</label>\
-                                    <input type="date" class="form-control" id="periodo_inicio_'+count_insumos+'" name="insumos['+count_insumos+'][periodo_inicio]">\
+                                    <input type="date" class="form-control" id="periodo_inicio_'+count_insumos+'" name="contratoInsumos['+count_insumos+'][periodo_inicio]">\
                                 </div>\
                                 <div class="col-md-2">\
                                     <label>Período término:</label>\
-                                    <input type="date" class="form-control" id="periodo_termino_'+count_insumos+'" name="insumos['+count_insumos+'][periodo_termino]">\
+                                    <input type="date" class="form-control" id="periodo_termino_'+count_insumos+'" name="contratoInsumos['+count_insumos+'][periodo_termino]">\
                                 </div>\
                                 <div class="col-md-12 border-separation"></div>\
                             </div>';
