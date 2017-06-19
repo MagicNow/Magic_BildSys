@@ -1117,7 +1117,7 @@ class OrdemDeCompraController extends AppBaseController
     public function alterarQuantidade($id, Request $request)
     {
         $ordem_de_compra_item = OrdemDeCompraItem::find($id);
-        $ordem_de_compra_item->valor_total = $ordem_de_compra_item->getOriginal('valor_unitario') * money_to_float($request->qtd);
+        $ordem_de_compra_item->valor_total = floatval($ordem_de_compra_item->getOriginal('valor_unitario')) * money_to_float($request->qtd);
         $ordem_de_compra_item->qtd = $request->qtd;
         $ordem_de_compra_item->aprovado = null;
         $ordem_de_compra_item->save();
@@ -1138,7 +1138,7 @@ class OrdemDeCompraController extends AppBaseController
         if ($orcamento) {
             $orcamento->preco_unitario = money_to_float($request->valor);
             if(!$orcamento->orcamento_que_substitui){ // Se for insumo substituído não altera o valor total
-                $orcamento->preco_total = $orcamento->getOriginal('qtd_total') * money_to_float($request->valor);
+                $orcamento->preco_total = floatval($orcamento->getOriginal('qtd_total')) * money_to_float($request->valor);
             }
             $orcamento->save();
         }
@@ -1153,7 +1153,7 @@ class OrdemDeCompraController extends AppBaseController
 
         if ($ordem_de_compra_item) {
             $ordem_de_compra_item->valor_unitario = money_to_float($request->valor);
-            $ordem_de_compra_item->valor_total = $ordem_de_compra_item->getOriginal('qtd') * money_to_float($request->valor);
+            $ordem_de_compra_item->valor_total = floatval($ordem_de_compra_item->getOriginal('qtd')) * money_to_float($request->valor);
             $ordem_de_compra_item->save();
         }
 
@@ -1533,13 +1533,13 @@ class OrdemDeCompraController extends AppBaseController
 
             $ordem_item->user_id = Auth::user()->id;
             if ($request['quantidade_comprada']) {
-                $ordem_item->qtd = number_format(money_to_float($request['saldo']) + money_to_float($request['quantidade_comprada']), 2, ',', '.');
+                $ordem_item->qtd = money_to_float($request['saldo']) + money_to_float($request['quantidade_comprada']);
             } else {
                 $ordem_item->qtd = $request['saldo'];
             }
             $ordem_item->total = 1;
             $ordem_item->valor_unitario = $orcamento_ativo->preco_unitario;
-            $ordem_item->valor_total = number_format($orcamento_ativo->getOriginal('preco_unitario') * money_to_float($ordem_item->qtd), 2, ',', '.');
+            $ordem_item->valor_total = floatval($orcamento_ativo->getOriginal('preco_unitario')) * money_to_float($ordem_item->qtd);
             $ordem_item->save();
         }
     }
