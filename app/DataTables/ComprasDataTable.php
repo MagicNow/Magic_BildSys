@@ -202,38 +202,41 @@ class ComprasDataTable extends DataTable
                         -
                         (
                             IFNULL(
-                                (
-                                    SELECT sum(ordem_de_compra_itens.valor_total) FROM ordem_de_compra_itens
-                                    JOIN ordem_de_compras
-                                    ON ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id
-                                    WHERE 
-                                        ordem_de_compra_itens.insumo_id in
-                                        (
-                                            SELECT 
-                                                insumo_id
-                                            FROM
-                                                orcamentos as OrcSub
-                                            WHERE
-                                                OrcSub.orcamento_que_substitui = orcamentos.id
-                                        )
-                                    AND ordem_de_compra_itens.grupo_id = orcamentos.grupo_id
-                                    AND ordem_de_compra_itens.subgrupo1_id = orcamentos.subgrupo1_id
-                                    AND ordem_de_compra_itens.subgrupo2_id = orcamentos.subgrupo2_id
-                                    AND ordem_de_compra_itens.subgrupo3_id = orcamentos.subgrupo3_id
-                                    AND ordem_de_compra_itens.servico_id = orcamentos.servico_id
-                                    AND (
-                                            ordem_de_compra_itens.aprovado IS NULL
-                                            OR
-                                            ordem_de_compra_itens.aprovado = 1
-                                        )
-                                    AND ordem_de_compra_itens.deleted_at IS NULL
-                                    AND ordem_de_compras.obra_id ='. $obra->id .'
-                                    AND ordem_de_compras.oc_status_id != 6
-                                    AND ordem_de_compras.oc_status_id != 4
+                                IFNULL(
+                                    (
+                                        SELECT sum(ordem_de_compra_itens.valor_total) FROM ordem_de_compra_itens
+                                        JOIN ordem_de_compras
+                                        ON ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id
+                                        WHERE 
+                                            ordem_de_compra_itens.insumo_id in
+                                            (
+                                                SELECT 
+                                                    insumo_id
+                                                FROM
+                                                    orcamentos as OrcSub
+                                                WHERE
+                                                    OrcSub.orcamento_que_substitui = orcamentos.id
+                                            )
+                                        AND ordem_de_compra_itens.grupo_id = orcamentos.grupo_id
+                                        AND ordem_de_compra_itens.subgrupo1_id = orcamentos.subgrupo1_id
+                                        AND ordem_de_compra_itens.subgrupo2_id = orcamentos.subgrupo2_id
+                                        AND ordem_de_compra_itens.subgrupo3_id = orcamentos.subgrupo3_id
+                                        AND ordem_de_compra_itens.servico_id = orcamentos.servico_id
+                                        AND (
+                                                ordem_de_compra_itens.aprovado IS NULL
+                                                OR
+                                                ordem_de_compra_itens.aprovado = 1
+                                            )
+                                        AND ordem_de_compra_itens.deleted_at IS NULL
+                                        AND ordem_de_compras.obra_id ='. $obra->id .'
+                                        AND ordem_de_compras.oc_status_id != 6
+                                        AND ordem_de_compras.oc_status_id != 4
+                                    ),0
                                 ),0
+                                
+                                / orcamentos.preco_unitario
+                            
                             )
-                            /
-                            orcamentos.preco_unitario
                         )
                     ),2,\'de_DE\') as saldo'),
                 // Colocar a OC se existir em aberto ou em sessão

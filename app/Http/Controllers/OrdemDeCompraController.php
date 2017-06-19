@@ -1641,20 +1641,35 @@ class OrdemDeCompraController extends AppBaseController
 
                     $troca->save();
 
-                    // Busca a ordem de compra
-                    $ordem_de_compra = OrdemDeCompra::where('oc_status_id', 1)
-                        ->where('user_id', Auth::id())
-                        ->where('obra_id', $troca->obra_id)
-                        ->first();
 
-                    // Se nao encontrou uma ordem de compra cria
-                    if(!$ordem_de_compra){
-                        $ordem_de_compra = new OrdemDeCompra([
-                            'oc_status_id' => 1,
-                            'obra_id' => $troca->obra_id,
-                            'user_id' => Auth::id()
-                        ]);
+                    //Testa se tem ordem de compra aberta pro user
+                    $ordem_de_compra = null;
+                    if (\Session::get('ordemCompra')) {
+                        $ordem_de_compra = OrdemDeCompra::where('id', \Session::get('ordemCompra'))
+                            ->where('oc_status_id', 1)
+                            ->where('user_id', Auth::user()->id)
+                            ->where('obra_id', $troca->obra_id)->first();
+                    } else {
+                        $ordem_de_compra = OrdemDeCompra::where('oc_status_id', 1)
+                            ->where('user_id', Auth::user()->id)
+                            ->where('obra_id', $troca->obra_id)->first();
+                    }
+
+                    if (!$ordem_de_compra) {
+                        $ordem_de_compra = new OrdemDeCompra();
+                        $ordem_de_compra->oc_status_id = 1;
+                        $ordem_de_compra->obra_id = $troca->obra_id;
+                        $ordem_de_compra->user_id = Auth::user()->id;
                         $ordem_de_compra->save();
+                        
+                        OrdemDeCompraStatusLog::create([
+                            'oc_status_id'=>1,
+                            'ordem_de_compra_id'=>$ordem_de_compra->id,
+                            'user_id'=>Auth::id()
+                        ]);
+
+                        # Colocando na sessão
+                        \Session::put('ordemCompra', $ordem_de_compra->id);
                     }
 
                     // Cria uma ordem de compra item com o insumo trocado
