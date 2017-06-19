@@ -327,7 +327,7 @@
                                 @endif
                             </td>
                             <td class="text-center">
-                                <span data-toggle="tooltip" data-placement="right" data-html="true" title="{{$item->motivo_nao_finaliza_obra}}">{{ $item->total ? 'Sim' : 'Não' }}</span>
+                                <span data-toggle="tooltip" data-placement="left" data-container="body" data-html="true" title="{{$item->motivo_nao_finaliza_obra}}">{{ $item->total ? 'Sim' : 'Não' }}</span>
                             </td>
                             <td class="text-center" style="width: 10%">
                                 <div class="btn-group" role="group" aria-label="...">
