@@ -509,6 +509,7 @@
             @endif
 
             setTimeout(function(){
+                window.LaravelDataTables["dataTableBuilder"].draw();
                 stopLoading();
             }, tempo);
         }
