@@ -148,6 +148,11 @@ class ContratoTemplateController extends AppBaseController
             return redirect(route('admin.contratoTemplates.index'));
         }
 
+        if($contratoTemplate->tipo != 'Q'){
+            Flash::error('Não é possível remover este Template ');
+
+            return redirect(route('admin.contratoTemplates.index'));
+        }
         $this->contratoTemplateRepository->delete($id);
 
         Flash::success('Contrato Template '.trans('common.deleted').' '.trans('common.successfully').'.');
