@@ -321,8 +321,13 @@ class QuadroDeConcorrenciaController extends AppBaseController
             $rodadaSelecionada
         );
 
+
         $ofertas = $quadro->itens->reduce(function ($ofertas, $item) use ($qcFornecedores) {
-            $ofertas[] = $qcFornecedores->map(function ($qcFornecedor) use ($item) {
+            $ofertas[] = $qcFornecedores
+                ->filter(function ($qcFornecedor) use ($item) {
+                    return $qcFornecedor->itens->where('qc_item_id', $item->id)->first();
+                })
+                ->map(function ($qcFornecedor) use ($item) {
                 $oferta = $qcFornecedor->itens->where('qc_item_id', $item->id)->first();
 
                 return [
