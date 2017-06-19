@@ -322,7 +322,10 @@ class OrdemDeCompraController extends AppBaseController
                     DB::raw("0 as qtd_realizada"),
                     DB::raw("0 as valor_realizado"),
                     'orcamentos.qtd_total as qtd_inicial',
-                    'orcamentos.preco_total as preco_inicial',
+                    DB::raw("
+                        IF (orcamentos.insumo_incluido = 1, 0, orcamentos.preco_total) as preco_inicial
+                    "),
+                    'orcamentos.insumo_incluido',
                     DB::raw("(
                         SELECT
                         SUM(orcamentos.preco_total)
