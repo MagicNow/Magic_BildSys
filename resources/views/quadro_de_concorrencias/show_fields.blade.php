@@ -10,6 +10,10 @@
     .list-group-item {
         border-radius: 0px !important;
     }
+
+    textarea {
+        resize:none;
+    }
 </style>
 
 <!-- Fornecedores Field -->

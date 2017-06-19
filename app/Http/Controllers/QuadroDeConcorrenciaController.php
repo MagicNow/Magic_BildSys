@@ -119,6 +119,14 @@ class QuadroDeConcorrenciaController extends AppBaseController
     public function show($id, QcItensDataTable $qcItensDataTable)
     {
         $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->findWithoutFail($id);
+//        $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository
+//            ->with(
+//                'tipoEqualizacaoTecnicas.itens',
+//                'tipoEqualizacaoTecnicas.anexos',
+//                'itens.insumo',
+//                'itens.ordemDeCompraItens'
+//            )
+//            ->findWithoutFail($id);
 
         if (empty($quadroDeConcorrencia)) {
             Flash::error('Quadro De Concorrencia ' . trans('common.not-found'));
