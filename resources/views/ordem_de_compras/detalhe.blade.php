@@ -315,7 +315,7 @@
                             <td class="text-center">{{ $item->unidade_sigla }}</td>
                             <td class="text-center">
                                 {{--CONTA = saldo - previsto no orçamento--}}
-                                <i class="fa fa-circle {{ (money_to_float($item->preco_inicial) - money_to_float($item->valor_realizado)) - money_to_float($item->preco_inicial) < 0 ? 'red': 'green'  }}" aria-hidden="true"></i>
+                                <i class="fa fa-circle {{ (money_to_float($item->substitui ? $item->valor_previsto_orcamento_pai : $item->preco_inicial) - money_to_float($item->valor_realizado)) - money_to_float($item->substitui ? $item->valor_previsto_orcamento_pai : $item->preco_inicial) < 0 ? 'red': 'green'  }}" aria-hidden="true"></i>
                             </td>
                             <td class="text-center">
                                 @if($item->servico)
@@ -410,8 +410,8 @@
                                             <tbody>
                                             <tr>
                                                 <td class="text-center">{{ $item->unidade_sigla }}</td>
-                                                <td class="text-center">{{ number_format($item->qtd_prevista_orcamento_pai, 2, ',','.') }}</td>
-                                                <td class="text-center"><small class="pull-left">R$</small> {{ number_format($item->valor_previsto_orcamento_pai, 2, ',','.') }}</td>
+                                                <td class="text-center">{{ number_format($item->substitui ? $item->qtd_prevista_orcamento_pai : $item->qtd_inicial, 2, ',','.') }}</td>
+                                                <td class="text-center"><small class="pull-left">R$</small> {{ number_format($item->substitui ? $item->valor_previsto_orcamento_pai : $item->preco_inicial, 2, ',','.') }}</td>
                                                 <td class="text-center">
                                                     {{ number_format(doubleval($item->qtd_realizada), 2, ',','.') }}
                                                 </td>
@@ -420,11 +420,11 @@
                                                     {{ number_format( doubleval($item->valor_realizado), 2, ',','.') }}
                                                 </td>
                                                 <td class="text-center">
-                                                    {{--{{ number_format( $item->qtd_prevista_orcamento_pai-doubleval($item->qtd_realizada), 2, ',','.') }}--}}0,00
+                                                    {{--{{ number_format( $item->substitui ? $item->qtd_prevista_orcamento_pai : $item->qtd_inicial-doubleval($item->qtd_realizada), 2, ',','.') }}--}}0,00
                                                 </td>
                                                 <td class="text-center">
                                                     <small class="pull-left">R$</small>
-                                                    {{--{{ number_format( $item->valor_previsto_orcamento_pai-doubleval($item->valor_realizado), 2, ',','.') }}--}}0,00
+                                                    {{--{{ number_format( $item->substitui ? $item->valor_previsto_orcamento_pai : $item->preco_inicial-doubleval($item->valor_realizado), 2, ',','.') }}--}}0,00
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -444,11 +444,11 @@
                                             <tbody>
                                             <tr>
                                                 <td class="text-center">
-                                                    {{ number_format( $item->qtd_prevista_orcamento_pai - doubleval($item->qtd_realizada), 2, ',','.') }}
+                                                    {{ number_format( $item->substitui ? $item->qtd_prevista_orcamento_pai : $item->qtd_inicial - doubleval($item->qtd_realizada), 2, ',','.') }}
                                                 </td>
                                                 <td class="text-center">
                                                     <small class="pull-left">R$</small>
-                                                    {{ number_format( $item->valor_previsto_orcamento_pai-doubleval($item->valor_realizado), 2, ',','.') }}
+                                                    {{ number_format( $item->substitui ? $item->valor_previsto_orcamento_pai : $item->preco_inicial-doubleval($item->valor_realizado), 2, ',','.') }}
                                                 </td>
                                                 <td class="text-center"><strong>{{ $item->qtd }}</strong></td>
                                                 <td class="text-center"><small class="pull-left">R$</small> <strong>{{ number_format(doubleval($item->valor_total), 2, ',','.') }}</strong></td>
