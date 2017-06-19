@@ -119,6 +119,14 @@ class QuadroDeConcorrenciaController extends AppBaseController
     public function show($id, QcItensDataTable $qcItensDataTable)
     {
         $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->findWithoutFail($id);
+//        $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository
+//            ->with(
+//                'tipoEqualizacaoTecnicas.itens',
+//                'tipoEqualizacaoTecnicas.anexos',
+//                'itens.insumo',
+//                'itens.ordemDeCompraItens'
+//            )
+//            ->findWithoutFail($id);
 
         if (empty($quadroDeConcorrencia)) {
             Flash::error('Quadro De Concorrencia ' . trans('common.not-found'));
@@ -321,8 +329,13 @@ class QuadroDeConcorrenciaController extends AppBaseController
             $rodadaSelecionada
         );
 
+
         $ofertas = $quadro->itens->reduce(function ($ofertas, $item) use ($qcFornecedores) {
-            $ofertas[] = $qcFornecedores->map(function ($qcFornecedor) use ($item) {
+            $ofertas[] = $qcFornecedores
+                ->filter(function ($qcFornecedor) use ($item) {
+                    return $qcFornecedor->itens->where('qc_item_id', $item->id)->first();
+                })
+                ->map(function ($qcFornecedor) use ($item) {
                 $oferta = $qcFornecedor->itens->where('qc_item_id', $item->id)->first();
 
                 return [
