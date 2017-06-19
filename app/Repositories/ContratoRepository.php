@@ -142,8 +142,8 @@ class ContratoRepository extends BaseRepository
                 if (!isset($contratoItens[$obra_id])) {
                     $contratoItens[$obra_id] = [];
                 }
-                if (!isset($contratoCampos[$obra_id]['valor_total'])) {
-                    $contratoCampos[$obra_id]['valor_total'] = 0;
+                if (!isset($contratoCampos[$obra_id]['valor_total_inicial'])) {
+                    $contratoCampos[$obra_id]['valor_total_inicial'] = 0;
                 }
 
                 if (!isset($valores['material'][$obra_id])) {
@@ -158,7 +158,7 @@ class ContratoRepository extends BaseRepository
                     $valores['locacao'][$obra_id] = [];
                 }
 
-                $contratoCampos[$obra_id]['valor_total'] += $valor_item;
+                $contratoCampos[$obra_id]['valor_total_inicial'] += $valor_item;
 
                 $tipo = head(explode(' ', $insumo->grupo->nome));
                 if ($fatorServico < 1) {
@@ -368,7 +368,7 @@ class ContratoRepository extends BaseRepository
                 $contratoArray['contrato_status_id'] = ContratoStatus::EM_APROVACAO;
                 $contratoArray['fornecedor_id'] = $qcFornecedor->fornecedor_id;
                 $contratoArray['quadro_de_concorrencia_id'] = $qcFornecedor->quadro_de_concorrencia_id;
-                $contratoArray['valor_total'] = number_format($contratoArray['valor_total'], 2, '.', '');
+                $contratoArray['valor_total_atual'] = $contratoArray['valor_total_inicial'];
 
                 // Salva o contrato
                 $contrato = Contrato::create($contratoArray);

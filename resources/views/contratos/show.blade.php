@@ -149,11 +149,11 @@
                         <table class="table table-striped table-bordered">
                             <tr>
                                 <th>Valor Inicial</th>
-                                <td>{{ float_to_money($valor_inicial) }}</td>
+                                <td>{{ float_to_money($contrato->valor_total_inicial) }}</td>
                             </tr>
                             <tr>
                                 <th>Valor Atual</th>
-                                <td>{{ float_to_money($contrato->valor_total) }}</td>
+                                <td>{{ float_to_money($contrato->valor_total_atual) }}</td>
                             </tr>
                             <tr>
                                 <th>Valor Medido</th>
@@ -161,7 +161,7 @@
                             </tr>
                             <tr>
                                 <th>Saldo</th>
-                                <td>{{ float_to_money($contrato->valor_total) }}</td>
+                                <td>{{ float_to_money($contrato->valor_total_atual) }}</td>
                             </tr>
                         </table>
                     </div>
