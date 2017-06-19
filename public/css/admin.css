@@ -19861,6 +19861,11 @@ table.dataTable.dtr-inline.collapsed> tbody> tr.parent> th:first-child:before {
   }
 }
 
+
+.table.table-no-margin {
+  margin: 0;
+}
+
 .sidebar-mini.sidebar-collapse .sidebar-menu > li:hover > a > span:not(.pull-right),
 .sidebar-mini.sidebar-collapse .sidebar-menu > li:hover > .treeview-menu {
   display: block !important;

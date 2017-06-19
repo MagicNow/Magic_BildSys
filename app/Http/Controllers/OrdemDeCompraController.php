@@ -245,6 +245,7 @@ class OrdemDeCompraController extends AppBaseController
         $orcamentoInicial = $totalAGastar = $realizado = $totalSolicitado = 0;
 
         $itens = collect([]);
+
         $avaliado_reprovado = [];
         $itens_ids = $ordemDeCompra->itens()->pluck('id', 'id')->toArray();
         $aprovavelTudo = WorkflowAprovacaoRepository::verificaAprovaGrupo('OrdemDeCompraItem', $itens_ids, Auth::user());
@@ -272,7 +273,7 @@ class OrdemDeCompraController extends AppBaseController
                     $itens_ids);
 
                 // Data do início da  Alçada
-                if ($alcada->ordem===1) {
+                if ($alcada->ordem === 1) {
                     $ordem_status_log = $ordemDeCompra->ordemDeCompraStatusLogs()
                         ->where('oc_status_id', 2)->first();
                     if ($ordem_status_log) {

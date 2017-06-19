@@ -27,4 +27,5 @@ class ContratoItemApropriacaoRepository extends BaseRepository
 
         return $this->create($data);
     }
+
 }

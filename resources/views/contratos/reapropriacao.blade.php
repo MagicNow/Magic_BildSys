@@ -1,5 +1,5 @@
 <label for="orcamento_item_id">{{ $item->insumo->nome }}</label>
-<table class="table table-striped">
+<table class="table table-striped table-no-margin">
   <thead>
     <tr>
       <th>#</th>
@@ -11,17 +11,17 @@
     @foreach($itens as $item)
       <tr>
         <td>
-          {!!
-            Form::radio(
-              'item_id',
-              $item->id,
-              null,
-              [
-                'data-qtd-max' => $item->qtd_sobra,
-                'class' => 'js-item'
-              ]
-            )
-          !!}
+            {!!
+                Form::radio(
+                    'item_id',
+                    $item->id,
+                    null,
+                    [
+                        'data-qtd' => $item->qtd_sobra,
+                        'class' => 'js-item'
+                    ]
+                )
+            !!}
         </td>
         <td class="text-left">
           <span data-toggle="tooltip"

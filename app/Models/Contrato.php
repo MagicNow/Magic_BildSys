@@ -114,9 +114,9 @@ class Contrato extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
-    public function contratoStatusLogs()
+    public function logs()
     {
-        return $this->hasMany(ContratoStatusLog::class);
+        return $this->hasMany(ContratoStatusLog::class, 'contrato_id');
     }
 
     // Funções de Aprovações

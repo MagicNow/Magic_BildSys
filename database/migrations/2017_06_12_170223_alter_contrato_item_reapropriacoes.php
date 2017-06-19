@@ -16,7 +16,7 @@ class AlterContratoItemReapropriacoes extends Migration
         Schema::table('contrato_item_reapropriacoes', function($table) {
             $table->dropForeign(['ordem_de_compra_item_id']);
             $table->dropColumn('ordem_de_compra_item_id');
-            $table->boolean('reapropriacao');
+            $table->boolean('reapropriacao')->default(0);
         });
 
         Schema::rename('contrato_item_reapropriacoes', 'contrato_item_apropriacoes');

@@ -255,7 +255,7 @@ class ContratoRepository extends BaseRepository
                         $contrato_item['apropriacoes'] = $valores_atuais->map(function ($valor) use ($insumo) {
                             return $valor['oc_itens']->map(function ($oc_item) use ($valor, $insumo) {
                                 $oc_item_arr = $oc_item->toArray();
-                                $oc_item_arr['qtd'] = money_to_float($valor['valor_item']);
+                                $oc_item_arr['qtd'] = $valor['valor_item'];
                                 $oc_item_arr['ligacao_id'] = $oc_item->insumo_id;
                                 $oc_item_arr['insumo_id'] = $insumo->id;
 

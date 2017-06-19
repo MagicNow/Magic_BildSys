@@ -29,7 +29,7 @@ class CreateApropriacaoLigacoesTable extends Migration
             $table->foreign('contrato_item_apropriacao_id')
                 ->references('id')
                 ->on('contrato_item_apropriacoes')
-                ->onDelete('restrict')
+                ->onDelete('cascade')
                 ->onUpdate('cascade');
 
             $table->foreign('grupo_id')

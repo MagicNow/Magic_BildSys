@@ -56,9 +56,7 @@ class ContratoItemModificacao extends Model
      *
      * @var array
      */
-    public static $rules = [
-
-    ];
+    public static $rules = [];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -97,6 +95,18 @@ class ContratoItemModificacao extends Model
         return $this->morphMany(WorkflowAprovacao::class, 'aprovavel');
     }
 
+    public function apropriacoes()
+    {
+        return $this->belongsToMany(
+            ContratoItemApropriacao::class,
+            'contrato_item_modificacao_apropriacao',
+            'contrato_item_modificacao_id',
+            'contrato_item_apropriacao_id'
+        )
+        ->withPivot('id', 'qtd')
+        ->withTimestamps();
+    }
+
     public function irmaosIds()
     {
         return [$this->attributes['id'] => $this->attributes['id']];
@@ -127,6 +137,10 @@ class ContratoItemModificacao extends Model
             $this->item->applyChanges($this);
             $this->item->contrato->updateTotal();
         }
+
+        $this->apropriacoes->map(function($apropriacao) {
+            $apropriacao->update(['qtd' => $apropriacao->pivot->qtd]);
+        });
 
         $this->item->update(['pendente' => 0]);
 
