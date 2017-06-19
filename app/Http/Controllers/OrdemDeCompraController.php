@@ -338,6 +338,39 @@ class OrdemDeCompraController extends AppBaseController
                         AND orcamentos.ativo = 1
 
                     ) as valor_servico"),
+                    DB::raw("(
+                        SELECT
+                        SUM(orcamentos.qtd_total)
+                        FROM
+                        orcamentos
+                        WHERE
+                        orcamentos.grupo_id = ordem_de_compra_itens.grupo_id
+                        AND orcamentos.subgrupo1_id = ordem_de_compra_itens.subgrupo1_id
+                        AND orcamentos.subgrupo2_id = ordem_de_compra_itens.subgrupo2_id
+                        AND orcamentos.subgrupo3_id = ordem_de_compra_itens.subgrupo3_id
+                        AND orcamentos.servico_id = ordem_de_compra_itens.servico_id
+                        AND orcamentos.obra_id = ordem_de_compra_itens.obra_id
+                        AND orcamentos.orcamento_que_substitui IS NULL
+                        AND orcamentos.ativo = 1
+
+                    ) as qtd_prevista_orcamento_pai"),
+
+                    DB::raw("(
+                        SELECT
+                        SUM(orcamentos.preco_total)
+                        FROM
+                        orcamentos
+                        WHERE
+                        orcamentos.grupo_id = ordem_de_compra_itens.grupo_id
+                        AND orcamentos.subgrupo1_id = ordem_de_compra_itens.subgrupo1_id
+                        AND orcamentos.subgrupo2_id = ordem_de_compra_itens.subgrupo2_id
+                        AND orcamentos.subgrupo3_id = ordem_de_compra_itens.subgrupo3_id
+                        AND orcamentos.servico_id = ordem_de_compra_itens.servico_id
+                        AND orcamentos.obra_id = ordem_de_compra_itens.obra_id
+                        AND orcamentos.orcamento_que_substitui IS NULL
+                        AND orcamentos.ativo = 1
+
+                    ) as valor_previsto_orcamento_pai"),
                     DB::raw("CONCAT(insumos_sub.codigo,' - ' ,insumos_sub.nome) as substitui")
                 ])
                 ->join('ordem_de_compras','ordem_de_compras.id' , 'ordem_de_compra_itens.ordem_de_compra_id')
@@ -1661,7 +1694,7 @@ class OrdemDeCompraController extends AppBaseController
                         $ordem_de_compra->obra_id = $troca->obra_id;
                         $ordem_de_compra->user_id = Auth::user()->id;
                         $ordem_de_compra->save();
-                        
+
                         OrdemDeCompraStatusLog::create([
                             'oc_status_id'=>1,
                             'ordem_de_compra_id'=>$ordem_de_compra->id,
