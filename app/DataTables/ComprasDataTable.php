@@ -335,9 +335,11 @@ class ComprasDataTable extends DataTable
                                         AND (ordem_de_compra_itens.aprovado IS NULL
                                         OR ordem_de_compra_itens.aprovado = 1)
                                         AND ordem_de_compra_itens.deleted_at IS NULL
-                                        AND ordem_de_compras.obra_id = 1
+                                        AND ordem_de_compras.obra_id = '. $obra->id .'
                                         AND ordem_de_compras.oc_status_id != 6
-                                        AND ordem_de_compras.oc_status_id != 4)
+                                        AND ordem_de_compras.oc_status_id != 4
+                                LIMIT 1        
+                                        )
                             , 1)'), 1)
             ->where('orcamentos.ativo', 1);
 

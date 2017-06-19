@@ -25,6 +25,8 @@ class UpdateCatalogoContratoRequest extends FormRequest
      */
     public function rules()
     {
-        return CatalogoContrato::$rules;
+        $rules = CatalogoContrato::$rules;
+        unset($rules['fornecedor_cod']);
+        return $rules;
     }
 }
