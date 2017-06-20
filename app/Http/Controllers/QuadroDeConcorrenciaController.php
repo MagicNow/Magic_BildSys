@@ -195,7 +195,12 @@ class QuadroDeConcorrenciaController extends AppBaseController
             if(isset($input['qcFornecedoresMega'])){
                 $fornecedores = count($input['qcFornecedores']) + count($input['qcFornecedoresMega']);
             }else{
-                $fornecedores = count($input['qcFornecedores']);
+                if(isset($input['qcFornecedores'])) {
+                    $fornecedores = count($input['qcFornecedores']);
+                }else{
+                    Flash::error('Selecione fornecedores para abrir concorrência no Q.C. '.$id);
+                    return back();
+                }
             }
 
             if($fornecedores > $quadroDeConcorrencia->qcFornecedores->count()){
