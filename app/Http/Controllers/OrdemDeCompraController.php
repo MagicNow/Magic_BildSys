@@ -834,14 +834,41 @@ class OrdemDeCompraController extends AppBaseController
 
     public function fechaCarrinho(Request $request)
     {
-        $ordemDeCompra = OrdemDeCompra::where('oc_status_id', 1)->where('user_id', Auth::id());
+        //Testa se tem ordem de compra aberta pro user
+        $ordem_de_compra = null;
+        if (\Session::get('ordemCompra')) {
+            $ordem_de_compra = OrdemDeCompra::where('id', \Session::get('ordemCompra'))
+                ->where('oc_status_id', 1)
+                ->where('user_id', Auth::user()->id);
+        } else {
+            $ordem_de_compra = OrdemDeCompra::where('oc_status_id', 1)
+                ->where('user_id', Auth::user()->id);
+        }
+
         if ($request->obra_id) {
-            $ordemDeCompra->where('obra_id', $request->obra_id);
+            $ordem_de_compra->where('obra_id', $request->obra_id);
         }
         if ($request->id) {
-            $ordemDeCompra->where('id', $request->id);
+            $ordem_de_compra->where('id', $request->id);
         }
-        $ordemDeCompra = $ordemDeCompra->first();
+        $ordemDeCompra = $ordem_de_compra->first();
+
+        if (!$ordem_de_compra) {
+            $ordem_de_compra = new OrdemDeCompra();
+            $ordem_de_compra->oc_status_id = 1;
+            $ordem_de_compra->obra_id = $request->obra_id;
+            $ordem_de_compra->user_id = Auth::user()->id;
+            $ordem_de_compra->save();
+
+            OrdemDeCompraStatusLog::create([
+                'oc_status_id'=>1,
+                'ordem_de_compra_id'=>$ordem_de_compra->id,
+                'user_id'=>Auth::id()
+            ]);
+
+            # Colocando na sessão
+            \Session::put('ordemCompra', $ordem_de_compra->id);
+        }
 
         $ordem_itens = OrdemDeCompraItem::where('ordem_de_compra_id', $ordemDeCompra->id)
             ->where('obra_id', $ordemDeCompra->obra_id)
