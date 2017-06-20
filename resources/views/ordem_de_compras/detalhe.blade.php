@@ -297,6 +297,14 @@
                         <tbody>
 
                     @foreach($itens as $item)
+                        {{--Se o insumo foi incluído no orçamento, o SALDO DE ORÇAMENTO fica com o valor comprado negativo.--}}
+                        @if($item->insumo_incluido)
+                            @php $saldo_valor_orcamento = $farol_saldo_valor_orcamento = - doubleval($item->valor_total); @endphp
+                        @else
+                            @php $saldo_valor_orcamento = $item->substitui ? $item->valor_previsto_orcamento_pai-doubleval($item->valor_realizado) : $item->preco_inicial-doubleval($item->valor_realizado); @endphp
+                            @php $farol_saldo_valor_orcamento = $item->substitui ? 0-doubleval($item->valor_realizado) : $item->preco_inicial-doubleval($item->valor_realizado); @endphp
+                        @endif
+
                         <tr>
                             <td class="text-center">
                                 <span data-toggle="tooltip" data-placement="right" data-html="true"
@@ -314,8 +322,11 @@
                             <td class="text-center">{{ $item->qtd }}</td>
                             <td class="text-center">{{ $item->unidade_sigla }}</td>
                             <td class="text-center">
-                                {{--CONTA = saldo - previsto no orçamento--}}
-                                <i class="fa fa-circle {{ (money_to_float($item->substitui ? $item->valor_previsto_orcamento_pai : $item->preco_inicial) - money_to_float($item->valor_realizado)) - money_to_float($item->substitui ? $item->valor_previsto_orcamento_pai : $item->preco_inicial) < 0 ? 'red': 'green'  }}" aria-hidden="true"></i>
+                                {{--CONTA = saldo - valor oc--}}
+                                @php
+                                    $status_insumo = $farol_saldo_valor_orcamento - doubleval($item->valor_total);
+                                @endphp
+                                <i class="fa fa-circle {{ $status_insumo < 0 ? 'red': 'green'  }}" aria-hidden="true"></i>
                             </td>
                             <td class="text-center">
                                 @if($item->servico)
@@ -448,12 +459,7 @@
                                                 </td>
                                                 <td class="text-center">
                                                     <small class="pull-left">R$</small>
-                                                    {{--Se o insumo foi incluído no orçamento, o SALDO DE ORÇAMENTO fica com o valor comprado negativo.--}}
-                                                    @if($item->insumo_incluido)
-                                                        - {{ number_format(doubleval($item->valor_total), 2, ',','.') }}
-                                                    @else
-                                                        {{ number_format( $item->substitui ? $item->valor_previsto_orcamento_pai : $item->preco_inicial-doubleval($item->valor_realizado), 2, ',','.') }}
-                                                    @endif
+                                                    {{ number_format($saldo_valor_orcamento , 2, ',','.') }}
                                                 </td>
                                                 <td class="text-center"><strong>{{ $item->qtd }}</strong></td>
                                                 <td class="text-center"><small class="pull-left">R$</small> <strong>{{ number_format(doubleval($item->valor_total), 2, ',','.') }}</strong></td>
