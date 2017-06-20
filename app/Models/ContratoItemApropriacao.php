@@ -62,7 +62,7 @@ class ContratoItemApropriacao extends Model
      **/
     public function contratoItem()
     {
-        return $this->belongsTo(ContratoItem::class);
+        return $this->belongsTo(ContratoItem::class, 'contrato_item_id');
     }
 
     public function codigoServico($showServico = true)
@@ -96,7 +96,15 @@ class ContratoItemApropriacao extends Model
 
     public function servico()
     {
-        return $this->belongsTo(Servico::class);
+        return $this->belongsTo(Servico::class, 'servico_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function grupo()
+    {
+        return $this->belongsTo(Grupo::class,'grupo_id');
     }
 
     /**

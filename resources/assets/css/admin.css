@@ -687,3 +687,9 @@ div.dataTables_wrapper div.dataTables_processing {
   width: auto !important;
   min-width: 240px !important;
 }
+
+.text-limit {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

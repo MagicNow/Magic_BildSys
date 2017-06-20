@@ -6,28 +6,49 @@ $(function() {
   Reapropriar.init();
   Editar.init();
 
-  var table = LaravelDataTables.dataTableBuilder
+  var obsAprovador = document.getElementById('obs-aprovador');
 
-  var visible = false;
+  if(obsAprovador) {
+    var contrato_id = document.getElementById('contrato_id');
+    var user_id = document.getElementById('user_id');
 
-  table.on('init', function() {
-    table.button().add(5, {
-      action: function(e, dt, button, config) {
-        visible = !visible;
+    var key = 'contrato_obs_' + user_id.value + '_' + contrato_id.value;
 
-        table.column('aliq_irrf:name').visible(visible);
-        table.column('aliq_inss:name').visible(visible);
-        table.column('aliq_pis:name').visible(visible);
-        table.column('aliq_cofins:name').visible(visible);
-        table.column('aliq_csll:name').visible(visible);
+    obsAprovador.value = localStorage.getItem(key);
 
-        button[0].innerHTML = !visible ?
-          '<i class="fa fa-money"></i> Exibir Impostos' :
-          '<i class="fa fa-money"></i> Ocultar Impostos';
-      },
-      text: '<i class="fa fa-money"></i> Exibir Impostos'
+    var saveObs = _.debounce(function(event) {
+      localStorage.setItem(key, obsAprovador.value);
+    }, 700);
+
+    obsAprovador.addEventListener('input', saveObs);
+    obsAprovador.addEventListener('change', saveObs);
+  }
+
+
+  if (typeof LaravelDataTables !== 'undefined') {
+    var table = LaravelDataTables.dataTableBuilder
+
+    var visible = false;
+
+    table.on('init', function() {
+      table.button().add(5, {
+        action: function(e, dt, button, config) {
+          visible = !visible;
+
+          table.column('aliq_irrf:name').visible(visible);
+          table.column('aliq_inss:name').visible(visible);
+          table.column('aliq_pis:name').visible(visible);
+          table.column('aliq_cofins:name').visible(visible);
+          table.column('aliq_csll:name').visible(visible);
+
+          button[0].innerHTML = !visible ?
+            '<i class="fa fa-money"></i> Exibir Impostos' :
+            '<i class="fa fa-money"></i> Ocultar Impostos';
+        },
+        text: '<i class="fa fa-money"></i> Exibir Impostos'
+      });
     });
-  })
+  }
 
 });
 
@@ -251,7 +272,7 @@ var Reajuste = (function() {
 
     var valorChanged = parseFloat(this.valor.dataset.oldValue) !== moneyToFloat(this.valor.value);
 
-    if(!adicionaisChanged && !valorChanged) {
+    if (!adicionaisChanged && !valorChanged) {
       swal('', 'Não foram encontratas modificações no contrato', 'warning');
 
       return false;
@@ -269,7 +290,7 @@ var Reajuste = (function() {
 
 
     data = _.reduce(this.inputs, function(data, input) {
-      if(
+      if (
         input.classList.contains('js-adicional') &&
         (input.value &&
           moneyToFloat(input.value) > 0)
@@ -576,4 +597,3 @@ var Editar = (function() {
 
   return Editar;
 }());
-

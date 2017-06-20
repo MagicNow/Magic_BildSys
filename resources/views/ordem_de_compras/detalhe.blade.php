@@ -536,22 +536,5 @@
     ?>
     options_motivos = "{!! $options_motivos !!}";
 
-    function showHideInfoExtra(qual) {
-        var icone_expandir = $('#icone-expandir'+qual);
-        var dados_extras = $('#dados-extras'+qual);
-
-        if(icone_expandir.hasClass('fa fa-caret-right')){ //fechado
-            dados_extras.show();
-            icone_expandir.parent().attr('title', 'Fechar');
-            icone_expandir.removeClass('fa-caret-right');
-            icone_expandir.addClass('fa-caret-down');
-        }else{ //aberto
-            dados_extras.hide();
-            icone_expandir.parent().attr('title', 'Expandir');
-            icone_expandir.removeClass('fa-caret-down');
-            icone_expandir.addClass('fa-caret-right');
-        }
-    }
-
 </script>
 @stop

@@ -358,7 +358,9 @@ class OrdemDeCompraController extends AppBaseController
         $motivos_reprovacao = WorkflowReprovacaoMotivo::where(function ($query) {
             $query->where('workflow_tipo_id', 1);
             $query->orWhereNull('workflow_tipo_id');
-        })->pluck('nome', 'id')->toArray();
+        })
+            ->pluck('nome', 'id')
+            ->toArray();
 
         $oc_status = $ordemDeCompra->ocStatus->nome;
 
@@ -380,8 +382,7 @@ class OrdemDeCompraController extends AppBaseController
             'oc_status',
             'alcadas_count',
             'totalSolicitado'
-        )
-    );
+        ));
     }
 
     /**
@@ -1638,7 +1639,7 @@ class OrdemDeCompraController extends AppBaseController
         ->where('nome','like', '%'.$request->q.'%')
         ->orderBy('nome', 'ASC')
         ->paginate();
-   }
+    }
 
 
     public function limparCarrinho($ordem_de_compra_id){

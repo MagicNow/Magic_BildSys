@@ -39,6 +39,7 @@ use App\Models\ContratoStatus;
 use App\Models\ContratoItemModificacao;
 use App\Repositories\ContratoItemApropriacaoRepository;
 use App\Models\WorkflowAlcada;
+use App\Models\ContratoItemApropriacao;
 
 class ContratoController extends AppBaseController
 {
@@ -92,6 +93,7 @@ class ContratoController extends AppBaseController
         $id,
         Request $request,
         WorkflowReprovacaoMotivoRepository $workflowReprovacaoMotivoRepository,
+        ContratoItemApropriacaoRepository $apropriacaoRepository,
         ContratoItemDataTable $contratoItemDataTable
     ) {
         $contrato = $this->contratoRepository->findWithoutFail($id);
@@ -102,13 +104,11 @@ class ContratoController extends AppBaseController
             return redirect(route('contratos.index'));
         }
 
-        $valor_inicial = $contrato->itens()
-            ->where('aprovado', 1)
-            ->get()
-            ->pluck('qcItem')
-            ->pluck('ordemDeCompraItens')
-            ->collapse()
-            ->sum('valor_total');
+        $orcamentoInicial = $totalAGastar = $realizado = $totalSolicitado = 0;
+
+        $orcamentoInicial = $apropriacaoRepository->orcamentoInicial(
+            $contrato
+        );
 
         $avaliado_reprovado = [];
 
@@ -180,26 +180,42 @@ class ContratoController extends AppBaseController
         $pendencias = ContratoItemModificacao::whereHas('item', function ($itens) use ($id) {
             return $itens->where('contrato_id', $id)->where('pendente', true);
         })
-            ->where('contrato_status_id', ContratoStatus::EM_APROVACAO)
-            ->get()
-            ->map(function ($pendencia) {
-                $pendencia->workflow = WorkflowAprovacaoRepository::verificaAprovacoes(
-                    'ContratoItemModificacao',
-                    $pendencia->id,
-                    auth()->user()
-                );
+        ->where('contrato_status_id', ContratoStatus::EM_APROVACAO)
+        ->get()
+        ->map(function ($pendencia) {
+            $pendencia->workflow = WorkflowAprovacaoRepository::verificaAprovacoes(
+                'ContratoItemModificacao',
+                $pendencia->id,
+                auth()->user()
+            );
 
-                return $pendencia;
-            });
+            return $pendencia;
+        });
 
         $status = $contrato->status->nome;
+
+        $itens = $apropriacaoRepository->forContratoApproval($contrato);
+
+        $isEmAprovacao = $contrato->isStatus(ContratoStatus::EM_APROVACAO);
 
         return $contratoItemDataTable
             ->setContrato($contrato)
             ->render(
-                'contratos.show',
-                compact('contrato', 'workflowAprovacao', 'motivos', 'aprovado', 'pendencias', 'valor_inicial', 'alcadas_count', 'avaliado_reprovado', 'status')
-            );
+            'contratos.show',
+            compact(
+                'isEmAprovacao',
+                'contrato',
+                'orcamentoInicial',
+                'itens',
+                'workflowAprovacao',
+                'motivos',
+                'aprovado',
+                'pendencias',
+                'alcadas_count',
+                'avaliado_reprovado',
+                'status'
+            )
+        );
     }
 
     public function reajustar(
