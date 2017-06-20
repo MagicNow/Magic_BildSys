@@ -1173,7 +1173,8 @@ class OrdemDeCompraController extends AppBaseController
 
         if ($orcamento) {
             $orcamento->preco_unitario = money_to_float($request->valor);
-            if(!$orcamento->orcamento_que_substitui){ // Se for insumo substituído não altera o valor total
+            // Se não for insumo substituído ou incluído, faz a conta do preço total
+            if(!$orcamento->orcamento_que_substitui  && !$orcamento->insumo_incluido){
                 $orcamento->preco_total = floatval($orcamento->getOriginal('qtd_total')) * money_to_float($request->valor);
             }
             $orcamento->save();
@@ -1673,7 +1674,7 @@ class OrdemDeCompraController extends AppBaseController
 
                     // Os valores devem estar zerados na troca
                     $troca->preco_unitario = 0;
-                    $troca->preco_total = 0;
+                    $troca->preco_total = null;
 
                     $troca->save();
 
