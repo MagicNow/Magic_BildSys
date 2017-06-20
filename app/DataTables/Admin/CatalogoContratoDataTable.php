@@ -31,6 +31,7 @@ class CatalogoContratoDataTable extends DataTable
         $catalogoContratos = CatalogoContrato::select([
             'catalogo_contratos.id',
             'fornecedores.nome as fornecedor',
+            'catalogo_contrato_status.nome as status',
             DB::raw('(
                 SELECT 
                     COUNT(Distinct insumo_id)
@@ -39,7 +40,8 @@ class CatalogoContratoDataTable extends DataTable
                 WHERE catalogo_contrato_id = catalogo_contratos.id
             ) as insumos')
         ])
-        ->join('fornecedores','catalogo_contratos.fornecedor_id','fornecedores.id');
+        ->join('fornecedores','catalogo_contratos.fornecedor_id','fornecedores.id')
+        ->join('catalogo_contrato_status','catalogo_contratos.catalogo_contrato_status_id','catalogo_contrato_status.id');
 
         return $this->applyScopes($catalogoContratos);
     }
@@ -107,6 +109,7 @@ class CatalogoContratoDataTable extends DataTable
         return [
             'fornecedor' => ['name' => 'fornecedores.nome', 'data' => 'fornecedor'],
             'qtd_insumos' => ['name' => 'insumos', 'data' => 'insumos', 'searchable' => false],
+            'situacao' => ['name' => 'catalogo_contrato_status.nome', 'data' => 'status'],
             'action' => ['title' => '#', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }

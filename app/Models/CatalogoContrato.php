@@ -18,7 +18,11 @@ class CatalogoContrato extends Model
     const UPDATED_AT = 'updated_at';
 
     public $fillable = [
-        'fornecedor_id'
+        'fornecedor_id',
+        'minuta_assinada',
+        'catalogo_contrato_status_id',
+        'campos_extras_contrato',
+        'campos_extras_minuta',
     ];
 
     /**
@@ -28,7 +32,8 @@ class CatalogoContrato extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'fornecedor_id' => 'integer'
+        'fornecedor_id' => 'integer',
+        'catalogo_contrato_status_id' => 'integer',
     ];
 
     /**
@@ -68,5 +73,9 @@ class CatalogoContrato extends Model
     public function ordemDeCompraItens()
     {
         return $this->hasMany(\App\Models\OrdemDeCompraItens::class);
+    }
+
+    public function status(){
+        return $this->belongsTo(CatalogoContratoStatus::class,'catalogo_contrato_status_id');
     }
 }

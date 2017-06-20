@@ -10,6 +10,23 @@
     @endif
 </div>
 
+<div class="col-sm-12">
+    <h4>Obras que estão permitidas neste acordo</h4>
+    <div class="input-group">
+        <span class="input-group-addon" id="basic-addon1">Escolha uma obra e adicione</span>
+        {!! Form::select('obras[]', ['' => 'Escolha...']+\App\Models\Obra::pluck('nome','id')->toArray(),  null, ['class' => 'form-control select2','id'=>'Obra','required'=>'required']) !!}
+        <span class="input-group-btn">
+            <button type="button" class="btn btn-primary btn-flat">Adicionar obra</button>
+        </span>
+    </div>
+
+    <ul class="list-group">
+        <li class="list-group-item">
+            Obra Tal <span class="label label-info">Ativo</span>
+        </li>
+    </ul>
+</div>
+
 <?php
 $count_insumos = 0;
 ?>

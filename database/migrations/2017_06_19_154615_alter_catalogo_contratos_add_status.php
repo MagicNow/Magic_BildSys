@@ -15,7 +15,7 @@ class AlterCatalogoContratosAddStatus extends Migration
     {
         Schema::table('catalogo_contratos', function (Blueprint $table){
             $table->string('minuta_assinada')->nullable();
-            $table->unsignedInteger('catalogo_contrato_status_id')->nullable();
+            $table->unsignedInteger('catalogo_contrato_status_id')->nullable()->default('1');
             $table->foreign('catalogo_contrato_status_id')
                 ->references('id')->on('catalogo_contrato_status')
                 ->onDelete('set null')

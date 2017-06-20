@@ -149,7 +149,7 @@ class ContratoTemplateController extends AppBaseController
         }
 
         if($contratoTemplate->tipo != 'Q'){
-            Flash::error('Não é possível remover este Template ');
+            Flash::error('Não é possível remover este Template.');
 
             return redirect(route('admin.contratoTemplates.index'));
         }
