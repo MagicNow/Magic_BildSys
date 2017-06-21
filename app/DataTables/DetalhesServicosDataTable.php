@@ -29,7 +29,12 @@ class DetalhesServicosDataTable extends DataTable
                 return '<small class="pull-left">R$</small>'.number_format( doubleval($obj->a_gastar), 2, ',','.');
             })
             ->editColumn('saldo_orcamento', function($obj){
-                return '<small class="pull-left">R$</small>'.number_format( doubleval($obj->saldo_orcamento), 2, ',','.');
+//              Se o insumo foi incluído no orçamento, o SALDO DE ORÇAMENTO fica com o valor comprado negativo.
+                if($obj->insumo_incluido){
+                    return '<small class="pull-left">R$</small> - '.number_format( doubleval($obj->valor_oc), 2, ',','.');
+                }else{
+                    return '<small class="pull-left">R$</small>'.number_format( doubleval($obj->saldo_orcamento), 2, ',','.');
+                }
             })
             ->editColumn('valor_oc', function($obj){
                 return '<small class="pull-left">R$</small>'.number_format( doubleval($obj->valor_oc), 2, ',','.');
@@ -57,7 +62,10 @@ class DetalhesServicosDataTable extends DataTable
         $orcamentos = Orcamento::select([
             DB::raw("CONCAT(SUBSTRING_INDEX(orcamentos.codigo_insumo, '.', -1),' - ' ,orcamentos.descricao) as descricao"),
             'orcamentos.unidade_sigla',
-            'orcamentos.preco_total as valor_previsto',
+            DB::raw("
+                IF (orcamentos.insumo_incluido = 1, 0, orcamentos.preco_total) as valor_previsto
+            "),
+            'orcamentos.insumo_incluido',
             DB::raw('0 as valor_realizado'),
             DB::raw('0 as a_gastar'),
             DB::raw('orcamentos.preco_total as saldo_orcamento'),

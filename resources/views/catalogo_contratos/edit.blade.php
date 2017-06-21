@@ -13,8 +13,8 @@
                <div class="row">
                    {!! Form::model($catalogoContrato, ['route' => ['catalogo_contratos.update', $catalogoContrato->id], 'method' => 'patch', 'files' => true]) !!}
 
+                    @include('catalogo_contratos.fields')
 
-                        @include('catalogo_contratos.fields')
                    {!! Form::close() !!}
                </div>
            </div>

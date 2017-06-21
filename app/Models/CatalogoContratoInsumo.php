@@ -54,49 +54,36 @@ class CatalogoContratoInsumo extends Model
         return number_format($value,2,',','.');
     }
 
-    public function setValorUnitarioAttribute($value)
-    {
-        $pontos = array(",");
-        $value = str_replace('.','',$value);
-        $result = str_replace( $pontos, ".", $value);
-
-        $this->attributes['valor_unitario'] = $result;
-    }
-    
     public function getPedidoMinimoAttribute($value)
     {
         if(strlen($value) == 4){
-            $value = '0'.$value;
+            return '0'.number_format($value,2,',','.');
+        }else{
+            return number_format($value,2,',','.');
         }
-
-        return number_format($value,2,',','.');
     }
 
     public function setPedidoMinimoAttribute($value)
     {
-        $pontos = array(",");
-        $value = str_replace('.','',$value);
-        $result = str_replace( $pontos, ".", $value);
-
-        $this->attributes['pedido_minimo'] = $result;
+        if($value){
+            $this->attributes['pedido_minimo'] = money_to_float($value);
+        }
     }
 
     public function getPedidoMultiploDeAttribute($value)
     {
         if(strlen($value) == 4){
-            $value = '0'.$value;
+            return '0'.number_format($value,2,',','.');
+        }else{
+            return number_format($value,2,',','.');
         }
-
-        return number_format($value,2,',','.');
     }
 
     public function setPedidoMultiploDeAttribute($value)
     {
-        $pontos = array(",");
-        $value = str_replace('.','',$value);
-        $result = str_replace( $pontos, ".", $value);
-
-        $this->attributes['pedido_multiplo_de'] = $result;
+        if($value) {
+            $this->attributes['pedido_multiplo_de'] = money_to_float($value);
+        }
     }
     
 

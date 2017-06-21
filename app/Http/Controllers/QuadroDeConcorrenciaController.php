@@ -119,6 +119,14 @@ class QuadroDeConcorrenciaController extends AppBaseController
     public function show($id, QcItensDataTable $qcItensDataTable)
     {
         $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->findWithoutFail($id);
+//        $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository
+//            ->with(
+//                'tipoEqualizacaoTecnicas.itens',
+//                'tipoEqualizacaoTecnicas.anexos',
+//                'itens.insumo',
+//                'itens.ordemDeCompraItens'
+//            )
+//            ->findWithoutFail($id);
 
         if (empty($quadroDeConcorrencia)) {
             Flash::error('Quadro De Concorrencia ' . trans('common.not-found'));
@@ -184,11 +192,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
 
         if($request->has('abrir_concorrencia')){
 
-            if(isset($input['qcFornecedoresMega'])){
-                $fornecedores = count($input['qcFornecedores']) + count($input['qcFornecedoresMega']);
-            }else{
-                $fornecedores = count($input['qcFornecedores']);
-            }
+            $fornecedores = count($request->qcFornecedores) + count($request->qcFornecedoresMega);
 
             if($fornecedores > $quadroDeConcorrencia->qcFornecedores->count()){
                 $input['qc_status_id'] = 7; // Em concorrência
@@ -199,6 +203,10 @@ class QuadroDeConcorrenciaController extends AppBaseController
         }
 
         $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->update($input, $id);
+
+        if(!$quadroDeConcorrencia){
+            return back();
+        }
 
         if (!$request->has('fechar_qc')) {
             if (!$request->has('adicionar_itens')) {
@@ -317,8 +325,13 @@ class QuadroDeConcorrenciaController extends AppBaseController
             $rodadaSelecionada
         );
 
+
         $ofertas = $quadro->itens->reduce(function ($ofertas, $item) use ($qcFornecedores) {
-            $ofertas[] = $qcFornecedores->map(function ($qcFornecedor) use ($item) {
+            $ofertas[] = $qcFornecedores
+                ->filter(function ($qcFornecedor) use ($item) {
+                    return $qcFornecedor->itens->where('qc_item_id', $item->id)->first();
+                })
+                ->map(function ($qcFornecedor) use ($item) {
                 $oferta = $qcFornecedor->itens->where('qc_item_id', $item->id)->first();
 
                 return [
@@ -357,6 +370,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
             )
             ->findWithoutFail($id);
 
+
         if (empty($quadro)) {
             Flash::error('Quadro De Concorrencia '.trans('common.not-found'));
 
@@ -367,7 +381,13 @@ class QuadroDeConcorrenciaController extends AppBaseController
 
         try {
             if ($request->gerar_nova_rodada) {
+
                 $quadro->update(['rodada_atual' => (int) $quadro->rodada_atual + 1]);
+
+                #Inserir novos fornecedores que vão participar da nova RODADA
+                $input = $request->except('fornecedores','fornecedores_temp','gerar_nova_rodada','_token');
+                $input['user_update_id'] = Auth::id();
+                $this->quadroDeConcorrenciaRepository->update($input, $id);
 
                 $mensagens = collect($request->fornecedores)
                     ->map(function ($fornecedor) use ($quadro, $request) {
@@ -728,11 +748,11 @@ class QuadroDeConcorrenciaController extends AppBaseController
                     if (Str::length($item['valor_unitario'])) {
                         $item['valor_unitario'] = money_to_float($item['valor_unitario']);
                         $item['valor_total'] = $item['valor_unitario'] * $item['qtd'];
-                    } else {
-                        $item['valor_unitario'] = null;
+
+                        $qcItemFornecedorRepository->create($item);
                     }
 
-                    $qcItemFornecedorRepository->create($item);
+
                 }
             }
         } catch (Exception $e) {

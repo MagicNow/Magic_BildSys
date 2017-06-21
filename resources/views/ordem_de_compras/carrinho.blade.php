@@ -19,9 +19,14 @@
             <div class="col-md-12">
                 <div class="col-md-6">
                     <h3 class="pull-left title">
-                        <a href="javascript:history.back()"><i class="fa fa-arrow-left" aria-hidden="true"></i></a> Ordem de Compra
+                        <a href="javascript:history.back()"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
+                            Ordem de Compra
+                            {{isset($ordemDeCompra->obra->nome) ? ' - ' . $ordemDeCompra->obra->nome : null}}
+                            <?php $ordemCompraSession = \Session::has('ordemCompra') ?>
+                            {{isset($ordemCompraSession) ? '- O.C: ' . \Session::get('ordemCompra') : null}}
                     </h3>
                 </div>
+                {{--{{dd($ordemDeCompra->obra->nome)}}--}}
 
                 <div class="col-md-6 text-right">
                     <a href="/compras/obrasInsumos?obra_id={{$obra_id}}" class="btn btn-default btn-lg btn-flat">

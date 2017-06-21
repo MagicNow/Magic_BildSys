@@ -29,11 +29,11 @@
                             {!! Form::label('grupo_id', 'Grupos:') !!}
                             {!! Form::select('grupo_id', [''=>'-']+$grupos, null, ['class' => 'form-control select2', 'id'=>'grupo_id','onchange'=>'selectgrupo(this.value, \'subgrupo1_id\', \'grupos\');', 'required']) !!}
                         </div>
-                        <div class="form-group col-sm-2">
-                            <a class="btn btn-info pull-right flat" data-toggle="modal" data-target="#cadastrarGrupo" style="margin-top: 20px;" onclick="atribuirGrupoId(null, 'grupo_id');">
-                                <i class="fa fa-save"></i> Cadastrar Grupo
-                            </a>
-                        </div>
+                        {{--<div class="form-group col-sm-2">--}}
+                            {{--<a class="btn btn-info pull-right flat" data-toggle="modal" data-target="#cadastrarGrupo" style="margin-top: 20px;" onclick="atribuirGrupoId(null, 'grupo_id');">--}}
+                                {{--<i class="fa fa-save"></i> Cadastrar Grupo--}}
+                            {{--</a>--}}
+                        {{--</div>--}}
                     </div>
                     <!-- SubGrupos1 de insumo Field -->
                     <div class="form-group col-sm-12">
@@ -250,6 +250,15 @@
                     $('#codigo_grupo').val('');
                     $('#nome_grupo').val('');
                     $('#subgrupo_de').val('');
+
+                    if(!subgrupo_de){
+                        $('#grupo_id').append('<option value="'+json.grupo.id+'">'+json.grupo.codigo+ ' ' +json.grupo.nome+'</option>');
+                    }
+                    if(subgrupo_de_nome == 'subgrupo1_id' || subgrupo_de_nome == 'subgrupo2_id' || subgrupo_de_nome == 'subgrupo3_id') {
+                        selectgrupo(subgrupo_de, subgrupo_de_nome, 'grupos')
+                    }else{
+                        selectgrupo(subgrupo_de, subgrupo_de_nome, 'servicos')
+                    }
                 }else{
                     swal("O campo código e nome são obrigatórios.", "", "info");
                 }
