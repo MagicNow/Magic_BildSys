@@ -339,6 +339,7 @@ class CatalogoContratoController extends AppBaseController
             DB::raw("CONVERT(agn_st_nome,'UTF8','WE8ISO8859P15') as agn_st_nome")
         ])
         ->whereRaw("LOWER(agn_st_nome) LIKE '%' || LOWER('{$request->q}') || '%'")
+        ->orderBy('agn_st_nome', 'ASC')
         ->paginate();
 
         return $fornecedores;
@@ -357,6 +358,7 @@ class CatalogoContratoController extends AppBaseController
         ->whereHas('grupo', function($query) {
             return $query->where('active', 1);
         })
+        ->orderBy('nome', 'ASC')
         ->paginate();
 
         return $insumos;
