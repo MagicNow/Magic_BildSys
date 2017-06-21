@@ -37,7 +37,9 @@ use App\Repositories\ContratoItemModificacaoRepository;
 use App\Repositories\ContratoItemRepository;
 use App\Models\ContratoStatus;
 use App\Models\ContratoItemModificacao;
-use App\Repositories\ContratoItemReapropriacaoRepository;
+use App\Repositories\ContratoItemApropriacaoRepository;
+use App\Models\WorkflowAlcada;
+use App\Models\ContratoItemApropriacao;
 
 class ContratoController extends AppBaseController
 {
@@ -61,7 +63,6 @@ class ContratoController extends AppBaseController
         ObraRepository $obraRepository,
         ContratoStatusRepository $contratoStatusRepository
     ) {
-
         $status = $contratoStatusRepository
             ->orderBy('nome', 'ASC')
             ->pluck('nome', 'id')
@@ -92,9 +93,9 @@ class ContratoController extends AppBaseController
         $id,
         Request $request,
         WorkflowReprovacaoMotivoRepository $workflowReprovacaoMotivoRepository,
-        ContratoItemDataTable $contratoItemDataTable
-    )
-    {
+        ContratoItemApropriacaoRepository $apropriacaoRepository,
+        ContratoItemRepository $contratoItemRepository
+    ) {
         $contrato = $this->contratoRepository->findWithoutFail($id);
 
         if (empty($contrato)) {
@@ -103,14 +104,19 @@ class ContratoController extends AppBaseController
             return redirect(route('contratos.index'));
         }
 
-        $valor_inicial = $contrato->itens()
-            ->where('aprovado', 1)
-            ->get()
-            ->pluck('qcItem')
-            ->pluck('ordemDeCompraItens')
-            ->collapse()
-            ->sum('valor_total');
+        $orcamentoInicial = $totalAGastar = $realizado = $totalSolicitado = 0;
 
+        $orcamentoInicial = $apropriacaoRepository->orcamentoInicial(
+            $contrato
+        );
+
+        $avaliado_reprovado = [];
+
+        $alcadas = WorkflowAlcada::where('workflow_tipo_id', WorkflowTipo::CONTRATO)
+            ->orderBy('ordem', 'ASC')
+            ->get();
+
+        $alcadas_count = $alcadas->count();
 
         if ($contrato->isStatus(ContratoStatus::EM_APROVACAO)) {
             $workflowAprovacao = WorkflowAprovacaoRepository::verificaAprovacoes(
@@ -118,6 +124,49 @@ class ContratoController extends AppBaseController
                 $contrato->id,
                 $request->user()
             );
+
+            foreach ($alcadas as $alcada) {
+                $avaliado_reprovado[$alcada->id] = WorkflowAprovacaoRepository::verificaTotalJaAprovadoReprovado(
+                    'Contrato',
+                    $contrato->irmaosIds(),
+                    null,
+                    null,
+                    $alcada->id);
+
+                $avaliado_reprovado[$alcada->id]['aprovadores'] = WorkflowAprovacaoRepository::verificaQuantidadeUsuariosAprovadores(
+                    WorkflowTipo::find(WorkflowTipo::CONTRATO),
+                    $contrato->obra_id,
+                    $alcada->id
+                );
+
+                $avaliado_reprovado[$alcada->id] ['faltam_aprovar'] = WorkflowAprovacaoRepository::verificaUsuariosQueFaltamAprovar(
+                    'Contrato',
+                    WorkflowTipo::CONTRATO,
+                    $contrato->obra_id,
+                    $alcada->id,
+                    [$alcada->id]
+                );
+
+                // Data do início da  Alçada
+                if ($alcada->ordem === 1) {
+                    $contrato_log = $contrato->logs()
+                        ->where('contrato_status_id', 4)->first();
+
+                    if ($contrato_log) {
+                        $avaliado_reprovado[$alcada->id] ['data_inicio'] = $contrato_log->created_at
+                            ->format('d/m/Y H:i');
+                    }
+                } else {
+                    $primeiro_voto = WorkflowAprovacao::where('aprovavel_type', 'App\\Models\\Contrato')
+                        ->where('aprovavel_id', $contrato->id)
+                        ->where('workflow_alcada_id', $alcada->id)
+                        ->orderBy('id', 'ASC')
+                        ->first();
+                    if ($primeiro_voto) {
+                        $avaliado_reprovado[$alcada->id]['data_inicio'] = $primeiro_voto->created_at->format('d/m/Y H:i');
+                    }
+                }
+            }
         }
 
         $aprovado = $contrato->isStatus(ContratoStatus::APROVADO);
@@ -128,103 +177,90 @@ class ContratoController extends AppBaseController
             ->prepend('Motivos...', '')
             ->all();
 
-        $pendencias = ContratoItemModificacao::whereHas('item', function($itens) use ($id) {
+        $pendencias = ContratoItemModificacao::whereHas('item', function ($itens) use ($id) {
             return $itens->where('contrato_id', $id)->where('pendente', true);
         })
-            ->where('contrato_status_id', ContratoStatus::EM_APROVACAO)
-            ->get()
-            ->map(function ($pendencia) {
-                $pendencia->workflow = WorkflowAprovacaoRepository::verificaAprovacoes(
-                    'ContratoItemModificacao',
-                    $pendencia->id,
-                    auth()->user()
-                );
-
-                return $pendencia;
-            });
-
-        return $contratoItemDataTable
-            ->setContrato($contrato)
-            ->render(
-                'contratos.show',
-                compact('contrato', 'workflowAprovacao', 'motivos', 'aprovado', 'pendencias', 'valor_inicial')
+        ->where('contrato_status_id', ContratoStatus::EM_APROVACAO)
+        ->get()
+        ->map(function ($pendencia) {
+            $pendencia->workflow = WorkflowAprovacaoRepository::verificaAprovacoes(
+                'ContratoItemModificacao',
+                $pendencia->id,
+                auth()->user()
             );
+
+            return $pendencia;
+        });
+
+        $status = $contrato->status->nome;
+
+        $isEmAprovacao = $contrato->isStatus(ContratoStatus::EM_APROVACAO);
+
+        $itens = $isEmAprovacao
+            ? $apropriacaoRepository->forContratoApproval($contrato)
+            : $contratoItemRepository->forContratoDetails($contrato);
+
+        return view('contratos.show', compact(
+                'isEmAprovacao',
+                'contrato',
+                'orcamentoInicial',
+                'itens',
+                'workflowAprovacao',
+                'motivos',
+                'aprovado',
+                'pendencias',
+                'alcadas_count',
+                'avaliado_reprovado',
+                'status'
+        ));
     }
 
-    public function reajustarItem(
-        $id,
+    public function reajustar(
+        $contrato_item_id,
         ReajustarRequest $request,
         ContratoItemModificacaoRepository $contratoItemModificacaoRepository
-    )
-    {
-        $contratoItemModificacaoRepository->reajustar($id, $request->all());
+    ) {
+        $contratoItemModificacaoRepository->reajustar($contrato_item_id, $request->all());
 
         return response()->json([
             'success' => true
         ]);
     }
 
-    public function distratarItem(
-        $id,
+    public function distratar(
+        $contrato_item_id,
         DistratarRequest $request,
         ContratoItemModificacaoRepository $contratoItemModificacaoRepository
-    )
-    {
-        $contratoItemModificacaoRepository->distratar($id, $request->qtd);
+    ) {
+        $contratoItemModificacaoRepository->distratar(
+            $contrato_item_id,
+            $request->distrato
+        );
 
         return response()->json([
             'success' => true
         ]);
     }
 
-    public function reapropriarItemForm(
+    public function apropriacoes(
         $id,
         ContratoItemRepository $contratoItemRepository
-    )
-    {
+    ) {
         $item = $contratoItemRepository->find($id);
 
-        $itens = $item->qcItem->ordemDeCompraItens;
-
-        $reapropriacoes = $item->reapropriacoes;
-
-        $reapropriacoes->each(function ($re) use (&$itens) {
-            if ($re->ordem_de_compra_item_id) {
-                $item = $itens->where('id', $re->ordem_de_compra_item_id)->shift();
-                $item->qtd = $item->qtd - $re->qtd;
-                $item->modificado_por = true;
-                $itens->push($item);
-            }
+        $itens = $item->apropriacoes->filter(function($apropriacao) {
+            return $apropriacao->qtd_sobra;
         });
 
-        $reapropriacoes->each(function ($re) use (&$reapropriacoes) {
-            if ($re->contrato_item_reapropriacao_id) {
-                $_re = $reapropriacoes->where('id', $re->contrato_item_reapropriacao_id)->shift();
-                $_re->qtd = $_re->qtd - $re->qtd;
-                $_re->modificado_por = true;
-                $reapropriacoes->push($_re);
-            }
-        });
-
-        $itens = $itens->merge($reapropriacoes)
-            ->filter(function ($item) {
-                return (float)$item->qtd;
-            })
-            ->sortBy(function ($item) {
-                return $item->created_at->getTimestamp();
-            });
-
-
-        return view('contratos.modal-reapropriacao', compact('itens', 'item'));
+        return view('contratos.' . request('view'), compact('itens', 'item'));
     }
 
     public function reapropriarItem(
         $id,
         ContratoItemRepository $contratoItemRepository,
-        ContratoItemReapropriacaoRepository $contratoItemReapropriacaoRepository,
+        ContratoItemApropriacaoRepository $contratoItemReapropriacaoRepository,
         ReapropriarRequest $request
-    )
-    {
+    ) {
         $item = $contratoItemRepository->find($id);
 
         $contratoItemReapropriacaoRepository->reapropriar($item, $request->all());
@@ -238,9 +274,7 @@ class ContratoController extends AppBaseController
         $id,
         ContratoItemRepository $contratoItemRepository,
         EditarItemRequest $request
-    )
-    {
-
+    ) {
         $contratoItemRepository->editarAditivo($id, $request->all());
 
         return response()->json([
@@ -358,7 +392,7 @@ class ContratoController extends AppBaseController
 
     public function pegaFornecedoresPelasObras(Request $request)
     {
-        $this->validate($request,['obras'=>'required|min:1']);
+        $this->validate($request, ['obras'=>'required|min:1']);
         $obras = $request->obras;
         return Fornecedor::whereHas('contratos', function ($query) use ($obras) {
             $query->where('contrato_status_id', 5);
@@ -407,9 +441,9 @@ class ContratoController extends AppBaseController
                                        ContratoItemModificacaoRepository $contratoItemModificacaoRepository)
     {
         $reajustes =  $contratoItemModificacaoRepository->reajusteFornecedor($request->fornecedor_id, $request->obra_id, $request->valor_unitario);
-        if(count($reajustes)){
+        if (count($reajustes)) {
             Flash::success('Reajustes de valores criados.');
-        }else{
+        } else {
             Flash::error('Nenhum reajuste foi criado.');
         }
         return redirect(route('contratos.index'));

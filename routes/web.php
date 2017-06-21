@@ -17,6 +17,9 @@ Auth::routes();
 $router->get('/notifications', 'NotificationController@index');
 $router->post('/notifications/{id}/mark-as-read', 'NotificationController@markAsRead');
 
+// Detalhes de workflow
+$router->get('/workflow/detalhes', 'WorkflowController@detalhes');
+
 ##### Buscas #####
 $router->get('/admin/catalogo-acordos/buscar/busca_insumos', ['as' => 'catalogo_contratos.busca_insumos', 'uses' => 'CatalogoContratoController@buscaInsumos']);
 $router->get('/admin/solicitacaoInsumos/buscar/grupos_insumos', 'Admin\SolicitacaoInsumoController@buscaGruposInsumos');
@@ -745,12 +748,13 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             ]
         )->middleware('needsPermission:contratos.edit');
         $router->post(
-            '/reajustar-item/{item}',
+            '/reajustar/{contrato_item_id}',
             [
-                'as' => 'contratos.reajustar-item',
-                'uses' => 'ContratoController@reajustarItem'
+                'as' => 'contratos.reajustar',
+                'uses' => 'ContratoController@reajustar'
             ]
         )->middleware('needsPermission:contratos.reajustar');
+
         $router->post(
             '/reapropriar-item/{item}',
             [
@@ -758,17 +762,19 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
                 'uses' => 'ContratoController@reapropriarItem'
             ]
         )->middleware('needsPermission:contratos.reapropriar');
+
         $router->get(
-            '/reapropriar-item/{item}',
+            '/apropriacoes/{item}',
             [
-                'uses' => 'ContratoController@reapropriarItemForm'
+                'uses' => 'ContratoController@apropriacoes'
             ]
-        )->middleware('needsPermission:contratos.reapropriar');
+        );
+
         $router->post(
-            '/distratar-item/{item}',
+            '/distratar/{contrato_item_id}',
             [
-                'as' => 'contratos.distratar-item',
-                'uses' => 'ContratoController@distratarItem'
+                'as' => 'contratos.distratar',
+                'uses' => 'ContratoController@distratar'
             ]
         )->middleware('needsPermission:contratos.distratar');
 
