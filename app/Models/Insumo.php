@@ -42,7 +42,12 @@ class Insumo extends Model
         'nome' => 'string',
         'unidade_sigla' => 'string',
         'codigo' => 'string',
-        'insumo_grupo_id' => 'integer'
+        'insumo_grupo_id' => 'integer',
+        'aliq_irrf' => 'float',
+        'aliq_csll' => 'float',
+        'aliq_pis' => 'float',
+        'aliq_inss' => 'float',
+        'aliq_cofins' => 'float'
     ];
 
     /**
@@ -120,7 +125,7 @@ class Insumo extends Model
     {
         return $this->belongsTo(InsumoGrupo::class, 'insumo_grupo_id', 'id');
     }
-    
+
     public function contratoItem(){
         return $this->hasMany(ContratoItem::class,'insumo_id');
     }
