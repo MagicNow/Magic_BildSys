@@ -26,16 +26,9 @@ class ReajustarRequest extends FormRequest
     {
         return [
             'valor' => [
-                'required',
-                'money'
+                'reajuste.*.adicional' => 'money',
+                'reajuste.*.valor_unitario' => 'money'
             ],
-        ];
-    }
-
-    public function messages()
-    {
-        return [
-            'valor.required' => 'O valor é obrigatório para reajuste',
         ];
     }
 }

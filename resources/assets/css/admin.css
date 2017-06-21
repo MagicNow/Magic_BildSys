@@ -313,11 +313,11 @@ h6 {
   font-weight: bold;
 }
 
-.panel table td {
+.panel:not(.panel-normal-table) table td {
   font-size: 18px;
 }
 
-.panel table th {
+.panel:not(.panel-normal-table) table th {
   font-size: 14px;
 }
 
@@ -361,6 +361,16 @@ h6 {
 .table-align-middle> tbody> tr> td,
 .table-align-middle> tfoot> tr> td {
   vertical-align: middle;
+}
+
+.table-all-center> thead> tr> th,
+.table-all-center> tbody> tr> th,
+.table-all-center> tfoot> tr> th,
+.table-all-center> thead> tr> td,
+.table-all-center> tbody> tr> td,
+.table-all-center> tfoot> tr> td {
+  vertical-align: middle;
+  text-align: center;
 }
 
 .box-equalizacao-tecnica> .box-body {
@@ -651,6 +661,11 @@ table.dataTable.dtr-inline.collapsed> tbody> tr.parent> th:first-child:before {
   }
 }
 
+
+.table.table-no-margin {
+  margin: 0;
+}
+
 .sidebar-mini.sidebar-collapse .sidebar-menu > li:hover > a > span:not(.pull-right),
 .sidebar-mini.sidebar-collapse .sidebar-menu > li:hover > .treeview-menu {
   display: block !important;
@@ -681,4 +696,42 @@ div.dataTables_wrapper div.dataTables_processing {
 .notifications-menu .dropdown-menu {
   width: auto !important;
   min-width: 240px !important;
+}
+
+.text-limit {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.alcada-detalhes {
+  user-select: none;
+  cursor: pointer;
+}
+
+.box-title-full {
+  width: 100%;
+  display: block;
+}
+
+.box-title > a[data-toggle="collapse"] {
+  color: inherit;
+}
+
+.box-title > a[data-toggle="collapse"]:hover {
+  color: #777;
+}
+
+.box-title-full > .label {
+  display: inline-block;
+  float: right;
+}
+
+.table.table-bordered {
+  border: 1px solid #f4f4f4 !important;
+}
+
+.table td .modal {
+  font-size: initial;
+  text-align: left;
 }

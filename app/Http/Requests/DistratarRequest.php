@@ -25,14 +25,14 @@ class DistratarRequest extends FormRequest
     public function rules()
     {
         return [
-            'qtd'   => 'required',
+            'distrato.*'   => 'required|money',
         ];
     }
 
     public function messages()
     {
         return [
-            'qtd.required'   => 'A nova quantidade é necessária para realizar distrato',
+            'distrato.*.required' => 'Não foi encontrado nenhuma modificação',
         ];
     }
 }

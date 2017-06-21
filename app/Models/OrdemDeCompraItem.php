@@ -221,7 +221,7 @@ class OrdemDeCompraItem extends Model
     public function reapropriacoes()
     {
         return $this->hasMany(
-            ContratoItemReapropriacao::class,
+            ContratoItemApropriacao::class,
             'ordem_de_compra_item_id'
         );
     }
