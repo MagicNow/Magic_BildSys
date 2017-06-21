@@ -19903,3 +19903,26 @@ div.dataTables_wrapper div.dataTables_processing {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.alcada-detalhes {
+  user-select: none;
+  cursor: pointer;
+}
+
+.box-title-full {
+  width: 100%;
+  display: block;
+}
+
+.box-title > a[data-toggle="collapse"] {
+  color: inherit;
+}
+
+.box-title > a[data-toggle="collapse"]:hover {
+  color: #777;
+}
+
+.box-title-full > .label {
+  display: inline-block;
+  float: right;
+}

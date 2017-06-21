@@ -48,7 +48,11 @@
                             }
                         @endphp
 
-                        <h4 class="col-md-{{$col_md}} col-sm-{{$col_md}}" style="padding-right: 1px;padding-left: 1px;">
+                        <h4 class="col-md-{{$col_md}} col-sm-{{$col_md}} alcada-detalhes"
+                            data-id="{{ $contrato->id }}"
+                            data-workflow-tipo="3"
+                            data-alcada="{{ $alcada['ordem'] }}"
+                            style="padding-right: 1px;padding-left: 1px;">
                             <span>
                                 {{$count}}ª alçada
                                 @if(isset($alcada['data_inicio']))
@@ -96,7 +100,11 @@
             @endforeach
         @else
             @for($i = 1; $i <= $alcadas_count; $i ++)
-                <h4 class="col-md-{{$col_md}} col-sm-{{$col_md}}" style="padding-right: 1px;padding-left: 1px;">
+                <h4 class="col-md-{{$col_md}} col-sm-{{$col_md}} alcada-detalhes"
+                    data-id="{{ $contrato->id }}"
+                    data-workflow-tipo="3"
+                    data-alcada="{{ $i }}"
+                    style="padding-right: 1px;padding-left: 1px;">
                     <span>{{$i}}ª alçada</span>
                     @if($i == $alcadas_count)
                         <span class="pull-right">{{ $status }}</span>
@@ -111,3 +119,5 @@
         @endif
     @endif
 </div>
+
+<div class="modal fade" id="modal-alcadas" tabindex="-1" role="dialog"></div>

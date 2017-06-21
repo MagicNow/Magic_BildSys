@@ -6,6 +6,26 @@ $(function() {
   Reapropriar.init();
   Editar.init();
 
+  var workflowTipo = $('[data-workflow-tipo]');
+
+  workflowTipo.tooltip({
+    title: 'Clique para ver detalhes desta alcada',
+    container: document.body
+  });
+
+  workflowTipo.on('click', function(event) {
+    startLoading();
+    $.get('/workflow/detalhes', event.currentTarget.dataset)
+      .always(stopLoading)
+      .done(function(data) {
+        $('#modal-alcadas').html(data);
+        $('#modal-alcadas').modal('show');
+      })
+      .fail(function() {
+        console.log(arguments)
+      });
+  });
+
   var obsAprovador = document.getElementById('obs-aprovador');
 
   if(obsAprovador) {
