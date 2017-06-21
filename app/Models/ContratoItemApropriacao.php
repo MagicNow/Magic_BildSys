@@ -147,6 +147,19 @@ class ContratoItemApropriacao extends Model
         );
     }
 
+    public function modificacoes()
+    {
+        return $this->belongsToMany(
+            ContratoItemModificacao::class,
+            'contrato_item_modificacao_apropriacao',
+            'contrato_item_apropriacao_id',
+            'contrato_item_modificacao_id'
+        )
+        ->withPivot([ 'qtd_atual', 'qtd_anterior', 'id' ])
+        ->withTimestamps();
+    }
+
+
     public function getQtdSobraAttribute()
     {
         return $this->qtd - $this->reapropriacoes->sum('qtd');

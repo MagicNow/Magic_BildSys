@@ -11,11 +11,13 @@ class ContratoItemModificacaoApropriacao extends Model
     public $fillable = [
         'contrato_item_modificacao_id',
         'contrato_item_apropriacao_id',
-        'qtd',
+        'qtd_atual',
+        'qtd_anterior',
     ];
 
     public $casts = [
-        'qtd' => 'float',
+        'qtd_anterior' => 'float',
+        'qtd_atual' => 'float',
         'contrato_item_modificacao_id' => 'integer',
         'contrato_item_apropriacao_id' => 'integer'
     ];

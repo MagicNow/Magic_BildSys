@@ -94,7 +94,7 @@ class ContratoController extends AppBaseController
         Request $request,
         WorkflowReprovacaoMotivoRepository $workflowReprovacaoMotivoRepository,
         ContratoItemApropriacaoRepository $apropriacaoRepository,
-        ContratoItemDataTable $contratoItemDataTable
+        ContratoItemRepository $contratoItemRepository
     ) {
         $contrato = $this->contratoRepository->findWithoutFail($id);
 
@@ -194,15 +194,13 @@ class ContratoController extends AppBaseController
 
         $status = $contrato->status->nome;
 
-        $itens = $apropriacaoRepository->forContratoApproval($contrato);
-
         $isEmAprovacao = $contrato->isStatus(ContratoStatus::EM_APROVACAO);
 
-        return $contratoItemDataTable
-            ->setContrato($contrato)
-            ->render(
-            'contratos.show',
-            compact(
+        $itens = $isEmAprovacao
+            ? $apropriacaoRepository->forContratoApproval($contrato)
+            : $contratoItemRepository->forContratoDetails($contrato);
+
+        return view('contratos.show', compact(
                 'isEmAprovacao',
                 'contrato',
                 'orcamentoInicial',
@@ -214,8 +212,7 @@ class ContratoController extends AppBaseController
                 'alcadas_count',
                 'avaliado_reprovado',
                 'status'
-            )
-        );
+        ));
     }
 
     public function reajustar(

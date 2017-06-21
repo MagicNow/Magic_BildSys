@@ -34,6 +34,7 @@ class ContratoItemModificacaoRepository extends BaseRepository
                 $qtd = $reajustes->map('money_to_float')->sum();
                 $apropriacoes = app(ContratoItemApropriacaoRepository::class)
                     ->findWhereIn('id', $reajustes->keys()->all());
+
                 $modApropriacoes = $reajustes
                     ->map(function($qtd, $apropriacao_id) use ($apropriacoes) {
                         $apropriacao = $apropriacoes->where('id', $apropriacao_id)
@@ -41,7 +42,8 @@ class ContratoItemModificacaoRepository extends BaseRepository
 
                         return [
                             'contrato_item_apropriacao_id' => $apropriacao_id,
-                            'qtd' => $qtd + $apropriacao->qtd,
+                            'qtd_anterior' => $apropriacao->qtd,
+                            'qtd_atual' => $qtd + $apropriacao->qtd,
                         ];
                     });
             } else {
@@ -113,7 +115,8 @@ class ContratoItemModificacaoRepository extends BaseRepository
 
                     return [
                         'contrato_item_apropriacao_id' => $item_id,
-                        'qtd' => $quantidade,
+                        'qtd_atual' => $quantidade,
+                        'qtd_anterior' => $item->qtd,
                         'distratar' => $item->qtd - $quantidade,
                     ];
                 });

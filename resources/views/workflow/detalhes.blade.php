@@ -9,7 +9,7 @@
         <div class="modal-body">
             @foreach($alcada->users as $user)
                 @php
-                    $aprovacao = $aprovacoes->where('user_id', $user->id)->first();
+                    $aprovacao = $aprovacoes->where('user_id', $user->id)->last();
                 @endphp
                 <div class="box {{ is_null($aprovacao) ?  'box-default' : ($aprovacao->aprovado ? 'box-success' : 'box-danger') }}">
                     <div class="box-header with-border">

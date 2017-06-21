@@ -95,18 +95,6 @@ class ContratoItemModificacao extends Model
         return $this->morphMany(WorkflowAprovacao::class, 'aprovavel');
     }
 
-    public function apropriacoes()
-    {
-        return $this->belongsToMany(
-            ContratoItemApropriacao::class,
-            'contrato_item_modificacao_apropriacao',
-            'contrato_item_modificacao_id',
-            'contrato_item_apropriacao_id'
-        )
-        ->withPivot('id', 'qtd')
-        ->withTimestamps();
-    }
-
     public function irmaosIds()
     {
         return [$this->attributes['id'] => $this->attributes['id']];
@@ -139,7 +127,7 @@ class ContratoItemModificacao extends Model
         }
 
         $this->apropriacoes->map(function($apropriacao) {
-            $apropriacao->update(['qtd' => $apropriacao->pivot->qtd]);
+            $apropriacao->update(['qtd' => $apropriacao->pivot->qtd_atual]);
         });
 
         $this->item->update(['pendente' => 0]);
@@ -156,5 +144,17 @@ class ContratoItemModificacao extends Model
     public function getValorTotalAttribute()
     {
         return (float) $this->valor_unitario_atual * (float) $this->qtd_atual;
+    }
+
+    public function apropriacoes()
+    {
+        return $this->belongsToMany(
+            ContratoItemApropriacao::class,
+            'contrato_item_modificacao_apropriacao',
+            'contrato_item_modificacao_id',
+            'contrato_item_apropriacao_id'
+        )
+        ->withPivot([ 'qtd_atual', 'qtd_anterior', 'id' ])
+        ->withTimestamps();
     }
 }

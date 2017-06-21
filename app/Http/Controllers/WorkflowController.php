@@ -87,6 +87,7 @@ class WorkflowController extends Controller
 
         $aprovacoes = WorkflowAprovacao::where('workflow_alcada_id', $alcada->id)
             ->where('aprovavel_id', $request->id)
+            ->orderBy('created_at')
             ->get();
 
         return view('workflow.detalhes', compact('aprovacoes', 'alcada'));

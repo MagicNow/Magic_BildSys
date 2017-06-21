@@ -313,11 +313,11 @@ h6 {
   font-weight: bold;
 }
 
-.panel table td {
+.panel:not(.panel-normal-table) table td {
   font-size: 18px;
 }
 
-.panel table th {
+.panel:not(.panel-normal-table) table th {
   font-size: 14px;
 }
 
@@ -361,6 +361,16 @@ h6 {
 .table-align-middle> tbody> tr> td,
 .table-align-middle> tfoot> tr> td {
   vertical-align: middle;
+}
+
+.table-all-center> thead> tr> th,
+.table-all-center> tbody> tr> th,
+.table-all-center> tfoot> tr> th,
+.table-all-center> thead> tr> td,
+.table-all-center> tbody> tr> td,
+.table-all-center> tfoot> tr> td {
+  vertical-align: middle;
+  text-align: center;
 }
 
 .box-equalizacao-tecnica> .box-body {
@@ -715,4 +725,13 @@ div.dataTables_wrapper div.dataTables_processing {
 .box-title-full > .label {
   display: inline-block;
   float: right;
+}
+
+.table.table-bordered {
+  border: 1px solid #f4f4f4 !important;
+}
+
+.table td .modal {
+  font-size: initial;
+  text-align: left;
 }

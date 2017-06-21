@@ -142,7 +142,7 @@
                         <button class="btn btn-flat btn-default btn-xs"
                             title="Insumo não originou de uma ordem de compra"
                             data-toggle="tooltip">
-                            <i class="fa fa-info fa-fw"></i>
+                            <i class="fa fa-info fa-fw fa-lg"></i>
                         </button>
                     @endif
                 </td>
@@ -154,7 +154,7 @@
                                 title="Expandir"
                                 onclick="showHideInfoExtra({{ $item->id }})">
                                 <i id="icone-expandir{{ $item->id }}"
-                                    class="fa fa-caret-right"></i>
+                                    class="fa fa-caret-right fa-fw fa-lg"></i>
                             </button>
                         @endif
                     </div>

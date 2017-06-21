@@ -55,8 +55,8 @@
                     {!! Form::label('user_id', 'Responsável') !!}
                     <p class="form-control input-lg">
                         {!!
-                            $contrato->user_id
-                                ? $contrato->user->name
+                            $contrato->quadroDeConcorrencia->user_id
+                                ? $contrato->quadroDeConcorrencia->user->name
                                 : 'Contrato Automático'
                         !!}
                     </p>
@@ -101,7 +101,7 @@
             @include('contratos.table-aprovacao')
         @else
             @include('contratos.table')
-            @if(!$pendencias->isEmpty())
+            @if($pendencias->isNotEmpty())
                 @include('contratos.box-pendencias')
             @endif
         @endif
