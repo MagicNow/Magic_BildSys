@@ -61,9 +61,14 @@
     @endif
     <div class="box box-muted">
       <div class="box-body">
-        @include('contratos.table')
+        {!! $dataTable->table(['width' => '100%','class'=>'table table-striped table-hover'],true) !!}
       </div>
     </div>
   </div>
+@endsection
+
+@section('scripts')
+    <script src="/vendor/datatables/buttons.server-side.js"></script>
+    {!! $dataTable->scripts() !!}
 @endsection
 
