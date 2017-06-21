@@ -343,6 +343,19 @@ class OrdemDeCompraController extends AppBaseController
                     ) as valor_servico"),
                     DB::raw("(
                         SELECT
+                        SUM(OCI.valor_total)
+                        FROM
+                        ordem_de_compra_itens as OCI
+                        WHERE
+                        OCI.grupo_id = ordem_de_compra_itens.grupo_id
+                        AND OCI.subgrupo1_id = ordem_de_compra_itens.subgrupo1_id
+                        AND OCI.subgrupo2_id = ordem_de_compra_itens.subgrupo2_id
+                        AND OCI.subgrupo3_id = ordem_de_compra_itens.subgrupo3_id
+                        AND OCI.servico_id = ordem_de_compra_itens.servico_id
+                        AND OCI.obra_id = ordem_de_compra_itens.obra_id
+                    ) as valor_servico_oc"),
+                    DB::raw("(
+                        SELECT
                         SUM(orcamentos.qtd_total)
                         FROM
                         orcamentos
