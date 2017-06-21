@@ -1097,81 +1097,65 @@ class OrdemDeCompraController extends AppBaseController
         ->take(5)->get();
 
         $status = OrdemDeCompra::select([
-            DB::raw('(
-                SELECT `status` FROM `ordem_de_compras` OC1
-                JOIN (
-                    SELECT
-                    z.id,
-                    IF(z.igual , 0 , IF(z.maior , 1 , - 1)) AS STATUS
-                    FROM
+                DB::raw('
+                 IFNULL(
                     (
-                        SELECT
-                        OC2.id,
-                        IF(qtd_total = qtd_itens , 1 , 0) AS igual ,
-                        IF(qtd_itens > qtd_total , 1 , 0) AS maior
+                        SELECT 
+                            SUM(orcamentos.preco_total)
                         FROM
-                        (
-                            SELECT
-                            OC3.id,
-                            (
-                                SELECT
-                                SUM(orcamentos.qtd_total) AS total
-                                FROM
-                                ordem_de_compra_itens
-                                INNER JOIN orcamentos ON orcamentos.obra_id = ordem_de_compra_itens.obra_id
+                            ordem_de_compra_itens
+                                INNER JOIN
+                            orcamentos ON orcamentos.insumo_id = ordem_de_compra_itens.insumo_id
                                 AND orcamentos.grupo_id = ordem_de_compra_itens.grupo_id
                                 AND orcamentos.subgrupo1_id = ordem_de_compra_itens.subgrupo1_id
                                 AND orcamentos.subgrupo2_id = ordem_de_compra_itens.subgrupo2_id
                                 AND orcamentos.subgrupo3_id = ordem_de_compra_itens.subgrupo3_id
                                 AND orcamentos.servico_id = ordem_de_compra_itens.servico_id
-                                AND orcamentos.insumo_id = ordem_de_compra_itens.insumo_id
                                 AND orcamentos.obra_id = ordem_de_compra_itens.obra_id
-                                WHERE
-                                orcamentos.orcamento_tipo_id = 1
                                 AND orcamentos.ativo = 1
+                        WHERE
+                            ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id
                                 AND ordem_de_compra_itens.deleted_at IS NULL
-                                AND ordem_de_compra_itens.ordem_de_compra_id = OC3.`id`
-                            ) AS qtd_total ,
-                            (
-                                SELECT
-                                SUM(ordem_de_compra_itens.qtd) AS qtd
-                                FROM
-                                ordem_de_compra_itens
-                                INNER JOIN orcamentos ON orcamentos.obra_id = ordem_de_compra_itens.obra_id
+                    ), 0
+                 ) 
+                 - 
+                 IFNULL(
+                    (
+                        SELECT 
+                            SUM(ordem_de_compra_itens.valor_total)
+                        FROM
+                            ordem_de_compra_itens
+                                INNER JOIN
+                            orcamentos ON orcamentos.insumo_id = ordem_de_compra_itens.insumo_id
                                 AND orcamentos.grupo_id = ordem_de_compra_itens.grupo_id
                                 AND orcamentos.subgrupo1_id = ordem_de_compra_itens.subgrupo1_id
                                 AND orcamentos.subgrupo2_id = ordem_de_compra_itens.subgrupo2_id
                                 AND orcamentos.subgrupo3_id = ordem_de_compra_itens.subgrupo3_id
                                 AND orcamentos.servico_id = ordem_de_compra_itens.servico_id
-                                AND orcamentos.insumo_id = ordem_de_compra_itens.insumo_id
                                 AND orcamentos.obra_id = ordem_de_compra_itens.obra_id
-                                WHERE orcamentos.orcamento_tipo_id = 1
-                                AND ordem_de_compra_itens.deleted_at IS NULL
                                 AND orcamentos.ativo = 1
-                                AND ordem_de_compra_itens.ordem_de_compra_id = OC3.`id`
-                            ) AS qtd_itens
-                            FROM ordem_de_compras OC3
-                        ) AS x
-                        JOIN ordem_de_compras OC2 ON OC2.id = x.id
-                    ) AS z
-                ) AS y ON y.id = OC1.id
-
-                WHERE OC1.id = `ordem_de_compras`.id
-                LIMIT 1
-            ) as status')
-        ])
-        ->get();
+                        WHERE
+                            ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id
+                                AND ordem_de_compra_itens.deleted_at IS NULL
+                    ), 0
+                 ) as status')
+            ])
+            ->join('obras', 'obras.id', '=', 'ordem_de_compras.obra_id')
+            ->join('oc_status', 'oc_status.id', '=', 'ordem_de_compras.oc_status_id')
+            ->join('users', 'users.id', '=', 'ordem_de_compras.user_id')
+            ->whereRaw('EXISTS (SELECT 1 FROM obra_users WHERE obra_users.obra_id = obras.id AND user_id=?)', auth()->id())
+            ->where('ordem_de_compras.oc_status_id', '!=', 6)
+            ->orderBy('ordem_de_compras.id','DESC')
+            ->get();
 
         $dentro_orcamento = 0;
         $acima_orcamento = 0;
 
         if (count($status)) {
             foreach ($status as $item) {
-                if ($item->status == 0 || $item->status == -1) {
+                if ($item->status >= 0) {
                     $dentro_orcamento += 1;
-                }
-
-                if ($item->status == 1) {
+                }else{
                     $acima_orcamento += 1;
                 }
             }
