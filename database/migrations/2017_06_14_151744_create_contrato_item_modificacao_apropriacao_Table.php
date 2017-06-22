@@ -26,7 +26,7 @@ class CreateContratoItemModificacaoApropriacaoTable extends Migration
                 )
                 ->references('id')
                 ->on('contrato_item_modificacoes')
-                ->onDelete('restrict')
+                ->onDelete('cascade')
                 ->onUpdate('cascade');
 
             $table->foreign(
@@ -35,7 +35,7 @@ class CreateContratoItemModificacaoApropriacaoTable extends Migration
                 )
                 ->references('id')
                 ->on('contrato_item_apropriacoes')
-                ->onDelete('restrict')
+                ->onDelete('cascade')
                 ->onUpdate('cascade');
 
             $table->timestamps();
