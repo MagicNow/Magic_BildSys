@@ -580,6 +580,17 @@ class OrdemDeCompraController extends AppBaseController
             ->pluck('tarefa', 'id')
             ->toArray();
 
+
+        $ordem = OrdemDeCompra::where('oc_status_id', 1)
+            ->where('user_id', Auth::user()->id)
+            ->where('obra_id', $request->obra_id)
+            ->first();
+
+        if($ordem){
+            # Colocando na sessão
+            \Session::put('ordemCompra', $ordem->id);
+        }
+
         return $comprasDataTable->render(
             'ordem_de_compras.obras_insumos',
             compact(
@@ -626,11 +637,10 @@ class OrdemDeCompraController extends AppBaseController
                 'ordem_de_compra_id'=>$ordem->id,
                 'user_id'=>Auth::id()
             ]);
-
-            # Colocando na sessão
-//            $request->session()->put('ordemCompra', $ordem->id);
-            \Session::put('ordemCompra', $ordem->id);
         }
+
+        # Colocando na sessão
+        \Session::put('ordemCompra', $ordem->id);
 
         // Encontra o orçamento ativo para validar preço
         $orcamento_ativo = Orcamento::where('insumo_id', $request->id)
@@ -1243,6 +1253,7 @@ class OrdemDeCompraController extends AppBaseController
 
         $ordemDeCompraItens = OrdemDeCompraItem::join('ordem_de_compras', 'ordem_de_compras.id', '=', 'ordem_de_compra_itens.ordem_de_compra_id')
             ->where('ordem_de_compra_itens.servico_id', $servico_id)
+            ->where('ordem_de_compra_itens.obra_id', $obra_id)
             ->whereIn('oc_status_id',[2,3,5]);
 
         $orcamentoInicial = $totalAGastar = $realizado = $totalSolicitado = 0;
@@ -1466,11 +1477,10 @@ class OrdemDeCompraController extends AppBaseController
                 'ordem_de_compra_id'=>$ordem->id,
                 'user_id'=>Auth::id()
             ]);
-
-            # Colocando na sessão
-//            $request->session()->put('ordemCompra', $ordem->id);
-            \Session::put('ordemCompra', $ordem->id);
         }
+
+        # Colocando na sessão
+        \Session::put('ordemCompra', $ordem->id);
 
         // Encontra o orçamento ativo
         $orcamento_ativo = Orcamento::where('insumo_id', $request->id)
@@ -1561,10 +1571,10 @@ class OrdemDeCompraController extends AppBaseController
                 'ordem_de_compra_id'=>$ordem->id,
                 'user_id'=>Auth::id()
             ]);
-
-            # Colocando na sessão
-            \Session::put('ordemCompra', $ordem->id);
         }
+
+        # Colocando na sessão
+        \Session::put('ordemCompra', $ordem->id);
 
         // Encontra o orçamento ativo para validar preço
         $orcamento_ativo = Orcamento::where('insumo_id', $request['id'])

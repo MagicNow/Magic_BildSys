@@ -368,10 +368,12 @@ class SpreadsheetRepository
                                     ]);
                                 }
 
-
                                 # save data table budget
                                 if ($erro == 0) {
-                                    Orcamento::create($final);
+                                    # Valida se o preço unitário do item é maior que 0
+                                    if($final['preco_unitario'] > 0) {
+                                        Orcamento::create($final);
+                                    }
                                 } else {
                                     // estourar loop
                                     $erro = 1;
