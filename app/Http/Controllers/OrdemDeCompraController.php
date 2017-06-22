@@ -1243,6 +1243,7 @@ class OrdemDeCompraController extends AppBaseController
 
         $ordemDeCompraItens = OrdemDeCompraItem::join('ordem_de_compras', 'ordem_de_compras.id', '=', 'ordem_de_compra_itens.ordem_de_compra_id')
             ->where('ordem_de_compra_itens.servico_id', $servico_id)
+            ->where('ordem_de_compra_itens.obra_id', $obra_id)
             ->whereIn('oc_status_id',[2,3,5]);
 
         $orcamentoInicial = $totalAGastar = $realizado = $totalSolicitado = 0;
