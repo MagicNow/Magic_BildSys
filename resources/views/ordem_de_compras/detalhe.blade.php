@@ -28,9 +28,9 @@
                 <div class="col-md-6">
                     <span class="pull-left title">
                         <h3>
-                            <button type="button" class="btn btn-link" onclick="history.go(-1);">
+                            <a href="/ordens-de-compra" class="btn btn-link">
                              <i class="fa fa-arrow-left" aria-hidden="true"></i>
-                            </button>
+                            </a>
                             <span>Detalhar Ordem de Compra</span>
                         </h3>
                     </span>
