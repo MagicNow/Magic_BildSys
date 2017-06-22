@@ -2,9 +2,18 @@
 
 @section('content')
   <section class="content-header">
-    <h1>
-      Trocar insumo
-    </h1>
+    <div class="modal-header">
+      <div class="col-md-12">
+          <span class="pull-left title">
+             <h3>
+                 <button type="button" class="btn btn-link" onclick="history.go(-1);">
+                      <i class="fa fa-arrow-left" aria-hidden="true"></i>
+                 </button>
+                 <span>Trocar insumo</span>
+             </h3>
+          </span>
+      </div>
+    </div>
   </section>
   <div class="content">
     <div class="box box-muted">
