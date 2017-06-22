@@ -58,9 +58,9 @@ class CatalogoContratoObra extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function catalogoContratoStatus()
+    public function status()
     {
-        return $this->belongsTo(\App\Models\CatalogoContratoStatus::class);
+        return $this->belongsTo(\App\Models\CatalogoContratoStatus::class, 'catalogo_contrato_status_id');
     }
 
     /**

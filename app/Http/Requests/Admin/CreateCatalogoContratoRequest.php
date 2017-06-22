@@ -27,4 +27,9 @@ class CreateCatalogoContratoRequest extends FormRequest
     {
         return CatalogoContrato::$rules;
     }
+
+    public function messages()
+    {
+        return ['obra.required' => 'Escolha uma obra e clique em adicionar'];
+    }
 }

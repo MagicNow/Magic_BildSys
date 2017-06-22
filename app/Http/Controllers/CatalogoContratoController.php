@@ -9,6 +9,7 @@ use App\Http\Requests\Admin\UpdateCatalogoContratoRequest;
 use App\Models\CatalogoContratoInsumo;
 use App\Models\CatalogoContrato;
 use App\Models\CatalogoContratoInsumoLog;
+use App\Models\CatalogoContratoObra;
 use App\Models\Fornecedor;
 use App\Models\Insumo;
 use App\Models\MegaFornecedor;
@@ -85,6 +86,17 @@ class CatalogoContratoController extends AppBaseController
         }
 
         $catalogoContrato->save();
+
+        if($request->obra){
+            foreach ($request->obra as $obra_id){
+                $catalogoContratoObra = CatalogoContratoObra::create([
+                    'catalogo_contrato_id' => $catalogoContrato->id,
+                    'obra_id' => $obra_id,
+                    'user_id' => auth()->id(),
+                    'catalogo_contrato_status_id' => 2
+                ]);
+            }
+        }
         
         if (count($request->contratoInsumos)) {
             foreach ($request->contratoInsumos as $item) {
@@ -178,6 +190,20 @@ class CatalogoContratoController extends AppBaseController
         $catalogoContrato = $this->catalogoContratoRepository->update($request->except('fornecedor_cod','contratoInsumos'), $id);
 
         $catalogoContrato->update();
+        if($request->obra){
+            foreach ($request->obra as $obra_id){
+                $catalogoContratoObra = CatalogoContratoObra::where('obra_id',$obra_id)->where('catalogo_contrato_id', $catalogoContrato->id)->first();
+                if(!$catalogoContratoObra){
+                    $catalogoContratoObra = CatalogoContratoObra::create([
+                        'catalogo_contrato_id' => $catalogoContrato->id,
+                        'obra_id' => $obra_id,
+                        'user_id' => auth()->id(),
+                        'catalogo_contrato_status_id' => 2
+                    ]);
+                }
+            }
+        }
+        
 
         if (count($request->contratoInsumos)) {
             foreach ($request->contratoInsumos as $item) {
@@ -279,6 +305,16 @@ class CatalogoContratoController extends AppBaseController
         Flash::success('Catalogo Contrato '.trans('common.updated').' '.trans('common.successfully').'.');
 
         return redirect(route('catalogo_contratos.index'));
+    }
+
+    public function removeObra($id, $cc_obra){
+        $remove = CatalogoContratoObra::find($cc_obra);
+        if($remove){
+            $remove->delete();
+            return response()->json(['success'=>true ]);
+        }
+        return response()->json(['success'=>false],400);
+
     }
 
     /**

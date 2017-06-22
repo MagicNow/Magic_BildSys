@@ -669,6 +669,9 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             ->middleware("needsPermission:catalogo_acordos.edit");
         $router->get('catalogo-acordos/buscar/busca_fornecedores', ['as' => 'catalogo_contratos.busca_fornecedores', 'uses' => 'CatalogoContratoController@buscaFornecedor']);
         $router->get('catalogo-acordos-insumo/delete', 'CatalogoContratoController@deleteInsumo');
+
+        $router->get('catalogo-acordos/{contratos}/removeObra/{remover}', ['as' => 'catalogo_contratos.removeObra', 'uses' => 'CatalogoContratoController@removeObra'])
+            ->middleware("needsPermission:catalogo_acordos.edit");
     });
 
     # Tipo equalização tecnicas
