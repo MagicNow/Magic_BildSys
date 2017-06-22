@@ -207,6 +207,7 @@
                                     <th class="text-center">Saldo de qntd do orçamento</th>
                                     <th class="text-center">Saldo de valor do orçamento</th>
                                     <th class="text-center">Emergencial</th>
+                                    <th class="text-center">Insumo Principal</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -219,6 +220,13 @@
                                         {{ number_format( $item->preco_inicial-doubleval($item->valor_realizado), 2, ',','.') }}
                                     </td>
                                     <td class="text-center">{!! $item->emergencial?'<strong class="text-danger"> <i class="fa fa-exclamation-circle"></i> SIM</strong>':'NÃO' !!}</td>
+                                    <td class="text-center">
+                                        @if($item->trocado)
+                                            {{ $item->insumo_troca_nome }}
+                                        @else
+                                            Não é troca
+                                        @endif
+                                    </td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -252,7 +260,7 @@
                             </div>
                         </div>
                         <div class="col-md-6 margem-topo">
-                            @if($item->anexos)
+                            @if($item->anexos->isNotEmpty())
                                 <div class="col-md-4 label-bloco">
                                     Arquivos anexos:
                                 </div>

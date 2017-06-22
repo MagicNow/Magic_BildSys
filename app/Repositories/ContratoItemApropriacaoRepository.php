@@ -7,6 +7,7 @@ use InfyOm\Generator\Common\BaseRepository;
 use App\Models\ContratoItem;
 use App\Models\Contrato;
 use Illuminate\Support\Facades\DB;
+use App\Models\OrdemDeCompraItemAnexo;
 
 class ContratoItemApropriacaoRepository extends BaseRepository
 {
@@ -39,13 +40,18 @@ SELECT
     0 as valor_realizado,
     orcamentos.qtd_total as qtd_inicial,
     orcamentos.preco_total as preco_inicial,
+    orcamentos.trocado,
+    orcamentos.orcamento_que_substitui,
     ordem_de_compra_itens.total,
     ordem_de_compra_itens.motivo_nao_finaliza_obra,
     ordem_de_compra_itens.justificativa,
     ordem_de_compra_itens.obs,
     ordem_de_compra_itens.tems,
+    ordem_de_compra_itens.id as oc_id,
     ordem_de_compra_itens.emergencial,
     ordem_de_compra_itens.id as ordem_de_compra_item_id,
+    orcamentos.id as orcamento_id,
+    insumo_troca.nome as insumo_troca_nome,
     (
         SELECT
             SUM(orcamentos.preco_total)
@@ -88,13 +94,28 @@ LEFT JOIN `orcamentos` ON
 	AND `orcamentos`.`servico_id` = `contrato_item_apropriacoes`.`servico_id`
 	AND `orcamentos`.`obra_id` = $contrato->obra_id
 	AND `orcamentos`.`ativo` = 1
+LEFT JOIN `orcamentos` `orcamento_troca` ON
+    `orcamento_troca`.`id` = `orcamentos`.`orcamento_que_substitui`
+LEFT JOIN `insumos` `insumo_troca` ON
+    `insumo_troca`.`id` = `orcamento_troca`.`insumo_id`
 WHERE
 	`contrato_itens`.`contrato_id` = $contrato->id
 GROUP BY
 	`contrato_item_apropriacoes`.`id`
 EOFSQL;
 
-        return ContratoItemApropriacao::hydrate(DB::select(DB::raw($query)));
+        $collection = ContratoItemApropriacao::hydrate(DB::select(DB::raw($query)));
+
+        $oc_ids = $collection->pluck('oc_id')->filter()->all();
+
+        $anexos = OrdemDeCompraItemAnexo::whereIn('ordem_de_compra_item_id', $oc_ids)
+            ->get();
+
+        return $collection->map(function($item) use ($anexos) {
+            $item->anexos = $anexos->where('ordem_de_compra_item_id', $item->oc_id);
+
+            return $item;
+        });
     }
 
     public function orcamentoInicial(Contrato $contrato)
