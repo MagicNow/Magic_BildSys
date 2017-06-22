@@ -1176,6 +1176,45 @@ class OrdemDeCompraController extends AppBaseController
         return view('ordem_de_compras.dashboard', compact('reprovados', 'aprovados', 'emaprovacao', 'abaixo_orcamento', 'dentro_orcamento', 'acima_orcamento'));
     }
 
+    // Verifica se tem OC aberta antes de reabrir
+    public function verificaReabrirOrdemDeCompra($oc_id, $obra_id)
+    {
+        $oc_aberta = OrdemDeCompra::where('obra_id', $obra_id)
+            ->where('user_id', Auth::id())
+            ->where('oc_status_id', 1)
+            ->first();
+
+        if($oc_aberta){
+            return response()->json(['success' => true, 'oc_aberta' => $oc_aberta->id]);
+        }else{
+            self::reabrirOrdemDeCompra($oc_id);
+
+            return response()->json(['success' => false]);
+        }
+    }
+
+    // Recebe id da OC Aberta e da que vai Reabrir. Junta os insumos na OC que vai Reabrir e deleta a que estava aberta.
+    public function unificarOrdemDeCompra($oc_aberta, $oc_reabrir)
+    {
+        $ordem_de_compra_aberta = OrdemDeCompra::find($oc_aberta);
+
+        if($ordem_de_compra_aberta) {
+            if(count($ordem_de_compra_aberta->itens()->get())) {
+                foreach ($ordem_de_compra_aberta->itens()->get() as $item) {
+                    $item->ordem_de_compra_id = $oc_reabrir;
+                    $item->save();
+                }
+            }
+
+            $ordem_de_compra_aberta->delete();
+
+            self::reabrirOrdemDeCompra($oc_reabrir);
+            return response()->json(['success' => true]);
+        }
+
+        return redirect('/ordens-de-compra');
+    }
+    
     public function reabrirOrdemDeCompra($id)
     {
         $ordem_de_compra = OrdemDeCompra::find($id);
@@ -1185,7 +1224,7 @@ class OrdemDeCompraController extends AppBaseController
 
         return redirect('/ordens-de-compra/carrinho?id='.$id);
     }
-
+    
     public function alterarQuantidade($id, Request $request)
     {
         $ordem_de_compra_item = OrdemDeCompraItem::find($id);
