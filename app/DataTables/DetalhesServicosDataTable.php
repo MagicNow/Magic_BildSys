@@ -46,6 +46,16 @@ class DetalhesServicosDataTable extends DataTable
                     return '<small class="pull-left">R$</small>'.number_format( doubleval($obj->saldo_orcamento), 2, ',','.');
                 }
             })
+            ->editColumn('descricao', function($obj){
+                if($obj->substitui){
+                    return "<strong  data-toggle=\"tooltip\" data-placement=\"top\" data-html=\"true\"
+                    title=\"". '<i class=\'fa fa-exchange\'></i> ' . $obj->substitui . "\">
+                    $obj->descricao
+                    </strong>";
+                } else {
+                    return $obj->descricao;
+                }
+            })
             ->filterColumn('descricao',function($query, $keyword){
                 $query->where(DB::raw("CONCAT(SUBSTRING_INDEX(orcamentos.codigo_insumo, '.', -1),' - ' ,orcamentos.descricao)"),'LIKE','%'.$keyword.'%');
             })
@@ -69,6 +79,7 @@ class DetalhesServicosDataTable extends DataTable
             DB::raw('0 as valor_realizado'),
             DB::raw('0 as a_gastar'),
             DB::raw('orcamentos.preco_total as saldo_orcamento'),
+            DB::raw("CONCAT(insumos_sub.codigo,' - ' ,insumos_sub.nome) as substitui"),
             DB::raw('
                     (SELECT 
                         SUM(ordem_de_compra_itens.valor_total) 
@@ -114,8 +125,10 @@ class DetalhesServicosDataTable extends DataTable
                     AND ordem_de_compra_itens.servico_id = '.$this->servico_id.'
                     AND ordem_de_compra_itens.obra_id ='. $this->obra_id .' ) as saldo_disponivel')
         ])
-            ->where('servico_id','=', DB::raw($this->servico_id))
-            ->where('obra_id','=', DB::raw($this->obra_id))
+            ->leftJoin(DB::raw('orcamentos orcamentos_sub'),  'orcamentos_sub.id', 'orcamentos.orcamento_que_substitui')
+            ->leftJoin(DB::raw('insumos insumos_sub'), 'insumos_sub.id', 'orcamentos_sub.insumo_id')
+            ->where('orcamentos.servico_id','=', DB::raw($this->servico_id))
+            ->where('orcamentos.obra_id','=', DB::raw($this->obra_id))
             ->groupBy('orcamentos.insumo_id');
 
         return $this->applyScopes($orcamentos);
