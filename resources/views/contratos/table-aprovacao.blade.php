@@ -52,9 +52,9 @@
                 <tr>
                     <th class="text-center">Código do insumo</th>
                     <th class="text-center">Descrição do insumo</th>
-                    <th class="text-center">Quantidade</th>
+                    <th class="text-center">Qtd.</th>
                     <th class="text-center">Und de medida</th>
-                    <th class="text-center">Status da quantidade do insumo</th>
+                    <th class="text-center">Status da qtd. do insumo</th>
                     <th class="text-center">Status do valor do insumo</th>
                     <th class="text-center">Status Serviço</th>
                     <th class="text-center">Acaba a obra</th>
@@ -169,11 +169,11 @@
                                 <thead>
                                 <tr>
                                     <th class="text-center">Unidade Medida</th>
-                                    <th class="text-center">Qntd prevista no orçamento</th>
+                                    <th class="text-center">Qtd. prevista no orçamento</th>
                                     <th class="text-center">Valor previsto no orçamento</th>
-                                    <th class="text-center">Qntd comprometida realizada</th>
+                                    <th class="text-center">Qtd. comprometida realizada</th>
                                     <th class="text-center">Valor comprometido realizado</th>
-                                    <th class="text-center">Qntd comprometida à gastar</th>
+                                    <th class="text-center">Qtd. comprometida à gastar</th>
                                     <th class="text-center">Valor comprometido à gastar</th>
                                 </tr>
                                 </thead>
@@ -204,7 +204,7 @@
                             <table class="table table-bordered table-striped">
                                 <thead>
                                 <tr>
-                                    <th class="text-center">Saldo de qntd do orçamento</th>
+                                    <th class="text-center">Saldo de qtd. do orçamento</th>
                                     <th class="text-center">Saldo de valor do orçamento</th>
                                     <th class="text-center">Emergencial</th>
                                     <th class="text-center">Insumo Principal</th>

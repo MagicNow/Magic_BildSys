@@ -45,12 +45,12 @@
                     <th>#</th>
                     <th>Código do insumo</th>
                     <th>Descrição do insumo</th>
-                    <th>Und de medida</th>
-                    <th>Quantidade</th>
+                    <th>Un. de medida</th>
+                    <th>Qtd.</th>
                     <th>Valor Total</th>
-                    <th>Quantidade</th>
+                    <th>Qtd.</th>
                     <th>Valor Total</th>
-                    <th>Quantidade</th>
+                    <th>Qtd.</th>
                     <th>Valor Total</th>
                     <th>Ação</th>
                 </tr>

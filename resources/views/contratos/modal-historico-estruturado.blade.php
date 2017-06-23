@@ -27,7 +27,7 @@
                                                 <th colspan="2">Contratado</th>
                                             </tr>
                                             <tr>
-                                                <th>Quantidade</th>
+                                                <th>Qtd.</th>
                                                 <th>Valor Total</th>
                                             </tr>
                                         </thead>
@@ -48,7 +48,7 @@
                                                 <th colspan="2">Realizado</th>
                                             </tr>
                                             <tr>
-                                                <th>Quantidade</th>
+                                                <th>Qtd.</th>
                                                 <th>Valor Total</th>
                                             </tr>
                                         </thead>
@@ -69,7 +69,7 @@
                                                 <th colspan="2">Saldo</th>
                                             </tr>
                                             <tr>
-                                                <th>Quantidade</th>
+                                                <th>Qtd.</th>
                                                 <th>Valor Total</th>
                                             </tr>
                                         </thead>
@@ -95,9 +95,9 @@
                                         </tr>
                                         <tr>
                                             <th>Movimentação</th>
-                                            <th>Quantidade</th>
-                                            <th>Valor</th>
-                                            <th>Quantidade</th>
+                                            <th>Qtd.</th>
+                                            <th>Valor Unitário</th>
+                                            <th>Qtd.</th>
                                             <th>Valor Unitário</th>
                                             <th>Data</th>
                                         </tr>
