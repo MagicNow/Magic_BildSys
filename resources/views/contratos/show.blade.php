@@ -1,4 +1,3 @@
-@inject('carbon', 'Carbon\Carbon')
 @extends('layouts.front')
 
 @section('styles')
@@ -127,7 +126,17 @@
                     <h4 class="modal-title">Reapropriar</h4>
                 </div>
                 <div class="modal-body">
-                    <div class="form-group js-ajax-container">
+                    <div class="form-group js-ajax-container"></div>
+                    <div class="form-group">
+                        <label for="qtd">Quantidade</label>
+                        <div class="input-group">
+                            {!! Form::text('qtd', null, ['class' => 'form-control money']) !!}
+                            <div class="input-group-btn">
+                                <button class="btn btn-warning btn-flat" id="add-all">
+                                    Tudo
+                                </button>
+                            </div>
+                        </div>
                     </div>
                     @include('partials.grupos-de-orcamento', ['full' => true])
                 </div>

@@ -40,7 +40,7 @@
                 <td>{{ float_to_money($modificacao['valor_unitario_anterior']) }}</td>
                 <td>{{ float_to_money($modificacao['qtd_atual'], '') }}</td>
                 <td>{{ float_to_money($modificacao['valor_unitario_atual']) }}</td>
-                <td>{{ $carbon->parse($modificacao['created_at'])->format('d/m/Y') }}</td>
+                <td>{{ $modificacao['created_at']->format('d/m/Y') }}</td>
                 <td>
                   @if($modificacao->workflow['podeAprovar'])
                     @if($modificacao->workflow['iraAprovar'])
