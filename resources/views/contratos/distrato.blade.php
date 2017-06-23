@@ -4,6 +4,7 @@
     <tr>
       <th>Código</th>
       <th>Quantidade</th>
+      <th>Quantidade a Distratar</th>
       <th>Nova Quantidade</th>
     </tr>
   </thead>
@@ -22,13 +23,18 @@
             <div class="input-group">
                 <input type="text"
                     class="form-control money text-right js-input"
-                    data-old-value="{{ $item->qtd }}"
-                    value="{{ float_to_money($item->qtd, '') }}"
+                    value="0,00"
+                    data-qtd="{{ $item->qtd_sobra }}"
                     name="distrato[{{ $item->id }}]">
                 <span class="input-group-btn">
-                    <button class="btn btn-flat btn-warning js-zerar" type="button">Zerar</button>
+                    <button class="btn btn-flat btn-warning js-zerar" type="button">
+                        Tudo
+                    </button>
                 </span>
             </div>
+        </td>
+        <td class="text-right" data-qtd="{{ $item->qtd_sobra }}">
+            {{ float_to_money($item->qtd_sobra, '') }}
         </td>
       </tr>
     @endforeach

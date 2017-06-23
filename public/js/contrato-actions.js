@@ -415,13 +415,31 @@ var Distrato = (function() {
     var button = event.currentTarget;
     this.id = button.dataset.itemId;
 
-    // this.defaultQtd = parseFloat(button.dataset.itemQtd);
-    // this.qtd.value = floatToMoney(this.defaultQtd, '');
-    // this.qtd.dispatchEvent(new Event('input'));
-
     getView(this.id, 'distrato', this.modal)
       .done(function() {
         self.inputs = self.modal.querySelectorAll('.js-input');
+        var handler = function(event) {
+          var input = event.currentTarget;
+
+          if(moneyToFloat(input.value) > parseFloat(input.dataset.qtd)) {
+            swal('', 'Você não pode distratar mais do que valor total', 'warning');
+
+            input.value = floatToMoney(parseFloat(input.dataset.qtd), '');
+            $(input).trigger('change');
+            return false;
+          }
+
+          var valueContainer = $(input).closest('tr').find('td:last').get(0);
+
+          valueContainer.innerText = floatToMoney(
+            parseFloat(input.dataset.qtd) - (input.value ? moneyToFloat(input.value) : 0),
+            ''
+          );
+        };
+
+        $(self.inputs).on('blur', handler);
+        $(self.inputs).on('change', handler);
+        $(self.inputs).on('keyup keypress keydown input', handler);
       });
   };
 
@@ -439,8 +457,10 @@ var Distrato = (function() {
 
   Distrato.prototype.zerar = function(event) {
     event.preventDefault();
-    var input = $(event.currentTarget).closest('.input-group').find('input');
-    input.val('0,00');
+    var input = $(event.currentTarget).parents('.input-group').find('input').get(0);
+
+    input.value = floatToMoney(parseFloat(input.dataset.qtd), '');
+    $(input).trigger('change');
   };
 
   Distrato.prototype.save = function(event) {
@@ -466,11 +486,21 @@ var Distrato = (function() {
 
   Distrato.prototype.valid = function() {
     var hasChanged = _.some(this.inputs, function(input) {
-      return parseFloat(input.dataset.oldValue) !== moneyToFloat(input.value);
+      return moneyToFloat(input.value) > 0;
+    });
+
+    var hasInvalid = _.some(this.inputs, function(input) {
+      return moneyToFloat(input.value) > parseFloat(input.dataset.qtd);
     });
 
     if (!hasChanged) {
       swal('', 'Nenhuma modificação encontrada', 'warning');
+
+      return false;
+    }
+
+    if(hasInvalid) {
+      swal('', 'Formulário contem distratos inválidos', 'warning');
 
       return false;
     }
