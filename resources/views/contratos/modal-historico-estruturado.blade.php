@@ -27,7 +27,7 @@
                                                 <th colspan="2">Contratado</th>
                                             </tr>
                                             <tr>
-                                                <th>Quantidade</th>
+                                                <th>Qtd.</th>
                                                 <th>Valor Total</th>
                                             </tr>
                                         </thead>
@@ -48,7 +48,7 @@
                                                 <th colspan="2">Realizado</th>
                                             </tr>
                                             <tr>
-                                                <th>Quantidade</th>
+                                                <th>Qtd.</th>
                                                 <th>Valor Total</th>
                                             </tr>
                                         </thead>
@@ -69,7 +69,7 @@
                                                 <th colspan="2">Saldo</th>
                                             </tr>
                                             <tr>
-                                                <th>Quantidade</th>
+                                                <th>Qtd.</th>
                                                 <th>Valor Total</th>
                                             </tr>
                                         </thead>
@@ -84,48 +84,50 @@
                                     </table>
                                 </div>
                             </div>
-                            <table class="table table-striped table-condensed">
-                                <thead>
-                                    <tr>
-                                        <th></th>
-                                        <th colspan="2" class="text-center">Antes</th>
-                                        <th colspan="2" class="text-center">Depois</th>
-                                        <th></th>
-                                    </tr>
-                                    <tr>
-                                        <th>Movimentação</th>
-                                        <th>Quantidade</th>
-                                        <th>Valor</th>
-                                        <th>Quantidade</th>
-                                        <th>Valor Unitário</th>
-                                        <th>Data</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($apropriacao->modificacoes as $modificacao)
+                            @if($apropriacao->modificacoes->isNotEmpty())
+                                <table class="table table-striped table-condensed">
+                                    <thead>
                                         <tr>
-                                            <td>
-                                                {{ $modificacao['tipo_modificacao'] }}
-                                            </td>
-                                            <td>
-                                                {{ float_to_money($modificacao->pivot->qtd_anterior, '') }}
-                                            </td>
-                                            <td>
-                                                {{ float_to_money($modificacao['valor_unitario_anterior'], '') }}
-                                            </td>
-                                            <td>
-                                                {{ float_to_money($modificacao->pivot->qtd_atual, '') }}
-                                            </td>
-                                            <td>
-                                                {{ float_to_money($modificacao['valor_unitario_atual'], '') }}
-                                            </td>
-                                            <td>
-                                                {{ $modificacao['created_at']->format('d/m/Y') }}
-                                            </td>
+                                            <th></th>
+                                            <th colspan="2" class="text-center">Antes</th>
+                                            <th colspan="2" class="text-center">Depois</th>
+                                            <th></th>
                                         </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                                        <tr>
+                                            <th>Movimentação</th>
+                                            <th>Qtd.</th>
+                                            <th>Valor Unitário</th>
+                                            <th>Qtd.</th>
+                                            <th>Valor Unitário</th>
+                                            <th>Data</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($apropriacao->modificacoes as $modificacao)
+                                            <tr>
+                                                <td>
+                                                    {{ $modificacao['tipo_modificacao'] }}
+                                                </td>
+                                                <td>
+                                                    {{ float_to_money($modificacao->pivot->qtd_anterior, '') }}
+                                                </td>
+                                                <td>
+                                                    {{ float_to_money($modificacao['valor_unitario_anterior'], '') }}
+                                                </td>
+                                                <td>
+                                                    {{ float_to_money($modificacao->pivot->qtd_atual, '') }}
+                                                </td>
+                                                <td>
+                                                    {{ float_to_money($modificacao['valor_unitario_atual'], '') }}
+                                                </td>
+                                                <td>
+                                                    {{ $modificacao['created_at']->format('d/m/Y') }}
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            @endif
                         </div>
                     </div>
                 @endforeach

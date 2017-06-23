@@ -45,12 +45,12 @@
                     <th>#</th>
                     <th>Código do insumo</th>
                     <th>Descrição do insumo</th>
-                    <th>Und de medida</th>
-                    <th>Quantidade</th>
+                    <th>Un. de medida</th>
+                    <th>Qtd.</th>
                     <th>Valor Total</th>
-                    <th>Quantidade</th>
+                    <th>Qtd.</th>
                     <th>Valor Total</th>
-                    <th>Quantidade</th>
+                    <th>Qtd.</th>
                     <th>Valor Total</th>
                     <th>Ação</th>
                 </tr>
@@ -94,9 +94,11 @@
                                 <i id="icone-expandir{{ $item->id }}"
                                     class="fa fa-caret-right fa-fw"></i>
                             </button>
-                            @include('contratos.itens_datatables_action', [
-                                'item' => $item
-                            ])
+                            @if($contrato->isStatus(2, 5) /* Aprovado ou Ativo */)
+                                @include('contratos.itens_datatables_action', [
+                                    'item' => $item
+                                ])
+                            @endif
                         </td>
                     </tr>
                     <tr id="dados-extras{{ $item->id }}" style="display: none">

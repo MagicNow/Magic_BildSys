@@ -1,5 +1,5 @@
 <div class="modal fade" id="modal-historico-{{ $item->id }}" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">
@@ -22,9 +22,9 @@
                             </tr>
                             <tr>
                                 <th>Movimentação</th>
-                                <th>Quantidade</th>
-                                <th>Valor</th>
-                                <th>Quantidade</th>
+                                <th>Qtd.</th>
+                                <th>Valor Unitário</th>
+                                <th>Qtd.</th>
                                 <th>Valor Unitário</th>
                                 <th>Data</th>
                             </tr>
