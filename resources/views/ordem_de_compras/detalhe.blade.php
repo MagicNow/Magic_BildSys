@@ -298,13 +298,12 @@
 
                     @foreach($itens as $item)
                         {{--Se o insumo foi incluído no orçamento, o SALDO DE ORÇAMENTO fica com o valor comprado negativo.--}}
-                        @if($item->insumo_incluido)
-                            @php $saldo_valor_orcamento = $farol_saldo_valor_orcamento = - doubleval($item->valor_total); @endphp
-                        @else
+                        {{--@if($item->insumo_incluido)--}}
+                            {{--@php $saldo_valor_orcamento = $farol_saldo_valor_orcamento = - doubleval($item->valor_total); @endphp--}}
+                        {{--@else--}}
                             @php $saldo_valor_orcamento = $item->substitui ? $item->valor_previsto_orcamento_pai-doubleval($item->valor_realizado) : $item->preco_inicial-doubleval($item->valor_realizado); @endphp
                             @php $farol_saldo_valor_orcamento = $item->substitui ? 0-doubleval($item->valor_realizado) : $item->preco_inicial-doubleval($item->valor_realizado); @endphp
-                        @endif
-
+                        {{--@endif--}}
                         <tr>
                             <td class="text-center">
                                 <span data-toggle="tooltip" data-placement="right" data-html="true"
@@ -324,7 +323,11 @@
                             <td class="text-center">
                                 {{--CONTA = saldo - valor oc--}}
                                 @php
-                                    $status_insumo = $farol_saldo_valor_orcamento - doubleval($item->valor_total);
+                                    if($item->substitui) {
+                                        $status_insumo = $farol_saldo_valor_orcamento;
+                                    } else {
+                                        $status_insumo = $farol_saldo_valor_orcamento - doubleval($item->valor_total);
+                                    }
                                 @endphp
                                 <i class="fa fa-circle {{ $status_insumo < 0 ? 'red': 'green'  }}" aria-hidden="true"></i>
                             </td>
