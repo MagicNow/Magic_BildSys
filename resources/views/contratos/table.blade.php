@@ -94,9 +94,11 @@
                                 <i id="icone-expandir{{ $item->id }}"
                                     class="fa fa-caret-right fa-fw"></i>
                             </button>
-                            @include('contratos.itens_datatables_action', [
-                                'item' => $item
-                            ])
+                            @if($contrato->isStatus(2, 5) /* Aprovado ou Ativo */)
+                                @include('contratos.itens_datatables_action', [
+                                    'item' => $item
+                                ])
+                            @endif
                         </td>
                     </tr>
                     <tr id="dados-extras{{ $item->id }}" style="display: none">

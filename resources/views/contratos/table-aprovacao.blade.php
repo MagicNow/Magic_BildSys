@@ -142,7 +142,7 @@
                         <button class="btn btn-flat btn-default btn-xs"
                             title="Insumo não originou de uma ordem de compra"
                             data-toggle="tooltip">
-                            <i class="fa fa-info fa-fw fa-lg"></i>
+                            <i class="fa fa-info fa-fw"></i>
                         </button>
                     @endif
                 </td>
