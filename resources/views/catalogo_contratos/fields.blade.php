@@ -462,7 +462,7 @@ $count_insumos = 0;
         }
         obra_selecionada = $('#obra_selecionada').val();
         obra_selecionada_txt = $("#obra_selecionada option:selected").text();
-        $('#obra_selecionada').val('');
+        $('#obra_selecionada').val(null).trigger("change");
         var novaObra = '<li class="list-group-item" id="obra_list_'+contadorObra+'">'+
                 '<i class="fa fa-building"></i>  '+ obra_selecionada_txt +
                         '<input type="hidden" name="obra[]" value="'+obra_selecionada+'">'+
