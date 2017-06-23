@@ -115,9 +115,9 @@ class ContratoItemModificacaoRepository extends BaseRepository
 
                     return [
                         'contrato_item_apropriacao_id' => $item_id,
-                        'qtd_atual' => $quantidade,
+                        'qtd_atual' => $item->qtd - $quantidade,
                         'qtd_anterior' => $item->qtd,
-                        'distratar' => $item->qtd - $quantidade,
+                        'distratar' => $quantidade,
                     ];
                 });
 
@@ -162,12 +162,14 @@ class ContratoItemModificacaoRepository extends BaseRepository
             $modificacaoLogRepository = app(ContratoItemModificacaoLogRepository::class);
             $modificacoes = [];
             foreach ($reajustes as $insumo_id => $novo_valor) {
+
                 $itens = ContratoItem::where('insumo_id', $insumo_id)
                     ->select('contrato_itens.*')
                     ->join('contratos', 'contratos.id', 'contrato_itens.contrato_id')
                     ->whereIn('contratos.obra_id', $obra_id)
                     ->where('contratos.fornecedor_id', $fornecedor_id)
                     ->get();
+
                 if ($itens->count()) {
                     foreach ($itens as $item) {
                         $modificacao = $this->create([
