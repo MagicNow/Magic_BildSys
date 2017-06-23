@@ -86,6 +86,7 @@
                 Realizar Troca
               </button>
             </div>
+          <input type="hidden" id="insumos_trocados">
           {!! Form::close() !!}
         </div>
       </div>
@@ -94,6 +95,8 @@
 @endsection
 @section('scripts')
   <script>
+    var array_insumos = [];
+
     $(function() {
       var $insumoSelect          = $('#insumo_id');
       var $quantidadeInput       = $('#qtd_total');
@@ -127,7 +130,8 @@
           data: function (params) {
             return {
               q: params.term,
-              page: params.page
+              page: params.page00,
+              insumos_trocados: $('#insumos_trocados').val()
             };
           },
 
@@ -188,6 +192,12 @@
         startLoading();
         var insumo_id = $insumoSelect.val();
         var qtd_total = moneyToFloat($quantidadeInput.val());
+
+        // Adiciona os insumos trocados no array
+        array_insumos.push(insumo_id);
+
+        $('#insumos_trocados').val(array_insumos);
+
         $.get('/admin/insumos/' + insumo_id + '/json')
           .done(function(insumo) {
             $listaDeTrocaContainer.removeClass('hidden');
@@ -200,7 +210,7 @@
                 '<td>' +
                   '<input type="hidden" name="data[' + clicks + '][insumo_id]" value="' + insumo_id + '">' +
                   '<input type="hidden" name="data[' + clicks + '][qtd_total]" value="' + qtd_total + '">' +
-                  '<button class="js-remove-row btn btn-sm btn-flat btn-danger">' +
+                  '<button class="js-remove-row btn btn-sm btn-flat btn-danger" onclick="removeInsumoArray(' + insumo_id + ')">' +
                     '<i class="fa fa-trash"></i> Remover' +
                   '</button>' +
                 '</td>' +
@@ -260,7 +270,19 @@
         $quantidadeInput.val('');
       };
 
-
     });
+
+    // Percorre o array de insumos trocados procurando o insumo removido e exclui do array
+    function removeInsumoArray(insumo_id)
+    {
+      for (var i = 0; i < array_insumos.length; i++) {
+        if (array_insumos[i] == insumo_id) {
+          array_insumos.splice(i, 1);
+          break;
+        }
+      }
+
+      $('#insumos_trocados').val(array_insumos);
+    }
   </script>
 @stop

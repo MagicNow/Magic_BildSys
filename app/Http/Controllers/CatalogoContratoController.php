@@ -346,6 +346,7 @@ class CatalogoContratoController extends AppBaseController
     }
 
     public function buscaInsumos(Request $request){
+
         $insumos = Insumo::select([
             'id',
             DB::raw("CONCAT(nome, ' - ', unidade_sigla) as nome")
@@ -358,8 +359,13 @@ class CatalogoContratoController extends AppBaseController
         ->whereHas('grupo', function($query) {
             return $query->where('active', 1);
         })
-        ->orderBy('nome', 'ASC')
-        ->paginate();
+        ->orderBy('nome', 'ASC');
+
+        if($request->insumos_trocados) {
+            $insumos = $insumos->whereNotIn('id', explode(',', $request->insumos_trocados));
+        }
+
+        $insumos = $insumos->paginate();
 
         return $insumos;
     }
