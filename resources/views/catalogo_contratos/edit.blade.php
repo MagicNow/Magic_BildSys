@@ -4,6 +4,10 @@
     <section class="content-header">
         <h1>
             Catálogo de Acordo
+            <span class="pull-right">
+                Situação:
+                <span class="label label-default" style="background-color: {{ $catalogoContrato->status->cor }}"> {{ $catalogoContrato->status->nome }} </span>
+            </span>
         </h1>
    </section>
    <div class="content">

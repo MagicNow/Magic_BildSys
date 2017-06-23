@@ -1,13 +1,126 @@
 <!-- Fornecedores Field -->
-<div class="form-group col-sm-12">
-    {!! Form::label('fornecedor_cod', 'Fornecedor:') !!}
-    @if(isset($catalogoContrato))
-        <div class="form-control">
-            {{ $catalogoContrato->fornecedor->nome }}
-        </div>
-    @else
-        {!! Form::select('fornecedor_cod', ['' => 'Escolha...']+$fornecedores,  null, ['class' => 'form-control','id'=>'fornecedor_cod','required'=>'required']) !!}
-    @endif
+<div class="row">
+    <div class="form-group col-sm-6">
+        {!! Form::label('fornecedor_cod', 'Fornecedor:') !!}
+        @if(isset($catalogoContrato))
+            <div class="form-control">
+                {{ $catalogoContrato->fornecedor->nome }}
+            </div>
+        @else
+            {!! Form::select('fornecedor_cod', ['' => 'Escolha...']+$fornecedores,  null, ['class' => 'form-control','id'=>'fornecedor_cod','required'=>'required']) !!}
+        @endif
+    </div>
+
+    <div class="form-group col-sm-6">
+        @if(isset($catalogoContrato))
+            @if($catalogoContrato->catalogo_contrato_status_id == 2 ||  $catalogoContrato->catalogo_contrato_status_id == 3 && $catalogoContrato->obras()->where('catalogo_contrato_status_id','1')->count()  )
+                <div class="box box-warning">
+                    <div class="box-header with-border">
+                        Enviar minuta assinada
+                    </div>
+                    <div class="box-body">
+                        @if(strlen($catalogoContrato->minuta_assinada))
+                        <a href="{{ Storage::url($catalogoContrato->minuta_assinada) }}" class="btn btn-info btn-xs btn-flat btn-block"> <i class="fa fa-download"></i> Baixar Minuta já assinada</a>
+                        @endif
+                        {!! Form::file('minuta_assinada',['class'=>'form-control']) !!}
+                    </div>
+                </div>
+            @endif
+        @endif
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <h4>Campos extras Minuta de Acordo</h4>
+        <?php
+            $contratoTemplateMinuta = \App\Models\ContratoTemplate::where('tipo','A')->first(); // busca o de Acordo
+            if( strlen(trim($contratoTemplateMinuta->campos_extras)) ){
+                $campos_extras = json_decode($contratoTemplateMinuta->campos_extras);
+            }
+
+            $valores_campos_extras_minutas = null;
+            if(isset($catalogoContrato)){
+                $valores_campos_extras_minutas = json_decode($catalogoContrato->campos_extras_minuta);
+            }
+        ?>
+        @if($campos_extras)
+            <table class="table table-condensed table-hovered table-striped table-bordered">
+                <thead>
+                <th width="40%">Campo</th>
+                <th width="40%">Valor</th>
+                <th width="20%">Tipo</th>
+                </thead>
+                <tbody>
+                @foreach($campos_extras as $campo => $valor)
+                    <?php
+                    $v_tag = 'CAMPO_EXTRA_MINUTA['. str_replace(']','', str_replace('[','', $valor->tag )). ']' ;
+                    $tag =  str_replace(']','', str_replace('[','', $valor->tag )) ;
+                    ?>
+                    <tr>
+                        <td class="text-center">
+                            <label for="{{ $v_tag }}">{{ $valor->nome }}</label>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control"
+                                   value="{{ isset($valores_campos_extras_minutas->$tag)?$valores_campos_extras_minutas->$tag:null }}"
+                                   required="required" name="{{ $v_tag }}" placeholder="{{ $valor->nome }}">
+                        </td>
+                        <td class="text-center">
+                            <label for="{{ $v_tag }}">{{ $valor->tipo }}</label>
+                        </td>
+                    </tr>
+                @endforeach
+                </tbody>
+            </table>
+        @endif
+
+    </div>
+    <div class="col-md-6">
+        <h4>Campos extras Quando for gerado um Contrato Automático</h4>
+        <?php
+        $contratoTemplateContrato = \App\Models\ContratoTemplate::where('tipo','M')->first(); // busca o de Acordo
+        if( strlen(trim($contratoTemplateContrato->campos_extras)) ){
+            $campos_extras = json_decode($contratoTemplateContrato->campos_extras);
+        }
+
+        $valores_campos_extras_contratos = null;
+        if(isset($catalogoContrato)){
+            $valores_campos_extras_contratos = json_decode($catalogoContrato->campos_extras_contrato);
+        }
+        ?>
+        @if($campos_extras)
+            <table class="table table-condensed table-hovered table-striped table-bordered">
+                <thead>
+                <th width="40%">Campo</th>
+                <th width="40%">Valor</th>
+                <th width="20%">Tipo</th>
+                </thead>
+                <tbody>
+                @foreach($campos_extras as $campo => $valor)
+                    <?php
+                    $v_tag = 'CAMPO_EXTRA_CONTRATO['. str_replace(']','', str_replace('[','', $valor->tag )). ']' ;
+                    $tag =  str_replace(']','', str_replace('[','', $valor->tag )) ;
+                    ?>
+                    <tr>
+                        <td class="text-center">
+                            <label for="{{ $v_tag }}">{{ $valor->nome }}</label>
+                        </td>
+                        <td>
+                            <input type="text"
+                                   value="{{ isset($valores_campos_extras_contratos->$tag)?$valores_campos_extras_contratos->$tag:null }}"
+                                   class="form-control" required="required" name="{{ $v_tag }}" placeholder="{{ $valor->nome }}">
+                        </td>
+                        <td class="text-center">
+                            <label for="{{ $v_tag }}">{{ $valor->tipo }}</label>
+                        </td>
+                    </tr>
+                @endforeach
+                </tbody>
+            </table>
+        @endif
+
+    </div>
 </div>
 
 <div class="col-sm-12">
@@ -148,6 +261,12 @@ $count_insumos = 0;
 
 <!-- Submit Field -->
 <div class="form-group col-sm-12">
+    {!! Form::button( '<i class="fa fa-check-square"></i> Gerar minuta e colocar em validação', [
+                            'class' => 'btn btn-warning btn-lg btn-flat pull-right',
+                            'value' => '1',
+                            'name' => 'gerar_minuta',
+                            'style' => 'margin-left:10px',
+                            'type'=>'submit']) !!}
     {!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save') ), ['class' => 'btn btn-success pull-right btn-lg btn-flat', 'type'=>'submit']) !!}
     <a href="{!! route('catalogo_contratos.index') !!}" class="btn btn-default btn-lg btn-flat"><i class="fa fa-times"></i>  {{ ucfirst( trans('common.cancel') )}}</a>
 </div>

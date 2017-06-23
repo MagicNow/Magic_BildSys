@@ -10,6 +10,7 @@ use App\Models\CatalogoContratoInsumo;
 use App\Models\CatalogoContrato;
 use App\Models\CatalogoContratoInsumoLog;
 use App\Models\CatalogoContratoObra;
+use App\Models\CatalogoContratoStatusLog;
 use App\Models\Fornecedor;
 use App\Models\Insumo;
 use App\Models\MegaFornecedor;
@@ -85,7 +86,42 @@ class CatalogoContratoController extends AppBaseController
             $catalogoContrato->fornecedor_id = $fornecedor->id;
         }
 
+        $catalogoContrato->catalogo_contrato_status_id = 1;
         $catalogoContrato->save();
+
+        $catalogoContratoStatus = CatalogoContratoStatusLog::create([
+            'catalogo_contrato_id' => $catalogoContrato->id,
+            'catalogo_contrato_status_id' => 1,
+            'user_id' => auth()->id()
+        ]);
+
+        $input = [];
+
+        // Template
+        $campos_extras_minuta = [];
+        if(isset($input['CAMPO_EXTRA_MINUTA'])){
+            foreach ($input['CAMPO_EXTRA_MINUTA'] as $campo => $valor){
+                $campos_extras_minuta[$campo] = $valor;
+            }
+
+            $campos_extras_minuta = json_encode($campos_extras_minuta);
+        }else{
+            $campos_extras_minuta = null;
+        }
+        $input['campos_extras_minuta'] = $campos_extras_minuta;
+        // Contrato
+        $campos_extras_contrato = [];
+        if(isset($input['CAMPO_EXTRA_CONTRATO'])){
+            foreach ($input['CAMPO_EXTRA_CONTRATO'] as $campo => $valor){
+                $campos_extras_contrato[$campo] = $valor;
+            }
+            $campos_extras_contrato = json_encode($campos_extras_contrato);
+        }else{
+            $campos_extras_contrato = null;
+        }
+        $input['campos_extras_contrato'] = $campos_extras_contrato;
+
+        $catalogoContrato = $this->catalogoContratoRepository->update($input, $catalogoContrato->id);
 
         if($request->obra){
             foreach ($request->obra as $obra_id){
@@ -124,7 +160,22 @@ class CatalogoContratoController extends AppBaseController
             }
         }
 
-        Flash::success('Catalogo Contrato '.trans('common.saved').' '.trans('common.successfully').'.');
+        if($request->gerar_minuta){
+            // Status do acordo
+            $catalogoContrato->catalogo_contrato_status_id = 2;
+            $catalogoContrato->save();
+            $catalogoContratoStatus = CatalogoContratoStatusLog::create([
+                'catalogo_contrato_id' => $catalogoContrato->id,
+                'catalogo_contrato_status_id' => 2,
+                'user_id' => auth()->id()
+            ]);
+            Flash::success('Catalogo Contrato '.trans('common.saved').' e minuta disponível.');
+
+        }else{
+            Flash::success('Catalogo Contrato '.trans('common.saved').' '.trans('common.successfully').'.');
+        }
+
+
 
         return redirect(route('catalogo_contratos.index'));
     }
@@ -187,9 +238,35 @@ class CatalogoContratoController extends AppBaseController
             return redirect(route('catalogo_contratos.index'));
         }
 
-        $catalogoContrato = $this->catalogoContratoRepository->update($request->except('fornecedor_cod','contratoInsumos'), $id);
+        $input = $request->except('fornecedor_cod','contratoInsumos');
 
-        $catalogoContrato->update();
+        // Template
+        $campos_extras_minuta = [];
+        if(isset($input['CAMPO_EXTRA_MINUTA'])){
+            foreach ($input['CAMPO_EXTRA_MINUTA'] as $campo => $valor){
+                $campos_extras_minuta[$campo] = $valor;
+            }
+
+            $campos_extras_minuta = json_encode($campos_extras_minuta);
+        }else{
+            $campos_extras_minuta = null;
+        }
+        $input['campos_extras_minuta'] = $campos_extras_minuta;
+        // Contrato
+        $campos_extras_contrato = [];
+        if(isset($input['CAMPO_EXTRA_CONTRATO'])){
+            foreach ($input['CAMPO_EXTRA_CONTRATO'] as $campo => $valor){
+                $campos_extras_contrato[$campo] = $valor;
+            }
+            $campos_extras_contrato = json_encode($campos_extras_contrato);
+        }else{
+            $campos_extras_contrato = null;
+        }
+        $input['campos_extras_contrato'] = $campos_extras_contrato;
+
+        $catalogoContrato = $this->catalogoContratoRepository->update($input, $id);
+
+
         if($request->obra){
             foreach ($request->obra as $obra_id){
                 $catalogoContratoObra = CatalogoContratoObra::where('obra_id',$obra_id)->where('catalogo_contrato_id', $catalogoContrato->id)->first();
@@ -302,7 +379,22 @@ class CatalogoContratoController extends AppBaseController
             }
         }
 
-        Flash::success('Catalogo Contrato '.trans('common.updated').' '.trans('common.successfully').'.');
+        if($request->gerar_minuta){
+            // Status do acordo
+            $catalogoContrato->catalogo_contrato_status_id = 2;
+            $catalogoContrato->save();
+
+            $catalogoContratoStatus = CatalogoContratoStatusLog::create([
+                'catalogo_contrato_id' => $catalogoContrato->id,
+                'catalogo_contrato_status_id' => 2,
+                'user_id' => auth()->id()
+            ]);
+            Flash::success('Catalogo Contrato '.trans('common.updated').' e minuta disponível para baixar.');
+        }else{
+            Flash::success('Catalogo Contrato '.trans('common.updated').' '.trans('common.successfully').'.');
+        }
+
+
 
         return redirect(route('catalogo_contratos.index'));
     }
