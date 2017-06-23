@@ -103,28 +103,46 @@ var getView = function(id, view, modal) {
 
 var Reapropriar = (function() {
   function Reapropriar() {
-    this.modal = document.getElementById('modal-reapropriar');
-    this.insumo = document.getElementById('insumo_id');
-    this.addAllBtn = document.getElementById('add-all');
-    this.grupos = document.querySelectorAll('.js-group-selector');
-    this.saveBtn = this.modal.querySelector('.js-save');
-    this.id = 0;
-    var _this = this;
+    this.modal      = document.getElementById('modal-reapropriar');
+    this.insumo     = document.getElementById('insumo_id');
+    this.addAllBtn  = document.getElementById('add-all');
+    this.grupos     = document.querySelectorAll('.js-group-selector');
+    this.qtd        = this.modal.querySelector('[name=qtd]');
+    this.saveBtn    = this.modal.querySelector('.js-save');
+    this.id         = 0;
+    this.defaultQtd = 0;
+    var _this       = this;
+
 
     $(this.modal).on('hide.bs.modal', function(e) {
       $(_this.insumo).select2('destroy');
     });
 
+    $(this.modal).on('ifToggled', '.js-item', function(event) {
+      _this.addAllBtn.dataset.qtd = event.currentTarget.dataset.qtd;
+    });
+
     $body.on('click', '.js-reapropriar', this.reapropriar.bind(this));
+    this.addAllBtn.addEventListener('click', this.addAll.bind(this));
     this.saveBtn.addEventListener('click', this.save.bind(this));
   }
 
   Reapropriar.prototype.reapropriar = function(event) {
     var button = event.currentTarget;
+    this.qtd.value = '';
     this.id = button.dataset.itemId;
+    var self = this;
 
     getView(this.id, 'reapropriacao', this.modal);
   }
+
+  Reapropriar.prototype.addAll = function(event) {
+    if(!this.addAllBtn.dataset.qtd) {
+      return false;
+    }
+
+    this.qtd.value = floatToMoney(parseFloat(this.addAllBtn.dataset.qtd), '');
+  };
 
   Reapropriar.prototype.save = function() {
     if (!this.valid()) {
@@ -153,7 +171,7 @@ var Reapropriar = (function() {
 
     var data = {
       _token: token,
-      qtd: item.dataset.qtd
+      qtd: this.qtd.value,
     };
 
     data.item_id = item.value;
@@ -168,7 +186,7 @@ var Reapropriar = (function() {
           type: 'success',
         }, function() {
           $(_this.modal).modal('hide');
-          LaravelDataTables.dataTableBuilder.draw();
+          location.reload();
         });
       })
       .fail(function(response) {
@@ -195,8 +213,20 @@ var Reapropriar = (function() {
   };
 
   Reapropriar.prototype.valid = function() {
+    var qtd = moneyToFloat(this.qtd.value);
+
     if (!this.getSelectedItem()) {
       swal('', 'Selecione o item a ser reapropriado', 'warning');
+      return false;
+    }
+
+    if (qtd > parseFloat(this.addAllBtn.dataset.qtd)) {
+      swal('', 'Neste item o máximo de reapropriação é ' + this.addAllBtn.dataset.qtd, 'warning');
+      return false;
+    }
+
+    if (!this.qtd.value.length || moneyToFloat(this.qtd.value) === 0) {
+      swal('', 'É necessário especificar a quantidade para reapropriar', 'warning');
       return false;
     }
 
@@ -559,9 +589,6 @@ var Editar = (function() {
       swal('', 'O novo valor não pode ser zero', 'warning');
       return false;
     }
-
-    console.log('Valor:', moneyToFloat(this.valor.value), this.valorDefault);
-    console.log('qtd:', moneyToFloat(this.qtd.value), this.qtdDefault);
 
     if (moneyToFloat(this.valor.value) === this.valorDefault &&
       moneyToFloat(this.qtd.value) === this.qtdDefault) {
