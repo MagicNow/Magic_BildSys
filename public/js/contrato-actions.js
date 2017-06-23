@@ -22,7 +22,7 @@ $(function() {
         $('#modal-alcadas').modal('show');
       })
       .fail(function() {
-        console.log(arguments)
+        swal('Ops!', 'Ocorreu um erro ao mostrar os detalhes da alçada', 'error');
       });
   });
 
@@ -248,17 +248,20 @@ var Reajuste = (function() {
           _.method('classList.contains', 'js-adicional')
         );
 
-        $(this.modal)
-          .find('.js-adicional')
-          .on('input, change, blur', self.adjustTotal.bind(this));
+        var inputs = $(self.modal).find('.js-adicional');
+
+        inputs.on('blur', self.adjustTotal.bind(this));
+        inputs.on('change', self.adjustTotal.bind(this));
+        inputs.on('keyup keypress keydown', self.adjustTotal.bind(this));
       });
   };
 
   Reajuste.prototype.adjustTotal = function(event) {
     var input = event.currentTarget;
     var valueContainer = $(input).parents('tr').find('td:last').get(0);
+
     valueContainer.innerText = floatToMoney(
-      moneyToFloat(input.value) + moneyToFloat(valueContainer.innerText),
+      (input.value ? moneyToFloat(input.value) : 0) + parseFloat(valueContainer.dataset.itemQtd),
       ''
     );
   };
