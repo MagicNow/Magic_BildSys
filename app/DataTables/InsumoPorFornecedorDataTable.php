@@ -61,10 +61,15 @@ class InsumoPorFornecedorDataTable extends DataTable
                 $qtd_comprada = $item_fornecedor ? $item_fornecedor->qtd : 0;
                 $valor_comprado_oi = $insumo['valor_unitario_calculo'] * $qtd_comprada;
                 if($qcFornecedor->fornecedor) {
-                    $insumo[str_replace('.',
-                                        '*dot*',
-                                        $qcFornecedor->fornecedor->nome . '||' . $qcFornecedor->id)
-                    ] = float_to_money($valor);
+                    if(!$qcFornecedor->desistencia_motivo_id || !$qcFornecedor->desistencia_texto) {
+                        $insumo[str_replace('.',
+                            '*dot*',
+                            $qcFornecedor->fornecedor->nome . '||' . $qcFornecedor->id)] = float_to_money($valor);
+                    }else{
+                        $insumo[str_replace('.',
+                            '*dot*',
+                            $qcFornecedor->fornecedor->nome . '||' . $qcFornecedor->id)] = '<span style="color:red">DECLINED</span>';
+                    }
                 }
                 $insumo['qntd do QC'] =  number_format($qtd_comprada, 2, ',', '.');
                 $insumo['valor total'] = float_to_money($valor_comprado_oi);

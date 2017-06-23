@@ -429,7 +429,9 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->post('/ordens-de-compra/upload-anexos/{id}', 'OrdemDeCompraController@uploadAnexos');
         $router->get('/ordens-de-compra/remover-anexo/{id}', 'OrdemDeCompraController@removerAnexo');
         $router->get('/ordens-de-compra/carrinho/remove-contrato', 'OrdemDeCompraController@removerContrato');
+        $router->get('/ordens-de-compra/reabrir-ordem-de-compra/verificar/{oc_id}/{obra_id}', 'OrdemDeCompraController@verificaReabrirOrdemDeCompra');
         $router->get('/ordens-de-compra/reabrir-ordem-de-compra/{id}', 'OrdemDeCompraController@reabrirOrdemDeCompra');
+        $router->get('/ordens-de-compra/unificar-ordem-de-compra/{oc_aberta}/{oc_reabrir}', 'OrdemDeCompraController@unificarOrdemDeCompra');
         $router->get('/ordens-de-compra/carrinho/alterar-quantidade/{id}', 'OrdemDeCompraController@alterarQuantidade');
         $router->get('/ordens-de-compra/carrinho/alterar-valor-unitario/{id}', 'OrdemDeCompraController@alteraValorUnitario');
         $router->get('/ordens-de-compra/carrinho/remover-item/{id}', 'OrdemDeCompraController@removerItem');

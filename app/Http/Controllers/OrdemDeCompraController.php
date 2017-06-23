@@ -580,6 +580,17 @@ class OrdemDeCompraController extends AppBaseController
             ->pluck('tarefa', 'id')
             ->toArray();
 
+
+        $ordem = OrdemDeCompra::where('oc_status_id', 1)
+            ->where('user_id', Auth::user()->id)
+            ->where('obra_id', $request->obra_id)
+            ->first();
+
+        if($ordem){
+            # Colocando na sessão
+            \Session::put('ordemCompra', $ordem->id);
+        }
+
         return $comprasDataTable->render(
             'ordem_de_compras.obras_insumos',
             compact(
@@ -626,11 +637,10 @@ class OrdemDeCompraController extends AppBaseController
                 'ordem_de_compra_id'=>$ordem->id,
                 'user_id'=>Auth::id()
             ]);
-
-            # Colocando na sessão
-//            $request->session()->put('ordemCompra', $ordem->id);
-            \Session::put('ordemCompra', $ordem->id);
         }
+
+        # Colocando na sessão
+        \Session::put('ordemCompra', $ordem->id);
 
         // Encontra o orçamento ativo para validar preço
         $orcamento_ativo = Orcamento::where('insumo_id', $request->id)
@@ -1166,6 +1176,45 @@ class OrdemDeCompraController extends AppBaseController
         return view('ordem_de_compras.dashboard', compact('reprovados', 'aprovados', 'emaprovacao', 'abaixo_orcamento', 'dentro_orcamento', 'acima_orcamento'));
     }
 
+    // Verifica se tem OC aberta antes de reabrir
+    public function verificaReabrirOrdemDeCompra($oc_id, $obra_id)
+    {
+        $oc_aberta = OrdemDeCompra::where('obra_id', $obra_id)
+            ->where('user_id', Auth::id())
+            ->where('oc_status_id', 1)
+            ->first();
+
+        if($oc_aberta){
+            return response()->json(['success' => true, 'oc_aberta' => $oc_aberta->id]);
+        }else{
+            self::reabrirOrdemDeCompra($oc_id);
+
+            return response()->json(['success' => false]);
+        }
+    }
+
+    // Recebe id da OC Aberta e da que vai Reabrir. Junta os insumos na OC que vai Reabrir e deleta a que estava aberta.
+    public function unificarOrdemDeCompra($oc_aberta, $oc_reabrir)
+    {
+        $ordem_de_compra_aberta = OrdemDeCompra::find($oc_aberta);
+
+        if($ordem_de_compra_aberta) {
+            if(count($ordem_de_compra_aberta->itens()->get())) {
+                foreach ($ordem_de_compra_aberta->itens()->get() as $item) {
+                    $item->ordem_de_compra_id = $oc_reabrir;
+                    $item->save();
+                }
+            }
+
+            $ordem_de_compra_aberta->delete();
+
+            self::reabrirOrdemDeCompra($oc_reabrir);
+            return response()->json(['success' => true]);
+        }
+
+        return redirect('/ordens-de-compra');
+    }
+    
     public function reabrirOrdemDeCompra($id)
     {
         $ordem_de_compra = OrdemDeCompra::find($id);
@@ -1175,7 +1224,7 @@ class OrdemDeCompraController extends AppBaseController
 
         return redirect('/ordens-de-compra/carrinho?id='.$id);
     }
-
+    
     public function alterarQuantidade($id, Request $request)
     {
         $ordem_de_compra_item = OrdemDeCompraItem::find($id);
@@ -1243,6 +1292,7 @@ class OrdemDeCompraController extends AppBaseController
 
         $ordemDeCompraItens = OrdemDeCompraItem::join('ordem_de_compras', 'ordem_de_compras.id', '=', 'ordem_de_compra_itens.ordem_de_compra_id')
             ->where('ordem_de_compra_itens.servico_id', $servico_id)
+            ->where('ordem_de_compra_itens.obra_id', $obra_id)
             ->whereIn('oc_status_id',[2,3,5]);
 
         $orcamentoInicial = $totalAGastar = $realizado = $totalSolicitado = 0;
@@ -1466,11 +1516,10 @@ class OrdemDeCompraController extends AppBaseController
                 'ordem_de_compra_id'=>$ordem->id,
                 'user_id'=>Auth::id()
             ]);
-
-            # Colocando na sessão
-//            $request->session()->put('ordemCompra', $ordem->id);
-            \Session::put('ordemCompra', $ordem->id);
         }
+
+        # Colocando na sessão
+        \Session::put('ordemCompra', $ordem->id);
 
         // Encontra o orçamento ativo
         $orcamento_ativo = Orcamento::where('insumo_id', $request->id)
@@ -1561,10 +1610,10 @@ class OrdemDeCompraController extends AppBaseController
                 'ordem_de_compra_id'=>$ordem->id,
                 'user_id'=>Auth::id()
             ]);
-
-            # Colocando na sessão
-            \Session::put('ordemCompra', $ordem->id);
         }
+
+        # Colocando na sessão
+        \Session::put('ordemCompra', $ordem->id);
 
         // Encontra o orçamento ativo para validar preço
         $orcamento_ativo = Orcamento::where('insumo_id', $request['id'])

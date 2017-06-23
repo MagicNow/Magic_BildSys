@@ -1,9 +1,7 @@
 @if(strtolower($situacao) == 'reprovada')
-    <a href="ordens-de-compra/reabrir-ordem-de-compra/{{$id}}">
-        <button type="button" class="btn btn-ms btn-flat">
-            <i class="fa fa-eye" aria-hidden="true"></i> Reabrir
-        </button>
-    </a>
+    <button type="button" class="btn btn-ms btn-flat" onclick="reabrir({{$id}}, {{$obra_id}});">
+        Reabrir
+    </button>
 @elseif(strtolower($situacao) == 'em aberto')
     <a href="ordens-de-compra/carrinho?id={{$id}}">
         <button type="button" class="btn btn-ms btn-flat">
