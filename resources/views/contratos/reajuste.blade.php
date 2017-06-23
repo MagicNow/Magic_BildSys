@@ -40,7 +40,7 @@
                 </span>
             </div>
         </td>
-        <td>
+        <td data-item-qtd="{{ $apropariacao->qtd }}">
             {{ float_to_money($apropariacao->qtd, '') }}
         </td>
       </tr>
