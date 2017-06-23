@@ -21,6 +21,23 @@ function showHideInfoExtra(qual) {
   }
 }
 
+function collapse() {
+  $body.on('click', '.js-collapse', function(event) {
+    var button = event.currentTarget;
+    var target = document.querySelector(button.dataset.target);
+    var icon = button.querySelector('i.fa');
+
+    target.classList.toggle('hidden');
+
+    var current_icon = target.classList.contains('hidden') ? 'fa-plus' : 'fa-minus';
+
+    icon.classList.remove('fa-plus');
+    icon.classList.remove('fa-minus');
+
+    icon.classList.add(current_icon);
+  });
+}
+
 function stopLoading() {
   if ($('.loader').length) {
     $('.loader').fadeToggle(function() {
@@ -39,6 +56,9 @@ var mascara = function(val) {
   };
 
 $(function() {
+
+  collapse();
+
   $.ajaxSetup({
     headers: {
       'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -326,4 +346,3 @@ jQuery(function($) {
   };
   $.datepicker.setDefaults($.datepicker.regional['pt-BR']);
 });
-
