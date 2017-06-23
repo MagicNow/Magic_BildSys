@@ -1,13 +1,13 @@
 <hr>
 <div class="row" id="totalInsumos">
-    <div class="col-md-2 col-20 text-right borda-direita">
+    <div class="col-sm-3 text-right borda-direita">
         <h5>Valor previsto no orçamento</h5>
         <h4>
             <small class="pull-left">R$</small>
             {{ number_format($orcamentoInicial,2,',','.') }}
         </h4>
     </div>
-    <div class="col-md-2 col-20 text-right borda-direita" title="Até o momento em todos os itens desta O.C.">
+    <div class="col-sm-3 text-right borda-direita" title="Até o momento em todos os itens desta O.C.">
         <h5>Valor comprometido realizado</h5>
         <h4>
             <small class="pull-left">R$</small>0,00
@@ -15,7 +15,7 @@
             {{--                    {{ number_format($realizado,2,',','.') }}--}}
         </h4>
     </div>
-    <div class="col-md-2 col-20 text-right borda-direita" title="Nos itens desta O.C.">
+    <div class="col-sm-3 text-right borda-direita" title="Nos itens desta O.C.">
         <h5>Valor comprometido à gastar</h5>
         <h4>
             <small class="pull-left">R$</small>0,00
@@ -23,25 +23,13 @@
             {{--                    {{ number_format($totalAGastar,2,',','.') }}--}}
         </h4>
     </div>
-    <div class="col-md-2 col-20 text-right borda-direita" title="Restante do Orçamento Inicial em relação aos itens desta O.C.">
+    <div class="col-sm-3 text-right borda-direita" title="Restante do Orçamento Inicial em relação aos itens desta O.C.">
         <h5>SALDO DE ORÇAMENTO</h5>
         <h4>
             <small class="pull-left">R$</small>
             {{ number_format($orcamentoInicial,2,',','.') }}
             {{--- TO DO = Saldo: Previsto - Realizado - A gastar--}}
             {{--{{ number_format($saldo,2,',','.') }}--}}
-        </h4>
-    </div>
-    <div class="col-md-2 col-20 text-right">
-        <h5>SALDO DISPONÍVEL</h5>
-        <h4>
-            <small class="pull-left">R$</small>
-            {{
-                float_to_money(
-                    $orcamentoInicial - $contrato->valor_atual_inicial,
-                    ''
-                )
-            }}
         </h4>
     </div>
 </div>
