@@ -39,10 +39,6 @@ class ComprasDataTable extends DataTable
                 }
             })
             ->editColumn('troca', function ($obj) {
-                if($obj->substitui) {
-                    return '<button data-toggle="popover" title="Substitui Insumo" data-content="' . $obj->substitui . '" type="button" data-placement="left" class="btn btn-info btn-flat btn-xs"> <i class="fa fa-exchange"></i> </button>';
-                }
-
                 if ($obj->insumo_grupo_id == 1570) {
                     return link_to(
                         'compras/trocar/' . $obj->orcamento_id,
@@ -54,7 +50,18 @@ class ComprasDataTable extends DataTable
                 }
             })
             ->editColumn('nome', function ($obj) {
-                return "<strong  data-toggle=\"tooltip\" data-placement=\"top\" data-html=\"true\"
+                if($obj->substitui){
+                    return "<strong  data-toggle=\"tooltip\" data-placement=\"top\" data-html=\"true\"
+                    title=\"". $obj->tooltip_grupo . ' <br> ' .
+                    $obj->tooltip_subgrupo1 . ' <br> ' .
+                    $obj->tooltip_subgrupo2 . ' <br> ' .
+                    $obj->tooltip_subgrupo3 . ' <br> ' .
+                    $obj->tooltip_servico . ' <br> <i class=\'fa fa-exchange\'></i> ' . $obj->substitui .
+                    "\">
+                    $obj->nome
+                    </strong>";
+                } else {
+                    return "<strong  data-toggle=\"tooltip\" data-placement=\"top\" data-html=\"true\"
                     title=\"". $obj->tooltip_grupo . ' <br> ' .
                     $obj->tooltip_subgrupo1 . ' <br> ' .
                     $obj->tooltip_subgrupo2 . ' <br> ' .
@@ -62,6 +69,7 @@ class ComprasDataTable extends DataTable
                     $obj->tooltip_servico  ."\">
                     $obj->nome
                     </strong>";
+                }
             })
             ->editColumn('valor_total', function($obj){
                 return $obj->quantidade_compra ? "R$ ".number_format($obj->getOriginal('preco_unitario') * money_to_float($obj->quantidade_compra), 2,',','.') : 'R$ 0,00';
