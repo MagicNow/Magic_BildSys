@@ -30,11 +30,11 @@ class DetalhesServicosDataTable extends DataTable
             })
             ->editColumn('saldo_orcamento', function($obj){
 //              Se o insumo foi incluído no orçamento, o SALDO DE ORÇAMENTO fica com o valor comprado negativo.
-                if($obj->insumo_incluido){
-                    return '<small class="pull-left">R$</small> - '.number_format( doubleval($obj->valor_oc), 2, ',','.');
-                }else{
+//                if($obj->insumo_incluido){
+//                    return '<small class="pull-left">R$</small> - '.number_format( doubleval($obj->valor_oc), 2, ',','.');
+//                }else{
                     return '<small class="pull-left">R$</small>'.number_format( doubleval($obj->saldo_orcamento), 2, ',','.');
-                }
+//                }
             })
             ->editColumn('valor_oc', function($obj){
                 return '<small class="pull-left">R$</small>'.number_format( doubleval($obj->valor_oc), 2, ',','.');
