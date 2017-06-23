@@ -25,6 +25,8 @@ class UpdateWorkflowAlcadaRequest extends FormRequest
      */
     public function rules()
     {
-        return WorkflowAlcada::$rules;
+        $rules = WorkflowAlcada::$rules;
+        unset($rules['workflow_tipo_id']);
+        return $rules;
     }
 }

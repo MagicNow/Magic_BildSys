@@ -29,16 +29,20 @@ class WorkflowAlcadaRepository extends BaseRepository
 
     public function validateBusinessLogic($input, $id = null)
     {
+        $workflowTipo_id = null;
         if($id) {
             $alcada = $this->model->find($id);
+            $workflowTipo_id = $alcada->workflow_tipo_id;
+        }else{
+            $workflowTipo_id = $input['workflow_tipo_id'];
         }
 
         $alcadas = $this->model
-            ->where('workflow_tipo_id', $input['workflow_tipo_id'])
+            ->where('workflow_tipo_id', $workflowTipo_id)
             ->where('id', '!=', $id)
             ->get();
 
-        $workflowTipo = WorkflowTipo::find($input['workflow_tipo_id']);
+        $workflowTipo = WorkflowTipo::find($workflowTipo_id);
 
         if(!empty(@$input['valor_minimo'])) {
             $input['valor_minimo'] = money_to_float($input['valor_minimo']);
@@ -47,6 +51,7 @@ class WorkflowAlcadaRepository extends BaseRepository
         if($alcadas->count()) {
             if(!isset($alcada) || isset($alcada) && $alcada->ordem != $input['ordem']) {
                 $alcada_anterior = $alcadas->where('ordem', '<=', intval($input['ordem']))
+                    ->where('workflow_tipo_id',$workflowTipo_id)
                     ->first();
                 if(!$alcada_anterior) {
                     Flash::error('Ordem inválida, não há alçadas anteriores.');
@@ -78,6 +83,19 @@ class WorkflowAlcadaRepository extends BaseRepository
             }
 
         } else {
+            if(isset($alcada)){
+                if($alcada->ordem > 1 || $input['ordem'] > 1){
+                    Flash::error('Ordem inválida, não existem alçadas em ordenação anterior.');
+
+                    throw new HttpResponseException(back()->withInput());
+                }
+            }else{
+                if($input['ordem'] > 1){
+                    Flash::error('Ordem inválida, não existem alçadas em ordenação anterior.');
+
+                    throw new HttpResponseException(back()->withInput());
+                }
+            }
             $input['ordem'] = 1;
 
             if($workflowTipo->usa_valor_minimo && $input['valor_minimo'] > 0) {
