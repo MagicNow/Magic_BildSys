@@ -33,15 +33,17 @@
         </h4>
     </div>
 </div>
-<div class="panel panel-default">
+<div class="panel panel-default panel-normal-table">
     <div class="panel-body table-responsive">
         <table class="table table-bordered">
             <thead>
                 <tr>
                     <th class="text-center">Código do insumo</th>
                     <th class="text-center">Descrição do insumo</th>
+                    <th class="text-center">Un. de medida</th>
                     <th class="text-center">Qtd.</th>
-                    <th class="text-center">Und de medida</th>
+                    <th class="text-center">Valor Unitário</th>
+                    <th class="text-center">Valor Total</th>
                     <th class="text-center">Status da qtd. do insumo</th>
                     <th class="text-center">Status do valor do insumo</th>
                     <th class="text-center">Status Serviço</th>
@@ -64,8 +66,10 @@
                     {{ $item->insumo->codigo }}</span>
                 </td>
                 <td class="text-center">{{ $item->insumo->nome }}</td>
-                <td class="text-center">{{ float_to_money($item->qtd, '') }}</td>
                 <td class="text-center">{{ $item->insumo->unidade_sigla }}</td>
+                <td class="text-center">{{ float_to_money($item->qtd, '') }}</td>
+                <td class="text-center">{{ float_to_money($item->contratoItem->valor_unitario) }} </td>
+                <td class="text-center">{{ float_to_money($item->contratoItem->valor_unitario * $item->qtd) }} </td>
                 <td class="text-center">
                     {{--CONTA = saldo - previsto no orçamento--}}
                     @if($item->ordem_de_compra_item_id)
