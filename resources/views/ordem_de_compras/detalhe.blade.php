@@ -323,7 +323,11 @@
                             <td class="text-center">
                                 {{--CONTA = saldo - valor oc--}}
                                 @php
-                                    $status_insumo = $farol_saldo_valor_orcamento - doubleval($item->valor_total);
+                                    if($item->substitui) {
+                                        $status_insumo = $farol_saldo_valor_orcamento;
+                                    } else {
+                                        $status_insumo = $farol_saldo_valor_orcamento - doubleval($item->valor_total);
+                                    }
                                 @endphp
                                 <i class="fa fa-circle {{ $status_insumo < 0 ? 'red': 'green'  }}" aria-hidden="true"></i>
                             </td>
