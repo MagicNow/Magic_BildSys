@@ -120,7 +120,7 @@
                         </li>--}}
 
                         <!-- Notifications: style can be found in dropdown.less -->
-                        <li class="dropdown notifications-menu" id="notificacoesLidas" onclick="notificacoesLidas()">
+                        <li class="dropdown notifications-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                                 <i class="fa fa-bell-o"></i>
                                 <span class="label label-success notification-counter"></span>

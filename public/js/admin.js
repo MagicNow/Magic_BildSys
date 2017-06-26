@@ -65428,10 +65428,8 @@ var NotificationSystem = {
     this.$container.html('');
   },
   verifyNotifications: function() {
-    if($('#notificacoesLidas').attr('class') == 'dropdown notifications-menu') {
-      var ajax = $.get('/notifications');
-      ajax.done(this.successCallback.bind(this));
-    }
+    var ajax = $.get('/notifications');
+    ajax.done(this.successCallback.bind(this));
   },
   markAsRead: function(id) {
     return $.post('/notifications/' + id + '/mark-as-read');
@@ -65474,6 +65472,3 @@ var NotificationSystem = {
   }
 };
 
-function notificacoesLidas() {
-    $.ajax('/notifications/notificacoesLidas');
-}
