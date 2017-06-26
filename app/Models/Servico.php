@@ -15,13 +15,11 @@ class Servico extends Model
     use SoftDeletes;
 
     public $table = 'servicos';
-    
+
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
-
     protected $dates = ['deleted_at'];
-
 
     public $fillable = [
         'codigo',
@@ -47,7 +45,7 @@ class Servico extends Model
      * @var array
      */
     public static $rules = [
-        
+
     ];
 
     /**
@@ -59,11 +57,17 @@ class Servico extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      **/
-    public function insumoServicos()
+    public function insumos()
     {
-        return $this->hasMany(\App\Models\InsumoServico::class);
+        return $this->belongsToMany(
+            Insumo::class,
+            'insumo_servico',
+            'servico_id',
+            'insumo_id'
+        )
+        ->withPivot('id');
     }
 
     /**

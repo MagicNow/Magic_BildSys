@@ -2,6 +2,7 @@
     @shield('contratos.reapropriar')
         <button class="btn btn-default btn-xs btn-flat js-reapropriar"
             data-item-qtd="{{ $item->qtd }}"
+            data-insumo-id="{{ $item->insumo_id }}"
             data-item-id="{{ $item->id }}">
             Reapropriar
         </button>

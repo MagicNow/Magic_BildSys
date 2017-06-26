@@ -52,7 +52,7 @@
                     <th>Valor Total</th>
                     <th>Qtd.</th>
                     <th>Valor Total</th>
-                    <th>Ação</th>
+                    <th style="width:18%">Ação</th>
                 </tr>
             </thead>
             <tbody>
@@ -86,43 +86,11 @@
                         <td>{{ float_to_money($item->qtd, '') }}</td>
                         <td>{{ float_to_money($item->valor_total) }}</td>
                         <td>
-                            <button type="button"
-                                class="btn btn-flat btn-xs btn-info"
-                                title="Expandir"
-                                onclick="showHideInfoExtra({{ $item->id }})">
-                                Impostos
-                                <i id="icone-expandir{{ $item->id }}"
-                                    class="fa fa-caret-right fa-fw"></i>
-                            </button>
                             @if($contrato->isStatus(2, 5) /* Aprovado ou Ativo */)
                                 @include('contratos.itens_datatables_action', [
                                     'item' => $item
                                 ])
                             @endif
-                        </td>
-                    </tr>
-                    <tr id="dados-extras{{ $item->id }}" style="display: none">
-                        <td colspan="11">
-                            <table class="table table-bordered table-condensed table-no-margin">
-                                <thead>
-                                    <tr>
-                                        <th>IRFF</th>
-                                        <th>INSS</th>
-                                        <th>PIS</th>
-                                        <th>COFINS</th>
-                                        <th>CSLL</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>{{ float_to_money($item->insumo->aliq_irff, '') }}%</td>
-                                        <td>{{ float_to_money($item->insumo->aliq_inss, '') }}%</td>
-                                        <td>{{ float_to_money($item->insumo->aliq_pis, '') }}%</td>
-                                        <td>{{ float_to_money($item->insumo->aliq_cofins, '') }}%</td>
-                                        <td>{{ float_to_money($item->insumo->aliq_csll, '') }}%</td>
-                                    </tr>
-                                </tbody>
-                            </table>
                         </td>
                     </tr>
                 @endforeach

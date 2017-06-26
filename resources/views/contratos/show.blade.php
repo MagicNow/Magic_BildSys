@@ -138,7 +138,7 @@
                             </div>
                         </div>
                     </div>
-                    @include('partials.grupos-de-orcamento', ['full' => true])
+                    @include('partials.grupos-de-orcamento', ['full' => true, 'insumo' => 0])
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger btn-flat" data-dismiss="modal">

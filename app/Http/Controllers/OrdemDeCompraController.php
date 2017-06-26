@@ -1112,7 +1112,7 @@ class OrdemDeCompraController extends AppBaseController
                 DB::raw('
                  IFNULL(
                     (
-                        SELECT 
+                        SELECT
                             SUM(orcamentos.preco_total)
                         FROM
                             ordem_de_compra_itens
@@ -1129,11 +1129,11 @@ class OrdemDeCompraController extends AppBaseController
                             ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id
                                 AND ordem_de_compra_itens.deleted_at IS NULL
                     ), 0
-                 ) 
-                 - 
+                 )
+                 -
                  IFNULL(
                     (
-                        SELECT 
+                        SELECT
                             SUM(ordem_de_compra_itens.valor_total)
                         FROM
                             ordem_de_compra_itens
@@ -1214,7 +1214,7 @@ class OrdemDeCompraController extends AppBaseController
 
         return redirect('/ordens-de-compra');
     }
-    
+
     public function reabrirOrdemDeCompra($id)
     {
         $ordem_de_compra = OrdemDeCompra::find($id);
@@ -1224,7 +1224,7 @@ class OrdemDeCompraController extends AppBaseController
 
         return redirect('/ordens-de-compra/carrinho?id='.$id);
     }
-    
+
     public function alterarQuantidade($id, Request $request)
     {
         $ordem_de_compra_item = OrdemDeCompraItem::find($id);
@@ -1669,16 +1669,22 @@ class OrdemDeCompraController extends AppBaseController
 
         return $grupo;
     }
-    public function getServicos($id)
+    public function getServicos($id, Request $request)
     {
         $servico = Servico::select([
             'id',
             DB::raw("CONCAT(codigo, ' ', nome) as nome")
         ])
         ->where('grupo_id', $id)
-        ->orderBy('nome', 'ASC')
-        ->pluck('nome', 'id')
-        ->toArray();
+        ->orderBy('nome', 'ASC');
+
+        if($request->insumo_id) {
+            $servico = $servico->whereHas('insumos', function($query) use ($request) {
+                $query->where('insumos.id', $request->insumo_id);
+            });
+        }
+
+        $servico = $servico->pluck('nome', 'id')->toArray();
 
         return $servico;
     }
