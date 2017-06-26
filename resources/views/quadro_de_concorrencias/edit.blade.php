@@ -45,12 +45,12 @@
                             'style' => 'margin-left:10px',
                             'type'=>'submit']) !!}
 
-                        {!! Form::button( '<i class="fa fa-check-square"></i> Abrir concorrência', [
-                            'class' => 'btn btn-success btn-lg btn-flat',
-                            'value' => '1',
-                            'name' => 'abrir_concorrencia',
-                            'style' => 'margin-left:10px',
-                            'type'=>'submit']) !!}
+                        {{--{!! Form::button( '<i class="fa fa-check-square"></i> Abrir concorrência', [--}}
+                            {{--'class' => 'btn btn-success btn-lg btn-flat',--}}
+                            {{--'value' => '1',--}}
+                            {{--'name' => 'abrir_concorrencia',--}}
+                            {{--'style' => 'margin-left:10px',--}}
+                            {{--'type'=>'submit']) !!}--}}
 
 
                     </div>

@@ -133,6 +133,16 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-md-4">
+                            <div class="element-grafico">
+                                <div class="element-head">Média de Aprovação GERAL (DIAS)</div>
+                                <div class="element-body">
+                                    <div class="text-center" style="font-size: 100px; color:orange; margin-top: 50px;">
+                                        {{$qcs_por_media_geral->media}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
