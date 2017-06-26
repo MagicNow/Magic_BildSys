@@ -282,7 +282,7 @@ class CatalogoContratoController extends AppBaseController
             }
         }
         
-
+        $alteraStatusParaValidacao = false;
         if (count($request->contratoInsumos)) {
             foreach ($request->contratoInsumos as $item) {
                 if ($item['insumo_id'] != '' && floatval($item['valor_unitario']) > 0 ) {
@@ -307,35 +307,43 @@ class CatalogoContratoController extends AppBaseController
                         $logCatInsumo->periodo_termino = $contrato_insumo->periodo_termino;
                         $logCatInsumo->save();
 
+                        $alteraStatusParaValidacao = true;
+
                     }else{
-                        $contrato_insumo = CatalogoContratoInsumo::find($item['id']);
-                        $logCatInsumo = new CatalogoContratoInsumoLog();
-                        $logCatInsumo->contrato_insumo_id = $contrato_insumo->id;
-                        $logCatInsumo->user_id = auth()->id();
-                        $logCatInsumo->valor_unitario_anterior = $contrato_insumo->valor_unitario;
-                        $logCatInsumo->pedido_minimo_anterior = $contrato_insumo->pedido_minimo;
-                        $logCatInsumo->pedido_multiplo_de_anterior = $contrato_insumo->pedido_multiplo_de;
-                        $logCatInsumo->periodo_inicio_anterior = $contrato_insumo->periodo_inicio;
-                        $logCatInsumo->periodo_termino_anterior = $contrato_insumo->periodo_termino;
-                        $logCatInsumo->save();
+                        if($catalogoContrato->catalogo_contrato_status_id != 3){
+                            $contrato_insumo = CatalogoContratoInsumo::find($item['id']);
+                            $logCatInsumo = new CatalogoContratoInsumoLog();
+                            $logCatInsumo->contrato_insumo_id = $contrato_insumo->id;
+                            $logCatInsumo->user_id = auth()->id();
+                            $logCatInsumo->valor_unitario_anterior = $contrato_insumo->valor_unitario;
+                            $logCatInsumo->pedido_minimo_anterior = $contrato_insumo->pedido_minimo;
+                            $logCatInsumo->pedido_multiplo_de_anterior = $contrato_insumo->pedido_multiplo_de;
+                            $logCatInsumo->periodo_inicio_anterior = $contrato_insumo->periodo_inicio;
+                            $logCatInsumo->periodo_termino_anterior = $contrato_insumo->periodo_termino;
+                            $logCatInsumo->save();
 
-                        $contrato_insumo->insumo_id = $item['insumo_id'];
-                        $contrato_insumo->valor_unitario = $item['valor_unitario'] ? money_to_float($item['valor_unitario']) : 0;
-                        $contrato_insumo->pedido_minimo = $item['pedido_minimo'];
-                        $contrato_insumo->pedido_multiplo_de = $item['pedido_multiplo_de'];
-                        $contrato_insumo->periodo_inicio = $item['periodo_inicio'];
-                        $contrato_insumo->periodo_termino = $item['periodo_termino'];
+                            $contrato_insumo->insumo_id = $item['insumo_id'];
+                            $contrato_insumo->valor_unitario = $item['valor_unitario'] ? money_to_float($item['valor_unitario']) : 0;
+                            $contrato_insumo->pedido_minimo = $item['pedido_minimo'];
+                            $contrato_insumo->pedido_multiplo_de = $item['pedido_multiplo_de'];
+                            $contrato_insumo->periodo_inicio = $item['periodo_inicio'];
+                            $contrato_insumo->periodo_termino = $item['periodo_termino'];
 
 
-                        $contrato_insumo->update();
+                            $contrato_insumo->update();
 
-                        $logCatInsumo->valor_unitario = $contrato_insumo->valor_unitario;
-                        $logCatInsumo->pedido_minimo = $contrato_insumo->pedido_minimo;
-                        $logCatInsumo->pedido_multiplo_de = $contrato_insumo->pedido_multiplo_de;
-                        $logCatInsumo->periodo_inicio = $contrato_insumo->periodo_inicio;
-                        $logCatInsumo->periodo_termino = $contrato_insumo->periodo_termino;
+                            $logCatInsumo->valor_unitario = $contrato_insumo->valor_unitario;
+                            $logCatInsumo->pedido_minimo = $contrato_insumo->pedido_minimo;
+                            $logCatInsumo->pedido_multiplo_de = $contrato_insumo->pedido_multiplo_de;
+                            $logCatInsumo->periodo_inicio = $contrato_insumo->periodo_inicio;
+                            $logCatInsumo->periodo_termino = $contrato_insumo->periodo_termino;
+                            $logCatInsumo->save();
 
-                        $logCatInsumo->save();
+                            $alteraStatusParaValidacao = true;
+
+                        }
+
+
                     }
 
                 }
@@ -376,6 +384,8 @@ class CatalogoContratoController extends AppBaseController
                     $logCatInsumo->periodo_inicio = $contrato_insumo->periodo_inicio;
                     $logCatInsumo->periodo_termino = $contrato_insumo->periodo_termino;
                     $logCatInsumo->save();
+
+                    $alteraStatusParaValidacao = true;
                 }
             }
         }
@@ -385,6 +395,15 @@ class CatalogoContratoController extends AppBaseController
             $catalogoContrato->catalogo_contrato_status_id = 2;
             $catalogoContrato->save();
 
+            foreach ($catalogoContrato->obras()->where('catalogo_contrato_status_id',3)->get() as $catalogoContratoObra){
+                $catalogoContratoObra->catalogo_contrato_status_id = 2;
+                $catalogoContratoObra->save();
+                $catalogoContratoObra = CatalogoContratoObraLog::create([
+                    'catalogo_contrato_obra_id' => $catalogoContratoObra->id,
+                    'catalogo_contrato_status_id' => $catalogoContratoObra->catalogo_contrato_status_id
+                ]);
+            }
+
             $catalogoContratoStatus = CatalogoContratoStatusLog::create([
                 'catalogo_contrato_id' => $catalogoContrato->id,
                 'catalogo_contrato_status_id' => 2,
@@ -392,6 +411,21 @@ class CatalogoContratoController extends AppBaseController
             ]);
             Flash::success('Catalogo Contrato '.trans('common.updated').' e minuta disponível para baixar.');
         }else{
+
+            if( $alteraStatusParaValidacao ){
+                // Status do acordo
+                $catalogoContrato->catalogo_contrato_status_id = 2;
+                $catalogoContrato->save();
+
+                foreach ($catalogoContrato->obras()->where('catalogo_contrato_status_id',3)->get() as $catalogoContratoObra){
+                    $catalogoContratoObra->catalogo_contrato_status_id = 2;
+                    $catalogoContratoObra->save();
+                    $catalogoContratoObra = CatalogoContratoObraLog::create([
+                        'catalogo_contrato_obra_id' => $catalogoContratoObra->id,
+                        'catalogo_contrato_status_id' => $catalogoContratoObra->catalogo_contrato_status_id
+                    ]);
+                }
+            }
 
             if ($request->minuta_assinada) {
                 $destinationPath = CodeRepository::saveFile($request->minuta_assinada, 'acordos/assinado_' . $catalogoContrato->id);
