@@ -6,9 +6,12 @@ use App\Models\Contrato;
 use App\Models\Insumo;
 use App\Models\OrdemDeCompraItem;
 use App\Models\QuadroDeConcorrencia;
+use App\Notifications\WorkflowNotification;
 use App\Repositories\ContratoRepository;
+use App\Repositories\WorkflowAprovacaoRepository;
 use Flash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 use Response;
 use Exception;
 use App\DataTables\QcItensDataTable;
@@ -215,6 +218,8 @@ class QuadroDeConcorrenciaController extends AppBaseController
                 Flash::success('Escolha os insumos para adicionar no Q.C. '.$id);
             }
         } else {
+            $aprovadores = WorkflowAprovacaoRepository::usuariosDaAlcadaAtual($quadroDeConcorrencia);
+            Notification::send($aprovadores, new WorkflowNotification($quadroDeConcorrencia));
             Flash::success('Quadro De Concorrencia colocado em aprovação.');
         }
 
