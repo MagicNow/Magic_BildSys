@@ -10,6 +10,7 @@ use App\Models\CatalogoContratoInsumo;
 use App\Models\CatalogoContrato;
 use App\Models\CatalogoContratoInsumoLog;
 use App\Models\CatalogoContratoObra;
+use App\Models\CatalogoContratoObraLog;
 use App\Models\CatalogoContratoStatusLog;
 use App\Models\Fornecedor;
 use App\Models\Insumo;
@@ -391,7 +392,41 @@ class CatalogoContratoController extends AppBaseController
             ]);
             Flash::success('Catalogo Contrato '.trans('common.updated').' e minuta disponível para baixar.');
         }else{
-            Flash::success('Catalogo Contrato '.trans('common.updated').' '.trans('common.successfully').'.');
+
+            if ($request->minuta_assinada) {
+                $destinationPath = CodeRepository::saveFile($request->minuta_assinada, 'acordos/assinado_' . $catalogoContrato->id);
+
+                $catalogoContrato->minuta_assinada = $destinationPath;
+                $catalogoContrato->save();
+                $acao = 'Arquivo enviado!';
+
+
+
+                    $catalogoContrato->catalogo_contrato_status_id = 3;
+                    $catalogoContrato->save();
+                    $catalogoContratoStatus = CatalogoContratoStatusLog::create([
+                        'catalogo_contrato_id' => $catalogoContrato->id,
+                        'catalogo_contrato_status_id' => 3,
+                        'user_id' => auth()->id()
+                    ]);
+                    foreach ($catalogoContrato->obras()->whereIn('catalogo_contrato_status_id',[1,2])->get() as $catalogoContratoObra){
+                        $catalogoContratoObra->catalogo_contrato_status_id = 3;
+                        $catalogoContratoObra->save();
+                        $catalogoContratoObra = CatalogoContratoObraLog::create([
+                            'catalogo_contrato_obra_id' => $catalogoContratoObra->id,
+                            'catalogo_contrato_status_id' => $catalogoContratoObra->catalogo_contrato_status_id
+                        ]);
+                    }
+                    $acao = 'Arquivo enviado e Acordo ativado!';
+
+
+                Flash::success($acao);
+            }else{
+                Flash::success('Catalogo Contrato '.trans('common.updated').' '.trans('common.successfully').'.');
+            }
+
+
+
         }
 
 
@@ -483,5 +518,9 @@ class CatalogoContratoController extends AppBaseController
         ->paginate();
 
         return $insumos;
+    }
+    
+    public function imprimirMinuta($id){
+        return response()->file(storage_path('/app/public/') . str_replace('storage/', '', CatalogoContratoRepository::geraImpressao($id)));
     }
 }

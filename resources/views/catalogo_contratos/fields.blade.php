@@ -13,18 +13,24 @@
 
     <div class="form-group col-sm-6">
         @if(isset($catalogoContrato))
-            @if($catalogoContrato->catalogo_contrato_status_id == 2 ||  $catalogoContrato->catalogo_contrato_status_id == 3 && $catalogoContrato->obras()->where('catalogo_contrato_status_id','1')->count()  )
-                <div class="box box-warning">
-                    <div class="box-header with-border">
-                        Enviar minuta assinada
-                    </div>
-                    <div class="box-body">
-                        @if(strlen($catalogoContrato->minuta_assinada))
-                        <a href="{{ Storage::url($catalogoContrato->minuta_assinada) }}" class="btn btn-info btn-xs btn-flat btn-block"> <i class="fa fa-download"></i> Baixar Minuta já assinada</a>
-                        @endif
-                        {!! Form::file('minuta_assinada',['class'=>'form-control']) !!}
+            @if($catalogoContrato->catalogo_contrato_status_id == 2 ||  $catalogoContrato->catalogo_contrato_status_id == 3 && $catalogoContrato->obras()->whereIn('catalogo_contrato_status_id',[1,2])->count()  )
+                <div class="col-sm-12">
+                    <div class="box box-warning">
+                        <div class="box-header with-border">
+                            Enviar minuta assinada
+                        </div>
+                        <div class="box-body">
+                            @if(strlen($catalogoContrato->minuta_assinada))
+                                <a href="{{ Storage::url($catalogoContrato->minuta_assinada) }}" target="_blank"
+                                   class="btn btn-info btn-xs btn-flat btn-block">
+                                    <i class="fa fa-download"></i> Baixar Minuta já assinada
+                                </a>
+                            @endif
+                            {!! Form::file('minuta_assinada',['class'=>'form-control']) !!}
+                        </div>
                     </div>
                 </div>
+
             @endif
         @endif
     </div>
@@ -127,7 +133,11 @@
     <h4>Obras que estão permitidas neste acordo</h4>
     <div class="input-group">
         <span class="input-group-addon" id="basic-addon1">Escolha uma obra e adicione</span>
-        {!! Form::select('obra_selecionada', ['' => 'Escolha...']+\App\Models\Obra::pluck('nome','id')->toArray(),  null, ['class' => 'form-control select2','id'=>'obra_selecionada']) !!}
+        @if(isset($catalogoContrato))
+            {!! Form::select('obra_selecionada', ['' => 'Escolha...']+\App\Models\Obra::whereNotIn('id',$catalogoContrato->obras()->pluck('obra_id','obra_id')->toArray())->pluck('nome','id')->toArray(),  null, ['class' => 'form-control select2','id'=>'obra_selecionada']) !!}
+        @else
+            {!! Form::select('obra_selecionada', ['' => 'Escolha...']+\App\Models\Obra::pluck('nome','id')->toArray(),  null, ['class' => 'form-control select2','id'=>'obra_selecionada']) !!}
+        @endif
         <span class="input-group-btn">
             <button type="button" class="btn btn-primary btn-flat" onclick="adicionaObra();">Adicionar obra</button>
         </span>
