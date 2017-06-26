@@ -144,7 +144,15 @@ function workflowAprovaReprova(item_id, tipo_item, aprovou, elemento, nome, pai_
         showLoaderOnConfirm: true,
       },
       function() {
-        workflowCall(item_id, tipo_item, aprovou, elemento, null, null, pai_id, pai_obj, filhos_metodo, shouldReload)
+          $.ajax("/notifications/marcar-lido", {
+                  data: {
+                      'type' : 1,
+                      'id' : item_id
+                  },
+                  type: "POST"
+              }
+          );
+        workflowCall(item_id, tipo_item, aprovou, elemento, null, null, pai_id, pai_obj, filhos_metodo, shouldReload);
       });
   }
 }

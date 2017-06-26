@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Repositories\NotificationRepository;
+use Illuminate\Http\Request;
 
 class NotificationController extends AppBaseController
 {
@@ -27,6 +28,13 @@ class NotificationController extends AppBaseController
     {
         return response()->json([
             'success' => $this->notificationRepository->markAsRead($id)
+        ]);
+    }
+
+    public function marcarLido(Request $request)
+    {
+        return response()->json([
+            'success' => $this->notificationRepository->marcarLido($request->type, $request->id)
         ]);
     }
 }
