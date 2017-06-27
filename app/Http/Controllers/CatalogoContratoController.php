@@ -96,7 +96,7 @@ class CatalogoContratoController extends AppBaseController
             'user_id' => auth()->id()
         ]);
 
-        $input = [];
+        $input = $request->only(['CAMPO_EXTRA_MINUTA','CAMPO_EXTRA_CONTRATO']);
 
         // Template
         $campos_extras_minuta = [];

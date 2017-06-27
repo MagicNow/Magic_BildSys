@@ -199,15 +199,16 @@ $count_insumos = 0;
                                     $botao_insumo_id = $item->insumo_id;
                                 @endphp
                                 <button class="btn btn-warning flat pull-right" type="button" onclick="mostrarReajustes('{{$item->insumo_id}}', 1)" id="btn_mostrar_ocultar_{{$item->insumo_id}}" title="Mostrar/Ocultar todos os reajustes">
-                                    <i class="fa fa-plus" id="icon_mostrar_ocultar_{{$item->insumo_id}}"></i>
+                                    <i class="fa fa-plus" id="icon_mostrar_ocultar_{{$item->insumo_id}}"></i> Mostrar/Ocultar todos os reajustes
                                 </button>
                             @endif
                         @endif
 
-                        {!! Form::hidden('contratoInsumos['.$item->id.'][id]', $item->id) !!}
+
                         <div class="col-md-10" {{in_array($item->insumo_id, $array_insumos) ? 'style=display:none;' : ''}}>
                             <label>Insumo:</label>
                             @if($podeEditar)
+                                {!! Form::hidden('contratoInsumos['.$item->id.'][id]', $item->id) !!}
                                 {!! Form::select('contratoInsumos['.$item->id.'][insumo_id]',[''=>'Escolha...']+
                                 \App\Models\Insumo::where('id',$item->insumo_id)->pluck('nome','id')->toArray(), $item->insumo_id,
                                 [
@@ -216,7 +217,6 @@ $count_insumos = 0;
                                     'id' => 'insumo_select_'.$item->id
                                 ]) !!}
                             @else
-                                {!! Form::hidden('contratoInsumos['.$item->id.'][insumo_id]',$item->insumo_id,[ 'id' => 'insumo_select_'.$item->id ]) !!}
                                 <div class="form-control">
                                     {{ $item->insumo->nome }}
                                 </div>
@@ -309,7 +309,7 @@ $count_insumos = 0;
     var count_reajuste = '{{$count_insumos}}';
 
     function addInsumo(){
-        @if($catalogoContrato->catalogo_contrato_status_id == 3)
+        @if(isset($catalogoContrato) && $catalogoContrato->catalogo_contrato_status_id == 3)
         swal({
                     title: "Inserir um insumo?",
                     text: "Ao inserir um insumo o acordo entrará em modo de aguardando validação, esperando o arquivo com a assinatura de ambos os lados validando todos os acordos firmados!",
@@ -418,7 +418,7 @@ $count_insumos = 0;
 
                             $('#add_insumos').css('margin-top','25px');
                         });
-                        @if($catalogoContrato->catalogo_contrato_status_id == 3)
+                        @if(isset($catalogoContrato) && $catalogoContrato->catalogo_contrato_status_id == 3)
             }
         });
         @endif
@@ -591,7 +591,7 @@ $count_insumos = 0;
     }
 
     function inserirReajuste(insumo_id) {
-        @if($catalogoContrato->catalogo_contrato_status_id == 3)
+        @if(isset($catalogoContrato) && $catalogoContrato->catalogo_contrato_status_id == 3)
         swal({
                     title: "Inserir reajuste?",
                     text: "Ao inserir um reajuste o acordo entrará em modo de aguardando validação, esperando o arquivo com a assinatura de ambos os lados validando todos os acordos firmados!",
@@ -638,7 +638,7 @@ $count_insumos = 0;
                             </div>';
                         $('#reajuste_'+insumo_id).append(block_reajuste);
                         $('#valor_unitario_'+count_reajuste).maskMoney({allowNegative: true, thousands:'.', decimal:','});
-                        @if($catalogoContrato->catalogo_contrato_status_id == 3)
+                        @if(isset($catalogoContrato) && $catalogoContrato->catalogo_contrato_status_id == 3)
                     }
                 });
         @endif
