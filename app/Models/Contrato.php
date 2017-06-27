@@ -36,7 +36,9 @@ class Contrato extends Model
     {
         return [
             'message' => 'Você tem um contrato para aprovar',
-            'link' => route('contratos.show', $this->id)
+            'link' => route('contratos.show', $this->id),
+            'workflow_tipo_id' => WorkflowTipo::CONTRATO,
+            'id_dinamico' => $this->id
         ];
     }
 

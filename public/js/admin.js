@@ -64933,6 +64933,9 @@ function workflowAprovaReprova(item_id, tipo_item, aprovou, elemento, nome, pai_
           if(tipo_item == 'QuadroDeConcorrencia'){
               type = 2;
           }
+          if(tipo_item == 'Contrato'){
+              type = 3;
+          }
           $.ajax("/notifications/marcar-lido", {
                   data: {
                       'type' : type,
