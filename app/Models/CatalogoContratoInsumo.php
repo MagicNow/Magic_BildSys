@@ -13,7 +13,7 @@ class CatalogoContratoInsumo extends Model
 {
 
     public $table = 'catalogo_contrato_insumos';
-    public $timestamps = false;
+    public $timestamps = true;
 
     public $fillable = [
         'catalogo_contrato_id',
