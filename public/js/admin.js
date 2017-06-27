@@ -66776,7 +66776,24 @@ function workflowAprovaReprova(item_id, tipo_item, aprovou, elemento, nome, pai_
         showLoaderOnConfirm: true,
       },
       function() {
-        workflowCall(item_id, tipo_item, aprovou, elemento, null, null, pai_id, pai_obj, filhos_metodo, shouldReload)
+          if(tipo_item == 'OrdemDeCompraItem'){
+              type = 1;
+          }
+          if(tipo_item == 'QuadroDeConcorrencia'){
+              type = 2;
+          }
+          if(tipo_item == 'Contrato'){
+              type = 3;
+          }
+          $.ajax("/notifications/marcar-lido", {
+                  data: {
+                      'type' : type,
+                      'id' : item_id
+                  },
+                  type: "POST"
+              }
+          );
+        workflowCall(item_id, tipo_item, aprovou, elemento, null, null, pai_id, pai_obj, filhos_metodo, shouldReload);
       });
   }
 }
@@ -67277,10 +67294,8 @@ var NotificationSystem = {
     this.$container.html('');
   },
   verifyNotifications: function() {
-    if($('#notificacoesLidas').attr('class') == 'dropdown notifications-menu') {
-      var ajax = $.get('/notifications');
-      ajax.done(this.successCallback.bind(this));
-    }
+    var ajax = $.get('/notifications');
+    ajax.done(this.successCallback.bind(this));
   },
   markAsRead: function(id) {
     return $.post('/notifications/' + id + '/mark-as-read');
@@ -67323,6 +67338,3 @@ var NotificationSystem = {
   }
 };
 
-function notificacoesLidas() {
-    $.ajax('/notifications/notificacoesLidas');
-}

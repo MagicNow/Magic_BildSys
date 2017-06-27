@@ -16,7 +16,7 @@ Auth::routes();
 // Notifications
 $router->get('/notifications', 'NotificationController@index');
 $router->post('/notifications/{id}/mark-as-read', 'NotificationController@markAsRead');
-$router->get('/notifications/notificacoesLidas', 'NotificationController@notificacoesLidas');
+$router->post('/notifications/marcar-lido', 'NotificationController@marcarLido');
 
 // Detalhes de workflow
 $router->get('/workflow/detalhes', 'WorkflowController@detalhes');
