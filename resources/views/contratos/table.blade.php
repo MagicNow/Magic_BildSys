@@ -39,7 +39,9 @@
                     <th colspan="2">Contratado</th>
                     <th colspan="2">Realizado</th>
                     <th colspan="2">Saldo</th>
-                    <th></th>
+                    @if($contrato->isStatus(2, 5) /* Aprovado ou Ativo */)
+                        <th></th>
+                    @endif
                 </tr>
                 <tr>
                     <th>#</th>
@@ -52,7 +54,9 @@
                     <th>Valor Total</th>
                     <th>Qtd.</th>
                     <th>Valor Total</th>
-                    <th style="width:18%">Ação</th>
+                    @if($contrato->isStatus(2, 5) /* Aprovado ou Ativo */)
+                        <th style="width:18%">Ação</th>
+                    @endif
                 </tr>
             </thead>
             <tbody>
@@ -85,13 +89,13 @@
                         <td>{{ 'R$ 0,00' }}</td>
                         <td>{{ float_to_money($item->qtd, '') }}</td>
                         <td>{{ float_to_money($item->valor_total) }}</td>
-                        <td>
-                            @if($contrato->isStatus(2, 5) /* Aprovado ou Ativo */)
+                        @if($contrato->isStatus(2, 5) /* Aprovado ou Ativo */)
+                            <td>
                                 @include('contratos.itens_datatables_action', [
                                     'item' => $item
                                 ])
-                            @endif
-                        </td>
+                            </td>
+                        @endif
                     </tr>
                 @endforeach
             </tbody>

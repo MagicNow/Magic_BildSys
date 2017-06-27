@@ -15,17 +15,20 @@ class Cnae extends Model
     use SoftDeletes;
 
     public $table = 'servicos_cnae';
-    
+
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
-
     protected $dates = ['deleted_at'];
-
 
     public $fillable = [
         'id',
-        'nome'
+        'nome',
+        'irrf',
+        'inss',
+        'csll',
+        'pis',
+        'cofins',
     ];
 
     /**
@@ -34,8 +37,13 @@ class Cnae extends Model
      * @var array
      */
     protected $casts = [
-        'id' => 'integer',
-        'nome' => 'string'
+        'id'     => 'integer',
+        'nome'   => 'string',
+        'irrf'   => 'float',
+        'inss'   => 'float',
+        'csll'   => 'float',
+        'pis'    => 'float',
+        'cofins' => 'float',
     ];
 
     /**
@@ -43,9 +51,33 @@ class Cnae extends Model
      *
      * @var array
      */
-    public static $rules = [
-        
+    public static $rules = [];
+
+    public static $iss = [
+        2.00,
+        2.79,
+        3.50,
+        3.84,
+        3.87,
+        4.23,
+        4.26,
+        4.31,
+        4.61,
+        4.65,
+        5.00,
     ];
 
-    
+    public function getIssAttribute()
+    {
+        if(in_array($this->id, [172, 61, 59, 78])) {
+            return 0;
+        }
+
+        return 2;
+    }
+
+    public function getIssSimplesAttribute()
+    {
+        return self::$iss;
+    }
 }

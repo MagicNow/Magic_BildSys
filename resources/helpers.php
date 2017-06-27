@@ -88,3 +88,29 @@ if(! function_exists('get_percentual_column')) {
         return Arr::get($insumos, $codigo_insumo);
     }
 }
+
+if(! function_exists('to_fixed')) {
+    /**
+     * Equivalent to the toFixed method of Javascript Numbers
+     * @param float $number
+     * @param int $decimals = 2
+     *
+     * @return string
+     */
+    function to_fixed($number, $decimals = 2, $decimal_separator = '.')
+    {
+        return number_format((float) $number, $decimals, $decimal_separator, '');
+    }
+}
+
+if(! function_exists('to_percentage')) {
+    /**
+     * Percentage format
+     *
+     * @return string
+     */
+    function to_percentage($number)
+    {
+      return to_fixed($number, 2, ',') . '%';
+    }
+}
