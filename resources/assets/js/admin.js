@@ -72,6 +72,13 @@ $(function() {
     allowClear: true
   });
 
+  $('[data-toggle="tab"].js-tooltip').tooltip({
+    trigger: 'hover',
+    placement: 'top',
+    animate: true,
+    container: 'body'
+  });
+
   $('input:not(.btn > input)').iCheck({
     checkboxClass: 'icheckbox_square-green',
     radioClass: 'iradio_square-green',
@@ -346,3 +353,4 @@ jQuery(function($) {
   };
   $.datepicker.setDefaults($.datepicker.regional['pt-BR']);
 });
+

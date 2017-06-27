@@ -65,6 +65,20 @@ class ContratoItemApropriacao extends Model
         return $this->belongsTo(ContratoItem::class, 'contrato_item_id');
     }
 
+    public function codigoEstruturado()
+    {
+       $grupos = [
+            $this->grupo_id,
+            $this->subgrupo1_id,
+            $this->subgrupo2_id,
+            $this->subgrupo3_id,
+            $this->servico_id,
+            $this->insumo_id
+        ];
+
+       return implode('.', $grupos);
+    }
+
     public function codigoServico($showServico = true)
     {
        $grupos = [
@@ -144,6 +158,14 @@ class ContratoItemApropriacao extends Model
         return $this->hasMany(
             ContratoItemApropriacao::class,
             'contrato_item_reapropriacao_id'
+        );
+    }
+
+    public function ligacao()
+    {
+        return $this->hasOne(
+            ApropriacaoLigacao::class,
+            'contrato_item_apropriacao_id'
         );
     }
 

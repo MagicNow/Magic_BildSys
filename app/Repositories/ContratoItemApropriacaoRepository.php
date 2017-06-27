@@ -8,6 +8,7 @@ use App\Models\ContratoItem;
 use App\Models\Contrato;
 use Illuminate\Support\Facades\DB;
 use App\Models\OrdemDeCompraItemAnexo;
+use App\Models\QcFornecedor;
 
 class ContratoItemApropriacaoRepository extends BaseRepository
 {
@@ -65,12 +66,24 @@ SELECT
                 AND orcamentos.servico_id = contrato_item_apropriacoes.servico_id
                 AND orcamentos.obra_id = $contrato->obra_id
                 AND orcamentos.ativo = 1
-    ) as valor_servico
+    ) as valor_servico,
+    qc_fornecedor.porcentagem_material,
+    qc_fornecedor.porcentagem_faturamento_direto,
+    qc_fornecedor.porcentagem_servico,
+    qc_fornecedor.porcentagem_locacao
 FROM
 	`contrato_item_apropriacoes`
 INNER JOIN `contrato_itens` ON
 	`contrato_itens`.`id` = `contrato_item_apropriacoes`.`contrato_item_id`
-LEFT JOIN `ordem_de_compra_itens` ON
+INNER JOIN `contratos` ON
+	`contrato_itens`.`contrato_id` = `contratos`.`id`
+INNER JOIN `quadro_de_concorrencias` ON
+	`quadro_de_concorrencias`.`id` = `contratos`.`quadro_de_concorrencia_id`
+INNER JOIN `qc_fornecedor` ON
+    `qc_fornecedor`.`quadro_de_concorrencia_id` = `contratos`.`quadro_de_concorrencia_id`
+    AND `qc_fornecedor`.`fornecedor_id` = `contratos`.`fornecedor_id`
+    AND `qc_fornecedor`.`rodada` = `quadro_de_concorrencias`.`rodada_atual`
+INNER JOIN `ordem_de_compra_itens` ON
 	`ordem_de_compra_itens`.`insumo_id` = `contrato_item_apropriacoes`.`insumo_id`
 	AND `ordem_de_compra_itens`.`grupo_id` = `contrato_item_apropriacoes`.`grupo_id`
 	AND `ordem_de_compra_itens`.`subgrupo1_id` = `contrato_item_apropriacoes`.`subgrupo1_id`
@@ -109,13 +122,33 @@ EOFSQL;
         $oc_ids = $collection->pluck('oc_id')->filter()->all();
 
         $anexos = OrdemDeCompraItemAnexo::whereIn('ordem_de_compra_item_id', $oc_ids)
-            ->get();
+        ->get();
 
-        return $collection->map(function($item) use ($anexos) {
+        $collection = $collection->map(function($item) use ($anexos) {
             $item->anexos = $anexos->where('ordem_de_compra_item_id', $item->oc_id);
 
             return $item;
         });
+
+        $oc_itens = $collection;
+
+        $contrato_itens = ContratoItem::where('contrato_id', $contrato->id)
+            ->whereNull('qc_item_id')
+            ->get();
+
+        $qc_fornecedor = QcFornecedor::where('quadro_de_concorrencia_id', $contrato->quadro_de_concorrencia_id)
+            ->where('rodada', $contrato->quadroDeConcorrencia->rodada_atual)
+            ->where('fornecedor_id', $contrato->fornecedor_id)
+            ->first();
+
+        $contrato_itens->map(function($item) use ($qc_fornecedor) {
+            $column = get_percentual_column($item->insumo->codigo);
+            $item->porcentagem = $qc_fornecedor->{$column} ?: false;
+
+            return $item;
+        });
+
+        return (object) compact('oc_itens', 'contrato_itens');
     }
 
     public function orcamentoInicial(Contrato $contrato)
