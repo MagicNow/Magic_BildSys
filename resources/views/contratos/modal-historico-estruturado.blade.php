@@ -22,11 +22,11 @@
                         <tr>
                             <th></th>
                             <th>Código</th>
-                            <th>Qth.</th>
+                            <th>Qtd.</th>
                             <th>Valor Total</th>
-                            <th>Qth.</th>
+                            <th>Qtd.</th>
                             <th>Valor Total</th>
-                            <th>Qth.</th>
+                            <th>Qtd.</th>
                             <th>Valor Total</th>
                         </tr>
                     </thead>
