@@ -78,7 +78,7 @@
                         {!! $contrato->fornecedor->nome !!}
                     </p>
                 </div>
-                <div class="col-md-2 form-group">
+                <div class="col-md-3 form-group">
                     <label>CNPJ</label>
                     <p class="form-control input-lg">
                         {!! $contrato->fornecedor->cnpj  !!}
@@ -90,7 +90,7 @@
                         {!! $contrato->fornecedor->telefone ?: '<span class="text-danger">Sem telefone</span>'  !!}
                     </p>
                 </div>
-                <div class="col-md-4 form-group">
+                <div class="col-md-3 form-group">
                     <label>Email</label>
                     <p class="form-control input-lg text-limit"
                         title="{{ $contrato->fornecedor->email ?: 'Sem email'  }}">
