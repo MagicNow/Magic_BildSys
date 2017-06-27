@@ -16,6 +16,10 @@ Auth::routes();
 // Notifications
 $router->get('/notifications', 'NotificationController@index');
 $router->post('/notifications/{id}/mark-as-read', 'NotificationController@markAsRead');
+$router->post('/notifications/marcar-lido', 'NotificationController@marcarLido');
+
+// Detalhes de workflow
+$router->get('/workflow/detalhes', 'WorkflowController@detalhes');
 
 ##### Buscas #####
 $router->get('/admin/catalogo-acordos/buscar/busca_insumos', ['as' => 'catalogo_contratos.busca_insumos', 'uses' => 'CatalogoContratoController@buscaInsumos']);
@@ -426,7 +430,9 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->post('/ordens-de-compra/upload-anexos/{id}', 'OrdemDeCompraController@uploadAnexos');
         $router->get('/ordens-de-compra/remover-anexo/{id}', 'OrdemDeCompraController@removerAnexo');
         $router->get('/ordens-de-compra/carrinho/remove-contrato', 'OrdemDeCompraController@removerContrato');
+        $router->get('/ordens-de-compra/reabrir-ordem-de-compra/verificar/{oc_id}/{obra_id}', 'OrdemDeCompraController@verificaReabrirOrdemDeCompra');
         $router->get('/ordens-de-compra/reabrir-ordem-de-compra/{id}', 'OrdemDeCompraController@reabrirOrdemDeCompra');
+        $router->get('/ordens-de-compra/unificar-ordem-de-compra/{oc_aberta}/{oc_reabrir}', 'OrdemDeCompraController@unificarOrdemDeCompra');
         $router->get('/ordens-de-compra/carrinho/alterar-quantidade/{id}', 'OrdemDeCompraController@alterarQuantidade');
         $router->get('/ordens-de-compra/carrinho/alterar-valor-unitario/{id}', 'OrdemDeCompraController@alteraValorUnitario');
         $router->get('/ordens-de-compra/carrinho/remover-item/{id}', 'OrdemDeCompraController@removerItem');
@@ -749,12 +755,13 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             ]
         )->middleware('needsPermission:contratos.edit');
         $router->post(
-            '/reajustar-item/{item}',
+            '/reajustar/{contrato_item_id}',
             [
-                'as' => 'contratos.reajustar-item',
-                'uses' => 'ContratoController@reajustarItem'
+                'as' => 'contratos.reajustar',
+                'uses' => 'ContratoController@reajustar'
             ]
         )->middleware('needsPermission:contratos.reajustar');
+
         $router->post(
             '/reapropriar-item/{item}',
             [
@@ -762,17 +769,19 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
                 'uses' => 'ContratoController@reapropriarItem'
             ]
         )->middleware('needsPermission:contratos.reapropriar');
+
         $router->get(
-            '/reapropriar-item/{item}',
+            '/apropriacoes/{item}',
             [
-                'uses' => 'ContratoController@reapropriarItemForm'
+                'uses' => 'ContratoController@apropriacoes'
             ]
-        )->middleware('needsPermission:contratos.reapropriar');
+        );
+
         $router->post(
-            '/distratar-item/{item}',
+            '/distratar/{contrato_item_id}',
             [
-                'as' => 'contratos.distratar-item',
-                'uses' => 'ContratoController@distratarItem'
+                'as' => 'contratos.distratar',
+                'uses' => 'ContratoController@distratar'
             ]
         )->middleware('needsPermission:contratos.distratar');
 

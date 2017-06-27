@@ -23,7 +23,8 @@ class Contrato extends Model
         'obra_id',
         'quadro_de_concorrencia_id',
         'fornecedor_id',
-        'valor_total',
+        'valor_total_inicial',
+        'valor_total_atual',
         'contrato_template_id',
         'arquivo',
         'campos_extras'
@@ -35,7 +36,9 @@ class Contrato extends Model
     {
         return [
             'message' => 'Você tem um contrato para aprovar',
-            'link' => route('contratos.show', $this->id)
+            'link' => route('contratos.show', $this->id),
+            'workflow_tipo_id' => WorkflowTipo::CONTRATO,
+            'id_dinamico' => $this->id
         ];
     }
 
@@ -114,9 +117,9 @@ class Contrato extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
-    public function contratoStatusLogs()
+    public function logs()
     {
-        return $this->hasMany(ContratoStatusLog::class);
+        return $this->hasMany(ContratoStatusLog::class, 'contrato_id');
     }
 
     // Funções de Aprovações
@@ -209,8 +212,13 @@ class Contrato extends Model
         })->get();
 
 
-        $this->update(['valor_total' => $itens->sum('valor_total')]);
+        $this->update(['valor_total_atual' => $itens->sum('valor_total')]);
 
         return $this;
+    }
+
+    public function getValorTotalAttribute()
+    {
+        return $this->valor_total_atual;
     }
 }

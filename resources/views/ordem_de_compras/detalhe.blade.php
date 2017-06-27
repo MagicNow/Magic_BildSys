@@ -28,9 +28,9 @@
                 <div class="col-md-6">
                     <span class="pull-left title">
                         <h3>
-                            <button type="button" class="btn btn-link" onclick="history.go(-1);">
+                            <a href="/ordens-de-compra" class="btn btn-link">
                              <i class="fa fa-arrow-left" aria-hidden="true"></i>
-                            </button>
+                            </a>
                             <span>Detalhar Ordem de Compra</span>
                         </h3>
                     </span>
@@ -286,7 +286,7 @@
                         <tr>
                             <th class="text-center">Código do insumo</th>
                             <th class="text-center">Descrição do insumo</th>
-                            <th class="text-center">Qntd da O.C.</th>
+                            <th class="text-center">Qtd. da O.C.</th>
                             <th class="text-center">Und de medida</th>
                             <th class="text-center">Status do valor do insumo</th>
                             <th class="text-center">Status Serviço</th>
@@ -297,6 +297,13 @@
                         <tbody>
 
                     @foreach($itens as $item)
+                        {{--Se o insumo foi incluído no orçamento, o SALDO DE ORÇAMENTO fica com o valor comprado negativo.--}}
+                        {{--@if($item->insumo_incluido)--}}
+                            {{--@php $saldo_valor_orcamento = $farol_saldo_valor_orcamento = - doubleval($item->valor_total); @endphp--}}
+                        {{--@else--}}
+                            @php $saldo_valor_orcamento = $item->substitui ? $item->valor_previsto_orcamento_pai-doubleval($item->valor_realizado) : $item->preco_inicial-doubleval($item->valor_realizado); @endphp
+                            @php $farol_saldo_valor_orcamento = $item->substitui ? 0-doubleval($item->valor_realizado) : $item->preco_inicial-doubleval($item->valor_realizado); @endphp
+                        {{--@endif--}}
                         <tr>
                             <td class="text-center">
                                 <span data-toggle="tooltip" data-placement="right" data-html="true"
@@ -305,7 +312,8 @@
                                         {{$item->subgrupo1->codigo.' - '.$item->subgrupo1->nome}}<br/>
                                         {{$item->subgrupo2->codigo.' - '.$item->subgrupo2->nome}}<br/>
                                         {{$item->subgrupo3->codigo.' - '.$item->subgrupo3->nome}}<br/>
-                                        {{$item->servico->codigo.' - '.$item->servico->nome}}
+                                        {{$item->servico->codigo.' - '.$item->servico->nome}}<br/>
+                                        <i class='fa fa-exchange'></i> {{$item->substitui}}
                                     ">
                                 {{ $item->insumo->codigo }}</span>
                             </td>
@@ -313,21 +321,28 @@
                             <td class="text-center">{{ $item->qtd }}</td>
                             <td class="text-center">{{ $item->unidade_sigla }}</td>
                             <td class="text-center">
-                                {{--CONTA = saldo - previsto no orçamento--}}
-                                <i class="fa fa-circle {{ (money_to_float($item->preco_inicial) - money_to_float($item->valor_realizado)) - money_to_float($item->preco_inicial) < 0 ? 'red': 'green'  }}" aria-hidden="true"></i>
+                                {{--CONTA = saldo - valor oc--}}
+                                @php
+                                    if($item->substitui) {
+                                        $status_insumo = $farol_saldo_valor_orcamento;
+                                    } else {
+                                        $status_insumo = $farol_saldo_valor_orcamento - doubleval($item->valor_total);
+                                    }
+                                @endphp
+                                <i class="fa fa-circle {{ $status_insumo < 0 ? 'red': 'green'  }}" aria-hidden="true"></i>
                             </td>
                             <td class="text-center">
                                 @if($item->servico)
                                     <a href="/ordens-de-compra/detalhes-servicos/{{$ordemDeCompra->obra_id}}/{{$item->servico->id}}" style="cursor:pointer;">
-                                        <i class="fa fa-circle {{ (money_to_float($item->valor_servico) - money_to_float($item->valor_realizado)) - money_to_float($item->valor_servico) < 0 ? 'red': 'green'  }}" aria-hidden="true"></i>
+                                        <i class="fa fa-circle {{ (money_to_float($item->valor_servico) - money_to_float($item->valor_servico_oc)) < 0 ? 'red': 'green'  }}" aria-hidden="true"></i>
                                         <button class="btn btn-warning btn-sm btn-flat">Análise</button>
                                     </a>
                                 @else
-                                    <i class="fa fa-circle {{ (money_to_float($item->valor_servico) - money_to_float($item->valor_realizado)) - money_to_float($item->valor_servico) < 0 ? 'red': 'green'  }}" aria-hidden="true"></i>
+                                    <i class="fa fa-circle {{ (money_to_float($item->valor_servico) - money_to_float($item->valor_servico_oc)) < 0 ? 'red': 'green'  }}" aria-hidden="true"></i>
                                 @endif
                             </td>
                             <td class="text-center">
-                                <span data-toggle="tooltip" data-placement="right" data-html="true" title="{{$item->motivo_nao_finaliza_obra}}">{{ $item->total ? 'Sim' : 'Não' }}</span>
+                                <span data-toggle="tooltip" data-placement="left" data-container="body" data-html="true" title="{{$item->motivo_nao_finaliza_obra}}">{{ $item->total ? 'Sim' : 'Não' }}</span>
                             </td>
                             <td class="text-center" style="width: 10%">
                                 <div class="btn-group" role="group" aria-label="...">
@@ -398,19 +413,19 @@
                                             <thead>
                                             <tr>
                                                 <th class="text-center">Unidade Medida</th>
-                                                <th class="text-center">Qntd prevista no orçamento</th>
+                                                <th class="text-center">Qtd. prevista no orçamento</th>
                                                 <th class="text-center">Valor previsto no orçamento</th>
-                                                <th class="text-center">Qntd comprometida realizada</th>
+                                                <th class="text-center">Qtd. comprometida realizada</th>
                                                 <th class="text-center">Valor comprometido realizado</th>
-                                                <th class="text-center">Qntd compremetida à gastar</th>
+                                                <th class="text-center">Qtd. compremetida à gastar</th>
                                                 <th class="text-center">Valor comprometido à gastar</th>
                                             </tr>
                                             </thead>
                                             <tbody>
                                             <tr>
                                                 <td class="text-center">{{ $item->unidade_sigla }}</td>
-                                                <td class="text-center">{{ number_format($item->qtd_inicial, 2, ',','.') }}</td>
-                                                <td class="text-center"><small class="pull-left">R$</small> {{ number_format($item->preco_inicial, 2, ',','.') }}</td>
+                                                <td class="text-center">{{ number_format($item->substitui ? $item->qtd_prevista_orcamento_pai : $item->qtd_inicial, 2, ',','.') }}</td>
+                                                <td class="text-center"><small class="pull-left">R$</small> {{ number_format($item->substitui ? $item->valor_previsto_orcamento_pai : $item->preco_inicial, 2, ',','.') }}</td>
                                                 <td class="text-center">
                                                     {{ number_format(doubleval($item->qtd_realizada), 2, ',','.') }}
                                                 </td>
@@ -419,11 +434,11 @@
                                                     {{ number_format( doubleval($item->valor_realizado), 2, ',','.') }}
                                                 </td>
                                                 <td class="text-center">
-                                                    {{--{{ number_format( $item->qtd_inicial-doubleval($item->qtd_realizada), 2, ',','.') }}--}}0,00
+                                                    {{--{{ number_format( $item->substitui ? $item->qtd_prevista_orcamento_pai : $item->qtd_inicial-doubleval($item->qtd_realizada), 2, ',','.') }}--}}0,00
                                                 </td>
                                                 <td class="text-center">
                                                     <small class="pull-left">R$</small>
-                                                    {{--{{ number_format( $item->preco_inicial-doubleval($item->valor_realizado), 2, ',','.') }}--}}0,00
+                                                    {{--{{ number_format( $item->substitui ? $item->valor_previsto_orcamento_pai : $item->preco_inicial-doubleval($item->valor_realizado), 2, ',','.') }}--}}0,00
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -433,9 +448,9 @@
                                         <table class="table table-bordered table-striped">
                                             <thead>
                                             <tr>
-                                                <th class="text-center">Saldo de qntd do orçamento</th>
+                                                <th class="text-center">Saldo de qtd. do orçamento</th>
                                                 <th class="text-center">Saldo de valor do orçamento</th>
-                                                <th class="text-center">Qntd da O.C.</th>
+                                                <th class="text-center">Qtd. da O.C.</th>
                                                 <th class="text-center">Valor da O.C.</th>
                                                 <th class="text-center">Emergencial</th>
                                             </tr>
@@ -443,11 +458,11 @@
                                             <tbody>
                                             <tr>
                                                 <td class="text-center">
-                                                    {{ number_format( $item->qtd_inicial - doubleval($item->qtd_realizada), 2, ',','.') }}
+                                                    {{ number_format( $item->substitui ? $item->qtd_prevista_orcamento_pai : $item->qtd_inicial - doubleval($item->qtd_realizada), 2, ',','.') }}
                                                 </td>
                                                 <td class="text-center">
                                                     <small class="pull-left">R$</small>
-                                                    {{ number_format( $item->preco_inicial-doubleval($item->valor_realizado), 2, ',','.') }}
+                                                    {{ number_format($saldo_valor_orcamento , 2, ',','.') }}
                                                 </td>
                                                 <td class="text-center"><strong>{{ $item->qtd }}</strong></td>
                                                 <td class="text-center"><small class="pull-left">R$</small> <strong>{{ number_format(doubleval($item->valor_total), 2, ',','.') }}</strong></td>
@@ -535,23 +550,6 @@
             }
     ?>
     options_motivos = "{!! $options_motivos !!}";
-
-    function showHideInfoExtra(qual) {
-        var icone_expandir = $('#icone-expandir'+qual);
-        var dados_extras = $('#dados-extras'+qual);
-
-        if(icone_expandir.hasClass('fa fa-caret-right')){ //fechado
-            dados_extras.show();
-            icone_expandir.parent().attr('title', 'Fechar');
-            icone_expandir.removeClass('fa-caret-right');
-            icone_expandir.addClass('fa-caret-down');
-        }else{ //aberto
-            dados_extras.hide();
-            icone_expandir.parent().attr('title', 'Expandir');
-            icone_expandir.removeClass('fa-caret-down');
-            icone_expandir.addClass('fa-caret-right');
-        }
-    }
 
 </script>
 @stop

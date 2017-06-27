@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+    @include( 'flash::message' )
     <section class="content-header">
         <h1 class="pull-left">Fornecedores</h1>
         <h1 class="pull-right">

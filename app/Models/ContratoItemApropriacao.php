@@ -5,20 +5,19 @@ namespace App\Models;
 use Eloquent as Model;
 
 /**
- * Class ContratoItemReapropriacao
+ * Class ContratoItemApropriacao
  * @package App\Models
  * @version May 18, 2017, 6:08 pm BRT
  */
-class ContratoItemReapropriacao extends Model
+class ContratoItemApropriacao extends Model
 {
-    public $table = 'contrato_item_reapropriacoes';
+    public $table = 'contrato_item_apropriacoes';
 
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
     public $fillable = [
         'contrato_item_id',
-        'ordem_de_compra_item_id',
         'contrato_item_reapropriacao_id',
         'codigo_insumo',
         'grupo_id',
@@ -37,17 +36,17 @@ class ContratoItemReapropriacao extends Model
      * @var array
      */
     protected $casts = [
-        'id' => 'integer',
-        'contrato_item_id' => 'integer',
-        'ordem_de_compra_item_id' => 'integer',
-        'codigo_insumo' => 'string',
-        'grupo_id' => 'integer',
-        'subgrupo1_id' => 'integer',
-        'subgrupo2_id' => 'integer',
-        'subgrupo3_id' => 'integer',
-        'servico_id' => 'integer',
-        'insumo_id' => 'integer',
-        'user_id' => 'integer'
+        'id'                      => 'integer',
+        'contrato_item_id'        => 'integer',
+        'codigo_insumo'           => 'string',
+        'grupo_id'                => 'integer',
+        'subgrupo1_id'            => 'integer',
+        'subgrupo2_id'            => 'integer',
+        'subgrupo3_id'            => 'integer',
+        'servico_id'              => 'integer',
+        'insumo_id'               => 'integer',
+        'user_id'                 => 'integer',
+        'qtd'                     => 'float'
     ];
 
     /**
@@ -63,7 +62,7 @@ class ContratoItemReapropriacao extends Model
      **/
     public function contratoItem()
     {
-        return $this->belongsTo(ContratoItem::class);
+        return $this->belongsTo(ContratoItem::class, 'contrato_item_id');
     }
 
     public function codigoServico($showServico = true)
@@ -97,7 +96,15 @@ class ContratoItemReapropriacao extends Model
 
     public function servico()
     {
-        return $this->belongsTo(Servico::class);
+        return $this->belongsTo(Servico::class, 'servico_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function grupo()
+    {
+        return $this->belongsTo(Grupo::class,'grupo_id');
     }
 
     /**
@@ -135,10 +142,23 @@ class ContratoItemReapropriacao extends Model
     public function reapropriacoes()
     {
         return $this->hasMany(
-            ContratoItemReapropriacao::class,
+            ContratoItemApropriacao::class,
             'contrato_item_reapropriacao_id'
         );
     }
+
+    public function modificacoes()
+    {
+        return $this->belongsToMany(
+            ContratoItemModificacao::class,
+            'contrato_item_modificacao_apropriacao',
+            'contrato_item_apropriacao_id',
+            'contrato_item_modificacao_id'
+        )
+        ->withPivot([ 'qtd_atual', 'qtd_anterior', 'id' ])
+        ->withTimestamps();
+    }
+
 
     public function getQtdSobraAttribute()
     {
@@ -147,11 +167,11 @@ class ContratoItemReapropriacao extends Model
 
     public function getQtdSobraFormattedAttribute()
     {
-        return float_to_money($this->getQtdSobraAttribute(), '') . $this->insumo->unidade_sigla;
+        return float_to_money($this->getQtdSobraAttribute(), '') . ' ' . $this->insumo->unidade_sigla;
     }
 
     public function getQtdFormattedAttribute()
     {
-        return float_to_money($this->qtd, '') . $this->insumo->unidade_sigla;
+        return float_to_money($this->qtd, '') . ' ' . $this->insumo->unidade_sigla;
     }
 }

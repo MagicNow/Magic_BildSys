@@ -1,20 +1,37 @@
 function workflowCall(item_id, tipo_item, aprovou, elemento, motivo, justificativa_texto, pai_id, pai_obj, filhos_metodo, shouldReload) {
 
   var url_aprova_reprova = '/workflow/aprova-reprova';
+
   if (pai_id > 0) {
     url_aprova_reprova = '/workflow/aprova-reprova-tudo'
   }
+
+  var data = {
+    id: item_id,
+    tipo: tipo_item,
+    resposta: aprovou,
+    motivo_id: motivo,
+    justificativa: justificativa_texto,
+    pai: pai_id,
+    pai_tipo: pai_obj,
+    filhos_relacionamento: filhos_metodo
+  };
+
+  var obsAprovador = document.getElementById('obs-aprovador');
+
+  if(obsAprovador && aprovou) {
+    var contrato_id = document.getElementById('contrato_id');
+    var user_id = document.getElementById('user_id');
+
+    var key = 'contrato_obs_' + user_id.value + '_' + contrato_id.value;
+
+    localStorage.removeItem(key);
+
+    data.justificativa = obsAprovador.value;
+  }
+
   return $.ajax(url_aprova_reprova, {
-      data: {
-        id: item_id,
-        tipo: tipo_item,
-        resposta: aprovou,
-        motivo_id: motivo,
-        justificativa: justificativa_texto,
-        pai: pai_id,
-        pai_tipo: pai_obj,
-        filhos_relacionamento: filhos_metodo
-      }
+      data: data
     }).done(function(retorno) {
       if (retorno.success) {
         if (aprovou) {
@@ -127,7 +144,24 @@ function workflowAprovaReprova(item_id, tipo_item, aprovou, elemento, nome, pai_
         showLoaderOnConfirm: true,
       },
       function() {
-        workflowCall(item_id, tipo_item, aprovou, elemento, null, null, pai_id, pai_obj, filhos_metodo, shouldReload)
+          if(tipo_item == 'OrdemDeCompraItem'){
+              type = 1;
+          }
+          if(tipo_item == 'QuadroDeConcorrencia'){
+              type = 2;
+          }
+          if(tipo_item == 'Contrato'){
+              type = 3;
+          }
+          $.ajax("/notifications/marcar-lido", {
+                  data: {
+                      'type' : type,
+                      'id' : item_id
+                  },
+                  type: "POST"
+              }
+          );
+        workflowCall(item_id, tipo_item, aprovou, elemento, null, null, pai_id, pai_obj, filhos_metodo, shouldReload);
       });
   }
 }

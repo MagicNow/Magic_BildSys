@@ -237,14 +237,19 @@
                                                               ->where('qc_item_id', $item->id)
                                                               ->first();
                                                         @endphp
+                                                        @if(isset($qcItemQcFornecedor->valor_total))
                                                         {{ float_to_money($qcItemQcFornecedor->valor_total) }}
                                                         <br/>
+
                                                         {!!
                                                           Form::radio(
                                                             "vencedores[{$item->id}]",
                                                             $qcItemQcFornecedor->id
                                                           )
                                                         !!}
+                                                        @else
+                                                        Sem proposta
+                                                        @endif
                                                     </label>
                                                 </div>
                                             </th>

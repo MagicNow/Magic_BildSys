@@ -180,6 +180,13 @@ class WorkflowAlcadaController extends AppBaseController
 
             return redirect(route('admin.workflowAlcadas.index'));
         }
+        
+        // Verifica se não é a primeira posição
+        if($workflowAlcada->ordem=="1"){
+            Flash::error('Esta alçada é a primeira do tipo '.$workflowAlcada->workflowTipo->nome.' e não pode ser removida!');
+
+            return redirect(route('admin.workflowAlcadas.index'));
+        }
 
         $this->workflowAlcadaRepository->delete($id);
 

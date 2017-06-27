@@ -1,5 +1,5 @@
 <label for="orcamento_item_id">{{ $item->insumo->nome }}</label>
-<table class="table table-striped">
+<table class="table table-striped table-no-margin">
   <thead>
     <tr>
       <th>#</th>
@@ -11,20 +11,17 @@
     @foreach($itens as $item)
       <tr>
         <td>
-          {!!
-            Form::radio(
-              'item_id',
-              $item->id,
-              null,
-              [
-                'data-column' => class_basename($item) === 'OcItem'
-                  ? 'ordem_de_compra_item_id'
-                  : 'contrato_item_reapropriacao_id',
-                'data-qtd-max' => $item->qtd,
-                'class' => 'js-item'
-              ]
-            )
-          !!}
+            {!!
+                Form::radio(
+                    'item_id',
+                    $item->id,
+                    null,
+                    [
+                        'data-qtd' => $item->qtd_sobra,
+                        'class' => 'js-item'
+                    ]
+                )
+            !!}
         </td>
         <td class="text-left">
           <span data-toggle="tooltip"
@@ -33,7 +30,7 @@
             {{ $item->codigoServico(false) }}
           </span>
         </td>
-        <td class="text-right">{{ $item->qtd_formatted }}</td>
+        <td class="text-right">{{ $item->qtd_sobra_formatted }}</td>
       </tr>
     @endforeach
   </tbody>

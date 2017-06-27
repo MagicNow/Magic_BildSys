@@ -42,12 +42,12 @@ class InsumoPorFornecedorDataTable extends DataTable
         $collection = $this->quadro->itens->map(function($item) {
             return [
                 'insumo' => $item->insumo->nome,
-                'qtd' => '',
+                'qntd do QC' => '',
                 'insumo_id' => $item->insumo->id,
                 'qc_item_id' => $item->id,
                 'valor_unitario_calculo' => $item->ordemDeCompraItens->sortBy('valor_unitario')->first() ? $item->ordemDeCompraItens->sortBy('valor_unitario')->first()->valor_unitario : 'R$ 0,00',
-                'valor unitário oi' => $item->ordemDeCompraItens->sortBy('valor_unitario')->first() ? float_to_money(floatval($item->ordemDeCompraItens->sortBy('valor_unitario')->first()->valor_unitario)) : 'R$ 0,00',
-                'valor total oi' => ''
+                'valor unitário do orçamento' => $item->ordemDeCompraItens->sortBy('valor_unitario')->first() ? float_to_money(floatval($item->ordemDeCompraItens->sortBy('valor_unitario')->first()->valor_unitario)) : 'R$ 0,00',
+                'valor total' => ''
             ];
         });
 
@@ -60,10 +60,19 @@ class InsumoPorFornecedorDataTable extends DataTable
                 $valor = $item_fornecedor ? $item_fornecedor->valor_total : 0;
                 $qtd_comprada = $item_fornecedor ? $item_fornecedor->qtd : 0;
                 $valor_comprado_oi = $insumo['valor_unitario_calculo'] * $qtd_comprada;
-
-                $insumo[str_replace('.', '*dot*',$qcFornecedor->fornecedor->nome . '||' . $qcFornecedor->id)] = float_to_money($valor);
-                $insumo['qtd'] =  number_format($qtd_comprada, 2, ',', '.');
-                $insumo['valor total oi'] = float_to_money($valor_comprado_oi);
+                if($qcFornecedor->fornecedor) {
+                    if(!$qcFornecedor->desistencia_motivo_id || !$qcFornecedor->desistencia_texto) {
+                        $insumo[str_replace('.',
+                            '*dot*',
+                            $qcFornecedor->fornecedor->nome . '||' . $qcFornecedor->id)] = float_to_money($valor);
+                    }else{
+                        $insumo[str_replace('.',
+                            '*dot*',
+                            $qcFornecedor->fornecedor->nome . '||' . $qcFornecedor->id)] = '<span style="color:red">DECLINED</span>';
+                    }
+                }
+                $insumo['qntd do QC'] =  number_format($qtd_comprada, 2, ',', '.');
+                $insumo['valor total'] = float_to_money($valor_comprado_oi);
             });
 
             return $insumo;
@@ -80,7 +89,7 @@ class InsumoPorFornecedorDataTable extends DataTable
         );
 
         return array_reduce($x, function($columns, $column) {
-            if($column != 'insumo' && $column != 'valor unitário oi' && $column != 'qtd' && $column != 'valor total oi') {
+            if($column != 'insumo' && $column != 'valor unitário do orçamento' && $column != 'qntd do QC' && $column != 'valor total') {
                 list($fornecedor, $id) = explode('||', $column);
 
                 $title = $fornecedor . '

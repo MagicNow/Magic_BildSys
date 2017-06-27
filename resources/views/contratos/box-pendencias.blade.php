@@ -22,11 +22,11 @@
               <th>Descrição</th>
               <th>Un</th>
               <th>Quantidade</th>
-              <th>Valor</th>
+              <th>Valor Unitário</th>
               <th>Quantidade</th>
-              <th>Valor</th>
+              <th>Valor Unitário</th>
               <th>Data</th>
-              <th>Action</th>
+              <th>Ação</th>
             </tr>
           </thead>
           <tbody>
@@ -40,11 +40,11 @@
                 <td>{{ float_to_money($modificacao['valor_unitario_anterior']) }}</td>
                 <td>{{ float_to_money($modificacao['qtd_atual'], '') }}</td>
                 <td>{{ float_to_money($modificacao['valor_unitario_atual']) }}</td>
-                <td>{{ $carbon->parse($modificacao['created_at'])->format('d/m/Y') }}</td>
+                <td>{{ $modificacao['created_at']->format('d/m/Y') }}</td>
                 <td>
                   @if($modificacao->workflow['podeAprovar'])
                     @if($modificacao->workflow['iraAprovar'])
-                      <div class="btn-group" id="blocoItemAprovaReprovaItem{{ $modificacao->id }}">
+                      <span id="blocoItemAprovaReprovaItem{{ $modificacao->id }}">
                         <button type="button" onclick="workflowAprovaReprova({{ $modificacao->id }},
                           'ContratoItemModificacao',1,'blocoItemAprovaReprovaItem{{ $modificacao->id }}',
                           '{{ $modificacao->tipo_modificacao }}', 0, '', '', true);"
@@ -61,7 +61,7 @@
                           Reprovar
                           <i class="fa fa-times" aria-hidden="true"></i>
                         </button>
-                      </div>
+                      </span>
                     @else
                       @if($modificacao->workflow['jaAprovou'])
                         @if($modificacao->workflow['aprovacao'])
@@ -82,6 +82,62 @@
                       @endif
                     @endif
                   @endif
+                  <button class="btn btn-xs btn-info btn-flat"
+                      data-toggle="modal"
+                      data-target="#detalhes-item-{{ $modificacao->id }}">
+                      <span data-toggle="tooltip" title="Detalhes Código Estruturado">
+                          Detalhes <i class="fa fa-plus fa-fw"></i>
+                      </span>
+                  </button>
+                  <div class="modal fade" id="detalhes-item-{{ $modificacao->id }}" tabindex="-1" role="dialog">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                          <h4 class="modal-title">
+                              Detalhes da modificação <br>
+                              <small>{{ $modificacao->tipo_modificacao }}</small>
+                          </h4>
+                        </div>
+                        <div class="modal-body">
+                            <table class="table table-striped table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th colspan="2" class="text-center">Antes</th>
+                                        <th colspan="2" class="text-center">Depois</th>
+                                    </tr>
+                                    <tr>
+                                        <th>Quantidade</th>
+                                        <th>Valor</th>
+                                        <th>Quantidade</th>
+                                        <th>Valor Unitário</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($modificacao->apropriacoes as $apropriacao)
+                                        <tr>
+                                            <td>
+                                                {{ float_to_money($apropriacao->pivot->qtd_anterior, '') }}
+                                            </td>
+                                            <td>
+                                                {{ float_to_money($modificacao['valor_unitario_anterior'], '') }}
+                                            </td>
+                                            <td>
+                                                {{ float_to_money($apropriacao->pivot->qtd_atual, '') }}
+                                            </td>
+                                            <td>
+                                                {{ float_to_money($modificacao['valor_unitario_atual'], '') }}
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </td>
               </tr>
             @endforeach

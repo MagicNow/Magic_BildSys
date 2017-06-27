@@ -6,9 +6,12 @@ use App\Models\Contrato;
 use App\Models\Insumo;
 use App\Models\OrdemDeCompraItem;
 use App\Models\QuadroDeConcorrencia;
+use App\Notifications\WorkflowNotification;
 use App\Repositories\ContratoRepository;
+use App\Repositories\WorkflowAprovacaoRepository;
 use Flash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 use Response;
 use Exception;
 use App\DataTables\QcItensDataTable;
@@ -119,6 +122,14 @@ class QuadroDeConcorrenciaController extends AppBaseController
     public function show($id, QcItensDataTable $qcItensDataTable)
     {
         $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->findWithoutFail($id);
+//        $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository
+//            ->with(
+//                'tipoEqualizacaoTecnicas.itens',
+//                'tipoEqualizacaoTecnicas.anexos',
+//                'itens.insumo',
+//                'itens.ordemDeCompraItens'
+//            )
+//            ->findWithoutFail($id);
 
         if (empty($quadroDeConcorrencia)) {
             Flash::error('Quadro De Concorrencia ' . trans('common.not-found'));
@@ -184,11 +195,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
 
         if($request->has('abrir_concorrencia')){
 
-            if(isset($input['qcFornecedoresMega'])){
-                $fornecedores = count($input['qcFornecedores']) + count($input['qcFornecedoresMega']);
-            }else{
-                $fornecedores = count($input['qcFornecedores']);
-            }
+            $fornecedores = count($request->qcFornecedores) + count($request->qcFornecedoresMega);
 
             if($fornecedores > $quadroDeConcorrencia->qcFornecedores->count()){
                 $input['qc_status_id'] = 7; // Em concorrência
@@ -211,6 +218,8 @@ class QuadroDeConcorrenciaController extends AppBaseController
                 Flash::success('Escolha os insumos para adicionar no Q.C. '.$id);
             }
         } else {
+            $aprovadores = WorkflowAprovacaoRepository::usuariosDaAlcadaAtual($quadroDeConcorrencia);
+            Notification::send($aprovadores, new WorkflowNotification($quadroDeConcorrencia));
             Flash::success('Quadro De Concorrencia colocado em aprovação.');
         }
 
@@ -321,8 +330,13 @@ class QuadroDeConcorrenciaController extends AppBaseController
             $rodadaSelecionada
         );
 
+
         $ofertas = $quadro->itens->reduce(function ($ofertas, $item) use ($qcFornecedores) {
-            $ofertas[] = $qcFornecedores->map(function ($qcFornecedor) use ($item) {
+            $ofertas[] = $qcFornecedores
+                ->filter(function ($qcFornecedor) use ($item) {
+                    return $qcFornecedor->itens->where('qc_item_id', $item->id)->first();
+                })
+                ->map(function ($qcFornecedor) use ($item) {
                 $oferta = $qcFornecedor->itens->where('qc_item_id', $item->id)->first();
 
                 return [
@@ -1467,12 +1481,58 @@ class QuadroDeConcorrenciaController extends AppBaseController
                         FROM quadro_de_concorrencias
                         JOIN users ON users.id = quadro_de_concorrencias.user_id
                         WHERE quadro_de_concorrencias.qc_status_id >= 8
+                        AND quadro_de_concorrencias.qc_status_id != 10
                     ) as X
                     GROUP BY X.user_id
                 ) as Y"
             )
         )->get();
 
-        return view('quadro_de_concorrencias.dashboard', compact('qcs_por_status','qcs_por_usuario','qcs_por_sla','qcs_por_media'));
+        $qcs_por_media_geral = DB::table(
+            DB::raw("
+                (SELECT SUM(dias) as media
+                    FROM
+                    (
+                        SELECT name, ROUND(SUM(dias) / count(user_id),0) as dias
+                            FROM
+                            (
+                                SELECT quadro_de_concorrencias.id, quadro_de_concorrencias.user_id, users.name,
+                                    (
+                                        DATEDIFF
+                                        (
+                                            (
+                                                SELECT qc_status_log.created_at
+                                                FROM qc_status_log
+                                                WHERE qc_status_log.qc_status_id = 8
+                                                AND quadro_de_concorrencias.id = qc_status_log.quadro_de_concorrencia_id
+                                                ORDER BY qc_status_log.created_at
+                                                LIMIT 1
+                                            ),
+                                            (
+                                                SELECT qc_status_log.created_at
+                                                FROM qc_status_log
+                                                WHERE qc_status_log.qc_status_id = 5
+                                                AND quadro_de_concorrencias.id = qc_status_log.quadro_de_concorrencia_id
+                                                ORDER BY qc_status_log.created_at
+                                                LIMIT 1
+                                            )
+                                        )
+                                    ) dias
+                                FROM quadro_de_concorrencias
+                                JOIN users ON users.id = quadro_de_concorrencias.user_id
+                                WHERE quadro_de_concorrencias.qc_status_id >= 8
+                                AND quadro_de_concorrencias.qc_status_id != 10
+                            ) as X
+                            GROUP BY X.user_id
+                        ) as Z
+                ) as Y"
+            )
+        )->first();
+
+        return view('quadro_de_concorrencias.dashboard', compact('qcs_por_status',
+                                                                 'qcs_por_usuario',
+                                                                 'qcs_por_sla',
+                                                                 'qcs_por_media',
+                                                                 'qcs_por_media_geral'));
     }
 }

@@ -531,12 +531,14 @@ class CatalogoContratoController extends AppBaseController
             DB::raw("CONVERT(agn_st_nome,'UTF8','WE8ISO8859P15') as agn_st_nome")
         ])
         ->whereRaw("LOWER(agn_st_nome) LIKE '%' || LOWER('{$request->q}') || '%'")
+        ->orderBy('agn_st_nome', 'ASC')
         ->paginate();
 
         return $fornecedores;
     }
 
     public function buscaInsumos(Request $request){
+
         $insumos = Insumo::select([
             'id',
             DB::raw("CONCAT(nome, ' - ', unidade_sigla) as nome")
@@ -549,7 +551,13 @@ class CatalogoContratoController extends AppBaseController
         ->whereHas('grupo', function($query) {
             return $query->where('active', 1);
         })
-        ->paginate();
+        ->orderBy('nome', 'ASC');
+
+        if($request->insumos_trocados) {
+            $insumos = $insumos->whereNotIn('id', explode(',', $request->insumos_trocados));
+        }
+
+        $insumos = $insumos->paginate();
 
         return $insumos;
     }
