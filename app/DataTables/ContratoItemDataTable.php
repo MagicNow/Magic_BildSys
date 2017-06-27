@@ -42,7 +42,7 @@ class ContratoItemDataTable extends DataTable
         $datatables = $this->datatables
             ->eloquent($this->query())
             ->editColumn('qtd', function ($item) {
-                return $item->qtd_formatted;
+                return float_to_money($item->qtd, '') . ' ' . $item->insumo_unidade;
             })
             ->editColumn('valor_total', function ($item) {
                 return float_to_money($item->valor_total);
@@ -67,12 +67,12 @@ class ContratoItemDataTable extends DataTable
                     return $query->where('contrato_status_id', ContratoStatus::APROVADO);
                 }]);
 
-                $reapropriacoes_dos_itens = $item->reapropriacoes->filter(function ($re) {
-                    return is_null($re->contrato_item_reapropriacao_id) && !is_null($re->ordem_de_compra_item_id);
-                })->pluck('ordem_de_compra_item_id')->unique();
+                $apropriacoes = $item->apropriacoes->filter(function ($re) {
+                    return is_null($re->contrato_item_reapropriacao_id);
+                });
 
-                $reapropriacoes_de_reapropriacoes = $item->reapropriacoes->filter(function ($re) {
-                    return $re->reapropriacoes->isNotEmpty();
+                $reapropriacoes = $item->apropriacoes->filter(function ($re) {
+                    return !is_null($re->contrato_item_reapropriacao_id);
                 });
 
                 $reprovado = false;
@@ -88,8 +88,8 @@ class ContratoItemDataTable extends DataTable
                     'contratos.itens_datatables_info',
                     compact(
                         'item',
-                        'reapropriacoes_dos_itens',
-                        'reapropriacoes_de_reapropriacoes',
+                        'apropriacoes',
+                        'reapropriacoes',
                         'reprovado',
                         'workflow'
                     ))
@@ -116,26 +116,16 @@ class ContratoItemDataTable extends DataTable
                 'insumos.aliq_pis',
                 'insumos.aliq_cofins',
                 'insumos.aliq_csll',
-                DB::raw('CONCAT(contrato_itens.qtd, \' \', insumos.unidade_sigla) as qtd_unidade'),
                 DB::raw('
                    (SELECT
                         CONCAT(codigo, \' - \', nome)
                             FROM servicos
-                        WHERE ordem_de_compra_itens.servico_id = servicos.id) AS servico'
+                        WHERE contrato_item_apropriacoes.servico_id = servicos.id) AS servico'
                 ),
             ])
             ->join('insumos', 'insumos.id', 'contrato_itens.insumo_id')
             ->leftJoin('contrato_item_modificacoes', 'contrato_itens.id', 'contrato_item_modificacoes.contrato_item_id')
-            ->leftJoin(
-                'oc_item_qc_item',
-                'contrato_itens.qc_item_id',
-                'oc_item_qc_item.qc_item_id'
-            )
-            ->leftJoin(
-                'ordem_de_compra_itens',
-                'ordem_de_compra_itens.id',
-                'oc_item_qc_item.ordem_de_compra_item_id'
-            )
+            ->join('contrato_item_apropriacoes', 'contrato_itens.id', 'contrato_item_apropriacoes.contrato_item_id')
             ->where('contrato_itens.contrato_id', $this->contrato->id)
             ->groupBy('contrato_itens.id');
 
@@ -219,9 +209,9 @@ class ContratoItemDataTable extends DataTable
                 'name'  => 'insumos.nome',
                 'title' => 'Descrição',
             ],
-            'qtd_unidade' => [
-                'data'  => 'qtd_unidade',
-                'name'  => 'contrato_itens.qtd',
+            'qtd' => [
+                'data'  => 'qtd',
+                'name'  => 'qtd',
                 'title' => 'Qtd'
             ],
             'valor_total' => [

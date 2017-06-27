@@ -32,4 +32,20 @@ class NotificationRepository extends BaseRepository
 
         return $notification;
     }
+
+    public function marcarLido($workflow_tipo_id, $id_dinamico)
+    {
+        $notifications = Notification::get();
+        $notification = [];
+
+        if(count($notifications)) {
+            foreach ($notifications as $notification) {
+                if($notification->data->workflow_tipo_id == $workflow_tipo_id && $notification->data->id_dinamico == $id_dinamico){
+                    $notification->update(['read_at' => Carbon::now()]);
+                }
+            }
+        }
+        
+        return $notification;
+    }
 }

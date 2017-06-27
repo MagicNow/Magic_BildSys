@@ -71,6 +71,7 @@ class Orcamento extends Model
         'subgrupo2_id' => 'integer',
         'subgrupo3_id' => 'integer',
         'descricao' => 'string',
+        'preco_unitario' => 'decimal',
     ];
 
     /**
@@ -100,45 +101,45 @@ class Orcamento extends Model
         'porcentagem_orcamento' => 'decimal'
     ];
 
-    public function getQtdTotalAttribute($value)
-    {
-        if(strlen($value) == 4){
-            $value = '0'.$value;
-        }
+//    public function getQtdTotalAttribute($value)
+//    {
+//        if(strlen($value) == 4){
+//            $value = '0'.$value;
+//        }
+//
+//        return number_format($value,2,',','.');
+//    }
+//
+//    public function setQtdTotalAttribute($value)
+//    {
+//        $pontos = array(",");
+//        $value = str_replace('.','',$value);
+//        $result = str_replace( $pontos, ".", $value);
+//        if($result == ''){
+//            $result = null;
+//        }
+//        $this->attributes['qtd_total'] = $result;
+//    }
 
-        return number_format($value,2,',','.');
-    }
-
-    public function setQtdTotalAttribute($value)
-    {
-        $pontos = array(",");
-        $value = str_replace('.','',$value);
-        $result = str_replace( $pontos, ".", $value);
-        if($result == ''){
-            $result = null;
-        }
-        $this->attributes['qtd_total'] = $result;
-    }
-
-    public function getPrecoTotalAttribute($value)
-    {
-        if(strlen($value) == 4){
-            $value = '0'.$value;
-        }
-
-        return number_format($value,2,',','.');
-    }
-
-    public function setPrecoTotalAttribute($value)
-    {
-        $pontos = array(",");
-        $value = str_replace('.','',$value);
-        $result = str_replace( $pontos, ".", $value);
-        if($result == ''){
-            $result = null;
-        }
-        $this->attributes['preco_total'] = $result;
-    }
+//    public function getPrecoTotalAttribute($value)
+//    {
+//        if(strlen($value) == 4){
+//            $value = '0'.$value;
+//        }
+//
+//        return number_format($value,2,',','.');
+//    }
+//
+//    public function setPrecoTotalAttribute($value)
+//    {
+//        $pontos = array(",");
+//        $value = str_replace('.','',$value);
+//        $result = str_replace( $pontos, ".", $value);
+//        if($result == ''){
+//            $result = null;
+//        }
+//        $this->attributes['preco_total'] = $result;
+//    }
 
     /**
      * Validation rules

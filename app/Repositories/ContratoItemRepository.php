@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\DB;
 use App\Repositories\WorkflowAprovacaoRepository;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\WorkflowNotification;
+use App\Models\ContratoItemApropriacao;
+use App\Models\Contrato;
 
 class ContratoItemRepository extends BaseRepository
 {
@@ -53,5 +55,14 @@ class ContratoItemRepository extends BaseRepository
         DB::commit();
 
         return $item;
+    }
+
+    public function forContratoDetails(Contrato $contrato)
+    {
+        return $this->model->select([
+            'contrato_itens.*',
+        ])
+        ->where('contrato_itens.contrato_id', $contrato->id)
+        ->get();
     }
 }

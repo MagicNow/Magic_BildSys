@@ -39,10 +39,6 @@ class ComprasDataTable extends DataTable
                 }
             })
             ->editColumn('troca', function ($obj) {
-                if($obj->substitui) {
-                    return '<button data-toggle="popover" title="Substitui Insumo" data-content="' . $obj->substitui . '" type="button" data-placement="left" class="btn btn-info btn-flat btn-xs"> <i class="fa fa-exchange"></i> </button>';
-                }
-
                 if ($obj->insumo_grupo_id == 1570) {
                     return link_to(
                         'compras/trocar/' . $obj->orcamento_id,
@@ -54,7 +50,18 @@ class ComprasDataTable extends DataTable
                 }
             })
             ->editColumn('nome', function ($obj) {
-                return "<strong  data-toggle=\"tooltip\" data-placement=\"top\" data-html=\"true\"
+                if($obj->substitui){
+                    return "<strong  data-toggle=\"tooltip\" data-placement=\"top\" data-html=\"true\"
+                    title=\"". $obj->tooltip_grupo . ' <br> ' .
+                    $obj->tooltip_subgrupo1 . ' <br> ' .
+                    $obj->tooltip_subgrupo2 . ' <br> ' .
+                    $obj->tooltip_subgrupo3 . ' <br> ' .
+                    $obj->tooltip_servico . ' <br> <i class=\'fa fa-exchange\'></i> ' . $obj->substitui .
+                    "\">
+                    $obj->nome
+                    </strong>";
+                } else {
+                    return "<strong  data-toggle=\"tooltip\" data-placement=\"top\" data-html=\"true\"
                     title=\"". $obj->tooltip_grupo . ' <br> ' .
                     $obj->tooltip_subgrupo1 . ' <br> ' .
                     $obj->tooltip_subgrupo2 . ' <br> ' .
@@ -62,12 +69,13 @@ class ComprasDataTable extends DataTable
                     $obj->tooltip_servico  ."\">
                     $obj->nome
                     </strong>";
+                }
             })
             ->editColumn('valor_total', function($obj){
                 return $obj->quantidade_compra ? "R$ ".number_format($obj->getOriginal('preco_unitario') * money_to_float($obj->quantidade_compra), 2,',','.') : 'R$ 0,00';
             })
             ->editColumn('preco_unitario', function($obj){
-                if($obj->insumo_incluido) {
+                if($obj->insumo_incluido || $obj->orcamento_que_substitui) {
                     return "<div class='input-group'>
                                 <span class='input-group-addon'>R$</span>
                                 <input type='text' value='".number_format($obj->preco_unitario,2,',','.')."' class='form-control
@@ -141,6 +149,7 @@ class ComprasDataTable extends DataTable
                 'orcamentos.preco_total',
                 'orcamentos.preco_unitario',
                 'orcamentos.insumo_incluido',
+                'orcamentos.orcamento_que_substitui',
                 DB::raw('(SELECT
                     CONCAT(codigo, \' - \', nome)
                     FROM
@@ -172,7 +181,8 @@ class ComprasDataTable extends DataTable
                     WHERE
                     orcamentos.servico_id = servicos.id) AS tooltip_servico'),
                 DB::raw('format((
-                        orcamentos.qtd_total -
+                        orcamentos.qtd_total 
+                        -
                         (
                             IFNULL(
                                 (
@@ -195,6 +205,45 @@ class ComprasDataTable extends DataTable
                                     AND ordem_de_compras.oc_status_id != 6
                                     AND ordem_de_compras.oc_status_id != 4
                                 ),0
+                            )
+                        )
+                        -
+                        (
+                            IFNULL(
+                                IFNULL(
+                                    (
+                                        SELECT sum(ordem_de_compra_itens.valor_total) FROM ordem_de_compra_itens
+                                        JOIN ordem_de_compras
+                                        ON ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id
+                                        WHERE 
+                                            ordem_de_compra_itens.insumo_id in
+                                            (
+                                                SELECT 
+                                                    insumo_id
+                                                FROM
+                                                    orcamentos as OrcSub
+                                                WHERE
+                                                    OrcSub.orcamento_que_substitui = orcamentos.id
+                                            )
+                                        AND ordem_de_compra_itens.grupo_id = orcamentos.grupo_id
+                                        AND ordem_de_compra_itens.subgrupo1_id = orcamentos.subgrupo1_id
+                                        AND ordem_de_compra_itens.subgrupo2_id = orcamentos.subgrupo2_id
+                                        AND ordem_de_compra_itens.subgrupo3_id = orcamentos.subgrupo3_id
+                                        AND ordem_de_compra_itens.servico_id = orcamentos.servico_id
+                                        AND (
+                                                ordem_de_compra_itens.aprovado IS NULL
+                                                OR
+                                                ordem_de_compra_itens.aprovado = 1
+                                            )
+                                        AND ordem_de_compra_itens.deleted_at IS NULL
+                                        AND ordem_de_compras.obra_id ='. $obra->id .'
+                                        AND ordem_de_compras.oc_status_id != 6
+                                        AND ordem_de_compras.oc_status_id != 4
+                                    ),0
+                                ),0
+                                
+                                / orcamentos.preco_unitario
+                            
                             )
                         )
                     ),2,\'de_DE\') as saldo'),
@@ -280,6 +329,29 @@ class ComprasDataTable extends DataTable
             ]
         )
             ->whereNotNull('orcamentos.qtd_total')
+            ->where(DB::raw('IFNULL(
+                                (SELECT 
+                                    ordem_de_compras.oc_status_id
+                                FROM
+                                    ordem_de_compra_itens
+                                        JOIN
+                                    ordem_de_compras ON ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id
+                                WHERE
+                                    ordem_de_compra_itens.insumo_id = orcamentos.insumo_id
+                                        AND ordem_de_compra_itens.grupo_id = orcamentos.grupo_id
+                                        AND ordem_de_compra_itens.subgrupo1_id = orcamentos.subgrupo1_id
+                                        AND ordem_de_compra_itens.subgrupo2_id = orcamentos.subgrupo2_id
+                                        AND ordem_de_compra_itens.subgrupo3_id = orcamentos.subgrupo3_id
+                                        AND ordem_de_compra_itens.servico_id = orcamentos.servico_id
+                                        AND (ordem_de_compra_itens.aprovado IS NULL
+                                        OR ordem_de_compra_itens.aprovado = 1)
+                                        AND ordem_de_compra_itens.deleted_at IS NULL
+                                        AND ordem_de_compras.obra_id = '. $obra->id .'
+                                        AND ordem_de_compras.oc_status_id != 6
+                                        AND ordem_de_compras.oc_status_id != 4
+                                LIMIT 1        
+                                        )
+                            , 1)'), 1)
             ->where('orcamentos.ativo', 1);
 
         $insumo_query->leftJoin(DB::raw('orcamentos orcamentos_sub'),  'orcamentos_sub.id', 'orcamentos.orcamento_que_substitui');

@@ -33,7 +33,7 @@ class CatalogoContratoDataTable extends DataTable
             'fornecedores.nome as fornecedor',
             DB::raw('(
                 SELECT 
-                    COUNT(id)
+                    COUNT(Distinct insumo_id)
                 FROM
                     catalogo_contrato_insumos
                 WHERE catalogo_contrato_id = catalogo_contratos.id

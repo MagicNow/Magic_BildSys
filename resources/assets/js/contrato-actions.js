@@ -1,36 +1,105 @@
 $(function() {
   $.fn.modal.Constructor.prototype.enforceFocus = $.noop;
+
   Reajuste.init();
   Distrato.init();
   Reapropriar.init();
   Editar.init();
 
-  var table = LaravelDataTables.dataTableBuilder
+  var workflowTipo = $('[data-workflow-tipo]');
 
-  var visible = false;
+  workflowTipo.tooltip({
+    title: 'Clique para ver detalhes desta alcada',
+    container: document.body
+  });
 
-  table.on('init', function() {
-    table.button().add(5, {
-      action: function(e, dt, button, config) {
-        visible = !visible;
+  workflowTipo.on('click', function(event) {
+    startLoading();
+    $.get('/workflow/detalhes', event.currentTarget.dataset)
+      .always(stopLoading)
+      .done(function(data) {
+        $('#modal-alcadas').html(data);
+        $('#modal-alcadas').modal('show');
+      })
+      .fail(function() {
+        swal('Ops!', 'Ocorreu um erro ao mostrar os detalhes da alçada', 'error');
+      });
+  });
 
-        table.column('aliq_irrf:name').visible(visible);
-        table.column('aliq_inss:name').visible(visible);
-        table.column('aliq_pis:name').visible(visible);
-        table.column('aliq_cofins:name').visible(visible);
-        table.column('aliq_csll:name').visible(visible);
+  var obsAprovador = document.getElementById('obs-aprovador');
 
-        button[0].innerHTML = !visible
-          ? '<i class="fa fa-money"></i> Exibir Impostos'
-          : '<i class="fa fa-money"></i> Ocultar Impostos';
-      },
-      text: '<i class="fa fa-money"></i> Exibir Impostos'
+  if(obsAprovador) {
+    var contrato_id = document.getElementById('contrato_id');
+    var user_id = document.getElementById('user_id');
+
+    var key = 'contrato_obs_' + user_id.value + '_' + contrato_id.value;
+
+    obsAprovador.value = localStorage.getItem(key);
+
+    var saveObs = _.debounce(function(event) {
+      localStorage.setItem(key, obsAprovador.value);
+    }, 700);
+
+    obsAprovador.addEventListener('input', saveObs);
+    obsAprovador.addEventListener('change', saveObs);
+  }
+
+
+  if (typeof LaravelDataTables !== 'undefined') {
+    var table = LaravelDataTables.dataTableBuilder
+
+    var visible = false;
+
+    table.on('init', function() {
+      table.button().add(5, {
+        action: function(e, dt, button, config) {
+          visible = !visible;
+
+          table.column('aliq_irrf:name').visible(visible);
+          table.column('aliq_inss:name').visible(visible);
+          table.column('aliq_pis:name').visible(visible);
+          table.column('aliq_cofins:name').visible(visible);
+          table.column('aliq_csll:name').visible(visible);
+
+          button[0].innerHTML = !visible ?
+            '<i class="fa fa-money"></i> Exibir Impostos' :
+            '<i class="fa fa-money"></i> Ocultar Impostos';
+        },
+        text: '<i class="fa fa-money"></i> Exibir Impostos'
+      });
     });
-  })
+  }
 
 });
 
 var token = document.currentScript.dataset.token;
+
+var getInputs = _.partial(_.reduce, _, function(data, grupo) {
+  data[grupo.name] = grupo.value;
+  return data;
+});
+
+var getView = function(id, view, modal) {
+  startLoading();
+  return $.get('/contratos/apropriacoes/' + id, {
+      view: view
+    })
+    .always(stopLoading)
+    .done(function(html) {
+      $(modal).find('.js-ajax-container').html(html);
+      $(modal).modal('show');
+      $(modal).find('input[type="radio"]').iCheck({
+        checkboxClass: 'icheckbox_square-green',
+        radioClass: 'iradio_square-green',
+        increaseArea: '20%' // optional
+      });
+      $('.money').maskMoney({
+        allowNegative: true,
+        thousands: '.',
+        decimal: ','
+      });
+    });
+};
 
 var Reapropriar = (function() {
   function Reapropriar() {
@@ -44,12 +113,13 @@ var Reapropriar = (function() {
     this.defaultQtd = 0;
     var _this       = this;
 
+
     $(this.modal).on('hide.bs.modal', function(e) {
       $(_this.insumo).select2('destroy');
     });
 
     $(this.modal).on('ifToggled', '.js-item', function(event) {
-      _this.addAllBtn.dataset.qtd = event.currentTarget.dataset.qtdMax;
+      _this.addAllBtn.dataset.qtd = event.currentTarget.dataset.qtd;
     });
 
     $body.on('click', '.js-reapropriar', this.reapropriar.bind(this));
@@ -63,26 +133,20 @@ var Reapropriar = (function() {
     this.id = button.dataset.itemId;
     var self = this;
 
-    startLoading();
-    this.getView(this.id)
-      .always(stopLoading)
-      .done(function(html) {
-        $(self.modal).find('#select-item').html(html);
-        $(self.modal).modal('show');
-        $(self.modal).find('input[type="radio"]').iCheck({
-          checkboxClass: 'icheckbox_square-green',
-          radioClass: 'iradio_square-green',
-          increaseArea: '20%' // optional
-        });
-      });
+    var insumo = this.modal.querySelector('#grupos_de_orcamento_insumo_id');
+    if(insumo) {
+      insumo.value = button.dataset.insumoId;
+    }
+
+    getView(this.id, 'reapropriacao', this.modal);
   }
 
   Reapropriar.prototype.addAll = function(event) {
-    this.qtd.value = floatToMoney(parseFloat(this.addAllBtn.dataset.qtd), '');
-  };
+    if(!this.addAllBtn.dataset.qtd) {
+      return false;
+    }
 
-  Reapropriar.prototype.getView = function(id) {
-    return $.get('/contratos/reapropriar-item/' + id);
+    this.qtd.value = floatToMoney(parseFloat(this.addAllBtn.dataset.qtd), '');
   };
 
   Reapropriar.prototype.save = function() {
@@ -107,19 +171,17 @@ var Reapropriar = (function() {
 
   Reapropriar.prototype.sendData = function() {
     var _this = this;
+
+    var item = this.getSelectedItem();
+
     var data = {
       _token: token,
       qtd: this.qtd.value,
     };
 
-    var item = this.getSelectedItem();
+    data.item_id = item.value;
 
-    data[item.dataset.column] = item.value;
-
-    data = _.reduce(this.grupos, function(data, grupo) {
-      data[grupo.name] = grupo.value;
-      return data;
-    }, data);
+    data = getInputs(this.grupos, data);
 
     $.post('/contratos/reapropriar-item/' + this.id, data)
       .done(function(response) {
@@ -129,7 +191,7 @@ var Reapropriar = (function() {
           type: 'success',
         }, function() {
           $(_this.modal).modal('hide');
-          LaravelDataTables.dataTableBuilder.draw();
+          location.reload();
         });
       })
       .fail(function(response) {
@@ -147,7 +209,7 @@ var Reapropriar = (function() {
           return true
         }
 
-        swal('Ops!', 'Ocorreu um erro ao realizar distrato.', 'error');
+        swal('Ops!', 'Ocorreu um erro ao reapropriar insumo.', 'error');
       });
   };
 
@@ -158,7 +220,7 @@ var Reapropriar = (function() {
   Reapropriar.prototype.valid = function() {
     var qtd = moneyToFloat(this.qtd.value);
 
-    if(!this.getSelectedItem()) {
+    if (!this.getSelectedItem()) {
       swal('', 'Selecione o item a ser reapropriado', 'warning');
       return false;
     }
@@ -197,37 +259,46 @@ var Reapropriar = (function() {
 var Reajuste = (function() {
   function Reajuste() {
     this.modal = document.getElementById('modal-reajuste');
-    this.total = this.modal.querySelector('[name=total]');
-    this.qtd = this.modal.querySelector('[name=qtd]');
-    this.valor = this.modal.querySelector('[name=valor]');
     this.saveBtn = this.modal.querySelector('.js-save');
-    this.totalDefault = 0;
     this.id = 0;
 
     $body.on('click', '.js-reajuste', this.reajustar.bind(this));
     this.saveBtn.addEventListener('click', this.save.bind(this));
-    this.qtd.addEventListener('input', this.adjustTotal.bind(this));
   }
 
   Reajuste.prototype.reajustar = function(event) {
     event.preventDefault();
+    var self = this;
     var button = event.currentTarget;
     this.id = button.dataset.itemId;
-    this.qtd.value = '';
-    this.totalDefault = parseFloat(button.dataset.itemQtd);
-    this.valorDefault = parseFloat(button.dataset.itemValor);
-    this.valor.value = floatToMoney(parseFloat(button.dataset.itemValor), '');
-    this.total.value = floatToMoney(parseFloat(button.dataset.itemQtd), '');
 
-    this.valor.dispatchEvent(new Event('input'));
+    getView(this.id, 'reajuste', this.modal)
+      .done(function() {
+        self.inputs = self.modal.querySelectorAll('.js-input');
 
-    $(this.modal).modal('show');
+        self.valor = self.modal.querySelector('.js-valor');
+
+        self.adicionais = _.filter(
+          self.inputs,
+          _.method('classList.contains', 'js-adicional')
+        );
+
+        var inputs = $(self.modal).find('.js-adicional');
+
+        inputs.on('blur', self.adjustTotal.bind(this));
+        inputs.on('change', self.adjustTotal.bind(this));
+        inputs.on('keyup keypress keydown', self.adjustTotal.bind(this));
+      });
   };
 
   Reajuste.prototype.adjustTotal = function(event) {
-    var qtd = moneyToFloat(this.qtd.value || '0');
+    var input = event.currentTarget;
+    var valueContainer = $(input).parents('tr').find('td:last').get(0);
 
-    this.total.value = floatToMoney(this.totalDefault + qtd, '');
+    valueContainer.innerText = floatToMoney(
+      (input.value ? moneyToFloat(input.value) : 0) + parseFloat(valueContainer.dataset.itemQtd),
+      ''
+    );
   };
 
   Reajuste.prototype.save = function(event) {
@@ -253,18 +324,15 @@ var Reajuste = (function() {
   };
 
   Reajuste.prototype.valid = function() {
-    if (!this.valor.value.length) {
-      swal('', 'É necessário enviar um valor para reajuste', 'warning');
-      return false;
-    }
+    var adicionaisChanged = _.some(this.adicionais, function(input) {
+      return input.value.length && moneyToFloat(input.value) > 0;
+    });
 
-    if (moneyToFloat(this.valor.value) === 0) {
-      swal('', 'O novo valor não pode ser zero', 'warning');
-      return false;
-    }
+    var valorChanged = parseFloat(this.valor.dataset.oldValue) !== moneyToFloat(this.valor.value);
 
-    if (moneyToFloat(this.valor.value) === this.valorDefault && !this.qtd.value) {
-      swal('', 'Você não fez nenhuma alteração para reajuste', 'warning');
+    if (!adicionaisChanged && !valorChanged) {
+      swal('', 'Não foram encontratas modificações no contrato', 'warning');
+
       return false;
     }
 
@@ -275,11 +343,23 @@ var Reajuste = (function() {
     var _this = this;
     var data = {
       _token: token,
-      qtd: this.qtd.value,
-      valor: this.valor.value
+      valor_unitario: this.valor.value
     };
 
-    $.post('/contratos/reajustar-item/' + this.id, data)
+
+    data = _.reduce(this.inputs, function(data, input) {
+      if (
+        input.classList.contains('js-adicional') &&
+        (input.value &&
+          moneyToFloat(input.value) > 0)
+      ) {
+        data[input.name] = input.value;
+      }
+
+      return data;
+    }, data);
+
+    $.post('/contratos/reajustar/' + this.id, data)
       .done(function(response) {
         swal({
           title: 'Sucesso!',
@@ -319,15 +399,15 @@ var Reajuste = (function() {
 var Distrato = (function() {
   function Distrato() {
     this.modal = document.getElementById('modal-distrato');
-    this.zerarBtn = document.getElementById('zerar-saldo');
-    this.qtd = this.modal.querySelector('[name="qtd"]');
     this.saveBtn = this.modal.querySelector('.js-save');
+    this.inputs = null;
     this.id = 0
     this.defaultQtd = 0;
 
     $body.on('click', '.js-distrato', this.distratar.bind(this));
     this.saveBtn.addEventListener('click', this.save.bind(this));
-    this.zerarBtn.addEventListener('click', this.zerar.bind(this));
+    $(this.modal).on('click', '.js-zerar', this.zerar.bind(this));
+    $(this.modal).on('blur', '.js-input', this.validateInputs.bind(this));
   }
 
   Distrato.init = function() {
@@ -336,21 +416,56 @@ var Distrato = (function() {
 
   Distrato.prototype.distratar = function(event) {
     event.preventDefault();
+    var self = this;
     var button = event.currentTarget;
-
     this.id = button.dataset.itemId;
-    this.defaultQtd = parseFloat(button.dataset.itemQtd);
-    this.qtd.value = floatToMoney(this.defaultQtd, '');
 
-    this.qtd.dispatchEvent(new Event('input'));
+    getView(this.id, 'distrato', this.modal)
+      .done(function() {
+        self.inputs = self.modal.querySelectorAll('.js-input');
+        var handler = function(event) {
+          var input = event.currentTarget;
 
-    $(this.modal).modal('show');
+          if(moneyToFloat(input.value) > parseFloat(input.dataset.qtd)) {
+            swal('', 'Você não pode distratar mais do que valor total', 'warning');
+
+            input.value = floatToMoney(parseFloat(input.dataset.qtd), '');
+            $(input).trigger('change');
+            return false;
+          }
+
+          var valueContainer = $(input).closest('tr').find('td:last').get(0);
+
+          valueContainer.innerText = floatToMoney(
+            parseFloat(input.dataset.qtd) - (input.value ? moneyToFloat(input.value) : 0),
+            ''
+          );
+        };
+
+        $(self.inputs).on('blur', handler);
+        $(self.inputs).on('change', handler);
+        $(self.inputs).on('keyup keypress keydown input', handler);
+      });
+  };
+
+  Distrato.prototype.validateInputs = function(event) {
+    var input = event.currentTarget;
+    var value = moneyToFloat(input.value, '');
+    var oldValue = parseFloat(input.dataset.oldValue);
+
+    if (value > oldValue) {
+      input.value = floatToMoney(oldValue, '');
+      input.focus();
+      swal('Valor inválido!', 'O novo valor só pode ser menor do que o atual', 'warning');
+    }
   };
 
   Distrato.prototype.zerar = function(event) {
     event.preventDefault();
-    this.qtd.value = 0;
-    this.qtd.dispatchEvent(new Event('input'));
+    var input = $(event.currentTarget).parents('.input-group').find('input').get(0);
+
+    input.value = floatToMoney(parseFloat(input.dataset.qtd), '');
+    $(input).trigger('change');
   };
 
   Distrato.prototype.save = function(event) {
@@ -375,31 +490,42 @@ var Distrato = (function() {
   };
 
   Distrato.prototype.valid = function() {
-    var qtd = moneyToFloat(this.qtd.value);
+    var hasChanged = _.some(this.inputs, function(input) {
+      return moneyToFloat(input.value) > 0;
+    });
 
-    if (qtd < this.defaultQtd) {
-      return true;
+    var hasInvalid = _.some(this.inputs, function(input) {
+      return moneyToFloat(input.value) > parseFloat(input.dataset.qtd);
+    });
+
+    if (!hasChanged) {
+      swal('', 'Nenhuma modificação encontrada', 'warning');
+
+      return false;
     }
 
-    if (qtd === this.defaultQtd) {
-      swal('', 'A quantidade não foi alterada', 'warning');
+    if(hasInvalid) {
+      swal('', 'Formulário contem distratos inválidos', 'warning');
+
+      return false;
     }
 
-    if (qtd > this.defaultQtd) {
-      swal('', 'A nova quantidade não pode ser maior que a atual', 'warning');
-    }
-
-    return false;
+    return true;
   };
 
   Distrato.prototype.sendData = function() {
     var _this = this;
     var data = {
       _token: token,
-      qtd: this.qtd.value,
     };
 
-    $.post('/contratos/distratar-item/' + this.id, data)
+    var inputs = _.filter(this.inputs, function(input) {
+      return parseFloat(input.dataset.oldValue) !== moneyToFloat(input.value);
+    });
+
+    data = getInputs(inputs, data);
+
+    $.post('/contratos/distratar/' + this.id, data)
       .done(function(response) {
         swal({
           title: 'Sucesso!',
@@ -499,11 +625,8 @@ var Editar = (function() {
       return false;
     }
 
-    console.log('Valor:', moneyToFloat(this.valor.value), this.valorDefault);
-    console.log('qtd:', moneyToFloat(this.qtd.value), this.qtdDefault);
-
-    if ( moneyToFloat(this.valor.value) === this.valorDefault
-      && moneyToFloat(this.qtd.value) === this.qtdDefault ) {
+    if (moneyToFloat(this.valor.value) === this.valorDefault &&
+      moneyToFloat(this.qtd.value) === this.qtdDefault) {
       swal('', 'Você não fez nenhuma alteração no aditivo', 'warning');
       return false;
     }
@@ -519,7 +642,7 @@ var Editar = (function() {
       valor: this.valor.value
     };
 
-    if(!this.valid()) {
+    if (!this.valid()) {
       return false;
     }
 

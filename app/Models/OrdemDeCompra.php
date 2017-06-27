@@ -34,7 +34,9 @@ class OrdemDeCompra extends Model
     {
         return [
             'message' => 'Você tem uma ordem de compra para aprovar',
-            'link' => route('ordens_de_compra.detalhes', $this->id)
+            'link' => route('ordens_de_compra.detalhes', $this->id),
+            'workflow_tipo_id' => WorkflowTipo::OC,
+            'id_dinamico' => $this->id
         ];
     }
 

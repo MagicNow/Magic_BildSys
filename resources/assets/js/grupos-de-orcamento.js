@@ -1,8 +1,11 @@
 $(function() {
   var groupSelector = $('.js-group-selector');
+  var insumo = document.getElementById('grupos_de_orcamento_insumo_id');
 
-  var url = function(type, id) {
-    return '/ordens-de-compra/' + type + '/' + id;
+  var url = function(type, id, data) {
+    data = data ? ('?' + querystring.stringify(data)) : '';
+
+    return '/ordens-de-compra/' + type + '/' + id + data;
   };
 
   var makeOptions = function(data) {
@@ -34,7 +37,14 @@ $(function() {
       selector.html('');
     });
 
-    $.get(url(next.dataset.inputType, selector.value))
+    var request_url = url(
+      next.dataset.inputType,
+      selector.value,
+      // Passa o insumo para filtrar o serviço
+      insumo && { insumo_id : insumo.value }
+    );
+
+    $.get(request_url)
       .always(stopLoading)
       .done(function(grupos) {
         $(next).html(makeOptions(grupos));

@@ -25,10 +25,10 @@
         <section class="content-header">
             <div class="modal-header">
                 <div class="col-md-12">
-                    <div class="col-md-6">
-                    <span class="pull-left title">
-                        Dashboard
-                    </span>
+                    <div class="col-md-9">
+                        <h3 class="pull-left title">
+                            <a href="#" onclick="history.go(-1);"><i class="fa fa-arrow-left" aria-hidden="true"></i></a> Dashboard
+                        </h3>
                     </div>
                 </div>
             </div>
@@ -130,6 +130,16 @@
                                                  :option="myoptionMedia"
                                                  :height="250">
                                  </chartjs-pie>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="element-grafico">
+                                <div class="element-head">Média de Aprovação GERAL (DIAS)</div>
+                                <div class="element-body">
+                                    <div class="text-center" style="font-size: 100px; color:orange; margin-top: 50px;">
+                                        {{$qcs_por_media_geral->media}}
+                                    </div>
                                 </div>
                             </div>
                         </div>

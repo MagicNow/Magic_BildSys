@@ -77,6 +77,11 @@ class WorkflowAlcada extends Model
         return $this->belongsToMany(User::class,'workflow_usuarios','workflow_alcada_id','user_id')->withPivot('deleted_at')->withTimestamps();
     }
 
+    public function users()
+    {
+        return $this->belongsToMany(User::class,'workflow_usuarios','workflow_alcada_id','user_id')->withPivot('deleted_at')->withTimestamps();
+    }
+
     public function anterior()
     {
         return $this->where('workflow_tipo_id', $this->workflow_tipo_id)

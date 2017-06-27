@@ -6,8 +6,11 @@ use App\DataTables\Admin\FornecedoresDataTable;
 use App\Http\Requests\Admin;
 use App\Http\Requests\Admin\CreateFornecedoresRequest;
 use App\Http\Requests\Admin\UpdateFornecedoresRequest;
+use App\Models\CatalogoContrato;
+use App\Models\Contrato;
 use App\Models\Fornecedor;
 use App\Models\FornecedorServico;
+use App\Models\QcFornecedor;
 use App\Models\User;
 use App\Repositories\Admin\FornecedoresRepository;
 use App\Repositories\Admin\ValidationRepository;
@@ -238,12 +241,23 @@ class FornecedoresController extends AppBaseController
             return redirect(route('admin.fornecedores.index'));
         }
 
-        DB::transaction(function() use ($id, $fornecedores) {
-            $this->fornecedoresRepository->delete($id);
-            if($fornecedores->user) {
-                $fornecedores->user->delete();
-            }
-        });
+        # Verificando se o fornecedor tem alguma proposta, caso ele tiver proposta não pode excluir o fornecedor.
+        $qc_fornecedor = QcFornecedor::where('fornecedor_id', $id)->first();
+        $catalogo_contrato = CatalogoContrato::where('fornecedor_id', $id)->first();
+        $contrato = Contrato::where('fornecedor_id', $id)->first();
+
+        #condição
+        if(!$qc_fornecedor && !$catalogo_contrato && !$contrato) {
+            DB::transaction(function() use ($id, $fornecedores) {
+                $this->fornecedoresRepository->delete($id);
+                if ($fornecedores->user) {
+                    $fornecedores->user->delete();
+                }
+            });
+        }else{
+            Flash::info('O fornecedor não pode ser deletado pois está relacionado em alguma PROPOSTA!');
+            return redirect(route('admin.fornecedores.index'));
+        }
 
         Flash::success('Fornecedores '.trans('common.deleted').' '.trans('common.successfully').'.');
 

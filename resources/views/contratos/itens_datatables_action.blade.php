@@ -1,12 +1,11 @@
 @if(!$item->pendente && $item->aprovado)
     @shield('contratos.reapropriar')
-        @if($item->qcItem)
-            <button class="btn btn-default btn-xs btn-flat js-reapropriar"
-                data-item-qtd="{{ $item->qtd }}"
-                data-item-id="{{ $item->id }}">
-                Reapropriar
-            </button>
-        @endif
+        <button class="btn btn-default btn-xs btn-flat js-reapropriar"
+            data-item-qtd="{{ $item->qtd }}"
+            data-insumo-id="{{ $item->insumo_id }}"
+            data-item-id="{{ $item->id }}">
+            Reapropriar
+        </button>
     @endshield
     @shield('contratos.distratar')
         <button class="btn btn-warning btn-xs btn-flat js-distrato"
@@ -43,11 +42,11 @@
         data-item-valor="{{ $item->valor_unitario }}"
         data-item-qtd="{{ $item->qtd }}"
         title="
-        <div class='text-center'>
-            Este item é um aditivo <strong class='text-danger'>REPROVADO</strong>, portanto
-            não entrou no contrato ainda. Clique para editar e enviar para aprovação
-            novamente.
-        </div>
+            <div class='text-center'>
+                Este item é um aditivo <strong class='text-danger'>REPROVADO</strong>, portanto
+                não entrou no contrato ainda. Clique para editar e enviar para aprovação
+                novamente.
+            </div>
         ">
         <i class="fa fa-fw fa-hourglass-half"></i>
     </button>

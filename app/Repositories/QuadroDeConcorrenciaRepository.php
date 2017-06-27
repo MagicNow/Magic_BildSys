@@ -20,6 +20,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use App\Models\Contrato;
 use App\Models\QcStatus;
+use Laracasts\Flash\Flash;
 
 class QuadroDeConcorrenciaRepository extends BaseRepository
 {
@@ -72,7 +73,9 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
             // Verifica se a qtd mínima é atendidida
             if ($item->getOriginal('qtd') >= $item_acordo->getOriginal('pedido_minimo')) {
                 // Verifica se a qtd multipla é atendida
-                if (($item->getOriginal('qtd') % floatval($item_acordo->getOriginal('pedido_multiplo_de'))) == 0) {
+                $multiplo_de = floatval($item_acordo->getOriginal('pedido_multiplo_de'));
+                $multiplo_de = $multiplo_de==0?1:$multiplo_de; // se tem acordo, o múltiplo deve ser diferente de zero
+                if (($item->getOriginal('qtd') % $multiplo_de) == 0) {
                     $gerar_qc_itens[$item->insumo_id] = [
                         'ids' => explode(',', $item->oc_itens_ids),
                         'insumo_id' => $item->insumo_id,
@@ -252,9 +255,11 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
             }
         }
 
-        if(count($attributes['qcFornecedores'])){
+        if(isset($attributes['qcFornecedores'])){
+//            dd($attributes['qcFornecedores']);
             foreach ($attributes['qcFornecedores'] as $qcFornecedor){
-
+//                echo 'QCFORNECEDOR';
+//                var_dump($qcFornecedor);
                 $qcF = QcFornecedor::firstOrCreate([
                     'fornecedor_id'=> $qcFornecedor['fornecedor_id'],
                     'rodada'=>$qc->rodada_atual,
@@ -262,9 +267,12 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
                     ],[
                     'user_id' => $attributes['user_update_id']
                 ]);
+//                echo 'QCF';
+//                var_dump($qcF);
             }
             unset($attributes['qcFornecedores']);
         }
+//        dd($attributes);
 
         // Have to skip presenter to get a model not some data
         $temporarySkipPresenter = $this->skipPresenter;
@@ -276,6 +284,12 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
         $model->save();
 
         if (isset($attributes['fechar_qc'])) {
+            // Verifica se existe pelo menos um item e um fornecedor
+            if(!$model->qcFornecedores()->count() || !$model->itens()->count()){
+                Flash::error('Escolha fornecedores / itens para o Q.C.');
+                return false;
+            }
+
             // Muda status do QC
             $model->qc_status_id = 3; // em aprovação
             $model->save();
