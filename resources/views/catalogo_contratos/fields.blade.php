@@ -293,12 +293,14 @@ $count_insumos = 0;
 
 <!-- Submit Field -->
 <div class="form-group col-sm-12">
+    @if(!isset($catalogoContrato) || (isset($catalogoContrato) && $catalogoContrato->catalogo_contrato_status_id != 2))
     {!! Form::button( '<i class="fa fa-check-square"></i> Gerar minuta e colocar em validação', [
                             'class' => 'btn btn-warning btn-lg btn-flat pull-right',
                             'value' => '1',
                             'name' => 'gerar_minuta',
                             'style' => 'margin-left:10px',
                             'type'=>'submit']) !!}
+    @endif
     {!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save') ), ['class' => 'btn btn-success pull-right btn-lg btn-flat', 'type'=>'submit']) !!}
     <a href="{!! route('catalogo_contratos.index') !!}" class="btn btn-default btn-lg btn-flat"><i class="fa fa-times"></i>  {{ ucfirst( trans('common.cancel') )}}</a>
 </div>

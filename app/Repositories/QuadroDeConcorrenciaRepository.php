@@ -94,7 +94,8 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
                         'insumo_id' => $item->insumo_id,
                         'qtd' => $item->getOriginal('qtd'),
                         'fornecedor_id' => $item_acordo->catalogo->fornecedor_id,
-                        'valor' => $item_acordo->getOriginal('valor_unitario')
+                        'valor' => $item_acordo->getOriginal('valor_unitario'),
+                        'cat_contrato_id' => $item->cat_contrato_id
                     ];
                     $fornecedores_ids[$item->insumo_id][$item_acordo->catalogo->fornecedor_id] = $item_acordo->catalogo->fornecedor_id;
                 }
@@ -193,7 +194,7 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
                     ];
                     $retorno = ContratoRepository::criar($gerarContrato);
                     if($retorno['success']){
-                        $catalogoContrato = CatalogoContrato::find(cat_contrato_id);
+                        $catalogoContrato = CatalogoContrato::find($qc_item_array['cat_contrato_id']);
                         // Adiciona os campos extras nos contratos
                         foreach ($retorno['contratos'] as $contrato){
                             $contrato->campos_extras = $catalogoContrato->campos_extras_contrato;
@@ -201,12 +202,12 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
                         }
                     }
                 }else{
-                    $avaliadores = [];
+                    $avaliadores = collect();
                     // Notifica os usuários que cuidam de QC para escolherem um vencedor
                     $compradores_avaliadores = CompradorInsumo::where('insumo_id', $qc_item_array['insumo_id'])->get();
                     if(count($compradores_avaliadores)){
                         foreach ($compradores_avaliadores as $compradorInsumo){
-                            $avaliadores[] = $compradorInsumo->user;
+                            $avaliadores->push($compradorInsumo->user);
                         }
                     }else{
                         $avaliadores = User::where('active','1')

@@ -135,7 +135,7 @@ class ContratoRepository extends BaseRepository
                 $obra_id = $obra->obra_id;
 
                 $ocItens = $qcItem->oc_itens()->where('obra_id', $obra_id)->get();
-                $qtd = $ocItens->sum('qtd');
+                $qtd = $qcItem->oc_itens()->where('obra_id', $obra_id)->sum('qtd');
 
                 $valor_item = $valor_item_unitario * $qtd;
 
