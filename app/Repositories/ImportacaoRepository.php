@@ -27,6 +27,7 @@ class ImportacaoRepository
             'PRO.PRO_ST_DESCRICAO',
             'PRO.GRU_IN_CODIGO',
             'PRO.UNI_ST_UNIDADE',
+            'CSE.COS_IN_CODIGO',
             'CSE.COS_RE_ALIQIRRF',
             'CSE.COS_RE_ALIQINSS',
             'CSE.COS_RE_ALIQCSLL',
@@ -69,6 +70,7 @@ class ImportacaoRepository
                     'unidade_sigla'   => trim(utf8_encode($produto->uni_st_unidade)),
                     'codigo'          => $produto->pro_in_codigo,
                     'insumo_grupo_id' => $produto->gru_in_codigo,
+                    'servico_cnae_id' => $produto->cos_in_codigo,
                 ]);
                 $insumo->ncm_codigo = $produto->ncm_in_codigo;
                 $insumo->ncm_texto  =  trim(utf8_encode($produto->ncm_st_descricao));
@@ -146,6 +148,7 @@ class ImportacaoRepository
             'AGN_CH_STATUSCGC',
             'AGN_ST_INSCRESTADUAL',
             'AGN_ST_EMAIL',
+            'AGN_BO_SIMPLES',
             'AGN_ST_URL'])
             ->where(DB::raw('trim('.$param_type.')'), trim($param_value))
             ->first();
@@ -172,6 +175,11 @@ class ImportacaoRepository
                     'cep' => trim(str_replace('.','',$fornecedores_mega->agn_st_cep)),
                     'cidade_id' => isset($cidade) ? $cidade->id : null
                 ]);
+
+                $fornecedor->update([
+                    'imposto_simples' => trim(utf8_encode($fornecedores_mega->agn_bo_simples)) === 'S',
+                ]);
+
                 ImportacaoRepository::fornecedor_servicos($fornecedor->codigo_mega);
                 return $fornecedor;
             }
@@ -220,15 +228,28 @@ class ImportacaoRepository
     public static function cnae_servicos(){
         $cnae_servicos = MegaCnae::select([
             'COS_IN_CODIGO',
-            'COS_ST_DESCRICAO'
+            'COS_ST_DESCRICAO',
+            'COS_RE_ALIQIRRF',
+            'COS_RE_ALIQINSS',
+            'COS_RE_ALIQCSLL',
+            'COS_RE_ALIQPIS',
+            'COS_RE_ALIQCOFINS',
         ])
         ->get();
 
         foreach ($cnae_servicos as $servico) {
             try {
-                Cnae::firstOrCreate([
-                    'id' => $servico->cos_in_codigo,
-                    'nome' => trim(utf8_encode($servico->cos_st_descricao))
+               $cnae = Cnae::firstOrCreate([
+                    'id'     => $servico->cos_in_codigo,
+                    'nome'   => trim(utf8_encode($servico->cos_st_descricao)),
+                ]);
+
+                $cnae->update([
+                    'irrf'   => $servico->cos_re_aliqirrf,
+                    'inss'   => $servico->cos_re_aliqinss,
+                    'csll'   => $servico->cos_re_aliqcsll,
+                    'pis'    => $servico->cos_re_aliqpis,
+                    'cofins' => $servico->cos_re_aliqcofins,
                 ]);
             } catch (\Exception $e) {
                 Log::error('Erro ao importar cnae '. $servico->cos_in_codigo. ': '.$e->getMessage());
