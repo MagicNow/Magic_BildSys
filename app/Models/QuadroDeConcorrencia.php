@@ -25,7 +25,9 @@ class QuadroDeConcorrencia extends Model
     {
         return [
             'message' => 'Você tem um novo quadro de concorrência para aprovar',
-            'link' => route('quadroDeConcorrencias.show', $this->id)
+            'link' => route('quadroDeConcorrencias.show', $this->id),
+            'workflow_tipo_id' => WorkflowTipo::QC,
+            'id_dinamico' => $this->id
         ];
     }
 

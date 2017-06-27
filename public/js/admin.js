@@ -64927,9 +64927,15 @@ function workflowAprovaReprova(item_id, tipo_item, aprovou, elemento, nome, pai_
         showLoaderOnConfirm: true,
       },
       function() {
+          if(tipo_item == 'OrdemDeCompraItem'){
+              type = 1;
+          }
+          if(tipo_item == 'QuadroDeConcorrencia'){
+              type = 2;
+          }
           $.ajax("/notifications/marcar-lido", {
                   data: {
-                      'type' : 1,
+                      'type' : type,
                       'id' : item_id
                   },
                   type: "POST"
