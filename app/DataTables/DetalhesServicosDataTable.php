@@ -43,7 +43,15 @@ class DetalhesServicosDataTable extends DataTable
                 if($obj->saldo_disponivel){
                     return '<small class="pull-left">R$</small>'.number_format( doubleval($obj->saldo_disponivel), 2, ',','.');
                 }else {
-                    return '<small class="pull-left">R$</small>'.number_format( doubleval($obj->saldo_orcamento), 2, ',','.');
+                    if($obj->insumo_incluido || $obj->substitui){
+                        if($obj->valor_oc){
+                            return '<small class="pull-left">R$</small> - '.number_format( doubleval($obj->valor_oc), 2, ',','.');
+                        }else{
+                            return '<small class="pull-left">R$</small>'.number_format( doubleval($obj->valor_oc), 2, ',','.');
+                        }
+                    }else{
+                        return '<small class="pull-left">R$</small>'.number_format( doubleval($obj->saldo_orcamento), 2, ',','.');
+                    }
                 }
             })
             ->editColumn('descricao', function($obj){
