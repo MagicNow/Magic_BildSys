@@ -1,14 +1,28 @@
 <div class="form-group">
     <label>{{ $item->insumo->nome }}</label>
     @if($item->insumo->unidade_sigla !== 'VB')
-    <div class="input-group">
-        <label class="input-group-addon">Valor Unitário</label>
-        <input type="text"
-            class="form-control money js-input js-valor"
-            data-old-value="{{ $item->valor_unitario }}"
-            value="{{ float_to_money($item->valor_unitario, '') }}"
-            name="valor_unitario">
-    </div>
+    <table class="table table-striped table-no-margin table-condensed">
+        <thead>
+            <tr>
+                <th>Valor Unitário</th>
+                <th>Novo Valor Unitário</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    {{ float_to_money($item->valor_unitario) }}
+                </td>
+                <td>
+                    <input type="text"
+                        class="form-control money js-input js-valor"
+                        data-old-value="{{ $item->valor_unitario }}"
+                        value="{{ float_to_money($item->valor_unitario, '') }}"
+                        name="valor_unitario">
+                </td>
+            </tr>
+        </tbody>
+    </table>
     @endif
 </div>
 <table class="table table-striped table-no-margin">
