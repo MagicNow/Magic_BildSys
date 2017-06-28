@@ -520,7 +520,7 @@ var Distrato = (function() {
     };
 
     var inputs = _.filter(this.inputs, function(input) {
-      return parseFloat(input.dataset.oldValue) !== moneyToFloat(input.value);
+      return input.value && moneyToFloat(input.value);
     });
 
     data = getInputs(inputs, data);

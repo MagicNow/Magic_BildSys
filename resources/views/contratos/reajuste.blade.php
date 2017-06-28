@@ -14,7 +14,8 @@
 <table class="table table-striped table-no-margin">
   <thead>
     <tr>
-      <th>Código</th>
+      <th>Apropriação</th>
+      <th>Saldo de Qtd.</th>
       <th>Quantidadade Adicionada</th>
       <th>Nova Quantidade</th>
     </tr>
@@ -28,6 +29,9 @@
             data-container="body">
             {{ $apropariacao->codigoServico(false) }}
           </span>
+        </td>
+        <td>
+            {{ float_to_money($apropariacao->qtd, '') }}
         </td>
         <td>
             <div class="input-group">

@@ -2,8 +2,8 @@
 <table class="table table-striped table-no-margin">
   <thead>
     <tr>
-      <th>Código</th>
-      <th>Quantidade</th>
+      <th>Apropriação</th>
+      <th>Saldo de Qtd.</th>
       <th>Quantidade a Distratar</th>
       <th>Nova Quantidade</th>
     </tr>
