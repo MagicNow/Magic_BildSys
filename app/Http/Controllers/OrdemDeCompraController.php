@@ -327,12 +327,17 @@ class OrdemDeCompraController extends AppBaseController
 
             $orcamentoInicial = $orcamentos_iniciais->sum('orcamentos.preco_total');
 
+            // Se os itens do orçamento for trocado pega o valor do pai
+            $array_orcamentos_substitui = [];
             foreach($orcamentos_iniciais->get() as $orcamento){
                 if($orcamento->orcamento_que_substitui){
-                    $orcamentoInicial += $orcamento->valor_previsto_orcamento_pai;
+                    if(!in_array($orcamento->orcamento_que_substitui, $array_orcamentos_substitui)){
+                        array_push($array_orcamentos_substitui, $orcamento->orcamento_que_substitui);
+                        $orcamentoInicial += $orcamento->valor_previsto_orcamento_pai;
+                    }
                 }
             }
-            
+
             $totalSolicitado = $ordemDeCompra->itens()->sum('valor_total');
 
             $realizado = OrdemDeCompraItem::join('ordem_de_compras', 'ordem_de_compras.id', '=', 'ordem_de_compra_itens.ordem_de_compra_id')
