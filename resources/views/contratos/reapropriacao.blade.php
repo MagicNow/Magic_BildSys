@@ -3,7 +3,7 @@
   <thead>
     <tr>
       <th>#</th>
-      <th>Código</th>
+      <th>Apropriação</th>
       <th>Quantidade</th>
     </tr>
   </thead>
@@ -24,11 +24,7 @@
             !!}
         </td>
         <td class="text-left">
-          <span data-toggle="tooltip"
-            title="{{ $item->servico->nome }}"
-            data-container="body">
-            {{ $item->codigoServico(false) }}
-          </span>
+            {{ $item->codigoServico() }}
         </td>
         <td class="text-right">{{ $item->qtd_sobra_formatted }}</td>
       </tr>
