@@ -85,7 +85,7 @@
                   <button class="btn btn-xs btn-info btn-flat"
                       data-toggle="modal"
                       data-target="#detalhes-item-{{ $modificacao->id }}">
-                      <span data-toggle="tooltip" title="Detalhes Código Estruturado">
+                      <span data-toggle="tooltip" title="Detalhes por Apropriação">
                           Detalhes <i class="fa fa-plus fa-fw"></i>
                       </span>
                   </button>
@@ -108,7 +108,6 @@
                                         <th></th>
                                         <th colspan="2" class="text-center">Antes</th>
                                         <th colspan="2" class="text-center">Depois</th>
-                                        <th></th>
                                     </tr>
                                     <tr>
                                         <th>Código Estruturado</th>

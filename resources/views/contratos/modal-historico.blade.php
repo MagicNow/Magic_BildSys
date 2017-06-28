@@ -11,7 +11,7 @@
                 </h4>
             </div>
             <div class="modal-body">
-                @if($item->modificacoes->isNotEmpty())
+                @if($item->modificacoes->where('contrato_status_id', 2)->isNotEmpty())
                     <table class="table table-striped table-condensed">
                         <thead>
                             <tr>
@@ -30,7 +30,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($item->modificacoes as $modificacao)
+                            @foreach($item->modificacoes->where('contrato_status_id', 2) as $modificacao)
                                 <tr>
                                     <td>
                                         {{ $modificacao['tipo_modificacao'] }}

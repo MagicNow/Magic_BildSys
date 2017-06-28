@@ -67,7 +67,7 @@
                                 data-toggle="modal"
                                 data-target="#modal-historico-estruturado-{{ $item->id }}">
                                 <i data-toggle="tooltip"
-                                    title="Código Estruturado"
+                                    title="Apropriações"
                                     class="fa fa-fw fa-building"></i>
                             </button>
                             <button class="btn btn-flat btn-xs btn-default"

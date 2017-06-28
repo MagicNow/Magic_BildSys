@@ -26,7 +26,7 @@
                                 'Contrato {{ $contrato->id }}',0, '', '', true);"
                                 class="btn btn-danger btn-lg btn-flat"
                                 title="Reprovar Este item">
-                            Reprovar
+                            Reprovar Contrato
                             <i class="fa fa-times" aria-hidden="true"></i>
                         </button>
                     </span>
