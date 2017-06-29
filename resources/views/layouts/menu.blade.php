@@ -150,3 +150,8 @@
     </li>
 @endshield
 
+
+<li class="{{ Request::is('nomeclaturaMapas*') ? 'active' : '' }}">
+    <a href="{!! route('admin.nomeclaturaMapas.index') !!}"><i class="fa fa-edit"></i><span>NomeclaturaMapas</span></a>
+</li>
+

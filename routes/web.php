@@ -826,3 +826,15 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         dd($insumos);
     });
 });
+
+
+
+
+Route::get('admin/nomeclaturaMapas', ['as'=> 'admin.nomeclaturaMapas.index', 'uses' => 'Admin\NomeclaturaMapaController@index']);
+Route::post('admin/nomeclaturaMapas', ['as'=> 'admin.nomeclaturaMapas.store', 'uses' => 'Admin\NomeclaturaMapaController@store']);
+Route::get('admin/nomeclaturaMapas/create', ['as'=> 'admin.nomeclaturaMapas.create', 'uses' => 'Admin\NomeclaturaMapaController@create']);
+Route::put('admin/nomeclaturaMapas/{nomeclaturaMapas}', ['as'=> 'admin.nomeclaturaMapas.update', 'uses' => 'Admin\NomeclaturaMapaController@update']);
+Route::patch('admin/nomeclaturaMapas/{nomeclaturaMapas}', ['as'=> 'admin.nomeclaturaMapas.update', 'uses' => 'Admin\NomeclaturaMapaController@update']);
+Route::delete('admin/nomeclaturaMapas/{nomeclaturaMapas}', ['as'=> 'admin.nomeclaturaMapas.destroy', 'uses' => 'Admin\NomeclaturaMapaController@destroy']);
+Route::get('admin/nomeclaturaMapas/{nomeclaturaMapas}', ['as'=> 'admin.nomeclaturaMapas.show', 'uses' => 'Admin\NomeclaturaMapaController@show']);
+Route::get('admin/nomeclaturaMapas/{nomeclaturaMapas}/edit', ['as'=> 'admin.nomeclaturaMapas.edit', 'uses' => 'Admin\NomeclaturaMapaController@edit']);
