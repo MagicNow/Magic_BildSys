@@ -17,6 +17,64 @@ class NomeclaturaMapaDataTable extends DataTable
         return $this->datatables
             ->eloquent($this->query())
             ->addColumn('action', 'admin.nomeclatura_mapas.datatables_actions')
+            ->editColumn('tipo', function($obj){
+                if($obj->tipo==1){
+                    return 'Estrutura';
+                }
+                if($obj->tipo==2){
+                    return 'Pavimento';
+                }
+                if($obj->tipo==3){
+                    return 'Trecho';
+                }
+            })
+            ->filterColumn('tipo', function($query, $keyword){
+                if(strlen($keyword)){
+                    $letra = strtolower( substr($keyword,0,1) );
+                    if($letra =='e'){
+                        $tipo = 1;
+                    }
+                    if($letra =='p'){
+                        $tipo = 2;
+                    }
+                    if($letra =='t'){
+                        $tipo = 3;
+                    }
+                    $query->where('tipo',$tipo);
+                }
+            })
+            ->editColumn('apenas_unidade', function($obj){
+                return '<span class="label label-'.(intval($obj->apenas_unidade)?'success':'danger').'">'. (intval($obj->apenas_unidade)?'SIM':'NÃO') .'</span>';
+            })
+            ->filterColumn('apenas_unidade', function($query, $keyword){
+                if(strlen($keyword)){
+                    $letra = strtolower( substr($keyword,0,1) );
+                    if($letra =='s'){
+                        $valor = 1;
+                    }
+                    if($letra =='n'){
+                        $valor = 0;
+                    }
+                    $query->where('apenas_unidade',$valor);
+                }
+            })
+            ->editColumn('apenas_cartela', function($obj){
+                return '<span class="label label-'.($obj->apenas_cartela?'success':'danger').'">'.
+                ($obj->apenas_cartela?'SIM':'NÃO')
+                    .'</span>';
+            })
+            ->filterColumn('apenas_cartela', function($query, $keyword){
+                if(strlen($keyword)){
+                    $letra = strtolower( substr($keyword,0,1) );
+                    if($letra =='s'){
+                        $valor = 1;
+                    }
+                    if($letra =='n'){
+                        $valor = 0;
+                    }
+                    $query->where('apenas_cartela',$valor);
+                }
+            })
             ->make(true);
     }
 

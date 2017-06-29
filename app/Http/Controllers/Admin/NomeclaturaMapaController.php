@@ -53,6 +53,10 @@ class NomeclaturaMapaController extends AppBaseController
     {
         $input = $request->all();
 
+        if(isset($input['apenas_cartela']) && isset($input['apenas_unidade']) ){
+            $input['apenas_unidade'] = 0;
+        }
+
         $nomeclaturaMapa = $this->nomeclaturaMapaRepository->create($input);
 
         Flash::success('Nomeclatura Mapa '.trans('common.saved').' '.trans('common.successfully').'.');
@@ -118,7 +122,14 @@ class NomeclaturaMapaController extends AppBaseController
             return redirect(route('admin.nomeclaturaMapas.index'));
         }
 
-        $nomeclaturaMapa = $this->nomeclaturaMapaRepository->update($request->all(), $id);
+        $input = $request->all();
+        $input['apenas_cartela'] = intval($request->apenas_cartela);
+        $input['apenas_unidade'] = intval($request->apenas_unidade);
+        if($input['apenas_cartela']==1 && $input['apenas_unidade']==1){
+            $input['apenas_unidade'] = 0;
+        }
+
+        $nomeclaturaMapa = $this->nomeclaturaMapaRepository->update($input, $id);
 
         Flash::success('Nomeclatura Mapa '.trans('common.updated').' '.trans('common.successfully').'.');
 

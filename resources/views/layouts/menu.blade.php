@@ -150,8 +150,15 @@
     </li>
 @endshield
 
-
-<li class="{{ Request::is('nomeclaturaMapas*') ? 'active' : '' }}">
-    <a href="{!! route('admin.nomeclaturaMapas.index') !!}"><i class="fa fa-edit"></i><span>NomeclaturaMapas</span></a>
+<li class="treeview {{ Request::is('admin/nomeclaturaMapas*')
+                       ? 'active' : '' }}">
+    <a href="#">
+        <i class="fa fa-table"></i> <span>Memória de Cálculo</span>
+        <i class="fa fa-angle-left pull-right"></i>
+    </a>
+    <ul class="treeview-menu">
+        <li class="{{ Request::is('nomeclaturaMapas*') ? 'active' : '' }}">
+            <a href="{!! route('admin.nomeclaturaMapas.index') !!}"><i class="fa fa-map-o"></i><span>Nomeclaturas</span></a>
+        </li>
+    </ul>
 </li>
-

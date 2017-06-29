@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class NomeclaturaMapa
@@ -12,15 +11,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class NomeclaturaMapa extends Model
 {
-    use SoftDeletes;
 
     public $table = 'nomeclatura_mapas';
-    
-    const CREATED_AT = 'created_at';
-    const UPDATED_AT = 'updated_at';
 
-
-    protected $dates = ['deleted_at'];
+    public $timestamps = false;
 
 
     public $fillable = [
@@ -37,7 +31,9 @@ class NomeclaturaMapa extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'nome' => 'string'
+        'nome' => 'string',
+        'apenas_cartela'=>'integer',
+        'apenas_unidade'=>'integer'
     ];
 
     /**
