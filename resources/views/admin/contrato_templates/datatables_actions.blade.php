@@ -6,12 +6,14 @@
     <a href="{{ route('admin.contratoTemplates.edit', $id) }}" title="{{ ucfirst( trans('common.edit') )}}" class='btn btn-warning btn-xs'>
         <i class="glyphicon glyphicon-edit"></i>
     </a>
+    @if($tipo=='Q')
     {!! Form::button('<i class="glyphicon glyphicon-trash"></i>', [
             'type' => 'button',
             'class' => 'btn btn-danger btn-xs',
             'onclick' => "confirmDelete('formDelete".$id."');",
             'title' => ucfirst(trans('common.delete'))
         ]) !!}
+    @endif
 
 </div>
 {!! Form::close() !!}

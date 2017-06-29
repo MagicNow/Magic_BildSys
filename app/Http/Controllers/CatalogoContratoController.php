@@ -9,6 +9,9 @@ use App\Http\Requests\Admin\UpdateCatalogoContratoRequest;
 use App\Models\CatalogoContratoInsumo;
 use App\Models\CatalogoContrato;
 use App\Models\CatalogoContratoInsumoLog;
+use App\Models\CatalogoContratoObra;
+use App\Models\CatalogoContratoObraLog;
+use App\Models\CatalogoContratoStatusLog;
 use App\Models\Fornecedor;
 use App\Models\Insumo;
 use App\Models\MegaFornecedor;
@@ -84,7 +87,53 @@ class CatalogoContratoController extends AppBaseController
             $catalogoContrato->fornecedor_id = $fornecedor->id;
         }
 
+        $catalogoContrato->catalogo_contrato_status_id = 1;
         $catalogoContrato->save();
+
+        $catalogoContratoStatus = CatalogoContratoStatusLog::create([
+            'catalogo_contrato_id' => $catalogoContrato->id,
+            'catalogo_contrato_status_id' => 1,
+            'user_id' => auth()->id()
+        ]);
+
+        $input = $request->only(['CAMPO_EXTRA_MINUTA','CAMPO_EXTRA_CONTRATO']);
+
+        // Template
+        $campos_extras_minuta = [];
+        if(isset($input['CAMPO_EXTRA_MINUTA'])){
+            foreach ($input['CAMPO_EXTRA_MINUTA'] as $campo => $valor){
+                $campos_extras_minuta[$campo] = $valor;
+            }
+
+            $campos_extras_minuta = json_encode($campos_extras_minuta);
+        }else{
+            $campos_extras_minuta = null;
+        }
+        $input['campos_extras_minuta'] = $campos_extras_minuta;
+        // Contrato
+        $campos_extras_contrato = [];
+        if(isset($input['CAMPO_EXTRA_CONTRATO'])){
+            foreach ($input['CAMPO_EXTRA_CONTRATO'] as $campo => $valor){
+                $campos_extras_contrato[$campo] = $valor;
+            }
+            $campos_extras_contrato = json_encode($campos_extras_contrato);
+        }else{
+            $campos_extras_contrato = null;
+        }
+        $input['campos_extras_contrato'] = $campos_extras_contrato;
+
+        $catalogoContrato = $this->catalogoContratoRepository->update($input, $catalogoContrato->id);
+
+        if($request->obra){
+            foreach ($request->obra as $obra_id){
+                $catalogoContratoObra = CatalogoContratoObra::create([
+                    'catalogo_contrato_id' => $catalogoContrato->id,
+                    'obra_id' => $obra_id,
+                    'user_id' => auth()->id(),
+                    'catalogo_contrato_status_id' => 2
+                ]);
+            }
+        }
         
         if (count($request->contratoInsumos)) {
             foreach ($request->contratoInsumos as $item) {
@@ -112,7 +161,22 @@ class CatalogoContratoController extends AppBaseController
             }
         }
 
-        Flash::success('Catalogo Contrato '.trans('common.saved').' '.trans('common.successfully').'.');
+        if($request->gerar_minuta){
+            // Status do acordo
+            $catalogoContrato->catalogo_contrato_status_id = 2;
+            $catalogoContrato->save();
+            $catalogoContratoStatus = CatalogoContratoStatusLog::create([
+                'catalogo_contrato_id' => $catalogoContrato->id,
+                'catalogo_contrato_status_id' => 2,
+                'user_id' => auth()->id()
+            ]);
+            Flash::success('Catalogo Contrato '.trans('common.saved').' e minuta disponível.');
+
+        }else{
+            Flash::success('Catalogo Contrato '.trans('common.saved').' '.trans('common.successfully').'.');
+        }
+
+
 
         return redirect(route('catalogo_contratos.index'));
     }
@@ -154,12 +218,7 @@ class CatalogoContratoController extends AppBaseController
             return redirect(route('catalogo_contratos.index'));
         }
 
-        $fornecedores = MegaFornecedor::select(DB::raw("CONVERT(agn_st_nome,'UTF8','WE8ISO8859P15' ) as agn_st_nome"), 'agn_in_codigo')
-            ->where('agn_st_cgc', $catalogoContrato->fornecedor->cnpj)
-            ->pluck('agn_st_nome', 'agn_in_codigo')
-            ->toArray();
-        
-        return view('catalogo_contratos.edit', compact('fornecedores'))->with('catalogoContrato', $catalogoContrato);
+        return view('catalogo_contratos.edit', compact('catalogoContrato'));
     }
 
     /**
@@ -180,10 +239,50 @@ class CatalogoContratoController extends AppBaseController
             return redirect(route('catalogo_contratos.index'));
         }
 
-        $catalogoContrato = $this->catalogoContratoRepository->update($request->except('fornecedor_cod','contratoInsumos'), $id);
+        $input = $request->except('fornecedor_cod','contratoInsumos');
 
-        $catalogoContrato->update();
+        // Template
+        $campos_extras_minuta = [];
+        if(isset($input['CAMPO_EXTRA_MINUTA'])){
+            foreach ($input['CAMPO_EXTRA_MINUTA'] as $campo => $valor){
+                $campos_extras_minuta[$campo] = $valor;
+            }
 
+            $campos_extras_minuta = json_encode($campos_extras_minuta);
+        }else{
+            $campos_extras_minuta = null;
+        }
+        $input['campos_extras_minuta'] = $campos_extras_minuta;
+        // Contrato
+        $campos_extras_contrato = [];
+        if(isset($input['CAMPO_EXTRA_CONTRATO'])){
+            foreach ($input['CAMPO_EXTRA_CONTRATO'] as $campo => $valor){
+                $campos_extras_contrato[$campo] = $valor;
+            }
+            $campos_extras_contrato = json_encode($campos_extras_contrato);
+        }else{
+            $campos_extras_contrato = null;
+        }
+        $input['campos_extras_contrato'] = $campos_extras_contrato;
+
+        $catalogoContrato = $this->catalogoContratoRepository->update($input, $id);
+
+
+        if($request->obra){
+            foreach ($request->obra as $obra_id){
+                $catalogoContratoObra = CatalogoContratoObra::where('obra_id',$obra_id)->where('catalogo_contrato_id', $catalogoContrato->id)->first();
+                if(!$catalogoContratoObra){
+                    $catalogoContratoObra = CatalogoContratoObra::create([
+                        'catalogo_contrato_id' => $catalogoContrato->id,
+                        'obra_id' => $obra_id,
+                        'user_id' => auth()->id(),
+                        'catalogo_contrato_status_id' => 2
+                    ]);
+                }
+            }
+        }
+        
+        $alteraStatusParaValidacao = false;
         if (count($request->contratoInsumos)) {
             foreach ($request->contratoInsumos as $item) {
                 if ($item['insumo_id'] != '' && floatval($item['valor_unitario']) > 0 ) {
@@ -208,35 +307,43 @@ class CatalogoContratoController extends AppBaseController
                         $logCatInsumo->periodo_termino = $contrato_insumo->periodo_termino;
                         $logCatInsumo->save();
 
+                        $alteraStatusParaValidacao = true;
+
                     }else{
-                        $contrato_insumo = CatalogoContratoInsumo::find($item['id']);
-                        $logCatInsumo = new CatalogoContratoInsumoLog();
-                        $logCatInsumo->contrato_insumo_id = $contrato_insumo->id;
-                        $logCatInsumo->user_id = auth()->id();
-                        $logCatInsumo->valor_unitario_anterior = $contrato_insumo->valor_unitario;
-                        $logCatInsumo->pedido_minimo_anterior = $contrato_insumo->pedido_minimo;
-                        $logCatInsumo->pedido_multiplo_de_anterior = $contrato_insumo->pedido_multiplo_de;
-                        $logCatInsumo->periodo_inicio_anterior = $contrato_insumo->periodo_inicio;
-                        $logCatInsumo->periodo_termino_anterior = $contrato_insumo->periodo_termino;
-                        $logCatInsumo->save();
+                        if($catalogoContrato->catalogo_contrato_status_id != 3){
+                            $contrato_insumo = CatalogoContratoInsumo::find($item['id']);
+                            $logCatInsumo = new CatalogoContratoInsumoLog();
+                            $logCatInsumo->contrato_insumo_id = $contrato_insumo->id;
+                            $logCatInsumo->user_id = auth()->id();
+                            $logCatInsumo->valor_unitario_anterior = $contrato_insumo->valor_unitario;
+                            $logCatInsumo->pedido_minimo_anterior = $contrato_insumo->pedido_minimo;
+                            $logCatInsumo->pedido_multiplo_de_anterior = $contrato_insumo->pedido_multiplo_de;
+                            $logCatInsumo->periodo_inicio_anterior = $contrato_insumo->periodo_inicio;
+                            $logCatInsumo->periodo_termino_anterior = $contrato_insumo->periodo_termino;
+                            $logCatInsumo->save();
 
-                        $contrato_insumo->insumo_id = $item['insumo_id'];
-                        $contrato_insumo->valor_unitario = $item['valor_unitario'] ? money_to_float($item['valor_unitario']) : 0;
-                        $contrato_insumo->pedido_minimo = $item['pedido_minimo'];
-                        $contrato_insumo->pedido_multiplo_de = $item['pedido_multiplo_de'];
-                        $contrato_insumo->periodo_inicio = $item['periodo_inicio'];
-                        $contrato_insumo->periodo_termino = $item['periodo_termino'];
+                            $contrato_insumo->insumo_id = $item['insumo_id'];
+                            $contrato_insumo->valor_unitario = $item['valor_unitario'] ? money_to_float($item['valor_unitario']) : 0;
+                            $contrato_insumo->pedido_minimo = $item['pedido_minimo'];
+                            $contrato_insumo->pedido_multiplo_de = $item['pedido_multiplo_de'];
+                            $contrato_insumo->periodo_inicio = $item['periodo_inicio'];
+                            $contrato_insumo->periodo_termino = $item['periodo_termino'];
 
 
-                        $contrato_insumo->update();
+                            $contrato_insumo->update();
 
-                        $logCatInsumo->valor_unitario = $contrato_insumo->valor_unitario;
-                        $logCatInsumo->pedido_minimo = $contrato_insumo->pedido_minimo;
-                        $logCatInsumo->pedido_multiplo_de = $contrato_insumo->pedido_multiplo_de;
-                        $logCatInsumo->periodo_inicio = $contrato_insumo->periodo_inicio;
-                        $logCatInsumo->periodo_termino = $contrato_insumo->periodo_termino;
+                            $logCatInsumo->valor_unitario = $contrato_insumo->valor_unitario;
+                            $logCatInsumo->pedido_minimo = $contrato_insumo->pedido_minimo;
+                            $logCatInsumo->pedido_multiplo_de = $contrato_insumo->pedido_multiplo_de;
+                            $logCatInsumo->periodo_inicio = $contrato_insumo->periodo_inicio;
+                            $logCatInsumo->periodo_termino = $contrato_insumo->periodo_termino;
+                            $logCatInsumo->save();
 
-                        $logCatInsumo->save();
+                            $alteraStatusParaValidacao = true;
+
+                        }
+
+
                     }
 
                 }
@@ -277,13 +384,98 @@ class CatalogoContratoController extends AppBaseController
                     $logCatInsumo->periodo_inicio = $contrato_insumo->periodo_inicio;
                     $logCatInsumo->periodo_termino = $contrato_insumo->periodo_termino;
                     $logCatInsumo->save();
+
+                    $alteraStatusParaValidacao = true;
                 }
             }
         }
 
-        Flash::success('Catalogo Contrato '.trans('common.updated').' '.trans('common.successfully').'.');
+        if($request->gerar_minuta){
+            // Status do acordo
+            $catalogoContrato->catalogo_contrato_status_id = 2;
+            $catalogoContrato->save();
+
+            foreach ($catalogoContrato->obras()->where('catalogo_contrato_status_id',3)->get() as $catalogoContratoObra){
+                $catalogoContratoObra->catalogo_contrato_status_id = 2;
+                $catalogoContratoObra->save();
+                $catalogoContratoObra = CatalogoContratoObraLog::create([
+                    'catalogo_contrato_obra_id' => $catalogoContratoObra->id,
+                    'catalogo_contrato_status_id' => $catalogoContratoObra->catalogo_contrato_status_id
+                ]);
+            }
+
+            $catalogoContratoStatus = CatalogoContratoStatusLog::create([
+                'catalogo_contrato_id' => $catalogoContrato->id,
+                'catalogo_contrato_status_id' => 2,
+                'user_id' => auth()->id()
+            ]);
+            Flash::success('Catalogo Contrato '.trans('common.updated').' e minuta disponível para baixar.');
+        }else{
+
+            if( $alteraStatusParaValidacao ){
+                // Status do acordo
+                $catalogoContrato->catalogo_contrato_status_id = 2;
+                $catalogoContrato->save();
+
+                foreach ($catalogoContrato->obras()->where('catalogo_contrato_status_id',3)->get() as $catalogoContratoObra){
+                    $catalogoContratoObra->catalogo_contrato_status_id = 2;
+                    $catalogoContratoObra->save();
+                    $catalogoContratoObra = CatalogoContratoObraLog::create([
+                        'catalogo_contrato_obra_id' => $catalogoContratoObra->id,
+                        'catalogo_contrato_status_id' => $catalogoContratoObra->catalogo_contrato_status_id
+                    ]);
+                }
+            }
+
+            if ($request->minuta_assinada) {
+                $destinationPath = CodeRepository::saveFile($request->minuta_assinada, 'acordos/assinado_' . $catalogoContrato->id);
+
+                $catalogoContrato->minuta_assinada = $destinationPath;
+                $catalogoContrato->save();
+                $acao = 'Arquivo enviado!';
+
+
+
+                    $catalogoContrato->catalogo_contrato_status_id = 3;
+                    $catalogoContrato->save();
+                    $catalogoContratoStatus = CatalogoContratoStatusLog::create([
+                        'catalogo_contrato_id' => $catalogoContrato->id,
+                        'catalogo_contrato_status_id' => 3,
+                        'user_id' => auth()->id()
+                    ]);
+                    foreach ($catalogoContrato->obras()->whereIn('catalogo_contrato_status_id',[1,2])->get() as $catalogoContratoObra){
+                        $catalogoContratoObra->catalogo_contrato_status_id = 3;
+                        $catalogoContratoObra->save();
+                        $catalogoContratoObra = CatalogoContratoObraLog::create([
+                            'catalogo_contrato_obra_id' => $catalogoContratoObra->id,
+                            'catalogo_contrato_status_id' => $catalogoContratoObra->catalogo_contrato_status_id
+                        ]);
+                    }
+                    $acao = 'Arquivo enviado e Acordo ativado!';
+
+
+                Flash::success($acao);
+            }else{
+                Flash::success('Catalogo Contrato '.trans('common.updated').' '.trans('common.successfully').'.');
+            }
+
+
+
+        }
+
+
 
         return redirect(route('catalogo_contratos.index'));
+    }
+
+    public function removeObra($id, $cc_obra){
+        $remove = CatalogoContratoObra::find($cc_obra);
+        if($remove){
+            $remove->delete();
+            return response()->json(['success'=>true ]);
+        }
+        return response()->json(['success'=>false],400);
+
     }
 
     /**
@@ -368,5 +560,9 @@ class CatalogoContratoController extends AppBaseController
         $insumos = $insumos->paginate();
 
         return $insumos;
+    }
+    
+    public function imprimirMinuta($id){
+        return response()->file(storage_path('/app/public/') . str_replace('storage/', '', CatalogoContratoRepository::geraImpressao($id)));
     }
 }

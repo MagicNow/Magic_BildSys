@@ -70,21 +70,6 @@ class QuadroDeConcorrenciaController extends AppBaseController
      */
     public function index(QuadroDeConcorrenciaDataTable $quadroDeConcorrenciaDataTable)
     {
-//        $qcs_por_status = QuadroDeConcorrencia::select([
-//            'qc_status.nome',
-//            'qc_status.cor',
-//            DB::raw('COUNT(1) qtd')
-//        ])->join('qc_status', 'qc_status.id', 'qc_status_id')
-//            ->groupBy('qc_status.nome', 'cor')
-//            ->get();
-//
-//        $qcs_por_usuario = QuadroDeConcorrencia::select([
-//            'users.name',
-//            DB::raw('COUNT(1) qtd')
-//        ])->join('users', 'users.id', 'quadro_de_concorrencias.user_id')
-//            ->groupBy('users.name')
-//            ->get();
-
         return $quadroDeConcorrenciaDataTable->render('quadro_de_concorrencias.index');
     }
 

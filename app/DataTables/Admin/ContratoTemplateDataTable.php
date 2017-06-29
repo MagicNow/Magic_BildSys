@@ -20,6 +20,12 @@ class ContratoTemplateDataTable extends DataTable
             ->editColumn('updated_at', function($obj){
                 return $obj->updated_at ? with(new\Carbon\Carbon($obj->updated_at))->format('d/m/Y H:i') : '';
             })
+            ->editColumn('usuario', function($obj){
+                return $obj->usuario ? $obj->usuario : 'Automático';
+            })
+            ->editColumn('tipo', function($obj){
+                return $obj->tipo=='A' ? 'Acordo' : ($obj->tipo=='M'?'Materiais':'Serviço/Material');
+            })
             ->filterColumn('updated_at', function ($query, $keyword) {
                 $query->whereRaw("DATE_FORMAT(obras.updated_at,'%d/%m/%Y') like ?", ["%$keyword%"]);
             })
@@ -34,11 +40,12 @@ class ContratoTemplateDataTable extends DataTable
     public function query()
     {
         $contratoTemplates = ContratoTemplate::query()
-        ->join('users','users.id','user_id')
+        ->leftJoin('users','users.id','user_id')
         ->select([
             'contrato_templates.id',
             'contrato_templates.nome',
             'contrato_templates.updated_at',
+            'contrato_templates.tipo',
             'users.name as usuario',
         ]);
 
@@ -107,6 +114,7 @@ class ContratoTemplateDataTable extends DataTable
             'nome' => ['name' => 'nome', 'data' => 'nome'],
             'cadastrado/alteradoPor' => ['name' => 'users.name', 'data' => 'usuario'],
             'cadastrado/AlteradoEm' => ['name' => 'updated_at', 'data' => 'updated_at'],
+            'tipo' => ['name' => 'tipo', 'data' => 'tipo','width'=>'10%'],
             'action' => ['title' => '#', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }
