@@ -3,55 +3,13 @@
 namespace App\DataTables;
 
 use App\Models\OrdemDeCompra;
+use App\Repositories\OrdemDeCompraRepository;
 use Form;
 use Illuminate\Support\Facades\DB;
 use Yajra\Datatables\Services\DataTable;
 
 class OrdemDeCompraDataTable extends DataTable
 {
-
-    private $query_status ='
-                 IFNULL(
-                    (
-                        SELECT 
-                            SUM(orcamentos.preco_total)
-                        FROM
-                            ordem_de_compra_itens
-                                INNER JOIN
-                            orcamentos ON orcamentos.insumo_id = ordem_de_compra_itens.insumo_id
-                                AND orcamentos.grupo_id = ordem_de_compra_itens.grupo_id
-                                AND orcamentos.subgrupo1_id = ordem_de_compra_itens.subgrupo1_id
-                                AND orcamentos.subgrupo2_id = ordem_de_compra_itens.subgrupo2_id
-                                AND orcamentos.subgrupo3_id = ordem_de_compra_itens.subgrupo3_id
-                                AND orcamentos.servico_id = ordem_de_compra_itens.servico_id
-                                AND orcamentos.obra_id = ordem_de_compra_itens.obra_id
-                                AND orcamentos.ativo = 1
-                        WHERE
-                            ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id
-                                AND ordem_de_compra_itens.deleted_at IS NULL
-                    ), 0
-                 ) 
-                 - 
-                 IFNULL(
-                    (
-                        SELECT 
-                            SUM(ordem_de_compra_itens.valor_total)
-                        FROM
-                            ordem_de_compra_itens
-                                INNER JOIN
-                            orcamentos ON orcamentos.insumo_id = ordem_de_compra_itens.insumo_id
-                                AND orcamentos.grupo_id = ordem_de_compra_itens.grupo_id
-                                AND orcamentos.subgrupo1_id = ordem_de_compra_itens.subgrupo1_id
-                                AND orcamentos.subgrupo2_id = ordem_de_compra_itens.subgrupo2_id
-                                AND orcamentos.subgrupo3_id = ordem_de_compra_itens.subgrupo3_id
-                                AND orcamentos.servico_id = ordem_de_compra_itens.servico_id
-                                AND orcamentos.obra_id = ordem_de_compra_itens.obra_id
-                                AND orcamentos.ativo = 1
-                        WHERE
-                            ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id
-                                AND ordem_de_compra_itens.deleted_at IS NULL
-                    ), 0
-                 )';
     /**
      * @return \Illuminate\Http\JsonResponse
      */
@@ -61,6 +19,9 @@ class OrdemDeCompraDataTable extends DataTable
             ->eloquent($this->query())
             ->addColumn('action', 'ordem_de_compras.datatables_actions')
             ->editColumn('status', function($obj){
+                $saldoDisponivel = OrdemDeCompraRepository::saldoDisponivel($obj->id, $obj->obra_id);
+                $obj->status = $saldoDisponivel;
+
                 if($obj->status >= 0){
                     return "<h4><i class='fa fa-circle green'></i></h4>";
                 }else{
@@ -69,7 +30,7 @@ class OrdemDeCompraDataTable extends DataTable
             })
             ->make(true);
     }
-
+    
     /**
      * Get the query object to be processed by datatables.
      *
@@ -84,7 +45,7 @@ class OrdemDeCompraDataTable extends DataTable
                 'users.name as usuario',
                 'oc_status.nome as situacao',
                 'ordem_de_compras.obra_id',
-                DB::raw($this->query_status. 'as status')
+                DB::raw('0 as status'),
             ])
             ->join('obras', 'obras.id', '=', 'ordem_de_compras.obra_id')
             ->join('oc_status', 'oc_status.id', '=', 'ordem_de_compras.oc_status_id')
@@ -99,16 +60,27 @@ class OrdemDeCompraDataTable extends DataTable
             }
         }
 
+        $array_oc_id = [];
+
         if($this->request()->get('status_oc') == '0'){
-            $ordemDeCompras->where(DB::raw($this->query_status), '>=', 0);
+            foreach ($ordemDeCompras->get() as $ordemDeCompra) {
+                $saldoDisponivel = OrdemDeCompraRepository::saldoDisponivel($ordemDeCompra->id, $ordemDeCompra->obra_id);
+                if($saldoDisponivel >= 0) {
+                    array_push($array_oc_id, $ordemDeCompra->id);
+                }
+            }
+            $ordemDeCompras->whereIn('ordem_de_compras.id', $array_oc_id);
         }
 
         if($this->request()->get('status_oc') == '1'){
-            $ordemDeCompras->where(DB::raw($this->query_status), '<', 0);
+            foreach ($ordemDeCompras->get() as $ordemDeCompra) {
+                $saldoDisponivel = OrdemDeCompraRepository::saldoDisponivel($ordemDeCompra->id, $ordemDeCompra->obra_id);
+                if($saldoDisponivel < 0) {
+                    array_push($array_oc_id, $ordemDeCompra->id);
+                }
+            }
+            $ordemDeCompras->whereIn('ordem_de_compras.id', $array_oc_id);
         }
-
-//        echo $ordemDeCompras->toSql();
-//        die();
 
         return $this->applyScopes($ordemDeCompras);
     }
