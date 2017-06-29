@@ -810,7 +810,24 @@ class OrdemDeCompraController extends AppBaseController
         $itens = collect([]);
 
         if ($ordemDeCompra->itens) {
-            $itens = OrdemDeCompraItem::where('ordem_de_compra_id', $ordemDeCompra->id)
+            $itens = OrdemDeCompraItem::select([
+                'ordem_de_compra_itens.*',
+                'orcamentos.orcamento_que_substitui',
+                DB::raw("CONCAT(insumos_sub.codigo,' - ' ,insumos_sub.nome) as substitui")
+            ])
+                ->where('ordem_de_compra_id', $ordemDeCompra->id)
+                ->join('orcamentos', function ($join) use ($ordemDeCompra) {
+                    $join->on('orcamentos.insumo_id', '=', 'ordem_de_compra_itens.insumo_id');
+                    $join->on('orcamentos.grupo_id', '=', 'ordem_de_compra_itens.grupo_id');
+                    $join->on('orcamentos.subgrupo1_id', '=', 'ordem_de_compra_itens.subgrupo1_id');
+                    $join->on('orcamentos.subgrupo2_id', '=', 'ordem_de_compra_itens.subgrupo2_id');
+                    $join->on('orcamentos.subgrupo3_id', '=', 'ordem_de_compra_itens.subgrupo3_id');
+                    $join->on('orcamentos.servico_id', '=', 'ordem_de_compra_itens.servico_id');
+                    $join->on('orcamentos.obra_id', '=', DB::raw($ordemDeCompra->obra_id));
+                    $join->on('orcamentos.ativo', '=', DB::raw('1'));
+                })
+                ->leftJoin(DB::raw('orcamentos orcamentos_sub'), 'orcamentos_sub.id', 'orcamentos.orcamento_que_substitui')
+                ->leftJoin(DB::raw('insumos insumos_sub'), 'insumos_sub.id', 'orcamentos_sub.insumo_id')
                 ->with('insumo', 'unidade', 'anexos')
                 ->paginate(10);
         }
