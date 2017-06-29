@@ -83,12 +83,17 @@ class WorkflowController extends Controller
             ->orderBy('ordem')
             ->get();
 
-        $alcada = $alcadas->where('ordem', $request->alcada)->first();
-
-        $aprovacoes = WorkflowAprovacao::where('workflow_alcada_id', $alcada->id)
-            ->where('aprovavel_id', $request->id)
+        $aprovacoes = WorkflowAprovacao::where('aprovavel_id', $request->id)
+            ->whereHas('workflowAlcada', function($query) use ($request) {
+                $query->withTrashed();
+                $query->where('ordem', $request->alcada);
+            })
             ->orderBy('created_at')
             ->get();
+
+        $alcada = $aprovacoes->pluck('workflowAlcada')->first();
+
+        $alcada = $alcada ?: $alcadas->where('ordem', $request->alcada)->first();
 
         return view('workflow.detalhes', compact('aprovacoes', 'alcada'));
     }

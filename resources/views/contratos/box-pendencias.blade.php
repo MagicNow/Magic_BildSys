@@ -4,7 +4,7 @@
   </div>
   <div class="box-body">
     <div class="table-responsive">
-        <table class="table table-striped table-condensed">
+        <table class="table table-condensed table-all-center table-bordered table-no-margin">
           <thead>
             <tr>
               <th></th>
@@ -21,12 +21,12 @@
               <th>Código</th>
               <th>Descrição</th>
               <th>Un</th>
-              <th>Quantidade</th>
+              <th>Qtd.</th>
               <th>Valor Unitário</th>
-              <th>Quantidade</th>
+              <th>Qtd.</th>
               <th>Valor Unitário</th>
               <th>Data</th>
-              <th>Ação</th>
+              <th style="width: 20%">Ação</th>
             </tr>
           </thead>
           <tbody>
@@ -85,39 +85,44 @@
                   <button class="btn btn-xs btn-info btn-flat"
                       data-toggle="modal"
                       data-target="#detalhes-item-{{ $modificacao->id }}">
-                      <span data-toggle="tooltip" title="Detalhes Código Estruturado">
+                      <span data-toggle="tooltip" title="Detalhes por Apropriação">
                           Detalhes <i class="fa fa-plus fa-fw"></i>
                       </span>
                   </button>
                   <div class="modal fade" id="detalhes-item-{{ $modificacao->id }}" tabindex="-1" role="dialog">
-                    <div class="modal-dialog" role="document">
+                    <div class="modal-dialog modal-lg" role="document">
                       <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                           <h4 class="modal-title">
-                              Detalhes da modificação <br>
-                              <small>{{ $modificacao->tipo_modificacao }}</small>
+                              {{ $modificacao->tipo_modificacao }} <br>
+                              <small>{{ $modificacao->item->insumo->nome }}</small>
                           </h4>
                         </div>
                         <div class="modal-body">
-                            <table class="table table-striped table-condensed">
+                            <table class="table table-condensed table-all-center table-bordered table-no-margin">
                                 <thead>
                                     <tr>
+                                        <th></th>
                                         <th colspan="2" class="text-center">Antes</th>
                                         <th colspan="2" class="text-center">Depois</th>
                                     </tr>
                                     <tr>
-                                        <th>Quantidade</th>
-                                        <th>Valor</th>
-                                        <th>Quantidade</th>
+                                        <th>Código Estruturado</th>
+                                        <th>Qtd.</th>
+                                        <th>Valor Unitário</th>
+                                        <th>Qtd.</th>
                                         <th>Valor Unitário</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach($modificacao->apropriacoes as $apropriacao)
                                         <tr>
+                                            <td>
+                                                {{ $apropriacao->codigoServico() }}
+                                            </td>
                                             <td>
                                                 {{ float_to_money($apropriacao->pivot->qtd_anterior, '') }}
                                             </td>

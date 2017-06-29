@@ -29,4 +29,9 @@ class UpdateCatalogoContratoRequest extends FormRequest
         unset($rules['fornecedor_cod']);
         return $rules;
     }
+
+    public function messages()
+    {
+        return ['obra.required' => 'Escolha uma obra e clique em adicionar'];
+    }
 }

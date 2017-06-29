@@ -135,7 +135,7 @@ class ContratoRepository extends BaseRepository
                 $obra_id = $obra->obra_id;
 
                 $ocItens = $qcItem->oc_itens()->where('obra_id', $obra_id)->get();
-                $qtd = $ocItens->sum('qtd');
+                $qtd = $qcItem->oc_itens()->where('obra_id', $obra_id)->sum('qtd');
 
                 $valor_item = $valor_item_unitario * $qtd;
 
@@ -321,7 +321,7 @@ class ContratoRepository extends BaseRepository
                     $contrato_item['apropriacoes'] = $ocItens->map(function ($ocItem) use ($valorApropriacao, $insumo) {
                         $oc_item_arr = $ocItem->toArray();
                         $oc_item_arr['qtd'] = $valorApropriacao;
-                        $oc_item_arr['insumo_id'] = $insumo_id;
+                        $oc_item_arr['insumo_id'] = $insumo->id;
                         $oc_item_arr['ligacao_id'] = $ocItem->insumo_id;
 
                         return array_only($oc_item_arr, [
@@ -342,7 +342,7 @@ class ContratoRepository extends BaseRepository
 
                     $contratoCampos[$obraID]['tipo_frete'] = $qcFornecedor->tipo_frete;
                     $contratoCampos[$obraID]['valor_frete'] = $valorFrete;
-                    $contratoCampos[$obraID]['valor_total'] += $valorFrete;
+                    $contratoCampos[$obraID]['valor_total_inicial'] += $valorFrete;
                 }
             }
         }

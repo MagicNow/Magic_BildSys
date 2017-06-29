@@ -6,7 +6,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
                 <h4 class="modal-title">
-                    Histórico de Apropriações <br>
+                    Apropriações <br>
                     <small>{{ $item->insumo->nome }}</small>
                 </h4>
             </div>
@@ -21,12 +21,12 @@
                         </tr>
                         <tr>
                             <th></th>
-                            <th>Código</th>
-                            <th>Qth.</th>
+                            <th>Apropriação</th>
+                            <th>Qtd.</th>
                             <th>Valor Total</th>
-                            <th>Qth.</th>
+                            <th>Qtd.</th>
                             <th>Valor Total</th>
-                            <th>Qth.</th>
+                            <th>Qtd.</th>
                             <th>Valor Total</th>
                         </tr>
                     </thead>
@@ -34,9 +34,9 @@
                         @foreach($item->apropriacoes as $apropriacao)
                             <tr>
                                 <td>
-                                    <button class="btn btn-xs btn-flat btn-info js-collapse"
+                                    <button class="btn btn-xs btn-flat btn-default js-collapse"
                                         data-target="#historico-apropriacao-{{ $apropriacao->id }}">
-                                        <i class="fa fa-plus fa-fw"></i>
+                                        <i class="fa fa-history fa-fw"></i>
                                     </button>
                                 </td>
                                 <td>{{ $apropriacao->codigoServico() }}</td>
@@ -49,7 +49,7 @@
                             </tr>
                             <tr id="historico-apropriacao-{{ $apropriacao->id }}" class="hidden">
                                 <td colspan="8" class="td-full">
-                                    @if($apropriacao->modificacoes->isNotEmpty())
+                                    @if($apropriacao->modificacoes->where('contrato_status_id', 2)->isNotEmpty())
                                         <table class="table table-condensed table-all-center">
                                             <thead>
                                                 <tr>
@@ -68,7 +68,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach($apropriacao->modificacoes as $modificacao)
+                                                @foreach($apropriacao->modificacoes->where('contrato_status_id', 2) as $modificacao)
                                                     <tr>
                                                         <td>
                                                             {{ $modificacao['tipo_modificacao'] }}

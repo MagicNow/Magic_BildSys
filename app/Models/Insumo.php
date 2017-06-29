@@ -30,6 +30,7 @@ class Insumo extends Model
         'aliq_pis',
         'aliq_inss',
         'aliq_cofins',
+        'servico_cnae_id',
     ];
 
     /**
@@ -100,6 +101,14 @@ class Insumo extends Model
     public function orcamentos()
     {
         return $this->hasMany(Orcamento::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function cnae()
+    {
+        return $this->belongsTo(Cnae::class, 'servico_cnae_id');
     }
 
     /**

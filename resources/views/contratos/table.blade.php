@@ -39,7 +39,9 @@
                     <th colspan="2">Contratado</th>
                     <th colspan="2">Realizado</th>
                     <th colspan="2">Saldo</th>
-                    <th></th>
+                    @if($contrato->isStatus(2, 5) /* Aprovado ou Ativo */)
+                        <th></th>
+                    @endif
                 </tr>
                 <tr>
                     <th>#</th>
@@ -52,7 +54,9 @@
                     <th>Valor Total</th>
                     <th>Qtd.</th>
                     <th>Valor Total</th>
-                    <th>Ação</th>
+                    @if($contrato->isStatus(2, 5) /* Aprovado ou Ativo */)
+                        <th style="width:18%">Ação</th>
+                    @endif
                 </tr>
             </thead>
             <tbody>
@@ -63,7 +67,7 @@
                                 data-toggle="modal"
                                 data-target="#modal-historico-estruturado-{{ $item->id }}">
                                 <i data-toggle="tooltip"
-                                    title="Código Estruturado"
+                                    title="Apropriações"
                                     class="fa fa-fw fa-building"></i>
                             </button>
                             <button class="btn btn-flat btn-xs btn-default"
@@ -85,45 +89,13 @@
                         <td>{{ 'R$ 0,00' }}</td>
                         <td>{{ float_to_money($item->qtd, '') }}</td>
                         <td>{{ float_to_money($item->valor_total) }}</td>
-                        <td>
-                            <button type="button"
-                                class="btn btn-flat btn-xs btn-info"
-                                title="Expandir"
-                                onclick="showHideInfoExtra({{ $item->id }})">
-                                Impostos
-                                <i id="icone-expandir{{ $item->id }}"
-                                    class="fa fa-caret-right fa-fw"></i>
-                            </button>
-                            @if($contrato->isStatus(2, 5) /* Aprovado ou Ativo */)
+                        @if($contrato->isStatus(2, 5) /* Aprovado ou Ativo */)
+                            <td>
                                 @include('contratos.itens_datatables_action', [
                                     'item' => $item
                                 ])
-                            @endif
-                        </td>
-                    </tr>
-                    <tr id="dados-extras{{ $item->id }}" style="display: none">
-                        <td colspan="11">
-                            <table class="table table-bordered table-condensed table-no-margin">
-                                <thead>
-                                    <tr>
-                                        <th>IRFF</th>
-                                        <th>INSS</th>
-                                        <th>PIS</th>
-                                        <th>COFINS</th>
-                                        <th>CSLL</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>{{ float_to_money($item->insumo->aliq_irff, '') }}%</td>
-                                        <td>{{ float_to_money($item->insumo->aliq_inss, '') }}%</td>
-                                        <td>{{ float_to_money($item->insumo->aliq_pis, '') }}%</td>
-                                        <td>{{ float_to_money($item->insumo->aliq_cofins, '') }}%</td>
-                                        <td>{{ float_to_money($item->insumo->aliq_csll, '') }}%</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </td>
+                            </td>
+                        @endif
                     </tr>
                 @endforeach
             </tbody>

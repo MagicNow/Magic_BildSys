@@ -133,6 +133,11 @@ var Reapropriar = (function() {
     this.id = button.dataset.itemId;
     var self = this;
 
+    var insumo = this.modal.querySelector('#grupos_de_orcamento_insumo_id');
+    if(insumo) {
+      insumo.value = button.dataset.insumoId;
+    }
+
     getView(this.id, 'reapropriacao', this.modal);
   }
 
@@ -515,7 +520,7 @@ var Distrato = (function() {
     };
 
     var inputs = _.filter(this.inputs, function(input) {
-      return parseFloat(input.dataset.oldValue) !== moneyToFloat(input.value);
+      return input.value && moneyToFloat(input.value);
     });
 
     data = getInputs(inputs, data);

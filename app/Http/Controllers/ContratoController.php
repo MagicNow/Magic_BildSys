@@ -40,6 +40,7 @@ use App\Models\ContratoItemModificacao;
 use App\Repositories\ContratoItemApropriacaoRepository;
 use App\Models\WorkflowAlcada;
 use App\Models\ContratoItemApropriacao;
+use App\Models\Cnae;
 
 class ContratoController extends AppBaseController
 {
@@ -94,7 +95,8 @@ class ContratoController extends AppBaseController
         Request $request,
         WorkflowReprovacaoMotivoRepository $workflowReprovacaoMotivoRepository,
         ContratoItemApropriacaoRepository $apropriacaoRepository,
-        ContratoItemRepository $contratoItemRepository
+        ContratoItemRepository $contratoItemRepository,
+        FornecedoresRepository $fornecedorRepository
     ) {
         $contrato = $this->contratoRepository->findWithoutFail($id);
 
@@ -111,6 +113,8 @@ class ContratoController extends AppBaseController
         );
 
         $avaliado_reprovado = [];
+
+        $fornecedor = $fornecedorRepository->updateImposto($contrato->fornecedor_id);
 
         $alcadas = WorkflowAlcada::where('workflow_tipo_id', WorkflowTipo::CONTRATO)
             ->orderBy('ordem', 'ASC')
@@ -200,6 +204,8 @@ class ContratoController extends AppBaseController
             ? $apropriacaoRepository->forContratoApproval($contrato)
             : $contratoItemRepository->forContratoDetails($contrato);
 
+        $iss = Cnae::$iss;
+
         return view('contratos.show', compact(
                 'isEmAprovacao',
                 'contrato',
@@ -211,7 +217,9 @@ class ContratoController extends AppBaseController
                 'pendencias',
                 'alcadas_count',
                 'avaliado_reprovado',
-                'status'
+                'status',
+                'fornecedor',
+                'iss'
         ));
     }
 

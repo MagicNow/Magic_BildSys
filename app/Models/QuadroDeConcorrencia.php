@@ -31,6 +31,15 @@ class QuadroDeConcorrencia extends Model
         ];
     }
 
+    public function concorrenciaNotification()
+    {
+        return [
+            'message' => 'Você tem uma concorrência para avaliar',
+            'link' => route('quadroDeConcorrencia.avaliar', $this->id),
+            'id_dinamico' => $this->id
+        ];
+    }
+
     /**
      * The attributes that should be casted to native types.
      *

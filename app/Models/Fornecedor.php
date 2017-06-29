@@ -37,7 +37,8 @@ class Fornecedor extends Model
         'site',
         'telefone',
         'cep',
-        'user_id'
+        'user_id',
+        'imposto_simples'
     ];
 
     public static $campos = [
@@ -83,7 +84,8 @@ class Fornecedor extends Model
         'site' => 'string',
         'telefone' => 'string',
         'cep' => 'string',
-        'user_id' => 'integer'
+        'user_id' => 'integer',
+        'imposto_simples' => 'boolean'
     ];
 
     /**
