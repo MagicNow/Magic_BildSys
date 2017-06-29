@@ -39,6 +39,10 @@ class ComprasDataTable extends DataTable
                 }
             })
             ->editColumn('troca', function ($obj) {
+                if($obj->substitui) {
+                    return '<button data-toggle="popover" title="Substitui Insumo" data-content="' . $obj->substitui . '" type="button" data-placement="left" class="btn btn-info btn-flat btn-xs"> <i class="fa fa-exchange"></i> </button>';
+                }
+                
                 if ($obj->insumo_grupo_id == 1570) {
                     return link_to(
                         'compras/trocar/' . $obj->orcamento_id,
