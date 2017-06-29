@@ -23,11 +23,16 @@ class CreateSolicitacaoEntregaTable extends Migration
 
             $table->foreign('contrato_id')
                 ->references('id')
-                ->on('contratos');
+                ->on('contratos')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+
 
             $table->foreign('user_id')
                 ->references('id')
-                ->on('users');
+                ->on('users')
+                ->onDelete('restrict')
+                ->onUpdate('cascade');
         });
     }
 

@@ -457,9 +457,30 @@ class ContratoController extends AppBaseController
         return redirect(route('contratos.index'));
     }
 
-    public function solicitarEntrega($contrato_id)
-    {
+    public function solicitarEntrega(
+        $contrato_id,
+        ContratoItemApropriacaoRepository $apropriacaoRepository
+    ) {
         $contrato = $this->contratoRepository->find($contrato_id);
-        return view('contratos.solicitar_entrega', compact('contrato'));
+
+        $apropriacoes = $apropriacaoRepository
+            ->fromContrato($contrato->id)
+            ->load('servico');
+
+        $apropriacaoPorServico = $apropriacoes
+            ->pluck('servico')
+            ->map(function($servico) use ($apropriacoes) {
+                $servico->apropriacoes = $apropriacoes->where(
+                    'servico_id',
+                    $servico->id
+                );
+
+                return $servico;
+            });
+
+        return view(
+            'contratos.solicitacao_entrega.index',
+            compact('contrato', 'apropriacoes', 'apropriacaoPorServico')
+        );
     }
 }
