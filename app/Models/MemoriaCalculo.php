@@ -3,24 +3,19 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class MemoriaCalculo
  * @package App\Models
- * @version June 28, 2017, 7:00 pm BRT
+ * @version June 29, 2017, 4:47 pm BRT
  */
 class MemoriaCalculo extends Model
 {
-    use SoftDeletes;
 
     public $table = 'memoria_calculos';
     
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
-
-
-    protected $dates = ['deleted_at'];
 
 
     public $fillable = [
@@ -48,7 +43,9 @@ class MemoriaCalculo extends Model
      * @var array
      */
     public static $rules = [
-        
+        'nome' => 'required',
+        'modo' => 'required',
+        'blocos' => 'required'
     ];
 
     /**
@@ -56,14 +53,14 @@ class MemoriaCalculo extends Model
      **/
     public function user()
     {
-        return $this->belongsTo(\App\Models\User::class);
+        return $this->belongsTo(User::class);
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
-    public function memoriaCalculoBlocos()
+    public function blocos()
     {
-        return $this->hasMany(\App\Models\MemoriaCalculoBloco::class);
+        return $this->hasMany(MemoriaCalculoBloco::class);
     }
 }

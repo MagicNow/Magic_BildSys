@@ -6,9 +6,11 @@ use App\DataTables\Admin\NomeclaturaMapaDataTable;
 use App\Http\Requests\Admin;
 use App\Http\Requests\Admin\CreateNomeclaturaMapaRequest;
 use App\Http\Requests\Admin\UpdateNomeclaturaMapaRequest;
+use App\Models\NomeclaturaMapa;
 use App\Repositories\Admin\NomeclaturaMapaRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
+use Illuminate\Http\Request;
 use Response;
 
 class NomeclaturaMapaController extends AppBaseController
@@ -158,5 +160,30 @@ class NomeclaturaMapaController extends AppBaseController
         Flash::success('Nomeclatura Mapa '.trans('common.deleted').' '.trans('common.successfully').'.');
 
         return redirect(route('admin.nomeclaturaMapas.index'));
+    }
+
+    public function json(Request $request){
+        $nomeclaturas = NomeclaturaMapa::orderBy('nome');
+        // tipo
+        if($request->tipo){
+            $nomeclaturas->where('tipo',$request->tipo);
+        }
+        // modo
+        if($request->modo){
+            if($request->modo == 'T'){
+                $nomeclaturas->where('apenas_cartela',0);
+                $nomeclaturas->where('apenas_unidade',0);
+            }
+            if($request->modo == 'C'){
+                $nomeclaturas->where('apenas_cartela',1);
+                $nomeclaturas->where('apenas_unidade',0);
+            }
+            if($request->modo == 'U'){
+                $nomeclaturas->where('apenas_cartela',0);
+                $nomeclaturas->where('apenas_unidade',1);
+            }
+        }
+
+        return $nomeclaturas->get();
     }
 }
