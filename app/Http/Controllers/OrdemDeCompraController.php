@@ -409,6 +409,7 @@ class OrdemDeCompraController extends AppBaseController
             });
             $itens->leftJoin('contrato_itens', 'contrato_itens.id' ,'=', 'contrato_item_apropriacoes.contrato_item_id');
 
+            $itens = $itens->groupBy('ordem_de_compra_itens.insumo_id');
             $itens = $itens->paginate(10);
         }
 
