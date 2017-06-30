@@ -381,6 +381,7 @@ class OrdemDeCompraController extends AppBaseController
                     ) as valor_previsto_orcamento_pai"),
                     DB::raw("CONCAT(insumos_sub.codigo,' - ' ,insumos_sub.nome) as substitui"),
                     DB::raw('(contrato_item_apropriacoes.qtd * contrato_itens.valor_unitario) as valor_comprometido_a_gastar'),
+                    'contrato_item_apropriacoes.qtd as qtd_comprometida_a_gastar'
                 ])
                 ->join('ordem_de_compras','ordem_de_compras.id' , 'ordem_de_compra_itens.ordem_de_compra_id')
                 ->join('orcamentos', function ($join) use ($ordemDeCompra) {
