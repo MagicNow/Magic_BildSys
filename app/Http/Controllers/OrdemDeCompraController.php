@@ -242,7 +242,7 @@ class OrdemDeCompraController extends AppBaseController
             return back();
         }
 
-        $orcamentoInicial = $totalAGastar = $realizado = $totalSolicitado = 0;
+        $orcamentoInicial = $valor_comprometido_a_gastar = $realizado = $totalSolicitado = 0;
 
         $itens = collect([]);
 
@@ -295,6 +295,8 @@ class OrdemDeCompraController extends AppBaseController
 
         if ($ordemDeCompra->itens) {
             $orcamentoInicial = OrdemDeCompraRepository::valorPrevistoOrcamento($ordemDeCompra->id, $ordemDeCompra->obra_id);
+
+            $valor_comprometido_a_gastar = OrdemDeCompraRepository::valorComprometidoRealizado($ordemDeCompra->id);
 
             $totalSolicitado = $ordemDeCompra->itens()->sum('valor_total');
 
@@ -416,7 +418,7 @@ class OrdemDeCompraController extends AppBaseController
             'ordemDeCompra',
             'orcamentoInicial',
             'realizado',
-            'totalAGastar',
+            'valor_comprometido_a_gastar',
             'saldo',
             'itens',
             'motivos_reprovacao',
