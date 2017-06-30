@@ -21,11 +21,20 @@ $router->post('/notifications/marcar-lido', 'NotificationController@marcarLido')
 // Detalhes de workflow
 $router->get('/workflow/detalhes', 'WorkflowController@detalhes');
 
+// Solicitação de Insumo
+$router->get('/solicitar-insumo', 'SolicitacaoInsumoController@create')
+    ->name('solicitar_insumo.create');
+$router->post('/solicitar-insumo', 'SolicitacaoInsumoController@store')
+    ->name('solicitar_insumo.store');
+
 ##### Buscas #####
-$router->get('/admin/catalogo-acordos/buscar/busca_insumos', ['as' => 'catalogo_contratos.busca_insumos', 'uses' => 'CatalogoContratoController@buscaInsumos']);
-$router->get('/admin/solicitacaoInsumos/buscar/grupos_insumos', 'Admin\SolicitacaoInsumoController@buscaGruposInsumos');
-$router->get('/compras/insumos/orcamento/solicitar-insumo/{obra_id}', 'Admin\SolicitacaoInsumoController@solicitarInsumo');
-$router->post('/compras/insumos/orcamento/solicitar-insumo/salvar/{obra_id}', 'Admin\SolicitacaoInsumoController@solicitarInsumoSalvar');
+$router->get('/admin/catalogo-acordos/buscar/busca_insumos', ['as' => 'catalogo_contratos.busca_insumos', 'uses' => 'BuscarController@getInsumos']);
+
+$router->get('/buscar/insumo-grupos', 'BuscarController@getInsumoGrupos')
+    ->name('buscar.insumo-grupos');
+$router->get('/buscar/insumos', 'BuscarController@getInsumos')
+    ->name('buscar.insumos');
+
 $router->get('/admin/users/busca', 'Admin\Manage\UsersController@busca');
 $router->get('/getForeignKey', 'CodesController@getForeignKey');
 $router->get('/busca-cidade', 'CodesController@buscaCidade');
@@ -751,6 +760,13 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->get(
             '/{contratos}/solicitar-entrega',
             'ContratoController@solicitarEntrega'
+        )
+        ->middleware('needsPermission:contratos.solicitar_entrega')
+        ->name('contratos.solicitar-entrega');
+
+        $router->post(
+            '/{contratos}/solicitar-entrega',
+            'ContratoController@solicitarEntregaSave'
         )
         ->middleware('needsPermission:contratos.solicitar_entrega')
         ->name('contratos.solicitar-entrega');

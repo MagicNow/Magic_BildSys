@@ -10,6 +10,7 @@
 
 <body class="skin-blue-light sidebar-mini loaded">
 
+@include('flash::message')
 @yield('content')
 
 <script type="text/javascript">
@@ -20,6 +21,7 @@
 <script src="/js/admin.js"></script>
 
 @yield('scripts')
+@if(request()->get('bind_form', true))
 <script type="text/javascript">
     $(function () {
         $('form').submit(function (event) {
@@ -89,6 +91,7 @@
         });
     });
 </script>
+@endif
 @yield('last-scripts')
 
 </body>

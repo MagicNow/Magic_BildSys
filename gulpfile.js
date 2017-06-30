@@ -209,6 +209,9 @@ elixir(function(mix) {
     'error-list.js',
     'is-mobile.js',
     'notifications.js',
+    'colorbox-helper.js',
+    'select2-helper.js',
+    'get-insumo.js',
   ], 'public/js/admin.js');
 
   mix.scripts([

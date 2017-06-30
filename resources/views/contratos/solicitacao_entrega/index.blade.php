@@ -42,7 +42,8 @@
         </div>
     </div>
 
-    <div class="panel panel-default">
+    <div class="panel panel-default panel-normal-table">
+        {!! Form::open(['route' => ['contratos.solicitar-entrega', $contrato->id], 'method' => 'post']) !!}
         <div class="panel-body">
             <div class="js-table-container" data-view-name="apropriacoes" style="display: none">
                 @include('contratos.solicitacao_entrega.table_apropriacoes')
@@ -54,7 +55,7 @@
         <div class="panel-footer">
             <div class="row">
                 <div class="col-sm-12">
-                    <button class="btn btn-flat btn-info pull-right">
+                    <button type="submit" class="btn btn-flat btn-info pull-right">
                         Finalizar
                     </button>
                     <div class="col-sm-3 pull-right h4 text-right">
@@ -66,8 +67,11 @@
                 </div>
             </div>
         </div>
+        {!! Form::close() !!}
     </div>
 </div>
+
+@include('contratos.solicitacao_entrega.modal_selecionar_insumo')
 @endsection
 
 @section('scripts')

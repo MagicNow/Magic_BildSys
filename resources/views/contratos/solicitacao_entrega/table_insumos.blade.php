@@ -52,9 +52,17 @@
                                     <td>{{ float_to_money($item->valor_unitario) }}</td>
                                     @if($apropriacao->insumo->codigo === '34007')
                                         <td colspan="2">
-                                            <div class="btn btn-flat btn-block btn-primary">
+                                            <button
+                                                type="button"
+                                                data-apropriacao="{{
+                                                    $apropriacao->id
+                                                }}"
+                                                class="btn btn-flat btn-block
+                                                btn-primary js-selecionar-insumo
+                                                btn-sm">
                                                 Selecionar Insumo
-                                            </div>
+                                            </button>
+                                            <div data-apropriacao="{{ $apropriacao->id }}" class="hidden js-selected"></div>
                                         </td>
                                     @else
                                         <td>

@@ -483,4 +483,9 @@ class ContratoController extends AppBaseController
             compact('contrato', 'apropriacoes', 'apropriacaoPorServico')
         );
     }
+
+    public function solicitarEntregaSave(Request $request)
+    {
+        dd($request->all());
+    }
 }

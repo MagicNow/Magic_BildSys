@@ -65898,6 +65898,7 @@ $(function() {
     thousands: '.',
     decimal: ','
   });
+
   $('.money_3').mask('0.000.000.000.000,000', {
     reverse: true
   });
@@ -66054,76 +66055,6 @@ var oTable = null;
 
 window.$body = $(document.body);
 window.$document = $(document);
-
-function makeSelect2(selector, url) {
-
-  function formatResultSelection(obj) {
-    if (obj.nome) {
-      return obj.nome;
-    }
-    return obj.text;
-  }
-
-  function formatResult(obj) {
-    if (obj.loading) return obj.text;
-
-    var markup = "<div class='select2-result-obj clearfix'>" +
-      "   <div class='select2-result-obj__meta'>" +
-      "       <div class='select2-result-obj__title'>" + obj.nome + "</div>" +
-      "   </div>" +
-      "</div>";
-
-    return markup;
-  }
-
-  var element = $(selector);
-  var options = {
-    allowClear: true,
-    placeholder: "-",
-    language: "pt-BR",
-    theme: 'bootstrap',
-    ajax: {
-      dataType: 'json',
-      delay: 250,
-
-      data: function(params) {
-        return {
-          q: params.term,
-          page: params.page
-        };
-      },
-
-      processResults: function(result, params) {
-        params.page = params.page || 1;
-
-        return {
-          results: result.data,
-          pagination: {
-            more: (params.page * result.per_page) < result.total
-          }
-        };
-      },
-      cache: true
-    },
-    escapeMarkup: function(markup) {
-      return markup;
-    },
-    minimumInputLength: 1,
-    templateResult: formatResult,
-    templateSelection: formatResultSelection
-  };
-
-  if (typeof url === 'string') {
-    options.ajax.url = url;
-    element.select2(options);
-
-    return element;
-  }
-
-  element.select2(_.merge(options, url));
-
-  return element;
-}
 
 /* Brazilian initialisation for the jQuery UI date picker plugin. */
 /* Written by Leonildo Costa Silva (leocsilva@gmail.com). */
@@ -67343,3 +67274,96 @@ var NotificationSystem = {
   }
 };
 
+
+function colorbox(options) {
+  options = Object.assign({
+    iframe: true,
+    width: '90%',
+    height: '90%',
+  }, options);
+
+  return new Promise(function(resolve, reject) {
+    options.onComplete = function() {
+      var $iframe = $('#colorbox iframe');
+      $iframe.on('load', function(event) {
+        resolve({
+          window: event.currentTarget.contentWindow,
+          element: event.currentTarget
+        })
+      });
+    };
+    $.colorbox(options);
+  });
+}
+
+
+function select2(selector, options) {
+  options = Object.assign({
+    allowClear: true,
+    placeholder: "Escolha...",
+    language: "pt-BR",
+    theme: 'bootstrap',
+    ajax: {
+      url: options.url || (options.ajax ? options.ajax.url : ''),
+      dataType: 'json',
+      delay: 250,
+
+      data: function(params) {
+        return {
+          q: params.term,
+          page: params.page,
+        };
+      },
+
+      processResults: function(result, params) {
+        params.page = params.page || 1;
+
+        return {
+          results: result.data.filter(options.filter || Boolean),
+          pagination: {
+            more: (params.page * result.per_page) < result.total
+          }
+        };
+      },
+      cache: true
+    },
+    escapeMarkup: function(markup) {
+      return markup;
+    },
+    minimumInputLength: 1,
+    templateResult: formatResult,
+    templateSelection: formatResultSelection
+  }, options)
+
+  return $(selector).select2(options);
+}
+
+function formatResultSelection(obj) {
+  if (obj.nome) {
+    return obj.nome;
+  }
+  return obj.text;
+}
+
+function formatResult(obj) {
+  if (obj.loading) return obj.text;
+
+  var markup = "<div class='select2-result-obj clearfix'>" +
+    "   <div class='select2-result-obj__meta'>" +
+    "       <div class='select2-result-obj__title'>" + obj.nome + "</div>" +
+    "   </div>" +
+    "</div>";
+
+  return markup;
+}
+
+/**
+ * Traz o insumo do servidor pelo id
+ *
+ * @param {Number} id
+ *
+ * @return jQuery.promise
+ */
+function getInsumo(id) {
+  return $.get('/admin/insumos/' + id + '/json');
+}

@@ -134,7 +134,7 @@ class CatalogoContratoController extends AppBaseController
                 ]);
             }
         }
-        
+
         if (count($request->contratoInsumos)) {
             foreach ($request->contratoInsumos as $item) {
                 if ($item['insumo_id'] != '' && floatval($item['valor_unitario']) > 0 ) {
@@ -281,7 +281,7 @@ class CatalogoContratoController extends AppBaseController
                 }
             }
         }
-        
+
         $alteraStatusParaValidacao = false;
         if (count($request->contratoInsumos)) {
             foreach ($request->contratoInsumos as $item) {
@@ -537,31 +537,6 @@ class CatalogoContratoController extends AppBaseController
         return $fornecedores;
     }
 
-    public function buscaInsumos(Request $request){
-
-        $insumos = Insumo::select([
-            'id',
-            DB::raw("CONCAT(nome, ' - ', unidade_sigla) as nome")
-        ])
-        ->where(function ($query) use($request){
-            $query->where('nome', 'like', '%' . $request->q . '%')
-                ->orWhere('unidade_sigla','like', '%'.$request->q.'%');
-        })
-        ->where('active', 1)
-        ->whereHas('grupo', function($query) {
-            return $query->where('active', 1);
-        })
-        ->orderBy('nome', 'ASC');
-
-        if($request->insumos_trocados) {
-            $insumos = $insumos->whereNotIn('id', explode(',', $request->insumos_trocados));
-        }
-
-        $insumos = $insumos->paginate();
-
-        return $insumos;
-    }
-    
     public function imprimirMinuta($id){
         return response()->file(storage_path('/app/public/') . str_replace('storage/', '', CatalogoContratoRepository::geraImpressao($id)));
     }
