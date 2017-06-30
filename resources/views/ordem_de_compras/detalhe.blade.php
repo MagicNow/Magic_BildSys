@@ -251,7 +251,7 @@
                 <h4>
                     <small class="pull-left">R$</small>
                     {{---  @TODO = A gastar: É a soma de todos os saldos de contratos na que apropriação, como ainda não exixte contrato gerado, tem q estar zerado--}}
-                    {{ number_format($valor_comprometido_a_gastar,2,',','.') }}
+                    {{ number_format(doubleval($valor_comprometido_a_gastar),2,',','.') }}
                 </h4>
             </div>
             <div class="col-md-2 text-right borda-direita" title="Restante do Orçamento Inicial em relação aos itens desta O.C.">
@@ -441,7 +441,7 @@
                                                 </td>
                                                 <td class="text-center">
                                                     <small class="pull-left">R$</small>
-                                                    {{--{{ number_format( $item->substitui ? $item->valor_previsto_orcamento_pai : $item->preco_inicial-doubleval($item->valor_realizado), 2, ',','.') }}--}}0,00
+                                                    {{ number_format(doubleval($item->valor_comprometido_a_gastar), 2, ',','.') }}
                                                 </td>
                                             </tr>
                                             </tbody>

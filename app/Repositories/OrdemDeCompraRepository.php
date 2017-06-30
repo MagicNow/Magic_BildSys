@@ -100,7 +100,7 @@ class OrdemDeCompraRepository extends BaseRepository
         return $saldoDisponivel;
     }
 
-    public static function valorComprometidoRealizado($ordem_de_compra_id)
+    public static function valorComprometidoAGastar($ordem_de_compra_id)
     {
         $valor_comprometido_a_gastar = OrdemDeCompraItem::select([
             'contrato_item_apropriacoes.qtd',
