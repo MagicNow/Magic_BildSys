@@ -249,9 +249,9 @@
             <div class="col-md-2 text-right borda-direita" title="Nos itens desta O.C.">
                 <h5>Valor comprometido à gastar</h5>
                 <h4>
-                    <small class="pull-left">R$</small>0,00
-                    {{---  @TODO = A gastar: É a soma de todos os saldos de contratos na que apropriação, como ainda não exixte contrato gerado, tem q estar zerado--}}
-                    {{--                    {{ number_format($totalAGastar,2,',','.') }}--}}
+                    <small class="pull-left">R$</small>
+                    {{---  @TODO = A gastar: É a soma de todos os saldos de contratos na que apropriação--}}
+                    {{ number_format(doubleval($valor_comprometido_a_gastar),2,',','.') }}
                 </h4>
             </div>
             <div class="col-md-2 text-right borda-direita" title="Restante do Orçamento Inicial em relação aos itens desta O.C.">
@@ -437,11 +437,11 @@
                                                     {{ number_format( doubleval($item->valor_realizado), 2, ',','.') }}
                                                 </td>
                                                 <td class="text-center">
-                                                    {{--{{ number_format( $item->substitui ? $item->qtd_prevista_orcamento_pai : $item->qtd_inicial-doubleval($item->qtd_realizada), 2, ',','.') }}--}}0,00
+                                                    {{ number_format(doubleval($item->qtd_comprometida_a_gastar), 2, ',','.') }}
                                                 </td>
                                                 <td class="text-center">
                                                     <small class="pull-left">R$</small>
-                                                    {{--{{ number_format( $item->substitui ? $item->valor_previsto_orcamento_pai : $item->preco_inicial-doubleval($item->valor_realizado), 2, ',','.') }}--}}0,00
+                                                    {{ number_format(doubleval($item->valor_comprometido_a_gastar), 2, ',','.') }}
                                                 </td>
                                             </tr>
                                             </tbody>

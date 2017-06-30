@@ -99,4 +99,25 @@ class OrdemDeCompraRepository extends BaseRepository
         
         return $saldoDisponivel;
     }
+
+    public static function valorComprometidoAGastar($ordem_de_compra_id)
+    {
+        $valor_comprometido_a_gastar = OrdemDeCompraItem::select([
+            'contrato_item_apropriacoes.qtd',
+            'contrato_itens.valor_unitario'
+            ])
+            ->where('ordem_de_compra_id', $ordem_de_compra_id)
+            ->join('contrato_item_apropriacoes', function ($join) {
+                $join->on('contrato_item_apropriacoes.insumo_id', '=', 'ordem_de_compra_itens.insumo_id');
+                $join->on('contrato_item_apropriacoes.grupo_id', '=', 'ordem_de_compra_itens.grupo_id');
+                $join->on('contrato_item_apropriacoes.subgrupo1_id', '=', 'ordem_de_compra_itens.subgrupo1_id');
+                $join->on('contrato_item_apropriacoes.subgrupo2_id', '=', 'ordem_de_compra_itens.subgrupo2_id');
+                $join->on('contrato_item_apropriacoes.subgrupo3_id', '=', 'ordem_de_compra_itens.subgrupo3_id');
+                $join->on('contrato_item_apropriacoes.servico_id', '=', 'ordem_de_compra_itens.servico_id');
+            })
+            ->join('contrato_itens', 'contrato_itens.id' ,'=', 'contrato_item_apropriacoes.contrato_item_id')
+            ->sum(DB::raw('contrato_item_apropriacoes.qtd * contrato_itens.valor_unitario'));
+
+        return $valor_comprometido_a_gastar;
+    }
 }

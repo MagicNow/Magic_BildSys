@@ -242,7 +242,7 @@ class OrdemDeCompraController extends AppBaseController
             return back();
         }
 
-        $orcamentoInicial = $totalAGastar = $realizado = $totalSolicitado = 0;
+        $orcamentoInicial = $valor_comprometido_a_gastar = $realizado = $totalSolicitado = 0;
 
         $itens = collect([]);
 
@@ -295,6 +295,8 @@ class OrdemDeCompraController extends AppBaseController
 
         if ($ordemDeCompra->itens) {
             $orcamentoInicial = OrdemDeCompraRepository::valorPrevistoOrcamento($ordemDeCompra->id, $ordemDeCompra->obra_id);
+
+            $valor_comprometido_a_gastar = OrdemDeCompraRepository::valorComprometidoAGastar($ordemDeCompra->id);
 
             $totalSolicitado = $ordemDeCompra->itens()->sum('valor_total');
 
@@ -377,7 +379,9 @@ class OrdemDeCompraController extends AppBaseController
                         AND orcamentos.ativo = 1
 
                     ) as valor_previsto_orcamento_pai"),
-                    DB::raw("CONCAT(insumos_sub.codigo,' - ' ,insumos_sub.nome) as substitui")
+                    DB::raw("CONCAT(insumos_sub.codigo,' - ' ,insumos_sub.nome) as substitui"),
+                    DB::raw('(contrato_item_apropriacoes.qtd * contrato_itens.valor_unitario) as valor_comprometido_a_gastar'),
+                    'contrato_item_apropriacoes.qtd as qtd_comprometida_a_gastar'
                 ])
                 ->join('ordem_de_compras','ordem_de_compras.id' , 'ordem_de_compra_itens.ordem_de_compra_id')
                 ->join('orcamentos', function ($join) use ($ordemDeCompra) {
@@ -396,6 +400,17 @@ class OrdemDeCompraController extends AppBaseController
             $itens->leftJoin(DB::raw('orcamentos orcamentos_sub'),  'orcamentos_sub.id', 'orcamentos.orcamento_que_substitui');
             $itens->leftJoin(DB::raw('insumos insumos_sub'), 'insumos_sub.id', 'orcamentos_sub.insumo_id');
 
+            $itens->leftJoin('contrato_item_apropriacoes', function ($join) {
+                $join->on('contrato_item_apropriacoes.insumo_id', '=', 'ordem_de_compra_itens.insumo_id');
+                $join->on('contrato_item_apropriacoes.grupo_id', '=', 'ordem_de_compra_itens.grupo_id');
+                $join->on('contrato_item_apropriacoes.subgrupo1_id', '=', 'ordem_de_compra_itens.subgrupo1_id');
+                $join->on('contrato_item_apropriacoes.subgrupo2_id', '=', 'ordem_de_compra_itens.subgrupo2_id');
+                $join->on('contrato_item_apropriacoes.subgrupo3_id', '=', 'ordem_de_compra_itens.subgrupo3_id');
+                $join->on('contrato_item_apropriacoes.servico_id', '=', 'ordem_de_compra_itens.servico_id');
+            });
+            $itens->leftJoin('contrato_itens', 'contrato_itens.id' ,'=', 'contrato_item_apropriacoes.contrato_item_id');
+
+            $itens = $itens->groupBy('ordem_de_compra_itens.insumo_id');
             $itens = $itens->paginate(10);
         }
 
@@ -416,7 +431,7 @@ class OrdemDeCompraController extends AppBaseController
             'ordemDeCompra',
             'orcamentoInicial',
             'realizado',
-            'totalAGastar',
+            'valor_comprometido_a_gastar',
             'saldo',
             'itens',
             'motivos_reprovacao',
