@@ -135,6 +135,7 @@ class ContratoRepository extends BaseRepository
                 $obra_id = $obra->obra_id;
 
                 $ocItens = $qcItem->oc_itens()->where('obra_id', $obra_id)->get();
+
                 $qtd = $qcItem->oc_itens()->where('obra_id', $obra_id)->sum('qtd');
 
                 $valor_item = $valor_item_unitario * $qtd;
@@ -216,7 +217,7 @@ class ContratoRepository extends BaseRepository
                 $contrato_item['apropriacoes'] = $ocItens->map(function ($oc_item) {
                     $oc_item_arr = $oc_item->toArray();
                     $oc_item_arr['qtd'] = $oc_item->getOriginal('qtd');
-                    return array_only($oc_item->toArray(), [
+                    return array_only($oc_item_arr, [
                         'codigo_insumo',
                         'grupo_id',
                         'subgrupo1_id',
