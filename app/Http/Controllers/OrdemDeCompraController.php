@@ -1424,7 +1424,7 @@ class OrdemDeCompraController extends AppBaseController
                 'grupo_id' => $request->grupo_id,
                 'unidade_sigla' => $insumo->unidade_sigla,
                 'preco_unitario' => 0,
-                'qtd_total' => $request->qtd_total,
+                'qtd_total' => money_to_float($request->qtd_total),
                 'orcamento_tipo_id' => 1,
                 'subgrupo1_id' => $request->subgrupo1_id,
                 'subgrupo2_id' => $request->subgrupo2_id,
@@ -1436,7 +1436,7 @@ class OrdemDeCompraController extends AppBaseController
             $orcamento->save();
         }else{
             Flash::warning(
-                'Insumo já existe nesse orçamento'
+                'O insumo já existe neste orçamento.'
             );
             return back()->withInput();
         }
