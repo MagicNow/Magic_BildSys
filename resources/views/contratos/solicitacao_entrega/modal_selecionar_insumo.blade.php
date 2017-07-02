@@ -9,7 +9,7 @@
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-sm-6">
+                    <div class="col-sm-4">
                         <div class="form-group">
                             {!! Form::label('insumo_id', 'Insumo') !!}
                             {!!
@@ -26,7 +26,7 @@
                             !!}
                         </div>
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-sm-4">
                         <div class="form-group">
                             {!! Form::label('qtd_total', 'Quantidade') !!}
                             {!!
@@ -37,6 +37,24 @@
                                         'class'               => 'form-control money js-input',
                                         'required'            => 'required',
                                         'id'                  => 'qtd_total',
+                                        'data-allow-zero'     => 'true',
+                                        'data-allow-negative' => 'false',
+                                    ]
+                                )
+                            !!}
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>Valor Unitário</label>
+                            {!!
+                                Form::text(
+                                    'valor_unitario',
+                                    null,
+                                    [
+                                        'class'               => 'form-control money js-input',
+                                        'required'            => 'required',
+                                        'id'                  => 'valor_unitario',
                                         'data-allow-zero'     => 'true',
                                         'data-allow-negative' => 'false',
                                     ]
@@ -59,7 +77,7 @@
                     </div>
                 </div>
                 <div id="lista-de-troca" class="hidden">
-                    <h4>Lista de Troca</h4>
+                    <h4>Insumos Selecionados</h4>
                     <table class="table table-bordered table-striped">
                         <thead>
                             <tr>
@@ -67,6 +85,8 @@
                                 <th>Nome</th>
                                 <th>Unidade</th>
                                 <th>Quantidade</th>
+                                <th>Valor Unitário</th>
+                                <th>Valor Total</th>
                                 <th style="width: 5%">Ação</th>
                             </tr>
                         </thead>
@@ -76,10 +96,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-danger btn-flat" id="clear-selected-insumos">
-                    Limpar Lista
-                </button>
-                <button class="btn btn-success btn-flat" id="save-selected-insumos">
+                <button class="btn btn-success btn-flat" data-dismiss="modal">
                     Salvar Seleção
                 </button>
             </div>

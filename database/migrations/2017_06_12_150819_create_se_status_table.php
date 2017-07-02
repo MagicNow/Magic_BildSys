@@ -23,7 +23,7 @@ class CreateSeStatusTable extends Migration
             $table->unsignedInteger('se_status_id');
             $table->foreign('se_status_id')
                 ->references('id')
-                ->on('solicitacao_entregas');
+                ->on('se_status');
         });
     }
 

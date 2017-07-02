@@ -41,6 +41,12 @@ use App\Repositories\ContratoItemApropriacaoRepository;
 use App\Models\WorkflowAlcada;
 use App\Models\ContratoItemApropriacao;
 use App\Models\Cnae;
+use App\Models\SolicitacaoEntrega;
+use App\Models\SeStatus;
+use Illuminate\Support\Arr;
+use App\Models\SeApropriacao;
+use App\Models\SeStatusLog;
+use App\Models\SolicitacaoEntregaItem;
 
 class ContratoController extends AppBaseController
 {
@@ -184,17 +190,17 @@ class ContratoController extends AppBaseController
         $pendencias = ContratoItemModificacao::whereHas('item', function ($itens) use ($id) {
             return $itens->where('contrato_id', $id)->where('pendente', true);
         })
-        ->where('contrato_status_id', ContratoStatus::EM_APROVACAO)
-        ->get()
-        ->map(function ($pendencia) {
-            $pendencia->workflow = WorkflowAprovacaoRepository::verificaAprovacoes(
-                'ContratoItemModificacao',
-                $pendencia->id,
-                auth()->user()
-            );
+            ->where('contrato_status_id', ContratoStatus::EM_APROVACAO)
+            ->get()
+            ->map(function ($pendencia) {
+                $pendencia->workflow = WorkflowAprovacaoRepository::verificaAprovacoes(
+                    'ContratoItemModificacao',
+                    $pendencia->id,
+                    auth()->user()
+                );
 
-            return $pendencia;
-        });
+                return $pendencia;
+            });
 
         $status = $contrato->status->nome;
 
@@ -207,19 +213,19 @@ class ContratoController extends AppBaseController
         $iss = Cnae::$iss;
 
         return view('contratos.show', compact(
-                'isEmAprovacao',
-                'contrato',
-                'orcamentoInicial',
-                'itens',
-                'workflowAprovacao',
-                'motivos',
-                'aprovado',
-                'pendencias',
-                'alcadas_count',
-                'avaliado_reprovado',
-                'status',
-                'fornecedor',
-                'iss'
+            'isEmAprovacao',
+            'contrato',
+            'orcamentoInicial',
+            'itens',
+            'workflowAprovacao',
+            'motivos',
+            'aprovado',
+            'pendencias',
+            'alcadas_count',
+            'avaliado_reprovado',
+            'status',
+            'fornecedor',
+            'iss'
         ));
     }
 
@@ -446,7 +452,7 @@ class ContratoController extends AppBaseController
     }
 
     public function atualizarValorSave(AtualizarValorRequest $request,
-                                       ContratoItemModificacaoRepository $contratoItemModificacaoRepository)
+        ContratoItemModificacaoRepository $contratoItemModificacaoRepository)
     {
         $reajustes =  $contratoItemModificacaoRepository->reajusteFornecedor($request->fornecedor_id, $request->obra_id, $request->valor_unitario);
         if (count($reajustes)) {
@@ -484,8 +490,78 @@ class ContratoController extends AppBaseController
         );
     }
 
-    public function solicitarEntregaSave(Request $request)
+    public function solicitarEntregaSave(Request $request, $contrato_id)
     {
-        dd($request->all());
+        $solicitacao = collect($request->solicitacao);
+
+        DB::beginTransaction();
+        try {
+            $solicitacaoEntrega = SolicitacaoEntrega::create([
+                'contrato_id' => $contrato_id,
+                'user_id' => auth()->id(),
+                'se_status_id' => SeStatus::EM_APROVACAO,
+                'valor_total' => 0
+            ]);
+
+            SeStatusLog::create([
+                'se_status_id' => SeStatus::EM_APROVACAO,
+                'user_id' => auth()->id(),
+                'solicitacao_entrega_id' => $solicitacaoEntrega->id,
+            ]);
+
+            $solicitacao
+                ->groupBy('contrato_item_id')
+                ->each(function($solicitacao, $contrato_id) use($solicitacaoEntrega) {
+                    $contratoItem = ContratoItem::find($contrato_id);
+
+                    if(!in_array($contratoItem->insumo_id, [34007, 30019])) {
+                        $solicitacaoEntregaItem = SolicitacaoEntregaItem::create([
+                            'solicitacao_entrega_id' => $solicitacaoEntrega->id,
+                            'contrato_item_id'       => $contrato_id,
+                            'insumo_id'              => $contratoItem->insumo_id,
+                            'qtd'                    => $solicitacao->sum('qtd'),
+                            'valor_unitario'         => $contratoItem->valor_unitario,
+                            'valor_total'            => $contratoItem->valor_unitario * $solicitacao->sum('qtd'),
+                        ]);
+
+                        $solicitacao->map(function($apropriacao) use ($solicitacaoEntregaItem) {
+                            return SeApropriacao::create([
+                                'contrato_item_apropriacao_id' => $apropriacao['apropriacao'],
+                                'solicitacao_entrega_item_id' => $solicitacaoEntregaItem->id,
+                                'qtd' => $apropriacao['qtd']
+                            ]);
+                        });
+                    } else {
+                        $solicitacao->map(function($solicitacao) use ($contratoItem) {
+                            $solicitacaoEntregaItem = SolicitacaoEntregaItem::create([
+                                'solicitacao_entrega_id' => $solicitacaoEntrega->id,
+                                'contrato_item_id'       => $contraoItem->id,
+                                'insumo_id'              => $contraotItem->insumo_id,
+                                'qtd'                    => $solicitacao['qtd'],
+                                'valor_unitario'         => $solicitacao['valor_unitario'],
+                                'valor_total'            => $solicitacao['valor_unitario'] * $solicitacao['qtd'],
+                            ]);
+
+                            return SeApropriacao::create([
+                                'contrato_item_apropriacao_id' => $apropriacao['apropriacao'],
+                                'solicitacao_entrega_item_id' => $solicitacaoEntregaItem->id,
+                                'qtd' => $apropriacao['qtd']
+                            ]);
+                        });
+
+                    }
+
+                });
+
+        } catch (Exception $e) {
+            DB::rollback();
+            throw $e;
+        }
+
+        DB::commit();
+
+        return response()->json([
+            'success' => true
+        ]);
     }
 }

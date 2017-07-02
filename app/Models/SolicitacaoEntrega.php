@@ -13,6 +13,7 @@ class SolicitacaoEntrega extends Model
         'user_id',
         'valor_total',
         'habilita_faturamento',
+        'se_status_id'
     ];
 
     /**
@@ -21,10 +22,10 @@ class SolicitacaoEntrega extends Model
      * @var array
      */
     protected $casts = [
-        'id' => 'integer',
-        'user_id' => 'integer',
-        'contrato_id' => 'integer',
-        'valor_total' => 'float',
+        'id'                   => 'integer',
+        'user_id'              => 'integer',
+        'contrato_id'          => 'integer',
+        'valor_total'          => 'float',
         'habilita_faturamento' => 'boolean'
     ];
 

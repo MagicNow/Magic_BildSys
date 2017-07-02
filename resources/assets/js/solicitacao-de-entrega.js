@@ -21,24 +21,22 @@ var SolicitacaoDeEntrega = {
   init: function() {
     this.tables = $('.js-table-container');
     this.totalContainer = $('#total-container');
+    this.btnFinalizar = $('#finalizar');
 
     this.tables.on(mixInputEvents, '.js-qtd', this.valueChangeHandler.bind(this));
+    this.btnFinalizar.on('click', this.save.bind(this));
   },
 
   valueChangeHandler: function(event) {
     var input = $(event.currentTarget);
-    var container = input.parents('.js-table-container');
-    var total = input.parents('tr:first').find('.js-total');
-    var qtd = this.getQtd(input, event.validate);
-    var valuePerUnit = parseFloat(input.data('value-per-unit'));
-    var value = qtd * valuePerUnit;
 
-    if (event.updateApropriacoes !== false) {
-      this.updateApropriacoes(input);
-    }
+    this.updateApropriacoes(input);
+    this.updateInputTotal(input);
+    this.updateTotal(input);
+  },
 
-    total.data('value', value);
-    total.prop('innerText', floatToMoney(value));
+  updateTotal: function(input) {
+    var container = input.parents('.js-table-container:first');
 
     var totals = _(container.find('.js-total'))
       .map(function(el) {
@@ -50,19 +48,27 @@ var SolicitacaoDeEntrega = {
     this.totalContainer.text(
       floatToMoney(totals)
     );
+
+    return totals;
+  },
+
+  updateInputTotal: function(input) {
+    var valuePerUnit = parseFloat(input.data('value-per-unit'));
+    var qtd = this.getQtd(input, event.validate);
+    var value = qtd * valuePerUnit;
+    var total = input.parents('tr:first').find('.js-total');
+
+    total.data('value', value);
+    total.prop('innerText', floatToMoney(value));
   },
 
   updateApropriacoes: function(input) {
+    var _this = this;
     var apropriacoes = $('[data-apropriacao="' + input.data('apropriacao') + '"]');
-    var event = $.Event('change');
-
-    event.validate = false;
-    event.updateApropriacoes = false;
 
     apropriacoes.each(function(n, el) {
       el.value = input.val();
-
-      $(el).trigger(event);
+      _this.updateInputTotal($(el));
     });
   },
 
@@ -80,7 +86,7 @@ var SolicitacaoDeEntrega = {
 
       swal({
         title: 'Valor Inválido',
-        text: 'A quantidade solicitade não pode ser maior do que ' +
+        text: 'A quantidade solicitada não pode ser maior do que ' +
           'a quantidade contratada',
         type: 'warning'
       });
@@ -93,19 +99,74 @@ var SolicitacaoDeEntrega = {
     return qtd;
   },
 
-  updateGeneralTotal: function() {}
+  save: function(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    var inputsQtd = $('.js-qtd');
+    var selections = $('.js-selected:not(:empty)');
+
+    var qtds = _(inputsQtd)
+      .filter(function(input) {
+        return !!input.value.length && (input.value !== '0,00');
+      })
+      .map(function(input) {
+        return {
+          apropriacao: _.parseInt(input.dataset.apropriacao),
+          contrato_item_id: _.parseInt(input.dataset.contratoItem),
+          qtd: moneyToFloat(input.value)
+        };
+      })
+      .uniqBy('apropriacao')
+      .value();
+
+    var selected = _(selections)
+      .uniqBy('dataset.apropriacao')
+      .map(function(container) {
+        var trs = $(container).find('tr');
+
+        return _(trs).map(function(tr, n) {
+            var inputs = tr.querySelectorAll('input');
+
+            return _.reduce(inputs, function(selected, input) {
+              selected[input.name] = input.value;
+
+              return selected;
+            }, {
+              apropriacao: container.dataset.apropriacao,
+              contrato_item_id: container.dataset.contratoItem,
+            });
+
+          })
+          .value()
+      })
+      .flatten()
+      .value();
+
+    var data = _.flatten([selected, qtds]);
+
+    startLoading();
+    $.post(location.href, {solicitacao: data})
+      .always(stopLoading)
+      .done(function() {
+        swal('Solicitação de Entrega', 'Solicitação enviada para aprovação', 'success');
+      })
+      .fail(function() {
+        swal('Solicitação de Entrega', 'Ocorreu um erro ao realizar esta ação', 'error');
+      });
+  }
 };
 
 var ModalSelecionarInsumo = {
   init: function() {
-    var _this = this;
-    this.modal = $('#modal-selecionar-insumos');
-    this.listaDeTroca = $('#lista-de-troca');
-    this.table = this.listaDeTroca.find('table:first');
-    this.selectInsumo = this.createInsumoSelector();
-    this.inputQtd = $('#qtd_total');
-    this.btnSaveSelectedInsumos = $('#save-selected-insumos');
-    this.btnClearSelectedInsumos = $('#clear-selected-insumos');
+    var _this                    = this;
+    this.modal                   = $('#modal-selecionar-insumos');
+    this.listaDeTroca            = $('#lista-de-troca');
+    this.table                   = this.listaDeTroca.find('table:first');
+    this.selectInsumo            = this.createInsumoSelector();
+    this.inputQtd                = $('#qtd_total');
+    this.inputValorUnitario      = $('#valor_unitario');
+    this.btnSaveSelectedInsumos  = $('#save-selected-insumos');
 
     $body.on('click', '.js-selecionar-insumo', function(event) {
       var button = $(event.currentTarget);
@@ -121,7 +182,6 @@ var ModalSelecionarInsumo = {
       .on('click', '.js-remove-row', this.removeInsumo.bind(this));
 
     this.btnSaveSelectedInsumos.on('click', this.save.bind(this));
-    this.btnClearSelectedInsumos.on('click', this.clear.bind(this));
 
     this.createSolicitarInsumoButton();
     this.handleAddButton();
@@ -132,8 +192,7 @@ var ModalSelecionarInsumo = {
     var selectInsumo = select2('#insumo_id', {
       url: '/buscar/insumos',
       filter: function(item) {
-        var button = _this.lastClickedButton();
-        var insumos = button.data('insumos') || [];
+        var insumos = _this.getSelectedInsumos();
 
         return !insumos.includes(item.id);
       }
@@ -143,7 +202,7 @@ var ModalSelecionarInsumo = {
   },
 
   getSelectedInsumos: function() {
-    return _.map($('.js-added-insumo'), 'value').map(_.ary(parseInt, 1));
+    return _.map(this.modal.find('.js-added-insumo'), 'value').map(_.ary(parseInt, 1));
   },
 
   createSolicitarInsumoButton: function() {
@@ -192,15 +251,18 @@ var ModalSelecionarInsumo = {
 
     });
   },
-  insumoTemplate: function(insumo, qtd) {
+  insumoTemplate: function(insumo, qtd, valor_unitario) {
     return '<tr>' +
       '<td>' + insumo.codigo + '</td>' +
       '<td>' + insumo.nome + '</td>' +
       '<td>' + insumo.unidade_sigla + '</td>' +
       '<td>' + floatToMoney(qtd, '') + '</td>' +
+      '<td>' + floatToMoney(valor_unitario) + '</td>' +
+      '<td class="js-selected-total" data-value="' + (valor_unitario * qtd) + '">' + floatToMoney(valor_unitario * qtd) + '</td>' +
       '<td>' +
       '<input class="js-added-insumo" type="hidden" name="insumo" value="' + insumo.id + '">' +
-      '<input type="hidden" name="qtd_total" value="' + qtd + '">' +
+      '<input type="hidden" name="qtd" value="' + qtd + '">' +
+      '<input type="hidden" name="valor_unitario" value="' + valor_unitario + '">' +
       '<button class="js-remove-row btn btn-xs btn-flat btn-danger">' +
       '<i class="fa fa-trash fa-fw"></i>' +
       '</button>' +
@@ -213,6 +275,7 @@ var ModalSelecionarInsumo = {
     var button = _this.lastClickedButton();
     var insumo_id = this.selectInsumo.val();
     var qtd = moneyToFloat(this.inputQtd.val());
+    var valor_unitario = moneyToFloat(this.inputValorUnitario.val());
 
     // Só pra evitar cagada
     if (!button) {
@@ -226,7 +289,8 @@ var ModalSelecionarInsumo = {
       .done(function(insumo) {
         button.data('insumos', _this.getSelectedInsumos());
 
-        var row = $(_this.insumoTemplate(insumo, qtd));
+        var row = $(_this.insumoTemplate(insumo, qtd, valor_unitario));
+
         _this.table.find('tbody').append(row);
         _this.listaDeTroca.removeClass('hidden');
         _this.clearInputs();
@@ -251,9 +315,12 @@ var ModalSelecionarInsumo = {
     this.selectInsumo.val(null).trigger('change');
     this.inputQtd.val('0,00');
     this.inputQtd.blur();
+    this.inputValorUnitario.val('0,00');
+    this.inputValorUnitario.blur();
   },
 
   onModalClose: function() {
+    this.save();
     this.clearSelectedInsumos();
     this.clearInputs();
   },
@@ -269,7 +336,7 @@ var ModalSelecionarInsumo = {
     var button = this.lastClickedButton();
     var insumos_html = button.data('insumos_html');
 
-    if (insumos_html) {
+    if (insumos_html && insumos_html.trim()) {
       this.table.find('tbody').html(insumos_html);
       this.listaDeTroca.removeClass('hidden');
     }
@@ -288,65 +355,48 @@ var ModalSelecionarInsumo = {
       this.listaDeTroca.addClass('hidden');
     }
 
+    var total = _(this.table.find('.js-selected-total'))
+      .map(function(el) {
+        return parseFloat(el.dataset.value);
+      })
+      .sum();
+
+    button.data('valor', total);
     button.data('insumos', this.getSelectedInsumos());
     button.data('insumos_html', this.table.find('tbody').html());
-  },
 
-  clear: function() {
-    var _this = this;
-
-    if(!this.table.find('tbody > tr').size()) {
-      swal('Selecionar Insumos', 'Lista de insumos vazia!', 'warning');
-
-      return false;
-    }
-
-    swal({
-        title: 'Limpar seleção',
-        text: 'Tem certeza que deseja limpar a seleção de insumos?',
-        type: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Limpar Seleção',
-        cancelButtonText: 'Cancelar',
-        closeOnConfirm: true,
-        confirmButtonColor: '#7ED32C'
-      },
-      function() {
-        var button = _this.lastClickedButton();
-
-        button.data('insumos', []);
-        button.data('insumos_html', '');
-        button.removeClass('btn-success').addClass('btn-primary');
-
-        button.text('Slecionar Insumos');
-
-        _this.mirror(button);
-
-        _this.modal.modal('hide');
-      }
-    );
-
+    SolicitacaoDeEntrega.updateTotal(button);
   },
 
   save: function() {
     var button = this.lastClickedButton();
     var rows = this.table.find('tbody > tr');
 
-    if (!rows.length) {
-      swal('Selecionar Insumos', 'Lista de insumos vazia!', 'warning');
+    var total = _(this.table.find('.js-selected-total'))
+      .map(function(el) {
+        return parseFloat(el.dataset.value);
+      })
+      .sum();
 
-      return false;
-    }
+    button.parents('tr:first')
+      .find('.js-total')
+      .data('value', total)
+      .text(floatToMoney(total));
 
-    button.removeClass('btn-primary').addClass('btn-success');
+    button.toggleClass('btn-primary', !rows.length);
+    button.toggleClass('btn-success', !!rows.length);
 
     $('[data-apropriacao="' + button.data('apropriacao') + '"].js-selected')
       .html(button.data('insumos_html'));
 
-    button.text('Visualizar Insumos');
+    button.text(rows.length ? 'Visualizar Insumos' : 'Selecionar Insumos');
+
+    var totals = SolicitacaoDeEntrega.updateTotal(button);
+
+    button.prop('title', 'Total: ' + floatToMoney(totals))
+    button.tooltip();
 
     this.mirror(button);
-
     this.modal.modal('hide');
   }
 }

@@ -55,7 +55,9 @@
         <div class="panel-footer">
             <div class="row">
                 <div class="col-sm-12">
-                    <button type="submit" class="btn btn-flat btn-info pull-right">
+                    <button type="submit"
+                        class="btn btn-flat btn-info pull-right"
+                        id="finalizar">
                         Finalizar
                     </button>
                     <div class="col-sm-3 pull-right h4 text-right">

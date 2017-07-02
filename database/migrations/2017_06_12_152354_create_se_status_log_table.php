@@ -26,7 +26,8 @@ class CreateSeStatusLogTable extends Migration
 
             $table->foreign('solicitacao_entrega_id')
                 ->references('id')
-                ->on('solicitacao_entregas');
+                ->on('solicitacao_entregas')
+                ->onDelete('cascade');
         });
     }
 

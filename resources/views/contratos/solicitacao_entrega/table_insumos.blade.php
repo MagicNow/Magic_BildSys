@@ -50,33 +50,12 @@
                                     <td>{{ $apropriacao->insumo->unidade_sigla }}</td>
                                     <td>{{ float_to_money($apropriacao->qtd, '') }}</td>
                                     <td>{{ float_to_money($item->valor_unitario) }}</td>
-                                    @if($apropriacao->insumo->codigo === '34007')
-                                        <td colspan="2">
-                                            <button
-                                                type="button"
-                                                data-apropriacao="{{
-                                                    $apropriacao->id
-                                                }}"
-                                                class="btn btn-flat btn-block
-                                                btn-primary js-selecionar-insumo
-                                                btn-sm">
-                                                Selecionar Insumo
-                                            </button>
-                                            <div data-apropriacao="{{ $apropriacao->id }}" class="hidden js-selected"></div>
-                                        </td>
-                                    @else
-                                        <td>
-                                            <input type="text"
-                                            class="form-control money js-qtd"
-                                            value"0,00"
-                                            data-apropriacao="{{ $apropriacao->id }}"
-                                            data-value-per-unit="{{ $item->valor_unitario }}"
-                                            data-qtd-max="{{ $apropriacao->qtd }}">
-                                        </td>
-                                        <td class="js-total">
-                                            R$ 0,00
-                                        </td>
-                                    @endif
+                                    <td>
+                                        @include('contratos.solicitacao_entrega.apropriacao_actions')
+                                    </td>
+                                    <td class="js-total">
+                                        R$ 0,00
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
