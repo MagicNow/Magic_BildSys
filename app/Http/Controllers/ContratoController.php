@@ -41,12 +41,7 @@ use App\Repositories\ContratoItemApropriacaoRepository;
 use App\Models\WorkflowAlcada;
 use App\Models\ContratoItemApropriacao;
 use App\Models\Cnae;
-use App\Models\SolicitacaoEntrega;
-use App\Models\SeStatus;
-use Illuminate\Support\Arr;
-use App\Models\SeApropriacao;
-use App\Models\SeStatusLog;
-use App\Models\SolicitacaoEntregaItem;
+use App\Repositories\SolicitacaoEntregaRepository;
 
 class ContratoController extends AppBaseController
 {
@@ -490,75 +485,14 @@ class ContratoController extends AppBaseController
         );
     }
 
-    public function solicitarEntregaSave(Request $request, $contrato_id)
-    {
-        $solicitacao = collect($request->solicitacao);
-
-        DB::beginTransaction();
-        try {
-            $solicitacaoEntrega = SolicitacaoEntrega::create([
-                'contrato_id' => $contrato_id,
-                'user_id' => auth()->id(),
-                'se_status_id' => SeStatus::EM_APROVACAO,
-                'valor_total' => 0
-            ]);
-
-            SeStatusLog::create([
-                'se_status_id' => SeStatus::EM_APROVACAO,
-                'user_id' => auth()->id(),
-                'solicitacao_entrega_id' => $solicitacaoEntrega->id,
-            ]);
-
-            $solicitacao
-                ->groupBy('contrato_item_id')
-                ->each(function($solicitacao, $contrato_id) use($solicitacaoEntrega) {
-                    $contratoItem = ContratoItem::find($contrato_id);
-
-                    if(!in_array($contratoItem->insumo_id, [34007, 30019])) {
-                        $solicitacaoEntregaItem = SolicitacaoEntregaItem::create([
-                            'solicitacao_entrega_id' => $solicitacaoEntrega->id,
-                            'contrato_item_id'       => $contrato_id,
-                            'insumo_id'              => $contratoItem->insumo_id,
-                            'qtd'                    => $solicitacao->sum('qtd'),
-                            'valor_unitario'         => $contratoItem->valor_unitario,
-                            'valor_total'            => $contratoItem->valor_unitario * $solicitacao->sum('qtd'),
-                        ]);
-
-                        $solicitacao->map(function($apropriacao) use ($solicitacaoEntregaItem) {
-                            return SeApropriacao::create([
-                                'contrato_item_apropriacao_id' => $apropriacao['apropriacao'],
-                                'solicitacao_entrega_item_id' => $solicitacaoEntregaItem->id,
-                                'qtd' => $apropriacao['qtd']
-                            ]);
-                        });
-                    } else {
-                        $solicitacao->map(function($solicitacao) use ($contratoItem) {
-                            $solicitacaoEntregaItem = SolicitacaoEntregaItem::create([
-                                'solicitacao_entrega_id' => $solicitacaoEntrega->id,
-                                'contrato_item_id'       => $contraoItem->id,
-                                'insumo_id'              => $contraotItem->insumo_id,
-                                'qtd'                    => $solicitacao['qtd'],
-                                'valor_unitario'         => $solicitacao['valor_unitario'],
-                                'valor_total'            => $solicitacao['valor_unitario'] * $solicitacao['qtd'],
-                            ]);
-
-                            return SeApropriacao::create([
-                                'contrato_item_apropriacao_id' => $apropriacao['apropriacao'],
-                                'solicitacao_entrega_item_id' => $solicitacaoEntregaItem->id,
-                                'qtd' => $apropriacao['qtd']
-                            ]);
-                        });
-
-                    }
-
-                });
-
-        } catch (Exception $e) {
-            DB::rollback();
-            throw $e;
-        }
-
-        DB::commit();
+    public function solicitarEntregaSave(
+        Request $request,
+        SolicitacaoEntregaRepository $repository,
+        $contrato_id
+    ) {
+        $input = $request->all();
+        $input['contrato_id'] = $contrato_id;
+        $solicitacao = $repository->create($input);
 
         return response()->json([
             'success' => true

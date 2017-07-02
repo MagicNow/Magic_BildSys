@@ -149,7 +149,13 @@ var SolicitacaoDeEntrega = {
     $.post(location.href, {solicitacao: data})
       .always(stopLoading)
       .done(function() {
-        swal('Solicitação de Entrega', 'Solicitação enviada para aprovação', 'success');
+        swal({
+          title: 'Solicitação de Entrega',
+          text: 'Solicitação enviada para aprovação',
+          type: 'success'
+        }, function() {
+          location.href = location.href.replace('/solicitar-entrega', '');
+        });
       })
       .fail(function() {
         swal('Solicitação de Entrega', 'Ocorreu um erro ao realizar esta ação', 'error');
