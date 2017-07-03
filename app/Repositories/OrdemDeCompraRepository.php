@@ -124,7 +124,7 @@ class OrdemDeCompraRepository extends BaseRepository
     
     public static function valorComprometidoAGastarItem($grupo_id, $subgrupo1_id, $subgrupo2_id, $subgrupo3_id, $servico_id, $insumo_id)
     {
-        $valor_comprometido_a_gastar = ContratoItemApropriacao::select([
+        $valores_comprometido_a_gastar = ContratoItemApropriacao::select([
             'contrato_item_apropriacoes.id',
             DB::raw('(contrato_item_apropriacoes.qtd * contrato_itens.valor_unitario) as valor_comprometido_a_gastar')
             ])
@@ -135,14 +135,41 @@ class OrdemDeCompraRepository extends BaseRepository
             ->where('contrato_item_apropriacoes.subgrupo2_id', $subgrupo2_id)
             ->where('contrato_item_apropriacoes.subgrupo3_id', $subgrupo3_id)
             ->where('contrato_item_apropriacoes.servico_id', $servico_id)
-            ->first();
-        
-        if($valor_comprometido_a_gastar){
-            $valor_comprometido_a_gastar = $valor_comprometido_a_gastar->valor_comprometido_a_gastar;
-        } else {
-            $valor_comprometido_a_gastar = 0;
+            ->get();
+
+        $valor_comprometido_a_gastar = 0;
+
+        if(count($valores_comprometido_a_gastar)){
+            foreach ($valores_comprometido_a_gastar as $valor) {
+                $valor_comprometido_a_gastar += $valor->valor_comprometido_a_gastar;
+            }
         }
 
         return $valor_comprometido_a_gastar;
+    }
+
+    public static function qtdComprometidaAGastarItem($grupo_id, $subgrupo1_id, $subgrupo2_id, $subgrupo3_id, $servico_id, $insumo_id)
+    {
+        $qtds_comprometida_a_gastar = ContratoItemApropriacao::select([
+            'contrato_item_apropriacoes.id',
+            'contrato_item_apropriacoes.qtd'
+        ])
+            ->where('contrato_item_apropriacoes.insumo_id', $insumo_id)
+            ->where('contrato_item_apropriacoes.grupo_id', $grupo_id)
+            ->where('contrato_item_apropriacoes.subgrupo1_id', $subgrupo1_id)
+            ->where('contrato_item_apropriacoes.subgrupo2_id', $subgrupo2_id)
+            ->where('contrato_item_apropriacoes.subgrupo3_id', $subgrupo3_id)
+            ->where('contrato_item_apropriacoes.servico_id', $servico_id)
+            ->get();
+
+        $qtd_comprometida_a_gastar = 0;
+
+        if(count($qtds_comprometida_a_gastar)){
+            foreach ($qtds_comprometida_a_gastar as $valor) {
+                $qtd_comprometida_a_gastar += $valor->qtd;
+            }
+        }
+
+        return $qtd_comprometida_a_gastar;
     }
 }

@@ -415,7 +415,7 @@
                                                 <th class="text-center">Valor previsto no orçamento</th>
                                                 <th class="text-center">Qtd. comprometida realizada</th>
                                                 <th class="text-center">Valor comprometido realizado</th>
-                                                <th class="text-center">Qtd. compremetida à gastar</th>
+                                                <th class="text-center">Qtd. comprometida à gastar</th>
                                                 <th class="text-center">Valor comprometido à gastar</th>
                                             </tr>
                                             </thead>
@@ -432,11 +432,11 @@
                                                     {{ number_format( doubleval($item->valor_realizado), 2, ',','.') }}
                                                 </td>
                                                 <td class="text-center">
-                                                    {{ number_format(doubleval($item->qtd_comprometida_a_gastar), 2, ',','.') }}
+                                                    {{ number_format(doubleval(\App\Repositories\OrdemDeCompraRepository::qtdComprometidaAGastarItem($item->grupo_id, $item->subgrupo1_id, $item->subgrupo2_id, $item->subgrupo3_id, $item->servico_id, $item->insumo_id)), 2, ',','.') }}
                                                 </td>
                                                 <td class="text-center">
                                                     <small class="pull-left">R$</small>
-                                                    {{ number_format(doubleval($item->valor_comprometido_a_gastar), 2, ',','.') }}
+                                                    {{ number_format(doubleval(\App\Repositories\OrdemDeCompraRepository::valorComprometidoAGastarItem($item->grupo_id, $item->subgrupo1_id, $item->subgrupo2_id, $item->subgrupo3_id, $item->servico_id, $item->insumo_id)), 2, ',','.') }}
                                                 </td>
                                             </tr>
                                             </tbody>
