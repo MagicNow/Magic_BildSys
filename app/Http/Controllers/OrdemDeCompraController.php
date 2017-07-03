@@ -1280,7 +1280,7 @@ class OrdemDeCompraController extends AppBaseController
             ->where('ordem_de_compra_itens.obra_id', $obra_id)
             ->whereIn('oc_status_id',[2,3,5]);
 
-        $orcamentoInicial = $totalAGastar = $realizado = $totalSolicitado = 0;
+        $orcamentoInicial = $valor_comprometido_a_gastar = $realizado = $totalSolicitado = 0;
 
         $itens = collect([]);
 
@@ -1290,10 +1290,15 @@ class OrdemDeCompraController extends AppBaseController
             return back();
         }
 
-        $orcamentoInicial = Orcamento::where('servico_id', $servico_id)
+        $orcamentos = Orcamento::where('servico_id', $servico_id)
             ->where('obra_id', $obra_id)
-            ->where('ativo', 1)
-            ->sum('orcamentos.preco_total');
+            ->where('ativo', 1);
+
+        foreach($orcamentos->get() as $orcamento) {
+            $valor_comprometido_a_gastar += OrdemDeCompraRepository::valorComprometidoAGastarItem($orcamento->grupo_id, $orcamento->subgrupo1_id, $orcamento->subgrupo2_id, $orcamento->subgrupo3_id, $orcamento->servico_id, $orcamento->insumo_id);
+        }
+
+        $orcamentoInicial = $orcamentos->sum('orcamentos.preco_total');
 
         $totalSolicitado = $ordemDeCompraItens->sum('valor_total');
 
@@ -1311,7 +1316,7 @@ class OrdemDeCompraController extends AppBaseController
                 'ordemDeCompra',
                 'orcamentoInicial',
                 'realizado',
-                'totalAGastar',
+                'valor_comprometido_a_gastar',
                 'saldo',
                 'itens',
                 'servico',
