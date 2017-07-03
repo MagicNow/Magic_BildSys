@@ -302,7 +302,7 @@
                             {{--@php $saldo_valor_orcamento = $farol_saldo_valor_orcamento = - doubleval($item->valor_total); @endphp--}}
                         {{--@else--}}
                             @php $saldo_valor_orcamento = $item->substitui ? $item->valor_previsto_orcamento_pai-doubleval($item->valor_realizado) : $item->preco_inicial-doubleval($item->valor_realizado); @endphp
-                            @php $farol_saldo_valor_orcamento = $item->substitui ? 0-doubleval($item->valor_realizado) : $saldo_valor_orcamento - doubleval($item->valor_total); @endphp
+                            @php $farol_saldo_valor_orcamento = $item->substitui ? 0-doubleval($item->valor_total) : $saldo_valor_orcamento - doubleval($item->valor_total); @endphp
                         {{--@endif--}}
                         <tr>
                             <td class="text-center">
