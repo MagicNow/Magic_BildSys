@@ -47,7 +47,8 @@ var paths = {
     'jquery_maskmoney':  vendors + '/jquery-maskmoney/dist/',
     'slugify':  vendors + '/slug/',
     'slim_scroll':  vendors + '/jquery-slimscroll/',
-    'querystring':  vendors + '/querystring/'
+    'querystring':  vendors + '/querystring/',
+    'html5sortable':  vendors + '/html5sortable/dist/'
 };
 
 elixir.config.sourcemaps = false;
@@ -189,6 +190,7 @@ elixir(function(mix) {
         paths.slugify + 'slug.js',
         paths.slim_scroll + 'jquery.slimscroll.js',
         paths.querystring + 'querystring.min.js',
+        paths.html5sortable + 'html.sortable.js',
         // paths.vue + 'vue.js',
         // paths.vue_resource + 'vue-resource.js',
         'bootstrap-dataTables-paging.js',

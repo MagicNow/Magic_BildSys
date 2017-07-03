@@ -411,6 +411,8 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
 ##### SITE #####
 $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($router) {
 
+    $router->resource('memoriaCalculos', 'MemoriaCalculoController');
+
     // Perfil
     $router->get('/perfil', 'PerfilController@index');
     $router->post('/perfil', 'PerfilController@save');
@@ -837,11 +839,3 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         dd($insumos);
     });
 });
-
-
-
-
-
-
-
-Route::resource('memoriaCalculos', 'MemoriaCalculoController');

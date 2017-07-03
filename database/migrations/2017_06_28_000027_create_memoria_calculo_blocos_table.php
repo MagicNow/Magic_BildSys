@@ -22,6 +22,7 @@ class CreateMemoriaCalculoBlocosTable extends Migration
             $table->unsignedInteger('estrutura');
             $table->unsignedInteger('pavimento');
             $table->unsignedInteger('trecho');
+            $table->unsignedInteger('ordem')->default('0');
 
 
             $table->foreign('estrutura')
