@@ -58,7 +58,7 @@ class DetalhesServicosDataTable extends DataTable
                 if($obj->substitui){
                     return "<strong  data-toggle=\"tooltip\" data-placement=\"top\" data-html=\"true\"
                     title=\"". '<i class=\'fa fa-exchange\'></i> ' . $obj->substitui . "\">
-                    $obj->descricao
+                    $obj->descricao <button type=\"button\" class=\"btn btn-info btn-flat btn-xs\"> <i class=\"fa fa-exchange\"></i> </button>
                     </strong>";
                 } else {
                     return $obj->descricao;
