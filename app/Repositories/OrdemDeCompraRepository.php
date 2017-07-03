@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Models\ContratoItemApropriacao;
 use App\Models\OrdemDeCompra;
 use App\Models\OrdemDeCompraItem;
 use Illuminate\Support\Facades\DB;
@@ -102,21 +103,45 @@ class OrdemDeCompraRepository extends BaseRepository
 
     public static function valorComprometidoAGastar($ordem_de_compra_id)
     {
-        $valor_comprometido_a_gastar = OrdemDeCompraItem::select([
+        $valor_comprometido_a_gastar = ContratoItemApropriacao::select([
             'contrato_item_apropriacoes.qtd',
             'contrato_itens.valor_unitario'
             ])
             ->where('ordem_de_compra_id', $ordem_de_compra_id)
-            ->join('contrato_item_apropriacoes', function ($join) {
-                $join->on('contrato_item_apropriacoes.insumo_id', '=', 'ordem_de_compra_itens.insumo_id');
-                $join->on('contrato_item_apropriacoes.grupo_id', '=', 'ordem_de_compra_itens.grupo_id');
-                $join->on('contrato_item_apropriacoes.subgrupo1_id', '=', 'ordem_de_compra_itens.subgrupo1_id');
-                $join->on('contrato_item_apropriacoes.subgrupo2_id', '=', 'ordem_de_compra_itens.subgrupo2_id');
-                $join->on('contrato_item_apropriacoes.subgrupo3_id', '=', 'ordem_de_compra_itens.subgrupo3_id');
-                $join->on('contrato_item_apropriacoes.servico_id', '=', 'ordem_de_compra_itens.servico_id');
+            ->join('ordem_de_compra_itens', function ($join) {
+                $join->on('ordem_de_compra_itens.insumo_id', '=', 'contrato_item_apropriacoes.insumo_id');
+                $join->on('ordem_de_compra_itens.grupo_id', '=', 'contrato_item_apropriacoes.grupo_id');
+                $join->on('ordem_de_compra_itens.subgrupo1_id', '=', 'contrato_item_apropriacoes.subgrupo1_id');
+                $join->on('ordem_de_compra_itens.subgrupo2_id', '=', 'contrato_item_apropriacoes.subgrupo2_id');
+                $join->on('ordem_de_compra_itens.subgrupo3_id', '=', 'contrato_item_apropriacoes.subgrupo3_id');
+                $join->on('ordem_de_compra_itens.servico_id', '=', 'contrato_item_apropriacoes.servico_id');
             })
             ->join('contrato_itens', 'contrato_itens.id' ,'=', 'contrato_item_apropriacoes.contrato_item_id')
             ->sum(DB::raw('contrato_item_apropriacoes.qtd * contrato_itens.valor_unitario'));
+
+        return $valor_comprometido_a_gastar;
+    }
+    
+    public static function valorComprometidoAGastarItem($grupo_id, $subgrupo1_id, $subgrupo2_id, $subgrupo3_id, $servico_id, $insumo_id)
+    {
+        $valor_comprometido_a_gastar = ContratoItemApropriacao::select([
+            'contrato_item_apropriacoes.id',
+            DB::raw('(contrato_item_apropriacoes.qtd * contrato_itens.valor_unitario) as valor_comprometido_a_gastar')
+            ])
+            ->join('contrato_itens', 'contrato_itens.id' ,'=', 'contrato_item_apropriacoes.contrato_item_id')
+            ->where('contrato_item_apropriacoes.insumo_id', $insumo_id)
+            ->where('contrato_item_apropriacoes.grupo_id', $grupo_id)
+            ->where('contrato_item_apropriacoes.subgrupo1_id', $subgrupo1_id)
+            ->where('contrato_item_apropriacoes.subgrupo2_id', $subgrupo2_id)
+            ->where('contrato_item_apropriacoes.subgrupo3_id', $subgrupo3_id)
+            ->where('contrato_item_apropriacoes.servico_id', $servico_id)
+            ->first();
+        
+        if($valor_comprometido_a_gastar){
+            $valor_comprometido_a_gastar = $valor_comprometido_a_gastar->valor_comprometido_a_gastar;
+        } else {
+            $valor_comprometido_a_gastar = 0;
+        }
 
         return $valor_comprometido_a_gastar;
     }

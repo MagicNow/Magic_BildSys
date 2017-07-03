@@ -27,11 +27,8 @@ class DetalhesServicosDataTable extends DataTable
                 return '<small class="pull-left">R$</small>'.number_format( doubleval($obj->valor_realizado), 2, ',','.');
             })
             ->editColumn('valor_comprometido_a_gastar', function($obj){
-                if($obj->oc_id) {
-                    $valor_comprometido_a_gastar = OrdemDeCompraRepository::valorComprometidoAGastar($obj->oc_id);
-                } else {
-                    $valor_comprometido_a_gastar = 0;
-                }
+                $valor_comprometido_a_gastar = OrdemDeCompraRepository::valorComprometidoAGastarItem($obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, $obj->insumo_id);
+                
                 return '<small class="pull-left">R$</small>'.number_format( doubleval($valor_comprometido_a_gastar), 2, ',','.');
             })
             ->editColumn('saldo_orcamento', function($obj){
@@ -90,6 +87,12 @@ class DetalhesServicosDataTable extends DataTable
                 IF (orcamentos.insumo_incluido = 1, 0, orcamentos.preco_total) as valor_previsto
             "),
             'orcamentos.insumo_incluido',
+            'orcamentos.grupo_id',
+            'orcamentos.subgrupo1_id',
+            'orcamentos.subgrupo2_id',
+            'orcamentos.subgrupo3_id',
+            'orcamentos.servico_id',
+            'orcamentos.insumo_id',
             DB::raw('0 as valor_realizado'),
             DB::raw('orcamentos.preco_total as saldo_orcamento'),
             DB::raw("CONCAT(insumos_sub.codigo,' - ' ,insumos_sub.nome) as substitui"),
@@ -136,28 +139,7 @@ class DetalhesServicosDataTable extends DataTable
                         )
                     AND ordem_de_compra_itens.deleted_at IS NULL
                     AND ordem_de_compra_itens.servico_id = '.$this->servico_id.'
-                    AND ordem_de_compra_itens.obra_id ='. $this->obra_id .' ) as saldo_disponivel'),
-
-            DB::raw('(SELECT ordem_de_compras.id
-                    FROM ordem_de_compra_itens
-                    JOIN ordem_de_compras
-                        ON ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id
-                    WHERE ordem_de_compra_itens.insumo_id = orcamentos.insumo_id
-                    AND ordem_de_compra_itens.grupo_id = orcamentos.grupo_id
-                    AND ordem_de_compra_itens.subgrupo1_id = orcamentos.subgrupo1_id
-                    AND ordem_de_compra_itens.subgrupo2_id = orcamentos.subgrupo2_id
-                    AND ordem_de_compra_itens.subgrupo3_id = orcamentos.subgrupo3_id
-                    AND ordem_de_compra_itens.servico_id = orcamentos.servico_id
-                    AND (
-                            ordem_de_compras.oc_status_id = 2
-                            OR
-                            ordem_de_compras.oc_status_id = 3                            
-                            OR
-                            ordem_de_compras.oc_status_id = 5
-                        )
-                    AND ordem_de_compra_itens.deleted_at IS NULL
-                    AND ordem_de_compra_itens.servico_id = '.$this->servico_id.'
-                    AND ordem_de_compra_itens.obra_id ='. $this->obra_id .' ) as oc_id')
+                    AND ordem_de_compra_itens.obra_id ='. $this->obra_id .' ) as saldo_disponivel')
             ])
             ->leftJoin(DB::raw('orcamentos orcamentos_sub'),  'orcamentos_sub.id', 'orcamentos.orcamento_que_substitui')
             ->leftJoin(DB::raw('insumos insumos_sub'), 'insumos_sub.id', 'orcamentos_sub.insumo_id')
