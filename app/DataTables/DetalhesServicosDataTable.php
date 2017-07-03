@@ -4,6 +4,7 @@ namespace App\DataTables;
 
 use App\Models\Orcamento;
 use App\Models\OrdemDeCompraItem;
+use App\Repositories\OrdemDeCompraRepository;
 use Form;
 use Illuminate\Support\Facades\DB;
 use Yajra\Datatables\Services\DataTable;
@@ -25,8 +26,13 @@ class DetalhesServicosDataTable extends DataTable
             ->editColumn('valor_realizado', function($obj){
                 return '<small class="pull-left">R$</small>'.number_format( doubleval($obj->valor_realizado), 2, ',','.');
             })
-            ->editColumn('a_gastar', function($obj){
-                return '<small class="pull-left">R$</small>'.number_format( doubleval($obj->a_gastar), 2, ',','.');
+            ->editColumn('valor_comprometido_a_gastar', function($obj){
+                if($obj->oc_id) {
+                    $valor_comprometido_a_gastar = OrdemDeCompraRepository::valorComprometidoAGastar($obj->oc_id);
+                } else {
+                    $valor_comprometido_a_gastar = 0;
+                }
+                return '<small class="pull-left">R$</small>'.number_format( doubleval($valor_comprometido_a_gastar), 2, ',','.');
             })
             ->editColumn('saldo_orcamento', function($obj){
 //              Se o insumo foi incluído no orçamento, o SALDO DE ORÇAMENTO fica com o valor comprado negativo.
@@ -85,7 +91,6 @@ class DetalhesServicosDataTable extends DataTable
             "),
             'orcamentos.insumo_incluido',
             DB::raw('0 as valor_realizado'),
-            DB::raw('0 as a_gastar'),
             DB::raw('orcamentos.preco_total as saldo_orcamento'),
             DB::raw("CONCAT(insumos_sub.codigo,' - ' ,insumos_sub.nome) as substitui"),
             DB::raw('
@@ -131,8 +136,29 @@ class DetalhesServicosDataTable extends DataTable
                         )
                     AND ordem_de_compra_itens.deleted_at IS NULL
                     AND ordem_de_compra_itens.servico_id = '.$this->servico_id.'
-                    AND ordem_de_compra_itens.obra_id ='. $this->obra_id .' ) as saldo_disponivel')
-        ])
+                    AND ordem_de_compra_itens.obra_id ='. $this->obra_id .' ) as saldo_disponivel'),
+
+            DB::raw('(SELECT ordem_de_compras.id
+                    FROM ordem_de_compra_itens
+                    JOIN ordem_de_compras
+                        ON ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id
+                    WHERE ordem_de_compra_itens.insumo_id = orcamentos.insumo_id
+                    AND ordem_de_compra_itens.grupo_id = orcamentos.grupo_id
+                    AND ordem_de_compra_itens.subgrupo1_id = orcamentos.subgrupo1_id
+                    AND ordem_de_compra_itens.subgrupo2_id = orcamentos.subgrupo2_id
+                    AND ordem_de_compra_itens.subgrupo3_id = orcamentos.subgrupo3_id
+                    AND ordem_de_compra_itens.servico_id = orcamentos.servico_id
+                    AND (
+                            ordem_de_compras.oc_status_id = 2
+                            OR
+                            ordem_de_compras.oc_status_id = 3                            
+                            OR
+                            ordem_de_compras.oc_status_id = 5
+                        )
+                    AND ordem_de_compra_itens.deleted_at IS NULL
+                    AND ordem_de_compra_itens.servico_id = '.$this->servico_id.'
+                    AND ordem_de_compra_itens.obra_id ='. $this->obra_id .' ) as oc_id')
+            ])
             ->leftJoin(DB::raw('orcamentos orcamentos_sub'),  'orcamentos_sub.id', 'orcamentos.orcamento_que_substitui')
             ->leftJoin(DB::raw('insumos insumos_sub'), 'insumos_sub.id', 'orcamentos_sub.insumo_id')
             ->where('orcamentos.servico_id','=', DB::raw($this->servico_id))
@@ -205,7 +231,7 @@ class DetalhesServicosDataTable extends DataTable
             'Und_de_medida' => ['name' => 'unidade_sigla', 'data' => 'unidade_sigla'],
             'Valor_previsto_no_orçamento' => ['name' => 'orcamentos.preco_total', 'data' => 'valor_previsto', 'searchable' => false],
             'Valor_comprometido_realizado' => ['name' => 'valor_realizado', 'data' => 'valor_realizado', 'searchable' => false],
-            'Valor_comprometido_à_gastar' => ['name' => 'a_gastar', 'data' => 'a_gastar', 'searchable' => false],
+            'Valor_comprometido_à_gastar' => ['name' => 'valor_comprometido_a_gastar', 'data' => 'valor_comprometido_a_gastar', 'searchable' => false],
             'Saldo_de_orçamento' => ['name' => 'saldo_orcamento', 'data' => 'saldo_orcamento', 'searchable' => false],
             'Valor_da_Oc' => ['name' => 'valor_oc', 'data' => 'valor_oc', 'searchable' => false],
             'Saldo_disponível' => ['name' => 'saldo_disponivel', 'data' => 'saldo_disponivel', 'searchable' => false]
