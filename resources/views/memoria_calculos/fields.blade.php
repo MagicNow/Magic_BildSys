@@ -123,7 +123,19 @@
             idx = $(objeto).parent().children().index(objeto);
             item.ordem = idx;
             $('#estrutura_bloco_ordem_'+item.id).val(idx);
+            // Ordena os itens
+            arrayPavimentosOrdenada = [];
+            if(item.itens.length > 0){
+                item.itens.forEach(function (linhaPav, indicePav){
+                    objetoPav = $('#linha_'+item.id+'_'+linhaPav.id);
+                    idxPav = $(objetoPav).parent().children().index(objeto);
+                    linhaPav.ordem = idxPav;
+                    $('#pavimento_bloco_ordem_'+item.id+'_'+linhaPav.id).val(idxPav);
 
+                    arrayPavimentosOrdenada[idxPav] = linhaPav;
+                });
+            }
+            item.itens = arrayPavimentosOrdenada;
             arrayVisual[idx] = item;
         });
 
@@ -265,7 +277,8 @@
                 '<select class="form-control select2" id="pavimentos_'+bloco+'_'+pavimentosCount+'" ' +
                 ' onchange="trocaNomePavimento('+bloco+','+pavimentosCount+')" name="pavimentos['+bloco+']['+pavimentosCount+']">' +
                 pavimentos +
-                '</select>' +
+                '</select> ' +
+                ' <input type="hidden" name="pavimento_bloco_ordem['+bloco+']['+pavimentosCount+']" id="pavimento_bloco_ordem_'+bloco+'_'+pavimentosCount+'" value="">' +
                 '</div>' +
                 '<div class="col-sm-3" style="min-height: 54px; padding-top: 20px">' +
                 '<button type="button" onclick="adicionaTrecho('+bloco+','+pavimentosCount+')" class="btn btn-flat btn-warning">' +
@@ -306,9 +319,11 @@
                 '<div class="input-group">' +
                     '<span class="input-group-addon" id="trecho'+trechosCount+'">'+nomeTrecho+'</span>' +
                     '<select class="form-control select2" onchange="trocaNomeTrecho('+bloco+','+pavimento+','+trechosCount+')"  ' +
-                    ' name="trecho['+trechosCount+']" id="trecho_'+trechosCount+'">' +
+                    ' name="trecho['+bloco+']['+pavimento+']['+trechosCount+']" id="trecho_'+trechosCount+'">' +
                         trechos +
                     '</select>' +
+                    ' <input type="hidden" name="trecho_bloco_ordem['+bloco+']['+pavimento+']['+trechosCount+']" ' +
+                    ' id="trecho_bloco_ordem_'+bloco+'_'+pavimento+'_'+trechosCount+'" value="">' +
                     '<span class="input-group-btn">'+
                     '<button type="button" onclick="removeTrecho('+blocos+','+pavimento+','+trechosCount+')" title="Remover" class="btn btn-flat btn-danger">' +
                     '<i class="fa fa-times"></i> '+
