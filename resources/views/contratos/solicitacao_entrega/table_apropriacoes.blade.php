@@ -12,7 +12,7 @@
     </thead>
     <tbody>
         @foreach($apropriacoes as $apropriacao)
-            <tr>
+            <tr data-view-name="{{ $apropriacao->insumo->codigo === '30019' ? 'direto' : 'contratada' }}">
                 <td
                     data-toggle="tooltip"
                     data-container="body"

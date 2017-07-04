@@ -10,7 +10,7 @@ class SeStatus extends Model
     const REPROVADO    = 2;
     const APROVADO     = 3;
     const CANCELADO    = 4;
-    const REALIZADO    = 5;
+    const RECEBIDO     = 5;
 
     public $table = 'oc_status';
 

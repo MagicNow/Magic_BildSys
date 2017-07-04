@@ -478,6 +478,7 @@ $(function() {
     templateSelection: formatResultSelection // omitted for brevity, see the source of this page
 
   });
+
   $('#fornecedor').on('select2:select', function(e) {
     addFornecedor()
   });

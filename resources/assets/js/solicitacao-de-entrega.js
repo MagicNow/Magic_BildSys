@@ -2,6 +2,32 @@ $(function() {
   ViewChanger.init();
   SolicitacaoDeEntrega.init();
   ModalSelecionarInsumo.init();
+
+  $('.js-fornecedor-selector').on('view-changer:change', function(event) {
+    var $current = $(event.currentTarget);
+    $('#fornecedor-selector').toggleClass('hidden', $current.val() !== 'direto');
+
+  });
+
+  $('.js-view-selector').on('view-changer:change', function(event) {
+    $('.js-extra-info').each(function() {
+      if($(this).parents('tr').next().is(':visible')) {
+        this.click();
+      }
+    });
+  });
+
+  $('.js-fornecedor-selector').on('view-changer:hidden', function(event) {
+    var $current = $(event.currentTarget);
+    var $view = $('[data-view-name='+ $current.val() +']');
+
+    $view.find('input').each(function() {
+      $(this).val('').trigger('change');
+    });
+  });
+
+  var $selectFornecedor = $('#fornecedor_id');
+  select2($selectFornecedor, {url: '/buscar/fornecedores?ignore[]=' + $selectFornecedor.data('ignore')});
 });
 
 var mixInputEvents = 'input keyup blur change';
@@ -11,8 +37,29 @@ var ViewChanger = {
     var $selectors = $('.js-view-selector');
 
     $selectors.on('ifChecked', function(event) {
-      $('[data-view-name]').hide();
-      $('[data-view-name="' + event.currentTarget.value + '"]').fadeIn();
+      var $container = $(event.currentTarget.dataset.container || document.body);
+      var $current = $(event.currentTarget);
+      var $inputs = $('[name="' + event.currentTarget.name + '"]');
+
+      var hiddenInputs = _.filter($inputs.each(function(n, el) {
+        $container.find('[data-view-name="' + el.value + '"]').hide();
+      }), function(el) {
+        return el.value !== $current.val();
+      });
+
+      $container
+        .find('[data-view-name="' + event.currentTarget.value + '"]')
+        .fadeIn();
+
+      hiddenInputs.map(function(el) {
+        $(el).trigger('view-changer:hidden');
+      });
+
+      $current.trigger('view-changer:change');
+    });
+
+    $selectors.filter(':checked').each(function() {
+      $(this).trigger('ifChecked');
     });
   }
 };
@@ -105,6 +152,22 @@ var SolicitacaoDeEntrega = {
 
     var inputsQtd = $('.js-qtd');
     var selections = $('.js-selected:not(:empty)');
+    var selectedType = $('.js-fornecedor-selector:checked');
+    var fornecedor = $('#fornecedor_id');
+    var formData = {};
+
+    if(selectedType.val() === 'direto' && !fornecedor.val()) {
+      swal({
+        title: 'Solicitação de Entrega',
+        text: 'Selecione o fornecedor do faturamento direto',
+        type: 'warning'
+      }, function() {
+        fornecedor.select2('open');
+      });
+      return false;
+    }
+
+    formData.fornecedor_id = fornecedor.val();
 
     var qtds = _(inputsQtd)
       .filter(function(input) {
@@ -143,10 +206,11 @@ var SolicitacaoDeEntrega = {
       .flatten()
       .value();
 
-    var data = _.flatten([selected, qtds]);
+    formData.solicitacao = _.flatten([selected, qtds]);
 
     startLoading();
-    $.post(location.href, {solicitacao: data})
+
+    $.post(location.href, formData)
       .always(stopLoading)
       .done(function() {
         swal({
@@ -154,7 +218,7 @@ var SolicitacaoDeEntrega = {
           text: 'Solicitação enviada para aprovação',
           type: 'success'
         }, function() {
-          location.href = location.href.replace('/solicitar-entrega', '');
+          // location.href = location.href.replace('/solicitar-entrega', '');
         });
       })
       .fail(function() {

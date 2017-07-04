@@ -199,7 +199,7 @@ class ContratoController extends AppBaseController
 
         $status = $contrato->status->nome;
 
-        $isEmAprovacao = $contrato->isStatus(ContratoStatus::EM_APROVACAO);
+        $isEmAprovacao = $contrato->em_aprovacao;
 
         $itens = $isEmAprovacao
             ? $apropriacaoRepository->forContratoApproval($contrato)
@@ -446,15 +446,18 @@ class ContratoController extends AppBaseController
             ->first();
     }
 
-    public function atualizarValorSave(AtualizarValorRequest $request,
-        ContratoItemModificacaoRepository $contratoItemModificacaoRepository)
-    {
+    public function atualizarValorSave(
+        AtualizarValorRequest $request,
+        ContratoItemModificacaoRepository $contratoItemModificacaoRepository
+    ) {
         $reajustes =  $contratoItemModificacaoRepository->reajusteFornecedor($request->fornecedor_id, $request->obra_id, $request->valor_unitario);
+
         if (count($reajustes)) {
             Flash::success('Reajustes de valores criados.');
         } else {
             Flash::error('Nenhum reajuste foi criado.');
         }
+
         return redirect(route('contratos.index'));
     }
 
@@ -462,26 +465,24 @@ class ContratoController extends AppBaseController
         $contrato_id,
         ContratoItemApropriacaoRepository $apropriacaoRepository
     ) {
-        $contrato = $this->contratoRepository->find($contrato_id);
+        $contrato = $this->contratoRepository->find($contrato_id)
+            ->load('materiais.apropriacoes');
 
-        $apropriacoes = $apropriacaoRepository
-            ->fromContrato($contrato->id)
-            ->load('servico');
+        if(!$contrato->pode_solicitar_entrega) {
+            Flash::warning('Ainda não é possível realizar solicitações de entrega neste contrato');
+            return redirect()->route('contratos.show', $contrato->id);
+        }
 
-        $apropriacaoPorServico = $apropriacoes
-            ->pluck('servico')
-            ->map(function($servico) use ($apropriacoes) {
-                $servico->apropriacoes = $apropriacoes->where(
-                    'servico_id',
-                    $servico->id
-                );
+        if($contrato->materiais->isEmpty()) {
+            Flash::warning('Este contrato não contem material');
+            return redirect()->route('contratos.show', $contrato->id);
+        }
 
-                return $servico;
-            });
+        $apropriacoes = $contrato->materiais->pluck('apropriacoes')->collapse();
 
         return view(
             'contratos.solicitacao_entrega.index',
-            compact('contrato', 'apropriacoes', 'apropriacaoPorServico')
+            compact('contrato', 'apropriacoes')
         );
     }
 

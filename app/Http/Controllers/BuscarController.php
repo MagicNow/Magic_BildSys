@@ -6,6 +6,7 @@ use App\Models\Insumo;
 use App\Models\InsumoGrupo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\Fornecedor;
 
 class BuscarController extends AppBaseController
 {
@@ -43,5 +44,18 @@ class BuscarController extends AppBaseController
         $insumos = $insumos->paginate();
 
         return $insumos;
+    }
+
+    public function getFornecedores(Request $request)
+    {
+        $fornecedores = Fornecedor::select([
+            'id',
+            'nome'
+        ])
+        ->where('nome', 'like', '%'.$request->q.'%')
+        ->whereNotIn('id', $request->ignore ?: [])
+        ->paginate();
+
+        return $fornecedores;
     }
 }

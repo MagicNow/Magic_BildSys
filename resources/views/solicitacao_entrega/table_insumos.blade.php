@@ -10,8 +10,8 @@
         </tr>
     </thead>
     <tbody>
-        @foreach($contrato->materiais as $item)
-            <tr data-view-name="{{ $item->insumo->codigo === '30019' ? 'direto' : 'contratada' }}">
+        @foreach($itens as $item)
+            <tr>
                 <td>{{ $item->insumo->codigo }}</td>
                 <td>{{ $item->insumo->nome }}</td>
                 <td>{{ $item->insumo->unidade_sigla }}</td>
@@ -20,7 +20,7 @@
                 <td>
                     <button type="button"
                          title="Expandir"
-                        class="btn btn-flat btn-sm btn-warning js-extra-info"
+                        class="btn btn-flat btn-sm btn-warning"
                         onclick="showHideInfoExtra({{ $item->id }})">
                         <i id="icone-expandir{{ $item->id }}"
                             class="fa fa-caret-right fa-fw">

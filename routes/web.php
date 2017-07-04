@@ -34,6 +34,8 @@ $router->get('/buscar/insumo-grupos', 'BuscarController@getInsumoGrupos')
     ->name('buscar.insumo-grupos');
 $router->get('/buscar/insumos', 'BuscarController@getInsumos')
     ->name('buscar.insumos');
+$router->get('/buscar/fornecedores', 'BuscarController@getFornecedores')
+    ->name('buscar.fornecedores');
 
 $router->get('/admin/users/busca', 'Admin\Manage\UsersController@busca');
 $router->get('/getForeignKey', 'CodesController@getForeignKey');
@@ -713,6 +715,14 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('planejamentos/lembretes', 'PlanejamentoController@lembretes');
     $router->get('planejamentos/lembretes/salvar-data-minima', 'PlanejamentoController@lembretes');
 
+    $router->get(
+        '/solicitacoes-de-entrega/{solicitacao_entrega}',
+        'SolicitacaoEntregaController@show'
+    )
+    ->middleware('needsPermission:contratos.solicitar_entrega')
+    ->name('solicitacao-entrega.show');
+
+
     $router->group(['prefix' => 'contratos','middleware' => 'needsPermission:contratos.list'], function($router) {
         $router->get(
             '',
@@ -770,13 +780,6 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         )
         ->middleware('needsPermission:contratos.solicitar_entrega')
         ->name('contratos.solicitar-entrega');
-
-        $router->get(
-            '/solicitacao-entrega/{solicitacao_entrega}',
-            'SolicitacaoEntregaController@show'
-        )
-        ->middleware('needsPermission:contratos.solicitar_entrega')
-        ->name('contrato.solicitacao-entrega');
 
         $router->post(
             '/editar-item/{item}',

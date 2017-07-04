@@ -13,7 +13,8 @@ class SolicitacaoEntrega extends Model
         'user_id',
         'valor_total',
         'habilita_faturamento',
-        'se_status_id'
+        'se_status_id',
+        'fornecedor_id',
     ];
 
     /**
@@ -25,6 +26,7 @@ class SolicitacaoEntrega extends Model
         'id'                   => 'integer',
         'user_id'              => 'integer',
         'contrato_id'          => 'integer',
+        'fornecedor_id'        => 'integer',
         'valor_total'          => 'float',
         'habilita_faturamento' => 'boolean'
     ];
@@ -48,6 +50,21 @@ class SolicitacaoEntrega extends Model
     public function aprovacoes()
     {
         return $this->morphMany(WorkflowAprovacao::class, 'aprovavel');
+    }
+
+    public function status()
+    {
+        return $this->belongsTo(SeStatus::class, 'se_status_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function fornecedor()
+    {
+        return $this->belongsTo(Fornecedor::class, 'fornecedor_id');
     }
 
     public function irmaosIds()
@@ -83,5 +100,14 @@ class SolicitacaoEntrega extends Model
             'message' => 'Você tem uma nova Solicitação de Entrega para aprovar',
             'link' => route('solicitacao_entrega.show', $this->id)
         ];
+    }
+
+    public function updateTotal()
+    {
+        $total = $this->itens()->sum('valor_total');
+
+        $this->update(['valor_total' => $total]);
+
+        return $total;
     }
 }

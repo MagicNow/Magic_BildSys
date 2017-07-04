@@ -19981,3 +19981,31 @@ td> .table {
 .lb-lg {
   font-size: 20px;
 }
+
+/**
+ * Totals component
+ */
+.total-header h5 {
+    font-weight: bold;
+    color: #4a4a4a;
+    font-size: 13px;
+    margin: 0 10px;
+    opacity: 0.5;
+    text-transform: uppercase;
+}
+
+.total-header h4 {
+    font-weight: bold;
+    margin: 0 10px;
+    color: #4a4a4a;
+    font-size: 22px;
+}
+
+.total-header {
+    margin-bottom: 20px;
+}
+
+.form-control .radio-inline {
+  text-transform: inherit;
+  font-weight: inherit;
+}

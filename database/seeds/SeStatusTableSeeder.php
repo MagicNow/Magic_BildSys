@@ -38,7 +38,7 @@ class SeStatusTableSeeder extends Seeder
             ],
             [
                 'id'   => 5,
-                'nome' => 'Realizado',
+                'nome' => 'Recebido',
                 'cor'  => '#2B55B5'
             ],
         ];

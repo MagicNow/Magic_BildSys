@@ -3,40 +3,22 @@
 @section('content')
 <div class="content-header">
     <h1 class="content-header-title">
-        Solicitação de Entrega
+        Solicitação de Entrega #{{ $entrega->id }}
     </h1>
 </div>
+
 <div class="content">
     <div class="row">
         <div class="col-md-2 form-group">
             {!! Form::label('', 'Código do Contrato') !!}
             <p class="form-control input-lg highlight text-center">
-                {!! $contrato->id !!}
+                {!! $entrega->contrato->id !!}
             </p>
         </div>
-        <div class="col-md-6 form-group">
+        <div class="col-md-4 form-group">
             {!! Form::label('', 'Fornecedor') !!}
             <p class="form-control input-lg">
-                <label class="radio-inline">
-                    <input type="radio"
-                        checked
-                        name="insumo"
-                        value="contratada"
-                        data-container=".js-table-container"
-                        class="js-view-selector js-fornecedor-selector">
-                        Do Contrato:
-                        <span class="highlight">
-                            {{ $contrato->fornecedor->nome }}
-                        </span>
-                </label>
-                <label class="radio-inline">
-                    <input type="radio"
-                        name="insumo"
-                        data-container=".js-table-container"
-                        value="direto"
-                        class="js-view-selector js-fornecedor-selector">
-                        Outro
-                </label>
+                {!! $entrega->contrato->fornecedor->nome !!}
             </p>
         </div>
         <div class="col-md-4 form-group">
@@ -47,7 +29,6 @@
                         checked
                         name="view"
                         value="insumos"
-                        data-container="#tables-container"
                         class="js-view-selector">
                     Insumos
                 </label>
@@ -55,35 +36,31 @@
                     <input type="radio"
                         name="view"
                         value="apropriacoes"
-                        data-container="#tables-container"
                         class="js-view-selector">
                     Apropriações
                 </label>
             </p>
         </div>
     </div>
-    <div class="row hidden" id="fornecedor-selector">
-        <div class="col-sm-6">
-            <div class="form-group">
-                <label>Fornecedor da Solicitação</label>
-                {!!
-                    Form::select(
-                        'fornecedor_id',
-                        [],
-                        null,
-                        ['id' => 'fornecedor_id', 'class' => 'form-control', 'data-ignore' => $contrato->fornecedor->id]
-                    )
-                !!}
-            </div>
-        </div>
-    </div>
+
     <div class="panel panel-default panel-normal-table">
-        <div class="panel-body" id="tables-container">
+        <div class="panel-body">
             <div class="js-table-container" data-view-name="apropriacoes" style="display: none">
-                @include('contratos.solicitacao_entrega.table_apropriacoes')
+                @include(
+                    'contratos.solicitacao_entrega.table_apropriacoes',
+                    [
+                        'apropriacoes' => $entrega->contrato
+                            ->itens
+                            ->pluck('apropriacoes')
+                            ->collapse()
+                    ]
+                )
             </div>
             <div class="js-table-container" data-view-name="insumos">
-                @include('contratos.solicitacao_entrega.table_insumos')
+                @include(
+                    'contratos.solicitacao_entrega.table_insumos',
+                    ['itens' => $entrega->contrato->itens]
+                )
             </div>
         </div>
         <div class="panel-footer">

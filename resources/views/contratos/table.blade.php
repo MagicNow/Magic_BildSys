@@ -1,5 +1,5 @@
 <hr>
-<div class="row" id="totalInsumos">
+<div class="row total-header">
     <div class="col-md-3 text-right borda-direita">
         <h5>Valor Inicial</h5>
         <h4>

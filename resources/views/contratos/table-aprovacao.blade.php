@@ -1,5 +1,5 @@
 <hr>
-<div class="row" id="totalInsumos">
+<div class="row total-header">
     <div class="col-sm-3 text-right borda-direita">
         <h5>Valor previsto no orçamento</h5>
         <h4>

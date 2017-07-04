@@ -5,6 +5,8 @@ namespace App\Models;
 use App\Repositories\ContratoRepository;
 use Eloquent as Model;
 use Laracasts\Flash\Flash;
+use App\Models\ContratoStatus;
+use App\Models\SeStatus;
 
 /**
  * Class Contrato
@@ -112,6 +114,27 @@ class Contrato extends Model
     public function itens()
     {
         return $this->hasMany(ContratoItem::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function materiais()
+    {
+        return $this->hasMany(ContratoItem::class)
+            ->whereHas('insumo', function($query) {
+                $query->whereHas('insumoGrupo', function($query) {
+                    $query->where('nome', 'like', 'MATERIAL%');
+                });
+            });
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function entregas()
+    {
+        return $this->hasMany(SolicitacaoEntrega::class, 'contrato_id');
     }
 
     /**
@@ -232,4 +255,20 @@ class Contrato extends Model
     {
         return $this->valor_total_atual;
     }
+
+    public function getEmAprovacaoAttribute()
+    {
+        return $this->isStatus(ContratoStatus::EM_APROVACAO);
+    }
+
+    public function getPodeSolicitarEntregaAttribute()
+    {
+        return $this->isStatus(ContratoStatus::APROVADO, ContratoStatus::ATIVO);
+    }
+
+    public function getPodeSolicitarNovaEntregaAttribute()
+    {
+        return $this->pode_solicitar_entrega && !$this->entregas()->whereNotIn('se_status_id', [SeStatus::REALIZADO, SeStatus::CANCELADO])->count();
+    }
+
 }
