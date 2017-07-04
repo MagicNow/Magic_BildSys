@@ -472,8 +472,28 @@ class ContratoController extends AppBaseController
             Flash::error('Item do contrato ' . trans('common.not-found'));
 
             return redirect(route('contratos.show', $contrato_id));
+        }       
+        
+        if (empty($contrato->fornecedor)) {
+            Flash::error('Fornecedor do contrato ' . trans('common.not-found'));
+
+            return redirect(route('contratos.show', $contrato_id));
         }
 
-        return view('contratos.memoria_de_calculo.create');
+        $insumo = Insumo::find($contrato_item_apropriacao->insumo_id);
+
+        if (empty($insumo)) {
+            Flash::error('Insumo ' . trans('common.not-found'));
+
+            return redirect(route('contratos.show', $contrato_id));
+        }
+
+        return view('contratos.memoria_de_calculo.create',
+            compact(
+                'contrato',
+                'contrato_item_apropriacao',
+                'insumo'
+            )
+        );
     }
 }
