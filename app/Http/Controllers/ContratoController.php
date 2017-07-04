@@ -456,4 +456,24 @@ class ContratoController extends AppBaseController
         }
         return redirect(route('contratos.index'));
     }
+
+    public function memoriaDeCalculo($contrato_id, $contrato_item_apropriacao_id)
+    {
+        $contrato = $this->contratoRepository->findWithoutFail($contrato_id);
+        $contrato_item_apropriacao = ContratoItemApropriacao::find($contrato_item_apropriacao_id);
+
+        if (empty($contrato)) {
+            Flash::error('Contrato ' . trans('common.not-found'));
+
+            return redirect(route('contratos.show', $contrato_id));
+        }
+
+        if (empty($contrato_item_apropriacao)) {
+            Flash::error('Item do contrato ' . trans('common.not-found'));
+
+            return redirect(route('contratos.show', $contrato_id));
+        }
+
+        return view('contratos.memoria_de_calculo.create');
+    }
 }

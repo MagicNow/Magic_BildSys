@@ -164,6 +164,7 @@ class RolesAndPermissions extends Seeder
             'contratos.distratar'   => 'Distratar item do contrato',
             'contratos.reajustar'   => 'Reajustar item do contrato',
             'contratos.reapropriar' => 'Reapropriar item do contrato',
+            'contratos.memoria_de_calculo' => 'Criar memória de cálculo',
 
             'configuracaoEstaticas.list'   => 'Listagem de Configuração padrão',
             'configuracaoEstaticas.edit'   => 'Edição de Configuração padrão',

@@ -704,6 +704,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('planejamentos/lembretes', 'PlanejamentoController@lembretes');
     $router->get('planejamentos/lembretes/salvar-data-minima', 'PlanejamentoController@lembretes');
 
+    #Contratos
     $router->group(['prefix' => 'contratos','middleware' => 'needsPermission:contratos.list'], function($router) {
         $router->get(
             '',
@@ -794,6 +795,11 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             '/{contratos}/update',
             ['as' => 'contratos.update', 'uses' => 'ContratoController@update']
         );
+
+        $router->get(
+            '/{contratos}/{insumo_id}/memoria-de-calculo',
+            ['as' => 'contratos.memoria_de_calculo', 'uses' => 'ContratoController@memoriaDeCalculo']
+        )->middleware('needsPermission:contratos.memoria_de_calculo');
     });
 
     # Configuracao Estatica
