@@ -18,7 +18,7 @@
         <div class="col-md-4 form-group">
             {!! Form::label('', 'Fornecedor') !!}
             <p class="form-control input-lg">
-                {!! $entrega->contrato->fornecedor->nome !!}
+                {!! $entrega->fornecedor_id ? $entrega->fornecedor->nome : $entrega->contrato->fornecedor->nome !!}
             </p>
         </div>
         <div class="col-md-4 form-group">
@@ -46,21 +46,10 @@
     <div class="panel panel-default panel-normal-table">
         <div class="panel-body">
             <div class="js-table-container" data-view-name="apropriacoes" style="display: none">
-                @include(
-                    'contratos.solicitacao_entrega.table_apropriacoes',
-                    [
-                        'apropriacoes' => $entrega->contrato
-                            ->itens
-                            ->pluck('apropriacoes')
-                            ->collapse()
-                    ]
-                )
+                @include('solicitacao_entrega.table_apropriacoes')
             </div>
             <div class="js-table-container" data-view-name="insumos">
-                @include(
-                    'contratos.solicitacao_entrega.table_insumos',
-                    ['itens' => $entrega->contrato->itens]
-                )
+                @include('solicitacao_entrega.table_insumos')
             </div>
         </div>
         <div class="panel-footer">

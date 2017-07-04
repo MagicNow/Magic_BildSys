@@ -4,18 +4,20 @@
             <th>Código do Insumo</th>
             <th>Descrição do Insumo</th>
             <th>Un. Medidia</th>
-            <th>Qtd.</th>
+            <th>Qtd. Solicitada</th>
             <th>Valor Unitário</th>
+            <th>Valor Total</th>
             <th style="width: 10%">Ação</th>
         </tr>
     </thead>
     <tbody>
-        @foreach($itens as $item)
+        @foreach($entrega->itens as $item)
             <tr>
                 <td>{{ $item->insumo->codigo }}</td>
                 <td>{{ $item->insumo->nome }}</td>
                 <td>{{ $item->insumo->unidade_sigla }}</td>
                 <td>{{ float_to_money($item->qtd, '') }}</td>
+                <td>{{ float_to_money($item->valor_total) }}</td>
                 <td>{{ float_to_money($item->valor_unitario) }}</td>
                 <td>
                     <button type="button"
@@ -35,9 +37,7 @@
                             <tr>
                                 <th>Código Estruturado</th>
                                 <th>Un. Medidia</th>
-                                <th>Qtd.</th>
-                                <th>Valor Unitário</th>
-                                <th style="width: 10%">Solicitação</th>
+                                <th>Qtd. Solicitada</th>
                                 <th>Valor Total</th>
                             </tr>
                         </thead>
@@ -45,16 +45,14 @@
                             @foreach($item->apropriacoes as $apropriacao)
                                 <tr>
                                     <td>
-                                        {{ $apropriacao->codigoServico() }}
+                                        {{ $apropriacao->apropriacao->codigoServico() }}
                                     </td>
-                                    <td>{{ $apropriacao->insumo->unidade_sigla }}</td>
+                                    <td>{{ $apropriacao->apropriacao->insumo->unidade_sigla }}</td>
                                     <td>{{ float_to_money($apropriacao->qtd, '') }}</td>
-                                    <td>{{ float_to_money($item->valor_unitario) }}</td>
-                                    <td>
-                                        @include('contratos.solicitacao_entrega.apropriacao_actions')
-                                    </td>
                                     <td class="js-total">
-                                        R$ 0,00
+                                        {{ float_to_money(
+                                            $apropriacao->qtd * $item->valor_unitario
+                                         ) }}
                                     </td>
                                 </tr>
                             @endforeach

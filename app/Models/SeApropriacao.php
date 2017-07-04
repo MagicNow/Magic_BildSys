@@ -27,4 +27,20 @@ class SeApropriacao extends Model
         'contrato_item_apropriacao_id' => 'integer',
         'qtd'                          => 'float'
     ];
+
+    public function apropriacao()
+    {
+        return $this->belongsTo(
+            ContratoItemApropriacao::class,
+            'contrato_item_apropriacao_id'
+        );
+    }
+
+    public function solicitacaoEntregaItem()
+    {
+        return $this->belongsTo(
+            SolicitacaoEntregaItem::class,
+            'solicitacao_entrega_item_id'
+        );
+    }
 }

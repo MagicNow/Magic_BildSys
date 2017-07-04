@@ -271,4 +271,8 @@ class Contrato extends Model
         return $this->pode_solicitar_entrega && !$this->entregas()->whereNotIn('se_status_id', [SeStatus::REALIZADO, SeStatus::CANCELADO])->count();
     }
 
+    public function getHasMaterialFaturamentoDiretoAttribute()
+    {
+        return $this->itens->pluck('insumo')->pluck('codigo')->contains(30019);
+    }
 }

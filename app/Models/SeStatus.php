@@ -12,7 +12,7 @@ class SeStatus extends Model
     const CANCELADO    = 4;
     const RECEBIDO     = 5;
 
-    public $table = 'oc_status';
+    public $table = 'se_status';
 
     public $timestamps = false;
 

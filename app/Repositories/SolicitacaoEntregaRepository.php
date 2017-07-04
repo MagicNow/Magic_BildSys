@@ -73,7 +73,7 @@ class SolicitacaoEntregaRepository extends BaseRepository
                             $solicitacaoEntregaItem = SolicitacaoEntregaItem::create([
                                 'solicitacao_entrega_id' => $solicitacaoEntrega->id,
                                 'contrato_item_id'       => $contratoItem->id,
-                                'insumo_id'              => $contratoItem->insumo_id,
+                                'insumo_id'              => $solicitacao['insumo'],
                                 'qtd'                    => $solicitacao['qtd'],
                                 'valor_unitario'         => $solicitacao['valor_unitario'],
                                 'valor_total'            => (float) $solicitacao['valor_unitario'] * (float) $solicitacao['qtd'],

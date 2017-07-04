@@ -65877,7 +65877,7 @@ $(function() {
     container: 'body'
   });
 
-  $('input:not(.btn > input)').iCheck({
+  $('input:not(.btn > input):not(.no-icheck)').iCheck({
     checkboxClass: 'icheckbox_square-green',
     radioClass: 'iradio_square-green',
     increaseArea: '20%' // optional

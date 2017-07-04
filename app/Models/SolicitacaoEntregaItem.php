@@ -55,4 +55,9 @@ class SolicitacaoEntregaItem extends Model
             'insumo_id'
         );
     }
+
+    public function apropriacoes()
+    {
+        return $this->hasMany(SeApropriacao::class, 'solicitacao_entrega_item_id');
+    }
 }

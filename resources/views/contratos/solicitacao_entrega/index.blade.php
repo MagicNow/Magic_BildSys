@@ -17,6 +17,7 @@
         <div class="col-md-6 form-group">
             {!! Form::label('', 'Fornecedor') !!}
             <p class="form-control input-lg">
+                @if($contrato->has_material_faturamento_direto)
                 <label class="radio-inline">
                     <input type="radio"
                         checked
@@ -37,6 +38,20 @@
                         class="js-view-selector js-fornecedor-selector">
                         Outro
                 </label>
+                @else
+                    <label class="radio-inline">
+                        <input type="radio"
+                            checked
+                            name="insumo"
+                            value="contratada"
+                            data-container=".js-table-container"
+                            class="js-view-selector js-fornecedor-selector no-icheck
+                            hidden">
+                            <span class="highlight">
+                                {{ $contrato->fornecedor->nome }}
+                            </span>
+                    </label>
+                @endif
             </p>
         </div>
         <div class="col-md-4 form-group">

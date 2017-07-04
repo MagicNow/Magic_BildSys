@@ -167,7 +167,9 @@ var SolicitacaoDeEntrega = {
       return false;
     }
 
-    formData.fornecedor_id = fornecedor.val();
+    if(fornecedor.val()) {
+      formData.fornecedor_id = fornecedor.val();
+    }
 
     var qtds = _(inputsQtd)
       .filter(function(input) {
@@ -207,6 +209,16 @@ var SolicitacaoDeEntrega = {
       .value();
 
     formData.solicitacao = _.flatten([selected, qtds]);
+
+    if(!formData.solicitacao.length) {
+      swal({
+        title: 'Solicitação de Entrega',
+        text: 'Nenhuma solicitação foi feita',
+        type: 'warning'
+      });
+
+      return false;
+    }
 
     startLoading();
 

@@ -16,8 +16,11 @@ class SolicitacaoEntregaController extends AppBaseController
      */
     public function show(SolicitacaoEntregaRepository $repository, $id)
     {
-        $entrega = $repository->find($id)->load('itens.apropriacoes');
+        $entrega      = $repository->find($id)->load('itens.apropriacoes');
+        $apropriacoes = $entrega->itens
+            ->pluck('apropriacoes')
+            ->collapse();
 
-        return view('solicitacao_entrega.show', compact('entrega'));
+        return view('solicitacao_entrega.show', compact('entrega', 'apropriacoes'));
     }
 }
