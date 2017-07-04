@@ -491,14 +491,18 @@ class ContratoController extends AppBaseController
 
         $tarefas = Planejamento::where('obra_id', $contrato->obra_id)
             ->pluck('tarefa', 'id')
+            ->prepend('', '')
             ->toArray();
 
-        return view('contratos.memoria_de_calculo.create',
+        $memoria_de_calculo = [];
+        
+        return view('contratos.memoria_de_calculo.previsao',
             compact(
                 'contrato',
                 'contrato_item_apropriacao',
                 'insumo',
-                'tarefas'
+                'tarefas',
+                'memoria_de_calculo'
             )
         );
     }

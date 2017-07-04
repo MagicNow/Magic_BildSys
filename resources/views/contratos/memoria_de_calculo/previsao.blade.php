@@ -9,7 +9,7 @@
                        <button type="button" class="btn btn-link" onclick="history.go(-1);">
                             <i class="fa fa-arrow-left" aria-hidden="true"></i>
                        </button>
-                       <span>Criar memória de cálculo</span>
+                       <span>Criar previsão de memória de cálculo</span>
                    </h3>
                 </span>
             </div>
@@ -36,7 +36,20 @@
 
         <div class="form-group col-md-6">
             {!! Form::label('tarefa', 'Tarefa:') !!}
-            {!! Form::select('tarefa', ['' => 'Selecione uma tarefa']+$tarefas , null, ['class' => 'form-control select2', 'required' => 'required']) !!}
+            {!! Form::select('tarefa', $tarefas , null, ['class' => 'form-control select2', 'required' => 'required']) !!}
+        </div>
+
+        <div class="form-group col-md-6">
+            {!! Form::label('memoria_de_calculo', 'Memória de cálculo:') !!}
+            <a href="/memoriaCalculos/create"
+               class="btn btn-flat btn-sm btn-primary pull-right"
+               data-toggle="tooltip"
+               data-placement="top"
+               title="Criar memória de cálculo"
+               style="margin-top: -10px;">
+                <i class="fa fa-plus fa-fw" aria-hidden="true"></i>
+            </a>
+            {!! Form::select('memoria_de_calculo', $memoria_de_calculo , null, ['class' => 'form-control select2', 'required' => 'required']) !!}
         </div>
     </div>
 @endsection

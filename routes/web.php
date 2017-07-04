@@ -797,7 +797,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         );
 
         $router->get(
-            '/{contratos}/{insumo_id}/memoria-de-calculo',
+            '/{contratos}/{insumo_id}/previsao-de-memoria-de-calculo',
             ['as' => 'contratos.memoria_de_calculo', 'uses' => 'ContratoController@memoriaDeCalculo']
         )->middleware('needsPermission:contratos.memoria_de_calculo');
     });

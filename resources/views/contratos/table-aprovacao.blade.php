@@ -140,7 +140,7 @@
                                         class="btn btn-flat btn-sm btn-primary"
                                         data-toggle="tooltip"
                                         data-placement="top"
-                                        title="Criar memória de cálculo">
+                                        title="Criar previsão de memória de cálculo">
                                     <i class="fa fa-calculator fa-fw" aria-hidden="true"></i>
                                 </a>
                             </td>
