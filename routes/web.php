@@ -33,6 +33,8 @@ $router->get('tipos-equalizacoes-tecnicas/busca', 'TipoEqualizacaoTecnicaControl
 $router->get('/compras/buscar/planejamentos', ['as' => 'buscaplanejamentos.busca_planejamento', 'uses' => 'OrdemDeCompraController@buscaPlanejamentos']);
 $router->get('/compras/buscar/insumogrupos', ['as' => 'buscainsumogrupos.busca_insumo', 'uses' => 'OrdemDeCompraController@buscaInsumoGrupos']);
 
+$router->get('nomeclatura-mapas/json', ['uses' => 'Admin\NomeclaturaMapaController@json']);
+
 ##### ADMIN #####
 $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:dashboard.access']], function () use ($router) {
 
@@ -395,10 +397,21 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
         $router->get('/{contratoTemplates}/edit', ['as' => 'admin.contratoTemplates.edit', 'uses' => 'Admin\ContratoTemplateController@edit'])
             ->middleware('needsPermission:contratoTemplates.edit');
     });
+
+    $router->get('nomeclaturaMapas', ['as'=> 'admin.nomeclaturaMapas.index', 'uses' => 'Admin\NomeclaturaMapaController@index']);
+    $router->post('nomeclaturaMapas', ['as'=> 'admin.nomeclaturaMapas.store', 'uses' => 'Admin\NomeclaturaMapaController@store']);
+    $router->get('nomeclaturaMapas/create', ['as'=> 'admin.nomeclaturaMapas.create', 'uses' => 'Admin\NomeclaturaMapaController@create']);
+    $router->put('nomeclaturaMapas/{nomeclaturaMapas}', ['as'=> 'admin.nomeclaturaMapas.update', 'uses' => 'Admin\NomeclaturaMapaController@update']);
+    $router->patch('nomeclaturaMapas/{nomeclaturaMapas}', ['as'=> 'admin.nomeclaturaMapas.update', 'uses' => 'Admin\NomeclaturaMapaController@update']);
+    $router->delete('nomeclaturaMapas/{nomeclaturaMapas}', ['as'=> 'admin.nomeclaturaMapas.destroy', 'uses' => 'Admin\NomeclaturaMapaController@destroy']);
+    $router->get('nomeclaturaMapas/{nomeclaturaMapas}', ['as'=> 'admin.nomeclaturaMapas.show', 'uses' => 'Admin\NomeclaturaMapaController@show']);
+    $router->get('nomeclaturaMapas/{nomeclaturaMapas}/edit', ['as'=> 'admin.nomeclaturaMapas.edit', 'uses' => 'Admin\NomeclaturaMapaController@edit']);
 });
 
 ##### SITE #####
 $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($router) {
+
+    $router->resource('memoriaCalculos', 'MemoriaCalculoController');
 
     // Perfil
     $router->get('/perfil', 'PerfilController@index');
