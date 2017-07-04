@@ -11,6 +11,7 @@ use App\Models\ContratoStatusLog;
 use App\Models\Fornecedor;
 use App\Models\Insumo;
 use App\Models\Obra;
+use App\Models\Planejamento;
 use App\Models\WorkflowAprovacao;
 use App\Repositories\CodeRepository;
 use App\Repositories\ContratoRepository;
@@ -488,11 +489,16 @@ class ContratoController extends AppBaseController
             return redirect(route('contratos.show', $contrato_id));
         }
 
+        $tarefas = Planejamento::where('obra_id', $contrato->obra_id)
+            ->pluck('tarefa', 'id')
+            ->toArray();
+
         return view('contratos.memoria_de_calculo.create',
             compact(
                 'contrato',
                 'contrato_item_apropriacao',
-                'insumo'
+                'insumo',
+                'tarefas'
             )
         );
     }

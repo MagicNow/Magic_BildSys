@@ -21,7 +21,7 @@
 
         <div class="form-group col-md-2">
             {!! Form::label('contrato', 'Contrato:') !!}
-            <span class="form-control">{!! $contrato->id !!}</span>
+            <p class="form-control">{!! $contrato->id !!}</p>
         </div>
 
         <div class="form-group col-md-4">
@@ -32,6 +32,11 @@
         <div class="form-group col-md-6">
             {!! Form::label('insumo', 'Insumo:') !!}
             <p class="form-control">{!! $contrato_item_apropriacao->codigo_insumo . ' - ' . $insumo->nome . ' - ' . $insumo->unidade_sigla!!}</p>
+        </div>
+
+        <div class="form-group col-md-6">
+            {!! Form::label('tarefa', 'Tarefa:') !!}
+            {!! Form::select('tarefa', ['' => 'Selecione uma tarefa']+$tarefas , null, ['class' => 'form-control select2', 'required' => 'required']) !!}
         </div>
     </div>
 @endsection
