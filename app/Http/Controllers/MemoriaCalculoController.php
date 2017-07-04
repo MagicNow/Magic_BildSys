@@ -52,7 +52,7 @@ class MemoriaCalculoController extends AppBaseController
     public function store(CreateMemoriaCalculoRequest $request)
     {
         $input = $request->all();
-
+        
         $memoriaCalculo = $this->memoriaCalculoRepository->create($input);
 
         Flash::success('Memoria Calculo '.trans('common.saved').' '.trans('common.successfully').'.');

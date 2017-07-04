@@ -45,7 +45,7 @@ class MemoriaCalculo extends Model
     public static $rules = [
         'nome' => 'required',
         'modo' => 'required',
-        'blocos' => 'required'
+        'estrutura_bloco' => 'required'
     ];
 
     /**

@@ -135,8 +135,9 @@
                     arrayPavimentosOrdenada[idxPav] = linhaPav;
                 });
             }
-            item.itens = arrayPavimentosOrdenada;
-            arrayVisual[idx] = item;
+            itemVisual = item;
+//            itemVisual.itens = arrayPavimentosOrdenada;
+            arrayVisual[idx] = itemVisual;
         });
 
         // -- Preenche o visual
