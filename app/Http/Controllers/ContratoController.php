@@ -10,6 +10,7 @@ use App\Http\Requests\UpdateContratoRequest;
 use App\Models\ContratoStatusLog;
 use App\Models\Fornecedor;
 use App\Models\Insumo;
+use App\Models\MemoriaCalculo;
 use App\Models\Obra;
 use App\Models\Planejamento;
 use App\Models\WorkflowAprovacao;
@@ -494,7 +495,32 @@ class ContratoController extends AppBaseController
             ->prepend('', '')
             ->toArray();
 
-        $memoria_de_calculo = [];
+        $memoria_de_calculo = MemoriaCalculo::select([
+            DB::raw('CONCAT(
+                        nome, " - ", 
+                        (
+                        CASE
+                            modo
+                        WHEN
+                            "T"
+                        THEN
+                            "Torre"
+                        WHEN
+                            "C"
+                        THEN
+                            "Cartela"
+                        WHEN
+                            "U"
+                        THEN
+                            "Unidade"
+                        END
+                        )
+                    ) as nome'),
+            'id'
+        ])
+            ->pluck('nome', 'id')
+            ->prepend('', '')
+            ->toArray();
         
         return view('contratos.memoria_de_calculo.previsao',
             compact(
