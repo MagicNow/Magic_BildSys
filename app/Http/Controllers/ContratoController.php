@@ -185,17 +185,17 @@ class ContratoController extends AppBaseController
         $pendencias = ContratoItemModificacao::whereHas('item', function ($itens) use ($id) {
             return $itens->where('contrato_id', $id)->where('pendente', true);
         })
-            ->where('contrato_status_id', ContratoStatus::EM_APROVACAO)
-            ->get()
-            ->map(function ($pendencia) {
-                $pendencia->workflow = WorkflowAprovacaoRepository::verificaAprovacoes(
-                    'ContratoItemModificacao',
-                    $pendencia->id,
-                    auth()->user()
-                );
+        ->where('contrato_status_id', ContratoStatus::EM_APROVACAO)
+        ->get()
+        ->map(function ($pendencia) {
+            $pendencia->workflow = WorkflowAprovacaoRepository::verificaAprovacoes(
+                'ContratoItemModificacao',
+                $pendencia->id,
+                auth()->user()
+            );
 
-                return $pendencia;
-            });
+            return $pendencia;
+        });
 
         $status = $contrato->status->nome;
 

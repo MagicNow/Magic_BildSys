@@ -32,6 +32,7 @@ class SolicitacaoEntregaRepository extends BaseRepository
 
         DB::beginTransaction();
         try {
+
             $solicitacaoEntrega = parent::create([
                 'contrato_id'   => $request['contrato_id'],
                 'user_id'       => auth()->id(),
@@ -48,7 +49,7 @@ class SolicitacaoEntregaRepository extends BaseRepository
 
             $solicitacao
                 ->groupBy('contrato_item_id')
-                ->each(function($solicitacao, $contrato_id) use($solicitacaoEntrega) {
+                ->each(function($solicitacao, $contrato_id) use($solicitacaoEntrega, $fornecedor_id) {
                     $contratoItem = ContratoItem::find($contrato_id);
 
                     if(!in_array($contratoItem->insumo->codigo, [34007, 30019]) && !$fornecedor_id) {
@@ -68,7 +69,9 @@ class SolicitacaoEntregaRepository extends BaseRepository
                                 'qtd'                          => $apropriacao['qtd']
                             ]);
                         });
+
                     } else {
+
                         $solicitacao->map(function($solicitacao) use ($contratoItem, $solicitacaoEntrega) {
                             $solicitacaoEntregaItem = SolicitacaoEntregaItem::create([
                                 'solicitacao_entrega_id' => $solicitacaoEntrega->id,

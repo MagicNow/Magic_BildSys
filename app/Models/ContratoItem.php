@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Eloquent as Model;
+use App\Models\SeStatus;
 
 /**
  * Class ContratoItem
@@ -110,5 +111,24 @@ class ContratoItem extends Model
             ContratoItemApropriacao::class,
             'contrato_item_id'
         );
+    }
+
+    public function solicitacaoEntregaItens()
+    {
+        return $this->hasMany(
+            SolicitacaoEntregaItem::class,
+            'contrato_item_id'
+        );
+    }
+
+    public function getQtdSaldoAttribute()
+    {
+        $total_solicitado = $this->solicitacaoEntregaItens()
+            ->whereHas('solicitacaoEntrega', function($query) {
+                $query->where('se_status_id', '!=', SeStatus::CANCELADO);
+            })
+            ->sum('qtd');
+
+        return $this->qtd - $total_solicitado;
     }
 }

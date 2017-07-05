@@ -4,6 +4,7 @@
 <div class="content-header">
     <h1 class="content-header-title">
         Solicitação de Entrega #{{ $entrega->id }}
+        @include('solicitacao_entrega.aprovacao_actions')
     </h1>
 </div>
 
@@ -41,6 +42,15 @@
                 </label>
             </p>
         </div>
+        <div class="col-md-2 form-group">
+            {!! Form::label('', 'Status') !!}
+            <p class="form-control input-lg text-center">
+                <span class="label label-white lb-md">
+                    <i class="fa fa-circle" style="color: {{ $entrega->status->cor }}"></i>
+                    {{ $entrega->status->nome }}
+                </span>
+            </p>
+        </div>
     </div>
 
     <div class="panel panel-default panel-normal-table">
@@ -55,15 +65,10 @@
         <div class="panel-footer">
             <div class="row">
                 <div class="col-sm-12">
-                    <button type="submit"
-                        class="btn btn-flat btn-info pull-right"
-                        id="finalizar">
-                        Finalizar
-                    </button>
                     <div class="col-sm-3 pull-right h4 text-right">
                         Total Solicitado:
                         <span id="total-container">
-                            R$ 0,00
+                            {{ float_to_money($entrega->total) }}
                         </span>
                     </div>
                 </div>
@@ -71,10 +76,14 @@
         </div>
     </div>
 </div>
-
-@include('contratos.solicitacao_entrega.modal_selecionar_insumo')
+<div class="hidden">
+    {!! Form::select('motivo', $motivos, null, ['id' => 'motivo']) !!}
+</div>
 @endsection
 
 @section('scripts')
+    <script>
+        window.options_motivos = document.getElementById('motivo').innerHTML;
+    </script>
     <script src="{{ asset('js/solicitacao-de-entrega.js') }}"> </script>
 @endsection

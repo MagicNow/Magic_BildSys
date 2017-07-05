@@ -184,4 +184,22 @@ class ContratoItemApropriacao extends Model
     {
         return float_to_money($this->qtd, '') . ' ' . $this->insumo->unidade_sigla;
     }
+
+    public function seApropriacoes()
+    {
+        return $this->hasMany(SeApropriacao::class, 'contrato_item_apropriacao_id');
+    }
+
+    public function getQtdSaldoAttribute()
+    {
+        $total_solicitado = $this->seApropriacoes()
+            ->whereHas('solicitacaoEntregaItem', function($query) {
+                $query->whereHas('solicitacaoEntrega', function($query) {
+                    $query->where('se_status_id', '!=', SeStatus::CANCELADO);
+                });
+            })
+            ->sum('qtd');
+
+        return $this->qtd - $total_solicitado;
+    }
 }

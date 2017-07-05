@@ -89,7 +89,12 @@ class SolicitacaoEntrega extends Model
 
     public function aprova($aprovado)
     {
-        $this->update(['aprovado' => $aprovado]);
+        $new_status = $aprovado
+            ? SeStatus::APROVADO
+            : SeStatus::REPROVADO
+            ;
+
+        $this->update(['se_status_id' => $new_status]);
     }
 
     public static $workflow_tipo_id = WorkflowTipo::SOLICITACAO_ENTREGA;
@@ -109,5 +114,25 @@ class SolicitacaoEntrega extends Model
         $this->update(['valor_total' => $total]);
 
         return $total;
+    }
+
+    public function isStatus($status)
+    {
+        $status = is_array($status) ? $status : func_get_args();
+
+        return in_array($this->se_status_id, $status);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function logs()
+    {
+        return $this->hasMany(SeStatusLog::class, 'solicitacao_entrega_id');
+    }
+
+    public function getTotalAttribute()
+    {
+        return $this->itens()->sum('valor_total');
     }
 }

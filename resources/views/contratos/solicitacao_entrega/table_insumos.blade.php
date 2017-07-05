@@ -4,7 +4,7 @@
             <th>Código do Insumo</th>
             <th>Descrição do Insumo</th>
             <th>Un. Medidia</th>
-            <th>Qtd.</th>
+            <th>Saldo de Qtd.</th>
             <th>Valor Unitário</th>
             <th style="width: 10%">Ação</th>
         </tr>
@@ -15,7 +15,7 @@
                 <td>{{ $item->insumo->codigo }}</td>
                 <td>{{ $item->insumo->nome }}</td>
                 <td>{{ $item->insumo->unidade_sigla }}</td>
-                <td>{{ float_to_money($item->qtd, '') }}</td>
+                <td>{{ float_to_money($item->qtd_saldo, '') }}</td>
                 <td>{{ float_to_money($item->valor_unitario) }}</td>
                 <td>
                     <button type="button"
@@ -35,7 +35,7 @@
                             <tr>
                                 <th>Código Estruturado</th>
                                 <th>Un. Medidia</th>
-                                <th>Qtd.</th>
+                                <th>Saldo de Qtd.</th>
                                 <th>Valor Unitário</th>
                                 <th style="width: 10%">Solicitação</th>
                                 <th>Valor Total</th>
@@ -48,7 +48,7 @@
                                         {{ $apropriacao->codigoServico() }}
                                     </td>
                                     <td>{{ $apropriacao->insumo->unidade_sigla }}</td>
-                                    <td>{{ float_to_money($apropriacao->qtd, '') }}</td>
+                                    <td>{{ float_to_money($apropriacao->qtd_saldo, '') }}</td>
                                     <td>{{ float_to_money($item->valor_unitario) }}</td>
                                     <td>
                                         @include('contratos.solicitacao_entrega.apropriacao_actions')

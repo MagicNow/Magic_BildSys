@@ -17,8 +17,8 @@
                 <td>{{ $item->insumo->nome }}</td>
                 <td>{{ $item->insumo->unidade_sigla }}</td>
                 <td>{{ float_to_money($item->qtd, '') }}</td>
-                <td>{{ float_to_money($item->valor_total) }}</td>
                 <td>{{ float_to_money($item->valor_unitario) }}</td>
+                <td>{{ float_to_money($item->valor_total) }}</td>
                 <td>
                     <button type="button"
                          title="Expandir"
@@ -31,7 +31,7 @@
                 </td>
             </tr>
             <tr style="display:none" id="dados-extras{{ $item->id }}">
-                <td colspan="6">
+                <td colspan="7">
                     <table class="table table-bordered table-no-margin table-all-center">
                         <thead>
                             <tr>

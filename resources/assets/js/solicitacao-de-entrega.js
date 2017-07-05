@@ -230,7 +230,7 @@ var SolicitacaoDeEntrega = {
           text: 'Solicitação enviada para aprovação',
           type: 'success'
         }, function() {
-          // location.href = location.href.replace('/solicitar-entrega', '');
+          location.href = location.href.replace('/solicitar-entrega', '');
         });
       })
       .fail(function() {
@@ -260,13 +260,18 @@ var ModalSelecionarInsumo = {
     });
 
     this.modal
-      .on('hidden.bs.modal', this.onModalClose.bind(this))
-      .on('click', '.js-remove-row', this.removeInsumo.bind(this));
+      .on('click', '.js-remove-row', this.removeInsumo.bind(this))
+      .on('show.bs.modal', this.addHideEventHandlerToModal.bind(this));
+
 
     this.btnSaveSelectedInsumos.on('click', this.save.bind(this));
 
     this.createSolicitarInsumoButton();
     this.handleAddButton();
+  },
+
+  addHideEventHandlerToModal: function() {
+    this.modal.one('hide.bs.modal', this.onModalClose.bind(this))
   },
 
   createInsumoSelector: function() {
@@ -401,7 +406,25 @@ var ModalSelecionarInsumo = {
     this.inputValorUnitario.blur();
   },
 
-  onModalClose: function() {
+  onModalClose: function(event) {
+    var _this = this;
+    var total = this.getTotal();
+    var max = this.lastClickedButton().data('valor-max');
+
+    if(total > max) {
+      event.preventDefault();
+      swal({
+        title: '',
+        text: 'A seleção de insumos ultrapassa o orçamento de ' +
+          floatToMoney(max) + ' desta apropriação',
+        type: 'warning'
+      }, function() {
+        _this.addHideEventHandlerToModal();
+      });
+
+      return false;
+    }
+
     this.save();
     this.clearSelectedInsumos();
     this.clearInputs();
@@ -450,15 +473,19 @@ var ModalSelecionarInsumo = {
     SolicitacaoDeEntrega.updateTotal(button);
   },
 
-  save: function() {
-    var button = this.lastClickedButton();
-    var rows = this.table.find('tbody > tr');
-
-    var total = _(this.table.find('.js-selected-total'))
+  getTotal: function() {
+    return _(this.table.find('.js-selected-total'))
       .map(function(el) {
         return parseFloat(el.dataset.value);
       })
       .sum();
+  },
+
+  save: function() {
+    var button = this.lastClickedButton();
+    var rows = this.table.find('tbody > tr');
+
+    var total = this.getTotal();
 
     button.parents('tr:first')
       .find('.js-total')

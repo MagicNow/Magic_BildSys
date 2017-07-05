@@ -4,7 +4,7 @@
             <th>Código Estruturado</th>
             <th>Descrição do Insumo</th>
             <th>Un. Medidia</th>
-            <th>Qtd.</th>
+            <th>Saldo de Qtd.</th>
             <th>Valor Unitário</th>
             <th style="width: 10%">Solicitação</th>
             <th>Valor Total</th>
@@ -29,7 +29,7 @@
                 </td>
                 <td>{{ $apropriacao->insumo->nome }}</td>
                 <td>{{ $apropriacao->insumo->unidade_sigla }}</td>
-                <td>{{ float_to_money($apropriacao->qtd, '') }}</td>
+                <td>{{ float_to_money($apropriacao->qtd_saldo, '') }}</td>
                 <td>{{ float_to_money($apropriacao->contratoItem->valor_unitario) }}</td>
                 <td>
                     @include('contratos.solicitacao_entrega.apropriacao_actions')
