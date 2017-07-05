@@ -53,7 +53,7 @@ class MemoriaCalculoBloco extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function estrutura()
+    public function estruturaObj()
     {
         return $this->belongsTo(NomeclaturaMapa::class, 'estrutura');
     }
@@ -69,7 +69,7 @@ class MemoriaCalculoBloco extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function trecho()
+    public function trechoObj()
     {
         return $this->belongsTo(NomeclaturaMapa::class,'trecho');
     }
@@ -77,7 +77,7 @@ class MemoriaCalculoBloco extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function pavimento()
+    public function pavimentoObj()
     {
         return $this->belongsTo(NomeclaturaMapa::class,'pavimento');
     }
