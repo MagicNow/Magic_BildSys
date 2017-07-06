@@ -66,7 +66,6 @@
         <table class="table table-striped table-no-margin">
             <thead>
             <tr>
-                <th>Torre</th>
                 <th>Estrutura</th>
                 <th>Pavimento</th>
                 <th>Trecho</th>
@@ -106,9 +105,6 @@
         $('tbody').append('\
         <tr id=linha_'+count+'>\
             <input type="hidden" name="itens['+count+'][memoria_calculo_bloco_id]" value="'+memoria_calculo_bloco_id+'">\
-            <td>\
-                '+ $("#obra_torre_id").find('option:selected').text() +'\
-            </td>\
             <td>\
                 '+estrutura+'\
             </td>\
