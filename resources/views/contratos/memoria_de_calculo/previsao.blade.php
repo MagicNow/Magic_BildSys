@@ -122,10 +122,10 @@
             <input type="date" class="form-control" name="itens['+count+'][data_competencia]">\
             </td>\
             <td>\
-                <input type="text" class="form-control money" name="itens['+count+'][qtd]" onkeyup="calcularPorcentagem(this.value, count);">\
+                <input type="text" class="form-control money" name="itens['+count+'][qtd]" id="quantidade_'+count+'" onkeyup="calcularPorcentagem(this.value, count);">\
             </td>\
             <td>\
-                <input type="text" class="form-control money" id="porcentagem_'+count+'">\
+                <input type="text" class="form-control money" id="porcentagem_'+count+'" onkeyup="calcularQuantidade(this.value, count);">\
             </td>\
             <td>\
             <button onclick="removerLinha('+count+');" class="btn btn-flat btn-sm btn-danger pull-right" data-toggle="tooltip" data-placement="top" title="Remover">\
@@ -142,9 +142,18 @@
         $('#linha_'+id).remove();
     }
 
+    // Interação entre quantidade e porcentagem.
     function calcularPorcentagem(qtd, id) {
         porcentagem =  (moneyToFloat(qtd) / qtd_item_apropriacao) * 100;
         $('#porcentagem_'+id).val(porcentagem);
+
+        recarregarMascara();
+    }
+
+    // Interação entre porcentagem e quantidade.
+    function calcularQuantidade(porcentagem, id) {
+        quantidade = qtd_item_apropriacao * (moneyToFloat(porcentagem) / 100);
+        $('#quantidade_'+id).val(quantidade);
 
         recarregarMascara();
     }
