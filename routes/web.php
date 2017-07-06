@@ -813,6 +813,11 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             '/{contratos}/{insumo_id}/previsao-de-memoria-de-calculo',
             ['as' => 'contratos.memoria_de_calculo', 'uses' => 'ContratoController@memoriaDeCalculo']
         )->middleware('needsPermission:contratos.memoria_de_calculo');
+
+        $router->post(
+            '/previsao-de-memoria-de-calculo/salvar',
+            ['as' => 'contratos.memoria_de_calculo_salvar', 'uses' => 'ContratoController@memoriaDeCalculoSalvar']
+        )->middleware('needsPermission:contratos.memoria_de_calculo');
     });
 
     # Configuracao Estatica

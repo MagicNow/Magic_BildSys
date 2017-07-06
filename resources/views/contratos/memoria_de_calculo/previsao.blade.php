@@ -16,8 +16,14 @@
         </div>
     </section>
 
+    {!! Form::model($contrato, ['route' => ['contratos.memoria_de_calculo_salvar']]) !!}
     <div class="content">
         <div class="clearfix"></div>
+
+        <input type="hidden" name="insumo_id" value="{{$insumo->id}}">
+        <input type="hidden" name="unidade_sigla" value="{{$insumo->unidade_sigla}}">
+        <input type="hidden" name="contrato_item_apropriacao_id" value="{{$contrato_item_apropriacao->id}}">
+        <input type="hidden" name="contrato_item_id" value="{{$contrato_item_apropriacao->contrato_item_id}}">
 
         <div class="form-group col-md-2">
             {!! Form::label('contrato', 'Contrato:') !!}
@@ -34,9 +40,14 @@
             <p class="form-control">{!! $contrato_item_apropriacao->codigo_insumo . ' - ' . $insumo->nome . ' - ' . $insumo->unidade_sigla!!}</p>
         </div>
 
-        <div class="form-group col-md-6">
-            {!! Form::label('tarefa', 'Tarefa:') !!}
-            {!! Form::select('tarefa', $tarefas , null, ['class' => 'form-control select2', 'required' => 'required']) !!}
+        <div class="form-group col-md-3">
+            {!! Form::label('planejamento_id', 'Tarefa:') !!}
+            {!! Form::select('planejamento_id', $tarefas , null, ['class' => 'form-control select2', 'required' => 'required']) !!}
+        </div>
+
+        <div class="form-group col-md-3">
+            {!! Form::label('obra_torre_id', 'Torres:') !!}
+            {!! Form::select('obra_torre_id', $obra_torres , null, ['class' => 'form-control select2', 'required' => 'required']) !!}
         </div>
 
         <div class="form-group col-md-6">
@@ -70,7 +81,18 @@
             </tbody>
         </table>
 
+        <div class="col-sm-12" style="margin-top: 10px;">
+            <button class="btn btn-success pull-right flat" type="submit">
+                <i class="fa fa-save"></i> Salvar
+            </button>
+
+            <button class="btn btn-default flat" onclick="history.go(-1);">
+                <i class="fa fa-times"></i> Cancelar
+            </button>
+        </div>
+
     </div>
+    {!! Form::close() !!}
 @endsection
 
 @section('scripts')
@@ -78,10 +100,11 @@
     var count = 0;
 
     // Função para adicionar linha na tabela
-    function adicionarNaTabela() {
+    function adicionarNaTabela(memoria_calculo_bloco_id) {
         count ++;
         $('tbody').append('\
         <tr id=linha_'+count+'>\
+            <input type="hidden" name="itens['+count+'][memoria_calculo_bloco_id]" value="'+memoria_calculo_bloco_id+'">\
             <td>\
                 torre 1\
             </td>\
@@ -95,16 +118,16 @@
                 Trecho 1\
             </td>\
             <td>\
-                {{Form::date('data_competencia', null, ['class' => 'form-control'])}}\
+            <input type="date" class="form-control" name="itens['+count+'][data_competencia]">\
             </td>\
             <td>\
-                {{Form::text('qtd', null, ['class' => 'form-control money'])}}\
+                <input type="text" class="form-control money" name="itens['+count+'][qtd]">\
             </td>\
             <td>\
-                {{Form::text('percentual', null, ['class' => 'form-control money'])}}\
+                <input type="text" class="form-control money">\
             </td>\
             <td>\
-            <button onclick="removerLinha('+count+');"class="btn btn-flat btn-sm btn-danger pull-right" data-toggle="tooltip" data-placement="top" title="Remover">\
+            <button onclick="removerLinha('+count+');" class="btn btn-flat btn-sm btn-danger pull-right" data-toggle="tooltip" data-placement="top" title="Remover">\
                 <i class="fa fa-remove fa-fw" aria-hidden="true"></i>\
             </td>\
         </tr>\

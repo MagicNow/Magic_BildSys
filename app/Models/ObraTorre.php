@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class ObraTorre
@@ -12,17 +11,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class ObraTorre extends Model
 {
-    use SoftDeletes;
 
     public $table = 'obra_torres';
+    public $timestamps = false;
     
-    const CREATED_AT = 'created_at';
-    const UPDATED_AT = 'updated_at';
-
-
-    protected $dates = ['deleted_at'];
-
-
     public $fillable = [
         'obra_id',
         'nome'

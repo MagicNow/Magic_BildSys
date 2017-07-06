@@ -10,14 +10,17 @@ use App\Http\Requests\UpdateContratoRequest;
 use App\Models\ContratoStatusLog;
 use App\Models\Fornecedor;
 use App\Models\Insumo;
+use App\Models\McMedicaoPrevisao;
 use App\Models\MemoriaCalculo;
 use App\Models\Obra;
+use App\Models\ObraTorre;
 use App\Models\Planejamento;
 use App\Models\WorkflowAprovacao;
 use App\Repositories\CodeRepository;
 use App\Repositories\ContratoRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Response;
@@ -495,6 +498,11 @@ class ContratoController extends AppBaseController
             ->prepend('', '')
             ->toArray();
 
+        $obra_torres = ObraTorre::where('obra_id', $contrato->obra_id)
+            ->pluck('nome', 'id')
+            ->prepend('', '')
+            ->toArray();
+
         $memoria_de_calculo = MemoriaCalculo::select([
             DB::raw('CONCAT(
                         nome, " - ", 
@@ -528,8 +536,32 @@ class ContratoController extends AppBaseController
                 'contrato_item_apropriacao',
                 'insumo',
                 'tarefas',
-                'memoria_de_calculo'
+                'memoria_de_calculo',
+                'obra_torres'
             )
         );
+    }
+
+    public function memoriaDeCalculoSalvar(Request $request)
+    {
+        if(count($request->itens)) {
+            foreach ($request->itens as $item) {
+                $item['qtd'] = money_to_float($item['qtd']);
+
+                $previsao = new McMedicaoPrevisao($item);
+                $previsao->insumo_id = $request->insumo_id;
+                $previsao->unidade_sigla = $request->unidade_sigla;
+                $previsao->contrato_item_apropriacao_id = $request->contrato_item_apropriacao_id;
+                $previsao->contrato_item_id = $request->contrato_item_id;
+                $previsao->planejamento_id = $request->planejamento_id;
+                $previsao->obra_torre_id = $request->obra_torre_id;
+                $previsao->user_id = Auth::id();
+                $previsao->save();
+            }
+        }
+
+        Flash::success('Previsão de memória de cálculo criada com sucesso!');
+        
+        return redirect(route('contratos.index'));
     }
 }
