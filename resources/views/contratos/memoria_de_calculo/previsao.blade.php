@@ -100,22 +100,22 @@
     var count = 0;
 
     // Função para adicionar linha na tabela
-    function adicionarNaTabela(memoria_calculo_bloco_id) {
+    function adicionarNaTabela(memoria_calculo_bloco_id, estrutura, pavimento, trecho) {
         count ++;
         $('tbody').append('\
         <tr id=linha_'+count+'>\
             <input type="hidden" name="itens['+count+'][memoria_calculo_bloco_id]" value="'+memoria_calculo_bloco_id+'">\
             <td>\
-                torre 1\
+                '+ $("#obra_torre_id").find('option:selected').text() +'\
             </td>\
             <td>\
-                Pre Tipo\
+                '+estrutura+'\
             </td>\
             <td>\
-                SS 1\
+                '+pavimento+'\
             </td>\
             <td>\
-                Trecho 1\
+                '+trecho+'\
             </td>\
             <td>\
             <input type="date" class="form-control" name="itens['+count+'][data_competencia]">\
