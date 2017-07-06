@@ -61,4 +61,7 @@
         @endshield
     </ul>
 </li>
+<li class="{{ Request::is('notafiscals*') ? 'active' : '' }}">
+    <a href="{!! route('notafiscals.index') !!}"><i class="fa fa-object-group"></i><span>Nota fiscal</span></a>
+</li>
 
