@@ -22,7 +22,8 @@ class MemoriaCalculo extends Model
         'nome',
         'padrao',
         'user_id',
-        'modo'
+        'modo',
+        'obra_id'
     ];
 
     /**
@@ -34,7 +35,8 @@ class MemoriaCalculo extends Model
         'id' => 'integer',
         'nome' => 'string',
         'user_id' => 'integer',
-        'modo' => 'string'
+        'modo' => 'string',
+        'obra_id' => 'integer'
     ];
 
     /**
@@ -62,5 +64,13 @@ class MemoriaCalculo extends Model
     public function blocos()
     {
         return $this->hasMany(MemoriaCalculoBloco::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function obra()
+    {
+        return $this->belongsTo(Obra::class);
     }
 }
