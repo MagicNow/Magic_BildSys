@@ -141,7 +141,14 @@
     // Interação entre quantidade e porcentagem.
     function calcularPorcentagem(qtd, id) {
         porcentagem =  (moneyToFloat(qtd) / qtd_item_apropriacao) * 100;
-        $('#porcentagem_'+id).val(porcentagem);
+
+        if(porcentagem.toString().length <= 2) {
+            porcentagem = porcentagem+',00'
+        } else {
+            porcentagem = porcentagem.toFixed(2)
+        }
+
+        $('#porcentagem_'+id).val(porcentagem.toString().replace('.', ','));
 
         recarregarMascara();
     }
@@ -149,14 +156,21 @@
     // Interação entre porcentagem e quantidade.
     function calcularQuantidade(porcentagem, id) {
         quantidade = qtd_item_apropriacao * (moneyToFloat(porcentagem) / 100);
-        $('#quantidade_'+id).val(quantidade);
+
+        if(quantidade.toString().length <= 2) {
+            quantidade = quantidade+',00'
+        } else {
+            quantidade = quantidade.toFixed(2)
+        }
+
+        $('#quantidade_'+id).val(quantidade.toString().replace('.', ','));
 
         recarregarMascara();
     }
 
     function recarregarMascara() {
         $('.money').maskMoney({
-            allowNegative: true,
+            allowNegative: false,
             thousands: '.',
             decimal: ','
         });
