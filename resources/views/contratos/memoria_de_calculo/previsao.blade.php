@@ -98,6 +98,7 @@
 @section('scripts')
 <script type="text/javascript">
     var count = 0;
+    var qtd_item_apropriacao = '{{$contrato_item_apropriacao->qtd}}';
 
     // Função para adicionar linha na tabela
     function adicionarNaTabela(memoria_calculo_bloco_id, estrutura, pavimento, trecho) {
@@ -121,10 +122,10 @@
             <input type="date" class="form-control" name="itens['+count+'][data_competencia]">\
             </td>\
             <td>\
-                <input type="text" class="form-control money" name="itens['+count+'][qtd]">\
+                <input type="text" class="form-control money" name="itens['+count+'][qtd]" onkeyup="calcularPorcentagem(this.value, count);">\
             </td>\
             <td>\
-                <input type="text" class="form-control money">\
+                <input type="text" class="form-control money" id="porcentagem_'+count+'">\
             </td>\
             <td>\
             <button onclick="removerLinha('+count+');" class="btn btn-flat btn-sm btn-danger pull-right" data-toggle="tooltip" data-placement="top" title="Remover">\
@@ -133,16 +134,27 @@
         </tr>\
         ');
 
-        $('.money').maskMoney({
-            allowNegative: true,
-            thousands: '.',
-            decimal: ','
-        });
+        recarregarMascara();
     }
 
     // Função para remover linha da tabela
     function removerLinha(id) {
         $('#linha_'+id).remove();
+    }
+
+    function calcularPorcentagem(qtd, id) {
+        porcentagem =  (moneyToFloat(qtd) / qtd_item_apropriacao) * 100;
+        $('#porcentagem_'+id).val(porcentagem);
+
+        recarregarMascara();
+    }
+
+    function recarregarMascara() {
+        $('.money').maskMoney({
+            allowNegative: true,
+            thousands: '.',
+            decimal: ','
+        });
     }
 </script>
 @endsection
