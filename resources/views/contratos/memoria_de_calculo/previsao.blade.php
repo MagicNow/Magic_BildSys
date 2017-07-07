@@ -40,7 +40,8 @@
             <p class="form-control">{!! $contrato_item_apropriacao->codigo_insumo . ' - ' . $insumo->nome . ' - ' . $insumo->unidade_sigla!!}</p>
         </div>
 
-        @if($previsao)
+        @if(count($previsoes))
+            @php $previsao = $previsoes->first(); @endphp
             <div class="form-group col-md-3">
                 {!! Form::label('planejamento_id', 'Tarefa:') !!}
                 <p class="form-control">{{$previsao->planejamento->tarefa}}</p>
@@ -104,7 +105,35 @@
             </tr>
             </thead>
             <tbody>
-
+                @if(count($previsoes))
+                    @foreach($previsoes as $item)
+                        <tr id=linha_{{$item->id}}>
+                            <input type="hidden" name="itens[{{$item->id}}][memoria_calculo_bloco_id]" value="{{$item->memoria_calculo_bloco_id}}">
+                            <td>
+                                {{$item->memoriaCalculoBloco->estruturaObj->nome}}
+                            </td>
+                            <td>
+                                {{$item->memoriaCalculoBloco->pavimentoObj->nome}}
+                            </td>
+                            <td>
+                                {{$item->memoriaCalculoBloco->trechoObj->nome}}
+                            </td>
+                            <td>
+                                <input type="date" class="form-control" name="itens[{{$item->id}}][data_competencia]" value="{{$item->data_competencia}}">
+                            </td>
+                            <td>
+                                <input type="text" class="form-control money" name="itens[{{$item->id}}][qtd]" id="quantidade_{{$item->id}}" onkeyup="calcularPorcentagem(this.value, '{{$item->id}}');" value="{{number_format($item->qtd, 2, ',', '.')}}">
+                            </td>
+                            <td>
+                                <input type="text" class="form-control money" id="porcentagem_{{$item->id}}" onkeyup="calcularQuantidade(this.value, '{{$item->id}}');">
+                            </td>
+                            <td>
+                                <button onclick="removerLinha({{$item->id}});" class="btn btn-flat btn-sm btn-danger pull-right" data-toggle="tooltip" data-placement="top" title="Remover">
+                                    <i class="fa fa-remove fa-fw" aria-hidden="true"></i>
+                            </td>
+                        </tr>
+                    @endforeach
+                @endif
             </tbody>
         </table>
 
