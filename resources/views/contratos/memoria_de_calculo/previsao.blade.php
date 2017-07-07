@@ -95,6 +95,16 @@
             </div>
         @endif
 
+        <div class="col-md-12">
+            <h3>
+                Filtros
+            </h3>
+            <div class="form-group col-md-3">
+                {!! Form::label('filtro_estrutura', 'Estrutura:') !!}
+                {!! Form::select('filtro_estrutura', $estruturas , null, ['class' => 'form-control select2', 'onchange' => 'filtrarEstrututa(this.value);']) !!}
+            </div>
+        </div>
+
         <table class="table table-striped table-no-margin">
             <thead>
             <tr>
@@ -108,12 +118,13 @@
             </tr>
             </thead>
             <tbody>
+
             @php $count = 0; @endphp
 
             @if(count($previsoes))
                 @foreach($previsoes as $item)
                     @php $count = $item->id; @endphp
-                    <tr id=linha_{{$item->id}} memoria_calculo_bloco_id="{{$item->memoria_calculo_bloco_id}}">
+                    <tr id="linha_{{$item->id}}" memoria_calculo_bloco_id="{{$item->memoria_calculo_bloco_id}}" class="estrutura" estrutura="{{$item->memoriaCalculoBloco->estruturaObj->id}}">
                         <input type="hidden" name="itens[{{$item->id}}][memoria_calculo_bloco_id]" value="{{$item->memoria_calculo_bloco_id}}">
                         <input type="hidden" name="itens[{{$item->id}}][id]" value="{{$item->id}}">
                         <td>
@@ -174,7 +185,7 @@
     });
 
     // Função para adicionar linha na tabela
-    function adicionarNaTabela(memoria_calculo_bloco_id, estrutura, pavimento, trecho) {
+    function adicionarNaTabela(memoria_calculo_bloco_id, estrutura, pavimento, trecho, estrutura_id) {
         count ++;
 
         if($.inArray(memoria_calculo_bloco_id.toString(), array_blocos_previstos) !== -1) {
@@ -187,7 +198,7 @@
             },3000);
         } else {
             $('tbody').append('\
-                <tr id=linha_'+count+'>\
+                <tr id="linha_'+count+'"  class="estrutura" estrutura="'+estrutura_id+'">\
                     <input type="hidden" name="itens['+count+'][memoria_calculo_bloco_id]" value="'+memoria_calculo_bloco_id+'">\
                     <td>\
                         '+estrutura+'\
@@ -274,6 +285,18 @@
         $('#quantidade_'+id).val(quantidade.toString().replace('.', ','));
 
         recarregarMascara();
+    }
+
+    // Filtro de estruturas
+    function filtrarEstrututa(valor) {
+        if(valor){
+            $(".estrutura").hide();
+            $('[estrutura='+valor+']').show();
+        } else {
+            setTimeout(function () {
+                $(".estrutura").show();
+            }, 500);
+        }
     }
 
     function recarregarMascara() {

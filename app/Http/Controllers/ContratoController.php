@@ -12,6 +12,7 @@ use App\Models\Fornecedor;
 use App\Models\Insumo;
 use App\Models\McMedicaoPrevisao;
 use App\Models\MemoriaCalculo;
+use App\Models\NomeclaturaMapa;
 use App\Models\Obra;
 use App\Models\ObraTorre;
 use App\Models\Planejamento;
@@ -535,6 +536,11 @@ class ContratoController extends AppBaseController
                 ->where('contrato_item_id', $contrato_item_apropriacao->contrato_item_id)
                 ->get();
 
+        $estruturas = NomeclaturaMapa::where('tipo', 1)
+            ->pluck('nome', 'id')
+            ->prepend('', '')
+            ->toArray();
+        
         return view('contratos.memoria_de_calculo.previsao',
             compact(
                 'contrato',
@@ -543,7 +549,8 @@ class ContratoController extends AppBaseController
                 'tarefas',
                 'memoria_de_calculo',
                 'obra_torres',
-                'previsoes'
+                'previsoes',
+                'estruturas'
             )
         );
     }
