@@ -550,6 +550,7 @@ class ContratoController extends AppBaseController
 
     public function memoriaDeCalculoSalvar(Request $request)
     {
+        dd($request->itens);
         if(count($request->itens)) {
             foreach ($request->itens as $item) {
                 $item['qtd'] = money_to_float($item['qtd']);

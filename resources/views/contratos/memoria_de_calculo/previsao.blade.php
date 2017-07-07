@@ -105,10 +105,14 @@
             </tr>
             </thead>
             <tbody>
-                @if(count($previsoes))
+            @php $count = 0; @endphp
+
+            @if(count($previsoes))
                     @foreach($previsoes as $item)
+                        @php $count = $item->id; @endphp
                         <tr id=linha_{{$item->id}}>
                             <input type="hidden" name="itens[{{$item->id}}][memoria_calculo_bloco_id]" value="{{$item->memoria_calculo_bloco_id}}">
+                            <input type="hidden" name="itens[{{$item->id}}][id]" value="{{$item->id}}">
                             <td>
                                 {{$item->memoriaCalculoBloco->estruturaObj->nome}}
                             </td>
@@ -153,7 +157,7 @@
 
 @section('scripts')
 <script type="text/javascript">
-    var count = 0;
+    var count = '{{$count}}';
     var qtd_item_apropriacao = '{{$contrato_item_apropriacao->qtd}}';
 
     $(function() {
