@@ -159,6 +159,7 @@
     // Função para adicionar linha na tabela
     function adicionarNaTabela(memoria_calculo_bloco_id, estrutura, pavimento, trecho) {
         count ++;
+
         $('tbody').append('\
         <tr id=linha_'+count+'>\
             <input type="hidden" name="itens['+count+'][memoria_calculo_bloco_id]" value="'+memoria_calculo_bloco_id+'">\
@@ -175,10 +176,10 @@
             <input type="date" class="form-control" name="itens['+count+'][data_competencia]">\
             </td>\
             <td>\
-                <input type="text" class="form-control money" name="itens['+count+'][qtd]" id="quantidade_'+count+'" onkeyup="calcularPorcentagem(this.value, count);">\
+                <input type="text" class="form-control money" name="itens['+count+'][qtd]" id="quantidade_'+count+'" onkeyup="calcularPorcentagem(this.value, '+count+');">\
             </td>\
             <td>\
-                <input type="text" class="form-control money" id="porcentagem_'+count+'" onkeyup="calcularQuantidade(this.value, count);">\
+                <input type="text" class="form-control money" id="porcentagem_'+count+'" onkeyup="calcularQuantidade(this.value, '+count+');">\
             </td>\
             <td>\
             <button onclick="removerLinha('+count+');" class="btn btn-flat btn-sm btn-danger pull-right" data-toggle="tooltip" data-placement="top" title="Remover">\
