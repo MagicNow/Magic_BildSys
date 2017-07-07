@@ -7,6 +7,7 @@ use App\Http\Requests;
 use App\Http\Requests\CreateNotafiscalRequest;
 use App\Http\Requests\UpdateNotafiscalRequest;
 use App\Models\Contrato;
+use App\Repositories\ConsultaNfeRepository;
 use App\Repositories\NotafiscalRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
@@ -155,5 +156,9 @@ class NotafiscalController extends AppBaseController
         Flash::success('Notafiscal '.trans('common.deleted').' '.trans('common.successfully').'.');
 
         return redirect(route('notafiscals.index'));
+    }
+
+    public function consultaNfe(){
+        ConsultaNfeRepository::consultaNfe();
     }
 }

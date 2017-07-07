@@ -22,30 +22,3 @@
         </div>
     </div>
 @endsection
-{{--@section('scripts')--}}
-    {{--<script type="text/javascript">--}}
-        {{--var qtditens = {{ isset($tipoEqualizacaoTecnica)?$qtdItens:'0' }};--}}
-
-        {{--function addNfItens(){--}}
-            {{--nfItens = 'TESTE';--}}
-            {{--$('#teste').html(nfItens);--}}
-        {{--}--}}
-        {{----}}
-        {{--function readURL(input) {--}}
-            {{--startLoading();--}}
-            {{--if (input.files && input.files[0]) {--}}
-                {{--var view = new FileReader();--}}
-                {{--view.onload = function (e) {--}}
-{{--//                    window.open(e.target.result);--}}
-                    {{--$('#arquivoNfe')--}}
-                            {{--.attr('src', e.target.result)--}}
-                            {{--.width(620)--}}
-                            {{--.height(700);--}}
-                {{--};--}}
-                {{--view.readAsDataURL(input.files[0]);--}}
-            {{--}--}}
-            {{--stopLoading();--}}
-            {{--$('#arquivo_nfe').val($('#arquivoNfe').val());--}}
-        {{--}--}}
-    {{--</script>--}}
-{{--@stop--}}
