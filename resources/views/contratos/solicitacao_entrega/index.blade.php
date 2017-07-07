@@ -122,6 +122,7 @@
 </div>
 
 @include('contratos.solicitacao_entrega.modal_selecionar_insumo')
+
 @endsection
 
 @section('scripts')

@@ -1,10 +1,15 @@
 @extends('layouts.front')
 
+@php
+    $editing = true;
+@endphp
+
 @section('content')
+<input type="hidden" id="is-editing" value="1">
+
 <div class="content-header">
     <h1 class="content-header-title">
-        Solicitação de Entrega #{{ $entrega->id }}
-        @include('solicitacao_entrega.actions')
+        Editar Solicitação de Entrega #{{ $entrega->id }}
     </h1>
 </div>
 
@@ -19,11 +24,7 @@
         <div class="col-md-4 form-group">
             {!! Form::label('', 'Fornecedor') !!}
             <p class="form-control input-lg">
-                {!!
-                    $entrega->fornecedor_id
-                        ? $entrega->fornecedor->nome
-                        : $entrega->contrato->fornecedor->nome
-                !!}
+                {!! $entrega->fornecedor_id ? $entrega->fornecedor->nome : $entrega->contrato->fornecedor->nome !!}
             </p>
         </div>
         <div class="col-md-4 form-group">
@@ -69,6 +70,11 @@
         <div class="panel-footer">
             <div class="row">
                 <div class="col-sm-12">
+                    <button type="submit"
+                        class="btn btn-flat btn-success pull-right"
+                        id="finalizar">
+                        Salvar
+                    </button>
                     <div class="col-sm-3 pull-right h4 text-right">
                         Total Solicitado:
                         <span id="total-container">
@@ -80,14 +86,8 @@
         </div>
     </div>
 </div>
-<div class="hidden">
-    {!! Form::select('motivo', $motivos, null, ['id' => 'motivo']) !!}
-</div>
 @endsection
 
 @section('scripts')
-    <script>
-        window.options_motivos = document.getElementById('motivo').innerHTML;
-    </script>
-    <script src="{{ asset('js/solicitacao-de-entrega.js') }}"> </script>
+    <script src="{{ asset('js/solicitacao-de-entrega.js') }}"></script>
 @endsection

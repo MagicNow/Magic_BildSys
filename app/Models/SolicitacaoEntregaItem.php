@@ -23,13 +23,13 @@ class SolicitacaoEntregaItem extends Model
      * @var array
      */
     protected $casts = [
-        'id' => 'integer',
+        'id'                     => 'integer',
         'solicitacao_entrega_id' => 'integer',
-        'insumo_id' => 'integer',
-        'contrato_item_id' => 'integer',
-        'valor_total' => 'float',
-        'valor_decimal' => 'float',
-        'qtd' => 'float'
+        'insumo_id'              => 'integer',
+        'contrato_item_id'       => 'integer',
+        'valor_total'            => 'float',
+        'valor_unitario'         => 'float',
+        'qtd'                    => 'float'
     ];
 
     public function solicitacaoEntrega()
@@ -54,6 +54,15 @@ class SolicitacaoEntregaItem extends Model
             Insumo::class,
             'insumo_id'
         );
+    }
+
+    public function updateQtd()
+    {
+        $total = $this->apropriacoes()->sum('qtd');
+
+        return $this->update([
+            'qtd' => $total
+        ]);
     }
 
     public function apropriacoes()

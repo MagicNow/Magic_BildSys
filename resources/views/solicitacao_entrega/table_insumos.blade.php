@@ -1,3 +1,7 @@
+@php
+    $editing = isset($editing) ? $editing : false;
+@endphp
+
 <table class="table table-bordered table-no-margin table-all-center">
     <thead>
         <tr>
@@ -38,6 +42,10 @@
                                 <th>Código Estruturado</th>
                                 <th>Un. Medidia</th>
                                 <th>Qtd. Solicitada</th>
+                                <th>Nova Qtd. Solicitada</th>
+                                <th>
+                                    Valor Unitário
+                                </th>
                                 <th>Valor Total</th>
                             </tr>
                         </thead>
@@ -49,6 +57,32 @@
                                     </td>
                                     <td>{{ $apropriacao->apropriacao->insumo->unidade_sigla }}</td>
                                     <td>{{ float_to_money($apropriacao->qtd, '') }}</td>
+                                    <td>
+                                        @if($editing)
+                                            <input type="text"
+                                                class="form-control money js-qtd"
+                                                data-apropriacao="{{ $apropriacao->id }}"
+                                                data-item="{{ $item->id }}"
+                                                data-value-per-unit="{{ $item->valor_unitario }}"
+                                                data-qtd-max="{{ $apropriacao->qtd_saldo }}"
+                                                data-initial-value="{{ float_to_money($apropriacao->qtd, '') }}"
+                                                value="{{ float_to_money($apropriacao->qtd, '') }}">
+                                        @else
+                                            {{ float_to_money($apropriacao->qtd, '') }}
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if($editing && $item->contratoItem->insumo->is_faturamento_direto)
+                                            <input type="text"
+                                                data-apropriacao="{{ $apropriacao->id }}"
+                                                data-item="{{ $item->id }}"
+                                                data-initial-value="{{ float_to_money($item->valor_unitario, '') }}"
+                                                class="form-control money js-new-value"
+                                                value="{{ float_to_money($item->valor_unitario, '') }}">
+                                        @else
+                                            {{ float_to_money($item->valor_unitario) }}
+                                        @endif
+                                    </td>
                                     <td class="js-total">
                                         {{ float_to_money(
                                             $apropriacao->qtd * $item->valor_unitario

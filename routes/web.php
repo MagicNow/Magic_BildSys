@@ -722,6 +722,26 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     ->middleware('needsPermission:contratos.solicitar_entrega')
     ->name('solicitacao-entrega.show');
 
+    $router->get(
+        '/solicitacoes-de-entrega/{solicitacao_entrega}/edit',
+        'SolicitacaoEntregaController@edit'
+    )
+    ->middleware('needsPermission:contratos.solicitar_entrega')
+    ->name('solicitacao-entrega.edit');
+
+    $router->patch(
+        '/solicitacoes-de-entrega/{solicitacao_entrega}',
+        'SolicitacaoEntregaController@update'
+    )
+    ->middleware('needsPermission:contratos.solicitar_entrega')
+    ->name('solicitacao-entrega.update');
+
+    $router->post(
+        '/solicitacoes-de-entrega/{solicitacao_entrega}/cancelar',
+        'SolicitacaoEntregaController@cancel'
+    )
+    ->middleware('needsPermission:contratos.solicitar_entrega')
+    ->name('solicitacao-entrega.cancel');
 
     $router->group(['prefix' => 'contratos','middleware' => 'needsPermission:contratos.list'], function($router) {
         $router->get(

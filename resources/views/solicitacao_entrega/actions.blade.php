@@ -53,3 +53,25 @@
         @endif
     @endif
 @endif
+
+@if($entrega->se_status_id === 2 /* REPROVADO */)
+<button type="button"
+     id="cancel"
+    class="btn btn-warning btn-lg btn-flat"
+    data-id="{{ $entrega->id }}">
+    <i class="fa fa-ban"></i>
+    Cancelar
+</button>
+<a href="{{ route('solicitacao-entrega.edit', $entrega->id) }}"
+    class="btn btn-success btn-lg btn-flat">
+    <i class="fa fa-pencil"></i>
+    Editar
+</a>
+@endif
+
+@if($entrega->se_status_id === 3 /* APROVADO */)
+<button type="button" class="btn btn-info btn-lg btn-flat">
+    <i class="fa fa-paper-plane"></i>
+    Marcar como Recebido
+</button>
+@endif

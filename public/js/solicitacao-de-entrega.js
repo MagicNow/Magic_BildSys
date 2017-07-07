@@ -3,6 +3,40 @@ $(function() {
   SolicitacaoDeEntrega.init();
   ModalSelecionarInsumo.init();
 
+
+  $('#cancel').on('click', function(event) {
+    var button = event.currentTarget;
+    swal({
+      title: 'Cancelar solicitação de entrega?',
+      text: 'Ao confirmar não será possível voltar atrás',
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Cancelar',
+      cancelButtonText: 'Não',
+      closeOnConfirm: false,
+      showLoaderOnConfirm: true,
+      confirmButtonColor: '#7ED32C'
+    }, function() {
+      $.post('/solicitacoes-de-entrega/' + button.dataset.id + '/cancelar')
+        .done(function() {
+          swal({
+            title: 'Pronto!',
+            text: 'Solicitaçao de entrega cancelada com sucesso',
+            type: 'success'
+          }, function() {
+            location.href = '/solicitacoes-de-entrega/' + button.dataset.id;
+          });
+        })
+        .fail(function() {
+          swal(
+            'Ops!',
+            'Não foi possivel cancelar esta solicitação de entrega!',
+            'error'
+          );
+        })
+    });
+  });
+
   $('.js-fornecedor-selector').on('view-changer:change', function(event) {
     var $current = $(event.currentTarget);
     $('#fornecedor-selector').toggleClass('hidden', $current.val() !== 'direto');
@@ -19,7 +53,7 @@ $(function() {
 
   $('.js-fornecedor-selector').on('view-changer:hidden', function(event) {
     var $current = $(event.currentTarget);
-    var $view = $('[data-view-name='+ $current.val() +']');
+    var $view = $('[data-view-name=' + $current.val() + ']');
 
     $view.find('input').each(function() {
       $(this).val('').trigger('change');
@@ -31,6 +65,12 @@ $(function() {
 });
 
 var mixInputEvents = 'input keyup blur change';
+
+var focusAtTheEnd = function(input) {
+  var temp = input.val();
+  input.val('').focus().val(temp);
+};
+
 
 var ViewChanger = {
   init: function() {
@@ -66,20 +106,100 @@ var ViewChanger = {
 
 var SolicitacaoDeEntrega = {
   init: function() {
+    var editing = document.getElementById('is-editing');
+    this.isEditing = editing && (editing.value === '1');
     this.tables = $('.js-table-container');
     this.totalContainer = $('#total-container');
     this.btnFinalizar = $('#finalizar');
 
-    this.tables.on(mixInputEvents, '.js-qtd', this.valueChangeHandler.bind(this));
+
+    this.tables.on('blur', '.js-new-value', function(event) {
+      var input = $(event.currentTarget);
+
+      if(!input.val().length || input.val() === '0,00') {
+        event.preventDefault();
+        event.stopPropagation();
+
+        input.val(input.data('initial-value')).trigger('change');
+
+        swal({
+          title: 'Valor Inválido',
+          text: 'O valor do insumo não pode ser 0,00',
+          type: 'warning'
+        }, function() {
+          focusAtTheEnd(input);
+        });
+      }
+    });
+
+    if(this.isEditing) {
+      this.tables.on(
+        'blur',
+        '.js-qtd',
+        this.validateZerosOnEdition('A nova quantidade não pode ser 0,00')
+      );
+
+      this.tables.on(
+        'blur',
+        '.js-new-value',
+        this.validateZerosOnEdition('O novo valor unitário não pode ser R$ 0,00')
+      );
+
+      this.tables.on(
+        mixInputEvents,
+        '.js-new-value',
+        this.newValueChangeHandler.bind(this)
+      );
+    }
+
+    this.tables.on(mixInputEvents, '.js-qtd', this.qtdChangeHandler.bind(this));
+
     this.btnFinalizar.on('click', this.save.bind(this));
   },
 
-  valueChangeHandler: function(event) {
+  validateZerosOnEdition: function(message) {
+    var handler = function(event) {
+      var input = $(event.currentTarget);
+
+      if(!input.val().length || input.val() === '0,00') {
+        event.preventDefault();
+        event.stopPropagation();
+
+        input.val(input.data('initial-value')).trigger('change');
+
+        swal({
+          title: 'Valor Inválido',
+          text: message,
+          type: 'warning'
+        }, function() {
+          focusAtTheEnd(input);
+        });
+      }
+    };
+
+    return handler.bind(this);
+  },
+
+  qtdChangeHandler: function(event) {
     var input = $(event.currentTarget);
 
     this.updateApropriacoes(input);
     this.updateInputTotal(input);
     this.updateTotal(input);
+  },
+
+  newValueChangeHandler: function(event) {
+    var input = $(event.currentTarget);
+
+    var qtd = $('[data-apropriacao="' + input.data('apropriacao') + '"].js-qtd');
+
+    this.updateApropriacoes(input, '.js-new-value', false);
+
+    qtd.each(function() {
+      $(this)
+        .data('value-per-unit', moneyToFloat(input.val()))
+        .trigger('change');
+    });
   },
 
   updateTotal: function(input) {
@@ -109,14 +229,22 @@ var SolicitacaoDeEntrega = {
     total.prop('innerText', floatToMoney(value));
   },
 
-  updateApropriacoes: function(input) {
+  updateApropriacoes: function(input, type, updateTotal) {
     var _this = this;
-    var apropriacoes = $('[data-apropriacao="' + input.data('apropriacao') + '"]');
+    type = type || '.js-qtd';
+    updateTotal = _.isUndefined(updateTotal) ? true : updateTotal;
+
+    var apropriacoes = $(
+      '[data-apropriacao="' + input.data('apropriacao') + '"]' + type
+    );
 
     apropriacoes.each(function(n, el) {
       el.value = input.val();
-      _this.updateInputTotal($(el));
+      if(updateTotal) {
+        _this.updateInputTotal($(el));
+      }
     });
+
   },
 
   getQtd: function(input, validate) {
@@ -134,7 +262,7 @@ var SolicitacaoDeEntrega = {
       swal({
         title: 'Valor Inválido',
         text: 'A quantidade solicitada não pode ser maior do que ' +
-          'a quantidade contratada',
+        'a quantidade contratada',
         type: 'warning'
       });
 
@@ -153,6 +281,7 @@ var SolicitacaoDeEntrega = {
     var inputsQtd = $('.js-qtd');
     var selections = $('.js-selected:not(:empty)');
     var selectedType = $('.js-fornecedor-selector:checked');
+    var newValues = $('.js-new-value');
     var fornecedor = $('#fornecedor_id');
     var formData = {};
 
@@ -171,6 +300,24 @@ var SolicitacaoDeEntrega = {
       formData.fornecedor_id = fornecedor.val();
     }
 
+    if(this.isEditing) {
+      var inputs = $('[data-initial-value]');
+
+      var nothingHasChanged = _.reduce(inputs, function(nothingHasChanged, input) {
+        return nothingHasChanged && (input.value.trim() === input.dataset.initialValue.trim());
+      }, true);
+
+      if(nothingHasChanged) {
+        swal({
+          title: 'Solicitaçao de Entrega',
+          type: 'warning',
+          text: 'Nenhuma alteração foi encontrada'
+        });
+
+        return false;
+      }
+    }
+
     var qtds = _(inputsQtd)
       .filter(function(input) {
         return !!input.value.length && (input.value !== '0,00');
@@ -178,7 +325,7 @@ var SolicitacaoDeEntrega = {
       .map(function(input) {
         return {
           apropriacao: _.parseInt(input.dataset.apropriacao),
-          contrato_item_id: _.parseInt(input.dataset.contratoItem),
+          contrato_item_id: input.dataset.contratoItem || null,
           qtd: moneyToFloat(input.value)
         };
       })
@@ -191,24 +338,34 @@ var SolicitacaoDeEntrega = {
         var trs = $(container).find('tr');
 
         return _(trs).map(function(tr, n) {
-            var inputs = tr.querySelectorAll('input');
+          var inputs = tr.querySelectorAll('input');
 
-            return _.reduce(inputs, function(selected, input) {
-              selected[input.name] = input.value;
+          return _.reduce(inputs, function(selected, input) {
+            selected[input.name] = input.value;
 
-              return selected;
-            }, {
-              apropriacao: container.dataset.apropriacao,
-              contrato_item_id: container.dataset.contratoItem,
-            });
+            return selected;
+          }, {
+            apropriacao: container.dataset.apropriacao,
+            contrato_item_id: container.dataset.contratoItem,
+          });
 
-          })
-          .value()
+        })
+        .value()
       })
       .flatten()
       .value();
 
-    formData.solicitacao = _.flatten([selected, qtds]);
+    var newValuesObjects = _(newValues)
+      .uniqBy('dataset.apropriacao')
+      .map(function(newValue) {
+        return {
+            apropriacao: newValue.dataset.apropriacao,
+            value: moneyToFloat(newValue.value),
+        };
+      })
+      .value();
+
+    formData.solicitacao = _.flatten([selected, qtds, newValuesObjects]);
 
     if(!formData.solicitacao.length) {
       swal({
@@ -222,7 +379,11 @@ var SolicitacaoDeEntrega = {
 
     startLoading();
 
-    $.post(location.href, formData)
+    $.ajax({
+      url: location.href.replace('/edit', ''),
+      data: formData,
+      method: this.isEditing ? 'PATCH' : 'POST',
+    })
       .always(stopLoading)
       .done(function() {
         swal({
@@ -230,7 +391,9 @@ var SolicitacaoDeEntrega = {
           text: 'Solicitação enviada para aprovação',
           type: 'success'
         }, function() {
-          location.href = location.href.replace('/solicitar-entrega', '');
+          location.href = location.href
+            .replace('/solicitar-entrega', '')
+            .replace('/edit', '');
         });
       })
       .fail(function() {
@@ -297,8 +460,8 @@ var ModalSelecionarInsumo = {
 
     btnSolicitarInsumo.on('click', function(event) {
       colorbox({
-          href: '/solicitar-insumo?is_modal=1&bind_form=0'
-        })
+        href: '/solicitar-insumo?is_modal=1&bind_form=0'
+      })
         .then(function(iframe) {
           iframe.element.addEventListener('load', function(e) {
             $(e.currentTarget.contentWindow.document)
@@ -338,6 +501,7 @@ var ModalSelecionarInsumo = {
 
     });
   },
+
   insumoTemplate: function(insumo, qtd, valor_unitario) {
     return '<tr>' +
       '<td>' + insumo.codigo + '</td>' +
@@ -416,7 +580,7 @@ var ModalSelecionarInsumo = {
       swal({
         title: '',
         text: 'A seleção de insumos ultrapassa o orçamento de ' +
-          floatToMoney(max) + ' desta apropriação',
+        floatToMoney(max) + ' desta apropriação',
         type: 'warning'
       }, function() {
         _this.addHideEventHandlerToModal();

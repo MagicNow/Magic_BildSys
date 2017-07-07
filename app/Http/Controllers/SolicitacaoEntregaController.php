@@ -9,9 +9,19 @@ use App\Repositories\WorkflowAprovacaoRepository;
 use App\Repositories\SolicitacaoEntregaRepository;
 use App\Models\WorkflowAlcada;
 use App\Repositories\Admin\WorkflowReprovacaoMotivoRepository;
+use Laracasts\Flash\Flash;
 
 class SolicitacaoEntregaController extends AppBaseController
 {
+    /**
+     * @param SolicitacaoEntregaRepository $solicitacaoEntregaRepository
+     */
+    public function __construct(SolicitacaoEntregaRepository $solicitacaoEntregaRepository)
+    {
+        $this->solicitacaoEntregaRepository = $solicitacaoEntregaRepository;
+    }
+
+
     /**
      * Show an especific resource
      *
@@ -21,11 +31,10 @@ class SolicitacaoEntregaController extends AppBaseController
      */
     public function show(
         WorkflowReprovacaoMotivoRepository $workflowReprovacaoMotivoRepository,
-        SolicitacaoEntregaRepository $repository,
         Request $request,
         $id
     ) {
-        $entrega      = $repository->find($id)->load('itens.apropriacoes');
+        $entrega      = $this->solicitacaoEntregaRepository->find($id)->load('itens.apropriacoes');
         $apropriacoes = $entrega->itens
             ->pluck('apropriacoes')
             ->collapse();
@@ -105,4 +114,47 @@ class SolicitacaoEntregaController extends AppBaseController
             'motivos'
         ));
     }
+
+    public function edit($id)
+    {
+        $entrega = $this->solicitacaoEntregaRepository
+            ->find($id)
+            ->load('itens.apropriacoes');
+
+        if(!$entrega->pode_editar) {
+            Flash::warning('Você não pode editar uma solicitação aprovada');
+
+            return redirect()->route('solicitacao-entrega.show', $entrega->id);
+        }
+
+        $apropriacoes = $entrega->itens
+            ->pluck('apropriacoes')
+            ->collapse();
+
+        return view('solicitacao_entrega.edit', compact(
+            'entrega',
+            'apropriacoes'
+        ));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $solicitacao = $this->solicitacaoEntregaRepository
+            ->update($request->all(), $id);
+
+        return response()->json([
+            'success' => true,
+            'data' => $solicitacao
+        ]);
+    }
+
+    public function cancel(Request $request, $id)
+    {
+        $solicitacao = $this->solicitacaoEntregaRepository->cancel($id);
+
+        return response()->json([
+            'success' => true
+        ]);
+    }
+
 }

@@ -52,7 +52,7 @@ class SolicitacaoEntregaRepository extends BaseRepository
                 ->each(function($solicitacao, $contrato_id) use($solicitacaoEntrega, $fornecedor_id) {
                     $contratoItem = ContratoItem::find($contrato_id);
 
-                    if(!in_array($contratoItem->insumo->codigo, [34007, 30019]) && !$fornecedor_id) {
+                    if(!$contratoItem->insumo->is_faturamento_direto && !$fornecedor_id) {
                         $solicitacaoEntregaItem = SolicitacaoEntregaItem::create([
                             'solicitacao_entrega_id' => $solicitacaoEntrega->id,
                             'contrato_item_id'       => $contrato_id,
@@ -107,4 +107,55 @@ class SolicitacaoEntregaRepository extends BaseRepository
         return $this->model->where('contrato_id', $id)->get();
     }
 
+    public function update(array $request, $id)
+    {
+        $solicitacao = $this->find($id);
+
+        DB::beginTransaction();
+        try {
+            foreach($request['solicitacao'] as $se_apropriacao) {
+                $se_apropriacao_model = SeApropriacao::findOrFail($se_apropriacao['apropriacao']);
+
+                if(isset($se_apropriacao['qtd'])) {
+                    $se_apropriacao_model->qtd = $se_apropriacao['qtd'];
+                    $se_apropriacao_model->save();
+                }
+
+                if(isset($se_apropriacao['value'])) {
+                    $se_apropriacao_model
+                        ->solicitacaoEntregaItem
+                        ->update([
+                            'valor_unitario' => $se_apropriacao['value'],
+                            'valor_total' => $se_apropriacao['value'] * $se_apropriacao_model->solicitacaoEntregaItem->qtd
+                        ]);
+                }
+
+                $se_apropriacao_model->solicitacaoEntregaItem->updateQtd();
+            }
+
+            $solicitacao->update([
+                'se_status_id' => SeStatus::EM_APROVACAO,
+                'valor_total' => $solicitacao->total
+            ]);
+        } catch (Exception $e) {
+            DB::rollback();
+            throw $e;
+        }
+
+        DB::commit();
+
+
+        return $solicitacao;
+    }
+
+    public function cancel($id)
+    {
+        $solicitacao = $this->find($id);
+
+        $solicitacao->update([
+            'se_status_id' => SeStatus::CANCELADO
+        ]);
+
+        return $solicitacao;
+    }
 }

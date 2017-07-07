@@ -135,4 +135,9 @@ class SolicitacaoEntrega extends Model
     {
         return $this->itens()->sum('valor_total');
     }
+
+    public function getPodeEditarAttribute()
+    {
+        return $this->isStatus(SeStatus::REPROVADO);
+    }
 }
