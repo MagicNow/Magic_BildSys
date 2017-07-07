@@ -812,6 +812,15 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             ->middleware('needsPermission:configuracaoEstaticas.edit');
     });
 
+    $router->get('notafiscals', ['as' => 'notafiscals.index', 'uses' => 'NotafiscalController@index']);
+    $router->post('notafiscals', ['as' => 'notafiscals.store', 'uses' => 'NotafiscalController@store']);
+    $router->get('notafiscals/create', ['as' => 'notafiscals.create', 'uses' => 'NotafiscalController@create']);
+    $router->put('notafiscals/{notafiscals}', ['as' => 'notafiscals.update', 'uses' => 'NotafiscalController@update']);
+    $router->patch('notafiscals/{notafiscals}', ['as' => 'notafiscals.update', 'uses' => 'NotafiscalController@update']);
+    $router->delete('notafiscals/{notafiscals}', ['as' => 'notafiscals.destroy', 'uses' => 'NotafiscalController@destroy']);
+    $router->get('notafiscals/{notafiscals}', ['as' => 'notafiscals.show', 'uses' => 'NotafiscalController@show']);
+    $router->get('notafiscals/{notafiscals}/edit', ['as' => 'notafiscals.edit', 'uses' => 'NotafiscalController@edit']);
+
 
     $router->get('/teste', function () {
         //        $grupos_mega = \App\Models\MegaInsumoGrupo::select([
