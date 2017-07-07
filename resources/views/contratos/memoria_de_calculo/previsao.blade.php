@@ -111,37 +111,37 @@
             @php $count = 0; @endphp
 
             @if(count($previsoes))
-                    @foreach($previsoes as $item)
-                        @php $count = $item->id; @endphp
-                        <tr id=linha_{{$item->id}}>
-                            <input type="hidden" name="itens[{{$item->id}}][memoria_calculo_bloco_id]" value="{{$item->memoria_calculo_bloco_id}}">
-                            <input type="hidden" name="itens[{{$item->id}}][id]" value="{{$item->id}}">
-                            <td>
-                                {{$item->memoriaCalculoBloco->estruturaObj->nome}}
-                            </td>
-                            <td>
-                                {{$item->memoriaCalculoBloco->pavimentoObj->nome}}
-                            </td>
-                            <td>
-                                {{$item->memoriaCalculoBloco->trechoObj->nome}}
-                            </td>
-                            <td>
-                                <input type="date" class="form-control" name="itens[{{$item->id}}][data_competencia]" value="{{$item->data_competencia->format('Y-m-d')}}" required>
-                            </td>
-                            <td>
-                                <input type="text" class="form-control money" name="itens[{{$item->id}}][qtd]" id="quantidade_{{$item->id}}" onkeyup="calcularPorcentagem(this.value, '{{$item->id}}');" value="{{number_format($item->qtd, 2, ',', '.')}}" required>
-                            </td>
-                            <td>
-                                <input type="text" class="form-control money" id="porcentagem_{{$item->id}}" onkeyup="calcularQuantidade(this.value, '{{$item->id}}');">
-                            </td>
-                            <td>
-                                <button onclick="excluirLinha({{$item->id}});" class="btn btn-flat btn-sm btn-danger pull-right" data-toggle="tooltip" data-placement="top" title="Excluir" type="button">
-                                    <i class="fa fa-remove fa-fw" aria-hidden="true"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    @endforeach
-                @endif
+                @foreach($previsoes as $item)
+                    @php $count = $item->id; @endphp
+                    <tr id=linha_{{$item->id}} memoria_calculo_bloco_id="{{$item->memoria_calculo_bloco_id}}">
+                        <input type="hidden" name="itens[{{$item->id}}][memoria_calculo_bloco_id]" value="{{$item->memoria_calculo_bloco_id}}">
+                        <input type="hidden" name="itens[{{$item->id}}][id]" value="{{$item->id}}">
+                        <td>
+                            {{$item->memoriaCalculoBloco->estruturaObj->nome}}
+                        </td>
+                        <td>
+                            {{$item->memoriaCalculoBloco->pavimentoObj->nome}}
+                        </td>
+                        <td>
+                            {{$item->memoriaCalculoBloco->trechoObj->nome}}
+                        </td>
+                        <td>
+                            <input type="date" class="form-control" name="itens[{{$item->id}}][data_competencia]" value="{{$item->data_competencia->format('Y-m-d')}}" required>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control money" name="itens[{{$item->id}}][qtd]" id="quantidade_{{$item->id}}" onkeyup="calcularPorcentagem(this.value, '{{$item->id}}');" value="{{number_format($item->qtd, 2, ',', '.')}}" required>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control money" id="porcentagem_{{$item->id}}" onkeyup="calcularQuantidade(this.value, '{{$item->id}}');">
+                        </td>
+                        <td>
+                            <button onclick="excluirLinha({{$item->id}});" class="btn btn-flat btn-sm btn-danger pull-right" data-toggle="tooltip" data-placement="top" title="Excluir" type="button">
+                                <i class="fa fa-remove fa-fw" aria-hidden="true"></i>
+                            </button>
+                        </td>
+                    </tr>
+                @endforeach
+            @endif
             </tbody>
         </table>
 
@@ -162,10 +162,12 @@
 <script type="text/javascript">
     var count = '{{$count}}';
     var qtd_item_apropriacao = '{{$contrato_item_apropriacao->qtd}}';
+    var array_blocos_previstos = [];
 
     $(function() {
         @if(count($previsoes))
             @foreach($previsoes as $item)
+                array_blocos_previstos.push('{{$item->memoria_calculo_bloco_id}}');
                 calcularPorcentagem('{{number_format($item->qtd, 2, ',', '.')}}', '{{$item->id}}');
             @endforeach
         @endif
@@ -175,36 +177,45 @@
     function adicionarNaTabela(memoria_calculo_bloco_id, estrutura, pavimento, trecho) {
         count ++;
 
-        $('tbody').append('\
-        <tr id=linha_'+count+'>\
-            <input type="hidden" name="itens['+count+'][memoria_calculo_bloco_id]" value="'+memoria_calculo_bloco_id+'">\
-            <td>\
-                '+estrutura+'\
-            </td>\
-            <td>\
-                '+pavimento+'\
-            </td>\
-            <td>\
-                '+trecho+'\
-            </td>\
-            <td>\
-            <input type="date" class="form-control" name="itens['+count+'][data_competencia]" required>\
-            </td>\
-            <td>\
-                <input type="text" class="form-control money" name="itens['+count+'][qtd]" id="quantidade_'+count+'" onkeyup="calcularPorcentagem(this.value, '+count+');" required>\
-            </td>\
-            <td>\
-                <input type="text" class="form-control money" id="porcentagem_'+count+'" onkeyup="calcularQuantidade(this.value, '+count+');">\
-            </td>\
-            <td>\
-                <button onclick="removerLinha('+count+');" class="btn btn-flat btn-sm btn-danger pull-right" data-toggle="tooltip" data-placement="top" title="Remover" type="button">\
-                    <i class="fa fa-remove fa-fw" aria-hidden="true"></i>\
-                </button>\
-            </td>\
-        </tr>\
-        ');
+        if($.inArray(memoria_calculo_bloco_id.toString(), array_blocos_previstos) !== -1) {
+            $('[memoria_calculo_bloco_id='+memoria_calculo_bloco_id+']').css('background-color', '#f98d00');
 
-        recarregarMascara();
+            setTimeout(function(){
+                $('[memoria_calculo_bloco_id='+memoria_calculo_bloco_id+']').animate({
+                    backgroundColor: 'tranparent'
+                }, 'slow');
+            },3000);
+        } else {
+            $('tbody').append('\
+                <tr id=linha_'+count+'>\
+                    <input type="hidden" name="itens['+count+'][memoria_calculo_bloco_id]" value="'+memoria_calculo_bloco_id+'">\
+                    <td>\
+                        '+estrutura+'\
+                    </td>\
+                    <td>\
+                        '+pavimento+'\
+                    </td>\
+                    <td>\
+                        '+trecho+'\
+                    </td>\
+                    <td>\
+                    <input type="date" class="form-control" name="itens['+count+'][data_competencia]" required>\
+                    </td>\
+                    <td>\
+                        <input type="text" class="form-control money" name="itens['+count+'][qtd]" id="quantidade_'+count+'" onkeyup="calcularPorcentagem(this.value, '+count+');" required>\
+                    </td>\
+                    <td>\
+                        <input type="text" class="form-control money" id="porcentagem_'+count+'" onkeyup="calcularQuantidade(this.value, '+count+');">\
+                    </td>\
+                    <td>\
+                        <button onclick="removerLinha('+count+');" class="btn btn-flat btn-sm btn-danger pull-right" data-toggle="tooltip" data-placement="top" title="Remover" type="button">\
+                            <i class="fa fa-remove fa-fw" aria-hidden="true"></i>\
+                        </button>\
+                    </td>\
+                </tr>\
+            ');
+            recarregarMascara();
+        }
     }
 
     // Função para remover linha da tabela
