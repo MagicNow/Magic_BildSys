@@ -263,12 +263,14 @@ class Contrato extends Model
 
     public function getPodeSolicitarEntregaAttribute()
     {
-        return $this->isStatus(ContratoStatus::APROVADO, ContratoStatus::ATIVO);
+        return $this->isStatus(ContratoStatus::APROVADO, ContratoStatus::ATIVO) && $this->hasMaterial();
     }
 
     public function getPodeSolicitarNovaEntregaAttribute()
     {
-        return $this->pode_solicitar_entrega && !$this->entregas()->whereNotIn('se_status_id', [SeStatus::REALIZADO, SeStatus::CANCELADO])->count();
+        return $this->pode_solicitar_entrega && !$this->entregas()
+            ->whereNotIn('se_status_id', [SeStatus::REALIZADO, SeStatus::CANCELADO])
+            ->count();
     }
 
     public function getHasMaterialFaturamentoDiretoAttribute()

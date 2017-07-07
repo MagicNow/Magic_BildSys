@@ -468,6 +468,11 @@ class ContratoController extends AppBaseController
         $contrato = $this->contratoRepository->find($contrato_id)
             ->load('materiais.apropriacoes');
 
+        if(!$contrato->hasMaterial()) {
+            Flash::warning('Este contrato não contém material para entrega');
+            return redirect()->route('contratos.show', $contrato->id);
+        }
+
         if(!$contrato->pode_solicitar_entrega) {
             Flash::warning('Ainda não é possível realizar solicitações de entrega neste contrato');
             return redirect()->route('contratos.show', $contrato->id);

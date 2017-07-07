@@ -69,8 +69,11 @@
 </a>
 @endif
 
-@if($entrega->se_status_id === 3 /* APROVADO */)
-<button type="button" class="btn btn-info btn-lg btn-flat">
+@if($entrega->se_status_id === 3 /* APROVADO */ && $entrega->se_status_id !== 5 /* RECEBIDO */)
+<button type="button"
+    class="btn btn-info btn-lg btn-flat"
+    id="received"
+    data-id="{{ $entrega->id }}">
     <i class="fa fa-paper-plane"></i>
     Marcar como Recebido
 </button>

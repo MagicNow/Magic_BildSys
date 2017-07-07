@@ -157,4 +157,12 @@ class SolicitacaoEntregaController extends AppBaseController
         ]);
     }
 
+    public function received($id)
+    {
+        $solicitacao = $this->solicitacaoEntregaRepository->received($id);
+
+        return response()->json([
+            'success' => true
+        ]);
+    }
 }

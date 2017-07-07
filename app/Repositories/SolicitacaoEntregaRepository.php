@@ -158,4 +158,15 @@ class SolicitacaoEntregaRepository extends BaseRepository
 
         return $solicitacao;
     }
+
+    public function received($id)
+    {
+        $solicitacao = $this->find($id);
+
+        $solicitacao->update([
+            'se_status_id' => SeStatus::RECEBIDO
+        ]);
+
+        return $solicitacao;
+    }
 }

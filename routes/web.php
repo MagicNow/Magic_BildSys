@@ -743,6 +743,13 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     ->middleware('needsPermission:contratos.solicitar_entrega')
     ->name('solicitacao-entrega.cancel');
 
+    $router->post(
+        '/solicitacoes-de-entrega/{solicitacao_entrega}/receber',
+        'SolicitacaoEntregaController@received'
+    )
+    ->middleware('needsPermission:contratos.solicitar_entrega')
+    ->name('solicitacao-entrega.received');
+
     $router->group(['prefix' => 'contratos','middleware' => 'needsPermission:contratos.list'], function($router) {
         $router->get(
             '',
