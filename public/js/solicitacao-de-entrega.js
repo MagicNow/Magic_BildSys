@@ -3,39 +3,6 @@ $(function() {
   SolicitacaoDeEntrega.init();
   ModalSelecionarInsumo.init();
 
-  $('#received').on('click', function(event) {
-    var button = event.currentTarget;
-    swal({
-      title: 'Marcar entrega como recebida?',
-      text: 'Ao confirmar não será possível voltar atrás',
-      type: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Sim',
-      cancelButtonText: 'Não',
-      closeOnConfirm: false,
-      showLoaderOnConfirm: true,
-      confirmButtonColor: '#7ED32C'
-    }, function() {
-      $.post('/solicitacoes-de-entrega/' + button.dataset.id + '/receber')
-        .done(function() {
-          swal({
-            title: 'Pronto!',
-            text: 'Solicitaçao de entrega marcada como recebida',
-            type: 'success'
-          }, function() {
-            location.href = '/solicitacoes-de-entrega/' + button.dataset.id;
-          });
-        })
-        .fail(function() {
-          swal(
-            'Ops!',
-            'Não foi possivel marcar esta entrega como recebida!',
-            'error'
-          );
-        })
-    });
-  });
-
   $('#cancel').on('click', function(event) {
     var button = event.currentTarget;
     swal({

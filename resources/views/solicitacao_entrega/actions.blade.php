@@ -69,12 +69,13 @@
 </a>
 @endif
 
-@if($entrega->se_status_id === 3 /* APROVADO */ && $entrega->se_status_id !== 5 /* RECEBIDO */)
-<button type="button"
-    class="btn btn-info btn-lg btn-flat"
-    id="received"
-    data-id="{{ $entrega->id }}">
-    <i class="fa fa-paper-plane"></i>
-    Marcar como Recebido
-</button>
+@if(
+    $entrega->se_status_id === 3 /* APROVADO */ &&
+    $entrega->se_status_id !== 5 /* RECEBIDO */
+)
+<a class="btn btn-info btn-lg btn-flat"
+    href="{{ route('solicitacao-entrega.vincular-nota', $entrega->id) }}">
+    <i class="fa fa-file-text"></i>
+    Vincular nota
+</a>
 @endif

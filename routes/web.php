@@ -743,12 +743,19 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     ->middleware('needsPermission:contratos.solicitar_entrega')
     ->name('solicitacao-entrega.cancel');
 
-    $router->post(
-        '/solicitacoes-de-entrega/{solicitacao_entrega}/receber',
-        'SolicitacaoEntregaController@received'
+    $router->get(
+        '/solicitacoes-de-entrega/{solicitacao_entrega}/vincular-nota',
+        'SolicitacaoEntregaController@vincularNota'
     )
     ->middleware('needsPermission:contratos.solicitar_entrega')
-    ->name('solicitacao-entrega.received');
+    ->name('solicitacao-entrega.vincular-nota');
+
+    $router->post(
+        '/solicitacoes-de-entrega/{solicitacao_entrega}/vincular-nota',
+        'SolicitacaoEntregaController@vincularNotaSave'
+    )
+    ->middleware('needsPermission:contratos.solicitar_entrega')
+    ->name('solicitacao-entrega.vincular-nota');
 
     $router->group(['prefix' => 'contratos','middleware' => 'needsPermission:contratos.list'], function($router) {
         $router->get(

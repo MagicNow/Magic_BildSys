@@ -21,7 +21,6 @@ class SolicitacaoEntregaController extends AppBaseController
         $this->solicitacaoEntregaRepository = $solicitacaoEntregaRepository;
     }
 
-
     /**
      * Show an especific resource
      *
@@ -157,12 +156,10 @@ class SolicitacaoEntregaController extends AppBaseController
         ]);
     }
 
-    public function received($id)
+    public function vincularNota($id)
     {
-        $solicitacao = $this->solicitacaoEntregaRepository->received($id);
+        $entrega = $this->solicitacaoEntregaRepository->find($id);
 
-        return response()->json([
-            'success' => true
-        ]);
+        return view('solicitacao_entrega.vincular_nota', compact('entrega'));
     }
 }
