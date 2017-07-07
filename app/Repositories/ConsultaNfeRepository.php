@@ -22,7 +22,7 @@ class ConsultaNfeRepository
                      // se for diferente de zero não importa o que está contido em ultNSU será retornado apenas
                      // os dados deste NSU em particular
 
-        $tpAmb = '1';// esses dados somente existirão em ambiente de produção pois em ambiente de testes
+        $tpAmb = '2';// esses dados somente existirão em ambiente de produção pois em ambiente de testes
                      // não existem dados de eventos, nem de NFe emitidas para o seu CNPJ
 
         $cnpj = ''; // deixando vazio irá pegar o CNPJ default do config
@@ -40,7 +40,9 @@ class ConsultaNfeRepository
                     //Os dados são retornados em formato ZIP dento do xml, mas no array os dados
                     //já são retornados descompactados para serem lidos
 
-        $xml = $nfe->sefazDistDFe('AN', $tpAmb, $cnpj, $ultNSU, $numNSU, $aResposta);
+//        $xml = $nfe->sefazDistDFe('AN', $tpAmb, $cnpj, $ultNSU, $numNSU, $aResposta);
+        $chNFe = '';
+        $resp = $nfe->sefazDownload($chNFe, $tpAmb, $cnpj, $aResposta);
 
         echo '<br><br><PRE>';
         echo htmlspecialchars($nfe->soapDebug);
