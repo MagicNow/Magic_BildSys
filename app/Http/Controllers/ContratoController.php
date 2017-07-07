@@ -550,24 +550,28 @@ class ContratoController extends AppBaseController
 
     public function memoriaDeCalculoSalvar(Request $request)
     {
-        dd($request->itens);
         if(count($request->itens)) {
             foreach ($request->itens as $item) {
                 $item['qtd'] = money_to_float($item['qtd']);
 
-                $previsao = new McMedicaoPrevisao($item);
-                $previsao->insumo_id = $request->insumo_id;
-                $previsao->unidade_sigla = $request->unidade_sigla;
-                $previsao->contrato_item_apropriacao_id = $request->contrato_item_apropriacao_id;
-                $previsao->contrato_item_id = $request->contrato_item_id;
-                $previsao->planejamento_id = $request->planejamento_id;
-                $previsao->obra_torre_id = $request->obra_torre_id;
-                $previsao->user_id = Auth::id();
-                $previsao->save();
+                if(isset($item['id'])){
+                    $previsao = McMedicaoPrevisao::find($item['id']);
+                    $previsao->update($item);
+                } else {
+                    $previsao = new McMedicaoPrevisao($item);
+                    $previsao->insumo_id = $request->insumo_id;
+                    $previsao->unidade_sigla = $request->unidade_sigla;
+                    $previsao->contrato_item_apropriacao_id = $request->contrato_item_apropriacao_id;
+                    $previsao->contrato_item_id = $request->contrato_item_id;
+                    $previsao->planejamento_id = $request->planejamento_id;
+                    $previsao->obra_torre_id = $request->obra_torre_id;
+                    $previsao->user_id = Auth::id();
+                    $previsao->save();
+                }
             }
         }
 
-        Flash::success('Previsão de memória de cálculo criada com sucesso!');
+        Flash::success('Previsão de memória de cálculo salva com sucesso!');
         
         return redirect(route('contratos.index'));
     }

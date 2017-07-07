@@ -45,11 +45,13 @@
             <div class="form-group col-md-3">
                 {!! Form::label('planejamento_id', 'Tarefa:') !!}
                 <p class="form-control">{{$previsao->planejamento->tarefa}}</p>
+                <input type="hidden" name="planejamento_id" value="{{$previsao->planejamento->id}}">
             </div>
 
             <div class="form-group col-md-3">
                 {!! Form::label('obra_torre_id', 'Torres:') !!}
                 <p class="form-control">{{$previsao->obraTorre->nome}}</p>
+                <input type="hidden" name="obra_torre_id" value="{{$previsao->obraTorre->id}}">
             </div>
 
             <div class="form-group col-md-6">
@@ -66,6 +68,7 @@
                     }
                 @endphp
                 <p class="form-control">{{$previsao->memoriaCalculoBloco->memoriaCalculo->nome . ' - ' . $modo}}</p>
+                <input type="hidden" name="memoria_de_calculo" value="{{$previsao->memoriaCalculoBloco->memoriaCalculo->id}}">
             </div>
         @else
             <div class="form-group col-md-3">
