@@ -529,7 +529,12 @@ class ContratoController extends AppBaseController
             ->pluck('nome', 'id')
             ->prepend('', '')
             ->toArray();
-        
+
+        $previsao = McMedicaoPrevisao::where('insumo_id',  $insumo->id)
+                ->where('contrato_item_apropriacao_id', $contrato_item_apropriacao->id)
+                ->where('contrato_item_id', $contrato_item_apropriacao->contrato_item_id)
+                ->first();
+
         return view('contratos.memoria_de_calculo.previsao',
             compact(
                 'contrato',
@@ -537,7 +542,8 @@ class ContratoController extends AppBaseController
                 'insumo',
                 'tarefas',
                 'memoria_de_calculo',
-                'obra_torres'
+                'obra_torres',
+                'previsao'
             )
         );
     }

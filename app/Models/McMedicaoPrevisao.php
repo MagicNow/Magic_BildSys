@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class McMedicaoPrevisao
@@ -12,8 +11,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class McMedicaoPrevisao extends Model
 {
-    use SoftDeletes;
-
     public $table = 'mc_medicao_previsoes';
     
     const CREATED_AT = 'created_at';

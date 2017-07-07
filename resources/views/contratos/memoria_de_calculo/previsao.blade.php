@@ -40,28 +40,56 @@
             <p class="form-control">{!! $contrato_item_apropriacao->codigo_insumo . ' - ' . $insumo->nome . ' - ' . $insumo->unidade_sigla!!}</p>
         </div>
 
-        <div class="form-group col-md-3">
-            {!! Form::label('planejamento_id', 'Tarefa:') !!}
-            {!! Form::select('planejamento_id', $tarefas , null, ['class' => 'form-control select2', 'required' => 'required']) !!}
-        </div>
+        @if($previsao)
+            <div class="form-group col-md-3">
+                {!! Form::label('planejamento_id', 'Tarefa:') !!}
+                <p class="form-control">{{$previsao->planejamento->tarefa}}</p>
+            </div>
 
-        <div class="form-group col-md-3">
-            {!! Form::label('obra_torre_id', 'Torres:') !!}
-            {!! Form::select('obra_torre_id', $obra_torres , null, ['class' => 'form-control select2', 'required' => 'required']) !!}
-        </div>
+            <div class="form-group col-md-3">
+                {!! Form::label('obra_torre_id', 'Torres:') !!}
+                <p class="form-control">{{$previsao->obraTorre->nome}}</p>
+            </div>
 
-        <div class="form-group col-md-6">
-            {!! Form::label('memoria_de_calculo', 'Memória de cálculo:') !!}
-            <a href="/memoriaCalculos/create"
-               class="btn btn-flat btn-sm btn-primary pull-right"
-               data-toggle="tooltip"
-               data-placement="top"
-               title="Criar memória de cálculo"
-               style="margin-top: -10px;">
-                <i class="fa fa-plus fa-fw" aria-hidden="true"></i>
-            </a>
-            {!! Form::select('memoria_de_calculo', $memoria_de_calculo , null, ['class' => 'form-control select2', 'required' => 'required']) !!}
-        </div>
+            <div class="form-group col-md-6">
+                {!! Form::label('memoria_de_calculo', 'Memória de cálculo:') !!}
+                @php
+                    $modo = $previsao->memoriaCalculoBloco->memoriaCalculo->modo;
+
+                    if($modo == 'C') {
+                        $modo = 'Cartela';
+                    } else if($modo == 'U') {
+                        $modo = 'Unidade';
+                    } else {
+                        $modo = 'Torre';
+                    }
+                @endphp
+                <p class="form-control">{{$previsao->memoriaCalculoBloco->memoriaCalculo->nome . ' - ' . $modo}}</p>
+            </div>
+        @else
+            <div class="form-group col-md-3">
+                {!! Form::label('planejamento_id', 'Tarefa:') !!}
+                {!! Form::select('planejamento_id', $tarefas , null, ['class' => 'form-control select2', 'required' => 'required']) !!}
+            </div>
+
+            <div class="form-group col-md-3">
+                {!! Form::label('obra_torre_id', 'Torres:') !!}
+                {!! Form::select('obra_torre_id', $obra_torres , null, ['class' => 'form-control select2', 'required' => 'required']) !!}
+            </div>
+
+            <div class="form-group col-md-6">
+                {!! Form::label('memoria_de_calculo', 'Memória de cálculo:') !!}
+                <a href="/memoriaCalculos/create"
+                   class="btn btn-flat btn-sm btn-primary pull-right"
+                   data-toggle="tooltip"
+                   data-placement="top"
+                   title="Criar memória de cálculo"
+                   style="margin-top: -10px;">
+                    <i class="fa fa-plus fa-fw" aria-hidden="true"></i>
+                </a>
+                {!! Form::select('memoria_de_calculo', $memoria_de_calculo , null, ['class' => 'form-control select2', 'required' => 'required']) !!}
+            </div>
+        @endif
 
         <table class="table table-striped table-no-margin">
             <thead>
