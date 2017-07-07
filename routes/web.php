@@ -818,6 +818,11 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             '/previsao-de-memoria-de-calculo/salvar',
             ['as' => 'contratos.memoria_de_calculo_salvar', 'uses' => 'ContratoController@memoriaDeCalculoSalvar']
         )->middleware('needsPermission:contratos.memoria_de_calculo');
+        
+        $router->post(
+            '/previsao-de-memoria-de-calculo/excluir-previsao',
+            ['as' => 'contratos.memoria_de_calculo.excluir_previsao', 'uses' => 'ContratoController@memoriaDeCalculoExcluirPrevisao']
+        )->middleware('needsPermission:contratos.memoria_de_calculo');
     });
 
     # Configuracao Estatica

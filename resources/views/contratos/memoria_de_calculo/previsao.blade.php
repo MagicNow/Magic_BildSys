@@ -128,7 +128,7 @@
                                 <input type="text" class="form-control money" id="porcentagem_{{$item->id}}" onkeyup="calcularQuantidade(this.value, '{{$item->id}}');">
                             </td>
                             <td>
-                                <button onclick="removerLinha({{$item->id}});" class="btn btn-flat btn-sm btn-danger pull-right" data-toggle="tooltip" data-placement="top" title="Remover">
+                                <button onclick="excluirLinha({{$item->id}});" class="btn btn-flat btn-sm btn-danger pull-right" data-toggle="tooltip" data-placement="top" title="Excluir" type="button">
                                     <i class="fa fa-remove fa-fw" aria-hidden="true"></i>
                                 </button>
                             </td>
@@ -190,7 +190,7 @@
                 <input type="text" class="form-control money" id="porcentagem_'+count+'" onkeyup="calcularQuantidade(this.value, '+count+');">\
             </td>\
             <td>\
-                <button onclick="removerLinha('+count+');" class="btn btn-flat btn-sm btn-danger pull-right" data-toggle="tooltip" data-placement="top" title="Remover">\
+                <button onclick="removerLinha('+count+');" class="btn btn-flat btn-sm btn-danger pull-right" data-toggle="tooltip" data-placement="top" title="Remover" type="button">\
                     <i class="fa fa-remove fa-fw" aria-hidden="true"></i>\
                 </button>\
             </td>\
@@ -203,6 +203,29 @@
     // Função para remover linha da tabela
     function removerLinha(id) {
         $('#linha_'+id).remove();
+    }
+
+    // Função para excluir a linha do banco e da tabela
+    function excluirLinha(id) {
+        swal({
+            title: "Você tem certeza?",
+            text: "Você não poderá mais recuperar este registro!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            cancelButtonText: "Cancelar",
+            confirmButtonText: "Sim, Remover",
+            closeOnConfirm: true
+        },
+        function(){
+            $.ajax({
+                url: '{{route('contratos.memoria_de_calculo.excluir_previsao')}}',
+                type: 'POST',
+                data: {'id' : id}
+            }).done(function() {
+                removerLinha(id);
+            });
+        });
     }
 
     // Interação entre quantidade e porcentagem.
