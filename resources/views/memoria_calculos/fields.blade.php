@@ -39,83 +39,98 @@
     <div>
         <button type="button" id="btn_adicionar_bloco" onclick="adicionaBloco();"
                 class="btn btn-flat btn-primary btn-block" disabled="disabled">
-            <i class="fa fa-plus"></i> Adicionar
+            <i class="fa fa-plus"></i>
         </button>
     </div>
 </div>
 <div>
-    <div class="col-sm-12">
+    <div class="col-md-6">
         <ul class="list-group" id="blocos">
             @if(isset($memoriaCalculo))
+                <?php
+                    $countTrechos = 0;
+                    if ($memoriaCalculo->modo == 'T') {
+                        $nomeEstrutura = 'Estrutura';
+                        $nomePavimento = 'Pavimento';
+                        $nomeTrecho = 'Trecho';
+                    } else {
+                        $nomeEstrutura = 'Bloco';
+                        $nomePavimento = 'Linha';
+                        $nomeTrecho = 'Coluna';
+                    }
+                ?>
                 @foreach($blocos as $indexBloco => $bloco)
-                    <li class="list-group-item" id="bloco_list_item_{{ $indexBloco }}">
+                    <li class="list-group-item estruturaClass" bloco="{{ $indexBloco }}" id="bloco_list_item_{{ $indexBloco }}">
                         <div class="row" style="margin-bottom: 10px">
-                            <div class="col-sm-9"><i class="fa fa-th-large"></i> &nbsp; Estrutura:
+                            <div class="col-sm-8"><i class="fa fa-th-large"></i> &nbsp; {{ $nomeEstrutura }}:
                                 {!! Form::select('estrutura_bloco['. $indexBloco .']',
                                     \App\Models\NomeclaturaMapa::where('tipo',1)
                                     ->where('apenas_cartela',($memoriaCalculo->tipo=='C'?'1':'0') )
                                     ->where('apenas_unidade',($memoriaCalculo->tipo=='U'?'1':'0') )
                                     ->pluck('nome','id')->toArray() ,
-                                    $bloco['id'], ['class'=>'form-control select2'] ) !!}
+                                    $bloco['objId'], ['class'=>'form-control select2','onchange'=>'atualizaVisual();', 'id'=>'estrutura_bloco_'.$indexBloco] ) !!}
                                 {!! Form::hidden('estrutura_bloco_ordem['. $indexBloco .']',$bloco['ordem']) !!}
                             </div>
-                            <div class="col-sm-3" style="min-height: 54px; padding-top: 20px">
-                                <button type="button" onclick="adicionaPavimento({{ $indexBloco }})" class="btn btn-flat btn-info"><i
-                                            class="fa fa-plus" ></i> Adicionar Pavimento
+                            <div class="col-sm-4" style="min-height: 54px; padding-top: 20px">
+                                <button type="button" onclick="adicionaPavimento({{ $indexBloco }})" class="btn btn-flat btn-xs btn-info"><i
+                                            class="fa fa-plus" ></i> {{ $nomePavimento }}
                                 </button>
-                                <button type="button" onclick="removeBloco({{ $indexBloco }})" title="Remover" class="btn btn-flat btn-danger">
+                                <button type="button" onclick="removeBloco({{ $indexBloco }})" title="Remover" class="btn btn-flat btn-xs btn-danger">
                                     <i class="fa fa-times" ></i></button>
                             </div>
                         </div>
                         <div style="clear: both">
-                            <ul class="list-group" id="pavimentos_{{ $indexBloco }}">
+                            <ul class="list-group pavBlocos" id="pavimentos_{{ $indexBloco }}">
                                 @if( count($bloco['itens']) )
                                     @foreach($bloco['itens'] as $indexPavimento => $pavimento)
-                                        <li class="list-group-item" id="linha_{{ $indexBloco }}_{{ $indexPavimento }}">
+                                        <li class="list-group-item pavimentosClass{{ $indexBloco }}" pavimento="{{ $indexPavimento }}" id="linha_{{ $indexBloco }}_{{ $indexPavimento }}">
                                             <div class="row" style="margin-bottom: 10px">
-                                                <div class="col-sm-9">
-                                                    <i class="fa fa-th-large"></i> &nbsp; Pavimento:
+                                                <div class="col-sm-8">
+                                                    <b class="fa fa-th-large"></b> &nbsp; {{ $nomePavimento }}:
                                                     {!! Form::select('pavimentos['. $indexBloco .']['.$indexPavimento.']',
                                                         \App\Models\NomeclaturaMapa::where('tipo',2)
                                                         ->where('apenas_cartela',($memoriaCalculo->tipo=='C'?'1':'0') )
                                                         ->where('apenas_unidade',($memoriaCalculo->tipo=='U'?'1':'0') )
                                                         ->pluck('nome','id')->toArray() ,
-                                                        $pavimento['id'], ['class'=>'form-control select2'] ) !!}
+                                                        $pavimento['objId'], ['class'=>'form-control select2','onchange'=>'atualizaVisual();', 'id'=>'pavimentos_'.$indexBloco .'_'. $indexPavimento ] ) !!}
                                                     {!! Form::hidden('pavimento_bloco_ordem['.$indexBloco.']['.$indexPavimento.']',$pavimento['ordem']) !!}
                                                 </div>
-                                                <div class="col-sm-3" style="min-height: 54px; padding-top: 20px">
+                                                <div class="col-sm-4" style="min-height: 54px; padding-top: 20px">
                                                     <button type="button" onclick="adicionaTrecho({{ $indexBloco }},{{ $indexPavimento }})"
-                                                            class="btn btn-flat btn-warning"><i class="fa fa-plus"></i> Adicionar Trecho
+                                                            class="btn btn-flat btn-xs btn-warning"><i class="fa fa-plus"></i> {{ $nomeTrecho }}
                                                     </button>
                                                     <button type="button" onclick="removeLinha({{ $indexBloco }},{{ $indexPavimento }})" title="Remover"
-                                                            class="btn btn-flat btn-danger"><i class="fa fa-times"></i></button>
+                                                            class="btn btn-flat btn-xs btn-danger"><i class="fa fa-times"></i></button>
                                                 </div>
                                             </div>
                                             <div style="clear: both">
-                                                <ul class="list-group" id="trechos_{{ $indexBloco }}_{{ $indexPavimento }}">
+                                                <ul class="list-group trechoBlocos" id="trechos_{{ $indexBloco }}_{{ $indexPavimento }}">
                                                     @if( count($pavimento['itens']) )
                                                         @foreach($pavimento['itens'] as $indexTrecho => $trecho)
-                                                            <li class="list-group-item" id="blocoTrecho_{{ $indexBloco }}_{{ $indexPavimento }}_{{ $indexTrecho }}">
+                                                            <?php
+                                                                $countTrechos++;
+                                                            ?>
+                                                            <li class="list-group-item trechoClass{{ $indexBloco }}_{{ $indexPavimento }}" trecho="{{ $indexTrecho }}"
+                                                                id="blocoTrecho_{{ $indexBloco }}_{{ $indexPavimento }}_{{ $indexTrecho }}">
                                                                 <div class="input-group">
-                                                                    <span class="input-group-addon"
-                                                                                               id="trecho_{{ $indexBloco }}_{{ $indexPavimento }}_{{ $indexTrecho }}">Trecho
-                                                                    </span>
+                                                                    <strong class="input-group-addon"
+                                                                                               id="trecho{{ $indexBloco }}_{{ $indexPavimento }}_{{ $indexTrecho }}">{{ $nomeTrecho }}
+                                                                    </strong>
                                                                     {!! Form::select('trecho['.$indexBloco.']['.$indexPavimento.']['.$indexTrecho.']',
                                                                         \App\Models\NomeclaturaMapa::where('tipo',3)
                                                                         ->where('apenas_cartela',($memoriaCalculo->tipo=='C'?'1':'0') )
                                                                         ->where('apenas_unidade',($memoriaCalculo->tipo=='U'?'1':'0') )
                                                                         ->pluck('nome','id')->toArray() ,
-                                                                        $trecho['id'],
-                                                                        ['class'=>'form-control select2','id'=>'trecho_' .$indexBloco .'_'. $indexPavimento . '_'. $indexTrecho] ) !!}
-                                                                    {!! Form::hidden('trecho['.$indexBloco.']['.$indexPavimento.']['.$indexTrecho.']',$trecho['id'],
-                                                                                    ['id'=>'trecho_'.$indexBloco.'_'.$indexPavimento.'_'.$indexTrecho]) !!}
+                                                                        $trecho['objId'],
+                                                                        ['class'=>'form-control select2','onchange'=>'atualizaVisual();', 'id'=>'trecho_' .$indexBloco .'_'. $indexPavimento . '_'. $indexTrecho] ) !!}
+                                                                    {!! Form::hidden('trecho_id['.$indexBloco.']['.$indexPavimento.']['.$indexTrecho.']',$trecho['blocoId']) !!}
 
                                                                     <input type="hidden" name="trecho_bloco_ordem{{ '['.$indexBloco.']['.$indexPavimento.']['.$indexTrecho.']' }}"
                                                                            id="trecho_bloco_ordem_{{ $indexBloco.'_'.$indexPavimento.'_'.$indexTrecho }}" value="">
                                                                         <span class="input-group-btn">
                                                                             <button
                                                                                 type="button" onclick="removeTrecho({{ $indexBloco.','.$indexPavimento.','.$indexTrecho }})" title="Remover"
-                                                                                class="btn btn-flat btn-danger"><i
+                                                                                class="btn btn-flat btn-xs btn-danger"><i
                                                                                     class="fa fa-times"></i> </button>
                                                                         </span>
                                                                 </div>
@@ -134,12 +149,12 @@
             @endif
         </ul>
     </div>
+
+
+    <div class="col-md-6" id="visual">
+
+    </div>
 </div>
-
-<div class="col-sm-12" id="visual">
-
-</div>
-
 
 <!-- Submit Field -->
 <div class="form-group col-sm-12">
@@ -149,28 +164,6 @@
 </div>
 @section('scripts')
     <script type="text/javascript">
-        $(function () {
-            // ready
-            @if(isset($memoriaCalculo))
-                buscaNomeclaturas('{{ $memoriaCalculo->modo }}');
-            @else
-                buscaNomeclaturas('T');
-            @endif
-
-            sortable('#blocos', {
-                handle: 'i'
-            });
-
-            sortable('#blocos')[0].addEventListener('sortstop', function (e) {
-                atualizaVisual();
-            });
-
-            @if(isset($memoriaCalculo))
-                estruturaArray = {!! json_encode($blocos) !!};
-                atualizaVisual();
-            @endif
-
-        });
         var estruturasObjs = [];
         var pavimentosObjs = [];
         var trechosObjs = [];
@@ -181,60 +174,113 @@
         var nomeEstrutura = '';
         var nomePavimento = '';
         var nomeTrecho = '';
-        var estruturaArray = [];
+        var blocos = 0;
+        var pavimentosCount = 0;
+        var trechosCount = 0;
+        $(function () {
+            // ready
+            @if(isset($memoriaCalculo))
+                buscaNomeclaturas('{{ $memoriaCalculo->modo }}');
+            @else
+                buscaNomeclaturas('T');
+            @endif
+
+            sortable('#blocos', {handle: 'i'});
+
+            sortable('#blocos')[0].addEventListener('sortstop', function (e) {
+                atualizaVisual();
+            });
+
+            @if(isset($memoriaCalculo))
+                blocos = {{ $indexBloco + 1 }};
+                pavimentosCount = {{ $indexPavimento + 1 }};
+                trechosCount = {{ $countTrechos + 1 }};
+
+                sortable('.pavBlocos', {handle: 'b'});
+
+                sortable('.pavBlocos')[0].addEventListener('sortstop', function (e) {
+                    atualizaVisual();
+                });
+
+                sortable('.trechoBlocos', {handle: 'strong'});
+
+                sortable('.trechoBlocos')[0].addEventListener('sortstop', function (e) {
+                    atualizaVisual();
+                });
+            @endif
+
+        });
 
         function mudaModo(valor) {
             $('#blocos').html('');
             buscaNomeclaturas(valor);
         }
-        function trocaNomeEstrutura(bloco) {
-            nome = $("#estrutura_bloco_" + bloco + " option:selected").text();
-            estruturaArray[bloco].nome = nome;
-            estruturaArray[bloco].objId = $("#estrutura_bloco_" + bloco + " option:selected").val();
-
-            atualizaVisual();
-        }
-
-        function trocaNomePavimento(bloco, pavimento) {
-            nome = $("#pavimentos_" + bloco + "_" + pavimento + " option:selected").text();
-            estruturaArray[bloco].itens[pavimento].nome = nome;
-            estruturaArray[bloco].itens[pavimento].objId = $("#pavimentos_" + bloco + "_" + pavimento + " option:selected").val();
-
-            atualizaVisual();
-        }
-
-        function trocaNomeTrecho(bloco, pavimento, trecho) {
-            nome = $("#trecho_" + trecho + " option:selected").text();
-            estruturaArray[bloco].itens[pavimento].itens[trecho].nome = nome;
-            estruturaArray[bloco].itens[pavimento].itens[trecho].objId = $("#trecho_" + trecho + " option:selected").val();
-
-            atualizaVisual();
-        }
 
         function atualizaVisual() {
             arrayVisual = [];
+            $('.estruturaClass').each(function (idx) {
+                k = $(this).attr('bloco');
+                $('#estrutura_bloco_ordem_' + k).val(idx);
 
-            estruturaArray.forEach(function (item, index) {
-                objeto = $('#bloco_list_item_' + item.id);
-                idx = $(objeto).parent().children().index(objeto);
-                item.ordem = idx;
-                $('#estrutura_bloco_ordem_' + item.id).val(idx);
-                // Ordena os itens
+                nome = $("#estrutura_bloco_" + k + " option:selected").text();
+
+                idx = $(this).parent().children().index(this);
+
+                item = {
+                    id: idx,
+                    nome: nome,
+                    objId: $("#estrutura_bloco_" + k + " option:selected").val(),
+                    itens: [],
+                    ordem: idx
+                };
                 arrayPavimentosOrdenada = [];
-                if (item.itens.length > 0) {
-                    item.itens.forEach(function (linhaPav, indicePav) {
-                        objetoPav = $('#linha_' + item.id + '_' + linhaPav.id);
-                        idxPav = $(objetoPav).parent().children().index(objeto);
-                        linhaPav.ordem = idxPav;
-                        $('#pavimento_bloco_ordem_' + item.id + '_' + linhaPav.id).val(idxPav);
+                $('.pavimentosClass'+k).each(function (idxPav) {
 
-                        arrayPavimentosOrdenada[idxPav] = linhaPav;
+                    idxPav2 = $(this).parent().children().index(this);
+                    p = $(this).attr('pavimento');
+
+                    $('#pavimento_bloco_ordem_' + k + '_' + p).val(idxPav);
+                    nomePav = $("#pavimentos_" + k + "_" + p + " option:selected").text();
+
+                    pavimentoItem = {
+                        id: idxPav,
+                        nome: nomePav,
+                        objId: $("#pavimentos_" + k + "_" + p + " option:selected").val(),
+                        itens: [],
+                        ordem: idxPav
+                    }
+
+                    arrayTrechos = [];
+                    $('.trechoClass' + k + '_' + p).each(function (idxTrecho) {
+
+                        idxTrecho = $(this).parent().children().index(this);
+
+                        t = $(this).attr('trecho');
+
+                        nomeTrech = $("#trecho_" + k + "_" + p + "_" + t + " option:selected").text();
+
+                        $('#trecho_bloco_ordem_' + k + '_' + p + '_' + t).val(idxTrecho);
+
+                        trechoItem = {
+                            id: idxTrecho,
+                            nome: nomeTrech,
+                            objId: $("#trecho_" + k + "_" + p + "_" + t + " option:selected").val(),
+                            ordem: idxTrecho
+                        }
+
+                        arrayTrechos[idxTrecho] = trechoItem;
+
                     });
-                }
-                itemVisual = item;
-//            itemVisual.itens = arrayPavimentosOrdenada;
-                arrayVisual[idx] = itemVisual;
+
+                    pavimentoItem.itens = arrayTrechos;
+
+                    arrayPavimentosOrdenada[idxPav] = pavimentoItem;
+                });
+                item.itens = arrayPavimentosOrdenada;
+
+                arrayVisual[idx] = item;
             });
+
 
             // -- Preenche o visual
             visualHTML = '';
@@ -269,19 +315,19 @@
                                 }
                                 trechosTD += '<td>&nbsp;' + trechoPav.nome + '&nbsp;</td>';
                             });
-                            trechosDestePavimento = '<table  style="width: ' + larguraPav + '%; margin:0px auto;min-height: 31px;"><tr> ' + trechosTD + ' </tr></table>';
+                            trechosDestePavimento = '<table class="table-bordered" style="width: ' + larguraPav + '%; margin:0px auto;min-height: 31px;"><tr> ' + trechosTD + ' </tr></table>';
                         }
 
-                        pavimentosDestaEstrutura += '   <tr><td class="warning" width="10%">' + linhaPavimento.nome + '</td> ' +
+                        pavimentosDestaEstrutura += '   <tr><td class="warning" width="15%">' + linhaPavimento.nome + '</td> ' +
                                 ' <td style="padding: 0px !important;"> ' + trechosDestePavimento + '</td> ' +
                                 ' </tr>';
                     });
                 }
 
-                visualHTML += '<div>' +
-                        '<div class="col-sm-1">' + item.nome + '</div> ' +
-                        '<div class="col-sm-11"> ' +
-                        ' <table class="table table-bordered table-condensed" style="width: ' + largura + '%; margin:5px auto;"> ' +
+                visualHTML += '<div class="row">' +
+                        '<div class="col-sm-12 text-left">' + item.nome + '</div> ' +
+                        '<div class="col-sm-12"> ' +
+                        ' <table class="table table-condensed" style="width: ' + largura + '%; margin:5px auto;"> ' +
                         pavimentosDestaEstrutura +
                         ' </table> ' +
                         '</div> ' +
@@ -291,75 +337,45 @@
 
         }
 
-        blocos = 0;
         function removeBloco(qual) {
             $('#bloco_list_item_' + qual).remove();
-            delete estruturaArray[qual];
             atualizaVisual();
         }
 
         function removeLinha(bloco, pavimento) {
             $('#linha_' + bloco + '_' + pavimento).remove();
-            delete estruturaArray[bloco].itens[pavimento];
             atualizaVisual();
         }
 
         function removeTrecho(bloco, pavimento, trecho) {
             $('#blocoTrecho_' + trecho).remove();
-            delete estruturaArray[bloco].itens[pavimento].itens[trecho];
             atualizaVisual();
         }
-        {{--@if(isset($memoriaCalculo))
-            @foreach($blocos as $indexBloco => $bloco)
-                @if( count($bloco['itens']) )
-                    @foreach($bloco['itens'] as $indexPavimento => $pavimento)
-                        @if( count($pavimento['itens']) )
-                            @foreach($pavimento['itens'] as $indexTrecho => $trecho)
-                                //                                estruturaArray[blocos] = {
-                                //                                    id: blocos,
-                                //                                    nome: '',
-                                //                                    objId: null,
-                                //                                    itens: [],
-                                //                                    ordem: null
-                                //                                };
-                            @endforeach
-                        @endif
-                    @endforeach
-                @endif
-            @endforeach
-        @endif--}}
 
         function adicionaBloco() {
             blocos++;
-            estruturaArray[blocos] = {
-                id: blocos,
-                nome: '',
-                objId: null,
-                itens: [],
-                ordem: null
-            };
             blocoHTML = '' +
-                    '<li class="list-group-item" id="bloco_list_item_' + blocos + '">' +
+                    '<li class="list-group-item estruturaClass" bloco="' + blocos + '" id="bloco_list_item_' + blocos + '">' +
                     '<div class="row" style="margin-bottom: 10px">' +
-                    '<div class="col-sm-9">' +
+                    '<div class="col-sm-8">' +
                     '<i class="fa fa-th-large"></i> &nbsp; ' +
                     nomeEstrutura + ':' +
                     '<select class="form-control select2" id="estrutura_bloco_' + blocos + '" ' +
-                    ' onchange="trocaNomeEstrutura(' + blocos + ')" name="estrutura_bloco[' + blocos + ']">' +
+                    ' onchange="atualizaVisual();" name="estrutura_bloco[' + blocos + ']">' +
                     estruturas +
                     '</select><input type="hidden" name="estrutura_bloco_ordem[' + blocos + ']" id="estrutura_bloco_ordem_' + blocos + '" value="">' +
                     '</div>' +
-                    '<div class="col-sm-3" style="min-height: 54px; padding-top: 20px">' +
-                    '<button type="button" onclick="adicionaPavimento(' + blocos + ')" class="btn btn-flat btn-info">' +
-                    '<i class="fa fa-plus"></i> Adicionar ' + nomePavimento +
+                    '<div class="col-sm-4" style="min-height: 54px; padding-top: 20px">' +
+                    '<button type="button" onclick="adicionaPavimento(' + blocos + ')" class="btn btn-flat btn-xs btn-info">' +
+                    '<i class="fa fa-plus"></i> ' + nomePavimento +
                     '</button>' +
-                    '<button type="button" onclick="removeBloco(' + blocos + ')" title="Remover" class="btn btn-flat btn-danger">' +
+                    '<button type="button" onclick="removeBloco(' + blocos + ')" title="Remover" class="btn btn-flat btn-xs btn-danger">' +
                     '<i class="fa fa-times"></i> ' +
                     '</button>' +
                     '</div>' +
                     '</div>' +
                     '<div style="clear: both">' +
-                    '<ul class="list-group" id="pavimentos_' + blocos + '">' +
+                    '<ul class="list-group pavBlocos" id="pavimentos_' + blocos + '">' +
                     '</ul>' +
                     '</div>' +
                     '</li>';
@@ -371,43 +387,37 @@
                 allowClear: true
             });
 
-            sortable('#blocos', 'reload');
+//            sortable('#blocos', 'reload');
             atualizaVisual();
         }
 
-        pavimentosCount = 0;
+
         function adicionaPavimento(bloco) {
             pavimentosCount++;
-            estruturaArray[bloco].itens[pavimentosCount] = {
-                id: pavimentosCount,
-                nome: '',
-                objId: null,
-                itens: [],
-                ordem: null
-            };
+
             pavimentoHTML = '' +
-                    '<li class="list-group-item" id="linha_' + bloco + '_' + pavimentosCount + '">' +
+                    '<li class="list-group-item pavimentosClass' + bloco + '" pavimento="' + pavimentosCount + '" id="linha_' + bloco + '_' + pavimentosCount + '">' +
                     '<div class="row" style="margin-bottom: 10px">' +
-                    '<div class="col-sm-9">' +
-                    '<i class="fa fa-th-large"></i> &nbsp; ' +
+                    '<div class="col-sm-8">' +
+                    '<b class="fa fa-th-large"></b> &nbsp; ' +
                     nomePavimento + ':' +
                     '<select class="form-control select2" id="pavimentos_' + bloco + '_' + pavimentosCount + '" ' +
-                    ' onchange="trocaNomePavimento(' + bloco + ',' + pavimentosCount + ')" name="pavimentos[' + bloco + '][' + pavimentosCount + ']">' +
+                    ' onchange="atualizaVisual();" name="pavimentos[' + bloco + '][' + pavimentosCount + ']">' +
                     pavimentos +
                     '</select> ' +
                     ' <input type="hidden" name="pavimento_bloco_ordem[' + bloco + '][' + pavimentosCount + ']" id="pavimento_bloco_ordem_' + bloco + '_' + pavimentosCount + '" value="">' +
                     '</div>' +
-                    '<div class="col-sm-3" style="min-height: 54px; padding-top: 20px">' +
-                    '<button type="button" onclick="adicionaTrecho(' + bloco + ',' + pavimentosCount + ')" class="btn btn-flat btn-warning">' +
-                    '<i class="fa fa-plus"></i> Adicionar ' + nomeTrecho +
+                    '<div class="col-sm-4" style="min-height: 54px; padding-top: 20px">' +
+                    '<button type="button" onclick="adicionaTrecho(' + bloco + ',' + pavimentosCount + ')" class="btn btn-flat btn-xs btn-warning">' +
+                    '<i class="fa fa-plus"></i> ' + nomeTrecho +
                     '</button>' +
-                    '<button type="button" onclick="removeLinha(' + blocos + ',' + pavimentosCount + ')" title="Remover" class="btn btn-flat btn-danger">' +
+                    '<button type="button" onclick="removeLinha(' + blocos + ',' + pavimentosCount + ')" title="Remover" class="btn btn-flat btn-xs btn-danger">' +
                     '<i class="fa fa-times"></i> ' +
                     '</button>' +
                     '</div>' +
                     '</div>' +
                     '<div style="clear: both">' +
-                    '<ul class="list-group" id="trechos_' + bloco + '_' + pavimentosCount + '">' +
+                    '<ul class="list-group trechoBlocos" id="trechos_' + bloco + '_' + pavimentosCount + '">' +
                     '</ul>' +
                     '</div>' +
                     '</li>';
@@ -418,31 +428,26 @@
                 language: "pt-BR",
                 allowClear: true
             });
-            sortable('#pavimentos_' + bloco, 'reload');
+//            sortable('#pavimentos_' + bloco, 'reload');
 
         }
 
-        trechosCount = 0;
+
         function adicionaTrecho(bloco, pavimento) {
             trechosCount++;
-            estruturaArray[bloco].itens[pavimento].itens[trechosCount] = {
-                id: trechosCount,
-                nome: '',
-                objId: null,
-                ordem: null
-            };
+
             trechoHTML = '' +
-                    '<li class="list-group-item" id="blocoTrecho_' + trechosCount + '">' +
+                    '<li class="list-group-item trechoClass' + bloco + '_' + pavimento + '" trecho="' + trechosCount + '" id="blocoTrecho_' + trechosCount + '">' +
                     '<div class="input-group">' +
                     '<span class="input-group-addon" id="trecho' + trechosCount + '">' + nomeTrecho + '</span>' +
-                    '<select class="form-control select2" onchange="trocaNomeTrecho(' + bloco + ',' + pavimento + ',' + trechosCount + ')"  ' +
-                    ' name="trecho[' + bloco + '][' + pavimento + '][' + trechosCount + ']" id="trecho_' + trechosCount + '">' +
+                    '<select class="form-control select2" onchange="atualizaVisual()"  ' +
+                    ' name="trecho[' + bloco + '][' + pavimento + '][' + trechosCount + ']" id="trecho_' + bloco + '_' + pavimento + '_' + trechosCount + '">' +
                     trechos +
                     '</select>' +
                     ' <input type="hidden" name="trecho_bloco_ordem[' + bloco + '][' + pavimento + '][' + trechosCount + ']" ' +
                     ' id="trecho_bloco_ordem_' + bloco + '_' + pavimento + '_' + trechosCount + '" value="">' +
                     '<span class="input-group-btn">' +
-                    '<button type="button" onclick="removeTrecho(' + blocos + ',' + pavimento + ',' + trechosCount + ')" title="Remover" class="btn btn-flat btn-danger">' +
+                    '<button type="button" onclick="removeTrecho(' + blocos + ',' + pavimento + ',' + trechosCount + ')" title="Remover" class="btn btn-flat btn-xs btn-danger">' +
                     '<i class="fa fa-times"></i> ' +
                     '</button>' + '</span>' +
                     '</div>' +
@@ -454,7 +459,7 @@
                 language: "pt-BR",
                 allowClear: true
             });
-            sortable('#trechos_' + bloco + '_' + pavimento, 'reload');
+//            sortable('#trechos_' + bloco + '_' + pavimento, 'reload');
         }
 
 
@@ -498,6 +503,7 @@
                             }
                         });
                         $('#btn_adicionar_bloco').attr('disabled', false);
+                        atualizaVisual();
                     });
         }
     </script>
