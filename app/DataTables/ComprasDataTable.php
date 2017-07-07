@@ -30,7 +30,7 @@ class ComprasDataTable extends DataTable
                 }
             })
             ->editColumn('total', function($obj){
-                if($obj->quantidade_compra && money_to_float($obj->saldo) > 0) {
+                if($obj->quantidade_compra) {
                     if($obj->quantidade_compra && $obj->total === 1) {
                         return "<input type='checkbox' value='1' checked onchange='totalCompra($obj->id, $obj->obra_id, $obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, this.value)'>";
                     }elseif($obj->quantidade_compra){
@@ -39,6 +39,10 @@ class ComprasDataTable extends DataTable
                 }
             })
             ->editColumn('troca', function ($obj) {
+                if($obj->substitui) {
+                    return '<button data-toggle="popover" title="Substitui Insumo" data-content="' . $obj->substitui . '" type="button" data-placement="left" class="btn btn-info btn-flat btn-xs"> <i class="fa fa-exchange"></i> </button>';
+                }
+                
                 if ($obj->insumo_grupo_id == 1570) {
                     return link_to(
                         'compras/trocar/' . $obj->orcamento_id,
@@ -330,11 +334,11 @@ class ComprasDataTable extends DataTable
         )
             ->whereNotNull('orcamentos.qtd_total')
             ->where(DB::raw('IFNULL(
-                                (SELECT 
+                                (SELECT
                                     ordem_de_compras.oc_status_id
                                 FROM
                                     ordem_de_compra_itens
-                                        JOIN
+                                JOIN
                                     ordem_de_compras ON ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id
                                 WHERE
                                     ordem_de_compra_itens.insumo_id = orcamentos.insumo_id
@@ -349,7 +353,8 @@ class ComprasDataTable extends DataTable
                                         AND ordem_de_compras.obra_id = '. $obra->id .'
                                         AND ordem_de_compras.oc_status_id != 6
                                         AND ordem_de_compras.oc_status_id != 4
-                                LIMIT 1        
+                                        AND orcamentos.orcamento_que_substitui IS NOT NULL
+                                LIMIT 1
                                         )
                             , 1)'), 1)
             ->where('orcamentos.ativo', 1);

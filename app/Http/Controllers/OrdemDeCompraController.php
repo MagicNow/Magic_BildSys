@@ -242,7 +242,7 @@ class OrdemDeCompraController extends AppBaseController
             return back();
         }
 
-        $orcamentoInicial = $totalAGastar = $realizado = $totalSolicitado = 0;
+        $orcamentoInicial = $valor_comprometido_a_gastar = $realizado = $totalSolicitado = 0;
 
         $itens = collect([]);
 
@@ -294,18 +294,9 @@ class OrdemDeCompraController extends AppBaseController
         }
 
         if ($ordemDeCompra->itens) {
-            $orcamentoInicial = OrdemDeCompraItem::where('ordem_de_compra_id', $ordemDeCompra->id)
-                ->join('orcamentos', function ($join) use ($ordemDeCompra) {
-                    $join->on('orcamentos.insumo_id', '=', 'ordem_de_compra_itens.insumo_id');
-                    $join->on('orcamentos.grupo_id', '=', 'ordem_de_compra_itens.grupo_id');
-                    $join->on('orcamentos.subgrupo1_id', '=', 'ordem_de_compra_itens.subgrupo1_id');
-                    $join->on('orcamentos.subgrupo2_id', '=', 'ordem_de_compra_itens.subgrupo2_id');
-                    $join->on('orcamentos.subgrupo3_id', '=', 'ordem_de_compra_itens.subgrupo3_id');
-                    $join->on('orcamentos.servico_id', '=', 'ordem_de_compra_itens.servico_id');
-                    $join->on('orcamentos.obra_id', '=', DB::raw($ordemDeCompra->obra_id));
-                    $join->on('orcamentos.ativo', '=', DB::raw('1'));
-                })
-                ->sum('orcamentos.preco_total');
+            $orcamentoInicial = OrdemDeCompraRepository::valorPrevistoOrcamento($ordemDeCompra->id, $ordemDeCompra->obra_id);
+
+            $valor_comprometido_a_gastar = OrdemDeCompraRepository::valorComprometidoAGastar($ordemDeCompra->id);
 
             $totalSolicitado = $ordemDeCompra->itens()->sum('valor_total');
 
@@ -315,7 +306,7 @@ class OrdemDeCompraController extends AppBaseController
                 ->whereIn('ordem_de_compra_itens.insumo_id', $ordemDeCompra->itens()->pluck('insumo_id', 'insumo_id')->toArray())
                 ->sum('ordem_de_compra_itens.valor_total');
 
-            $saldo = $orcamentoInicial - $realizado;
+            $saldo = OrdemDeCompraRepository::saldoDisponivel($ordemDeCompra->id, $ordemDeCompra->obra_id);
 
             $itens = OrdemDeCompraItem::where('ordem_de_compra_id', $ordemDeCompra->id)
                 ->select([
@@ -388,7 +379,7 @@ class OrdemDeCompraController extends AppBaseController
                         AND orcamentos.ativo = 1
 
                     ) as valor_previsto_orcamento_pai"),
-                    DB::raw("CONCAT(insumos_sub.codigo,' - ' ,insumos_sub.nome) as substitui")
+                    DB::raw("CONCAT(insumos_sub.codigo,' - ' ,insumos_sub.nome) as substitui"),
                 ])
                 ->join('ordem_de_compras','ordem_de_compras.id' , 'ordem_de_compra_itens.ordem_de_compra_id')
                 ->join('orcamentos', function ($join) use ($ordemDeCompra) {
@@ -407,6 +398,7 @@ class OrdemDeCompraController extends AppBaseController
             $itens->leftJoin(DB::raw('orcamentos orcamentos_sub'),  'orcamentos_sub.id', 'orcamentos.orcamento_que_substitui');
             $itens->leftJoin(DB::raw('insumos insumos_sub'), 'insumos_sub.id', 'orcamentos_sub.insumo_id');
 
+            $itens = $itens->groupBy('ordem_de_compra_itens.insumo_id');
             $itens = $itens->paginate(10);
         }
 
@@ -427,7 +419,7 @@ class OrdemDeCompraController extends AppBaseController
             'ordemDeCompra',
             'orcamentoInicial',
             'realizado',
-            'totalAGastar',
+            'valor_comprometido_a_gastar',
             'saldo',
             'itens',
             'motivos_reprovacao',
@@ -821,7 +813,24 @@ class OrdemDeCompraController extends AppBaseController
         $itens = collect([]);
 
         if ($ordemDeCompra->itens) {
-            $itens = OrdemDeCompraItem::where('ordem_de_compra_id', $ordemDeCompra->id)
+            $itens = OrdemDeCompraItem::select([
+                'ordem_de_compra_itens.*',
+                'orcamentos.orcamento_que_substitui',
+                DB::raw("CONCAT(insumos_sub.codigo,' - ' ,insumos_sub.nome) as substitui")
+            ])
+                ->where('ordem_de_compra_id', $ordemDeCompra->id)
+                ->join('orcamentos', function ($join) use ($ordemDeCompra) {
+                    $join->on('orcamentos.insumo_id', '=', 'ordem_de_compra_itens.insumo_id');
+                    $join->on('orcamentos.grupo_id', '=', 'ordem_de_compra_itens.grupo_id');
+                    $join->on('orcamentos.subgrupo1_id', '=', 'ordem_de_compra_itens.subgrupo1_id');
+                    $join->on('orcamentos.subgrupo2_id', '=', 'ordem_de_compra_itens.subgrupo2_id');
+                    $join->on('orcamentos.subgrupo3_id', '=', 'ordem_de_compra_itens.subgrupo3_id');
+                    $join->on('orcamentos.servico_id', '=', 'ordem_de_compra_itens.servico_id');
+                    $join->on('orcamentos.obra_id', '=', DB::raw($ordemDeCompra->obra_id));
+                    $join->on('orcamentos.ativo', '=', DB::raw('1'));
+                })
+                ->leftJoin(DB::raw('orcamentos orcamentos_sub'), 'orcamentos_sub.id', 'orcamentos.orcamento_que_substitui')
+                ->leftJoin(DB::raw('insumos insumos_sub'), 'insumos_sub.id', 'orcamentos_sub.insumo_id')
                 ->with('insumo', 'unidade', 'anexos')
                 ->paginate(10);
         }
@@ -1108,49 +1117,12 @@ class OrdemDeCompraController extends AppBaseController
         ->where('oc_status_id', 3)->orderBy('id', 'desc')
         ->take(5)->get();
 
-        $status = OrdemDeCompra::select([
-                DB::raw('
-                 IFNULL(
-                    (
-                        SELECT
-                            SUM(orcamentos.preco_total)
-                        FROM
-                            ordem_de_compra_itens
-                                INNER JOIN
-                            orcamentos ON orcamentos.insumo_id = ordem_de_compra_itens.insumo_id
-                                AND orcamentos.grupo_id = ordem_de_compra_itens.grupo_id
-                                AND orcamentos.subgrupo1_id = ordem_de_compra_itens.subgrupo1_id
-                                AND orcamentos.subgrupo2_id = ordem_de_compra_itens.subgrupo2_id
-                                AND orcamentos.subgrupo3_id = ordem_de_compra_itens.subgrupo3_id
-                                AND orcamentos.servico_id = ordem_de_compra_itens.servico_id
-                                AND orcamentos.obra_id = ordem_de_compra_itens.obra_id
-                                AND orcamentos.ativo = 1
-                        WHERE
-                            ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id
-                                AND ordem_de_compra_itens.deleted_at IS NULL
-                    ), 0
-                 )
-                 -
-                 IFNULL(
-                    (
-                        SELECT
-                            SUM(ordem_de_compra_itens.valor_total)
-                        FROM
-                            ordem_de_compra_itens
-                                INNER JOIN
-                            orcamentos ON orcamentos.insumo_id = ordem_de_compra_itens.insumo_id
-                                AND orcamentos.grupo_id = ordem_de_compra_itens.grupo_id
-                                AND orcamentos.subgrupo1_id = ordem_de_compra_itens.subgrupo1_id
-                                AND orcamentos.subgrupo2_id = ordem_de_compra_itens.subgrupo2_id
-                                AND orcamentos.subgrupo3_id = ordem_de_compra_itens.subgrupo3_id
-                                AND orcamentos.servico_id = ordem_de_compra_itens.servico_id
-                                AND orcamentos.obra_id = ordem_de_compra_itens.obra_id
-                                AND orcamentos.ativo = 1
-                        WHERE
-                            ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id
-                                AND ordem_de_compra_itens.deleted_at IS NULL
-                    ), 0
-                 ) as status')
+        $ordemDeCompras = OrdemDeCompra::select([
+                'ordem_de_compras.id',
+                'obras.nome as obra',
+                'users.name as usuario',
+                'oc_status.nome as situacao',
+                'ordem_de_compras.obra_id'
             ])
             ->join('obras', 'obras.id', '=', 'ordem_de_compras.obra_id')
             ->join('oc_status', 'oc_status.id', '=', 'ordem_de_compras.oc_status_id')
@@ -1163,16 +1135,17 @@ class OrdemDeCompraController extends AppBaseController
         $dentro_orcamento = 0;
         $acima_orcamento = 0;
 
-        if (count($status)) {
-            foreach ($status as $item) {
-                if ($item->status >= 0) {
+        if(count($ordemDeCompras)) {
+            foreach ($ordemDeCompras as $ordemDeCompra) {
+                $saldoDisponivel = OrdemDeCompraRepository::saldoDisponivel($ordemDeCompra->id, $ordemDeCompra->obra_id);
+                if($saldoDisponivel >= 0) {
                     $dentro_orcamento += 1;
-                }else{
+                } else {
                     $acima_orcamento += 1;
                 }
             }
         }
-
+        
         return view('ordem_de_compras.dashboard', compact('reprovados', 'aprovados', 'emaprovacao', 'abaixo_orcamento', 'dentro_orcamento', 'acima_orcamento'));
     }
 
@@ -1295,7 +1268,7 @@ class OrdemDeCompraController extends AppBaseController
             ->where('ordem_de_compra_itens.obra_id', $obra_id)
             ->whereIn('oc_status_id',[2,3,5]);
 
-        $orcamentoInicial = $totalAGastar = $realizado = $totalSolicitado = 0;
+        $orcamentoInicial = $valor_comprometido_a_gastar = $realizado = $totalSolicitado = 0;
 
         $itens = collect([]);
 
@@ -1305,10 +1278,15 @@ class OrdemDeCompraController extends AppBaseController
             return back();
         }
 
-        $orcamentoInicial = Orcamento::where('servico_id', $servico_id)
+        $orcamentos = Orcamento::where('servico_id', $servico_id)
             ->where('obra_id', $obra_id)
-            ->where('ativo', 1)
-            ->sum('orcamentos.preco_total');
+            ->where('ativo', 1);
+
+        foreach($orcamentos->get() as $orcamento) {
+            $valor_comprometido_a_gastar += OrdemDeCompraRepository::valorComprometidoAGastarItem($orcamento->grupo_id, $orcamento->subgrupo1_id, $orcamento->subgrupo2_id, $orcamento->subgrupo3_id, $orcamento->servico_id, $orcamento->insumo_id);
+        }
+
+        $orcamentoInicial = $orcamentos->sum('orcamentos.preco_total');
 
         $totalSolicitado = $ordemDeCompraItens->sum('valor_total');
 
@@ -1326,7 +1304,7 @@ class OrdemDeCompraController extends AppBaseController
                 'ordemDeCompra',
                 'orcamentoInicial',
                 'realizado',
-                'totalAGastar',
+                'valor_comprometido_a_gastar',
                 'saldo',
                 'itens',
                 'servico',
@@ -1439,7 +1417,7 @@ class OrdemDeCompraController extends AppBaseController
                 'grupo_id' => $request->grupo_id,
                 'unidade_sigla' => $insumo->unidade_sigla,
                 'preco_unitario' => 0,
-                'qtd_total' => $request->qtd_total,
+                'qtd_total' => money_to_float($request->qtd_total),
                 'orcamento_tipo_id' => 1,
                 'subgrupo1_id' => $request->subgrupo1_id,
                 'subgrupo2_id' => $request->subgrupo2_id,
@@ -1451,7 +1429,7 @@ class OrdemDeCompraController extends AppBaseController
             $orcamento->save();
         }else{
             Flash::warning(
-                'Insumo já existe nesse orçamento'
+                'O insumo já existe neste orçamento.'
             );
             return back()->withInput();
         }

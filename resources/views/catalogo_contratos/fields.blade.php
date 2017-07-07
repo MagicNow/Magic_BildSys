@@ -30,7 +30,13 @@
                         </div>
                     </div>
                 </div>
-
+            @else
+                @if(strlen($catalogoContrato->minuta_assinada))
+                    <a href="{{ Storage::url($catalogoContrato->minuta_assinada) }}" target="_blank"
+                       class="btn btn-info btn-xs btn-flat btn-block">
+                        <i class="fa fa-download"></i> Baixar Minuta já assinada
+                    </a>
+                @endif
             @endif
         @endif
     </div>
@@ -253,11 +259,11 @@ $count_insumos = 0;
                             </div>
                             <div class="col-md-3">
                                 <label>Pedido quantidade mínima:</label>
-                                <input type="text" {{ $podeEditar?'':' disabled="disabled"' }} value="{{$item->pedido_minimo}}" id="pedido_minimo_{{$item->id}}" class="form-control decimal" name="contratoInsumos[{{$item->id}}][pedido_minimo]">
+                                <input type="text" {{ $podeEditar?'':' disabled="disabled"' }} value="{{$item->pedido_minimo}}" id="pedido_minimo_{{$item->id}}" class="form-control money" name="contratoInsumos[{{$item->id}}][pedido_minimo]">
                             </div>
                             <div class="col-md-2">
                                 <label>Pedido múltiplo de:</label>
-                                <input type="text" {{ $podeEditar?'':' disabled="disabled"' }} value="{{$item->pedido_multiplo_de}}" id="pedido_multiplo_de_{{$item->id}}" class="form-control decimal" name="contratoInsumos[{{$item->id}}][pedido_multiplo_de]">
+                                <input type="text" {{ $podeEditar?'':' disabled="disabled"' }} value="{{$item->pedido_multiplo_de}}" id="pedido_multiplo_de_{{$item->id}}" class="form-control money" name="contratoInsumos[{{$item->id}}][pedido_multiplo_de]">
                             </div>
                             <div class="col-md-2">
                                 <label>Período início:</label>
@@ -348,11 +354,11 @@ $count_insumos = 0;
                                                 </div>\
                                                 <div class="col-md-3">\
                                                     <label>Pedido quantidade mínima:</label>\
-                                                    <input type="text" class="form-control decimal" id="pedido_minimo_'+count_insumos+'" name="contratoInsumos['+count_insumos+'][pedido_minimo]">\
+                                                    <input type="text" class="form-control money" id="pedido_minimo_'+count_insumos+'" name="contratoInsumos['+count_insumos+'][pedido_minimo]">\
                                                 </div>\
                                                 <div class="col-md-2">\
                                                     <label>Pedido múltiplo de:</label>\
-                                                    <input type="text" class="form-control decimal" id="pedido_multiplo_de_'+count_insumos+'" name="contratoInsumos['+count_insumos+'][pedido_multiplo_de]">\
+                                                    <input type="text" class="form-control money" id="pedido_multiplo_de_'+count_insumos+'" name="contratoInsumos['+count_insumos+'][pedido_multiplo_de]">\
                                                 </div>\
                                                 <div class="col-md-2">\
                                                     <label>Período início:</label>\
@@ -623,11 +629,11 @@ $count_insumos = 0;
                                 </div>\
                                 <div class="col-md-3">\
                                     <label>Pedido quantidade mínima:</label>\
-                                    <input type="text" class="form-control decimal" id="pedido_minimo_'+count_reajuste+'" name="reajuste['+count_reajuste+'][pedido_minimo]">\
+                                    <input type="text" class="form-control money" id="pedido_minimo_'+count_reajuste+'" name="reajuste['+count_reajuste+'][pedido_minimo]">\
                                 </div>\
                                 <div class="col-md-2">\
                                     <label>Pedido múltiplo de:</label>\
-                                    <input type="text" class="form-control decimal" id="pedido_multiplo_de_'+count_reajuste+'" name="reajuste['+count_reajuste+'][pedido_multiplo_de]">\
+                                    <input type="text" class="form-control money" id="pedido_multiplo_de_'+count_reajuste+'" name="reajuste['+count_reajuste+'][pedido_multiplo_de]">\
                                 </div>\
                                 <div class="col-md-2">\
                                     <label>Período início:</label>\
@@ -640,6 +646,8 @@ $count_insumos = 0;
                             </div>';
                         $('#reajuste_'+insumo_id).append(block_reajuste);
                         $('#valor_unitario_'+count_reajuste).maskMoney({allowNegative: true, thousands:'.', decimal:','});
+                        $('#pedido_minimo_'+count_reajuste).maskMoney({allowNegative: true, thousands:'.', decimal:','});
+                        $('#pedido_multiplo_de_'+count_reajuste).maskMoney({allowNegative: true, thousands:'.', decimal:','});
                         @if(isset($catalogoContrato) && $catalogoContrato->catalogo_contrato_status_id == 3)
                     }
                 });

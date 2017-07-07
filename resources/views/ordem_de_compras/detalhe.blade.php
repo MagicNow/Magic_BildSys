@@ -249,9 +249,9 @@
             <div class="col-md-2 text-right borda-direita" title="Nos itens desta O.C.">
                 <h5>Valor comprometido à gastar</h5>
                 <h4>
-                    <small class="pull-left">R$</small>0,00
-                    {{---  @TODO = A gastar: É a soma de todos os saldos de contratos na que apropriação, como ainda não exixte contrato gerado, tem q estar zerado--}}
-                    {{--                    {{ number_format($totalAGastar,2,',','.') }}--}}
+                    <small class="pull-left">R$</small>
+                    {{---  @TODO = A gastar: É a soma de todos os saldos de contratos na que apropriação--}}
+                    {{ number_format(doubleval($valor_comprometido_a_gastar),2,',','.') }}
                 </h4>
             </div>
             <div class="col-md-2 text-right borda-direita" title="Restante do Orçamento Inicial em relação aos itens desta O.C.">
@@ -312,8 +312,10 @@
                                         {{$item->subgrupo1->codigo.' - '.$item->subgrupo1->nome}}<br/>
                                         {{$item->subgrupo2->codigo.' - '.$item->subgrupo2->nome}}<br/>
                                         {{$item->subgrupo3->codigo.' - '.$item->subgrupo3->nome}}<br/>
-                                        {{$item->servico->codigo.' - '.$item->servico->nome}}<br/>
-                                        <i class='fa fa-exchange'></i> {{$item->substitui}}
+                                        {{$item->servico->codigo.' - '.$item->servico->nome}}
+                                        @if($item->substitui)
+                                            <br/><i class='fa fa-exchange'></i> {{$item->substitui}}
+                                        @endif
                                     ">
                                 {{ $item->insumo->codigo }}</span>
                             </td>
@@ -323,11 +325,7 @@
                             <td class="text-center">
                                 {{--CONTA = saldo - valor oc--}}
                                 @php
-                                    if($item->substitui) {
-                                        $status_insumo = $farol_saldo_valor_orcamento;
-                                    } else {
-                                        $status_insumo = $farol_saldo_valor_orcamento - doubleval($item->valor_total);
-                                    }
+                                    $status_insumo = $farol_saldo_valor_orcamento - doubleval($item->valor_total);
                                 @endphp
                                 <i class="fa fa-circle {{ $status_insumo < 0 ? 'red': 'green'  }}" aria-hidden="true"></i>
                             </td>
@@ -417,7 +415,7 @@
                                                 <th class="text-center">Valor previsto no orçamento</th>
                                                 <th class="text-center">Qtd. comprometida realizada</th>
                                                 <th class="text-center">Valor comprometido realizado</th>
-                                                <th class="text-center">Qtd. compremetida à gastar</th>
+                                                <th class="text-center">Qtd. comprometida à gastar</th>
                                                 <th class="text-center">Valor comprometido à gastar</th>
                                             </tr>
                                             </thead>
@@ -434,11 +432,11 @@
                                                     {{ number_format( doubleval($item->valor_realizado), 2, ',','.') }}
                                                 </td>
                                                 <td class="text-center">
-                                                    {{--{{ number_format( $item->substitui ? $item->qtd_prevista_orcamento_pai : $item->qtd_inicial-doubleval($item->qtd_realizada), 2, ',','.') }}--}}0,00
+                                                    {{ number_format(doubleval(\App\Repositories\OrdemDeCompraRepository::qtdComprometidaAGastarItem($item->grupo_id, $item->subgrupo1_id, $item->subgrupo2_id, $item->subgrupo3_id, $item->servico_id, $item->insumo_id)), 2, ',','.') }}
                                                 </td>
                                                 <td class="text-center">
                                                     <small class="pull-left">R$</small>
-                                                    {{--{{ number_format( $item->substitui ? $item->valor_previsto_orcamento_pai : $item->preco_inicial-doubleval($item->valor_realizado), 2, ',','.') }}--}}0,00
+                                                    {{ number_format(doubleval(\App\Repositories\OrdemDeCompraRepository::valorComprometidoAGastarItem($item->grupo_id, $item->subgrupo1_id, $item->subgrupo2_id, $item->subgrupo3_id, $item->servico_id, $item->insumo_id)), 2, ',','.') }}
                                                 </td>
                                             </tr>
                                             </tbody>

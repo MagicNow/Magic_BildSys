@@ -138,13 +138,16 @@
                             @endif
                             <div class="row">
                                 <span class="col-md-2 col-sm-2 col-xs-12 text-center borda-direita" data-toggle="tooltip" data-placement="top" data-html="true"
-                                      title="{{
-                                            $item->grupo->codigo .' '. $item->grupo->nome . ' <br> ' .
-                                            $item->subgrupo1->codigo .' '.$item->subgrupo1->nome . ' <br> ' .
-                                            $item->subgrupo2->codigo .' '.$item->subgrupo2->nome . ' <br> ' .
-                                            $item->subgrupo3->codigo .' '.$item->subgrupo3->nome . ' <br> ' .
-                                            $item->servico->codigo .' '.$item->servico->nome
-                                        }}">
+                                      title="
+                                        {{$item->grupo->codigo.' - '.$item->grupo->nome}}<br/>
+                                        {{$item->subgrupo1->codigo.' - '.$item->subgrupo1->nome}}<br/>
+                                        {{$item->subgrupo2->codigo.' - '.$item->subgrupo2->nome}}<br/>
+                                        {{$item->subgrupo3->codigo.' - '.$item->subgrupo3->nome}}<br/>
+                                        {{$item->servico->codigo.' - '.$item->servico->nome}}
+                                        @if($item->substitui)
+                                                <br/><i class='fa fa-exchange'></i> {{$item->substitui}}
+                                        @endif
+                                      ">
                                     <strong class="visible-xs pull-left">Insumo:</strong>
                                     {{ $item->insumo->codigo }} - {{ $item->insumo->nome }} - {{ $item->unidade_sigla }}
                                 </span>
