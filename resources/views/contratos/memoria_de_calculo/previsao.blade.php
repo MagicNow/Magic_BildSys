@@ -73,12 +73,12 @@
         @else
             <div class="form-group col-md-3">
                 {!! Form::label('planejamento_id', 'Tarefa:') !!}
-                {!! Form::select('planejamento_id', $tarefas , null, ['class' => 'form-control select2', 'required' => 'required']) !!}
+                {!! Form::select('planejamento_id', $tarefas, null, ['class' => 'form-control select2', 'required' => 'required']) !!}
             </div>
 
             <div class="form-group col-md-3">
                 {!! Form::label('obra_torre_id', 'Torres:') !!}
-                {!! Form::select('obra_torre_id', $obra_torres , null, ['class' => 'form-control select2', 'required' => 'required']) !!}
+                {!! Form::select('obra_torre_id', $obra_torres, null, ['class' => 'form-control select2', 'required' => 'required']) !!}
             </div>
 
             <div class="form-group col-md-6">
@@ -91,7 +91,7 @@
                    style="margin-top: -10px;">
                     <i class="fa fa-plus fa-fw" aria-hidden="true"></i>
                 </a>
-                {!! Form::select('memoria_de_calculo', $memoria_de_calculo , null, ['class' => 'form-control select2', 'required' => 'required']) !!}
+                {!! Form::select('memoria_de_calculo', $memoria_de_calculo, null, ['class' => 'form-control select2', 'required' => 'required']) !!}
             </div>
         @endif
 
@@ -99,9 +99,25 @@
             <h3>
                 Filtros
             </h3>
-            <div class="form-group col-md-3">
-                {!! Form::label('filtro_estrutura', 'Estrutura:') !!}
-                {!! Form::select('filtro_estrutura', $estruturas , null, ['class' => 'form-control select2', 'onchange' => 'filtrarEstrututa(this.value);']) !!}
+            <div class="row form-group col-md-5">
+                <div class="row col-md-3">
+                    {!! Form::label('filtro_estrutura', 'Estrutura:') !!}
+                </div>
+                <div class="col-md-9">
+                    {!! Form::select('filtro_estrutura', $estruturas, null, ['class' => 'form-control select2', 'onchange' => 'filtrarEstrututa(this.value);']) !!}
+                </div>
+            </div>
+            <div class="form-group col-md-2">
+                {!! Form::label('filtro_preenchido', 'Preenchido:') !!}
+                {!! Form::checkbox('filtro_preenchido', null, false) !!}
+            </div>
+            <div class="form-group col-md-2">
+                {!! Form::label('filtro_nao_preenchido', 'Não preenchido:') !!}
+                {!! Form::checkbox('filtro_nao_preenchido', null, false) !!}
+            </div>
+            <div class="form-group col-md-2">
+                {!! Form::label('filtro_todos', 'Todos:') !!}
+                {!! Form::checkbox('filtro_todos', null, false) !!}
             </div>
         </div>
 
