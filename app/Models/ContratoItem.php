@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Eloquent as Model;
+use App\Models\SeStatus;
 
 /**
  * Class ContratoItem
@@ -33,14 +34,15 @@ class ContratoItem extends Model
      * @var array
      */
     protected $casts = [
-        'id' => 'integer',
-        'contrato_id' => 'integer',
-        'insumo_id' => 'integer',
-        'qc_item_id' => 'integer',
-        'pendente' => 'boolean',
-        'aprovado' => 'boolean',
+        'id'             => 'integer',
+        'contrato_id'    => 'integer',
+        'insumo_id'      => 'integer',
+        'qc_item_id'     => 'integer',
+        'pendente'       => 'boolean',
+        'aprovado'       => 'boolean',
         'valor_unitario' => 'float',
-        'valor_total' => 'float',
+        'valor_total'    => 'float',
+        'qtd'            => 'float',
     ];
 
     /**
@@ -110,5 +112,29 @@ class ContratoItem extends Model
             ContratoItemApropriacao::class,
             'contrato_item_id'
         );
+    }
+
+    public function solicitacaoEntregaItens()
+    {
+        return $this->hasMany(
+            SolicitacaoEntregaItem::class,
+            'contrato_item_id'
+        );
+    }
+
+    public function getQtdSaldoAttribute()
+    {
+        $columnToSum = $this->insumo->is_faturamento_direto
+            ? 'valor_total'
+            : 'qtd';
+
+
+        $total_solicitado = $this->solicitacaoEntregaItens()
+            ->whereHas('solicitacaoEntrega', function($query) {
+                $query->where('se_status_id', '!=', SeStatus::CANCELADO);
+            })
+            ->sum($columnToSum);
+
+        return $this->qtd - $total_solicitado;
     }
 }

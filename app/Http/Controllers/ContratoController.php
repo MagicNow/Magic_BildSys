@@ -41,6 +41,7 @@ use App\Repositories\ContratoItemApropriacaoRepository;
 use App\Models\WorkflowAlcada;
 use App\Models\ContratoItemApropriacao;
 use App\Models\Cnae;
+use App\Repositories\SolicitacaoEntregaRepository;
 
 class ContratoController extends AppBaseController
 {
@@ -198,7 +199,7 @@ class ContratoController extends AppBaseController
 
         $status = $contrato->status->nome;
 
-        $isEmAprovacao = $contrato->isStatus(ContratoStatus::EM_APROVACAO);
+        $isEmAprovacao = $contrato->em_aprovacao;
 
         $itens = $isEmAprovacao
             ? $apropriacaoRepository->forContratoApproval($contrato)
@@ -207,19 +208,19 @@ class ContratoController extends AppBaseController
         $iss = Cnae::$iss;
 
         return view('contratos.show', compact(
-                'isEmAprovacao',
-                'contrato',
-                'orcamentoInicial',
-                'itens',
-                'workflowAprovacao',
-                'motivos',
-                'aprovado',
-                'pendencias',
-                'alcadas_count',
-                'avaliado_reprovado',
-                'status',
-                'fornecedor',
-                'iss'
+            'isEmAprovacao',
+            'contrato',
+            'orcamentoInicial',
+            'itens',
+            'workflowAprovacao',
+            'motivos',
+            'aprovado',
+            'pendencias',
+            'alcadas_count',
+            'avaliado_reprovado',
+            'status',
+            'fornecedor',
+            'iss'
         ));
     }
 
@@ -445,15 +446,62 @@ class ContratoController extends AppBaseController
             ->first();
     }
 
-    public function atualizarValorSave(AtualizarValorRequest $request,
-                                       ContratoItemModificacaoRepository $contratoItemModificacaoRepository)
-    {
+    public function atualizarValorSave(
+        AtualizarValorRequest $request,
+        ContratoItemModificacaoRepository $contratoItemModificacaoRepository
+    ) {
         $reajustes =  $contratoItemModificacaoRepository->reajusteFornecedor($request->fornecedor_id, $request->obra_id, $request->valor_unitario);
+
         if (count($reajustes)) {
             Flash::success('Reajustes de valores criados.');
         } else {
             Flash::error('Nenhum reajuste foi criado.');
         }
+
         return redirect(route('contratos.index'));
+    }
+
+    public function solicitarEntrega(
+        $contrato_id,
+        ContratoItemApropriacaoRepository $apropriacaoRepository
+    ) {
+        $contrato = $this->contratoRepository->find($contrato_id)
+            ->load('materiais.apropriacoes');
+
+        if(!$contrato->hasMaterial()) {
+            Flash::warning('Este contrato não contém material para entrega');
+            return redirect()->route('contratos.show', $contrato->id);
+        }
+
+        if(!$contrato->pode_solicitar_entrega) {
+            Flash::warning('Ainda não é possível realizar solicitações de entrega neste contrato');
+            return redirect()->route('contratos.show', $contrato->id);
+        }
+
+        if($contrato->materiais->isEmpty()) {
+            Flash::warning('Este contrato não contem material');
+            return redirect()->route('contratos.show', $contrato->id);
+        }
+
+        $apropriacoes = $contrato->materiais->pluck('apropriacoes')->collapse();
+
+        return view(
+            'contratos.solicitacao_entrega.index',
+            compact('contrato', 'apropriacoes')
+        );
+    }
+
+    public function solicitarEntregaSave(
+        Request $request,
+        SolicitacaoEntregaRepository $repository,
+        $contrato_id
+    ) {
+        $input = $request->all();
+        $input['contrato_id'] = $contrato_id;
+        $solicitacao = $repository->create($input);
+
+        return response()->json([
+            'success' => true
+        ]);
     }
 }

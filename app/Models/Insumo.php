@@ -138,4 +138,10 @@ class Insumo extends Model
     public function contratoItem(){
         return $this->hasMany(ContratoItem::class,'insumo_id');
     }
+
+    public function getIsFaturamentoDiretoAttribute()
+    {
+        return in_array($this->codigo, [34007, 30019]);
+    }
+
 }

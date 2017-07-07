@@ -1,29 +1,5 @@
 @extends('layouts.front')
 
-@section('styles')
-    <style type="text/css">
-        #totalInsumos h5 {
-            font-weight: bold;
-            color: #4a4a4a;
-            font-size: 13px;
-            margin: 0 10px;
-            opacity: 0.5;
-            text-transform: uppercase;
-        }
-
-        #totalInsumos h4 {
-            font-weight: bold;
-            margin: 0 10px;
-            color: #4a4a4a;
-            font-size: 22px;
-        }
-
-        #totalInsumos {
-            margin-bottom: 20px;
-        }
-    </style>
-@stop
-
 @section('content')
     <section class="content-header">
         <h1>
@@ -38,7 +14,38 @@
                 </button>
             @endif
             @include('contratos.aprovacao')
+            @if($contrato->pode_solicitar_entrega)
+                <button class="btn btn-flat btn-primary btn-lg"
+                    data-toggle="modal"
+                    data-target="#modal-entregas">
+                    Solicitações de Entrega
+                </button>
+            @endif
         </h1>
+    </section>
+
+	<div class="content">
+		@if($contrato->contrato_status_id == 4 || (is_null($contrato->arquivo) && $contrato->contrato_status_id == 5)  )
+            {!! Form::open(['url'=>'/contratos/'.$contrato->id.'/envia-contrato', 'files'=> true ]) !!}
+            <div class="box box-warning">
+                <div class="box-header with-border">
+                    Enviar contrato assinado
+                </div>
+                <div class="box-body">
+                    <div class="col-md-10">
+                        {!! Form::file('arquivo',['class'=>'form-control']) !!}
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-flat btn-success btn-block">
+                            <i class="fa fa-upload"></i>
+                            Enviar
+                            {{ $contrato->contrato_status_id == 4? ' e Liberar':'' }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {!! Form::close() !!}
+		@endif
         <section>
             <h6>Dados Informativos</h6>
             <div class="row">
@@ -62,12 +69,11 @@
                             $contrato->quadroDeConcorrencia->user_id
                                 ? $contrato->quadroDeConcorrencia->user->name
                                 : 'Contrato Automático'
-                        !!}
+                            !!}
                     </p>
                 </div>
             </div>
         </section>
-
         <section>
             <h6>Dados do Fornecedor</h6>
             <div class="row">
@@ -109,12 +115,12 @@
                 @include('contratos.box-pendencias')
             @endif
         @endif
-    </div>
 
-    <div class="hidden">
-        {!! Form::select('motivo', $motivos, null, ['id' => 'motivo']) !!}
-    </div>
+        <div class="hidden">
+            {!! Form::select('motivo', $motivos, null, ['id' => 'motivo']) !!}
+        </div>
 
+    </div>
     <div class="content">
         <a href="{!! route('contratos.index') !!}" class="btn btn-default btn-flat btn-lg">
             <i class="fa fa-arrow-left"></i> {{ ucfirst( trans('common.back') )}}
@@ -201,142 +207,43 @@
             </div>
         </div>
     </div>
-  </div>
 
-  <div class="modal centered-modal fade" id="modal-editar" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-sm" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">
-            <span aria-hidden="true">&times;</span>
-          </button>
-          <h4 class="modal-title">Editar Aditivo</h4>
-        </div>
-        <div class="modal-body">
-          <div class="form-group">
-            <label for="qtd">Quantidade</label>
-            {!! Form::text('qtd', null, ['class' => 'form-control money']) !!}
-          </div>
-          <div class="form-group">
-            <label for="valor">Valor</label>
-            <div class="input-group">
-              <span class="input-group-addon">R$</span>
-              {!! Form::text('valor', null, ['class' => 'form-control money']) !!}
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-danger btn-flat" data-dismiss="modal">
-            Cancelar
-          </button>
-          <button type="button" class="btn btn-success btn-flat js-save">
-            Salvar
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal fade" id="modal-impostos" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">
-              <span aria-hidden="true">&times;</span>
-          </button>
-          <h4 class="modal-title">Impostos</h4>
-        </div>
-        @if(!$isEmAprovacao)
-            <div class="modal-body">
-                @if($fornecedor->imposto_simples)
-                    <h4>
-                        {{ $fornecedor->nome }}
-                        <span class="label label-info">ALÍQUOTA SIMPLES</span>
-                    </h4>
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <table class="table table-no-margin table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>ISS</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($iss as $porcentagem)
-                                        <tr>
-                                            <td>{{ float_to_money($porcentagem, '') }}%</td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="col-sm-9">
-                            <table class="table table-no-margin table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>Insumo</th>
-                                        <th>Inss</th>
-                                        <th>Iss</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($itens as $item)
-                                        <tr>
-                                            <td>{{ $item->insumo->nome }}</td>
-                                            <td>{{ $item->insumo->cnae->inss ? to_percentage($item->insumo->cnae->inss) : 'Não' }}</td>
-                                            <td>{{ $item->insumo->cnae->iss ? to_percentage($item->insumo->cnae->iss) : 'Não' }}</td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+    <div class="modal centered-modal fade" id="modal-editar" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">Editar Aditivo</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="qtd">Quantidade</label>
+                        {!! Form::text('qtd', null, ['class' => 'form-control money']) !!}
+                    </div>
+                    <div class="form-group">
+                        <label for="valor">Valor</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">R$</span>
+                            {!! Form::text('valor', null, ['class' => 'form-control money']) !!}
                         </div>
                     </div>
-                @else
-                    <h4>
-                        {{ $fornecedor->nome }}
-                        <span class="label label-info">ALÍQUOTA PRESUMIDA</span>
-                    </h4>
-                    <table class="table table-no-margin table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Insumo</th>
-                                <th>ISS</th>
-                                <th>INSS</th>
-                                <th>IRRF</th>
-                                <th>PIS</th>
-                                <th>COFINS</th>
-                                <th>CSLL</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($itens as $item)
-                                <tr>
-                                    <td>{{ $item->insumo->nome }}</td>
-                                    @if($item->servico_cnae_id)
-                                        <td>{{ to_percentage($item->insumo->cnae->iss) }}</td>
-                                        <td>{{ to_percentage($item->insumo->cnae->inss) }}</td>
-                                        <td>{{ to_percentage($item->insumo->cnae->irrf) }}</td>
-                                        <td>{{ to_percentage($item->insumo->cnae->pis) }}</td>
-                                        <td>{{ to_percentage($item->insumo->cnae->cofins) }}</td>
-                                        <td>{{ to_percentage($item->insumo->cnae->csll) }}</td>
-                                    @else
-                                        <td>{{ to_percentage(0) }}</td>
-                                        <td>{{ to_percentage(0) }}</td>
-                                        <td>{{ to_percentage(0) }}</td>
-                                        <td>{{ to_percentage(0) }}</td>
-                                        <td>{{ to_percentage(0) }}</td>
-                                        <td>{{ to_percentage(0) }}</td>
-                                    @endif
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                @endif
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger btn-flat" data-dismiss="modal">
+                        Cancelar
+                    </button>
+                    <button type="button" class="btn btn-success btn-flat js-save">
+                        Salvar
+                    </button>
+                </div>
             </div>
-        @endif
-      </div>
+        </div>
     </div>
-  </div>
+
+    @include('contratos.modal_impostos')
+    @include('contratos.modal_entregas')
 @endsection
 
 @section('scripts')

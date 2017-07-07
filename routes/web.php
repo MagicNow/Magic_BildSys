@@ -21,11 +21,22 @@ $router->post('/notifications/marcar-lido', 'NotificationController@marcarLido')
 // Detalhes de workflow
 $router->get('/workflow/detalhes', 'WorkflowController@detalhes');
 
+// Solicitação de Insumo
+$router->get('/solicitar-insumo', 'SolicitacaoInsumoController@create')
+    ->name('solicitar_insumo.create');
+$router->post('/solicitar-insumo', 'SolicitacaoInsumoController@store')
+    ->name('solicitar_insumo.store');
+
 ##### Buscas #####
-$router->get('/admin/catalogo-acordos/buscar/busca_insumos', ['as' => 'catalogo_contratos.busca_insumos', 'uses' => 'CatalogoContratoController@buscaInsumos']);
-$router->get('/admin/solicitacaoInsumos/buscar/grupos_insumos', 'Admin\SolicitacaoInsumoController@buscaGruposInsumos');
-$router->get('/compras/insumos/orcamento/solicitar-insumo/{obra_id}', 'Admin\SolicitacaoInsumoController@solicitarInsumo');
-$router->post('/compras/insumos/orcamento/solicitar-insumo/salvar/{obra_id}', 'Admin\SolicitacaoInsumoController@solicitarInsumoSalvar');
+$router->get('/admin/catalogo-acordos/buscar/busca_insumos', ['as' => 'catalogo_contratos.busca_insumos', 'uses' => 'BuscarController@getInsumos']);
+
+$router->get('/buscar/insumo-grupos', 'BuscarController@getInsumoGrupos')
+    ->name('buscar.insumo-grupos');
+$router->get('/buscar/insumos', 'BuscarController@getInsumos')
+    ->name('buscar.insumos');
+$router->get('/buscar/fornecedores', 'BuscarController@getFornecedores')
+    ->name('buscar.fornecedores');
+
 $router->get('/admin/users/busca', 'Admin\Manage\UsersController@busca');
 $router->get('/getForeignKey', 'CodesController@getForeignKey');
 $router->get('/busca-cidade', 'CodesController@buscaCidade');
@@ -704,6 +715,48 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('planejamentos/lembretes', 'PlanejamentoController@lembretes');
     $router->get('planejamentos/lembretes/salvar-data-minima', 'PlanejamentoController@lembretes');
 
+    $router->get(
+        '/solicitacoes-de-entrega/{solicitacao_entrega}',
+        'SolicitacaoEntregaController@show'
+    )
+    ->middleware('needsPermission:contratos.solicitar_entrega')
+    ->name('solicitacao-entrega.show');
+
+    $router->get(
+        '/solicitacoes-de-entrega/{solicitacao_entrega}/edit',
+        'SolicitacaoEntregaController@edit'
+    )
+    ->middleware('needsPermission:contratos.solicitar_entrega')
+    ->name('solicitacao-entrega.edit');
+
+    $router->patch(
+        '/solicitacoes-de-entrega/{solicitacao_entrega}',
+        'SolicitacaoEntregaController@update'
+    )
+    ->middleware('needsPermission:contratos.solicitar_entrega')
+    ->name('solicitacao-entrega.update');
+
+    $router->post(
+        '/solicitacoes-de-entrega/{solicitacao_entrega}/cancelar',
+        'SolicitacaoEntregaController@cancel'
+    )
+    ->middleware('needsPermission:contratos.solicitar_entrega')
+    ->name('solicitacao-entrega.cancel');
+
+    $router->get(
+        '/solicitacoes-de-entrega/{solicitacao_entrega}/vincular-nota',
+        'SolicitacaoEntregaController@vincularNota'
+    )
+    ->middleware('needsPermission:contratos.solicitar_entrega')
+    ->name('solicitacao-entrega.vincular-nota');
+
+    $router->post(
+        '/solicitacoes-de-entrega/{solicitacao_entrega}/vincular-nota',
+        'SolicitacaoEntregaController@vincularNotaSave'
+    )
+    ->middleware('needsPermission:contratos.solicitar_entrega')
+    ->name('solicitacao-entrega.vincular-nota');
+
     $router->group(['prefix' => 'contratos','middleware' => 'needsPermission:contratos.list'], function($router) {
         $router->get(
             '',
@@ -743,11 +796,25 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             '/insumo-valor',
             'ContratoController@insumoValor'
         )->middleware('needsPermission:contratos.edit');
-
         $router->get(
             '/{contratos}',
             ['as' => 'contratos.show', 'uses' => 'ContratoController@show']
         )->middleware('needsPermission:contratos.show');
+
+        $router->get(
+            '/{contratos}/solicitar-entrega',
+            'ContratoController@solicitarEntrega'
+        )
+        ->middleware('needsPermission:contratos.solicitar_entrega')
+        ->name('contratos.solicitar-entrega');
+
+        $router->post(
+            '/{contratos}/solicitar-entrega',
+            'ContratoController@solicitarEntregaSave'
+        )
+        ->middleware('needsPermission:contratos.solicitar_entrega')
+        ->name('contratos.solicitar-entrega');
+
         $router->post(
             '/editar-item/{item}',
             [
