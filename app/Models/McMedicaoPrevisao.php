@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class McMedicaoPrevisao
@@ -12,7 +11,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class McMedicaoPrevisao extends Model
 {
-    use SoftDeletes;
 
     public $table = 'mc_medicao_previsoes';
     
@@ -20,7 +18,6 @@ class McMedicaoPrevisao extends Model
     const UPDATED_AT = 'updated_at';
 
 
-    protected $dates = ['deleted_at'];
 
 
     public $fillable = [
