@@ -463,11 +463,11 @@ class ContratoController extends AppBaseController
         return redirect(route('contratos.index'));
     }
 
-    public function memoriaDeCalculo($contrato_id, $contrato_item_apropriacao_id)
+    public function memoriaDeCalculo($contrato_id, $contrato_item_apropriacao_id, Request $request)
     {
         $contrato = $this->contratoRepository->findWithoutFail($contrato_id);
         $contrato_item_apropriacao = ContratoItemApropriacao::find($contrato_item_apropriacao_id);
-
+        
         if (empty($contrato)) {
             Flash::error('Contrato ' . trans('common.not-found'));
 
@@ -536,11 +536,98 @@ class ContratoController extends AppBaseController
                 ->where('contrato_item_id', $contrato_item_apropriacao->contrato_item_id)
                 ->get();
 
-        $estruturas = NomeclaturaMapa::where('tipo', 1)
+        $filtro_estruturas = NomeclaturaMapa::where('tipo', 1)
             ->pluck('nome', 'id')
             ->prepend('', '')
             ->toArray();
-        
+
+        // Montar os blocos
+        if(count($previsoes)) {
+            $memoria_de_calculo_id = $previsoes->first()->memoriaCalculoBloco->memoriaCalculo->id;
+        }else{
+            $memoria_de_calculo_id = $request->memoria_de_calculo;
+        }
+
+        if($memoria_de_calculo_id) {
+            $memoriaCalculo = MemoriaCalculo::find($memoria_de_calculo_id);
+
+            if (empty($memoriaCalculo)) {
+                Flash::error('Memoria Calculo '.trans('common.not-found'));
+
+                return redirect(route('memoriaCalculos.index'));
+            }
+            $blocos = [];
+            $memoriaBlocos = $memoriaCalculo->blocos()
+                ->orderBy('ordem_bloco','ASC')
+                ->orderBy('ordem_linha','ASC')
+                ->orderBy('ordem','ASC')
+                ->with('estruturaObj','pavimentoObj','trechoObj')
+                ->get();
+            if(count($memoriaBlocos)){
+                $estruturas = [];
+                $pavimentos = [];
+                $trechos = [];
+                foreach ($memoriaBlocos as $memoriaBloco) {
+                    if(!isset($estruturas[$memoriaBloco->estrutura])){
+                        $estruturas[$memoriaBloco->estrutura] = [
+                            'id'=>   $memoriaBloco->ordem,
+                            'objId'=>   $memoriaBloco->estrutura,
+                            'nome'=> $memoriaBloco->estruturaObj->nome,
+                            'ordem' => $memoriaBloco->ordem_bloco,
+                            'itens' => []
+                        ];
+                    }
+
+                    if(!isset($pavimentos[$memoriaBloco->estrutura][$memoriaBloco->pavimento])){
+                        $countEstrutura = !isset($pavimentos[$memoriaBloco->estrutura])?1:count($pavimentos[$memoriaBloco->estrutura])+1;
+                        $pavimentos[$memoriaBloco->estrutura][$memoriaBloco->pavimento] = [
+                            'id'=>   $countEstrutura,
+                            'objId'=>   $memoriaBloco->pavimento,
+                            'nome'=> $memoriaBloco->pavimentoObj->nome,
+                            'ordem' => $memoriaBloco->ordem_linha,
+                            'estrutura' => $memoriaBloco->estrutura,
+                            'itens' => []
+                        ];
+                    }
+
+                    if(!isset($trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento][$memoriaBloco->trecho])){
+                        $countTrecho = !isset($trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento])?1:count($trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento])+1;
+                        $trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento][$memoriaBloco->trecho] = [
+                            'id'=>   $countTrecho,
+                            'blocoId'=>   $memoriaBloco->id,
+                            'objId'=>   $memoriaBloco->trecho,
+                            'nome'=> $memoriaBloco->trechoObj->nome,
+                            'ordem' => $memoriaBloco->ordem,
+                            'estrutura' => $memoriaBloco->estrutura,
+                            'pavimento' => $memoriaBloco->pavimento
+                        ];
+                    }
+
+                }
+                // organiza a array
+                foreach ($trechos as $estrutura_id => $estruturaTrechos){
+                    foreach ($estruturaTrechos as $pavimento_id => $pavimentoTrechos) {
+                        foreach ($pavimentoTrechos as $trecho) {
+                            $pavimentos[$trecho['estrutura']][$trecho['pavimento']]['itens'][] = $trecho;
+                        }
+                    }
+
+                }
+
+                foreach ($pavimentos as $estrutura_id => $pavimentos_internos){
+                    foreach ($pavimentos_internos as $pavimento_interno){
+                        $estruturas[$pavimento_interno['estrutura']]['itens'][] = $pavimento_interno;
+                    }
+                }
+
+                foreach ($estruturas as $estrutura){
+                    $blocos[$estrutura['ordem']] = $estrutura;
+                }
+
+            }
+            ksort($blocos);
+        }
+
         return view('contratos.memoria_de_calculo.previsao',
             compact(
                 'contrato',
@@ -550,7 +637,9 @@ class ContratoController extends AppBaseController
                 'memoria_de_calculo',
                 'obra_torres',
                 'previsoes',
-                'estruturas'
+                'filtro_estruturas',
+                'blocos',
+                'memoriaCalculo'
             )
         );
     }
