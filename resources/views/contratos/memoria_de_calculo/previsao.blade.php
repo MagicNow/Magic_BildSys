@@ -207,7 +207,7 @@
             </div>
 
             {{--Renderiza os blocos--}}
-            <div class="col-md-6" id="visual"></div>
+            <div class="col-md-12" id="visual"></div>
 
             <div class="col-md-12">
                 <h3>
