@@ -24,7 +24,9 @@ class MemoriaCalculoBloco extends Model
         'estrutura',
         'pavimento',
         'trecho',
-        'ordem'
+        'ordem',
+        'ordem_linha',
+        'ordem_bloco',
     ];
 
     /**
@@ -39,6 +41,8 @@ class MemoriaCalculoBloco extends Model
         'pavimento' => 'integer',
         'trecho' => 'integer',
         'ordem' => 'integer',
+        'ordem_linha' => 'integer',
+        'ordem_bloco' => 'integer',
     ];
 
     /**

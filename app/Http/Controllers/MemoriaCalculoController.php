@@ -110,7 +110,12 @@ class MemoriaCalculoController extends AppBaseController
             return redirect(route('memoriaCalculos.index'));
         }
         $blocos = [];
-        $memoriaBlocos = $memoriaCalculo->blocos;
+        $memoriaBlocos = $memoriaCalculo->blocos()
+            ->orderBy('ordem_bloco','ASC')
+            ->orderBy('ordem_linha','ASC')
+            ->orderBy('ordem','ASC')
+            ->with('estruturaObj','pavimentoObj','trechoObj')
+            ->get();
         if(count($memoriaBlocos)){
             $estruturas = [];
             $pavimentos = [];
@@ -118,28 +123,34 @@ class MemoriaCalculoController extends AppBaseController
             foreach ($memoriaBlocos as $memoriaBloco) {
                 if(!isset($estruturas[$memoriaBloco->estrutura])){
                     $estruturas[$memoriaBloco->estrutura] = [
-                        'id'=>   $memoriaBloco->estrutura,
+                        'id'=>   $memoriaBloco->ordem,
+                        'objId'=>   $memoriaBloco->estrutura,
                         'nome'=> $memoriaBloco->estruturaObj->nome,
-                        'ordem' => $memoriaBloco->ordem,
+                        'ordem' => $memoriaBloco->ordem_bloco,
                         'itens' => []
                     ];
                 }
 
                 if(!isset($pavimentos[$memoriaBloco->estrutura][$memoriaBloco->pavimento])){
+                    $countEstrutura = !isset($pavimentos[$memoriaBloco->estrutura])?1:count($pavimentos[$memoriaBloco->estrutura])+1;
                     $pavimentos[$memoriaBloco->estrutura][$memoriaBloco->pavimento] = [
-                        'id'=>   $memoriaBloco->pavimento,
+                        'id'=>   $countEstrutura,
+                        'objId'=>   $memoriaBloco->pavimento,
                         'nome'=> $memoriaBloco->pavimentoObj->nome,
-                        'ordem' => count($pavimentos),
+                        'ordem' => $memoriaBloco->ordem_linha,
                         'estrutura' => $memoriaBloco->estrutura,
                         'itens' => []
                     ];
                 }
 
                 if(!isset($trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento][$memoriaBloco->trecho])){
+                    $countTrecho = !isset($trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento])?1:count($trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento])+1;
                     $trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento][$memoriaBloco->trecho] = [
-                        'id'=>   $memoriaBloco->trecho,
+                        'id'=>   $countTrecho,
+                        'blocoId'=>   $memoriaBloco->id,
+                        'objId'=>   $memoriaBloco->trecho,
                         'nome'=> $memoriaBloco->trechoObj->nome,
-                        'ordem' => count($trechos),
+                        'ordem' => $memoriaBloco->ordem,
                         'estrutura' => $memoriaBloco->estrutura,
                         'pavimento' => $memoriaBloco->pavimento
                     ];
@@ -150,7 +161,7 @@ class MemoriaCalculoController extends AppBaseController
             foreach ($trechos as $estrutura_id => $estruturaTrechos){
                 foreach ($estruturaTrechos as $pavimento_id => $pavimentoTrechos) {
                     foreach ($pavimentoTrechos as $trecho) {
-                        $pavimentos[$trecho['estrutura']][$trecho['pavimento']]['itens'][$trecho['ordem']] = $trecho;
+                        $pavimentos[$trecho['estrutura']][$trecho['pavimento']]['itens'][] = $trecho;
                     }
                 }
 
@@ -158,7 +169,7 @@ class MemoriaCalculoController extends AppBaseController
 
             foreach ($pavimentos as $estrutura_id => $pavimentos_internos){
                 foreach ($pavimentos_internos as $pavimento_interno){
-                    $estruturas[$pavimento_interno['estrutura']]['itens'][$pavimento_interno['ordem']] = $pavimento_interno;
+                    $estruturas[$pavimento_interno['estrutura']]['itens'][] = $pavimento_interno;
                 }
             }
 
@@ -168,7 +179,7 @@ class MemoriaCalculoController extends AppBaseController
 
         }
         ksort($blocos);
-        
+
         return view('memoria_calculos.edit', compact('obras','memoriaCalculo','blocos'));
     }
 
