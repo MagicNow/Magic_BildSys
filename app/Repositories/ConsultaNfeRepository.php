@@ -22,7 +22,7 @@ class ConsultaNfeRepository
                      // se for diferente de zero não importa o que está contido em ultNSU será retornado apenas
                      // os dados deste NSU em particular
 
-        $tpAmb = '2';// esses dados somente existirão em ambiente de produção pois em ambiente de testes
+        $tpAmb = '1';// esses dados somente existirão em ambiente de produção pois em ambiente de testes
                      // não existem dados de eventos, nem de NFe emitidas para o seu CNPJ
 
         $cnpj = ''; // deixando vazio irá pegar o CNPJ default do config
