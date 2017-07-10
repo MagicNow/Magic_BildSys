@@ -927,7 +927,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->delete('notafiscals/{notafiscals}', ['as' => 'notafiscals.destroy', 'uses' => 'NotafiscalController@destroy']);
     $router->get('notafiscals/{notafiscals}', ['as' => 'notafiscals.show', 'uses' => 'NotafiscalController@show']);
     $router->get('notafiscals/{notafiscals}/edit', ['as' => 'notafiscals.edit', 'uses' => 'NotafiscalController@edit']);
-
+    $router->get('ConsultaNfe', 'NotafiscalController@consultaNfe');
 
     $router->get('/teste', function () {
         //        $grupos_mega = \App\Models\MegaInsumoGrupo::select([

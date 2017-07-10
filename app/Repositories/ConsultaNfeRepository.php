@@ -40,7 +40,9 @@ class ConsultaNfeRepository
                     //Os dados são retornados em formato ZIP dento do xml, mas no array os dados
                     //já são retornados descompactados para serem lidos
 
-        $xml = $nfe->sefazDistDFe('AN', $tpAmb, $cnpj, $ultNSU, $numNSU, $aResposta);
+//        $xml = $nfe->sefazDistDFe('AN', $tpAmb, $cnpj, $ultNSU, $numNSU, $aResposta);
+        $chNFe = '';
+        $resp = $nfe->sefazDownload($chNFe, $tpAmb, $cnpj, $aResposta);
 
         echo '<br><br><PRE>';
         echo htmlspecialchars($nfe->soapDebug);
