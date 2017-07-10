@@ -51,7 +51,7 @@ class InsumoPorFornecedorDataTable extends DataTable
             ];
         });
 
-        $collection->prepend([
+        $collection->push([
                 'insumo'  => 'FRETE',
                 'qntd do QC'  => '',
                 'insumo_id' => '',
@@ -69,35 +69,41 @@ class InsumoPorFornecedorDataTable extends DataTable
                     ->where('qc_item_id', $insumo['qc_item_id'])
                     ->first();
 
-                $valor = $item_fornecedor ? $item_fornecedor->valor_total : 0;
-                $qtd_comprada = $item_fornecedor ? $item_fornecedor->qtd : 0;
-                $valor_frete = $qcFornecedor->valor_frete ? $qcFornecedor->valor_frete : 0;
-                $valor_comprado_oi = $insumo['valor_unitario_calculo'] * $qtd_comprada;
-                if($qcFornecedor->fornecedor) {
-                    if(!$qcFornecedor->desistencia_motivo_id || !$qcFornecedor->desistencia_texto) {
-                        $insumo[str_replace('.',
-                            '*dot*',
-                            $qcFornecedor->fornecedor->nome . '||' . $qcFornecedor->id)] = float_to_money($valor);
-                        if($insumo['insumo'] === 'FRETE') {
+                    $valor = $item_fornecedor ? $item_fornecedor->valor_total : 0;
+                    $qtd_comprada = $item_fornecedor ? $item_fornecedor->qtd : 0;
+                    
+                    $insumoValorUnitario = $insumo['valor_unitario_calculo'];
+                    if(!$insumoValorUnitario){
+                        $insumoValorUnitario = 0;
+                    }
+                    $valor_frete = $qcFornecedor->valor_frete ? $qcFornecedor->valor_frete : 0;
+                    $valor_comprado_oi = doubleval($insumo['valor_unitario_calculo']) * $qtd_comprada;
+                    if($qcFornecedor->fornecedor) {
+                        if(!$qcFornecedor->desistencia_motivo_id || !$qcFornecedor->desistencia_texto) {
                             $insumo[str_replace('.',
                                 '*dot*',
-                                $qcFornecedor->fornecedor->nome . '||' . $qcFornecedor->id)] = 'R$ '. $valor_frete;
-                        }
-                    }else{
-                        if($insumo['insumo'] != 'FRETE') {
-                            $insumo[str_replace('.',
-                                '*dot*',
-                                $qcFornecedor->fornecedor->nome . '||' . $qcFornecedor->id)] = '<span style="color:red">DECLINED</span>';
+                                $qcFornecedor->fornecedor->nome . '||' . $qcFornecedor->id)] = float_to_money($valor);
+                            if($insumo['insumo'] === 'FRETE') {
+                                $insumo[str_replace('.',
+                                    '*dot*',
+                                    $qcFornecedor->fornecedor->nome . '||' . $qcFornecedor->id)] = 'R$ '. $valor_frete;
+                            }
+                        }else{
+                            if($insumo['insumo'] != 'FRETE') {
+                                $insumo[str_replace('.',
+                                    '*dot*',
+                                    $qcFornecedor->fornecedor->nome . '||' . $qcFornecedor->id)] = '<span style="color:red">DECLINED</span>';
+                            }
                         }
                     }
-                }
-                $insumo['qntd do QC'] =  number_format($qtd_comprada, 2, ',', '.');
-                $insumo['valor total'] = float_to_money($valor_comprado_oi);
-                if($insumo['insumo'] === 'FRETE') {
-                    $insumo['qntd do QC'] = '';
-                    $insumo['valor total'] = '';
-                    $insumo['valor unitário do orçamento'] = '';
-                }
+                    $insumo['qntd do QC'] =  number_format($qtd_comprada, 2, ',', '.');
+                    $insumo['valor total'] = float_to_money($valor_comprado_oi);
+                    if($insumo['insumo'] === 'FRETE') {
+                        $insumo['qntd do QC'] = '';
+                        $insumo['valor total'] = '';
+                        $insumo['valor unitário do orçamento'] = '';
+                    }
+
             });
 //            dd($insumo);
             return $insumo;

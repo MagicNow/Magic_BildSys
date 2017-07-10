@@ -19,19 +19,20 @@
 <!-- Insumo Grupo Id Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('insumo_grupo_id', 'Grupo:') !!}
-    {!! Form::select('insumo_grupo_id',[]+$insumo_grupos, @isset($solicitacaoInsumo) ? $solicitacaoInsumo->insumo_grupo_id : null, ['class' => 'form-control']) !!}
+    {!! Form::select('insumo_grupo_id',[], @isset($solicitacaoInsumo) ? $solicitacaoInsumo->insumo_grupo_id : null, ['class' => 'form-control']) !!}
 </div>
 
 @section('scripts')
     <script>
         $(function () {
             $('#insumo_grupo_id').select2({
+                theme:'bootstrap',
                 allowClear: true,
                 placeholder: "Escolha...",
                 language: "pt-BR",
 
                 ajax: {
-                    url: "{{ url('/admin/solicitacaoInsumos/buscar/grupos_insumos') }}",
+                    url: "{{ route('buscar.insumo-grupos') }}",
                     dataType: 'json',
                     delay: 250,
 

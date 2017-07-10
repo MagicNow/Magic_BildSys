@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests\Admin;
+namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Models\SolicitacaoInsumo;
+use App\Models\Notafiscal;
 
-class UpdateSolicitacaoInsumoRequest extends FormRequest
+class UpdateNotafiscalRequest extends FormRequest
 {
 
     /**
@@ -25,6 +25,6 @@ class UpdateSolicitacaoInsumoRequest extends FormRequest
      */
     public function rules()
     {
-        return SolicitacaoInsumo::$rules;
+        return Notafiscal::$rules;
     }
 }

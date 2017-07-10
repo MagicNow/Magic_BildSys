@@ -5,6 +5,8 @@ namespace App\Models;
 use App\Repositories\ContratoRepository;
 use Eloquent as Model;
 use Laracasts\Flash\Flash;
+use App\Models\ContratoStatus;
+use App\Models\SeStatus;
 
 /**
  * Class Contrato
@@ -117,6 +119,27 @@ class Contrato extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
+    public function materiais()
+    {
+        return $this->hasMany(ContratoItem::class)
+            ->whereHas('insumo', function($query) {
+                $query->whereHas('insumoGrupo', function($query) {
+                    $query->where('nome', 'like', 'MATERIAL%');
+                });
+            });
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function entregas()
+    {
+        return $this->hasMany(SolicitacaoEntrega::class, 'contrato_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
     public function logs()
     {
         return $this->hasMany(ContratoStatusLog::class, 'contrato_id');
@@ -198,6 +221,17 @@ class Contrato extends Model
             });
     }
 
+    public function hasMaterial()
+    {
+        return $this->itens
+            ->pluck('insumo')
+            ->pluck('insumoGrupo')
+            ->pluck('nome')
+            ->contains(function($nome) {
+                return starts_with($nome, 'MATERIAL');
+            });
+    }
+
     public function isStatus($status)
     {
         $status = is_array($status) ? $status : func_get_args();
@@ -220,5 +254,27 @@ class Contrato extends Model
     public function getValorTotalAttribute()
     {
         return $this->valor_total_atual;
+    }
+
+    public function getEmAprovacaoAttribute()
+    {
+        return $this->isStatus(ContratoStatus::EM_APROVACAO);
+    }
+
+    public function getPodeSolicitarEntregaAttribute()
+    {
+        return $this->isStatus(ContratoStatus::APROVADO, ContratoStatus::ATIVO) && $this->hasMaterial();
+    }
+
+    public function getPodeSolicitarNovaEntregaAttribute()
+    {
+        return $this->pode_solicitar_entrega && !$this->entregas()
+            ->whereNotIn('se_status_id', [SeStatus::REALIZADO, SeStatus::CANCELADO])
+            ->count();
+    }
+
+    public function getHasMaterialFaturamentoDiretoAttribute()
+    {
+        return $this->itens->pluck('insumo')->pluck('codigo')->contains(30019);
     }
 }

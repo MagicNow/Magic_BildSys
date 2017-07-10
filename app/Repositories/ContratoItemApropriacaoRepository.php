@@ -169,4 +169,13 @@ EOFSQL;
             })
             ->sum('orcamentos.preco_total');
     }
+
+    public function fromContrato($contrato_id)
+    {
+        return $this->model
+            ->whereHas('contratoItem', function($query) use ($contrato_id) {
+                $query->where('contrato_id', $contrato_id);
+            })
+            ->get();
+    }
 }

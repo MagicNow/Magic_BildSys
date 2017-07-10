@@ -21,11 +21,22 @@ $router->post('/notifications/marcar-lido', 'NotificationController@marcarLido')
 // Detalhes de workflow
 $router->get('/workflow/detalhes', 'WorkflowController@detalhes');
 
+// Solicitação de Insumo
+$router->get('/solicitar-insumo', 'SolicitacaoInsumoController@create')
+    ->name('solicitar_insumo.create');
+$router->post('/solicitar-insumo', 'SolicitacaoInsumoController@store')
+    ->name('solicitar_insumo.store');
+
 ##### Buscas #####
-$router->get('/admin/catalogo-acordos/buscar/busca_insumos', ['as' => 'catalogo_contratos.busca_insumos', 'uses' => 'CatalogoContratoController@buscaInsumos']);
-$router->get('/admin/solicitacaoInsumos/buscar/grupos_insumos', 'Admin\SolicitacaoInsumoController@buscaGruposInsumos');
-$router->get('/compras/insumos/orcamento/solicitar-insumo/{obra_id}', 'Admin\SolicitacaoInsumoController@solicitarInsumo');
-$router->post('/compras/insumos/orcamento/solicitar-insumo/salvar/{obra_id}', 'Admin\SolicitacaoInsumoController@solicitarInsumoSalvar');
+$router->get('/admin/catalogo-acordos/buscar/busca_insumos', ['as' => 'catalogo_contratos.busca_insumos', 'uses' => 'BuscarController@getInsumos']);
+
+$router->get('/buscar/insumo-grupos', 'BuscarController@getInsumoGrupos')
+    ->name('buscar.insumo-grupos');
+$router->get('/buscar/insumos', 'BuscarController@getInsumos')
+    ->name('buscar.insumos');
+$router->get('/buscar/fornecedores', 'BuscarController@getFornecedores')
+    ->name('buscar.fornecedores');
+
 $router->get('/admin/users/busca', 'Admin\Manage\UsersController@busca');
 $router->get('/getForeignKey', 'CodesController@getForeignKey');
 $router->get('/busca-cidade', 'CodesController@buscaCidade');
@@ -398,20 +409,47 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
             ->middleware('needsPermission:contratoTemplates.edit');
     });
 
-    $router->get('nomeclaturaMapas', ['as'=> 'admin.nomeclaturaMapas.index', 'uses' => 'Admin\NomeclaturaMapaController@index']);
-    $router->post('nomeclaturaMapas', ['as'=> 'admin.nomeclaturaMapas.store', 'uses' => 'Admin\NomeclaturaMapaController@store']);
-    $router->get('nomeclaturaMapas/create', ['as'=> 'admin.nomeclaturaMapas.create', 'uses' => 'Admin\NomeclaturaMapaController@create']);
-    $router->put('nomeclaturaMapas/{nomeclaturaMapas}', ['as'=> 'admin.nomeclaturaMapas.update', 'uses' => 'Admin\NomeclaturaMapaController@update']);
-    $router->patch('nomeclaturaMapas/{nomeclaturaMapas}', ['as'=> 'admin.nomeclaturaMapas.update', 'uses' => 'Admin\NomeclaturaMapaController@update']);
-    $router->delete('nomeclaturaMapas/{nomeclaturaMapas}', ['as'=> 'admin.nomeclaturaMapas.destroy', 'uses' => 'Admin\NomeclaturaMapaController@destroy']);
-    $router->get('nomeclaturaMapas/{nomeclaturaMapas}', ['as'=> 'admin.nomeclaturaMapas.show', 'uses' => 'Admin\NomeclaturaMapaController@show']);
-    $router->get('nomeclaturaMapas/{nomeclaturaMapas}/edit', ['as'=> 'admin.nomeclaturaMapas.edit', 'uses' => 'Admin\NomeclaturaMapaController@edit']);
+    $router->group(['prefix'=>'nomeclaturaMapas', 'middleware' => 'needsPermission:nomeclaturaMapas.list'], function () use ($router) {
+        $router->get('', ['as'=> 'admin.nomeclaturaMapas.index', 'uses' => 'Admin\NomeclaturaMapaController@index']);
+        $router->post('', ['as'=> 'admin.nomeclaturaMapas.store', 'uses' => 'Admin\NomeclaturaMapaController@store'])
+            ->middleware('needsPermission:nomeclaturaMapas.create');
+        $router->get('/create', ['as'=> 'admin.nomeclaturaMapas.create', 'uses' => 'Admin\NomeclaturaMapaController@create'])
+            ->middleware('needsPermission:nomeclaturaMapas.create');
+        $router->put('/{nomeclaturaMapas}', ['as'=> 'admin.nomeclaturaMapas.update', 'uses' => 'Admin\NomeclaturaMapaController@update'])
+            ->middleware('needsPermission:nomeclaturaMapas.edit');
+        $router->patch('/{nomeclaturaMapas}', ['as'=> 'admin.nomeclaturaMapas.update', 'uses' => 'Admin\NomeclaturaMapaController@update'])
+            ->middleware('needsPermission:nomeclaturaMapas.edit');
+        $router->delete('/{nomeclaturaMapas}', ['as'=> 'admin.nomeclaturaMapas.destroy', 'uses' => 'Admin\NomeclaturaMapaController@destroy'])
+            ->middleware('needsPermission:nomeclaturaMapas.delete');
+        $router->get('/{nomeclaturaMapas}', ['as'=> 'admin.nomeclaturaMapas.show', 'uses' => 'Admin\NomeclaturaMapaController@show']);
+        $router->get('/{nomeclaturaMapas}/edit', ['as'=> 'admin.nomeclaturaMapas.edit', 'uses' => 'Admin\NomeclaturaMapaController@edit'])
+            ->middleware('needsPermission:nomeclaturaMapas.edit');
+    });
 });
 
 ##### SITE #####
 $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($router) {
 
-    $router->resource('memoriaCalculos', 'MemoriaCalculoController');
+    $router->group(['prefix'=>'memoriaCalculos', 'middleware' => 'needsPermission:memoriaCalculos.list'], function () use ($router) {
+        $router->get('', ['as'=> 'memoriaCalculos.index', 'uses' => 'MemoriaCalculoController@index']);
+        $router->post('', ['as'=> 'memoriaCalculos.store', 'uses' => 'MemoriaCalculoController@store'])
+            ->middleware('needsPermission:memoriaCalculos.create');
+        $router->get('/create', ['as'=> 'memoriaCalculos.create', 'uses' => 'MemoriaCalculoController@create'])
+            ->middleware('needsPermission:memoriaCalculos.create');
+        $router->put('/{memoriaCalculos}', ['as'=> 'memoriaCalculos.update', 'uses' => 'MemoriaCalculoController@update'])
+            ->middleware('needsPermission:memoriaCalculos.edit');
+        $router->patch('/{memoriaCalculos}', ['as'=> 'memoriaCalculos.update', 'uses' => 'MemoriaCalculoController@update'])
+            ->middleware('needsPermission:memoriaCalculos.edit');
+        $router->delete('/{memoriaCalculos}', ['as'=> 'memoriaCalculos.destroy', 'uses' => 'MemoriaCalculoController@destroy'])
+            ->middleware('needsPermission:memoriaCalculos.delete');
+        $router->get('/{memoriaCalculos}', ['as'=> 'memoriaCalculos.show', 'uses' => 'MemoriaCalculoController@show']);
+        $router->get('/{memoriaCalculos}/edit', ['as'=> 'memoriaCalculos.edit', 'uses' => 'MemoriaCalculoController@edit'])
+            ->middleware('needsPermission:memoriaCalculos.edit');
+        $router->get('/{memoriaCalculo}/clone', ['as'=> 'memoriaCalculos.clone', 'uses' => 'MemoriaCalculoController@clonar'])
+            ->middleware('needsPermission:memoriaCalculos.create');
+
+    });
+
 
     // Perfil
     $router->get('/perfil', 'PerfilController@index');
@@ -717,7 +755,50 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('planejamentos/lembretes', 'PlanejamentoController@lembretes');
     $router->get('planejamentos/lembretes/salvar-data-minima', 'PlanejamentoController@lembretes');
 
+
     #Contratos
+    $router->get(
+        '/solicitacoes-de-entrega/{solicitacao_entrega}',
+        'SolicitacaoEntregaController@show'
+    )
+    ->middleware('needsPermission:contratos.solicitar_entrega')
+    ->name('solicitacao-entrega.show');
+
+    $router->get(
+        '/solicitacoes-de-entrega/{solicitacao_entrega}/edit',
+        'SolicitacaoEntregaController@edit'
+    )
+    ->middleware('needsPermission:contratos.solicitar_entrega')
+    ->name('solicitacao-entrega.edit');
+
+    $router->patch(
+        '/solicitacoes-de-entrega/{solicitacao_entrega}',
+        'SolicitacaoEntregaController@update'
+    )
+    ->middleware('needsPermission:contratos.solicitar_entrega')
+    ->name('solicitacao-entrega.update');
+
+    $router->post(
+        '/solicitacoes-de-entrega/{solicitacao_entrega}/cancelar',
+        'SolicitacaoEntregaController@cancel'
+    )
+    ->middleware('needsPermission:contratos.solicitar_entrega')
+    ->name('solicitacao-entrega.cancel');
+
+    $router->get(
+        '/solicitacoes-de-entrega/{solicitacao_entrega}/vincular-nota',
+        'SolicitacaoEntregaController@vincularNota'
+    )
+    ->middleware('needsPermission:contratos.solicitar_entrega')
+    ->name('solicitacao-entrega.vincular-nota');
+
+    $router->post(
+        '/solicitacoes-de-entrega/{solicitacao_entrega}/vincular-nota',
+        'SolicitacaoEntregaController@vincularNotaSave'
+    )
+    ->middleware('needsPermission:contratos.solicitar_entrega')
+    ->name('solicitacao-entrega.vincular-nota');
+    
     $router->group(['prefix' => 'contratos','middleware' => 'needsPermission:contratos.list'], function($router) {
         $router->get(
             '',
@@ -757,11 +838,25 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             '/insumo-valor',
             'ContratoController@insumoValor'
         )->middleware('needsPermission:contratos.edit');
-
         $router->get(
             '/{contratos}',
             ['as' => 'contratos.show', 'uses' => 'ContratoController@show']
         )->middleware('needsPermission:contratos.show');
+
+        $router->get(
+            '/{contratos}/solicitar-entrega',
+            'ContratoController@solicitarEntrega'
+        )
+        ->middleware('needsPermission:contratos.solicitar_entrega')
+        ->name('contratos.solicitar-entrega');
+
+        $router->post(
+            '/{contratos}/solicitar-entrega',
+            'ContratoController@solicitarEntregaSave'
+        )
+        ->middleware('needsPermission:contratos.solicitar_entrega')
+        ->name('contratos.solicitar-entrega');
+
         $router->post(
             '/editar-item/{item}',
             [
@@ -812,17 +907,17 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->get(
             '/{contratos}/{insumo_id}/previsao-de-memoria-de-calculo',
             ['as' => 'contratos.memoria_de_calculo', 'uses' => 'ContratoController@memoriaDeCalculo']
-        )->middleware('needsPermission:contratos.memoria_de_calculo');
+        )->middleware('needsPermission:contratos.previsao_de_memoria_de_calculo');
 
         $router->post(
             '/previsao-de-memoria-de-calculo/salvar',
             ['as' => 'contratos.memoria_de_calculo_salvar', 'uses' => 'ContratoController@memoriaDeCalculoSalvar']
-        )->middleware('needsPermission:contratos.memoria_de_calculo');
+        )->middleware('needsPermission:contratos.previsao_de_memoria_de_calculo');
         
         $router->post(
             '/previsao-de-memoria-de-calculo/excluir-previsao',
             ['as' => 'contratos.memoria_de_calculo.excluir_previsao', 'uses' => 'ContratoController@memoriaDeCalculoExcluirPrevisao']
-        )->middleware('needsPermission:contratos.memoria_de_calculo');
+        )->middleware('needsPermission:contratos.previsao_de_memoria_de_calculo');
     });
 
     # Configuracao Estatica
@@ -841,6 +936,15 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             ->middleware('needsPermission:configuracaoEstaticas.edit');
     });
 
+    $router->get('notafiscals', ['as' => 'notafiscals.index', 'uses' => 'NotafiscalController@index']);
+    $router->post('notafiscals', ['as' => 'notafiscals.store', 'uses' => 'NotafiscalController@store']);
+    $router->get('notafiscals/create', ['as' => 'notafiscals.create', 'uses' => 'NotafiscalController@create']);
+    $router->put('notafiscals/{notafiscals}', ['as' => 'notafiscals.update', 'uses' => 'NotafiscalController@update']);
+    $router->patch('notafiscals/{notafiscals}', ['as' => 'notafiscals.update', 'uses' => 'NotafiscalController@update']);
+    $router->delete('notafiscals/{notafiscals}', ['as' => 'notafiscals.destroy', 'uses' => 'NotafiscalController@destroy']);
+    $router->get('notafiscals/{notafiscals}', ['as' => 'notafiscals.show', 'uses' => 'NotafiscalController@show']);
+    $router->get('notafiscals/{notafiscals}/edit', ['as' => 'notafiscals.edit', 'uses' => 'NotafiscalController@edit']);
+    $router->get('ConsultaNfe', 'NotafiscalController@consultaNfe');
 
     $router->get('/teste', function () {
         //        $grupos_mega = \App\Models\MegaInsumoGrupo::select([

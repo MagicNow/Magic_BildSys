@@ -150,6 +150,7 @@
     </li>
 @endshield
 
+@shield('nomeclaturaMapas.list')
 <li class="treeview {{ Request::is('admin/nomeclaturaMapas*') || Request::is('memoriaCalculos*')
                        ? 'active' : '' }}">
     <a href="#">
@@ -160,10 +161,13 @@
         <li class="{{ Request::is('admin/nomeclaturaMapas*') ? 'active' : '' }}">
             <a href="{!! route('admin.nomeclaturaMapas.index') !!}"><i class="fa fa-map-o"></i><span>Nomeclaturas</span></a>
         </li>
+        @shield('memoriaCalculos.list')
         <li class="{{ Request::is('memoriaCalculos*') ? 'active' : '' }}">
             <a href="{!! route('memoriaCalculos.index') !!}"><i class="fa fa-building-o"></i><span>Memoria de Calculo</span></a>
         </li>
+        @endshield
     </ul>
 </li>
+@endshield
 
 

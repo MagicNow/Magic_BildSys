@@ -11,7 +11,7 @@
 <!-- Nome Field -->
 <div class="form-group col-sm-2">
     {!! Form::label('obra_id', 'Obra:') !!}
-    {!! Form::select('obra_id',$obras, null, ['class' => 'form-control select2','required'=>'required']) !!}
+    {!! Form::select('obra_id',$obras, (isset($memoriaCalculo)?$memoriaCalculo->obra_id:null), ['class' => 'form-control select2','required'=>'required']) !!}
 </div>
 <!-- Nome Field -->
 <div class="form-group col-sm-4">
@@ -22,7 +22,7 @@
 <!-- Modo Field -->
 <div class="form-group col-sm-2">
     {!! Form::label('modo', 'Modo:') !!}
-    {!! Form::select('modo',['T'=>'Torre','C'=>'Cartela','U'=>'Unidade'], null,
+    {!! Form::select('modo',['T'=>'Torre','C'=>'Cartela','U'=>'Unidade'], (isset($memoriaCalculo)?$memoriaCalculo->modo:null),
         ['class' => 'form-control select2', 'required'=>'required', 'onChange'=>'mudaModo(this.value);']) !!}
 </div>
 
@@ -48,91 +48,142 @@
         <ul class="list-group" id="blocos">
             @if(isset($memoriaCalculo))
                 <?php
-                    $countTrechos = 0;
-                    if ($memoriaCalculo->modo == 'T') {
-                        $nomeEstrutura = 'Estrutura';
-                        $nomePavimento = 'Pavimento';
-                        $nomeTrecho = 'Trecho';
-                    } else {
-                        $nomeEstrutura = 'Bloco';
-                        $nomePavimento = 'Linha';
-                        $nomeTrecho = 'Coluna';
-                    }
+                $countTrechos = 0;
+                if ($memoriaCalculo->modo == 'T') {
+                    $nomeEstrutura = 'Estrutura';
+                    $nomePavimento = 'Pavimento';
+                    $nomeTrecho = 'Trecho';
+                } else {
+                    $nomeEstrutura = 'Bloco';
+                    $nomePavimento = 'Linha';
+                    $nomeTrecho = 'Coluna';
+                }
                 ?>
                 @foreach($blocos as $indexBloco => $bloco)
-                    <li class="list-group-item estruturaClass" bloco="{{ $indexBloco }}" id="bloco_list_item_{{ $indexBloco }}">
+                    <li class="list-group-item estruturaClass" bloco="{{ $indexBloco }}"
+                        id="bloco_list_item_{{ $indexBloco }}">
                         <div class="row" style="margin-bottom: 10px">
                             <div class="col-sm-8"><i class="fa fa-th-large"></i> &nbsp; {{ $nomeEstrutura }}:
-                                {!! Form::select('estrutura_bloco['. $indexBloco .']',
-                                    \App\Models\NomeclaturaMapa::where('tipo',1)
-                                    ->where('apenas_cartela',($memoriaCalculo->tipo=='C'?'1':'0') )
-                                    ->where('apenas_unidade',($memoriaCalculo->tipo=='U'?'1':'0') )
-                                    ->pluck('nome','id')->toArray() ,
-                                    $bloco['objId'], ['class'=>'form-control select2','onchange'=>'atualizaVisual();', 'id'=>'estrutura_bloco_'.$indexBloco] ) !!}
+                                @if($bloco['editavel'])
+                                    {!! Form::select('estrutura_bloco['. $indexBloco .']',
+                                        \App\Models\NomeclaturaMapa::where('tipo',1)
+                                        ->where('apenas_cartela',($memoriaCalculo->modo=='C'?'1':'0') )
+                                        ->where('apenas_unidade',($memoriaCalculo->modo=='U'?'1':'0') )
+                                        ->pluck('nome','id')->toArray() ,
+                                        $bloco['objId'], ['class'=>'form-control select2','onchange'=>'atualizaVisual();', 'id'=>'estrutura_bloco_'.$indexBloco] ) !!}
+                                @else
+                                    {!! Form::hidden('estrutura_bloco['. $indexBloco .']', $bloco['objId'], ['id'=>'estrutura_bloco_'.$indexBloco, 'nome'=>$bloco['nome']]) !!}
+                                    <span class="form-control"
+                                          title="Não é possível alterar pois já existem previsões amarradas"
+                                          data-toggle="tooltip" data-placement="top">{{ $bloco['nome'] }}</span>
+                                @endif
                                 {!! Form::hidden('estrutura_bloco_ordem['. $indexBloco .']',$bloco['ordem']) !!}
                             </div>
                             <div class="col-sm-4" style="min-height: 54px; padding-top: 20px">
-                                <button type="button" onclick="adicionaPavimento({{ $indexBloco }})" class="btn btn-flat btn-xs btn-info"><i
-                                            class="fa fa-plus" ></i> {{ $nomePavimento }}
+                                <button type="button" onclick="adicionaPavimento({{ $indexBloco }})"
+                                        class="btn btn-flat btn-xs btn-info"><i
+                                            class="fa fa-plus"></i> {{ $nomePavimento }}
                                 </button>
-                                <button type="button" onclick="removeBloco({{ $indexBloco }})" title="Remover" class="btn btn-flat btn-xs btn-danger">
-                                    <i class="fa fa-times" ></i></button>
+                                @if($bloco['editavel'])
+                                    <button type="button" onclick="removeBloco({{ $indexBloco }})" title="Remover"
+                                            class="btn btn-flat btn-xs btn-danger">
+                                        <i class="fa fa-times"></i>
+                                    </button>
+                                @endif
                             </div>
                         </div>
                         <div style="clear: both">
                             <ul class="list-group pavBlocos" id="pavimentos_{{ $indexBloco }}">
                                 @if( count($bloco['itens']) )
                                     @foreach($bloco['itens'] as $indexPavimento => $pavimento)
-                                        <li class="list-group-item pavimentosClass{{ $indexBloco }}" pavimento="{{ $indexPavimento }}" id="linha_{{ $indexBloco }}_{{ $indexPavimento }}">
+                                        <li class="list-group-item pavimentosClass{{ $indexBloco }}"
+                                            pavimento="{{ $indexPavimento }}"
+                                            id="linha_{{ $indexBloco }}_{{ $indexPavimento }}">
                                             <div class="row" style="margin-bottom: 10px">
                                                 <div class="col-sm-8">
                                                     <b class="fa fa-th-large"></b> &nbsp; {{ $nomePavimento }}:
-                                                    {!! Form::select('pavimentos['. $indexBloco .']['.$indexPavimento.']',
-                                                        \App\Models\NomeclaturaMapa::where('tipo',2)
-                                                        ->where('apenas_cartela',($memoriaCalculo->tipo=='C'?'1':'0') )
-                                                        ->where('apenas_unidade',($memoriaCalculo->tipo=='U'?'1':'0') )
-                                                        ->pluck('nome','id')->toArray() ,
-                                                        $pavimento['objId'], ['class'=>'form-control select2','onchange'=>'atualizaVisual();', 'id'=>'pavimentos_'.$indexBloco .'_'. $indexPavimento ] ) !!}
+                                                    @if($pavimento['editavel'])
+                                                        {!! Form::select('pavimentos['. $indexBloco .']['.$indexPavimento.']',
+                                                            \App\Models\NomeclaturaMapa::where('tipo',2)
+                                                            ->where('apenas_cartela',($memoriaCalculo->modo=='C'?'1':'0') )
+                                                            ->where('apenas_unidade',($memoriaCalculo->modo=='U'?'1':'0') )
+                                                            ->pluck('nome','id')->toArray() ,
+                                                            $pavimento['objId'], ['class'=>'form-control select2','onchange'=>'atualizaVisual();', 'id'=>'pavimentos_'.$indexBloco .'_'. $indexPavimento ] ) !!}
+                                                    @else
+                                                        {!! Form::hidden('pavimentos['. $indexBloco .']['.$indexPavimento.']',
+                                                        $pavimento['objId'], ['id'=>'pavimentos_'.$indexBloco .'_'. $indexPavimento, 'nome'=>$pavimento['nome']]) !!}
+                                                        <span class="form-control"
+                                                              title="Não é possível alterar pois já existem previsões amarradas"
+                                                              data-toggle="tooltip"
+                                                              data-placement="top">{{ $pavimento['nome'] }}</span>
+                                                    @endif
                                                     {!! Form::hidden('pavimento_bloco_ordem['.$indexBloco.']['.$indexPavimento.']',$pavimento['ordem']) !!}
                                                 </div>
                                                 <div class="col-sm-4" style="min-height: 54px; padding-top: 20px">
-                                                    <button type="button" onclick="adicionaTrecho({{ $indexBloco }},{{ $indexPavimento }})"
-                                                            class="btn btn-flat btn-xs btn-warning"><i class="fa fa-plus"></i> {{ $nomeTrecho }}
+                                                    <button type="button"
+                                                            onclick="adicionaTrecho({{ $indexBloco }},{{ $indexPavimento }})"
+                                                            class="btn btn-flat btn-xs btn-warning"><i
+                                                                class="fa fa-plus"></i> {{ $nomeTrecho }}
                                                     </button>
-                                                    <button type="button" onclick="removeLinha({{ $indexBloco }},{{ $indexPavimento }})" title="Remover"
-                                                            class="btn btn-flat btn-xs btn-danger"><i class="fa fa-times"></i></button>
+                                                    @if($pavimento['editavel'])
+                                                        <button type="button"
+                                                                onclick="removeLinha({{ $indexBloco }},{{ $indexPavimento }})"
+                                                                title="Remover"
+                                                                class="btn btn-flat btn-xs btn-danger">
+                                                            <i class="fa fa-times"></i>
+                                                        </button>
+                                                    @endif
                                                 </div>
                                             </div>
                                             <div style="clear: both">
-                                                <ul class="list-group trechoBlocos" id="trechos_{{ $indexBloco }}_{{ $indexPavimento }}">
+                                                <ul class="list-group trechoBlocos"
+                                                    id="trechos_{{ $indexBloco }}_{{ $indexPavimento }}">
                                                     @if( count($pavimento['itens']) )
                                                         @foreach($pavimento['itens'] as $indexTrecho => $trecho)
                                                             <?php
-                                                                $countTrechos++;
+                                                            $countTrechos++;
                                                             ?>
-                                                            <li class="list-group-item trechoClass{{ $indexBloco }}_{{ $indexPavimento }}" trecho="{{ $indexTrecho }}"
+                                                            <li class="list-group-item trechoClass{{ $indexBloco }}_{{ $indexPavimento }}"
+                                                                trecho="{{ $indexTrecho }}"
                                                                 id="blocoTrecho_{{ $indexBloco }}_{{ $indexPavimento }}_{{ $indexTrecho }}">
                                                                 <div class="input-group">
                                                                     <strong class="input-group-addon"
-                                                                                               id="trecho{{ $indexBloco }}_{{ $indexPavimento }}_{{ $indexTrecho }}">{{ $nomeTrecho }}
+                                                                            id="trecho{{ $indexBloco }}_{{ $indexPavimento }}_{{ $indexTrecho }}">{{ $nomeTrecho }}
                                                                     </strong>
-                                                                    {!! Form::select('trecho['.$indexBloco.']['.$indexPavimento.']['.$indexTrecho.']',
-                                                                        \App\Models\NomeclaturaMapa::where('tipo',3)
-                                                                        ->where('apenas_cartela',($memoriaCalculo->tipo=='C'?'1':'0') )
-                                                                        ->where('apenas_unidade',($memoriaCalculo->tipo=='U'?'1':'0') )
-                                                                        ->pluck('nome','id')->toArray() ,
-                                                                        $trecho['objId'],
-                                                                        ['class'=>'form-control select2','onchange'=>'atualizaVisual();', 'id'=>'trecho_' .$indexBloco .'_'. $indexPavimento . '_'. $indexTrecho] ) !!}
+                                                                    @if($trecho['editavel'])
+                                                                        {!! Form::select('trecho['.$indexBloco.']['.$indexPavimento.']['.$indexTrecho.']',
+                                                                            \App\Models\NomeclaturaMapa::where('tipo',3)
+                                                                            ->where('apenas_cartela',($memoriaCalculo->modo=='C'?'1':'0') )
+                                                                            ->where('apenas_unidade',($memoriaCalculo->modo=='U'?'1':'0') )
+                                                                            ->pluck('nome','id')->toArray() ,
+                                                                            $trecho['objId'],
+                                                                            ['class'=>'form-control select2','onchange'=>'atualizaVisual();', 'id'=>'trecho_' .$indexBloco .'_'. $indexPavimento . '_'. $indexTrecho] ) !!}
+                                                                    @else
+                                                                        {!! Form::hidden('trecho['.$indexBloco.']['.$indexPavimento.']['.$indexTrecho.']',
+                                                                        $trecho['objId'], ['id'=>'trecho_' .$indexBloco .'_'. $indexPavimento . '_'. $indexTrecho, 'nome'=>$trecho['nome']]) !!}
+                                                                        <span class="form-control"
+                                                                              title="Não é possível alterar pois já existem previsões amarradas"
+                                                                              data-toggle="tooltip"
+                                                                              data-placement="top">{{ $trecho['nome'] }}</span>
+                                                                    @endif
+                                                                    @if(!isset($clonando))
                                                                     {!! Form::hidden('trecho_id['.$indexBloco.']['.$indexPavimento.']['.$indexTrecho.']',$trecho['blocoId']) !!}
+                                                                    @endif
 
-                                                                    <input type="hidden" name="trecho_bloco_ordem{{ '['.$indexBloco.']['.$indexPavimento.']['.$indexTrecho.']' }}"
-                                                                           id="trecho_bloco_ordem_{{ $indexBloco.'_'.$indexPavimento.'_'.$indexTrecho }}" value="">
+                                                                    <input type="hidden"
+                                                                           name="trecho_bloco_ordem{{ '['.$indexBloco.']['.$indexPavimento.']['.$indexTrecho.']' }}"
+                                                                           id="trecho_bloco_ordem_{{ $indexBloco.'_'.$indexPavimento.'_'.$indexTrecho }}"
+                                                                           value="{{ $trecho['ordem'] }}">
+                                                                    @if($trecho['editavel'])
                                                                         <span class="input-group-btn">
-                                                                            <button
-                                                                                type="button" onclick="removeTrecho({{ $indexBloco.','.$indexPavimento.','.$indexTrecho }})" title="Remover"
-                                                                                class="btn btn-flat btn-xs btn-danger"><i
-                                                                                    class="fa fa-times"></i> </button>
-                                                                        </span>
+                                                                                <button
+                                                                                        type="button"
+                                                                                        onclick="removeTrecho({{ $indexBloco.','.$indexPavimento.','.$indexTrecho }})"
+                                                                                        title="Remover"
+                                                                                        class="btn btn-flat btn-xs btn-danger"><i
+                                                                                            class="fa fa-times"></i> </button>
+                                                                            </span>
+                                                                    @endif
                                                                 </div>
                                                             </li>
                                                         @endforeach
@@ -158,8 +209,8 @@
 
 <!-- Submit Field -->
 <div class="form-group col-sm-12">
-    {!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save') ), ['class' => 'btn btn-success pull-right', 'type'=>'submit']) !!}
-    <a href="{!! route('memoriaCalculos.index') !!}" class="btn btn-default"><i
+    {!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save') ), ['class' => 'btn btn-success btn-flat btn-lg pull-right', 'type'=>'submit']) !!}
+    <a href="{!! route('memoriaCalculos.index') !!}" class="btn btn-lg btn-flat btn-default"><i
                 class="fa fa-times"></i> {{ ucfirst( trans('common.cancel') )}}</a>
 </div>
 @section('scripts')
@@ -192,21 +243,21 @@
             });
 
             @if(isset($memoriaCalculo))
-                blocos = {{ $indexBloco + 1 }};
-                pavimentosCount = {{ $indexPavimento + 1 }};
-                trechosCount = {{ $countTrechos + 1 }};
+                    blocos = {{ $indexBloco + 1 }};
+            pavimentosCount = {{ $indexPavimento + 1 }};
+            trechosCount = {{ $countTrechos + 1 }};
 
-                sortable('.pavBlocos', {handle: 'b'});
+            sortable('.pavBlocos', {handle: 'b'});
 
-                sortable('.pavBlocos')[0].addEventListener('sortstop', function (e) {
-                    atualizaVisual();
-                });
+            sortable('.pavBlocos')[0].addEventListener('sortstop', function (e) {
+                atualizaVisual();
+            });
 
-                sortable('.trechoBlocos', {handle: 'strong'});
+            sortable('.trechoBlocos', {handle: 'strong'});
 
-                sortable('.trechoBlocos')[0].addEventListener('sortstop', function (e) {
-                    atualizaVisual();
-                });
+            sortable('.trechoBlocos')[0].addEventListener('sortstop', function (e) {
+                atualizaVisual();
+            });
             @endif
 
         });
@@ -221,31 +272,45 @@
             $('.estruturaClass').each(function (idx) {
                 k = $(this).attr('bloco');
                 $('#estrutura_bloco_ordem_' + k).val(idx);
+                if ($("#estrutura_bloco_" + k).is('select')) {
+                    nome = $("#estrutura_bloco_" + k + " option:selected").text();
+                    objID = $("#estrutura_bloco_" + k + " option:selected").val();
+                } else {
+                    nome = $("#estrutura_bloco_" + k).attr('nome');
+                    objID = $("#estrutura_bloco_" + k).val();
+                }
 
-                nome = $("#estrutura_bloco_" + k + " option:selected").text();
 
                 idx = $(this).parent().children().index(this);
 
                 item = {
                     id: idx,
                     nome: nome,
-                    objId: $("#estrutura_bloco_" + k + " option:selected").val(),
+                    objId: objID,
                     itens: [],
                     ordem: idx
                 };
                 arrayPavimentosOrdenada = [];
-                $('.pavimentosClass'+k).each(function (idxPav) {
+                $('.pavimentosClass' + k).each(function (idxPav) {
 
                     idxPav2 = $(this).parent().children().index(this);
                     p = $(this).attr('pavimento');
 
                     $('#pavimento_bloco_ordem_' + k + '_' + p).val(idxPav);
-                    nomePav = $("#pavimentos_" + k + "_" + p + " option:selected").text();
+
+                    if ($("#pavimentos_" + k + "_" + p).is('select')) {
+                        nomePav = $("#pavimentos_" + k + "_" + p + " option:selected").text();
+                        pavID = $("#pavimentos_" + k + "_" + p + " option:selected").val();
+                    } else {
+                        nomePav = $("#pavimentos_" + k + "_" + p).attr('nome');
+                        pavID = $("#pavimentos_" + k + "_" + p).val();
+                    }
+
 
                     pavimentoItem = {
                         id: idxPav,
                         nome: nomePav,
-                        objId: $("#pavimentos_" + k + "_" + p + " option:selected").val(),
+                        objId: pavID,
                         itens: [],
                         ordem: idxPav
                     }
@@ -257,14 +322,21 @@
 
                         t = $(this).attr('trecho');
 
-                        nomeTrech = $("#trecho_" + k + "_" + p + "_" + t + " option:selected").text();
+                        if ($("#trecho_" + k + "_" + p + "_" + t).is('select')) {
+                            nomeTrech = $("#trecho_" + k + "_" + p + "_" + t + " option:selected").text();
+                            trechID = $("#trecho_" + k + "_" + p + "_" + t + " option:selected").val();
+                        } else {
+                            nomeTrech = $("#trecho_" + k + "_" + p + "_" + t).attr('nome');
+                            trechID = $("#trecho_" + k + "_" + p + "_" + t).val();
+                        }
+
 
                         $('#trecho_bloco_ordem_' + k + '_' + p + '_' + t).val(idxTrecho);
 
                         trechoItem = {
                             id: idxTrecho,
                             nome: nomeTrech,
-                            objId: $("#trecho_" + k + "_" + p + "_" + t + " option:selected").val(),
+                            objId: trechID,
                             ordem: idxTrecho
                         }
 
@@ -391,7 +463,6 @@
             atualizaVisual();
         }
 
-
         function adicionaPavimento(bloco) {
             pavimentosCount++;
 
@@ -411,7 +482,7 @@
                     '<button type="button" onclick="adicionaTrecho(' + bloco + ',' + pavimentosCount + ')" class="btn btn-flat btn-xs btn-warning">' +
                     '<i class="fa fa-plus"></i> ' + nomeTrecho +
                     '</button>' +
-                    '<button type="button" onclick="removeLinha(' + blocos + ',' + pavimentosCount + ')" title="Remover" class="btn btn-flat btn-xs btn-danger">' +
+                    '<button type="button" onclick="removeLinha(' + bloco + ',' + pavimentosCount + ')" title="Remover" class="btn btn-flat btn-xs btn-danger">' +
                     '<i class="fa fa-times"></i> ' +
                     '</button>' +
                     '</div>' +
@@ -432,7 +503,6 @@
 
         }
 
-
         function adicionaTrecho(bloco, pavimento) {
             trechosCount++;
 
@@ -447,7 +517,7 @@
                     ' <input type="hidden" name="trecho_bloco_ordem[' + bloco + '][' + pavimento + '][' + trechosCount + ']" ' +
                     ' id="trecho_bloco_ordem_' + bloco + '_' + pavimento + '_' + trechosCount + '" value="">' +
                     '<span class="input-group-btn">' +
-                    '<button type="button" onclick="removeTrecho(' + blocos + ',' + pavimento + ',' + trechosCount + ')" title="Remover" class="btn btn-flat btn-xs btn-danger">' +
+                    '<button type="button" onclick="removeTrecho(' + bloco + ',' + pavimento + ',' + trechosCount + ')" title="Remover" class="btn btn-flat btn-xs btn-danger">' +
                     '<i class="fa fa-times"></i> ' +
                     '</button>' + '</span>' +
                     '</div>' +
@@ -461,7 +531,6 @@
             });
 //            sortable('#trechos_' + bloco + '_' + pavimento, 'reload');
         }
-
 
         function buscaNomeclaturas(valor) {
             if (valor == 'T') {

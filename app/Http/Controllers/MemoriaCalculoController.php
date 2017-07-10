@@ -84,7 +84,94 @@ class MemoriaCalculoController extends AppBaseController
             return redirect(route('memoriaCalculos.index'));
         }
 
-        return view('memoria_calculos.show')->with('memoriaCalculo', $memoriaCalculo);
+        $blocos = [];
+        $memoriaBlocos = $memoriaCalculo->blocos()
+            ->orderBy('ordem_bloco','ASC')
+            ->orderBy('ordem_linha','ASC')
+            ->orderBy('ordem','ASC')
+            ->with('estruturaObj','pavimentoObj','trechoObj')
+            ->get();
+        if(count($memoriaBlocos)){
+            $estruturas = [];
+            $pavimentos = [];
+            $trechos = [];
+            foreach ($memoriaBlocos as $memoriaBloco) {
+                $editavel = 1;
+                if(!isset($estruturas[$memoriaBloco->estrutura])){
+                    $estruturas[$memoriaBloco->estrutura] = [
+                        'id'=>   $memoriaBloco->ordem,
+                        'objId'=>   $memoriaBloco->estrutura,
+                        'nome'=> $memoriaBloco->estruturaObj->nome,
+                        'ordem' => $memoriaBloco->ordem_bloco,
+                        'itens' => [],
+                        'editavel'=>$editavel
+                    ];
+                }else{
+                    if(!$editavel){
+                        $estruturas[$memoriaBloco->estrutura]['editavel'] = $editavel;
+                    }
+                }
+
+                if(!isset($pavimentos[$memoriaBloco->estrutura][$memoriaBloco->pavimento])){
+                    $countEstrutura = !isset($pavimentos[$memoriaBloco->estrutura])?1:count($pavimentos[$memoriaBloco->estrutura])+1;
+                    $pavimentos[$memoriaBloco->estrutura][$memoriaBloco->pavimento] = [
+                        'id'=>   $countEstrutura,
+                        'objId'=>   $memoriaBloco->pavimento,
+                        'nome'=> $memoriaBloco->pavimentoObj->nome,
+                        'ordem' => $memoriaBloco->ordem_linha,
+                        'estrutura' => $memoriaBloco->estrutura,
+                        'itens' => [],
+                        'editavel'=>$editavel
+                    ];
+                }else{
+                    if(!$editavel){
+                        $pavimentos[$memoriaBloco->estrutura][$memoriaBloco->pavimento]['editavel'] = $editavel;
+                    }
+                }
+
+                if(!isset($trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento][$memoriaBloco->trecho])){
+                    $countTrecho = !isset($trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento])?1:count($trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento])+1;
+                    $trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento][$memoriaBloco->id] = [
+                        'id'=>   $countTrecho,
+                        'blocoId'=>   $memoriaBloco->id,
+                        'objId'=>   $memoriaBloco->trecho,
+                        'nome'=> $memoriaBloco->trechoObj->nome,
+                        'ordem' => $memoriaBloco->ordem,
+                        'estrutura' => $memoriaBloco->estrutura,
+                        'pavimento' => $memoriaBloco->pavimento,
+                        'editavel'=>$editavel
+                    ];
+                }else{
+                    if(!$editavel){
+                        $trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento][$memoriaBloco->id]['editavel'] = $editavel;
+                    }
+                }
+
+            }
+            // organiza a array
+            foreach ($trechos as $estrutura_id => $estruturaTrechos){
+                foreach ($estruturaTrechos as $pavimento_id => $pavimentoTrechos) {
+                    foreach ($pavimentoTrechos as $trecho) {
+                        $pavimentos[$trecho['estrutura']][$trecho['pavimento']]['itens'][] = $trecho;
+                    }
+                }
+
+            }
+
+            foreach ($pavimentos as $estrutura_id => $pavimentos_internos){
+                foreach ($pavimentos_internos as $pavimento_interno){
+                    $estruturas[$pavimento_interno['estrutura']]['itens'][] = $pavimento_interno;
+                }
+            }
+
+            foreach ($estruturas as $estrutura){
+                $blocos[$estrutura['ordem']] = $estrutura;
+            }
+
+        }
+        ksort($blocos);
+
+        return view('memoria_calculos.show', compact('blocos','memoriaCalculo'));
     }
 
     /**
@@ -114,21 +201,27 @@ class MemoriaCalculoController extends AppBaseController
             ->orderBy('ordem_bloco','ASC')
             ->orderBy('ordem_linha','ASC')
             ->orderBy('ordem','ASC')
-            ->with('estruturaObj','pavimentoObj','trechoObj')
+            ->with('estruturaObj','pavimentoObj','trechoObj','mcMedicaoPrevisoes')
             ->get();
         if(count($memoriaBlocos)){
             $estruturas = [];
             $pavimentos = [];
             $trechos = [];
             foreach ($memoriaBlocos as $memoriaBloco) {
+                $editavel = !count($memoriaBloco->mcMedicaoPrevisoes);
                 if(!isset($estruturas[$memoriaBloco->estrutura])){
                     $estruturas[$memoriaBloco->estrutura] = [
                         'id'=>   $memoriaBloco->ordem,
                         'objId'=>   $memoriaBloco->estrutura,
                         'nome'=> $memoriaBloco->estruturaObj->nome,
                         'ordem' => $memoriaBloco->ordem_bloco,
-                        'itens' => []
+                        'itens' => [],
+                        'editavel'=>$editavel
                     ];
+                }else{
+                    if(!$editavel){
+                        $estruturas[$memoriaBloco->estrutura]['editavel'] = $editavel;
+                    }
                 }
 
                 if(!isset($pavimentos[$memoriaBloco->estrutura][$memoriaBloco->pavimento])){
@@ -139,21 +232,31 @@ class MemoriaCalculoController extends AppBaseController
                         'nome'=> $memoriaBloco->pavimentoObj->nome,
                         'ordem' => $memoriaBloco->ordem_linha,
                         'estrutura' => $memoriaBloco->estrutura,
-                        'itens' => []
+                        'itens' => [],
+                        'editavel'=>$editavel
                     ];
+                }else{
+                    if(!$editavel){
+                        $pavimentos[$memoriaBloco->estrutura][$memoriaBloco->pavimento]['editavel'] = $editavel;
+                    }
                 }
 
-                if(!isset($trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento][$memoriaBloco->trecho])){
+                if(!isset($trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento][$memoriaBloco->id])){
                     $countTrecho = !isset($trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento])?1:count($trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento])+1;
-                    $trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento][$memoriaBloco->trecho] = [
+                    $trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento][$memoriaBloco->id] = [
                         'id'=>   $countTrecho,
                         'blocoId'=>   $memoriaBloco->id,
                         'objId'=>   $memoriaBloco->trecho,
                         'nome'=> $memoriaBloco->trechoObj->nome,
                         'ordem' => $memoriaBloco->ordem,
                         'estrutura' => $memoriaBloco->estrutura,
-                        'pavimento' => $memoriaBloco->pavimento
+                        'pavimento' => $memoriaBloco->pavimento,
+                        'editavel'=>$editavel
                     ];
+                }else{
+                    if(!$editavel){
+                        $trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento][$memoriaBloco->id]['editavel'] = $editavel;
+                    }
                 }
 
             }
@@ -181,6 +284,113 @@ class MemoriaCalculoController extends AppBaseController
         ksort($blocos);
 
         return view('memoria_calculos.edit', compact('obras','memoriaCalculo','blocos'));
+    }
+
+    public function clonar($id, ObraRepository $obraRepository)
+    {
+        $obras = $obraRepository
+            ->findByUser(auth()->id())
+            ->pluck('nome', 'id')
+            ->prepend('', '')
+            ->toArray();
+
+        $memoriaCalculo = $this->memoriaCalculoRepository->findWithoutFail($id);
+
+        if (empty($memoriaCalculo)) {
+            Flash::error('Memoria Calculo '.trans('common.not-found'));
+
+            return redirect(route('memoriaCalculos.index'));
+        }
+        $blocos = [];
+        $memoriaBlocos = $memoriaCalculo->blocos()
+            ->orderBy('ordem_bloco','ASC')
+            ->orderBy('ordem_linha','ASC')
+            ->orderBy('ordem','ASC')
+            ->with('estruturaObj','pavimentoObj','trechoObj')
+            ->get();
+        if(count($memoriaBlocos)){
+            $estruturas = [];
+            $pavimentos = [];
+            $trechos = [];
+            foreach ($memoriaBlocos as $memoriaBloco) {
+                $editavel = 1;
+                if(!isset($estruturas[$memoriaBloco->estrutura])){
+                    $estruturas[$memoriaBloco->estrutura] = [
+                        'id'=>   $memoriaBloco->ordem,
+                        'objId'=>   $memoriaBloco->estrutura,
+                        'nome'=> $memoriaBloco->estruturaObj->nome,
+                        'ordem' => $memoriaBloco->ordem_bloco,
+                        'itens' => [],
+                        'editavel'=>$editavel
+                    ];
+                }else{
+                    if(!$editavel){
+                        $estruturas[$memoriaBloco->estrutura]['editavel'] = $editavel;
+                    }
+                }
+
+                if(!isset($pavimentos[$memoriaBloco->estrutura][$memoriaBloco->pavimento])){
+                    $countEstrutura = !isset($pavimentos[$memoriaBloco->estrutura])?1:count($pavimentos[$memoriaBloco->estrutura])+1;
+                    $pavimentos[$memoriaBloco->estrutura][$memoriaBloco->pavimento] = [
+                        'id'=>   $countEstrutura,
+                        'objId'=>   $memoriaBloco->pavimento,
+                        'nome'=> $memoriaBloco->pavimentoObj->nome,
+                        'ordem' => $memoriaBloco->ordem_linha,
+                        'estrutura' => $memoriaBloco->estrutura,
+                        'itens' => [],
+                        'editavel'=>$editavel
+                    ];
+                }else{
+                    if(!$editavel){
+                        $pavimentos[$memoriaBloco->estrutura][$memoriaBloco->pavimento]['editavel'] = $editavel;
+                    }
+                }
+
+                if(!isset($trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento][$memoriaBloco->trecho])){
+                    $countTrecho = !isset($trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento])?1:count($trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento])+1;
+                    $trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento][$memoriaBloco->id] = [
+                        'id'=>   $countTrecho,
+                        'blocoId'=>   $memoriaBloco->id,
+                        'objId'=>   $memoriaBloco->trecho,
+                        'nome'=> $memoriaBloco->trechoObj->nome,
+                        'ordem' => $memoriaBloco->ordem,
+                        'estrutura' => $memoriaBloco->estrutura,
+                        'pavimento' => $memoriaBloco->pavimento,
+                        'editavel'=>$editavel
+                    ];
+                }else{
+                    if(!$editavel){
+                        $trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento][$memoriaBloco->id]['editavel'] = $editavel;
+                    }
+                }
+
+            }
+            // organiza a array
+            foreach ($trechos as $estrutura_id => $estruturaTrechos){
+                foreach ($estruturaTrechos as $pavimento_id => $pavimentoTrechos) {
+                    foreach ($pavimentoTrechos as $trecho) {
+                        $pavimentos[$trecho['estrutura']][$trecho['pavimento']]['itens'][] = $trecho;
+                    }
+                }
+
+            }
+
+            foreach ($pavimentos as $estrutura_id => $pavimentos_internos){
+                foreach ($pavimentos_internos as $pavimento_interno){
+                    $estruturas[$pavimento_interno['estrutura']]['itens'][] = $pavimento_interno;
+                }
+            }
+
+            foreach ($estruturas as $estrutura){
+                $blocos[$estrutura['ordem']] = $estrutura;
+            }
+
+        }
+        ksort($blocos);
+
+        $clonando = 1;
+
+        return view('memoria_calculos.create', compact('obras','memoriaCalculo','blocos','clonando'));
     }
 
     /**

@@ -81,6 +81,7 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
         // Se existe verifica se as quantidades requisitadas estão dentro dos requisitos
         $gerar_qc_itens = [];
         $fornecedores_ids = [];
+        $item_valores = [];
         foreach ($itens_aprovados_com_acordos as $item) {
             $item_acordo = CatalogoContratoInsumo::find($item->catalogo_contrato_insumo_id);
             // Verifica se a qtd mínima é atendidida
@@ -97,6 +98,7 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
                         'valor' => $item_acordo->getOriginal('valor_unitario'),
                         'cat_contrato_id' => $item->cat_contrato_id
                     ];
+                    $item_valores[$item->insumo_id][$item_acordo->catalogo->fornecedor_id] = $item_acordo->getOriginal('valor_unitario');
                     $fornecedores_ids[$item->insumo_id][$item_acordo->catalogo->fornecedor_id] = $item_acordo->catalogo->fornecedor_id;
                 }
             }
@@ -161,18 +163,20 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
                 // Após gerado, já lança os valores daqueles fornecedores pelo firmado no acordo
                 foreach ($quadroDeConcorrencia->itens as $item) {
                     $acordo_item = $gerar_qc_itens[$item->insumo_id];
-                    $qc_fornecedor = QcFornecedor::where('quadro_de_concorrencia_id', $quadroDeConcorrencia->id)
-                        ->where('fornecedor_id', $acordo_item['fornecedor_id'])
-                        ->first();
-                    QcItemQcFornecedor::create([
-                        'qc_item_id' => $item->id,
-                        'qc_fornecedor_id' => $qc_fornecedor->id,
-                        'qtd' => $item->getOriginal('qtd'),
-                        'valor_unitario' => $acordo_item['valor'],
-                        'valor_total' => ($acordo_item['valor'] * $item->getOriginal('qtd')),
-                        'vencedor' => $vencedor,
-                        'data_decisao' => date('Y-m-d H:i:s')
-                    ]);
+                    foreach ($item_valores[$item->insumo_id] as $fornecedorID => $valorItem){
+                        $qc_fornecedor = QcFornecedor::where('quadro_de_concorrencia_id', $quadroDeConcorrencia->id)
+                            ->where('fornecedor_id', $fornecedorID)
+                            ->first();
+                        QcItemQcFornecedor::create([
+                            'qc_item_id' => $item->id,
+                            'qc_fornecedor_id' => $qc_fornecedor->id,
+                            'qtd' => $item->getOriginal('qtd'),
+                            'valor_unitario' => $valorItem,
+                            'valor_total' => ($valorItem * $item->getOriginal('qtd')),
+                            'vencedor' => $vencedor,
+                            'data_decisao' => date('Y-m-d H:i:s')
+                        ]);
+                    }
                 }
 
                 // Se existe apenas um fornecedor

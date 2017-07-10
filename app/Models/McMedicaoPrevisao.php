@@ -11,14 +11,11 @@ use Eloquent as Model;
  */
 class McMedicaoPrevisao extends Model
 {
+
     public $table = 'mc_medicao_previsoes';
     
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
-
-
-    protected $dates = ['deleted_at'];
-
 
     public $fillable = [
         'obra_torre_id',
