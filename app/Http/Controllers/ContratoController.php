@@ -467,6 +467,7 @@ class ContratoController extends AppBaseController
     {
         $contrato = $this->contratoRepository->findWithoutFail($contrato_id);
         $contrato_item_apropriacao = ContratoItemApropriacao::find($contrato_item_apropriacao_id);
+        $filtro_estruturas = [];
         
         if (empty($contrato)) {
             Flash::error('Contrato ' . trans('common.not-found'));
@@ -536,12 +537,6 @@ class ContratoController extends AppBaseController
                 ->where('contrato_item_id', $contrato_item_apropriacao->contrato_item_id)
                 ->get();
 
-        $filtro_estruturas = NomeclaturaMapa::where('tipo', 1)
-            ->pluck('nome', 'id')
-            ->prepend('', '')
-            ->toArray();
-
-        // Montar os blocos
         if(count($previsoes)) {
             $memoria_de_calculo_id = $previsoes->first()->memoriaCalculoBloco->memoriaCalculo->id;
         }else{
@@ -556,6 +551,15 @@ class ContratoController extends AppBaseController
 
                 return redirect(route('memoriaCalculos.index'));
             }
+
+            $filtro_estruturas = NomeclaturaMapa::where('tipo', 1)
+                ->where('apenas_cartela',($memoriaCalculo->modo=='C'?'1':'0') )
+                ->where('apenas_unidade',($memoriaCalculo->modo=='U'?'1':'0') )
+                ->pluck('nome', 'id')
+                ->prepend('', '')
+                ->toArray();
+
+            // Montar os blocos
             $blocos = [];
             $memoriaBlocos = $memoriaCalculo->blocos()
                 ->orderBy('ordem_bloco','ASC')
