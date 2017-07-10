@@ -339,7 +339,7 @@
             },3000);
         } else {
             $('#tbody_previsoes').append('\
-                <tr id="linha_'+count+'"  class="estrutura nao-preenchido" estrutura="'+estrutura_id+'">\
+                <tr id="linha_'+count+'"  class="estrutura nao-preenchido" estrutura="'+estrutura_id+'" memoria_calculo_bloco_id='+memoria_calculo_bloco_id+'>\
                     <input type="hidden" name="itens['+count+'][memoria_calculo_bloco_id]" value="'+memoria_calculo_bloco_id+'">\
                     <td>\
                         '+estrutura+'\
@@ -367,6 +367,7 @@
                 </tr>\
             ');
             recarregarMascara();
+            array_blocos_previstos.push(memoria_calculo_bloco_id.toString());
         }
     }
 
@@ -491,11 +492,14 @@
 
                     $('#trecho_bloco_ordem_' + k + '_' + p + '_' + t).val(idxTrecho);
 
+                    blocoId = $('input[name="trecho_id['+ k +']['+ p +']['+ t +']"]').val();
+
                     trechoItem = {
                         id: idxTrecho,
                         nome: nomeTrech,
                         objId: $("#trecho_" + k + "_" + p + "_" + t + " option:selected").val(),
-                        ordem: idxTrecho
+                        ordem: idxTrecho,
+                        blocoId: blocoId
                     }
 
                     arrayTrechos[idxTrecho] = trechoItem;
@@ -543,7 +547,14 @@
                             if (objDBEstruturaTrecho != undefined) {
                                 larguraTrecho = objDBEstruturaTrecho.largura_visual;
                             }
-                            trechosTD += '<td>&nbsp;' + trechoPav.nome + '&nbsp;</td>';
+
+                            previsao_bloco_id = trechoPav.blocoId;
+                            previsao_estrutura = "'"+item.nome+"'";
+                            previsao_pavimento =  "'"+linhaPavimento.nome+ "'";
+                            previsao_trecho =  "'"+trechoPav.nome+ "'";
+                            previsao_estrutura_id = item.objId;
+
+                            trechosTD += '<td onclick="adicionarNaTabela('+previsao_bloco_id+','+previsao_estrutura+','+previsao_pavimento+','+previsao_trecho+','+previsao_estrutura_id+')" style="cursor:pointer;">&nbsp;' + trechoPav.nome + '&nbsp;</td>';
                         });
                         trechosDestePavimento = '<table class="table-bordered" style="width: ' + larguraPav + '%; margin:0px auto;min-height: 31px;"><tr> ' + trechosTD + ' </tr></table>';
                     }

@@ -576,14 +576,20 @@ class ContratoController extends AppBaseController
                 $pavimentos = [];
                 $trechos = [];
                 foreach ($memoriaBlocos as $memoriaBloco) {
+                    $editavel = 1;
                     if(!isset($estruturas[$memoriaBloco->estrutura])){
                         $estruturas[$memoriaBloco->estrutura] = [
                             'id'=>   $memoriaBloco->ordem,
                             'objId'=>   $memoriaBloco->estrutura,
                             'nome'=> $memoriaBloco->estruturaObj->nome,
                             'ordem' => $memoriaBloco->ordem_bloco,
-                            'itens' => []
+                            'itens' => [],
+                            'editavel'=>$editavel
                         ];
+                    }else{
+                        if(!$editavel){
+                            $estruturas[$memoriaBloco->estrutura]['editavel'] = $editavel;
+                        }
                     }
 
                     if(!isset($pavimentos[$memoriaBloco->estrutura][$memoriaBloco->pavimento])){
@@ -594,21 +600,31 @@ class ContratoController extends AppBaseController
                             'nome'=> $memoriaBloco->pavimentoObj->nome,
                             'ordem' => $memoriaBloco->ordem_linha,
                             'estrutura' => $memoriaBloco->estrutura,
-                            'itens' => []
+                            'itens' => [],
+                            'editavel'=>$editavel
                         ];
+                    }else{
+                        if(!$editavel){
+                            $pavimentos[$memoriaBloco->estrutura][$memoriaBloco->pavimento]['editavel'] = $editavel;
+                        }
                     }
 
                     if(!isset($trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento][$memoriaBloco->trecho])){
                         $countTrecho = !isset($trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento])?1:count($trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento])+1;
-                        $trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento][$memoriaBloco->trecho] = [
+                        $trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento][$memoriaBloco->id] = [
                             'id'=>   $countTrecho,
                             'blocoId'=>   $memoriaBloco->id,
                             'objId'=>   $memoriaBloco->trecho,
                             'nome'=> $memoriaBloco->trechoObj->nome,
                             'ordem' => $memoriaBloco->ordem,
                             'estrutura' => $memoriaBloco->estrutura,
-                            'pavimento' => $memoriaBloco->pavimento
+                            'pavimento' => $memoriaBloco->pavimento,
+                            'editavel'=>$editavel
                         ];
+                    }else{
+                        if(!$editavel){
+                            $trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento][$memoriaBloco->id]['editavel'] = $editavel;
+                        }
                     }
 
                 }
