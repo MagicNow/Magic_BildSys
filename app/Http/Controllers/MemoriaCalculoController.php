@@ -131,7 +131,7 @@ class MemoriaCalculoController extends AppBaseController
 
                 if(!isset($trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento][$memoriaBloco->trecho])){
                     $countTrecho = !isset($trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento])?1:count($trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento])+1;
-                    $trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento][$memoriaBloco->trecho] = [
+                    $trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento][$memoriaBloco->id] = [
                         'id'=>   $countTrecho,
                         'blocoId'=>   $memoriaBloco->id,
                         'objId'=>   $memoriaBloco->trecho,
@@ -143,7 +143,7 @@ class MemoriaCalculoController extends AppBaseController
                     ];
                 }else{
                     if(!$editavel){
-                        $trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento][$memoriaBloco->trecho]['editavel'] = $editavel;
+                        $trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento][$memoriaBloco->id]['editavel'] = $editavel;
                     }
                 }
 
@@ -241,9 +241,9 @@ class MemoriaCalculoController extends AppBaseController
                     }
                 }
 
-                if(!isset($trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento][$memoriaBloco->trecho])){
+                if(!isset($trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento][$memoriaBloco->id])){
                     $countTrecho = !isset($trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento])?1:count($trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento])+1;
-                    $trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento][$memoriaBloco->trecho] = [
+                    $trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento][$memoriaBloco->id] = [
                         'id'=>   $countTrecho,
                         'blocoId'=>   $memoriaBloco->id,
                         'objId'=>   $memoriaBloco->trecho,
@@ -255,7 +255,7 @@ class MemoriaCalculoController extends AppBaseController
                     ];
                 }else{
                     if(!$editavel){
-                        $trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento][$memoriaBloco->trecho]['editavel'] = $editavel;
+                        $trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento][$memoriaBloco->id]['editavel'] = $editavel;
                     }
                 }
 
@@ -348,7 +348,7 @@ class MemoriaCalculoController extends AppBaseController
 
                 if(!isset($trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento][$memoriaBloco->trecho])){
                     $countTrecho = !isset($trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento])?1:count($trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento])+1;
-                    $trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento][$memoriaBloco->trecho] = [
+                    $trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento][$memoriaBloco->id] = [
                         'id'=>   $countTrecho,
                         'blocoId'=>   $memoriaBloco->id,
                         'objId'=>   $memoriaBloco->trecho,
@@ -360,7 +360,7 @@ class MemoriaCalculoController extends AppBaseController
                     ];
                 }else{
                     if(!$editavel){
-                        $trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento][$memoriaBloco->trecho]['editavel'] = $editavel;
+                        $trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento][$memoriaBloco->id]['editavel'] = $editavel;
                     }
                 }
 
