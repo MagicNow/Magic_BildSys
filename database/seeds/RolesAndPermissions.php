@@ -126,6 +126,11 @@ class RolesAndPermissions extends Seeder
             'contratoTemplates.edit'   => 'Edição de Template de Contrato',
             'contratoTemplates.delete'   => 'Remoção de Template de Contrato',
 
+            'nomeclaturaMapas.list' => 'Listagem de Nomeclaturas para Memórias de cálculo',
+            'nomeclaturaMapas.create' => 'Criação de Nomeclaturas para Memórias de cálculo',
+            'nomeclaturaMapas.edit'   => 'Edição de Nomeclaturas para Memórias de cálculo',
+            'nomeclaturaMapas.delete'   => 'Remoção de Nomeclaturas para Memórias de cálculo',
+
             ################# SITE ###################
             'compras_lembretes.list' => 'Listagem de compras e lembretes',
 
@@ -169,6 +174,12 @@ class RolesAndPermissions extends Seeder
             'configuracaoEstaticas.list'   => 'Listagem de Configuração padrão',
             'configuracaoEstaticas.edit'   => 'Edição de Configuração padrão',
             'configuracaoEstaticas.show'   => 'Visualizar Configuração padrão',
+
+            'memoriaCalculos.list' => 'Listagem de Memória de Cálculo',
+            'memoriaCalculos.create' => 'Criação de Memória de Cálculo',
+            'memoriaCalculos.edit'   => 'Edição de Memória de Cálculo',
+            'memoriaCalculos.delete'   => 'Remoção de Memória de Cálculo',
+
 
         ];
 

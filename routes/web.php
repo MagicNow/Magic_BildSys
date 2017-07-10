@@ -44,6 +44,8 @@ $router->get('tipos-equalizacoes-tecnicas/busca', 'TipoEqualizacaoTecnicaControl
 $router->get('/compras/buscar/planejamentos', ['as' => 'buscaplanejamentos.busca_planejamento', 'uses' => 'OrdemDeCompraController@buscaPlanejamentos']);
 $router->get('/compras/buscar/insumogrupos', ['as' => 'buscainsumogrupos.busca_insumo', 'uses' => 'OrdemDeCompraController@buscaInsumoGrupos']);
 
+$router->get('nomeclatura-mapas/json', ['uses' => 'Admin\NomeclaturaMapaController@json']);
+
 ##### ADMIN #####
 $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:dashboard.access']], function () use ($router) {
 
@@ -406,10 +408,48 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
         $router->get('/{contratoTemplates}/edit', ['as' => 'admin.contratoTemplates.edit', 'uses' => 'Admin\ContratoTemplateController@edit'])
             ->middleware('needsPermission:contratoTemplates.edit');
     });
+
+    $router->group(['prefix'=>'nomeclaturaMapas', 'middleware' => 'needsPermission:nomeclaturaMapas.list'], function () use ($router) {
+        $router->get('', ['as'=> 'admin.nomeclaturaMapas.index', 'uses' => 'Admin\NomeclaturaMapaController@index']);
+        $router->post('', ['as'=> 'admin.nomeclaturaMapas.store', 'uses' => 'Admin\NomeclaturaMapaController@store'])
+            ->middleware('needsPermission:nomeclaturaMapas.create');
+        $router->get('/create', ['as'=> 'admin.nomeclaturaMapas.create', 'uses' => 'Admin\NomeclaturaMapaController@create'])
+            ->middleware('needsPermission:nomeclaturaMapas.create');
+        $router->put('/{nomeclaturaMapas}', ['as'=> 'admin.nomeclaturaMapas.update', 'uses' => 'Admin\NomeclaturaMapaController@update'])
+            ->middleware('needsPermission:nomeclaturaMapas.edit');
+        $router->patch('/{nomeclaturaMapas}', ['as'=> 'admin.nomeclaturaMapas.update', 'uses' => 'Admin\NomeclaturaMapaController@update'])
+            ->middleware('needsPermission:nomeclaturaMapas.edit');
+        $router->delete('/{nomeclaturaMapas}', ['as'=> 'admin.nomeclaturaMapas.destroy', 'uses' => 'Admin\NomeclaturaMapaController@destroy'])
+            ->middleware('needsPermission:nomeclaturaMapas.delete');
+        $router->get('/{nomeclaturaMapas}', ['as'=> 'admin.nomeclaturaMapas.show', 'uses' => 'Admin\NomeclaturaMapaController@show']);
+        $router->get('/{nomeclaturaMapas}/edit', ['as'=> 'admin.nomeclaturaMapas.edit', 'uses' => 'Admin\NomeclaturaMapaController@edit'])
+            ->middleware('needsPermission:nomeclaturaMapas.edit');
+    });
 });
 
 ##### SITE #####
 $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($router) {
+
+    $router->group(['prefix'=>'memoriaCalculos', 'middleware' => 'needsPermission:memoriaCalculos.list'], function () use ($router) {
+        $router->get('', ['as'=> 'memoriaCalculos.index', 'uses' => 'MemoriaCalculoController@index']);
+        $router->post('', ['as'=> 'memoriaCalculos.store', 'uses' => 'MemoriaCalculoController@store'])
+            ->middleware('needsPermission:memoriaCalculos.create');
+        $router->get('/create', ['as'=> 'memoriaCalculos.create', 'uses' => 'MemoriaCalculoController@create'])
+            ->middleware('needsPermission:memoriaCalculos.create');
+        $router->put('/{memoriaCalculos}', ['as'=> 'memoriaCalculos.update', 'uses' => 'MemoriaCalculoController@update'])
+            ->middleware('needsPermission:memoriaCalculos.edit');
+        $router->patch('/{memoriaCalculos}', ['as'=> 'memoriaCalculos.update', 'uses' => 'MemoriaCalculoController@update'])
+            ->middleware('needsPermission:memoriaCalculos.edit');
+        $router->delete('/{memoriaCalculos}', ['as'=> 'memoriaCalculos.destroy', 'uses' => 'MemoriaCalculoController@destroy'])
+            ->middleware('needsPermission:memoriaCalculos.delete');
+        $router->get('/{memoriaCalculos}', ['as'=> 'memoriaCalculos.show', 'uses' => 'MemoriaCalculoController@show']);
+        $router->get('/{memoriaCalculos}/edit', ['as'=> 'memoriaCalculos.edit', 'uses' => 'MemoriaCalculoController@edit'])
+            ->middleware('needsPermission:memoriaCalculos.edit');
+        $router->get('/{memoriaCalculo}/clone', ['as'=> 'memoriaCalculos.clone', 'uses' => 'MemoriaCalculoController@clonar'])
+            ->middleware('needsPermission:memoriaCalculos.create');
+
+    });
+
 
     // Perfil
     $router->get('/perfil', 'PerfilController@index');
