@@ -1,6 +1,15 @@
 @extends('layouts.front')
 
 @section('content')
+    <style type="text/css">
+        .fa-th-large {
+            cursor: ns-resize;
+        }
+
+        .table-bordered td {
+            border: 1px solid #5a5555 !important;
+        }
+    </style>
     <section class="content-header">
         <div class="modal-header">
             <div class="col-md-12">
