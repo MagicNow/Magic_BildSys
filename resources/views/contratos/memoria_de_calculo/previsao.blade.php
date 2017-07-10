@@ -188,7 +188,7 @@
                                                                                 ->pluck('nome','id')->toArray() ,
                                                                                 $trecho['objId'],
                                                                                 ['class'=>'form-control select2','onchange'=>'atualizaVisual();', 'id'=>'trecho_' .$indexBloco .'_'. $indexPavimento . '_'. $indexTrecho] ) !!}
-                                                                            {!! Form::hidden('trecho_id['.$indexBloco.']['.$indexPavimento.']['.$indexTrecho.']',$trecho['blocoId']) !!}
+                                                                            {!! Form::hidden('trecho_id['.$indexBloco.']['.$indexPavimento.']['.$indexTrecho.']',$trecho['blocoId'], ['class' => 'todosTrechos']) !!}
 
                                                                             <input type="hidden" name="trecho_bloco_ordem{{ '['.$indexBloco.']['.$indexPavimento.']['.$indexTrecho.']' }}"
                                                                                    id="trecho_bloco_ordem_{{ $indexBloco.'_'.$indexPavimento.'_'.$indexTrecho }}" value="">
@@ -339,6 +339,10 @@
 
         // Filtro de não preenchido
         $('#filtro_nao_preenchido').on('ifChanged', function (event) {
+            $('.todosTrechos').each(function (index, value) {
+                $('#td_bloco_'+value.value).click();
+            });
+
             $('.nao-preenchido').show();
             $('.preenchido').hide();
         });
@@ -353,13 +357,15 @@
         count ++;
 
         if($.inArray(memoria_calculo_bloco_id, array_blocos_previstos) !== -1) {
-            $('[memoria_calculo_bloco_id='+memoria_calculo_bloco_id+']').css('background-color', '#f98d00');
+            $('#filtro_nao_preenchido').on('ifUnchecked', function (event) {
+                $('[memoria_calculo_bloco_id=' + memoria_calculo_bloco_id + ']').css('background-color', '#f98d00');
 
-            setTimeout(function(){
-                $('[memoria_calculo_bloco_id='+memoria_calculo_bloco_id+']').animate({
-                    backgroundColor: 'tranparent'
-                }, 'slow');
-            },3000);
+                setTimeout(function () {
+                    $('[memoria_calculo_bloco_id=' + memoria_calculo_bloco_id + ']').animate({
+                        backgroundColor: 'tranparent'
+                    }, 'slow');
+                }, 3000);
+            });
         } else {
             $('#tbody_previsoes').append('\
                 <tr id="linha_'+count+'"  class="estrutura nao-preenchido" estrutura="'+estrutura_id+'" memoria_calculo_bloco_id='+memoria_calculo_bloco_id+'>\
@@ -582,7 +588,7 @@
                             previsao_trecho =  "'"+trechoPav.nome+ "'";
                             previsao_estrutura_id = item.objId;
 
-                            trechosTD += '<td onclick="adicionarNaTabela('+previsao_bloco_id+','+previsao_estrutura+','+previsao_pavimento+','+previsao_trecho+','+previsao_estrutura_id+')" style="cursor:pointer;">&nbsp;' + trechoPav.nome + '&nbsp;</td>';
+                            trechosTD += '<td onclick="adicionarNaTabela('+previsao_bloco_id+','+previsao_estrutura+','+previsao_pavimento+','+previsao_trecho+','+previsao_estrutura_id+')" id="td_bloco_'+previsao_bloco_id+'" style="cursor:pointer;">&nbsp;' + trechoPav.nome + '&nbsp;</td>';
                         });
                         trechosDestePavimento = '<table class="table-bordered" style="width: ' + larguraPav + '%; margin:0px auto;min-height: 31px;"><tr> ' + trechosTD + ' </tr></table>';
                     }
