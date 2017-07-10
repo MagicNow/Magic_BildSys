@@ -252,7 +252,7 @@
                 @if(count($previsoes))
                     @foreach($previsoes as $item)
                         @php $count = $item->id; @endphp
-                        <tr id="linha_{{$item->id}}" memoria_calculo_bloco_id="{{$item->memoria_calculo_bloco_id}}" class="estrutura" estrutura="{{$item->memoriaCalculoBloco->estruturaObj->id}}">
+                        <tr id="linha_{{$item->id}}" memoria_calculo_bloco_id="{{$item->memoria_calculo_bloco_id}}" class="estrutura preenchido" estrutura="{{$item->memoriaCalculoBloco->estruturaObj->id}}">
                             <input type="hidden" name="itens[{{$item->id}}][memoria_calculo_bloco_id]" value="{{$item->memoria_calculo_bloco_id}}">
                             <input type="hidden" name="itens[{{$item->id}}][id]" value="{{$item->id}}">
                             <td>
@@ -317,6 +317,12 @@
                 calcularPorcentagem('{{number_format($item->qtd, 2, ',', '.')}}', '{{$item->id}}');
             @endforeach
         @endif
+
+        // Filtro de preenchido
+        $('#filtro_preenchido').on('ifChanged', function (event) {
+            $('.nao-preenchido').hide();
+            $('.preenchido').show();
+        });
     });
 
     // Função para adicionar linha na tabela
@@ -333,7 +339,7 @@
             },3000);
         } else {
             $('#tbody_previsoes').append('\
-                <tr id="linha_'+count+'"  class="estrutura" estrutura="'+estrutura_id+'">\
+                <tr id="linha_'+count+'"  class="estrutura nao-preenchido" estrutura="'+estrutura_id+'">\
                     <input type="hidden" name="itens['+count+'][memoria_calculo_bloco_id]" value="'+memoria_calculo_bloco_id+'">\
                     <td>\
                         '+estrutura+'\
