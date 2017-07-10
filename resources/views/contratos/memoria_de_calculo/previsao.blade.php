@@ -283,7 +283,7 @@
                                 <input type="text" class="form-control money" id="porcentagem_{{$item->id}}" onkeyup="calcularQuantidade(this.value, '{{$item->id}}');">
                             </td>
                             <td>
-                                <button onclick="excluirLinha({{$item->id}});" class="btn btn-flat btn-sm btn-danger pull-right" data-toggle="tooltip" data-placement="top" title="Excluir" type="button">
+                                <button onclick="excluirLinha({{$item->id}}, {{$item->memoria_calculo_bloco_id}});" class="btn btn-flat btn-sm btn-danger pull-right" data-toggle="tooltip" data-placement="top" title="Excluir" type="button">
                                     <i class="fa fa-remove fa-fw" aria-hidden="true"></i>
                                 </button>
                             </td>
@@ -322,7 +322,7 @@
 
         @if(count($previsoes))
             @foreach($previsoes as $item)
-                array_blocos_previstos.push('{{$item->memoria_calculo_bloco_id}}');
+                array_blocos_previstos.push({{$item->memoria_calculo_bloco_id}});
                 calcularPorcentagem('{{number_format($item->qtd, 2, ',', '.')}}', '{{$item->id}}');
             @endforeach
         @endif
@@ -332,13 +332,27 @@
             $('.nao-preenchido').hide();
             $('.preenchido').show();
         });
+        $('#filtro_preenchido').on('ifUnchecked', function (event) {
+            $('.nao-preenchido').show();
+            $('.preenchido').show();
+        });
+
+        // Filtro de não preenchido
+        $('#filtro_nao_preenchido').on('ifChanged', function (event) {
+            $('.nao-preenchido').show();
+            $('.preenchido').hide();
+        });
+        $('#filtro_nao_preenchido').on('ifUnchecked', function (event) {
+            $('.nao-preenchido').show();
+            $('.preenchido').show();
+        });
     });
 
     // Função para adicionar linha na tabela
     function adicionarNaTabela(memoria_calculo_bloco_id, estrutura, pavimento, trecho, estrutura_id) {
         count ++;
 
-        if($.inArray(memoria_calculo_bloco_id.toString(), array_blocos_previstos) !== -1) {
+        if($.inArray(memoria_calculo_bloco_id, array_blocos_previstos) !== -1) {
             $('[memoria_calculo_bloco_id='+memoria_calculo_bloco_id+']').css('background-color', '#f98d00');
 
             setTimeout(function(){
@@ -369,24 +383,29 @@
                         <input type="text" class="form-control money" id="porcentagem_'+count+'" onkeyup="calcularQuantidade(this.value, '+count+');">\
                     </td>\
                     <td>\
-                        <button onclick="removerLinha('+count+');" class="btn btn-flat btn-sm btn-danger pull-right" data-toggle="tooltip" data-placement="top" title="Remover" type="button">\
+                        <button onclick="removerLinha('+count+', '+memoria_calculo_bloco_id+');" class="btn btn-flat btn-sm btn-danger pull-right" data-toggle="tooltip" data-placement="top" title="Remover" type="button">\
                             <i class="fa fa-remove fa-fw" aria-hidden="true"></i>\
                         </button>\
                     </td>\
                 </tr>\
             ');
             recarregarMascara();
-            array_blocos_previstos.push(memoria_calculo_bloco_id.toString());
+            array_blocos_previstos.push(memoria_calculo_bloco_id);
         }
     }
 
     // Função para remover linha da tabela
-    function removerLinha(id) {
+    function removerLinha(id, bloco_id) {
         $('#linha_'+id).remove();
+        var index = array_blocos_previstos.indexOf(bloco_id);
+
+        if (index > -1) {
+            array_blocos_previstos.splice(index, 1);
+        }
     }
 
     // Função para excluir a linha do banco e da tabela
-    function excluirLinha(id) {
+    function excluirLinha(id, bloco_id) {
         swal({
             title: "Você tem certeza?",
             text: "Você não poderá mais recuperar este registro!",
@@ -403,7 +422,7 @@
                 type: 'POST',
                 data: {'id' : id}
             }).done(function() {
-                removerLinha(id);
+                removerLinha(id, bloco_id);
             });
         });
     }
@@ -412,13 +431,13 @@
     function calcularPorcentagem(qtd, id) {
         porcentagem =  (moneyToFloat(qtd) / qtd_item_apropriacao) * 100;
 
-        if(porcentagem.toString().length <= 2) {
+        if(porcentagem.length <= 2) {
             porcentagem = porcentagem+',00'
         } else {
             porcentagem = porcentagem.toFixed(2)
         }
 
-        $('#porcentagem_'+id).val(porcentagem.toString().replace('.', ','));
+        $('#porcentagem_'+id).val(porcentagem.replace('.', ','));
 
         recarregarMascara();
     }
@@ -427,13 +446,13 @@
     function calcularQuantidade(porcentagem, id) {
         quantidade = qtd_item_apropriacao * (moneyToFloat(porcentagem) / 100);
 
-        if(quantidade.toString().length <= 2) {
+        if(quantidade.length <= 2) {
             quantidade = quantidade+',00'
         } else {
             quantidade = quantidade.toFixed(2)
         }
 
-        $('#quantidade_'+id).val(quantidade.toString().replace('.', ','));
+        $('#quantidade_'+id).val(quantidade.replace('.', ','));
 
         recarregarMascara();
     }
