@@ -313,7 +313,10 @@
 
     $(function() {
         @if(isset($memoriaCalculo))
+            buscaNomeclaturas('{{ $memoriaCalculo->modo }}');
             atualizaVisual();
+        @else
+            buscaNomeclaturas('T');
         @endif
 
         @if(count($previsoes))
@@ -323,7 +326,7 @@
             @endforeach
         @endif
 
-        $('#filtro_preenchido').iCheck('destroy');
+    $('#filtro_preenchido').iCheck('destroy');
         $('#filtro_nao_preenchido').iCheck('destroy');
     });
 
@@ -627,6 +630,50 @@
         });
         $('#visual').html(visualHTML);
         stopLoading();
+    }
+
+    function buscaNomeclaturas(valor) {
+        if (valor == 'T') {
+            nomeEstrutura = 'Estrutura';
+            nomePavimento = 'Pavimento';
+            nomeTrecho = 'Trecho';
+        } else {
+            nomeEstrutura = 'Bloco';
+            nomePavimento = 'Linha';
+            nomeTrecho = 'Coluna';
+        }
+        estruturasObjs = [];
+        pavimentosObjs = [];
+        trechosObjs = [];
+
+        $('#btn_adicionar_bloco').attr('disabled', true);
+        estruturas = '<option value="" selected="selected">Escolha</option>';
+        pavimentos = '<option value="" selected="selected">Escolha</option>';
+        trechos = '<option value="" selected="selected">Escolha</option>';
+        $.ajax('/nomeclatura-mapas/json?modo=' + valor)
+                .fail(function (retorno) {
+                    swal({title: 'Erro na solicitação', type: 'error'}, function () {
+                        document.location.reload();
+                    });
+                })
+                .done(function (retorno) {
+                    $.each(retorno, function (index, nomeclatura) {
+                        if (nomeclatura.tipo == 1) {
+                            estruturas += '<option value="' + nomeclatura.id + '">' + nomeclatura.nome + '</option>';
+                            estruturasObjs[nomeclatura.id] = nomeclatura;
+                        }
+                        if (nomeclatura.tipo == 2) {
+                            pavimentos += '<option value="' + nomeclatura.id + '">' + nomeclatura.nome + '</option>';
+                            pavimentosObjs[nomeclatura.id] = nomeclatura;
+                        }
+                        if (nomeclatura.tipo == 3) {
+                            trechos += '<option value="' + nomeclatura.id + '">' + nomeclatura.nome + '</option>';
+                            trechosObjs[nomeclatura.id] = nomeclatura;
+                        }
+                    });
+                    $('#btn_adicionar_bloco').attr('disabled', false);
+                    atualizaVisual();
+                });
     }
 
     function recarregarMascara() {
