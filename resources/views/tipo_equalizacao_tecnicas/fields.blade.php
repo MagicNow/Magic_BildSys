@@ -16,11 +16,7 @@
     <div class="tab-content">
         <div role="tabpanel" class="tab-pane active" id="tab_itens">
             <fieldset class="col-sm-12" style="min-width: 300px">
-                <legend>Itens
-                        <button type="button" class="btn btn-warning btn-sm btn-flat pull-right" onclick="addItens();">
-                            <i class="fa fa-plus"></i> Adicionar
-                        </button>
-                </legend>
+                <h3>Itens</h3>
                 <div id="itens">
                     <?php $qtdItens = 0; ?>
                     @if(isset($tipoEqualizacaoTecnica))
@@ -58,15 +54,16 @@
                         @endforeach
                     @endif
                 </div>
+                <div class="col-md-12" style="margin-bottom: 20px;">
+                    <button type="button" class="btn btn-warning btn-sm btn-flat pull-right" onclick="addItens();">
+                        <i class="fa fa-plus"></i> Adicionar
+                    </button>
+                </div>
             </fieldset>
         </div>
         <div role="tabpanel" class="tab-pane" id="tab_anexos">
             <fieldset class="col-sm-12" style="min-width: 300px">
-                <legend>Anexos
-                        <button type="button" class="btn btn-warning btn-sm btn-flat pull-right" onclick="addAnexos();">
-                            <i class="fa fa-plus"></i> Adicionar
-                        </button>
-                </legend>
+                <h3>Anexos</h3>
                 <div id="anexos">
                     @if(isset($tipoEqualizacaoTecnica))
                         <?php $qtdanexos = 0; ?>
@@ -102,6 +99,11 @@
                             <hr>
                         @endforeach
                     @endif
+                </div>
+                <div class="col-md-12" style="margin-bottom: 20px;">
+                    <button type="button" class="btn btn-warning btn-sm btn-flat pull-right" onclick="addAnexos();">
+                        <i class="fa fa-plus"></i> Adicionar
+                    </button>
                 </div>
             </fieldset>
         </div>
