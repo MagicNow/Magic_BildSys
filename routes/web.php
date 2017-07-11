@@ -449,6 +449,25 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             ->middleware('needsPermission:memoriaCalculos.create');
 
     });
+    $router->group(['prefix'=>'medicoes', 'middleware' => 'needsPermission:medicoes.list'], function () use ($router) {
+        $router->get('', ['as'=> 'medicoes.index', 'uses' => 'MedicaoController@index']);
+        $router->post('', ['as'=> 'medicoes.store', 'uses' => 'MedicaoController@store'])
+            ->middleware('needsPermission:medicoes.create');
+        $router->get('/pre-create', ['as'=> 'medicoes.preCreate', 'uses' => 'MedicaoController@preCreate'])
+            ->middleware('needsPermission:medicoes.create');
+        $router->get('/create', ['as'=> 'medicoes.create', 'uses' => 'MedicaoController@create'])
+            ->middleware('needsPermission:medicoes.create');
+        $router->put('/{medicoes}', ['as'=> 'medicoes.update', 'uses' => 'MedicaoController@update'])
+            ->middleware('needsPermission:medicoes.edit');
+        $router->patch('/{medicoes}', ['as'=> 'medicoes.update', 'uses' => 'MedicaoController@update'])
+            ->middleware('needsPermission:medicoes.edit');
+        $router->delete('/{medicoes}', ['as'=> 'medicoes.destroy', 'uses' => 'MedicaoController@destroy'])
+            ->middleware('needsPermission:medicoes.delete');
+        $router->get('/{medicoes}', ['as'=> 'medicoes.show', 'uses' => 'MedicaoController@show']);
+        $router->get('/{medicoes}/edit', ['as'=> 'medicoes.edit', 'uses' => 'MedicaoController@edit'])
+            ->middleware('needsPermission:medicoes.edit');
+
+    });
 
 
     // Perfil

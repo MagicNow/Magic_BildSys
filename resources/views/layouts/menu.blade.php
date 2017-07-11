@@ -169,5 +169,3 @@
     </ul>
 </li>
 @endshield
-
-

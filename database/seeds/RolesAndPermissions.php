@@ -183,6 +183,11 @@ class RolesAndPermissions extends Seeder
             'memoriaCalculos.edit'   => 'Edição de Memória de Cálculo',
             'memoriaCalculos.delete'   => 'Remoção de Memória de Cálculo',
 
+            'medicoes.list' => 'Listagem de Medições',
+            'medicoes.create' => 'Criação de Medições',
+            'medicoes.edit'   => 'Edição de Medições',
+            'medicoes.delete'   => 'Remoção de Medições',
+
 
         ];
 
