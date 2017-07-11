@@ -292,7 +292,7 @@ class FornecedoresController extends AppBaseController
     public function buscaTemporarios(Request $request){
         $fornecedores = Fornecedor::select([
             'id',
-            "nome"
+            DB::raw("CONCAT(nome, ' - ', cnpj) as nome")
         ])
             ->whereNull('codigo_mega')
             ->where('nome','like', '%'.$request->q.'%')->paginate();
