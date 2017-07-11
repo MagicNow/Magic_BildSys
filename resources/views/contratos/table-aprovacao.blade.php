@@ -134,8 +134,15 @@
                                     title="Expandir"
                                     onclick="showHideInfoExtra({{ $item->id }})">
                                     <i id="icone-expandir{{ $item->id }}"
-                                        class="fa fa-caret-right fa-fw fa-lg"></i>
+                                        class="fa fa-caret-right fa-fw"></i>
                                 </button>
+                                <a href="{{ route('contratos.memoria_de_calculo', [$contrato->id, $item->id]) }}" type="button"
+                                        class="btn btn-flat btn-sm btn-primary"
+                                        data-toggle="tooltip"
+                                        data-placement="top"
+                                        title="Criar previsão de memória de cálculo">
+                                    <i class="fa fa-calculator fa-fw" aria-hidden="true"></i>
+                                </a>
                             </td>
                         </tr>
                         <tr style="display: none;" id="dados-extras{{ $item->id }}">

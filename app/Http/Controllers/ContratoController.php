@@ -10,12 +10,18 @@ use App\Http\Requests\UpdateContratoRequest;
 use App\Models\ContratoStatusLog;
 use App\Models\Fornecedor;
 use App\Models\Insumo;
+use App\Models\McMedicaoPrevisao;
+use App\Models\MemoriaCalculo;
+use App\Models\NomeclaturaMapa;
 use App\Models\Obra;
+use App\Models\ObraTorre;
+use App\Models\Planejamento;
 use App\Models\WorkflowAprovacao;
 use App\Repositories\CodeRepository;
 use App\Repositories\ContratoRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Response;
@@ -461,6 +467,245 @@ class ContratoController extends AppBaseController
         return redirect(route('contratos.index'));
     }
 
+    public function memoriaDeCalculo($contrato_id, $contrato_item_apropriacao_id, Request $request)
+    {
+        $contrato = $this->contratoRepository->findWithoutFail($contrato_id);
+        $contrato_item_apropriacao = ContratoItemApropriacao::find($contrato_item_apropriacao_id);
+        $filtro_estruturas = [];
+
+        if (empty($contrato)) {
+            Flash::error('Contrato ' . trans('common.not-found'));
+
+            return redirect(route('contratos.show', $contrato_id));
+        }
+
+        if (empty($contrato_item_apropriacao)) {
+            Flash::error('Item do contrato ' . trans('common.not-found'));
+
+            return redirect(route('contratos.show', $contrato_id));
+        }
+
+        if (empty($contrato->fornecedor)) {
+            Flash::error('Fornecedor do contrato ' . trans('common.not-found'));
+
+            return redirect(route('contratos.show', $contrato_id));
+        }
+
+        $insumo = Insumo::find($contrato_item_apropriacao->insumo_id);
+
+        if (empty($insumo)) {
+            Flash::error('Insumo ' . trans('common.not-found'));
+
+            return redirect(route('contratos.show', $contrato_id));
+        }
+
+        $tarefas = Planejamento::where('obra_id', $contrato->obra_id)
+            ->pluck('tarefa', 'id')
+            ->prepend('', '')
+            ->toArray();
+
+        $obra_torres = ObraTorre::where('obra_id', $contrato->obra_id)
+            ->pluck('nome', 'id')
+            ->prepend('', '')
+            ->toArray();
+
+        $memoria_de_calculo = MemoriaCalculo::select([
+            DB::raw('CONCAT(
+                        nome, " - ", 
+                        (
+                        CASE
+                            modo
+                        WHEN
+                            "T"
+                        THEN
+                            "Torre"
+                        WHEN
+                            "C"
+                        THEN
+                            "Cartela"
+                        WHEN
+                            "U"
+                        THEN
+                            "Unidade"
+                        END
+                        )
+                    ) as nome'),
+            'id'
+        ])
+            ->pluck('nome', 'id')
+            ->prepend('', '')
+            ->toArray();
+
+        $previsoes = McMedicaoPrevisao::where('insumo_id',  $insumo->id)
+            ->where('contrato_item_apropriacao_id', $contrato_item_apropriacao->id)
+            ->where('contrato_item_id', $contrato_item_apropriacao->contrato_item_id)
+            ->get();
+
+        if(count($previsoes)) {
+            $memoria_de_calculo_id = $previsoes->first()->memoriaCalculoBloco->memoriaCalculo->id;
+        }else{
+            $memoria_de_calculo_id = $request->memoria_de_calculo;
+        }
+
+        if($memoria_de_calculo_id) {
+            $memoriaCalculo = MemoriaCalculo::find($memoria_de_calculo_id);
+
+            if (empty($memoriaCalculo)) {
+                Flash::error('Memoria Calculo '.trans('common.not-found'));
+
+                return redirect(route('memoriaCalculos.index'));
+            }
+
+            $filtro_estruturas = NomeclaturaMapa::where('tipo', 1)
+                ->where('apenas_cartela',($memoriaCalculo->modo=='C'?'1':'0') )
+                ->where('apenas_unidade',($memoriaCalculo->modo=='U'?'1':'0') )
+                ->pluck('nome', 'id')
+                ->prepend('', '')
+                ->toArray();
+
+            // Montar os blocos
+            $blocos = [];
+            $memoriaBlocos = $memoriaCalculo->blocos()
+                ->orderBy('ordem_bloco','ASC')
+                ->orderBy('ordem_linha','ASC')
+                ->orderBy('ordem','ASC')
+                ->with('estruturaObj','pavimentoObj','trechoObj')
+                ->get();
+            if(count($memoriaBlocos)){
+                $estruturas = [];
+                $pavimentos = [];
+                $trechos = [];
+                foreach ($memoriaBlocos as $memoriaBloco) {
+                    $editavel = 1;
+                    if(!isset($estruturas[$memoriaBloco->estrutura])){
+                        $estruturas[$memoriaBloco->estrutura] = [
+                            'id'=>   $memoriaBloco->ordem,
+                            'objId'=>   $memoriaBloco->estrutura,
+                            'nome'=> $memoriaBloco->estruturaObj->nome,
+                            'ordem' => $memoriaBloco->ordem_bloco,
+                            'itens' => [],
+                            'editavel'=>$editavel
+                        ];
+                    }else{
+                        if(!$editavel){
+                            $estruturas[$memoriaBloco->estrutura]['editavel'] = $editavel;
+                        }
+                    }
+
+                    if(!isset($pavimentos[$memoriaBloco->estrutura][$memoriaBloco->pavimento])){
+                        $countEstrutura = !isset($pavimentos[$memoriaBloco->estrutura])?1:count($pavimentos[$memoriaBloco->estrutura])+1;
+                        $pavimentos[$memoriaBloco->estrutura][$memoriaBloco->pavimento] = [
+                            'id'=>   $countEstrutura,
+                            'objId'=>   $memoriaBloco->pavimento,
+                            'nome'=> $memoriaBloco->pavimentoObj->nome,
+                            'ordem' => $memoriaBloco->ordem_linha,
+                            'estrutura' => $memoriaBloco->estrutura,
+                            'itens' => [],
+                            'editavel'=>$editavel
+                        ];
+                    }else{
+                        if(!$editavel){
+                            $pavimentos[$memoriaBloco->estrutura][$memoriaBloco->pavimento]['editavel'] = $editavel;
+                        }
+                    }
+
+                    if(!isset($trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento][$memoriaBloco->trecho])){
+                        $countTrecho = !isset($trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento])?1:count($trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento])+1;
+                        $trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento][$memoriaBloco->id] = [
+                            'id'=>   $countTrecho,
+                            'blocoId'=>   $memoriaBloco->id,
+                            'objId'=>   $memoriaBloco->trecho,
+                            'nome'=> $memoriaBloco->trechoObj->nome,
+                            'ordem' => $memoriaBloco->ordem,
+                            'estrutura' => $memoriaBloco->estrutura,
+                            'pavimento' => $memoriaBloco->pavimento,
+                            'editavel'=>$editavel
+                        ];
+                    }else{
+                        if(!$editavel){
+                            $trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento][$memoriaBloco->id]['editavel'] = $editavel;
+                        }
+                    }
+
+                }
+                // organiza a array
+                foreach ($trechos as $estrutura_id => $estruturaTrechos){
+                    foreach ($estruturaTrechos as $pavimento_id => $pavimentoTrechos) {
+                        foreach ($pavimentoTrechos as $trecho) {
+                            $pavimentos[$trecho['estrutura']][$trecho['pavimento']]['itens'][] = $trecho;
+                        }
+                    }
+
+                }
+
+                foreach ($pavimentos as $estrutura_id => $pavimentos_internos){
+                    foreach ($pavimentos_internos as $pavimento_interno){
+                        $estruturas[$pavimento_interno['estrutura']]['itens'][] = $pavimento_interno;
+                    }
+                }
+
+                foreach ($estruturas as $estrutura){
+                    $blocos[$estrutura['ordem']] = $estrutura;
+                }
+
+            }
+            ksort($blocos);
+        }
+
+        return view('contratos.memoria_de_calculo.previsao',
+            compact(
+                'contrato',
+                'contrato_item_apropriacao',
+                'insumo',
+                'tarefas',
+                'memoria_de_calculo',
+                'obra_torres',
+                'previsoes',
+                'filtro_estruturas',
+                'blocos',
+                'memoriaCalculo'
+            )
+        );
+    }
+
+    public function memoriaDeCalculoSalvar(Request $request)
+    {
+        if(count($request->itens)) {
+            foreach ($request->itens as $item) {
+                $item['qtd'] = money_to_float($item['qtd']);
+
+                if(isset($item['id'])){
+                    $previsao = McMedicaoPrevisao::find($item['id']);
+                    $previsao->update($item);
+                } else {
+                    $previsao = new McMedicaoPrevisao($item);
+                    $previsao->insumo_id = $request->insumo_id;
+                    $previsao->unidade_sigla = $request->unidade_sigla;
+                    $previsao->contrato_item_apropriacao_id = $request->contrato_item_apropriacao_id;
+                    $previsao->contrato_item_id = $request->contrato_item_id;
+                    $previsao->planejamento_id = $request->planejamento_id;
+                    $previsao->obra_torre_id = $request->obra_torre_id;
+                    $previsao->user_id = Auth::id();
+                    $previsao->save();
+                }
+            }
+        }
+
+        Flash::success('Previsão de memória de cálculo salva com sucesso!');
+
+        return redirect(route('contratos.index'));
+    }
+
+    public function memoriaDeCalculoExcluirPrevisao(Request $request)
+    {
+        $previsao = McMedicaoPrevisao::find($request->id);
+
+        if ($previsao) {
+            $previsao->delete();
+        }
+
+        return response()->json(true);
+    }
     public function solicitarEntrega(
         $contrato_id,
         ContratoItemApropriacaoRepository $apropriacaoRepository

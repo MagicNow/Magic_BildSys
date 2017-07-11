@@ -163,13 +163,16 @@ class RolesAndPermissions extends Seeder
             'equalizacao_tecnicas.edit'   => 'Edição de equalização tecnica',
             'equalizacao_tecnicas.delete'   => 'Remoção de equalização tecnica',
 
-            'contratos.list'              => 'Listagem de contratos',
-            'contratos.show'              => 'Visualização de contrato',
-            'contratos.edit'              => 'Editar contrato',
-            'contratos.distratar'         => 'Distratar item do contrato',
-            'contratos.reajustar'         => 'Reajustar item do contrato',
-            'contratos.reapropriar'       => 'Reapropriar item do contrato',
+
+            'contratos.list'        => 'Listagem de contratos',
+            'contratos.show'        => 'Visualização de contrato',
+            'contratos.edit'        => 'Editar contrato',
+            'contratos.distratar'   => 'Distratar item do contrato',
+            'contratos.reajustar'   => 'Reajustar item do contrato',
+            'contratos.reapropriar' => 'Reapropriar item do contrato',
+            'contratos.previsao_de_memoria_de_calculo' => 'Previsão de memória de cálculo',
             'contratos.solicitar_entrega' => 'Solicitar entrega do Contrato',
+
 
             'configuracaoEstaticas.list'   => 'Listagem de Configuração padrão',
             'configuracaoEstaticas.edit'   => 'Edição de Configuração padrão',

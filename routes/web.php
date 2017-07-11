@@ -755,6 +755,8 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('planejamentos/lembretes', 'PlanejamentoController@lembretes');
     $router->get('planejamentos/lembretes/salvar-data-minima', 'PlanejamentoController@lembretes');
 
+
+    #Contratos
     $router->get(
         '/solicitacoes-de-entrega/{solicitacao_entrega}',
         'SolicitacaoEntregaController@show'
@@ -796,7 +798,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     )
     ->middleware('needsPermission:contratos.solicitar_entrega')
     ->name('solicitacao-entrega.vincular-nota');
-
+    
     $router->group(['prefix' => 'contratos','middleware' => 'needsPermission:contratos.list'], function($router) {
         $router->get(
             '',
@@ -901,6 +903,21 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             '/{contratos}/update',
             ['as' => 'contratos.update', 'uses' => 'ContratoController@update']
         );
+
+        $router->get(
+            '/{contratos}/{insumo_id}/previsao-de-memoria-de-calculo',
+            ['as' => 'contratos.memoria_de_calculo', 'uses' => 'ContratoController@memoriaDeCalculo']
+        )->middleware('needsPermission:contratos.previsao_de_memoria_de_calculo');
+
+        $router->post(
+            '/previsao-de-memoria-de-calculo/salvar',
+            ['as' => 'contratos.memoria_de_calculo_salvar', 'uses' => 'ContratoController@memoriaDeCalculoSalvar']
+        )->middleware('needsPermission:contratos.previsao_de_memoria_de_calculo');
+        
+        $router->post(
+            '/previsao-de-memoria-de-calculo/excluir-previsao',
+            ['as' => 'contratos.memoria_de_calculo.excluir_previsao', 'uses' => 'ContratoController@memoriaDeCalculoExcluirPrevisao']
+        )->middleware('needsPermission:contratos.previsao_de_memoria_de_calculo');
     });
 
     # Configuracao Estatica
