@@ -65,3 +65,6 @@
     <a href="{!! route('notafiscals.index') !!}"><i class="fa fa-object-group"></i><span>Nota fiscal</span></a>
 </li>
 
+<li class="{{ Request::is('medicao*') ? 'active' : '' }}">
+    <a href="{!! route('medicao.index') !!}"><i class="fa fa-calendar-check-o"></i><span>Medic</span></a>
+</li>
