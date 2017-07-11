@@ -270,13 +270,13 @@
                                 {{$item->memoriaCalculoBloco->trechoObj->nome}}
                             </td>
                             <td>
-                                <input type="date" class="form-control" name="itens[{{$item->id}}][data_competencia]" value="{{$item->data_competencia->format('Y-m-d')}}" required>
+                                <input type="date" class="form-control" name="itens[{{$item->id}}][data_competencia]" value="{{$item->data_competencia->format('Y-m-d')}}" required id="data_{{$item->id}}" onkeyup="verificarPreenchido('{{$item->id}}');" onchange="verificarPreenchido('{{$item->id}}');">
                             </td>
                             <td>
-                                <input type="text" class="form-control money" name="itens[{{$item->id}}][qtd]" id="quantidade_{{$item->id}}" onkeyup="calcularPorcentagem(this.value, '{{$item->id}}');" value="{{number_format($item->qtd, 2, ',', '.')}}" required>
+                                <input type="text" class="form-control money" name="itens[{{$item->id}}][qtd]" id="quantidade_{{$item->id}}" onkeyup="calcularPorcentagem(this.value, '{{$item->id}}');verificarPreenchido('{{$item->id}}');" value="{{number_format($item->qtd, 2, ',', '.')}}" required>
                             </td>
                             <td>
-                                <input type="text" class="form-control money" id="porcentagem_{{$item->id}}" onkeyup="calcularQuantidade(this.value, '{{$item->id}}');">
+                                <input type="text" class="form-control money" id="porcentagem_{{$item->id}}" onkeyup="calcularQuantidade(this.value, '{{$item->id}}');verificarPreenchido('{{$item->id}}');">
                             </td>
                             <td>
                                 <button onclick="excluirLinha({{$item->id}}, {{$item->memoria_calculo_bloco_id}});" class="btn btn-flat btn-sm btn-danger pull-right" data-toggle="tooltip" data-placement="top" title="Excluir" type="button">
@@ -350,13 +350,13 @@
                         '+trecho+'\
                     </td>\
                     <td>\
-                    <input type="date" class="form-control" name="itens['+count+'][data_competencia]" required>\
+                    <input type="date" class="form-control" name="itens['+count+'][data_competencia]" id="data_'+count+'" required onkeyup="verificarPreenchido('+count+');" onchange="verificarPreenchido('+count+');">\
                     </td>\
                     <td>\
-                        <input type="text" class="form-control money" name="itens['+count+'][qtd]" id="quantidade_'+count+'" onkeyup="calcularPorcentagem(this.value, '+count+');" required>\
+                        <input type="text" class="form-control money" name="itens['+count+'][qtd]" id="quantidade_'+count+'" onkeyup="calcularPorcentagem(this.value, '+count+');verificarPreenchido('+count+');" required>\
                     </td>\
                     <td>\
-                        <input type="text" class="form-control money" id="porcentagem_'+count+'" onkeyup="calcularQuantidade(this.value, '+count+');">\
+                        <input type="text" class="form-control money" id="porcentagem_'+count+'" onkeyup="calcularQuantidade(this.value, '+count+');verificarPreenchido('+count+');">\
                     </td>\
                     <td>\
                         <button onclick="removerLinha('+count+', '+memoria_calculo_bloco_id+');" class="btn btn-flat btn-sm btn-danger pull-right" data-toggle="tooltip" data-placement="top" title="Remover" type="button">\
@@ -471,6 +471,24 @@
         if(!preenchido && !nao_preenchido) {
             $('.preenchido').show();
             $('.nao-preenchido').hide();
+        }
+    }
+
+    function verificarPreenchido(id) {
+        var data = $('#data_'+id).val();
+        var quantidade = $('#quantidade_'+id).val();
+        var linha = $('#linha_'+id);
+
+        if(quantidade == '0,00') {
+            quantidade = null;
+        }
+
+        if(data && quantidade) {
+            linha.removeClass('nao-preenchido');
+            linha.addClass('preenchido');
+        } else {
+            linha.removeClass('preenchido');
+            linha.addClass('nao-preenchido');
         }
     }
 
