@@ -127,6 +127,10 @@
                                        onclick="swal('{{ $EQTitem->nome }}','{!!  $EQTitem->obrigatorio ? " ITEM OBRIGATÓRIO \\n " : '' !!}{{ $EQTitem->descricao }}','info')"
                                        aria-hidden="true"></i>
                                 </button>
+
+                                <a href="/tipoEqualizacaoTecnicas/{{$EQTitem->id}}/edit" target="_blank" class="btn btn-xs btn-flat btn-info pull-right" title="Ir para equilização técnica">
+                                    <i class="fa fa-external-link" aria-hidden="true"></i>
+                                </a>
                             </li>
                         @endforeach
                         @foreach($tipoEqualizacaoTecnica->anexos as $EQTitem)
