@@ -23,12 +23,12 @@
     <section class="content-header">
         <div class="row">
             <div class="col-sm-6">
-                <h1 class="content-header-title">Quadro De Concorrencias</h1>
+                <h1 class="content-header-title">Quadro de concorrência</h1>
             </div>
             <div class="col-sm-6 content-header-buttons">
                 <a class="btn btn-primary btn-lg btn-flat"
                     href="{!! url('/ordens-de-compra/insumos-aprovados') !!}">
-                    <i class="fa fa-plus"></i> Novo Quadro de Concorrência
+                    <i class="fa fa-plus"></i> Criar novo quadro de concorrência
                 </a>
             </div>
         </div>

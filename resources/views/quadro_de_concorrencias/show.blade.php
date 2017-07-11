@@ -3,7 +3,7 @@
 @section('content')
     <section class="content-header">
         <h1>
-            Quadro De Concorrencia {{ $quadroDeConcorrencia->id }}
+            Quadro de concorrência {{ $quadroDeConcorrencia->id }}
             <small class="label label-default pull-right margin10">
                 <i class="fa fa-clock-o"
                    aria-hidden="true"></i> {{ $quadroDeConcorrencia->created_at->format('d/m/Y H:i') }}

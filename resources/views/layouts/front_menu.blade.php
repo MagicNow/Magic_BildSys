@@ -36,7 +36,7 @@
         @endshield
         @shield('quadroDeConcorrencias.dashboard')
         <li class="{{ Request::is('quadro-de-concorrencia*') ? 'active' : '' }}">
-            <a href="{!! route('quadroDeConcorrencias.dashboard') !!}"><i class="fa fa-tachometer"></i><span>DashBoard Q.C</span></a>
+            <a href="{!! route('quadroDeConcorrencias.dashboard') !!}"><i class="fa fa-tachometer"></i><span>Status dos Qc´s</span></a>
         </li>
         @endshield
         @shield('catalogo_acordos.list')

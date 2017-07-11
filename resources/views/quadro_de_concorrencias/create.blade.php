@@ -3,7 +3,7 @@
 @section('content')
     <section class="content-header">
         <h1>
-            Quadro De Concorrencia
+            Quadro de concorrência
         </h1>
     </section>
     <div class="content">
