@@ -24,7 +24,8 @@ class CatalogoContratoInsumo extends Model
         'pedido_multiplo_de',
         'qtd_minima',
         'periodo_inicio',
-        'periodo_termino'
+        'periodo_termino',
+        'user_id'
     ];
 
     /**
@@ -34,6 +35,7 @@ class CatalogoContratoInsumo extends Model
      */
     protected $casts = [
         'id' => 'integer',
+        'user_id' => 'integer',
         'catalogo_contrato_id' => 'integer',
         'insumo_id' => 'integer',
         'periodo_inicio' => 'date',
@@ -101,5 +103,13 @@ class CatalogoContratoInsumo extends Model
     public function insumo()
     {
         return $this->belongsTo(Insumo::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }
