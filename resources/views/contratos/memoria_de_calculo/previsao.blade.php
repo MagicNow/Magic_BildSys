@@ -232,15 +232,11 @@
                 </div>
                 <div class="form-group col-md-2">
                     {!! Form::label('filtro_preenchido', 'Preenchido:') !!}
-                    {!! Form::checkbox('filtro_preenchido', null, false) !!}
+                    {!! Form::checkbox('filtro_preenchido', null, false, ['onclick' => 'filtrarCheck();']) !!}
                 </div>
                 <div class="form-group col-md-2">
                     {!! Form::label('filtro_nao_preenchido', 'Não preenchido:') !!}
-                    {!! Form::checkbox('filtro_nao_preenchido', null, false) !!}
-                </div>
-                <div class="form-group col-md-2">
-                    {!! Form::label('filtro_todos', 'Todos:') !!}
-                    {!! Form::checkbox('filtro_todos', null, false) !!}
+                    {!! Form::checkbox('filtro_nao_preenchido', null, false, ['onclick' => 'filtrarCheck();']) !!}
                 </div>
             </div>
 
@@ -327,29 +323,8 @@
             @endforeach
         @endif
 
-        // Filtro de preenchido
-        $('#filtro_preenchido').on('ifChanged', function (event) {
-            $('.nao-preenchido').hide();
-            $('.preenchido').show();
-        });
-        $('#filtro_preenchido').on('ifUnchecked', function (event) {
-            $('.nao-preenchido').show();
-            $('.preenchido').show();
-        });
-
-        // Filtro de não preenchido
-        $('#filtro_nao_preenchido').on('ifChanged', function (event) {
-            $('.todosTrechos').each(function (index, value) {
-                $('#td_bloco_'+value.value).click();
-            });
-
-            $('.nao-preenchido').show();
-            $('.preenchido').hide();
-        });
-        $('#filtro_nao_preenchido').on('ifUnchecked', function (event) {
-            $('.nao-preenchido').show();
-            $('.preenchido').show();
-        });
+        $('#filtro_preenchido').iCheck('destroy');
+        $('#filtro_nao_preenchido').iCheck('destroy');
     });
 
     // Função para adicionar linha na tabela
@@ -472,6 +447,35 @@
             setTimeout(function () {
                 $(".estrutura").show();
             }, 500);
+        }
+    }
+
+    function filtrarCheck() {
+        var preenchido = $('#filtro_preenchido:checked').length;
+        var nao_preenchido = $('#filtro_nao_preenchido:checked').length;
+
+        $('.todosTrechos').each(function (index, value) {
+            $('#td_bloco_'+value.value).click();
+        });
+
+        if(preenchido && !nao_preenchido) {
+            $('.preenchido').show();
+            $('.nao-preenchido').hide();
+        }
+
+        if(nao_preenchido && !preenchido) {
+            $('.nao-preenchido').show();
+            $('.preenchido').hide();
+        }
+
+        if(preenchido && nao_preenchido) {
+            $('.preenchido').show();
+            $('.nao-preenchido').show();
+        }
+
+        if(!preenchido && !nao_preenchido) {
+            $('.preenchido').show();
+            $('.nao-preenchido').hide();
         }
     }
 
