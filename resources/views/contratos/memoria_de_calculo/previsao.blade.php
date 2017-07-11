@@ -332,15 +332,11 @@
         count ++;
 
         if($.inArray(memoria_calculo_bloco_id, array_blocos_previstos) !== -1) {
-            $('#filtro_nao_preenchido').on('ifUnchecked', function (event) {
-                $('[memoria_calculo_bloco_id=' + memoria_calculo_bloco_id + ']').css('background-color', '#f98d00');
+            $('[memoria_calculo_bloco_id=' + memoria_calculo_bloco_id + ']').css('background-color', '#f98d00');
 
-                setTimeout(function () {
-                    $('[memoria_calculo_bloco_id=' + memoria_calculo_bloco_id + ']').animate({
-                        backgroundColor: 'tranparent'
-                    }, 'slow');
-                }, 3000);
-            });
+            $('[memoria_calculo_bloco_id=' + memoria_calculo_bloco_id + ']').animate({
+                backgroundColor: 'tranparent'
+            }, 'slow');
         } else {
             $('#tbody_previsoes').append('\
                 <tr id="linha_'+count+'"  class="estrutura nao-preenchido" estrutura="'+estrutura_id+'" memoria_calculo_bloco_id='+memoria_calculo_bloco_id+'>\
