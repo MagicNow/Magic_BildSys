@@ -145,6 +145,7 @@ class QuadroDeConcorrenciaDataTable extends DataTable
                 ->whereRaw('qc_fornecedor.rodada = quadro_de_concorrencias.rodada_atual');
         }
 
+        $quadroDeConcorrencias->orderBy('id', 'DESC');
         return $this->applyScopes($quadroDeConcorrencias);
     }
 
