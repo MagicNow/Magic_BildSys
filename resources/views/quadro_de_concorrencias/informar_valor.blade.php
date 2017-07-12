@@ -80,7 +80,7 @@
               <tr>
                   <th>Obra - Cidade</th>
                   <th>Insumo</th>
-                  <th>Obs. Fornecedor</th>
+                  <th>Observações ao fornecedor:</th>
                   <th>Quantidade</th>
                   <th>Un</th>
                   <th>Valor Unitário</th>
@@ -358,7 +358,7 @@
                         <tr>
                           <th width="10%">Detalhes</th>
                           <th>Item</th>
-                          <th width="20%">Sim/Não/Ciência</th>
+                          <th width="20%">Validação</th>
                           <th width="25%">Obs</th>
                         </tr>
                       </thead>
