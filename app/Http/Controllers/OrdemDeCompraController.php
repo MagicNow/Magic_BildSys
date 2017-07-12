@@ -398,7 +398,7 @@ class OrdemDeCompraController extends AppBaseController
             $itens->leftJoin(DB::raw('orcamentos orcamentos_sub'),  'orcamentos_sub.id', 'orcamentos.orcamento_que_substitui');
             $itens->leftJoin(DB::raw('insumos insumos_sub'), 'insumos_sub.id', 'orcamentos_sub.insumo_id');
 
-            $itens = $itens->groupBy('ordem_de_compra_itens.insumo_id');
+//            $itens = $itens->groupBy('ordem_de_compra_itens.insumo_id');
             $itens = $itens->paginate(10);
         }
 
