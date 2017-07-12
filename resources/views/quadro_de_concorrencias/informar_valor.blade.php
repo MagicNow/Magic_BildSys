@@ -459,7 +459,7 @@
                     class="btn btn-danger btn-flat btn-lg pull-left"
                     value="Rejeitar"
                     id="reject">
-                <i class='fa fa-times'></i>  Rejeitar
+                <i class='fa fa-times'></i> Declinar
             </button>
         </div>
     </div>
