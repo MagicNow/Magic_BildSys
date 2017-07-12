@@ -208,7 +208,7 @@ class QuadroDeConcorrenciaDataTable extends DataTable
     private function getColumns()
     {
         $columns = [
-            'Número do QC' => ['name' => 'quadro_de_concorrencias.id', 'data' => 'id', 'width'=>'5%'],
+            'Q&period;C&period;' => ['name' => 'quadro_de_concorrencias.id', 'data' => 'id', 'width'=>'10%'],
             'Status' => ['name' => 'qc_status.nome', 'data' => 'situacao', 'width'=>'20%'],
             'atualizadoEm' => ['name' => 'quadro_de_concorrencias.updated_at', 'data' => 'updated_at', 'width'=>'12%'],
             'rodada' => ['name' => 'rodada_atual', 'data' => 'rodada_atual', 'width'=>'5%'],
