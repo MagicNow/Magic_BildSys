@@ -145,7 +145,6 @@ class QuadroDeConcorrenciaDataTable extends DataTable
                 ->whereRaw('qc_fornecedor.rodada = quadro_de_concorrencias.rodada_atual');
         }
 
-        $quadroDeConcorrencias->orderBy('id', 'DESC');
         return $this->applyScopes($quadroDeConcorrencias);
     }
 
@@ -160,6 +159,7 @@ class QuadroDeConcorrenciaDataTable extends DataTable
             ->columns($this->getColumns())
             ->ajax('')
             ->parameters([
+                'order'=> [ 0, "desc" ],
                 'responsive'=> 'true',
                 'initComplete' => 'function () {
                     max = this.api().columns().count();
