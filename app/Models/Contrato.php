@@ -207,6 +207,17 @@ class Contrato extends Model
                     Flash::success($retorno['messages'][0]);
                 }
             }
+        }elseif ($isAprovado){
+            // Não tem serviço, Muda o status para Ativo
+            $this->attributes['contrato_status_id'] = 5;
+
+            $this->save();
+
+            ContratoStatusLog::create([
+                'contrato_id'        => $this->attributes['id'],
+                'contrato_status_id' => $this->attributes['contrato_status_id'],
+                'user_id'            => auth()->id()
+            ]);
         }
     }
 
