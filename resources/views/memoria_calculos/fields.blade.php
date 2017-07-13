@@ -340,7 +340,6 @@
                         nomePav = $("#pavimentos_" + k + "_" + p).attr('nome');
                         pavID = $("#pavimentos_" + k + "_" + p).val();
                     }
-                    console.log(nomePav, pavID,'IDX: ' ,idxPavim);
 
                     pavimentoItem = {
                         id: idxPav,
@@ -462,7 +461,7 @@
         }
 
         function removeTrecho(bloco, pavimento, trecho) {
-            $('#blocoTrecho_' + trecho).remove();
+            $('#blocoTrecho_'+bloco+'_'+pavimento+'_' + trecho).remove();
             atualizaVisual();
         }
 
