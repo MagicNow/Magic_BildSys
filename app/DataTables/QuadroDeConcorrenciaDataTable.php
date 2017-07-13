@@ -222,7 +222,7 @@ class QuadroDeConcorrenciaDataTable extends DataTable
         }
 
         $columns['action'] = [
-            'title'      => 'Ações',
+            'title'      => 'Ação',
             'printable'  => false,
             'exportable' => false,
             'searchable' => false,

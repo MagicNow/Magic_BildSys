@@ -23,7 +23,16 @@
     <section class="content-header">
         <div class="row">
             <div class="col-sm-6">
-                <h1 class="content-header-title">Quadro de concorrência</h1>
+                <div class="col-md-9">
+                    <span class="pull-left title">
+                       <h3>
+                           <button type="button" class="btn btn-link" onclick="history.go(-1);">
+                                <i class="fa fa-arrow-left" aria-hidden="true"></i>
+                           </button>
+                           <span>Quadro de concorrência</span>
+                       </h3>
+                    </span>
+                </div>
             </div>
             <div class="col-sm-6 content-header-buttons">
                 <a class="btn btn-primary btn-lg btn-flat"
