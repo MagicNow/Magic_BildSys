@@ -49,6 +49,7 @@
             @if(isset($memoriaCalculo))
                 <?php
                 $countTrechos = 0;
+                $countPavimentos = 0;
                 if ($memoriaCalculo->modo == 'T') {
                     $nomeEstrutura = 'Estrutura';
                     $nomePavimento = 'Pavimento';
@@ -97,6 +98,9 @@
                             <ul class="list-group pavBlocos" id="pavimentos_{{ $indexBloco }}">
                                 @if( count($bloco['itens']) )
                                     @foreach($bloco['itens'] as $indexPavimento => $pavimento)
+                                        <?php
+                                            $countPavimentos++;
+                                        ?>
                                         <li class="list-group-item pavimentosClass{{ $indexBloco }}"
                                             pavimento="{{ $indexPavimento }}"
                                             id="linha_{{ $indexBloco }}_{{ $indexPavimento }}">
@@ -251,27 +255,27 @@
             });
 
             @if(isset($memoriaCalculo))
-                    blocos = {{ $indexBloco + 1 }};
-            pavimentosCount = {{ $indexPavimento + 1 }};
-            trechosCount = {{ $countTrechos + 1 }};
+                blocos = {{ $indexBloco + 1 }};
+                pavimentosCount = {{ $countPavimentos + 1 }};
+                trechosCount = {{ $countTrechos + 1 }};
 
-            sortable('.pavBlocos', {handle: 'b'});
+                sortable('.pavBlocos', {handle: 'b'});
 
-            sortable('.pavBlocos')[0].addEventListener('sortstop', function (e) {
-                atualizaVisual();
-            });
-            sortable('.pavBlocos')[0].addEventListener('sortupdate', function (e) {
-                atualizaVisual();
-            });
+                sortable('.pavBlocos')[0].addEventListener('sortstop', function (e) {
+                    atualizaVisual();
+                });
+                sortable('.pavBlocos')[0].addEventListener('sortupdate', function (e) {
+                    atualizaVisual();
+                });
 
-            sortable('.trechoBlocos', {handle: 'strong'});
-
-            sortable('.trechoBlocos')[0].addEventListener('sortstop', function (e) {
-                atualizaVisual();
-            });
-            sortable('.trechoBlocos')[0].addEventListener('sortupdate', function (e) {
-                atualizaVisual();
-            });
+                sortable('.trechoBlocos', {handle: 'strong'});
+    
+                sortable('.trechoBlocos')[0].addEventListener('sortstop', function (e) {
+                    atualizaVisual();
+                });
+                sortable('.trechoBlocos')[0].addEventListener('sortupdate', function (e) {
+                    atualizaVisual();
+                });
             @endif
 
 
