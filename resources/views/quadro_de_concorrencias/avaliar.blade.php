@@ -5,6 +5,9 @@
         <div class="col-sm-12">
           <section class="content-header">
             <h1 class="pull-left">
+                <button type="button" class="btn btn-link" onclick="history.go(-1);">
+                    <i class="fa fa-arrow-left" aria-hidden="true"></i>
+                </button>
               Avaliar Quadro de Concorrência
               <small>
                 Rodada {{ $rodadaSelecionada }}

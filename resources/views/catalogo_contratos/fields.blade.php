@@ -250,6 +250,12 @@ $count_insumos = 0;
 
                             <div class="col-md-12 border-separation" style="border-bottom: 1px solid #d2d6de !important; margin-bottom: 20px;"></div>
 
+                            <div class="col-md-12">
+                                <p class="pull-right">
+                                    Alterado por {{$item->user ? $item->user->name : null}} em {{$item->updated_at->format('d/m/Y H:i')}}
+                                </p>
+                            </div>
+
                             <div class="col-md-3">
                                 <label>Valor unitário:</label>
                                 <div class="input-group">

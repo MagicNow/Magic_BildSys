@@ -64,7 +64,7 @@
                                    value="{{ $qcFornecedor->id }}">
                             <input type="hidden" name="qcFornecedores[{{ $qcFornecedor->id }}][fornecedor_id]"
                                    value="{{ $qcFornecedor->fornecedor_id }}">
-                            {{ $qcFornecedor->fornecedor->nome }}
+                            {{ $qcFornecedor->fornecedor->nome }} - <br> {{$qcFornecedor->fornecedor->cnpj}}
                             <button type="button" class="btn btn-flat btn-danger btn-xs pull-right" title="remover"
                                     onclick="removerFornecedor({{ $qcFornecedor->id }},{{ $qcFornecedor->id }})">
                                 <i class="fa fa-trash" aria-hidden="true"></i>
@@ -127,6 +127,10 @@
                                        onclick="swal('{{ $EQTitem->nome }}','{!!  $EQTitem->obrigatorio ? " ITEM OBRIGATÓRIO \\n " : '' !!}{{ $EQTitem->descricao }}','info')"
                                        aria-hidden="true"></i>
                                 </button>
+
+                                <a href="/tipoEqualizacaoTecnicas/{{$EQTitem->id}}/edit" target="_blank" class="btn btn-xs btn-flat btn-info pull-right" title="Ir para equilização técnica">
+                                    <i class="fa fa-external-link" aria-hidden="true"></i>
+                                </a>
                             </li>
                         @endforeach
                         @foreach($tipoEqualizacaoTecnica->anexos as $EQTitem)
