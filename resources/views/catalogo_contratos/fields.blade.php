@@ -252,7 +252,7 @@ $count_insumos = 0;
 
                             <div class="col-md-12">
                                 <p class="pull-right">
-                                    Alterado por {{$item->user ? $item->user->name : null}} em {{$item->updated_at->format('d/m/Y H:i')}}
+                                    Alterado por {{$item->user ? $item->user->name : null}} em {{$item->created_at->format('d/m/Y H:i')}}
                                 </p>
                             </div>
 
