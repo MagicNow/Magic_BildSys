@@ -463,6 +463,23 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             ->middleware('needsPermission:medicoes.edit');
         $router->delete('/{medicoes}', ['as'=> 'medicoes.destroy', 'uses' => 'MedicaoController@destroy'])
             ->middleware('needsPermission:medicoes.delete');
+        $router->get(
+            '/fornecedores-por-obra',
+            'MedicaoController@fornecedoresPorObra'
+        );
+        $router->get(
+            '/contratos-por-obra',
+            'MedicaoController@contratosPorObra'
+        );
+        $router->get(
+            '/servicos-por-obra',
+            'MedicaoController@servicosPorObra'
+        );
+        $router->get(
+            '/insumos-por-fornecedor',
+            'MedicaoController@insumosPorFornecedor'
+        );
+
         $router->get('/{medicoes}', ['as'=> 'medicoes.show', 'uses' => 'MedicaoController@show']);
         $router->get('/{medicoes}/edit', ['as'=> 'medicoes.edit', 'uses' => 'MedicaoController@edit'])
             ->middleware('needsPermission:medicoes.edit');

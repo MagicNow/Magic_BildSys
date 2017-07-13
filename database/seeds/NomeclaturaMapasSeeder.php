@@ -30,7 +30,7 @@ class NomeclaturaMapasSeeder extends Seeder
                 'tipo' => '1',
                 'apenas_cartela' => 0,
                 'apenas_unidade' => 0,
-                'largura_visual' => 90,
+                'largura_visual' => 85,
 
             ],
             [
@@ -39,7 +39,7 @@ class NomeclaturaMapasSeeder extends Seeder
                 'tipo' => '1',
                 'apenas_cartela' => 0,
                 'apenas_unidade' => 0,
-                'largura_visual' => 80,
+                'largura_visual' => 60,
 
             ],
             [
