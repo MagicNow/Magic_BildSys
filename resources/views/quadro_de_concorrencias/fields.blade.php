@@ -84,7 +84,10 @@
 <div class="form-group col-sm-6">
     <div class="row">
         <div class="col-md-5">
-            {!! Form::label('tiposEqualizacaoTecnicas', 'Tipo Equalização Técnica:') !!}
+            <a href="/tipoEqualizacaoTecnicas" target="_blank" class="btn btn-xs btn-flat btn-info pull-right" title="Ir para equilização técnica">
+                <i class="fa fa-external-link" aria-hidden="true"></i>
+            </a>
+            {!! Form::label('tiposEqualizacaoTecnicas', 'Equalização Técnica') !!}
             @if(count(\App\Models\TipoEqualizacaoTecnica::count()))
                 <ul class="list-group bloco_filtro tiposEqT">
                     @foreach(\App\Models\TipoEqualizacaoTecnica::pluck('nome','id')->toArray() as
@@ -95,6 +98,9 @@
                             <label for="filter_tipoEqualizacaoTecnica_{{ $tipoEqualizacaoTecnica_id }}">
                                 {{ $tipoEqualizacaoTecnica_nome }}
                             </label>
+                            <a href="/tipoEqualizacaoTecnicas/{{$tipoEqualizacaoTecnica_id}}/edit" target="_blank" class="btn btn-xs btn-flat btn-info pull-right" title="Ir para equilização técnica">
+                                <i class="fa fa-external-link" aria-hidden="true"></i>
+                            </a>
                         </li>
                     @endforeach
                 </ul>
@@ -102,7 +108,7 @@
         </div>
         <div class="col-md-7">
             <label>
-                Equalização Técnica
+               Itens Equalização Técnica
             </label>
             <button type="button" class="btn btn-flat btn-primary btn-xs pull-right" onclick="addEQitem();"
                     title="Adicionar Equalização Técnica apenas para este Q.C.">
@@ -127,10 +133,6 @@
                                        onclick="swal('{{ $EQTitem->nome }}','{!!  $EQTitem->obrigatorio ? " ITEM OBRIGATÓRIO \\n " : '' !!}{{ $EQTitem->descricao }}','info')"
                                        aria-hidden="true"></i>
                                 </button>
-
-                                <a href="/tipoEqualizacaoTecnicas/{{$EQTitem->id}}/edit" target="_blank" class="btn btn-xs btn-flat btn-info pull-right" title="Ir para equilização técnica">
-                                    <i class="fa fa-external-link" aria-hidden="true"></i>
-                                </a>
                             </li>
                         @endforeach
                         @foreach($tipoEqualizacaoTecnica->anexos as $EQTitem)
