@@ -28,7 +28,7 @@ class QcItensDataTable extends DataTable
                 return number_format($obj->qtd,2,',','.');
             })
             ->editColumn('obs', function($obj){
-                return "<textarea placeholder='Observação' class='form-control' rows=2 cols=25 disabled=disabled style='resize: vertical;'>".$obj->obs."</textarea>";
+                return "<textarea placeholder='Observação' class='form-control' rows=2 cols=25 disabled=disabled style='cursor: auto;background-color: transparent;resize: vertical;'>".$obj->obs."</textarea>";
             })
             ->filterColumn('insumo_nome', function($query, $keyword){
                 $query->where(function($subquery) use($keyword){
