@@ -47,7 +47,7 @@ class InsumoPorFornecedorDataTable extends DataTable
                 'qc_item_id' => $item->id,
                 'valor_unitario_calculo' => $item->ordemDeCompraItens->sortBy('valor_unitario')->first() ? $item->ordemDeCompraItens->sortBy('valor_unitario')->first()->valor_unitario : 'R$ 0,00',
                 'valor unitário do orçamento' => $item->ordemDeCompraItens->sortBy('valor_unitario')->first() ? float_to_money(floatval($item->ordemDeCompraItens->sortBy('valor_unitario')->first()->valor_unitario)) : 'R$ 0,00',
-                'valor total' => ''
+                'Valor total previsto' => ''
             ];
         });
 
@@ -58,7 +58,7 @@ class InsumoPorFornecedorDataTable extends DataTable
                 'qc_item_id' => '',
                 'valor_unitario_calculo' => '',
                 'valor unitário do orçamento' => '',
-                'valor total' => '',
+                'Valor total previsto' => '',
             ]);
 
 //        dd($collection);
@@ -97,10 +97,10 @@ class InsumoPorFornecedorDataTable extends DataTable
                         }
                     }
                     $insumo['qntd do QC'] =  number_format($qtd_comprada, 2, ',', '.');
-                    $insumo['valor total'] = float_to_money($valor_comprado_oi);
+                    $insumo['Valor total previsto'] = float_to_money($valor_comprado_oi);
                     if($insumo['insumo'] === 'FRETE') {
                         $insumo['qntd do QC'] = '';
-                        $insumo['valor total'] = '';
+                        $insumo['Valor total previsto'] = '';
                         $insumo['valor unitário do orçamento'] = '';
                     }
 
@@ -120,7 +120,7 @@ class InsumoPorFornecedorDataTable extends DataTable
         );
 
         return array_reduce($x, function($columns, $column) {
-            $excluded = ['insumo', 'valor unitário do orçamento', 'qntd do QC', 'valor total', 'frete'];
+            $excluded = ['insumo', 'valor unitário do orçamento', 'qntd do QC', 'Valor total previsto', 'frete'];
             if(!in_array($column, $excluded)) {
                 list($fornecedor, $id) = explode('||', $column);
 
