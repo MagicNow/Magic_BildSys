@@ -131,6 +131,11 @@ class RolesAndPermissions extends Seeder
             'nomeclaturaMapas.edit'   => 'Edição de Nomeclaturas para Memórias de cálculo',
             'nomeclaturaMapas.delete'   => 'Remoção de Nomeclaturas para Memórias de cálculo',
 
+            'desistenciaMotivos.list' => 'Listagem de motivos para declinar proposta',
+            'desistenciaMotivos.create' => 'Criação de motivos para declinar proposta',
+            'desistenciaMotivos.edit'   => 'Edição de motivos para declinar proposta',
+            'desistenciaMotivos.delete'   => 'Remoção de motivos para declinar proposta',
+
             ################# SITE ###################
             'compras_lembretes.list' => 'Listagem de compras e lembretes',
 

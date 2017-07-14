@@ -65701,7 +65701,7 @@ var QcInformarValoresForm = {
     reject.addEventListener('click', function(event) {
       event.preventDefault();
       swal({
-        title: "Rejeitar proposta?",
+        title: "Declinar proposta?",
         text: '<label for="desistencia_motivo_id">Escolha um motivo</label>' +
         motivoSelect.outerHTML,
         html: true,
