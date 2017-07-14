@@ -28,7 +28,7 @@ class QcItensDataTable extends DataTable
                 return number_format($obj->qtd,2,',','.');
             })
             ->editColumn('obs', function($obj){
-                return "<textarea placeholder='Observação' class='form-control' rows=2 cols=25 disabled=disabled>".$obj->obs."</textarea>";
+                return "<textarea placeholder='Observação' class='form-control' rows=2 cols=25 disabled=disabled style='resize: vertical;'>".$obj->obs."</textarea>";
             })
             ->filterColumn('insumo_nome', function($query, $keyword){
                 $query->where(function($subquery) use($keyword){
@@ -62,15 +62,13 @@ class QcItensDataTable extends DataTable
                             GROUP BY oc_item_qc_item.qc_item_id
                          ) as obras"),
                 DB::raw("(SELECT
-		                	OCI.obs
+		                	GROUP_CONCAT( CONCAT('Obra ' , obras.nome, ' - ', OCI.obs) SEPARATOR ' / ')
 		                    FROM
 		                    	oc_item_qc_item
 		                    JOIN ordem_de_compra_itens OCI ON OCI.id = oc_item_qc_item.ordem_de_compra_item_id
 		                    JOIN obras ON obras.id = OCI.obra_id
 		                    WHERE
 		                    	qc_item_id = qc_itens.id
-		                    GROUP BY
-			                oc_item_qc_item.qc_item_id
 			             ) as obs"),
 //                'obras.nome as obra',
                 DB::raw("CONCAT(insumos.codigo,' - ', insumos.nome) as insumo_nome"),
