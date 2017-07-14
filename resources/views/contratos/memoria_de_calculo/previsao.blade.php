@@ -130,8 +130,8 @@
                                     <div class="col-sm-8"><i class="fa fa-th-large"></i> &nbsp; {{ $nomeEstrutura }}:
                                         {!! Form::select('estrutura_bloco['. $indexBloco .']',
                                             \App\Models\NomeclaturaMapa::where('tipo',1)
-                                            ->where('apenas_cartela',($memoriaCalculo->tipo=='C'?'1':'0') )
-                                            ->where('apenas_unidade',($memoriaCalculo->tipo=='U'?'1':'0') )
+                                            ->where('apenas_cartela',($memoriaCalculo->modo=='C'?'1':'0') )
+                                            ->where('apenas_unidade',($memoriaCalculo->modo=='U'?'1':'0') )
                                             ->pluck('nome','id')->toArray() ,
                                             $bloco['objId'], ['class'=>'form-control select2','onchange'=>'atualizaVisual();', 'id'=>'estrutura_bloco_'.$indexBloco] ) !!}
                                         {!! Form::hidden('estrutura_bloco_ordem['. $indexBloco .']',$bloco['ordem']) !!}
@@ -154,8 +154,8 @@
                                                             <b class="fa fa-th-large"></b> &nbsp; {{ $nomePavimento }}:
                                                             {!! Form::select('pavimentos['. $indexBloco .']['.$indexPavimento.']',
                                                                 \App\Models\NomeclaturaMapa::where('tipo',2)
-                                                                ->where('apenas_cartela',($memoriaCalculo->tipo=='C'?'1':'0') )
-                                                                ->where('apenas_unidade',($memoriaCalculo->tipo=='U'?'1':'0') )
+                                                                ->where('apenas_cartela',($memoriaCalculo->modo=='C'?'1':'0') )
+                                                                ->where('apenas_unidade',($memoriaCalculo->modo=='U'?'1':'0') )
                                                                 ->pluck('nome','id')->toArray() ,
                                                                 $pavimento['objId'], ['class'=>'form-control select2','onchange'=>'atualizaVisual();', 'id'=>'pavimentos_'.$indexBloco .'_'. $indexPavimento ] ) !!}
                                                             {!! Form::hidden('pavimento_bloco_ordem['.$indexBloco.']['.$indexPavimento.']',$pavimento['ordem']) !!}
@@ -183,8 +183,8 @@
                                                                             </strong>
                                                                             {!! Form::select('trecho['.$indexBloco.']['.$indexPavimento.']['.$indexTrecho.']',
                                                                                 \App\Models\NomeclaturaMapa::where('tipo',3)
-                                                                                ->where('apenas_cartela',($memoriaCalculo->tipo=='C'?'1':'0') )
-                                                                                ->where('apenas_unidade',($memoriaCalculo->tipo=='U'?'1':'0') )
+                                                                                ->where('apenas_cartela',($memoriaCalculo->modo=='C'?'1':'0') )
+                                                                                ->where('apenas_unidade',($memoriaCalculo->modo=='U'?'1':'0') )
                                                                                 ->pluck('nome','id')->toArray() ,
                                                                                 $trecho['objId'],
                                                                                 ['class'=>'form-control select2','onchange'=>'atualizaVisual();', 'id'=>'trecho_' .$indexBloco .'_'. $indexPavimento . '_'. $indexTrecho] ) !!}
