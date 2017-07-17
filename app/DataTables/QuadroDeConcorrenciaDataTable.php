@@ -25,7 +25,7 @@ class QuadroDeConcorrenciaDataTable extends DataTable
             ->editColumn('usuario', function($obj){
                 return $obj->usuario ?
                     '<span class="label label-info">'.$obj->usuario.'</span>' :
-                    '<span class="label label-default"> <i class="fa fa-magic" aria-hidden="true"></i> Automático</span>';
+                    '<span class="label label-default"> <i class="fa fa-magic" aria-hidden="true"></i> Catálogo</span>';
             })
             ->editColumn('situacao', function($obj){
                 return '<i class="fa fa-circle" aria-hidden="true" style="color:'.$obj->situacao_cor.'"></i> '.$obj->situacao;
@@ -66,7 +66,7 @@ class QuadroDeConcorrenciaDataTable extends DataTable
                          ) = ?',[$keyword]);
             })
             ->filterColumn('users.name', function($query, $keyword){
-                $query->whereRaw("IFNULL(users.name,'automatico') LIKE ?",['%'.$keyword.'%']);
+                $query->whereRaw("IFNULL(users.name,'catalogo') LIKE ?",['%'.$keyword.'%']);
             })
             ->make(true);
     }
