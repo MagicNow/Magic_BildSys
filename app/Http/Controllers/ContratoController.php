@@ -472,6 +472,7 @@ class ContratoController extends AppBaseController
         $contrato = $this->contratoRepository->findWithoutFail($contrato_id);
         $contrato_item_apropriacao = ContratoItemApropriacao::find($contrato_item_apropriacao_id);
         $filtro_estruturas = [];
+        $planejamentos = [];
 
         if (empty($contrato)) {
             Flash::error('Contrato ' . trans('common.not-found'));
@@ -650,6 +651,16 @@ class ContratoController extends AppBaseController
 
             }
             ksort($blocos);
+
+            $planejamentos = Planejamento::where('obra_id', $memoriaCalculo->obra_id)
+                ->where('resumo', 'Sim')
+                ->select([
+                    DB::raw("CONCAT(tarefa,' - ',DATE_FORMAT( data, '%d/%m/%Y')) as tarefa"),
+                    'id'
+                ])
+                ->pluck('tarefa','id')
+                ->prepend('', '')
+                ->toArray();
         }
 
         return view('contratos.memoria_de_calculo.previsao',
@@ -663,7 +674,8 @@ class ContratoController extends AppBaseController
                 'previsoes',
                 'filtro_estruturas',
                 'blocos',
-                'memoriaCalculo'
+                'memoriaCalculo',
+                'planejamentos'
             )
         );
     }

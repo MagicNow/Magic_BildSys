@@ -53,18 +53,6 @@
 
         @if(count($previsoes))
             @php $previsao = $previsoes->first(); @endphp
-            <div class="form-group col-md-3">
-                {!! Form::label('planejamento_id', 'Tarefa:') !!}
-                <p class="form-control">{{$previsao->planejamento->tarefa}}</p>
-                <input type="hidden" name="planejamento_id" value="{{$previsao->planejamento->id}}">
-            </div>
-
-            <div class="form-group col-md-3">
-                {!! Form::label('obra_torre_id', 'Torres:') !!}
-                <p class="form-control">{{$previsao->obraTorre->nome}}</p>
-                <input type="hidden" name="obra_torre_id" value="{{$previsao->obraTorre->id}}">
-            </div>
-
             <div class="form-group col-md-6">
                 {!! Form::label('memoria_de_calculo', 'Memória de cálculo:') !!}
                 @php
@@ -81,6 +69,12 @@
                 <p class="form-control">{{$previsao->memoriaCalculoBloco->memoriaCalculo->nome . ' - ' . $modo}}</p>
                 <input type="hidden" name="memoria_de_calculo" value="{{$previsao->memoriaCalculoBloco->memoriaCalculo->id}}">
             </div>
+
+            <div class="form-group col-md-6">
+                {!! Form::label('obra_torre_id', 'Torres:') !!}
+                <p class="form-control">{{$previsao->obraTorre->nome}}</p>
+                <input type="hidden" name="obra_torre_id" value="{{$previsao->obraTorre->id}}">
+            </div>
         @else
             <div class="form-group col-md-6">
                 {!! Form::label('memoria_de_calculo', 'Memória de cálculo:') !!}
@@ -95,12 +89,7 @@
                 {!! Form::select('memoria_de_calculo', $memoria_de_calculo, \Illuminate\Support\Facades\Input::get('memoria_de_calculo') ? : null, ['class' => 'form-control select2', 'required' => 'required', 'onchange' => 'buscarMemoriaDeCalculo(this.value);']) !!}
             </div>
             @if(isset($memoriaCalculo))
-                <div class="form-group col-md-3">
-                    {!! Form::label('planejamento_id', 'Tarefa:') !!}
-                    {!! Form::select('planejamento_id', $tarefas, null, ['class' => 'form-control select2', 'required' => 'required']) !!}
-                </div>
-
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-6">
                     {!! Form::label('obra_torre_id', 'Torres:') !!}
                     {!! Form::select('obra_torre_id', $obra_torres, null, ['class' => 'form-control select2', 'required' => 'required']) !!}
                 </div>
@@ -246,6 +235,7 @@
                     <th>Estrutura</th>
                     <th>Pavimento</th>
                     <th>Trecho</th>
+                    <th>Tarefa</th>
                     <th style="width: 15%;">Data</th>
                     <th style="width: 15%;">Qtde</th>
                     <th style="width: 15%;">%</th>
@@ -268,6 +258,9 @@
                             </td>
                             <td>
                                 {{$item->memoriaCalculoBloco->trechoObj->nome}}
+                            </td>
+                            <td>
+                                {!! Form::select('itens['.$item->id.'][data_competencia]', $planejamentos, $item->planejamento->id, ['class' => 'form-control select2']) !!}
                             </td>
                             <td>
                                 <input type="date" class="form-control" name="itens[{{$item->id}}][data_competencia]" value="{{$item->data_competencia->format('Y-m-d')}}" required id="data_{{$item->id}}" onkeyup="verificarPreenchido('{{$item->id}}');" onchange="verificarPreenchido('{{$item->id}}');">
@@ -308,7 +301,7 @@
     var count = '{{$count}}';
     var qtd_item_apropriacao = '{{$contrato_item_apropriacao->qtd}}';
     var array_blocos_previstos = [];
-
+    var options_planejamento = [];
     var estruturasObjs = [];
 
     $(function() {
@@ -340,6 +333,9 @@
                 backgroundColor: 'tranparent'
                 }, 'slow');
         } else {
+            @foreach($planejamentos as $id => $nome)
+                    options_planejamento += '<option value="{{$id}}">{{$nome}}</option>';
+            @endforeach
             $('#tbody_previsoes').append('\
                 <tr id="linha_'+count+'"  class="estrutura nao-preenchido" estrutura="'+estrutura_id+'" memoria_calculo_bloco_id='+memoria_calculo_bloco_id+'>\
                     <input type="hidden" name="itens['+count+'][memoria_calculo_bloco_id]" value="'+memoria_calculo_bloco_id+'">\
@@ -351,6 +347,11 @@
                     </td>\
                     <td>\
                         '+trecho+'\
+                    </td>\
+                    <td>\
+                        <select class="form-control select2">\
+                        ' + options_planejamento + '\
+                        </select>\
                     </td>\
                     <td>\
                     <input type="date" class="form-control" name="itens['+count+'][data_competencia]" id="data_'+count+'" required onkeyup="verificarPreenchido('+count+');" onchange="verificarPreenchido('+count+');">\
@@ -370,6 +371,8 @@
             ');
             recarregarMascara();
             array_blocos_previstos.push(memoria_calculo_bloco_id);
+
+            $('.select2').select2();
         }
     }
 
