@@ -472,12 +472,12 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             'MedicaoController@contratosPorObra'
         );
         $router->get(
-            '/servicos-por-obra',
-            'MedicaoController@servicosPorObra'
+            '/tarefas-por-obra',
+            'MedicaoController@tarefasPorObra'
         );
         $router->get(
-            '/insumos-por-fornecedor',
-            'MedicaoController@insumosPorFornecedor'
+            '/insumos',
+            'MedicaoController@insumos'
         );
 
         $router->get('/{medicoes}', ['as'=> 'medicoes.show', 'uses' => 'MedicaoController@show']);

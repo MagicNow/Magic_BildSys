@@ -10,6 +10,7 @@ use App\Models\Contrato;
 use App\Models\Fornecedor;
 use App\Models\Insumo;
 use App\Models\Obra;
+use App\Models\Planejamento;
 use App\Models\Servico;
 use App\Repositories\Admin\ObraRepository;
 use App\Repositories\MedicaoRepository;
@@ -96,45 +97,67 @@ class MedicaoController extends AppBaseController
             ->paginate();
     }
 
-    public function servicosPorObra(){
+    public function tarefasPorObra(){
         $this->validate(request(), ['obra'=>'required|min:1']);
         $obra = request()->get('obra');
+        $contrato = request()->get('contrato');
 
-        return Servico::whereExists(function ($query2) use ($obra) {
+        $tarefas = Planejamento::whereExists(function ($query2) use ($obra,$contrato) {
                 $query2->select(DB::raw(1))
                     ->from('mc_medicao_previsoes')
                     ->join('contrato_item_apropriacoes','contrato_item_apropriacoes.id','mc_medicao_previsoes.contrato_item_apropriacao_id')
                     ->join('obra_torres','obra_torres.id','mc_medicao_previsoes.obra_torre_id')
-                    ->where('obra_torres.obra_id',$obra)
-                    ->whereRaw('contrato_item_apropriacoes.servico_id = servicos.id');
-            })
-            ->orderBy('nome', 'ASC')
-            ->paginate();
+                    ->where('obra_torres.obra_id',$obra);
+                if($contrato){
+                    $query2->join('contrato_itens','contrato_itens.id','mc_medicao_previsoes.contrato_item_id');
+                    $query2->where('contrato_itens.contrato_id',$contrato);
+                }
+                $query2->whereRaw('mc_medicao_previsoes.planejamento_id = planejamentos.id');
+            });
+
+            return $tarefas->orderBy('tarefa', 'ASC')->paginate();
     }
 
-    public function insumosPorFornecedor(Request $request)
+    public function insumos(Request $request)
     {
-        $fornecedor_id = $request->fornecedor;
-        if(is_array($request->obras)){
-            $obras = $request->obras;
-        }else{
-            $obras[] = $request->obras;
-        }
-        return Insumo::whereHas('contratoItem', function ($query) use ($fornecedor_id, $obras) {
+
+
+        $insumos = Insumo::whereHas('contratoItem', function ($query) use ($request) {
             $query->join('contratos', 'contratos.id', 'contrato_itens.contrato_id');
             $query->where('contrato_status_id', 5);
-            $query->where('fornecedor_id', $fornecedor_id);
-            $query->whereIn('obra_id', $obras);
-            $query->whereExists(function ($query2) {
-                $query2->select(DB::raw(1))
-                    ->from('mc_medicao_previsoes')
-                    ->join('obra_torres','obra_torres.id','mc_medicao_previsoes.obra_torre_id')
-                    ->whereRaw('obra_torres.obra_id = contratos.obra_id');
+            if($request->contrato){
+                $query->where('contratos.id', $request->contrato);
+            }
+            if($request->obra) {
+                $query->where('obra_id', $request->obra);
+            }
+            $query->whereExists(function ($query2) use ($request) {
+
+                if($request->tarefa){
+                    $query2->select(DB::raw(1))
+                        ->from('mc_medicao_previsoes')
+                        ->join('obra_torres','obra_torres.id','mc_medicao_previsoes.obra_torre_id')
+                        ->where('mc_medicao_previsoes.planejamento_id',$request->tarefa)
+                        ->whereRaw('obra_torres.obra_id = contratos.obra_id');
+                }else{
+                    $query2->select(DB::raw(1))
+                        ->from('mc_medicao_previsoes')
+                        ->join('obra_torres','obra_torres.id','mc_medicao_previsoes.obra_torre_id')
+                        ->whereRaw('obra_torres.obra_id = contratos.obra_id');
+                }
             });
-            $query->whereExists(function ($query2) {
-                $query2->select(DB::raw(1))
-                    ->from('mc_medicao_previsoes')
-                    ->whereRaw('mc_medicao_previsoes.contrato_item_id = contrato_itens.id');
+            $query->whereExists(function ($query2) use ($request){
+                if($request->tarefa){
+                    $query2->select(DB::raw(1))
+                        ->from('mc_medicao_previsoes')
+                        ->where('mc_medicao_previsoes.planejamento_id',$request->tarefa)
+                        ->whereRaw('mc_medicao_previsoes.contrato_item_id = contrato_itens.id');
+                }else{
+                    $query2->select(DB::raw(1))
+                        ->from('mc_medicao_previsoes')
+                        ->whereRaw('mc_medicao_previsoes.contrato_item_id = contrato_itens.id');
+                }
+
             });
         })
             ->join('contrato_itens', 'contrato_itens.insumo_id', 'insumos.id')
@@ -143,11 +166,15 @@ class MedicaoController extends AppBaseController
                 'contrato_itens.id as contrato_item_id',
                 DB::raw("CONCAT(insumos.codigo,' - ',insumos.nome) as nome"),
             ])
-            ->join('contratos', 'contratos.id', 'contrato_itens.contrato_id')
-            ->where('fornecedor_id', $fornecedor_id)
-            ->whereIn('obra_id', $obras)
-            ->orderBy('nome', 'ASC')
-            ->paginate();
+            ->join('contratos', 'contratos.id', 'contrato_itens.contrato_id');
+        if($request->contrato){
+            $insumos->where('contratos.id', $request->contrato);
+        }
+        if($request->obra){
+            $insumos->where('obra_id', $request->obra);
+        }
+
+        return $insumos->orderBy('nome', 'ASC')->paginate();
     }
 
     /**
