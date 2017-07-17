@@ -260,7 +260,7 @@
                                 {{$item->memoriaCalculoBloco->trechoObj->nome}}
                             </td>
                             <td>
-                                {!! Form::select('itens['.$item->id.'][data_competencia]', $planejamentos, $item->planejamento->id, ['class' => 'form-control select2']) !!}
+                                {!! Form::select('itens['.$item->id.'][planejamento_id]', $planejamentos, $item->planejamento->id, ['class' => 'form-control select2']) !!}
                             </td>
                             <td>
                                 <input type="date" class="form-control" name="itens[{{$item->id}}][data_competencia]" value="{{$item->data_competencia->format('Y-m-d')}}" required id="data_{{$item->id}}" onkeyup="verificarPreenchido('{{$item->id}}');" onchange="verificarPreenchido('{{$item->id}}');">
@@ -349,7 +349,7 @@
                         '+trecho+'\
                     </td>\
                     <td>\
-                        <select class="form-control select2">\
+                        <select class="form-control select2" name="itens['+count+'][planejamento_id]">\
                         ' + options_planejamento + '\
                         </select>\
                     </td>\

@@ -685,8 +685,7 @@ class ContratoController extends AppBaseController
         if(count($request->itens)) {
             foreach ($request->itens as $item) {
                 $item['qtd'] = money_to_float($item['qtd']);
-
-                if(isset($item['id'])){
+                if(@isset($item['id'])){
                     $previsao = McMedicaoPrevisao::find($item['id']);
                     $previsao->update($item);
                 } else {
@@ -695,7 +694,6 @@ class ContratoController extends AppBaseController
                     $previsao->unidade_sigla = $request->unidade_sigla;
                     $previsao->contrato_item_apropriacao_id = $request->contrato_item_apropriacao_id;
                     $previsao->contrato_item_id = $request->contrato_item_id;
-                    $previsao->planejamento_id = $request->planejamento_id;
                     $previsao->obra_torre_id = $request->obra_torre_id;
                     $previsao->user_id = Auth::id();
                     $previsao->save();
