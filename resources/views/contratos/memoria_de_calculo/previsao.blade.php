@@ -207,28 +207,34 @@
             {{--Renderiza os blocos--}}
             <div class="col-md-12" id="visual"></div>
 
-            <div class="col-md-12">
-                <h3>
+            <div class="col-md-8 thumbnail">
+                <h3 class="modal-header">
                     Filtros
                 </h3>
-                <div class="row form-group col-md-5">
-                    <div class="row col-md-3">
+                <div class="row form-group col-md-6">
+                    <div class="row col-md-4">
                         {!! Form::label('filtro_estrutura', 'Estrutura:') !!}
                     </div>
-                    <div class="col-md-9">
+                    <div class="col-md-8">
                         {!! Form::select('filtro_estrutura', $filtro_estruturas, null, ['class' => 'form-control select2', 'onchange' => 'filtrarEstrututa(this.value);']) !!}
                     </div>
                 </div>
-                <div class="form-group col-md-2">
+                <div class="form-group col-md-3">
                     {!! Form::label('filtro_preenchido', 'Preenchido:') !!}
                     {!! Form::checkbox('filtro_preenchido', null, false, ['onclick' => 'filtrarCheck();']) !!}
                 </div>
-                <div class="form-group col-md-2">
+                <div class="form-group col-md-3">
                     {!! Form::label('filtro_nao_preenchido', 'Não preenchido:') !!}
                     {!! Form::checkbox('filtro_nao_preenchido', null, false, ['onclick' => 'filtrarCheck();']) !!}
                 </div>
             </div>
 
+            <div class="col-md-4 thumbnail" style="height: 146px;">
+                <h3 class="modal-header">
+                    Tarefa referência
+                </h3>
+                {!! Form::select('tarefa_referencia', $planejamentos, null, ['class' => 'form-control select2', 'id' => 'tarefa_referencia']) !!}
+            </div>
             <table class="table table-striped table-no-margin">
                 <thead>
                 <tr>
@@ -336,6 +342,7 @@
             @foreach($planejamentos as $id => $nome)
                     options_planejamento += '<option value="{{$id}}">{{$nome}}</option>';
             @endforeach
+
             $('#tbody_previsoes').append('\
                 <tr id="linha_'+count+'"  class="estrutura nao-preenchido" estrutura="'+estrutura_id+'" memoria_calculo_bloco_id='+memoria_calculo_bloco_id+'>\
                     <input type="hidden" name="itens['+count+'][memoria_calculo_bloco_id]" value="'+memoria_calculo_bloco_id+'">\
@@ -349,7 +356,7 @@
                         '+trecho+'\
                     </td>\
                     <td>\
-                        <select class="form-control select2_add" name="itens['+count+'][planejamento_id]" required>\
+                        <select class="form-control select2_add" name="itens['+count+'][planejamento_id]" id="planejamento_'+count+'" required>\
                         ' + options_planejamento + '\
                         </select>\
                     </td>\
@@ -373,6 +380,12 @@
             array_blocos_previstos.push(memoria_calculo_bloco_id);
 
             $('.select2_add').select2();
+
+            var tarefa_referencia = $('#tarefa_referencia').val();
+
+            if(tarefa_referencia) {
+                $('#planejamento_'+count).val(tarefa_referencia).trigger('change');
+            }
         }
     }
 
