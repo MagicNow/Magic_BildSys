@@ -236,9 +236,9 @@
                     <th>Pavimento</th>
                     <th>Trecho</th>
                     <th>Tarefa</th>
-                    <th style="width: 15%;">Data</th>
+                    <th style="width: 10%;">Data</th>
                     <th style="width: 15%;">Qtde</th>
-                    <th style="width: 15%;">%</th>
+                    <th style="width: 10%;">%</th>
                     <th style="width: 4%;"></th>
                 </tr>
                 </thead>
@@ -260,7 +260,7 @@
                                 {{$item->memoriaCalculoBloco->trechoObj->nome}}
                             </td>
                             <td>
-                                {!! Form::select('itens['.$item->id.'][planejamento_id]', $planejamentos, $item->planejamento->id, ['class' => 'form-control select2']) !!}
+                                {!! Form::select('itens['.$item->id.'][planejamento_id]', $planejamentos, $item->planejamento->id, ['class' => 'form-control select2', 'required']) !!}
                             </td>
                             <td>
                                 <input type="date" class="form-control" name="itens[{{$item->id}}][data_competencia]" value="{{$item->data_competencia->format('Y-m-d')}}" required id="data_{{$item->id}}" onkeyup="verificarPreenchido('{{$item->id}}');" onchange="verificarPreenchido('{{$item->id}}');">
@@ -349,7 +349,7 @@
                         '+trecho+'\
                     </td>\
                     <td>\
-                        <select class="form-control select2" name="itens['+count+'][planejamento_id]">\
+                        <select class="form-control select2_add" name="itens['+count+'][planejamento_id]" required>\
                         ' + options_planejamento + '\
                         </select>\
                     </td>\
@@ -372,7 +372,7 @@
             recarregarMascara();
             array_blocos_previstos.push(memoria_calculo_bloco_id);
 
-            $('.select2').select2();
+            $('.select2_add').select2();
         }
     }
 
