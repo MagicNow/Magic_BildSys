@@ -7,8 +7,11 @@ use App\Http\Requests;
 use App\Http\Requests\CreateMedicaoRequest;
 use App\Http\Requests\UpdateMedicaoRequest;
 use App\Models\Contrato;
+use App\Models\ContratoItemApropriacao;
 use App\Models\Fornecedor;
 use App\Models\Insumo;
+use App\Models\McMedicaoPrevisao;
+use App\Models\MemoriaCalculo;
 use App\Models\Obra;
 use App\Models\Planejamento;
 use App\Models\Servico;
@@ -18,6 +21,7 @@ use Flash;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Psy\Util\Json;
 use Response;
 
 class MedicaoController extends AppBaseController
@@ -118,11 +122,13 @@ class MedicaoController extends AppBaseController
             return $tarefas->orderBy('tarefa', 'ASC')->paginate();
     }
 
+    /** Insumos
+     * @param Request $request
+     * @return Json
+     */
     public function insumos(Request $request)
     {
-
-
-        $insumos = Insumo::whereHas('contratoItem', function ($query) use ($request) {
+        $insumos = ContratoItemApropriacao::whereHas('contratoItem', function ($query) use ($request) {
             $query->join('contratos', 'contratos.id', 'contrato_itens.contrato_id');
             $query->where('contrato_status_id', 5);
             if($request->contrato){
@@ -160,11 +166,11 @@ class MedicaoController extends AppBaseController
 
             });
         })
+            ->join('insumos', 'contrato_item_apropriacoes.insumo_id', 'insumos.id')
             ->join('contrato_itens', 'contrato_itens.insumo_id', 'insumos.id')
             ->select([
-                'insumos.id',
-                'contrato_itens.id as contrato_item_id',
-                DB::raw("CONCAT(insumos.codigo,' - ',insumos.nome) as nome"),
+                'contrato_item_apropriacoes.id',
+                DB::raw("CONCAT(contrato_item_apropriacoes.codigo_insumo,' - ',insumos.nome) as nome"),
             ])
             ->join('contratos', 'contratos.id', 'contrato_itens.contrato_id');
         if($request->contrato){
@@ -184,7 +190,18 @@ class MedicaoController extends AppBaseController
      */
     public function create()
     {
-        return view('medicoes.create');
+        if(!request()->get('contrato_item_apropriacao_id')){
+            flash('Não foi passado um insumo!','error');
+            return back();
+        }
+        $contratoItemApropriacao = ContratoItemApropriacao::find(request()->get('contrato_item_apropriacao_id'));
+        $previsoes = McMedicaoPrevisao::where('contrato_item_apropriacao_id',request()->get('contrato_item_apropriacao_id'))->get();
+        $memoriasCalculo = MemoriaCalculo::whereHas('blocos', function ($query){
+            $query->join('mc_medicao_previsoes','mc_medicao_previsoes.memoria_calculo_bloco_id','memoria_calculo_blocos.id');
+            $query->where('contrato_item_apropriacao_id',request()->get('contrato_item_apropriacao_id') );
+        })->get();
+
+        return view('medicoes.create',compact('contratoItemApropriacao','memoriasCalculo', 'previsoes'));
     }
 
     /**

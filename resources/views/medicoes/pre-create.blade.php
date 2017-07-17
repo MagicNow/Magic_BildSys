@@ -24,7 +24,7 @@
 
                     <div class="form-group col-md-6">
                         {!! Form::label('contrato_id', 'Contrato:') !!}
-                        {!! Form::select('contrato_id',[], null, ['class' => 'form-control select2', 'id'=>'contrato_id']) !!}
+                        {!! Form::select('contrato_id',[], null, ['class' => 'form-control select2','required'=>'required' , 'id'=>'contrato_id']) !!}
                     </div>
 
                     <div class="form-group col-md-6">
@@ -33,8 +33,8 @@
                     </div>
 
                     <div class="form-group col-md-6">
-                        {!! Form::label('insumo_id', 'Insumo:') !!}
-                        {!! Form::select('insumo_id',[], null, ['class' => 'form-control select2','required'=>'required', 'id'=>'insumo_id']) !!}
+                        {!! Form::label('contrato_item_apropriacao_id', 'Insumo:') !!}
+                        {!! Form::select('contrato_item_apropriacao_id',[], null, ['class' => 'form-control select2','required'=>'required', 'id'=>'contrato_item_apropriacao_id']) !!}
                     </div>
                     <div class="form-group col-md-12 text-center">
                         <button type="submit" class="btn btn-success btn-flat btn-lg">
@@ -53,7 +53,7 @@
         var contrato_id = null;
         var tarefa_id = null;
         var contrato_id = null;
-        var insumo_id = null;
+        var contrato_item_apropriacao_id = null;
         function buscaContratos() {
             if (!obra_id) {
                 $('#contrato_id').html('');
@@ -102,7 +102,7 @@
                         var options_tarefas = '<option value="" selected>-</option>';
                         if(retorno.data){
                             $.each(retorno.data, function (index, valor) {
-                                options_tarefas += '<option value="' + valor.id + '">' + valor.tarefa + '</option>';
+                                options_tarefas += '<option value="' + valor.id + '"'+(tarefa_id == valor.id? ' selected="selected" ': '' )+'>' + valor.tarefa + '</option>';
                             });
                             $('#tarefa_id').html(options_tarefas);
                             $('#tarefa_id').trigger('change.select2');
@@ -124,8 +124,8 @@
 
         function buscaInsumos(){
             if (!obra_id) {
-                $('#insumo_id').html('');
-                $('#insumo_id').trigger('change.select2');
+                $('#contrato_item_apropriacao_id').html('');
+                $('#contrato_item_apropriacao_id').trigger('change.select2');
             }
 
             $.ajax('/medicoes/insumos', {
@@ -139,12 +139,12 @@
                         var options_insumos = '<option value="" selected>-</option>';
                         if(retorno.data){
                             $.each(retorno.data, function (index, valor) {
-                                options_insumos += '<option value="' + valor.contrato_item_id + '">' + valor.nome + '</option>';
+                                options_insumos += '<option value="' + valor.id + '"'+(contrato_item_apropriacao_id == valor.id? ' selected="selected" ': '' )+'>' + valor.nome + '</option>';
                             });
                         }
 
-                        $('#insumo_id').html(options_insumos);
-                        $('#insumo_id').trigger('change.select2');
+                        $('#contrato_item_apropriacao_id').html(options_insumos);
+                        $('#contrato_item_apropriacao_id').trigger('change.select2');
 
                     })
                     .fail(function (retorno) {
@@ -165,18 +165,6 @@
                 var v_obra = $(evt.target).val();
                 obra_id = v_obra;
 
-                if (!v_obra) {
-
-
-                    $('#contrato_id').html('');
-                    $('#contrato_id').trigger('change.select2');
-
-                    $('#insumo_id').html('');
-                    $('#insumo_id').trigger('change.select2');
-
-                    return false;
-                }
-
                 buscaContratos();
 
                 buscaTarefas();
@@ -194,10 +182,9 @@
                 tarefa_id = $(evt.target).val();
                 buscaInsumos();
             });
-            // ao escolher o insumo adicionar na tabela e habilitar postagem
-            $('#insumo_id').on('change', function (evt) {
-                var insumo_id = $(evt.target).val();
 
+            $('#contrato_item_apropriacao_id').on('change', function (evt) {
+                contrato_item_apropriacao_id = $(evt.target).val();
             });
 
         });
