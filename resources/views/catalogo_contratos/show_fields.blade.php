@@ -170,7 +170,7 @@ $count_insumos = 0;
                     <div class="col-md-12" {{in_array($item->insumo_id, $array_insumos) ? 'style=display:none;' : ''}}>
                         <label>Insumo:</label>
                         <div class="form-control">
-                            {{ $item->insumo->nome }}
+                            {{ $item->insumo->codigo }} - {{ $item->insumo->nome }} - {{ $item->insumo->unidade_sigla }}
                         </div>
                     </div>
 
