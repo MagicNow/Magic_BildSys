@@ -219,7 +219,10 @@
                                     <th>Insumos</th>
                                     <th>Quantidade</th>
                                     @foreach($qcFornecedores as $qcFornecedor)
-                                        <th>{{ $qcFornecedor->fornecedor->nome }}</th>
+                                        <th>
+                                            {{ Form::radio('qcFornecedor_'.$qcFornecedor->id, 1, false, ['class' => 'icheck_destroy', 'style' => 'width: 18px;height: 18px;', 'onclick' => 'marcarDesmarcarTudo('.$qcFornecedor->id.');']) }}
+                                            {{ $qcFornecedor->fornecedor->nome }}
+                                        </th>
                                     @endforeach
                                 </tr>
                                 </thead>
@@ -241,17 +244,17 @@
                                                               ->first();
                                                         @endphp
                                                         @if(isset($qcItemQcFornecedor->valor_total))
-                                                        {{ float_to_money($qcItemQcFornecedor->valor_total) }}
-                                                        <br/>
-
-                                                        {!!
-                                                          Form::radio(
-                                                            "vencedores[{$item->id}]",
-                                                            $qcItemQcFornecedor->id
-                                                          )
-                                                        !!}
+                                                            {!!
+                                                              Form::radio(
+                                                                "vencedores[{$item->id}]",
+                                                                $qcItemQcFornecedor->id,
+                                                                false,
+                                                                ['class' => 'icheck_destroy qcFornecedorInsumo_'.$qcFornecedor->id, 'style' => 'width: 18px;height: 18px;']
+                                                              )
+                                                            !!}
+                                                            {{ float_to_money($qcItemQcFornecedor->valor_total) }}
                                                         @else
-                                                        Sem proposta
+                                                            Sem proposta
                                                         @endif
                                                     </label>
                                                 </div>
@@ -388,6 +391,8 @@
             $('#fornecedor_temp').on('select2:select', function (e) {
                 addFornecedorTemp();
             });
+
+            $('.icheck_destroy').iCheck('destroy');
         });
 
         // Fornecedor
@@ -538,6 +543,9 @@
             return obj.text;
         }
 
+        function marcarDesmarcarTudo(id) {
+            $('.qcFornecedorInsumo_'+id).click();
+        }
     </script>
     <script src="/vendor/datatables/buttons.server-side.js"></script>
     {!! $dataTable->scripts() !!}
