@@ -11,7 +11,7 @@ use NFePHP\NFe\ToolsNFe;
 
 class ConsultaNfeRepository
 {
-    public static function consultaNfe(){
+    public static function buscaNfe(){
         $nfe = new ToolsNFe(config_path('nfe.json'));
         $nfe->setModelo('55');
         $ultNSU = 0; // se estiver como zero irá retornar os dados dos ultimos 15 dias até o limite de 50 registros
