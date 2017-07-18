@@ -44,7 +44,7 @@
                     @endif
                 </tr>
                 <tr>
-                    <th>#</th>
+                    <th>Visualizar</th>
                     <th>Código do insumo</th>
                     <th>Descrição do insumo</th>
                     <th>Un. de medida</th>
@@ -55,7 +55,7 @@
                     <th>Qtd.</th>
                     <th>Valor Total</th>
                     @if($contrato->isStatus(2, 5) /* Aprovado ou Ativo */)
-                        <th style="width:18%">Ação</th>
+                        <th style="width:18%">Ações</th>
                     @endif
                 </tr>
             </thead>
