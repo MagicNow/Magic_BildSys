@@ -12,7 +12,7 @@
                 <div class="row" style="padding-left: 20px">
                     @include('admin.fornecedores.show_fields')
                     <div class="col-md-12">
-                        <a href="{!! route('admin.fornecedores.index') !!}" class="btn btn-default">
+                        <a href="{!! route('admin.fornecedores.index') !!}" class="btn btn-warning">
                            <i class="fa fa-arrow-left"></i>  {{ ucfirst( trans('common.back') )}}
                         </a>
                     </div>

@@ -163,7 +163,7 @@
         </li>
         @shield('memoriaCalculos.list')
         <li class="{{ Request::is('memoriaCalculos*') ? 'active' : '' }}">
-            <a href="{!! route('memoriaCalculos.index') !!}"><i class="fa fa-building-o"></i><span>Memoria de Calculo</span></a>
+            <a href="{!! route('memoriaCalculos.index') !!}"><i class="fa fa-building-o"></i><span>Memória de Cálculo</span></a>
         </li>
         @endshield
     </ul>

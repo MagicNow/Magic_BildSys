@@ -31,12 +31,12 @@
                             <a href="/ordens-de-compra" class="btn btn-link">
                              <i class="fa fa-arrow-left" aria-hidden="true"></i>
                             </a>
-                            <span>Detalhar Ordem de Compra</span>
+                            <span>Detalhe da Ordem de Compra</span>
                         </h3>
                     </span>
                 </div>
                 <div class="col-md-6 text-right">
-                    <a href="/retroalimentacao" class="btn btn-default btn-lg btn-flat">
+                    <a href="/retroalimentacao" class="btn btn-info btn-lg btn-flat">
                         Retroalimentação
                     </a>
                     @if(!is_null($ordemDeCompra->aprovado))
@@ -53,13 +53,13 @@
                         @if($aprovavelTudo['podeAprovar'])
                             @if($aprovavelTudo['iraAprovar'])
                                 <div class="btn-group" role="group" id="blocoOCAprovacao{{ $ordemDeCompra->id }}" aria-label="...">
-                                    <button type="button" title="Aprovar Todos os itens"
+                                    <button type="button" title="Aprovar todos os itens"
                                             onclick="workflowAprovaReprova({{ $ordemDeCompra->id }},'OrdemDeCompraItem',1,'blocoOCAprovacao{{ $ordemDeCompra->id }}','OC {{ $ordemDeCompra->id }}', {{ $ordemDeCompra->id }}, 'OrdemDeCompra', 'itens');"
                                             class="btn btn-success btn-lg btn-flat">
                                         Aprovar
                                         <i class="fa fa-check" aria-hidden="true"></i>
                                     </button>
-                                    <button type="button" title="Reprovar Todos os itens"
+                                    <button type="button" title="Reprovar todos os itens"
                                             onclick="workflowAprovaReprova({{ $ordemDeCompra->id }},'OrdemDeCompraItem',0, 'blocoOCAprovacao{{ $ordemDeCompra->id }}','OC {{ $ordemDeCompra->id }}', {{ $ordemDeCompra->id }}, 'OrdemDeCompra', 'itens');"
                                             class="btn btn-danger btn-lg btn-flat">
                                         Reprovar
@@ -365,12 +365,12 @@
                                                 <div class="btn-group" role="group" id="blocoItemAprovaReprova{{ $item->id }}" aria-label="...">
                                                     <button type="button" onclick="workflowAprovaReprova({{ $item->id }},'OrdemDeCompraItem',1,'blocoItemAprovaReprova{{ $item->id }}','Insumo {{ $item->insumo->codigo }}',0, '', '');"
                                                             class="btn btn-success btn-sm btn-flat"
-                                                            title="Aprovar Este item">
+                                                            title="Aprovar este item">
                                                         <i class="fa fa-check" aria-hidden="true"></i>
                                                     </button>
                                                     <button type="button" onclick="workflowAprovaReprova({{ $item->id }},'OrdemDeCompraItem',0, 'blocoItemAprovaReprova{{ $item->id }}','Insumo {{ $item->insumo->codigo }}',0, '', '');"
                                                             class="btn btn-danger btn-sm btn-flat"
-                                                            title="Reprovar Este item">
+                                                            title="Reprovar este item">
                                                         <i class="fa fa-times" aria-hidden="true"></i>
                                                     </button>
                                                 </div>
@@ -396,7 +396,7 @@
                                             @endif
                                         @endif
                                     @endif
-                                    <button type="button" class="btn btn-flat btn-sm btn-warning" title="Expandir"
+                                    <button type="button" class="btn btn-flat btn-sm btn-warning" title="Detalhar"
                                              onclick="showHideInfoExtra({{ $item->id }})">
                                         <i id="icone-expandir{{ $item->id }}" class="fa fa-caret-right" aria-hidden="true"></i>
                                     </button>

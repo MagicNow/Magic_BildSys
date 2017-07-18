@@ -216,8 +216,8 @@
 
 <!-- Submit Field -->
 <div class="form-group col-sm-12">
-    {!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save') ), ['class' => 'btn btn-success btn-flat btn-lg pull-right', 'type'=>'submit']) !!}
-    <a href="{!! route('memoriaCalculos.index') !!}" class="btn btn-lg btn-flat btn-default"><i
+    {!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save') ), ['class' => 'btn btn-success pull-right', 'type'=>'submit']) !!}
+    <a href="{!! route('memoriaCalculos.index') !!}" class="btn btn-danger"><i
                 class="fa fa-times"></i> {{ ucfirst( trans('common.cancel') )}}</a>
 </div>
 @section('scripts')

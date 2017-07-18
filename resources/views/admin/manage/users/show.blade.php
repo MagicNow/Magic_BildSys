@@ -152,7 +152,7 @@
                         @else
                             {!! Form::open(['route' => ['manage.users.activate', $user->id], 'id'=>'formActivate'.$user->id,  'method' => 'patch']) !!}
                         @endif
-                        <a href="{!! url('/admin/manage/users') !!}" class="btn btn-default btn-lg btn-flat"><i class="fa fa-times"></i>  Voltar</a>
+                        <a href="{!! url('/admin/manage/users') !!}" class="btn btn-warning btn-flat"><i class="fa fa-arrow-left"></i>  Voltar</a>
 
                         <span class='btn-group pull-right'>
                             <a href="{{ url('admin/manage/users/' . $user->id . '/edit')  }}" class="btn btn-warning">
