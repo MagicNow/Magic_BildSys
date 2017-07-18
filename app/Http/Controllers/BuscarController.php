@@ -25,10 +25,11 @@ class BuscarController extends AppBaseController
     {
         $insumos = Insumo::select([
             'id',
-            DB::raw("CONCAT(nome, ' - ', unidade_sigla) as nome")
+            DB::raw("CONCAT(codigo, ' - ', nome, ' - ', unidade_sigla) as nome")
         ])
         ->where(function ($query) use ($request) {
-            $query->where('nome', 'like', '%' . $request->q . '%')
+            $query->where('codigo', 'like', '%' . $request->q . '%')
+                ->orWhere('nome', 'like', '%' . $request->q . '%')
                 ->orWhere('unidade_sigla', 'like', '%'.$request->q.'%');
         })
         ->where('active', 1)

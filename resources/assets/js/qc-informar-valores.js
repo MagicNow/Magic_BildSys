@@ -45,7 +45,7 @@ var QcInformarValoresForm = {
     reject.addEventListener('click', function(event) {
       event.preventDefault();
       swal({
-        title: "Rejeitar proposta?",
+        title: "Declinar proposta?",
         text: '<label for="desistencia_motivo_id">Escolha um motivo</label>' +
         motivoSelect.outerHTML,
         html: true,
@@ -56,7 +56,7 @@ var QcInformarValoresForm = {
         inputPlaceholder: "Justificativa",
         showLoaderOnConfirm: true,
         cancelButtonText: 'Cancelar',
-        confirmButtonText: 'Rejeitar',
+        confirmButtonText: 'Declinar',
         confirmButtonColor: '#DD6B55'
       },
         function (justificativa_texto) {

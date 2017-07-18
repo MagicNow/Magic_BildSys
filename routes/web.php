@@ -425,6 +425,24 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
         $router->get('/{nomeclaturaMapas}/edit', ['as'=> 'admin.nomeclaturaMapas.edit', 'uses' => 'Admin\NomeclaturaMapaController@edit'])
             ->middleware('needsPermission:nomeclaturaMapas.edit');
     });
+
+    # desistenciaMotivos
+    $router->group(['middleware' => 'needsPermission:desistenciaMotivos.list'], function () use ($router) {
+        $router->get('motivos-declinar-proposta', ['as'=> 'admin.desistenciaMotivos.index', 'uses' => 'Admin\DesistenciaMotivoController@index']);
+        $router->post('motivos-declinar-proposta', ['as'=> 'admin.desistenciaMotivos.store', 'uses' => 'Admin\DesistenciaMotivoController@store'])
+            ->middleware('needsPermission:desistenciaMotivos.create');
+        $router->get('motivos-declinar-proposta/create', ['as'=> 'admin.desistenciaMotivos.create', 'uses' => 'Admin\DesistenciaMotivoController@create'])
+            ->middleware('needsPermission:desistenciaMotivos.create');
+        $router->put('motivos-declinar-proposta/{desistenciaMotivos}', ['as'=> 'admin.desistenciaMotivos.update', 'uses' => 'Admin\DesistenciaMotivoController@update'])
+            ->middleware('needsPermission:desistenciaMotivos.edit');
+        $router->patch('motivos-declinar-proposta/{desistenciaMotivos}', ['as'=> 'admin.desistenciaMotivos.update', 'uses' => 'Admin\DesistenciaMotivoController@update'])
+            ->middleware('needsPermission:desistenciaMotivos.edit');
+        $router->delete('motivos-declinar-proposta/{desistenciaMotivos}', ['as'=> 'admin.desistenciaMotivos.destroy', 'uses' => 'Admin\DesistenciaMotivoController@destroy'])
+            ->middleware('needsPermission:desistenciaMotivos.delete');
+        $router->get('motivos-declinar-proposta/{desistenciaMotivos}', ['as'=> 'admin.desistenciaMotivos.show', 'uses' => 'Admin\DesistenciaMotivoController@show']);
+        $router->get('motivos-declinar-proposta/{desistenciaMotivos}/edit', ['as'=> 'admin.desistenciaMotivos.edit', 'uses' => 'Admin\DesistenciaMotivoController@edit'])
+            ->middleware('needsPermission:desistenciaMotivos.edit');
+    });
 });
 
 ##### SITE #####
@@ -565,6 +583,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             $router->post('insumosAdd', 'OrdemDeCompraController@insumosAdd');
 
             $router->get('obrasInsumos', 'OrdemDeCompraController@obrasInsumos');
+            $router->get('obrasInsumos/dispensar', 'OrdemDeCompraController@dispensar');
             $router->get('obrasInsumosFilters', 'OrdemDeCompraController@obrasInsumosFilters');
             $router->get('obrasInsumosJson', 'OrdemDeCompraController@obrasInsumosJson');
 
@@ -981,7 +1000,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('notafiscals/{notafiscals}', ['as' => 'notafiscals.show', 'uses' => 'NotafiscalController@show']);
     $router->get('notafiscals/{notafiscals}/edit', ['as' => 'notafiscals.edit', 'uses' => 'NotafiscalController@edit']);
     $router->get('ConsultaNfe', 'NotafiscalController@consultaNfe');
-
+    
     $router->get('/teste', function () {
         //        $grupos_mega = \App\Models\MegaInsumoGrupo::select([
         //            'GRU_IDE_ST_CODIGO',

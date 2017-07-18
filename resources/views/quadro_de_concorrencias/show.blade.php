@@ -10,7 +10,7 @@
             <small class="label label-default pull-right margin10">
                 <i class="fa fa-clock-o"
                    aria-hidden="true"></i> {{ $quadroDeConcorrencia->created_at->format('d/m/Y H:i') }}
-                <i class="fa fa-user" aria-hidden="true"></i> {{ $quadroDeConcorrencia->user ? $quadroDeConcorrencia->user->name : 'Automático' }}
+                <i class="fa fa-user" aria-hidden="true"></i> {{ $quadroDeConcorrencia->user ? $quadroDeConcorrencia->user->name : 'Catálogo' }}
             </small>
 
             <small class="label label-info pull-right margin10" id="qc_status">

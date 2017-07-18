@@ -53,18 +53,6 @@
 
         @if(count($previsoes))
             @php $previsao = $previsoes->first(); @endphp
-            <div class="form-group col-md-3">
-                {!! Form::label('planejamento_id', 'Tarefa:') !!}
-                <p class="form-control">{{$previsao->planejamento->tarefa}}</p>
-                <input type="hidden" name="planejamento_id" value="{{$previsao->planejamento->id}}">
-            </div>
-
-            <div class="form-group col-md-3">
-                {!! Form::label('obra_torre_id', 'Torres:') !!}
-                <p class="form-control">{{$previsao->obraTorre->nome}}</p>
-                <input type="hidden" name="obra_torre_id" value="{{$previsao->obraTorre->id}}">
-            </div>
-
             <div class="form-group col-md-6">
                 {!! Form::label('memoria_de_calculo', 'Memória de cálculo:') !!}
                 @php
@@ -81,6 +69,12 @@
                 <p class="form-control">{{$previsao->memoriaCalculoBloco->memoriaCalculo->nome . ' - ' . $modo}}</p>
                 <input type="hidden" name="memoria_de_calculo" value="{{$previsao->memoriaCalculoBloco->memoriaCalculo->id}}">
             </div>
+
+            <div class="form-group col-md-6">
+                {!! Form::label('obra_torre_id', 'Torres:') !!}
+                <p class="form-control">{{$previsao->obraTorre->nome}}</p>
+                <input type="hidden" name="obra_torre_id" value="{{$previsao->obraTorre->id}}">
+            </div>
         @else
             <div class="form-group col-md-6">
                 {!! Form::label('memoria_de_calculo', 'Memória de cálculo:') !!}
@@ -95,12 +89,7 @@
                 {!! Form::select('memoria_de_calculo', $memoria_de_calculo, \Illuminate\Support\Facades\Input::get('memoria_de_calculo') ? : null, ['class' => 'form-control select2', 'required' => 'required', 'onchange' => 'buscarMemoriaDeCalculo(this.value);']) !!}
             </div>
             @if(isset($memoriaCalculo))
-                <div class="form-group col-md-3">
-                    {!! Form::label('planejamento_id', 'Tarefa:') !!}
-                    {!! Form::select('planejamento_id', $tarefas, null, ['class' => 'form-control select2', 'required' => 'required']) !!}
-                </div>
-
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-6">
                     {!! Form::label('obra_torre_id', 'Torres:') !!}
                     {!! Form::select('obra_torre_id', $obra_torres, null, ['class' => 'form-control select2', 'required' => 'required']) !!}
                 </div>
@@ -130,8 +119,8 @@
                                     <div class="col-sm-8"><i class="fa fa-th-large"></i> &nbsp; {{ $nomeEstrutura }}:
                                         {!! Form::select('estrutura_bloco['. $indexBloco .']',
                                             \App\Models\NomeclaturaMapa::where('tipo',1)
-                                            ->where('apenas_cartela',($memoriaCalculo->tipo=='C'?'1':'0') )
-                                            ->where('apenas_unidade',($memoriaCalculo->tipo=='U'?'1':'0') )
+                                            ->where('apenas_cartela',($memoriaCalculo->modo=='C'?'1':'0') )
+                                            ->where('apenas_unidade',($memoriaCalculo->modo=='U'?'1':'0') )
                                             ->pluck('nome','id')->toArray() ,
                                             $bloco['objId'], ['class'=>'form-control select2','onchange'=>'atualizaVisual();', 'id'=>'estrutura_bloco_'.$indexBloco] ) !!}
                                         {!! Form::hidden('estrutura_bloco_ordem['. $indexBloco .']',$bloco['ordem']) !!}
@@ -154,8 +143,8 @@
                                                             <b class="fa fa-th-large"></b> &nbsp; {{ $nomePavimento }}:
                                                             {!! Form::select('pavimentos['. $indexBloco .']['.$indexPavimento.']',
                                                                 \App\Models\NomeclaturaMapa::where('tipo',2)
-                                                                ->where('apenas_cartela',($memoriaCalculo->tipo=='C'?'1':'0') )
-                                                                ->where('apenas_unidade',($memoriaCalculo->tipo=='U'?'1':'0') )
+                                                                ->where('apenas_cartela',($memoriaCalculo->modo=='C'?'1':'0') )
+                                                                ->where('apenas_unidade',($memoriaCalculo->modo=='U'?'1':'0') )
                                                                 ->pluck('nome','id')->toArray() ,
                                                                 $pavimento['objId'], ['class'=>'form-control select2','onchange'=>'atualizaVisual();', 'id'=>'pavimentos_'.$indexBloco .'_'. $indexPavimento ] ) !!}
                                                             {!! Form::hidden('pavimento_bloco_ordem['.$indexBloco.']['.$indexPavimento.']',$pavimento['ordem']) !!}
@@ -183,8 +172,8 @@
                                                                             </strong>
                                                                             {!! Form::select('trecho['.$indexBloco.']['.$indexPavimento.']['.$indexTrecho.']',
                                                                                 \App\Models\NomeclaturaMapa::where('tipo',3)
-                                                                                ->where('apenas_cartela',($memoriaCalculo->tipo=='C'?'1':'0') )
-                                                                                ->where('apenas_unidade',($memoriaCalculo->tipo=='U'?'1':'0') )
+                                                                                ->where('apenas_cartela',($memoriaCalculo->modo=='C'?'1':'0') )
+                                                                                ->where('apenas_unidade',($memoriaCalculo->modo=='U'?'1':'0') )
                                                                                 ->pluck('nome','id')->toArray() ,
                                                                                 $trecho['objId'],
                                                                                 ['class'=>'form-control select2','onchange'=>'atualizaVisual();', 'id'=>'trecho_' .$indexBloco .'_'. $indexPavimento . '_'. $indexTrecho] ) !!}
@@ -218,37 +207,44 @@
             {{--Renderiza os blocos--}}
             <div class="col-md-12" id="visual"></div>
 
-            <div class="col-md-12">
-                <h3>
+            <div class="col-md-8 thumbnail">
+                <h3 class="modal-header">
                     Filtros
                 </h3>
-                <div class="row form-group col-md-5">
-                    <div class="row col-md-3">
+                <div class="row form-group col-md-6">
+                    <div class="row col-md-4">
                         {!! Form::label('filtro_estrutura', 'Estrutura:') !!}
                     </div>
-                    <div class="col-md-9">
+                    <div class="col-md-8">
                         {!! Form::select('filtro_estrutura', $filtro_estruturas, null, ['class' => 'form-control select2', 'onchange' => 'filtrarEstrututa(this.value);']) !!}
                     </div>
                 </div>
-                <div class="form-group col-md-2">
+                <div class="form-group col-md-3">
                     {!! Form::label('filtro_preenchido', 'Preenchido:') !!}
                     {!! Form::checkbox('filtro_preenchido', null, false, ['onclick' => 'filtrarCheck();']) !!}
                 </div>
-                <div class="form-group col-md-2">
+                <div class="form-group col-md-3">
                     {!! Form::label('filtro_nao_preenchido', 'Não preenchido:') !!}
                     {!! Form::checkbox('filtro_nao_preenchido', null, false, ['onclick' => 'filtrarCheck();']) !!}
                 </div>
             </div>
 
+            <div class="col-md-4 thumbnail" style="height: 146px;">
+                <h3 class="modal-header">
+                    Tarefa referência
+                </h3>
+                {!! Form::select('tarefa_referencia', $planejamentos, null, ['class' => 'form-control select2', 'id' => 'tarefa_referencia']) !!}
+            </div>
             <table class="table table-striped table-no-margin">
                 <thead>
                 <tr>
                     <th>Estrutura</th>
                     <th>Pavimento</th>
                     <th>Trecho</th>
-                    <th style="width: 15%;">Data</th>
+                    <th>Tarefa</th>
+                    <th style="width: 10%;">Data</th>
                     <th style="width: 15%;">Qtde</th>
-                    <th style="width: 15%;">%</th>
+                    <th style="width: 10%;">%</th>
                     <th style="width: 4%;"></th>
                 </tr>
                 </thead>
@@ -268,6 +264,9 @@
                             </td>
                             <td>
                                 {{$item->memoriaCalculoBloco->trechoObj->nome}}
+                            </td>
+                            <td>
+                                {!! Form::select('itens['.$item->id.'][planejamento_id]', $planejamentos, $item->planejamento->id, ['class' => 'form-control select2', 'required']) !!}
                             </td>
                             <td>
                                 <input type="date" class="form-control" name="itens[{{$item->id}}][data_competencia]" value="{{$item->data_competencia->format('Y-m-d')}}" required id="data_{{$item->id}}" onkeyup="verificarPreenchido('{{$item->id}}');" onchange="verificarPreenchido('{{$item->id}}');">
@@ -308,7 +307,7 @@
     var count = '{{$count}}';
     var qtd_item_apropriacao = '{{$contrato_item_apropriacao->qtd}}';
     var array_blocos_previstos = [];
-
+    var options_planejamento = [];
     var estruturasObjs = [];
 
     $(function() {
@@ -340,6 +339,10 @@
                 backgroundColor: 'tranparent'
                 }, 'slow');
         } else {
+            @foreach($planejamentos as $id => $nome)
+                    options_planejamento += '<option value="{{$id}}">{{$nome}}</option>';
+            @endforeach
+
             $('#tbody_previsoes').append('\
                 <tr id="linha_'+count+'"  class="estrutura nao-preenchido" estrutura="'+estrutura_id+'" memoria_calculo_bloco_id='+memoria_calculo_bloco_id+'>\
                     <input type="hidden" name="itens['+count+'][memoria_calculo_bloco_id]" value="'+memoria_calculo_bloco_id+'">\
@@ -351,6 +354,11 @@
                     </td>\
                     <td>\
                         '+trecho+'\
+                    </td>\
+                    <td>\
+                        <select class="form-control select2_add" name="itens['+count+'][planejamento_id]" id="planejamento_'+count+'" required>\
+                        ' + options_planejamento + '\
+                        </select>\
                     </td>\
                     <td>\
                     <input type="date" class="form-control" name="itens['+count+'][data_competencia]" id="data_'+count+'" required onkeyup="verificarPreenchido('+count+');" onchange="verificarPreenchido('+count+');">\
@@ -370,6 +378,14 @@
             ');
             recarregarMascara();
             array_blocos_previstos.push(memoria_calculo_bloco_id);
+
+            $('.select2_add').select2();
+
+            var tarefa_referencia = $('#tarefa_referencia').val();
+
+            if(tarefa_referencia) {
+                $('#planejamento_'+count).val(tarefa_referencia).trigger('change');
+            }
         }
     }
 

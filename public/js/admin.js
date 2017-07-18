@@ -64732,7 +64732,7 @@ function showHideInfoExtra(qual) {
     icone_expandir.addClass('fa-caret-down');
   } else { //aberto
     dados_extras.hide();
-    icone_expandir.parent().attr('title', 'Expandir');
+    icone_expandir.parent().attr('title', 'Detalhar');
     icone_expandir.removeClass('fa-caret-down');
     icone_expandir.addClass('fa-caret-right');
   }
@@ -65701,7 +65701,7 @@ var QcInformarValoresForm = {
     reject.addEventListener('click', function(event) {
       event.preventDefault();
       swal({
-        title: "Rejeitar proposta?",
+        title: "Declinar proposta?",
         text: '<label for="desistencia_motivo_id">Escolha um motivo</label>' +
         motivoSelect.outerHTML,
         html: true,
@@ -65712,7 +65712,7 @@ var QcInformarValoresForm = {
         inputPlaceholder: "Justificativa",
         showLoaderOnConfirm: true,
         cancelButtonText: 'Cancelar',
-        confirmButtonText: 'Rejeitar',
+        confirmButtonText: 'Declinar',
         confirmButtonColor: '#DD6B55'
       },
         function (justificativa_texto) {
@@ -66027,7 +66027,7 @@ $(function() {
 
     var insumos = _.reduce(rows, function(insumos, row) {
       var insumo = row.querySelector('td').innerText;
-      var inputs = row.querySelectorAll('input[type="radio"]');
+      var inputs = row.querySelectorAll('input[type="checkbox"]');
 
       insumos[insumo] = hasCheckedElement(inputs);
 

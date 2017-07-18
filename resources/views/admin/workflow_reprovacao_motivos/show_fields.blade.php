@@ -22,9 +22,3 @@
     <p class="form-control">{!! $workflowReprovacaoMotivo->updated_at !!}</p>
 </div>
 
-<!-- Deleted At Field -->
-<div class="form-group col-md-6">
-    {!! Form::label('deleted_at', 'Deleted At:') !!}
-    <p class="form-control">{!! $workflowReprovacaoMotivo->deleted_at !!}</p>
-</div>
-

@@ -37,8 +37,8 @@
                                                 {{--'onclick' => "DeleteBloco();",--}}
                                                 {{--'title' => ucfirst(trans('common.delete'))--}}
                                             {{--]) !!}--}}
-                                            {!! Form::button( '<i class="glyphicon glyphicon-trash"></i> '. ucfirst( trans('common.delete') ), ['class' => 'btn btn-danger pull-right', 'type'=>'button', 'onclick' => "DeleteBloco();"]) !!}
-                                            <a href="{!! route('admin.compradorInsumos.index') !!}" class="btn btn-default"><i class="fa fa-times"></i>  {{ ucfirst( trans('common.cancel') )}}</a>
+                                            {!! Form::button( '<i class="glyphicon glyphicon-trash"></i> '. ucfirst( trans('common.delete') ), ['class' => 'btn btn-success pull-right', 'type'=>'button', 'onclick' => "DeleteBloco();"]) !!}
+                                            <a href="{!! route('admin.compradorInsumos.index') !!}" class="btn btn-danger"><i class="fa fa-times"></i>  {{ ucfirst( trans('common.cancel') )}}</a>
                                         </div>
                                     </div>
                                 </div>

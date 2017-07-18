@@ -110,6 +110,7 @@
                                 'rows' => 2,
                                 'cols' => 25,
                                 'disabled' => 'disabled',
+                                'style' => 'cursor: auto;background-color: transparent;resize: vertical;'
                               ]
                             )
                           !!}

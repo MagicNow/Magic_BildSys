@@ -11,7 +11,7 @@
             <div class="box-body">
                 <div class="row" style="padding-left: 20px">
                     @include('admin.nomeclatura_mapas.show_fields')
-                    <a href="{!! route('admin.nomeclaturaMapas.index') !!}" class="btn btn-default">
+                    <a href="{!! route('admin.nomeclaturaMapas.index') !!}" class="btn btn-warning">
                        <i class="fa fa-arrow-left"></i>  {{ ucfirst( trans('common.back') )}}
                     </a>
                 </div>

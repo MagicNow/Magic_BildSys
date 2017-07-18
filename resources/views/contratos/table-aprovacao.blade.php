@@ -70,7 +70,7 @@
                         <th class="text-center">Status do valor do insumo</th>
                         <th class="text-center">Status Serviço</th>
                         <th class="text-center">Acaba a obra</th>
-                        <th class="text-center">Ação</th>
+                        <th class="text-center">Ações</th>
                     </tr>
                 </thead>
                 <tbody>

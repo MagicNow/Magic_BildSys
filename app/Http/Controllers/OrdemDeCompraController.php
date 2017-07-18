@@ -1834,4 +1834,41 @@ class OrdemDeCompraController extends AppBaseController
 
         return response()->json(['success'=>true]);
     }
+
+    public function dispensar(Request $request)
+    {
+        try {
+            $PlanejamentoCompra = [];
+
+            $update = [
+                'dispensado' => 1,
+                'data_dispensa' => date('Y-m-d H:i:s'),
+                'user_id_dispensa' => Auth::user()->id
+            ];
+
+            if ($request->insumo_grupos_id AND
+                $request->planejamento_id
+            ) {
+
+                $insumoGrupo = InsumoGrupo::find($request->insumo_grupos_id);
+                $insumos = $insumoGrupo->insumos()->pluck('id', 'id')->toArray();
+
+                $PlanejamentoCompra = PlanejamentoCompra::where('planejamento_id', $request->planejamento_id)
+                    ->where('dispensado', 0)
+                    ->whereIn('insumo_id', $insumos)
+                    ->update($update);
+
+            } else if ($request->planejamento_id) {
+
+                $PlanejamentoCompra = PlanejamentoCompra::where('planejamento_id', $request->planejamento_id)
+                    ->where('dispensado', 0)
+                    ->update($update);
+            }
+
+            return $PlanejamentoCompra;
+
+        } catch (Exception $e) {
+            return $e->getMessage();
+        }
+    }
 }

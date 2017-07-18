@@ -180,7 +180,7 @@ $(function() {
 
     var insumos = _.reduce(rows, function(insumos, row) {
       var insumo = row.querySelector('td').innerText;
-      var inputs = row.querySelectorAll('input[type="radio"]');
+      var inputs = row.querySelectorAll('input[type="checkbox"]');
 
       insumos[insumo] = hasCheckedElement(inputs);
 

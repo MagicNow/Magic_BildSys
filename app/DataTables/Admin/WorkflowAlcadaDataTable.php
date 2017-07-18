@@ -109,7 +109,7 @@ class WorkflowAlcadaDataTable extends DataTable
             'ordem' => ['name' => 'ordem', 'data' => 'ordem', 'searchable' => false],
             'valor_minimo' => ['name' => 'valor_minimo', 'data' => 'valor_minimo', 'searchable' => false],
             'usuarios' => ['name' => 'usuarios', 'data' => 'usuarios', 'searchable' => false],
-            'action' => ['title' => '#', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
+            'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }
 

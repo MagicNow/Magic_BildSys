@@ -11,7 +11,7 @@
             <div class="box-body">
                 <div class="row" style="padding-left: 20px">
                     @include('memoria_calculos.show_fields')
-                    <a href="{!! route('memoriaCalculos.index') !!}" class="btn btn-lg btn-flat btn-default">
+                    <a href="{!! route('memoriaCalculos.index') !!}" class="btn btn-warning">
                        <i class="fa fa-arrow-left"></i>  {{ ucfirst( trans('common.back') )}}
                     </a>
                 </div>

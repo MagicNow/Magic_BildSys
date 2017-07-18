@@ -115,7 +115,7 @@ class ContratoTemplateDataTable extends DataTable
             'cadastrado/alteradoPor' => ['name' => 'users.name', 'data' => 'usuario'],
             'cadastrado/AlteradoEm' => ['name' => 'updated_at', 'data' => 'updated_at'],
             'tipo' => ['name' => 'tipo', 'data' => 'tipo','width'=>'10%'],
-            'action' => ['title' => '#', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
+            'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }
 

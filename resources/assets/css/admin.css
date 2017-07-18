@@ -809,3 +809,7 @@ td> .table {
   color: #4a4a4a;
   padding: .3em .6em;
 }
+
+.btn {
+  border-radius: 0 !important;
+}

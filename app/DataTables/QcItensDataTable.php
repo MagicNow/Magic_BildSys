@@ -28,7 +28,7 @@ class QcItensDataTable extends DataTable
                 return number_format($obj->qtd,2,',','.');
             })
             ->editColumn('obs', function($obj){
-                return "<textarea placeholder='Observação' class='form-control' rows=2 cols=25 disabled=disabled>".$obj->obs."</textarea>";
+                return "<textarea placeholder='Observação' class='form-control' rows=2 cols=25 disabled=disabled style='cursor: auto;background-color: transparent;resize: vertical;'>".$obj->obs."</textarea>";
             })
             ->filterColumn('insumo_nome', function($query, $keyword){
                 $query->where(function($subquery) use($keyword){
@@ -62,15 +62,13 @@ class QcItensDataTable extends DataTable
                             GROUP BY oc_item_qc_item.qc_item_id
                          ) as obras"),
                 DB::raw("(SELECT
-		                	OCI.obs
+		                	GROUP_CONCAT( CONCAT('Obra ' , obras.nome, ' - ', OCI.obs) SEPARATOR '\n\n')
 		                    FROM
 		                    	oc_item_qc_item
 		                    JOIN ordem_de_compra_itens OCI ON OCI.id = oc_item_qc_item.ordem_de_compra_item_id
 		                    JOIN obras ON obras.id = OCI.obra_id
 		                    WHERE
 		                    	qc_item_id = qc_itens.id
-		                    GROUP BY
-			                oc_item_qc_item.qc_item_id
 			             ) as obs"),
 //                'obras.nome as obra',
                 DB::raw("CONCAT(insumos.codigo,' - ', insumos.nome) as insumo_nome"),
@@ -192,7 +190,7 @@ class QcItensDataTable extends DataTable
             'Itens (oc)' => ['name' => 'oci_qtd', 'data' => 'oci_qtd', 'width'=>'7%'],
             'Obra(s)' => ['name' => 'obras', 'data' => 'obras', 'width'=>'12%'],
             'detalhamento De Insumo' => ['name' => 'obs', 'data' => 'obs','searchable' => false, 'orderable' => false],
-            'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'30px'],
+            'action' => ['name' => 'Ações', 'title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'30px'],
         ];
         if($this->show){
             unset($columns['action']);
