@@ -65712,7 +65712,7 @@ var QcInformarValoresForm = {
         inputPlaceholder: "Justificativa",
         showLoaderOnConfirm: true,
         cancelButtonText: 'Cancelar',
-        confirmButtonText: 'Rejeitar',
+        confirmButtonText: 'Declinar',
         confirmButtonColor: '#DD6B55'
       },
         function (justificativa_texto) {
