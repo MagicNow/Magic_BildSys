@@ -18,7 +18,7 @@
                 <div class="col-md-3">
                     <a href="/compras" type="button" class="btn btn-success btn-block btn-lg btn-flat" data-dismiss="modal">
                         <i class="fa fa-shopping-cart"></i>
-                        Comprar
+                        Calendário de compras
                     </a>
                 </div>
             </div>
