@@ -237,6 +237,12 @@ class LembretesHomeDataTable extends DataTable
             $url = 'CONCAT(\'/compras/obrasInsumos?planejamento_id=\',planejamentos.id,\'&insumo_grupos_id=\',insumo_grupos.id,\'&obra_id=\',obras.id) as url';
         }
 
+        if ($this->request()->exibir_por_tarefa) {
+            $url_dispensar = 'CONCAT(\'/compras/obrasInsumos/dispensar?planejamento_id=\',planejamentos.id,\'&obra_id=\',obras.id) as url_dispensar';
+        } else {
+            $url_dispensar = 'CONCAT(\'/compras/obrasInsumos/dispensar?planejamento_id=\',planejamentos.id,\'&insumo_grupos_id=\',insumo_grupos.id,\'&obra_id=\',obras.id) as url_dispensar';
+        }
+
         if (!$this->request()->exibir_por_tarefa) {
             $query = Lembrete::join('insumo_grupos', 'insumo_grupos.id', '=', 'lembretes.insumo_grupo_id')
                 ->join('insumos', 'insumos.insumo_grupo_id', '=', 'insumo_grupos.id')
@@ -247,6 +253,7 @@ class LembretesHomeDataTable extends DataTable
                 ->whereNull('planejamentos.deleted_at')
                 ->whereNull('planejamento_compras.deleted_at')
                 ->where('lembretes.lembrete_tipo_id', 1)
+                ->where('planejamento_compras.dispensado', 0)
                 ->where('obra_users.user_id', Auth::user()->id)
                 ->select([
                     'lembretes.id',
@@ -254,6 +261,7 @@ class LembretesHomeDataTable extends DataTable
                     'planejamentos.tarefa',
                     DB::raw("GROUP_CONCAT(DISTINCT insumo_grupos.nome ORDER BY insumo_grupos.nome ASC SEPARATOR ', ') grupo"),
                     DB::raw($url),
+                    DB::raw($url_dispensar),
                     DB::raw("DATE_FORMAT(DATE_SUB(planejamentos.data, INTERVAL (
                         IFNULL(
                             (
@@ -443,13 +451,15 @@ class LembretesHomeDataTable extends DataTable
 
             $query->groupBy(['id', 'obra', 'dias', 'tarefa', 'url', 'inicio']);
         } else {
+
             $query = DB::table(
-                DB::raw('(SELECT tarefa, id, obra, url, inicio, dias, grupo
+                DB::raw('(SELECT tarefa, id, obra, url, url_dispensar, inicio, dias, grupo
                             FROM (SELECT
 	                                planejamentos.id,
 	                                obras.nome AS obra,
 	                                planejamentos.tarefa,
 	                                '.$url.',
+	                                '.$url_dispensar.',
 	                                insumo_grupos.nome as grupo,
 	                                DATE_FORMAT(
 	                                	DATE_SUB(
@@ -549,9 +559,10 @@ class LembretesHomeDataTable extends DataTable
                                 INNER JOIN obra_users ON obra_users.obra_id = obras.id
                                 WHERE planejamentos.deleted_at IS NULL
                                 AND lembretes.lembrete_tipo_id = 1
+                                AND planejamento_compras.dispensado = 0
                                 AND obra_users.user_id = '.Auth::user()->id.'
                                 AND (
-	                                SELECT
+                                    SELECT
                                         1
                                     FROM
                                         planejamento_compras plc
@@ -719,7 +730,7 @@ class LembretesHomeDataTable extends DataTable
         $columns['Grupo De Insumo'] = ['name' => 'grupo', 'data' => 'grupo'];
 
         $columns['action'] = [
-            'title'      => 'Visualizar',
+            'title'      => 'AÇÕES',
             'searchable' => false,
             'orderable'  => false,
             'printable'  => false,
