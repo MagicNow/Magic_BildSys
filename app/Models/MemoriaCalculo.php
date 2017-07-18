@@ -101,6 +101,7 @@ class MemoriaCalculo extends Model
                         'id'=>   $memoriaBloco->ordem_bloco,
                         'objId'=>   $memoriaBloco->estrutura,
                         'nome'=> $memoriaBloco->estruturaObj->nome,
+                        'largura'=> $memoriaBloco->estruturaObj->largura_visual,
                         'ordem' => $memoriaBloco->ordem_bloco,
                         'itens' => [],
                         'editavel'=>$editavel
@@ -117,6 +118,7 @@ class MemoriaCalculo extends Model
                         'id'=>   $countEstrutura,
                         'objId'=>   $memoriaBloco->pavimento,
                         'nome'=> $memoriaBloco->pavimentoObj->nome,
+                        'largura'=> $memoriaBloco->pavimentoObj->largura_visual,
                         'ordem' => $memoriaBloco->ordem_linha,
                         'estrutura' => $memoriaBloco->estrutura,
                         'itens' => [],
@@ -135,6 +137,7 @@ class MemoriaCalculo extends Model
                         'blocoId'=>   $memoriaBloco->id,
                         'objId'=>   $memoriaBloco->trecho,
                         'nome'=> $memoriaBloco->trechoObj->nome,
+                        'largura'=> $memoriaBloco->trechoObj->largura_visual,
                         'ordem' => $memoriaBloco->ordem,
                         'estrutura' => $memoriaBloco->estrutura,
                         'pavimento' => $memoriaBloco->pavimento,
