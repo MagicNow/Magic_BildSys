@@ -410,7 +410,6 @@
                                         <table class="table table-bordered table-striped">
                                             <thead>
                                             <tr>
-                                                <th class="text-center">Unidade Medida</th>
                                                 <th class="text-center">Qtd. prevista no orçamento</th>
                                                 <th class="text-center">Valor previsto no orçamento</th>
                                                 <th class="text-center">Qtd. comprometida realizada</th>
@@ -421,7 +420,6 @@
                                             </thead>
                                             <tbody>
                                             <tr>
-                                                <td class="text-center">{{ $item->unidade_sigla }}</td>
                                                 <td class="text-center">{{ number_format($item->substitui ? $item->qtd_prevista_orcamento_pai : $item->qtd_inicial, 2, ',','.') }}</td>
                                                 <td class="text-center"><small class="pull-left">R$</small> {{ number_format($item->substitui ? $item->valor_previsto_orcamento_pai : $item->preco_inicial, 2, ',','.') }}</td>
                                                 <td class="text-center">
