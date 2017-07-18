@@ -155,7 +155,7 @@ class ContratoDataTable extends DataTable
         return $this->builder()
             ->columns($this->getColumns())
             ->ajax('')
-            ->addAction(['width' => '80px', 'class' => 'all'])
+//            ->addAction(['width' => '80px', 'class' => 'all'])
             ->parameters([
                 'responsive'=> 'true',
                 'initComplete' => 'function () {
@@ -211,6 +211,7 @@ class ContratoDataTable extends DataTable
             'obra'              => ['name' => 'obras.nome', 'data' => 'obra'],
             'valor_total_atual' => ['name' => 'valor_total_atual', 'data' => 'valor_total_atual', 'title' => 'Saldo'],
             'status'            => ['name' => 'status.nome', 'data' => 'status'],
+            'action' => ['name'=>'Ações', 'title' => 'visualizar', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'15%', 'class' => 'all']
         ];
     }
 

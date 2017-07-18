@@ -365,7 +365,7 @@ class InsumosAprovadosDataTable extends DataTable
             'qtd' => ['name' => 'ordem_de_compra_itens.qtd', 'data' => 'qtd'],
 //            'urgente' => ['name' => 'ordem_de_compra_itens.emergencial', 'data' => 'ordem_de_compra_itens.emergencial'],
             'sla' => ['name' => 'sla', 'data' => 'sla'],
-            'action' => ['title' => 'Selecionar', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10px', 'class' => 'all'],
+            'action' => ['name' => 'Ações', 'title' => 'Selecionar', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10px', 'class' => 'all'],
         ];
     }
 

@@ -190,7 +190,7 @@ class QcItensDataTable extends DataTable
             'Itens (oc)' => ['name' => 'oci_qtd', 'data' => 'oci_qtd', 'width'=>'7%'],
             'Obra(s)' => ['name' => 'obras', 'data' => 'obras', 'width'=>'12%'],
             'detalhamento De Insumo' => ['name' => 'obs', 'data' => 'obs','searchable' => false, 'orderable' => false],
-            'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'30px'],
+            'action' => ['name' => 'Ações', 'title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'30px'],
         ];
         if($this->show){
             unset($columns['action']);

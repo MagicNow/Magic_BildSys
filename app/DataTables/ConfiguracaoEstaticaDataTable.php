@@ -93,7 +93,7 @@ class ConfiguracaoEstaticaDataTable extends DataTable
         return [
             'nome' => ['name' => 'chave', 'data' => 'chave'],
             'descrição' => ['name' => 'valor', 'data' => 'valor'],
-            'action' => ['title' => '#', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
+            'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }
 

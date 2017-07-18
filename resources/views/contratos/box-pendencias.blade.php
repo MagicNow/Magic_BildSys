@@ -26,7 +26,7 @@
               <th>Qtd.</th>
               <th>Valor Unitário</th>
               <th>Data</th>
-              <th style="width: 20%">Ação</th>
+              <th style="width: 20%">Ações</th>
             </tr>
           </thead>
           <tbody>

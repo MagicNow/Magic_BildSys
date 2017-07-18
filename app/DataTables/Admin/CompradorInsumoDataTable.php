@@ -103,7 +103,7 @@ class CompradorInsumoDataTable extends DataTable
             'Comprador' => ['name' => 'users.name', 'data' => 'name'],
             'Grupo_de_insumos' => ['name' => 'insumo_grupos.nome', 'data' => 'nome_grupo_insumo'],
             'Insumos' => ['name' => 'insumos.nome', 'data' => 'nome'],
-            'action' => ['title' => '#', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
+            'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }
 

@@ -110,7 +110,7 @@ class CatalogoContratoDataTable extends DataTable
             'fornecedor' => ['name' => 'fornecedores.nome', 'data' => 'fornecedor'],
             'qtd_insumos' => ['name' => 'insumos', 'data' => 'insumos', 'searchable' => false],
             'situacao' => ['name' => 'catalogo_contrato_status.nome', 'data' => 'status'],
-            'action' => ['title' => '#', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
+            'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }
 

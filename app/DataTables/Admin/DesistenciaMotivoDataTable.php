@@ -92,7 +92,7 @@ class DesistenciaMotivoDataTable extends DataTable
     {
         return [
             'motivo' => ['name' => 'nome', 'data' => 'nome'],
-            'action' => ['title' => 'Ação', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
+            'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }
 
