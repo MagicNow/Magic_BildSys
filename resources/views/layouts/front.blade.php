@@ -219,6 +219,26 @@
                 formulary.submit();
             });
         }
+
+        function dispensarInsumos(url, msg) {
+            swal({
+                title: msg,
+                text: "",
+                type: "success",
+                showCancelButton: true,
+                confirmButtonColor: "success",
+                confirmButtonText: "{{ ucfirst( trans('common.yes') ) }}",
+                cancelButtonText: "{{ ucfirst( trans('common.cancel') ) }}",
+                closeOnConfirm: false,
+                showLoaderOnConfirm: true
+            }, function () {
+                $.get(url, function(){
+                    LaravelDataTables.dataTableBuilder.draw();
+                    atualizaCalendario();
+                    swal.close();
+                });
+            });
+        }
     </script>
 </body>
 </html>
