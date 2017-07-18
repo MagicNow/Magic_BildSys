@@ -52,7 +52,7 @@ class MemoriaCalculoDataTable extends DataTable
                 'memoria_calculos.modo',
                 DB::raw('(SELECT 1 FROM memoria_calculo_blocos 
                 JOIN mc_medicao_previsoes ON mc_medicao_previsoes.memoria_calculo_bloco_id = memoria_calculo_blocos.id
-                WHERE memoria_calculo_id = memoria_calculos.id) as utilizado')
+                WHERE memoria_calculo_id = memoria_calculos.id LIMIT 1) as utilizado')
             ])
             ->join('obras','obras.id','obra_id')
             ->join('users','users.id','user_id');

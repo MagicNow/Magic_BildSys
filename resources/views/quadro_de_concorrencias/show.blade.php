@@ -3,11 +3,14 @@
 @section('content')
     <section class="content-header">
         <h1>
-            Quadro De Concorrencia {{ $quadroDeConcorrencia->id }}
+            <button type="button" class="btn btn-link" onclick="history.go(-1);">
+                <i class="fa fa-arrow-left" aria-hidden="true"></i>
+            </button>
+            Quadro de concorrência {{ $quadroDeConcorrencia->id }}
             <small class="label label-default pull-right margin10">
                 <i class="fa fa-clock-o"
                    aria-hidden="true"></i> {{ $quadroDeConcorrencia->created_at->format('d/m/Y H:i') }}
-                <i class="fa fa-user" aria-hidden="true"></i> {{ $quadroDeConcorrencia->user ? $quadroDeConcorrencia->user->name : 'Automático' }}
+                <i class="fa fa-user" aria-hidden="true"></i> {{ $quadroDeConcorrencia->user ? $quadroDeConcorrencia->user->name : 'Catálogo' }}
             </small>
 
             <small class="label label-info pull-right margin10" id="qc_status">
@@ -31,7 +34,7 @@
                             <button type="button" onclick="workflowAprovaReprova({{ $quadroDeConcorrencia->id }},
                                     'QuadroDeConcorrencia',1,'blocoItemAprovaReprova{{ $quadroDeConcorrencia->id }}',
                                     'Q.C. {{ $quadroDeConcorrencia->id }}',0, '', '', true);"
-                                    class="btn btn-success btn-lg btn-flat"
+                                    class="btn btn-success btn-md btn-flat"
                                     title="Aprovar">
                                 Aprovar Q.C.
                                 <i class="fa fa-check" aria-hidden="true"></i>
@@ -39,9 +42,9 @@
                             <button type="button" onclick="workflowAprovaReprova({{ $quadroDeConcorrencia->id }},
                                     'QuadroDeConcorrencia',0, 'blocoItemAprovaReprova{{ $quadroDeConcorrencia->id }}',
                                     'Q.C. {{ $quadroDeConcorrencia->id }}',0, '', '', true);"
-                                    class="btn btn-danger btn-lg btn-flat"
-                                    title="Reprovar Este item">
-                                Reprovar
+                                    class="btn btn-danger btn-md btn-flat"
+                                    title="Reprovar">
+                                Reprovar Q.C.
                                 <i class="fa fa-times" aria-hidden="true"></i>
                             </button>
                         </div>

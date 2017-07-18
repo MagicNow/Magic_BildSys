@@ -8,7 +8,7 @@
             <small class="label label-default pull-right margin10">
                 <i class="fa fa-clock-o"
                    aria-hidden="true"></i> {{ $quadroDeConcorrencia->created_at->format('d/m/Y H:i') }}
-                <i class="fa fa-user" aria-hidden="true"></i> {{ $quadroDeConcorrencia->user ? $quadroDeConcorrencia->user->name : 'Automático' }}
+                <i class="fa fa-user" aria-hidden="true"></i> {{ $quadroDeConcorrencia->user ? $quadroDeConcorrencia->user->name : 'Catálogo' }}
             </small>
 
             <small class="label label-info pull-right margin10" id="qc_status">
@@ -171,7 +171,7 @@
                         <table class="table table-condensed table-hovered table-striped table-bordered">
                             <thead>
                             <th width="40%">Campo</th>
-                            <th width="40%">Valor</th>
+                            <th width="40%">Informação</th>
                             <th width="20%">Tipo</th>
                             </thead>
                             <tbody>
@@ -225,12 +225,20 @@
                                 $.each(retorno.campos_extras, function(index, valor){
                                     var v_tag = valor.tag.replace('[','');
                                     v_tag = 'CAMPO_EXTRA['+ v_tag.replace(']','') + ']';
+
+                                    eh_telefone = valor.tag.toLowerCase().indexOf("telefone") != -1;
+                                    if(eh_telefone){
+                                        classe = 'form-control telefone';
+                                    }else{
+                                        classe = 'form-control';
+                                    }
+
                                     campos += '<tr>'+
                                             '   <td class="text-center">'+
                                             '       <label for="'+v_tag+'">'+valor.nome+'</label>' +
                                             '   </td>'+
                                             '   <td>'+
-                                            '       <input type="text" class="form-control" required="required" name="'+v_tag+'" placeholder="'+valor.nome+'">'+
+                                            '       <input type="text" class="'+classe+'" required="required" name="'+v_tag+'" placeholder="'+valor.nome+'">'+
                                             '   </td>'+
                                             '   <td class="text-center">'+
                                             '       <label for="'+v_tag+'">'+valor.tipo+'</label>'+

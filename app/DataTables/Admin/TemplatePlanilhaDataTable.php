@@ -104,7 +104,7 @@ class TemplatePlanilhaDataTable extends DataTable
             'nome' => ['name' => 'nome', 'data' => 'nome'],
             'modulo' => ['name' => 'modulo', 'data' => 'modulo'],
             'colunas' => ['name' => 'colunas', 'data' => 'colunas'],
-            'action' => ['title' => '#', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
+            'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }
 

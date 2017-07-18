@@ -99,7 +99,7 @@ class NomeclaturaMapaDataTable extends DataTable
     {
         return $this->builder()
             ->columns($this->getColumns())
-            ->addAction(['width' => '10%'])
+//            ->addAction(['width' => '10%'])
             ->ajax('')
             ->parameters([
                 'initComplete' => 'function () {
@@ -152,7 +152,8 @@ class NomeclaturaMapaDataTable extends DataTable
             'nome' => ['name' => 'nome', 'data' => 'nome'],
             'tipo' => ['name' => 'tipo', 'data' => 'tipo'],
             'apenas_cartela' => ['name' => 'apenas_cartela', 'data' => 'apenas_cartela'],
-            'apenas_unidade' => ['name' => 'apenas_unidade', 'data' => 'apenas_unidade']
+            'apenas_unidade' => ['name' => 'apenas_unidade', 'data' => 'apenas_unidade'],
+            'action' => ['name' => 'Ações', 'title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false],
         ];
     }
 

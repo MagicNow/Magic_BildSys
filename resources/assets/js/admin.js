@@ -15,7 +15,7 @@ function showHideInfoExtra(qual) {
     icone_expandir.addClass('fa-caret-down');
   } else { //aberto
     dados_extras.hide();
-    icone_expandir.parent().attr('title', 'Expandir');
+    icone_expandir.parent().attr('title', 'Detalhar');
     icone_expandir.removeClass('fa-caret-down');
     icone_expandir.addClass('fa-caret-right');
   }

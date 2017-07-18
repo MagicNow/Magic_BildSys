@@ -4,14 +4,10 @@
     </button>
 @elseif(strtolower($situacao) == 'em aberto')
     <a href="ordens-de-compra/carrinho?id={{$id}}">
-        <button type="button" class="btn btn-ms btn-flat">
-            <i class="fa fa-eye" aria-hidden="true"></i>
-        </button>
+        <i class="fa fa-eye" aria-hidden="true" style="font-size: 25px;"></i>
     </a>
 @else
     <a href="ordens-de-compra/detalhes/{{$id}}">
-        <button type="button" class="btn btn-ms btn-flat">
-            <i class="fa fa-eye" aria-hidden="true"></i>
-        </button>
+        <i class="fa fa-eye" aria-hidden="true" style="font-size: 25px;"></i>
     </a>
 @endif

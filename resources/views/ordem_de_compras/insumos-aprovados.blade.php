@@ -116,7 +116,7 @@
 
 
                     <div class="col-md-1">
-                        <h4>Farol</h4>
+                        <h4>SLA</h4>
                         @if(count($farol))
                             <div class="js-datatable-filter-form">
                                 {!! Form::select('farol[]',$farol, null, [

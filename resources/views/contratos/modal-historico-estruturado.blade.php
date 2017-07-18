@@ -38,6 +38,13 @@
                                         data-target="#historico-apropriacao-{{ $apropriacao->id }}">
                                         <i class="fa fa-history fa-fw"></i>
                                     </button>
+                                    <a href="{{ route('contratos.memoria_de_calculo', [$contrato->id, $apropriacao  ->id]) }}" type="button"
+                                       class="btn btn-flat btn-xs btn-primary"
+                                       data-toggle="tooltip"
+                                       data-placement="top"
+                                       title="Criar previsão de memória de cálculo">
+                                        <i class="fa fa-calculator fa-fw" aria-hidden="true"></i>
+                                    </a>
                                 </td>
                                 <td>{{ $apropriacao->codigoServico() }}</td>
                                 <td>{{ float_to_money($apropriacao->qtd, '') }}</td>

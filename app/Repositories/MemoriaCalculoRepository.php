@@ -29,32 +29,26 @@ class MemoriaCalculoRepository extends BaseRepository
     {
         $attributes['blocos'] = [];
         $attributes['user_id'] = auth()->id();
-        if (isset($attributes['estrutura_bloco'])) {
-            foreach ($attributes['estrutura_bloco'] as $indexEstrutura => $estrutura_id) {
-                $ordemBloco = $attributes['estrutura_bloco_ordem'][$indexEstrutura];
-                if (isset($attributes['pavimentos'][$indexEstrutura])) {
-                    foreach ($attributes['pavimentos'][$indexEstrutura] as $indexPavimento => $pavimento_id) {
-                        $ordemLinha = $attributes['pavimento_bloco_ordem'][$indexEstrutura][$indexPavimento];
 
-                        if (isset($attributes['trecho'][$indexEstrutura][$indexPavimento])) {
-                            foreach ($attributes['trecho'][$indexEstrutura][$indexPavimento] as $indexTrecho => $trecho_id) {
-                                $ordem = $attributes['trecho_bloco_ordem'][$indexEstrutura][$indexPavimento][$indexTrecho];
-                                $attributes['blocos'][] =
-                                    [
-                                        'estrutura' => $estrutura_id,
-                                        'pavimento' => $pavimento_id,
-                                        'trecho' => $trecho_id,
-                                        'ordem' => $ordem,
-                                        'ordem_linha' => $ordemLinha,
-                                        'ordem_bloco' => $ordemBloco
-                                    ];
-                            }
-                        }
-                    }
+        foreach ($attributes['trecho'] as $estruturaT => $pavimentos){
+            $estruturaID = $attributes['estrutura_bloco'][$estruturaT];
+            $ordemBloco = $attributes['estrutura_bloco_ordem'][$estruturaT];
+            foreach($pavimentos as $pavimentoT => $trechos){
+                $pavimentoID = $attributes['pavimentos'][$estruturaT][$pavimentoT];
+                $ordemLinha = $attributes['pavimento_bloco_ordem'][$estruturaT][$pavimentoT];
+                foreach($trechos as $indexTrecho => $trecho){
+                    $ordem = $attributes['trecho_bloco_ordem'][$estruturaT][$pavimentoT][$indexTrecho];
+                    $attributes['blocos'][] =
+                        [
+                            'estrutura' => $estruturaID,
+                            'pavimento' => $pavimentoID,
+                            'trecho' => $trecho,
+                            'ordem' => $ordem,
+                            'ordem_linha' => $ordemLinha,
+                            'ordem_bloco' => $ordemBloco
+                        ];
                 }
-
             }
-
         }
 
         $model = parent::create($attributes);
@@ -64,43 +58,36 @@ class MemoriaCalculoRepository extends BaseRepository
 
     public function update(array $attributes, $id)
     {
-
         $attributes['blocos'] = [];
         $attributes['user_id'] = auth()->id();
-        if (isset($attributes['estrutura_bloco'])) {
-            foreach ($attributes['estrutura_bloco'] as $indexEstrutura => $estrutura_id) {
-                $ordemBloco = $attributes['estrutura_bloco_ordem'][$indexEstrutura];
-                if (isset($attributes['pavimentos'][$indexEstrutura])) {
-                    foreach ($attributes['pavimentos'][$indexEstrutura] as $indexPavimento => $pavimento_id) {
-                        $ordemLinha = $attributes['pavimento_bloco_ordem'][$indexEstrutura][$indexPavimento];
 
-                        if (isset($attributes['trecho'][$indexEstrutura][$indexPavimento])) {
-                            foreach ($attributes['trecho'][$indexEstrutura][$indexPavimento] as $indexTrecho => $trecho_id) {
-                                $ordem = $attributes['trecho_bloco_ordem'][$indexEstrutura][$indexPavimento][$indexTrecho];
-                                $idBloco = null;
-                                if(isset($attributes['trecho_id'][$indexEstrutura][$indexPavimento][$indexTrecho])){
-                                    $idBloco = $attributes['trecho_id'][$indexEstrutura][$indexPavimento][$indexTrecho];
-                                }
-                                $attributes['blocos'][] =
-                                    [
-                                        'id' => $idBloco,
-                                        'estrutura' => $estrutura_id,
-                                        'pavimento' => $pavimento_id,
-                                        'trecho' => $trecho_id,
-                                        'ordem' => $ordem,
-                                        'ordem_linha' => $ordemLinha,
-                                        'ordem_bloco' => $ordemBloco
-                                    ];
-                            }
-                        }
+        foreach ($attributes['trecho'] as $estruturaT => $pavimentos){
+            $estruturaID = $attributes['estrutura_bloco'][$estruturaT];
+            $ordemBloco = $attributes['estrutura_bloco_ordem'][$estruturaT];
+            foreach($pavimentos as $pavimentoT => $trechos){
+                $pavimentoID = $attributes['pavimentos'][$estruturaT][$pavimentoT];
+                $ordemLinha = $attributes['pavimento_bloco_ordem'][$estruturaT][$pavimentoT];
+                foreach($trechos as $indexTrecho => $trecho){
+                    $ordem = $attributes['trecho_bloco_ordem'][$estruturaT][$pavimentoT][$indexTrecho];
+
+                    $idBloco = null;
+                    $bloco = [
+                        'estrutura' => $estruturaID,
+                        'pavimento' => $pavimentoID,
+                        'trecho' => $trecho,
+                        'ordem' => $ordem,
+                        'ordem_linha' => $ordemLinha,
+                        'ordem_bloco' => $ordemBloco
+                    ];
+                    if(isset($attributes['trecho_id'][$estruturaT][$pavimentoT][$indexTrecho])){
+                        $bloco['id'] = $attributes['trecho_id'][$estruturaT][$pavimentoT][$indexTrecho];
                     }
+                    $attributes['blocos'][] = $bloco;
                 }
-
             }
-
         }
-        $model = parent::update($attributes, $id);
 
+        $model = parent::update($attributes, $id);
 
         return $model;
     }

@@ -216,7 +216,12 @@ $count_insumos = 0;
                             @if($podeEditar)
                                 {!! Form::hidden('contratoInsumos['.$item->id.'][id]', $item->id) !!}
                                 {!! Form::select('contratoInsumos['.$item->id.'][insumo_id]',[''=>'Escolha...']+
-                                \App\Models\Insumo::where('id',$item->insumo_id)->pluck('nome','id')->toArray(), $item->insumo_id,
+                                \App\Models\Insumo::select([
+                                                        'id',
+                                                        DB::raw("CONCAT(codigo, ' - ', nome, ' - ', unidade_sigla) as nome")
+                                                    ])
+                                                    ->where('id',$item->insumo_id)->pluck('nome','id')->toArray(),
+                                $item->insumo_id,
                                 [
                                     'class' => 'form-control select2 insumos_existentes insumo_select_'.$item->id,
                                     'required'=>'required',
@@ -224,7 +229,7 @@ $count_insumos = 0;
                                 ]) !!}
                             @else
                                 <div class="form-control">
-                                    {{ $item->insumo->nome }}
+                                    {{ $item->insumo->codigo }} - {{ $item->insumo->nome }} - {{ $item->insumo->unidade_sigla }}
                                 </div>
                             @endif
                         </div>
@@ -249,6 +254,12 @@ $count_insumos = 0;
                         <div {{in_array($item->insumo_id, $array_insumos) ? 'style=display:none; class=bloco_mostrar_reajustes_'.$item->insumo_id : ''}}>
 
                             <div class="col-md-12 border-separation" style="border-bottom: 1px solid #d2d6de !important; margin-bottom: 20px;"></div>
+
+                            <div class="col-md-12">
+                                <p class="pull-right">
+                                    {{count($insumo) > 1 ? 'Alterado' : 'Criado'}} por {{$item->user ? $item->user->name : null}} em {{$item->created_at->format('d/m/Y H:i')}}
+                                </p>
+                            </div>
 
                             <div class="col-md-3">
                                 <label>Valor unitário:</label>

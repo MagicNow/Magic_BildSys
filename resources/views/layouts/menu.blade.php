@@ -163,11 +163,15 @@
         </li>
         @shield('memoriaCalculos.list')
         <li class="{{ Request::is('memoriaCalculos*') ? 'active' : '' }}">
-            <a href="{!! route('memoriaCalculos.index') !!}"><i class="fa fa-building-o"></i><span>Memoria de Calculo</span></a>
+            <a href="{!! route('memoriaCalculos.index') !!}"><i class="fa fa-building-o"></i><span>Memória de Cálculo</span></a>
         </li>
         @endshield
     </ul>
 </li>
 @endshield
 
-
+@shield('desistenciaMotivos.list')
+<li class="{{ Request::is('desistenciaMotivos*') ? 'active' : '' }}">
+    <a href="{!! route('admin.desistenciaMotivos.index') !!}"><i class="fa fa-edit"></i><span>Motivos declinar proposta</span></a>
+</li>
+@endshield

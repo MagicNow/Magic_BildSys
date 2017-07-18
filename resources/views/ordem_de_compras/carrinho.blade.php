@@ -600,7 +600,8 @@
                 confirmButtonColor: "#DD6B55",
                 confirmButtonText: "Sim, remover!",
                 cancelButtonText: "Cancelar",
-                closeOnConfirm: false
+                closeOnConfirm: false,
+                allowOutsideClick: true
             },
             function(){
                 $.ajax({
@@ -611,7 +612,8 @@
                             text: "O item foi removido da ordem de compra!",
                             type: "success",
                             timer: 2000,
-                            showConfirmButton: false
+                            showConfirmButton: false,
+                            allowOutsideClick: true
                         });
                     $('#alert_'+item_id).remove();
                     $('#item'+item_id).remove();
@@ -629,7 +631,8 @@
                 confirmButtonColor: "#7ed321",
                 confirmButtonText: "Sim, remover.",
                 cancelButtonText: "Cancelar",
-                closeOnConfirm: false
+                closeOnConfirm: false,
+                allowOutsideClick: true
             },
             function() {
                 $.ajax({
@@ -640,7 +643,8 @@
                         text: "Todos os itens foram removidos da ordem de compra!",
                         type: "success",
                         timer: 2000,
-                        showConfirmButton: false
+                        showConfirmButton: false,
+                        allowOutsideClick: true
                     }, function () {
                         document.location = '{{ url('/compras/obrasInsumos?obra_id='.$obra_id) }}';
                     });

@@ -25,7 +25,7 @@ class QuadroDeConcorrenciaDataTable extends DataTable
             ->editColumn('usuario', function($obj){
                 return $obj->usuario ?
                     '<span class="label label-info">'.$obj->usuario.'</span>' :
-                    '<span class="label label-default"> <i class="fa fa-magic" aria-hidden="true"></i> Automático</span>';
+                    '<span class="label label-default"> <i class="fa fa-magic" aria-hidden="true"></i> Catálogo</span>';
             })
             ->editColumn('situacao', function($obj){
                 return '<i class="fa fa-circle" aria-hidden="true" style="color:'.$obj->situacao_cor.'"></i> '.$obj->situacao;
@@ -66,7 +66,7 @@ class QuadroDeConcorrenciaDataTable extends DataTable
                          ) = ?',[$keyword]);
             })
             ->filterColumn('users.name', function($query, $keyword){
-                $query->whereRaw("IFNULL(users.name,'automatico') LIKE ?",['%'.$keyword.'%']);
+                $query->whereRaw("IFNULL(users.name,'catalogo') LIKE ?",['%'.$keyword.'%']);
             })
             ->make(true);
     }
@@ -159,6 +159,7 @@ class QuadroDeConcorrenciaDataTable extends DataTable
             ->columns($this->getColumns())
             ->ajax('')
             ->parameters([
+                'order'=> [ 0, "desc" ],
                 'responsive'=> 'true',
                 'initComplete' => 'function () {
                     max = this.api().columns().count();
@@ -207,8 +208,8 @@ class QuadroDeConcorrenciaDataTable extends DataTable
     private function getColumns()
     {
         $columns = [
-            'id' => ['name' => 'quadro_de_concorrencias.id', 'data' => 'id', 'width'=>'5%'],
-            'situação' => ['name' => 'qc_status.nome', 'data' => 'situacao', 'width'=>'20%'],
+            'Q&period;C&period;' => ['name' => 'quadro_de_concorrencias.id', 'data' => 'id', 'width'=>'10%'],
+            'Status' => ['name' => 'qc_status.nome', 'data' => 'situacao', 'width'=>'20%'],
             'atualizadoEm' => ['name' => 'quadro_de_concorrencias.updated_at', 'data' => 'updated_at', 'width'=>'12%'],
             'rodada' => ['name' => 'rodada_atual', 'data' => 'rodada_atual', 'width'=>'5%'],
             'fornecedores' => ['name' => 'fornecedores', 'data' => 'fornecedores', 'width'=>'5%'],
@@ -216,7 +217,7 @@ class QuadroDeConcorrenciaDataTable extends DataTable
         ];
 
         if(!auth()->user()->fornecedor) {
-            $columns['usuario'] = ['name' => 'users.name', 'data' => 'usuario'];
+            $columns['usuário'] = ['name' => 'users.name', 'data' => 'usuario'];
             $columns['criadoEm'] = ['name' => 'quadro_de_concorrencias.created_at', 'data' => 'created_at', 'width'=>'12%'];
         }
 

@@ -94,7 +94,7 @@ class ObrasInsumosDataTable extends DataTable
             'codigo' => ['name' => 'codigo', 'data' => 'codigo'],
             'nome' => ['name' => 'nome', 'data' => 'nome'],
             'unidade_sigla' => ['name' => 'unidade_sigla', 'data' => 'unidade_sigla'],
-            'action' => ['title' => '#', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%'],
+            'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%'],
         ];
     }
 

@@ -12,6 +12,9 @@
 @section('content')
   <section class="content-header">
     <h1>
+        <button type="button" class="btn btn-link" onclick="history.go(-1);">
+            <i class="fa fa-arrow-left" aria-hidden="true"></i>
+        </button>
         @if(auth()->user()->fornecedor)
             Enviar Proposta
         @else
@@ -80,7 +83,7 @@
               <tr>
                   <th>Obra - Cidade</th>
                   <th>Insumo</th>
-                  <th>Obs. Fornecedor</th>
+                  <th>Observações ao fornecedor:</th>
                   <th>Quantidade</th>
                   <th>Un</th>
                   <th>Valor Unitário</th>
@@ -107,6 +110,7 @@
                                 'rows' => 2,
                                 'cols' => 25,
                                 'disabled' => 'disabled',
+                                'style' => 'cursor: auto;background-color: transparent;resize: vertical;'
                               ]
                             )
                           !!}
@@ -358,7 +362,7 @@
                         <tr>
                           <th width="10%">Detalhes</th>
                           <th>Item</th>
-                          <th width="20%">Sim/Não/Ciência</th>
+                          <th width="20%">Validação</th>
                           <th width="25%">Obs</th>
                         </tr>
                       </thead>
@@ -459,7 +463,7 @@
                     class="btn btn-danger btn-flat btn-lg pull-left"
                     value="Rejeitar"
                     id="reject">
-                <i class='fa fa-times'></i>  Rejeitar
+                <i class='fa fa-times'></i> Declinar
             </button>
         </div>
     </div>

@@ -27,7 +27,8 @@
                 <div class="col-md-12">
                     <div class="col-md-9">
                         <h3 class="pull-left title">
-                            <a href="#" onclick="history.go(-1);"><i class="fa fa-arrow-left" aria-hidden="true"></i></a> Dashboard
+                            <a href="#" onclick="history.go(-1);">
+                                <i class="fa fa-arrow-left" aria-hidden="true"></i></a> Dashboard
                         </h3>
                     </div>
                 </div>
@@ -52,7 +53,7 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="element-grafico">
-                                <div class="element-head">Por Situação</div>
+                                <div class="element-head">Status dos Qc´s</div>
                                 <div class="element-body">
                                     <chartjs-bar :labels="{{$json_labels}}" :data="{{$json_data}}"
                                                  :beginzero="myboolean"

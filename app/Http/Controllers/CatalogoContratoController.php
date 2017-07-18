@@ -146,6 +146,7 @@ class CatalogoContratoController extends AppBaseController
                     $contrato_insumo->pedido_multiplo_de = $item['pedido_multiplo_de'];
                     $contrato_insumo->periodo_inicio = $item['periodo_inicio'];
                     $contrato_insumo->periodo_termino = $item['periodo_termino'];
+                    $contrato_insumo->user_id = auth()->id();
                     $contrato_insumo = $catalogoContrato->contratoInsumos()->save($contrato_insumo);
 
                     $logCatInsumo = new CatalogoContratoInsumoLog();
@@ -295,6 +296,7 @@ class CatalogoContratoController extends AppBaseController
                         $contrato_insumo->pedido_multiplo_de = $item['pedido_multiplo_de'];
                         $contrato_insumo->periodo_inicio = $item['periodo_inicio'];
                         $contrato_insumo->periodo_termino = $item['periodo_termino'];
+                        $contrato_insumo->user_id = auth()->id();
                         $contrato_insumo = $catalogoContrato->contratoInsumos()->save($contrato_insumo);
 
                         $logCatInsumo = new CatalogoContratoInsumoLog();
@@ -328,7 +330,7 @@ class CatalogoContratoController extends AppBaseController
                             $contrato_insumo->pedido_multiplo_de = $item['pedido_multiplo_de'];
                             $contrato_insumo->periodo_inicio = $item['periodo_inicio'];
                             $contrato_insumo->periodo_termino = $item['periodo_termino'];
-
+                            $contrato_insumo->user_id = auth()->id();
 
                             $contrato_insumo->update();
 
@@ -367,6 +369,7 @@ class CatalogoContratoController extends AppBaseController
                     $contrato_insumo->pedido_multiplo_de = $reajuste['pedido_multiplo_de'];
                     $contrato_insumo->periodo_inicio = $reajuste['periodo_inicio'];
                     $contrato_insumo->periodo_termino = $reajuste['periodo_termino'];
+                    $contrato_insumo->user_id = auth()->id();
                     $contrato_insumo->save();
 
                     $logCatInsumo = new CatalogoContratoInsumoLog();
@@ -528,7 +531,8 @@ class CatalogoContratoController extends AppBaseController
     public function buscaFornecedor(Request $request){
         $fornecedores = MegaFornecedor::select([
             'agn_in_codigo as id',
-            DB::raw("CONVERT(agn_st_nome,'UTF8','WE8ISO8859P15') as agn_st_nome")
+            'agn_st_cgc',
+            DB::raw("(CONVERT(agn_st_nome,'UTF8','WE8ISO8859P15') || ' - ' || agn_st_cgc) as agn_st_nome")
         ])
         ->whereRaw("LOWER(agn_st_nome) LIKE '%' || LOWER('{$request->q}') || '%'")
         ->orderBy('agn_st_nome', 'ASC')

@@ -145,12 +145,12 @@
                                 <!-- The user image in the navbar-->
                                 <span class="hidden-xs">{!! Auth::user()->name !!}</span>
                                 <!-- hidden-xs hides the username on small devices so only the image appears. -->
-                                <img src="{{ Gravatar::fallback(asset('img/user2-160x160.jpg'))->get(Auth::user()->email) }}" class="user-image" alt="User Image">
+                                {{--<img src="/img/bildzito.jpg" class="user-image" alt="User Image">--}}
                             </a>
                             <ul class="dropdown-menu">
                                 <!-- The user image in the menu -->
                                 <li class="user-header">
-                                    <img src="{{ Gravatar::fallback(asset('img/user2-160x160.jpg'))->get(Auth::user()->email) }}" class="img-circle" alt="User Image">
+                                    <img src="/img/bildzito.jpg" class="img-circle" alt="User Image">
                                     <p>
                                         {!! Auth::user()->name !!}
                                         <small>Cadastrado desde {!! Auth::user()->created_at->format('d/m/Y') !!}</small>
@@ -217,6 +217,26 @@
                 closeOnConfirm: false
             }, function () {
                 formulary.submit();
+            });
+        }
+
+        function dispensarInsumos(url, msg) {
+            swal({
+                title: msg,
+                text: "",
+                type: "success",
+                showCancelButton: true,
+                confirmButtonColor: "success",
+                confirmButtonText: "{{ ucfirst( trans('common.yes') ) }}",
+                cancelButtonText: "{{ ucfirst( trans('common.cancel') ) }}",
+                closeOnConfirm: false,
+                showLoaderOnConfirm: true
+            }, function () {
+                $.get(url, function(){
+                    LaravelDataTables.dataTableBuilder.draw();
+                    atualizaCalendario();
+                    swal.close();
+                });
             });
         }
     </script>
