@@ -62,7 +62,7 @@ class QcItensDataTable extends DataTable
                             GROUP BY oc_item_qc_item.qc_item_id
                          ) as obras"),
                 DB::raw("(SELECT
-		                	GROUP_CONCAT( CONCAT('Obra ' , obras.nome, ' - ', OCI.obs) SEPARATOR ' / ')
+		                	GROUP_CONCAT( CONCAT('Obra ' , obras.nome, ' - ', OCI.obs) SEPARATOR '\n\n')
 		                    FROM
 		                    	oc_item_qc_item
 		                    JOIN ordem_de_compra_itens OCI ON OCI.id = oc_item_qc_item.ordem_de_compra_item_id
