@@ -217,11 +217,17 @@
                                 <thead>
                                 <tr>
                                     <th>Insumos</th>
-                                    <th>Quantidade</th>
+                                    <th>Qtd</th>
                                     @foreach($qcFornecedores as $qcFornecedor)
                                         <th>
                                             {{ Form::radio('qcFornecedor_'.$qcFornecedor->id, 1, false, ['class' => 'icheck_destroy', 'style' => 'width: 18px;height: 18px;', 'onclick' => 'marcarDesmarcarTudo('.$qcFornecedor->id.');']) }}
                                             {{ $qcFornecedor->fornecedor->nome }}
+                                            <table style="width:100%;margin-top: 20px;">
+                                                <tr>
+                                                    <th>Valor unitário</th>
+                                                    <th>Valor total</th>
+                                                </tr>
+                                            </table>
                                         </th>
                                     @endforeach
                                 </tr>
@@ -235,29 +241,42 @@
                                             {{ $item->insumo->unidade_sigla }}
                                         </td>
                                         @foreach($qcFornecedores as $qcFornecedor)
+                                            @php
+                                                $qcItemQcFornecedor = $qcFornecedor->itens
+                                                  ->where('qc_item_id', $item->id)
+                                                  ->first();
+                                            @endphp
                                             <th class="text-center">
-                                                <div class="radio">
-                                                    <label>
-                                                        @php
-                                                            $qcItemQcFornecedor = $qcFornecedor->itens
-                                                              ->where('qc_item_id', $item->id)
-                                                              ->first();
-                                                        @endphp
-                                                        @if(isset($qcItemQcFornecedor->valor_total))
-                                                            {!!
-                                                              Form::radio(
-                                                                "vencedores[{$item->id}]",
-                                                                $qcItemQcFornecedor->id,
-                                                                false,
-                                                                ['class' => 'icheck_destroy qcFornecedorInsumo_'.$qcFornecedor->id, 'style' => 'width: 18px;height: 18px;']
-                                                              )
-                                                            !!}
-                                                            {{ float_to_money($qcItemQcFornecedor->valor_total) }}
-                                                        @else
-                                                            Sem proposta
-                                                        @endif
-                                                    </label>
-                                                </div>
+                                                <table style="width:100%">
+                                                    <tr>
+                                                        <td>
+                                                            <label style="font-weight: normal;">
+                                                                @if(isset($qcItemQcFornecedor->valor_unitario))
+                                                                    {{ float_to_money($qcItemQcFornecedor->valor_unitario) }}
+                                                                @endif
+                                                            </label>
+                                                        </td>
+                                                        <td>
+                                                            <div class="radio">
+                                                                <label>
+                                                                    @if(isset($qcItemQcFornecedor->valor_total))
+                                                                        {!!
+                                                                          Form::radio(
+                                                                            "vencedores[{$item->id}]",
+                                                                            $qcItemQcFornecedor->id,
+                                                                            false,
+                                                                            ['class' => 'icheck_destroy qcFornecedorInsumo_'.$qcFornecedor->id, 'style' => 'width: 18px;height: 18px;']
+                                                                          )
+                                                                        !!}
+                                                                        {{ float_to_money($qcItemQcFornecedor->valor_total) }}
+                                                                    @else
+                                                                        Sem proposta
+                                                                    @endif
+                                                                </label>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </table>
                                             </th>
                                         @endforeach
                                     </tr>
