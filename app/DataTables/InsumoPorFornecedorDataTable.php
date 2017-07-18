@@ -93,6 +93,10 @@ class InsumoPorFornecedorDataTable extends DataTable
                                 $insumo[str_replace('.',
                                     '*dot*',
                                     $qcFornecedor->fornecedor->nome . '||' . $qcFornecedor->id)] = '<span style="color:red">DECLINED</span>';
+                            } else {
+                                $insumo[str_replace('.',
+                                    '*dot*',
+                                    $qcFornecedor->fornecedor->nome . '||' . $qcFornecedor->id)] = null;
                             }
                         }
                     }
