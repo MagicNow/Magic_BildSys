@@ -44,16 +44,19 @@ class DetalhesServicosDataTable extends DataTable
             })
             ->editColumn('saldo_disponivel', function($obj){
                 if($obj->saldo_disponivel){
-                    return '<small class="pull-left">R$</small>'.number_format( doubleval($obj->saldo_disponivel), 2, ',','.');
+                    $cor = $obj->saldo_disponivel >=0 ? '#7ed321' : "#eb0000";
+                    return '<span style="color: '.$cor.'"><small class="pull-left">R$</small>'.number_format( doubleval($obj->saldo_disponivel), 2, ',','.').'</span>';
                 }else {
                     if($obj->insumo_incluido || $obj->substitui){
                         if($obj->valor_oc){
-                            return '<small class="pull-left">R$</small> - '.number_format( doubleval($obj->valor_oc), 2, ',','.');
+                            return '<span style="color:#eb0000"><small class="pull-left">R$</small> - '.number_format( doubleval($obj->valor_oc), 2, ',','.').'</span>';
                         }else{
-                            return '<small class="pull-left">R$</small>'.number_format( doubleval($obj->valor_oc), 2, ',','.');
+                            $cor = $obj->valor_oc >=0 ? '#7ed321' : "#eb0000";
+                            return '<span style="color: '.$cor.'"><small class="pull-left">R$</small>'.number_format( doubleval($obj->valor_oc), 2, ',','.').'</span>';
                         }
                     }else{
-                        return '<small class="pull-left">R$</small>'.number_format( doubleval($obj->saldo_orcamento), 2, ',','.');
+                        $cor = $obj->saldo_orcamento >=0 ? '#7ed321' : "#eb0000";
+                        return '<span style="color: '.$cor.'"><small class="pull-left">R$</small>'.number_format( doubleval($obj->saldo_orcamento), 2, ',','.').'</span>';
                     }
                 }
             })
@@ -216,7 +219,7 @@ class DetalhesServicosDataTable extends DataTable
             'Valor_comprometido_à_gastar' => ['name' => 'valor_comprometido_a_gastar', 'data' => 'valor_comprometido_a_gastar', 'searchable' => false],
             'Saldo_de_orçamento' => ['name' => 'saldo_orcamento', 'data' => 'saldo_orcamento', 'searchable' => false],
             'Valor_da_Oc' => ['name' => 'valor_oc', 'data' => 'valor_oc', 'searchable' => false],
-            'Saldo_disponível' => ['name' => 'saldo_disponivel', 'data' => 'saldo_disponivel', 'searchable' => false]
+            'Saldo_disponível_após_O&period;C&period;' => ['name' => 'saldo_disponivel', 'data' => 'saldo_disponivel', 'searchable' => false]
         ];
     }
 
