@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\DataTables\MedicaoDataTable;
 use App\Http\Requests;
 use App\Http\Requests\CreateMedicaoRequest;
+use App\Http\Requests\CreateMedicaoServicoRequest;
 use App\Http\Requests\UpdateMedicaoRequest;
 use App\Models\Contrato;
 use App\Models\ContratoItemApropriacao;
@@ -12,6 +13,7 @@ use App\Models\Fornecedor;
 use App\Models\Insumo;
 use App\Models\McMedicaoPrevisao;
 use App\Models\Medicao;
+use App\Models\MedicaoServico;
 use App\Models\MemoriaCalculo;
 use App\Models\Obra;
 use App\Models\Planejamento;
@@ -204,17 +206,31 @@ class MedicaoController extends AppBaseController
         $blocos = $memoriaCalculo->blocosEstruturados(false);
         $previsoes = $previsoes->keyBy('memoria_calculo_bloco_id');
 
+        $previsoes_ids = McMedicaoPrevisao::where('contrato_item_apropriacao_id',request()->get('contrato_item_apropriacao_id'))->pluck('id','id')->toArray();
+        if(request()->get('mc_medicao_previsao_id')){
+            $previsoes_ids = [0=>request()->get('mc_medicao_previsao_id') ];
+        }
         $medicoes = Medicao::select([
             DB::raw('SUM(qtd) qtd'),
             'mc_medicao_previsao_id'
-        ])->whereIn('mc_medicao_previsao_id',$previsoes->only(['id']))
+        ])->whereIn('mc_medicao_previsao_id',$previsoes_ids)
             ->groupBy('mc_medicao_previsao_id')
             ->get();
         if($medicoes->count()){
             $medicoes = $medicoes->keyBy('mc_medicao_previsao_id');
         }
+
+        $medicaoServico = null;
+        if(request()->get('medicao_servico_id')){
+            $medicaoServico = MedicaoServico::find(request()->get('medicao_servico_id'));
+        }
+
+        $mcMedicaoPrevisao = null;
+        if(request()->get('mc_medicao_previsao_id')){
+            $mcMedicaoPrevisao = McMedicaoPrevisao::find(request()->get('mc_medicao_previsao_id'));
+        }
         
-        return view('medicoes.create',compact('contratoItemApropriacao','memoriaCalculo', 'previsoes','blocos', 'medicoes'));
+        return view('medicoes.create',compact('contratoItemApropriacao','memoriaCalculo', 'previsoes','blocos', 'medicoes','medicaoServico', 'mcMedicaoPrevisao'));
     }
 
     /**
@@ -230,7 +246,29 @@ class MedicaoController extends AppBaseController
 
         $medicao = $this->medicaoRepository->create($input);
 
-        Flash::success('Medicao '.trans('common.saved').' '.trans('common.successfully').'.');
+        Flash::success('Medicão salva '.trans('common.successfully').'.');
+
+        return redirect()->to( '/medicoes/create?contrato_item_apropriacao_id='.
+                                    $request->get('contrato_item_apropriacao_id').
+                                '&medicao_servico_id='.$request->get('medicao_servico_id') );
+    }
+
+    public function medicaoServicoStore(CreateMedicaoServicoRequest $request)
+    {
+        $input = $request->except(['contrato_item_apropriacao_id']);
+        if($input['descontos']!=''){
+            $input['descontos'] = money_to_float($input['descontos']);
+        }
+        $input['user_id'] = auth()->id();
+        $medicaoServico = MedicaoServico::create($input);
+
+        if($medicaoServico){
+            return redirect()->to('/medicoes/create?contrato_item_apropriacao_id='.$request->get('contrato_item_apropriacao_id').'&medicao_servico_id='.$medicaoServico->id);
+        }else{
+            return back();
+        }
+
+
 
         return redirect(route('medicoes.index'));
     }

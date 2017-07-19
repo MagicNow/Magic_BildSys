@@ -471,6 +471,8 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->get('', ['as'=> 'medicoes.index', 'uses' => 'MedicaoController@index']);
         $router->post('', ['as'=> 'medicoes.store', 'uses' => 'MedicaoController@store'])
             ->middleware('needsPermission:medicoes.create');
+        $router->post('/medicao-servico', ['as'=> 'medicao_servicos.store', 'uses' => 'MedicaoController@medicaoServicoStore'])
+            ->middleware('needsPermission:medicoes.create');
         $router->get('/pre-create', ['as'=> 'medicoes.preCreate', 'uses' => 'MedicaoController@preCreate'])
             ->middleware('needsPermission:medicoes.create');
         $router->get('/create', ['as'=> 'medicoes.create', 'uses' => 'MedicaoController@create'])

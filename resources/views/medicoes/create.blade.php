@@ -27,7 +27,6 @@
     </section>
     <div class="content">
         @include('adminlte-templates::common.errors')
-
         <div class="box box-default">
             <div class="box-body">
                 <h4>Obra: {{ $contratoItemApropriacao->contratoItem->contrato->obra->nome }}</h4>
@@ -36,8 +35,27 @@
                     {{ $contratoItemApropriacao->contratoItem->contrato->fornecedor->nome }}
                 </h4>
                 <h4>Insumo: {{ $contratoItemApropriacao->codigo_insumo }} - {{ $contratoItemApropriacao->insumo->nome }}</h4>
+                @if($medicaoServico)
+                    <h4>Medição do Serviço: {{ $medicaoServico->periodo_inicio->format('d/m/Y') }} - {{ $medicaoServico->periodo_termino->format('d/m/Y') }}</h4>
+                @endif
+                @if($mcMedicaoPrevisao)
+                    <h3>{{ $mcMedicaoPrevisao->memoriaCalculoBloco->estruturaObj->nome }} -
+                        {{ $mcMedicaoPrevisao->memoriaCalculoBloco->pavimentoObj->nome }} -
+                        {{ $mcMedicaoPrevisao->memoriaCalculoBloco->trechoObj->nome }}
+                        <span class="label label-default">
+                            {{ float_to_money($mcMedicaoPrevisao->qtd,'') .' '. $mcMedicaoPrevisao->unidade_sigla }}
+                        </span>
+                        @if($medicoes)
+                            <span class="label label-warning">
+                                {{ number_format( ( ($medicoes->first()->qtd/$mcMedicaoPrevisao->qtd) * 100),2,',','.')  }}% já medido
+                            </span>
+                        @endif
+                    </h3>
+                @endif
             </div>
         </div>
+        @if( !is_null($medicaoServico) && is_null($mcMedicaoPrevisao))
+
         <div class="box box-warning" id="blocos">
             <div class="box-body">
                 @if(isset($blocos))
@@ -71,21 +89,25 @@
                                                                 @foreach($pavimento['itens'] as $trechoIndex => $trecho)
                                                                     @if(isset($previsoes[$trecho['blocoId']]))
                                                                         @if(isset($medicoes[$previsoes[$trecho['blocoId']]->id]) )
-                                                                            @if( $medicoes[$previsoes[$trecho['blocoId']]->id]->qtd == $previsoes[$trecho['blocoId']]->qtd)
+                                                                            @if( $previsoes[$trecho['blocoId']]->qtd <= $medicoes[$previsoes[$trecho['blocoId']]->id]->qtd)
                                                                                 {{--Foi medido 100%--}}
                                                                                 <td class="trechoMedido100porcento" id="trecho{{ $trecho['blocoId'] }}">
                                                                             @else
                                                                                 <td class="trechoMedido" id="trecho{{ $trecho['blocoId'] }}"
                                                                                     onclick="selecionaTrecho({{ $trecho['blocoId'] }});">
                                                                             @endif
-
                                                                         @else
                                                                             <td class="trecho" id="trecho{{ $trecho['blocoId'] }}"
                                                                                 onclick="selecionaTrecho({{ $trecho['blocoId'] }});">
                                                                         @endif
                                                                             &nbsp;
                                                                             {{ $trecho['nome'] }}
-                                                                            &nbsp;
+                                                                                @if(isset($medicoes[$previsoes[$trecho['blocoId']]->id]) )
+                                                                                    @if( $medicoes[$previsoes[$trecho['blocoId']]->id]->qtd < $previsoes[$trecho['blocoId']]->qtd)
+                                                                                        {{ number_format( ( ($medicoes[$previsoes[$trecho['blocoId']]->id]->qtd/$previsoes[$trecho['blocoId']]->qtd) * 100),2,',','.')  }}%
+                                                                                    @endif
+                                                                                @endif
+                                                                                    &nbsp;
                                                                         </td>
                                                                     @else
                                                                         <td> &nbsp;{{ $trecho['nome'] }}&nbsp;</td>
@@ -105,27 +127,104 @@
                 @endif
             </div>
         </div>
+        @endif
 
-        <div class="box box-primary">
+        @if( !is_null($medicaoServico) && !is_null($mcMedicaoPrevisao))
+            <div class="box box-primary">
+                <div class="box-body">
+                    <div class="row">
+                        {!! Form::open(['route' => 'medicoes.store','files'=>true]) !!}
 
-            <div class="box-body">
-                <div class="row">
-                    {!! Form::open(['route' => 'medicoes.store']) !!}
+                            @include('medicoes.fields')
 
-                        @include('medicoes.fields')
-
-                    {!! Form::close() !!}
+                        {!! Form::close() !!}
+                    </div>
                 </div>
             </div>
-        </div>
+        @elseif( is_null($medicaoServico) && is_null($mcMedicaoPrevisao))
+            <div class="box box-primary">
+                <div class="box-body">
+                    <div class="row">
+                            {!! Form::open(['route' => 'medicao_servicos.store']) !!}
+
+                            @include('medicao_servicos.fields')
+
+                            {!! Form::close() !!}
+                    </div>
+                </div>
+            </div>
+        @endif
+
     </div>
 @endsection
 @section('scripts')
 <script type="text/javascript">
+    @if($medicaoServico)
     var previsoes = {!! json_encode($previsoes->toArray()) !!};
     function selecionaTrecho(qual){
-        console.log(qual, previsoes[qual]);
+        document.location = '{!! route('medicoes.create').
+                    '?contrato_item_apropriacao_id='.$contratoItemApropriacao->id.
+                    '&medicao_servico_id='.$medicaoServico->id.
+                    '&mc_medicao_previsao_id=' !!}'+previsoes[qual].id;
     }
+    @endif
+
+    @if($mcMedicaoPrevisao)
+        var valor_a_medir = {!! $mcMedicaoPrevisao->qtd !!};
+        var maximo_qtd = {!! $mcMedicaoPrevisao->qtd !!};
+        var maximo_percentual = 100;
+        @if($medicoes)
+            maximo_qtd = {{ ($mcMedicaoPrevisao->qtd - $medicoes->first()->qtd) }};
+            maximo_percentual = {{ number_format( (100 - ($medicoes->first()->qtd/$mcMedicaoPrevisao->qtd) * 100),2,'.','') }};
+        @endif
+
+        function atualizaValor(percentual){
+            var valor_qtd = $('#qtd').val();
+            var valor_percentual = $('#percentual').val();
+            var valor_final = 0;
+            if(percentual){
+                if(valor_percentual!=''){
+                    valor_percentual = moneyToFloat(valor_percentual);
+                    if(valor_percentual > maximo_percentual){
+                        valor_percentual = maximo_percentual;
+                        $('#percentual').val(floatToMoney(valor_percentual.toFixed(2),''));
+                    }
+                    valor_final = (valor_percentual / 100) * valor_a_medir;
+
+                    valor_final_txt = floatToMoney(valor_final.toFixed(2),'');
+                    $('#qtd').val(valor_final_txt);
+                }
+            }else{
+                if(valor_qtd!=''){
+                    valor_qtd = moneyToFloat(valor_qtd);
+                    if(valor_qtd > maximo_qtd){
+                        valor_qtd = maximo_qtd;
+                        $('#qtd').val(floatToMoney(valor_qtd.toFixed(2),''));
+                    }
+                    valor_final = (valor_qtd / valor_a_medir) * 100;
+                    valor_final_txt = floatToMoney(valor_final.toFixed(2),'');
+                    $('#percentual').val(valor_final_txt);
+                }
+            }
+        }
+
+    function checaTotal() {
+
+        var valor_percentual = $('#percentual').val();
+        if(valor_percentual!=''){
+            valor_percentual = moneyToFloat(valor_percentual);
+            if(valor_percentual<100){
+                $('#blocoObs').show();
+                $('#obs').attr('required',true);
+            }else{
+                $('#blocoObs').hide();
+                $('#obs').attr('required',false);
+            }
+        }
+    }
+
+
+    @endif
 </script>
 
 @stop

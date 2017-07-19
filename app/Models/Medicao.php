@@ -20,8 +20,7 @@ class Medicao extends Model
     public $fillable = [
         'mc_medicao_previsao_id',
         'qtd',
-        'periodo_inicio',
-        'periodo_termino',
+        'medicao_servico_id',
         'user_id',
         'aprovado',
         'obs'
@@ -35,8 +34,7 @@ class Medicao extends Model
     protected $casts = [
         'id' => 'integer',
         'mc_medicao_previsao_id' => 'integer',
-        'periodo_inicio' => 'date',
-        'periodo_termino' => 'date',
+        'medicao_servico_id' => 'integer',
         'user_id' => 'integer',
         'obs' => 'string'
     ];
@@ -47,7 +45,8 @@ class Medicao extends Model
      * @var array
      */
     public static $rules = [
-        
+        'mc_medicao_previsao_id'=>'required',
+        'qtd'=>'required',
     ];
 
     /**
@@ -63,7 +62,7 @@ class Medicao extends Model
      **/
     public function medicaoImagens()
     {
-        return $this->hasMany(MedicaoImagem::class);
+        return $this->hasMany(MedicaoImagem::class,'medicao_id');
     }
 
     /**
@@ -71,6 +70,6 @@ class Medicao extends Model
      **/
     public function medicaoServicos()
     {
-        return $this->hasMany(MedicaoServico::class);
+        return $this->belongsTo(MedicaoServico::class);
     }
 }

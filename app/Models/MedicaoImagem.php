@@ -12,10 +12,8 @@ use Eloquent as Model;
 class MedicaoImagem extends Model
 {
     public $table = 'medicao_imagens';
-    
-    const CREATED_AT = 'created_at';
-    const UPDATED_AT = 'updated_at';
 
+    public $timestamps = false;
 
     public $fillable = [
         'medicao_id',

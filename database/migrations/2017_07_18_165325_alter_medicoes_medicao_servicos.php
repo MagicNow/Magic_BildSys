@@ -23,6 +23,8 @@ class AlterMedicoesMedicaoServicos extends Migration
 
         Schema::table('medicoes', function (Blueprint $table){
             $table->unsignedInteger('medicao_servico_id')->nullable();
+            $table->dropColumn('periodo_inicio');
+            $table->dropColumn('periodo_termino');
             $table->foreign('medicao_servico_id')
                 ->references('id')
                 ->on('medicao_servicos')
@@ -41,6 +43,8 @@ class AlterMedicoesMedicaoServicos extends Migration
         Schema::table('medicoes', function (Blueprint $table){
             $table->dropForeign(['medicao_servico_id']);
             $table->dropColumn('medicao_servico_id');
+            $table->date('periodo_inicio')->nullable();
+            $table->date('periodo_termino')->nullable();
         });
         Schema::table('medicao_servicos', function (Blueprint $table){
             $table->unsignedInteger('medicao_id');

@@ -20,6 +20,21 @@ class MedicaoRepository extends BaseRepository
         'obs'
     ];
 
+    public function create(array $attributes)
+    {
+        $attributes['user_id'] = auth()->id();
+        if(isset($attributes['medicaoImagens'])){
+            $imagens = [];
+            foreach ($attributes['medicaoImagens'] as &$medicaoImagem){
+                $imagens[]['imagem'] = CodeRepository::saveFile($medicaoImagem, 'medicao/'.$attributes['mc_medicao_previsao_id']);
+            }
+            $attributes['medicaoImagens'] = $imagens;
+        }
+        $model = parent::create($attributes);
+
+        return $model;
+    }
+
     /**
      * Configure the Model
      **/

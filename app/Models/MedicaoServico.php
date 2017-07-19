@@ -18,12 +18,13 @@ class MedicaoServico extends Model
 
 
     public $fillable = [
-        'medicao_id',
         'qtd_funcionarios',
         'qtd_ajudantes',
         'qtd_outros',
         'descontos',
         'descricao_descontos',
+        'periodo_inicio',
+        'periodo_termino',
         'user_id'
     ];
 
@@ -34,11 +35,12 @@ class MedicaoServico extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'medicao_id' => 'integer',
         'qtd_funcionarios' => 'integer',
         'qtd_ajudantes' => 'integer',
         'qtd_outros' => 'integer',
         'descricao_descontos' => 'string',
+        'periodo_inicio' => 'date',
+        'periodo_termino' => 'date',
         'user_id' => 'integer'
     ];
 
@@ -48,7 +50,8 @@ class MedicaoServico extends Model
      * @var array
      */
     public static $rules = [
-        
+        'periodo_inicio' => 'required',
+        'periodo_termino' => 'required',
     ];
 
     /**
@@ -56,6 +59,6 @@ class MedicaoServico extends Model
      **/
     public function medicao()
     {
-        return $this->belongsTo(Medicao::class);
+        return $this->hasMany(Medicao::class);
     }
 }
