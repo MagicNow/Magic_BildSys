@@ -223,6 +223,10 @@ class MedicaoController extends AppBaseController
         $medicaoServico = null;
         if(request()->get('medicao_servico_id')){
             $medicaoServico = MedicaoServico::find(request()->get('medicao_servico_id'));
+        }else{
+            $medicaoServico = MedicaoServico::where('contrato_item_apropriacao_id',request()->get('contrato_item_apropriacao_id'))
+                                ->whereRaw('DATE(created_at) = CURDATE()')
+                                ->first();
         }
 
         $mcMedicaoPrevisao = null;
@@ -255,7 +259,7 @@ class MedicaoController extends AppBaseController
 
     public function medicaoServicoStore(CreateMedicaoServicoRequest $request)
     {
-        $input = $request->except(['contrato_item_apropriacao_id']);
+        $input = $request->all();
         if($input['descontos']!=''){
             $input['descontos'] = money_to_float($input['descontos']);
         }
@@ -267,10 +271,6 @@ class MedicaoController extends AppBaseController
         }else{
             return back();
         }
-
-
-
-        return redirect(route('medicoes.index'));
     }
 
     /**

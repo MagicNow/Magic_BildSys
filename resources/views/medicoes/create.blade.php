@@ -11,10 +11,13 @@
         }
         .trechoMedido{
             cursor: pointer;
-            border: 2px solid #6e2423 !important;
+            border: 2px solid #dd4b39 !important;
         }
         .trechoMedido100porcento{
-            border: 2px solid #000 !important;
+            border: 2px solid #00a65a !important;
+        }
+        .trechoVazio{
+            border: 1px solid #5a5555 !important;
         }
     </style>
     <section class="content-header">
@@ -29,14 +32,14 @@
         @include('adminlte-templates::common.errors')
         <div class="box box-default">
             <div class="box-body">
-                <h4>Obra: {{ $contratoItemApropriacao->contratoItem->contrato->obra->nome }}</h4>
+                <h4>Obra: <span class="label bg-orange">{{ $contratoItemApropriacao->contratoItem->contrato->obra->nome }}</span></h4>
                 <h4>
-                    Contrato: {{ $contratoItemApropriacao->contratoItem->contrato->id }}
-                    {{ $contratoItemApropriacao->contratoItem->contrato->fornecedor->nome }}
+                    Contrato: <span class="label bg-navy">{{ $contratoItemApropriacao->contratoItem->contrato->id }}</span>
+                    <span class="label bg-navy">{{ $contratoItemApropriacao->contratoItem->contrato->fornecedor->nome }}</span>
                 </h4>
-                <h4>Insumo: {{ $contratoItemApropriacao->codigo_insumo }} - {{ $contratoItemApropriacao->insumo->nome }}</h4>
+                <h4>Insumo: <span class="label label-warning">{{ $contratoItemApropriacao->codigo_insumo }}</span> <span class="label label-warning">{{ $contratoItemApropriacao->insumo->nome }}</span></h4>
                 @if($medicaoServico)
-                    <h4>Medição do Serviço: {{ $medicaoServico->periodo_inicio->format('d/m/Y') }} - {{ $medicaoServico->periodo_termino->format('d/m/Y') }}</h4>
+                    <h4>Período do Serviço: <span class="label label-default"> {{ $medicaoServico->periodo_inicio->format('d/m/Y') }}</span> à <span class="label label-default">{{ $medicaoServico->periodo_termino->format('d/m/Y') }}</span></h4>
                 @endif
                 @if($mcMedicaoPrevisao)
                     <h3>{{ $mcMedicaoPrevisao->memoriaCalculoBloco->estruturaObj->nome }} -
@@ -46,9 +49,11 @@
                             {{ float_to_money($mcMedicaoPrevisao->qtd,'') .' '. $mcMedicaoPrevisao->unidade_sigla }}
                         </span>
                         @if($medicoes)
+                            @if($medicoes->count())
                             <span class="label label-warning">
                                 {{ number_format( ( ($medicoes->first()->qtd/$mcMedicaoPrevisao->qtd) * 100),2,',','.')  }}% já medido
                             </span>
+                            @endif
                         @endif
                     </h3>
                 @endif
@@ -101,16 +106,33 @@
                                                                                 onclick="selecionaTrecho({{ $trecho['blocoId'] }});">
                                                                         @endif
                                                                             &nbsp;
-                                                                            {{ $trecho['nome'] }}
+                                                                            {{ $trecho['nome'] }}    &nbsp;
                                                                                 @if(isset($medicoes[$previsoes[$trecho['blocoId']]->id]) )
-                                                                                    @if( $medicoes[$previsoes[$trecho['blocoId']]->id]->qtd < $previsoes[$trecho['blocoId']]->qtd)
-                                                                                        {{ number_format( ( ($medicoes[$previsoes[$trecho['blocoId']]->id]->qtd/$previsoes[$trecho['blocoId']]->qtd) * 100),2,',','.')  }}%
+                                                                                    @if( $previsoes[$trecho['blocoId']]->qtd <= $medicoes[$previsoes[$trecho['blocoId']]->id]->qtd )
+                                                                                        100%
+                                                                                        <div class="progress progress-xs">
+                                                                                            <div class="progress-bar progress-bar-green" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                                                                                                <span class="sr-only">100%</span>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    @else
+                                                                                        <?php
+                                                                                            $porcent_number = number_format( ( ($medicoes[$previsoes[$trecho['blocoId']]->id]->qtd/$previsoes[$trecho['blocoId']]->qtd) * 100),0,'.','');
+                                                                                            $porcent = number_format( ( ($medicoes[$previsoes[$trecho['blocoId']]->id]->qtd/$previsoes[$trecho['blocoId']]->qtd) * 100),2,',','.');
+                                                                                        ?>
+                                                                                            {{ $porcent  }}%
+                                                                                    <div class="progress progress-xs active">
+                                                                                        <div class="progress-bar progress-bar-red progress-bar-striped" role="progressbar" aria-valuenow="{{$porcent_number}}" aria-valuemin="0" aria-valuemax="100" style="width: {{$porcent_number}}%">
+                                                                                            <span class="sr-only">{{$porcent}}%</span>
+                                                                                        </div>
+                                                                                    </div>
                                                                                     @endif
+                                                                                @else
+                                                                                    0%
                                                                                 @endif
-                                                                                    &nbsp;
                                                                         </td>
                                                                     @else
-                                                                        <td> &nbsp;{{ $trecho['nome'] }}&nbsp;</td>
+                                                                        <td class="trechoVazio"> &nbsp;{{ $trecho['nome'] }}&nbsp;</td>
                                                                     @endif
                                                                 @endforeach
                                                             </tr>
@@ -174,8 +196,10 @@
         var maximo_qtd = {!! $mcMedicaoPrevisao->qtd !!};
         var maximo_percentual = 100;
         @if($medicoes)
-            maximo_qtd = {{ ($mcMedicaoPrevisao->qtd - $medicoes->first()->qtd) }};
-            maximo_percentual = {{ number_format( (100 - ($medicoes->first()->qtd/$mcMedicaoPrevisao->qtd) * 100),2,'.','') }};
+            @if($medicoes->count())
+                maximo_qtd = {{ ($mcMedicaoPrevisao->qtd - $medicoes->first()->qtd) }};
+                maximo_percentual = {{ number_format( (100 - ($medicoes->first()->qtd/$mcMedicaoPrevisao->qtd) * 100),2,'.','') }};
+            @endif
         @endif
 
         function atualizaValor(percentual){

@@ -25,6 +25,7 @@ class MedicaoServico extends Model
         'descricao_descontos',
         'periodo_inicio',
         'periodo_termino',
+        'contrato_item_apropriacao_id',
         'user_id'
     ];
 
@@ -41,6 +42,7 @@ class MedicaoServico extends Model
         'descricao_descontos' => 'string',
         'periodo_inicio' => 'date',
         'periodo_termino' => 'date',
+        'contrato_item_apropriacao_id' => 'integer',
         'user_id' => 'integer'
     ];
 
@@ -60,5 +62,9 @@ class MedicaoServico extends Model
     public function medicao()
     {
         return $this->hasMany(Medicao::class);
+    }
+
+    public function contratoItemApropriacao(){
+        return $this->belongsTo(ContratoItemApropriacao::class,'contrato_item_apropriacao_id');
     }
 }

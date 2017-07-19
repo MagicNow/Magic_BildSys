@@ -42,7 +42,7 @@
             countImagens++;
             $('#imagens').append('<li id="blocoArquivo'+countImagens+'">' +
                     '   <div class="input-group">' +
-                    '       <input name="medicaoImagens[]" required="required"  accept="image/*" capture id="arquivo'+countImagens+'" class="form-control" type="file">' +
+                    '       <input name="medicaoImagens[]" required="required"  accept="image/*" id="arquivo'+countImagens+'" class="form-control" type="file">' +
                     '       <span class="input-group-btn">' +
                     '           <button type="button" title="remover imagem" class="btn btn-danger btn-flat" ' +
                     '               onclick="removerImagem('+countImagens+')">' +
