@@ -4,10 +4,17 @@ namespace App\DataTables;
 
 use App\Models\Medicao;
 use Form;
+use Illuminate\Support\Facades\DB;
 use Yajra\Datatables\Services\DataTable;
 
 class MedicaoDataTable extends DataTable
 {
+    protected $medicao_servico_id;
+
+    public function servico($id){
+        $this->medicao_servico_id = $id;
+        return $this;
+    }
 
     /**
      * @return \Illuminate\Http\JsonResponse
@@ -16,7 +23,33 @@ class MedicaoDataTable extends DataTable
     {
         return $this->datatables
             ->eloquent($this->query())
-            ->addColumn('action', 'medicaos.datatables_actions')
+            ->editColumn('percentual', function ($obj){
+                return '<div class="text-right">'.number_format($obj->percentual,2,',','.').'</div>';
+            })
+            ->editColumn('qtd', function ($obj){
+                return '<div class="text-right">'.number_format($obj->qtd,2,',','.').'</div>';
+            })
+            ->editColumn('obs', function ($obj){
+                return '<div class="text-left">'.str_limit($obj->obs,50).'</div>';
+            })
+            ->editColumn('created_at', function($obj){
+                return $obj->created_at ? with(new\Carbon\Carbon($obj->created_at))->format('d/m/Y H:i') : '';
+            })
+            ->filterColumn('created_at', function ($query, $keyword) {
+                $query->whereRaw("DATE_FORMAT(medicao_servicos.created_at,'%d/%m/%Y') like ?", ["%$keyword%"]);
+            })
+            ->filterColumn('local', function ($query, $keyword) {
+                $query->whereRaw("CONCAT(E.nome,' - ',P.nome,' - ',T.nome) like ?", ["%$keyword%"]);
+            })
+            ->filterColumn('qtd', function ($query, $keyword) {
+                $keyword = str_replace(',','.', str_replace('.','',$keyword));
+                $query->whereRaw("medicoes.qtd like ?", ["%$keyword%"]);
+            })
+            ->filterColumn('percentual', function ($query, $keyword) {
+                $keyword = str_replace(',','.', str_replace('.','',$keyword));
+                $query->whereRaw("((medicoes.qtd/mc_medicao_previsoes.qtd)*100) like ?", ["%$keyword%"]);
+            })
+//            ->addColumn('action', 'medicaos.datatables_actions')
             ->make(true);
     }
 
@@ -27,7 +60,27 @@ class MedicaoDataTable extends DataTable
      */
     public function query()
     {
-        $medicaos = Medicao::query();
+        $medicaos = Medicao::query()
+            ->select([
+                'medicoes.id',
+                'users.name as user',
+                'medicoes.qtd',
+                'medicoes.obs',
+                'medicoes.created_at',
+                DB::raw('(medicoes.qtd/mc_medicao_previsoes.qtd)*100 as percentual'),
+                DB::raw("CONCAT(E.nome,' - ',P.nome,' - ',T.nome) as local"),
+            ])
+        ->join('users','users.id','medicoes.user_id')
+        ->join('mc_medicao_previsoes','mc_medicao_previsoes.id','medicoes.mc_medicao_previsao_id')
+        ->join('memoria_calculo_blocos','memoria_calculo_blocos.id','mc_medicao_previsoes.memoria_calculo_bloco_id')
+        ->join('nomeclatura_mapas as E','memoria_calculo_blocos.estrutura','E.id')
+        ->join('nomeclatura_mapas as P','memoria_calculo_blocos.pavimento','P.id')
+        ->join('nomeclatura_mapas as T','memoria_calculo_blocos.trecho','T.id')
+        ;
+
+        if($this->medicao_servico_id){
+            $medicaos->where('medicao_servico_id',$this->medicao_servico_id);
+        }
 
         return $this->applyScopes($medicaos);
     }
@@ -41,7 +94,6 @@ class MedicaoDataTable extends DataTable
     {
         return $this->builder()
             ->columns($this->getColumns())
-            ->addAction(['width' => '10%'])
             ->ajax('')
             ->parameters([
                 'initComplete' => 'function () {
@@ -60,25 +112,13 @@ class MedicaoDataTable extends DataTable
                         }
                     });
                 }' ,
-                'dom' => 'Bfrtip',
+                'dom' => 'Bfrltip',
                 'scrollX' => false,
                 'language'=> [
                     "url"=> "/vendor/datatables/Portuguese-Brasil.json"
                 ],
                 'buttons' => [
-                    'print',
-                    'reset',
                     'reload',
-                    [
-                         'extend'  => 'collection',
-                         'text'    => '<i class="fa fa-download"></i> Export',
-                         'buttons' => [
-                             'csv',
-                             'excel',
-                             'pdf',
-                         ],
-                    ],
-                    'colvis'
                 ]
             ]);
     }
@@ -91,13 +131,13 @@ class MedicaoDataTable extends DataTable
     private function getColumns()
     {
         return [
-            'mc_medicao_previsao_id' => ['name' => 'mc_medicao_previsao_id', 'data' => 'mc_medicao_previsao_id'],
-            'qtd' => ['name' => 'qtd', 'data' => 'qtd'],
-            'periodo_inicio' => ['name' => 'periodo_inicio', 'data' => 'periodo_inicio'],
-            'periodo_termino' => ['name' => 'periodo_termino', 'data' => 'periodo_termino'],
-            'user_id' => ['name' => 'user_id', 'data' => 'user_id'],
-            'aprovado' => ['name' => 'aprovado', 'data' => 'aprovado'],
-            'obs' => ['name' => 'obs', 'data' => 'obs']
+            '#' => ['name' => 'id', 'data' => 'id','width'=>'5%'],
+            'local' => ['name' => 'local', 'data' => 'local'],
+            'quantidade' => ['name' => 'qtd', 'data' => 'qtd'],
+            'percentual' => ['name' => 'percentual', 'data' => 'percentual'],
+            'usuário' => ['name' => 'users.name', 'data' => 'user'],
+            'obs' => ['name' => 'obs', 'data' => 'obs'],
+            'data_medição' => ['name' => 'created_at', 'data' => 'created_at'],
         ];
     }
 

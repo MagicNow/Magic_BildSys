@@ -67,4 +67,8 @@ class MedicaoServico extends Model
     public function contratoItemApropriacao(){
         return $this->belongsTo(ContratoItemApropriacao::class,'contrato_item_apropriacao_id');
     }
+
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
 }

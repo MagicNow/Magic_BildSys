@@ -18,7 +18,8 @@ class MedicaoServicoRepository extends BaseRepository
         'descricao_descontos',
         'user_id',
         'periodo_inicio',
-        'periodo_termino'
+        'periodo_termino',
+        'contrato_item_apropriacao_id'
     ];
 
     /**
