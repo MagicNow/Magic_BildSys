@@ -88,7 +88,7 @@ class MedicaoServicoController extends AppBaseController
      *
      * @return Response
      */
-    public function edit($id)
+    public function edit(MedicaoDataTable $medicaoDataTable,$id)
     {
         $medicaoServico = $this->medicaoServicoRepository->findWithoutFail($id);
 
@@ -97,8 +97,7 @@ class MedicaoServicoController extends AppBaseController
 
             return redirect(route('medicaoServicos.index'));
         }
-
-        return view('medicao_servicos.edit')->with('medicaoServico', $medicaoServico);
+        return $medicaoDataTable->servico($id)->render('medicao_servicos.edit',compact('medicaoServico'));
     }
 
     /**
@@ -121,9 +120,9 @@ class MedicaoServicoController extends AppBaseController
 
         $medicaoServico = $this->medicaoServicoRepository->update($request->all(), $id);
 
-        Flash::success('Medicao Servico '.trans('common.updated').' '.trans('common.successfully').'.');
+        Flash::success('Medição do Serviço atualizada '.trans('common.successfully').'.');
 
-        return redirect(route('medicaoServicos.index'));
+        return redirect(route('medicoes.index'));
     }
 
     /**

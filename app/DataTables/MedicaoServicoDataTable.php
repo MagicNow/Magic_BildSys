@@ -29,6 +29,9 @@ class MedicaoServicoDataTable extends DataTable
             ->editColumn('descontos', function ($obj){
                 return $obj->descontos ? float_to_money($obj->descontos) : '';
             })
+            ->editColumn('finalizado', function ($obj){
+                return $obj->finalizado ? ( is_null($obj->aprovado) ? 'Aguardando Aprovação' : ($obj->aprovado==1?'Aprovado': 'Reprovado') )  : 'Em Aberto';
+            })
             ->filterColumn('created_at', function ($query, $keyword) {
                 $query->whereRaw("DATE_FORMAT(medicao_servicos.created_at,'%d/%m/%Y') like ?", ["%$keyword%"]);
             })
@@ -75,6 +78,8 @@ class MedicaoServicoDataTable extends DataTable
                 'medicao_servicos.created_at',
                 'users.name',
                 DB::raw('(SELECT COUNT(1) FROM medicoes WHERE medicao_servico_id = medicao_servicos.id ) as trechos'),
+                'medicao_servicos.finalizado',
+                'medicao_servicos.aprovado',
             ])
             ->join('users','users.id','medicao_servicos.user_id')
             ->join('contrato_item_apropriacoes','contrato_item_apropriacoes.id','medicao_servicos.contrato_item_apropriacao_id')
@@ -156,6 +161,7 @@ class MedicaoServicoDataTable extends DataTable
             'período_término' => ['name' => 'periodo_termino', 'data' => 'periodo_termino'],
             'usuário' => ['name' => 'users.name', 'data' => 'name'],
             'trechosMedidos' => ['name' => 'trechos', 'data' => 'trechos', 'width'=>'5%'],
+            'situação' => ['name' => 'finalizado', 'data' => 'finalizado', 'width'=>'5%'],
             'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }

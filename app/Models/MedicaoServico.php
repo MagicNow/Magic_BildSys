@@ -26,7 +26,9 @@ class MedicaoServico extends Model
         'periodo_inicio',
         'periodo_termino',
         'contrato_item_apropriacao_id',
-        'user_id'
+        'user_id',
+        'finalizado',
+        'aprovado',
     ];
 
     /**
@@ -43,7 +45,9 @@ class MedicaoServico extends Model
         'periodo_inicio' => 'date',
         'periodo_termino' => 'date',
         'contrato_item_apropriacao_id' => 'integer',
-        'user_id' => 'integer'
+        'user_id' => 'integer',
+        'finalizado' => 'integer',
+        'aprovado' => 'integer',
     ];
 
     /**
@@ -70,5 +74,41 @@ class MedicaoServico extends Model
 
     public function user(){
         return $this->belongsTo(User::class);
+    }
+
+    public function getPeriodoInicioAttribute($value){
+        if($value) {
+            $date = new \DateTime($value);
+            return $date->format('Y-m-d');
+        }else{
+            return $value;
+        }
+    }
+
+    public function getPeriodoInicioBrAttribute($value){
+        if($value) {
+            $date = new Carbon($value);
+            return $date->format('d/m/Y');
+        }else{
+            return $value;
+        }
+    }
+
+    public function getPeriodoTerminoAttribute($value){
+        if($value) {
+            $date = new \DateTime($value);
+            return $date->format('Y-m-d');
+        }else{
+            return $value;
+        }
+    }
+
+    public function getPeriodoTerminoBrAttribute($value){
+        if($value) {
+            $date = new Carbon($value);
+            return $date->format('d/m/Y');
+        }else{
+            return $value;
+        }
     }
 }

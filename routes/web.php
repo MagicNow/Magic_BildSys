@@ -487,6 +487,11 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->delete('/servico/{medicoes}', ['as'=> 'medicaoServicos.destroy', 'uses' => 'MedicaoServicoController@destroy'])
             ->middleware('needsPermission:medicoes.delete');
 
+        $router->put('/servico/{medicoes}', ['as'=> 'medicaoServicos.update', 'uses' => 'MedicaoServicoController@update'])
+            ->middleware('needsPermission:medicoes.edit');
+        $router->patch('/servico/{medicoes}', ['as'=> 'medicaoServicos.update', 'uses' => 'MedicaoServicoController@update'])
+            ->middleware('needsPermission:medicoes.edit');
+
         $router->get(
             '/fornecedores-por-obra',
             'MedicaoController@fornecedoresPorObra'

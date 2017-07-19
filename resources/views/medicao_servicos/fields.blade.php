@@ -19,19 +19,19 @@
 <!-- Qtd Ajudantes Field -->
 <div class="form-group col-sm-4">
     {!! Form::label('qtd_ajudantes', 'Quantidade de Ajudantes:') !!}
-    {!! Form::number('qtd_ajudantes', null, ['class' => 'form-control', 'min'=>'0']) !!}
+    {!! Form::number('qtd_ajudantes', null, ['class' => 'form-control text-right', 'min'=>'0']) !!}
 </div>
 
 <!-- Qtd Outros Field -->
 <div class="form-group col-sm-4">
     {!! Form::label('qtd_outros', 'Quantidade de Outros:') !!}
-    {!! Form::number('qtd_outros', null, ['class' => 'form-control', 'min'=>'0']) !!}
+    {!! Form::number('qtd_outros', null, ['class' => 'form-control text-right', 'min'=>'0']) !!}
 </div>
 
 <!-- Descontos Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('descontos', 'Descontos:') !!}
-    {!! Form::text('descontos', null, ['class' => 'form-control money']) !!}
+    {!! Form::text('descontos', null, ['class' => 'form-control text-right money']) !!}
 </div>
 
 <!-- Descontos Field -->
@@ -43,8 +43,19 @@
 {!! Form::hidden('contrato_item_apropriacao_id', request('contrato_item_apropriacao_id')) !!}
 
 
+
 <!-- Submit Field -->
 <div class="form-group col-sm-12">
     {!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save') ), ['class' => 'btn btn-success btn-lg btn-flat pull-right', 'type'=>'submit']) !!}
+    @if(isset($medicaoServico))
+        @if(request()->segment(count(request()->segments()))=='edit' && !$medicaoServico->finalizado)
+            {!! Form::button( '<i class="fa fa-check"></i> Salvar e Enviar para Aprovação', [
+                                'class' => 'btn btn-warning btn-lg btn-flat pull-right',
+                                'value'=>'1',
+                                'style'=>'margin-right:10px',
+                                'name'=>'finalizado',
+                                'type'=>'submit']) !!}
+        @endif
+    @endif
     <button type="button" onclick="history.go(-1);" class="btn btn-default btn-lg btn-flat"><i class="fa fa-times"></i>  {{ ucfirst( trans('common.cancel') )}}</button>
 </div>
