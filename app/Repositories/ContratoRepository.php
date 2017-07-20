@@ -234,7 +234,7 @@ class ContratoRepository extends BaseRepository
             }
         }
 
-        $adicionar_novos_insumos = function ($tipo, $insumo) use ($valores, &$contratoItens) {
+        $adicionar_novos_insumos = function ($tipo, $insumo_codigo) use ($valores, &$contratoItens) {
             $atual = $valores[$tipo];
 
             if (count($atual)) {
@@ -242,7 +242,7 @@ class ContratoRepository extends BaseRepository
                     $valores_atuais = collect($valores_atuais);
                     $valor_total = $valores_atuais->sum('valor_item');
                     if ($valor_total > 0) {
-                        $insumo = Insumo::where('codigo', $insumo)->first();
+                        $insumo = Insumo::where('codigo', $insumo_codigo)->first();
 
                         $contrato_item = [
                             'insumo_id'         => $insumo->id,
