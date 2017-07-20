@@ -44,11 +44,6 @@
                                         <input type="hidden" name="random" id="random" value="{{str_random(5)}}">
                                         {!! Form::label('obra', 'Obra:') !!}
                                         <div class="form-control">{{$obra->nome}}</div>
-                                        {{--{!! Form::select('grupo_id',[''=>'-']+$grupos, null, [--}}
-                                            {{--'class'=>'form-control select2',--}}
-                                            {{--'id'=>'grupo_id',--}}
-                                            {{--'onchange'=>'selectgrupo(this.value, \'subgrupo1_id\', \'grupos\', \'grupo\');filtroQueryString("grupo_id", this.value);'--}}
-                                            {{--]) !!}--}}
                                     </div>
                                 </div>
 
