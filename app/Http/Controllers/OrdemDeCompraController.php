@@ -572,7 +572,6 @@ class OrdemDeCompraController extends AppBaseController
             ->pluck('tarefa', 'id')
             ->toArray();
 
-
         $ordem = OrdemDeCompra::where('oc_status_id', 1)
             ->where('user_id', Auth::user()->id)
             ->where('obra_id', $request->obra_id)
@@ -1634,15 +1633,17 @@ class OrdemDeCompraController extends AppBaseController
         }
     }
 
-    public function getGrupos($id)
+    public function getGrupos($id, Request $request)
     {
         $grupo = Grupo::select([
-            'id',
-            DB::raw("CONCAT(codigo, ' ', nome) as nome")
+            'grupos.id',
+            DB::raw("CONCAT(grupos.codigo, ' ', grupos.nome) as nome")
         ])
-        ->where('grupo_id', $id)
-        ->orderBy('nome', 'ASC')
-        ->pluck('nome','id')
+        ->join('orcamentos', 'orcamentos.'.$request->campo_join, '=', 'grupos.id')
+        ->where('grupos.grupo_id', $id)
+        ->where('orcamentos.obra_id', $request->obra_id)
+        ->orderBy('grupos.nome', 'ASC')
+        ->pluck('grupos.nome','grupos.id')
         ->toArray();
 
         return $grupo;
@@ -1650,11 +1651,13 @@ class OrdemDeCompraController extends AppBaseController
     public function getServicos($id, Request $request)
     {
         $servico = Servico::select([
-            'id',
-            DB::raw("CONCAT(codigo, ' ', nome) as nome")
+            'servicos.id',
+            DB::raw("CONCAT(servicos.codigo, ' ', servicos.nome) as nome")
         ])
-        ->where('grupo_id', $id)
-        ->orderBy('nome', 'ASC');
+        ->join('orcamentos', 'orcamentos.servico_id', '=', 'servicos.id')
+        ->where('servicos.grupo_id', $id)
+        ->where('orcamentos.obra_id', $request->obra_id)
+        ->orderBy('servicos.nome', 'ASC');
 
         if($request->insumo_id) {
             $servico = $servico->whereHas('insumos', function($query) use ($request) {
