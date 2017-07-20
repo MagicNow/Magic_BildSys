@@ -77,4 +77,77 @@ class Medicao extends Model
     {
         return $this->belongsTo(User::class);
     }
+    
+    // -------- APROVAÇÕES
+
+    public function aprovacoes()
+    {
+        return $this->morphMany(WorkflowAprovacao::class, 'aprovavel');
+    }
+
+    public function irmaosIds()
+    {
+        return $this->medicaoServico->medicoes()->pluck('medicoes.id', 'medicoes.id')->toArray();
+    }
+
+    public function paiEmAprovacao()
+    {
+        if(!$this->medicao_servico_id){
+            return true;
+        }
+        if (!$this->medicaoServico->finalizado) {
+            $this->medicaoServico->update(['finalizado' => 3]);
+        }
+    }
+
+    public function confereAprovacaoGeral()
+    {
+        if(!$this->medicao_servico_id){
+            return true;
+        }
+        $qtd_itens = $this->medicaoServico->medicoes()->count();
+        $qtd_itens_aprovados = $this->medicaoServico->medicoes()->where('aprovado', '1')->count();
+        $qtd_itens_sem_voto = $this->medicaoServico->medicoes()->whereNull('aprovado')->count();
+
+        // Verifica se todos foram aprovados
+        if ($qtd_itens === $qtd_itens_aprovados) {
+
+            $this->medicaoServico->update(['aprovado' => 1]);
+        }
+
+        // Verifica se algum foi reprovado e todos foram votados
+        if ($qtd_itens !== $qtd_itens_aprovados && $qtd_itens_sem_voto===0) {
+            $this->medicaoServico->update(['aprovado'=>0]);
+        }
+    }
+
+    public function qualObra()
+    {
+        return $this->mcMedicaoPrevisao->contratoItem->contrato->obra_id;
+    }
+
+    public function aprova($valor)
+    {
+        $this->timestamps = false;
+        $this->attributes['aprovado'] = $valor;
+        $this->save();
+    }
+
+    public static $workflow_tipo_id = WorkflowTipo::MEDICAO;
+
+    public function workflowNotification()
+    {
+        if($this->medicao_servico_id){
+            return [
+                'message' => 'Você tem uma medição para aprovar',
+                'link' => route('medicaoServicos.show', $this->medicao_servico_id)
+            ];
+        }else{
+            return [
+                'message' => 'Você tem uma medição para aprovar',
+                'link' => route('medicoes.show', $this->id)
+            ];
+        }
+
+    }
 }

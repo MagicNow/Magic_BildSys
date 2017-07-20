@@ -42,7 +42,7 @@
         @if($medicao->medicaoImagens->count())
             @foreach($medicao->medicaoImagens as $imagem)
                 <a class="colorbox-photo" rel="galeria" href="{!! url('/imagem?file='.$imagem->imagem.'&mode=resize&height=940&width=940') !!}">
-                    <img width="100"
+                    <img width="100" class="img-bordered"
                             src="{!! url('/imagem?file='.$imagem->imagem.'&mode=resize&width=100') !!}">
                 </a>
             @endforeach

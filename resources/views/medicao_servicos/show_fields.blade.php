@@ -50,13 +50,13 @@
 <!-- Periodo Inicio Field -->
 <div class="form-group col-md-4">
     {!! Form::label('periodo_inicio', 'Período Início:') !!}
-    <p class="form-control text-center">{!! $medicaoServico->periodo_inicio->format('d/m/Y') !!}</p>
+    <p class="form-control text-center">{!! with(new\Carbon\Carbon($medicaoServico->periodo_inicio))->format('d/m/Y') !!}</p>
 </div>
 
 <!-- Período Termino Field -->
 <div class="form-group col-md-4">
     {!! Form::label('periodo_termino', 'Período Término:') !!}
-    <p class="form-control text-center">{!! $medicaoServico->periodo_termino->format('d/m/Y') !!}</p>
+    <p class="form-control text-center">{!! with(new\Carbon\Carbon($medicaoServico->periodo_termino))->format('d/m/Y') !!}</p>
 </div>
 
 <!-- User Id Field -->

@@ -66,6 +66,9 @@ class MedicaoDataTable extends DataTable
                 'users.name as user',
                 'medicoes.qtd',
                 'medicoes.obs',
+                'medicoes.aprovado',
+                'medicoes.medicao_servico_id',
+                'medicao_servicos.finalizado as medicao_servico_finalizado',
                 'medicoes.created_at',
                 DB::raw('(medicoes.qtd/mc_medicao_previsoes.qtd)*100 as percentual'),
                 DB::raw("CONCAT(E.nome,' - ',P.nome,' - ',T.nome) as local"),
@@ -76,6 +79,7 @@ class MedicaoDataTable extends DataTable
         ->join('nomeclatura_mapas as E','memoria_calculo_blocos.estrutura','E.id')
         ->join('nomeclatura_mapas as P','memoria_calculo_blocos.pavimento','P.id')
         ->join('nomeclatura_mapas as T','memoria_calculo_blocos.trecho','T.id')
+        ->leftJoin('medicao_servicos','medicao_servicos.id','medicoes.medicao_servico_id')
         ;
 
         if($this->medicao_servico_id){

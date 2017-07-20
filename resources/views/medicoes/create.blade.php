@@ -25,7 +25,7 @@
             <button type="button" class="btn btn-link" onclick="history.go(-1);">
                 <i class="fa fa-arrow-left" aria-hidden="true"></i>
             </button>
-            Nova Medicão
+            Medicão
         </h1>
     </section>
     <div class="content">
@@ -149,6 +149,24 @@
                 @endif
             </div>
         </div>
+            @if($medicaoServico->medicoes()->count())
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        {!! Form::model($medicaoServico, ['route' => ['medicaoServicos.update',
+                                        $medicaoServico->id], 'method' => 'patch']) !!}
+                        {!! Form::hidden('periodo_inicio', $medicaoServico->periodo_inicio) !!}
+
+                        {!! Form::hidden('periodo_termino', $medicaoServico->periodo_termino) !!}
+
+                        {!! Form::button( '<i class="fa fa-check"></i> Salvar e Enviar para Aprovação', [
+                                        'class' => 'btn btn-success btn-lg btn-flat',
+                                        'value'=>'1',
+                                        'name'=>'finalizado',
+                                        'type'=>'submit']) !!}
+                        {!! Form::close() !!}
+                    </div>
+                </div>
+            @endif
         @endif
 
         @if( !is_null($medicaoServico) && !is_null($mcMedicaoPrevisao))

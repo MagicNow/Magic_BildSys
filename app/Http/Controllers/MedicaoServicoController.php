@@ -4,13 +4,19 @@ namespace App\Http\Controllers;
 
 use App\DataTables\MedicaoDataTable;
 use App\DataTables\MedicaoServicoDataTable;
+use App\DataTables\Scopes\MedicaoServicoScope;
 use App\Http\Requests;
 use App\Http\Requests\CreateMedicaoServicoRequest;
 use App\Http\Requests\UpdateMedicaoServicoRequest;
+use App\Models\WorkflowAlcada;
+use App\Models\WorkflowTipo;
 use App\Repositories\MedicaoServicoRepository;
+use App\Repositories\WorkflowAprovacaoRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
 use Response;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\WorkflowNotification;
 
 class MedicaoServicoController extends AppBaseController
 {
@@ -30,7 +36,7 @@ class MedicaoServicoController extends AppBaseController
      */
     public function index(MedicaoServicoDataTable $medicaoServicoDataTable)
     {
-        return $medicaoServicoDataTable->render('medicao_servicos.index');
+        return $medicaoServicoDataTable->addScope(new MedicaoServicoScope())->render('medicao_servicos.index');
     }
 
     /**
@@ -73,12 +79,55 @@ class MedicaoServicoController extends AppBaseController
         $medicaoServico = $this->medicaoServicoRepository->findWithoutFail($id);
 
         if (empty($medicaoServico)) {
-            Flash::error('Medicao Servico '.trans('common.not-found'));
+            Flash::error('Medição de Serviço não encontrada');
 
-            return redirect(route('medicaoServicos.index'));
+            return redirect(route('medicoes.index'));
+        }
+        $avaliado_reprovado = [];
+        $itens_ids = $medicaoServico->medicoes()->pluck('id', 'id')->toArray();
+        $aprovavelTudo = WorkflowAprovacaoRepository::verificaAprovaGrupo('Medicao', $itens_ids, auth()->user());
+        $alcadas = WorkflowAlcada::where('workflow_tipo_id', WorkflowTipo::MEDICAO)->orderBy('ordem', 'ASC')->get();
+
+        if ($medicaoServico->finalizado) { //Em Aprovação
+            foreach ($alcadas as $alcada) {
+                $avaliado_reprovado[$alcada->id] = WorkflowAprovacaoRepository::verificaTotalJaAprovadoReprovado(
+                    'Medicao',
+                    $itens_ids,
+                    null,
+                    null,
+                    $alcada->id);
+
+                $avaliado_reprovado[$alcada->id] ['aprovadores'] = WorkflowAprovacaoRepository::verificaQuantidadeUsuariosAprovadores(
+                    WorkflowTipo::find(WorkflowTipo::MEDICAO),
+                    $medicaoServico->obra_id,
+                    $alcada->id);
+
+                $avaliado_reprovado[$alcada->id] ['faltam_aprovar'] = WorkflowAprovacaoRepository::verificaUsuariosQueFaltamAprovar(
+                    'Medicao',
+                    WorkflowTipo::MEDICAO,
+                    $medicaoServico->obra_id,
+                    $alcada->id,
+                    $itens_ids);
+
+                // Data do início da Alçada
+                if ($alcada->ordem === 1) {
+
+                    $avaliado_reprovado[$alcada->id] ['data_inicio'] = $medicaoServico->updated_at->format('d/m/Y H:i');
+
+                } else {
+                    $primeiro_voto = WorkflowAprovacao::where('aprovavel_type', 'App\\Models\\Medicao')
+                        ->whereIn('aprovavel_id', $itens_ids)
+                        ->where('workflow_alcada_id', $alcada->id)
+                        ->orderBy('id', 'ASC')
+                        ->first();
+                    if ($primeiro_voto) {
+                        $avaliado_reprovado[$alcada->id]['data_inicio'] = $primeiro_voto->created_at->format('d/m/Y H:i');
+                    }
+                }
+            }
         }
 
-        return $medicaoDataTable->servico($id)->render('medicao_servicos.show',compact('medicaoServico'));
+        return $medicaoDataTable->servico($id)->render('medicao_servicos.show',compact('medicaoServico','aprovavelTudo','alcadas'));
     }
 
     /**
@@ -93,7 +142,7 @@ class MedicaoServicoController extends AppBaseController
         $medicaoServico = $this->medicaoServicoRepository->findWithoutFail($id);
 
         if (empty($medicaoServico)) {
-            Flash::error('Medicao Servico '.trans('common.not-found'));
+            Flash::error('Medição de Serviço não encontrada');
 
             return redirect(route('medicaoServicos.index'));
         }
@@ -113,11 +162,20 @@ class MedicaoServicoController extends AppBaseController
         $medicaoServico = $this->medicaoServicoRepository->findWithoutFail($id);
 
         if (empty($medicaoServico)) {
-            Flash::error('Medicao Servico '.trans('common.not-found'));
+            Flash::error('Medição de Serviço não encontrada');
 
             return redirect(route('medicaoServicos.index'));
         }
         $input = $request->all();
+        if(!isset($input['finalizado'])){
+            $input['finalizado'] = 0;
+        }else{
+            if($input['finalizado']){
+                $aprovadores = WorkflowAprovacaoRepository::usuariosDaAlcadaAtual($medicaoServico);
+                Notification::send($aprovadores, new WorkflowNotification($medicaoServico));
+            }
+        }
+        $input['aprovado'] = null;
         $medicaoServico = $this->medicaoServicoRepository->update($input, $id);
 
         Flash::success('Medição do Serviço atualizada '.trans('common.successfully').'.');
@@ -137,7 +195,7 @@ class MedicaoServicoController extends AppBaseController
         $medicaoServico = $this->medicaoServicoRepository->findWithoutFail($id);
 
         if (empty($medicaoServico)) {
-            Flash::error('Medicao Servico '.trans('common.not-found'));
+            Flash::error('Medição de Serviço não encontrada');
 
             return redirect(route('medicaoServicos.index'));
         }

@@ -3,13 +3,14 @@
 namespace App\DataTables;
 
 use App\Models\MedicaoServico;
+use App\Models\WorkflowTipo;
+use App\Models\WorkflowUsuario;
 use Form;
 use Illuminate\Support\Facades\DB;
 use Yajra\Datatables\Services\DataTable;
 
 class MedicaoServicoDataTable extends DataTable
 {
-
     /**
      * @return \Illuminate\Http\JsonResponse
      */
@@ -53,6 +54,7 @@ class MedicaoServicoDataTable extends DataTable
             })
             ->orderColumn('trechos','(SELECT COUNT(1) FROM medicoes WHERE medicao_servico_id = medicao_servicos.id ) $1')
             ->editColumn('action', 'medicao_servicos.datatables_actions')
+            ->with('aprovador','1')
             ->make(true);
     }
 
@@ -63,6 +65,12 @@ class MedicaoServicoDataTable extends DataTable
      */
     public function query()
     {
+        // Verifica se o usuário é um aprovador de Medições
+        $aprovador = WorkflowUsuario::where('user_id',auth()->id())
+            ->join('workflow_alcadas','workflow_alcadas.id','workflow_usuarios.workflow_alcada_id')
+            ->where('workflow_tipo_id',WorkflowTipo::MEDICAO)
+            ->count();
+
         $medicaoServicos = MedicaoServico::query()
             ->select([
                 'medicao_servicos.id',
@@ -76,10 +84,12 @@ class MedicaoServicoDataTable extends DataTable
                 'medicao_servicos.qtd_ajudantes',
                 'medicao_servicos.descontos',
                 'medicao_servicos.created_at',
+                DB::raw("'".$aprovador."' as aprovador"),
                 'users.name',
                 DB::raw('(SELECT COUNT(1) FROM medicoes WHERE medicao_servico_id = medicao_servicos.id ) as trechos'),
                 'medicao_servicos.finalizado',
                 'medicao_servicos.aprovado',
+                'obras.nome',
             ])
             ->join('users','users.id','medicao_servicos.user_id')
             ->join('contrato_item_apropriacoes','contrato_item_apropriacoes.id','medicao_servicos.contrato_item_apropriacao_id')
@@ -87,6 +97,7 @@ class MedicaoServicoDataTable extends DataTable
             ->join('servicos','servicos.id','contrato_item_apropriacoes.servico_id')
             ->join('contrato_itens','contrato_itens.id','contrato_item_apropriacoes.contrato_item_id')
             ->join('contratos','contratos.id','contrato_itens.contrato_id')
+            ->join('obras','obras.id','contratos.obra_id')
             ->join('fornecedores','fornecedores.id','contratos.fornecedor_id')
         ;
 
@@ -152,6 +163,7 @@ class MedicaoServicoDataTable extends DataTable
     {
         return [
             '#' => ['name' => 'id', 'data' => 'id', 'width'=>'5%'],
+            'obra' => ['name' => 'obras.nome', 'data' => 'nome', 'width'=>'5%'],
             'contrato' => ['name' => 'contratos.id', 'data' => 'contrato_id', 'width'=>'5%'],
             'fornecedor' => ['name' => 'fornecedores.nome', 'data' => 'fornecedor'],
             'insumo' => ['name' => 'insumo', 'data' => 'insumo'],

@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\MedicaoServico;
+use App\Models\ObraUser;
 use InfyOm\Generator\Common\BaseRepository;
 
 class MedicaoServicoRepository extends BaseRepository
@@ -28,5 +29,23 @@ class MedicaoServicoRepository extends BaseRepository
     public function model()
     {
         return MedicaoServico::class;
+    }
+
+    public function findWithoutFail($id, $columns = ['*'])
+    {
+        try {
+            $obj = $this->find($id, $columns);
+            // Verifica se o usuário pode ver este item (devido ao acesso à obra)
+            $obraUser = ObraUser::where('obra_id',$obj->contratoItemApropriacao->contratoItem->contrato->obra_id)
+                                ->where('user_id', auth()->id())
+                ->first();
+            if(!$obraUser){
+                return;
+            }
+
+            return $obj;
+        } catch (Exception $e) {
+            return;
+        }
     }
 }

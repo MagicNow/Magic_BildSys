@@ -7,6 +7,63 @@
                 <i class="fa fa-arrow-left" aria-hidden="true"></i>
             </button>
             Medicão - {{ $medicao->id }}
+
+            <span class="pull-right">
+
+            @if(!is_null($medicao->aprovado))
+                @if($medicao->aprovado)
+                    <button type="button" disabled="disabled"
+                            class="btn btn-success btn-sm btn-flat">
+                        <i class="fa fa-check" aria-hidden="true"></i>
+                    </button>
+                @else
+                    <button type="button" disabled="disabled"
+                            class="btn btn-danger btn-sm btn-flat">
+                        <i class="fa fa-times" aria-hidden="true"></i>
+                    </button>
+                @endif
+            @else
+                <?php
+                $workflowAprovacao = \App\Repositories\WorkflowAprovacaoRepository::verificaAprovacoes('Medicao', $medicao->id, Auth::user());
+                ?>
+                @if($workflowAprovacao['podeAprovar'])
+                    @if($workflowAprovacao['iraAprovar'])
+                        <div class="btn-group" role="group" id="blocoItemAprovaReprova{{ $medicao->id }}" aria-label="...">
+                            <button type="button" onclick="workflowAprovaReprova({{ $medicao->id }},'Medicao',1,'blocoItemAprovaReprova{{ $medicao->id }}','Medição {{ $medicao->id }}',0, '', '', true);"
+                                    class="btn btn-success btn-sm btn-flat"
+                                    title="Aprovar este item">
+                                <i class="fa fa-check" aria-hidden="true"></i>
+                            </button>
+                            <button type="button" onclick="workflowAprovaReprova({{ $medicao->id }},'Medicao',0, 'blocoItemAprovaReprova{{ $medicao->id }}','Medição {{ $medicao->id }}',0, '', '', true);"
+                                    class="btn btn-danger btn-sm btn-flat"
+                                    title="Reprovar este item">
+                                <i class="fa fa-times" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                    @else
+                        @if($workflowAprovacao['jaAprovou'])
+                            @if($workflowAprovacao['aprovacao'])
+                                <span class="btn-lg btn-flat text-success" title="Aprovado por você">
+                                                    <i class="fa fa-check" aria-hidden="true"></i>
+                                                </span>
+                            @else
+                                <span class="text-danger btn-sm btn-flat" title="Reprovado por você">
+                                                    <i class="fa fa-times" aria-hidden="true"></i>
+                                                </span>
+                            @endif
+                        @else
+                            {{--Não Aprovou ainda, pode aprovar, mas por algum motivo não irá aprovar no momento--}}
+                            <button type="button" title="{{ $workflowAprovacao['msg'] }}"
+                                    onclick="swal('{{ $workflowAprovacao['msg'] }}','','info');"
+                                    class="btn btn-default btn-sm btn-flat">
+                                <i class="fa fa-info" aria-hidden="true"></i>
+                            </button>
+                        @endif
+                    @endif
+                @endif
+            @endif
+        </span>
+
         </h1>
     </section>
     <?php

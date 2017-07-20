@@ -63,7 +63,7 @@ class MedicaoServico extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function medicao()
+    public function medicoes()
     {
         return $this->hasMany(Medicao::class);
     }
@@ -110,5 +110,24 @@ class MedicaoServico extends Model
         }else{
             return $value;
         }
+    }
+    
+    // Aprovação
+
+    public static $workflow_tipo_id = WorkflowTipo::MEDICAO;
+
+    public function workflowNotification()
+    {
+        return [
+            'message' => 'Você tem uma medição para aprovar',
+            'link' => route('medicaoServicos.show', $this->id),
+            'workflow_tipo_id' => WorkflowTipo::MEDICAO,
+            'id_dinamico' => $this->id
+        ];
+    }
+
+    public function irmaosIds()
+    {
+        return [$this->attributes['id'] => $this->attributes['id']];
     }
 }

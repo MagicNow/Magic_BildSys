@@ -13,6 +13,60 @@
                 Continuar medição <i class="fa fa-arrow-right" aria-hidden="true"></i>
             </a>
             @endif
+
+            @if($medicaoServico->finalizado)
+            <span class="pull-right">
+                @if(!is_null($medicaoServico->aprovado))
+                    @if($medicaoServico->aprovado)
+                        <span class="btn-lg btn-flat text-success" title="Aprovado">
+                                <i class="fa fa-check" aria-hidden="true"></i>
+                            </span>
+                    @else
+                        <span class="text-danger btn-lg btn-flat" title="Reprovado">
+                                <i class="fa fa-times" aria-hidden="true"></i>
+                            </span>
+                    @endif
+                @else
+                    @if($aprovavelTudo['podeAprovar'])
+                        @if($aprovavelTudo['iraAprovar'])
+                            <div class="btn-group" role="group" id="blocoMSAprovacao{{ $medicaoServico->id }}" aria-label="...">
+                                <button type="button" title="Aprovar todas as medições"
+                                        onclick="workflowAprovaReprova({{ $medicaoServico->id }},'Medicao',1,'blocoMSAprovacao{{ $medicaoServico->id }}','Medição de Serviço {{ $medicaoServico->id }}', {{ $medicaoServico->id }}, 'MedicaoServico', 'medicoes');"
+                                        class="btn btn-success btn-lg btn-flat">
+                                    Aprovar
+                                    <i class="fa fa-check" aria-hidden="true"></i>
+                                </button>
+                                <button type="button" title="Reprovar todas as medições"
+                                        onclick="workflowAprovaReprova({{ $medicaoServico->id }},'Medicao',0, 'blocoMSAprovacao{{ $medicaoServico->id }}','Medição de Serviço {{ $medicaoServico->id }}', {{ $medicaoServico->id }}, 'MedicaoServico', 'medicoes');"
+                                        class="btn btn-danger btn-lg btn-flat">
+                                    Reprovar
+                                    <i class="fa fa-times" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                        @else
+                            @if($aprovavelTudo['jaAprovou'])
+                                @if($aprovavelTudo['aprovacao'])
+                                    <span class="btn-lg btn-flat text-success" title="Aprovado por você">
+                                                <i class="fa fa-check" aria-hidden="true"></i>
+                                            </span>
+                                @else
+                                    <span class="text-danger btn-lg btn-flat" title="Reprovado por você">
+                                                <i class="fa fa-times" aria-hidden="true"></i>
+                                            </span>
+                                @endif
+                            @else
+                                {{--Não Aprovou ainda, pode aprovar, mas por algum motivo não irá aprovar no momento--}}
+                                <button type="button" title="{{ $aprovavelTudo['msg'] }}"
+                                        onclick="swal('{{ $aprovavelTudo['msg'] }}','','info');"
+                                        class="btn btn-default btn-lg btn-flat">
+                                    <i class="fa fa-info" aria-hidden="true"></i>
+                                </button>
+                            @endif
+                        @endif
+                    @endif
+                @endif
+            </span>
+            @endif
         </h1>
     </section>
     <div class="content">
