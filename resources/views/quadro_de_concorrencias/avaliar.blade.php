@@ -220,7 +220,7 @@
                                     <th>Qtd</th>
                                     @foreach($qcFornecedores as $qcFornecedor)
                                         <th>
-                                            {{ Form::radio('qcFornecedor_'.$qcFornecedor->id, 1, false, ['class' => 'icheck_destroy', 'style' => 'width: 18px;height: 18px;', 'onclick' => 'marcarDesmarcarTudo('.$qcFornecedor->id.');']) }}
+                                            {{ Form::checkbox('qcFornecedor_'.$qcFornecedor->id, 1, false, ['class' => 'icheck_destroy', 'style' => 'width: 18px;height: 18px;', 'onclick' => 'marcarDesmarcarTudo('.$qcFornecedor->id.');']) }}
                                             {{ $qcFornecedor->fornecedor->nome }}
                                             <table style="width:100%;margin-top: 20px;">
                                                 <tr>
@@ -261,7 +261,7 @@
                                                                 <label>
                                                                     @if(isset($qcItemQcFornecedor->valor_total))
                                                                         {!!
-                                                                          Form::radio(
+                                                                          Form::checkbox(
                                                                             "vencedores[{$item->id}]",
                                                                             $qcItemQcFornecedor->id,
                                                                             false,

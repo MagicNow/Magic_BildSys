@@ -13,7 +13,7 @@
             </a>
         @else
             <a href="{{ route('contratos.show', $id) }}"
-                title="{{ ucfirst(trans('common.show')) }}">
+                title="Visualizar">
                 <i class="fa fa-eye" aria-hidden="true" style="font-size: 25px;"></i>
             </a>
         @endif

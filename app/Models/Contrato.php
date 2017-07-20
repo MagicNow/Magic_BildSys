@@ -37,7 +37,7 @@ class Contrato extends Model
     public function workflowNotification()
     {
         return [
-            'message' => 'Você tem um contrato para aprovar',
+            'message' => 'Aprovar o contrato nº '. $this->id,
             'link' => route('contratos.show', $this->id),
             'workflow_tipo_id' => WorkflowTipo::CONTRATO,
             'id_dinamico' => $this->id

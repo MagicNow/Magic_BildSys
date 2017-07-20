@@ -211,20 +211,18 @@
             if(value == 1){
                 swal({
                     title: "Motivo",
-                    text: "Informe o motivo de não finalizar a obra:",
-                    type: "input",
+                    text: "Informe o motivo de não finalizar a obra: <br> <textarea class='form-control' id='motivoText'></textarea>",
                     showCancelButton: true,
                     closeOnConfirm: false,
-                    animation: "slide-from-top"
+                    animation: "slide-from-top",
+                    html: true
                 },
-                function(inputValue){
-                    if (inputValue === false) return false;
-
-                    if (inputValue === "") {
+                function(){
+                    if ($('#motivoText').val() === "") {
                         swal.showInputError("Informe o motivo!");
                         return false
                     }else{
-                        ajaxTotalParcial(id, obra_id, grupo_id, subgrupo1_id, subgrupo2_id, subgrupo3_id, servico_id, value, inputValue);
+                        ajaxTotalParcial(id, obra_id, grupo_id, subgrupo1_id, subgrupo2_id, subgrupo3_id, servico_id, value, $('#motivoText').val());
                         $('.cancel').click();
                     }
                 });
