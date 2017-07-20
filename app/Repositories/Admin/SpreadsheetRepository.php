@@ -242,23 +242,25 @@ class SpreadsheetRepository
                         # se for grupo, subgrupo
                         if(strlen($codigo_quebrado[0]) <= 45) {
                             if (count($codigo_quebrado) <= 4) {
-                                if (count($codigo_quebrado) === 1) {
-                                    $grupo = Grupo::where('codigo', $final['codigo_insumo'])->first();
-                                    if($grupo){
-                                        if($grupo->nome != $final['descricao']){
-                                            $erro = 1;
-                                            $mensagens_erro[] = 'Já existe o grupo '.'
-                                                <span style="color:orange">'.$grupo->codigo.' - '.$grupo->nome.'</span>
-                                                e você tentou inserir '.'
-                                                "<span style="color:red">'.$final['codigo_insumo'].' - '.$final['descricao'].'</span>"';
-                                        }
-                                    }else {
-                                        Grupo::create([
-                                            'codigo' => $final['codigo_insumo'],
-                                            'nome' => $final['descricao']
-                                        ]);
-                                    }
-                                } else {
+                                if (count($codigo_quebrado) > 1) {
+//                                if (count($codigo_quebrado) === 1) {
+//                                    $grupo = Grupo::where('codigo', $final['codigo_insumo'])->first();
+//
+//                                    if($grupo){
+//                                        if($grupo->nome != $final['descricao']){
+//                                            $erro = 1;
+//                                            $mensagens_erro[] = 'Já existe o grupo '.'
+//                                                <span style="color:orange">'.$grupo->codigo.' - '.$grupo->nome.'</span>
+//                                                e você tentou inserir '.'
+//                                                "<span style="color:red">'.$final['codigo_insumo'].' - '.$final['descricao'].'</span>"';
+//                                        }
+//                                    }else {
+//                                        Grupo::create([
+//                                            'codigo' => $final['codigo_insumo'],
+//                                            'nome' => $final['descricao']
+//                                        ]);
+//                                    }
+//                                } else {
                                     $codigo_subgrupo = $codigo_quebrado;
                                     $subGrupo = Grupo::where('codigo', implode('.', $codigo_subgrupo))->first();
 

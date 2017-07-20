@@ -42,12 +42,8 @@
                                 <div class="form-group col-sm-12 col-20">
                                     <div class="js-datatable-filter-form">
                                         <input type="hidden" name="random" id="random" value="{{str_random(5)}}">
-                                        {!! Form::label('grupo_id', 'Grupo:') !!}
-                                        {!! Form::select('grupo_id',[''=>'-']+$grupos, null, [
-                                            'class'=>'form-control select2',
-                                            'id'=>'grupo_id',
-                                            'onchange'=>'selectgrupo(this.value, \'subgrupo1_id\', \'grupos\', \'grupo\');filtroQueryString("grupo_id", this.value);'
-                                            ]) !!}
+                                        {!! Form::label('obra', 'Obra:') !!}
+                                        <div class="form-control">{{$obra->nome}}</div>
                                     </div>
                                 </div>
 
@@ -211,20 +207,18 @@
             if(value == 1){
                 swal({
                     title: "Motivo",
-                    text: "Informe o motivo de não finalizar a obra:",
-                    type: "input",
+                    text: "Informe o motivo de não finalizar a obra: <br> <textarea class='form-control' id='motivoText'></textarea>",
                     showCancelButton: true,
                     closeOnConfirm: false,
-                    animation: "slide-from-top"
+                    animation: "slide-from-top",
+                    html: true
                 },
-                function(inputValue){
-                    if (inputValue === false) return false;
-
-                    if (inputValue === "") {
+                function(){
+                    if ($('#motivoText').val() === "") {
                         swal.showInputError("Informe o motivo!");
                         return false
                     }else{
-                        ajaxTotalParcial(id, obra_id, grupo_id, subgrupo1_id, subgrupo2_id, subgrupo3_id, servico_id, value, inputValue);
+                        ajaxTotalParcial(id, obra_id, grupo_id, subgrupo1_id, subgrupo2_id, subgrupo3_id, servico_id, value, $('#motivoText').val());
                         $('.cancel').click();
                     }
                 });
@@ -296,7 +290,11 @@
             if(id){
                 $('.box.box-primary').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
                 $.ajax({
-                    url: rota + id
+                    url: rota + id,
+                    data: {
+                        obra_id: '{{$obra->id}}',
+                        campo_join: change
+                    }
                 }).done(function(retorno) {
                     options = '';
                     options = '<option value="">Selecione</option>';
@@ -466,7 +464,9 @@
         function verificarFiltroGrupos() {
             startLoading();
             @php
-                $grupo = \Illuminate\Support\Facades\Input::get('grupo_id');
+                $grupo_obra = \App\Models\Grupo::where('codigo', '01')->whereNull('grupo_id')->first();
+
+                $grupo = $grupo_obra->id;
                 $subgrupo1 = \Illuminate\Support\Facades\Input::get('subgrupo1_id');
                 $subgrupo2 = \Illuminate\Support\Facades\Input::get('subgrupo2_id');
                 $subgrupo3 = \Illuminate\Support\Facades\Input::get('subgrupo3_id');

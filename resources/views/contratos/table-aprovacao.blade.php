@@ -284,7 +284,7 @@
                             <tr>
                                 <td>{{ $item->insumo->codigo }}</td>
                                 <td>{{ $item->insumo->nome }}</td>
-                                <td>{{ float_to_money($item->qtd) }}</td>
+                                <td>{{ float_to_money($item->qtd * $item->valor_unitario) }}</td>
                                 <td>
                                     @if($item->porcentagem)
                                         {{ $item->porcentagem }}%
@@ -314,7 +314,7 @@
                                                     <tr>
                                                         <td>{{ $apropriacao->codigoServico() }}</td>
                                                         <td>{{ $apropriacao->ligacao->insumo->codigo }} - {{ $apropriacao->ligacao->insumo->nome }}</td>
-                                                        <td>{{ float_to_money($apropriacao->qtd) }}</td>
+                                                        <td>{{ float_to_money($apropriacao->qtd * $item->valor_unitario) }}</td>
                                                     </tr>
                                                 @endforeach
                                             </tbody>

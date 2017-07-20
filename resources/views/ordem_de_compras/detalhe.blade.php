@@ -286,7 +286,6 @@
                         <tr>
                             <th class="text-center">Código do insumo</th>
                             <th class="text-center">Descrição do insumo</th>
-                            <th class="text-center">Qtd. da O.C.</th>
                             <th class="text-center">Und de medida</th>
                             <th class="text-center">Status do valor do insumo</th>
                             <th class="text-center">Status Serviço</th>
@@ -320,7 +319,6 @@
                                 {{ $item->insumo->codigo }}</span>
                             </td>
                             <td class="text-center">{{ $item->insumo->nome }}</td>
-                            <td class="text-center">{{ $item->qtd }}</td>
                             <td class="text-center">{{ $item->unidade_sigla }}</td>
                             <td class="text-center">
                                 {{--CONTA = saldo - valor oc--}}
@@ -411,30 +409,28 @@
                                             <thead>
                                             <tr>
                                                 <th class="text-center">Qtd. prevista no orçamento</th>
-                                                <th class="text-center">Valor previsto no orçamento</th>
                                                 <th class="text-center">Qtd. comprometida realizada</th>
-                                                <th class="text-center">Valor comprometido realizado</th>
                                                 <th class="text-center">Qtd. comprometida à gastar</th>
-                                                <th class="text-center">Valor comprometido à gastar</th>
+                                                <th class="text-center">Saldo de qtd. do orçamento</th>
+                                                <th class="text-center">Qtd. da O.C.</th>
                                             </tr>
                                             </thead>
                                             <tbody>
                                             <tr>
-                                                <td class="text-center">{{ number_format($item->substitui ? $item->qtd_prevista_orcamento_pai : $item->qtd_inicial, 2, ',','.') }}</td>
-                                                <td class="text-center"><small class="pull-left">R$</small> {{ number_format($item->substitui ? $item->valor_previsto_orcamento_pai : $item->preco_inicial, 2, ',','.') }}</td>
                                                 <td class="text-center">
-                                                    {{ number_format(doubleval($item->qtd_realizada), 2, ',','.') }}
+                                                    {{ number_format($item->substitui ? $item->qtd_prevista_orcamento_pai : $item->qtd_inicial, 2, ',','.') }}
                                                 </td>
                                                 <td class="text-center">
-                                                    <small class="pull-left">R$</small>
-                                                    {{ number_format( doubleval($item->valor_realizado), 2, ',','.') }}
+                                                    {{ number_format(doubleval($item->qtd_realizada), 2, ',','.') }}
                                                 </td>
                                                 <td class="text-center">
                                                     {{ number_format(doubleval(\App\Repositories\OrdemDeCompraRepository::qtdComprometidaAGastarItem($item->grupo_id, $item->subgrupo1_id, $item->subgrupo2_id, $item->subgrupo3_id, $item->servico_id, $item->insumo_id)), 2, ',','.') }}
                                                 </td>
                                                 <td class="text-center">
-                                                    <small class="pull-left">R$</small>
-                                                    {{ number_format(doubleval(\App\Repositories\OrdemDeCompraRepository::valorComprometidoAGastarItem($item->grupo_id, $item->subgrupo1_id, $item->subgrupo2_id, $item->subgrupo3_id, $item->servico_id, $item->insumo_id)), 2, ',','.') }}
+                                                    {{ number_format( $item->substitui ? $item->qtd_prevista_orcamento_pai : $item->qtd_inicial - doubleval($item->qtd_realizada), 2, ',','.') }}
+                                                </td>
+                                                <td class="text-center">
+                                                    <strong>{{ $item->qtd }}</strong>
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -444,9 +440,10 @@
                                         <table class="table table-bordered table-striped">
                                             <thead>
                                             <tr>
-                                                <th class="text-center">Saldo de qtd. do orçamento</th>
+                                                <th class="text-center">Valor previsto no orçamento</th>
+                                                <th class="text-center">Valor comprometido realizado</th>
+                                                <th class="text-center">Valor comprometido à gastar</th>
                                                 <th class="text-center">Saldo de valor do orçamento</th>
-                                                <th class="text-center">Qtd. da O.C.</th>
                                                 <th class="text-center">Valor da O.C.</th>
                                                 <th class="text-center">Emergencial</th>
                                             </tr>
@@ -454,15 +451,26 @@
                                             <tbody>
                                             <tr>
                                                 <td class="text-center">
-                                                    {{ number_format( $item->substitui ? $item->qtd_prevista_orcamento_pai : $item->qtd_inicial - doubleval($item->qtd_realizada), 2, ',','.') }}
+                                                    <small class="pull-left">R$</small> {{ number_format($item->substitui ? $item->valor_previsto_orcamento_pai : $item->preco_inicial, 2, ',','.') }}
+                                                </td>
+                                                <td class="text-center">
+                                                    <small class="pull-left">R$</small>
+                                                    {{ number_format( doubleval($item->valor_realizado), 2, ',','.') }}
+                                                </td>
+                                                <td class="text-center">
+                                                    <small class="pull-left">R$</small>
+                                                    {{ number_format(doubleval(\App\Repositories\OrdemDeCompraRepository::valorComprometidoAGastarItem($item->grupo_id, $item->subgrupo1_id, $item->subgrupo2_id, $item->subgrupo3_id, $item->servico_id, $item->insumo_id)), 2, ',','.') }}
                                                 </td>
                                                 <td class="text-center">
                                                     <small class="pull-left">R$</small>
                                                     {{ number_format($saldo_valor_orcamento , 2, ',','.') }}
                                                 </td>
-                                                <td class="text-center"><strong>{{ $item->qtd }}</strong></td>
-                                                <td class="text-center"><small class="pull-left">R$</small> <strong>{{ number_format(doubleval($item->valor_total), 2, ',','.') }}</strong></td>
-                                                <td class="text-center">{!! $item->emergencial?'<strong class="text-danger"> <i class="fa fa-exclamation-circle" aria-hidden="true"></i> SIM</strong>':'NÃO' !!}</td>
+                                                <td class="text-center">
+                                                    <small class="pull-left">R$</small> <strong>{{ number_format(doubleval($item->valor_total), 2, ',','.') }}</strong>
+                                                </td>
+                                                <td class="text-center">
+                                                    {!! $item->emergencial?'<strong class="text-danger"> <i class="fa fa-exclamation-circle" aria-hidden="true"></i> SIM</strong>':'NÃO' !!}
+                                                </td>
                                             </tr>
                                             </tbody>
                                         </table>
