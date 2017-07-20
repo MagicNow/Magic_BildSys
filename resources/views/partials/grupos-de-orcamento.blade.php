@@ -5,7 +5,8 @@
             value="{{ $insumo }}">
     @endif
 
-    <!-- Grupos de insumo Field -->
+    @if(isset($obras))
+        <!-- Grupos de insumo Field -->
         <div class="form-group col-sm-12 col-20">
             {!! Form::label('obra', 'Obra:') !!}
             {!!
@@ -40,6 +41,7 @@
             {!! Form::label('servico_id', 'Serviço:') !!}
             {!! Form::select('servico_id', [''=>'-'], null, ['class' => 'form-control select2 js-filter', 'id'=>'servico_id', 'disabled'=>'disabled', 'onchange'=>'selectgrupo(this.value, null, \'servicos\');']) !!}
         </div>
+    @endif
 </div>
 
 @section('scripts')
