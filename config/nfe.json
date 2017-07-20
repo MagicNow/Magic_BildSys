@@ -24,7 +24,7 @@
   "tokenIBPT":"",
   "tokenNFCe":"",
   "tokenNFCeId":"",
-  "certPfxName":"/storage/certs/trend.pfx",
+  "certPfxName":"../storage/certs/trend.pfx",
   "certPassword":"12345678",
   "certPhrase":"",
 

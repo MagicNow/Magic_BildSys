@@ -302,13 +302,13 @@ class NotafiscalController extends AppBaseController
     }//fim gunzip1
 
     public function pescadorNfe(){
-//        ConsultaNfeRepository::buscaNfe();
+        //ConsultaNfeRepository::buscaNfe();
+        //dd();
         $path = storage_path('app/public/nfe/producao/temporarias/201707/-retDownnfe.xml');
         $xml = str_ireplace(['SOAP-ENV:', 'SOAP:'], '', file_get_contents($path));
 
         $resNFe = 'resNFe_v1.00.xsd';
         $procNFe = 'procNFe_v3.10.xsd';
-
 
         $resp = array(
             'bStat' => false,
@@ -319,6 +319,7 @@ class NotafiscalController extends AppBaseController
             'maxNSU' => 0,
             'docs' => array()
         );
+
         try {
             //tratar dados de retorno
             $dom = new \DOMDocument('1.0', 'utf-8'); //cria objeto DOM
@@ -350,6 +351,7 @@ class NotafiscalController extends AppBaseController
 
             $docs = $dom->getElementsByTagName('docZip');
             foreach ($docs as $doc) {
+
                 $nsu = (int) $doc->getAttribute('NSU');
                 $schema = (string) $doc->getAttribute('schema');
                 //o conteudo desse dado é um zip em base64
@@ -365,9 +367,9 @@ class NotafiscalController extends AppBaseController
                     'dados' => $zip
                 );
             }
+
             // Percorrendo array para popular tabela de notas_fiscais e nota_fiscal_itens
             $resp['docs'] = $aDocs;
-            dd($resp['docs']);
             foreach($resp['docs'] as $item){
                 // NFe de serviço
                 if($item['schema'] = $resNFe){
@@ -375,7 +377,6 @@ class NotafiscalController extends AppBaseController
                      * Buscar tags de nota de serviço
                      * salvar no banco de dados
                      * */
-                    dd($item['dados']);
 
 
                 }
@@ -387,6 +388,18 @@ class NotafiscalController extends AppBaseController
                      * */
                 }
             }
+
+            $cont = 0;
+            foreach($aDocs as $doc) {
+               $at = simplexml_load_string($doc['dados']);
+                if ($doc['schema'] == 'procNFe_v3.10.xsd')
+                    dump($cont++, $at, $doc['NSU'],  $doc['schema']);
+
+
+            }
+
+            die();
+
         } catch (\Exception $e) {
            $erro = $this->printDebug($e->getMessage());
             return $erro;
