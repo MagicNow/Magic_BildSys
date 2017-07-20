@@ -45,8 +45,8 @@ class InsumoPorFornecedorDataTable extends DataTable
                 'qntd do QC' => '',
                 'insumo_id' => $item->insumo->id,
                 'qc_item_id' => $item->id,
-                'valor_unitario_calculo' => $item->ordemDeCompraItens->sortBy('valor_unitario')->first() ? $item->ordemDeCompraItens->sortBy('valor_unitario')->first()->valor_unitario : 'R$ 0,00',
-                'valor unitário do orçamento' => $item->ordemDeCompraItens->sortBy('valor_unitario')->first() ? float_to_money(floatval($item->ordemDeCompraItens->sortBy('valor_unitario')->first()->valor_unitario)) : 'R$ 0,00',
+                'valor_unitario_calculo' => $item->ordemDeCompraItens->sortBy('valor_unitario')->first() ? $item->ordemDeCompraItens->sortBy('valor_unitario')->first()->valor_unitario : '<span style="color:red">DECLINED</span>',
+                'valor unitário do orçamento' => $item->ordemDeCompraItens->sortBy('valor_unitario')->first() ? float_to_money(floatval($item->ordemDeCompraItens->sortBy('valor_unitario')->first()->valor_unitario)) : '<span style="color:red">DECLINED</span>',
                 'Valor total previsto' => ''
             ];
         });
