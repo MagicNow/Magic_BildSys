@@ -72,6 +72,35 @@
     $medicaoServico = $medicao->medicaoServicos;
     ?>
     <div class="content">
+        <?php
+        if($medicao->aprovacoes()){
+            $motivos_reprovacao = $medicao->aprovacoes()
+                    ->where('aprovado', 0)
+                    ->where('created_at', '>=', $medicao->updated_at)
+                    ->orderBy('id', 'DESC')
+                    ->get();
+        }else{
+            $motivos_reprovacao = [];
+        }
+        ?>
+        @if(count($motivos_reprovacao))
+            <div class="alert alert-danger" role="alert" id="alert_{{ $medicao->id }}">
+                <h4><i class="fa fa-exclamation"></i> Reprovações</h4>
+                @foreach($motivos_reprovacao as $motivo_reprovacao)
+                    @if (!$loop->first)
+                        <hr>
+                    @endif
+                    @if($motivo_reprovacao->user)
+                        Usuário: <strong>{{$motivo_reprovacao->user->name}}</strong><br>
+                    @endif
+                    @if($motivo_reprovacao->workflowReprovacaoMotivo)
+                        Motivo de reprovação: <span style="font-weight:bold;">{{$motivo_reprovacao->workflowReprovacaoMotivo->nome}}</span><br>
+                    @endif
+                    Justificativa: <span style="font-weight:bold;">{{$motivo_reprovacao->justificativa}}</span>
+
+                @endforeach
+            </div>
+        @endif
         <div class="box box-default">
             <div class="box-body">
                 <h4>Obra: <span class="label bg-orange">{{ $contratoItemApropriacao->contratoItem->contrato->obra->nome }}</span></h4>

@@ -3,7 +3,7 @@
     <a href="{{ route('medicaoServicos.show', $id) }}" title="{{ ucfirst( trans('common.show') )}}" class='btn btn-default btn-xs'>
         <i class="glyphicon glyphicon-eye-open"></i>
     </a>
-    @if($finalizado && $aprovador)
+    @if($finalizado && $aprovador && is_null($aprovado))
         <a href="{{ route('medicaoServicos.show', $id) }}" title="Aprovar/Reprovar" class='btn btn-default bg-purple btn-xs'>
             <i class="fa fa-check"></i>
         </a>

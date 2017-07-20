@@ -49,12 +49,20 @@
     {!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save') ), ['class' => 'btn btn-success btn-lg btn-flat pull-right', 'type'=>'submit']) !!}
     @if(isset($medicaoServico))
         @if(request()->segment(count(request()->segments()))=='edit' && !$medicaoServico->finalizado)
+            @if(!$medicaoServico->medicoes()->where('aprovado','0')->count())
             {!! Form::button( '<i class="fa fa-check"></i> Salvar e Enviar para Aprovação', [
                                 'class' => 'btn btn-warning btn-lg btn-flat pull-right',
                                 'value'=>'1',
                                 'style'=>'margin-right:10px',
                                 'name'=>'finalizado',
                                 'type'=>'submit']) !!}
+            @else
+                <button title="Impossível enviar para aprovação, pois existem itens reprovados!" type="button"
+                        disabled class="btn btn-warning btn-lg btn-flat pull-right" data-toggle="tooltip"
+                        data-placement="top" style="margin-right:10px">
+                    <i class="fa fa-check"></i>  Salvar e Enviar para Aprovação
+                </button>
+            @endif
         @endif
     @endif
     <button type="button" onclick="history.go(-1);" class="btn btn-default btn-lg btn-flat"><i class="fa fa-times"></i>  {{ ucfirst( trans('common.cancel') )}}</button>

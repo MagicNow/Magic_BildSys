@@ -9,6 +9,7 @@ use App\Http\Requests;
 use App\Http\Requests\CreateMedicaoServicoRequest;
 use App\Http\Requests\UpdateMedicaoServicoRequest;
 use App\Models\WorkflowAlcada;
+use App\Models\WorkflowReprovacaoMotivo;
 use App\Models\WorkflowTipo;
 use App\Repositories\MedicaoServicoRepository;
 use App\Repositories\WorkflowAprovacaoRepository;
@@ -127,7 +128,14 @@ class MedicaoServicoController extends AppBaseController
             }
         }
 
-        return $medicaoDataTable->servico($id)->render('medicao_servicos.show',compact('medicaoServico','aprovavelTudo','alcadas'));
+        $motivos_reprovacao = WorkflowReprovacaoMotivo::where(function ($query) {
+            $query->where('workflow_tipo_id', WorkflowTipo::MEDICAO);
+            $query->orWhereNull('workflow_tipo_id');
+        })
+            ->pluck('nome', 'id')
+            ->toArray();
+
+        return $medicaoDataTable->servico($id)->render('medicao_servicos.show',compact('medicaoServico','aprovavelTudo','alcadas','motivos_reprovacao'));
     }
 
     /**

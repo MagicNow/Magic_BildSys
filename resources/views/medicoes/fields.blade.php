@@ -47,7 +47,7 @@
 
                             <span class="input-group-btn">
                                 <button type="button" title="remover imagem" class="btn btn-lg btn-danger btn-flat"
-                                    onclick="removerImagem({{ $countImagens }})">
+                                    onclick="removerImagemExistente({{ $countImagens }})">
                                     <i class="fa fa-times" aria-hidden="true"></i>
                                 </button>
                             </span>
@@ -88,6 +88,22 @@
         }
         function removerImagem(qual) {
             $('#blocoArquivo'+qual).remove();
+        }
+
+        function removerImagemExistente(qual) {
+            swal({
+                        title: "Remover foto?",
+                        text: "Tem certeza que deseja remover esta imagem?",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Sim, remover imagem!",
+                        closeOnConfirm: true
+                    },
+                    function(){
+                        $('#blocoArquivo'+qual).remove();
+                    });
+
         }
 
         var valor_a_medir = {!! $mcMedicaoPrevisao->qtd !!};

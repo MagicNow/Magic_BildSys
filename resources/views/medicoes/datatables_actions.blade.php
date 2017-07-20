@@ -6,7 +6,7 @@
     @if(request()->segment(count(request()->segments()))!='edit' && $medicao_servico_finalizado)
     <span class="pull-right">
 
-            @if(!is_null($aprovado))
+        @if(!is_null($aprovado))
             @if($aprovado)
                 <button type="button" disabled="disabled"
                         class="btn btn-success btn-xs btn-flat">
@@ -59,6 +59,20 @@
             @endif
         @endif
         </span>
+    @else
+        @if(!is_null($aprovado))
+            @if($aprovado)
+                <button type="button" disabled="disabled"
+                        class="btn btn-success btn-xs btn-flat">
+                    <i class="fa fa-check" aria-hidden="true"></i>
+                </button>
+            @else
+                <span type="button" title="Reprovado, clique em visualizar para conferir o motivo, ou em editar."  data-toggle="tooltip" data-placement="top"
+                        class="btn btn-danger btn-xs btn-flat">
+                    <i class="fa fa-times" aria-hidden="true"></i>
+                </span>
+            @endif
+        @endif
     @endif
     @if(request()->segment(count(request()->segments()))=='edit')
     <a href="{{ route('medicoes.edit', $id) }}" title="{{ ucfirst( trans('common.edit') )}}" class='btn btn-warning btn-xs'>

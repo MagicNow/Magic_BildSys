@@ -87,3 +87,15 @@
         </div>
     </div>
 @endsection
+@section('scripts')
+    <script type="text/javascript">
+        <?php
+                $options_motivos = "<option value=''>Escolha...</option>";
+                foreach($motivos_reprovacao as $motivo_id=>$motivo_nome){
+                    $options_motivos .= "<option value='".$motivo_id."'>".$motivo_nome."</option>";
+                }
+                ?>
+                options_motivos = "{!! $options_motivos !!}";
+
+    </script>
+@stop
