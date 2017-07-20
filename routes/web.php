@@ -1029,3 +1029,6 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         dd($insumos);
     });
 });
+
+#Image Controller
+$router->get('imagem', 'ImageController@index');

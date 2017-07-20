@@ -49,7 +49,7 @@ class MedicaoDataTable extends DataTable
                 $keyword = str_replace(',','.', str_replace('.','',$keyword));
                 $query->whereRaw("((medicoes.qtd/mc_medicao_previsoes.qtd)*100) like ?", ["%$keyword%"]);
             })
-//            ->addColumn('action', 'medicaos.datatables_actions')
+            ->editColumn('action', 'medicoes.datatables_actions')
             ->make(true);
     }
 
@@ -138,6 +138,7 @@ class MedicaoDataTable extends DataTable
             'usuário' => ['name' => 'users.name', 'data' => 'user'],
             'obs' => ['name' => 'obs', 'data' => 'obs'],
             'data_medição' => ['name' => 'created_at', 'data' => 'created_at'],
+            'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }
 

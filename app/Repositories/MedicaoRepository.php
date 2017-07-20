@@ -35,6 +35,27 @@ class MedicaoRepository extends BaseRepository
         return $model;
     }
 
+    public function update(array $attributes, $id)
+    {
+        $attributes['user_id'] = auth()->id();
+        $attributes['aprovado'] = null;
+        if(isset($attributes['medicaoImagens'])){
+            $imagens = [];
+            foreach ($attributes['medicaoImagens'] as &$medicaoImagem){
+                $imagens[]['imagem'] = CodeRepository::saveFile($medicaoImagem, 'medicao/'.$attributes['mc_medicao_previsao_id']);
+            }
+            $attributes['medicaoImagens'] = $imagens;
+        }
+        if(isset($attributes['medicaoImagemExistente'])){
+            foreach ($attributes['medicaoImagemExistente'] as $imagemExistente){
+                $attributes['medicaoImagens'][] = $imagemExistente;
+            }
+        }
+        $model = parent::update($attributes, $id);
+
+        return $model;
+    }
+
     /**
      * Configure the Model
      **/

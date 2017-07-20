@@ -26,7 +26,7 @@ class MedicaoImagem extends Model
      * @var array
      */
     protected $casts = [
-        'di' => 'integer',
+        'id' => 'integer',
         'medicao_id' => 'integer',
         'imagem' => 'string'
     ];

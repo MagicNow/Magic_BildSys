@@ -117,8 +117,8 @@ class MedicaoServicoController extends AppBaseController
 
             return redirect(route('medicaoServicos.index'));
         }
-
-        $medicaoServico = $this->medicaoServicoRepository->update($request->all(), $id);
+        $input = $request->all();
+        $medicaoServico = $this->medicaoServicoRepository->update($input, $id);
 
         Flash::success('Medição do Serviço atualizada '.trans('common.successfully').'.');
 

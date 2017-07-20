@@ -290,7 +290,17 @@ class MedicaoController extends AppBaseController
             return redirect(route('medicoes.index'));
         }
 
-        return view('medicoes.show')->with('medicao', $medicao);
+        $medicoes = Medicao::select([
+            DB::raw('SUM(qtd) qtd'),
+            'mc_medicao_previsao_id'
+        ])->where('mc_medicao_previsao_id',$medicao->mc_medicao_previsao_id)
+            ->groupBy('mc_medicao_previsao_id')
+            ->get();
+        if($medicoes->count()){
+            $medicoes = $medicoes->keyBy('mc_medicao_previsao_id');
+        }
+
+        return view('medicoes.show', compact('medicoes','medicao'));
     }
 
     /**
@@ -310,7 +320,22 @@ class MedicaoController extends AppBaseController
             return redirect(route('medicoes.index'));
         }
 
-        return view('medicoes.edit')->with('medicao', $medicao);
+        $medicoes = Medicao::select([
+            DB::raw('SUM(qtd) qtd'),
+            'mc_medicao_previsao_id'
+        ])->where('mc_medicao_previsao_id',$medicao->mc_medicao_previsao_id)
+            ->where('id','!=',$medicao->id)
+            ->groupBy('mc_medicao_previsao_id')
+            ->get();
+        if($medicoes->count()){
+            $medicoes = $medicoes->keyBy('mc_medicao_previsao_id');
+        }
+
+        $contratoItemApropriacao = $medicao->mcMedicaoPrevisao->contratoItemApropriacao;
+        $mcMedicaoPrevisao = $medicao->mcMedicaoPrevisao;
+        $medicaoServico = $medicao->medicaoServico;
+
+        return view('medicoes.edit', compact('medicoes','medicao', 'contratoItemApropriacao', 'mcMedicaoPrevisao', 'medicaoServico'));
     }
 
     /**
@@ -326,16 +351,23 @@ class MedicaoController extends AppBaseController
         $medicao = $this->medicaoRepository->findWithoutFail($id);
 
         if (empty($medicao)) {
-            Flash::error('Medicao '.trans('common.not-found'));
+            Flash::error('Medição '.trans('common.not-found'));
 
             return redirect(route('medicoes.index'));
         }
 
         $medicao = $this->medicaoRepository->update($request->all(), $id);
 
-        Flash::success('Medicao '.trans('common.updated').' '.trans('common.successfully').'.');
-
-        return redirect(route('medicoes.index'));
+        Flash::success('Medição editada '.trans('common.successfully').'.');
+        if($medicao->medicao_servico_id){
+            $medicaoServico = $medicao->medicaoServico;
+            $medicaoServico->finalizado = 0;
+            $medicaoServico->aprovado = null;
+            $medicaoServico->save();
+            return redirect(route('medicaoServicos.edit',$medicao->medicao_servico_id));
+        }else{
+            return redirect(route('medicoes.index'));
+        }
     }
 
     /**
@@ -354,11 +386,15 @@ class MedicaoController extends AppBaseController
 
             return redirect(route('medicoes.index'));
         }
-
+        $medicao_servico_id = $medicao->medicao_servico_id;
         $this->medicaoRepository->delete($id);
 
-        Flash::success('Medicao '.trans('common.deleted').' '.trans('common.successfully').'.');
+        Flash::success('Medição '.trans('common.deleted').' '.trans('common.successfully').'.');
 
-        return redirect(route('medicoes.index'));
+        if($medicao_servico_id){
+            return redirect(route('medicaoServicos.edit',$medicao_servico_id));
+        }else{
+            return redirect(route('medicoes.index'));
+        }
     }
 }

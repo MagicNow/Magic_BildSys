@@ -190,65 +190,6 @@
                     '&mc_medicao_previsao_id=' !!}'+previsoes[qual].id;
     }
     @endif
-
-    @if($mcMedicaoPrevisao)
-        var valor_a_medir = {!! $mcMedicaoPrevisao->qtd !!};
-        var maximo_qtd = {!! $mcMedicaoPrevisao->qtd !!};
-        var maximo_percentual = 100;
-        @if($medicoes)
-            @if($medicoes->count())
-                maximo_qtd = {{ ($mcMedicaoPrevisao->qtd - $medicoes->first()->qtd) }};
-                maximo_percentual = {{ number_format( (100 - ($medicoes->first()->qtd/$mcMedicaoPrevisao->qtd) * 100),2,'.','') }};
-            @endif
-        @endif
-
-        function atualizaValor(percentual){
-            var valor_qtd = $('#qtd').val();
-            var valor_percentual = $('#percentual').val();
-            var valor_final = 0;
-            if(percentual){
-                if(valor_percentual!=''){
-                    valor_percentual = moneyToFloat(valor_percentual);
-                    if(valor_percentual > maximo_percentual){
-                        valor_percentual = maximo_percentual;
-                        $('#percentual').val(floatToMoney(valor_percentual.toFixed(2),''));
-                    }
-                    valor_final = (valor_percentual / 100) * valor_a_medir;
-
-                    valor_final_txt = floatToMoney(valor_final.toFixed(2),'');
-                    $('#qtd').val(valor_final_txt);
-                }
-            }else{
-                if(valor_qtd!=''){
-                    valor_qtd = moneyToFloat(valor_qtd);
-                    if(valor_qtd > maximo_qtd){
-                        valor_qtd = maximo_qtd;
-                        $('#qtd').val(floatToMoney(valor_qtd.toFixed(2),''));
-                    }
-                    valor_final = (valor_qtd / valor_a_medir) * 100;
-                    valor_final_txt = floatToMoney(valor_final.toFixed(2),'');
-                    $('#percentual').val(valor_final_txt);
-                }
-            }
-        }
-
-    function checaTotal() {
-
-        var valor_percentual = $('#percentual').val();
-        if(valor_percentual!=''){
-            valor_percentual = moneyToFloat(valor_percentual);
-            if(valor_percentual<100){
-                $('#blocoObs').show();
-                $('#obs').attr('required',true);
-            }else{
-                $('#blocoObs').hide();
-                $('#obs').attr('required',false);
-            }
-        }
-    }
-
-
-    @endif
 </script>
 
 @stop

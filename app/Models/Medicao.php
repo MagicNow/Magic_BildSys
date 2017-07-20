@@ -68,8 +68,13 @@ class Medicao extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
-    public function medicaoServicos()
+    public function medicaoServico()
     {
-        return $this->belongsTo(MedicaoServico::class);
+        return $this->belongsTo(MedicaoServico::class,'medicao_servico_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

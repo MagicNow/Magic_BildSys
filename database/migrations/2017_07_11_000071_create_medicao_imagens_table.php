@@ -15,11 +15,10 @@ class CreateMedicaoImagensTable extends Migration
     {
         Schema::create('medicao_imagens', function (Blueprint $table) {
             $table->engine = 'InnoDB';
-            $table->increments('di');
+            $table->increments('id');
             $table->unsignedInteger('medicao_id');
             $table->string('imagem', 255);
             $table->timestamp('created_at');
-
 
             $table->foreign('medicao_id')
                 ->references('id')->on('medicoes')
