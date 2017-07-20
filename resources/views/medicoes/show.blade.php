@@ -141,3 +141,16 @@
         </div>
     </div>
 @endsection
+@section('scripts')
+    <script type="text/javascript">
+        @parent
+        <?php
+                $options_motivos = "<option value=''>Escolha...</option>";
+                foreach($motivos_de_reprovacao as $motivo_id=>$motivo_nome){
+                    $options_motivos .= "<option value='".$motivo_id."'>".$motivo_nome."</option>";
+                }
+                ?>
+                options_motivos = "{!! $options_motivos !!}";
+
+    </script>
+@stop

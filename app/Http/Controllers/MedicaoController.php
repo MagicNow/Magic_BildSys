@@ -18,6 +18,8 @@ use App\Models\MemoriaCalculo;
 use App\Models\Obra;
 use App\Models\Planejamento;
 use App\Models\Servico;
+use App\Models\WorkflowReprovacaoMotivo;
+use App\Models\WorkflowTipo;
 use App\Repositories\Admin\ObraRepository;
 use App\Repositories\MedicaoRepository;
 use Flash;
@@ -300,7 +302,14 @@ class MedicaoController extends AppBaseController
             $medicoes = $medicoes->keyBy('mc_medicao_previsao_id');
         }
 
-        return view('medicoes.show', compact('medicoes','medicao'));
+        $motivos_de_reprovacao = WorkflowReprovacaoMotivo::where(function ($query) {
+            $query->where('workflow_tipo_id', WorkflowTipo::MEDICAO);
+            $query->orWhereNull('workflow_tipo_id');
+        })
+            ->pluck('nome', 'id')
+            ->toArray();
+
+        return view('medicoes.show', compact('medicoes','medicao','motivos_de_reprovacao'));
     }
 
     /**
