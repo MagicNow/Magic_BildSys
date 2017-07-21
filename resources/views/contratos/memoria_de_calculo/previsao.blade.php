@@ -36,21 +36,42 @@
         <input type="hidden" name="contrato_item_apropriacao_id" value="{{$contrato_item_apropriacao->id}}">
         <input type="hidden" name="contrato_item_id" value="{{$contrato_item_apropriacao->contrato_item_id}}">
 
-        <div class="form-group col-md-2">
-            {!! Form::label('contrato', 'Contrato:') !!}
-            <p class="form-control">{!! $contrato->id !!}</p>
-        </div>
+        <div class="modal-header" style="margin-bottom: 40px;">
+            <div class="form-group col-md-2">
+                {!! Form::label('contrato', 'Contrato:') !!}
+                <p class="form-control">{!! $contrato->id !!}</p>
+            </div>
 
-        <div class="form-group col-md-4">
-            {!! Form::label('fornecedor', 'Fornecedor:') !!}
-            <p class="form-control">{!! $contrato->fornecedor->nome !!}</p>
-        </div>
+            <div class="form-group col-md-4">
+                {!! Form::label('fornecedor', 'Fornecedor:') !!}
+                <p class="form-control">{!! $contrato->fornecedor->nome !!}</p>
+            </div>
 
-        <div class="form-group col-md-6">
-            {!! Form::label('insumo', 'Insumo:') !!}
-            <p class="form-control">{!! $contrato_item_apropriacao->codigo_insumo . ' - ' . $insumo->nome . ' - ' . $insumo->unidade_sigla!!}</p>
-        </div>
+            <div class="form-group col-md-6">
+                {!! Form::label('insumo', 'Insumo:') !!}
+                <p class="form-control">{!! $contrato_item_apropriacao->codigo_insumo . ' - ' . $insumo->nome . ' - ' . $insumo->unidade_sigla!!}</p>
+            </div>
 
+            <div class="form-group col-md-3">
+                {!! Form::label('qtd_insumo', 'Quantidade do insumo:') !!}
+                <p class="form-control">{!! number_format($contrato_item_apropriacao->qtd, 2, ',', '.') . ' - ' . $insumo->unidade_sigla!!}</p>
+            </div>
+
+            <div class="form-group col-md-3">
+                {!! Form::label('saldo_qtd_insumo', 'Saldo de quantidade do insumo:') !!}
+                <p class="form-control"></p>
+            </div>
+
+            <div class="form-group col-md-3">
+                {!! Form::label('qtd_distribuida', 'Quantidade distribuida:') !!}
+                <p class="form-control" id="distribuida">0,00</p>
+            </div>
+
+            <div class="form-group col-md-3">
+                {!! Form::label('qtd_distribuir', 'Quantidade à distribuir:') !!}
+                <p class="form-control" id="a_distribuir">{{ number_format($contrato_item_apropriacao->qtd, 2, ',', '.') }}</p>
+            </div>
+        </div>
         @if(count($previsoes))
             @php $previsao = $previsoes->first(); @endphp
             <div class="form-group col-md-6">
@@ -309,6 +330,7 @@
     var array_blocos_previstos = [];
     var options_planejamento = [];
     var estruturasObjs = [];
+    var quantidade_distribuida = 0;
 
     $(function() {
         @if(isset($memoriaCalculo))
@@ -364,7 +386,7 @@
                     <input type="date" class="form-control" name="itens['+count+'][data_competencia]" id="data_'+count+'" required onkeyup="verificarPreenchido('+count+');" onchange="verificarPreenchido('+count+');">\
                     </td>\
                     <td>\
-                        <input type="text" class="form-control money" name="itens['+count+'][qtd]" id="quantidade_'+count+'" onkeyup="calcularPorcentagem(this.value, '+count+');verificarPreenchido('+count+');" required>\
+                        <input type="text" class="form-control money calc_quantidade" name="itens['+count+'][qtd]" id="quantidade_'+count+'" onkeyup="calcularPorcentagem(this.value, '+count+');verificarPreenchido('+count+');" required>\
                     </td>\
                     <td>\
                         <input type="text" class="form-control money" id="porcentagem_'+count+'" onkeyup="calcularQuantidade(this.value, '+count+');verificarPreenchido('+count+');">\
@@ -397,6 +419,10 @@
         if (index > -1) {
             array_blocos_previstos.splice(index, 1);
         }
+
+        quantidadeDistribuida(function(){
+            quantidade_distribuida = 0;
+        });
     }
 
     // Função para excluir a linha do banco e da tabela
@@ -435,6 +461,10 @@
         $('#porcentagem_'+id).val(porcentagem.replace('.', ','));
 
         recarregarMascara();
+
+        quantidadeDistribuida(function(){
+            quantidade_distribuida = 0;
+        });
     }
 
     // Interação entre porcentagem e quantidade.
@@ -450,6 +480,21 @@
         $('#quantidade_'+id).val(quantidade.replace('.', ','));
 
         recarregarMascara();
+
+        quantidadeDistribuida(function(){
+            quantidade_distribuida = 0;
+        });
+    }
+
+    // Calcula a quantidade distribuida
+    function quantidadeDistribuida(callback) {
+        $('.calc_quantidade').each(function(index, value) {
+            quantidade_distribuida += moneyToFloat(value.value);
+        });
+
+        $('#distribuida').text(floatToMoney(quantidade_distribuida, ''));
+        $('#a_distribuir').text(floatToMoney({{$contrato_item_apropriacao->qtd}} - quantidade_distribuida, ''));
+        return callback();
     }
 
     // Filtro de estruturas
