@@ -19,6 +19,9 @@ class CreateMedicaoBoletimStatusTable extends Migration
             $table->string('nome', 45);
             $table->string('cor', 7)->nullable();
         });
+
+        $seeder = new MedicaoBoletimStatusTableSeeder();
+        $seeder->run();
     }
 
     /**
