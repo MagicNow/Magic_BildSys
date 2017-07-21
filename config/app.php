@@ -189,6 +189,7 @@ return [
         Yajra\Oci8\Oci8ServiceProvider::class,
         Cagartner\CorreiosConsulta\ServiceProvider::class,
         Barryvdh\Snappy\ServiceProvider::class,
+        Intervention\Image\ImageServiceProvider::class,
     ],
 
     /*
@@ -243,6 +244,7 @@ return [
         'Correios'    => Cagartner\CorreiosConsulta\Facade::class,
         'PDF' => Barryvdh\Snappy\Facades\SnappyPdf::class,
         'SnappyImage' => Barryvdh\Snappy\Facades\SnappyImage::class,
+        'Image' => Intervention\Image\Facades\Image::class
     ],
 
 ];

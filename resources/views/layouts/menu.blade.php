@@ -175,3 +175,4 @@
     <a href="{!! route('admin.desistenciaMotivos.index') !!}"><i class="fa fa-edit"></i><span>Motivos declinar proposta</span></a>
 </li>
 @endshield
+
