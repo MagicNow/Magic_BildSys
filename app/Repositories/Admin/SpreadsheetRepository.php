@@ -446,7 +446,15 @@ class SpreadsheetRepository
 
     public static function planejamento($planilha){
         $line = 1;
-        $reader = ReaderFactory::create(Type::XLSX);
+        if(strtolower(substr($planilha->arquivo,-3,3)) =='csv'){
+            $reader = ReaderFactory::create(Type::CSV);
+            $reader->setFieldDelimiter(';');
+            $reader->setEndOfLineCharacter("\r");
+            $reader->setEncoding('UTF-8');
+        }else{
+            $reader = ReaderFactory::create(Type::XLSX);
+        }
+
         $reader->setShouldFormatDates(true);
         $reader->open(str_replace('public','storage/app/',public_path()).$planilha->arquivo);
 
