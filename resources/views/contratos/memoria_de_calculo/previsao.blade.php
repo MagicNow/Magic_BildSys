@@ -9,6 +9,11 @@
         .table-bordered td {
             border: 1px solid #5a5555 !important;
         }
+
+        .trecho{
+            cursor: pointer;
+            border: 2px solid #f98d00 !important;
+        }
     </style>
     <section class="content-header">
         <div class="modal-header">
@@ -340,14 +345,19 @@
             buscaNomeclaturas('T');
         @endif
 
+
         @if(count($previsoes))
             @foreach($previsoes as $item)
                 array_blocos_previstos.push({{$item->memoria_calculo_bloco_id}});
                 calcularPorcentagem('{{number_format($item->qtd, 2, ',', '.')}}', '{{$item->id}}');
+
+                setTimeout(function () {
+                    $('#td_bloco_{{$item->memoria_calculo_bloco_id}}').attr('style','border: 2px solid #f98d00 !important;');
+                }, 100);
             @endforeach
         @endif
 
-    $('#filtro_preenchido').iCheck('destroy');
+        $('#filtro_preenchido').iCheck('destroy');
         $('#filtro_nao_preenchido').iCheck('destroy');
     });
 
@@ -409,6 +419,8 @@
                 $('#planejamento_'+count).val(tarefa_referencia).trigger('change');
             }
         }
+
+        $('#td_bloco_'+memoria_calculo_bloco_id).attr('style','border: 2px solid #f98d00 !important;');
     }
 
     // Função para remover linha da tabela
