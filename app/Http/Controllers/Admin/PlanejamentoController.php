@@ -248,8 +248,9 @@ class PlanejamentoController extends AppBaseController
             \Session::put('colunasbd', $colunasbd);
 
             return redirect('/admin/planejamento/importar/selecionaCampos?planilha_id='.$retorno['planilha_id'].($template?'&template_id='.$template:''));
+        }else{
+            return $retorno;
         }
-        
     }
 
     /**

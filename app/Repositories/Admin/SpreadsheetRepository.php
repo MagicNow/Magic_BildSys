@@ -73,6 +73,12 @@ class SpreadsheetRepository
 
                 } elseif ($tipo == 'planejamento'){
                     $reader = ReaderFactory::create(Type::XLSX);
+                    if(strtolower($spreadsheet['file']->getClientOriginalExtension())=='csv'){
+                        $reader = ReaderFactory::create(Type::CSV);
+                        $reader->setFieldDelimiter(';');
+                        $reader->setEndOfLineCharacter("\r");
+                        $reader->setEncoding('UTF-8');
+                    }
                 }
                 $reader->open(str_replace('public','storage/app/',public_path()).$destinationPath);
 
@@ -109,11 +115,11 @@ class SpreadsheetRepository
                 $reader->close();
             }
 
-            \Flash::error('Escolha um arquivo');
+            flash('Escolha um arquivo','error');
             return back()->with('error', 'Escolha um arquivo!');
         }catch(\Exception $e) {
-            \Flash::info('Não foi possivel fazer a leitura do cabeçalho.');
-            return Redirect::back();
+            flash('Não foi possivel fazer a leitura do cabeçalho. '.$e->getMessage(),'error');
+            return back();
         }
     }
 
