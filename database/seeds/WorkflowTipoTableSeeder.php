@@ -38,6 +38,11 @@ class WorkflowTipoTableSeeder extends Seeder {
                     'nome'             => 'Workflow Aprovação de Solicitação de Entrega',
                     'dias_prazo'       => 3,
                     'usa_valor_minimo' => 0,
+                ], [
+                    'id'               => 6,
+                    'nome'             => 'Workflow Aprovação de Medição',
+                    'dias_prazo'       => 5,
+                    'usa_valor_minimo' => 0,
                 ]
 
             ]);

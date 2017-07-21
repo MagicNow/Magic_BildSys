@@ -403,7 +403,7 @@ class OrdemDeCompraController extends AppBaseController
         }
 
         $motivos_reprovacao = WorkflowReprovacaoMotivo::where(function ($query) {
-            $query->where('workflow_tipo_id', 1);
+            $query->where('workflow_tipo_id', WorkflowTipo::OC);
             $query->orWhereNull('workflow_tipo_id');
         })
             ->pluck('nome', 'id')

@@ -238,15 +238,19 @@ class PlanejamentoController extends AppBaseController
         /* Percorrendo campos retornados e enviando para a view onde o
             usuário escolhe as colunas que vão ser importadas e tipos.
         */
-        foreach ($retorno['colunas'] as $coluna => $type ) {
-            $colunasbd[$coluna] = $coluna . ' - ' . $type;
+        if(is_array($retorno)){
+            foreach ($retorno['colunas'] as $coluna => $type ) {
+                $colunasbd[$coluna] = $coluna . ' - ' . $type;
+            }
+
+            # Colocando variaveis na sessão para fazer validações de campos obrigatórios.
+            \Session::put('retorno', $retorno);
+            \Session::put('colunasbd', $colunasbd);
+
+            return redirect('/admin/planejamento/importar/selecionaCampos?planilha_id='.$retorno['planilha_id'].($template?'&template_id='.$template:''));
+        }else{
+            return $retorno;
         }
-
-        # Colocando variaveis na sessão para fazer validações de campos obrigatórios.
-        \Session::put('retorno', $retorno);
-        \Session::put('colunasbd', $colunasbd);
-
-        return redirect('/admin/planejamento/importar/selecionaCampos?planilha_id='.$retorno['planilha_id'].($template?'&template_id='.$template:''));
     }
 
     /**

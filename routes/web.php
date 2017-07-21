@@ -467,6 +467,57 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             ->middleware('needsPermission:memoriaCalculos.create');
 
     });
+    $router->group(['prefix'=>'medicoes', 'middleware' => 'needsPermission:medicoes.list'], function () use ($router) {
+        //        $router->get('', ['as'=> 'medicoes.index', 'uses' => 'MedicaoController@index']);
+        $router->get('', ['as'=> 'medicoes.index', 'uses' => 'MedicaoServicoController@index']);
+        $router->post('', ['as'=> 'medicoes.store', 'uses' => 'MedicaoController@store'])
+            ->middleware('needsPermission:medicoes.create');
+        $router->post('/medicao-servico', ['as'=> 'medicao_servicos.store', 'uses' => 'MedicaoController@medicaoServicoStore'])
+            ->middleware('needsPermission:medicoes.create');
+        $router->get('/pre-create', ['as'=> 'medicoes.preCreate', 'uses' => 'MedicaoController@preCreate'])
+            ->middleware('needsPermission:medicoes.create');
+        $router->get('/create', ['as'=> 'medicoes.create', 'uses' => 'MedicaoController@create'])
+            ->middleware('needsPermission:medicoes.create');
+        $router->put('/{medicoes}', ['as'=> 'medicoes.update', 'uses' => 'MedicaoController@update'])
+            ->middleware('needsPermission:medicoes.edit');
+        $router->patch('/{medicoes}', ['as'=> 'medicoes.update', 'uses' => 'MedicaoController@update'])
+            ->middleware('needsPermission:medicoes.edit');
+        $router->delete('/{medicoes}', ['as'=> 'medicoes.destroy', 'uses' => 'MedicaoController@destroy'])
+            ->middleware('needsPermission:medicoes.delete');
+        $router->delete('/servico/{medicoes}', ['as'=> 'medicaoServicos.destroy', 'uses' => 'MedicaoServicoController@destroy'])
+            ->middleware('needsPermission:medicoes.delete');
+
+        $router->put('/servico/{medicoes}', ['as'=> 'medicaoServicos.update', 'uses' => 'MedicaoServicoController@update'])
+            ->middleware('needsPermission:medicoes.edit');
+        $router->patch('/servico/{medicoes}', ['as'=> 'medicaoServicos.update', 'uses' => 'MedicaoServicoController@update'])
+            ->middleware('needsPermission:medicoes.edit');
+
+        $router->get(
+            '/fornecedores-por-obra',
+            'MedicaoController@fornecedoresPorObra'
+        );
+        $router->get(
+            '/contratos-por-obra',
+            'MedicaoController@contratosPorObra'
+        );
+        $router->get(
+            '/tarefas-por-obra',
+            'MedicaoController@tarefasPorObra'
+        );
+        $router->get(
+            '/insumos',
+            'MedicaoController@insumos'
+        );
+
+        $router->get('/{medicoes}', ['as'=> 'medicoes.show', 'uses' => 'MedicaoController@show']);
+        $router->get('/{medicoes}/edit', ['as'=> 'medicoes.edit', 'uses' => 'MedicaoController@edit'])
+            ->middleware('needsPermission:medicoes.edit');
+
+        $router->get('/servico/{medicoes}', ['as'=> 'medicaoServicos.show', 'uses' => 'MedicaoServicoController@show']);
+        $router->get('/servico/{medicoes}/edit', ['as'=> 'medicaoServicos.edit', 'uses' => 'MedicaoServicoController@edit'])
+            ->middleware('needsPermission:medicoes.edit');
+
+    });
 
 
     // Perfil
@@ -978,3 +1029,6 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         dd($insumos);
     });
 });
+
+#Image Controller
+$router->get('imagem', 'ImageController@index');

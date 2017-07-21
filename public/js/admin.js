@@ -65096,6 +65096,9 @@ $(function() {
     height: "95%"
   });
 
+
+  $('.colorbox-photo').colorbox({photo:true, transition:"fade", width:"95%", height:"95%"});
+
   $('form').submit(function(event) {
     $('.box.box-primary').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
   });

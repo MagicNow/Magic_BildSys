@@ -60,17 +60,17 @@ class McMedicaoPrevisao extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function contratoItemApropriaco()
+    public function contratoItemApropriacao()
     {
-        return $this->belongsTo(\App\Models\ContratoItemApropriaco::class);
+        return $this->belongsTo(ContratoItemApropriacao::class);
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function contratoIten()
+    public function contratoItem()
     {
-        return $this->belongsTo(\App\Models\ContratoIten::class);
+        return $this->belongsTo(ContratoItem::class);
     }
 
     /**
@@ -78,7 +78,7 @@ class McMedicaoPrevisao extends Model
      **/
     public function insumo()
     {
-        return $this->belongsTo(\App\Models\Insumo::class);
+        return $this->belongsTo(Insumo::class);
     }
 
     /**
@@ -86,7 +86,7 @@ class McMedicaoPrevisao extends Model
      **/
     public function memoriaCalculoBloco()
     {
-        return $this->belongsTo(\App\Models\MemoriaCalculoBloco::class);
+        return $this->belongsTo(MemoriaCalculoBloco::class);
     }
 
     /**
@@ -94,7 +94,7 @@ class McMedicaoPrevisao extends Model
      **/
     public function obraTorre()
     {
-        return $this->belongsTo(\App\Models\ObraTorre::class);
+        return $this->belongsTo(ObraTorre::class);
     }
 
     /**
@@ -102,7 +102,7 @@ class McMedicaoPrevisao extends Model
      **/
     public function planejamento()
     {
-        return $this->belongsTo(\App\Models\Planejamento::class);
+        return $this->belongsTo(Planejamento::class);
     }
 
     /**
@@ -110,6 +110,6 @@ class McMedicaoPrevisao extends Model
      **/
     public function unidade()
     {
-        return $this->belongsTo(\App\Models\Unidade::class);
+        return $this->belongsTo(Unidade::class);
     }
 }

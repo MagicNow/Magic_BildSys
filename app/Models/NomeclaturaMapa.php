@@ -21,7 +21,8 @@ class NomeclaturaMapa extends Model
         'nome',
         'tipo',
         'apenas_cartela',
-        'apenas_unidade'
+        'apenas_unidade',
+        'largura_visual'
     ];
 
     /**
