@@ -301,7 +301,7 @@
                                 <input type="text" class="form-control money calc_quantidade" name="itens[{{$item->id}}][qtd]" id="quantidade_{{$item->id}}" onkeyup="calcularPorcentagem(this.value, '{{$item->id}}');verificarPreenchido('{{$item->id}}');" value="{{number_format($item->qtd, 2, ',', '.')}}" required>
                             </td>
                             <td>
-                                <input type="text" class="form-control money" id="porcentagem_{{$item->id}}" onkeyup="calcularQuantidade(this.value, '{{$item->id}}');verificarPreenchido('{{$item->id}}');">
+                                <input type="text" class="form-control money calc_porcentagem" id="porcentagem_{{$item->id}}" onkeyup="calcularQuantidade(this.value, '{{$item->id}}');verificarPreenchido('{{$item->id}}');">
                             </td>
                             <td>
                                 <button onclick="excluirLinha({{$item->id}}, {{$item->memoria_calculo_bloco_id}});" class="btn btn-flat btn-sm btn-danger pull-right" data-toggle="tooltip" data-placement="top" title="Excluir" type="button">
@@ -315,14 +315,16 @@
             </table>
         @endif
 
-        <div class="col-sm-12" style="margin-top: 10px;">
-            <button class="btn btn-success pull-right flat" type="submit">
-                <i class="fa fa-save"></i> Salvar
-            </button>
+        <div class="row">
+            <div class="col-sm-12" style="margin-top: 20px;">
+                <button class="btn btn-success pull-right flat" type="submit">
+                    <i class="fa fa-save"></i> Salvar
+                </button>
 
-            <button class="btn btn-default flat" onclick="history.go(-1);">
-                <i class="fa fa-times"></i> Cancelar
-            </button>
+                <button class="btn btn-default flat" onclick="history.go(-1);">
+                    <i class="fa fa-times"></i> Cancelar
+                </button>
+            </div>
         </div>
     </div>
     {!! Form::close() !!}
@@ -399,7 +401,7 @@
                         <input type="text" class="form-control money calc_quantidade" name="itens['+count+'][qtd]" id="quantidade_'+count+'" onkeyup="calcularPorcentagem(this.value, '+count+');verificarPreenchido('+count+');" required>\
                     </td>\
                     <td>\
-                        <input type="text" class="form-control money" id="porcentagem_'+count+'" onkeyup="calcularQuantidade(this.value, '+count+');verificarPreenchido('+count+');">\
+                        <input type="text" class="form-control money calc_porcentagem" id="porcentagem_'+count+'" onkeyup="calcularQuantidade(this.value, '+count+');verificarPreenchido('+count+');">\
                     </td>\
                     <td>\
                         <button onclick="removerLinha('+count+', '+memoria_calculo_bloco_id+');" class="btn btn-flat btn-sm btn-danger pull-right" data-toggle="tooltip" data-placement="top" title="Remover" type="button">\
@@ -505,7 +507,11 @@
         });
 
         $('#distribuida').text(floatToMoney(quantidade_distribuida, ''));
-        $('#a_distribuir').text(floatToMoney({{$contrato_item_apropriacao->qtd}} - quantidade_distribuida, ''));
+
+        a_distribuir = {{$contrato_item_apropriacao->qtd}} - quantidade_distribuida;
+
+        $('#a_distribuir').text(floatToMoney(a_distribuir, ''));
+        
         return callback();
     }
 
