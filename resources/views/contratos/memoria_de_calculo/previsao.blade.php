@@ -59,7 +59,7 @@
 
             <div class="form-group col-md-3">
                 {!! Form::label('saldo_qtd_insumo', 'Saldo de quantidade do insumo:') !!}
-                <p class="form-control"></p>
+                <p class="form-control">{!! number_format($contrato_item_apropriacao->qtd, 2, ',', '.') . ' - ' . $insumo->unidade_sigla!!}</p>
             </div>
 
             <div class="form-group col-md-3">
@@ -293,7 +293,7 @@
                                 <input type="date" class="form-control" name="itens[{{$item->id}}][data_competencia]" value="{{$item->data_competencia->format('Y-m-d')}}" required id="data_{{$item->id}}" onkeyup="verificarPreenchido('{{$item->id}}');" onchange="verificarPreenchido('{{$item->id}}');">
                             </td>
                             <td>
-                                <input type="text" class="form-control money" name="itens[{{$item->id}}][qtd]" id="quantidade_{{$item->id}}" onkeyup="calcularPorcentagem(this.value, '{{$item->id}}');verificarPreenchido('{{$item->id}}');" value="{{number_format($item->qtd, 2, ',', '.')}}" required>
+                                <input type="text" class="form-control money calc_quantidade" name="itens[{{$item->id}}][qtd]" id="quantidade_{{$item->id}}" onkeyup="calcularPorcentagem(this.value, '{{$item->id}}');verificarPreenchido('{{$item->id}}');" value="{{number_format($item->qtd, 2, ',', '.')}}" required>
                             </td>
                             <td>
                                 <input type="text" class="form-control money" id="porcentagem_{{$item->id}}" onkeyup="calcularQuantidade(this.value, '{{$item->id}}');verificarPreenchido('{{$item->id}}');">
