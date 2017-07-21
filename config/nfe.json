@@ -6,7 +6,7 @@
   "pathXmlUrlFileMDFe":"",
   "pathXmlUrlFileCLe":"",
   "pathXmlUrlFileNFSe":"",
-  "pathNFeFiles":"storage/nfe",
+  "pathNFeFiles":"../storage/nfe",
   "pathCTeFiles":"",
   "pathMDFeFiles":"",
   "pathCLeFiles":"",

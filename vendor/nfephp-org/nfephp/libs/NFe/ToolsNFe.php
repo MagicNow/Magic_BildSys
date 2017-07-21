@@ -1745,7 +1745,8 @@ class ToolsNFe extends BaseTools
         $chNFe='',
         $tpAmb = '',
         $cnpj = '',
-        &$aRetorno = array()
+        &$aRetorno = array(),
+        $ultimoNSU = 0
     ) {
         if ($tpAmb == '') {
             $tpAmb = $this->aConfig['tpAmb'];
@@ -1768,8 +1769,11 @@ class ToolsNFe extends BaseTools
             throw new Exception\RuntimeException($msg);
         }
         $cUF = self::getcUF($siglaUF);
+
+        $ultimoNSU = str_pad($ultimoNSU, 15, '0', STR_PAD_LEFT);
+
         //monta a consulta
-        $tagchNFe = "<distNSU><ultNSU>000000000000000</ultNSU></distNSU>";
+        $tagchNFe = "<distNSU><ultNSU>{$ultimoNSU}</ultNSU></distNSU>";
         $cons = "<distDFeInt xmlns=\"$this->urlPortal\" versao=\"$this->urlVersion\">"
             . "<tpAmb>$tpAmb</tpAmb>"
             . "<cUFAutor>$cUF</cUFAutor>"

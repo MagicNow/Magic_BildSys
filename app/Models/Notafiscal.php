@@ -28,7 +28,9 @@ class Notafiscal extends Model
         'razao_social',
         'fantasia',
         'cnpj_destinatario',
-        'arquivo_nfe'
+        'arquivo_nfe',
+        'nsu',
+        'chave'
     ];
 
     /**
@@ -48,7 +50,9 @@ class Notafiscal extends Model
         'razao_social' => 'string',
         'fantasia' => 'string',
         'cnpj_destinatario' => 'string',
-        'arquivo_nfe' => 'string'
+        'arquivo_nfe' => 'string',
+        'nsu' => 'integer',
+        'chave' => 'string',
     ];
 
     /**
@@ -79,8 +83,8 @@ class Notafiscal extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
-    public function notaFiscalItens()
+    public function items()
     {
-        return $this->hasMany(\App\Models\NotaFiscalIten::class);
+        return $this->hasMany(\App\Models\NotaFiscalItem::class, 'nota_fiscal_id');
     }
 }

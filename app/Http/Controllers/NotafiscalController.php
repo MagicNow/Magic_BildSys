@@ -7,6 +7,8 @@ use App\Http\Requests;
 use App\Http\Requests\CreateNotafiscalRequest;
 use App\Http\Requests\UpdateNotafiscalRequest;
 use App\Models\Contrato;
+use App\Models\Notafiscal;
+use App\Models\NotaFiscalItem;
 use App\Repositories\ConsultaNfeRepository;
 use App\Repositories\NotafiscalRepository;
 use Flash;
@@ -46,9 +48,9 @@ class NotafiscalController extends AppBaseController
         $contrato = Contrato::select([
             'contratos.id',
             DB::raw("CONCAT('Contrato: ', contratos.id, ' - ','Fornecedor: ', fornecedores.nome) as nome")
-            ])
-            ->join('fornecedores','fornecedores.id', '=', 'contratos.fornecedor_id')
-            ->pluck('nome','contratos.id')->toArray();
+        ])
+            ->join('fornecedores', 'fornecedores.id', '=', 'contratos.fornecedor_id')
+            ->pluck('nome', 'contratos.id')->toArray();
         return view('notafiscals.create', compact('contrato'));
     }
 
@@ -65,7 +67,7 @@ class NotafiscalController extends AppBaseController
 
         $notafiscal = $this->notafiscalRepository->create($input);
 
-        Flash::success('Notafiscal '.trans('common.saved').' '.trans('common.successfully').'.');
+        Flash::success('Notafiscal ' . trans('common.saved') . ' ' . trans('common.successfully') . '.');
 
         return redirect(route('notafiscals.index'));
     }
@@ -82,7 +84,7 @@ class NotafiscalController extends AppBaseController
         $notafiscal = $this->notafiscalRepository->findWithoutFail($id);
 
         if (empty($notafiscal)) {
-            Flash::error('Notafiscal '.trans('common.not-found'));
+            Flash::error('Notafiscal ' . trans('common.not-found'));
 
             return redirect(route('notafiscals.index'));
         }
@@ -102,7 +104,7 @@ class NotafiscalController extends AppBaseController
         $notafiscal = $this->notafiscalRepository->findWithoutFail($id);
 
         if (empty($notafiscal)) {
-            Flash::error('Notafiscal '.trans('common.not-found'));
+            Flash::error('Notafiscal ' . trans('common.not-found'));
 
             return redirect(route('notafiscals.index'));
         }
@@ -113,7 +115,7 @@ class NotafiscalController extends AppBaseController
     /**
      * Update the specified Notafiscal in storage.
      *
-     * @param  int              $id
+     * @param  int $id
      * @param UpdateNotafiscalRequest $request
      *
      * @return Response
@@ -123,14 +125,14 @@ class NotafiscalController extends AppBaseController
         $notafiscal = $this->notafiscalRepository->findWithoutFail($id);
 
         if (empty($notafiscal)) {
-            Flash::error('Notafiscal '.trans('common.not-found'));
+            Flash::error('Notafiscal ' . trans('common.not-found'));
 
             return redirect(route('notafiscals.index'));
         }
 
         $notafiscal = $this->notafiscalRepository->update($request->all(), $id);
 
-        Flash::success('Notafiscal '.trans('common.updated').' '.trans('common.successfully').'.');
+        Flash::success('Notafiscal ' . trans('common.updated') . ' ' . trans('common.successfully') . '.');
 
         return redirect(route('notafiscals.index'));
     }
@@ -147,14 +149,14 @@ class NotafiscalController extends AppBaseController
         $notafiscal = $this->notafiscalRepository->findWithoutFail($id);
 
         if (empty($notafiscal)) {
-            Flash::error('Notafiscal '.trans('common.not-found'));
+            Flash::error('Notafiscal ' . trans('common.not-found'));
 
             return redirect(route('notafiscals.index'));
         }
 
         $this->notafiscalRepository->delete($id);
 
-        Flash::success('Notafiscal '.trans('common.deleted').' '.trans('common.successfully').'.');
+        Flash::success('Notafiscal ' . trans('common.deleted') . ' ' . trans('common.successfully') . '.');
 
         return redirect(route('notafiscals.index'));
     }
@@ -167,7 +169,8 @@ class NotafiscalController extends AppBaseController
      * @param   string $msg Descrição do erro
      * @return  none
      */
-    public function  printDebug($value) {
+    public function printDebug($value)
+    {
         echo sprintf('<pre>%s</pre>', print_r($value, true));
     }
 
@@ -180,7 +183,7 @@ class NotafiscalController extends AppBaseController
             return false;
         }
         $method = ord(substr($data, 2, 1));  // metodo de compressão
-        $flags  = ord(substr($data, 3, 1));  // Flags
+        $flags = ord(substr($data, 3, 1));  // Flags
         if ($flags & 31 != $flags) {
             $msg = "Não são permitidos bits reservados.";
             $this->printDebug($msg);
@@ -190,8 +193,8 @@ class NotafiscalController extends AppBaseController
         $mtime = unpack("V", substr($data, 4, 4));
         $mtime = $mtime[1];
         $headerlen = 10;
-        $extralen  = 0;
-        $extra     = "";
+        $extralen = 0;
+        $extra = "";
         if ($flags & 4) {
             // dados estras prefixados de 2-byte no cabeçalho
             if ($len - $headerlen - 2 < 8) {
@@ -269,7 +272,7 @@ class NotafiscalController extends AppBaseController
         $isize = unpack("V", substr($data, -4));
         $isize = $isize[1];
         // decompressão
-        $bodylen = $len-$headerlen-8;
+        $bodylen = $len - $headerlen - 8;
         if ($bodylen < 1) {
             $msg = "BUG da implementação.";
             $this->printDebug($msg);
@@ -290,21 +293,26 @@ class NotafiscalController extends AppBaseController
             }
         }  // conteudo zero-byte é permitido
         // Verificar CRC32
-        $crc   = sprintf("%u", crc32($data));
+        $crc = sprintf("%u", crc32($data));
         $crcOK = $crc == $datacrc;
         $lenOK = $isize == strlen($data);
         if (!$lenOK || !$crcOK) {
-            $msg = ( $lenOK ? '' : 'Verificação do comprimento FALHOU. ').( $crcOK ? '' : 'Checksum FALHOU.');
+            $msg = ($lenOK ? '' : 'Verificação do comprimento FALHOU. ') . ($crcOK ? '' : 'Checksum FALHOU.');
             $this->printDebug($msg);
             return false;
         }
         return $data;
     }//fim gunzip1
 
-    public function pescadorNfe(){
-        //ConsultaNfeRepository::buscaNfe();
-        //dd();
-        $path = storage_path('app/public/nfe/producao/temporarias/201707/-retDownnfe.xml');
+
+    public function buscaNfe()
+    {
+        ConsultaNfeRepository::buscaNfe();
+    }
+
+    public function pescadorNfe()
+    {
+        $path = storage_path(sprintf('app/public/nfe/producao/temporarias/%s/-retDownnfe.xml', date('Ym')));
         $xml = str_ireplace(['SOAP-ENV:', 'SOAP:'], '', file_get_contents($path));
 
         $resNFe = 'resNFe_v1.00.xsd';
@@ -327,37 +335,37 @@ class NotafiscalController extends AppBaseController
             $dom->preserveWhiteSpace = false;
             $dom->loadXML($xml, LIBXML_NOBLANKS | LIBXML_NOEMPTYTAG);
             $retDistDFeInt = $dom->getElementsByTagName("retDistDFeInt")->item(0);
-            $cStat = ! empty($dom->getElementsByTagName('cStat')->item(0)->nodeValue) ?
+            $cStat = !empty($dom->getElementsByTagName('cStat')->item(0)->nodeValue) ?
                 $dom->getElementsByTagName('cStat')->item(0)->nodeValue : '';
-            $xMotivo = ! empty($dom->getElementsByTagName('xMotivo')->item(0)->nodeValue) ?
+            $xMotivo = !empty($dom->getElementsByTagName('xMotivo')->item(0)->nodeValue) ?
                 $dom->getElementsByTagName('xMotivo')->item(0)->nodeValue : '';
 
             $bStat = true;
-            $dhResp = ! empty($dom->getElementsByTagName('dhResp')->item(0)->nodeValue) ?
+            $dhResp = !empty($dom->getElementsByTagName('dhResp')->item(0)->nodeValue) ?
                 $dom->getElementsByTagName('dhResp')->item(0)->nodeValue : '';
-            $ultNSU = ! empty($dom->getElementsByTagName('ultNSU')->item(0)->nodeValue) ?
+            $ultNSU = !empty($dom->getElementsByTagName('ultNSU')->item(0)->nodeValue) ?
                 $dom->getElementsByTagName('ultNSU')->item(0)->nodeValue : '';
-            $maxNSU = ! empty($dom->getElementsByTagName('maxNSU')->item(0)->nodeValue) ?
+            $maxNSU = !empty($dom->getElementsByTagName('maxNSU')->item(0)->nodeValue) ?
                 $dom->getElementsByTagName('maxNSU')->item(0)->nodeValue : '';
             $resp = array(
                 'bStat' => $bStat,
-                'cStat' => (int) $cStat,
-                'xMotivo' => (string) $xMotivo,
-                'dhResp' => (string) $dhResp,
-                'ultNSU' => (int) $ultNSU,
-                'maxNSU' => (int) $maxNSU,
+                'cStat' => (int)$cStat,
+                'xMotivo' => (string)$xMotivo,
+                'dhResp' => (string)$dhResp,
+                'ultNSU' => (int)$ultNSU,
+                'maxNSU' => (int)$maxNSU,
                 'docs' => array()
             );
 
             $docs = $dom->getElementsByTagName('docZip');
             foreach ($docs as $doc) {
 
-                $nsu = (int) $doc->getAttribute('NSU');
-                $schema = (string) $doc->getAttribute('schema');
+                $nsu = (int)$doc->getAttribute('NSU');
+                $schema = (string)$doc->getAttribute('schema');
                 //o conteudo desse dado é um zip em base64
                 //para deszipar deve primeiro descomverter de base64
                 //e depois aplicar a descompactação
-                $zip = (string) $doc->nodeValue;
+                $zip = (string)$doc->nodeValue;
                 $zipdata = base64_decode($zip);
                 $zip = $this->pGunzip1($zipdata);
 
@@ -370,38 +378,162 @@ class NotafiscalController extends AppBaseController
 
             // Percorrendo array para popular tabela de notas_fiscais e nota_fiscal_itens
             $resp['docs'] = $aDocs;
-            foreach($resp['docs'] as $item){
-                // NFe de serviço
-                if($item['schema'] = $resNFe){
-                    /*
-                     * Buscar tags de nota de serviço
-                     * salvar no banco de dados
-                     * */
-
-
-                }
-                // NFe de produto
-                if($item['schema'] = $procNFe){
-                    /*
-                     * Buscar tags de nota de produto
-                     * salvar no banco de dados
-                     * */
-                }
-            }
 
             $cont = 0;
-            foreach($aDocs as $doc) {
-               $at = simplexml_load_string($doc['dados']);
-                if ($doc['schema'] == 'procNFe_v3.10.xsd')
-                    dump($cont++, $at, $doc['NSU'],  $doc['schema']);
+            foreach ($aDocs as $doc) {
 
+                $NSU = $doc['NSU'];
+
+                if ($doc['schema'] == 'procNFe_v3.10.xsd') {
+
+                    $nota = simplexml_load_string($doc['dados']);
+
+                    try {
+
+                        $arrayNota = json_decode(json_encode((array)$nota), TRUE);
+
+                        $dataSaida = isset($arrayNota['NFe']['infNFe']['ide']['dhSaiEnt']) ? $arrayNota['NFe']['infNFe']['ide']['dhSaiEnt'] : null;
+
+                        $fantasia = isset($arrayNota['NFe']['infNFe']['emit']['xFant']) ? $arrayNota['NFe']['infNFe']['emit']['xFant'] : null;
+
+                        $notaData = [
+                            'contrato_id' => null,
+                            'nsu' => $NSU,
+                            'solicitacao_entrega_id' => null,
+                            'xml' => $doc['dados'],
+                            'codigo' => $arrayNota['NFe']['infNFe']['ide']['nNF'],
+                            'versao' => $arrayNota['NFe']['infNFe']["@attributes"]['versao'],
+                            'natureza_operacao' => $arrayNota['NFe']['infNFe']['ide']['natOp'],
+                            'data_emissao' => $arrayNota['NFe']['infNFe']['ide']['dhEmi'],
+                            'data_saida' => $dataSaida,
+                            'cnpj' => $arrayNota['NFe']['infNFe']['emit']['CNPJ'],
+                            'razao_social' => $arrayNota['NFe']['infNFe']['emit']['xNome'],
+                            'fantasia' => $fantasia,
+                            'cnpj_destinatario' => $arrayNota['NFe']['infNFe']['dest']['CNPJ'],
+                            'arquivo_nfe' => null,
+                            'chave' => str_replace('NFe', '', $arrayNota['NFe']['infNFe']["@attributes"]['Id'])
+                        ];
+
+                        $items = [];
+
+                        $detalhes = $arrayNota['NFe']['infNFe']['det'];
+
+                        foreach ($detalhes as $detalhe) {
+
+                            try {
+
+                                if (isset($detalhe["prod"])) {
+
+                                    $icms = 0;
+                                    $pis = 0;
+                                    $confins = 0;
+                                    $totalTributo = 0;
+
+                                    if (isset($detalhe['imposto']['ICMS']['ICMS00']['vICMS'])) {
+                                        $icms = $detalhe['imposto']['ICMS']['ICMS00']['vICMS'];
+                                    }
+
+                                    if (isset($detalhe['imposto']['PIS']['PISAliq']['vPIS'])) {
+                                        $pis = $detalhe['imposto']['PIS']['PISAliq']['vPIS'];
+                                    }
+
+                                    if (isset($detalhe['imposto']['COFINS']['COFINSAliq']['vCOFINS'])) {
+                                        $confins = $detalhe['imposto']['COFINS']['COFINSAliq']['vCOFINS'];
+                                    }
+
+                                    if (isset($detalhe['prod']['vUnTrib'])) {
+                                        $totalTributo = $detalhe['prod']['qTrib'] * $detalhe['prod']['vUnTrib'];
+                                    }
+
+                                    $itemData = [
+                                        'ncm' => $detalhe['prod']['NCM'],
+                                        'nome_produto' => $detalhe['prod']['xProd'],
+                                        'codigo_produto' => $detalhe['prod']['cProd'],
+                                        'ean' => count($detalhe['prod']['cEAN']) > 0 ? json_encode($detalhe['prod']['cEAN']) : null,
+                                        'qtd' => $detalhe['prod']['qCom'],
+                                        'valor_unitario' => $detalhe['prod']['vUnCom'],
+                                        'valor_total' => $detalhe['prod']['vProd'],
+                                        'unidade' => $detalhe['prod']['uCom'],
+                                        'valor_tributavel' => $totalTributo,
+                                        'icms' => $icms,
+                                        'ipi' => $pis,
+                                        'cofins' => $confins,
+                                    ];
+
+                                    array_push($items, $itemData);
+                                }
+
+                            } catch (\Exception $e) {
+                                dd($e, $detalhe);
+                            }
+                        }
+
+                        $nfObjArr = $this->notafiscalRepository->findByField('chave', $notaData['chave']);
+                        $nfObj = isset($nfObjArr[0]) ? $nfObjArr[0] : null;
+
+                        if (!$nfObj) {
+                            $nfObj = $this->notafiscalRepository->firstOrCreate($notaData);
+                        }
+
+                        foreach ($items as $item) {
+                            if (!$itemObj = $nfObj->items()->where('codigo_produto', $item['codigo_produto'])->first()) {
+                                $nfObj->items()->save(new NotaFiscalItem($item));
+                            } else {
+                                $itemObj->update($item);
+                            }
+                        }
+
+                    } catch (\Exception $e) {
+
+                        dump($e, $nota);
+
+                    }
+                } elseif ($doc['schema'] == "resNFe_v1.00.xsd") {
+
+                    $nota = simplexml_load_string($doc['dados']);
+                    $arrayNota = json_decode(json_encode((array)$nota), TRUE);
+
+                    $nfObjRes = Notafiscal::where("chave", $arrayNota['chNFe'])->first();
+
+                    if (!$nfObjRes) {
+
+                        $notaData = [
+                            'contrato_id' => null,
+                            'nsu' => $NSU,
+                            'solicitacao_entrega_id' => null,
+                            'xml' => $doc['dados'],
+                            'codigo' => '',
+                            'versao' => '',
+                            'natureza_operacao' => null,
+                            'data_emissao' => $arrayNota['dhEmi'],
+                            'data_saida' => null,
+                            'cnpj' => $arrayNota['CNPJ'],
+                            'razao_social' => $arrayNota['xNome'],
+                            'fantasia' => null,
+                            'cnpj_destinatario' => null,
+                            'arquivo_nfe' => null,
+                            'chave' => str_replace('NFe', '', $arrayNota['chNFe'])
+                        ];
+
+                        $items = [];
+
+                        $nfObjArr = $this->notafiscalRepository->findByField('chave', $notaData['chave']);
+                        $nfObj = isset($nfObjArr[0]) ? $nfObjArr[0] : null;
+                        if (!$nfObj) {
+                            $nfObj = $this->notafiscalRepository->firstOrCreate($notaData);
+                        }
+                    }
+
+                }
 
             }
 
-            die();
 
+
+
+            echo 'Finalizado';
         } catch (\Exception $e) {
-           $erro = $this->printDebug($e->getMessage());
+            $erro = $this->printDebug($e->getMessage());
             return $erro;
         }//fim catch
     }

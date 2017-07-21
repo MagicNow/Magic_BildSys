@@ -7,6 +7,7 @@
  */
 
 namespace App\Repositories;
+use App\Models\Notafiscal;
 use NFePHP\NFe\ToolsNFe;
 
 class ConsultaNfeRepository
@@ -42,7 +43,10 @@ class ConsultaNfeRepository
 
 //        $xml = $nfe->sefazDistDFe('AN', $tpAmb, $cnpj, $ultNSU, $numNSU, $aResposta);
         $chNFe = '';
-        $resp = $nfe->sefazDownload($chNFe, $tpAmb, $cnpj, $aResposta);
+
+        $nota = Notafiscal::orderBy('nsu', 'desc')->first();
+
+        $resp = $nfe->sefazDownload($chNFe, $tpAmb, $cnpj, $aResposta, $nota->nsu);
 
         echo '<br><br><PRE>';
         echo htmlspecialchars($nfe->soapDebug);
