@@ -312,7 +312,12 @@ class NotafiscalController extends AppBaseController
 
     public function pescadorNfe()
     {
-        $path = storage_path(sprintf('app/public/nfe/producao/temporarias/%s/-retDownnfe.xml', date('Ym')));
+
+        if (request('busca')) {
+            $this->buscaNfe();
+        }
+
+        $path = storage_path(sprintf('nfe/producao/temporarias/%s/-retDownnfe.xml', date('Ym')));
         $xml = str_ireplace(['SOAP-ENV:', 'SOAP:'], '', file_get_contents($path));
 
         $resNFe = 'resNFe_v1.00.xsd';
@@ -380,11 +385,13 @@ class NotafiscalController extends AppBaseController
             $resp['docs'] = $aDocs;
 
             $cont = 0;
+            $nfObj = null;
+            $nota = null;
             foreach ($aDocs as $doc) {
 
                 $NSU = $doc['NSU'];
 
-                if ($doc['schema'] == 'procNFe_v3.10.xsd') {
+                if ($doc['schema'] == $procNFe) {
 
                     $nota = simplexml_load_string($doc['dados']);
 
@@ -488,7 +495,7 @@ class NotafiscalController extends AppBaseController
                         dump($e, $nota);
 
                     }
-                } elseif ($doc['schema'] == "resNFe_v1.00.xsd") {
+                } elseif ($doc['schema'] == $resNFe) {
 
                     $nota = simplexml_load_string($doc['dados']);
                     $arrayNota = json_decode(json_encode((array)$nota), TRUE);
@@ -522,9 +529,16 @@ class NotafiscalController extends AppBaseController
                         if (!$nfObj) {
                             $nfObj = $this->notafiscalRepository->firstOrCreate($notaData);
                         }
+                    } else {
+                        if ($NSU > $nfObjRes->nsu) {
+                            $nfObjRes->nsu = $NSU;
+                            $nfObjRes->save();
+                        }
                     }
 
                 }
+
+                dump($doc, $nota, $nfObj);
 
             }
 
@@ -534,7 +548,46 @@ class NotafiscalController extends AppBaseController
             echo 'Finalizado';
         } catch (\Exception $e) {
             $erro = $this->printDebug($e->getMessage());
+            dd($e);
             return $erro;
         }//fim catch
+    }
+
+    public function buscaMde()
+    {
+        $cteTools = new \NFePHP\CTe\Tools(config_path('nfe.json'));
+        $aResposta = array();
+
+        $nfObj = $this->notafiscalRepository->orderBy(DB::raw("Rand()"))->first();
+
+        echo "Chave: ", $nfObj->chave, "<br/>";
+
+        $chave = $nfObj->chave;
+        $tpAmb = '2';
+        $retorno = $cteTools->sefazConsultaChave($chave, $tpAmb, $aResposta);
+        echo '<pre>';
+        //echo htmlspecialchars($cteTools->soapDebug);
+        print_r($aResposta);
+        //print_r($retorno);
+        echo '</pre>';
+    }
+
+    public function buscaCTe()
+    {
+        $cteTools = new \NFePHP\CTe\Tools(config_path('nfe.json'));
+        $aResposta = array();
+
+        $nfObj = $this->notafiscalRepository->orderBy(DB::raw("Rand()"))->first();
+
+        echo "Chave: ", $nfObj->chave, "<br/>";
+
+        $chave = $nfObj->chave;
+        $tpAmb = '2';
+        $retorno = $cteTools->sefazConsultaChave($chave, $tpAmb, $aResposta);
+        echo '<pre>';
+        //echo htmlspecialchars($cteTools->soapDebug);
+        print_r($aResposta);
+        //print_r($retorno);
+        echo '</pre>';
     }
 }

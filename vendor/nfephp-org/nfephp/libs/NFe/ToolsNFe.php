@@ -1782,6 +1782,7 @@ class ToolsNFe extends BaseTools
         $body = "<nfeDistDFeInteresse xmlns=\"$this->urlNamespace\">"
             . "<nfeDadosMsg xmlns=\"$this->urlNamespace\">$cons</nfeDadosMsg>"
             . "</nfeDistDFeInteresse>";
+
         //envia dados via SOAP e verifica o retorno este webservice não requer cabeçalho
         $retorno = $this->oSoap->send(
             $this->urlService,

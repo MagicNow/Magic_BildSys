@@ -33,7 +33,8 @@
         "yajra/laravel-oci8": "5.3.*",
         "rap2hpoutre/laravel-log-viewer": "^0.10.0",
         "barryvdh/laravel-snappy": "^0.3.3",
-        "nfephp-org/nfephp": "^4.0"
+        "nfephp-org/nfephp": "^4.0",
+        "nfephp-org/sped-cte": "^1.2"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

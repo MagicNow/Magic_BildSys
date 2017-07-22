@@ -965,6 +965,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('notafiscals/{notafiscals}/edit', ['as' => 'notafiscals.edit', 'uses' => 'NotafiscalController@edit']);
     $router->get('ConsultaNfe', 'NotafiscalController@pescadorNfe');
     $router->get('buscaNfe', 'NotafiscalController@buscaNfe');
+    $router->get('buscaCTe', 'NotafiscalController@buscaCTe');
 
     $router->get('/teste', function () {
         //        $grupos_mega = \App\Models\MegaInsumoGrupo::select([

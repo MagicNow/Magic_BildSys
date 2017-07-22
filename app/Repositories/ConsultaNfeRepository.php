@@ -46,12 +46,18 @@ class ConsultaNfeRepository
 
         $nota = Notafiscal::orderBy('nsu', 'desc')->first();
 
-        $resp = $nfe->sefazDownload($chNFe, $tpAmb, $cnpj, $aResposta, $nota->nsu);
-
+        $ultNSU = (int) $nota->nsu;
+        $resp = $nfe->sefazDownload($chNFe, $tpAmb, $cnpj, $aResposta, $ultNSU );
+        /*
         echo '<br><br><PRE>';
         echo htmlspecialchars($nfe->soapDebug);
         echo '</PRE><BR>';
         print_r($aResposta);
         echo "<br>";
+        */
+
+        echo "Download realizado com sucesso !", "<br/>";
+
+        return true;
     }
 }
