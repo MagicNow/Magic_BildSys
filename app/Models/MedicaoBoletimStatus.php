@@ -3,24 +3,18 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class MedicaoBoletimStatus
  * @package App\Models
- * @version July 21, 2017, 11:37 am BRT
+ * @version July 21, 2017, 2:42 pm BRT
  */
 class MedicaoBoletimStatus extends Model
 {
-    use SoftDeletes;
-
     public $table = 'medicao_boletim_status';
     
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
-
-
-    protected $dates = ['deleted_at'];
 
 
     public $fillable = [
@@ -45,7 +39,7 @@ class MedicaoBoletimStatus extends Model
      * @var array
      */
     public static $rules = [
-        
+        'nome' => 'required',
     ];
 
     /**
@@ -53,7 +47,7 @@ class MedicaoBoletimStatus extends Model
      **/
     public function medicaoBoletimStatusLogs()
     {
-        return $this->hasMany(\App\Models\MedicaoBoletimStatusLog::class);
+        return $this->hasMany(MedicaoBoletimStatusLog::class);
     }
 
     /**
@@ -61,6 +55,6 @@ class MedicaoBoletimStatus extends Model
      **/
     public function medicaoBoletins()
     {
-        return $this->hasMany(\App\Models\MedicaoBoletin::class);
+        return $this->hasMany(MedicaoBoletim::class);
     }
 }

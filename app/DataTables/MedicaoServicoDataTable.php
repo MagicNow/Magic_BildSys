@@ -100,6 +100,15 @@ class MedicaoServicoDataTable extends DataTable
             ->join('obras','obras.id','contratos.obra_id')
             ->join('fornecedores','fornecedores.id','contratos.fornecedor_id')
         ;
+        if(request()->segment(count(request()->segments()))=='create'){
+            $medicaoServicos->where('medicao_servicos.finalizado','1')
+                ->whereRaw('NOT EXISTS(
+                    SELECT 1 FROM 
+                    medicao_boletim_medicao_servico
+                    WHERE medicao_boletim_medicao_servico.medicao_servico_id = medicao_servicos.id
+                )');
+
+        }
 
         return $this->applyScopes($medicaoServicos);
     }
@@ -111,6 +120,24 @@ class MedicaoServicoDataTable extends DataTable
      */
     public function html()
     {
+        $buttons = [];
+        if(request()->segment(count(request()->segments()))!='create'){
+            $buttons = [
+                'print',
+                'reset',
+                'reload',
+                [
+                    'extend'  => 'collection',
+                    'text'    => '<i class="fa fa-download"></i> Export',
+                    'buttons' => [
+                        'csv',
+                        'excel',
+                        'pdf',
+                    ],
+                ],
+                'colvis'
+            ];
+        }
         return $this->builder()
             ->columns($this->getColumns())
             ->ajax('')
@@ -118,7 +145,7 @@ class MedicaoServicoDataTable extends DataTable
                 'initComplete' => 'function () {
                     max = this.api().columns().count();
                     this.api().columns().every(function (col) {
-                        if((col+1)<max){
+                        if(((col+1)<max) && (col>2) || (col==0) ){
                             var column = this;
                             var input = document.createElement("input");
                             $(input).attr(\'placeholder\',\'Filtrar...\');
@@ -128,29 +155,38 @@ class MedicaoServicoDataTable extends DataTable
                             .on(\'change\', function () {
                                 column.search($(this).val(), false, false, true).draw();
                             });
+                        }else if(col==1){
+                            var column = this;
+                            var input = document.createElement("input");
+                            $(input).attr(\'id\',\'filtro_obra\');
+                            $(input).attr(\'placeholder\',\'Obra...\');
+                            $(input).addClass(\'form-control\');
+                            $(input).css(\'width\',\'100%\');
+                            $(input).appendTo($(column.footer()).empty())
+                            .on(\'change\', function () {
+                                column.search($(this).val(), false, false, true).draw();
+                            });
+                        }else if(col==2){
+                            var column = this;
+                            var input = document.createElement("input");
+                            $(input).attr(\'id\',\'filtro_contrato\');
+                            $(input).attr(\'placeholder\',\'Contrato...\');
+                            $(input).addClass(\'form-control\');
+                            $(input).css(\'width\',\'100%\');
+                            $(input).appendTo($(column.footer()).empty())
+                            .on(\'change\', function () {
+                                column.search($(this).val(), false, false, true).draw();
+                            });
                         }
                     });
                 }' ,
+                "pageLength"=> (request()->segment(count(request()->segments()))!='create' ? 10 : 100),
                 'dom' => 'Bfrltip',
                 'scrollX' => false,
                 'language'=> [
                     "url"=> "/vendor/datatables/Portuguese-Brasil.json"
                 ],
-                'buttons' => [
-                    'print',
-                    'reset',
-                    'reload',
-                    [
-                         'extend'  => 'collection',
-                         'text'    => '<i class="fa fa-download"></i> Export',
-                         'buttons' => [
-                             'csv',
-                             'excel',
-                             'pdf',
-                         ],
-                    ],
-                    'colvis'
-                ]
+                'buttons' => $buttons
             ]);
     }
 
@@ -174,7 +210,7 @@ class MedicaoServicoDataTable extends DataTable
             'usuário' => ['name' => 'users.name', 'data' => 'name'],
             'trechosMedidos' => ['name' => 'trechos', 'data' => 'trechos', 'width'=>'5%'],
             'situação' => ['name' => 'finalizado', 'data' => 'finalizado', 'width'=>'5%'],
-            'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
+            'action' => ['title' => (request()->segment(count(request()->segments()))!='create'?'Ações':'Selecionar'), 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }
 

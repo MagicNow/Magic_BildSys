@@ -64,7 +64,7 @@
 <li class="{{ Request::is('notafiscals*') ? 'active' : '' }}">
     <a href="{!! route('notafiscals.index') !!}"><i class="fa fa-object-group"></i><span>Nota fiscal</span></a>
 </li>
-<li class="treeview {{ Request::is('medicoes*') ? 'active' : '' }}">
+<li class="treeview {{ Request::is('medicoes*')|| Request::is('boletim-medicao*') ? 'active' : '' }}">
     <a href="#">
         <i class="fa fa-calendar-check-o" aria-hidden="true"></i> <span>Medição</span>
         <span class="pull-right-container">
@@ -77,6 +77,9 @@
         </li>
         <li class="{{ Request::is('medicoes*') ? 'active' : '' }}">
             <a href="{!! route('medicoes.index') !!}"><i class="fa fa-list-alt"></i><span>Listar Medicões</span></a>
+        </li>
+        <li class="{{ Request::is('boletim-medicao*') ? 'active' : '' }}">
+            <a href="{!! route('boletim-medicao.index') !!}"><i class="fa fa-file-text-o"></i><span>Boletins de Medição</span></a>
         </li>
     </ul>
 </li>

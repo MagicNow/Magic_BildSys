@@ -21,7 +21,7 @@ class CreateMedicaoBoletinsTable extends Migration
             $table->unsignedInteger('medicao_boletim_status_id');
             $table->text('obs')->nullable();
             $table->unsignedInteger('user_id');
-
+            $table->timestamps();
 
             $table->foreign('user_id')
                 ->references('id')->on('users')

@@ -13,7 +13,7 @@ class CreateMedicaoBoletimStatusLogTable extends Migration
      */
     public function up()
     {
-        Schema::create('medicao_boletim_status_log', function (Blueprint $table) {
+        Schema::create('medicao_boletim_status_logs', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->increments('id');
             $table->unsignedInteger('medicao_boletim_id');
@@ -46,6 +46,6 @@ class CreateMedicaoBoletimStatusLogTable extends Migration
      */
      public function down()
      {
-       Schema::dropIfExists('medicao_boletim_status_log');
+       Schema::dropIfExists('medicao_boletim_status_logs');
      }
 }

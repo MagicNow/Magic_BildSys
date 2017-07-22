@@ -447,7 +447,7 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
 
 ##### SITE #####
 $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($router) {
-
+    // Memória de Cálculo
     $router->group(['prefix'=>'memoriaCalculos', 'middleware' => 'needsPermission:memoriaCalculos.list'], function () use ($router) {
         $router->get('', ['as'=> 'memoriaCalculos.index', 'uses' => 'MemoriaCalculoController@index']);
         $router->post('', ['as'=> 'memoriaCalculos.store', 'uses' => 'MemoriaCalculoController@store'])
@@ -467,6 +467,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             ->middleware('needsPermission:memoriaCalculos.create');
 
     });
+    // Medição
     $router->group(['prefix'=>'medicoes', 'middleware' => 'needsPermission:medicoes.list'], function () use ($router) {
         //        $router->get('', ['as'=> 'medicoes.index', 'uses' => 'MedicaoController@index']);
         $router->get('', ['as'=> 'medicoes.index', 'uses' => 'MedicaoServicoController@index']);
@@ -518,7 +519,8 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             ->middleware('needsPermission:medicoes.edit');
 
     });
-
+    // Boletim de Medição
+    $router->resource('boletim-medicao', 'MedicaoBoletimController');
 
     // Perfil
     $router->get('/perfil', 'PerfilController@index');
