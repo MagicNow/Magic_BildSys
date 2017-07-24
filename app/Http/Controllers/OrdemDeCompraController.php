@@ -1644,10 +1644,24 @@ class OrdemDeCompraController extends AppBaseController
         ])
         ->join('orcamentos', 'orcamentos.'.$request->campo_join, '=', 'grupos.id')
         ->where('grupos.grupo_id', $id)
-        ->where('orcamentos.obra_id', $request->obra_id)
-        ->orderBy('grupos.nome', 'ASC')
-        ->pluck('grupos.nome','grupos.id')
-        ->toArray();
+        ->orderBy('grupos.nome', 'ASC');
+
+        if($request->obra_id == 'todas') {
+            $obras = Obra::orderBy('nome', 'ASC')
+                ->whereHas('users', function($query){
+                    $query->where('user_id', auth()->id());
+                })
+                ->whereHas('contratos')
+                ->pluck('id', 'id')
+                ->toArray();
+
+            $grupo = $grupo->whereIn('orcamentos.obra_id', $obras);
+        } else {
+            $grupo = $grupo->where('orcamentos.obra_id', $request->obra_id);
+        }
+
+        $grupo = $grupo->pluck('grupos.nome','grupos.id')
+            ->toArray();
 
         return $grupo;
     }
@@ -1659,9 +1673,22 @@ class OrdemDeCompraController extends AppBaseController
         ])
         ->join('orcamentos', 'orcamentos.servico_id', '=', 'servicos.id')
         ->where('servicos.grupo_id', $id)
-        ->where('orcamentos.obra_id', $request->obra_id)
         ->orderBy('servicos.nome', 'ASC');
 
+        if($request->obra_id == 'todas') {
+            $obras = Obra::orderBy('nome', 'ASC')
+                ->whereHas('users', function($query){
+                    $query->where('user_id', auth()->id());
+                })
+                ->whereHas('contratos')
+                ->pluck('id', 'id')
+                ->toArray();
+            
+            $servico = $servico->whereIn('orcamentos.obra_id', $obras);
+        } else {
+            $servico = $servico->where('orcamentos.obra_id', $request->obra_id);
+        }
+        
         if($request->insumo_id) {
             $servico = $servico->whereHas('insumos', function($query) use ($request) {
                 $query->where('insumos.id', $request->insumo_id);

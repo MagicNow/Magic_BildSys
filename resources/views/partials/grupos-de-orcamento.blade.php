@@ -12,7 +12,7 @@
             {!!
               Form::select(
                 'obra_id',
-                $obras,
+                ['todas'=>'Todas']+$obras,
                 null,
                 ['class' => 'form-control select2 js-filter', 'id'=>'obra_id', 'onchange' => 'selectgrupo('. \App\Models\Grupo::where('codigo', '01')->whereNull('grupo_id')->first()->id.', \'subgrupo1_id\', \'grupos\');']
               )

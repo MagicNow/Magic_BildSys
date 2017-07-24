@@ -229,6 +229,34 @@
 
                     $('#cadastrar_'+change).css('display', '');
                 });
+            }else{
+                if(change == 'subgrupo1_id'){
+                    $('#subgrupo1_id').val(null).trigger('change');
+                    $('#subgrupo2_id').val(null).trigger('change');
+                    $('#subgrupo3_id').val(null).trigger('change');
+                    $('#servico_id').val(null).trigger('change');
+
+                    $('#subgrupo1_id').attr('disabled',true);
+                    $('#subgrupo2_id').attr('disabled',true);
+                    $('#subgrupo3_id').attr('disabled',true);
+                    $('#servico_id').attr('disabled',true);
+                }else if(change == 'subgrupo2_id'){
+                    $('#subgrupo2_id').val(null).trigger('change');
+                    $('#subgrupo3_id').val(null).trigger('change');
+                    $('#servico_id').val(null).trigger('change');
+
+                    $('#subgrupo2_id').attr('disabled',true);
+                    $('#subgrupo3_id').attr('disabled',true);
+                    $('#servico_id').attr('disabled',true);
+                }else if(change == 'subgrupo3_id'){
+                    $('#subgrupo3_id').val(null).trigger('change');
+                    $('#servico_id').val(null).trigger('change');
+
+                    $('#subgrupo3_id').attr('disabled',true);
+                    $('#servico_id').attr('disabled',true);
+                }else if(change == 'servico_id'){
+                    $('#servico_id').attr('disabled',true);
+                }
             }
         }
 
