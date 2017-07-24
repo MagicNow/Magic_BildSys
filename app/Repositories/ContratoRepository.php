@@ -216,7 +216,7 @@ class ContratoRepository extends BaseRepository
 
                 $contrato_item['apropriacoes'] = $ocItens->map(function ($oc_item) {
                     $oc_item_arr = $oc_item->toArray();
-                    $oc_item_arr['qtd'] = $oc_item->getOriginal('qtd');
+                    $oc_item_arr['qtd'] = floatval($oc_item->getOriginal('qtd'));
                     return array_only($oc_item_arr, [
                         'codigo_insumo',
                         'grupo_id',
