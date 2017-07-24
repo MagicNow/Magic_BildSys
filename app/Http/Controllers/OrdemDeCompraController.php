@@ -345,6 +345,7 @@ class OrdemDeCompraController extends AppBaseController
                         AND OCI.subgrupo3_id = ordem_de_compra_itens.subgrupo3_id
                         AND OCI.servico_id = ordem_de_compra_itens.servico_id
                         AND OCI.obra_id = ordem_de_compra_itens.obra_id
+                        AND deleted_at IS NULL
                     ) as valor_servico_oc"),
                     DB::raw("(
                         SELECT
