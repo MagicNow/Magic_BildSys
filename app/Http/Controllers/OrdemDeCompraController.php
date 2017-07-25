@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\DataTables\DetalhesServicosDataTable;
+use App\Models\CompradorInsumo;
 use Exception;
 use App\DataTables\ComprasDataTable;
 use App\DataTables\InsumosAprovadosDataTable;
@@ -567,10 +568,19 @@ class OrdemDeCompraController extends AppBaseController
             ->prepend('', '')
             ->toArray();
 
-        $planejamentos = $planejamentoRepository
-            ->comLembretesComItensDeCompraPorUsuario($request->user()->id)
+//        $planejamentos = $planejamentoRepository
+//            ->comLembretesComItensDeCompraPorUsuario($request->user()->id)
+//            ->prepend('', '')
+//            ->pluck('tarefa', 'id')
+//            ->toArray();
+        $planejamentos = Planejamento::where('obra_id', $request->obra_id)
+            ->where('resumo', 'Sim')
+            ->select([
+                DB::raw("CONCAT(tarefa,' - ',DATE_FORMAT( data, '%d/%m/%Y')) as tarefa"),
+                'id'
+            ])
+            ->pluck('tarefa','id')
             ->prepend('', '')
-            ->pluck('tarefa', 'id')
             ->toArray();
 
         $ordem = OrdemDeCompra::where('oc_status_id', 1)
@@ -1365,8 +1375,15 @@ class OrdemDeCompraController extends AppBaseController
             'verde'=>'Verde',
             'vermelho'=>'Vermelho',
         ];
+
+        $compradores = CompradorInsumo::join('users', 'users.id', '=', 'comprador_insumos.user_id')
+                ->groupBy('comprador_insumos.user_id')
+                ->orderBy('users.name', 'ASC')
+                ->pluck('users.name', 'users.id')
+                ->toArray();
+
         return $insumosAprovadosDataTable->render('ordem_de_compras.insumos-aprovados',
-            compact('obras', 'OCs', 'insumoGrupos', 'insumos', 'cidades', 'farol'));
+            compact('obras', 'OCs', 'insumoGrupos', 'insumos', 'cidades', 'farol', 'compradores'));
     }
 
     /**
