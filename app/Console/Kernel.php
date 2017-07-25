@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands\CapturaNfeGeradas;
 use App\Repositories\ImportacaoRepository;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -15,7 +16,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
+        CapturaNfeGeradas::class
     ];
 
     /**
@@ -37,6 +38,9 @@ class Kernel extends ConsoleKernel
             $importaInsumo = ImportacaoRepository::insumos();
             Log::info('Executado script de importação de Insumos', $importaInsumo);
         })->twiceDaily(10, 19);
+
+        $schedule->command('captura:nfe')
+            ->hourly();
     }
 
     /**
