@@ -9,6 +9,7 @@ use App\Http\Requests\UpdateNotafiscalRequest;
 use App\Models\Contrato;
 use App\Models\Notafiscal;
 use App\Models\NotaFiscalItem;
+use App\Repositories\ConsultaCteRepository;
 use App\Repositories\ConsultaNfeRepository;
 use App\Repositories\NotafiscalRepository;
 use Flash;
@@ -22,11 +23,15 @@ class NotafiscalController extends AppBaseController
     /** @var  NotafiscalRepository */
     private $notafiscalRepository;
     private $consultaRepository;
+    private $consultaCteRepository;
 
-    public function __construct(NotafiscalRepository $notafiscalRepo, ConsultaNfeRepository $consultaRepo)
+    public function __construct(NotafiscalRepository $notafiscalRepo,
+                                ConsultaNfeRepository $consultaRepo,
+                                ConsultaCteRepository $consultaCteRepository)
     {
         $this->notafiscalRepository = $notafiscalRepo;
         $this->consultaRepository = $consultaRepo;
+        $this->consultaCteRepository = $consultaCteRepository;
     }
 
     /**
@@ -194,20 +199,9 @@ class NotafiscalController extends AppBaseController
 
     public function buscaCTe()
     {
-        $cteTools = new \NFePHP\CTe\Tools(config_path('nfe.json'));
-        $aResposta = array();
-
-        $nfObj = $this->notafiscalRepository->orderBy(DB::raw("Rand()"))->first();
-
-        echo "Chave: ", $nfObj->chave, "<br/>";
-
-        $chave = $nfObj->chave;
-        $tpAmb = '2';
-        $retorno = $cteTools->sefazConsultaChave($chave, $tpAmb, $aResposta);
-        echo '<pre>';
-        //echo htmlspecialchars($cteTools->soapDebug);
-        print_r($aResposta);
-        //print_r($retorno);
-        echo '</pre>';
+        if ( $this->consultaCteRepository->syncXML(1, 0) ) {
+            return "Sucesso";
+        }
+        return "Não foram encontrados CTe's para download.";
     }
 }
