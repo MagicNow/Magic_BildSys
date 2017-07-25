@@ -14,4 +14,9 @@ class ContratoStatusRepository extends BaseRepository
     {
         return ContratoStatus::class;
     }
+
+    public function comContrato()
+    {
+        return $this->model->has('contratos')->get();
+    }
 }

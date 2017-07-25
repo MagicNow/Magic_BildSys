@@ -216,7 +216,7 @@ class ContratoRepository extends BaseRepository
 
                 $contrato_item['apropriacoes'] = $ocItens->map(function ($oc_item) {
                     $oc_item_arr = $oc_item->toArray();
-                    $oc_item_arr['qtd'] = $oc_item->getOriginal('qtd');
+                    $oc_item_arr['qtd'] = floatval($oc_item->getOriginal('qtd'));
                     return array_only($oc_item_arr, [
                         'codigo_insumo',
                         'grupo_id',
@@ -234,7 +234,7 @@ class ContratoRepository extends BaseRepository
             }
         }
 
-        $adicionar_novos_insumos = function ($tipo, $insumo) use ($valores, &$contratoItens) {
+        $adicionar_novos_insumos = function ($tipo, $insumo_codigo) use ($valores, &$contratoItens) {
             $atual = $valores[$tipo];
 
             if (count($atual)) {
@@ -242,7 +242,7 @@ class ContratoRepository extends BaseRepository
                     $valores_atuais = collect($valores_atuais);
                     $valor_total = $valores_atuais->sum('valor_item');
                     if ($valor_total > 0) {
-                        $insumo = Insumo::where('codigo', $insumo)->first();
+                        $insumo = Insumo::where('codigo', $insumo_codigo)->first();
 
                         $contrato_item = [
                             'insumo_id'         => $insumo->id,

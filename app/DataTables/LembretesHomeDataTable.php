@@ -298,6 +298,8 @@ class LembretesHomeDataTable extends DataTable
                                         WHERE
                                             workflow_alcada_id = workflow_alcadas.id
                                     )
+                                AND workflow_alcadas.workflow_tipo_id <= 2
+								AND workflow_alcadas.deleted_at IS NULL
                             ) ,
                             0
                         )
@@ -340,6 +342,8 @@ class LembretesHomeDataTable extends DataTable
                                         WHERE
                                             workflow_alcada_id = workflow_alcadas.id
                                     )
+                                AND workflow_alcadas.workflow_tipo_id <= 2
+								AND workflow_alcadas.deleted_at IS NULL
                             ) ,
                             0
                         )
@@ -386,6 +390,8 @@ class LembretesHomeDataTable extends DataTable
                                                             WHERE
                                                                 workflow_alcada_id = workflow_alcadas.id
                                                         )
+                                                    AND workflow_alcadas.workflow_tipo_id <= 2
+								                    AND workflow_alcadas.deleted_at IS NULL
                                                 ) ,
                                                 0
                                             )
@@ -429,6 +435,8 @@ class LembretesHomeDataTable extends DataTable
                                                 WHERE
                                                     workflow_alcada_id = workflow_alcadas.id
                                             )
+                                        AND workflow_alcadas.workflow_tipo_id <= 2
+								        AND workflow_alcadas.deleted_at IS NULL
                                     ) ,
                                     0
                                 )
@@ -500,6 +508,8 @@ class LembretesHomeDataTable extends DataTable
 	                                							WHERE
 	                                								workflow_alcada_id = workflow_alcadas.id
 	                                						)
+	                                					AND workflow_alcadas.workflow_tipo_id <= 2
+								                        AND workflow_alcadas.deleted_at IS NULL
 	                                				),
 	                                				0
 	                                			)
@@ -545,6 +555,8 @@ class LembretesHomeDataTable extends DataTable
                                                         WHERE
                                                             workflow_alcada_id = workflow_alcadas.id
                                                     )
+                                                AND workflow_alcadas.workflow_tipo_id <= 2
+								                AND workflow_alcadas.deleted_at IS NULL
                                             ) ,
                                             0
                                         )

@@ -22,7 +22,7 @@
             <h4>Data</h4>
             @include('partials.filter-date')
           </div>
-          <div class="col-sm-3">
+          <div class="col-sm-5">
             <h4>Fornecedor</h4>
             {!!
               Form::select(
@@ -33,18 +33,7 @@
               )
             !!}
           </div>
-          <div class="col-sm-3">
-            <h4>Obra</h4>
-            {!!
-              Form::select(
-                'obra_id',
-                $obras,
-                null,
-                ['class' => 'form-control select2 js-filter']
-              )
-            !!}
-          </div>
-          <div class="col-sm-3">
+          <div class="col-sm-4">
             <h4>Status</h4>
             {!!
               Form::select(
@@ -69,6 +58,63 @@
 
 @section('scripts')
     <script src="/vendor/datatables/buttons.server-side.js"></script>
+    <script>
+      function selectgrupo(id, change, tipo){
+        var rota = "{{url('ordens-de-compra/grupos')}}/";
+        if(tipo == 'servicos'){
+          rota = "{{url('ordens-de-compra/servicos')}}/";
+        }
+        if(id){
+          $('.box.box-primary').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
+          $.ajax({
+            url: rota + id,
+            data: {
+              obra_id: $('#obra_id').val(),
+              campo_join: change
+            }
+          }).done(function(retorno) {
+            options = '';
+            options = '<option value="">Selecione</option>';
+            $('#'+change).html(options);
+            $.each(retorno,function(index, value){
+              options += '<option value="'+index+'">'+value+'</option>';
+            });
+            $('#'+change).html(options);
+            $('#'+change).attr('disabled',false);
+
+            $('#cadastrar_'+change).css('display', '');
+          });
+        }else{
+          if(change == 'subgrupo1_id'){
+            $('#subgrupo1_id').val(null).trigger('change');
+            $('#subgrupo2_id').val(null).trigger('change');
+            $('#subgrupo3_id').val(null).trigger('change');
+            $('#servico_id').val(null).trigger('change');
+
+            $('#subgrupo1_id').attr('disabled',true);
+            $('#subgrupo2_id').attr('disabled',true);
+            $('#subgrupo3_id').attr('disabled',true);
+            $('#servico_id').attr('disabled',true);
+          }else if(change == 'subgrupo2_id'){
+            $('#subgrupo2_id').val(null).trigger('change');
+            $('#subgrupo3_id').val(null).trigger('change');
+            $('#servico_id').val(null).trigger('change');
+
+            $('#subgrupo2_id').attr('disabled',true);
+            $('#subgrupo3_id').attr('disabled',true);
+            $('#servico_id').attr('disabled',true);
+          }else if(change == 'subgrupo3_id'){
+            $('#subgrupo3_id').val(null).trigger('change');
+            $('#servico_id').val(null).trigger('change');
+
+            $('#subgrupo3_id').attr('disabled',true);
+            $('#servico_id').attr('disabled',true);
+          }else if(change == 'servico_id'){
+            $('#servico_id').attr('disabled',true);
+          }
+        }
+      }
+    </script>
     {!! $dataTable->scripts() !!}
 @endsection
 

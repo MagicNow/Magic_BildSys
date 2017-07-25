@@ -69,7 +69,7 @@ class InsumoPorFornecedorDataTable extends DataTable
                     ->where('qc_item_id', $insumo['qc_item_id'])
                     ->first();
 
-                    $valor = $item_fornecedor ? $item_fornecedor->valor_total : 0;
+                    $valor = $item_fornecedor ? float_to_money($item_fornecedor->valor_total) : '<span style="color:red">DECLINED</span>';
                     $qtd_comprada = $item_fornecedor ? $item_fornecedor->qtd : 0;
                     
                     $insumoValorUnitario = $insumo['valor_unitario_calculo'];
@@ -82,7 +82,7 @@ class InsumoPorFornecedorDataTable extends DataTable
                         if(!$qcFornecedor->desistencia_motivo_id || !$qcFornecedor->desistencia_texto) {
                             $insumo[str_replace('.',
                                 '*dot*',
-                                $qcFornecedor->fornecedor->nome . '||' . $qcFornecedor->id)] = float_to_money($valor);
+                                $qcFornecedor->fornecedor->nome . '||' . $qcFornecedor->id)] = $valor;
                             if($insumo['insumo'] === 'FRETE') {
                                 $insumo[str_replace('.',
                                     '*dot*',

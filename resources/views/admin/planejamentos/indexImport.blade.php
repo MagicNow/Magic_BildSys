@@ -4,8 +4,11 @@
     <section class="content-header">
         <h1 class="pull-left">Importar planejamentos</h1>
     </section>
+    @include('vendor.flash.message')
     <div class="content">
         <div class="clearfix"></div>
+
+
         <div class="box box-primary">
 
             {!! Form::open(['route' => 'admin.planejamentos.importar', 'files'=>true]) !!}

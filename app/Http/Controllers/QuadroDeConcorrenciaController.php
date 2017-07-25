@@ -622,6 +622,24 @@ class QuadroDeConcorrenciaController extends AppBaseController
         try {
             $quadro = $this->quadroDeConcorrenciaRepository->findWithoutFail($id);
 
+            if (!$request->reject) {
+                $itens = $request->itens;
+                $array = [];
+
+                foreach ($itens as $chave => $item) {
+                    if ($item['valor_unitario'] == "") {
+                        array_push($array, $chave);
+                    }
+                }
+
+                if (count($itens) == count($array)) {
+                    Flash::error('Necessário pelo menos um valor unitário.');
+                    return back()->withInput();
+                }
+            }
+//            dd(count($itens), count($array));
+
+
             if (empty($quadro)) {
                 DB::rollback();
                 Flash::error('Quadro De Concorrencia '.trans('common.not-found'));

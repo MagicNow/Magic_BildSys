@@ -73,6 +73,7 @@ class ContratoController extends AppBaseController
     ) {
         $status = $contratoStatusRepository
             ->orderBy('nome', 'ASC')
+            ->comContrato()
             ->pluck('nome', 'id')
             ->prepend('', '')
             ->all();
@@ -86,6 +87,9 @@ class ContratoController extends AppBaseController
 
         $obras = $obraRepository
             ->orderBy('nome', 'ASC')
+            ->whereHas('users', function($query){
+                $query->where('user_id', auth()->id());
+            })
             ->comContrato()
             ->pluck('nome', 'id')
             ->prepend('', '')

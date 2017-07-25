@@ -88,11 +88,12 @@ class OrdemDeCompraRepository extends BaseRepository
 
         if($ordemDeCompra) {
             if(count($ordemDeCompra->itens())) {
-                $realizado = OrdemDeCompraItem::join('ordem_de_compras', 'ordem_de_compras.id', '=', 'ordem_de_compra_itens.ordem_de_compra_id')
-                    ->where('ordem_de_compras.obra_id', $obra_id)
-                    ->whereIn('oc_status_id', [2,3,5])
-                    ->whereIn('ordem_de_compra_itens.insumo_id', $ordemDeCompra->itens()->pluck('insumo_id', 'insumo_id')->toArray())
-                    ->sum('ordem_de_compra_itens.valor_total');
+//                $realizado = OrdemDeCompraItem::join('ordem_de_compras', 'ordem_de_compras.id', '=', 'ordem_de_compra_itens.ordem_de_compra_id')
+//                    ->where('ordem_de_compras.obra_id', $obra_id)
+//                    ->whereIn('oc_status_id', [2,3,5])
+//                    ->whereIn('ordem_de_compra_itens.insumo_id', $ordemDeCompra->itens()->pluck('insumo_id', 'insumo_id')->toArray())
+//                    ->sum('ordem_de_compra_itens.valor_total');
+                $realizado = $ordemDeCompra->itens()->sum('valor_total');
             }
         }
 

@@ -26,14 +26,9 @@
                     <!-- Grupos de insumo Field -->
                     <div class="form-group col-sm-12">
                         <div class="form-group col-sm-10">
-                            {!! Form::label('grupo_id', 'Grupos:') !!}
-                            {!! Form::select('grupo_id', [''=>'-']+$grupos, null, ['class' => 'form-control select2', 'id'=>'grupo_id','onchange'=>'selectgrupo(this.value, \'subgrupo1_id\', \'grupos\');', 'required']) !!}
+                            {!! Form::label('obra', 'Obra:') !!}
+                            <div class="form-control">{{$obra->nome}}</div>
                         </div>
-                        {{--<div class="form-group col-sm-2">--}}
-                            {{--<a class="btn btn-info pull-right flat" data-toggle="modal" data-target="#cadastrarGrupo" style="margin-top: 20px;" onclick="atribuirGrupoId(null, 'grupo_id');">--}}
-                                {{--<i class="fa fa-save"></i> Cadastrar Grupo--}}
-                            {{--</a>--}}
-                        {{--</div>--}}
                     </div>
                     <!-- SubGrupos1 de insumo Field -->
                     <div class="form-group col-sm-12">
@@ -133,6 +128,9 @@
 @section('scripts')
     <script>
         $(function () {
+            @php $grupo_obra = \App\Models\Grupo::where('codigo', '01')->whereNull('grupo_id')->first(); @endphp
+            selectgrupo('{{$grupo_obra->id}}', 'subgrupo1_id', 'grupos');
+
             @if(session('salvo'))
                 swal({
                     title: "Insumo incluído!",
@@ -214,7 +212,11 @@
             if(id){
                 $('.box.box-primary').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
                 $.ajax({
-                    url: rota + id
+                    url: rota + id,
+                    data: {
+                        obra_id: '{{$obra->id}}',
+                        campo_join: change
+                    }
                 }).done(function(retorno) {
                     options = '';
                     options = '<option value="">Selecione</option>';
@@ -227,6 +229,34 @@
 
                     $('#cadastrar_'+change).css('display', '');
                 });
+            }else{
+                if(change == 'subgrupo1_id'){
+                    $('#subgrupo1_id').val(null).trigger('change');
+                    $('#subgrupo2_id').val(null).trigger('change');
+                    $('#subgrupo3_id').val(null).trigger('change');
+                    $('#servico_id').val(null).trigger('change');
+
+                    $('#subgrupo1_id').attr('disabled',true);
+                    $('#subgrupo2_id').attr('disabled',true);
+                    $('#subgrupo3_id').attr('disabled',true);
+                    $('#servico_id').attr('disabled',true);
+                }else if(change == 'subgrupo2_id'){
+                    $('#subgrupo2_id').val(null).trigger('change');
+                    $('#subgrupo3_id').val(null).trigger('change');
+                    $('#servico_id').val(null).trigger('change');
+
+                    $('#subgrupo2_id').attr('disabled',true);
+                    $('#subgrupo3_id').attr('disabled',true);
+                    $('#servico_id').attr('disabled',true);
+                }else if(change == 'subgrupo3_id'){
+                    $('#subgrupo3_id').val(null).trigger('change');
+                    $('#servico_id').val(null).trigger('change');
+
+                    $('#subgrupo3_id').attr('disabled',true);
+                    $('#servico_id').attr('disabled',true);
+                }else if(change == 'servico_id'){
+                    $('#servico_id').attr('disabled',true);
+                }
             }
         }
 

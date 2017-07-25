@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\DataTables\DetalhesServicosDataTable;
+use App\Models\CompradorInsumo;
 use Exception;
 use App\DataTables\ComprasDataTable;
 use App\DataTables\InsumosAprovadosDataTable;
@@ -345,6 +346,7 @@ class OrdemDeCompraController extends AppBaseController
                         AND OCI.subgrupo3_id = ordem_de_compra_itens.subgrupo3_id
                         AND OCI.servico_id = ordem_de_compra_itens.servico_id
                         AND OCI.obra_id = ordem_de_compra_itens.obra_id
+                        AND deleted_at IS NULL
                     ) as valor_servico_oc"),
                     DB::raw("(
                         SELECT
@@ -403,7 +405,7 @@ class OrdemDeCompraController extends AppBaseController
         }
 
         $motivos_reprovacao = WorkflowReprovacaoMotivo::where(function ($query) {
-            $query->where('workflow_tipo_id', 1);
+            $query->where('workflow_tipo_id', WorkflowTipo::OC);
             $query->orWhereNull('workflow_tipo_id');
         })
             ->pluck('nome', 'id')
@@ -566,12 +568,20 @@ class OrdemDeCompraController extends AppBaseController
             ->prepend('', '')
             ->toArray();
 
-        $planejamentos = $planejamentoRepository
-            ->comLembretesComItensDeCompraPorUsuario($request->user()->id)
+//        $planejamentos = $planejamentoRepository
+//            ->comLembretesComItensDeCompraPorUsuario($request->user()->id)
+//            ->prepend('', '')
+//            ->pluck('tarefa', 'id')
+//            ->toArray();
+        $planejamentos = Planejamento::where('obra_id', $request->obra_id)
+            ->where('resumo', 'Sim')
+            ->select([
+                DB::raw("CONCAT(tarefa,' - ',DATE_FORMAT( data, '%d/%m/%Y')) as tarefa"),
+                'id'
+            ])
+            ->pluck('tarefa','id')
             ->prepend('', '')
-            ->pluck('tarefa', 'id')
             ->toArray();
-
 
         $ordem = OrdemDeCompra::where('oc_status_id', 1)
             ->where('user_id', Auth::user()->id)
@@ -1365,8 +1375,15 @@ class OrdemDeCompraController extends AppBaseController
             'verde'=>'Verde',
             'vermelho'=>'Vermelho',
         ];
+
+        $compradores = CompradorInsumo::join('users', 'users.id', '=', 'comprador_insumos.user_id')
+                ->groupBy('comprador_insumos.user_id')
+                ->orderBy('users.name', 'ASC')
+                ->pluck('users.name', 'users.id')
+                ->toArray();
+
         return $insumosAprovadosDataTable->render('ordem_de_compras.insumos-aprovados',
-            compact('obras', 'OCs', 'insumoGrupos', 'insumos', 'cidades', 'farol'));
+            compact('obras', 'OCs', 'insumoGrupos', 'insumos', 'cidades', 'farol', 'compradores'));
     }
 
     /**
@@ -1384,7 +1401,9 @@ class OrdemDeCompraController extends AppBaseController
             ->pluck('nome', 'id')
             ->toArray();
 
-        return view('ordem_de_compras.insumos_orcamento', compact('obra_id', 'grupos'));
+        $obra = Obra::find($obra_id);
+        
+        return view('ordem_de_compras.insumos_orcamento', compact('obra_id', 'grupos', 'obra'));
     }
 
     /**
@@ -1634,28 +1653,59 @@ class OrdemDeCompraController extends AppBaseController
         }
     }
 
-    public function getGrupos($id)
+    public function getGrupos($id, Request $request)
     {
         $grupo = Grupo::select([
-            'id',
-            DB::raw("CONCAT(codigo, ' ', nome) as nome")
+            'grupos.id',
+            DB::raw("CONCAT(grupos.codigo, ' ', grupos.nome) as nome")
         ])
-        ->where('grupo_id', $id)
-        ->orderBy('nome', 'ASC')
-        ->pluck('nome','id')
-        ->toArray();
+        ->join('orcamentos', 'orcamentos.'.$request->campo_join, '=', 'grupos.id')
+        ->where('grupos.grupo_id', $id)
+        ->orderBy('grupos.nome', 'ASC');
+
+        if($request->obra_id == 'todas') {
+            $obras = Obra::orderBy('nome', 'ASC')
+                ->whereHas('users', function($query){
+                    $query->where('user_id', auth()->id());
+                })
+                ->whereHas('contratos')
+                ->pluck('id', 'id')
+                ->toArray();
+
+            $grupo = $grupo->whereIn('orcamentos.obra_id', $obras);
+        } else {
+            $grupo = $grupo->where('orcamentos.obra_id', $request->obra_id);
+        }
+
+        $grupo = $grupo->pluck('grupos.nome','grupos.id')
+            ->toArray();
 
         return $grupo;
     }
     public function getServicos($id, Request $request)
     {
         $servico = Servico::select([
-            'id',
-            DB::raw("CONCAT(codigo, ' ', nome) as nome")
+            'servicos.id',
+            DB::raw("CONCAT(servicos.codigo, ' ', servicos.nome) as nome")
         ])
-        ->where('grupo_id', $id)
-        ->orderBy('nome', 'ASC');
+        ->join('orcamentos', 'orcamentos.servico_id', '=', 'servicos.id')
+        ->where('servicos.grupo_id', $id)
+        ->orderBy('servicos.nome', 'ASC');
 
+        if($request->obra_id == 'todas') {
+            $obras = Obra::orderBy('nome', 'ASC')
+                ->whereHas('users', function($query){
+                    $query->where('user_id', auth()->id());
+                })
+                ->whereHas('contratos')
+                ->pluck('id', 'id')
+                ->toArray();
+            
+            $servico = $servico->whereIn('orcamentos.obra_id', $obras);
+        } else {
+            $servico = $servico->where('orcamentos.obra_id', $request->obra_id);
+        }
+        
         if($request->insumo_id) {
             $servico = $servico->whereHas('insumos', function($query) use ($request) {
                 $query->where('insumos.id', $request->insumo_id);

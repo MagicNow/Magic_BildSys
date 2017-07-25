@@ -20,6 +20,7 @@ class WorkflowTipo extends Model
     const CONTRATO = 3;
     const ITEM_CONTRATO = 4;
     const SOLICITACAO_ENTREGA = 5;
+    const MEDICAO = 6;
 
     public $fillable = [
         'nome',
