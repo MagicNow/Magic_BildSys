@@ -221,7 +221,7 @@ class ConsultaNfeRepository
                                 }
 
                             } catch (\Exception $e) {
-                                dd($e, $detalhe);
+                                \Log::error($e);
                             }
                         }
 
