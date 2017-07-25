@@ -567,10 +567,19 @@ class OrdemDeCompraController extends AppBaseController
             ->prepend('', '')
             ->toArray();
 
-        $planejamentos = $planejamentoRepository
-            ->comLembretesComItensDeCompraPorUsuario($request->user()->id)
+//        $planejamentos = $planejamentoRepository
+//            ->comLembretesComItensDeCompraPorUsuario($request->user()->id)
+//            ->prepend('', '')
+//            ->pluck('tarefa', 'id')
+//            ->toArray();
+        $planejamentos = Planejamento::where('obra_id', $request->obra_id)
+            ->where('resumo', 'Sim')
+            ->select([
+                DB::raw("CONCAT(tarefa,' - ',DATE_FORMAT( data, '%d/%m/%Y')) as tarefa"),
+                'id'
+            ])
+            ->pluck('tarefa','id')
             ->prepend('', '')
-            ->pluck('tarefa', 'id')
             ->toArray();
 
         $ordem = OrdemDeCompra::where('oc_status_id', 1)
