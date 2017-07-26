@@ -93,7 +93,7 @@
                                             <th width="45%">Insumo</th>
                                             <th width="15%">Qtd.</th>
                                             <th width="15%">V.Unitário</th>
-                                            <th width="25%">Valor</th>
+                                            <th width="25%">Valor total</th>
                                         </tr>
                                         </thead>
 
