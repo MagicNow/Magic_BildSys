@@ -25,10 +25,10 @@ class MedicaoBoletimDataTable extends DataTable
                 . $obj->situacao;
             })
             ->editColumn('obs', function($obj){
-                return strlen($obj->obs) ? str_limit($obj->obs, 50) : '';
+                return strlen($obj->obs) ? str_limit($obj->obs, 40) : '';
             })
             ->editColumn('total', function($obj){
-                return float_to_money($obj->total);
+                return '<div class="text-right">'. float_to_money($obj->total).'</div>';
             })
             ->filterColumn('total',function($query, $search){
                 $keyword = str_replace(',','.', str_replace('.','',$search));
@@ -53,17 +53,20 @@ class MedicaoBoletimDataTable extends DataTable
             ->select([
                 'medicao_boletins.id',
                 'medicao_boletins.obs',
+                'medicao_boletins.medicao_boletim_status_id',
                 'medicao_boletins.contrato_id',
                 'obras.nome as obra',
                 'users.name as user',
                 'medicao_boletim_status.nome as situacao',
                 'medicao_boletim_status.cor as status_cor',
                 DB::raw('(
-                            SELECT SUM(medicoes.qtd) 
+                            SELECT SUM(medicoes.qtd * contrato_itens.valor_unitario)
                             FROM medicao_boletim_medicao_servico
-                            JOIN medicoes ON medicoes.medicao_servico_id = medicao_boletim_medicao_servico.id
+                            JOIN medicoes ON medicoes.medicao_servico_id = medicao_boletim_medicao_servico.medicao_servico_id
+                            JOIN mc_medicao_previsoes ON mc_medicao_previsoes.id = medicoes.mc_medicao_previsao_id 
+                            JOIN contrato_itens ON contrato_itens.id = mc_medicao_previsoes.contrato_item_id
                             WHERE medicao_boletim_medicao_servico.medicao_boletim_id = medicao_boletins.id
-                        )
+                         )
                         as total')
             ])
             ->join('users','users.id','medicao_boletins.user_id')
@@ -135,7 +138,7 @@ class MedicaoBoletimDataTable extends DataTable
             'obra' => ['name' => 'obras.nome', 'data' => 'obra'],
             'contrato' => ['name' => 'contrato_id', 'data' => 'contrato_id', 'width'=>'10%'],
             'status' => ['name' => 'medicao_boletim_status.nome', 'data' => 'situacao', 'width'=>'10%'],
-            'obs' => ['name' => 'obs', 'data' => 'obs', 'width'=>'10%'],
+            'obs' => ['name' => 'obs', 'data' => 'obs', 'width'=>'20%'],
             'total' => ['name' => 'total', 'data' => 'total', 'width'=>'10%'],
             'usuário' => ['name' => 'users.name', 'data' => 'user', 'width'=>'10%'],
             'action' => ['title' => 'Ações',

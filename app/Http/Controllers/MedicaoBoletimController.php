@@ -8,6 +8,7 @@ use App\DataTables\Scopes\MedicaoServicoScope;
 use App\Http\Requests;
 use App\Http\Requests\CreateMedicaoBoletimRequest;
 use App\Http\Requests\UpdateMedicaoBoletimRequest;
+use App\Models\MedicaoBoletimStatusLog;
 use App\Models\Obra;
 use App\Repositories\MedicaoBoletimRepository;
 use Flash;
@@ -93,14 +94,7 @@ class MedicaoBoletimController extends AppBaseController
         return view('medicao_boletims.show')->with('medicaoBoletim', $medicaoBoletim);
     }
 
-    /**
-     * Show the form for editing the specified MedicaoBoletim.
-     *
-     * @param  int $id
-     *
-     * @return Response
-     */
-    public function edit($id)
+    public function liberarNF($id)
     {
         $medicaoBoletim = $this->medicaoBoletimRepository->findWithoutFail($id);
 
@@ -110,7 +104,45 @@ class MedicaoBoletimController extends AppBaseController
             return redirect(route('boletim-medicao.index'));
         }
 
-        return view('medicao_boletims.edit')->with('medicaoBoletim', $medicaoBoletim);
+        $liberaNF = $this->medicaoBoletimRepository->liberaParaNF($id);
+
+        if($liberaNF){
+            Flash::success('Boletim de Medição '.$medicaoBoletim->id.' liberado para receber Nota Fiscal.');
+        }else{
+            Flash::error('Boletim de Medição '.$medicaoBoletim->id.' não liberado, houve algum erro.');
+        }
+
+        return redirect(route('boletim-medicao.index'));
+    }
+
+    /**
+     * Show the form for editing the specified MedicaoBoletim.
+     *
+     * @param  int $id
+     *
+     * @return Response
+     */
+    public function edit(MedicaoServicoDataTable $medicaoServicoDataTable, $id)
+    {
+        $medicaoBoletim = $this->medicaoBoletimRepository->findWithoutFail($id);
+
+        if (empty($medicaoBoletim)) {
+            Flash::error('Medicao Boletim '.trans('common.not-found'));
+
+            return redirect(route('boletim-medicao.index'));
+        }
+
+        return $medicaoServicoDataTable->addScope(new MedicaoServicoScope())->render('medicao_boletims.edit', compact('medicaoBoletim'));
+    }
+
+    public function removerMedicao($id, $medicao_servico_id){
+        $medicaoBoletim = $this->medicaoBoletimRepository->findWithoutFail($id);
+
+        if (empty($medicaoBoletim)) {
+            return response()->json(['error'=>'Boletim não encontrado'],404);
+        }
+        $medicaoBoletim->medicaoServicos()->detach($medicao_servico_id);
+        return response()->json(['success'=>true]);
     }
 
     /**

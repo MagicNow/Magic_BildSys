@@ -520,7 +520,29 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
 
     });
     // Boletim de Medição
-    $router->resource('boletim-medicao', 'MedicaoBoletimController');
+    $router->group(['prefix'=>'boletim-medicao', 'middleware' => 'needsPermission:boletim-medicao.list'], function () use ($router) {
+        $router->get('/{boletimMedicao}/remover-medicao/{medicao_servico_id}', ['as'=> 'boletim-medicao.remover', 'uses' => 'MedicaoBoletimController@removerMedicao']);
+        $router->get('/{boletimMedicao}/liberar', ['as'=> 'boletim-medicao.liberar-nf', 'uses' => 'MedicaoBoletimController@liberarNF']);
+        
+        $router->get('', ['as'=> 'boletim-medicao.index', 'uses' => 'MedicaoBoletimController@index']);
+        $router->post('', ['as'=> 'boletim-medicao.store', 'uses' => 'MedicaoBoletimController@store'])
+            ->middleware('needsPermission:boletim-medicao.create');
+        $router->get('/create', ['as'=> 'boletim-medicao.create', 'uses' => 'MedicaoBoletimController@create'])
+            ->middleware('needsPermission:boletim-medicao.create');
+        $router->put('/{boletimMedicao}', ['as'=> 'boletim-medicao.update', 'uses' => 'MedicaoBoletimController@update'])
+            ->middleware('needsPermission:boletim-medicao.edit');
+        $router->patch('/{boletimMedicao}', ['as'=> 'boletim-medicao.update', 'uses' => 'MedicaoBoletimController@update'])
+            ->middleware('needsPermission:boletim-medicao.edit');
+        $router->delete('/{boletimMedicao}', ['as'=> 'boletim-medicao.destroy', 'uses' => 'MedicaoBoletimController@destroy'])
+            ->middleware('needsPermission:boletim-medicao.delete');
+        
+
+        $router->get('/{boletimMedicao}', ['as'=> 'boletim-medicao.show', 'uses' => 'MedicaoBoletimController@show']);
+        $router->get('/{boletimMedicao}/edit', ['as'=> 'boletim-medicao.edit', 'uses' => 'MedicaoBoletimController@edit'])
+            ->middleware('needsPermission:boletim-medicao.edit');
+
+    });
+    // 
 
     // Perfil
     $router->get('/perfil', 'PerfilController@index');

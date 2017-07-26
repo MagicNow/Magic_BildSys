@@ -193,6 +193,10 @@ class RolesAndPermissions extends Seeder
             'medicoes.edit'   => 'Edição de Medições',
             'medicoes.delete'   => 'Remoção de Medições',
 
+            'boletim-medicao.list' => 'Listagem de Boletins de Medições',
+            'boletim-medicao.create' => 'Criação de Boletim de Medição',
+            'boletim-medicao.edit'   => 'Edição de Boletim de Medição',
+            'boletim-medicao.delete'   => 'Remoção de Boletim de Medição',
 
         ];
 

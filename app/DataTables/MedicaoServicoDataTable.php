@@ -33,6 +33,9 @@ class MedicaoServicoDataTable extends DataTable
             ->editColumn('finalizado', function ($obj){
                 return $obj->finalizado ? ( is_null($obj->aprovado) ? 'Aguardando Aprovação' : ($obj->aprovado==1?'Aprovado': 'Reprovado') )  : 'Em Aberto';
             })
+            ->editColumn('soma', function ($obj){
+                return '<div class="text-right">'.($obj->soma ? float_to_money($obj->soma,'')  : '0').'</div>';
+            })
             ->filterColumn('created_at', function ($query, $keyword) {
                 $query->whereRaw("DATE_FORMAT(medicao_servicos.created_at,'%d/%m/%Y') like ?", ["%$keyword%"]);
             })
@@ -90,6 +93,15 @@ class MedicaoServicoDataTable extends DataTable
                 'medicao_servicos.finalizado',
                 'medicao_servicos.aprovado',
                 'obras.nome',
+                DB::raw('(
+                            (
+                                SELECT SUM(medicoes.qtd) 
+                                FROM medicoes 
+                                WHERE medicoes.medicao_servico_id = medicao_servicos.id 
+                            ) 
+                            * 
+                            contrato_itens.valor_unitario
+                        ) as soma')
             ])
             ->join('users','users.id','medicao_servicos.user_id')
             ->join('contrato_item_apropriacoes','contrato_item_apropriacoes.id','medicao_servicos.contrato_item_apropriacao_id')
@@ -100,7 +112,7 @@ class MedicaoServicoDataTable extends DataTable
             ->join('obras','obras.id','contratos.obra_id')
             ->join('fornecedores','fornecedores.id','contratos.fornecedor_id')
         ;
-        if(request()->segment(count(request()->segments()))=='create'){
+        if(request()->segment(count(request()->segments()))=='create' || request()->segment(count(request()->segments()))=='edit'){
             $medicaoServicos->where('medicao_servicos.finalizado','1')
                 ->whereRaw('NOT EXISTS(
                     SELECT 1 FROM 
@@ -121,7 +133,7 @@ class MedicaoServicoDataTable extends DataTable
     public function html()
     {
         $buttons = [];
-        if(request()->segment(count(request()->segments()))!='create'){
+        if(request()->segment(count(request()->segments()))!='create'&& request()->segment(count(request()->segments()))!='edit'){
             $buttons = [
                 'print',
                 'reset',
@@ -180,7 +192,7 @@ class MedicaoServicoDataTable extends DataTable
                         }
                     });
                 }' ,
-                "pageLength"=> (request()->segment(count(request()->segments()))!='create' ? 10 : 100),
+                "pageLength"=> (request()->segment(count(request()->segments()))!='create'&& request()->segment(count(request()->segments()))!='edit' ? 10 : 100),
                 'dom' => 'Bfrltip',
                 'scrollX' => false,
                 'language'=> [
@@ -197,21 +209,41 @@ class MedicaoServicoDataTable extends DataTable
      */
     private function getColumns()
     {
-        return [
-            '#' => ['name' => 'id', 'data' => 'id', 'width'=>'5%'],
-            'obra' => ['name' => 'obras.nome', 'data' => 'nome', 'width'=>'5%'],
-            'contrato' => ['name' => 'contratos.id', 'data' => 'contrato_id', 'width'=>'5%'],
-            'fornecedor' => ['name' => 'fornecedores.nome', 'data' => 'fornecedor'],
-            'insumo' => ['name' => 'insumo', 'data' => 'insumo'],
-            'apropriação' => ['name' => 'apropriacao', 'data' => 'apropriacao'],
-            'data_medição' => ['name' => 'created_at', 'data' => 'created_at'],
-            'período_início' => ['name' => 'periodo_inicio', 'data' => 'periodo_inicio'],
-            'período_término' => ['name' => 'periodo_termino', 'data' => 'periodo_termino'],
-            'usuário' => ['name' => 'users.name', 'data' => 'name'],
-            'trechosMedidos' => ['name' => 'trechos', 'data' => 'trechos', 'width'=>'5%'],
-            'situação' => ['name' => 'finalizado', 'data' => 'finalizado', 'width'=>'5%'],
-            'action' => ['title' => (request()->segment(count(request()->segments()))!='create'?'Ações':'Selecionar'), 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
-        ];
+        $colunas = [];
+        if(request()->segment(count(request()->segments()))=='create' || request()->segment(count(request()->segments()))=='edit'){
+            $colunas = [
+                '#' => ['name' => 'id', 'data' => 'id', 'width'=>'5%'],
+                'obra' => ['name' => 'obras.nome', 'data' => 'nome', 'width'=>'5%'],
+                'contrato' => ['name' => 'contratos.id', 'data' => 'contrato_id', 'width'=>'5%'],
+                'fornecedor' => ['name' => 'fornecedores.nome', 'data' => 'fornecedor'],
+                'insumo' => ['name' => 'insumo', 'data' => 'insumo'],
+                'apropriação' => ['name' => 'apropriacao', 'data' => 'apropriacao'],
+                'data_medição' => ['name' => 'created_at', 'data' => 'created_at'],
+                'período_início' => ['name' => 'periodo_inicio', 'data' => 'periodo_inicio'],
+                'período_término' => ['name' => 'periodo_termino', 'data' => 'periodo_termino'],
+                'usuário' => ['name' => 'users.name', 'data' => 'name'],
+                'trechosMedidos' => ['name' => 'trechos', 'data' => 'trechos', 'width'=>'5%'],
+                'valorMedido' => ['name' => 'soma', 'data' => 'soma', 'width'=>'5%'],
+                'action' => ['title' => 'Selecionar', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
+            ];
+        }else{
+            $colunas = [
+                '#' => ['name' => 'id', 'data' => 'id', 'width'=>'5%'],
+                'obra' => ['name' => 'obras.nome', 'data' => 'nome', 'width'=>'5%'],
+                'contrato' => ['name' => 'contratos.id', 'data' => 'contrato_id', 'width'=>'5%'],
+                'fornecedor' => ['name' => 'fornecedores.nome', 'data' => 'fornecedor'],
+                'insumo' => ['name' => 'insumo', 'data' => 'insumo'],
+                'apropriação' => ['name' => 'apropriacao', 'data' => 'apropriacao'],
+                'data_medição' => ['name' => 'created_at', 'data' => 'created_at'],
+                'período_início' => ['name' => 'periodo_inicio', 'data' => 'periodo_inicio'],
+                'período_término' => ['name' => 'periodo_termino', 'data' => 'periodo_termino'],
+                'usuário' => ['name' => 'users.name', 'data' => 'name'],
+                'trechosMedidos' => ['name' => 'trechos', 'data' => 'trechos', 'width'=>'5%'],
+                'situação' => ['name' => 'finalizado', 'data' => 'finalizado', 'width'=>'5%'],
+                'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
+            ];
+        }
+        return $colunas;
     }
 
     /**
