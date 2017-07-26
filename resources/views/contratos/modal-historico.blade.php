@@ -15,13 +15,14 @@
                     <table class="table table-striped table-condensed">
                         <thead>
                             <tr>
-                                <th></th>
+                                <th colspan="2"></th>
                                 <th colspan="2" class="text-center">Antes</th>
                                 <th colspan="2" class="text-center">Depois</th>
                                 <th></th>
                             </tr>
                             <tr>
                                 <th>Movimentação</th>
+                                <th>Anexo</th>
                                 <th>Qtd.</th>
                                 <th>Valor Unitário</th>
                                 <th>Qtd.</th>
@@ -34,6 +35,11 @@
                                 <tr>
                                     <td>
                                         {{ $modificacao['tipo_modificacao'] }}
+                                    </td>
+                                    <td>
+                                        @if($modificacao->anexo)
+                                            <a href="{!! Storage::url($modificacao->anexo) !!}" target="_blank">Ver</a>
+                                        @endif
                                     </td>
                                     <td>
                                         {{ float_to_money($modificacao['qtd_anterior'], '') }}

@@ -51,6 +51,12 @@ class ContratoItemModificacaoRepository extends BaseRepository
                 $modApropriacoes = collect();
             }
 
+            $destinationPath = null;
+
+            if($data['anexo']) {
+                $destinationPath = CodeRepository::saveFile($data['anexo'], 'contratos/reajustes/' . $item->id);
+            }
+            
             $modificacao = $this->create([
                 'qtd_anterior'            => $item->qtd,
                 'qtd_atual'               => $item->qtd + $qtd,
@@ -59,6 +65,7 @@ class ContratoItemModificacaoRepository extends BaseRepository
                 'contrato_status_id'      => ContratoStatus::EM_APROVACAO,
                 'contrato_item_id'        => $item->id,
                 'tipo_modificacao'        => 'Reajuste',
+                'anexo'                   => $destinationPath,
                 'user_id'                 => auth()->id(),
             ]);
 
