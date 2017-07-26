@@ -1493,7 +1493,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
 
         $qcs_por_media_geral = DB::table(
             DB::raw("
-                (SELECT SUM(dias) as media
+                (SELECT ROUND(SUM(dias) / count(name),0) as media
                     FROM
                     (
                         SELECT name, ROUND(SUM(dias) / count(user_id),0) as dias
