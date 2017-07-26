@@ -123,7 +123,7 @@
                         @endphp
                         <div class="col-md-4">
                             <div class="element-grafico">
-                                <div class="element-head">Média de Aprovação (DIAS)</div>
+                                <div class="element-head">Média de dias de negociação - Comprador</div>
                                 <div class="element-body">
                                     <chartjs-pie :labels="labelsporMedia"
                                                  :datasets="datasetsMedia"
@@ -136,7 +136,7 @@
                         </div>
                         <div class="col-md-4">
                             <div class="element-grafico">
-                                <div class="element-head">Média de Aprovação GERAL (DIAS)</div>
+                                <div class="element-head">Média de dias de negociação - Geral</div>
                                 <div class="element-body">
                                     <div class="text-center" style="font-size: 100px; color:orange; margin-top: 50px;">
                                         {{$qcs_por_media_geral->media}}
