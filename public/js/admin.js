@@ -65771,6 +65771,25 @@ function filterFind(find) {
     }
     addQuery();
 }
+var obsAprovador = document.getElementById('obs-aprovador');
+
+if(obsAprovador) {
+    //var contrato_id = document.getElementById('contrato_id');
+    //var user_id = document.getElementById('user_id');
+
+    //var key = 'contrato_obs_' + user_id.value + '_' + contrato_id.value;
+    var key = obsAprovador.dataset.key;
+
+    obsAprovador.value = localStorage.getItem(key);
+
+    var saveObs = _.debounce(function(event) {
+        localStorage.setItem(key, obsAprovador.value);
+    }, 700);
+
+    obsAprovador.addEventListener('input', saveObs);
+    obsAprovador.addEventListener('change', saveObs);
+}
+
 function workflowCall(item_id, tipo_item, aprovou, elemento, motivo, justificativa_texto, pai_id, pai_obj, filhos_metodo, shouldReload) {
 
   var url_aprova_reprova = '/workflow/aprova-reprova';
@@ -65793,10 +65812,10 @@ function workflowCall(item_id, tipo_item, aprovou, elemento, motivo, justificati
   var obsAprovador = document.getElementById('obs-aprovador');
 
   if (obsAprovador && aprovou) {
-    var contrato_id = document.getElementById('contrato_id');
-    var user_id = document.getElementById('user_id');
+    //var contrato_id = document.getElementById('contrato_id');
+    //var user_id = document.getElementById('user_id');
 
-    var key = 'contrato_obs_' + user_id.value + '_' + contrato_id.value;
+    var key = obsAprovador.dataset.key;
 
     localStorage.removeItem(key);
 
