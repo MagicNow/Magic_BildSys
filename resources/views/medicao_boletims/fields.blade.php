@@ -40,26 +40,46 @@
     <table class="table table-hover table-condensed table-striped table-striped" id="medicoes">
         <thead>
         <tr>
-            <th width="10%">
+            <th width="5%">
                 Medição
             </th>
-            <th width="40%">
+            <th>
                 Insumo
             </th>
-            <th width="10%">
-                Quant. Trechos
+            <th width="5%">
+                Unidade
             </th>
-            <th width="30%">
-                Valor
+            <th>
+                Quantidade Total do insumo
+            </th>
+            <th>
+                Valor Unitário
+            </th>
+            <th>
+                Valor Total
+            </th>
+            <th>
+                Quantidade Medida
+            </th>
+            <th>
+                Descontos
             </th>
             <th width="10%">
-                Remover
+                Valor Medido
+            </th>
+            <th width="10%">
+                Saldo
+            </th>
+            <th width="10%">
+
             </th>
         </tr>
         </thead>
         <tbody>
         <?php
         $somaTotal = 0;
+        $somaDescontos = 0;
+        $somaTotalVlr = 0;
         ?>
         @if(isset($medicaoBoletim))
 
@@ -71,15 +91,62 @@
                     <td class="text-left">
                         {{ $medicaoServico->contratoItemApropriacao->insumo->codigo . ' - '.  $medicaoServico->contratoItemApropriacao->insumo->nome }}
                     </td>
+                    <td>
+                        {{ $medicaoServico->contratoItemApropriacao->insumo->unidade_sigla }}
+                    </td>
                     <td class="text-right">
-                        {{ $medicaoServico->medicoes()->count() }}
+                        {{ float_to_money($medicaoServico->contratoItemApropriacao->contratoItem->qtd,'') }}
+                    </td>
+                    <td class="text-right">
+                        {{ float_to_money($medicaoServico->contratoItemApropriacao->contratoItem->valor_unitario) }}
+                    </td>
+                    <td class="text-right">
+                        {{ float_to_money($medicaoServico->contratoItemApropriacao->contratoItem->valor_total) }}
+                    </td>
+                    <td class="text-right">
+                        {{ float_to_money($medicaoServico->medicoes()->sum('qtd'),'') }}
+                    </td>
+                    <td class="text-right">
+                        {{ float_to_money($medicaoServico->descontos,'') }}
                     </td>
                     <td class="text-right">
                         <?php
                             $valorItem = $medicaoServico->medicoes()->sum('qtd')* $medicaoServico->contratoItemApropriacao->contratoItem->valor_unitario;
                             $somaTotal += $valorItem;
+                            $somaDescontos += $medicaoServico->descontos;
+
+                            $somaTotalVlr += $medicaoServico->contratoItemApropriacao->contratoItem->valor_total;
+
+                            $contratoItem = $medicaoServico->contratoItemApropriacao->contratoItem;
+                            $valoresJaMedidos = $contratoItem->contratoItemReapropriacao()->select([
+                                'contrato_item_apropriacoes.insumo_id',
+                                'medicao_servicos.descontos',
+                                \Illuminate\Support\Facades\DB::raw('( SELECT SUM(qtd) FROM medicoes WHERE medicao_servico_id = medicao_servicos.id ) as qtd_medida')
+                            ])
+                                    ->join('medicao_servicos','medicao_servicos.contrato_item_apropriacao_id','contrato_item_apropriacoes.id')
+                                    ->whereExists(function ($query2) {
+                                        $query2->select(DB::raw(1))
+                                                ->from('medicao_boletim_medicao_servico')
+                                                ->join('medicao_boletins','medicao_boletins.id','medicao_boletim_medicao_servico.medicao_boletim_id')
+                                                ->whereRaw('medicao_boletim_medicao_servico.medicao_servico_id = medicao_servicos.id')
+                                                ->where('medicao_boletins.medicao_boletim_status_id','>','1');
+                                    })
+                                    ->get()->toArray();
+                            $jaMedido = 0;
+                            if(count($valoresJaMedidos)){
+                                foreach ($valoresJaMedidos as $valorJaMedido) {
+                                    $jaMedido += ($valorJaMedido['qtd_medida'] * $medicaoServico->contratoItemApropriacao->contratoItem->valor_unitario)-$valorJaMedido['descontos'];
+                                }
+                            }
+
+
+                            $saldo = $medicaoServico->contratoItemApropriacao->contratoItem->valor_total - $jaMedido - ($valorItem -$medicaoServico->descontos)  ;
+
                         ?>
                         {{ float_to_money($valorItem) }}
+                    </td>
+                    <td class="text-right">
+                        {{ float_to_money($saldo) }}
                     </td>
                     <td>
                         <button type="button" onclick="removerMedicaoServicoSalva( {{ $medicaoServico->id }} )"
@@ -91,13 +158,28 @@
         </tbody>
         <tfoot>
             <tr class="warning">
-                <td colspan="4" class="text-right" style="font-weight: bold !important; font-size: 16px;" id="somaTotal">
+                <td colspan="5">
+
+                </td>
+                <td class="text-right" style="font-weight: bold !important; font-size: 16px;">
+
+                </td>
+                <td></td>
+                <td class="text-right" style="font-weight: bold !important; font-size: 16px;" id="somaDescontos">
+                    @if(isset($medicaoBoletim))
+                        {{ float_to_money($somaDescontos) }}
+                    @endif
+                </td>
+                <td class="text-right" style="font-weight: bold !important; font-size: 16px;" id="somaTotal">
                     @if(isset($medicaoBoletim))
                         {{ float_to_money($somaTotal) }}
                     @endif
                 </td>
                 <td>
 
+                </td>
+                <td class="text-right" style="font-weight: bold !important; font-size: 16px;" id="somaFinal">
+                    {{ float_to_money( ($somaTotal-$somaDescontos) ) }}
                 </td>
             </tr>
         </tfoot>
@@ -121,11 +203,16 @@
     <script type="text/javascript">
         var obra_id = null;
         var contrato_id = null;
+        var v_somaDescontos = {{ $somaDescontos }};
         var v_somaTotal = {{ $somaTotal }};
+        var v_somaFinal = {{ $somaTotal-$somaDescontos }};
         var valores_array = [];
+        var valores_array_descontos = [];
+
         @if(isset($medicaoBoletim))
             @foreach($medicaoBoletim->medicaoServicos as $medicaoServico)
                 valores_array[{{ $medicaoServico->id }}] = {{ ($medicaoServico->medicoes()->sum('qtd')* $medicaoServico->contratoItemApropriacao->contratoItem->valor_unitario) }};
+                valores_array_descontos[{{ $medicaoServico->id }}] = {{ $medicaoServico->descontos }};
             @endforeach
 
             function removerMedicaoServicoSalva(medicao_servico_id) {
@@ -153,18 +240,33 @@
             }
         @endif
 
-        function adicionaMedicaoServico(medicao_servico_id, insumo, soma, trechos) {
+        function adicionaMedicaoServico(medicao_servico_id, insumo, soma, unidade, qtd_total_insumo, valor_unitario, valor_total, qtd_medida, descontos, saldo) {
             valores_array[medicao_servico_id] = soma;
+            valores_array_descontos[medicao_servico_id] = descontos;
             v_somaTotal += soma;
+            v_somaDescontos += descontos;
+            v_somaFinal = v_somaTotal - v_somaDescontos;
             var novaMedicao = '<tr id="medicaoServico' + medicao_servico_id + '">' +
                     '<td>   ' + medicao_servico_id +
                     '   <input type="hidden" name="medicaoServicos[]" value="' + medicao_servico_id + '">' +
                     '</td>' +
                     '<td class="text-left">' + insumo +
                     '</td>' +
-                    '<td class="text-right">' + trechos +
+                    '<td>' + unidade +
+                    '</td>' +
+                    '<td class="text-right">' + floatToMoney(qtd_total_insumo,'') +
+                    '</td>' +
+                    '<td class="text-right">' + floatToMoney(valor_unitario) +
+                    '</td>' +
+                    '<td class="text-right">' + floatToMoney(valor_total)  +
+                    '</td>' +
+                    '<td class="text-right">' + floatToMoney(qtd_medida,'') +
+                    '</td>' +
+                    '<td class="text-right">' + floatToMoney(descontos) +
                     '</td>' +
                     '<td class="text-right">' + floatToMoney(soma) +
+                    '</td>' +
+                    '<td class="text-right">' + floatToMoney(saldo) +
                     '</td>' +
                     '<td> <button type="button" onclick="removerMedicaoServico(' + medicao_servico_id + ')" ' +
                     ' class="btn btn-sm btn-danger btn-flat"> <i class="fa fa-times"></i> </button> ' +
@@ -173,13 +275,19 @@
             $('#medicoes tbody').append(novaMedicao);
             $('#btnAdicionarMedicaoServico' + medicao_servico_id).parent().parent().parent().hide();
             $('#somaTotal').html(floatToMoney(v_somaTotal));
+            $('#somaDescontos').html(floatToMoney(v_somaDescontos));
+            $('#somaFinal').html(floatToMoney(v_somaFinal));
         }
 
         function removerMedicaoServico(qual) {
             v_somaTotal -= valores_array[qual];
+            v_somaDescontos -= valores_array_descontos[qual];
+            v_somaFinal = v_somaTotal - v_somaDescontos;
             $('#medicaoServico' + qual).remove();
             $('#btnAdicionarMedicaoServico' + qual).parent().parent().parent().show();
             $('#somaTotal').html(floatToMoney(v_somaTotal));
+            $('#somaDescontos').html(floatToMoney(v_somaDescontos));
+            $('#somaFinal').html(floatToMoney(v_somaFinal));
         }
 
 

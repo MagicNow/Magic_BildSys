@@ -1,7 +1,7 @@
 @if(request()->segment(count(request()->segments()))=='create' || request()->segment(count(request()->segments()))=='edit')
     <div class='btn-group'>
 
-        <button onclick="adicionaMedicaoServico({{$id}},'{{ $insumo }}', {{ $soma }},{{ $trechos }})"
+        <button onclick="adicionaMedicaoServico({{$id}},'{{ $insumo }}', {{ $soma }}, '{{ $unidade }}', {{ $qtd_total_insumo }}, {{ $valor_unitario }}, {{ $valor_total }}, {{ $qtd_medida }}, {{ $descontos }}, {{ $saldo }})"
                 title="Adicionar esta medição ao boletim" type="button"
                 class='btn btn-success btn-sm btn-flat' id="btnAdicionarMedicaoServico{{$id}}">
             <i class="fa fa-plus"></i> Adicionar

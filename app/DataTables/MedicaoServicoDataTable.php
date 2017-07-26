@@ -34,7 +34,13 @@ class MedicaoServicoDataTable extends DataTable
                 return $obj->finalizado ? ( is_null($obj->aprovado) ? 'Aguardando Aprovação' : ($obj->aprovado==1?'Aprovado': 'Reprovado') )  : 'Em Aberto';
             })
             ->editColumn('soma', function ($obj){
-                return '<div class="text-right">'.($obj->soma ? float_to_money($obj->soma,'')  : '0').'</div>';
+                return '<div class="text-right">'.($obj->soma ? float_to_money($obj->soma)  : 'R$ 0,00').'</div>';
+            })
+            ->editColumn('descontos', function ($obj){
+                return '<div class="text-right">'.($obj->descontos ? float_to_money($obj->descontos)  : 'R$ 0,00').'</div>';
+            })
+            ->editColumn('qtd_medida', function ($obj){
+                return '<div class="text-right">'.($obj->qtd_medida ? float_to_money($obj->qtd_medida,'')  : '0,00').'</div>';
             })
             ->filterColumn('created_at', function ($query, $keyword) {
                 $query->whereRaw("DATE_FORMAT(medicao_servicos.created_at,'%d/%m/%Y') like ?", ["%$keyword%"]);
@@ -54,6 +60,24 @@ class MedicaoServicoDataTable extends DataTable
             })
             ->filterColumn('trechos', function ($query, $keyword) {
                 $query->whereRaw("(SELECT COUNT(1) FROM medicoes WHERE medicao_servico_id = medicao_servicos.id ) = ?", ["$keyword"]);
+            })
+            ->filterColumn('qtd_medida', function ($query, $keyword) {
+                $query->whereRaw("(
+                            SELECT SUM(medicoes.qtd) 
+                            FROM medicoes 
+                            WHERE medicoes.medicao_servico_id = medicao_servicos.id 
+                        ) LIKE ?", ["%$keyword%"]);
+            })
+            ->filterColumn('soma', function ($query, $keyword) {
+                $query->whereRaw("(
+                            (
+                                SELECT SUM(medicoes.qtd) 
+                                FROM medicoes 
+                                WHERE medicoes.medicao_servico_id = medicao_servicos.id 
+                            ) 
+                            * 
+                            contrato_itens.valor_unitario
+                        ) LIKE ?", ["%$keyword%"]);
             })
             ->orderColumn('trechos','(SELECT COUNT(1) FROM medicoes WHERE medicao_servico_id = medicao_servicos.id ) $1')
             ->editColumn('action', 'medicao_servicos.datatables_actions')
@@ -87,6 +111,35 @@ class MedicaoServicoDataTable extends DataTable
                 'medicao_servicos.qtd_ajudantes',
                 'medicao_servicos.descontos',
                 'medicao_servicos.created_at',
+                'insumos.unidade_sigla as unidade',
+                'contrato_itens.qtd as qtd_total_insumo',
+                'contrato_itens.valor_unitario',
+                'contrato_itens.valor_total',
+                DB::raw('(contrato_itens.valor_total - IFNULL( (
+                    SELECT SUM(medicoes.qtd)
+                    FROM medicoes 
+                    JOIN medicao_servicos MS ON MS.id = medicoes.medicao_servico_id
+                    WHERE 
+                        EXISTS(
+                            SELECT 1 FROM medicao_boletim_medicao_servico
+                            JOIN medicao_boletins MB ON MB.id = medicao_boletim_medicao_servico.medicao_boletim_id
+                            WHERE 
+                                medicao_boletim_medicao_servico.medicao_servico_id = MS.id
+                                AND MB.medicao_boletim_status_id > 1
+                        )
+                        AND EXISTS(
+                            SELECT 1 FROM 
+                            contrato_item_apropriacoes CAP
+                            WHERE CAP.contrato_item_id = contrato_itens.id
+                            AND CAP.id = MS.contrato_item_apropriacao_id
+                        )
+                    ),0) * contrato_itens.valor_unitario
+                ) as saldo'),
+                DB::raw('(
+                            SELECT SUM(medicoes.qtd) 
+                            FROM medicoes 
+                            WHERE medicoes.medicao_servico_id = medicao_servicos.id 
+                        ) as qtd_medida'),
                 DB::raw("'".$aprovador."' as aprovador"),
                 'users.name',
                 DB::raw('(SELECT COUNT(1) FROM medicoes WHERE medicao_servico_id = medicao_servicos.id ) as trechos'),
@@ -219,10 +272,9 @@ class MedicaoServicoDataTable extends DataTable
                 'insumo' => ['name' => 'insumo', 'data' => 'insumo'],
                 'apropriação' => ['name' => 'apropriacao', 'data' => 'apropriacao'],
                 'data_medição' => ['name' => 'created_at', 'data' => 'created_at'],
-                'período_início' => ['name' => 'periodo_inicio', 'data' => 'periodo_inicio'],
-                'período_término' => ['name' => 'periodo_termino', 'data' => 'periodo_termino'],
                 'usuário' => ['name' => 'users.name', 'data' => 'name'],
-                'trechosMedidos' => ['name' => 'trechos', 'data' => 'trechos', 'width'=>'5%'],
+                'quantidadeMedida' => ['name' => 'qtd_medida', 'data' => 'qtd_medida', 'width'=>'5%'],
+                'descontos' => ['name' => 'descontos', 'data' => 'descontos', 'width'=>'5%'],
                 'valorMedido' => ['name' => 'soma', 'data' => 'soma', 'width'=>'5%'],
                 'action' => ['title' => 'Selecionar', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
             ];
