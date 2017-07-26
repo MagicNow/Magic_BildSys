@@ -31,6 +31,12 @@
                         <span class="text-warning"> ||  Aprovação de Escopo </span>
                         <div class="btn-group" role="group" id="blocoItemAprovaReprova{{ $quadroDeConcorrencia->id }}"
                              aria-label="...">
+                            <button type="button"
+                                    class="btn btn-ms btn-flat btn-primary"
+                                    data-toggle="modal"
+                                    data-target="#modal-obs">
+                                Observação do Aprovador
+                            </button>
                             <button type="button" onclick="workflowAprovaReprova({{ $quadroDeConcorrencia->id }},
                                     'QuadroDeConcorrencia',1,'blocoItemAprovaReprova{{ $quadroDeConcorrencia->id }}',
                                     'Q.C. {{ $quadroDeConcorrencia->id }}',0, '', '', true);"
@@ -47,6 +53,22 @@
                                 Reprovar Q.C.
                                 <i class="fa fa-times" aria-hidden="true"></i>
                             </button>
+                        </div>
+                        <div class="modal fade" id="modal-obs" tabindex="-1" role="dialog">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        <h4 class="modal-title">Observações do Aprovador</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        {{--<textarea class="form-control" id="obs-aprovador" data-set="obs_aprova_qc" rows="15"></textarea>--}}
+                                        <textarea class="form-control" id="obs-aprovador" data-key="qc_obs_{{ auth()->id() }}_{{ $quadroDeConcorrencia->id }}" rows="15"></textarea>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     @else
                         @if($workflowAprovacao['jaAprovou'])
@@ -111,6 +133,7 @@
         }
         ?>
         options_motivos = "{!! $options_motivos !!}";
+
 
 </script>
 @stop

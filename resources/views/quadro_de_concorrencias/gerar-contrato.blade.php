@@ -90,9 +90,10 @@
                                     <table class="table table-striped table-hovered table-bordered table-condensed">
                                         <thead>
                                         <tr>
-                                            <th width="60%">Insumo</th>
-                                            <th width="20%">Qtd.</th>
-                                            <th width="20%">Valor</th>
+                                            <th width="45%">Insumo</th>
+                                            <th width="15%">Qtd.</th>
+                                            <th width="15%">V.Unitário</th>
+                                            <th width="25%">Valor total</th>
                                         </tr>
                                         </thead>
 
@@ -112,9 +113,13 @@
                                                 <tr>
                                                     <td class="text-left">
                                                         <label class="label label-{{ $item['tipo']=='SERVIÇO'?'info':'primary' }}">{{ $item['tipo'] }}</label>
-                                                        {{ $item['insumo']->nome }}</td>
+                                                        {{ $item['insumo']->nome }}
+                                                    </td>
                                                     <td class="text-right">
                                                         {{ number_format($item['qtd'],2,',','.') . ' '. $item['insumo']->unidade_sigla }}
+                                                    </td>
+                                                    <td>
+                                                        R$ {{ number_format($item['valor_unitario'],2,',','.')}}
                                                     </td>
                                                     <td class="text-right">
                                                         R$ {{ number_format($item['valor_total'],2,',','.') }}
@@ -128,7 +133,7 @@
                                         @endforeach
                                         @if($quadroDeConcorrencia->hasMaterial() && $qcFornecedor->tipo_frete != 'CIF')
                                             <tr>
-                                                <td colspan="2" class="text-left">Frete</td>
+                                                <td colspan="3" class="text-left">Frete</td>
                                                 <td class="text-right">
                                                     <div class="input-group">
                                                         <span class="input-group-addon">R$</span>
@@ -144,7 +149,7 @@
                                         </tbody>
                                         <tfoot>
                                         <tr class="warning">
-                                            <td colspan="2" class="text-right">TOTAL</td>
+                                            <td colspan="3" class="text-right">TOTAL</td>
                                             <input type="hidden" id="total_contrato_{{ $qcFornecedor->id.'_'. $obraId }}"
                                                    value="{{ $total_contrato[$qcFornecedor->id][$obraId] }}">
                                             <td class="text-right" id="sum_total_contrato_{{ $qcFornecedor->id.'_'. $obraId }}">

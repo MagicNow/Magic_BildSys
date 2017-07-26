@@ -26,23 +26,24 @@ $(function() {
       });
   });
 
-  var obsAprovador = document.getElementById('obs-aprovador');
-
-  if(obsAprovador) {
-    var contrato_id = document.getElementById('contrato_id');
-    var user_id = document.getElementById('user_id');
-
-    var key = 'contrato_obs_' + user_id.value + '_' + contrato_id.value;
-
-    obsAprovador.value = localStorage.getItem(key);
-
-    var saveObs = _.debounce(function(event) {
-      localStorage.setItem(key, obsAprovador.value);
-    }, 700);
-
-    obsAprovador.addEventListener('input', saveObs);
-    obsAprovador.addEventListener('change', saveObs);
-  }
+  //var obsAprovador = document.getElementById('obs-aprovador');
+  //console.log(obsAprovador);
+  //if(obsAprovador) {
+  //  //var contrato_id = document.getElementById('contrato_id');
+  //  //var user_id = document.getElementById('user_id');
+  //
+  //  //var key = 'contrato_obs_' + user_id.value + '_' + contrato_id.value;
+  //  var key = obsAprovador.dataset.key;
+  //
+  //  obsAprovador.value = localStorage.getItem(key);
+  //
+  //  var saveObs = _.debounce(function(event) {
+  //    localStorage.setItem(key, obsAprovador.value);
+  //  }, 700);
+  //
+  //  obsAprovador.addEventListener('input', saveObs);
+  //  obsAprovador.addEventListener('change', saveObs);
+  //}
 
 
   if (typeof LaravelDataTables !== 'undefined') {
