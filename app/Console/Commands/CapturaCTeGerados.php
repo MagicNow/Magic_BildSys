@@ -2,36 +2,36 @@
 
 namespace App\Console\Commands;
 
-use App\Repositories\ConsultaNfeRepository;
+use App\Repositories\ConsultaCteRepository;
 use Illuminate\Console\Command;
 
-class CapturaNfeGeradas extends Command
+class CapturaCTeGerados extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'captura:nfe';
-
-    protected $consultaNfeRepository;
+    protected $signature = 'captura:cte';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Captura as notas fiscais no ambiente sefaz geradas contra o CNPJ da empresa';
+    protected $description = 'Captura os conhecimentos de notas fiscais no ambiente sefaz';
+
+    protected $consultaCTeRepository;
 
     /**
      * Create a new command instance.
      *
      * @return void
      */
-    public function __construct(ConsultaNfeRepository $consultaNfeRepository)
+    public function __construct(ConsultaCteRepository $consultaCTeRepository)
     {
         parent::__construct();
-        $this->consultaNfeRepository = $consultaNfeRepository;
+        $this->consultaCTeRepository = $consultaCTeRepository;
     }
 
     /**
@@ -43,6 +43,6 @@ class CapturaNfeGeradas extends Command
     {
         $download = 1;
         $fromCommand = 1;
-        $this->consultaNfeRepository->syncXML($download, $fromCommand);
+        $this->consultaCTeRepository->syncXML($download, $fromCommand);
     }
 }

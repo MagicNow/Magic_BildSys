@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Console\Commands\CapturaNfeGeradas;
+use App\Console\Commands\CapturaCTeGerados;
 use App\Repositories\ImportacaoRepository;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -16,7 +17,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        CapturaNfeGeradas::class
+        CapturaNfeGeradas::class,
+        CapturaCteGerados::class,
     ];
 
     /**
@@ -40,6 +42,9 @@ class Kernel extends ConsoleKernel
         })->twiceDaily(10, 19);
 
         $schedule->command('captura:nfe')
+            ->hourly();
+
+        $schedule->command('captura:cte')
             ->hourly();
     }
 
