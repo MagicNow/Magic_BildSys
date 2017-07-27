@@ -35,6 +35,7 @@ class ContratoItemModificacao extends Model
         'valor_unitario_atual',
         'tipo_modificacao',
         'contrato_status_id',
+        'anexo',
         'user_id'
     ];
 

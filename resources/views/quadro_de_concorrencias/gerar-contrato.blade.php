@@ -91,9 +91,9 @@
                                         <thead>
                                         <tr>
                                             <th width="45%">Insumo</th>
-                                            <th width="15%">V.Unitário</th>
                                             <th width="15%">Qtd.</th>
-                                            <th width="25%">Valor</th>
+                                            <th width="15%">V.Unitário</th>
+                                            <th width="25%">Valor total</th>
                                         </tr>
                                         </thead>
 
@@ -115,11 +115,11 @@
                                                         <label class="label label-{{ $item['tipo']=='SERVIÇO'?'info':'primary' }}">{{ $item['tipo'] }}</label>
                                                         {{ $item['insumo']->nome }}
                                                     </td>
-                                                    <td>
-                                                        R$ {{ number_format($item['valor_unitario'],2,',','.')}}
-                                                    </td>
                                                     <td class="text-right">
                                                         {{ number_format($item['qtd'],2,',','.') . ' '. $item['insumo']->unidade_sigla }}
+                                                    </td>
+                                                    <td>
+                                                        R$ {{ number_format($item['valor_unitario'],2,',','.')}}
                                                     </td>
                                                     <td class="text-right">
                                                         R$ {{ number_format($item['valor_total'],2,',','.') }}

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\DataTables\DetalhesServicosDataTable;
 use App\Models\CompradorInsumo;
+use App\Models\User;
 use Exception;
 use App\DataTables\ComprasDataTable;
 use App\DataTables\InsumosAprovadosDataTable;
@@ -1376,12 +1377,12 @@ class OrdemDeCompraController extends AppBaseController
             'vermelho'=>'Vermelho',
         ];
 
-        $compradores = CompradorInsumo::join('users', 'users.id', '=', 'comprador_insumos.user_id')
-                ->groupBy('comprador_insumos.user_id')
-                ->orderBy('users.name', 'ASC')
-                ->pluck('users.name', 'users.id')
-                ->toArray();
-
+        $compradores = User::join('role_user', 'role_user.user_id', '=', 'users.id')
+                        ->where('role_user.role_id', 2)
+                        ->orderBy('users.name', 'ASC')
+                        ->pluck('users.name', 'users.id')
+                        ->toArray();
+        
         return $insumosAprovadosDataTable->render('ordem_de_compras.insumos-aprovados',
             compact('obras', 'OCs', 'insumoGrupos', 'insumos', 'cidades', 'farol', 'compradores'));
     }
