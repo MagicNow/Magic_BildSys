@@ -1,0 +1,340 @@
+<Recebimento OPERACAO="I/U/D">
+	insert update delete
+    <FIL_IN_CODIGO>Código da Filial</FIL_IN_CODIGO> 
+    Campo inserido manualmente no cadastro de obra do sys *
+    <ACAO_IN_CODIGO>Código da Ação</ACAO_IN_CODIGO> 
+    891 (Fernanda irá Criar mais dois códigos) *
+    <CPAG_TPD_ST_CODIGO>Tipo Documento Financeiro</CPAG_TPD_ST_CODIGO> 
+    (buscar de tabela do Mega (será enviada consulta por email)) *
+    <AGN_IN_CODIGO>Código do Agente.</AGN_IN_CODIGO> 
+    Código Fornecedor dentro do SYS *
+    <AGN_TAU_ST_CODIGO>Identificador Agente</AGN_TAU_ST_CODIGO> 
+    apenas texto "COD" COD
+    <RCB_ST_NOTA>Nr.Nota Fiscal</RCB_ST_NOTA> 
+    número SEFAZ *
+    <SER_ST_CODIGO>Informe o Código da série/subsérie de documento contábil/fiscal</SER_ST_CODIGO> 
+    SEFAZ *
+    <TDF_ST_SIGLA>Tipo Documento</TDF_ST_SIGLA> 
+    Será enviado por e-mail *
+    <RCB_DT_DOCUMENTO>Data do documento fiscal</RCB_DT_DOCUMENTO> 
+    Data emissão NF
+    <RCB_DT_MOVIMENTO>Data do Movimento</RCB_DT_MOVIMENTO> 
+    Data entrada *
+    <TPR_ST_TIPOPRECO>Informe o Tipo de Preço</TPR_ST_TIPOPRECO>
+    CIF / FOB
+    <COND_ST_CODIGO>Código da condição de pagamento.</COND_ST_CODIGO>
+    Buscar na tabela do Mega e salvar no contrato, também na entrada da NF pode-se escolher a forma de pagamento. *
+    <CCF_IN_REDUZIDO>C. Custo Padrao</CCF_IN_REDUZIDO>
+    Criar campo Código centro de Custo na Obra (atual é 480) * REQUERIDO *
+    <PROJ_IN_REDUZIDO>Proj. Padrão</PROJ_IN_REDUZIDO>
+    Criar campo no cadastro da obra (Código Projeto Padrão) * REQUERIDO *
+    <RCB_RE_VALDESCGERAL>Valor do Desconto Geral Nota Fiscal</RCB_RE_VALDESCGERAL>
+    <RCB_RE_VALACREGERAL>Valor do Acrescimo Geral</RCB_RE_VALACREGERAL> 
+    nulo
+    <RCB_RE_VALDESCONTOS>Valor total dos Descontos ( Por Item )</RCB_RE_VALDESCONTOS> 
+    nulo(se vier uma NF com valores neste campo não aceitar)
+    <RCB_RE_TOTALFRETE>Valor total do Frete</RCB_RE_TOTALFRETE>
+    <RCB_RE_TOTALSEGURO>Valor total do Seguro</RCB_RE_TOTALSEGURO>
+    <RCB_RE_TOTALDESPACESS>Valor Total despesas Acessórias</RCB_RE_TOTALDESPACESS>
+    <RCB_RE_TOTALNOTA>Valor Total da Nota Fiscal</RCB_RE_TOTALNOTA>
+    <RCB_RE_VLMERCADORIA>Total de Mercadorias</RCB_RE_VLMERCADORIA>
+    <RCB_RE_VLICMS>Valor Total do ICMS</RCB_RE_VLICMS>
+    <RCB_RE_VLICMSRETIDO>Valor total do ICMS Retido</RCB_RE_VLICMSRETIDO>
+    <RCB_RE_VLIPI>Valor Total do IPI</RCB_RE_VLIPI>
+    <RCB_RE_TOTALMAOOBRA>Valor do Total de Mão de Obra</RCB_RE_TOTALMAOOBRA>
+    <RCB_RE_BASEICMS>Valor Total do ICMS</RCB_RE_BASEICMS>
+    <RCB_RE_TOTALISS>Valor Total ISS</RCB_RE_TOTALISS>
+    <RCB_RE_TOTALIRRF>Valor Total IRRF</RCB_RE_TOTALIRRF>
+    <RCB_RE_TOTALIMPORTACAO>Valor de Despesas de Importacao</RCB_RE_TOTALIMPORTACAO>
+    <RCB_RE_DESPNAOTRIB>Valor de Despesas não Tributadas</RCB_RE_DESPNAOTRIB>
+    <RCB_RE_BASESUBTRIB>Base de Calc. ICMS Retido</RCB_RE_BASESUBTRIB>
+    <RCB_RE_TOTALINSS>Valor Total INSS</RCB_RE_TOTALINSS>
+    <RCB_CL_OBSTRF>Observação Tributos</RCB_CL_OBSTRF> Nulo
+    <RCB_CL_INFADIC>Informações adicionais</RCB_CL_INFADIC> 
+    Colocar apenas info "Importada SYS Engenharia"
+    <RCB_ST_OBSFIN>Observação Financeiro</RCB_ST_OBSFIN> 
+    nunca utilizado para bild e vitta (sugiro realização de teste sem a TAG)
+    <RCB_RE_SESTSENAT>Valor Sest/Senat</RCB_RE_SESTSENAT> Nulo
+    <RCB_RE_VLPIS>Valor PIS</RCB_RE_VLPIS> 
+    nunca utilizado para bild e vitta (sugiro realização de teste sem a TAG)
+    <RCB_RE_VLCOFINS>Vl. Cofins</RCB_RE_VLCOFINS> 
+    nunca utilizado para bild e vitta (sugiro realização de teste sem a TAG)
+    <RCB_RE_TOTALCSLL>Valor CSLLporte</RCB_RE_TOTALCSLL> 
+    nunca utilizado para bild e vitta (sugiro realização de teste sem a TAG)
+    <RCB_CH_TIPOTRANS>RCB_CH_TIPOTRANS</RCB_CH_TIPOTRANS>
+    DEFAULT "RO" - TIPO DE TRANSPORTE
+    <RCB_ST_PLACA1>Nr Placa 01</RCB_ST_PLACA1>
+    nunca utilizado para bild e vitta (sugiro realização de teste sem a TAG)
+    <RCB_ST_PLACA2>Nr Placa 02</RCB_ST_PLACA2>
+    nunca utilizado para bild e vitta (sugiro realização de teste sem a TAG)
+    <RCB_ST_PLACA3>Nr Placa 03</RCB_ST_PLACA3>
+    nunca utilizado para bild e vitta (sugiro realização de teste sem a TAG)
+    <RCB_RE_VLDESADUANEIRA>Valor Desp Aduaneiras</RCB_RE_VLDESADUANEIRA>
+    nunca utilizado para bild e vitta (sugiro realização de teste sem a TAG)
+    <RCB_RE_OUTRASDESPIMP>Outras Desp de Importação</RCB_RE_OUTRASDESPIMP>
+    nunca utilizado para bild e vitta (sugiro realização de teste sem a TAG)
+    <DRF_ST_CODIGOIR>Código IR</DRF_ST_CODIGOIR>
+    Verificar com Fernanda/Lucas *
+    <RCB_BO_CALCULARVALORES>Identifica se Calculamos ou não os valores de Totais, Tributos (S/N)</RCB_BO_CALCULARVALORES>
+    Verificar com Fernanda/Lucas
+    <RCB_ST_CHAVEACESSO>Chave de Acesso NF-e</RCB_ST_CHAVEACESSO>
+    NF
+    <RCB_RE_ICMSSTRECUPERA>Valor do ICMS ST Recuperado</RCB_RE_ICMSSTRECUPERA>
+    0
+    <RCB_RE_BASESUBTRIBANT>Valor da base de cálculo do ICMS Retido Anteriormente</RCB_RE_BASESUBTRIBANT>
+    0
+    <RCB_RE_VLICMSRETIDOANT>Valor do ICMS Retido Anteriormente</RCB_RE_VLICMSRETIDOANT>
+    0
+    <RCB_RE_BASEFUNRURAL>Base de cálculo do FUNRURAL.</RCB_RE_BASEFUNRURAL>
+    0
+    <RCB_RE_VALORFUNRURAL>Valor do FUNRURAL.</RCB_RE_VALORFUNRURAL>
+    0
+    <ItensRecebimento OPERACAO="I/U/D">
+        <RCI_IN_SEQUENCIA>Numero da Sequencia dos Itens da Nota</RCI_IN_SEQUENCIA>
+        NUMERO SEQUENCIAL POR NF (1,2,3,4,5....)
+        <PRO_ST_ALTERNATIVO>Cód.Alternativo</PRO_ST_ALTERNATIVO>
+        TXT "COD" COD
+        <PRO_IN_CODIGO>Cód.Item</PRO_IN_CODIGO>
+        Código do insumo do SYS *
+        <RCI_RE_QTDEACONVERTER>Qtde.Recebimento</RCI_RE_QTDEACONVERTER>
+        Qtd da NF
+        <UNI_ST_UNIDADEFMT>Unid. Receb.</UNI_ST_UNIDADEFMT>
+        Unidade recebida SUGIRO TESTAR SEM A TAG NO INÍCIO
+        <RCI_RE_VLMERCADORIA>Vl. Mercadoria</RCI_RE_VLMERCADORIA>
+        valor total do produto (sem frete/IPI)
+        <RCI_RE_VLIPI>Valor I.P.I</RCI_RE_VLIPI>
+        <RCI_RE_VLFRETE>Valor Frete</RCI_RE_VLFRETE>
+        <RCI_RE_VLSEGURO>Valor Seguro</RCI_RE_VLSEGURO>
+        <RCI_RE_VLDESPESA>Desp.Acessórias</RCI_RE_VLDESPESA>
+        <RCI_RE_PERCICM>% ICMS</RCI_RE_PERCICM>
+        <RCI_RE_PERCIPI>% IPI</RCI_RE_PERCIPI>
+        <RCI_RE_VLMOBRAP>Vl. Mão de Obra</RCI_RE_VLMOBRAP>
+        <RCI_RE_PEDESC>% Descto.</RCI_RE_PEDESC>
+        <RCI_RE_VLDESC>Valor Descto.</RCI_RE_VLDESC>
+        <RCI_RE_VLDESCPROP>Valor Descto.Nota</RCI_RE_VLDESCPROP>
+        <RCI_RE_VLFINANCPROP>RCI_RE_VLFINANCPROP</RCI_RE_VLFINANCPROP>
+        nulo
+        <RCI_RE_VLIMPORTACAO>Valor Importação</RCI_RE_VLIMPORTACAO>
+        nf
+        <RCI_RE_VLICMS>Vl. ICMS</RCI_RE_VLICMS>
+        nf
+        <RCB_ST_NOTA>Nr. Nota Fiscal</RCB_ST_NOTA>
+        <UNI_ST_UNIDADE>Unidade</UNI_ST_UNIDADE>
+        Unidade no Mega (ex. KG,M2,M3, etc) Unidade do cadastro de insumo do SYS *
+        <FMT_ST_CODIGO>Cód. Conversor unidades</FMT_ST_CODIGO>
+        Testar passando nulo SUGIRO TESTAR SEM A TAG NO INÍCIO
+        <APL_IN_CODIGO>Codigo da Aplicação</APL_IN_CODIGO>
+        121 para serviço, 101 para material, 111 Energia Elétrica, 992 Serviço de Comunicação, 993 Frete *
+        <TPC_ST_CLASSE>Tipo de Classe</TPC_ST_CLASSE>
+        150 para material p/ construção, 151 serviços técnicos, 174 gastos com canteiro de obra, 152 Mão de Obra para levantamento da obra *
+        <CFOP_IN_CODIGO>Código Reduzido CFOP</CFOP_IN_CODIGO>
+        Código de Aplicação -> CFOP = 121 -> 1933, 101 -> 1949, 111 -> 1253, 992 -> 1353, 993 -> 1303 *
+        <COS_IN_CODIGO>Código de Serviço do Item</COS_IN_CODIGO>
+        Código do serviço Item (Confirmar com Lucas) *
+        <UF_LOC_ST_SIGLA>Estado em que o Serviço foi Prestado</UF_LOC_ST_SIGLA>
+        UF estado *
+        <MUN_LOC_IN_CODIGO>Codigo do Municipio em que o Serviço foi Prestado</MUN_LOC_IN_CODIGO>
+        MEGA CÓDIGO DE MUNICIPIO PADRÃO QUE ESTA NO MEGA OU PADRÃO CORREIOS
+        <ALM_IN_CODIGO>Almoxarifado do Item</ALM_IN_CODIGO>
+        null SUGIRO TESTAR SEM A TAG NO INÍCIO
+        <LOC_IN_CODIGO>Localização do Item</LOC_IN_CODIGO>
+        null SUGIRO TESTAR SEM A TAG NO INÍCIO
+        <RCI_RE_VALORPVV>Valor PVV (Substituição ICMS)</RCI_RE_VALORPVV>
+        nulo
+        <RCI_RE_VLICMRETIDO>Vl ICMS Retido (Substituição)</RCI_RE_VLICMRETIDO>
+        nulo
+        <RCI_RE_VLISENIPI>Valor do Isento IPI</RCI_RE_VLISENIPI>
+        nulo
+        <RCI_RE_IPIRECUPERA>Vl Recuperado IPI</RCI_RE_IPIRECUPERA>
+        nulo
+        <RCI_RE_VLOUTRIPI>Vl. Outros IPI</RCI_RE_VLOUTRIPI>
+        nulo
+        <RCI_RE_VLBASEIPI>Base de Cálculo IPI</RCI_RE_VLBASEIPI>
+        nulo
+        <RCI_RE_ICMSRECUPERA>Vl Recuperado ICMS</RCI_RE_ICMSRECUPERA>
+        nulo
+        <RCI_RE_VLISENICM>Valor do Isento de ICMS</RCI_RE_VLISENICM>
+        nulo
+        <RCI_RE_VLOUTRICM>Valor Outros ICMS</RCI_RE_VLOUTRICM>
+        nulo
+        <RCI_RE_VLBASEICM>Base de Cálculo ICMS</RCI_RE_VLBASEICM>
+        nulo
+        <RCI_RE_VALDIFICMS>Valor do Imposto (Diferencial de Aliq. ICMS)</RCI_RE_VALDIFICMS>
+        nulo
+        <RCI_RE_BASEISS>Vl Base de Calculo ISS</RCI_RE_BASEISS>
+        NF
+        <RCI_RE_PERISS>% de ISS</RCI_RE_PERISS>
+        NF
+        <RCI_RE_VLISS>Valor do Imposto de ISS</RCI_RE_VLISS>
+        NF
+        <RCI_RE_BASEINSS>Base de Calculo INSS</RCI_RE_BASEINSS>
+        NF
+        <RCI_RE_PERINSS>% de INSS</RCI_RE_PERINSS>
+        NF
+        <RCI_RE_VLINSS>Vl INSS</RCI_RE_VLINSS>
+        NF
+        <RCI_RE_BASEIRRF>Base de Cálculo IRRF</RCI_RE_BASEIRRF>
+        NF
+        <RCI_RE_PERIRRF>% de IRRF</RCI_RE_PERIRRF>
+        NF
+        <RCI_RE_VLIRRF>Valor IRRF</RCI_RE_VLIRRF>
+        NF
+        <RCI_RE_BASESUBTRIB>Vl. Base de Cálculo Substituição</RCI_RE_BASESUBTRIB>
+        NF
+        <RCI_RE_PERDIFICMS>% de Aliquota Interna (Diferencial de Aliq. ICMS)</RCI_RE_PERDIFICMS>
+        nulo
+        <RCI_ST_NCM_EXTENSO>Codigo Extenso do NCM</RCI_ST_NCM_EXTENSO>
+        Verifica os 4 primeiros dígitos q vem na NF e faz comparação *
+        <RCI_CH_STICMS_A>Sit. Trib - ICMS</RCI_CH_STICMS_A>
+        Não tem na BILD 0
+        <RCI_CH_STICMS_B>Sit. Trib - ICMS</RCI_CH_STICMS_B>
+        Não tem na BILD 0
+        <RCI_RE_VLDESPNAOTRIB>Valor Despesa não trib.</RCI_RE_VLDESPNAOTRIB>
+        nulo
+        <RCI_RE_VALORMOEDA>Vl. Converter</RCI_RE_VALORMOEDA> nulo
+        <RCI_RE_VLICMRETIDOANT>Vl ICMS Retido Inform.(Substituição)</RCI_RE_VLICMRETIDOANT>
+        nulo
+        <RCI_RE_BASESUBTRIBANT>Vl Base de Calculo Inform(Substituição)</RCI_RE_BASESUBTRIBANT> 
+        nulo
+        <RCI_RE_VLPISRETIDO>Valor PIS Retido</RCI_RE_VLPISRETIDO>
+        No valor X o %
+        <RCI_RE_VLPISRECUPERA>Valor PIS Recuperado</RCI_RE_VLPISRECUPERA> 
+        nulo
+        <RCI_RE_PERCPIS>% de PIS</RCI_RE_PERCPIS>
+        Busca o que está no código de Serviço X cadastro do Fornecedor
+        <RCI_RE_VLPIS>Valor de Imposto PIS</RCI_RE_VLPIS>
+        NF
+        <RCI_RE_VLBASEPIS>Base de Cálculo PIS</RCI_RE_VLBASEPIS>
+        Valor do serviço
+        <RCI_RE_VLCOFINSRETIDO>Valor COFINS Retido</RCI_RE_VLCOFINSRETIDO>
+        No valor do serviço X o %
+        <RCI_RE_VLCOFINSRECUPERA>Valor COFINS Recuperado</RCI_RE_VLCOFINSRECUPERA>
+        nulo
+        <RCI_RE_PERCCOFINS>% de COFINS</RCI_RE_PERCCOFINS>
+        Busca o que está no código de Serviço X cadastro do Fornecedor
+        <RCI_RE_VLCOFINS>Valor de Imposto COFINS</RCI_RE_VLCOFINS>
+        No valor do serviço X o %
+        <RCI_RE_VLBASECOFINS>Base de Cálculo COFINS</RCI_RE_VLBASECOFINS> 
+        Valor do serviço
+        <RCI_RE_PERCSLL>% de CSLL</RCI_RE_PERCSLL> 
+        Busca o que está no código de Serviço X cadastro do Fornecedor
+        <RCI_RE_VLBASECSLL>Base de Cálculo CSLL</RCI_RE_VLBASECSLL> 
+        Valor do serviço
+        <RCI_RE_VLCSLL>Valor do Imposto CSLL</RCI_RE_VLCSLL> 
+        No valor do serviço X o %
+        <NAT_ST_CODIGO>Natureza de Estoque</NAT_ST_CODIGO> 
+        nulo SUGIRO TESTAR SEM A TAG NO INÍCIO
+        <RCI_RE_VLICMSDIFERIDO>Vl do Imposto ICMS Diferido</RCI_RE_VLICMSDIFERIDO> 
+        nulo
+        <RCI_RE_VLDESADUANEIRA>Valor Desp Aduaneiras</RCI_RE_VLDESADUANEIRA> 
+        nulo
+        <RCI_RE_OUTRASDESPIMP>Outras Desp de Importação</RCI_RE_OUTRASDESPIMP> 
+        nulo
+        <RCI_ST_REFERENCIA>Referência</RCI_ST_REFERENCIA> 
+        nulo SUGIRO TESTAR SEM A TAG NO INÍCIO
+        <RCI_BO_GENERICO>Item Genérico (S/N)</RCI_BO_GENERICO> 
+        nulo SUGIRO TESTAR SEM A TAG NO INÍCIO
+        <COMPL_ST_DESCRICAO>Descrição Item Genérico</COMPL_ST_DESCRICAO> 
+        nulo SUGIRO TESTAR SEM A TAG NO INÍCIO
+        <COSM_IN_CODIGO>Tipo de Serviço</COSM_IN_CODIGO> 
+        Nulo (validar) *
+        <NCM_IN_CODIGO>Código Reduzido NCM</NCM_IN_CODIGO> 
+        Busca o valor que está no cadastro do insumo no sys *
+        <RCO_ST_COMPLEMENTO>Observação Item</RCO_ST_COMPLEMENTO> 
+        ?
+        <RCI_BO_CALCULARVALORES>Calcular Valores Tributos</RCI_BO_CALCULARVALORES> 
+        Quando for NF de serviço é S do contrário N
+        <RCI_RE_ICMSSTRECUPERA>Valor do ICMS ST Recuperado</RCI_RE_ICMSSTRECUPERA> 
+        nulo
+        <RCI_RE_BASEFUNRURAL>Base de cálculo do FUNRURAL.</RCI_RE_BASEFUNRURAL> 
+        nulo
+        <RCI_RE_ALIQFUNRURAL>Alíquota de cálculo do FUNRURAL.</RCI_RE_ALIQFUNRURAL> 
+        nulo
+        <RCI_RE_VALORFUNRURAL>Valor do FUNRURAL</RCI_RE_VALORFUNRURAL> 
+        nulo
+        <STS_ST_CSOSN>Código de Situação da Operação no Simples Nacional.</STS_ST_CSOSN> 
+        NF *
+        <RCI_ST_STIPI>Situação Tributária do IPI</RCI_ST_STIPI> 
+        nulo
+        <STP_ST_CSTPIS>Código da Situação Tributária do PIS</STP_ST_CSTPIS> 
+        nulo
+        <STC_ST_CSTCOFINS>Código da Situação Tributária do COFINS</STC_ST_CSTCOFINS> 
+        nulo
+        <RCI_RE_VLBASESESTSENAT>RCI_RE_VLBASESESTSENAT</RCI_RE_VLBASESESTSENAT> 
+        nulo
+        <RCI_RE_PERCSESTSENAT>RCI_RE_PERCSESTSENAT</RCI_RE_PERCSESTSENAT> 
+        nulo
+        <RCI_RE_VLSESTSENAT>RCI_RE_VLSESTSENAT</RCI_RE_VLSESTSENAT> 
+        nulo
+        <RCI_CH_DEFIPI>Define como será calculado o IPI</RCI_CH_DEFIPI> 
+        nulo
+        <RCI_RE_PAUTAIPI>Valor da Pauta do IPI</RCI_RE_PAUTAIPI> 
+        nulo
+        <ENI_ST_CODIGO>Cód.Enquadramento IPI</ENI_ST_CODIGO> 
+        nulo
+        <LotesVinculados OPERACAO="I/U/D"> 
+        	SUGIRO TESTAR SEM A TAG NO INÍCIO
+            <MVS_ST_LOTEFORNE>Nr. Lote</MVS_ST_LOTEFORNE> 
+            SUGIRO TESTAR SEM A TAG NO INÍCIO
+            <MVT_DT_MOVIMENTO>Dt. Movimento</MVT_DT_MOVIMENTO> 
+            SUGIRO TESTAR SEM A TAG NO INÍCIO
+            <MVS_DT_VALIDADE>Dt. Validade</MVS_DT_VALIDADE> 
+            SUGIRO TESTAR SEM A TAG NO INÍCIO
+            <MVS_ST_REFERENCIA>Referência de Estoque</MVS_ST_REFERENCIA> 
+            SUGIRO TESTAR SEM A TAG NO INÍCIO
+            <ALM_IN_CODIGO>Almoxarifado</ALM_IN_CODIGO> 
+            SUGIRO TESTAR SEM A TAG NO INÍCIO
+            <LOC_IN_CODIGO>Localização</LOC_IN_CODIGO> 
+            SUGIRO TESTAR SEM A TAG NO INÍCIO
+            <NAT_ST_CODIGO>Cód.Natureza Estoque</NAT_ST_CODIGO> 
+            SUGIRO TESTAR SEM A TAG NO INÍCIO
+            <MVS_DT_ENTRADA>Dt. Entrada</MVS_DT_ENTRADA> 
+            SUGIRO TESTAR SEM A TAG NO INÍCIO
+            <LMS_RE_QUANTIDADE>Quantidade</LMS_RE_QUANTIDADE> 
+            SUGIRO TESTAR SEM A TAG NO INÍCIO
+            <RCI_IN_SEQUENCIA>Seq. Item</RCI_IN_SEQUENCIA> 
+            SUGIRO TESTAR SEM A TAG NO INÍCIO   </LotesVinculados> SUGIRO TESTAR SEM A TAG NO INÍCIO
+        <CentroCusto OPERACAO="I/U/D">
+            <RCB_ST_NOTA>Nr. Documento</RCB_ST_NOTA> 
+            Número NF
+            <RCI_IN_SEQUENCIA>Seq. do Item da Nota</RCI_IN_SEQUENCIA>
+            <IRC_IN_SEQUENCIA>Numero da Sequencia do Centro de Custo</IRC_IN_SEQUENCIA> 
+            NUMERO SEQUENCIAL POR NF (1,2,3,4,5....)
+            <CCF_IN_REDUZIDO>C.Custo</CCF_IN_REDUZIDO> 
+            Código cadastrado na obra *
+            <TPC_ST_CLASSE>Código do Tipo de Classe</TPC_ST_CLASSE> 
+            150 para material p/ construção, 151 serviços técnicos, 174 gastos com canteiro de obra, 152 Mão de Obra para levantamento da obra (olhar vinculação no insumo) *
+            <IRC_RE_PERC>Perc.Rateio</IRC_RE_PERC> 
+            100
+            <IRC_RE_VLPROP>Vlr.Proporcional</IRC_RE_VLPROP> 
+            Percentual anterior
+            <Projetos OPERACAO="I/U/D">
+                <RCB_ST_NOTA>Nr. Documento</RCB_ST_NOTA>
+                <RCI_IN_SEQUENCIA>Seq. do Item da Nota</RCI_IN_SEQUENCIA>
+                <IRC_IN_SEQUENCIA>Numero da Sequencia do Centro de Custo ao qual o Projeto esta amarrado</IRC_IN_SEQUENCIA> 
+                Código Centro de Custo cadastrado na obra
+                <IRP_IN_SEQUENCIA>Sequencia Projeto</IRP_IN_SEQUENCIA> 
+                NUMERO SEQUENCIAL POR NF (1,2,3,4,5....)
+                <PROJ_IN_REDUZIDO>Projeto</PROJ_IN_REDUZIDO> 
+                Código cadastrado na obra *
+                <TPC_ST_CLASSE>Código do Tipo de Classe</TPC_ST_CLASSE> 
+                Código vinculado ao Insumo no Mega
+                <IRP_RE_PERC>Perc.Rateio</IRP_RE_PERC> 100
+                <IRP_RE_VLPROP>Vlr.Proporcional</IRP_RE_VLPROP> 
+                valor do percentual x valor do item
+            </Projetos>
+        </CentroCusto>
+    </ItensRecebimento>
+    <Parcelas OPERACAO="I/U/D">
+        <RCB_ST_NOTA>Nr.Nota Fiscal</RCB_ST_NOTA> 
+        NF
+        <MOV_ST_DOCUMENTO>Documento</MOV_ST_DOCUMENTO> 
+        mesmo número da NF
+        <MOV_ST_PARCELA>Parcela</MOV_ST_PARCELA> 
+        NNN NUMERO SEQUENCIAL POR NF (001,002,003,004,005....).
+        <MOV_DT_VENCTO>Vencimento</MOV_DT_VENCTO> 
+        DD/MM/YYYY Considerar dias mínimos vencimento do Fornecedor (será buscado do Mega)
+        <MOV_RE_VALORMOE>Valor Parcela</MOV_RE_VALORMOE> 
+        00000000000.00   
+    </Parcelas>
+</Recebimento>
