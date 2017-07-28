@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Models\MedicaoBoletim;
 use App\Models\MedicaoBoletimStatusLog;
 use App\Notifications\NotificaFornecedorMedicaoBoletim;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use InfyOm\Generator\Common\BaseRepository;
 use PDF;
@@ -56,7 +57,7 @@ class MedicaoBoletimRepository extends BaseRepository
     
     public function liberaParaNF($id){
         $arquivo = self::geraImpressao($id);
-        dd($arquivo);
+        return ($arquivo);
 
         $medicaoBoletim = $this->find($id);
         $medicaoBoletim->medicao_boletim_status_id = 2;
@@ -107,11 +108,48 @@ class MedicaoBoletimRepository extends BaseRepository
             return null;
         }
 
-        
         if (is_file(base_path().'/storage/app/public/contratos/boletim_'.$medicaoBoletim->id.'.pdf')) {
             unlink(base_path().'/storage/app/public/contratos/boletim_'.$medicaoBoletim->id.'.pdf');
         }
-        PDF::loadView('medicao_boletims.pdf',compact('medicaoBoletim'))->setPaper('a4')->setOrientation('portrait')->save(base_path().'/storage/app/public/contratos/boletim_'.$medicaoBoletim->id.'.pdf');
+
+        $insumosMedidos = $medicaoBoletim->medicaoServicos()->select([
+            DB::raw('SUM(medicao_servicos.descontos) descontos'),
+            'insumos.id as insumo_id',
+            'insumos.codigo',
+            'insumos.nome',
+            'insumos.unidade_sigla',
+            'contrato_itens.id',
+            'contrato_itens.qtd',
+            'contrato_itens.valor_unitario',
+            'contrato_itens.valor_total',
+            DB::raw('SUM( (SELECT SUM(qtd) FROM medicoes WHERE medicoes.medicao_servico_id = medicao_servicos.id ) ) as qtd_medida'),
+        ])
+            ->join('contrato_item_apropriacoes','contrato_item_apropriacao_id','contrato_item_apropriacoes.id')
+            ->join('contrato_itens', 'contrato_item_id','contrato_itens.id')
+            ->join('insumos', 'contrato_item_apropriacoes.insumo_id', 'insumos.id')
+            ->groupBy('insumos.nome')
+            ->get();
+
+        // Insumos Não medidos
+        $contrato = $medicaoBoletim->contrato;
+        $insumosNaoMedidos = $contrato->itens()->select([
+            DB::raw('0 as descontos'),
+            'insumos.nome',
+            'insumos.codigo',
+            'insumos.unidade_sigla',
+            'contrato_itens.id',
+            'contrato_itens.qtd',
+            'contrato_itens.valor_unitario',
+            'contrato_itens.valor_total',
+            DB::raw('0 as qtd_medida')
+
+        ])
+            ->join('insumos','insumos.id','contrato_itens.insumo_id')
+            ->whereNotIn('insumo_id', $insumosMedidos->pluck('insumo_id','insumo_id')->toArray() )->get();
+        
+        return view('medicao_boletims.pdf',compact('medicaoBoletim', 'insumosMedidos','insumosNaoMedidos'));
+
+        PDF::loadView('medicao_boletims.pdf',compact('medicaoBoletim', 'insumosMedidos','insumosNaoMedidos'))->setPaper('a4')->setOrientation('portrait')->save(base_path().'/storage/app/public/contratos/boletim_'.$medicaoBoletim->id.'.pdf');
         return 'contratos/boletim_'.$medicaoBoletim->id.'.pdf';
     }
 }

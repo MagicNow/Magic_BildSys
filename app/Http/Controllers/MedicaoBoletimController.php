@@ -105,6 +105,7 @@ class MedicaoBoletimController extends AppBaseController
         }
 
         $liberaNF = $this->medicaoBoletimRepository->liberaParaNF($id);
+        return $liberaNF;
 
         if($liberaNF){
             Flash::success('Boletim de Medição '.$medicaoBoletim->id.' liberado para receber Nota Fiscal.');
