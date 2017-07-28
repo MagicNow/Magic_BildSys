@@ -330,6 +330,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
                     'fornecedor_id'  => $qcFornecedor->fornecedor_id,
                     'valor_total'    => (float) $oferta->valor_total,
                     'valor_unitario' => (float) $oferta->valor_unitario,
+                    'valor_oi' => floatval($item->ordemDeCompraItens->sortBy('valor_unitario')->first() ? $item->ordemDeCompraItens->sortBy('valor_unitario')->first()->valor_unitario : 0),
                 ];
             })->all();
 
