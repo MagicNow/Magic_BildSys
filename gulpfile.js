@@ -114,6 +114,15 @@ elixir(function (mix) {
         'site.css'
     ], 'public/css/site.css');
 
+    mix.styles([
+        paths.bootstrap + '/css/bootstrap.css',
+        paths.bootstrap + '/css/bootstrap-theme.css',
+        paths.fontawesome + '/css/font-awesome.css',
+        paths.adminlte + '/css/AdminLTE.css',
+        paths.adminlte + '/css/skins/skin-yellow-light.css',
+        paths.ionicons + '/css/ionicons.css',
+    ], 'public/css/print.css');
+
     // Merge Site scripts.
     mix.scripts([
         paths.jquery + '/jquery.js',

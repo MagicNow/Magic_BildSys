@@ -44,8 +44,8 @@
                                         @foreach($itens as $item)
                                             <tr>
                                                 <td>{{ $item->insumo->nome }}</td>
-                                                <td>{{ $item->insumo->cnae->inss ? to_percentage($item->insumo->cnae->inss) : 'Não' }}</td>
-                                                <td>{{ $item->insumo->cnae->iss ? to_percentage($item->insumo->cnae->iss) : 'Não' }}</td>
+                                                <td>{{  $item->insumo->cnae ? $item->insumo->cnae->inss ? to_percentage($item->insumo->cnae->inss) : 'Não' : '-' }}</td>
+                                                <td>{{ $item->insumo->cnae ? $item->insumo->cnae->iss ? to_percentage($item->insumo->cnae->iss) : 'Não' : '-' }}</td>
                                             </tr>
                                         @endforeach
                                     </tbody>
