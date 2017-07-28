@@ -8,6 +8,13 @@
         <title>Impressão</title>
         <style type="text/css">
             @media print {
+                thead { display: table-header-group }
+                tfoot { display: table-row-group }
+                tr { page-break-inside: avoid }
+                body {
+                    background: white;
+                    font-size: 10pt !important;
+                }
                 .col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-sm-10, .col-sm-11, .col-sm-12 {
                     float: left;
                 }
@@ -288,7 +295,8 @@
     </head>
     <body>
         <div>
-            <div class="row text-left">
+            <div class="text-left">
+
                 <span class="logo-lg">
                     <img src="{{ asset('img/logo_bild.png') }}" style="max-height: 50px;">
                 </span>

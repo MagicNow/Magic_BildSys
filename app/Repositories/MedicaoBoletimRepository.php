@@ -56,8 +56,10 @@ class MedicaoBoletimRepository extends BaseRepository
     }
     
     public function liberaParaNF($id){
-        $arquivo = self::geraImpressao($id);
-        return ($arquivo);
+        $retornoImpressao = self::geraImpressao($id);
+        if(!$retornoImpressao){
+            return ['success'=>false];
+        }
 
         $medicaoBoletim = $this->find($id);
         $medicaoBoletim->medicao_boletim_status_id = 2;
@@ -78,25 +80,25 @@ class MedicaoBoletimRepository extends BaseRepository
 
         if ($user = $fornecedor->user) {
             //se tiver já envia uma notificação
-            $user->notify(new NotificaFornecedorMedicaoBoletim($fornecedor, $arquivo));
+            $user->notify(new NotificaFornecedorMedicaoBoletim($fornecedor, $retornoImpressao['arquivo']));
             return [
-                'success'=>true
-            ];
+                'success'=>true,
+            ]+$retornoImpressao;
         } else {
             // Se não tiver envia um e-mail para o fornecedor
             if (!strlen($fornecedor->email)) {
                 $mensagens[] = 'O Fornecedor ' . $fornecedor->nome . ' não possui acesso e e-mail cadastrado,
-                    <a href="'.Storage::url($arquivo).'" target="_blank">Imprima o boletim</a> e entregue ao fornecedor.
+                    <a href="'.Storage::url($retornoImpressao['arquivo']).'" target="_blank">Imprima o boletim</a> e entregue ao fornecedor.
                     O telefone do fornecedor é ' . $fornecedor->telefone;
                 return [
                     'success'=>true,
                     'messages'=>$mensagens
-                ];
+                ]+$retornoImpressao;
             } else {
-                Mail::to($fornecedor->email)->send(new ContratoServicoFornecedorNaoUsuario($contrato, $arquivo));
+                Mail::to($fornecedor->email)->send(new ContratoServicoFornecedorNaoUsuario($contrato, $retornoImpressao['arquivo']));
                 return [
                     'success'=>true
-                ];
+                ]+$retornoImpressao;
             }
         }
     }
@@ -146,10 +148,19 @@ class MedicaoBoletimRepository extends BaseRepository
         ])
             ->join('insumos','insumos.id','contrato_itens.insumo_id')
             ->whereNotIn('insumo_id', $insumosMedidos->pluck('insumo_id','insumo_id')->toArray() )->get();
-        
-        return view('medicao_boletims.pdf',compact('medicaoBoletim', 'insumosMedidos','insumosNaoMedidos'));
 
-        PDF::loadView('medicao_boletims.pdf',compact('medicaoBoletim', 'insumosMedidos','insumosNaoMedidos'))->setPaper('a4')->setOrientation('portrait')->save(base_path().'/storage/app/public/contratos/boletim_'.$medicaoBoletim->id.'.pdf');
-        return 'contratos/boletim_'.$medicaoBoletim->id.'.pdf';
+        PDF::loadView('medicao_boletims.pdf',compact('medicaoBoletim', 'insumosMedidos','insumosNaoMedidos'))
+                ->setPaper('a4')->setOrientation('landscape')
+                ->setOption('margin-top', 1)
+                ->setOption('margin-bottom', 1)
+                ->setOption('margin-left', 1)
+                ->setOption('margin-right', 1)
+                ->save(base_path().'/storage/app/public/contratos/boletim_'.$medicaoBoletim->id.'.pdf');
+
+        return [
+            'arquivo'=>'contratos/boletim_'.$medicaoBoletim->id.'.pdf',
+            'insumosMedidos' => $insumosMedidos,
+            'insumosNaoMedidos' => $insumosNaoMedidos
+                ];
     }
 }

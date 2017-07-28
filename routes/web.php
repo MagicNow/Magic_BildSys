@@ -523,6 +523,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->group(['prefix'=>'boletim-medicao', 'middleware' => 'needsPermission:boletim-medicao.list'], function () use ($router) {
         $router->get('/{boletimMedicao}/remover-medicao/{medicao_servico_id}', ['as'=> 'boletim-medicao.remover', 'uses' => 'MedicaoBoletimController@removerMedicao']);
         $router->get('/{boletimMedicao}/liberar', ['as'=> 'boletim-medicao.liberar-nf', 'uses' => 'MedicaoBoletimController@liberarNF']);
+        $router->get('/{boletimMedicao}/download', ['as'=> 'boletim-medicao.download', 'uses' => 'MedicaoBoletimController@download']);
         
         $router->get('', ['as'=> 'boletim-medicao.index', 'uses' => 'MedicaoBoletimController@index']);
         $router->post('', ['as'=> 'boletim-medicao.store', 'uses' => 'MedicaoBoletimController@store'])

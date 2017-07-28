@@ -16,6 +16,10 @@
             'onclick' => "confirmDelete('formDelete".$id."');",
             'title' => ucfirst(trans('common.delete'))
         ]) !!}
+    @elseif($medicao_boletim_status_id===2)
+            <a href="{{ route('boletim-medicao.download', $id) }}" title="Baixar boletim" class='btn btn-success btn-xs btn-flat'>
+                <i class="glyphicon glyphicon-cloud-download" aria-hidden="true"></i>
+            </a>
     @endif
 
 </div>

@@ -13,6 +13,7 @@ use App\Models\Obra;
 use App\Repositories\MedicaoBoletimRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
+use Illuminate\Support\Facades\Storage;
 use Response;
 
 class MedicaoBoletimController extends AppBaseController
@@ -105,15 +106,17 @@ class MedicaoBoletimController extends AppBaseController
         }
 
         $liberaNF = $this->medicaoBoletimRepository->liberaParaNF($id);
-        return $liberaNF;
-
-        if($liberaNF){
+        if($liberaNF['success']){
             Flash::success('Boletim de Medição '.$medicaoBoletim->id.' liberado para receber Nota Fiscal.');
+            return redirect(route('boletim-medicao.index'));
         }else{
             Flash::error('Boletim de Medição '.$medicaoBoletim->id.' não liberado, houve algum erro.');
+            return redirect(route('boletim-medicao.index'));
         }
+    }
 
-        return redirect(route('boletim-medicao.index'));
+    public function download($id){
+        return response()->download(storage_path('app/public/contratos/boletim_'.$id.'.pdf'));
     }
 
     /**

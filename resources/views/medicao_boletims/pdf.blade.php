@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="row">
-        <div class="form-group col-sm-6">
+        <div class="form-group col-xs-5">
             {!! Form::label('obra', 'Obra:') !!}
             <div class="form-control">
                 {{ $medicaoBoletim->obra->nome }}
@@ -10,7 +10,7 @@
         </div>
 
         <!-- Contrato Id Field -->
-        <div class="form-group col-sm-6">
+        <div class="form-group col-xs-6">
             {!! Form::label('contrato_id', 'Contrato:') !!}
             <div class="form-control">
                 {{ $medicaoBoletim->contrato_id . ' - '. $medicaoBoletim->contrato->fornecedor->nome }}
@@ -25,35 +25,51 @@
         <div class="box-body">
             <table class="table table-hover table-bordered table-condensed table-striped" id="medicoes">
                 <thead>
-                <tr class="active">
-                    <th width="5%">
-                        Insumo
-                    </th>
-                    <th>
+                <tr>
+                    <th colspan="2">
 
                     </th>
-                    <th width="5%">
+                    <th colspan="3" class="text-center">
+                        CONTRATADO
+                    </th>
+                    <th colspan="2" class="text-center">
+                        QUANTIDADE
+                    </th>
+                    <th colspan="3" class="text-center">
+                        VALOR
+                    </th>
+                </tr>
+                <tr class="active">
+                    <th  class="text-center">
+                        Insumo
+                    </th>
+
+                    <th width="5%" class="text-center">
                         Unidade
                     </th>
-                    <th>
-                        Quantidade Total do insumo
+                    <th class="text-center">
+                        Quantidade
                     </th>
-                    <th>
+                    <th class="text-center">
                         Valor Unitário
                     </th>
-                    <th>
+                    <th class="text-center">
                         Valor Total
                     </th>
-                    <th>
-                        Quantidade Medida
+                    <th class="text-center">
+                        Medida
                     </th>
-                    <th width="10%">
+
+                    <th width="10%" class="text-center">
+                        Saldo
+                    </th>
+                    <th width="10%" class="text-center">
                         Descontos
                     </th>
-                    <th width="10%">
-                        Valor Medido - Descontos
+                    <th width="10%" class="text-center">
+                        Medido - Descontos
                     </th>
-                    <th width="10%">
+                    <th width="10%" class="text-center">
                         Saldo
                     </th>
                 </tr>
@@ -63,14 +79,54 @@
                 $somaTotal = 0;
                 $somaDescontos = 0;
                 $somaTotalVlr = 0;
-                        $insumos_medidos =[];
+                $somaTotalVlrContratado = 0;
+                $somaTotalVlrSaldo = 0;
+                $insumos_medidos =[];
                 ?>
 
                     @foreach($insumosMedidos as $medicaoServico)
+                        <?php
+                        $insumos_medidos[] = $medicaoServico->insumo_id;
+                        $valorItem = $medicaoServico->qtd_medida * $medicaoServico->valor_unitario;
+                        $somaTotal += $valorItem;
+                        $somaDescontos += $medicaoServico->descontos;
+
+                        $somaTotalVlr += $medicaoServico->valor_total;
+
+                        $contratoItem = \App\Models\ContratoItem::find($medicaoServico->id);
+                        $valoresJaMedidos = $contratoItem->contratoItemReapropriacao()->select([
+                                'contrato_item_apropriacoes.insumo_id',
+                                'medicao_servicos.descontos',
+                                \Illuminate\Support\Facades\DB::raw('( SELECT SUM(qtd) FROM medicoes WHERE medicao_servico_id = medicao_servicos.id ) as qtd_medida')
+                        ])
+                                ->join('medicao_servicos','medicao_servicos.contrato_item_apropriacao_id','contrato_item_apropriacoes.id')
+                                ->whereExists(function ($query2) {
+                                    $query2->select(DB::raw(1))
+                                            ->from('medicao_boletim_medicao_servico')
+                                            ->join('medicao_boletins','medicao_boletins.id','medicao_boletim_medicao_servico.medicao_boletim_id')
+                                            ->whereRaw('medicao_boletim_medicao_servico.medicao_servico_id = medicao_servicos.id')
+                                            ->where('medicao_boletins.medicao_boletim_status_id','>','1');
+                                })
+                                ->get()->toArray();
+                        $jaMedido = 0;
+                        $jaMedido_qtd = 0;
+                        if(count($valoresJaMedidos)){
+                            foreach ($valoresJaMedidos as $valorJaMedido) {
+                                $jaMedido += ($valorJaMedido['qtd_medida'] * $medicaoServico->valor_unitario)-$valorJaMedido['descontos'];
+                                $jaMedido_qtd += $valorJaMedido['qtd_medida'] ;
+                            }
+                        }
+
+
+                        $saldo = $medicaoServico->valor_total - $jaMedido - ($valorItem -$medicaoServico->descontos);
+                        $saldo_qtd = $medicaoServico->qtd - $jaMedido_qtd - ($medicaoServico->qtd_medida);
+
+
+                        $somaTotalVlrContratado += $medicaoServico->valor_total;
+                        $somaTotalVlrSaldo += $saldo;
+
+                        ?>
                         <tr>
-                            <td>
-                                {{ $medicaoServico->codigo  }}
-                            </td>
                             <td class="text-left">
                                 {{ $medicaoServico->nome }}
                             </td>
@@ -90,57 +146,64 @@
                                 {{ float_to_money($medicaoServico->qtd_medida,'') }}
                             </td>
                             <td class="text-right">
+                                {{ float_to_money($saldo_qtd,'') }}
+                            </td>
+                            <td class="text-right">
                                 {{ float_to_money($medicaoServico->descontos,'') }}
                             </td>
                             <td class="text-right">
-                                <?php
-                                $insumos_medidos[] = $medicaoServico->insumo_id;
-                                $valorItem = $medicaoServico->qtd_medida * $medicaoServico->valor_unitario;
-                                $somaTotal += $valorItem;
-                                $somaDescontos += $medicaoServico->descontos;
-
-                                $somaTotalVlr += $medicaoServico->valor_total;
-
-                                $contratoItem = \App\Models\ContratoItem::find($medicaoServico->id);
-                                $valoresJaMedidos = $contratoItem->contratoItemReapropriacao()->select([
-                                        'contrato_item_apropriacoes.insumo_id',
-                                        'medicao_servicos.descontos',
-                                        \Illuminate\Support\Facades\DB::raw('( SELECT SUM(qtd) FROM medicoes WHERE medicao_servico_id = medicao_servicos.id ) as qtd_medida')
-                                ])
-                                        ->join('medicao_servicos','medicao_servicos.contrato_item_apropriacao_id','contrato_item_apropriacoes.id')
-                                        ->whereExists(function ($query2) {
-                                            $query2->select(DB::raw(1))
-                                                    ->from('medicao_boletim_medicao_servico')
-                                                    ->join('medicao_boletins','medicao_boletins.id','medicao_boletim_medicao_servico.medicao_boletim_id')
-                                                    ->whereRaw('medicao_boletim_medicao_servico.medicao_servico_id = medicao_servicos.id')
-                                                    ->where('medicao_boletins.medicao_boletim_status_id','>','1');
-                                        })
-                                        ->get()->toArray();
-                                $jaMedido = 0;
-                                if(count($valoresJaMedidos)){
-                                    foreach ($valoresJaMedidos as $valorJaMedido) {
-                                        $jaMedido += ($valorJaMedido['qtd_medida'] * $medicaoServico->valor_unitario)-$valorJaMedido['descontos'];
-                                    }
-                                }
-
-
-                                $saldo = $medicaoServico->valor_total - $jaMedido - ($valorItem -$medicaoServico->descontos)  ;
-
-                                ?>
                                 {{ float_to_money($valorItem-$medicaoServico->descontos) }}
                             </td>
                             <td class="text-right">
                                 {{ float_to_money($saldo) }}
                             </td>
+
                         </tr>
 
                     @endforeach
 
                 @foreach($insumosNaoMedidos as $medicaoServico)
+                    <?php
+                    $insumos_medidos[] = $medicaoServico->insumo_id;
+                    $valorItem = $medicaoServico->qtd_medida * $medicaoServico->valor_unitario;
+                    $somaTotal += $valorItem;
+                    $somaDescontos += $medicaoServico->descontos;
+
+                    $somaTotalVlr += $medicaoServico->valor_total;
+
+                    $contratoItem = \App\Models\ContratoItem::find($medicaoServico->id);
+                    $valoresJaMedidos = $contratoItem->contratoItemReapropriacao()->select([
+                            'contrato_item_apropriacoes.insumo_id',
+                            'medicao_servicos.descontos',
+                            \Illuminate\Support\Facades\DB::raw('( SELECT SUM(qtd) FROM medicoes WHERE medicao_servico_id = medicao_servicos.id ) as qtd_medida')
+                    ])
+                            ->join('medicao_servicos','medicao_servicos.contrato_item_apropriacao_id','contrato_item_apropriacoes.id')
+                            ->whereExists(function ($query2) {
+                                $query2->select(DB::raw(1))
+                                        ->from('medicao_boletim_medicao_servico')
+                                        ->join('medicao_boletins','medicao_boletins.id','medicao_boletim_medicao_servico.medicao_boletim_id')
+                                        ->whereRaw('medicao_boletim_medicao_servico.medicao_servico_id = medicao_servicos.id')
+                                        ->where('medicao_boletins.medicao_boletim_status_id','>','1');
+                            })
+                            ->get()->toArray();
+                    $jaMedido = 0;
+                    $jaMedido_qtd = 0;
+                    if(count($valoresJaMedidos)){
+                        foreach ($valoresJaMedidos as $valorJaMedido) {
+                            $jaMedido += ($valorJaMedido['qtd_medida'] * $medicaoServico->valor_unitario)-$valorJaMedido['descontos'];
+                            $jaMedido_qtd += $valorJaMedido['qtd_medida'] ;
+                        }
+                    }
+
+
+                    $saldo = $medicaoServico->valor_total - $jaMedido - ($valorItem -$medicaoServico->descontos)  ;
+                    $saldo_qtd = $medicaoServico->qtd - $jaMedido_qtd - ($medicaoServico->qtd_medida)  ;
+
+
+                    $somaTotalVlrContratado += $medicaoServico->valor_total;
+                    $somaTotalVlrSaldo += $saldo;
+                    ?>
                     <tr>
-                        <td>
-                            {{ $medicaoServico->codigo  }}
-                        </td>
                         <td class="text-left">
                             {{ $medicaoServico->nome }}
                         </td>
@@ -160,43 +223,12 @@
                             {{ float_to_money($medicaoServico->qtd_medida,'') }}
                         </td>
                         <td class="text-right">
+                            {{ float_to_money($saldo_qtd,'') }}
+                        </td>
+                        <td class="text-right">
                             {{ float_to_money($medicaoServico->descontos,'') }}
                         </td>
                         <td class="text-right">
-                            <?php
-                            $insumos_medidos[] = $medicaoServico->insumo_id;
-                            $valorItem = $medicaoServico->qtd_medida * $medicaoServico->valor_unitario;
-                            $somaTotal += $valorItem;
-                            $somaDescontos += $medicaoServico->descontos;
-
-                            $somaTotalVlr += $medicaoServico->valor_total;
-
-                            $contratoItem = \App\Models\ContratoItem::find($medicaoServico->id);
-                            $valoresJaMedidos = $contratoItem->contratoItemReapropriacao()->select([
-                                    'contrato_item_apropriacoes.insumo_id',
-                                    'medicao_servicos.descontos',
-                                    \Illuminate\Support\Facades\DB::raw('( SELECT SUM(qtd) FROM medicoes WHERE medicao_servico_id = medicao_servicos.id ) as qtd_medida')
-                            ])
-                                    ->join('medicao_servicos','medicao_servicos.contrato_item_apropriacao_id','contrato_item_apropriacoes.id')
-                                    ->whereExists(function ($query2) {
-                                        $query2->select(DB::raw(1))
-                                                ->from('medicao_boletim_medicao_servico')
-                                                ->join('medicao_boletins','medicao_boletins.id','medicao_boletim_medicao_servico.medicao_boletim_id')
-                                                ->whereRaw('medicao_boletim_medicao_servico.medicao_servico_id = medicao_servicos.id')
-                                                ->where('medicao_boletins.medicao_boletim_status_id','>','1');
-                                    })
-                                    ->get()->toArray();
-                            $jaMedido = 0;
-                            if(count($valoresJaMedidos)){
-                                foreach ($valoresJaMedidos as $valorJaMedido) {
-                                    $jaMedido += ($valorJaMedido['qtd_medida'] * $medicaoServico->valor_unitario)-$valorJaMedido['descontos'];
-                                }
-                            }
-
-
-                            $saldo = $medicaoServico->valor_total - $jaMedido - ($valorItem -$medicaoServico->descontos)  ;
-
-                            ?>
                             {{ float_to_money($valorItem-$medicaoServico->descontos) }}
                         </td>
                         <td class="text-right">
@@ -208,8 +240,14 @@
                 </tbody>
                 <tfoot>
                 <tr class="warning">
-                    <td colspan="7" class="text-right">
+                    <td colspan="4" class="text-right">
                         Total:
+                    </td>
+                    <td class="text-right" style="font-size: 16px;">
+                            {{ float_to_money($somaTotalVlrContratado) }}
+                    </td>
+                    <td colspan="2">
+
                     </td>
                     <td class="text-right" style="font-weight: bold !important; font-size: 16px;" id="somaDescontos">
                         @if(isset($medicaoBoletim))
@@ -221,8 +259,8 @@
                             {{ float_to_money($somaTotal-$somaDescontos) }}
                         @endif
                     </td>
-                    <td>
-
+                    <td colspan="2" class="text-right" style="font-size: 16px;">
+                        {{ float_to_money($somaTotalVlrSaldo) }}
                     </td>
                 </tr>
                 </tfoot>
@@ -270,13 +308,173 @@
             </table>
         </div>
     </div>
+    <div class="box">
+        <div class="box-header with-border">
+            <h3 class="box-title">Observações</h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <table class="table table-hover table-bordered table-condensed table-striped" id="medicoes">
+                <tr class="active">
+                    <th class="text-right" width="5%">
+                        Medição
+                    </th>
+                    <th class="text-left" width="60%">
+                        Insumo
+                    </th>
+                    <th class="text-right" width="30%">
+                        Quantidade
+                    </th>
+                </tr>
+                <tbody>
+                <?php
+                $somaTotal = 0;
+                ?>
+                @if(isset($medicaoBoletim))
+                    @foreach($medicaoBoletim->medicaoServicos as $medicaoServico)
+                        <tr id="medicaoServico{{ $medicaoServico->id }}">
+                            <td class="text-right" >   {{ $medicaoServico->id }}
+                                <input type="hidden" name="medicaoServicos[]" value="{{ $medicaoServico->id }}">
+                            </td>
+                            <td class="text-left">
+                                {{ $medicaoServico->contratoItemApropriacao->insumo->codigo . ' - '.  $medicaoServico->contratoItemApropriacao->insumo->nome }}
+                            </td>
+                            <td class="text-right">
+                                <?php
+                                $valorItem = $medicaoServico->medicoes()->sum('qtd')* $medicaoServico->contratoItemApropriacao->contratoItem->valor_unitario;
+                                $somaTotal += $valorItem;
+                                ?>
+                                {{ float_to_money($medicaoServico->medicoes()->sum('qtd'),'') }}
+                            </td>
+                        </tr>
+                        @if( $medicaoServico->medicoes()->count() )
+                            <tr>
+                                {{--<td class="text-right" >--}}
+                                   {{--<span class="badge">--}}
+                                       {{--{{ $medicaoServico->medicoes()->count() }}--}}
+                                   {{--</span><br> Trechos--}}
+                                {{--</td>--}}
+                                <td colspan="3">
+                                    <table class="table table-no-margin table-bordered table-hover table-condensed table-striped">
+                                        <tr>
+                                            <th class="text-left">
+                                                Local
+                                            </th>
+                                            <th class="text-right">
+                                                Quantidade
+                                            </th>
+                                            <th class="text-right">
+                                                Percentual
+                                            </th>
+                                            <th class="text-left">
+                                                Observação
+                                            </th>
+                                            <th class="text-center">
+                                                Data da Medição
+                                            </th>
+                                            <th class="text-left">
+                                                Responsável pela medição
+                                            </th>
+                                        </tr>
+                                        <?php
+                                        $medicoes = $medicaoServico->medicoes()
+                                                ->with( 'mcMedicaoPrevisao',
+                                                        'mcMedicaoPrevisao.memoriaCalculoBloco',
+                                                        'mcMedicaoPrevisao.memoriaCalculoBloco.estruturaObj',
+                                                        'mcMedicaoPrevisao.memoriaCalculoBloco.pavimentoObj',
+                                                        'mcMedicaoPrevisao.memoriaCalculoBloco.trechoObj')
+                                                ->get();
+                                        ?>
+                                        @foreach($medicaoServico->medicoes as $medicao)
+                                            <tr>
+                                                <td>
+                                                    {{ $medicao->mcMedicaoPrevisao->memoriaCalculoBloco->estruturaObj->nome }} -
+                                                    {{ $medicao->mcMedicaoPrevisao->memoriaCalculoBloco->pavimentoObj->nome }} -
+                                                    {{ $medicao->mcMedicaoPrevisao->memoriaCalculoBloco->trechoObj->nome }}
+                                                </td>
+                                                <td class="text-right">
+                                                    {{ float_to_money($medicao->qtd,'') }}
+                                                </td>
+                                                <td class="text-right">
+                                                    {{ number_format( ( ($medicao->qtd/$medicao->mcMedicaoPrevisao->qtd)*100 ),2,',','.') }} %
+                                                </td>
+                                                <td>
+                                                    {{ $medicao->obs }}
+                                                </td>
+                                                <td class="text-center">
+                                                    {{ $medicao->created_at->format('d/m/Y') }}
+                                                </td>
 
-    Observações
-    Observações	"Neste campo deve apercer todas as observações apontadas nas medições, seja por trecho ou por medição.
-    Bem como deve possuir anexo ao boletim de medição um espelho da memória de cálculo com todos as informações da medição, até os anexos"
+                                                <td>
+                                                    {{ $medicao->user->name }}
+                                                </td>
+                                            </tr>
+                                            @if($medicao->medicaoImagens()->count())
+                                           <tr>
+                                               <td colspan="6">
+                                                   @foreach($medicao->medicaoImagens as $imagem)
+                                                        @if(is_file(storage_path('app/'.$imagem->imagem)))
+                                                            <span>
+                                                               <img height="300"
+                                                                    src="{!! url('/imagem?file='.$imagem->imagem.'&mode=resize&height=300') !!}">
+                                                            </span>
 
-    <div class="row">
-        <hr>
-        Declaro concordar com os valores e quantidades constantes nesta medição, não restando nada a medir até esta data, e  estar ciente  da necessidade do envio da documentação descriminada em contrato para a liberação desta medição.
+                                                       @endif
+                                                   @endforeach
+                                               </td>
+                                           </tr>
+                                            @endif
+
+                                        @endforeach
+
+                                    </table>
+                                </td>
+                            </tr>
+                        @endif
+                    @endforeach
+                @endif
+                </tbody>
+                {{--<tfoot>
+                <tr class="warning">
+                    <td colspan="2" class="text-right">
+                        Total:
+                    </td>
+                    <td class="text-right" style="font-weight: bold !important; font-size: 16px;" id="somaTotal">
+                        @if(isset($medicaoBoletim))
+                            {{ float_to_money($somaTotal) }}
+                        @endif
+                    </td>
+                    <td>
+
+                    </td>
+                </tr>
+                </tfoot>--}}
+
+            </table>
+        </div>
+    </div>
+
+
+    <div class="box">
+        <div class="box-header with-border">
+            <h3 class="box-title">Ciência</h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            {{ \App\Models\ConfiguracaoEstatica::find(3)->valor }}
+            <div class="row" style="padding-top: 30px">
+
+                <div class="col-xs-6">
+
+                    ___________________________________<br>
+                    Contratada
+                </div>
+                <div class="col-xs-6">
+
+                    ___________________________________<br>
+                    Gestor da Obra
+                </div>
+            </div>
+        </div>
     </div>
 @stop
