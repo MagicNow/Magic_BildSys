@@ -2,6 +2,7 @@
 
 namespace App\DataTables;
 
+use App\Models\CompradorInsumo;
 use App\Models\OrdemDeCompraItem;
 use App\User;
 use Illuminate\Support\Facades\DB;
@@ -184,6 +185,21 @@ class InsumosAprovadosDataTable extends DataTable
         if($this->request()->get('cidades')){
             if(count($this->request()->get('cidades')) && $this->request()->get('cidades')[0] != "") {
                 $query->whereIn('obras.cidade_id', $this->request()->get('cidades'));
+            }
+        }
+        if($this->request()->get('compradores')){
+            if(count($this->request()->get('compradores')) && $this->request()->get('compradores')[0] != "") {
+                $insumos_do_comprador = CompradorInsumo::whereIn('user_id', $this->request()->get('compradores'))
+                                                        ->pluck('insumo_id', 'insumo_id')
+                                                        ->toArray();
+
+                $todos_insumos_compradores = CompradorInsumo::pluck('insumo_id', 'insumo_id')
+                                                            ->toArray();
+
+                $query->where(function ($consulta) use ($insumos_do_comprador, $todos_insumos_compradores) {
+                    $consulta->whereIn('insumos.id', $insumos_do_comprador);
+                    $consulta->orWhereNotIn('insumos.id', $todos_insumos_compradores);
+                });
             }
         }
         if($this->request()->get('farol')){

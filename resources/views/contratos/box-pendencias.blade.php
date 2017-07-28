@@ -105,12 +105,13 @@
                             <table class="table table-condensed table-all-center table-bordered table-no-margin">
                                 <thead>
                                     <tr>
-                                        <th></th>
+                                        <th colspan="2"></th>
                                         <th colspan="2" class="text-center">Antes</th>
                                         <th colspan="2" class="text-center">Depois</th>
                                     </tr>
                                     <tr>
                                         <th>Código Estruturado</th>
+                                        <th>Anexo</th>
                                         <th>Qtd.</th>
                                         <th>Valor Unitário</th>
                                         <th>Qtd.</th>
@@ -122,6 +123,11 @@
                                         <tr>
                                             <td>
                                                 {{ $apropriacao->codigoServico() }}
+                                            </td>
+                                            <td>
+                                                @if($modificacao->anexo)
+                                                    <a href="{!! Storage::url($modificacao->anexo) !!}" target="_blank">Ver</a>
+                                                @endif
                                             </td>
                                             <td>
                                                 {{ float_to_money($apropriacao->pivot->qtd_anterior, '') }}

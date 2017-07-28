@@ -40,7 +40,8 @@
                                 <h4 class="modal-title">Observações do Aprovador</h4>
                             </div>
                             <div class="modal-body">
-                                <textarea class="form-control" id="obs-aprovador" rows="15"></textarea>
+                                {{--<textarea class="form-control" id="obs-aprovador" data-set="obs_aprova_contrato" rows="15"></textarea>--}}
+                                <textarea class="form-control" id="obs-aprovador" data-key="contrato_obs_{{ auth()->id() }}_{{ $contrato->id }}" rows="15"></textarea>
                             </div>
                         </div>
                     </div>

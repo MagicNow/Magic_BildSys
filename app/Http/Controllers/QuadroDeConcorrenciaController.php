@@ -330,6 +330,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
                     'fornecedor_id'  => $qcFornecedor->fornecedor_id,
                     'valor_total'    => (float) $oferta->valor_total,
                     'valor_unitario' => (float) $oferta->valor_unitario,
+                    'valor_oi' => floatval($item->ordemDeCompraItens->sortBy('valor_unitario')->first() ? $item->ordemDeCompraItens->sortBy('valor_unitario')->first()->valor_unitario : 0),
                 ];
             })->all();
 
@@ -621,6 +622,24 @@ class QuadroDeConcorrenciaController extends AppBaseController
 
         try {
             $quadro = $this->quadroDeConcorrenciaRepository->findWithoutFail($id);
+
+            if (!$request->reject) {
+                $itens = $request->itens;
+                $array = [];
+
+                foreach ($itens as $chave => $item) {
+                    if ($item['valor_unitario'] == "") {
+                        array_push($array, $chave);
+                    }
+                }
+
+                if (count($itens) == count($array)) {
+                    Flash::error('Necessário pelo menos um valor unitário.');
+                    return back()->withInput();
+                }
+            }
+//            dd(count($itens), count($array));
+
 
             if (empty($quadro)) {
                 DB::rollback();
@@ -1475,7 +1494,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
 
         $qcs_por_media_geral = DB::table(
             DB::raw("
-                (SELECT SUM(dias) as media
+                (SELECT ROUND(SUM(dias) / count(name),0) as media
                     FROM
                     (
                         SELECT name, ROUND(SUM(dias) / count(user_id),0) as dias

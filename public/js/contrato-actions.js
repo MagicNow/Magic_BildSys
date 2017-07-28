@@ -26,23 +26,24 @@ $(function() {
       });
   });
 
-  var obsAprovador = document.getElementById('obs-aprovador');
-
-  if(obsAprovador) {
-    var contrato_id = document.getElementById('contrato_id');
-    var user_id = document.getElementById('user_id');
-
-    var key = 'contrato_obs_' + user_id.value + '_' + contrato_id.value;
-
-    obsAprovador.value = localStorage.getItem(key);
-
-    var saveObs = _.debounce(function(event) {
-      localStorage.setItem(key, obsAprovador.value);
-    }, 700);
-
-    obsAprovador.addEventListener('input', saveObs);
-    obsAprovador.addEventListener('change', saveObs);
-  }
+  //var obsAprovador = document.getElementById('obs-aprovador');
+  //console.log(obsAprovador);
+  //if(obsAprovador) {
+  //  //var contrato_id = document.getElementById('contrato_id');
+  //  //var user_id = document.getElementById('user_id');
+  //
+  //  //var key = 'contrato_obs_' + user_id.value + '_' + contrato_id.value;
+  //  var key = obsAprovador.dataset.key;
+  //
+  //  obsAprovador.value = localStorage.getItem(key);
+  //
+  //  var saveObs = _.debounce(function(event) {
+  //    localStorage.setItem(key, obsAprovador.value);
+  //  }, 700);
+  //
+  //  obsAprovador.addEventListener('input', saveObs);
+  //  obsAprovador.addEventListener('change', saveObs);
+  //}
 
 
   if (typeof LaravelDataTables !== 'undefined') {
@@ -260,6 +261,7 @@ var Reajuste = (function() {
   function Reajuste() {
     this.modal = document.getElementById('modal-reajuste');
     this.saveBtn = this.modal.querySelector('.js-save');
+    this.anexo = this.modal.querySelector('[name=anexo]');
     this.id = 0;
 
     $body.on('click', '.js-reajuste', this.reajustar.bind(this));
@@ -277,6 +279,8 @@ var Reajuste = (function() {
         self.inputs = self.modal.querySelectorAll('.js-input');
 
         self.valor = self.modal.querySelector('.js-valor');
+
+        self.anexo = self.modal.querySelector('[name=anexo]');
 
         self.adicionais = _.filter(
           self.inputs,
@@ -341,6 +345,7 @@ var Reajuste = (function() {
 
   Reajuste.prototype.sendData = function() {
     var _this = this;
+
     var data = {
       _token: token,
       valor_unitario: this.valor.value
@@ -359,8 +364,23 @@ var Reajuste = (function() {
       return data;
     }, data);
 
-    $.post('/contratos/reajustar/' + this.id, data)
-      .done(function(response) {
+    var formData = new FormData();
+
+    $.map(data, function(value, index) {
+      formData.append(index, value);
+    });
+
+    formData.append('anexo', $('input[name="anexo"]')[0].files[0]);
+
+    $.ajax({
+      type: 'POST',
+      url: '/contratos/reajustar/' + this.id,
+      data: formData,
+      mimeType: "multipart/form-data",
+      contentType: false,
+      cache: false,
+      processData: false
+    }).done(function(response) {
         swal({
           title: 'Sucesso!',
           text: 'Reajuste enviado para aprovação',

@@ -6,6 +6,7 @@
             <tr>
                 <th>Valor Unitário</th>
                 <th>Novo Valor Unitário</th>
+                <th>Anexar documento</th>
             </tr>
         </thead>
         <tbody>
@@ -19,6 +20,9 @@
                         data-old-value="{{ $item->valor_unitario }}"
                         value="{{ float_to_money($item->valor_unitario, '') }}"
                         name="valor_unitario">
+                </td>
+                <td>
+                    <input class="form-control" type="file" name="anexo">
                 </td>
             </tr>
         </tbody>

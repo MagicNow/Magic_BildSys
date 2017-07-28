@@ -3,6 +3,7 @@
 namespace App\DataTables;
 
 use App\Models\Contrato;
+use App\Models\Obra;
 use Yajra\Datatables\Services\DataTable;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
@@ -91,7 +92,19 @@ class ContratoDataTable extends DataTable
         }
 
         if($request->obra_id) {
-            $query->where('contratos.obra_id', $request->obra_id);
+            if($request->obra_id == 'todas') {
+                $obras = Obra::orderBy('nome', 'ASC')
+                    ->whereHas('users', function($query){
+                        $query->where('user_id', auth()->id());
+                    })
+                    ->whereHas('contratos')
+                    ->pluck('id', 'id')
+                    ->toArray();
+
+                $query->whereIn('contratos.obra_id', $obras);
+            } else {
+                $query->where('contratos.obra_id', $request->obra_id);
+            }
         }
 
         if($request->contrato_status_id) {

@@ -1,6 +1,7 @@
 @extends('layouts.front')
 
 @section('content')
+    @php $grupo_obra = \App\Models\Grupo::where('codigo', '01')->whereNull('grupo_id')->first(); @endphp
     <section class="content-header">
         <div class="modal-header">
             <h3>Incluir insumo</h3>
@@ -28,6 +29,7 @@
                         <div class="form-group col-sm-10">
                             {!! Form::label('obra', 'Obra:') !!}
                             <div class="form-control">{{$obra->nome}}</div>
+                            <input type="hidden" name="grupo_id" value="{{$grupo_obra->id}}">
                         </div>
                     </div>
                     <!-- SubGrupos1 de insumo Field -->
@@ -128,7 +130,6 @@
 @section('scripts')
     <script>
         $(function () {
-            @php $grupo_obra = \App\Models\Grupo::where('codigo', '01')->whereNull('grupo_id')->first(); @endphp
             selectgrupo('{{$grupo_obra->id}}', 'subgrupo1_id', 'grupos');
 
             @if(session('salvo'))
@@ -229,6 +230,34 @@
 
                     $('#cadastrar_'+change).css('display', '');
                 });
+            }else{
+                if(change == 'subgrupo1_id'){
+                    $('#subgrupo1_id').val(null).trigger('change');
+                    $('#subgrupo2_id').val(null).trigger('change');
+                    $('#subgrupo3_id').val(null).trigger('change');
+                    $('#servico_id').val(null).trigger('change');
+
+                    $('#subgrupo1_id').attr('disabled',true);
+                    $('#subgrupo2_id').attr('disabled',true);
+                    $('#subgrupo3_id').attr('disabled',true);
+                    $('#servico_id').attr('disabled',true);
+                }else if(change == 'subgrupo2_id'){
+                    $('#subgrupo2_id').val(null).trigger('change');
+                    $('#subgrupo3_id').val(null).trigger('change');
+                    $('#servico_id').val(null).trigger('change');
+
+                    $('#subgrupo2_id').attr('disabled',true);
+                    $('#subgrupo3_id').attr('disabled',true);
+                    $('#servico_id').attr('disabled',true);
+                }else if(change == 'subgrupo3_id'){
+                    $('#subgrupo3_id').val(null).trigger('change');
+                    $('#servico_id').val(null).trigger('change');
+
+                    $('#subgrupo3_id').attr('disabled',true);
+                    $('#servico_id').attr('disabled',true);
+                }else if(change == 'servico_id'){
+                    $('#servico_id').attr('disabled',true);
+                }
             }
         }
 

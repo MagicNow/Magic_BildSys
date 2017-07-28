@@ -65483,6 +65483,25 @@ function filterFind(find) {
     }
     addQuery();
 }
+var obsAprovador = document.getElementById('obs-aprovador');
+
+if(obsAprovador) {
+    //var contrato_id = document.getElementById('contrato_id');
+    //var user_id = document.getElementById('user_id');
+
+    //var key = 'contrato_obs_' + user_id.value + '_' + contrato_id.value;
+    var key = obsAprovador.dataset.key;
+
+    obsAprovador.value = localStorage.getItem(key);
+
+    var saveObs = _.debounce(function(event) {
+        localStorage.setItem(key, obsAprovador.value);
+    }, 700);
+
+    obsAprovador.addEventListener('input', saveObs);
+    obsAprovador.addEventListener('change', saveObs);
+}
+
 function workflowCall(item_id, tipo_item, aprovou, elemento, motivo, justificativa_texto, pai_id, pai_obj, filhos_metodo, shouldReload) {
 
   var url_aprova_reprova = '/workflow/aprova-reprova';
@@ -65505,10 +65524,10 @@ function workflowCall(item_id, tipo_item, aprovou, elemento, motivo, justificati
   var obsAprovador = document.getElementById('obs-aprovador');
 
   if (obsAprovador && aprovou) {
-    var contrato_id = document.getElementById('contrato_id');
-    var user_id = document.getElementById('user_id');
+    //var contrato_id = document.getElementById('contrato_id');
+    //var user_id = document.getElementById('user_id');
 
-    var key = 'contrato_obs_' + user_id.value + '_' + contrato_id.value;
+    var key = obsAprovador.dataset.key;
 
     localStorage.removeItem(key);
 
@@ -65672,6 +65691,7 @@ var QcInformarValoresForm = {
     var reject       = document.getElementById('reject');
     var motivoSelect = document.getElementById('desistencia_motivo_id');
     var percents     = document.getElementsByClassName('js-percent');
+    var valor_unitario     = document.getElementsByClassName('js-calc-price');
 
     motivoSelect.classList.remove('hidden');
 
@@ -65762,6 +65782,31 @@ var QcInformarValoresForm = {
           });
 
           return false;
+        }
+      }
+
+      if(valor_unitario.length) {
+        var v_unitario = _(valor_unitario)
+            .map('value')
+            .filter(function (value) {
+              return !value.length || value === '0,00';
+            }).value();
+
+        if(v_unitario.length){
+          swal({
+            title: 'Atenção!',
+            text: 'Tem itens sem valores, deseja continuar?',
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Salvar',
+            cancelButtonText: 'Cancelar',
+            closeOnConfirm: false,
+            showLoaderOnConfirm: true,
+            confirmButtonColor: '#7ED32C'
+          }, function () {
+            form.submit();
+          });
+          return true;
         }
       }
 
@@ -65951,9 +65996,74 @@ $(function() {
             max: _.max(_.map(ofertasDoInsumo, _.property('valor_total'))) + 100
           }
         }]
-      }
+      },
+      "horizontalLine": [{
+        "y": _.max(_.map(ofertasDoInsumo, _.property('valor_oi'))) ? _.max(_.map(ofertasDoInsumo, _.property('valor_oi'))) : [],
+        "style": "red",
+        "text": "Valor do OI"
+      },
+      {
+        "y": _.min(_.map(ofertasDoInsumo, function (obj) {
+                          if(obj['valor_total'] > 0) {
+                            return obj['valor_total'];
+                          } else {
+                            return _.max(_.map(ofertasDoInsumo, _.property('valor_total'))) + 100;
+                          }
+                        })
+                  ),
+        "style": "blue",
+        "text": "Menor preço"
+      }]
     }
   });
+
+  // Aplica linha horizontal no gráfico de chart-insumo-fornecedor
+  var horizontalLinePlugin = {
+    afterDraw: function(chartInstance) {
+      var yScale = chartInstance.scales["y-axis-0"];
+      var canvas = chartInstance.chart;
+      var ctx = canvas.ctx;
+      var index;
+      var line;
+      var style;
+
+      if (chartInstance.options.horizontalLine) {
+        for (index = 0; index < chartInstance.options.horizontalLine.length; index++) {
+          line = chartInstance.options.horizontalLine[index];
+
+          if (!line.style) {
+            style = "rgba(169,169,169, .6)";
+          } else {
+            style = line.style;
+          }
+
+          if (line.y) {
+            yValue = yScale.getPixelForValue(line.y);
+          } else {
+            yValue = 0;
+          }
+
+          ctx.lineWidth = 3;
+
+          if (yValue) {
+            ctx.beginPath();
+            ctx.moveTo(0, yValue);
+            ctx.lineTo(canvas.width, yValue);
+            ctx.strokeStyle = style;
+            ctx.stroke();
+          }
+
+          if (line.text) {
+            ctx.fillStyle = style;
+            ctx.fillText(line.text, 0, yValue + ctx.lineWidth);
+          }
+        }
+        return;
+      };
+    }
+  };
+  Chart.pluginService.register(horizontalLinePlugin);
+// Fim da aplicação da linha horizontal no gráfico
 
   selectInsumo.change(function() {
     var ofertasDoInsumo = _.filter(ofertas, {
