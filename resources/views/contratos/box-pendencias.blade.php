@@ -120,7 +120,7 @@
                                                 <tr>
                                                     <th colspan="2"></th>
                                                     <th colspan="2" class="text-center">Antes</th>
-                                                    <th colspan="2" class="text-center">Depois</th>
+                                                    <th colspan="3" class="text-center">Depois</th>
                                                 </tr>
                                                 <tr>
                                                     <th>Código Estruturado</th>
@@ -129,7 +129,7 @@
                                                     <th>Valor Unitário</th>
                                                     <th>Qtd.</th>
                                                     <th>Valor Unitário</th>
-                                                    <th>Descrição</th>
+                                                    <th>Observação</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>

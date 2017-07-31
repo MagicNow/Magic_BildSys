@@ -36,7 +36,7 @@
       <th>Saldo de Qtd.</th>
       <th>Quantidadade Adicionada</th>
       <th>Nova Quantidade</th>
-      <th>Descrição</th>
+      <th>Observação</th>
     </tr>
   </thead>
   <tbody>
@@ -67,8 +67,8 @@
             {{ float_to_money($apropariacao->qtd, '') }}
         </td>
         <td>
-            <div class="input-group js-input">
-                <textarea class="form-control"></textarea>
+            <div class="input-group">
+                <textarea class="form-control js-desc" name="reajusteDescricao[{{ $apropariacao->id }}]"></textarea>
             </div>
         </td>
       </tr>
