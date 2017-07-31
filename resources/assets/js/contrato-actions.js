@@ -421,6 +421,7 @@ var Distrato = (function() {
     this.modal = document.getElementById('modal-distrato');
     this.saveBtn = this.modal.querySelector('.js-save');
     this.inputs = null;
+    this.descriptions = null;
     this.id = 0
     this.defaultQtd = 0;
 
@@ -443,6 +444,7 @@ var Distrato = (function() {
     getView(this.id, 'distrato', this.modal)
       .done(function() {
         self.inputs = self.modal.querySelectorAll('.js-input');
+        self.descriptions = self.modal.querySelectorAll('.js-desc');
         var handler = function(event) {
           var input = event.currentTarget;
 
@@ -454,7 +456,7 @@ var Distrato = (function() {
             return false;
           }
 
-          var valueContainer = $(input).closest('tr').find('td:last').get(0);
+          var valueContainer = $(input).closest('tr').find('td:nth-last-child(2)').get(0);
 
           valueContainer.innerText = floatToMoney(
             parseFloat(input.dataset.qtd) - (input.value ? moneyToFloat(input.value) : 0),
@@ -536,14 +538,19 @@ var Distrato = (function() {
   Distrato.prototype.sendData = function() {
     var _this = this;
     var data = {
-      _token: token,
+      _token: token
     };
 
     var inputs = _.filter(this.inputs, function(input) {
       return input.value && moneyToFloat(input.value);
     });
 
+    var descriptions = _.filter(this.descriptions, function(input) {
+      return input.value;
+    });
+
     data = getInputs(inputs, data);
+    data = getInputs(descriptions, data);
 
     $.post('/contratos/distratar/' + this.id, data)
       .done(function(response) {
