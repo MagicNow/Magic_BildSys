@@ -190,11 +190,6 @@
             @yield('content')
         </div>
 
-        <!-- Main Footer -->
-        <footer class="main-footer" style="max-height: 100px;text-align: center">
-            <strong>{{ env('APP_TITLE') }} © {{ date('Y') }} </strong>
-        </footer>
-
     </div>
 @else
     <nav class="navbar navbar-default navbar-static-top">

@@ -30,7 +30,7 @@
                 </div>
             @else
                 <div class="col-md-7 text-center">
-                    
+
                 </div>
                 <div class="col-md-5">
                     <div class="box box-warning">
