@@ -249,4 +249,16 @@
 @section('scripts')
     <script> options_motivos = document.getElementById('motivo').innerHTML; </script>
     <script data-token="{{ csrf_token() }}" src="{{ asset('/js/contrato-actions.js') }}"></script>
+
+    <script>
+        function mostrarOcultarAnalise(id, funcao) {
+            if(funcao == 'mostrar') {
+                $('#analise-'+id).css('display', '');
+                $('#btn-analise-reajuste-'+id).attr('onclick', 'mostrarOcultarAnalise('+id+', "ocultar")');
+            } else {
+                $('#analise-'+id).css('display', 'none');
+                $('#btn-analise-reajuste-'+id).attr('onclick', 'mostrarOcultarAnalise('+id+', "mostrar")');
+            }
+        }
+    </script>
 @append

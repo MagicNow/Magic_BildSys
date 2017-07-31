@@ -217,6 +217,8 @@ class ContratoController extends AppBaseController
 
         $iss = Cnae::$iss;
 
+        $itens_analise = $apropriacaoRepository->forContratoApproval($contrato);
+            
         return view('contratos.show', compact(
             'isEmAprovacao',
             'contrato',
@@ -230,7 +232,8 @@ class ContratoController extends AppBaseController
             'avaliado_reprovado',
             'status',
             'fornecedor',
-            'iss'
+            'iss',
+            'itens_analise'
         ));
     }
 
