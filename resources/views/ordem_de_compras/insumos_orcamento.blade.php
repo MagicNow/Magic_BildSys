@@ -1,6 +1,7 @@
 @extends('layouts.front')
 
 @section('content')
+    @php $grupo_obra = \App\Models\Grupo::where('codigo', '01')->whereNull('grupo_id')->first(); @endphp
     <section class="content-header">
         <div class="modal-header">
             <h3>Incluir insumo</h3>
@@ -28,6 +29,7 @@
                         <div class="form-group col-sm-10">
                             {!! Form::label('obra', 'Obra:') !!}
                             <div class="form-control">{{$obra->nome}}</div>
+                            <input type="hidden" name="grupo_id" value="{{$grupo_obra->id}}">
                         </div>
                     </div>
                     <!-- SubGrupos1 de insumo Field -->
@@ -128,7 +130,6 @@
 @section('scripts')
     <script>
         $(function () {
-            @php $grupo_obra = \App\Models\Grupo::where('codigo', '01')->whereNull('grupo_id')->first(); @endphp
             selectgrupo('{{$grupo_obra->id}}', 'subgrupo1_id', 'grupos');
 
             @if(session('salvo'))

@@ -216,7 +216,9 @@ class ContratoController extends AppBaseController
             : $contratoItemRepository->forContratoDetails($contrato);
 
         $iss = Cnae::$iss;
-//        dd($pendencias);
+
+        $itens_analise = $apropriacaoRepository->forContratoApproval($contrato);
+
         return view('contratos.show', compact(
             'isEmAprovacao',
             'contrato',
@@ -230,7 +232,8 @@ class ContratoController extends AppBaseController
             'avaliado_reprovado',
             'status',
             'fornecedor',
-            'iss'
+            'iss',
+            'itens_analise'
         ));
     }
 
@@ -252,7 +255,6 @@ class ContratoController extends AppBaseController
         DistratarRequest $request,
         ContratoItemModificacaoRepository $contratoItemModificacaoRepository
     ) {
-//        dd($request->all());
         $contratoItemModificacaoRepository->distratar(
             $contrato_item_id,
             $request->distrato,

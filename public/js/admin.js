@@ -66284,9 +66284,74 @@ $(function() {
             max: _.max(_.map(ofertasDoInsumo, _.property('valor_total'))) + 100
           }
         }]
-      }
+      },
+      "horizontalLine": [{
+        "y": _.max(_.map(ofertasDoInsumo, _.property('valor_oi'))) ? _.max(_.map(ofertasDoInsumo, _.property('valor_oi'))) : [],
+        "style": "red",
+        "text": "Valor do OI"
+      },
+      {
+        "y": _.min(_.map(ofertasDoInsumo, function (obj) {
+                          if(obj['valor_total'] > 0) {
+                            return obj['valor_total'];
+                          } else {
+                            return _.max(_.map(ofertasDoInsumo, _.property('valor_total'))) + 100;
+                          }
+                        })
+                  ),
+        "style": "blue",
+        "text": "Menor preço"
+      }]
     }
   });
+
+  // Aplica linha horizontal no gráfico de chart-insumo-fornecedor
+  var horizontalLinePlugin = {
+    afterDraw: function(chartInstance) {
+      var yScale = chartInstance.scales["y-axis-0"];
+      var canvas = chartInstance.chart;
+      var ctx = canvas.ctx;
+      var index;
+      var line;
+      var style;
+
+      if (chartInstance.options.horizontalLine) {
+        for (index = 0; index < chartInstance.options.horizontalLine.length; index++) {
+          line = chartInstance.options.horizontalLine[index];
+
+          if (!line.style) {
+            style = "rgba(169,169,169, .6)";
+          } else {
+            style = line.style;
+          }
+
+          if (line.y) {
+            yValue = yScale.getPixelForValue(line.y);
+          } else {
+            yValue = 0;
+          }
+
+          ctx.lineWidth = 3;
+
+          if (yValue) {
+            ctx.beginPath();
+            ctx.moveTo(0, yValue);
+            ctx.lineTo(canvas.width, yValue);
+            ctx.strokeStyle = style;
+            ctx.stroke();
+          }
+
+          if (line.text) {
+            ctx.fillStyle = style;
+            ctx.fillText(line.text, 0, yValue + ctx.lineWidth);
+          }
+        }
+        return;
+      };
+    }
+  };
+  Chart.pluginService.register(horizontalLinePlugin);
+// Fim da aplicação da linha horizontal no gráfico
 
   selectInsumo.change(function() {
     var ofertasDoInsumo = _.filter(ofertas, {
