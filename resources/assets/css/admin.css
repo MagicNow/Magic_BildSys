@@ -813,3 +813,7 @@ td> .table {
 .btn {
   border-radius: 0 !important;
 }
+
+.todo-list > li .label {
+  font-size: 10px;
+}
