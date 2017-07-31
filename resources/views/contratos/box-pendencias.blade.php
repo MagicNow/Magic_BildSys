@@ -199,6 +199,10 @@
                                                 </thead>
                                                 <tbody>
                                                 @foreach($itens_analise->oc_itens->whereIn('id', $apropriacoes_id) as $item)
+                                                    @php
+                                                        $qtd_comprometida_a_gastar = $modificacao->apropriacoes->where('id', $item->id)->first()->pivot->qtd_atual;
+                                                        $valor_comprometido_a_gastar = $modificacao['valor_unitario_atual'];
+                                                    @endphp
                                                     <tr>
                                                         <td class="text-center">
                                                         <span data-toggle="tooltip" data-placement="right"
@@ -220,7 +224,7 @@
                                                         <td class="text-center">
                                                             {{--CONTA = saldo - previsto no orçamento--}}
                                                             <i class="fa fa-circle
-                                                            {{ ($item->qtd_inicial - $item->qtd_realizado - $item->qtd_inicial) < 0
+                                                            {{ ($item->qtd_inicial - doubleval($item->qtd_realizada) - doubleval($qtd_comprometida_a_gastar)) < 0
                                                                 ? 'red'
                                                                 : 'green'
                                                             }}">
@@ -229,7 +233,7 @@
                                                         <td class="text-center">
                                                             {{--CONTA = saldo - previsto no orçamento--}}
                                                             <i class="fa fa-circle
-                                                            {{ ($item->preco_inicial - $item->valor_realizado - $item->preco_inicial) < 0
+                                                            {{ ($item->preco_inicial - doubleval($item->valor_realizado) - doubleval($valor_comprometido_a_gastar)) < 0
                                                                 ? 'red'
                                                                 : 'green'
                                                             }}"></i>
@@ -285,11 +289,10 @@
                                                                                 {{ number_format(doubleval($item->qtd_realizada), 2, ',','.') }}
                                                                             </td>
                                                                             <td class="text-center">
-                                                                                {{--{{ number_format( $item->qtd_inicial-doubleval($item->qtd_realizada), 2, ',','.') }}--}}
-                                                                                0,00
+                                                                                {{float_to_money($qtd_comprometida_a_gastar, '')}}
                                                                             </td>
                                                                             <td class="text-center">
-                                                                                {{ number_format( $item->qtd_inicial - doubleval($item->qtd_realizada), 2, ',','.') }}
+                                                                                {{ number_format( $item->qtd_inicial - doubleval($item->qtd_realizada) - doubleval($qtd_comprometida_a_gastar), 2, ',','.') }}
                                                                             </td>
                                                                             <td class="text-center">{!! $item->emergencial?'<strong class="text-danger"> <i class="fa fa-exclamation-circle"></i> SIM</strong>':'NÃO' !!}</td>
                                                                         </tr>
@@ -319,12 +322,11 @@
                                                                             </td>
                                                                             <td class="text-center">
                                                                                 <small class="pull-left">R$</small>
-                                                                                {{--{{ number_format( $item->preco_inicial-doubleval($item->valor_realizado), 2, ',','.') }}--}}
-                                                                                0,00
+                                                                                {{float_to_money($valor_comprometido_a_gastar, '')}}
                                                                             </td>
                                                                             <td class="text-center">
                                                                                 <small class="pull-left">R$</small>
-                                                                                {{ number_format( $item->preco_inicial-doubleval($item->valor_realizado), 2, ',','.') }}
+                                                                                {{ number_format( $item->preco_inicial - doubleval($item->valor_realizado) - doubleval($valor_comprometido_a_gastar), 2, ',','.') }}
                                                                             </td>
                                                                             <td class="text-center">
                                                                                 @if($item->trocado)
