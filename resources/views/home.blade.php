@@ -30,7 +30,7 @@
                 </div>
             @else
                 <div class="col-md-7 text-center">
-                    <img src="/img/personagem.png" style="margin: auto" class="img-responsive">
+                    
                 </div>
                 <div class="col-md-5">
                     <div class="box box-warning">
