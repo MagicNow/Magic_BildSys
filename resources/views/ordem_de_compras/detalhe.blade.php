@@ -286,7 +286,10 @@
                         <tr>
                             <th class="text-center">Código do insumo</th>
                             <th class="text-center">Descrição do insumo</th>
-                            <th class="text-center">Und de medida</th>
+                            <th class="text-center">Un. de medida</th>
+                            <th class="text-center">Qtd.</th>
+                            <th class="text-center">Valor unitário</th>
+                            <th class="text-center">Valor total</th>
                             <th class="text-center">Status da qtd. do insumo</th>
                             <th class="text-center">Status do valor do insumo</th>
                             <th class="text-center">Status Serviço</th>
@@ -319,8 +322,21 @@
                                     ">
                                 {{ $item->insumo->codigo }}</span>
                             </td>
-                            <td class="text-center">{{ $item->insumo->nome }}</td>
-                            <td class="text-center">{{ $item->unidade_sigla }}</td>
+                            <td class="text-center">
+                                {{ $item->insumo->nome }}
+                            </td>
+                            <td class="text-center">
+                                {{ $item->unidade_sigla }}
+                            </td>
+                            <td class="text-center">
+                                {{ $item->qtd }}
+                            </td>
+                            <td class="text-center">
+                                {{ float_to_money($item->valor_unitario) }}
+                            </td>
+                            <td class="text-center">
+                                {{ number_format(money_to_float($item->valor_total), 2, ',','.') }}
+                            </td>
                             <td class="text-center">
                                 {{-- Qntd Prevista - Qntd Realizada - Qntd Á gastar = Qntd Saldo do orçamento - Qntd OC --}}
                                 @php
@@ -421,7 +437,7 @@
                             </td>
                         </tr>
                         <tr style="display: none;" id="dados-extras{{ $item->id }}">
-                            <td colspan="8">
+                            <td colspan="11">
                                 <div class="row">
                                     <div class="col-md-12 table-responsive margem-topo">
                                         <table class="table table-bordered table-striped">
@@ -431,7 +447,6 @@
                                                 <th class="text-center">Qtd. comprometida realizada</th>
                                                 <th class="text-center">Qtd. comprometida à gastar</th>
                                                 <th class="text-center">Saldo de qtd. do orçamento</th>
-                                                <th class="text-center">Qtd. da O.C.</th>
                                                 <th class="text-center">Saldo de qntd disponível após O.C</th>
                                             </tr>
                                             </thead>
@@ -450,9 +465,6 @@
                                                     {{ number_format($saldo_qtd_orcamento, 2, ',','.') }}
                                                 </td>
                                                 <td class="text-center">
-                                                    {{ $item->qtd }}
-                                                </td>
-                                                <td class="text-center">
                                                     {{--SALDO DE QNTD DO ORÇAMENTO - QNTD DA O.C.--}}
                                                     {{ number_format($status_qtd , 2, ',','.')}}
                                                 </td>
@@ -468,7 +480,6 @@
                                                 <th class="text-center">Valor comprometido realizado</th>
                                                 <th class="text-center">Valor comprometido à gastar</th>
                                                 <th class="text-center">Saldo de valor do orçamento</th>
-                                                <th class="text-center">Valor da O.C.</th>
                                                 <th class="text-center">Saldo de valor disponível após O.C.</th>
                                             </tr>
                                             </thead>
@@ -490,11 +501,8 @@
                                                     {{ number_format($saldo_valor_orcamento , 2, ',','.') }}
                                                 </td>
                                                 <td class="text-center">
-                                                    <small class="pull-left">R$</small> <strong>{{ number_format(money_to_float($item->valor_total), 2, ',','.') }}</strong>
-                                                </td>
-                                                <td class="text-center">
                                                     {{--SALDO DE VALOR DO ORÇAMENTO - VALOR DA O.C.--}}
-                                                    {{ number_format($saldo_valor_orcamento -  money_to_float($item->valor_total), 2, ',','.')}}
+                                                    {{ float_to_money($saldo_valor_orcamento - doubleval($item->valor_total)) }}
                                                 </td>
                                             </tr>
                                             </tbody>
