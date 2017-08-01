@@ -1,6 +1,11 @@
 <div class="box box-muted">
     <div class="box-header with-border">
         Pendências
+        <button class="btn btn-xs btn-warning btn-flat pull-right" data-toggle="modal" data-target="#analise-reajuste">
+            <span data-toggle="tooltip" title="Análise do reajuste">
+                Análise <i class="fa fa-eye fa-fw"></i>
+            </span>
+        </button>
     </div>
     <div class="box-body">
         <div class="table-responsive">
@@ -86,21 +91,12 @@
                             @endif
 
                             <button class="btn btn-xs btn-info btn-flat"
-                                data-toggle="modal"
-                                data-target="#detalhes-item-{{ $modificacao->id }}">
+                                    data-toggle="modal"
+                                    data-target="#detalhes-item-{{ $modificacao->id }}">
                               <span data-toggle="tooltip" title="Detalhes por Apropriação">
                                   Detalhes <i class="fa fa-plus fa-fw"></i>
                               </span>
                             </button>
-
-                            @if($modificacao['tipo_modificacao'] == 'Reajuste')
-                                <button class="btn btn-xs btn-warning btn-flat" data-toggle="modal"
-                                        data-target="#analise-item-{{ $modificacao->id }}">
-                                  <span data-toggle="tooltip" title="Análise do reajuste">
-                                      Análise <i class="fa fa-eye fa-fw"></i>
-                                  </span>
-                                </button>
-                            @endif
                             <div class="modal fade" id="detalhes-item-{{ $modificacao->id }}" tabindex="-1"
                                  role="dialog">
                                 <div class="modal-dialog modal-lg" role="document">
@@ -170,45 +166,100 @@
                                     </div>
                                 </div>
                             </div>
+                        </td>
+                    </tr>
+                @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-                            <div class="modal fade" id="analise-item-{{ $modificacao->id }}" tabindex="-1"
-                                 role="dialog">
-                                <div class="modal-dialog modal-full" role="document" style="padding-left: 30px;">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <button type="button" class="btn btn-flat btn-sm btn-danger pull-right" title="Fechar" data-dismiss="modal">
-                                                <i class="fa fa-remove fa-fw" aria-hidden="true"></i>
-                                            </button>
-                                            <h4 class="modal-title">
-                                                {{ $modificacao->tipo_modificacao }} <br>
-                                                <small>{{ $modificacao->item->insumo->nome }}</small>
-                                            </h4>
-                                        </div>
-                                        <div class="modal-body">
-                                            <table class="table table-bordered table-no-margin">
-                                                <thead>
-                                                <tr>
-                                                    <th class="text-center">Código do insumo</th>
-                                                    <th class="text-center">Descrição do insumo</th>
-                                                    <th class="text-center">Un. de medida</th>
-                                                    <th class="text-center">Qtd.</th>
-                                                    <th class="text-center">Valor Unitário</th>
-                                                    <th class="text-center">Valor Total</th>
-                                                    <th class="text-center">Status da qtd. do insumo</th>
-                                                    <th class="text-center">Status do valor do insumo</th>
-                                                    <th class="text-center">Status Serviço</th>
-                                                    <th class="text-center">Acaba a obra</th>
-                                                    <th class="text-center">Ações</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                @foreach($itens_analise->oc_itens->whereIn('id', $apropriacoes_id) as $item)
-                                                    @php
-                                                        $qtd_comprometida_a_gastar = $modificacao->apropriacoes->where('id', $item->id)->first()->pivot->qtd_atual;
-                                                        $valor_comprometido_a_gastar = $modificacao['valor_unitario_atual'];
-                                                    @endphp
-                                                    <tr>
-                                                        <td class="text-center">
+    <div class="modal fade" id="analise-reajuste" tabindex="-1"
+         role="dialog">
+        <div class="modal-dialog modal-full" role="document" style="padding-left: 30px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="btn btn-flat btn-sm btn-danger pull-right" title="Fechar"
+                            data-dismiss="modal">
+                        <i class="fa fa-remove fa-fw" aria-hidden="true"></i>
+                    </button>
+                    <h4 class="modal-title">
+                        Análise do reajuste
+                    </h4>
+                </div>
+                <div class="modal-header" style="padding-top: 45px;">
+                    <div class="row total-header">
+                        <div class="col-sm-3 text-right borda-direita">
+                            <h5>Valor previsto no orçamento</h5>
+                            <h4>
+                                <small class="pull-left">R$</small>
+                                {{ number_format($orcamentoInicial,2,',','.') }}
+                            </h4>
+                        </div>
+                        <div class="col-sm-3 text-right borda-direita" title="Até o momento em todos os itens desta O.C.">
+                            <h5>Valor comprometido realizado</h5>
+                            <h4>
+                                <small class="pull-left">R$</small>0,00
+                                {{---  TO DO = Realizado: São informações que virão com a entrada de NF, sendo assim, no momento não haverá informações--}}
+                                {{--                    {{ number_format($realizado,2,',','.') }}--}}
+                            </h4>
+                        </div>
+                        <div class="col-sm-3 text-right borda-direita" title="Nos itens desta O.C.">
+                            <h5>Valor comprometido à gastar</h5>
+                            <h4>
+                                <small class="pull-left">R$</small> <span id="valor_total_comprometido_a_gastar"></span>
+                                {{---  TO DO = A gastar: É a soma de todos os saldos de contratos na que apropriação, como ainda não exixte contrato gerado, tem q estar zerado--}}
+                                {{--                    {{ number_format($totalAGastar,2,',','.') }}--}}
+                            </h4>
+                        </div>
+                        <div class="col-sm-3 text-right borda-direita" title="Restante do Orçamento Inicial em relação aos itens desta O.C.">
+                            <h5>SALDO DE ORÇAMENTO</h5>
+                            <h4>
+                                <small class="pull-left">R$</small> <span id="saldo_total_de_orcamento"></span>
+                                {{--- TO DO = Saldo: Previsto - Realizado - A gastar--}}
+                                {{--{{ number_format($saldo,2,',','.') }}--}}
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-body">
+                    <table class="table table-bordered table-no-margin">
+                        <thead>
+                        <tr>
+                            <th class="text-center">Código do insumo</th>
+                            <th class="text-center">Descrição do insumo</th>
+                            <th class="text-center">Un. de medida</th>
+                            <th class="text-center">Qtd.</th>
+                            <th class="text-center">Valor Unitário</th>
+                            <th class="text-center">Valor Total</th>
+                            <th class="text-center">Qtd. do insumo</th>
+                            <th class="text-center">Valor do insumo</th>
+                            <th class="text-center">Serviço</th>
+                            <th class="text-center">Acaba a obra</th>
+                            <th class="text-center">Ações</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach($itens_analise->oc_itens as $item)
+                            @php
+                                $qtd_comprometida_a_gastar = money_to_float($item->qtd_inicial);
+                                $valor_comprometido_a_gastar = money_to_float($item->preco_inicial);
+                                $ultima_modificacao = null;
+
+                                if(count($item->modificacoes)) {
+                                    $ultima_modificacao = $item->modificacoes->sortByDesc('updated_at')->first();
+                                }
+
+                                if($ultima_modificacao) {
+                                    $qtd_comprometida_a_gastar += money_to_float($ultima_modificacao->pivot->qtd_atual);
+                                    $valor_comprometido_a_gastar += money_to_float($ultima_modificacao->valor_unitario_atual);
+                                }
+
+                                $GLOBALS["valor_total_comprometido_a_gastar"] += $valor_comprometido_a_gastar;
+                            @endphp
+                            <tr>
+                                <td class="text-center">
                                                         <span data-toggle="tooltip" data-placement="right"
                                                               data-html="true"
                                                               title="
@@ -219,41 +270,41 @@
                                                             {{ $item->servico->codigo.' - '.$item->servico->nome }}
                                                                       ">
                                                             {{ $item->insumo->codigo }}</span>
-                                                        </td>
-                                                        <td class="text-center">{{ $item->insumo->nome }}</td>
-                                                        <td class="text-center">{{ $item->insumo->unidade_sigla }}</td>
-                                                        <td class="text-center">{{ float_to_money($item->qtd, '') }}</td>
-                                                        <td class="text-center">{{ float_to_money($item->contratoItem->valor_unitario) }} </td>
-                                                        <td class="text-center">{{ float_to_money($item->contratoItem->valor_unitario * $item->qtd) }} </td>
-                                                        <td class="text-center">
-                                                            {{--CONTA = saldo - previsto no orçamento--}}
-                                                            <i class="fa fa-circle
+                                </td>
+                                <td class="text-center">{{ $item->insumo->nome }}</td>
+                                <td class="text-center">{{ $item->insumo->unidade_sigla }}</td>
+                                <td class="text-center">{{ float_to_money($item->qtd, '') }}</td>
+                                <td class="text-center">{{ float_to_money($item->contratoItem->valor_unitario) }} </td>
+                                <td class="text-center">{{ float_to_money($item->contratoItem->valor_unitario * $item->qtd) }} </td>
+                                <td class="text-center">
+                                    {{--CONTA = saldo - previsto no orçamento--}}
+                                    <i class="fa fa-circle
                                                             {{ ($item->qtd_inicial - doubleval($item->qtd_realizada) - doubleval($qtd_comprometida_a_gastar)) < 0
                                                                 ? 'red'
                                                                 : 'green'
                                                             }}">
-                                                            </i>
-                                                        </td>
-                                                        <td class="text-center">
-                                                            {{--CONTA = saldo - previsto no orçamento--}}
-                                                            <i class="fa fa-circle
+                                    </i>
+                                </td>
+                                <td class="text-center">
+                                    {{--CONTA = saldo - previsto no orçamento--}}
+                                    <i class="fa fa-circle
                                                             {{ ($item->preco_inicial - doubleval($item->valor_realizado) - doubleval($valor_comprometido_a_gastar)) < 0
                                                                 ? 'red'
                                                                 : 'green'
                                                             }}"></i>
-                                                        </td>
-                                                        <td class="text-center">
-                                                            @if($item->servico)
-                                                                <a href="/ordens-de-compra/detalhes-servicos/{{$contrato->obra_id}}/{{$item->servico->id}}"
-                                                                   style="cursor:pointer;">
-                                                                    <i class="fa fa-circle {{ (money_to_float($item->valor_servico) - money_to_float($item->valor_realizado)) - money_to_float($item->valor_servico) < 0 ? 'red': 'green'  }}"></i>
-                                                                    <button class="btn btn-warning btn-sm btn-flat">Análise</button>
-                                                                </a>
-                                                            @else
-                                                                <i class="fa fa-circle {{ (money_to_float($item->valor_servico) - money_to_float($item->valor_realizado)) - money_to_float($item->valor_servico) < 0 ? 'red': 'green'  }}"></i>
-                                                            @endif
-                                                        </td>
-                                                        <td class="text-center">
+                                </td>
+                                <td class="text-center">
+                                    @if($item->servico)
+                                        <a href="/ordens-de-compra/detalhes-servicos/{{$contrato->obra_id}}/{{$item->servico->id}}"
+                                           style="cursor:pointer;">
+                                            <i class="fa fa-circle {{ (money_to_float($item->valor_servico) - money_to_float($item->valor_realizado)) - money_to_float($item->valor_servico) < 0 ? 'red': 'green'  }}"></i>
+                                            <button class="btn btn-warning btn-sm btn-flat">Análise</button>
+                                        </a>
+                                    @else
+                                        <i class="fa fa-circle {{ (money_to_float($item->valor_servico) - money_to_float($item->valor_realizado)) - money_to_float($item->valor_servico) < 0 ? 'red': 'green'  }}"></i>
+                                    @endif
+                                </td>
+                                <td class="text-center">
                                                         <span data-toggle="tooltip"
                                                               data-placement="right"
                                                               data-container="body"
@@ -261,152 +312,145 @@
                                                               title="{{ $item->motivo_nao_finaliza_obra }}">
                                                             {{ $item->total ? 'Sim' : 'Não' }}
                                                         </span>
-                                                        </td>
-                                                        <td class="text-center">
-                                                            <button type="button"
-                                                                    class="btn btn-flat btn-sm btn-warning"
-                                                                    title="Expandir"
-                                                                    onclick="showHideInfoExtra({{ $item->id }})">
-                                                                <i id="icone-expandir{{ $item->id }}"
-                                                                   class="fa fa-caret-right fa-fw"></i>
-                                                            </button>
-                                                        </td>
-                                                    </tr>
-                                                    <tr style="display: none;" id="dados-extras{{ $item->id }}">
-                                                        <td colspan="11">
-                                                            <div class="row">
-                                                                <div class="col-md-12 table-responsive margem-topo">
-                                                                    <table class="table table-bordered table-striped">
-                                                                        <thead>
-                                                                        <tr>
-                                                                            <th class="text-center">Qtd. prevista no orçamento</th>
-                                                                            <th class="text-center">Qtd. comprometida realizada</th>
-                                                                            <th class="text-center">Qtd. comprometida à gastar</th>
-                                                                            <th class="text-center">Saldo de qtd. do orçamento</th>
-                                                                            <th class="text-center">Emergencial</th>
-                                                                        </tr>
-                                                                        </thead>
-                                                                        <tbody>
-                                                                        <tr>
-                                                                            <td class="text-center">{{ number_format($item->qtd_inicial, 2, ',','.') }}</td>
-                                                                            <td class="text-center">
-                                                                                {{ number_format(doubleval($item->qtd_realizada), 2, ',','.') }}
-                                                                            </td>
-                                                                            <td class="text-center">
-                                                                                {{float_to_money($qtd_comprometida_a_gastar, '')}}
-                                                                            </td>
-                                                                            <td class="text-center">
-                                                                                {{ number_format( $item->qtd_inicial - doubleval($item->qtd_realizada) - doubleval($qtd_comprometida_a_gastar), 2, ',','.') }}
-                                                                            </td>
-                                                                            <td class="text-center">{!! $item->emergencial?'<strong class="text-danger"> <i class="fa fa-exclamation-circle"></i> SIM</strong>':'NÃO' !!}</td>
-                                                                        </tr>
-                                                                        </tbody>
-                                                                    </table>
-                                                                </div>
-                                                                <div class="col-md-12 table-responsive margem-topo">
-                                                                    <table class="table table-bordered table-striped">
-                                                                        <thead>
-                                                                        <tr>
-                                                                            <th class="text-center">Valor previsto no orçamento</th>
-                                                                            <th class="text-center">Valor comprometido realizado</th>
-                                                                            <th class="text-center">Valor comprometido à gastar</th>
-                                                                            <th class="text-center">Saldo de valor do orçamento</th>
-                                                                            <th class="text-center">Insumo Principal</th>
-                                                                        </tr>
-                                                                        </thead>
-                                                                        <tbody>
-                                                                        <tr>
-                                                                            <td class="text-center">
-                                                                                <small class="pull-left">R$
-                                                                                </small> {{ number_format($item->preco_inicial, 2, ',','.') }}
-                                                                            </td>
-                                                                            <td class="text-center">
-                                                                                <small class="pull-left">R$</small>
-                                                                                {{ number_format( doubleval($item->valor_realizado), 2, ',','.') }}
-                                                                            </td>
-                                                                            <td class="text-center">
-                                                                                <small class="pull-left">R$</small>
-                                                                                {{float_to_money($valor_comprometido_a_gastar, '')}}
-                                                                            </td>
-                                                                            <td class="text-center">
-                                                                                <small class="pull-left">R$</small>
-                                                                                {{ number_format( $item->preco_inicial - doubleval($item->valor_realizado) - doubleval($valor_comprometido_a_gastar), 2, ',','.') }}
-                                                                            </td>
-                                                                            <td class="text-center">
-                                                                                @if($item->trocado)
-                                                                                    {{ $item->insumo_troca_nome }}
-                                                                                @else
-                                                                                    Não é troca
-                                                                                @endif
-                                                                            </td>
-                                                                        </tr>
-                                                                        </tbody>
-                                                                    </table>
-                                                                </div>
-                                                                <div class="col-md-6 margem-topo borda-direita">
-                                                                    <div class="row">
-                                                                        <div class="col-md-4 label-bloco">
-                                                                            Justificativa de compra:
-                                                                        </div>
-                                                                        <div class="bloco-texto-conteudo col-md-7">
-                                                                            {{ $item->justificativa }}
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-6 margem-topo">
-                                                                    <div class="col-md-4 label-bloco">
-                                                                        Observações ao fornecedor:
-                                                                    </div>
-                                                                    <div class="bloco-texto-conteudo col-md-7">
-                                                                        {{ $item->obs }}
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-6 margem-topo borda-direita">
-                                                                    <div class="row">
-                                                                        <div class="col-md-4 label-bloco">
-                                                                            Tabela TEMS:
-                                                                        </div>
-                                                                        <div class="bloco-texto-conteudo col-md-7">
-                                                                            {{ $item->tems }}
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-6 margem-topo">
-                                                                    @if($item->anexos->isNotEmpty())
-                                                                        <div class="col-md-4 label-bloco">
-                                                                            Arquivos anexos:
-                                                                        </div>
-                                                                        <div class="col-md-8">
-                                                                            <div class="row">
-                                                                                @foreach($item->anexos as $anexo)
-                                                                                    <div class="bloco-texto-linha col-md-9"> {{ substr($anexo->arquivo, strrpos($anexo->arquivo,'/') + 1)  }}</div>
-                                                                                    <div class="col-md-2">
-                                                                                        <a href="{{ Storage::url($anexo->arquivo) }}"
-                                                                                           class="btn btn-default btn-block"
-                                                                                           target="_blank">
-                                                                                            <i class="fa fa-eye"></i>
-                                                                                        </a>
-                                                                                    </div>
-                                                                                @endforeach
-                                                                            </div>
-                                                                        </div>
-                                                                    @endif
-                                                                </div>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                @endforeach
+                                </td>
+                                <td class="text-center">
+                                    <button type="button"
+                                            class="btn btn-flat btn-sm btn-warning"
+                                            title="Expandir"
+                                            onclick="showHideInfoExtra({{ $item->id }})">
+                                        <i id="icone-expandir{{ $item->id }}"
+                                           class="fa fa-caret-right fa-fw"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr style="display: none;" id="dados-extras{{ $item->id }}">
+                                <td colspan="11">
+                                    <div class="row">
+                                        <div class="col-md-12 table-responsive margem-topo">
+                                            <table class="table table-bordered table-striped">
+                                                <thead>
+                                                <tr>
+                                                    <th class="text-center">Qtd. prevista no orçamento</th>
+                                                    <th class="text-center">Qtd. comprometida realizada</th>
+                                                    <th class="text-center">Qtd. comprometida à gastar</th>
+                                                    <th class="text-center">Saldo de qtd. do orçamento</th>
+                                                    <th class="text-center">Emergencial</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr>
+                                                    <td class="text-center">{{ number_format($item->qtd_inicial, 2, ',','.') }}</td>
+                                                    <td class="text-center">
+                                                        {{ number_format(doubleval($item->qtd_realizada), 2, ',','.') }}
+                                                    </td>
+                                                    <td class="text-center">
+                                                        {{float_to_money($qtd_comprometida_a_gastar, '')}}
+                                                    </td>
+                                                    <td class="text-center">
+                                                        {{ number_format( $item->qtd_inicial - doubleval($item->qtd_realizada) - doubleval($qtd_comprometida_a_gastar), 2, ',','.') }}
+                                                    </td>
+                                                    <td class="text-center">{!! $item->emergencial?'<strong class="text-danger"> <i class="fa fa-exclamation-circle"></i> SIM</strong>':'NÃO' !!}</td>
+                                                </tr>
                                                 </tbody>
                                             </table>
                                         </div>
+                                        <div class="col-md-12 table-responsive margem-topo">
+                                            <table class="table table-bordered table-striped">
+                                                <thead>
+                                                <tr>
+                                                    <th class="text-center">Valor previsto no orçamento</th>
+                                                    <th class="text-center">Valor comprometido realizado</th>
+                                                    <th class="text-center">Valor comprometido à gastar</th>
+                                                    <th class="text-center">Saldo de valor do orçamento</th>
+                                                    <th class="text-center">Insumo Principal</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr>
+                                                    <td class="text-center">
+                                                        <small class="pull-left">R$
+                                                        </small> {{ number_format($item->preco_inicial, 2, ',','.') }}
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <small class="pull-left">R$</small>
+                                                        {{ number_format( doubleval($item->valor_realizado), 2, ',','.') }}
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <small class="pull-left">R$</small>
+                                                        {{float_to_money($valor_comprometido_a_gastar, '')}}
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <small class="pull-left">R$</small>
+                                                        {{ number_format( $item->preco_inicial - doubleval($item->valor_realizado) - doubleval($valor_comprometido_a_gastar), 2, ',','.') }}
+                                                    </td>
+                                                    <td class="text-center">
+                                                        @if($item->trocado)
+                                                            {{ $item->insumo_troca_nome }}
+                                                        @else
+                                                            Não é troca
+                                                        @endif
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="col-md-6 margem-topo borda-direita">
+                                            <div class="row">
+                                                <div class="col-md-4 label-bloco">
+                                                    Justificativa de compra:
+                                                </div>
+                                                <div class="bloco-texto-conteudo col-md-7">
+                                                    {{ $item->justificativa }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 margem-topo">
+                                            <div class="col-md-4 label-bloco">
+                                                Observações ao fornecedor:
+                                            </div>
+                                            <div class="bloco-texto-conteudo col-md-7">
+                                                {{ $item->obs }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 margem-topo borda-direita">
+                                            <div class="row">
+                                                <div class="col-md-4 label-bloco">
+                                                    Tabela TEMS:
+                                                </div>
+                                                <div class="bloco-texto-conteudo col-md-7">
+                                                    {{ $item->tems }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 margem-topo">
+                                            @if($item->anexos->isNotEmpty())
+                                                <div class="col-md-4 label-bloco">
+                                                    Arquivos anexos:
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <div class="row">
+                                                        @foreach($item->anexos as $anexo)
+                                                            <div class="bloco-texto-linha col-md-9"> {{ substr($anexo->arquivo, strrpos($anexo->arquivo,'/') + 1)  }}</div>
+                                                            <div class="col-md-2">
+                                                                <a href="{{ Storage::url($anexo->arquivo) }}"
+                                                                   class="btn btn-default btn-block"
+                                                                   target="_blank">
+                                                                    <i class="fa fa-eye"></i>
+                                                                </a>
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
+                                                </div>
+                                            @endif
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                @endforeach
-                </tbody>
-            </table>
+                                </td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </div>

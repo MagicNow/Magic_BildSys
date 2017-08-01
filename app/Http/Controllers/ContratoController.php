@@ -219,6 +219,8 @@ class ContratoController extends AppBaseController
 
         $itens_analise = $apropriacaoRepository->forContratoApproval($contrato);
 
+        $GLOBALS["valor_total_comprometido_a_gastar"] = 0.00;
+    
         return view('contratos.show', compact(
             'isEmAprovacao',
             'contrato',
@@ -233,7 +235,8 @@ class ContratoController extends AppBaseController
             'status',
             'fornecedor',
             'iss',
-            'itens_analise'
+            'itens_analise',
+            'valor_total_comprometido_a_gastar'
         ));
     }
 
