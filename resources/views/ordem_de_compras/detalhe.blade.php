@@ -432,6 +432,7 @@
                                                 <th class="text-center">Qtd. comprometida à gastar</th>
                                                 <th class="text-center">Saldo de qtd. do orçamento</th>
                                                 <th class="text-center">Qtd. da O.C.</th>
+                                                <th class="text-center">Saldo de qntd disponível após O.C</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -449,7 +450,11 @@
                                                     {{ number_format($saldo_qtd_orcamento, 2, ',','.') }}
                                                 </td>
                                                 <td class="text-center">
-                                                    <strong>{{ $item->qtd }}</strong>
+                                                    {{ $item->qtd }}
+                                                </td>
+                                                <td class="text-center">
+                                                    {{--SALDO DE QNTD DO ORÇAMENTO - QNTD DA O.C.--}}
+                                                    {{ number_format($status_qtd , 2, ',','.')}}
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -464,7 +469,7 @@
                                                 <th class="text-center">Valor comprometido à gastar</th>
                                                 <th class="text-center">Saldo de valor do orçamento</th>
                                                 <th class="text-center">Valor da O.C.</th>
-                                                <th class="text-center">Emergencial</th>
+                                                <th class="text-center">Saldo de valor disponível após O.C.</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -488,7 +493,8 @@
                                                     <small class="pull-left">R$</small> <strong>{{ number_format(money_to_float($item->valor_total), 2, ',','.') }}</strong>
                                                 </td>
                                                 <td class="text-center">
-                                                    {!! $item->emergencial?'<strong class="text-danger"> <i class="fa fa-exclamation-circle" aria-hidden="true"></i> SIM</strong>':'NÃO' !!}
+                                                    {{--SALDO DE VALOR DO ORÇAMENTO - VALOR DA O.C.--}}
+                                                    {{ number_format($saldo_valor_orcamento -  money_to_float($item->valor_total), 2, ',','.')}}
                                                 </td>
                                             </tr>
                                             </tbody>
