@@ -251,6 +251,11 @@
     <script data-token="{{ csrf_token() }}" src="{{ asset('/js/contrato-actions.js') }}"></script>
 
     <script>
+        $(function () {
+            $('#valor_total_comprometido_a_gastar').text('{{number_format($GLOBALS["valor_total_comprometido_a_gastar"], 2, ',', '.')}}');
+            $('#saldo_total_de_orcamento').text('{{number_format($orcamentoInicial - $GLOBALS["valor_total_comprometido_a_gastar"], 2, ',', '.')}}');
+        });
+
         function mostrarOcultarAnalise(id, funcao) {
             if(funcao == 'mostrar') {
                 $('#analise-'+id).css('display', '');

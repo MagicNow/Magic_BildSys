@@ -20028,8 +20028,11 @@ td> .table {
   font-size: 10px;
 }
 
-.treeview.active .fa-angle-left{
+.treeview.active .fa-angle-left {
   -ms-transform: rotate(270deg) !important; /* IE 9 */
   -webkit-transform: rotate(270deg) !important; /* Chrome, Safari, Opera */
   transform: rotate(270deg) !important;
+}
+.yellow {
+  color: #f3d712;
 }

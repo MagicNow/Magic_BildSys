@@ -66,9 +66,9 @@
                         <th class="text-center">Qtd.</th>
                         <th class="text-center">Valor Unitário</th>
                         <th class="text-center">Valor Total</th>
-                        <th class="text-center">Status da qtd. do insumo</th>
-                        <th class="text-center">Status do valor do insumo</th>
-                        <th class="text-center">Status Serviço</th>
+                        <th class="text-center">Qtd. do insumo</th>
+                        <th class="text-center">Valor do insumo</th>
+                        <th class="text-center">Serviço</th>
                         <th class="text-center">Acaba a obra</th>
                         <th class="text-center">Ações</th>
                     </tr>
@@ -156,7 +156,6 @@
                                                     <th class="text-center">Qtd. comprometida realizada</th>
                                                     <th class="text-center">Qtd. comprometida à gastar</th>
                                                     <th class="text-center">Saldo de qtd. do orçamento</th>
-                                                    <th class="text-center">Emergencial</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -171,7 +170,6 @@
                                                     <td class="text-center">
                                                         {{ number_format( $item->qtd_inicial - doubleval($item->qtd_realizada), 2, ',','.') }}
                                                     </td>
-                                                    <td class="text-center">{!! $item->emergencial?'<strong class="text-danger"> <i class="fa fa-exclamation-circle"></i> SIM</strong>':'NÃO' !!}</td>
                                                 </tr>
                                             </tbody>
                                         </table>
