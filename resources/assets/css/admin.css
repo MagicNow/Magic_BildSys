@@ -817,3 +817,7 @@ td> .table {
 .todo-list > li .label {
   font-size: 10px;
 }
+
+.yellow {
+  color: #f3d712;
+}
