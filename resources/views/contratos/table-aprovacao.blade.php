@@ -66,9 +66,9 @@
                         <th class="text-center">Qtd.</th>
                         <th class="text-center">Valor Unitário</th>
                         <th class="text-center">Valor Total</th>
-                        <th class="text-center">Status da qtd. do insumo</th>
-                        <th class="text-center">Status do valor do insumo</th>
-                        <th class="text-center">Status Serviço</th>
+                        <th class="text-center">Qtd. do insumo</th>
+                        <th class="text-center">Valor do insumo</th>
+                        <th class="text-center">Serviço</th>
                         <th class="text-center">Acaba a obra</th>
                         <th class="text-center">Ações</th>
                     </tr>
