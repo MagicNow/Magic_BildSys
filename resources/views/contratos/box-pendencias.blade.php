@@ -334,7 +334,6 @@
                                                     <th class="text-center">Qtd. comprometida realizada</th>
                                                     <th class="text-center">Qtd. comprometida à gastar</th>
                                                     <th class="text-center">Saldo de qtd. do orçamento</th>
-                                                    <th class="text-center">Emergencial</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -349,7 +348,6 @@
                                                     <td class="text-center">
                                                         {{ number_format( $item->qtd_inicial - doubleval($item->qtd_realizada) - doubleval($qtd_comprometida_a_gastar), 2, ',','.') }}
                                                     </td>
-                                                    <td class="text-center">{!! $item->emergencial?'<strong class="text-danger"> <i class="fa fa-exclamation-circle"></i> SIM</strong>':'NÃO' !!}</td>
                                                 </tr>
                                                 </tbody>
                                             </table>
