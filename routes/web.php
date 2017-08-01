@@ -119,22 +119,23 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
         $router->get('planejamentoOrcamentos/planejamento/orcamento/insumo/insumo_grupos', 'Admin\PlanejamentoOrcamentoController@getGrupoInsumoRelacionados');
         $router->get('planejamentoOrcamentos/orcamentos/desvincular', 'Admin\PlanejamentoOrcamentoController@desvincular');
 
-        # Lembretes
-        $router->group(['middleware' => 'needsPermission:lembretes.list'], function () use ($router) {
-            $router->get('lembretes/data-minima', 'Admin\LembreteController@lembreteDataMinima');
-            $router->get('lembretes', ['as' => 'admin.lembretes.index', 'uses' => 'Admin\LembreteController@index']);
-            $router->post('lembretes', ['as' => 'admin.lembretes.store', 'uses' => 'Admin\LembreteController@store']);
-            $router->get('lembretes/create', ['as' => 'admin.lembretes.create', 'uses' => 'Admin\LembreteController@create'])
-                ->middleware("needsPermission:lembretes.create");
-            $router->put('lembretes/{lembretes}', ['as' => 'admin.lembretes.update', 'uses' => 'Admin\LembreteController@update']);
-            $router->patch('lembretes/{lembretes}', ['as' => 'admin.lembretes.update', 'uses' => 'Admin\LembreteController@update']);
-            $router->delete('lembretes/{lembretes}', ['as' => 'admin.lembretes.destroy', 'uses' => 'Admin\LembreteController@destroy']);
-            $router->get('lembretes/{lembretes}', ['as' => 'admin.lembretes.show', 'uses' => 'Admin\LembreteController@show'])
-                ->middleware("needsPermission:lembretes.view");
-            $router->get('lembretes/{lembretes}/edit', ['as' => 'admin.lembretes.edit', 'uses' => 'Admin\LembreteController@edit'])
-                ->middleware("needsPermission:lembretes.edit");
-            $router->get('lembretes/filtro/busca', ['as' => 'admin.lembretes.busca', 'uses' => 'Admin\LembreteController@busca']);
-        });
+    });
+
+    # Lembretes
+    $router->group(['middleware' => 'needsPermission:lembretes.list'], function () use ($router) {
+        $router->get('lembretes/data-minima', 'Admin\LembreteController@lembreteDataMinima');
+        $router->get('lembretes', ['as' => 'admin.lembretes.index', 'uses' => 'Admin\LembreteController@index']);
+        $router->post('lembretes', ['as' => 'admin.lembretes.store', 'uses' => 'Admin\LembreteController@store']);
+        $router->get('lembretes/create', ['as' => 'admin.lembretes.create', 'uses' => 'Admin\LembreteController@create'])
+            ->middleware("needsPermission:lembretes.create");
+        $router->put('lembretes/{lembretes}', ['as' => 'admin.lembretes.update', 'uses' => 'Admin\LembreteController@update']);
+        $router->patch('lembretes/{lembretes}', ['as' => 'admin.lembretes.update', 'uses' => 'Admin\LembreteController@update']);
+        $router->delete('lembretes/{lembretes}', ['as' => 'admin.lembretes.destroy', 'uses' => 'Admin\LembreteController@destroy']);
+        $router->get('lembretes/{lembretes}', ['as' => 'admin.lembretes.show', 'uses' => 'Admin\LembreteController@show'])
+            ->middleware("needsPermission:lembretes.view");
+        $router->get('lembretes/{lembretes}/edit', ['as' => 'admin.lembretes.edit', 'uses' => 'Admin\LembreteController@edit'])
+            ->middleware("needsPermission:lembretes.edit");
+        $router->get('lembretes/filtro/busca', ['as' => 'admin.lembretes.busca', 'uses' => 'Admin\LembreteController@busca']);
     });
 
     # Obras
@@ -847,8 +848,8 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
 
     $router->get('planejamentosByObra', 'PlanejamentoController@getPlanejamentosByObra');
 
-    $router->get('planejamentos/lembretes', 'PlanejamentoController@lembretes');
-    $router->get('planejamentos/lembretes/salvar-data-minima', 'PlanejamentoController@lembretes');
+    $router->get('lembretes', 'PlanejamentoController@lembretes');
+    $router->get('lembretes/salvar-data-minima', 'PlanejamentoController@lembretes');
 
 
     #Contratos
@@ -1021,9 +1022,9 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->post('configuracaoEstaticas', ['as' => 'configuracaoEstaticas.store', 'uses' => 'ConfiguracaoEstaticaController@store']);
         $router->get('configuracaoEstaticas/create', ['as' => 'configuracaoEstaticas.create', 'uses' => 'ConfiguracaoEstaticaController@create']);
         $router->put('configuracaoEstaticas/{configuracaoEstaticas}', ['as' => 'configuracaoEstaticas.update', 'uses' => 'ConfiguracaoEstaticaController@update'])
-            ->middleware('needsPermission:configuracaoEstaticas.update');
+            ->middleware('needsPermission:configuracaoEstaticas.edit');
         $router->patch('configuracaoEstaticas/{configuracaoEstaticas}', ['as' => 'configuracaoEstaticas.update', 'uses' => 'ConfiguracaoEstaticaController@update'])
-            ->middleware('needsPermission:configuracaoEstaticas.update');
+            ->middleware('needsPermission:configuracaoEstaticas.edit');
         $router->delete('configuracaoEstaticas/{configuracaoEstaticas}', ['as' => 'configuracaoEstaticas.destroy', 'uses' => 'ConfiguracaoEstaticaController@destroy']);
         $router->get('configuracaoEstaticas/{configuracaoEstaticas}', ['as' => 'configuracaoEstaticas.show', 'uses' => 'ConfiguracaoEstaticaController@show'])
             ->middleware('needsPermission:configuracaoEstaticas.show');

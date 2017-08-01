@@ -1,8 +1,4 @@
-<!-- Chave Field -->
-<div class="form-group col-sm-12">
-    {!! Form::label('chave', 'Nome:') !!}
-    {!! Form::text('chave', null, ['class' => 'form-control']) !!}
-</div>
+{!! Form::hidden('chave', $configuracaoEstatica->chave, ['class' => 'form-control']) !!}
 
 <!-- Teste Field -->
 <div class="form-group col-sm-12">

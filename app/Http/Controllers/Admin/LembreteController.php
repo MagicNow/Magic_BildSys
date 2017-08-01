@@ -62,17 +62,17 @@ class LembreteController extends AppBaseController
 
         if($input['dias_prazo_minimo'] < 0){
             Flash::error('O prazo mínimo não pode ser negativo.');
-            return redirect('/admin/planejamentos/lembretes/create')->withInput($input);
+            return redirect('/admin/lembretes/create')->withInput($input);
         }
 
         if($input['dias_prazo_maximo'] < 0){
             Flash::error('O prazo máximo não pode ser negativo.');
-            return redirect('/admin/planejamentos/lembretes/create')->withInput($input);
+            return redirect('/admin/lembretes/create')->withInput($input);
         }
 
         if($input['dias_prazo_maximo'] < $input['dias_prazo_minimo']){
             Flash::error('O prazo máximo não pode menor que o prazo mínimo.');
-            return redirect('/admin/planejamentos/lembretes/create')->withInput($input);
+            return redirect('/admin/lembretes/create')->withInput($input);
         }
 
         $input['user_id'] = Auth::id();
@@ -154,17 +154,17 @@ class LembreteController extends AppBaseController
 
         if($input['dias_prazo_minimo'] < 0){
             Flash::error('O prazo mínimo não pode ser negativo');
-            return redirect('/admin/planejamentos/lembretes/'. $id .'/edit')->withInput($input);
+            return redirect('/admin/lembretes/'. $id .'/edit')->withInput($input);
         }
 
         if($input['dias_prazo_maximo'] < 0){
             Flash::error('O prazo máximo não pode ser negativo');
-            return redirect('/admin/planejamentos/lembretes/'. $id .'/edit')->withInput($input);
+            return redirect('/admin/lembretes/'. $id .'/edit')->withInput($input);
         }
 
         if($input['dias_prazo_maximo'] < $input['dias_prazo_minimo']){
             Flash::error('O prazo máximo não pode menor que o prazo mínimo.');
-            return redirect('/admin/planejamentos/lembretes/'. $id .'/edit')->withInput($input);
+            return redirect('/admin/lembretes/'. $id .'/edit')->withInput($input);
         }
 
         $lembreteTipo = LembreteTipo::find($input['lembrete_tipo_id']);

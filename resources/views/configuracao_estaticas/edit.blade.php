@@ -1,9 +1,9 @@
-@extends('layouts.front')
+@extends('layouts.app')
 
 @section('content')
     <section class="content-header">
         <h1>
-            Configuração
+            {{ $configuracaoEstatica->chave }}
         </h1>
    </section>
    <div class="content">
