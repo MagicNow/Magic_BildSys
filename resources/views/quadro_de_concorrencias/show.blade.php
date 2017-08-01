@@ -3,11 +3,14 @@
 @section('content')
     <section class="content-header">
         <h1>
-            Quadro De Concorrencia {{ $quadroDeConcorrencia->id }}
+            <button type="button" class="btn btn-link" onclick="history.go(-1);">
+                <i class="fa fa-arrow-left" aria-hidden="true"></i>
+            </button>
+            Quadro de concorrência {{ $quadroDeConcorrencia->id }}
             <small class="label label-default pull-right margin10">
                 <i class="fa fa-clock-o"
                    aria-hidden="true"></i> {{ $quadroDeConcorrencia->created_at->format('d/m/Y H:i') }}
-                <i class="fa fa-user" aria-hidden="true"></i> {{ $quadroDeConcorrencia->user ? $quadroDeConcorrencia->user->name : 'Automático' }}
+                <i class="fa fa-user" aria-hidden="true"></i> {{ $quadroDeConcorrencia->user ? $quadroDeConcorrencia->user->name : 'Catálogo' }}
             </small>
 
             <small class="label label-info pull-right margin10" id="qc_status">
@@ -28,10 +31,16 @@
                         <span class="text-warning"> ||  Aprovação de Escopo </span>
                         <div class="btn-group" role="group" id="blocoItemAprovaReprova{{ $quadroDeConcorrencia->id }}"
                              aria-label="...">
+                            <button type="button"
+                                    class="btn btn-ms btn-flat btn-primary"
+                                    data-toggle="modal"
+                                    data-target="#modal-obs">
+                                Observação do Aprovador
+                            </button>
                             <button type="button" onclick="workflowAprovaReprova({{ $quadroDeConcorrencia->id }},
                                     'QuadroDeConcorrencia',1,'blocoItemAprovaReprova{{ $quadroDeConcorrencia->id }}',
                                     'Q.C. {{ $quadroDeConcorrencia->id }}',0, '', '', true);"
-                                    class="btn btn-success btn-lg btn-flat"
+                                    class="btn btn-success btn-md btn-flat"
                                     title="Aprovar">
                                 Aprovar Q.C.
                                 <i class="fa fa-check" aria-hidden="true"></i>
@@ -39,11 +48,27 @@
                             <button type="button" onclick="workflowAprovaReprova({{ $quadroDeConcorrencia->id }},
                                     'QuadroDeConcorrencia',0, 'blocoItemAprovaReprova{{ $quadroDeConcorrencia->id }}',
                                     'Q.C. {{ $quadroDeConcorrencia->id }}',0, '', '', true);"
-                                    class="btn btn-danger btn-lg btn-flat"
-                                    title="Reprovar Este item">
-                                Reprovar
+                                    class="btn btn-danger btn-md btn-flat"
+                                    title="Reprovar">
+                                Reprovar Q.C.
                                 <i class="fa fa-times" aria-hidden="true"></i>
                             </button>
+                        </div>
+                        <div class="modal fade" id="modal-obs" tabindex="-1" role="dialog">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        <h4 class="modal-title">Observações do Aprovador</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        {{--<textarea class="form-control" id="obs-aprovador" data-set="obs_aprova_qc" rows="15"></textarea>--}}
+                                        <textarea class="form-control" id="obs-aprovador" data-key="qc_obs_{{ auth()->id() }}_{{ $quadroDeConcorrencia->id }}" rows="15"></textarea>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     @else
                         @if($workflowAprovacao['jaAprovou'])
@@ -108,6 +133,7 @@
         }
         ?>
         options_motivos = "{!! $options_motivos !!}";
+
 
 </script>
 @stop

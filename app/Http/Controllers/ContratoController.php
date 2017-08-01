@@ -10,12 +10,18 @@ use App\Http\Requests\UpdateContratoRequest;
 use App\Models\ContratoStatusLog;
 use App\Models\Fornecedor;
 use App\Models\Insumo;
+use App\Models\McMedicaoPrevisao;
+use App\Models\MemoriaCalculo;
+use App\Models\NomeclaturaMapa;
 use App\Models\Obra;
+use App\Models\ObraTorre;
+use App\Models\Planejamento;
 use App\Models\WorkflowAprovacao;
 use App\Repositories\CodeRepository;
 use App\Repositories\ContratoRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Response;
@@ -37,7 +43,11 @@ use App\Repositories\ContratoItemModificacaoRepository;
 use App\Repositories\ContratoItemRepository;
 use App\Models\ContratoStatus;
 use App\Models\ContratoItemModificacao;
-use App\Repositories\ContratoItemReapropriacaoRepository;
+use App\Repositories\ContratoItemApropriacaoRepository;
+use App\Models\WorkflowAlcada;
+use App\Models\ContratoItemApropriacao;
+use App\Models\Cnae;
+use App\Repositories\SolicitacaoEntregaRepository;
 
 class ContratoController extends AppBaseController
 {
@@ -61,9 +71,9 @@ class ContratoController extends AppBaseController
         ObraRepository $obraRepository,
         ContratoStatusRepository $contratoStatusRepository
     ) {
-
         $status = $contratoStatusRepository
             ->orderBy('nome', 'ASC')
+            ->comContrato()
             ->pluck('nome', 'id')
             ->prepend('', '')
             ->all();
@@ -77,6 +87,9 @@ class ContratoController extends AppBaseController
 
         $obras = $obraRepository
             ->orderBy('nome', 'ASC')
+            ->whereHas('users', function($query){
+                $query->where('user_id', auth()->id());
+            })
             ->comContrato()
             ->pluck('nome', 'id')
             ->prepend('', '')
@@ -92,9 +105,10 @@ class ContratoController extends AppBaseController
         $id,
         Request $request,
         WorkflowReprovacaoMotivoRepository $workflowReprovacaoMotivoRepository,
-        ContratoItemDataTable $contratoItemDataTable
-    )
-    {
+        ContratoItemApropriacaoRepository $apropriacaoRepository,
+        ContratoItemRepository $contratoItemRepository,
+        FornecedoresRepository $fornecedorRepository
+    ) {
         $contrato = $this->contratoRepository->findWithoutFail($id);
 
         if (empty($contrato)) {
@@ -103,14 +117,21 @@ class ContratoController extends AppBaseController
             return redirect(route('contratos.index'));
         }
 
-        $valor_inicial = $contrato->itens()
-            ->where('aprovado', 1)
-            ->get()
-            ->pluck('qcItem')
-            ->pluck('ordemDeCompraItens')
-            ->collapse()
-            ->sum('valor_total');
+        $orcamentoInicial = $totalAGastar = $realizado = $totalSolicitado = 0;
 
+        $orcamentoInicial = $apropriacaoRepository->orcamentoInicial(
+            $contrato
+        );
+
+        $avaliado_reprovado = [];
+
+        $fornecedor = $fornecedorRepository->updateImposto($contrato->fornecedor_id);
+
+        $alcadas = WorkflowAlcada::where('workflow_tipo_id', WorkflowTipo::CONTRATO)
+            ->orderBy('ordem', 'ASC')
+            ->get();
+
+        $alcadas_count = $alcadas->count();
 
         if ($contrato->isStatus(ContratoStatus::EM_APROVACAO)) {
             $workflowAprovacao = WorkflowAprovacaoRepository::verificaAprovacoes(
@@ -118,6 +139,49 @@ class ContratoController extends AppBaseController
                 $contrato->id,
                 $request->user()
             );
+
+            foreach ($alcadas as $alcada) {
+                $avaliado_reprovado[$alcada->id] = WorkflowAprovacaoRepository::verificaTotalJaAprovadoReprovado(
+                    'Contrato',
+                    $contrato->irmaosIds(),
+                    null,
+                    null,
+                    $alcada->id);
+
+                $avaliado_reprovado[$alcada->id]['aprovadores'] = WorkflowAprovacaoRepository::verificaQuantidadeUsuariosAprovadores(
+                    WorkflowTipo::find(WorkflowTipo::CONTRATO),
+                    $contrato->obra_id,
+                    $alcada->id
+                );
+
+                $avaliado_reprovado[$alcada->id] ['faltam_aprovar'] = WorkflowAprovacaoRepository::verificaUsuariosQueFaltamAprovar(
+                    'Contrato',
+                    WorkflowTipo::CONTRATO,
+                    $contrato->obra_id,
+                    $alcada->id,
+                    [$alcada->id]
+                );
+
+                // Data do início da  Alçada
+                if ($alcada->ordem === 1) {
+                    $contrato_log = $contrato->logs()
+                        ->where('contrato_status_id', 4)->first();
+
+                    if ($contrato_log) {
+                        $avaliado_reprovado[$alcada->id] ['data_inicio'] = $contrato_log->created_at
+                            ->format('d/m/Y H:i');
+                    }
+                } else {
+                    $primeiro_voto = WorkflowAprovacao::where('aprovavel_type', 'App\\Models\\Contrato')
+                        ->where('aprovavel_id', $contrato->id)
+                        ->where('workflow_alcada_id', $alcada->id)
+                        ->orderBy('id', 'ASC')
+                        ->first();
+                    if ($primeiro_voto) {
+                        $avaliado_reprovado[$alcada->id]['data_inicio'] = $primeiro_voto->created_at->format('d/m/Y H:i');
+                    }
+                }
+            }
         }
 
         $aprovado = $contrato->isStatus(ContratoStatus::APROVADO);
@@ -128,103 +192,99 @@ class ContratoController extends AppBaseController
             ->prepend('Motivos...', '')
             ->all();
 
-        $pendencias = ContratoItemModificacao::whereHas('item', function($itens) use ($id) {
+        $pendencias = ContratoItemModificacao::whereHas('item', function ($itens) use ($id) {
             return $itens->where('contrato_id', $id)->where('pendente', true);
         })
-            ->where('contrato_status_id', ContratoStatus::EM_APROVACAO)
-            ->get()
-            ->map(function ($pendencia) {
-                $pendencia->workflow = WorkflowAprovacaoRepository::verificaAprovacoes(
-                    'ContratoItemModificacao',
-                    $pendencia->id,
-                    auth()->user()
-                );
-
-                return $pendencia;
-            });
-
-        return $contratoItemDataTable
-            ->setContrato($contrato)
-            ->render(
-                'contratos.show',
-                compact('contrato', 'workflowAprovacao', 'motivos', 'aprovado', 'pendencias', 'valor_inicial')
+        ->where('contrato_status_id', ContratoStatus::EM_APROVACAO)
+        ->get()
+        ->map(function ($pendencia) {
+            $pendencia->workflow = WorkflowAprovacaoRepository::verificaAprovacoes(
+                'ContratoItemModificacao',
+                $pendencia->id,
+                auth()->user()
             );
+
+            return $pendencia;
+        });
+
+        $status = $contrato->status->nome;
+
+        $isEmAprovacao = $contrato->em_aprovacao;
+
+        $itens = $isEmAprovacao
+            ? $apropriacaoRepository->forContratoApproval($contrato)
+            : $contratoItemRepository->forContratoDetails($contrato);
+
+        $iss = Cnae::$iss;
+
+        $itens_analise = $apropriacaoRepository->forContratoApproval($contrato);
+
+        return view('contratos.show', compact(
+            'isEmAprovacao',
+            'contrato',
+            'orcamentoInicial',
+            'itens',
+            'workflowAprovacao',
+            'motivos',
+            'aprovado',
+            'pendencias',
+            'alcadas_count',
+            'avaliado_reprovado',
+            'status',
+            'fornecedor',
+            'iss',
+            'itens_analise'
+        ));
     }
 
-    public function reajustarItem(
-        $id,
+    public function reajustar(
+        $contrato_item_id,
         ReajustarRequest $request,
         ContratoItemModificacaoRepository $contratoItemModificacaoRepository
-    )
-    {
-        $contratoItemModificacaoRepository->reajustar($id, $request->all());
+    ) {
+        
+        $contratoItemModificacaoRepository->reajustar($contrato_item_id, $request->all());
 
         return response()->json([
             'success' => true
         ]);
     }
 
-    public function distratarItem(
-        $id,
+    public function distratar(
+        $contrato_item_id,
         DistratarRequest $request,
         ContratoItemModificacaoRepository $contratoItemModificacaoRepository
-    )
-    {
-        $contratoItemModificacaoRepository->distratar($id, $request->qtd);
+    ) {
+        $contratoItemModificacaoRepository->distratar(
+            $contrato_item_id,
+            $request->distrato,
+            $request->distratoDescricao
+        );
 
         return response()->json([
             'success' => true
         ]);
     }
 
-    public function reapropriarItemForm(
+    public function apropriacoes(
         $id,
         ContratoItemRepository $contratoItemRepository
-    )
-    {
+    ) {
         $item = $contratoItemRepository->find($id);
 
-        $itens = $item->qcItem->ordemDeCompraItens;
-
-        $reapropriacoes = $item->reapropriacoes;
-
-        $reapropriacoes->each(function ($re) use (&$itens) {
-            if ($re->ordem_de_compra_item_id) {
-                $item = $itens->where('id', $re->ordem_de_compra_item_id)->shift();
-                $item->qtd = $item->qtd - $re->qtd;
-                $item->modificado_por = true;
-                $itens->push($item);
-            }
+        $itens = $item->apropriacoes->filter(function($apropriacao) {
+            return $apropriacao->qtd_sobra;
         });
 
-        $reapropriacoes->each(function ($re) use (&$reapropriacoes) {
-            if ($re->contrato_item_reapropriacao_id) {
-                $_re = $reapropriacoes->where('id', $re->contrato_item_reapropriacao_id)->shift();
-                $_re->qtd = $_re->qtd - $re->qtd;
-                $_re->modificado_por = true;
-                $reapropriacoes->push($_re);
-            }
-        });
-
-        $itens = $itens->merge($reapropriacoes)
-            ->filter(function ($item) {
-                return (float)$item->qtd;
-            })
-            ->sortBy(function ($item) {
-                return $item->created_at->getTimestamp();
-            });
-
-
-        return view('contratos.modal-reapropriacao', compact('itens', 'item'));
+        return view('contratos.' . request('view'), compact('itens', 'item'));
     }
 
     public function reapropriarItem(
         $id,
         ContratoItemRepository $contratoItemRepository,
-        ContratoItemReapropriacaoRepository $contratoItemReapropriacaoRepository,
+        ContratoItemApropriacaoRepository $contratoItemReapropriacaoRepository,
         ReapropriarRequest $request
-    )
-    {
+    ) {
         $item = $contratoItemRepository->find($id);
 
         $contratoItemReapropriacaoRepository->reapropriar($item, $request->all());
@@ -238,9 +298,7 @@ class ContratoController extends AppBaseController
         $id,
         ContratoItemRepository $contratoItemRepository,
         EditarItemRequest $request
-    )
-    {
-
+    ) {
         $contratoItemRepository->editarAditivo($id, $request->all());
 
         return response()->json([
@@ -358,7 +416,7 @@ class ContratoController extends AppBaseController
 
     public function pegaFornecedoresPelasObras(Request $request)
     {
-        $this->validate($request,['obras'=>'required|min:1']);
+        $this->validate($request, ['obras'=>'required|min:1']);
         $obras = $request->obras;
         return Fornecedor::whereHas('contratos', function ($query) use ($obras) {
             $query->where('contrato_status_id', 5);
@@ -403,15 +461,311 @@ class ContratoController extends AppBaseController
             ->first();
     }
 
-    public function atualizarValorSave(AtualizarValorRequest $request,
-                                       ContratoItemModificacaoRepository $contratoItemModificacaoRepository)
-    {
+    public function atualizarValorSave(
+        AtualizarValorRequest $request,
+        ContratoItemModificacaoRepository $contratoItemModificacaoRepository
+    ) {
         $reajustes =  $contratoItemModificacaoRepository->reajusteFornecedor($request->fornecedor_id, $request->obra_id, $request->valor_unitario);
-        if(count($reajustes)){
+
+        if (count($reajustes)) {
             Flash::success('Reajustes de valores criados.');
-        }else{
+        } else {
             Flash::error('Nenhum reajuste foi criado.');
         }
+
         return redirect(route('contratos.index'));
+    }
+
+    public function memoriaDeCalculo($contrato_id, $contrato_item_apropriacao_id, Request $request)
+    {
+        $contrato = $this->contratoRepository->findWithoutFail($contrato_id);
+        $contrato_item_apropriacao = ContratoItemApropriacao::find($contrato_item_apropriacao_id);
+        $filtro_estruturas = [];
+        $planejamentos = [];
+
+        if (empty($contrato)) {
+            Flash::error('Contrato ' . trans('common.not-found'));
+
+            return redirect(route('contratos.show', $contrato_id));
+        }
+
+        if (empty($contrato_item_apropriacao)) {
+            Flash::error('Item do contrato ' . trans('common.not-found'));
+
+            return redirect(route('contratos.show', $contrato_id));
+        }
+
+        if (empty($contrato->fornecedor)) {
+            Flash::error('Fornecedor do contrato ' . trans('common.not-found'));
+
+            return redirect(route('contratos.show', $contrato_id));
+        }
+
+        $insumo = Insumo::find($contrato_item_apropriacao->insumo_id);
+
+        if (empty($insumo)) {
+            Flash::error('Insumo ' . trans('common.not-found'));
+
+            return redirect(route('contratos.show', $contrato_id));
+        }
+
+        $tarefas = Planejamento::where('obra_id', $contrato->obra_id)
+            ->pluck('tarefa', 'id')
+            ->prepend('', '')
+            ->toArray();
+
+        $obra_torres = ObraTorre::where('obra_id', $contrato->obra_id)
+            ->pluck('nome', 'id')
+            ->prepend('', '')
+            ->toArray();
+
+        $memoria_de_calculo = MemoriaCalculo::select([
+            DB::raw('CONCAT(
+                        nome, " - ", 
+                        (
+                        CASE
+                            modo
+                        WHEN
+                            "T"
+                        THEN
+                            "Torre"
+                        WHEN
+                            "C"
+                        THEN
+                            "Cartela"
+                        WHEN
+                            "U"
+                        THEN
+                            "Unidade"
+                        END
+                        )
+                    ) as nome'),
+            'id'
+        ])
+            ->pluck('nome', 'id')
+            ->prepend('', '')
+            ->toArray();
+
+        $previsoes = McMedicaoPrevisao::where('insumo_id',  $insumo->id)
+            ->where('contrato_item_apropriacao_id', $contrato_item_apropriacao->id)
+            ->where('contrato_item_id', $contrato_item_apropriacao->contrato_item_id)
+            ->get();
+
+        if(count($previsoes)) {
+            $memoria_de_calculo_id = $previsoes->first()->memoriaCalculoBloco->memoriaCalculo->id;
+        }else{
+            $memoria_de_calculo_id = $request->memoria_de_calculo;
+        }
+
+        if($memoria_de_calculo_id) {
+            $memoriaCalculo = MemoriaCalculo::find($memoria_de_calculo_id);
+
+            if (empty($memoriaCalculo)) {
+                Flash::error('Memoria Calculo '.trans('common.not-found'));
+
+                return redirect(route('memoriaCalculos.index'));
+            }
+
+            $filtro_estruturas = NomeclaturaMapa::where('tipo', 1)
+                ->where('apenas_cartela',($memoriaCalculo->modo=='C'?'1':'0') )
+                ->where('apenas_unidade',($memoriaCalculo->modo=='U'?'1':'0') )
+                ->pluck('nome', 'id')
+                ->prepend('', '')
+                ->toArray();
+
+            // Montar os blocos
+            $blocos = [];
+            $memoriaBlocos = $memoriaCalculo->blocos()
+                ->orderBy('ordem_bloco','ASC')
+                ->orderBy('ordem_linha','ASC')
+                ->orderBy('ordem','ASC')
+                ->with('estruturaObj','pavimentoObj','trechoObj')
+                ->get();
+            if(count($memoriaBlocos)){
+                $estruturas = [];
+                $pavimentos = [];
+                $trechos = [];
+                foreach ($memoriaBlocos as $memoriaBloco) {
+                    $editavel = 1;
+                    if(!isset($estruturas[$memoriaBloco->estrutura])){
+                        $estruturas[$memoriaBloco->estrutura] = [
+                            'id'=>   $memoriaBloco->ordem,
+                            'objId'=>   $memoriaBloco->estrutura,
+                            'nome'=> $memoriaBloco->estruturaObj->nome,
+                            'ordem' => $memoriaBloco->ordem_bloco,
+                            'itens' => [],
+                            'editavel'=>$editavel
+                        ];
+                    }else{
+                        if(!$editavel){
+                            $estruturas[$memoriaBloco->estrutura]['editavel'] = $editavel;
+                        }
+                    }
+
+                    if(!isset($pavimentos[$memoriaBloco->estrutura][$memoriaBloco->pavimento])){
+                        $countEstrutura = !isset($pavimentos[$memoriaBloco->estrutura])?1:count($pavimentos[$memoriaBloco->estrutura])+1;
+                        $pavimentos[$memoriaBloco->estrutura][$memoriaBloco->pavimento] = [
+                            'id'=>   $countEstrutura,
+                            'objId'=>   $memoriaBloco->pavimento,
+                            'nome'=> $memoriaBloco->pavimentoObj->nome,
+                            'ordem' => $memoriaBloco->ordem_linha,
+                            'estrutura' => $memoriaBloco->estrutura,
+                            'itens' => [],
+                            'editavel'=>$editavel
+                        ];
+                    }else{
+                        if(!$editavel){
+                            $pavimentos[$memoriaBloco->estrutura][$memoriaBloco->pavimento]['editavel'] = $editavel;
+                        }
+                    }
+
+                    if(!isset($trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento][$memoriaBloco->trecho])){
+                        $countTrecho = !isset($trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento])?1:count($trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento])+1;
+                        $trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento][$memoriaBloco->id] = [
+                            'id'=>   $countTrecho,
+                            'blocoId'=>   $memoriaBloco->id,
+                            'objId'=>   $memoriaBloco->trecho,
+                            'nome'=> $memoriaBloco->trechoObj->nome,
+                            'ordem' => $memoriaBloco->ordem,
+                            'estrutura' => $memoriaBloco->estrutura,
+                            'pavimento' => $memoriaBloco->pavimento,
+                            'editavel'=>$editavel
+                        ];
+                    }else{
+                        if(!$editavel){
+                            $trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento][$memoriaBloco->id]['editavel'] = $editavel;
+                        }
+                    }
+
+                }
+                // organiza a array
+                foreach ($trechos as $estrutura_id => $estruturaTrechos){
+                    foreach ($estruturaTrechos as $pavimento_id => $pavimentoTrechos) {
+                        foreach ($pavimentoTrechos as $trecho) {
+                            $pavimentos[$trecho['estrutura']][$trecho['pavimento']]['itens'][] = $trecho;
+                        }
+                    }
+
+                }
+
+                foreach ($pavimentos as $estrutura_id => $pavimentos_internos){
+                    foreach ($pavimentos_internos as $pavimento_interno){
+                        $estruturas[$pavimento_interno['estrutura']]['itens'][] = $pavimento_interno;
+                    }
+                }
+
+                foreach ($estruturas as $estrutura){
+                    $blocos[$estrutura['ordem']] = $estrutura;
+                }
+
+            }
+            ksort($blocos);
+
+            $planejamentos = Planejamento::where('obra_id', $memoriaCalculo->obra_id)
+                ->where('resumo', 'Sim')
+                ->select([
+                    DB::raw("CONCAT(tarefa,' - ',DATE_FORMAT( data, '%d/%m/%Y')) as tarefa"),
+                    'id'
+                ])
+                ->pluck('tarefa','id')
+                ->prepend('', '')
+                ->toArray();
+        }
+
+        return view('contratos.memoria_de_calculo.previsao',
+            compact(
+                'contrato',
+                'contrato_item_apropriacao',
+                'insumo',
+                'tarefas',
+                'memoria_de_calculo',
+                'obra_torres',
+                'previsoes',
+                'filtro_estruturas',
+                'blocos',
+                'memoriaCalculo',
+                'planejamentos'
+            )
+        );
+    }
+
+    public function memoriaDeCalculoSalvar(Request $request)
+    {
+        if(count($request->itens)) {
+            foreach ($request->itens as $item) {
+                $item['qtd'] = money_to_float($item['qtd']);
+                if(@isset($item['id'])){
+                    $previsao = McMedicaoPrevisao::find($item['id']);
+                    $previsao->update($item);
+                } else {
+                    $previsao = new McMedicaoPrevisao($item);
+                    $previsao->insumo_id = $request->insumo_id;
+                    $previsao->unidade_sigla = $request->unidade_sigla;
+                    $previsao->contrato_item_apropriacao_id = $request->contrato_item_apropriacao_id;
+                    $previsao->contrato_item_id = $request->contrato_item_id;
+                    $previsao->obra_torre_id = $request->obra_torre_id;
+                    $previsao->user_id = Auth::id();
+                    $previsao->save();
+                }
+            }
+        }
+
+        Flash::success('Previsão de memória de cálculo salva com sucesso!');
+
+        return redirect(route('contratos.index'));
+    }
+
+    public function memoriaDeCalculoExcluirPrevisao(Request $request)
+    {
+        $previsao = McMedicaoPrevisao::find($request->id);
+
+        if ($previsao) {
+            $previsao->delete();
+        }
+
+        return response()->json(true);
+    }
+    public function solicitarEntrega(
+        $contrato_id,
+        ContratoItemApropriacaoRepository $apropriacaoRepository
+    ) {
+        $contrato = $this->contratoRepository->find($contrato_id)
+            ->load('materiais.apropriacoes');
+
+        if(!$contrato->hasMaterial()) {
+            Flash::warning('Este contrato não contém material para entrega');
+            return redirect()->route('contratos.show', $contrato->id);
+        }
+
+        if(!$contrato->pode_solicitar_entrega) {
+            Flash::warning('Ainda não é possível realizar solicitações de entrega neste contrato');
+            return redirect()->route('contratos.show', $contrato->id);
+        }
+
+        if($contrato->materiais->isEmpty()) {
+            Flash::warning('Este contrato não contem material');
+            return redirect()->route('contratos.show', $contrato->id);
+        }
+
+        $apropriacoes = $contrato->materiais->pluck('apropriacoes')->collapse();
+
+        return view(
+            'contratos.solicitacao_entrega.index',
+            compact('contrato', 'apropriacoes')
+        );
+    }
+
+    public function solicitarEntregaSave(
+        Request $request,
+        SolicitacaoEntregaRepository $repository,
+        $contrato_id
+    ) {
+        $input = $request->all();
+        $input['contrato_id'] = $contrato_id;
+        $solicitacao = $repository->create($input);
+
+        return response()->json([
+            'success' => true
+        ]);
     }
 }

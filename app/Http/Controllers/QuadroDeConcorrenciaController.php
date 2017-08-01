@@ -6,9 +6,12 @@ use App\Models\Contrato;
 use App\Models\Insumo;
 use App\Models\OrdemDeCompraItem;
 use App\Models\QuadroDeConcorrencia;
+use App\Notifications\WorkflowNotification;
 use App\Repositories\ContratoRepository;
+use App\Repositories\WorkflowAprovacaoRepository;
 use Flash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 use Response;
 use Exception;
 use App\DataTables\QcItensDataTable;
@@ -67,21 +70,6 @@ class QuadroDeConcorrenciaController extends AppBaseController
      */
     public function index(QuadroDeConcorrenciaDataTable $quadroDeConcorrenciaDataTable)
     {
-//        $qcs_por_status = QuadroDeConcorrencia::select([
-//            'qc_status.nome',
-//            'qc_status.cor',
-//            DB::raw('COUNT(1) qtd')
-//        ])->join('qc_status', 'qc_status.id', 'qc_status_id')
-//            ->groupBy('qc_status.nome', 'cor')
-//            ->get();
-//
-//        $qcs_por_usuario = QuadroDeConcorrencia::select([
-//            'users.name',
-//            DB::raw('COUNT(1) qtd')
-//        ])->join('users', 'users.id', 'quadro_de_concorrencias.user_id')
-//            ->groupBy('users.name')
-//            ->get();
-
         return $quadroDeConcorrenciaDataTable->render('quadro_de_concorrencias.index');
     }
 
@@ -119,6 +107,14 @@ class QuadroDeConcorrenciaController extends AppBaseController
     public function show($id, QcItensDataTable $qcItensDataTable)
     {
         $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->findWithoutFail($id);
+//        $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository
+//            ->with(
+//                'tipoEqualizacaoTecnicas.itens',
+//                'tipoEqualizacaoTecnicas.anexos',
+//                'itens.insumo',
+//                'itens.ordemDeCompraItens'
+//            )
+//            ->findWithoutFail($id);
 
         if (empty($quadroDeConcorrencia)) {
             Flash::error('Quadro De Concorrencia ' . trans('common.not-found'));
@@ -184,11 +180,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
 
         if($request->has('abrir_concorrencia')){
 
-            if(isset($input['qcFornecedoresMega'])){
-                $fornecedores = count($input['qcFornecedores']) + count($input['qcFornecedoresMega']);
-            }else{
-                $fornecedores = count($input['qcFornecedores']);
-            }
+            $fornecedores = count($request->qcFornecedores) + count($request->qcFornecedoresMega);
 
             if($fornecedores > $quadroDeConcorrencia->qcFornecedores->count()){
                 $input['qc_status_id'] = 7; // Em concorrência
@@ -200,6 +192,10 @@ class QuadroDeConcorrenciaController extends AppBaseController
 
         $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->update($input, $id);
 
+        if(!$quadroDeConcorrencia){
+            return back();
+        }
+
         if (!$request->has('fechar_qc')) {
             if (!$request->has('adicionar_itens')) {
                 Flash::success('Quadro De Concorrencia ' . trans('common.updated') . ' ' . trans('common.successfully') . '.');
@@ -207,6 +203,8 @@ class QuadroDeConcorrenciaController extends AppBaseController
                 Flash::success('Escolha os insumos para adicionar no Q.C. '.$id);
             }
         } else {
+            $aprovadores = WorkflowAprovacaoRepository::usuariosDaAlcadaAtual($quadroDeConcorrencia);
+            Notification::send($aprovadores, new WorkflowNotification($quadroDeConcorrencia));
             Flash::success('Quadro De Concorrencia colocado em aprovação.');
         }
 
@@ -317,8 +315,13 @@ class QuadroDeConcorrenciaController extends AppBaseController
             $rodadaSelecionada
         );
 
+
         $ofertas = $quadro->itens->reduce(function ($ofertas, $item) use ($qcFornecedores) {
-            $ofertas[] = $qcFornecedores->map(function ($qcFornecedor) use ($item) {
+            $ofertas[] = $qcFornecedores
+                ->filter(function ($qcFornecedor) use ($item) {
+                    return $qcFornecedor->itens->where('qc_item_id', $item->id)->first();
+                })
+                ->map(function ($qcFornecedor) use ($item) {
                 $oferta = $qcFornecedor->itens->where('qc_item_id', $item->id)->first();
 
                 return [
@@ -327,6 +330,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
                     'fornecedor_id'  => $qcFornecedor->fornecedor_id,
                     'valor_total'    => (float) $oferta->valor_total,
                     'valor_unitario' => (float) $oferta->valor_unitario,
+                    'valor_oi' => floatval($item->ordemDeCompraItens->sortBy('valor_unitario')->first() ? $item->ordemDeCompraItens->sortBy('valor_unitario')->first()->valor_unitario : 0),
                 ];
             })->all();
 
@@ -619,6 +623,24 @@ class QuadroDeConcorrenciaController extends AppBaseController
         try {
             $quadro = $this->quadroDeConcorrenciaRepository->findWithoutFail($id);
 
+            if (!$request->reject) {
+                $itens = $request->itens;
+                $array = [];
+
+                foreach ($itens as $chave => $item) {
+                    if ($item['valor_unitario'] == "") {
+                        array_push($array, $chave);
+                    }
+                }
+
+                if (count($itens) == count($array)) {
+                    Flash::error('Necessário pelo menos um valor unitário.');
+                    return back()->withInput();
+                }
+            }
+//            dd(count($itens), count($array));
+
+
             if (empty($quadro)) {
                 DB::rollback();
                 Flash::error('Quadro De Concorrencia '.trans('common.not-found'));
@@ -735,11 +757,11 @@ class QuadroDeConcorrenciaController extends AppBaseController
                     if (Str::length($item['valor_unitario'])) {
                         $item['valor_unitario'] = money_to_float($item['valor_unitario']);
                         $item['valor_total'] = $item['valor_unitario'] * $item['qtd'];
-                    } else {
-                        $item['valor_unitario'] = null;
+
+                        $qcItemFornecedorRepository->create($item);
                     }
 
-                    $qcItemFornecedorRepository->create($item);
+
                 }
             }
         } catch (Exception $e) {
@@ -1463,12 +1485,58 @@ class QuadroDeConcorrenciaController extends AppBaseController
                         FROM quadro_de_concorrencias
                         JOIN users ON users.id = quadro_de_concorrencias.user_id
                         WHERE quadro_de_concorrencias.qc_status_id >= 8
+                        AND quadro_de_concorrencias.qc_status_id != 10
                     ) as X
                     GROUP BY X.user_id
                 ) as Y"
             )
         )->get();
 
-        return view('quadro_de_concorrencias.dashboard', compact('qcs_por_status','qcs_por_usuario','qcs_por_sla','qcs_por_media'));
+        $qcs_por_media_geral = DB::table(
+            DB::raw("
+                (SELECT ROUND(SUM(dias) / count(name),0) as media
+                    FROM
+                    (
+                        SELECT name, ROUND(SUM(dias) / count(user_id),0) as dias
+                            FROM
+                            (
+                                SELECT quadro_de_concorrencias.id, quadro_de_concorrencias.user_id, users.name,
+                                    (
+                                        DATEDIFF
+                                        (
+                                            (
+                                                SELECT qc_status_log.created_at
+                                                FROM qc_status_log
+                                                WHERE qc_status_log.qc_status_id = 8
+                                                AND quadro_de_concorrencias.id = qc_status_log.quadro_de_concorrencia_id
+                                                ORDER BY qc_status_log.created_at
+                                                LIMIT 1
+                                            ),
+                                            (
+                                                SELECT qc_status_log.created_at
+                                                FROM qc_status_log
+                                                WHERE qc_status_log.qc_status_id = 5
+                                                AND quadro_de_concorrencias.id = qc_status_log.quadro_de_concorrencia_id
+                                                ORDER BY qc_status_log.created_at
+                                                LIMIT 1
+                                            )
+                                        )
+                                    ) dias
+                                FROM quadro_de_concorrencias
+                                JOIN users ON users.id = quadro_de_concorrencias.user_id
+                                WHERE quadro_de_concorrencias.qc_status_id >= 8
+                                AND quadro_de_concorrencias.qc_status_id != 10
+                            ) as X
+                            GROUP BY X.user_id
+                        ) as Z
+                ) as Y"
+            )
+        )->first();
+
+        return view('quadro_de_concorrencias.dashboard', compact('qcs_por_status',
+                                                                 'qcs_por_usuario',
+                                                                 'qcs_por_sla',
+                                                                 'qcs_por_media',
+                                                                 'qcs_por_media_geral'));
     }
 }

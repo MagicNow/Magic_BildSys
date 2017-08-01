@@ -8,15 +8,13 @@
         @if($tem_pendencias)
             <a href="{{ route('contratos.show', $id) }}"
                 data-toggle="tooltip"
-                title="Contém modificações pendentes"
-                class="btn btn-warning btn-xs btn-flat">
-                <i class="fa fa-exclamation-triangle"></i>
+                title="Contém modificações pendentes">
+                <i class="fa fa-exclamation-triangle" style="font-size: 25px;color: #f39c12;"></i>
             </a>
         @else
             <a href="{{ route('contratos.show', $id) }}"
-                title="{{ ucfirst(trans('common.show')) }}"
-                class="btn btn-default btn-xs btn-flat">
-                <i class="fa fa-eye"></i>
+                title="Visualizar">
+                <i class="fa fa-eye" aria-hidden="true" style="font-size: 25px;"></i>
             </a>
         @endif
         @if($status == 'Reprovado')

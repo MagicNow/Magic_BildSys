@@ -2,6 +2,7 @@
 
 namespace App\DataTables;
 
+use App\Models\CompradorInsumo;
 use App\Models\OrdemDeCompraItem;
 use App\User;
 use Illuminate\Support\Facades\DB;
@@ -186,6 +187,21 @@ class InsumosAprovadosDataTable extends DataTable
                 $query->whereIn('obras.cidade_id', $this->request()->get('cidades'));
             }
         }
+        if($this->request()->get('compradores')){
+            if(count($this->request()->get('compradores')) && $this->request()->get('compradores')[0] != "") {
+                $insumos_do_comprador = CompradorInsumo::whereIn('user_id', $this->request()->get('compradores'))
+                                                        ->pluck('insumo_id', 'insumo_id')
+                                                        ->toArray();
+
+                $todos_insumos_compradores = CompradorInsumo::pluck('insumo_id', 'insumo_id')
+                                                            ->toArray();
+
+                $query->where(function ($consulta) use ($insumos_do_comprador, $todos_insumos_compradores) {
+                    $consulta->whereIn('insumos.id', $insumos_do_comprador);
+                    $consulta->orWhereNotIn('insumos.id', $todos_insumos_compradores);
+                });
+            }
+        }
         if($this->request()->get('farol')){
             if(count($this->request()->get('farol')) && $this->request()->get('farol')[0] != "") {
                 $query->whereIn(DB::raw("IF(
@@ -365,7 +381,7 @@ class InsumosAprovadosDataTable extends DataTable
             'qtd' => ['name' => 'ordem_de_compra_itens.qtd', 'data' => 'qtd'],
 //            'urgente' => ['name' => 'ordem_de_compra_itens.emergencial', 'data' => 'ordem_de_compra_itens.emergencial'],
             'sla' => ['name' => 'sla', 'data' => 'sla'],
-            'action' => ['title' => 'Selecionar', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10px', 'class' => 'all'],
+            'action' => ['name' => 'Ações', 'title' => 'Selecionar', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10px', 'class' => 'all'],
         ];
     }
 

@@ -26,14 +26,15 @@ class CreateContratoItemModificacoesTable extends Migration
             $table->unsignedInteger('user_id')->nullable();
             $table->nullableTimestamps();
 
-
             $table->foreign('contrato_item_id')
-                ->references('id')->on('contrato_itens')
+                ->references('id')
+                ->on('contrato_itens')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
 
             $table->foreign('contrato_status_id')
-                ->references('id')->on('contrato_status')
+                ->references('id')
+                ->on('contrato_status')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
 
@@ -50,8 +51,8 @@ class CreateContratoItemModificacoesTable extends Migration
      *
      * @return void
      */
-     public function down()
-     {
-       Schema::dropIfExists('contrato_item_modificacoes');
-     }
+    public function down()
+    {
+        Schema::dropIfExists('contrato_item_modificacoes');
+    }
 }

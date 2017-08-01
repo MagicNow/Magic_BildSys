@@ -71,9 +71,9 @@
             <div class="col-md-2 text-right borda-direita" title="Nos itens desta O.C.">
                 <h5>Valor comprometido à gastar</h5>
                 <h4>
-                    <small class="pull-left">R$</small>0,00
-                    {{---  TO DO = A gastar: É a soma de todos os saldos de contratos na que apropriação, como ainda não exixte contrato gerado, tem q estar zerado--}}
-                    {{--                    {{ number_format($totalAGastar,2,',','.') }}--}}
+                    <small class="pull-left">R$</small>
+                    {{---  TO DO = A gastar: É a soma de todos os saldos de contratos na que apropriação--}}
+                    {{ number_format($valor_comprometido_a_gastar,2,',','.') }}
                 </h4>
             </div>
             <div class="col-md-2 text-right borda-direita" title="Restante do Orçamento Inicial em relação aos itens desta O.C.">

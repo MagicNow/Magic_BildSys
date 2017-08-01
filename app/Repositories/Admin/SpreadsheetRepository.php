@@ -73,6 +73,12 @@ class SpreadsheetRepository
 
                 } elseif ($tipo == 'planejamento'){
                     $reader = ReaderFactory::create(Type::XLSX);
+                    if(strtolower($spreadsheet['file']->getClientOriginalExtension())=='csv'){
+                        $reader = ReaderFactory::create(Type::CSV);
+                        $reader->setFieldDelimiter(';');
+                        $reader->setEndOfLineCharacter("\r");
+                        $reader->setEncoding('UTF-8');
+                    }
                 }
                 $reader->open(str_replace('public','storage/app/',public_path()).$destinationPath);
 
@@ -109,11 +115,11 @@ class SpreadsheetRepository
                 $reader->close();
             }
 
-            \Flash::error('Escolha um arquivo');
+            flash('Escolha um arquivo','error');
             return back()->with('error', 'Escolha um arquivo!');
         }catch(\Exception $e) {
-            \Flash::info('Não foi possivel fazer a leitura do cabeçalho.');
-            return Redirect::back();
+            flash('Não foi possivel fazer a leitura do cabeçalho. '.$e->getMessage(),'error');
+            return back();
         }
     }
 
@@ -242,18 +248,43 @@ class SpreadsheetRepository
                         # se for grupo, subgrupo
                         if(strlen($codigo_quebrado[0]) <= 45) {
                             if (count($codigo_quebrado) <= 4) {
-                                if (count($codigo_quebrado) === 1) {
-                                    # verifica se codigo insumo é inteiro
-                                    Grupo::firstOrCreate([
-                                        'codigo' => $final['codigo_insumo'],
-                                        'nome' => $final['descricao']
-                                    ]);
-                                } else {
-                                    $codigo_grupo_pai = $codigo_quebrado;
-                                    array_pop($codigo_grupo_pai);
-                                    $grupoPai = Grupo::where('codigo', implode('.', $codigo_grupo_pai))->first();
-                                    if ($grupoPai) {
-                                        Grupo::firstOrCreate([
+                                if (count($codigo_quebrado) > 1) {
+//                                if (count($codigo_quebrado) === 1) {
+//                                    $grupo = Grupo::where('codigo', $final['codigo_insumo'])->first();
+//
+//                                    if($grupo){
+//                                        if($grupo->nome != $final['descricao']){
+//                                            $erro = 1;
+//                                            $mensagens_erro[] = 'Já existe o grupo '.'
+//                                                <span style="color:orange">'.$grupo->codigo.' - '.$grupo->nome.'</span>
+//                                                e você tentou inserir '.'
+//                                                "<span style="color:red">'.$final['codigo_insumo'].' - '.$final['descricao'].'</span>"';
+//                                        }
+//                                    }else {
+//                                        Grupo::create([
+//                                            'codigo' => $final['codigo_insumo'],
+//                                            'nome' => $final['descricao']
+//                                        ]);
+//                                    }
+//                                } else {
+                                    $codigo_subgrupo = $codigo_quebrado;
+                                    $subGrupo = Grupo::where('codigo', implode('.', $codigo_subgrupo))->first();
+
+                                    if ($subGrupo) {
+                                        if($subGrupo->nome != $final['descricao']){
+                                            $erro = 1;
+                                            $mensagens_erro[] = 'Já existe o subGrupo '.'
+                                                <span style="color:orange">'.$subGrupo->codigo.' - '.$subGrupo->nome.'</span>
+                                                e você tentou inserir '.'
+                                                "<span style="color:red">'.$final['codigo_insumo'].' - '.$final['descricao'].'</span>"';
+                                        }
+                                    }else{
+                                        $codigo_grupo_pai = $codigo_quebrado;
+                                        # array_pop() extrai e retorna o último elemento de array, diminuindo array em um elemento.
+                                        array_pop($codigo_grupo_pai);
+                                        $grupoPai = Grupo::where('codigo', implode('.', $codigo_grupo_pai))->first();
+
+                                        Grupo::create([
                                             'codigo' => $final['codigo_insumo'],
                                             'nome' => $final['descricao'],
                                             'grupo_id' => $grupoPai->id
@@ -262,17 +293,21 @@ class SpreadsheetRepository
                                 }
                             } # se for serviço
                             elseif (count($codigo_quebrado) == 5) {
-                                if (count($codigo_quebrado) === 1) {
-                                    Servico::firstOrCreate([
-                                        'codigo' => $final['codigo_insumo'],
-                                        'nome' => $final['descricao']
-                                    ]);
-                                } else {
+                                $servico = Servico::where('codigo', $final['codigo_insumo'])->first();
+                                if($servico){
+                                    if($servico->nome != $final['descricao']){
+                                        $erro = 1;
+                                        $mensagens_erro[] = 'Já existe o grupo '.'
+                                            <span style="color:orange">'.$servico->codigo.' - '.$servico->nome.'</span>
+                                            e você tentou inserir '.'
+                                            "<span style="color:red">'.$final['codigo_insumo'].' - '.$final['descricao'].'</span>"';
+                                    }
+                                }else {
                                     $codigo_grupo_pai = $codigo_quebrado;
                                     array_pop($codigo_grupo_pai);
                                     $grupoPai = Grupo::where('codigo', implode('.', $codigo_grupo_pai))->first();
                                     if ($grupoPai) {
-                                        Servico::firstOrCreate([
+                                        Servico::create([
                                             'codigo' => $final['codigo_insumo'],
                                             'nome' => $final['descricao'],
                                             'grupo_id' => $grupoPai->id
@@ -368,10 +403,12 @@ class SpreadsheetRepository
                                     ]);
                                 }
 
-
                                 # save data table budget
                                 if ($erro == 0) {
-                                    Orcamento::create($final);
+                                    # Valida se o preço unitário do item é maior que 0
+                                    if($final['preco_unitario'] > 0) {
+                                        Orcamento::create($final);
+                                    }
                                 } else {
                                     // estourar loop
                                     $erro = 1;
@@ -381,6 +418,10 @@ class SpreadsheetRepository
                         }else{
                             $erro = 1;
                             $mensagens_erro[] = 'Template não contém a mesma posição ou colunas da planilha importada.';
+                        }
+
+                        if($erro == 1){
+                            break;
                         }
                     }
                 }
@@ -405,7 +446,15 @@ class SpreadsheetRepository
 
     public static function planejamento($planilha){
         $line = 1;
-        $reader = ReaderFactory::create(Type::XLSX);
+        if(strtolower(substr($planilha->arquivo,-3,3)) =='csv'){
+            $reader = ReaderFactory::create(Type::CSV);
+            $reader->setFieldDelimiter(';');
+            $reader->setEndOfLineCharacter("\r");
+            $reader->setEncoding('UTF-8');
+        }else{
+            $reader = ReaderFactory::create(Type::XLSX);
+        }
+
         $reader->setShouldFormatDates(true);
         $reader->open(str_replace('public','storage/app/',public_path()).$planilha->arquivo);
 

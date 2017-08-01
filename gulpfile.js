@@ -1,10 +1,10 @@
 require('laravel-elixir-vue-2');
-var gulp        = require('gulp');
-var bower       = require('gulp-bower');
-var elixir      = require('laravel-elixir');
+var gulp = require('gulp');
+var bower = require('gulp-bower');
+var elixir = require('laravel-elixir');
 var browserSync = require('browser-sync').create();
 
-gulp.task('bower', function() {
+gulp.task('bower', function () {
     return bower();
 });
 
@@ -27,31 +27,33 @@ var paths = {
     'dt_responsive_css': vendors + '/datatables.net-responsive-dt/css/responsive.dataTables.css',
     'summernote': vendors + '/summernote/dist',
     'select2': vendors + '/select2/dist',
-    'jqueryui':  vendors + '/jquery-ui',
-    'justifiedGallery':  vendors + '/Justified-Gallery/dist/',
-    'mustache':  vendors + '/mustache/',
-    'select2':  vendors + '/select2/dist/',
+    'jqueryui': vendors + '/jquery-ui',
+    'justifiedGallery': vendors + '/Justified-Gallery/dist/',
+    'mustache': vendors + '/mustache/',
+    'select2': vendors + '/select2/dist/',
     'select2theme': vendors + '/select2-bootstrap-theme/dist/',
-    'modernizr':  vendors + '/modernizr/',
-    'bootstrapdatepicker':  vendors + '/bootstrap-datepicker/dist/',
-    'jquerymaskplugin':  vendors + '/jquery-mask-plugin/dist/',
-    'sweetalert':  vendors + '/sweetalert/dist/',
-    'fullcalendar':  vendors + '/fullcalendar/dist/',
-    'moment':  vendors + '/moment/',
-    'bootstrap3_typeahead':  vendors + '/bootstrap-3-typeahead/',
-    'bootstrap_calendar':  vendors + '/bootstrap-calendar/',
-    'underscore':  vendors + '/underscore/',
-    'vue':  vendors + '/vue/dist/',
-    'vue_resource':  vendors + '/vue-resource/dist/',
-    'chartjs':  vendors + '/chart.js/dist/',
-    'jquery_maskmoney':  vendors + '/jquery-maskmoney/dist/',
-    'slugify':  vendors + '/slug/',
-    'slim_scroll':  vendors + '/jquery-slimscroll/'
+    'modernizr': vendors + '/modernizr/',
+    'bootstrapdatepicker': vendors + '/bootstrap-datepicker/dist/',
+    'jquerymaskplugin': vendors + '/jquery-mask-plugin/dist/',
+    'sweetalert': vendors + '/sweetalert/dist/',
+    'fullcalendar': vendors + '/fullcalendar/dist/',
+    'moment': vendors + '/moment/',
+    'bootstrap3_typeahead': vendors + '/bootstrap-3-typeahead/',
+    'bootstrap_calendar': vendors + '/bootstrap-calendar/',
+    'underscore': vendors + '/underscore/',
+    'vue': vendors + '/vue/dist/',
+    'vue_resource': vendors + '/vue-resource/dist/',
+    'chartjs': vendors + '/chart.js/dist/',
+    'jquery_maskmoney': vendors + '/jquery-maskmoney/dist/',
+    'slugify': vendors + '/slug/',
+    'slim_scroll': vendors + '/jquery-slimscroll/',
+    'querystring': vendors + '/querystring/',
+    'html5sortable': vendors + '/html5sortable/dist/'
 };
 
 elixir.config.sourcemaps = false;
 
-elixir(function(mix) {
+elixir(function (mix) {
 
     // Run bower install
     mix.task('bower');
@@ -92,9 +94,9 @@ elixir(function(mix) {
         }
     });
 
-    mix.sass('app.scss')
-        .webpack('app.js')
-        .copy('node_modules/bootstrap-sass/assets/fonts/bootstrap/','public/fonts/bootstrap');
+    //mix.sass('app.scss')
+    //    .webpack('app.js')
+    //    .copy('node_modules/bootstrap-sass/assets/fonts/bootstrap/', 'public/fonts/bootstrap');
 
     // Merge Site CSSs.
     mix.styles([
@@ -111,6 +113,15 @@ elixir(function(mix) {
         paths.fullcalendar + 'fullcalendar.css',
         'site.css'
     ], 'public/css/site.css');
+
+    mix.styles([
+        paths.bootstrap + '/css/bootstrap.css',
+        paths.bootstrap + '/css/bootstrap-theme.css',
+        paths.fontawesome + '/css/font-awesome.css',
+        paths.adminlte + '/css/AdminLTE.css',
+        paths.adminlte + '/css/skins/skin-yellow-light.css',
+        paths.ionicons + '/css/ionicons.css',
+    ], 'public/css/print.css');
 
     // Merge Site scripts.
     mix.scripts([
@@ -187,6 +198,8 @@ elixir(function(mix) {
         paths.jquery_maskmoney + 'jquery.maskMoney.js',
         paths.slugify + 'slug.js',
         paths.slim_scroll + 'jquery.slimscroll.js',
+        paths.querystring + 'querystring.min.js',
+        paths.html5sortable + 'html.sortable.js',
         // paths.vue + 'vue.js',
         // paths.vue_resource + 'vue-resource.js',
         'bootstrap-dataTables-paging.js',
@@ -203,7 +216,7 @@ elixir(function(mix) {
         'qc-informar-valores.js',
         'sweetalert-helper.js',
         'flat-color-generator.js',
-            'qc-avaliar.js',
+        'qc-avaliar.js',
         'error-list.js',
         'is-mobile.js',
         'notifications.js',
@@ -240,11 +253,12 @@ elixir(function(mix) {
     mix.scripts([
         'carrinho.js',
     ], 'public/js/carrinho.js');
-
+    
 });
 
-gulp.task('browser-sync', function() {
+gulp.task('browser-sync', function () {
     browserSync.init({
         proxy: "bild-sys.dev"
     });
 });
+

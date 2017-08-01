@@ -95,7 +95,7 @@ class GrupoDataTable extends DataTable
             'codigo' => ['name' => 'codigo', 'data' => 'codigo'],
             'nome' => ['name' => 'nome', 'data' => 'nome'],
             'grupo_id' => ['name' => 'grupo_id', 'data' => 'grupo_id'],
-            'action' => ['printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false],
+            'action' => ['name'=>'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false],
         ];
     }
 

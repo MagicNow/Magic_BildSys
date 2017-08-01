@@ -12,6 +12,7 @@ use Illuminate\Http\Exception\HttpResponseException;
 use Illuminate\Support\Facades\Notification;
 use App\Repositories\WorkflowAprovacaoRepository;
 use App\Notifications\WorkflowNotification;
+use App\Models\ContratoItemModificacaoApropriacao;
 
 class ContratoItemModificacaoRepository extends BaseRepository
 {
@@ -20,23 +21,51 @@ class ContratoItemModificacaoRepository extends BaseRepository
         return ContratoItemModificacao::class;
     }
 
-    public function reajustar($id, $data)
+    public function reajustar($contrato_item_id, $data)
     {
-        $modificacao = DB::transaction(function () use ($id, $data) {
+        $modificacao = DB::transaction(function () use ($contrato_item_id, $data) {
             $contratoItemRepository = app(ContratoItemRepository::class);
             $modificacaoLogRepository = app(ContratoItemModificacaoLogRepository::class);
-            $item = $contratoItemRepository->find($id);
 
-            $qtd = $data['qtd'] ? money_to_float($data['qtd']) : 0;
+            $item = $contratoItemRepository->find($contrato_item_id);
 
+            if(isset($data['reajuste'])) {
+                $reajustes = collect($data['reajuste']);
+                $qtd = $reajustes->map('money_to_float')->sum();
+                $apropriacoes = app(ContratoItemApropriacaoRepository::class)
+                    ->findWhereIn('id', $reajustes->keys()->all());
+
+                $modApropriacoes = $reajustes
+                    ->map(function($qtd, $apropriacao_id) use ($apropriacoes) {
+                        $apropriacao = $apropriacoes->where('id', $apropriacao_id)
+                            ->first();
+
+                        return [
+                            'contrato_item_apropriacao_id' => $apropriacao_id,
+                            'qtd_anterior' => $apropriacao->qtd,
+                            'qtd_atual' => $qtd + $apropriacao->qtd,
+                        ];
+                    });
+            } else {
+                $qtd = 0;
+                $modApropriacoes = collect();
+            }
+
+            $destinationPath = null;
+
+            if($data['anexo'] != "undefined") {
+                $destinationPath = CodeRepository::saveFile($data['anexo'], 'contratos/reajustes/' . $item->id);
+            }
+            
             $modificacao = $this->create([
                 'qtd_anterior'            => $item->qtd,
-                'qtd_atual'               => ($item->qtd + money_to_float($data['qtd'] ?: 0)),
+                'qtd_atual'               => $item->qtd + $qtd,
                 'valor_unitario_anterior' => $item->valor_unitario,
-                'valor_unitario_atual'    => money_to_float($data['valor']),
+                'valor_unitario_atual'    => money_to_float($data['valor_unitario']),
                 'contrato_status_id'      => ContratoStatus::EM_APROVACAO,
                 'contrato_item_id'        => $item->id,
                 'tipo_modificacao'        => 'Reajuste',
+                'anexo'                   => $destinationPath,
                 'user_id'                 => auth()->id(),
             ]);
 
@@ -45,6 +74,11 @@ class ContratoItemModificacaoRepository extends BaseRepository
                 'contrato_status_id'           => ContratoStatus::EM_APROVACAO,
                 'user_id'                      => $modificacao->user_id,
             ]);
+
+            $modApropriacoes->map(function($modApro) use ($modificacao) {
+                $modApro['contrato_item_modificacao_id'] = $modificacao->id;
+                return ContratoItemModificacaoApropriacao::create($modApro);
+            });
 
             $item->update(['pendente' => 1]);
 
@@ -58,33 +92,54 @@ class ContratoItemModificacaoRepository extends BaseRepository
         return $modificacao;
     }
 
-    public function distratar($id, $quantidade)
+    public function distratar($contrato_item_id, $distratos, $distratosDescricao)
     {
-        $quantidade = money_to_float($quantidade ?: 0);
+        $distratos = collect($distratos)->map('money_to_float');
 
-        $modificacao = DB::transaction(function () use ($id, $quantidade) {
+        $modificacao = DB::transaction(function () use ($distratos, $contrato_item_id, $distratosDescricao) {
             $contratoItemRepository = app(ContratoItemRepository::class);
+            $apropriacaoRepository = app(ContratoItemApropriacaoRepository::class);
             $modificacaoLogRepository = app(ContratoItemModificacaoLogRepository::class);
-            $item = $contratoItemRepository->find($id);
 
-            if ($item->qtd < $quantidade) {
-                $response = response()->json([
-                    'A nova quantidade não pode ser maior que a atual'
-                ], 422);
+            $contrato_item = $contratoItemRepository->find($contrato_item_id);
 
-                throw new HttpResponseException($response);
-            }
+            $itens = $apropriacaoRepository->findWhereIn(
+                'id',
+                $distratos->keys()->all()
+            );
+
+            $modApropriacao = $distratos
+                ->map(function($quantidade, $item_id) use ($itens, $distratosDescricao) {
+                    $item = $itens->where('id', $item_id)->first();
+//                    dd($distratosDescricao);
+                    if ($item->qtd < $quantidade) {
+                        $response = response()->json([
+                            'A nova quantidade não pode ser maior que a atual'
+                        ], 422);
+
+                        throw new HttpResponseException($response);
+                    }
+
+                    return [
+                        'contrato_item_apropriacao_id' => $item_id,
+                        'qtd_atual' => $item->qtd - $quantidade,
+                        'qtd_anterior' => $item->qtd,
+                        'distratar' => $quantidade,
+                        'descricao' => $distratosDescricao[$item_id]
+                    ];
+                });
 
             $modificacao = $this->create([
-                'qtd_anterior'            => $item->qtd,
-                'qtd_atual'               => $quantidade,
-                'valor_unitario_anterior' => $item->valor_unitario,
-                'valor_unitario_atual'    => $item->valor_unitario,
+                'qtd_anterior'            => $contrato_item->qtd,
+                'qtd_atual'               => $contrato_item->qtd - $modApropriacao->sum('distratar'),
+                'valor_unitario_anterior' => $contrato_item->valor_unitario,
+                'valor_unitario_atual'    => $contrato_item->valor_unitario,
                 'contrato_status_id'      => ContratoStatus::EM_APROVACAO,
-                'contrato_item_id'        => $item->id,
+                'contrato_item_id'        => $contrato_item->id,
                 'tipo_modificacao'        => 'Distrato',
                 'user_id'                 => auth()->id(),
             ]);
+
 
             $modificacaoLogRepository->create([
                 'contrato_item_modificacao_id' => $modificacao->id,
@@ -92,7 +147,12 @@ class ContratoItemModificacaoRepository extends BaseRepository
                 'user_id'                      => $modificacao->user_id,
             ]);
 
-            $item->update(['pendente' => 1]);
+            $modApropriacao->map(function($modApro) use ($modificacao) {
+                $modApro['contrato_item_modificacao_id'] = $modificacao->id;
+                return ContratoItemModificacaoApropriacao::create($modApro);
+            });
+
+            $contrato_item->update(['pendente' => 1]);
 
             return $modificacao;
         });
@@ -110,12 +170,14 @@ class ContratoItemModificacaoRepository extends BaseRepository
             $modificacaoLogRepository = app(ContratoItemModificacaoLogRepository::class);
             $modificacoes = [];
             foreach ($reajustes as $insumo_id => $novo_valor) {
+
                 $itens = ContratoItem::where('insumo_id', $insumo_id)
                     ->select('contrato_itens.*')
                     ->join('contratos', 'contratos.id', 'contrato_itens.contrato_id')
                     ->whereIn('contratos.obra_id', $obra_id)
                     ->where('contratos.fornecedor_id', $fornecedor_id)
                     ->get();
+
                 if ($itens->count()) {
                     foreach ($itens as $item) {
                         $modificacao = $this->create([

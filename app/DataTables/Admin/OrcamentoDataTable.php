@@ -128,7 +128,7 @@ class OrcamentoDataTable extends DataTable
             'insumo' => ['name' => 'insumos.nome', 'data' => 'insumo'],
             'unid De Medida' => ['name' => 'unidade_sigla', 'data' => 'unidade_sigla'],
             'dataUpload' => ['name' => 'created_at', 'data' => 'created_at'],
-            'action' => ['title' => '#', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
+            'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }
 

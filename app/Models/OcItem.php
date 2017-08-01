@@ -179,21 +179,13 @@ class OcItem extends Model
 
     public function codigoServico($showServico = true)
     {
-        $grupos = [
-            $this->grupo_id,
-            $this->subgrupo1_id,
-            $this->subgrupo2_id,
-            $this->subgrupo3_id,
-            $this->servico_id
-        ];
-
-        return implode('.', $grupos) . ($showServico ? (' ' . $this->servico->nome) : '');
+        return $this->servico->codigo . ($showServico ? (' ' . $this->servico->nome) : '');
     }
 
     public function reapropriacoes()
     {
         return $this->hasMany(
-            ContratoItemReapropriacao::class,
+            ContratoItemApropriacao::class,
             'ordem_de_compra_item_id'
         );
     }

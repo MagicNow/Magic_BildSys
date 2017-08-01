@@ -126,6 +126,16 @@ class RolesAndPermissions extends Seeder
             'contratoTemplates.edit'   => 'Edição de Template de Contrato',
             'contratoTemplates.delete'   => 'Remoção de Template de Contrato',
 
+            'nomeclaturaMapas.list' => 'Listagem de Nomeclaturas para Memórias de cálculo',
+            'nomeclaturaMapas.create' => 'Criação de Nomeclaturas para Memórias de cálculo',
+            'nomeclaturaMapas.edit'   => 'Edição de Nomeclaturas para Memórias de cálculo',
+            'nomeclaturaMapas.delete'   => 'Remoção de Nomeclaturas para Memórias de cálculo',
+
+            'desistenciaMotivos.list' => 'Listagem de motivos para declinar proposta',
+            'desistenciaMotivos.create' => 'Criação de motivos para declinar proposta',
+            'desistenciaMotivos.edit'   => 'Edição de motivos para declinar proposta',
+            'desistenciaMotivos.delete'   => 'Remoção de motivos para declinar proposta',
+
             ################# SITE ###################
             'compras_lembretes.list' => 'Listagem de compras e lembretes',
 
@@ -158,16 +168,35 @@ class RolesAndPermissions extends Seeder
             'equalizacao_tecnicas.edit'   => 'Edição de equalização tecnica',
             'equalizacao_tecnicas.delete'   => 'Remoção de equalização tecnica',
 
+
             'contratos.list'        => 'Listagem de contratos',
             'contratos.show'        => 'Visualização de contrato',
             'contratos.edit'        => 'Editar contrato',
             'contratos.distratar'   => 'Distratar item do contrato',
             'contratos.reajustar'   => 'Reajustar item do contrato',
             'contratos.reapropriar' => 'Reapropriar item do contrato',
+            'contratos.previsao_de_memoria_de_calculo' => 'Previsão de memória de cálculo',
+            'contratos.solicitar_entrega' => 'Solicitar entrega do Contrato',
+
 
             'configuracaoEstaticas.list'   => 'Listagem de Configuração padrão',
             'configuracaoEstaticas.edit'   => 'Edição de Configuração padrão',
             'configuracaoEstaticas.show'   => 'Visualizar Configuração padrão',
+
+            'memoriaCalculos.list' => 'Listagem de Memória de Cálculo',
+            'memoriaCalculos.create' => 'Criação de Memória de Cálculo',
+            'memoriaCalculos.edit'   => 'Edição de Memória de Cálculo',
+            'memoriaCalculos.delete'   => 'Remoção de Memória de Cálculo',
+
+            'medicoes.list' => 'Listagem de Medições',
+            'medicoes.create' => 'Criação de Medições',
+            'medicoes.edit'   => 'Edição de Medições',
+            'medicoes.delete'   => 'Remoção de Medições',
+
+            'boletim-medicao.list' => 'Listagem de Boletins de Medições',
+            'boletim-medicao.create' => 'Criação de Boletim de Medição',
+            'boletim-medicao.edit'   => 'Edição de Boletim de Medição',
+            'boletim-medicao.delete'   => 'Remoção de Boletim de Medição',
 
         ];
 

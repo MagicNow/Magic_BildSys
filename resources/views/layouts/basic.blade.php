@@ -18,9 +18,13 @@
     <![endif]-->
     <style type="text/css">
         body{
-            background-image: url("{{ asset('img/bkg_login_bild.jpg') }}") !important;
-            background-position: center !important;
+            background-image: url("{{ asset('img/backLogin.jpg') }}") !important;
+            background-position: right bottom !important;
             background-repeat: no-repeat !important;
+            background-size: contain !important;
+        }
+        .login-page, .register-page {
+            background: #ddd9d8;
         }
     </style>
 </head>

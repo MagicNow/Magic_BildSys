@@ -150,3 +150,29 @@
     </li>
 @endshield
 
+@shield('nomeclaturaMapas.list')
+<li class="treeview {{ Request::is('admin/nomeclaturaMapas*') || Request::is('memoriaCalculos*')
+                       ? 'active' : '' }}">
+    <a href="#">
+        <i class="fa fa-table"></i> <span>Memória de Cálculo</span>
+        <i class="fa fa-angle-left pull-right"></i>
+    </a>
+    <ul class="treeview-menu">
+        <li class="{{ Request::is('admin/nomeclaturaMapas*') ? 'active' : '' }}">
+            <a href="{!! route('admin.nomeclaturaMapas.index') !!}"><i class="fa fa-map-o"></i><span>Nomeclaturas</span></a>
+        </li>
+        @shield('memoriaCalculos.list')
+        <li class="{{ Request::is('memoriaCalculos*') ? 'active' : '' }}">
+            <a href="{!! route('memoriaCalculos.index') !!}"><i class="fa fa-building-o"></i><span>Memória de Cálculo</span></a>
+        </li>
+        @endshield
+    </ul>
+</li>
+@endshield
+
+@shield('desistenciaMotivos.list')
+<li class="{{ Request::is('desistenciaMotivos*') ? 'active' : '' }}">
+    <a href="{!! route('admin.desistenciaMotivos.index') !!}"><i class="fa fa-edit"></i><span>Motivos declinar proposta</span></a>
+</li>
+@endshield
+

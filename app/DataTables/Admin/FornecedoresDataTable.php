@@ -110,7 +110,7 @@ class FornecedoresDataTable extends DataTable
             'site' => ['name' => 'site', 'data' => 'site'],
             'telefone' => ['name' => 'telefone', 'data' => 'telefone'],
             'is_user' => ['name' => 'is_user', 'data' => 'is_user', 'searchable' => false, 'title' => 'Usuário', 'orderable' => false],
-            'action' => ['title' => '#', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
+            'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }
 

@@ -3,6 +3,7 @@
 namespace App\DataTables;
 
 use App\Models\Contrato;
+use App\Models\Obra;
 use Yajra\Datatables\Services\DataTable;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
@@ -28,8 +29,8 @@ class ContratoDataTable extends DataTable
                     ? $contrato->created_at->format('d/m/Y')
                     : '';
             })
-            ->editColumn('valor_total', function ($contrato) {
-                return float_to_money($contrato->valor_total);
+            ->editColumn('valor_total_atual', function ($contrato) {
+                return float_to_money($contrato->valor_total_atual);
             })
             ->editColumn('status', function($obj){
                 return '<i class="fa fa-circle" aria-hidden="true" style="color:'
@@ -55,7 +56,7 @@ class ContratoDataTable extends DataTable
         $query->select([
             'contratos.id',
             'contratos.created_at',
-            'contratos.valor_total',
+            'contratos.valor_total_atual',
             'fornecedores.nome as fornecedor',
             'obras.nome as obra',
             'contrato_status.nome as status',
@@ -91,7 +92,19 @@ class ContratoDataTable extends DataTable
         }
 
         if($request->obra_id) {
-            $query->where('contratos.obra_id', $request->obra_id);
+            if($request->obra_id == 'todas') {
+                $obras = Obra::orderBy('nome', 'ASC')
+                    ->whereHas('users', function($query){
+                        $query->where('user_id', auth()->id());
+                    })
+                    ->whereHas('contratos')
+                    ->pluck('id', 'id')
+                    ->toArray();
+
+                $query->whereIn('contratos.obra_id', $obras);
+            } else {
+                $query->where('contratos.obra_id', $request->obra_id);
+            }
         }
 
         if($request->contrato_status_id) {
@@ -155,7 +168,7 @@ class ContratoDataTable extends DataTable
         return $this->builder()
             ->columns($this->getColumns())
             ->ajax('')
-            ->addAction(['width' => '80px', 'class' => 'all'])
+//            ->addAction(['width' => '80px', 'class' => 'all'])
             ->parameters([
                 'responsive'=> 'true',
                 'initComplete' => 'function () {
@@ -205,12 +218,13 @@ class ContratoDataTable extends DataTable
     protected function getColumns()
     {
         return [
-            'id'             => ['name' => 'id', 'data' => 'id', 'title' => 'N° do Contrato'],
-            'created_at'     => ['name' => 'created_at', 'data' => 'created_at', 'title' => 'Data'],
-            'fornecedor'     => ['name' => 'fornecedores.nome', 'data' => 'fornecedor'],
-            'obra'           => ['name' => 'obras.nome', 'data' => 'obra'],
-            'valor_total'    => ['name' => 'valor_total', 'data' => 'valor_total', 'title' => 'Saldo'],
-            'status'         => ['name' => 'status.nome', 'data' => 'status'],
+            'id'                => ['name' => 'id', 'data' => 'id', 'title' => 'N° do Contrato'],
+            'created_at'        => ['name' => 'created_at', 'data' => 'created_at', 'title' => 'Data'],
+            'fornecedor'        => ['name' => 'fornecedores.nome', 'data' => 'fornecedor'],
+            'obra'              => ['name' => 'obras.nome', 'data' => 'obra'],
+            'valor_total_atual' => ['name' => 'valor_total_atual', 'data' => 'valor_total_atual', 'title' => 'Saldo'],
+            'status'            => ['name' => 'status.nome', 'data' => 'status'],
+            'action' => ['name'=>'Ações', 'title' => 'visualizar', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'15%', 'class' => 'all']
         ];
     }
 

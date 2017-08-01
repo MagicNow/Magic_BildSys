@@ -3,7 +3,10 @@
 @section('content')
     <section class="content-header">
         <h1>
-            Quadro De Concorrencia {{ $quadroDeConcorrencia->id }}
+            <button type="button" class="btn btn-link" onclick="history.go(-1);">
+                <i class="fa fa-arrow-left" aria-hidden="true"></i>
+            </button>
+            Quadro de concorrência {{ $quadroDeConcorrencia->id }}
             <small class="label label-default pull-right margin10">
                 <i class="fa fa-clock-o"
                    aria-hidden="true"></i> {{ $quadroDeConcorrencia->created_at->format('d/m/Y H:i') }}
@@ -45,12 +48,12 @@
                             'style' => 'margin-left:10px',
                             'type'=>'submit']) !!}
 
-                        {!! Form::button( '<i class="fa fa-check-square"></i> Abrir concorrência', [
-                            'class' => 'btn btn-success btn-lg btn-flat',
-                            'value' => '1',
-                            'name' => 'abrir_concorrencia',
-                            'style' => 'margin-left:10px',
-                            'type'=>'submit']) !!}
+                        {{--{!! Form::button( '<i class="fa fa-check-square"></i> Abrir concorrência', [--}}
+                            {{--'class' => 'btn btn-success btn-lg btn-flat',--}}
+                            {{--'value' => '1',--}}
+                            {{--'name' => 'abrir_concorrencia',--}}
+                            {{--'style' => 'margin-left:10px',--}}
+                            {{--'type'=>'submit']) !!}--}}
 
 
                     </div>

@@ -25,7 +25,18 @@ class QuadroDeConcorrencia extends Model
     {
         return [
             'message' => 'Você tem um novo quadro de concorrência para aprovar',
-            'link' => route('quadroDeConcorrencias.show', $this->id)
+            'link' => route('quadroDeConcorrencias.show', $this->id),
+            'workflow_tipo_id' => WorkflowTipo::QC,
+            'id_dinamico' => $this->id
+        ];
+    }
+
+    public function concorrenciaNotification()
+    {
+        return [
+            'message' => 'Você tem uma concorrência para avaliar',
+            'link' => route('quadroDeConcorrencia.avaliar', $this->id),
+            'id_dinamico' => $this->id
         ];
     }
 
@@ -223,6 +234,19 @@ class QuadroDeConcorrencia extends Model
             ->contains(function($nome) {
                 return starts_with($nome, 'MATERIAL');
             });
+    }
+
+    public function itensMateriais()
+    {
+        $itens = $this->itens()
+            ->whereHas('insumo', function($q) {
+                $q->whereHas('insumoGrupo', function($q) {
+                    $q->where('nome', 'like', 'MATERIAL%');
+                });
+            })
+            ->get();
+
+        return $itens;
     }
 
     public function contratos()

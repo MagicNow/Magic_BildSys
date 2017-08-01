@@ -41,6 +41,8 @@
                 <!-- Navbar Right Menu -->
                 <div class="navbar-custom-menu">
                     <ul class="nav navbar-nav">
+
+
                         {{--<!-- Messages: style can be found in dropdown.less-->
                         <li class="dropdown messages-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
@@ -134,6 +136,9 @@
                                     <ul class="menu">
                                         <li id="new_notifications"></li>
                                     </ul>
+                                    <a href="#" class="btn btn-default btn-xs btn-flat btn-block">
+                                        Histórico de Avisos
+                                    </a>
                                 </li>
                             </ul>
                         </li>
@@ -145,16 +150,23 @@
                                 <!-- The user image in the navbar-->
                                 <span class="hidden-xs">{!! Auth::user()->name !!}</span>
                                 <!-- hidden-xs hides the username on small devices so only the image appears. -->
-                                <img src="{{ Gravatar::fallback(asset('img/user2-160x160.jpg'))->get(Auth::user()->email) }}" class="user-image" alt="User Image">
+                                {{--<img src="/img/bildzito.jpg" class="user-image" alt="User Image">--}}
                             </a>
                             <ul class="dropdown-menu">
                                 <!-- The user image in the menu -->
                                 <li class="user-header">
-                                    <img src="{{ Gravatar::fallback(asset('img/user2-160x160.jpg'))->get(Auth::user()->email) }}" class="img-circle" alt="User Image">
+                                    <img src="{{ asset('img/bildzito.jpg') }}" class="img-circle" alt="User Image">
                                     <p>
                                         {!! Auth::user()->name !!}
-                                        <small>Cadastrado desde {!! Auth::user()->created_at->format('d/m/Y') !!}</small>
+                                        {{--<small>Cadastrado desde {!! Auth::user()->created_at->format('d/m/Y') !!}</small>--}}
+
+                                        <a class="btn btn-xs btn-block btn-flat btn-default" title="Missão, Visão e Valores"
+                                           href="#" data-toggle="modal" data-target="#modalMVV">
+                                            Missão, Visão e Valores
+                                        </a>
                                     </p>
+
+
                                 </li>
                                 <!-- Menu Footer-->
                                 <li class="user-footer">
@@ -165,7 +177,7 @@
                                         </div>
                                     @endshield
                                     <div class="pull-left">
-                                        <a href="/perfil" class="btn btn-info btn-flat">Perfil</a>
+                                        <a href="/perfil" class="btn btn-primary btn-flat">Perfil</a>
                                     </div>
                                     <div class="pull-right">
                                         <a href="{!! url('/logout') !!}" class="btn btn-danger btn-flat"
@@ -179,6 +191,7 @@
                                 </li>
                             </ul>
                         </li>
+
                     </ul>
                 </div>
             </nav>
@@ -192,11 +205,22 @@
             @yield('content')
         </div>
 
-        <!-- Main Footer -->
-        <footer class="main-footer" style="max-height: 100px;text-align: center">
-            <strong>{{ env('APP_TITLE') }} © {{ date('Y') }} </strong>
-        </footer>
 
+
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="modalMVV" tabindex="-1" role="dialog" aria-labelledby="modalMissaoVisaoValores">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="modalMissaoVisaoValores">Missão, Visão e Valores</h4>
+                </div>
+                <div class="modal-body">
+                    <img src="/img/missao-visao-valores.png" style="margin: auto" class="img-responsive">
+                </div>
+            </div>
+        </div>
     </div>
     @include('partials.modals-importacao')
     <script src="/js/admin.js"></script>
@@ -217,6 +241,26 @@
                 closeOnConfirm: false
             }, function () {
                 formulary.submit();
+            });
+        }
+
+        function dispensarInsumos(url, msg) {
+            swal({
+                title: msg,
+                text: "",
+                type: "success",
+                showCancelButton: true,
+                confirmButtonColor: "success",
+                confirmButtonText: "{{ ucfirst( trans('common.yes') ) }}",
+                cancelButtonText: "{{ ucfirst( trans('common.cancel') ) }}",
+                closeOnConfirm: false,
+                showLoaderOnConfirm: true
+            }, function () {
+                $.get(url, function(){
+                    LaravelDataTables.dataTableBuilder.draw();
+                    atualizaCalendario();
+                    swal.close();
+                });
             });
         }
     </script>

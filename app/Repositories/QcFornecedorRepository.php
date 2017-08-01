@@ -84,8 +84,8 @@ class QcFornecedorRepository extends BaseRepository
                 'qc_fornecedor.quadro_de_concorrencia_id'
             )
             ->where('quadro_de_concorrencia_id', $quadro_id)
-            ->whereNull('desistencia_motivo_id')
-            ->whereNull('desistencia_texto')
+//            ->whereNull('desistencia_motivo_id')
+//            ->whereNull('desistencia_texto')
             ->where(function($query) use ($rodada) {
                 if(!is_null($rodada)) {
                     $query->where('qc_fornecedor.rodada', $rodada);
@@ -98,7 +98,17 @@ class QcFornecedorRepository extends BaseRepository
                     'qc_fornecedor.rodada'
                 );
             })
-            ->has('itens')
+            ->where(function($query) {
+                $query->where(function($query) {
+                   $query->whereNull('desistencia_motivo_id')
+                       ->whereNull('desistencia_texto')
+                       ->has('itens');
+                });
+                $query->orWhere(function($query) {
+                    $query->whereNotNull('desistencia_motivo_id')
+                        ->whereNotNull('desistencia_texto');
+                });
+            })
             ->get();
     }
 }

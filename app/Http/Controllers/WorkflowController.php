@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Repositories\WorkflowAprovacaoRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\WorkflowAlcada;
+use App\Models\WorkflowAprovacao;
 
 class WorkflowController extends Controller
 {
@@ -73,5 +75,26 @@ class WorkflowController extends Controller
 
         return response()->json(['success' => true]);
 
+    }
+
+    public function detalhes(Request $request)
+    {
+        $alcadas = WorkflowAlcada::where('workflow_tipo_id', $request->workflowTipo)
+            ->orderBy('ordem')
+            ->get();
+
+        $aprovacoes = WorkflowAprovacao::where('aprovavel_id', $request->id)
+            ->whereHas('workflowAlcada', function($query) use ($request) {
+                $query->withTrashed();
+                $query->where('ordem', $request->alcada);
+            })
+            ->orderBy('created_at')
+            ->get();
+
+        $alcada = $aprovacoes->pluck('workflowAlcada')->first();
+
+        $alcada = $alcada ?: $alcadas->where('ordem', $request->alcada)->first();
+
+        return view('workflow.detalhes', compact('aprovacoes', 'alcada'));
     }
 }

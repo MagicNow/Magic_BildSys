@@ -25,6 +25,13 @@ class UpdateCatalogoContratoRequest extends FormRequest
      */
     public function rules()
     {
-        return CatalogoContrato::$rules;
+        $rules = CatalogoContrato::$rules;
+        unset($rules['fornecedor_cod']);
+        return $rules;
+    }
+
+    public function messages()
+    {
+        return ['obra.required' => 'Escolha uma obra e clique em adicionar'];
     }
 }

@@ -27,6 +27,9 @@ class QcItensDataTable extends DataTable
             ->editColumn('qtd', function($obj){
                 return number_format($obj->qtd,2,',','.');
             })
+            ->editColumn('obs', function($obj){
+                return "<textarea placeholder='Observação' class='form-control' rows=2 cols=25 disabled=disabled style='cursor: auto;background-color: transparent;resize: vertical;'>".$obj->obs."</textarea>";
+            })
             ->filterColumn('insumo_nome', function($query, $keyword){
                 $query->where(function($subquery) use($keyword){
                     $subquery->where('insumos.codigo','LIKE','%'.$keyword.'%');
@@ -58,6 +61,15 @@ class QcItensDataTable extends DataTable
                             WHERE qc_item_id = qc_itens.id
                             GROUP BY oc_item_qc_item.qc_item_id
                          ) as obras"),
+                DB::raw("(SELECT
+		                	GROUP_CONCAT( CONCAT('Obra ' , obras.nome, ' - ', OCI.obs) SEPARATOR '\n\n')
+		                    FROM
+		                    	oc_item_qc_item
+		                    JOIN ordem_de_compra_itens OCI ON OCI.id = oc_item_qc_item.ordem_de_compra_item_id
+		                    JOIN obras ON obras.id = OCI.obra_id
+		                    WHERE
+		                    	qc_item_id = qc_itens.id
+			             ) as obs"),
 //                'obras.nome as obra',
                 DB::raw("CONCAT(insumos.codigo,' - ', insumos.nome) as insumo_nome"),
             ])
@@ -111,23 +123,25 @@ class QcItensDataTable extends DataTable
             $parametersinitComplete = 'function () {
                     max = this.api().columns().count();
                     this.api().columns().every(function (col) {
-                        var column = this;
-                        var input = document.createElement("input");
-                        $(input).attr(\'placeholder\',\'Filtrar...\');
-                        $(input).addClass(\'form-control\');
-                        $(input).addClass(\'form-control\');
-                        $(input).css(\'width\',\'100%\');
-                        $(input).appendTo($(column.footer()).empty())
-                        .on(\'change\', function () {
-                            column.search($(this).val(), false, false, true).draw();
-                        })
-                        .keydown(function(event){
-                            if(event.keyCode == 13) {
-                                event.preventDefault();
+                        if((col+1)<max){
+                            var column = this;
+                            var input = document.createElement("input");
+                            $(input).attr(\'placeholder\',\'Filtrar...\');
+                            $(input).addClass(\'form-control\');
+                            $(input).addClass(\'form-control\');
+                            $(input).css(\'width\',\'100%\');
+                            $(input).appendTo($(column.footer()).empty())
+                            .on(\'change\', function () {
                                 column.search($(this).val(), false, false, true).draw();
-                                return false;
-                            }
-                        });
+                            })
+                            .keydown(function(event){
+                                if(event.keyCode == 13) {
+                                    event.preventDefault();
+                                    column.search($(this).val(), false, false, true).draw();
+                                    return false;
+                                }
+                            });
+                        }
                     });
                 }';
         }
@@ -175,7 +189,8 @@ class QcItensDataTable extends DataTable
             'qtd' => ['name' => 'qc_itens.qtd', 'data' => 'qtd'],
             'Itens (oc)' => ['name' => 'oci_qtd', 'data' => 'oci_qtd', 'width'=>'7%'],
             'Obra(s)' => ['name' => 'obras', 'data' => 'obras', 'width'=>'12%'],
-            'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'30px'],
+            'detalhamento De Insumo' => ['name' => 'obs', 'data' => 'obs','searchable' => false, 'orderable' => false],
+            'action' => ['name' => 'Ações', 'title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'30px'],
         ];
         if($this->show){
             unset($columns['action']);

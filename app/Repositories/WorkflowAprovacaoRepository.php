@@ -387,6 +387,7 @@ class WorkflowAprovacaoRepository
             ->join('workflow_alcadas', 'workflow_alcadas.id', '=', 'workflow_usuarios.workflow_alcada_id')
             ->where('workflow_alcadas.workflow_tipo_id', $workflow_tipo_id)// Tipo = Aprovação de OC
             ->where('user_id', $user->id)
+            ->whereNull('workflow_alcadas.deleted_at')
             ->first();
 
         DB::beginTransaction();

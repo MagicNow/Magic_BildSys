@@ -36,7 +36,7 @@
         @endshield
         @shield('quadroDeConcorrencias.dashboard')
         <li class="{{ Request::is('quadro-de-concorrencia*') ? 'active' : '' }}">
-            <a href="{!! route('quadroDeConcorrencias.dashboard') !!}"><i class="fa fa-tachometer"></i><span>DashBoard Q.C</span></a>
+            <a href="{!! route('quadroDeConcorrencias.dashboard') !!}"><i class="fa fa-tachometer"></i><span>Dashboard Q.C.</span></a>
         </li>
         @endshield
         @shield('catalogo_acordos.list')
@@ -61,4 +61,25 @@
         @endshield
     </ul>
 </li>
-
+<li class="{{ Request::is('notafiscals*') ? 'active' : '' }}">
+    <a href="{!! route('notafiscals.index') !!}"><i class="fa fa-object-group"></i><span>Nota fiscal</span></a>
+</li>
+<li class="treeview {{ Request::is('medicoes*')|| Request::is('boletim-medicao*') ? 'active' : '' }}">
+    <a href="#">
+        <i class="fa fa-calendar-check-o" aria-hidden="true"></i> <span>Medição</span>
+        <span class="pull-right-container">
+            <i class="fa fa-angle-left pull-right"></i>
+        </span>
+    </a>
+    <ul class="treeview-menu">
+        <li class="{{ Request::is('medicoes*') ? 'active' : '' }}">
+            <a href="{!! route('medicoes.preCreate') !!}"><i class="fa fa-check-circle-o"></i><span>Nova Medicão</span></a>
+        </li>
+        <li class="{{ Request::is('medicoes*') ? 'active' : '' }}">
+            <a href="{!! route('medicoes.index') !!}"><i class="fa fa-list-alt"></i><span>Listar Medicões</span></a>
+        </li>
+        <li class="{{ Request::is('boletim-medicao*') ? 'active' : '' }}">
+            <a href="{!! route('boletim-medicao.index') !!}"><i class="fa fa-file-text-o"></i><span>Boletins de Medição</span></a>
+        </li>
+    </ul>
+</li>

@@ -35,6 +35,7 @@ class ContratoItemModificacao extends Model
         'valor_unitario_atual',
         'tipo_modificacao',
         'contrato_status_id',
+        'anexo',
         'user_id'
     ];
 
@@ -56,9 +57,7 @@ class ContratoItemModificacao extends Model
      *
      * @var array
      */
-    public static $rules = [
-
-    ];
+    public static $rules = [];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -128,6 +127,10 @@ class ContratoItemModificacao extends Model
             $this->item->contrato->updateTotal();
         }
 
+        $this->apropriacoes->map(function($apropriacao) {
+            $apropriacao->update(['qtd' => $apropriacao->pivot->qtd_atual]);
+        });
+
         $this->item->update(['pendente' => 0]);
 
         $this->save();
@@ -142,5 +145,17 @@ class ContratoItemModificacao extends Model
     public function getValorTotalAttribute()
     {
         return (float) $this->valor_unitario_atual * (float) $this->qtd_atual;
+    }
+
+    public function apropriacoes()
+    {
+        return $this->belongsToMany(
+            ContratoItemApropriacao::class,
+            'contrato_item_modificacao_apropriacao',
+            'contrato_item_modificacao_id',
+            'contrato_item_apropriacao_id'
+        )
+        ->withPivot([ 'qtd_atual', 'qtd_anterior', 'id', 'descricao' ])
+        ->withTimestamps();
     }
 }

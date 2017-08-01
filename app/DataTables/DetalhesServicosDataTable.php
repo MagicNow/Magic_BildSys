@@ -4,6 +4,7 @@ namespace App\DataTables;
 
 use App\Models\Orcamento;
 use App\Models\OrdemDeCompraItem;
+use App\Repositories\OrdemDeCompraRepository;
 use Form;
 use Illuminate\Support\Facades\DB;
 use Yajra\Datatables\Services\DataTable;
@@ -25,20 +26,48 @@ class DetalhesServicosDataTable extends DataTable
             ->editColumn('valor_realizado', function($obj){
                 return '<small class="pull-left">R$</small>'.number_format( doubleval($obj->valor_realizado), 2, ',','.');
             })
-            ->editColumn('a_gastar', function($obj){
-                return '<small class="pull-left">R$</small>'.number_format( doubleval($obj->a_gastar), 2, ',','.');
+            ->editColumn('valor_comprometido_a_gastar', function($obj){
+                $valor_comprometido_a_gastar = OrdemDeCompraRepository::valorComprometidoAGastarItem($obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, $obj->insumo_id);
+                
+                return '<small class="pull-left">R$</small>'.number_format( doubleval($valor_comprometido_a_gastar), 2, ',','.');
             })
             ->editColumn('saldo_orcamento', function($obj){
-                return '<small class="pull-left">R$</small>'.number_format( doubleval($obj->saldo_orcamento), 2, ',','.');
+//              Se o insumo foi incluído no orçamento, o SALDO DE ORÇAMENTO fica com o valor comprado negativo.
+//                if($obj->insumo_incluido){
+//                    return '<small class="pull-left">R$</small> - '.number_format( doubleval($obj->valor_oc), 2, ',','.');
+//                }else{
+                    return '<small class="pull-left">R$</small>'.number_format( doubleval($obj->saldo_orcamento), 2, ',','.');
+//                }
             })
             ->editColumn('valor_oc', function($obj){
                 return '<small class="pull-left">R$</small>'.number_format( doubleval($obj->valor_oc), 2, ',','.');
             })
             ->editColumn('saldo_disponivel', function($obj){
                 if($obj->saldo_disponivel){
-                    return '<small class="pull-left">R$</small>'.number_format( doubleval($obj->saldo_disponivel), 2, ',','.');
+                    $cor = $obj->saldo_disponivel >=0 ? '#7ed321' : "#eb0000";
+                    return '<span style="color: '.$cor.'"><small class="pull-left">R$</small>'.number_format( doubleval($obj->saldo_disponivel), 2, ',','.').'</span>';
                 }else {
-                    return '<small class="pull-left">R$</small>'.number_format( doubleval($obj->saldo_orcamento), 2, ',','.');
+                    if($obj->insumo_incluido || $obj->substitui){
+                        if($obj->valor_oc){
+                            return '<span style="color:#eb0000"><small class="pull-left">R$</small> - '.number_format( doubleval($obj->valor_oc), 2, ',','.').'</span>';
+                        }else{
+                            $cor = $obj->valor_oc >=0 ? '#7ed321' : "#eb0000";
+                            return '<span style="color: '.$cor.'"><small class="pull-left">R$</small>'.number_format( doubleval($obj->valor_oc), 2, ',','.').'</span>';
+                        }
+                    }else{
+                        $cor = $obj->saldo_orcamento >=0 ? '#7ed321' : "#eb0000";
+                        return '<span style="color: '.$cor.'"><small class="pull-left">R$</small>'.number_format( doubleval($obj->saldo_orcamento), 2, ',','.').'</span>';
+                    }
+                }
+            })
+            ->editColumn('descricao', function($obj){
+                if($obj->substitui){
+                    return "<strong  data-toggle=\"tooltip\" data-placement=\"top\" data-html=\"true\"
+                    title=\"". '<i class=\'fa fa-exchange\'></i> ' . $obj->substitui . "\">
+                    $obj->descricao <button type=\"button\" class=\"btn btn-info btn-flat btn-xs\"> <i class=\"fa fa-exchange\"></i> </button>
+                    </strong>";
+                } else {
+                    return $obj->descricao;
                 }
             })
             ->filterColumn('descricao',function($query, $keyword){
@@ -57,10 +86,19 @@ class DetalhesServicosDataTable extends DataTable
         $orcamentos = Orcamento::select([
             DB::raw("CONCAT(SUBSTRING_INDEX(orcamentos.codigo_insumo, '.', -1),' - ' ,orcamentos.descricao) as descricao"),
             'orcamentos.unidade_sigla',
-            'orcamentos.preco_total as valor_previsto',
+            DB::raw("
+                IF (orcamentos.insumo_incluido = 1, 0, orcamentos.preco_total) as valor_previsto
+            "),
+            'orcamentos.insumo_incluido',
+            'orcamentos.grupo_id',
+            'orcamentos.subgrupo1_id',
+            'orcamentos.subgrupo2_id',
+            'orcamentos.subgrupo3_id',
+            'orcamentos.servico_id',
+            'orcamentos.insumo_id',
             DB::raw('0 as valor_realizado'),
-            DB::raw('0 as a_gastar'),
             DB::raw('orcamentos.preco_total as saldo_orcamento'),
+            DB::raw("CONCAT(insumos_sub.codigo,' - ' ,insumos_sub.nome) as substitui"),
             DB::raw('
                     (SELECT 
                         SUM(ordem_de_compra_itens.valor_total) 
@@ -105,9 +143,11 @@ class DetalhesServicosDataTable extends DataTable
                     AND ordem_de_compra_itens.deleted_at IS NULL
                     AND ordem_de_compra_itens.servico_id = '.$this->servico_id.'
                     AND ordem_de_compra_itens.obra_id ='. $this->obra_id .' ) as saldo_disponivel')
-        ])
-            ->where('servico_id','=', DB::raw($this->servico_id))
-            ->where('obra_id','=', DB::raw($this->obra_id))
+            ])
+            ->leftJoin(DB::raw('orcamentos orcamentos_sub'),  'orcamentos_sub.id', 'orcamentos.orcamento_que_substitui')
+            ->leftJoin(DB::raw('insumos insumos_sub'), 'insumos_sub.id', 'orcamentos_sub.insumo_id')
+            ->where('orcamentos.servico_id','=', DB::raw($this->servico_id))
+            ->where('orcamentos.obra_id','=', DB::raw($this->obra_id))
             ->groupBy('orcamentos.insumo_id');
 
         return $this->applyScopes($orcamentos);
@@ -176,10 +216,10 @@ class DetalhesServicosDataTable extends DataTable
             'Und_de_medida' => ['name' => 'unidade_sigla', 'data' => 'unidade_sigla'],
             'Valor_previsto_no_orçamento' => ['name' => 'orcamentos.preco_total', 'data' => 'valor_previsto', 'searchable' => false],
             'Valor_comprometido_realizado' => ['name' => 'valor_realizado', 'data' => 'valor_realizado', 'searchable' => false],
-            'Valor_comprometido_à_gastar' => ['name' => 'a_gastar', 'data' => 'a_gastar', 'searchable' => false],
+            'Valor_comprometido_à_gastar' => ['name' => 'valor_comprometido_a_gastar', 'data' => 'valor_comprometido_a_gastar', 'searchable' => false],
             'Saldo_de_orçamento' => ['name' => 'saldo_orcamento', 'data' => 'saldo_orcamento', 'searchable' => false],
             'Valor_da_Oc' => ['name' => 'valor_oc', 'data' => 'valor_oc', 'searchable' => false],
-            'Saldo_disponível' => ['name' => 'saldo_disponivel', 'data' => 'saldo_disponivel', 'searchable' => false]
+            'Saldo_disponível_após_O&period;C&period;' => ['name' => 'saldo_disponivel', 'data' => 'saldo_disponivel', 'searchable' => false]
         ];
     }
 

@@ -93,7 +93,7 @@ class TipoEqualizacaoTecnicaDataTable extends DataTable
     {
         return [
             'nome' => ['name' => 'nome', 'data' => 'nome'],
-            'action' => ['title' => '#', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
+            'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }
 

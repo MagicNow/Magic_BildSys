@@ -13,6 +13,7 @@ var QcInformarValoresForm = {
     var reject       = document.getElementById('reject');
     var motivoSelect = document.getElementById('desistencia_motivo_id');
     var percents     = document.getElementsByClassName('js-percent');
+    var valor_unitario     = document.getElementsByClassName('js-calc-price');
 
     motivoSelect.classList.remove('hidden');
 
@@ -45,7 +46,7 @@ var QcInformarValoresForm = {
     reject.addEventListener('click', function(event) {
       event.preventDefault();
       swal({
-        title: "Rejeitar proposta?",
+        title: "Declinar proposta?",
         text: '<label for="desistencia_motivo_id">Escolha um motivo</label>' +
         motivoSelect.outerHTML,
         html: true,
@@ -56,7 +57,7 @@ var QcInformarValoresForm = {
         inputPlaceholder: "Justificativa",
         showLoaderOnConfirm: true,
         cancelButtonText: 'Cancelar',
-        confirmButtonText: 'Rejeitar',
+        confirmButtonText: 'Declinar',
         confirmButtonColor: '#DD6B55'
       },
         function (justificativa_texto) {
@@ -103,6 +104,31 @@ var QcInformarValoresForm = {
           });
 
           return false;
+        }
+      }
+
+      if(valor_unitario.length) {
+        var v_unitario = _(valor_unitario)
+            .map('value')
+            .filter(function (value) {
+              return !value.length || value === '0,00';
+            }).value();
+
+        if(v_unitario.length){
+          swal({
+            title: 'Atenção!',
+            text: 'Tem itens sem valores, deseja continuar?',
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Salvar',
+            cancelButtonText: 'Cancelar',
+            closeOnConfirm: false,
+            showLoaderOnConfirm: true,
+            confirmButtonColor: '#7ED32C'
+          }, function () {
+            form.submit();
+          });
+          return true;
         }
       }
 

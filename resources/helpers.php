@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
+use Illuminate\Support\Arr;
 
 if (! function_exists('is_money')) {
     /**
@@ -68,3 +69,48 @@ Collection::macro('dd', function () {
 EloquentCollection::macro('dd', function () {
     dd($this);
 });
+
+if(! function_exists('get_percentual_column')) {
+    /**
+     * Recebe o código do insumo e devolve o nome da coluna que contem a porcentagem
+     * que gerou este insumo
+     *
+     * @return string
+     */
+    function get_percentual_column($codigo_insumo)
+    {
+        $insumos = [
+            '34007' => 'porcentagem_material',
+            '30019' => 'porcentagem_faturamento_direto',
+            '37367' => 'porcentagem_locacao',
+        ];
+
+        return Arr::get($insumos, $codigo_insumo);
+    }
+}
+
+if(! function_exists('to_fixed')) {
+    /**
+     * Equivalent to the toFixed method of Javascript Numbers
+     * @param float $number
+     * @param int $decimals = 2
+     *
+     * @return string
+     */
+    function to_fixed($number, $decimals = 2, $decimal_separator = '.')
+    {
+        return number_format((float) $number, $decimals, $decimal_separator, '');
+    }
+}
+
+if(! function_exists('to_percentage')) {
+    /**
+     * Percentage format
+     *
+     * @return string
+     */
+    function to_percentage($number)
+    {
+      return to_fixed($number, 2, ',') . '%';
+    }
+}

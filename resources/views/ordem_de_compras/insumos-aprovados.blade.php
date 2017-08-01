@@ -53,7 +53,7 @@
 
 
                 <div class="row">
-                    <div class="col-md-2">
+                    <div class="col-md-4">
                         <h4>Obras</h4>
                         @if(count($obras))
                         <div class="js-datatable-filter-form">
@@ -66,7 +66,20 @@
                         @endif
                     </div>
 
-                    <div class="col-md-1">
+                    <div class="col-md-4">
+                        <h4>Compradores</h4>
+                        @if(count($compradores))
+                        <div class="js-datatable-filter-form">
+                            {!! Form::select('compradores[]',$compradores, null, [
+                                'class'=>'form-control select2',
+                                'multiple'=>'multiple',
+                                ]) !!}
+
+                        </div>
+                        @endif
+                    </div>
+
+                    <div class="col-md-2">
                         <h4>O.C.s</h4>
                         @if(count($OCs))
                             <div class="js-datatable-filter-form">
@@ -79,6 +92,18 @@
                     </div>
 
                     <div class="col-md-2">
+                        <h4>SLA</h4>
+                        @if(count($farol))
+                            <div class="js-datatable-filter-form">
+                                {!! Form::select('farol[]',$farol, null, [
+                                'class'=>'form-control select2',
+                                'multiple'=>'multiple',
+                                ]) !!}
+                            </div>
+                        @endif
+                    </div>
+
+                    <div class="col-md-4">
                         <h4>Grupos de Insumos</h4>
                         @if(count($insumoGrupos))
                             <div class="js-datatable-filter-form">
@@ -90,7 +115,7 @@
                         @endif
                     </div>
 
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <h4>Insumos</h4>
                         @if(count($insumos))
                             <div class="js-datatable-filter-form">
@@ -102,24 +127,11 @@
                         @endif
                     </div>
 
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <h4>Cidades</h4>
                         @if(count($cidades))
                             <div class="js-datatable-filter-form">
                                 {!! Form::select('cidades[]',$cidades, null, [
-                                'class'=>'form-control select2',
-                                'multiple'=>'multiple',
-                                ]) !!}
-                            </div>
-                        @endif
-                    </div>
-
-
-                    <div class="col-md-1">
-                        <h4>Farol</h4>
-                        @if(count($farol))
-                            <div class="js-datatable-filter-form">
-                                {!! Form::select('farol[]',$farol, null, [
                                 'class'=>'form-control select2',
                                 'multiple'=>'multiple',
                                 ]) !!}

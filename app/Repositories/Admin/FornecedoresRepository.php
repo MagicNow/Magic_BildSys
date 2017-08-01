@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\App;
 use App\Models\User;
 use App\Notifications\FornecedorAccountCreated;
 use Artesaos\Defender\Facades\Defender;
+use App\Models\MegaFornecedor;
 
 class FornecedoresRepository extends BaseRepository
 {
@@ -166,5 +167,19 @@ class FornecedoresRepository extends BaseRepository
     public function comContrato()
     {
         return $this->model->has('contratos')->get();
+    }
+
+    public function updateImposto($id)
+    {
+        $fornecedor = $this->find($id);
+
+        if(is_null($fornecedor->imposto_simples) && $fornecedor->codigo_mega) {
+            $fornecedor->imposto_simples = trim(utf8_encode(MegaFornecedor::where('AGN_IN_CODIGO', $fornecedor->codigo_mega)
+                ->value('AGN_BO_SIMPLES'))) === 'S';
+
+            $fornecedor->save();
+        }
+
+        return $fornecedor;
     }
 }
