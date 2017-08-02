@@ -198,7 +198,7 @@
 
         $('#insumos_trocados').val(array_insumos);
 
-        $.get('/admin/insumos/' + insumo_id + '/json')
+        $.get('/insumos/' + insumo_id + '/json')
           .done(function(insumo) {
             $listaDeTrocaContainer.removeClass('hidden');
             $listTableBody.append(
