@@ -282,6 +282,8 @@ var Reajuste = (function() {
 
         self.anexo = self.modal.querySelector('[name=anexo]');
 
+        self.descriptions = self.modal.querySelectorAll('.js-desc');
+
         self.adicionais = _.filter(
           self.inputs,
           _.method('classList.contains', 'js-adicional')
@@ -297,7 +299,7 @@ var Reajuste = (function() {
 
   Reajuste.prototype.adjustTotal = function(event) {
     var input = event.currentTarget;
-    var valueContainer = $(input).parents('tr').find('td:last').get(0);
+    var valueContainer = $(input).parents('tr').find('td:nth-last-child(2)').get(0);
 
     valueContainer.innerText = floatToMoney(
       (input.value ? moneyToFloat(input.value) : 0) + parseFloat(valueContainer.dataset.itemQtd),
@@ -351,13 +353,19 @@ var Reajuste = (function() {
       valor_unitario: this.valor.value
     };
 
+    var inputs = Array.from(this.inputs).concat(Array.from(this.descriptions));
 
-    data = _.reduce(this.inputs, function(data, input) {
+    data = _.reduce(inputs, function(data, input) {
       if (
         input.classList.contains('js-adicional') &&
         (input.value &&
           moneyToFloat(input.value) > 0)
       ) {
+        data[input.name] = input.value;
+      }
+
+
+      if(input.classList.contains('js-desc')) {
         data[input.name] = input.value;
       }
 
