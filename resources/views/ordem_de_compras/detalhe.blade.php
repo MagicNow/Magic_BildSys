@@ -499,7 +499,7 @@
                                                 </td>
                                                 <td class="text-center">
                                                     <small class="pull-left">R$</small>
-                                                    {{ number_format(money_to_float(\App\Repositories\OrdemDeCompraRepository::valorComprometidoAGastarItem($item->grupo_id, $item->subgrupo1_id, $item->subgrupo2_id, $item->subgrupo3_id, $item->servico_id, $item->insumo_id)), 2, ',','.') }}
+                                                    {{ number_format(\App\Repositories\OrdemDeCompraRepository::valorComprometidoAGastarItem($item->grupo_id, $item->subgrupo1_id, $item->subgrupo2_id, $item->subgrupo3_id, $item->servico_id, $item->insumo_id), 2, ',','.') }}
                                                 </td>
                                                 <td class="text-center">
                                                     <small class="pull-left">R$</small>
