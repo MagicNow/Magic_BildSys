@@ -58,5 +58,12 @@ class UserRepository extends BaseRepository
             $q->where('obra_id', $obraId);
         })->where('active', true)->get();
     }
+	
+	public function usuariosDaCarteira($carteiraId)
+    {
+        return $this->model->whereHas('carteiras', function($q) use ($carteiraId) {
+            $q->where('carteira_id', $carteiraId);
+        })->where('active', true)->get();
+    }
 
 }

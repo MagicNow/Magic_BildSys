@@ -6,5 +6,5 @@
  * @return jQuery.promise
  */
 function getInsumo(id) {
-  return $.get('/admin/insumos/' + id + '/json');
+  return $.get('/insumos/' + id + '/json');
 }

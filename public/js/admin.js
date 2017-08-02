@@ -65293,7 +65293,17 @@ jQuery(function($) {
   $.datepicker.setDefaults($.datepicker.regional['pt-BR']);
 });
 
-
+function ativarDesativarCatalogo(id) {
+  $.ajax({
+    type: 'GET',
+    url: 'catalogo-acordos/acao/ativar-desativar',
+    data: {
+      id: id
+    }
+  }).done(function() {
+    LaravelDataTables.dataTableBuilder.draw();
+  });
+}
 var k = 0;
 var filtroGlobal = [];
 

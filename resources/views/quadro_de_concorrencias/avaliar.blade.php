@@ -367,7 +367,7 @@
                 placeholder: "Fornecedores Temporários",
                 language: "pt-BR",
                 ajax: {
-                    url: "/admin/fornecedores/busca-temporarios",
+                    url: "/fornecedores/busca-temporarios",
                     dataType: 'json',
                     delay: 250,
 
@@ -418,7 +418,7 @@
         function cadastraFornecedor() {
             funcaoPosCreate = "preencheFornecedor();";
             $.colorbox({
-                href: "/admin/fornecedores/create?modal=1",
+                href: "/fornecedores/create?modal=1",
                 iframe: true,
                 width: '90%',
                 height: '90%'

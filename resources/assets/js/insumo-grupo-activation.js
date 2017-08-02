@@ -20,7 +20,7 @@ $(function() {
       var action = checkbox.checked ? 'enable' : 'disable';
       var actionPhrase = checkbox.checked ? 'disponível' : 'indisponível';
 
-      $.post('/admin/insumoGrupos/' + checkbox.value + '/' + action)
+      $.post('/insumoGrupos/' + checkbox.value + '/' + action)
         .done(function(grupo) {
           checkbox.classList.remove('is-loading');
         })

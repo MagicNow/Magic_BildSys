@@ -1,8 +1,11 @@
-@extends('layouts.app')
+@extends('layouts.front')
 
 @section('content')
     <section class="content-header">
         <h1>
+            <button type="button" class="btn btn-link" onclick="history.go(-1);">
+                <i class="fa fa-arrow-left" aria-hidden="true"></i>
+            </button>
             Solicitação de insumo
         </h1>
     </section>
@@ -11,7 +14,7 @@
             <div class="box-body">
                 <div class="row" style="padding-left: 20px">
                     @include('admin.solicitacao_insumos.show_fields')
-                    <a href="{!! route('admin.solicitacaoInsumos.index') !!}" class="btn btn-warning">
+                    <a href="{!! route('admin.solicitacaoInsumos.index') !!}" class="btn btn-warning btn-flat btn-lg">
                        <i class="fa fa-arrow-left"></i>  {{ ucfirst( trans('common.back') )}}
                     </a>
                 </div>

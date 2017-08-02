@@ -1,4 +1,4 @@
-{!! Form::open(['route' => ['admin.insumos.destroy', $id], 'id'=>'formDelete'.$id, 'method' => 'delete']) !!}
+{{--{!! Form::open(['route' => ['admin.insumos.destroy', $id], 'id'=>'formDelete'.$id, 'method' => 'delete']) !!}--}}
 <div class='btn-group'>
     <a href="{{ route('admin.insumos.show', $id) }}" title="{{ ucfirst( trans('common.show') )}}" class='btn btn-default btn-xs'>
         <i class="glyphicon glyphicon-eye-open"></i>
@@ -14,4 +14,4 @@
         ]) !!}--}}
 
 </div>
-{!! Form::close() !!}
+{{--{!! Form::close() !!}--}}
