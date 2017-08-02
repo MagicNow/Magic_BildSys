@@ -430,6 +430,21 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->post('insumos/{insumos}/disable', ['as' => 'admin.insumos.disable', 'uses' => 'Admin\InsumoController@disable'])
             ->middleware("needsPermission:insumos.availability");
     });
+	
+	# Carteiras
+    $router->group(['middleware' => 'needsPermission:carteiras.list'], function () use ($router) {
+        $router->get('carteiras', ['as' => 'admin.carteiras.index', 'uses' => 'Admin\CarteiraController@index']);
+        $router->post('carteiras', ['as' => 'admin.carteiras.store', 'uses' => 'Admin\CarteiraController@store']);
+        $router->get('carteiras/create', ['as' => 'admin.carteiras.create', 'uses' => 'Admin\CarteiraController@create'])
+->middleware("needsPermission:carteiras.create");
+        $router->put('carteiras/{carteiras}', ['as' => 'admin.carteiras.update', 'uses' => 'Admin\CarteiraController@update']);
+        $router->patch('carteiras/{carteiras}', ['as' => 'admin.carteiras.update', 'uses' => 'Admin\CarteiraController@update']);
+        $router->delete('carteiras/{carteiras}', ['as' => 'admin.carteiras.destroy', 'uses' => 'Admin\CarteiraController@destroy']);
+        $router->get('carteiras/{carteiras}', ['as' => 'admin.carteiras.show', 'uses' => 'Admin\CarteiraController@show'])
+            ->middleware("needsPermission:carteiras.view");
+        $router->get('carteiras/{carteiras}/edit', ['as' => 'admin.carteiras.edit', 'uses' => 'Admin\CarteiraController@edit'])
+            ->middleware("needsPermission:carteiras.edit");
+    });
     
     # Retroalimentação de obras
     $router->group(['middleware' => 'needsPermission:retroalimentacao.list'], function () use ($router) {
@@ -449,7 +464,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             ->middleware("needsPermission:obras.view");
         $router->get('obras/{obras}/edit', ['as' => 'admin.obras.edit', 'uses' => 'Admin\ObraController@edit'])
             ->middleware("needsPermission:obras.edit");
-    });
+    });	
     
     // Memória de Cálculo
     $router->group(['prefix'=>'memoriaCalculos', 'middleware' => 'needsPermission:memoriaCalculos.list'], function () use ($router) {
