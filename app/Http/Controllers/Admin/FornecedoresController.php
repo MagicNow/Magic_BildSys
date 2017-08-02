@@ -98,7 +98,7 @@ class FornecedoresController extends AppBaseController
 //        if (isset($fornecedor_existente) || isset($usuario_existente)) {
 //            if(!$request->ajax()) {
 //                Flash::error('O e-mail já esta sendo utilizado em outro cadastro');
-//                return redirect('/admin/fornecedores/create')->withInput($request->except('password', 'password_confirmation'));
+//                return redirect('/fornecedores/create')->withInput($request->except('password', 'password_confirmation'));
 //            }else{
 //                return response()->json(['error' => true, 'msg'=>'O e-mail já esta sendo utilizado em outro cadastro']);
 //            }
@@ -206,7 +206,7 @@ class FornecedoresController extends AppBaseController
 
 //        if (isset($usuario_existente)) {
 //            Flash::error('O campo email já esta sendo utilizado em outro cadastro');
-//            return redirect('/admin/fornecedores/'.$id.'/edit')->withInput($request->except('password', 'password_confirmation'));
+//            return redirect('/fornecedores/'.$id.'/edit')->withInput($request->except('password', 'password_confirmation'));
 //        }
 
         $fornecedores = $this->fornecedoresRepository->findWithoutFail($id);

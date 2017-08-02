@@ -24,7 +24,7 @@ $(function() {
     var action = checkbox.checked ? 'enable' : 'disable';
     var actionPhrase = checkbox.checked ? 'disponível' : 'indisponível';
 
-    $.post('/admin/insumos/' + checkbox.value + '/' + action)
+    $.post('/insumos/' + checkbox.value + '/' + action)
       .done(function(insumo) {
         checkbox.classList.remove('is-loading');
       })

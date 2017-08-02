@@ -103,8 +103,8 @@
 
 <!-- Submit Field -->
 <div class="form-group col-sm-12">
-    {!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save') ), ['class' => 'btn btn-success pull-right', 'type'=>'submit']) !!}
-    <a href="{!! route('admin.fornecedores.index') !!}" class="btn btn-danger"><i class="fa fa-times"></i>  {{ ucfirst( trans('common.cancel') )}}</a>
+    {!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save') ), ['class' => 'btn btn-success btn-flat btn-lg pull-right', 'type'=>'submit']) !!}
+    <a href="{!! route('admin.fornecedores.index') !!}" class="btn btn-danger btn-flat btn-lg"><i class="fa fa-times"></i>  {{ ucfirst( trans('common.cancel') )}}</a>
 </div>
 
 @section('scripts')
@@ -115,7 +115,7 @@
                 startLoading();
                 valor = valor.replace('-','');
                 $.ajax({
-                            url: '/admin/fornecedores/buscacep/'+valor,
+                            url: '/fornecedores/buscacep/'+valor,
                             dataType: 'json',
                             crossDomain:true
                         })
@@ -161,7 +161,7 @@
                                 },
                                 function(){
                                     @if(!\Illuminate\Support\Facades\Request::get('modal'))
-                                    document.location='/admin/fornecedores/'+ retorno.fornecedor.id;
+                                    document.location='/fornecedores/'+ retorno.fornecedor.id;
                                     @else
                                         parent.novoObjeto = retorno.fornecedor;
                                         setTimeout(function () {
