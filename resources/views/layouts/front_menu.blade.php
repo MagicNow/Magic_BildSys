@@ -1,11 +1,8 @@
 <li class="treeview {{ Request::is('obras*')||
-                       Request::is('retroalimentacaoObras*') ||
                        Request::is('insumos*') ||
                        Request::is('insumoGrupos*') ||
                        Request::is('solicitacaoInsumos*') ||
-                       Request::is('fornecedores*') ||
-                       Request::is('nomeclaturaMapas*') ||
-                       Request::is('memoriaCalculos*')
+                       Request::is('fornecedores*')
                        ? 'active' : '' }}">
     <a href="#">
         <i class="fa fa-pencil-square-o"></i>
@@ -41,24 +38,6 @@
         </li>
         @endshield
 
-        @shield('memoriaCalculos.list')
-        <li class="{{ Request::is('memoriaCalculos*') ? 'active' : '' }}">
-            <a href="{!! route('memoriaCalculos.index') !!}">
-                <i class="fa fa-caret-right" aria-hidden="true"></i>
-                <span>Memória de Cálculo</span>
-            </a>
-        </li>
-        @endshield
-
-        @shield('nomeclaturaMapas.list')
-        <li class="{{ Request::is('nomeclaturaMapas*') ? 'active' : '' }}">
-            <a href="{!! route('admin.nomeclaturaMapas.index') !!}">
-                <i class="fa fa-caret-right" aria-hidden="true"></i>
-                <span>Nomeclatura Mem. Cálc.</span>
-            </a>
-        </li>
-        @endshield
-
         @shield('obras.list')
         <li class="{{ Request::is('obras*') ? 'active' : '' }}">
             <a href="{!! route('admin.obras.index') !!}">
@@ -67,13 +46,6 @@
         </li>
         @endshield
 
-        @shield('retroalimentacao.list')
-        <li class="{{ Request::is('retroalimentacaoObras*') ? 'active' : '' }}">
-            <a href="{!! route('retroalimentacaoObras.index') !!}">
-                <i class="fa fa-caret-right" aria-hidden="true"></i>
-                <span>Retroalimentação de obras</span></a>
-        </li>
-        @endshield
 
         @shield('solicitacaoInsumos.list')
         <li class="{{ Request::is('solicitacaoInsumos*') ? 'active' : '' }}">
@@ -121,7 +93,12 @@
 </li>
 @endshield
 
-<li class="treeview {{ Request::is('medicoes*')|| Request::is('boletim-medicao*')|| Request::is('contratos*')|| Request::is('notafiscals*') ? 'active' : '' }}">
+<li class="treeview {{ Request::is('medicoes*')||
+                        Request::is('boletim-medicao*')||
+                        Request::is('contratos*')||
+                        Request::is('notafiscals*') ||
+                       Request::is('nomeclaturaMapas*') ||
+                       Request::is('memoriaCalculos*') ? 'active' : '' }}">
     <a href="#">
         <i class="fa fa-file-text-o" aria-hidden="true"></i> <span>Contratos</span>
         <span class="pull-right-container">
@@ -161,8 +138,34 @@
                 <span>Nova Medicão</span></a>
         </li>
 
+        @shield('memoriaCalculos.list')
+        <li class="{{ Request::is('memoriaCalculos*') ? 'active' : '' }}">
+            <a href="{!! route('memoriaCalculos.index') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Memória de Cálculo</span>
+            </a>
+        </li>
+        @endshield
+
+        @shield('nomeclaturaMapas.list')
+        <li class="{{ Request::is('nomeclaturaMapas*') ? 'active' : '' }}">
+            <a href="{!! route('admin.nomeclaturaMapas.index') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Nomeclatura Mem. Cálc.</span>
+            </a>
+        </li>
+        @endshield
+
     </ul>
 </li>
+
+@shield('retroalimentacao.list')
+<li class="{{ Request::is('retroalimentacaoObras*') ? 'active' : '' }}">
+    <a href="{!! route('retroalimentacaoObras.index') !!}">
+        <i class="fa fa-retweet" aria-hidden="true"></i>
+        <span>Retroalimentação de obras</span></a>
+</li>
+@endshield
 
 <li class="treeview {{ Request::is('quadro-de-concorrencia*')||Request::is('catalogo-acordos*')||Request::is('tipoEqualizacaoTecnicas*') ? 'active' : '' }}">
     <a href="#">
