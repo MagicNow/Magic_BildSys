@@ -344,7 +344,9 @@
                                     $qtd_comprometida_a_gastar = money_to_float(\App\Repositories\OrdemDeCompraRepository::qtdComprometidaAGastarItem($item->grupo_id, $item->subgrupo1_id, $item->subgrupo2_id, $item->subgrupo3_id, $item->servico_id, $item->insumo_id));
                                     $saldo_qtd_orcamento = $qtd_prevista - money_to_float($item->qtd_realizada) - $qtd_comprometida_a_gastar;
 
-                                    $status_qtd = $saldo_qtd_orcamento - money_to_float($item->qtd);
+                                    $qtd_comprometida_a_gastar_2 = money_to_float(\App\Repositories\OrdemDeCompraRepository::qtdComprometidaAGastarItem($item->grupo_id, $item->subgrupo1_id, $item->subgrupo2_id, $item->subgrupo3_id, $item->servico_id, $item->insumo_id, $item->id));
+                                    $saldo_qtd_orcamento2 = $qtd_prevista - money_to_float($item->qtd_realizada) - $qtd_comprometida_a_gastar_2;
+                                    $status_qtd = $saldo_qtd_orcamento2 - money_to_float($item->qtd);
                                 @endphp
 
                                 @if($status_qtd > 0)
