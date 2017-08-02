@@ -17,7 +17,7 @@ class Notification extends Model
         'notifiable_type',
         'data',
         'read_at',
-        'is_task'
+        'task_done'
     ];
 
     /**
@@ -28,7 +28,7 @@ class Notification extends Model
     protected $casts = [
         'id' => 'string',
         'type' => 'string',
-        'is_task' => 'integer',
+        'task_done' => 'integer',
         'notifiable_id' => 'integer',
         'notifiable_type' => 'string',
         'data' => 'object'
