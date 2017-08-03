@@ -11,11 +11,13 @@ use Eloquent as Model;
  */
 class QcStatusLog extends Model
 {
+
     public $table = 'qc_status_log';
     
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
-    
+
+
     public $fillable = [
         'quadro_de_concorrencia_id',
         'qc_status_id',
