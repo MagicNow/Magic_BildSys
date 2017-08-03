@@ -570,8 +570,8 @@ class WorkflowAprovacaoRepository
             $queryNomes->where('obra_users.obra_id', $obra_id);
         }
 
-        $usuarios_nomes = $queryNomes->get();
-
+        $usuarios_nomes = $queryNomes->groupBy('users.id')->get();
+        
         $total_a_aprovar = self::verificaTotalaAprovar($tipo, $ids);
 
         foreach ($usuarios_nomes as $usuario) {

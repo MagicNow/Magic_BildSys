@@ -42,6 +42,8 @@ class QuadroDeConcorrenciaItem extends Model
 
     ];
 
+    public static $workflow_tipo_id = WorkflowTipo::QC;
+    
     public function ordemDeCompraItens()
     {
         return $this->belongsToMany(
