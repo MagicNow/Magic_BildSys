@@ -33,10 +33,12 @@ class OrdemDeCompra extends Model
     public function workflowNotification()
     {
         return [
-            'message' => 'Você tem uma ordem de compra para aprovar',
+            'message' => 'OC '.$this->id.' à aprovar',
             'link' => route('ordens_de_compra.detalhes', $this->id),
             'workflow_tipo_id' => WorkflowTipo::OC,
-            'id_dinamico' => $this->id
+            'id_dinamico' => $this->id,
+            'task'=>1,
+            'done'=>0
         ];
     }
 

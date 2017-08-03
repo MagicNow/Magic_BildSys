@@ -53,160 +53,31 @@
                         <div class="box-body">
                             <!-- See dist/js/pages/dashboard.js to activate the todoList plugin -->
                             <ul class="todo-list">
+                                @foreach(auth()->user()->notifications()->whereRaw("data LIKE '%\"task\":1,\"done\":0%'")->get() as $notification)
                                 <li>
-                                    <i class="fa fa-exclamation-circle text-danger" aria-hidden="true"></i>
-                                    <span class="text">Texto exemplo de tarefa X</span>
-                                    <small class="label label-danger"><i class="fa fa-clock-o"></i> -1 dias</small>
-                                    <a href="#" class="btn btn-flat btn-xs btn-success pull-right">
-                                        <i class="fa fa-arrow-right"></i>
-                                    </a>
-                                </li>
-                                <li>
-                                    <i class="fa fa-exclamation-circle text-warning" aria-hidden="true"></i>
-                                    <span class="text">Texto exemplo de tarefa X</span>
-                                    <small class="label label-warning"><i class="fa fa-clock-o"></i> 2 dias</small>
-                                    <a href="#" class="btn btn-flat btn-xs btn-success pull-right">
-                                        <i class="fa fa-arrow-right"></i>
-                                    </a>
-                                </li>
-                                <li>
-                                    <i class="fa fa-exclamation-circle text-success" aria-hidden="true"></i>
-                                    <span class="text">Texto exemplo de tarefa X</span>
-                                    <small class="label label-success"><i class="fa fa-clock-o"></i> 4 dias</small>
-                                    <a href="#" class="btn btn-flat btn-xs btn-success pull-right">
-                                        <i class="fa fa-arrow-right"></i>
-                                    </a>
-                                </li>
-                                <li>
-                                    <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
-                                    <span class="text">Texto exemplo de tarefa X</span>
-                                    <a href="#" class="btn btn-flat btn-xs btn-success pull-right">
-                                        <i class="fa fa-arrow-right"></i>
-                                    </a>
-                                </li>
-                                <li>
-                                    <!-- checkbox -->
-                                    <i class="fa fa-exclamation-circle text-danger" aria-hidden="true"></i>
-                                    <!-- todo text -->
-                                    <span class="text">Texto exemplo de tarefa X
-                                    <span class="label label-danger"><i class="fa fa-clock-o"></i> 2 dias</span>
-                                    </span>
-                                    <!-- General tools such as edit or delete-->
+                                    @php
+                                        $hoje = \Carbon\Carbon::create();
+                                        $data_maxima = $notification->created_at->addDays($workflow_prazos[$notification->data['workflow_tipo_id']]);
+                                        $dias_restantes = $hoje->diffInDays($data_maxima, false);
+                                        $classe = 'success';
+                                        $percentualPrazo = (($dias_restantes * 100) / $workflow_prazos[$notification->data['workflow_tipo_id']]);
+                                        if($percentualPrazo < 80 && $percentualPrazo > 10){
+                                            $classe = 'warning';
+                                        }elseif ($percentualPrazo < 10){
+                                            $classe = 'danger';
+                                        }
+                                    @endphp
+                                    <i class="fa fa-exclamation-circle text-{{ $classe }}" aria-hidden="true"></i>
+                                    <span class="text">{{ $notification->data['message'] }}</span>
 
-                                    <a href="#" class="btn btn-flat btn-xs btn-success pull-right">
+                                    <small class="label label-{{ $classe }}"><i class="fa fa-clock-o"></i>
+                                        {{ $dias_restantes }} dias
+                                    </small>
+                                    <a href="{{ $notification->data['link'] }}" class="btn btn-flat btn-xs btn-{{ $classe }} pull-right">
                                         <i class="fa fa-arrow-right"></i>
                                     </a>
                                 </li>
-                                <li>
-                                    <i class="fa fa-exclamation-circle text-danger" aria-hidden="true"></i>
-                                    <span class="text">Texto exemplo de tarefa X</span>
-                                    <a href="#" class="btn btn-flat btn-xs btn-success pull-right">
-                                        <i class="fa fa-arrow-right"></i>
-                                    </a>
-                                </li>
-                                <li>
-                                    <i class="fa fa-exclamation-circle text-warning" aria-hidden="true"></i>
-                                    <span class="text">Texto exemplo de tarefa X</span>
-                                    <a href="#" class="btn btn-flat btn-xs btn-success pull-right">
-                                        <i class="fa fa-arrow-right"></i>
-                                    </a>
-                                </li>
-                                <li>
-                                    <i class="fa fa-exclamation-circle text-success" aria-hidden="true"></i>
-                                    <span class="text">Texto exemplo de tarefa X</span>
-                                    <a href="#" class="btn btn-flat btn-xs btn-success pull-right">
-                                        <i class="fa fa-arrow-right"></i>
-                                    </a>
-                                </li>
-                                <li>
-                                    <i class="fa fa-exclamation-circle text-success" aria-hidden="true"></i>
-                                    <span class="text">Texto exemplo de tarefa X</span>
-                                    <a href="#" class="btn btn-flat btn-xs btn-success pull-right">
-                                        <i class="fa fa-arrow-right"></i>
-                                    </a>
-                                </li>
-                                <li>
-                                    <!-- checkbox -->
-                                    <i class="fa fa-exclamation-circle text-danger" aria-hidden="true"></i>
-                                    <!-- todo text -->
-                                    <span class="text">Texto exemplo de tarefa X
-                                    <span class="label label-danger"><i class="fa fa-clock-o"></i> 2 dias</span>
-                                    </span>
-                                    <!-- General tools such as edit or delete-->
-
-                                    <a href="#" class="btn btn-flat btn-xs btn-success pull-right">
-                                        <i class="fa fa-arrow-right"></i>
-                                    </a>
-                                </li>
-                                <li>
-                                    <i class="fa fa-exclamation-circle text-danger" aria-hidden="true"></i>
-                                    <span class="text">Texto exemplo de tarefa X</span>
-                                    <a href="#" class="btn btn-flat btn-xs btn-success pull-right">
-                                        <i class="fa fa-arrow-right"></i>
-                                    </a>
-                                </li>
-                                <li>
-                                    <i class="fa fa-exclamation-circle text-warning" aria-hidden="true"></i>
-                                    <span class="text">Texto exemplo de tarefa X</span>
-                                    <a href="#" class="btn btn-flat btn-xs btn-success pull-right">
-                                        <i class="fa fa-arrow-right"></i>
-                                    </a>
-                                </li>
-                                <li>
-                                    <i class="fa fa-exclamation-circle text-success" aria-hidden="true"></i>
-                                    <span class="text">Texto exemplo de tarefa X</span>
-                                    <a href="#" class="btn btn-flat btn-xs btn-success pull-right">
-                                        <i class="fa fa-arrow-right"></i>
-                                    </a>
-                                </li>
-                                <li>
-                                    <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
-                                    <span class="text">Texto exemplo de tarefa X</span>
-                                    <a href="#" class="btn btn-flat btn-xs btn-success pull-right">
-                                        <i class="fa fa-arrow-right"></i>
-                                    </a>
-                                </li>
-                                <li>
-                                    <!-- checkbox -->
-                                    <i class="fa fa-exclamation-circle text-danger" aria-hidden="true"></i>
-                                    <!-- todo text -->
-                                    <span class="text">Texto exemplo de tarefa X
-                                    <span class="label label-danger"><i class="fa fa-clock-o"></i> -3 dias</span>
-                                    </span>
-                                    <!-- General tools such as edit or delete-->
-
-                                    <a href="#" class="btn btn-flat btn-xs btn-success pull-right">
-                                        <i class="fa fa-arrow-right"></i>
-                                    </a>
-                                </li>
-                                <li>
-                                    <i class="fa fa-exclamation-circle text-danger" aria-hidden="true"></i>
-                                    <span class="text">Texto exemplo de tarefa X</span>
-                                    <a href="#" class="btn btn-flat btn-xs btn-success pull-right">
-                                        <i class="fa fa-arrow-right"></i>
-                                    </a>
-                                </li>
-                                <li>
-                                    <i class="fa fa-exclamation-circle text-warning" aria-hidden="true"></i>
-                                    <span class="text">Texto exemplo de tarefa X</span>
-                                    <a href="#" class="btn btn-flat btn-xs btn-success pull-right">
-                                        <i class="fa fa-arrow-right"></i>
-                                    </a>
-                                </li>
-                                <li>
-                                    <i class="fa fa-exclamation-circle text-success" aria-hidden="true"></i>
-                                    <span class="text">Texto exemplo de tarefa X</span>
-                                    <a href="#" class="btn btn-flat btn-xs btn-success pull-right">
-                                        <i class="fa fa-arrow-right"></i>
-                                    </a>
-                                </li>
-                                <li>
-                                    <i class="fa fa-exclamation-circle text-success" aria-hidden="true"></i>
-                                    <span class="text">Texto exemplo de tarefa X</span>
-                                    <a href="#" class="btn btn-flat btn-xs btn-success pull-right">
-                                        <i class="fa fa-arrow-right"></i>
-                                    </a>
-                                </li>
+                                @endforeach
                             </ul>
                         </div>
                         <!-- /.box-body -->

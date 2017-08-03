@@ -30,11 +30,4 @@ class NotificationController extends AppBaseController
             'success' => $this->notificationRepository->markAsRead($id)
         ]);
     }
-
-    public function marcarLido(Request $request)
-    {
-        return response()->json([
-            'success' => $this->notificationRepository->marcarLido($request->type, $request->id)
-        ]);
-    }
 }

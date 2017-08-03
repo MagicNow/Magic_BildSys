@@ -133,21 +133,21 @@ class Medicao extends Model
         $this->save();
     }
 
+    public function idPai(){
+        return $this->medicao_servico_id;
+    }
+
     public static $workflow_tipo_id = WorkflowTipo::MEDICAO;
 
     public function workflowNotification()
     {
-        if($this->medicao_servico_id){
-            return [
-                'message' => 'Você tem uma medição para aprovar',
-                'link' => route('medicaoServicos.show', $this->medicao_servico_id)
-            ];
-        }else{
-            return [
-                'message' => 'Você tem uma medição para aprovar',
-                'link' => route('medicoes.show', $this->id)
-            ];
-        }
-
+        return [
+            'message' => 'Medição '.$this->id.' à aprovar',
+            'link' => $this->medicao_servico_id ? route('medicaoServicos.show', $this->medicao_servico_id) : route('medicoes.show', $this->id) ,
+            'workflow_tipo_id' => WorkflowTipo::MEDICAO,
+            'id_dinamico' => $this->id,
+            'task'=>1,
+            'done'=>0
+        ];
     }
 }

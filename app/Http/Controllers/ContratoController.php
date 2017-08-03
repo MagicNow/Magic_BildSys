@@ -17,12 +17,14 @@ use App\Models\Obra;
 use App\Models\ObraTorre;
 use App\Models\Planejamento;
 use App\Models\WorkflowAprovacao;
+use App\Notifications\WorkflowNotification;
 use App\Repositories\CodeRepository;
 use App\Repositories\ContratoRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use Response;
 use App\Repositories\Admin\FornecedoresRepository;
@@ -765,6 +767,11 @@ class ContratoController extends AppBaseController
         $input = $request->all();
         $input['contrato_id'] = $contrato_id;
         $solicitacao = $repository->create($input);
+
+        # Notifica usuários aprovadores
+        $aprovadores = WorkflowAprovacaoRepository::usuariosDaAlcadaAtual($solicitacao);
+
+        Notification::send($aprovadores, new WorkflowNotification($solicitacao));
 
         return response()->json([
             'success' => true
