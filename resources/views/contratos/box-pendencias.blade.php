@@ -107,24 +107,28 @@
                                             </button>
                                             <h4 class="modal-title">
                                                 {{ $modificacao->tipo_modificacao }} <br>
-                                                <small>{{ $modificacao->item->insumo->nome }}</small>
+                                                <small>{{ $modificacao->item->insumo->codigo .' - '.
+                                                          $modificacao->item->insumo->nome   .' - '.
+                                                          $modificacao->item->insumo->unidade_sigla }}</small>
                                             </h4>
                                         </div>
                                         <div class="modal-body">
                                             <table class="table table-condensed table-all-center table-bordered table-no-margin">
                                                 <thead>
                                                 <tr>
-                                                    <th colspan="2"></th>
+                                                    <th colspan="1"></th>
                                                     <th colspan="2" class="text-center">Antes</th>
-                                                    <th colspan="3" class="text-center">Depois</th>
+                                                    <th colspan="2" class="text-center">Depois</th>
+                                                    <th colspan="3"></th>
                                                 </tr>
                                                 <tr>
                                                     <th>Código Estruturado</th>
+                                                    <th>Qtd.</th>
+                                                    <th>Valor Unitário</th>
+                                                    <th>Qtd.</th>
+                                                    <th>Valor Unitário</th>
+                                                    <th>Variação</th>
                                                     <th>Anexo</th>
-                                                    <th>Qtd.</th>
-                                                    <th>Valor Unitário</th>
-                                                    <th>Qtd.</th>
-                                                    <th>Valor Unitário</th>
                                                     <th>Observação</th>
                                                 </tr>
                                                 </thead>
@@ -137,12 +141,6 @@
                                                                 {{ $apropriacao->codigoServico() }}
                                                             </td>
                                                             <td>
-                                                                @if($modificacao->anexo)
-                                                                    <a href="{!! Storage::url($modificacao->anexo) !!}"
-                                                                       target="_blank">Ver</a>
-                                                                @endif
-                                                            </td>
-                                                            <td>
                                                                 {{ float_to_money($apropriacao->pivot->qtd_anterior, '') }}
                                                             </td>
                                                             <td>
@@ -153,6 +151,15 @@
                                                             </td>
                                                             <td>
                                                                 {{ float_to_money($modificacao['valor_unitario_atual'], '') }}
+                                                            </td>
+                                                            <td>
+                                                                {{ float_to_money($apropriacao->pivot->qtd_atual -  $apropriacao->pivot->qtd_anterior, '') }}
+                                                            </td>
+                                                            <td>
+                                                                @if($modificacao->anexo)
+                                                                    <a href="{!! Storage::url($modificacao->anexo) !!}"
+                                                                       target="_blank">Ver</a>
+                                                                @endif
                                                             </td>
                                                             <td>
                                                                 {{$apropriacao->pivot->descricao}}
