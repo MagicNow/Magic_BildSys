@@ -20,14 +20,16 @@ class QuadroDeConcorrencia extends Model
     ];
 
     public static $workflow_tipo_id = WorkflowTipo::QC;
-
+    
     public function workflowNotification()
     {
         return [
-            'message' => 'Você tem um novo quadro de concorrência para aprovar',
+            'message' => "QC ".$this->id." à aprovar",
             'link' => route('quadroDeConcorrencias.show', $this->id),
             'workflow_tipo_id' => WorkflowTipo::QC,
-            'id_dinamico' => $this->id
+            'id_dinamico' => $this->id,
+            'task'=>1,
+            'done'=>0
         ];
     }
 

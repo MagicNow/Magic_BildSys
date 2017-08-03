@@ -7,7 +7,7 @@
             font-family: 'Courgette', cursive;
         }
         body {
-            background-image: url(http://bild.dev/img/bkg_login_bild_old.jpg) !important;
+            background-image: url(/img/bkg_login_bild_old.jpg) !important;
             background-position: center !important;
             background-repeat: no-repeat !important;
         }

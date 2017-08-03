@@ -21,8 +21,12 @@ class OrdemDeCompraItem extends Model
     public function workflowNotification()
     {
         return [
-            'message' => 'Você tem uma ordem de compra para aprovar',
-            'link' => route('ordens_de_compra.detalhes', $this->ordem_de_compra_id)
+            'message' => 'OC Item '.$this->ordem_de_compra_id.' à aprovar',
+            'link' => route('ordens_de_compra.detalhes', $this->ordem_de_compra_id),
+            'workflow_tipo_id' => WorkflowTipo::OC,
+            'id_dinamico' => $this->ordem_de_compra_id,
+            'task'=>1,
+            'done'=>0
         ];
     }
 
@@ -102,9 +106,12 @@ class OrdemDeCompraItem extends Model
 
     public function setQtdAttribute($value)
     {
-        $pontos = [","];
-        $value = str_replace('.', '', $value);
-        $result = str_replace($pontos, ".", $value);
+        if(strpos($value,',') !== false){
+            $value = str_replace('.', '', $value);
+            $result = str_replace(",", ".", $value);
+        }else{
+            $result = $value;
+        }
 
         $this->attributes['qtd'] = $result;
     }
@@ -291,5 +298,24 @@ class OrdemDeCompraItem extends Model
         $this->timestamps = false;
         $this->attributes['aprovado'] = $valor;
         $this->save();
+    }
+    
+    public function idPai(){
+        return $this->ordem_de_compra_id;
+    }
+    
+    public function getQtdSobraAttribute()
+    {
+        return $this->qtd - $this->reapropriacoes->sum('qtd');
+    }
+
+    public function getQtdSobraFormattedAttribute()
+    {
+        return float_to_money($this->getQtdSobraAttribute(), '') . ' ' . $this->insumo->unidade_sigla;
+    }
+
+    public function getQtdFormattedAttribute()
+    {
+        return float_to_money($this->qtd, '') . ' ' . $this->insumo->unidade_sigla;
     }
 }

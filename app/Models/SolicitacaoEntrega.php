@@ -98,12 +98,16 @@ class SolicitacaoEntrega extends Model
     }
 
     public static $workflow_tipo_id = WorkflowTipo::SOLICITACAO_ENTREGA;
-
+    
     public function workflowNotification()
     {
         return [
-            'message' => 'Você tem uma nova Solicitação de Entrega para aprovar',
-            'link' => route('solicitacao_entrega.show', $this->id)
+            'message' => 'Solicitação de Entrega '.$this->id.' à aprovar',
+            'link' => url('/solicitacoes-de-entrega/'. $this->id),
+            'workflow_tipo_id' => WorkflowTipo::SOLICITACAO_ENTREGA,
+            'id_dinamico' => $this->id,
+            'task'=>1,
+            'done'=>0
         ];
     }
 

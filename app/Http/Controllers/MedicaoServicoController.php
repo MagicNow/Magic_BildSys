@@ -9,6 +9,7 @@ use App\Http\Requests;
 use App\Http\Requests\CreateMedicaoServicoRequest;
 use App\Http\Requests\UpdateMedicaoServicoRequest;
 use App\Models\WorkflowAlcada;
+use App\Models\WorkflowAprovacao;
 use App\Models\WorkflowReprovacaoMotivo;
 use App\Models\WorkflowTipo;
 use App\Repositories\MedicaoServicoRepository;

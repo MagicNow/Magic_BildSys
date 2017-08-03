@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\DataTables\DetalhesServicosDataTable;
 use App\Models\CompradorInsumo;
 use App\Models\User;
+use App\Repositories\NotificationRepository;
 use Exception;
 use App\DataTables\ComprasDataTable;
 use App\DataTables\InsumosAprovadosDataTable;
@@ -237,6 +238,9 @@ class OrdemDeCompraController extends AppBaseController
     public function detalhe($id)
     {
         $ordemDeCompra = $this->ordemDeCompraRepository->findWithoutFail($id);
+
+        // Limpa qualquer notificação que tiver deste item
+        NotificationRepository::marcarLido(WorkflowTipo::OC,$id);
 
         if (empty($ordemDeCompra)) {
             Flash::error('Ordem De Compra '.trans('common.not-found'));

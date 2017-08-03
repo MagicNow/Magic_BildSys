@@ -408,11 +408,28 @@ class WorkflowAprovacaoRepository
             $total_ja_votado_geral = self::verificaTotalJaAprovadoReprovado($tipo, $ids);
 
             $total_ja_votado = self::verificaTotalJaAprovadoReprovado($tipo, $ids, null, $obj->id);
+            if(count($ids) >1){
+                if ($total_ja_votado_geral['total_avaliado'] === 1) {
+                    // Se for já altera o status do pai para Em Aprovação
+                    $obj->paiEmAprovacao();
+                }
+                // Verifica se o usuário atual já aprovou tudo que precisava aprovar
+                $aprovacoesDesteUser = WorkflowAprovacao::join(DB::raw($obj->table . ' as T'),'T.id','aprovavel_id')
+                    ->where('workflow_aprovacoes.user_id', $user->id)
+                    ->where('workflow_aprovacoes.workflow_alcada_id', $workflowUsuario->workflow_alcada_id)
+                    ->where('workflow_aprovacoes.aprovavel_type','App\\Models\\' . $tipo )
+                    ->where('workflow_aprovacoes.created_at', '>=', DB::raw('T.updated_at'))
+                    ->whereIn('T.id',$ids)
+                    ->count();
 
-            if ($total_ja_votado_geral['total_avaliado'] === 1) {
-                // Se for já altera o status do pai para Em Aprovação
-                $obj->paiEmAprovacao();
+                if($aprovacoesDesteUser == count($ids)){
+                    NotificationRepository::marcarFeito($workflow_tipo_id, $obj->idPai());
+                }
+            }else{
+                // Marca como Feito a notificação
+                NotificationRepository::marcarFeito($workflow_tipo_id, $id);
             }
+
 
             // Se não for, verifica se já é a última
             $qtd_aprovadores = self::verificaQuantidadeUsuariosAprovadores($workflow_tipo, $obj->qualObra(), null, $ids, $tipo);

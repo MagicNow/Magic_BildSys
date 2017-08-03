@@ -39,11 +39,10 @@ class ContratoItemModificacaoRepository extends BaseRepository
                     ->map(function($qtd, $apropriacao_id) use ($apropriacoes) {
                         $apropriacao = $apropriacoes->where('id', $apropriacao_id)
                             ->first();
-
                         return [
                             'contrato_item_apropriacao_id' => $apropriacao_id,
                             'qtd_anterior' => $apropriacao->qtd,
-                            'qtd_atual' => $qtd + $apropriacao->qtd,
+                            'qtd_atual' => money_to_float($qtd) + $apropriacao->qtd,
                         ];
                     });
             } else {

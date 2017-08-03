@@ -115,14 +115,16 @@ class MedicaoServico extends Model
     // Aprovação
 
     public static $workflow_tipo_id = WorkflowTipo::MEDICAO;
-
+    
     public function workflowNotification()
     {
         return [
-            'message' => 'Você tem uma medição para aprovar',
+            'message' => "Medição {$this->id} à aprovar",
             'link' => route('medicaoServicos.show', $this->id),
             'workflow_tipo_id' => WorkflowTipo::MEDICAO,
-            'id_dinamico' => $this->id
+            'id_dinamico' => $this->id,
+            'task'=>1,
+            'done'=>0
         ];
     }
 
