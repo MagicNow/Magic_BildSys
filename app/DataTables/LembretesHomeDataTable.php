@@ -462,6 +462,8 @@ class LembretesHomeDataTable extends DataTable
 
             $query = DB::table(
                 DB::raw('(SELECT tarefa, id, obra, url, url_dispensar, inicio, dias, grupo
+                         FROM
+                            (SELECT tarefa, id, obra, url, url_dispensar, inicio, dias, grupo
                             FROM (SELECT
 	                                planejamentos.id,
 	                                obras.nome AS obra,
@@ -631,9 +633,8 @@ class LembretesHomeDataTable extends DataTable
                                 ' . ($this->request()->get('planejamento_id') ? ' AND planejamentos.id = ' . $this->request()->get('planejamento_id') : '') . '
                                 ' . ($this->request()->get('insumo_grupo_id') ? ' AND insumos.insumo_grupo_id = ' . $this->request()->get('insumo_grupo_id') : '') . '
                                 ) as queryInterna
-                                GROUP BY tarefa
                                 ORDER BY
-					            STR_TO_DATE(inicio,\'%d/%m/%Y\') ASC) as xpto'
+					            STR_TO_DATE(inicio,\'%d/%m/%Y\') ASC) as xpto_ordenado) as xpto GROUP BY tarefa'
                 )
             );
         }

@@ -247,8 +247,7 @@ class ContratoController extends AppBaseController
         ReajustarRequest $request,
         ContratoItemModificacaoRepository $contratoItemModificacaoRepository
     ) {
-        
-        $contratoItemModificacaoRepository->reajustar($contrato_item_id, $request->all());
+        $contratoItemModificacaoRepository->reajustar($contrato_item_id, $request->all(), $request->reajusteDescricao);
 
         return response()->json([
             'success' => true

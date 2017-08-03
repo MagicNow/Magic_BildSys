@@ -53,6 +53,28 @@ class ComprasDataTable extends DataTable
                     );
                 }
             })
+            ->editColumn('codigo', function ($obj) {
+                if($obj->substitui){
+                    return "<strong  data-toggle=\"tooltip\" data-placement=\"top\" data-html=\"true\"
+                    title=\"". $obj->tooltip_grupo . ' <br> ' .
+                    $obj->tooltip_subgrupo1 . ' <br> ' .
+                    $obj->tooltip_subgrupo2 . ' <br> ' .
+                    $obj->tooltip_subgrupo3 . ' <br> ' .
+                    $obj->tooltip_servico . ' <br> <i class=\'fa fa-exchange\'></i> ' . $obj->substitui .
+                    "\">
+                    $obj->codigo
+                    </strong>";
+                } else {
+                    return "<strong  data-toggle=\"tooltip\" data-placement=\"top\" data-html=\"true\"
+                    title=\"". $obj->tooltip_grupo . ' <br> ' .
+                    $obj->tooltip_subgrupo1 . ' <br> ' .
+                    $obj->tooltip_subgrupo2 . ' <br> ' .
+                    $obj->tooltip_subgrupo3 . ' <br> ' .
+                    $obj->tooltip_servico  ."\">
+                    $obj->codigo
+                    </strong>";
+                }
+            })
             ->editColumn('nome', function ($obj) {
                 if($obj->substitui){
                     return "<strong  data-toggle=\"tooltip\" data-placement=\"top\" data-html=\"true\"
@@ -137,7 +159,8 @@ class ComprasDataTable extends DataTable
         $insumos->select(
             [
                 'insumos.id',
-                DB::raw("CONCAT(insumos.codigo,' - ' ,insumos.nome) as nome"),
+                'insumos.codigo',
+                'insumos.nome',
                 DB::raw("format(orcamentos.qtd_total,2,'de_DE') as qtd_total"),
                 DB::raw("CONCAT(insumos_sub.codigo,' - ' ,insumos_sub.nome) as substitui"),
                 'orcamentos.id as orcamento_id',
@@ -459,6 +482,7 @@ class ComprasDataTable extends DataTable
     protected function getColumns()
     {
         return [
+            'código' => ['name' => 'codigo', 'data' => 'codigo'],
             'insumos' => ['name' => 'nome', 'data' => 'nome'],
             'unidade De Medida' => ['name' => 'unidade_sigla', 'data' => 'unidade_sigla'],
             'quantidade' => ['name' => 'orcamentos.qtd_total', 'data' => 'qtd_total'],

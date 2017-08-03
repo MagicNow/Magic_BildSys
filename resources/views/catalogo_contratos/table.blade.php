@@ -3,4 +3,18 @@
 @section('scripts')
     <script src="/vendor/datatables/buttons.server-side.js"></script>
     {!! $dataTable->scripts() !!}
+
+    <script type="text/javascript">
+        function ativarDesativarCatalogo(id) {
+            $.ajax({
+                type: 'GET',
+                url: 'catalogo-acordos/acao/ativar-desativar',
+                data: {
+                    id: id
+                }
+            }).done(function() {
+                LaravelDataTables.dataTableBuilder.draw();
+            });
+        }
+    </script>
 @endsection

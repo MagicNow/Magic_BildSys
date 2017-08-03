@@ -111,6 +111,9 @@
             @endif
         </h1>
     </section>
+    @if($oc_status != 'Em Aberto')
+        @include('quadro_de_concorrencias.timeline')
+    @endif
     <div class="content">
         <div class="box box-warning">
             <div class="box-body">

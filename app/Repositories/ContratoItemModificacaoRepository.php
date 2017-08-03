@@ -21,9 +21,9 @@ class ContratoItemModificacaoRepository extends BaseRepository
         return ContratoItemModificacao::class;
     }
 
-    public function reajustar($contrato_item_id, $data)
+    public function reajustar($contrato_item_id, $data, $reajusteDescricao)
     {
-        $modificacao = DB::transaction(function () use ($contrato_item_id, $data) {
+        $modificacao = DB::transaction(function () use ($contrato_item_id, $data, $reajusteDescricao) {
             $contratoItemRepository = app(ContratoItemRepository::class);
             $modificacaoLogRepository = app(ContratoItemModificacaoLogRepository::class);
 
@@ -36,13 +36,14 @@ class ContratoItemModificacaoRepository extends BaseRepository
                     ->findWhereIn('id', $reajustes->keys()->all());
 
                 $modApropriacoes = $reajustes
-                    ->map(function($qtd, $apropriacao_id) use ($apropriacoes) {
+                    ->map(function($qtd, $apropriacao_id) use ($apropriacoes, $reajusteDescricao) {
                         $apropriacao = $apropriacoes->where('id', $apropriacao_id)
                             ->first();
                         return [
                             'contrato_item_apropriacao_id' => $apropriacao_id,
                             'qtd_anterior' => $apropriacao->qtd,
                             'qtd_atual' => money_to_float($qtd) + $apropriacao->qtd,
+                            'descricao' => $reajusteDescricao[$apropriacao_id]
                         ];
                     });
             } else {
