@@ -1061,7 +1061,24 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('notafiscals/{notafiscals}', ['as' => 'notafiscals.show', 'uses' => 'NotafiscalController@show']);
     $router->get('notafiscals/{notafiscals}/edit', ['as' => 'notafiscals.edit', 'uses' => 'NotafiscalController@edit']);
     $router->get('ConsultaNfe', 'NotafiscalController@consultaNfe');
-    
+
+    $router->group(['middleware' => 'needsPermission:padraoEmpreendimentos.list'], function () use ($router) {
+        $router->get('padroes-de-empreendimento', ['as' => 'padraoEmpreendimentos.index', 'uses' => 'PadraoEmpreendimentoController@index']);
+        $router->post('padroes-de-empreendimento', ['as' => 'padraoEmpreendimentos.store', 'uses' => 'PadraoEmpreendimentoController@store'])
+            ->middleware('needsPermission:padraoEmpreendimentos.create');
+        $router->get('padroes-de-empreendimento/create', ['as' => 'padraoEmpreendimentos.create', 'uses' => 'PadraoEmpreendimentoController@create'])
+            ->middleware('needsPermission:padraoEmpreendimentos.create');
+        $router->put('padroes-de-empreendimento/{padraoEmpreendimentos}', ['as' => 'padraoEmpreendimentos.update', 'uses' => 'PadraoEmpreendimentoController@update'])
+            ->middleware('needsPermission:padraoEmpreendimentos.edit');
+        $router->patch('padroes-de-empreendimento/{padraoEmpreendimentos}', ['as' => 'padraoEmpreendimentos.update', 'uses' => 'PadraoEmpreendimentoController@update'])
+            ->middleware('needsPermission:padraoEmpreendimentos.edit');
+        $router->delete('padroes-de-empreendimento/{padraoEmpreendimentos}', ['as' => 'padraoEmpreendimentos.destroy', 'uses' => 'PadraoEmpreendimentoController@destroy'])
+            ->middleware('needsPermission:padraoEmpreendimentos.delete');
+        $router->get('padroes-de-empreendimento/{padraoEmpreendimentos}', ['as' => 'padraoEmpreendimentos.show', 'uses' => 'PadraoEmpreendimentoController@show']);
+        $router->get('padroes-de-empreendimento/{padraoEmpreendimentos}/edit', ['as' => 'padraoEmpreendimentos.edit', 'uses' => 'PadraoEmpreendimentoController@edit'])
+            ->middleware('needsPermission:padraoEmpreendimentos.edit');
+    });
+
     $router->get('/teste', function () {
         //        $grupos_mega = \App\Models\MegaInsumoGrupo::select([
         //            'GRU_IDE_ST_CODIGO',

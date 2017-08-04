@@ -42,10 +42,19 @@
         <li class="{{ Request::is('obras*') ? 'active' : '' }}">
             <a href="{!! route('admin.obras.index') !!}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
-                <span>Obras</span></a>
+                <span>Obras</span>
+            </a>
         </li>
         @endshield
 
+        @shield('padraoEmpreendimentos.list')
+        <li class="{{ Request::is('padraoEmpreendimentos*') ? 'active' : '' }}">
+            <a href="{!! route('padraoEmpreendimentos.index') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Padrões de empreendimento</span>
+            </a>
+        </li>
+        @endshield
 
         @shield('solicitacaoInsumos.list')
         <li class="{{ Request::is('solicitacaoInsumos*') ? 'active' : '' }}">
@@ -57,7 +66,6 @@
         @endshield
     </ul>
 </li>
-
 
 @shield('ordens_de_compra.list')
 <li class="treeview {{ Request::is('ordens-de-compra*')||Request::is('compras/dashboard')||Request::is('compras*') ? 'active' : '' }}">

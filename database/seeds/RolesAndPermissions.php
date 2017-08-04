@@ -141,6 +141,11 @@ class RolesAndPermissions extends Seeder
             'desistenciaMotivos.edit'   => 'Edição de motivos para declinar proposta',
             'desistenciaMotivos.delete'   => 'Remoção de motivos para declinar proposta',
 
+            'padraoEmpreendimentos.list' => 'Padrões de empreendimento',
+            'padraoEmpreendimentos.create' => 'Criação de padrão de empreendimento',
+            'padraoEmpreendimentos.edit'   => 'Edição de padrão de empreendimento',
+            'padraoEmpreendimentos.delete'   => 'Remoção de padrão de empreendimento',
+
             ################# SITE ###################
             'compras_lembretes.list' => 'Listagem de compras e lembretes',
 
