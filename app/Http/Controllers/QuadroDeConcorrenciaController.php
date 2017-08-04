@@ -775,12 +775,14 @@ class QuadroDeConcorrenciaController extends AppBaseController
             }
 
             if (!$request->reject) {
-                if ($quadro->hasMaterial()) {
                     if (!intval($request->frete_incluso) && !$request->tipo_frete) {
-                        DB::rollback();
-                        Flash::error('Selecione o Tipo do Frete');
+                        if ($quadro->hasMaterial()) {
 
-                        return back()->withInput();
+                            DB::rollback();
+                            Flash::error('Selecione o Tipo do Frete');
+
+                            return back()->withInput();
+                        }
                     } else {
                         if (!intval($request->frete_incluso)) {
                             if ($request->tipo_frete=='FOB' && (is_null($request->valor_frete) || floatval($request->valor_frete) == 0)) {
@@ -796,7 +798,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
                         'tipo_frete' => intval($request->frete_incluso)?'INC': $request->tipo_frete,
                         'valor_frete' => ($request->tipo_frete=='FOB'? money_to_float($request->get('valor_frete', 0)): 0),
                     ]);
-                }
+
 
                 if(!empty($request->equalizacoes)) {
                     foreach ($request->equalizacoes as $check) {
