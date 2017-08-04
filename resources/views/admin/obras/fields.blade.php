@@ -26,6 +26,16 @@
     {!! Form::select('cidade_id', $cidades, null, ['class' => 'form-control']) !!}
 </div>
 
+<div class="form-group col-sm-6">
+    {!! Form::label('regional_id', 'Regional:') !!}
+    {!! Form::select('regional_id', $regionais, null, ['class' => 'form-control select2']) !!}
+</div>
+
+<div class="form-group col-sm-6">
+    {!! Form::label('padrao_empreendimento_id', 'Padrão de empreendimento:') !!}
+    {!! Form::select('padrao_empreendimento_id', $padrao_empreendimentos, null, ['class' => 'form-control select2']) !!}
+</div>
+
 <!-- area_terreno Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('area_terreno', 'Área do terreno:') !!}
