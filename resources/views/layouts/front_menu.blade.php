@@ -56,6 +56,15 @@
         </li>
         @endshield
 
+        @shield('padraoEmpreendimentos.list')
+        <li class="{{ Request::is('regionals*') ? 'active' : '' }}">
+            <a href="{!! route('regionals.index') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Regionais</span>
+            </a>
+        </li>
+        @endshield
+
         @shield('solicitacaoInsumos.list')
         <li class="{{ Request::is('solicitacaoInsumos*') ? 'active' : '' }}">
             <a href="{!! route('admin.solicitacaoInsumos.index') !!}">

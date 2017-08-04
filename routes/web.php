@@ -1062,6 +1062,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('notafiscals/{notafiscals}/edit', ['as' => 'notafiscals.edit', 'uses' => 'NotafiscalController@edit']);
     $router->get('ConsultaNfe', 'NotafiscalController@consultaNfe');
 
+    # Padrões de empreendimento Novo
     $router->group(['middleware' => 'needsPermission:padraoEmpreendimentos.list'], function () use ($router) {
         $router->get('padroes-de-empreendimento', ['as' => 'padraoEmpreendimentos.index', 'uses' => 'PadraoEmpreendimentoController@index']);
         $router->post('padroes-de-empreendimento', ['as' => 'padraoEmpreendimentos.store', 'uses' => 'PadraoEmpreendimentoController@store'])
@@ -1077,6 +1078,24 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->get('padroes-de-empreendimento/{padraoEmpreendimentos}', ['as' => 'padraoEmpreendimentos.show', 'uses' => 'PadraoEmpreendimentoController@show']);
         $router->get('padroes-de-empreendimento/{padraoEmpreendimentos}/edit', ['as' => 'padraoEmpreendimentos.edit', 'uses' => 'PadraoEmpreendimentoController@edit'])
             ->middleware('needsPermission:padraoEmpreendimentos.edit');
+    });
+
+    # Regionais
+    $router->group(['middleware' => 'needsPermission:regionals.list'], function () use ($router) {
+        $router->get('regionais', ['as' => 'regionals.index', 'uses' => 'RegionalController@index']);
+        $router->post('regionais', ['as' => 'regionals.store', 'uses' => 'RegionalController@store'])
+            ->middleware('needsPermission:regionals.create');
+        $router->get('regionais/create', ['as' => 'regionals.create', 'uses' => 'RegionalController@create'])
+            ->middleware('needsPermission:regionals.create');
+        $router->put('regionais/{regionals}', ['as' => 'regionals.update', 'uses' => 'RegionalController@update'])
+            ->middleware('needsPermission:regionals.edit');
+        $router->patch('regionais/{regionals}', ['as' => 'regionals.update', 'uses' => 'RegionalController@update'])
+            ->middleware('needsPermission:regionals.edit');
+        $router->delete('regionais/{regionals}', ['as' => 'regionals.destroy', 'uses' => 'RegionalController@destroy'])
+            ->middleware('needsPermission:regionals.delete');
+        $router->get('regionais/{regionals}', ['as' => 'regionals.show', 'uses' => 'RegionalController@show']);
+        $router->get('regionais/{regionals}/edit', ['as' => 'regionals.edit', 'uses' => 'RegionalController@edit'])
+            ->middleware('needsPermission:regionals.edit');
     });
 
     $router->get('/teste', function () {
