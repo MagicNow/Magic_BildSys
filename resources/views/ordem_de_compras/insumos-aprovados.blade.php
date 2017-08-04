@@ -52,10 +52,23 @@
 
                 <div class="row">
                     <div class="col-md-3">
-                        <h4>Regional</h4>
+                        <h4>Regionais</h4>
                         @if(count($regionais))
                             <div class="js-datatable-filter-form">
                                 {!! Form::select('regionais[]',$regionais, null, [
+                                    'class'=>'form-control select2',
+                                    'multiple'=>'multiple',
+                                    ]) !!}
+
+                            </div>
+                        @endif
+                    </div>
+
+                    <div class="col-md-3">
+                        <h4>Padrões de empreendimento</h4>
+                        @if(count($padroes_empreendimento))
+                            <div class="js-datatable-filter-form">
+                                {!! Form::select('padroes_empreendimento[]',$padroes_empreendimento, null, [
                                     'class'=>'form-control select2',
                                     'multiple'=>'multiple',
                                     ]) !!}
@@ -126,7 +139,7 @@
                         @endif
                     </div>
 
-                    <div class="col-md-3">
+                    <div class="col-md-1">
                         <h4>O.C.s</h4>
                         @if(count($OCs))
                             <div class="js-datatable-filter-form">
@@ -138,7 +151,7 @@
                         @endif
                     </div>
 
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <h4>SLA</h4>
                         @if(count($farol))
                             <div class="js-datatable-filter-form">

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\DataTables\DetalhesServicosDataTable;
 use App\Models\CompradorInsumo;
+use App\Models\PadraoEmpreendimento;
 use App\Models\Regional;
 use App\Models\User;
 use App\Repositories\NotificationRepository;
@@ -1354,6 +1355,12 @@ class OrdemDeCompraController extends AppBaseController
             ->pluck('obra_regional.regional_id', 'obra_regional.regional_id')
             ->toArray())->pluck('nome', 'id')->toArray();
 
+
+        $padroes_empreendimento = PadraoEmpreendimento::whereIn('id', $insumosAprovados->groupBy('obra_padrao_empreendimento.padrao_empreendimento_id')
+            ->join('obras as obra_padrao_empreendimento', 'obra_padrao_empreendimento.id', 'ordem_de_compra_itens.obra_id')
+            ->pluck('obra_padrao_empreendimento.padrao_empreendimento_id', 'obra_padrao_empreendimento.padrao_empreendimento_id')
+            ->toArray())->pluck('nome', 'id')->toArray();
+
         $obras = Obra::whereIn('id', $insumosAprovados->groupBy('ordem_de_compra_itens.obra_id')
             ->pluck('ordem_de_compra_itens.obra_id', 'ordem_de_compra_itens.obra_id')
             ->toArray())->orderBy('nome', 'ASC')->pluck('nome','id')->toArray();
@@ -1394,7 +1401,7 @@ class OrdemDeCompraController extends AppBaseController
                         ->toArray();
         
         return $insumosAprovadosDataTable->render('ordem_de_compras.insumos-aprovados',
-            compact('obras', 'OCs', 'insumoGrupos', 'insumos', 'cidades', 'farol', 'compradores', 'regionais'));
+            compact('obras', 'OCs', 'insumoGrupos', 'insumos', 'cidades', 'farol', 'compradores', 'regionais', 'padroes_empreendimento'));
     }
 
     /**

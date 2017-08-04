@@ -167,6 +167,11 @@ class InsumosAprovadosDataTable extends DataTable
                 $query->whereIn('obras.regional_id',$this->request()->get('regionais'));
             }
         }
+        if($this->request()->get('padroes_empreendimento')){
+            if(count($this->request()->get('padroes_empreendimento')) && $this->request()->get('padroes_empreendimento')[0] != ""){
+                $query->whereIn('obras.padrao_empreendimento_id',$this->request()->get('padroes_empreendimento'));
+            }
+        }
         if($this->request()->get('obras')){
             if(count($this->request()->get('obras')) && $this->request()->get('obras')[0] != ""){
                 $query->whereIn('ordem_de_compra_itens.obra_id',$this->request()->get('obras'));
