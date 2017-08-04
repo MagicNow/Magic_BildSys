@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\SeStatus;
+use App\Repositories\NotificationRepository;
 use Illuminate\Http\Request;
 use App\Models\WorkflowTipo;
 use App\Repositories\WorkflowAprovacaoRepository;
@@ -34,6 +35,10 @@ class SolicitacaoEntregaController extends AppBaseController
         $id
     ) {
         $entrega      = $this->solicitacaoEntregaRepository->find($id)->load('itens.apropriacoes');
+
+        // Limpa qualquer notificação que tiver deste item
+        NotificationRepository::marcarLido(WorkflowTipo::SOLICITACAO_ENTREGA,$id);
+
         $apropriacoes = $entrega->itens
             ->pluck('apropriacoes')
             ->collapse();

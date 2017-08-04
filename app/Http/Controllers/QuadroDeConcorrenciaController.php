@@ -11,6 +11,7 @@ use App\Models\WorkflowAprovacao;
 use App\Models\WorkflowTipo;
 use App\Notifications\WorkflowNotification;
 use App\Repositories\ContratoRepository;
+use App\Repositories\NotificationRepository;
 use App\Repositories\WorkflowAprovacaoRepository;
 use Flash;
 use Illuminate\Support\Facades\Log;
@@ -110,14 +111,8 @@ class QuadroDeConcorrenciaController extends AppBaseController
     public function show($id, QcItensDataTable $qcItensDataTable)
     {
         $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->findWithoutFail($id);
-//        $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository
-//            ->with(
-//                'tipoEqualizacaoTecnicas.itens',
-//                'tipoEqualizacaoTecnicas.anexos',
-//                'itens.insumo',
-//                'itens.ordemDeCompraItens'
-//            )
-//            ->findWithoutFail($id);
+        // Limpa qualquer notificação que tiver deste item
+        NotificationRepository::marcarLido(WorkflowTipo::QC,$id);
 
         if (empty($quadroDeConcorrencia)) {
             Flash::error('Quadro De Concorrencia ' . trans('common.not-found'));

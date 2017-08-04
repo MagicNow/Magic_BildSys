@@ -20,6 +20,7 @@ use App\Models\WorkflowAprovacao;
 use App\Notifications\WorkflowNotification;
 use App\Repositories\CodeRepository;
 use App\Repositories\ContratoRepository;
+use App\Repositories\NotificationRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Support\Facades\Auth;
@@ -118,6 +119,9 @@ class ContratoController extends AppBaseController
 
             return redirect(route('contratos.index'));
         }
+
+        // Limpa qualquer notificação que tiver deste item
+        NotificationRepository::marcarLido(WorkflowTipo::CONTRATO,$id);
 
         $orcamentoInicial = $totalAGastar = $realizado = $totalSolicitado = 0;
 
