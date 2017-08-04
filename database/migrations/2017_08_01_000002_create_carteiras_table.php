@@ -17,6 +17,8 @@ class CreateCarteirasTable extends Migration
             
             $table->increments('id');
             $table->string('nome');
+			$table->timestamps();
+            $table->softDeletes();
         });
     }
 

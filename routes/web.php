@@ -378,6 +378,24 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->get('fornecedores/buscacep/{cep}', 'Admin\FornecedoresController@buscaPorCep');
         $router->get('valida-documento', 'Admin\FornecedoresController@validaCnpj');
     });
+	
+	# Carteiras
+    $router->group(['middleware' => 'needsPermission:carteiras.list'], function () use ($router) {
+        $router->get('carteiras/busca-temporarios', ['as' => 'admin.carteiras.busca_temporarios', 'uses' => 'Admin\CarteiraController@buscaTemporarios']);
+        $router->get('carteiras', ['as' => 'admin.carteiras.index', 'uses' => 'Admin\CarteiraController@index']);
+        $router->post('carteiras', ['as' => 'admin.carteiras.store', 'uses' => 'Admin\CarteiraController@store']);
+        $router->get('carteiras/create', ['as' => 'admin.carteiras.create', 'uses' => 'Admin\CarteiraController@create'])
+            ->middleware("needsPermission:carteiras.create");;
+        $router->put('carteiras/{carteiras}', ['as' => 'admin.carteiras.update', 'uses' => 'Admin\CarteiraController@update']);
+        $router->patch('carteiras/{carteiras}', ['as' => 'admin.carteiras.update', 'uses' => 'Admin\CarteiraController@update']);
+        $router->delete('carteiras/{carteiras}', ['as' => 'admin.carteiras.destroy', 'uses' => 'Admin\CarteiraController@destroy'])
+            ->middleware("needsPermission:carteiras.delete");;
+        $router->get('carteiras/{carteiras}', ['as' => 'admin.carteiras.show', 'uses' => 'Admin\CarteiraController@show']);
+        $router->get('carteiras/{carteiras}/edit', ['as' => 'admin.carteiras.edit', 'uses' => 'Admin\CarteiraController@edit'])
+            ->middleware("needsPermission:carteiras.edit");
+        $router->get('carteiras/buscacep/{cep}', 'Admin\CarteiraController@buscaPorCep');
+        $router->get('valida-documento', 'Admin\CarteiraController@validaCnpj');
+    });
     
     # Solicitação de Insumos
     $router->get('solicitacaoInsumos/create', ['as' => 'admin.solicitacaoInsumos.create', 'uses' => 'Admin\SolicitacaoInsumoController@create'])
