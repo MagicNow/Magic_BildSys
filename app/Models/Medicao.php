@@ -95,9 +95,6 @@ class Medicao extends Model
         if(!$this->medicao_servico_id){
             return true;
         }
-        if (!$this->medicaoServico->finalizado) {
-            $this->medicaoServico->update(['finalizado' => 3]);
-        }
     }
 
     public function confereAprovacaoGeral()
@@ -149,5 +146,9 @@ class Medicao extends Model
             'task'=>1,
             'done'=>0
         ];
+    }
+
+    public function emAprovacao(){
+        return true;
     }
 }

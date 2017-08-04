@@ -1,4 +1,4 @@
-<div class="panel panel-default panel-body">
+<div class="panel panel-default panel-body" id="linhaDoTempo" data-id="{{ $contrato->id }}" data-workflow-tipo="3">
     <h4 class="highlight">Timeline</h4>
     @if($alcadas_count)
         @php $col_md = 12 / ($alcadas_count + 1); @endphp
@@ -51,7 +51,6 @@
                         <h4 class="col-md-{{$col_md}} col-sm-{{$col_md}} alcada-detalhes"
                             data-id="{{ $contrato->id }}"
                             data-workflow-tipo="3"
-                            data-alcada="{{ $alcada['ordem'] }}"
                             style="padding-right: 1px;padding-left: 1px;">
                             <span>
                                 {{$count}}ª alçada
@@ -101,16 +100,14 @@
         @else
             @for($i = 1; $i <= $alcadas_count; $i ++)
                 <h4 class="col-md-{{$col_md}} col-sm-{{$col_md}} alcada-detalhes"
-                    data-id="{{ $contrato->id }}"
-                    data-workflow-tipo="3"
-                    data-alcada="{{ $i }}"
                     style="padding-right: 1px;padding-left: 1px;">
                     <span>{{$i}}ª alçada</span>
                     @if($i == $alcadas_count)
                         <span class="pull-right">{{ $status }}</span>
                     @endif
                     <div class="progress">
-                        <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
+                        <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="100"
+                             aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
                             100%
                         </div>
                     </div>

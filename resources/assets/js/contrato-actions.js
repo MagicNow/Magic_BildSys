@@ -6,10 +6,10 @@ $(function() {
   Reapropriar.init();
   Editar.init();
 
-  var workflowTipo = $('[data-workflow-tipo]');
+  var workflowTipo = $('#linhaDoTempo');
 
   workflowTipo.tooltip({
-    title: 'Clique para ver detalhes desta alcada',
+    title: 'Clique para ver detalhes',
     container: document.body
   });
 

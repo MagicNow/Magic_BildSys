@@ -23,8 +23,8 @@
             @endif
         </h1>
     </section>
-
 	<div class="content">
+
 		@if($contrato->contrato_status_id == 4 || (is_null($contrato->arquivo) && $contrato->contrato_status_id == 5)  )
             {!! Form::open(['url'=>'/contratos/'.$contrato->id.'/envia-contrato', 'files'=> true ]) !!}
             <div class="box box-warning">

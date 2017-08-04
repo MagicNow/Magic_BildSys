@@ -144,4 +144,8 @@ class SolicitacaoEntrega extends Model
     {
         return $this->isStatus(SeStatus::REPROVADO);
     }
+
+    public function emAprovacao(){
+        return ($this->se_status_id == 1);
+    }
 }
