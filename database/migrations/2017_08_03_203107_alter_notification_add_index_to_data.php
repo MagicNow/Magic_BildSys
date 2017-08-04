@@ -14,7 +14,7 @@ class AlterNotificationAddIndexToData extends Migration
     public function up()
     {
         Schema::table('notifications', function (Blueprint $table){
-            $sql = 'ALTER TABLE `bildsys`.`notifications` ADD INDEX `notifications_data_index` (`data`(500))';
+            $sql = 'ALTER TABLE `notifications` ADD INDEX `notifications_data_index` (`data`(500))';
             DB::connection()->getPdo()->exec($sql);
         });
     }
