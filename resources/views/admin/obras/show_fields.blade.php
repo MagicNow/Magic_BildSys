@@ -35,6 +35,16 @@
     <p class="form-control">{{ @isset($obra->cidade) ? $obra->cidade->nome_completo . ' - ' . $obra->cidade->uf : null }}</p>
 </div>
 
+<div class="form-group col-sm-6">
+    {!! Form::label('regional_id', 'Regional:') !!}
+    <p class="form-control">{{ @isset($obra->regional_id) ? $obra->regional->nome : null }}</p>
+</div>
+
+<div class="form-group col-sm-6">
+    {!! Form::label('padrao_empreendimento_id', 'Padrão de empreendimento:') !!}
+    <p class="form-control">{{ @isset($obra->padrao_empreendimento_id) ? $obra->padrao_empreendimento->nome : null }}</p>
+</div>
+
 <!-- area_terreno Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('area_terreno', 'Área do terreno:') !!}
