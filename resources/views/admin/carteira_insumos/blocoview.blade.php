@@ -15,10 +15,10 @@
                             <div class="col-md-12">
                                 <div class="caption">
                                     <div class="card-description">
-                                        <!-- User Field -->
+                                        <!-- Carteira Field -->
                                         <div class="form-group col-sm-12">
                                             {!! Form::label('carteira_id', 'Carteiras:') !!}
-                                            {!! Form::select('carteira_id', [''=>'-']+$carteiras, null, ['class' => 'form-control select2', 'id'=>'carteira_id', 'required'=>'required', 'onchange'=>'GrupoInsumoUsuario(this.value)']) !!}
+                                            {!! Form::select('carteira_id', [''=>'-']+$carteiras, null, ['class' => 'form-control select2', 'id'=>'carteira_id', 'required'=>'required', 'onchange'=>'GrupoInsumoCarteira(this.value)']) !!}
                                         </div>
 
                                         <!-- Grupo de insumos Field -->
@@ -54,7 +54,7 @@
 @endsection
 @section('scripts')
     <script type="text/javascript">
-        function GrupoInsumoUsuario(id){
+        function GrupoInsumoCarteira(id){
             console.log(id);
             var rota = "{{url('/admin/carteiraInsumos/delete-bloco/view/delete')}}/";
             $('.box.box-primary').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');

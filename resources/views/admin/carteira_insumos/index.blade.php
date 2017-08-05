@@ -10,7 +10,7 @@
         </h1>
         <h1 class="pull-right">
            <a class="btn btn-primary pull-right" style="margin-top: -10px;margin-bottom: 5px; margin-right: 10px;" href="{!! route('admin.carteiraInsumos.create') !!}">
-            Cadastrar insumos ao carteira
+            Cadastrar insumos a carteira
            </a>
         </h1>
     </section>

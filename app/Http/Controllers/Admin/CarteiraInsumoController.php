@@ -46,7 +46,7 @@ class CarteiraInsumoController extends AppBaseController
     {
         $grupoInsumos = InsumoGrupo::where('active', true)->pluck('nome', 'id')->toArray();
 
-        $carteiras = Carteira::first()->pluck('nome', 'id')->toArray();
+       $carteiras = Carteira::where('active', true)->pluck('nome', 'id')->toArray();
 
         return view('admin.carteira_insumos.create', compact('grupoInsumos', 'carteiras'));
     }
@@ -170,7 +170,7 @@ class CarteiraInsumoController extends AppBaseController
 
     public function deleteBlocoView()
     {
-        $carteiras = Carteiras::where('active', true)->pluck('nome', 'id')->toArray();
+        $carteiras = Carteira::where('active', true)->pluck('nome', 'id')->toArray();
 		
 //        $grupoInsumos = InsumoGrupo::select([
 //            'insumo_grupos.nome',

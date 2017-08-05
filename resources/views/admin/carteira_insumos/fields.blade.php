@@ -45,10 +45,10 @@
         <div class="col-md-12">
             <div class="caption">
                 <div class="card-description">
-                    <!-- Categoria Field -->
+                    <!-- Carteira Field -->
                     <div class="form-group col-sm-12">
-                        {!! Form::label('categoria_id', 'Categorias:') !!}
-                        {!! Form::select('categoria_id', [''=>'-']+$carteira, null, ['class' => 'form-control select2', 'id'=>'categoria_id', 'required'=>'required']) !!}
+                        {!! Form::label('carteira_id', 'Carteiras:') !!}
+                        {!! Form::select('carteira_id', [''=>'-']+$carteiras, null, ['class' => 'form-control select2', 'id'=>'carteira_id', 'required'=>'required']) !!}
                     </div>
 
                     <!-- Grupo de insumos Field -->
