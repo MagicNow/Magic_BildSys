@@ -122,9 +122,10 @@ class RolesAndPermissions extends Seeder
             'compradorInsumos.deleteBlocoView'   => 'Remoção em bloco de comprador/insumos',
 			
 			'carteiraInsumos.list'   => 'Listagem de carteira/insumos',
-            'carteiraInsumos.create'   => 'Criação de carteira/insumos',
+            'carteiraInsumos.create'   => 'Criação de carteira/insumos',			
             'carteiraInsumos.delete'   => 'Remoção de carteira/insumos',
             'carteiraInsumos.deleteBlocoView'   => 'Remoção em bloco de carteira/insumos',
+			'carteiraInsumos.semCarteiraView'   => 'Insumos que não tem carteira associada',
 
             'solicitacaoInsumos.list'   => 'Listagem de solicitação insumos',
             'solicitacaoInsumos.create'   => 'Criação de solicitação insumo',
@@ -178,7 +179,6 @@ class RolesAndPermissions extends Seeder
             'equalizacao_tecnicas.edit'   => 'Edição de equalização tecnica',
             'equalizacao_tecnicas.delete'   => 'Remoção de equalização tecnica',
 
-
             'contratos.list'        => 'Listagem de contratos',
             'contratos.show'        => 'Visualização de contrato',
             'contratos.edit'        => 'Editar contrato',
@@ -187,7 +187,6 @@ class RolesAndPermissions extends Seeder
             'contratos.reapropriar' => 'Reapropriar item do contrato',
             'contratos.previsao_de_memoria_de_calculo' => 'Previsão de memória de cálculo',
             'contratos.solicitar_entrega' => 'Solicitar entrega do Contrato',
-
 
             'configuracaoEstaticas.list'   => 'Listagem de Configuração padrão',
             'configuracaoEstaticas.edit'   => 'Edição de Configuração padrão',

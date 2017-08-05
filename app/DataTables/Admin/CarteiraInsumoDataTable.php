@@ -30,7 +30,7 @@ class CarteiraInsumoDataTable extends DataTable
         $carteiraInsumos = CarteiraInsumo::query()
             ->select([
                 'carteira_insumos.id',
-                'carteiras.nome',
+                'carteiras.nome as nome_carteira',
                 'insumos.nome',
                 'insumo_grupos.nome as nome_grupo_insumo'
             ])
@@ -100,7 +100,7 @@ class CarteiraInsumoDataTable extends DataTable
     private function getColumns()
     {
         return [
-            'Carteira' => ['name' => 'carteiras.nome', 'data' => 'nome'],
+            'Carteira' => ['name' => 'carteiras.nome', 'data' => 'nome_carteira'],
             'Grupo_de_insumos' => ['name' => 'insumo_grupos.nome', 'data' => 'nome_grupo_insumo'],
             'Insumos' => ['name' => 'insumos.nome', 'data' => 'nome'],
             'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']

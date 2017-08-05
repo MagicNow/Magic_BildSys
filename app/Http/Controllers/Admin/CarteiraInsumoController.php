@@ -44,13 +44,13 @@ class CarteiraInsumoController extends AppBaseController
      */
     public function create()
     {
-        $grupoInsumos = InsumoGrupo::where('active', true)->pluck('nome', 'id')->toArray();
+		$grupoInsumos = InsumoGrupo::where('active', true)->pluck('nome', 'id')->toArray();
 
-       $carteiras = Carteira::where('active', true)->pluck('nome', 'id')->toArray();
+		$carteiras = Carteira::where('active', true)->pluck('nome', 'id')->toArray();
 
         return view('admin.carteira_insumos.create', compact('grupoInsumos', 'carteiras'));
     }
-
+	
     /**
      * Store a newly created CarteiraInsumo in storage.
      *
@@ -181,6 +181,22 @@ class CarteiraInsumoController extends AppBaseController
 //            ->pluck('nome','id')->toArray();
 
         return view('admin.carteira_insumos.blocoview', compact('carteiras'));
+    }
+	
+	
+	/**
+     * Display the specified CarteiraInsumo without association with any Carteira
+     *
+     * @return Response
+     */
+    public function semCarteiraView()
+    {
+		$grupoInsumos = InsumoGrupo::where('active', true)->pluck('nome', 'id')->toArray();
+
+		$carteiras = Carteira::where('active', true)->pluck('nome', 'id')->toArray();
+
+        return view('admin.carteira_insumos.sem_carteira', compact('grupoInsumos', 'carteiras'));
+   
     }
 
     public function buscaGrupoInsumo($carteira_id)
