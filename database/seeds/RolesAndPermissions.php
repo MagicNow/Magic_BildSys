@@ -120,6 +120,11 @@ class RolesAndPermissions extends Seeder
             'compradorInsumos.create'   => 'Criação de comprador/insumos',
             'compradorInsumos.delete'   => 'Remoção de comprador/insumos',
             'compradorInsumos.deleteBlocoView'   => 'Remoção em bloco de comprador/insumos',
+			
+			'carteiraInsumos.list'   => 'Listagem de carteira/insumos',
+            'carteiraInsumos.create'   => 'Criação de carteira/insumos',
+            'carteiraInsumos.delete'   => 'Remoção de carteira/insumos',
+            'carteiraInsumos.deleteBlocoView'   => 'Remoção em bloco de carteira/insumos',
 
             'solicitacaoInsumos.list'   => 'Listagem de solicitação insumos',
             'solicitacaoInsumos.create'   => 'Criação de solicitação insumo',

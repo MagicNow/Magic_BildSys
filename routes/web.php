@@ -174,6 +174,26 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
         $router->get('compradorInsumos/delete-bloco/view/delete', ['as' => 'admin.compradorInsumos.deletebloco', 'uses' => 'Admin\CompradorInsumoController@deleteBloco']);
         $router->get('compradorInsumos/delete-bloco/view/delete/{id}', 'Admin\CompradorInsumoController@buscaGrupoInsumo');
     });
+	
+	# Carteira de insumos 
+    $router->group(['middleware' => 'needsPermission:carteiraInsumos.list'], function () use ($router) {
+        $router->get('carteiraInsumos', ['as' => 'admin.carteiraInsumos.index', 'uses' => 'Admin\CarteiraInsumoController@index']);
+        $router->post('carteiraInsumos', ['as' => 'admin.carteiraInsumos.store', 'uses' => 'Admin\CarteiraInsumoController@store']);
+        $router->get('carteiraInsumos/create', ['as' => 'admin.carteiraInsumos.create', 'uses' => 'Admin\CarteiraInsumoController@create'])
+            ->middleware("needsPermission:carteiraInsumos.create");
+        $router->put('carteiraInsumos/{carteiraInsumos}', ['as' => 'admin.carteiraInsumos.update', 'uses' => 'Admin\CarteiraInsumoController@update']);
+        $router->patch('carteiraInsumos/{carteiraInsumos}', ['as' => 'admin.carteiraInsumos.update', 'uses' => 'Admin\CarteiraInsumoController@update']);
+        $router->delete('carteiraInsumos/{carteiraInsumos}', ['as' => 'admin.carteiraInsumos.destroy', 'uses' => 'Admin\CarteiraInsumoController@destroy'])
+            ->middleware("needsPermission:carteiraInsumos.delete");
+        $router->get('carteiraInsumos/{carteiraInsumos}', ['as' => 'admin.carteiraInsumos.show', 'uses' => 'Admin\CarteiraInsumoController@show']);
+        $router->get('carteiraInsumos/{carteiraInsumos}/edit', ['as' => 'admin.carteiraInsumos.edit', 'uses' => 'Admin\CarteiraInsumoController@edit'])
+            ->middleware("needsPermission:carteiraInsumos.edit");
+        $router->get('carteiraInsumos/insumos/{id}', 'Admin\CarteiraInsumoController@getInsumos');
+        $router->get('carteiraInsumos/delete-bloco/view', ['as' => 'admin.carteiraInsumos.deleteblocoview', 'uses' => 'Admin\CarteiraInsumoController@deleteBlocoView'])
+            ->middleware("needsPermission:carteiraInsumos.deleteBlocoView");
+        $router->get('carteiraInsumos/delete-bloco/view/delete', ['as' => 'admin.carteiraInsumos.deletebloco', 'uses' => 'Admin\CarteiraInsumoController@deleteBloco']);
+        $router->get('carteiraInsumos/delete-bloco/view/delete/{id}', 'Admin\CarteiraInsumoController@buscaGrupoInsumo');
+    });
 
     # Manage users
     $router->group(['middleware' => 'needsPermission:users.list'], function () use ($router) {
