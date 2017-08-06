@@ -25,6 +25,7 @@ class Carteira extends Model
 
     public $fillable = [
         'nome',
+		'active'
     ];
 
     public static $campos = [

@@ -2,7 +2,12 @@
 
 @section('content')
     <section class="content-header">
-        <h1 class="pull-left">Carteira / insumos</h1>
+        <h1 class="pull-left">
+			{{--<button type="button" class="btn btn-link" onclick="history.go(-1);">
+				<i class="fa fa-arrow-left" aria-hidden="true"></i>
+			</button>--}}
+			Carteira / insumos
+		</h1>
         <h1>
             <a class="btn btn-danger pull-right" style="margin-top: -10px;margin-bottom: 5px;" href="{!! route('admin.carteiraInsumos.deleteblocoview') !!}">
                 Remover insumos em bloco

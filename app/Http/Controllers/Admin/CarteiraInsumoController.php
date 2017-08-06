@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\DataTables\Admin\CarteiraInsumoDataTable;
+use App\DataTables\Admin\SemCarteiraInsumoDataTable;
 use App\Http\Requests\Admin;
 use App\Http\Requests\Admin\CreateCarteiraInsumoRequest;
 use App\Http\Requests\Admin\UpdateCarteiraInsumoRequest;
@@ -188,15 +189,14 @@ class CarteiraInsumoController extends AppBaseController
      * Display the specified CarteiraInsumo without association with any Carteira
      *
      * @return Response
-     */
-    public function semCarteiraView()
+     */	
+    public function semCarteiraView(SemCarteiraInsumoDataTable $semCarteiraInsumoDataTable)
     {
 		$grupoInsumos = InsumoGrupo::where('active', true)->pluck('nome', 'id')->toArray();
 
 		$carteiras = Carteira::where('active', true)->pluck('nome', 'id')->toArray();
 
-        return view('admin.carteira_insumos.sem_carteira', compact('grupoInsumos', 'carteiras'));
-   
+        return $semCarteiraInsumoDataTable->render('admin.carteira_insumos.sem_carteira', compact('grupoInsumos', 'carteiras'));   
     }
 
     public function buscaGrupoInsumo($carteira_id)

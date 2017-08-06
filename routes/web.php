@@ -84,6 +84,7 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
 
     # Planejamentos
     $router->group(['prefix' => 'planejamentos'], function () use ($router) {
+		
         $router->group(['middleware' => 'needsPermission:cronograma_de_obras.list'], function () use ($router) {
             $router->get('atividade', ['as' => 'admin.planejamentos.index', 'uses' => 'Admin\PlanejamentoController@index']);
             $router->post('atividade', ['as' => 'admin.planejamentos.store', 'uses' => 'Admin\PlanejamentoController@store']);
