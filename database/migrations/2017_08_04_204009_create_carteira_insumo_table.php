@@ -15,8 +15,8 @@ class CreateCarteiraInsumoTable extends Migration
     {
         Schema::create('carteira_insumos', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
+            $table->unsignedInteger('carteira_id');
+            $table->foreign('carteira_id')->references('id')->on('carteiras')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedInteger('insumo_id');
             $table->foreign('insumo_id')->references('id')->on('insumos')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
@@ -31,7 +31,7 @@ class CreateCarteiraInsumoTable extends Migration
     public function down()
     {
         Schema::table('carteira_insumos', function(Blueprint $table) {
-            $table->dropForeign(['user_id']);
+            $table->dropForeign(['carteira_id']);
             $table->dropForeign(['insumo_id']);
         });
 
