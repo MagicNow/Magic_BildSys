@@ -56,4 +56,5 @@ class CarteiraInsumo extends Model
     {
         return $this->belongsTo(\App\Models\Carteira::class);
     }
+		
 }

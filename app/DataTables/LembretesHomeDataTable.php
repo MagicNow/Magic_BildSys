@@ -64,7 +64,7 @@ class LembretesHomeDataTable extends DataTable
                             ) ,
                             0
                         )
-                    ) DAY),'%d/%m/%Y') like ?", ["%$keyword%"]);
+						) DAY),'%d/%m/%Y') like ?", ["%$keyword%"]);
                     } else {
                         $range = explode('-', $keyword);
                         $inicio_array = explode('/', trim($range[0]));
@@ -210,8 +210,8 @@ class LembretesHomeDataTable extends DataTable
                 })
                 ->orderColumn('planejamentos.tarefa',
                     $this->request()->exibir_por_tarefa ? 'xpto.tarefa' : 'planejamentos.tarefa')
-
-                ->filterColumn('obras.nome', function ($query, $keyword) {
+                
+				->filterColumn('obras.nome', function ($query, $keyword) {
                     if (!$this->request()->exibir_por_tarefa) {
                         $query->whereRaw("obras.nome LIKE ?", ['%' . $keyword . '%']);
                     } else {
@@ -220,7 +220,8 @@ class LembretesHomeDataTable extends DataTable
                 })
                 ->orderColumn('obras.nome',
                     $this->request()->exibir_por_tarefa ? 'xpto.obra' : 'obras.nome')
-                ->make(true);
+                
+				->make(true);
         }
     }
 
@@ -701,6 +702,17 @@ class LembretesHomeDataTable extends DataTable
                             .on(\'change\', function () {
                                 column.search($(this).val(), false, false, true).draw();
                             });
+                        }else if(col==4){
+                            var column = this;
+                            var input = document.createElement("input");
+                            $(input).attr(\'id\',\'filtro_carteira\');
+                            $(input).attr(\'placeholder\',\'Filtrar Carteira...\');
+                            $(input).addClass(\'form-control\');
+                            $(input).css(\'width\',\'100%\');
+                            $(input).appendTo($(column.footer()).empty())
+                            .on(\'change\', function () {
+                                column.search($(this).val(), false, false, true).draw();
+                            });
                         }else if((col+1)<max){
                             var column = this;
                             var input = document.createElement("input");
@@ -741,6 +753,7 @@ class LembretesHomeDataTable extends DataTable
         ];
 
         $columns['Grupo De Insumo'] = ['name' => 'grupo', 'data' => 'grupo'];
+		$columns['Carteira'] = ['name' => 'carteira', 'data' => 'grupo'];
 
         $columns['action'] = [
             'title'      => 'Ações',

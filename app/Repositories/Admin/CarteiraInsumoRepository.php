@@ -22,4 +22,5 @@ class CarteiraInsumoRepository extends BaseRepository
     {
         return CarteiraInsumo::class;
     }
+
 }
