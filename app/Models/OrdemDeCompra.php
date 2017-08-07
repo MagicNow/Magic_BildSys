@@ -42,9 +42,21 @@ class OrdemDeCompra extends Model
         ];
     }
 
+    public function workflowNotificationDone($aprovado)
+    {
+        return [
+            'message' => 'Ordem de compra '.$this->id.($aprovado?' aprovada ':' reprovada '),
+            'link' => route('ordens_de_compra.detalhes', $this->id)
+        ];
+    }
+
     public function irmaosIds()
     {
         return [$this->attributes['id'] => $this->attributes['id']];
+    }
+
+    public function idPai(){
+        return null;
     }
 
     /**
