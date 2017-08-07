@@ -148,7 +148,16 @@ class Medicao extends Model
         ];
     }
 
-    public function emAprovacao(){
+    public function workflowNotificationDone($aprovado)
+    {
+        return [
+            'message' => 'Medição '.$this->id.($aprovado?' aprovada ':' reprovada '),
+            'link' => $this->medicao_servico_id ? route('medicaoServicos.show', $this->medicao_servico_id) : route('medicoes.show', $this->id),
+        ];
+    }
+
+    public function emAprovacao()
+    {
         return true;
     }
 }

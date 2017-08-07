@@ -32,6 +32,14 @@ class QuadroDeConcorrencia extends Model
             'done'=>0
         ];
     }
+    
+    public function workflowNotificationDone($aprovado)
+    {
+        return [
+            'message' => "QC ".$this->id.($aprovado?' aprovada ':' reprovada '),
+            'link' => route('quadroDeConcorrencias.show', $this->id)
+        ];
+    }
 
     public function concorrenciaNotification()
     {
@@ -175,6 +183,10 @@ class QuadroDeConcorrencia extends Model
     public function irmaosIds()
     {
         return [$this->attributes['id'] => $this->attributes['id']];
+    }
+
+    public function idPai(){
+        return null;
     }
 
     public function paiEmAprovacao()

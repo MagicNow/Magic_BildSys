@@ -45,6 +45,13 @@ class Contrato extends Model
             'done'=>0
         ];
     }
+    public function workflowNotificationDone($aprovado)
+    {
+        return [
+            'message' => 'Contrato '.$this->id.($aprovado?' aprovado ':' reprovado '),
+            'link' => route('contratos.show', $this->id),
+        ];
+    }
 
     /**
      * The attributes that should be casted to native types.
@@ -152,6 +159,10 @@ class Contrato extends Model
     public function irmaosIds()
     {
         return [$this->attributes['id'] => $this->attributes['id']];
+    }
+
+    public function idPai(){
+        return null;
     }
 
     public function aprovacoes()

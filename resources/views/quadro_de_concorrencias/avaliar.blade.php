@@ -220,8 +220,8 @@
                                     <th>Qtd</th>
                                     @foreach($qcFornecedores as $qcFornecedor)
                                         <th>
-                                            {{ Form::checkbox('qcFornecedor_'.$qcFornecedor->id, 1, false, ['class' => 'icheck_destroy', 'style' => 'width: 18px;height: 18px;', 'onclick' => 'marcarDesmarcarTudo('.$qcFornecedor->id.');', 'id' => 'marcarDesmarcarTudoCheck']) }}
-                                            {{ $qcFornecedor->fornecedor->nome }}
+                                            {{ Form::radio('qcFornecedor_escolhido', 1, false, ['class' => 'icheck_destroy', 'style' => 'width: 18px;height: 18px;', 'onclick' => 'marcarDesmarcarTudo('.$qcFornecedor->id.');', 'id' => 'marcarDesmarcarTudoCheck'.$qcFornecedor->id]) }}
+                                            <label for="marcarDesmarcarTudoCheck{{ $qcFornecedor->id }}">{{ $qcFornecedor->fornecedor->nome }}</label>
                                             <table style="width:100%;margin-top: 20px;">
                                                 <tr>
                                                     <th>Valor unitário</th>
@@ -261,7 +261,7 @@
                                                                 <label>
                                                                     @if(isset($qcItemQcFornecedor->valor_total))
                                                                         {!!
-                                                                          Form::checkbox(
+                                                                          Form::radio(
                                                                             "vencedores[{$item->id}]",
                                                                             $qcItemQcFornecedor->id,
                                                                             false,
@@ -563,7 +563,7 @@
         }
 
         function marcarDesmarcarTudo(id) {
-            var marcarDesmarcarTudoCheck = $('#marcarDesmarcarTudoCheck').prop('checked');
+            var marcarDesmarcarTudoCheck = $('#marcarDesmarcarTudoCheck'+id).prop('checked');
             if(marcarDesmarcarTudoCheck) {
                 $('.qcFornecedorInsumo_'+id).prop('checked', true);
             } else {

@@ -132,4 +132,8 @@ class MedicaoServico extends Model
     {
         return [$this->attributes['id'] => $this->attributes['id']];
     }
+
+    public function idPai(){
+        return null;
+    }
 }
