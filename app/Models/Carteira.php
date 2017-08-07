@@ -25,7 +25,6 @@ class Carteira extends Model
 
     public $fillable = [
         'nome',
-		'active'
     ];
 
     public static $campos = [
@@ -65,6 +64,24 @@ class Carteira extends Model
     public function users()
     {
         return $this->belongsToMany(User::class, 'carteira_users', 'carteira_id', 'user_id')
+            ->withPivot('deleted_at')
+            ->withTimestamps();
+    }
+	
+	/**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function carteiraTipoEquilizacaoTecnicas()
+    {
+        return $this->belongsToMany(CarteiraTipoEquilizacaoTecnica::class, 'carteira_tipo_equalizacao_tecnicas', 'carteira_id', 'tipo_equalizacao_id')->withPivot('deleted_at')->withTimestamps();
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function tipoEquilizacaoTecnicas()
+    {
+        return $this->belongsToMany(TipoEqualizacaoTecnica::class, 'carteira_tipo_equalizacao_tecnicas', 'carteira_id', 'tipo_equalizacao_id')
             ->withPivot('deleted_at')
             ->withTimestamps();
     }

@@ -24,8 +24,8 @@ class CarteiraTipoEqualizacaoTecnica extends Model
 
 
     public $fillable = [
-        'tipo_equalizacao_tecnica_id',
-        'carteira_id'
+		'carteira_id',
+        'tipo_equalizacao_id'
     ];
 
     /**
@@ -35,8 +35,8 @@ class CarteiraTipoEqualizacaoTecnica extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'tipo_equalizacao_tecnica_id' => 'integer',
-        'carteira_id' => 'integer'
+        'carteira_id' => 'integer',
+        'tipo_equalizacao_id' => 'integer'		
     ];
 
     /**

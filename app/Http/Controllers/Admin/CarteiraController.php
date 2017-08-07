@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Storage;
 use Response;
 use DB;
 use App\Repositories\Admin\UserRepository;
+use App\Repositories\Admin\TipoEqualizacaoTecnicaRepository;
 
 class CarteiraController extends AppBaseController
 {
@@ -110,7 +111,7 @@ class CarteiraController extends AppBaseController
      *
      * @return Response
      */
-    public function edit($id, UserRepository $userRepository)
+    public function edit($id, UserRepository $userRepository, TipoEqualizacaoTecnicaRepository $tipoEqualizacaoTecnicaRepository)
     {
         $carteira = $this->carteiraRepository->findWithoutFail($id);
 
@@ -120,11 +121,16 @@ class CarteiraController extends AppBaseController
             return redirect(route('admin.carteiras.index'));
         }
 
-        $relacionados = $userRepository->usuariosDaCarteira($id);
-        $carteiraUsers = $relacionados->pluck('id')->all();
-        $relacionados = $relacionados->pluck('name', 'id')->all();
+        $relacionadoUsers = $userRepository->usuariosDaCarteira($id);
+        $carteiraUsers = $relacionadoUsers->pluck('id')->all();
+        $relacionadoUsers = $relacionadoUsers->pluck('name', 'id')->all();
+		
+		
+		$relacionadoTipoEqualizacaoTecnicas = $tipoEqualizacaoTecnicaRepository->tiposEqualizacaoTecnicasDaCarteira($id);
+        $carteiraTipoEqualizacaoTecnicas = $relacionadoTipoEqualizacaoTecnicas->pluck('id')->all();
+        $relacionadoTipoEqualizacaoTecnicas = $relacionadoTipoEqualizacaoTecnicas->pluck('nome', 'id')->all();
         
-        return view('admin.carteiras.edit', compact('carteira', 'relacionados', 'carteiraUsers'));
+        return view('admin.carteiras.edit', compact('carteira', 'relacionadoUsers', 'carteiraUsers' ,'relacionadoTipoEqualizacaoTecnicas', 'carteiraTipoEqualizacaoTecnicas'));
     }
 
     /**

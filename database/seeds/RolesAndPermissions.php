@@ -100,6 +100,7 @@ class RolesAndPermissions extends Seeder
             'carteiras.create' => 'Criação de carteiras',
             'carteiras.edit'   => 'Edição de carteiras',
             'carteiras.view'   => 'Visualização de carteiras',
+			'carteiras.delete'   => 'Remoção de carteiras',
 
             'insumos.list' => 'Listagem de insumos',
             'insumos.view'   => 'Visualização de insumos',

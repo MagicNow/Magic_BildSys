@@ -40,21 +40,21 @@ class CarteiraInsumo extends Model
     public static $rules = [
         
     ];
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     **/
-    public function insumo()
-    {
-        return $this->belongsTo(\App\Models\Insumo::class);
-    }
-
+    
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
     public function carteira()
     {
         return $this->belongsTo(\App\Models\Carteira::class);
+    }
+	
+	/**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function insumo()
+    {
+        return $this->belongsTo(\App\Models\Insumo::class);
     }
 		
 }

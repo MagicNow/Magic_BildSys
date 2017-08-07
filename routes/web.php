@@ -35,6 +35,8 @@ $router->get('/buscar/insumos', 'BuscarController@getInsumos')
     ->name('buscar.insumos');
 $router->get('/buscar/fornecedores', 'BuscarController@getFornecedores')
     ->name('buscar.fornecedores');
+$router->get('/buscar/tipo-equalizacao-tecnicas', 'BuscarController@getTipoEqualizacaoTecnicas')
+    ->name('buscar.tipo-equalizacao-tecnicas');
 
 $router->get('/admin/users/busca', 'Admin\Manage\UsersController@busca');
 $router->get('/getForeignKey', 'CodesController@getForeignKey');
