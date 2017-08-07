@@ -66118,7 +66118,7 @@ $(function() {
 
     var insumos = _.reduce(rows, function(insumos, row) {
       var insumo = row.querySelector('td').innerText;
-      var inputs = row.querySelectorAll('input[type="checkbox"]');
+      var inputs = row.querySelectorAll('input[type="radio"]');
 
       insumos[insumo] = hasCheckedElement(inputs);
 

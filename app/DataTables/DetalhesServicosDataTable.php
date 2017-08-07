@@ -221,10 +221,10 @@ class DetalhesServicosDataTable extends DataTable
             'Und_de_medida' => ['name' => 'unidade_sigla', 'data' => 'unidade_sigla'],
             'Valor_previsto_no_orçamento' => ['name' => 'orcamentos.preco_total', 'data' => 'valor_previsto', 'searchable' => false],
             'Valor_comprometido_realizado' => ['name' => 'valor_realizado', 'data' => 'valor_realizado', 'searchable' => false],
-            'Valor_comprometido_à_gastar' => ['name' => 'valor_comprometido_a_gastar', 'data' => 'valor_comprometido_a_gastar', 'searchable' => false],
+            'Valor_comprometido_à_gastar' => ['name' => 'valor_comprometido_a_gastar', 'data' => 'valor_comprometido_a_gastar', 'searchable' => false, 'orderable' => false],
             'Saldo_de_orçamento' => ['name' => 'saldo_orcamento', 'data' => 'saldo_orcamento', 'searchable' => false],
             'Valor_da_Oc' => ['name' => 'valor_oc', 'data' => 'valor_oc', 'searchable' => false],
-            'Saldo_disponível_após_O&period;C&period;' => ['name' => 'saldo_disponivel', 'data' => 'saldo_disponivel', 'searchable' => false],
+            'Saldo_disponível_após_O&period;C&period;' => ['name' => 'saldo_disponivel', 'data' => 'saldo_disponivel', 'searchable' => false, 'orderable' => false],
             'action' => ['name' => 'Ações', 'title' => 'Selecionar', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10px', 'class' => 'all'],
         ];
     }
