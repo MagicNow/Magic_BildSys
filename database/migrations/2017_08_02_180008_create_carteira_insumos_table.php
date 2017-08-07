@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCarteiraInsumoTable extends Migration
+class CreateCarteiraInsumosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,11 +15,20 @@ class CreateCarteiraInsumoTable extends Migration
     {
         Schema::create('carteira_insumos', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('carteira_id');
-            $table->foreign('carteira_id')->references('id')->on('carteiras')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedInteger('insumo_id');
-            $table->foreign('insumo_id')->references('id')->on('insumos')->onDelete('cascade')->onUpdate('cascade');
+            $table->unsignedInteger('carteira_id');
             $table->timestamps();
+            $table->softDeletes();
+
+            $table->foreign('insumo_id')
+                ->references('id')->on('insumos')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+
+            $table->foreign('carteira_id')
+                ->references('id')->on('carteiras')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
         });
     }
 
@@ -30,11 +39,6 @@ class CreateCarteiraInsumoTable extends Migration
      */
     public function down()
     {
-        Schema::table('carteira_insumos', function(Blueprint $table) {
-            $table->dropForeign(['carteira_id']);
-            $table->dropForeign(['insumo_id']);
-        });
-
         Schema::dropIfExists('carteira_insumos');
 
     }
