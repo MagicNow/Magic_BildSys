@@ -57,6 +57,7 @@
 @endsection
 
 @section('scripts')
+  @parent
     <script src="/vendor/datatables/buttons.server-side.js"></script>
     <script>
       function selectgrupo(id, change, tipo){

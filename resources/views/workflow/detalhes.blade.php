@@ -7,11 +7,26 @@
             <h4 class="modal-title">Histórico de Aprovações</h4>
         </div>
         <div class="modal-body">
+            @php
+                $impressoAlteracao = false;
+            @endphp
             @foreach($alcadas_aprovacao as $alcada)
                 <h5>
                     Alçada {{ $alcada['alcada']->ordem }}
                 </h5>
                 @foreach($alcada['itens'] as $aprovacao)
+                    @if($aprovacao->aprovavel->emAprovacao() && $aprovacao->created_at > $aprovacao->aprovavel->updated_at && !$impressoAlteracao)
+                        <h4>
+                            <i class="fa fa-edit"></i>
+                            Última Edição
+                                <span class="label label-warning">
+                                    {{ $aprovacao->aprovavel->updated_at->format('d/m/Y H:i') }}
+                                </span>
+                        </h4>
+                        @php
+                            $impressoAlteracao = true;
+                        @endphp
+                    @endif
                     <div class="box {{ is_null($aprovacao) ?  'box-default' : ($aprovacao->aprovado ? 'box-success' : 'box-danger') }}">
                         <div class="box-header with-border">
                             <h3 class="box-title box-title-full">
@@ -33,11 +48,6 @@
                                         </strong>
                                     @endif
 
-                                    @if($aprovacao->aprovavel->emAprovacao() && $aprovacao->created_at < $aprovacao->aprovavel->updated_at)
-                                        <span class="label label-warning">
-                                            Antes de alteração
-                                        </span>
-                                    @endif
                                 @endif
                             </h3>
                         </div>
@@ -84,15 +94,16 @@
                         </div>
                     </div>
                 @endforeach
-                @if($aprovacao->aprovavel->emAprovacao() && $aprovacao->created_at < $aprovacao->aprovavel->updated_at)
-                    <h4>
-                        <i class="fa fa-edit"></i>
-                        Edição
-                        <span class="label label-warning">
-                            {{ $aprovacao->aprovavel->updated_at->format('d/m/Y H:i') }}
-                        </span>
-                    </h4>
-
+                @if ($loop->last)
+                    @if($aprovacao->aprovavel->emAprovacao() && $aprovacao->created_at < $aprovacao->aprovavel->updated_at && !$impressoAlteracao)
+                        <h4>
+                            <i class="fa fa-edit"></i>
+                            Última Edição
+                                <span class="label label-warning">
+                                    {{ $aprovacao->aprovavel->updated_at->format('d/m/Y H:i') }}
+                                </span>
+                        </h4>
+                    @endif
                 @endif
             @endforeach
             </div>

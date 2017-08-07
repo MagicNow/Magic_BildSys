@@ -107,7 +107,8 @@ var Reapropriar = (function() {
     this.modal      = document.getElementById('modal-reapropriar');
     this.insumo     = document.getElementById('insumo_id');
     this.addAllBtn  = document.getElementById('add-all');
-    this.grupos     = document.querySelectorAll('.js-group-selector');
+    // this.grupos     = document.querySelectorAll('.js-group-selector');
+    this.grupos     = document.querySelectorAll('.js-grupos-orc');
     this.qtd        = this.modal.querySelector('[name=qtd]');
     this.saveBtn    = this.modal.querySelector('.js-save');
     this.id         = 0;
@@ -241,6 +242,7 @@ var Reapropriar = (function() {
       .map(_.property('value'))
       .filter(Boolean)
       .length;
+    console.log(filled,this.grupos.length );
 
     if (filled !== this.grupos.length) {
       swal('', 'Selecione todos os grupos para reapropriação', 'warning');

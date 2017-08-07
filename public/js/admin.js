@@ -64102,6 +64102,66 @@ sortable.disable = function (sortableElement) {
 return sortable;
 }));
 
+function select2(selector, options) {
+  options = Object.assign({
+    allowClear: true,
+    placeholder: "Escolha...",
+    language: "pt-BR",
+    theme: 'bootstrap',
+    ajax: {
+      url: options.url || (options.ajax ? options.ajax.url : ''),
+      dataType: 'json',
+      delay: 250,
+
+      data: function(params) {
+        return {
+          q: params.term,
+          page: params.page,
+        };
+      },
+
+      processResults: function(result, params) {
+        params.page = params.page || 1;
+
+        return {
+          results: result.data.filter(options.filter || Boolean),
+          pagination: {
+            more: (params.page * result.per_page) < result.total
+          }
+        };
+      },
+      cache: true
+    },
+    escapeMarkup: function(markup) {
+      return markup;
+    },
+    minimumInputLength: 1,
+    templateResult: formatResult,
+    templateSelection: formatResultSelection
+  }, options)
+
+  return $(selector).select2(options);
+}
+
+function formatResultSelection(obj) {
+  if (obj.nome) {
+    return obj.nome;
+  }
+  return obj.text;
+}
+
+function formatResult(obj) {
+  if (obj.loading) return obj.text;
+
+  var markup = "<div class='select2-result-obj clearfix'>" +
+    "   <div class='select2-result-obj__meta'>" +
+    "       <div class='select2-result-obj__title'>" + obj.nome + "</div>" +
+    "   </div>" +
+    "</div>";
+
+  return markup;
+}
+
 /* Set the defaults for DataTables initialisation */
 $.extend(true, $.fn.dataTable.defaults, {
   "sDom": "<'row'<'col-xs-5 col-sm-6'l><'col-xs-7 col-sm-6 text-right'f>r>t<'row'<'col-xs-3 col-sm-4 col-md-5'i><'col-xs-9 col-sm-8 col-md-7 text-right'p>>",
