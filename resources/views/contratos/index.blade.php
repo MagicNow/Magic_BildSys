@@ -115,6 +115,9 @@
           }
         }
       }
+      $(function () {
+        selectgrupo( $('#grupo_id').val() , 'subgrupo1_id', 'grupos');
+      });
     </script>
     {!! $dataTable->scripts() !!}
 @endsection
