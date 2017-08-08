@@ -39,6 +39,7 @@ class NotificationRepository extends BaseRepository
         $notification = Notification::where('notifiable_type','App\\Models\\User')
             ->where('notifiable_id',auth()->id())
             ->where('data','LIKE','%"workflow_tipo_id":'. $workflow_tipo_id .',"id_dinamico":'. $id_dinamico .',%')
+            ->whereNull('read_at')
             ->first();
 
         if($notification) {
@@ -54,6 +55,7 @@ class NotificationRepository extends BaseRepository
         $notification = Notification::where('notifiable_type','App\\Models\\User')
             ->where('notifiable_id',auth()->id())
             ->where('data','LIKE','%"workflow_tipo_id":'. $workflow_tipo_id .',"id_dinamico":'. $id_dinamico .',%')
+            ->where('data','LIKE','%"done":0%')
             ->first();
 
         if($notification) {

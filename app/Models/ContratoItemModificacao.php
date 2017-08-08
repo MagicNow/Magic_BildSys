@@ -19,12 +19,19 @@ class ContratoItemModificacao extends Model
     public function workflowNotification()
     {
         return [
-            'message' => "Modificação do Contrato {$this->item->contrato_id} nº{$this->id} à aprovar",
+            'message' => "Modificação do Contrato {$this->item->contrato_id} à aprovar",
             'link' => route('contratos.show', $this->item->contrato_id),
             'workflow_tipo_id' => WorkflowTipo::ITEM_CONTRATO,
             'id_dinamico' => $this->id,
             'task'=>1,
             'done'=>0
+        ];
+    }
+    public function workflowNotificationDone($aprovado)
+    {
+        return [
+            'message' => 'Modificação do Contrato {$this->item->contrato_id} '.$this->id.($aprovado?' aprovada ':' reprovada '),
+            'link' => route('contratos.show', $this->item->contrato_id),
         ];
     }
 
@@ -103,6 +110,10 @@ class ContratoItemModificacao extends Model
     public function irmaosIds()
     {
         return [$this->attributes['id'] => $this->attributes['id']];
+    }
+
+    public function idPai(){
+        return null;
     }
 
     public function paiEmAprovacao()

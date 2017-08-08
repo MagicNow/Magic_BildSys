@@ -67,7 +67,6 @@
                                             $classe = 'danger';
                                         }
                                     @endphp
-                                    <i class="fa fa-exclamation-circle text-{{ $classe }}" aria-hidden="true"></i>
                                     <span class="text">{{ $notification->data['message'] }}</span>
 
                                     <small class="label label-{{ $classe }}"><i class="fa fa-clock-o"></i>
