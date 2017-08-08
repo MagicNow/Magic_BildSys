@@ -267,4 +267,8 @@ class QuadroDeConcorrencia extends Model
     {
         return $this->hasMany(Contrato::class);
     }
+
+    public function emAprovacao(){
+        return ($this->qc_status_id == 3);
+    }
 }

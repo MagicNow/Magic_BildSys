@@ -301,4 +301,8 @@ class Contrato extends Model
     {
         return $this->itens->pluck('insumo')->pluck('codigo')->contains(30019);
     }
+
+    public function emAprovacao(){
+        return ($this->contrato_status_id == 1);
+    }
 }

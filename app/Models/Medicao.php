@@ -95,9 +95,6 @@ class Medicao extends Model
         if(!$this->medicao_servico_id){
             return true;
         }
-        if (!$this->medicaoServico->finalizado) {
-            $this->medicaoServico->update(['finalizado' => 3]);
-        }
     }
 
     public function confereAprovacaoGeral()
@@ -150,12 +147,17 @@ class Medicao extends Model
             'done'=>0
         ];
     }
-    
+
     public function workflowNotificationDone($aprovado)
     {
         return [
             'message' => 'Medição '.$this->id.($aprovado?' aprovada ':' reprovada '),
             'link' => $this->medicao_servico_id ? route('medicaoServicos.show', $this->medicao_servico_id) : route('medicoes.show', $this->id),
         ];
+    }
+
+    public function emAprovacao()
+    {
+        return true;
     }
 }

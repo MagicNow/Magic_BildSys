@@ -61,7 +61,7 @@
                                         $dias_restantes = $hoje->diffInDays($data_maxima, false);
                                         $classe = 'success';
                                         $percentualPrazo = (($dias_restantes * 100) / $workflow_prazos[$notification->data['workflow_tipo_id']]);
-                                        if($percentualPrazo < 80 && $percentualPrazo > 10){
+                                        if($percentualPrazo < 50 && $percentualPrazo > 10){
                                             $classe = 'warning';
                                         }elseif ($percentualPrazo < 10){
                                             $classe = 'danger';
