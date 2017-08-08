@@ -10,32 +10,17 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @package App\Models
  * @version July 20, 2017, 12:44 pm BRT
  */
-class NotaFiscalItem extends Model
+class NotaFiscalFatura extends Model
 {
-    public $table = 'nota_fiscal_itens';
+    public $table = 'nota_fiscal_faturas';
 
     public $timestamps = false;
 
     public $fillable = [
         'nota_fiscal_id',
-        'ncm',
-        'cfop',
-        'nome_produto',
-        'codigo_produto',
-        'ean',
-        'qtd',
-        'valor_unitario',
-        'valor_total',
-        'unidade',
-        'base_calculo_icms',
-        'aliquota_icms',
-        'valor_icms',
-        'valor_ipi',
-        'aliquota_ipi',
-        'aliquota_cofins',
-        'valor_cofins',
-        'aliquota_pis',
-        'valor_pis',
+        'numero',
+        'vencimento',
+        'valor',
     ];
 
     /**
@@ -46,11 +31,9 @@ class NotaFiscalItem extends Model
     protected $casts = [
         'id' => 'integer',
         'nota_fiscal_id' => 'integer',
-        'ncm' => 'integer',
-        'codigo_produto' => 'string',
-        'nome_produto' => 'string',
-        'ean' => 'string',
-        'unidade' => 'string'
+        'numero' => 'string',
+        'vencimento' => 'date',
+        'valor' => 'float'
     ];
 
     /**

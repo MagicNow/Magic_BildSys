@@ -173,35 +173,22 @@ class NotafiscalController extends AppBaseController
     {
         $result = $this->consultaRepository->syncXML(1);
         if ($result) {
-            return "Sucesso";
+            return "Sucesso - Notas Importadas ou Atualizadas: {$result} - Ultima consulta: " . date("d/m/Y H:i:s");
         }
-        return "Não há notas para realizar a importação.";
-    }
-
-    public function buscaMde()
-    {
-        $cteTools = new \NFePHP\CTe\Tools(config_path('nfe.json'));
-        $aResposta = array();
-
-        $nfObj = $this->notafiscalRepository->orderBy(DB::raw("Rand()"))->first();
-
-        echo "Chave: ", $nfObj->chave, "<br/>";
-
-        $chave = $nfObj->chave;
-        $tpAmb = '2';
-        $retorno = $cteTools->sefazConsultaChave($chave, $tpAmb, $aResposta);
-        echo '<pre>';
-        //echo htmlspecialchars($cteTools->soapDebug);
-        print_r($aResposta);
-        //print_r($retorno);
-        echo '</pre>';
+        return "Não há notas para realizar a importação. Data: " . date("d/m/Y H:i:s");
     }
 
     public function buscaCTe()
     {
         if ( $this->consultaCteRepository->syncXML(1, 0) ) {
-            return "Sucesso";
+            return "Sucesso - Ultima consulta: " . date("d/m/Y H:i:s");
         }
-        return "Não foram encontrados CTe's para download.";
+        return "Não foram encontrados CTe's para download. Data: " . date("d/m/Y H:i:s");
+    }
+
+    public function visualizaDanfe($id)
+    {
+        $notafiscal = Notafiscal::find($id);
+        return $this->consultaRepository->geraDanfe($notafiscal);
     }
 }
