@@ -36,6 +36,7 @@
       <th>Saldo de Qtd.</th>
       <th>Quantidadade Adicionada</th>
       <th>Nova Quantidade</th>
+      <th>Observação</th>
     </tr>
   </thead>
   <tbody>
@@ -64,6 +65,11 @@
         </td>
         <td data-item-qtd="{{ $apropariacao->qtd }}">
             {{ float_to_money($apropariacao->qtd, '') }}
+        </td>
+        <td>
+            <div class="input-group">
+                <textarea class="form-control js-desc" name="reajusteDescricao[{{ $apropariacao->id }}]"></textarea>
+            </div>
         </td>
       </tr>
     @endforeach

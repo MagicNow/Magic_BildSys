@@ -544,4 +544,27 @@ class CatalogoContratoController extends AppBaseController
     public function imprimirMinuta($id){
         return response()->file(storage_path('/app/public/') . str_replace('storage/', '', CatalogoContratoRepository::geraImpressao($id)));
     }
+
+    public function ativarDesativar(Request $request)
+    {
+        $catalogo_contrato = CatalogoContrato::find($request->id);
+        $novo_status = null;
+
+        if($catalogo_contrato) {
+            if($catalogo_contrato->catalogo_contrato_status_id == 3) {
+                $novo_status = 4;
+            }
+
+            if($catalogo_contrato->catalogo_contrato_status_id == 4) {
+                $novo_status = 3;
+            }
+
+            if($novo_status){
+                $catalogo_contrato->catalogo_contrato_status_id = $novo_status;
+                $catalogo_contrato->save();
+            }
+        }
+        
+        return response()->json(true);
+    }
 }

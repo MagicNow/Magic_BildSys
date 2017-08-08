@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\WorkflowAlcada;
 use App\Models\WorkflowAprovacao;
 use App\Models\WorkflowUsuario;
+use App\Notifications\WorkflowNotificationAprovado;
 use Illuminate\Support\Facades\DB;
 use phpDocumentor\Reflection\Types\Array_;
 use phpDocumentor\Reflection\Types\Integer;
@@ -408,11 +409,24 @@ class WorkflowAprovacaoRepository
             $total_ja_votado_geral = self::verificaTotalJaAprovadoReprovado($tipo, $ids);
 
             $total_ja_votado = self::verificaTotalJaAprovadoReprovado($tipo, $ids, null, $obj->id);
+            if(count($ids) >1){
+                // Verifica se o usuário atual já aprovou tudo que precisava aprovar
+                $aprovacoesDesteUser = WorkflowAprovacao::join(DB::raw($obj->table . ' as T'),'T.id','aprovavel_id')
+                    ->where('workflow_aprovacoes.user_id', $user->id)
+                    ->where('workflow_aprovacoes.workflow_alcada_id', $workflowUsuario->workflow_alcada_id)
+                    ->where('workflow_aprovacoes.aprovavel_type','App\\Models\\' . $tipo )
+                    ->where('workflow_aprovacoes.created_at', '>=', DB::raw('T.updated_at'))
+                    ->whereIn('T.id',$ids)
+                    ->count();
 
-            if ($total_ja_votado_geral['total_avaliado'] === 1) {
-                // Se for já altera o status do pai para Em Aprovação
-                $obj->paiEmAprovacao();
+                if($aprovacoesDesteUser == count($ids)){
+                    NotificationRepository::marcarFeito($workflow_tipo_id, $obj->idPai());
+                }
+            }else{
+                // Marca como Feito a notificação
+                NotificationRepository::marcarFeito($workflow_tipo_id, $id);
             }
+
 
             // Se não for, verifica se já é a última
             $qtd_aprovadores = self::verificaQuantidadeUsuariosAprovadores($workflow_tipo, $obj->qualObra(), null, $ids, $tipo);
@@ -425,8 +439,42 @@ class WorkflowAprovacaoRepository
                     // Se for já salva se foi aprovado ou reprovado
                     $obj->aprova($total_ja_votado['total_aprovado'] === $total_ja_votado['total_avaliado']);
 
-                    // Chama função do model do item que irá verificar batendo no pai se todos os filhos foram aprovados
-                    $obj->confereAprovacaoGeral();
+                    if($obj->idPai()) {
+                        // Chama função do model do item que irá verificar batendo no pai se todos os filhos foram aprovados
+                        $tudoAprovado = $obj->confereAprovacaoGeral();
+                        $notificaUser = [
+                            'notifica'=>false
+                        ];
+                        // Confere se tudo foi já votado
+                        if(!is_null($tudoAprovado)){
+                            // Ou foi ou não foi
+                            if($tudoAprovado){
+                                $notificaUser = [
+                                    'notifica'=>true,
+                                    'aprovado'=>1
+                                ];
+                            }else{
+                                $notificaUser = [
+                                    'notifica'=>true,
+                                    'aprovado'=>0
+                                ];
+                            }
+                        }
+                    }else{
+                        $notificaUser = [
+                            'notifica'=> true,
+                            'aprovado'=> $workflowAprovacao->aprovado
+                        ];
+                    }
+                    
+                    // Verifica se vai notificar o usuário que este item foi aprovado
+                    if($notificaUser['notifica']){
+                        // Se tiver usuário
+                        if($obj->user_id){
+                            $notificar = User::find($obj->user_id);
+                            Notification::send($notificar, new WorkflowNotificationAprovado($obj,$notificaUser['aprovado']));
+                        }
+                    }
                 } else {
                     $alcada_atual = self::verificaAlcadaAtual($tipo, $ids, $workflow_tipo);
 
@@ -570,8 +618,8 @@ class WorkflowAprovacaoRepository
             $queryNomes->where('obra_users.obra_id', $obra_id);
         }
 
-        $usuarios_nomes = $queryNomes->get();
-
+        $usuarios_nomes = $queryNomes->groupBy('users.id')->get();
+        
         $total_a_aprovar = self::verificaTotalaAprovar($tipo, $ids);
 
         foreach ($usuarios_nomes as $usuario) {

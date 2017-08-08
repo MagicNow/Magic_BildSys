@@ -106,4 +106,9 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Obra::class, 'obra_users', 'user_id', 'obra_id');
     }
+	
+	public function carteiras()
+    {
+        return $this->belongsToMany(Carteira::class, 'carteira_users', 'user_id', 'carteira_id');
+    }
 }

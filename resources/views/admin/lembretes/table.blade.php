@@ -7,7 +7,7 @@
     <script type="application/javascript">
         function incluirPrazo(lembrete_tipo_id, insumo_grupo_id, dias_prazo_minimo, nome) {
             $.ajax({
-                url: "/admin/planejamentos/lembretes/data-minima",
+                url: "/admin/lembretes/data-minima",
                 data: {
                     'lembrete_tipo_id' : lembrete_tipo_id,
                     'insumo_grupo_id' : insumo_grupo_id,

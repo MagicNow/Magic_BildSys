@@ -116,6 +116,8 @@ $(function() {
 
   $('.cnpj').mask('99.999.999/9999-99');
   $('.cep').mask('00000-000');
+  $('.rg').mask('99.999.999-9');
+  $('.cpf').mask('999.999.999-99');
   $('.telefone').mask(mascara, options);
 
   var popoverOptions = {

@@ -22,7 +22,7 @@ class ContratoItemApropriacaoRepository extends BaseRepository
 
     public function reapropriar(ContratoItem $contratoItem, $data)
     {
-        $data['insumo_id']                      = $contratoItem->qcItem->insumo_id;
+        $data['insumo_id']                      = $contratoItem->insumo_id;
         $data['contrato_item_id']               = $contratoItem->id;
         $data['qtd']                            = money_to_float($data['qtd']);
         $data['user_id']                        = auth()->id();

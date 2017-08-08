@@ -21,9 +21,9 @@ class ContratoItemModificacaoRepository extends BaseRepository
         return ContratoItemModificacao::class;
     }
 
-    public function reajustar($contrato_item_id, $data)
+    public function reajustar($contrato_item_id, $data, $reajusteDescricao)
     {
-        $modificacao = DB::transaction(function () use ($contrato_item_id, $data) {
+        $modificacao = DB::transaction(function () use ($contrato_item_id, $data, $reajusteDescricao) {
             $contratoItemRepository = app(ContratoItemRepository::class);
             $modificacaoLogRepository = app(ContratoItemModificacaoLogRepository::class);
 
@@ -36,14 +36,14 @@ class ContratoItemModificacaoRepository extends BaseRepository
                     ->findWhereIn('id', $reajustes->keys()->all());
 
                 $modApropriacoes = $reajustes
-                    ->map(function($qtd, $apropriacao_id) use ($apropriacoes) {
+                    ->map(function($qtd, $apropriacao_id) use ($apropriacoes, $reajusteDescricao) {
                         $apropriacao = $apropriacoes->where('id', $apropriacao_id)
                             ->first();
-
                         return [
                             'contrato_item_apropriacao_id' => $apropriacao_id,
                             'qtd_anterior' => $apropriacao->qtd,
-                            'qtd_atual' => $qtd + $apropriacao->qtd,
+                            'qtd_atual' => money_to_float($qtd) + $apropriacao->qtd,
+                            'descricao' => $reajusteDescricao[$apropriacao_id]
                         ];
                     });
             } else {
@@ -53,7 +53,7 @@ class ContratoItemModificacaoRepository extends BaseRepository
 
             $destinationPath = null;
 
-            if($data['anexo']) {
+            if($data['anexo'] != "undefined") {
                 $destinationPath = CodeRepository::saveFile($data['anexo'], 'contratos/reajustes/' . $item->id);
             }
             
@@ -92,11 +92,11 @@ class ContratoItemModificacaoRepository extends BaseRepository
         return $modificacao;
     }
 
-    public function distratar($contrato_item_id, $distratos)
+    public function distratar($contrato_item_id, $distratos, $distratosDescricao)
     {
         $distratos = collect($distratos)->map('money_to_float');
 
-        $modificacao = DB::transaction(function () use ($distratos, $contrato_item_id) {
+        $modificacao = DB::transaction(function () use ($distratos, $contrato_item_id, $distratosDescricao) {
             $contratoItemRepository = app(ContratoItemRepository::class);
             $apropriacaoRepository = app(ContratoItemApropriacaoRepository::class);
             $modificacaoLogRepository = app(ContratoItemModificacaoLogRepository::class);
@@ -109,9 +109,9 @@ class ContratoItemModificacaoRepository extends BaseRepository
             );
 
             $modApropriacao = $distratos
-                ->map(function($quantidade, $item_id) use ($itens) {
+                ->map(function($quantidade, $item_id) use ($itens, $distratosDescricao) {
                     $item = $itens->where('id', $item_id)->first();
-
+//                    dd($distratosDescricao);
                     if ($item->qtd < $quantidade) {
                         $response = response()->json([
                             'A nova quantidade não pode ser maior que a atual'
@@ -125,6 +125,7 @@ class ContratoItemModificacaoRepository extends BaseRepository
                         'qtd_atual' => $item->qtd - $quantidade,
                         'qtd_anterior' => $item->qtd,
                         'distratar' => $quantidade,
+                        'descricao' => $distratosDescricao[$item_id]
                     ];
                 });
 

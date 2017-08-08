@@ -196,7 +196,7 @@
                 queryString +='exibir_por_tarefa=' + exibir_por_tarefa;
             }
 
-            calendar.setOptions({events_source: '{{ url('planejamentos/lembretes') }}' + queryString});
+            calendar.setOptions({events_source: '{{ url('lembretes') }}' + queryString});
 
             calendar.view();
         }
@@ -246,7 +246,7 @@
                 }
               },
               weekbox: false,
-              events_source: '/planejamentos/lembretes'
+              events_source: '/lembretes'
             };
 
             var $exibirPorTarefa = $('#exibir_por_tarefa');
@@ -258,7 +258,7 @@
               var date = calendar.options.position.start.toISOString().split('T')[0];
 
               calendar = $('#calendar').calendar(Object.assign(calendarOptions, {
-                events_source: '/planejamentos/lembretes?exibir_por_tarefa=' + (+isChecked),
+                events_source: '/lembretes?exibir_por_tarefa=' + (+isChecked),
                 day: date
               }))
 

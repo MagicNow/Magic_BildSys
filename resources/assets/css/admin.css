@@ -672,14 +672,14 @@ table.dataTable.dtr-inline.collapsed> tbody> tr.parent> th:first-child:before {
 .sidebar-mini.sidebar-collapse .sidebar-menu> li:hover> .treeview-menu {
   display: block !important;
   position: absolute;
-  width: 220px;
+  width: 245px;
   left: 50px;
 }
 
 .sidebar-mini.sidebar-collapse .sidebar-menu> li:hover> a> .pull-right-container {
   float: right;
   width: auto!important;
-  left: 240px!important;
+  left: 270px!important;
   top: 10px!important;
 }
 
@@ -813,3 +813,84 @@ td> .table {
 .btn {
   border-radius: 0 !important;
 }
+
+.todo-list > li .label {
+  font-size: 10px;
+}
+
+.treeview.active .fa-angle-left {
+  -ms-transform: rotate(270deg) !important; /* IE 9 */
+  -webkit-transform: rotate(270deg) !important; /* Chrome, Safari, Opera */
+  transform: rotate(270deg) !important;
+}
+.yellow {
+  color: #f3d712;
+}
+
+/*INÍCIO CHECKBOX TOOGLE
+
+    <label class="switch">
+        <input type="checkbox">
+        <span class="slider round"></span>
+    </label>
+
+*/
+
+/* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 45px;
+  height: 21px;
+}
+
+.switch input {display:none;}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 15px;
+  width: 15px;
+  left: 5px;
+  bottom: 3px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(20px);
+  -ms-transform: translateX(20px);
+  transform: translateX(20px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+/*FIM CHECKBOX TOOGLE*/

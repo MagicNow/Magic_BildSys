@@ -6,6 +6,7 @@
       <th>Saldo de Qtd.</th>
       <th>Quantidade a Distratar</th>
       <th>Nova Quantidade</th>
+      <th>Descrição</th>
     </tr>
   </thead>
   <tbody>
@@ -35,6 +36,11 @@
         </td>
         <td class="text-right" data-qtd="{{ $item->qtd_sobra }}">
             {{ float_to_money($item->qtd_sobra, '') }}
+        </td>
+        <td>
+            <div class="input-group">
+                <textarea class="form-control js-desc" name="distratoDescricao[{{ $item->id }}]"></textarea>
+            </div>
         </td>
       </tr>
     @endforeach

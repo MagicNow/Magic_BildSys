@@ -42,8 +42,11 @@ class QuadroDeConcorrenciaItem extends Model
 
     ];
 
+    public static $workflow_tipo_id = WorkflowTipo::QC;
+    
     public function ordemDeCompraItens()
     {
+        /**  @TODO Remover esta classe OcItem pois é um model repetido */
         return $this->belongsToMany(
             OcItem::class,
             'oc_item_qc_item',

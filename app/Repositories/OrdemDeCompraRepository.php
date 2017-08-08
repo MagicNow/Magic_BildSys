@@ -149,7 +149,7 @@ class OrdemDeCompraRepository extends BaseRepository
         return $valor_comprometido_a_gastar;
     }
 
-    public static function qtdComprometidaAGastarItem($grupo_id, $subgrupo1_id, $subgrupo2_id, $subgrupo3_id, $servico_id, $insumo_id)
+    public static function qtdComprometidaAGastarItem($grupo_id, $subgrupo1_id, $subgrupo2_id, $subgrupo3_id, $servico_id, $insumo_id, $item_id = null)
     {
         $qtds_comprometida_a_gastar = ContratoItemApropriacao::select([
             'contrato_item_apropriacoes.id',
@@ -160,8 +160,19 @@ class OrdemDeCompraRepository extends BaseRepository
             ->where('contrato_item_apropriacoes.subgrupo1_id', $subgrupo1_id)
             ->where('contrato_item_apropriacoes.subgrupo2_id', $subgrupo2_id)
             ->where('contrato_item_apropriacoes.subgrupo3_id', $subgrupo3_id)
-            ->where('contrato_item_apropriacoes.servico_id', $servico_id)
-            ->get();
+            ->where('contrato_item_apropriacoes.servico_id', $servico_id);
+
+        if($item_id){
+            $qtds_comprometida_a_gastar->whereRaw('NOT EXISTS(
+                SELECT 1 
+                FROM contrato_itens CI
+                JOIN oc_item_qc_item OCQC ON OCQC.qc_item_id = CI.qc_item_id
+                WHERE CI.id = contrato_item_apropriacoes.contrato_item_id
+                AND OCQC.ordem_de_compra_item_id = '.$item_id.'
+            )');
+        }
+
+        $qtds_comprometida_a_gastar = $qtds_comprometida_a_gastar->get();
 
         $qtd_comprometida_a_gastar = 0;
 

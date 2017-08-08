@@ -14,12 +14,6 @@
     {!! Form::text('nome', null, ['class' => 'form-control']) !!}
 </div>
 
-<!-- Situacao Cnpj Field -->
-{{--<div class="form-group col-sm-6">--}}
-    {{--{!! Form::label('situacao_cnpj', 'Situacao Cnpj:') !!}--}}
-    {{--{!! Form::text('situacao_cnpj', null, ['class' => 'form-control']) !!}--}}
-{{--</div>--}}
-
 <!-- Inscricao Estadual Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('inscricao_estadual', 'Inscricao Estadual:') !!}
@@ -50,23 +44,12 @@
     {!! Form::text('cep', null, ['class' => 'form-control cep', 'onkeyup'=>'buscacep(this.value)']) !!}
 </div>
 
-<!-- Tipo Logradouro Field -->
-{{--<div class="form-group col-sm-6">--}}
-    {{--{!! Form::label('tipo_logradouro', 'Tipo Logradouro:') !!}--}}
-    {{--{!! Form::text('tipo_logradouro', null, ['class' => 'form-control']) !!}--}}
-{{--</div>--}}
 
 <!-- Logradouro Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('logradouro', 'Logradouro:') !!}
     {!! Form::text('logradouro', null, ['class' => 'form-control']) !!}
 </div>
-
-<!-- Cidade Id Field -->
-{{--<div class="form-group col-sm-6">--}}
-    {{--{!! Form::label('cidade_id', 'Cidade Id:') !!}--}}
-    {{--{!! Form::text('cidade_id', null, ['class' => 'form-control']) !!}--}}
-{{--</div>--}}
 
 <!-- Municipio Field -->
 <div class="form-group col-sm-6">
@@ -92,6 +75,102 @@
     {!! Form::text('complemento', null, ['class' => 'form-control']) !!}
 </div>
 
+<!-- Nome sócio ou procurador Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('nome_socio', 'Nome sócio ou procurador:') !!}
+    {!! Form::text('nome_socio', null, ['class' => 'form-control']) !!}
+</div>
+
+<!-- Nacionalidade sócio ou procurador Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('nacionalidade_socio', 'Nacionalidade sócio ou procurador:') !!}
+    {!! Form::text('nacionalidade_socio', null, ['class' => 'form-control']) !!}
+</div>
+
+<!-- Estado civil sócio ou procurador Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('estado_civil_socio', 'Estado civil sócio ou procurador:') !!}
+    {!! Form::text('estado_civil_socio', null, ['class' => 'form-control']) !!}
+</div>
+
+<!-- Profissão sócio ou procurador Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('profissao_socio', 'Profissão sócio ou procurador:') !!}
+    {!! Form::text('profissao_socio', null, ['class' => 'form-control']) !!}
+</div>
+
+<!-- RG sócio ou procurador Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('rg_socio', 'RG sócio ou procurador:') !!}
+    {!! Form::text('rg_socio', null, ['class' => 'form-control rg']) !!}
+</div>
+
+<!-- CPF sócio ou procurador Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('cpf_socio', 'CPF sócio ou procurador:') !!}
+    {!! Form::text('cpf_socio', null, ['class' => 'form-control cpf']) !!}
+</div>
+
+<!-- Endereço sócio ou procurador Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('endereco_socio', 'Endereço sócio ou procurador:') !!}
+    {!! Form::text('endereco_socio', null, ['class' => 'form-control']) !!}
+</div>
+
+<!-- Cidade sócio ou procurador Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('cidade_socio', 'Cidade sócio ou procurador:') !!}
+    {!! Form::text('cidade_socio', null, ['class' => 'form-control']) !!}
+</div>
+
+<!-- Estado sócio ou procurador Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('estado_socio', 'Estado sócio ou procurador:') !!}
+    {!! Form::text('estado_socio', null, ['class' => 'form-control']) !!}
+</div>
+
+<!-- CEP sócio ou procurador Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('cep_socio', 'CEP sócio ou procurador:') !!}
+    {!! Form::text('cep_socio', null, ['class' => 'form-control cep']) !!}
+</div>
+
+<!-- Telefone sócio ou procurador Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('telefone_socio', 'Telefone sócio ou procurador:') !!}
+    {!! Form::text('telefone_socio', null, ['class' => 'form-control telefone']) !!}
+</div>
+
+<!-- Celular sócio ou procurador Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('celular_socio', 'Celular sócio ou procurador:') !!}
+    {!! Form::text('celular_socio', null, ['class' => 'form-control telefone']) !!}
+</div>
+
+<!-- Email sócio ou procurador Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('email_socio', 'Email sócio ou procurador:') !!}
+    {!! Form::email('email_socio', null, ['class' => 'form-control']) !!}
+</div>
+
+<!-- Nome do vendedor Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('nome_vendedor', 'Nome do vendedor:') !!}
+    {!! Form::text('nome_vendedor', null, ['class' => 'form-control']) !!}
+</div>
+
+<!-- Email do vendedor Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('email_vendedor', 'Email do vendedor:') !!}
+    {!! Form::email('email_vendedor', null, ['class' => 'form-control']) !!}
+</div>
+
+<!-- Telefone do vendedor Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('telefone_vendedor', 'Telefone do vendedor:') !!}
+    {!! Form::text('telefone_vendedor', null, ['class' => 'form-control telefone']) !!}
+</div>
+
 <div class="form-group col-sm-6">
   <div class="checkbox">
     <label>
@@ -103,8 +182,8 @@
 
 <!-- Submit Field -->
 <div class="form-group col-sm-12">
-    {!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save') ), ['class' => 'btn btn-success pull-right', 'type'=>'submit']) !!}
-    <a href="{!! route('admin.fornecedores.index') !!}" class="btn btn-danger"><i class="fa fa-times"></i>  {{ ucfirst( trans('common.cancel') )}}</a>
+    {!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save') ), ['class' => 'btn btn-success btn-flat btn-lg pull-right', 'type'=>'submit']) !!}
+    <a href="{!! route('admin.fornecedores.index') !!}" class="btn btn-danger btn-flat btn-lg"><i class="fa fa-times"></i>  {{ ucfirst( trans('common.cancel') )}}</a>
 </div>
 
 @section('scripts')
@@ -115,7 +194,7 @@
                 startLoading();
                 valor = valor.replace('-','');
                 $.ajax({
-                            url: '/admin/fornecedores/buscacep/'+valor,
+                            url: '/fornecedores/buscacep/'+valor,
                             dataType: 'json',
                             crossDomain:true
                         })
@@ -144,24 +223,25 @@
             if($('#numero'+qual).val()!=''){
                 $('.box.box-primary').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
                 $.ajax({
-                    url: "/admin/valida-documento",
+                    url: "/valida-documento",
                     data: {
                         numero: $('#numero'+qual).val(),
-                        cpf: 1
+                        cnpj: 1
                     }
                 }).done(function(retorno) {
                     if(retorno.importado == 1){
                         swal({
                                     title: retorno.msg,
-                                    text: "",
-                                    type: "success",
+                                    text: "Clique em continuar para preencher os campos que não foram importado do MEGA!",
+                                    type: "info",
                                     showCancelButton: false,
-                                    confirmButtonText: "Ok",
+                                    confirmButtonText: "Continuar",
+                                    showLoaderOnConfirm: true,
                                     closeOnConfirm: false
                                 },
                                 function(){
                                     @if(!\Illuminate\Support\Facades\Request::get('modal'))
-                                    document.location='/admin/fornecedores/'+ retorno.fornecedor.id;
+                                    document.location='/fornecedores/'+ retorno.fornecedor.id +'/edit';
                                     @else
                                         parent.novoObjeto = retorno.fornecedor;
                                         setTimeout(function () {

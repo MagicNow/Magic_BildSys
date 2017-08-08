@@ -1,15 +1,16 @@
 @extends('layouts.app')
 
 @section('content')
-    <section class="content-header">
-        <h1>
-            Dashboard
-            <small>Painel de controle</small>
-        </h1>
-        {{--<ol class="breadcrumb">--}}
-            {{--<li class="active"><a href="/"><i class="fa fa-dashboard"></i> Dashboard</a></li>--}}
-        {{--</ol>--}}
-    </section>
+    <style type="text/css">
+        .content-wrapper {
+            background-image: url("{{ asset('img/backDashboard.jpg') }}") !important;
+            background-position: right bottom !important;
+            background-repeat: no-repeat !important;
+            background-size: contain !important;
+            background: #ddd9d8;
+        }
+    </style>
+    
     <div class="content">
         <div class="row">
 

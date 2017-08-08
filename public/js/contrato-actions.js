@@ -6,10 +6,10 @@ $(function() {
   Reapropriar.init();
   Editar.init();
 
-  var workflowTipo = $('[data-workflow-tipo]');
+  var workflowTipo = $('#linhaDoTempo');
 
   workflowTipo.tooltip({
-    title: 'Clique para ver detalhes desta alcada',
+    title: 'Clique para ver detalhes',
     container: document.body
   });
 
@@ -107,7 +107,8 @@ var Reapropriar = (function() {
     this.modal      = document.getElementById('modal-reapropriar');
     this.insumo     = document.getElementById('insumo_id');
     this.addAllBtn  = document.getElementById('add-all');
-    this.grupos     = document.querySelectorAll('.js-group-selector');
+    // this.grupos     = document.querySelectorAll('.js-group-selector');
+    this.grupos     = document.querySelectorAll('.js-grupos-orc');
     this.qtd        = this.modal.querySelector('[name=qtd]');
     this.saveBtn    = this.modal.querySelector('.js-save');
     this.id         = 0;
@@ -241,6 +242,7 @@ var Reapropriar = (function() {
       .map(_.property('value'))
       .filter(Boolean)
       .length;
+    console.log(filled,this.grupos.length );
 
     if (filled !== this.grupos.length) {
       swal('', 'Selecione todos os grupos para reapropriação', 'warning');
@@ -282,6 +284,8 @@ var Reajuste = (function() {
 
         self.anexo = self.modal.querySelector('[name=anexo]');
 
+        self.descriptions = self.modal.querySelectorAll('.js-desc');
+
         self.adicionais = _.filter(
           self.inputs,
           _.method('classList.contains', 'js-adicional')
@@ -297,7 +301,7 @@ var Reajuste = (function() {
 
   Reajuste.prototype.adjustTotal = function(event) {
     var input = event.currentTarget;
-    var valueContainer = $(input).parents('tr').find('td:last').get(0);
+    var valueContainer = $(input).parents('tr').find('td:nth-last-child(2)').get(0);
 
     valueContainer.innerText = floatToMoney(
       (input.value ? moneyToFloat(input.value) : 0) + parseFloat(valueContainer.dataset.itemQtd),
@@ -351,13 +355,19 @@ var Reajuste = (function() {
       valor_unitario: this.valor.value
     };
 
+    var inputs = Array.from(this.inputs).concat(Array.from(this.descriptions));
 
-    data = _.reduce(this.inputs, function(data, input) {
+    data = _.reduce(inputs, function(data, input) {
       if (
         input.classList.contains('js-adicional') &&
         (input.value &&
           moneyToFloat(input.value) > 0)
       ) {
+        data[input.name] = input.value;
+      }
+
+
+      if(input.classList.contains('js-desc')) {
         data[input.name] = input.value;
       }
 
@@ -421,6 +431,7 @@ var Distrato = (function() {
     this.modal = document.getElementById('modal-distrato');
     this.saveBtn = this.modal.querySelector('.js-save');
     this.inputs = null;
+    this.descriptions = null;
     this.id = 0
     this.defaultQtd = 0;
 
@@ -443,6 +454,7 @@ var Distrato = (function() {
     getView(this.id, 'distrato', this.modal)
       .done(function() {
         self.inputs = self.modal.querySelectorAll('.js-input');
+        self.descriptions = self.modal.querySelectorAll('.js-desc');
         var handler = function(event) {
           var input = event.currentTarget;
 
@@ -454,7 +466,7 @@ var Distrato = (function() {
             return false;
           }
 
-          var valueContainer = $(input).closest('tr').find('td:last').get(0);
+          var valueContainer = $(input).closest('tr').find('td:nth-last-child(2)').get(0);
 
           valueContainer.innerText = floatToMoney(
             parseFloat(input.dataset.qtd) - (input.value ? moneyToFloat(input.value) : 0),
@@ -536,14 +548,19 @@ var Distrato = (function() {
   Distrato.prototype.sendData = function() {
     var _this = this;
     var data = {
-      _token: token,
+      _token: token
     };
 
     var inputs = _.filter(this.inputs, function(input) {
       return input.value && moneyToFloat(input.value);
     });
 
+    var descriptions = _.filter(this.descriptions, function(input) {
+      return input.value;
+    });
+
     data = getInputs(inputs, data);
+    data = getInputs(descriptions, data);
 
     $.post('/contratos/distratar/' + this.id, data)
       .done(function(response) {

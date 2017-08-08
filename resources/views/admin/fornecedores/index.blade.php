@@ -1,11 +1,14 @@
-@extends('layouts.app')
+@extends('layouts.front')
 
 @section('content')
-    @include( 'flash::message' )
+    {{--@include( 'flash::message' )--}}
     <section class="content-header">
-        <h1 class="pull-left">Fornecedores</h1>
-        <h1 class="pull-right">
-           <a class="btn btn-primary pull-right" style="margin-top: -10px;margin-bottom: 5px" href="{!! route('admin.fornecedores.create') !!}">
+        <h1>
+            <button type="button" class="btn btn-link" onclick="history.go(-1);">
+                <i class="fa fa-arrow-left" aria-hidden="true"></i>
+            </button>
+            Fornecedores
+           <a class="btn btn-primary pull-right btn-lg btn-flat" style="margin-top: -10px;margin-bottom: 5px" href="{!! route('admin.fornecedores.create') !!}">
             {{ ucfirst( trans('common.new') ) }}
            </a>
         </h1>

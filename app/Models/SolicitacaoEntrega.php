@@ -72,6 +72,10 @@ class SolicitacaoEntrega extends Model
         return [$this->attributes['id'] => $this->attributes['id']];
     }
 
+    public function idPai(){
+        return null;
+    }
+
     public function paiEmAprovacao()
     {
         return false;
@@ -98,12 +102,24 @@ class SolicitacaoEntrega extends Model
     }
 
     public static $workflow_tipo_id = WorkflowTipo::SOLICITACAO_ENTREGA;
-
+    
     public function workflowNotification()
     {
         return [
-            'message' => 'Você tem uma nova Solicitação de Entrega para aprovar',
-            'link' => route('solicitacao_entrega.show', $this->id)
+            'message' => 'Solicitação de Entrega '.$this->id.' à aprovar',
+            'link' => url('/solicitacoes-de-entrega/'. $this->id),
+            'workflow_tipo_id' => WorkflowTipo::SOLICITACAO_ENTREGA,
+            'id_dinamico' => $this->id,
+            'task'=>1,
+            'done'=>0
+        ];
+    }
+
+    public function workflowNotificationDone($aprovado)
+    {
+        return [
+            'message' => 'Solicitação de Entrega '.$this->id.($aprovado?' aprovada ':' reprovada '),
+            'link' => url('/solicitacoes-de-entrega/'. $this->id)
         ];
     }
 
@@ -139,5 +155,9 @@ class SolicitacaoEntrega extends Model
     public function getPodeEditarAttribute()
     {
         return $this->isStatus(SeStatus::REPROVADO);
+    }
+
+    public function emAprovacao(){
+        return ($this->se_status_id == 1);
     }
 }

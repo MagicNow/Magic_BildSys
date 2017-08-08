@@ -220,8 +220,8 @@
                                     <th>Qtd</th>
                                     @foreach($qcFornecedores as $qcFornecedor)
                                         <th>
-                                            {{ Form::checkbox('qcFornecedor_'.$qcFornecedor->id, 1, false, ['class' => 'icheck_destroy', 'style' => 'width: 18px;height: 18px;', 'onclick' => 'marcarDesmarcarTudo('.$qcFornecedor->id.');']) }}
-                                            {{ $qcFornecedor->fornecedor->nome }}
+                                            {{ Form::radio('qcFornecedor_escolhido', 1, false, ['class' => 'icheck_destroy', 'style' => 'width: 18px;height: 18px;', 'onclick' => 'marcarDesmarcarTudo('.$qcFornecedor->id.');', 'id' => 'marcarDesmarcarTudoCheck'.$qcFornecedor->id]) }}
+                                            <label for="marcarDesmarcarTudoCheck{{ $qcFornecedor->id }}">{{ $qcFornecedor->fornecedor->nome }}</label>
                                             <table style="width:100%;margin-top: 20px;">
                                                 <tr>
                                                     <th>Valor unitário</th>
@@ -261,7 +261,7 @@
                                                                 <label>
                                                                     @if(isset($qcItemQcFornecedor->valor_total))
                                                                         {!!
-                                                                          Form::checkbox(
+                                                                          Form::radio(
                                                                             "vencedores[{$item->id}]",
                                                                             $qcItemQcFornecedor->id,
                                                                             false,
@@ -367,7 +367,7 @@
                 placeholder: "Fornecedores Temporários",
                 language: "pt-BR",
                 ajax: {
-                    url: "/admin/fornecedores/busca-temporarios",
+                    url: "/fornecedores/busca-temporarios",
                     dataType: 'json',
                     delay: 250,
 
@@ -418,7 +418,7 @@
         function cadastraFornecedor() {
             funcaoPosCreate = "preencheFornecedor();";
             $.colorbox({
-                href: "/admin/fornecedores/create?modal=1",
+                href: "/fornecedores/create?modal=1",
                 iframe: true,
                 width: '90%',
                 height: '90%'
@@ -563,7 +563,12 @@
         }
 
         function marcarDesmarcarTudo(id) {
-            $('.qcFornecedorInsumo_'+id).click();
+            var marcarDesmarcarTudoCheck = $('#marcarDesmarcarTudoCheck'+id).prop('checked');
+            if(marcarDesmarcarTudoCheck) {
+                $('.qcFornecedorInsumo_'+id).prop('checked', true);
+            } else {
+                $('.qcFornecedorInsumo_'+id).prop('checked', false);
+            }
         }
     </script>
     <script src="/vendor/datatables/buttons.server-side.js"></script>

@@ -6,8 +6,12 @@ use App\Models\Contrato;
 use App\Models\Insumo;
 use App\Models\OrdemDeCompraItem;
 use App\Models\QuadroDeConcorrencia;
+use App\Models\WorkflowAlcada;
+use App\Models\WorkflowAprovacao;
+use App\Models\WorkflowTipo;
 use App\Notifications\WorkflowNotification;
 use App\Repositories\ContratoRepository;
+use App\Repositories\NotificationRepository;
 use App\Repositories\WorkflowAprovacaoRepository;
 use Flash;
 use Illuminate\Support\Facades\Log;
@@ -107,14 +111,8 @@ class QuadroDeConcorrenciaController extends AppBaseController
     public function show($id, QcItensDataTable $qcItensDataTable)
     {
         $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->findWithoutFail($id);
-//        $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository
-//            ->with(
-//                'tipoEqualizacaoTecnicas.itens',
-//                'tipoEqualizacaoTecnicas.anexos',
-//                'itens.insumo',
-//                'itens.ordemDeCompraItens'
-//            )
-//            ->findWithoutFail($id);
+        // Limpa qualquer notificação que tiver deste item
+        NotificationRepository::marcarLido(WorkflowTipo::QC,$id);
 
         if (empty($quadroDeConcorrencia)) {
             Flash::error('Quadro De Concorrencia ' . trans('common.not-found'));
@@ -129,7 +127,68 @@ class QuadroDeConcorrenciaController extends AppBaseController
             $query->orWhereNull('workflow_tipo_id');
         })->pluck('nome', 'id')->toArray();
 
-        return $qcItensDataTable->qc($quadroDeConcorrencia->id)->with('show', $show)->render('quadro_de_concorrencias.show', compact('quadroDeConcorrencia', 'show', 'motivos_reprovacao'));
+        $avaliado_reprovado = [];
+        $itens_ids = $quadroDeConcorrencia->itens()->pluck('id', 'id')->toArray();
+        $aprovavelTudo = WorkflowAprovacaoRepository::verificaAprovaGrupo('QuadroDeConcorrenciaItem', $itens_ids, Auth::user());
+        $alcadas = WorkflowAlcada::where('workflow_tipo_id', WorkflowTipo::QC)->orderBy('ordem', 'ASC')->get();
+
+        if ($quadroDeConcorrencia->qc_status_id == QcStatus::EM_APROVACAO) {
+            foreach ($alcadas as $alcada) {
+                $avaliado_reprovado[$alcada->id] = WorkflowAprovacaoRepository::verificaTotalJaAprovadoReprovado(
+                    'QuadroDeConcorrenciaItem',
+                    $quadroDeConcorrencia->itens()->pluck('id', 'id')->toArray(),
+                    null,
+                    null,
+                    $alcada->id);
+
+                $avaliado_reprovado[$alcada->id] ['aprovadores'] = WorkflowAprovacaoRepository::verificaQuantidadeUsuariosAprovadores(
+                    WorkflowTipo::find(WorkflowTipo::QC),
+                    $quadroDeConcorrencia->obra_id,
+                    $alcada->id);
+
+                $avaliado_reprovado[$alcada->id] ['faltam_aprovar'] = WorkflowAprovacaoRepository::verificaUsuariosQueFaltamAprovar(
+                    'QuadroDeConcorrenciaItem',
+                    WorkflowTipo::QC,
+                    $quadroDeConcorrencia->obra_id,
+                    $alcada->id,
+                    $itens_ids);
+
+                // Data do início da  Alçada
+                if ($alcada->ordem === 1) {
+                    $ordem_status_log = $quadroDeConcorrencia->logs()
+                        ->where('qc_status_id', QcStatus::FECHADO)->first();
+                    if ($ordem_status_log) {
+                        $avaliado_reprovado[$alcada->id] ['data_inicio'] = $ordem_status_log->created_at
+                            ->format('d/m/Y H:i');
+                    }
+                } else {
+                    $primeiro_voto = WorkflowAprovacao::where('aprovavel_type', 'App\\Models\\QuadroDeConcorrencia')
+                        ->whereIn('aprovavel_id', $itens_ids)
+                        ->where('workflow_alcada_id', $alcada->id)
+                        ->orderBy('id', 'ASC')
+                        ->first();
+                    if ($primeiro_voto) {
+                        $avaliado_reprovado[$alcada->id]['data_inicio'] = $primeiro_voto->created_at->format('d/m/Y H:i');
+                    }
+                }
+            }
+        }
+
+        $alcadas_count = $alcadas->count();
+        $oc_status = $quadroDeConcorrencia->status->nome;
+
+        return $qcItensDataTable->qc($quadroDeConcorrencia->id)
+            ->with('show', $show)
+            ->render('quadro_de_concorrencias.show',
+                compact('quadroDeConcorrencia',
+                        'show',
+                        'motivos_reprovacao',
+                        'aprovavelTudo',
+                        'avaliado_reprovado',
+                        'qtd_itens',
+                        'alcadas_count',
+                        'oc_status'
+                ));
     }
 
     /**
@@ -330,6 +389,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
                     'fornecedor_id'  => $qcFornecedor->fornecedor_id,
                     'valor_total'    => (float) $oferta->valor_total,
                     'valor_unitario' => (float) $oferta->valor_unitario,
+                    'valor_oi' => floatval($item->ordemDeCompraItens->sortBy('valor_unitario')->first() ? $item->ordemDeCompraItens->sortBy('valor_unitario')->first()->valor_unitario : 0),
                 ];
             })->all();
 
@@ -715,12 +775,14 @@ class QuadroDeConcorrenciaController extends AppBaseController
             }
 
             if (!$request->reject) {
-                if ($quadro->hasMaterial()) {
                     if (!intval($request->frete_incluso) && !$request->tipo_frete) {
-                        DB::rollback();
-                        Flash::error('Selecione o Tipo do Frete');
+                        if ($quadro->hasMaterial()) {
 
-                        return back()->withInput();
+                            DB::rollback();
+                            Flash::error('Selecione o Tipo do Frete');
+
+                            return back()->withInput();
+                        }
                     } else {
                         if (!intval($request->frete_incluso)) {
                             if ($request->tipo_frete=='FOB' && (is_null($request->valor_frete) || floatval($request->valor_frete) == 0)) {
@@ -736,7 +798,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
                         'tipo_frete' => intval($request->frete_incluso)?'INC': $request->tipo_frete,
                         'valor_frete' => ($request->tipo_frete=='FOB'? money_to_float($request->get('valor_frete', 0)): 0),
                     ]);
-                }
+
 
                 if(!empty($request->equalizacoes)) {
                     foreach ($request->equalizacoes as $check) {

@@ -64102,6 +64102,66 @@ sortable.disable = function (sortableElement) {
 return sortable;
 }));
 
+function select2(selector, options) {
+  options = Object.assign({
+    allowClear: true,
+    placeholder: "Escolha...",
+    language: "pt-BR",
+    theme: 'bootstrap',
+    ajax: {
+      url: options.url || (options.ajax ? options.ajax.url : ''),
+      dataType: 'json',
+      delay: 250,
+
+      data: function(params) {
+        return {
+          q: params.term,
+          page: params.page,
+        };
+      },
+
+      processResults: function(result, params) {
+        params.page = params.page || 1;
+
+        return {
+          results: result.data.filter(options.filter || Boolean),
+          pagination: {
+            more: (params.page * result.per_page) < result.total
+          }
+        };
+      },
+      cache: true
+    },
+    escapeMarkup: function(markup) {
+      return markup;
+    },
+    minimumInputLength: 1,
+    templateResult: formatResult,
+    templateSelection: formatResultSelection
+  }, options)
+
+  return $(selector).select2(options);
+}
+
+function formatResultSelection(obj) {
+  if (obj.nome) {
+    return obj.nome;
+  }
+  return obj.text;
+}
+
+function formatResult(obj) {
+  if (obj.loading) return obj.text;
+
+  var markup = "<div class='select2-result-obj clearfix'>" +
+    "   <div class='select2-result-obj__meta'>" +
+    "       <div class='select2-result-obj__title'>" + obj.nome + "</div>" +
+    "   </div>" +
+    "</div>";
+
+  return markup;
+}
+
 /* Set the defaults for DataTables initialisation */
 $.extend(true, $.fn.dataTable.defaults, {
   "sDom": "<'row'<'col-xs-5 col-sm-6'l><'col-xs-7 col-sm-6 text-right'f>r>t<'row'<'col-xs-3 col-sm-4 col-md-5'i><'col-xs-9 col-sm-8 col-md-7 text-right'p>>",
@@ -64833,6 +64893,8 @@ $(function() {
 
   $('.cnpj').mask('99.999.999/9999-99');
   $('.cep').mask('00000-000');
+  $('.rg').mask('99.999.999-9');
+  $('.cpf').mask('999.999.999-99');
   $('.telefone').mask(mascara, options);
 
   var popoverOptions = {
@@ -65648,28 +65710,6 @@ function workflowAprovaReprova(item_id, tipo_item, aprovou, elemento, nome, pai_
         showLoaderOnConfirm: true,
       },
       function() {
-        var type = 0;
-        if (tipo_item == 'OrdemDeCompraItem') {
-          type = 1;
-        }
-        if (tipo_item == 'QuadroDeConcorrencia') {
-          type = 2;
-        }
-        if (tipo_item == 'Contrato') {
-          type = 3;
-        }
-        if (tipo_item == 'ContratoItemModificacao') {
-          type = 4;
-        }
-
-        $.ajax("/notifications/marcar-lido", {
-          data: {
-            type: type,
-            id: item_id
-          },
-          type: 'POST'
-        });
-
         workflowCall(item_id, tipo_item, aprovou, elemento, null, null, pai_id, pai_obj, filhos_metodo, shouldReload);
       });
   }
@@ -65996,9 +66036,74 @@ $(function() {
             max: _.max(_.map(ofertasDoInsumo, _.property('valor_total'))) + 100
           }
         }]
-      }
+      },
+      "horizontalLine": [{
+        "y": _.max(_.map(ofertasDoInsumo, _.property('valor_oi'))) ? _.max(_.map(ofertasDoInsumo, _.property('valor_oi'))) : [],
+        "style": "red",
+        "text": "Valor do OI"
+      },
+      {
+        "y": _.min(_.map(ofertasDoInsumo, function (obj) {
+                          if(obj['valor_total'] > 0) {
+                            return obj['valor_total'];
+                          } else {
+                            return _.max(_.map(ofertasDoInsumo, _.property('valor_total'))) + 100;
+                          }
+                        })
+                  ),
+        "style": "blue",
+        "text": "Menor preço"
+      }]
     }
   });
+
+  // Aplica linha horizontal no gráfico de chart-insumo-fornecedor
+  var horizontalLinePlugin = {
+    afterDraw: function(chartInstance) {
+      var yScale = chartInstance.scales["y-axis-0"];
+      var canvas = chartInstance.chart;
+      var ctx = canvas.ctx;
+      var index;
+      var line;
+      var style;
+
+      if (chartInstance.options.horizontalLine) {
+        for (index = 0; index < chartInstance.options.horizontalLine.length; index++) {
+          line = chartInstance.options.horizontalLine[index];
+
+          if (!line.style) {
+            style = "rgba(169,169,169, .6)";
+          } else {
+            style = line.style;
+          }
+
+          if (line.y) {
+            yValue = yScale.getPixelForValue(line.y);
+          } else {
+            yValue = 0;
+          }
+
+          ctx.lineWidth = 3;
+
+          if (yValue) {
+            ctx.beginPath();
+            ctx.moveTo(0, yValue);
+            ctx.lineTo(canvas.width, yValue);
+            ctx.strokeStyle = style;
+            ctx.stroke();
+          }
+
+          if (line.text) {
+            ctx.fillStyle = style;
+            ctx.fillText(line.text, 0, yValue + ctx.lineWidth);
+          }
+        }
+        return;
+      };
+    }
+  };
+  Chart.pluginService.register(horizontalLinePlugin);
+// Fim da aplicação da linha horizontal no gráfico
 
   selectInsumo.change(function() {
     var ofertasDoInsumo = _.filter(ofertas, {
@@ -66075,7 +66180,7 @@ $(function() {
 
     var insumos = _.reduce(rows, function(insumos, row) {
       var insumo = row.querySelector('td').innerText;
-      var inputs = row.querySelectorAll('input[type="checkbox"]');
+      var inputs = row.querySelectorAll('input[type="radio"]');
 
       insumos[insumo] = hasCheckedElement(inputs);
 

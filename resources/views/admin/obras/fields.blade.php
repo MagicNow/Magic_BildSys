@@ -26,6 +26,16 @@
     {!! Form::select('cidade_id', $cidades, null, ['class' => 'form-control']) !!}
 </div>
 
+<div class="form-group col-sm-6">
+    {!! Form::label('regional_id', 'Regional:') !!}
+    {!! Form::select('regional_id', $regionais, null, ['class' => 'form-control select2']) !!}
+</div>
+
+<div class="form-group col-sm-6">
+    {!! Form::label('padrao_empreendimento_id', 'Padrão de empreendimento:') !!}
+    {!! Form::select('padrao_empreendimento_id', $padrao_empreendimentos, null, ['class' => 'form-control select2']) !!}
+</div>
+
 <!-- area_terreno Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('area_terreno', 'Área do terreno:') !!}
@@ -184,8 +194,8 @@
 
 <!-- Submit Field -->
 <div class="form-group col-sm-12">
-    {!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save') ), ['class' => 'btn btn-success pull-right flat', 'type'=>'submit']) !!}
-    <a href="{!! route('admin.obras.index') !!}" class="btn btn-danger flat"><i class="fa fa-times"></i>  {{ ucfirst( trans('common.cancel') )}}</a>
+    {!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save') ), ['class' => 'btn btn-success btn-lg pull-right btn-flat', 'type'=>'submit']) !!}
+    <a href="{!! route('admin.obras.index') !!}" class="btn btn-danger btn-lg btn-flat"><i class="fa fa-times"></i>  {{ ucfirst( trans('common.cancel') )}}</a>
 </div>
 
 @section('scripts')
