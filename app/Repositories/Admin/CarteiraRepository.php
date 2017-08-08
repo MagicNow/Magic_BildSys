@@ -31,4 +31,16 @@ class CarteiraRepository extends BaseRepository
         ->get();
     }
 	
+	
+	public function comInsumoOrcamentoObra($obra_id)
+    {
+        return $this->model
+            ->whereHas('insumos', function($query) use ($obra_id) {
+                $query
+                    ->join('orcamentos', 'orcamentos.insumo_id', '=', 'insumos.id')											
+                    ->where('orcamentos.obra_id', $obra_id);
+            })
+            ->orderBy('nome','ASC')
+            ->get();
+    }
 }

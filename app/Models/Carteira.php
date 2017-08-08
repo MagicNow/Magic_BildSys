@@ -71,6 +71,24 @@ class Carteira extends Model
 	/**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
+    public function carteiraInsumos()
+    {
+        return $this->belongsToMany(CarteiraInsumo::class, 'carteira_insumos', 'carteira_id', 'insumo_id')->withPivot('deleted_at')->withTimestamps();
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function insumos()
+    {
+        return $this->belongsToMany(Insumo::class, 'carteira_insumos', 'carteira_id', 'insumo_id')
+            ->withPivot('deleted_at')
+            ->withTimestamps();
+    }
+	
+	/**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
     public function carteiraTipoEquilizacaoTecnicas()
     {
         return $this->belongsToMany(CarteiraTipoEquilizacaoTecnica::class, 'carteira_tipo_equalizacao_tecnicas', 'carteira_id', 'tipo_equalizacao_id')->withPivot('deleted_at')->withTimestamps();

@@ -228,14 +228,18 @@ class OrdemDeCompraController extends AppBaseController
             ->pluck('tarefa', 'id')
             ->toArray();
 		
-		$carteiras = $carteiraRepository		
-            ->pluck('nome', 'id')
-            ->prepend('', '')
-            ->toArray();
+		/*$carteiras = Carteira::whereIn('id', $lembretesHomeDataTable 			
+			->join('carteira_insumos', 'carteira_insumos.insumo_id', 'ordem_de_compra_itens.insumo_id')			
+            ->pluck('carteira_insumos.carteira_id', 'carteira_insumos.carteira_id')            
+            ->toArray()
+        )
+        ->orderBy('nome', 'ASC')
+        ->pluck('nome','id')
+        ->toArray();*/
 
         return $lembretesHomeDataTable->render(
             'ordem_de_compras.compras',
-            compact('obras', 'grupos', 'atividades', 'carteiras')
+            compact('obras', 'grupos', 'atividades')
         );
     }
 
@@ -561,11 +565,13 @@ class OrdemDeCompraController extends AppBaseController
         ComprasDataTable $comprasDataTable,
         Request $request,
         InsumoGrupoRepository $insumoGrupoRepository,
-        PlanejamentoRepository $planejamentoRepository
+        PlanejamentoRepository $planejamentoRepository,		
+		CarteiraRepository $carteiraRepository
     ) {
         $planejamento = Planejamento::find($request->planejamento_id);
         $insumoGrupo = InsumoGrupo::find($request->insumo_grupos_id);
-
+		$carteira = Carteira::find($request->carteira_id);
+		
         $obra = Obra::find($request->obra_id);
 
         $grupos = Grupo::whereNull('grupo_id')
@@ -581,12 +587,19 @@ class OrdemDeCompraController extends AppBaseController
             ->pluck('nome', 'id')
             ->prepend('', '')
             ->toArray();
+		
+		$carteiras = $carteiraRepository
+            ->comInsumoOrcamentoObra($request->obra_id)
+            ->pluck('nome', 'id')
+            ->prepend('', '')
+            ->toArray();
 
 //        $planejamentos = $planejamentoRepository
 //            ->comLembretesComItensDeCompraPorUsuario($request->user()->id)
 //            ->prepend('', '')
 //            ->pluck('tarefa', 'id')
 //            ->toArray();
+
         $planejamentos = Planejamento::where('obra_id', $request->obra_id)
             ->where('resumo', 'Sim')
             ->select([
@@ -615,6 +628,8 @@ class OrdemDeCompraController extends AppBaseController
                 'planejamento',
                 'insumoGrupo',
                 'insumoGrupos',
+				'carteira',
+				'carteiras',
                 'planejamentos'
             )
         );
