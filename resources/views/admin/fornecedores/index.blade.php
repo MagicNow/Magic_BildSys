@@ -1,7 +1,7 @@
 @extends('layouts.front')
 
 @section('content')
-    @include( 'flash::message' )
+    {{--@include( 'flash::message' )--}}
     <section class="content-header">
         <h1>
             <button type="button" class="btn btn-link" onclick="history.go(-1);">

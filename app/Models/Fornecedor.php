@@ -38,7 +38,23 @@ class Fornecedor extends Model
         'telefone',
         'cep',
         'user_id',
-        'imposto_simples'
+        'imposto_simples',
+        'nome_socio',
+        'nacionalidade_socio',
+        'estado_civil_socio',
+        'profissao_socio',
+        'rg_socio',
+        'cpf_socio',
+        'endereco_socio',
+        'cidade_socio',
+        'estado_socio',
+        'cep_socio',
+        'telefone_socio',
+        'celular_socio',
+        'email_socio',
+        'nome_vendedor',
+        'email_vendedor',
+        'telefone_vendedor'
     ];
 
     public static $campos = [

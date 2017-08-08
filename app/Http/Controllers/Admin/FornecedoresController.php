@@ -177,6 +177,7 @@ class FornecedoresController extends AppBaseController
      */
     public function update($id, UpdateFornecedoresRequest $request)
     {
+//        dd($request->all());
         $usuario_existente_deletado = User::Where('email', '=', $request->email)
             ->withTrashed()
             ->whereNotNull('deleted_at')
@@ -200,9 +201,9 @@ class FornecedoresController extends AppBaseController
             $fornecedor_existente_deletado->forceDelete();
         }
 
-        $this->validate($request, [
-            'email' => 'unique:fornecedores|unique:users'
-        ]);
+//        $this->validate($request, [
+//            'email' => 'unique:fornecedores|unique:users'
+//        ]);
 
 //        if (isset($usuario_existente)) {
 //            Flash::error('O campo email já esta sendo utilizado em outro cadastro');
@@ -212,7 +213,7 @@ class FornecedoresController extends AppBaseController
         $fornecedores = $this->fornecedoresRepository->findWithoutFail($id);
 
         if (empty($fornecedores)) {
-            Flash::error('Fornecedores '.trans('common.not-found'));
+            Flash::error('Fornecedor '.trans('common.not-found'));
 
             return redirect(route('admin.fornecedores.index'));
         }
@@ -270,20 +271,19 @@ class FornecedoresController extends AppBaseController
     }
 
     public function validaCnpj(Request $request){
-        $validator = ValidationRepository::validaCnpj($request->numero,$request->cpf);
+        $validator = ValidationRepository::validaCnpj($request->numero,$request->cnpj);
 
         $validator->validate();
 
         // verifica se já não existe o cnpj com outro fornecedor
         $documentoUnico = ValidationRepository::CnpjUnico($request->numero);
 
-
         if($documentoUnico){
-            return response()->json(['success'=>false,'erro'=>'CNPJ já cadastrado na base!'],422);
+            return response()->json(['success' => false, 'erro' => 'CNPJ já cadastrado na base!'],422);
         }else{
             $retorno = ImportacaoRepository::fornecedores($request->numero);
             if($retorno) {
-                return response()->json(['success' => true, 'msg'=>'Fornecedor já existente no banco MEGA e importado automaticamente', 'importado'=>1, 'fornecedor'=>$retorno]);
+                return response()->json(['success' => true, 'msg'=>'Fornecedor encontrado no MEGA e inserido no SYS', 'importado'=>1, 'fornecedor'=>$retorno]);
             }
         }
         return response()->json(['success'=>true]);
