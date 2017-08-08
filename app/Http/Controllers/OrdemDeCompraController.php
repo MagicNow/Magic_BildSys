@@ -228,16 +228,18 @@ class OrdemDeCompraController extends AppBaseController
             ->pluck('tarefa', 'id')
             ->toArray();
 		
-		/*$carteiras = Carteira::whereIn('id', $lembretesHomeDataTable 			
-			->join('carteira_insumos', 'carteira_insumos.insumo_id', 'ordem_de_compra_itens.insumo_id')			
-            ->pluck('carteira_insumos.carteira_id', 'carteira_insumos.carteira_id')            
-            ->toArray()
-        )
-        ->orderBy('nome', 'ASC')
-        ->pluck('nome','id')
-        ->toArray();*/
+		/*$carteiras = $carteiraRepository
+            ->findByUser($request->user()->id)
+            ->pluck('nome', 'id')
+            ->prepend('', '')
+            ->toArray();
 
         return $lembretesHomeDataTable->render(
+            'ordem_de_compras.compras',
+            compact('obras', 'grupos', 'atividades', 'carteiras')
+        );*/
+		
+		return $lembretesHomeDataTable->render(
             'ordem_de_compras.compras',
             compact('obras', 'grupos', 'atividades')
         );

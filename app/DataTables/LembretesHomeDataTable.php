@@ -702,7 +702,7 @@ class LembretesHomeDataTable extends DataTable
                             .on(\'change\', function () {
                                 column.search($(this).val(), false, false, true).draw();
                             });
-                        }else if(col==4){
+                        /*}else if(col==4){
                             var column = this;
                             var input = document.createElement("input");
                             $(input).attr(\'id\',\'filtro_carteira\');
@@ -712,7 +712,7 @@ class LembretesHomeDataTable extends DataTable
                             $(input).appendTo($(column.footer()).empty())
                             .on(\'change\', function () {
                                 column.search($(this).val(), false, false, true).draw();
-                            });
+                            });*/
                         }else if((col+1)<max){
                             var column = this;
                             var input = document.createElement("input");
@@ -753,7 +753,7 @@ class LembretesHomeDataTable extends DataTable
         ];
 
         $columns['Grupo De Insumo'] = ['name' => 'grupo', 'data' => 'grupo'];
-		$columns['Carteira'] = ['name' => 'carteira', 'data' => 'grupo'];
+		//$columns['Carteira'] = ['name' => 'carteira', 'data' => 'grupo'];
 
         $columns['action'] = [
             'title'      => 'Ações',
