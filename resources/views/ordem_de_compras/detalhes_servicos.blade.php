@@ -40,6 +40,9 @@
     </section>
     <div class="content">
         <h6>Dados Informativos</h6>
+        <div class="js-datatable-filter-form">
+            <input type="hidden" name="itens_selecionados" id="itens_selecionados">
+        </div>
         <div class="row">
             <div class="col-md-2 form-group">
                 {!! Form::label('codigo', 'Código do serviço') !!}
@@ -110,17 +113,21 @@
 
 @section('scripts')
     <script>
+        var itens_selecionados = [];
+
         $(function () {
             recalcularAnaliseServico();
         });
 
         function recalcularAnaliseServico() {
+            startLoading();
             var valor_previsto = 0;
             var valor_comprometido_a_gastar = 0;
             var saldo_orcamento = 0;
             var valor_oc = 0;
             var saldo_disponivel = 0;
             var tem_checked = false;
+//            var itens_selecionados = [];
 
             $('.detalhes_servicos_itens').each(function (index, value) {
                 if($(value).prop('checked')) {
@@ -130,6 +137,21 @@
                     saldo_orcamento += parseInt($(value).attr('saldo_orcamento'));
                     valor_oc += parseInt($(value).attr('valor_oc'));
                     saldo_disponivel += parseInt($(value).attr('saldo_disponivel'));
+
+                    itens_selecionados.push($(value).attr('id'));
+                } else {
+                    Array.prototype.remove = function() {
+                        var what, a = arguments, L = a.length, ax;
+                        while (L && this.length) {
+                            what = a[--L];
+                            while ((ax = this.indexOf(what)) !== -1) {
+                                this.splice(ax, 1);
+                            }
+                        }
+                        return this;
+                    };
+
+                    itens_selecionados.remove($(value).attr('id'));
                 }
             });
 
@@ -139,6 +161,21 @@
                 $('#saldo_orcamento').text(floatToMoney(saldo_orcamento, ''));
                 $('#valor_oc').text(floatToMoney(valor_oc, ''));
                 $('#saldo_disponivel').text(floatToMoney(saldo_disponivel, ''));
+
+                $('#dataTableBuilder').on('preXhr.dt', function ( e, settings, data ) {
+                    $('.js-datatable-filter-form :input').each(function () {
+                        data[$(this).prop('name')] = itens_selecionados;
+                    });
+
+                    setTimeout(function () {
+                        $.each(itens_selecionados, function( index, value ) {
+                            $('#'+value).attr('checked', true);
+                        });
+
+                        stopLoading();
+                    }, 100);
+                });
+
             } else {
                 $('#valor_previsto').text('{{ number_format($orcamentoInicial,2,',','.') }}');
                 $('#valor_comprometido_a_gastar').text('{{ number_format($valor_comprometido_a_gastar,2,',','.') }}');
@@ -146,6 +183,16 @@
                 $('#valor_oc').text('{{ number_format($totalSolicitado,2,',','.') }}');
                 $('#saldo_disponivel').text('{{ number_format(($orcamentoInicial - $totalSolicitado),2,',','.') }}');
             }
+
+            window.LaravelDataTables["dataTableBuilder"].draw();
+
+            setTimeout(function () {
+                $.each(itens_selecionados, function( index, value ) {
+                    $('#'+value).attr('checked', true);
+                });
+
+                stopLoading();
+            }, 100);
         }
     </script>
 @endsection

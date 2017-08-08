@@ -152,8 +152,17 @@ class DetalhesServicosDataTable extends DataTable
             ->leftJoin(DB::raw('orcamentos orcamentos_sub'),  'orcamentos_sub.id', 'orcamentos.orcamento_que_substitui')
             ->leftJoin(DB::raw('insumos insumos_sub'), 'insumos_sub.id', 'orcamentos_sub.insumo_id')
             ->where('orcamentos.servico_id','=', DB::raw($this->servico_id))
-            ->where('orcamentos.obra_id','=', DB::raw($this->obra_id))
-            ->groupBy('orcamentos.insumo_id');
+            ->where('orcamentos.obra_id','=', DB::raw($this->obra_id));
+
+        if($this->request()->get('itens_selecionados')) {
+            if(count($this->request()->get('itens_selecionados'))) {
+                $itens_selecionados = implode(',', $this->request()->get('itens_selecionados'));
+
+                $orcamentos = $orcamentos->orderByRaw(DB::raw('FIELD(orcamentos.id, '.$itens_selecionados.') DESC'));
+            }
+        }
+        
+        $orcamentos = $orcamentos->groupBy('orcamentos.insumo_id');
 
         return $this->applyScopes($orcamentos);
     }
