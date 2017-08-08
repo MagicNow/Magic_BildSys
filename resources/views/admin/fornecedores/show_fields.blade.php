@@ -70,6 +70,102 @@
     <p class="form-control">{!! $fornecedores->complemento !!}</p>
 </div>
 
+<!-- Nome sócio ou procurador Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('nome_socio', 'Nome sócio ou procurador:') !!}
+    <p class="form-control">{!! $fornecedores->nome_socio !!}</p>
+</div>
+
+<!-- Nacionalidade sócio ou procurador Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('nacionalidade_socio', 'Nacionalidade sócio ou procurador:') !!}
+    <p class="form-control">{!! $fornecedores->nacionalidade_socio !!}</p>
+</div>
+
+<!-- Estado civil sócio ou procurador Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('estado_civil_socio', 'Estado civil sócio ou procurador:') !!}
+    <p class="form-control">{!! $fornecedores->estado_civil_socio !!}</p>
+</div>
+
+<!-- Profissão sócio ou procurador Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('profissao_socio', 'Profissão sócio ou procurador:') !!}
+    <p class="form-control">{!! $fornecedores->profissao_socio !!}</p>
+</div>
+
+<!-- RG sócio ou procurador Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('rg_socio', 'RG sócio ou procurador:') !!}
+    <p class="form-control">{!! $fornecedores->rg_socio !!}</p>
+</div>
+
+<!-- CPF sócio ou procurador Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('cpf_socio', 'CPF sócio ou procurador:') !!}
+    <p class="form-control">{!! $fornecedores->cpf_socio !!}</p>
+</div>
+
+<!-- Endereço sócio ou procurador Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('endereco_socio', 'Endereço sócio ou procurador:') !!}
+    <p class="form-control">{!! $fornecedores->endereco_socio !!}</p>
+</div>
+
+<!-- Cidade sócio ou procurador Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('cidade_socio', 'Cidade sócio ou procurador:') !!}
+    <p class="form-control">{!! $fornecedores->cidade_socio !!}</p>
+</div>
+
+<!-- Estado sócio ou procurador Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('estado_socio', 'Estado sócio ou procurador:') !!}
+    <p class="form-control">{!! $fornecedores->estado_socio !!}</p>
+</div>
+
+<!-- CEP sócio ou procurador Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('cep_socio', 'CEP sócio ou procurador:') !!}
+    <p class="form-control">{!! $fornecedores->cep_socio !!}</p>
+</div>
+
+<!-- Telefone sócio ou procurador Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('telefone_socio', 'Telefone sócio ou procurador:') !!}
+    <p class="form-control">{!! $fornecedores->telefone_socio !!}</p>
+</div>
+
+<!-- Celular sócio ou procurador Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('celular_socio', 'Celular sócio ou procurador:') !!}
+    <p class="form-control">{!! $fornecedores->celular_socio !!}</p>
+</div>
+
+<!-- Email sócio ou procurador Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('email_socio', 'Email sócio ou procurador:') !!}
+    <p class="form-control">{!! $fornecedores->email_socio !!}</p>
+</div>
+
+<!-- Nome do vendedor Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('nome_vendedor', 'Nome do vendedor:') !!}
+    <p class="form-control">{!! $fornecedores->nome_vendedor !!}</p>
+</div>
+
+<!-- Email do vendedor Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('email_vendedor', 'Email do vendedor:') !!}
+    <p class="form-control">{!! $fornecedores->email_vendedor !!}</p>
+</div>
+
+<!-- Telefone do vendedor Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('telefone_vendedor', 'Telefone do vendedor:') !!}
+    <p class="form-control">{!! $fornecedores->telefone_vendedor !!}</p>
+</div>
+
 <div class="form-group col-sm-12">
   <div class="checkbox">
     <label style="padding-left: 0px; ">
