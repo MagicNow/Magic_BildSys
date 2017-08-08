@@ -20,14 +20,24 @@ class QuadroDeConcorrencia extends Model
     ];
 
     public static $workflow_tipo_id = WorkflowTipo::QC;
-
+    
     public function workflowNotification()
     {
         return [
-            'message' => 'Você tem um novo quadro de concorrência para aprovar',
+            'message' => "QC ".$this->id." à aprovar",
             'link' => route('quadroDeConcorrencias.show', $this->id),
             'workflow_tipo_id' => WorkflowTipo::QC,
-            'id_dinamico' => $this->id
+            'id_dinamico' => $this->id,
+            'task'=>1,
+            'done'=>0
+        ];
+    }
+    
+    public function workflowNotificationDone($aprovado)
+    {
+        return [
+            'message' => "QC ".$this->id.($aprovado?' aprovada ':' reprovada '),
+            'link' => route('quadroDeConcorrencias.show', $this->id)
         ];
     }
 
@@ -175,6 +185,10 @@ class QuadroDeConcorrencia extends Model
         return [$this->attributes['id'] => $this->attributes['id']];
     }
 
+    public function idPai(){
+        return null;
+    }
+
     public function paiEmAprovacao()
     {
         return false;
@@ -252,5 +266,9 @@ class QuadroDeConcorrencia extends Model
     public function contratos()
     {
         return $this->hasMany(Contrato::class);
+    }
+
+    public function emAprovacao(){
+        return ($this->qc_status_id == 3);
     }
 }

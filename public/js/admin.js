@@ -64102,6 +64102,66 @@ sortable.disable = function (sortableElement) {
 return sortable;
 }));
 
+function select2(selector, options) {
+  options = Object.assign({
+    allowClear: true,
+    placeholder: "Escolha...",
+    language: "pt-BR",
+    theme: 'bootstrap',
+    ajax: {
+      url: options.url || (options.ajax ? options.ajax.url : ''),
+      dataType: 'json',
+      delay: 250,
+
+      data: function(params) {
+        return {
+          q: params.term,
+          page: params.page,
+        };
+      },
+
+      processResults: function(result, params) {
+        params.page = params.page || 1;
+
+        return {
+          results: result.data.filter(options.filter || Boolean),
+          pagination: {
+            more: (params.page * result.per_page) < result.total
+          }
+        };
+      },
+      cache: true
+    },
+    escapeMarkup: function(markup) {
+      return markup;
+    },
+    minimumInputLength: 1,
+    templateResult: formatResult,
+    templateSelection: formatResultSelection
+  }, options)
+
+  return $(selector).select2(options);
+}
+
+function formatResultSelection(obj) {
+  if (obj.nome) {
+    return obj.nome;
+  }
+  return obj.text;
+}
+
+function formatResult(obj) {
+  if (obj.loading) return obj.text;
+
+  var markup = "<div class='select2-result-obj clearfix'>" +
+    "   <div class='select2-result-obj__meta'>" +
+    "       <div class='select2-result-obj__title'>" + obj.nome + "</div>" +
+    "   </div>" +
+    "</div>";
+
+  return markup;
+}
+
 /* Set the defaults for DataTables initialisation */
 $.extend(true, $.fn.dataTable.defaults, {
   "sDom": "<'row'<'col-xs-5 col-sm-6'l><'col-xs-7 col-sm-6 text-right'f>r>t<'row'<'col-xs-3 col-sm-4 col-md-5'i><'col-xs-9 col-sm-8 col-md-7 text-right'p>>",
@@ -64833,6 +64893,8 @@ $(function() {
 
   $('.cnpj').mask('99.999.999/9999-99');
   $('.cep').mask('00000-000');
+  $('.rg').mask('99.999.999-9');
+  $('.cpf').mask('999.999.999-99');
   $('.telefone').mask(mascara, options);
 
   var popoverOptions = {
@@ -65648,28 +65710,6 @@ function workflowAprovaReprova(item_id, tipo_item, aprovou, elemento, nome, pai_
         showLoaderOnConfirm: true,
       },
       function() {
-        var type = 0;
-        if (tipo_item == 'OrdemDeCompraItem') {
-          type = 1;
-        }
-        if (tipo_item == 'QuadroDeConcorrencia') {
-          type = 2;
-        }
-        if (tipo_item == 'Contrato') {
-          type = 3;
-        }
-        if (tipo_item == 'ContratoItemModificacao') {
-          type = 4;
-        }
-
-        $.ajax("/notifications/marcar-lido", {
-          data: {
-            type: type,
-            id: item_id
-          },
-          type: 'POST'
-        });
-
         workflowCall(item_id, tipo_item, aprovou, elemento, null, null, pai_id, pai_obj, filhos_metodo, shouldReload);
       });
   }
@@ -66140,7 +66180,7 @@ $(function() {
 
     var insumos = _.reduce(rows, function(insumos, row) {
       var insumo = row.querySelector('td').innerText;
-      var inputs = row.querySelectorAll('input[type="checkbox"]');
+      var inputs = row.querySelectorAll('input[type="radio"]');
 
       insumos[insumo] = hasCheckedElement(inputs);
 

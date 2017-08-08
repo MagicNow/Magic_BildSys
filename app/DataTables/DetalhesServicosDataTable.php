@@ -18,6 +18,9 @@ class DetalhesServicosDataTable extends DataTable
      */
     public function ajax()
     {
+//      ATENÇÃO
+//      Se alterar o html tem que alterar o arquivo detalhes_servicos_datatables_actions.blade.php
+
         return $this->datatables
             ->eloquent($this->query())
             ->editColumn('valor_previsto', function($obj){
@@ -28,7 +31,7 @@ class DetalhesServicosDataTable extends DataTable
             })
             ->editColumn('valor_comprometido_a_gastar', function($obj){
                 $valor_comprometido_a_gastar = OrdemDeCompraRepository::valorComprometidoAGastarItem($obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, $obj->insumo_id);
-                
+
                 return '<small class="pull-left">R$</small>'.number_format( doubleval($valor_comprometido_a_gastar), 2, ',','.');
             })
             ->editColumn('saldo_orcamento', function($obj){
@@ -73,6 +76,7 @@ class DetalhesServicosDataTable extends DataTable
             ->filterColumn('descricao',function($query, $keyword){
                 $query->where(DB::raw("CONCAT(SUBSTRING_INDEX(orcamentos.codigo_insumo, '.', -1),' - ' ,orcamentos.descricao)"),'LIKE','%'.$keyword.'%');
             })
+            ->editColumn('action', 'ordem_de_compras.detalhes_servicos_datatables_actions')
             ->make(true);
     }
 
@@ -89,6 +93,7 @@ class DetalhesServicosDataTable extends DataTable
             DB::raw("
                 IF (orcamentos.insumo_incluido = 1, 0, orcamentos.preco_total) as valor_previsto
             "),
+            'orcamentos.id',
             'orcamentos.insumo_incluido',
             'orcamentos.grupo_id',
             'orcamentos.subgrupo1_id',
@@ -147,8 +152,17 @@ class DetalhesServicosDataTable extends DataTable
             ->leftJoin(DB::raw('orcamentos orcamentos_sub'),  'orcamentos_sub.id', 'orcamentos.orcamento_que_substitui')
             ->leftJoin(DB::raw('insumos insumos_sub'), 'insumos_sub.id', 'orcamentos_sub.insumo_id')
             ->where('orcamentos.servico_id','=', DB::raw($this->servico_id))
-            ->where('orcamentos.obra_id','=', DB::raw($this->obra_id))
-            ->groupBy('orcamentos.insumo_id');
+            ->where('orcamentos.obra_id','=', DB::raw($this->obra_id));
+
+        if($this->request()->get('itens_selecionados')) {
+            if(count($this->request()->get('itens_selecionados'))) {
+                $itens_selecionados = implode(',', $this->request()->get('itens_selecionados'));
+
+                $orcamentos = $orcamentos->orderByRaw(DB::raw('FIELD(orcamentos.id, '.$itens_selecionados.') DESC'));
+            }
+        }
+        
+        $orcamentos = $orcamentos->groupBy('orcamentos.insumo_id');
 
         return $this->applyScopes($orcamentos);
     }
@@ -216,10 +230,11 @@ class DetalhesServicosDataTable extends DataTable
             'Und_de_medida' => ['name' => 'unidade_sigla', 'data' => 'unidade_sigla'],
             'Valor_previsto_no_orçamento' => ['name' => 'orcamentos.preco_total', 'data' => 'valor_previsto', 'searchable' => false],
             'Valor_comprometido_realizado' => ['name' => 'valor_realizado', 'data' => 'valor_realizado', 'searchable' => false],
-            'Valor_comprometido_à_gastar' => ['name' => 'valor_comprometido_a_gastar', 'data' => 'valor_comprometido_a_gastar', 'searchable' => false],
+            'Valor_comprometido_à_gastar' => ['name' => 'valor_comprometido_a_gastar', 'data' => 'valor_comprometido_a_gastar', 'searchable' => false, 'orderable' => false],
             'Saldo_de_orçamento' => ['name' => 'saldo_orcamento', 'data' => 'saldo_orcamento', 'searchable' => false],
             'Valor_da_Oc' => ['name' => 'valor_oc', 'data' => 'valor_oc', 'searchable' => false],
-            'Saldo_disponível_após_O&period;C&period;' => ['name' => 'saldo_disponivel', 'data' => 'saldo_disponivel', 'searchable' => false]
+            'Saldo_disponível_após_O&period;C&period;' => ['name' => 'saldo_disponivel', 'data' => 'saldo_disponivel', 'searchable' => false, 'orderable' => false],
+            'action' => ['name' => 'Ações', 'title' => 'Selecionar', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10px', 'class' => 'all'],
         ];
     }
 

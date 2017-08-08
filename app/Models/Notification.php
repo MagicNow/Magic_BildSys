@@ -16,7 +16,7 @@ class Notification extends Model
         'notifiable_id',
         'notifiable_type',
         'data',
-        'read_at'
+        'read_at',
     ];
 
     /**
@@ -29,7 +29,7 @@ class Notification extends Model
         'type' => 'string',
         'notifiable_id' => 'integer',
         'notifiable_type' => 'string',
-        'data' => 'object'
+        'data' => 'array'
     ];
 
     /**

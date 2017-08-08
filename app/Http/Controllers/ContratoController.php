@@ -17,12 +17,15 @@ use App\Models\Obra;
 use App\Models\ObraTorre;
 use App\Models\Planejamento;
 use App\Models\WorkflowAprovacao;
+use App\Notifications\WorkflowNotification;
 use App\Repositories\CodeRepository;
 use App\Repositories\ContratoRepository;
+use App\Repositories\NotificationRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use Response;
 use App\Repositories\Admin\FornecedoresRepository;
@@ -116,6 +119,9 @@ class ContratoController extends AppBaseController
 
             return redirect(route('contratos.index'));
         }
+
+        // Limpa qualquer notificação que tiver deste item
+        NotificationRepository::marcarLido(WorkflowTipo::CONTRATO,$id);
 
         $orcamentoInicial = $totalAGastar = $realizado = $totalSolicitado = 0;
 
@@ -220,6 +226,8 @@ class ContratoController extends AppBaseController
         $itens_analise = $apropriacaoRepository->forContratoApproval($contrato);
 
         $GLOBALS["valor_total_comprometido_a_gastar"] = 0.00;
+
+        $qtd_itens = 1;
     
         return view('contratos.show', compact(
             'isEmAprovacao',
@@ -236,6 +244,7 @@ class ContratoController extends AppBaseController
             'fornecedor',
             'iss',
             'itens_analise',
+            'qtd_itens',
             'valor_total_comprometido_a_gastar'
         ));
     }
@@ -339,22 +348,17 @@ class ContratoController extends AppBaseController
             return redirect(route('contratos.index'));
         }
 
-        $workflow_aprovacao = WorkflowAprovacao::where('aprovavel_type', 'App\Models\Contrato')
-            ->where('aprovavel_id', $contrato->id)
-            ->first();
 
         if (count($request->quantidade)) {
             foreach ($request->quantidade as $item) {
                 $contrato_item = ContratoItem::find($item['id']);
-                if ($contrato_item && $item['qtd'] != '' && $contrato_item->qtd != money_to_float($item['qtd']) && $workflow_aprovacao) {
+                if ($contrato_item && $item['qtd'] != '' && $contrato_item->qtd != money_to_float($item['qtd']) ) {
                     $contrato_item->qtd = money_to_float($item['qtd']);
                     $contrato_item->valor_total = money_to_float($item['qtd']) * money_to_float($contrato_item->valor_unitario);
                     $contrato_item->update();
 
                     $contrato->contrato_status_id = 1;
                     $contrato->update();
-
-                    $workflow_aprovacao->delete();
 
                     $type_resposta = 'success';
                     $resposta = 'Contrato em aprovação.';
@@ -765,6 +769,11 @@ class ContratoController extends AppBaseController
         $input = $request->all();
         $input['contrato_id'] = $contrato_id;
         $solicitacao = $repository->create($input);
+
+        # Notifica usuários aprovadores
+        $aprovadores = WorkflowAprovacaoRepository::usuariosDaAlcadaAtual($solicitacao);
+
+        Notification::send($aprovadores, new WorkflowNotification($solicitacao));
 
         return response()->json([
             'success' => true

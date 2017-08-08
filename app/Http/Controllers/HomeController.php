@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\MegaInsumo;
+use App\Models\WorkflowAlcada;
 use App\Repositories\ImportacaoRepository;
 use Illuminate\Http\Request;
 use App\Models\OrdemDeCompra;
@@ -28,37 +29,19 @@ class HomeController extends Controller
      */
     public function index(QuadroDeConcorrenciaRepository $quadroDeConcorrenciaRepository)
     {
-//        $reprovados = OrdemDeCompra::select([
-//            'ordem_de_compras.id',
-//            'obras.nome',
-//            'users.name'
-//        ])            ->join('obras','obras.id','ordem_de_compras.obra_id')
-//            ->join('users', 'users.id','=', 'ordem_de_compras.user_id')
-//            ->where('oc_status_id', 4)->orderBy('id', 'desc')
-//            ->take(5)->get();
-//
-//        $aprovados = OrdemDeCompra::select([
-//                'ordem_de_compras.id',
-//                'obras.nome',
-//                'users.name'
-//            ])            ->join('obras','obras.id','ordem_de_compras.obra_id')
-//                ->join('users', 'users.id','=', 'ordem_de_compras.user_id')
-//                ->where('oc_status_id', 5)->orderBy('id', 'desc')
-//                ->take(5)->get();
-//
-//        $emaprovacao = OrdemDeCompra::select([
-//                'ordem_de_compras.id',
-//                'obras.nome',
-//                'users.name'
-//            ])            ->join('obras','obras.id','ordem_de_compras.obra_id')
-//                ->join('users', 'users.id','=', 'ordem_de_compras.user_id')
-//                ->where('oc_status_id', 3)->orderBy('id', 'desc')
-//                ->take(5)->get();
-
-        return view('home', [
-            'quadros' => $quadroDeConcorrenciaRepository
-                ->quadrosPreenchiveisPeloUsuario(auth()->user())
-                ->count()
-        ]);
+        $workflow_prazos = [];
+        $workflow_alcadas_user = WorkflowAlcada::whereHas('workflowUsuarios', function($query){
+                $query->where('user_id',auth()->id());
+            })->get();
+        if($workflow_alcadas_user->count()){
+            foreach ($workflow_alcadas_user as $alcada){
+                $workflow_prazos[$alcada->workflow_tipo_id] = $alcada->dias_prazo;
+            }
+        }
+        
+        $quadros = $quadroDeConcorrenciaRepository
+            ->quadrosPreenchiveisPeloUsuario(auth()->user())
+            ->count();
+        return view('home', compact('quadros','workflow_prazos'));
     }
 }

@@ -11,6 +11,7 @@ use App\Models\WorkflowAprovacao;
 use App\Models\WorkflowTipo;
 use App\Notifications\WorkflowNotification;
 use App\Repositories\ContratoRepository;
+use App\Repositories\NotificationRepository;
 use App\Repositories\WorkflowAprovacaoRepository;
 use Flash;
 use Illuminate\Support\Facades\Log;
@@ -110,14 +111,8 @@ class QuadroDeConcorrenciaController extends AppBaseController
     public function show($id, QcItensDataTable $qcItensDataTable)
     {
         $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->findWithoutFail($id);
-//        $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository
-//            ->with(
-//                'tipoEqualizacaoTecnicas.itens',
-//                'tipoEqualizacaoTecnicas.anexos',
-//                'itens.insumo',
-//                'itens.ordemDeCompraItens'
-//            )
-//            ->findWithoutFail($id);
+        // Limpa qualquer notificação que tiver deste item
+        NotificationRepository::marcarLido(WorkflowTipo::QC,$id);
 
         if (empty($quadroDeConcorrencia)) {
             Flash::error('Quadro De Concorrencia ' . trans('common.not-found'));
@@ -780,12 +775,14 @@ class QuadroDeConcorrenciaController extends AppBaseController
             }
 
             if (!$request->reject) {
-                if ($quadro->hasMaterial()) {
                     if (!intval($request->frete_incluso) && !$request->tipo_frete) {
-                        DB::rollback();
-                        Flash::error('Selecione o Tipo do Frete');
+                        if ($quadro->hasMaterial()) {
 
-                        return back()->withInput();
+                            DB::rollback();
+                            Flash::error('Selecione o Tipo do Frete');
+
+                            return back()->withInput();
+                        }
                     } else {
                         if (!intval($request->frete_incluso)) {
                             if ($request->tipo_frete=='FOB' && (is_null($request->valor_frete) || floatval($request->valor_frete) == 0)) {
@@ -801,7 +798,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
                         'tipo_frete' => intval($request->frete_incluso)?'INC': $request->tipo_frete,
                         'valor_frete' => ($request->tipo_frete=='FOB'? money_to_float($request->get('valor_frete', 0)): 0),
                     ]);
-                }
+
 
                 if(!empty($request->equalizacoes)) {
                     foreach ($request->equalizacoes as $check) {

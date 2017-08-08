@@ -79,22 +79,33 @@ class WorkflowController extends Controller
 
     public function detalhes(Request $request)
     {
-        $alcadas = WorkflowAlcada::where('workflow_tipo_id', $request->workflowTipo)
-            ->orderBy('ordem')
-            ->get();
-
         $aprovacoes = WorkflowAprovacao::where('aprovavel_id', $request->id)
-            ->whereHas('workflowAlcada', function($query) use ($request) {
-                $query->withTrashed();
-                $query->where('ordem', $request->alcada);
+            ->whereHas('workflowAlcada',function ($query) use($request){
+                $query->where('workflow_tipo_id', $request->workflowTipo);
             })
             ->orderBy('created_at')
+            ->with('workflowAlcada','user','workflowAlcada.workflowUsuarios')
             ->get();
+        $aprovacao = $aprovacoes->first();
+        $alcada_atual = $aprovacao->workflow_alcada_id;
+        $alcada_count = 0;
+        $alcadas_aprovacao[$alcada_count] = [
+            'alcada'=>$aprovacao->workflowAlcada,
+            'itens'=>[]
+        ];
+        foreach ($aprovacoes as $aprovacao) {
+            if($alcada_atual != $aprovacao->workflow_alcada_id ){
+                $alcada_atual = $aprovacao->workflow_alcada_id;
+                $alcada_count++;
+                $alcadas_aprovacao[$alcada_count] = [
+                    'alcada'=>$aprovacao->workflowAlcada,
+                    'itens'=>[]
+                ];
+            }
+            $alcadas_aprovacao[$alcada_count]['itens'][] = $aprovacao;
+        }
 
-        $alcada = $aprovacoes->pluck('workflowAlcada')->first();
 
-        $alcada = $alcada ?: $alcadas->where('ordem', $request->alcada)->first();
-
-        return view('workflow.detalhes', compact('aprovacoes', 'alcada'));
+        return view('workflow.detalhes', compact('alcadas_aprovacao'));
     }
 }

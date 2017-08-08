@@ -13,23 +13,23 @@ use App\Models\Fornecedor;
 
 class ValidationRepository
 {
-    public static function validaCnpj($valor, $cpf){
+    public static function validaCnpj($valor, $cnpj){
         $validar = [
             1 => 'cnpj'
         ];
         $messages = [
             'cnpj' => 'CNPJ inválido.',
         ];
-        if(!isset($validar[$cpf])){
+        if(!isset($validar[$cnpj])){
             return \Validator::make(['numero'=>$valor], ['numero'=>'required']);
         }
 
         $rules = array(
-            $validar[$cpf] => $validar[$cpf].'|required'
+            $validar[$cnpj] => $validar[$cnpj].'|required'
         );
 
         $data = array(
-            $validar[$cpf] => $valor
+            $validar[$cnpj] => $valor
         );
 
         return \Validator::make($data, $rules, $messages);

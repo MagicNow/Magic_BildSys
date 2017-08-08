@@ -8,6 +8,8 @@ use App\Http\Requests\Admin\CreateObraRequest;
 use App\Http\Requests\Admin\UpdateObraRequest;
 use App\Models\Cidade;
 use App\Models\ObraUser;
+use App\Models\PadraoEmpreendimento;
+use App\Models\Regional;
 use App\Models\User;
 use App\Repositories\Admin\ObraRepository;
 use App\Repositories\CodeRepository;
@@ -53,7 +55,10 @@ class ObraController extends AppBaseController
             ->get()
             ->pluck('nome_final', 'id');
 
-        return view('admin.obras.create', compact('relacionados', 'cidades'));
+        $regionais = Regional::pluck('nome', 'id')->prepend('', '')->all();
+        $padrao_empreendimentos = PadraoEmpreendimento::pluck('nome', 'id')->prepend('', '')->all();
+
+        return view('admin.obras.create', compact('relacionados', 'cidades', 'regionais', 'padrao_empreendimentos'));
     }
 
     /**
@@ -135,7 +140,16 @@ class ObraController extends AppBaseController
             ->get()
             ->pluck('nome_final', 'id');
 
-        return view('admin.obras.edit', compact('obra', 'relacionados', 'obraUsers', 'cidades'));
+        $regionais = Regional::pluck('nome', 'id')->prepend('', '')->all();
+        $padrao_empreendimentos = PadraoEmpreendimento::pluck('nome', 'id')->prepend('', '')->all();
+
+
+        return view('admin.obras.edit', compact('obra', 
+            'relacionados', 
+            'obraUsers', 
+            'cidades', 
+            'regionais',
+            'padrao_empreendimentos'));
     }
 
     /**

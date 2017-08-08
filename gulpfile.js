@@ -202,6 +202,7 @@ elixir(function (mix) {
         paths.html5sortable + 'html.sortable.js',
         // paths.vue + 'vue.js',
         // paths.vue_resource + 'vue-resource.js',
+        'select2-helper.js',
         'bootstrap-dataTables-paging.js',
         'dataTables.bootstrap.js',
         'datatables.fnReloadAjax.js',

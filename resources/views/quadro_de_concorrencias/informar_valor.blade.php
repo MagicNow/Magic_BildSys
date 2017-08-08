@@ -148,7 +148,6 @@
 
   <div class="row">
           <div class="col-md-3">
-              @if($quadro->hasMaterial())
                   <div class="box box-info">
                       <div class="box-header with-border">
                           Frete
@@ -222,7 +221,6 @@
                           </div>
                       </div>
                   </div>
-              @endif
 
             @if($quadro->hasServico())
             <div class="row">
