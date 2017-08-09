@@ -102,7 +102,7 @@ class OrdemDeCompraRepository extends BaseRepository
         return $saldoDisponivel;
     }
 
-    public static function valorComprometidoAGastar($ordem_de_compra_id)
+    public static function valorComprometidoAGastar($ordem_de_compra_id, $itens = null)
     {
         $valor_comprometido_a_gastar = ContratoItemApropriacao::select([
             'contrato_item_apropriacoes.qtd',
@@ -117,8 +117,19 @@ class OrdemDeCompraRepository extends BaseRepository
                 $join->on('ordem_de_compra_itens.subgrupo3_id', '=', 'contrato_item_apropriacoes.subgrupo3_id');
                 $join->on('ordem_de_compra_itens.servico_id', '=', 'contrato_item_apropriacoes.servico_id');
             })
-            ->join('contrato_itens', 'contrato_itens.id' ,'=', 'contrato_item_apropriacoes.contrato_item_id')
-            ->sum(DB::raw('contrato_item_apropriacoes.qtd * contrato_itens.valor_unitario'));
+            ->join('contrato_itens', 'contrato_itens.id' ,'=', 'contrato_item_apropriacoes.contrato_item_id');
+
+            if($itens){
+                $valor_comprometido_a_gastar->whereRaw('NOT EXISTS(
+                    SELECT 1 
+                    FROM contrato_itens CI
+                    JOIN oc_item_qc_item OCQC ON OCQC.qc_item_id = CI.qc_item_id
+                    WHERE CI.id = contrato_item_apropriacoes.contrato_item_id
+                    AND OCQC.ordem_de_compra_item_id IN ('.implode(', ', $itens).')
+                )');
+            }
+
+            $valor_comprometido_a_gastar = $valor_comprometido_a_gastar->sum(DB::raw('contrato_item_apropriacoes.qtd * contrato_itens.valor_unitario'));
 
         return $valor_comprometido_a_gastar;
     }

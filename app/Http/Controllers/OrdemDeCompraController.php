@@ -304,7 +304,7 @@ class OrdemDeCompraController extends AppBaseController
         if ($ordemDeCompra->itens) {
             $orcamentoInicial = OrdemDeCompraRepository::valorPrevistoOrcamento($ordemDeCompra->id, $ordemDeCompra->obra_id);
 
-            $valor_comprometido_a_gastar = OrdemDeCompraRepository::valorComprometidoAGastar($ordemDeCompra->id);
+            $valor_comprometido_a_gastar = OrdemDeCompraRepository::valorComprometidoAGastar($ordemDeCompra->id, $ordemDeCompra->itens()->pluck('ordem_de_compra_itens.id','ordem_de_compra_itens.id')->toArray());
 
             $totalSolicitado = $ordemDeCompra->itens()->sum('valor_total');
 
