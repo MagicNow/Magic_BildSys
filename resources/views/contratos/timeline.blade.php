@@ -1,5 +1,9 @@
+@if($contrato->contrato_status_id==1||$contrato->contrato_status_id==3)
 <div class="panel panel-default panel-body" id="linhaDoTempo" data-id="{{ $contrato->id }}" data-workflow-tipo="3">
-    <h4 class="highlight">Timeline</h4>
+    <h4 class="highlight">
+        Timeline
+        <i class="fa fa-info-circle text-info"></i>
+    </h4>
     @if($alcadas_count)
         @php $col_md = 12 / ($alcadas_count + 1); @endphp
         <h4 class="col-md-{{$col_md}} col-sm-{{$col_md}}" style="padding-right: 1px;padding-left: 1px;">
@@ -116,5 +120,12 @@
         @endif
     @endif
 </div>
-
+@else
+    <div class="well well-sm" id="linhaDoTempo" data-id="{{ $contrato->id }}" data-workflow-tipo="3">
+        <h4 class="highlight">
+            Aprovações
+            <i class="fa fa-info-circle text-info"></i>
+        </h4>
+    </div>
+@endif
 <div class="modal fade" id="modal-alcadas" tabindex="-1" role="dialog"></div>
