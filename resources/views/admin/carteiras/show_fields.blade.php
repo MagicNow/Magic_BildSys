@@ -19,10 +19,10 @@
 
 <div class="form-group col-sm-6">
     {!! Form::label('carteiraTipoEqualizacaoTecnicas', 'Tipos Equalização Técnica nesta carteira:') !!}
-    @if($carteira->tipoEquilizacaoTecnicas)
+    @if($carteira->tipoEqualizacaoTecnicas)
         @php $tipos = ''; @endphp
-        @foreach($carteira->tipoEquilizacaoTecnicas as $tipoEquilizacaoTecnicas)
-            @php $tipos .= $tipoEquilizacaoTecnicas->nome . ' - '; @endphp
+        @foreach($carteira->tipoEqualizacaoTecnicas as $tipoEqualizacaoTecnicas)
+            @php $tipos .= $tipoEqualizacaoTecnicas->nome . ' - '; @endphp
         @endforeach
         {!! Form::textarea('nome', substr($tipos, 0, -3), ['class' => 'form-control', 'rows' => '3', 'disabled']) !!}
     @else

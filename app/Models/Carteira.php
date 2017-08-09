@@ -89,15 +89,15 @@ class Carteira extends Model
 	/**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
-    public function carteiraTipoEquilizacaoTecnicas()
+    public function carteiraTipoEqualizacaoTecnicas()
     {
-        return $this->belongsToMany(CarteiraTipoEquilizacaoTecnica::class, 'carteira_tipo_equalizacao_tecnicas', 'carteira_id', 'tipo_equalizacao_id')->withPivot('deleted_at')->withTimestamps();
+        return $this->belongsToMany(CarteiraTipoEqualizacaoTecnica::class, 'carteira_tipo_equalizacao_tecnicas', 'carteira_id', 'tipo_equalizacao_id')->withPivot('deleted_at')->withTimestamps();
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
-    public function tipoEquilizacaoTecnicas()
+    public function tipoEqualizacaoTecnicas()
     {
         return $this->belongsToMany(TipoEqualizacaoTecnica::class, 'carteira_tipo_equalizacao_tecnicas', 'carteira_id', 'tipo_equalizacao_id')
             ->withPivot('deleted_at')
