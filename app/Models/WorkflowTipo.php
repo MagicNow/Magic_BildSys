@@ -22,6 +22,29 @@ class WorkflowTipo extends Model
     const SOLICITACAO_ENTREGA = 5;
     const MEDICAO = 6;
 
+    public static function qualTipo($id){
+        switch ($id){
+            case 1:
+                return 'OrdemDeCompraItem';
+                break;
+            case 2:
+                return 'QuadroDeConcorrencia';
+                break;
+            case 3:
+                return 'Contrato';
+                break;
+            case 4:
+                return 'ContratoItemModificacao';
+                break;
+            case 5:
+                return 'SolicitacaoEntrega';
+                break;
+            case 6:
+                return 'Medicao';
+                break;
+        }
+    }
+
     public $fillable = [
         'nome',
         'dias_prazo'

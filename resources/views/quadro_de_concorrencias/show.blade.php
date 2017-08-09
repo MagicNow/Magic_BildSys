@@ -112,7 +112,9 @@
         </h1>
     </section>
     @if($oc_status != 'Em Aberto')
-        @include('quadro_de_concorrencias.timeline')
+        <div class="content" style="    padding-bottom: 0px;    margin-bottom: 0px;    min-height: 0px;">
+            @include('quadro_de_concorrencias.timeline')
+        </div>
     @endif
     <div class="content">
         <div class="box box-warning">
