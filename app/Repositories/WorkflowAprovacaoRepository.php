@@ -80,7 +80,7 @@ class WorkflowAprovacaoRepository
             $jaAprovou = $obj->aprovacoes()
                 ->where('user_id', $user->id)
                 ->where('workflow_alcada_id', $alcada_atual->id)
-                ->where('created_at', '>=', $obj->updated_at)
+                ->where('created_at', '>=', $obj->dataUltimoPeriodoAprovacao()->format('Y-m-d H:i:s'))
                 ->first();
 
 
@@ -127,7 +127,7 @@ class WorkflowAprovacaoRepository
             # Busca a quantidade de aprovações q este item tem
             $aprovacoesAlcadaAnterior = $obj->aprovacoes()
                 ->where('workflow_alcada_id', $workflowAlcada->id)
-                ->where('created_at', '>=', $obj->updated_at)
+                ->where('created_at', '>=', $obj->dataUltimoPeriodoAprovacao()->format('Y-m-d H:i:s'))
                 ->where('aprovado', '=', 1)
                 ->count();
 
@@ -437,7 +437,7 @@ class WorkflowAprovacaoRepository
             // Verifica se é a primeira aprovação deste item dentre os irmãos
             $ids = $obj->irmaosIds();
 
-            $total_ja_votado_geral = self::verificaTotalJaAprovadoReprovado($tipo, $ids);
+//            $total_ja_votado_geral = self::verificaTotalJaAprovadoReprovado($tipo, $ids);
 
             $total_ja_votado = self::verificaTotalJaAprovadoReprovado($tipo, $ids, null, $obj->id);
             if(count($ids) >1){
@@ -461,7 +461,7 @@ class WorkflowAprovacaoRepository
 
             // Se não for, verifica se já é a última
             $qtd_aprovadores = self::verificaQuantidadeUsuariosAprovadores($workflow_tipo, $obj->qualObra(), null, $ids, $tipo);
-
+            
             if ($qtd_aprovadores) {
                 // Divide a qtd de aprovações/reprovações pela quantidade de aprovadores
                 $avaliacoes = $total_ja_votado['total_avaliado'] / $qtd_aprovadores;
@@ -573,7 +573,10 @@ class WorkflowAprovacaoRepository
             $total_itens_aprovados_reprovados->where('workflow_aprovacoes.user_id', $user->id);
         }
         if ($item_id) {
-            $total_itens_aprovados_reprovados->where('workflow_aprovacoes.aprovavel_id', $item_id);
+            eval('$obj= \\App\Models\\' . $tipo . '::find('.$item_id.');');
+            $total_itens_aprovados_reprovados
+                ->where('workflow_aprovacoes.created_at', '>=',$obj->dataUltimoPeriodoAprovacao()->format('Y-m-d H:i:s'))
+                ->where('workflow_aprovacoes.aprovavel_id', $item_id);
         }
 
         if ($alcada) {
