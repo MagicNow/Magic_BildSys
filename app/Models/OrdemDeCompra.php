@@ -50,6 +50,19 @@ class OrdemDeCompra extends Model
         ];
     }
 
+    public function dataUltimoPeriodoAprovacao(){
+        $ultimoStatusAprovacao = $this->ordemDeCompraStatusLogs()->where('oc_status_id',3)
+            ->orderBy('created_at','DESC')->first();
+        if($ultimoStatusAprovacao){
+            return $ultimoStatusAprovacao->created_at;
+        }
+        return null;
+    }
+
+    public function qualObra(){
+        return $this->obra_id;
+    }
+
     public function irmaosIds()
     {
         return [$this->attributes['id'] => $this->attributes['id']];
