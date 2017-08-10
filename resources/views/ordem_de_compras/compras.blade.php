@@ -202,14 +202,14 @@
                 queryString +='insumo_grupo_id=' + insumo_grupo_id;
             }
 			
-			/*if(parseInt(carteira_id) > 0){
+			if(parseInt(carteira_id) > 0){
                 if(queryString.length>0){
                     queryString +='&';
                 }else{
                     queryString +='?';
                 }
                 queryString +='carteira_id=' + carteira_id;
-            }*/
+            }
 
             var $exibirPorTarefa = $('#exibir_por_tarefa');
             exibir_por_tarefa = $exibirPorTarefa.prop('checked');

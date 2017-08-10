@@ -127,17 +127,17 @@
                         @endif
                     </div>
 					
-					{{--@if(count($carteiras))--}}
 					<div class="col-md-3">
-                        <h4>Carteiras</h4>                        
-						<div class="js-datatable-filter-form">
-							{!! Form::select('carteiras[]',$carteiras, null, [
-							'class'=>'form-control select2',
-							'multiple'=>'multiple',
-							]) !!}
-						</div>                        
+                        <h4>Carteiras</h4>
+                        @if(count($carteiras))
+                            <div class="js-datatable-filter-form">
+                                {!! Form::select('carteiras[]',$carteiras, null, [
+                                'class'=>'form-control select2',
+                                'multiple'=>'multiple',
+                                ]) !!}
+                            </div>
+                        @endif
                     </div>
-					{{--@endif--}}
 					
                     <div class="col-md-3">
                         <h4>Cidades</h4>
