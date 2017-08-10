@@ -160,4 +160,8 @@ class Medicao extends Model
     {
         return true;
     }
+
+    public function dataUltimoPeriodoAprovacao(){
+        return $this->updated_at;
+    }
 }

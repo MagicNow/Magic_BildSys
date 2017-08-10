@@ -261,7 +261,7 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
 
         $attributes = [
             'user_id' => $attributes['user_id'],
-            'qc_status_id' => 1,
+            'qc_status_id' => QcStatus::EM_APROVACAO,
             'obrigacoes_fornecedor' => ConfiguracaoEstatica::find(1)->valor,
             'obrigacoes_bild' => ConfiguracaoEstatica::find(2)->valor,
             'rodada_atual' => 1
@@ -383,17 +383,17 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
             }
 
             // Muda status do QC
-            $model->qc_status_id = 3; // em aprovação
+            $model->qc_status_id = QcStatus::EM_APROVACAO;
             $model->save();
             QcStatusLog::create([
                 'quadro_de_concorrencia_id' => $model->id,
-                'qc_status_id' => 2, // Fechado
+                'qc_status_id' => QcStatus::FECHADO,
                 'user_id' => $attributes['user_update_id']
             ]);
 
             QcStatusLog::create([
                 'quadro_de_concorrencia_id' => $model->id,
-                'qc_status_id' => $model->qc_status_id, // Em aprovação
+                'qc_status_id' => QcStatus::EM_APROVACAO,
                 'user_id' => $attributes['user_update_id']
             ]);
         }
@@ -411,7 +411,7 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
             // Ação para Abrir concorrência (onde enviará e-mail aos fornecedores para acessarem e lançarem os preços)
             case 'inicia-concorrencia':
                 // Altera o status do Q.C.
-                $quadroDeConcorrencia->qc_status_id = 7;
+                $quadroDeConcorrencia->qc_status_id = QcStatus::EM_CONCORRENCIA;
                 $quadroDeConcorrencia->save();
                 QcStatusLog::create([
                     'quadro_de_concorrencia_id' => $quadroDeConcorrencia->id,
@@ -431,7 +431,7 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
                 break;
             case 'cancelar':
                 // Altera o status do Q.C.
-                $quadroDeConcorrencia->qc_status_id = 6;
+                $quadroDeConcorrencia->qc_status_id = QcStatus::CANCELADO;
                 $quadroDeConcorrencia->save();
                 QcStatusLog::create([
                     'quadro_de_concorrencia_id' => $quadroDeConcorrencia->id,

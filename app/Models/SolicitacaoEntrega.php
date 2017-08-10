@@ -88,7 +88,7 @@ class SolicitacaoEntrega extends Model
 
     public function qualObra()
     {
-        return null;
+        return $this->contrato->obra_id;
     }
 
     public function aprova($aprovado)
@@ -158,6 +158,15 @@ class SolicitacaoEntrega extends Model
     }
 
     public function emAprovacao(){
-        return ($this->se_status_id == 1);
+        return ($this->qc_status_id == SeStatus::EM_APROVACAO);
+    }
+
+    public function dataUltimoPeriodoAprovacao(){
+        $ultimoStatusAprovacao = $this->logs()->where('se_status_id',SeStatus::EM_APROVACAO)
+            ->orderBy('created_at','DESC')->first();
+        if($ultimoStatusAprovacao){
+            return $ultimoStatusAprovacao->created_at;
+        }
+        return null;
     }
 }

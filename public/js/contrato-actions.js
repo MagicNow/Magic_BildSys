@@ -6,7 +6,7 @@ $(function() {
   Reapropriar.init();
   Editar.init();
 
-  var workflowTipo = $('#linhaDoTempo');
+  var workflowTipo = $('#linhaDoTempo, .modificacaoContratoItemTimeline');
 
   workflowTipo.tooltip({
     title: 'Clique para ver detalhes',
@@ -242,7 +242,6 @@ var Reapropriar = (function() {
       .map(_.property('value'))
       .filter(Boolean)
       .length;
-    console.log(filled,this.grupos.length );
 
     if (filled !== this.grupos.length) {
       swal('', 'Selecione todos os grupos para reapropriação', 'warning');

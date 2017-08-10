@@ -317,6 +317,28 @@ class OrdemDeCompraItem extends Model
     public function idPai(){
         return $this->ordem_de_compra_id;
     }
+
+
+    public function dataUltimoPeriodoAprovacao(){
+        $ultimoStatusAprovacao = $this->ordemDeCompra->ordemDeCompraStatusLogs()->where('oc_status_id',3)
+            ->orderBy('created_at','DESC')->first();
+        if($ultimoStatusAprovacao){
+            return $ultimoStatusAprovacao->created_at;
+        }
+        return null;
+    }
+
+    public function colocaEmAprovacao(){
+        $ordemDeCompra = $this->ordemDeCompra;
+        $ordemDeCompra->oc_status_id = 3; // Em Aprovação
+        $ordemDeCompra->save();
+
+        OrdemDeCompraStatusLog::create([
+            'oc_status_id'=>$ordemDeCompra->oc_status_id,
+            'ordem_de_compra_id'=>$ordemDeCompra->id,
+            'user_id'=> auth::id()
+        ]);
+    }
     
     public function getQtdSobraAttribute()
     {

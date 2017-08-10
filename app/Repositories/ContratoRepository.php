@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Models\ContratoStatusLog;
 use PDF;
 use Exception;
 use App\Mail\ContratoServicoFornecedorNaoUsuario;
@@ -377,6 +378,13 @@ class ContratoRepository extends BaseRepository
 
                 // Salva o contrato
                 $contrato = Contrato::create($contratoArray);
+
+                // Salva o primeiro status
+                ContratoStatusLog::create([
+                    'contrato_id'        => $contrato->id,
+                    'contrato_status_id' => $contrato->contrato_status_id,
+                    'user_id'            => auth()->id()
+                ]);
 
                 // Salva os itens do contrato
                 foreach ($contratoItens[$obraId] as &$item) {

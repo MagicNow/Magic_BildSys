@@ -379,17 +379,24 @@
                                 <div class="btn-group" role="group" aria-label="...">
                                     @if(!is_null($item->aprovado))
                                         @if($item->aprovado)
-                                            <button type="button" disabled="disabled"
-                                                    class="btn btn-success btn-sm btn-flat">
+                                            <span
+                                                    class="btn btn-success btn-sm btn-flat ocItemTimeline"
+                                                    data-id="{{ $item->id }}" data-workflow-tipo="1">
                                                 <i class="fa fa-check" aria-hidden="true"></i>
-                                            </button>
+                                            </span>
                                         @else
-                                            <button type="button" disabled="disabled"
-                                                    class="btn btn-danger btn-sm btn-flat">
+                                            <span  disabled="disabled"
+                                                    class="btn btn-danger btn-sm btn-flat ocItemTimeline"
+                                                    data-id="{{ $item->id }}" data-workflow-tipo="1">
                                                 <i class="fa fa-times" aria-hidden="true"></i>
-                                            </button>
+                                            </span>
                                         @endif
                                     @else
+                                        <button type="button" title="Ver detalhes de aprovação"
+                                                class="btn btn-sm btn-default btn-flat ocItemTimeline"
+                                                data-id="{{ $item->id }}" data-workflow-tipo="1">
+                                            <i class="fa fa-fw fa-hourglass-half"></i>
+                                        </button>
                                         <?php
                                         $workflowAprovacao = \App\Repositories\WorkflowAprovacaoRepository::verificaAprovacoes('OrdemDeCompraItem', $item->id, Auth::user());
                                         ?>
@@ -585,8 +592,10 @@
             {{ $itens->links() }}
     </div>
 </div>
+        <div class="modal fade" id="modal-alcadas" tabindex="-1" role="dialog"></div>
 @endsection
 @section('scripts')
+    @parent
 <script type="text/javascript">
     <?php
             $options_motivos = "<option value=''>Escolha...</option>";
@@ -595,6 +604,26 @@
             }
     ?>
     options_motivos = "{!! $options_motivos !!}";
+    $(function () {
+        var workflowTipo = $('.ocItemTimeline');
 
+        workflowTipo.tooltip({
+            title: 'Clique para ver detalhes',
+            container: document.body
+        });
+
+        workflowTipo.on('click', function(event) {
+            startLoading();
+            $.get('/workflow/detalhes', event.currentTarget.dataset)
+                    .always(stopLoading)
+                    .done(function(data) {
+                        $('#modal-alcadas').html(data);
+                        $('#modal-alcadas').modal('show');
+                    })
+                    .fail(function() {
+                        swal('Ops!', 'Ocorreu um erro ao mostrar os detalhes da alçada', 'error');
+                    });
+        });
+    });
 </script>
 @stop
