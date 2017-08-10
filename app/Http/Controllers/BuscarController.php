@@ -7,6 +7,7 @@ use App\Models\InsumoGrupo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Fornecedor;
+use App\Models\TipoEqualizacaoTecnica;
 
 class BuscarController extends AppBaseController
 {
@@ -58,5 +59,16 @@ class BuscarController extends AppBaseController
         ->paginate();
 
         return $fornecedores;
+    }
+	
+	public function getTipoEqualizacaoTecnicas(Request $request)
+    {
+        $tipo_equalizacao_tecnicas = TipoEqualizacaoTecnica::select([
+            'id',
+            'nome as name'
+        ])
+        ->where('nome', 'like', '%'.$request->q.'%')->paginate();
+
+        return $tipo_equalizacao_tecnicas;
     }
 }

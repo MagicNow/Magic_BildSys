@@ -16,6 +16,7 @@ use App\DataTables\OrdemDeCompraDataTable;
 use App\Http\Requests;
 use App\Http\Requests\CreateOrdemDeCompraRequest;
 use App\Http\Requests\UpdateOrdemDeCompraRequest;
+use App\Models\Carteira;
 use App\Models\Cidade;
 use App\Models\ContratoInsumo;
 use App\Models\Insumo;
@@ -57,6 +58,7 @@ use App\Repositories\Admin\InsumoGrupoRepository;
 use App\Repositories\Admin\PlanejamentoRepository;
 use App\Repositories\Admin\OrcamentoRepository;
 use App\Repositories\Admin\InsumoRepository;
+use App\Repositories\Admin\CarteiraRepository;
 use App\Repositories\ContratoRepository;
 use App\DataTables\ContratoDataTable;
 use App\Models\WorkflowTipo;
@@ -206,7 +208,9 @@ class OrdemDeCompraController extends AppBaseController
         LembretesHomeDataTable $lembretesHomeDataTable,
         ObraRepository $obraRepository,
         InsumoGrupoRepository $insumoGrupoRepository,
-        PlanejamentoRepository $planejamentoRepository
+        PlanejamentoRepository $planejamentoRepository,
+		CarteiraRepository $carteiraRepository
+		
     ) {
         $obras = $obraRepository
             ->findByUser($request->user()->id)
@@ -225,10 +229,16 @@ class OrdemDeCompraController extends AppBaseController
             ->prepend('', '')
             ->pluck('tarefa', 'id')
             ->toArray();
+		
+		$carteiras = $carteiraRepository
+            ->findByUser($request->user()->id)
+            ->pluck('nome', 'id')
+            ->prepend('', '')
+            ->toArray();
 
         return $lembretesHomeDataTable->render(
             'ordem_de_compras.compras',
-            compact('obras', 'grupos', 'atividades')
+            compact('obras', 'grupos', 'atividades', 'carteiras')
         );
     }
 
@@ -554,11 +564,13 @@ class OrdemDeCompraController extends AppBaseController
         ComprasDataTable $comprasDataTable,
         Request $request,
         InsumoGrupoRepository $insumoGrupoRepository,
-        PlanejamentoRepository $planejamentoRepository
+        PlanejamentoRepository $planejamentoRepository,		
+		CarteiraRepository $carteiraRepository
     ) {
         $planejamento = Planejamento::find($request->planejamento_id);
         $insumoGrupo = InsumoGrupo::find($request->insumo_grupos_id);
-
+		$carteira = Carteira::find($request->carteira_id);
+		
         $obra = Obra::find($request->obra_id);
 
         $grupos = Grupo::whereNull('grupo_id')
@@ -574,12 +586,19 @@ class OrdemDeCompraController extends AppBaseController
             ->pluck('nome', 'id')
             ->prepend('', '')
             ->toArray();
+		
+		$carteiras = $carteiraRepository
+            ->comInsumoOrcamentoObra($request->obra_id)
+            ->pluck('nome', 'id')
+            ->prepend('', '')
+            ->toArray();
 
 //        $planejamentos = $planejamentoRepository
 //            ->comLembretesComItensDeCompraPorUsuario($request->user()->id)
 //            ->prepend('', '')
 //            ->pluck('tarefa', 'id')
 //            ->toArray();
+
         $planejamentos = Planejamento::where('obra_id', $request->obra_id)
             ->where('resumo', 'Sim')
             ->select([
@@ -604,10 +623,12 @@ class OrdemDeCompraController extends AppBaseController
             'ordem_de_compras.obras_insumos',
             compact(
                 'obra',
-                'grupos',
-                'planejamento',
+                'grupos',                
                 'insumoGrupo',
                 'insumoGrupos',
+				'carteira',
+				'carteiras',
+				'planejamento',
                 'planejamentos'
             )
         );
@@ -1395,6 +1416,15 @@ class OrdemDeCompraController extends AppBaseController
         ->orderBy('nome', 'ASC')
         ->pluck('nome','id')
         ->toArray();
+						
+		$carteiras = Carteira::whereIn('id', $insumosAprovados 			
+			->join('carteira_insumos', 'carteira_insumos.insumo_id', 'ordem_de_compra_itens.insumo_id')			
+            ->pluck('carteira_insumos.carteira_id', 'carteira_insumos.carteira_id')            
+            ->toArray()
+        )
+        ->orderBy('nome', 'ASC')
+        ->pluck('nome','id')
+        ->toArray();
 
         $farol = [
             'amarelo'=>'Amarelo',
@@ -1408,8 +1438,7 @@ class OrdemDeCompraController extends AppBaseController
                         ->pluck('users.name', 'users.id')
                         ->toArray();
         
-        return $insumosAprovadosDataTable->render('ordem_de_compras.insumos-aprovados',
-            compact('obras', 'OCs', 'insumoGrupos', 'insumos', 'cidades', 'farol', 'compradores', 'regionais', 'padroes_empreendimento'));
+        return $insumosAprovadosDataTable->render('ordem_de_compras.insumos-aprovados',compact('obras', 'OCs', 'insumoGrupos', 'insumos', 'cidades', 'farol', 'compradores', 'regionais', 'padroes_empreendimento'));
     }
 
     /**

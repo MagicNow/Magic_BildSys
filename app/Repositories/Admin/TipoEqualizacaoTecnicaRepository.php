@@ -80,5 +80,12 @@ class TipoEqualizacaoTecnicaRepository extends BaseRepository
 
         return $model;
     }
+	
+	public function tiposEqualizacaoTecnicasDaCarteira($carteiraId)
+    {
+        return $this->model->whereHas('carteiras', function($q) use ($carteiraId) {
+            $q->where('carteira_id', $carteiraId);
+        })->get();
+    }
 
 }

@@ -1,4 +1,5 @@
 <li class="treeview {{ Request::is('obras*')||
+					   Request::is('carteiras*')||
                        Request::is('insumos*') ||
                        Request::is('insumoGrupos*') ||
                        Request::is('solicitacaoInsumos*') ||
@@ -17,6 +18,15 @@
             <a href="{!! route('admin.fornecedores.index') !!}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
                 <span>Fornecedores</span>
+            </a>
+        </li>
+        @endshield
+		
+		@shield('carteiras.list')
+        <li class="{{ Request::is('carteiras*') ? 'active' : '' }}">
+            <a href="{!! route('admin.carteiras.index') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Carteiras</span>
             </a>
         </li>
         @endshield

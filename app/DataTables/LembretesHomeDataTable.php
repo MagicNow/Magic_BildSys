@@ -128,7 +128,8 @@ class LembretesHomeDataTable extends DataTable
                     }
                     return '<span class="text-' . $alerta . '"> ' . $obj->inicio . '</span>';
                 })
-                ->orderColumn('inicio', 'DATE_FORMAT(DATE_SUB(planejamentos.data, INTERVAL (
+                
+				->orderColumn('inicio', 'DATE_FORMAT(DATE_SUB(planejamentos.data, INTERVAL (
                         IFNULL(
                             (
                                 SELECT
@@ -170,6 +171,9 @@ class LembretesHomeDataTable extends DataTable
                     ) DAY), "%y%m%d") $1')
                 ->filterColumn('grupo', function ($query, $keyword) {
                     $query->whereRaw("insumo_grupos.nome LIKE ?", ['%' . $keyword . '%']);
+                })
+				->filterColumn('carteira', function ($query, $keyword) {
+                    $query->whereRaw("carteiras.nome LIKE ?", ['%' . $keyword . '%']);
                 })
                 ->make(true);
         } else {
@@ -242,10 +246,12 @@ class LembretesHomeDataTable extends DataTable
         } else {
             $url_dispensar = 'CONCAT(\'/compras/obrasInsumos/dispensar?planejamento_id=\',planejamentos.id,\'&insumo_grupos_id=\',insumo_grupos.id,\'&obra_id=\',obras.id) as url_dispensar';
         }
-
+		
+		//Atualizacao, sem exibir tarefas marcada
         if (!$this->request()->exibir_por_tarefa) {
             $query = Lembrete::join('insumo_grupos', 'insumo_grupos.id', '=', 'lembretes.insumo_grupo_id')
                 ->join('insumos', 'insumos.insumo_grupo_id', '=', 'insumo_grupos.id')
+				//->join('carteira_insumos', 'carteira_insumos.insumos_id', '=', 'insumos.id')
                 ->join('planejamento_compras', 'planejamento_compras.insumo_id', '=', 'insumos.id')
                 ->join('planejamentos', 'planejamentos.id', '=', 'planejamento_compras.planejamento_id')
                 ->join('obras', 'obras.id', '=', 'planejamentos.obra_id')
@@ -454,7 +460,7 @@ class LembretesHomeDataTable extends DataTable
                 $query->where('insumos.insumo_grupo_id', $this->request()->get('insumo_grupo_id'));
             }
 
-            // Busca se existe algum item à ser comprado desta tarefa
+            // Busca se existe algum item Ã  ser comprado desta tarefa
             $query->whereRaw(PlanejamentoCompraRepository::existeItemParaComprarComInsumoGrupo());
 
             $query->groupBy(['id', 'obra', 'dias', 'tarefa', 'url', 'inicio']);
@@ -662,7 +668,7 @@ class LembretesHomeDataTable extends DataTable
                         if(col==0){
                             var column = this;
                             var input = document.createElement("input");
-                            $(input).attr(\'title\',\'Para uma faixa utilize hífen(-), ex:01/01/2018-31/01/2018\');
+                            $(input).attr(\'title\',\'Para uma faixa utilize hÃ­fen(-), ex:01/01/2018-31/01/2018\');
                             $(input).attr(\'placeholder\',\'Filtrar Data...\');
                             $(input).addClass(\'form-control\');
                             $(input).css(\'width\',\'100%\');
@@ -745,7 +751,7 @@ class LembretesHomeDataTable extends DataTable
         $columns['Grupo De Insumo'] = ['name' => 'grupo', 'data' => 'grupo'];
 
         $columns['action'] = [
-            'title'      => 'Ações',
+            'title'      => 'AÃ§Ãµes',
             'searchable' => false,
             'orderable'  => false,
             'printable'  => false,
