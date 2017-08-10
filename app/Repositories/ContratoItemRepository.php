@@ -62,6 +62,7 @@ class ContratoItemRepository extends BaseRepository
         return $this->model->select([
             'contrato_itens.*',
         ])
+            ->with('modificacoes.apropriacoes')
         ->where('contrato_itens.contrato_id', $contrato->id)
         ->get();
     }

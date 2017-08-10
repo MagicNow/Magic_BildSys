@@ -149,7 +149,12 @@
                             </div>
                         </div>
                     </div>
+                    <label>Informe o destino da apropriação:</label>
                     @include('partials.grupos-de-orcamento', ['full' => true, 'insumo' => 0])
+                    <div class="form-group">
+                        <label for="descricao">Observação</label>
+                        <textarea class="form-control" name="descricao"></textarea>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger btn-flat" data-dismiss="modal">
