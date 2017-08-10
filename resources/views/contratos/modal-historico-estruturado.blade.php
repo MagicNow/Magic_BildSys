@@ -18,6 +18,7 @@
                             <th colspan="2">Contratado</th>
                             <th colspan="2">Realizado</th>
                             <th colspan="2">Saldo</th>
+                            <th colspan="1"></th>
                         </tr>
                         <tr>
                             <th></th>
@@ -28,6 +29,7 @@
                             <th>Valor Total</th>
                             <th>Qtd.</th>
                             <th>Valor Total</th>
+                            <th>Observação</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -53,6 +55,7 @@
                                 <td>{{ '0,00' }}</td>
                                 <td>{{ float_to_money($apropriacao->qtd /* - $realizado */, '') }}</td>
                                 <td>{{ float_to_money(($item->valor_unitario * $apropriacao->qtd) /* - $realizado */) }}</td>
+                                <td>{{ $apropriacao->descricao }}</td>
                             </tr>
                             <tr id="historico-apropriacao-{{ $apropriacao->id }}" class="hidden">
                                 <td colspan="8" class="td-full">
@@ -63,7 +66,7 @@
                                                     <th></th>
                                                     <th colspan="2" class="text-center">Antes</th>
                                                     <th colspan="2" class="text-center">Depois</th>
-                                                    <th></th>
+                                                    <th colspan="2"></th>
                                                 </tr>
                                                 <tr>
                                                     <th>Movimentação</th>
@@ -71,6 +74,7 @@
                                                     <th>Valor Unitário</th>
                                                     <th>Qtd.</th>
                                                     <th>Valor Unitário</th>
+                                                    <th>Observação</th>
                                                     <th>Data</th>
                                                 </tr>
                                             </thead>
@@ -91,6 +95,9 @@
                                                         </td>
                                                         <td>
                                                             {{ float_to_money($modificacao['valor_unitario_atual'], '') }}
+                                                        </td>
+                                                        <td>
+                                                            {{ $modificacao->pivot->descricao }}
                                                         </td>
                                                         <td>
                                                             {{ $modificacao['created_at']->format('d/m/Y') }}

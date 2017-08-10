@@ -108,12 +108,13 @@ var Reapropriar = (function() {
     this.insumo     = document.getElementById('insumo_id');
     this.addAllBtn  = document.getElementById('add-all');
     // this.grupos     = document.querySelectorAll('.js-group-selector');
-    this.grupos     = document.querySelectorAll('.js-grupos-orc');
-    this.qtd        = this.modal.querySelector('[name=qtd]');
-    this.saveBtn    = this.modal.querySelector('.js-save');
-    this.id         = 0;
-    this.defaultQtd = 0;
-    var _this       = this;
+    this.grupos       = document.querySelectorAll('.js-grupos-orc');
+    this.qtd          = this.modal.querySelector('[name=qtd]');
+    this.observacao   = this.modal.querySelector('[name=descricao]');
+    this.saveBtn      = this.modal.querySelector('.js-save');
+    this.id           = 0;
+    this.defaultQtd   = 0;
+    var _this         = this;
 
 
     $(this.modal).on('hide.bs.modal', function(e) {
@@ -179,6 +180,7 @@ var Reapropriar = (function() {
     var data = {
       _token: token,
       qtd: this.qtd.value,
+      observacao: this.observacao.value
     };
 
     data.item_id = item.value;
@@ -282,6 +284,8 @@ var Reajuste = (function() {
 
         self.valor = self.modal.querySelector('.js-valor');
 
+        self.observacao = self.modal.querySelector('.js-obs');
+
         self.anexo = self.modal.querySelector('[name=anexo]');
 
         self.descriptions = self.modal.querySelectorAll('.js-desc');
@@ -352,7 +356,8 @@ var Reajuste = (function() {
 
     var data = {
       _token: token,
-      valor_unitario: this.valor.value
+      valor_unitario: this.valor.value,
+      observacao: this.observacao.value
     };
 
     var inputs = Array.from(this.inputs).concat(Array.from(this.descriptions));

@@ -7,6 +7,7 @@
                 <th>Valor Unitário</th>
                 <th>Novo Valor Unitário</th>
                 <th>Anexar documento</th>
+                <th>Observação</th>
             </tr>
         </thead>
         <tbody>
@@ -23,6 +24,11 @@
                 </td>
                 <td>
                     <input class="form-control" type="file" name="anexo">
+                </td>
+                <td>
+                    <div class="input-group">
+                        <textarea class="form-control js-input js-obs" name="descricao"></textarea>
+                    </div>
                 </td>
             </tr>
         </tbody>

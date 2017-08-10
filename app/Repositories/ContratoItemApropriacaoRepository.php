@@ -28,6 +28,7 @@ class ContratoItemApropriacaoRepository extends BaseRepository
         $data['user_id']                        = auth()->id();
         $data['codigo_insumo']                  = $contratoItem->insumo->codigo;
         $data['contrato_item_reapropriacao_id'] = $data['item_id'];
+        $data['descricao']                      = $data['observacao'];
 
         return $this->create($data);
     }
