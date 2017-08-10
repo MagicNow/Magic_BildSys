@@ -62,8 +62,24 @@
                                     )
                                   !!}
                                 </div>
+                            </div>	
+							<div class="col-md-4">
+                                <label for="planejamento_id">Carteiras</label>
+                                <div class="form-group">
+                                  {!!
+                                    Form::select(
+                                      'carteira_id',
+                                      $carteiras,
+                                      null,
+                                      [
+                                        'class'    => 'form-control select2',
+                                        'onchange' => 'atualizaCalendarioPorCarteira(this.value);',
+                                        'id'       => 'carteira_id'
+                                      ]
+                                    )
+                                  !!}
+                                </div>
                             </div>
-							
                         </div>
                         <div class="form-group">
                           <div class="checkbox">
@@ -138,7 +154,7 @@
         var obra = null;
         var planejamento_id = null;
         var insumo_grupo_id = null;
-		//var carteira_id = null;
+		var carteira_id = null;
         var exibir_por_tarefa = null;
 
         function escolheObra(obra_id) {
@@ -231,7 +247,7 @@
             atualizaCalendario();
         }
 		
-		/*function atualizaCalendarioPorCarteira(carteira) {
+		function atualizaCalendarioPorCarteira(carteira) {
             carteira_id = carteira;
             if(carteira){
                 $('#filtro_carteira').val($('#carteira_id option:selected').text()).trigger( "change" );
@@ -239,7 +255,7 @@
                 $('#filtro_carteira').val('').trigger( "change" );
             }
             atualizaCalendario();
-        }*/
+        }
 
         $(function () {
             var calendarOptions = {

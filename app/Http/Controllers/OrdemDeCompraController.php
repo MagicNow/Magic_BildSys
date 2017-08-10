@@ -228,7 +228,7 @@ class OrdemDeCompraController extends AppBaseController
             ->pluck('tarefa', 'id')
             ->toArray();
 		
-		/*$carteiras = $carteiraRepository
+		$carteiras = $carteiraRepository
             ->findByUser($request->user()->id)
             ->pluck('nome', 'id')
             ->prepend('', '')
@@ -237,11 +237,6 @@ class OrdemDeCompraController extends AppBaseController
         return $lembretesHomeDataTable->render(
             'ordem_de_compras.compras',
             compact('obras', 'grupos', 'atividades', 'carteiras')
-        );*/
-		
-		return $lembretesHomeDataTable->render(
-            'ordem_de_compras.compras',
-            compact('obras', 'grupos', 'atividades')
         );
     }
 
