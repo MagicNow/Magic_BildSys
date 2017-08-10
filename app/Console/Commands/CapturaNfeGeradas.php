@@ -4,6 +4,8 @@ namespace App\Console\Commands;
 
 use App\Repositories\ConsultaNfeRepository;
 use Illuminate\Console\Command;
+use Exception;
+use Log;
 
 class CapturaNfeGeradas extends Command
 {
@@ -41,8 +43,17 @@ class CapturaNfeGeradas extends Command
      */
     public function handle()
     {
-        $download = 1;
-        $fromCommand = 1;
-        $this->consultaNfeRepository->syncXML($download, $fromCommand);
+        try {
+            Log::info("Capturando NF-e's gerados!");
+            $this->info("Capturando NF-e's gerados!");
+            $download = 1;
+            $fromCommand = 1;
+            $this->consultaNfeRepository->syncXML($download, $fromCommand);
+            $this->info("Captura de NF-e's finalizada!");
+            Log::info("Captura de NF-e's finalizada!");
+        } catch (Exception $e) {
+            Log::error($e);
+            $this->error(sprintf('Error: %s', $e->getMessage()));
+        }
     }
 }

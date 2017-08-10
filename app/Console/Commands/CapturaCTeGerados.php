@@ -4,6 +4,8 @@ namespace App\Console\Commands;
 
 use App\Repositories\ConsultaCteRepository;
 use Illuminate\Console\Command;
+use Exception;
+use Log;
 
 class CapturaCTeGerados extends Command
 {
@@ -41,8 +43,17 @@ class CapturaCTeGerados extends Command
      */
     public function handle()
     {
-        $download = 1;
-        $fromCommand = 1;
-        $this->consultaCTeRepository->syncXML($download, $fromCommand);
+        try {
+            Log::info("Capturando Ctes gerados!");
+            $this->info("Capturando Ctes gerados!");
+            $download = 1;
+            $fromCommand = 1;
+            $this->consultaCTeRepository->syncXML($download, $fromCommand);
+            $this->info("Captura de Ctes finalizada!");
+            Log::info("Capturando Ctes gerados!");
+        } catch (Exception $e) {
+            Log::error($e);
+            $this->error(sprintf('Error: %s', $e->getMessage()));
+        }
     }
 }

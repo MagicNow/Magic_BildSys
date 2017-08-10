@@ -1,9 +1,4 @@
 <div class="col-sm-6" style="height: 700px !important;">
-        <div class="col-md-12">
-            {!! Form::label('arquivo_nfe', 'Arquivo NFe:') !!}
-            <input type="file" id="arquivo_nfe" accept="application/pdf" onchange="readURL(this);"/>
-            {{--{!! Form::file('arquivo_nfe',null, ['class' => 'form-control', 'id'=>'arquivo_nfe','onchange'=>'console.log(blabla)']) !!}--}}
-        </div>
         <div class="col-md-12" style="margin-top: 10px;height: 100%;">
             {{--<img src="" class="img-rounded" id="arquivoNfe">--}}
             <iframe type="application/pdf"
@@ -22,7 +17,7 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h4 class="panel-title">
-                        NOTA FISCAL
+                  NOTA FISCAL
                 </h4>
             </div>
             <div>
@@ -92,7 +87,7 @@
         <div class="text-right" style="margin-top: 10px;">
             <p>
                 <button type="button" class="btn btn-primary btn-ms" onclick="addItens()">
-                    INSERIR ITENS NA NOTA FISCAL
+                    ITENS DA NOTA FISCAL
                 </button>
             </p>
         </div>
@@ -115,12 +110,13 @@
 
                         {!! Form::hidden('notaFiscalItens['.$qtdItens.'][id]',$item->id) !!}
                         {!! Form::hidden('notaFiscalItens['.$qtdItens.'][tipo_equalizacao_tecnica_id]',$item->tipo_equalizacao_tecnica_id) !!}
-
+                        <!--
                         <div class="form-group col-sm-1">
                             <button type="button" onclick="remExtra({{$qtdItens}},'item_')" class="btn btn-danger" style="margin-top: 24px" title="Remover">
                                 <i class="fa fa-times"></i>
                             </button>
                         </div>
+                        //-->
                     </div>
                 @endforeach
             @endif

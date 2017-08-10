@@ -42,10 +42,12 @@ class Kernel extends ConsoleKernel
         })->twiceDaily(10, 19);
 
         $schedule->command('captura:nfe')
-            ->hourly();
+            ->everyMinute()
+            ->sendOutputTo(storage_path('nfe/captura-nfe.log'));
 
         $schedule->command('captura:cte')
-            ->hourly();
+            ->everyMinute()
+            ->sendOutputTo(storage_path('cte/captura-cte.log'));
     }
 
     /**

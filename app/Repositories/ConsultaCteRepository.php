@@ -129,10 +129,12 @@ class ConsultaCteRepository
                 }
             }
 
+
+
             $cont = 0;
             $nfObj = null;
             $nota = null;
-            $dadosNfe = [];
+            $dadosCte = [];
             foreach ($aDocs as $doc) {
                 try {
 
@@ -177,16 +179,43 @@ class ConsultaCteRepository
                     $dados['valor_cobrado'] = $doc['obj']['CTe']['infCte']['vPrest']['vTPrest'];
                     $dados['natureza_operacao'] = $doc['obj']['CTe']['infCte']['ide']['natOp'];
 
-                    array_push($dadosNfe, $dados);
+                    $dados['icms_cst'] = isset($doc['obj']['CTe']['infCte']['imp']['ICMS']['ICMS00']['CST'])?$doc['obj']['CTe']['infCte']['imp']['ICMS']['ICMS00']['CST']:null;
+                    $dados['base_calculo_icms'] = isset($doc['obj']['CTe']['infCte']['imp']['ICMS']['ICMS00']['vBC'])?$doc['obj']['CTe']['infCte']['imp']['ICMS']['ICMS00']['vBC']:null;
+                    $dados['aliquota_icms'] = isset($doc['obj']['CTe']['infCte']['imp']['ICMS']['ICMS00']['pICMS'])?$doc['obj']['CTe']['infCte']['imp']['ICMS']['ICMS00']['pICMS']:null;
+                    $dados['valor_icms'] = isset($doc['obj']['CTe']['infCte']['imp']['ICMS']['ICMS00']['vICMS'])?$doc['obj']['CTe']['infCte']['imp']['ICMS']['ICMS00']['vICMS']:null;
+
+                    $dados['RNTRC'] = isset($doc['obj']['CTe']['infCte']['infCTeNorm']['infModal']['rodo']['RNTRC'])?$doc['obj']['CTe']['infCte']['infCTeNorm']['infModal']['rodo']['RNTRC']:null;
+                    $dados['data_previsao'] = isset($doc['obj']['CTe']['infCte']['infCTeNorm']['infModal']['rodo']['dPrev'])?$doc['obj']['CTe']['infCte']['infCTeNorm']['infModal']['rodo']['dPrev']:null;
+
+                    $dados['seguradora_responsavel'] = isset($doc['obj']['CTe']['infCte']['infCTeNorm']['seg']['respSeg'])?$doc['obj']['CTe']['infCte']['infCTeNorm']['seg']['respSeg']:null;
+                    $dados['seguradora_nome'] = isset($doc['obj']['CTe']['infCte']['infCTeNorm']['seg']['xSeg'])?$doc['obj']['CTe']['infCte']['infCTeNorm']['seg']['xSeg']:null;
+                    $dados['seguradora_apolice'] = isset($doc['obj']['CTe']['infCte']['infCTeNorm']['seg']['nApol'])?$doc['obj']['CTe']['infCte']['infCTeNorm']['seg']['nApol']:null;
+                    $dados['seguradora_valor'] = isset($doc['obj']['CTe']['infCte']['infCTeNorm']['seg']['vCarga'])?$doc['obj']['CTe']['infCte']['infCTeNorm']['seg']['vCarga']:null;
+
+                    $dados['unidade_1'] = isset($doc['obj']['CTe']['infCte']['infCTeNorm']['infCarga']['infQ'][0]['cUnid'])?$doc['obj']['CTe']['infCte']['infCTeNorm']['infCarga']['infQ'][0]['cUnid']:null;
+                    $dados['tipo_medida_1'] = isset($doc['obj']['CTe']['infCte']['infCTeNorm']['infCarga']['infQ'][0]['tpMed'])?$doc['obj']['CTe']['infCte']['infCTeNorm']['infCarga']['infQ'][0]['tpMed']:null;
+                    $dados['quantidade_carga_1'] = isset($doc['obj']['CTe']['infCte']['infCTeNorm']['infCarga']['infQ'][0]['qCarga'])?$doc['obj']['CTe']['infCte']['infCTeNorm']['infCarga']['infQ'][0]['qCarga']:null;
+
+                    $dados['unidade_2'] = isset($doc['obj']['CTe']['infCte']['infCTeNorm']['infCarga']['infQ'][1]['cUnid'])?$doc['obj']['CTe']['infCte']['infCTeNorm']['infCarga']['infQ'][1]['cUnid']:null;
+                    $dados['tipo_medida_2'] = isset($doc['obj']['CTe']['infCte']['infCTeNorm']['infCarga']['infQ'][1]['tpMed'])?$doc['obj']['CTe']['infCte']['infCTeNorm']['infCarga']['infQ'][1]['tpMed']:null;
+                    $dados['quantidade_carga_2'] = isset($doc['obj']['CTe']['infCte']['infCTeNorm']['infCarga']['infQ'][1]['qCarga'])?$doc['obj']['CTe']['infCte']['infCTeNorm']['infCarga']['infQ'][1]['qCarga']:null;
+
+                    $dados['unidade_3'] = isset($doc['obj']['CTe']['infCte']['infCTeNorm']['infCarga']['infQ'][2]['cUnid'])?$doc['obj']['CTe']['infCte']['infCTeNorm']['infCarga']['infQ'][2]['cUnid']:null;
+                    $dados['tipo_medida_3'] = isset($doc['obj']['CTe']['infCte']['infCTeNorm']['infCarga']['infQ'][2]['tpMed'])?$doc['obj']['CTe']['infCte']['infCTeNorm']['infCarga']['infQ'][2]['tpMed']:null;
+                    $dados['quantidade_carga_3'] = isset($doc['obj']['CTe']['infCte']['infCTeNorm']['infCarga']['infQ'][2]['qCarga'])?$doc['obj']['CTe']['infCte']['infCTeNorm']['infCarga']['infQ'][2]['qCarga']:null;
+
+                    array_push($dadosCte, $dados);
 
                 } catch (\Exception $e) {
                     dd($e);
                     Log::error($e);
                 }
+
+
             }
 
-            if (count($dadosNfe) > 0) {
-                foreach ($dadosNfe as $dados) {
+            if (count($dadosCte) > 0) {
+                foreach ($dadosCte as $dados) {
                     $cte = DB::table("ctes")->where("chave", $dados['chave'])->first();
                     if (!$cte) {
                         $dataItems  = $dados['nfes'];
@@ -353,7 +382,6 @@ class ConsultaCteRepository
         return $data;
     }//fim gunzip1
 
-
     public function geraDacte($cte)
     {
         $cteTools = new Tools(config_path('nfe.json'));
@@ -365,9 +393,6 @@ class ConsultaCteRepository
             'I',
             '');
         $id = $dacte->montaDACTE();
-        //Salva o PDF na pasta
-        //$salva = $danfe->printDANFE($pdfDanfe, 'F');
-        //Abre o PDF no Navegador
         return $dacte->printDACTE("{$id}-dacte.pdf", 'I');
     }
 
@@ -383,9 +408,6 @@ class ConsultaCteRepository
             '');
 
         $id = $dacte->montaDACTE();
-        //Salva o PDF na pasta
-        //$salva = $danfe->printDANFE($pdfDanfe, 'F');
-        //Abre o PDF no Navegador
         return $dacte->printDACTE("{$id}-dacte.pdf", 'I');
     }
 }

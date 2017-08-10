@@ -10,6 +10,7 @@ namespace App\Repositories;
 use App\Models\Notafiscal;
 use App\Models\NotaFiscalFatura;
 use App\Models\NotaFiscalItem;
+use Carbon\Carbon;
 use NFePHP\NFe\ToolsNFe;
 use App\Repositories\NotafiscalRepository;
 
@@ -157,7 +158,7 @@ class ConsultaNfeRepository
 
                     try {
 
-                        $dataSaida = isset($arrayNota['NFe']['infNFe']['ide']['dhSaiEnt']) ? $arrayNota['NFe']['infNFe']['ide']['dhSaiEnt'] : null;
+                        $dataSaida = isset($arrayNota['NFe']['infNFe']['ide']['dhSaiEnt']) ? substr($arrayNota['NFe']['infNFe']['ide']['dhSaiEnt'],0,19) : null;
 
                         $fantasia = isset($arrayNota['NFe']['infNFe']['emit']['xFant']) ? $arrayNota['NFe']['infNFe']['emit']['xFant'] : null;
 
@@ -169,7 +170,7 @@ class ConsultaNfeRepository
                             'codigo' => $arrayNota['NFe']['infNFe']['ide']['nNF'],
                             'versao' => $arrayNota['NFe']['infNFe']["@attributes"]['versao'],
                             'natureza_operacao' => $arrayNota['NFe']['infNFe']['ide']['natOp'],
-                            'data_emissao' => $arrayNota['NFe']['infNFe']['ide']['dhEmi'],
+                            'data_emissao' => isset($arrayNota['NFe']['infNFe']['ide']['dhEmi'])? str_replace('T', ' ', substr($arrayNota['NFe']['infNFe']['ide']['dhEmi'],0,19)): null,
                             'data_saida' => $dataSaida,
                             'cnpj' => $arrayNota['NFe']['infNFe']['emit']['CNPJ'],
                             'razao_social' => $arrayNota['NFe']['infNFe']['emit']['xNome'],
@@ -413,7 +414,7 @@ class ConsultaNfeRepository
                             'codigo' => '',
                             'versao' => '',
                             'natureza_operacao' => null,
-                            'data_emissao' => $arrayNota['dhEmi'],
+                            'data_emissao' => isset($arrayNota['dhEmi'])? str_replace('T', ' ', substr($arrayNota['dhEmi'],0,19)): null,
                             'data_saida' => null,
                             'cnpj' => $arrayNota['CNPJ'],
                             'razao_social' => $arrayNota['xNome'],
@@ -603,9 +604,6 @@ class ConsultaNfeRepository
             'I',
             '');
         $id = $danfe->montaDANFE();
-        //Salva o PDF na pasta
-        //$salva = $danfe->printDANFE($pdfDanfe, 'F');
-        //Abre o PDF no Navegador
         return $abre = $danfe->printDANFE("{$id}-danfe.pdf", 'I');
     }
 

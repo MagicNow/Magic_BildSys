@@ -28,3 +28,5 @@ _ide_helper.php
 tags
 tags.lock
 tags.temp
+storage/cte/captura-cte.log
+storage/nfe/captura-nfe.log
