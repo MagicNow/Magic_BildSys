@@ -198,4 +198,10 @@ class NotafiscalController extends AppBaseController
         $cte = Cte::find($id);
         return $this->consultaCteRepository->geraDacte($cte);
     }
+
+    public function visualizaDacteV3($id)
+    {
+        $cte = Cte::find($id);
+        return $this->consultaCteRepository->geraDacteV3($cte);
+    }
 }

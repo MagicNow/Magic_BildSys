@@ -9,6 +9,7 @@
 namespace App\Repositories;
 use DB;
 use NFePHP\CTe\Tools;
+use NFePHP\DA\CTe\DacteV3;
 
 class ConsultaCteRepository
 {
@@ -363,6 +364,24 @@ class ConsultaCteRepository
             $cteTools->aConfig['aDocFormat']->pathLogoFile,
             'I',
             '');
+        $id = $dacte->montaDACTE();
+        //Salva o PDF na pasta
+        //$salva = $danfe->printDANFE($pdfDanfe, 'F');
+        //Abre o PDF no Navegador
+        return $dacte->printDACTE("{$id}-dacte.pdf", 'I');
+    }
+
+    public function geraDacteV3($cte)
+    {
+        $cteTools = new Tools(config_path('nfe.json'));
+        $dacte = new DacteV3(
+            $cte->xml,
+            'P',
+            'A4',
+            $cteTools->aConfig['aDocFormat']->pathLogoFile,
+            'I',
+            '');
+
         $id = $dacte->montaDACTE();
         //Salva o PDF na pasta
         //$salva = $danfe->printDANFE($pdfDanfe, 'F');
