@@ -127,7 +127,7 @@
                         @endif
                     </div>
 					
-					@if(count($carteiras))
+					{{--@if(count($carteiras))--}}
 					<div class="col-md-3">
                         <h4>Carteiras</h4>                        
 						<div class="js-datatable-filter-form">
@@ -137,7 +137,7 @@
 							]) !!}
 						</div>                        
                     </div>
-					@endif
+					{{--@endif--}}
 					
                     <div class="col-md-3">
                         <h4>Cidades</h4>
