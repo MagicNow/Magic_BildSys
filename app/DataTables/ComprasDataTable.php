@@ -425,6 +425,7 @@ class ComprasDataTable extends DataTable
                     ->whereNull('planejamento_compras.deleted_at');
             }
         }
+		
         if($this->request()->get('insumo_grupos_id')){
             if(count($this->request()->get('insumo_grupos_id')) && $this->request()->get('insumo_grupos_id')[0] != "") {
                 $insumo_query->where('insumos.insumo_grupo_id', $this->request()->get('insumo_grupos_id'));

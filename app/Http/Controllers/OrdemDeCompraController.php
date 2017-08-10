@@ -626,12 +626,12 @@ class OrdemDeCompraController extends AppBaseController
             'ordem_de_compras.obras_insumos',
             compact(
                 'obra',
-                'grupos',
-                'planejamento',
+                'grupos',                
                 'insumoGrupo',
                 'insumoGrupos',
 				'carteira',
 				'carteiras',
+				'planejamento',
                 'planejamentos'
             )
         );
