@@ -103,4 +103,5 @@ class Carteira extends Model
             ->withPivot('deleted_at')
             ->withTimestamps();
     }
+	
 }

@@ -4,6 +4,7 @@ namespace App\Repositories\Admin;
 
 use App\Models\Carteira;
 use InfyOm\Generator\Common\BaseRepository;
+use App\Repositories\Admin\PlanejamentoCompraRepository;
 
 class CarteiraRepository extends BaseRepository
 {
@@ -43,4 +44,5 @@ class CarteiraRepository extends BaseRepository
             ->orderBy('nome','ASC')
             ->get();
     }
+	
 }
