@@ -137,6 +137,11 @@ class SolicitacaoEntregaRepository extends BaseRepository
                 'se_status_id' => SeStatus::EM_APROVACAO,
                 'valor_total' => $solicitacao->total
             ]);
+            SeStatusLog::create([
+                'se_status_id'           => SeStatus::EM_APROVACAO,
+                'user_id'                => auth()->id(),
+                'solicitacao_entrega_id' => $solicitacao->id,
+            ]);
         } catch (Exception $e) {
             DB::rollback();
             throw $e;

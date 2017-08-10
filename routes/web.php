@@ -19,6 +19,7 @@ $router->post('/notifications/{id}/mark-as-read', 'NotificationController@markAs
 
 // Detalhes de workflow
 $router->get('/workflow/detalhes', 'WorkflowController@detalhes');
+$router->get('/workflow/redefinir', 'WorkflowController@redefinir');
 
 // Solicitação de Insumo
 $router->get('/solicitar-insumo', 'SolicitacaoInsumoController@create')

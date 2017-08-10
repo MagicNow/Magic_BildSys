@@ -128,7 +128,7 @@ class ContratoItemModificacao extends Model
 
     public function qualObra()
     {
-        return null;
+        return $this->item->contrato->obra_id;
     }
 
     public function aprova($isAprovado)
@@ -155,6 +155,15 @@ class ContratoItemModificacao extends Model
             'contrato_status_id'           => $this->contrato_status_id,
             'user_id'                      => auth()->id()
         ]);
+    }
+
+    public function dataUltimoPeriodoAprovacao(){
+        $ultimoStatusAprovacao = $this->logs()->where('contrato_status_id',ContratoStatus::EM_APROVACAO)
+            ->orderBy('created_at','DESC')->first();
+        if($ultimoStatusAprovacao){
+            return $ultimoStatusAprovacao->created_at;
+        }
+        return null;
     }
 
     public function getValorTotalAttribute()
