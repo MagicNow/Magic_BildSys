@@ -304,7 +304,7 @@ class OrdemDeCompraController extends AppBaseController
         if ($ordemDeCompra->itens) {
             $orcamentoInicial = OrdemDeCompraRepository::valorPrevistoOrcamento($ordemDeCompra->id, $ordemDeCompra->obra_id);
 
-            $valor_comprometido_a_gastar = OrdemDeCompraRepository::valorComprometidoAGastar($ordemDeCompra->id);
+            $valor_comprometido_a_gastar = OrdemDeCompraRepository::valorComprometidoAGastar($ordemDeCompra->id, $ordemDeCompra->itens()->pluck('ordem_de_compra_itens.id','ordem_de_compra_itens.id')->toArray());
 
             $totalSolicitado = $ordemDeCompra->itens()->sum('valor_total');
 
@@ -1305,7 +1305,15 @@ class OrdemDeCompraController extends AppBaseController
 
         $orcamentoInicial = $orcamentos->sum('orcamentos.preco_total');
 
-        $totalSolicitado = $ordemDeCompraItens->sum('valor_total');
+        $totalSolicitado = $ordemDeCompraItens->whereRaw('NOT EXISTS(
+                        SELECT 1 
+                        FROM contrato_itens CI
+                        JOIN contrato_item_apropriacoes CIT ON CIT.contrato_item_id = CI.id
+                        JOIN oc_item_qc_item OCQC ON OCQC.qc_item_id = CI.qc_item_id
+                        WHERE CI.id = CIT.contrato_item_id
+                        AND OCQC.ordem_de_compra_item_id = ordem_de_compra_itens.id
+                    )')
+            ->sum('valor_total');
 
         $realizado = OrdemDeCompraItem::join('ordem_de_compras','ordem_de_compras.id','=','ordem_de_compra_itens.ordem_de_compra_id')
             ->where('ordem_de_compras.obra_id',$obra_id)

@@ -18,9 +18,9 @@
     <div class="col-sm-3 text-right borda-direita" title="Nos itens desta O.C.">
         <h5>Valor comprometido à gastar</h5>
         <h4>
-            <small class="pull-left">R$</small>0,00
+            <small class="pull-left">R$</small>
             {{---  TO DO = A gastar: É a soma de todos os saldos de contratos na que apropriação, como ainda não exixte contrato gerado, tem q estar zerado--}}
-            {{--                    {{ number_format($totalAGastar,2,',','.') }}--}}
+            {{float_to_money($itens->contrato_itens->sum('valor_total') + $itens->contrato_itens->sum('qtd'))}}
         </h4>
     </div>
     <div class="col-sm-3 text-right borda-direita" title="Restante do Orçamento Inicial em relação aos itens desta O.C.">
@@ -165,7 +165,7 @@
                                                         {{ number_format(doubleval($item->qtd_realizada), 2, ',','.') }}
                                                     </td>
                                                     <td class="text-center">
-                                                        {{--{{ number_format( $item->qtd_inicial-doubleval($item->qtd_realizada), 2, ',','.') }}--}}0,00
+                                                        {{ float_to_money($item->qtd, '') }}
                                                     </td>
                                                     <td class="text-center">
                                                         {{ number_format( $item->qtd_inicial - doubleval($item->qtd_realizada), 2, ',','.') }}
@@ -194,7 +194,7 @@
                                                     </td>
                                                     <td class="text-center">
                                                         <small class="pull-left">R$</small>
-                                                        {{--{{ number_format( $item->preco_inicial-doubleval($item->valor_realizado), 2, ',','.') }}--}}0,00
+                                                        {{float_to_money($item->contratoItem->valor_total)}}
                                                     </td>
                                                     <td class="text-center">
                                                         <small class="pull-left">R$</small>
