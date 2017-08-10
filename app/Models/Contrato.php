@@ -305,4 +305,13 @@ class Contrato extends Model
     public function emAprovacao(){
         return ($this->contrato_status_id == 1);
     }
+
+    public function dataUltimoPeriodoAprovacao(){
+        $ultimoStatusAprovacao = $this->logs()->where('contrato_status_id',ContratoStatus::EM_APROVACAO)
+            ->orderBy('created_at','DESC')->first();
+        if($ultimoStatusAprovacao){
+            return $ultimoStatusAprovacao->created_at;
+        }
+        return null;
+    }
 }

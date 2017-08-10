@@ -133,8 +133,13 @@ class ContratoController extends AppBaseController
 
         $fornecedor = $fornecedorRepository->updateImposto($contrato->fornecedor_id);
 
+        $dataUltimoPeriodo = $contrato->dataUltimoPeriodoAprovacao();
+        if(!$dataUltimoPeriodo){
+            $dataUltimoPeriodo = $contrato->updated_at;
+        }
         $alcadas = WorkflowAlcada::where('workflow_tipo_id', WorkflowTipo::CONTRATO)
             ->orderBy('ordem', 'ASC')
+            ->where('created_at', '<=', $dataUltimoPeriodo->format('Y-m-d H:i:s'))
             ->get();
 
         $alcadas_count = $alcadas->count();
@@ -151,13 +156,15 @@ class ContratoController extends AppBaseController
                     'Contrato',
                     $contrato->irmaosIds(),
                     null,
-                    null,
+                    $contrato->id,
                     $alcada->id);
 
                 $avaliado_reprovado[$alcada->id]['aprovadores'] = WorkflowAprovacaoRepository::verificaQuantidadeUsuariosAprovadores(
                     WorkflowTipo::find(WorkflowTipo::CONTRATO),
                     $contrato->obra_id,
-                    $alcada->id
+                    $alcada->id,
+                    [$contrato->id=>$contrato->id],
+                    'Contrato'
                 );
 
                 $avaliado_reprovado[$alcada->id] ['faltam_aprovar'] = WorkflowAprovacaoRepository::verificaUsuariosQueFaltamAprovar(
@@ -189,7 +196,6 @@ class ContratoController extends AppBaseController
                 }
             }
         }
-
         $aprovado = $contrato->isStatus(ContratoStatus::APROVADO);
 
         $motivos = $workflowReprovacaoMotivoRepository
@@ -347,7 +353,7 @@ class ContratoController extends AppBaseController
 
             return redirect(route('contratos.index'));
         }
-
+        $contrato_status_id = $contrato->contrato_status_id;
 
         if (count($request->quantidade)) {
             foreach ($request->quantidade as $item) {
@@ -364,6 +370,13 @@ class ContratoController extends AppBaseController
                     $resposta = 'Contrato em aprovação.';
                 }
             }
+        }
+        if($contrato->contrato_status_id != $contrato_status_id){
+            ContratoStatusLog::create([
+                'contrato_id'        => $contrato->id,
+                'contrato_status_id' => $contrato->contrato_status_id,
+                'user_id'            => auth()->id()
+            ]);
         }
 
         Flash::$type_resposta($resposta);

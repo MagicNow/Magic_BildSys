@@ -576,6 +576,26 @@ $(function() {
     var tipo_eqt_id = event.target.value;
     $('.eqt_' + tipo_eqt_id).remove();
   });
+
+  var workflowTipo = $('#linhaDoTempo');
+
+  workflowTipo.tooltip({
+    title: 'Clique para ver detalhes',
+    container: document.body
+  });
+
+  workflowTipo.on('click', function(event) {
+    startLoading();
+    $.get('/workflow/detalhes', event.currentTarget.dataset)
+        .always(stopLoading)
+        .done(function(data) {
+          $('#modal-alcadas').html(data);
+          $('#modal-alcadas').modal('show');
+        })
+        .fail(function() {
+          swal('Ops!', 'Ocorreu um erro ao mostrar os detalhes da alçada', 'error');
+        });
+  });
 });
 
 function addFornecedor() {

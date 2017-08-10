@@ -38,7 +38,7 @@ class WorkflowAprovacaoRepository
         eval('$obj = \\App\Models\\' . $tipo . '::find(' . $id . ');');
 
         $workflow_tipo = WorkflowTipo::find($workflow_tipo_id);
-
+        
         if ($obj) {
             $ids = $obj->irmaosIds();
 
@@ -48,16 +48,15 @@ class WorkflowAprovacaoRepository
             // Verifica se o usuário atual é um aprovador de alguma alçada
             $workflowUsuario = WorkflowUsuario::select(['workflow_usuarios.*', 'workflow_alcadas.ordem'])
                 ->join('workflow_alcadas', 'workflow_alcadas.id', '=', 'workflow_usuarios.workflow_alcada_id')
-                ->where('workflow_alcadas.workflow_tipo_id', $workflow_tipo_id)// Tipo = Aprovação de OC
+                ->where('workflow_alcadas.workflow_tipo_id', $workflow_tipo_id)
                 ->where('user_id', $user->id)
                 ->where('workflow_alcadas.id', $alcada_atual->id)
                 ->first();
 
-
             if (!$workflowUsuario) {
                 $workflowUsuario = WorkflowUsuario::select(['workflow_usuarios.*', 'workflow_alcadas.ordem'])
                     ->join('workflow_alcadas', 'workflow_alcadas.id', '=', 'workflow_usuarios.workflow_alcada_id')
-                    ->where('workflow_alcadas.workflow_tipo_id', $workflow_tipo_id)// Tipo = Aprovação de OC
+                    ->where('workflow_alcadas.workflow_tipo_id', $workflow_tipo_id)
                     ->where('user_id', $user->id)
                     ->first();
 
@@ -77,12 +76,11 @@ class WorkflowAprovacaoRepository
                 ];
             }
 
-
             // Verifica se a já é a alçada atual que o usuário está já aprovou
             $jaAprovou = $obj->aprovacoes()
                 ->where('user_id', $user->id)
                 ->where('workflow_alcada_id', $alcada_atual->id)
-                ->where('created_at', '>=', $obj->updated_at)
+                ->where('created_at', '>=', $obj->dataUltimoPeriodoAprovacao()->format('Y-m-d H:i:s'))
                 ->first();
 
 
@@ -108,16 +106,28 @@ class WorkflowAprovacaoRepository
             }
 
             // Caso não é a primeira, verifica as aprovações da alçada anterior
-            $workflowAlcada = WorkflowAlcada::where('workflow_alcadas.workflow_tipo_id', $workflow_tipo_id)// Tipo = Aprovação de OC
+            $workflowAlcada = WorkflowAlcada::where('workflow_alcadas.workflow_tipo_id', $workflow_tipo_id)
                 ->where('ordem', ($workflowUsuario->ordem - 1))
                 ->first();
 
-            $usuariosAlcadaAnterior = $workflowAlcada->workflowUsuarios()->count();
+            $dataUltimoPeriodo = $obj->dataUltimoPeriodoAprovacao();
+
+            $workflow_users = $workflowAlcada->workflowUsuarios();
+            // Pega a qtd de aprovadores desta alçada
+            if($dataUltimoPeriodo){
+                $workflow_users->where('workflow_usuarios.created_at','<=',$dataUltimoPeriodo->format('Y-m-d H:i:s'));
+            }
+            if ($obj->qualObra()) {
+                $workflow_users->join('obra_users', 'obra_users.user_id', '=', 'users.id')
+                    ->where('obra_users.obra_id', $obj->qualObra());
+            }
+            $usuariosAlcadaAnterior = $workflow_users->count();
+
 
             # Busca a quantidade de aprovações q este item tem
             $aprovacoesAlcadaAnterior = $obj->aprovacoes()
                 ->where('workflow_alcada_id', $workflowAlcada->id)
-                ->where('created_at', '>=', $obj->updated_at)
+                ->where('created_at', '>=', $obj->dataUltimoPeriodoAprovacao()->format('Y-m-d H:i:s'))
                 ->where('aprovado', '=', 1)
                 ->count();
 
@@ -188,6 +198,11 @@ class WorkflowAprovacaoRepository
         $alcada_atual = null;
         $total_a_aprovar = self::verificaTotalaAprovar($tipo, $ids);
 
+        eval('$obj = \\App\Models\\' . $tipo . '::where("id",' . current($ids) . ')->first();');
+        if($obj){
+            $dataUltimoPeriodo = $obj->dataUltimoPeriodoAprovacao();
+        }
+
         // Percorre buscando qual alçada está
         foreach ($workflow_alcadas as $alcada) {
             if ($alcada_atual_ordem == $alcada->ordem) {
@@ -199,8 +214,24 @@ class WorkflowAprovacaoRepository
             // Verifica a qtd de avaliações desta alçada
             $avaliado = self::verificaTotalJaAprovadoReprovado($tipo, $ids, null, null, $alcada->id);
 
+            $workflow_users = $alcada->workflowUsuarios();
             // Pega a qtd de aprovadores desta alçada
-            $aprovadores = $alcada->workflowUsuarios()->count();
+            if($dataUltimoPeriodo){
+                $workflow_users->where('workflow_usuarios.created_at','<=',$dataUltimoPeriodo->format('Y-m-d H:i:s'));
+            }
+            if($obj){
+                if ($obj->qualObra()) {
+                    $workflow_users->join('obra_users', 'obra_users.user_id', '=', 'users.id')
+                        ->where('obra_users.obra_id', $obj->qualObra());
+                }
+            }
+
+            $aprovadores = $workflow_users->count();
+
+            if($aprovadores<1){
+                $alcada_atual = $alcada;
+                break;
+            }
 
             $itens_avaliados = 0;
 
@@ -406,7 +437,7 @@ class WorkflowAprovacaoRepository
             // Verifica se é a primeira aprovação deste item dentre os irmãos
             $ids = $obj->irmaosIds();
 
-            $total_ja_votado_geral = self::verificaTotalJaAprovadoReprovado($tipo, $ids);
+//            $total_ja_votado_geral = self::verificaTotalJaAprovadoReprovado($tipo, $ids);
 
             $total_ja_votado = self::verificaTotalJaAprovadoReprovado($tipo, $ids, null, $obj->id);
             if(count($ids) >1){
@@ -430,7 +461,7 @@ class WorkflowAprovacaoRepository
 
             // Se não for, verifica se já é a última
             $qtd_aprovadores = self::verificaQuantidadeUsuariosAprovadores($workflow_tipo, $obj->qualObra(), null, $ids, $tipo);
-
+            
             if ($qtd_aprovadores) {
                 // Divide a qtd de aprovações/reprovações pela quantidade de aprovadores
                 $avaliacoes = $total_ja_votado['total_avaliado'] / $qtd_aprovadores;
@@ -542,7 +573,10 @@ class WorkflowAprovacaoRepository
             $total_itens_aprovados_reprovados->where('workflow_aprovacoes.user_id', $user->id);
         }
         if ($item_id) {
-            $total_itens_aprovados_reprovados->where('workflow_aprovacoes.aprovavel_id', $item_id);
+            eval('$obj= \\App\Models\\' . $tipo . '::find('.$item_id.');');
+            $total_itens_aprovados_reprovados
+                ->where('workflow_aprovacoes.created_at', '>=',$obj->dataUltimoPeriodoAprovacao()->format('Y-m-d H:i:s'))
+                ->where('workflow_aprovacoes.aprovavel_id', $item_id);
         }
 
         if ($alcada) {
@@ -573,6 +607,18 @@ class WorkflowAprovacaoRepository
             $model = $class::whereIn('id', $ids)->first();
             $workflow_alcadas->where('valor_minimo', '<=', $model->valor_total);
         }
+        $dataUltimoPeriodo = null;
+        if ($ids && $tipo) {
+            $class = "App\\Models\\{$tipo}";
+            $model = $class::whereIn('id', $ids)->first();
+            $dataUltimoPeriodo = $model->dataUltimoPeriodoAprovacao();
+            if($dataUltimoPeriodo) {
+                $workflow_alcadas->where('created_at', '<=', $dataUltimoPeriodo->format('Y-m-d H:i:s'));
+                $workflow_alcadas->with(['workflowUsuarios' => function ($query) use ($dataUltimoPeriodo) {
+                    $query->where('workflow_usuarios.created_at', '<=', $dataUltimoPeriodo->format('Y-m-d H:i:s'));
+                }]);
+            }
+        }
 
         if ($alcada) {
             $workflow_alcadas->where('id', $alcada);
@@ -586,6 +632,10 @@ class WorkflowAprovacaoRepository
             if ($obra_id) {
                 $queryUsers->join('obra_users', 'obra_users.user_id', '=', 'users.id')
                     ->where('obra_users.obra_id', $obra_id);
+            }
+
+            if($dataUltimoPeriodo){
+                $queryUsers->where('workflow_usuarios.created_at','<=', $dataUltimoPeriodo->format('Y-m-d H:i:s'));
             }
 
             $qtd_usuarios += $queryUsers->count();
@@ -630,5 +680,69 @@ class WorkflowAprovacaoRepository
         }
 
         return $nomes;
+    }
+
+    public static function verificaUsuariosAprovadores(WorkflowTipo $workflow_tipo, $obra_id = null, $alcada = null, $ids = null, $tipo = null)
+    {
+        $usuarios = [];
+
+        $workflow_alcadas = WorkflowAlcada::where('workflow_tipo_id', $workflow_tipo->id);
+
+        // Se tem limite de valor mínimo
+        if ($workflow_tipo->usa_valor_minimo && $ids && $tipo) {
+            $class = "App\\Models\\{$tipo}";
+            $model = $class::whereIn('id', $ids)->first();
+            $workflow_alcadas->where('valor_minimo', '<=', $model->valor_total);
+        }
+        $dataUltimoPeriodo = null;
+        // Se foi passado um Id, verifica quais usuários existiam antes
+        if ($ids && $tipo) {
+            $class = "App\\Models\\{$tipo}";
+            $model = $class::whereIn('id', $ids)->first();
+            $dataUltimoPeriodo = $model->dataUltimoPeriodoAprovacao();
+            if($dataUltimoPeriodo) {
+                $workflow_alcadas->where('created_at', '<=', $dataUltimoPeriodo->format('Y-m-d H:i:s'));
+                $workflow_alcadas->with(['workflowUsuarios' => function ($query) use ($dataUltimoPeriodo) {
+                    $query->where('workflow_usuarios.created_at', '<=', $dataUltimoPeriodo->format('Y-m-d H:i:s'));
+                }]);
+            }
+        }
+
+        if ($alcada) {
+            $workflow_alcadas->where('id', $alcada);
+        }
+
+        $workflow_alcadas = $workflow_alcadas->get();
+
+        foreach ($workflow_alcadas as $alcada) {
+            $usuarios[$alcada->id]['alcada'] = $alcada;
+            $usuarios[$alcada->id]['alcada_prazo'] = WorkflowAlcada::where('workflow_tipo_id', $workflow_tipo->id)->where('ordem','<=',$alcada->ordem)->sum('dias_prazo');
+            $queryUsers = $alcada->workflowUsuarios();
+
+            if ($obra_id) {
+                $queryUsers->join('obra_users', 'obra_users.user_id', '=', 'users.id')
+                    ->where('obra_users.obra_id', $obra_id);
+            }
+
+            if($dataUltimoPeriodo){
+                $queryUsers->where('workflow_usuarios.created_at','<=', $dataUltimoPeriodo->format('Y-m-d H:i:s'));
+            }
+
+
+            $queryUsers = $queryUsers->get();
+            if($queryUsers->count()){
+                foreach ($queryUsers as $user){
+                    $usuarios[$alcada->id]['users'][$user->id] = [
+                        'id' => $user->id,
+                        'nome' => $user->name,
+                        'inclusao'=> $user->pivot->created_at
+                    ];
+                }
+
+            }
+
+        }
+
+        return $usuarios;
     }
 }

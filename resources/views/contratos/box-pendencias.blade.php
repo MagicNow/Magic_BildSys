@@ -48,6 +48,10 @@
                         <td>{{ float_to_money($modificacao['valor_unitario_atual']) }}</td>
                         <td>{{ $modificacao['created_at']->format('d/m/Y') }}</td>
                         <td>
+                            <button type="button" class="btn btn-xs btn-default btn-flat modificacaoContratoItemTimeline"
+                                    data-id="{{ $modificacao->id }}" data-workflow-tipo="4">
+                                <i class="fa fa-fw fa-hourglass-half"></i>
+                            </button>
                             @if($modificacao->workflow['podeAprovar'])
                                 @if($modificacao->workflow['iraAprovar'])
                                     <span id="blocoItemAprovaReprovaItem{{ $modificacao->id }}">
@@ -94,7 +98,7 @@
                                     data-toggle="modal"
                                     data-target="#detalhes-item-{{ $modificacao->id }}">
                               <span data-toggle="tooltip" title="Detalhes por Apropriação">
-                                  Detalhes <i class="fa fa-plus fa-fw"></i>
+                                  <i class="fa fa-plus fa-fw"></i>
                               </span>
                             </button>
                             <div class="modal fade" id="detalhes-item-{{ $modificacao->id }}" tabindex="-1"

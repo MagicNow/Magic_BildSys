@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Models\ContratoStatusLog;
 use PDF;
 use Exception;
 use App\Mail\ContratoServicoFornecedorNaoUsuario;
@@ -170,6 +171,8 @@ class ContratoRepository extends BaseRepository
                                 'qc_item' => $qcItem,
                                 'oc_itens' => $ocItens,
                                 'valor_item' => $valor_item * $fatorFatDireto,
+                                'valor_unitario' => $valor_item_unitario,
+                                'valor_total_item' => $valor_item,
                                 'fator' => $fatorFatDireto,
                             ];
 
@@ -182,6 +185,8 @@ class ContratoRepository extends BaseRepository
                                 'qc_item' => $qcItem,
                                 'oc_itens' => $ocItens,
                                 'valor_item' => $valor_item * $fatorMaterial,
+                                'valor_unitario' => $valor_item_unitario,
+                                'valor_total_item' => $valor_item,
                                 'fator' => $fatorMaterial,
                             ];
 
@@ -194,9 +199,10 @@ class ContratoRepository extends BaseRepository
                                 'qc_item' => $qcItem,
                                 'oc_itens' => $ocItens,
                                 'valor_item' => $valor_item * $fatorLocacao,
+                                'valor_unitario' => $valor_item_unitario,
+                                'valor_total_item' => $valor_item,
                                 'fator' => $fatorLocacao,
                             ];
-
                             $valores['locacao'][$obra_id][] = $v_l;
                         }
 
@@ -256,7 +262,8 @@ class ContratoRepository extends BaseRepository
                         $contrato_item['apropriacoes'] = $valores_atuais->map(function ($valor) use ($insumo) {
                             return $valor['oc_itens']->map(function ($oc_item) use ($valor, $insumo) {
                                 $oc_item_arr = $oc_item->toArray();
-                                $oc_item_arr['qtd'] = $valor['valor_item'];
+                                $porcentagem_apropriacao = money_to_float($oc_item->qtd) * $valor['valor_unitario'] / $valor['valor_total_item'];
+                                $oc_item_arr['qtd'] =  $valor['valor_item'] * $porcentagem_apropriacao;
                                 $oc_item_arr['ligacao_id'] = $oc_item->insumo_id;
                                 $oc_item_arr['insumo_id'] = $insumo->id;
 
@@ -357,9 +364,7 @@ class ContratoRepository extends BaseRepository
         }
 
         $campos_extras = json_encode($campos_extras);
-
         $contratos = [];
-
         DB::beginTransaction();
         try {
             foreach ($contratoCampos as $obraId => &$contratoArray) {
@@ -373,6 +378,13 @@ class ContratoRepository extends BaseRepository
 
                 // Salva o contrato
                 $contrato = Contrato::create($contratoArray);
+
+                // Salva o primeiro status
+                ContratoStatusLog::create([
+                    'contrato_id'        => $contrato->id,
+                    'contrato_status_id' => $contrato->contrato_status_id,
+                    'user_id'            => auth()->id()
+                ]);
 
                 // Salva os itens do contrato
                 foreach ($contratoItens[$obraId] as &$item) {
@@ -410,7 +422,6 @@ class ContratoRepository extends BaseRepository
             $aprovadores = WorkflowAprovacaoRepository::usuariosDaAlcadaAtual($contrato);
 
             Notification::send($aprovadores, new WorkflowNotification($contrato));
-
         } catch (Exception $e) {
             throw $e;
             DB::rollback();

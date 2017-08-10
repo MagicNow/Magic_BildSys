@@ -271,4 +271,13 @@ class QuadroDeConcorrencia extends Model
     public function emAprovacao(){
         return ($this->qc_status_id == 3);
     }
+
+    public function dataUltimoPeriodoAprovacao(){
+        $ultimoStatusAprovacao = $this->logs()->where('qc_status_id',QcStatus::EM_APROVACAO)
+            ->orderBy('created_at','DESC')->first();
+        if($ultimoStatusAprovacao){
+            return $ultimoStatusAprovacao->created_at;
+        }
+        return null;
+    }
 }
