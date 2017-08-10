@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class Carteira
@@ -12,8 +11,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Carteira extends Model
 {
-    use SoftDeletes;
-
     public $table = 'carteiras';
 
     const CREATED_AT = 'created_at';

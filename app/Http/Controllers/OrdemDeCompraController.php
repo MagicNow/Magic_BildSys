@@ -1438,7 +1438,7 @@ class OrdemDeCompraController extends AppBaseController
                         ->pluck('users.name', 'users.id')
                         ->toArray();
         
-        return $insumosAprovadosDataTable->render('ordem_de_compras.insumos-aprovados',compact('obras', 'OCs', 'insumoGrupos', 'insumos', 'cidades', 'farol', 'compradores', 'regionais', 'padroes_empreendimento'));
+        return $insumosAprovadosDataTable->render('ordem_de_compras.insumos-aprovados',compact('obras', 'OCs', 'insumoGrupos', 'insumos', 'cidades', 'farol', 'compradores', 'regionais', 'padroes_empreendimento', 'carteiras'));
     }
 
     /**
