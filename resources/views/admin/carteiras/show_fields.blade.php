@@ -17,6 +17,19 @@
     @endif
 </div>
 
+<div class="form-group col-sm-6">
+    {!! Form::label('carteiraTipoEqualizacaoTecnicas', 'Tipos Equalização Técnica nesta carteira:') !!}
+    @if($carteira->tipoEqualizacaoTecnicas)
+        @php $tipos = ''; @endphp
+        @foreach($carteira->tipoEqualizacaoTecnicas as $tipoEqualizacaoTecnicas)
+            @php $tipos .= $tipoEqualizacaoTecnicas->nome . ' - '; @endphp
+        @endforeach
+        {!! Form::textarea('nome', substr($tipos, 0, -3), ['class' => 'form-control', 'rows' => '3', 'disabled']) !!}
+    @else
+        <p class="form-control"></p>
+    @endif
+</div>
+
 <!-- Created At Field -->
 <div class="form-group col-md-6">
     {!! Form::label('created_at', 'Cadastrada em:') !!}

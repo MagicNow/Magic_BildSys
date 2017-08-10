@@ -4,6 +4,7 @@ namespace App\Repositories\Admin;
 
 use App\Models\Carteira;
 use InfyOm\Generator\Common\BaseRepository;
+use App\Repositories\Admin\PlanejamentoCompraRepository;
 
 class CarteiraRepository extends BaseRepository
 {
@@ -29,6 +30,19 @@ class CarteiraRepository extends BaseRepository
         })
         ->orderBy('nome','ASC')
         ->get();
+    }
+	
+	
+	public function comInsumoOrcamentoObra($obra_id)
+    {
+        return $this->model
+            ->whereHas('insumos', function($query) use ($obra_id) {
+                $query
+                    ->join('orcamentos', 'orcamentos.insumo_id', '=', 'insumos.id')											
+                    ->where('orcamentos.obra_id', $obra_id);
+            })
+            ->orderBy('nome','ASC')
+            ->get();
     }
 	
 }

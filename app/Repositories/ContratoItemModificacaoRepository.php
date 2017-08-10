@@ -67,6 +67,7 @@ class ContratoItemModificacaoRepository extends BaseRepository
                 'tipo_modificacao'        => 'Reajuste',
                 'anexo'                   => $destinationPath,
                 'user_id'                 => auth()->id(),
+                'descricao'               => $data['observacao']
             ]);
 
             $modificacaoLogRepository->create([

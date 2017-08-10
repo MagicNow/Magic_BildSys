@@ -47,7 +47,8 @@ class ContratoItemModificacao extends Model
         'tipo_modificacao',
         'contrato_status_id',
         'anexo',
-        'user_id'
+        'user_id',
+        'descricao'
     ];
 
     /**

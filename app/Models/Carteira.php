@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class Carteira
@@ -12,8 +11,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Carteira extends Model
 {
-    use SoftDeletes;
-
     public $table = 'carteiras';
 
     const CREATED_AT = 'created_at';
@@ -67,4 +64,41 @@ class Carteira extends Model
             ->withPivot('deleted_at')
             ->withTimestamps();
     }
+	
+	/**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function carteiraInsumos()
+    {
+        return $this->belongsToMany(CarteiraInsumo::class, 'carteira_insumos', 'carteira_id', 'insumo_id')->withPivot('deleted_at')->withTimestamps();
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function insumos()
+    {
+        return $this->belongsToMany(Insumo::class, 'carteira_insumos', 'carteira_id', 'insumo_id')
+            ->withPivot('deleted_at')
+            ->withTimestamps();
+    }
+	
+	/**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function carteiraTipoEqualizacaoTecnicas()
+    {
+        return $this->belongsToMany(CarteiraTipoEqualizacaoTecnica::class, 'carteira_tipo_equalizacao_tecnicas', 'carteira_id', 'tipo_equalizacao_id')->withPivot('deleted_at')->withTimestamps();
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function tipoEqualizacaoTecnicas()
+    {
+        return $this->belongsToMany(TipoEqualizacaoTecnica::class, 'carteira_tipo_equalizacao_tecnicas', 'carteira_id', 'tipo_equalizacao_id')
+            ->withPivot('deleted_at')
+            ->withTimestamps();
+    }
+	
 }
