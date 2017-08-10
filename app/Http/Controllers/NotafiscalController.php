@@ -7,6 +7,7 @@ use App\Http\Requests;
 use App\Http\Requests\CreateNotafiscalRequest;
 use App\Http\Requests\UpdateNotafiscalRequest;
 use App\Models\Contrato;
+use App\Models\Cte;
 use App\Models\Notafiscal;
 use App\Models\NotaFiscalItem;
 use App\Repositories\ConsultaCteRepository;
@@ -190,5 +191,11 @@ class NotafiscalController extends AppBaseController
     {
         $notafiscal = Notafiscal::find($id);
         return $this->consultaRepository->geraDanfe($notafiscal);
+    }
+
+    public function visualizaDacte($id)
+    {
+        $cte = Cte::find($id);
+        return $this->consultaCteRepository->geraDacte($cte);
     }
 }

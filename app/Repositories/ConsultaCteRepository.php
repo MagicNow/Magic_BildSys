@@ -352,4 +352,21 @@ class ConsultaCteRepository
         return $data;
     }//fim gunzip1
 
+
+    public function geraDacte($cte)
+    {
+        $cteTools = new Tools(config_path('nfe.json'));
+        $dacte = new \NFePHP\Extras\Dacte(
+            $cte->xml,
+            'P',
+            'A4',
+            $cteTools->aConfig['aDocFormat']->pathLogoFile,
+            'I',
+            '');
+        $id = $dacte->montaDACTE();
+        //Salva o PDF na pasta
+        //$salva = $danfe->printDANFE($pdfDanfe, 'F');
+        //Abre o PDF no Navegador
+        return $dacte->printDACTE("{$id}-dacte.pdf", 'I');
+    }
 }
