@@ -158,7 +158,7 @@ class ConsultaNfeRepository
 
                     try {
 
-                        $dataSaida = isset($arrayNota['NFe']['infNFe']['ide']['dhSaiEnt']) ? substr($arrayNota['NFe']['infNFe']['ide']['dhSaiEnt'],0,19) : null;
+                        $dataSaida = isset($arrayNota['NFe']['infNFe']['ide']['dhSaiEnt']) ? str_replace('T', ' ',substr($arrayNota['NFe']['infNFe']['ide']['dhSaiEnt'],0,19)) : null;
 
                         $fantasia = isset($arrayNota['NFe']['infNFe']['emit']['xFant']) ? $arrayNota['NFe']['infNFe']['emit']['xFant'] : null;
 
