@@ -14,12 +14,12 @@ class AlterQcAddTemplate extends Migration
     public function up()
     {
         Schema::table('quadro_de_concorrencias', function (Blueprint $table){
-            $table->integer('contrato_template_id');
+            $table->unsignedInteger('contrato_template_id')->nullable();
             $table->text('campos_extras_contrato')->nullable();
 
             $table->foreign('contrato_template_id')
                 ->references('id')->on('contrato_templates')
-                ->onDelete('restrict')
+                ->onDelete('set null')
                 ->onUpdate('cascade');
         });
     }
