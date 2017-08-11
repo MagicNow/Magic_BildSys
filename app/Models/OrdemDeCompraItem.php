@@ -312,6 +312,12 @@ class OrdemDeCompraItem extends Model
         $this->timestamps = false;
         $this->attributes['aprovado'] = $valor;
         $this->save();
+
+        OrdemDeCompraItemLog::create([
+            'oc_status_id' => ($valor?5:4),
+            'ordem_de_compra_item_id' => $this->id,
+            'user_id' => auth()->id()
+        ]);
     }
     
     public function idPai(){
@@ -320,24 +326,16 @@ class OrdemDeCompraItem extends Model
 
 
     public function dataUltimoPeriodoAprovacao(){
-        $ultimoStatusAprovacao = $this->ordemDeCompra->ordemDeCompraStatusLogs()->where('oc_status_id',3)
+        $ultimoStatusAprovacao = $this->logs()->where('oc_status_id',3)
             ->orderBy('created_at','DESC')->first();
         if($ultimoStatusAprovacao){
             return $ultimoStatusAprovacao->created_at;
         }
-        return null;
+        return $this->updated_at;
     }
 
     public function colocaEmAprovacao(){
-        $ordemDeCompra = $this->ordemDeCompra;
-        $ordemDeCompra->oc_status_id = 3; // Em Aprovação
-        $ordemDeCompra->save();
-
-        OrdemDeCompraStatusLog::create([
-            'oc_status_id'=>$ordemDeCompra->oc_status_id,
-            'ordem_de_compra_id'=>$ordemDeCompra->id,
-            'user_id'=> auth::id()
-        ]);
+        return $this->itemEmAprovacao();
     }
     
     public function getQtdSobraAttribute()
@@ -353,5 +351,30 @@ class OrdemDeCompraItem extends Model
     public function getQtdFormattedAttribute()
     {
         return float_to_money($this->qtd, '') . ' ' . $this->insumo->unidade_sigla;
+    }
+
+    public function logs(){
+        return $this->hasMany(OrdemDeCompraItemLog::class);
+    }
+
+    public function itemEmAprovacao(){
+        $this->aprovado = null;
+        $this->save();
+        OrdemDeCompraItemLog::create([
+            'oc_status_id'=>3, // Em aprovação
+            'ordem_de_compra_item_id'=>$this->id,
+            'user_id'=> auth()->id()
+        ]);
+    }
+
+    public function itemEmAberto(){
+
+        OrdemDeCompraItemLog::create([
+            'oc_status_id'=>1, // Em aberto
+            'ordem_de_compra_item_id'=>$this->id,
+            'user_id'=> auth()->id()
+        ]);
+        $this->aprovado = null;
+        return $this->save();
     }
 }
