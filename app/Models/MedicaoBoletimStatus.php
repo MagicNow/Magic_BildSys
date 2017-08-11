@@ -16,6 +16,26 @@ class MedicaoBoletimStatus extends Model
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
+    /**
+     * Id do status Pendente
+     *
+     * @const int
+     */
+    const PENDENTE = 1;
+    /**
+     * Id do status Aguardando a Nota fiscal
+     *
+     * @const int
+     */
+    const AGUARDANDO_NOTA = 2;
+    /**
+     * Id do status Nota Recebida
+     *
+     * @const int
+     */
+    const NOTA_RECEBIDA = 3;
+
+
 
     public $fillable = [
         'nome',

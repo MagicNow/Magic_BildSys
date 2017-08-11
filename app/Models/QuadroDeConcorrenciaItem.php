@@ -66,19 +66,6 @@ class QuadroDeConcorrenciaItem extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     **/
-    public function logs()
-    {
-        return $this->hasMany(QcStatusLog::class, 'quadro_de_concorrencia_id');
-    }
-
-    public function qualObra()
-    {
-        return null;
-    }
-
-    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
     public function quadroDeConcorrencia()
@@ -119,15 +106,6 @@ class QuadroDeConcorrenciaItem extends Model
     public function contratoItens()
     {
         return $this->hasMany(ContratoItem::class, 'qc_item_id');
-    }
-
-    public function dataUltimoPeriodoAprovacao(){
-        $ultimoStatusAprovacao = $this->logs()->where('qc_status_id',QcStatus::EM_APROVACAO)
-            ->orderBy('created_at','DESC')->first();
-        if($ultimoStatusAprovacao){
-            return $ultimoStatusAprovacao->created_at;
-        }
-        return null;
     }
 
 }
