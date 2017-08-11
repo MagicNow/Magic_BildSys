@@ -58,7 +58,7 @@
                                 <td>{{ $apropriacao->descricao }}</td>
                             </tr>
                             <tr id="historico-apropriacao-{{ $apropriacao->id }}" class="hidden">
-                                <td colspan="8" class="td-full">
+                                <td colspan="9" class="td-full">
                                     @if($apropriacao->modificacoes->where('contrato_status_id', 2)->isNotEmpty())
                                         <table class="table table-condensed table-all-center">
                                             <thead>
@@ -66,7 +66,7 @@
                                                     <th></th>
                                                     <th colspan="2" class="text-center">Antes</th>
                                                     <th colspan="2" class="text-center">Depois</th>
-                                                    <th colspan="2"></th>
+                                                    <th colspan="3"></th>
                                                 </tr>
                                                 <tr>
                                                     <th>Movimentação</th>
@@ -74,6 +74,7 @@
                                                     <th>Valor Unitário</th>
                                                     <th>Qtd.</th>
                                                     <th>Valor Unitário</th>
+                                                    <th>Anexo</th>
                                                     <th>Observação</th>
                                                     <th>Data</th>
                                                 </tr>
@@ -95,6 +96,12 @@
                                                         </td>
                                                         <td>
                                                             {{ float_to_money($modificacao['valor_unitario_atual'], '') }}
+                                                        </td>
+                                                        <td>
+                                                            @if($modificacao->pivot->anexo)
+                                                                <a href="{!! Storage::url($modificacao->pivot->anexo) !!}"
+                                                                   target="_blank">Ver</a>
+                                                            @endif
                                                         </td>
                                                         <td>
                                                             {{ $modificacao->pivot->descricao }}
