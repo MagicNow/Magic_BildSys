@@ -460,7 +460,7 @@ class LembretesHomeDataTable extends DataTable
                 $query->where('insumos.insumo_grupo_id', $this->request()->get('insumo_grupo_id'));
             }
 
-            // Busca se existe algum item Ã  ser comprado desta tarefa
+            // Busca se existe algum item a  ser comprado desta tarefa
             $query->whereRaw(PlanejamentoCompraRepository::existeItemParaComprarComInsumoGrupo());
 
             $query->groupBy(['id', 'obra', 'dias', 'tarefa', 'url', 'inicio']);
@@ -668,7 +668,7 @@ class LembretesHomeDataTable extends DataTable
                         if(col==0){
                             var column = this;
                             var input = document.createElement("input");
-                            $(input).attr(\'title\',\'Para uma faixa utilize hÃ­fen(-), ex:01/01/2018-31/01/2018\');
+                            $(input).attr(\'title\',\'Para uma faixa utilize hífen(-), ex:01/01/2018-31/01/2018\');
                             $(input).attr(\'placeholder\',\'Filtrar Data...\');
                             $(input).addClass(\'form-control\');
                             $(input).css(\'width\',\'100%\');
@@ -751,7 +751,7 @@ class LembretesHomeDataTable extends DataTable
         $columns['Grupo De Insumo'] = ['name' => 'grupo', 'data' => 'grupo'];
 
         $columns['action'] = [
-            'title'      => 'AÃ§Ãµes',
+            'title'      => 'Ações',
             'searchable' => false,
             'orderable'  => false,
             'printable'  => false,
