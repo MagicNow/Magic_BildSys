@@ -160,8 +160,8 @@
                                                                 {{ float_to_money($apropriacao->pivot->qtd_atual -  $apropriacao->pivot->qtd_anterior, '') }}
                                                             </td>
                                                             <td>
-                                                                @if($modificacao->anexo)
-                                                                    <a href="{!! Storage::url($modificacao->anexo) !!}"
+                                                                @if($apropriacao->pivot->anexo)
+                                                                    <a href="{!! Storage::url($apropriacao->pivot->anexo) !!}"
                                                                        target="_blank">Ver</a>
                                                                 @endif
                                                             </td>
