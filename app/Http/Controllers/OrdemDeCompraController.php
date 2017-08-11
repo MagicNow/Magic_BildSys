@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\DataTables\DetalhesServicosDataTable;
 use App\Models\CompradorInsumo;
+use App\Models\OrdemDeCompraItemLog;
 use App\Models\PadraoEmpreendimento;
 use App\Models\Regional;
 use App\Models\User;
@@ -712,6 +713,8 @@ class OrdemDeCompraController extends AppBaseController
 
         if (!$request->quantidade_compra || $request->quantidade_compra == '0' || $request->quantidade_compra == '') {
             $ordem_item->forceDelete();
+        }else{
+            $ordem_item->itemEmAberto();
         }
 
         return response()->json(['success'=>$salvo]);
@@ -952,13 +955,17 @@ class OrdemDeCompraController extends AppBaseController
         }
 
         foreach ($ordem_itens as $item) {
-            if (!$item->aprovado) { // Se o item não esta aprovado
+            if ($item->aprovado === 0) { // Se o item não esta aprovado
                 if ($item->updated_at < $ordemDeCompra->updated_at) { // Se o item for atualizado  antes da ordem de compra
                     Flash::error('O item não foi atualizado.');
                     return back();
                 } else {
-                    $item->aprovado = null;
-                    $item->update();
+                    $item->itemEmAprovacao();
+                }
+            }else if(is_null($item->aprovado)){
+                $ultimoStatus = $item->logs()->orderBy('id','DESC')->first();
+                if(!$ultimoStatus || $ultimoStatus->oc_status_id != 3){
+                    $item->itemEmAprovacao();
                 }
             }
             if ($item->qtd == '0.00' || !$item->qtd) {
