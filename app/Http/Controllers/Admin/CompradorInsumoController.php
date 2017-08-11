@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\DataTables\Admin\CompradorInsumoDataTable;
+use App\DataTables\Admin\SemCompradorInsumoDataTable;
 use App\Http\Requests\Admin;
 use App\Http\Requests\Admin\CreateCompradorInsumoRequest;
 use App\Http\Requests\Admin\UpdateCompradorInsumoRequest;
 use App\Models\CompradorInsumo;
 use App\Models\Insumo;
 use App\Models\InsumoGrupo;
+use App\Models\Carteira;
 use App\Models\User;
 use App\Repositories\Admin\CompradorInsumoRepository;
 use Flash;
@@ -170,6 +172,20 @@ class CompradorInsumoController extends AppBaseController
         Flash::success('Comprador Insumo '.trans('common.deleted').' '.trans('common.successfully').'.');
 
         return redirect(route('admin.compradorInsumos.index'));
+    }
+	
+	/**
+     * Display the specified CompradorInsumo without association with any Insumos
+     *
+     * @return Response
+     */	
+    public function semInsumoView(SemCompradorInsumoDataTable $semCompradorInsumoDataTable)
+    {
+		$grupoInsumos = InsumoGrupo::where('active', true)->pluck('nome', 'id')->toArray();
+
+		$insumos = Insumo::where('active', true)->pluck('nome', 'id')->toArray();
+
+        return $semCompradorInsumoDataTable->render('admin.comprador_insumos.sem_insumo', compact('grupoInsumos', 'insumos'));   
     }
 
     public function deleteBlocoView()

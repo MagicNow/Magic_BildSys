@@ -383,7 +383,10 @@ class ComprasDataTable extends DataTable
             ->where('orcamentos.ativo', 1);
 
         $insumo_query->leftJoin(DB::raw('orcamentos orcamentos_sub'),  'orcamentos_sub.id', 'orcamentos.orcamento_que_substitui');
-        $insumo_query->leftJoin(DB::raw('insumos insumos_sub'), 'insumos_sub.id', 'orcamentos_sub.insumo_id');
+        //ex: left join insumos insumos_sub on `insumos_sub`.`id` = `orcamentos_sub`.`insumo_id` 
+		$insumo_query->leftJoin(DB::raw('insumos insumos_sub'), 'insumos_sub.id', 'orcamentos_sub.insumo_id');
+		$insumo_query->leftJoin(DB::raw('carteira_insumos'), 'insumos.id', 'carteira_insumos.insumo_id');
+		$insumo_query->leftJoin(DB::raw('carteiras'), 'carteiras.id', 'carteira_insumos.carteira_id');
 
         if ($this->request()->get('grupo_id')) {
             if (count($this->request()->get('grupo_id')) && $this->request()->get('grupo_id')[0] != "") {
@@ -425,9 +428,16 @@ class ComprasDataTable extends DataTable
                     ->whereNull('planejamento_compras.deleted_at');
             }
         }
+		
         if($this->request()->get('insumo_grupos_id')){
             if(count($this->request()->get('insumo_grupos_id')) && $this->request()->get('insumo_grupos_id')[0] != "") {
                 $insumo_query->where('insumos.insumo_grupo_id', $this->request()->get('insumo_grupos_id'));
+            }
+        }
+		
+		if($this->request()->get('carteira_id')){
+            if(count($this->request()->get('carteira_id')) && $this->request()->get('carteira_id')[0] != "") {
+                $insumo_query->where('carteiras.id', $this->request()->get('carteira_id'));
             }
         }
 

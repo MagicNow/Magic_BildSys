@@ -47,7 +47,8 @@ class ContratoItemModificacao extends Model
         'tipo_modificacao',
         'contrato_status_id',
         'anexo',
-        'user_id'
+        'user_id',
+        'descricao'
     ];
 
     /**
@@ -179,7 +180,7 @@ class ContratoItemModificacao extends Model
             'contrato_item_modificacao_id',
             'contrato_item_apropriacao_id'
         )
-        ->withPivot([ 'qtd_atual', 'qtd_anterior', 'id', 'descricao' ])
+        ->withPivot([ 'qtd_atual', 'qtd_anterior', 'id', 'descricao', 'anexo' ])
         ->withTimestamps();
     }
 }

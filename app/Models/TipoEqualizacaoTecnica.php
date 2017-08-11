@@ -62,4 +62,9 @@ class TipoEqualizacaoTecnica extends Model
     {
         return $this->hasMany(\App\Models\QcTipoEqualizacaoTecnica::class);
     }
+	
+	public function carteiras()
+    {
+        return $this->belongsToMany(Carteira::class, 'carteira_tipo_equalizacao_tecnicas', 'tipo_equalizacao_id', 'carteira_id');
+    }
 }

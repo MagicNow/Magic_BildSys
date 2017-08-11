@@ -7,6 +7,7 @@
                 <th>Valor Unitário</th>
                 <th>Novo Valor Unitário</th>
                 <th>Anexar documento</th>
+                <th>Observação</th>
             </tr>
         </thead>
         <tbody>
@@ -24,6 +25,11 @@
                 <td>
                     <input class="form-control" type="file" name="anexo">
                 </td>
+                <td>
+                    <div class="input-group">
+                        <textarea class="form-control js-input js-obs" name="descricao"></textarea>
+                    </div>
+                </td>
             </tr>
         </tbody>
     </table>
@@ -36,6 +42,7 @@
       <th>Saldo de Qtd.</th>
       <th>Quantidadade Adicionada</th>
       <th>Nova Quantidade</th>
+      <th>Anexar documento</th>
       <th>Observação</th>
     </tr>
   </thead>
@@ -65,6 +72,11 @@
         </td>
         <td data-item-qtd="{{ $apropariacao->qtd }}">
             {{ float_to_money($apropariacao->qtd, '') }}
+        </td>
+        <td>
+            <div class="input-group">
+                <input class="form-control js-anexos" type="file" name="anexos[{{ $apropariacao->id }}]">
+            </div>
         </td>
         <td>
             <div class="input-group">

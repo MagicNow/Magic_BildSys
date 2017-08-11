@@ -244,10 +244,10 @@
                                     {{--{!! Form::date('sugestao_data_uso['.$item->id.']', $item->sugestao_data_uso, ['class'=>'form-control', 'onBlur'=>"alteraItem(".$item->id.",'sugestao_data_uso', this.value )"] ) !!}--}}
                                 {{--</span>--}}
                             {{--</span>--}}
-                            <span class="col-md-4 col-sm-12 col-xs-12 text-center">
-                                {!! Form::checkbox('emergencial['.$item->id.']',1, $item->emergencial, ['class'=>'form-control ck_emergencial', 'id'=>'emergencial_'.$item->id, 'item_id'=>$item->id ] ) !!}
-                                <label class="label-bloco" for="emergencial_{{ $item->id }}">Emergencial</label>
-                            </span>
+                            {{--<span class="col-md-4 col-sm-12 col-xs-12 text-center">--}}
+                                {{--{!! Form::checkbox('emergencial['.$item->id.']',1, $item->emergencial, ['class'=>'form-control ck_emergencial', 'id'=>'emergencial_'.$item->id, 'item_id'=>$item->id ] ) !!}--}}
+                                {{--<label class="label-bloco" for="emergencial_{{ $item->id }}">Emergencial</label>--}}
+                            {{--</span>--}}
                                 </div>
                                 <hr>
 

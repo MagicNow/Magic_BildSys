@@ -136,6 +136,17 @@
                                             ]) !!}
                                     </div>
                                 </div>
+								<div class="form-group col-sm-12 col-20">
+                                    <div class="js-datatable-filter-form">
+                                        {!! Form::label('carteira_id', 'Carteiras:') !!}
+                                        {!!
+                                          Form::select('carteira_id', $carteiras, (isset($carteira) ? $carteira->id : null), [
+                                            'class'=>'form-control select2',
+                                            'id'=>'carteira_id',
+                                            'onchange'=>'filtroQueryString("carteira_id", this.value)'
+                                            ]) !!}
+                                    </div>
+                                </div>													
 
                                 <input type="hidden" name="obra_id" value="{{$obra->id}}">
 
