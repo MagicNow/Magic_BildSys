@@ -15,14 +15,18 @@ class TemplateEmail extends Model
     use SoftDeletes;
 
     public $table = 'template_emails';
-    
 
+    const CREATED_AT = 'created_at';
+    const UPDATED_AT = 'updated_at';
+    
     protected $dates = ['deleted_at'];
 
 
     public $fillable = [
-        'chave',
-        'valor'
+        'nome',
+        'template',
+        'tags',
+        'user_id'
     ];
 
     /**
@@ -32,8 +36,10 @@ class TemplateEmail extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'chave' => 'string',
-        'valor' => 'string'
+        'nome' => 'string',
+        'template' => 'string',
+        'tags' => 'string',
+        'user_id' => 'integer'
     ];
 
     /**
@@ -42,9 +48,17 @@ class TemplateEmail extends Model
      * @var array
      */
     public static $rules = [
-        'chave' => 'required',
-        'valor' => 'required'
+        'nome' => 'required',
+        'template' => 'required'
     ];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     
 }

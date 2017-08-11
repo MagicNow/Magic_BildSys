@@ -9,6 +9,7 @@ use App\Http\Requests\UpdateTemplateEmailRequest;
 use App\Repositories\TemplateEmailRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
+use Illuminate\Support\Facades\Auth;
 use Response;
 
 class TemplateEmailController extends AppBaseController
@@ -52,6 +53,7 @@ class TemplateEmailController extends AppBaseController
     public function store(CreateTemplateEmailRequest $request)
     {
         $input = $request->all();
+        $input['user_id'] = Auth::id();
 
         $templateEmail = $this->templateEmailRepository->create($input);
 
@@ -118,7 +120,9 @@ class TemplateEmailController extends AppBaseController
             return redirect(route('templateEmails.index'));
         }
 
-        $templateEmail = $this->templateEmailRepository->update($request->all(), $id);
+        $input = $request->all();
+        $input['user_id'] = Auth::id();
+        $templateEmail = $this->templateEmailRepository->update($input, $id);
 
         Flash::success('Template Email '.trans('common.updated').' '.trans('common.successfully').'.');
 

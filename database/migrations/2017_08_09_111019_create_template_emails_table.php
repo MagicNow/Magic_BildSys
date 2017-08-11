@@ -15,8 +15,15 @@ class CreateTemplateEmailsTable extends Migration
     {
         Schema::create('template_emails', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('chave');
-            $table->longText('valor');
+            $table->string('nome');
+            $table->longText('template');
+            $table->longText('tags');
+            $table->unsignedInteger('user_id')->nullable();
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('users')
+                ->onDelete('set null')
+                ->onUpdate('cascade');
             $table->timestamps();
             $table->softDeletes();
         });

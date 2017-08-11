@@ -10,16 +10,16 @@
     <p class="form-control">{!! $templateEmail->id !!}</p>
 </div>
 
-<!-- Chave Field -->
+<!-- Nome Field -->
 <div class="form-group col-md-6">
-    {!! Form::label('chave', 'Chave:') !!}
-    <p class="form-control">{!! $templateEmail->chave !!}</p>
+    {!! Form::label('nome', 'Nome:') !!}
+    <p class="form-control">{!! $templateEmail->nome !!}</p>
 </div>
 
 <!-- Valor Field -->
 <div class="form-group col-md-6">
-    {!! Form::label('valor', 'Valor:') !!}
-    <p class="form-control">{!! $templateEmail->valor !!}</p>
+    {!! Form::label('template', 'Template:') !!}
+    <p class="form-control">{!! $templateEmail->template !!}</p>
 </div>
 
 <!-- Created At Field -->

@@ -17,6 +17,9 @@ class TemplateEmailDataTable extends DataTable
         return $this->datatables
             ->eloquent($this->query())
             ->addColumn('action', 'template_emails.datatables_actions')
+            ->editColumn('updated_at', function($obj){
+                return $obj->updated_at ? with(new\Carbon\Carbon($obj->updated_at))->format('d/m/Y H:i') : '';
+            })
             ->make(true);
     }
 
@@ -27,7 +30,14 @@ class TemplateEmailDataTable extends DataTable
      */
     public function query()
     {
-        $templateEmails = TemplateEmail::query();
+        $templateEmails = TemplateEmail::query()
+            ->leftJoin('users','users.id','user_id')
+            ->select([
+                'template_emails.id',
+                'template_emails.nome',
+                'template_emails.updated_at',
+                'users.name as usuario',
+            ]);
 
         return $this->applyScopes($templateEmails);
     }
@@ -91,8 +101,9 @@ class TemplateEmailDataTable extends DataTable
     private function getColumns()
     {
         return [
-            'nome' => ['name' => 'chave', 'data' => 'chave'],
-            'descrição' => ['name' => 'valor', 'data' => 'valor'],
+            'nome' => ['name' => 'nome', 'data' => 'nome'],
+            'alterado Por' => ['name' => 'users.name', 'data' => 'usuario'],
+            'Alterado Em' => ['name' => 'updated_at', 'data' => 'updated_at'],
             'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }

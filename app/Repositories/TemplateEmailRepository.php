@@ -11,8 +11,9 @@ class TemplateEmailRepository extends BaseRepository
      * @var array
      */
     protected $fieldSearchable = [
-        'chave',
-        'valor'
+        'nome',
+        'template',
+        'user_id'
     ];
 
     /**
