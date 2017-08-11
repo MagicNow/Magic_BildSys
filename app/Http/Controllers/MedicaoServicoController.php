@@ -211,13 +211,13 @@ class MedicaoServicoController extends AppBaseController
         if (empty($medicaoServico)) {
             Flash::error('Medição de Serviço não encontrada');
 
-            return redirect(route('medicaoServicos.index'));
+            return redirect(route('medicoes.index'));
         }
 
         $this->medicaoServicoRepository->delete($id);
 
         Flash::success('Medicao Servico '.trans('common.deleted').' '.trans('common.successfully').'.');
 
-        return redirect(route('medicaoServicos.index'));
+        return redirect(route('medicoes.index'));
     }
 }

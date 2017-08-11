@@ -58,8 +58,8 @@
                                 'type'=>'submit']) !!}
             @else
                 <button title="Impossível enviar para aprovação, pois existem itens reprovados!" type="button"
-                        disabled class="btn btn-warning btn-lg btn-flat pull-right" data-toggle="tooltip"
-                        data-placement="top" style="margin-right:10px">
+                         class="btn btn-warning btn-lg btn-flat pull-right disabled"
+                        data-toggle="tooltip" data-placement="left" style="margin-right:10px">
                     <i class="fa fa-check"></i>  Salvar e Enviar para Aprovação
                 </button>
             @endif
