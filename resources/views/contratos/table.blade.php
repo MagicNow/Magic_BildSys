@@ -38,7 +38,7 @@
                     <th colspan="4"></th>
                     <th colspan="2">Contratado</th>
                     <th colspan="2">Realizado</th>
-                    <th colspan="2">Saldo</th>
+                    <th colspan="3">Saldo</th>
                     @if($contrato->isStatus(2, 5) /* Aprovado ou Ativo */)
                         <th></th>
                     @endif
@@ -53,6 +53,7 @@
                     <th>Qtd.</th>
                     <th>Valor Total</th>
                     <th>Qtd.</th>
+                    <th>Valor Unitário</th>
                     <th>Valor Total</th>
                     @if($contrato->isStatus(2, 5) /* Aprovado ou Ativo */)
                         <th style="width:18%">Ações</th>
@@ -88,6 +89,7 @@
                         <td>{{ '0,00' }}</td>
                         <td>{{ 'R$ 0,00' }}</td>
                         <td>{{ float_to_money($item->qtd, '') }}</td>
+                        <td>{{ float_to_money($item->valor_unitario) }}</td>
                         <td>{{ float_to_money($item->valor_total) }}</td>
                         @if($contrato->isStatus(2, 5) /* Aprovado ou Ativo */)
                             <td>
