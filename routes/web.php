@@ -177,6 +177,8 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
             ->middleware("needsPermission:compradorInsumos.deleteBlocoView");
         $router->get('compradorInsumos/delete-bloco/view/delete', ['as' => 'admin.compradorInsumos.deletebloco', 'uses' => 'Admin\CompradorInsumoController@deleteBloco']);
         $router->get('compradorInsumos/delete-bloco/view/delete/{id}', 'Admin\CompradorInsumoController@buscaGrupoInsumo');
+		$router->get('compradorInsumos/sem-insumo/view', ['as' => 'admin.compradorInsumos.seminsumoview', 'uses' => 'Admin\CompradorInsumoController@semInsumoView'])
+            ->middleware("needsPermission:compradorInsumos.semInsumoView");
     });
 	
 	# Carteira de insumos 
