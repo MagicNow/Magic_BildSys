@@ -15,7 +15,6 @@ class AlterQcAddTemplate extends Migration
     {
         Schema::table('quadro_de_concorrencias', function (Blueprint $table){
             $table->unsignedInteger('contrato_template_id')->nullable();
-            $table->text('campos_extras_contrato')->nullable();
 
             $table->foreign('contrato_template_id')
                 ->references('id')->on('contrato_templates')
@@ -34,7 +33,6 @@ class AlterQcAddTemplate extends Migration
         Schema::table('quadro_de_concorrencias', function (Blueprint $table){
             $table->dropForeign(['contrato_template_id']);
             $table->dropColumn('contrato_template_id');
-            $table->dropColumn('campos_extras_contrato');
         });
     }
 }

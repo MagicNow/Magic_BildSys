@@ -15,6 +15,7 @@ class QuadroDeConcorrencia extends Model
         'user_id',
         'qc_status_id',
         'obrigacoes_fornecedor',
+        'contrato_template_id',
         'obrigacoes_bild',
         'rodada_atual'
     ];
