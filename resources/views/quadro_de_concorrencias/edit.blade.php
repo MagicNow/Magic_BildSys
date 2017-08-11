@@ -1,5 +1,11 @@
 @extends('layouts.front')
-
+@section('styles')
+<style type="text/css">
+    .dataTables_length{
+        float: right;
+    }
+</style>
+@stop
 @section('content')
     <section class="content-header">
         <h1>

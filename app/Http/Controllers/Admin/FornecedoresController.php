@@ -94,16 +94,6 @@ class FornecedoresController extends AppBaseController
             'email' => 'unique:fornecedores|unique:users'
         ]);
 
-//        dd($usuario_existente);
-//        if (isset($fornecedor_existente) || isset($usuario_existente)) {
-//            if(!$request->ajax()) {
-//                Flash::error('O e-mail já esta sendo utilizado em outro cadastro');
-//                return redirect('/fornecedores/create')->withInput($request->except('password', 'password_confirmation'));
-//            }else{
-//                return response()->json(['error' => true, 'msg'=>'O e-mail já esta sendo utilizado em outro cadastro']);
-//            }
-//        }
-
         $input = $request->all();
 
         $fornecedor = $this->fornecedoresRepository->create($input);
