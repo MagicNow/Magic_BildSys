@@ -289,6 +289,8 @@ var Reajuste = (function() {
 
         self.descriptions = self.modal.querySelectorAll('.js-desc');
 
+        self.anexos = self.modal.querySelectorAll('.js-anexos');
+
         self.adicionais = _.filter(
           self.inputs,
           _.method('classList.contains', 'js-adicional')
@@ -304,7 +306,7 @@ var Reajuste = (function() {
 
   Reajuste.prototype.adjustTotal = function(event) {
     var input = event.currentTarget;
-    var valueContainer = $(input).parents('tr').find('td:nth-last-child(2)').get(0);
+    var valueContainer = $(input).parents('tr').find('td:nth-last-child(3)').get(0);
 
     valueContainer.innerText = floatToMoney(
       (input.value ? moneyToFloat(input.value) : 0) + parseFloat(valueContainer.dataset.itemQtd),
@@ -359,7 +361,8 @@ var Reajuste = (function() {
       observacao: this.observacao.value
     };
 
-    var inputs = Array.from(this.inputs).concat(Array.from(this.descriptions));
+    var inputs = Array.from(this.inputs).concat(Array.from(this.descriptions), Array.from(this.anexos));
+    var array_nomes_anexos = [];
 
     data = _.reduce(inputs, function(data, input) {
       if (
@@ -375,6 +378,10 @@ var Reajuste = (function() {
         data[input.name] = input.value;
       }
 
+      if(input.classList.contains('js-anexos')) {
+        array_nomes_anexos.push(input.name);
+      }
+
       return data;
     }, data);
 
@@ -385,6 +392,10 @@ var Reajuste = (function() {
     });
 
     formData.append('anexo', $('input[name="anexo"]')[0].files[0]);
+
+    $.map(array_nomes_anexos , function(value, index) {
+      formData.append(value, $('input[name="'+value+'"]')[0].files[0]);
+    });
 
     $.ajax({
       type: 'POST',
