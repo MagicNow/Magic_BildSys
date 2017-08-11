@@ -136,9 +136,6 @@
                                     <ul class="menu">
                                         <li id="new_notifications"></li>
                                     </ul>
-                                    <a href="#" class="btn btn-default btn-xs btn-flat btn-block">
-                                        Histórico de Avisos
-                                    </a>
                                 </li>
                             </ul>
                         </li>
