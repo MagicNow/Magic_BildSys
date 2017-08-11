@@ -6,7 +6,12 @@
 
 <div class="form-group col-sm-6">
     {!! Form::label('carteiraUsers', 'Usuários nesta carteira:') !!}
-    {!! Form::select('carteiraUsers[]', $relacionados , (!isset($carteira )? null : $carteiraUsers), ['class' => 'form-control', 'id'=>"carteiraUsers", 'multiple'=>"multiple"]) !!}
+    {!! Form::select('carteiraUsers[]', $relacionadoUsers , (!isset($carteira )? null : $carteiraUsers), ['class' => 'form-control', 'id'=>"carteiraUsers", 'multiple'=>"multiple"]) !!}
+</div>
+
+<div class="form-group col-sm-6">
+    {!! Form::label('carteiraTipoEqualizacaoTecnicas', 'Tipos Equalização Técnica nesta carteira:') !!}
+    {!! Form::select('carteiraTipoEqualizacaoTecnicas[]', $relacionadoTipoEqualizacaoTecnicas , (!isset($carteira )? null : $carteiraTipoEqualizacaoTecnicas), ['class' => 'form-control', 'id'=>"carteiraTipoEqualizacaoTecnicas", 'multiple'=>"multiple"]) !!}
 </div>
 
 <!-- Submit Field -->
@@ -42,6 +47,42 @@
                 theme:'bootstrap',
                 ajax: {
                     url: "/admin/users/busca",
+                    dataType: 'json',
+                    delay: 250,
+
+                    data: function (params) {
+                        return {
+                            q: params.term, // search term
+                            page: params.page
+                        };
+                    },
+                    processResults: function (result, params) {
+                        // parse the results into the format expected by Select2
+                        // since we are using custom formatting functions we do not need to
+                        // alter the remote JSON data, except to indicate that infinite
+                        // scrolling can be used
+                        params.page = params.page || 1;
+
+                        return {
+                            results: result.data,
+                            pagination: {
+                                more: (params.page * result.per_page) < result.total
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
+                minimumInputLength: 1,
+                templateResult: formatResult, // omitted for brevity, see the source of this page
+                templateSelection: formatResultSelection // omitted for brevity, see the source of this page
+            });
+			
+			$('#carteiraTipoEqualizacaoTecnicas').select2({
+                language: "pt-BR",
+                theme:'bootstrap',
+                ajax: {
+                    url: "/buscar/tipo-equalizacao-tecnicas",
                     dataType: 'json',
                     delay: 250,
 

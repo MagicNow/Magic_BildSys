@@ -138,6 +138,18 @@
                             </div>
                         @endif
                     </div>
+					
+					<div class="col-md-3">
+                        <h4>Carteiras</h4>
+                        @if(count($carteiras))
+                            <div class="js-datatable-filter-form">
+                                {!! Form::select('carteiras[]',$carteiras, null, [
+                                'class'=>'form-control select2',
+                                'multiple'=>'multiple',
+                                ]) !!}
+                            </div>
+                        @endif
+                    </div>
 
                     <div class="col-md-1">
                         <h4>O.C.s</h4>

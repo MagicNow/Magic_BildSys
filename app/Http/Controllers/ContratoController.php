@@ -287,6 +287,7 @@ class ContratoController extends AppBaseController
         $id,
         ContratoItemRepository $contratoItemRepository
     ) {
+
         $item = $contratoItemRepository->find($id);
 
         $itens = $item->apropriacoes->filter(function($apropriacao) {
@@ -304,7 +305,7 @@ class ContratoController extends AppBaseController
     ) {
         $item = $contratoItemRepository->find($id);
 
-        $contratoItemReapropriacaoRepository->reapropriar($item, $request->all());
+        $contratoItemReapropriacaoRepository->reaprop0riar($item, $request->all());
 
         return response()->json([
             'success' => true
