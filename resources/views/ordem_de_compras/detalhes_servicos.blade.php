@@ -163,9 +163,18 @@
                 $('#saldo_disponivel').text(floatToMoney(saldo_disponivel, ''));
 
                 $('#dataTableBuilder').on('preXhr.dt', function ( e, settings, data ) {
+                    startLoading();
                     $('.js-datatable-filter-form :input').each(function () {
                         data[$(this).prop('name')] = itens_selecionados;
                     });
+
+                    setTimeout(function () {
+                        $.each(itens_selecionados, function( index, value ) {
+                            $('#'+value).attr('checked', true);
+                        });
+
+                        stopLoading();
+                    }, 500);
                 });
 
             } else {
