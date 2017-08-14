@@ -4,6 +4,7 @@ namespace App\Mail;
 
 use App\Models\Fornecedor;
 use App\Models\QuadroDeConcorrencia;
+use App\Models\TemplateEmail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -34,6 +35,25 @@ class IniciaConcorrenciaFornecedorNaoUsuario extends Mailable
      */
     public function build()
     {
-        return $this->subject('Solicitação de orçamento - BILD '.date('d/m/Y'))->view('emails.qc.concorrencia-fornecedor-sem-acesso');
+
+        $model = new TemplateEmail();
+        $r = $model->find(2);
+
+        $table = '';
+
+
+        $r->template = str_replace("[FORNECEDOR_NOME]", $this->fornecedor->nome, $r->template);
+
+        foreach ($this->quadroDeConcorrencia->itens as $item) {
+
+            $table .= "<p>".$item->insumo->nome." | Qtd.".$item->qtd.". ".$item->insumo->unidade_sigla."</p>";
+        }
+
+        $r->template = str_replace("[TABELA_PRODUTOS]", $table, $r->template);
+
+
+        return $this->subject('Solicitação de orçamento - BILD '.date('d/m/Y'))->view('emails.qc.concorrencia-fornecedor-sem-acesso')->with([
+            'text' => $r->template
+        ]);
     }
 }

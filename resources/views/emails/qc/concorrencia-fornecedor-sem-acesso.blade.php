@@ -50,28 +50,7 @@
             <table style="{{ $style['email-body_inner'] }}" align="center" width="800" cellpadding="0" cellspacing="0">
                 <tr>
                     <td style="{{ $fontFamily }} {{ $style['email-body_cell'] }}">
-                        <!-- Greeting -->
-                        <h1 style="{{ $style['header-1'] }}">
-                            Olá {{ $fornecedor->nome }}
-                        </h1>
-
-                        <!-- Intro -->
-
-                        <p style="{{ $style['paragraph'] }}">
-                            Você foi selecionado para um Quadro de concorrência, por favor indique os valores para os produtos/serviços abaixo:
-                        </p>
-
-                        @foreach ($quadroDeConcorrencia->itens as $item)
-                            <p style="{{ $style['paragraph'] }}">
-                                {{ $item->insumo->nome }} | Qtd. {{ $item->qtd . $item->insumo->unidade_sigla }} |
-                                <strong>R$ </strong>
-                            </p>
-                        @endforeach
-
-                    <!-- Salutation -->
-                        <p style="{{ $style['paragraph'] }}">
-                            Aguardamos o mais breve possível o retorno deste e-mail
-                        </p>
+                        {!!html_entity_decode($text)!!}
                     </td>
                 </tr>
             </table>
