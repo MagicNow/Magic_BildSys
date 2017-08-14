@@ -132,11 +132,11 @@
             $('.detalhes_servicos_itens').each(function (index, value) {
                 if($(value).prop('checked')) {
                     tem_checked = true;
-                    valor_previsto += parseInt($(value).attr('valor_previsto'));
-                    valor_comprometido_a_gastar += parseInt($(value).attr('valor_comprometido_a_gastar'));
-                    saldo_orcamento += parseInt($(value).attr('saldo_orcamento'));
-                    valor_oc += parseInt($(value).attr('valor_oc'));
-                    saldo_disponivel += parseInt($(value).attr('saldo_disponivel'));
+                    valor_previsto += parseFloat($(value).attr('valor_previsto'));
+                    valor_comprometido_a_gastar += parseFloat($(value).attr('valor_comprometido_a_gastar'));
+                    saldo_orcamento += parseFloat($(value).attr('saldo_orcamento'));
+                    valor_oc += parseFloat($(value).attr('valor_oc'));
+                    saldo_disponivel += parseFloat($(value).attr('saldo_disponivel'));
 
                     itens_selecionados.push($(value).attr('id'));
                 } else {
