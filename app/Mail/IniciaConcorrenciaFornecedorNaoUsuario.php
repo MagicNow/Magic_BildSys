@@ -41,7 +41,6 @@ class IniciaConcorrenciaFornecedorNaoUsuario extends Mailable
 
         $table = '';
 
-
         $r->template = str_replace("[FORNECEDOR_NOME]", $this->fornecedor->nome, $r->template);
 
         foreach ($this->quadroDeConcorrencia->itens as $item) {
