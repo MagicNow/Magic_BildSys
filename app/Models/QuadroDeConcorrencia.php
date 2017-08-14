@@ -281,4 +281,12 @@ class QuadroDeConcorrencia extends Model
         }
         return null;
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function contratoTemplate()
+    {
+        return $this->belongsTo(ContratoTemplate::class);
+    }
 }

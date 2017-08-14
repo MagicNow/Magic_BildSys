@@ -808,6 +808,22 @@ class QuadroDeConcorrenciaController extends AppBaseController
                     }
                 }
 
+                // Template
+                $campos_extras = [];
+                if (isset($request['CAMPO_EXTRA'])) {
+                    foreach ($request['CAMPO_EXTRA'] as $campo => $valor) {
+                        if(strlen($valor)){
+                            $campos_extras[$campo] = $valor;
+                        }
+                    }
+                }
+                if(count($campos_extras)){
+                    $campos_extras = json_encode($campos_extras);
+                    $qcFornecedor->update([
+                        'campos_extras_contrato' => $campos_extras,
+                    ]);
+                }
+
                 foreach ($request->itens as $qcItemId => $item) {
                     $item['qc_fornecedor_id'] = $qcFornecedor->id;
                     $item['user_id'] = $request->user()->id;
