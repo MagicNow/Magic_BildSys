@@ -67,7 +67,9 @@
                     <i class="fa fa-check" aria-hidden="true"></i>
                 </button>
             @else
-                <span type="button" title="Reprovado, clique em visualizar para conferir o motivo, ou em editar."  data-toggle="tooltip" data-placement="top"
+                <span type="button" title="Reprovado, clique em visualizar para conferir o motivo, ou em editar."
+                      data-toggle="tooltip" data-placement="top"
+                      onclick="document.location='{{ route('medicoes.show', $id) }}';"
                         class="btn btn-danger btn-xs btn-flat">
                     <i class="fa fa-times" aria-hidden="true"></i>
                 </span>

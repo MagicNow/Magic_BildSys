@@ -440,7 +440,7 @@ class WorkflowAprovacaoRepository
 //            $total_ja_votado_geral = self::verificaTotalJaAprovadoReprovado($tipo, $ids);
 
             $total_ja_votado = self::verificaTotalJaAprovadoReprovado($tipo, $ids, null, $obj->id);
-            if(count($ids) >1){
+            if($obj->idPai()) {
                 // Verifica se o usuário atual já aprovou tudo que precisava aprovar
                 $aprovacoesDesteUser = WorkflowAprovacao::join(DB::raw($obj->table . ' as T'),'T.id','aprovavel_id')
                     ->where('workflow_aprovacoes.user_id', $user->id)

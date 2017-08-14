@@ -20,7 +20,7 @@
                     <table class="table table-striped table-condensed">
                         <thead>
                             <tr>
-                                <th colspan="2"></th>
+                                <th colspan="1"></th>
                                 <th colspan="2" class="text-center">Antes</th>
                                 <th colspan="2" class="text-center">Depois</th>
                                 <th colspan="4"></th>
@@ -28,7 +28,6 @@
                             <tr>
                                 {{--<th>id</th>--}}
                                 <th>Movimentação</th>
-
                                 <th>Qtd.</th>
                                 <th>Valor Unitário</th>
                                 <th>Qtd.</th>

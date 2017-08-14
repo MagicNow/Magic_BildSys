@@ -1,27 +1,39 @@
 <?php
-
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Schema;
+use App\Models\ContratoStatus;
 
-class MedicaoBoletimStatusTableSeeder extends Seeder
+class ContratoStatusTableSeeder extends Seeder
 {
     public function run()
     {
         Schema::disableForeignKeyConstraints();
-        DB::table('medicao_boletim_status')->truncate();
+        DB::table('contrato_status')->truncate();
 
-        DB::table('medicao_boletim_status')->insert([[
-            'id' => 1,
-            'nome' => 'Pendente',
+        DB::table('contrato_status')->insert([[
+            'id' => ContratoStatus::EM_APROVACAO,
+            'nome' => 'Em Aprovação',
             'cor' => '#DEA447'
         ], [
-            'id' => 2,
-            'nome' => 'Aguardando Nota',
+            'id' => ContratoStatus::APROVADO,
+            'nome' => 'Aprovado',
+            'cor' => '#2BBD30'
+        ], [
+            'id' => ContratoStatus::REPROVADO,
+            'nome' => 'Reprovado',
+            'cor' => '#CC2910'
+        ], [
+            'id' => ContratoStatus::AGUARDANDO,
+            'nome' => 'Aguardando Liberação',
             'cor' => '#CCCCCC'
         ], [
-            'id' => 3,
-            'nome' => 'Nota Recebida',
+            'id' => ContratoStatus::ATIVO,
+            'nome' => 'Ativo',
             'cor' => '#008d4c'
+        ], [
+            'id' => ContratoStatus::CANCELADO,
+            'nome' => 'Cancelado',
+            'cor' => '#dd4b39'
         ]
         ]);
 
