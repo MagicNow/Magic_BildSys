@@ -33,7 +33,12 @@
                 </div>
             </div>
         </section>
-        {{--@include('layouts.filters')--}}
+
+        <div class="form-group col-sm-12">
+            {!! Form::label('obras_id', 'Obra:') !!}
+            {!! Form::select('obras_id', $obras, 'default', ['class' => 'form-control select2', 'onchange' => 'filterObra(this.value);']) !!}
+        </div>
+
         <div class="box-body" id="app">
             <div class="row">
                 <div class="col-xs-12">
@@ -88,6 +93,10 @@
 @endsection
 @section('scripts')
     <script>
+        function filterObra(id) {
+            window.location = '/compras/dashboard?obra_id='+id;
+        }
+
         const app = new Vue({
             el: '#app',
             data:{

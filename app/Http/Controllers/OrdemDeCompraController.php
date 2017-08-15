@@ -1133,7 +1133,7 @@ class OrdemDeCompraController extends AppBaseController
         return response()->json(['sucesso' => true]);
     }
 
-    public function dashboard()
+    public function dashboard(Request $request)
     {
         $reprovados = OrdemDeCompra::select([
             'ordem_de_compras.id',
@@ -1172,10 +1172,14 @@ class OrdemDeCompraController extends AppBaseController
             ->join('obras', 'obras.id', '=', 'ordem_de_compras.obra_id')
             ->join('oc_status', 'oc_status.id', '=', 'ordem_de_compras.oc_status_id')
             ->join('users', 'users.id', '=', 'ordem_de_compras.user_id')
-            ->whereRaw('EXISTS (SELECT 1 FROM obra_users WHERE obra_users.obra_id = obras.id AND user_id=?)', auth()->id())
             ->where('ordem_de_compras.oc_status_id', '!=', 6)
-            ->orderBy('ordem_de_compras.id','DESC')
-            ->get();
+            ->orderBy('ordem_de_compras.id','DESC');
+
+        if($request->obra_id) {
+            $ordemDeCompras = $ordemDeCompras->where('obra_id', $request->obra_id);
+        }
+
+        $ordemDeCompras = $ordemDeCompras->get();
 
         $dentro_orcamento = 0;
         $acima_orcamento = 0;
@@ -1190,8 +1194,10 @@ class OrdemDeCompraController extends AppBaseController
                 }
             }
         }
+
+        $obras = Obra::pluck('nome', 'id')->prepend('', '');
         
-        return view('ordem_de_compras.dashboard', compact('reprovados', 'aprovados', 'emaprovacao', 'abaixo_orcamento', 'dentro_orcamento', 'acima_orcamento'));
+        return view('ordem_de_compras.dashboard', compact('reprovados', 'aprovados', 'emaprovacao', 'abaixo_orcamento', 'dentro_orcamento', 'acima_orcamento', 'obras'));
     }
 
     // Verifica se tem OC aberta antes de reabrir
