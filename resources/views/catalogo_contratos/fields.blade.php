@@ -1,17 +1,25 @@
 <!-- Fornecedores Field -->
-<div class="row">
+<div>
     <div class="form-group col-sm-6">
         {!! Form::label('fornecedor_cod', 'Fornecedor:') !!}
         @if(isset($catalogoContrato))
             <div class="form-control">
                 {{ $catalogoContrato->fornecedor->nome }}
+                @if($catalogoContrato->fornecedor->faltaDados())
+                    <a href="{{ route('admin.fornecedores.show', $catalogoContrato->fornecedor_id) }}"
+                       title="Para poder gerar contratos automaticamente, todos os dados devem estar preenchidos"
+                       data-toggle="tooltip" data-placement="top" class="btn btn-danger btn-xs pull-right">
+                        <i class="fa fa-exclamation-triangle"></i>
+                        Preencha todos os dados
+                    </a>
+                @endif
             </div>
         @else
             {!! Form::select('fornecedor_cod', ['' => 'Escolha...']+$fornecedores,  null, ['class' => 'form-control','id'=>'fornecedor_cod','required'=>'required']) !!}
         @endif
     </div>
 
-    <div class="form-group col-sm-6">
+    <div class="form-group col-sm-6" style="min-height: 66px;">
         @if(isset($catalogoContrato))
             @if($catalogoContrato->catalogo_contrato_status_id == 2 ||  $catalogoContrato->catalogo_contrato_status_id == 3 && $catalogoContrato->obras()->whereIn('catalogo_contrato_status_id',[1,2])->count()  )
                 <div class="col-sm-12">
@@ -33,16 +41,20 @@
             @else
                 @if(strlen($catalogoContrato->minuta_assinada))
                     <a href="{{ Storage::url($catalogoContrato->minuta_assinada) }}" target="_blank"
-                       class="btn btn-info btn-xs btn-flat btn-block">
+                       class="btn btn-info btn-xs btn-flat btn-block" style="margin-top: 25px">
                         <i class="fa fa-download"></i> Baixar Minuta já assinada
                     </a>
                 @endif
             @endif
+        @else
+            <div class="col-sm-12" style="height: 56px;">
+                &nbsp;
+            </div>
         @endif
     </div>
 </div>
 
-<div class="row">
+<div>
     <div class="col-md-6">
         <h4>Campos extras Minuta de Acordo</h4>
         <?php
@@ -174,9 +186,9 @@ $count_insumos = 0;
 ?>
 <div>
 
-    <div class="modal-header" style="border-bottom: 2px solid #ccc !important;margin-bottom: 20px;">
+    <div>
         <div class="col-md-12">
-            <h2>Insumos</h2>
+            <h2 style="border-bottom: 2px solid #ccc !important;margin-bottom: 20px;">Insumos</h2>
         </div>
     </div>
 

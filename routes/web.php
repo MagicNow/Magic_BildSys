@@ -864,9 +864,9 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             ->middleware("needsPermission:catalogo_acordos.create");
         $router->put('catalogo-acordos/{contratos}', ['as' => 'catalogo_contratos.update', 'uses' => 'CatalogoContratoController@update']);
         $router->patch('catalogo-acordos/{contratos}', ['as' => 'catalogo_contratos.update', 'uses' => 'CatalogoContratoController@update']);
-        $router->delete('catalogo-acordos/{contratos}', ['as' => 'catalogo_contratos.destroy', 'uses' => 'CatalogoContratoController@destroy']);
-        $router->get('catalogo-acordos/{contratos}', ['as' => 'catalogo_contratos.show', 'uses' => 'CatalogoContratoController@show'])
-            ->middleware("needsPermission:catalogo_acordos.view");
+        $router->delete('catalogo-acordos/{contratos}', ['as' => 'catalogo_contratos.destroy', 'uses' => 'CatalogoContratoController@destroy'])
+            ->middleware("needsPermission:catalogo_acordos.delete");
+        $router->get('catalogo-acordos/{contratos}', ['as' => 'catalogo_contratos.show', 'uses' => 'CatalogoContratoController@show']);
         $router->get('catalogo-acordos/{contratos}/edit', ['as' => 'catalogo_contratos.edit', 'uses' => 'CatalogoContratoController@edit'])
             ->middleware("needsPermission:catalogo_acordos.edit");
         $router->get('catalogo-acordos/buscar/busca_fornecedores', ['as' => 'catalogo_contratos.busca_fornecedores', 'uses' => 'CatalogoContratoController@buscaFornecedor']);

@@ -435,26 +435,34 @@ class CatalogoContratoController extends AppBaseController
 
                 $catalogoContrato->minuta_assinada = $destinationPath;
                 $catalogoContrato->save();
-                $acao = 'Arquivo enviado!';
 
-
-
-                    $catalogoContrato->catalogo_contrato_status_id = 3;
+                $catalogoContrato->catalogo_contrato_status_id = 3;
+                $catalogoContrato->save();
+                CatalogoContratoStatusLog::create([
+                    'catalogo_contrato_id' => $catalogoContrato->id,
+                    'catalogo_contrato_status_id' => $catalogoContrato->catalogo_contrato_status_id,
+                    'user_id' => auth()->id()
+                ]);
+                foreach ($catalogoContrato->obras()->whereIn('catalogo_contrato_status_id',[1,2])->get() as $catalogoContratoObra){
+                    $catalogoContratoObra->catalogo_contrato_status_id = $catalogoContrato->catalogo_contrato_status_id;
+                    $catalogoContratoObra->save();
+                    $catalogoContratoObra = CatalogoContratoObraLog::create([
+                        'catalogo_contrato_obra_id' => $catalogoContratoObra->id,
+                        'catalogo_contrato_status_id' => $catalogoContratoObra->catalogo_contrato_status_id
+                    ]);
+                }
+                if($catalogoContrato->fornecedor->faltaDados()){
+                    $catalogoContrato->catalogo_contrato_status_id = 4;
                     $catalogoContrato->save();
-                    $catalogoContratoStatus = CatalogoContratoStatusLog::create([
+                    CatalogoContratoStatusLog::create([
                         'catalogo_contrato_id' => $catalogoContrato->id,
-                        'catalogo_contrato_status_id' => 3,
+                        'catalogo_contrato_status_id' => $catalogoContrato->catalogo_contrato_status_id,
                         'user_id' => auth()->id()
                     ]);
-                    foreach ($catalogoContrato->obras()->whereIn('catalogo_contrato_status_id',[1,2])->get() as $catalogoContratoObra){
-                        $catalogoContratoObra->catalogo_contrato_status_id = 3;
-                        $catalogoContratoObra->save();
-                        $catalogoContratoObra = CatalogoContratoObraLog::create([
-                            'catalogo_contrato_obra_id' => $catalogoContratoObra->id,
-                            'catalogo_contrato_status_id' => $catalogoContratoObra->catalogo_contrato_status_id
-                        ]);
-                    }
+                    $acao = 'Arquivo enviado, porém não foi possível ativar, visto que o fornecedor possui dados incompletos';
+                }else{
                     $acao = 'Arquivo enviado e Acordo ativado!';
+                }
 
 
                 Flash::success($acao);
@@ -556,6 +564,10 @@ class CatalogoContratoController extends AppBaseController
             }
 
             if($catalogo_contrato->catalogo_contrato_status_id == 4) {
+                if($catalogo_contrato->fornecedor->faltaDados()){
+                    // Falta dados do fornecedor
+                    return response()->json(['erro'=>'Fornecedor com dados importantes faltando, vá até o cadastro e complete.'], 400);
+                }
                 $novo_status = 3;
             }
 
@@ -563,6 +575,11 @@ class CatalogoContratoController extends AppBaseController
                 $catalogo_contrato->catalogo_contrato_status_id = $novo_status;
                 $catalogo_contrato->save();
             }
+            CatalogoContratoStatusLog::create([
+                'catalogo_contrato_id' => $catalogo_contrato->id,
+                'catalogo_contrato_status_id' => $catalogo_contrato->catalogo_contrato_status_id,
+                'user_id' => auth()->id()
+            ]);
         }
         
         return response()->json(true);

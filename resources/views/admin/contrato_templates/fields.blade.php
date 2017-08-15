@@ -455,6 +455,37 @@
                                 </div>
                                 <!-- /.box-body -->
                             </div>
+                            <div class="box box-solid">
+                                <div class="box-header with-border">
+                                    <i class="fa fa-usd"></i>
+                                    <h3 class="box-title">Proposta do Q.C.</h3>
+                                </div>
+                                <!-- /.box-header -->
+                                <div class="box-body">
+                                    <ul class="list-group">
+                                        <li class="list-group-item">
+                                            <span class="label label-primary selecionavel">
+                                               [COMPOSICAO_DO_PRECO]
+                                            </span> &nbsp;
+                                            Composição do preço (percentual mão-de-obra, Material Contradada, Material Fat. Direto)
+                                        </li>
+                                        <li class="list-group-item">
+                                            <span class="label label-primary selecionavel">
+                                                [FRETE_TIPO]
+                                            </span> &nbsp;
+                                            CIF ou FOB
+                                        </li>
+                                        <li class="list-group-item">
+                                            <span class="label label-primary selecionavel">
+                                                [FRETE_VALOR]
+                                            </span> &nbsp;
+                                            Valor do Frete
+                                        </li>
+
+                                    </ul>
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
                         </div>
                     </div>
 
