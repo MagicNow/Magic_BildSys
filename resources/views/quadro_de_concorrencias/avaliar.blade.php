@@ -286,6 +286,17 @@
                                     !!}
                                     </div>
                                 </div>
+                                <div class="col-md-12">
+                                    <div class="col-md-6">
+                                        Menor preço
+                                        <canvas id="UgCanvas" width="40" height="12" style="border:1px solid blue; background-color: blue;"></canvas>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        Valor do OI
+                                        <canvas id="UgCanvas" width="40" height="12" style="border:1px solid red; background-color: red;"></canvas>
+                                    </div>
+                                </div>
                                 <canvas id="chart-insumo-fornecedor"
                                         data-data='{{ json_encode($ofertas) }}'>
                                 </canvas>
@@ -298,7 +309,7 @@
     </div>
 
     <div id="equalizacao-tecnica" class="modal fade" role="dialog">
-        <div class="modal-dialog">
+        <div clasqus="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>

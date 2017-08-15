@@ -1083,15 +1083,21 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             ->middleware('needsPermission:configuracaoEstaticas.edit');
     });
 
-    $router->get('notafiscals', ['as' => 'notafiscals.index', 'uses' => 'NotafiscalController@index']);
-    $router->post('notafiscals', ['as' => 'notafiscals.store', 'uses' => 'NotafiscalController@store']);
-    $router->get('notafiscals/create', ['as' => 'notafiscals.create', 'uses' => 'NotafiscalController@create']);
-    $router->put('notafiscals/{notafiscals}', ['as' => 'notafiscals.update', 'uses' => 'NotafiscalController@update']);
-    $router->patch('notafiscals/{notafiscals}', ['as' => 'notafiscals.update', 'uses' => 'NotafiscalController@update']);
-    $router->delete('notafiscals/{notafiscals}', ['as' => 'notafiscals.destroy', 'uses' => 'NotafiscalController@destroy']);
-    $router->get('notafiscals/{notafiscals}', ['as' => 'notafiscals.show', 'uses' => 'NotafiscalController@show']);
-    $router->get('notafiscals/{notafiscals}/edit', ['as' => 'notafiscals.edit', 'uses' => 'NotafiscalController@edit']);
-    $router->get('ConsultaNfe', 'NotafiscalController@consultaNfe');
+    $router->get('notasfiscais', ['as' => 'notafiscals.index', 'uses' => 'NotafiscalController@index']);
+    $router->post('notasfiscais', ['as' => 'notafiscals.store', 'uses' => 'NotafiscalController@store']);
+    $router->get('notasfiscais/create', ['as' => 'notafiscals.create', 'uses' => 'NotafiscalController@create']);
+    $router->put('notasfiscais/{notafiscal}', ['as' => 'notafiscals.update', 'uses' => 'NotafiscalController@update']);
+    $router->patch('notasfiscais/{notafiscal}', ['as' => 'notafiscals.update', 'uses' => 'NotafiscalController@update']);
+    $router->delete('notasfiscais/{notafiscal}', ['as' => 'notafiscals.destroy', 'uses' => 'NotafiscalController@destroy']);
+    $router->get('notasfiscais/{notafiscal}', ['as' => 'notafiscals.show', 'uses' => 'NotafiscalController@show']);
+    $router->get('notasfiscais/{notafiscal}/edit', ['as' => 'notafiscals.edit', 'uses' => 'NotafiscalController@edit']);
+
+    $router->get('ConsultaNfe', 'NotafiscalController@pescadorNfe');
+    $router->get('buscaNfe', 'NotafiscalController@buscaNfe');
+    $router->get('buscaCTe', 'NotafiscalController@buscaCTe');
+    $router->get('danfe/{id}', 'NotafiscalController@visualizaDanfe');
+    $router->get('dacte/{id}', 'NotafiscalController@visualizaDacte');
+    $router->get('dacte/v3/{id}', 'NotafiscalController@visualizaDacteV3');
 
     # Padrões de empreendimento Novo
     $router->group(['middleware' => 'needsPermission:padraoEmpreendimentos.list'], function () use ($router) {

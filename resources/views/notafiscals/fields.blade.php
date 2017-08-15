@@ -1,28 +1,23 @@
-<div class="col-sm-6">
-    <div class="pull-left">
-        <div>
-            {!! Form::label('arquivo_nfe', 'Arquivo NFe:') !!}
-            <input type="file" id="arquivo_nfe" accept="application/pdf" onchange="readURL(this);"/>
-            {{--{!! Form::file('arquivo_nfe',null, ['class' => 'form-control', 'id'=>'arquivo_nfe','onchange'=>'console.log(blabla)']) !!}--}}
-        </div>
-        <div class="col-md-12" style="margin-top: 50px;">
+<div class="col-sm-6" style="height: 700px !important;">
+        <div class="col-md-12" style="margin-top: 10px;height: 100%;">
             {{--<img src="" class="img-rounded" id="arquivoNfe">--}}
             <iframe type="application/pdf"
-                    src=""
+                    src="/danfe/{{ $notafiscal->id }}"
                     id="arquivoNfe"
                     frameborder="0"
                     marginheight="0"
-                    marginwidth="0" >
+                    marginwidth="0"
+            width="100%"
+            height="100%">
             </iframe>
         </div>
-    </div>
 </div>
 <div class="col-md-6">
     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h4 class="panel-title">
-                        NOTA FISCAL
+                  NOTA FISCAL
                 </h4>
             </div>
             <div>
@@ -30,7 +25,7 @@
                     <!-- Contrato Id Field -->
                     <div class="form-group col-sm-12">
                         {!! Form::label('contrato_id', 'Contrato:') !!}
-                        {!! Form::select('contrato_id',[''=>'Escolha...']+$contrato,null, ['class' => 'form-control select2']) !!}
+                        {!! Form::select('contrato_id',[''=>'Escolha...'] + (isset($contrato) ? $contrato : []), null, ['class' => 'form-control select2']) !!}
                     </div>
 
                     <!-- Codigo Field -->
@@ -78,13 +73,13 @@
                     <!-- Data Emissao Field -->
                     <div class="form-group col-sm-6">
                         {!! Form::label('data_emissao', 'Data Emissão:') !!}
-                        {!! Form::date('data_emissao', null, ['class' => 'form-control']) !!}
+                        {!! Form::date('data_emissao', $notafiscal->data_emissao, ['class' => 'form-control']) !!}
                     </div>
 
                     <!-- Data Saida Field -->
                     <div class="form-group col-sm-6">
                         {!! Form::label('data_saida', 'Data Saída:') !!}
-                        {!! Form::date('data_saida', null, ['class' => 'form-control']) !!}
+                        {!! Form::date('data_saida', $notafiscal->data_saida, ['class' => 'form-control']) !!}
                     </div>
                 </div>
             </div>
@@ -92,30 +87,36 @@
         <div class="text-right" style="margin-top: 10px;">
             <p>
                 <button type="button" class="btn btn-primary btn-ms" onclick="addItens()">
-                    INSERIR ITENS NA NOTA FISCAL
+                    ITENS DA NOTA FISCAL
                 </button>
             </p>
         </div>
         <div id="itens">
-            <?php $qtdItens = 0; ?>
+            <?php
+            $qtdItens = 0;
+
+            ?>
             @if(isset($notafiscal))
-                @foreach($notafiscal->notaFiscalItens as $item)
-                    <?php $qtdItens = $item->id; ?>
+                @foreach($notafiscal->items as $item)
+                    <?php
+                        $qtdItens = $item->id;
+                        ?>
                     <div id="item_{{$qtdItens}}">
                         <!-- idioma Id Field -->
                         <div class="form-group col-sm-11">
-                            {!! Form::label('notaFiscalItens['.$qtdItens.'][nome]', 'Nome:') !!}
-                            {!! Form::text('notaFiscalItens['.$qtdItens.'][nome]', $item->nome, ['class' => 'form-control']) !!}
+                            {!! Form::label('notaFiscalItens['.$qtdItens.'][nome_produto]', 'Nome:') !!}
+                            {!! Form::text('notaFiscalItens['.$qtdItens.'][nome_produto]', $item->nome_produto, ['class' => 'form-control']) !!}
                         </div>
 
                         {!! Form::hidden('notaFiscalItens['.$qtdItens.'][id]',$item->id) !!}
                         {!! Form::hidden('notaFiscalItens['.$qtdItens.'][tipo_equalizacao_tecnica_id]',$item->tipo_equalizacao_tecnica_id) !!}
-
+                        <!--
                         <div class="form-group col-sm-1">
                             <button type="button" onclick="remExtra({{$qtdItens}},'item_')" class="btn btn-danger" style="margin-top: 24px" title="Remover">
                                 <i class="fa fa-times"></i>
                             </button>
                         </div>
+                        //-->
                     </div>
                 @endforeach
             @endif
