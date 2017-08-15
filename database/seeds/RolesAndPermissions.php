@@ -266,7 +266,7 @@ class RolesAndPermissions extends Seeder
         $roles[1]->attachPermission(Defender::findPermission('lembretes.edit'));
         $roles[1]->attachPermission(Defender::findPermission('compradorInsumos.list'));
         $roles[1]->attachPermission(Defender::findPermission('compradorInsumos.create'));
-        $roles[1]->attachPermission(Defender::findPermission('compradorInsumos.semCarteiraView'));
+        $roles[1]->attachPermission(Defender::findPermission('compradorInsumos.semInsumoView'));
 		$roles[1]->attachPermission(Defender::findPermission('obras.list'));
 		$roles[1]->attachPermission(Defender::findPermission('carteiras.list'));
 		$roles[1]->attachPermission(Defender::findPermission('carteiraInsumos.list'));
