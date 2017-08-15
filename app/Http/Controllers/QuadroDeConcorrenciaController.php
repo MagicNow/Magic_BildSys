@@ -374,6 +374,15 @@ class QuadroDeConcorrenciaController extends AppBaseController
             $rodadaSelecionada
         );
 
+        $equalizacoes = $quadro->tipoEqualizacaoTecnicas()->with('itens','itens.checks')->get()
+            ->pluck('itens')
+            ->merge($quadro->equalizacaoTecnicaExtras()->with('checks')->get())
+            ->flatten();
+
+        $campos_extras = [];
+        if($quadro->contratoTemplate && strlen(trim($quadro->contratoTemplate->campos_extras)) ){
+                $campos_extras = json_decode($quadro->contratoTemplate->campos_extras);
+        }
 
         $ofertas = $quadro->itens->reduce(function ($ofertas, $item) use ($qcFornecedores) {
             $ofertas[] = $qcFornecedores
@@ -402,7 +411,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
             ->setQcFornecedores($qcFornecedores)
             ->render(
                 'quadro_de_concorrencias.avaliar',
-                compact('qcFornecedores', 'quadro', 'ofertas', 'rodadaSelecionada')
+                compact('qcFornecedores', 'quadro', 'ofertas', 'rodadaSelecionada', 'equalizacoes', 'campos_extras')
             );
     }
 

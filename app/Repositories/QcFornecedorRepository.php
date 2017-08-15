@@ -109,6 +109,7 @@ class QcFornecedorRepository extends BaseRepository
                         ->whereNotNull('desistencia_texto');
                 });
             })
+            ->with('fornecedor','qcFornecedorEqualizacaoChecks')
             ->get();
     }
 }
