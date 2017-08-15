@@ -121,6 +121,7 @@ class RolesAndPermissions extends Seeder
             'compradorInsumos.create'   => 'Criação de comprador/insumos',
             'compradorInsumos.delete'   => 'Remoção de comprador/insumos',
             'compradorInsumos.deleteBlocoView'   => 'Remoção em bloco de comprador/insumos',
+			'compradorInsumos.semInsumoView'   => 'Insumos que não tem comprador associado',
 			
 			'carteiraInsumos.list'   => 'Listagem de carteira/insumos',
             'carteiraInsumos.create'   => 'Criação de carteira/insumos',			
@@ -265,10 +266,12 @@ class RolesAndPermissions extends Seeder
         $roles[1]->attachPermission(Defender::findPermission('lembretes.edit'));
         $roles[1]->attachPermission(Defender::findPermission('compradorInsumos.list'));
         $roles[1]->attachPermission(Defender::findPermission('compradorInsumos.create'));
-        $roles[1]->attachPermission(Defender::findPermission('obras.list'));
+        $roles[1]->attachPermission(Defender::findPermission('compradorInsumos.semCarteiraView'));
+		$roles[1]->attachPermission(Defender::findPermission('obras.list'));
 		$roles[1]->attachPermission(Defender::findPermission('carteiras.list'));
 		$roles[1]->attachPermission(Defender::findPermission('carteiraInsumos.list'));
         $roles[1]->attachPermission(Defender::findPermission('carteiraInsumos.create'));
+		$roles[1]->attachPermission(Defender::findPermission('carteiraInsumos.semCarteiraView'));
         $roles[1]->attachPermission(Defender::findPermission('fornecedores.list'));
         $roles[1]->attachPermission(Defender::findPermission('configuracaoEstaticas.list'));
         $roles[1]->attachPermission(Defender::findPermission('configuracaoEstaticas.edit'));

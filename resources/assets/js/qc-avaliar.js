@@ -105,7 +105,7 @@ $(function() {
       "horizontalLine": [{
         "y": _.max(_.map(ofertasDoInsumo, _.property('valor_oi'))) ? _.max(_.map(ofertasDoInsumo, _.property('valor_oi'))) : [],
         "style": "red",
-        "text": "Valor do OI"
+        "text": _.max(_.map(ofertasDoInsumo, _.property('valor_oi'))) ? _.max(_.map(ofertasDoInsumo, _.property('valor_oi'))) : 0
       },
       {
         "y": _.min(_.map(ofertasDoInsumo, function (obj) {
@@ -117,7 +117,14 @@ $(function() {
                         })
                   ),
         "style": "blue",
-        "text": "Menor preço"
+        "text": _.min(_.map(ofertasDoInsumo, function (obj) {
+              if(obj['valor_total'] > 0) {
+                return obj['valor_total'];
+              } else {
+                return _.max(_.map(ofertasDoInsumo, _.property('valor_total'))) + 100;
+              }
+            })
+        )
       }]
     }
   });
@@ -152,7 +159,7 @@ $(function() {
 
           if (yValue) {
             ctx.beginPath();
-            ctx.moveTo(0, yValue);
+            ctx.moveTo(yScale.right, yValue);
             ctx.lineTo(canvas.width, yValue);
             ctx.strokeStyle = style;
             ctx.stroke();

@@ -117,48 +117,16 @@
                                             </h4>
                                         </div>
                                         <div class="modal-body">
-                                            <table class="table table-condensed table-all-center table-bordered table-no-margin">
-                                                <thead>
-                                                <tr>
-                                                    <th colspan="1"></th>
-                                                    <th colspan="2" class="text-center">Antes</th>
-                                                    <th colspan="2" class="text-center">Depois</th>
-                                                    <th colspan="3"></th>
-                                                </tr>
-                                                <tr>
-                                                    <th>Código Estruturado</th>
-                                                    <th>Qtd.</th>
-                                                    <th>Valor Unitário</th>
-                                                    <th>Qtd.</th>
-                                                    <th>Valor Unitário</th>
-                                                    <th>Variação</th>
-                                                    <th>Anexo</th>
-                                                    <th>Observação</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                @foreach($modificacao->apropriacoes as $apropriacao)
-                                                    @if($apropriacao->pivot->qtd_anterior != $apropriacao->pivot->qtd_atual || $modificacao['valor_unitario_anterior'] != $modificacao['valor_unitario_atual'])
-                                                        @php array_push($apropriacoes_id, $apropriacao->id); @endphp
+                                            @if($modificacao->anexo || $modificacao->descricao)
+                                                <table class="table table-condensed table-all-center table-bordered table-no-margin">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>Anexo</th>
+                                                        <th>Observação</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
                                                         <tr>
-                                                            <td>
-                                                                {{ $apropriacao->codigoServico() }}
-                                                            </td>
-                                                            <td>
-                                                                {{ float_to_money($apropriacao->pivot->qtd_anterior, '') }}
-                                                            </td>
-                                                            <td>
-                                                                {{ float_to_money($modificacao['valor_unitario_anterior'], '') }}
-                                                            </td>
-                                                            <td>
-                                                                {{ float_to_money($apropriacao->pivot->qtd_atual, '') }}
-                                                            </td>
-                                                            <td>
-                                                                {{ float_to_money($modificacao['valor_unitario_atual'], '') }}
-                                                            </td>
-                                                            <td>
-                                                                {{ float_to_money($apropriacao->pivot->qtd_atual -  $apropriacao->pivot->qtd_anterior, '') }}
-                                                            </td>
                                                             <td>
                                                                 @if($modificacao->anexo)
                                                                     <a href="{!! Storage::url($modificacao->anexo) !!}"
@@ -166,13 +134,71 @@
                                                                 @endif
                                                             </td>
                                                             <td>
-                                                                {{$apropriacao->pivot->descricao}}
+                                                                {{$modificacao->descricao}}
                                                             </td>
                                                         </tr>
-                                                    @endif
-                                                @endforeach
-                                                </tbody>
-                                            </table>
+                                                    </tbody>
+                                                </table>
+                                            @endif
+
+                                            @if(count($modificacao->apropriacoes))
+                                                <table class="table table-condensed table-all-center table-bordered table-no-margin">
+                                                    <thead>
+                                                    <tr>
+                                                        <th colspan="1"></th>
+                                                        <th colspan="2" class="text-center">Antes</th>
+                                                        <th colspan="2" class="text-center">Depois</th>
+                                                        <th colspan="3"></th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Código Estruturado</th>
+                                                        <th>Qtd.</th>
+                                                        <th>Valor Unitário</th>
+                                                        <th>Qtd.</th>
+                                                        <th>Valor Unitário</th>
+                                                        <th>Variação</th>
+                                                        <th>Anexo</th>
+                                                        <th>Observação</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    @foreach($modificacao->apropriacoes as $apropriacao)
+                                                        @if($apropriacao->pivot->qtd_anterior != $apropriacao->pivot->qtd_atual || $modificacao['valor_unitario_anterior'] != $modificacao['valor_unitario_atual'])
+                                                            @php array_push($apropriacoes_id, $apropriacao->id); @endphp
+                                                            <tr>
+                                                                <td>
+                                                                    {{ $apropriacao->codigoServico() }}
+                                                                </td>
+                                                                <td>
+                                                                    {{ float_to_money($apropriacao->pivot->qtd_anterior, '') }}
+                                                                </td>
+                                                                <td>
+                                                                    {{ float_to_money($modificacao['valor_unitario_anterior'], '') }}
+                                                                </td>
+                                                                <td>
+                                                                    {{ float_to_money($apropriacao->pivot->qtd_atual, '') }}
+                                                                </td>
+                                                                <td>
+                                                                    {{ float_to_money($modificacao['valor_unitario_atual'], '') }}
+                                                                </td>
+                                                                <td>
+                                                                    {{ float_to_money($apropriacao->pivot->qtd_atual -  $apropriacao->pivot->qtd_anterior, '') }}
+                                                                </td>
+                                                                <td>
+                                                                    @if($apropriacao->pivot->anexo)
+                                                                        <a href="{!! Storage::url($apropriacao->pivot->anexo) !!}"
+                                                                           target="_blank">Ver</a>
+                                                                    @endif
+                                                                </td>
+                                                                <td>
+                                                                    {{$apropriacao->pivot->descricao}}
+                                                                </td>
+                                                            </tr>
+                                                        @endif
+                                                    @endforeach
+                                                    </tbody>
+                                                </table>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>

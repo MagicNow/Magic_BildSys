@@ -261,7 +261,7 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
 
         $attributes = [
             'user_id' => $attributes['user_id'],
-            'qc_status_id' => QcStatus::EM_APROVACAO,
+            'qc_status_id' => QcStatus::ABERTO,
             'obrigacoes_fornecedor' => ConfiguracaoEstatica::find(1)->valor,
             'obrigacoes_bild' => ConfiguracaoEstatica::find(2)->valor,
             'rodada_atual' => 1

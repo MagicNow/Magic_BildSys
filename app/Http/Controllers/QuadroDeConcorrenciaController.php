@@ -129,14 +129,14 @@ class QuadroDeConcorrenciaController extends AppBaseController
 
         $avaliado_reprovado = [];
         $itens_ids = $quadroDeConcorrencia->itens()->pluck('id', 'id')->toArray();
-        $aprovavelTudo = WorkflowAprovacaoRepository::verificaAprovaGrupo('QuadroDeConcorrenciaItem', $itens_ids, Auth::user());
+        $aprovavelTudo = WorkflowAprovacaoRepository::verificaAprovaGrupo('QuadroDeConcorrencia', [$quadroDeConcorrencia->id => $quadroDeConcorrencia->id], Auth::user());
         $alcadas = WorkflowAlcada::where('workflow_tipo_id', WorkflowTipo::QC)->orderBy('ordem', 'ASC')->get();
 
         if ($quadroDeConcorrencia->qc_status_id == QcStatus::EM_APROVACAO) {
             foreach ($alcadas as $alcada) {
                 $avaliado_reprovado[$alcada->id] = WorkflowAprovacaoRepository::verificaTotalJaAprovadoReprovado(
-                    'QuadroDeConcorrenciaItem',
-                    $quadroDeConcorrencia->itens()->pluck('id', 'id')->toArray(),
+                    'QuadroDeConcorrencia',
+                    [$quadroDeConcorrencia->id => $quadroDeConcorrencia->id],
                     null,
                     null,
                     $alcada->id);
@@ -147,7 +147,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
                     $alcada->id);
 
                 $avaliado_reprovado[$alcada->id] ['faltam_aprovar'] = WorkflowAprovacaoRepository::verificaUsuariosQueFaltamAprovar(
-                    'QuadroDeConcorrenciaItem',
+                    'QuadroDeConcorrencia',
                     WorkflowTipo::QC,
                     $quadroDeConcorrencia->obra_id,
                     $alcada->id,

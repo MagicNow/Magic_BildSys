@@ -128,6 +128,25 @@ class MedicaoServico extends Model
         ];
     }
 
+    public function workflowNotificationDone($aprovado)
+    {
+        return [
+            'message' => 'Medição '.$this->id.($aprovado?' aprovada ':' reprovada '),
+            'link' => route('medicaoServicos.show', $this->id)
+        ];
+    }
+
+    public function dataUltimoPeriodoAprovacao(){
+        if($this->aprovado){
+            return $this->created_at;
+        }
+        return $this->updated_at;
+    }
+
+    public function qualObra(){
+        return $this->contratoItemApropriacao->contratoItem->contrato->obra_id;
+    }
+
     public function irmaosIds()
     {
         return [$this->attributes['id'] => $this->attributes['id']];
