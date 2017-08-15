@@ -1142,7 +1142,12 @@ class OrdemDeCompraController extends AppBaseController
         ])            ->join('obras', 'obras.id', 'ordem_de_compras.obra_id')
         ->join('users', 'users.id', '=', 'ordem_de_compras.user_id')
         ->where('oc_status_id', 4)->orderBy('id', 'desc')
-        ->take(5)->get();
+        ->take(5);
+        if($request->obra_id) {
+            $reprovados = $reprovados->where('obra_id', $request->obra_id);
+        }
+        $reprovados = $reprovados->get();
+
 
         $aprovados = OrdemDeCompra::select([
             'ordem_de_compras.id',
@@ -1151,7 +1156,12 @@ class OrdemDeCompraController extends AppBaseController
         ])            ->join('obras', 'obras.id', 'ordem_de_compras.obra_id')
         ->join('users', 'users.id', '=', 'ordem_de_compras.user_id')
         ->where('oc_status_id', 5)->orderBy('id', 'desc')
-        ->take(5)->get();
+        ->take(5);
+        if($request->obra_id) {
+            $aprovados = $aprovados->where('obra_id', $request->obra_id);
+        }
+        $aprovados = $aprovados->get();
+
 
         $emaprovacao = OrdemDeCompra::select([
             'ordem_de_compras.id',
@@ -1160,7 +1170,12 @@ class OrdemDeCompraController extends AppBaseController
         ])            ->join('obras', 'obras.id', 'ordem_de_compras.obra_id')
         ->join('users', 'users.id', '=', 'ordem_de_compras.user_id')
         ->where('oc_status_id', 3)->orderBy('id', 'desc')
-        ->take(5)->get();
+        ->take(5);
+        if($request->obra_id) {
+            $emaprovacao = $emaprovacao->where('obra_id', $request->obra_id);
+        }
+        $emaprovacao = $emaprovacao->get();
+
 
         $ordemDeCompras = OrdemDeCompra::select([
                 'ordem_de_compras.id',

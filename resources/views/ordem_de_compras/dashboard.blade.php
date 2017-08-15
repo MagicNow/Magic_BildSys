@@ -35,8 +35,8 @@
         </section>
 
         <div class="form-group col-sm-12">
-            {!! Form::label('obras_id', 'Obra:') !!}
-            {!! Form::select('obras_id', $obras, 'default', ['class' => 'form-control select2', 'onchange' => 'filterObra(this.value);']) !!}
+            {!! Form::label('obra_id', 'Obra:') !!}
+            {!! Form::select('obra_id', $obras, \Illuminate\Support\Facades\Input::get('obra_id'), ['class' => 'form-control select2', 'onchange' => 'filters();']) !!}
         </div>
 
         <div class="box-body" id="app">
@@ -93,8 +93,8 @@
 @endsection
 @section('scripts')
     <script>
-        function filterObra(id) {
-            window.location = '/compras/dashboard?obra_id='+id;
+        function filters() {
+            window.location = '/compras/dashboard?obra_id=' + $('#obra_id').val();
         }
 
         const app = new Vue({
