@@ -34,9 +34,14 @@
             </div>
         </section>
 
-        <div class="form-group col-sm-12">
+        <div class="form-group col-sm-6">
             {!! Form::label('obra_id', 'Obra:') !!}
             {!! Form::select('obra_id', $obras, \Illuminate\Support\Facades\Input::get('obra_id'), ['class' => 'form-control select2', 'onchange' => 'filters();']) !!}
+        </div>
+
+        <div class="form-group col-sm-6">
+            {!! Form::label('user_id', 'Usuário:') !!}
+            {!! Form::select('user_id', $users, \Illuminate\Support\Facades\Input::get('user_id'), ['class' => 'form-control select2', 'onchange' => 'filters();']) !!}
         </div>
 
         <div class="box-body" id="app">
@@ -94,7 +99,7 @@
 @section('scripts')
     <script>
         function filters() {
-            window.location = '/compras/dashboard?obra_id=' + $('#obra_id').val();
+            window.location = '/compras/dashboard?obra_id=' + $('#obra_id').val() + '&user_id=' + $('#user_id').val();
         }
 
         const app = new Vue({
