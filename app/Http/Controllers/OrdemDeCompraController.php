@@ -896,6 +896,10 @@ class OrdemDeCompraController extends AppBaseController
         ->join('obras', 'obras.id', 'ordem_de_compras.obra_id')
         ->join('users', 'users.id', '=', 'ordem_de_compras.user_id');
 
+        if ($request->obra_id) {
+            $ordem_compra->where('obra_id', $request->obra_id);
+        }
+        
         if ($request->type == 'created') {
             $ordem_compra->orderBy('id', 'desc')->take(5);
         } else {
@@ -1192,6 +1196,8 @@ class OrdemDeCompraController extends AppBaseController
 
         if($request->obra_id) {
             $ordemDeCompras = $ordemDeCompras->where('obra_id', $request->obra_id);
+        } else {
+            $ordemDeCompras = $ordemDeCompras->whereRaw('EXISTS (SELECT 1 FROM obra_users WHERE obra_users.obra_id = obras.id AND user_id=?)', auth()->id());
         }
 
         $ordemDeCompras = $ordemDeCompras->get();
