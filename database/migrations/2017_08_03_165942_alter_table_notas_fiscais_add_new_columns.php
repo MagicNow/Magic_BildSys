@@ -73,20 +73,7 @@ class AlterTableNotasFiscaisAddNewColumns extends Migration
             $table->text("dados_adicionais")->nullable();
         });
 
-        Schema::create("nota_fiscal_faturas", function(Blueprint $table){
-            $table->engine = 'InnoDB';
-            $table->increments('id');
-            $table->unsignedInteger('nota_fiscal_id');
-            $table->string("numero")->nullable();
-            $table->date("vencimento")->nullable();
-            $table->decimal("valor", 19, 2)->nullable();
-            $table->index(["nota_fiscal_id"], 'fk_nota_fiscal_itens_notas_fiscais2_idx');
-            $table->foreign('nota_fiscal_id', 'fk_nota_fiscal_itens_notas_fiscais2_idx')
-                ->references('id')
-                ->on('notas_fiscais')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
-        });
+
 
         Schema::table("nota_fiscal_itens", function(Blueprint $table) {
             $table->decimal("aliquota_icms", 19, 2)->nullable();
@@ -176,6 +163,5 @@ class AlterTableNotasFiscaisAddNewColumns extends Migration
             $table->renameColumn('valor_cofins', 'cofins');
         });
 
-        Schema::drop("nota_fiscal_faturas");
     }
 }

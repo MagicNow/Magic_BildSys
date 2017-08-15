@@ -204,4 +204,13 @@ class NotafiscalController extends AppBaseController
         $cte = Cte::find($id);
         return $this->consultaCteRepository->geraDacteV3($cte);
     }
+
+    public function manifesta()
+    {
+        $notas = $this->consultaRepository->manifestaNotas();
+        if (count($notas)) {
+            return sprintf("%s notas manifestadas com sucesso.", count($notas));
+        }
+        return "Não há notas para manifestação.";
+    }
 }

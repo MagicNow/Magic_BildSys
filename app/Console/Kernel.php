@@ -4,6 +4,7 @@ namespace App\Console;
 
 use App\Console\Commands\CapturaNfeGeradas;
 use App\Console\Commands\CapturaCTeGerados;
+use App\Console\Commands\ManifestaNfeGeradas;
 use App\Repositories\ImportacaoRepository;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -19,6 +20,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         CapturaNfeGeradas::class,
         CapturaCteGerados::class,
+        ManifestaNfeGeradas::class,
     ];
 
     /**
@@ -30,24 +32,40 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->call(function () {
-            Log::info('Inicio de execucao importação de grupos');
-            $importaInsumoGrupos = ImportacaoRepository::insumo_grupos();
-            Log::info('Executado script de importação de grupo', $importaInsumoGrupos);
-        })->twiceDaily(9, 18);
+                Log::info('Inicio de execucao importação de grupos');
+                $importaInsumoGrupos = ImportacaoRepository::insumo_grupos();
+                Log::info('Executado script de importação de grupo', $importaInsumoGrupos);
+            })
+            ->name('importacao:repository')
+            ->twiceDaily(9, 18)
+            ->withoutOverlapping();
 
         $schedule->call(function () {
-            Log::info('Inicio de execucao importação de Insumos');
-            $importaInsumo = ImportacaoRepository::insumos();
-            Log::info('Executado script de importação de Insumos', $importaInsumo);
-        })->twiceDaily(10, 19);
+                Log::info('Inicio de execucao importação de Insumos');
+                $importaInsumo = ImportacaoRepository::insumos();
+                Log::info('Executado script de importação de Insumos', $importaInsumo);
+            })
+            ->twiceDaily(10, 19)
+            ->name('importacao:repository')
+            ->withoutOverlapping();
 
         $schedule->command('captura:nfe')
-            ->everyMinute()
-            ->sendOutputTo(storage_path('nfe/captura-nfe.log'));
+            ->everyThirtyMinutes()
+            ->sendOutputTo(storage_path('nfe/captura-nfe.log'))
+            ->name('captura:nfe')
+            ->withoutOverlapping();
 
         $schedule->command('captura:cte')
-            ->everyMinute()
-            ->sendOutputTo(storage_path('cte/captura-cte.log'));
+            ->hourly()
+            ->sendOutputTo(storage_path('cte/captura-cte.log'))
+            ->name('captura:cte')
+            ->withoutOverlapping();
+
+        $schedule->command('manifesta:nfe')
+            ->daily()
+            ->sendOutputTo(storage_path('nfe/manifesta-nfe.log'))
+            ->name('manifesta:nfe')
+            ->withoutOverlapping();
     }
 
     /**
