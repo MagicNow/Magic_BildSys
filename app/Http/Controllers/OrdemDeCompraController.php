@@ -904,6 +904,13 @@ class OrdemDeCompraController extends AppBaseController
             $ordem_compra->where('ordem_de_compras.user_id', $request->user_id);
         }
 
+        if($request->data_inicio) {
+            $ordem_compra = $ordem_compra->where('ordem_de_compras.created_at', '>=', $request->data_inicio);
+        }
+        if($request->data_termino) {
+            $ordem_compra = $ordem_compra->where('ordem_de_compras.created_at', '<=', $request->data_termino);
+        }
+
         if ($request->type == 'created') {
             $ordem_compra->orderBy('id', 'desc')->take(5);
         } else {
@@ -1157,6 +1164,12 @@ class OrdemDeCompraController extends AppBaseController
         if($request->user_id) {
             $reprovados = $reprovados->where('ordem_de_compras.user_id', $request->user_id);
         }
+        if($request->data_inicio) {
+            $reprovados = $reprovados->where('ordem_de_compras.created_at', '>=', $request->data_inicio);
+        }
+        if($request->data_termino) {
+            $reprovados = $reprovados->where('ordem_de_compras.created_at', '<=', $request->data_termino);
+        }
         $reprovados = $reprovados->get();
 
 
@@ -1174,6 +1187,12 @@ class OrdemDeCompraController extends AppBaseController
         if($request->user_id) {
             $aprovados = $aprovados->where('ordem_de_compras.user_id', $request->user_id);
         }
+        if($request->data_inicio) {
+            $aprovados = $aprovados->where('ordem_de_compras.created_at', '>=', $request->data_inicio);
+        }
+        if($request->data_termino) {
+            $aprovados = $aprovados->where('ordem_de_compras.created_at', '<=', $request->data_termino);
+        }
         $aprovados = $aprovados->get();
 
 
@@ -1190,6 +1209,12 @@ class OrdemDeCompraController extends AppBaseController
         }
         if($request->user_id) {
             $emaprovacao = $emaprovacao->where('ordem_de_compras.user_id', $request->user_id);
+        }
+        if($request->data_inicio) {
+            $emaprovacao = $emaprovacao->where('ordem_de_compras.created_at', '>=', $request->data_inicio);
+        }
+        if($request->data_termino) {
+            $emaprovacao = $emaprovacao->where('ordem_de_compras.created_at', '<=', $request->data_termino);
         }
         $emaprovacao = $emaprovacao->get();
 
@@ -1216,6 +1241,12 @@ class OrdemDeCompraController extends AppBaseController
 
         if(!$request->obra_id || !$request->user_id) {
             $ordemDeCompras = $ordemDeCompras->whereRaw('EXISTS (SELECT 1 FROM obra_users WHERE obra_users.obra_id = obras.id AND user_id=?)', auth()->id());
+        }
+        if($request->data_inicio) {
+            $ordemDeCompras = $ordemDeCompras->where('ordem_de_compras.created_at', '>=', $request->data_inicio);
+        }
+        if($request->data_termino) {
+            $ordemDeCompras = $ordemDeCompras->where('ordem_de_compras.created_at', '<=', $request->data_termino);
         }
 
         $ordemDeCompras = $ordemDeCompras->get();
