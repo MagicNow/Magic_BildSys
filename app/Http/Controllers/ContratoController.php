@@ -305,7 +305,7 @@ class ContratoController extends AppBaseController
     ) {
         $item = $contratoItemRepository->find($id);
 
-        $contratoItemReapropriacaoRepository->reaprop0riar($item, $request->all());
+        $contratoItemReapropriacaoRepository->reapropriar($item, $request->all());
 
         return response()->json([
             'success' => true

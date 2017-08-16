@@ -896,6 +896,21 @@ class OrdemDeCompraController extends AppBaseController
         ->join('obras', 'obras.id', 'ordem_de_compras.obra_id')
         ->join('users', 'users.id', '=', 'ordem_de_compras.user_id');
 
+        if ($request->obra_id) {
+            $ordem_compra->where('obra_id', $request->obra_id);
+        }
+
+        if($request->user_id) {
+            $ordem_compra->where('ordem_de_compras.user_id', $request->user_id);
+        }
+
+        if($request->data_inicio) {
+            $ordem_compra = $ordem_compra->where('ordem_de_compras.created_at', '>=', $request->data_inicio);
+        }
+        if($request->data_termino) {
+            $ordem_compra = $ordem_compra->where('ordem_de_compras.created_at', '<=', $request->data_termino);
+        }
+
         if ($request->type == 'created') {
             $ordem_compra->orderBy('id', 'desc')->take(5);
         } else {
@@ -1133,7 +1148,7 @@ class OrdemDeCompraController extends AppBaseController
         return response()->json(['sucesso' => true]);
     }
 
-    public function dashboard()
+    public function dashboard(Request $request)
     {
         $reprovados = OrdemDeCompra::select([
             'ordem_de_compras.id',
@@ -1142,7 +1157,21 @@ class OrdemDeCompraController extends AppBaseController
         ])            ->join('obras', 'obras.id', 'ordem_de_compras.obra_id')
         ->join('users', 'users.id', '=', 'ordem_de_compras.user_id')
         ->where('oc_status_id', 4)->orderBy('id', 'desc')
-        ->take(5)->get();
+        ->take(5);
+        if($request->obra_id) {
+            $reprovados = $reprovados->where('obra_id', $request->obra_id);
+        }
+        if($request->user_id) {
+            $reprovados = $reprovados->where('ordem_de_compras.user_id', $request->user_id);
+        }
+        if($request->data_inicio) {
+            $reprovados = $reprovados->where('ordem_de_compras.created_at', '>=', $request->data_inicio);
+        }
+        if($request->data_termino) {
+            $reprovados = $reprovados->where('ordem_de_compras.created_at', '<=', $request->data_termino);
+        }
+        $reprovados = $reprovados->get();
+
 
         $aprovados = OrdemDeCompra::select([
             'ordem_de_compras.id',
@@ -1151,7 +1180,21 @@ class OrdemDeCompraController extends AppBaseController
         ])            ->join('obras', 'obras.id', 'ordem_de_compras.obra_id')
         ->join('users', 'users.id', '=', 'ordem_de_compras.user_id')
         ->where('oc_status_id', 5)->orderBy('id', 'desc')
-        ->take(5)->get();
+        ->take(5);
+        if($request->obra_id) {
+            $aprovados = $aprovados->where('obra_id', $request->obra_id);
+        }
+        if($request->user_id) {
+            $aprovados = $aprovados->where('ordem_de_compras.user_id', $request->user_id);
+        }
+        if($request->data_inicio) {
+            $aprovados = $aprovados->where('ordem_de_compras.created_at', '>=', $request->data_inicio);
+        }
+        if($request->data_termino) {
+            $aprovados = $aprovados->where('ordem_de_compras.created_at', '<=', $request->data_termino);
+        }
+        $aprovados = $aprovados->get();
+
 
         $emaprovacao = OrdemDeCompra::select([
             'ordem_de_compras.id',
@@ -1160,7 +1203,21 @@ class OrdemDeCompraController extends AppBaseController
         ])            ->join('obras', 'obras.id', 'ordem_de_compras.obra_id')
         ->join('users', 'users.id', '=', 'ordem_de_compras.user_id')
         ->where('oc_status_id', 3)->orderBy('id', 'desc')
-        ->take(5)->get();
+        ->take(5);
+        if($request->obra_id) {
+            $emaprovacao = $emaprovacao->where('obra_id', $request->obra_id);
+        }
+        if($request->user_id) {
+            $emaprovacao = $emaprovacao->where('ordem_de_compras.user_id', $request->user_id);
+        }
+        if($request->data_inicio) {
+            $emaprovacao = $emaprovacao->where('ordem_de_compras.created_at', '>=', $request->data_inicio);
+        }
+        if($request->data_termino) {
+            $emaprovacao = $emaprovacao->where('ordem_de_compras.created_at', '<=', $request->data_termino);
+        }
+        $emaprovacao = $emaprovacao->get();
+
 
         $ordemDeCompras = OrdemDeCompra::select([
                 'ordem_de_compras.id',
@@ -1172,10 +1229,27 @@ class OrdemDeCompraController extends AppBaseController
             ->join('obras', 'obras.id', '=', 'ordem_de_compras.obra_id')
             ->join('oc_status', 'oc_status.id', '=', 'ordem_de_compras.oc_status_id')
             ->join('users', 'users.id', '=', 'ordem_de_compras.user_id')
-            ->whereRaw('EXISTS (SELECT 1 FROM obra_users WHERE obra_users.obra_id = obras.id AND user_id=?)', auth()->id())
             ->where('ordem_de_compras.oc_status_id', '!=', 6)
-            ->orderBy('ordem_de_compras.id','DESC')
-            ->get();
+            ->orderBy('ordem_de_compras.id','DESC');
+
+        if($request->obra_id) {
+            $ordemDeCompras = $ordemDeCompras->where('obra_id', $request->obra_id);
+        }
+        if($request->user_id) {
+            $ordemDeCompras = $ordemDeCompras->where('ordem_de_compras.user_id', $request->user_id);
+        }
+
+        if(!$request->obra_id || !$request->user_id) {
+            $ordemDeCompras = $ordemDeCompras->whereRaw('EXISTS (SELECT 1 FROM obra_users WHERE obra_users.obra_id = obras.id AND user_id=?)', auth()->id());
+        }
+        if($request->data_inicio) {
+            $ordemDeCompras = $ordemDeCompras->where('ordem_de_compras.created_at', '>=', $request->data_inicio);
+        }
+        if($request->data_termino) {
+            $ordemDeCompras = $ordemDeCompras->where('ordem_de_compras.created_at', '<=', $request->data_termino);
+        }
+
+        $ordemDeCompras = $ordemDeCompras->get();
 
         $dentro_orcamento = 0;
         $acima_orcamento = 0;
@@ -1190,8 +1264,12 @@ class OrdemDeCompraController extends AppBaseController
                 }
             }
         }
-        
-        return view('ordem_de_compras.dashboard', compact('reprovados', 'aprovados', 'emaprovacao', 'abaixo_orcamento', 'dentro_orcamento', 'acima_orcamento'));
+
+        $obras = Obra::pluck('nome', 'id')->prepend('', '');
+
+        $users = User::pluck('name', 'id')->prepend('', '');
+
+        return view('ordem_de_compras.dashboard', compact('reprovados', 'aprovados', 'emaprovacao', 'abaixo_orcamento', 'dentro_orcamento', 'acima_orcamento', 'obras', 'users'));
     }
 
     // Verifica se tem OC aberta antes de reabrir
