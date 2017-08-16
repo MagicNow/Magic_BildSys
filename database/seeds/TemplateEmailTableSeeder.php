@@ -58,6 +58,25 @@ class TemplateEmailTableSeeder extends Seeder
                 'tags'=> '{"1":{"tag":"[FORNECEDOR_NOME]","nome":"Fornecedor Nome"}}',
                 'user_id' => 2,
                 'created_at' => date('Y-m-d H::s')
+            ],
+            [
+                'id' => 4,
+                'nome' => 'Conta de acesso no sistema da Bild Desenvolvimento Imobiliário',
+                'template' => '<p>Olá [FORNECEDOR_NOME],</p>
+                               <p>
+                                Uma conta de acesso no sistema da Bild Desenvolvimento Imobiliário foi cadastrada para você
+                                <br><br>
+                                Você pode cadastrar com os dados:
+                                <br><br>
+                                Email: [FORNECEDOR_EMAIL]
+                                <br>
+                                Senha: [FORNECEDOR_SENHA]
+                               </p>
+                               <p>Atenciosamente, Bild Desenvolvimento Imobiliário</p>
+                                ',
+                'tags'=> '{"1":{"tag":"[FORNECEDOR_NOME]","nome":"Fornecedor Nome"},"2":{"tag":"[FORNECEDOR_EMAIL]","nome":"Fornecedor Email"},"3":{"tag":"[FORNECEDOR_SENHA]","nome":"Fornecedor Senha"}}',
+                'user_id' => 2,
+                'created_at' => date('Y-m-d H::s')
             ]
         ];
 
