@@ -595,7 +595,7 @@
 @endsection
 @section('scripts')
     <script type="text/javascript">
-        $(function () {
+        $(function () { floatToMoney
             $('input[name="frete_incluso"]').on('ifToggled', function (event) {
                 if (parseInt(event.target.value)) {
                     $('.blocoFrete').hide();

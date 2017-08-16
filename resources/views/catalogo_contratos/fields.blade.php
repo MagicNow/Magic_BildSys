@@ -6,7 +6,7 @@
             <div class="form-control">
                 {{ $catalogoContrato->fornecedor->nome }}
                 @if($catalogoContrato->fornecedor->faltaDados())
-                    <a href="{{ route('admin.fornecedores.show', $catalogoContrato->fornecedor_id) }}"
+                    <a href="{{ route('admin.fornecedores.edit', $catalogoContrato->fornecedor_id) }}"
                        title="Para poder gerar contratos automaticamente, todos os dados devem estar preenchidos"
                        data-toggle="tooltip" data-placement="top" class="btn btn-danger btn-xs pull-right">
                         <i class="fa fa-exclamation-triangle"></i>

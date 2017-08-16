@@ -184,7 +184,7 @@ class RolesAndPermissions extends Seeder
             'catalogo_acordos.list' => 'Listagem de Catálogo Acordos',
             'catalogo_acordos.create' => 'Criação de Catálogo Acordos',
             'catalogo_acordos.edit'   => 'Edição de Catálogo Acordos',
-            'catalogo_acordos.view'   => 'Visualização de Catálogo Acordos',
+            'catalogo_acordos.delete'   => 'Remoção de Catálogo Acordos',
 
             'equalizacao_tecnicas.list'   => 'Listagem de equalização tecnica',
             'equalizacao_tecnicas.create'   => 'Criação de equalização tecnica',
@@ -249,7 +249,7 @@ class RolesAndPermissions extends Seeder
         $roles[1]->attachPermission(Defender::findPermission('catalogo_acordos.list'));
         $roles[1]->attachPermission(Defender::findPermission('catalogo_acordos.create'));
         $roles[1]->attachPermission(Defender::findPermission('catalogo_acordos.edit'));
-        $roles[1]->attachPermission(Defender::findPermission('catalogo_acordos.view'));
+        $roles[1]->attachPermission(Defender::findPermission('catalogo_acordos.delete'));
         $roles[1]->attachPermission(Defender::findPermission('equalizacao_tecnicas.list'));
         $roles[1]->attachPermission(Defender::findPermission('equalizacao_tecnicas.create'));
         $roles[1]->attachPermission(Defender::findPermission('equalizacao_tecnicas.edit'));
