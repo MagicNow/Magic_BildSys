@@ -52,7 +52,7 @@ class DetalhesServicosDataTable extends DataTable
                 }else {
                     if($obj->insumo_incluido || $obj->substitui){
                         if($obj->valor_oc){
-                            return '<span style="color:#eb0000"><small class="pull-left">R$</small> - '.number_format( doubleval($obj->valor_oc), 2, ',','.').'</span>';
+                            return '<span style="color: #eb0000"><small class="pull-left">R$</small>-'.number_format( doubleval($obj->valor_oc), 2, ',','.').'</span>';
                         }else{
                             $cor = $obj->valor_oc >=0 ? '#7ed321' : "#eb0000";
                             return '<span style="color: '.$cor.'"><small class="pull-left">R$</small>'.number_format( doubleval($obj->valor_oc), 2, ',','.').'</span>';
