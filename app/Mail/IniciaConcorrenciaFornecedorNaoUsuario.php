@@ -37,7 +37,7 @@ class IniciaConcorrenciaFornecedorNaoUsuario extends Mailable
     {
 
         $model = new TemplateEmail();
-        $r = $model->find(2);
+        $r = $model->find(1);
 
         $table = '';
 
