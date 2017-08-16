@@ -592,7 +592,28 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             ->middleware('needsPermission:boletim-medicao.edit');
 
     });
-    // 
+    
+	#importação de planilhas de plano diretor, trabalho, plan e arquivo linha de balanco 
+    $router->group(['middleware' => 'needsPermission:cronograma_fisico.import'], function () use ($router) {
+        $router->get('orcamento/', ['as' => 'admin.cronograma_fisico.indexImport', 'uses' => 'Admin\OrcamentoController@indexImport']);
+        $router->post('orcamento/importar', ['as' => 'admin.cronograma_fisico.importar', 'uses' => 'Admin\OrcamentoController@import']);
+        $router->get('orcamento/importar/checkIn', ['as' => 'admin.cronograma_fisico.checkIn', 'uses' => 'Admin\OrcamentoController@checkIn']);
+        $router->post('orcamento/importar/save', ['as' => 'admin.cronograma_fisico.save', 'uses' => 'Admin\OrcamentoController@save']);
+        $router->get('orcamento/importar/selecionaCampos', 'Admin\OrcamentoController@selecionaCampos');
+    });
+
+    # Cronograma Fisico
+    /*$router->group(['middleware' => 'needsPermission:orcamentos.list'], function () use ($router) {
+        $router->get('orcamentos', ['as' => 'admin.orcamentos.index', 'uses' => 'Admin\OrcamentoController@index']);
+        $router->post('orcamentos', ['as' => 'admin.orcamentos.store', 'uses' => 'Admin\OrcamentoController@store']);
+        $router->get('orcamentos/create', ['as' => 'admin.orcamentos.create', 'uses' => 'Admin\OrcamentoController@create']);
+        $router->put('orcamentos/{orcamentos}', ['as' => 'admin.orcamentos.update', 'uses' => 'Admin\OrcamentoController@update']);
+        $router->patch('orcamentos/{orcamentos}', ['as' => 'admin.orcamentos.update', 'uses' => 'Admin\OrcamentoController@update']);
+        $router->delete('orcamentos/{orcamentos}', ['as' => 'admin.orcamentos.destroy', 'uses' => 'Admin\OrcamentoController@destroy']);
+        $router->get('orcamentos/{orcamentos}', ['as' => 'admin.orcamentos.show', 'uses' => 'Admin\OrcamentoController@show']);
+        $router->get('orcamentos/{orcamentos}/edit', ['as' => 'admin.orcamentos.edit', 'uses' => 'Admin\OrcamentoController@edit']);
+    });*/
+	
 
     // Perfil
     $router->get('/perfil', 'PerfilController@index');
