@@ -28,7 +28,66 @@ class Notafiscal extends Model
         'razao_social',
         'fantasia',
         'cnpj_destinatario',
-        'arquivo_nfe'
+        'arquivo_nfe',
+        'nsu',
+        'chave',
+
+        'serie',
+        'tipo_entrada_saida',
+        'protocolo',
+        'remetente_inscricao_estadual_sub',
+        'remetente_endereco',
+        'remetente_numero',
+        'remetente_bairro',
+        'remetente_cep',
+        'remetente_cidade',
+        'remetente_uf',
+        'remetente_fone_fax',
+        'destinatario_nome',
+        'destinatario_endereco',
+        'destinatario_numero',
+        'destinatario_bairro',
+        'destinatario_cep',
+        'destinatario_cidade',
+        'destinatario_uf',
+        'destinatario_fone_fax',
+        'destinatario_inscricao_estadual',
+        'destinatario_inscricao_estadual_sub',
+        'base_calculo_icms',
+        'valor_icms',
+        'base_calculo_icms_sub',
+        'valor_icms_sub',
+        'valor_imposto_importacao',
+        'valor_icms_uf_remetente',
+        'valor_fcp',
+        'valor_pis',
+        'valor_total_produtos',
+        'valor_frete',
+        'valor_seguro',
+        'desconto',
+        'outras_despesas',
+        'valor_total_ipi',
+        'valor_icms_uf_destinatario',
+        'valor_total_tributos',
+        'valor_confins',
+        'valor_total_nota',
+        'frete_por_conta',
+        'transportadora_nome',
+        'codigo_antt',
+        'placa_veiculo',
+        'veiculo_uf',
+        'transportadora_cnpj',
+        'transportadora_endereco',
+        'transportadora_municipio',
+        'transportadora_uf',
+        'transportadora_inscricao',
+        'transportadora_quantidade',
+        'especie',
+        'marca',
+        'numeracao',
+        'peso_bruto',
+        'peso_liquido',
+        'dados_adicionais',
     ];
 
     /**
@@ -48,7 +107,11 @@ class Notafiscal extends Model
         'razao_social' => 'string',
         'fantasia' => 'string',
         'cnpj_destinatario' => 'string',
-        'arquivo_nfe' => 'string'
+        'arquivo_nfe' => 'string',
+        'nsu' => 'integer',
+        'chave' => 'string',
+        'data_emissao' => 'datetime',
+        'data_saida' => 'datetime',
     ];
 
     /**
@@ -79,8 +142,17 @@ class Notafiscal extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
-    public function notaFiscalItens()
+    public function items()
     {
-        return $this->hasMany(\App\Models\NotaFiscalIten::class);
+        return $this->hasMany(\App\Models\NotaFiscalItem::class, 'nota_fiscal_id');
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function faturas()
+    {
+        return $this->hasMany(\App\Models\NotaFiscalFatura::class, 'nota_fiscal_id');
+    }
+
 }

@@ -93,9 +93,9 @@ class NotafiscalDataTable extends DataTable
         return [
             'contrato_id' => ['name' => 'contrato_id', 'data' => 'contrato_id'],
             'solicitacao_entrega_id' => ['name' => 'solicitacao_entrega_id', 'data' => 'solicitacao_entrega_id'],
-            'xml' => ['name' => 'xml', 'data' => 'xml'],
+            'nsu' => ['name' => 'nsu', 'data' => 'nsu'],
+            'chave' => ['name' => 'chave', 'data' => 'chave'],
             'codigo' => ['name' => 'codigo', 'data' => 'codigo'],
-            'versao' => ['name' => 'versao', 'data' => 'versao'],
             'natureza_operacao' => ['name' => 'natureza_operacao', 'data' => 'natureza_operacao'],
             'data_emissao' => ['name' => 'data_emissao', 'data' => 'data_emissao'],
             'data_saida' => ['name' => 'data_saida', 'data' => 'data_saida'],
