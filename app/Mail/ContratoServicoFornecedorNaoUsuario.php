@@ -44,7 +44,7 @@ class ContratoServicoFornecedorNaoUsuario extends Mailable
 
         return $this->subject('Contrato ' . $this->contrato->id . ' Bild - [Assinar]')
             ->attach( storage_path('/app/public/') . str_replace('storage/', '', $this->arquivo) )
-            ->view('emails.contratos.contrato-fornecedor-sem-acesso')
+            ->view('emails.body-email-base')
             ->with(['text' => $r->template]);
     }
 }

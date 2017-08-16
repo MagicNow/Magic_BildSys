@@ -51,7 +51,7 @@ class IniciaConcorrenciaFornecedorNaoUsuario extends Mailable
         $r->template = str_replace("[TABELA_PRODUTOS]", $table, $r->template);
 
 
-        return $this->subject('Solicitação de orçamento - BILD '.date('d/m/Y'))->view('emails.qc.concorrencia-fornecedor-sem-acesso')->with([
+        return $this->subject('Solicitação de orçamento - BILD '.date('d/m/Y'))->view('emails.body-email-base')->with([
             'text' => $r->template
         ]);
     }

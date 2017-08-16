@@ -41,7 +41,7 @@ class BoletimFornecedorNaoUsuario extends Mailable
         
         return $this->subject('Boletim de Medição de serviço - '.date('m/Y').' - Bild')
             ->attach( storage_path('/app/public/') . str_replace('storage/', '', $this->arquivo) )
-            ->view('emails.contratos.boletim-fornecedor-sem-acesso')
+            ->view('emails.body-email-base')
             ->with(['text' => $r->template]);
     }
 }
