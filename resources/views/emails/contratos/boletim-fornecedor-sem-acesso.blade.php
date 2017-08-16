@@ -50,24 +50,7 @@
             <table style="{{ $style['email-body_inner'] }}" align="center" width="800" cellpadding="0" cellspacing="0">
                 <tr>
                     <td style="{{ $fontFamily }} {{ $style['email-body_cell'] }}">
-                        <!-- Greeting -->
-                        <h1 style="{{ $style['header-1'] }}">
-                            Olá {{ $fornecedor->nome }}
-                        </h1>
-
-                        <!-- Intro -->
-
-                        <p style="{{ $style['paragraph'] }}">
-                            O boletim da medição do seu serviço prestado foi gerado e liberado para faturamento.
-                            <br>
-                            <br>
-                            Baixe o arquivo em anexo, e gere uma Nota fiscal no valor informado.
-                        </p>
-
-                    <!-- Salutation -->
-                        <p style="{{ $style['paragraph'] }}">
-                            Aguardamos o mais breve possível o retorno deste e-mail
-                        </p>
+                        {!!html_entity_decode($text)!!}
                     </td>
                 </tr>
             </table>
