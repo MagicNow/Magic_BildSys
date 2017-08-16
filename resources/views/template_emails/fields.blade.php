@@ -26,64 +26,6 @@
             <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
                 <div class="panel-body">
 
-                    <ul class="list-group" id="campos_extras">
-                        <?php
-                        $campos_extras_count = 0;
-                        $campos_extras = [];
-                        if(isset($contratoTemplate)){
-                            if( strlen(trim($contratoTemplate->campos_extras)) ){
-                                $campos_extras = json_decode($contratoTemplate->campos_extras);
-                            }
-                        }
-                        ?>
-                        @if(count($campos_extras))
-                            @foreach($campos_extras as $campo_extra)
-                                <?php $campos_extras_count++; ?>
-                                <li id="campos_extras{{ $campos_extras_count }}" class="list-group-item">
-                                    <div class="row">
-                                        <span class="col-md-1 text-right">
-                                            <label>Nome:</label>
-                                        </span>
-                                        <span class="col-md-3">
-                                            <input type="hidden" name="campos_extras[{{ $campos_extras_count }}][tag]"
-                                                   id="campo_extra_tag{{ $campos_extras_count }}"
-                                                   required="required" value="{{ $campo_extra->tag }}">
-                                            <input type="text" class="form-control" value="{{ $campo_extra->nome }}"
-                                                   name="campos_extras[{{ $campos_extras_count }}][nome]"
-                                                   onkeyup="slugAndShow(1, this.value);" placeholder="Nome do Campo">
-                                        </span>
-                                        <span class="col-md-1 text-right">
-                                            <label>Tipo:</label>
-                                        </span>
-                                        <span class="col-md-2">
-                                            <select name="campos_extras[{{ $campos_extras_count }}][tipo]"
-                                                    class="form-control select2" required="required">
-                                                <option {{ $campo_extra->tipo == 'texto'? 'selected="selected"':'' }}
-                                                        value="texto">Texto</option>
-                                                <option  {{ $campo_extra->tipo == 'numero'? 'selected="selected"':'' }}
-                                                         value="numero">Número</option>
-                                                <option  {{ $campo_extra->tipo == 'data'? 'selected="selected"':'' }}
-                                                         value="data">Data</option>
-                                            </select>
-                                        </span>
-                                        <span class="col-md-1 text-right">
-                                            <label>Uso:</label>
-                                        </span>
-                                        <span class="col-md-3">
-                                            <span id="campo_extra{{ $campos_extras_count }}"
-                                                  class="label label-primary selecionavel">{{ $campo_extra->tag }}</span>
-                                        </span>
-                                        <span class="col-md-1 text-right">
-                                            <button type="button" class="btn btn-danger btn-flat"
-                                                    title="remover" onclick="removeTag({{ $campos_extras_count }});">
-                                                <i class="fa fa-times"></i>
-                                            </button>
-                                        </span>
-                                    </div>
-                                </li>
-                            @endforeach
-                        @endif
-
                     </ul>
 
                     <h5>Para que ao gerar um email os dados reais sejam carregados, é necessário usar estas tags onde
@@ -98,12 +40,23 @@
                                 <!-- /.box-header -->
                                 <div class="box-body">
                                     <ul class="list-group">
-                                        <li class="list-group-item">
-                                            <span class="label label-primary selecionavel">
-                                                [RAZAO_SOCIAL_OBRA]
-                                            </span> &nbsp;
-                                            Razão social
-                                        </li>
+                                        <?php
+                                        if (isset($templateEmail)) {
+                                            if( strlen(trim($templateEmail->tags)) ){
+                                                $tags = json_decode($templateEmail->tags);
+                                            }
+                                        }
+                                        ?>
+                                        @if(count($tags))
+                                                @foreach($tags as $tag)
+                                            <li class="list-group-item">
+                                                <span class="label label-primary selecionavel">
+                                                    {{ $tag->tag }}
+                                                </span> &nbsp;
+                                                {{ $tag->nome }}
+                                            </li>
+                                            @endforeach
+                                        @endif
                                 </div>
                                 <!-- /.box-body -->
                             </div>
