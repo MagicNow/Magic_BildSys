@@ -8,7 +8,8 @@
             <small class="label label-default pull-right margin10">
                 <i class="fa fa-clock-o"
                    aria-hidden="true"></i> {{ $quadroDeConcorrencia->created_at->format('d/m/Y H:i') }}
-                <i class="fa fa-user" aria-hidden="true"></i> {{ $quadroDeConcorrencia->user ? $quadroDeConcorrencia->user->name : 'Catálogo' }}
+                <i class="fa fa-user"
+                   aria-hidden="true"></i> {{ $quadroDeConcorrencia->user ? $quadroDeConcorrencia->user->name : 'Catálogo' }}
             </small>
 
             <small class="label label-info pull-right margin10" id="qc_status">
@@ -57,7 +58,7 @@
                             </span>
                             <span class="col-md-8 text-left">
                                 {!! Form::select('contrato_template_id',[''=>'Selecione...']+
-                                \App\Models\ContratoTemplate::pluck('nome','id')->toArray(),null,[
+                                \App\Models\ContratoTemplate::pluck('nome','id')->toArray(),$quadroDeConcorrencia->contrato_template_id,[
                                 'class'=>'form-control select2 contratoTemplate',
                                 'required'=>'required',
                                 'id'=>'contratoTemplate'.$qcFornecedor->id,
@@ -73,7 +74,7 @@
                             </span>
                             <span class="col-md-8 text-left">
                                 {!! Form::select('contrato_template_id',[''=>'Selecione...']+
-                                \App\Models\ContratoTemplate::pluck('nome','id')->toArray(),null,[
+                                \App\Models\ContratoTemplate::pluck('nome','id')->toArray(),$quadroDeConcorrencia->contrato_template_id,[
                                 'class'=>'form-control select2 contratoTemplate',
                                 'required'=>'required',
                                 'id'=>'contratoTemplate'.$qcFornecedor->id,
@@ -106,7 +107,7 @@
 
                                             @if(!isset($item['frete']))
                                                 <?php
-                                                if($item['tipo']=='MATERIAL'){
+                                                if ($item['tipo'] == 'MATERIAL') {
                                                     $tem_material = true;
                                                 }
                                                 ?>
@@ -150,9 +151,11 @@
                                         <tfoot>
                                         <tr class="warning">
                                             <td colspan="3" class="text-right">TOTAL</td>
-                                            <input type="hidden" id="total_contrato_{{ $qcFornecedor->id.'_'. $obraId }}"
+                                            <input type="hidden"
+                                                   id="total_contrato_{{ $qcFornecedor->id.'_'. $obraId }}"
                                                    value="{{ $total_contrato[$qcFornecedor->id][$obraId] }}">
-                                            <td class="text-right" id="sum_total_contrato_{{ $qcFornecedor->id.'_'. $obraId }}">
+                                            <td class="text-right"
+                                                id="sum_total_contrato_{{ $qcFornecedor->id.'_'. $obraId }}">
                                                 R$ {{ number_format($total_contrato[$qcFornecedor->id][$obraId]+$frete,2,',','.') }}
                                             </td>
                                         </tr>
@@ -160,10 +163,12 @@
                                     </table>
                                 @else
                                     <div class="alert alert-success alert-dismissible">
-                                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×
+                                        </button>
                                         <h4><i class="icon fa fa-check"></i>
                                             Contrato Obra {{ \App\Models\Obra::find($obraId)->nome }} já gerado!</h4>
-                                        <a href="{{ route('contratos.show', $contratosExistentes[$qcFornecedor->id][$obraId]->id) }}" class="btn btn-link btn-flat btn-block">
+                                        <a href="{{ route('contratos.show', $contratosExistentes[$qcFornecedor->id][$obraId]->id) }}"
+                                           class="btn btn-link btn-flat btn-block">
                                             Exibir contrato
                                         </a>
                                     </div>
@@ -205,7 +210,7 @@
         @endforeach
         <div class="row">
             <a href="{!! route('quadroDeConcorrencias.index') !!}" class="btn btn-default">
-                <i class="fa fa-arrow-left"></i>  {{ ucfirst( trans('common.back') )}}
+                <i class="fa fa-arrow-left"></i> {{ ucfirst( trans('common.back') )}}
             </a>
         </div>
     </div>
@@ -213,56 +218,56 @@
 @section('scripts')
     <script type="text/javascript">
         function alteraValorTotal(qual, valor) {
-            total = parseFloat($('#total_contrato_'+qual).val()) + moneyToFloat(valor);
-            $('#sum_total_contrato_'+qual).html(floatToMoney(total));
+            total = parseFloat($('#total_contrato_' + qual).val()) + moneyToFloat(valor);
+            $('#sum_total_contrato_' + qual).html(floatToMoney(total));
         }
         $(function () {
             $('.contratoTemplate').on('select2:select', function (evt) {
                 var qcFornecedor = $(evt.target).attr('qcFornecedor');
-                if(parseInt($(evt.target).val())==0){
-                    $('#blocoCamposExtras'+qcFornecedor).hide();
+                if (parseInt($(evt.target).val()) == 0) {
+                    $('#blocoCamposExtras' + qcFornecedor).hide();
                     return false;
                 }
-                $.ajax('/contrato-template/'+$(evt.target).val()+'/campos')
+                $.ajax('/contrato-template/' + $(evt.target).val() + '/campos')
                         .done(function (retorno) {
                             var campos = '';
-                            if(retorno.campos_extras){
-                                $.each(retorno.campos_extras, function(index, valor){
-                                    var v_tag = valor.tag.replace('[','');
-                                    v_tag = 'CAMPO_EXTRA['+ v_tag.replace(']','') + ']';
+                            if (retorno.campos_extras) {
+                                $.each(retorno.campos_extras, function (index, valor) {
+                                    var v_tag = valor.tag.replace('[', '');
+                                    v_tag = 'CAMPO_EXTRA[' + v_tag.replace(']', '') + ']';
 
                                     eh_telefone = valor.tag.toLowerCase().indexOf("telefone") != -1;
-                                    if(eh_telefone){
+                                    if (eh_telefone) {
                                         classe = 'form-control telefone';
-                                    }else{
+                                    } else {
                                         classe = 'form-control';
                                     }
 
-                                    campos += '<tr>'+
-                                            '   <td class="text-center">'+
-                                            '       <label for="'+v_tag+'">'+valor.nome+'</label>' +
-                                            '   </td>'+
-                                            '   <td>'+
-                                            '       <input type="text" class="'+classe+'" required="required" name="'+v_tag+'" placeholder="'+valor.nome+'">'+
-                                            '   </td>'+
-                                            '   <td class="text-center">'+
-                                            '       <label for="'+v_tag+'">'+valor.tipo+'</label>'+
-                                            '   </td>'+
+                                    campos += '<tr>' +
+                                            '   <td class="text-center">' +
+                                            '       <label for="' + v_tag + '">' + valor.nome + '</label>' +
+                                            '   </td>' +
+                                            '   <td>' +
+                                            '       <input type="text" class="' + classe + '" required="required" name="' + v_tag + '" placeholder="' + valor.nome + '">' +
+                                            '   </td>' +
+                                            '   <td class="text-center">' +
+                                            '       <label for="' + v_tag + '">' + valor.tipo + '</label>' +
+                                            '   </td>' +
                                             '</tr>';
                                 });
                             }
-                            $('#blocoCamposExtras'+qcFornecedor+' tbody').html(campos);
-                            $('#blocoCamposExtras'+qcFornecedor).show();
+                            $('#blocoCamposExtras' + qcFornecedor + ' tbody').html(campos);
+                            $('#blocoCamposExtras' + qcFornecedor).show();
                         })
                         .fail(function (retorno) {
-                            swal('Erro', 'Houve um problema ao buscar dados do template','error');
+                            swal('Erro', 'Houve um problema ao buscar dados do template', 'error');
                         });
             });
 
             $('form').submit(function (event) {
                 event.preventDefault();
                 var form = $(this);
-                $('#'+form.attr('id')+' .box.box-solid').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
+                $('#' + form.attr('id') + ' .box.box-solid').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
 
                 if (form.attr('id') == '' || form.attr('id') != 'fupload') {
                     $.ajax({
@@ -275,18 +280,18 @@
                             var contratos_ids = '';
                             var exibir_contratos = '';
                             $.each(retorno.contratos, function (index, contrato) {
-                                if(contratos_ids!=''){
+                                if (contratos_ids != '') {
                                     contratos_ids += ', ';
                                 }
-                                exibir_contratos += ' <a href="/contratos/'+contrato.id+'" target="_blank" class="btn btn-link btn-flat"> Exibir contrato '+contrato.id+' </a>';
+                                exibir_contratos += ' <a href="/contratos/' + contrato.id + '" target="_blank" class="btn btn-link btn-flat"> Exibir contrato ' + contrato.id + ' </a>';
                                 contratos_ids += contrato.id;
                             });
-                            $('#boxQcFornecedor'+retorno.qcFornecedor+' .box-body').html('<div class="alert alert-success alert-dismissible">'+
-                                    '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>'+
-                                    '<h4><i class="icon fa fa-check"></i> Contrato '+ contratos_ids + ' gerado!</h4>'+
+                            $('#boxQcFornecedor' + retorno.qcFornecedor + ' .box-body').html('<div class="alert alert-success alert-dismissible">' +
+                                    '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>' +
+                                    '<h4><i class="icon fa fa-check"></i> Contrato ' + contratos_ids + ' gerado!</h4>' +
                                     exibir_contratos +
                                     '</div>');
-                            $('#boxQcFornecedor'+retorno.qcFornecedor+' .box-footer').hide();
+                            $('#boxQcFornecedor' + retorno.qcFornecedor + ' .box-footer').hide();
                             swal({
                                         title: 'Contrato Gerado',
                                         text: '',
@@ -294,7 +299,7 @@
                                         timer: 2000,
                                         showConfirmButton: false
                                     },
-                                    function(){
+                                    function () {
                                         swal.close();
                                     });
                         }, 10);
@@ -327,18 +332,18 @@
                             var contratos_ids = '';
                             var exibir_contratos = '';
                             $.each(retorno.contratos, function (index, contrato) {
-                                if(contratos_ids!=''){
+                                if (contratos_ids != '') {
                                     contratos_ids += ', ';
                                 }
-                                exibir_contratos += ' <a href="/contratos/'+contrato.id+'" target="_blank" class="btn btn-link btn-flat"> Exibir contrato '+contrato.id+' </a>';
+                                exibir_contratos += ' <a href="/contratos/' + contrato.id + '" target="_blank" class="btn btn-link btn-flat"> Exibir contrato ' + contrato.id + ' </a>';
                                 contratos_ids += contrato.id;
                             });
-                            $('#boxQcFornecedor'+retorno.qcFornecedor+' .box-body').html('<div class="alert alert-success alert-dismissible">'+
-                                    '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>'+
-                                    '<h4><i class="icon fa fa-check"></i> Contrato '+ contratos_ids + ' gerado!</h4>'+
+                            $('#boxQcFornecedor' + retorno.qcFornecedor + ' .box-body').html('<div class="alert alert-success alert-dismissible">' +
+                                    '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>' +
+                                    '<h4><i class="icon fa fa-check"></i> Contrato ' + contratos_ids + ' gerado!</h4>' +
                                     exibir_contratos +
                                     '</div>');
-                            $('#boxQcFornecedor'+retorno.qcFornecedor+' .box-footer').hide();
+                            $('#boxQcFornecedor' + retorno.qcFornecedor + ' .box-footer').hide();
 
                             swal({
                                         title: 'Contrato Gerado',
@@ -347,7 +352,7 @@
                                         timer: 2000,
                                         showConfirmButton: false
                                     },
-                                    function(){
+                                    function () {
                                         swal.close();
                                     });
                         }, 10);

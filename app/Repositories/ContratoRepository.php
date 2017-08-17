@@ -40,20 +40,16 @@ class ContratoRepository extends BaseRepository
     ];
 
     /**
-     * Configure the Model
-     *
-     * @return string
-     **/
-    public function model()
-    {
-        return Contrato::class;
-    }
-
+     * criar Criação de contrato
+     * @param array $attributes
+     * @return array [ success => Boolean, contratos => Array, erro => String]
+     * @throws Exception
+     */
     public static function criar(array $attributes)
     {
         // Busca o Fornecedor que vai ser gerado o contrato
         $qcFornecedor = QcFornecedor::where('qc_fornecedor.id', $attributes['qcFornecedor'])
-            ->with(['itens'=> function ($query) {
+            ->with(['itens' => function ($query) {
                 $query->where('vencedor', '1');
             }])
             ->first();
@@ -68,8 +64,8 @@ class ContratoRepository extends BaseRepository
             if ($soma_frete != $qcFornecedor->getOriginal('valor_frete')) {
                 return [
                     'success' => false,
-                    'contratos'=>[],
-                    'erro'=>'Valor do Frete ('.$soma_frete.') não confere com o passado R$ '. $qcFornecedor->valor_frete
+                    'contratos' => [],
+                    'erro' => 'Valor do Frete (' . $soma_frete . ') não confere com o passado R$ ' . $qcFornecedor->valor_frete
                 ];
             }
         }
@@ -77,9 +73,9 @@ class ContratoRepository extends BaseRepository
         // Valida se o fornecedor já está cadastrado no Mega
         if ($qcFornecedor->fornecedor->codigo_mega == '') {
             return [
-                'success'   => false,
+                'success' => false,
                 'contratos' => [],
-                'erro'      => 'O Fornecedor '. $qcFornecedor->fornecedor->nome.' não está cadastrado no Mega, por favor
+                'erro' => 'O Fornecedor ' . $qcFornecedor->fornecedor->nome . ' não está cadastrado no Mega, por favor
                 solicite a inclusão para que o contrato possa ser gerado'
             ];
         }
@@ -234,7 +230,7 @@ class ContratoRepository extends BaseRepository
                         'qtd',
                     ]);
                 })
-                ->toArray();
+                    ->toArray();
 
                 $contratoItens[$obra_id][] = $contrato_item;
             }
@@ -251,19 +247,19 @@ class ContratoRepository extends BaseRepository
                         $insumo = Insumo::where('codigo', $insumo_codigo)->first();
 
                         $contrato_item = [
-                            'insumo_id'         => $insumo->id,
-                            'qc_item_id'        => null,
-                            'qtd'               => $valor_total,
-                            'valor_unitario'    => 1,
-                            'valor_total'       => $valor_total,
-                            'aprovado'          => 1
+                            'insumo_id' => $insumo->id,
+                            'qc_item_id' => null,
+                            'qtd' => $valor_total,
+                            'valor_unitario' => 1,
+                            'valor_total' => $valor_total,
+                            'aprovado' => 1
                         ];
 
                         $contrato_item['apropriacoes'] = $valores_atuais->map(function ($valor) use ($insumo) {
                             return $valor['oc_itens']->map(function ($oc_item) use ($valor, $insumo) {
                                 $oc_item_arr = $oc_item->toArray();
                                 $porcentagem_apropriacao = money_to_float($oc_item->qtd) * $valor['valor_unitario'] / $valor['valor_total_item'];
-                                $oc_item_arr['qtd'] =  $valor['valor_item'] * $porcentagem_apropriacao;
+                                $oc_item_arr['qtd'] = $valor['valor_item'] * $porcentagem_apropriacao;
                                 $oc_item_arr['ligacao_id'] = $oc_item->insumo_id;
                                 $oc_item_arr['insumo_id'] = $insumo->id;
 
@@ -280,8 +276,8 @@ class ContratoRepository extends BaseRepository
                                 ]);
                             });
                         })
-                        ->collapse()
-                        ->toArray();
+                            ->collapse()
+                            ->toArray();
 
                         $contratoItens[$obraId][] = $contrato_item;
                     }
@@ -318,12 +314,12 @@ class ContratoRepository extends BaseRepository
                     $valorApropriacao = $valorFrete / $ocItensCount;
 
                     $contrato_item = [
-                        'insumo_id'         => $insumo->id,
-                        'qc_item_id'        => null,
-                        'qtd'               => $valorFrete,
-                        'valor_unitario'    => 1,
-                        'valor_total'       => $valorFrete,
-                        'aprovado'          => 1
+                        'insumo_id' => $insumo->id,
+                        'qc_item_id' => null,
+                        'qtd' => $valorFrete,
+                        'valor_unitario' => 1,
+                        'valor_total' => $valorFrete,
+                        'aprovado' => 1
                     ];
 
                     $contrato_item['apropriacoes'] = $ocItens->map(function ($ocItem) use ($valorApropriacao, $insumo) {
@@ -344,7 +340,7 @@ class ContratoRepository extends BaseRepository
                             'qtd',
                         ]);
                     })
-                    ->toArray();
+                        ->toArray();
 
                     $contratoItens[$obraID][] = $contrato_item;
 
@@ -381,9 +377,9 @@ class ContratoRepository extends BaseRepository
 
                 // Salva o primeiro status
                 ContratoStatusLog::create([
-                    'contrato_id'        => $contrato->id,
+                    'contrato_id' => $contrato->id,
                     'contrato_status_id' => $contrato->contrato_status_id,
-                    'user_id'            => auth()->id()
+                    'user_id' => auth()->id()
                 ]);
 
                 // Salva os itens do contrato
@@ -398,7 +394,7 @@ class ContratoRepository extends BaseRepository
                                     ['contrato_item_id' => $saved_item->id]
                                 )
                             );
-                            if(isset($apropriacao['ligacao_id'])) {
+                            if (isset($apropriacao['ligacao_id'])) {
                                 ApropriacaoLigacao::create(
                                     array_merge(
                                         $apropriacao_created->toArray(),
@@ -431,8 +427,54 @@ class ContratoRepository extends BaseRepository
 
         return [
             'success' => true,
-            'contratos'=> $contratos
+            'contratos' => $contratos
         ];
+    }
+
+    /**
+     * notifyFornecedor
+     * @param $id
+     * @return array
+     */
+    public static function notifyFornecedor($id)
+    {
+        $contrato = Contrato::find($id);
+        if (!$contrato) {
+            return [
+                'success' => false,
+                'messages' => [
+                    'O contrato não foi encontrado!'
+                ]
+            ];
+        }
+
+        $arquivo = self::geraImpressao($id);
+        $fornecedor = $contrato->fornecedor;
+        $mensagens = [];
+
+        if ($user = $fornecedor->user) {
+            //se tiver já envia uma notificação
+            $user->notify(new NotificaFornecedorContratoServico($contrato, $arquivo));
+            return [
+                'success' => true
+            ];
+        } else {
+            // Se não tiver envia um e-mail para o fornecedor
+            if (!strlen($fornecedor->email)) {
+                $mensagens[] = 'O Fornecedor ' . $fornecedor->nome . ' não possui acesso e e-mail cadastrado,
+                    <a href="' . Storage::url($arquivo) . '" target="_blank">Imprima o contrato</a> e faça o fornecedor assinar.
+                    O telefone do fornecedor é ' . $fornecedor->telefone;
+                return [
+                    'success' => true,
+                    'messages' => $mensagens
+                ];
+            } else {
+                Mail::to($fornecedor->email)->send(new ContratoServicoFornecedorNaoUsuario($contrato, $arquivo));
+                return [
+                    'success' => true
+                ];
+            }
+        }
     }
 
     /**
@@ -456,12 +498,12 @@ class ContratoRepository extends BaseRepository
 
         // Tenta aplicar variáveis de Obra
         foreach (Obra::$campos as $campo) {
-            $templateRenderizado = str_replace('['.strtoupper($campo).'_OBRA]', $contrato->obra->$campo, $templateRenderizado);
+            $templateRenderizado = str_replace('[' . strtoupper($campo) . '_OBRA]', $contrato->obra->$campo, $templateRenderizado);
         }
 
         // Tenta aplicar variáveis de Fornecedor
         foreach (Fornecedor::$campos as $campo) {
-            $templateRenderizado = str_replace('['.strtoupper($campo).'_FORNECEDOR]', $contrato->fornecedor->$campo, $templateRenderizado);
+            $templateRenderizado = str_replace('[' . strtoupper($campo) . '_FORNECEDOR]', $contrato->fornecedor->$campo, $templateRenderizado);
         }
 
         // Tenta aplicar variáveis de Contrato
@@ -478,10 +520,10 @@ class ContratoRepository extends BaseRepository
             <tbody>';
         foreach ($contrato->itens as $item) {
             $tabela_itens .= '<tr>';
-            $tabela_itens .= '<td>'.$item->insumo->nome.'</td>';
-            $tabela_itens .= '<td align="right">'.float_to_money($item->qtd, '').' '. $item->insumo->unidade_sigla.'</td>';
-            $tabela_itens .= '<td align="right">'.float_to_money($item->valor_unitario).'</td>';
-            $tabela_itens .= '<td align="right">'.float_to_money($item->valor_total).'</td>';
+            $tabela_itens .= '<td>' . $item->insumo->nome . '</td>';
+            $tabela_itens .= '<td align="right">' . float_to_money($item->qtd, '') . ' ' . $item->insumo->unidade_sigla . '</td>';
+            $tabela_itens .= '<td align="right">' . float_to_money($item->valor_unitario) . '</td>';
+            $tabela_itens .= '<td align="right">' . float_to_money($item->valor_total) . '</td>';
 
             $tabela_itens .= '</tr>';
         }
@@ -494,60 +536,31 @@ class ContratoRepository extends BaseRepository
 
         ];
         foreach ($contratoCampos as $campo => $valor) {
-            $templateRenderizado = str_replace('['.strtoupper($campo).'_CONTRATO]', $valor, $templateRenderizado);
+            $templateRenderizado = str_replace('[' . strtoupper($campo) . '_CONTRATO]', $valor, $templateRenderizado);
         }
         // Tenta aplicar variáveis do Template (dinâmicas)
         if (strlen($contrato->campos_extras)) {
-            $variaveis_dinamicas = json_decode($contrato->campos_extras) ;
+            $variaveis_dinamicas = json_decode($contrato->campos_extras);
             foreach ($variaveis_dinamicas as $campo => $valor) {
-                $templateRenderizado = str_replace('['.strtoupper($campo).']', $valor, $templateRenderizado);
+                $templateRenderizado = str_replace('[' . strtoupper($campo) . ']', $valor, $templateRenderizado);
             }
         }
-        if (is_file(base_path().'/storage/app/public/contratos/contrato_'.$contrato->id.'.pdf')) {
-            unlink(base_path().'/storage/app/public/contratos/contrato_'.$contrato->id.'.pdf');
+        if (is_file(base_path() . '/storage/app/public/contratos/contrato_' . $contrato->id . '.pdf')) {
+            unlink(base_path() . '/storage/app/public/contratos/contrato_' . $contrato->id . '.pdf');
         }
-        PDF::loadHTML(utf8_decode($templateRenderizado))->setPaper('a4')->setOrientation('portrait')->save(base_path().'/storage/app/public/contratos/contrato_'.$contrato->id.'.pdf');
-        return 'contratos/contrato_'.$contrato->id.'.pdf';
+        PDF::loadHTML(utf8_decode($templateRenderizado))->setPaper('a4')
+            ->setOrientation('portrait')
+            ->save(base_path() . '/storage/app/public/contratos/contrato_' . $contrato->id . '.pdf');
+        return 'contratos/contrato_' . $contrato->id . '.pdf';
     }
 
-    public static function notifyFornecedor($id)
+    /**
+     * Configure the Model
+     *
+     * @return string
+     **/
+    public function model()
     {
-        $contrato = Contrato::find($id);
-        if (!$contrato) {
-            return [
-                'success'=>false,
-                'messages'=>[
-                    'O contrato não foi encontrado!'
-                ]
-            ];
-        }
-
-        $arquivo = self::geraImpressao($id);
-        $fornecedor = $contrato->fornecedor;
-        $mensagens = [];
-
-        if ($user = $fornecedor->user) {
-            //se tiver já envia uma notificação
-            $user->notify(new NotificaFornecedorContratoServico($contrato, $arquivo));
-            return [
-                'success'=>true
-            ];
-        } else {
-            // Se não tiver envia um e-mail para o fornecedor
-            if (!strlen($fornecedor->email)) {
-                $mensagens[] = 'O Fornecedor ' . $fornecedor->nome . ' não possui acesso e e-mail cadastrado,
-                    <a href="'.Storage::url($arquivo).'" target="_blank">Imprima o contrato</a> e faça o fornecedor assinar.
-                    O telefone do fornecedor é ' . $fornecedor->telefone;
-                return [
-                    'success'=>true,
-                    'messages'=>$mensagens
-                ];
-            } else {
-                Mail::to($fornecedor->email)->send(new ContratoServicoFornecedorNaoUsuario($contrato, $arquivo));
-                return [
-                    'success'=>true
-                ];
-            }
-        }
+        return Contrato::class;
     }
 }
