@@ -12,6 +12,7 @@ use App\Models\Notafiscal;
 use App\Models\NotaFiscalItem;
 use App\Repositories\ConsultaCteRepository;
 use App\Repositories\ConsultaNfeRepository;
+use App\Repositories\MegaXmlRepository;
 use App\Repositories\NotafiscalRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
@@ -213,4 +214,12 @@ class NotafiscalController extends AppBaseController
         }
         return "Não há notas para manifestação.";
     }
+
+    public function integraMega($id)
+    {
+        $notafiscal = Notafiscal::find($id);
+        $mega = new MegaXmlRepository();
+        return $mega->montaXML($notafiscal);
+    }
+
 }
