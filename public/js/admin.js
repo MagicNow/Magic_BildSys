@@ -66090,7 +66090,7 @@ $(function() {
             yValue = 0;
           }
 
-          ctx.lineWidth = 3;
+          ctx.lineWidth = 1;
 
           if (yValue) {
             ctx.beginPath();
@@ -66125,7 +66125,30 @@ $(function() {
 
     __chartInsumoFornecedor.options.scales.yAxes[0].ticks.max = _.max(_.map(ofertasDoInsumo, _.property('valor_total'))) + 100;
 
+    __chartInsumoFornecedor.options.horizontalLine[0].y = _.max(_.map(ofertasDoInsumo, _.property('valor_oi'))) ? _.max(_.map(ofertasDoInsumo, _.property('valor_oi'))) : [];
+    __chartInsumoFornecedor.options.horizontalLine[0].style = 'red';
+    __chartInsumoFornecedor.options.horizontalLine[0].text = _.max(_.map(ofertasDoInsumo, _.property('valor_oi'))) ? _.max(_.map(ofertasDoInsumo, _.property('valor_oi'))) : 0;
+
+    __chartInsumoFornecedor.options.horizontalLine[1].y = _.min(_.map(ofertasDoInsumo, function (obj) {
+          if(obj['valor_total'] > 0) {
+            return obj['valor_total'];
+          } else {
+            return _.max(_.map(ofertasDoInsumo, _.property('valor_total'))) + 100;
+          }
+        })
+    );
+    __chartInsumoFornecedor.options.horizontalLine[1].style = 'blue';
+    __chartInsumoFornecedor.options.horizontalLine[1].text = _.min(_.map(ofertasDoInsumo, function (obj) {
+          if(obj['valor_total'] > 0) {
+            return obj['valor_total'];
+          } else {
+            return _.max(_.map(ofertasDoInsumo, _.property('valor_total'))) + 100;
+          }
+        })
+    );
+
     __chartInsumoFornecedor.update();
+
   });
 
   var formFinalizar = document.getElementById('form-finalizar');
