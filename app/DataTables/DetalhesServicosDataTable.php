@@ -30,7 +30,7 @@ class DetalhesServicosDataTable extends DataTable
                 return '<small class="pull-left">R$</small>'.number_format( doubleval($obj->valor_realizado), 2, ',','.');
             })
             ->editColumn('valor_comprometido_a_gastar', function($obj){
-                $valor_comprometido_a_gastar = OrdemDeCompraRepository::valorComprometidoAGastarItem($obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, $obj->insumo_id);
+                $valor_comprometido_a_gastar = OrdemDeCompraRepository::valorComprometidoAGastarItem($obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, $obj->insumo_id, $this->obra_id);
 
                 return '<small class="pull-left">R$</small>'.number_format( doubleval($valor_comprometido_a_gastar), 2, ',','.');
             })

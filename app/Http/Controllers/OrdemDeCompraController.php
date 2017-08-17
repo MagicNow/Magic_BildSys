@@ -1406,7 +1406,7 @@ class OrdemDeCompraController extends AppBaseController
             ->where('ativo', 1);
 
         foreach($orcamentos->get() as $orcamento) {
-            $valor_comprometido_a_gastar += OrdemDeCompraRepository::valorComprometidoAGastarItem($orcamento->grupo_id, $orcamento->subgrupo1_id, $orcamento->subgrupo2_id, $orcamento->subgrupo3_id, $orcamento->servico_id, $orcamento->insumo_id);
+            $valor_comprometido_a_gastar += OrdemDeCompraRepository::valorComprometidoAGastarItem($orcamento->grupo_id, $orcamento->subgrupo1_id, $orcamento->subgrupo2_id, $orcamento->subgrupo3_id, $orcamento->servico_id, $orcamento->insumo_id, $obra_id);
         }
 
         $orcamentoInicial = $orcamentos->sum('orcamentos.preco_total');

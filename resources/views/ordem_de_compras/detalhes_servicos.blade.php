@@ -96,7 +96,7 @@
                 </h4>
             </div>
             <div class="col-md-2 text-right">
-                <h5>SALDO DISPONÍVEL</h5>
+                <h5>SALDO DISPONÍVEL APÓS O.C</h5>
                 <h4>
                     <small class="pull-left">R$</small>
                     <span id="saldo_disponivel"></span>
