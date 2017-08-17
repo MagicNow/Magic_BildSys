@@ -413,7 +413,8 @@ class QuadroDeConcorrenciaController extends AppBaseController
         QcItemQcFornecedorRepository $qcItemFornecedorRepository,
         QcStatusLogRepository $qcStatusLogRepository
     ) {
-        $quadro = $this->quadroDeConcorrenciaRepository
+
+       $quadro = $this->quadroDeConcorrenciaRepository
             ->with(
                 'itens.insumo',
                 'itens.ordemDeCompraItens'
@@ -487,6 +488,16 @@ class QuadroDeConcorrenciaController extends AppBaseController
             $quadro->update([
                 'qc_status_id' => QcStatus::CONCORRENCIA_FINALIZADA
             ]);
+
+            //Envia email de agradecimento a todos os fornecedores que estavam participando do QC
+
+            $forncedoresQC = $qcFornecedorRepository->with('fornecedor')->buscarPorQuadroNaRodada($id);
+
+            foreach ($forncedoresQC as $fornecedor ) {
+
+                $this->quadroDeConcorrenciaRepository->notifyFornecedorParticipacaoQC($fornecedor->fornecedor);
+            }
+
 
             if ($request->valor_frete) {
                 foreach ($request->valor_frete as $qcFornecedorId => $valor) {

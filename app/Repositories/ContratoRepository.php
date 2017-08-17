@@ -528,7 +528,8 @@ class ContratoRepository extends BaseRepository
 
         if ($user = $fornecedor->user) {
             //se tiver já envia uma notificação
-            $user->notify(new NotificaFornecedorContratoServico($contrato, $arquivo));
+            //$user->notify(new NotificaFornecedorContratoServico($contrato, $arquivo));
+            Mail::to($fornecedor->email)->send(new ContratoServicoFornecedorNaoUsuario($contrato, $arquivo));
             return [
                 'success'=>true
             ];

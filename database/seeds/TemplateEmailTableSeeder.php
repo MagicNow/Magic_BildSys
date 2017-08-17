@@ -77,6 +77,17 @@ class TemplateEmailTableSeeder extends Seeder
                 'tags'=> '{"1":{"tag":"[FORNECEDOR_NOME]","nome":"Fornecedor Nome"},"2":{"tag":"[FORNECEDOR_EMAIL]","nome":"Fornecedor Email"},"3":{"tag":"[FORNECEDOR_SENHA]","nome":"Fornecedor Senha"}}',
                 'user_id' => 2,
                 'created_at' => date('Y-m-d H::s')
+            ],
+            [
+                'id' => 5,
+                'nome' => 'Agradecimento Participação - BILD',
+                'template' => '<p>Olá [FORNECEDOR_NOME],</p>
+                               <p>Agradecemos sua participação no nosso Quadro de Concorrência.</p>
+                               <p>Atenciosamente, Bild Desenvolvimento Imobiliário</p>
+                                ',
+                'tags'=> '{"1":{"tag":"[FORNECEDOR_NOME]","nome":"Fornecedor Nome"}}',
+                'user_id' => 2,
+                'created_at' => date('Y-m-d H::s')
             ]
         ];
 
