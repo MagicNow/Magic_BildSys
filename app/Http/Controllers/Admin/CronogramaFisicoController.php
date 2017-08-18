@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\DataTables\Admin\OrcamentoDataTable;
+use App\DataTables\Admin\CronogramaFisicoDataTable;
 use App\Http\Requests\Admin;
-use App\Http\Requests\Admin\CreateOrcamentoRequest;
-use App\Http\Requests\Admin\UpdateOrcamentoRequest;
+use App\Http\Requests\Admin\CronogramaFisicoRequest;
 use App\Jobs\PlanilhaProcessa;
 use App\Models\Obra;
 use App\Models\Planilha;
 use App\Models\TemplatePlanilha;
 use App\Models\TipoOrcamento;
-use App\Repositories\Admin\OrcamentoRepository;
+use App\Repositories\Admin\CronogramaFisicoRepository;
 use App\Repositories\Admin\SpreadsheetRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
@@ -19,57 +18,57 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Response;
 
-class OrcamentoController extends AppBaseController
+class CronogramaFisicoController extends AppBaseController
 {
-    /** @var  OrcamentoRepository */
+    /** @var  CronogramaFisicoRepository */
     private $orcamentoRepository;
 
-    public function __construct(OrcamentoRepository $orcamentoRepo)
+    public function __construct(CronogramaFisicoRepository $cronogramaRepo)
     {
-        $this->orcamentoRepository = $orcamentoRepo;
+        $this->cronogramaFisicoRepository = $cronogramaRepo;
     }
 
     /**
-     * Display a listing of the Orcamento.
+     * Display a listing of the Cronograma.
      *
      * @param OrcamentoDataTable $orcamentoDataTable
      * @return Response
      */
-    public function index(OrcamentoDataTable $orcamentoDataTable)
+    public function index(CronogramaFisicoDataTable $cronogramaFisicoDataTable)
     {
-        return $orcamentoDataTable->render('admin.orcamentos.index');
+        return $cronogramaFisicoDataTable->render('admin.cronograma_fisicos.index');
     }
 
     /**
-     * Show the form for creating a new Orcamento.
+     * Show the form for creating a new Cronograma.
      *
      * @return Response
      */
     public function create()
     {
-        return view('admin.orcamentos.create');
+        return view('admin.cronograma_fisicos.create');
     }
 
     /**
-     * Store a newly created Orcamento in storage.
+     * Store a newly created Cronograma in storage.
      *
      * @param CreateOrcamentoRequest $request
      *
      * @return Response
      */
-    public function store(CreateOrcamentoRequest $request)
+    public function store(CreateCronogramaFisicoRequest $request)
     {
         $input = $request->all();
 
-        $orcamento = $this->orcamentoRepository->create($input);
+        $cronograma = $this->cronogramaFisicoRepository->create($input);
 
-        Flash::success('Orcamento '.trans('common.saved').' '.trans('common.successfully').'.');
+        Flash::success('Cronograma '.trans('common.saved').' '.trans('common.successfully').'.');
 
-        return redirect(route('admin.orcamentos.index'));
+        return redirect(route('admin.cronograma_fisicos.index'));
     }
 
     /**
-     * Display the specified Orcamento.
+     * Display the specified Cronograma.
      *
      * @param  int $id
      *
@@ -77,19 +76,19 @@ class OrcamentoController extends AppBaseController
      */
     public function show($id)
     {
-        $orcamento = $this->orcamentoRepository->findWithoutFail($id);
+        $cronograma = $this->cronogramaFisicoRepository->findWithoutFail($id);
 
-        if (empty($orcamento)) {
-            Flash::error('Orcamento '.trans('common.not-found'));
+        if (empty($cronograma)) {
+            Flash::error('Cronograma '.trans('common.not-found'));
 
-            return redirect(route('admin.orcamentos.index'));
+            return redirect(route('admin.cronograma_fisicos.index'));
         }
 
-        return view('admin.orcamentos.show')->with('orcamento', $orcamento);
+        return view('admin.cronograma_fisicos.show')->with('cronograma', $cronograma);
     }
 
     /**
-     * Show the form for editing the specified Orcamento.
+     * Show the form for editing the specified Cronograma.
      *
      * @param  int $id
      *
@@ -97,44 +96,44 @@ class OrcamentoController extends AppBaseController
      */
     public function edit($id)
     {
-        $orcamento = $this->orcamentoRepository->findWithoutFail($id);
+        $cronograma = $this->cronogramaFisicoRepository->findWithoutFail($id);
 
-        if (empty($orcamento)) {
-            Flash::error('Orcamento '.trans('common.not-found'));
+        if (empty($cronograma)) {
+            Flash::error('Cronograma '.trans('common.not-found'));
 
-            return redirect(route('admin.orcamentos.index'));
+            return redirect(route('admin.cronograma_fisicos.index'));
         }
 
-        return view('admin.orcamentos.edit')->with('orcamento', $orcamento);
+        return view('admin.cronograma_fisicos.edit')->with('cronograma', $cronograma);
     }
 
     /**
-     * Update the specified Orcamento in storage.
+     * Update the specified Cronograma in storage.
      *
      * @param  int              $id
-     * @param UpdateOrcamentoRequest $request
+     * @param UpdateCronogramFisicoRequest $request
      *
      * @return Response
      */
-    public function update($id, UpdateOrcamentoRequest $request)
+    public function update($id, UpdateCronogramFisicoRequest $request)
     {
-        $orcamento = $this->orcamentoRepository->findWithoutFail($id);
+        $cronograma = $this->cronogramaFisicoRepository->findWithoutFail($id);
 
-        if (empty($orcamento)) {
-            Flash::error('Orcamento '.trans('common.not-found'));
+        if (empty($cronograma)) {
+            Flash::error('Cronograma '.trans('common.not-found'));
 
-            return redirect(route('admin.orcamentos.index'));
+            return redirect(route('admin.cronograma_fisicos.index'));
         }
 
-        $orcamento = $this->orcamentoRepository->update($request->all(), $id);
+        $cronograma = $this->cronogramaFisicoRepository->update($request->all(), $id);
 
-        Flash::success('Orcamento '.trans('common.updated').' '.trans('common.successfully').'.');
+        Flash::success('Cronograma '.trans('common.updated').' '.trans('common.successfully').'.');
 
-        return redirect(route('admin.orcamentos.index'));
+        return redirect(route('admin.cronograma_fisicos.index'));
     }
 
     /**
-     * Remove the specified Orcamento from storage.
+     * Remove the specified Cronograma from storage.
      *
      * @param  int $id
      *
@@ -142,19 +141,19 @@ class OrcamentoController extends AppBaseController
      */
     public function destroy($id)
     {
-        $orcamento = $this->orcamentoRepository->findWithoutFail($id);
+        $cronograma = $this->cronogramaFisicoRepository->findWithoutFail($id);
 
-        if (empty($orcamento)) {
-            Flash::error('Orcamento '.trans('common.not-found'));
+        if (empty($cronograma)) {
+            Flash::error('Cronograma '.trans('common.not-found'));
 
-            return redirect(route('admin.orcamentos.index'));
+            return redirect(route('admin.cronograma_fisicos.index'));
         }
 
-        $this->orcamentoRepository->delete($id);
+        $this->cronogramaFisicoRepository->delete($id);
 
-        Flash::success('Orcamento '.trans('common.deleted').' '.trans('common.successfully').'.');
+        Flash::success('Cronograma '.trans('common.deleted').' '.trans('common.successfully').'.');
 
-        return redirect(route('admin.orcamentos.index'));
+        return redirect(route('admin.cronograma_fisicos.index'));
     }
 
     ################################ IMPORTAÇÃO ###################################
@@ -166,9 +165,11 @@ class OrcamentoController extends AppBaseController
      */
     public function indexImport(){
         $obras = Obra::pluck('nome','id')->toArray();
+		//$cronograma_fisico_tipos = CronogramaFisicoTipos::pluck('nome','id')->toArray();
         $orcamento_tipos = TipoOrcamento::pluck('nome','id')->toArray();
-        $templates = TemplatePlanilha::where('modulo', 'Orçamento')->pluck('nome','id')->toArray();
-        return view('admin.orcamentos.indexImport', compact('orcamento_tipos','obras', 'templates'));
+        $templates = TemplatePlanilha::where('modulo', 'Cronograma Físicos')->pluck('nome','id')->toArray();
+        //return view('admin.cronograma_fisicos.indexImport', compact('cronograma_fisico_tipos','obras', 'templates'));
+		return view('admin.cronograma_fisicos.indexImport', compact('orcamento_tipos','obras', 'templates'));
     }
 
     /**

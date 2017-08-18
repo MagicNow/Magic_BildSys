@@ -4,7 +4,7 @@
     @include( 'flash::message' )
 
     <section class="content-header">
-        <h1 class="pull-left">Importar orçamentos</h1>
+        <h1 class="pull-left">Importar planos</h1>
     </section>
     <div class="content">
         <div class="clearfix"></div>
