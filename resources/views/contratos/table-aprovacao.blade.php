@@ -351,9 +351,7 @@
     @parent
     <script>
         $(function(){
-            startLoading();
             $('#valor_comprometido_a_gastar_total').text('{{float_to_money($valor_comprometido_a_gastar_total)}}');
-            stopLoading();
         })
     </script>
 @endsection
