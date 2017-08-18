@@ -168,7 +168,7 @@
                                                         {{ float_to_money($item->qtd, '') }}
                                                     </td>
                                                     <td class="text-center">
-                                                        {{ number_format( $item->qtd_inicial - doubleval($item->qtd_realizada), 2, ',','.') }}
+                                                        {{ number_format( money_to_float($item->qtd_inicial) - $item->qtd_realizada - $item->qtd, 2, ',','.') }}
                                                     </td>
                                                 </tr>
                                             </tbody>
