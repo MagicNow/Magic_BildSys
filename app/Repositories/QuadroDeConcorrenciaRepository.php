@@ -455,7 +455,7 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
     {
         if ($user = $fornecedor->user) {
             //se tiver já envia uma notificação
-            $user->notify(new IniciaConcorrencia($quadroDeConcorrencia));
+            $user->notify(new IniciaConcorrencia($quadroDeConcorrencia, $fornecedor));
         } else {
             // Se não tiver envia um e-mail para o fornecedor
             if (!strlen($fornecedor->email)) {

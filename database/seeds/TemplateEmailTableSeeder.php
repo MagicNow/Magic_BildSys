@@ -88,6 +88,18 @@ class TemplateEmailTableSeeder extends Seeder
                 'tags'=> '{"1":{"tag":"[FORNECEDOR_NOME]","nome":"Fornecedor Nome"}}',
                 'user_id' => 2,
                 'created_at' => date('Y-m-d H::s')
+            ],
+            [
+                'id' => 6,
+                'nome' => 'Quadro de Concorrência - BILD',
+                'template' => '<p>Olá [FORNECEDOR_NOME],</p>
+                               <p>Existe um Quadro de Concorrência e você foi convidado à participar</p>
+                               <p>Agradecemos antecipadamente pela sua atenção!</p>
+                               <p>Atenciosamente, Bild Desenvolvimento Imobiliário</p>
+                                ',
+                'tags'=> '{"1":{"tag":"[FORNECEDOR_NOME]","nome":"Fornecedor Nome"}}',
+                'user_id' => 2,
+                'created_at' => date('Y-m-d H::s')
             ]
         ];
 
