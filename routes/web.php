@@ -1082,6 +1082,8 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->get('configuracaoEstaticas/{configuracaoEstaticas}/edit', ['as' => 'configuracaoEstaticas.edit', 'uses' => 'ConfiguracaoEstaticaController@edit'])
             ->middleware('needsPermission:configuracaoEstaticas.edit');
     });
+    
+    Route::resource('templateEmails', 'TemplateEmailController');
 
     $router->get('notasfiscais', ['as' => 'notafiscals.index', 'uses' => 'NotafiscalController@index']);
     $router->post('notasfiscais', ['as' => 'notafiscals.store', 'uses' => 'NotafiscalController@store']);

@@ -3,28 +3,27 @@
 namespace App\Mail;
 
 use App\Models\Fornecedor;
+use App\Models\QuadroDeConcorrencia;
 use App\Models\TemplateEmail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class BoletimFornecedorNaoUsuario extends Mailable
+class AgradeceParticipacaoQC extends Mailable
 {
     use Queueable, SerializesModels;
-    
+
     public $fornecedor;
-    public $arquivo;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(Fornecedor $fornecedor, $arquivo = null)
+    public function __construct(Fornecedor $fornecedor)
     {
         $this->fornecedor = $fornecedor;
-        $this->arquivo = $arquivo;
     }
 
     /**
@@ -34,14 +33,15 @@ class BoletimFornecedorNaoUsuario extends Mailable
      */
     public function build()
     {
+
         $model = new TemplateEmail();
-        $r = $model->find(2);
+        $r = $model->find(5);
 
         $r->template = str_replace("[FORNECEDOR_NOME]", $this->fornecedor->nome, $r->template);
-        
-        return $this->subject('Boletim de Medição de serviço - '.date('m/Y').' - Bild')
-            ->attach( storage_path('/app/public/') . str_replace('storage/', '', $this->arquivo) )
-            ->view('emails.body-email-base')
-            ->with(['text' => $r->template]);
+
+
+        return $this->subject('Agradecimento Participação - BILD '.date('d/m/Y'))->view('emails.body-email-base')->with([
+            'text' => $r->template
+        ]);
     }
 }
