@@ -50,25 +50,7 @@
             <table style="{{ $style['email-body_inner'] }}" align="center" width="800" cellpadding="0" cellspacing="0">
                 <tr>
                     <td style="{{ $fontFamily }} {{ $style['email-body_cell'] }}">
-                        <!-- Greeting -->
-                        <h1 style="{{ $style['header-1'] }}">
-                            Olá {{ $fornecedor->nome }}
-                        </h1>
-
-                        <!-- Intro -->
-
-                        <p style="{{ $style['paragraph'] }}">
-                            O contrato foi gerado e é necessário sua assinatura em todas as folhas
-                            para dar seguimento no processo de contratação.
-                            <br>
-                            <br>
-                            Baixe o arquivo em anexo, assine e nos envie.
-                        </p>
-
-                    <!-- Salutation -->
-                        <p style="{{ $style['paragraph'] }}">
-                            Aguardamos o mais breve possível o retorno deste e-mail
-                        </p>
+                        {!!html_entity_decode($text)!!}
                     </td>
                 </tr>
             </table>

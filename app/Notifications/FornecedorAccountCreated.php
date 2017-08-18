@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Models\TemplateEmail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -42,13 +43,16 @@ class FornecedorAccountCreated extends Notification
      */
     public function toMail($notifiable)
     {
+        $model = new TemplateEmail();
+        $r = $model->find(4);
+
+        $r->template = str_replace("[FORNECEDOR_NOME]", $notifiable->name, $r->template);
+        $r->template = str_replace("[FORNECEDOR_EMAIL]", $notifiable->email, $r->template);
+        $r->template = str_replace("[FORNECEDOR_SENHA]", $this->password, $r->template);
+
         return (new MailMessage)
             ->subject('Conta de acesso no sistema da Bild Desenvolvimento Imobiliário')
-            ->greeting('Olá, ' . $notifiable->name)
-            ->line('Uma conta de acesso no sistema da Bild Desenvolvimento Imobiliário foi cadastrada para você')
-            ->line('Você pode cadastrar com os dados:')
-            ->line('Email: ' . $notifiable->email)
-            ->line('Senha: ' . $this->password);
+            ->view('emails.body-email-base',['text' => $r->template]);
     }
 
     /**

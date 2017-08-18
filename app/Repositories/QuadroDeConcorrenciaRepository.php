@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Mail\IniciaConcorrenciaFornecedorNaoUsuario;
+use App\Mail\AgradeceParticipacaoQC;
 use App\Models\CatalogoContrato;
 use App\Models\CatalogoContratoInsumo;
 use App\Models\CompradorInsumo;
@@ -454,7 +455,7 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
     {
         if ($user = $fornecedor->user) {
             //se tiver já envia uma notificação
-            $user->notify(new IniciaConcorrencia($quadroDeConcorrencia));
+            $user->notify(new IniciaConcorrencia($quadroDeConcorrencia, $fornecedor));
         } else {
             // Se não tiver envia um e-mail para o fornecedor
             if (!strlen($fornecedor->email)) {
@@ -465,6 +466,11 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
                 Mail::to($fornecedor->email)->send(new IniciaConcorrenciaFornecedorNaoUsuario($quadroDeConcorrencia, $fornecedor));
             }
         }
+    }
+
+    public function notifyFornecedorParticipacaoQC(Fornecedor $fornecedor)
+    {
+        Mail::to($fornecedor->email)->send(new AgradeceParticipacaoQC($fornecedor));
     }
 
     /**

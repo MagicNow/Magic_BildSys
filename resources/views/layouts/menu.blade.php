@@ -182,6 +182,14 @@
         </li>
         @endshield
 
+        <li class="{{ Request::is('templateEmails*') ? 'active' : '' }}">
+            <a href="{!! route('templateEmails.index') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Template Emails</span>
+            </a>
+        </li>
+
     </ul>
 </li>
+
 
