@@ -22,6 +22,9 @@ class QuadroDeConcorrenciaDataTable extends DataTable
             ->editColumn('created_at', function($obj){
                 return $obj->created_at ? with(new\Carbon\Carbon($obj->created_at))->format('d/m/Y H:i') : '';
             })
+            ->editColumn('updated_at', function($obj){
+                return $obj->updated_at ? with(new\Carbon\Carbon($obj->updated_at))->format('d/m/Y H:i') : '';
+            })
             ->editColumn('usuario', function($obj){
                 return $obj->usuario ?
                     '<span class="label label-info">'.$obj->usuario.'</span>' :
@@ -32,9 +35,6 @@ class QuadroDeConcorrenciaDataTable extends DataTable
             })
             ->filterColumn('quadro_de_concorrencias.created_at', function ($query, $keyword) {
                 $query->whereRaw("DATE_FORMAT(quadro_de_concorrencias.created_at,'%d/%m/%Y') like ?", ["%$keyword%"]);
-            })
-            ->editColumn('quadro_de_concorrencias.updated_at', function($obj){
-                return $obj->updated_at ? with(new\Carbon\Carbon($obj->updated_at))->format('d/m/Y H:i') : '';
             })
             ->filterColumn('updated_at', function ($query, $keyword) {
                 $query->whereRaw("DATE_FORMAT(quadro_de_concorrencias.updated_at,'%d/%m/%Y') like ?", ["%$keyword%"]);
