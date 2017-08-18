@@ -19,8 +19,8 @@
         <h5>Valor comprometido à gastar</h5>
         <h4>
             <small class="pull-left">R$</small>
-            {{---  TO DO = A gastar: É a soma de todos os saldos de contratos na que apropriação, como ainda não exixte contrato gerado, tem q estar zerado--}}
-            {{float_to_money($itens->contrato_itens->sum('valor_total') + $itens->contrato_itens->sum('qtd'))}}
+            {{---  TO DO = A gastar: É a soma de todos os saldos de contratos na que apropriação--}}
+            <span id="valor_comprometido_a_gastar_total"></span>
         </h4>
     </div>
     <div class="col-sm-3 text-right borda-direita" title="Restante do Orçamento Inicial em relação aos itens desta O.C.">
@@ -74,23 +74,28 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @php $valor_comprometido_a_gastar_total = 0; @endphp
+
                     @foreach($itens->oc_itens as $item)
                         @php $valor_comprometido_a_gastar = 0; @endphp
+
                         @if($itens->contrato_itens->isNotEmpty())
                             @foreach($itens->contrato_itens as $c_item)
-                                @foreach($c_item->apropriacoes as $c_apropriacao)
-                                    @php
-                                        $valor_comprometido_a_gastar += $c_item->apropriacoes
-                                            ->where('grupo_id', $item->grupo_id)
-                                            ->where('subgrupo1_id', $item->subgrupo1_id)
-                                            ->where('subgrupo2_id', $item->subgrupo2_id)
-                                            ->where('subgrupo3_id', $item->subgrupo3_id)
-                                            ->where('servico_id', $item->servico_id)
-                                            ->sum('qtd');
-                                    @endphp
-                                @endforeach
+                                @php
+                                    $valor_comprometido_a_gastar += $c_item->apropriacoes
+                                        ->where('grupo_id', $item->grupo_id)
+                                        ->where('subgrupo1_id', $item->subgrupo1_id)
+                                        ->where('subgrupo2_id', $item->subgrupo2_id)
+                                        ->where('subgrupo3_id', $item->subgrupo3_id)
+                                        ->where('servico_id', $item->servico_id)
+                                        ->sum('qtd');
+                                @endphp
                             @endforeach
                         @endif
+                        @php
+                            $valor_comprometido_a_gastar += $item->contratoItem->valor_unitario * $item->qtd;
+                            $valor_comprometido_a_gastar_total += $valor_comprometido_a_gastar;
+                        @endphp
                         <tr>
                             <td class="text-center">
                                 <span data-toggle="tooltip" data-placement="right" data-html="true"
@@ -341,3 +346,14 @@
         @endif
     </div>
 </div>
+
+@section('scripts')
+    @parent
+    <script>
+        $(function(){
+            startLoading();
+            $('#valor_comprometido_a_gastar_total').text('{{float_to_money($valor_comprometido_a_gastar_total)}}');
+            stopLoading();
+        })
+    </script>
+@endsection
