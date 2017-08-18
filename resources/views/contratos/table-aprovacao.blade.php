@@ -75,6 +75,22 @@
                 </thead>
                 <tbody>
                     @foreach($itens->oc_itens as $item)
+                        @php $valor_comprometido_a_gastar = 0; @endphp
+                        @if($itens->contrato_itens->isNotEmpty())
+                            @foreach($itens->contrato_itens as $c_item)
+                                @foreach($c_item->apropriacoes as $c_apropriacao)
+                                    @php
+                                        $valor_comprometido_a_gastar += $c_item->apropriacoes
+                                            ->where('grupo_id', $item->grupo_id)
+                                            ->where('subgrupo1_id', $item->subgrupo1_id)
+                                            ->where('subgrupo2_id', $item->subgrupo2_id)
+                                            ->where('subgrupo3_id', $item->subgrupo3_id)
+                                            ->where('servico_id', $item->servico_id)
+                                            ->sum('qtd');
+                                    @endphp
+                                @endforeach
+                            @endforeach
+                        @endif
                         <tr>
                             <td class="text-center">
                                 <span data-toggle="tooltip" data-placement="right" data-html="true"
@@ -93,18 +109,16 @@
                             <td class="text-center">{{ float_to_money($item->contratoItem->valor_unitario) }} </td>
                             <td class="text-center">{{ float_to_money($item->contratoItem->valor_unitario * $item->qtd) }} </td>
                             <td class="text-center">
-                                {{--CONTA = saldo - previsto no orçamento--}}
                                 <i class="fa fa-circle
-                                    {{ ($item->qtd_inicial - $item->qtd_realizado - $item->qtd_inicial) < 0
+                                    {{ (money_to_float($item->qtd_inicial) - $item->qtd_realizada - $item->qtd) < 0
                                         ? 'red'
                                         : 'green'
                                     }}">
                                 </i>
                             </td>
                             <td class="text-center">
-                                {{--CONTA = saldo - previsto no orçamento--}}
                                 <i class="fa fa-circle
-                                    {{ ($item->preco_inicial - $item->valor_realizado - $item->preco_inicial) < 0
+                                    {{ ($item->preco_inicial - doubleval($item->valor_realizado) - $valor_comprometido_a_gastar) < 0
                                         ? 'red'
                                         : 'green'
                                     }}"></i>
@@ -194,11 +208,11 @@
                                                     </td>
                                                     <td class="text-center">
                                                         <small class="pull-left">R$</small>
-                                                        {{float_to_money($item->contratoItem->valor_total)}}
+                                                        {{ number_format( $valor_comprometido_a_gastar, 2, ',','.') }}
                                                     </td>
                                                     <td class="text-center">
                                                         <small class="pull-left">R$</small>
-                                                        {{ number_format( $item->preco_inicial-doubleval($item->valor_realizado), 2, ',','.') }}
+                                                        {{ number_format( $item->preco_inicial - doubleval($item->valor_realizado) - $valor_comprometido_a_gastar, 2, ',','.') }}
                                                     </td>
                                                     <td class="text-center">
                                                         @if($item->trocado)
