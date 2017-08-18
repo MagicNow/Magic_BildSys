@@ -210,7 +210,7 @@ class QuadroDeConcorrenciaDataTable extends DataTable
         $columns = [
             'Q&period;C&period;' => ['name' => 'quadro_de_concorrencias.id', 'data' => 'id', 'width'=>'10%'],
             'Status' => ['name' => 'qc_status.nome', 'data' => 'situacao', 'width'=>'20%'],
-            'atualizadoEm' => ['name' => 'quadro_de_concorrencias.updated_at', 'data' => 'updated_at', 'width'=>'12%'],
+            'atualizado' => ['name' => 'quadro_de_concorrencias.updated_at', 'data' => 'updated_at', 'width'=>'12%'],
             'rodada' => ['name' => 'rodada_atual', 'data' => 'rodada_atual', 'width'=>'5%'],
             'fornecedores' => ['name' => 'fornecedores', 'data' => 'fornecedores', 'width'=>'5%'],
             'propostas' => ['name' => 'propostas', 'data' => 'propostas', 'width'=>'5%'],
@@ -218,7 +218,7 @@ class QuadroDeConcorrenciaDataTable extends DataTable
 
         if(!auth()->user()->fornecedor) {
             $columns['usuário'] = ['name' => 'users.name', 'data' => 'usuario'];
-            $columns['criadoEm'] = ['name' => 'quadro_de_concorrencias.created_at', 'data' => 'created_at', 'width'=>'12%'];
+            $columns['criado'] = ['name' => 'quadro_de_concorrencias.created_at', 'data' => 'created_at', 'width'=>'12%'];
         }
 
         $columns['action'] = [
