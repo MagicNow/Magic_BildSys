@@ -158,6 +158,13 @@ class RolesAndPermissions extends Seeder
             'regionals.create' => 'Criação de regional',
             'regionals.edit'   => 'Edição de regional',
             'regionals.delete'   => 'Remoção de regional',
+			
+			'cronogramaFisicos.list' => 'Listagem de cronograma físicos',
+            'cronogramaFisicos.create' => 'Criação de cronograma físicos',
+            'cronogramaFisicos.edit'   => 'Edição de cronograma físicos',
+            'cronogramaFisicos.delete'   => 'Remoção de cronograma físicos',
+			
+            'cronogramaFisicos.import' => 'Importar orçamentos',
 
             ################# SITE ###################
             'compras_lembretes.list' => 'Listagem de compras e lembretes',

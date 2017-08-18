@@ -31,6 +31,33 @@
     </ul>
 </li>
 
+<li class="treeview {{ Request::is('admin/cronogramaFisico*') ? 'active' : '' }}">
+    <a href="#">
+        <i class="fa fa-balance-scale"></i> <span>Cronograma Físicos</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+    </a>
+    <ul class="treeview-menu">
+        @shield('cronogramaFisicos.list')
+        <li class="{{ Request::is('admin/cronogramaFisicos*') ? 'active' : '' }}">
+            <a href="{!! route('admin.cronogramaFisicos.index') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Cronograma Físicos</span>
+            </a>
+        </li>
+        @endshield
+        @shield('cronogramaFisicos.import')
+        <li class="{{ Request::is('admin/cronogramaFisicos') ? 'active' : '' }}">
+            <a href="{!! route('admin.cronogramaFisicos.indexImport') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Importação</span>
+            </a>
+        </li>
+        @endshield
+    </ul>
+</li>
+
 <li class="treeview {{ Request::is('admin/planejamento*') ? 'active' : '' }}">
     <a href="#">
         <i class="fa fa-calendar"></i> <span>Cronograma de Obras</span>
