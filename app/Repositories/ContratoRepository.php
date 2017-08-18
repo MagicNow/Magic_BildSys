@@ -508,6 +508,7 @@ class ContratoRepository extends BaseRepository
 
         // Tenta aplicar variáveis de Contrato
 
+        // [TABELA_ITENS_CONTRATO]
         $tabela_itens = '<table>
             <thead>
                 <tr>
@@ -538,6 +539,51 @@ class ContratoRepository extends BaseRepository
         foreach ($contratoCampos as $campo => $valor) {
             $templateRenderizado = str_replace('[' . strtoupper($campo) . '_CONTRATO]', $valor, $templateRenderizado);
         }
+
+        // Campos do Q.C.
+
+        // [COMPOSICAO_DO_PRECO]
+        $composicao_preco = '';
+        $tipo_frete = 'Incluso';
+        $valor_frete = '';
+        $qcFornecedor = $item->qcItem->ofertas()->where('vencedor',1)->first()->qcFornecedor;
+
+        if($qcFornecedor){
+            $composicao_preco .='<h3>Composição do Preço</h3>';
+            if($qcFornecedor->porcentagem_servico>0){
+                $composicao_preco .='<h5>Serviço: '.$qcFornecedor->porcentagem_servico.'%</h5>';
+            }
+            if($qcFornecedor->porcentagem_material>0){
+                $composicao_preco .='<h5>Material: '.$qcFornecedor->porcentagem_material.'%</h5>';
+            }
+            if($qcFornecedor->porcentagem_locacao>0){
+                $composicao_preco .='<h5>Locação: '.$qcFornecedor->porcentagem_locacao.'%</h5>';
+            }
+            if($qcFornecedor->nf_material &&
+                (
+                    !$qcFornecedor->porcentagem_servico
+                    &&
+                    !$qcFornecedor->porcentagem_material
+                    && !$qcFornecedor->porcentagem_locacao
+                )
+            ){
+                $composicao_preco .='<h5>100% MATERIAL</h5>';
+            }
+            $tipo_frete = $qcFornecedor->tipo_frete?$qcFornecedor->tipo_frete:'Incluso';
+            $valor_frete = 'R$ '.$qcFornecedor->valor_frete;
+        }
+
+        $qcCampos = [
+            'composicao_do_preco' => $composicao_preco,
+            'frete_tipo' => $tipo_frete,
+            'frete_valor' => $valor_frete,
+
+        ];
+        foreach ($qcCampos as $campo => $valor) {
+            $templateRenderizado = str_replace('[' . strtoupper($campo) . ']', $valor, $templateRenderizado);
+        }
+
+
         // Tenta aplicar variáveis do Template (dinâmicas)
         if (strlen($contrato->campos_extras)) {
             $variaveis_dinamicas = json_decode($contrato->campos_extras);

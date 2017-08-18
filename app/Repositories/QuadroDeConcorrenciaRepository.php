@@ -7,6 +7,7 @@ use App\Models\CatalogoContrato;
 use App\Models\CatalogoContratoInsumo;
 use App\Models\CompradorInsumo;
 use App\Models\ConfiguracaoEstatica;
+use App\Models\ContratoTemplate;
 use App\Models\Fornecedor;
 use App\Models\OrdemDeCompraItem;
 use App\Models\QcFornecedor;
@@ -129,6 +130,7 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
 
             }
 
+            $contratoTemplateContrato = ContratoTemplate::where('tipo', 'M')->first(); // Busca template do tipo Material (só tem um no sistema)
             foreach ($QCs_por_forncedor as $QC)
             {
                 $quadroDeConcorrencia = QuadroDeConcorrencia::create([
@@ -136,7 +138,8 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
                     'qc_status_id' => 1,
                     'obrigacoes_fornecedor' => ConfiguracaoEstatica::find(1)->valor,
                     'obrigacoes_bild' => ConfiguracaoEstatica::find(2)->valor,
-                    'rodada_atual' => 1
+                    'rodada_atual' => 1,
+                    'contrato_template_id'=> $contratoTemplateContrato->id
                 ]);
 
                 foreach ($QC as $qc_item_array) {
