@@ -84,8 +84,8 @@
                   <th>Obra - Cidade</th>
                   <th>Insumo</th>
                   <th>Observações ao fornecedor:</th>
+                  <th>Un. de Medida</th>
                   <th>Quantidade</th>
-                  <th>Un</th>
                   <th>Valor Unitário</th>
                   <th>Valor Total</th>
               </tr>
@@ -116,11 +116,11 @@
                           !!}
                       </td>
 
+                      <td>{{ $item->insumo->unidade_sigla }}</td>
                       <td class="js-calc-amount">
                           {{ number_format($item->qtd,2,',','.') }}
                           {!! Form::hidden("itens[{$item->id}][qtd]", $item->qtd) !!}
                       </td>
-                      <td>{{ $item->insumo->unidade_sigla }}</td>
                       <td>
                           <div class="input-group">
                               <span class="input-group-addon" id="basic-addon1">R$</span>
@@ -321,8 +321,7 @@
                           {!!
                             Form::checkbox(
                               "nf_servico",
-                              '1',
-                              old('nf_servico',true)
+                              '1'
                             )
                           !!}
                           Serviço

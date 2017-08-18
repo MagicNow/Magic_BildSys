@@ -22,6 +22,9 @@ class QuadroDeConcorrenciaDataTable extends DataTable
             ->editColumn('created_at', function($obj){
                 return $obj->created_at ? with(new\Carbon\Carbon($obj->created_at))->format('d/m/Y H:i') : '';
             })
+            ->editColumn('updated_at', function($obj){
+                return $obj->updated_at ? with(new\Carbon\Carbon($obj->updated_at))->format('d/m/Y H:i') : '';
+            })
             ->editColumn('usuario', function($obj){
                 return $obj->usuario ?
                     '<span class="label label-info">'.$obj->usuario.'</span>' :
@@ -32,9 +35,6 @@ class QuadroDeConcorrenciaDataTable extends DataTable
             })
             ->filterColumn('quadro_de_concorrencias.created_at', function ($query, $keyword) {
                 $query->whereRaw("DATE_FORMAT(quadro_de_concorrencias.created_at,'%d/%m/%Y') like ?", ["%$keyword%"]);
-            })
-            ->editColumn('quadro_de_concorrencias.updated_at', function($obj){
-                return $obj->updated_at ? with(new\Carbon\Carbon($obj->updated_at))->format('d/m/Y H:i') : '';
             })
             ->filterColumn('updated_at', function ($query, $keyword) {
                 $query->whereRaw("DATE_FORMAT(quadro_de_concorrencias.updated_at,'%d/%m/%Y') like ?", ["%$keyword%"]);
@@ -210,7 +210,7 @@ class QuadroDeConcorrenciaDataTable extends DataTable
         $columns = [
             'Q&period;C&period;' => ['name' => 'quadro_de_concorrencias.id', 'data' => 'id', 'width'=>'10%'],
             'Status' => ['name' => 'qc_status.nome', 'data' => 'situacao', 'width'=>'20%'],
-            'atualizadoEm' => ['name' => 'quadro_de_concorrencias.updated_at', 'data' => 'updated_at', 'width'=>'12%'],
+            'atualizado' => ['name' => 'quadro_de_concorrencias.updated_at', 'data' => 'updated_at', 'width'=>'12%'],
             'rodada' => ['name' => 'rodada_atual', 'data' => 'rodada_atual', 'width'=>'5%'],
             'fornecedores' => ['name' => 'fornecedores', 'data' => 'fornecedores', 'width'=>'5%'],
             'propostas' => ['name' => 'propostas', 'data' => 'propostas', 'width'=>'5%'],
@@ -218,7 +218,7 @@ class QuadroDeConcorrenciaDataTable extends DataTable
 
         if(!auth()->user()->fornecedor) {
             $columns['usuário'] = ['name' => 'users.name', 'data' => 'usuario'];
-            $columns['criadoEm'] = ['name' => 'quadro_de_concorrencias.created_at', 'data' => 'created_at', 'width'=>'12%'];
+            $columns['criado'] = ['name' => 'quadro_de_concorrencias.created_at', 'data' => 'created_at', 'width'=>'12%'];
         }
 
         $columns['action'] = [
