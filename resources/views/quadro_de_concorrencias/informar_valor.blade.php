@@ -321,8 +321,7 @@
                           {!!
                             Form::checkbox(
                               "nf_servico",
-                              '1',
-                              old('nf_servico',true)
+                              '1'
                             )
                           !!}
                           Serviço
