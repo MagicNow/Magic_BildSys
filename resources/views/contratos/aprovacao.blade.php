@@ -89,7 +89,7 @@
 @endif
 
 @if($contrato->contrato_status_id == 4 )
-    <a href="{{ route('contratos.imprimirContrato', $contrato->id) }}" download="contrato_{{ $contrato->id }}.pdf" target="_blank"
+    <a href="{{ route('contratos.imprimirContrato', $contrato->id) }}" target="_blank"
         class="btn btn-lg btn-flat btn-success" title="Imprimir Contrato para enviar ao Fornecedor">
         <i class="fa fa-print"></i>
     </a>
