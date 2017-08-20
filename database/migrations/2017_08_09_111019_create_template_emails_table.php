@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use TemplateEmailTableSeeder;
 
 class CreateTemplateEmailsTable extends Migration
 {
