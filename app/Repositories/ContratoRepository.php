@@ -445,10 +445,12 @@ class ContratoRepository extends BaseRepository
      */
     public static function geraImpressao($id)
     {
-        $contrato = Contrato::find($id);
+        $contrato = Contrato::with('fornecedor')->find($id);
         if (!$contrato) {
             return null;
         }
+
+        $nomeArquivo = 'contrato-'.str_slug($contrato->fornecedor->nome).'-'.$contrato->id;
 
         $template = $contrato->contratoTemplate;
 
@@ -503,11 +505,12 @@ class ContratoRepository extends BaseRepository
                 $templateRenderizado = str_replace('['.strtoupper($campo).']', $valor, $templateRenderizado);
             }
         }
-        if (is_file(base_path().'/storage/app/public/contratos/contrato_'.$contrato->id.'.pdf')) {
-            unlink(base_path().'/storage/app/public/contratos/contrato_'.$contrato->id.'.pdf');
+        if (is_file(base_path().'/storage/app/public/contratos/'.$nomeArquivo.'.pdf')) {
+            unlink(base_path().'/storage/app/public/contratos/'.$nomeArquivo.'.pdf');
         }
-        PDF::loadHTML(utf8_decode($templateRenderizado))->setPaper('a4')->setOrientation('portrait')->save(base_path().'/storage/app/public/contratos/contrato_'.$contrato->id.'.pdf');
-        return 'contratos/contrato_'.$contrato->id.'.pdf';
+
+        PDF::loadHTML(utf8_decode($templateRenderizado))->setPaper('a4')->setOrientation('portrait')->save(base_path().'/storage/app/public/contratos/'.$nomeArquivo.'.pdf');
+        return 'contratos/'.$nomeArquivo.'.pdf';
     }
 
     public static function notifyFornecedor($id)
