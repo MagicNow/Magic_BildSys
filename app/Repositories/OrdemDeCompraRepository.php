@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Models\Contrato;
 use App\Models\ContratoItemApropriacao;
 use App\Models\OrdemDeCompra;
 use App\Models\OrdemDeCompraItem;
@@ -106,16 +107,17 @@ class OrdemDeCompraRepository extends BaseRepository
     {
         $valores_comprometido_a_gastar = ContratoItemApropriacao::select([
             'contrato_item_apropriacoes.id',
+            'contratos.id as contrato_id',
             DB::raw('(contrato_item_apropriacoes.qtd * contrato_itens.valor_unitario) as valor_comprometido_a_gastar')
             ])
             ->join('contrato_itens', 'contrato_itens.id' ,'=', 'contrato_item_apropriacoes.contrato_item_id')
             ->join('contratos', 'contratos.id' ,'=', 'contrato_itens.contrato_id')
-            ->where('contrato_item_apropriacoes.insumo_id', $insumo_id)
             ->where('contrato_item_apropriacoes.grupo_id', $grupo_id)
             ->where('contrato_item_apropriacoes.subgrupo1_id', $subgrupo1_id)
             ->where('contrato_item_apropriacoes.subgrupo2_id', $subgrupo2_id)
             ->where('contrato_item_apropriacoes.subgrupo3_id', $subgrupo3_id)
             ->where('contrato_item_apropriacoes.servico_id', $servico_id)
+            ->where('contrato_item_apropriacoes.insumo_id', $insumo_id)
             ->where('contratos.obra_id', $obra_id);
 
         if($item_id){
@@ -131,10 +133,30 @@ class OrdemDeCompraRepository extends BaseRepository
         $valores_comprometido_a_gastar = $valores_comprometido_a_gastar->get();
 
         $valor_comprometido_a_gastar = 0;
+        $valor_apropriacoes = 0;
 
         if(count($valores_comprometido_a_gastar)){
             foreach ($valores_comprometido_a_gastar as $valor) {
                 $valor_comprometido_a_gastar += $valor->valor_comprometido_a_gastar;
+
+                //Valor das apropriações
+                $contrato = Contrato::find($valor->contrato_id);
+
+                $itens = ContratoItemApropriacaoRepository::forContratoApproval($contrato);
+
+                if($itens->contrato_itens->isNotEmpty()) {
+                    foreach ($itens->contrato_itens as $c_item) {
+                        $valor_apropriacoes += $c_item->apropriacoes
+                            ->where('grupo_id', $grupo_id)
+                            ->where('subgrupo1_id', $subgrupo1_id)
+                            ->where('subgrupo2_id', $subgrupo2_id)
+                            ->where('subgrupo3_id', $subgrupo3_id)
+                            ->where('servico_id', $servico_id)
+                            ->sum('qtd');
+                    }
+                    $valor_comprometido_a_gastar += $valor_apropriacoes;
+                }
+                //Valor das apropriações
             }
         }
 

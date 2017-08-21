@@ -115,10 +115,6 @@
     <script>
         var itens_selecionados = [];
 
-        $(function () {
-            recalcularAnaliseServico();
-        });
-
         function recalcularAnaliseServico() {
             startLoading();
             var valor_previsto = 0;
@@ -127,7 +123,6 @@
             var valor_oc = 0;
             var saldo_disponivel = 0;
             var tem_checked = false;
-//            var itens_selecionados = [];
 
             $('.detalhes_servicos_itens').each(function (index, value) {
                 if($(value).prop('checked')) {
@@ -153,37 +148,40 @@
 
                     itens_selecionados.remove($(value).attr('id'));
                 }
-            });
+                if(index+1 === $('.detalhes_servicos_itens').length) {
+                    if(tem_checked) {
+                        $('#valor_previsto').text(floatToMoney(valor_previsto, ''));
+                        $('#valor_comprometido_a_gastar').text(floatToMoney(valor_comprometido_a_gastar, ''));
+                        $('#saldo_orcamento').text(floatToMoney(saldo_orcamento, ''));
+                        $('#valor_oc').text(floatToMoney(valor_oc, ''));
+                        $('#saldo_disponivel').text(floatToMoney(saldo_disponivel, ''));
 
-            if(tem_checked) {
-                $('#valor_previsto').text(floatToMoney(valor_previsto, ''));
-                $('#valor_comprometido_a_gastar').text(floatToMoney(valor_comprometido_a_gastar, ''));
-                $('#saldo_orcamento').text(floatToMoney(saldo_orcamento, ''));
-                $('#valor_oc').text(floatToMoney(valor_oc, ''));
-                $('#saldo_disponivel').text(floatToMoney(saldo_disponivel, ''));
-
-                $('#dataTableBuilder').on('preXhr.dt', function ( e, settings, data ) {
-                    startLoading();
-                    $('.js-datatable-filter-form :input').each(function () {
-                        data[$(this).prop('name')] = itens_selecionados;
-                    });
-
-                    setTimeout(function () {
-                        $.each(itens_selecionados, function( index, value ) {
-                            $('#'+value).attr('checked', true);
+                        $('#dataTableBuilder').on('preXhr.dt', function ( e, settings, data ) {
+                            startLoading();
+                            $('.js-datatable-filter-form :input').each(function () {
+                                data[$(this).prop('name')] = itens_selecionados;
+                            });
                         });
 
-                        stopLoading();
-                    }, 500);
-                });
+                    } else {
+                        $('.detalhes_servicos_itens').each(function (index2, value) {
+                            valor_previsto += parseFloat($(value).attr('valor_previsto'));
+                            valor_comprometido_a_gastar += parseFloat($(value).attr('valor_comprometido_a_gastar'));
+                            saldo_orcamento += parseFloat($(value).attr('saldo_orcamento'));
+                            valor_oc += parseFloat($(value).attr('valor_oc'));
+                            saldo_disponivel += parseFloat($(value).attr('saldo_disponivel'));
 
-            } else {
-                $('#valor_previsto').text('{{ number_format($orcamentoInicial,2,',','.') }}');
-                $('#valor_comprometido_a_gastar').text('{{ number_format($valor_comprometido_a_gastar,2,',','.') }}');
-                $('#saldo_orcamento').text('{{ number_format($orcamentoInicial,2,',','.') }}');
-                $('#valor_oc').text('{{ number_format($totalSolicitado,2,',','.') }}');
-                $('#saldo_disponivel').text('{{ number_format(($orcamentoInicial - $totalSolicitado),2,',','.') }}');
-            }
+                            if(index2+1 === $('.detalhes_servicos_itens').length) {
+                                $('#valor_previsto').text(floatToMoney(valor_previsto, ''));
+                                $('#valor_comprometido_a_gastar').text(floatToMoney(valor_comprometido_a_gastar, ''));
+                                $('#saldo_orcamento').text(floatToMoney(saldo_orcamento, ''));
+                                $('#valor_oc').text(floatToMoney(valor_oc, ''));
+                                $('#saldo_disponivel').text(floatToMoney(saldo_disponivel, ''));
+                            }
+                        });
+                    }
+                }
+            });
 
             window.LaravelDataTables["dataTableBuilder"].draw();
 

@@ -1392,8 +1392,6 @@ class OrdemDeCompraController extends AppBaseController
             ->where('ordem_de_compra_itens.obra_id', $obra_id)
             ->whereIn('oc_status_id',[2,3,5]);
 
-        $orcamentoInicial = $valor_comprometido_a_gastar = $realizado = $totalSolicitado = 0;
-
         $itens = collect([]);
 
         if(!count($ordemDeCompraItens)){
@@ -1402,45 +1400,13 @@ class OrdemDeCompraController extends AppBaseController
             return back();
         }
 
-        $orcamentos = Orcamento::where('servico_id', $servico_id)
-            ->where('obra_id', $obra_id)
-            ->where('ativo', 1);
-
-        foreach($orcamentos->get() as $orcamento) {
-            $valor_comprometido_a_gastar += OrdemDeCompraRepository::valorComprometidoAGastarItem($orcamento->grupo_id, $orcamento->subgrupo1_id, $orcamento->subgrupo2_id, $orcamento->subgrupo3_id, $orcamento->servico_id, $orcamento->insumo_id, $obra_id);
-        }
-
-        $orcamentoInicial = $orcamentos->sum('orcamentos.preco_total');
-
-        $totalSolicitado = $ordemDeCompraItens->whereRaw('NOT EXISTS(
-                        SELECT 1 
-                        FROM contrato_itens CI
-                        JOIN contrato_item_apropriacoes CIT ON CIT.contrato_item_id = CI.id
-                        JOIN oc_item_qc_item OCQC ON OCQC.qc_item_id = CI.qc_item_id
-                        WHERE CI.id = CIT.contrato_item_id
-                        AND OCQC.ordem_de_compra_item_id = ordem_de_compra_itens.id
-                    )')
-            ->sum('valor_total');
-
-        $realizado = OrdemDeCompraItem::join('ordem_de_compras','ordem_de_compras.id','=','ordem_de_compra_itens.ordem_de_compra_id')
-            ->where('ordem_de_compras.obra_id',$obra_id)
-            ->whereIn('oc_status_id',[2,3,5])
-            ->whereIn('ordem_de_compra_itens.insumo_id',$ordemDeCompraItens->pluck('insumo_id','insumo_id')->toArray())
-            ->sum('ordem_de_compra_itens.valor_total');
-
-        $saldo = $orcamentoInicial - $realizado;
-
         return $detalhesServicosDataTable->getObra($obra_id)->getServico($servico_id)->render(
             'ordem_de_compras.detalhes_servicos',
             compact(
                 'ordemDeCompra',
-                'orcamentoInicial',
-                'realizado',
-                'valor_comprometido_a_gastar',
                 'saldo',
                 'itens',
-                'servico',
-                'totalSolicitado'
+                'servico'
             )
         );
     }

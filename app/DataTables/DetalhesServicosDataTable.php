@@ -35,13 +35,8 @@ class DetalhesServicosDataTable extends DataTable
                 return '<small class="pull-left">R$</small>'.number_format( floatval($valor_comprometido_a_gastar), 2, ',','.');
             })
             ->editColumn('saldo_orcamento', function($obj){
-//              Se o insumo foi incluído no orçamento, o SALDO DE ORÇAMENTO fica com o valor comprado negativo.
-//                if($obj->insumo_incluido){
-//                    return '<small class="pull-left">R$</small> - '.number_format( floatval($obj->valor_oc), 2, ',','.');
-//                }else{
                 $valor_comprometido_a_gastar = OrdemDeCompraRepository::valorComprometidoAGastarItem($obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, $obj->insumo_id, $this->obra_id);
-                return '<small class="pull-left">R$</small>'.number_format( (floatval($obj->saldo_orcamento) - $valor_comprometido_a_gastar), 2, ',','.');
-//                }
+                return '<small class="pull-left">R$</small>'.number_format( floatval($obj->valor_previsto) - floatval($obj->valor_realizado) - $valor_comprometido_a_gastar, 2, ',','.');
             })
             ->editColumn('valor_oc', function($obj){
                 return '<small class="pull-left">R$</small>'.number_format( floatval($obj->valor_oc), 2, ',','.');
@@ -49,15 +44,17 @@ class DetalhesServicosDataTable extends DataTable
             ->editColumn('saldo_disponivel', function($obj){
                 if($obj->insumo_incluido || $obj->substitui){
                     if($obj->valor_oc){
+                        $obj->saldo_disponivel = '-'.number_format( floatval($obj->valor_oc), 2, ',','.');
                         return '<span style="color: #eb0000"><small class="pull-left">R$</small>-'.number_format( floatval($obj->valor_oc), 2, ',','.').'</span>';
                     }else{
                         $cor = $obj->valor_oc >=0 ? '#7ed321' : "#eb0000";
+                        $obj->saldo_disponivel = number_format( floatval($obj->valor_oc), 2, ',','.');
                         return '<span style="color: '.$cor.'"><small class="pull-left">R$</small>'.number_format( floatval($obj->valor_oc), 2, ',','.').'</span>';
                     }
                 }else{
                     //Saldo do orçamento - Valor da OC = Saldo disponivel após OC
                     $valor_comprometido_a_gastar = OrdemDeCompraRepository::valorComprometidoAGastarItem($obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, $obj->insumo_id, $this->obra_id);
-                    $obj->saldo_disponivel = floatval($obj->saldo_orcamento) - $valor_comprometido_a_gastar - floatval($obj->valor_oc);
+                    $obj->saldo_disponivel = floatval($obj->valor_previsto) - floatval($obj->valor_realizado) - $valor_comprometido_a_gastar - floatval($obj->valor_oc);
                     $cor = $obj->saldo_disponivel >=0 ? '#7ed321' : "#eb0000";
 
                     return '<span style="color: '.$cor.'"><small class="pull-left">R$</small>'.number_format( $obj->saldo_disponivel, 2, ',','.').'</span>';
@@ -101,8 +98,6 @@ class DetalhesServicosDataTable extends DataTable
             'orcamentos.subgrupo3_id',
             'orcamentos.servico_id',
             'orcamentos.insumo_id',
-            DB::raw('0 as valor_realizado'),
-            DB::raw('orcamentos.preco_total as saldo_orcamento'),
             DB::raw("CONCAT(insumos_sub.codigo,' - ' ,insumos_sub.nome) as substitui"),
             DB::raw('
                     (SELECT 
@@ -169,9 +164,10 @@ class DetalhesServicosDataTable extends DataTable
             ->parameters([
                 'responsive'=> 'true',
                 'initComplete' => 'function () {
+                    recalcularAnaliseServico();
                     max = this.api().columns().count();
                     this.api().columns().every(function (col) {
-                        if((col+6)<max){
+                        if((col+7)<max){
                             var column = this;
                             var input = document.createElement("input");
                             $(input).attr(\'placeholder\',\'Filtrar...\');

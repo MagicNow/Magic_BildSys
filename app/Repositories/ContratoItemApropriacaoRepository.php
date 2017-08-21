@@ -33,7 +33,7 @@ class ContratoItemApropriacaoRepository extends BaseRepository
         return $this->create($data);
     }
 
-    public function forContratoApproval(Contrato $contrato)
+    public static function forContratoApproval(Contrato $contrato)
     {
         $query = <<<EOFSQL
 SELECT
