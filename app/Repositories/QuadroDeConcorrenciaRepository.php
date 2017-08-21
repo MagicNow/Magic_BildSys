@@ -62,7 +62,7 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
             })
             ->where('ordem_de_compras.aprovado', '1')
             ->where('catalogo_contratos.catalogo_contrato_status_id',3) // Acordo Ativo
-            ->where('catalogo_contrato_obra.catalogo_contrato_status_id',3) // Acordo Ativo
+            ->where('catalogo_contrato_obra.catalogo_contrato_status_id',3) // Obra Acordo Ativa
             ->where('catalogo_contrato_insumos.periodo_inicio','<=',date('Y-m-d'))
             ->where('catalogo_contrato_insumos.periodo_termino','>=',date('Y-m-d'))
             ->whereNotExists(function ($query) {
@@ -167,11 +167,14 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
 
                     // Amarra os fornecedores no QC
                     foreach ($fornecedores_ids[$qc_item_array['insumo_id']] as $fornecedor_id) {
+                        $catalogoContrato = CatalogoContrato::find($qc_item_array['cat_contrato_id']);
+
                         $qc_fornecedor = QcFornecedor::firstOrCreate([
                             'quadro_de_concorrencia_id' => $quadroDeConcorrencia->id,
                             'fornecedor_id' => $fornecedor_id,
                             'rodada' => $quadroDeConcorrencia->rodada_atual,
-                            'nf_material' => 1
+                            'nf_material' => 1,
+                            'campos_extras_contrato' => $catalogoContrato->campos_extras_contrato
                         ]);
                     }
 
@@ -219,17 +222,19 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
                     $contratoTemplateContrato = \App\Models\ContratoTemplate::where('tipo','M')->first();
                     $gerarContrato = [
                         'qcFornecedor' => $qc_fornecedor->id,
-                        'contrato_template_id'=> $contratoTemplateContrato->id
+                        'contrato_template_id'=> $contratoTemplateContrato->id,
                     ];
-                    $retorno = ContratoRepository::criar($gerarContrato);
-                    if($retorno['success']){
-                        $catalogoContrato = CatalogoContrato::find($qc_item_array['cat_contrato_id']);
-                        // Adiciona os campos extras nos contratos
-                        foreach ($retorno['contratos'] as $contrato){
-                            $contrato->campos_extras = $catalogoContrato->campos_extras_contrato;
-                            $contrato->save();
+
+                    // Campos extras
+                    if($qc_fornecedor->campos_extras_contrato){
+                        $campos_extras_contrato = json_decode($qc_fornecedor->campos_extras_contrato);
+                        foreach ($campos_extras_contrato as $key => $value){
+                            $gerarContrato['CAMPO_EXTRA'][$key] = $value;
                         }
                     }
+
+                    ContratoRepository::criar($gerarContrato);
+
                 }else{
                     $avaliadores = collect();
                     // Notifica os usuários que cuidam de QC para escolherem um vencedor
