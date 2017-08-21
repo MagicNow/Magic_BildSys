@@ -514,6 +514,14 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
         return $query->get();
     }
 
+    /**
+     * Aditivar Contratos
+     * Função onde recebe os itens da Ordem de Compra após aprovada e já cria Quadros de Concorrência com o Fornecedor
+     * do contrato apontado como destino, aguardando o lançamento de valores
+     * @param Collection $itens
+     * @param $user_id
+     * @return \Illuminate\Support\Collection
+     */
     public function aditivarContratos(Collection $itens, $user_id)
     {
         $contratos = $itens->groupBy('sugestao_contrato_id');
