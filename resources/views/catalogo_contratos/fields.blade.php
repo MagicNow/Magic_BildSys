@@ -4,7 +4,7 @@
         {!! Form::label('fornecedor_cod', 'Fornecedor:') !!}
         @if(isset($catalogoContrato))
             <div class="form-control">
-                {{ $catalogoContrato->fornecedor->nome }}
+                {{ $catalogoContrato->fornecedor->nome }} - {{ $catalogoContrato->fornecedor->cnpj }}
             </div>
         @else
             {!! Form::select('fornecedor_cod', ['' => 'Escolha...']+$fornecedores,  null, ['class' => 'form-control','id'=>'fornecedor_cod','required'=>'required']) !!}
