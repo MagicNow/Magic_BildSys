@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\ContratoStatusLog;
+use App\Models\ContratoTemplate;
 use PDF;
 use Exception;
 use App\Mail\ContratoServicoFornecedorNaoUsuario;
@@ -81,10 +82,7 @@ class ContratoRepository extends BaseRepository
         }
         $quadroDeConcorrencia = $qcFornecedor->quadroDeConcorrencia;
         // Monta os itens do contrato
-        $primeiroItem = $qcFornecedor->itens()->where('vencedor', '1')->first();
-        $obra_id = $primeiroItem->qcItem->oc_itens()->first()->obra_id;
-
-
+        
         $contratoItens = [];
         $contratoCampos = [];
 
@@ -298,7 +296,7 @@ class ContratoRepository extends BaseRepository
         $valor_frete = 0;
 
         $qcItensMateriais = $quadroDeConcorrencia->itensMateriais()->load('ordemDeCompraItens');
-
+        // Insere valor do Frete
         if ($qcItensMateriais->isNotEmpty() && $qcFornecedor->tipo_frete == 'FOB') {
             foreach ($attributes['valor_frete'] as $obraID => $vl_frete) {
                 $ocItens = $qcItensMateriais
@@ -357,6 +355,32 @@ class ContratoRepository extends BaseRepository
             foreach ($attributes['CAMPO_EXTRA'] as $campo => $valor) {
                 $campos_extras[$campo] = $valor;
             }
+        }
+        $campos_extras_faltantes = [];
+        // Valida se todos os campos extras requeridos no template estão preenchidos
+        $contratoTemplate = ContratoTemplate::find($attributes['contrato_template_id']);
+        if($contratoTemplate){
+            // Se tiver campo extra
+            if($contratoTemplate->campos_extras){
+                $campos_extras_template = json_decode($contratoTemplate->campos_extras);
+
+                foreach ($campos_extras_template as $campo){
+                    $nome_campo = str_replace(['[',']'], '', $campo->tag);
+
+                    // Verifica se exite o campo extra requerido no template vindo por parâmetro
+                    if(!isset($campos_extras[$nome_campo])){
+                        $campos_extras_faltantes[] = $campo->nome;
+                    }
+                }
+            }
+        }
+        // Se falta algum campo extra retorna sem criar o contrato
+        if(count($campos_extras_faltantes)){
+            return [
+                'success' => false,
+                'contratos' => [],
+                'erro' => 'O campo(s) para o template ' . implode(',', $campos_extras_faltantes) . ' não foram preenchidos'
+            ];
         }
 
         $campos_extras = json_encode($campos_extras);
@@ -421,6 +445,11 @@ class ContratoRepository extends BaseRepository
         } catch (Exception $e) {
             throw $e;
             DB::rollback();
+            return [
+                'success' => false,
+                'contratos' => [],
+                'erro' => 'Aconteceu algum erro ao tentar inserir o contrato | ' . $e->getMessage()
+            ];
         }
 
         DB::commit();

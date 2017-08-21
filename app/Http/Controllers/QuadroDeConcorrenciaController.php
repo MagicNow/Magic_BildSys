@@ -1397,6 +1397,91 @@ class QuadroDeConcorrenciaController extends AppBaseController
                 }
             }
         }
+        $contratosAGerar = [];
+        $contratosGerados = [];
+        $qtdContratosAGerar = 0;
+        // Tenta gerar contrato com os dados
+        if($quadroDeConcorrencia->contrato_template_id){
+            foreach ($fornecedores as $qcFornecedor){
+                $attributes = [];
+                $attributes['qcFornecedor'] = $qcFornecedor->id;
+
+                // Valor do Frete
+                $obras_itens = collect($contratoItens[$qcFornecedor->id]);
+                $obra_ids = $obras_itens->keys();
+
+                // Contratos à gerar
+                foreach ($obra_ids as $obra_id){
+                    if(!isset($contratosExistentes[$qcFornecedor->id][$obra_id])){
+                        $contratosAGerar[$qcFornecedor->id][$obra_id] = 1;
+                        $qtdContratosAGerar++;
+                    }
+                }
+                // Caso tenha contratos à gerar deste QC Fornecedors
+                if(isset($contratosAGerar[$qcFornecedor->id])){
+                    // Caso houver mais de uma obra para o mesmo insumo deve-se ratear o valor do frete
+                    if(count($obra_ids)>1){
+                        if($qcFornecedor->valor_frete > 0){
+                            // Verifica-se o peso de cada obra
+                            $obras_pesos = [];
+                            $total_obras = 0;
+                            foreach ($contratoItens[$qcFornecedor->id] as $obra_id => $itens) {
+                                $obras_pesos[$obra_id] = array_reduce($itens,function($soma, $item){
+                                    $soma += $item['valor_total'];
+                                    return $soma;
+                                });
+                                $total_obras += $obras_pesos[$obra_id];
+                            }
+                            // Agora distribui o valor
+                            foreach ($obras_pesos as $obra_id => $valor) {
+                                $proporcao = $valor/$total_obras;
+                                $valor_frete_proporcional = $proporcao * $qcFornecedor->getOriginal('valor_frete');
+                                $attributes['valor_frete'][$obra_id] = number_format($valor_frete_proporcional, 2);
+                            }
+                        }else{
+                            // o valor é zero do frete, logo coloca zero pra todas as obras
+                            foreach ($obra_ids as $obra_id) {
+                                $attributes['valor_frete'][$obra_id] = 0;
+                            }
+                        }
+
+                    }else{
+                        // Caso for igual à um, pega o valor e coloca na obra
+                        $attributes['valor_frete'][$obra_ids->first()] = $qcFornecedor->getOriginal('valor_frete');
+                    }
+
+                    // Campos extras
+                    if($qcFornecedor->campos_extras_contrato){
+                        $campos_extras_contrato = json_decode($qcFornecedor->campos_extras_contrato);
+                        foreach ($campos_extras_contrato as $key => $value){
+                            $attributes['CAMPO_EXTRA'][$key] = $value;
+                        }
+                    }
+                    $attributes['contrato_template_id'] = $quadroDeConcorrencia->contrato_template_id;
+
+                    // Tenta gerar o contrato
+                    $retorno = ContratoRepository::criar($attributes);
+                    if ($retorno['success']) {
+                        // Se foi gerado com sucesso, percorre os contratos e adiciona à array de Existentes
+                        foreach ($retorno['contratos'] as $contrato){
+                            $contratosExistentes[$qcFornecedor->id][$contrato->obra_id] = $contrato;
+                            $contratosGerados[] = $contrato->id;
+                            if(isset($contratosAGerar[$qcFornecedor->id][$contrato->obra_id])){
+                                unset($contratosAGerar[$qcFornecedor->id][$contrato->obra_id]);
+                                $qtdContratosAGerar--;
+                            }
+                        }
+                    }
+                } // Fim de verificação se precisa gerar contratos deste QC Fornecedor
+
+            } // Fim Foreach de qcFornecedor
+
+            // Verificar se todos os contratos que deveriam ser criados, foram de fato, se foram já direciona para index
+            if( count($contratosAGerar)  && $qtdContratosAGerar==0 && count($contratosGerados) ){
+                flash()->success('Contrato'.(count($contratosGerados)>1?'s ':' '). implode(', ', $contratosGerados) .' gerado'.(count($contratosGerados)>1?'s':'').'.');
+                return redirect(route('contratos.index'));
+            }
+        } // fim check se QC tem contrato_template_id
 
         return view('quadro_de_concorrencias.gerar-contrato',
             compact('quadroDeConcorrencia', 'fornecedores', 'contratoItens', 'total_contrato', 'contratosExistentes'));
