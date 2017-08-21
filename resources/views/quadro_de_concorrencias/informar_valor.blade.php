@@ -147,7 +147,7 @@
     </div>
     @php
         $campos_extras = [];
-        if( strlen(trim($quadro->contratoTemplate->campos_extras)) ){
+        if($quadro->contrato_template_id && strlen(trim($quadro->contratoTemplate->campos_extras)) ){
             $campos_extras = json_decode($quadro->contratoTemplate->campos_extras);
         }
     @endphp
@@ -400,7 +400,7 @@
                                 </label>
 
                                 @if($campo->tipo =='data')
-                                    {!! Form::date($v_tag,null,['placeholder'=>$campo->nome,'class'=>$classe]) !!}
+                                    {!! Form::text($v_tag,null,['placeholder'=>$campo->nome,'class'=>'data_br '.$classe]) !!}
                                 @else
                                     @if(strpos($tag,'e-mail') !== false || strpos($tag,'email') !== false)
                                         {!! Form::email($v_tag,null,['placeholder'=>$campo->nome,'class'=>$classe]) !!}

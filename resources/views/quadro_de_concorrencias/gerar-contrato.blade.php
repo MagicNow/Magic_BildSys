@@ -18,6 +18,12 @@
             </small>
         </h1>
     </section>
+    @php
+        $campos_extras = [];
+        if($quadroDeConcorrencia->contrato_template_id && strlen(trim($quadroDeConcorrencia->contratoTemplate->campos_extras)) ){
+            $campos_extras = json_decode($quadroDeConcorrencia->contratoTemplate->campos_extras);
+        }
+    @endphp
     <div class="content">
         @foreach($fornecedores as $qcFornecedor)
             {!! Form::open(['id'=>'formFornecedor'.$qcFornecedor->id]) !!}
@@ -53,22 +59,22 @@
                     @if(isset($contratosExistentes[$qcFornecedor->id]))
                         @if(count($contratosExistentes[$qcFornecedor->id])!=count($total_contrato[$qcFornecedor->id]) )
                             <div class="row text-right form-inline">
-                            <span class="col-md-4">
-                               <label>Template de Contrato</label>
-                            </span>
-                            <span class="col-md-8 text-left">
-                                {!! Form::select('contrato_template_id',[''=>'Selecione...']+
-                                \App\Models\ContratoTemplate::pluck('nome','id')->toArray(),$quadroDeConcorrencia->contrato_template_id,[
-                                'class'=>'form-control select2 contratoTemplate',
-                                'required'=>'required',
-                                'id'=>'contratoTemplate'.$qcFornecedor->id,
-                                'qcFornecedor'=>$qcFornecedor->id
-                                ]) !!}
-                            </span>
+                                <span class="col-md-4">
+                                   <label>Template de Contrato</label>
+                                </span>
+                                <span class="col-md-8 text-left">
+                                    {!! Form::select('contrato_template_id',[''=>'Selecione...']+
+                                    \App\Models\ContratoTemplate::pluck('nome','id')->toArray(),$quadroDeConcorrencia->contrato_template_id,[
+                                    'class'=>'form-control select2 contratoTemplate',
+                                    'required'=>'required',
+                                    'id'=>'contratoTemplate'.$qcFornecedor->id,
+                                    'qcFornecedor'=>$qcFornecedor->id
+                                    ]) !!}
+                                </span>
                             </div>
                         @endif
                     @else
-                        <div class="row text-right form-inline">
+                        <div class="row text-right form-inline" style="{{ $quadroDeConcorrencia->contrato_template_id?'display:none;':'' }}">
                             <span class="col-md-4">
                                <label>Template de Contrato</label>
                             </span>
@@ -132,7 +138,7 @@
                                             @endif
 
                                         @endforeach
-                                        @if($quadroDeConcorrencia->hasMaterial() && $qcFornecedor->tipo_frete != 'CIF')
+                                        @if(doubleval($qcFornecedor->getOriginal('valor_frete')))
                                             <tr>
                                                 <td colspan="3" class="text-left">Frete</td>
                                                 <td class="text-right">
@@ -176,8 +182,84 @@
                             @endforeach
                         @endif
                     </div>
-                    <div class="col-md-5" id="blocoCamposExtras{{ $qcFornecedor->id }}" style="display: none">
-                        <h4>Campos Extras</h4>
+                    <div class="col-md-5" id="blocoCamposExtras{{ $qcFornecedor->id }}"
+                         style="{{ count($campos_extras)? (isset($contratosExistentes[$qcFornecedor->id])?'display: none':''):'display: none' }}">
+                        <h4>Condições Comerciais</h4>
+                        @if(count($campos_extras))
+                            @php
+                                $campos_extras_preenchidos = null;
+                                if($qcFornecedor->campos_extras_contrato){
+                                    $campos_extras_preenchidos = json_decode($qcFornecedor->campos_extras_contrato);
+                                }
+                            @endphp
+                            <div class="box box-primary">
+                                <div class="box-body">
+                            @foreach($campos_extras as $campo)
+                                @php
+                                    $v_tag = str_replace('[','', $campo->tag);
+                                    $v_tag = 'CAMPO_EXTRA[' . str_replace(']','', $v_tag). ']';
+                                    $tag = mb_strtolower($campo->tag);
+                                    $tagClean = str_replace(['[',']'],'',$campo->tag);
+
+                                    $eh_telefone = strpos($tag,'telefone');
+                                    if($eh_telefone === false){
+                                        $eh_telefone = strpos($tag,'celular');
+                                    }
+                                    $classe = 'form-control';
+                                    if($eh_telefone !== false){
+                                        $classe .=" telefone";
+                                    }else{
+                                        if(strpos($tag,'valor') !== false){
+                                            $classe .=" money";
+                                        }else if(strpos($tag,'preco') !== false || strpos($tag,'preço') !== false){
+                                            $classe .=" money";
+                                        }
+                                        // cnpj cep cpf
+                                        if(strpos($tag,'cep') !== false){
+                                            $classe .=" cep";
+                                        }
+                                        if(strpos($tag,'cnpj') !== false){
+                                            $classe .=" cnpj";
+                                        }
+                                        if(strpos($tag,'cpf') !== false){
+                                            $classe .=" cpf";
+                                        }
+                                    }
+                                @endphp
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        {{ $campo->nome }}
+                                    </label>
+
+                                    @if($campo->tipo =='data')
+                                        {!! Form::text($v_tag,($campos_extras_preenchidos?
+                                        (
+                                            isset($campos_extras_preenchidos->$tagClean)?
+                                            $campos_extras_preenchidos->$tagClean:
+                                            null
+                                            ):null),['required'=>'required','placeholder'=>$campo->nome,'class'=>'data_br '.$classe]) !!}
+                                    @else
+                                        @if(strpos($tag,'e-mail') !== false || strpos($tag,'email') !== false)
+                                            {!! Form::email($v_tag,($campos_extras_preenchidos?
+                                            (
+                                            isset($campos_extras_preenchidos->$tagClean)?
+                                            $campos_extras_preenchidos->$tagClean:
+                                            null
+                                            ):null),['required'=>'required','placeholder'=>$campo->nome,'class'=>$classe]) !!}
+                                        @else
+                                            {!! Form::text($v_tag,($campos_extras_preenchidos?
+                                            (
+                                            isset($campos_extras_preenchidos->$tagClean)?
+                                            $campos_extras_preenchidos->$tagClean:
+                                            null
+                                            ):null),['required'=>'required','placeholder'=>$campo->nome,'class'=>$classe,'title'=>$campo->tipo]) !!}
+                                        @endif
+                                    @endif
+                                </div>
+                            @endforeach
+                                </div>
+                            </div>
+                        @else
                         <table class="table table-condensed table-hovered table-striped table-bordered">
                             <thead>
                             <th width="40%">Campo</th>
@@ -185,9 +267,9 @@
                             <th width="20%">Tipo</th>
                             </thead>
                             <tbody>
-
                             </tbody>
                         </table>
+                        @endif
                     </div>
                 </div>
                 @if(isset($contratosExistentes[$qcFornecedor->id]))

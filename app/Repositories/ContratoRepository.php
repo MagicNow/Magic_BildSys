@@ -370,6 +370,8 @@ class ContratoRepository extends BaseRepository
                     // Verifica se exite o campo extra requerido no template vindo por parâmetro
                     if(!isset($campos_extras[$nome_campo])){
                         $campos_extras_faltantes[] = $campo->nome;
+                    }else if(!strlen($campos_extras[$nome_campo])){
+                        $campos_extras_faltantes[] = $campo->nome;
                     }
                 }
             }

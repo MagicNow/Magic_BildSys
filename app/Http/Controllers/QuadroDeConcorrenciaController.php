@@ -1275,10 +1275,9 @@ class QuadroDeConcorrenciaController extends AppBaseController
                             }
                             $valor_item = $valor_item * $fatorServico;
                             $valor_item_unitario = $item->valor_unitario * $fatorServico;
-                        } else {
-                            $contratoComMaterial[$qcFornecedor->id.'-'.$obra_id] = ['qcFornecedor'=>$qcFornecedor->id,'obraId'=>$obra_id];
                         }
                     }
+                    $contratoComMaterial[$qcFornecedor->id.'-'.$obra_id] = ['qcFornecedor'=>$qcFornecedor->id,'obraId'=>$obra_id];
 
                     $contratoItens[$qcFornecedor->id][$obra_id][] = [
                         'insumo_id'         => $insumo->id,
@@ -1296,7 +1295,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
 
             $tipo_frete = 'CIF';
             $valor_frete = 0;
-            if ($quadroDeConcorrencia->hasMaterial() && $qcFornecedor->tipo_frete != 'CIF') {
+            if (doubleval($qcFornecedor->getOriginal('valor_frete'))) {
                 $valor_frete = $qcFornecedor->getOriginal('valor_frete');
                 $tipo_frete = $qcFornecedor->tipo_frete;
                 // Coloca frete em todos os itens que quem material
