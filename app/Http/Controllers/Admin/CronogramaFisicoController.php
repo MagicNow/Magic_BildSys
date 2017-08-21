@@ -9,7 +9,7 @@ use App\Jobs\PlanilhaProcessa;
 use App\Models\Obra;
 use App\Models\Planilha;
 use App\Models\TemplatePlanilha;
-use App\Models\TipoOrcamento;
+use App\Models\TipoCronogramaFisico;
 use App\Repositories\Admin\CronogramaFisicoRepository;
 use App\Repositories\Admin\SpreadsheetRepository;
 use Flash;
@@ -165,11 +165,11 @@ class CronogramaFisicoController extends AppBaseController
      */
     public function indexImport(){
         $obras = Obra::pluck('nome','id')->toArray();
-		//$cronograma_fisico_tipos = CronogramaFisicoTipos::pluck('nome','id')->toArray();
-        $orcamento_tipos = TipoOrcamento::pluck('nome','id')->toArray();
+		$cronograma_fisico_tipos = CronogramaFisicoTipos::pluck('nome','id')->toArray();
+        //$orcamento_tipos = TipoOrcamento::pluck('nome','id')->toArray();
         $templates = TemplatePlanilha::where('modulo', 'Cronograma Físicos')->pluck('nome','id')->toArray();
-        //return view('admin.cronograma_fisicos.indexImport', compact('cronograma_fisico_tipos','obras', 'templates'));
-		return view('admin.cronograma_fisicos.indexImport', compact('orcamento_tipos','obras', 'templates'));
+        return view('admin.cronograma_fisicos.indexImport', compact('cronograma_fisico_tipos','obras', 'templates'));
+		//return view('admin.cronograma_fisicos.indexImport', compact('orcamento_tipos','obras', 'templates'));
     }
 
     /**
