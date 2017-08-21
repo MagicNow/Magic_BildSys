@@ -305,7 +305,7 @@ class ContratoController extends AppBaseController
     ) {
         $item = $contratoItemRepository->find($id);
 
-        $contratoItemReapropriacaoRepository->reaprop0riar($item, $request->all());
+        $contratoItemReapropriacaoRepository->reapropriar($item, $request->all());
 
         return response()->json([
             'success' => true
@@ -326,7 +326,8 @@ class ContratoController extends AppBaseController
 
     public function imprimirContrato($id)
     {
-        return response()->file(storage_path('/app/public/') . str_replace('storage/', '', ContratoRepository::geraImpressao($id)));
+
+        return response()->download(storage_path('/app/public/') . str_replace('storage/', '', ContratoRepository::geraImpressao($id)));
     }
 
     public function edit($id)

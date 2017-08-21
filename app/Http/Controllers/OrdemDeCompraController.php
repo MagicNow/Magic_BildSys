@@ -315,8 +315,6 @@ class OrdemDeCompraController extends AppBaseController
         if ($ordemDeCompra->itens) {
             $orcamentoInicial = OrdemDeCompraRepository::valorPrevistoOrcamento($ordemDeCompra->id, $ordemDeCompra->obra_id);
 
-            $valor_comprometido_a_gastar = OrdemDeCompraRepository::valorComprometidoAGastar($ordemDeCompra->id, $ordemDeCompra->itens()->pluck('ordem_de_compra_itens.id','ordem_de_compra_itens.id')->toArray());
-
             $totalSolicitado = $ordemDeCompra->itens()->sum('valor_total');
 
             $realizado = OrdemDeCompraItem::join('ordem_de_compras', 'ordem_de_compras.id', '=', 'ordem_de_compra_itens.ordem_de_compra_id')
@@ -418,6 +416,9 @@ class OrdemDeCompraController extends AppBaseController
             $itens->leftJoin(DB::raw('orcamentos orcamentos_sub'),  'orcamentos_sub.id', 'orcamentos.orcamento_que_substitui');
             $itens->leftJoin(DB::raw('insumos insumos_sub'), 'insumos_sub.id', 'orcamentos_sub.insumo_id');
 
+            foreach($itens->get() as $item) {
+                $valor_comprometido_a_gastar += OrdemDeCompraRepository::valorComprometidoAGastarItem($item->grupo_id, $item->subgrupo1_id, $item->subgrupo2_id, $item->subgrupo3_id, $item->servico_id, $item->insumo_id, $item->obra_id, $item->id);
+            }
 //            $itens = $itens->groupBy('ordem_de_compra_itens.insumo_id');
             $itens = $itens->paginate(10);
         }
@@ -896,6 +897,21 @@ class OrdemDeCompraController extends AppBaseController
         ->join('obras', 'obras.id', 'ordem_de_compras.obra_id')
         ->join('users', 'users.id', '=', 'ordem_de_compras.user_id');
 
+        if ($request->obra_id) {
+            $ordem_compra->where('obra_id', $request->obra_id);
+        }
+
+        if($request->user_id) {
+            $ordem_compra->where('ordem_de_compras.user_id', $request->user_id);
+        }
+
+        if($request->data_inicio) {
+            $ordem_compra = $ordem_compra->where('ordem_de_compras.created_at', '>=', $request->data_inicio);
+        }
+        if($request->data_termino) {
+            $ordem_compra = $ordem_compra->where('ordem_de_compras.created_at', '<=', $request->data_termino);
+        }
+
         if ($request->type == 'created') {
             $ordem_compra->orderBy('id', 'desc')->take(5);
         } else {
@@ -1133,7 +1149,7 @@ class OrdemDeCompraController extends AppBaseController
         return response()->json(['sucesso' => true]);
     }
 
-    public function dashboard()
+    public function dashboard(Request $request)
     {
         $reprovados = OrdemDeCompra::select([
             'ordem_de_compras.id',
@@ -1142,7 +1158,21 @@ class OrdemDeCompraController extends AppBaseController
         ])            ->join('obras', 'obras.id', 'ordem_de_compras.obra_id')
         ->join('users', 'users.id', '=', 'ordem_de_compras.user_id')
         ->where('oc_status_id', 4)->orderBy('id', 'desc')
-        ->take(5)->get();
+        ->take(5);
+        if($request->obra_id) {
+            $reprovados = $reprovados->where('obra_id', $request->obra_id);
+        }
+        if($request->user_id) {
+            $reprovados = $reprovados->where('ordem_de_compras.user_id', $request->user_id);
+        }
+        if($request->data_inicio) {
+            $reprovados = $reprovados->where('ordem_de_compras.created_at', '>=', $request->data_inicio);
+        }
+        if($request->data_termino) {
+            $reprovados = $reprovados->where('ordem_de_compras.created_at', '<=', $request->data_termino);
+        }
+        $reprovados = $reprovados->get();
+
 
         $aprovados = OrdemDeCompra::select([
             'ordem_de_compras.id',
@@ -1151,7 +1181,21 @@ class OrdemDeCompraController extends AppBaseController
         ])            ->join('obras', 'obras.id', 'ordem_de_compras.obra_id')
         ->join('users', 'users.id', '=', 'ordem_de_compras.user_id')
         ->where('oc_status_id', 5)->orderBy('id', 'desc')
-        ->take(5)->get();
+        ->take(5);
+        if($request->obra_id) {
+            $aprovados = $aprovados->where('obra_id', $request->obra_id);
+        }
+        if($request->user_id) {
+            $aprovados = $aprovados->where('ordem_de_compras.user_id', $request->user_id);
+        }
+        if($request->data_inicio) {
+            $aprovados = $aprovados->where('ordem_de_compras.created_at', '>=', $request->data_inicio);
+        }
+        if($request->data_termino) {
+            $aprovados = $aprovados->where('ordem_de_compras.created_at', '<=', $request->data_termino);
+        }
+        $aprovados = $aprovados->get();
+
 
         $emaprovacao = OrdemDeCompra::select([
             'ordem_de_compras.id',
@@ -1160,7 +1204,21 @@ class OrdemDeCompraController extends AppBaseController
         ])            ->join('obras', 'obras.id', 'ordem_de_compras.obra_id')
         ->join('users', 'users.id', '=', 'ordem_de_compras.user_id')
         ->where('oc_status_id', 3)->orderBy('id', 'desc')
-        ->take(5)->get();
+        ->take(5);
+        if($request->obra_id) {
+            $emaprovacao = $emaprovacao->where('obra_id', $request->obra_id);
+        }
+        if($request->user_id) {
+            $emaprovacao = $emaprovacao->where('ordem_de_compras.user_id', $request->user_id);
+        }
+        if($request->data_inicio) {
+            $emaprovacao = $emaprovacao->where('ordem_de_compras.created_at', '>=', $request->data_inicio);
+        }
+        if($request->data_termino) {
+            $emaprovacao = $emaprovacao->where('ordem_de_compras.created_at', '<=', $request->data_termino);
+        }
+        $emaprovacao = $emaprovacao->get();
+
 
         $ordemDeCompras = OrdemDeCompra::select([
                 'ordem_de_compras.id',
@@ -1172,10 +1230,27 @@ class OrdemDeCompraController extends AppBaseController
             ->join('obras', 'obras.id', '=', 'ordem_de_compras.obra_id')
             ->join('oc_status', 'oc_status.id', '=', 'ordem_de_compras.oc_status_id')
             ->join('users', 'users.id', '=', 'ordem_de_compras.user_id')
-            ->whereRaw('EXISTS (SELECT 1 FROM obra_users WHERE obra_users.obra_id = obras.id AND user_id=?)', auth()->id())
             ->where('ordem_de_compras.oc_status_id', '!=', 6)
-            ->orderBy('ordem_de_compras.id','DESC')
-            ->get();
+            ->orderBy('ordem_de_compras.id','DESC');
+
+        if($request->obra_id) {
+            $ordemDeCompras = $ordemDeCompras->where('obra_id', $request->obra_id);
+        }
+        if($request->user_id) {
+            $ordemDeCompras = $ordemDeCompras->where('ordem_de_compras.user_id', $request->user_id);
+        }
+
+        if(!$request->obra_id || !$request->user_id) {
+            $ordemDeCompras = $ordemDeCompras->whereRaw('EXISTS (SELECT 1 FROM obra_users WHERE obra_users.obra_id = obras.id AND user_id=?)', auth()->id());
+        }
+        if($request->data_inicio) {
+            $ordemDeCompras = $ordemDeCompras->where('ordem_de_compras.created_at', '>=', $request->data_inicio);
+        }
+        if($request->data_termino) {
+            $ordemDeCompras = $ordemDeCompras->where('ordem_de_compras.created_at', '<=', $request->data_termino);
+        }
+
+        $ordemDeCompras = $ordemDeCompras->get();
 
         $dentro_orcamento = 0;
         $acima_orcamento = 0;
@@ -1190,8 +1265,12 @@ class OrdemDeCompraController extends AppBaseController
                 }
             }
         }
-        
-        return view('ordem_de_compras.dashboard', compact('reprovados', 'aprovados', 'emaprovacao', 'abaixo_orcamento', 'dentro_orcamento', 'acima_orcamento'));
+
+        $obras = Obra::pluck('nome', 'id')->prepend('', '');
+
+        $users = User::pluck('name', 'id')->prepend('', '');
+
+        return view('ordem_de_compras.dashboard', compact('reprovados', 'aprovados', 'emaprovacao', 'abaixo_orcamento', 'dentro_orcamento', 'acima_orcamento', 'obras', 'users'));
     }
 
     // Verifica se tem OC aberta antes de reabrir
@@ -1313,8 +1392,6 @@ class OrdemDeCompraController extends AppBaseController
             ->where('ordem_de_compra_itens.obra_id', $obra_id)
             ->whereIn('oc_status_id',[2,3,5]);
 
-        $orcamentoInicial = $valor_comprometido_a_gastar = $realizado = $totalSolicitado = 0;
-
         $itens = collect([]);
 
         if(!count($ordemDeCompraItens)){
@@ -1323,45 +1400,13 @@ class OrdemDeCompraController extends AppBaseController
             return back();
         }
 
-        $orcamentos = Orcamento::where('servico_id', $servico_id)
-            ->where('obra_id', $obra_id)
-            ->where('ativo', 1);
-
-        foreach($orcamentos->get() as $orcamento) {
-            $valor_comprometido_a_gastar += OrdemDeCompraRepository::valorComprometidoAGastarItem($orcamento->grupo_id, $orcamento->subgrupo1_id, $orcamento->subgrupo2_id, $orcamento->subgrupo3_id, $orcamento->servico_id, $orcamento->insumo_id);
-        }
-
-        $orcamentoInicial = $orcamentos->sum('orcamentos.preco_total');
-
-        $totalSolicitado = $ordemDeCompraItens->whereRaw('NOT EXISTS(
-                        SELECT 1 
-                        FROM contrato_itens CI
-                        JOIN contrato_item_apropriacoes CIT ON CIT.contrato_item_id = CI.id
-                        JOIN oc_item_qc_item OCQC ON OCQC.qc_item_id = CI.qc_item_id
-                        WHERE CI.id = CIT.contrato_item_id
-                        AND OCQC.ordem_de_compra_item_id = ordem_de_compra_itens.id
-                    )')
-            ->sum('valor_total');
-
-        $realizado = OrdemDeCompraItem::join('ordem_de_compras','ordem_de_compras.id','=','ordem_de_compra_itens.ordem_de_compra_id')
-            ->where('ordem_de_compras.obra_id',$obra_id)
-            ->whereIn('oc_status_id',[2,3,5])
-            ->whereIn('ordem_de_compra_itens.insumo_id',$ordemDeCompraItens->pluck('insumo_id','insumo_id')->toArray())
-            ->sum('ordem_de_compra_itens.valor_total');
-
-        $saldo = $orcamentoInicial - $realizado;
-
         return $detalhesServicosDataTable->getObra($obra_id)->getServico($servico_id)->render(
             'ordem_de_compras.detalhes_servicos',
             compact(
                 'ordemDeCompra',
-                'orcamentoInicial',
-                'realizado',
-                'valor_comprometido_a_gastar',
                 'saldo',
                 'itens',
-                'servico',
-                'totalSolicitado'
+                'servico'
             )
         );
     }

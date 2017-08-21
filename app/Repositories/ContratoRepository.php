@@ -485,24 +485,24 @@ class ContratoRepository extends BaseRepository
 
         if ($user = $fornecedor->user) {
             //se tiver já envia uma notificação
-            $user->notify(new NotificaFornecedorContratoServico($contrato, $arquivo));
+            Mail::to($fornecedor->email)->send(new ContratoServicoFornecedorNaoUsuario($contrato, $arquivo));
             return [
-                'success' => true
+                'success'=>true
             ];
         } else {
             // Se não tiver envia um e-mail para o fornecedor
             if (!strlen($fornecedor->email)) {
                 $mensagens[] = 'O Fornecedor ' . $fornecedor->nome . ' não possui acesso e e-mail cadastrado,
-                    <a href="' . Storage::url($arquivo) . '" target="_blank">Imprima o contrato</a> e faça o fornecedor assinar.
+                    <a href="'.Storage::url($arquivo).'" target="_blank">Imprima o contrato</a> e faça o fornecedor assinar.
                     O telefone do fornecedor é ' . $fornecedor->telefone;
                 return [
-                    'success' => true,
-                    'messages' => $mensagens
+                    'success'=>true,
+                    'messages'=>$mensagens
                 ];
             } else {
                 Mail::to($fornecedor->email)->send(new ContratoServicoFornecedorNaoUsuario($contrato, $arquivo));
                 return [
-                    'success' => true
+                    'success'=>true
                 ];
             }
         }
@@ -518,10 +518,12 @@ class ContratoRepository extends BaseRepository
      */
     public static function geraImpressao($id)
     {
-        $contrato = Contrato::find($id);
+        $contrato = Contrato::with('fornecedor')->find($id);
         if (!$contrato) {
             return null;
         }
+
+        $nomeArquivo = 'contrato-'.str_slug($contrato->fornecedor->nome).'-'.$contrato->id;
 
         $template = $contrato->contratoTemplate;
 
@@ -622,13 +624,13 @@ class ContratoRepository extends BaseRepository
                 $templateRenderizado = str_replace('[' . strtoupper($campo) . ']', $valor, $templateRenderizado);
             }
         }
-        if (is_file(base_path() . '/storage/app/public/contratos/contrato_' . $contrato->id . '.pdf')) {
-            unlink(base_path() . '/storage/app/public/contratos/contrato_' . $contrato->id . '.pdf');
+
+        if (is_file(base_path().'/storage/app/public/contratos/'.$nomeArquivo.'.pdf')) {
+            unlink(base_path().'/storage/app/public/contratos/'.$nomeArquivo.'.pdf');
         }
-        PDF::loadHTML(utf8_decode($templateRenderizado))->setPaper('a4')
-            ->setOrientation('portrait')
-            ->save(base_path() . '/storage/app/public/contratos/contrato_' . $contrato->id . '.pdf');
-        return 'contratos/contrato_' . $contrato->id . '.pdf';
+
+        PDF::loadHTML(utf8_decode($templateRenderizado))->setPaper('a4')->setOrientation('portrait')->save(base_path().'/storage/app/public/contratos/'.$nomeArquivo.'.pdf');
+        return 'contratos/'.$nomeArquivo.'.pdf';
     }
 
     /**

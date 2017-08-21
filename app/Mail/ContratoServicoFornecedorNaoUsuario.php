@@ -4,7 +4,7 @@ namespace App\Mail;
 
 use App\Models\Contrato;
 use App\Models\Fornecedor;
-use App\Models\QuadroDeConcorrencia;
+use App\Models\TemplateEmail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -37,8 +37,14 @@ class ContratoServicoFornecedorNaoUsuario extends Mailable
      */
     public function build()
     {
+        $model = new TemplateEmail();
+        $r = $model->find(3);
+
+        $r->template = str_replace("[FORNECEDOR_NOME]", $this->fornecedor->nome, $r->template);
+
         return $this->subject('Contrato ' . $this->contrato->id . ' Bild - [Assinar]')
             ->attach( storage_path('/app/public/') . str_replace('storage/', '', $this->arquivo) )
-            ->view('emails.contratos.contrato-fornecedor-sem-acesso');
+            ->view('emails.body-email-base')
+            ->with(['text' => $r->template]);
     }
 }

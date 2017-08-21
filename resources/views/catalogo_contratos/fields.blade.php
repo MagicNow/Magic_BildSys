@@ -4,7 +4,7 @@
         {!! Form::label('fornecedor_cod', 'Fornecedor:') !!}
         @if(isset($catalogoContrato))
             <div class="form-control">
-                {{ $catalogoContrato->fornecedor->nome }}
+                {{ $catalogoContrato->fornecedor->nome }} - {{ $catalogoContrato->fornecedor->cnpj }}
                 @if($catalogoContrato->fornecedor->faltaDados())
                     <a href="{{ route('admin.fornecedores.edit', $catalogoContrato->fornecedor_id) }}"
                        title="Para poder gerar contratos automaticamente, todos os dados devem estar preenchidos:
