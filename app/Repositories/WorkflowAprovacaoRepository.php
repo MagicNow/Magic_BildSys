@@ -239,7 +239,7 @@ class WorkflowAprovacaoRepository
                 $itens_avaliados = $avaliado['total_avaliado'] / $aprovadores;
             }
 
-            if ($itens_avaliados == $total_a_aprovar) {
+            if ($itens_avaliados >= $total_a_aprovar) {
                 $alcada_atual_ordem = $alcada->ordem + 1;
             }
 
@@ -466,7 +466,7 @@ class WorkflowAprovacaoRepository
                 // Divide a qtd de aprovações/reprovações pela quantidade de aprovadores
                 $avaliacoes = $total_ja_votado['total_avaliado'] / $qtd_aprovadores;
 
-                if ($avaliacoes === 1 || !$workflowAprovacao->aprovado) {
+                if ($avaliacoes >= 1 || !$workflowAprovacao->aprovado) {
                     // Se for já salva se foi aprovado ou reprovado
                     $obj->aprova($total_ja_votado['total_aprovado'] === $total_ja_votado['total_avaliado']);
 
