@@ -66,16 +66,44 @@
     {!! Form::number('num_apartamentos', null, ['class' => 'form-control']) !!}
 </div>
 
-<!-- num_torres Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('num_torres', 'Número de torres:') !!}
-    {!! Form::number('num_torres', null, ['class' => 'form-control']) !!}
-</div>
-
 <!-- num_pavimento_tipo Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('num_pavimento_tipo', 'Número pavimento tipo:') !!}
     {!! Form::number('num_pavimento_tipo', null, ['class' => 'form-control']) !!}
+</div>
+
+<!-- num_torres Field -->
+<div class="form-group col-sm-12">
+    {!! Form::label('num_torres', 'Torres:') !!}
+    <button type="button" class="btn btn-info" onclick="addTorre();">
+        <i class="fa fa-plus"></i> Adicionar Torre
+    </button>
+
+    {!! Form::hidden('num_torres', null, ['id' => 'num_torres']) !!}
+    <ul class="list-group" id="torres">
+        @if(isset($obra))
+            @foreach($obra->torres as $torre)
+            <li class="list-group-item" id="torre{{ $torre->id }}">
+                <div class="input-group">
+                    <input type="hidden" name="torres[{{ $torre->id }}][id]" value="{{ $torre->id }}">
+                    <input type="text" name="torres[{{ $torre->id }}][nome]" value="{{ $torre->nome }}" class="form-control">
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-danger"
+                                @if(!$torre->mcMedicaoPrevisoes()->count()))
+                                    onclick="removeTorre({{ $torre->id }})"
+                                @else
+                                    disabled="disabled" title="Não é possível remover esta torre, pois já existe memória de cálculo atribuída à ela"
+                                @endif
+                        >
+                            <i class="fa fa-times"></i>
+                        </button>
+                    </span>
+
+                </div>
+            </li>
+            @endforeach
+        @endif
+    </ul>
 </div>
 
 <!-- data_inicio Field -->
@@ -237,6 +265,38 @@
                 return obj.nome + ' - '+ obj.uf;
             }
             return obj.text;
+        }
+
+        var torresQtd = {{ (isset($obra)?$torre->id:0) }};
+        function addTorre(){
+            torresQtd ++;
+            var torreHTML = '<li class="list-group-item" id="torre'+torresQtd+'">' +
+                    '   <div class="input-group">' +
+                    '       <input type="hidden" name="torres['+torresQtd+'][id]" value="">' +
+                    '       <input type="text" name="torres['+torresQtd+'][nome]" value="" class="form-control">' +
+                    '       <span class="input-group-btn">' +
+                    '           <button type="button" class="btn btn-danger" onclick="removeTorre('+torresQtd+')">' +
+                    '               <i class="fa fa-times"></i>' +
+                    '           </button>' +
+                    '       </span>' +
+                    '   </div>' +
+                    '</li>';
+            $('#torres').append(torreHTML);
+        }
+
+        function removeTorre(qual) {
+            swal({
+                        title: "Remover",
+                        text: "Tem certeza que deseja remover esta torre?",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Remover",
+                        closeOnConfirm: true
+                    },
+                    function(){
+                        $('#torre'+qual).remove();
+                    });
         }
 
         $(function(){
