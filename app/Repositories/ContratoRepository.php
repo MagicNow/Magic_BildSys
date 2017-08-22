@@ -579,6 +579,8 @@ class ContratoRepository extends BaseRepository
         $composicao_preco = '';
         $tipo_frete = 'Incluso';
         $valor_frete = '';
+        // Pega um item que tem qc_item
+        $item = $contrato->itens()->whereHas('qcItem')->first();
         $qcFornecedor = $item->qcItem->ofertas()->where('vencedor',1)->first()->qcFornecedor;
 
         if($qcFornecedor){
