@@ -161,6 +161,14 @@
                             $('.js-datatable-filter-form :input').each(function () {
                                 data[$(this).prop('name')] = itens_selecionados;
                             });
+
+                            setTimeout(function () {
+                                $.each(itens_selecionados, function( index, value ) {
+                                    $('#'+value).attr('checked', true);
+                                });
+
+                                stopLoading();
+                            }, 2000);
                         });
 
                     } else {
