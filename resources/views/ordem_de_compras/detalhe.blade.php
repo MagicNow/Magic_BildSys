@@ -271,7 +271,7 @@
                 </h4>
             </div>
             <div class="col-md-2 text-right">
-                <h5>SALDO DISPONÍVEL</h5>
+                <h5>SALDO DISPONÍVEL APÓS O.C</h5>
                 <h4>
                     <small class="pull-left">R$</small>
                     {{ number_format(($orcamentoInicial - $totalSolicitado),2,',','.') }}
@@ -341,12 +341,10 @@
                                 {{-- Qntd Prevista - Qntd Realizada - Qntd Á gastar = Qntd Saldo do orçamento - Qntd OC --}}
                                 @php
                                     $qtd_prevista = $item->substitui ? $item->qtd_prevista_orcamento_pai : $item->qtd_inicial;
-                                    $qtd_comprometida_a_gastar = money_to_float(\App\Repositories\OrdemDeCompraRepository::qtdComprometidaAGastarItem($item->grupo_id, $item->subgrupo1_id, $item->subgrupo2_id, $item->subgrupo3_id, $item->servico_id, $item->insumo_id));
+                                    $qtd_comprometida_a_gastar = money_to_float(\App\Repositories\OrdemDeCompraRepository::qtdComprometidaAGastarItem($item->grupo_id, $item->subgrupo1_id, $item->subgrupo2_id, $item->subgrupo3_id, $item->servico_id, $item->insumo_id, $item->obra_id, $item->id));
                                     $saldo_qtd_orcamento = $qtd_prevista - money_to_float($item->qtd_realizada) - $qtd_comprometida_a_gastar;
 
-                                    $qtd_comprometida_a_gastar_2 = money_to_float(\App\Repositories\OrdemDeCompraRepository::qtdComprometidaAGastarItem($item->grupo_id, $item->subgrupo1_id, $item->subgrupo2_id, $item->subgrupo3_id, $item->servico_id, $item->insumo_id, $item->id));
-                                    $saldo_qtd_orcamento2 = $qtd_prevista - money_to_float($item->qtd_realizada) - $qtd_comprometida_a_gastar_2;
-                                    $status_qtd = $saldo_qtd_orcamento2 - money_to_float($item->qtd);
+                                    $status_qtd = $saldo_qtd_orcamento - money_to_float($item->qtd);
                                 @endphp
 
                                 @if($status_qtd > 0)
@@ -381,17 +379,24 @@
                                 <div class="btn-group" role="group" aria-label="...">
                                     @if(!is_null($item->aprovado))
                                         @if($item->aprovado)
-                                            <button type="button" disabled="disabled"
-                                                    class="btn btn-success btn-sm btn-flat">
+                                            <span
+                                                    class="btn btn-success btn-sm btn-flat ocItemTimeline"
+                                                    data-id="{{ $item->id }}" data-workflow-tipo="1">
                                                 <i class="fa fa-check" aria-hidden="true"></i>
-                                            </button>
+                                            </span>
                                         @else
-                                            <button type="button" disabled="disabled"
-                                                    class="btn btn-danger btn-sm btn-flat">
+                                            <span  disabled="disabled"
+                                                    class="btn btn-danger btn-sm btn-flat ocItemTimeline"
+                                                    data-id="{{ $item->id }}" data-workflow-tipo="1">
                                                 <i class="fa fa-times" aria-hidden="true"></i>
-                                            </button>
+                                            </span>
                                         @endif
                                     @else
+                                        <button type="button" title="Ver detalhes de aprovação"
+                                                class="btn btn-sm btn-default btn-flat ocItemTimeline"
+                                                data-id="{{ $item->id }}" data-workflow-tipo="1">
+                                            <i class="fa fa-fw fa-hourglass-half"></i>
+                                        </button>
                                         <?php
                                         $workflowAprovacao = \App\Repositories\WorkflowAprovacaoRepository::verificaAprovacoes('OrdemDeCompraItem', $item->id, Auth::user());
                                         ?>
@@ -501,7 +506,7 @@
                                                 </td>
                                                 <td class="text-center">
                                                     <small class="pull-left">R$</small>
-                                                    {{ number_format(\App\Repositories\OrdemDeCompraRepository::valorComprometidoAGastarItem($item->grupo_id, $item->subgrupo1_id, $item->subgrupo2_id, $item->subgrupo3_id, $item->servico_id, $item->insumo_id), 2, ',','.') }}
+                                                    {{ number_format(\App\Repositories\OrdemDeCompraRepository::valorComprometidoAGastarItem($item->grupo_id, $item->subgrupo1_id, $item->subgrupo2_id, $item->subgrupo3_id, $item->servico_id, $item->insumo_id, $item->obra_id, $item->id), 2, ',','.') }}
                                                 </td>
                                                 <td class="text-center">
                                                     <small class="pull-left">R$</small>
@@ -587,8 +592,10 @@
             {{ $itens->links() }}
     </div>
 </div>
+        <div class="modal fade" id="modal-alcadas" tabindex="-1" role="dialog"></div>
 @endsection
 @section('scripts')
+    @parent
 <script type="text/javascript">
     <?php
             $options_motivos = "<option value=''>Escolha...</option>";
@@ -597,6 +604,26 @@
             }
     ?>
     options_motivos = "{!! $options_motivos !!}";
+    $(function () {
+        var workflowTipo = $('.ocItemTimeline');
 
+        workflowTipo.tooltip({
+            title: 'Clique para ver detalhes',
+            container: document.body
+        });
+
+        workflowTipo.on('click', function(event) {
+            startLoading();
+            $.get('/workflow/detalhes', event.currentTarget.dataset)
+                    .always(stopLoading)
+                    .done(function(data) {
+                        $('#modal-alcadas').html(data);
+                        $('#modal-alcadas').modal('show');
+                    })
+                    .fail(function() {
+                        swal('Ops!', 'Ocorreu um erro ao mostrar os detalhes da alçada', 'error');
+                    });
+        });
+    });
 </script>
 @stop

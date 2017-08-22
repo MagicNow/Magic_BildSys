@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Models\Contrato;
 use App\Models\ContratoItemApropriacao;
 use App\Models\OrdemDeCompra;
 use App\Models\OrdemDeCompraItem;
@@ -101,66 +102,82 @@ class OrdemDeCompraRepository extends BaseRepository
         
         return $saldoDisponivel;
     }
-
-    public static function valorComprometidoAGastar($ordem_de_compra_id)
-    {
-        $valor_comprometido_a_gastar = ContratoItemApropriacao::select([
-            'contrato_item_apropriacoes.qtd',
-            'contrato_itens.valor_unitario'
-            ])
-            ->where('ordem_de_compra_id', $ordem_de_compra_id)
-            ->join('ordem_de_compra_itens', function ($join) {
-                $join->on('ordem_de_compra_itens.insumo_id', '=', 'contrato_item_apropriacoes.insumo_id');
-                $join->on('ordem_de_compra_itens.grupo_id', '=', 'contrato_item_apropriacoes.grupo_id');
-                $join->on('ordem_de_compra_itens.subgrupo1_id', '=', 'contrato_item_apropriacoes.subgrupo1_id');
-                $join->on('ordem_de_compra_itens.subgrupo2_id', '=', 'contrato_item_apropriacoes.subgrupo2_id');
-                $join->on('ordem_de_compra_itens.subgrupo3_id', '=', 'contrato_item_apropriacoes.subgrupo3_id');
-                $join->on('ordem_de_compra_itens.servico_id', '=', 'contrato_item_apropriacoes.servico_id');
-            })
-            ->join('contrato_itens', 'contrato_itens.id' ,'=', 'contrato_item_apropriacoes.contrato_item_id')
-            ->sum(DB::raw('contrato_item_apropriacoes.qtd * contrato_itens.valor_unitario'));
-
-        return $valor_comprometido_a_gastar;
-    }
     
-    public static function valorComprometidoAGastarItem($grupo_id, $subgrupo1_id, $subgrupo2_id, $subgrupo3_id, $servico_id, $insumo_id)
+    public static function valorComprometidoAGastarItem($grupo_id, $subgrupo1_id, $subgrupo2_id, $subgrupo3_id, $servico_id, $insumo_id, $obra_id, $item_id = null)
     {
         $valores_comprometido_a_gastar = ContratoItemApropriacao::select([
             'contrato_item_apropriacoes.id',
+            'contratos.id as contrato_id',
             DB::raw('(contrato_item_apropriacoes.qtd * contrato_itens.valor_unitario) as valor_comprometido_a_gastar')
             ])
             ->join('contrato_itens', 'contrato_itens.id' ,'=', 'contrato_item_apropriacoes.contrato_item_id')
-            ->where('contrato_item_apropriacoes.insumo_id', $insumo_id)
+            ->join('contratos', 'contratos.id' ,'=', 'contrato_itens.contrato_id')
             ->where('contrato_item_apropriacoes.grupo_id', $grupo_id)
             ->where('contrato_item_apropriacoes.subgrupo1_id', $subgrupo1_id)
             ->where('contrato_item_apropriacoes.subgrupo2_id', $subgrupo2_id)
             ->where('contrato_item_apropriacoes.subgrupo3_id', $subgrupo3_id)
             ->where('contrato_item_apropriacoes.servico_id', $servico_id)
-            ->get();
+            ->where('contrato_item_apropriacoes.insumo_id', $insumo_id)
+            ->where('contratos.obra_id', $obra_id);
+
+        if($item_id){
+            $valores_comprometido_a_gastar->whereRaw('NOT EXISTS(
+                SELECT 1 
+                FROM contrato_itens CI
+                JOIN oc_item_qc_item OCQC ON OCQC.qc_item_id = CI.qc_item_id
+                WHERE CI.id = contrato_item_apropriacoes.contrato_item_id
+                AND OCQC.ordem_de_compra_item_id = '.$item_id.'
+            )');
+        }
+
+        $valores_comprometido_a_gastar = $valores_comprometido_a_gastar->get();
 
         $valor_comprometido_a_gastar = 0;
+        $valor_apropriacoes = 0;
 
         if(count($valores_comprometido_a_gastar)){
             foreach ($valores_comprometido_a_gastar as $valor) {
                 $valor_comprometido_a_gastar += $valor->valor_comprometido_a_gastar;
+
+                //Valor das apropriações
+                $contrato = Contrato::find($valor->contrato_id);
+
+                $itens = ContratoItemApropriacaoRepository::forContratoApproval($contrato);
+
+                if($itens->contrato_itens->isNotEmpty()) {
+                    foreach ($itens->contrato_itens as $c_item) {
+                        $valor_apropriacoes += $c_item->apropriacoes
+                            ->where('grupo_id', $grupo_id)
+                            ->where('subgrupo1_id', $subgrupo1_id)
+                            ->where('subgrupo2_id', $subgrupo2_id)
+                            ->where('subgrupo3_id', $subgrupo3_id)
+                            ->where('servico_id', $servico_id)
+                            ->sum('qtd');
+                    }
+                    $valor_comprometido_a_gastar += $valor_apropriacoes;
+                }
+                //Valor das apropriações
             }
         }
 
         return $valor_comprometido_a_gastar;
     }
 
-    public static function qtdComprometidaAGastarItem($grupo_id, $subgrupo1_id, $subgrupo2_id, $subgrupo3_id, $servico_id, $insumo_id, $item_id = null)
+    public static function qtdComprometidaAGastarItem($grupo_id, $subgrupo1_id, $subgrupo2_id, $subgrupo3_id, $servico_id, $insumo_id, $obra_id, $item_id = null)
     {
         $qtds_comprometida_a_gastar = ContratoItemApropriacao::select([
             'contrato_item_apropriacoes.id',
             'contrato_item_apropriacoes.qtd'
         ])
+            ->join('contrato_itens', 'contrato_itens.id' ,'=', 'contrato_item_apropriacoes.contrato_item_id')
+            ->join('contratos', 'contratos.id' ,'=', 'contrato_itens.contrato_id')
             ->where('contrato_item_apropriacoes.insumo_id', $insumo_id)
             ->where('contrato_item_apropriacoes.grupo_id', $grupo_id)
             ->where('contrato_item_apropriacoes.subgrupo1_id', $subgrupo1_id)
             ->where('contrato_item_apropriacoes.subgrupo2_id', $subgrupo2_id)
             ->where('contrato_item_apropriacoes.subgrupo3_id', $subgrupo3_id)
-            ->where('contrato_item_apropriacoes.servico_id', $servico_id);
+            ->where('contrato_item_apropriacoes.servico_id', $servico_id)
+            ->where('contratos.obra_id', $obra_id);
 
         if($item_id){
             $qtds_comprometida_a_gastar->whereRaw('NOT EXISTS(

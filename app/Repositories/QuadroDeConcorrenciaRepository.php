@@ -3,10 +3,12 @@
 namespace App\Repositories;
 
 use App\Mail\IniciaConcorrenciaFornecedorNaoUsuario;
+use App\Mail\AgradeceParticipacaoQC;
 use App\Models\CatalogoContrato;
 use App\Models\CatalogoContratoInsumo;
 use App\Models\CompradorInsumo;
 use App\Models\ConfiguracaoEstatica;
+use App\Models\ContratoTemplate;
 use App\Models\Fornecedor;
 use App\Models\OrdemDeCompraItem;
 use App\Models\QcFornecedor;
@@ -61,7 +63,7 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
             })
             ->where('ordem_de_compras.aprovado', '1')
             ->where('catalogo_contratos.catalogo_contrato_status_id',3) // Acordo Ativo
-            ->where('catalogo_contrato_obra.catalogo_contrato_status_id',3) // Acordo Ativo
+            ->where('catalogo_contrato_obra.catalogo_contrato_status_id',3) // Obra Acordo Ativa
             ->where('catalogo_contrato_insumos.periodo_inicio','<=',date('Y-m-d'))
             ->where('catalogo_contrato_insumos.periodo_termino','>=',date('Y-m-d'))
             ->whereNotExists(function ($query) {
@@ -129,6 +131,7 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
 
             }
 
+            $contratoTemplateContrato = ContratoTemplate::where('tipo', 'M')->first(); // Busca template do tipo Material (só tem um no sistema)
             foreach ($QCs_por_forncedor as $QC)
             {
                 $quadroDeConcorrencia = QuadroDeConcorrencia::create([
@@ -136,7 +139,8 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
                     'qc_status_id' => 1,
                     'obrigacoes_fornecedor' => ConfiguracaoEstatica::find(1)->valor,
                     'obrigacoes_bild' => ConfiguracaoEstatica::find(2)->valor,
-                    'rodada_atual' => 1
+                    'rodada_atual' => 1,
+                    'contrato_template_id'=> $contratoTemplateContrato->id
                 ]);
 
                 foreach ($QC as $qc_item_array) {
@@ -164,11 +168,14 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
 
                     // Amarra os fornecedores no QC
                     foreach ($fornecedores_ids[$qc_item_array['insumo_id']] as $fornecedor_id) {
+                        $catalogoContrato = CatalogoContrato::find($qc_item_array['cat_contrato_id']);
+
                         $qc_fornecedor = QcFornecedor::firstOrCreate([
                             'quadro_de_concorrencia_id' => $quadroDeConcorrencia->id,
                             'fornecedor_id' => $fornecedor_id,
                             'rodada' => $quadroDeConcorrencia->rodada_atual,
-                            'nf_material' => 1
+                            'nf_material' => 1,
+                            'campos_extras_contrato' => $catalogoContrato->campos_extras_contrato
                         ]);
                     }
 
@@ -216,17 +223,19 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
                     $contratoTemplateContrato = \App\Models\ContratoTemplate::where('tipo','M')->first();
                     $gerarContrato = [
                         'qcFornecedor' => $qc_fornecedor->id,
-                        'contrato_template_id'=> $contratoTemplateContrato->id
+                        'contrato_template_id'=> $contratoTemplateContrato->id,
                     ];
-                    $retorno = ContratoRepository::criar($gerarContrato);
-                    if($retorno['success']){
-                        $catalogoContrato = CatalogoContrato::find($qc_item_array['cat_contrato_id']);
-                        // Adiciona os campos extras nos contratos
-                        foreach ($retorno['contratos'] as $contrato){
-                            $contrato->campos_extras = $catalogoContrato->campos_extras_contrato;
-                            $contrato->save();
+
+                    // Campos extras
+                    if($qc_fornecedor->campos_extras_contrato){
+                        $campos_extras_contrato = json_decode($qc_fornecedor->campos_extras_contrato);
+                        foreach ($campos_extras_contrato as $key => $value){
+                            $gerarContrato['CAMPO_EXTRA'][$key] = $value;
                         }
                     }
+
+                    ContratoRepository::criar($gerarContrato);
+
                 }else{
                     $avaliadores = collect();
                     // Notifica os usuários que cuidam de QC para escolherem um vencedor
@@ -261,7 +270,7 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
 
         $attributes = [
             'user_id' => $attributes['user_id'],
-            'qc_status_id' => 1,
+            'qc_status_id' => QcStatus::ABERTO,
             'obrigacoes_fornecedor' => ConfiguracaoEstatica::find(1)->valor,
             'obrigacoes_bild' => ConfiguracaoEstatica::find(2)->valor,
             'rodada_atual' => 1
@@ -383,17 +392,17 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
             }
 
             // Muda status do QC
-            $model->qc_status_id = 3; // em aprovação
+            $model->qc_status_id = QcStatus::EM_APROVACAO;
             $model->save();
             QcStatusLog::create([
                 'quadro_de_concorrencia_id' => $model->id,
-                'qc_status_id' => 2, // Fechado
+                'qc_status_id' => QcStatus::FECHADO,
                 'user_id' => $attributes['user_update_id']
             ]);
 
             QcStatusLog::create([
                 'quadro_de_concorrencia_id' => $model->id,
-                'qc_status_id' => $model->qc_status_id, // Em aprovação
+                'qc_status_id' => QcStatus::EM_APROVACAO,
                 'user_id' => $attributes['user_update_id']
             ]);
         }
@@ -411,7 +420,7 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
             // Ação para Abrir concorrência (onde enviará e-mail aos fornecedores para acessarem e lançarem os preços)
             case 'inicia-concorrencia':
                 // Altera o status do Q.C.
-                $quadroDeConcorrencia->qc_status_id = 7;
+                $quadroDeConcorrencia->qc_status_id = QcStatus::EM_CONCORRENCIA;
                 $quadroDeConcorrencia->save();
                 QcStatusLog::create([
                     'quadro_de_concorrencia_id' => $quadroDeConcorrencia->id,
@@ -431,7 +440,7 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
                 break;
             case 'cancelar':
                 // Altera o status do Q.C.
-                $quadroDeConcorrencia->qc_status_id = 6;
+                $quadroDeConcorrencia->qc_status_id = QcStatus::CANCELADO;
                 $quadroDeConcorrencia->save();
                 QcStatusLog::create([
                     'quadro_de_concorrencia_id' => $quadroDeConcorrencia->id,
@@ -454,7 +463,7 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
     {
         if ($user = $fornecedor->user) {
             //se tiver já envia uma notificação
-            $user->notify(new IniciaConcorrencia($quadroDeConcorrencia));
+            $user->notify(new IniciaConcorrencia($quadroDeConcorrencia, $fornecedor));
         } else {
             // Se não tiver envia um e-mail para o fornecedor
             if (!strlen($fornecedor->email)) {
@@ -465,6 +474,11 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
                 Mail::to($fornecedor->email)->send(new IniciaConcorrenciaFornecedorNaoUsuario($quadroDeConcorrencia, $fornecedor));
             }
         }
+    }
+
+    public function notifyFornecedorParticipacaoQC(Fornecedor $fornecedor)
+    {
+        Mail::to($fornecedor->email)->send(new AgradeceParticipacaoQC($fornecedor));
     }
 
     /**
@@ -506,6 +520,14 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
         return $query->get();
     }
 
+    /**
+     * Aditivar Contratos
+     * Função onde recebe os itens da Ordem de Compra após aprovada e já cria Quadros de Concorrência com o Fornecedor
+     * do contrato apontado como destino, aguardando o lançamento de valores
+     * @param Collection $itens
+     * @param $user_id
+     * @return \Illuminate\Support\Collection
+     */
     public function aditivarContratos(Collection $itens, $user_id)
     {
         $contratos = $itens->groupBy('sugestao_contrato_id');

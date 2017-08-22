@@ -19,8 +19,19 @@ class ContratoItemModificacao extends Model
     public function workflowNotification()
     {
         return [
-            'message' => "Você tem uma modificação no contrato #{$this->item->contrato_id} para aprovar",
-            'link' => route('contratos.show', $this->item->contrato_id)
+            'message' => "Modificação do Contrato {$this->item->contrato_id} à aprovar",
+            'link' => route('contratos.show', $this->item->contrato_id),
+            'workflow_tipo_id' => WorkflowTipo::ITEM_CONTRATO,
+            'id_dinamico' => $this->id,
+            'task'=>1,
+            'done'=>0
+        ];
+    }
+    public function workflowNotificationDone($aprovado)
+    {
+        return [
+            'message' => 'Modificação do Contrato {$this->item->contrato_id} '.$this->id.($aprovado?' aprovada ':' reprovada '),
+            'link' => route('contratos.show', $this->item->contrato_id),
         ];
     }
 
@@ -36,7 +47,8 @@ class ContratoItemModificacao extends Model
         'tipo_modificacao',
         'contrato_status_id',
         'anexo',
-        'user_id'
+        'user_id',
+        'descricao'
     ];
 
     /**
@@ -101,6 +113,10 @@ class ContratoItemModificacao extends Model
         return [$this->attributes['id'] => $this->attributes['id']];
     }
 
+    public function idPai(){
+        return null;
+    }
+
     public function paiEmAprovacao()
     {
         return false;
@@ -113,7 +129,7 @@ class ContratoItemModificacao extends Model
 
     public function qualObra()
     {
-        return null;
+        return $this->item->contrato->obra_id;
     }
 
     public function aprova($isAprovado)
@@ -142,6 +158,15 @@ class ContratoItemModificacao extends Model
         ]);
     }
 
+    public function dataUltimoPeriodoAprovacao(){
+        $ultimoStatusAprovacao = $this->logs()->where('contrato_status_id',ContratoStatus::EM_APROVACAO)
+            ->orderBy('created_at','DESC')->first();
+        if($ultimoStatusAprovacao){
+            return $ultimoStatusAprovacao->created_at;
+        }
+        return null;
+    }
+
     public function getValorTotalAttribute()
     {
         return (float) $this->valor_unitario_atual * (float) $this->qtd_atual;
@@ -155,7 +180,7 @@ class ContratoItemModificacao extends Model
             'contrato_item_modificacao_id',
             'contrato_item_apropriacao_id'
         )
-        ->withPivot([ 'qtd_atual', 'qtd_anterior', 'id', 'descricao' ])
+        ->withPivot([ 'qtd_atual', 'qtd_anterior', 'id', 'descricao', 'anexo' ])
         ->withTimestamps();
     }
 }

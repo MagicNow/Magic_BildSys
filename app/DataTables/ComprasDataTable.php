@@ -53,6 +53,28 @@ class ComprasDataTable extends DataTable
                     );
                 }
             })
+            ->editColumn('codigo', function ($obj) {
+                if($obj->substitui){
+                    return "<strong  data-toggle=\"tooltip\" data-placement=\"top\" data-html=\"true\"
+                    title=\"". $obj->tooltip_grupo . ' <br> ' .
+                    $obj->tooltip_subgrupo1 . ' <br> ' .
+                    $obj->tooltip_subgrupo2 . ' <br> ' .
+                    $obj->tooltip_subgrupo3 . ' <br> ' .
+                    $obj->tooltip_servico . ' <br> <i class=\'fa fa-exchange\'></i> ' . $obj->substitui .
+                    "\">
+                    $obj->codigo
+                    </strong>";
+                } else {
+                    return "<strong  data-toggle=\"tooltip\" data-placement=\"top\" data-html=\"true\"
+                    title=\"". $obj->tooltip_grupo . ' <br> ' .
+                    $obj->tooltip_subgrupo1 . ' <br> ' .
+                    $obj->tooltip_subgrupo2 . ' <br> ' .
+                    $obj->tooltip_subgrupo3 . ' <br> ' .
+                    $obj->tooltip_servico  ."\">
+                    $obj->codigo
+                    </strong>";
+                }
+            })
             ->editColumn('nome', function ($obj) {
                 if($obj->substitui){
                     return "<strong  data-toggle=\"tooltip\" data-placement=\"top\" data-html=\"true\"
@@ -137,7 +159,8 @@ class ComprasDataTable extends DataTable
         $insumos->select(
             [
                 'insumos.id',
-                DB::raw("CONCAT(insumos.codigo,' - ' ,insumos.nome) as nome"),
+                'insumos.codigo',
+                'insumos.nome',
                 DB::raw("format(orcamentos.qtd_total,2,'de_DE') as qtd_total"),
                 DB::raw("CONCAT(insumos_sub.codigo,' - ' ,insumos_sub.nome) as substitui"),
                 'orcamentos.id as orcamento_id',
@@ -360,7 +383,10 @@ class ComprasDataTable extends DataTable
             ->where('orcamentos.ativo', 1);
 
         $insumo_query->leftJoin(DB::raw('orcamentos orcamentos_sub'),  'orcamentos_sub.id', 'orcamentos.orcamento_que_substitui');
-        $insumo_query->leftJoin(DB::raw('insumos insumos_sub'), 'insumos_sub.id', 'orcamentos_sub.insumo_id');
+        //ex: left join insumos insumos_sub on `insumos_sub`.`id` = `orcamentos_sub`.`insumo_id` 
+		$insumo_query->leftJoin(DB::raw('insumos insumos_sub'), 'insumos_sub.id', 'orcamentos_sub.insumo_id');
+		$insumo_query->leftJoin(DB::raw('carteira_insumos'), 'insumos.id', 'carteira_insumos.insumo_id');
+		$insumo_query->leftJoin(DB::raw('carteiras'), 'carteiras.id', 'carteira_insumos.carteira_id');
 
         if ($this->request()->get('grupo_id')) {
             if (count($this->request()->get('grupo_id')) && $this->request()->get('grupo_id')[0] != "") {
@@ -402,9 +428,16 @@ class ComprasDataTable extends DataTable
                     ->whereNull('planejamento_compras.deleted_at');
             }
         }
+		
         if($this->request()->get('insumo_grupos_id')){
             if(count($this->request()->get('insumo_grupos_id')) && $this->request()->get('insumo_grupos_id')[0] != "") {
                 $insumo_query->where('insumos.insumo_grupo_id', $this->request()->get('insumo_grupos_id'));
+            }
+        }
+		
+		if($this->request()->get('carteira_id')){
+            if(count($this->request()->get('carteira_id')) && $this->request()->get('carteira_id')[0] != "") {
+                $insumo_query->where('carteiras.id', $this->request()->get('carteira_id'));
             }
         }
 
@@ -459,6 +492,7 @@ class ComprasDataTable extends DataTable
     protected function getColumns()
     {
         return [
+            'código' => ['name' => 'codigo', 'data' => 'codigo'],
             'insumos' => ['name' => 'nome', 'data' => 'nome'],
             'unidade De Medida' => ['name' => 'unidade_sigla', 'data' => 'unidade_sigla'],
             'quantidade' => ['name' => 'orcamentos.qtd_total', 'data' => 'qtd_total'],

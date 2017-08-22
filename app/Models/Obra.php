@@ -26,6 +26,8 @@ class Obra extends Model
     public $fillable = [
         'nome',
         'cidade_id',
+        'regional_id',
+        'padrao_empreendimento_id',
         'area_terreno',
         'area_privativa',
         'area_construida',
@@ -326,5 +328,25 @@ class Obra extends Model
         return $this->belongsToMany(User::class, 'obra_users', 'obra_id', 'user_id')
             ->withPivot('deleted_at')
             ->withTimestamps();
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function regional()
+    {
+        return $this->belongsTo(Regional::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function padrao_empreendimento()
+    {
+        return $this->belongsTo(PadraoEmpreendimento::class);
+    }
+
+    public function torres(){
+        return $this->hasMany(ObraTorre::class);
     }
 }

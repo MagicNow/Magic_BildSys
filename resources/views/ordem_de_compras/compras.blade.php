@@ -29,7 +29,7 @@
                           !!}
                         </div>
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                   <label for="planejamento_id">Tarefa</label>
                                   {!!
@@ -46,7 +46,7 @@
                                   !!}
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <label for="planejamento_id">Grupo de Insumo</label>
                                 <div class="form-group">
                                   {!!
@@ -58,6 +58,23 @@
                                         'class'    => 'form-control select2',
                                         'onchange' => 'atualizaCalendarioPorInsumoGrupo(this.value);',
                                         'id'       => 'insumo_grupo_id'
+                                      ]
+                                    )
+                                  !!}
+                                </div>
+                            </div>	
+							<div class="col-md-4">
+                                <label for="planejamento_id">Carteiras</label>
+                                <div class="form-group">
+                                  {!!
+                                    Form::select(
+                                      'carteira_id',
+                                      $carteiras,
+                                      null,
+                                      [
+                                        'class'    => 'form-control select2',
+                                        'onchange' => 'atualizaCalendarioPorCarteira(this.value);',
+                                        'id'       => 'carteira_id'
                                       ]
                                     )
                                   !!}
@@ -137,6 +154,7 @@
         var obra = null;
         var planejamento_id = null;
         var insumo_grupo_id = null;
+		var carteira_id = null;
         var exibir_por_tarefa = null;
 
         function escolheObra(obra_id) {
@@ -160,7 +178,6 @@
             atualizaCalendario();
         }
 
-
         function atualizaCalendario() {
             var queryString = '';
             if(parseInt(obra) > 0){
@@ -183,6 +200,15 @@
                     queryString +='?';
                 }
                 queryString +='insumo_grupo_id=' + insumo_grupo_id;
+            }
+			
+			if(parseInt(carteira_id) > 0){
+                if(queryString.length>0){
+                    queryString +='&';
+                }else{
+                    queryString +='?';
+                }
+                queryString +='carteira_id=' + carteira_id;
             }
 
             var $exibirPorTarefa = $('#exibir_por_tarefa');
@@ -217,6 +243,16 @@
                 $('#filtro_grupo').val($('#insumo_grupo_id option:selected').text()).trigger( "change" );
             }else{
                 $('#filtro_grupo').val('').trigger( "change" );
+            }
+            atualizaCalendario();
+        }
+		
+		function atualizaCalendarioPorCarteira(carteira) {
+            carteira_id = carteira;
+            if(carteira){
+                $('#filtro_carteira').val($('#carteira_id option:selected').text()).trigger( "change" );
+            }else{
+                $('#filtro_carteira').val('').trigger( "change" );
             }
             atualizaCalendario();
         }

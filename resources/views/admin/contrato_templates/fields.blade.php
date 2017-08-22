@@ -326,6 +326,103 @@
                                             </span> &nbsp;
                                             CEP
                                         </li>
+                                        <!--NOVOS CAMPOS-->
+                                        <li class="list-group-item">
+                                            <span class="label label-primary selecionavel">
+                                                [NOME_SOCIO]
+                                            </span> &nbsp;
+                                            Nome sócio ou procurador
+                                        </li>
+                                        <li class="list-group-item">
+                                            <span class="label label-primary selecionavel">
+                                                [NACIONALIDADE_SOCIO]
+                                            </span> &nbsp;
+                                            Nacionalidade sócio ou procurador
+                                        </li>
+                                        <li class="list-group-item">
+                                            <span class="label label-primary selecionavel">
+                                                [ESTADO_CIVIL_SOCIO]
+                                            </span> &nbsp;
+                                            Estado civil sócio ou procurador
+                                        </li>
+                                        <li class="list-group-item">
+                                            <span class="label label-primary selecionavel">
+                                                [PROFISSAO_SOCIO]
+                                            </span> &nbsp;
+                                            Profissão sócio ou procurador
+                                        </li>
+                                        <li class="list-group-item">
+                                            <span class="label label-primary selecionavel">
+                                                [RG_SOCIO]
+                                            </span> &nbsp;
+                                            RG sócio ou procurador
+                                        </li>
+                                        <li class="list-group-item">
+                                            <span class="label label-primary selecionavel">
+                                                [CPF_SOCIO]
+                                            </span> &nbsp;
+                                            CPF sócio ou procurador
+                                        </li>
+                                        <li class="list-group-item">
+                                            <span class="label label-primary selecionavel">
+                                                [ENDERECO_SOCIO]
+                                            </span> &nbsp;
+                                            Endereço sócio ou procurador
+                                        </li>
+                                        <li class="list-group-item">
+                                            <span class="label label-primary selecionavel">
+                                                [CIDADE_SOCIO]
+                                            </span> &nbsp;
+                                            Cidade sócio ou procurador
+                                        </li>
+                                        <li class="list-group-item">
+                                            <span class="label label-primary selecionavel">
+                                                [ESTADO_SOCIO]
+                                            </span> &nbsp;
+                                            Estado sócio ou procurador
+                                        </li>
+                                        <li class="list-group-item">
+                                            <span class="label label-primary selecionavel">
+                                                [CEP_SOCIO]
+                                            </span> &nbsp;
+                                            CEP sócio ou procurador
+                                        </li>
+                                        <li class="list-group-item">
+                                            <span class="label label-primary selecionavel">
+                                                [TELEFONE_SOCIO]
+                                            </span> &nbsp;
+                                            Telefone sócio ou procurador
+                                        </li>
+                                        <li class="list-group-item">
+                                            <span class="label label-primary selecionavel">
+                                                [CELULAR_SOCIO]
+                                            </span> &nbsp;
+                                            Celular sócio ou procurador
+                                        </li>
+                                        <li class="list-group-item">
+                                            <span class="label label-primary selecionavel">
+                                                [EMAIL_SOCIO]
+                                            </span> &nbsp;
+                                            Email sócio ou procurador
+                                        </li>
+                                        <li class="list-group-item">
+                                            <span class="label label-primary selecionavel">
+                                                [NOME_VENDEDOR]
+                                            </span> &nbsp;
+                                            Nome vendedor
+                                        </li>
+                                        <li class="list-group-item">
+                                            <span class="label label-primary selecionavel">
+                                                [EMAIL_VENDEDOR]
+                                            </span> &nbsp;
+                                            Email vendedor
+                                        </li>
+                                        <li class="list-group-item">
+                                            <span class="label label-primary selecionavel">
+                                                [TELEFONE_VENDEDOR]
+                                            </span> &nbsp;
+                                            Telefone vendedor
+                                        </li>
                                     </ul>
                                 </div>
                                 <!-- /.box-body -->
@@ -352,6 +449,37 @@
                                                 [TABELA_ITENS_CONTRATO]
                                             </span> &nbsp;
                                             Tabela com a listagem de Insumo, Qtd, Valor Unitário e Valor Total
+                                        </li>
+
+                                    </ul>
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+                            <div class="box box-solid">
+                                <div class="box-header with-border">
+                                    <i class="fa fa-usd"></i>
+                                    <h3 class="box-title">Proposta do Q.C.</h3>
+                                </div>
+                                <!-- /.box-header -->
+                                <div class="box-body">
+                                    <ul class="list-group">
+                                        <li class="list-group-item">
+                                            <span class="label label-primary selecionavel">
+                                               [COMPOSICAO_DO_PRECO]
+                                            </span> &nbsp;
+                                            Composição do preço (percentual mão-de-obra, Material Contradada, Material Fat. Direto)
+                                        </li>
+                                        <li class="list-group-item">
+                                            <span class="label label-primary selecionavel">
+                                                [FRETE_TIPO]
+                                            </span> &nbsp;
+                                            CIF ou FOB
+                                        </li>
+                                        <li class="list-group-item">
+                                            <span class="label label-primary selecionavel">
+                                                [FRETE_VALOR]
+                                            </span> &nbsp;
+                                            Valor do Frete
                                         </li>
 
                                     </ul>

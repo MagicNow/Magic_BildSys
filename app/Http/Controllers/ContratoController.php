@@ -17,12 +17,15 @@ use App\Models\Obra;
 use App\Models\ObraTorre;
 use App\Models\Planejamento;
 use App\Models\WorkflowAprovacao;
+use App\Notifications\WorkflowNotification;
 use App\Repositories\CodeRepository;
 use App\Repositories\ContratoRepository;
+use App\Repositories\NotificationRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use Response;
 use App\Repositories\Admin\FornecedoresRepository;
@@ -117,6 +120,9 @@ class ContratoController extends AppBaseController
             return redirect(route('contratos.index'));
         }
 
+        // Limpa qualquer notificação que tiver deste item
+        NotificationRepository::marcarLido(WorkflowTipo::CONTRATO,$id);
+
         $orcamentoInicial = $totalAGastar = $realizado = $totalSolicitado = 0;
 
         $orcamentoInicial = $apropriacaoRepository->orcamentoInicial(
@@ -127,8 +133,13 @@ class ContratoController extends AppBaseController
 
         $fornecedor = $fornecedorRepository->updateImposto($contrato->fornecedor_id);
 
+        $dataUltimoPeriodo = $contrato->dataUltimoPeriodoAprovacao();
+        if(!$dataUltimoPeriodo){
+            $dataUltimoPeriodo = $contrato->updated_at;
+        }
         $alcadas = WorkflowAlcada::where('workflow_tipo_id', WorkflowTipo::CONTRATO)
             ->orderBy('ordem', 'ASC')
+            ->where('created_at', '<=', $dataUltimoPeriodo->format('Y-m-d H:i:s'))
             ->get();
 
         $alcadas_count = $alcadas->count();
@@ -145,13 +156,15 @@ class ContratoController extends AppBaseController
                     'Contrato',
                     $contrato->irmaosIds(),
                     null,
-                    null,
+                    $contrato->id,
                     $alcada->id);
 
                 $avaliado_reprovado[$alcada->id]['aprovadores'] = WorkflowAprovacaoRepository::verificaQuantidadeUsuariosAprovadores(
                     WorkflowTipo::find(WorkflowTipo::CONTRATO),
                     $contrato->obra_id,
-                    $alcada->id
+                    $alcada->id,
+                    [$contrato->id=>$contrato->id],
+                    'Contrato'
                 );
 
                 $avaliado_reprovado[$alcada->id] ['faltam_aprovar'] = WorkflowAprovacaoRepository::verificaUsuariosQueFaltamAprovar(
@@ -183,7 +196,6 @@ class ContratoController extends AppBaseController
                 }
             }
         }
-
         $aprovado = $contrato->isStatus(ContratoStatus::APROVADO);
 
         $motivos = $workflowReprovacaoMotivoRepository
@@ -220,6 +232,8 @@ class ContratoController extends AppBaseController
         $itens_analise = $apropriacaoRepository->forContratoApproval($contrato);
 
         $GLOBALS["valor_total_comprometido_a_gastar"] = 0.00;
+
+        $qtd_itens = 1;
     
         return view('contratos.show', compact(
             'isEmAprovacao',
@@ -236,6 +250,7 @@ class ContratoController extends AppBaseController
             'fornecedor',
             'iss',
             'itens_analise',
+            'qtd_itens',
             'valor_total_comprometido_a_gastar'
         ));
     }
@@ -245,8 +260,7 @@ class ContratoController extends AppBaseController
         ReajustarRequest $request,
         ContratoItemModificacaoRepository $contratoItemModificacaoRepository
     ) {
-        
-        $contratoItemModificacaoRepository->reajustar($contrato_item_id, $request->all());
+        $contratoItemModificacaoRepository->reajustar($contrato_item_id, $request->all(), $request->reajusteDescricao);
 
         return response()->json([
             'success' => true
@@ -273,6 +287,7 @@ class ContratoController extends AppBaseController
         $id,
         ContratoItemRepository $contratoItemRepository
     ) {
+
         $item = $contratoItemRepository->find($id);
 
         $itens = $item->apropriacoes->filter(function($apropriacao) {
@@ -311,7 +326,8 @@ class ContratoController extends AppBaseController
 
     public function imprimirContrato($id)
     {
-        return response()->file(storage_path('/app/public/') . str_replace('storage/', '', ContratoRepository::geraImpressao($id)));
+
+        return response()->download(storage_path('/app/public/') . str_replace('storage/', '', ContratoRepository::geraImpressao($id)));
     }
 
     public function edit($id)
@@ -339,15 +355,12 @@ class ContratoController extends AppBaseController
 
             return redirect(route('contratos.index'));
         }
-
-        $workflow_aprovacao = WorkflowAprovacao::where('aprovavel_type', 'App\Models\Contrato')
-            ->where('aprovavel_id', $contrato->id)
-            ->first();
+        $contrato_status_id = $contrato->contrato_status_id;
 
         if (count($request->quantidade)) {
             foreach ($request->quantidade as $item) {
                 $contrato_item = ContratoItem::find($item['id']);
-                if ($contrato_item && $item['qtd'] != '' && $contrato_item->qtd != money_to_float($item['qtd']) && $workflow_aprovacao) {
+                if ($contrato_item && $item['qtd'] != '' && $contrato_item->qtd != money_to_float($item['qtd']) ) {
                     $contrato_item->qtd = money_to_float($item['qtd']);
                     $contrato_item->valor_total = money_to_float($item['qtd']) * money_to_float($contrato_item->valor_unitario);
                     $contrato_item->update();
@@ -355,12 +368,17 @@ class ContratoController extends AppBaseController
                     $contrato->contrato_status_id = 1;
                     $contrato->update();
 
-                    $workflow_aprovacao->delete();
-
                     $type_resposta = 'success';
                     $resposta = 'Contrato em aprovação.';
                 }
             }
+        }
+        if($contrato->contrato_status_id != $contrato_status_id){
+            ContratoStatusLog::create([
+                'contrato_id'        => $contrato->id,
+                'contrato_status_id' => $contrato->contrato_status_id,
+                'user_id'            => auth()->id()
+            ]);
         }
 
         Flash::$type_resposta($resposta);
@@ -766,6 +784,11 @@ class ContratoController extends AppBaseController
         $input = $request->all();
         $input['contrato_id'] = $contrato_id;
         $solicitacao = $repository->create($input);
+
+        # Notifica usuários aprovadores
+        $aprovadores = WorkflowAprovacaoRepository::usuariosDaAlcadaAtual($solicitacao);
+
+        Notification::send($aprovadores, new WorkflowNotification($solicitacao));
 
         return response()->json([
             'success' => true

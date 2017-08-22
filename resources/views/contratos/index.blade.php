@@ -57,6 +57,7 @@
 @endsection
 
 @section('scripts')
+  @parent
     <script src="/vendor/datatables/buttons.server-side.js"></script>
     <script>
       function selectgrupo(id, change, tipo){
@@ -114,6 +115,9 @@
           }
         }
       }
+      $(function () {
+        selectgrupo( $('#grupo_id').val() , 'subgrupo1_id', 'grupos');
+      });
     </script>
     {!! $dataTable->scripts() !!}
 @endsection

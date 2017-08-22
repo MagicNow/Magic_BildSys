@@ -21,7 +21,19 @@ class OrdemDeCompraItem extends Model
     public function workflowNotification()
     {
         return [
-            'message' => 'Você tem uma ordem de compra para aprovar',
+            'message' => 'Ordem de compra '.$this->ordem_de_compra_id.' à aprovar',
+            'link' => route('ordens_de_compra.detalhes', $this->ordem_de_compra_id),
+            'workflow_tipo_id' => WorkflowTipo::OC,
+            'id_dinamico' => $this->ordem_de_compra_id,
+            'task'=>1,
+            'done'=>0
+        ];
+    }
+
+    public function workflowNotificationDone($aprovado)
+    {
+        return [
+            'message' => 'Ordem de compra '.$this->ordem_de_compra_id.($aprovado?' aprovada ':' reprovada '),
             'link' => route('ordens_de_compra.detalhes', $this->ordem_de_compra_id)
         ];
     }
@@ -102,9 +114,12 @@ class OrdemDeCompraItem extends Model
 
     public function setQtdAttribute($value)
     {
-        $pontos = [","];
-        $value = str_replace('.', '', $value);
-        $result = str_replace($pontos, ".", $value);
+        if(strpos($value,',') !== false){
+            $value = str_replace('.', '', $value);
+            $result = str_replace(",", ".", $value);
+        }else{
+            $result = $value;
+        }
 
         $this->attributes['qtd'] = $result;
     }
@@ -268,6 +283,8 @@ class OrdemDeCompraItem extends Model
             }
 
             QuadroDeConcorrenciaRepository::verificaQCAutomatico();
+            
+            return true;
         }
 
         // Verifica se algum foi reprovado e todos foram votados
@@ -278,7 +295,11 @@ class OrdemDeCompraItem extends Model
                 'ordem_de_compra_id'=>$this->ordemDeCompra->id,
                 'user_id'=>Auth::id()
             ]);
+            
+            return false;
         }
+        
+        return null;
     }
 
     public function qualObra()
@@ -291,5 +312,69 @@ class OrdemDeCompraItem extends Model
         $this->timestamps = false;
         $this->attributes['aprovado'] = $valor;
         $this->save();
+
+        OrdemDeCompraItemLog::create([
+            'oc_status_id' => ($valor?5:4),
+            'ordem_de_compra_item_id' => $this->id,
+            'user_id' => auth()->id()
+        ]);
+    }
+    
+    public function idPai(){
+        return $this->ordem_de_compra_id;
+    }
+
+
+    public function dataUltimoPeriodoAprovacao(){
+        $ultimoStatusAprovacao = $this->logs()->where('oc_status_id',3)
+            ->orderBy('created_at','DESC')->first();
+        if($ultimoStatusAprovacao){
+            return $ultimoStatusAprovacao->created_at;
+        }
+        return $this->updated_at;
+    }
+
+    public function colocaEmAprovacao(){
+        return $this->itemEmAprovacao();
+    }
+    
+    public function getQtdSobraAttribute()
+    {
+        return $this->qtd - $this->reapropriacoes->sum('qtd');
+    }
+
+    public function getQtdSobraFormattedAttribute()
+    {
+        return float_to_money($this->getQtdSobraAttribute(), '') . ' ' . $this->insumo->unidade_sigla;
+    }
+
+    public function getQtdFormattedAttribute()
+    {
+        return float_to_money($this->qtd, '') . ' ' . $this->insumo->unidade_sigla;
+    }
+
+    public function logs(){
+        return $this->hasMany(OrdemDeCompraItemLog::class);
+    }
+
+    public function itemEmAprovacao(){
+        $this->aprovado = null;
+        $this->save();
+        OrdemDeCompraItemLog::create([
+            'oc_status_id'=>3, // Em aprovação
+            'ordem_de_compra_item_id'=>$this->id,
+            'user_id'=> auth()->id()
+        ]);
+    }
+
+    public function itemEmAberto(){
+
+        OrdemDeCompraItemLog::create([
+            'oc_status_id'=>1, // Em aberto
+            'ordem_de_compra_item_id'=>$this->id,
+            'user_id'=> auth()->id()
+        ]);
+        $this->aprovado = null;
+        return $this->save();
     }
 }

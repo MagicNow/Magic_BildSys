@@ -51,8 +51,8 @@ class ObraTorre extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
-    public function mcMedicaoPrevisos()
+    public function mcMedicaoPrevisoes()
     {
-        return $this->hasMany(\App\Models\McMedicaoPreviso::class);
+        return $this->hasMany(McMedicaoPrevisao::class);
     }
 }

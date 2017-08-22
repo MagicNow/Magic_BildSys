@@ -92,9 +92,11 @@
                     @endif
                 @endif
             @elseif($quadroDeConcorrencia->qc_status_id==5)
+                @shield('quadroDeConcorrencias.edit')
                 <button type="button" class="btn btn-lg btn-success btn-flat" style="margin-left: 20px" onclick="abrirConcorrencia({{$quadroDeConcorrencia->id}});">
                     <i class="fa fa-play-circle-o " aria-hidden="true"></i> Abrir concorrência
                 </button>
+                @endshield
             @elseif($quadroDeConcorrencia->qc_status_id==7)
                 @shield('quadroDeConcorrencias.informar_valor')
                     <a href="{{ route('quadroDeConcorrencia.informar-valor', $quadroDeConcorrencia->id) }}" class="btn btn-lg btn-flat btn-info" title="Informar valores">
@@ -111,6 +113,11 @@
             @endif
         </h1>
     </section>
+    @if($oc_status != 'Em Aberto')
+        <div class="content" style="    padding-bottom: 0px;    margin-bottom: 0px;    min-height: 0px;">
+            @include('quadro_de_concorrencias.timeline')
+        </div>
+    @endif
     <div class="content">
         <div class="box box-warning">
             <div class="box-body">

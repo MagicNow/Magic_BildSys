@@ -50,10 +50,34 @@
                     </span>
                 </div>
 
-
-
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-3">
+                        <h4>Regionais</h4>
+                        @if(count($regionais))
+                            <div class="js-datatable-filter-form">
+                                {!! Form::select('regionais[]',$regionais, null, [
+                                    'class'=>'form-control select2',
+                                    'multiple'=>'multiple',
+                                    ]) !!}
+
+                            </div>
+                        @endif
+                    </div>
+
+                    <div class="col-md-3">
+                        <h4>Padrões de empreendimento</h4>
+                        @if(count($padroes_empreendimento))
+                            <div class="js-datatable-filter-form">
+                                {!! Form::select('padroes_empreendimento[]',$padroes_empreendimento, null, [
+                                    'class'=>'form-control select2',
+                                    'multiple'=>'multiple',
+                                    ]) !!}
+
+                            </div>
+                        @endif
+                    </div>
+
+                    <div class="col-md-3">
                         <h4>Obras</h4>
                         @if(count($obras))
                         <div class="js-datatable-filter-form">
@@ -66,7 +90,7 @@
                         @endif
                     </div>
 
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <h4>Compradores</h4>
                         @if(count($compradores))
                         <div class="js-datatable-filter-form">
@@ -79,7 +103,55 @@
                         @endif
                     </div>
 
-                    <div class="col-md-2">
+                    <div class="col-md-3">
+                        <h4>Cidades</h4>
+                        @if(count($cidades))
+                            <div class="js-datatable-filter-form">
+                                {!! Form::select('cidades[]',$cidades, null, [
+                                'class'=>'form-control select2',
+                                'multiple'=>'multiple',
+                                ]) !!}
+                            </div>
+                        @endif
+                    </div>
+
+                    <div class="col-md-3">
+                        <h4>Grupos de Insumos</h4>
+                        @if(count($insumoGrupos))
+                            <div class="js-datatable-filter-form">
+                                {!! Form::select('insumo_grupos[]',$insumoGrupos, null, [
+                                'class'=>'form-control select2',
+                                'multiple'=>'multiple',
+                                ]) !!}
+                            </div>
+                        @endif
+                    </div>
+
+                    <div class="col-md-3">
+                        <h4>Insumos</h4>
+                        @if(count($insumos))
+                            <div class="js-datatable-filter-form">
+                                {!! Form::select('insumos[]',$insumos, null, [
+                                'class'=>'form-control select2',
+                                'multiple'=>'multiple',
+                                ]) !!}
+                            </div>
+                        @endif
+                    </div>
+					
+					<div class="col-md-3">
+                        <h4>Carteiras</h4>
+                        @if(count($carteiras))
+                            <div class="js-datatable-filter-form">
+                                {!! Form::select('carteiras[]',$carteiras, null, [
+                                'class'=>'form-control select2',
+                                'multiple'=>'multiple',
+                                ]) !!}
+                            </div>
+                        @endif
+                    </div>
+
+                    <div class="col-md-1">
                         <h4>O.C.s</h4>
                         @if(count($OCs))
                             <div class="js-datatable-filter-form">
@@ -103,41 +175,6 @@
                         @endif
                     </div>
 
-                    <div class="col-md-4">
-                        <h4>Grupos de Insumos</h4>
-                        @if(count($insumoGrupos))
-                            <div class="js-datatable-filter-form">
-                                {!! Form::select('insumo_grupos[]',$insumoGrupos, null, [
-                                'class'=>'form-control select2',
-                                'multiple'=>'multiple',
-                                ]) !!}
-                            </div>
-                        @endif
-                    </div>
-
-                    <div class="col-md-4">
-                        <h4>Insumos</h4>
-                        @if(count($insumos))
-                            <div class="js-datatable-filter-form">
-                                {!! Form::select('insumos[]',$insumos, null, [
-                                'class'=>'form-control select2',
-                                'multiple'=>'multiple',
-                                ]) !!}
-                            </div>
-                        @endif
-                    </div>
-
-                    <div class="col-md-4">
-                        <h4>Cidades</h4>
-                        @if(count($cidades))
-                            <div class="js-datatable-filter-form">
-                                {!! Form::select('cidades[]',$cidades, null, [
-                                'class'=>'form-control select2',
-                                'multiple'=>'multiple',
-                                ]) !!}
-                            </div>
-                        @endif
-                    </div>
                 </div>
             </div>
         </div>

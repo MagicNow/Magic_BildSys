@@ -22,17 +22,18 @@ class ContratoItemApropriacaoRepository extends BaseRepository
 
     public function reapropriar(ContratoItem $contratoItem, $data)
     {
-        $data['insumo_id']                      = $contratoItem->qcItem->insumo_id;
+        $data['insumo_id']                      = $contratoItem->insumo_id;
         $data['contrato_item_id']               = $contratoItem->id;
         $data['qtd']                            = money_to_float($data['qtd']);
         $data['user_id']                        = auth()->id();
         $data['codigo_insumo']                  = $contratoItem->insumo->codigo;
         $data['contrato_item_reapropriacao_id'] = $data['item_id'];
+        $data['descricao']                      = $data['observacao'];
 
         return $this->create($data);
     }
 
-    public function forContratoApproval(Contrato $contrato)
+    public static function forContratoApproval(Contrato $contrato)
     {
         $query = <<<EOFSQL
 SELECT

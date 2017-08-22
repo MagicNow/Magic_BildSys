@@ -9,9 +9,11 @@ use App\Http\Requests;
 use App\Http\Requests\CreateMedicaoServicoRequest;
 use App\Http\Requests\UpdateMedicaoServicoRequest;
 use App\Models\WorkflowAlcada;
+use App\Models\WorkflowAprovacao;
 use App\Models\WorkflowReprovacaoMotivo;
 use App\Models\WorkflowTipo;
 use App\Repositories\MedicaoServicoRepository;
+use App\Repositories\NotificationRepository;
 use App\Repositories\WorkflowAprovacaoRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
@@ -84,6 +86,10 @@ class MedicaoServicoController extends AppBaseController
 
             return redirect(route('medicoes.index'));
         }
+
+        // Limpa qualquer notificação que tiver deste item
+        NotificationRepository::marcarLido(WorkflowTipo::MEDICAO,$id);
+
         $avaliado_reprovado = [];
         $itens_ids = $medicaoServico->medicoes()->pluck('id', 'id')->toArray();
         $aprovavelTudo = WorkflowAprovacaoRepository::verificaAprovaGrupo('Medicao', $itens_ids, auth()->user());
@@ -205,13 +211,13 @@ class MedicaoServicoController extends AppBaseController
         if (empty($medicaoServico)) {
             Flash::error('Medição de Serviço não encontrada');
 
-            return redirect(route('medicaoServicos.index'));
+            return redirect(route('medicoes.index'));
         }
 
         $this->medicaoServicoRepository->delete($id);
 
         Flash::success('Medicao Servico '.trans('common.deleted').' '.trans('common.successfully').'.');
 
-        return redirect(route('medicaoServicos.index'));
+        return redirect(route('medicoes.index'));
     }
 }

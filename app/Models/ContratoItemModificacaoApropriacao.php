@@ -13,7 +13,8 @@ class ContratoItemModificacaoApropriacao extends Model
         'contrato_item_apropriacao_id',
         'qtd_atual',
         'qtd_anterior',
-        'descricao'
+        'descricao',
+        'anexo'
     ];
 
     public $casts = [

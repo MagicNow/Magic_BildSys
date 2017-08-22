@@ -6,8 +6,12 @@ use App\Models\Contrato;
 use App\Models\Insumo;
 use App\Models\OrdemDeCompraItem;
 use App\Models\QuadroDeConcorrencia;
+use App\Models\WorkflowAlcada;
+use App\Models\WorkflowAprovacao;
+use App\Models\WorkflowTipo;
 use App\Notifications\WorkflowNotification;
 use App\Repositories\ContratoRepository;
+use App\Repositories\NotificationRepository;
 use App\Repositories\WorkflowAprovacaoRepository;
 use Flash;
 use Illuminate\Support\Facades\Log;
@@ -107,14 +111,8 @@ class QuadroDeConcorrenciaController extends AppBaseController
     public function show($id, QcItensDataTable $qcItensDataTable)
     {
         $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->findWithoutFail($id);
-//        $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository
-//            ->with(
-//                'tipoEqualizacaoTecnicas.itens',
-//                'tipoEqualizacaoTecnicas.anexos',
-//                'itens.insumo',
-//                'itens.ordemDeCompraItens'
-//            )
-//            ->findWithoutFail($id);
+        // Limpa qualquer notificação que tiver deste item
+        NotificationRepository::marcarLido(WorkflowTipo::QC,$id);
 
         if (empty($quadroDeConcorrencia)) {
             Flash::error('Quadro De Concorrencia ' . trans('common.not-found'));
@@ -129,7 +127,68 @@ class QuadroDeConcorrenciaController extends AppBaseController
             $query->orWhereNull('workflow_tipo_id');
         })->pluck('nome', 'id')->toArray();
 
-        return $qcItensDataTable->qc($quadroDeConcorrencia->id)->with('show', $show)->render('quadro_de_concorrencias.show', compact('quadroDeConcorrencia', 'show', 'motivos_reprovacao'));
+        $avaliado_reprovado = [];
+        $itens_ids = $quadroDeConcorrencia->itens()->pluck('id', 'id')->toArray();
+        $aprovavelTudo = WorkflowAprovacaoRepository::verificaAprovaGrupo('QuadroDeConcorrencia', [$quadroDeConcorrencia->id => $quadroDeConcorrencia->id], Auth::user());
+        $alcadas = WorkflowAlcada::where('workflow_tipo_id', WorkflowTipo::QC)->orderBy('ordem', 'ASC')->get();
+
+        if ($quadroDeConcorrencia->qc_status_id == QcStatus::EM_APROVACAO) {
+            foreach ($alcadas as $alcada) {
+                $avaliado_reprovado[$alcada->id] = WorkflowAprovacaoRepository::verificaTotalJaAprovadoReprovado(
+                    'QuadroDeConcorrencia',
+                    [$quadroDeConcorrencia->id => $quadroDeConcorrencia->id],
+                    null,
+                    null,
+                    $alcada->id);
+
+                $avaliado_reprovado[$alcada->id] ['aprovadores'] = WorkflowAprovacaoRepository::verificaQuantidadeUsuariosAprovadores(
+                    WorkflowTipo::find(WorkflowTipo::QC),
+                    $quadroDeConcorrencia->obra_id,
+                    $alcada->id);
+
+                $avaliado_reprovado[$alcada->id] ['faltam_aprovar'] = WorkflowAprovacaoRepository::verificaUsuariosQueFaltamAprovar(
+                    'QuadroDeConcorrencia',
+                    WorkflowTipo::QC,
+                    $quadroDeConcorrencia->obra_id,
+                    $alcada->id,
+                    $itens_ids);
+
+                // Data do início da  Alçada
+                if ($alcada->ordem === 1) {
+                    $ordem_status_log = $quadroDeConcorrencia->logs()
+                        ->where('qc_status_id', QcStatus::FECHADO)->first();
+                    if ($ordem_status_log) {
+                        $avaliado_reprovado[$alcada->id] ['data_inicio'] = $ordem_status_log->created_at
+                            ->format('d/m/Y H:i');
+                    }
+                } else {
+                    $primeiro_voto = WorkflowAprovacao::where('aprovavel_type', 'App\\Models\\QuadroDeConcorrencia')
+                        ->whereIn('aprovavel_id', $itens_ids)
+                        ->where('workflow_alcada_id', $alcada->id)
+                        ->orderBy('id', 'ASC')
+                        ->first();
+                    if ($primeiro_voto) {
+                        $avaliado_reprovado[$alcada->id]['data_inicio'] = $primeiro_voto->created_at->format('d/m/Y H:i');
+                    }
+                }
+            }
+        }
+
+        $alcadas_count = $alcadas->count();
+        $oc_status = $quadroDeConcorrencia->status->nome;
+
+        return $qcItensDataTable->qc($quadroDeConcorrencia->id)
+            ->with('show', $show)
+            ->render('quadro_de_concorrencias.show',
+                compact('quadroDeConcorrencia',
+                        'show',
+                        'motivos_reprovacao',
+                        'aprovavelTudo',
+                        'avaliado_reprovado',
+                        'qtd_itens',
+                        'alcadas_count',
+                        'oc_status'
+                ));
     }
 
     /**
@@ -315,6 +374,15 @@ class QuadroDeConcorrenciaController extends AppBaseController
             $rodadaSelecionada
         );
 
+        $equalizacoes = $quadro->tipoEqualizacaoTecnicas()->with('itens','itens.checks')->get()
+            ->pluck('itens')
+            ->merge($quadro->equalizacaoTecnicaExtras()->with('checks')->get())
+            ->flatten();
+
+        $campos_extras = [];
+        if($quadro->contratoTemplate && strlen(trim($quadro->contratoTemplate->campos_extras)) ){
+                $campos_extras = json_decode($quadro->contratoTemplate->campos_extras);
+        }
 
         $ofertas = $quadro->itens->reduce(function ($ofertas, $item) use ($qcFornecedores) {
             $ofertas[] = $qcFornecedores
@@ -343,7 +411,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
             ->setQcFornecedores($qcFornecedores)
             ->render(
                 'quadro_de_concorrencias.avaliar',
-                compact('qcFornecedores', 'quadro', 'ofertas', 'rodadaSelecionada')
+                compact('qcFornecedores', 'quadro', 'ofertas', 'rodadaSelecionada', 'equalizacoes', 'campos_extras')
             );
     }
 
@@ -354,7 +422,8 @@ class QuadroDeConcorrenciaController extends AppBaseController
         QcItemQcFornecedorRepository $qcItemFornecedorRepository,
         QcStatusLogRepository $qcStatusLogRepository
     ) {
-        $quadro = $this->quadroDeConcorrenciaRepository
+
+       $quadro = $this->quadroDeConcorrenciaRepository
             ->with(
                 'itens.insumo',
                 'itens.ordemDeCompraItens'
@@ -428,6 +497,16 @@ class QuadroDeConcorrenciaController extends AppBaseController
             $quadro->update([
                 'qc_status_id' => QcStatus::CONCORRENCIA_FINALIZADA
             ]);
+
+            //Envia email de agradecimento a todos os fornecedores que estavam participando do QC
+
+            $forncedoresQC = $qcFornecedorRepository->with('fornecedor')->buscarPorQuadroNaRodada($id);
+
+            foreach ($forncedoresQC as $fornecedor ) {
+
+                $this->quadroDeConcorrenciaRepository->notifyFornecedorParticipacaoQC($fornecedor->fornecedor);
+            }
+
 
             if ($request->valor_frete) {
                 foreach ($request->valor_frete as $qcFornecedorId => $valor) {
@@ -716,12 +795,14 @@ class QuadroDeConcorrenciaController extends AppBaseController
             }
 
             if (!$request->reject) {
-                if ($quadro->hasMaterial()) {
                     if (!intval($request->frete_incluso) && !$request->tipo_frete) {
-                        DB::rollback();
-                        Flash::error('Selecione o Tipo do Frete');
+                        if ($quadro->hasMaterial()) {
 
-                        return back()->withInput();
+                            DB::rollback();
+                            Flash::error('Selecione o Tipo do Frete');
+
+                            return back()->withInput();
+                        }
                     } else {
                         if (!intval($request->frete_incluso)) {
                             if ($request->tipo_frete=='FOB' && (is_null($request->valor_frete) || floatval($request->valor_frete) == 0)) {
@@ -737,7 +818,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
                         'tipo_frete' => intval($request->frete_incluso)?'INC': $request->tipo_frete,
                         'valor_frete' => ($request->tipo_frete=='FOB'? money_to_float($request->get('valor_frete', 0)): 0),
                     ]);
-                }
+
 
                 if(!empty($request->equalizacoes)) {
                     foreach ($request->equalizacoes as $check) {
@@ -745,6 +826,22 @@ class QuadroDeConcorrenciaController extends AppBaseController
                         $check['user_id'] = $request->user()->id;
                         $checksRepository->create($check);
                     }
+                }
+
+                // Template
+                $campos_extras = [];
+                if (isset($request['CAMPO_EXTRA'])) {
+                    foreach ($request['CAMPO_EXTRA'] as $campo => $valor) {
+                        if(strlen($valor)){
+                            $campos_extras[$campo] = $valor;
+                        }
+                    }
+                }
+                if(count($campos_extras)){
+                    $campos_extras = json_encode($campos_extras);
+                    $qcFornecedor->update([
+                        'campos_extras_contrato' => $campos_extras,
+                    ]);
                 }
 
                 foreach ($request->itens as $qcItemId => $item) {
@@ -1189,10 +1286,9 @@ class QuadroDeConcorrenciaController extends AppBaseController
                             }
                             $valor_item = $valor_item * $fatorServico;
                             $valor_item_unitario = $item->valor_unitario * $fatorServico;
-                        } else {
-                            $contratoComMaterial[$qcFornecedor->id.'-'.$obra_id] = ['qcFornecedor'=>$qcFornecedor->id,'obraId'=>$obra_id];
                         }
                     }
+                    $contratoComMaterial[$qcFornecedor->id.'-'.$obra_id] = ['qcFornecedor'=>$qcFornecedor->id,'obraId'=>$obra_id];
 
                     $contratoItens[$qcFornecedor->id][$obra_id][] = [
                         'insumo_id'         => $insumo->id,
@@ -1210,7 +1306,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
 
             $tipo_frete = 'CIF';
             $valor_frete = 0;
-            if ($quadroDeConcorrencia->hasMaterial() && $qcFornecedor->tipo_frete != 'CIF') {
+            if (doubleval($qcFornecedor->getOriginal('valor_frete'))) {
                 $valor_frete = $qcFornecedor->getOriginal('valor_frete');
                 $tipo_frete = $qcFornecedor->tipo_frete;
                 // Coloca frete em todos os itens que quem material
@@ -1311,6 +1407,91 @@ class QuadroDeConcorrenciaController extends AppBaseController
                 }
             }
         }
+        $contratosAGerar = [];
+        $contratosGerados = [];
+        $qtdContratosAGerar = 0;
+        // Tenta gerar contrato com os dados
+        if($quadroDeConcorrencia->contrato_template_id){
+            foreach ($fornecedores as $qcFornecedor){
+                $attributes = [];
+                $attributes['qcFornecedor'] = $qcFornecedor->id;
+
+                // Valor do Frete
+                $obras_itens = collect($contratoItens[$qcFornecedor->id]);
+                $obra_ids = $obras_itens->keys();
+
+                // Contratos à gerar
+                foreach ($obra_ids as $obra_id){
+                    if(!isset($contratosExistentes[$qcFornecedor->id][$obra_id])){
+                        $contratosAGerar[$qcFornecedor->id][$obra_id] = 1;
+                        $qtdContratosAGerar++;
+                    }
+                }
+                // Caso tenha contratos à gerar deste QC Fornecedors
+                if(isset($contratosAGerar[$qcFornecedor->id])){
+                    // Caso houver mais de uma obra para o mesmo insumo deve-se ratear o valor do frete
+                    if(count($obra_ids)>1){
+                        if($qcFornecedor->valor_frete > 0){
+                            // Verifica-se o peso de cada obra
+                            $obras_pesos = [];
+                            $total_obras = 0;
+                            foreach ($contratoItens[$qcFornecedor->id] as $obra_id => $itens) {
+                                $obras_pesos[$obra_id] = array_reduce($itens,function($soma, $item){
+                                    $soma += $item['valor_total'];
+                                    return $soma;
+                                });
+                                $total_obras += $obras_pesos[$obra_id];
+                            }
+                            // Agora distribui o valor
+                            foreach ($obras_pesos as $obra_id => $valor) {
+                                $proporcao = $valor/$total_obras;
+                                $valor_frete_proporcional = $proporcao * $qcFornecedor->getOriginal('valor_frete');
+                                $attributes['valor_frete'][$obra_id] = number_format($valor_frete_proporcional, 2);
+                            }
+                        }else{
+                            // o valor é zero do frete, logo coloca zero pra todas as obras
+                            foreach ($obra_ids as $obra_id) {
+                                $attributes['valor_frete'][$obra_id] = 0;
+                            }
+                        }
+
+                    }else{
+                        // Caso for igual à um, pega o valor e coloca na obra
+                        $attributes['valor_frete'][$obra_ids->first()] = $qcFornecedor->getOriginal('valor_frete');
+                    }
+
+                    // Campos extras
+                    if($qcFornecedor->campos_extras_contrato){
+                        $campos_extras_contrato = json_decode($qcFornecedor->campos_extras_contrato);
+                        foreach ($campos_extras_contrato as $key => $value){
+                            $attributes['CAMPO_EXTRA'][$key] = $value;
+                        }
+                    }
+                    $attributes['contrato_template_id'] = $quadroDeConcorrencia->contrato_template_id;
+
+                    // Tenta gerar o contrato
+                    $retorno = ContratoRepository::criar($attributes);
+                    if ($retorno['success']) {
+                        // Se foi gerado com sucesso, percorre os contratos e adiciona à array de Existentes
+                        foreach ($retorno['contratos'] as $contrato){
+                            $contratosExistentes[$qcFornecedor->id][$contrato->obra_id] = $contrato;
+                            $contratosGerados[] = $contrato->id;
+                            if(isset($contratosAGerar[$qcFornecedor->id][$contrato->obra_id])){
+                                unset($contratosAGerar[$qcFornecedor->id][$contrato->obra_id]);
+                                $qtdContratosAGerar--;
+                            }
+                        }
+                    }
+                } // Fim de verificação se precisa gerar contratos deste QC Fornecedor
+
+            } // Fim Foreach de qcFornecedor
+
+            // Verificar se todos os contratos que deveriam ser criados, foram de fato, se foram já direciona para index
+            if( count($contratosAGerar)  && $qtdContratosAGerar==0 && count($contratosGerados) ){
+                flash()->success('Contrato'.(count($contratosGerados)>1?'s ':' '). implode(', ', $contratosGerados) .' gerado'.(count($contratosGerados)>1?'s':'').'.');
+                return redirect(route('contratos.index'));
+            }
+        } // fim check se QC tem contrato_template_id
 
         return view('quadro_de_concorrencias.gerar-contrato',
             compact('quadroDeConcorrencia', 'fornecedores', 'contratoItens', 'total_contrato', 'contratosExistentes'));

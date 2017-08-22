@@ -3,47 +3,66 @@
 @section('content')
     <div class="row">
         <div class="col-sm-12">
-          <section class="content-header">
-            <h1 class="pull-left">
-                <button type="button" class="btn btn-link" onclick="history.go(-1);">
-                    <i class="fa fa-arrow-left" aria-hidden="true"></i>
+            <section class="content-header">
+                <h1 class="pull-left">
+                    <button type="button" class="btn btn-link" onclick="history.go(-1);">
+                        <i class="fa fa-arrow-left" aria-hidden="true"></i>
+                    </button>
+                    Avaliar Quadro de Concorrência
+                    <small>
+                        Rodada {{ $rodadaSelecionada }}
+                    </small>
+                </h1>
+                <button class="btn btn-success btn-lg pull-right btn-flat"
+                        data-toggle="modal"
+                        data-target="#modal-finalizar">
+                    <i class="fa fa-trophy" aria-hidden="true"></i>
+                    Informar vencedor
+                    ou
+                    <i class="fa fa-refresh" aria-hidden="true"></i>
+                    Gerar nova rodada
                 </button>
-              Avaliar Quadro de Concorrência
-              <small>
-                Rodada {{ $rodadaSelecionada }}
-              </small>
-            </h1>
-            <button class="btn btn-success btn-lg pull-right btn-flat"
-              data-toggle="modal"
-              data-target="#modal-finalizar">
-              <i class="fa fa-trophy" aria-hidden="true"></i>
-              Informar vencedor
-                ou
-                <i class="fa fa-refresh" aria-hidden="true"></i>
-                Gerar nova rodada
-            </button>
-          </section>
+            </section>
         </div>
     </div>
     <div class="content">
-        <div class="box box-muted">
-          <div class="box-header with-border">Exibir rodada</div>
-          <div class="box-body">
-            @foreach(range(1, $quadro->rodada_atual) as $rodada)
-              <label class="radio-inline">
-                {!!
-                  Form::radio(
-                    'rodada',
-                    $rodada, $rodada === $rodadaSelecionada,
-                    [ 'class' => 'js-change-round' ]
-                  )
-                !!}
-                Rodada {{ $rodada }} {{ $rodada === $quadro->rodada_atual ? '(atual)' : '' }}
-              </label>
-            @endforeach
-          </div>
+
+        {{-- Rodada --}}
+        <div class="box box-muted" id="box_rodadas">
+            <div class="box-header with-border">
+                <i class="fa fa-refresh"></i>
+                Exibir rodada
+                <button type="button" class="btn btn-default btn-xs pull-right"
+                        onclick="expandeEncolhe('box_rodadas');">
+                    <i class="iconeExpandeEncolhe fa fa-minus"></i>
+                </button>
+            </div>
+            <div class="box-body">
+                @foreach(range(1, $quadro->rodada_atual) as $rodada)
+                    <label class="radio-inline">
+                        {!!
+                          Form::radio(
+                            'rodada',
+                            $rodada, $rodada === $rodadaSelecionada,
+                            [ 'class' => 'js-change-round' ]
+                          )
+                        !!}
+                        Rodada {{ $rodada }} {{ $rodada === $quadro->rodada_atual ? '(atual)' : '' }}
+                    </label>
+                @endforeach
+            </div>
         </div>
-        <div class="box box-muted">
+
+        {{--Preços dos insumos--}}
+        <div class="box box-muted" id="box_precos">
+            <div class="box-header with-border">
+                <i class="fa fa-usd"></i>
+                Preços
+                <button type="button" class="btn btn-default btn-xs pull-right"
+                        onclick="expandeEncolhe('box_precos');">
+                    <i class="iconeExpandeEncolhe fa fa-minus"></i>
+                </button>
+            </div>
             <div class="box-body">
                 {!!
                   $dataTable->table([
@@ -53,12 +72,175 @@
                 !!}
             </div>
         </div>
+
+        {{-- Condições Comerciais --}}
+        @if($campos_extras)
+            <div class="box box-muted" id="box_campos_extras">
+                <div class="box-header with-border">
+                    <i class="fa fa-coffee"></i>
+                    Condições Comerciais
+                    <button type="button" class="btn btn-default btn-xs pull-right"
+                            onclick="expandeEncolhe('box_campos_extras');">
+                        <i class="iconeExpandeEncolhe fa fa-minus"></i>
+                    </button>
+                </div>
+                <div class="box-body">
+                    <table class="table table-striped table-condensed table-bordered table-hover">
+                        <thead>
+                        <tr>
+                            <th>Condição</th>
+                            @foreach($qcFornecedores as $qcFornecedor)
+                                <th>
+                                    {{ $qcFornecedor->fornecedor->nome }}
+                                </th>
+                            @endforeach
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        @foreach($campos_extras as $campo_extra)
+                            <tr>
+                                <td class="text-left">
+                                    {{ $campo_extra->nome }}
+                                </td>
+                                @php
+                                    $v_tag = str_replace('[','', $campo_extra->tag);
+                                    $v_tag = str_replace(']','', $v_tag);
+                                    $classe_campo = 'text-left';
+                                    if($campo_extra->tipo=='numero'){
+                                        $classe_campo = 'text-right';
+                                    }
+                                @endphp
+                                @foreach($qcFornecedores as $qcFornecedor)
+                                    <td class="{{ $classe_campo }}">
+                                        @php
+                                            $campo_extra_fornecedor = null;
+                                            if(strlen($qcFornecedor->campos_extras_contrato)){
+                                                $campos_extras_contrato = json_decode($qcFornecedor->campos_extras_contrato);
+                                                $campo_extra_fornecedor = $campos_extras_contrato->$v_tag;
+                                            }
+                                        @endphp
+                                        @if($campo_extra_fornecedor)
+                                            {{ $campo_extra_fornecedor }}
+                                            @else
+                                            <span class="text-warning">
+                                                <i class="fa fa-exclamation-circle"></i>
+                                                Não informado
+                                            </span>
+                                        @endif
+                                    </td>
+                                @endforeach
+                            </tr>
+                        @endforeach
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        @endif
+
+        {{--Equalizações Técnicas--}}
+        @if($quadro->qcTipoEqualizacaoTecnicas()->count())
+            <div class="box box-muted" id="box_equalizacoes_tecnicas">
+                <div class="box-header with-border">
+                    <i class="fa fa-list-ul"></i>
+                    Equalizações Técnicas
+                    <button type="button" class="btn btn-default btn-xs pull-right"
+                            onclick="expandeEncolhe('box_equalizacoes_tecnicas');">
+                        <i class="iconeExpandeEncolhe fa fa-minus"></i>
+                    </button>
+                </div>
+                <div class="box-body">
+                    <table class="table table-striped table-condensed table-bordered table-hover">
+                        <thead>
+                        <tr>
+                            <th>Requerimento</th>
+                            @foreach($qcFornecedores as $qcFornecedor)
+                                <th>
+                                    {{ $qcFornecedor->fornecedor->nome }}
+                                </th>
+                            @endforeach
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                            @foreach($equalizacoes as $equalizacao)
+                                <tr>
+                                    <td class="text-left">
+                                        {{ $equalizacao->nome }}
+                                        <button type="button"
+                                                class="btn btn-default btn-flat btn-xs js-sweetalert"
+                                                data-title="{{ $equalizacao->nome }}"
+                                                data-text="{{ $equalizacao->descricao }}">
+                                            <i class="fa fa-info-circle"></i> detalhes
+                                        </button>
+
+                                        @if($equalizacao->obrigatorio)
+                                            <span class="text-warning pull-left" title="Obrigatório">
+                                              <i class="fa fa-exclamation-circle"></i>
+                                            </span>
+                                        @endif
+                                    </td>
+                                    @foreach($qcFornecedores as $qcFornecedor)
+                                        <td>
+                                            @php
+                                                $check = $qcFornecedor->qcFornecedorEqualizacaoChecks()
+                                                        ->where('checkable_id',$equalizacao->id)
+                                                        ->where('checkable_type', $equalizacao->table)
+                                                        ->first();
+                                            @endphp
+                                            @if($check)
+                                                @if($check->checkable->obrigatorio)
+                                                    <span class="text-info">
+                                                      <i class="fa fa-check"></i>
+                                                    </span>
+                                                @else
+                                                    @if($check->checked)
+                                                        <span class="text-success">
+                                                        <i class="fa fa-check"></i> Concorda
+                                                      </span>
+                                                    @else
+                                                        <span class="text-danger">
+                                                        <i class="fa fa-times"></i> Não Concorda
+                                                      </span>
+                                                    @endif
+
+                                                    @if(strlen($check->obs))
+                                                        <button type="button"
+                                                                title="Considerações"
+                                                                class="btn btn-warning btn-flat btn-xs js-sweetalert"
+                                                                data-title="{{ $equalizacao->nome }}"
+                                                                data-text="{{ $check->obs }}">
+                                                            <i class="fa fa-info"></i>
+                                                        </button>
+                                                    @endif
+                                                @endif
+                                            @endif
+                                        </td>
+                                    @endforeach
+                                </tr>
+                            @endforeach
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        @endif
+        {{-- Gráficos --}}
         <div class="row">
             <div class="col-md-12">
                 <div class="row">
+                    {{-- Gráfico Valor Total por Fornecedor --}}
                     <div class="col-md-6">
-                        <div class="box box-muted box-chart">
-                            <div class="box-header with-border">Valor Total / Fornecedor</div>
+                        <div class="box box-muted box-chart" id="box_total_por_fornecedor">
+                            <div class="box-header with-border">
+                                <i class="fa fa-bar-chart-o"></i>
+                                Valor Total / Fornecedor
+                                <button type="button" class="btn btn-default btn-xs pull-right"
+                                        onclick="expandeEncolhe('box_total_por_fornecedor');">
+                                    <i class="iconeExpandeEncolhe fa fa-minus"></i>
+                                </button>
+                            </div>
                             <div class="box-body">
                                 <canvas id="chart-total-fornecedor"
                                         data-labels="{{
@@ -79,20 +261,42 @@
                             </div>
                         </div>
                     </div>
+                    {{--Gráfico Insumo Por Fornecedor--}}
                     <div class="col-md-6">
-                        <div class="box box-muted box-chart">
-                            <div class="box-header with-border">Insumo / Fornecedor</div>
-                              <div class="box-input">
-                                  {!!
-                                    Form::select(
-                                      'insumo',
-                                      $quadro->itens->pluck('insumo')->flatten()->pluck('nome', 'id')->toArray(),
-                                      null,
-                                      ['class' => 'select2 form-control', 'id' => 'insumo']
-                                    )
-                                  !!}
+                        <div class="box box-muted box-chart" id="box_insumo_por_fornecedor">
+                            <div class="box-header with-border">
+                                <i class="fa fa-bar-chart-o"></i>
+                                Insumo / Fornecedor
+                                <button type="button" class="btn btn-default btn-xs pull-right"
+                                        onclick="expandeEncolhe('box_insumo_por_fornecedor');">
+                                    <i class="iconeExpandeEncolhe fa fa-minus"></i>
+                                </button>
+                            </div>
+
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        {!!
+                                      Form::select(
+                                        'insumo',
+                                        $quadro->itens->pluck('insumo')->flatten()->pluck('nome', 'id')->toArray(),
+                                        null,
+                                        ['class' => 'select2 form-control', 'id' => 'insumo']
+                                      )
+                                    !!}
+                                    </div>
                                 </div>
-                              <div class="box-body">
+                                <div class="col-md-12">
+                                    <div class="col-md-6">
+                                        Menor preço
+                                        <canvas id="UgCanvas" width="40" height="12" style="border:1px solid blue; background-color: blue;"></canvas>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        Valor do OI
+                                        <canvas id="UgCanvas" width="40" height="12" style="border:1px solid red; background-color: red;"></canvas>
+                                    </div>
+                                </div>
                                 <canvas id="chart-insumo-fornecedor"
                                         data-data='{{ json_encode($ofertas) }}'>
                                 </canvas>
@@ -105,7 +309,7 @@
     </div>
 
     <div id="equalizacao-tecnica" class="modal fade" role="dialog">
-        <div class="modal-dialog">
+        <div clasqus="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -133,7 +337,8 @@
                     <div class="box box-warning collapsed-box">
                         <div class="box-header with-border">
                             <h3 class="box-title">
-                                <button type="button" class="btn btn-warning btn-flat btn-flat btn-lg" data-widget="collapse">
+                                <button type="button" class="btn btn-warning btn-flat btn-flat btn-lg"
+                                        data-widget="collapse">
                                     Nova Rodada
                                 </button>
                             </h3>
@@ -160,7 +365,8 @@
                                     <button type="button" title="Cadastrar Fornecedor Temporariamente"
                                             style="margin-top: 5px; margin-bottom: 5px;"
                                             id="cadastrarFornecedorTemporariamente"
-                                            onclick="cadastraFornecedor()" class="btn btn-block btn-sm btn-flat btn-info">
+                                            onclick="cadastraFornecedor()"
+                                            class="btn btn-block btn-sm btn-flat btn-info">
                                         <i class="fa fa-user-plus" aria-hidden="true"></i>
                                         Cadastrar Temporariamente
                                     </button>
@@ -220,8 +426,16 @@
                                     <th>Qtd</th>
                                     @foreach($qcFornecedores as $qcFornecedor)
                                         <th>
-                                            {{ Form::checkbox('qcFornecedor_'.$qcFornecedor->id, 1, false, ['class' => 'icheck_destroy', 'style' => 'width: 18px;height: 18px;', 'onclick' => 'marcarDesmarcarTudo('.$qcFornecedor->id.');']) }}
-                                            {{ $qcFornecedor->fornecedor->nome }}
+                                            {{ Form::radio('qcFornecedor_escolhido', 1, false,
+                                            [
+                                                'class' => 'icheck_destroy',
+                                                'style' => 'width: 18px;height: 18px;',
+                                                'onclick' => 'marcarDesmarcarTudo('.$qcFornecedor->id.');',
+                                                'id' => 'marcarDesmarcarTudoCheck'.$qcFornecedor->id
+                                            ]) }}
+                                            <label for="marcarDesmarcarTudoCheck{{ $qcFornecedor->id }}">
+                                                {{ $qcFornecedor->fornecedor->nome }}
+                                            </label>
                                             <table style="width:100%;margin-top: 20px;">
                                                 <tr>
                                                     <th>Valor unitário</th>
@@ -261,11 +475,15 @@
                                                                 <label>
                                                                     @if(isset($qcItemQcFornecedor->valor_total))
                                                                         {!!
-                                                                          Form::checkbox(
+                                                                          Form::radio(
                                                                             "vencedores[{$item->id}]",
                                                                             $qcItemQcFornecedor->id,
                                                                             false,
-                                                                            ['class' => 'icheck_destroy qcFornecedorInsumo_'.$qcFornecedor->id, 'style' => 'width: 18px;height: 18px;']
+                                                                            [
+                                                                                'class' => 'icheck_destroy qcFornecedorInsumo_'.
+                                                                                            $qcFornecedor->id,
+                                                                                'style' => 'width: 18px;height: 18px;'
+                                                                            ]
                                                                           )
                                                                         !!}
                                                                         {{ float_to_money($qcItemQcFornecedor->valor_total) }}
@@ -282,21 +500,21 @@
                                     </tr>
                                 @endforeach
                                 @if($quadro->hasMaterial())
-                                <tr>
-                                    <td colspan="2" class="text-right"> <strong>Frete</strong></td>
-                                    @foreach($qcFornecedores as $qcFornecedor)
-                                        <td class="text-center">
-                                            {{ $qcFornecedor->tipo_frete }}
-                                            <div class="input-group">
-                                                <span class="input-group-addon">R$</span>
-                                                <input type="text"
-                                                       class="form-control money"
-                                                       value="{{ $qcFornecedor->valor_frete }}"
-                                                       name="valor_frete[{{$qcFornecedor->id}}]">
-                                            </div>
-                                        </td>
-                                    @endforeach
-                                </tr>
+                                    <tr>
+                                        <td colspan="2" class="text-right"><strong>Frete</strong></td>
+                                        @foreach($qcFornecedores as $qcFornecedor)
+                                            <td class="text-center">
+                                                {{ $qcFornecedor->tipo_frete }}
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">R$</span>
+                                                    <input type="text"
+                                                           class="form-control money"
+                                                           value="{{ $qcFornecedor->valor_frete }}"
+                                                           name="valor_frete[{{$qcFornecedor->id}}]">
+                                                </div>
+                                            </td>
+                                        @endforeach
+                                    </tr>
                                 @endif
                                 </tbody>
                             </table>
@@ -320,7 +538,7 @@
         window.urlEqualizacao = "/quadro-de-concorrencia/{{ $quadro->id }}/equalizacao-tecnica/";
 
         var qtdFornecedores = parseInt({!! $qcFornecedorCount !!});
-        $(function() {
+        $(function () {
             $('#fornecedor').select2({
                 allowClear: true,
                 placeholder: "-",
@@ -413,6 +631,19 @@
 
             $('.icheck_destroy').iCheck('destroy');
         });
+
+        function expandeEncolhe(qual) {
+            if($('#'+qual+' .box-body').is(':visible')){
+                $('#'+qual+' .box-body').hide();
+                $('#'+qual+' .iconeExpandeEncolhe').removeClass('fa-minus');
+                $('#'+qual+' .iconeExpandeEncolhe').addClass('fa-plus');
+            }else{
+                $('#'+qual+' .box-body').show();
+                $('#'+qual+' .iconeExpandeEncolhe').removeClass('fa-plus');
+                $('#'+qual+' .iconeExpandeEncolhe').addClass('fa-minus');
+            }
+
+        }
 
         // Fornecedor
         function cadastraFornecedor() {
@@ -509,12 +740,12 @@
                     confirmButtonText: "Sim, tenho certeza!",
                     cancelButtonText: "Não",
                     closeOnConfirm: false
-                }, function() {
+                }, function () {
                     $.ajax("/quadro-de-concorrencia/" + quadroDeConcorrenciaId + "/remover-fornecedor/" + qual)
-                            .done(function(retorno) {
+                            .done(function (retorno) {
                                 $('#qcFornecedor_id' + qual).remove();
                                 swal('Removido', '', 'success');
-                            }).fail(function(jqXHR, textStatus, errorThrown) {
+                            }).fail(function (jqXHR, textStatus, errorThrown) {
                         swal('Erro', jqXHR.responseText, 'error');
                     });
                 });
@@ -563,7 +794,12 @@
         }
 
         function marcarDesmarcarTudo(id) {
-            $('.qcFornecedorInsumo_'+id).click();
+            var marcarDesmarcarTudoCheck = $('#marcarDesmarcarTudoCheck' + id).prop('checked');
+            if (marcarDesmarcarTudoCheck) {
+                $('.qcFornecedorInsumo_' + id).prop('checked', true);
+            } else {
+                $('.qcFornecedorInsumo_' + id).prop('checked', false);
+            }
         }
     </script>
     <script src="/vendor/datatables/buttons.server-side.js"></script>

@@ -2,6 +2,8 @@
 
 namespace App\Repositories;
 
+use App\Models\ContratoStatusLog;
+use App\Models\ContratoTemplate;
 use PDF;
 use Exception;
 use App\Mail\ContratoServicoFornecedorNaoUsuario;
@@ -39,20 +41,16 @@ class ContratoRepository extends BaseRepository
     ];
 
     /**
-     * Configure the Model
-     *
-     * @return string
-     **/
-    public function model()
-    {
-        return Contrato::class;
-    }
-
+     * criar Criação de contrato
+     * @param array $attributes
+     * @return array [ success => Boolean, contratos => Array, erro => String]
+     * @throws Exception
+     */
     public static function criar(array $attributes)
     {
         // Busca o Fornecedor que vai ser gerado o contrato
         $qcFornecedor = QcFornecedor::where('qc_fornecedor.id', $attributes['qcFornecedor'])
-            ->with(['itens'=> function ($query) {
+            ->with(['itens' => function ($query) {
                 $query->where('vencedor', '1');
             }])
             ->first();
@@ -67,8 +65,8 @@ class ContratoRepository extends BaseRepository
             if ($soma_frete != $qcFornecedor->getOriginal('valor_frete')) {
                 return [
                     'success' => false,
-                    'contratos'=>[],
-                    'erro'=>'Valor do Frete ('.$soma_frete.') não confere com o passado R$ '. $qcFornecedor->valor_frete
+                    'contratos' => [],
+                    'erro' => 'Valor do Frete (' . $soma_frete . ') não confere com o passado R$ ' . $qcFornecedor->valor_frete
                 ];
             }
         }
@@ -76,18 +74,15 @@ class ContratoRepository extends BaseRepository
         // Valida se o fornecedor já está cadastrado no Mega
         if ($qcFornecedor->fornecedor->codigo_mega == '') {
             return [
-                'success'   => false,
+                'success' => false,
                 'contratos' => [],
-                'erro'      => 'O Fornecedor '. $qcFornecedor->fornecedor->nome.' não está cadastrado no Mega, por favor
+                'erro' => 'O Fornecedor ' . $qcFornecedor->fornecedor->nome . ' não está cadastrado no Mega, por favor
                 solicite a inclusão para que o contrato possa ser gerado'
             ];
         }
         $quadroDeConcorrencia = $qcFornecedor->quadroDeConcorrencia;
         // Monta os itens do contrato
-        $primeiroItem = $qcFornecedor->itens()->where('vencedor', '1')->first();
-        $obra_id = $primeiroItem->qcItem->oc_itens()->first()->obra_id;
-
-
+        
         $contratoItens = [];
         $contratoCampos = [];
 
@@ -170,6 +165,8 @@ class ContratoRepository extends BaseRepository
                                 'qc_item' => $qcItem,
                                 'oc_itens' => $ocItens,
                                 'valor_item' => $valor_item * $fatorFatDireto,
+                                'valor_unitario' => $valor_item_unitario,
+                                'valor_total_item' => $valor_item,
                                 'fator' => $fatorFatDireto,
                             ];
 
@@ -182,6 +179,8 @@ class ContratoRepository extends BaseRepository
                                 'qc_item' => $qcItem,
                                 'oc_itens' => $ocItens,
                                 'valor_item' => $valor_item * $fatorMaterial,
+                                'valor_unitario' => $valor_item_unitario,
+                                'valor_total_item' => $valor_item,
                                 'fator' => $fatorMaterial,
                             ];
 
@@ -194,9 +193,10 @@ class ContratoRepository extends BaseRepository
                                 'qc_item' => $qcItem,
                                 'oc_itens' => $ocItens,
                                 'valor_item' => $valor_item * $fatorLocacao,
+                                'valor_unitario' => $valor_item_unitario,
+                                'valor_total_item' => $valor_item,
                                 'fator' => $fatorLocacao,
                             ];
-
                             $valores['locacao'][$obra_id][] = $v_l;
                         }
 
@@ -228,7 +228,7 @@ class ContratoRepository extends BaseRepository
                         'qtd',
                     ]);
                 })
-                ->toArray();
+                    ->toArray();
 
                 $contratoItens[$obra_id][] = $contrato_item;
             }
@@ -245,18 +245,19 @@ class ContratoRepository extends BaseRepository
                         $insumo = Insumo::where('codigo', $insumo_codigo)->first();
 
                         $contrato_item = [
-                            'insumo_id'         => $insumo->id,
-                            'qc_item_id'        => null,
-                            'qtd'               => $valor_total,
-                            'valor_unitario'    => 1,
-                            'valor_total'       => $valor_total,
-                            'aprovado'          => 1
+                            'insumo_id' => $insumo->id,
+                            'qc_item_id' => null,
+                            'qtd' => $valor_total,
+                            'valor_unitario' => 1,
+                            'valor_total' => $valor_total,
+                            'aprovado' => 1
                         ];
 
                         $contrato_item['apropriacoes'] = $valores_atuais->map(function ($valor) use ($insumo) {
                             return $valor['oc_itens']->map(function ($oc_item) use ($valor, $insumo) {
                                 $oc_item_arr = $oc_item->toArray();
-                                $oc_item_arr['qtd'] = $valor['valor_item'];
+                                $porcentagem_apropriacao = money_to_float($oc_item->qtd) * $valor['valor_unitario'] / $valor['valor_total_item'];
+                                $oc_item_arr['qtd'] = $valor['valor_item'] * $porcentagem_apropriacao;
                                 $oc_item_arr['ligacao_id'] = $oc_item->insumo_id;
                                 $oc_item_arr['insumo_id'] = $insumo->id;
 
@@ -273,8 +274,8 @@ class ContratoRepository extends BaseRepository
                                 ]);
                             });
                         })
-                        ->collapse()
-                        ->toArray();
+                            ->collapse()
+                            ->toArray();
 
                         $contratoItens[$obraId][] = $contrato_item;
                     }
@@ -295,7 +296,7 @@ class ContratoRepository extends BaseRepository
         $valor_frete = 0;
 
         $qcItensMateriais = $quadroDeConcorrencia->itensMateriais()->load('ordemDeCompraItens');
-
+        // Insere valor do Frete
         if ($qcItensMateriais->isNotEmpty() && $qcFornecedor->tipo_frete == 'FOB') {
             foreach ($attributes['valor_frete'] as $obraID => $vl_frete) {
                 $ocItens = $qcItensMateriais
@@ -311,12 +312,12 @@ class ContratoRepository extends BaseRepository
                     $valorApropriacao = $valorFrete / $ocItensCount;
 
                     $contrato_item = [
-                        'insumo_id'         => $insumo->id,
-                        'qc_item_id'        => null,
-                        'qtd'               => $valorFrete,
-                        'valor_unitario'    => 1,
-                        'valor_total'       => $valorFrete,
-                        'aprovado'          => 1
+                        'insumo_id' => $insumo->id,
+                        'qc_item_id' => null,
+                        'qtd' => $valorFrete,
+                        'valor_unitario' => 1,
+                        'valor_total' => $valorFrete,
+                        'aprovado' => 1
                     ];
 
                     $contrato_item['apropriacoes'] = $ocItens->map(function ($ocItem) use ($valorApropriacao, $insumo) {
@@ -337,7 +338,7 @@ class ContratoRepository extends BaseRepository
                             'qtd',
                         ]);
                     })
-                    ->toArray();
+                        ->toArray();
 
                     $contratoItens[$obraID][] = $contrato_item;
 
@@ -355,11 +356,37 @@ class ContratoRepository extends BaseRepository
                 $campos_extras[$campo] = $valor;
             }
         }
+        $campos_extras_faltantes = [];
+        // Valida se todos os campos extras requeridos no template estão preenchidos
+        $contratoTemplate = ContratoTemplate::find($attributes['contrato_template_id']);
+        if($contratoTemplate){
+            // Se tiver campo extra
+            if($contratoTemplate->campos_extras){
+                $campos_extras_template = json_decode($contratoTemplate->campos_extras);
+
+                foreach ($campos_extras_template as $campo){
+                    $nome_campo = str_replace(['[',']'], '', $campo->tag);
+
+                    // Verifica se exite o campo extra requerido no template vindo por parâmetro
+                    if(!isset($campos_extras[$nome_campo])){
+                        $campos_extras_faltantes[] = $campo->nome;
+                    }else if(!strlen($campos_extras[$nome_campo])){
+                        $campos_extras_faltantes[] = $campo->nome;
+                    }
+                }
+            }
+        }
+        // Se falta algum campo extra retorna sem criar o contrato
+        if(count($campos_extras_faltantes)){
+            return [
+                'success' => false,
+                'contratos' => [],
+                'erro' => 'O campo(s) para o template ' . implode(',', $campos_extras_faltantes) . ' não foram preenchidos'
+            ];
+        }
 
         $campos_extras = json_encode($campos_extras);
-
         $contratos = [];
-
         DB::beginTransaction();
         try {
             foreach ($contratoCampos as $obraId => &$contratoArray) {
@@ -374,6 +401,13 @@ class ContratoRepository extends BaseRepository
                 // Salva o contrato
                 $contrato = Contrato::create($contratoArray);
 
+                // Salva o primeiro status
+                ContratoStatusLog::create([
+                    'contrato_id' => $contrato->id,
+                    'contrato_status_id' => $contrato->contrato_status_id,
+                    'user_id' => auth()->id()
+                ]);
+
                 // Salva os itens do contrato
                 foreach ($contratoItens[$obraId] as &$item) {
                     $item['contrato_id'] = $contrato->id;
@@ -386,7 +420,7 @@ class ContratoRepository extends BaseRepository
                                     ['contrato_item_id' => $saved_item->id]
                                 )
                             );
-                            if(isset($apropriacao['ligacao_id'])) {
+                            if (isset($apropriacao['ligacao_id'])) {
                                 ApropriacaoLigacao::create(
                                     array_merge(
                                         $apropriacao_created->toArray(),
@@ -410,102 +444,36 @@ class ContratoRepository extends BaseRepository
             $aprovadores = WorkflowAprovacaoRepository::usuariosDaAlcadaAtual($contrato);
 
             Notification::send($aprovadores, new WorkflowNotification($contrato));
-
         } catch (Exception $e) {
             throw $e;
             DB::rollback();
+            return [
+                'success' => false,
+                'contratos' => [],
+                'erro' => 'Aconteceu algum erro ao tentar inserir o contrato | ' . $e->getMessage()
+            ];
         }
 
         DB::commit();
 
         return [
             'success' => true,
-            'contratos'=> $contratos
+            'contratos' => $contratos
         ];
     }
 
     /**
-     * Gera a impressão do Contrato aplicando as variáveis
-     * Retorna o local do arquivo gerado
-     *
-     * @param int $id
-     *
-     * @return string
+     * notifyFornecedor
+     * @param $id
+     * @return array
      */
-    public static function geraImpressao($id)
-    {
-        $contrato = Contrato::find($id);
-        if (!$contrato) {
-            return null;
-        }
-
-        $template = $contrato->contratoTemplate;
-
-        $templateRenderizado = $template->template;
-
-        // Tenta aplicar variáveis de Obra
-        foreach (Obra::$campos as $campo) {
-            $templateRenderizado = str_replace('['.strtoupper($campo).'_OBRA]', $contrato->obra->$campo, $templateRenderizado);
-        }
-
-        // Tenta aplicar variáveis de Fornecedor
-        foreach (Fornecedor::$campos as $campo) {
-            $templateRenderizado = str_replace('['.strtoupper($campo).'_FORNECEDOR]', $contrato->fornecedor->$campo, $templateRenderizado);
-        }
-
-        // Tenta aplicar variáveis de Contrato
-
-        $tabela_itens = '<table>
-            <thead>
-                <tr>
-                    <th align="left">Descrição</th>
-                    <th width="10%" align="right">Qtd.</th>
-                    <th width="20%" align="right">Valor Unitário</th>
-                    <th width="20%" align="right">Valor Total</th>
-                </tr>
-            </thead>
-            <tbody>';
-        foreach ($contrato->itens as $item) {
-            $tabela_itens .= '<tr>';
-            $tabela_itens .= '<td>'.$item->insumo->nome.'</td>';
-            $tabela_itens .= '<td align="right">'.float_to_money($item->qtd, '').' '. $item->insumo->unidade_sigla.'</td>';
-            $tabela_itens .= '<td align="right">'.float_to_money($item->valor_unitario).'</td>';
-            $tabela_itens .= '<td align="right">'.float_to_money($item->valor_total).'</td>';
-
-            $tabela_itens .= '</tr>';
-        }
-
-        $tabela_itens .= '</tbody></table>';
-
-        $contratoCampos = [
-            'valor_total' => $contrato->valor_total,
-            'tabela_itens' => $tabela_itens
-
-        ];
-        foreach ($contratoCampos as $campo => $valor) {
-            $templateRenderizado = str_replace('['.strtoupper($campo).'_CONTRATO]', $valor, $templateRenderizado);
-        }
-        // Tenta aplicar variáveis do Template (dinâmicas)
-        if (strlen($contrato->campos_extras)) {
-            $variaveis_dinamicas = json_decode($contrato->campos_extras) ;
-            foreach ($variaveis_dinamicas as $campo => $valor) {
-                $templateRenderizado = str_replace('['.strtoupper($campo).']', $valor, $templateRenderizado);
-            }
-        }
-        if (is_file(base_path().'/storage/app/public/contratos/contrato_'.$contrato->id.'.pdf')) {
-            unlink(base_path().'/storage/app/public/contratos/contrato_'.$contrato->id.'.pdf');
-        }
-        PDF::loadHTML(utf8_decode($templateRenderizado))->setPaper('a4')->setOrientation('portrait')->save(base_path().'/storage/app/public/contratos/contrato_'.$contrato->id.'.pdf');
-        return 'contratos/contrato_'.$contrato->id.'.pdf';
-    }
-
     public static function notifyFornecedor($id)
     {
         $contrato = Contrato::find($id);
         if (!$contrato) {
             return [
-                'success'=>false,
-                'messages'=>[
+                'success' => false,
+                'messages' => [
                     'O contrato não foi encontrado!'
                 ]
             ];
@@ -517,7 +485,7 @@ class ContratoRepository extends BaseRepository
 
         if ($user = $fornecedor->user) {
             //se tiver já envia uma notificação
-            $user->notify(new NotificaFornecedorContratoServico($contrato, $arquivo));
+            Mail::to($fornecedor->email)->send(new ContratoServicoFornecedorNaoUsuario($contrato, $arquivo));
             return [
                 'success'=>true
             ];
@@ -538,5 +506,142 @@ class ContratoRepository extends BaseRepository
                 ];
             }
         }
+    }
+
+    /**
+     * Gera a impressão do Contrato aplicando as variáveis
+     * Retorna o local do arquivo gerado
+     *
+     * @param int $id
+     *
+     * @return string
+     */
+    public static function geraImpressao($id)
+    {
+        $contrato = Contrato::with('fornecedor')->find($id);
+        if (!$contrato) {
+            return null;
+        }
+
+        $nomeArquivo = 'contrato-'.str_slug($contrato->fornecedor->nome).'-'.$contrato->id;
+
+        $template = $contrato->contratoTemplate;
+
+        $templateRenderizado = $template->template;
+
+        // Tenta aplicar variáveis de Obra
+        foreach (Obra::$campos as $campo) {
+            $templateRenderizado = str_replace('[' . strtoupper($campo) . '_OBRA]', $contrato->obra->$campo, $templateRenderizado);
+        }
+
+        // Tenta aplicar variáveis de Fornecedor
+        foreach (Fornecedor::$campos as $campo) {
+            $templateRenderizado = str_replace('[' . strtoupper($campo) . '_FORNECEDOR]', $contrato->fornecedor->$campo, $templateRenderizado);
+        }
+
+        // Tenta aplicar variáveis de Contrato
+
+        // [TABELA_ITENS_CONTRATO]
+        $tabela_itens = '<table>
+            <thead>
+                <tr>
+                    <th align="left">Descrição</th>
+                    <th width="10%" align="right">Qtd.</th>
+                    <th width="20%" align="right">Valor Unitário</th>
+                    <th width="20%" align="right">Valor Total</th>
+                </tr>
+            </thead>
+            <tbody>';
+        foreach ($contrato->itens as $item) {
+            $tabela_itens .= '<tr>';
+            $tabela_itens .= '<td>' . $item->insumo->nome . '</td>';
+            $tabela_itens .= '<td align="right">' . float_to_money($item->qtd, '') . ' ' . $item->insumo->unidade_sigla . '</td>';
+            $tabela_itens .= '<td align="right">' . float_to_money($item->valor_unitario) . '</td>';
+            $tabela_itens .= '<td align="right">' . float_to_money($item->valor_total) . '</td>';
+
+            $tabela_itens .= '</tr>';
+        }
+
+        $tabela_itens .= '</tbody></table>';
+
+        $contratoCampos = [
+            'valor_total' => $contrato->valor_total,
+            'tabela_itens' => $tabela_itens
+
+        ];
+        foreach ($contratoCampos as $campo => $valor) {
+            $templateRenderizado = str_replace('[' . strtoupper($campo) . '_CONTRATO]', $valor, $templateRenderizado);
+        }
+
+        // Campos do Q.C.
+
+        // [COMPOSICAO_DO_PRECO]
+        $composicao_preco = '';
+        $tipo_frete = 'Incluso';
+        $valor_frete = '';
+        // Pega um item que tem qc_item
+        $item = $contrato->itens()->whereHas('qcItem')->first();
+        $qcFornecedor = $item->qcItem->ofertas()->where('vencedor',1)->first()->qcFornecedor;
+
+        if($qcFornecedor){
+            $composicao_preco .='<h3>Composição do Preço</h3>';
+            if($qcFornecedor->porcentagem_servico>0){
+                $composicao_preco .='<h5>Serviço: '.$qcFornecedor->porcentagem_servico.'%</h5>';
+            }
+            if($qcFornecedor->porcentagem_material>0){
+                $composicao_preco .='<h5>Material: '.$qcFornecedor->porcentagem_material.'%</h5>';
+            }
+            if($qcFornecedor->porcentagem_locacao>0){
+                $composicao_preco .='<h5>Locação: '.$qcFornecedor->porcentagem_locacao.'%</h5>';
+            }
+            if($qcFornecedor->nf_material &&
+                (
+                    !$qcFornecedor->porcentagem_servico
+                    &&
+                    !$qcFornecedor->porcentagem_material
+                    && !$qcFornecedor->porcentagem_locacao
+                )
+            ){
+                $composicao_preco .='<h5>100% MATERIAL</h5>';
+            }
+            $tipo_frete = $qcFornecedor->tipo_frete?$qcFornecedor->tipo_frete:'Incluso';
+            $valor_frete = 'R$ '.$qcFornecedor->valor_frete;
+        }
+
+        $qcCampos = [
+            'composicao_do_preco' => $composicao_preco,
+            'frete_tipo' => $tipo_frete,
+            'frete_valor' => $valor_frete,
+
+        ];
+        foreach ($qcCampos as $campo => $valor) {
+            $templateRenderizado = str_replace('[' . strtoupper($campo) . ']', $valor, $templateRenderizado);
+        }
+
+
+        // Tenta aplicar variáveis do Template (dinâmicas)
+        if (strlen($contrato->campos_extras)) {
+            $variaveis_dinamicas = json_decode($contrato->campos_extras);
+            foreach ($variaveis_dinamicas as $campo => $valor) {
+                $templateRenderizado = str_replace('[' . strtoupper($campo) . ']', $valor, $templateRenderizado);
+            }
+        }
+
+        if (is_file(base_path().'/storage/app/public/contratos/'.$nomeArquivo.'.pdf')) {
+            unlink(base_path().'/storage/app/public/contratos/'.$nomeArquivo.'.pdf');
+        }
+
+        PDF::loadHTML(utf8_decode($templateRenderizado))->setPaper('a4')->setOrientation('portrait')->save(base_path().'/storage/app/public/contratos/'.$nomeArquivo.'.pdf');
+        return 'contratos/'.$nomeArquivo.'.pdf';
+    }
+
+    /**
+     * Configure the Model
+     *
+     * @return string
+     **/
+    public function model()
+    {
+        return Contrato::class;
     }
 }

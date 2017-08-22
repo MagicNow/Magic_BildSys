@@ -33,16 +33,43 @@ class OrdemDeCompra extends Model
     public function workflowNotification()
     {
         return [
-            'message' => 'Você tem uma ordem de compra para aprovar',
+            'message' => 'OC '.$this->id.' à aprovar',
             'link' => route('ordens_de_compra.detalhes', $this->id),
             'workflow_tipo_id' => WorkflowTipo::OC,
-            'id_dinamico' => $this->id
+            'id_dinamico' => $this->id,
+            'task'=>1,
+            'done'=>0
         ];
+    }
+
+    public function workflowNotificationDone($aprovado)
+    {
+        return [
+            'message' => 'Ordem de compra '.$this->id.($aprovado?' aprovada ':' reprovada '),
+            'link' => route('ordens_de_compra.detalhes', $this->id)
+        ];
+    }
+
+    public function dataUltimoPeriodoAprovacao(){
+        $ultimoStatusAprovacao = $this->ordemDeCompraStatusLogs()->where('oc_status_id',3)
+            ->orderBy('created_at','DESC')->first();
+        if($ultimoStatusAprovacao){
+            return $ultimoStatusAprovacao->created_at;
+        }
+        return null;
+    }
+
+    public function qualObra(){
+        return $this->obra_id;
     }
 
     public function irmaosIds()
     {
         return [$this->attributes['id'] => $this->attributes['id']];
+    }
+
+    public function idPai(){
+        return null;
     }
 
     /**

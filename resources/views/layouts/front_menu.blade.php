@@ -1,4 +1,5 @@
 <li class="treeview {{ Request::is('obras*')||
+					   Request::is('carteiras*')||
                        Request::is('insumos*') ||
                        Request::is('insumoGrupos*') ||
                        Request::is('solicitacaoInsumos*') ||
@@ -17,6 +18,15 @@
             <a href="{!! route('admin.fornecedores.index') !!}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
                 <span>Fornecedores</span>
+            </a>
+        </li>
+        @endshield
+		
+		@shield('carteiras.list')
+        <li class="{{ Request::is('carteiras*') ? 'active' : '' }}">
+            <a href="{!! route('admin.carteiras.index') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Carteiras</span>
             </a>
         </li>
         @endshield
@@ -42,10 +52,28 @@
         <li class="{{ Request::is('obras*') ? 'active' : '' }}">
             <a href="{!! route('admin.obras.index') !!}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
-                <span>Obras</span></a>
+                <span>Obras</span>
+            </a>
         </li>
         @endshield
 
+        @shield('padraoEmpreendimentos.list')
+        <li class="{{ Request::is('padraoEmpreendimentos*') ? 'active' : '' }}">
+            <a href="{!! route('padraoEmpreendimentos.index') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Padrões de empreendimento</span>
+            </a>
+        </li>
+        @endshield
+
+        @shield('padraoEmpreendimentos.list')
+        <li class="{{ Request::is('regionals*') ? 'active' : '' }}">
+            <a href="{!! route('regionals.index') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Regionais</span>
+            </a>
+        </li>
+        @endshield
 
         @shield('solicitacaoInsumos.list')
         <li class="{{ Request::is('solicitacaoInsumos*') ? 'active' : '' }}">
@@ -57,7 +85,6 @@
         @endshield
     </ul>
 </li>
-
 
 @shield('ordens_de_compra.list')
 <li class="treeview {{ Request::is('ordens-de-compra*')||Request::is('compras/dashboard')||Request::is('compras*') ? 'active' : '' }}">

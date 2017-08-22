@@ -80,7 +80,8 @@ class MedicaoBoletimRepository extends BaseRepository
 
         if ($user = $fornecedor->user) {
             //se tiver já envia uma notificação
-            $user->notify(new NotificaFornecedorMedicaoBoletim($fornecedor, $retornoImpressao['arquivo']));
+            //$user->notify(new NotificaFornecedorMedicaoBoletim($fornecedor, $retornoImpressao['arquivo']));
+            Mail::to($fornecedor->email)->send(new ContratoServicoFornecedorNaoUsuario($contrato, $retornoImpressao['arquivo']));
             return [
                 'success'=>true,
             ]+$retornoImpressao;

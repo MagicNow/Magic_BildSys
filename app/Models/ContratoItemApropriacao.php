@@ -27,7 +27,8 @@ class ContratoItemApropriacao extends Model
         'servico_id',
         'insumo_id',
         'qtd',
-        'user_id'
+        'user_id',
+        'descricao'
     ];
 
     /**
@@ -165,7 +166,7 @@ class ContratoItemApropriacao extends Model
             'contrato_item_apropriacao_id',
             'contrato_item_modificacao_id'
         )
-        ->withPivot([ 'qtd_atual', 'qtd_anterior', 'id' ])
+        ->withPivot([ 'qtd_atual', 'qtd_anterior', 'id', 'descricao', 'anexo' ])
         ->withTimestamps();
     }
 

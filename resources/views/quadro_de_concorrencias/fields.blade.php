@@ -214,6 +214,23 @@
     {!! Form::textarea('obrigacoes_bild', null, ['class' => 'form-control', 'rows'=>3]) !!}
 </div>
 
+<div class="row text-right form-inline">
+    <div class="col-sm-12">
+        <span class="col-md-4">
+           <label>Template de Minuta</label>
+        </span>
+        <span class="col-md-8 text-left">
+            {!! Form::select('contrato_template_id',[''=>'Selecione...']+
+            \App\Models\ContratoTemplate::pluck('nome','id')->toArray(),null,[
+            'class'=>'form-control select2 contratoTemplate',
+            'required'=>'required',
+            'id'=>'contratoTemplate'
+            ]) !!}
+        </span>
+    </div>
+
+</div>
+
 <!-- Modal -->
 <div class="modal fade" id="modalCadastroEQT" tabindex="-1" role="dialog" aria-labelledby="modalCadastroEQTLabel">
     <div class="modal-dialog" role="document">

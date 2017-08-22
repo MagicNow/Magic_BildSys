@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\WorkflowTipo;
 use App\Repositories\WorkflowAprovacaoRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -77,24 +78,110 @@ class WorkflowController extends Controller
 
     }
 
+    public function redefinir(Request $request)
+    {
+        $tipo = WorkflowTipo::qualTipo($request->workflowTipo);
+        eval('$obj = \\App\\Models\\' . $tipo . '::find(' . $request->id . ');');
+        $obj->touch();
+        $obj->colocaEmAprovacao();
+        return back();
+    }
+
     public function detalhes(Request $request)
     {
-        $alcadas = WorkflowAlcada::where('workflow_tipo_id', $request->workflowTipo)
-            ->orderBy('ordem')
-            ->get();
+        $tipo = WorkflowTipo::qualTipo($request->workflowTipo);
+        eval('$obj = \\App\\Models\\' . $tipo . '::find(' . $request->id . ');');
 
-        $aprovacoes = WorkflowAprovacao::where('aprovavel_id', $request->id)
-            ->whereHas('workflowAlcada', function($query) use ($request) {
-                $query->withTrashed();
-                $query->where('ordem', $request->alcada);
-            })
-            ->orderBy('created_at')
-            ->get();
+        $alcadas_aprovacao = [
+            'atuais'=>[],
+            'historicos'=>[]
+        ];
+        $dataUltimoPeriodo = null;
+        $aprovadores = WorkflowAprovacaoRepository::verificaUsuariosAprovadores(
+            WorkflowTipo::find($request->workflowTipo), $obj->qualObra(),
+            null,[ $request->id => $request->id ], $tipo
+        );
+        $dataUltimoPeriodo = $obj->dataUltimoPeriodoAprovacao();
+        if($aprovadores){
+            foreach ($aprovadores as $alcada){
+                $aprovacoes = WorkflowAprovacao::where('aprovavel_id', $request->id)
+                    ->whereHas('workflowAlcada',function ($query) use($request){
+                        $query->where('workflow_tipo_id', $request->workflowTipo);
+                    })
+                    ->where('workflow_alcada_id',$alcada['alcada']->id)
+                    ->orderBy('created_at')
+                    ->with('user');
 
-        $alcada = $aprovacoes->pluck('workflowAlcada')->first();
+                // Busca apenas aprovações após a última alteração
+                if($dataUltimoPeriodo){
+                    $aprovacoes->where('created_at','>', $dataUltimoPeriodo->format('Y-m-d H:i:s'));
+                }
+                $aprovacoes = $aprovacoes->get();
 
-        $alcada = $alcada ?: $alcadas->where('ordem', $request->alcada)->first();
+                $hoje = \Carbon\Carbon::create();
+                if($dataUltimoPeriodo) {
+                    $data_maxima = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s',$dataUltimoPeriodo)->addDays($alcada['alcada_prazo']);
+                    $dias_restantes = $hoje->diffInDays($data_maxima, false);
+                }else{
+                    $data_maxima = $hoje->addDays($alcada['alcada_prazo']);
+                    $dias_restantes = $alcada['alcada_prazo'];
+                }
 
-        return view('workflow.detalhes', compact('aprovacoes', 'alcada'));
+                $alcadas_aprovacao['atuais'][$alcada['alcada']->id] = [
+                    'alcada'=>$alcada['alcada'],
+                    'prazo'=>$dias_restantes,
+                    'data_maxima'=>$data_maxima->format('d/m/Y H:i'),
+                    'itens'=>[],
+                    'falta'=>(isset($alcada['users']) ? $alcada['users'] : [])
+                ];
+
+                foreach ($aprovacoes as $aprovacao) {
+                    $alcadas_aprovacao['atuais'][$alcada['alcada']->id]['itens'][] = $aprovacao;
+                    unset($alcadas_aprovacao['atuais'][$alcada['alcada']->id]['falta'][$aprovacao->user_id]);
+                }
+            }
+
+
+            // Busca apenas aprovações após a última alteração
+            if($dataUltimoPeriodo) {
+                $aprovacoes = WorkflowAprovacao::where('aprovavel_id', $request->id)
+                    ->whereHas('workflowAlcada', function ($query) use ($request) {
+                        $query->where('workflow_tipo_id', $request->workflowTipo);
+                    })
+                    ->orderBy('created_at')
+                    ->with('workflowAlcada', 'user', 'workflowAlcada.workflowUsuarios')
+                    ->where('created_at', '<=', $dataUltimoPeriodo->format('Y-m-d H:i:s'))
+                    ->get();
+                if($aprovacoes->count()){
+                    $aprovacao = $aprovacoes->first();
+                    $alcada_atual = $aprovacao->workflow_alcada_id;
+                    $alcada_count = 0;
+                    $alcadas_aprovacao['historicos'][$alcada_count] = [
+                        'alcada' => $aprovacao->workflowAlcada,
+                        'itens' => [],
+                        'falta' => $aprovacao->workflowAlcada->workflowUsuarios()->pluck('name', 'users.id')->toArray()
+                    ];
+                    foreach ($aprovacoes as $aprovacao) {
+                        if ($alcada_atual != $aprovacao->workflow_alcada_id) {
+                            $alcada_atual = $aprovacao->workflow_alcada_id;
+                            $alcada_count++;
+                            $alcadas_aprovacao['historicos'][$alcada_count] = [
+                                'alcada' => $aprovacao->workflowAlcada,
+                                'itens' => [],
+                                'falta' => $aprovacao->workflowAlcada->workflowUsuarios()->pluck('name', 'users.id')->toArray()
+                            ];
+                        }
+                        $alcadas_aprovacao['historicos'][$alcada_count]['itens'][] = $aprovacao;
+                        unset($alcadas_aprovacao['historicos'][$alcada_count]['falta'][$aprovacao->user_id]);
+                    }
+                }
+
+            }
+        }
+        $workflow_tipo_id = $request->workflowTipo;
+        $id = $request->id;
+
+
+        return view('workflow.detalhes', compact('alcadas_aprovacao','dataUltimoPeriodo','id','workflow_tipo_id'));
     }
 }

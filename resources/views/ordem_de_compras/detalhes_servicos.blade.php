@@ -40,6 +40,9 @@
     </section>
     <div class="content">
         <h6>Dados Informativos</h6>
+        <div class="js-datatable-filter-form">
+            <input type="hidden" name="itens_selecionados" id="itens_selecionados">
+        </div>
         <div class="row">
             <div class="col-md-2 form-group">
                 {!! Form::label('codigo', 'Código do serviço') !!}
@@ -57,7 +60,7 @@
                 <h5>Valor previsto no orçamento</h5>
                 <h4>
                     <small class="pull-left">R$</small>
-                    {{ number_format($orcamentoInicial,2,',','.') }}
+                    <span id="valor_previsto"></span>
                 </h4>
             </div>
             <div class="col-md-2 text-right borda-direita" title="Até o momento em todos os itens desta O.C.">
@@ -72,15 +75,15 @@
                 <h5>Valor comprometido à gastar</h5>
                 <h4>
                     <small class="pull-left">R$</small>
+                    <span id="valor_comprometido_a_gastar"></span>
                     {{---  TO DO = A gastar: É a soma de todos os saldos de contratos na que apropriação--}}
-                    {{ number_format($valor_comprometido_a_gastar,2,',','.') }}
                 </h4>
             </div>
             <div class="col-md-2 text-right borda-direita" title="Restante do Orçamento Inicial em relação aos itens desta O.C.">
                 <h5>SALDO DE ORÇAMENTO</h5>
                 <h4>
                     <small class="pull-left">R$</small>
-                    {{ number_format($orcamentoInicial,2,',','.') }}
+                    <span id="saldo_orcamento"></span>
                     {{--- TO DO = Saldo: Previsto - Realizado - A gastar--}}
                     {{--{{ number_format($saldo,2,',','.') }}--}}
                 </h4>
@@ -89,14 +92,14 @@
                 <h5>VALOR DA OC</h5>
                 <h4>
                     <small class="pull-left">R$</small>
-                    {{ number_format($totalSolicitado,2,',','.') }}
+                    <span id="valor_oc"></span>
                 </h4>
             </div>
             <div class="col-md-2 text-right">
-                <h5>SALDO DISPONÍVEL</h5>
+                <h5>SALDO DISPONÍVEL APÓS O.C</h5>
                 <h4>
                     <small class="pull-left">R$</small>
-                    {{ number_format(($orcamentoInicial - $totalSolicitado),2,',','.') }}
+                    <span id="saldo_disponivel"></span>
                 </h4>
             </div>
         </div>
@@ -105,4 +108,90 @@
             @include('ordem_de_compras.obras-insumos-table')
         </div>
     </div>
+@endsection
+
+
+@section('scripts')
+    <script>
+        var itens_selecionados = [];
+
+        function recalcularAnaliseServico() {
+            startLoading();
+            var valor_previsto = 0;
+            var valor_comprometido_a_gastar = 0;
+            var saldo_orcamento = 0;
+            var valor_oc = 0;
+            var saldo_disponivel = 0;
+            var tem_checked = false;
+
+            $('.detalhes_servicos_itens').each(function (index, value) {
+                if($(value).prop('checked')) {
+                    tem_checked = true;
+                    valor_previsto += parseFloat($(value).attr('valor_previsto'));
+                    valor_comprometido_a_gastar += parseFloat($(value).attr('valor_comprometido_a_gastar'));
+                    saldo_orcamento += parseFloat($(value).attr('saldo_orcamento'));
+                    valor_oc += parseFloat($(value).attr('valor_oc'));
+                    saldo_disponivel += parseFloat($(value).attr('saldo_disponivel'));
+
+                    itens_selecionados.push($(value).attr('id'));
+                } else {
+                    Array.prototype.remove = function() {
+                        var what, a = arguments, L = a.length, ax;
+                        while (L && this.length) {
+                            what = a[--L];
+                            while ((ax = this.indexOf(what)) !== -1) {
+                                this.splice(ax, 1);
+                            }
+                        }
+                        return this;
+                    };
+
+                    itens_selecionados.remove($(value).attr('id'));
+                }
+                if(index+1 === $('.detalhes_servicos_itens').length) {
+                    if(tem_checked) {
+                        $('#valor_previsto').text(floatToMoney(valor_previsto, ''));
+                        $('#valor_comprometido_a_gastar').text(floatToMoney(valor_comprometido_a_gastar, ''));
+                        $('#saldo_orcamento').text(floatToMoney(saldo_orcamento, ''));
+                        $('#valor_oc').text(floatToMoney(valor_oc, ''));
+                        $('#saldo_disponivel').text(floatToMoney(saldo_disponivel, ''));
+
+                        $('#dataTableBuilder').on('preXhr.dt', function ( e, settings, data ) {
+                            startLoading();
+                            $('.js-datatable-filter-form :input').each(function () {
+                                data[$(this).prop('name')] = itens_selecionados;
+                            });
+                        });
+
+                    } else {
+                        $('.detalhes_servicos_itens').each(function (index2, value) {
+                            valor_previsto += parseFloat($(value).attr('valor_previsto'));
+                            valor_comprometido_a_gastar += parseFloat($(value).attr('valor_comprometido_a_gastar'));
+                            saldo_orcamento += parseFloat($(value).attr('saldo_orcamento'));
+                            valor_oc += parseFloat($(value).attr('valor_oc'));
+                            saldo_disponivel += parseFloat($(value).attr('saldo_disponivel'));
+
+                            if(index2+1 === $('.detalhes_servicos_itens').length) {
+                                $('#valor_previsto').text(floatToMoney(valor_previsto, ''));
+                                $('#valor_comprometido_a_gastar').text(floatToMoney(valor_comprometido_a_gastar, ''));
+                                $('#saldo_orcamento').text(floatToMoney(saldo_orcamento, ''));
+                                $('#valor_oc').text(floatToMoney(valor_oc, ''));
+                                $('#saldo_disponivel').text(floatToMoney(saldo_disponivel, ''));
+                            }
+                        });
+                    }
+                }
+            });
+
+            window.LaravelDataTables["dataTableBuilder"].draw();
+
+            setTimeout(function () {
+                $.each(itens_selecionados, function( index, value ) {
+                    $('#'+value).attr('checked', true);
+                });
+
+                stopLoading();
+            }, 1000);
+        }
+    </script>
 @endsection

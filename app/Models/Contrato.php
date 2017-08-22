@@ -37,10 +37,19 @@ class Contrato extends Model
     public function workflowNotification()
     {
         return [
-            'message' => 'Aprovar o contrato nº '. $this->id,
+            'message' => 'Contrato '.$this->id.' à aprovar',
             'link' => route('contratos.show', $this->id),
             'workflow_tipo_id' => WorkflowTipo::CONTRATO,
-            'id_dinamico' => $this->id
+            'id_dinamico' => $this->id,
+            'task'=>1,
+            'done'=>0
+        ];
+    }
+    public function workflowNotificationDone($aprovado)
+    {
+        return [
+            'message' => 'Contrato '.$this->id.($aprovado?' aprovado ':' reprovado '),
+            'link' => route('contratos.show', $this->id),
         ];
     }
 
@@ -150,6 +159,10 @@ class Contrato extends Model
     public function irmaosIds()
     {
         return [$this->attributes['id'] => $this->attributes['id']];
+    }
+
+    public function idPai(){
+        return null;
     }
 
     public function aprovacoes()
@@ -287,5 +300,18 @@ class Contrato extends Model
     public function getHasMaterialFaturamentoDiretoAttribute()
     {
         return $this->itens->pluck('insumo')->pluck('codigo')->contains(30019);
+    }
+
+    public function emAprovacao(){
+        return ($this->contrato_status_id == 1);
+    }
+
+    public function dataUltimoPeriodoAprovacao(){
+        $ultimoStatusAprovacao = $this->logs()->where('contrato_status_id',ContratoStatus::EM_APROVACAO)
+            ->orderBy('created_at','DESC')->first();
+        if($ultimoStatusAprovacao){
+            return $ultimoStatusAprovacao->created_at;
+        }
+        return null;
     }
 }
