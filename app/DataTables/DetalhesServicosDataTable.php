@@ -3,6 +3,7 @@
 namespace App\DataTables;
 
 use App\Models\Orcamento;
+use App\Models\OrdemDeCompra;
 use App\Models\OrdemDeCompraItem;
 use App\Repositories\OrdemDeCompraRepository;
 use Form;
@@ -84,6 +85,10 @@ class DetalhesServicosDataTable extends DataTable
      */
     public function query()
     {
+        if($this->request()->get('oc_id')) {
+            $ordem_de_compra_ultima_aprovacao = OrdemDeCompra::find($this->request()->get('oc_id'))->dataUltimoPeriodoAprovacao();
+        }
+
         $orcamentos = Orcamento::select([
             DB::raw("CONCAT(SUBSTRING_INDEX(orcamentos.codigo_insumo, '.', -1),' - ' ,orcamentos.descricao) as descricao"),
             'orcamentos.unidade_sigla',
@@ -128,6 +133,7 @@ class DetalhesServicosDataTable extends DataTable
                         AND OCQC.ordem_de_compra_item_id = ordem_de_compra_itens.id
                     )
                     AND ordem_de_compra_itens.servico_id = '.$this->servico_id.'
+                    '.(isset($ordem_de_compra_ultima_aprovacao) ? "AND ordem_de_compras.created_at <='".$ordem_de_compra_ultima_aprovacao."'" : '').'
                     AND ordem_de_compra_itens.obra_id ='. $this->obra_id .' ) as valor_oc'),
 
             DB::raw('0
