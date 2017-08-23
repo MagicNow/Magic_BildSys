@@ -17,10 +17,18 @@ class CreateCatalogoContratoRegionalLogsTable extends Migration
             $table->increments('id');
 
             $table->integer('catalogo_contrato_regional_id')->unsigned();
-            $table->foreign('catalogo_contrato_regional_id','cont_regional_id')->references('id')->on('catalogo_contrato_regional')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('catalogo_contrato_regional_id','cc_regional_id')
+                ->references('id')
+                ->on('catalogo_contrato_regional')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
 
             $table->integer('catalogo_contrato_status_id')->unsigned();
-            $table->foreign('catalogo_contrato_status_id','cont_status_id')->references('id')->on('catalogo_contrato_status')->onDelete('restrict')->onUpdate('cascade');
+            $table->foreign('catalogo_contrato_status_id','cc_status_id')
+                ->references('id')
+                ->on('catalogo_contrato_status')
+                ->onDelete('restrict')
+                ->onUpdate('cascade');
 
             $table->timestamps();
 
