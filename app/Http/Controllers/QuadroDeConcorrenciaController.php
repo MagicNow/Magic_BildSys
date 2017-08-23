@@ -523,59 +523,6 @@ class QuadroDeConcorrenciaController extends AppBaseController
                 'user_id' => $request->user()->id
             ]);
 
-            $qcItensAditivos = $quadro->itens->load('ordemDeCompraItens')
-                    ->map(function($qcItem) {
-                        $qcItem->contratos = $qcItem->ordemDeCompraItens
-                            ->pluck('sugestao_contrato_id')
-                            ->filter();
-
-                        return $qcItem;
-                    })
-                    ->reject(function($qcItem) {
-                        return $qcItem->contratos->isEmpty();
-                    });
-
-            $qcItensAditivos->each(function($qcItem) use ($vencedores) {
-                $qcItem->contratos->each(function($contrato_id) use ($qcItem, $vencedores) {
-
-                    $contrato = Contrato::find($contrato_id);
-
-                    $vencedor = $vencedores->where('qc_item_id', $qcItem->id)->first();
-
-                    // Se o contrato sugerido não é do fornecedor vencedor, não aditivar.
-                    if((int) $contrato->fornecedor_id !== (int) $vencedor->qcFornecedor->fornecedor_id) {
-                        return true;
-                    }
-
-                    $contratoItem = ContratoItem::create([
-                        'qc_item_id'     => $qcItem->id,
-                        'insumo_id'      => $qcItem->insumo_id,
-                        'qtd'            => $qcItem->ordemDeCompraItens->where('obra_id', $contrato->obra_id)->sum('qtd'),
-                        'valor_unitario' => $vencedor->valor_unitario,
-                        'valor_total'    => $vencedor->valor_total,
-                        'aprovado'       => 0,
-                        'pendente'       => 1,
-                        'contrato_id'    => $contrato->id,
-                    ]);
-
-                    $mod = ContratoItemModificacao::create([
-                        'contrato_item_id'        => $contratoItem->id,
-                        'qtd_anterior'            => 0,
-                        'qtd_atual'               => $contratoItem->qtd,
-                        'valor_unitario_anterior' => 0,
-                        'valor_unitario_atual'    => $contratoItem->valor_unitario,
-                        'contrato_status_id'      => ContratoStatus::EM_APROVACAO,
-                        'tipo_modificacao'        => 'Aditivo',
-                        'user_id'                 => auth()->id()
-                    ]);
-
-                    ContratoItemModificacaoLog::create([
-                        'contrato_item_modificacao_id' => $mod->id,
-                        'contrato_status_id'           => $mod->contrato_status_id
-                    ]);
-                });
-            });
-
         } catch (Exception $e) {
             DB::rollback();
             logger()->error((string) $e);
@@ -1478,6 +1425,9 @@ class QuadroDeConcorrenciaController extends AppBaseController
                             $contratosGerados[] = $contrato->id;
                             if(isset($contratosAGerar[$qcFornecedor->id][$contrato->obra_id])){
                                 unset($contratosAGerar[$qcFornecedor->id][$contrato->obra_id]);
+                                if(!count($contratosAGerar[$qcFornecedor->id])){
+                                    unset($contratosAGerar[$qcFornecedor->id]);
+                                }
                                 $qtdContratosAGerar--;
                             }
                         }

@@ -39,7 +39,7 @@ class ContratoItemModificacaoRepository extends BaseRepository
                         $apropriacao = $apropriacoes->where('id', $apropriacao_id)
                             ->first();
 
-                        if($data['anexos'][$apropriacao_id] != "undefined") {
+                        if(isset($data['anexos']) && isset($data['anexos'][$apropriacao_id]) && $data['anexos'][$apropriacao_id] != "undefined") {
                             $destinationPath = CodeRepository::saveFile($data['anexos'][$apropriacao_id], 'contratos/reajustes/' . $item->id .'/apropriacao/' . $apropriacao_id);
                         }
 
@@ -47,7 +47,7 @@ class ContratoItemModificacaoRepository extends BaseRepository
                             'contrato_item_apropriacao_id' => $apropriacao_id,
                             'qtd_anterior' => $apropriacao->qtd,
                             'qtd_atual' => money_to_float($qtd) + $apropriacao->qtd,
-                            'descricao' => $reajusteDescricao[$apropriacao_id],
+                            'descricao' => isset($reajusteDescricao[$apropriacao_id])?$reajusteDescricao[$apropriacao_id]:null,
                             'anexo' => isset($destinationPath) ? $destinationPath : null
                         ];
                     });
@@ -57,9 +57,8 @@ class ContratoItemModificacaoRepository extends BaseRepository
             }
 
             $destinationPath = null;
-
-            if($data['anexo'] != "undefined") {
-                $destinationPath = CodeRepository::saveFile($data['anexo'], 'contratos/reajustes/' . $item->id);
+            if(isset($data['anexo']) &&  $data['anexo'] != "undefined") {
+                    $destinationPath = CodeRepository::saveFile($data['anexo'], 'contratos/reajustes/' . $item->id);
             }
             
             $modificacao = $this->create([
@@ -72,7 +71,7 @@ class ContratoItemModificacaoRepository extends BaseRepository
                 'tipo_modificacao'        => 'Reajuste',
                 'anexo'                   => $destinationPath,
                 'user_id'                 => auth()->id(),
-                'descricao'               => $data['observacao']
+                'descricao'               => isset($data['observacao']) ? $data['observacao']: null
             ]);
 
             $modificacaoLogRepository->create([
