@@ -177,7 +177,7 @@
         @if(isset($catalogoContrato))
             @foreach($catalogoContrato->regionais as $cc_regional)
                 <li class="list-group-item" id="regional_list_{{ $cc_regional->id }}">
-                    <input type="hidden" name="regionais[{{ $count_regionais++ }}]" value="{{ $cc_regional->regional_id }}">
+                    <input type="hidden" name="regional[{{ $count_regionais++ }}]" value="{{ $cc_regional->regional_id }}">
                     <i class="fa fa-building"></i> {{ $cc_regional->regional->nome }}
                     <span class="label label-default"
                           style="background-color: {{$cc_regional->status->cor}}">{{ $cc_regional->status->nome }}</span>
@@ -754,7 +754,7 @@ $count_insumos = 0;
             $('#regional_selecionada').val(null).trigger("change");
             var novaRegional = '<li class="list-group-item" id="regional_list_' + contadorRegional + '">' +
                     '<i class="fa fa-building"></i>  ' + regional_selecionada_txt +
-                    '<input type="hidden" name="regionais[]" value="' + regional_selecionada + '">' +
+                    '<input type="hidden" name="regional[]" value="' + regional_selecionada + '">' +
                     ' <span class="label label-info">Nova</span>' +
                     '<button type="button" title="Remover Regional" onclick="removerRegional(' + contadorRegional + ',null);" class="btn btn-danger btn-xs btn-flat pull-right">' +
                     '<i class="fa fa-times"></i>' +

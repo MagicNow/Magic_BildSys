@@ -126,11 +126,11 @@ class CatalogoContratoController extends AppBaseController
 
         $catalogoContrato = $this->catalogoContratoRepository->update($input, $catalogoContrato->id);
 
-        if($request->obra){
-            foreach ($request->obra as $obra_id){
-                $catalogoContratoObra = CatalogoContratoObra::create([
+        if($request->regional){
+            foreach ($request->regional as $regional_id){
+                $catalogoContratoRegional = CatalogoContratoRegional::create([
                     'catalogo_contrato_id' => $catalogoContrato->id,
-                    'obra_id' => $obra_id,
+                    'regional_id' => $regional_id,
                     'user_id' => auth()->id(),
                     'catalogo_contrato_status_id' => 2
                 ]);
