@@ -325,6 +325,8 @@ class OrdemDeCompraController extends AppBaseController
 
             $saldo = OrdemDeCompraRepository::saldoDisponivel($ordemDeCompra->id, $ordemDeCompra->obra_id);
 
+            $ordem_de_compra_ultima_aprovacao = $ordemDeCompra->dataUltimoPeriodoAprovacao();
+
             $itens = OrdemDeCompraItem::where('ordem_de_compra_id', $ordemDeCompra->id)
                 ->select([
                     'ordem_de_compra_itens.*',
@@ -350,20 +352,36 @@ class OrdemDeCompraController extends AppBaseController
                         AND orcamentos.ativo = 1
 
                     ) as valor_servico"),
-                    DB::raw("(
-                        SELECT
-                        SUM(OCI.valor_total)
-                        FROM
-                        ordem_de_compra_itens as OCI
-                        WHERE
-                        OCI.grupo_id = ordem_de_compra_itens.grupo_id
+                    DB::raw('
+                        (SELECT 
+                            SUM(OCI.valor_total) 
+                        FROM ordem_de_compra_itens as OCI
+                        JOIN ordem_de_compras
+                            ON OCI.ordem_de_compra_id = ordem_de_compras.id
+                        WHERE OCI.insumo_id = orcamentos.insumo_id
                         AND OCI.subgrupo1_id = ordem_de_compra_itens.subgrupo1_id
                         AND OCI.subgrupo2_id = ordem_de_compra_itens.subgrupo2_id
                         AND OCI.subgrupo3_id = ordem_de_compra_itens.subgrupo3_id
                         AND OCI.servico_id = ordem_de_compra_itens.servico_id
                         AND OCI.obra_id = ordem_de_compra_itens.obra_id
-                        AND deleted_at IS NULL
-                    ) as valor_servico_oc"),
+                        AND (
+                                ordem_de_compras.oc_status_id = 2
+                                OR
+                                ordem_de_compras.oc_status_id = 3                            
+                                OR
+                                ordem_de_compras.oc_status_id = 5
+                            )
+                        AND OCI.deleted_at IS NULL
+                        AND NOT EXISTS(
+                            SELECT 1 
+                            FROM contrato_itens CI
+                            JOIN contrato_item_apropriacoes CIT ON CIT.contrato_item_id = CI.id
+                            JOIN oc_item_qc_item OCQC ON OCQC.qc_item_id = CI.qc_item_id
+                            WHERE CI.id = CIT.contrato_item_id
+                            AND OCQC.ordem_de_compra_item_id = OCI.id
+                        )
+                        '.($ordem_de_compra_ultima_aprovacao ? "AND ordem_de_compras.created_at <='".$ordem_de_compra_ultima_aprovacao."'" : '').'
+                        ) as valor_servico_oc'),
                     DB::raw("(
                         SELECT
                         SUM(orcamentos.qtd_total)

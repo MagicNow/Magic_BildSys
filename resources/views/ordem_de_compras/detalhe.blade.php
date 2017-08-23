@@ -347,6 +347,8 @@
                                         $saldo_valor_orcamento -= $valor_comprometido_a_gastar_item;
 
                                         $status_qtd = $saldo_qtd_orcamento - money_to_float($item->qtd);
+
+                                        $valor_comprometido_a_gastar_servico = \App\Repositories\OrdemDeCompraRepository::valorComprometidoAGastarItem($item->grupo_id, $item->subgrupo1_id, $item->subgrupo2_id, $item->subgrupo3_id, $item->servico_id, $item->insumo_id, $item->obra_id, null, $item->ordemDeCompra->dataUltimoPeriodoAprovacao());
                                 @endphp
 
                                 @if($status_qtd > 0)
@@ -367,11 +369,11 @@
                             <td class="text-center">
                                 @if($item->servico)
                                     <a href="/ordens-de-compra/detalhes-servicos/{{$ordemDeCompra->obra_id}}/{{$item->servico->id}}?oc_id={{$ordemDeCompra->id}}" style="cursor:pointer;">
-                                        <i class="fa fa-circle {{ (money_to_float($item->valor_servico) - money_to_float($item->valor_servico_oc)) < 0 ? 'red': 'green'  }}" aria-hidden="true"></i>
+                                        <i class="fa fa-circle {{ (money_to_float($item->valor_servico) - $valor_comprometido_a_gastar_servico - money_to_float($item->valor_servico_oc)) < 0 ? 'red': 'green'  }}" aria-hidden="true"></i>
                                         <button class="btn btn-warning btn-sm btn-flat">Análise</button>
                                     </a>
                                 @else
-                                    <i class="fa fa-circle {{ (money_to_float($item->valor_servico) - money_to_float($item->valor_servico_oc)) < 0 ? 'red': 'green'  }}" aria-hidden="true"></i>
+                                    <i class="fa fa-circle {{ (money_to_float($item->valor_servico) - $valor_comprometido_a_gastar_servico - money_to_float($item->valor_servico_oc)) < 0 ? 'red': 'green'  }}" aria-hidden="true"></i>
                                 @endif
                             </td>
                             <td class="text-center">
