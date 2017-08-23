@@ -3,7 +3,9 @@
 namespace App\Repositories\Admin;
 
 use App\Models\CronogramaFisico;
+use Illuminate\Support\Facades\DB;
 use InfyOm\Generator\Common\BaseRepository;
+use App\Models\Lembrete;
 
 class CronogramaFisicoRepository extends BaseRepository
 {
@@ -12,34 +14,12 @@ class CronogramaFisicoRepository extends BaseRepository
      */
     protected $fieldSearchable = [
         'obra_id',
-        'codigo_insumo',
-        'insumo_id',
-        'servico_id',
-        'grupo_id',
-        'unidade_sigla',
-        'coeficiente',
-        'indireto',
-        'terreo_externo_solo',
-        'terreo_externo_estrutura',
-        'terreo_interno',
-        'primeiro_pavimento',
-        'segundo_ao_penultimo',
-        'cobertura_ultimo_piso',
-        'atico',
-        'reservatorio',
-        'qtd_total',
-        'preco_unitario',
-        'preco_total',
-        'referencia_preco',
-        'obs',
-        'porcentagem_orcamento',
-        'orcamento_tipo_id',
-        'ativo',
-        'subgrupo1_id',
-        'subgrupo2_id',
-        'subgrupo3_id',
-        'user_id',
-        'descricao'
+        'tarefa',
+        'data',
+        'prazo',
+        'planejamento_id',
+        'data_fim',
+        'resumo'
     ];
 
     /**
@@ -48,5 +28,25 @@ class CronogramaFisicoRepository extends BaseRepository
     public function model()
     {
         return CronogramaFisico::class;
+    }
+
+    public function comLembretesComItensDeCompraPorUsuario(
+        $user_id,
+        $lembrete_tipo_id = 1
+    ) {
+        return Lembrete::select('planejamentos.*')
+            ->join('insumo_grupos', 'insumo_grupos.id', '=', 'lembretes.insumo_grupo_id')
+            ->join('insumos', 'insumos.insumo_grupo_id', '=', 'insumo_grupos.id')
+            ->join('planejamento_compras', 'planejamento_compras.insumo_id', '=', 'insumos.id')
+            ->join('planejamentos', 'planejamentos.id', '=', 'planejamento_compras.planejamento_id')
+            ->join('obras', 'obras.id', '=', 'planejamentos.obra_id')
+            ->join('obra_users', 'obra_users.obra_id', '=', 'obras.id')
+            ->whereNull('planejamentos.deleted_at')
+            ->where('lembretes.lembrete_tipo_id', $lembrete_tipo_id)
+            ->where('obra_users.user_id', $user_id)
+            ->whereRaw(PlanejamentoCompraRepository::existeItemParaComprar())
+            ->groupBy('planejamentos.id')
+            ->orderBy(DB::raw('trim(tarefa)'),'ASC')
+            ->get();
     }
 }

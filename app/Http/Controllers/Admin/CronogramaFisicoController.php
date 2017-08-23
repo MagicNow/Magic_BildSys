@@ -5,70 +5,84 @@ namespace App\Http\Controllers\Admin;
 use App\DataTables\Admin\CronogramaFisicoDataTable;
 use App\Http\Requests\Admin;
 use App\Http\Requests\Admin\CronogramaFisicoRequest;
+use App\Http\Requests\Admin\UpdateCronogramaFisicoRequest;
 use App\Jobs\PlanilhaProcessa;
+use App\Models\Grupo;
+use App\Models\Insumo;
+use App\Models\InsumoGrupo;
+use App\Models\InsumoServico;
 use App\Models\Obra;
+use App\Models\Orcamento;
+use App\Models\PlanejamentoCompra;
 use App\Models\Planilha;
+use App\Models\Servico;
 use App\Models\TemplatePlanilha;
-use App\Models\TipoCronogramaFisico;
+use App\Models\TipoOrcamento;
 use App\Repositories\Admin\CronogramaFisicoRepository;
 use App\Repositories\Admin\SpreadsheetRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Response;
 
 class CronogramaFisicoController extends AppBaseController
 {
     /** @var  CronogramaFisicoRepository */
-    private $orcamentoRepository;
+    private $cronogramaFisicoRepository;
 
-    public function __construct(CronogramaFisicoRepository $cronogramaRepo)
+    public function __construct(CronogramaFisicoRepository $cronogramaFisicoRepo)
     {
-        $this->cronogramaFisicoRepository = $cronogramaRepo;
+        $this->cronogramaFisicoRepository = $cronogramaFisicoRepo;
     }
 
     /**
-     * Display a listing of the Cronograma.
+     * Display a listing of the Planejamento.
      *
-     * @param OrcamentoDataTable $orcamentoDataTable
+     * @param CronogramaFisicoDataTable $cronogramaFisicoDataTable
      * @return Response
      */
-    public function index(CronogramaFisicoDataTable $cronogramaFisicoDataTable)
+    public function index(Request $request, CronogramaFisicoDataTable $cronogramaFisicoDataTable)
     {
-        return $cronogramaFisicoDataTable->render('admin.cronograma_fisicos.index');
+        $id = null;
+        if($request->id){
+            $id = $request->id;
+        }
+        return $cronogramaFisicoDataTable->porObra($id)->render('admin.cronograma_fisicos.index');
     }
 
     /**
-     * Show the form for creating a new Cronograma.
+     * Show the form for creating a new Planejamento.
      *
      * @return Response
      */
     public function create()
     {
-        return view('admin.cronograma_fisicos.create');
+        $obras = Obra::pluck('nome','id')->toArray();
+        return view('admin.cronograma_fisicos.create', compact('obras'));
     }
 
     /**
-     * Store a newly created Cronograma in storage.
+     * Store a newly created Planejamento in storage.
      *
-     * @param CreateOrcamentoRequest $request
+     * @param CreatePlanejamentoRequest $request
      *
      * @return Response
      */
-    public function store(CreateCronogramaFisicoRequest $request)
+    public function store(CreatePlanejamentoRequest $request)
     {
         $input = $request->all();
 
-        $cronograma = $this->cronogramaFisicoRepository->create($input);
+        $planejamento = $this->cronogramaFisicoRepository->create($input);
 
-        Flash::success('Cronograma '.trans('common.saved').' '.trans('common.successfully').'.');
+        Flash::success('Planejamento '.trans('common.saved').' '.trans('common.successfully').'.');
 
         return redirect(route('admin.cronograma_fisicos.index'));
     }
 
     /**
-     * Display the specified Cronograma.
+     * Display the specified Planejamento.
      *
      * @param  int $id
      *
@@ -76,19 +90,22 @@ class CronogramaFisicoController extends AppBaseController
      */
     public function show($id)
     {
-        $cronograma = $this->cronogramaFisicoRepository->findWithoutFail($id);
+        $planejamento = $this->cronogramaFisicoRepository->findWithoutFail($id);
+        $itens = PlanejamentoCompra::where('planejamento_id', $id)
+            ->orderBy('servico_id')
+            ->paginate(10);
 
-        if (empty($cronograma)) {
-            Flash::error('Cronograma '.trans('common.not-found'));
+        if (empty($planejamento)) {
+            Flash::error('Planejamento '.trans('common.not-found'));
 
             return redirect(route('admin.cronograma_fisicos.index'));
         }
 
-        return view('admin.cronograma_fisicos.show')->with('cronograma', $cronograma);
+        return view('admin.cronograma_fisicos.show', compact('planejamento','itens'));
     }
 
     /**
-     * Show the form for editing the specified Cronograma.
+     * Show the form for editing the specified Planejamento.
      *
      * @param  int $id
      *
@@ -96,44 +113,47 @@ class CronogramaFisicoController extends AppBaseController
      */
     public function edit($id)
     {
-        $cronograma = $this->cronogramaFisicoRepository->findWithoutFail($id);
+        $obras = Obra::pluck('nome','id')->toArray();
+        $planejamento = $this->cronogramaFisicoRepository->findWithoutFail($id);
 
-        if (empty($cronograma)) {
-            Flash::error('Cronograma '.trans('common.not-found'));
+        if (empty($planejamento)) {
+            Flash::error('Planejamento '.trans('common.not-found'));
 
             return redirect(route('admin.cronograma_fisicos.index'));
         }
 
-        return view('admin.cronograma_fisicos.edit')->with('cronograma', $cronograma);
+
+        return view('admin.cronograma_fisicos.edit', compact('planejamento','obras'));
     }
 
     /**
-     * Update the specified Cronograma in storage.
+     * Update the specified Planejamento in storage.
      *
      * @param  int              $id
-     * @param UpdateCronogramFisicoRequest $request
+     * @param UpdatePlanejamentoRequest $request
      *
      * @return Response
      */
-    public function update($id, UpdateCronogramFisicoRequest $request)
+    public function update($id, UpdatePlanejamentoRequest $request)
     {
-        $cronograma = $this->cronogramaFisicoRepository->findWithoutFail($id);
+        $planejamento = $this->cronogramaFisicoRepository->findWithoutFail($id);
 
-        if (empty($cronograma)) {
-            Flash::error('Cronograma '.trans('common.not-found'));
+        if (empty($planejamento)) {
+            Flash::error('Planejamento '.trans('common.not-found'));
 
             return redirect(route('admin.cronograma_fisicos.index'));
         }
+        $input = $request->all();
 
-        $cronograma = $this->cronogramaFisicoRepository->update($request->all(), $id);
+        $planejamento = $this->cronogramaFisicoRepository->update($input, $id);
 
-        Flash::success('Cronograma '.trans('common.updated').' '.trans('common.successfully').'.');
+        Flash::success('Planejamento '.trans('common.updated').' '.trans('common.successfully').'.');
 
         return redirect(route('admin.cronograma_fisicos.index'));
     }
 
     /**
-     * Remove the specified Cronograma from storage.
+     * Remove the specified Planejamento from storage.
      *
      * @param  int $id
      *
@@ -141,20 +161,40 @@ class CronogramaFisicoController extends AppBaseController
      */
     public function destroy($id)
     {
-        $cronograma = $this->cronogramaFisicoRepository->findWithoutFail($id);
+        $planejamento = $this->cronogramaFisicoRepository->findWithoutFail($id);
 
-        if (empty($cronograma)) {
-            Flash::error('Cronograma '.trans('common.not-found'));
+        if (empty($planejamento)) {
+            Flash::error('Planejamento '.trans('common.not-found'));
 
             return redirect(route('admin.cronograma_fisicos.index'));
         }
 
         $this->cronogramaFisicoRepository->delete($id);
 
-        Flash::success('Cronograma '.trans('common.deleted').' '.trans('common.successfully').'.');
+        Flash::success('Planejamento '.trans('common.deleted').' '.trans('common.successfully').'.');
 
         return redirect(route('admin.cronograma_fisicos.index'));
     }
+
+    public function destroyPlanejamentoCompra($id)
+    {
+        try {
+            $planejamentoCompra = PlanejamentoCompra::find($id);
+
+            if ($planejamentoCompra) {
+                $planejamentoCompra->delete();
+                return response()->json(['success' => true, 'error' => false]);
+            } else {
+                $acao = "Ocorreu um erro ao deletar o item.";
+            }
+            return response()->json(['success' => false, 'error' => $acao]);
+        }catch(\Exception $e) {
+            Flash::error($e->getMessage());
+            return redirect(route('admin.cronograma_fisicos.index'));
+        }
+    }
+
+
 
     ################################ IMPORTAÇÃO ###################################
 
@@ -163,13 +203,16 @@ class CronogramaFisicoController extends AppBaseController
      * $orcamento_tipos = Buscando chave e valor para fazer o combobox da view
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function indexImport(){
+    public function indexImport(Request $request){
+        
+		$id = null;
+        if($request->id){
+            $id = $request->id;
+        }
+
         $obras = Obra::pluck('nome','id')->toArray();
-		$cronograma_fisico_tipos = CronogramaFisicoTipos::pluck('nome','id')->toArray();
-        //$orcamento_tipos = TipoOrcamento::pluck('nome','id')->toArray();
-        $templates = TemplatePlanilha::where('modulo', 'Cronograma Físicos')->pluck('nome','id')->toArray();
-        return view('admin.cronograma_fisicos.indexImport', compact('cronograma_fisico_tipos','obras', 'templates'));
-		//return view('admin.cronograma_fisicos.indexImport', compact('orcamento_tipos','obras', 'templates'));
+        $templates = TemplatePlanilha::where('modulo', 'Cronograma Fisicos')->pluck('nome','id')->toArray();
+        return view('admin.cronograma_fisicos.indexImport', compact('obras','templates','id'));
     }
 
     /**
@@ -183,46 +226,32 @@ class CronogramaFisicoController extends AppBaseController
      */
     public function import(Request $request)
     {
-        $tipo = 'orcamento';
-        $file = $request->except('obra_id','template_id','orcamento_tipo_id');
+        $tipo = 'planejamento';
+        $file = $request->except('obra_id','template_id');
         $input = $request->except('_token','file');
-        $this->validate($request,['file'=>'file','obra_id'=>'required']);
         $template = $request->template_id;
-        $obra_id = null;
-        $orcamento_tipo_id = null;
-
-        # Validando campos obrigatórios como chave estrangeiras
-        if($input['obra_id'] != "") {
-            $obra_id = array_key_exists('obra_id', $input);
-        }
-        if($input['orcamento_tipo_id'] != "") {
-            $orcamento_tipo_id = array_key_exists('orcamento_tipo_id', $input);
-        }
-        if(!$obra_id || !$orcamento_tipo_id){
-            Flash::error('Os campos: obra e tipo orçamento são obrigátorios.');
-            return back();
-        }
-
-
         $input['user_id'] = Auth::id();
         $parametros = json_encode($input);
         $colunasbd = [];
 
         # Enviando $file e $parametros para método de leitura da planilha.
         $retorno = SpreadsheetRepository::Spreadsheet($file, $parametros, $tipo);
-
         /* Percorrendo campos retornados e enviando para a view onde o
             usuário escolhe as colunas que vão ser importadas e tipos.
         */
-        foreach ($retorno['colunas'] as $coluna => $type ) {
-            $colunasbd[$coluna] = $coluna . ' - ' . $type;
+        if(is_array($retorno)){
+            foreach ($retorno['colunas'] as $coluna => $type ) {
+                $colunasbd[$coluna] = $coluna . ' - ' . $type;
+            }
+
+            # Colocando variaveis na sessão para fazer validações de campos obrigatórios.
+            \Session::put('retorno', $retorno);
+            \Session::put('colunasbd', $colunasbd);
+
+            return redirect('/admin/cronogramaFisico/importar/selecionaCampos?planilha_id='.$retorno['planilha_id'].($template?'&template_id='.$template:''));
+        }else{
+            return $retorno;
         }
-
-        # Colocando variaveis na sessão para fazer validações de campos obrigatórios.
-        \Session::put('retorno', $retorno);
-        \Session::put('colunasbd', $colunasbd);
-
-        return redirect('/admin/orcamento/importar/selecionaCampos?planilha_id='.$retorno['planilha_id'].($template?'&template_id='.$template:''));
     }
 
     /**
@@ -230,8 +259,8 @@ class CronogramaFisicoController extends AppBaseController
      * @param Request $request
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function selecionaCampos(Request $request)
-    {
+    public function selecionaCampos(Request $request){
+
         $retorno = $request->session()->get('retorno');
         $colunasbd = $request->session()->get('colunasbd');
         if($request->template_id){
@@ -247,10 +276,10 @@ class CronogramaFisicoController extends AppBaseController
                 # Mensagem que será exibida para o usuário avisando que a importação foi adicionada na fila e será processada.
                 Flash::warning('Importação incluída na FILA. Ao concluir o processamento enviaremos um ALERTA!');
 
-                return redirect('admin/orcamento');
+                return redirect('admin/cronogramaFisico');
             }
         }
-        return view('admin.orcamentos.checkIn', compact('retorno','colunasbd'));
+        return view('admin.cronograma_fisicos.checkIn', compact('retorno','colunasbd'));
     }
 
     /*
@@ -260,15 +289,14 @@ class CronogramaFisicoController extends AppBaseController
     public function save(Request $request){
         $input = $request->except('_token');
         $json = json_encode(array_filter($input));
-//        dd($json);
+
         # Validando campos obrigatórios como chave estrangeiras
-        $codigo_insumo = in_array('codigo_insumo', $input);
-        $unidade_sigla = in_array('unidade_sigla', $input);
-        $descricao = in_array('descricao', $input);
-        if(!$codigo_insumo || !$unidade_sigla || !$descricao){
-            Flash::error('Os campos: codigo_insumo, unidade_sigla e descrição são obrigátorios.');
-            return back();
-        }
+//        $codigo_insumo = in_array('codigo_insumo', $input);
+//        $unidade_sigla = in_array('unidade_sigla', $input);
+//        if(!$codigo_insumo && !$unidade_sigla){
+//            Flash::error('Os campos: codigo_insumo e unidade_sigla são obrigátorios.');
+//            return back();
+//        }
 
         # Pegando todas as planilhas por ordem decrescente e que trás somente a ultima planilha importada pelo usuário
         $planilha = Planilha::where('user_id', \Auth::id())->orderBy('id','desc')->first();
@@ -279,15 +307,12 @@ class CronogramaFisicoController extends AppBaseController
         }
 
         # Salvar os campos escolhido na primeira importação de planilha para criar um modelo de template
-        $parametros_json = json_decode($planilha->parametros_json);
-        $orcamento = TipoOrcamento::find(intval($parametros_json->orcamento_tipo_id));
         $template_orcamento = TemplatePlanilha::firstOrNew([
-            'nome' => $orcamento->nome,
-            'modulo' => 'Orçamento'
+            'nome' => 'CronogramaFisico',
+            'modulo' => 'CronogramaFisico'
         ]);
         $template_orcamento->colunas = $json;
         $template_orcamento->save();
-
 
         # Comentário de processamento de fila iniciada
         \Log::info("Ciclo de solicitações com filas iniciada");
@@ -297,6 +322,54 @@ class CronogramaFisicoController extends AppBaseController
 
         # Mensagem que será exibida para o usuário avisando que a importação foi adicionada na fila e será processada.
         Flash::warning('Importação incluída na FILA. Ao concluir o processamento enviaremos um ALERTA!');
-        return redirect('admin/orcamento');
+        return redirect('admin/cronogramaFisico');
     }
+
+    /*public function getGrupos(Request $request, $id)
+    {
+        if($id){
+            $grupo = Grupo::where('grupo_id', $id)
+                ->select([
+                    'id',
+                    DB::raw("CONCAT(codigo, ' ', nome) as nome")
+                ])
+                ->where(function ($query) use($request){
+                   $query->where('nome', 'like', '%' . $request->q . '%')
+                       ->orWhere('codigo','like', '%'.$request->q.'%');
+                });
+        }else {
+            $grupo = Grupo::whereNull('grupo_id')
+                ->select([
+                    'id',
+                    DB::raw("CONCAT(codigo, ' ', nome) as nome")
+                ])
+                ->where(function ($query) use($request){
+                    $query->where('nome', 'like', '%' . $request->q . '%')
+                        ->orWhere('codigo','like', '%'.$request->q.'%');
+                });
+        }
+        return $grupo->paginate();
+    }*/
+    /*public function getServicos(Request $request, $id)
+    {
+        $servico = Servico::where('grupo_id', $id)
+            ->select([
+                'id',
+                DB::raw("CONCAT(codigo, ' ', nome) as nome")
+            ])
+            ->where(function ($query) use($request){
+                $query->where('nome', 'like', '%' . $request->q . '%')
+                    ->orWhere('codigo','like', '%'.$request->q.'%');
+            });
+
+        return $servico->paginate();
+    }
+    public function getServicoInsumos($id)
+    {
+        $insumoServico = InsumoServico::select(['insumos.id', 'insumos.nome', 'insumos.codigo'])
+            ->join('insumos', 'insumo_servico.insumo_id', '=', 'insumos.id')
+            ->where('servico_id', $id)
+            ->get();
+        return $insumoServico;
+    }*/
 }

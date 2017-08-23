@@ -3,7 +3,7 @@
 @section('content')
     <section class="content-header">
         <h1>
-            Orcamento
+            Cronograma de Obra
         </h1>
    </section>
    <div class="content">
@@ -11,9 +11,9 @@
        <div class="box box-primary">
            <div class="box-body">
                <div class="row">
-                   {!! Form::model($orcamento, ['route' => ['admin.orcamentos.update', $orcamento->id], 'method' => 'patch']) !!}
+                   {!! Form::model($planejamento, ['route' => ['admin.planejamentos.update', $planejamento->id], 'method' => 'patch']) !!}
 
-                        @include('admin.orcamentos.fields')
+                        @include('admin.planejamentos.fields')
 
                    {!! Form::close() !!}
                </div>

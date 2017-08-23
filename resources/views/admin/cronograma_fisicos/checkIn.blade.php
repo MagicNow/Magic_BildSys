@@ -1,8 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-    @include( 'flash::message' )
-
     <section class="content-header">
         <h1 class="pull-left">Validações de colunas</h1>
     </section>
@@ -12,7 +10,7 @@
 
             <div class="panel-body"></div>
             <!-- INICIO form -->
-            {!! Form::open(['route' => 'admin.orcamentos.save', 'method'=>'post']) !!}
+            {!! Form::open(['route' => 'admin.planejamentos.save', 'method'=>'post']) !!}
             <div class="table-responsive">
                 <table class="table table-bordered table-striped table-hover table-condensed">
                         <thead>

@@ -47,6 +47,14 @@
             </a>
         </li>
         @endshield
+		@shield('cronogramaFisicos.import')
+        <li class="{{ Request::is('admin/cronogramaFisicos*') ? 'active' : '' }}">
+            <a href="{!! route('admin.cronogramaFisicos.indexImport') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Rel. Semanal/Mensal</span>
+            </a>
+        </li>
+        @endshield
         @shield('cronogramaFisicos.import')
         <li class="{{ Request::is('admin/cronogramaFisicos*') ? 'active' : '' }}">
             <a href="{!! route('admin.cronogramaFisicos.indexImport') !!}">

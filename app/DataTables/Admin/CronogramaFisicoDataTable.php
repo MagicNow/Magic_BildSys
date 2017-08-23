@@ -5,10 +5,11 @@ namespace App\DataTables\Admin;
 use App\Models\CronogramaFisico;
 use Form;
 use Yajra\Datatables\Services\DataTable;
+use Illuminate\Support\Facades\DB;
 
 class CronogramaFisicoDataTable extends DataTable
 {
-
+    protected $obra = null;
     /**
      * @return \Illuminate\Http\JsonResponse
      */
@@ -17,11 +18,23 @@ class CronogramaFisicoDataTable extends DataTable
         return $this->datatables
             ->eloquent($this->query())
             ->editColumn('action', 'admin.cronograma_fisicos.datatables_actions')
-            ->editColumn('created_at', function($obj){
-                return $obj->created_at ? $obj->created_at->format('d/m/Y'): '';
+            ->editColumn('obra_id',function ($obj){
+                return $obj->obra_id ? $obj->obra->nome : '';
             })
-            ->filterColumn('created_at', function ($query, $keyword) {
-                $query->whereRaw("DATE_FORMAT(cronograma_fisicos.created_at,'%d/%m/%Y') like ?", ["%$keyword%"]);
+            ->editColumn('data',function ($obj){
+                return $obj->data ? with(new\Carbon\Carbon($obj->data))->format('d/m/Y') : '';
+            })
+            ->filterColumn('data', function ($query, $keyword) {
+                $query->whereRaw("DATE_FORMAT(cronograma_fisicos.data,'%d/%m/%Y') like ?", ["%$keyword%"]);
+            })
+            ->editColumn('data_fim',function ($obj){
+                return $obj->data_fim ? with(new\Carbon\Carbon($obj->data_fim))->format('d/m/Y') : '';
+            })
+            ->filterColumn('data_fim', function ($query, $keyword) {
+                $query->whereRaw("DATE_FORMAT(cronograma_fisicos.data_fim,'%d/%m/%Y') like ?", ["%$keyword%"]);
+            })
+            ->editColumn('prazo',function ($obj){
+                return $obj->prazo ? $obj->prazo . ' dias ' : '';
             })
             ->make(true);
     }
@@ -33,29 +46,28 @@ class CronogramaFisicoDataTable extends DataTable
      */
     public function query()
     {
-        $cronogramas = CronogramaFisico::query()
+        $cronograma_fisicos = CronogramaFisico::query()
             ->select([
-                'orcamentos.id',
+                'cronograma_fisicos.id',
                 'obras.nome as obra',
-                'orcamentos.codigo_insumo',
-                'insumos.nome as insumo',
-                'servicos.nome as servico',
-                'orcamentos.unidade_sigla',
-                'orcamentos.created_at',
-                'grupos.nome as grupo',
-                'grupos1.nome as subgrupo1',
-                'grupos2.nome as subgrupo2',
-                'grupos3.nome as subgrupo3',
+				'cronograma_fisicos.tarefa',	
+                'cronograma_fisicos.custo',				
+                'cronograma_fisicos.resumo',
+				'cronograma_fisicos.torre',
+				'cronograma_fisicos.pavimento',
+				'cronograma_fisicos.critica',
+				DB::raw("DATE_FORMAT(cronograma_fisicos.data,'%d/%m/%Y') as data_inicio"),
+				DB::raw("DATE_FORMAT(cronograma_fisicos.data_fim,'%d/%m/%Y') as data_termino"),				
+                'cronograma_fisicos.concluida',
+				'cronograma_fisicos.created_at'					
             ])
-        ->join('obras','obras.id','orcamentos.obra_id')
-        ->join('insumos','insumos.id','orcamentos.insumo_id')
-        ->join('grupos','grupos.id','orcamentos.grupo_id')
-        ->join('grupos as grupos1','grupos1.id','orcamentos.subgrupo1_id')
-        ->join('grupos as grupos2','grupos2.id','orcamentos.subgrupo2_id')
-        ->join('grupos as grupos3','grupos3.id','orcamentos.subgrupo3_id')
-        ->join('servicos','servicos.id','orcamentos.servico_id');
+        ->join('obras','obras.id','cronograma_fisicos.obra_id');		
+		
+        if($this->obra){
+            $cronograma_fisicos>where('cronograma_fisicos.obra_id', $this->obra);
+        }
 
-        return $this->applyScopes($cronogramas);
+        return $this->applyScopes($cronograma_fisicos);
     }
 
     /**
@@ -110,6 +122,11 @@ class CronogramaFisicoDataTable extends DataTable
             ]);
     }
 
+    public function porObra($id){
+        $this->obra = $id;
+        return $this;
+    }
+
     /**
      * Get columns.
      *
@@ -117,17 +134,38 @@ class CronogramaFisicoDataTable extends DataTable
      */
     private function getColumns()
     {
+		//mostra a semana do mes anterior
+		$fridays = array();
+		$fridays[0] = date('d/m/Y', strtotime('first friday of previous month'));
+		$fridays[1] = date('d/m/Y', strtotime('second friday of previous month'));
+		$fridays[2] = date('d/m/Y', strtotime('third friday of previous month'));
+		$fridays[3] = date('d/m/Y', strtotime('fourth friday of previous month'));
+		$fridays[4] = date('d/m/Y', strtotime('fifth friday of previous month'));
+		$last_day	= date('d/m/Y', strtotime('last day of previous month')); 
+
+		//retorna os valores de trabalho baseado por semana
+		/*- Se a data de início for maior da data da semana, é 0% pois não haverá produção;
+		- se a data da semana for maior do que o término é 100%;
+		- se não for nenhuma das 2 condições acima, divide os dias da semana da data de início - da data da sexta por os dias da semana do término -  da data do início*/
+		
+		
+		
         return [
-            'obra' => ['name' => 'obras.nome', 'data' => 'obra'],
-            'grupo' => ['name' => 'grupos.nome', 'data' => 'grupo'],
-            'subgrupo1' => ['name' => 'grupos1.nome', 'data' => 'subgrupo1'],
-            'subgrupo2' => ['name' => 'grupos2.nome', 'data' => 'subgrupo2'],
-            'subgrupo3' => ['name' => 'grupos3.nome', 'data' => 'subgrupo3'],
-            'serviço' => ['name' => 'servicos.nome', 'data' => 'servico'],
-            'codigo' => ['name' => 'codigo_insumo', 'data' => 'codigo_insumo'],
-            'insumo' => ['name' => 'insumos.nome', 'data' => 'insumo'],
-            'unid De Medida' => ['name' => 'unidade_sigla', 'data' => 'unidade_sigla'],
-            'dataUpload' => ['name' => 'created_at', 'data' => 'created_at'],
+            'obra' => ['name' => 'obras.nome', 'data' => 'obra'],            
+			'tarefa' => ['name' => 'tarefa', 'data' => 'tarefa'],
+			'custo' => ['name' => 'custo', 'data' => 'custo'],
+			'resumo' => ['name' => 'resumo', 'data' => 'resumo'],
+			'torre' => ['name' => 'torre', 'data' => 'torre'],
+			'pavimento' => ['name' => 'pavimento', 'data' => 'pavimento'],
+			'critica' => ['critica' => 'critica', 'data' => 'critica'],
+            'data_início' => ['name' => 'data', 'data' => 'data_inicio'],
+            'data_termino' => ['name' => 'data_fim', 'data' => 'data_termino'],
+			'concluida' => ['name' => 'concluida', 'data' => 'concluida'],			
+			$fridays[0].'' => ['name' => 'concluida', 'data' => 'concluida'],
+			$fridays[1].'' => ['name' => 'concluida', 'data' => 'concluida'],
+			$fridays[2].'' => ['name' => 'concluida', 'data' => 'concluida'],
+			$fridays[3].'' => ['name' => 'concluida', 'data' => 'concluida'],
+			$last_day.'' => ['name' => 'concluida', 'data' => 'concluida'],
             'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }
@@ -139,6 +177,6 @@ class CronogramaFisicoDataTable extends DataTable
      */
     protected function filename()
     {
-        return 'orcamentos';
+        return 'cronograma_fisicos';
     }
 }

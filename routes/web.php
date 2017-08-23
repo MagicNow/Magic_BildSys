@@ -123,6 +123,44 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
         $router->get('planejamentoOrcamentos/orcamentos/desvincular', 'Admin\PlanejamentoOrcamentoController@desvincular');
 
     });
+	
+	#importação de planilhas de cronograma fisico
+    $router->group(['middleware' => 'needsPermission:cronogramaFisicos.import'], function () use ($router) {
+        $router->get('cronogramaFisico/', ['as' => 'admin.cronogramaFisicos.indexImport', 'uses' => 'Admin\CronogramaFisicoController@indexImport']);
+        $router->post('cronogramaFisico/importar', ['as' => 'admin.cronogramaFisicos.importar', 'uses' => 'Admin\CronogramaFisicoController@import']);
+        $router->get('cronogramaFisico/importar/checkIn', ['as' => 'admin.cronogramaFisicos.checkIn', 'uses' => 'Admin\CronogramaFisicoController@checkIn']);
+        $router->post('cronogramaFisico/importar/save', ['as' => 'admin.cronogramaFisicos.save', 'uses' => 'Admin\CronogramaFisicoController@save']);
+        $router->get('cronogramaFisico/importar/selecionaCampos', 'Admin\CronogramaFisicoController@selecionaCampos');
+    });
+
+    # Cronograma Fisico
+    $router->group(['prefix' => 'cronogramaFisicos'], function () use ($router) {
+		
+        $router->group(['middleware' => 'needsPermission:cronogramaFisicos.list'], function () use ($router) {
+            $router->get('atividade', ['as' => 'admin.cronogramaFisicos.index', 'uses' => 'Admin\CronogramaFisicoController@index']);
+            $router->post('atividade', ['as' => 'admin.cronogramaFisicos.store', 'uses' => 'Admin\CronogramaFisicoController@store']);
+            $router->get('atividade/create', ['as' => 'admin.cronograma_fisicos.create', 'uses' => 'Admin\CronogramaFisicoController@create']);
+            $router->put('atividade/{planejamentos}', ['as' => 'admin.cronograma_fisicos.update', 'uses' => 'Admin\CronogramaFisicoController@update']);
+            $router->patch('atividade/{planejamentos}', ['as' => 'admin.cronograma_fisicos.update', 'uses' => 'Admin\CronogramaFisicoController@update']);
+            $router->delete('atividade/{planejamentos}', ['as' => 'admin.cronograma_fisicos.destroy', 'uses' => 'Admin\CronogramaFisicoController@destroy']);
+            $router->get('atividade/{planejamentos}', ['as' => 'admin.cronograma_fisicos.show', 'uses' => 'Admin\CronogramaFisicoController@show'])
+                ->middleware("needsPermission:cronograma_de_obras.view");
+            $router->get('atividade/{planejamentos}/edit', ['as' => 'admin.cronograma_fisicos.edit', 'uses' => 'Admin\CronogramaFisicoController@edit'])
+                ->middleware("needsPermission:cronograma_de_obras.edit");
+            /*$router->get('atividade/grupos/{id}', 'Admin\CronogramaFisicoController@getGrupos');
+            $router->get('atividade/servicos/{id}', 'Admin\CronogramaFisicoController@getServicos');
+            $router->get('atividade/servico/insumo/relacionados', 'Admin\CronogramaFisicoController@GrupoRelacionados');
+            $router->get('atividade/servico/insumo/{id}', 'Admin\CronogramaFisicoController@getServicoInsumos');
+            $router->post('atividade/insumos', ['as' => 'admin.cronograma_fisicos.insumos', 'uses' => 'Admin\CronogramaFisicoController@planejamentoCompras']);
+            $router->get('atividade/planejamentocompras/{id}', 'Admin\CronogramaFisicoController@destroyPlanejamentoCompra');*/
+        });
+
+    });
+	
+	#Cronograma por planos/obra
+    /*$router->get('planejamentoCronogramas', ['as' => 'admin.planejamentoCronogramas.index', 'uses' => 'Admin\PlanejamentoCronogramaController@index'])
+        ->middleware("needsPermission:cronograma_por_obras.list");*/
+	
 
     # Lembretes
     $router->group(['middleware' => 'needsPermission:lembretes.list'], function () use ($router) {
@@ -384,27 +422,6 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
         $router->get('motivos-declinar-proposta/{desistenciaMotivos}/edit', ['as'=> 'admin.desistenciaMotivos.edit', 'uses' => 'Admin\DesistenciaMotivoController@edit'])
             ->middleware('needsPermission:desistenciaMotivos.edit');
     });	
-    
-    #importação de cronograma físicos
-    $router->group(['middleware' => 'needsPermission:cronogramaFisicos.import'], function () use ($router) {
-        $router->get('cronogramaFisico/', ['as' => 'admin.cronogramaFisicos.indexImport', 'uses' => 'Admin\CronogramaFisicoController@indexImport']);
-        $router->post('cronogramaFisico/importar', ['as' => 'admin.cronogramaFisicos.importar', 'uses' => 'Admin\CronogramaFisicoController@import']);
-        $router->get('cronogramaFisico/importar/checkIn', ['as' => 'admin.cronogramaFisicos.checkIn', 'uses' => 'Admin\CronogramaFisicoController@checkIn']);
-        $router->post('cronogramaFisico/importar/save', ['as' => 'admin.cronogramaFisicos.save', 'uses' => 'Admin\CronogramaFisicoController@save']);
-        $router->get('cronogramaFisico/importar/selecionaCampos', 'Admin\CronogramaFisicoController@selecionaCampos');
-    });
-
-    # Cronograma Físicos
-    $router->group(['middleware' => 'needsPermission:cronogramaFisicos.list'], function () use ($router) {
-        $router->get('cronogramaFisicos', ['as' => 'admin.cronogramaFisicos.index', 'uses' => 'Admin\CronogramaFisicoController@index']);
-        $router->post('cronogramaFisicos', ['as' => 'admin.cronogramaFisicos.store', 'uses' => 'Admin\CronogramaFisicoController@store']);
-        $router->get('cronogramaFisicos/create', ['as' => 'admin.cronogramaFisicos.create', 'uses' => 'Admin\CronogramaFisicoController@create']);
-        $router->put('cronogramaFisicos/{cronogramaFisicos}', ['as' => 'admin.cronogramaFisicos.update', 'uses' => 'Admin\CronogramaFisicoController@update']);
-        $router->patch('cronogramaFisicos/{cronogramaFisicos}', ['as' => 'admin.cronogramaFisicos.update', 'uses' => 'Admin\CronogramaFisicoController@update']);
-        $router->delete('cronogramaFisicos/{cronogramaFisicos}', ['as' => 'admin.cronogramaFisicos.destroy', 'uses' => 'Admin\CronogramaFisicoController@destroy']);
-        $router->get('cronogramaFisicos/{cronogramaFisicos}', ['as' => 'admin.cronogramaFisicos.show', 'uses' => 'Admin\CronogramaFisicoController@show']);
-        $router->get('cronogramaFisicos/{cronogramaFisicos}/edit', ['as' => 'admin.cronogramaFisicos.edit', 'uses' => 'Admin\CronogramaFisicoController@edit']);
-    });
 	
 });
 

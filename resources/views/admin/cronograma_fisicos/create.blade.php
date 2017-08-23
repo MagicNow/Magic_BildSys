@@ -3,7 +3,7 @@
 @section('content')
     <section class="content-header">
         <h1>
-            Orcamento
+            Planejamento
         </h1>
     </section>
     <div class="content">
@@ -12,9 +12,9 @@
 
             <div class="box-body">
                 <div class="row">
-                    {!! Form::open(['route' => 'admin.orcamentos.store']) !!}
+                    {!! Form::open(['route' => 'admin.planejamentos.store']) !!}
 
-                        @include('admin.orcamentos.fields')
+                        @include('admin.planejamentos.fields')
 
                     {!! Form::close() !!}
                 </div>

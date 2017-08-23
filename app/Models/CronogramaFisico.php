@@ -3,52 +3,35 @@
 namespace App\Models;
 
 use Eloquent as Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class CronogramaFisico
  * @package App\Models
- * @version April 4, 2017, 5:37 pm BRT
+ * @version April 5, 2017, 11:58 am BRT
  */
 class CronogramaFisico extends Model
 {
-    public $table = 'cronograma_fisicos';
+    use SoftDeletes;
 
+    public $table = 'cronograma_fisicos';
+    
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
+
+    protected $dates = ['deleted_at'];
+
+
     public $fillable = [
         'obra_id',
-        'codigo_insumo',
-        'insumo_id',
-        'servico_id',
-        'grupo_id',
-        'unidade_sigla',
-        'coeficiente',
-        'indireto',
-        'terreo_externo_solo',
-        'terreo_externo_estrutura',
-        'terrreo_interno',
-        'primeiro_pavimento',
-        'segundo_ao_penultimo',
-        'cobertura_ultimo_piso',
-        'atico',
-        'reservatorio',
-        'qtd_total',
-        'preco_unitario',
-        'preco_total',
-        'referencia_preco',
-        'obs',
-        'porcentagem_orcamento',
-        'orcamento_tipo_id',
-        'ativo',
-        'subgrupo1_id',
-        'subgrupo2_id',
-        'subgrupo3_id',
-        'user_id',
-        'descricao',
-        'trocado',
-        'orcamento_que_substitui',
-        'insumo_incluido'
+        'tarefa',
+        'data',
+        'data_fim',
+        'prazo',
+        'resumo',
+        'planejamento_id',
+        'data_upload'
     ];
 
     /**
@@ -59,19 +42,10 @@ class CronogramaFisico extends Model
     protected $casts = [
         'id' => 'integer',
         'obra_id' => 'integer',
-        'codigo_insumo' => 'string',
-        'insumo_id' => 'integer',
-        'servico_id' => 'integer',
-        'grupo_id' => 'integer',
-        'unidade_sigla' => 'string',
-        'referencia_preco' => 'string',
-        'obs' => 'text',
-        'orcamento_tipo_id' => 'integer',
-        'subgrupo1_id' => 'integer',
-        'subgrupo2_id' => 'integer',
-        'subgrupo3_id' => 'integer',
-        'descricao' => 'string',
-        'preco_unitario' => 'decimal',
+        'tarefa' => 'string',
+        'prazo' => 'integer',
+        'resumo' => 'string',
+        'planejamento_id' => 'integer'
     ];
 
     /**
@@ -80,25 +54,13 @@ class CronogramaFisico extends Model
      * @var array
      */
     public static $relation = [
-        'codigo_insumo' => 'string',
-        'descricao' => 'string',
-        'unidade_sigla' => 'string',
-        'coeficiente' => 'decimal',
-        'indireto' => 'decimal',
-        'terreo_externo_solo' => 'decimal',
-        'terreo_externo_estrutura' => 'decimal',
-        'terreo_interno' => 'decimal',
-        'primeiro_pavimento' => 'decimal',
-        'segundo_ao_penultimo' => 'decimal',
-        'cobertura_ultimo_piso' => 'decimal',
-        'atico' => 'decimal',
-        'reservatorio' => 'decimal',
-        'qtd_total' => 'decimal',
-        'preco_unitario' => 'decimal',
-        'preco_total' => 'decimal',
-        'referencia_preco' => 'string',
-        'obs' => 'text',
-        'porcentagem_orcamento' => 'decimal'
+        'resumo' => 'string',
+        'tarefa' => 'string',
+        'prazo' => 'integer',
+        'data' => 'date',
+        'data_fim' => 'date',
+
+
     ];
 
     /**
@@ -107,24 +69,19 @@ class CronogramaFisico extends Model
      * @var array
      */
     public static $rules = [
-        'unidade_sigla' => 'required',
-        'codigo_insumo' => 'required'
+        'obra_id' => 'required',
+        'tarefa' => 'required',
+        'data' => 'required',
+        'data_fim' => 'required',
+        'prazo' => 'required',
     ];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function grupo()
+    public function cronogramaFisico()
     {
-        return $this->belongsTo(Grupo::class);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     **/
-    public function insumo()
-    {
-        return $this->belongsTo(Insumo::class);
+        return $this->belongsTo(\App\Models\CronogramaFisico::class);
     }
 
     /**
@@ -132,54 +89,15 @@ class CronogramaFisico extends Model
      **/
     public function obra()
     {
-        return $this->belongsTo(Obra::class);
+        return $this->belongsTo(\App\Models\Obra::class);
     }
+    
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
-    public function orcamentoTipo()
+    public function planejamentoCompras()
     {
-        return $this->belongsTo(TipoOrcamento::class);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     **/
-    public function servico()
-    {
-        return $this->belongsTo(Servico::class);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     **/
-    public function grupo1()
-    {
-        return $this->belongsTo(Grupo::class,'subgrupo1_id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     **/
-    public function grupo2()
-    {
-        return $this->belongsTo(Grupo::class,'subgrupo2_id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     **/
-    public function grupo3()
-    {
-        return $this->belongsTo(Grupo::class,'subgrupo3_id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     **/
-    public function unidade()
-    {
-        return $this->belongsTo(Unidade::class);
+        return $this->hasMany(\App\Models\PlanejamentoCompra::class);
     }
 }
