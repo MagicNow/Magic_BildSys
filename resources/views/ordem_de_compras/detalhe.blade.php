@@ -339,14 +339,16 @@
                             <td class="text-center">
                                 {{-- Qntd Prevista - Qntd Realizada - Qntd Á gastar = Qntd Saldo do orçamento - Qntd OC --}}
                                 @php
-                                    $valor_comprometido_a_gastar_item = \App\Repositories\OrdemDeCompraRepository::valorComprometidoAGastarItem($item->grupo_id, $item->subgrupo1_id, $item->subgrupo2_id, $item->subgrupo3_id, $item->servico_id, $item->insumo_id, $item->obra_id, $item->id);
-                                    $qtd_prevista = $item->substitui ? $item->qtd_prevista_orcamento_pai : $item->qtd_inicial;
-                                    $qtd_comprometida_a_gastar = money_to_float(\App\Repositories\OrdemDeCompraRepository::qtdComprometidaAGastarItem($item->grupo_id, $item->subgrupo1_id, $item->subgrupo2_id, $item->subgrupo3_id, $item->servico_id, $item->insumo_id, $item->obra_id, $item->id));
-                                    $saldo_qtd_orcamento = $qtd_prevista - money_to_float($item->qtd_realizada) - $qtd_comprometida_a_gastar;
+                                        $valor_comprometido_a_gastar_item = \App\Repositories\OrdemDeCompraRepository::valorComprometidoAGastarItem($item->grupo_id, $item->subgrupo1_id, $item->subgrupo2_id, $item->subgrupo3_id, $item->servico_id, $item->insumo_id, $item->obra_id, $item->id, $item->ordemDeCompra->dataUltimoPeriodoAprovacao());
+                                        $qtd_prevista = $item->substitui ? $item->qtd_prevista_orcamento_pai : $item->qtd_inicial;
+                                        $qtd_comprometida_a_gastar = money_to_float(\App\Repositories\OrdemDeCompraRepository::qtdComprometidaAGastarItem($item->grupo_id, $item->subgrupo1_id, $item->subgrupo2_id, $item->subgrupo3_id, $item->servico_id, $item->insumo_id, $item->obra_id, $item->id, $item->ordemDeCompra->dataUltimoPeriodoAprovacao()));
+                                        $saldo_qtd_orcamento = $qtd_prevista - money_to_float($item->qtd_realizada) - $qtd_comprometida_a_gastar;
 
-                                    $saldo_valor_orcamento -= $valor_comprometido_a_gastar_item;
+                                        $saldo_valor_orcamento -= $valor_comprometido_a_gastar_item;
 
-                                    $status_qtd = $saldo_qtd_orcamento - money_to_float($item->qtd);
+                                        $status_qtd = $saldo_qtd_orcamento - money_to_float($item->qtd);
+
+                                        $valor_comprometido_a_gastar_servico = \App\Repositories\OrdemDeCompraRepository::valorComprometidoAGastarItem($item->grupo_id, $item->subgrupo1_id, $item->subgrupo2_id, $item->subgrupo3_id, $item->servico_id, $item->insumo_id, $item->obra_id, null, $item->ordemDeCompra->dataUltimoPeriodoAprovacao());
                                 @endphp
 
                                 @if($status_qtd > 0)
@@ -366,12 +368,12 @@
                             </td>
                             <td class="text-center">
                                 @if($item->servico)
-                                    <a href="/ordens-de-compra/detalhes-servicos/{{$ordemDeCompra->obra_id}}/{{$item->servico->id}}" style="cursor:pointer;">
-                                        <i class="fa fa-circle {{ (money_to_float($item->valor_servico) - money_to_float($item->valor_servico_oc)) < 0 ? 'red': 'green'  }}" aria-hidden="true"></i>
+                                    <a href="/ordens-de-compra/detalhes-servicos/{{$ordemDeCompra->obra_id}}/{{$item->servico->id}}?oc_id={{$ordemDeCompra->id}}" style="cursor:pointer;">
+                                        <i class="fa fa-circle {{ (money_to_float($item->valor_servico) - $valor_comprometido_a_gastar_servico - money_to_float($item->valor_servico_oc)) < 0 ? 'red': 'green'  }}" aria-hidden="true"></i>
                                         <button class="btn btn-warning btn-sm btn-flat">Análise</button>
                                     </a>
                                 @else
-                                    <i class="fa fa-circle {{ (money_to_float($item->valor_servico) - money_to_float($item->valor_servico_oc)) < 0 ? 'red': 'green'  }}" aria-hidden="true"></i>
+                                    <i class="fa fa-circle {{ (money_to_float($item->valor_servico) - $valor_comprometido_a_gastar_servico - money_to_float($item->valor_servico_oc)) < 0 ? 'red': 'green'  }}" aria-hidden="true"></i>
                                 @endif
                             </td>
                             <td class="text-center">
