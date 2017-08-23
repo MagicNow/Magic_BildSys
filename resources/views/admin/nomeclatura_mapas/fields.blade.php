@@ -7,7 +7,7 @@
 <!-- Tipo Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('tipo', 'Tipo:') !!}
-    {!! Form::select('tipo', ['1'=>'Estrutura','2'=>'Pavimento','3'=>'Trecho'], null,
+    {!! Form::select('tipo', ['1'=>'Bloco','2'=>'Linha','3'=>'Coluna'], null,
     ['class' => 'form-control', 'required'=>'required']) !!}
 </div>
 
