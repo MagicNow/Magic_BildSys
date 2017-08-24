@@ -8,6 +8,7 @@ use App\Http\Requests\CreateNotafiscalRequest;
 use App\Http\Requests\UpdateNotafiscalRequest;
 use App\Models\Contrato;
 use App\Models\Cte;
+use App\Models\Fornecedor;
 use App\Models\Notafiscal;
 use App\Models\NotaFiscalItem;
 use App\Repositories\ConsultaCteRepository;
@@ -118,7 +119,28 @@ class NotafiscalController extends AppBaseController
             return redirect(route('notafiscals.index'));
         }
 
-        return view('notafiscals.edit')->with('notafiscal', $notafiscal);
+        $cnpj = $notafiscal->cnpj;
+        $fornecedor = Fornecedor::where(\DB::raw("replace(replace(replace(fornecedores.cnpj,'-',''),'.',''),'/','')"), $cnpj)->first();
+        $contratos = [];
+        if ($fornecedor) {
+            $contratos = $fornecedor->contratos;
+        }
+
+        $solicitacoes_de_entrega = [];
+
+        if ($contratos) {
+            foreach ($contratos as $contrato) {
+                $solicitacoes_de_entrega[$contrato->id] = [];
+                if ($entregas = $contrato->entregas) {
+                    $solicitacoes_de_entrega[$contrato->id] = $entregas;
+                }
+            }
+        }
+
+        return view('notafiscals.edit', compact('notafiscal',
+                                                'fornecedor',
+                                                'contratos',
+                                                'solicitacoes_de_entrega'));
     }
 
     /**

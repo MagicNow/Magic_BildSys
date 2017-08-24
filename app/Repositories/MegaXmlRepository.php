@@ -11,14 +11,12 @@ class MegaXmlRepository
     {
         /* create a dom document with encoding utf8 */
         $domtree = new DOMDocument('1.0', 'UTF-8');
-
         $domtree->formatOutput = true;
-
         /* create the root element of the xml tree */
         $xmlRoot = $domtree->createElement("Recebimento");
         $xmlRoot->setAttribute("OPERACAO", "I/U/D");
-        /* append it to the document created */
         $xmlRoot = $domtree->appendChild($xmlRoot);
+
         //Campo inserido manualmente no cadastro de obra do sys
         $node = $domtree->createElement("FIL_IN_CODIGO", "Código da Filial");
         $xmlRoot->appendChild($node);
@@ -169,12 +167,16 @@ class MegaXmlRepository
 
         $node = $domtree->createElement("RCB_RE_ICMSSTRECUPERA", "Valor do ICMS ST Recuperado");
         $xmlRoot->appendChild($node);
+
         $node = $domtree->createElement("RCB_RE_BASESUBTRIBANT", "Valor da base de cálculo do ICMS Retido Anteriormente");
         $xmlRoot->appendChild($node);
+
         $node = $domtree->createElement("RCB_RE_VLICMSRETIDOANT", "Valor do ICMS Retido Anteriormente");
         $xmlRoot->appendChild($node);
+
         $node = $domtree->createElement("RCB_RE_BASEFUNRURAL", "Base de cálculo do FUNRURAL.");
         $xmlRoot->appendChild($node);
+
         $node = $domtree->createElement("RCB_RE_VALORFUNRURAL", "Valor do FUNRURAL.");
         $xmlRoot->appendChild($node);
 
@@ -200,24 +202,34 @@ class MegaXmlRepository
         //valor total do produto (sem frete/IPI)
         $node = $domtree->createElement("RCI_RE_VLMERCADORIA", "Vl. Mercadoria");
         $itensNode->appendChild($node);
+
         $node = $domtree->createElement("RCI_RE_VLIPI", "Valor I.P.I");
         $itensNode->appendChild($node);
+
         $node = $domtree->createElement("RCI_RE_VLFRETE", "Valor Frete");
         $itensNode->appendChild($node);
+
         $node = $domtree->createElement("RCI_RE_VLSEGURO", "Valor Seguro");
         $itensNode->appendChild($node);
+
         $node = $domtree->createElement("RCI_RE_VLDESPESA", "Desp.Acessórias");
         $itensNode->appendChild($node);
+
         $node = $domtree->createElement("RCI_RE_PERCICM", "% ICMS");
         $itensNode->appendChild($node);
+
         $node = $domtree->createElement("RCI_RE_PERCIPI", "% IPI");
         $itensNode->appendChild($node);
+
         $node = $domtree->createElement("RCI_RE_VLMOBRAP", "Vl. Mão de Obra");
         $itensNode->appendChild($node);
+
         $node = $domtree->createElement("RCI_RE_PEDESC", "% Descto.");
         $itensNode->appendChild($node);
+
         $node = $domtree->createElement("RCI_RE_VLDESC", "Valor Descto.");
         $itensNode->appendChild($node);
+
         $node = $domtree->createElement("RCI_RE_VLDESCPROP", "Valor Descto.Nota");
         $itensNode->appendChild($node);
         //nulo
@@ -229,6 +241,7 @@ class MegaXmlRepository
         //nf
         $node = $domtree->createElement("RCI_RE_VLICMS", "Vl. ICMS");
         $itensNode->appendChild($node);
+
         $node = $domtree->createElement("RCB_ST_NOTA", "Nr. Nota Fiscal");
         $itensNode->appendChild($node);
         //Unidade no Mega (ex. KG,M2,M3, etc) Unidade do cadastro de insumo do SYS	*
@@ -271,22 +284,31 @@ class MegaXmlRepository
 
         $node = $domtree->createElement("RCI_RE_VALORPVV", "Valor PVV (Substituição ICMS)");
         $itensNode->appendChild($node);
+
         $node = $domtree->createElement("RCI_RE_VLICMRETIDO", "Vl ICMS Retido (Substituição)");
         $itensNode->appendChild($node);
+
         $node = $domtree->createElement("RCI_RE_VLISENIPI", "Valor do Isento IPI");
         $itensNode->appendChild($node);
+
         $node = $domtree->createElement("RCI_RE_IPIRECUPERA", "Vl Recuperado IPI");
         $itensNode->appendChild($node);
+
         $node = $domtree->createElement("RCI_RE_VLOUTRIPI", "Vl. Outros IPI");
         $itensNode->appendChild($node);
+
         $node = $domtree->createElement("RCI_RE_VLBASEIPI", "Base de Cálculo IPI");
         $itensNode->appendChild($node);
+
         $node = $domtree->createElement("RCI_RE_ICMSRECUPERA", "Vl Recuperado ICMS");
         $itensNode->appendChild($node);
+
         $node = $domtree->createElement("RCI_RE_VLISENICM", "Valor do Isento de ICMS");
         $itensNode->appendChild($node);
+
         $node = $domtree->createElement("RCI_RE_VLOUTRICM", "Valor Outros ICMS");
         $itensNode->appendChild($node);
+
         $node = $domtree->createElement("RCI_RE_VLBASEICM", "Base de Cálculo ICMS");
         $itensNode->appendChild($node);
 
@@ -322,6 +344,7 @@ class MegaXmlRepository
         //NF
         $node = $domtree->createElement("RCI_RE_BASESUBTRIB", "Vl. Base de Cálculo Substituição");
         $itensNode->appendChild($node);
+
         $node = $domtree->createElement("RCI_RE_PERDIFICMS", "% de Aliquota Interna (Diferencial de Aliq. ICMS)");
         $itensNode->appendChild($node);
         //Verifica os 4 primeiros dígitos q vem na NF e faz comparação
@@ -333,17 +356,22 @@ class MegaXmlRepository
         //Não tem na BILD
         $node = $domtree->createElement("RCI_CH_STICMS_B", "Sit. Trib - ICMS");
         $itensNode->appendChild($node);
+
         $node = $domtree->createElement("RCI_RE_VLDESPNAOTRIB", "Valor Despesa não trib.");
         $itensNode->appendChild($node);
+
         $node = $domtree->createElement("RCI_RE_VALORMOEDA", "Vl. Converter");
         $itensNode->appendChild($node);
+
         $node = $domtree->createElement("RCI_RE_VLICMRETIDOANT", "Vl ICMS Retido Inform.(Substituição)");
         $itensNode->appendChild($node);
+
         $node = $domtree->createElement("RCI_RE_BASESUBTRIBANT", "Vl Base de Calculo Inform(Substituição)");
         $itensNode->appendChild($node);
         //No valor X o %
         $node = $domtree->createElement("RCI_RE_VLPISRETIDO", "Valor PIS Retido");
         $itensNode->appendChild($node);
+
         $node = $domtree->createElement("RCI_RE_VLPISRECUPERA", "Valor PIS Recuperado");
         $itensNode->appendChild($node);
         //Busca o que está no código de Serviço X cadastro do Fornecedor

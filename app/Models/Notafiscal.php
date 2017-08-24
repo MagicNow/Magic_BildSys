@@ -11,6 +11,16 @@ use Eloquent as Model;
  */
 class Notafiscal extends Model
 {
+    const TIPOS_ENTRADA_SAIDA = [
+        0 => 'Entrada',
+        1 => 'Saída'
+    ];
+
+    const FRETE_POR_CONTA_DO = [
+        0 => 'Emitente',
+        1 => 'Destinatário',
+    ];
+
     public $table = 'notas_fiscais';
 
     public $timestamps = false;
