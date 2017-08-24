@@ -50,7 +50,7 @@
             <h6>Dados Informativos</h6>
             <div class="row">
                 <div class="col-md-2 form-group">
-                    {!! Form::label('id', 'Código do Contrato') !!}
+                    {!! Form::label('id', 'Número do Contrato') !!}
                     <p class="form-control input-lg highlight text-center">{!! $contrato->id !!}</p>
                 </div>
 
