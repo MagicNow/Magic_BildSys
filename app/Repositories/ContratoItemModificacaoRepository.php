@@ -60,18 +60,37 @@ class ContratoItemModificacaoRepository extends BaseRepository
             if(isset($data['anexo']) &&  $data['anexo'] != "undefined") {
                     $destinationPath = CodeRepository::saveFile($data['anexo'], 'contratos/reajustes/' . $item->id);
             }
-            
-            $modificacao = $this->create([
+
+            $modificacao_valor = $this->create([
                 'qtd_anterior'            => $item->qtd,
-                'qtd_atual'               => $item->qtd + $qtd,
+                'qtd_atual'               => $item->qtd,
                 'valor_unitario_anterior' => $item->valor_unitario,
                 'valor_unitario_atual'    => money_to_float($data['valor_unitario']),
                 'contrato_status_id'      => ContratoStatus::EM_APROVACAO,
                 'contrato_item_id'        => $item->id,
-                'tipo_modificacao'        => 'Reajuste',
+                'tipo_modificacao'        => ContratoItemModificacao::REAJUSTE_VALOR,
                 'anexo'                   => $destinationPath,
                 'user_id'                 => auth()->id(),
                 'descricao'               => isset($data['observacao']) ? $data['observacao']: null
+            ]);
+
+            $modificacao = $this->create([
+                'qtd_anterior'            => $item->qtd,
+                'qtd_atual'               => $item->qtd + $qtd,
+                'valor_unitario_anterior' => $item->valor_unitario,
+                'valor_unitario_atual'    => $item->valor_unitario,
+                'contrato_status_id'      => ContratoStatus::EM_APROVACAO,
+                'contrato_item_id'        => $item->id,
+                'tipo_modificacao'        => ContratoItemModificacao::REAJUSTE_QTD,
+                'anexo'                   => null,
+                'user_id'                 => auth()->id(),
+                'descricao'               => null
+            ]);
+
+            $modificacaoLogRepository->create([
+                'contrato_item_modificacao_id' => $modificacao_valor->id,
+                'contrato_status_id'           => ContratoStatus::EM_APROVACAO,
+                'user_id'                      => $modificacao_valor->user_id,
             ]);
 
             $modificacaoLogRepository->create([
