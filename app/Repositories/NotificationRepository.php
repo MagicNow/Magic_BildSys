@@ -43,8 +43,13 @@ class NotificationRepository extends BaseRepository
             ->first();
 
         if($notification) {
-            $notification->read_at = Carbon::now();
-            $notification->save();
+            Notification::where('notifiable_type','App\\Models\\User')
+                ->where('notifiable_id',auth()->id())
+                ->where('data','LIKE','%"workflow_tipo_id":'. $workflow_tipo_id .',"id_dinamico":'. $id_dinamico .',%')
+                ->whereNull('read_at')
+                ->update([
+                    'read_at' => Carbon::now()
+                ]);
         }
         
         return $notification;

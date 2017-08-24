@@ -2,7 +2,9 @@
 
 namespace App\Notifications;
 
+use App\Models\Fornecedor;
 use App\Models\QuadroDeConcorrencia;
+use App\Models\TemplateEmail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -13,15 +15,17 @@ class IniciaConcorrencia extends Notification
     use Queueable;
 
     public $quadroDeConcorrencia;
+    public $fornecedor;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(QuadroDeConcorrencia $qc)
+    public function __construct(QuadroDeConcorrencia $quadroDeConcorrencia, Fornecedor $fornecedor)
     {
-        $this->quadroDeConcorrencia = $qc;
+        $this->quadroDeConcorrencia = $quadroDeConcorrencia;
+        $this->fornecedor = $fornecedor;
     }
 
     /**
@@ -43,19 +47,29 @@ class IniciaConcorrencia extends Notification
      */
     public function toMail($notifiable)
     {
-        $tipo_subject = 'Novo ';
+
+        /*$tipo_subject = 'Novo ';
         $tipo_line = 'Existe um novo ';
-        
+
         if($this->quadroDeConcorrencia->rodada_atual === 1) {
             $tipo_subject = 'Novo ';
-            $tipo_line = 'Existe uma nova rodada do ';
-        }
+            //$tipo_line = 'Existe uma nova rodada do ';
+        }*/
+
+        $model = new TemplateEmail();
+        $r = $model->find(6);
+
+        $r->template = str_replace("[FORNECEDOR_NOME]", $this->fornecedor->nome, $r->template);
 
         return (new MailMessage)
+            ->subject('Novo Quadro de Concorrência ' . $this->quadroDeConcorrencia->id . ' - Bild '.date('d/m/Y'))
+            ->view('emails.body-email-base',['text' => $r->template]);
+
+        /*return (new MailMessage)
             ->subject($tipo_subject.'Quadro de Concorrência ' . $this->quadroDeConcorrencia->id . ' - Bild '.date('d/m/Y') )
             ->line($tipo_line.'Quadro de Concorrência e você foi convidado à participar.')
             ->action('Envie sua proposta', url('/'))
-            ->line('Agradecemos antecipadamente pela sua atenção!');
+            ->line('Agradecemos antecipadamente pela sua atenção!');*/
     }
 
     /**

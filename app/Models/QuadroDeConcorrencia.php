@@ -15,6 +15,7 @@ class QuadroDeConcorrencia extends Model
         'user_id',
         'qc_status_id',
         'obrigacoes_fornecedor',
+        'contrato_template_id',
         'obrigacoes_bild',
         'rodada_atual'
     ];
@@ -279,5 +280,13 @@ class QuadroDeConcorrencia extends Model
             return $ultimoStatusAprovacao->created_at;
         }
         return null;
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function contratoTemplate()
+    {
+        return $this->belongsTo(ContratoTemplate::class);
     }
 }

@@ -75,16 +75,24 @@
     <p class="form-control">{!! $obra->num_apartamentos !!}</p>
 </div>
 
-<!-- num_torres Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('num_torres', 'Número de torres:') !!}
-    <p class="form-control">{!! $obra->num_torres !!}</p>
-</div>
-
 <!-- num_pavimento_tipo Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('num_pavimento_tipo', 'Número pavimento tipo:') !!}
     <p class="form-control">{!! $obra->num_pavimento_tipo !!}</p>
+</div>
+
+<!-- num_torres Field -->
+<div class="form-group col-sm-12">
+    {!! Form::label('num_torres', 'Torres:') !!}
+    <ul class="list-group" id="torres">
+        @if(isset($obra))
+            @foreach($obra->torres as $torre)
+                <li class="list-group-item" id="torre{{ $torre->id }}">
+                    {{ $torre->nome }}
+                </li>
+            @endforeach
+        @endif
+    </ul>
 </div>
 
 <!-- data_inicio Field -->

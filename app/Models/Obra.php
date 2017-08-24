@@ -345,4 +345,8 @@ class Obra extends Model
     {
         return $this->belongsTo(PadraoEmpreendimento::class);
     }
+
+    public function torres(){
+        return $this->hasMany(ObraTorre::class);
+    }
 }

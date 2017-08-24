@@ -12,8 +12,25 @@
                 data: {
                     id: id
                 }
-            }).done(function() {
+            })
+            .done(function() {
                 LaravelDataTables.dataTableBuilder.draw();
+            })
+            .fail(function (retorno) {
+                LaravelDataTables.dataTableBuilder.draw();
+                swal({
+                        title: "Atenção",
+                        text: retorno.responseJSON.erro,
+                        type: "error",
+                        showCancelButton: false,
+                        confirmButtonText: "Ok",
+                        closeOnConfirm: false
+                    },
+                    function(){
+                        document.location="{{ url('/catalogo-acordos') }}/"+id;
+                    }
+                );
+
             });
         }
     </script>

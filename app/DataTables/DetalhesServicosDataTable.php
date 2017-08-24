@@ -3,6 +3,7 @@
 namespace App\DataTables;
 
 use App\Models\Orcamento;
+use App\Models\OrdemDeCompra;
 use App\Models\OrdemDeCompraItem;
 use App\Repositories\OrdemDeCompraRepository;
 use Form;
@@ -24,43 +25,57 @@ class DetalhesServicosDataTable extends DataTable
         return $this->datatables
             ->eloquent($this->query())
             ->editColumn('valor_previsto', function($obj){
-                return '<small class="pull-left">R$</small>'.number_format( doubleval($obj->valor_previsto), 2, ',','.');
+                return '<small class="pull-left">R$</small>'.number_format( floatval($obj->valor_previsto), 2, ',','.');
             })
             ->editColumn('valor_realizado', function($obj){
-                return '<small class="pull-left">R$</small>'.number_format( doubleval($obj->valor_realizado), 2, ',','.');
+                return '<small class="pull-left">R$</small>'.number_format( floatval($obj->valor_realizado), 2, ',','.');
             })
             ->editColumn('valor_comprometido_a_gastar', function($obj){
-                $valor_comprometido_a_gastar = OrdemDeCompraRepository::valorComprometidoAGastarItem($obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, $obj->insumo_id, $this->obra_id);
+                if($this->request()->get('oc_id')) {
+                    $ordem_de_compra_ultima_aprovacao = OrdemDeCompra::find($this->request()->get('oc_id'))->dataUltimoPeriodoAprovacao();
+                } else {
+                    $ordem_de_compra_ultima_aprovacao = null;
+                }
+                $valor_comprometido_a_gastar = OrdemDeCompraRepository::valorComprometidoAGastarItem($obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, $obj->insumo_id, $this->obra_id, null, $ordem_de_compra_ultima_aprovacao);
 
-                return '<small class="pull-left">R$</small>'.number_format( doubleval($valor_comprometido_a_gastar), 2, ',','.');
+                return '<small class="pull-left">R$</small>'.number_format( floatval($valor_comprometido_a_gastar), 2, ',','.');
             })
             ->editColumn('saldo_orcamento', function($obj){
-//              Se o insumo foi incluído no orçamento, o SALDO DE ORÇAMENTO fica com o valor comprado negativo.
-//                if($obj->insumo_incluido){
-//                    return '<small class="pull-left">R$</small> - '.number_format( doubleval($obj->valor_oc), 2, ',','.');
-//                }else{
-                    return '<small class="pull-left">R$</small>'.number_format( doubleval($obj->saldo_orcamento), 2, ',','.');
-//                }
+                if($this->request()->get('oc_id')) {
+                    $ordem_de_compra_ultima_aprovacao = OrdemDeCompra::find($this->request()->get('oc_id'))->dataUltimoPeriodoAprovacao();
+                } else {
+                    $ordem_de_compra_ultima_aprovacao = null;
+                }
+                $valor_comprometido_a_gastar = OrdemDeCompraRepository::valorComprometidoAGastarItem($obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, $obj->insumo_id, $this->obra_id, null, $ordem_de_compra_ultima_aprovacao);
+                
+                return '<small class="pull-left">R$</small>'.number_format( floatval($obj->valor_previsto) - floatval($obj->valor_realizado) - $valor_comprometido_a_gastar, 2, ',','.');
             })
             ->editColumn('valor_oc', function($obj){
-                return '<small class="pull-left">R$</small>'.number_format( doubleval($obj->valor_oc), 2, ',','.');
+                return '<small class="pull-left">R$</small>'.number_format( floatval($obj->valor_oc), 2, ',','.');
             })
             ->editColumn('saldo_disponivel', function($obj){
-                if($obj->saldo_disponivel){
-                    $cor = $obj->saldo_disponivel >=0 ? '#7ed321' : "#eb0000";
-                    return '<span style="color: '.$cor.'"><small class="pull-left">R$</small>'.number_format( doubleval($obj->saldo_disponivel), 2, ',','.').'</span>';
-                }else {
-                    if($obj->insumo_incluido || $obj->substitui){
-                        if($obj->valor_oc){
-                            return '<span style="color: #eb0000"><small class="pull-left">R$</small>-'.number_format( doubleval($obj->valor_oc), 2, ',','.').'</span>';
-                        }else{
-                            $cor = $obj->valor_oc >=0 ? '#7ed321' : "#eb0000";
-                            return '<span style="color: '.$cor.'"><small class="pull-left">R$</small>'.number_format( doubleval($obj->valor_oc), 2, ',','.').'</span>';
-                        }
+                if($obj->insumo_incluido || $obj->substitui){
+                    if($obj->valor_oc){
+                        $obj->saldo_disponivel = '-'.number_format( floatval($obj->valor_oc), 2, ',','.');
+                        return '<span style="color: #eb0000"><small class="pull-left">R$</small>-'.number_format( floatval($obj->valor_oc), 2, ',','.').'</span>';
                     }else{
-                        $cor = $obj->saldo_orcamento >=0 ? '#7ed321' : "#eb0000";
-                        return '<span style="color: '.$cor.'"><small class="pull-left">R$</small>'.number_format( doubleval($obj->saldo_orcamento), 2, ',','.').'</span>';
+                        $cor = $obj->valor_oc >=0 ? '#7ed321' : "#eb0000";
+                        $obj->saldo_disponivel = number_format( floatval($obj->valor_oc), 2, ',','.');
+                        return '<span style="color: '.$cor.'"><small class="pull-left">R$</small>'.number_format( floatval($obj->valor_oc), 2, ',','.').'</span>';
                     }
+                }else{
+                    //Saldo do orçamento - Valor da OC = Saldo disponivel após OC
+                    if($this->request()->get('oc_id')) {
+                        $ordem_de_compra_ultima_aprovacao = OrdemDeCompra::find($this->request()->get('oc_id'))->dataUltimoPeriodoAprovacao();
+                    } else {
+                        $ordem_de_compra_ultima_aprovacao = null;
+                    }
+                    $valor_comprometido_a_gastar = OrdemDeCompraRepository::valorComprometidoAGastarItem($obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, $obj->insumo_id, $this->obra_id, null, $ordem_de_compra_ultima_aprovacao);
+                    
+                    $obj->saldo_disponivel = floatval($obj->valor_previsto) - floatval($obj->valor_realizado) - $valor_comprometido_a_gastar - floatval($obj->valor_oc);
+                    $cor = $obj->saldo_disponivel >=0 ? '#7ed321' : "#eb0000";
+
+                    return '<span style="color: '.$cor.'"><small class="pull-left">R$</small>'.number_format( $obj->saldo_disponivel, 2, ',','.').'</span>';
                 }
             })
             ->editColumn('descricao', function($obj){
@@ -87,6 +102,10 @@ class DetalhesServicosDataTable extends DataTable
      */
     public function query()
     {
+        if($this->request()->get('oc_id')) {
+            $ordem_de_compra_ultima_aprovacao = OrdemDeCompra::find($this->request()->get('oc_id'))->dataUltimoPeriodoAprovacao();
+        }
+
         $orcamentos = Orcamento::select([
             DB::raw("CONCAT(SUBSTRING_INDEX(orcamentos.codigo_insumo, '.', -1),' - ' ,orcamentos.descricao) as descricao"),
             'orcamentos.unidade_sigla',
@@ -101,8 +120,6 @@ class DetalhesServicosDataTable extends DataTable
             'orcamentos.subgrupo3_id',
             'orcamentos.servico_id',
             'orcamentos.insumo_id',
-            DB::raw('0 as valor_realizado'),
-            DB::raw('orcamentos.preco_total as saldo_orcamento'),
             DB::raw("CONCAT(insumos_sub.codigo,' - ' ,insumos_sub.nome) as substitui"),
             DB::raw('
                     (SELECT 
@@ -124,39 +141,21 @@ class DetalhesServicosDataTable extends DataTable
                             ordem_de_compras.oc_status_id = 5
                         )
                     AND ordem_de_compra_itens.deleted_at IS NULL
-                    AND NOT EXISTS(
+                    '.($this->request()->get('oc_id') ? "AND ordem_de_compras.id = '".$this->request()->get('oc_id')."'" : 'AND NOT EXISTS(
                         SELECT 1 
                         FROM contrato_itens CI
                         JOIN contrato_item_apropriacoes CIT ON CIT.contrato_item_id = CI.id
                         JOIN oc_item_qc_item OCQC ON OCQC.qc_item_id = CI.qc_item_id
                         WHERE CI.id = CIT.contrato_item_id
                         AND OCQC.ordem_de_compra_item_id = ordem_de_compra_itens.id
-                    )
+                    )').'
                     AND ordem_de_compra_itens.servico_id = '.$this->servico_id.'
+                    '.(isset($ordem_de_compra_ultima_aprovacao) ? "AND ordem_de_compras.created_at <='".$ordem_de_compra_ultima_aprovacao."'" : '').'
                     AND ordem_de_compra_itens.obra_id ='. $this->obra_id .' ) as valor_oc'),
 
-            DB::raw('orcamentos.preco_total - (SELECT 
-                        SUM(ordem_de_compra_itens.valor_total) 
-                    FROM ordem_de_compra_itens
-                    JOIN ordem_de_compras
-                        ON ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id
-                    WHERE ordem_de_compra_itens.insumo_id = orcamentos.insumo_id
-                    AND ordem_de_compra_itens.grupo_id = orcamentos.grupo_id
-                    AND ordem_de_compra_itens.subgrupo1_id = orcamentos.subgrupo1_id
-                    AND ordem_de_compra_itens.subgrupo2_id = orcamentos.subgrupo2_id
-                    AND ordem_de_compra_itens.subgrupo3_id = orcamentos.subgrupo3_id
-                    AND ordem_de_compra_itens.servico_id = orcamentos.servico_id
-                    AND (
-                            ordem_de_compras.oc_status_id = 2
-                            OR
-                            ordem_de_compras.oc_status_id = 3                            
-                            OR
-                            ordem_de_compras.oc_status_id = 5
-                        )
-                    AND ordem_de_compra_itens.deleted_at IS NULL
-                    AND ordem_de_compra_itens.servico_id = '.$this->servico_id.'
-                    AND ordem_de_compra_itens.obra_id ='. $this->obra_id .' ) as saldo_disponivel')
-            ])
+            DB::raw('0
+                    as saldo_disponivel')
+        ])
             ->leftJoin(DB::raw('orcamentos orcamentos_sub'),  'orcamentos_sub.id', 'orcamentos.orcamento_que_substitui')
             ->leftJoin(DB::raw('insumos insumos_sub'), 'insumos_sub.id', 'orcamentos_sub.insumo_id')
             ->where('orcamentos.servico_id','=', DB::raw($this->servico_id))
@@ -169,7 +168,7 @@ class DetalhesServicosDataTable extends DataTable
                 $orcamentos = $orcamentos->orderByRaw(DB::raw('FIELD(orcamentos.id, '.$itens_selecionados.') DESC'));
             }
         }
-        
+
         $orcamentos = $orcamentos->groupBy('orcamentos.insumo_id');
 
         return $this->applyScopes($orcamentos);
@@ -188,9 +187,10 @@ class DetalhesServicosDataTable extends DataTable
             ->parameters([
                 'responsive'=> 'true',
                 'initComplete' => 'function () {
+                    recalcularAnaliseServico();
                     max = this.api().columns().count();
                     this.api().columns().every(function (col) {
-                        if((col+6)<max){
+                        if((col+7)<max){
                             var column = this;
                             var input = document.createElement("input");
                             $(input).attr(\'placeholder\',\'Filtrar...\');

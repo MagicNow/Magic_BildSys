@@ -32,6 +32,6 @@ class UpdateCatalogoContratoRequest extends FormRequest
 
     public function messages()
     {
-        return ['obra.required' => 'Escolha uma obra e clique em adicionar'];
+        return ['regional.required' => 'Escolha uma regional e clique em adicionar'];
     }
 }

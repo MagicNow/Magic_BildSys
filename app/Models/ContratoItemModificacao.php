@@ -14,6 +14,9 @@ class ContratoItemModificacao extends Model
 {
     public $table = 'contrato_item_modificacoes';
 
+    const REAJUSTE_VALOR = 'Reajuste de valor unitário';
+    const REAJUSTE_QTD = 'Reajuste de quantidade';
+
     public static $workflow_tipo_id = WorkflowTipo::ITEM_CONTRATO;
 
     public function workflowNotification()
@@ -139,7 +142,16 @@ class ContratoItemModificacao extends Model
             : ContratoStatus::REPROVADO;
 
         if($isAprovado) {
-            $this->item->applyChanges($this);
+            $tipo_reajuste = null;
+
+            if($this->tipo_modificacao == self::REAJUSTE_VALOR) {
+                $tipo_reajuste =  self::REAJUSTE_VALOR;
+            }
+            if($this->tipo_modificacao == self::REAJUSTE_QTD) {
+                $tipo_reajuste =  self::REAJUSTE_QTD;
+            }
+
+            $this->item->applyChanges($this, $tipo_reajuste);
             $this->item->contrato->updateTotal();
         }
 
@@ -147,7 +159,9 @@ class ContratoItemModificacao extends Model
             $apropriacao->update(['qtd' => $apropriacao->pivot->qtd_atual]);
         });
 
-        $this->item->update(['pendente' => 0]);
+        if(count($this->item->modificacoes->where('contrato_status_id', ContratoStatus::EM_APROVACAO)) <= 1) {
+            $this->item->update(['pendente' => 0]);
+        }
 
         $this->save();
 

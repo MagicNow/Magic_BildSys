@@ -2,7 +2,8 @@
 
 namespace App\Models;
 
-use Eloquent as Model; use Illuminate\Database\Eloquent\SoftDeletes;
+use Eloquent as Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class Fornecedor
@@ -13,13 +14,39 @@ class Fornecedor extends Model
 {
     use SoftDeletes;
 
-    public $table = 'fornecedores';
-
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
-
-    protected $dates = ['deleted_at'];
-
+    public static $campos = [
+        'codigo_mega',
+        'nome',
+        'cnpj',
+        'tipo_logradouro',
+        'logradouro',
+        'numero',
+        'complemento',
+        'cidade_id',
+        'municipio',
+        'estado',
+        'situacao_cnpj',
+        'inscricao_estadual',
+        'email',
+        'site',
+        'telefone',
+        'cep',
+        'user_id'
+    ];
+    /**
+     * Validation rules
+     *
+     * @var array
+     */
+    public static $rules = [
+        'nome' => 'required',
+        'cnpj' => 'required',
+        'email' => 'required|email',
+        'telefone' => 'required',
+    ];
+    public $table = 'fornecedores';
     public $fillable = [
         'codigo_mega',
         'nome',
@@ -56,27 +83,7 @@ class Fornecedor extends Model
         'email_vendedor',
         'telefone_vendedor'
     ];
-
-    public static $campos = [
-        'codigo_mega',
-        'nome',
-        'cnpj',
-        'tipo_logradouro',
-        'logradouro',
-        'numero',
-        'complemento',
-        'cidade_id',
-        'municipio',
-        'estado',
-        'situacao_cnpj',
-        'inscricao_estadual',
-        'email',
-        'site',
-        'telefone',
-        'cep',
-        'user_id'
-    ];
-
+    protected $dates = ['deleted_at'];
     /**
      * The attributes that should be casted to native types.
      *
@@ -102,18 +109,6 @@ class Fornecedor extends Model
         'cep' => 'string',
         'user_id' => 'integer',
         'imposto_simples' => 'boolean'
-    ];
-
-    /**
-     * Validation rules
-     *
-     * @var array
-     */
-    public static $rules = [
-        'nome' => 'required',
-        'cnpj' => 'required',
-        'email' => 'required|email',
-        'telefone' => 'required',
     ];
 
     /**
@@ -153,5 +148,70 @@ class Fornecedor extends Model
     public function getIsUserAttribute()
     {
         return !is_null($this->user) && $this->user->active;
+    }
+
+    /**
+     * faltaDados
+     * Verifica se falta algum dos dados necessários
+     * @return bool
+     */
+    public function faltaDados()
+    {
+        $falta_dados = false;
+        $dados = [
+            'nome_socio',
+            'nacionalidade_socio',
+            'estado_civil_socio',
+            'profissao_socio',
+            'rg_socio',
+            'cpf_socio',
+            'endereco_socio',
+            'cidade_socio',
+            'estado_socio',
+            'cep_socio',
+            'telefone_socio',
+            'celular_socio',
+            'email_socio',
+            'nome_vendedor',
+            'email_vendedor',
+            'telefone_vendedor'
+        ];
+        // Percorre todos os campos do registro atual verificando se estão preenchidos
+        array_map(function($value) use (&$falta_dados){
+            if(!strlen($this->attributes[$value])){
+                $falta_dados = true;
+            }
+        }, $dados);
+        return $falta_dados;
+    }
+
+    public function faltaQuaisDados()
+    {
+        $dados_faltantes = [];
+        $dados = [
+            'nome_socio',
+            'nacionalidade_socio',
+            'estado_civil_socio',
+            'profissao_socio',
+            'rg_socio',
+            'cpf_socio',
+            'endereco_socio',
+            'cidade_socio',
+            'estado_socio',
+            'cep_socio',
+            'telefone_socio',
+            'celular_socio',
+            'email_socio',
+            'nome_vendedor',
+            'email_vendedor',
+            'telefone_vendedor'
+        ];
+        // Percorre todos os campos do registro atual verificando se estão preenchidos
+        array_map(function($value) use (&$dados_faltantes){
+            if(!strlen($this->attributes[$value])){
+                $dados_faltantes[] = $value;
+            }
+        }, $dados);
+        return $dados_faltantes;
     }
 }

@@ -39,7 +39,7 @@ class ContratoItemModificacaoRepository extends BaseRepository
                         $apropriacao = $apropriacoes->where('id', $apropriacao_id)
                             ->first();
 
-                        if($data['anexos'][$apropriacao_id] != "undefined") {
+                        if(isset($data['anexos']) && isset($data['anexos'][$apropriacao_id]) && $data['anexos'][$apropriacao_id] != "undefined") {
                             $destinationPath = CodeRepository::saveFile($data['anexos'][$apropriacao_id], 'contratos/reajustes/' . $item->id .'/apropriacao/' . $apropriacao_id);
                         }
 
@@ -47,7 +47,7 @@ class ContratoItemModificacaoRepository extends BaseRepository
                             'contrato_item_apropriacao_id' => $apropriacao_id,
                             'qtd_anterior' => $apropriacao->qtd,
                             'qtd_atual' => money_to_float($qtd) + $apropriacao->qtd,
-                            'descricao' => $reajusteDescricao[$apropriacao_id],
+                            'descricao' => isset($reajusteDescricao[$apropriacao_id])?$reajusteDescricao[$apropriacao_id]:null,
                             'anexo' => isset($destinationPath) ? $destinationPath : null
                         ];
                     });
@@ -57,22 +57,40 @@ class ContratoItemModificacaoRepository extends BaseRepository
             }
 
             $destinationPath = null;
-
-            if($data['anexo'] != "undefined") {
-                $destinationPath = CodeRepository::saveFile($data['anexo'], 'contratos/reajustes/' . $item->id);
+            if(isset($data['anexo']) &&  $data['anexo'] != "undefined") {
+                    $destinationPath = CodeRepository::saveFile($data['anexo'], 'contratos/reajustes/' . $item->id);
             }
-            
-            $modificacao = $this->create([
+
+            $modificacao_valor = $this->create([
                 'qtd_anterior'            => $item->qtd,
-                'qtd_atual'               => $item->qtd + $qtd,
+                'qtd_atual'               => $item->qtd,
                 'valor_unitario_anterior' => $item->valor_unitario,
                 'valor_unitario_atual'    => money_to_float($data['valor_unitario']),
                 'contrato_status_id'      => ContratoStatus::EM_APROVACAO,
                 'contrato_item_id'        => $item->id,
-                'tipo_modificacao'        => 'Reajuste',
+                'tipo_modificacao'        => ContratoItemModificacao::REAJUSTE_VALOR,
                 'anexo'                   => $destinationPath,
                 'user_id'                 => auth()->id(),
-                'descricao'               => $data['observacao']
+                'descricao'               => isset($data['observacao']) ? $data['observacao']: null
+            ]);
+
+            $modificacao = $this->create([
+                'qtd_anterior'            => $item->qtd,
+                'qtd_atual'               => $item->qtd + $qtd,
+                'valor_unitario_anterior' => $item->valor_unitario,
+                'valor_unitario_atual'    => $item->valor_unitario,
+                'contrato_status_id'      => ContratoStatus::EM_APROVACAO,
+                'contrato_item_id'        => $item->id,
+                'tipo_modificacao'        => ContratoItemModificacao::REAJUSTE_QTD,
+                'anexo'                   => null,
+                'user_id'                 => auth()->id(),
+                'descricao'               => null
+            ]);
+
+            $modificacaoLogRepository->create([
+                'contrato_item_modificacao_id' => $modificacao_valor->id,
+                'contrato_status_id'           => ContratoStatus::EM_APROVACAO,
+                'user_id'                      => $modificacao_valor->user_id,
             ]);
 
             $modificacaoLogRepository->create([

@@ -4,6 +4,15 @@
         {!! Form::label('fornecedor_cod', 'Fornecedor:') !!}
         <div class="form-control">
             {{ $catalogoContrato->fornecedor->nome }}
+            @if($catalogoContrato->fornecedor->faltaDados())
+                <a href="{{ route('admin.fornecedores.edit', $catalogoContrato->fornecedor_id) }}"
+                   title="Para poder gerar contratos automaticamente, todos os dados devem estar preenchidos:
+                       {{ implode(',', $catalogoContrato->fornecedor->faltaQuaisDados())  }}"
+                   data-toggle="tooltip" data-placement="top" class="btn btn-danger btn-xs pull-right">
+                    <i class="fa fa-exclamation-triangle"></i>
+                    Preencha todos os dados
+                </a>
+            @endif
         </div>
     </div>
 
@@ -108,18 +117,18 @@
 </div>
 
 <div class="col-sm-12">
-    <h4>Obras que estão permitidas neste acordo</h4>
-    {{ Form::hidden('qtd_obras',(!isset($catalogoContrato)?0:$catalogoContrato->obras()->count()),['id'=>'qtd_obras']) }}
+    <h4>Regionais que estão permitidas neste acordo</h4>
+    {{ Form::hidden('qtd_regionais',(!isset($catalogoContrato)?0:$catalogoContrato->regionais()->count()),['id'=>'qtd_regionais']) }}
 
-    <ul class="list-group" id="obra_list">
+    <ul class="list-group" id="regional_list">
         <?php
-        $count_obras = 0;
+        $count_regionais = 0;
         ?>
-        @foreach($catalogoContrato->obras as $cc_obra)
-            <li class="list-group-item" id="obra_list_{{ $cc_obra->id }}">
-                <input type="hidden" name="obra[{{ $count_obras++ }}]" value="{{ $cc_obra->obra_id }}">
-                <i class="fa fa-building"></i>  {{ $cc_obra->obra->nome }}
-                <span class="label label-default" style="background-color: {{$cc_obra->status->cor}}">{{ $cc_obra->status->nome }}</span>
+        @foreach($catalogoContrato->regionais as $cc_regional)
+            <li class="list-group-item" id="regional_list_{{ $cc_regional->id }}">
+                <input type="hidden" name="regional[{{ $count_regionais++ }}]" value="{{ $cc_regional->regional_id }}">
+                <i class="fa fa-building"></i>  {{ $cc_regional->regional->nome }}
+                <span class="label label-default" style="background-color: {{$cc_regional->status->cor}}">{{ $cc_regional->status->nome }}</span>
             </li>
         @endforeach
     </ul>

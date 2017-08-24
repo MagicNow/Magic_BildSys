@@ -14,7 +14,7 @@
 <div class="form-group col-md-4">
     {!! Form::label('tipo', 'Tipo:') !!}
     <?php
-            $tipos = ['1'=>'Estrutura','2'=>'Pavimento','3'=>'Trecho'];
+            $tipos = ['1'=>'Bloco','2'=>'Linha','3'=>'Coluna'];
             ?>
     <p class="form-control">{!! $tipos[$nomeclaturaMapa->tipo] !!}</p>
 </div>
@@ -22,7 +22,7 @@
 <!-- Apenas Cartela Field -->
 <div class="form-group col-md-6">
     {!! Form::label('apenas_cartela', 'Apenas Cartela:') !!}
-    <p class="form-control">{!! '<span class="label label-'.(intval($nomeclaturaMapa->apenas_unidade)?'success':'danger').'">'. (intval($nomeclaturaMapa->apenas_unidade)?'SIM':'NÃO') .'</span>' !!}</p>
+    <p class="form-control">{!! '<span class="label label-'.(intval($nomeclaturaMapa->apenas_cartela)?'success':'danger').'">'. (intval($nomeclaturaMapa->apenas_cartela)?'SIM':'NÃO') .'</span>' !!}</p>
 </div>
 
 <!-- Apenas Unidade Field -->

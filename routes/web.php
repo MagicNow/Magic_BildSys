@@ -864,15 +864,15 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             ->middleware("needsPermission:catalogo_acordos.create");
         $router->put('catalogo-acordos/{contratos}', ['as' => 'catalogo_contratos.update', 'uses' => 'CatalogoContratoController@update']);
         $router->patch('catalogo-acordos/{contratos}', ['as' => 'catalogo_contratos.update', 'uses' => 'CatalogoContratoController@update']);
-        $router->delete('catalogo-acordos/{contratos}', ['as' => 'catalogo_contratos.destroy', 'uses' => 'CatalogoContratoController@destroy']);
-        $router->get('catalogo-acordos/{contratos}', ['as' => 'catalogo_contratos.show', 'uses' => 'CatalogoContratoController@show'])
-            ->middleware("needsPermission:catalogo_acordos.view");
+        $router->delete('catalogo-acordos/{contratos}', ['as' => 'catalogo_contratos.destroy', 'uses' => 'CatalogoContratoController@destroy'])
+            ->middleware("needsPermission:catalogo_acordos.delete");
+        $router->get('catalogo-acordos/{contratos}', ['as' => 'catalogo_contratos.show', 'uses' => 'CatalogoContratoController@show']);
         $router->get('catalogo-acordos/{contratos}/edit', ['as' => 'catalogo_contratos.edit', 'uses' => 'CatalogoContratoController@edit'])
             ->middleware("needsPermission:catalogo_acordos.edit");
         $router->get('catalogo-acordos/buscar/busca_fornecedores', ['as' => 'catalogo_contratos.busca_fornecedores', 'uses' => 'CatalogoContratoController@buscaFornecedor']);
         $router->get('catalogo-acordos-insumo/delete', 'CatalogoContratoController@deleteInsumo');
 
-        $router->get('catalogo-acordos/{contratos}/removeObra/{remover}', ['as' => 'catalogo_contratos.removeObra', 'uses' => 'CatalogoContratoController@removeObra'])
+        $router->get('catalogo-acordos/{contratos}/removeRegional/{remover}', ['as' => 'catalogo_contratos.removeRegional', 'uses' => 'CatalogoContratoController@removeRegional'])
             ->middleware("needsPermission:catalogo_acordos.edit");
         $router->get('catalogo-acordos/{contratos}/imprimir-minuta', ['as' => 'catalogo_contratos.removeObra', 'uses' => 'CatalogoContratoController@imprimirMinuta']);
 
@@ -1082,6 +1082,8 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->get('configuracaoEstaticas/{configuracaoEstaticas}/edit', ['as' => 'configuracaoEstaticas.edit', 'uses' => 'ConfiguracaoEstaticaController@edit'])
             ->middleware('needsPermission:configuracaoEstaticas.edit');
     });
+    
+    Route::resource('templateEmails', 'TemplateEmailController');
 
     $router->get('notasfiscais', ['as' => 'notafiscals.index', 'uses' => 'NotafiscalController@index']);
     $router->post('notasfiscais', ['as' => 'notafiscals.store', 'uses' => 'NotafiscalController@store']);
@@ -1146,8 +1148,19 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         //            ->first();
         //        dd($grupos_mega);
         //        $servicos = \App\Repositories\ImportacaoRepository::fornecedor_servicos(446);
-        $insumos = \App\Repositories\ImportacaoRepository::insumos();
-        dd($insumos);
+//        $insumos = \App\Repositories\ImportacaoRepository::insumos();
+//        dd($insumos);
+        $contratoTemplate = \App\Models\ContratoTemplate::find(1);
+        if($contratoTemplate){
+            if($contratoTemplate->campos_extras){
+                $campos_extras_template = json_decode($contratoTemplate->campos_extras);
+                foreach ($campos_extras_template as $campo){
+                    var_dump($campo);
+                }
+                dd($campos_extras_template);
+
+            }
+        }
     });
 });
 

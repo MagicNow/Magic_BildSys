@@ -283,6 +283,12 @@ class ContratoController extends AppBaseController
         ]);
     }
 
+    /**
+     * Retorna as apropriações que ainda existem sobra
+     * @param $id
+     * @param ContratoItemRepository $contratoItemRepository
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function apropriacoes(
         $id,
         ContratoItemRepository $contratoItemRepository
@@ -326,7 +332,8 @@ class ContratoController extends AppBaseController
 
     public function imprimirContrato($id)
     {
-        return response()->file(storage_path('/app/public/') . str_replace('storage/', '', ContratoRepository::geraImpressao($id)));
+
+        return response()->download(storage_path('/app/public/') . str_replace('storage/', '', ContratoRepository::geraImpressao($id)));
     }
 
     public function edit($id)

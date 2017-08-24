@@ -9,6 +9,15 @@
 {!! Form::label('template', 'Template:') !!}
 <!-- Info modal -->
 
+   <?php
+    if (isset($contratoTemplate)) {
+        $contratoId = $contratoTemplate->id;
+    } else {
+        $contratoId = 0;
+    }
+    ?>
+
+
     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
         <div class="panel panel-default">
             <div class="panel-heading" role="tab" id="headingOne">
@@ -90,6 +99,9 @@
                         o sistema irá substituir automaticamente.
                     </h5>
                     <div class="row">
+
+                        @if($contratoId != 2)
+
                         <div class="col-md-4">
                             <div class="box box-solid">
                                 <div class="box-header with-border">
@@ -238,6 +250,8 @@
                                 <!-- /.box-body -->
                             </div>
                         </div>
+
+                        @endif
 
                         <div class="col-md-4">
                             <div class="box box-solid">
@@ -451,6 +465,63 @@
                                             Tabela com a listagem de Insumo, Qtd, Valor Unitário e Valor Total
                                         </li>
 
+                                    </ul>
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+                            <div class="box box-solid">
+                                <div class="box-header with-border">
+                                    <i class="fa fa-usd"></i>
+                                    <h3 class="box-title">Proposta do Q.C.</h3>
+                                </div>
+                                <!-- /.box-header -->
+                                <div class="box-body">
+                                    <ul class="list-group">
+                                        <li class="list-group-item">
+                                            <span class="label label-primary selecionavel">
+                                               [COMPOSICAO_DO_PRECO]
+                                            </span> &nbsp;
+                                            Composição do preço (percentual mão-de-obra, Material Contradada, Material Fat. Direto)
+                                        </li>
+                                        <li class="list-group-item">
+                                            <span class="label label-primary selecionavel">
+                                                [FRETE_TIPO]
+                                            </span> &nbsp;
+                                            CIF ou FOB
+                                        </li>
+                                        <li class="list-group-item">
+                                            <span class="label label-primary selecionavel">
+                                                [FRETE_VALOR]
+                                            </span> &nbsp;
+                                            Valor do Frete
+                                        </li>
+
+                                    </ul>
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+
+                            <div class="box box-solid">
+                                <div class="box-header with-border">
+                                    <i class="fa fa-building"></i>
+                                    <h3 class="box-title">Dados Martiz</h3>
+                                </div>
+                                <!-- /.box-header -->
+                                <div class="box-body">
+                                    <ul class="list-group">
+                                        <li class="list-group-item">
+                                            <span class="label label-primary selecionavel">
+                                               [CABECALHO_MATRIZ]
+                                            </span> &nbsp;
+                                            Razão Social, CNPJ, Inscrição Estadual, Inscrição Municipal e Endereço
+                                        </li>
+
+                                        <li class="list-group-item">
+                                            <span class="label label-primary selecionavel">
+                                               [REGIONAIS]
+                                            </span> &nbsp;
+                                            Lista as regionais do contrato
+                                        </li>
                                     </ul>
                                 </div>
                                 <!-- /.box-body -->

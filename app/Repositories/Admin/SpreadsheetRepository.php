@@ -381,15 +381,21 @@ class SpreadsheetRepository
                                 $insumo = Insumo::where('codigo', $codigo_insumo)->first();
 
                                 if ($insumo) {
-                                    if (!$insumo->active) {
+                                    if($insumo->grupo){
+                                        if (!$insumo->active) {
+                                            $erro = 1;
+                                            $mensagens_erro[] = 'Insumo - Código: ' . $codigo_insumo . ' não está disponivel.';
+                                        } else if (!$insumo->grupo->active) {
+                                            $erro = 1;
+                                            $mensagens_erro[] = 'Insumo - Código: ' . $codigo_insumo . ' faz parte de um grupo indisponível.';
+                                        } else {
+                                            $final['insumo_id'] = $insumo->id;
+                                        }
+                                    }else{
                                         $erro = 1;
-                                        $mensagens_erro[] = 'Insumo - Código: ' . $codigo_insumo . ' não está disponivel.';
-                                    } else if (!$insumo->grupo->active) {
-                                        $erro = 1;
-                                        $mensagens_erro[] = 'Insumo - Código: ' . $codigo_insumo . ' faz parte de um grupo indisponível.';
-                                    } else {
-                                        $final['insumo_id'] = $insumo->id;
+                                        $mensagens_erro[] = 'Grupo do Insumo - Código: ' . $codigo_insumo . ' não foi encontrado.';
                                     }
+
                                 } else {
                                     $erro = 1;
                                     $mensagens_erro[] = 'Insumo - Código: ' . $codigo_insumo . ' não foi encontrado.';
