@@ -94,6 +94,13 @@ class ContratoItem extends Model
         return $this->hasMany(ContratoItemApropriacao::class);
     }
 
+    /**
+     * applyChanges
+     * Aplica as mudanças no item do Contrato
+     * @param ContratoItemModificacao $mod
+     * @param null $tipo_reajuste Null = Ambos ou 'Reajuste de quantidade' ou 'Reajuste de valor unitário'
+     * @return ContratoItem $this
+     */
     public function applyChanges(ContratoItemModificacao $mod, $tipo_reajuste = null)
     {
         $this->aprovado = true;

@@ -151,13 +151,17 @@ class ContratoItemModificacao extends Model
                 $tipo_reajuste =  self::REAJUSTE_QTD;
             }
 
+            // Aplica as mudanças no item do contrato
             $this->item->applyChanges($this, $tipo_reajuste);
-            $this->item->contrato->updateTotal();
-        }
 
-        $this->apropriacoes->map(function($apropriacao) {
-            $apropriacao->update(['qtd' => $apropriacao->pivot->qtd_atual]);
-        });
+            // Atualiza o total do contrato
+            $this->item->contrato->updateTotal();
+
+            // Atualiza os valores das apropriações
+            $this->apropriacoes->map(function($apropriacao) {
+                $apropriacao->update(['qtd' => $apropriacao->pivot->qtd_atual]);
+            });
+        }
 
         if(count($this->item->modificacoes->where('contrato_status_id', ContratoStatus::EM_APROVACAO)) <= 1) {
             $this->item->update(['pendente' => 0]);
