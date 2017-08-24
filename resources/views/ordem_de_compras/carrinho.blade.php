@@ -527,7 +527,7 @@
                         type: "warning",
                         showCancelButton: true,
                         confirmButtonColor: "#7ed321",
-                        confirmButtonText: "Sim, continuar ordem de compra.",
+                        confirmButtonText: "Sim, fechar ordem de compra.",
                         cancelButtonText: "Não, ainda quero validar algo.",
                         closeOnConfirm: false
                     },
