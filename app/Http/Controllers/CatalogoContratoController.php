@@ -11,6 +11,8 @@ use App\Models\CatalogoContrato;
 use App\Models\CatalogoContratoInsumoLog;
 use App\Models\CatalogoContratoObra;
 use App\Models\CatalogoContratoObraLog;
+use App\Models\CatalogoContratoRegional;
+use App\Models\CatalogoContratoRegionalLog;
 use App\Models\CatalogoContratoStatusLog;
 use App\Models\Fornecedor;
 use App\Models\Insumo;
@@ -124,11 +126,11 @@ class CatalogoContratoController extends AppBaseController
 
         $catalogoContrato = $this->catalogoContratoRepository->update($input, $catalogoContrato->id);
 
-        if($request->obra){
-            foreach ($request->obra as $obra_id){
-                $catalogoContratoObra = CatalogoContratoObra::create([
+        if($request->regional){
+            foreach ($request->regional as $regional_id){
+                $catalogoContratoRegional = CatalogoContratoRegional::create([
                     'catalogo_contrato_id' => $catalogoContrato->id,
-                    'obra_id' => $obra_id,
+                    'regional_id' => $regional_id,
                     'user_id' => auth()->id(),
                     'catalogo_contrato_status_id' => 2
                 ]);
@@ -269,13 +271,13 @@ class CatalogoContratoController extends AppBaseController
         $catalogoContrato = $this->catalogoContratoRepository->update($input, $id);
 
 
-        if($request->obra){
-            foreach ($request->obra as $obra_id){
-                $catalogoContratoObra = CatalogoContratoObra::where('obra_id',$obra_id)->where('catalogo_contrato_id', $catalogoContrato->id)->first();
-                if(!$catalogoContratoObra){
-                    $catalogoContratoObra = CatalogoContratoObra::create([
+        if($request->regional){
+            foreach ($request->regional as $regional_id){
+                $catalogoContratoRegional = CatalogoContratoRegional::where('regional_id',$regional_id)->where('catalogo_contrato_id', $catalogoContrato->id)->first();
+                if(!$catalogoContratoRegional){
+                    $catalogoContratoRegional = CatalogoContratoRegional::create([
                         'catalogo_contrato_id' => $catalogoContrato->id,
-                        'obra_id' => $obra_id,
+                        'regional_id' => $regional_id,
                         'user_id' => auth()->id(),
                         'catalogo_contrato_status_id' => 2
                     ]);
@@ -398,12 +400,12 @@ class CatalogoContratoController extends AppBaseController
             $catalogoContrato->catalogo_contrato_status_id = 2;
             $catalogoContrato->save();
 
-            foreach ($catalogoContrato->obras()->where('catalogo_contrato_status_id',3)->get() as $catalogoContratoObra){
-                $catalogoContratoObra->catalogo_contrato_status_id = 2;
-                $catalogoContratoObra->save();
-                $catalogoContratoObra = CatalogoContratoObraLog::create([
-                    'catalogo_contrato_obra_id' => $catalogoContratoObra->id,
-                    'catalogo_contrato_status_id' => $catalogoContratoObra->catalogo_contrato_status_id
+            foreach ($catalogoContrato->regionais()->where('catalogo_contrato_status_id',3)->get() as $catalogoContratoRegional){
+                $catalogoContratoRegional->catalogo_contrato_status_id = 2;
+                $catalogoContratoRegional->save();
+                $catalogoContratoRegional = CatalogoContratoRegionalLog::create([
+                    'catalogo_contrato_regional_id' => $catalogoContratoRegional->id,
+                    'catalogo_contrato_status_id' => $catalogoContratoRegional->catalogo_contrato_status_id
                 ]);
             }
 
@@ -420,12 +422,12 @@ class CatalogoContratoController extends AppBaseController
                 $catalogoContrato->catalogo_contrato_status_id = 2;
                 $catalogoContrato->save();
 
-                foreach ($catalogoContrato->obras()->where('catalogo_contrato_status_id',3)->get() as $catalogoContratoObra){
-                    $catalogoContratoObra->catalogo_contrato_status_id = 2;
-                    $catalogoContratoObra->save();
-                    $catalogoContratoObra = CatalogoContratoObraLog::create([
-                        'catalogo_contrato_obra_id' => $catalogoContratoObra->id,
-                        'catalogo_contrato_status_id' => $catalogoContratoObra->catalogo_contrato_status_id
+                foreach ($catalogoContrato->regionais()->where('catalogo_contrato_status_id',3)->get() as $catalogoContratoRegional){
+                    $catalogoContratoRegional->catalogo_contrato_status_id = 2;
+                    $catalogoContratoRegional->save();
+                    $catalogoContratoRegional = CatalogoContratoRegionalLog::create([
+                        'catalogo_contrato_regional_id' => $catalogoContratoRegional->id,
+                        'catalogo_contrato_status_id' => $catalogoContratoRegional->catalogo_contrato_status_id
                     ]);
                 }
             }
@@ -443,11 +445,12 @@ class CatalogoContratoController extends AppBaseController
                     'catalogo_contrato_status_id' => $catalogoContrato->catalogo_contrato_status_id,
                     'user_id' => auth()->id()
                 ]);
-                foreach ($catalogoContrato->obras()->whereIn('catalogo_contrato_status_id',[1,2])->get() as $catalogoContratoObra){
+                foreach ($catalogoContrato->regionais()->whereIn('catalogo_contrato_status_id',[1,2])->get() as $catalogoContratoObra){
+
                     $catalogoContratoObra->catalogo_contrato_status_id = $catalogoContrato->catalogo_contrato_status_id;
                     $catalogoContratoObra->save();
-                    $catalogoContratoObra = CatalogoContratoObraLog::create([
-                        'catalogo_contrato_obra_id' => $catalogoContratoObra->id,
+                    $catalogoContratoRegional = CatalogoContratoRegionalLog::create([
+                        'catalogo_contrato_regional_id' => $catalogoContratoObra->id,
                         'catalogo_contrato_status_id' => $catalogoContratoObra->catalogo_contrato_status_id
                     ]);
                 }
@@ -479,8 +482,8 @@ class CatalogoContratoController extends AppBaseController
         return redirect(route('catalogo_contratos.index'));
     }
 
-    public function removeObra($id, $cc_obra){
-        $remove = CatalogoContratoObra::find($cc_obra);
+    public function removeRegional($id, $cc_obra){
+        $remove = CatalogoContratoRegional::find($cc_obra);
         if($remove){
             $remove->delete();
             return response()->json(['success'=>true ]);

@@ -25,7 +25,7 @@
         @if(isset($catalogoContrato))
             @if($catalogoContrato->catalogo_contrato_status_id == 2 ||
                 $catalogoContrato->catalogo_contrato_status_id == 3 &&
-                $catalogoContrato->obras()->whereIn('catalogo_contrato_status_id',[1,2])->count()  )
+                $catalogoContrato->regionais()->whereIn('catalogo_contrato_status_id',[1,2])->count()  )
                 <div class="col-sm-12">
                     <div class="box box-warning">
                         <div class="box-header with-border">
@@ -153,36 +153,36 @@
 </div>
 
 <div class="col-sm-12">
-    <h4>Obras que estão permitidas neste acordo</h4>
+    <h4>Regionais que estão permitidas neste acordo</h4>
     <div class="input-group">
-        <span class="input-group-addon" id="basic-addon1">Escolha uma obra e adicione</span>
+        <span class="input-group-addon" id="basic-addon1">Escolha uma regional e adicione</span>
         @if(isset($catalogoContrato))
-            {!! Form::select('obra_selecionada', ['' => 'Escolha...']+
-                \App\Models\Obra::whereNotIn('id',$catalogoContrato->obras()->pluck('obra_id','obra_id')
-                ->toArray())->pluck('nome','id')->toArray(),  null, ['class' => 'form-control select2','id'=>'obra_selecionada']) !!}
+            {!! Form::select('regional_selecionada', ['' => 'Escolha...']+
+                \App\Models\Regional::whereNotIn('id',$catalogoContrato->regionais()->pluck('regional_id','regional_id')
+                ->toArray())->pluck('nome','id')->toArray(),  null, ['class' => 'form-control select2','id'=>'regional_selecionada']) !!}
         @else
-            {!! Form::select('obra_selecionada', ['' => 'Escolha...']+\App\Models\Obra::pluck('nome','id')->toArray(),  null,
-            ['class' => 'form-control select2','id'=>'obra_selecionada']) !!}
+            {!! Form::select('regional_selecionada', ['' => 'Escolha...']+\App\Models\Regional::pluck('nome','id')->toArray(),  null,
+            ['class' => 'form-control select2','id'=>'regional_selecionada']) !!}
         @endif
         <span class="input-group-btn">
-            <button type="button" class="btn btn-primary btn-flat" onclick="adicionaObra();">Adicionar obra</button>
+            <button type="button" class="btn btn-primary btn-flat" onclick="adicionaRegional();">Adicionar regional</button>
         </span>
     </div>
-    {{ Form::hidden('qtd_obras',(!isset($catalogoContrato)?0:$catalogoContrato->obras()->count()),['id'=>'qtd_obras']) }}
+    {{ Form::hidden('qtd_regionais',(!isset($catalogoContrato)?0:$catalogoContrato->regionais()->count()),['id'=>'qtd_regionais']) }}
 
-    <ul class="list-group" id="obra_list">
+    <ul class="list-group" id="regional_list">
         <?php
-        $count_obras = 0;
+        $count_regionais = 0;
         ?>
         @if(isset($catalogoContrato))
-            @foreach($catalogoContrato->obras as $cc_obra)
-                <li class="list-group-item" id="obra_list_{{ $cc_obra->id }}">
-                    <input type="hidden" name="obra[{{ $count_obras++ }}]" value="{{ $cc_obra->obra_id }}">
-                    <i class="fa fa-building"></i> {{ $cc_obra->obra->nome }}
+            @foreach($catalogoContrato->regionais as $cc_regional)
+                <li class="list-group-item" id="regional_list_{{ $cc_regional->id }}">
+                    <input type="hidden" name="regional[{{ $count_regionais++ }}]" value="{{ $cc_regional->regional_id }}">
+                    <i class="fa fa-building"></i> {{ $cc_regional->regional->nome }}
                     <span class="label label-default"
-                          style="background-color: {{$cc_obra->status->cor}}">{{ $cc_obra->status->nome }}</span>
-                    <button type="button" title="Remover Obra"
-                            onclick="removerObra({{ $cc_obra->id }},{{ $cc_obra->id }});"
+                          style="background-color: {{$cc_regional->status->cor}}">{{ $cc_regional->status->nome }}</span>
+                    <button type="button" title="Remover Regional"
+                            onclick="removerRegional({{ $cc_regional->id }},{{ $cc_regional->id }});"
                             class="btn btn-danger btn-xs btn-flat pull-right">
                         <i class="fa fa-times"></i>
                     </button>
@@ -741,31 +741,31 @@ $count_insumos = 0;
 
         }
 
-        var contadorObra = {{ $count_obras }};
-        function adicionaObra() {
-            contadorObra++;
-            $('#qtd_obras').val(parseInt($('#qtd_obras').val()) + 1);
-            if (!$('#obra_selecionada').val()) {
-                swal('Escolha uma obra!', '', 'error');
+        var contadorRegional = {{ $count_regionais }};
+        function adicionaRegional() {
+            contadorRegional++;
+            $('#qtd_regionais').val(parseInt($('#qtd_regionais').val()) + 1);
+            if (!$('#regional_selecionada').val()) {
+                swal('Escolha uma regional!', '', 'error');
                 return false;
             }
-            obra_selecionada = $('#obra_selecionada').val();
-            obra_selecionada_txt = $("#obra_selecionada option:selected").text();
-            $('#obra_selecionada').val(null).trigger("change");
-            var novaObra = '<li class="list-group-item" id="obra_list_' + contadorObra + '">' +
-                    '<i class="fa fa-building"></i>  ' + obra_selecionada_txt +
-                    '<input type="hidden" name="obra[]" value="' + obra_selecionada + '">' +
+            regional_selecionada = $('#regional_selecionada').val();
+            regional_selecionada_txt = $("#regional_selecionada option:selected").text();
+            $('#regional_selecionada').val(null).trigger("change");
+            var novaRegional = '<li class="list-group-item" id="regional_list_' + contadorRegional + '">' +
+                    '<i class="fa fa-building"></i>  ' + regional_selecionada_txt +
+                    '<input type="hidden" name="regional[]" value="' + regional_selecionada + '">' +
                     ' <span class="label label-info">Nova</span>' +
-                    '<button type="button" title="Remover Obra" onclick="removerObra(' + contadorObra + ',null);" class="btn btn-danger btn-xs btn-flat pull-right">' +
+                    '<button type="button" title="Remover Regional" onclick="removerRegional(' + contadorRegional + ',null);" class="btn btn-danger btn-xs btn-flat pull-right">' +
                     '<i class="fa fa-times"></i>' +
                     '</button>' +
                     '</li>';
-            $('#obra_list').append(novaObra);
+            $('#regional_list').append(novaRegional);
 
         }
-        function removerObra(qual, registroBD) {
+        function removerRegional(qual, registroBD) {
             swal({
-                        title: "Tem certeza que deseja remover esta obra?",
+                        title: "Tem certeza que deseja remover esta regional?",
                         type: "warning",
                         showCancelButton: true,
                         closeOnConfirm: false,
@@ -776,24 +776,24 @@ $count_insumos = 0;
                         confirmButtonColor: '#DD6B55'
                     },
                     function () {
-                        $('#qtd_obras').val(parseInt($('#qtd_obras').val()) - 1);
+                        $('#qtd_regionais').val(parseInt($('#qtd_regionais').val()) - 1);
                         if (registroBD) {
 
                             $.ajax({
-                                url: '/catalogo-acordos/{{ isset($catalogoContrato)? $catalogoContrato->id: null }}/removeObra/' + registroBD,
+                                url: '/catalogo-acordos/{{ isset($catalogoContrato)? $catalogoContrato->id: null }}/removeRegional/' + registroBD,
                             }).done(function () {
-                                $('#obra_list_' + qual).remove();
+                                $('#regional_list_' + qual).remove();
                                 swal({
-                                    title: "Obra removida deste acordo!",
+                                    title: "Regional removida deste acordo!",
                                     type: "success",
                                     timer: 2000,
                                     showConfirmButton: false
                                 });
                             });
                         } else {
-                            $('#obra_list_' + qual).remove();
+                            $('#regional_list_' + qual).remove();
                             swal({
-                                title: "Obra removida deste acordo!",
+                                title: "Regional removida deste acordo!",
                                 type: "success",
                                 timer: 2000,
                                 showConfirmButton: false

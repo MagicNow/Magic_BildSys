@@ -3,6 +3,7 @@
 namespace App\Repositories\Admin;
 
 use App\Models\CatalogoContrato;
+use App\Models\ConfiguracaoEstatica;
 use App\Models\ContratoTemplate;
 use App\Models\Fornecedor;
 use App\Models\Obra;
@@ -47,17 +48,29 @@ class CatalogoContratoRepository extends BaseRepository
             return null;
         }
 
+        // Busca o nome das regionais que fazem parte do contrato
+        $regionais = \App\Models\Regional::whereIn('id',$catalogoContrato->regionais()->pluck('regional_id','regional_id')->toArray())->pluck('nome','id')->toArray();
+
         $template = ContratoTemplate::where('tipo','A')->first();
+
         $arquivoFinal = '';
-        foreach ($catalogoContrato->obras as $acordoObra) {
+
+        //foreach ($catalogoContrato->regionais as $acordoObra) {
+
             $templateRenderizado = $template->template;
 
-            $obra = $acordoObra->obra;
+            //$obra = $acordoObra->obra;
 
             // Tenta aplicar variáveis de Obra
-            foreach (Obra::$campos as $campo) {
+            /*foreach (Obra::$campos as $campo) {
                 $templateRenderizado = str_replace('[' . strtoupper($campo) . '_OBRA]', $obra->$campo, $templateRenderizado);
-            }
+            }*/
+
+            // Busca o cabecalho com os dados da matriz
+            $model = new ConfiguracaoEstatica();
+            $r = $model->find(4);
+
+            $templateRenderizado = str_replace("[CABECALHO_MATRIZ]", $r->valor, $templateRenderizado);
 
             // Tenta aplicar variáveis de Fornecedor
             foreach (Fornecedor::$campos as $campo) {
@@ -92,6 +105,22 @@ class CatalogoContratoRepository extends BaseRepository
 
             $tabela_itens .= '</tbody></table>';
 
+
+            $tabela_regionais = '<table width="100%">
+                <thead>
+                    <tr>
+                        <th align="left">Regional</th>
+                    </tr>
+                </thead>
+                <tbody>';
+            foreach ($regionais as $regional) {
+                $tabela_regionais .= '<tr>';
+                $tabela_regionais .= '<td>' . $regional . '</td>';
+                $tabela_regionais .= '</tr>';
+            }
+
+            $tabela_regionais .= '</tbody></table>';
+
             $meses = [
                 1 => 'Janeiro',
                 2 => 'Fevereiro',
@@ -109,6 +138,7 @@ class CatalogoContratoRepository extends BaseRepository
 
             $catalogoContratoCampos = [
                 'catalogo_contrato_itens' => $tabela_itens,
+                'regionais' => $tabela_regionais,
                 'DIA_ATUAL' => date('d'),
                 'MES_ATUAL_EXTENSO' => $meses[intval(date('m'))],
                 'ANO_ATUAL' => date('Y'),
@@ -126,7 +156,7 @@ class CatalogoContratoRepository extends BaseRepository
             }
 
             $arquivoFinal .= '<div style="page-break-before: always;"> </div>'. $templateRenderizado;
-        }
+        //}
         if(is_file(base_path().'/storage/app/public/contratos/acordo_'.$catalogoContrato->id.'.pdf')){
             unlink(base_path().'/storage/app/public/contratos/acordo_'.$catalogoContrato->id.'.pdf');
         }
