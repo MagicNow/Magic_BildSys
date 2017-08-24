@@ -446,8 +446,9 @@ class CatalogoContratoController extends AppBaseController
                     'user_id' => auth()->id()
                 ]);
                 foreach ($catalogoContrato->regionais()->whereIn('catalogo_contrato_status_id',[1,2])->get() as $catalogoContratoObra){
-                    $catalogoContratoRegional->catalogo_contrato_status_id = $catalogoContrato->catalogo_contrato_status_id;
-                    $catalogoContratoRegional->save();
+
+                    $catalogoContratoObra->catalogo_contrato_status_id = $catalogoContrato->catalogo_contrato_status_id;
+                    $catalogoContratoObra->save();
                     $catalogoContratoRegional = CatalogoContratoRegionalLog::create([
                         'catalogo_contrato_regional_id' => $catalogoContratoObra->id,
                         'catalogo_contrato_status_id' => $catalogoContratoObra->catalogo_contrato_status_id
