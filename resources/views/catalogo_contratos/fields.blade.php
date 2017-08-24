@@ -25,7 +25,7 @@
         @if(isset($catalogoContrato))
             @if($catalogoContrato->catalogo_contrato_status_id == 2 ||
                 $catalogoContrato->catalogo_contrato_status_id == 3 &&
-                $catalogoContrato->obras()->whereIn('catalogo_contrato_status_id',[1,2])->count()  )
+                $catalogoContrato->regionais()->whereIn('catalogo_contrato_status_id',[1,2])->count()  )
                 <div class="col-sm-12">
                     <div class="box box-warning">
                         <div class="box-header with-border">
@@ -776,7 +776,7 @@ $count_insumos = 0;
                         confirmButtonColor: '#DD6B55'
                     },
                     function () {
-                        $('#qtd_obras').val(parseInt($('#qtd_obras').val()) - 1);
+                        $('#qtd_regionais').val(parseInt($('#qtd_regionais').val()) - 1);
                         if (registroBD) {
 
                             $.ajax({
