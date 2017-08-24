@@ -141,14 +141,14 @@ class DetalhesServicosDataTable extends DataTable
                             ordem_de_compras.oc_status_id = 5
                         )
                     AND ordem_de_compra_itens.deleted_at IS NULL
-                    AND NOT EXISTS(
+                    '.($this->request()->get('oc_id') ? "AND ordem_de_compras.id = '".$this->request()->get('oc_id')."'" : 'AND NOT EXISTS(
                         SELECT 1 
                         FROM contrato_itens CI
                         JOIN contrato_item_apropriacoes CIT ON CIT.contrato_item_id = CI.id
                         JOIN oc_item_qc_item OCQC ON OCQC.qc_item_id = CI.qc_item_id
                         WHERE CI.id = CIT.contrato_item_id
                         AND OCQC.ordem_de_compra_item_id = ordem_de_compra_itens.id
-                    )
+                    )').'
                     AND ordem_de_compra_itens.servico_id = '.$this->servico_id.'
                     '.(isset($ordem_de_compra_ultima_aprovacao) ? "AND ordem_de_compras.created_at <='".$ordem_de_compra_ultima_aprovacao."'" : '').'
                     AND ordem_de_compra_itens.obra_id ='. $this->obra_id .' ) as valor_oc'),
