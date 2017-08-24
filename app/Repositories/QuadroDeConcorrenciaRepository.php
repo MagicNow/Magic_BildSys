@@ -57,13 +57,13 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
             ->join('insumos', 'insumos.id', 'ordem_de_compra_itens.insumo_id')
             ->join('catalogo_contrato_insumos', 'catalogo_contrato_insumos.insumo_id', 'ordem_de_compra_itens.insumo_id')
             ->join('catalogo_contratos', 'catalogo_contratos.id', 'catalogo_contrato_insumos.catalogo_contrato_id')
-            ->join('catalogo_contrato_obra', function($join){
-                $join->on('catalogo_contrato_obra.obra_id','=','obras.id');
-                $join->on('catalogo_contrato_obra.catalogo_contrato_id','=','catalogo_contratos.id');
+            ->join('catalogo_contrato_regional', function($join){
+                $join->on('catalogo_contrato_regional.regional_id','=','obras.regional_id');
+                $join->on('catalogo_contrato_regional.catalogo_contrato_id','=','catalogo_contratos.id');
             })
             ->where('ordem_de_compras.aprovado', '1')
             ->where('catalogo_contratos.catalogo_contrato_status_id',3) // Acordo Ativo
-            ->where('catalogo_contrato_obra.catalogo_contrato_status_id',3) // Obra Acordo Ativa
+            ->where('catalogo_contrato_regional.catalogo_contrato_status_id',3) // Regional Ativa
             ->where('catalogo_contrato_insumos.periodo_inicio','<=',date('Y-m-d'))
             ->where('catalogo_contrato_insumos.periodo_termino','>=',date('Y-m-d'))
             ->whereNotExists(function ($query) {
@@ -71,8 +71,6 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
                     ->from('oc_item_qc_item')
                     ->where('ordem_de_compra_item_id', DB::raw('ordem_de_compra_itens.id'));
             })
-//            ->where('catalogo_contratos.periodo_inicio', '<=', date('Y-m-d')) // O CAMPO FOI REMOVIDO
-//            ->where('catalogo_contratos.periodo_termino', '>=', date('Y-m-d')) // O CAMPO FOI REMOVIDO
             ->groupBy('ordem_de_compra_itens.insumo_id', 'catalogo_contrato_insumos.id')
             ->get();
 
