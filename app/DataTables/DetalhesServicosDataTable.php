@@ -3,6 +3,7 @@
 namespace App\DataTables;
 
 use App\Models\Orcamento;
+use App\Models\OrdemDeCompra;
 use App\Models\OrdemDeCompraItem;
 use App\Repositories\OrdemDeCompraRepository;
 use Form;
@@ -30,12 +31,23 @@ class DetalhesServicosDataTable extends DataTable
                 return '<small class="pull-left">R$</small>'.number_format( floatval($obj->valor_realizado), 2, ',','.');
             })
             ->editColumn('valor_comprometido_a_gastar', function($obj){
-                $valor_comprometido_a_gastar = OrdemDeCompraRepository::valorComprometidoAGastarItem($obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, $obj->insumo_id, $this->obra_id);
+                if($this->request()->get('oc_id')) {
+                    $ordem_de_compra_ultima_aprovacao = OrdemDeCompra::find($this->request()->get('oc_id'))->dataUltimoPeriodoAprovacao();
+                } else {
+                    $ordem_de_compra_ultima_aprovacao = null;
+                }
+                $valor_comprometido_a_gastar = OrdemDeCompraRepository::valorComprometidoAGastarItem($obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, $obj->insumo_id, $this->obra_id, null, $ordem_de_compra_ultima_aprovacao);
 
                 return '<small class="pull-left">R$</small>'.number_format( floatval($valor_comprometido_a_gastar), 2, ',','.');
             })
             ->editColumn('saldo_orcamento', function($obj){
-                $valor_comprometido_a_gastar = OrdemDeCompraRepository::valorComprometidoAGastarItem($obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, $obj->insumo_id, $this->obra_id);
+                if($this->request()->get('oc_id')) {
+                    $ordem_de_compra_ultima_aprovacao = OrdemDeCompra::find($this->request()->get('oc_id'))->dataUltimoPeriodoAprovacao();
+                } else {
+                    $ordem_de_compra_ultima_aprovacao = null;
+                }
+                $valor_comprometido_a_gastar = OrdemDeCompraRepository::valorComprometidoAGastarItem($obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, $obj->insumo_id, $this->obra_id, null, $ordem_de_compra_ultima_aprovacao);
+                
                 return '<small class="pull-left">R$</small>'.number_format( floatval($obj->valor_previsto) - floatval($obj->valor_realizado) - $valor_comprometido_a_gastar, 2, ',','.');
             })
             ->editColumn('valor_oc', function($obj){
@@ -53,7 +65,13 @@ class DetalhesServicosDataTable extends DataTable
                     }
                 }else{
                     //Saldo do orçamento - Valor da OC = Saldo disponivel após OC
-                    $valor_comprometido_a_gastar = OrdemDeCompraRepository::valorComprometidoAGastarItem($obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, $obj->insumo_id, $this->obra_id);
+                    if($this->request()->get('oc_id')) {
+                        $ordem_de_compra_ultima_aprovacao = OrdemDeCompra::find($this->request()->get('oc_id'))->dataUltimoPeriodoAprovacao();
+                    } else {
+                        $ordem_de_compra_ultima_aprovacao = null;
+                    }
+                    $valor_comprometido_a_gastar = OrdemDeCompraRepository::valorComprometidoAGastarItem($obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, $obj->insumo_id, $this->obra_id, null, $ordem_de_compra_ultima_aprovacao);
+                    
                     $obj->saldo_disponivel = floatval($obj->valor_previsto) - floatval($obj->valor_realizado) - $valor_comprometido_a_gastar - floatval($obj->valor_oc);
                     $cor = $obj->saldo_disponivel >=0 ? '#7ed321' : "#eb0000";
 
@@ -84,6 +102,10 @@ class DetalhesServicosDataTable extends DataTable
      */
     public function query()
     {
+        if($this->request()->get('oc_id')) {
+            $ordem_de_compra_ultima_aprovacao = OrdemDeCompra::find($this->request()->get('oc_id'))->dataUltimoPeriodoAprovacao();
+        }
+
         $orcamentos = Orcamento::select([
             DB::raw("CONCAT(SUBSTRING_INDEX(orcamentos.codigo_insumo, '.', -1),' - ' ,orcamentos.descricao) as descricao"),
             'orcamentos.unidade_sigla',
@@ -128,6 +150,7 @@ class DetalhesServicosDataTable extends DataTable
                         AND OCQC.ordem_de_compra_item_id = ordem_de_compra_itens.id
                     )
                     AND ordem_de_compra_itens.servico_id = '.$this->servico_id.'
+                    '.(isset($ordem_de_compra_ultima_aprovacao) ? "AND ordem_de_compras.created_at <='".$ordem_de_compra_ultima_aprovacao."'" : '').'
                     AND ordem_de_compra_itens.obra_id ='. $this->obra_id .' ) as valor_oc'),
 
             DB::raw('0

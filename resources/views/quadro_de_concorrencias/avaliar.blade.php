@@ -117,7 +117,7 @@
                                             $campo_extra_fornecedor = null;
                                             if(strlen($qcFornecedor->campos_extras_contrato)){
                                                 $campos_extras_contrato = json_decode($qcFornecedor->campos_extras_contrato);
-                                                $campo_extra_fornecedor = $campos_extras_contrato->$v_tag;
+                                                $campo_extra_fornecedor = isset($campos_extras_contrato->$v_tag)?$campos_extras_contrato->$v_tag:'';
                                             }
                                         @endphp
                                         @if($campo_extra_fornecedor)

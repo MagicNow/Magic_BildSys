@@ -221,6 +221,7 @@ elixir(function (mix) {
         'error-list.js',
         'is-mobile.js',
         'notifications.js',
+        'get-insumo.js',
     ], 'public/js/admin.js');
 
     mix.scripts([
@@ -254,6 +255,10 @@ elixir(function (mix) {
     mix.scripts([
         'carrinho.js',
     ], 'public/js/carrinho.js');
+
+    mix.scripts([
+        'solicitacao-de-entrega.js',
+    ], 'public/js/solicitacao-de-entrega.js');
     
 });
 

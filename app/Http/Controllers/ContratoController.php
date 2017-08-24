@@ -283,6 +283,12 @@ class ContratoController extends AppBaseController
         ]);
     }
 
+    /**
+     * Retorna as apropriações que ainda existem sobra
+     * @param $id
+     * @param ContratoItemRepository $contratoItemRepository
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function apropriacoes(
         $id,
         ContratoItemRepository $contratoItemRepository
