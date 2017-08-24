@@ -24,7 +24,7 @@ class Levantamento extends Model
     public $fillable = [    
 		'obra_id',
         'apropriacao',
-        'insumo_id',
+        'insumo',
 		'torre',
 		'andar',
 		'pavimento',
@@ -35,9 +35,7 @@ class Levantamento extends Model
 		'trecho_parede',
 		'personalizavel',
 		'quantidade',
-		'perda',
-        'data_inicio',
-        'data_termino',            
+		'perda',         
         'data_upload'
     ];
 
@@ -48,14 +46,7 @@ class Levantamento extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'obra_id' => 'integer',
-        'custo' => 'string',
-        'resumo' => 'string',
-		'torre' => 'string',
-		'pavimento' => 'string',
-		'tarefa' => 'string',
-		'critica' => 'string',
-		'concluida' => 'string'
+        'obra_id' => 'integer',        
     ];
 
     /**
@@ -63,18 +54,22 @@ class Levantamento extends Model
      *
      * @var array
      */
-	 //["custo","resumo","torre","pavimento","tarefa","critica","data_inicio","data_termino","concluida"]
+	 //["apropriacao","insumo","torre","andar","pavimento","trecho","apartamento","comodo","parede","trecho_parede","personalizavel","quantidade","perda"]
     public static $relation = [        
-		'custo' => 'string',
-        'resumo' => 'string',
+		'apropriacao' => 'string',
+		'insumo' => 'string',
 		'torre' => 'string',
+		'andar' => 'string',
+		'andar' => 'string',
 		'pavimento' => 'string',
-		'tarefa' => 'string',
-		'critica' => 'string',
-        'data_inicio' => 'date',
-        'data_termino' => 'date',
-		'concluida' => 'string'
-
+		'trecho' => 'string',
+		'apartamento' => 'string',
+		'comodo' => 'string',
+		'parede' => 'string',
+		'trecho_parede' => 'string',
+		'personalizavel' => 'string',
+		'quantidade' => 'integer',
+		'perda' => 'integer'
     ];
 
     /**
@@ -83,16 +78,7 @@ class Levantamento extends Model
      * @var array
      */
     public static $rules = [
-        'obra_id' => 'required',
-        'custo' => 'required',
-        'resumo' => 'required',
-		'torre' => 'required',
-		'pavimento' => 'required',
-		'tarefa' => 'required',
-		'critica' => 'required',
-        'data_inicio' => 'required',
-        'data_termino' => 'required',
-		'concluida' => 'required'
+        'obra_id' => 'required'        
     ];
 
     /**

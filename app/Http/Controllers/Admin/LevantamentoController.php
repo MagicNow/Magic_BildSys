@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\DataTables\Admin\LevantamentoDataTable;
+use App\DataTables\Admin\LevantamentoMascaraInsumoDataTable;
+use App\DataTables\Admin\LevantamentoMascaraEstruturaDataTable;
 use App\Http\Requests\Admin;
 use App\Http\Requests\Admin\LevantamentoRequest;
 use App\Http\Requests\Admin\UpdateLevantamentoRequest;
@@ -45,6 +47,38 @@ class LevantamentoController extends AppBaseController
             $id = $request->id;
         }
         return $levantamentoDataTable->porObra($id)->render('admin.levantamentos.index');
+    }
+	
+	/**
+     * Display a listing of the Mascara.
+     *
+     * @param LevantamentoMascaraDataTable $LevantamentoMascaraDataTable
+     * @return Response
+     */
+	public function mascaraInsumo(Request $request, LevantamentoMascaraInsumoDataTable $levantamentoMascaraInsumoDataTable)
+    {
+        $id = null;
+        if($request->id){
+            $id = $request->id;
+        }
+		
+        return $levantamentoMascaraInsumoDataTable->render('admin.levantamentos.mascara_insumo');
+    }
+	
+	/**
+     * Display a listing of the Mascara.
+     *
+     * @param LevantamentoMascaraDataTable $LevantamentoMascaraDataTable
+     * @return Response
+     */
+	public function mascaraEstrutura(Request $request, LevantamentoMascaraEstruturaDataTable $levantamentoMascaraEstruturaDataTable)
+    {
+        $id = null;
+        if($request->id){
+            $id = $request->id;
+        }
+		
+        return $levantamentoMascaraEstruturaDataTable->render('admin.levantamentos.mascara_estrutura');
     }
 
     /**

@@ -799,7 +799,7 @@ class SpreadsheetRepository
                         foreach ($colunas as $chave => $value) {
                             if($value) {
                                 if($row[$chave]) {
-                                    switch (CronogramaFisico::$relation[$value]) {
+                                    switch (Levantamento::$relation[$value]) {
                                         case 'string' :
                                             if (is_string($row[$chave])) {
                                                 $final[$value] = $row[$chave];
@@ -867,12 +867,12 @@ class SpreadsheetRepository
 
                         # save data table budget
                         if($erro == 0) {							
-                            CronogramaFisico::updateOrCreate(
+                            Levantamento::updateOrCreate(
                               [								
 								#restritos
                                   'obra_id' => $final['obra_id'],
 								  'apropriacao' => $final['apropriacao'],                                  
-								  'insumo_id' => $final['insumo_id'],
+								  'insumo' => $final['insumo'],
 								  'torre' => $final['torre'],								  
 								  'andar' => $final['andar'],
 								  'pavimento' => $final['pavimento'],
@@ -881,18 +881,13 @@ class SpreadsheetRepository
 								  'comodo' => $final['comodo'],
 								  'parede' => $final['parede'],
 								  'trecho_parede' => $final['trecho_parede'],
-								  'personalizavel' => $final['personalizavel'],
-								  'quantidade' => $final['quantidade'],
-								  'perda' => $final['perda']								  
+								  'personalizavel' => $final['personalizavel']								  								  							 
                               ],
                               [
 								#variaveis
-                                  'user_id' => $final['user_id'], 								  
-								  'custo' => $final['custo'],
+                                  'user_id' => $final['user_id'], 								  								  
 								  'quantidade' => $final['quantidade'],
 								  'perda' => $final['perda'],
-                                  'data_inicio' => $final['data_inicio'],
-                                  'data_termino' => $final['data_termino'],
                                   'data_upload' => date('Y-m-d')
                               ]
                             );

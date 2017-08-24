@@ -14,7 +14,7 @@ class LevantamentoRepository extends BaseRepository
     protected $fieldSearchable = [
         'obra_id',
         'apropriacao',
-        'insumo_id',
+        'insumo',
 		'torre',
 		'andar',
 		'pavimento',
@@ -25,9 +25,7 @@ class LevantamentoRepository extends BaseRepository
 		'trecho_parede',
 		'personalizavel',
 		'quantidade',
-		'perda',
-        'data_inicio',
-        'data_termino'
+		'perda'
     ];
 
     /**

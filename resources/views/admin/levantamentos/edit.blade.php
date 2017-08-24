@@ -3,7 +3,7 @@
 @section('content')
     <section class="content-header">
         <h1>
-            Cronograma de Obra
+            Levantamento
         </h1>
    </section>
    <div class="content">
@@ -11,9 +11,9 @@
        <div class="box box-primary">
            <div class="box-body">
                <div class="row">
-                   {!! Form::model($levantamento, ['route' => ['admin.levantatamentos.update', $levantatamento->id], 'method' => 'patch']) !!}
+                   {!! Form::model($levantamento, ['route' => ['admin.levantamentos.update', $levantamento->id], 'method' => 'patch']) !!}
 
-                        @include('admin.levantatamentos.fields')
+                        @include('admin.levantamentos.fields')
 
                    {!! Form::close() !!}
                </div>

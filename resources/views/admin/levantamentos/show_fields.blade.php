@@ -103,19 +103,7 @@
         <div class="form-group col-md-6">
             {!! Form::label('pavimento', 'Pavimento:') !!}
             <p class="form-control">{!! $levantamento->pavimento !!}</p>
-        </div>
-        
-		<!-- Data Field -->
-        <div class="form-group col-md-6">
-            {!! Form::label('data', 'Data Início:') !!}
-            <p class="form-control">{!! $levantamento->data_inicio ? with(new\Carbon\Carbon($levantamento->data))->format('d/m/Y') : '' !!}</p>
-        </div>
-
-        <!-- Data Fim Field -->
-        <div class="form-group col-md-6">
-            {!! Form::label('data_termino', 'Data Fim:') !!}
-            <p class="form-control">{!! $levantamento->data_termino ? with(new\Carbon\Carbon($levantamento->data_termino))->format('d/m/Y') : '' !!}</p>
-        </div>
+        </div>        
         
     </div>
 

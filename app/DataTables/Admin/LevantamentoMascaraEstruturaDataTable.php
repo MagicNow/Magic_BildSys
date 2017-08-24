@@ -7,7 +7,7 @@ use Form;
 use Yajra\Datatables\Services\DataTable;
 use Illuminate\Support\Facades\DB;
 
-class LevantamentoDataTable extends DataTable
+class LevantamentoMascaraEstruturaDataTable extends DataTable
 {
     protected $obra = null;
     /**

@@ -7,7 +7,7 @@ use Form;
 use Yajra\Datatables\Services\DataTable;
 use Illuminate\Support\Facades\DB;
 
-class LevantamentoDataTable extends DataTable
+class LevantamentoMascaraInsumoDataTable extends DataTable
 {
     protected $obra = null;
     /**
@@ -31,6 +31,8 @@ class LevantamentoDataTable extends DataTable
      */
     public function query()
     {
+		
+		//'levantamento', 'apropriacao', 'descricao', 'unidadde'
 				
         $levantamentos = Levantamento::query()
             ->select([
@@ -51,7 +53,7 @@ class LevantamentoDataTable extends DataTable
 				'levantamentos.created_at'					
             ])
         ->join('obras','obras.id','levantamentos.obra_id');
-		//->join('insumos','insumos.codigo','levantamentos.insumo');		
+				
 		
         if($this->obra){
             $levantamentos>where('levantamentos.obra_id', $this->obra);
@@ -126,19 +128,10 @@ class LevantamentoDataTable extends DataTable
     {				
 
         return [
-            'obra' => ['name' => 'obras.nome', 'data' => 'obra'], 
+            'levantamento' => ['name' => 'levantamento', 'data' => 'levantamento'], 
 			'apropriacao' => ['name' => 'apropriacao', 'data' => 'apropriacao'], 			
-			'insumo' => ['name' => 'insumo', 'data' => 'insumo'],
-			'torre' => ['name' => 'torre', 'data' => 'torre'],
-			'andar' => ['name' => 'andar', 'data' => 'andar'],
-			'pavimento' => ['name' => 'pavimento', 'data' => 'pavimento'],
-			'trecho' => ['name' => 'trecho', 'data' => 'trecho'],
-			'comodo' => ['name' => 'comodo', 'data' => 'comodo'],
-			'parede' => ['critica' => 'parede', 'data' => 'parede'],
-            'trecho_parede' => ['name' => 'trecho_parede', 'data' => 'trecho_parede'],
-            'personalizavel' => ['name' => 'personalizavel', 'data' => 'personalizavel'],
-			'quantidade' => ['name' => 'quantidade', 'data' => 'quantidade'],
-			'perda' => ['name' => 'perda', 'data' => 'perda'],			
+			'descricao' => ['name' => 'descricao', 'data' => 'descricao'],
+			'unidadde' => ['name' => 'unidadde', 'data' => 'unidadde'],					
             'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }

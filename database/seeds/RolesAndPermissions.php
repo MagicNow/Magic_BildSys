@@ -173,7 +173,8 @@ class RolesAndPermissions extends Seeder
             'levantamentos.delete'   => 'Remoção de levantamento',
 			
             'levantamentos.import' => 'Importar levantamentos',
-			//'levantamentos.dashboard' => 'Dashboard do levantamentos',
+			'levantamentos.mascara_insumo' => 'Mascara de Insumo para Upload',
+			'levantamentos.mascara_estrutura' => 'Mascara de Estrutura para Upload',
 
             ################# SITE ###################
             'compras_lembretes.list' => 'Listagem de compras e lembretes',

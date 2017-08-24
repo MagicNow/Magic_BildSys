@@ -163,7 +163,8 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
     $router->group(['prefix' => 'levantamentos'], function () use ($router) {
 		
         $router->group(['middleware' => 'needsPermission:levantamentos.list'], function () use ($router) {
-			//$router->get('dashboard', ['as' => 'admin.cronograma_fisicos.dashboard', 'uses' => 'Admin\LevantamentoController@dashboard']);
+			$router->get('mascaraInsumo', ['as' => 'admin.levantamentos.mascara_insumo', 'uses' => 'Admin\LevantamentoController@mascaraInsumo']);
+			$router->get('mascaraEstrutura', ['as' => 'admin.levantamentos.mascara_estrutura', 'uses' => 'Admin\LevantamentoController@mascaraEstrutura']);
             $router->get('atividade', ['as' => 'admin.levantamentos.index', 'uses' => 'Admin\LevantamentoController@index']);
             $router->post('atividade', ['as' => 'admin.levantamentos.store', 'uses' => 'Admin\LevantamentoController@store']);
             $router->get('atividade/create', ['as' => 'admin.levantamentos.create', 'uses' => 'Admin\LevantamentoController@create']);

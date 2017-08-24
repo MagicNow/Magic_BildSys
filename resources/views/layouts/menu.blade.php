@@ -33,7 +33,7 @@
 
 <li class="treeview {{ Request::is('admin/levantamentos*') ? 'active' : '' }}">
     <a href="#">
-        <i class="fa fa-balance-scale"></i> <span>Levantamentos</span>
+        <i class="fa fa-pencil fa-fw"></i> <span>Levantamentos</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
@@ -46,7 +46,23 @@
                 <span>Levantamentos</span>
             </a>
         </li>
-        @endshield		
+        @endshield	
+		@shield('levantamentos.list')
+        <li class="{{ Request::is('admin/levantamentos*') ? 'active' : '' }}">
+            <a href="{!! route('admin.levantamentos.mascara_insumo') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Mascara Insumo</span>
+            </a>
+        </li>
+        @endshield
+		@shield('levantamentos.list')
+        <li class="{{ Request::is('admin/levantamentos*') ? 'active' : '' }}">
+            <a href="{!! route('admin.levantamentos.mascara_estrutura') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Mascara Estrutura</span>
+            </a>
+        </li>
+        @endshield
         @shield('levantamentos.import')
         <li class="{{ Request::is('admin/levantamentos*') ? 'active' : '' }}">
             <a href="{!! route('admin.levantamentos.indexImport') !!}">
@@ -60,7 +76,7 @@
 
 <li class="treeview {{ Request::is('admin/cronogramaFisicos*') ? 'active' : '' }}">
     <a href="#">
-        <i class="fa fa-balance-scale"></i> <span>Cronograma Físicos</span>
+        <i class="fa fa-book fa-fw"></i> <span>Cronograma Físicos</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
