@@ -7,7 +7,7 @@
                        <button type="button" class="btn btn-link" onclick="history.go(-1);">
                            <i class="fa fa-arrow-left" aria-hidden="true"></i>
                        </button>
-                       <span>{{$planejamento->tarefa}}</span>
+                       <span>{{$cronogramaFisico->tarefa}}</span>
                    </h3>
                 </span>
             </div>
@@ -90,114 +90,68 @@
         <!-- Obra Id Field -->
         <div class="form-group col-md-6">
             {!! Form::label('obra_id', 'Obra:') !!}
-            <p class="form-control">{!! $planejamento->obra->nome !!}</p>
+            <p class="form-control">{!! $cronogramaFisico->obra->nome !!}</p>
+        </div>
+		
+
+        <!-- Resumo Field -->
+        <div class="form-group col-md-6">
+            {!! Form::label('resumo', 'Resumo:') !!}
+            <p class="form-control">{!! strtoupper($cronogramaFisico->resumo) !!}</p>
         </div>
 		
 		<!-- Custo Field -->
         <div class="form-group col-md-6">
             {!! Form::label('custo', 'Custo:') !!}
-            <p class="form-control">R$ 11.100,00</p>
+            <p class="form-control">{!! $cronogramaFisico->custo !!}</p>
         </div>
+		
+		<!-- Torre Field -->
+        <div class="form-group col-md-6">
+            {!! Form::label('torre', 'Torre:') !!}
+            <p class="form-control">{!! $cronogramaFisico->torre !!}</p>
+        </div>
+		
+		<!-- Pavimento Field -->
+        <div class="form-group col-md-6">
+            {!! Form::label('pavimento', 'Pavimento:') !!}
+            <p class="form-control">{!! $cronogramaFisico->pavimento !!}</p>
+        </div>
+		
+		
 
         <!-- Tarefa Field -->
         <div class="form-group col-md-6">
             {!! Form::label('tarefa', 'Tarefa:') !!}
-            <p class="form-control">{!! $planejamento->tarefa !!}</p>
+            <p class="form-control">{!! $cronogramaFisico->tarefa !!}</p>
         </div>
 
 		<!-- Critica Field -->
         <div class="form-group col-md-6">
             {!! Form::label('critica', 'Critica:') !!}
-            <p class="form-control">Sim</p>
+            <p class="form-control">{!! $cronogramaFisico->critica !!}</p>
+        </div>
+		
+		<!-- Concluida Field -->
+        <div class="form-group col-md-6">
+            {!! Form::label('conclusao', 'Concluida(%):') !!}
+            <p class="form-control">{!! $cronogramaFisico->concluida !!}</p>
         </div>
         
 		<!-- Data Field -->
         <div class="form-group col-md-6">
             {!! Form::label('data', 'Data Início:') !!}
-            <p class="form-control">{!! $planejamento->data ? with(new\Carbon\Carbon($planejamento->data))->format('d/m/Y') : '' !!}</p>
+            <p class="form-control">{!! $cronogramaFisico->data_inicio ? with(new\Carbon\Carbon($cronogramaFisico->data))->format('d/m/Y') : '' !!}</p>
         </div>
 
         <!-- Data Fim Field -->
         <div class="form-group col-md-6">
-            {!! Form::label('data_fim', 'Data Fim:') !!}
-            <p class="form-control">{!! $planejamento->data_fim ? with(new\Carbon\Carbon($planejamento->data_fim))->format('d/m/Y') : '' !!}</p>
+            {!! Form::label('data_termino', 'Data Fim:') !!}
+            <p class="form-control">{!! $cronogramaFisico->data_termino ? with(new\Carbon\Carbon($cronogramaFisico->data_termino))->format('d/m/Y') : '' !!}</p>
         </div>
-
-        <!-- Prazo Field -->
-        <div class="form-group col-md-6">
-            {!! Form::label('prazo', 'Prazo:') !!}
-            <p class="form-control">{!! $planejamento->prazo !!}</p>
-        </div>
-
-        <!-- Resumo Field -->
-        <div class="form-group col-md-6">
-            {!! Form::label('resumo', 'Resumo:') !!}
-            <p class="form-control">{!! strtoupper($planejamento->resumo) !!}</p>
-        </div>
-        <div class="row">
-            <div id="carrinho" class="col-md-12">
-                <ul>
-                    @if(count($itens))
-                        <?php $servico = null ?>
-                        @foreach($itens as $item)
-                            @if($servico != $item->servico_id)
-                                @if($servico > 0)
-                                    <!-- fecha tabela -->
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </li>
-                                @endif
-                                <?php $servico = $item->servico_id?>
-                                <!-- cria tabela -->
-                                <li>
-                                    <div class="row">
-                                        <table class="table table-hover">
-                                            <tbody>
-                                                <h4>
-                                                    Serviço:
-                                                    <span data-toggle="tooltip" data-placement="top" data-html="true" title="
-                                                        {{$item->grupo->codigo.' - '.$item->grupo->nome}}<br/>
-                                                        {{$item->subgrupo1->codigo.' - '.$item->subgrupo1->nome}}<br/>
-                                                        {{$item->subgrupo2->codigo.' - '.$item->subgrupo2->nome}}<br/>
-                                                        {{$item->subgrupo3->codigo.' - '.$item->subgrupo3->nome}}<br/>
-                                                        {{$item->servico->codigo.' - '.$item->servico->nome}}">
-                                                        <strong>{{$item->servico->codigo}}</strong>
-                                                    </span>
-                                                </h4>
-                            @endif
-                            <tr id="item_{{ $item->id }}">
-                                <td>{{$item->insumo->codigo}}</td>
-                                <td>{{$item->insumo->nome}}</td>
-                                <td>
-                                    <span class="pull-right text-center">
-                                         <button type="button" class="btn btn-flat btn-link"
-                                                 style="font-size: 18px; margin-top: -7px"
-                                                 onclick="removePlanejamentoCompra({{ $item->id }})">
-                                             <i class="text-red glyphicon glyphicon-trash" aria-hidden="true"></i>
-                                         </button>
-                                    </span>
-                                </td>
-                            </tr>
-                        @endforeach
-                        @if($servico)
-                                    </tbody>
-                                </table>
-                            </div>
-                        </li>
-                        @endif
-                    @else
-                        <div class="text-center">
-                            Nenhum item foi adicionado nesse planejamento!
-                        </div>
-                    @endif
-                </ul>
-            </div>
-        </div>
+        
     </div>
-    <div class="pg text-center">
-        {{ $itens->links() }}
-    </div>
+
 @endsection
 @section('scripts')
     <script type="text/javascript">
@@ -207,35 +161,6 @@
 
         $('div.alert').not('.alert-important').delay(3000).fadeOut(350);
 
-        function removePlanejamentoCompra(id) {
-            swal({
-                  title: "Remover este item?",
-                  text: "",
-                  type: "warning",
-                  showCancelButton: true,
-                  confirmButtonColor: "#DD6B55",
-                  confirmButtonText: "Sim, remover!",
-                  cancelButtonText: "Não",
-                  closeOnConfirm: false
-            },
-            function(){
-                startLoading();
-                $.ajax("{{ url('admin/planejamentos/atividade/planejamentocompras') }}/"+ id, {}
-                ).done(function (retorno) {
-                    stopLoading();
-                    if(retorno.success){
-                        swal('Removido','', 'success');
-                        $('#item_'+id).remove();
-                    }else{
-                        swal('Oops',retorno.error, 'error');
-                    }
-                }).fail(function (retorno) {
-                    stopLoading();
-                    error = 'Não foi possível remover o item';
-                    swal("Oops" + error, "error");
-                });
-            });
-        }
-    </script>
+	</script>
 @endsection
 

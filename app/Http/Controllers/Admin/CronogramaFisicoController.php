@@ -7,17 +7,12 @@ use App\Http\Requests\Admin;
 use App\Http\Requests\Admin\CronogramaFisicoRequest;
 use App\Http\Requests\Admin\UpdateCronogramaFisicoRequest;
 use App\Jobs\PlanilhaProcessa;
-use App\Models\Grupo;
-use App\Models\Insumo;
-use App\Models\InsumoGrupo;
-use App\Models\InsumoServico;
 use App\Models\Obra;
 use App\Models\Orcamento;
 use App\Models\PlanejamentoCompra;
 use App\Models\Planilha;
 use App\Models\Servico;
 use App\Models\TemplatePlanilha;
-use App\Models\TipoOrcamento;
 use App\Repositories\Admin\CronogramaFisicoRepository;
 use App\Repositories\Admin\SpreadsheetRepository;
 use Flash;
@@ -38,7 +33,7 @@ class CronogramaFisicoController extends AppBaseController
     }
 
     /**
-     * Display a listing of the Planejamento.
+     * Display a listing of the Cronograma Fisico.
      *
      * @param CronogramaFisicoDataTable $cronogramaFisicoDataTable
      * @return Response
@@ -53,7 +48,7 @@ class CronogramaFisicoController extends AppBaseController
     }
 
     /**
-     * Show the form for creating a new Planejamento.
+     * Show the form for creating a new Cronograma Fisico.
      *
      * @return Response
      */
@@ -74,15 +69,15 @@ class CronogramaFisicoController extends AppBaseController
     {
         $input = $request->all();
 
-        $planejamento = $this->cronogramaFisicoRepository->create($input);
+        $cronogramaFisico = $this->cronogramaFisicoRepository->create($input);
 
-        Flash::success('Planejamento '.trans('common.saved').' '.trans('common.successfully').'.');
+        Flash::success('Cronograma Fisico '.trans('common.saved').' '.trans('common.successfully').'.');
 
         return redirect(route('admin.cronograma_fisicos.index'));
     }
 
     /**
-     * Display the specified Planejamento.
+     * Display the specified Cronograma Fisico.
      *
      * @param  int $id
      *
@@ -90,22 +85,19 @@ class CronogramaFisicoController extends AppBaseController
      */
     public function show($id)
     {
-        $planejamento = $this->cronogramaFisicoRepository->findWithoutFail($id);
-        $itens = PlanejamentoCompra::where('planejamento_id', $id)
-            ->orderBy('servico_id')
-            ->paginate(10);
+        $cronogramaFisico = $this->cronogramaFisicoRepository->findWithoutFail($id);        
 
-        if (empty($planejamento)) {
-            Flash::error('Planejamento '.trans('common.not-found'));
+        if (empty($cronogramaFisico)) {
+            Flash::error('Cronograma Fisico '.trans('common.not-found'));
 
             return redirect(route('admin.cronograma_fisicos.index'));
         }
 
-        return view('admin.cronograma_fisicos.show', compact('planejamento','itens'));
+        return view('admin.cronograma_fisicos.show', compact('cronogramaFisico'));
     }
 
     /**
-     * Show the form for editing the specified Planejamento.
+     * Show the form for editing the specified Cronograma Fisico.
      *
      * @param  int $id
      *
@@ -114,46 +106,46 @@ class CronogramaFisicoController extends AppBaseController
     public function edit($id)
     {
         $obras = Obra::pluck('nome','id')->toArray();
-        $planejamento = $this->cronogramaFisicoRepository->findWithoutFail($id);
+        $cronogramaFisico = $this->cronogramaFisicoRepository->findWithoutFail($id);
 
-        if (empty($planejamento)) {
-            Flash::error('Planejamento '.trans('common.not-found'));
+        if (empty($cronogramaFisico)) {
+            Flash::error('Cronograma Fisico '.trans('common.not-found'));
 
             return redirect(route('admin.cronograma_fisicos.index'));
         }
 
 
-        return view('admin.cronograma_fisicos.edit', compact('planejamento','obras'));
+        return view('admin.cronograma_fisicos.edit', compact('cronogramaFisico','obras'));
     }
 
     /**
-     * Update the specified Planejamento in storage.
+     * Update the specified Cronograma Fisico in storage.
      *
      * @param  int              $id
      * @param UpdatePlanejamentoRequest $request
      *
      * @return Response
      */
-    public function update($id, UpdatePlanejamentoRequest $request)
+    public function update($id, UpdateCronogramaFisicoRequest $request)
     {
-        $planejamento = $this->cronogramaFisicoRepository->findWithoutFail($id);
+        $cronogramaFisico = $this->cronogramaFisicoRepository->findWithoutFail($id);
 
-        if (empty($planejamento)) {
-            Flash::error('Planejamento '.trans('common.not-found'));
+        if (empty($cronogramaFisico)) {
+            Flash::error('Cronograma Fisico '.trans('common.not-found'));
 
             return redirect(route('admin.cronograma_fisicos.index'));
         }
         $input = $request->all();
 
-        $planejamento = $this->cronogramaFisicoRepository->update($input, $id);
+        $cronogramaFisico = $this->cronogramaFisicoRepository->update($input, $id);
 
-        Flash::success('Planejamento '.trans('common.updated').' '.trans('common.successfully').'.');
+        Flash::success('Cronograma Fisico '.trans('common.updated').' '.trans('common.successfully').'.');
 
         return redirect(route('admin.cronograma_fisicos.index'));
     }
 
     /**
-     * Remove the specified Planejamento from storage.
+     * Remove the specified Cronograma Fisico from storage.
      *
      * @param  int $id
      *
@@ -161,39 +153,20 @@ class CronogramaFisicoController extends AppBaseController
      */
     public function destroy($id)
     {
-        $planejamento = $this->cronogramaFisicoRepository->findWithoutFail($id);
+        $cronogramaFisico = $this->cronogramaFisicoRepository->findWithoutFail($id);
 
-        if (empty($planejamento)) {
-            Flash::error('Planejamento '.trans('common.not-found'));
+        if (empty($cronogramaFisico)) {
+            Flash::error('Cronograma Fisico '.trans('common.not-found'));
 
             return redirect(route('admin.cronograma_fisicos.index'));
         }
 
         $this->cronogramaFisicoRepository->delete($id);
 
-        Flash::success('Planejamento '.trans('common.deleted').' '.trans('common.successfully').'.');
+        Flash::success('Cronograma Fisico '.trans('common.deleted').' '.trans('common.successfully').'.');
 
         return redirect(route('admin.cronograma_fisicos.index'));
     }
-
-    public function destroyPlanejamentoCompra($id)
-    {
-        try {
-            $planejamentoCompra = PlanejamentoCompra::find($id);
-
-            if ($planejamentoCompra) {
-                $planejamentoCompra->delete();
-                return response()->json(['success' => true, 'error' => false]);
-            } else {
-                $acao = "Ocorreu um erro ao deletar o item.";
-            }
-            return response()->json(['success' => false, 'error' => $acao]);
-        }catch(\Exception $e) {
-            Flash::error($e->getMessage());
-            return redirect(route('admin.cronograma_fisicos.index'));
-        }
-    }
-
 
 
     ################################ IMPORTAÇÃO ###################################
@@ -226,7 +199,7 @@ class CronogramaFisicoController extends AppBaseController
      */
     public function import(Request $request)
     {
-        $tipo = 'planejamento';
+        $tipo = 'cronogramaFisico';
         $file = $request->except('obra_id','template_id');
         $input = $request->except('_token','file');
         $template = $request->template_id;
@@ -290,14 +263,6 @@ class CronogramaFisicoController extends AppBaseController
         $input = $request->except('_token');
         $json = json_encode(array_filter($input));
 
-        # Validando campos obrigatórios como chave estrangeiras
-//        $codigo_insumo = in_array('codigo_insumo', $input);
-//        $unidade_sigla = in_array('unidade_sigla', $input);
-//        if(!$codigo_insumo && !$unidade_sigla){
-//            Flash::error('Os campos: codigo_insumo e unidade_sigla são obrigátorios.');
-//            return back();
-//        }
-
         # Pegando todas as planilhas por ordem decrescente e que trás somente a ultima planilha importada pelo usuário
         $planilha = Planilha::where('user_id', \Auth::id())->orderBy('id','desc')->first();
         # Após encontrar a planilha, será feito um update adicionando em array os campos escolhido pelo usuário.
@@ -325,51 +290,4 @@ class CronogramaFisicoController extends AppBaseController
         return redirect('admin/cronogramaFisico');
     }
 
-    /*public function getGrupos(Request $request, $id)
-    {
-        if($id){
-            $grupo = Grupo::where('grupo_id', $id)
-                ->select([
-                    'id',
-                    DB::raw("CONCAT(codigo, ' ', nome) as nome")
-                ])
-                ->where(function ($query) use($request){
-                   $query->where('nome', 'like', '%' . $request->q . '%')
-                       ->orWhere('codigo','like', '%'.$request->q.'%');
-                });
-        }else {
-            $grupo = Grupo::whereNull('grupo_id')
-                ->select([
-                    'id',
-                    DB::raw("CONCAT(codigo, ' ', nome) as nome")
-                ])
-                ->where(function ($query) use($request){
-                    $query->where('nome', 'like', '%' . $request->q . '%')
-                        ->orWhere('codigo','like', '%'.$request->q.'%');
-                });
-        }
-        return $grupo->paginate();
-    }*/
-    /*public function getServicos(Request $request, $id)
-    {
-        $servico = Servico::where('grupo_id', $id)
-            ->select([
-                'id',
-                DB::raw("CONCAT(codigo, ' ', nome) as nome")
-            ])
-            ->where(function ($query) use($request){
-                $query->where('nome', 'like', '%' . $request->q . '%')
-                    ->orWhere('codigo','like', '%'.$request->q.'%');
-            });
-
-        return $servico->paginate();
-    }
-    public function getServicoInsumos($id)
-    {
-        $insumoServico = InsumoServico::select(['insumos.id', 'insumos.nome', 'insumos.codigo'])
-            ->join('insumos', 'insumo_servico.insumo_id', '=', 'insumos.id')
-            ->where('servico_id', $id)
-            ->get();
-        return $insumoServico;
-    }*/
 }

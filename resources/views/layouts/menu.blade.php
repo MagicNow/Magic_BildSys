@@ -41,7 +41,7 @@
     <ul class="treeview-menu">
         @shield('cronogramaFisicos.list')
         <li class="{{ Request::is('admin/cronogramaFisicos*') ? 'active' : '' }}">
-            <a href="{!! route('admin.cronogramaFisicos.index') !!}">
+            <a href="{!! route('admin.cronograma_fisicos.index') !!}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
                 <span>Cronograma Físicos</span>
             </a>

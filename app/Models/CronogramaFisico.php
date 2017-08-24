@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class CronogramaFisico
@@ -11,8 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @version April 5, 2017, 11:58 am BRT
  */
 class CronogramaFisico extends Model
-{
-    use SoftDeletes;
+{    
 
     public $table = 'cronograma_fisicos';
     
@@ -24,13 +22,16 @@ class CronogramaFisico extends Model
 
 
     public $fillable = [
-        'obra_id',
-        'tarefa',
-        'data',
-        'data_fim',
-        'prazo',
-        'resumo',
-        'planejamento_id',
+        'obra_id',                
+        'custo',
+		'resumo',
+		'torre',
+		'pavimento',
+		'tarefa',
+		'critica',
+		'data_inicio',
+        'data_termino',
+        'concluida',        
         'data_upload'
     ];
 
@@ -42,10 +43,13 @@ class CronogramaFisico extends Model
     protected $casts = [
         'id' => 'integer',
         'obra_id' => 'integer',
-        'tarefa' => 'string',
-        'prazo' => 'integer',
+        'custo' => 'string',
         'resumo' => 'string',
-        'planejamento_id' => 'integer'
+		'torre' => 'string',
+		'pavimento' => 'string',
+		'tarefa' => 'string',
+		'critica' => 'string',
+		'concluida' => 'string'
     ];
 
     /**
@@ -53,13 +57,17 @@ class CronogramaFisico extends Model
      *
      * @var array
      */
+	 //["custo","resumo","torre","pavimento","tarefa","critica","data_inicio","data_termino","concluida"]
     public static $relation = [
+        'custo' => 'string',
         'resumo' => 'string',
-        'tarefa' => 'string',
-        'prazo' => 'integer',
-        'data' => 'date',
-        'data_fim' => 'date',
-
+		'torre' => 'string',
+		'pavimento' => 'string',
+		'tarefa' => 'string',
+		'critica' => 'string',
+        'data_inicio' => 'date',
+        'data_termino' => 'date',
+		'concluida' => 'string'
 
     ];
 
@@ -70,10 +78,15 @@ class CronogramaFisico extends Model
      */
     public static $rules = [
         'obra_id' => 'required',
-        'tarefa' => 'required',
-        'data' => 'required',
-        'data_fim' => 'required',
-        'prazo' => 'required',
+        'custo' => 'required',
+        'resumo' => 'required',
+		'torre' => 'required',
+		'pavimento' => 'required',
+		'tarefa' => 'required',
+		'critica' => 'required',
+        'data_inicio' => 'required',
+        'data_termino' => 'required',
+		'concluida' => 'required'
     ];
 
     /**
@@ -93,11 +106,4 @@ class CronogramaFisico extends Model
     }
     
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     **/
-    public function planejamentoCompras()
-    {
-        return $this->hasMany(\App\Models\PlanejamentoCompra::class);
-    }
 }

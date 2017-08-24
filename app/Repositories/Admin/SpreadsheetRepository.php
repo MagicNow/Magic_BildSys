@@ -17,7 +17,6 @@ use App\Models\CronogramaFisico;
 use App\Models\Planilha;
 use App\Models\Servico;
 use App\Models\TemplatePlanilha;
-use App\Models\TipoOrcamento;
 use App\Models\User;
 use App\Notifications\PlanilhaProcessamento;
 use Box\Spout\Common\Type;
@@ -634,7 +633,7 @@ class SpreadsheetRepository
                         foreach ($colunas as $chave => $value) {
                             if($value) {
                                 if($row[$chave]) {
-                                    switch (Planejamento::$relation[$value]) {
+                                    switch (CronogramaFisico::$relation[$value]) {
                                         case 'string' :
                                             if (is_string($row[$chave])) {
                                                 $final[$value] = $row[$chave];
@@ -701,22 +700,26 @@ class SpreadsheetRepository
                         }
 
                         # save data table budget
-                        if($erro == 0) {
+                        if($erro == 0) {							
                             CronogramaFisico::updateOrCreate(
-                              [
+                              [															  
                                   'obra_id' => $final['obra_id'],
-                                  'resumo' => $final['resumo'],
-                                  'tarefa' => trim($final['tarefa'])
+								  'resumo' => $final['resumo'],                                  
+								  'torre' => $final['torre'],
+								  'pavimento' => $final['pavimento'],								  
+								  'tarefa' => $final['tarefa']								  
                               ],
                               [
-                                  'user_id' => $final['user_id'],
-                                  'prazo' => $final['prazo'],
-                                  'data' => $final['data'],
-                                  'data_fim' => $final['data_fim'],
+                                  'user_id' => $final['user_id'], 
+								  'custo' => $final['custo'],
+								  'critica' => $final['critica'],
+								  'concluida' => $final['concluida']*100,
+                                  'data_inicio' => $final['data_inicio'],
+                                  'data_termino' => $final['data_termino'],
                                   'data_upload' => date('Y-m-d')
                               ]
                             );
-//                            Planejamento::create($final);
+                            //CronogramaFisico::create($final);
                         }else{
                             // estourar loop
                             $erro = 1;

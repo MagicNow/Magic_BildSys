@@ -12,9 +12,9 @@
 
             <div class="box-body">
                 <div class="row">
-                    {!! Form::open(['route' => 'admin.planejamentos.store']) !!}
+                    {!! Form::open(['route' => 'admin.cronograma_fisicos.store']) !!}
 
-                        @include('admin.planejamentos.fields')
+                        @include('admin.cronograma_fisicos.fields')
 
                     {!! Form::close() !!}
                 </div>

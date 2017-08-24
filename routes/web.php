@@ -137,22 +137,14 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
     $router->group(['prefix' => 'cronogramaFisicos'], function () use ($router) {
 		
         $router->group(['middleware' => 'needsPermission:cronogramaFisicos.list'], function () use ($router) {
-            $router->get('atividade', ['as' => 'admin.cronogramaFisicos.index', 'uses' => 'Admin\CronogramaFisicoController@index']);
-            $router->post('atividade', ['as' => 'admin.cronogramaFisicos.store', 'uses' => 'Admin\CronogramaFisicoController@store']);
+            $router->get('atividade', ['as' => 'admin.cronograma_fisicos.index', 'uses' => 'Admin\CronogramaFisicoController@index']);
+            $router->post('atividade', ['as' => 'admin.cronograma_fisicos.store', 'uses' => 'Admin\CronogramaFisicoController@store']);
             $router->get('atividade/create', ['as' => 'admin.cronograma_fisicos.create', 'uses' => 'Admin\CronogramaFisicoController@create']);
-            $router->put('atividade/{planejamentos}', ['as' => 'admin.cronograma_fisicos.update', 'uses' => 'Admin\CronogramaFisicoController@update']);
-            $router->patch('atividade/{planejamentos}', ['as' => 'admin.cronograma_fisicos.update', 'uses' => 'Admin\CronogramaFisicoController@update']);
-            $router->delete('atividade/{planejamentos}', ['as' => 'admin.cronograma_fisicos.destroy', 'uses' => 'Admin\CronogramaFisicoController@destroy']);
-            $router->get('atividade/{planejamentos}', ['as' => 'admin.cronograma_fisicos.show', 'uses' => 'Admin\CronogramaFisicoController@show'])
-                ->middleware("needsPermission:cronograma_de_obras.view");
-            $router->get('atividade/{planejamentos}/edit', ['as' => 'admin.cronograma_fisicos.edit', 'uses' => 'Admin\CronogramaFisicoController@edit'])
-                ->middleware("needsPermission:cronograma_de_obras.edit");
-            /*$router->get('atividade/grupos/{id}', 'Admin\CronogramaFisicoController@getGrupos');
-            $router->get('atividade/servicos/{id}', 'Admin\CronogramaFisicoController@getServicos');
-            $router->get('atividade/servico/insumo/relacionados', 'Admin\CronogramaFisicoController@GrupoRelacionados');
-            $router->get('atividade/servico/insumo/{id}', 'Admin\CronogramaFisicoController@getServicoInsumos');
-            $router->post('atividade/insumos', ['as' => 'admin.cronograma_fisicos.insumos', 'uses' => 'Admin\CronogramaFisicoController@planejamentoCompras']);
-            $router->get('atividade/planejamentocompras/{id}', 'Admin\CronogramaFisicoController@destroyPlanejamentoCompra');*/
+            $router->put('atividade/{cronograma_fisicos}', ['as' => 'admin.cronograma_fisicos.update', 'uses' => 'Admin\CronogramaFisicoController@update']);
+            $router->patch('atividade/{cronograma_fisicos}', ['as' => 'admin.cronograma_fisicos.update', 'uses' => 'Admin\CronogramaFisicoController@update']);
+            $router->delete('atividade/{cronograma_fisicos}', ['as' => 'admin.cronograma_fisicos.destroy', 'uses' => 'Admin\CronogramaFisicoController@destroy']);
+            $router->get('atividade/{cronograma_fisicos}', ['as' => 'admin.cronograma_fisicos.show', 'uses' => 'Admin\CronogramaFisicoController@show']);
+            $router->get('atividade/{cronograma_fisicos}/edit', ['as' => 'admin.cronograma_fisicos.edit', 'uses' => 'Admin\CronogramaFisicoController@edit']);
         });
 
     });
