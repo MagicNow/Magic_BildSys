@@ -486,6 +486,25 @@
                                 </div>
                                 <!-- /.box-body -->
                             </div>
+
+                            <div class="box box-solid">
+                                <div class="box-header with-border">
+                                    <i class="fa fa-building"></i>
+                                    <h3 class="box-title">Cabeçalho Martiz</h3>
+                                </div>
+                                <!-- /.box-header -->
+                                <div class="box-body">
+                                    <ul class="list-group">
+                                        <li class="list-group-item">
+                                            <span class="label label-primary selecionavel">
+                                               [CABECALHO_MATRIZ]
+                                            </span> &nbsp;
+                                            Razão Social, CNPJ, Inscrição Estadual, Inscrição Municipal e Endereço
+                                        </li>
+                                    </ul>
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
                         </div>
                     </div>
 
