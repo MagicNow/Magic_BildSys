@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\DataTables\Admin\CronogramaFisicoDataTable;
+use App\DataTables\Admin\LevantamentoDataTable;
 use App\Http\Requests\Admin;
-use App\Http\Requests\Admin\CronogramaFisicoRequest;
-use App\Http\Requests\Admin\UpdateCronogramaFisicoRequest;
+use App\Http\Requests\Admin\LevantamentoRequest;
+use App\Http\Requests\Admin\UpdateLevantamentoRequest;
 use App\Jobs\PlanilhaProcessa;
 use App\Models\Obra;
 use App\Models\Orcamento;
@@ -13,7 +13,7 @@ use App\Models\PlanejamentoCompra;
 use App\Models\Planilha;
 use App\Models\Servico;
 use App\Models\TemplatePlanilha;
-use App\Repositories\Admin\CronogramaFisicoRepository;
+use App\Repositories\Admin\LevantamentoRepository;
 use App\Repositories\Admin\SpreadsheetRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
@@ -22,40 +22,40 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Response;
 
-class CronogramaFisicoController extends AppBaseController
+class LevantamentoController extends AppBaseController
 {
-    /** @var  CronogramaFisicoRepository */
-    private $cronogramaFisicoRepository;
+    /** @var  LevantamentoRepository */
+    private $levantamentoRepository;
 
-    public function __construct(CronogramaFisicoRepository $cronogramaFisicoRepo)
+    public function __construct(LevantamentoRepository $levantamentoRepo)
     {
-        $this->cronogramaFisicoRepository = $cronogramaFisicoRepo;
+        $this->levantamentoRepository = $levantamentoRepo;
     }
 
     /**
-     * Display a listing of the Cronograma Fisico.
+     * Display a listing of the Levantamento.
      *
-     * @param CronogramaFisicoDataTable $cronogramaFisicoDataTable
+     * @param LevantamentoDataTable $levantamentoDataTable
      * @return Response
      */
-    public function index(Request $request, CronogramaFisicoDataTable $cronogramaFisicoDataTable)
+    public function index(Request $request, LevantamentoDataTable $levantamentoDataTable)
     {
         $id = null;
         if($request->id){
             $id = $request->id;
         }
-        return $cronogramaFisicoDataTable->porObra($id)->render('admin.cronograma_fisicos.index');
+        return $levantamentoDataTable->porObra($id)->render('admin.levantamentos.index');
     }
 
     /**
-     * Show the form for creating a new Cronograma Fisico.
+     * Show the form for creating a new Levantamento.
      *
      * @return Response
      */
     public function create()
     {
         $obras = Obra::pluck('nome','id')->toArray();
-        return view('admin.cronograma_fisicos.create', compact('obras'));
+        return view('admin.levantamentos.create', compact('obras'));
     }
 
     /**
@@ -69,15 +69,15 @@ class CronogramaFisicoController extends AppBaseController
     {
         $input = $request->all();
 
-        $cronogramaFisico = $this->cronogramaFisicoRepository->create($input);
+        $levantamento = $this->levantamentoRepository->create($input);
 
-        Flash::success('Cronograma Fisico '.trans('common.saved').' '.trans('common.successfully').'.');
+        Flash::success('Levantamento '.trans('common.saved').' '.trans('common.successfully').'.');
 
-        return redirect(route('admin.cronograma_fisicos.index'));
+        return redirect(route('admin.levantamentos.index'));
     }
 
     /**
-     * Display the specified Cronograma Fisico.
+     * Display the specified Levantamento.
      *
      * @param  int $id
      *
@@ -85,19 +85,19 @@ class CronogramaFisicoController extends AppBaseController
      */
     public function show($id)
     {
-        $cronogramaFisico = $this->cronogramaFisicoRepository->findWithoutFail($id);        
+        $levantamento = $this->levantamentoRepository->findWithoutFail($id);        
 
-        if (empty($cronogramaFisico)) {
-            Flash::error('Cronograma Fisico '.trans('common.not-found'));
+        if (empty($levantamento)) {
+            Flash::error('Levantamento '.trans('common.not-found'));
 
-            return redirect(route('admin.cronograma_fisicos.index'));
+            return redirect(route('admin.levantamentos.index'));
         }
 
-        return view('admin.cronograma_fisicos.show', compact('cronogramaFisico'));
+        return view('admin.levantamentos.show', compact('levantamento'));
     }
 
     /**
-     * Show the form for editing the specified Cronograma Fisico.
+     * Show the form for editing the specified Levantamento.
      *
      * @param  int $id
      *
@@ -106,46 +106,46 @@ class CronogramaFisicoController extends AppBaseController
     public function edit($id)
     {
         $obras = Obra::pluck('nome','id')->toArray();
-        $cronogramaFisico = $this->cronogramaFisicoRepository->findWithoutFail($id);
+        $levantamento = $this->levantamentoRepository->findWithoutFail($id);
 
-        if (empty($cronogramaFisico)) {
-            Flash::error('Cronograma Fisico '.trans('common.not-found'));
+        if (empty($levantamento)) {
+            Flash::error('Levantamento '.trans('common.not-found'));
 
-            return redirect(route('admin.cronograma_fisicos.index'));
+            return redirect(route('admin.levantamentos.index'));
         }
 
 
-        return view('admin.cronograma_fisicos.edit', compact('cronogramaFisico','obras'));
+        return view('admin.levantamentos.edit', compact('levantamento','obras'));
     }
 
     /**
-     * Update the specified Cronograma Fisico in storage.
+     * Update the specified Levantamento in storage.
      *
      * @param  int              $id
      * @param UpdatePlanejamentoRequest $request
      *
      * @return Response
      */
-    public function update($id, UpdateCronogramaFisicoRequest $request)
+    public function update($id, UpdateLevantamentoRequest $request)
     {
-        $cronogramaFisico = $this->cronogramaFisicoRepository->findWithoutFail($id);
+        $levantamento = $this->levantamentoRepository->findWithoutFail($id);
 
-        if (empty($cronogramaFisico)) {
-            Flash::error('Cronograma Fisico '.trans('common.not-found'));
+        if (empty($levantamento)) {
+            Flash::error('Levantamento '.trans('common.not-found'));
 
-            return redirect(route('admin.cronograma_fisicos.index'));
+            return redirect(route('admin.levantamentos.index'));
         }
         $input = $request->all();
 
-        $cronogramaFisico = $this->cronogramaFisicoRepository->update($input, $id);
+        $levantamento = $this->levantamentoRepository->update($input, $id);
 
-        Flash::success('Cronograma Fisico '.trans('common.updated').' '.trans('common.successfully').'.');
+        Flash::success('Levantamento '.trans('common.updated').' '.trans('common.successfully').'.');
 
-        return redirect(route('admin.cronograma_fisicos.index'));
+        return redirect(route('admin.levantamentos.index'));
     }
 
     /**
-     * Remove the specified Cronograma Fisico from storage.
+     * Remove the specified Levantamento from storage.
      *
      * @param  int $id
      *
@@ -153,19 +153,19 @@ class CronogramaFisicoController extends AppBaseController
      */
     public function destroy($id)
     {
-        $cronogramaFisico = $this->cronogramaFisicoRepository->findWithoutFail($id);
+        $levantamento = $this->levantamentoRepository->findWithoutFail($id);
 
-        if (empty($cronogramaFisico)) {
-            Flash::error('Cronograma Fisico '.trans('common.not-found'));
+        if (empty($levantamento)) {
+            Flash::error('Levantamento '.trans('common.not-found'));
 
-            return redirect(route('admin.cronograma_fisicos.index'));
+            return redirect(route('admin.levantamentos.index'));
         }
 
-        $this->cronogramaFisicoRepository->delete($id);
+        $this->levantamentoRepository->delete($id);
 
-        Flash::success('Cronograma Fisico '.trans('common.deleted').' '.trans('common.successfully').'.');
+        Flash::success('Levantamento '.trans('common.deleted').' '.trans('common.successfully').'.');
 
-        return redirect(route('admin.cronograma_fisicos.index'));
+        return redirect(route('admin.levantamentos.index'));
     }
 
 
@@ -184,8 +184,8 @@ class CronogramaFisicoController extends AppBaseController
         }
 
         $obras = Obra::pluck('nome','id')->toArray();
-        $templates = TemplatePlanilha::where('modulo', 'Cronograma Fisicos')->pluck('nome','id')->toArray();
-        return view('admin.cronograma_fisicos.indexImport', compact('obras','templates','id'));
+        $templates = TemplatePlanilha::where('modulo', 'Levantamentos')->pluck('nome','id')->toArray();
+        return view('admin.levantamentos.indexImport', compact('obras','templates','id'));
     }
 
     /**
@@ -199,12 +199,12 @@ class CronogramaFisicoController extends AppBaseController
      */
     public function import(Request $request)
     {
-        $tipo = 'cronogramaFisico';
+        $tipo = 'levantamento';
         $file = $request->except('obra_id','template_id');
         $input = $request->except('_token','file');
         $template = $request->template_id;
         $input['user_id'] = Auth::id();
-		$input['template_id'] = $request->template_id;
+		//$input['template_id'] = $request->template_id;
         $parametros = json_encode($input);
         $colunasbd = [];
 
@@ -222,7 +222,7 @@ class CronogramaFisicoController extends AppBaseController
             \Session::put('retorno', $retorno);
             \Session::put('colunasbd', $colunasbd);
 
-            return redirect('/admin/cronogramaFisico/importar/selecionaCampos?planilha_id='.$retorno['planilha_id'].($template?'&template_id='.$template:''));
+            return redirect('/admin/levantamento/importar/selecionaCampos?planilha_id='.$retorno['planilha_id'].($template?'&template_id='.$template:''));
         }else{
             return $retorno;
         }
@@ -250,10 +250,10 @@ class CronogramaFisicoController extends AppBaseController
                 # Mensagem que será exibida para o usuário avisando que a importação foi adicionada na fila e será processada.
                 Flash::warning('Importação incluída na FILA. Ao concluir o processamento enviaremos um ALERTA!');
 
-                return redirect('admin/cronogramaFisico');
+                return redirect('admin/levantamento');
             }
         }
-        return view('admin.cronograma_fisicos.checkIn', compact('retorno','colunasbd'));
+        return view('admin.levantamentos.checkIn', compact('retorno','colunasbd'));
     }
 
     /*
@@ -274,8 +274,8 @@ class CronogramaFisicoController extends AppBaseController
 
         # Salvar os campos escolhido na primeira importação de planilha para criar um modelo de template
         $template_orcamento = TemplatePlanilha::firstOrNew([
-            'nome' => 'CronogramaFisico',
-            'modulo' => 'CronogramaFisico'
+            'nome' => 'Levantamento',
+            'modulo' => 'Levantamento'
         ]);
         $template_orcamento->colunas = $json;
         $template_orcamento->save();
@@ -288,7 +288,7 @@ class CronogramaFisicoController extends AppBaseController
 
         # Mensagem que será exibida para o usuário avisando que a importação foi adicionada na fila e será processada.
         Flash::warning('Importação incluída na FILA. Ao concluir o processamento enviaremos um ALERTA!');
-        return redirect('admin/cronogramaFisico');
+        return redirect('admin/levantamento');
     }
 	
 	//Gráficos
@@ -350,7 +350,7 @@ class CronogramaFisicoController extends AppBaseController
             }
         }
         
-        return view('admin.cronograma_fisicos.dashboard', compact('reprovados', 'aprovados', 'emaprovacao', 'abaixo_orcamento', 'dentro_orcamento', 'acima_orcamento'));
+        return view('admin.levantamentos.dashboard', compact('reprovados', 'aprovados', 'emaprovacao', 'abaixo_orcamento', 'dentro_orcamento', 'acima_orcamento'));
     }
 
 

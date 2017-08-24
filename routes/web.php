@@ -137,6 +137,7 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
     $router->group(['prefix' => 'cronogramaFisicos'], function () use ($router) {
 		
         $router->group(['middleware' => 'needsPermission:cronogramaFisicos.list'], function () use ($router) {
+			$router->get('dashboard', ['as' => 'admin.cronograma_fisicos.dashboard', 'uses' => 'Admin\CronogramaFisicoController@dashboard']);
             $router->get('atividade', ['as' => 'admin.cronograma_fisicos.index', 'uses' => 'Admin\CronogramaFisicoController@index']);
             $router->post('atividade', ['as' => 'admin.cronograma_fisicos.store', 'uses' => 'Admin\CronogramaFisicoController@store']);
             $router->get('atividade/create', ['as' => 'admin.cronograma_fisicos.create', 'uses' => 'Admin\CronogramaFisicoController@create']);
@@ -149,9 +150,31 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
 
     });
 	
-	#Cronograma por planos/obra
-    /*$router->get('planejamentoCronogramas', ['as' => 'admin.planejamentoCronogramas.index', 'uses' => 'Admin\PlanejamentoCronogramaController@index'])
-        ->middleware("needsPermission:cronograma_por_obras.list");*/
+	#importação de planilhas de levantamentos
+    $router->group(['middleware' => 'needsPermission:levantamentos.import'], function () use ($router) {
+        $router->get('levantamento/', ['as' => 'admin.levantamentos.indexImport', 'uses' => 'Admin\LevantamentoController@indexImport']);
+        $router->post('levantamento/importar', ['as' => 'admin.levantamentos.importar', 'uses' => 'Admin\LevantamentoController@import']);
+        $router->get('levantamento/importar/checkIn', ['as' => 'admin.levantamentos.checkIn', 'uses' => 'Admin\LevantamentoController@checkIn']);
+        $router->post('levantamento/importar/save', ['as' => 'admin.levantamentos.save', 'uses' => 'Admin\LevantamentoController@save']);
+        $router->get('levantamento/importar/selecionaCampos', 'Admin\LevantamentoController@selecionaCampos');
+    });
+
+    # Levantamentos
+    $router->group(['prefix' => 'levantamentos'], function () use ($router) {
+		
+        $router->group(['middleware' => 'needsPermission:levantamentos.list'], function () use ($router) {
+			//$router->get('dashboard', ['as' => 'admin.cronograma_fisicos.dashboard', 'uses' => 'Admin\LevantamentoController@dashboard']);
+            $router->get('atividade', ['as' => 'admin.levantamentos.index', 'uses' => 'Admin\LevantamentoController@index']);
+            $router->post('atividade', ['as' => 'admin.levantamentos.store', 'uses' => 'Admin\LevantamentoController@store']);
+            $router->get('atividade/create', ['as' => 'admin.levantamentos.create', 'uses' => 'Admin\LevantamentoController@create']);
+            $router->put('atividade/{levantamentos}', ['as' => 'admin.levantamentos.update', 'uses' => 'Admin\LevantamentoController@update']);
+            $router->patch('atividade/{levantamentos}', ['as' => 'admin.levantamentos.update', 'uses' => 'Admin\LevantamentoController@update']);
+            $router->delete('atividade/{levantamentos}', ['as' => 'admin.levantamentos.destroy', 'uses' => 'Admin\LevantamentoController@destroy']);
+            $router->get('atividade/{levantamentos}', ['as' => 'admin.levantamentos.show', 'uses' => 'Admin\LevantamentoController@show']);
+            $router->get('atividade/{levantamentos}/edit', ['as' => 'admin.levantamentos.edit', 'uses' => 'Admin\LevantamentoController@edit']);
+        });
+
+    });
 	
 
     # Lembretes

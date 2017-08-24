@@ -5,14 +5,14 @@ namespace App\Models;
 use Eloquent as Model;
 
 /**
- * Class CronogramaFisico
+ * Class Levantamento
  * @package App\Models
  * @version April 5, 2017, 11:58 am BRT
  */
-class CronogramaFisico extends Model
+class Levantamento extends Model
 {    
 
-    public $table = 'cronograma_fisicos';
+    public $table = 'levantamentos';
     
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
@@ -23,16 +23,21 @@ class CronogramaFisico extends Model
 
     public $fillable = [    
 		'obra_id',
-		'template_id',		
-        'custo',
-		'resumo',
+        'apropriacao',
+        'insumo_id',
 		'torre',
+		'andar',
 		'pavimento',
-		'tarefa',
-		'critica',
-		'data_inicio',
-        'data_termino',
-        'concluida',        
+		'trecho',
+		'comodo',
+		'parede',
+		'apartamento',
+		'trecho_parede',
+		'personalizavel',
+		'quantidade',
+		'perda',
+        'data_inicio',
+        'data_termino',            
         'data_upload'
     ];
 
@@ -95,7 +100,7 @@ class CronogramaFisico extends Model
      **/
     public function cronogramaFisico()
     {
-        return $this->belongsTo(\App\Models\CronogramaFisico::class);
+        return $this->belongsTo(\App\Models\Levantamento::class);
     }
 
     /**

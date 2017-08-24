@@ -18,7 +18,7 @@ class CreateCronogramaFisicosTable extends Migration
 			$table->increments('id');
             $table->unsignedInteger('obra_id');
             $table->string('tarefa');	
-			$table->string('tipo');
+			$table->string('template_id');
 			$table->string('custo');
 			$table->string('resumo');
 			$table->string('torre');

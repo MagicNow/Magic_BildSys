@@ -2,7 +2,7 @@
 
 @section('content')
     <section class="content-header">
-        <h1 class="pull-left">Importar cronograma físico</h1>
+        <h1 class="pull-left">Importar Levantamento</h1>
     </section>
     @include('vendor.flash.message')
     <div class="content">
@@ -11,7 +11,7 @@
 
         <div class="box box-primary">
 
-            {!! Form::open(['route' => 'admin.cronogramaFisicos.importar', 'files'=>true]) !!}
+            {!! Form::open(['route' => 'admin.levantamentos.importar', 'files'=>true]) !!}
             <fieldset style="margin-top:10px; min-width: 1px;">
                 <div class="panel-body">
                     <div class="col-md-10">
@@ -24,7 +24,7 @@
                             {!! Form::select('template_id', ['' => 'Escolha...']+$templates, null, ['class' => 'form-control']) !!}
                         </div>
                         <h4>Apenas planilhas no formato <strong class="label label-warning"> .xlsx </strong></h4></br>
-                        <h5 style="color:#000000">Planilha modelo: <strong class="label label-warning"><a href="/cronograma_fisicos.xlsx" style="color:white" target="_blank">clique aqui</a> </strong></h5>
+                        <h5 style="color:#000000">Planilha modelo: <strong class="label label-warning"><a href="/levantamentos.xlsx" style="color:white" target="_blank">clique aqui</a> </strong></h5>
                         <div class="row" style="margin-bottom: 20px">
                             <div class="col-sm-6 {{ $errors->has('file') ? 'has-error' : '' }}">
                                 {!! Form::file('file', array('id' => 'file', 'class' => 'form-control', 'required'=>'required')) !!}

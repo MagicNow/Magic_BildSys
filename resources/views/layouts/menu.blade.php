@@ -31,6 +31,33 @@
     </ul>
 </li>
 
+<li class="treeview {{ Request::is('admin/levantamentos*') ? 'active' : '' }}">
+    <a href="#">
+        <i class="fa fa-balance-scale"></i> <span>Levantamentos</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+    </a>
+    <ul class="treeview-menu">		
+        @shield('levantamentos.list')
+        <li class="{{ Request::is('admin/levantamentos*') ? 'active' : '' }}">
+            <a href="{!! route('admin.levantamentos.index') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Levantamentos</span>
+            </a>
+        </li>
+        @endshield		
+        @shield('levantamentos.import')
+        <li class="{{ Request::is('admin/levantamentos*') ? 'active' : '' }}">
+            <a href="{!! route('admin.levantamentos.indexImport') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Importação</span>
+            </a>
+        </li>
+        @endshield
+    </ul>
+</li>
+
 <li class="treeview {{ Request::is('admin/cronogramaFisicos*') ? 'active' : '' }}">
     <a href="#">
         <i class="fa fa-balance-scale"></i> <span>Cronograma Físicos</span>
@@ -39,6 +66,14 @@
             </span>
     </a>
     <ul class="treeview-menu">
+		@shield('cronogramaFisicos.dashboard')
+        <li class="{{ Request::is('admin/cronogramaFisicos*') ? 'active' : '' }}">
+            <a href="{!! route('admin.cronograma_fisicos.dashboard') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Rel. Semanal/Mensal</span>
+            </a>
+        </li>
+        @endshield
         @shield('cronogramaFisicos.list')
         <li class="{{ Request::is('admin/cronogramaFisicos*') ? 'active' : '' }}">
             <a href="{!! route('admin.cronograma_fisicos.index') !!}">
@@ -46,15 +81,7 @@
                 <span>Cronograma Físicos</span>
             </a>
         </li>
-        @endshield
-		@shield('cronogramaFisicos.import')
-        <li class="{{ Request::is('admin/cronogramaFisicos*') ? 'active' : '' }}">
-            <a href="{!! route('admin.cronogramaFisicos.indexImport') !!}">
-                <i class="fa fa-caret-right" aria-hidden="true"></i>
-                <span>Rel. Semanal/Mensal</span>
-            </a>
-        </li>
-        @endshield
+        @endshield		
         @shield('cronogramaFisicos.import')
         <li class="{{ Request::is('admin/cronogramaFisicos*') ? 'active' : '' }}">
             <a href="{!! route('admin.cronogramaFisicos.indexImport') !!}">

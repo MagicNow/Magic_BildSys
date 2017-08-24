@@ -21,6 +21,9 @@ class CronogramaFisicoDataTable extends DataTable
             ->editColumn('obra_id',function ($obj){
                 return $obj->obra_id ? $obj->obra->nome : '';
             })
+			->editColumn('template_id',function ($obj){
+                return $obj->template_id ? $obj->tipo->nome : '';
+            })
             ->editColumn('data_inicio',function ($obj){
                 return $obj->data_inicio ? with(new\Carbon\Carbon($obj->data_inicio))->format('d/m/Y') : '';
             })
@@ -57,8 +60,11 @@ class CronogramaFisicoDataTable extends DataTable
             ->select([
                 'cronograma_fisicos.id',
                 'obras.nome as obra',
-				'cronograma_fisicos.tarefa',	
-                'cronograma_fisicos.custo',				
+				'template_planilhas.nome as tipo',
+				'cronograma_fisicos.tarefa',
+				DB::raw("(CONCAT('R$ ',cronograma_fisicos.custo,'')
+                         ) as custo"
+                ),
                 'cronograma_fisicos.resumo',
 				'cronograma_fisicos.torre',
 				'cronograma_fisicos.pavimento',
@@ -116,12 +122,23 @@ class CronogramaFisicoDataTable extends DataTable
 							WHERE CF.id = cronograma_fisicos.id 
                          ) as ultimo_dia"
                 ),
+				DB::raw("(SELECT CONCAT(ROUND(CF.custo/
+							(SELECT custo 
+								FROM cronograma_fisicos  
+								WHERE tarefa like '%Cronograma%'
+								GROUP BY custo
+							)*100,2),'%') custo_total
+							FROM cronograma_fisicos CF
+							WHERE CF.id = cronograma_fisicos.id 
+                         ) as peso"
+                ),
 				DB::raw("(CONCAT(cronograma_fisicos.concluida,'%')
                          ) as concluida"
                 ),                 
 				'cronograma_fisicos.created_at'					
             ])
-        ->join('obras','obras.id','cronograma_fisicos.obra_id');		
+        ->join('obras','obras.id','cronograma_fisicos.obra_id')
+		->join('template_planilhas','template_planilhas.id','cronograma_fisicos.template_id');		
 		
         if($this->obra){
             $cronograma_fisicos>where('cronograma_fisicos.obra_id', $this->obra);
@@ -209,7 +226,8 @@ class CronogramaFisicoDataTable extends DataTable
 		- se não for nenhuma das 2 condições acima, divide os dias da semana da data de início - da data da sexta por os dias da semana do término -  da data do início*/			
 		
         return [
-            'obra' => ['name' => 'obras.nome', 'data' => 'obra'],            
+            'obra' => ['name' => 'obras.nome', 'data' => 'obra'], 
+			'tipo' => ['name' => 'template_planilhas.nome', 'data' => 'tipo'], 			
 			'tarefa_mes' => ['name' => 'tarefa_mes', 'data' => 'tarefa_mes'],
 			'tarefa' => ['name' => 'tarefa', 'data' => 'tarefa'],
 			'custo' => ['name' => 'custo', 'data' => 'custo'],
@@ -217,9 +235,10 @@ class CronogramaFisicoDataTable extends DataTable
 			'torre' => ['name' => 'torre', 'data' => 'torre'],
 			'pavimento' => ['name' => 'pavimento', 'data' => 'pavimento'],
 			'critica' => ['critica' => 'critica', 'data' => 'critica'],
-            'data_início' => ['name' => 'data_início', 'data' => 'data_inicio'],
+            'data_início' => ['name' => 'data_inicio', 'data' => 'data_inicio'],
             'data_termino' => ['name' => 'data_termino', 'data' => 'data_termino'],
-			'concluida' => ['name' => 'concluida', 'data' => 'concluida'],			
+			'concluida' => ['name' => 'concluida', 'data' => 'concluida'],
+			'peso' => ['name' => 'peso', 'data' => 'peso'],			
 			$fridays[0].'' => ['name' => 'concluida', 'data' => 'semana1'],
 			$fridays[1].'' => ['name' => 'concluida', 'data' => 'semana2'],
 			$fridays[2].'' => ['name' => 'concluida', 'data' => 'semana3'],

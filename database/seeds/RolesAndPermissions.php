@@ -165,6 +165,15 @@ class RolesAndPermissions extends Seeder
             'cronogramaFisicos.delete'   => 'Remoção de cronograma físicos',
 			
             'cronogramaFisicos.import' => 'Importar orçamentos',
+			'cronogramaFisicos.dashboard' => 'Dashboard do Cronograma Físico',
+			
+			'levantamentos.list' => 'Listagem de levantamento',
+            'levantamentos.create' => 'Criação de levantamento',
+            'levantamentos.edit'   => 'Edição de levantamento',
+            'levantamentos.delete'   => 'Remoção de levantamento',
+			
+            'levantamentos.import' => 'Importar levantamentos',
+			//'levantamentos.dashboard' => 'Dashboard do levantamentos',
 
             ################# SITE ###################
             'compras_lembretes.list' => 'Listagem de compras e lembretes',
