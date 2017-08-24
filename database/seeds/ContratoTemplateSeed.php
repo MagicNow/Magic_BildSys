@@ -24,17 +24,8 @@ class ContratoTemplateSeed extends Seeder
                                     <span style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:underline;vertical-align:baseline;white-space:pre-wrap;">ACORDO DE PREÇO UNITÁRIO DE MATERIAL PARA CONSTRUÇÃO CIVIL</span>
                                 </p>
                                 <p dir="ltr" style="line-height:1.2;margin-top:0pt;margin-bottom:0pt;text-align: justify;">&nbsp;</p>
-                                <p dir="ltr" style="line-height: 1.2; margin-top: 0pt; margin-bottom: 0pt;"><span
-                                        style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;">A</span><span
-                                        style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;">&nbsp;- </span><span
-                                        style="text-align: center;">[RAZAO_SOCIAL_OBRA]&nbsp;</span><span
-                                        style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;">, pessoa jurídica de direito privado, com sede na</span><span
-                                        style="vertical-align: baseline;"> </span><span style="text-align: center;">[</span><span
-                                        style="text-align: center;">ENDERECO_OBRA_OBRA</span><span style="text-align: center;">]&nbsp;</span><span
-                                        style="vertical-align: baseline;">,</span><span
-                                        style="vertical-align: baseline;"> inscrita no CNPJ sob nº </span><span style="text-align: center;">[CNPJ_OBRA]&nbsp;</span><span
-                                        style="vertical-align: baseline;"> </span><span
-                                        style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;">com seu contrato social devidamente registrado na junta Comercial do Estado de São Paulo, neste ato representada na forma de seus atos constitutivos, doravante denominada simplesmente CONTRATANTE.</span>
+                                <p dir="ltr" style="line-height: 1.2; margin-top: 0pt; margin-bottom: 0pt;">
+                                        [CABECALHO_MATRIZ]
                                 </p>
                                 <p dir="ltr" style="line-height:1.2;margin-top:0pt;margin-bottom:0pt;text-align: justify;">&nbsp;</p>
                                 <p dir="ltr" style="line-height: 1.2; margin-top: 0pt; margin-bottom: 0pt;"><span
@@ -109,6 +100,11 @@ class ContratoTemplateSeed extends Seeder
                                 <p dir="ltr" style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;text-align: justify;">&nbsp;</p>
                                 <p dir="ltr" style="line-height:1.2;margin-top:0pt;margin-bottom:0pt;text-align: justify;"><span
                                         style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;">D.2. Da composição do preço do material:</span>
+                                </p>
+                                <p dir="ltr" style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;text-align: justify;">&nbsp;</p>
+                                <p dir="ltr" style="line-height:1.2;margin-top:0pt;margin-bottom:0pt;text-align: justify;">
+                                    <span style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;">D.3. Regionais:</span>
+                                    <span style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;">[REGIONAIS]</span>
                                 </p>
                                 <p dir="ltr" style="line-height:1.2;margin-top:0pt;margin-bottom:0pt;text-align: justify;">&nbsp;</p>
                                 <p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="text-align: center;">[COMPOSICAO_DO_PRECO]</span><br>
