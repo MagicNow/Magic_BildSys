@@ -490,7 +490,7 @@
                             <div class="box box-solid">
                                 <div class="box-header with-border">
                                     <i class="fa fa-building"></i>
-                                    <h3 class="box-title">Cabeçalho Martiz</h3>
+                                    <h3 class="box-title">Dados Martiz</h3>
                                 </div>
                                 <!-- /.box-header -->
                                 <div class="box-body">
@@ -500,6 +500,13 @@
                                                [CABECALHO_MATRIZ]
                                             </span> &nbsp;
                                             Razão Social, CNPJ, Inscrição Estadual, Inscrição Municipal e Endereço
+                                        </li>
+
+                                        <li class="list-group-item">
+                                            <span class="label label-primary selecionavel">
+                                               [REGIONAIS]
+                                            </span> &nbsp;
+                                            Lista as regionais do contrato
                                         </li>
                                     </ul>
                                 </div>
