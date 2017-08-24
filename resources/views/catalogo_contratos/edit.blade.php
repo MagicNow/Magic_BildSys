@@ -11,14 +11,14 @@
                 Situação:
                 <span class="label label-default"
                       style="background-color: {{ $catalogoContrato->status->cor }}"> {{ $catalogoContrato->status->nome }} </span>
-                @if($catalogoContrato->catalogo_contrato_status_id == 3 && $catalogoContrato->obras()->whereIn('catalogo_contrato_status_id',[1,2])->count()  )
+                @if($catalogoContrato->catalogo_contrato_status_id == 3 && $catalogoContrato->regionais()->whereIn('catalogo_contrato_status_id',[1,2])->count()  )
                     <span class="label label-warning" data-toggle="tooltip" data-placement="bottom"
                           title="Alguma obra amarrada foi adicionada após a assinatura"
                           style="margin-left: 10px">
                         <i class="fa fa-exclamation"></i>
                     </span>
                 @endif
-                @if($catalogoContrato->catalogo_contrato_status_id == 2 ||  $catalogoContrato->catalogo_contrato_status_id == 3 && $catalogoContrato->obras()->whereIn('catalogo_contrato_status_id',[1,2])->count()  )
+                @if($catalogoContrato->catalogo_contrato_status_id == 2 ||  $catalogoContrato->catalogo_contrato_status_id == 3 && $catalogoContrato->regionais()->whereIn('catalogo_contrato_status_id',[1,2])->count()  )
                     <a href="{{ url('/catalogo-acordos/'.$catalogoContrato->id.'/imprimir-minuta') }}"
                        target="_blank"
                        style="margin-left: 10px" class="btn btn-success btn-sm btn-flat">

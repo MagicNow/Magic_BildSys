@@ -49,7 +49,7 @@ class CatalogoContrato extends Model
         'contratoInsumos.*.pedido_multiplo_de'=>'required|min:0.01',
         'contratoInsumos.*.periodo_inicio'=>'required',
         'contratoInsumos.*.periodo_termino'=>'required',
-        'obra' => 'required'
+        'regional' => 'required'
     ];
 
     /**
@@ -82,5 +82,9 @@ class CatalogoContrato extends Model
 
     public function obras(){
         return $this->hasMany(CatalogoContratoObra::class, 'catalogo_contrato_id');
+    }
+
+    public function regionais(){
+        return $this->hasMany(CatalogoContratoRegional::class, 'catalogo_contrato_id');
     }
 }
