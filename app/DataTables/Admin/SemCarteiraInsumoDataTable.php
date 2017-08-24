@@ -5,6 +5,7 @@ namespace App\DataTables\Admin;
 use App\Models\CarteiraInsumo;
 use App\Models\Insumo;
 use Form;
+use Illuminate\Support\Facades\DB;
 use Yajra\Datatables\Services\DataTable;
 
 class SemCarteiraInsumoDataTable extends DataTable
@@ -28,18 +29,21 @@ class SemCarteiraInsumoDataTable extends DataTable
      */
     public function query()
     {		
-		
-        $carteiraInsumos = CarteiraInsumo::query()
-            ->select([
-				'carteira_insumos.id',
-                'insumos.nome',
-                'insumo_grupos.nome as nome_grupo_insumo'
-            ])		
-        ->join('insumos','insumos.id','<>','carteira_insumos.insumo_id')
-        ->join('insumo_grupos','insumo_grupos.id','=','insumos.insumo_grupo_id')		
-        ->join('carteiras','carteiras.id','=','carteira_insumos.carteira_id');
 
-        return $this->applyScopes($carteiraInsumos);
+        $insumos = Insumo::select([
+            'insumos.id',
+            'insumos.nome',
+            'insumo_grupos.nome as nome_grupo_insumo'
+        ])
+            ->join('insumo_grupos','insumo_grupos.id','=','insumos.insumo_grupo_id')
+            ->whereNotExists(function ($query) {
+            $query->select(DB::raw(1))
+                ->from('carteira_insumos')
+                ->whereRaw('carteira_insumos.insumo_id = insumos.id');
+        });
+
+        return $this->applyScopes($insumos);
+
     }
 
     /**
