@@ -306,7 +306,22 @@
                         {{--@else--}}
                             @php $saldo_valor_orcamento = $item->substitui ? $item->valor_previsto_orcamento_pai-money_to_float($item->valor_realizado) : $item->preco_inicial-money_to_float($item->valor_realizado); @endphp
                         {{--@endif--}}
-                        <tr>
+                        <tr
+                        @if($item->data_dispensa)
+                            class="danger"
+                        ><td colspan="11" class="text-left">
+                                <i class="fa fa-trash text-danger" aria-hidden="true"></i>
+                                Insumo dispensado após aprovação:<br>
+                                <small>
+                                    {{ $item->obs_dispensa }}
+                                    <span class="label label-default">
+                                        por {{ $item->userDispensa->name }}
+                                    </span>
+                                </small>
+                            </td>
+                            <tr class="danger"
+                            @endif
+                        >
                             <td class="text-center">
                                 <span data-toggle="tooltip" data-placement="right" data-html="true"
                                     title="

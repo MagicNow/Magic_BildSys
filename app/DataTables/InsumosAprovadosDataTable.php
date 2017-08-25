@@ -153,6 +153,7 @@ class InsumosAprovadosDataTable extends DataTable
             ->join('obras','obras.id','ordem_de_compra_itens.obra_id')
             ->join('insumos','insumos.id','ordem_de_compra_itens.insumo_id')
             ->where('ordem_de_compras.aprovado','1')
+            ->whereNull('data_dispensa')
             ->whereNotExists(function ($query){
                 $query->select(DB::raw('1'))
                     ->from('oc_item_qc_item')

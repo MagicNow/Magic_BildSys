@@ -66302,6 +66302,9 @@ var NotificationSystem = {
     this.$container = $('#new_notifications');
     this.$error_import = $('#error_import');
     this.makeNotification = _.template(
+        '<button type="button" data-id="<%= id %>" class="btn btn-xs btn-danger btn-flat dismiss-notify pull-right" title="Dispensar"> ' +
+        ' <i class="fa fa-times"></i> ' +
+        '</button> ' + 
       '<a href="<%= data.link %>" data-id="<%= id %>" class="js-notification" >' +
       '<i class="fa fa-<%= data.icon || "comment" %> text-<%= data.state || "success" %>"></i>' +
       '<%= data.message %>' +
@@ -66321,6 +66324,12 @@ var NotificationSystem = {
           location.href = notification.href;
         });
       }
+    });
+    $body.on('click', '.dismiss-notify', function(event) {
+      var notification = event.currentTarget;
+      var ajax = self.markAsRead(notification.dataset.id)
+      
+      $('[data-id="'+notification.dataset.id+'"]').remove();
     });
 
     this.verifyNotifications();
