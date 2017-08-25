@@ -6,8 +6,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
                 <h4 class="modal-title">
-                    Apropriações <br>
-                    <small>{{ $item->insumo->nome }}</small>
+                   {{ $item->insumo->codigo }} - {{ $item->insumo->nome }} - {{ $item->insumo->unidade_sigla }}
                 </h4>
             </div>
             <div class="modal-body">
