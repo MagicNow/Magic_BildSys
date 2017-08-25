@@ -612,6 +612,8 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     # Ordens de compra
     $router->get('/ordens-de-compra/insumos-aprovados', 'OrdemDeCompraController@insumosAprovados')
         ->middleware("needsPermission:quadroDeConcorrencias.create");
+    $router->get('/ordens-de-compra/dispensar-insumo-aprovado', 'OrdemDeCompraController@dispensaAprovado')
+        ->middleware("needsPermission:quadroDeConcorrencias.create");
     $router->group(['middleware' => 'needsPermission:ordens_de_compra.list'], function () use ($router) {
         $router->get('/ordens-de-compra/detalhes/{id}', 'OrdemDeCompraController@detalhe')
             ->middleware("needsPermission:ordens_de_compra.detalhes")
