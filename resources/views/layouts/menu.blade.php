@@ -84,9 +84,17 @@
     <ul class="treeview-menu">
 		@shield('cronogramaFisicos.dashboard')
         <li class="{{ Request::is('admin/cronogramaFisicos*') ? 'active' : '' }}">
-            <a href="{!! route('admin.cronograma_fisicos.dashboard') !!}">
+            <a href="{!! route('admin.cronograma_fisicos.relSemanal') !!}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
-                <span>Rel. Semanal/Mensal</span>
+                <span>Acompanhamento Semanal</span>
+            </a>
+        </li>
+        @endshield
+		@shield('cronogramaFisicos.dashboard')
+        <li class="{{ Request::is('admin/cronogramaFisicos*') ? 'active' : '' }}">
+            <a href="{!! route('admin.cronograma_fisicos.relMensal') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Acompanhamento Mensal</span>
             </a>
         </li>
         @endshield

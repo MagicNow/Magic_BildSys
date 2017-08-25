@@ -37,15 +37,22 @@
         <div class="box-body" id="app">
             <div class="row">
                 <div class="col-xs-12">
+					
+					<div class="row">
+                        <div class="col-md-6"><tile title-color="head-grey" title="Coleta Semanal" type="created"></tile></div>
+                        <div class="col-md-6"><tile title-color="head-red" title="Tarefas Críticas" type="4"></tile></div>                        
+                    </div>
+					
                     @php
                         $json_data = json_encode([$reprovados->count(), $emaprovacao->count(), $aprovados->count()]);
                         //$json_data = json_encode([10,20, 30]);
-                        $json_labels = json_encode(['Reprovados', 'Em Aprovação', 'Aprovados']);
+                        $json_labels = json_encode(['Plano Diretor', 'Plano de Trabalho', 'Realizado']);
+						$json_labels = json_encode(['Semana 1', 'Semana 2', 'Semana 3']);
                     @endphp
                     <div class="row">
-                        <div class="col-md-4">
+						<div class="col-md-4">
                             <div class="element-grafico">
-                                <div class="element-head">ORDENS DE COMPRA</div>
+                                <div class="element-head">Previsto x Realizado Semanal</div>
                                 <div class="element-body">
                                     <chartjs-bar :datalabel="mylabel"
                                                  :labels="{{$json_labels}}" :data="{{$json_data}}"
@@ -60,15 +67,22 @@
                         </div>
                         <div class="col-md-4">
                             <div class="element-grafico">
-                                <div class="element-head">RANKING CATEGORIAS REPROVADAS</div>
+                                <div class="element-head">PDP X  P. Trabalho x Real Acumulado</div>
                                 <div class="element-body">
-
+                                    <chartjs-bar :datalabel="mylabel"
+                                                 :labels="{{$json_labels}}" :data="{{$json_data}}"
+                                                 :beginzero="myboolean"
+                                                 :backgroundcolor="mybackgroundcolor"
+                                                 :bordercolor="mybordercolor"
+                                                 :option="myoption"
+                                                 :height="250"
+                                    ></chartjs-bar>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="element-grafico">
-                                <div class="element-head">FAROL</div>
+                                <div class="element-head">Desvio PDP x P. Trabalho</div>
                                 <div class="element-body">
                                     <chartjs-pie :labels="labelsFarol" :datasets="datasetsFarol" :scalesdisplay="false" :option="myoption2" :height="250"></chartjs-pie>
                                 </div>
@@ -77,9 +91,9 @@
                     </div>
                     <hr>
                     <div class="row">
-                        <div class="col-md-4"><tile title-color="head-grey" title="Últimas Criadas" type="created"></tile></div>
-                        <div class="col-md-4"><tile title-color="head-red" title="Últimas Reprovadas" type="4"></tile></div>
-                        <div class="col-md-4"><tile title-color="head-green" title="Últimas Aprovadas" type="5"></tile></div>
+                        <div class="col-md-4"><tile title-color="head-grey" title="Coleta Semanal" type="created"></tile></div>
+                        <div class="col-md-4"><tile title-color="head-red" title="Tarefas Críticas" type="4"></tile></div>
+                        <div class="col-md-4"><tile title-color="head-green" title="Tarefas nao previstas" type="5"></tile></div>
                     </div>
                 </div>
             </div>
@@ -130,7 +144,7 @@
                     }
                 },
 
-                labelsFarol: ["Dentro do orçamento", "Acima do orçamento"],
+                labelsFarol: ["Desvio PDP", "Desvio P. Trabalho"],
                 myoption2: {
                     onClick: function (event, legendItem) {
                         window.location.href = "{{url('ordens-de-compra?status_oc=')}}"+legendItem[0]._index;
