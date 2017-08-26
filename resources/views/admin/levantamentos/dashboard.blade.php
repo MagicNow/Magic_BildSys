@@ -70,7 +70,13 @@
                             <div class="element-grafico">
                                 <div class="element-head">FAROL</div>
                                 <div class="element-body">
-                                    <chartjs-pie :labels="labelsFarol" :datasets="datasetsFarol" :scalesdisplay="false" :option="myoption2" :height="250"></chartjs-pie>
+                                    <chartjs-pie 
+										:labels="labelsFarol" 
+										:datasets="datasetsFarol" 
+										:scalesdisplay="false" 
+										:option="myoption2" 
+										:height="250">
+									</chartjs-pie>
                                 </div>
                             </div>
                         </div>
@@ -91,6 +97,8 @@
         const app = new Vue({
             el: '#app',
             data:{
+				
+				//Grafico Compras - BAR
                 mylabel : 'quantidade',
                 myboolean : true,
                 mybackgroundcolor : ['rgba(255,0,0,1)','rgba(249,141,0,1)','rgba(126, 211, 33,1)'],
@@ -129,7 +137,8 @@
                         }
                     }
                 },
-
+				
+				//Grafico Farol - PIE
                 labelsFarol: ["Dentro do orçamento", "Acima do orçamento"],
                 myoption2: {
                     onClick: function (event, legendItem) {

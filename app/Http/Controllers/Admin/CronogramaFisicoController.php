@@ -10,6 +10,7 @@ use App\Jobs\PlanilhaProcessa;
 use App\Models\OrdemDeCompra;
 
 use App\Repositories\OrdemDeCompraRepository;
+use App\Repositories\Admin\ObraRepository;
 use App\Models\Obra;
 use App\Models\Orcamento;
 use App\Models\PlanejamentoCompra;
@@ -295,8 +296,19 @@ class CronogramaFisicoController extends AppBaseController
     }
 	
 	//Acompanhamento Semanal
-	public function relSemanal()
-    {
+	public function relSemanal( ObraRepository $obraRepository )
+    {	
+		
+		$obras = $obraRepository
+            ->orderBy('nome', 'ASC')
+            ->whereHas('users', function($query){
+                $query->where('user_id', auth()->id());
+            })
+            ->comContrato()
+            ->pluck('nome', 'id')
+            ->prepend('', '')
+            ->all();
+		
         $reprovados = OrdemDeCompra::select([
             'ordem_de_compras.id',
             'obras.nome',
@@ -323,39 +335,33 @@ class CronogramaFisicoController extends AppBaseController
         ->join('users', 'users.id', '=', 'ordem_de_compras.user_id')
         ->where('oc_status_id', 3)->orderBy('id', 'desc')
         ->take(5)->get();
-
-        $ordemDeCompras = OrdemDeCompra::select([
-                'ordem_de_compras.id',
-                'obras.nome as obra',
-                'users.name as usuario',
-                'oc_status.nome as situacao',
-                'ordem_de_compras.obra_id'
-            ])
-            ->join('obras', 'obras.id', '=', 'ordem_de_compras.obra_id')
-            ->join('oc_status', 'oc_status.id', '=', 'ordem_de_compras.oc_status_id')
-            ->join('users', 'users.id', '=', 'ordem_de_compras.user_id')
-            ->whereRaw('EXISTS (SELECT 1 FROM obra_users WHERE obra_users.obra_id = obras.id AND user_id=?)', auth()->id())
-            ->where('ordem_de_compras.oc_status_id', '!=', 6)
-            ->orderBy('ordem_de_compras.id','DESC')
-            ->get();
-
-        $dentro_orcamento = 0;
-        $acima_orcamento = 0;
-
-        if(count($ordemDeCompras)) {
-            foreach ($ordemDeCompras as $ordemDeCompra) {
-                $saldoDisponivel = OrdemDeCompraRepository::saldoDisponivel($ordemDeCompra->id, $ordemDeCompra->obra_id);
-                if($saldoDisponivel >= 0) {
-                    $dentro_orcamento += 1;
-                } else {
-                    $acima_orcamento += 1;
-                }
-            }
-        }
-        
-        return view('admin.cronograma_fisicos.relSemanal', compact('reprovados', 'aprovados', 'emaprovacao', 'abaixo_orcamento', 'dentro_orcamento', 'acima_orcamento'));
+               
+        return view('admin.cronograma_fisicos.relSemanal', compact('obras','reprovados', 'aprovados', 'emaprovacao'));
     }
 
+	//Puxar os dados para a Coleta Semanal	
+    public function jsonRelSemanalColetaSemanal(Request $request)
+    {
+        $ordem_compra = OrdemDeCompra::select([
+            'ordem_de_compras.id',
+            'obras.nome',
+            'users.name'
+        ])
+        ->join('obras', 'obras.id', 'ordem_de_compras.obra_id')
+        ->join('users', 'users.id', '=', 'ordem_de_compras.user_id');
+
+        if ($request->type == 'created') {
+            $ordem_compra->orderBy('id', 'desc')->take(5);
+        } else {
+            $ordem_compra->where('oc_status_id', $request->type)
+                ->orderBy('id', 'desc')
+                ->take(5);
+        }
+
+        return response()->json($ordem_compra->get(), 200);
+    }
+
+	
 	//Acompanhamento Mensal
 	public function relMensal()
     {
