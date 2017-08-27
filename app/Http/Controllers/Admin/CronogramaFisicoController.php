@@ -11,6 +11,7 @@ use App\Models\OrdemDeCompra;
 
 use App\Repositories\OrdemDeCompraRepository;
 use App\Repositories\Admin\ObraRepository;
+use App\Models\CronogramaFisico;
 use App\Models\Obra;
 use App\Models\Orcamento;
 use App\Models\PlanejamentoCompra;
@@ -25,6 +26,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Response;
+use Carbon\Carbon;
 
 class CronogramaFisicoController extends AppBaseController
 {
@@ -296,8 +298,13 @@ class CronogramaFisicoController extends AppBaseController
     }
 	
 	//Acompanhamento Semanal
-	public function relSemanal( ObraRepository $obraRepository )
-    {	
+	public function relSemanal( ObraRepository $obraRepository)
+    {
+		//Filtros	//julho-2017	
+		$fromDate="2017-01-01";
+		$fridays = CronogramaFisicoRepository::getFridaysBydate($fromDate);
+		
+		print_r($fridays);
 		
 		$obras = $obraRepository
             ->orderBy('nome', 'ASC')
@@ -308,121 +315,61 @@ class CronogramaFisicoController extends AppBaseController
             ->pluck('nome', 'id')
             ->prepend('', '')
             ->all();
+
+		//Tabela Percentual Previsto e Acumulado		
+		$tabelaPercPrevistoRealizadosSemanas = ["07/07","18/07","21/07","28/07","31/07","julho-2017"];
 		
-        $reprovados = OrdemDeCompra::select([
-            'ordem_de_compras.id',
-            'obras.nome',
-            'users.name'
-        ])            ->join('obras', 'obras.id', 'ordem_de_compras.obra_id')
-        ->join('users', 'users.id', '=', 'ordem_de_compras.user_id')
-        ->where('oc_status_id', 4)->orderBy('id', 'desc')
-        ->take(5)->get();
-
-        $aprovados = OrdemDeCompra::select([
-            'ordem_de_compras.id',
-            'obras.nome',
-            'users.name'
-        ])            ->join('obras', 'obras.id', 'ordem_de_compras.obra_id')
-        ->join('users', 'users.id', '=', 'ordem_de_compras.user_id')
-        ->where('oc_status_id', 5)->orderBy('id', 'desc')
-        ->take(5)->get();
-
-        $emaprovacao = OrdemDeCompra::select([
-            'ordem_de_compras.id',
-            'obras.nome',
-            'users.name'
-        ])            ->join('obras', 'obras.id', 'ordem_de_compras.obra_id')
-        ->join('users', 'users.id', '=', 'ordem_de_compras.user_id')
-        ->where('oc_status_id', 3)->orderBy('id', 'desc')
-        ->take(5)->get();
-               
-        return view('admin.cronograma_fisicos.relSemanal', compact('obras','reprovados', 'aprovados', 'emaprovacao'));
-    }
-
-	//Puxar os dados para a Coleta Semanal	
-    public function jsonRelSemanalColetaSemanal(Request $request)
-    {
-        $ordem_compra = OrdemDeCompra::select([
-            'ordem_de_compras.id',
-            'obras.nome',
-            'users.name'
+		$tabelaPercPrevistoRealizados = CronogramaFisico::select([
+			'cronograma_fisicos.id',                
+			'template_planilhas.nome as tipo',				                												
+				DB::raw("(CONCAT(cronograma_fisicos.concluida,'%')
+					) as concluida"
+			),                 
+			'cronograma_fisicos.data_inicio'		
         ])
-        ->join('obras', 'obras.id', 'ordem_de_compras.obra_id')
-        ->join('users', 'users.id', '=', 'ordem_de_compras.user_id');
+		->join('obras','obras.id','cronograma_fisicos.obra_id')
+		->join('template_planilhas','template_planilhas.id','cronograma_fisicos.template_id')		
+		->whereDate('cronograma_fisicos.data_inicio','>=',Carbon::createFromFormat('Y-m-d', '2017-03-01')->toDateString())
+        ->orderBy('id', 'desc')
+		->take(7)
+		->get();	
 
-        if ($request->type == 'created') {
-            $ordem_compra->orderBy('id', 'desc')->take(5);
-        } else {
-            $ordem_compra->where('oc_status_id', $request->type)
-                ->orderBy('id', 'desc')
-                ->take(5);
-        }
-
-        return response()->json($ordem_compra->get(), 200);
+		//Tabela Tarefas Criticas
+		$tabelaTarefasCriticasTitulos = ["LOCAL","Tarefas Críticas","Previsto Ac.","Realizado Ac.","Desvio"];
+		
+		$tabelaTarefasCriticasDados = CronogramaFisico::select([
+			'cronograma_fisicos.id',
+			'cronograma_fisicos.torre as local',
+			'cronograma_fisicos.tarefa',
+			
+        ])
+		->join('obras','obras.id','cronograma_fisicos.obra_id')
+		->join('template_planilhas','template_planilhas.id','cronograma_fisicos.template_id')		
+		//->whereDate('cronograma_fisicos.data_inicio','>=',Carbon::createFromFormat('Y-m-d', '2017-03-01')->toDateString())
+		//->where filtro obra, ano, mes e semana
+        ->orderBy('id', 'desc')		
+		->get();
+               
+        return view('admin.cronograma_fisicos.relSemanal', compact('obras','tabelaPercPrevistoRealizados', 'tabelaPercPrevistoRealizadosSemanas'
+		, 'tabelaTarefasCriticasTitulos', 'tabelaTarefasCriticasDados'));
     }
 
+	public function relMensal( ObraRepository $obraRepository )
+    {	
+		
+		$obras = $obraRepository
+            ->orderBy('nome', 'ASC')
+            ->whereHas('users', function($query){
+                $query->where('user_id', auth()->id());
+            })
+            ->comContrato()
+            ->pluck('nome', 'id')
+            ->prepend('', '')
+            ->all();		
+               
+        return view('admin.cronograma_fisicos.relMensal', compact('obras'));
+    }
 	
-	//Acompanhamento Mensal
-	public function relMensal()
-    {
-        $reprovados = OrdemDeCompra::select([
-            'ordem_de_compras.id',
-            'obras.nome',
-            'users.name'
-        ])            ->join('obras', 'obras.id', 'ordem_de_compras.obra_id')
-        ->join('users', 'users.id', '=', 'ordem_de_compras.user_id')
-        ->where('oc_status_id', 4)->orderBy('id', 'desc')
-        ->take(5)->get();
-
-        $aprovados = OrdemDeCompra::select([
-            'ordem_de_compras.id',
-            'obras.nome',
-            'users.name'
-        ])            ->join('obras', 'obras.id', 'ordem_de_compras.obra_id')
-        ->join('users', 'users.id', '=', 'ordem_de_compras.user_id')
-        ->where('oc_status_id', 5)->orderBy('id', 'desc')
-        ->take(5)->get();
-
-        $emaprovacao = OrdemDeCompra::select([
-            'ordem_de_compras.id',
-            'obras.nome',
-            'users.name'
-        ])            ->join('obras', 'obras.id', 'ordem_de_compras.obra_id')
-        ->join('users', 'users.id', '=', 'ordem_de_compras.user_id')
-        ->where('oc_status_id', 3)->orderBy('id', 'desc')
-        ->take(5)->get();
-
-        $ordemDeCompras = OrdemDeCompra::select([
-                'ordem_de_compras.id',
-                'obras.nome as obra',
-                'users.name as usuario',
-                'oc_status.nome as situacao',
-                'ordem_de_compras.obra_id'
-            ])
-            ->join('obras', 'obras.id', '=', 'ordem_de_compras.obra_id')
-            ->join('oc_status', 'oc_status.id', '=', 'ordem_de_compras.oc_status_id')
-            ->join('users', 'users.id', '=', 'ordem_de_compras.user_id')
-            ->whereRaw('EXISTS (SELECT 1 FROM obra_users WHERE obra_users.obra_id = obras.id AND user_id=?)', auth()->id())
-            ->where('ordem_de_compras.oc_status_id', '!=', 6)
-            ->orderBy('ordem_de_compras.id','DESC')
-            ->get();
-
-        $dentro_orcamento = 0;
-        $acima_orcamento = 0;
-
-        if(count($ordemDeCompras)) {
-            foreach ($ordemDeCompras as $ordemDeCompra) {
-                $saldoDisponivel = OrdemDeCompraRepository::saldoDisponivel($ordemDeCompra->id, $ordemDeCompra->obra_id);
-                if($saldoDisponivel >= 0) {
-                    $dentro_orcamento += 1;
-                } else {
-                    $acima_orcamento += 1;
-                }
-            }
-        }
-        
-        return view('admin.cronograma_fisicos.relSemanal', compact('reprovados', 'aprovados', 'emaprovacao', 'abaixo_orcamento', 'dentro_orcamento', 'acima_orcamento'));
-    }
-
+	
 
 }

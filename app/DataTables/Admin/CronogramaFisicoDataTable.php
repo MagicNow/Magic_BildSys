@@ -6,6 +6,7 @@ use App\Models\CronogramaFisico;
 use Form;
 use Yajra\Datatables\Services\DataTable;
 use Illuminate\Support\Facades\DB;
+use App\Repositories\Admin\CronogramaFisicoRepository;
 
 class CronogramaFisicoDataTable extends DataTable
 {
@@ -212,13 +213,11 @@ class CronogramaFisicoDataTable extends DataTable
     private function getColumns()
     {
 		//mostra a semana do mes anterior
-		$fridays = array();
-		$fridays[0] = date('d/m/Y', strtotime('first friday of previous month'));
-		$fridays[1] = date('d/m/Y', strtotime('second friday of previous month'));
-		$fridays[2] = date('d/m/Y', strtotime('third friday of previous month'));
-		$fridays[3] = date('d/m/Y', strtotime('fourth friday of previous month'));
-		$fridays[4] = date('d/m/Y', strtotime('fifth friday of previous month'));
-		$last_day	= date('d/m/Y', strtotime('last day of previous month')); 
+		//Filtros	//julho-2017	
+		$fromDate="2017-01-01";
+		$fridays = CronogramaFisicoRepository::getFridaysBydate($fromDate);
+		
+		$last_day	= end($fridays);
 
 		//retorna os valores de trabalho baseado por semana
 		/*- Se a data de início for maior da data da semana, é 0% pois não haverá produção;

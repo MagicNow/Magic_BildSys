@@ -136,8 +136,7 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
     # Cronograma Fisico
     $router->group(['prefix' => 'cronogramaFisicos'], function () use ($router) {
 		
-        $router->group(['middleware' => 'needsPermission:cronogramaFisicos.list'], function () use ($router) {
-			//$router->get('jsonRelSemanalColetaSemanal', 'Admin\CronogramaFisicoController@jsonRelSemanalColetaSemanal');
+        $router->group(['middleware' => 'needsPermission:cronogramaFisicos.list'], function () use ($router) {			
 			$router->get('relSemanal', ['as' => 'admin.cronograma_fisicos.relSemanal', 'uses' => 'Admin\CronogramaFisicoController@relSemanal']);
 			$router->get('relMensal', ['as' => 'admin.cronograma_fisicos.relMensal', 'uses' => 'Admin\CronogramaFisicoController@relMensal']);
             $router->get('atividade', ['as' => 'admin.cronograma_fisicos.index', 'uses' => 'Admin\CronogramaFisicoController@index']);

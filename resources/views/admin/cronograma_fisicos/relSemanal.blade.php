@@ -1,4 +1,4 @@
-@extends('layouts.front')
+@extends('layouts.app')
 
 @section('content')
     <style>
@@ -14,9 +14,16 @@
             font-family: Raleway;
             font-weight: bold;
         }
-        .element-body1{
-            height: 300px;
-            padding: 15px;
+        
+		.element-body1{
+            height: 200px;
+            padding: 5px;
+            background-color: white;
+        }
+		
+		.element-body-tarefaCriticas{
+            height: 250px;
+            padding: 5px;
             background-color: white;
         }
 		
@@ -25,6 +32,12 @@
             padding: 5px;
             background-color: white;
         }
+		
+		.table> thead> tr> th, .table> thead> tr> td{
+			background-color:orange;
+			color:white;
+		}
+		
     </style>
 
     <div class="container">
@@ -83,14 +96,48 @@
                 <div class="col-xs-12">                    
                     
 					<div class="row">
-						<div class="col-md-12"><tile title-color="head-grey" title="Percentual Previsto x Precentual Realizado" type="created"></tile></div>
+						<div class="col-md-12"><tile title-color="head-grey" title="Percentual Previsto x Percentual Realizado" type="created"></tile></div>
 					</div>
 					</br>
 					<div class="row">                        
-						<div class="col-md-4">							
-                            Tabela com Valores
-                        </div> 						
-						<div class="col-md-4">							
+						<div class="col-md-6 table-responsive">
+							<table class="table table-bordered table-striped">
+								<thead >
+									<tr>
+										<th class="text-center">Tipo</th>
+										<th class="text-center">Semana 1</th>
+										<th class="text-center">Semana 2</th>
+										<th class="text-center">Semana 3</th>
+										<th class="text-center">Semana 4</th>
+										<th class="text-center">Semana 5</th>										
+										<th class="text-center">Mês</th>										
+									</tr>
+								</thead>
+								<tbody>
+																		
+									<tr>
+										<td class="text-center"></td>	
+										@foreach($tabelaPercPrevistoRealizadosSemanas as $tabelaSemana)										
+											<td class="text-center">{{ $tabelaSemana }}</td>									
+										@endforeach
+									</tr>																															
+									
+									@foreach($tabelaPercPrevistoRealizados as $tabelaPercPrevistoRealizado)	
+									<tr>
+										<td class="text-center">{{ $tabelaPercPrevistoRealizado->tipo}}</td>
+										<td class="text-center">{{ $tabelaPercPrevistoRealizado->concluida }}</td>
+										<td class="text-center">{{ $tabelaPercPrevistoRealizado->concluida }}</td>
+										<td class="text-center">{{ $tabelaPercPrevistoRealizado->concluida }}</td>
+										<td class="text-center">{{ $tabelaPercPrevistoRealizado->concluida }}</td>
+										<td class="text-center">{{ $tabelaPercPrevistoRealizado->concluida }}</td>
+										<td class="text-center">{{ $tabelaPercPrevistoRealizado->concluida }}</td>																			
+									</tr>
+									@endforeach
+								</tbody>
+							</table>
+                        </div> 
+						
+						<div class="col-md-3">							
                             <div class="element-grafico">
                                 <div class="element-head">Previsto X Realizado Semanal</div>
                                 <div class="element-body1">
@@ -98,31 +145,30 @@
 										//$json_dataPrevistoXRealizado = json_encode([$previstoXRealizado]);                        
 										//$json_labelsPrevistoXRealizado = json_encode(['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4', 'Semana 5', 'Mês']);
 									@endphp
-									<chartjs-bar :datalabel="mylabelPrevistoXRealizado"
+									<chartjs-bar 
                                                  :labels="labelsPrevistoXRealizado" 
-												 :datasets="datasetsPrevistoXRealizado"
-                                                 :beginzero="mybooleanPrevistoXRealizado"                                                 
+												 :datasets="datasetsPrevistoXRealizado"                                                                                                
                                                  :option="myoptionPrevistoXRealizado"
-                                                 :height="250">
+                                                 :height="220">
 									</chartjs-bar>
                                 </div>
                             </div>
                         </div>
 						
-						<div class="col-md-4">							
-                            <div class="element-grafico" id="chartPDPxPTrabalhoxRealAc">
+						<div class="col-md-3">							
+                            <div class="element-grafico">
                                 <div class="element-head">PDP x P.Trabalho x Real Acumulado</div>
                                 <div class="element-body1">
                                     @php
 										//$json_dataPrevistoXRealizado = json_encode([$pDPxPTrabalhoxRealAc]);                        
 										//$json_labelsPrevistoXRealizado = json_encode(['Semana 1']);
 									@endphp
-									<chartjs-bar :datalabel="mylabelPDPxPTrabalhoxRealAc"
+									<chartjs-bar 
                                                  :labels="labelsPDPxPTrabalhoxRealAc" 
 												 :datasets="datasetsPDPxPTrabalhoxRealAc"
                                                  :beginzero="mybooleanPDPxPTrabalhoxRealAc"                                                 
                                                  :option="myoptionPDPxPTrabalhoxRealAc"
-                                                 :height="250">
+                                                 :height="220">
 									</chartjs-bar>
                                 </div>
                             </div>
@@ -131,7 +177,7 @@
                     </br>					              				
 					<div class="row">						
 						<div class="col-md-3">							
-                            <div class="element-grafico" id="chartPDPxPTrabalhoxRealAc">
+                            <div class="element-grafico">
                                 <div class="element-head">DESVIO PDP</div>
                                 <div class="element-body2">
                                     @php
@@ -150,7 +196,7 @@
                         </div>
 						
 						<div class="col-md-3">							
-                            <div class="element-grafico" id="chartPDPxPTrabalhoxRealAc">
+                            <div class="element-grafico">
                                 <div class="element-head">DESVIO P. TRABALHO</div>
                                 <div class="element-body2">
                                     @php
@@ -174,24 +220,44 @@
 					</div>
 					</br>
 					<div class="row">
-                        <div class="col-md-4">							
-                            Tabela com Valores
+					
+                        <div class="col-md-6 table-responsive">
+							<table class="table table-bordered table-striped">
+								<thead class="element-tabela-head">
+									<tr>
+										@foreach($tabelaTarefasCriticasTitulos as $tabelaTarefasCriticasTitulo)										
+											<td class="text-center">{{ $tabelaTarefasCriticasTitulo }}</td>									
+										@endforeach										
+									</tr>
+								</thead>
+								<tbody>																																																				
+									
+									@foreach($tabelaTarefasCriticasDados as $tabelaTarefasCriticasDado)										
+									<tr>
+										<td class="text-center">{{ $tabelaTarefasCriticasDado->local }}</td>
+										<td class="text-center">{{ $tabelaTarefasCriticasDado->tarefa }}</td>
+										<td class="text-center">{{ $tabelaTarefasCriticasDado->tarefa }}</td>
+										<td class="text-center">{{ $tabelaTarefasCriticasDado->tarefa }}</td>
+										<td class="text-center">{{ $tabelaTarefasCriticasDado->tarefa }}</td>
+									</tr>
+									@endforeach
+									
+								</tbody>
+							</table>
                         </div> 
 						
 						<div class="col-md-4">							
                             <div class="element-grafico">
                                 <div class="element-head">Tarefas Críticas</div>
-                                <div class="element-body1">
+                                <div class="element-body-tarefaCriticas">
                                     @php
 										//$json_dataPrevistoXRealizado = json_encode([$previstoXRealizado]);                        
 										//$json_labelsPrevistoXRealizado = json_encode(['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4', 'Semana 5', 'Mês']);
 									@endphp
-									<chartjs-bar :datalabel="mylabelTarefasCriticas"
-                                                 :labels="labelsTarefasCriticas" 
-												 :datasets="datasetsTarefasCriticas"
-                                                 :beginzero="mybooleanTarefasCriticas"                                                 
+									<chartjs-bar :labels="labelsTarefasCriticas" 
+												 :datasets="datasetsTarefasCriticas"                                                                                                
                                                  :option="myoptionTarefasCriticas"
-                                                 :height="250">
+                                                 :height="200">
 									</chartjs-bar>
                                 </div>
                             </div>
@@ -240,7 +306,7 @@
                             ticks: {
                                 // Create scientific notation labels
                                 beginAtZero:true,
-                                fixedStepSize: 0.20
+                                fixedStepSize: 0.50
                             }
                         }]
                     },

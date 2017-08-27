@@ -14,9 +14,15 @@
             font-family: Raleway;
             font-weight: bold;
         }
-        .element-body{
+        .element-body1{
             height: 300px;
             padding: 15px;
+            background-color: white;
+        }
+		
+		.element-body2{
+            height: 120px;
+            padding: 5px;
             background-color: white;
         }
     </style>
@@ -26,75 +32,169 @@
             <div class="modal-header">
                 <div class="col-md-12">
                     <div class="col-md-9">
-                        <h3 class="pull-left title">
-                            <a href="#" onclick="history.go(-1);"><i class="fa fa-arrow-left" aria-hidden="true"></i></a> Dashboard
-                        </h3>
-                    </div>
+                        <h3 class="pull-left title"><a href="#" onclick="history.go(-1);"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
+						Acompanhamento Mensal</h3>						
+					</div>
                 </div>
             </div>
         </section>
         {{--@include('layouts.filters')--}}
+		
+		<div class="box box-muted">
+			<div class="box-body">
+				<div class="row">
+					<div class="col-sm-3">
+						<h4>Obra</h4>
+						{!!
+						  Form::select(
+							'obra_id',$obras,null,['class' => 'form-control select2 js-filter']
+						  )
+						!!}
+					</div>
+					<div class="col-sm-2">
+						<h4>Ano</h4>
+						{!!
+						  Form::select(
+							'ano_id',["2017","2018","2019","2020"],null,['class' => 'form-control select2 js-filter']
+						  )
+						!!}
+					</div>
+					<div class="col-sm-3">
+						<h4>Mês</h4>
+						{!!
+						  Form::select(
+							'mes_id',["Janeiro","Fevereiro"],null,['class' => 'form-control select2 js-filter']
+						  )
+						!!}
+					</div>
+				</div>
+			</div>
+		</div>
+		
         <div class="box-body" id="app">
             <div class="row">
-                <div class="col-xs-12">
-					
+                <div class="col-xs-12">                    
+                    
 					<div class="row">
-                        <div class="col-md-6"><tile title-color="head-grey" title="Coleta Semanal" type="created"></tile></div>
-                        <div class="col-md-6"><tile title-color="head-red" title="Tarefas Críticas" type="4"></tile></div>                        
+						<div class="col-md-12"><tile title-color="head-grey" title="Previsto x Realizado" type="created"></tile></div>
+					</div>
+					</br>
+					<div class="row">                        
+						<div class="col-md-4">							
+                            <p>Tabela com Valores 1</p> 
+							<p>Tabela com Valores 2</p>
+                        </div> 						
+						<div class="col-md-4">							
+                            <div class="element-grafico">
+                                <div class="element-head">%Mensal</div>
+                                <div class="element-body1">
+                                    @php
+										//$json_dataPrevistoXRealizado = json_encode([$previstoXRealizado]);                        
+										//$json_labelsPrevistoXRealizado = json_encode(['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4', 'Semana 5', 'Mês']);
+									@endphp
+									<chartjs-bar :datalabel="mylabelPercMensal"
+                                                 :labels="labelsPercMensal" 
+												 :datasets="datasetsPercMensal"
+                                                 :beginzero="mybooleanPercMensal"                                                 
+                                                 :option="myoptionPercMensal"
+                                                 :height="250">
+									</chartjs-bar>
+                                </div>
+                            </div>
+                        </div>
+						
+						<div class="col-md-4">							
+                            <div class="element-grafico">
+                                <div class="element-head">%Acumulada</div>
+                                <div class="element-body1">
+                                    @php
+										//$json_dataPrevistoXRealizado = json_encode([$pDPxPTrabalhoxRealAc]);                        
+										//$json_labelsPrevistoXRealizado = json_encode(['Semana 1']);
+									@endphp
+									<chartjs-bar :datalabel="mylabelPercAcumulada"
+                                                 :labels="labelsPercAcumulada" 
+												 :datasets="datasetsPercAcumulada"
+                                                 :beginzero="mybooleanPercAcumulada"                                                 
+                                                 :option="myoptionPercAcumulada"
+                                                 :height="250">
+									</chartjs-bar>
+                                </div>
+                            </div>
+                        </div>												
                     </div>
+                    </br>					              				
+					<div class="row">						
+						<div class="col-md-3">							
+                            <div class="element-grafico">
+                                <div class="element-head">DESVIO PDP</div>
+                                <div class="element-body2">
+                                    @php
+										//$json_dataPrevistoXRealizado = json_encode([$pDPxPTrabalhoxRealAc]);                        
+										//$json_labelsPrevistoXRealizado = json_encode(['Semana 1']);
+									@endphp
+									<chartjs-pie 
+										:labels="labelsDesvioPDP" 
+										:datasets="datasetsDesvioPDP" 
+										:scalesdisplay="false" 
+										:option="myoptionDesvioPDP" 
+										:height="120">
+									</chartjs-pie>
+                                </div>
+                            </div>
+                        </div>
+						
+						<div class="col-md-3">							
+                            <div class="element-grafico">
+                                <div class="element-head">DESVIO TRABALHO</div>
+                                <div class="element-body2">
+                                    @php
+										//$json_dataPrevistoXRealizado = json_encode([$pDPxPTrabalhoxRealAc]);                        
+										//$json_labelsPrevistoXRealizado = json_encode(['Semana 1']);
+									@endphp
+									<chartjs-pie 
+										:labels="labelsDesvioPTrabalho" 
+										:datasets="datasetsDesvioPTrabalho" 
+										:scalesdisplay="false" 
+										:option="myoptionDesvioPTrabalho" 
+										:height="120">
+									</chartjs-pie>
+                                </div>
+                            </div>
+                        </div>						
+                    </div>
+					</br>
+					<div class="row">
+						<div class="col-md-12"><tile title-color="head-grey" title="Desvio De Prazo" type="created"></tile></div>
+					</div>
+					</br>
+					<div class="row">                        
+						
+						<div class="col-md-4">							
+                            <div class="element-grafico">
+                                <div class="element-head">Desvio de Prazo</div>
+                                <div class="element-body1">
+                                    @php
+										//$json_dataPrevistoXRealizado = json_encode([$previstoXRealizado]);                        
+										//$json_labelsPrevistoXRealizado = json_encode(['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4', 'Semana 5', 'Mês']);
+									@endphp
+									<chartjs-line :datalabel="mylabelDesvioPrazo"
+                                                 :labels="labelsDesvioPrazo" 
+												 :datasets="datasetsDesvioPrazo"
+                                                 :beginzero="mybooleanDesvioPrazo"                                                 
+                                                 :option="myoptionDesvioPrazo"
+                                                 :height="250">
+									</chartjs-bar>
+                                </div>
+                            </div>
+                        </div>
+						
+						<div class="col-md-4">							
+                            <p>Tabela com Valores 1</p> 
+							<p>Tabela com Valores 2</p>
+                        </div> 
+						
+					</div>
 					
-                    @php
-                        $json_data = json_encode([$reprovados->count(), $emaprovacao->count(), $aprovados->count()]);
-                        //$json_data = json_encode([10,20, 30]);
-                        $json_labels = json_encode(['Plano Diretor', 'Plano de Trabalho', 'Realizado']);
-						$json_labels = json_encode(['Semana 1', 'Semana 2', 'Semana 3']);
-                    @endphp
-                    <div class="row">
-						<div class="col-md-4">
-                            <div class="element-grafico">
-                                <div class="element-head">Previsto x Realizado Semanal</div>
-                                <div class="element-body">
-                                    <chartjs-bar :datalabel="mylabel"
-                                                 :labels="{{$json_labels}}" :data="{{$json_data}}"
-                                                 :beginzero="myboolean"
-                                                 :backgroundcolor="mybackgroundcolor"
-                                                 :bordercolor="mybordercolor"
-                                                 :option="myoption"
-                                                 :height="250"
-                                    ></chartjs-bar>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="element-grafico">
-                                <div class="element-head">PDP X  P. Trabalho x Real Acumulado</div>
-                                <div class="element-body">
-                                    <chartjs-bar :datalabel="mylabel"
-                                                 :labels="{{$json_labels}}" :data="{{$json_data}}"
-                                                 :beginzero="myboolean"
-                                                 :backgroundcolor="mybackgroundcolor"
-                                                 :bordercolor="mybordercolor"
-                                                 :option="myoption"
-                                                 :height="250"
-                                    ></chartjs-bar>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="element-grafico">
-                                <div class="element-head">Desvio PDP x P. Trabalho</div>
-                                <div class="element-body">
-                                    <chartjs-pie :labels="labelsFarol" :datasets="datasetsFarol" :scalesdisplay="false" :option="myoption2" :height="250"></chartjs-pie>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-md-4"><tile title-color="head-grey" title="Coleta Semanal" type="created"></tile></div>
-                        <div class="col-md-4"><tile title-color="head-red" title="Tarefas Críticas" type="4"></tile></div>
-                        <div class="col-md-4"><tile title-color="head-green" title="Tarefas nao previstas" type="5"></tile></div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -102,25 +202,24 @@
 @endsection
 @section('scripts')
     <script>
-        const app = new Vue({
+	
+		const app = new Vue({
             el: '#app',
             data:{
-                mylabel : 'quantidade',
-                myboolean : true,
-                mybackgroundcolor : ['rgba(255,0,0,1)','rgba(249,141,0,1)','rgba(126, 211, 33,1)'],
-                mybordercolor : ['rgba(255,0,0,1)','rgba(249,141,0,1)','rgba(126, 211, 33,1)'],
-                myoption: {
+				
+				//Grafico BAR - % Mensal
+                datasetsPercMensal:
+				[{
+					label: 'Mensal',						
+					backgroundColor: ['blue','grey', 'DarkOrange', 'red'],
+					borderColor: ['blue','grey', 'DarkOrange', 'red'],
+					data: [0.68, 0.68, 0.97, 0.71]
+				}],				
+                labelsPercMensal : ["PDP", "Trabalho", "Previsto", "Real"],				
+                myoptionPercMensal: {
                     onClick: function (event, legendItem) {
-                        if(legendItem[0]._index == 0){
-                            window.location.href = "{{url('ordens-de-compra?oc_status_id=4')}}";
-                        }
-                        if(legendItem[0]._index == 1){
-                            window.location.href = "{{url('ordens-de-compra?oc_status_id=3')}}";
-                        }
-                        if(legendItem[0]._index == 2){
-                            window.location.href = "{{url('ordens-de-compra?oc_status_id=5')}}";
-                        }
-                    },
+						
+					},
                     responsive:true,
                     maintainAspectRatio:true,
                     scales: {
@@ -128,40 +227,114 @@
                             ticks: {
                                 // Create scientific notation labels
                                 beginAtZero:true,
-                                fixedStepSize: 10
+                                fixedStepSize: 0.20
                             }
                         }]
                     },
                     legend: {
-                        display: false,
-                        position: 'bottom',
-                        labels: {
-                            boxWidth:10
-                        },
-                        onClick: function (event, legendItem) {
-                            console.log(legendItem);
-                        }
+                        display: false
                     }
-                },
-
-                labelsFarol: ["Desvio PDP", "Desvio P. Trabalho"],
-                myoption2: {
+                }
+				
+				,				
+				//Grafico BAR - % Acumulada
+                datasetsPercAcumulada:
+				[{
+					label: 'Acumulada',						
+					backgroundColor: ['blue','grey', 'red'],
+					borderColor: ['blue','grey', 'red'],
+					data: [1.68, 1.68, 1.97]
+				}],				
+                labelsPercAcumulada : ["PDP", "Trabalho", "Real"],				
+                myoptionPercAcumulada: {
                     onClick: function (event, legendItem) {
-                        window.location.href = "{{url('ordens-de-compra?status_oc=')}}"+legendItem[0]._index;
+						
+					},
+                    responsive:true,
+                    maintainAspectRatio:true,
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                // Create scientific notation labels
+                                beginAtZero:true,
+                                fixedStepSize: 0.20
+                            }
+                        }]
+                    },
+                    legend: {
+                        display: false
                     }
+                }
+				
+				,				
+				//Grafico PIE - DESVIO PDP
+				labelsDesvioPDP: ["DESVIO PDP"],
+                myoptionDesvioPDP: {
+                    /*onClick: function (event, legendItem) {
+                        window.location.href = "{{url('ordens-de-compra?status_oc=')}}"+legendItem[0]._index;
+                    }*/
                 },
-                datasetsFarol:[{
-                    data: [{{$dentro_orcamento}}, {{$acima_orcamento}}],
-                    backgroundColor: [
-                        "#7ed321",
-                        "#eb0000"
-                    ],
-                    hoverBackgroundColor: [
-                        "#7ed321",
-                        "#eb0000"
-                    ]
+                datasetsDesvioPDP:[{
+                    data: [100],
+                    backgroundColor: 'blue',
+                    hoverBackgroundColor: 'blue'
                 }]
+				
+				,				
+				//Grafico PIE - DESVIO P. TRABALHO
+				labelsDesvioPTrabalho: ["DESVIO P. TRABALHO"],
+                myoptionDesvioPTrabalho: {
+                    /*onClick: function (event, legendItem) {
+                        window.location.href = "{{url('ordens-de-compra?status_oc=')}}"+legendItem[0]._index;
+                    }*/
+                },
+                datasetsDesvioPTrabalho:[{
+                    data: [100],
+                    backgroundColor: 'maroon',
+                    hoverBackgroundColor: 'maroon'
+                }]
+				
+				,				
+				//Grafico Line - Desvio Prazo
+                datasetsDesvioPrazo:
+				[{
+					label: 'Previsto Acumulado',						
+					backgroundColor: 'maroon',
+					borderColor: 'maroon',
+					data: ['30/10/2010']
+				},
+				{
+					label: 'Realizado Acumulado',
+					backgroundColor: 'DarkOrange',
+					borderColor: 'DarkOrange',
+					data: [95.00, 0.00, 0.00, 0.00]
+				}],				
+                labelsDesvioPrazo : ["abr/2017", "mai/2017", "jun/2017"],
+				//mylabelPrevistoXRealizado : '%',
+                mybooleanDesvioPrazo : false,                
+                myoptionDesvioPrazo: {
+                    onClick: function (event, legendItem) {
+						
+					},
+                    responsive:true,
+                    maintainAspectRatio:true,
+                    scales: {
+						yAxes: [{
+							type: "time",
+							display: true,
+							time: {
+								format: 'MM/DD/YYYY',
+								round: 'day'
+							}
+						}]
+                    },
+                    legend: {
+                        display: false
+                    }
+                }
+								
             }
         });
+		        			
     </script>
 @endsection
