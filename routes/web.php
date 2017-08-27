@@ -163,9 +163,7 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
     # Levantamentos
     $router->group(['prefix' => 'levantamentos'], function () use ($router) {
 		
-        $router->group(['middleware' => 'needsPermission:levantamentos.list'], function () use ($router) {
-			$router->get('mascaraInsumo', ['as' => 'admin.levantamentos.mascara_insumo', 'uses' => 'Admin\LevantamentoController@mascaraInsumo']);
-			$router->get('mascaraEstrutura', ['as' => 'admin.levantamentos.mascara_estrutura', 'uses' => 'Admin\LevantamentoController@mascaraEstrutura']);
+        $router->group(['middleware' => 'needsPermission:levantamentos.list'], function () use ($router) {						
             $router->get('atividade', ['as' => 'admin.levantamentos.index', 'uses' => 'Admin\LevantamentoController@index']);
             $router->post('atividade', ['as' => 'admin.levantamentos.store', 'uses' => 'Admin\LevantamentoController@store']);
             $router->get('atividade/create', ['as' => 'admin.levantamentos.create', 'uses' => 'Admin\LevantamentoController@create']);
@@ -178,6 +176,35 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
 
     });
 	
+	# Estruturas
+    $router->group(['middleware' => 'needsPermission:estruturas.list'], function () use ($router) {        
+        $router->get('estruturas', ['as' => 'admin.estruturas.index', 'uses' => 'Admin\EstruturaController@index']);
+        $router->post('estruturas', ['as' => 'admin.estruturas.store', 'uses' => 'Admin\EstruturaController@store']);
+        $router->get('estruturas/create', ['as' => 'admin.estruturas.create', 'uses' => 'Admin\EstruturaController@create'])
+            ->middleware("needsPermission:estruturas.create");;
+        $router->put('estruturas/{estruturas}', ['as' => 'admin.estruturas.update', 'uses' => 'Admin\EstruturaController@update']);
+        $router->patch('estruturas/{estruturas}', ['as' => 'admin.estruturas.update', 'uses' => 'Admin\EstruturaController@update']);
+        $router->delete('estruturas/{estruturas}', ['as' => 'admin.estruturas.destroy', 'uses' => 'Admin\EstruturaController@destroy'])
+            ->middleware("needsPermission:estruturas.delete");;
+        $router->get('estruturas/{estruturas}', ['as' => 'admin.estruturas.show', 'uses' => 'Admin\EstruturaController@show']);
+        $router->get('estruturas/{estruturas}/edit', ['as' => 'admin.estruturas.edit', 'uses' => 'Admin\EstruturaController@edit'])
+            ->middleware("needsPermission:estruturas.edit");        
+    });
+	
+	# Mascara Insumos
+    $router->group(['middleware' => 'needsPermission:mascaraInsumos.list'], function () use ($router) {        
+        $router->get('mascara_insumos', ['as' => 'admin.mascara_insumos.index', 'uses' => 'Admin\MascaraInsumoController@index']);
+        $router->post('mascara_insumos', ['as' => 'admin.mascara_insumos.store', 'uses' => 'Admin\MascaraInsumoController@store']);
+        $router->get('mascara_insumos/create', ['as' => 'admin.mascara_insumos.create', 'uses' => 'Admin\MascaraInsumoController@create'])
+            ->middleware("needsPermission:mascaraInsumos.create");;
+        $router->put('mascara_insumos/{mascara_insumos}', ['as' => 'admin.mascara_insumos.update', 'uses' => 'Admin\MascaraInsumoController@update']);
+        $router->patch('mascara_insumos/{mascara_insumos}', ['as' => 'admin.mascara_insumos.update', 'uses' => 'Admin\MascaraInsumoController@update']);
+        $router->delete('mascara_insumos/{mascara_insumos}', ['as' => 'admin.mascara_insumos.destroy', 'uses' => 'Admin\MascaraInsumoController@destroy'])
+            ->middleware("needsPermission:mascaraInsumos.delete");;
+        $router->get('mascara_insumos/{mascara_insumos}', ['as' => 'admin.mascara_insumos.show', 'uses' => 'Admin\MascaraInsumoController@show']);
+        $router->get('mascara_insumos/{mascara_insumos}/edit', ['as' => 'admin.mascara_insumos.edit', 'uses' => 'Admin\MascaraInsumoController@edit'])
+            ->middleware("needsPermission:mascaraInsumos.edit");        
+    });
 
     # Lembretes
     $router->group(['middleware' => 'needsPermission:lembretes.list'], function () use ($router) {
@@ -194,9 +221,7 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
         $router->get('lembretes/{lembretes}/edit', ['as' => 'admin.lembretes.edit', 'uses' => 'Admin\LembreteController@edit'])
             ->middleware("needsPermission:lembretes.edit");
         $router->get('lembretes/filtro/busca', ['as' => 'admin.lembretes.busca', 'uses' => 'Admin\LembreteController@busca']);
-    });
-
-    
+    });    
 
     # Template de importação de planilha
     $router->group(['middleware' => 'needsPermission:template_planilhas.list'], function () use ($router) {

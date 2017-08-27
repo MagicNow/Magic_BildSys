@@ -49,13 +49,10 @@ class CronogramaFisicoDataTable extends DataTable
     {
 		
 		//mostra a semana do mes anterior
-		$fridays = array();
-		$fridays[0] = date('d/m/Y', strtotime('first friday of previous month'));
-		$fridays[1] = date('d/m/Y', strtotime('second friday of previous month'));
-		$fridays[2] = date('d/m/Y', strtotime('third friday of previous month'));
-		$fridays[3] = date('d/m/Y', strtotime('fourth friday of previous month'));
-		//$fridays[4] = date('d/m/Y', strtotime('fifth friday of previous month'));
-		$last_day	= date('d/m/Y', strtotime('last day of previous month')); 
+		$fromDate="2017-01-01";
+		$fridays = CronogramaFisicoRepository::getFridaysBydate($fromDate);
+		
+		$last_day	= end($fridays);
 		
         $cronograma_fisicos = CronogramaFisico::query()
             ->select([

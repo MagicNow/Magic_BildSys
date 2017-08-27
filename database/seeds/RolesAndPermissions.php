@@ -172,9 +172,17 @@ class RolesAndPermissions extends Seeder
             'levantamentos.edit'   => 'Edição de levantamento',
             'levantamentos.delete'   => 'Remoção de levantamento',
 			
-            'levantamentos.import' => 'Importar levantamentos',
-			'levantamentos.mascara_insumo' => 'Mascara de Insumo para Upload',
-			'levantamentos.mascara_estrutura' => 'Mascara de Estrutura para Upload',
+            'levantamentos.import' => 'Importar levantamentos',			
+			
+			'mascaraInsumos.list' => 'Listagem de Mascara de Insumos',
+            'mascaraInsumos.create' => 'Criação de Mascara de Insumos',
+            'mascaraInsumos.edit'   => 'Edição de Mascara de Insumos',
+            'mascaraInsumos.delete'   => 'Remoção de Mascara de Insumos',
+			
+			'estruturas.list' => 'Listagem de estruturas',
+            'estruturas.create' => 'Criação de estruturas',
+            'estruturas.edit'   => 'Edição de estruturas',
+            'estruturas.delete'   => 'Remoção de estruturas',
 
             ################# SITE ###################
             'compras_lembretes.list' => 'Listagem de compras e lembretes',

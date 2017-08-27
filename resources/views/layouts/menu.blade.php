@@ -47,17 +47,17 @@
             </a>
         </li>
         @endshield	
-		@shield('levantamentos.list')
-        <li class="{{ Request::is('admin/levantamentos*') ? 'active' : '' }}">
-            <a href="{!! route('admin.levantamentos.mascara_insumo') !!}">
+		@shield('mascaraInsumos.list')
+        <li class="{{ Request::is('admin/mascaraInsumos*') ? 'active' : '' }}">
+            <a href="{!! route('admin.mascara_insumos.index') !!}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
                 <span>Mascara Insumo</span>
             </a>
         </li>
         @endshield
 		@shield('levantamentos.list')
-        <li class="{{ Request::is('admin/levantamentos*') ? 'active' : '' }}">
-            <a href="{!! route('admin.levantamentos.mascara_estrutura') !!}">
+        <li class="{{ Request::is('admin/estruturas*') ? 'active' : '' }}">
+            <a href="{!! route('admin.estruturas.index') !!}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
                 <span>Mascara Estrutura</span>
             </a>

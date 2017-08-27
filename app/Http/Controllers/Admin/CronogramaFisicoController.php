@@ -50,7 +50,11 @@ class CronogramaFisicoController extends AppBaseController
         if($request->id){
             $id = $request->id;
         }
-        return $cronogramaFisicoDataTable->porObra($id)->render('admin.cronograma_fisicos.index');
+				
+		$obras = Obra::pluck('nome','id')->toArray();
+        $templates = TemplatePlanilha::where('modulo', 'Cronograma Fisicos')->pluck('nome','id')->toArray();
+		
+        return $cronogramaFisicoDataTable->porObra($id)->render('admin.cronograma_fisicos.index', compact('obras','templates','id'));
     }
 
     /**
@@ -302,9 +306,7 @@ class CronogramaFisicoController extends AppBaseController
     {
 		//Filtros	//julho-2017	
 		$fromDate="2017-01-01";
-		$fridays = CronogramaFisicoRepository::getFridaysBydate($fromDate);
-		
-		print_r($fridays);
+		$fridays = CronogramaFisicoRepository::getFridaysBydate($fromDate);		
 		
 		$obras = $obraRepository
             ->orderBy('nome', 'ASC')

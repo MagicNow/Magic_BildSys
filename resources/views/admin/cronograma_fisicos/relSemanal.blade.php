@@ -63,7 +63,7 @@
 						  )
 						!!}
 					</div>
-					<div class="col-sm-3">
+					<div class="col-sm-2">
 						<h4>Ano</h4>
 						{!!
 						  Form::select(
@@ -71,19 +71,19 @@
 						  )
 						!!}
 					</div>
-					<div class="col-sm-3">
+					<div class="col-sm-2">
 						<h4>Mês</h4>
 						{!!
 						  Form::select(
-							'mes_id',["Janeiro","Fevereiro"],null,['class' => 'form-control select2 js-filter']
+							'mes_id',["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"],null,['class' => 'form-control select2 js-filter']
 						  )
 						!!}
 					</div>
-					<div class="col-sm-3">
+					<div class="col-sm-2">
 						<h4>Semana</h4>
 						{!!
 						  Form::select(
-							'semana_id',["Semana 1","Semana 2","Semana 3","Semana 4"],null,['class' => 'form-control select2 js-filter']
+							'semana_id',["Semana 1","Semana 2","Semana 3","Semana 4","Semana 5"],null,['class' => 'form-control select2 js-filter']
 						  )
 						!!}
 					</div>
@@ -98,7 +98,9 @@
 					<div class="row">
 						<div class="col-md-12"><tile title-color="head-grey" title="Percentual Previsto x Percentual Realizado" type="created"></tile></div>
 					</div>
-					</br>
+					
+					<div class="clearfix"></div>
+					
 					<div class="row">                        
 						<div class="col-md-6 table-responsive">
 							<table class="table table-bordered table-striped">
@@ -174,7 +176,9 @@
                             </div>
                         </div>												
                     </div>
-                    </br>					              				
+                    
+					<div class="clearfix"></div>
+					
 					<div class="row">						
 						<div class="col-md-3">							
                             <div class="element-grafico">
@@ -214,11 +218,15 @@
                             </div>
                         </div>						
                     </div>
-					</br>
+					
+					<div class="clearfix"></div>
+					
 					<div class="row">
 						<div class="col-md-12"><tile title-color="head-grey" title="Tarefas Críticas" type="created"></tile></div>
 					</div>
-					</br>
+					
+					<div class="clearfix"></div>
+					
 					<div class="row">
 					
                         <div class="col-md-6 table-responsive">
