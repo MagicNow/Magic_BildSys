@@ -13,7 +13,7 @@
         <div class="js-datatable-filter-form pull-right form-group col-sm-3">
 
             <select name="obra" id="obra" class="select2">
-                <option value="">-- Selecione a Obra --</option>
+                <option value="0">-- Selecione a Obra --</option>
 
                 @foreach($obras as $k => $v)
                     <option value="{{ $k }}">{{ $v }}</option>
@@ -32,8 +32,6 @@
         <div class="clearfix"></div>
         <div class="box box-primary">
             <div class="box-body">
-
-
 
                 @include('admin.planejamento_orcamentos.sem_planejamento_table')
 
