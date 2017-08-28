@@ -80,7 +80,7 @@
             if(id){
 
                 $("#js-btn-semPlanejamento").removeClass('hide');
-                $("#js-btn-semPlanejamento").attr("href", "{{url('/admin/planejamentos/planejamentoOrcamentos/planejamento')}}/"+id)
+                $("#js-btn-semPlanejamento").attr("href", "{{url('/admin/planejamentos/planejamentoOrcamentos/sem-planejamento/view')}}/"+id)
 
                 $('.box.box-primary').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
                 $.ajax({
