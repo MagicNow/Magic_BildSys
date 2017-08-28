@@ -318,15 +318,5 @@
             $('#valor_total_comprometido_a_gastar').text('{{number_format($GLOBALS["valor_total_comprometido_a_gastar"], 2, ',', '.')}}');
             $('#saldo_total_de_orcamento').text('{{number_format($orcamentoInicial - $GLOBALS["valor_total_comprometido_a_gastar"], 2, ',', '.')}}');
         });
-
-        function mostrarOcultarAnalise(id, funcao) {
-            if(funcao == 'mostrar') {
-                $('#analise-'+id).css('display', '');
-                $('#btn-analise-reajuste-'+id).attr('onclick', 'mostrarOcultarAnalise('+id+', "ocultar")');
-            } else {
-                $('#analise-'+id).css('display', 'none');
-                $('#btn-analise-reajuste-'+id).attr('onclick', 'mostrarOcultarAnalise('+id+', "mostrar")');
-            }
-        }
     </script>
 @append

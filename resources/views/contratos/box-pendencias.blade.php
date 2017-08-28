@@ -282,7 +282,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($itens_analise->oc_itens as $item)
+                        @foreach($itens_analise as $item)
                             @php
                                 $qtd_comprometida_a_gastar = money_to_float($item->qtd_inicial);
                                 $valor_comprometido_a_gastar = money_to_float($item->preco_inicial);
@@ -312,7 +312,7 @@
                                                                       ">
                                                             {{ $item->insumo->codigo }}</span>
                                 </td>
-                                <td class="text-center">{{ $item->insumo->nome }}</td>
+                                <td class="text-center">{{ $item->nome_item }}</td>
                                 <td class="text-center">{{ $item->insumo->unidade_sigla }}</td>
                                 <td class="text-center">{{ float_to_money($item->qtd, '') }}</td>
                                 <td class="text-center">{{ float_to_money($item->contratoItem->valor_unitario) }} </td>

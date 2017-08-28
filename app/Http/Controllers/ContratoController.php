@@ -229,7 +229,7 @@ class ContratoController extends AppBaseController
 
         $iss = Cnae::$iss;
 
-        $itens_analise = $apropriacaoRepository->forContratoApproval($contrato);
+        $itens_analise = $apropriacaoRepository->analiseReajuste($contrato);
 
         $GLOBALS["valor_total_comprometido_a_gastar"] = 0.00;
 
