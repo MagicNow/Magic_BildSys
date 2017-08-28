@@ -230,5 +230,80 @@
             });
         });
     });
+
+    function dispensarInsumoAprovado(ordem_de_compra_item_id, nome) {
+        swal({
+                    title: "Dispensar item de O.C.?",
+                    text: "Insumo: " + nome + "<br><hr><label>Escreva uma justificativa</label>: ",
+                    html: true,
+                    type: "input",
+                    showCancelButton: true,
+                    closeOnConfirm: false,
+                    animation: "slide-from-top",
+                    inputPlaceholder: "Justificativa",
+                    showLoaderOnConfirm: true,
+                    cancelButtonText: 'Cancelar',
+                    confirmButtonText: 'Dispensar',
+                    confirmButtonColor: '#DD6B55'
+                },
+                function(justificativa_texto) {
+                    if (justificativa_texto === false) return false;
+
+                    if (justificativa_texto === "") {
+                        swal.showInputError("Escreva uma justificativa!");
+                        return false
+                    }
+                    var data = {
+                        id: ordem_de_compra_item_id,
+                        justificativa: justificativa_texto
+                    };
+
+
+                    return $.ajax('/ordens-de-compra/dispensar-insumo-aprovado', {
+                        data: data
+                    }).done(function(retorno) {
+                        if (retorno.success) {
+                            swal({
+                                        title: 'Dispensado',
+                                        text: 'Item de O.C. dispensado!',
+                                        type: "success",
+                                        showCancelButton: false,
+                                        confirmButtonColor: "#7ED32C",
+                                        confirmButtonText: "Ok",
+                                        closeOnConfirm: true
+                                    },
+                                    function() {
+                                        window.LaravelDataTables["dataTableBuilder"].draw();
+                                        swal.close();
+                                    });
+
+                        } else {
+                            swal({
+                                        title: 'Oops',
+                                        text: retorno.erro,
+                                        type: "error",
+                                        showCancelButton: false,
+                                        confirmButtonColor: "#7ED32C",
+                                        confirmButtonText: "Ok",
+                                        closeOnConfirm: true
+                                    },
+                                    function() {
+                                        swal.close();
+                                    });
+                        }
+                    })
+                            .fail(function(retorno) {
+
+                                erros = '';
+                                $.each(retorno.responseJSON, function(index, value) {
+                                    if (erros.length) {
+                                        erros += '<br>';
+                                    }
+                                    erros += value;
+                                });
+                                swal("Oops", erros, "error");
+                            });
+                });
+    }
 </script>
 @stop

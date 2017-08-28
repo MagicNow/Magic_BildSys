@@ -68,15 +68,7 @@
             @endif
         @endif
     @else
-        @if($aprovado)
-            <span class="btn-lg btn-flat text-success" title="Aprovado">
-                <i class="fa fa-check" aria-hidden="true"></i>
-            </span>
-        @else
-            <span class="text-danger btn-lg btn-flat" title="Reprovado">
-                <i class="fa fa-times" aria-hidden="true"></i>
-            </span>
-        @endif
+        
     @endif
     @if($contrato->status->nome == 'Reprovado')
         <a href="/contratos/{{$contrato->id}}/editar" type="button"

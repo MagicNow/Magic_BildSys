@@ -22,7 +22,7 @@ class ContratoItemModificacao extends Model
     public function workflowNotification()
     {
         return [
-            'message' => "Modificação do Contrato {$this->item->contrato_id} à aprovar",
+            'message' => "Modificação do Contrato ".$this->item->contrato_id." à aprovar",
             'link' => route('contratos.show', $this->item->contrato_id),
             'workflow_tipo_id' => WorkflowTipo::ITEM_CONTRATO,
             'id_dinamico' => $this->id,
@@ -33,7 +33,7 @@ class ContratoItemModificacao extends Model
     public function workflowNotificationDone($aprovado)
     {
         return [
-            'message' => 'Modificação do Contrato {$this->item->contrato_id} '.$this->id.($aprovado?' aprovada ':' reprovada '),
+            'message' => 'Modificação do Contrato'.$this->item->contrato_id.' '.$this->id.($aprovado?' aprovada ':' reprovada '),
             'link' => route('contratos.show', $this->item->contrato_id),
         ];
     }
@@ -151,13 +151,17 @@ class ContratoItemModificacao extends Model
                 $tipo_reajuste =  self::REAJUSTE_QTD;
             }
 
+            // Aplica as mudanças no item do contrato
             $this->item->applyChanges($this, $tipo_reajuste);
-            $this->item->contrato->updateTotal();
-        }
 
-        $this->apropriacoes->map(function($apropriacao) {
-            $apropriacao->update(['qtd' => $apropriacao->pivot->qtd_atual]);
-        });
+            // Atualiza o total do contrato
+            $this->item->contrato->updateTotal();
+
+            // Atualiza os valores das apropriações
+            $this->apropriacoes->map(function($apropriacao) {
+                $apropriacao->update(['qtd' => $apropriacao->pivot->qtd_atual]);
+            });
+        }
 
         if(count($this->item->modificacoes->where('contrato_status_id', ContratoStatus::EM_APROVACAO)) <= 1) {
             $this->item->update(['pendente' => 0]);

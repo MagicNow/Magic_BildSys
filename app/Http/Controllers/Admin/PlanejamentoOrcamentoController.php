@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\DataTables\Admin\PlanejamentoOrcamentoDataTable;
+use App\DataTables\Admin\SemPlanejamentoInsumoDataTable;
 use App\Http\Requests\Admin;
+use App\Models\Carteira;
 use App\Models\InsumoGrupo;
 use App\Models\Obra;
 use App\Models\Orcamento;
@@ -479,5 +481,24 @@ class PlanejamentoOrcamentoController extends AppBaseController
             ->delete();
 
         return response()->json(['success'=>$removidos]);
+    }
+
+
+    /**
+     * Display the specified CarteiraInsumo without association with any Carteira
+     *
+     * @return Response
+     */
+    public function semPlanejamentoView(SemPlanejamentoInsumoDataTable $semPlanejamentoInsumoDataTable, $obra_id = null)
+    {
+        $grupoInsumos = InsumoGrupo::where('active', true)->pluck('nome', 'id')->toArray();
+
+        $carteiras = Carteira::where('active', true)->pluck('nome', 'id')->toArray();
+
+        $obras = Obra::pluck('nome','id')->toArray();
+
+
+
+        return $semPlanejamentoInsumoDataTable->render('admin.planejamento_orcamentos.sem_planejamento', compact('grupoInsumos', 'carteiras','obras','obra_id'));
     }
 }

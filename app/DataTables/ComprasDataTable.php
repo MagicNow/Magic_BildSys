@@ -228,6 +228,7 @@ class ComprasDataTable extends DataTable
                                             ordem_de_compra_itens.aprovado = 1
                                         )
                                     AND ordem_de_compra_itens.deleted_at IS NULL
+                                    AND ordem_de_compra_itens.data_dispensa IS NULL
                                     AND ordem_de_compras.obra_id ='. $obra->id .'
                                     AND ordem_de_compras.oc_status_id != 6
                                     AND ordem_de_compras.oc_status_id != 4
@@ -262,6 +263,7 @@ class ComprasDataTable extends DataTable
                                                 OR
                                                 ordem_de_compra_itens.aprovado = 1
                                             )
+                                        AND ordem_de_compra_itens.data_dispensa IS NULL
                                         AND ordem_de_compra_itens.deleted_at IS NULL
                                         AND ordem_de_compras.obra_id ='. $obra->id .'
                                         AND ordem_de_compras.oc_status_id != 6
