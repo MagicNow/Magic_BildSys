@@ -37,7 +37,11 @@ class InsumosAprovadosDataTable extends DataTable
                 return '<a href="'.url('/ordens-de-compra/detalhes/'.$obj->ordem_de_compra_id).'">'.$obj->ordem_de_compra_id.'</a>';
             })
             ->editColumn('sla', function($obj){
-                return $obj->sla.' <i class="fa fa-circle ' .($obj->sla < 0?'text-danger' : ( $obj->sla < 30 ? 'text-warning' : 'text-success') ).'" aria-hidden="true"></i>';
+                $sla = $obj->sla.' <i class="fa fa-circle ' .($obj->sla < 0?'text-danger' : ( $obj->sla < 30 ? 'text-warning' : 'text-success') ).'" aria-hidden="true"></i>';
+                if($obj->sla_data_planejamento<0){
+                    $sla .= '&nbsp;<i class="fa fa-exclamation-circle text-danger" data-toggle="tooltip" title="Necessidade da obra - '.$obj->data_planejamento.'"></i>';
+                }
+                return $sla;
             })
             ->filterColumn('sla', function($query, $keyword){
                 $query->whereRaw("(SELECT
@@ -148,6 +152,71 @@ class InsumosAprovadosDataTable extends DataTable
                     AND PC.deleted_at IS NULL
                 LIMIT 1
                 ) as sla"),
+                DB::raw("(
+                SELECT
+                    DATEDIFF(
+                        SUBDATE(
+                            PL.`data` , " . //-- Data de alteração da ordem de compras itens
+                "INTERVAL(
+                                IFNULL(
+                                (SELECT
+                                    SUM(L.dias_prazo_minimo) prazo
+                                FROM
+                                    lembretes L
+                                JOIN insumo_grupos IG ON IG.id = L.insumo_grupo_id
+                                WHERE
+                                    EXISTS( ". //-- Busca apenas os Lembretes q o Insumo está no grupo
+                "SELECT
+                                            1
+                                        FROM
+                                            insumos I
+                                        WHERE
+                                            I.id = item.insumo_id
+                                        AND I.insumo_grupo_id = IG.id
+                                    )
+                                AND L.deleted_at IS NULL
+                                AND L.lembrete_tipo_id = 2) ". //-- Subtrai a soma de todos prazos dos lembretes deste insumo
+                ",0)
+                            )
+                            DAY
+                        ) ,
+                        CURDATE()
+                    ) sla
+                FROM
+                    ordem_de_compra_itens item
+                JOIN ordem_de_compras OC ON OC.id = item.ordem_de_compra_id
+                JOIN planejamento_compras PC ON PC.insumo_id = item.insumo_id
+                AND PC.grupo_id = item.grupo_id
+                AND PC.subgrupo1_id = item.subgrupo1_id
+                AND PC.subgrupo2_id = item.subgrupo2_id
+                AND PC.subgrupo3_id = item.subgrupo3_id
+                AND PC.servico_id = item.servico_id
+                JOIN planejamentos PL ON PL.id = PC.planejamento_id
+                WHERE
+                    item.id = ordem_de_compra_itens.id
+                    AND PL.deleted_at IS NULL
+                    AND PC.deleted_at IS NULL
+                LIMIT 1
+                ) as sla_data_planejamento"),
+                DB::raw("(
+                SELECT
+                    DATE_FORMAT(PL.`data`,'%d/%m/%Y')
+                FROM
+                    ordem_de_compra_itens item
+                JOIN ordem_de_compras OC ON OC.id = item.ordem_de_compra_id
+                JOIN planejamento_compras PC ON PC.insumo_id = item.insumo_id
+                AND PC.grupo_id = item.grupo_id
+                AND PC.subgrupo1_id = item.subgrupo1_id
+                AND PC.subgrupo2_id = item.subgrupo2_id
+                AND PC.subgrupo3_id = item.subgrupo3_id
+                AND PC.servico_id = item.servico_id
+                JOIN planejamentos PL ON PL.id = PC.planejamento_id
+                WHERE
+                    item.id = ordem_de_compra_itens.id
+                    AND PL.deleted_at IS NULL
+                    AND PC.deleted_at IS NULL
+                LIMIT 1
+                ) as data_planejamento"),
         ])
             ->join('ordem_de_compras','ordem_de_compras.id','ordem_de_compra_itens.ordem_de_compra_id')
             ->join('obras','obras.id','ordem_de_compra_itens.obra_id')
@@ -194,25 +263,25 @@ class InsumosAprovadosDataTable extends DataTable
                 $query->whereIn('ordem_de_compra_itens.insumo_id', $this->request()->get('insumos'));
             }
         }
-		
+
 		if($this->request()->get('carteiras')){
             if(count($this->request()->get('carteiras')) && $this->request()->get('carteiras')[0] != "") {
                 $insumos_da_carteira = CarteiraInsumo::whereIn('carteira_id', $this->request()->get('carteiras'))
                                                         ->pluck('insumo_id', 'insumo_id')
-                                                        ->toArray();                
+                                                        ->toArray();
 
                 $query->where(function ($consulta) use ($insumos_da_carteira) {
-                    $consulta->whereIn('insumos.id', $insumos_da_carteira);                    
+                    $consulta->whereIn('insumos.id', $insumos_da_carteira);
                 });
             }
         }
-		
+
         if($this->request()->get('cidades')){
             if(count($this->request()->get('cidades')) && $this->request()->get('cidades')[0] != "") {
                 $query->whereIn('obras.cidade_id', $this->request()->get('cidades'));
             }
         }
-        
+
 		if($this->request()->get('compradores')){
             if(count($this->request()->get('compradores')) && $this->request()->get('compradores')[0] != "") {
                 $insumos_do_comprador = CompradorInsumo::whereIn('user_id', $this->request()->get('compradores'))
@@ -226,7 +295,7 @@ class InsumosAprovadosDataTable extends DataTable
                 });
             }
         }
-		
+
         if($this->request()->get('farol')){
             if(count($this->request()->get('farol')) && $this->request()->get('farol')[0] != "") {
                 $query->whereIn(DB::raw("IF(
