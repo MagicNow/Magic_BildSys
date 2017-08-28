@@ -495,6 +495,8 @@ class PlanejamentoOrcamentoController extends AppBaseController
 
         $carteiras = Carteira::where('active', true)->pluck('nome', 'id')->toArray();
 
-        return $semPlanejamentoInsumoDataTable->render('admin.planejamento_orcamentos.sem_planejamento', compact('grupoInsumos', 'carteiras'));
+        $obras = Obra::pluck('nome','id')->toArray();
+
+        return $semPlanejamentoInsumoDataTable->render('admin.planejamento_orcamentos.sem_planejamento', compact('grupoInsumos', 'carteiras','obras'));
     }
 }
