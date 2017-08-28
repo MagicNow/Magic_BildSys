@@ -7,6 +7,7 @@ use App\Models\Insumo;
 use Form;
 use Illuminate\Support\Facades\DB;
 use Yajra\Datatables\Services\DataTable;
+use Illuminate\Support\Facades\Input;
 
 class SemPlanejamentoInsumoDataTable extends DataTable
 {
@@ -30,6 +31,8 @@ class SemPlanejamentoInsumoDataTable extends DataTable
     public function query()
     {		
 
+        echo Input::get('obra'); die;
+
         $insumos = Insumo::select([
             'insumos.id',
             'insumos.nome',
@@ -37,6 +40,7 @@ class SemPlanejamentoInsumoDataTable extends DataTable
         ])
             ->join('insumo_grupos','insumo_grupos.id','=','insumos.insumo_grupo_id')
             ->join('orcamentos','orcamentos.insumo_id','=','insumos.id')
+            ->where('orcamentos.obra_id', '=' , 4)
             ->whereNotExists(function ($query) {
             $query->select(DB::raw(1))
                 ->from('planejamento_compras')
