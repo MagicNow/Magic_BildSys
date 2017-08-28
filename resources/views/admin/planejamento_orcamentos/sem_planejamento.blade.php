@@ -10,16 +10,20 @@
 		</h1>
 
 
-        <div class="js-datatable-filter-form pull-right form-group col-sm-3">
+        <div class="js-datatable-filter-form pull-right form-group">
+            <div class="col-sm-3">
+                <label for="obra" style="margin-top: 8px;">Obra:</label>
+            </div>
+            <div class="col-sm-9">
+                <select name="obra" id="obra" class="form-control select2">
+                    <option value="">-- Selecione a Obra --</option>
 
-            <select name="obra" id="obra" class="select2">
-                <option value="">-- Selecione a Obra --</option>
+                    @foreach($obras as $k => $v)
+                        <option value="{{ $k }}" {{ $k==$obra_id?'selected="selected"':''}}>{{ $v }}</option>
+                    @endforeach
 
-                @foreach($obras as $k => $v)
-                    <option value="{{ $k }}" {{ $k==$obra_id?'selected="selected"':''}}>{{ $v }}</option>
-                @endforeach
-
-            </select>
+                </select>
+            </div>
 
         </div>
 
