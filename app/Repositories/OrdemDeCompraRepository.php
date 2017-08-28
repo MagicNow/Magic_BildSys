@@ -103,7 +103,7 @@ class OrdemDeCompraRepository extends BaseRepository
         return $saldoDisponivel;
     }
     
-    public static function valorComprometidoAGastarItem($grupo_id, $subgrupo1_id, $subgrupo2_id, $subgrupo3_id, $servico_id, $insumo_id, $obra_id, $item_id = null)
+    public static function valorComprometidoAGastarItem($grupo_id, $subgrupo1_id, $subgrupo2_id, $subgrupo3_id, $servico_id, $insumo_id, $obra_id, $item_id = null, $ordem_de_compra_ultima_aprovacao = null)
     {
         $valores_comprometido_a_gastar = ContratoItemApropriacao::select([
             'contrato_item_apropriacoes.id',
@@ -121,13 +121,17 @@ class OrdemDeCompraRepository extends BaseRepository
             ->where('contratos.obra_id', $obra_id);
 
         if($item_id){
-            $valores_comprometido_a_gastar->whereRaw('NOT EXISTS(
+            $valores_comprometido_a_gastar = $valores_comprometido_a_gastar->whereRaw('NOT EXISTS(
                 SELECT 1 
                 FROM contrato_itens CI
                 JOIN oc_item_qc_item OCQC ON OCQC.qc_item_id = CI.qc_item_id
                 WHERE CI.id = contrato_item_apropriacoes.contrato_item_id
                 AND OCQC.ordem_de_compra_item_id = '.$item_id.'
             )');
+        }
+
+        if($ordem_de_compra_ultima_aprovacao) {
+            $valores_comprometido_a_gastar = $valores_comprometido_a_gastar->where('contrato_item_apropriacoes.created_at', '<', $ordem_de_compra_ultima_aprovacao);
         }
 
         $valores_comprometido_a_gastar = $valores_comprometido_a_gastar->get();
@@ -163,7 +167,7 @@ class OrdemDeCompraRepository extends BaseRepository
         return $valor_comprometido_a_gastar;
     }
 
-    public static function qtdComprometidaAGastarItem($grupo_id, $subgrupo1_id, $subgrupo2_id, $subgrupo3_id, $servico_id, $insumo_id, $obra_id, $item_id = null)
+    public static function qtdComprometidaAGastarItem($grupo_id, $subgrupo1_id, $subgrupo2_id, $subgrupo3_id, $servico_id, $insumo_id, $obra_id, $item_id = null, $ordem_de_compra_ultima_aprovacao = null)
     {
         $qtds_comprometida_a_gastar = ContratoItemApropriacao::select([
             'contrato_item_apropriacoes.id',
@@ -189,6 +193,10 @@ class OrdemDeCompraRepository extends BaseRepository
             )');
         }
 
+        if($ordem_de_compra_ultima_aprovacao) {
+            $qtds_comprometida_a_gastar = $qtds_comprometida_a_gastar->where('contrato_item_apropriacoes.created_at', '<', $ordem_de_compra_ultima_aprovacao);
+        }
+        
         $qtds_comprometida_a_gastar = $qtds_comprometida_a_gastar->get();
 
         $qtd_comprometida_a_gastar = 0;

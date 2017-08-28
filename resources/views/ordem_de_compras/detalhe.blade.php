@@ -251,14 +251,14 @@
                 <h4>
                     <small class="pull-left">R$</small>
                     {{---  @TODO = A gastar: É a soma de todos os saldos de contratos na que apropriação--}}
-                    {{ number_format(doubleval($valor_comprometido_a_gastar),2,',','.') }}
+                    {{ number_format(floatval($valor_comprometido_a_gastar),2,',','.') }}
                 </h4>
             </div>
             <div class="col-md-2 text-right borda-direita" title="Restante do Orçamento Inicial em relação aos itens desta O.C.">
                 <h5>SALDO DE ORÇAMENTO</h5>
                 <h4>
                     <small class="pull-left">R$</small>
-                    {{ number_format($orcamentoInicial,2,',','.') }}
+                    {{ number_format($orcamentoInicial - floatval($valor_comprometido_a_gastar),2,',','.') }}
                     {{--- TO DO = Saldo: Previsto - Realizado - A gastar--}}
                     {{--{{ number_format($saldo,2,',','.') }}--}}
                 </h4>
@@ -274,7 +274,7 @@
                 <h5>SALDO DISPONÍVEL APÓS O.C</h5>
                 <h4>
                     <small class="pull-left">R$</small>
-                    {{ number_format(($orcamentoInicial - $totalSolicitado),2,',','.') }}
+                    {{ number_format(($orcamentoInicial - floatval($valor_comprometido_a_gastar) - $totalSolicitado),2,',','.') }}
                 </h4>
             </div>
         </div>
@@ -305,9 +305,23 @@
                             {{--@php $saldo_valor_orcamento = $farol_saldo_valor_orcamento = - money_to_float($item->valor_total); @endphp--}}
                         {{--@else--}}
                             @php $saldo_valor_orcamento = $item->substitui ? $item->valor_previsto_orcamento_pai-money_to_float($item->valor_realizado) : $item->preco_inicial-money_to_float($item->valor_realizado); @endphp
-                            @php $farol_saldo_valor_orcamento = $item->substitui ? 0-money_to_float($item->valor_realizado) : $item->preco_inicial-money_to_float($item->valor_realizado); @endphp
                         {{--@endif--}}
-                        <tr>
+                        <tr
+                        @if($item->data_dispensa)
+                            class="danger"
+                        ><td colspan="11" class="text-left">
+                                <i class="fa fa-trash text-danger" aria-hidden="true"></i>
+                                Insumo dispensado após aprovação:<br>
+                                <small>
+                                    {{ $item->obs_dispensa }}
+                                    <span class="label label-default">
+                                        por {{ $item->userDispensa->name }}
+                                    </span>
+                                </small>
+                            </td>
+                            <tr class="danger"
+                            @endif
+                        >
                             <td class="text-center">
                                 <span data-toggle="tooltip" data-placement="right" data-html="true"
                                     title="
@@ -340,11 +354,16 @@
                             <td class="text-center">
                                 {{-- Qntd Prevista - Qntd Realizada - Qntd Á gastar = Qntd Saldo do orçamento - Qntd OC --}}
                                 @php
-                                    $qtd_prevista = $item->substitui ? $item->qtd_prevista_orcamento_pai : $item->qtd_inicial;
-                                    $qtd_comprometida_a_gastar = money_to_float(\App\Repositories\OrdemDeCompraRepository::qtdComprometidaAGastarItem($item->grupo_id, $item->subgrupo1_id, $item->subgrupo2_id, $item->subgrupo3_id, $item->servico_id, $item->insumo_id, $item->obra_id, $item->id));
-                                    $saldo_qtd_orcamento = $qtd_prevista - money_to_float($item->qtd_realizada) - $qtd_comprometida_a_gastar;
+                                        $valor_comprometido_a_gastar_item = \App\Repositories\OrdemDeCompraRepository::valorComprometidoAGastarItem($item->grupo_id, $item->subgrupo1_id, $item->subgrupo2_id, $item->subgrupo3_id, $item->servico_id, $item->insumo_id, $item->obra_id, $item->id, $item->ordemDeCompra->dataUltimoPeriodoAprovacao());
+                                        $qtd_prevista = $item->substitui ? $item->qtd_prevista_orcamento_pai : $item->qtd_inicial;
+                                        $qtd_comprometida_a_gastar = money_to_float(\App\Repositories\OrdemDeCompraRepository::qtdComprometidaAGastarItem($item->grupo_id, $item->subgrupo1_id, $item->subgrupo2_id, $item->subgrupo3_id, $item->servico_id, $item->insumo_id, $item->obra_id, $item->id, $item->ordemDeCompra->dataUltimoPeriodoAprovacao()));
+                                        $saldo_qtd_orcamento = $qtd_prevista - money_to_float($item->qtd_realizada) - $qtd_comprometida_a_gastar;
 
-                                    $status_qtd = $saldo_qtd_orcamento - money_to_float($item->qtd);
+                                        $saldo_valor_orcamento -= $valor_comprometido_a_gastar_item;
+
+                                        $status_qtd = $saldo_qtd_orcamento - money_to_float($item->qtd);
+
+                                        $valor_comprometido_a_gastar_servico = \App\Repositories\OrdemDeCompraRepository::valorComprometidoAGastarItem($item->grupo_id, $item->subgrupo1_id, $item->subgrupo2_id, $item->subgrupo3_id, $item->servico_id, $item->insumo_id, $item->obra_id, null, $item->ordemDeCompra->dataUltimoPeriodoAprovacao());
                                 @endphp
 
                                 @if($status_qtd > 0)
@@ -358,18 +377,18 @@
                             <td class="text-center">
                                 {{--CONTA = saldo - valor oc--}}
                                 @php
-                                    $status_insumo = $farol_saldo_valor_orcamento - money_to_float($item->valor_total);
+                                    $status_insumo = $saldo_valor_orcamento - money_to_float($item->valor_total);
                                 @endphp
                                 <i class="fa fa-circle {{ $status_insumo < 0 ? 'red': 'green'  }}" aria-hidden="true"></i>
                             </td>
                             <td class="text-center">
                                 @if($item->servico)
-                                    <a href="/ordens-de-compra/detalhes-servicos/{{$ordemDeCompra->obra_id}}/{{$item->servico->id}}" style="cursor:pointer;">
-                                        <i class="fa fa-circle {{ (money_to_float($item->valor_servico) - money_to_float($item->valor_servico_oc)) < 0 ? 'red': 'green'  }}" aria-hidden="true"></i>
+                                    <a href="/ordens-de-compra/detalhes-servicos/{{$ordemDeCompra->obra_id}}/{{$item->servico->id}}?oc_id={{$ordemDeCompra->id}}" style="cursor:pointer;">
+                                        <i class="fa fa-circle {{ (money_to_float($item->valor_servico) - $valor_comprometido_a_gastar_servico - money_to_float($item->valor_servico_oc)) < 0 ? 'red': 'green'  }}" aria-hidden="true"></i>
                                         <button class="btn btn-warning btn-sm btn-flat">Análise</button>
                                     </a>
                                 @else
-                                    <i class="fa fa-circle {{ (money_to_float($item->valor_servico) - money_to_float($item->valor_servico_oc)) < 0 ? 'red': 'green'  }}" aria-hidden="true"></i>
+                                    <i class="fa fa-circle {{ (money_to_float($item->valor_servico) - $valor_comprometido_a_gastar_servico - money_to_float($item->valor_servico_oc)) < 0 ? 'red': 'green'  }}" aria-hidden="true"></i>
                                 @endif
                             </td>
                             <td class="text-center">
@@ -506,18 +525,18 @@
                                                 </td>
                                                 <td class="text-center">
                                                     <small class="pull-left">R$</small>
-                                                    {{ number_format(\App\Repositories\OrdemDeCompraRepository::valorComprometidoAGastarItem($item->grupo_id, $item->subgrupo1_id, $item->subgrupo2_id, $item->subgrupo3_id, $item->servico_id, $item->insumo_id, $item->obra_id, $item->id), 2, ',','.') }}
+                                                    {{number_format($valor_comprometido_a_gastar_item, 2, ',','.')}}
                                                 </td>
                                                 <td class="text-center">
                                                     <small class="pull-left">R$</small>
-                                                    {{ number_format($saldo_valor_orcamento , 2, ',','.') }}
+                                                    {{ number_format($saldo_valor_orcamento, 2, ',','.') }}
                                                 </td>
                                                 <td class="text-center">
                                                     {{ float_to_money(money_to_float($item->valor_total)) }}
                                                 </td>
                                                 <td class="text-center">
                                                     {{--SALDO DE VALOR DO ORÇAMENTO - VALOR DA O.C.--}}
-                                                    {{ float_to_money($saldo_valor_orcamento - doubleval($item->valor_total)) }}
+                                                    {{ float_to_money($saldo_valor_orcamento - floatval($item->valor_total)) }}
                                                 </td>
                                             </tr>
                                             </tbody>

@@ -8,7 +8,7 @@ use Form;
 use Illuminate\Support\Facades\DB;
 use Yajra\Datatables\Services\DataTable;
 
-class SemCarteiraInsumoDataTable extends DataTable
+class SemPlanejamentoInsumoDataTable extends DataTable
 {
 
     /**
@@ -18,7 +18,7 @@ class SemCarteiraInsumoDataTable extends DataTable
     {
         return $this->datatables
             ->eloquent($this->query())
-            ->addColumn('action', 'admin.carteira_insumos.datatables_actions')
+            ->addColumn('action', 'admin.planejamento_orcamentos.datatables_actions')
             ->make(true);
     }
 
@@ -28,7 +28,7 @@ class SemCarteiraInsumoDataTable extends DataTable
      * @return \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder
      */
     public function query()
-    {		
+    {
 
         $insumos = Insumo::select([
             'insumos.id',
@@ -36,11 +36,14 @@ class SemCarteiraInsumoDataTable extends DataTable
             'insumo_grupos.nome as nome_grupo_insumo'
         ])
             ->join('insumo_grupos','insumo_grupos.id','=','insumos.insumo_grupo_id')
+            ->join('orcamentos','orcamentos.insumo_id','=','insumos.id')
             ->whereNotExists(function ($query) {
             $query->select(DB::raw(1))
-                ->from('carteira_insumos')
-                ->whereRaw('carteira_insumos.insumo_id = insumos.id');
+                ->from('planejamento_compras')
+                ->whereRaw('planejamento_compras.insumo_id = insumos.id');
         });
+
+        $insumos->where('orcamentos.obra_id',intval($this->request()->get('obra')));
 
         return $this->applyScopes($insumos);
 

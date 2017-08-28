@@ -121,6 +121,7 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
         $router->get('planejamentoOrcamentos/planejamento/orcamento/insumo_grupos', 'Admin\PlanejamentoOrcamentoController@getGrupoInsumos');
         $router->get('planejamentoOrcamentos/planejamento/orcamento/insumo/insumo_grupos', 'Admin\PlanejamentoOrcamentoController@getGrupoInsumoRelacionados');
         $router->get('planejamentoOrcamentos/orcamentos/desvincular', 'Admin\PlanejamentoOrcamentoController@desvincular');
+        $router->get('planejamentoOrcamentos/sem-planejamento/view/{obra}', ['as' => 'admin.planejamentoOrcamentos.semplanejamentoview', 'uses' => 'Admin\PlanejamentoOrcamentoController@semPlanejamentoView']);
 
     });
 
@@ -422,7 +423,6 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->get('carteiras/{carteiras}/edit', ['as' => 'admin.carteiras.edit', 'uses' => 'Admin\CarteiraController@edit'])
             ->middleware("needsPermission:carteiras.edit");
         $router->get('carteiras/buscacep/{cep}', 'Admin\CarteiraController@buscaPorCep');
-        $router->get('valida-documento', 'Admin\CarteiraController@validaCnpj');
     });
     
     # Solicitação de Insumos
@@ -612,6 +612,8 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     # Ordens de compra
     $router->get('/ordens-de-compra/insumos-aprovados', 'OrdemDeCompraController@insumosAprovados')
         ->middleware("needsPermission:quadroDeConcorrencias.create");
+    $router->get('/ordens-de-compra/dispensar-insumo-aprovado', 'OrdemDeCompraController@dispensaAprovado')
+        ->middleware("needsPermission:quadroDeConcorrencias.create");
     $router->group(['middleware' => 'needsPermission:ordens_de_compra.list'], function () use ($router) {
         $router->get('/ordens-de-compra/detalhes/{id}', 'OrdemDeCompraController@detalhe')
             ->middleware("needsPermission:ordens_de_compra.detalhes")
@@ -686,6 +688,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             $router->post('{obra}/totalParcial', 'OrdemDeCompraController@totalParcial');
             $router->post('{obra}/comprarTudo', 'OrdemDeCompraController@comprarTudo');
             $router->get('removerInsumoPlanejamento/{planejamentoCompra}', 'OrdemDeCompraController@removerInsumoPlanejamento');
+
         });
     });
 
@@ -872,7 +875,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->get('catalogo-acordos/buscar/busca_fornecedores', ['as' => 'catalogo_contratos.busca_fornecedores', 'uses' => 'CatalogoContratoController@buscaFornecedor']);
         $router->get('catalogo-acordos-insumo/delete', 'CatalogoContratoController@deleteInsumo');
 
-        $router->get('catalogo-acordos/{contratos}/removeObra/{remover}', ['as' => 'catalogo_contratos.removeObra', 'uses' => 'CatalogoContratoController@removeObra'])
+        $router->get('catalogo-acordos/{contratos}/removeRegional/{remover}', ['as' => 'catalogo_contratos.removeRegional', 'uses' => 'CatalogoContratoController@removeRegional'])
             ->middleware("needsPermission:catalogo_acordos.edit");
         $router->get('catalogo-acordos/{contratos}/imprimir-minuta', ['as' => 'catalogo_contratos.removeObra', 'uses' => 'CatalogoContratoController@imprimirMinuta']);
 

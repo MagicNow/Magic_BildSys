@@ -94,12 +94,30 @@ class ContratoItem extends Model
         return $this->hasMany(ContratoItemApropriacao::class);
     }
 
-    public function applyChanges(ContratoItemModificacao $mod)
+    /**
+     * applyChanges
+     * Aplica as mudanças no item do Contrato
+     * @param ContratoItemModificacao $mod
+     * @param null $tipo_reajuste Null = Ambos ou 'Reajuste de quantidade' ou 'Reajuste de valor unitário'
+     * @return ContratoItem $this
+     */
+    public function applyChanges(ContratoItemModificacao $mod, $tipo_reajuste = null)
     {
-        $this->aprovado       = true;
-        $this->qtd            = $mod->qtd_atual;
-        $this->valor_unitario = $mod->valor_unitario_atual;
-        $this->valor_total    = (float) $this->qtd * (float) $this->valor_unitario;
+        $this->aprovado = true;
+        
+        if($tipo_reajuste){
+            if($tipo_reajuste == ContratoItemModificacao::REAJUSTE_QTD){
+                $this->qtd = $mod->qtd_atual;
+            }
+            if($tipo_reajuste == ContratoItemModificacao::REAJUSTE_VALOR){
+                $this->valor_unitario = $mod->valor_unitario_atual;
+            }
+        } else {
+            $this->qtd = $mod->qtd_atual;
+            $this->valor_unitario = $mod->valor_unitario_atual;
+        }
+        
+        $this->valor_total = (float) $this->qtd * (float) $this->valor_unitario;
 
         $this->save();
 

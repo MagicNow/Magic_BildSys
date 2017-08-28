@@ -6,8 +6,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
                 <h4 class="modal-title">
-                    Apropriações <br>
-                    <small>{{ $item->insumo->nome }}</small>
+                   {{ $item->insumo->codigo }} - {{ $item->insumo->nome }} - {{ $item->insumo->unidade_sigla }}
                 </h4>
             </div>
             <div class="modal-body">
@@ -37,10 +36,6 @@
                         @foreach($item->apropriacoes as $apropriacao)
                             <tr>
                                 <td>
-                                    <button class="btn btn-xs btn-flat btn-default js-collapse"
-                                        data-target="#historico-apropriacao-{{ $apropriacao->id }}">
-                                        <i class="fa fa-history fa-fw"></i>
-                                    </button>
                                     <a href="{{ route('contratos.memoria_de_calculo', [$contrato->id, $apropriacao  ->id]) }}" type="button"
                                        class="btn btn-flat btn-xs btn-primary"
                                        data-toggle="tooltip"
@@ -48,6 +43,15 @@
                                        title="Criar previsão de memória de cálculo">
                                         <i class="fa fa-calculator fa-fw" aria-hidden="true"></i>
                                     </a>
+
+                                    <button class="btn btn-xs btn-flat btn-default js-collapse"
+                                        data-target="#historico-apropriacao-{{ $apropriacao->id }}"
+                                            data-toggle="tooltip"
+                                            data-placement="top"
+                                            title="Histórico Apropriação">
+                                        <i class="fa fa-history fa-fw"></i>
+                                    </button>
+
                                 </td>
                                 <td>{{ $apropriacao->codigoServico() }}</td>
                                 <td>{{ float_to_money($apropriacao->qtd, '') }}</td>

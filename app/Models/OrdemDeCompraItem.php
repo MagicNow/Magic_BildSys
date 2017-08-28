@@ -66,7 +66,10 @@ class OrdemDeCompraItem extends Model
         'sugestao_data_uso',
         'sugestao_contrato_id',
         'user_id',
-        'unidade_sigla'
+        'unidade_sigla',
+        'data_dispensa',
+        'user_id_dispensa',
+        'obs_dispensa'
     ];
 
     /**
@@ -210,6 +213,14 @@ class OrdemDeCompraItem extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function userDispensa()
+    {
+        return $this->belongsTo(User::class,'user_id_dispensa');
     }
 
     /**

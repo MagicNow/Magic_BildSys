@@ -12,7 +12,7 @@ class ContratoTemplateSeed extends Seeder
     public function run()
     {
         Schema::disableForeignKeyConstraints();
-        DB::table('contrato_templates')->delete();
+        DB::table('contrato_templates')->whereIn('id',[1,2])->delete();
 
         $items = [
             [
@@ -23,56 +23,44 @@ class ContratoTemplateSeed extends Seeder
                                 <p dir="ltr" style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;text-align: center;">
                                     <span style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:underline;vertical-align:baseline;white-space:pre-wrap;">ACORDO DE PREÇO UNITÁRIO DE MATERIAL PARA CONSTRUÇÃO CIVIL</span>
                                 </p>
-                                <p dir="ltr" style="line-height:1.2;margin-top:0pt;margin-bottom:0pt;text-align: justify;">&nbsp;</p>
-                                <p dir="ltr" style="line-height: 1.2; margin-top: 0pt; margin-bottom: 0pt;"><span
-                                        style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;">A</span><span
-                                        style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;">&nbsp;- </span><span
-                                        style="text-align: center;">[RAZAO_SOCIAL_OBRA]&nbsp;</span><span
-                                        style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;">, pessoa jurídica de direito privado, com sede na</span><span
-                                        style="vertical-align: baseline;"> </span><span style="text-align: center;">[</span><span
-                                        style="text-align: center;">ENDERECO_OBRA_OBRA</span><span style="text-align: center;">]&nbsp;</span><span
-                                        style="vertical-align: baseline;">,</span><span
-                                        style="vertical-align: baseline;"> inscrita no CNPJ sob nº </span><span style="text-align: center;">[CNPJ_OBRA]&nbsp;</span><span
-                                        style="vertical-align: baseline;"> </span><span
-                                        style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;">com seu contrato social devidamente registrado na junta Comercial do Estado de São Paulo, neste ato representada na forma de seus atos constitutivos, doravante denominada simplesmente CONTRATANTE.</span>
-                                </p>
-                                <p dir="ltr" style="line-height:1.2;margin-top:0pt;margin-bottom:0pt;text-align: justify;">&nbsp;</p>
+                                [CABECALHO_MATRIZ]
+                                <p dir="ltr" style="line-height:1.2;margin-top:0pt;margin-bottom:0pt;text-align: justify;"> </p>
                                 <p dir="ltr" style="line-height: 1.2; margin-top: 0pt; margin-bottom: 0pt;"><span
                                         style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;">B</span><span
-                                        style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;">&nbsp;–</span><span
-                                        style="vertical-align: baseline;"> </span><span style="text-align: center;">[NOME_FORNECEDOR]&nbsp;</span><span
+                                        style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;"> –</span><span
+                                        style="vertical-align: baseline;"> </span><span style="text-align: center;">[NOME_FORNECEDOR] </span><span
                                         style="vertical-align: baseline;">,</span><span
                                         style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;"> pessoa jurídica de direito privado, com sede na</span><span
-                                        style="vertical-align: baseline;"> <span style="text-align: center;">[TIPO_LOGRADOURO_FORNECEDOR]&nbsp;</span> </span><span
-                                        style="text-align: center;">[LOGRADOURO_FORNECEDOR]&nbsp;</span><span style="vertical-align: baseline;">, <span
-                                        style="text-align: center;">[NUMERO_FORNECEDOR]&nbsp;&nbsp;</span> <span style="text-align: center;">[COMPLEMENTO_FORNECEDOR]&nbsp;</span>, CEP <span
-                                        style="text-align: center;">[CEP_FORNECEDOR]&nbsp;</span>,</span><span style="vertical-align: baseline;"> na cidade de <span
-                                        style="text-align: center;">[MUNICIPIO_FORNECEDOR]&nbsp;</span>, <span style="text-align: center;">[ESTADO_FORNECEDOR]&nbsp;</span> inscrita no CNPJ sob nº </span><span
-                                        style="text-align: center;">[CNPJ_FORNECEDOR]&nbsp;</span><span style="vertical-align: baseline;"> com se</span><span
+                                        style="vertical-align: baseline;"> <span style="text-align: center;">[TIPO_LOGRADOURO_FORNECEDOR] </span> </span><span
+                                        style="text-align: center;">[LOGRADOURO_FORNECEDOR] </span><span style="vertical-align: baseline;">, <span
+                                        style="text-align: center;">[NUMERO_FORNECEDOR]  </span> <span style="text-align: center;">[COMPLEMENTO_FORNECEDOR] </span>, CEP <span
+                                        style="text-align: center;">[CEP_FORNECEDOR] </span>,</span><span style="vertical-align: baseline;"> na cidade de <span
+                                        style="text-align: center;">[MUNICIPIO_FORNECEDOR] </span>, <span style="text-align: center;">[ESTADO_FORNECEDOR] </span> inscrita no CNPJ sob nº </span><span
+                                        style="text-align: center;">[CNPJ_FORNECEDOR] </span><span style="vertical-align: baseline;"> com se</span><span
                                         style="vertical-align: baseline;">u</span><span
                                         style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;"> contrato social devidamente registrado na junta Comercial do Estado de São Paulo, neste ato representada na forma de seus atos constitutivos</span><span
                                         style="vertical-align: baseline;"> por </span><span
                                         style="text-align: center;">[NOME_SOCIO_OU_PROCURADOR]</span><span
                                         style="vertical-align: baseline;">,</span><span
-                                        style="vertical-align: baseline;"> nacionalidade&nbsp;</span><span style="text-align: center;">[NACIONALIDADE_SOCIO_OU_PROCURADOR]</span><span
+                                        style="vertical-align: baseline;"> nacionalidade </span><span style="text-align: center;">[NACIONALIDADE_SOCIO_OU_PROCURADOR]</span><span
                                         style="vertical-align: baseline;">, </span><span
-                                        style="text-align: center;">[ESTADO_CIVIL_SOCIO_PROCURADOR]</span><span style="vertical-align: baseline;">, profissão&nbsp;</span><span
+                                        style="text-align: center;">[ESTADO_CIVIL_SOCIO_PROCURADOR]</span><span style="vertical-align: baseline;">, profissão </span><span
                                         style="text-align: center;">[PROFISSAO_SOCIO_OU_PROCURADOR]</span><span
                                         style="vertical-align: baseline;">,</span><span style="vertical-align: baseline;"> </span><span
                                         style="background-color: transparent; font-size: 12pt; font-family: Arial; font-weight: 400; vertical-align: baseline; white-space: pre-wrap;">inscrito no RG </span><span
-                                        style="vertical-align: baseline;">nº&nbsp;</span><span
-                                        style="text-align: center;">[RG_SOCIO_OU_PROCURADOR]</span><span style="vertical-align: baseline;">, inscrito no CPF nº&nbsp;</span><span
-                                        style="text-align: center;">[CPF_SOCIO_PROCURADOR]</span><span style="vertical-align: baseline;">, domiciliado(s) na&nbsp;</span><span
+                                        style="vertical-align: baseline;">nº </span><span
+                                        style="text-align: center;">[RG_SOCIO_OU_PROCURADOR]</span><span style="vertical-align: baseline;">, inscrito no CPF nº </span><span
+                                        style="text-align: center;">[CPF_SOCIO_PROCURADOR]</span><span style="vertical-align: baseline;">, domiciliado(s) na </span><span
                                         style="text-align: center;">[ENDERECO_SOCIO_OU_PROCURADOR]</span><span style="vertical-align: baseline;">, na cidade de </span><span
-                                        style="text-align: center;">[CIDADE_SOCIO_OU_PROCURADOR]</span><span style="vertical-align: baseline;">, Estado de&nbsp;<span
+                                        style="text-align: center;">[CIDADE_SOCIO_OU_PROCURADOR]</span><span style="vertical-align: baseline;">, Estado de <span
                                         style="text-align: center;">[ESTADO_SOCIO_OU_PROCURADOR]</span>,</span><span
                                         style="background-color: transparent; font-size: 12pt; font-family: Arial; font-weight: 400; vertical-align: baseline; white-space: pre-wrap;"> </span><span
-                                        style="vertical-align: baseline;">CEP&nbsp;<span style="text-align: center;">[CEP_SOCIO_OU_PROCURADOR]</span>&nbsp;, Telefone&nbsp;<span
-                                        style="text-align: center;">[TELEFONE_SOCIO_OU_PROCURADOR]</span>&nbsp;, Celular&nbsp;<span
-                                        style="text-align: center;">[CELULAR_SOCIO_OU_PROCURADOR]</span>, e-mail &nbsp;</span><span
+                                        style="vertical-align: baseline;">CEP <span style="text-align: center;">[CEP_SOCIO_OU_PROCURADOR]</span> , Telefone <span
+                                        style="text-align: center;">[TELEFONE_SOCIO_OU_PROCURADOR]</span> , Celular <span
+                                        style="text-align: center;">[CELULAR_SOCIO_OU_PROCURADOR]</span>, e-mail  </span><span
                                         style="text-align: center;">[EMAIL_SOCIO_OU_PROCURADOR]</span><span style="vertical-align: baseline;">, doravante denominada simplesmente CONTRATADA.</span>
                                 </p>
-                                <p dir="ltr" style="line-height:1.2;margin-top:0pt;margin-bottom:0pt;text-align: justify;">&nbsp;</p>
+                                <p dir="ltr" style="line-height:1.2;margin-top:0pt;margin-bottom:0pt;text-align: justify;"> </p>
                                 <p dir="ltr" style="line-height: 1.2; margin-top: 0pt; margin-bottom: 0pt;"><span
                                         style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;">B.1 - </span><span
                                         style="text-align: center;">[NOME_DO_VENDEDOR]</span><span style="vertical-align: baseline;">, <span
@@ -89,47 +77,52 @@ class ContratoTemplateSeed extends Seeder
                                         style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;"> </span><span
                                         style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;">– O presente acordo versa sobre a compra e venda de material com preço individualizado para cada material abaixo descrito garantido pelo prazo de duração do presente acordo, que se regerá pelos termos e cláusulas do presente instrumento.</span>
                                 </p>
-                                <p dir="ltr" style="line-height:1.2;margin-top:0pt;margin-bottom:0pt;text-align: justify;">&nbsp;</p>
+                                <p dir="ltr" style="line-height:1.2;margin-top:0pt;margin-bottom:0pt;text-align: justify;"> </p>
                                 <p dir="ltr" style="line-height:1.2;margin-top:0pt;margin-bottom:0pt;text-align: justify;"><span
                                         style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;">D – </span><span
                                         style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:underline;vertical-align:baseline;white-space:pre-wrap;">ESPECIFICAÇÕES DOS MATERIAIS CONTRATADOS</span>
                                 </p>
-                                <p dir="ltr" style="line-height:1.2;margin-top:0pt;margin-bottom:0pt;text-align: justify;">&nbsp;</p>
+                                <p dir="ltr" style="line-height:1.2;margin-top:0pt;margin-bottom:0pt;text-align: justify;"> </p>
                                 <p dir="ltr" style="line-height:1.2;margin-top:0pt;margin-bottom:0pt;text-align: justify;"><span
                                         style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;">D.1 - Descrição dos Materiais:</span>
                                 </p>
                                 <p dir="ltr" style="line-height:1.2;margin-top:0pt;margin-bottom:0pt;text-align: justify;"><span
                                         style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;">[CATALOGO_CONTRATO_ITENS]<br></span>
                                 </p>
-                                <p dir="ltr" style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;text-align: justify;">&nbsp;</p>
+                                <p dir="ltr" style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;text-align: justify;"> </p>
                                 <p dir="ltr" style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;text-align: justify;"><span
                                         style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;">D.1.1. </span><span
                                         style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;">Os preços, expressos em reais, manter-se-ão fixos e irreajustáveis durante a vigência deste ACORDO, salvo disposição em contrário.</span>
                                 </p>
-                                <p dir="ltr" style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;text-align: justify;">&nbsp;</p>
+				<p dir="ltr" style="line-height:1.2;margin-top:0pt;margin-bottom:0pt;text-align: justify;">
+                                    <span style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;">D.3. Regionais:</span>
+                                    <span style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;">[REGIONAIS]</span>
+                                </p>
+                                <p dir="ltr" style="line-height:1.2;margin-top:0pt;margin-bottom:0pt;text-align: justify;">&nbsp;</p>
+                                <p dir="ltr" style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;text-align: justify;"> </p>
                                 <p dir="ltr" style="line-height:1.2;margin-top:0pt;margin-bottom:0pt;text-align: justify;"><span
                                         style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;">D.2. Da composição do preço do material:</span>
                                 </p>
-                                <p dir="ltr" style="line-height:1.2;margin-top:0pt;margin-bottom:0pt;text-align: justify;">&nbsp;</p>
+                                <p dir="ltr" style="line-height:1.2;margin-top:0pt;margin-bottom:0pt;text-align: justify;"> </p>
                                 <p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span style="text-align: center;">[COMPOSICAO_DO_PRECO]</span><br>
                                 </p>
-                                <p dir="ltr" style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;text-align: justify;">&nbsp;</p>
-                                <p dir="ltr" style="line-height:1.2;margin-top:0pt;margin-bottom:0pt;text-align: justify;">&nbsp;</p>
+                                <p dir="ltr" style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;text-align: justify;"> </p>
+                                <p dir="ltr" style="line-height:1.2;margin-top:0pt;margin-bottom:0pt;text-align: justify;"> </p>
                                 <p dir="ltr" style="line-height:1.2;margin-top:0pt;margin-bottom:0pt;text-align: justify;"><span
                                         style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;">E – </span><span
                                         style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:underline;vertical-align:baseline;white-space:pre-wrap;">PREÇO</span><span
                                         style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:underline;vertical-align:baseline;white-space:pre-wrap;">:</span>
                                 </p>
-                                <p dir="ltr" style="line-height:1.2;margin-top:0pt;margin-bottom:0pt;text-align: justify;">&nbsp;</p>
+                                <p dir="ltr" style="line-height:1.2;margin-top:0pt;margin-bottom:0pt;text-align: justify;"> </p>
                                 <p dir="ltr" style="line-height:1.2;margin-top:0pt;margin-bottom:0pt;text-align: justify;"><span
                                         style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;">E.1.</span><span
                                         style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;"> O preço de cada material é aquele delimitado no item “D.1” acima, sendo que as quantidades deverão ser solicitadas por escrito pela CONTRATANTE, conforme a necessidade desta, garantindo a CONTRATADA o preço ajustado até o fim do ACORDO.</span>
                                 </p>
-                                <p dir="ltr" style="line-height:1.2;margin-top:0pt;margin-bottom:0pt;text-align: justify;">&nbsp;</p>
+                                <p dir="ltr" style="line-height:1.2;margin-top:0pt;margin-bottom:0pt;text-align: justify;"> </p>
                                 <p dir="ltr" style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;text-align: justify;"><span
                                         style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:underline;vertical-align:baseline;white-space:pre-wrap;">F - FORMA E LOCAL DE PAGAMENTO:</span>
                                 </p>
-                                <p dir="ltr" style="line-height:1.2;margin-top:0pt;margin-bottom:0pt;text-align: justify;">&nbsp;</p>
+                                <p dir="ltr" style="line-height:1.2;margin-top:0pt;margin-bottom:0pt;text-align: justify;"> </p>
                                 <p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 10pt;"><span
                                         style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;">F.1.</span><span
                                         style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;"> A CONTRATANTE realizará o pagamento</span><span
@@ -149,7 +142,7 @@ class ContratoTemplateSeed extends Seeder
                                         style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;">F.4. </span><span
                                         style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;">A não emissão da nota fiscal ou o não cumprimento de TODAS as obrigações assumidas, inclusive falta de material ou material com defeitos, darão ensejo à retenção do pagamento até o cumprimento das obrigações, sem que seja configurada a mora da CONTRATANTE.</span>
                                 </p>
-                                <p dir="ltr" style="line-height:1.2;margin-top:0pt;margin-bottom:0pt;text-align: justify;">&nbsp;</p>
+                                <p dir="ltr" style="line-height:1.2;margin-top:0pt;margin-bottom:0pt;text-align: justify;"> </p>
                                 <p dir="ltr" style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;text-align: justify;"><span
                                         style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:underline;vertical-align:baseline;white-space:pre-wrap;">G - PRAZO DE ENTREGA DO MATERIAL</span><span
                                         style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;">: </span><span
@@ -157,14 +150,14 @@ class ContratoTemplateSeed extends Seeder
                                 </p>
                                 <p dir="ltr"
                                    style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;text-indent: -14.2pt;text-align: justify;padding:0pt 0pt 0pt 14.2pt;">
-                                    &nbsp;</p>
+                                     </p>
                                 <p dir="ltr"
                                    style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;text-indent: -14.2pt;text-align: justify;padding:0pt 0pt 0pt 14.2pt;">
                                     <span style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:underline;vertical-align:baseline;white-space:pre-wrap;">H – VIGÊNCIA DO ACORDO DE PREÇO: </span>
                                 </p>
                                 <p dir="ltr"
                                    style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;text-indent: -14.2pt;text-align: justify;padding:0pt 0pt 0pt 14.2pt;">
-                                    &nbsp;</p>
+                                     </p>
                                 <p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span
                                         style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;">H.1. </span><span
                                         style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;">O presente Acordo tem validade</span><span
@@ -175,22 +168,22 @@ class ContratoTemplateSeed extends Seeder
                                 </p>
                                 <p dir="ltr" style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;text-align: justify;"><span
                                         style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;">H.2. </span><span
-                                        style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;">&nbsp;Vencido o período de validade do acordo, se nenhuma das PARTES entrar em contato, o mesmo será prorrogado e valido até que uma das PARTES informe a outra por escrito do término do mesmo.</span>
+                                        style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;"> Vencido o período de validade do acordo, se nenhuma das PARTES entrar em contato, o mesmo será prorrogado e valido até que uma das PARTES informe a outra por escrito do término do mesmo.</span>
                                 </p>
                                 <p dir="ltr"
                                    style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;text-indent: -14.2pt;text-align: justify;padding:0pt 0pt 0pt 14.2pt;">
-                                    &nbsp;</p>
+                                     </p>
                                 <p dir="ltr" style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;text-align: justify;"><span
                                         style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:underline;vertical-align:baseline;white-space:pre-wrap;">I - SOLICITAÇÃO DO MATERIAL:</span>
                                 </p>
-                                <p dir="ltr" style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;text-align: justify;">&nbsp;</p>
+                                <p dir="ltr" style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;text-align: justify;"> </p>
                                 <p dir="ltr" style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;text-align: justify;"><span
                                         style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;">I.1.</span><span
                                         style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;"> Acordam as PARTES que os preços ora negociados serão aplicados para as contratações a serem realizadas por qualquer das empresas afiliadas ou controladas pela CONTRATANTE, sendo que a compradora do material será devidamente identificada no PEDIDO DE COMPRA/CONTRATO/ACORDO.</span>
                                 </p>
                                 <p dir="ltr" style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;text-align: justify;"><span
                                         style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;">I.2.</span><span
-                                        style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;">&nbsp;A solicitação dos materiais ocorrerá através de PEDIDO DE COMPRA/CONTRATO/ACORDO enviada eletrônica e/ou fisicamente pela CONTRATANTE à CONTRATADA, a qual efetivará os termos e condições específicos da contratação, tais como a razão social da CONTRATANTE, o prazo e o local para entrega de materiais, bem como as demais condições comerciais e técnicas acordadas pelas PARTES.</span>
+                                        style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;"> A solicitação dos materiais ocorrerá através de PEDIDO DE COMPRA/CONTRATO/ACORDO enviada eletrônica e/ou fisicamente pela CONTRATANTE à CONTRATADA, a qual efetivará os termos e condições específicos da contratação, tais como a razão social da CONTRATANTE, o prazo e o local para entrega de materiais, bem como as demais condições comerciais e técnicas acordadas pelas PARTES.</span>
                                 </p>
                                 <p dir="ltr" style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:10pt;text-align: justify;"><span
                                         style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;">I.3</span><span
@@ -198,14 +191,14 @@ class ContratoTemplateSeed extends Seeder
                                 </p>
                                 <p dir="ltr"
                                    style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;text-indent: -14.2pt;text-align: justify;padding:0pt 0pt 0pt 14.2pt;">
-                                    &nbsp;</p>
+                                     </p>
                                 <p dir="ltr" style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;text-align: justify;"><span
                                         style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:underline;vertical-align:baseline;white-space:pre-wrap;">J - DA NÃO EXCLUSIVIDADE</span><span
                                         style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;">: A CONTRATADA declara estar ciente de que a CONTRATANTE não está obrigada a adquirir os materiais listados acima, bem como reconhece que a CONTRATANTE poderá celebrar acordos similares com outros fornecedores, reconhecendo ainda que a contratação somente será efetivada com a formalização dos termos e condições específicas do PEDIDO DE COMPRA/CONTRATO/ACORDO.</span>
                                 </p>
                                 <p dir="ltr"
                                    style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;text-indent: -14.2pt;text-align: justify;padding:0pt 0pt 0pt 14.2pt;">
-                                    &nbsp;</p>
+                                     </p>
                                 <p dir="ltr" style="line-height: 1.38; margin-top: 0pt; margin-bottom: 0pt;"><span
                                         style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:underline;vertical-align:baseline;white-space:pre-wrap;">L – GARANTIA</span><span
                                         style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;">: </span><span
@@ -215,14 +208,14 @@ class ContratoTemplateSeed extends Seeder
                                 </p>
                                 <p dir="ltr"
                                    style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;text-indent: -14.2pt;text-align: justify;padding:0pt 0pt 0pt 14.2pt;">
-                                    &nbsp;</p>
+                                     </p>
                                 <p dir="ltr" style="line-height:1.2;margin-top:0pt;margin-bottom:0pt;text-align: justify;"><span
                                         style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:underline;vertical-align:baseline;white-space:pre-wrap;">M - CONFIDENCIALIDADE</span><span
                                         style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;">: As partes se comprometem a manter em sigilo e confidencialidade, e a não divulgar tais Informações a terceiros sem o prévio consentimento por escrito.</span>
                                 </p>
                                 <p dir="ltr"
                                    style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;text-indent: -14.2pt;text-align: justify;padding:0pt 0pt 0pt 14.2pt;">
-                                    &nbsp;</p>
+                                     </p>
                                 <p dir="ltr" style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;text-align: justify;"><span
                                         style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:underline;vertical-align:baseline;white-space:pre-wrap;">N – FORO:</span><span
                                         style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;"> </span><span
@@ -230,16 +223,16 @@ class ContratoTemplateSeed extends Seeder
                                 </p>
                                 <p dir="ltr"
                                    style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;text-indent: -14.2pt;text-align: justify;padding:0pt 0pt 0pt 14.2pt;">
-                                    &nbsp;</p>
-                                <p dir="ltr" style="line-height:1.2;margin-top:0pt;margin-bottom:0pt;text-align: justify;">&nbsp;</p>
+                                     </p>
+                                <p dir="ltr" style="line-height:1.2;margin-top:0pt;margin-bottom:0pt;text-align: justify;"> </p>
                                 <p dir="ltr" style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;text-align: justify;"><span
                                         style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;">Ribeirão Preto/SP, [DIA_ATUAL] de [MES_ATUAL_EXTENSO] de [ANO_ATUAL].</span>
                                 </p>
-                                <p dir="ltr" style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;text-align: justify;">&nbsp;</p>
-                                <p dir="ltr" style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;text-align: justify;">&nbsp;</p>
+                                <p dir="ltr" style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;text-align: justify;"> </p>
+                                <p dir="ltr" style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;text-align: justify;"> </p>
                                 <p dir="ltr"
                                    style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;margin-right: -4.65pt;text-align: justify;">
-                                    &nbsp;<span
+                                     <span
                                         style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;"><br
                                         class="kix-line-break"></span></p>
                                 <p dir="ltr"
@@ -252,7 +245,7 @@ class ContratoTemplateSeed extends Seeder
                                 </p>
                                 <p dir="ltr"
                                    style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;margin-right: -4.65pt;text-align: justify;">
-                                    &nbsp;</p>
+                                     </p>
                                 <p dir="ltr"
                                    style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;margin-right: -4.65pt;text-align: justify;">
                                     <span style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;">________________________</span>
@@ -263,7 +256,7 @@ class ContratoTemplateSeed extends Seeder
                                 </p>
                                 <p dir="ltr"
                                    style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;margin-right: -4.65pt;text-align: justify;">
-                                    &nbsp;<span
+                                     <span
                                         style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;"><br
                                         class="kix-line-break"></span></p>
                                 <p dir="ltr"
@@ -273,12 +266,12 @@ class ContratoTemplateSeed extends Seeder
                                 <p dir="ltr" style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;text-align: justify;"><span
                                         style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;">VENDEDOR DA CONTRATADA</span>
                                 </p>
-                                <p dir="ltr" style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;text-align: justify;">&nbsp;</p>
-                                <p dir="ltr" style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;text-align: justify;">&nbsp;</p>
+                                <p dir="ltr" style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;text-align: justify;"> </p>
+                                <p dir="ltr" style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;text-align: justify;"> </p>
                                 <p dir="ltr" style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;text-align: justify;"><span
-                                        style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;">Testemunhas:&nbsp;</span>
+                                        style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;">Testemunhas: </span>
                                 </p>
-                                <p dir="ltr" style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;text-align: justify;">&nbsp;</p>
+                                <p dir="ltr" style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;text-align: justify;"> </p>
                                 <p dir="ltr" style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;text-align: justify;"><span
                                         style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;">_______________________</span>
                                 </p>
@@ -291,7 +284,7 @@ class ContratoTemplateSeed extends Seeder
                                 <p dir="ltr" style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;text-align: justify;"><span
                                         style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;">CPF:</span>
                                 </p>
-                                <p dir="ltr" style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;text-align: justify;">&nbsp;</p>
+                                <p dir="ltr" style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;text-align: justify;"> </p>
                                 <p dir="ltr" style="line-height:1.3800000000000001;margin-top:0pt;margin-bottom:0pt;text-align: justify;"><span
                                         style="font-size:12pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:400;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre-wrap;">_______________________</span>
                                 </p>
@@ -308,7 +301,7 @@ class ContratoTemplateSeed extends Seeder
                                 </div>',
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s'),
-                'campos_extras' => '{"1":{"tag":"[NOME_SOCIO_OU_PROCURADOR]","nome":"Nome s\u00f3cio ou procurador","tipo":"texto"},"2":{"tag":"[NACIONALIDADE_SOCIO_OU_PROCURADOR]","nome":"Nacionalidade s\u00f3cio ou procurador","tipo":"texto"},"3":{"tag":"[ESTADO_CIVIL_SOCIO_OU_PROCURADOR]","nome":"Estado Civil s\u00f3cio ou procurador","tipo":"texto"},"4":{"tag":"[PROFISSAO_SOCIO_OU_PROCURADOR]","nome":"Profiss\u00e3o s\u00f3cio ou procurador","tipo":"texto"},"5":{"tag":"[RG_SOCIO_OU_PROCURADOR]","nome":"RG s\u00f3cio ou procurador","tipo":"texto"},"6":{"tag":"[CPF_SOCIO_OU_PROCURADOR]","nome":"CPF s\u00f3cio ou procurador","tipo":"texto"},"7":{"tag":"[ENDERECO_SOCIO_OU_PROCURADOR]","nome":"Endere\u00e7o s\u00f3cio ou procurador","tipo":"texto"},"8":{"tag":"[CIDADE_SOCIO_OU_PROCURADOR]","nome":"Cidade s\u00f3cio ou procurador","tipo":"texto"},"9":{"tag":"[ESTADO_SOCIO_OU_PROCURADOR]","nome":"Estado s\u00f3cio ou procurador","tipo":"texto"},"10":{"tag":"[CEP_SOCIO_OU_PROCURADOR]","nome":"CEP s\u00f3cio ou procurador","tipo":"texto"},"11":{"tag":"[TELEFONE_SOCIO_OU_PROCURADOR]","nome":"Telefone s\u00f3cio ou procurador","tipo":"texto"},"12":{"tag":"[CELULAR_SOCIO_OU_PROCURADOR]","nome":"Celular s\u00f3cio ou procurador","tipo":"texto"},"13":{"tag":"[EMAIL_SOCIO_OU_PROCURADOR]","nome":"EMail s\u00f3cio ou procurador","tipo":"texto"},"14":{"tag":"[NOME_DO_VENDEDOR]","nome":"Nome do vendedor","tipo":"texto"},"15":{"tag":"[EMAIL_DO_VENDEDOR]","nome":"Email do vendedor","tipo":"texto"},"16":{"tag":"[TELEFONE_DO_VENDEDOR]","nome":"Telefone do vendedor","tipo":"texto"},"17":{"tag":"[COMPOSICAO_DO_PRECO]","nome":"Composi\u00e7\u00e3o do pre\u00e7o","tipo":"Texto"},"18":{"tag":"[DIAS_PAGAMENTO]","nome":"Dias pagamento","tipo":"numero"},"19":{"tag":"[DIAS_PAGAMENTO_POR_EXTENSO]","nome":"Dias pagamento por extenso","tipo":"Texto"},"20":{"tag":"[MESES_VALIDADE_NUMERO]","nome":"Meses validade numero","tipo":"numero"},"21":{"tag":"[MESES_VALIDADE_EXTENSO]","nome":"Meses validade extenso","tipo":"Texto"},"22":{"tag":"[ANOS_GARANTIA_MATERIAIS]","nome":"Anos Garantia Materiais","tipo":"Texto"}}'
+                'campos_extras' => '{"18":{"tag":"[DIAS_PAGAMENTO]","nome":"Dias pagamento","tipo":"numero"},"19":{"tag":"[DIAS_PAGAMENTO_POR_EXTENSO]","nome":"Dias pagamento por extenso","tipo":"texto"},"20":{"tag":"[MESES_VALIDADE_NUMERO]","nome":"Meses validade numero","tipo":"numero"},"21":{"tag":"[MESES_VALIDADE_EXTENSO]","nome":"Meses validade extenso","tipo":"texto"},"22":{"tag":"[ANOS_GARANTIA_MATERIAIS]","nome":"Anos Garantia Materiais","tipo":"texto"}}'
             ]
             ,
             [
@@ -358,15 +351,9 @@ class ContratoTemplateSeed extends Seeder
                                         irreajustáveis <span class="s2">durante a vigência deste CONTRATO, salvo disposição em contrário.</span></p>
                                     <p class="p2"><br></p>
                                     <p class="p3"><b>D.2. Da composição do preço do material:</b></p>
-                                    <p class="p4"><b></b><br>
-                                    </p>
-                                    <p class="p5">A -&nbsp; [ex: frete]</p>
-                                    <p class="p5">B -&nbsp; [ex: descarga]</p>
-                                    <p class="p5">C -&nbsp; [ex:
-                                        logística reversa etc]</p>
-                                    <p class="p5">D – ex. embalagem</p>
+                                    <p class="p4"><b><br></b></p><p class="p4"><span style="text-align: center;">[COMPOSICAO_DO_PRECO]&nbsp;</span><b><br></b></p>
                                     <p class="p2"><br></p>
-                                    <p class="p2"><br></p>
+                                    <p class="p2"><b>FRETE</b></p><p class="p2"><span style="text-align: center;">[FRETE_TIPO] &nbsp;-&nbsp;</span><span style="text-align: center;">[FRETE_VALOR]</span><span style="text-align: center;">&nbsp;</span><br></p>
                                     <p class="p2"><br></p>
                                     <p class="p3"><b>E – </b><span class="s1"><b>PREÇO</b>:</span></p>
                                     <p class="p4"><span class="s1"></span><br></p>
@@ -378,7 +365,7 @@ class ContratoTemplateSeed extends Seeder
                                     <p class="p11"><span class="s1"><b><i>F - FORMA E LOCAL DE PAGAMENTO:</i></b></span></p>
                                     <p class="p12"><span class="s1"><b><i></i></b></span><br></p>
                                     <p class="p5"><b>F.1.</b> A CONTRATANTE realizará o
-                                        pagamento em XX (xxxxxxx) dias após a emissão da nota fiscal, boleto e entrega do Material;&nbsp;</p>
+                                        pagamento em&nbsp;<span style="text-align: center;">[QUANTIDADE_DE_DIAS_PAGAMENTO]</span>&nbsp;(<span style="text-align: center;">[QTD_DIAS_PAGAMENTO_POR_EXTENSO]</span>) dias após a emissão da nota fiscal, boleto e entrega do Material;&nbsp;</p>
                                     <p class="p5">
                                         <b>F.2. </b>A Nota Fiscal deve ser entregue em até 03 (três) dias da data de sua emissão. O recebimento após este
                                         prazo implicará automaticamente na prorrogação do prazo de vencimento do citado documento.</p>
@@ -394,8 +381,7 @@ class ContratoTemplateSeed extends Seeder
                                         agilizar o recebimento.</p>
                                     <p class="p2"><br></p>
                                     <p class="p2"><br></p>
-                                    <p class="p5"><span class="s4"><b>G –CONDIÇÕES E </b></span><span
-                                            class="s1"><b>PRAZO DE ENTREGA DO MATERIAL</b></span><b>:</b></p>
+                                    <p class="p5"><span class="s4"><b>G –CONDIÇÕES E </b></span><span class="s1"><b>PRAZO DE ENTREGA DO MATERIAL</b></span><b>:</b></p>
                                     <p class="p2"><b></b><br></p>
                                     <p class="p5">
                                         <b>G.1. </b>O prazo de entrega será de XXXX dias após a solicitação do material feito pela obra, que integrar-se-á
@@ -985,7 +971,7 @@ class ContratoTemplateSeed extends Seeder
                                     </p>
                                     <p class="p25"><br></p>
                                 </div>',
-                'campos_extras'=> '{"1":{"tag":"[VENDEDOR_NOME]","nome":"Vendedor Nome","tipo":"texto"},"2":{"tag":"[VENDEDOR_EMAIL]","nome":"Vendedor Email","tipo":"texto"},"3":{"tag":"[VENDEDOR_TELEFONE]","nome":"Vendedor Telefone","tipo":"texto"}}'
+                'campos_extras'=> '{"1":{"tag":"[QUANTIDADE_DE_DIAS_PAGAMENTO]","nome":"Quantidade de Dias pagamento","tipo":"numero"},"2":{"tag":"[QTD_DIAS_PAGAMENTO_POR_EXTENSO]","nome":"Qtd dias pagamento por extenso","tipo":"texto"}}'
             ]
         ];
 

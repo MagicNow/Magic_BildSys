@@ -97,7 +97,7 @@
                             <button class="btn btn-xs btn-info btn-flat"
                                     data-toggle="modal"
                                     data-target="#detalhes-item-{{ $modificacao->id }}">
-                              <span data-toggle="tooltip" title="Detalhes por Apropriação">
+                              <span data-toggle="tooltip" title="{{$modificacao->anexo || $modificacao->descricao ? 'Detalhes' : 'Detalhes por Apropriação'}}">
                                   <i class="fa fa-plus fa-fw"></i>
                               </span>
                             </button>
@@ -121,12 +121,16 @@
                                                 <table class="table table-condensed table-all-center table-bordered table-no-margin">
                                                     <thead>
                                                     <tr>
+                                                        <th>Variação</th>
                                                         <th>Anexo</th>
                                                         <th>Observação</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
                                                         <tr>
+                                                            <td>
+                                                                {{ float_to_money($modificacao['valor_unitario_atual'] - $modificacao['valor_unitario_anterior']) }}
+                                                            </td>
                                                             <td>
                                                                 @if($modificacao->anexo)
                                                                     <a href="{!! Storage::url($modificacao->anexo) !!}"
