@@ -489,7 +489,7 @@ class PlanejamentoOrcamentoController extends AppBaseController
      *
      * @return Response
      */
-    public function semPlanejamentoView(SemPlanejamentoInsumoDataTable $semPlanejamentoInsumoDataTable)
+    public function semPlanejamentoView(SemPlanejamentoInsumoDataTable $semPlanejamentoInsumoDataTable, $obra_id = null)
     {
         $grupoInsumos = InsumoGrupo::where('active', true)->pluck('nome', 'id')->toArray();
 
@@ -497,6 +497,8 @@ class PlanejamentoOrcamentoController extends AppBaseController
 
         $obras = Obra::pluck('nome','id')->toArray();
 
-        return $semPlanejamentoInsumoDataTable->render('admin.planejamento_orcamentos.sem_planejamento', compact('grupoInsumos', 'carteiras','obras'));
+
+
+        return $semPlanejamentoInsumoDataTable->render('admin.planejamento_orcamentos.sem_planejamento', compact('grupoInsumos', 'carteiras','obras','obra_id'));
     }
 }

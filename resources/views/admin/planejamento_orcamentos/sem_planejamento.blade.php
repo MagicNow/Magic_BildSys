@@ -13,10 +13,10 @@
         <div class="js-datatable-filter-form pull-right form-group col-sm-3">
 
             <select name="obra" id="obra" class="select2">
-                <option value="0">-- Selecione a Obra --</option>
+                <option value="">-- Selecione a Obra --</option>
 
                 @foreach($obras as $k => $v)
-                    <option value="{{ $k }}">{{ $v }}</option>
+                    <option value="{{ $k }}" {{ $k==$obra_id?'selected="selected"':''}}>{{ $v }}</option>
                 @endforeach
 
             </select>

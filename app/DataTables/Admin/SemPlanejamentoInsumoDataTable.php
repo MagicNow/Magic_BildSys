@@ -43,11 +43,7 @@ class SemPlanejamentoInsumoDataTable extends DataTable
                 ->whereRaw('planejamento_compras.insumo_id = insumos.id');
         });
 
-        if($this->request()->get('obra')){
-            if(count($this->request()->get('obra')) && $this->request()->get('obra') != ""){
-                $insumos->where('orcamentos.obra_id',$this->request()->get('obra'));
-            }
-        }
+        $insumos->where('orcamentos.obra_id',intval($this->request()->get('obra')));
 
         return $this->applyScopes($insumos);
 
