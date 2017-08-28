@@ -305,8 +305,9 @@ class CronogramaFisicoController extends AppBaseController
 	public function relSemanal( ObraRepository $obraRepository)
     {
 		//Filtros	//julho-2017	
-		$fromDate="2017-01-01";
+		$fromDate="2017-07-01";
 		$fridays = CronogramaFisicoRepository::getFridaysBydate($fromDate);		
+		$last_day= end($fridays);	
 		
 		$obras = $obraRepository
             ->orderBy('nome', 'ASC')
@@ -319,7 +320,7 @@ class CronogramaFisicoController extends AppBaseController
             ->all();
 
 		//Tabela Percentual Previsto e Acumulado		
-		$tabelaPercPrevistoRealizadosSemanas = ["07/07","18/07","21/07","28/07","31/07","julho-2017"];
+		$tabelaPercPrevistoRealizadosSemanas = $fridays;
 		
 		$tabelaPercPrevistoRealizados = CronogramaFisico::select([
 			'cronograma_fisicos.id',                
@@ -339,16 +340,42 @@ class CronogramaFisicoController extends AppBaseController
 		//Tabela Tarefas Criticas
 		$tabelaTarefasCriticasTitulos = ["LOCAL","Tarefas Críticas","Previsto Ac.","Realizado Ac.","Desvio"];
 		
-		$tabelaTarefasCriticasDados = CronogramaFisico::select([
+		$tabelaTarefasCriticasDados= CronogramaFisico::select([
 			'cronograma_fisicos.id',
 			'cronograma_fisicos.torre as local',
 			'cronograma_fisicos.tarefa',
+			DB::raw("(SELECT (case when count(distinct CF.id) = 1 then 'Sim' else 'Não' end) as tarefa_mes
+						FROM cronograma_fisicos CF
+						WHERE CF.id = cronograma_fisicos.id
+						AND (CF.data_inicio >= '$fromDate' AND CF.data_inicio < '$last_day')
+						AND (CF.data_termino>= '$fromDate' AND CF.data_termino< '$last_day')
+					 ) as tarefa_mes"
+			),
+			DB::raw("(SELECT   
+						CASE    
+							WHEN (CF.data_inicio >= '$fridays[0]') THEN '0%' 
+							WHEN (CF.data_termino <= '$fridays[0]') THEN '100%' 								
+						END AS semana1
+						FROM cronograma_fisicos CF
+						WHERE CF.id = cronograma_fisicos.id 
+					 ) as previsto_acumulado"
+			),
+			DB::raw("(SELECT   
+						CASE    
+							WHEN (CF.data_inicio >= '$fridays[0]') THEN '0%' 
+							WHEN (CF.data_termino <= '$fridays[0]') THEN '100%' 								
+						END AS semana1
+						FROM cronograma_fisicos CF
+						WHERE CF.id = cronograma_fisicos.id 
+					 ) as realizado_acumulado"
+			)
 			
         ])
 		->join('obras','obras.id','cronograma_fisicos.obra_id')
-		->join('template_planilhas','template_planilhas.id','cronograma_fisicos.template_id')		
-		//->whereDate('cronograma_fisicos.data_inicio','>=',Carbon::createFromFormat('Y-m-d', '2017-03-01')->toDateString())
+		->join('template_planilhas','template_planilhas.id','cronograma_fisicos.template_id')				
+		->where('cronograma_fisicos.resumo','=','Não')
 		//->where filtro obra, ano, mes e semana
+		//->whereDate('cronograma_fisicos.data_inicio','>=',Carbon::createFromFormat('Y-m-d', '2017-03-01')->toDateString())
         ->orderBy('id', 'desc')		
 		->get();
                

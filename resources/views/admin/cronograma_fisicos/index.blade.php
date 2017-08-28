@@ -25,6 +25,14 @@
 						!!}
 					</div>
 					<div class="col-sm-3">
+						<h4>Tipo</h4>
+						{!!
+						  Form::select(
+							'template_id',$templates,null,['class' => 'form-control select2 js-filter']
+						  )
+						!!}
+					</div>
+					<div class="col-sm-2">
 						<h4>Ano</h4>
 						{!!
 						  Form::select(
@@ -32,19 +40,11 @@
 						  )
 						!!}
 					</div>
-					<div class="col-sm-3">
+					<div class="col-sm-2">
 						<h4>Mês</h4>
 						{!!
 						  Form::select(
 							'mes_id',["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"],null,['class' => 'form-control select2 js-filter']
-						  )
-						!!}
-					</div>
-					<div class="col-sm-3">
-						<h4>Semana</h4>
-						{!!
-						  Form::select(
-							'semana_id',["Semana 1","Semana 2","Semana 3","Semana 4","Semana 5"],null,['class' => 'form-control select2 js-filter']
 						  )
 						!!}
 					</div>

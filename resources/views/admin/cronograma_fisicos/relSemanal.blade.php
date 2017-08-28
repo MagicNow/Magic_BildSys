@@ -75,7 +75,7 @@
 						<h4>Mês</h4>
 						{!!
 						  Form::select(
-							'mes_id',["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"],null,['class' => 'form-control select2 js-filter']
+							'mes_id',["Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"],null,['class' => 'form-control select2 js-filter']
 						  )
 						!!}
 					</div>
@@ -96,17 +96,17 @@
                 <div class="col-xs-12">                    
                     
 					<div class="row">
-						<div class="col-md-12"><tile title-color="head-grey" title="Percentual Previsto x Percentual Realizado" type="created"></tile></div>
+						<div class="col-md-12 margem-topo"><tile title-color="head-grey" title="Percentual Previsto x Percentual Realizado" type="created"></tile></div>
 					</div>
 					
 					<div class="clearfix"></div>
 					
 					<div class="row">                        
-						<div class="col-md-6 table-responsive">
+						<div class="col-md-7 table-responsive margem-topo">
 							<table class="table table-bordered table-striped">
 								<thead >
 									<tr>
-										<th class="text-center">Tipo</th>
+										<th class="text-center"></th>
 										<th class="text-center">Semana 1</th>
 										<th class="text-center">Semana 2</th>
 										<th class="text-center">Semana 3</th>
@@ -120,7 +120,7 @@
 									<tr>
 										<td class="text-center"></td>	
 										@foreach($tabelaPercPrevistoRealizadosSemanas as $tabelaSemana)										
-											<td class="text-center">{{ $tabelaSemana }}</td>									
+											<td class="text-center">{{ Carbon\Carbon::parse($tabelaSemana)->format('d/m/Y') }}</td>									
 										@endforeach
 									</tr>																															
 									
@@ -139,7 +139,7 @@
 							</table>
                         </div> 
 						
-						<div class="col-md-3">							
+						<div class="col-md-3 margem-topo">							
                             <div class="element-grafico">
                                 <div class="element-head">Previsto X Realizado Semanal</div>
                                 <div class="element-body1">
@@ -157,9 +157,9 @@
                             </div>
                         </div>
 						
-						<div class="col-md-3">							
+						<div class="col-md-2 margem-topo">							
                             <div class="element-grafico">
-                                <div class="element-head">PDP x P.Trabalho x Real Acumulado</div>
+                                <div class="element-head">PDP x P.Trab. x Real Ac.</div>
                                 <div class="element-body1">
                                     @php
 										//$json_dataPrevistoXRealizado = json_encode([$pDPxPTrabalhoxRealAc]);                        
@@ -180,7 +180,7 @@
 					<div class="clearfix"></div>
 					
 					<div class="row">						
-						<div class="col-md-3">							
+						<div class="col-md-3 margem-topo">							
                             <div class="element-grafico">
                                 <div class="element-head">DESVIO PDP</div>
                                 <div class="element-body2">
@@ -199,7 +199,7 @@
                             </div>
                         </div>
 						
-						<div class="col-md-3">							
+						<div class="col-md-3 margem-topo">							
                             <div class="element-grafico">
                                 <div class="element-head">DESVIO P. TRABALHO</div>
                                 <div class="element-body2">
@@ -222,14 +222,14 @@
 					<div class="clearfix"></div>
 					
 					<div class="row">
-						<div class="col-md-12"><tile title-color="head-grey" title="Tarefas Críticas" type="created"></tile></div>
+						<div class="col-md-12 margem-topo"><tile title-color="head-grey" title="Tarefas Críticas" type="created"></tile></div>
 					</div>
 					
 					<div class="clearfix"></div>
 					
 					<div class="row">
 					
-                        <div class="col-md-6 table-responsive">
+                        <div class="col-md-7 table-responsive margem-topo">
 							<table class="table table-bordered table-striped">
 								<thead class="element-tabela-head">
 									<tr>
@@ -244,9 +244,9 @@
 									<tr>
 										<td class="text-center">{{ $tabelaTarefasCriticasDado->local }}</td>
 										<td class="text-center">{{ $tabelaTarefasCriticasDado->tarefa }}</td>
-										<td class="text-center">{{ $tabelaTarefasCriticasDado->tarefa }}</td>
-										<td class="text-center">{{ $tabelaTarefasCriticasDado->tarefa }}</td>
-										<td class="text-center">{{ $tabelaTarefasCriticasDado->tarefa }}</td>
+										<td class="text-center">{{ $tabelaTarefasCriticasDado->previsto_acumulado}}</td>
+										<td class="text-center">{{ $tabelaTarefasCriticasDado->realizado_acumulado}}</td>
+										<td class="text-center">{{ $tabelaTarefasCriticasDado->previsto_acumulado - $tabelaTarefasCriticasDado->realizado_acumulado}}</td>										
 									</tr>
 									@endforeach
 									
@@ -255,7 +255,7 @@
                         </div> 
 						
 						<div class="col-md-4">							
-                            <div class="element-grafico">
+                            <div class="element-grafico margem-topo">
                                 <div class="element-head">Tarefas Críticas</div>
                                 <div class="element-body-tarefaCriticas">
                                     @php

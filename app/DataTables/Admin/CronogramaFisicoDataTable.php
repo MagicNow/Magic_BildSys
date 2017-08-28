@@ -49,10 +49,9 @@ class CronogramaFisicoDataTable extends DataTable
     {
 		
 		//mostra a semana do mes anterior
-		$fromDate="2017-01-01";
-		$fridays = CronogramaFisicoRepository::getFridaysBydate($fromDate);
-		
-		$last_day	= end($fridays);
+		$fromDate="2017-07-01";
+		$fridays = CronogramaFisicoRepository::getFridaysBydate($fromDate);		
+		$last_day= end($fridays);	
 		
         $cronograma_fisicos = CronogramaFisico::query()
             ->select([
@@ -67,18 +66,19 @@ class CronogramaFisicoDataTable extends DataTable
 				'cronograma_fisicos.torre',
 				'cronograma_fisicos.pavimento',
 				'cronograma_fisicos.critica',
-				DB::raw("DATE_FORMAT(cronograma_fisicos.data_inicio,'%d/%m/%Y') as data_inicio"),
-				DB::raw("DATE_FORMAT(cronograma_fisicos.data_termino,'%d/%m/%Y') as data_termino"),
+				'cronograma_fisicos.data_inicio',
+				'cronograma_fisicos.data_termino',
 				DB::raw("(SELECT (case when count(distinct CF.id) = 1 then 'Sim' else 'Não' end) as tarefa_mes
 							FROM cronograma_fisicos CF
-							WHERE CF.id = cronograma_fisicos.id AND
-							MONTH(CF.data_inicio) = MONTH(CURRENT_DATE() - INTERVAL 1 MONTH) AND MONTH(CF.data_termino) = MONTH(CURRENT_DATE() - INTERVAL 1 MONTH)
+							WHERE CF.id = cronograma_fisicos.id
+							AND (CF.data_inicio >= '$fromDate' AND CF.data_inicio < '$last_day')
+							AND (CF.data_termino>= '$fromDate' AND CF.data_termino< '$last_day')
                          ) as tarefa_mes"
                 ),
 				DB::raw("(SELECT   
 							CASE    
-								WHEN ( DATE_FORMAT(CF.data_inicio,'%d/%m/%Y') > DATE_FORMAT($fridays[0],'%d/%m/%Y')) THEN '0%'  
-								WHEN ( DATE_FORMAT(CF.data_termino,'%d/%m/%Y') < DATE_FORMAT($fridays[0],'%d/%m/%Y')) THEN '100%'								
+								WHEN (CF.data_inicio >= '$fridays[0]') THEN '0%' 
+								WHEN (CF.data_termino <= '$fridays[0]') THEN '100%' 								
 							END AS semana1
 							FROM cronograma_fisicos CF
 							WHERE CF.id = cronograma_fisicos.id 
@@ -86,8 +86,8 @@ class CronogramaFisicoDataTable extends DataTable
                 ),
 				DB::raw("(SELECT   
 							CASE    
-								WHEN ( DATE_FORMAT(CF.data_inicio,'%d/%m/%Y') > DATE_FORMAT($fridays[1],'%d/%m/%Y')) THEN '0%'  
-								WHEN ( DATE_FORMAT(CF.data_termino,'%d/%m/%Y') < DATE_FORMAT($fridays[1],'%d/%m/%Y')) THEN '100%'								
+								WHEN (CF.data_inicio > '$fridays[1]') THEN '0%' 
+								WHEN (CF.data_termino < '$fridays[1]') THEN '100%'							
 							END AS semana2
 							FROM cronograma_fisicos CF
 							WHERE CF.id = cronograma_fisicos.id 
@@ -95,8 +95,8 @@ class CronogramaFisicoDataTable extends DataTable
                 ),
 				DB::raw("(SELECT   
 							CASE    
-								WHEN ( DATE_FORMAT(CF.data_inicio,'%d/%m/%Y') > DATE_FORMAT($fridays[2],'%d/%m/%Y')) THEN '0%'  
-								WHEN ( DATE_FORMAT(CF.data_termino,'%d/%m/%Y') < DATE_FORMAT($fridays[2],'%d/%m/%Y')) THEN '100%'									
+								WHEN (CF.data_inicio > '$fridays[2]') THEN '0%' 
+								WHEN (CF.data_termino < '$fridays[2]') THEN '100%'									
 							END AS semana3
 							FROM cronograma_fisicos CF
 							WHERE CF.id = cronograma_fisicos.id 
@@ -104,8 +104,8 @@ class CronogramaFisicoDataTable extends DataTable
                 ),
 				DB::raw("(SELECT   
 							CASE    
-								WHEN ( DATE_FORMAT(CF.data_inicio,'%d/%m/%Y') > DATE_FORMAT($fridays[3],'%d/%m/%Y')) THEN '0%'  
-								WHEN ( DATE_FORMAT(CF.data_termino,'%d/%m/%Y') < DATE_FORMAT($fridays[3],'%d/%m/%Y')) THEN '100%'								
+								WHEN (CF.data_inicio > '$fridays[3]') THEN '0%' 
+								WHEN (CF.data_termino < '$fridays[3]') THEN '100%'								
 							END AS semana4
 							FROM cronograma_fisicos CF
 							WHERE CF.id = cronograma_fisicos.id 
@@ -113,8 +113,8 @@ class CronogramaFisicoDataTable extends DataTable
                 ),
 				DB::raw("(SELECT   
 							CASE    
-								WHEN ( DATE_FORMAT(CF.data_inicio,'%d/%m/%Y') > DATE_FORMAT($last_day,'%d/%m/%Y') ) THEN '0%'  
-								WHEN ( DATE_FORMAT(CF.data_termino,'%d/%m/%Y') < DATE_FORMAT($last_day,'%d/%m/%Y') ) THEN '100%'								
+								WHEN (CF.data_inicio > '$last_day') THEN '0%' 
+								WHEN (CF.data_termino < '$last_day') THEN '100%'								
 							END AS ultimo_dia
 							FROM cronograma_fisicos CF
 							WHERE CF.id = cronograma_fisicos.id 
@@ -209,13 +209,6 @@ class CronogramaFisicoDataTable extends DataTable
      */
     private function getColumns()
     {
-		//mostra a semana do mes anterior
-		//Filtros	//julho-2017	
-		$fromDate="2017-01-01";
-		$fridays = CronogramaFisicoRepository::getFridaysBydate($fromDate);
-		
-		$last_day	= end($fridays);
-
 		//retorna os valores de trabalho baseado por semana
 		/*- Se a data de início for maior da data da semana, é 0% pois não haverá produção;
 		- se a data da semana for maior do que o término é 100%;
@@ -230,16 +223,16 @@ class CronogramaFisicoDataTable extends DataTable
 			'resumo' => ['name' => 'resumo', 'data' => 'resumo'],
 			'torre' => ['name' => 'torre', 'data' => 'torre'],
 			'pavimento' => ['name' => 'pavimento', 'data' => 'pavimento'],
-			'critica' => ['critica' => 'critica', 'data' => 'critica'],
+			'crítica' => ['critica' => 'critica', 'data' => 'critica'],
             'data_início' => ['name' => 'data_inicio', 'data' => 'data_inicio'],
-            'data_termino' => ['name' => 'data_termino', 'data' => 'data_termino'],
+            'data_término' => ['name' => 'data_termino', 'data' => 'data_termino'],
 			'concluida' => ['name' => 'concluida', 'data' => 'concluida'],
 			'peso' => ['name' => 'peso', 'data' => 'peso'],			
-			$fridays[0].'' => ['name' => 'concluida', 'data' => 'semana1'],
-			$fridays[1].'' => ['name' => 'concluida', 'data' => 'semana2'],
-			$fridays[2].'' => ['name' => 'concluida', 'data' => 'semana3'],
-			$fridays[3].'' => ['name' => 'concluida', 'data' => 'semana4'],
-			$last_day.'' => ['name' => 'concluida', 'data' => 'ultimo_dia'],
+			'Semana_1' => ['name' => 'concluida', 'data' => 'semana1'],
+			'Semana_2' => ['name' => 'concluida', 'data' => 'semana2'],
+			'Semana_3' => ['name' => 'concluida', 'data' => 'semana3'],
+			'Semana_4' => ['name' => 'concluida', 'data' => 'semana4'],
+			'Último_Dia' => ['name' => 'concluida', 'data' => 'ultimo_dia'],
             'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }

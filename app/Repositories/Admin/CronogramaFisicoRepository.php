@@ -27,7 +27,7 @@ class CronogramaFisicoRepository extends BaseRepository
 	
 	public static function getFridaysBydate($fromDate){
 		
-		$lastday = date('Y-m-t',strtotime($fromDate));		
+		$lastday = date('t-m-Y',strtotime($fromDate));		
 		
 		$fridays = [];		
 		
@@ -48,28 +48,15 @@ class CronogramaFisicoRepository extends BaseRepository
 		return $fridays;
 	}
 	
-	public static function getMonthsYearBydate($fromDate){
+	public static function getIntervalBydate($fromDate){
 		
-		$lastday = date('Y-m-t',strtotime($fromDate));		
+		$lastday = date('t-m-Y',strtotime($fromDate));
+		$endDate = Carbon::parse($lastday);	
+		$endDate= $endDate->format('d/m/Y');				
 		
-		$fridays = [];		
-		
-		$startDate = Carbon::parse($fromDate)->next(Carbon::FRIDAY); // Get the first friday.
-		$endDate = Carbon::parse($lastday);		
-
-		for ($date = $startDate; $date->lte($endDate); $date->addWeek()) {
-			$fridays[] = $date->format('Y-m-d');
-		}
-		
-		$endDate= $endDate->format('Y-m-d');
-		
-		
-		if(end($fridays) != $endDate){
-			$fridays[] = $endDate;
-		}				
-		
-		return $fridays;
+		return $month;
 	}
+	
 
     /**
      * Configure the Model
