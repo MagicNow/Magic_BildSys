@@ -69,9 +69,9 @@ class ImportacaoRepository
                     'nome'            => trim(utf8_encode($produto->pro_st_descricao)),
                     'unidade_sigla'   => trim(utf8_encode($produto->uni_st_unidade)),
                     'codigo'          => $produto->pro_in_codigo,
-                    'insumo_grupo_id' => $produto->gru_in_codigo,
-                    'servico_cnae_id' => $produto->cos_in_codigo,
+                    'insumo_grupo_id' => $produto->gru_in_codigo
                 ]);
+                $insumo->servico_cnae_id = $produto->cos_in_codigo;
                 $insumo->ncm_codigo = $produto->ncm_in_codigo;
                 $insumo->ncm_texto  =  trim(utf8_encode($produto->ncm_st_descricao));
                 $insumo->ncm_codigo_texto  =  trim(utf8_encode($produto->ncm_st_extenso));
