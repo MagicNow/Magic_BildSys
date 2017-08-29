@@ -52,6 +52,10 @@ class CronogramaFisicoController extends AppBaseController
         }
 				
 		$obras = Obra::pluck('nome','id')->toArray();
+		/*$tipos = ["", "", "", "", ""];
+		$ano = ["", "", "", "", ""];
+		$mes = [];*/
+		
         $templates = TemplatePlanilha::where('modulo', 'Cronograma Fisicos')->pluck('nome','id')->toArray();
 		
         return $cronogramaFisicoDataTable->porObra($id)->render('admin.cronograma_fisicos.index', compact('obras','templates','id'));
@@ -302,22 +306,19 @@ class CronogramaFisicoController extends AppBaseController
     }
 	
 	//Acompanhamento Semanal
-	public function relSemanal( ObraRepository $obraRepository)
-    {
+	public function relSemanal(Request $request)
+    {		
+		$id = null;
+        if($request->id){
+            $id = $request->id;
+        }
+		
 		//Filtros	//julho-2017	
 		$fromDate="2017-07-01";
 		$fridays = CronogramaFisicoRepository::getFridaysBydate($fromDate);		
-		$last_day= end($fridays);	
-		
-		$obras = $obraRepository
-            ->orderBy('nome', 'ASC')
-            ->whereHas('users', function($query){
-                $query->where('user_id', auth()->id());
-            })
-            ->comContrato()
-            ->pluck('nome', 'id')
-            ->prepend('', '')
-            ->all();
+		$last_day= end($fridays);			
+
+        $obras = Obra::pluck('nome','id')->toArray();        
 
 		//Tabela Percentual Previsto e Acumulado		
 		$tabelaPercPrevistoRealizadosSemanas = $fridays;
@@ -379,22 +380,13 @@ class CronogramaFisicoController extends AppBaseController
         ->orderBy('id', 'desc')		
 		->get();
                
-        return view('admin.cronograma_fisicos.relSemanal', compact('obras','tabelaPercPrevistoRealizados', 'tabelaPercPrevistoRealizadosSemanas'
-		, 'tabelaTarefasCriticasTitulos', 'tabelaTarefasCriticasDados'));
+        return view('admin.cronograma_fisicos.relSemanal', compact('obras','tabelaPercPrevistoRealizados', 'tabelaPercPrevistoRealizadosSemanas', 'tabelaTarefasCriticasTitulos', 'tabelaTarefasCriticasDados'));
     }
 
-	public function relMensal( ObraRepository $obraRepository )
+	public function relMensal(Request $request)
     {	
 		
-		$obras = $obraRepository
-            ->orderBy('nome', 'ASC')
-            ->whereHas('users', function($query){
-                $query->where('user_id', auth()->id());
-            })
-            ->comContrato()
-            ->pluck('nome', 'id')
-            ->prepend('', '')
-            ->all();		
+		$obras = Obra::pluck('nome','id')->toArray(); 	
                
         return view('admin.cronograma_fisicos.relMensal', compact('obras'));
     }

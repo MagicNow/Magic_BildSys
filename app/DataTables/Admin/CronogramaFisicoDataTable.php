@@ -46,7 +46,7 @@ class CronogramaFisicoDataTable extends DataTable
      * @return \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder
      */
     public function query()
-    {
+    {		
 		
 		//mostra a semana do mes anterior
 		$fromDate="2017-07-01";
@@ -138,9 +138,11 @@ class CronogramaFisicoDataTable extends DataTable
         ->join('obras','obras.id','cronograma_fisicos.obra_id')
 		->join('template_planilhas','template_planilhas.id','cronograma_fisicos.template_id');		
 		
-        if($this->obra){
-            $cronograma_fisicos>where('cronograma_fisicos.obra_id', $this->obra);
-        }
+		if($this->request()->get('obra')){
+            if(count($this->request()->get('obra')) && $this->request()->get('obra') != ""){
+                $cronograma_fisicos->where('cronograma_fisicos.obra_id1',$this->request()->get('obra'));
+            }
+        }        
 
         return $this->applyScopes($cronograma_fisicos);
     }
@@ -215,8 +217,7 @@ class CronogramaFisicoDataTable extends DataTable
 		- se não for nenhuma das 2 condições acima, divide os dias da semana da data de início - da data da sexta por os dias da semana do término -  da data do início*/			
 		
         return [
-            'obra' => ['name' => 'obras.nome', 'data' => 'obra'], 
-			'tipo' => ['name' => 'template_planilhas.nome', 'data' => 'tipo'], 			
+            'obra' => ['name' => 'obras.nome', 'data' => 'obra'], 					
 			'tarefa_mes' => ['name' => 'tarefa_mes', 'data' => 'tarefa_mes'],
 			'tarefa' => ['name' => 'tarefa', 'data' => 'tarefa'],
 			'custo' => ['name' => 'custo', 'data' => 'custo'],

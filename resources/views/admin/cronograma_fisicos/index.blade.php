@@ -44,7 +44,7 @@
 						<h4>Mês</h4>
 						{!!
 						  Form::select(
-							'mes_id',["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"],null,['class' => 'form-control select2 js-filter']
+							'mes_id',["Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"],null,['class' => 'form-control select2 js-filter']
 						  )
 						!!}
 					</div>
@@ -59,4 +59,3 @@
         </div>
     </div>
 @endsection
-
