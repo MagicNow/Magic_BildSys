@@ -115,6 +115,7 @@ class OrdemDeCompraDataTable extends DataTable
                     });
                 }' ,
                 'dom' => 'Bfrltip',
+                // Coloca ordenação inicial no datatable
                 'order' => [
                     0,
                     'desc'

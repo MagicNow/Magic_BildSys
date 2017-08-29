@@ -248,6 +248,11 @@ class MedicaoServicoDataTable extends DataTable
                 "pageLength"=> (request()->segment(count(request()->segments()))!='create'&& request()->segment(count(request()->segments()))!='edit' ? 10 : 100),
                 'dom' => 'Bfrltip',
                 'scrollX' => false,
+                // Ordena para que inicialmente carregue os mais novos
+                'order' => [
+                    0,
+                    'desc'
+                ],
                 'language'=> [
                     "url"=> "/vendor/datatables/Portuguese-Brasil.json"
                 ],
