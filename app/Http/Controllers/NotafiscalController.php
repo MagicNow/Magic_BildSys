@@ -446,18 +446,9 @@ class NotafiscalController extends AppBaseController
         // -- Eu criaria um parametro para essa porta, pois ela muda constantemente
         // -- Numero da Tarefa (para Entrada de Nota = (701 - Insumos / 705 - Recebimentos / 306 - Faturas a Pagar)
         // -- XML desenvolvimento pela Mazzatech
-        $sql = "Select MGINT.INT_PCK_UTIL.F_PROCESSATRANSACAO(?,?,?,?,?,?,?,?) from dual";
+        $sql = "EXECUTE MGINT.INT_PCK_UTIL.F_PROCESSATRANSACAO(?,?,?,?,?,?,?, NULL)";
         $results = DB::connection('oracle')->select($sql,
-            array(
-                '192.168.0.21',
-                8116,
-                306,
-                1,
-                1,
-                'Transacao para Integração do Bild Obras',
-                $xml,
-                null
-            )
+            array('192.168.0.21', 8116, 306, 1, 1, 'Transacao para Integração do Bild Obras', $xml)
         );
 
         dd($results);
