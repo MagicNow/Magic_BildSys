@@ -148,7 +148,7 @@ class ConsultaCteRepository
                     $dados['data_recibo'] = $doc['obj']['protCTe']['infProt']['dhRecbto'];
                     $dados['data_emissao'] = $doc['obj']['CTe']['infCte']['ide']['dhEmi'];
 
-                    if (is_array($doc['obj']['CTe']['infCte']['infCTeNorm']['infDoc']['infNFe'])) {
+                    if (isset($doc['obj']['CTe']['infCte']['infCTeNorm']['infDoc']['infNFe']) AND is_array($doc['obj']['CTe']['infCte']['infCTeNorm']['infDoc']['infNFe'])) {
                         foreach ($doc['obj']['CTe']['infCte']['infCTeNorm']['infDoc']['infNFe'] as $index => $chave) {
                             if (is_array($chave)) {
                                 if (strlen($chave['chave']) == 44) {

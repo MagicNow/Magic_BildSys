@@ -1102,7 +1102,9 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('buscaCTe', 'NotafiscalController@buscaCTe');
     $router->get('danfe/{id}', 'NotafiscalController@visualizaDanfe');
     $router->get('dacte/{id}', 'NotafiscalController@visualizaDacte');
+    $router->get('integra-mega/{id}', 'NotafiscalController@integraMega');
     $router->get('dacte/v3/{id}', 'NotafiscalController@visualizaDacteV3');
+    $router->get('manifestar/nfe', 'NotafiscalController@manifesta');
 
     # Padrões de empreendimento Novo
     $router->group(['middleware' => 'needsPermission:padraoEmpreendimentos.list'], function () use ($router) {

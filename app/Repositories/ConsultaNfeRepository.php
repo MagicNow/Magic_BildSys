@@ -7,12 +7,14 @@
  */
 
 namespace App\Repositories;
+
 use App\Models\Notafiscal;
 use App\Models\NotaFiscalFatura;
 use App\Models\NotaFiscalItem;
 use Carbon\Carbon;
 use NFePHP\NFe\ToolsNFe;
 use App\Repositories\NotafiscalRepository;
+use Log;
 
 class ConsultaNfeRepository
 {
@@ -23,7 +25,8 @@ class ConsultaNfeRepository
         $this->notaFiscalRepository = $notaFiscalRepository;
     }
 
-    public static function downloadXML($fromCommand = 0){
+    public static function downloadXML($fromCommand = 0)
+    {
         if ($fromCommand) {
             $nfe = new ToolsNFe(config_path('nfe-command.json'));
         } else {
@@ -32,30 +35,30 @@ class ConsultaNfeRepository
 
         $nfe->setModelo('55');
         $ultNSU = 0; // se estiver como zero irá retornar os dados dos ultimos 15 dias até o limite de 50 registros
-                     // se for diferente de zero irá retornar a partir desse numero os dados dos
-                     // últimos 15 dias até o limite de 50 registros
+        // se for diferente de zero irá retornar a partir desse numero os dados dos
+        // últimos 15 dias até o limite de 50 registros
 
         $numNSU = 0; // se estiver como zero irá usar o ultNSU
-                     // se for diferente de zero não importa o que está contido em ultNSU será retornado apenas
-                     // os dados deste NSU em particular
+        // se for diferente de zero não importa o que está contido em ultNSU será retornado apenas
+        // os dados deste NSU em particular
 
         $tpAmb = '1';// esses dados somente existirão em ambiente de produção pois em ambiente de testes
-                     // não existem dados de eventos, nem de NFe emitidas para o seu CNPJ
+        // não existem dados de eventos, nem de NFe emitidas para o seu CNPJ
 
         $cnpj = ''; // deixando vazio irá pegar o CNPJ default do config
-                    // se for colocado um CNPJ tenha certeza que o certificado está autorizado a
-                    // baixar os dados desse CNPJ pois se não estiver autorizado haverá uma
-                    // mensagem de erro da SEFAZ
-                    //array que irá conter os dados de retorno da SEFAZ
+        // se for colocado um CNPJ tenha certeza que o certificado está autorizado a
+        // baixar os dados desse CNPJ pois se não estiver autorizado haverá uma
+        // mensagem de erro da SEFAZ
+        //array que irá conter os dados de retorno da SEFAZ
 
         $aResposta = array();
-                    //essa rotina deve rá ser repetida a cada hora até que o maxNSU retornado esteja contido no NSU da mensagem
-                    //se estiver já foram baixadas todas as referencias a NFe, CTe e outros eventos da NFe e não a mais nada a buscar
-                    //outro detalhe é que não adianta tentar buscar dados muito antigos o sistema irá informar que
-                    //nada foi encontrado, porque a SEFAZ não mantêm os NSU em base de dados por muito tempo, em
-                    //geral são mantidos apenas os dados dos últimos 15 dias.
-                    //Os dados são retornados em formato ZIP dento do xml, mas no array os dados
-                    //já são retornados descompactados para serem lidos
+        //essa rotina deve rá ser repetida a cada hora até que o maxNSU retornado esteja contido no NSU da mensagem
+        //se estiver já foram baixadas todas as referencias a NFe, CTe e outros eventos da NFe e não a mais nada a buscar
+        //outro detalhe é que não adianta tentar buscar dados muito antigos o sistema irá informar que
+        //nada foi encontrado, porque a SEFAZ não mantêm os NSU em base de dados por muito tempo, em
+        //geral são mantidos apenas os dados dos últimos 15 dias.
+        //Os dados são retornados em formato ZIP dento do xml, mas no array os dados
+        //já são retornados descompactados para serem lidos
 
         $chNFe = '';
         $nota = Notafiscal::orderBy('nsu', 'desc')->first();
@@ -63,7 +66,7 @@ class ConsultaNfeRepository
         if ($nota) {
             $ultNSU = (int)$nota->nsu;
         }
-        $resp = $nfe->sefazDownload($chNFe, $tpAmb, $cnpj, $aResposta, $ultNSU );
+        $nfe->sefazDownload($chNFe, $tpAmb, $cnpj, $aResposta, $ultNSU);
         return true;
     }
 
@@ -158,19 +161,20 @@ class ConsultaNfeRepository
 
                     try {
 
-                        $dataSaida = isset($arrayNota['NFe']['infNFe']['ide']['dhSaiEnt']) ? str_replace('T', ' ',substr($arrayNota['NFe']['infNFe']['ide']['dhSaiEnt'],0,19)) : null;
+                        $dataSaida = isset($arrayNota['NFe']['infNFe']['ide']['dhSaiEnt']) ? str_replace('T', ' ', substr($arrayNota['NFe']['infNFe']['ide']['dhSaiEnt'], 0, 19)) : null;
 
                         $fantasia = isset($arrayNota['NFe']['infNFe']['emit']['xFant']) ? $arrayNota['NFe']['infNFe']['emit']['xFant'] : null;
 
                         $notaData = [
                             'contrato_id' => null,
                             'nsu' => $NSU,
+                            'schema' => $doc['schema'],
                             'solicitacao_entrega_id' => null,
                             'xml' => $doc['dados'],
                             'codigo' => $arrayNota['NFe']['infNFe']['ide']['nNF'],
                             'versao' => $arrayNota['NFe']['infNFe']["@attributes"]['versao'],
                             'natureza_operacao' => $arrayNota['NFe']['infNFe']['ide']['natOp'],
-                            'data_emissao' => isset($arrayNota['NFe']['infNFe']['ide']['dhEmi'])? str_replace('T', ' ', substr($arrayNota['NFe']['infNFe']['ide']['dhEmi'],0,19)): null,
+                            'data_emissao' => isset($arrayNota['NFe']['infNFe']['ide']['dhEmi']) ? str_replace('T', ' ', substr($arrayNota['NFe']['infNFe']['ide']['dhEmi'], 0, 19)) : null,
                             'data_saida' => $dataSaida,
                             'cnpj' => $arrayNota['NFe']['infNFe']['emit']['CNPJ'],
                             'razao_social' => $arrayNota['NFe']['infNFe']['emit']['xNome'],
@@ -200,7 +204,7 @@ class ConsultaNfeRepository
                         $notaData["destinatario_cep"] = $arrayNota['NFe']['infNFe']['dest']['enderDest']['CEP'];
                         $notaData["destinatario_cidade"] = $arrayNota['NFe']['infNFe']['dest']['enderDest']['xMun'];
                         $notaData["destinatario_uf"] = $arrayNota['NFe']['infNFe']['dest']['enderDest']['UF'];
-                        $notaData["destinatario_fone_fax"] = isset($arrayNota['NFe']['infNFe']['dest']['enderDest']['fone'])? $arrayNota['NFe']['infNFe']['dest']['enderDest']['fone']: '';
+                        $notaData["destinatario_fone_fax"] = isset($arrayNota['NFe']['infNFe']['dest']['enderDest']['fone']) ? $arrayNota['NFe']['infNFe']['dest']['enderDest']['fone'] : '';
                         $notaData["destinatario_inscricao_estadual"] = isset($arrayNota['NFe']['infNFe']['dest']['IE']) ? $arrayNota['NFe']['infNFe']['dest']['IE'] : '';
                         $notaData["destinatario_inscricao_estadual_sub"] = '';
 
@@ -226,7 +230,7 @@ class ConsultaNfeRepository
                         $notaData['frete_por_conta'] = $arrayNota['NFe']['infNFe']['transp']['modFrete'];
 
                         if (isset($arrayNota['NFe']['infNFe']['transp']['transporta'])) {
-                            $notaData["transportadora_nome"] = isset($arrayNota['NFe']['infNFe']['transp']['transporta']['xNome'])? $arrayNota['NFe']['infNFe']['transp']['transporta']['xNome']: '';
+                            $notaData["transportadora_nome"] = isset($arrayNota['NFe']['infNFe']['transp']['transporta']['xNome']) ? $arrayNota['NFe']['infNFe']['transp']['transporta']['xNome'] : '';
                             $notaData["codigo_antt"] = '';
 
                             if (isset($arrayNota['NFe']['infNFe']['transp']['veicTransp'])) {
@@ -237,17 +241,17 @@ class ConsultaNfeRepository
                             $notaData["transportadora_cnpj"] = isset($arrayNota['NFe']['infNFe']['transp']['transporta']['CPF']) ? $arrayNota['NFe']['infNFe']['transp']['transporta']['CPF'] : '';
                             $notaData["transportadora_endereco"] = isset($arrayNota['NFe']['infNFe']['transp']['transporta']['xEnder']) ? $arrayNota['NFe']['infNFe']['transp']['transporta']['xEnder'] : '';
                             $notaData["transportadora_municipio"] = isset($arrayNota['NFe']['infNFe']['transp']['transporta']['xMun']) ? $arrayNota['NFe']['infNFe']['transp']['transporta']['xMun'] : '';
-                            $notaData["transportadora_uf"] = isset($arrayNota['NFe']['infNFe']['transp']['transporta']['UF'])?$arrayNota['NFe']['infNFe']['transp']['transporta']['UF']:'';
+                            $notaData["transportadora_uf"] = isset($arrayNota['NFe']['infNFe']['transp']['transporta']['UF']) ? $arrayNota['NFe']['infNFe']['transp']['transporta']['UF'] : '';
                             $notaData["transportadora_inscricao"] = isset($arrayNota['NFe']['infNFe']['transp']['transporta']['IE']) ? $arrayNota['NFe']['infNFe']['transp']['transporta']['IE'] : '';
-                            $notaData["transportadora_quantidade"] = isset($arrayNota['NFe']['infNFe']['transp']['vol']['qVol'])?$arrayNota['NFe']['infNFe']['transp']['vol']['qVol']:0;
-                            $notaData["especie"] = isset($arrayNota['NFe']['infNFe']['transp']['vol']['esp'])?$arrayNota['NFe']['infNFe']['transp']['vol']['esp']:'';
+                            $notaData["transportadora_quantidade"] = isset($arrayNota['NFe']['infNFe']['transp']['vol']['qVol']) ? $arrayNota['NFe']['infNFe']['transp']['vol']['qVol'] : 0;
+                            $notaData["especie"] = isset($arrayNota['NFe']['infNFe']['transp']['vol']['esp']) ? $arrayNota['NFe']['infNFe']['transp']['vol']['esp'] : '';
                             $notaData["marca"] = isset($arrayNota['NFe']['infNFe']['transp']['vol']['marca']) ? $arrayNota['NFe']['infNFe']['transp']['vol']['marca'] : '';
                             $notaData["numeracao"] = '';
                             $notaData["peso_bruto"] = isset($arrayNota['NFe']['infNFe']['transp']['vol']['pesoB']) ? $arrayNota['NFe']['infNFe']['transp']['vol']['pesoB'] : '';
-                            $notaData["peso_liquido"] = isset($arrayNota['NFe']['infNFe']['transp']['vol']['pesoL'])?$arrayNota['NFe']['infNFe']['transp']['vol']['pesoL']: '';
+                            $notaData["peso_liquido"] = isset($arrayNota['NFe']['infNFe']['transp']['vol']['pesoL']) ? $arrayNota['NFe']['infNFe']['transp']['vol']['pesoL'] : '';
                         }
 
-                        $notaData["dados_adicionais"] = isset($arrayNota['NFe']['infNFe']['infAdic']['infCpl'])?$arrayNota['NFe']['infNFe']['infAdic']['infCpl']:'';
+                        $notaData["dados_adicionais"] = isset($arrayNota['NFe']['infNFe']['infAdic']['infCpl']) ? $arrayNota['NFe']['infNFe']['infAdic']['infCpl'] : '';
 
                         $faturas = [];
                         $items = [];
@@ -303,14 +307,14 @@ class ConsultaNfeRepository
                                             'valor_total' => $detalhe['prod']['vProd'],
                                             'unidade' => $detalhe['prod']['uCom'],
                                             'base_calculo_icms' => isset($detalhe['imposto']['ICMS']['ICMS00']['vBC']) ? $detalhe['imposto']['ICMS']['ICMS00']['vBC'] : 0,
-                                            'aliquota_icms' => isset($detalhe['imposto']['ICMS']['ICMS00']['pICMS'])? $detalhe['imposto']['ICMS']['ICMS00']['pICMS'] : 0,
+                                            'aliquota_icms' => isset($detalhe['imposto']['ICMS']['ICMS00']['pICMS']) ? $detalhe['imposto']['ICMS']['ICMS00']['pICMS'] : 0,
                                             'valor_icms' => isset($detalhe['imposto']['ICMS']['ICMS00']['vICMS']) ? $detalhe['imposto']['ICMS']['ICMS00']['vICMS'] : 0,
                                             'valor_ipi' => '',
                                             'aliquota_ipi' => '',
                                             'aliquota_cofins' => isset($detalhe['imposto']['COFINS']['COFINSAliq']['pCOFINS']) ? $detalhe['imposto']['COFINS']['COFINSAliq']['pCOFINS'] : 0,
                                             'valor_cofins' => isset($detalhe['imposto']['COFINS']['COFINSAliq']['vCOFINS']) ? $detalhe['imposto']['COFINS']['COFINSAliq']['vCOFINS'] : 0,
-                                            'aliquota_pis' => isset($detalhe['imposto']['PIS']['PISAliq']['pPIS'])?$detalhe['imposto']['PIS']['PISAliq']['pPIS']: 0,
-                                            'valor_pis' => isset($detalhe['imposto']['PIS']['PISAliq']['vPIS'])?$detalhe['imposto']['PIS']['PISAliq']['vPIS']:0,
+                                            'aliquota_pis' => isset($detalhe['imposto']['PIS']['PISAliq']['pPIS']) ? $detalhe['imposto']['PIS']['PISAliq']['pPIS'] : 0,
+                                            'valor_pis' => isset($detalhe['imposto']['PIS']['PISAliq']['vPIS']) ? $detalhe['imposto']['PIS']['PISAliq']['vPIS'] : 0,
                                         ];
 
                                         if (isset($detalhe['imposto']['ICMSUFDest'])) {
@@ -321,7 +325,7 @@ class ConsultaNfeRepository
                                             $itemData['aliquota_icms_uf_interna_part'] = $detalhe['imposto']['ICMSUFDest']['pICMSInterPart'];
                                             $itemData['valor_fcp_icms_uf_dest'] = $detalhe['imposto']['ICMSUFDest']['vFCPUFDest'];
                                             $itemData['valor_icms_uf_dest'] = $detalhe['imposto']['ICMSUFDest']['vICMSUFDest'];
-                                            $itemData[ 'valor_icms_uf_remetente'] = $detalhe['imposto']['ICMSUFDest']['vICMSUFRemet'];
+                                            $itemData['valor_icms_uf_remetente'] = $detalhe['imposto']['ICMSUFDest']['vICMSUFRemet'];
                                         }
 
                                         array_push($items, $itemData);
@@ -366,7 +370,7 @@ class ConsultaNfeRepository
 
                         if (!$nfObj) {
                             $nfObj = $this->notaFiscalRepository
-                                          ->create($notaData);
+                                ->create($notaData);
                         } else {
                             $nfObj->fill($notaData);
                             $nfObj->save();
@@ -409,12 +413,13 @@ class ConsultaNfeRepository
                         $notaData = [
                             'contrato_id' => null,
                             'nsu' => $NSU,
+                            'schema' => $doc['schema'],
                             'solicitacao_entrega_id' => null,
                             'xml' => $doc['dados'],
                             'codigo' => '',
                             'versao' => '',
                             'natureza_operacao' => null,
-                            'data_emissao' => isset($arrayNota['dhEmi'])? str_replace('T', ' ', substr($arrayNota['dhEmi'],0,19)): null,
+                            'data_emissao' => isset($arrayNota['dhEmi']) ? str_replace('T', ' ', substr($arrayNota['dhEmi'], 0, 19)) : null,
                             'data_saida' => null,
                             'cnpj' => $arrayNota['CNPJ'],
                             'razao_social' => $arrayNota['xNome'],
@@ -605,6 +610,66 @@ class ConsultaNfeRepository
             '');
         $id = $danfe->montaDANFE();
         return $abre = $danfe->printDANFE("{$id}-danfe.pdf", 'I');
+    }
+
+    public function manifesta($notaFiscal, $operacao = '210210', $fromCommand = 0)
+    {
+        if ($fromCommand) {
+            $nfe = new ToolsNFe(config_path('nfe-command.json'));
+        } else {
+            $nfe = new ToolsNFe(config_path('nfe.json'));
+        }
+
+        $nfe->setModelo('55');
+
+        //210200 – Confirmação da Operação
+        //210210 – Ciência da Operação
+        //210220 – Desconhecimento da Operação
+        //210240 – Operação não Realizada ===> é obritatoria uma justificativa para esse caso
+        $chave = $notaFiscal->chave;
+        $tpAmb = '1';
+        $xJust = '';
+        $tpEvento = $operacao; //ciencia da operação
+        $aResposta = array();
+        $nfe->sefazManifesta($chave, $tpAmb, $xJust, $tpEvento, $aResposta);
+
+        try {
+
+            $cStat = $aResposta['evento'][0]['cStat'];
+            $xMotivo = $aResposta['evento'][0]['xMotivo'];
+            $notaFiscal->manifesto += 1;
+            $notaFiscal->retorno_manifesto_motivo = $xMotivo;
+            $notaFiscal->manifesto_status = $cStat;
+            $notaFiscal->save();
+
+            return [
+                'id' => $notaFiscal->id,
+                'chave' => $notaFiscal->chave,
+                'status' => $cStat,
+                'motivo' => $xMotivo,
+            ];
+
+        } catch (\Exception $e) {
+            Log::error($e);
+            return false;
+        }
+    }
+
+    public function manifestaNotas($fromCommand = 0, $operacao = '210210')
+    {
+        $notas = Notafiscal::where('schema', 'resNFe_v1.00.xsd')
+            ->where('manifesto', 0)
+            ->orderBy('id', 'asc')
+            ->take(100)
+            ->get();
+
+        $nfe = [];
+        foreach ($notas as $nfeObj)
+        {
+            $nfe[] = $this->manifestaNotas($nfeObj, $operacao, $fromCommand);
+        }
+
+        return $nfe;
     }
 
 }

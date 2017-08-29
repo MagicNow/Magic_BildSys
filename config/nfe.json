@@ -11,7 +11,7 @@
   "pathMDFeFiles":"",
   "pathCLeFiles":"",
   "pathNFSeFiles":"",
-  "pathCertsFiles":"../vendor/nfephp-org/nfephp/certs",
+  "pathCertsFiles":"../storage/certs",
   "siteUrl":"",
   "schemesNFe":"PL_008h2",
   "schemesCTe":"PL_CTe_300",
