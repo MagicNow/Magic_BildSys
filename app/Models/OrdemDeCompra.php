@@ -25,7 +25,8 @@ class OrdemDeCompra extends Model
         'oc_status_id',
         'obra_id',
         'user_id',
-        'aprovado'
+        'aprovado',
+        'saldo_disponivel_temp'
     ];
 
     public static $workflow_tipo_id = WorkflowTipo::OC;
@@ -82,7 +83,8 @@ class OrdemDeCompra extends Model
         'oc_status_id' => 'integer',
         'obra_id' => 'integer',
         'aprovado' => 'integer',
-        'user_id' => 'integer'
+        'user_id' => 'integer',
+        'saldo_disponivel_temp' => 'decimal',
     ];
 
     public static $filters = [

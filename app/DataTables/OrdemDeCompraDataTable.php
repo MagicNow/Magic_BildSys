@@ -28,6 +28,7 @@ class OrdemDeCompraDataTable extends DataTable
                     return "<h4><i class='fa fa-circle red'></i></h4>";
                 }
             })
+            ->orderColumn('status', 'saldo_disponivel_temp $1')
             ->make(true);
     }
     
@@ -45,14 +46,14 @@ class OrdemDeCompraDataTable extends DataTable
                 'users.name as usuario',
                 'oc_status.nome as situacao',
                 'ordem_de_compras.obra_id',
+                'ordem_de_compras.saldo_disponivel_temp',
                 DB::raw('0 as status'),
             ])
             ->join('obras', 'obras.id', '=', 'ordem_de_compras.obra_id')
             ->join('oc_status', 'oc_status.id', '=', 'ordem_de_compras.oc_status_id')
             ->join('users', 'users.id', '=', 'ordem_de_compras.user_id')
             ->whereRaw('EXISTS (SELECT 1 FROM obra_users WHERE obra_users.obra_id = obras.id AND user_id=?)', auth()->id())
-            ->where('ordem_de_compras.oc_status_id', '!=', 6)
-            ->orderBy('ordem_de_compras.id','DESC');
+            ->where('ordem_de_compras.oc_status_id', '!=', 6);
 
         if($this->request()->get('oc_status_id')){
             if(count($this->request()->get('oc_status_id')) && $this->request()->get('oc_status_id')[0] != "") {
@@ -114,6 +115,10 @@ class OrdemDeCompraDataTable extends DataTable
                     });
                 }' ,
                 'dom' => 'Bfrltip',
+                'order' => [
+                    0,
+                    'desc'
+                ],
                 'scrollX' => false,
                 'language'=> [
                     "url"=> "/vendor/datatables/Portuguese-Brasil.json"
@@ -135,7 +140,7 @@ class OrdemDeCompraDataTable extends DataTable
             'obra' => ['name' => 'obras.nome', 'data' => 'obra'],
             'usuário' => ['name' => 'users.name', 'data' => 'usuario'],
             'situação' => ['name' => 'oc_status.nome', 'data' => 'situacao'],
-            'status' => ['name' => 'status', 'data' => 'status', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false],
+            'status' => ['name' => 'status', 'data' => 'status', 'printable' => false, 'exportable' => false, 'searchable' => false],
             'action' => ['name'=>'Ações', 'title' => 'visualizar OC', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'15%', 'class' => 'all']
         ];
     }
