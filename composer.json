@@ -12,6 +12,14 @@
         {
             "type": "vcs",
             "url": "https://github.com/rafaelqm/laravel-generator"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/fhferreira/nfephp"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/fhferreira/sped-cte"
         }
     ],
     "require": {
