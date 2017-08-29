@@ -114,3 +114,30 @@ if(! function_exists('to_percentage')) {
       return to_fixed($number, 2, ',') . '%';
     }
 }
+
+if(! function_exists('mask')) {
+    //echo mask($cnpj, '##.###.###/####-##');
+    //echo mask($cpf,  '###.###.###-##');
+    //echo mask($cep,  '#####-###');
+    //echo mask($data, '##/##/####');
+    //echo mask($data, '##/##/####');
+    //echo mask($data, '[##][##][####]');
+    //echo mask($data, '(##)(##)(####)');
+    //echo mask($hora, 'Agora são ## horas ## minutos e ## segundos');
+    //echo mask($hora, '##:##:##');
+    function mask($val, $mask)
+    {
+        $maskared = '';
+        $k = 0;
+        for ($i = 0; $i <= strlen($mask) - 1; $i++) {
+            if ($mask[$i] == '#') {
+                if (isset($val[$k]))
+                    $maskared .= $val[$k++];
+            } else {
+                if (isset($mask[$i]))
+                    $maskared .= $mask[$i];
+            }
+        }
+        return $maskared;
+    }
+}

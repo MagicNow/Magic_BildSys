@@ -11,6 +11,16 @@ use Eloquent as Model;
  */
 class Notafiscal extends Model
 {
+    const TIPOS_ENTRADA_SAIDA = [
+        0 => 'Entrada',
+        1 => 'Saída'
+    ];
+
+    const FRETE_POR_CONTA_DO = [
+        0 => 'Emitente',
+        1 => 'Destinatário',
+    ];
+
     public $table = 'notas_fiscais';
 
     public $timestamps = false;
@@ -31,6 +41,7 @@ class Notafiscal extends Model
         'arquivo_nfe',
         'nsu',
         'chave',
+        'schema',
 
         'serie',
         'tipo_entrada_saida',
@@ -88,6 +99,9 @@ class Notafiscal extends Model
         'peso_bruto',
         'peso_liquido',
         'dados_adicionais',
+        'manifesto',
+        'manifesto_status',
+        'retorno_manifesto_motivo',
     ];
 
     /**
@@ -109,9 +123,12 @@ class Notafiscal extends Model
         'cnpj_destinatario' => 'string',
         'arquivo_nfe' => 'string',
         'nsu' => 'integer',
+        'manifesto_status' => 'integer',
+        'manifesto' => 'integer',
         'chave' => 'string',
         'data_emissao' => 'datetime',
         'data_saida' => 'datetime',
+        'retorno_manifesto_motivo' => 'string',
     ];
 
     /**

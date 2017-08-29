@@ -173,16 +173,16 @@ class QuadroDeConcorrenciaDataTable extends DataTable
                             $(input).appendTo($(column.footer()).empty())
                                 .on(\'change\', function () {
                                     column.search($(this).val(), false, false, true).draw();
-    });
-    }
-    });
-    }' ,
-        'dom' => 'Bfrltip',
-        'scrollX' => false,
-        'language'=> [
-            "url"=> "/vendor/datatables/Portuguese-Brasil.json"
-        ],
-        'buttons' => [
+                                });
+                        }
+                    });
+                }' ,
+                'dom' => 'Bfrltip',
+                'scrollX' => false,
+                'language'=> [
+                    "url"=> "/vendor/datatables/Portuguese-Brasil.json"
+                ],
+                'buttons' => [
             'print',
             'reset',
             'reload',
@@ -197,7 +197,7 @@ class QuadroDeConcorrenciaDataTable extends DataTable
             ],
             'colvis'
         ]
-    ]);
+            ]);
     }
 
     /**

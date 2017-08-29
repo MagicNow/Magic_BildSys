@@ -1741,13 +1741,7 @@ class ToolsNFe extends BaseTools
      * @return string
      * @throws Exception\RuntimeException
      */
-    public function sefazDownload(
-        $chNFe='',
-        $tpAmb = '',
-        $cnpj = '',
-        &$aRetorno = array(),
-        $ultimoNSU = 0
-    ) {
+    public function sefazDownload($chNFe = '', $tpAmb = '', $cnpj = '', &$aRetorno = array(), $ultimoNSU = 0) {
         if ($tpAmb == '') {
             $tpAmb = $this->aConfig['tpAmb'];
         }

@@ -168,7 +168,6 @@ class ContratoDataTable extends DataTable
         return $this->builder()
             ->columns($this->getColumns())
             ->ajax('')
-//            ->addAction(['width' => '80px', 'class' => 'all'])
             ->parameters([
                 'responsive'=> 'true',
                 'initComplete' => 'function () {
@@ -191,6 +190,11 @@ class ContratoDataTable extends DataTable
                 'scrollX' => false,
                 'language'=> [
                     "url"=> "/vendor/datatables/Portuguese-Brasil.json"
+                ],
+                // Ordena para que inicialmente carregue os mais novos
+                'order' => [
+                    0,
+                    'desc'
                 ],
                 'buttons' => [
                     'print',
