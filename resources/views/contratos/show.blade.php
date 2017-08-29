@@ -315,8 +315,6 @@
 
         $(function () {
             selectgrupo( $('#grupo_id').val() , 'subgrupo1_id', 'grupos');
-            $('#valor_total_comprometido_a_gastar').text('{{number_format($GLOBALS["valor_total_comprometido_a_gastar"], 2, ',', '.')}}');
-            $('#saldo_total_de_orcamento').text('{{number_format($orcamentoInicial - $GLOBALS["valor_total_comprometido_a_gastar"], 2, ',', '.')}}');
         });
     </script>
 @append

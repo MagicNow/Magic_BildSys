@@ -231,10 +231,12 @@ class ContratoController extends AppBaseController
 
         $itens_analise = $apropriacaoRepository->analiseReajuste($contrato);
 
-        $GLOBALS["valor_total_comprometido_a_gastar"] = 0.00;
+        $valor_previsto_orcamento = $itens_analise->sum('preco_inicial');
 
+        $saldo = 0;
+        
         $qtd_itens = 1;
-    
+
         return view('contratos.show', compact(
             'isEmAprovacao',
             'contrato',
@@ -251,7 +253,8 @@ class ContratoController extends AppBaseController
             'iss',
             'itens_analise',
             'qtd_itens',
-            'valor_total_comprometido_a_gastar'
+            'valor_previsto_orcamento',
+            'saldo'
         ));
     }
 
