@@ -50,7 +50,7 @@ class CapturaCTeGerados extends Command
             $fromCommand = 1;
             $this->consultaCTeRepository->syncXML($download, $fromCommand);
             $this->info("Captura de Ctes finalizada!");
-            Log::info("Capturando Ctes gerados!");
+            Log::info("Captura de Ctes finalizada!");
         } catch (Exception $e) {
             Log::error($e);
             $this->error(sprintf('Error: %s', $e->getMessage()));
