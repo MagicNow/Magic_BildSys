@@ -115,12 +115,14 @@ class FornecedoresRepository extends BaseRepository
         $fornecedor = DB::transaction(function() use ($input, $id)  {
             $fornecedor = parent::update($input, $id);
 
-            $user = $this->createOrUpdateFornecedorUser(
-                $fornecedor,
-                Arr::get($input, 'is_user', false)
-            );
+            if(Arr::get($input, 'is_user', false) || $fornecedor->user_id) {
+                $user = $this->createOrUpdateFornecedorUser(
+                    $fornecedor,
+                    Arr::get($input, 'is_user', false)
+                );
+                $fornecedor->update(['user_id' => $user->id]);
+            }
 
-            $fornecedor->update(['user_id' => $user->id]);
 
             return $fornecedor;
         });

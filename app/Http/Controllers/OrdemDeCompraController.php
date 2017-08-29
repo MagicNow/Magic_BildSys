@@ -8,6 +8,7 @@ use App\Models\OrdemDeCompraItemLog;
 use App\Models\PadraoEmpreendimento;
 use App\Models\Regional;
 use App\Models\User;
+use App\Notifications\UserCommonNotification;
 use App\Repositories\NotificationRepository;
 use Exception;
 use App\DataTables\ComprasDataTable;
@@ -2044,6 +2045,38 @@ class OrdemDeCompraController extends AppBaseController
 
         } catch (Exception $e) {
             return $e->getMessage();
+        }
+    }
+
+    public function dispensaAprovado(Request $request)
+    {
+        $this->validate($request,['id'=>'required','justificativa'=>'required|max:250']);
+        try {
+            $oc_item = OrdemDeCompraItem::where('id', $request->id)
+                    ->update([
+                        'data_dispensa' => date('Y-m-d H:i:s'),
+                        'user_id_dispensa' => Auth::user()->id,
+                        'obs_dispensa' => $request->justificativa
+                    ]);
+            if($oc_item){
+                $ordem_compra_item = OrdemDeCompraItem::find($request->id);
+                
+                $notificar = $ordem_compra_item->ordemDeCompra->user;
+                if($notificar && $notificar->id != Auth::user()->id){
+                    Notification::send($notificar,
+                        new UserCommonNotification("O item <small>".
+                            $ordem_compra_item->insumo->codigo.
+                            "</small> da O.C. <strong>" . $ordem_compra_item->ordem_de_compra_id.
+                            "</strong> foi dispensado por ".Auth::user()->name,
+                            route('ordens_de_compra.detalhes', $ordem_compra_item->ordem_de_compra_id)
+                        )
+                    );
+                }
+            }
+            return response()->json(['success'=>$oc_item]);
+
+        } catch (Exception $e) {
+            return response()->json(['success'=>0,'erro'=>$e->getMessage()]);
         }
     }
 }

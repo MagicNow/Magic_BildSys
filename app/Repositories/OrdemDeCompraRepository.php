@@ -98,8 +98,13 @@ class OrdemDeCompraRepository extends BaseRepository
             }
         }
 
-        $saldoDisponivel = $orcamentoInicial - $realizado;
-        
+        $saldoDisponivel = doubleval($orcamentoInicial) - doubleval($realizado);
+
+        if($ordemDeCompra->saldo_disponivel_temp !== $saldoDisponivel){
+            $ordemDeCompra->saldo_disponivel_temp = $saldoDisponivel;
+            $ordemDeCompra->save();
+        }
+
         return $saldoDisponivel;
     }
     
