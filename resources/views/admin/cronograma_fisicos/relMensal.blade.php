@@ -2,10 +2,17 @@
 
 @section('content')
     <style>
+		
+		.element-text{
+            width: 100%;
+            border: solid 1px #dddddd;
+        }
+		
         .element-grafico{
             width: 100%;
             border: solid 1px #dddddd;
         }
+		
         .element-head {
             text-align: center;
             color: #f5f5f5;
@@ -14,8 +21,9 @@
             font-family: Raleway;
             font-weight: bold;
         }
+		
         .element-body1{
-            height: 300px;
+            height: 180px;
             padding: 15px;
             background-color: white;
         }
@@ -25,6 +33,17 @@
             padding: 5px;
             background-color: white;
         }
+		
+		.element-body3{
+            height: 180px;
+            padding: 15px;
+            background-color: white;
+        }
+		
+		.table> thead> tr> th, .table> thead> tr> td{
+			background-color:orange;
+			color:white;
+		}
     </style>
 
     <div class="container">
@@ -63,7 +82,7 @@
 						<h4>Mês</h4>
 						{!!
 						  Form::select(
-							'mes_id',["Janeiro","Fevereiro"],null,['class' => 'form-control select2 js-filter']
+							'mes_id',["Julho","Agosto"],null,['class' => 'form-control select2 js-filter']
 						  )
 						!!}
 					</div>
@@ -76,15 +95,78 @@
                 <div class="col-xs-12">                    
                     
 					<div class="row">
-						<div class="col-md-12"><tile title-color="head-grey" title="Previsto x Realizado" type="created"></tile></div>
+						<div class="col-md-12 margem-topo"><tile title-color="head-grey" title="Previsto x Realizado" type="created"></tile></div>
 					</div>
 					</br>
 					<div class="row">                        
-						<div class="col-md-4">							
-                            <p>Tabela com Valores 1</p> 
-							<p>Tabela com Valores 2</p>
-                        </div> 						
-						<div class="col-md-4">							
+						
+						<div class="col-md-6 table-responsive margem-topo">
+							<div class="element-grafico">
+                                <div class="element-head">ASSERTIVIDADE MENSAL</div>
+							</div>
+							<table class="table table-bordered table-striped">
+								<thead></thead>
+								<tbody>																		
+									<tr>
+										<td class="text-center">PDP</td>
+										<td class="text-center">TRABALHO</td>										
+										<td class="text-center">PREVISTO</td>
+										<td class="text-center">REAL</td>
+										<td class="text-center">ASSERTIVIDADE</td>
+									</tr>
+									<tr>
+										<td class="text-center">{{ $assertividadeMensal[0]}}</td>
+										<td class="text-center">{{ $assertividadeMensal[1]}}</td>
+										<td class="text-center">{{ $assertividadeMensal[2]}}</td>										
+										<td class="text-center">{{ $assertividadeMensal[3]}}</td>
+										<td class="text-center">{{ $assertividadeMensal[4]}}</td>
+									</tr>									
+								</tbody>
+							</table>
+                        </div>
+						
+						<div class="col-md-6 table-responsive margem-topo">
+							<table class="table table-bordered table-striped">
+								<thead >
+									<tr>										
+										<th class="text-center">jun-17</th>
+										<th class="text-center"></th>
+										<th class="text-center">jul-17</th>
+										<th class="text-center"></th>
+										<th class="text-center">ago-17</th>
+										<th class="text-center"></th>
+										<th class="text-center">set-17</th>
+										<th class="text-center"></th>
+									</tr>
+								</thead>
+								<tbody>
+																		
+									<tr>
+										<td class="text-center">% Mens.</td>
+										<td class="text-center">% Acum.</td>										
+										<td class="text-center">% Mens.</td>
+										<td class="text-center">% Acum.</td>
+										<td class="text-center">% Mens.</td>
+										<td class="text-center">% Acum.</td>
+										<td class="text-center">% Mens.</td>
+										<td class="text-center">% Acum.</td>
+									</tr>																															
+																		
+									<tr>
+										<td class="text-center">111</td>
+										<td class="text-center">111</td>										
+										<td class="text-center">222</td>
+										<td class="text-center">222</td>
+										<td class="text-center">333</td>										
+										<td class="text-center">333</td>
+										<td class="text-center">444</td>
+										<td class="text-center">444</td>																				
+									</tr>									
+								</tbody>
+							</table>
+                        </div> 
+						
+						<div class="col-md-3 margem-topo">							
                             <div class="element-grafico">
                                 <div class="element-head">%Mensal</div>
                                 <div class="element-body1">
@@ -92,18 +174,18 @@
 										//$json_dataPrevistoXRealizado = json_encode([$previstoXRealizado]);                        
 										//$json_labelsPrevistoXRealizado = json_encode(['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4', 'Semana 5', 'Mês']);
 									@endphp
-									<chartjs-bar :datalabel="mylabelPercMensal"
+									<chartjs-bar 
                                                  :labels="labelsPercMensal" 
 												 :datasets="datasetsPercMensal"
-                                                 :beginzero="mybooleanPercMensal"                                                 
+                                                                                                  
                                                  :option="myoptionPercMensal"
-                                                 :height="250">
+                                                 :height="200">
 									</chartjs-bar>
                                 </div>
                             </div>
                         </div>
 						
-						<div class="col-md-4">							
+						<div class="col-md-3 margem-topo">							
                             <div class="element-grafico">
                                 <div class="element-head">%Acumulada</div>
                                 <div class="element-body1">
@@ -111,20 +193,18 @@
 										//$json_dataPrevistoXRealizado = json_encode([$pDPxPTrabalhoxRealAc]);                        
 										//$json_labelsPrevistoXRealizado = json_encode(['Semana 1']);
 									@endphp
-									<chartjs-bar :datalabel="mylabelPercAcumulada"
+									<chartjs-bar 
                                                  :labels="labelsPercAcumulada" 
 												 :datasets="datasetsPercAcumulada"
-                                                 :beginzero="mybooleanPercAcumulada"                                                 
+                                                                                                 
                                                  :option="myoptionPercAcumulada"
-                                                 :height="250">
+                                                 :height="200">
 									</chartjs-bar>
                                 </div>
                             </div>
-                        </div>												
-                    </div>
-                    </br>					              				
-					<div class="row">						
-						<div class="col-md-3">							
+                        </div>	
+						
+						<div class="col-md-3 margem-topo">							
                             <div class="element-grafico">
                                 <div class="element-head">DESVIO PDP</div>
                                 <div class="element-body2">
@@ -143,7 +223,7 @@
                             </div>
                         </div>
 						
-						<div class="col-md-3">							
+						<div class="col-md-3 margem-topo">							
                             <div class="element-grafico">
                                 <div class="element-head">DESVIO TRABALHO</div>
                                 <div class="element-body2">
@@ -160,37 +240,39 @@
 									</chartjs-pie>
                                 </div>
                             </div>
-                        </div>						
+                        </div>
                     </div>
-					</br>
+					
 					<div class="row">
-						<div class="col-md-12"><tile title-color="head-grey" title="Desvio De Prazo" type="created"></tile></div>
+						<div class="col-md-12 margem-topo"><tile title-color="head-grey" title="Desvio De Prazo" type="created"></tile></div>
 					</div>
-					</br>
-					<div class="row">                        
-						
-						<div class="col-md-4">							
+					
+					<div class="row">           						
+						<div class="col-md-7 margem-topo">							
                             <div class="element-grafico">
                                 <div class="element-head">Desvio de Prazo</div>
-                                <div class="element-body1">
+                                <div class="element-body3">
                                     @php
 										//$json_dataPrevistoXRealizado = json_encode([$previstoXRealizado]);                        
 										//$json_labelsPrevistoXRealizado = json_encode(['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4', 'Semana 5', 'Mês']);
 									@endphp
-									<chartjs-line :datalabel="mylabelDesvioPrazo"
-                                                 :labels="labelsDesvioPrazo" 
-												 :datasets="datasetsDesvioPrazo"
-                                                 :beginzero="mybooleanDesvioPrazo"                                                 
-                                                 :option="myoptionDesvioPrazo"
-                                                 :height="250">
-									</chartjs-bar>
+									<chartjs-line 
+											:labels="labelsDesvioPrazo" 
+											:datasets="datasetsDesvioPrazo" 
+											:scalesdisplay="true" 
+											:option="myoptionDesvioPrazo" 
+											:height="120">
+									</chartjs-line>
                                 </div>
                             </div>
                         </div>
 						
-						<div class="col-md-4">							
-                            <p>Tabela com Valores 1</p> 
-							<p>Tabela com Valores 2</p>
+						<div class="col-md-5 margem-topo">							
+                            <div class="element-grafico">
+								<div class="element-head">Observações</div>
+								
+								</div>
+                            </div>
                         </div> 
 						
 					</div>
@@ -295,43 +377,69 @@
                 }]
 				
 				,				
-				//Grafico Line - Desvio Prazo
+				//Grafico Line - DesvioPrazo
                 datasetsDesvioPrazo:
 				[{
-					label: 'Previsto Acumulado',						
-					backgroundColor: 'maroon',
-					borderColor: 'maroon',
-					data: ['30/10/2010']
+					label: 'Data do Cliente',						
+					backgroundColor: 'blue',
+					hoverBackgroundColor: 'blue',
+					data: [111]
 				},
 				{
-					label: 'Realizado Acumulado',
-					backgroundColor: 'DarkOrange',
-					borderColor: 'DarkOrange',
-					data: [95.00, 0.00, 0.00, 0.00]
+					label: 'Plano Diretor',						
+					backgroundColor: 'black',
+					hoverBackgroundColor: 'black',
+					data: ["11111", "30/10/2010","30/10/2010"]
+				},
+				{
+					label: 'Plano Trabalho',						
+					backgroundColor: 'orange',
+					hoverBackgroundColor: 'orange',
+					data: ["11111", "30/10/2010","30/10/2010"]
+				},
+				{
+					label: 'Tendência Diretor',						
+					backgroundColor: 'purple',
+					hoverBackgroundColor: 'purple',
+					data: ["11111", "30/10/2010","30/10/2010"]
+				},
+				{
+					label: 'Tendência Trabalho',						
+					backgroundColor: 'yellow',
+					hoverBackgroundColor: 'yellow',
+					data: ["11111", "30/10/2010","30/10/2010"]
+				},
+				{
+					label: 'Tendência Real',						
+					backgroundColor: 'green',
+					hoverBackgroundColor: 'green',
+					data: ["11111", "30/10/2010","30/10/2010"]
+				},				
+				{
+					label: 'Habite-se',						
+					backgroundColor: 'red',
+					hoverBackgroundColor: 'red',
+					data: ["11111", "30/10/2010","30/10/2010"]
 				}],				
-                labelsDesvioPrazo : ["abr/2017", "mai/2017", "jun/2017"],
-				//mylabelPrevistoXRealizado : '%',
-                mybooleanDesvioPrazo : false,                
-                myoptionDesvioPrazo: {
-                    onClick: function (event, legendItem) {
-						
-					},
+                labelsDesvioPrazo : ["ABR-17", "MAI-17", "JUN-17"],				
+                myoptionDesvioPrazo: {                    
                     responsive:true,
                     maintainAspectRatio:true,
                     scales: {
 						yAxes: [{
-							type: "time",
-							display: true,
+							type: 'time',
 							time: {
-								format: 'MM/DD/YYYY',
-								round: 'day'
+								displayFormats: {
+									quarter: 'III'
+								}
 							}
 						}]
-                    },
+					},
                     legend: {
-                        display: false
+                        display: true
                     }
                 }
+                
 								
             }
         });

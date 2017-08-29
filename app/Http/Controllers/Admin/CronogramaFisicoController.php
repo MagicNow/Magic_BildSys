@@ -387,8 +387,10 @@ class CronogramaFisicoController extends AppBaseController
     {	
 		
 		$obras = Obra::pluck('nome','id')->toArray(); 	
+		
+		$assertividadeMensal = [0.68, 0.68, 0.97, 0.71, -26.80];
                
-        return view('admin.cronograma_fisicos.relMensal', compact('obras'));
+        return view('admin.cronograma_fisicos.relMensal', compact('obras', 'assertividadeMensal'));
     }
 	
 	
