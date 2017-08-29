@@ -25,6 +25,13 @@ class UpdateFornecedoresRequest extends FormRequest
      */
     public function rules()
     {
-        return Fornecedor::$rules;
+        $fornecedor = Fornecedor::find(collect( request()->segments() )->last());
+        $user_id = '';
+        if($fornecedor && $fornecedor->user_id){
+            $user_id = ','.$fornecedor->user_id;
+        }
+        $rules = Fornecedor::$rules;
+        $rules['email'] = 'required|email|unique:fornecedores,email,'. collect( request()->segments() )->last().'|unique:users,email'. $user_id ;
+        return $rules;
     }
 }

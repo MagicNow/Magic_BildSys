@@ -26,7 +26,7 @@ class UpdateUserRequest extends FormRequest
     public function rules()
     {
         $rules = User::$rules;
-        
+        $rules['email'] = 'required|unique:users,email,'. collect( request()->segments() )->last();
         unset($rules['password']);
         return $rules;
     }

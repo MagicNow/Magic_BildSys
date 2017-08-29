@@ -43,7 +43,7 @@ class Fornecedor extends Model
     public static $rules = [
         'nome' => 'required',
         'cnpj' => 'required',
-        'email' => 'required|email',
+        'email' => 'required|email|unique:fornecedores,email|unique:users,email',
         'telefone' => 'required',
     ];
     public $table = 'fornecedores';
