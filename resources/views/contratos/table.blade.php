@@ -39,14 +39,16 @@
                     <th colspan="2">Contratado</th>
                     <th colspan="2">Realizado</th>
                     <th colspan="3">Saldo</th>
-                    @if($contrato->isStatus(2, 5) /* Aprovado ou Ativo */)
+                    @if($contrato->isStatus(2, 5) /* Aprovado ou Ativo */ && !isset($impressao))
                         <th></th>
                     @endif
                 </tr>
                 <tr>
+                    @if(!isset($impressao))
                     <th>Visualizar</th>
+                    @endif
                     <th>Código do insumo</th>
-                    <th>Descrição do insumo</th>
+                    <th {{ !isset($impressao)?'colspan="2"':'' }}>Descrição do insumo</th>
                     <th>Un. de medida</th>
                     <th>Qtd.</th>
                     <th>Valor Total</th>
@@ -55,7 +57,7 @@
                     <th>Qtd.</th>
                     <th>Valor Unitário</th>
                     <th>Valor Total</th>
-                    @if($contrato->isStatus(2, 5) /* Aprovado ou Ativo */)
+                    @if($contrato->isStatus(2, 5) /* Aprovado ou Ativo */ && !isset($impressao))
                         <th style="width:18%">Ações</th>
                     @endif
                 </tr>
@@ -63,6 +65,7 @@
             <tbody>
                 @foreach($itens as $item)
                     <tr>
+                        @if(!isset($impressao))
                         <td>
                             <button class="btn btn-primary btn-xs btn-flat"
                                 data-toggle="modal"
@@ -81,8 +84,9 @@
                             @include('contratos.modal-historico', ['item' => $item])
                             @include('contratos.modal-historico-estruturado', ['item' => $item])
                         </td>
+                        @endif
                         <td>{{ $item->insumo->codigo }}</td>
-                        <td>{{ $item->insumo->nome }}</td>
+                        <td {{ !isset($impressao)?'colspan="2"':'' }}>{{ $item->insumo->nome }}</td>
                         <td>{{ $item->insumo->unidade_sigla }}</td>
                         <td>{{ float_to_money($item->qtd, '') }}</td>
                         <td>{{ float_to_money($item->valor_total) }}</td>
@@ -91,7 +95,7 @@
                         <td>{{ float_to_money($item->qtd, '') }}</td>
                         <td>{{ float_to_money($item->valor_unitario) }}</td>
                         <td>{{ float_to_money($item->valor_total) }}</td>
-                        @if($contrato->isStatus(2, 5) /* Aprovado ou Ativo */)
+                        @if($contrato->isStatus(2, 5) /* Aprovado ou Ativo */ && !isset($impressao))
                             <td>
                                 @include('contratos.itens_datatables_action', [
                                     'item' => $item

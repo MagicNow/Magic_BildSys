@@ -783,9 +783,21 @@ class ContratoRepository extends BaseRepository
         if (is_file(base_path().'/storage/app/public/contratos/contrato_completo_'.$contrato->id.'.pdf')) {
             unlink(base_path().'/storage/app/public/contratos/contrato_completo_'.$contrato->id.'.pdf');
         }
-        
 
-        PDF::loadView('contrato.show',compact('contrato'))
+        $isEmAprovacao = $contrato->em_aprovacao;
+
+        $contratoItemRepository = app(ContratoItemRepository::class);
+        $apropriacaoRepository = app(ContratoItemApropriacaoRepository::class);
+
+        $itens = $isEmAprovacao
+            ? $apropriacaoRepository->forContratoApproval($contrato)
+            : $contratoItemRepository->forContratoDetails($contrato);
+
+        $impressao = 1;
+        
+        return view('contratos.pdf',compact('contrato', 'insumosDoContrato','itens','impressao'));
+        
+        PDF::loadView('contratos.pdf',compact('contrato', 'insumosDoContrato','itens','impressao'))
             ->setPaper('a4')->setOrientation('landscape')
             ->setOption('margin-top', 1)
             ->setOption('margin-bottom', 1)

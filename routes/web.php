@@ -958,6 +958,10 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             '/{contratos}/imprimir',
             ['as' => 'contratos.imprimirContrato', 'uses' => 'ContratoController@imprimirContrato']
         );
+        $router->get(
+            '/{contratos}/imprimir-contrato',
+            ['as' => 'contratos.imprimirContratoCompleto', 'uses' => 'ContratoController@imprimirContratoCompleto']
+        );
         $router->post(
             '/{contratos}/envia-contrato',
             ['as' => 'contratos.enviaContrato', 'uses' => 'ContratoController@validaEnvioContrato']
