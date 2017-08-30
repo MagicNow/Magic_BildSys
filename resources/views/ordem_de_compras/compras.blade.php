@@ -177,7 +177,7 @@
                 $('#btn-comprar-calendario').css('pointer-events','none');
                 $('#planejamento_id').attr('disabled',true);
             }
-
+            carregaPlanejamentos(obra_id);
             atualizaCalendario();
         }
 
@@ -240,6 +240,33 @@
             atualizaCalendario();
         }
 
+        function carregaPlanejamentos(obra_id){
+            $.ajax('/planejamentosListaByObra', {
+                data: {
+                    obra_id: obra_id
+                }
+            })
+                    .done(function (retorno) {
+                        var options_tarefas = '<option value="" selected>-</option>';
+                        $.each(retorno, function (index, valor) {
+                            options_tarefas += '<option value="' + valor.id + '">' + valor.tarefa + '</option>';
+                        });
+                        $('#planejamento_id').html(options_tarefas);
+                        $('#planejamento_id').trigger('change.select2');
+
+                    })
+                    .fail(function (retorno) {
+                        erros = '';
+                        $.each(retorno.responseJSON, function (index, value) {
+                            if (erros.length) {
+                                erros += '<br>';
+                            }
+                            erros += value;
+                        });
+                        swal("Oops", erros, "error");
+                    });
+        }
+
         function atualizaCalendarioPorInsumoGrupo(insumo_grupo) {
             insumo_grupo_id = insumo_grupo;
             if(insumo_grupo){
@@ -261,46 +288,6 @@
         }
 
         $(function () {
-
-            $('#planejamento_id').select2({
-                allowClear: true,
-                placeholder: "-",
-                language: "pt-BR",
-                ajax: {
-                    url: "/planejamentosByObra",
-                    dataType: 'json',
-                    delay: 250,
-
-                    data: function (params) {
-                        return {
-                            q: params.term, // search term
-                            page: params.page,
-                            obra_id:obra
-                        };
-                    },
-
-                    processResults: function (result, params) {
-                        // parse the results into the format expected by Select2
-                        // since we are using custom formatting functions we do not need to
-                        // alter the remote JSON data, except to indicate that infinite
-                        // scrolling can be used
-                        params.page = params.page || 1;
-
-                        return {
-                            results: result.data,
-                            pagination: {
-                                more: (params.page * result.per_page) < result.total
-                            }
-                        };
-                    },
-                    cache: true
-                },
-                escapeMarkup: function (markup) {
-                    return markup;
-                }, // let our custom formatter work
-                minimumInputLength: 1
-
-            });
 
             var calendarOptions = {
               language: 'pt-BR',
