@@ -664,7 +664,6 @@ class OrdemDeCompraController extends AppBaseController
     public function addCarrinho(Request $request)
     {
         //Testa se tem ordem de compra aberta pro user
-
         $ordem = null;
         if (\Session::get('ordemCompra')) {
             $ordem = OrdemDeCompra::where('id', \Session::get('ordemCompra'))
@@ -708,6 +707,14 @@ class OrdemDeCompraController extends AppBaseController
             return response()->json(['success'=>false,'error'=>'Um item de orçamento ativo deste insumo não foi encontrado.']);
         }
 
+        $insumo_catalogo = OrdemDeCompraRepository::existeNoCatalogo($request->id, $request->obra_id);
+
+        if($insumo_catalogo) {
+            $preco_unitario = $insumo_catalogo->valor_unitario;
+        } else {
+            $preco_unitario = floatval($orcamento_ativo->getOriginal('preco_unitario'));
+        }
+
         $ordem_item = OrdemDeCompraItem::firstOrNew([
             'ordem_de_compra_id' => $ordem->id,
             'obra_id' => $request->obra_id,
@@ -724,8 +731,8 @@ class OrdemDeCompraController extends AppBaseController
         $ordem_item->user_id = Auth::user()->id;
         $ordem_item->total = 1;
         $ordem_item->qtd = $request->quantidade_compra;
-        $ordem_item->valor_unitario = $orcamento_ativo->preco_unitario;
-        $ordem_item->valor_total = floatval($orcamento_ativo->getOriginal('preco_unitario')) * money_to_float($request->quantidade_compra);
+        $ordem_item->valor_unitario = $preco_unitario;
+        $ordem_item->valor_total = $preco_unitario * money_to_float($request->quantidade_compra);
         $insumo = Insumo::find($orcamento_ativo->insumo_id);
 
         $ordem_item->tems = $insumo->tems;
@@ -1749,6 +1756,14 @@ class OrdemDeCompraController extends AppBaseController
             ->where('ativo', 1)
             ->first();
 
+        $insumo_catalogo = OrdemDeCompraRepository::existeNoCatalogo($request['id'], $request['obra_id']);
+
+        if($insumo_catalogo) {
+            $preco_unitario = $insumo_catalogo->valor_unitario;
+        } else {
+            $preco_unitario = floatval($orcamento_ativo->getOriginal('preco_unitario'));
+        }
+
         $insumo = Insumo::find($orcamento_ativo->insumo_id);
         if ($insumo->insumo_grupo_id != 1570) {
             $ordem_item = OrdemDeCompraItem::firstOrNew([
@@ -1773,8 +1788,8 @@ class OrdemDeCompraController extends AppBaseController
                 $ordem_item->qtd = $request['saldo'];
             }
             $ordem_item->total = 1;
-            $ordem_item->valor_unitario = $orcamento_ativo->preco_unitario;
-            $ordem_item->valor_total = floatval($orcamento_ativo->getOriginal('preco_unitario')) * money_to_float($ordem_item->qtd);
+            $ordem_item->valor_unitario = $preco_unitario;
+            $ordem_item->valor_total = $preco_unitario * money_to_float($ordem_item->qtd);
             $ordem_item->save();
         }
     }

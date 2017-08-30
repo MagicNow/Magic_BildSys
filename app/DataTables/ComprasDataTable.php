@@ -6,6 +6,7 @@ use App\Models\Insumo;
 use App\Models\Obra;
 use App\Models\OrdemDeCompra;
 use App\Models\Planejamento;
+use App\Repositories\OrdemDeCompraRepository;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
@@ -98,7 +99,15 @@ class ComprasDataTable extends DataTable
                 }
             })
             ->editColumn('valor_total', function($obj){
-                return $obj->quantidade_compra ? "R$ ".number_format($obj->getOriginal('preco_unitario') * money_to_float($obj->quantidade_compra), 2,',','.') : 'R$ 0,00';
+                $insumo_catalogo = OrdemDeCompraRepository::existeNoCatalogo($obj->id, $obj->obra_id);
+
+                if($insumo_catalogo) {
+                    $preco_unitario = $insumo_catalogo->valor_unitario;
+                } else {
+                    $preco_unitario = $obj->getOriginal('preco_unitario');
+                }
+
+                return $obj->quantidade_compra ? "R$ ".number_format($preco_unitario * money_to_float($obj->quantidade_compra), 2,',','.') : 'R$ 0,00';
             })
             ->editColumn('preco_unitario', function($obj){
                 if($obj->insumo_incluido || $obj->orcamento_que_substitui) {
@@ -114,7 +123,18 @@ class ComprasDataTable extends DataTable
                                                                                             $obj->servico_id)'>
                             </div>";
                 }else{
-                    return "R$ ". $obj->preco_unitario;
+                    $insumo_catalogo = OrdemDeCompraRepository::existeNoCatalogo($obj->id, $obj->obra_id);
+
+                    if($insumo_catalogo) {
+                        $preco_unitario = float_to_money($insumo_catalogo->valor_unitario). '<button type="button" title="
+                        Pedido mínimo: '.float_to_money($insumo_catalogo->pedido_minimo, '').'<br> Pedido múltiplo de: '.float_to_money($insumo_catalogo->pedido_multiplo_de, '').'
+                        " data-toggle="tooltip" data-placement="top" data-html="true" class="btn btn-primary btn-sm" style="border-radius: 15px !important;width: 20px;height: 20px;padding: 0px;margin-left: 5px;">
+                                                <i class="fa fa-info-circle" aria-hidden="true"></i>
+                                             </button>';
+                    } else {
+                        $preco_unitario = 'R$ ' . $obj->preco_unitario;
+                    }
+                    return $preco_unitario;
                 }
             })
             ->filterColumn('nome',function($query, $keyword){

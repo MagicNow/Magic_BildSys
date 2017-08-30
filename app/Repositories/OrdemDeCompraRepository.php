@@ -2,8 +2,10 @@
 
 namespace App\Repositories;
 
+use App\Models\CatalogoContrato;
 use App\Models\Contrato;
 use App\Models\ContratoItemApropriacao;
+use App\Models\Obra;
 use App\Models\OrdemDeCompra;
 use App\Models\OrdemDeCompraItem;
 use Illuminate\Support\Facades\DB;
@@ -213,5 +215,26 @@ class OrdemDeCompraRepository extends BaseRepository
         }
 
         return $qtd_comprometida_a_gastar;
+    }
+
+    public static function existeNoCatalogo($insumo_id, $obra_id)
+    {
+        $obra = Obra::find($obra_id);
+
+        $insumo_catalogo = CatalogoContrato::select(
+            'valor_unitario',
+            'pedido_minimo',
+            'pedido_multiplo_de'
+        )
+            ->join('catalogo_contrato_insumos', 'catalogo_contrato_insumos.catalogo_contrato_id', '=', 'catalogo_contratos.id')
+            ->join('catalogo_contrato_regional', 'catalogo_contrato_regional.catalogo_contrato_id', '=', 'catalogo_contratos.id')
+            ->where('catalogo_contrato_insumos.insumo_id', $insumo_id)
+            ->where('catalogo_contrato_regional.regional_id', $obra->regional_id)
+            ->where('catalogo_contrato_insumos.periodo_inicio', '<=', date('Y-m-d'))
+            ->where('catalogo_contrato_insumos.periodo_termino', '>=', date('Y-m-d'))
+            ->where('catalogo_contratos.catalogo_contrato_status_id', 3) //ATIVO
+            ->first();
+
+        return $insumo_catalogo;
     }
 }
