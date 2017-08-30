@@ -39,6 +39,7 @@
                                       null,
                                       [
                                         'class'    => 'form-control select2',
+                                        'disabled'=>'disabled',
                                         'onchange' => 'atualizaCalendarioPorTarefa(this.value);',
                                         'id'       => 'planejamento_id'
                                       ]
@@ -167,12 +168,14 @@
               .trigger( "change" );
 
             if(obra_id){
+                $('#planejamento_id').attr('disabled',false);
                 $('#btn-comprar-calendario').attr("href", "compras/obrasInsumos/?obra_id="+obra_id);
                 $('#btn-comprar-calendario').css('pointer-events','auto');
                 $('#btn-comprar-calendario').addClass('btn-success');
             } else {
                 $('#btn-comprar-calendario').removeClass('btn-success');
                 $('#btn-comprar-calendario').css('pointer-events','none');
+                $('#planejamento_id').attr('disabled',true);
             }
 
             atualizaCalendario();
@@ -258,6 +261,47 @@
         }
 
         $(function () {
+
+            $('#planejamento_id').select2({
+                allowClear: true,
+                placeholder: "-",
+                language: "pt-BR",
+                ajax: {
+                    url: "/planejamentosByObra",
+                    dataType: 'json',
+                    delay: 250,
+
+                    data: function (params) {
+                        return {
+                            q: params.term, // search term
+                            page: params.page,
+                            obra_id:obra
+                        };
+                    },
+
+                    processResults: function (result, params) {
+                        // parse the results into the format expected by Select2
+                        // since we are using custom formatting functions we do not need to
+                        // alter the remote JSON data, except to indicate that infinite
+                        // scrolling can be used
+                        params.page = params.page || 1;
+
+                        return {
+                            results: result.data,
+                            pagination: {
+                                more: (params.page * result.per_page) < result.total
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                escapeMarkup: function (markup) {
+                    return markup;
+                }, // let our custom formatter work
+                minimumInputLength: 1
+
+            });
+
             var calendarOptions = {
               language: 'pt-BR',
               view: 'month',
