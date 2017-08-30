@@ -24,7 +24,7 @@ class CronogramaFisicoDataTable extends DataTable
             })
 			->editColumn('template_id',function ($obj){
                 return $obj->template_id ? $obj->tipo->nome : '';
-            })
+			})
             ->editColumn('data_inicio',function ($obj){
                 return $obj->data_inicio ? with(new\Carbon\Carbon($obj->data_inicio))->format('d/m/Y') : '';
             })
@@ -140,7 +140,7 @@ class CronogramaFisicoDataTable extends DataTable
 		
 		if($this->request()->get('obra')){
             if(count($this->request()->get('obra')) && $this->request()->get('obra') != ""){
-                $cronograma_fisicos->where('cronograma_fisicos.obra_id1',$this->request()->get('obra'));
+                $cronograma_fisicos->where('cronograma_fisicos.obra_id',$this->request()->get('obra'));
             }
         }        
 
@@ -218,6 +218,7 @@ class CronogramaFisicoDataTable extends DataTable
 		
         return [
             'obra' => ['name' => 'obras.nome', 'data' => 'obra'], 					
+			'tipo' => ['name' => 'template_planilhas.nome', 'data' => 'tipo'],
 			'tarefa_mes' => ['name' => 'tarefa_mes', 'data' => 'tarefa_mes'],
 			'tarefa' => ['name' => 'tarefa', 'data' => 'tarefa'],
 			'custo' => ['name' => 'custo', 'data' => 'custo'],

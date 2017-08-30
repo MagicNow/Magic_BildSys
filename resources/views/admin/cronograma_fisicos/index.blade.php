@@ -15,15 +15,17 @@
 		<div class="clearfix"></div>
 		<div class="box">
 			<div class="box-body">
-				<div class="row">
-					<div class="col-sm-3">
+				<div class="row">						
+					<div class="js-datatable-filter-form pull-left form-group col-sm-3">
 						<h4>Obra</h4>
-						{!!
-						  Form::select(
-							'obra_id',$obras,null,['class' => 'form-control select2 js-filter']
-						  )
-						!!}
-					</div>
+						<select name="obra" id="obra" class="select2">
+							<option value="">-- Selecione a Obra --</option>
+							@foreach($obras as $k => $v)
+								<option value="{{ $k }}">{{ $v }}</option>
+							@endforeach
+
+						</select>
+					</div>					
 					<div class="col-sm-3">
 						<h4>Tipo</h4>
 						{!!
@@ -59,3 +61,33 @@
         </div>
     </div>
 @endsection
+
+@section('scripts')
+    <script type="text/javascript">
+
+        $(function () {
+
+            $('#obra').on('change', function (event) {
+                window.LaravelDataTables["dataTableBuilder"].draw();
+            });
+
+            $('#dataTableBuilder').on('preXhr.dt', function ( e, settings, data ) {
+
+                $('.js-datatable-filter-form :input').each(function () {
+
+                    if($(this).attr('type')=='checkbox'){
+                        if(data[$(this).prop('name')]==undefined){
+                            data[$(this).prop('name')] = [];
+                        }
+                        if($(this).is(':checked')){
+                            data[$(this).prop('name')].push($(this).val());
+                        }
+
+                    }else{
+                        data[$(this).prop('name')] = $(this).val();
+                    }
+                });
+            });
+        });
+    </script>
+@stop
