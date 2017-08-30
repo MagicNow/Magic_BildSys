@@ -11,13 +11,12 @@ class RetroalimentacaoObraRepository extends BaseRepository
      * @var array
      */
     protected $fieldSearchable = [
-        'obra_id',
-        'user_id',
-        'origem',
-        'categoria',
-        'situacao_atual',
-        'situacao_proposta',
-        'data_inclusao'
+        'retroalimentacao_obras_id',
+        'user_id_origem',
+        'user_id_destino',
+        'status_origem',
+        'status_destino',
+        'andamento'
     ];
 
     /**
