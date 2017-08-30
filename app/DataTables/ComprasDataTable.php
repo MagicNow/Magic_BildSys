@@ -111,7 +111,18 @@ class ComprasDataTable extends DataTable
             })
             ->editColumn('preco_unitario', function($obj){
                 if($obj->insumo_incluido || $obj->orcamento_que_substitui) {
-                    return "<div class='input-group'>
+                    $insumo_catalogo = OrdemDeCompraRepository::existeNoCatalogo($obj->id, $obj->obra_id);
+
+                    if($insumo_catalogo) {
+                        $preco_unitario = float_to_money($insumo_catalogo->valor_unitario). '<button type="button" title="
+                        Pedido mínimo: '.float_to_money($insumo_catalogo->pedido_minimo, '').'<br> Pedido múltiplo de: '.float_to_money($insumo_catalogo->pedido_multiplo_de, '').'
+                        " data-toggle="tooltip" data-placement="top" data-html="true" class="btn btn-primary btn-sm" style="border-radius: 15px !important;width: 20px;height: 20px;padding: 0px;margin-left: 5px;">
+                                                <i class="fa fa-info-circle" aria-hidden="true"></i>
+                                             </button>';
+                        
+                        return $preco_unitario;
+                    } else {
+                        return "<div class='input-group'>
                                 <span class='input-group-addon'>R$</span>
                                 <input type='text' value='".number_format($obj->preco_unitario,2,',','.')."' class='form-control
                                         js-blur-on-enter money' onblur='alteraValorUnitario(this.value,
@@ -122,6 +133,7 @@ class ComprasDataTable extends DataTable
                                                                                             $obj->subgrupo3_id,
                                                                                             $obj->servico_id)'>
                             </div>";
+                    }
                 }else{
                     $insumo_catalogo = OrdemDeCompraRepository::existeNoCatalogo($obj->id, $obj->obra_id);
 
