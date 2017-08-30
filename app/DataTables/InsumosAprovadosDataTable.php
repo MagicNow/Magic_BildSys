@@ -30,7 +30,7 @@ class InsumosAprovadosDataTable extends DataTable
                                     $obj->subgrupo2->codigo .' '.$obj->subgrupo2->nome . ' <br> ' .
                                     $obj->subgrupo3->codigo .' '.$obj->subgrupo3->nome . ' <br> ' .
                                     $obj->servico->codigo .' '.$obj->servico->nome  ."\">
-                     $obj->codigo_insumo
+                     $obj->codigo
                 </strong>";
             })
             ->editColumn('ordem_de_compra_id', function($obj){
@@ -105,6 +105,7 @@ class InsumosAprovadosDataTable extends DataTable
             'obras.nome as obra',
             'insumos.nome as insumo_nome',
             'insumos.unidade_sigla',
+            'insumos.codigo',
             // -- Busca qtd dias de SLA
             DB::raw("(
                 SELECT
@@ -467,11 +468,12 @@ class InsumosAprovadosDataTable extends DataTable
     protected function getColumns()
     {
         return [
+            'Codigo' => ['name' => 'insumos.codigo', 'data' => 'codigo'],
+            'Descrição' => ['name' => 'insumos.nome', 'data' => 'insumo_nome'],
+            'Unidade_de_medida' => ['name' => 'unidade_sigla', 'data' => 'unidade_sigla'],
             'obra' => ['name' => 'obras.nome', 'data' => 'obra'],
             'OC' => ['name' => 'ordem_de_compra_itens.ordem_de_compra_id', 'data' => 'ordem_de_compra_id'],
-            'und' => ['name' => 'unidade_sigla', 'data' => 'unidade_sigla'],
 //            'Codigo' => ['name' => 'ordem_de_compra_itens.codigo_insumo', 'data' => 'codigo_insumo'],
-            'Insumo' => ['name' => 'insumos.nome', 'data' => 'insumo_nome'],
             'qtd' => ['name' => 'ordem_de_compra_itens.qtd', 'data' => 'qtd'],
 //            'urgente' => ['name' => 'ordem_de_compra_itens.emergencial', 'data' => 'ordem_de_compra_itens.emergencial'],
             'sla' => ['name' => 'sla', 'data' => 'sla'],
