@@ -28,4 +28,9 @@ class RetroalimentacaoObraRepository extends BaseRepository
     {
         return RetroalimentacaoObra::class;
     }
+
+    public function update(array $attributes,$id) {
+
+        dd($attributes);
+    }
 }

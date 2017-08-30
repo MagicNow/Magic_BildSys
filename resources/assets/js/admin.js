@@ -114,6 +114,15 @@ $(function() {
 
   $('.datepicker').datepicker();
 
+    if (!Modernizr.inputtypes.date) {
+        $('input[type=date]')
+            .attr('type', 'text')
+            .datepicker({
+                format: 'dd/mm/yyyy',
+                language:'pt-BR'
+            });
+    }
+
   $('.data_br').mask('99/99/9999');
   $('.cnpj').mask('99.999.999/9999-99');
   $('.cep').mask('00000-000');

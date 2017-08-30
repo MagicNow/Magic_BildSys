@@ -222,6 +222,7 @@ elixir(function (mix) {
         'is-mobile.js',
         'notifications.js',
         'get-insumo.js',
+        'modernizr.js',
     ], 'public/js/admin.js');
 
     mix.scripts([
