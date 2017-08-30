@@ -1560,6 +1560,14 @@ class OrdemDeCompraController extends AppBaseController
             ->where('ativo', 1)
             ->first();
 
+        $insumo_catalogo = OrdemDeCompraRepository::existeNoCatalogo($request->insumo_id, $request->obra_id);
+
+        if($insumo_catalogo) {
+            $preco_unitario = $insumo_catalogo->valor_unitario;
+        } else {
+            $preco_unitario = 0;
+        }
+
         if(!$insumoCadastrado) {
             $orcamento = new Orcamento([
                 'obra_id' => $request->obra_id,
@@ -1568,7 +1576,7 @@ class OrdemDeCompraController extends AppBaseController
                 'servico_id' => $request->servico_id,
                 'grupo_id' => $request->grupo_id,
                 'unidade_sigla' => $insumo->unidade_sigla,
-                'preco_unitario' => 0,
+                'preco_unitario' => $preco_unitario,
                 'qtd_total' => money_to_float($request->qtd_total),
                 'orcamento_tipo_id' => 1,
                 'subgrupo1_id' => $request->subgrupo1_id,
