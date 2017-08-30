@@ -26,6 +26,7 @@ class RetroalimentacaoObra extends Model
     public $fillable = [
         'obra_id',
         'user_id',
+        'user_id_responsavel',
         'origem',
         'categoria',
         'situacao_atual',
@@ -47,6 +48,7 @@ class RetroalimentacaoObra extends Model
         'id' => 'integer',
         'obra_id' => 'integer',
         'user_id' => 'integer',
+        'user_id_responsavel' => 'integer',
         'origem' => 'string',
         'categoria' => 'string',
         'situacao_atual' => 'string',
