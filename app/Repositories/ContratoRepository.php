@@ -772,4 +772,29 @@ class ContratoRepository extends BaseRepository
     {
         return Contrato::class;
     }
+
+    public static function geraImpressaoCompleta($id)
+    {
+        $contrato = Contrato::with('fornecedor')->find($id);
+        if (!$contrato) {
+            return null;
+        }
+
+        if (is_file(base_path().'/storage/app/public/contratos/contrato_completo_'.$contrato->id.'.pdf')) {
+            unlink(base_path().'/storage/app/public/contratos/contrato_completo_'.$contrato->id.'.pdf');
+        }
+        
+
+        PDF::loadView('contrato.show',compact('contrato'))
+            ->setPaper('a4')->setOrientation('landscape')
+            ->setOption('margin-top', 1)
+            ->setOption('margin-bottom', 1)
+            ->setOption('margin-left', 1)
+            ->setOption('margin-right', 1)
+            ->save(base_path().'/storage/app/public/contratos/contrato_completo_'.$contrato->id.'.pdf');
+
+        return [
+            'arquivo'=>'contratos/contrato_completo_'.$contrato->id.'.pdf'
+        ];
+    }
 }
