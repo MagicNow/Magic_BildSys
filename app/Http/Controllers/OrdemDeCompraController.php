@@ -226,14 +226,9 @@ class OrdemDeCompraController extends AppBaseController
             ->prepend('', '')
             ->toArray();
 
-        $atividades = $planejamentoRepository
-            ->comLembretesComItensDeCompraPorUsuario($request->user()->id)
-            ->prepend('', '')
-            ->pluck('tarefa', 'id')
-            ->toArray();
+        $atividades = [];
 		
-		$carteiras = $carteiraRepository
-            ->findByUser($request->user()->id)
+		$carteiras = Carteira::get()
             ->pluck('nome', 'id')
             ->prepend('', '')
             ->toArray();

@@ -39,6 +39,7 @@
                                       null,
                                       [
                                         'class'    => 'form-control select2',
+                                        'disabled'=>'disabled',
                                         'onchange' => 'atualizaCalendarioPorTarefa(this.value);',
                                         'id'       => 'planejamento_id'
                                       ]
@@ -167,14 +168,16 @@
               .trigger( "change" );
 
             if(obra_id){
+                $('#planejamento_id').attr('disabled',false);
                 $('#btn-comprar-calendario').attr("href", "compras/obrasInsumos/?obra_id="+obra_id);
                 $('#btn-comprar-calendario').css('pointer-events','auto');
                 $('#btn-comprar-calendario').addClass('btn-success');
             } else {
                 $('#btn-comprar-calendario').removeClass('btn-success');
                 $('#btn-comprar-calendario').css('pointer-events','none');
+                $('#planejamento_id').attr('disabled',true);
             }
-
+            carregaPlanejamentos(obra_id);
             atualizaCalendario();
         }
 
@@ -237,6 +240,33 @@
             atualizaCalendario();
         }
 
+        function carregaPlanejamentos(obra_id){
+            $.ajax('/planejamentosListaByObra', {
+                data: {
+                    obra_id: obra_id
+                }
+            })
+                    .done(function (retorno) {
+                        var options_tarefas = '<option value="" selected>-</option>';
+                        $.each(retorno, function (index, valor) {
+                            options_tarefas += '<option value="' + valor.id + '">' + valor.tarefa + '</option>';
+                        });
+                        $('#planejamento_id').html(options_tarefas);
+                        $('#planejamento_id').trigger('change.select2');
+
+                    })
+                    .fail(function (retorno) {
+                        erros = '';
+                        $.each(retorno.responseJSON, function (index, value) {
+                            if (erros.length) {
+                                erros += '<br>';
+                            }
+                            erros += value;
+                        });
+                        swal("Oops", erros, "error");
+                    });
+        }
+
         function atualizaCalendarioPorInsumoGrupo(insumo_grupo) {
             insumo_grupo_id = insumo_grupo;
             if(insumo_grupo){
@@ -258,6 +288,7 @@
         }
 
         $(function () {
+
             var calendarOptions = {
               language: 'pt-BR',
               view: 'month',
