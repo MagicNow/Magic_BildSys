@@ -446,12 +446,52 @@ class NotafiscalController extends AppBaseController
         // -- Eu criaria um parametro para essa porta, pois ela muda constantemente
         // -- Numero da Tarefa (para Entrada de Nota = (701 - Insumos / 705 - Recebimentos / 306 - Faturas a Pagar)
         // -- XML desenvolvimento pela Mazzatech
-        $sql = "EXECUTE MGINT.INT_PCK_UTIL.F_PROCESSATRANSACAO(?,?,?,?,?,?,?, NULL)";
-        $results = DB::connection('oracle')->select($sql,
-            array('192.168.0.21', 8116, 306, 1, 1, 'Transacao para Integração do Bild Obras', $xml)
-        );
 
-        dd($results);
+        $porta = 306;
+
+        $Prexml = $xml; //addslashes($xml);
+
+        try {
+
+            $sql = "BEGIN MGCLI.pck_bld_app.F_Int_Integrador({$porta}, '{$Prexml}'); END;";
+            $sql = str_replace("\n", "",$sql);
+            $results = DB::connection('oracle')->getPdo()->exec($sql);
+            dump($results);
+        } catch (\Exception $e) {
+            dump($e);
+        }
+
+        try {
+            $pdo = DB::connection('oracle')->getPdo();
+            $sth = $pdo->prepare('BEGIN MGCLI.pck_bld_app.F_Int_Integrador(:porta, :xml); END;');
+
+            $sth->bindParam(':porta', $porta);
+            $sth->bindParam(':xml', $Prexml);
+            $results = $sth->execute();
+
+            dump($results);
+        } catch (\Exception $e) {
+            dump($e);
+        }
+
+        try {
+            $sql = "begin
+                    MGCLI.pck_bld_app.F_Int_Integrador(:porta, :xml);
+                    end;";
+
+            $pdo = DB::connection('oracle')->getPdo();
+            $stmt = $pdo->prepare($sql);
+
+            $stmt->bindParam(':porta', $porta);
+            $stmt->bindParam(':xml', $xml);
+
+            $result = $stmt->execute();
+
+            dump($result);
+        } catch (\Exception $e) {
+            dump($e);
+        }
+
     }
 
 }
