@@ -13,6 +13,8 @@ class CreateRetroalimentacaoObrasStatus extends Migration
      */
     public function up()
     {
+        $seeder = new RetroalimentacaoObrasStatusTableSeeder();
+
         Schema::create('retroalimentacao_obras_status', function (Blueprint $table){
 
             $table->increments('id');
@@ -22,6 +24,8 @@ class CreateRetroalimentacaoObrasStatus extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
+
+        $seeder->run();
     }
 
     /**

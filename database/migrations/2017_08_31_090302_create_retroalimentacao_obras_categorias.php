@@ -13,6 +13,8 @@ class CreateRetroalimentacaoObrasCategorias extends Migration
      */
     public function up()
     {
+        $seeder = new RetroalimentacaoObrasCategoriasTableSeeder();
+
         Schema::create('retroalimentacao_obras_categorias', function (Blueprint $table){
 
             $table->increments('id');
@@ -22,6 +24,8 @@ class CreateRetroalimentacaoObrasCategorias extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
+
+        $seeder->run();
     }
 
     /**
