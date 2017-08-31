@@ -845,6 +845,11 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
                     'as' => 'quadroDeConcorrencias.adicionar',
                     'uses' => 'QuadroDeConcorrenciaController@adicionar'
                 ])->middleware("needsPermission:quadroDeConcorrencias.edit");
+            $router->get('/{quadroDeConcorrencias}/check-fornecedor',
+                [
+                    'as' => 'quadroDeConcorrencias.validaFornecedor',
+                    'uses' => 'QuadroDeConcorrenciaController@validaFornecedor'
+                ]);
 
             # Dashboard site QUADRO DE CONCORRÊNCIA
             $router->get('/view/dashboard',
