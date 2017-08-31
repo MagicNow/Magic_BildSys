@@ -18,7 +18,7 @@ class QcStatusTableSeed extends Seeder
         $items = [
             [
                 'id'=>1,
-                'nome' => 'Em Aberto',
+                'nome' => 'Em Elaboração',
                 'cor' => '#FCE9C0'
             ],
             [
@@ -28,7 +28,7 @@ class QcStatusTableSeed extends Seeder
             ],
             [
                 'id'=>3,
-                'nome' => 'Em Aprovação',
+                'nome' => 'Em Validação',
                 'cor' => '#DEA447'
             ],
             [
@@ -48,12 +48,12 @@ class QcStatusTableSeed extends Seeder
             ],
             [
                 'id'=>7,
-                'nome' => 'Em Concorrência',
+                'nome' => 'Em Negociação',
                 'cor' => '#8C2EB8'
             ],
             [
                 'id'=>8,
-                'nome' => 'Concorrência Finalizada',
+                'nome' => 'Fechado',
                 'cor' => '#518709'
             ],
             [
