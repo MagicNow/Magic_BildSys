@@ -452,23 +452,9 @@ class NotafiscalController extends AppBaseController
         $Prexml = $xml; //addslashes($xml);
 
         try {
-
             $sql = "BEGIN MGCLI.pck_bld_app.F_Int_Integrador({$porta}, '{$Prexml}'); END;";
             $sql = str_replace("\n", "",$sql);
             $results = DB::connection('oracle')->getPdo()->exec($sql);
-            dump($results);
-        } catch (\Exception $e) {
-            dump($e);
-        }
-
-        try {
-            $pdo = DB::connection('oracle')->getPdo();
-            $sth = $pdo->prepare('BEGIN MGCLI.pck_bld_app.F_Int_Integrador(:porta, :xml); END;');
-
-            $sth->bindParam(':porta', $porta);
-            $sth->bindParam(':xml', $Prexml);
-            $results = $sth->execute();
-
             dump($results);
         } catch (\Exception $e) {
             dump($e);

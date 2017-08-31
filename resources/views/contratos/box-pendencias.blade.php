@@ -127,20 +127,20 @@
                                                     </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr>
-                                                            <td>
-                                                                {{ float_to_money($modificacao['valor_unitario_atual'] - $modificacao['valor_unitario_anterior']) }}
-                                                            </td>
-                                                            <td>
-                                                                @if($modificacao->anexo)
-                                                                    <a href="{!! Storage::url($modificacao->anexo) !!}"
-                                                                       target="_blank">Ver</a>
-                                                                @endif
-                                                            </td>
-                                                            <td>
-                                                                {{$modificacao->descricao}}
-                                                            </td>
-                                                        </tr>
+                                                    <tr>
+                                                        <td>
+                                                            {{ float_to_money($modificacao['valor_unitario_atual'] - $modificacao['valor_unitario_anterior']) }}
+                                                        </td>
+                                                        <td>
+                                                            @if($modificacao->anexo)
+                                                                <a href="{!! Storage::url($modificacao->anexo) !!}"
+                                                                   target="_blank">Ver</a>
+                                                            @endif
+                                                        </td>
+                                                        <td>
+                                                            {{$modificacao->descricao}}
+                                                        </td>
+                                                    </tr>
                                                     </tbody>
                                                 </table>
                                             @endif
@@ -234,7 +234,7 @@
                             <h5>Valor previsto no orçamento</h5>
                             <h4>
                                 <small class="pull-left">R$</small>
-                                {{ number_format($orcamentoInicial,2,',','.') }}
+                                {{float_to_money($valor_previsto_orcamento)}}
                             </h4>
                         </div>
                         <div class="col-sm-3 text-right borda-direita" title="Até o momento em todos os itens desta O.C.">
@@ -248,17 +248,16 @@
                         <div class="col-sm-3 text-right borda-direita" title="Nos itens desta O.C.">
                             <h5>Valor comprometido à gastar</h5>
                             <h4>
-                                <small class="pull-left">R$</small> <span id="valor_total_comprometido_a_gastar"></span>
-                                {{---  TO DO = A gastar: É a soma de todos os saldos de contratos na que apropriação, como ainda não exixte contrato gerado, tem q estar zerado--}}
-                                {{--                    {{ number_format($totalAGastar,2,',','.') }}--}}
+                                <small class="pull-left">R$</small>
+                                {{float_to_money($valor_previsto_orcamento)}}
                             </h4>
                         </div>
                         <div class="col-sm-3 text-right borda-direita" title="Restante do Orçamento Inicial em relação aos itens desta O.C.">
                             <h5>SALDO DE ORÇAMENTO</h5>
                             <h4>
                                 <small class="pull-left">R$</small> <span id="saldo_total_de_orcamento"></span>
-                                {{--- TO DO = Saldo: Previsto - Realizado - A gastar--}}
-                                {{--{{ number_format($saldo,2,',','.') }}--}}
+                                {{--- Saldo: Previsto - Realizado - A gastar--}}
+                                {{ float_to_money($saldo) }}
                             </h4>
                         </div>
                     </div>
@@ -282,22 +281,17 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($itens_analise->oc_itens as $item)
+                        @foreach($itens_analise as $item)
                             @php
+                                $itens_reajustados = $pendencias->where('contrato_item_id',$item->contrato_item_id);
+                                $reajustado_qtd = $itens_reajustados->where('tipo_modificacao', \App\Models\ContratoItemModificacao::REAJUSTE_QTD)->first();
+                                $reajustado_valor = $itens_reajustados->where('tipo_modificacao', \App\Models\ContratoItemModificacao::REAJUSTE_VALOR)->first();
+
                                 $qtd_comprometida_a_gastar = money_to_float($item->qtd_inicial);
-                                $valor_comprometido_a_gastar = money_to_float($item->preco_inicial);
-                                $ultima_modificacao = null;
+                                $valor_comprometido_a_gastar_item = money_to_float($item->preco_inicial);
 
-                                if(count($item->modificacoes)) {
-                                    $ultima_modificacao = $item->modificacoes->sortByDesc('updated_at')->first();
-                                }
-
-                                if($ultima_modificacao) {
-                                    $qtd_comprometida_a_gastar += money_to_float($ultima_modificacao->pivot->qtd_atual);
-                                    $valor_comprometido_a_gastar += money_to_float($ultima_modificacao->valor_unitario_atual);
-                                }
-
-                                $GLOBALS["valor_total_comprometido_a_gastar"] += $valor_comprometido_a_gastar;
+                                $qtd = $reajustado_qtd ? $reajustado_qtd->qtd_atual : $item->qtd;
+                                $valor_unitario = $reajustado_valor ? $reajustado_valor->valor_unitario_atual : $item->contratoItem->valor_unitario;
                             @endphp
                             <tr>
                                 <td class="text-center">
@@ -312,11 +306,11 @@
                                                                       ">
                                                             {{ $item->insumo->codigo }}</span>
                                 </td>
-                                <td class="text-center">{{ $item->insumo->nome }}</td>
+                                <td class="text-center">{{ $item->nome_item }}</td>
                                 <td class="text-center">{{ $item->insumo->unidade_sigla }}</td>
-                                <td class="text-center">{{ float_to_money($item->qtd, '') }}</td>
-                                <td class="text-center">{{ float_to_money($item->contratoItem->valor_unitario) }} </td>
-                                <td class="text-center">{{ float_to_money($item->contratoItem->valor_unitario * $item->qtd) }} </td>
+                                <td class="text-center">{{ float_to_money($qtd) }}</td>
+                                <td class="text-center">{{ float_to_money($valor_unitario) }} </td>
+                                <td class="text-center">{{ float_to_money($qtd * $valor_unitario) }} </td>
                                 <td class="text-center">
                                     {{--CONTA = saldo - previsto no orçamento--}}
                                     <i class="fa fa-circle
@@ -329,7 +323,7 @@
                                 <td class="text-center">
                                     {{--CONTA = saldo - previsto no orçamento--}}
                                     <i class="fa fa-circle
-                                                            {{ ($item->preco_inicial - doubleval($item->valor_realizado) - doubleval($valor_comprometido_a_gastar)) < 0
+                                                            {{ ($item->preco_inicial - doubleval($item->valor_realizado) - doubleval($valor_comprometido_a_gastar_item)) < 0
                                                                 ? 'red'
                                                                 : 'green'
                                                             }}"></i>
@@ -416,11 +410,11 @@
                                                     </td>
                                                     <td class="text-center">
                                                         <small class="pull-left">R$</small>
-                                                        {{float_to_money($valor_comprometido_a_gastar, '')}}
+                                                        {{float_to_money($valor_comprometido_a_gastar_item, '')}}
                                                     </td>
                                                     <td class="text-center">
                                                         <small class="pull-left">R$</small>
-                                                        {{ number_format( $item->preco_inicial - doubleval($item->valor_realizado) - doubleval($valor_comprometido_a_gastar), 2, ',','.') }}
+                                                        {{ number_format( $item->preco_inicial - doubleval($item->valor_realizado) - doubleval($valor_comprometido_a_gastar_item), 2, ',','.') }}
                                                     </td>
                                                     <td class="text-center">
                                                         @if($item->trocado)

@@ -479,4 +479,17 @@ class PlanejamentoController extends AppBaseController
 
         return $planejamentos->paginate();
     }
+    public function getListaDePlanejamentosByObra(Request $request)
+    {
+        $planejamentos = Planejamento::where('obra_id', $request->obra_id)
+            ->join('planejamento_compras','planejamento_compras.planejamento_id', 'planejamentos.id')
+            ->select([
+                'planejamentos.id',
+                'planejamentos.tarefa'
+            ])
+            ->where('planejamentos.resumo','Sim')
+            ->groupBy('planejamentos.id','planejamentos.tarefa');
+
+        return $planejamentos->get();
+    }
 }

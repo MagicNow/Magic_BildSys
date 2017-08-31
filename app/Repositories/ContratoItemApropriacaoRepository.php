@@ -179,4 +179,109 @@ EOFSQL;
             })
             ->get();
     }
+
+    public static function analiseReajuste(Contrato $contrato)
+    {
+        $itens = ContratoItemApropriacao::select(
+                'contrato_item_apropriacoes.*',
+                'contrato_item_apropriacoes.id as contrato_item_apropriacao_id',
+                DB::raw('0 as qtd_realizada'),
+                DB::raw('0 as valor_realizado'),
+                'orcamentos.qtd_total as qtd_inicial',
+                'orcamentos.preco_total as preco_inicial',
+                'orcamentos.trocado',
+                'orcamentos.orcamento_que_substitui',
+                'ordem_de_compra_itens.total',
+                'ordem_de_compra_itens.motivo_nao_finaliza_obra',
+                'ordem_de_compra_itens.justificativa',
+                'ordem_de_compra_itens.obs',
+                'ordem_de_compra_itens.tems',
+                'ordem_de_compra_itens.id as oc_id',
+                'ordem_de_compra_itens.emergencial',
+                'ordem_de_compra_itens.id as ordem_de_compra_item_id',
+                'orcamentos.id as orcamento_id',
+                'insumos_sub.nome as insumo_troca_nome',
+                DB::raw('(
+                            SELECT
+                                SUM(orcamentos.preco_total)
+                            FROM
+                                orcamentos
+                            WHERE
+                                orcamentos.grupo_id = contrato_item_apropriacoes.grupo_id
+                                    AND orcamentos.subgrupo1_id = contrato_item_apropriacoes.subgrupo1_id
+                                    AND orcamentos.subgrupo2_id = contrato_item_apropriacoes.subgrupo2_id
+                                    AND orcamentos.subgrupo3_id = contrato_item_apropriacoes.subgrupo3_id
+                                    AND orcamentos.servico_id = contrato_item_apropriacoes.servico_id
+                                    AND orcamentos.obra_id = '.$contrato->obra_id.'
+                                    AND orcamentos.ativo = 1
+                        ) as valor_servico
+                ')
+            )
+            ->join('contrato_itens', 'contrato_itens.id', '=', 'contrato_item_apropriacoes.contrato_item_id')
+            ->leftJoin('ordem_de_compra_itens', function ($join) use ($contrato) {
+                $join->on('ordem_de_compra_itens.insumo_id', 'contrato_item_apropriacoes.insumo_id');
+                $join->on('ordem_de_compra_itens.grupo_id', 'contrato_item_apropriacoes.grupo_id');
+                $join->on('ordem_de_compra_itens.subgrupo1_id', 'contrato_item_apropriacoes.subgrupo1_id');
+                $join->on('ordem_de_compra_itens.subgrupo2_id', 'contrato_item_apropriacoes.subgrupo2_id');
+                $join->on('ordem_de_compra_itens.subgrupo3_id', 'contrato_item_apropriacoes.subgrupo3_id');
+                $join->on('ordem_de_compra_itens.servico_id', 'contrato_item_apropriacoes.servico_id');
+                $join->on('ordem_de_compra_itens.obra_id', DB::raw($contrato->obra_id));
+                $join->on('ordem_de_compra_itens.id', DB::raw('(
+                    SELECT
+                        oc_item_qc_item.ordem_de_compra_item_id
+                    FROM
+                        oc_item_qc_item WHERE
+                        oc_item_qc_item.qc_item_id = contrato_itens.qc_item_id
+                    )')
+                );
+            })
+            ->leftJoin('orcamentos', function ($join) use ($contrato) {
+                $join->on('orcamentos.insumo_id', 'contrato_item_apropriacoes.insumo_id');
+                $join->on('orcamentos.grupo_id', 'contrato_item_apropriacoes.grupo_id');
+                $join->on('orcamentos.subgrupo1_id', 'contrato_item_apropriacoes.subgrupo1_id');
+                $join->on('orcamentos.subgrupo2_id', 'contrato_item_apropriacoes.subgrupo2_id');
+                $join->on('orcamentos.subgrupo3_id', 'contrato_item_apropriacoes.subgrupo3_id');
+                $join->on('orcamentos.servico_id', 'contrato_item_apropriacoes.servico_id');
+                $join->on('orcamentos.obra_id', DB::raw($contrato->obra_id));
+                $join->on('orcamentos.ativo', DB::raw('1'));
+            })
+            ->leftJoin(DB::raw('orcamentos orcamentos_sub'),  'orcamentos_sub.id', 'orcamentos.orcamento_que_substitui')
+            ->leftJoin(DB::raw('insumos insumos_sub'), 'insumos_sub.id', 'orcamentos_sub.insumo_id')
+            ->whereIn('contrato_item_id', ContratoItem::where('contrato_id', $contrato->id)->pluck('id', 'id'));
+
+            $contrato_itens_apropriacoes = $itens->get();
+            $contrato_itens_get = $itens->groupBy('contrato_itens.id')->get();
+
+
+            $oc_ids_apropriacoes = $contrato_itens_apropriacoes->pluck('oc_id')->filter()->all();
+
+            $anexos_apropriacoes = OrdemDeCompraItemAnexo::whereIn('ordem_de_compra_item_id', $oc_ids_apropriacoes)
+                ->get();
+
+
+            $contrato_itens_apropriacoes = $contrato_itens_apropriacoes->map(function($item, $index) use ($anexos_apropriacoes) {
+                $item->id = $index;
+                $item->anexos = $anexos_apropriacoes->where('ordem_de_compra_item_id', $item->oc_id);
+                $item->nome_item = $item->servico->nome;
+
+                return $item;
+            });
+
+            $oc_ids = $contrato_itens_get->pluck('oc_id')->filter()->all();
+
+            $anexos = OrdemDeCompraItemAnexo::whereIn('ordem_de_compra_item_id', $oc_ids)
+                ->get();
+
+            $contrato_itens_get = $contrato_itens_get->map(function($item, $index) use ($anexos, $contrato_itens_apropriacoes) {
+                $item->id = count($contrato_itens_apropriacoes) + $index;
+                $item->anexos = $anexos->where('ordem_de_compra_item_id', $item->oc_id);
+                $item->nome_item = $item->insumo->nome;
+
+                return $item;
+            });
+
+        $itens_analise = $contrato_itens_apropriacoes->merge($contrato_itens_get);
+        
+        return $itens_analise;
+    }
 }
