@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\RetroalimentacaoObra;
 use InfyOm\Generator\Common\BaseRepository;
+use Carbon\Carbon;
 
 class RetroalimentacaoObraRepository extends BaseRepository
 {
@@ -31,6 +32,15 @@ class RetroalimentacaoObraRepository extends BaseRepository
 
     public function update(array $attributes,$id) {
 
-        dd($attributes);
+        $r = parent::findWithoutFail($id);
+
+        $attributes["data_prevista"] = (!empty($attributes["data_prevista"])) ? Carbon::createFromFormat('d/m/Y', $attributes["data_prevista"])->format('Y-m-d') : NULL;
+        $attributes["data_conclusao"] = (!empty($attributes["data_conclusao"])) ? Carbon::createFromFormat('d/m/Y', $attributes["data_conclusao"])->format('Y-m-d') : NULL;
+
+        if(isset($attributes['aceite'])){
+            $attributes['aceite'] = 1;
+        }
+
+        parent::update($attributes, $id);
     }
 }

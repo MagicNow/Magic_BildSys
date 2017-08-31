@@ -133,10 +133,7 @@ class RetroalimentacaoObraController extends AppBaseController
             return redirect(route('retroalimentacaoObras.index'));
         }
         $input = $request->all();
-        if(isset($input['aceite'])){
-            $input['aceite'] = 1;
-        }
-        
+               
         $retroalimentacaoObra = $this->retroalimentacaoObraRepository->update($input, $id);
         Flash::success('Retroalimentacao Obra'.trans('common.updated').' '.trans('common.successfully').'.');
 
