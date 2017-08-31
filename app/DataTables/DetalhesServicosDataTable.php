@@ -30,15 +30,32 @@ class DetalhesServicosDataTable extends DataTable
             ->editColumn('valor_realizado', function($obj){
                 return '<small class="pull-left">R$</small>'.number_format( floatval($obj->valor_realizado), 2, ',','.');
             })
+            ->editColumn('origem', function($obj){
+                if($this->request()->get('oc_id')) {
+                    $ordem_de_compra_ultima_aprovacao = OrdemDeCompra::find($this->request()->get('oc_id'))->dataUltimoPeriodoAprovacao();
+                } else {
+                    $ordem_de_compra_ultima_aprovacao = null;
+                }
+
+                $origem = OrdemDeCompraRepository::origemComprometidoAGastar($obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, $obj->insumo_id, $this->obra_id, null, $ordem_de_compra_ultima_aprovacao);
+
+                return $origem;
+            })
             ->editColumn('valor_comprometido_a_gastar', function($obj){
                 if($this->request()->get('oc_id')) {
                     $ordem_de_compra_ultima_aprovacao = OrdemDeCompra::find($this->request()->get('oc_id'))->dataUltimoPeriodoAprovacao();
                 } else {
                     $ordem_de_compra_ultima_aprovacao = null;
                 }
+                $origem = OrdemDeCompraRepository::origemComprometidoAGastar($obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, $obj->insumo_id, $this->obra_id, null, $ordem_de_compra_ultima_aprovacao);
                 $valor_comprometido_a_gastar = OrdemDeCompraRepository::valorComprometidoAGastarItem($obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, $obj->insumo_id, $this->obra_id, null, $ordem_de_compra_ultima_aprovacao);
 
-                return '<small class="pull-left">R$</small>'.number_format( floatval($valor_comprometido_a_gastar), 2, ',','.');
+
+                if(money_to_float($valor_comprometido_a_gastar) > 0) {
+                    return '<span data-toggle="tooltip" data-placement="top" data-html="true" title="'.$origem.'"> <small class="pull-left">R$</small>'.number_format( money_to_float($valor_comprometido_a_gastar), 2, ',','.').'</span>';
+                } else {
+                    return '<small class="pull-left">R$</small>'.number_format( money_to_float($valor_comprometido_a_gastar), 2, ',','.');
+                }
             })
             ->editColumn('saldo_orcamento', function($obj){
                 if($this->request()->get('oc_id')) {
