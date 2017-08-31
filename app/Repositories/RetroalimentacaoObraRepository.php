@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\RetroalimentacaoObra;
+use App\Models\User;
 use InfyOm\Generator\Common\BaseRepository;
 use Carbon\Carbon;
 
@@ -28,6 +29,17 @@ class RetroalimentacaoObraRepository extends BaseRepository
     public function model()
     {
         return RetroalimentacaoObra::class;
+    }
+
+    public function usuariosSistema() {
+
+        $r = User::where('active','1')->select('users.id','users.name')
+            ->join('role_user','role_user.user_id','users.id')
+            ->join('roles','roles.id','role_user.role_id')
+            ->where('roles.name', '!=' ,'Fornecedor')
+            ->get();
+
+        return $r;
     }
 
     public function update(array $attributes,$id) {

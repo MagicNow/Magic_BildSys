@@ -12,21 +12,7 @@
 <!-- Categoria Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('categoria', 'Categoria:') !!}
-    {!! Form::select(
-        'categoria',
-        array(
-            'Escolha'=>'Escolha...',
-            'Quantidade'=>'Quantidade',
-            'Escopo'=>'Escopo',
-            'Consumo'=>'Consumo',
-            'Máscara'=>'Máscara',
-            'Projeto'=>'Projeto',
-            'Orçamento'=>'Orçamento',
-            'Procedimento'=>'Procedimento'
-        ),
-        isset($retroalimentacaoObra) ? $retroalimentacaoObra->categoria : 'Escolha',
-        ['class' => 'form-control input-md']
-    ) !!}
+    {!! Form::select('categoria_id',[''=>'Escolha...']+$categorias, null, ['class' => 'form-control', 'required'=>'required']) !!}
 </div>
 
 <!-- Origem Field -->
@@ -60,21 +46,7 @@
 
     <div class="form-group col-sm-6">
         {!! Form::label('status', 'Status:') !!}
-        {!! Form::select(
-            'status',
-            array(
-                'Escolha'=>'Escolha...',
-                'Pendente'=>'Pendente',
-                'Escopo'=>'Escopo',
-                'Consumo'=>'Consumo',
-                'Máscara'=>'Máscara',
-                'Projeto'=>'Projeto',
-                'Orçamento'=>'Orçamento',
-                'Procedimento'=>'Procedimento'
-            ),
-            (isset($retroalimentacaoObra) && $retroalimentacaoObra->status != null)? $retroalimentacaoObra->status : 'Escolha',
-            ['class' => 'form-control input-md']
-        ) !!}
+        {!! Form::select('status_id',[''=>'Escolha...']+$status, null, ['class' => 'form-control', 'required'=>'required']) !!}
     </div>
 
     <div class="form-group col-sm-6">
@@ -83,12 +55,19 @@
     </div>
 
     <div class="form-group col-sm-6">
+        {!! Form::label('Usuário Responsável', 'Usuário Responsável:') !!}
+        {!! Form::select('user_id_responsavel',[''=>'Escolha...']+$usuarios, null, ['class' => 'form-control', 'required'=>'required']) !!}
+    </div>
+
+    <div class="form-group col-sm-6 pull-right">
         {!! Form::label('aceite', 'Aceite:') !!}
         <p>{!! Form::checkbox('aceite', '1', $retroalimentacaoObra->aceite == 1 ? true : false) !!}</p>
     </div>
-    <!-- Submit Field -->
-    <div class="form-group col-sm-12">
-        {!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save') ), ['class' => 'btn btn-success btn-lg btn-flat pull-right', 'type'=>'submit']) !!}
-        <a href="{!! url('/retroalimentacaoObras') !!}" class="btn btn-lg btn-flat btn-danger"><i class="fa fa-times"></i>  {{ ucfirst( trans('common.cancel') )}}</a>
-    </div>
+
 @endif
+
+<!-- Submit Field -->
+<div class="form-group col-sm-12">
+    {!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save') ), ['class' => 'btn btn-success btn-lg btn-flat pull-right', 'type'=>'submit']) !!}
+    <a href="{!! url('/retroalimentacaoObras') !!}" class="btn btn-lg btn-flat btn-danger"><i class="fa fa-times"></i>  {{ ucfirst( trans('common.cancel') )}}</a>
+</div>

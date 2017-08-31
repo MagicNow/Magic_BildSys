@@ -54,12 +54,13 @@ class RetroalimentacaoObraDataTable extends DataTable
                 'users.name as user',
                 'retroalimentacao_obras.id',
                 'retroalimentacao_obras.origem',
-                'retroalimentacao_obras.categoria',
+                'retroalimentacao_obras_categorias.nome as categoria',
                 'retroalimentacao_obras.situacao_atual',
                 'retroalimentacao_obras.situacao_proposta',
                 'retroalimentacao_obras.created_at'
             ])
             ->join('obras','obras.id','=', 'retroalimentacao_obras.obra_id')
+            ->join('retroalimentacao_obras_categorias','retroalimentacao_obras_categorias.id','=', 'retroalimentacao_obras.categoria_id')
             ->join('users','users.id','=', 'retroalimentacao_obras.user_id');
         return $this->applyScopes($retroalimentacaoObras);
     }
