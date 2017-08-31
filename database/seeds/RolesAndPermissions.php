@@ -158,6 +158,10 @@ class RolesAndPermissions extends Seeder
             'regionals.create' => 'Criação de regional',
             'regionals.edit'   => 'Edição de regional',
             'regionals.delete'   => 'Remoção de regional',
+			
+			'mascaraPadrao.list'   => 'Listagem de Mascara Padrao',
+            'mascaraPadrao.create'   => 'Criação de Mascara Padrao',			
+            'mascaraPadrao.delete'   => 'Remoção de Mascara Padrao',            
 
             ################# SITE ###################
             'compras_lembretes.list' => 'Listagem de compras e lembretes',

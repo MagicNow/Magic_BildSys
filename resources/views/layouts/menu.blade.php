@@ -123,6 +123,14 @@
             </a>
         </li>
         @endshield
+		@shield('mascaraPadrao.list')
+        <li class="{{ Request::is('mascaraPadrao*') ? 'active' : '' }}">
+            <a href="{!! route('admin.mascara_padrao.index') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Máscara Padrão</span>
+            </a>
+        </li>
+        @endshield
     </ul>
 </li>
 
