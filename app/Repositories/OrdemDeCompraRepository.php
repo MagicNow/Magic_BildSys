@@ -238,4 +238,30 @@ class OrdemDeCompraRepository extends BaseRepository
 
         return $insumo_catalogo;
     }
+
+    public static function origemComprometidoAGastar($grupo_id, $subgrupo1_id, $subgrupo2_id, $subgrupo3_id, $servico_id, $insumo_id, $obra_id, $item_id = null, $ordem_de_compra_ultima_aprovacao = null)
+    {
+        $origem = OrdemDeCompraItem::select(
+                DB::raw('(
+                        GROUP_CONCAT(
+                            CONCAT("O.C.", ordem_de_compra_id, " - ", FORMAT(qtd, 2, "de_DE"), " ", unidade_sigla) SEPARATOR "*"
+                        )
+                ) as oc_origem')
+            )
+            ->where('grupo_id', $grupo_id)
+            ->where('subgrupo1_id', $subgrupo1_id)
+            ->where('subgrupo2_id', $subgrupo2_id)
+            ->where('subgrupo3_id', $subgrupo3_id)
+            ->where('servico_id', $servico_id)
+            ->where('insumo_id', $insumo_id)
+            ->where('obra_id', $obra_id)
+            ->first();
+
+        if($origem) {
+            $origem = $origem->oc_origem;
+            $origem = str_replace('*', '<br>' , $origem);
+        }
+
+        return $origem;
+    }
 }

@@ -267,7 +267,7 @@
             return obj.text;
         }
 
-        var torresQtd = {{ (isset($obra)?$torre->id:0) }};
+        var torresQtd = {{ (isset($obra)? isset($torre) ? $torre->id : 0 : 0) }};
         function addTorre(){
             torresQtd ++;
             var torreHTML = '<li class="list-group-item" id="torre'+torresQtd+'">' +
