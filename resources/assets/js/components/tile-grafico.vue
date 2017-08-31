@@ -80,7 +80,7 @@
                 }).then(function(resp){
                     this.emAprovacao = resp.data.length;
 //                    this.mydatasets.push({
-//                        label: "Em Aprovação",
+//                        label: "Em Validação",
 //                        backgroundColor: [
 //                            'rgba(249,141,0,1)'
 //                        ],
