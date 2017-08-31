@@ -1107,6 +1107,8 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('dacte/v3/{id}', 'NotafiscalController@visualizaDacteV3');
     $router->get('manifestar/nfe', 'NotafiscalController@manifesta');
 
+    $router->get('notasfiscais/conciliacao/filtro', 'NotafiscalController@filtraFornecedorContratos');
+
     # Padrões de empreendimento Novo
     $router->group(['middleware' => 'needsPermission:padraoEmpreendimentos.list'], function () use ($router) {
         $router->get('padroes-de-empreendimento', ['as' => 'padraoEmpreendimentos.index', 'uses' => 'PadraoEmpreendimentoController@index']);

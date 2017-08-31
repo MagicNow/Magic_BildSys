@@ -60,7 +60,7 @@
                     @php
                         $json_data = json_encode([$reprovados->count(), $emaprovacao->count(), $aprovados->count()]);
                         //$json_data = json_encode([10,20, 30]);
-                        $json_labels = json_encode(['Reprovados', 'Em Aprovação', 'Aprovados']);
+                        $json_labels = json_encode(['Reprovados', 'Em Validação', 'Aprovados']);
                     @endphp
                     <div class="row">
                         <div class="col-md-4">
