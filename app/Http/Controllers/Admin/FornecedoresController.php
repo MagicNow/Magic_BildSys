@@ -123,7 +123,6 @@ class FornecedoresController extends AppBaseController
             'fornecedor_servicos.codigo_servico_id',
             'servicos_cnae.nome'
         ])
-            ->join('fornecedores','fornecedores.id','=','fornecedor_servicos.codigo_fornecedor_id')
             ->join('servicos_cnae','servicos_cnae.id','=','fornecedor_servicos.codigo_servico_id')
             ->where('fornecedor_servicos.codigo_fornecedor_id', $id)
             ->get();
@@ -146,6 +145,15 @@ class FornecedoresController extends AppBaseController
      */
     public function edit($id)
     {
+        $servicos = FornecedorServico::select([
+            'fornecedor_servicos.codigo_fornecedor_id',
+            'fornecedor_servicos.codigo_servico_id',
+            'servicos_cnae.nome'
+        ])
+            ->join('servicos_cnae','servicos_cnae.id','=','fornecedor_servicos.codigo_servico_id')
+            ->where('fornecedor_servicos.codigo_fornecedor_id', $id)
+            ->get();
+
         $fornecedores = $this->fornecedoresRepository->findWithoutFail($id);
 
         if (empty($fornecedores)) {
@@ -154,7 +162,7 @@ class FornecedoresController extends AppBaseController
             return redirect(route('admin.fornecedores.index'));
         }
 
-        return view('admin.fornecedores.edit')->with('fornecedores', $fornecedores);
+        return view('admin.fornecedores.edit', compact('servicos'))->with('fornecedores', $fornecedores);
     }
 
     /**

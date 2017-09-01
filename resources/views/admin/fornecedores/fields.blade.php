@@ -180,10 +180,35 @@
   </div>
 </div>
 
+@if(isset($servicos))
+    <div class="col-md-12">
+        <h3>Serviços prestados pelo fornecedor:</h3>
+    </div>
+    <?php $qtd = 1; ?>
+    <div id="itens">
+    @foreach($servicos as $servico)
+        <div class="col-md-12">
+            <ul class="list-group">
+                <li class="list-group-item">{{$qtd++}} - {{$servico->nome}}</li>
+            </ul>
+        </div>
+    @endforeach
+    </div>
+@endif
+
 <!-- Submit Field -->
-<div class="form-group col-sm-12">
-    {!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save') ), ['class' => 'btn btn-success btn-flat btn-lg pull-right', 'type'=>'submit']) !!}
-    <a href="{!! route('admin.fornecedores.index') !!}" class="btn btn-danger btn-flat btn-lg"><i class="fa fa-times"></i>  {{ ucfirst( trans('common.cancel') )}}</a>
+<div class="row col-md-12">
+    <div class="col-md-9 text-left">
+        <a href="{!! route('admin.fornecedores.index') !!}" class="btn btn-danger btn-flat btn-lg "><i class="fa fa-times"></i>  {{ ucfirst( trans('common.cancel') )}}</a>
+    </div>
+    <div class="col-md-2 text-right">
+        <button type="button" class="btn btn-primary btn-lg btn-flat" onclick="addServicos();">
+            Adicionar serviços
+        </button>
+    </div>
+    <div class="col-md-1 text-right">
+        {!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save') ), ['class' => 'btn btn-success btn-flat btn-lg', 'type'=>'submit']) !!}
+    </div>
 </div>
 
 @section('scripts')
