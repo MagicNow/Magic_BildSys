@@ -114,6 +114,28 @@ $(function() {
 
   $('.datepicker').datepicker();
 
+    if (!Modernizr.inputtypes.date) {
+      $('input[type=date]').each(function(index, obj){
+        var data = $(obj).val();
+        if(data != '' && (data.indexOf('-')>1)){
+          var ano = data.substring(0, 4);
+          var mes = data.substring(5, 7);
+          var dia = data.substring(8, 10);
+          var data_formatada = dia+'/'+mes+'/'+ano;
+
+          $(obj).val(data_formatada);
+        }
+      });
+      
+        $('input[type=date]')
+            .attr('type', 'text')
+            .attr('readonly','readonly')
+            .datepicker({
+                format: 'dd/mm/yyyy',
+                language:'pt-BR'
+            });
+    }
+
   $('.data_br').mask('99/99/9999');
   $('.cnpj').mask('99.999.999/9999-99');
   $('.cep').mask('00000-000');

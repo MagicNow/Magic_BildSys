@@ -7,6 +7,9 @@ use App\Models\Obra;
 use App\Http\Requests;
 use App\Http\Requests\CreateRetroalimentacaoObraRequest;
 use App\Http\Requests\UpdateRetroalimentacaoObraRequest;
+use App\Models\RetroalimentacaoObraCategoria;
+use App\Models\RetroalimentacaoObraStatus;
+use App\Repositories\RetroalimentacaoObraHistoricoRepository;
 use App\Repositories\RetroalimentacaoObraRepository;
 use Flash;
 use Illuminate\Support\Facades\Auth;
@@ -16,11 +19,12 @@ use Response;
 class RetroalimentacaoObraController extends AppBaseController
 {
     /** @var  RetroalimentacaoObraRepository */
-    private $retroalimentacaoObraRepository;
+    private $retroalimentacaoObraRepository,$historicoRepository;
 
-    public function __construct(RetroalimentacaoObraRepository $retroalimentacaoObraRepo)
+    public function __construct(RetroalimentacaoObraRepository $retroalimentacaoObraRepo, RetroalimentacaoObraHistoricoRepository $historicoRepository)
     {
         $this->retroalimentacaoObraRepository = $retroalimentacaoObraRepo;
+        $this->historicoRepository = $historicoRepository;
     }
 
     /**
@@ -42,7 +46,10 @@ class RetroalimentacaoObraController extends AppBaseController
     public function create()
     {
         $obras = Obra::pluck('nome','id')->toArray();
-        return view('retroalimentacao_obras.create', compact('obras'));
+        $categorias = RetroalimentacaoObraCategoria::pluck('nome','id')->toArray();
+        $status = RetroalimentacaoObraStatus::pluck('nome','id')->toArray();
+
+        return view('retroalimentacao_obras.create', compact('obras', 'categorias', 'status'));
     }
     
     /**
@@ -70,7 +77,7 @@ class RetroalimentacaoObraController extends AppBaseController
 
         $retroalimentacaoObra = $this->retroalimentacaoObraRepository->create($input);
 
-        Flash::success('Retroalimentação inserida com sucesso.');
+        Flash::success('Retroalimentacao Obra '.trans('common.saved').' '.trans('common.successfully').'.');
 
         return redirect($request->origem);
     }
@@ -84,7 +91,7 @@ class RetroalimentacaoObraController extends AppBaseController
      */
     public function show($id)
     {
-        $retroalimentacaoObra = $this->retroalimentacaoObraRepository->findWithoutFail($id);
+        $retroalimentacaoObra = $this->retroalimentacaoObraRepository->with(['categoria', 'status'])->findWithoutFail($id);
 
         if (empty($retroalimentacaoObra)) {
             Flash::error('Retroalimentacao Obra '.trans('common.not-found'));
@@ -92,7 +99,7 @@ class RetroalimentacaoObraController extends AppBaseController
             return redirect(route('retroalimentacaoObras.index'));
         }
 
-        return view('retroalimentacao_obras.show')->with('retroalimentacaoObra', $retroalimentacaoObra);
+        return view('retroalimentacao_obras.show',compact('retroalimentacaoObra'));
     }
 
     /**
@@ -105,14 +112,23 @@ class RetroalimentacaoObraController extends AppBaseController
     public function edit($id)
     {
         $retroalimentacaoObra = $this->retroalimentacaoObraRepository->findWithoutFail($id);
+
+        $usuarios = $this->retroalimentacaoObraRepository->usuariosSistema()->pluck('name','id')->toArray();
+
+        $historico = $this->historicoRepository->getHistoricoByRetroId($id);
+   
         $obras = Obra::pluck('nome','id')->toArray();
+        $categorias = RetroalimentacaoObraCategoria::pluck('nome','id')->toArray();
+        $status = RetroalimentacaoObraStatus::pluck('nome','id')->toArray();
+
+
         if (empty($retroalimentacaoObra)) {
-            Flash::error('Retroalimentacao Obra '.trans('common.not-found'));
+            Flash::error('Retroalimentação Obra '.trans('common.not-found'));
 
             return redirect(route('retroalimentacaoObras.index'));
         }
 
-        return view('retroalimentacao_obras.edit',compact('retroalimentacaoObra', 'obras'));
+        return view('retroalimentacao_obras.edit',compact('retroalimentacaoObra', 'obras', 'categorias', 'status', 'usuarios', 'historico'));
     }
 
     /**
@@ -133,11 +149,9 @@ class RetroalimentacaoObraController extends AppBaseController
             return redirect(route('retroalimentacaoObras.index'));
         }
         $input = $request->all();
-        if(isset($input['aceite'])){
-            $input['aceite'] = 1;
-        }
+               
         $retroalimentacaoObra = $this->retroalimentacaoObraRepository->update($input, $id);
-        Flash::success('Retroalimentacao Obra'.trans('common.updated').' '.trans('common.successfully').'.');
+        Flash::success('Retroalimentação Obra '.trans('common.updated').' '.trans('common.successfully').'.');
 
         return redirect(route('retroalimentacaoObras.index'));
     }
@@ -161,7 +175,7 @@ class RetroalimentacaoObraController extends AppBaseController
 
         $this->retroalimentacaoObraRepository->delete($id);
 
-        Flash::success('Retroalimentacao Obra '.trans('common.deleted').' '.trans('common.successfully').'.');
+        Flash::success('Retroalimentação Obra '.trans('common.deleted').' '.trans('common.successfully').'.');
 
         return redirect(route('retroalimentacaoObras.index'));
     }
