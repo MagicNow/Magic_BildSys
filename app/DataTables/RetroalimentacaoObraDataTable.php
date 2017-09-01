@@ -60,7 +60,7 @@ class RetroalimentacaoObraDataTable extends DataTable
                 'retroalimentacao_obras.created_at'
             ])
             ->join('obras','obras.id','=', 'retroalimentacao_obras.obra_id')
-            ->join('retroalimentacao_obras_categorias','retroalimentacao_obras_categorias.id','=', 'retroalimentacao_obras.categoria_id')
+            ->leftJoin('retroalimentacao_obras_categorias','retroalimentacao_obras_categorias.id','=', 'retroalimentacao_obras.categoria_id')
             ->join('users','users.id','=', 'retroalimentacao_obras.user_id');
         return $this->applyScopes($retroalimentacaoObras);
     }
