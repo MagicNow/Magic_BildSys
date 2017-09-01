@@ -64894,7 +64894,7 @@ $(function() {
     if (!Modernizr.inputtypes.date) {
       $('input[type=date]').each(function(index, obj){
         var data = $(obj).val();
-        if(data != ''){
+        if(data != '' && (data.indexOf('-')>1)){
           var ano = data.substring(0, 4);
           var mes = data.substring(5, 7);
           var dia = data.substring(8, 10);
@@ -64906,6 +64906,7 @@ $(function() {
       
         $('input[type=date]')
             .attr('type', 'text')
+            .attr('readonly','readonly')
             .datepicker({
                 format: 'dd/mm/yyyy',
                 language:'pt-BR'
