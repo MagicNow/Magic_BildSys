@@ -32,7 +32,7 @@
                             </tr>
                             <tr>
                                 {{--<th>id</th>--}}
-                                <th>Movimentação</th>
+                                <th>Alteração</th>
                                 <th>Qtd.</th>
                                 <th>Valor Unitário</th>
                                 <th>Qtd.</th>

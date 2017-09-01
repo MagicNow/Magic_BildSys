@@ -87,7 +87,7 @@
                                 <th>Quantidade</th>
                                 <th>Valor Unitário</th>
                                 <th>Valor Total</th>
-                                <th style="width: 5%">Ação</th>
+                                <th style="width: 5%">Alteração</th>
                             </tr>
                         </thead>
                         <tbody>

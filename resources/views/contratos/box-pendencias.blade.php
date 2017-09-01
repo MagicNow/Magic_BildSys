@@ -22,7 +22,7 @@
                     <th></th>
                 </tr>
                 <tr>
-                    <th>Movimentação</th>
+                    <th>Alteração</th>
                     <th>Código</th>
                     <th>Descrição</th>
                     <th>Un</th>
