@@ -296,7 +296,7 @@
                             <th>Descrição do Insumo</th>
                             <th>Valor</th>
                             <th>%</th>
-                            <th>Serviço</th>
+                            <th>Apropriação</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -324,7 +324,7 @@
                                         <table class="table table-bordered table-condensed table-all-center">
                                             <thead>
                                                 <tr>
-                                                    <th>Código Estruturado</th>
+                                                    <th>Serviço</th>
                                                     <th>Insumo</th>
                                                     <th>Valor Apropriado</th>
                                                 </tr>
