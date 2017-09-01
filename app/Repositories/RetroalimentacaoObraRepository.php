@@ -49,10 +49,10 @@ class RetroalimentacaoObraRepository extends BaseRepository
 
         $r = parent::findWithoutFail($id);
 
-        if ( ($r->user_id_responsavel != $attributes['user_id_responsavel']) or ($r->status_id != $attributes['status_id']) ) {
+        if ( ($r->user_id_responsavel != $attributes['user_id_responsavel']) || ($r->status_id != $attributes['status_id']) || strlen($attributes['andamento']) ) {
 
             $insert['retroalimentacao_obras_id'] = $r->id;
-            $insert['user_id_origem'] = !empty($r->user_id_responsavel) ? $r->user_id_responsavel : null;
+            $insert['user_id_origem'] = auth()->id();
             $insert['user_id_destino'] = $attributes['user_id_responsavel'];
             $insert['status_origem'] = !empty($r->status_id) ? $r->status_id : null;
             $insert['status_destino'] = $attributes['status_id'];

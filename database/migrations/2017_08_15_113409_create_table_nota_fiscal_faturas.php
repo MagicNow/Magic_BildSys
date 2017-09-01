@@ -13,6 +13,7 @@ class CreateTableNotaFiscalFaturas extends Migration
      */
     public function up()
     {
+        Schema::dropIfExists('nota_fiscal_faturas');
         Schema::create("nota_fiscal_faturas", function(Blueprint $table){
             $table->engine = 'InnoDB';
             $table->increments('id');

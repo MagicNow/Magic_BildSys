@@ -15,8 +15,8 @@ class AddUserIdResponsavelRetroalimentacaoObrasTable extends Migration
     {
         Schema::table('retroalimentacao_obras', function(Blueprint $table){
 
-            $table->unsignedInteger('user_id_responsavel')->after('user_id');
-            $table->foreign('user_id_responsavel')->references('id')->on('users')->onUpdate('cascade')->onDelete('restrict');
+            $table->unsignedInteger('user_id_responsavel')->after('user_id')->nullable();
+            $table->foreign('user_id_responsavel')->references('id')->on('users')->onUpdate('cascade')->onDelete('set null');
         });
     }
 

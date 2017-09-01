@@ -35,6 +35,11 @@
     </div>
 
     <div class="form-group col-sm-6">
+        {!! Form::label('aceite', 'Aceite:') !!}
+        <p>{!! Form::checkbox('aceite', '1', $retroalimentacaoObra->aceite == 1 ? true : false) !!}</p>
+    </div>
+
+    <div class="form-group col-sm-6">
         {!! Form::label('data_prevista', 'Data prevista:') !!}
         {!! Form::date('data_prevista', isset($retroalimentacaoObra) ? $retroalimentacaoObra->data_prevista ? $retroalimentacaoObra->data_prevista->format('d/m/Y') : null : null, ['class' => 'form-control', 'readonly' => true]) !!}
     </div>
@@ -59,15 +64,12 @@
         {!! Form::select('user_id_responsavel',[''=>'Escolha...']+$usuarios, null, ['class' => 'form-control', 'required'=>'required']) !!}
     </div>
 
-    <div class="form-group col-sm-6">
-        {!! Form::label('andamento', 'Andamento:') !!}
-        {!! Form::text('andamento', null, ['class' => 'form-control', 'maxlength' => '100']) !!}
+    <div class="form-group col-sm-12">
+        {!! Form::label('andamento', 'Informar Andamento:') !!}
+        {!! Form::textarea('andamento', null, ['class' => 'form-control', 'rows'=>4]) !!}
     </div>
 
-    <div class="form-group col-sm-6">
-        {!! Form::label('aceite', 'Aceite:') !!}
-        <p>{!! Form::checkbox('aceite', '1', $retroalimentacaoObra->aceite == 1 ? true : false) !!}</p>
-    </div>
+
 
 @endif
 

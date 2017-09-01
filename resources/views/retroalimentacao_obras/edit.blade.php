@@ -23,14 +23,12 @@
            </div>
        </div>
 
-
+       @if($historico->count())
        <section class="content-header">
            <h3>
-               Histórico Andamento
+               Histórico de Andamentos
            </h3>
        </section>
-
-
        <div class="box box-primary">
            <div class="box-body">
 
@@ -51,10 +49,10 @@
                             <tr>
                                 <td>{{ $v->created_at->format('d/m/Y H:i:s') }}</td>
                                 <td>{{ $v->userOrigem->name }}</td>
-                                <td>{{ $v->userDestino->name }}</td>
-                                <th>{{ $v->statusOrigem->nome }}</th>
+                                <td>{{ $v->userDestino ? $v->userDestino->name : '-' }}</td>
+                                <th>{{ $v->statusOrigem ? $v->statusOrigem->nome : '-' }}</th>
                                 <th>{{ $v->statusDestino->nome }}</th>
-                                <td>{{ $v->andamento }}</td>
+                                <td align="left">{!! nl2br($v->andamento)  !!}</td>
                            </tr>
                         @endforeach
                    </tbody>
@@ -62,6 +60,7 @@
 
            </div>
        </div>
+       @endif
 
    </div>
 @endsection
