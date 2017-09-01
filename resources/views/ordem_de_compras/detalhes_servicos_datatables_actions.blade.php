@@ -3,7 +3,8 @@
                             '<small class="pull-left">R$</small>',
                             '<span style="color: #7ed321">',
                             '<span style="color: #eb0000">',
-                            '</span>'
+                            '</span>',
+                            '<span data-toggle="tooltip" data-placement="top" data-html="true" title="'.$origem.'"> '
                           ];
     @endphp
     <input type="checkbox" class="detalhes_servicos_itens"

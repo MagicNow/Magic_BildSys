@@ -901,6 +901,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('filter-json-ordem-compra', 'OrdemDeCompraController@filterJsonOrdemCompra');
 
     $router->get('planejamentosByObra', 'PlanejamentoController@getPlanejamentosByObra');
+    $router->get('planejamentosListaByObra', 'PlanejamentoController@getListaDePlanejamentosByObra');
 
     $router->get('lembretes', 'PlanejamentoController@lembretes');
     $router->get('lembretes/salvar-data-minima', 'PlanejamentoController@lembretes');

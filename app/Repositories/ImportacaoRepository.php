@@ -158,9 +158,11 @@ class ImportacaoRepository
                     ->first();
 
                 $fornecedor = Fornecedor::firstOrCreate([
+                    'cnpj' => trim($fornecedores_mega->agn_st_cgc),
+                    ]);
+                $fornecedor->update([
                     'codigo_mega' => trim($fornecedores_mega->agn_in_codigo),
                     'nome' => trim(utf8_encode($fornecedores_mega->agn_st_nome)),
-                    'cnpj' => trim($fornecedores_mega->agn_st_cgc),
                     'tipo_logradouro' => trim($fornecedores_mega->tpl_st_sigla),
                     'logradouro' => trim(utf8_encode($fornecedores_mega->agn_st_logradouro)),
                     'numero' => trim($fornecedores_mega->agn_st_numero),
@@ -173,10 +175,7 @@ class ImportacaoRepository
                     'site' => trim(utf8_encode($fornecedores_mega->agn_st_url)),
                     'telefone' => null,
                     'cep' => trim(str_replace('.','',$fornecedores_mega->agn_st_cep)),
-                    'cidade_id' => isset($cidade) ? $cidade->id : null
-                ]);
-
-                $fornecedor->update([
+                    'cidade_id' => isset($cidade) ? $cidade->id : null,
                     'imposto_simples' => trim(utf8_encode($fornecedores_mega->agn_bo_simples)) === 'S',
                 ]);
 
