@@ -58,7 +58,7 @@ class FornecedoresController extends AppBaseController
     }
 
     /**
-     * Store a newly created Fornecedores in storage.
+     * Store a newly created Fornecedor in storage.
      *
      * @param CreateFornecedoresRequest $request
      *
@@ -99,7 +99,7 @@ class FornecedoresController extends AppBaseController
         $fornecedor = $this->fornecedoresRepository->create($input);
 
         if(!$request->ajax()) {
-            Flash::success('Fornecedores '.trans('common.saved').' '.trans('common.successfully').'.');
+            Flash::success('Fornecedor '.trans('common.saved').' '.trans('common.successfully').'.');
 
             return redirect(route('admin.fornecedores.index'));
         }
@@ -129,7 +129,7 @@ class FornecedoresController extends AppBaseController
             ->get();
 
         if (empty($fornecedores)) {
-            Flash::error('Fornecedores '.trans('common.not-found'));
+            Flash::error('Fornecedor '.trans('common.not-found'));
 
             return redirect(route('admin.fornecedores.index'));
         }
@@ -149,7 +149,7 @@ class FornecedoresController extends AppBaseController
         $fornecedores = $this->fornecedoresRepository->findWithoutFail($id);
 
         if (empty($fornecedores)) {
-            Flash::error('Fornecedores '.trans('common.not-found'));
+            Flash::error('Fornecedor '.trans('common.not-found'));
 
             return redirect(route('admin.fornecedores.index'));
         }
@@ -158,7 +158,7 @@ class FornecedoresController extends AppBaseController
     }
 
     /**
-     * Update the specified Fornecedores in storage.
+     * Update the specified Fornecedor in storage.
      *
      * @param  int              $id
      * @param UpdateFornecedoresRequest $request
@@ -210,13 +210,13 @@ class FornecedoresController extends AppBaseController
 
         $fornecedores = $this->fornecedoresRepository->update($request->all(), $id);
 
-        Flash::success('Fornecedores '.trans('common.updated').' '.trans('common.successfully').'.');
+        Flash::success('Fornecedor '.trans('common.updated').' '.trans('common.successfully').'.');
 
         return redirect(route('admin.fornecedores.index'));
     }
 
     /**
-     * Remove the specified Fornecedores from storage.
+     * Remove the specified Fornecedor from storage.
      *
      * @param  int $id
      *
@@ -227,7 +227,7 @@ class FornecedoresController extends AppBaseController
         $fornecedores = $this->fornecedoresRepository->findWithoutFail($id);
 
         if (empty($fornecedores)) {
-            Flash::error('Fornecedores '.trans('common.not-found'));
+            Flash::error('Fornecedor '.trans('common.not-found'));
 
             return redirect(route('admin.fornecedores.index'));
         }
@@ -250,7 +250,7 @@ class FornecedoresController extends AppBaseController
             return redirect(route('admin.fornecedores.index'));
         }
 
-        Flash::success('Fornecedores '.trans('common.deleted').' '.trans('common.successfully').'.');
+        Flash::success('Fornecedor '.trans('common.deleted').' '.trans('common.successfully').'.');
 
         return redirect(route('admin.fornecedores.index'));
     }
