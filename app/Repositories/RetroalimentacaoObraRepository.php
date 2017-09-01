@@ -5,8 +5,10 @@ namespace App\Repositories;
 use App\Models\RetroalimentacaoObra;
 use App\Models\RetroalimentacaoObraHistorico;
 use App\Models\User;
+use App\Notifications\UserCommonNotification;
 use InfyOm\Generator\Common\BaseRepository;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Notification;
 
 class RetroalimentacaoObraRepository extends BaseRepository
 {
@@ -47,7 +49,6 @@ class RetroalimentacaoObraRepository extends BaseRepository
 
         $r = parent::findWithoutFail($id);
 
-
         if ( ($r->user_id_responsavel != $attributes['user_id_responsavel']) or ($r->status_id != $attributes['status_id']) ) {
 
             $insert['retroalimentacao_obras_id'] = $r->id;
@@ -60,6 +61,22 @@ class RetroalimentacaoObraRepository extends BaseRepository
 
             RetroalimentacaoObraHistorico::insert($insert);
 
+            $rHistorico = RetroalimentacaoObraHistorico::select('user_id_destino')->with('userDestino')->get();
+
+            foreach($rHistorico as $historico) {
+
+                Notification::send($historico->userDestino,
+                    new UserCommonNotification("A retroalimentação da qual você faz parte teve uma modificação",
+                        route('retroalimentacaoObras.edit', $id)
+                    )
+                );
+            }
+
+            Notification::send($r->user,
+                new UserCommonNotification("A retroalimentação que você criou teve uma modificação",
+                    route('retroalimentacaoObras.edit', $id)
+                )
+            );
         }
 
 
