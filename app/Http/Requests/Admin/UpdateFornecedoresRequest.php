@@ -34,4 +34,9 @@ class UpdateFornecedoresRequest extends FormRequest
         $rules['email'] = 'required|email|unique:fornecedores,email,'. collect( request()->segments() )->last().'|unique:users,email'. $user_id ;
         return $rules;
     }
+
+    public function messages()
+    {
+        return ['email.unique'=>'Este e-mail já está sendo utilizado em outro fornecedor ou em algum usuário do sistema'];
+    }
 }
