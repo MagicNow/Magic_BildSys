@@ -480,7 +480,7 @@ $(function() {
   });
 
   $('#fornecedor').on('select2:select', function(e) {
-    addFornecedor()
+    addFornecedor();
   });
 
   $('#fornecedor_temp').select2({
@@ -602,7 +602,8 @@ function addFornecedor() {
   qtdFornecedores++;
   if ($('#fornecedor').val()) {
     var nomeFornecedor = $('#fornecedor').select2('data');
-
+    var codigo_mega_fornecedor = $('#fornecedor').val();
+    var codigo_temp_fornecedor = null;
     var qcFornecedorHTML = '<li class="list-group-item" id="qcFornecedor_id' + qtdFornecedores + '">' +
       '<input type="hidden" name="qcFornecedoresMega[]" value="' + $('#fornecedor').val() + '">' +
       nomeFornecedor[0].agn_st_nome +
@@ -615,6 +616,8 @@ function addFornecedor() {
     $('#fornecedor').val(null).trigger("change");
     $('#fornecedoresSelecionados').append(qcFornecedorHTML);
     $('#fornecedor').select2('open');
+
+    validaFornecedor(codigo_mega_fornecedor, codigo_temp_fornecedor, quadroDeConcorrenciaId, qtdFornecedores);
   }
 }
 
@@ -622,7 +625,8 @@ function addFornecedorTemp() {
   qtdFornecedores++;
   if ($('#fornecedor_temp').val()) {
     var nomeFornecedor = $('#fornecedor_temp').select2('data');
-
+    var codigo_temp_fornecedor = $('#fornecedor_temp').val();
+    var codigo_mega_fornecedor = null;
     var qcFornecedorHTML = '<li class="list-group-item" id="qcFornecedor_id' + qtdFornecedores + '">' +
       '<input type="hidden" name="qcFornecedores[][fornecedor_id]" value="' + $('#fornecedor_temp').val() + '">' +
       nomeFornecedor[0].nome +
@@ -635,6 +639,8 @@ function addFornecedorTemp() {
     $('#fornecedor_temp').val(null).trigger("change");
     $('#fornecedoresSelecionados').append(qcFornecedorHTML);
     //                $('#fornecedor_temp').select2('open');
+
+    validaFornecedor(codigo_mega_fornecedor, codigo_temp_fornecedor, quadroDeConcorrenciaId, qtdFornecedores);
   }
 }
 
@@ -880,5 +886,32 @@ function remover() {
       );
     });
   });
+}
+
+function validaFornecedor(codigo_mega_fornecedor, codigo_temp_fornecedor, quadroDeConcorrenciaId, qtdFornecedores) {
+    console.log('mega: ',codigo_mega_fornecedor, 'temp: ',codigo_temp_fornecedor, 'qc: ', quadroDeConcorrenciaId);
+    $.ajax({
+        type: 'GET',
+        url : "/quadro-de-concorrencia/" + quadroDeConcorrenciaId + "/check-fornecedor",
+        data: {
+          'id_qc': quadroDeConcorrenciaId,
+          'codigo_mega_fornecedor': codigo_mega_fornecedor,
+          'codigo_temp_fornecedor': codigo_temp_fornecedor
+        }
+    }).done(function (retorno) {
+      console.log(retorno);
+      //retorno
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+      var qcFornecedorALERT = '<a href="/fornecedores/'+jqXHR.responseJSON.id_fornecedor+'/edit">' +
+          '<button type="button" title="Alterar dados do fornecedor" class="btn btn-flat btn-warning btn-xs">' +
+          '<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>' +
+          '</button>' +
+          '</a>';
+
+      $('#fornecedor').val(null).trigger("change");
+      $('#qcFornecedor_id'+qtdFornecedores).append(qcFornecedorALERT);
+      $('#fornecedor').select2('open');
+          swal('Atenção', jqXHR.responseJSON.error, 'info');
+    });
 }
 

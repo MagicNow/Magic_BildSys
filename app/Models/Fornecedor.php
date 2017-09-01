@@ -214,4 +214,12 @@ class Fornecedor extends Model
         }, $dados);
         return $dados_faltantes;
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function servicos()
+    {
+        return $this->belongsToMany(FornecedorServico::class, 'fornecedor_servicos', 'codigo_fornecedor_id', 'codigo_servico_id');
+    }
 }
