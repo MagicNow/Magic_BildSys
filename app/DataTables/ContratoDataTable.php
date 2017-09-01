@@ -139,19 +139,21 @@ class ContratoDataTable extends DataTable
             );
         }
 
-        if($request->start) {
-            $query->whereDate(
-                'contratos.created_at',
-                '>=',
-                Carbon::createFromFormat('d/m/Y', $request->start)->toDateString()
-            );
+        if($request->data_start) {
+            if(strpos($request->data_start, '/')){
+                $query->whereDate(
+                    'contratos.created_at',
+                    '>=',
+                    Carbon::createFromFormat('d/m/Y', $request->data_start)->toDateString()
+                );
+            }
         }
 
-        if($request->end) {
+        if($request->data_end) {
             $query->whereDate(
                 'contratos.created_at',
                 '<=',
-                Carbon::createFromFormat('d/m/Y', $request->end)->toDateString()
+                Carbon::createFromFormat('d/m/Y', $request->data_end)->toDateString()
             );
         }
 

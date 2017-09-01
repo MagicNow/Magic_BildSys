@@ -340,8 +340,8 @@ class ContratoController extends AppBaseController
     }
     public function imprimirContratoCompleto($id)
     {
-        return ContratoRepository::geraImpressaoCompleta($id);
-        return response()->download(storage_path('/app/public/') . str_replace('storage/', '', ContratoRepository::geraImpressaoCompleta($id)));
+        $arquivo = ContratoRepository::geraImpressaoCompleta($id);
+        return response()->download(storage_path('/app/public/') . str_replace('storage/', '', $arquivo['arquivo']));
     }
 
     public function edit($id)

@@ -795,14 +795,17 @@ class ContratoRepository extends BaseRepository
 
         $impressao = 1;
         
-        return view('contratos.pdf',compact('contrato', 'insumosDoContrato','itens','impressao'));
+//        return view('contratos.pdf',compact('contrato', 'itens','impressao'));
         
-        PDF::loadView('contratos.pdf',compact('contrato', 'insumosDoContrato','itens','impressao'))
+        PDF::loadView('contratos.pdf',compact('contrato', 'itens','impressao'))
             ->setPaper('a4')->setOrientation('landscape')
             ->setOption('margin-top', 1)
             ->setOption('margin-bottom', 1)
             ->setOption('margin-left', 1)
             ->setOption('margin-right', 1)
+//            ->setOption('disable-smart-shrinking',true)
+//            ->setOption('dpi',36)
+//            ->setOption('viewport-size','1280x1024')
             ->save(base_path().'/storage/app/public/contratos/contrato_completo_'.$contrato->id.'.pdf');
 
         return [

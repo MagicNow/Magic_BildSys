@@ -1,27 +1,27 @@
 <hr>
 <div class="row total-header">
-    <div class="col-md-3 text-right borda-direita">
+    <div class="col-xs-3 text-right borda-direita">
         <h5>Valor Inicial</h5>
         <h4>
             <small class="pull-left">R$</small>
             {{ float_to_money($contrato->valor_total_inicial, '') }}
         </h4>
     </div>
-    <div class="col-md-3 text-right borda-direita">
+    <div class="col-xs-3 text-right borda-direita">
         <h5>Valor Atual</h5>
         <h4>
             <small class="pull-left">R$</small>
             {{ float_to_money($contrato->valor_total_atual, '') }}
         </h4>
     </div>
-    <div class="col-md-3 text-right borda-direita">
+    <div class="col-xs-3 text-right borda-direita">
         <h5>Valor Medido</h5>
         <h4>
             <small class="pull-left">R$</small>
             0,00
         </h4>
     </div>
-    <div class="col-md-3 text-right borda-direita">
+    <div class="col-xs-3 text-right borda-direita">
         <h5>Valor Saldo</h5>
         <h4>
             <small class="pull-left">R$</small>
@@ -81,8 +81,6 @@
                                     title="Histórico"
                                     class="fa fa-fw fa-history"></i>
                             </button>
-                            @include('contratos.modal-historico', ['item' => $item])
-                            @include('contratos.modal-historico-estruturado', ['item' => $item])
                         </td>
                         @endif
                         <td>{{ $item->insumo->codigo }}</td>
@@ -102,6 +100,12 @@
                                 ])
                             </td>
                         @endif
+                    </tr>
+                    <tr>
+                        <td colspan="{{ !isset($impressao)?'12':'10' }}" style="{{ !isset($impressao)?'padding:0px':'' }}">
+                    @include('contratos.modal-historico', ['item' => $item])
+                    @include('contratos.modal-historico-estruturado', ['item' => $item])
+                        </td>
                     </tr>
                 @endforeach
             </tbody>

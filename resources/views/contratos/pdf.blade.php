@@ -1,6 +1,12 @@
 @extends('layouts.printable')
 
 @section('content')
+    <style>
+        /*thead, tfoot { display: table-row-group !important; }*/
+        /*html{*/
+            /*zoom: 0.9;*/
+        /*}*/
+    </style>
     <section>
         <div class="row">
             <div class="col-xs-2 form-group">
