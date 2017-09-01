@@ -102,7 +102,14 @@ class DetalhesServicosDataTable extends DataTable
                     $obj->descricao <button type=\"button\" class=\"btn btn-info btn-flat btn-xs\"> <i class=\"fa fa-exchange\"></i> </button>
                     </strong>";
                 } else {
-                    return $obj->descricao;
+                    return '<span data-toggle="tooltip" data-placement="top" data-html="true"
+                                title="'.
+                                    $obj->tooltip_grupo . ' <br> ' .
+                                    $obj->tooltip_subgrupo1 . ' <br> ' .
+                                    $obj->tooltip_subgrupo2 . ' <br> ' .
+                                    $obj->tooltip_subgrupo3 . ' <br> ' .
+                                    $obj->tooltip_servico
+                                .'">'.$obj->descricao.'</span>';
                 }
             })
             ->filterColumn('descricao',function($query, $keyword){
@@ -171,7 +178,37 @@ class DetalhesServicosDataTable extends DataTable
                     AND ordem_de_compra_itens.obra_id ='. $this->obra_id .' ) as valor_oc'),
 
             DB::raw('0
-                    as saldo_disponivel')
+                    as saldo_disponivel'),
+            DB::raw('(SELECT
+                    CONCAT(codigo, \' - \', nome)
+                    FROM
+                    grupos
+                    WHERE
+                    orcamentos.grupo_id = grupos.id) AS tooltip_grupo'),
+            DB::raw('(SELECT
+                    CONCAT(codigo, \' - \', nome)
+                    FROM
+                    grupos
+                    WHERE
+                    orcamentos.subgrupo1_id = grupos.id) AS tooltip_subgrupo1'),
+            DB::raw('(SELECT
+                    CONCAT(codigo, \' - \', nome)
+                    FROM
+                    grupos
+                    WHERE
+                    orcamentos.subgrupo2_id = grupos.id) AS tooltip_subgrupo2'),
+            DB::raw('(SELECT
+                    CONCAT(codigo, \' - \', nome)
+                    FROM
+                    grupos
+                    WHERE
+                    orcamentos.subgrupo3_id = grupos.id) AS tooltip_subgrupo3'),
+            DB::raw('(SELECT
+                    CONCAT(codigo, \' - \', nome)
+                    FROM
+                    servicos
+                    WHERE
+                    orcamentos.servico_id = servicos.id) AS tooltip_servico')
         ])
             ->leftJoin(DB::raw('orcamentos orcamentos_sub'),  'orcamentos_sub.id', 'orcamentos.orcamento_que_substitui')
             ->leftJoin(DB::raw('insumos insumos_sub'), 'insumos_sub.id', 'orcamentos_sub.insumo_id')
