@@ -9,6 +9,7 @@ use App\Http\Requests\CreateRetroalimentacaoObraRequest;
 use App\Http\Requests\UpdateRetroalimentacaoObraRequest;
 use App\Models\RetroalimentacaoObraCategoria;
 use App\Models\RetroalimentacaoObraStatus;
+use App\Repositories\RetroalimentacaoObraHistoricoRepository;
 use App\Repositories\RetroalimentacaoObraRepository;
 use Flash;
 use Illuminate\Support\Facades\Auth;
@@ -18,11 +19,12 @@ use Response;
 class RetroalimentacaoObraController extends AppBaseController
 {
     /** @var  RetroalimentacaoObraRepository */
-    private $retroalimentacaoObraRepository;
+    private $retroalimentacaoObraRepository,$historicoRepository;
 
-    public function __construct(RetroalimentacaoObraRepository $retroalimentacaoObraRepo)
+    public function __construct(RetroalimentacaoObraRepository $retroalimentacaoObraRepo, RetroalimentacaoObraHistoricoRepository $historicoRepository)
     {
         $this->retroalimentacaoObraRepository = $retroalimentacaoObraRepo;
+        $this->historicoRepository = $historicoRepository;
     }
 
     /**
@@ -89,7 +91,7 @@ class RetroalimentacaoObraController extends AppBaseController
      */
     public function show($id)
     {
-        $retroalimentacaoObra = $this->retroalimentacaoObraRepository->findWithoutFail($id);
+        $retroalimentacaoObra = $this->retroalimentacaoObraRepository->with(['categoria', 'status'])->findWithoutFail($id);
 
         if (empty($retroalimentacaoObra)) {
             Flash::error('Retroalimentacao Obra '.trans('common.not-found'));
@@ -97,7 +99,7 @@ class RetroalimentacaoObraController extends AppBaseController
             return redirect(route('retroalimentacaoObras.index'));
         }
 
-        return view('retroalimentacao_obras.show')->with('retroalimentacaoObra', $retroalimentacaoObra);
+        return view('retroalimentacao_obras.show',compact('retroalimentacaoObra'));
     }
 
     /**
@@ -112,6 +114,8 @@ class RetroalimentacaoObraController extends AppBaseController
         $retroalimentacaoObra = $this->retroalimentacaoObraRepository->findWithoutFail($id);
 
         $usuarios = $this->retroalimentacaoObraRepository->usuariosSistema()->pluck('name','id')->toArray();
+
+        $historico = $this->historicoRepository->getHistoricoByRetroId($id);
    
         $obras = Obra::pluck('nome','id')->toArray();
         $categorias = RetroalimentacaoObraCategoria::pluck('nome','id')->toArray();
@@ -124,7 +128,7 @@ class RetroalimentacaoObraController extends AppBaseController
             return redirect(route('retroalimentacaoObras.index'));
         }
 
-        return view('retroalimentacao_obras.edit',compact('retroalimentacaoObra', 'obras', 'categorias', 'status', 'usuarios'));
+        return view('retroalimentacao_obras.edit',compact('retroalimentacaoObra', 'obras', 'categorias', 'status', 'usuarios', 'historico'));
     }
 
     /**

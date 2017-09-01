@@ -59,7 +59,12 @@
         {!! Form::select('user_id_responsavel',[''=>'Escolha...']+$usuarios, null, ['class' => 'form-control', 'required'=>'required']) !!}
     </div>
 
-    <div class="form-group col-sm-6 pull-right">
+    <div class="form-group col-sm-6">
+        {!! Form::label('andamento', 'Andamento:') !!}
+        {!! Form::text('andamento', null, ['class' => 'form-control', 'maxlength' => '100']) !!}
+    </div>
+
+    <div class="form-group col-sm-6">
         {!! Form::label('aceite', 'Aceite:') !!}
         <p>{!! Form::checkbox('aceite', '1', $retroalimentacaoObra->aceite == 1 ? true : false) !!}</p>
     </div>

@@ -35,15 +35,15 @@
 </div>
 
 <!-- Status Field -->
-<div class="form-group col-md-6">
+<div class="form-group col-sm-6">
     {!! Form::label('status', 'Status:') !!}
-    <p class="form-control">{!! $retroalimentacaoObra->status !!}</p>
+    <p class="form-control">{!! $retroalimentacaoObra->status->nome !!}</p>
 </div>
 
 <!-- Categoria Field -->
-<div class="form-group col-md-6">
+<div class="form-group col-sm-6">
     {!! Form::label('categoria', 'Categoria:') !!}
-    <p class="form-control">{!! $retroalimentacaoObra->categoria !!}</p>
+    <p class="form-control">{!! $retroalimentacaoObra->categoria->nome !!}</p>
 </div>
 
 <div class="form-group col-sm-6">

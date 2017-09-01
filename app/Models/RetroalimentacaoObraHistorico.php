@@ -59,8 +59,34 @@ class RetroalimentacaoObraHistorico extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function user()
+    public function userOrigem()
     {
-        return $this->belongsTo(\App\Models\User::class);
+        return $this->belongsTo(\App\Models\User::class, 'user_id_origem');
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function userDestino()
+    {
+        return $this->belongsTo(\App\Models\User::class, 'user_id_destino');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function statusOrigem()
+    {
+        return $this->belongsTo(\App\Models\RetroalimentacaoObraStatus::class, 'status_origem');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function statusDestino()
+    {
+        return $this->belongsTo(\App\Models\RetroalimentacaoObraStatus::class, 'status_destino');
+    }
+
+
 }

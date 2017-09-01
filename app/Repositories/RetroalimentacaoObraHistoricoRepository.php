@@ -26,4 +26,13 @@ class RetroalimentacaoObraHistoricoRepository extends BaseRepository
     {
         return RetroalimentacaoObraHistorico::class;
     }
+
+    public function getHistoricoByRetroId($id) {
+
+        $r = RetroalimentacaoObraHistorico::with(['userOrigem', 'userDestino', 'statusOrigem', 'statusDestino'])->where('retroalimentacao_obras_id',$id)
+            ->orderBy('created_at','desc')
+            ->get();
+
+        return $r;
+    }
 }

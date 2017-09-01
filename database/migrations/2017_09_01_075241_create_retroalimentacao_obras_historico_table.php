@@ -20,18 +20,22 @@ class CreateRetroalimentacaoObrasHistoricoTable extends Migration
             $table->integer('retroalimentacao_obras_id')->unsigned();
             $table->foreign('retroalimentacao_obras_id','retro_obras_id')->references('id')->on('retroalimentacao_obras')->onDelete('cascade')->onUpdate('cascade');
 
-            $table->integer('user_id_origem')->unsigned();
+            $table->integer('user_id_origem')->unsigned()->nullable();
             $table->foreign('user_id_origem')->references('id')->on('users')->onDelete('restrict')->onUpdate('cascade');
 
-            $table->integer('user_id_destino')->unsigned();
+            $table->integer('user_id_destino')->unsigned()->nullable();
             $table->foreign('user_id_destino')->references('id')->on('users')->onDelete('restrict')->onUpdate('cascade');
 
-            $table->string('status_origem', 30);
-            $table->string('status_destino', 30);
+            $table->integer('status_origem')->unsigned()->nullable();
+            $table->foreign('status_origem')->references('id')->on('retroalimentacao_obras_status')->onDelete('restrict')->onUpdate('cascade');
+
+            $table->integer('status_destino')->unsigned()->nullable();
+            $table->foreign('status_destino')->references('id')->on('retroalimentacao_obras_status')->onDelete('restrict')->onUpdate('cascade');
 
             $table->text('andamento');
 
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
