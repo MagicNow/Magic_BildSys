@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Mail\ContratoServicoFornecedorNaoUsuario;
 use App\Models\MedicaoBoletim;
 use App\Models\MedicaoBoletimStatusLog;
 use App\Notifications\NotificaFornecedorMedicaoBoletim;
@@ -81,7 +82,7 @@ class MedicaoBoletimRepository extends BaseRepository
         if ($user = $fornecedor->user) {
             //se tiver já envia uma notificação
             //$user->notify(new NotificaFornecedorMedicaoBoletim($fornecedor, $retornoImpressao['arquivo']));
-            Mail::to($fornecedor->email)->send(new ContratoServicoFornecedorNaoUsuario($contrato, $retornoImpressao['arquivo']));
+            Mail::to($fornecedor->email)->send(new ContratoServicoFornecedorNaoUsuario($medicaoBoletim->contrato, $retornoImpressao['arquivo']));
             return [
                 'success'=>true,
             ]+$retornoImpressao;
@@ -96,7 +97,7 @@ class MedicaoBoletimRepository extends BaseRepository
                     'messages'=>$mensagens
                 ]+$retornoImpressao;
             } else {
-                Mail::to($fornecedor->email)->send(new ContratoServicoFornecedorNaoUsuario($contrato, $retornoImpressao['arquivo']));
+                Mail::to($fornecedor->email)->send(new ContratoServicoFornecedorNaoUsuario($medicaoBoletim->contrato, $retornoImpressao['arquivo']));
                 return [
                     'success'=>true
                 ]+$retornoImpressao;
@@ -156,6 +157,7 @@ class MedicaoBoletimRepository extends BaseRepository
                 ->setOption('margin-bottom', 1)
                 ->setOption('margin-left', 1)
                 ->setOption('margin-right', 1)
+                ->setOption('image-dpi',300)
                 ->save(base_path().'/storage/app/public/contratos/boletim_'.$medicaoBoletim->id.'.pdf');
 
         return [

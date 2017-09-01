@@ -27,9 +27,9 @@
   </div>
 </div>
 <div class="input-group with-middle">
-  <input type="text" name="start" class="form-control datepicker js-filter">
+  <input type="text" name="data_start" class="form-control datepicker js-filter">
   <span class="input-group-addon addon-middle">até</span>
-  <input type="text" name="end" class="form-control datepicker js-filter">
+  <input type="text" name="data_end" class="form-control datepicker js-filter">
 </div>
 
 @section('scripts')
