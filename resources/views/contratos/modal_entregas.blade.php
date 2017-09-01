@@ -23,6 +23,7 @@
                         <tbody>
                             @foreach($contrato->entregas as $entrega)
                                 <tr>
+                                    <td>{{ $entrega->user->name }}</td>
                                     <td>
                                         {{
                                             $entrega->fornecedor_id
@@ -30,7 +31,7 @@
                                                 : $contrato->fornecedor->nome
                                          }}
                                      </td>
-                                    <td>{{ $entrega->user->name }}</td>
+
                                     <td>{{ $entrega->created_at->format('d/m/Y H:i:s') }}</td>
                                     <td>{{ float_to_money($entrega->valor_total) }}</td>
                                     <td>
