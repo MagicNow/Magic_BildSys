@@ -79,10 +79,6 @@ class RetroalimentacaoObraRepository extends BaseRepository
             );
         }
 
-
-        $attributes["data_prevista"] = (!empty($attributes["data_prevista"])) ? Carbon::createFromFormat('d/m/Y', $attributes["data_prevista"])->format('Y-m-d') : NULL;
-        $attributes["data_conclusao"] = (!empty($attributes["data_conclusao"])) ? Carbon::createFromFormat('d/m/Y', $attributes["data_conclusao"])->format('Y-m-d') : NULL;
-
         if(isset($attributes['aceite'])){
             $attributes['aceite'] = 1;
         }

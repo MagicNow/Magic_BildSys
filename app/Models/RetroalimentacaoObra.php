@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -100,5 +101,29 @@ class RetroalimentacaoObra extends Model
     public function status()
     {
         return $this->belongsTo(\App\Models\RetroalimentacaoObraStatus::class);
+    }
+
+    public function setDataPrevistaAttribute($value){
+        if(strlen($value)){
+            if(strpos($value,'/')){
+                $this->attributes["data_prevista"] = Carbon::createFromFormat('d/m/Y', $value)->format('Y-m-d');
+            }else{
+                $this->attributes["data_prevista"] = $value;
+            }
+        }else{
+            $this->attributes["data_prevista"] = null;
+        }
+    }
+    
+    public function setDataConclusaoAttribute($value){
+        if(strlen($value)){
+            if(strpos($value,'/')){
+                $this->attributes["data_conclusao"] = Carbon::createFromFormat('d/m/Y', $value)->format('Y-m-d');
+            }else{
+                $this->attributes["data_conclusao"] = $value;
+            }
+        }else{
+            $this->attributes["data_conclusao"] = null;
+        }
     }
 }

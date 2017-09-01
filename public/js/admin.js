@@ -64892,6 +64892,18 @@ $(function() {
   $('.datepicker').datepicker();
 
     if (!Modernizr.inputtypes.date) {
+      $('input[type=date]').each(function(index, obj){
+        var data = $(obj).val();
+        if(data != ''){
+          var ano = data.substring(0, 4);
+          var mes = data.substring(5, 7);
+          var dia = data.substring(8, 10);
+          var data_formatada = dia+'/'+mes+'/'+ano;
+
+          $(obj).val(data_formatada);
+        }
+      });
+      
         $('input[type=date]')
             .attr('type', 'text')
             .datepicker({
