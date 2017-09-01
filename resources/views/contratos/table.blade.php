@@ -15,7 +15,7 @@
         </h4>
     </div>
     <div class="col-xs-3 text-right borda-direita">
-        <h5>Valor Medido</h5>
+        <h5>Valor Realizado</h5>
         <h4>
             <small class="pull-left">R$</small>
             0,00

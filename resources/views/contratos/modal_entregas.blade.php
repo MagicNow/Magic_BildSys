@@ -17,7 +17,7 @@
                                 <th>Data</th>
                                 <th>Total</th>
                                 <th>Status</th>
-                                <th>Ação</th>
+                                <th>Alteração</th>
                             </tr>
                         </thead>
                         <tbody>

@@ -25,7 +25,7 @@
 @elseif($item->pendente && $item->aprovado)
     <button class="btn btn-default btn-xs btn-flat"
         data-toggle="tooltip"
-        title="Item com modificação pendente">
+        title="Item com alteração pendente">
         <i class="fa fa-fw fa-hourglass-half"></i>
     </button>
 @elseif($item->pendente && !$item->aprovado)

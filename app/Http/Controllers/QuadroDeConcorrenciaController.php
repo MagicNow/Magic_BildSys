@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Contrato;
+use App\Models\Fornecedor;
+use App\Models\FornecedorServico;
 use App\Models\Insumo;
 use App\Models\OrdemDeCompraItem;
 use App\Models\QuadroDeConcorrencia;
@@ -11,6 +13,7 @@ use App\Models\WorkflowAprovacao;
 use App\Models\WorkflowTipo;
 use App\Notifications\WorkflowNotification;
 use App\Repositories\ContratoRepository;
+use App\Repositories\ImportacaoRepository;
 use App\Repositories\NotificationRepository;
 use App\Repositories\WorkflowAprovacaoRepository;
 use Flash;
@@ -226,6 +229,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
      */
     public function update($id, UpdateQuadroDeConcorrenciaRequest $request)
     {
+
         $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->findWithoutFail($id);
 
         if (empty($quadroDeConcorrencia)) {
@@ -254,7 +258,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
         if(!$quadroDeConcorrencia){
             return back();
         }
-
+//        dd($request->all());
         if (!$request->has('fechar_qc')) {
             if (!$request->has('adicionar_itens')) {
                 Flash::success('Quadro De Concorrencia ' . trans('common.updated') . ' ' . trans('common.successfully') . '.');
@@ -277,6 +281,16 @@ class QuadroDeConcorrenciaController extends AppBaseController
         } else {
             return redirect(route('quadroDeConcorrencias.edit', $quadroDeConcorrencia->id));
         }
+    }
+
+    public function validaFornecedor(Request $request)
+    {
+        $retorno =  QuadroDeConcorrenciaRepository::validaFornecedor($request->all());
+
+        if(!isset($retorno['success'])) {
+            return response()->json($retorno, 400);
+        }
+        return response()->json($retorno);
     }
 
     public function adicionar($id, UpdateQuadroDeConcorrenciaRequest $request)

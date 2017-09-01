@@ -72,7 +72,7 @@
                         value="apropriacoes"
                         data-container="#tables-container"
                         class="js-view-selector">
-                    Apropriações
+                    Apropriação
                 </label>
             </p>
         </div>

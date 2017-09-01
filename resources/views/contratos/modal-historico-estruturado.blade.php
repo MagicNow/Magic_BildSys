@@ -81,7 +81,7 @@
                                                     <th colspan="4"></th>
                                                 </tr>
                                                 <tr>
-                                                    <th>Movimentação</th>
+                                                    <th>Alteração</th>
                                                     <th>Qtd.</th>
                                                     <th>Valor Unitário</th>
                                                     <th>Qtd.</th>

@@ -7,10 +7,12 @@ use App\Http\Requests\Admin;
 use App\Http\Requests\Admin\CreateFornecedoresRequest;
 use App\Http\Requests\Admin\UpdateFornecedoresRequest;
 use App\Models\CatalogoContrato;
+use App\Models\Cnae;
 use App\Models\Contrato;
 use App\Models\Fornecedor;
 use App\Models\FornecedorServico;
 use App\Models\QcFornecedor;
+use App\Models\Servico;
 use App\Models\User;
 use App\Repositories\Admin\FornecedoresRepository;
 use App\Repositories\Admin\ValidationRepository;
@@ -123,7 +125,6 @@ class FornecedoresController extends AppBaseController
             'fornecedor_servicos.codigo_servico_id',
             'servicos_cnae.nome'
         ])
-            ->join('fornecedores','fornecedores.id','=','fornecedor_servicos.codigo_fornecedor_id')
             ->join('servicos_cnae','servicos_cnae.id','=','fornecedor_servicos.codigo_servico_id')
             ->where('fornecedor_servicos.codigo_fornecedor_id', $id)
             ->get();
@@ -146,6 +147,11 @@ class FornecedoresController extends AppBaseController
      */
     public function edit($id)
     {
+        $servicos = Cnae::pluck('nome', 'id')->toArray();
+        $servicos_fornecedor = FornecedorServico::join('servicos_cnae','servicos_cnae.id','=','fornecedor_servicos.codigo_servico_id')
+            ->where('fornecedor_servicos.codigo_fornecedor_id', $id)
+            ->pluck('servicos_cnae.id')->all();
+
         $fornecedores = $this->fornecedoresRepository->findWithoutFail($id);
 
         if (empty($fornecedores)) {
@@ -154,7 +160,7 @@ class FornecedoresController extends AppBaseController
             return redirect(route('admin.fornecedores.index'));
         }
 
-        return view('admin.fornecedores.edit')->with('fornecedores', $fornecedores);
+        return view('admin.fornecedores.edit', compact('servicos_fornecedor', 'servicos'))->with('fornecedores', $fornecedores);
     }
 
     /**
@@ -167,7 +173,6 @@ class FornecedoresController extends AppBaseController
      */
     public function update($id, UpdateFornecedoresRequest $request)
     {
-//        dd($request->all());
         $usuario_existente_deletado = User::Where('email', '=', $request->email)
             ->withTrashed()
             ->whereNotNull('deleted_at')
@@ -207,6 +212,8 @@ class FornecedoresController extends AppBaseController
 
             return redirect(route('admin.fornecedores.index'));
         }
+
+
 
         $fornecedores = $this->fornecedoresRepository->update($request->all(), $id);
 

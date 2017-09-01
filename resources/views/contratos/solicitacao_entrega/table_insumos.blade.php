@@ -6,7 +6,7 @@
             <th>Un. Medidia</th>
             <th>Saldo de Qtd.</th>
             <th>Valor Unitário</th>
-            <th style="width: 10%">Ação</th>
+            <th style="width: 10%">Alteração</th>
         </tr>
     </thead>
     <tbody>
