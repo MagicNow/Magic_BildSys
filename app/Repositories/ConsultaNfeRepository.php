@@ -27,6 +27,7 @@ class ConsultaNfeRepository
 
     public static function downloadXML($fromCommand = 0)
     {
+
         if ($fromCommand) {
             $nfe = new ToolsNFe(config_path('nfe-command.json'));
         } else {
