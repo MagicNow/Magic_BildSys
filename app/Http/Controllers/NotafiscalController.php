@@ -241,20 +241,43 @@ class NotafiscalController extends AppBaseController
     {
         $fornecedores = Fornecedor::whereHas('contratos')->whereHas("contratos.entregas")->orderBy('id')->get();
 
-        dd($fornecedores);
-
         $contratos = [];
+        $contratosArr = [];
+        $fornecedoresArr = [];
         if ($fornecedores) {
             foreach ($fornecedores as $fornecedor) {
-                if ($contratosFornecedor = $fornecedor->contratos()->with("entregas", "obra")->get() AND count($contratosFornecedor) > 0) {
+                if (
+                    $contratosFornecedor = $fornecedor->contratos()->with("entregas", "obra")->get()
+                    AND count($contratosFornecedor) > 0
+                ) {
+                    $fornecedoresArr[$fornecedor->id] = $fornecedor->nome;
+
                     $contratos[$fornecedor->id] = $contratosFornecedor;
+                    foreach ($contratosFornecedor as $c) {
+                        $contratosArr[$fornecedor->id][$c->id] = [
+                            'text' => sprintf('Contrato N.o: %s', $c->id),
+                            'id' => $c->id
+                        ];
+                    }
                 }
             }
         }
 
-        dump($contratos, $fornecedores);
+        $notasFiscais = [];
+        foreach ($fornecedores as $fornecedor) {
+            $notasFiscais[$fornecedor->id] = [];
+            $notas = Notafiscal::where(\DB::raw("replace(replace(replace(cnpj,'-',''),'.',''),'/','')"), $fornecedor->cnpj)->get();
+            foreach ($notas as $nota) {
+                $notasFiscais[$fornecedor->id][$nota->id] = [
+                    'text' => sprintf('Nota N.o: %s', $nota->numero),
+                    'id' => $nota->id
+                ];
+            }
+        }
 
-        return view('notafiscals.filtro');
+        return view('notafiscals.filtro',
+            compact('contratos', 'fornecedores', 'fornecedoresArr', 'notasFiscais', 'contratosArr')
+        );
     }
 
     public function integraMega($id)
