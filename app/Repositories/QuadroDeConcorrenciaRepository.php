@@ -10,6 +10,7 @@ use App\Models\CompradorInsumo;
 use App\Models\ConfiguracaoEstatica;
 use App\Models\ContratoTemplate;
 use App\Models\Fornecedor;
+use App\Models\FornecedorServico;
 use App\Models\OrdemDeCompraItem;
 use App\Models\QcFornecedor;
 use App\Models\QcItem;
@@ -353,19 +354,29 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
                 }
             }
         }
-
+        $nao_atende = false;
         if(isset($attributes['qcFornecedores'])){
 //            dd($attributes['qcFornecedores']);
             foreach ($attributes['qcFornecedores'] as $qcFornecedor){
 //                echo 'QCFORNECEDOR';
 //                var_dump($qcFornecedor);
-                $qcF = QcFornecedor::firstOrCreate([
-                    'fornecedor_id'=> $qcFornecedor['fornecedor_id'],
-                    'rodada'=>$qc->rodada_atual,
-                    'quadro_de_concorrencia_id'=>$qc->id
+
+                $fornecedor = Fornecedor::find($qcFornecedor['fornecedor_id']);
+                $validaFornecedor = $this->validaFornecedor(['codigo_mega_fornecedor'=> $fornecedor->codigo_mega, 'codigo_temp_fornecedor'=> $fornecedor->id, 'id_qc' => $id]);
+                if(!isset($validaFornecedor['success'])) {
+                    flash($validaFornecedor['error'],'error');
+                    $nao_atende = true;
+                }else{
+                    $qcF = QcFornecedor::firstOrCreate([
+                        'fornecedor_id'=> $qcFornecedor['fornecedor_id'],
+                        'rodada'=>$qc->rodada_atual,
+                        'quadro_de_concorrencia_id'=>$qc->id
                     ],[
-                    'user_id' => $attributes['user_update_id']
-                ]);
+                        'user_id' => $attributes['user_update_id']
+                    ]);
+                }
+
+
 //                echo 'QCF';
 //                var_dump($qcF);
             }
@@ -381,6 +392,10 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
 
         $model = $this->updateRelations($model, $attributes);
         $model->save();
+
+        if($nao_atende){
+            return false;
+        }
 
         if (isset($attributes['fechar_qc'])) {
             // Verifica se existe pelo menos um item e um fornecedor
@@ -560,5 +575,55 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
         });
 
         return $qcs;
+    }
+
+    public static function validaFornecedor(array $attributes)
+    {
+        # verificar se o fornecedor existe.
+        if($attributes['codigo_mega_fornecedor']) {
+            $fornecedor = Fornecedor::where('codigo_mega', $attributes['codigo_mega_fornecedor'])->first();
+
+            if (!$fornecedor) {
+                # Importar fornecedor caso não existir.
+                $fornecedor = ImportacaoRepository::fornecedores($attributes['codigo_mega_fornecedor'], 'AGN_IN_CODIGO');
+                if(!$fornecedor){
+                    return ['error' => 'Não foi possível importar o fornecedor'];
+                }
+            }
+        }else{
+            $fornecedor = Fornecedor::find($attributes['codigo_temp_fornecedor']);
+        }
+
+        # Com o codigo do QC buscar os insumos e verificar se algum ID é de serviço
+        $insumoServicos = QcItem::join('insumos', 'insumos.id', '=', 'qc_itens.insumo_id')
+            ->where('qc_itens.quadro_de_concorrencia_id', $attributes['id_qc'])
+            ->whereNotNull('insumos.servico_cnae_id')
+            ->get();
+
+        $servico = null;
+        $servico_nao_atendido = true;
+        # Verifica se o insumo é de serviço
+        if(count($insumoServicos)){
+            foreach($insumoServicos as $insumoServico) {
+                # Verifica se o serviço é atendido pelo fornecedor.
+                $servico = FornecedorServico::where('codigo_fornecedor_id', $fornecedor->id)
+                    ->where('codigo_servico_id', $insumoServico->servico_cnae_id)
+                    ->first();
+
+                if($servico){
+                    $servico_nao_atendido = false;
+                }
+            }
+            if($servico_nao_atendido){
+                return ['error' => 'O fornecedor, ' . $fornecedor->nome . ' não atende nenhum insumo deste Q.C.', 'id_fornecedor' => $fornecedor->id];
+            }
+            # retorna o resultado para a tela.
+            return ['success' => true];
+        }else{
+            if(!$fornecedor->inscricao_estadual){
+                return ['error' => 'Inscrição estadual não cadastrado para o fornecedor: ' . $fornecedor->nome, 'id_fornecedor' => $fornecedor->id];
+            }
+            return ['success' => true];
+        }
     }
 }

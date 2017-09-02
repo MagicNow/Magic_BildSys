@@ -16,12 +16,17 @@ class FornecedoresDataTable extends DataTable
     {
         return $this->datatables
             ->eloquent($this->query())
-            ->addColumn('is_user', function($fornecedor) {
+            ->editColumn('is_user', function($fornecedor) {
                 return $fornecedor->is_user
                     ? '<i class="fa fa-check text-success"></i>'
                     : '<i class="fa fa-times text-danger"></i>';
             })
-            ->addColumn('action', 'admin.fornecedores.datatables_actions')
+            ->editColumn('codigo_mega', function($fornecedor) {
+                return $fornecedor->codigo_mega
+                    ? $fornecedor->codigo_mega
+                    : '<i class="fa fa-times text-danger" title="Fornecedor temporário"></i>';
+            })
+            ->editColumn('action', 'admin.fornecedores.datatables_actions')
             ->make(true);
     }
 
@@ -50,6 +55,9 @@ class FornecedoresDataTable extends DataTable
             ->ajax('')
             ->parameters([
                 'responsive' => 'true',
+                'order' => [
+                    2,'ASC'
+                ],
                  'initComplete' => 'function () {
                     max = this.api().columns().count();
                     this.api().columns().every(function (col) {
@@ -97,6 +105,8 @@ class FornecedoresDataTable extends DataTable
     private function getColumns()
     {
         return [
+            'Código' => ['name' => 'id', 'data' => 'id', 'width'=>'6%'],
+            'Código Mega' => ['name' => 'codigo_mega', 'data' => 'codigo_mega', 'width'=>'6%'],
             'nome' => ['name' => 'nome', 'data' => 'nome'],
             'cnpj' => ['name' => 'cnpj', 'data' => 'cnpj'],
 //            'logradouro' => ['name' => 'logradouro', 'data' => 'logradouro'],

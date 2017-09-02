@@ -845,6 +845,11 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
                     'as' => 'quadroDeConcorrencias.adicionar',
                     'uses' => 'QuadroDeConcorrenciaController@adicionar'
                 ])->middleware("needsPermission:quadroDeConcorrencias.edit");
+            $router->get('/{quadroDeConcorrencias}/check-fornecedor',
+                [
+                    'as' => 'quadroDeConcorrencias.validaFornecedor',
+                    'uses' => 'QuadroDeConcorrenciaController@validaFornecedor'
+                ]);
 
             # Dashboard site QUADRO DE CONCORRÊNCIA
             $router->get('/view/dashboard',
@@ -958,6 +963,10 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->get(
             '/{contratos}/imprimir',
             ['as' => 'contratos.imprimirContrato', 'uses' => 'ContratoController@imprimirContrato']
+        );
+        $router->get(
+            '/{contratos}/imprimir-contrato',
+            ['as' => 'contratos.imprimirContratoCompleto', 'uses' => 'ContratoController@imprimirContratoCompleto']
         );
         $router->post(
             '/{contratos}/envia-contrato',

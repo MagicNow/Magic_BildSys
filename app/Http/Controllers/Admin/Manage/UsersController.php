@@ -6,6 +6,7 @@ use App\DataTables\UserDataTable;
 use App\Http\Requests\Admin;
 use App\Http\Requests\Admin\CreateUserRequest;
 use App\Http\Requests\Admin\UpdateUserRequest;
+use App\Models\Fornecedor;
 use App\Repositories\Admin\UserRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
@@ -84,15 +85,32 @@ class UsersController extends AppBaseController
 
         $usuario_existente = User::Where('email', '=', $request->email)
             ->first();
-
-        if (isset($usuario_existente_deletado)) {
-            $usuario_existente_deletado->forceDelete();
-        }
-
         if (isset($usuario_existente)) {
             Flash::error('O campo email já esta sendo utilizado em outro cadastro');
             return redirect('/admin/users/create')->withInput($request->except('password'));
         }
+
+        $fornecedor_email_existente = Fornecedor::where('email', trim($request->email) )
+            ->first();
+        if (isset($fornecedor_email_existente)) {
+            Flash::error('O campo email já esta sendo utilizado em um cadastro de fornecedor');
+            return redirect('/admin/users/create')->withInput($request->except('password'));
+        }
+        
+        if (isset($usuario_existente_deletado)) {
+//            $usuario_existente_deletado->forceDelete();
+            $usuario_existente_deletado->deleted_at = null;
+            $usuario_existente_deletado->save();
+            
+            $user = $this->userRepository->update($input, $usuario_existente_deletado->id);
+
+            $user->roles()->sync($request->roles);
+            Flash::success('Usuário ' . trans('common.saved') . ' ' . trans('common.successfully') . '.');
+
+            return redirect(route('manage.users'));
+        }
+
+        
 
         $input = $request->all();
         $input['active'] = intval($request->get('active'));

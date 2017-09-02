@@ -7,10 +7,12 @@ use App\Http\Requests\Admin;
 use App\Http\Requests\Admin\CreateFornecedoresRequest;
 use App\Http\Requests\Admin\UpdateFornecedoresRequest;
 use App\Models\CatalogoContrato;
+use App\Models\Cnae;
 use App\Models\Contrato;
 use App\Models\Fornecedor;
 use App\Models\FornecedorServico;
 use App\Models\QcFornecedor;
+use App\Models\Servico;
 use App\Models\User;
 use App\Repositories\Admin\FornecedoresRepository;
 use App\Repositories\Admin\ValidationRepository;
@@ -58,7 +60,7 @@ class FornecedoresController extends AppBaseController
     }
 
     /**
-     * Store a newly created Fornecedores in storage.
+     * Store a newly created Fornecedor in storage.
      *
      * @param CreateFornecedoresRequest $request
      *
@@ -99,7 +101,7 @@ class FornecedoresController extends AppBaseController
         $fornecedor = $this->fornecedoresRepository->create($input);
 
         if(!$request->ajax()) {
-            Flash::success('Fornecedores '.trans('common.saved').' '.trans('common.successfully').'.');
+            Flash::success('Fornecedor '.trans('common.saved').' '.trans('common.successfully').'.');
 
             return redirect(route('admin.fornecedores.index'));
         }
@@ -123,13 +125,12 @@ class FornecedoresController extends AppBaseController
             'fornecedor_servicos.codigo_servico_id',
             'servicos_cnae.nome'
         ])
-            ->join('fornecedores','fornecedores.id','=','fornecedor_servicos.codigo_fornecedor_id')
             ->join('servicos_cnae','servicos_cnae.id','=','fornecedor_servicos.codigo_servico_id')
             ->where('fornecedor_servicos.codigo_fornecedor_id', $id)
             ->get();
 
         if (empty($fornecedores)) {
-            Flash::error('Fornecedores '.trans('common.not-found'));
+            Flash::error('Fornecedor '.trans('common.not-found'));
 
             return redirect(route('admin.fornecedores.index'));
         }
@@ -146,19 +147,24 @@ class FornecedoresController extends AppBaseController
      */
     public function edit($id)
     {
+        $servicos = Cnae::pluck('nome', 'id')->toArray();
+        $servicos_fornecedor = FornecedorServico::join('servicos_cnae','servicos_cnae.id','=','fornecedor_servicos.codigo_servico_id')
+            ->where('fornecedor_servicos.codigo_fornecedor_id', $id)
+            ->pluck('servicos_cnae.id')->all();
+
         $fornecedores = $this->fornecedoresRepository->findWithoutFail($id);
 
         if (empty($fornecedores)) {
-            Flash::error('Fornecedores '.trans('common.not-found'));
+            Flash::error('Fornecedor '.trans('common.not-found'));
 
             return redirect(route('admin.fornecedores.index'));
         }
 
-        return view('admin.fornecedores.edit')->with('fornecedores', $fornecedores);
+        return view('admin.fornecedores.edit', compact('servicos_fornecedor', 'servicos'))->with('fornecedores', $fornecedores);
     }
 
     /**
-     * Update the specified Fornecedores in storage.
+     * Update the specified Fornecedor in storage.
      *
      * @param  int              $id
      * @param UpdateFornecedoresRequest $request
@@ -167,7 +173,6 @@ class FornecedoresController extends AppBaseController
      */
     public function update($id, UpdateFornecedoresRequest $request)
     {
-//        dd($request->all());
         $usuario_existente_deletado = User::Where('email', '=', $request->email)
             ->withTrashed()
             ->whereNotNull('deleted_at')
@@ -208,15 +213,17 @@ class FornecedoresController extends AppBaseController
             return redirect(route('admin.fornecedores.index'));
         }
 
+
+
         $fornecedores = $this->fornecedoresRepository->update($request->all(), $id);
 
-        Flash::success('Fornecedores '.trans('common.updated').' '.trans('common.successfully').'.');
+        Flash::success('Fornecedor '.trans('common.updated').' '.trans('common.successfully').'.');
 
         return redirect(route('admin.fornecedores.index'));
     }
 
     /**
-     * Remove the specified Fornecedores from storage.
+     * Remove the specified Fornecedor from storage.
      *
      * @param  int $id
      *
@@ -227,7 +234,7 @@ class FornecedoresController extends AppBaseController
         $fornecedores = $this->fornecedoresRepository->findWithoutFail($id);
 
         if (empty($fornecedores)) {
-            Flash::error('Fornecedores '.trans('common.not-found'));
+            Flash::error('Fornecedor '.trans('common.not-found'));
 
             return redirect(route('admin.fornecedores.index'));
         }
@@ -250,7 +257,7 @@ class FornecedoresController extends AppBaseController
             return redirect(route('admin.fornecedores.index'));
         }
 
-        Flash::success('Fornecedores '.trans('common.deleted').' '.trans('common.successfully').'.');
+        Flash::success('Fornecedor '.trans('common.deleted').' '.trans('common.successfully').'.');
 
         return redirect(route('admin.fornecedores.index'));
     }

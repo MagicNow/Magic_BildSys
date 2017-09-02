@@ -23,7 +23,7 @@
     "gulp": "^3.9.1",
     "gulp-bower": "0.0.13",
     "jquery": "^3.1.0",
-    "laravel-elixir": "^6.0.0-14",
+    "laravel-elixir": "^6.0.0-15",
     "laravel-elixir-vue-2": "^0.2.0",
     "laravel-elixir-webpack-official": "^1.0.10",
     "lodash": "^4.16.2",
@@ -34,6 +34,7 @@
   },
   "dependencies": {
     "browser-sync": "^2.18.12",
-    "hchs-vue-charts": "^1.2.31"
+    "hchs-vue-charts": "^1.2.31",
+    "laravel-elixir-modernizr": "^1.1.1"
   }
 }

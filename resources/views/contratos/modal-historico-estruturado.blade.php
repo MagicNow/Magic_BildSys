@@ -1,3 +1,4 @@
+@if(!isset($impressao))
 <div class="modal fade" id="modal-historico-estruturado-{{ $item->id }}" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-full" role="document">
         <div class="modal-content">
@@ -10,17 +11,20 @@
                 </h4>
             </div>
             <div class="modal-body">
+@endif
                 <table class="table table-bordered table-all-center">
                     <thead>
                         <tr>
-                            <th colspan="2"></th>
+                            <th colspan="{{ !isset($impressao)?'2':'1' }}"></th>
                             <th colspan="2">Contratado</th>
                             <th colspan="2">Realizado</th>
                             <th colspan="3">Saldo</th>
                             <th colspan="1"></th>
                         </tr>
                         <tr>
+                            @if(!isset($impressao))
                             <th></th>
+                            @endif
                             <th>Apropriação</th>
                             <th>Qtd.</th>
                             <th>Valor Total</th>
@@ -35,6 +39,7 @@
                     <tbody>
                         @foreach($item->apropriacoes as $apropriacao)
                             <tr>
+                                @if(!isset($impressao))
                                 <td>
                                     <a href="{{ route('contratos.memoria_de_calculo', [$contrato->id, $apropriacao  ->id]) }}" type="button"
                                        class="btn btn-flat btn-xs btn-primary"
@@ -53,6 +58,7 @@
                                     </button>
 
                                 </td>
+                                @endif
                                 <td>{{ $apropriacao->codigoServico() }}</td>
                                 <td>{{ float_to_money($apropriacao->qtd, '') }}</td>
                                 <td>{{ float_to_money($item->valor_unitario * $apropriacao->qtd) }}</td>
@@ -75,7 +81,7 @@
                                                     <th colspan="4"></th>
                                                 </tr>
                                                 <tr>
-                                                    <th>Movimentação</th>
+                                                    <th>Alteração</th>
                                                     <th>Qtd.</th>
                                                     <th>Valor Unitário</th>
                                                     <th>Qtd.</th>
@@ -131,7 +137,9 @@
                         @endforeach
                     </tbody>
                 </table>
+@if(!isset($impressao))
             </div>
         </div>
     </div>
 </div>
+@endif

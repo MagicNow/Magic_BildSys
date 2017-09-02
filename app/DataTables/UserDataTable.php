@@ -22,6 +22,12 @@ class UserDataTable extends DataTable
             ->editColumn('action', 'admin.manage.users.datatables_actions')
             ->editColumn('active', '{!! $active?\'<i class="fa fa-check text-success"></i>\':\'<i class="fa fa-times text-danger"></i>\' !!}')
             ->editColumn('admin', '{!! $admin?\'<i class="fa fa-check text-success"></i>\':\'<i class="fa fa-times text-danger"></i>\' !!}')
+            ->editColumn('created_at', function($obj){
+                return $obj->created_at->format('d/m/Y');
+            })
+            ->filterColumn('created_at', function ($query, $keyword) {
+                $query->whereRaw("DATE_FORMAT(users.created_at,'%d/%m/%Y') like ?", ["%$keyword%"]);
+            })
             ->make(true);
     }
 
@@ -51,6 +57,7 @@ class UserDataTable extends DataTable
             ->columns($this->getColumns())
             ->ajax('')
             ->parameters([
+                'order' => [1,'asc'],
                 'responsive'=> 'true',
                 "initComplete" => 'function () {
                     max = this.api().columns().count();
@@ -99,10 +106,12 @@ class UserDataTable extends DataTable
     private function getColumns()
     {
         return [
+            'id' => ['name' => 'id', 'data' => 'id', 'width'=>'6%'],
             'nome' => ['name' => 'name', 'data' => 'name'],
             'e-mail' => ['name' => 'email', 'data' => 'email'],
-            'ativo' => ['name' => 'active', 'data' => 'active'],
-            'admin' => ['name' => 'admin', 'data' => 'admin'],
+            'ativo' => ['name' => 'active', 'data' => 'active', 'width'=>'4%'],
+            'admin' => ['name' => 'admin', 'data' => 'admin', 'width'=>'4%'],
+            'criadoEm' => ['name' => 'created_at', 'data' => 'created_at', 'width'=>'8%'],
             'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%', 'class' => 'all']
         ];
     }

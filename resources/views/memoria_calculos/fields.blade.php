@@ -87,7 +87,7 @@
                                             class="fa fa-plus"></i> {{ $nomePavimento }}
                                 </button>
                                 @if($bloco['editavel'])
-                                    <button type="button" onclick="removeBloco({{ $indexBloco }})" title="Remover"
+                                    <button type="button" onclick="removeBloco({{ $indexBloco }})" data-toggle="tooltip" title="Remover {{ $nomePavimento }}"
                                             class="btn btn-flat btn-xs btn-danger">
                                         <i class="fa fa-times"></i>
                                     </button>
@@ -135,7 +135,7 @@
                                                     @if($pavimento['editavel'])
                                                         <button type="button"
                                                                 onclick="removeLinha({{ $indexBloco }},{{ $indexPavimento }})"
-                                                                title="Remover"
+                                                                data-toggle="tooltip" title="Remover {{ $nomeTrecho }}"
                                                                 class="btn btn-flat btn-xs btn-danger">
                                                             <i class="fa fa-times"></i>
                                                         </button>
@@ -186,7 +186,7 @@
                                                                                 <button
                                                                                         type="button"
                                                                                         onclick="removeTrecho({{ $indexBloco.','.$indexPavimento.','.$indexTrecho }})"
-                                                                                        title="Remover"
+                                                                                        data-toggle="tooltip" title="Remover {{ $nomeTrecho }}"
                                                                                         class="btn btn-flat btn-xs btn-danger"><i
                                                                                             class="fa fa-times"></i> </button>
                                                                             </span>
@@ -482,7 +482,7 @@
                     '<button type="button" onclick="adicionaPavimento(' + blocos + ')" class="btn btn-flat btn-xs btn-info">' +
                     '<i class="fa fa-plus"></i> ' + nomePavimento +
                     '</button>' +
-                    '<button type="button" onclick="removeBloco(' + blocos + ')" title="Remover" class="btn btn-flat btn-xs btn-danger">' +
+                    '<button type="button" onclick="removeBloco(' + blocos + ')" data-toggle="tooltip" title="Remover '+ nomePavimento +'" class="btn btn-flat btn-xs btn-danger">' +
                     '<i class="fa fa-times"></i> ' +
                     '</button>' +
                     '</div>' +
@@ -523,7 +523,7 @@
                     '<button type="button" onclick="adicionaTrecho(' + bloco + ',' + pavimentosCount + ')" class="btn btn-flat btn-xs btn-warning">' +
                     '<i class="fa fa-plus"></i> ' + nomeTrecho +
                     '</button>' +
-                    '<button type="button" onclick="removeLinha(' + bloco + ',' + pavimentosCount + ')" title="Remover" class="btn btn-flat btn-xs btn-danger">' +
+                    '<button type="button" onclick="removeLinha(' + bloco + ',' + pavimentosCount + ')"  data-toggle="tooltip" title="Remover '+ nomePavimento +'"  class="btn btn-flat btn-xs btn-danger">' +
                     '<i class="fa fa-times"></i> ' +
                     '</button>' +
                     '</div>' +
@@ -559,7 +559,7 @@
                     ' <input type="hidden" name="trecho_bloco_ordem[' + bloco + '][' + pavimento + '][' + trechosCount + ']" ' +
                     ' id="trecho_bloco_ordem_' + bloco + '_' + pavimento + '_' + trechosCount + '" value="">' +
                     '<span class="input-group-btn">' +
-                    '<button type="button" onclick="removeTrecho(' + bloco + ',' + pavimento + ',' + trechosCount + ')" title="Remover" class="btn btn-flat btn-xs btn-danger">' +
+                    '<button type="button" onclick="removeTrecho(' + bloco + ',' + pavimento + ',' + trechosCount + ')"  data-toggle="tooltip" title="Remover '+ nomeTrecho +'"  class="btn btn-flat btn-xs btn-danger">' +
                     '<i class="fa fa-times"></i> ' +
                     '</button>' + '</span>' +
                     '</div>' +
