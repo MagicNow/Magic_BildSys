@@ -176,6 +176,21 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
 
     });
 	
+	# Tipos de Levantamentos
+    $router->group(['middleware' => 'needsPermission:tipoLevantamentos.list'], function () use ($router) {
+        $router->get('tipoLevantamentos', ['as' => 'admin.tipo_levantamentos.index', 'uses' => 'Admin\TipoLevantamentoController@index']);
+        $router->post('tipoLevantamentos', ['as' => 'admin.tipo_levantamentos.store', 'uses' => 'Admin\TipoLevantamentoController@store']);
+        $router->get('tipoLevantamentos/create', ['as' => 'admin.tipo_levantamentos.create', 'uses' => 'Admin\TipoLevantamentoController@create'])
+			->middleware("needsPermission:tipoLevantamentos.create");
+        $router->put('tipoLevantamentos/{tipoLevantamentos}', ['as' => 'admin.tipo_levantamentos.update', 'uses' => 'Admin\TipoLevantamentoController@update']);
+        $router->patch('tipoLevantamentos/{tipoLevantamentos}', ['as' => 'admin.tipo_levantamentos.update', 'uses' => 'Admin\TipoLevantamentoController@update']);
+        $router->delete('tipoLevantamentos/{tipoLevantamentos}', ['as' => 'admin.tipo_levantamentos.destroy', 'uses' => 'Admin\TipoLevantamentoController@destroy'])
+			->middleware("needsPermission:tipoLevantamentos.delete");
+        $router->get('tipoLevantamentos/{tipoLevantamentos}', ['as' => 'admin.tipo_levantamentos.show', 'uses' => 'Admin\TipoLevantamentoController@show']);
+        $router->get('tipoLevantamentos/{tipoLevantamentos}/edit', ['as' => 'admin.tipo_levantamentos.edit', 'uses' => 'Admin\TipoLevantamentoController@edit'])
+			->middleware("needsPermission:tipoLevantamentos.edit");
+    });    
+	
 	# Estruturas
     $router->group(['middleware' => 'needsPermission:estruturas.list'], function () use ($router) {        
         $router->get('estruturas', ['as' => 'admin.estruturas.index', 'uses' => 'Admin\EstruturaController@index']);

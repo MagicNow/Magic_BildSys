@@ -46,7 +46,15 @@
                 <span>Levantamentos</span>
             </a>
         </li>
-        @endshield	
+        @endshield
+		@shield('tipoLevantamentos.list')
+        <li class="{{ Request::is('admin/tipo_levantamentos*') ? 'active' : '' }}">
+            <a href="{!! route('admin.tipo_levantamentos.index') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Tipos Levantamentos</span>
+            </a>
+        </li>
+        @endshield
 		@shield('mascaraInsumos.list')
         <li class="{{ Request::is('admin/mascaraInsumos*') ? 'active' : '' }}">
             <a href="{!! route('admin.mascara_insumos.index') !!}">

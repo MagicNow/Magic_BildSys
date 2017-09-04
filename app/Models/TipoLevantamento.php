@@ -5,19 +5,28 @@ namespace App\Models;
 use Eloquent as Model;
 
 /**
- * Class LevantamentoTipo
+ * Class TipoLevantamento
  * @package App\Models
  * @version April 5, 2017, 12:32 pm BRT
  */
-class LevantamentoTipo extends Model
+class TipoLevantamento extends Model
 {
 
-    public $table = 'levantamento_tipos';
+    public $table = 'tipo_levantamentos';
 
-    public $timestamps = false;
+    const CREATED_AT = 'created_at';
+    const UPDATED_AT = 'updated_at';
+
+
+    protected $dates = ['deleted_at'];
+
 
     public $fillable = [
-        'nome'
+        'nome',
+    ];
+
+    public static $campos = [
+        'nome',        
     ];
 
     /**

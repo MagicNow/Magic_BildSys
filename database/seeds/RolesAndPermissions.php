@@ -170,9 +170,13 @@ class RolesAndPermissions extends Seeder
 			'levantamentos.list' => 'Listagem de levantamento',
             'levantamentos.create' => 'Criação de levantamento',
             'levantamentos.edit'   => 'Edição de levantamento',
-            'levantamentos.delete'   => 'Remoção de levantamento',
-			
+            'levantamentos.delete'   => 'Remoção de levantamento',			
             'levantamentos.import' => 'Importar levantamentos',			
+			
+			'tipoLevantamentos.list' => 'Listagem de tipos de levantamento',
+            'tipoLevantamentos.create' => 'Criação de tipos de levantamento',
+            'tipoLevantamentos.edit'   => 'Edição de tipos de levantamento',
+            'tipoLevantamentos.delete'   => 'Remoção de tipos de levantamento',
 			
 			'mascaraInsumos.list' => 'Listagem de Mascara de Insumos',
             'mascaraInsumos.create' => 'Criação de Mascara de Insumos',
