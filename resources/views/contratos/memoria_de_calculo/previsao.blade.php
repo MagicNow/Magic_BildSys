@@ -113,7 +113,8 @@
                    style="margin-top: -10px;">
                     <i class="fa fa-plus fa-fw" aria-hidden="true"></i>
                 </a>
-                {!! Form::select('memoria_de_calculo', $memoria_de_calculo, \Illuminate\Support\Facades\Input::get('memoria_de_calculo') ? : null, ['class' => 'form-control select2', 'required' => 'required', 'onchange' => 'buscarMemoriaDeCalculo(this.value);']) !!}
+                {!! Form::select('memoria_de_calculo', $memoria_de_calculo, \Illuminate\Support\Facades\Input::get('memoria_de_calculo') ? : null,
+                 ['class' => 'form-control select2', 'required' => 'required', 'onchange' => 'buscarMemoriaDeCalculo(this.value);']) !!}
             </div>
             @if(isset($memoriaCalculo))
                 <div class="form-group col-md-6">
@@ -246,7 +247,7 @@
                         Informe os Valores desta medição
                         <button onclick="cancelarEdicao();"
                                 class="btn btn-flat btn-link btn-xs pull-right" data-toggle="tooltip"
-                                data-placement="top" title="Cancelar inserção" type="button">
+                                data-placement="top" title="Fechar" type="button">
                             <i class="fa fa-times" aria-hidden="true"></i>
                         </button>
                     </div>
@@ -261,7 +262,7 @@
                             {!! Form::label('preenchimento_planejamento_id', 'Tarefa:') !!}
                             {!! Form::select('preenchimento_planejamento_id', $planejamentos, null, [
                                 'id' => 'preenchimento_planejamento_id',
-                                'class' => 'form-control select2']) !!}
+                                'class' => 'form-control select2', 'onchange'=>"atualizaReferencia('planejamento_id_',this.value);"]) !!}
                         </div>
 
                         <div class="form-group">
@@ -269,19 +270,21 @@
                                 <div class="col-md-4">
                                     {!! Form::label('preenchimento_data_competencia', 'Data Prevista:') !!}
                                     <input type="date" class="form-control" name="preenchimento_data_competencia"
-                                           value=""  id="preenchimento_data_competencia">
+                                           value=""  id="preenchimento_data_competencia"
+                                        onchange="atualizaReferencia('data_',this.value);">
                                 </div>
                                 <div class="col-md-4">
                                     {!! Form::label('preenchimento_qtd', 'Quantidade:') !!}
                                     <input type="text" class="form-control money text-right" name="quantidade_preenchimento"
-                                           id="quantidade_preenchimento" onkeyup="calcularPorcentagem(this.value, 'preenchimento');"
+                                           id="quantidade_preenchimento"
+                                           onkeyup="atualizaQtd();"
                                            value="" >
                                 </div>
                                 <div class="col-md-4">
                                     {!! Form::label('porcentagem_0', 'Percentual:') !!}
                                     <input type="text" class="form-control money text-right"
                                            id="porcentagem_preenchimento"
-                                           onkeyup="calcularQuantidade(this.value, 'preenchimento');">
+                                           onkeyup="atualizaPercentual();">
                                 </div>
                             </div>
 
@@ -324,7 +327,8 @@
                     @if(count($previsoes))
                         @foreach($previsoes as $item)
                             @php $count = $item->id; @endphp
-                            <tr id="linha_{{$item->id}}" memoria_calculo_bloco_id="{{$item->memoria_calculo_bloco_id}}" class="estrutura preenchido" estrutura="{{$item->memoriaCalculoBloco->estruturaObj->id}}">
+                            <tr id="linha_{{$item->id}}" memoria_calculo_bloco_id="{{$item->memoria_calculo_bloco_id}}"
+                                class="estrutura preenchido" estrutura="{{$item->memoriaCalculoBloco->estruturaObj->id}}">
                                 <input type="hidden" name="itens[{{$item->id}}][memoria_calculo_bloco_id]" value="{{$item->memoria_calculo_bloco_id}}">
                                 <input type="hidden" name="itens[{{$item->id}}][id]" value="{{$item->id}}">
                                 <td>
@@ -335,19 +339,32 @@
                                     {{$item->memoriaCalculoBloco->trechoObj->nome}}
                                 </td>
                                 <td>
-                                    {!! Form::select('itens['.$item->id.'][planejamento_id]', $planejamentos, $item->planejamento->id, ['class' => 'form-control select2', 'required', 'id'=>'planejamento_id_'.$item->memoria_calculo_bloco_id]) !!}
+                                    {!! Form::select('itens['.$item->id.'][planejamento_id]',
+                                    $planejamentos, $item->planejamento->id, ['class' => 'form-control select2',
+                                    'required', 'id'=>'planejamento_id_'.$item->memoria_calculo_bloco_id, 'onfocus'=>"cancelarEdicao()"]) !!}
                                 </td>
                                 <td>
-                                    <input type="date" class="form-control" name="itens[{{$item->id}}][data_competencia]" value="{{$item->data_competencia->format('Y-m-d')}}" required id="data_{{$item->id}}" onkeyup="verificarPreenchido('{{$item->id}}');" onchange="verificarPreenchido('{{$item->id}}');">
+                                    <input type="date" class="form-control" name="itens[{{$item->id}}][data_competencia]"
+                                           value="{{$item->data_competencia->format('Y-m-d')}}" required  onfocus="cancelarEdicao();"
+                                           id="data_{{$item->memoria_calculo_bloco_id}}" onkeyup="verificarPreenchido('{{$item->id}}');"
+                                           onchange="verificarPreenchido('{{$item->id}}');">
                                 </td>
                                 <td>
-                                    <input type="text" class="form-control money calc_quantidade" name="itens[{{$item->id}}][qtd]" id="quantidade_{{$item->id}}" onkeyup="calcularPorcentagem(this.value, '{{$item->id}}');verificarPreenchido('{{$item->id}}');" value="{{number_format($item->qtd, 2, ',', '.')}}" required>
+                                    <input type="text" class="form-control money calc_quantidade" name="itens[{{$item->id}}][qtd]"
+                                           id="quantidade_{{$item->memoria_calculo_bloco_id}}"
+                                           onfocus="cancelarEdicao();"
+                                           onkeyup="calcularPorcentagem(this.value, '{{$item->memoria_calculo_bloco_id}}');verificarPreenchido('{{$item->memoria_calculo_bloco_id}}');"
+                                           value="{{number_format($item->qtd, 2, ',', '.')}}" required>
                                 </td>
                                 <td>
-                                    <input type="text" class="form-control money calc_porcentagem" id="porcentagem_{{$item->id}}" onkeyup="calcularQuantidade(this.value, '{{$item->id}}');verificarPreenchido('{{$item->id}}');">
+                                    <input type="text" class="form-control money calc_porcentagem" value="{{number_format((($item->qtd/$contrato_item_apropriacao->qtd)*100), 2, ',', '.')}}"
+                                           id="porcentagem_{{$item->memoria_calculo_bloco_id}}"  onfocus="cancelarEdicao();"
+                                           onkeyup="calcularQuantidade(this.value, '{{$item->memoria_calculo_bloco_id}}');verificarPreenchido('{{$item->memoria_calculo_bloco_id}}');">
                                 </td>
                                 <td>
-                                    <button onclick="excluirLinha({{$item->id}}, {{$item->memoria_calculo_bloco_id}});" class="btn btn-flat btn-sm btn-danger pull-right" data-toggle="tooltip" data-placement="top" title="Excluir" type="button">
+                                    <button onclick="excluirLinha({{$item->id}}, {{$item->memoria_calculo_bloco_id}});"
+                                            class="btn btn-flat btn-sm btn-danger pull-right" data-toggle="tooltip"
+                                            data-placement="top" title="Excluir" type="button">
                                         <i class="fa fa-remove fa-fw" aria-hidden="true"></i>
                                     </button>
                                 </td>
@@ -427,33 +444,52 @@
         $('#filtro_nao_preenchido').iCheck('destroy');
     });
 
-    function abreEdicaoFacil(memoria_calculo_bloco_id, estrutura, pavimento, trecho, estrutura_id) {
-        if($('tr [memoria_calculo_bloco_id="'+memoria_calculo_bloco_id+'"]').length){
-
-        }
+    function abreEdicaoFacil(memoria_calculo_bloco_id, estrutura, pavimento, trecho) {
         $('#preenchimento_memoria_calculo_bloco_id').val(memoria_calculo_bloco_id);
-        $('#preenchimento_id').val();
         $('#preenchimento_texto').text(estrutura + ' - ' + pavimento + ' - ' + trecho);
-        $('#preenchimento_planejamento_id').val($('#tarefa_referencia').val()).trigger('change');
-        $('#preenchimento_data_competencia').val();
-        $('#quantidade_preenchimento').val();
-        $('#porcentagem_preenchimento').val();
+        if($('#planejamento_id_'+memoria_calculo_bloco_id).length){
+            $('#preenchimento_planejamento_id').val($('#planejamento_id_'+memoria_calculo_bloco_id).val()).trigger('change');
+            $('#preenchimento_data_competencia').val($('#data_'+memoria_calculo_bloco_id).val());
+            $('#quantidade_preenchimento').val($('#quantidade_'+memoria_calculo_bloco_id).val());
+            $('#porcentagem_preenchimento').val($('#porcentagem_'+memoria_calculo_bloco_id).val());
+        }
 
         $('#boxPreenchimento').show('fast');
+    }
+
+    function atualizaQtd(){
+        atualizaReferencia('quantidade_',$('#quantidade_preenchimento').val());
+        calcularPorcentagem($('#quantidade_preenchimento').val(), 'preenchimento');
+        atualizaReferencia('porcentagem_',$('#porcentagem_preenchimento').val());
+    }
+
+    function atualizaPercentual(){
+        atualizaReferencia('porcentagem_',$('#porcentagem_preenchimento').val());
+        calcularQuantidade($('#porcentagem_preenchimento').val(), 'preenchimento');
+        atualizaReferencia('quantidade_',$('#quantidade_preenchimento').val());
+        atualizaQtd();
+    }
+
+    function atualizaReferencia(qual, valor) {
+        alvo = $('#'+qual+$('#preenchimento_memoria_calculo_bloco_id').val());
+        if(alvo.is('select')){
+            alvo.val(valor).trigger('change');
+        }else{
+            alvo.val(valor);
+        }
     }
 
     // Função para adicionar linha na tabela
     function adicionarNaTabela(memoria_calculo_bloco_id, estrutura, pavimento, trecho, estrutura_id) {
         count ++;
-//@TODO Continuar edição fácil
-//        abreEdicaoFacil(memoria_calculo_bloco_id, estrutura, pavimento, trecho, estrutura_id);
 
         if($.inArray(memoria_calculo_bloco_id, array_blocos_previstos) !== -1) {
             $('[memoria_calculo_bloco_id=' + memoria_calculo_bloco_id + ']').css('background-color', '#f98d00')
                 .animate({
                 backgroundColor: 'tranparent'
                 }, 'slow');
-        } else {
+        } else
+        {
             @foreach($planejamentos as $id => $nome)
                     options_planejamento += '<option value="{{$id}}">{{$nome}}</option>';
             @endforeach
@@ -467,21 +503,30 @@
                         '+trecho+'\
                     </td>\
                     <td>\
-                        <select class="form-control select2_add" name="itens['+count+'][planejamento_id]" id="planejamento_id_'+memoria_calculo_bloco_id+'" required>\
+                        <select class="form-control select2_add" name="itens['+count+
+                            '][planejamento_id]" id="planejamento_id_'+memoria_calculo_bloco_id+'" required>\
                         ' + options_planejamento + '\
                         </select>\
                     </td>\
                     <td>\
-                    <input type="date" class="form-control" name="itens['+count+'][data_competencia]" id="data_'+count+'" required onkeyup="verificarPreenchido('+count+');" onchange="verificarPreenchido('+count+');">\
+                    <input type="date" class="form-control" name="itens['+count+'][data_competencia]" id="data_'+memoria_calculo_bloco_id+
+                        '" required onkeyup="verificarPreenchido('+count+','+memoria_calculo_bloco_id+');"' +
+                    ' onfocus="cancelarEdicao();"  onchange="verificarPreenchido('+count+','+memoria_calculo_bloco_id+');">\
                     </td>\
                     <td>\
-                        <input type="text" class="form-control money calc_quantidade" name="itens['+count+'][qtd]" id="quantidade_'+count+'" onkeyup="calcularPorcentagem(this.value, '+count+');verificarPreenchido('+count+');" required>\
+                        <input type="text" class="form-control money calc_quantidade" name="itens['+count+'][qtd]" id="quantidade_'+memoria_calculo_bloco_id+
+                        '" onkeyup="calcularPorcentagem(this.value, '+memoria_calculo_bloco_id+');verificarPreenchido('+count+','+memoria_calculo_bloco_id+');" \
+                          onfocus="cancelarEdicao();" required>\
                     </td>\
                     <td>\
-                        <input type="text" class="form-control money calc_porcentagem" id="porcentagem_'+count+'" onkeyup="calcularQuantidade(this.value, '+count+');verificarPreenchido('+count+');">\
+                        <input type="text" class="form-control money calc_porcentagem" id="porcentagem_'+memoria_calculo_bloco_id+
+                        '" onkeyup="calcularQuantidade(this.value, '+memoria_calculo_bloco_id+');verificarPreenchido('+count+','+memoria_calculo_bloco_id+');" \
+                        onfocus="cancelarEdicao();">\
                     </td>\
                     <td>\
-                        <button onclick="removerLinha('+count+', '+memoria_calculo_bloco_id+');" class="btn btn-flat btn-sm btn-danger pull-right" data-toggle="tooltip" data-placement="top" title="Remover" type="button">\
+                        <button onclick="removerLinha('+count+', '+memoria_calculo_bloco_id+
+                    ');" class="btn btn-flat btn-sm btn-danger pull-right" data-toggle="tooltip" data-placement="top" '+
+                        ' title="Remover" type="button">\
                             <i class="fa fa-remove fa-fw" aria-hidden="true"></i>\
                         </button>\
                     </td>\
@@ -495,9 +540,11 @@
             var tarefa_referencia = $('#tarefa_referencia').val();
 
             if(tarefa_referencia) {
-                $('#planejamento_'+memoria_calculo_bloco_id).val(tarefa_referencia).trigger('change');
+                $('#planejamento_id_'+memoria_calculo_bloco_id).val(tarefa_referencia).trigger('change');
             }
         }
+        abreEdicaoFacil(memoria_calculo_bloco_id, estrutura, pavimento, trecho);
+
 
         $('#td_bloco_'+memoria_calculo_bloco_id).attr('style','border: 2px solid #f98d00 !important;');
     }
@@ -579,8 +626,9 @@
 
     // Calcula a quantidade distribuida
     function quantidadeDistribuida(callback) {
-        $('.calc_quantidade').each(function(index, value) {
-            quantidade_distribuida += moneyToFloat(value.value);
+        $('.calc_quantidade').each(function(index, objeto) {
+            console.log('calc_quantidade.each',index, objeto.value, moneyToFloat(objeto.value) );
+            quantidade_distribuida += moneyToFloat(objeto.value);
         });
 
         $('#distribuida').text(floatToMoney(quantidade_distribuida, ''));
@@ -634,9 +682,9 @@
         }
     }
 
-    function verificarPreenchido(id) {
-        var data = $('#data_'+id).val();
-        var quantidade = $('#quantidade_'+id).val();
+    function verificarPreenchido(id, mem_calc_id) {
+        var data = $('#data_'+mem_calc_id).val();
+        var quantidade = $('#quantidade_'+mem_calc_id).val();
         var linha = $('#linha_'+id);
 
         if(quantidade == '0,00') {
