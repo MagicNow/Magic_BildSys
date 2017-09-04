@@ -2,7 +2,7 @@
 
 @section('content')
     <style>
-        /*thead, tfoot { display: table-row-group !important; }*/
+        thead, tfoot { display: table-row-group !important; }
         /*html{*/
             /*zoom: 0.9;*/
         /*}*/
