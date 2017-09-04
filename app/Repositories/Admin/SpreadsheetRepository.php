@@ -290,6 +290,11 @@ class SpreadsheetRepository
                                             'grupo_id' => $grupoPai->id
                                         ]);
                                     }
+                                }else{
+                                    $erro = 1;
+                                    $mensagens_erro[] = 'A ordenação das suas colunas deve estar com algum problema visto que o primeiro
+                                            código completo que encontramos possuí o valor '.'
+                                            "<span style="color:red"> '.$final['codigo_insumo'].' </span>"';
                                 }
                             } # se for serviço
                             elseif (count($codigo_quebrado) == 5) {
