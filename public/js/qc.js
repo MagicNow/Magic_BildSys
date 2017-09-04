@@ -529,8 +529,18 @@ $(function() {
 
   function checkEqualizacaoTecnica() {
 
+      qcEqualizacao = [];
+
+      $(".qcEqualizacao").each(function( index ) {
+
+          qcEqualizacao.push($(this).val());
+      });
+
       $( ".tiposEqT input" ).each(function( index ) {
-          $('#filter_tipoEqualizacaoTecnica_'+$(this).val()).iCheck('check');
+
+          if (qcEqualizacao.indexOf($(this).val() != -1)) {
+              $('#filter_tipoEqualizacaoTecnica_'+$(this).val()).iCheck('check');
+          }
       });
   }
 
