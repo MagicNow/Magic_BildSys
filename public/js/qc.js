@@ -527,6 +527,15 @@ $(function() {
     addFornecedorTemp();
   });
 
+  function checkEqualizacaoTecnica() {
+
+      $( ".tiposEqT input" ).each(function( index ) {
+          $('#filter_tipoEqualizacaoTecnica_'+$(this).val()).iCheck('check');
+      });
+  }
+
+  setTimeout(checkEqualizacaoTecnica, 3000);
+
   $('.tiposEqT input').on('ifChecked', function(event) {
     var tipo_eqt_id = event.target.value;
 
