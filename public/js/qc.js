@@ -530,18 +530,25 @@ $(function() {
   function checkEqualizacaoTecnica() {
 
       qcEqualizacao = [];
+      tiposEqT = []
 
       $(".qcEqualizacao").each(function( index ) {
 
-          qcEqualizacao.push($(this).val());
+          qcEqualizacao.push( parseInt( $(this).val() ) );
       });
 
-      $( ".tiposEqT input" ).each(function( index ) {
+      $(".tiposEqT input").each(function( index ) {
 
-          if (qcEqualizacao.indexOf($(this).val() != -1)) {
-              $('#filter_tipoEqualizacaoTecnica_'+$(this).val()).iCheck('check');
+          tiposEqT.push( parseInt( $(this).val() ) );
+      });
+
+      for (let value of tiposEqT) {
+
+          if (qcEqualizacao.indexOf(value) !== -1) {
+
+              $('#filter_tipoEqualizacaoTecnica_'+value).iCheck('check');
           }
-      });
+      }
   }
 
   setTimeout(checkEqualizacaoTecnica, 3000);
