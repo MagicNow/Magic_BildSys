@@ -100,6 +100,28 @@
 
     function iniciarConciliacao() {
 
+        var $fornecedor = $('#fornecedor_id');
+        var $contrato = $('#contrato_id');
+        var $nota_fiscal = $('#nota_fiscal_id');
+
+        if ($.trim($fornecedor.val()) == '') {
+            alert("Por favor selecione o Fornecedor.");
+            return false;
+        }
+
+        if ($.trim($contrato.val()) == '') {
+            alert("Por favor selecione o Contrato.");
+            return false;
+        }
+
+        if ($.trim($nota_fiscal.val()) == '') {
+            alert("Por favor selecione a Nota Fiscal.");
+            return false;
+        }
+
+        window.location = "/notasfiscais/" + $nota_fiscal.val()
+                + "/edit?fornecedor=" + $fornecedor.val()
+                + "&contrato=" + $contrato.val();
     }
     </script>
 @endsection

@@ -239,7 +239,10 @@ class NotafiscalController extends AppBaseController
 
     public function filtraFornecedorContratos()
     {
-        $fornecedores = Fornecedor::whereHas('contratos')->whereHas("contratos.entregas")->orderBy('id')->get();
+        $fornecedores = Fornecedor::whereHas('contratos')
+            ->whereHas("contratos.entregas")
+            ->orderBy('id')
+            ->get();
 
         $contratos = [];
         $contratosArr = [];
@@ -247,15 +250,17 @@ class NotafiscalController extends AppBaseController
         if ($fornecedores) {
             foreach ($fornecedores as $fornecedor) {
                 if (
-                    $contratosFornecedor = $fornecedor->contratos()->with("entregas", "obra")->get()
+                    $contratosFornecedor = $fornecedor->contratos()
+                        ->with("entregas", "obra")
+                        ->get()
                     AND count($contratosFornecedor) > 0
                 ) {
-                    $fornecedoresArr[$fornecedor->id] = $fornecedor->nome;
+                    $fornecedoresArr[$fornecedor->id] = sprintf("%s [ %s ]", $fornecedor->nome, $fornecedor->cnpj);;
 
                     $contratos[$fornecedor->id] = $contratosFornecedor;
                     foreach ($contratosFornecedor as $c) {
                         $contratosArr[$fornecedor->id][$c->id] = [
-                            'text' => sprintf('Contrato N.o: %s', $c->id),
+                            'text' => sprintf('Contrato Nº: %s', $c->id),
                             'id' => $c->id
                         ];
                     }
@@ -266,10 +271,16 @@ class NotafiscalController extends AppBaseController
         $notasFiscais = [];
         foreach ($fornecedores as $fornecedor) {
             $notasFiscais[$fornecedor->id] = [];
-            $notas = Notafiscal::where(\DB::raw("replace(replace(replace(cnpj,'-',''),'.',''),'/','')"), $fornecedor->cnpj)->get();
+            $notas = Notafiscal::where(\DB::raw(
+                "replace(replace(replace(cnpj,'-',''),'.',''),'/','')"),
+                str_replace(['.', '-', '/'], '',$fornecedor->cnpj
+                )
+            )->where("schema", "like", "%procNFe%")
+                ->get();
+
             foreach ($notas as $nota) {
                 $notasFiscais[$fornecedor->id][$nota->id] = [
-                    'text' => sprintf('Nota N.o: %s', $nota->numero),
+                    'text' => sprintf('Nota Nº: %s', $nota->codigo),
                     'id' => $nota->id
                 ];
             }

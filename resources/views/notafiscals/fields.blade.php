@@ -14,11 +14,6 @@
                         {!! Form::select('contrato_id',[''=>'Escolha...'] + (isset($contrato) ? $contrato : []), null, ['class' => 'form-control select2']) !!}
                     </div>
 
-                    <div class="form-group col-sm-12">
-                        {!! Form::label('solicitacao_entrega_id', 'Solicitação de Entrega:') !!}
-                        {!! Form::select('solicitacao_entrega_id',[''=>'Escolha...'] + (isset($solicitacoes) ? $solicitacoes : []), null, ['class' => 'form-control select2']) !!}
-                    </div>
-
                     <!-- Codigo Field -->
                     <div class="form-group col-sm-4">
                         {!! Form::label('codigo', 'Número NFe:') !!}
@@ -226,16 +221,16 @@
                     <div class="panel-body">
                         <table id="itens" class="table table-striped table-hover dataTable dtr-inline">
                             <thead>
-                                <tr>
-                                    <th>Nome</th>
-                                    <th>NCM</th>
-                                    <th>Código Prod</th>
-                                    <th>Quantidade</th>
-                                    <th>Unidade</th>
-                                    <th>Valor Unit</th>
-                                    <th>Valor Total</th>
-                                    <th>Item Vínculado</th>
-                                </tr>
+                            <tr>
+                                <th>Nome</th>
+                                <th>NCM</th>
+                                <th>Código Prod</th>
+                                <th>Quantidade</th>
+                                <th>Unidade</th>
+                                <th>Valor Unit</th>
+                                <th>Valor Total</th>
+                                <th></th>
+                            </tr>
                             </thead>
                             <tbody>
                             <?php
@@ -254,24 +249,24 @@
                                         <td>
                                             {!! Form::text('notaFiscalItens['.$qtdItens.'][ncm]', $item->ncm, ['class' => 'form-control text-right']) !!}
                                         </td>
-                                        <td >
+                                        <td>
                                             {!! Form::text('notaFiscalItens['.$qtdItens.'][codigo_produto]', $item->codigo_produto, ['class' => 'form-control text-right']) !!}
                                         </td>
-                                        <td >
+                                        <td>
                                             {!! Form::text('notaFiscalItens['.$qtdItens.'][qtd]', $item->qtd, ['class' => 'form-control text-right']) !!}
                                         </td>
-                                        <td >
+                                        <td>
                                             {!! Form::text('notaFiscalItens['.$qtdItens.'][unidade]', $item->unidade, ['class' => 'form-control text-right']) !!}
                                         </td>
-                                        <td >
+                                        <td>
                                             {!! Form::text('notaFiscalItens['.$qtdItens.'][valor_unitario]', $item->valor_unitario, ['class' => 'form-control text-right']) !!}
                                         </td>
-                                        <td >
+                                        <td>
                                             {!! Form::text('notaFiscalItens['.$qtdItens.'][valor_total]', $item->valor_total, ['class' => 'form-control text-right']) !!}
                                             {!! Form::hidden('notaFiscalItens['.$qtdItens.'][id]',$item->id) !!}
                                             {!! Form::hidden('notaFiscalItens['.$qtdItens.'][tipo_equalizacao_tecnica_id]',$item->tipo_equalizacao_tecnica_id) !!}
                                         </td>
-                                        <td >
+                                        <td>
                                             <a class="btn btn-success">Vincular</a>
                                         </td>
                                     </tr>
@@ -280,6 +275,46 @@
                             </tbody>
                         </table>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-sm-12">
+    <div class="col-md-12">
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true" style="margin-top:10px;">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        FATURA DA NOTA FISCAL
+                    </h4>
+                </div>
+                <div class="panel-body">
+
+                    @foreach($notafiscal->faturas as $fatura)
+
+                        <div class="col-md-4 box-rounded-bordered" id="fatura-{{ $fatura->id }}">
+                            <div class="form-group col-sm-12">
+                                {!! Form::hidden(sprintf('faturas[%s]["id"]', $fatura->id), $fatura->id, ['class' => 'form-control text-right']) !!}
+
+                                {!! Form::label('numero', 'Numero') !!}
+                                {!! Form::text(sprintf('faturas[%s]["numero"]', $fatura->id), $fatura->numero, ['class' => 'form-control text-right']) !!}
+                            </div>
+
+                            <div class="form-group col-sm-12">
+                                {!! Form::label('numero', 'Numero') !!}
+                                {!! Form::date(sprintf('faturas[%s]["vencimento"]', $fatura->id), $fatura->vencimento, ['class' => 'form-control text-right']) !!}
+                            </div>
+
+                            <div class="form-group col-sm-12">
+                                {!! Form::label('valor', 'Valor') !!}
+                                {!! Form::text(sprintf('faturas[%s]["valor"]', $fatura->id), $fatura->valor, ['class' => 'form-control text-right']) !!}
+                            </div>
+                        </div>
+
+                    @endforeach
+
                 </div>
             </div>
         </div>
@@ -351,4 +386,11 @@
             $('#' + nome + '' + qual).remove();
         }
     </script>
+    <style>
+        .box-rounded-bordered {
+            border: 1px solid #ccc;
+            padding: 5px;
+            border-radius: 10px;
+        }
+    </style>
 @stop

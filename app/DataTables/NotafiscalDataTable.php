@@ -17,6 +17,22 @@ class NotafiscalDataTable extends DataTable
         return $this->datatables
             ->eloquent($this->query())
             ->addColumn('action', 'notafiscals.datatables_actions')
+            ->filterColumn('cnpj', function ($query, $keyword) {
+                $keyword = str_replace(['-', '.', '/'], '', $keyword);
+                $query->whereRaw("cnpj like ?", ["%$keyword%"]);
+            })
+            ->editColumn('chave', function ($obj){
+                return sprintf('<div title="%s">%s</div>', $obj->chave, substr($obj->chave,0,10) . '...');
+            })
+            ->editColumn('cnpj', function ($obj){
+                return $obj->cnpj ? mask($obj->cnpj, '##.###.###/####-##') : '';
+            })
+            ->editColumn('data_emissao', function ($obj){
+                return sprintf('<div title="">%s</div>', $obj->data_emissao ? $obj->data_emissao->format("d/m/Y H:i") : "");
+            })
+            ->editColumn('data_saida', function ($obj){
+                return sprintf('<div title="">%s</div>', $obj->data_saida ? $obj->data_saida->format("d/m/Y H:i") : "");
+            })
             ->make(true);
     }
 
@@ -91,18 +107,18 @@ class NotafiscalDataTable extends DataTable
     private function getColumns()
     {
         return [
-            'contrato_id' => ['name' => 'contrato_id', 'data' => 'contrato_id'],
-            'solicitacao_entrega_id' => ['name' => 'solicitacao_entrega_id', 'data' => 'solicitacao_entrega_id'],
-            'nsu' => ['name' => 'nsu', 'data' => 'nsu'],
-            'chave' => ['name' => 'chave', 'data' => 'chave'],
-            'codigo' => ['name' => 'codigo', 'data' => 'codigo'],
+            'contrato' => ['name' => 'contrato_id', 'data' => 'contrato_id'],
+            //'solicitacao_entrega_id' => ['name' => 'solicitacao_entrega_id', 'data' => 'solicitacao_entrega_id'],
+            //'nsu' => ['name' => 'nsu', 'data' => 'nsu'],
+            'numero' => ['name' => 'codigo', 'data' => 'codigo'],
+            'razao_social' => ['name' => 'razao_social', 'data' => 'razao_social'],
+            'fantasia' => ['name' => 'fantasia', 'data' => 'fantasia'],
             'natureza_operacao' => ['name' => 'natureza_operacao', 'data' => 'natureza_operacao'],
             'data_emissao' => ['name' => 'data_emissao', 'data' => 'data_emissao'],
             'data_saida' => ['name' => 'data_saida', 'data' => 'data_saida'],
             'cnpj' => ['name' => 'cnpj', 'data' => 'cnpj'],
-            'razao_social' => ['name' => 'razao_social', 'data' => 'razao_social'],
-            'fantasia' => ['name' => 'fantasia', 'data' => 'fantasia'],
-            'cnpj_destinatario' => ['name' => 'cnpj_destinatario', 'data' => 'cnpj_destinatario']
+            'chave' => ['name' => 'chave', 'data' => 'chave'],
+            //'cnpj_destinatario' => ['name' => 'cnpj_destinatario', 'data' => 'cnpj_destinatario']
         ];
     }
 
