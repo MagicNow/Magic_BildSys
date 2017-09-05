@@ -808,6 +808,8 @@ class ContratoController extends AppBaseController
         $contrato_id
     ) {
         $input = $request->all();
+
+        $input['solicitacao'] = json_decode($input['solicitacao']);
         $input['contrato_id'] = $contrato_id;
         $solicitacao = $repository->create($input);
 

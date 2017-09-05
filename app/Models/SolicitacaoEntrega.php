@@ -15,6 +15,7 @@ class SolicitacaoEntrega extends Model
         'habilita_faturamento',
         'se_status_id',
         'fornecedor_id',
+        'anexo',
     ];
 
     /**
@@ -28,7 +29,8 @@ class SolicitacaoEntrega extends Model
         'contrato_id'          => 'integer',
         'fornecedor_id'        => 'integer',
         'valor_total'          => 'float',
-        'habilita_faturamento' => 'boolean'
+        'habilita_faturamento' => 'boolean',
+        'anexo'                => 'string'
     ];
 
     public function itens()

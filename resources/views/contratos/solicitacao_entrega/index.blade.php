@@ -76,6 +76,25 @@
                 </label>
             </p>
         </div>
+        @php $faturamento = 0; @endphp
+        @if(count($contrato->materiais))
+            @foreach($contrato->materiais as $contrato_item)
+                @if($contrato_item->insumo)
+                    @if($contrato_item->insumo->codigo === '34007' || $contrato_item->insumo->codigo === '30019')
+                        @php $faturamento = 1; @endphp
+                    @endif
+                @endif
+            @endforeach
+        @endif
+
+        @if($faturamento)
+            <div class="col-md-4 form-group">
+                <label>Anexar arquivo</label>
+                <p class="form-control input-lg">
+                    <input type="file" name="anexo" id="anexo">
+                </p>
+            </div>
+        @endif
     </div>
     <div class="row hidden" id="fornecedor-selector">
         <div class="col-sm-6">
