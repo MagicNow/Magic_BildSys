@@ -131,7 +131,7 @@
                 <h3>Não há aprovadores</h3>
             @endif
             @if(count($alcadas_aprovacao['historicos']))
-                <h4 class="antesAlteracao hidden "><i class="fa fa-edit"></i> Última data de aprovação {{ $dataUltimoPeriodo->format('d/m/Y H:i') }}</h4>
+                <h4 class="antesAlteracao hidden "><i class="fa fa-edit"></i> Nova rodada de aprovação iniciada em {{ $dataUltimoPeriodo->format('d/m/Y H:i') }}</h4>
                 @foreach($alcadas_aprovacao['historicos'] as $array_alcada)
                     <h5 class="antesAlteracao hidden">
                         Alçada {{ $array_alcada['alcada']->ordem }}
