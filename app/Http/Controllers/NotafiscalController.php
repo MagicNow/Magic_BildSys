@@ -491,10 +491,10 @@ class NotafiscalController extends AppBaseController
         // -- XML desenvolvimento pela Mazzatech
 
         $porta = 306;
-        $xml = '<x></x>';
+        //$xml = '<x></x>';
 
         $Prexml = $xml; //addslashes($xml);
-
+        /*
         try {
             $sql = "BEGIN
                     MGCLI.pck_bld_app.F_Int_Integrador({$porta}, '{$Prexml}');
@@ -507,7 +507,7 @@ class NotafiscalController extends AppBaseController
         } catch (\Exception $e) {
             dump($e);
         }
-
+        */
         try {
             $sql = "BEGIN
                     MGCLI.pck_bld_app.F_Int_Integrador(:porta, :xml);
@@ -522,7 +522,8 @@ class NotafiscalController extends AppBaseController
 
             $result = $stmt->execute();
 
-            dump($result);
+            dump($result, $xml);
+
         } catch (\Exception $e) {
             dump($e);
         }

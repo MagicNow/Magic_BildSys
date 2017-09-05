@@ -11,7 +11,7 @@ class MegaXmlRepository
     {
         /* create a dom document with encoding utf8 */
         $domtree = new DOMDocument('1.0', 'UTF-8');
-        $domtree->formatOutput = false;
+        $domtree->formatOutput = true;
         /* create the root element of the xml tree */
         $xmlRoot = $domtree->createElement("Recebimento");
         //"I/U/D"
