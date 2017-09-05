@@ -155,8 +155,9 @@
     @endphp
 
     <div class="row">
+
         {{--Frete--}}
-        <div class="col-md-3">
+        <div class="col-md-4">
             <div class="box box-info">
                 <div class="box-header with-border">
                     Frete
@@ -231,286 +232,299 @@
                 </div>
             </div>
 
-            @if($quadro->hasServico())
-                <div class="row">
-                    <div class="col-md-12">
-
-                        <div class="box box-primary">
-                            <div class="box-header with-border">
-                                Porcentagens
-                            </div>
-                            <div class="box-body">
-                                <div class="form-group">
-                                    <div class="row">
-                                        <label class="col-md-6">
-                                            Mão de Obra
-                                        </label>
-                                        <div class="col-md-6">
-                                            <div class="input-group">
-                                                <input type="text"
-                                                       class="form-control percent js-percent"
-                                                       value="{{ old('porcentagem_servico') }}"
-                                                       name="porcentagem_servico">
-                                                <span class="input-group-addon">%</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="row">
-                                        <label class="col-md-6">
-                                            Material da Contratada
-                                        </label>
-                                        <div class="col-md-6">
-                                            <div class="input-group">
-                                                <input type="text"
-                                                       class="form-control percent js-percent"
-                                                       value="{{ old('porcentagem_material') }}"
-                                                       name="porcentagem_material">
-                                                <span class="input-group-addon">%</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="row">
-                                        <label class="col-md-6">
-                                            Faturamento Direto
-                                        </label>
-                                        <div class="col-md-6">
-                                            <div class="input-group">
-                                                <input type="text"
-                                                       class="form-control percent js-percent"
-                                                       value="{{ old('porcentagem_faturamento_direto') }}"
-                                                       name="porcentagem_faturamento_direto">
-                                                <span class="input-group-addon">%</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="row">
-                                        <label class="col-md-6">
-                                            Locação
-                                        </label>
-                                        <div class="col-md-6">
-                                            <div class="input-group">
-                                                <input type="text"
-                                                       class="form-control percent js-percent"
-                                                       value="{{ old('porcentagem_locacao') }}"
-                                                       name="porcentagem_locacao">
-                                                <span class="input-group-addon">%</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="box box-warning">
-                            <div class="box-header with-border">
-                                Tipo da Nota Fiscal
-                            </div>
-                            <div class="box-body">
-                                <div class="form-group">
-                                    <div class="checkbox">
-                                        <label>
-                                            {!!
-                                              Form::checkbox(
-                                                "nf_material",
-                                                '1'
-                                              )
-                                            !!}
-                                            Material
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="checkbox">
-                                        <label>
-                                            {!!
-                                              Form::checkbox(
-                                                "nf_servico",
-                                                '1'
-                                              )
-                                            !!}
-                                            Serviço
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="checkbox">
-                                        <label>
-                                            {!!
-                                              Form::checkbox(
-                                                "nf_locacao",
-                                                '1'
-                                              )
-                                            !!}
-                                            Fatura de Locação
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            @endif
         </div>
-        {{--Campos extras Template contrato--}}
-        <div class="col-md-9">
-            @if(count($campos_extras))
+
+        @if($quadro->hasServico())
+
+            <div class="col-md-4">
+
                 <div class="box box-primary">
                     <div class="box-header with-border">
-                        Condições Comerciais
+                        Porcentagens
                     </div>
                     <div class="box-body">
-                        @foreach($campos_extras as $campo)
-                            @php
-                                $v_tag = str_replace('[','', $campo->tag);
-                                $v_tag = 'CAMPO_EXTRA[' . str_replace(']','', $v_tag). ']';
-                                $tag = mb_strtolower($campo->tag);
-
-                                $eh_telefone = strpos($tag,'telefone');
-                                if($eh_telefone === false){
-                                    $eh_telefone = strpos($tag,'celular');
-                                }
-                                $classe = 'form-control';
-                                if($eh_telefone !== false){
-                                    $classe .=" telefone";
-                                }else{
-                                    if(strpos($tag,'valor') !== false){
-                                        $classe .=" money";
-                                    }else if(strpos($tag,'preco') !== false || strpos($tag,'preço') !== false){
-                                        $classe .=" money";
-                                    }
-                                    // cnpj cep cpf
-                                    if(strpos($tag,'cep') !== false){
-                                        $classe .=" cep";
-                                    }
-                                    if(strpos($tag,'cnpj') !== false){
-                                        $classe .=" cnpj";
-                                    }
-                                    if(strpos($tag,'cpf') !== false){
-                                        $classe .=" cpf";
-                                    }
-                                }
-                            @endphp
-                            <div class="form-group">
-                                <label class="form-label">
-                                    {{ $campo->nome }}
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-md-6">
+                                    Mão de Obra
                                 </label>
-
-                                @if($campo->tipo =='data')
-                                    {!! Form::text($v_tag,null,['placeholder'=>$campo->nome,'class'=>'data_br '.$classe]) !!}
-                                @else
-                                    @if(strpos($tag,'e-mail') !== false || strpos($tag,'email') !== false)
-                                        {!! Form::email($v_tag,null,['placeholder'=>$campo->nome,'class'=>$classe]) !!}
-                                    @else
-                                        {!! Form::text($v_tag,null,['placeholder'=>$campo->nome,'class'=>$classe,'title'=>$campo->tipo]) !!}
-                                    @endif
-                                @endif
+                                <div class="col-md-6">
+                                    <div class="input-group">
+                                        <input type="text"
+                                               class="form-control percent js-percent"
+                                               value="{{ old('porcentagem_servico') }}"
+                                               name="porcentagem_servico">
+                                        <span class="input-group-addon">%</span>
+                                    </div>
+                                </div>
                             </div>
-                        @endforeach
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-md-6">
+                                    Material da Contratada
+                                </label>
+                                <div class="col-md-6">
+                                    <div class="input-group">
+                                        <input type="text"
+                                               class="form-control percent js-percent"
+                                               value="{{ old('porcentagem_material') }}"
+                                               name="porcentagem_material">
+                                        <span class="input-group-addon">%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-md-6">
+                                    Faturamento Direto
+                                </label>
+                                <div class="col-md-6">
+                                    <div class="input-group">
+                                        <input type="text"
+                                               class="form-control percent js-percent"
+                                               value="{{ old('porcentagem_faturamento_direto') }}"
+                                               name="porcentagem_faturamento_direto">
+                                        <span class="input-group-addon">%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-md-6">
+                                    Locação
+                                </label>
+                                <div class="col-md-6">
+                                    <div class="input-group">
+                                        <input type="text"
+                                               class="form-control percent js-percent"
+                                               value="{{ old('porcentagem_locacao') }}"
+                                               name="porcentagem_locacao">
+                                        <span class="input-group-addon">%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            @endif
-        </div>
+            </div>
+
+            <div class="col-md-4">
+
+                <div class="box box-warning">
+                    <div class="box-header with-border">
+                        Tipo da Nota Fiscal
+                    </div>
+                    <div class="box-body">
+                        <div class="form-group">
+                            <div class="checkbox">
+                                <label>
+                                    {!!
+                                      Form::checkbox(
+                                        "nf_material",
+                                        '1'
+                                      )
+                                    !!}
+                                    Material
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="checkbox">
+                                <label>
+                                    {!!
+                                      Form::checkbox(
+                                        "nf_servico",
+                                        '1'
+                                      )
+                                    !!}
+                                    Serviço
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="checkbox">
+                                <label>
+                                    {!!
+                                      Form::checkbox(
+                                        "nf_locacao",
+                                        '1'
+                                      )
+                                    !!}
+                                    Fatura de Locação
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        @endif
     </div>
+
+
+    {{--Campos extras Template contrato--}}
+    <div class="col-md-12">
+        @if(count($campos_extras))
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    Condições Comerciais
+                </div>
+                <div class="box-body">
+                    @foreach($campos_extras as $campo)
+                        @php
+                            $v_tag = str_replace('[','', $campo->tag);
+                            $v_tag = 'CAMPO_EXTRA[' . str_replace(']','', $v_tag). ']';
+                            $tag = mb_strtolower($campo->tag);
+
+                            $eh_telefone = strpos($tag,'telefone');
+                            if($eh_telefone === false){
+                                $eh_telefone = strpos($tag,'celular');
+                            }
+                            $classe = 'form-control';
+                            if($eh_telefone !== false){
+                                $classe .=" telefone";
+                            }else{
+                                if(strpos($tag,'valor') !== false){
+                                    $classe .=" money";
+                                }else if(strpos($tag,'preco') !== false || strpos($tag,'preço') !== false){
+                                    $classe .=" money";
+                                }
+                                // cnpj cep cpf
+                                if(strpos($tag,'cep') !== false){
+                                    $classe .=" cep";
+                                }
+                                if(strpos($tag,'cnpj') !== false){
+                                    $classe .=" cnpj";
+                                }
+                                if(strpos($tag,'cpf') !== false){
+                                    $classe .=" cpf";
+                                }
+                            }
+                        @endphp
+                        <div class="form-group">
+                            <label class="form-label">
+                                {{ $campo->nome }}
+                            </label>
+
+                            @if($campo->tipo =='data')
+                                {!! Form::text($v_tag,null,['placeholder'=>$campo->nome,'class'=>'data_br '.$classe]) !!}
+                            @else
+                                @if(strpos($tag,'e-mail') !== false || strpos($tag,'email') !== false)
+                                    {!! Form::email($v_tag,null,['placeholder'=>$campo->nome,'class'=>$classe]) !!}
+                                @else
+                                    {!! Form::text($v_tag,null,['placeholder'=>$campo->nome,'class'=>$classe,'title'=>$campo->tipo]) !!}
+                                @endif
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        @endif
+    </div>
+
+
     {{--Equalização técnica--}}
-    <div class="box box-danger box-equalizacao-tecnica">
-        <div class="box-header with-border">Equalização Técnica</div>
-        <div class="box-body">
-            @if($equalizacoes->isEmpty())
-                <p>Sem equalizações técnicas no Quadro de Concorrência</p>
-            @else
-                <table class="table table-responsive table-striped table-align-middle table-condensed">
-                    <thead>
-                    <tr>
-                        <th width="10%">Detalhes</th>
-                        <th>Item</th>
-                        <th width="20%">Validação</th>
-                        <th width="25%">Obs</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @foreach($equalizacoes as $key =>  $equalizacao)
+
+    <div class="col-md-12">
+
+        <div class="box box-danger box-equalizacao-tecnica">
+            <div class="box-header with-border">Equalização Técnica</div>
+            <div class="box-body">
+                @if($equalizacoes->isEmpty())
+                    <p>Sem equalizações técnicas no Quadro de Concorrência</p>
+                @else
+                    <table class="table table-responsive table-striped table-align-middle table-condensed">
+                        <thead>
                         <tr>
-                            <td>
-                                <button type="button"
-                                        class="btn btn-default btn-flat btn-xs js-sweetalert"
-                                        data-title="{{ $equalizacao->nome }}"
-                                        data-text="{{ $equalizacao->descricao }}">
-                                    <i class="fa fa-info-circle"></i> detalhes
-                                </button>
-                            </td>
-                            <td class="text-left">{{ $equalizacao->nome }}</td>
-                            <td>
-                                {!! Form::hidden("equalizacoes[{$equalizacao->id}-{$equalizacao->getTable()}][checkable_type]", $equalizacao->getTable()) !!}
-                                {!! Form::hidden("equalizacoes[{$equalizacao->id}-{$equalizacao->getTable()}][checkable_id]", $equalizacao->id) !!}
-                                @if($equalizacao->obrigatorio)
-                                    <div class="checkbox">
-                                        <label>
+                            <th width="10%">Detalhes</th>
+                            <th>Item</th>
+                            <th width="20%">Validação</th>
+                            <th width="25%">Obs</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach($equalizacoes as $key =>  $equalizacao)
+                            <tr>
+                                <td>
+                                    <button type="button"
+                                            class="btn btn-default btn-flat btn-xs js-sweetalert"
+                                            data-title="{{ $equalizacao->nome }}"
+                                            data-text="{{ $equalizacao->descricao }}">
+                                        <i class="fa fa-info-circle"></i> detalhes
+                                    </button>
+                                </td>
+                                <td class="text-left">{{ $equalizacao->nome }}</td>
+                                <td>
+                                    {!! Form::hidden("equalizacoes[{$equalizacao->id}-{$equalizacao->getTable()}][checkable_type]", $equalizacao->getTable()) !!}
+                                    {!! Form::hidden("equalizacoes[{$equalizacao->id}-{$equalizacao->getTable()}][checkable_id]", $equalizacao->id) !!}
+                                    @if($equalizacao->obrigatorio)
+                                        <div class="checkbox">
+                                            <label>
+                                                {!!
+                                                  Form::checkbox(
+                                                    "equalizacoes[{$equalizacao->id}-{$equalizacao->getTable()}][checked]",
+                                                    '1'
+                                                  )
+                                                !!}
+                                                Estou ciente
+                                            </label>
+                                        </div>
+                                    @else
+                                        <label class="radio-inline">
                                             {!!
-                                              Form::checkbox(
+                                              Form::radio(
                                                 "equalizacoes[{$equalizacao->id}-{$equalizacao->getTable()}][checked]",
                                                 '1'
                                               )
                                             !!}
-                                            Estou ciente
+                                            Sim
                                         </label>
-                                    </div>
-                                @else
-                                    <label class="radio-inline">
+                                        <label class="radio-inline">
+                                            {!!
+                                              Form::radio(
+                                                "equalizacoes[{$equalizacao->id}-{$equalizacao->getTable()}][checked]",
+                                                '0'
+                                              )
+                                            !!}
+                                            Não
+                                        </label>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if(!$equalizacao->obrigatorio)
                                         {!!
-                                          Form::radio(
-                                            "equalizacoes[{$equalizacao->id}-{$equalizacao->getTable()}][checked]",
-                                            '1'
+                                          Form::textarea(
+                                            "equalizacoes[{$equalizacao->id}-{$equalizacao->getTable()}][obs]",
+                                            old("equalizacoes[{$equalizacao->id}-{$equalizacao->getTable()}][obs]"),
+                                            [
+                                              'placeholder' => 'Suas Considerações ou Observações',
+                                              'class' => 'form-control',
+                                              'rows' => 2,
+                                              'cols' => 25
+                                            ]
                                           )
                                         !!}
-                                        Sim
-                                    </label>
-                                    <label class="radio-inline">
-                                        {!!
-                                          Form::radio(
-                                            "equalizacoes[{$equalizacao->id}-{$equalizacao->getTable()}][checked]",
-                                            '0'
-                                          )
-                                        !!}
-                                        Não
-                                    </label>
-                                @endif
-                            </td>
-                            <td>
-                                @if(!$equalizacao->obrigatorio)
-                                    {!!
-                                      Form::textarea(
-                                        "equalizacoes[{$equalizacao->id}-{$equalizacao->getTable()}][obs]",
-                                        old("equalizacoes[{$equalizacao->id}-{$equalizacao->getTable()}][obs]"),
-                                        [
-                                          'placeholder' => 'Suas Considerações ou Observações',
-                                          'class' => 'form-control',
-                                          'rows' => 2,
-                                          'cols' => 25
-                                        ]
-                                      )
-                                    !!}
-                                @else
-                                    <span class="text-muted"></span>
-                                @endif
-                            </td>
-                        </tr>
-                    @endforeach
-                    </tbody>
-                </table>
+                                    @else
+                                        <span class="text-muted"></span>
+                                    @endif
+                                </td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                @endif
+            </div>
+            @if($anexos->isNotEmpty())
+                <div class="box-footer text-center">
+                    <a href="#modal-anexos" data-toggle="modal" class="btn btn-primary btn-flat">
+                        <i class="fa fa-paperclip"></i> Exibir todos os Anexos de Equalização Técnica
+                    </a>
+                </div>
             @endif
         </div>
-        @if($anexos->isNotEmpty())
-            <div class="box-footer text-center">
-                <a href="#modal-anexos" data-toggle="modal" class="btn btn-primary btn-flat">
-                    <i class="fa fa-paperclip"></i> Exibir todos os Anexos de Equalização Técnica
-                </a>
-            </div>
-        @endif
     </div>
 
     <div class="row">
