@@ -30,10 +30,14 @@ class QcItensDataTable extends DataTable
             ->editColumn('obs', function($obj){
                 return "<textarea placeholder='Observação' class='form-control' rows=2 cols=25 disabled=disabled style='cursor: auto;background-color: transparent;resize: vertical;'>".$obj->obs."</textarea>";
             })
-            ->filterColumn('insumo_nome', function($query, $keyword){
+            ->filterColumn('insumos.nome', function($query, $keyword){
+                $query->where(function($subquery) use($keyword){
+                    $subquery->orWhere('insumos.nome','LIKE','%'.$keyword.'%');
+                });
+            })
+            ->filterColumn('insumos.codigo', function($query, $keyword){
                 $query->where(function($subquery) use($keyword){
                     $subquery->where('insumos.codigo','LIKE','%'.$keyword.'%');
-                    $subquery->orWhere('insumos.nome','LIKE','%'.$keyword.'%');
                 });
             })
             ->filterColumn('qc_itens.qtd',function($query, $keyword){
@@ -71,7 +75,7 @@ class QcItensDataTable extends DataTable
 		                    	qc_item_id = qc_itens.id
 			             ) as obs"),
 //                'obras.nome as obra',
-                DB::raw("CONCAT(insumos.codigo,' - ', insumos.nome) as insumo_nome"),
+                DB::raw("CONCAT(insumos.codigo,' - ', insumos.nome) as insumo_nome, insumos.codigo,insumos.nome, insumos.unidade_sigla"),
             ])
         ->join('insumos','insumos.id','qc_itens.insumo_id');
         if($this->quadro_de_concorrencia_id){
@@ -184,12 +188,13 @@ class QcItensDataTable extends DataTable
     protected function getColumns()
     {
         $columns = [
-            'id' => ['name' => 'qc_itens.id', 'data' => 'id', 'width'=>'8%'],
-            'Insumo' => ['name' => 'insumo_nome', 'data' => 'insumo_nome'],
+            'Nº Do Insumo' => ['name' => 'insumos.codigo', 'data' => 'codigo'],
+            'Descrição Do Insumo' => ['name' => 'insumos.nome', 'data' => 'nome'],
             'qtd' => ['name' => 'qc_itens.qtd', 'data' => 'qtd'],
-            'Itens (oc)' => ['name' => 'oci_qtd', 'data' => 'oci_qtd', 'width'=>'7%'],
-            'Obra(s)' => ['name' => 'obras', 'data' => 'obras', 'width'=>'12%'],
+            'Itens Agrupados' => ['name' => 'oci_qtd', 'data' => 'oci_qtd'],
+            'Obra(s)' => ['name' => 'obras', 'data' => 'obras'],
             'detalhamento De Insumo' => ['name' => 'obs', 'data' => 'obs','searchable' => false, 'orderable' => false],
+            'Un. De Medida' => ['name' => 'insumos.unidade_sigla', 'data' => 'unidade_sigla'],
             'action' => ['name' => 'Ações', 'title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'30px'],
         ];
         if($this->show){
