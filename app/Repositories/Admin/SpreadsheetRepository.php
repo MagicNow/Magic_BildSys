@@ -290,6 +290,11 @@ class SpreadsheetRepository
                                             'grupo_id' => $grupoPai->id
                                         ]);
                                     }
+                                }else{
+                                    $erro = 1;
+                                    $mensagens_erro[] = 'A ordem do template está incorreta<br>O
+                                            código completo encontrado foi '.'
+                                            "<span class="text-danger"> '.$final['codigo_insumo'].' </span>"';
                                 }
                             } # se for serviço
                             elseif (count($codigo_quebrado) == 5) {
@@ -298,7 +303,7 @@ class SpreadsheetRepository
                                     if($servico->nome != $final['descricao']){
                                         $erro = 1;
                                         $mensagens_erro[] = 'Já existe o grupo '.'
-                                            <span style="color:orange">'.$servico->codigo.' - '.$servico->nome.'</span>
+                                            <span style="color:orange">'.$servico->codigo.' - '.$servico->nome.'</span> <br>
                                             e você tentou inserir '.'
                                             "<span style="color:red">'.$final['codigo_insumo'].' - '.$final['descricao'].'</span>"';
                                     }
@@ -446,7 +451,17 @@ class SpreadsheetRepository
 
         $user = User::find($final['user_id']);
         if($user){
-            $user->notify(new PlanilhaProcessamento(['success'=>!count($mensagens_erro),'error'=>array_unique($mensagens_erro)]));
+            if(count($mensagens_erro)){
+                $erros_txt = implode('<br>', $mensagens_erro);
+            }
+            $user->notify(new PlanilhaProcessamento([
+                'message'=>!count($mensagens_erro)?
+                    'Planilha '.$planilha->id.'Importada com sucesso'
+                    :
+                    'Ocorreram erros ao importar a planilha '.$planilha->id.':<br>'.
+                    $erros_txt
+                ,
+                'link'=>'#']));
         }
     }
 
@@ -588,7 +603,18 @@ class SpreadsheetRepository
 
         $user = User::find($final['user_id']);
         if($user){
-            $user->notify(new PlanilhaProcessamento(['success'=>!count($mensagens_erro),'error'=>array_unique($mensagens_erro)]));
+            if(count($mensagens_erro)){
+                $erros_txt = implode('<br>', $mensagens_erro);
+            }
+            
+            $user->notify(new PlanilhaProcessamento([
+                'message'=>!count($mensagens_erro)?
+                    'Planilha '.$planilha->id.'Importada com sucesso'
+                    :
+                    'Ocorreram erros ao importar a planilha '.$planilha->id.':<br>'.
+                    $erros_txt
+                ,
+                'link'=>'#']));
         }
     }
 }

@@ -253,7 +253,7 @@
                                         data-values="{{
                                           $qcFornecedores
                                             ->map(function($qcFornecedor) {
-                                              return $qcFornecedor->itens->sum('valor_total');
+                                              return $qcFornecedor->itens->sum('valor_total') + $qcFornecedor->getOriginal('valor_frete');
                                             })
                                             ->implode('||')
                                           }}">
@@ -279,7 +279,7 @@
                                         {!!
                                       Form::select(
                                         'insumo',
-                                        $quadro->itens->pluck('insumo')->flatten()->pluck('nome', 'id')->toArray(),
+                                        $quadro->itens->pluck('insumo')->flatten()->pluck('nome', 'id')->toArray()+ [4131=>'SER FRETE'],
                                         null,
                                         ['class' => 'select2 form-control', 'id' => 'insumo']
                                       )
@@ -390,7 +390,6 @@
                                             {{ $qcFornecedor->fornecedor->nome }}
                                         </label>
                                     </div>
-
                                     <?php
                                     $qcFornecedorCount = $qcFornecedor->id;
                                     ?>
@@ -537,7 +536,7 @@
     <script type="text/javascript">
         window.urlEqualizacao = "/quadro-de-concorrencia/{{ $quadro->id }}/equalizacao-tecnica/";
 
-        var qtdFornecedores = parseInt({!! $qcFornecedorCount !!});
+        var qtdFornecedores = parseInt({!! (isset($qcFornecedorCount) ? $qcFornecedorCount : 0) !!});
         $(function () {
             $('#fornecedor').select2({
                 allowClear: true,

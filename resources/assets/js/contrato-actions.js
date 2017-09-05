@@ -116,7 +116,6 @@ var Reapropriar = (function() {
     this.defaultQtd   = 0;
     var _this         = this;
 
-
     $(this.modal).on('hide.bs.modal', function(e) {
       $(_this.insumo).select2('destroy');
     });
@@ -185,7 +184,9 @@ var Reapropriar = (function() {
 
     data.item_id = item.value;
 
-    data = getInputs(this.grupos, data);
+    // data = getInputs(this.grupos, data);
+
+    data.orcamento_id = document.getElementById('insumo_reapropriado').value;
 
     $.post('/contratos/reapropriar-item/' + this.id, data)
       .done(function(response) {
