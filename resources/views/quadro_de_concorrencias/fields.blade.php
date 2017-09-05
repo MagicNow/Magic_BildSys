@@ -331,6 +331,12 @@
     @include('quadro_de_concorrencias.itens-table')
 </div>
 
+@foreach($arrayCarteirasEqualizacaoes as $eq)
+
+    <input type="hidden" name="qcEqualizacao[]" class="qcEqualizacao" value="{{ $eq }}">
+
+@endforeach
+
 @section('scripts')
     @parent
     <script type="text/javascript">

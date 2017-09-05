@@ -144,4 +144,9 @@ class Insumo extends Model
         return in_array($this->codigo, [34007, 30019]);
     }
 
+    public function carteiras()
+    {
+        return $this->belongsToMany(Carteira::class, 'carteira_insumos', 'insumo_id', 'carteira_id')->withPivot('deleted_at')->withTimestamps();
+    }
+
 }
