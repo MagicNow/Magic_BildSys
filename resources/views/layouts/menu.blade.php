@@ -75,7 +75,7 @@
 <li class="treeview {{ Request::is('admin/lembretes*') ||
                         Request::is('admin/compradorInsumos*') ||
                         Request::is('admin/contratoTemplates*') ||
-                        Request::is('desistenciaMotivos*')
+                        Request::is('desistenciaMotivos*') 
                         ? 'active' : '' }}">
     <a href="#">
         <i class="fa fa-diamond"></i> <span>Suprimentos</span>

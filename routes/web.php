@@ -1080,7 +1080,26 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         )->middleware('needsPermission:contratos.previsao_de_memoria_de_calculo');
     });
 
-    # Configuracao Estatica
+    #LPU	 
+    $router->group(['prefix' => 'lpu','middleware' => 'needsPermission:lpu.list'], function($router) {
+        $router->get('',['as' => 'lpu.index', 'uses' => 'LpuController@index']);        
+        $router->get('/atualizar-valor',['as' => 'lpu.atualizar-valor','uses' => 'LpuController@atualizarValor'])
+			->middleware('needsPermission:lpu.edit');
+        $router->post('/atualizar-valor',['as' => 'lpu.atualizar-valor-save','uses' => 'LpuController@atualizarValorSave'])->middleware('needsPermission:lpu.edit');        
+        $router->get('/insumo-valor','LpuController@insumoValor')
+			->middleware('needsPermission:lpu.edit');
+        $router->get('/{lpu}',['as' => 'lpu.show', 'uses' => 'LpuController@show'])
+			->middleware('needsPermission:lpu.show');
+		$router->post('/editar-item/{item}',['as' => 'lpu.editar-item','uses' => 'LpuController@editarItem'])
+			->middleware('needsPermission:lpu.edit');        
+		$router->post('/reajustar/{contrato_item_id}',['as' => 'lpu.reajustar','uses' => 'LpuController@reajustar'])
+			->middleware('needsPermission:lpu.reajustar');
+        $router->get('/apropriacoes/{item}',['uses' => 'LpuController@apropriacoes']);
+        $router->get('/{lpu}/editar',['as' => 'lpu.edit', 'uses' => 'LpuController@edit']);
+        $router->patch('/{lpu}/update',['as' => 'lpu.update', 'uses' => 'LpuController@update']);
+    });
+	
+	# Configuracao Estatica
     $router->group(['middleware' => 'needsPermission:configuracaoEstaticas.list'], function () use ($router) {
         $router->get('configuracaoEstaticas', ['as' => 'configuracaoEstaticas.index', 'uses' => 'ConfiguracaoEstaticaController@index']);
         $router->post('configuracaoEstaticas', ['as' => 'configuracaoEstaticas.store', 'uses' => 'ConfiguracaoEstaticaController@store']);
