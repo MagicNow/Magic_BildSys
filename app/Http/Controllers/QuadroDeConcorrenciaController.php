@@ -403,23 +403,48 @@ class QuadroDeConcorrenciaController extends AppBaseController
                 ->filter(function ($qcFornecedor) use ($item) {
                     return $qcFornecedor->itens->where('qc_item_id', $item->id)->first();
                 })
+
                 ->map(function ($qcFornecedor) use ($item) {
-                $oferta = $qcFornecedor->itens->where('qc_item_id', $item->id)->first();
+                    $oferta = $qcFornecedor->itens->where('qc_item_id', $item->id)->first();
 
-                return [
-                    'insumo_id'      => $item->insumo->id,
-                    'insumo'         => $item->insumo->nome,
-                    'fornecedor_id'  => $qcFornecedor->fornecedor_id,
-                    'valor_total'    => (float) $oferta->valor_total,
-                    'valor_unitario' => (float) $oferta->valor_unitario,
-                    'valor_oi' => floatval($item->ordemDeCompraItens->sortBy('valor_unitario')->first() ? $item->ordemDeCompraItens->sortBy('valor_unitario')->first()->valor_unitario : 0),
-                ];
-            })->all();
-
+                    return [
+                        'insumo_id'      => $item->insumo->id,
+                        'insumo'         => $item->insumo->nome,
+                        'fornecedor_id'  => $qcFornecedor->fornecedor_id,
+                        'valor_total'    => (float) $oferta->valor_total,
+                        'valor_unitario' => (float) $oferta->valor_unitario,
+                        'valor_oi' => floatval($item->ordemDeCompraItens->sortBy('valor_unitario')->first() ? $item->ordemDeCompraItens->sortBy('valor_unitario')->first()->valor_unitario : 0),
+                    ];
+                })->all();
             return $ofertas;
         }, collect())
             ->collapse()
             ->all();
+
+        $fretes = $quadro->itens->reduce(function ($fretes, $item) use ($qcFornecedores) {
+            $fretes[] = $qcFornecedores
+                ->filter(function ($qcFornecedor) use ($item) {
+                    return $qcFornecedor->itens->where('qc_item_id', $item->id)->first();
+                })
+
+                ->map(function ($qcFornecedor) use ($item) {
+                $insumo = Insumo::where('codigo', '28675')->first();
+                return [
+                    'insumo_id'      => $insumo->id,
+                    'insumo'         => $insumo->nome,
+                    'fornecedor_id'  => $qcFornecedor->fornecedor_id,
+                    'valor_total'    => (float) $qcFornecedor->getOriginal('valor_frete'),
+                    'valor_unitario' => 0,
+                    'valor_oi' => 0
+                ];
+            })->all();
+
+            return $fretes;
+        }, collect())
+            ->collapse()
+            ->all();
+
+        $ofertas = array_merge($ofertas,$fretes);
 
         return $view->setQuadroDeConcorrencia($quadro)
             ->setQcFornecedores($qcFornecedores)

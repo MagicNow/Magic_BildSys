@@ -61,11 +61,7 @@ var NotificationSystem = {
     this.clearContainer();
 
     notifications.filter(function(notification) {
-      if(notification.type !== 'App\\Notifications\\PlanilhaProcessamento') {
         return self.parse(notification);
-      }
-
-      return self.parseProcessamento(notification);
     });
 
 
@@ -76,20 +72,6 @@ var NotificationSystem = {
   },
   parse: function(notification) {
     this.$container.append(this.makeNotification(notification));
-  },
-  parseProcessamento: function(notification) {
-    if (notification.data.success) {
-      return this.$container.append('<a href="#" data-toggle="modal" data-target="#myModalsuccess" class="js-notification" data-id="' + notification.id + '"><i class="fa fa-check text-green"></i> Importação com sucesso</a>');
-    }
-
-    if (notification.data.error && notification.data.error.length) {
-      var self = this;
-      notification.data.error.map(function(val) {
-        self.$error_import.append('<tr><td>' + val + '</td></tr>');
-      });
-    }
-
-    this.$container.append('<a href="#" data-toggle="modal" data-target="#myModalerror" class="js-notification" data-id="' + notification.id + '"><i class="fa fa-warning text-yellow"></i> Erro na importação</a>');
   }
 };
 

@@ -160,8 +160,6 @@
                             </div>
                         </div>
                     </div>
-                    <label>Informe o destino da apropriação:</label>
-                    @include('partials.grupos-de-orcamento', ['full' => true, 'insumo' => 0])
                     <div class="form-group">
                         <label for="descricao">Observação</label>
                         <textarea class="form-control" name="descricao"></textarea>

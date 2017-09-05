@@ -51,6 +51,30 @@ class CatalogoContratoInsumo extends Model
         
     ];
 
+    public function setPeriodoInicioAttribute($value){
+        if(strlen($value)){
+            if(strpos($value,'/')){
+                $this->attributes["periodo_inicio"] = Carbon::createFromFormat('d/m/Y', $value)->format('Y-m-d');
+            }else{
+                $this->attributes["periodo_inicio"] = $value;
+            }
+        }else{
+            $this->attributes["periodo_inicio"] = null;
+        }
+    }
+
+    public function setPeriodoTerminoAttribute($value){
+        if(strlen($value)){
+            if(strpos($value,'/')){
+                $this->attributes["periodo_termino"] = Carbon::createFromFormat('d/m/Y', $value)->format('Y-m-d');
+            }else{
+                $this->attributes["periodo_termino"] = $value;
+            }
+        }else{
+            $this->attributes["periodo_termino"] = null;
+        }
+    }
+
     public function getValorUnitarioAttribute($value)
     {
         return number_format($value,2,',','.');
@@ -87,7 +111,7 @@ class CatalogoContratoInsumo extends Model
             $this->attributes['pedido_multiplo_de'] = money_to_float($value);
         }
     }
-    
+
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
