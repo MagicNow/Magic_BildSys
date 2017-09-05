@@ -1107,9 +1107,8 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('notasfiscais/{notafiscal}', ['as' => 'notafiscals.show', 'uses' => 'NotafiscalController@show']);
     $router->get('notasfiscais/{notafiscal}/edit', ['as' => 'notafiscals.edit', 'uses' => 'NotafiscalController@edit']);
 
-    $router->get('ConsultaNfe', 'NotafiscalController@pescadorNfe');
-    $router->get('buscaNfe', 'NotafiscalController@buscaNfe');
-    $router->get('buscaCTe', 'NotafiscalController@buscaCTe');
+    $router->get('capturaNfe', 'NotafiscalController@pescadorNfe');
+    $router->get('capturaCte', 'NotafiscalController@buscaCTe');
     $router->get('danfe/{id}', 'NotafiscalController@visualizaDanfe');
     $router->get('dacte/{id}', 'NotafiscalController@visualizaDacte');
     $router->get('integra-mega/{id}', 'NotafiscalController@integraMega');
