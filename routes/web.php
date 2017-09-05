@@ -1090,13 +1090,14 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
 			->middleware('needsPermission:lpu.edit');
         $router->get('/{lpu}',['as' => 'lpu.show', 'uses' => 'LpuController@show'])
 			->middleware('needsPermission:lpu.show');
-		$router->post('/editar-item/{item}',['as' => 'lpu.editar-item','uses' => 'LpuController@editarItem'])
-			->middleware('needsPermission:lpu.edit');        
-		$router->post('/reajustar/{contrato_item_id}',['as' => 'lpu.reajustar','uses' => 'LpuController@reajustar'])
+		/*$router->post('/editar-item/{item}',['as' => 'lpu.editar-item','uses' => 'LpuController@editarItem'])
+			->middleware('needsPermission:lpu.edit');  */      
+		$router->post('/reajustar/{lpu_id}',['as' => 'lpu.reajustar','uses' => 'LpuController@reajustar'])
 			->middleware('needsPermission:lpu.reajustar');
-        $router->get('/apropriacoes/{item}',['uses' => 'LpuController@apropriacoes']);
         $router->get('/{lpu}/editar',['as' => 'lpu.edit', 'uses' => 'LpuController@edit']);
         $router->patch('/{lpu}/update',['as' => 'lpu.update', 'uses' => 'LpuController@update']);
+		$router->get('/insumos-por-regional','LpuController@insumosPorRegional'
+		)->middleware('needsPermission:lpu.edit');
     });
 	
 	# Configuracao Estatica

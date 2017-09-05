@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\DataTables\ContratoDataTable;
+use App\DataTables\LpuDataTable;
 use App\Http\Requests;
 use App\Http\Requests\CreateContratoRequest;
 use App\Http\Requests\EditarItemRequest;
@@ -53,6 +53,9 @@ use App\Models\ContratoItemApropriacao;
 use App\Models\Cnae;
 use App\Repositories\SolicitacaoEntregaRepository;
 
+use App\Models\Regional;
+
+
 class LpuController extends AppBaseController
 {
     /** @var  ContratoRepository */
@@ -70,38 +73,14 @@ class LpuController extends AppBaseController
      * @return Response
      */
     public function index(
-        ContratoDataTable $contratoDataTable,
-        FornecedoresRepository $fornecedorRepository,
-        ObraRepository $obraRepository,
-        ContratoStatusRepository $contratoStatusRepository
+        LpuDataTable $lpuDataTable
     ) {
-        $status = $contratoStatusRepository
-            ->orderBy('nome', 'ASC')
-            ->comContrato()
-            ->pluck('nome', 'id')
-            ->prepend('', '')
-            ->all();
+        
+		$regionais = Regional::pluck('nome', 'id')->prepend('', '')->all();
 
-        $fornecedores = $fornecedorRepository
-            ->orderBy('nome', 'ASC')
-            ->comContrato()
-            ->pluck('nome', 'id')
-            ->prepend('', '')
-            ->all();
-
-        $obras = $obraRepository
-            ->orderBy('nome', 'ASC')
-            ->whereHas('users', function($query){
-                $query->where('user_id', auth()->id());
-            })
-            ->comContrato()
-            ->pluck('nome', 'id')
-            ->prepend('', '')
-            ->all();
-
-        return $contratoDataTable->render(
+        return $lpuDataTable->render(
             'lpu.index',
-            compact('status', 'fornecedores', 'obras')
+			compact('regionais')
         );
     }
 
@@ -458,7 +437,10 @@ class LpuController extends AppBaseController
             ->orderBy('nome', 'ASC')
             ->pluck('nome', 'id')
             ->toArray();
-        return view('contratos.atualizar-valor', compact('obras'));
+        return view('lpu.atualizar-valor', compact('obras'));
+		
+		/*$insumos = Insumo::pluck('nome', 'id')->prepend('', '')->all();
+		return view('lpu.atualizar-valor', compact('lpu'));*/
     }
 
     public function pegaFornecedoresPelasObras(Request $request)

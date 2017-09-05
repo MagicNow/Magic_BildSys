@@ -3,7 +3,7 @@
 @section('content')
     <section class="content-header">
         <h1>
-            Atualização de Contratos
+            Sugestão de Valor
         </h1>
     </section>
     <div class="content">
@@ -63,6 +63,7 @@
     </div>
 @endsection
 @section('scripts')
+
     <script type="text/javascript">
         var linhas = 0;
         $(function () {
@@ -104,6 +105,7 @@
                             swal("Oops", erros, "error");
                         });
             });
+			
             // Na hora q selecionar o Fornecedor trazer os insumos q este fornecedor tem contrato
             $('select[name="fornecedor_id"]').on('change', function (evt) {
                 var fornecedor_id = $(evt.target).val();
@@ -140,55 +142,7 @@
                             swal("Oops", erros, "error");
                         });
             });
-            // ao escolher o insumo adicionar na tabela e habilitar postagem
-            $('select[name="insumo_id"]').on('change', function (evt) {
-                var insumo_id = $(evt.target).val();
-                $.ajax('/contratos/insumo-valor', {
-                    data: {
-                        insumo: insumo_id
-                    }
-                })
-                        .done(function (retorno) {
-                            linhas++;
-                            $('#tr_insumo_'+retorno.insumo.id).remove();
-                            var linha = '<tr id="tr_insumo_'+retorno.insumo.id+'">';
-
-                            linha += '<td align="left">'+retorno.insumo.nome+'</td>';
-                            linha += '<td align="right">'+ floatToMoney(retorno.valor_unitario) +'</td>';
-                            linha += '<td>' +
-                                    '   <div class="input-group">' +
-                                    '       <span class="input-group-addon">R$</span>' +
-                                    '       <input type="text"' +
-                                    '           class="form-control input-sm" ' +
-                                    '           value="" required="required" ' +
-                                    '           name="valor_unitario['+retorno.insumo.id+']" ' +
-                                    '           id="valor_unitario_'+retorno.insumo.id+'">' +
-                                    '   </div>' +
-                                    '</td>' ;
-                            linha += '<td>' +
-                                    '   <button type="button" onclick="removerLinha('+retorno.insumo.id+')" class="btn btn-flat btn-sm btn-danger">' +
-                                    '       <i class="fa fa-times"></i>' +
-                                    '   </button>' +
-                                    '</td>';
-                            linha += '</tr>';
-
-                            $('#insumos_body').append(linha);
-
-                            $('#valor_unitario_'+retorno.insumo.id).maskMoney({allowNegative: true, thousands:'.', decimal:','});
-
-                        })
-                        .fail(function (retorno) {
-                            erros = '';
-                            $.each(retorno.responseJSON, function (index, value) {
-                                if (erros.length) {
-                                    erros += '<br>';
-                                }
-                                erros += value;
-                            });
-                            swal("Oops", erros, "error");
-                        });
-            });
-
+            
         });
         function removerLinha(qual) {
             $('#tr_insumo_'+qual).remove();

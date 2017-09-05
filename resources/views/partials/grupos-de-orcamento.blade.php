@@ -11,8 +11,8 @@
 		{!! Form::label('regional', 'Regional:') !!}
 		{!!
 		  Form::select(
-			'obra_id',
-			['todas'=>'Todas']+$obras,
+			'regional_id',
+			$regionais,
 			null,
 			['class' => 'form-control select2 js-filter', 'id'=>'obra_id', 'onchange' => 'selectgrupo('. \App\Models\Grupo::where('codigo', '01')->whereNull('grupo_id')->first()->id.', \'subgrupo1_id\', \'grupos\');']
 		  )

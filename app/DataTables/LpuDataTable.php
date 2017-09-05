@@ -2,18 +2,14 @@
 
 namespace App\DataTables;
 
-use App\Models\Contrato;
-use App\Models\Obra;
+use App\Models\Lpu;
 use Yajra\Datatables\Services\DataTable;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
-use App\Models\ContratoStatus;
 
 class LpuDataTable extends DataTable
 {
-
-    private $isModal = false;
 
     /**
      * Display ajax response.
@@ -24,24 +20,13 @@ class LpuDataTable extends DataTable
     {
         return $this->datatables
             ->eloquent($this->query())
-            ->editColumn('created_at', function ($contrato) {
-                return $contrato->created_at
-                    ? $contrato->created_at->format('d/m/Y')
+            ->editColumn('created_at', function ($lpu) {
+                return $lpu->created_at
+                    ? $lpu->created_at->format('d/m/Y')
                     : '';
             })
-            ->editColumn('valor_total_atual', function ($contrato) {
-                return float_to_money($contrato->valor_total_atual);
-            })
-            ->editColumn('status', function($obj){
-                return '<i class="fa fa-circle" aria-hidden="true" style="color:'
-                    . $obj->status_cor
-                    . '"></i> '
-                    . $obj->status;
-            })
-            ->addColumn('action', function($obj) {
-                return view('contratos.datatables_actions')
-                    ->with($obj->toArray())
-                    ->with('isModal', $this->isModal);
+            ->editColumn('valor_unitario', function ($lpu) {
+                return float_to_money($lpu->valor_unitario);
             })
             ->make(true);
     }
@@ -51,89 +36,53 @@ class LpuDataTable extends DataTable
      */
     public function query()
     {
-        $query = Contrato::query();
+        $query = Lpu::query();
 
         $query->select([
-            'contratos.id',
-            'contratos.created_at',
-            'contratos.valor_total_atual',
-            'fornecedores.nome as fornecedor',
-            'obras.nome as obra',
-            'contrato_status.nome as status',
-            'contrato_status.cor as status_cor',
-            DB::raw('exists (select 1 from contrato_itens where contrato_itens.contrato_id = contratos.id and contrato_itens.pendente = 1) as tem_pendencias')
+            'lpu.id',
+            'lpu.created_at',
+            'lpu.valor_unitario',
+			'lpu.valor_contrato',
+			'lpu.valor_catalogo',
+            'lpu.insumo_id',
+			'insumos.nome as descricao'
         ])
-        ->join('obras', 'obras.id', 'contratos.obra_id')
-        ->join('fornecedores', 'fornecedores.id', 'contratos.fornecedor_id')
-        ->join('contrato_status', 'contrato_status.id', 'contratos.contrato_status_id')
-        ->join('contrato_itens', function($join) {
-            $join->on('contrato_itens.contrato_id', 'contratos.id');
-            // Excluir contratos que já constam este insumo
-            if($insumo = request('insumo')) {
-                $join->where('contrato_itens.insumo_id', '!=', $insumo);
-            }
-        })
-        ->leftJoin('oc_item_qc_item', 'contrato_itens.qc_item_id', 'oc_item_qc_item.qc_item_id')
-        ->join('ordem_de_compra_itens', 'ordem_de_compra_itens.id', 'oc_item_qc_item.ordem_de_compra_item_id')
-        ->groupBy('contratos.id');
+        ->join('insumos', 'insumos.id', 'lpu.insumo_id')        
+        ->groupBy('lpu.id');
 
         $request = $this->request();
-
-        if($request->obra) {
-            $query->where('contratos.obra_id', $request->obra);
-            $query->whereIn('contratos.contrato_status_id', [
-                ContratoStatus::APROVADO,
-                ContratoStatus::ATIVO
-            ]);
+		
+		if($request->regional_id) {
+            $query->where('lpu.regional_id', $request->regional_id);
         }
-
-        if($request->fornecedor_id) {
-            $query->where('contratos.fornecedor_id', $request->fornecedor_id);
+		
+        if($request->subgrupo3_id) {
+            $query->where('insumos.insumo_grupo_id', $request->subgrupo3_id);
         }
-
-        if($request->obra_id) {
-            if($request->obra_id == 'todas') {
-                $obras = Obra::orderBy('nome', 'ASC')
-                    ->whereHas('users', function($query){
-                        $query->where('user_id', auth()->id());
-                    })
-                    ->whereHas('contratos')
-                    ->pluck('id', 'id')
-                    ->toArray();
-
-                $query->whereIn('contratos.obra_id', $obras);
-            } else {
-                $query->where('contratos.obra_id', $request->obra_id);
-            }
-        }
-
-        if($request->contrato_status_id) {
-            $query->where('contratos.contrato_status_id', $request->contrato_status_id);
-        }
-
-        if($request->grupo_id) {
-            $query->where('ordem_de_compra_itens.grupo_id', $request->grupo_id);
+		
+		if($request->grupo_id) {
+            $query->where('insumos.insumo_grupo_id', $request->grupo_id);
         }
 
         if($request->subgrupo1_id) {
-            $query->where('ordem_de_compra_itens.subgrupo1_id', $request->subgrupo1_id);
+            $query->where('insumos.insumo_grupo_id', $request->subgrupo1_id);
         }
 
         if($request->subgrupo2_id) {
-            $query->where('ordem_de_compra_itens.subgrupo2_id', $request->subgrupo2_id);
+            $query->where('insumos.insumo_grupo_id',  $request->subgrupo2_id);
         }
 
         if($request->subgrupo3_id) {
-            $query->where('ordem_de_compra_itens.subgrupo3_id', $request->subgrupo3_id);
+            $query->where('insumos.insumo_grupo_id',  $request->subgrupo3_id);
         }
 
         if($request->servico_id) {
-            $query->where('ordem_de_compra_itens.servico_id', $request->servico_id);
+            $query->where('insumos.insumo_grupo_id',  $request->servico_id);
         }
 
         if(!is_null($request->days)) {
             $query->whereDate(
-                'contratos.created_at',
+                'lpu.created_at',
                 '>=',
                 Carbon::now()->subDays($request->days)->toDateString()
             );
@@ -142,7 +91,7 @@ class LpuDataTable extends DataTable
         if($request->data_start) {
             if(strpos($request->data_start, '/')){
                 $query->whereDate(
-                    'contratos.created_at',
+                    'lpu.created_at',
                     '>=',
                     Carbon::createFromFormat('d/m/Y', $request->data_start)->toDateString()
                 );
@@ -151,12 +100,12 @@ class LpuDataTable extends DataTable
 
         if($request->data_end) {
             $query->whereDate(
-                'contratos.created_at',
+                'lpu.created_at',
                 '<=',
                 Carbon::createFromFormat('d/m/Y', $request->data_end)->toDateString()
             );
-        }
-
+        }			
+	
         return $this->applyScopes($query);
     }
 
@@ -224,37 +173,24 @@ class LpuDataTable extends DataTable
     protected function getColumns()
     {
         return [
-            'id'                => ['name' => 'id', 'data' => 'id', 'title' => 'N° do Contrato'],
+            'insumo_id'                => ['name' => 'id', 'data' => 'id', 'title' => 'Insumo'],
             'created_at'        => ['name' => 'created_at', 'data' => 'created_at', 'title' => 'Data'],
-            'fornecedor'        => ['name' => 'fornecedores.nome', 'data' => 'fornecedor'],
-            'obra'              => ['name' => 'obras.nome', 'data' => 'obra'],
-            'valor_total_atual' => ['name' => 'valor_total_atual', 'data' => 'valor_total_atual', 'title' => 'Saldo'],
-            'status'            => ['name' => 'status.nome', 'data' => 'status'],
-            'action' => ['name'=>'Ações', 'title' => 'visualizar', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'15%', 'class' => 'all']
+            'descricao' => ['name' => 'descricao', 'data' => 'descricao', 'title' => 'Descrição'],
+			'valor_unitario' => ['name' => 'valor_unitario', 'data' => 'valor_unitario', 'title' => 'Valor Sugerido'],
+			'valor_contrato' => ['name' => 'valor_unitario', 'data' => 'valor_contrato', 'title' => 'Valor Contrato'],
+			'valor_catalogo' => ['name' => 'valor_unitario', 'data' => 'valor_catalogo', 'title' => 'Valor Catálogo']
         ];
     }
 
     /**
-     * Get filename for export.
+     * Get filename for export
      *
      * @return string
      */
     protected function filename()
     {
-        return 'contratodatatables_' . time();
+        return 'lpu_' . time();
     }
 
-    /**
-     * Setter for isModal
-     *
-     * @param bool $isModal
-     *
-     * @return ContratoDataTable
-     */
-    public function setIsModal($isModal)
-    {
-        $this->isModal = $isModal;
-        return $this;
-    }
 
 }

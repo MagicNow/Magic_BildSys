@@ -9,7 +9,7 @@
   <section class="content-header">
     <h1>
       Lista de Preço Unitário
-      <a href="{{ url('/lpu/atualizar-valor') }}" class="btn btn-lg btn-flat btn-info pull-right"> <i class="fa fa-refresh"></i>  Atualizar valores</a>
+      <a href="{{ url('/lpu/atualizar-valor') }}" class="btn btn-lg btn-flat btn-info pull-right"> <i class="fa fa-refresh"></i>Sugerir valor</a>
     </h1>
   </section>
   <div class="content" style="clear: both">
@@ -21,29 +21,7 @@
           <div class="col-sm-3">
             <h4>Data</h4>
             @include('partials.filter-date')
-          </div>
-          <div class="col-sm-5">
-            <h4>Fornecedor</h4>
-            {!!
-              Form::select(
-                'fornecedor_id',
-                $fornecedores,
-                null,
-                ['class' => 'form-control select2 js-filter']
-              )
-            !!}
-          </div>
-          <div class="col-sm-4">
-            <h4>Status</h4>
-            {!!
-              Form::select(
-                'contrato_status_id',
-                $status,
-                null,
-                ['class' => 'form-control select2 js-filter']
-              )
-            !!}
-          </div>
+          </div>          
         </div>
       </div>
     </div>
