@@ -527,32 +527,6 @@ $(function() {
     addFornecedorTemp();
   });
 
-  function checkEqualizacaoTecnica() {
-
-      qcEqualizacao = [];
-      tiposEqT = []
-
-      $(".qcEqualizacao").each(function( index ) {
-
-          qcEqualizacao.push( parseInt( $(this).val() ) );
-      });
-
-      $(".tiposEqT input").each(function( index ) {
-
-          tiposEqT.push( parseInt( $(this).val() ) );
-      });
-
-      for (let value of tiposEqT) {
-
-          if (qcEqualizacao.indexOf(value) !== -1) {
-
-              $('#filter_tipoEqualizacaoTecnica_'+value).iCheck('check');
-          }
-      }
-  }
-
-  setTimeout(checkEqualizacaoTecnica, 3000);
-
   $('.tiposEqT input').on('ifChecked', function(event) {
     var tipo_eqt_id = event.target.value;
 
