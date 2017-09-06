@@ -1161,6 +1161,11 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->get('regionais/{regionals}/edit', ['as' => 'regionals.edit', 'uses' => 'RegionalController@edit'])
             ->middleware('needsPermission:regionals.edit');
     });
+	
+	$router->get('/testeLpu', function () {
+        $lpu = \App\Repositories\LpuGerarRepository::calcular();
+		dd($lpu);		
+    });
 
     $router->get('/teste', function () {
         //        $grupos_mega = \App\Models\MegaInsumoGrupo::select([

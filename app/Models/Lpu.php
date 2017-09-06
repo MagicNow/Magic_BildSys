@@ -18,7 +18,16 @@ class Lpu extends Model
 
     public $fillable = [
         'insumo_id',
-        'valor_sugerido',
+		'codigo_insumo',
+		'regional_id',
+		'grupo_id',
+		'subgrupo1_id',
+		'subgrupo2_id',
+		'subgrupo3_id',
+		'servico_id',
+		'valor_sugerido',
+		'valor_contrato',
+		'valor_catalogo',
     ];
 
     /**

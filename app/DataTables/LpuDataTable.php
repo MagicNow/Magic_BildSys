@@ -45,7 +45,8 @@ class LpuDataTable extends DataTable
             'lpu.valor_sugerido',
 			'lpu.valor_contrato',
 			'lpu.valor_catalogo',
-            'lpu.insumo_id',
+            'insumos.codigo',
+			'insumos.unidade_sigla',
 			'insumos.nome as descricao'
         ])
         ->join('insumos', 'insumos.id', 'lpu.insumo_id')        
@@ -166,12 +167,13 @@ class LpuDataTable extends DataTable
     protected function getColumns()
     {
         return [
-            'insumo_id'                => ['name' => 'id', 'data' => 'id', 'title' => 'Insumo'],
-            'created_at'        => ['name' => 'created_at', 'data' => 'created_at', 'title' => 'Data'],
+            'codigo' => ['name' => 'codigo', 'data' => 'codigo', 'title' => 'Código Insumo'],            
             'descricao' => ['name' => 'descricao', 'data' => 'descricao', 'title' => 'Descrição'],
+			'unidade_sigla' => ['name' => 'unidade_sigla', 'data' => 'unidade_sigla', 'title' => 'UN Medida'],
 			'valor_sugerido' => ['name' => 'valor_sugerido', 'data' => 'valor_sugerido', 'title' => 'Valor Sugerido'],
 			'valor_contrato' => ['name' => 'valor_unitario', 'data' => 'valor_contrato', 'title' => 'Valor Contrato'],
 			'valor_catalogo' => ['name' => 'valor_unitario', 'data' => 'valor_catalogo', 'title' => 'Valor Catálogo'],
+			'created_at'        => ['name' => 'created_at', 'data' => 'created_at', 'title' => 'Data'],
 			'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
 		];
     }
