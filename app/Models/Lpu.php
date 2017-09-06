@@ -38,7 +38,16 @@ class Lpu extends Model
     protected $casts = [
         'id'             => 'integer',
         'insumo_id'      => 'integer',
+        'codigo_insumo' => 'string',
+        'regional_id' => 'integer',
+        'grupo_id' => 'integer',
+        'subgrupo1_id' => 'integer',
+        'subgrupo2_id' => 'integer',
+        'subgrupo3_id' => 'integer',
+        'servico_id' => 'integer',
         'valor_sugerido' => 'float',
+        'valor_contrato' => 'float',
+        'valor_catalogo' => 'float'
     ];
 
     /**
@@ -49,57 +58,13 @@ class Lpu extends Model
     public static $rules = [
 
     ];
-
-    /**
+	
+	/**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function insumo()
+    public function regional()
     {
-        return $this->belongsTo(Insumo::class, 'insumo_id');
+        return $this->belongsTo(\App\Models\Regional::class);
     }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     **/
-    public function modificacoes()
-    {
-        return $this->hasMany(LpuModificacao::class);
-    }
-
-    /**
-     * applyChanges
-     * Aplica as mudanças no item da Lpu
-     * @param LpuModificacao $mod
-     * @param 'Reajuste de valor unitário'
-     * @return Lpu $this
-     */
-    public function applyChanges(LpuModificacao $mod, $tipo_reajuste = null)
-    {
-        
-        if($tipo_reajuste){            
-            if($tipo_reajuste == ContratoItemModificacao::REAJUSTE_VALOR){
-                $this->valor_unitario = $mod->valor_unitario_atual;
-            }
-        } 
-        
-        $this->save();
-
-        return $this;
-    }
-
-    /*public function getQtdSaldoAttribute()
-    {
-        $columnToSum = $this->insumo->is_faturamento_direto
-            ? 'valor_total'
-            : 'qtd';
-
-
-        $total_solicitado = $this->solicitacaoEntregaItens()
-            ->whereHas('solicitacaoEntrega', function($query) {
-                $query->where('se_status_id', '!=', SeStatus::CANCELADO);
-            })
-            ->sum($columnToSum);
-
-        return $this->qtd - $total_solicitado;
-    }*/
+    
 }

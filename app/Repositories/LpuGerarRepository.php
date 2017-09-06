@@ -10,12 +10,18 @@ use Illuminate\Support\Facades\Log;
 
 class LpuGerarRepository
 {
+	#Calcular por catalago/contrato
+	#Calcular por QC para insumo quebrado
+	#AVG e medias do subgrupo1_id
+	#Retornar subgrupo ou insumo?
+	
     # Calcular as Lpu do Mês
     public static function calcular()
     {
-        $insumos = Contrato::select([
+        $insumos = Lpu::select([
             
 			'contrato_itens.id',
+			'insumos.id as insumo_id',
 			'insumos.codigo',
 			'insumos.nome as insumo',
 			'insumo_grupos.nome as grupo',
@@ -35,15 +41,19 @@ class LpuGerarRepository
 		->join('contrato_itens', 'contrato_itens.contrato_id', 'contratos.id')
 		->join('insumos', 'insumos.id', 'contrato_itens.insumo_id')
 		->join('insumo_grupos', 'insumo_grupos.id', 'insumos.insumo_grupo_id')
-        ->where('contrato_status.id','5')        
+        ->where('contrato_status.id','5')
+		->groupBy('insumos.id')      
         ->get();
 
         foreach ($insumos as $insumo) {
             try {
-                
+				
+				/*print_r($insumos);
+				die;*/
+				                
                 $lpu = Lpu::updateOrCreate([                
                     'insumo_id' => $insumo->insumo_id,
-					'valor_sugerido'	=> $insumo->valor_unitario
+					'valor_sugerido' => $insumo->valor_unitario
                 ]);
                                
 				$lpu->codigo_insumo = $insumo->codigo;
