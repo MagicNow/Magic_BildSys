@@ -18,7 +18,7 @@ class Lpu extends Model
 
     public $fillable = [
         'insumo_id',
-        'valor_unitario',
+        'valor_sugerido',
     ];
 
     /**
@@ -29,7 +29,7 @@ class Lpu extends Model
     protected $casts = [
         'id'             => 'integer',
         'insumo_id'      => 'integer',
-        'valor_unitario' => 'float',
+        'valor_sugerido' => 'float',
     ];
 
     /**
