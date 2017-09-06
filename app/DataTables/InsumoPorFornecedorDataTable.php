@@ -128,11 +128,7 @@ class InsumoPorFornecedorDataTable extends DataTable
             if(!in_array($column, $excluded)) {
                 list($fornecedor, $id) = explode('||', $column);
 
-                $title = $fornecedor . '
-                    <button class="btn btn-xs btn-default btn-flat pull-right" data-qcfornecedor="' . $id . '">
-                        <i class="fa fa-info-circle"></i>
-                    </button>
-                ';
+                $title = $fornecedor;
             } else {
                 $title = $column;
             }

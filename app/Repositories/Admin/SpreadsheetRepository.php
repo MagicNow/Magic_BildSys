@@ -290,6 +290,14 @@ class SpreadsheetRepository
                                             'grupo_id' => $grupoPai->id
                                         ]);
                                     }
+                                }elseif(count($codigo_quebrado) == 1){
+                                    $grupo = Grupo::where('codigo', $final['codigo_insumo'])->first();
+                                    if(!$grupo){
+                                        $erro = 1;
+                                        $mensagens_erro[] = 'A ordem do template está incorreta<br>O
+                                            código completo encontrado foi '.'
+                                            "<span class="text-danger"> '.$final['codigo_insumo'].' </span>"';
+                                    }
                                 }else{
                                     $erro = 1;
                                     $mensagens_erro[] = 'A ordem do template está incorreta<br>O
