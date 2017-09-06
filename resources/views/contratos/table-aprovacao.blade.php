@@ -1,3 +1,13 @@
+<style>
+    .nav-tabs-custom > .nav-tabs > li.active > a, .nav-tabs-custom > .nav-tabs > li.active:hover > a {
+        color: #f98d00 !important;
+    }
+
+    .nav-tabs-custom > .nav-tabs > li.active {
+        border-top-color: #f98d00 !important;
+    }
+</style>
+
 <hr>
 <div class="row total-header">
     <div class="col-sm-3 text-right borda-direita">
@@ -40,8 +50,8 @@
             <a href="#oc"
                 data-toggle="tab"
                 class="js-tooltip"
-                title="Insumos que foram originados de uma ordem de Compra">
-                Originados da O.C.
+                title="Insumos que foram originados na O.C" style="color: #a94442;">
+                Originado na O.C
             </a>
         </li>
         @if($itens->contrato_itens->isNotEmpty())
@@ -49,8 +59,8 @@
                 <a href="#contrato"
                     class="js-tooltip"
                     title="Insumos que foram adicionados ao gerar o contrato"
-                    data-toggle="tab">
-                    Originados do Contrato
+                    data-toggle="tab" style="color: #a94442;">
+                    Originado no Contrato
                 </a>
             </li>
         @endif
