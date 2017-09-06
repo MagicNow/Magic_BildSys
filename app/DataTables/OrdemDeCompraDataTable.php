@@ -17,7 +17,13 @@ class OrdemDeCompraDataTable extends DataTable
     {
         return $this->datatables
             ->eloquent($this->query())
+
             ->addColumn('action', 'ordem_de_compras.datatables_actions')
+
+            ->editColumn('created_at',function ($obj){
+                return $obj->created_at ? with(new\Carbon\Carbon($obj->created_at))->format('d/m/Y') : '';
+            })
+
             ->editColumn('status', function($obj){
                 $saldoDisponivel = OrdemDeCompraRepository::saldoDisponivel($obj->id, $obj->obra_id);
                 $obj->status = $saldoDisponivel;
@@ -28,7 +34,13 @@ class OrdemDeCompraDataTable extends DataTable
                     return "<h4><i class='fa fa-circle red'></i></h4>";
                 }
             })
+
             ->orderColumn('status', 'saldo_disponivel_temp $1')
+
+            ->filterColumn('created_at', function ($query, $keyword) {
+                $query->whereRaw("DATE_FORMAT(ordem_de_compras.created_at,'%d/%m/%Y') like ?", ["%$keyword%"]);
+            })
+
             ->make(true);
     }
     
@@ -42,6 +54,7 @@ class OrdemDeCompraDataTable extends DataTable
         $ordemDeCompras = OrdemDeCompra::query()
             ->select([
                 'ordem_de_compras.id',
+                'ordem_de_compras.created_at',
                 'obras.nome as obra',
                 'users.name as usuario',
                 'oc_status.nome as situacao',
@@ -138,6 +151,7 @@ class OrdemDeCompraDataTable extends DataTable
     {
         return [
             'núm Oc' => ['name' => 'id', 'data' => 'id'],
+            'Data De Criação' => ['name' => 'ordem_de_compras.created_at', 'data' => 'created_at'],
             'obra' => ['name' => 'obras.nome', 'data' => 'obra'],
             'usuário' => ['name' => 'users.name', 'data' => 'usuario'],
             'situação' => ['name' => 'oc_status.nome', 'data' => 'situacao'],
