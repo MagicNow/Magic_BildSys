@@ -459,7 +459,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
             ->all();
 
         $ofertas = array_merge($ofertas,$fretes);
-
+//        dd($qcFornecedores);
         return $view->setQuadroDeConcorrencia($quadro)
             ->setQcFornecedores($qcFornecedores)
             ->render(

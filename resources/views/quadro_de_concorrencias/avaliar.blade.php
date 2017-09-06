@@ -226,6 +226,78 @@
                 </div>
             </div>
         @endif
+
+        {{--Demais condições--}}
+        @if(count($qcFornecedores))
+            <div class="box box-muted" id="box_demais_condicoes">
+                <div class="box-header with-border">
+                    <i class="fa fa-list-ul"></i>
+                    Demais condições
+                    <button type="button" class="btn btn-default btn-xs pull-right"
+                            onclick="expandeEncolhe('box_demais_condicoes');">
+                        <i class="iconeExpandeEncolhe fa fa-minus"></i>
+                    </button>
+                </div>
+                <div class="box-body">
+                    <table class="table table-striped table-condensed table-bordered table-hover">
+                        <thead>
+                        <tr>
+                            <th>Detalhes</th>
+                            @php
+                            $porcentagem_material = '';
+                            $porcentagem_servico = '';
+                            $porcentagem_faturamento_direto = '';
+                            $nf_material = '';
+                            $nf_servico = '';
+                            $nf_locacao = '';
+                            @endphp
+                            @foreach($qcFornecedores as $qcFornecedor)
+                                <th>
+                                    {{ $qcFornecedor->fornecedor->nome }}
+                                </th>
+
+                                @php
+                                    $porcentagem_material .= '<td>'.$qcFornecedor->porcentagem_material.' <span>%</span></td>';
+                                    $porcentagem_servico .= '<td>'.$qcFornecedor->porcentagem_servico.' <span>%</span></td>';
+                                    $porcentagem_faturamento_direto .= '<td>'.$qcFornecedor->porcentagem_faturamento_direto.' <span>%</span></td>';
+                                    $nf_material .= '<td>'.($qcFornecedor->nf_material ? '<span style="color:green">SIM</span>' : '<span style="color:red">NÃO</span>').'</td>';
+                                    $nf_servico .= '<td>'.($qcFornecedor->nf_servico   ? '<span style="color:green">SIM</span>' : '<span style="color:red">NÃO</span>').'</td>';
+                                    $nf_locacao .= '<td>'.($qcFornecedor->nf_locacao   ? '<span style="color:green">SIM</span>' : '<span style="color:red">NÃO</span>').'</td>';
+                                @endphp
+                            @endforeach
+                        </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="text-left">% Material</td>
+                                {!! $porcentagem_material !!}
+                            </tr>
+                            <tr>
+                                <td class="text-left">% Serviço</td>
+                                {!! $porcentagem_servico !!}
+                            </tr>
+                            <tr>
+                                <td class="text-left">% Faturamento Direto</td>
+                                {!! $porcentagem_faturamento_direto !!}
+                            </tr>
+                            <tr>
+                                <td class="text-left">NF Material</td>
+                                {!! $nf_material !!}
+                            </tr>
+                            <tr>
+                                <td class="text-left">NF Serviço</td>
+                                {!! $nf_servico !!}
+                            </tr>
+                            <tr>
+                                <td class="text-left">NF Locação</td>
+                                {!! $nf_locacao !!}
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        @endif
+
         {{-- Gráficos --}}
         <div class="row">
             <div class="col-md-12">

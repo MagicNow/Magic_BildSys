@@ -66,4 +66,17 @@ class UserRepository extends BaseRepository
         })->where('active', true)->get();
     }
 
+
+    public function getUsersByType($type) {
+
+        $user = User::select([
+            'id',
+            'name'
+        ]);
+
+        $user->join('role_user','users.id', '=', 'role_user.user_id')->where('role_user.role_id',$type)->where('active', true);
+
+        return $user->get();
+    }
+
 }
