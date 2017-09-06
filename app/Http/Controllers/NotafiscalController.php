@@ -230,11 +230,15 @@ class NotafiscalController extends AppBaseController
 
     public function manifesta()
     {
-        $notas = $this->consultaRepository->manifestaNotas();
-        if (count($notas)) {
-            return sprintf("%s notas manifestadas com sucesso.", count($notas));
+        try {
+            $notas = $this->consultaRepository->manifestaNotas();
+            if (count($notas)) {
+                return sprintf("%s notas manifestadas com sucesso.", count($notas));
+            }
+            return "Não há notas para manifestação.";
+        } catch (\Exception $e) {
+            dd($e);
         }
-        return "Não há notas para manifestação.";
     }
 
     public function filtraFornecedorContratos()

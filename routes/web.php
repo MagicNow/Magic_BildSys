@@ -1106,6 +1106,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->delete('notasfiscais/{notafiscal}', ['as' => 'notafiscals.destroy', 'uses' => 'NotafiscalController@destroy']);
     $router->get('notasfiscais/{notafiscal}', ['as' => 'notafiscals.show', 'uses' => 'NotafiscalController@show']);
     $router->get('notasfiscais/{notafiscal}/edit', ['as' => 'notafiscals.edit', 'uses' => 'NotafiscalController@edit']);
+    $router->get('notasfiscais/conciliacao/filtro', 'NotafiscalController@filtraFornecedorContratos');
 
     $router->get('capturaNfe', 'NotafiscalController@pescadorNfe');
     $router->get('capturaCte', 'NotafiscalController@buscaCTe');
@@ -1114,8 +1115,6 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('integra-mega/{id}', 'NotafiscalController@integraMega');
     $router->get('dacte/v3/{id}', 'NotafiscalController@visualizaDacteV3');
     $router->get('manifestar/nfe', 'NotafiscalController@manifesta');
-
-    $router->get('notasfiscais/conciliacao/filtro', 'NotafiscalController@filtraFornecedorContratos');
 
     # Padrões de empreendimento Novo
     $router->group(['middleware' => 'needsPermission:padraoEmpreendimentos.list'], function () use ($router) {

@@ -667,7 +667,7 @@ class ConsultaNfeRepository
         $nfe = [];
         foreach ($notas as $nfeObj)
         {
-            $nfe[] = $this->manifestaNotas($nfeObj, $operacao, $fromCommand);
+            $nfe[] = $this->manifesta($nfeObj, $operacao, $fromCommand);
         }
 
         return $nfe;
