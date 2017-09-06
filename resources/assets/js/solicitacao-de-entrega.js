@@ -295,10 +295,6 @@ var SolicitacaoDeEntrega = {
       return false;
     }
 
-    if(fornecedor.val()) {
-      formData.fornecedor_id = fornecedor.val();
-    }
-
     if(this.isEditing) {
       var inputs = $('[data-initial-value]');
 
@@ -376,12 +372,24 @@ var SolicitacaoDeEntrega = {
       return false;
     }
 
+    var form_data = new FormData();
+    form_data.append('solicitacao', JSON.stringify(_.flatten([selected, qtds, newValuesObjects])));
+    form_data.append('anexo', $('input[name="anexo"]')[0].files[0]);
+
+    if(fornecedor.val()) {
+      form_data.append('fornecedor_id', fornecedor.val());
+    }
+
     startLoading();
 
     $.ajax({
       url: location.href.replace('/edit', ''),
-      data: formData,
+      data: form_data,
       method: this.isEditing ? 'PATCH' : 'POST',
+      mimeType: "multipart/form-data",
+      contentType: false,
+      cache: false,
+      processData: false
     })
       .always(stopLoading)
       .done(function() {

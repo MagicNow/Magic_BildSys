@@ -32,13 +32,15 @@ class SolicitacaoEntregaRepository extends BaseRepository
 
         DB::beginTransaction();
         try {
+            $nome_anexo = CodeRepository::saveFile($request['anexo'], 'contratos/'.$request['contrato_id'].'/solicitacoes-de-entrega');
 
             $solicitacaoEntrega = parent::create([
                 'contrato_id'   => $request['contrato_id'],
                 'user_id'       => auth()->id(),
                 'se_status_id'  => SeStatus::EM_APROVACAO,
                 'valor_total'   => 0,
-                'fornecedor_id' => $fornecedor_id
+                'fornecedor_id' => $fornecedor_id,
+                'anexo'         => $nome_anexo
             ]);
 
             SeStatusLog::create([
@@ -76,16 +78,16 @@ class SolicitacaoEntregaRepository extends BaseRepository
                             $solicitacaoEntregaItem = SolicitacaoEntregaItem::create([
                                 'solicitacao_entrega_id' => $solicitacaoEntrega->id,
                                 'contrato_item_id'       => $contratoItem->id,
-                                'insumo_id'              => $solicitacao['insumo'],
-                                'qtd'                    => $solicitacao['qtd'],
-                                'valor_unitario'         => $solicitacao['valor_unitario'],
-                                'valor_total'            => (float) $solicitacao['valor_unitario'] * (float) $solicitacao['qtd'],
+                                'insumo_id'              => $solicitacao->insumo,
+                                'qtd'                    => $solicitacao->qtd,
+                                'valor_unitario'         => $solicitacao->valor_unitario,
+                                'valor_total'            => (float) $solicitacao->valor_unitario * (float) $solicitacao->qtd,
                             ]);
 
                             return SeApropriacao::create([
-                                'contrato_item_apropriacao_id' => $solicitacao['apropriacao'],
+                                'contrato_item_apropriacao_id' => $solicitacao->apropriacao,
                                 'solicitacao_entrega_item_id'  => $solicitacaoEntregaItem->id,
-                                'qtd'                          => $solicitacao['qtd']
+                                'qtd'                          => $solicitacao->qtd
                             ]);
                         });
                     }
