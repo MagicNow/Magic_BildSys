@@ -53,17 +53,19 @@ use App\Models\ContratoItemApropriacao;
 use App\Models\Cnae;
 use App\Repositories\SolicitacaoEntregaRepository;
 
+use App\Http\Requests\UpdateLpuRequest;
+use App\Repositories\LpuRepository;
 use App\Models\Regional;
 
 
 class LpuController extends AppBaseController
 {
-    /** @var  ContratoRepository */
-    private $contratoRepository;
+    /** @var  LpuRepository */
+    private $lpuRepository;
 
-    public function __construct(ContratoRepository $contratoRepo)
+    public function __construct(LpuRepository $lpuRepo)
     {
-        $this->contratoRepository = $contratoRepo;
+        $this->lpuRepository = $lpuRepo;
     }
 
     /**
@@ -72,9 +74,7 @@ class LpuController extends AppBaseController
      * @param ContratoDataTable $contratoDataTable
      * @return Response
      */
-    public function index(
-        LpuDataTable $lpuDataTable
-    ) {
+    public function index( LpuDataTable $lpuDataTable) {
         
 		$regionais = Regional::pluck('nome', 'id')->prepend('', '')->all();
 
@@ -84,747 +84,60 @@ class LpuController extends AppBaseController
         );
     }
 
-    public function show(
-        $id,
-        Request $request,
-        WorkflowReprovacaoMotivoRepository $workflowReprovacaoMotivoRepository,
-        ContratoItemApropriacaoRepository $apropriacaoRepository,
-        ContratoItemRepository $contratoItemRepository,
-        FornecedoresRepository $fornecedorRepository
-    ) {
-        $contrato = $this->contratoRepository->findWithoutFail($id);
+    public function show(){
+        /*$carteira = $this->carteiraRepository->findWithoutFail($id);
 
-        if (empty($contrato)) {
-            Flash::error('Contrato ' . trans('common.not-found'));
+        if (empty($carteira)) {
+            Flash::error('Carteira '.trans('common.not-found'));
 
-            return redirect(route('contratos.index'));
+            return redirect(route('admin.carteiras.index'));
         }
 
-        // Limpa qualquer notificação que tiver deste item
-        NotificationRepository::marcarLido(WorkflowTipo::CONTRATO,$id);
-
-        $orcamentoInicial = $totalAGastar = $realizado = $totalSolicitado = 0;
-
-        $orcamentoInicial = $apropriacaoRepository->orcamentoInicial(
-            $contrato
-        );
-
-        $avaliado_reprovado = [];
-
-        $fornecedor = $fornecedorRepository->updateImposto($contrato->fornecedor_id);
-
-        $dataUltimoPeriodo = $contrato->dataUltimoPeriodoAprovacao();
-        if(!$dataUltimoPeriodo){
-            $dataUltimoPeriodo = $contrato->updated_at;
-        }
-        $alcadas = WorkflowAlcada::where('workflow_tipo_id', WorkflowTipo::CONTRATO)
-            ->orderBy('ordem', 'ASC')
-            ->where('created_at', '<=', $dataUltimoPeriodo->format('Y-m-d H:i:s'))
-            ->get();
-
-        $alcadas_count = $alcadas->count();
-
-        if ($contrato->isStatus(ContratoStatus::EM_APROVACAO)) {
-            $workflowAprovacao = WorkflowAprovacaoRepository::verificaAprovacoes(
-                'Contrato',
-                $contrato->id,
-                $request->user()
-            );
-
-            foreach ($alcadas as $alcada) {
-                $avaliado_reprovado[$alcada->id] = WorkflowAprovacaoRepository::verificaTotalJaAprovadoReprovado(
-                    'Contrato',
-                    $contrato->irmaosIds(),
-                    null,
-                    $contrato->id,
-                    $alcada->id);
-
-                $avaliado_reprovado[$alcada->id]['aprovadores'] = WorkflowAprovacaoRepository::verificaQuantidadeUsuariosAprovadores(
-                    WorkflowTipo::find(WorkflowTipo::CONTRATO),
-                    $contrato->obra_id,
-                    $alcada->id,
-                    [$contrato->id=>$contrato->id],
-                    'Contrato'
-                );
-
-                $avaliado_reprovado[$alcada->id] ['faltam_aprovar'] = WorkflowAprovacaoRepository::verificaUsuariosQueFaltamAprovar(
-                    'Contrato',
-                    WorkflowTipo::CONTRATO,
-                    $contrato->obra_id,
-                    $alcada->id,
-                    [$alcada->id]
-                );
-
-                // Data do início da  Alçada
-                if ($alcada->ordem === 1) {
-                    $contrato_log = $contrato->logs()
-                        ->where('contrato_status_id', 4)->first();
-
-                    if ($contrato_log) {
-                        $avaliado_reprovado[$alcada->id] ['data_inicio'] = $contrato_log->created_at
-                            ->format('d/m/Y H:i');
-                    }
-                } else {
-                    $primeiro_voto = WorkflowAprovacao::where('aprovavel_type', 'App\\Models\\Contrato')
-                        ->where('aprovavel_id', $contrato->id)
-                        ->where('workflow_alcada_id', $alcada->id)
-                        ->orderBy('id', 'ASC')
-                        ->first();
-                    if ($primeiro_voto) {
-                        $avaliado_reprovado[$alcada->id]['data_inicio'] = $primeiro_voto->created_at->format('d/m/Y H:i');
-                    }
-                }
-            }
-        }
-        $aprovado = $contrato->isStatus(ContratoStatus::APROVADO);
-
-        $motivos = $workflowReprovacaoMotivoRepository
-            ->porTipo(WorkflowTipo::CONTRATO)
-            ->pluck('nome', 'id')
-            ->prepend('Motivos...', '')
-            ->all();
-
-        $pendencias = ContratoItemModificacao::whereHas('item', function ($itens) use ($id) {
-            return $itens->where('contrato_id', $id)->where('pendente', true);
-        })
-        ->where('contrato_status_id', ContratoStatus::EM_APROVACAO)
-        ->get()
-        ->map(function ($pendencia) {
-            $pendencia->workflow = WorkflowAprovacaoRepository::verificaAprovacoes(
-                'ContratoItemModificacao',
-                $pendencia->id,
-                auth()->user()
-            );
-
-            return $pendencia;
-        });
-
-        $status = $contrato->status->nome;
-
-        $isEmAprovacao = $contrato->em_aprovacao;
-
-        $itens = $isEmAprovacao
-            ? $apropriacaoRepository->forContratoApproval($contrato)
-            : $contratoItemRepository->forContratoDetails($contrato);
-
-        $iss = Cnae::$iss;
-
-        $itens_analise = $apropriacaoRepository->analiseReajuste($contrato);
-
-        $valor_previsto_orcamento = $itens_analise->sum('preco_inicial');
-
-        $saldo = 0;
-        
-        $qtd_itens = 1;
-
-        return view('contratos.show', compact(
-            'isEmAprovacao',
-            'contrato',
-            'orcamentoInicial',
-            'itens',
-            'workflowAprovacao',
-            'motivos',
-            'aprovado',
-            'pendencias',
-            'alcadas_count',
-            'avaliado_reprovado',
-            'status',
-            'fornecedor',
-            'iss',
-            'itens_analise',
-            'qtd_itens',
-            'valor_previsto_orcamento',
-            'saldo'
-        ));
-    }
-
-    public function reajustar(
-        $contrato_item_id,
-        ReajustarRequest $request,
-        ContratoItemModificacaoRepository $contratoItemModificacaoRepository
-    ) {
-        $contratoItemModificacaoRepository->reajustar($contrato_item_id, $request->all(), $request->reajusteDescricao);
-
-        return response()->json([
-            'success' => true
-        ]);
-    }
-
-    public function distratar(
-        $contrato_item_id,
-        DistratarRequest $request,
-        ContratoItemModificacaoRepository $contratoItemModificacaoRepository
-    ) {
-        $contratoItemModificacaoRepository->distratar(
-            $contrato_item_id,
-            $request->distrato,
-            $request->distratoDescricao
-        );
-
-        return response()->json([
-            'success' => true
-        ]);
-    }
-
-    /**
-     * Retorna as apropriações que ainda existem sobra
-     * @param $id
-     * @param ContratoItemRepository $contratoItemRepository
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    public function apropriacoes(
-        $id,
-        ContratoItemRepository $contratoItemRepository
-    ) {
-
-        $item = $contratoItemRepository->find($id);
-
-        $itens = $item->apropriacoes->filter(function($apropriacao) {
-            return $apropriacao->qtd_sobra;
-        });
-
-        return view('contratos.' . request('view'), compact('itens', 'item'));
-    }
-
-    public function reapropriarItem(
-        $id,
-        ContratoItemRepository $contratoItemRepository,
-        ContratoItemApropriacaoRepository $contratoItemReapropriacaoRepository,
-        ReapropriarRequest $request
-    ) {
-        $item = $contratoItemRepository->find($id);
-
-        $input = $request->all();
-
-        $orcamento = Orcamento::find($input['orcamento_id']);
-
-        $input['codigo_insumo'] = $orcamento->codigo_insumo;
-        $input['grupo_id'] = $orcamento->grupo_id;
-        $input['subgrupo1_id'] = $orcamento->subgrupo1_id;
-        $input['subgrupo2_id'] = $orcamento->subgrupo2_id;
-        $input['subgrupo3_id'] = $orcamento->subgrupo3_id;
-        $input['servico_id'] = $orcamento->servico_id;
-        
-        $contratoItemReapropriacaoRepository->reapropriar($item, $input);
-
-        return response()->json([
-            'success' => true
-        ]);
-    }
-
-    public function editarItem(
-        $id,
-        ContratoItemRepository $contratoItemRepository,
-        EditarItemRequest $request
-    ) {
-        $contratoItemRepository->editarAditivo($id, $request->all());
-
-        return response()->json([
-            'success' => true
-        ]);
-    }
-
-    public function imprimirContrato($id)
-    {
-
-        return response()->download(storage_path('/app/public/') . str_replace('storage/', '', ContratoRepository::geraImpressao($id)));
-    }
-    public function imprimirContratoCompleto($id)
-    {
-        $arquivo = ContratoRepository::geraImpressaoCompleta($id);
-        return response()->download(storage_path('/app/public/') . str_replace('storage/', '', $arquivo['arquivo']));
-    }
+        return view('lpu.show')->with('carteira', $carteira);*/
+    }    
 
     public function edit($id)
     {
-        $contrato = $this->contratoRepository->findWithoutFail($id);
+        $lpu = $this->lpuRepository->findWithoutFail($id);
 
-        if (empty($contrato)) {
-            Flash::error('Contrato ' . trans('common.not-found'));
+        if (empty($lpu)) {
+            Flash::error('Lpu '.trans('common.not-found'));
 
-            return redirect(route('contratos.index'));
+            return redirect(route('lpu.index'));
         }
-
-        return view('contratos.edit', compact('contrato'));
+     
+        return view('lpu.edit', compact('lpu'));
     }
 
-    public function update($id, Request $request)
+    public function update($id, UpdateLpuRequest $request)
     {
-        $contrato = $this->contratoRepository->findWithoutFail($id);
+        $lpu = $this->lpuRepository->findWithoutFail($id);
 
-        $type_resposta = 'info';
-        $resposta = 'Contrato não modificado.';
+        if (empty($lpu)) {
+            Flash::error('LPU '.trans('common.not-found'));
 
-        if (empty($contrato)) {
-            Flash::error('Contrato ' . trans('common.not-found'));
-
-            return redirect(route('contratos.index'));
-        }
-        $contrato_status_id = $contrato->contrato_status_id;
-
-        if (count($request->quantidade)) {
-            foreach ($request->quantidade as $item) {
-                $contrato_item = ContratoItem::find($item['id']);
-                if ($contrato_item && $item['qtd'] != '' && $contrato_item->qtd != money_to_float($item['qtd']) ) {
-                    $contrato_item->qtd = money_to_float($item['qtd']);
-                    $contrato_item->valor_total = money_to_float($item['qtd']) * money_to_float($contrato_item->valor_unitario);
-                    $contrato_item->update();
-
-                    $contrato->contrato_status_id = 1;
-                    $contrato->update();
-
-                    $type_resposta = 'success';
-                    $resposta = 'Contrato em aprovação.';
-                }
-            }
-        }
-        if($contrato->contrato_status_id != $contrato_status_id){
-            ContratoStatusLog::create([
-                'contrato_id'        => $contrato->id,
-                'contrato_status_id' => $contrato->contrato_status_id,
-                'user_id'            => auth()->id()
-            ]);
+            return redirect(route('lpu.index'));
         }
 
-        Flash::$type_resposta($resposta);
-
-        return redirect(route('contratos.index'));
-    }
-
-    public function validaEnvioContrato($id, Request $request)
-    {
-        $contrato = $this->contratoRepository->findWithoutFail($id);
-
-        if (empty($contrato)) {
-            Flash::error('Contrato ' . trans('common.not-found'));
-            return redirect(route('contratos.index'));
+        if($request->logo){
+            $destinationPath = CodeRepository::saveFile($request->logo, 'lpu/' . $lpu->id);
+            $lpu->logo = Storage::url($destinationPath);
+            $lpu->save();
         }
 
-        if ($request->arquivo) {
-            $destinationPath = CodeRepository::saveFile($request->arquivo, 'contratos/' . $contrato->id);
-
-            $contrato->arquivo = $destinationPath;
-            $contrato->save();
-            $acao = 'Arquivo enviado!';
-
-
-            if ($contrato->contrato_status_id == 4) {
-                $contrato->contrato_status_id = 5;
-                $contrato->save();
-                ContratoStatusLog::create([
-                    'contrato_id' => $contrato->id,
-                    'contrato_status_id' => $contrato->contrato_status_id,
-                    'user_id' => auth()->id()
-                ]);
-                $acao = 'Arquivo enviado e Contrato Liberado!';
-            }
-
-            Flash::success($acao);
-            return redirect(route('contratos.show', $contrato->id));
-        }
-
-        Flash::error('É necessário enviar um arquivo!');
-        return redirect(route('contratos.show', $contrato->id));
-    }
-
-    public function atualizarValor(Request $request)
-    {
-        $obras = Obra::whereHas('contratos', function ($query) {
-            $query->where('contrato_status_id', 5);
-        })->whereHas('users', function ($query) {
-            $query->where('user_id', auth()->id());
-        })
-            ->orderBy('nome', 'ASC')
-            ->pluck('nome', 'id')
-            ->toArray();
-        return view('lpu.atualizar-valor', compact('obras'));
-		
-		/*$insumos = Insumo::pluck('nome', 'id')->prepend('', '')->all();
-		return view('lpu.atualizar-valor', compact('lpu'));*/
-    }
-
-    public function pegaFornecedoresPelasObras(Request $request)
-    {
-        $this->validate($request, ['obras'=>'required|min:1']);
-        $obras = $request->obras;
-        return Fornecedor::whereHas('contratos', function ($query) use ($obras) {
-            $query->where('contrato_status_id', 5);
-            $query->whereIn('obra_id', $obras);
-        })
-            ->select([
-                'id',
-                DB::raw("CONCAT(nome,' - ',cnpj) as nome"),
-            ])
-            ->orderBy('nome', 'ASC')
-            ->paginate();
-    }
-
-    public function insumosPorFornecedor(Request $request)
-    {
-        $fornecedor_id = $request->fornecedor;
-        $obras = $request->obras;
-        return Insumo::whereHas('contratoItem', function ($query) use ($fornecedor_id, $obras) {
-            $query->join('contratos', 'contratos.id', 'contrato_itens.contrato_id');
-            $query->where('contrato_status_id', 5);
-            $query->where('fornecedor_id', $fornecedor_id);
-            $query->whereIn('obra_id', $obras);
-        })
-            ->join('contrato_itens', 'contrato_itens.insumo_id', 'insumos.id')
-            ->select([
-                'insumos.id',
-                'contrato_itens.id as contrato_item_id',
-                DB::raw("CONCAT(insumos.codigo,' - ',insumos.nome) as nome"),
-            ])
-            ->join('contratos', 'contratos.id', 'contrato_itens.contrato_id')
-            ->where('fornecedor_id', $fornecedor_id)
-            ->whereIn('obra_id', $obras)
-            ->orderBy('nome', 'ASC')
-            ->paginate();
-    }
-
-    public function insumoValor(Request $request)
-    {
-        $item_id = $request->insumo;
-        return ContratoItem::where('id', $item_id)
-            ->with('insumo')
-            ->first();
-    }
-
-    public function atualizarValorSave(
-        AtualizarValorRequest $request,
-        ContratoItemModificacaoRepository $contratoItemModificacaoRepository
-    ) {
-        $reajustes =  $contratoItemModificacaoRepository->reajusteFornecedor($request->fornecedor_id, $request->obra_id, $request->valor_unitario);
-
-        if (count($reajustes)) {
-            Flash::success('Reajustes de valores criados.');
-        } else {
-            Flash::error('Nenhum reajuste foi criado.');
-        }
-
-        return redirect(route('contratos.index'));
-    }
-
-    public function memoriaDeCalculo($contrato_id, $contrato_item_apropriacao_id, Request $request)
-    {
-        $contrato = $this->contratoRepository->findWithoutFail($contrato_id);
-        $contrato_item_apropriacao = ContratoItemApropriacao::find($contrato_item_apropriacao_id);
-        $filtro_estruturas = [];
-        $planejamentos = [];
-
-        if (empty($contrato)) {
-            Flash::error('Contrato ' . trans('common.not-found'));
-
-            return redirect(route('contratos.show', $contrato_id));
-        }
-
-        if (empty($contrato_item_apropriacao)) {
-            Flash::error('Item do contrato ' . trans('common.not-found'));
-
-            return redirect(route('contratos.show', $contrato_id));
-        }
-
-        if (empty($contrato->fornecedor)) {
-            Flash::error('Fornecedor do contrato ' . trans('common.not-found'));
-
-            return redirect(route('contratos.show', $contrato_id));
-        }
-
-        $insumo = Insumo::find($contrato_item_apropriacao->insumo_id);
-
-        if (empty($insumo)) {
-            Flash::error('Insumo ' . trans('common.not-found'));
-
-            return redirect(route('contratos.show', $contrato_id));
-        }
-
-        $tarefas = Planejamento::where('obra_id', $contrato->obra_id)
-            ->pluck('tarefa', 'id')
-            ->prepend('', '')
-            ->toArray();
-
-        $obra_torres = ObraTorre::where('obra_id', $contrato->obra_id)
-            ->pluck('nome', 'id')
-            ->prepend('', '')
-            ->toArray();
-
-        $memoria_de_calculo = MemoriaCalculo::select([
-            DB::raw('CONCAT(
-                        nome, " - ", 
-                        (
-                        CASE
-                            modo
-                        WHEN
-                            "T"
-                        THEN
-                            "Torre"
-                        WHEN
-                            "C"
-                        THEN
-                            "Cartela"
-                        WHEN
-                            "U"
-                        THEN
-                            "Unidade"
-                        END
-                        )
-                    ) as nome'),
-            'id'
-        ])
-            ->pluck('nome', 'id')
-            ->prepend('', '')
-            ->toArray();
-
-        $previsoes = McMedicaoPrevisao::where('insumo_id',  $insumo->id)
-            ->where('contrato_item_apropriacao_id', $contrato_item_apropriacao->id)
-            ->where('contrato_item_id', $contrato_item_apropriacao->contrato_item_id)
-            ->get();
-
-        if(count($previsoes)) {
-            $memoria_de_calculo_id = $previsoes->first()->memoriaCalculoBloco->memoriaCalculo->id;
-        }else{
-            $memoria_de_calculo_id = $request->memoria_de_calculo;
-        }
-
-        if($memoria_de_calculo_id) {
-            $memoriaCalculo = MemoriaCalculo::find($memoria_de_calculo_id);
-
-            if (empty($memoriaCalculo)) {
-                Flash::error('Memoria Calculo '.trans('common.not-found'));
-
-                return redirect(route('memoriaCalculos.index'));
-            }
-
-            $filtro_estruturas = NomeclaturaMapa::where('tipo', 1)
-                ->where('apenas_cartela',($memoriaCalculo->modo=='C'?'1':'0') )
-                ->where('apenas_unidade',($memoriaCalculo->modo=='U'?'1':'0') )
-                ->pluck('nome', 'id')
-                ->prepend('', '')
-                ->toArray();
-
-            // Montar os blocos
-            $blocos = [];
-            $memoriaBlocos = $memoriaCalculo->blocos()
-                ->orderBy('ordem_bloco','ASC')
-                ->orderBy('ordem_linha','ASC')
-                ->orderBy('ordem','ASC')
-                ->with('estruturaObj','pavimentoObj','trechoObj')
-                ->get();
-            if(count($memoriaBlocos)){
-                $estruturas = [];
-                $pavimentos = [];
-                $trechos = [];
-                foreach ($memoriaBlocos as $memoriaBloco) {
-                    $editavel = 1;
-                    if(!isset($estruturas[$memoriaBloco->estrutura])){
-                        $estruturas[$memoriaBloco->estrutura] = [
-                            'id'=>   $memoriaBloco->ordem,
-                            'objId'=>   $memoriaBloco->estrutura,
-                            'nome'=> $memoriaBloco->estruturaObj->nome,
-                            'ordem' => $memoriaBloco->ordem_bloco,
-                            'itens' => [],
-                            'editavel'=>$editavel
-                        ];
-                    }else{
-                        if(!$editavel){
-                            $estruturas[$memoriaBloco->estrutura]['editavel'] = $editavel;
-                        }
-                    }
-
-                    if(!isset($pavimentos[$memoriaBloco->estrutura][$memoriaBloco->pavimento])){
-                        $countEstrutura = !isset($pavimentos[$memoriaBloco->estrutura])?1:count($pavimentos[$memoriaBloco->estrutura])+1;
-                        $pavimentos[$memoriaBloco->estrutura][$memoriaBloco->pavimento] = [
-                            'id'=>   $countEstrutura,
-                            'objId'=>   $memoriaBloco->pavimento,
-                            'nome'=> $memoriaBloco->pavimentoObj->nome,
-                            'ordem' => $memoriaBloco->ordem_linha,
-                            'estrutura' => $memoriaBloco->estrutura,
-                            'itens' => [],
-                            'editavel'=>$editavel
-                        ];
-                    }else{
-                        if(!$editavel){
-                            $pavimentos[$memoriaBloco->estrutura][$memoriaBloco->pavimento]['editavel'] = $editavel;
-                        }
-                    }
-
-                    if(!isset($trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento][$memoriaBloco->trecho])){
-                        $countTrecho = !isset($trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento])?1:count($trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento])+1;
-                        $trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento][$memoriaBloco->id] = [
-                            'id'=>   $countTrecho,
-                            'blocoId'=>   $memoriaBloco->id,
-                            'objId'=>   $memoriaBloco->trecho,
-                            'nome'=> $memoriaBloco->trechoObj->nome,
-                            'ordem' => $memoriaBloco->ordem,
-                            'estrutura' => $memoriaBloco->estrutura,
-                            'pavimento' => $memoriaBloco->pavimento,
-                            'editavel'=>$editavel
-                        ];
-                    }else{
-                        if(!$editavel){
-                            $trechos[$memoriaBloco->estrutura][$memoriaBloco->pavimento][$memoriaBloco->id]['editavel'] = $editavel;
-                        }
-                    }
-
-                }
-                // organiza a array
-                foreach ($trechos as $estrutura_id => $estruturaTrechos){
-                    foreach ($estruturaTrechos as $pavimento_id => $pavimentoTrechos) {
-                        foreach ($pavimentoTrechos as $trecho) {
-                            $pavimentos[$trecho['estrutura']][$trecho['pavimento']]['itens'][] = $trecho;
-                        }
-                    }
-
-                }
-
-                foreach ($pavimentos as $estrutura_id => $pavimentos_internos){
-                    foreach ($pavimentos_internos as $pavimento_interno){
-                        $estruturas[$pavimento_interno['estrutura']]['itens'][] = $pavimento_interno;
-                    }
-                }
-
-                foreach ($estruturas as $estrutura){
-                    $blocos[$estrutura['ordem']] = $estrutura;
-                }
-
-            }
-            ksort($blocos);
-
-            $planejamentos = Planejamento::where('obra_id', $memoriaCalculo->obra_id)
-                ->where('resumo', 'Sim')
-                ->select([
-                    DB::raw("CONCAT(tarefa,' - ',DATE_FORMAT( data, '%d/%m/%Y')) as tarefa"),
-                    'id'
-                ])
-                ->pluck('tarefa','id')
-                ->prepend('', '')
-                ->toArray();
-        }
-
-        return view('contratos.memoria_de_calculo.previsao',
-            compact(
-                'contrato',
-                'contrato_item_apropriacao',
-                'insumo',
-                'tarefas',
-                'memoria_de_calculo',
-                'obra_torres',
-                'previsoes',
-                'filtro_estruturas',
-                'blocos',
-                'memoriaCalculo',
-                'planejamentos'
-            )
-        );
-    }
-
-    public function memoriaDeCalculoSalvar(Request $request)
-    {
-        if(count($request->itens)) {
-            foreach ($request->itens as $item) {
-                $item['qtd'] = money_to_float($item['qtd']);
-                if(@isset($item['id'])){
-                    $previsao = McMedicaoPrevisao::find($item['id']);
-                    $previsao->update($item);
-                } else {
-                    $previsao = new McMedicaoPrevisao($item);
-                    $previsao->insumo_id = $request->insumo_id;
-                    $previsao->unidade_sigla = $request->unidade_sigla;
-                    $previsao->contrato_item_apropriacao_id = $request->contrato_item_apropriacao_id;
-                    $previsao->contrato_item_id = $request->contrato_item_id;
-                    $previsao->obra_torre_id = $request->obra_torre_id;
-                    $previsao->user_id = Auth::id();
-                    $previsao->save();
-                }
+        $input = $request->except('logo');
+        foreach ($input as $item => $value){
+            if($value == ''){
+                $input[$item] = null;
             }
         }
 
-        Flash::success('Previsão de memória de cálculo salva com sucesso!');
+        $lpu = $this->lpuRepository->update($input, $id);
 
-        return redirect(route('contratos.index'));
-    }
+        $lpu->update();
 
-    public function memoriaDeCalculoExcluirPrevisao(Request $request)
-    {
-        $previsao = McMedicaoPrevisao::find($request->id);
+        Flash::success('LPU '.trans('common.updated').' '.trans('common.successfully').'.');
 
-        if ($previsao) {
-            $previsao->delete();
-        }
-
-        return response()->json(true);
-    }
-    public function solicitarEntrega(
-        $contrato_id,
-        ContratoItemApropriacaoRepository $apropriacaoRepository
-    ) {
-        $contrato = $this->contratoRepository->find($contrato_id)
-            ->load('materiais.apropriacoes');
-
-        if(!$contrato->hasMaterial()) {
-            Flash::warning('Este contrato não contém material para entrega');
-            return redirect()->route('contratos.show', $contrato->id);
-        }
-
-        if(!$contrato->pode_solicitar_entrega) {
-            Flash::warning('Ainda não é possível realizar solicitações de entrega neste contrato');
-            return redirect()->route('contratos.show', $contrato->id);
-        }
-
-        if($contrato->materiais->isEmpty()) {
-            Flash::warning('Este contrato não contem material');
-            return redirect()->route('contratos.show', $contrato->id);
-        }
-
-        $apropriacoes = $contrato->materiais->pluck('apropriacoes')->collapse();
-
-        return view(
-            'contratos.solicitacao_entrega.index',
-            compact('contrato', 'apropriacoes')
-        );
-    }
-
-    public function solicitarEntregaSave(
-        Request $request,
-        SolicitacaoEntregaRepository $repository,
-        $contrato_id
-    ) {
-        $input = $request->all();
-        $input['contrato_id'] = $contrato_id;
-        $solicitacao = $repository->create($input);
-
-        # Notifica usuários aprovadores
-        $aprovadores = WorkflowAprovacaoRepository::usuariosDaAlcadaAtual($solicitacao);
-
-        Notification::send($aprovadores, new WorkflowNotification($solicitacao));
-
-        return response()->json([
-            'success' => true
-        ]);
-    }
-
-    /**
-     * Busca os insumos que estão no orçamento, de acordo com os parâmetros recebidos.
-     *
-     * @param
-     *      $insumos_id(array com os ids dos insumos),
-     *      $obra_id
-     *
-     * @return object
-     */
-    public static function orcamentosReapropriacoes($insumos_id, $obra_id)
-    {
-        $orcamentos = Orcamento::select(
-            'orcamentos.id as id',
-            DB::raw('CONCAT(servicos.codigo, " ", servicos.nome) as nome')
-        )
-            ->join('servicos', 'servicos.id', '=', 'orcamentos.servico_id')
-            ->whereIn('insumo_id', $insumos_id)
-            ->where('obra_id', $obra_id)
-            ->where('ativo', 1)
-            ->pluck('nome', 'id')
-            ->prepend('', '');
-
-        return $orcamentos;
+        return redirect(route('lpu.index'));
     }
 }

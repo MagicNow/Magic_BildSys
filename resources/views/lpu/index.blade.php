@@ -8,8 +8,7 @@
 @section('content')
   <section class="content-header">
     <h1>
-      Lista de Preço Unitário
-      <a href="{{ url('/lpu/atualizar-valor') }}" class="btn btn-lg btn-flat btn-info pull-right"> <i class="fa fa-refresh"></i>Sugerir valor</a>
+      Lista de Preço Unitário      
     </h1>
   </section>
   <div class="content" style="clear: both">

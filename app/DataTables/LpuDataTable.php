@@ -19,16 +19,17 @@ class LpuDataTable extends DataTable
     public function ajax()
     {
         return $this->datatables
-            ->eloquent($this->query())
+            ->eloquent($this->query())			
             ->editColumn('created_at', function ($lpu) {
                 return $lpu->created_at
                     ? $lpu->created_at->format('d/m/Y')
                     : '';
             })
-            ->editColumn('valor_unitario', function ($lpu) {
-                return float_to_money($lpu->valor_unitario);
+            ->editColumn('valor_sugerido', function ($lpu) {
+                return float_to_money($lpu->valor_sugerido);
             })
-            ->make(true);
+            ->editColumn('action', 'lpu.datatables_actions')
+			->make(true);
     }
 
     /**
@@ -41,7 +42,7 @@ class LpuDataTable extends DataTable
         $query->select([
             'lpu.id',
             'lpu.created_at',
-            'lpu.valor_unitario',
+            'lpu.valor_sugerido',
 			'lpu.valor_contrato',
 			'lpu.valor_catalogo',
             'lpu.insumo_id',
@@ -54,14 +55,6 @@ class LpuDataTable extends DataTable
 		
 		if($request->regional_id) {
             $query->where('lpu.regional_id', $request->regional_id);
-        }
-		
-        if($request->subgrupo3_id) {
-            $query->where('insumos.insumo_grupo_id', $request->subgrupo3_id);
-        }
-		
-		if($request->grupo_id) {
-            $query->where('insumos.insumo_grupo_id', $request->grupo_id);
         }
 
         if($request->subgrupo1_id) {
@@ -76,9 +69,9 @@ class LpuDataTable extends DataTable
             $query->where('insumos.insumo_grupo_id',  $request->subgrupo3_id);
         }
 
-        if($request->servico_id) {
+        /*if($request->servico_id) {
             $query->where('insumos.insumo_grupo_id',  $request->servico_id);
-        }
+        }*/
 
         if(!is_null($request->days)) {
             $query->whereDate(
@@ -176,10 +169,11 @@ class LpuDataTable extends DataTable
             'insumo_id'                => ['name' => 'id', 'data' => 'id', 'title' => 'Insumo'],
             'created_at'        => ['name' => 'created_at', 'data' => 'created_at', 'title' => 'Data'],
             'descricao' => ['name' => 'descricao', 'data' => 'descricao', 'title' => 'Descrição'],
-			'valor_unitario' => ['name' => 'valor_unitario', 'data' => 'valor_unitario', 'title' => 'Valor Sugerido'],
+			'valor_sugerido' => ['name' => 'valor_sugerido', 'data' => 'valor_sugerido', 'title' => 'Valor Sugerido'],
 			'valor_contrato' => ['name' => 'valor_unitario', 'data' => 'valor_contrato', 'title' => 'Valor Contrato'],
-			'valor_catalogo' => ['name' => 'valor_unitario', 'data' => 'valor_catalogo', 'title' => 'Valor Catálogo']
-        ];
+			'valor_catalogo' => ['name' => 'valor_unitario', 'data' => 'valor_catalogo', 'title' => 'Valor Catálogo'],
+			'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
+		];
     }
 
     /**
