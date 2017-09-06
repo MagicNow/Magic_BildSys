@@ -97,7 +97,7 @@
                             <button class="btn btn-xs btn-info btn-flat"
                                     data-toggle="modal"
                                     data-target="#detalhes-item-{{ $modificacao->id }}">
-                              <span data-toggle="tooltip" title="{{$modificacao->anexo || $modificacao->descricao ? 'Detalhes' : 'Detalhes por Apropriação'}}">
+                              <span data-toggle="tooltip" title="{{$modificacao->tipo_modificacao == \App\Models\ContratoItemModificacao::REAJUSTE_VALOR ? 'Detalhes' : 'Detalhes por Apropriação'}}">
                                   <i class="fa fa-plus fa-fw"></i>
                               </span>
                             </button>
@@ -117,7 +117,7 @@
                                             </h4>
                                         </div>
                                         <div class="modal-body">
-                                            @if($modificacao->anexo || $modificacao->descricao)
+                                            @if($modificacao->tipo_modificacao == \App\Models\ContratoItemModificacao::REAJUSTE_VALOR)
                                                 <table class="table table-condensed table-all-center table-bordered table-no-margin">
                                                     <thead>
                                                     <tr>
