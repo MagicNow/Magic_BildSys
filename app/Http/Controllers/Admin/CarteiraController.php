@@ -52,7 +52,11 @@ class CarteiraController extends AppBaseController
         $relacionadoUsers = [];    
 		$relacionadoTipoEqualizacaoTecnicas = [];
 
-        return view('admin.carteiras.create', compact('relacionadoUsers'), compact('relacionadoTipoEqualizacaoTecnicas'));
+        $equalizacoesTecnicas = TipoEqualizacaoTecnica::pluck('nome', 'id')->all();
+
+        $usuarios = $this->userRepository->getUsersByType(2)->pluck('name', 'id')->toArray(); // suprimentos
+
+        return view('admin.carteiras.create', compact('relacionadoUsers'), compact('relacionadoTipoEqualizacaoTecnicas', 'equalizacoesTecnicas', 'usuarios'));
     }
 
     /**
