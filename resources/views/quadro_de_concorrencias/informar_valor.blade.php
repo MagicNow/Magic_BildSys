@@ -441,8 +441,8 @@
                         <table class="table table-responsive table-striped table-align-middle table-condensed">
                             <thead>
                             <tr>
-                                <th width="10%">Detalhes</th>
-                                <th>Item</th>
+                                <th width="15%">Item</th>
+                                <th width="25%">Descriação</th>
                                 <th width="20%">Validação</th>
                                 <th width="25%">Obs</th>
                             </tr>
@@ -450,15 +450,9 @@
                             <tbody>
                             @foreach($equalizacoes as $key =>  $equalizacao)
                                 <tr>
-                                    <td>
-                                        <button type="button"
-                                                class="btn btn-default btn-flat btn-xs js-sweetalert"
-                                                data-title="{{ $equalizacao->nome }}"
-                                                data-text="{{ $equalizacao->descricao }}">
-                                            <i class="fa fa-info-circle"></i> detalhes
-                                        </button>
-                                    </td>
                                     <td class="text-left">{{ $equalizacao->nome }}</td>
+                                    <td>{{ $equalizacao->descricao }}</td>
+
                                     <td>
                                         {!! Form::hidden("equalizacoes[{$equalizacao->id}-{$equalizacao->getTable()}][checkable_type]", $equalizacao->getTable()) !!}
                                         {!! Form::hidden("equalizacoes[{$equalizacao->id}-{$equalizacao->getTable()}][checkable_id]", $equalizacao->id) !!}
