@@ -374,7 +374,9 @@ var SolicitacaoDeEntrega = {
 
     var form_data = new FormData();
     form_data.append('solicitacao', JSON.stringify(_.flatten([selected, qtds, newValuesObjects])));
-    form_data.append('anexo', $('input[name="anexo"]')[0].files[0]);
+    if($('input[name="anexo"]').length){
+      form_data.append('anexo', $('input[name="anexo"]')[0].files[0]);
+    }
 
     if(fornecedor.val()) {
       form_data.append('fornecedor_id', fornecedor.val());

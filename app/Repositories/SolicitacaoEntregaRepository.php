@@ -32,7 +32,10 @@ class SolicitacaoEntregaRepository extends BaseRepository
 
         DB::beginTransaction();
         try {
-            $nome_anexo = CodeRepository::saveFile($request['anexo'], 'contratos/'.$request['contrato_id'].'/solicitacoes-de-entrega');
+            $nome_anexo = null;
+            if(isset($request['anexo'])){
+                $nome_anexo = CodeRepository::saveFile($request['anexo'], 'contratos/'.$request['contrato_id'].'/solicitacoes-de-entrega');
+            }
 
             $solicitacaoEntrega = parent::create([
                 'contrato_id'   => $request['contrato_id'],
@@ -66,9 +69,9 @@ class SolicitacaoEntregaRepository extends BaseRepository
 
                         $solicitacao->map(function($apropriacao) use ($solicitacaoEntregaItem) {
                             return SeApropriacao::create([
-                                'contrato_item_apropriacao_id' => $apropriacao['apropriacao'],
+                                'contrato_item_apropriacao_id' => $apropriacao->apropriacao,
                                 'solicitacao_entrega_item_id'  => $solicitacaoEntregaItem->id,
-                                'qtd'                          => $apropriacao['qtd']
+                                'qtd'                          => $apropriacao->qtd
                             ]);
                         });
 

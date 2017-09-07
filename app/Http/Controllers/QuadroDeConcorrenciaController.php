@@ -383,7 +383,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
             return redirect(route('quadroDeConcorrencias.index'));
         }
 
-        if ($quadro->qc_status_id != 7) {
+        if ($quadro->qc_status_id < 7 ) {
             Flash::error('Quadro De Concorrencia deve estar EM CONCORRÊNCIA para ser avaliado!');
 
             return redirect(route('quadroDeConcorrencias.index'));

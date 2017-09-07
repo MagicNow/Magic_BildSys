@@ -8,20 +8,27 @@
                     <button type="button" class="btn btn-link" onclick="history.go(-1);">
                         <i class="fa fa-arrow-left" aria-hidden="true"></i>
                     </button>
-                    Avaliar Quadro de Concorrência
+                    @if($quadro->qc_status_id == 7)
+                    Avaliar
+                    @else
+                    Histórico do
+                    @endif
+                    Quadro de Concorrência
                     <small>
                         Rodada {{ $rodadaSelecionada }}
                     </small>
                 </h1>
-                <button class="btn btn-success btn-lg pull-right btn-flat"
-                        data-toggle="modal"
-                        data-target="#modal-finalizar">
-                    <i class="fa fa-trophy" aria-hidden="true"></i>
-                    Informar vencedor
-                    ou
-                    <i class="fa fa-refresh" aria-hidden="true"></i>
-                    Gerar nova rodada
-                </button>
+                @if($quadro->qc_status_id == 7)
+                    <button class="btn btn-success btn-lg pull-right btn-flat"
+                            data-toggle="modal"
+                            data-target="#modal-finalizar">
+                        <i class="fa fa-trophy" aria-hidden="true"></i>
+                        Informar vencedor
+                        ou
+                        <i class="fa fa-refresh" aria-hidden="true"></i>
+                        Gerar nova rodada
+                    </button>
+                @endif
             </section>
         </div>
     </div>
@@ -314,22 +321,24 @@
                                 </button>
                             </div>
                             <div class="box-body">
-                                <canvas id="chart-total-fornecedor"
-                                        data-labels="{{
-                                            $qcFornecedores
-                                              ->pluck('fornecedor')
-                                              ->flatten()
-                                              ->pluck('nome')
-                                              ->implode('||')
-                                            }}"
-                                        data-values="{{
-                                          $qcFornecedores
-                                            ->map(function($qcFornecedor) {
-                                              return $qcFornecedor->itens->sum('valor_total') + $qcFornecedor->getOriginal('valor_frete');
-                                            })
-                                            ->implode('||')
-                                          }}">
-                                </canvas>
+                                <div style="position: relative; height: 480px">
+                                    <canvas id="chart-total-fornecedor"
+                                            data-labels="{{
+                                                $qcFornecedores
+                                                  ->pluck('fornecedor')
+                                                  ->flatten()
+                                                  ->pluck('nome')
+                                                  ->implode('||')
+                                                }}"
+                                            data-values="{{
+                                              $qcFornecedores
+                                                ->map(function($qcFornecedor) {
+                                                  return $qcFornecedor->itens->sum('valor_total') + $qcFornecedor->getOriginal('valor_frete');
+                                                })
+                                                ->implode('||')
+                                              }}">
+                                    </canvas>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -369,9 +378,11 @@
                                         <canvas id="UgCanvas" width="40" height="12" style="border:1px solid red; background-color: red;"></canvas>
                                     </div>
                                 </div>
-                                <canvas id="chart-insumo-fornecedor"
-                                        data-data='{{ json_encode($ofertas) }}'>
-                                </canvas>
+                                <div style="position: relative; max-height: 420px">
+                                    <canvas id="chart-insumo-fornecedor"
+                                            data-data='{{ json_encode($ofertas) }}'>
+                                    </canvas>
+                                </div>
                             </div>
                         </div>
                     </div>
