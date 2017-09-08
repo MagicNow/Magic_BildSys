@@ -166,7 +166,7 @@
                                 </div>
                             @endif
                             <div class="row">
-                                <span class="col-md-2 col-sm-2 col-xs-12 text-center borda-direita" data-toggle="tooltip" data-placement="top" data-html="true"
+                                <span class="col-md-3 col-sm-3 col-xs-12 text-center borda-direita" data-toggle="tooltip" data-placement="top" data-html="true"
                                       title="
                                         {{$item->grupo->codigo.' - '.$item->grupo->nome}}<br/>
                                         {{$item->subgrupo1->codigo.' - '.$item->subgrupo1->nome}}<br/>
@@ -231,7 +231,7 @@
                                     </button>
                                     {!! Form::close() !!}
                                 </span>
-                                <span class="col-md-1 col-sm-1 col-xs-1 text-center">
+                                <span>
                                     <button type="button" class="btn btn-flat btn-link"
                                             style="font-size: 18px; margin-top: -7px" onclick="showHideExtra({{ $item->id }})">
                                         <i class="icone-expandir fa fa-caret-right" aria-hidden="true"></i>

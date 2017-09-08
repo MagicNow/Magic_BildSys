@@ -25,7 +25,7 @@
                     <th>Alteração</th>
                     <th>Código</th>
                     <th>Descrição</th>
-                    <th>Un</th>
+                    <th>Un. de medida</th>
                     <th>Qtd.</th>
                     <th>Valor Unitário</th>
                     <th>Qtd.</th>

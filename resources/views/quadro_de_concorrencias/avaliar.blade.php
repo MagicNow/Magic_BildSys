@@ -504,7 +504,9 @@
                             <table class="table table-striped table-align-middle">
                                 <thead>
                                 <tr>
-                                    <th>Insumos</th>
+                                    <th>Código</th>
+                                    <th>Descrição</th>
+                                    <th>Un. de medida</th>
                                     <th>Qtd</th>
                                     @foreach($qcFornecedores as $qcFornecedor)
                                         <th>
@@ -531,10 +533,17 @@
                                 <tbody>
                                 @foreach($quadro->itens as $item)
                                     <tr class="js-insumo-row">
-                                        <td class="text-left">{{ $item->insumo->nome }}</td>
+                                        <td class="text-left">
+                                            {{ $item->insumo->codigo }}
+                                        </td>
+                                        <td class="text-left">
+                                            {{ $item->insumo->nome }}
+                                        </td>
+                                        <td class="text-left">
+                                            {{ $item->insumo->unidade_sigla }}
+                                        </td>
                                         <td>
                                             {{ float_to_money($item->qtd, '') }}
-                                            {{ $item->insumo->unidade_sigla }}
                                         </td>
                                         @foreach($qcFornecedores as $qcFornecedor)
                                             @php

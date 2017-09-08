@@ -284,8 +284,8 @@
                     <table class="table table-bordered table-striped">
                         <thead>
                         <tr>
-                            <th class="text-center">Código do insumo</th>
-                            <th class="text-center">Descrição do insumo</th>
+                            <th class="text-center">Código</th>
+                            <th class="text-center">Descrição</th>
                             <th class="text-center">Un. de medida</th>
                             <th class="text-center">Qtd.</th>
                             <th class="text-center">Valor unitário</th>
@@ -336,7 +336,7 @@
                                     ">
                                 {{ $item->insumo->codigo }}</span>
                             </td>
-                            <td class="text-center">
+                            <td class="text-left">
                                 {{ $item->insumo->nome }}
                             </td>
                             <td class="text-center">

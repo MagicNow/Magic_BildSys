@@ -41,7 +41,9 @@ class InsumoPorFornecedorDataTable extends DataTable
     {
         $collection = $this->quadro->itens->map(function($item) {
             return [
-                'insumo' => $item->insumo->nome,
+                'código' => $item->insumo->codigo,
+                'descrição' => $item->insumo->nome,
+                'Un&period; De Medida' => $item->insumo->unidade_sigla,
                 'qntd do QC' => '',
                 'insumo_id' => $item->insumo->id,
                 'qc_item_id' => $item->id,
@@ -52,7 +54,9 @@ class InsumoPorFornecedorDataTable extends DataTable
         });
 
         $collection->push([
-                'insumo'  => 'FRETE',
+                'código'  => '28675',
+                'descrição'  => 'FRETE',
+                'Un&period; De Medida'  => 'VB',
                 'qntd do QC'  => '',
                 'insumo_id' => '',
                 'qc_item_id' => '',
@@ -83,13 +87,13 @@ class InsumoPorFornecedorDataTable extends DataTable
                             $insumo[str_replace('.',
                                 '*dot*',
                                 $qcFornecedor->fornecedor->nome . '||' . $qcFornecedor->id)] = $valor;
-                            if($insumo['insumo'] === 'FRETE') {
+                            if($insumo['descrição'] === 'FRETE') {
                                 $insumo[str_replace('.',
                                     '*dot*',
                                     $qcFornecedor->fornecedor->nome . '||' . $qcFornecedor->id)] = 'R$ '. $valor_frete;
                             }
                         }else{
-                            if($insumo['insumo'] != 'FRETE') {
+                            if($insumo['descrição'] != 'FRETE') {
                                 $insumo[str_replace('.',
                                     '*dot*',
                                     $qcFornecedor->fornecedor->nome . '||' . $qcFornecedor->id)] = '<span style="color:red">DECLINED</span>';
@@ -102,7 +106,7 @@ class InsumoPorFornecedorDataTable extends DataTable
                     }
                     $insumo['qntd do QC'] =  number_format($qtd_comprada, 2, ',', '.');
                     $insumo['Valor total previsto'] = float_to_money($valor_comprado_oi);
-                    if($insumo['insumo'] === 'FRETE') {
+                    if($insumo['descrição'] === 'FRETE') {
                         $insumo['qntd do QC'] = '';
                         $insumo['Valor total previsto'] = '';
                         $insumo['valor unitário do orçamento'] = '';
@@ -124,7 +128,7 @@ class InsumoPorFornecedorDataTable extends DataTable
         );
 
         return array_reduce($x, function($columns, $column) {
-            $excluded = ['insumo', 'valor unitário do orçamento', 'qntd do QC', 'Valor total previsto', 'frete'];
+            $excluded = ['descrição', 'valor unitário do orçamento', 'qntd do QC', 'Valor total previsto', 'frete', 'Un&period; De Medida', 'código'];
             if(!in_array($column, $excluded)) {
                 list($fornecedor, $id) = explode('||', $column);
 

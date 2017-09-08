@@ -51,10 +51,10 @@ class DetalhesServicosDataTable extends DataTable
                 $valor_comprometido_a_gastar = OrdemDeCompraRepository::valorComprometidoAGastarItem($obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, $obj->insumo_id, $this->obra_id, null, $ordem_de_compra_ultima_aprovacao);
 
 
-                if(money_to_float($valor_comprometido_a_gastar) > 0) {
-                    return '<span data-toggle="tooltip" data-placement="top" data-html="true" title="'.$origem.'"> <small class="pull-left">R$</small>'.number_format( money_to_float($valor_comprometido_a_gastar), 2, ',','.').'</span>';
+                if($valor_comprometido_a_gastar > 0) {
+                    return '<span data-toggle="tooltip" data-placement="top" data-html="true" title="'.$origem.'"> <small class="pull-left">R$</small>'.number_format($valor_comprometido_a_gastar, 2, ',','.').'</span>';
                 } else {
-                    return '<small class="pull-left">R$</small>'.number_format( money_to_float($valor_comprometido_a_gastar), 2, ',','.');
+                    return '<small class="pull-left">R$</small>'.number_format($valor_comprometido_a_gastar, 2, ',','.');
                 }
             })
             ->editColumn('saldo_orcamento', function($obj){
@@ -144,6 +144,7 @@ class DetalhesServicosDataTable extends DataTable
             'orcamentos.subgrupo3_id',
             'orcamentos.servico_id',
             'orcamentos.insumo_id',
+            'insumos.codigo',
             DB::raw("CONCAT(insumos_sub.codigo,' - ' ,insumos_sub.nome) as substitui"),
             DB::raw('
                     (SELECT 
@@ -210,6 +211,7 @@ class DetalhesServicosDataTable extends DataTable
                     WHERE
                     orcamentos.servico_id = servicos.id) AS tooltip_servico')
         ])
+            ->join('insumos',  'insumos.id', 'orcamentos.insumo_id')
             ->leftJoin(DB::raw('orcamentos orcamentos_sub'),  'orcamentos_sub.id', 'orcamentos.orcamento_que_substitui')
             ->leftJoin(DB::raw('insumos insumos_sub'), 'insumos_sub.id', 'orcamentos_sub.insumo_id')
             ->where('orcamentos.servico_id','=', DB::raw($this->servico_id))
@@ -239,7 +241,6 @@ class DetalhesServicosDataTable extends DataTable
             ->columns($this->getColumns())
             ->ajax('')
             ->parameters([
-                'responsive'=> 'true',
                 'initComplete' => 'function () {
                     recalcularAnaliseServico();
                     max = this.api().columns().count();
@@ -288,8 +289,9 @@ class DetalhesServicosDataTable extends DataTable
     private function getColumns()
     {
         return [
-            'Descrição_do_insumo' => ['name' => 'descricao', 'data' => 'descricao'],
-            'Und_de_medida' => ['name' => 'unidade_sigla', 'data' => 'unidade_sigla'],
+            'código' => ['name' => 'codigo', 'data' => 'codigo'],
+            'Descrição' => ['name' => 'descricao', 'data' => 'descricao'],
+            'Un&period;_de_medida' => ['name' => 'unidade_sigla', 'data' => 'unidade_sigla'],
             'Valor_previsto_no_orçamento' => ['name' => 'orcamentos.preco_total', 'data' => 'valor_previsto', 'searchable' => false],
             'Valor_comprometido_realizado' => ['name' => 'valor_realizado', 'data' => 'valor_realizado', 'searchable' => false],
             'Valor_comprometido_à_gastar' => ['name' => 'valor_comprometido_a_gastar', 'data' => 'valor_comprometido_a_gastar', 'searchable' => false, 'orderable' => false],
