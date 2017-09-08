@@ -50,14 +50,14 @@ class Kernel extends ConsoleKernel
             ->name('importacao:repository')
             ->withoutOverlapping();
 		
-		$schedule->call(function () {
+		/*$schedule->call(function () {
                 Log::info('Inicio de execucao gerar Lpu');
                 $lpuGerar = LpuGerarRepository::calcular();
                 Log::info('Executado script de gerar Lpu', $lpuGerar);
             })
 			->monthlyOn(date('t'), time);            
             ->name('lpu:repository');
-            ->withoutOverlapping();
+            ->withoutOverlapping();*/
 
         $schedule->command('captura:nfe')
             ->everyThirtyMinutes()

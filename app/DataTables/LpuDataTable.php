@@ -26,7 +26,7 @@ class LpuDataTable extends DataTable
                     : '';
             })
             ->editColumn('valor_sugerido', function ($lpu) {
-                return float_to_money($lpu->valor_sugerido);
+                return float_to_money($lpu->valor_sugerido_atual);
             })
             ->editColumn('action', 'lpu.datatables_actions')
 			->make(true);
@@ -42,7 +42,7 @@ class LpuDataTable extends DataTable
         $query->select([
             'lpu.id',
             'lpu.created_at',
-            'lpu.valor_sugerido',
+			'lpu.valor_sugerido_atual',
 			'lpu.valor_contrato',
 			'lpu.valor_catalogo',
             'insumos.codigo',
@@ -170,7 +170,7 @@ class LpuDataTable extends DataTable
             'codigo' => ['name' => 'codigo', 'data' => 'codigo', 'title' => 'Código Insumo'],            
             'descricao' => ['name' => 'descricao', 'data' => 'descricao', 'title' => 'Descrição'],
 			'unidade_sigla' => ['name' => 'unidade_sigla', 'data' => 'unidade_sigla', 'title' => 'UN Medida'],
-			'valor_sugerido' => ['name' => 'valor_sugerido', 'data' => 'valor_sugerido', 'title' => 'Valor Sugerido'],
+			'valor_sugerido' => ['name' => 'valor_sugerido', 'data' => 'valor_sugerido_atual', 'title' => 'Valor Sugerido'],
 			'valor_contrato' => ['name' => 'valor_unitario', 'data' => 'valor_contrato', 'title' => 'Valor Contrato'],
 			'valor_catalogo' => ['name' => 'valor_unitario', 'data' => 'valor_catalogo', 'title' => 'Valor Catálogo'],
 			'created_at'        => ['name' => 'created_at', 'data' => 'created_at', 'title' => 'Data'],

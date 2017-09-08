@@ -22,11 +22,13 @@ class LpuGerarRepository
             
 			'contrato_itens.id',
 			'insumos.id as insumo_id',
-			'insumos.codigo',
+			'insumos.codigo as codigo_insumo',
 			'insumos.nome as insumo',
 			'insumo_grupos.nome as grupo',
-			'insumos.unidade_sigla',
-			'contrato_itens.valor_unitario',
+			'insumos.unidade_sigla',	
+			DB::raw('AVG(contrato_itens.valor_unitario) as valor_sugerido'),
+			'contrato_itens.valor_unitario as valor_contrato',
+			DB::raw('exists (select catalogo_contrato_insumos.valor_unitario from catalogo_contrato_insumos where catalogo_contrato_insumos.insumo_id = insumos.id) as valor_catalogo'),
 			'contrato_itens.updated_at',
 			'fornecedores.nome as fornecedor',
 			'regionais.id as regional_id',
@@ -53,20 +55,26 @@ class LpuGerarRepository
 				                
                 $lpu = Lpu::updateOrCreate([                
                     'insumo_id' => $insumo->insumo_id,
-					'valor_sugerido' => $insumo->valor_unitario
-                ]);
-                               
-				$lpu->codigo_insumo = $insumo->codigo;
-				$lpu->regional_id = $insumo->regional_id;
-				$lpu->grupo_id = "1";
-				$lpu->subgrupo1_id = "1";
-				$lpu->subgrupo2_id = "1";
-				$lpu->subgrupo3_id = "1";
-				$lpu->servico_id = "1";
-				$lpu->valor_contrato = "1.00";
-				$lpu->valor_catalogo = "1.00";
+					'codigo_insumo'   => $insumo->codigo_insumo,
+					'regional_id'   => $insumo->regional_id,
+					'grupo_id'   => "1",
+					'subgrupo1_id'   => "1",
+					'subgrupo2_id'   => "1",
+					'subgrupo3_id'   => "1",
+					'servico_id'   => "1",
+					'valor_sugerido_anterior'   => $insumo->valor_sugerido,
+					'valor_sugerido_atual'   => $insumo->valor_sugerido,
+					'valor_contrato'   => $insumo->valor_contrato,
+					'valor_catalogo'   => $insumo->valor_catalogo,									
+                ]);	  
+
+				$lpu->valor_sugerido_anterior = $insumo->valor_sugerido;
+                $lpu->valor_sugerido_atual = $insumo->valor_sugerido;
+                $lpu->valor_contrato  =  $insumo->valor_contrato;
+                $lpu->valor_catalogo  =  $insumo->valor_catalogo;
 
                 $lpu->save();
+				
             } catch (\Exception $e) {
                 Log::error('Erro ao importar lpu '. $insumo->insumo_id. ': '.$e->getMessage());
             }

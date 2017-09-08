@@ -1,7 +1,16 @@
+
+<!-- Valor Sugerido Anterior Field -->
+<div class="form-group col-sm-2">
+    {!! Form::label('valor_sugerido_anterior', 'Valor Sugerido Anterior:') !!}    
+	<p class="form-control input-lg text-center">
+		<small class="pull-left">R$</small>{{ float_to_money($lpu->valor_sugerido_anterior, '') }}	
+	</p>	
+</div>
+
 <!-- Valor Sugerido Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('valor_sugerido', 'Valor Sugerido:') !!}
-    {!! Form::text('valor_sugerido', null, ['class' => 'form-control', 'required']) !!}
+<div class="form-group col-sm-3">
+    {!! Form::label('valor_sugerido_atual', 'Sugerir Valor:') !!}
+    {!! Form::text('valor_sugerido_atual', null, ['class' => 'form-control', 'required']) !!}
 </div>
 
 <!-- Submit Field -->
