@@ -47,8 +47,8 @@
                     @if(!isset($impressao))
                     <th>Visualizar</th>
                     @endif
-                    <th>Código do insumo</th>
-                    <th {{ !isset($impressao)?'colspan="2"':'' }}>Descrição do insumo</th>
+                    <th>Código</th>
+                    <th {{ !isset($impressao)?'colspan="2"':'' }}>Descrição</th>
                     <th>Un. de medida</th>
                     <th>Qtd.</th>
                     <th>Valor Total</th>

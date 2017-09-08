@@ -97,10 +97,12 @@
                                     <table class="table table-striped table-hovered table-bordered table-condensed">
                                         <thead>
                                         <tr>
-                                            <th width="45%">Insumo</th>
+                                            <th width="10%">Código</th>
+                                            <th width="35%">Descrição</th>
+                                            <th width="10%">Un. de medida</th>
                                             <th width="15%">Qtd.</th>
                                             <th width="15%">V.Unitário</th>
-                                            <th width="25%">Valor total</th>
+                                            <th width="15%">Valor total</th>
                                         </tr>
                                         </thead>
 
@@ -119,8 +121,14 @@
                                                 ?>
                                                 <tr>
                                                     <td class="text-left">
+                                                        {{ $item['insumo']->codigo }}
+                                                    </td>
+                                                    <td class="text-left">
                                                         <label class="label label-{{ $item['tipo']=='SERVIÇO'?'info':'primary' }}">{{ $item['tipo'] }}</label>
                                                         {{ $item['insumo']->nome }}
+                                                    </td>
+                                                    <td class="text-left">
+                                                        {{ $item['insumo']->unidade_sigla }}
                                                     </td>
                                                     <td class="text-right">
                                                         {{ number_format($item['qtd'],2,',','.') . ' '. $item['insumo']->unidade_sigla }}
@@ -140,7 +148,7 @@
                                         @endforeach
                                         @if(doubleval($qcFornecedor->getOriginal('valor_frete')))
                                             <tr>
-                                                <td colspan="3" class="text-left">Frete</td>
+                                                <td colspan="5" class="text-left">Frete</td>
                                                 <td class="text-right">
                                                     <div class="input-group">
                                                         <span class="input-group-addon">R$</span>
@@ -156,7 +164,7 @@
                                         </tbody>
                                         <tfoot>
                                         <tr class="warning">
-                                            <td colspan="3" class="text-right">TOTAL</td>
+                                            <td colspan="5" class="text-right">TOTAL</td>
                                             <input type="hidden"
                                                    id="total_contrato_{{ $qcFornecedor->id.'_'. $obraId }}"
                                                    value="{{ $total_contrato[$qcFornecedor->id][$obraId] }}">

@@ -70,8 +70,8 @@
             <table class="table table-bordered table-no-margin">
                 <thead>
                     <tr>
-                        <th class="text-center">Código do insumo</th>
-                        <th class="text-center">Descrição do insumo</th>
+                        <th class="text-center">Código</th>
+                        <th class="text-center">Descrição</th>
                         <th class="text-center">Un. de medida</th>
                         <th class="text-center">Qtd.</th>
                         <th class="text-center">Valor Unitário</th>
@@ -118,7 +118,7 @@
                                     ">
                                     {{ $item->insumo->codigo }}</span>
                             </td>
-                            <td class="text-center">{{ $item->insumo->nome }}</td>
+                            <td class="text-left">{{ $item->insumo->nome }}</td>
                             <td class="text-center">{{ $item->insumo->unidade_sigla }}</td>
                             <td class="text-center">{{ float_to_money($item->qtd, '') }}</td>
                             <td class="text-center">{{ float_to_money($item->contratoItem->valor_unitario) }} </td>

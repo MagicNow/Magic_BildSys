@@ -194,7 +194,7 @@
 </li>
 @endshield
 
-<li class="treeview {{ Request::is('quadro-de-concorrencia*')||Request::is('catalogo-acordos*')||Request::is('tipoEqualizacaoTecnicas*') ? 'active' : '' }}">
+<li class="treeview {{ Request::is('quadro-de-concorrencia*')||Request::is('catalogo-acordos*')||Request::is('tipoEqualizacaoTecnicas*') ||Request::is('lpu*')? 'active' : '' }}">
     <a href="#">
         <i class="fa fa-diamond" aria-hidden="true"></i> <span>Suprimentos</span>
         <span class="pull-right-container">
@@ -231,6 +231,14 @@
             <a href="{!! route('quadroDeConcorrencias.index') !!}" title="Quadro De Concorrência">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
                 <span>Q.C.</span> </a>
+        </li>
+        @endshield
+		
+		@shield('lpu.list')
+        <li class="{{ Request::is('lpu*') ? 'active' : '' }}">
+            <a href="{!! route('lpu.index') !!}" title="LPU">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>L.P.U.</span> </a>
         </li>
         @endshield
 

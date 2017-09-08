@@ -65,7 +65,11 @@
                                         {{ float_to_money($modificacao['valor_unitario_atual'], '') }}
                                     </td>
                                     <td>
-                                        {{ float_to_money($modificacao['qtd_atual'] -  $modificacao['qtd_anterior'], '') }}
+                                        @if($modificacao->tipo_modificacao == \App\Models\ContratoItemModificacao::REAJUSTE_VALOR)
+                                            {{ float_to_money($modificacao['valor_unitario_atual'] - $modificacao['valor_unitario_anterior']) }}
+                                        @else
+                                            {{ float_to_money($modificacao['qtd_atual'] -  $modificacao['qtd_anterior'], '') }}
+                                        @endif
                                     </td>
                                     <td>
                                         @if($modificacao->anexo)

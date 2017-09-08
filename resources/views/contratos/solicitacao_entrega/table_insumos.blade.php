@@ -1,9 +1,9 @@
 <table class="table table-bordered table-no-margin table-all-center">
     <thead>
         <tr>
-            <th>Código do Insumo</th>
-            <th>Descrição do Insumo</th>
-            <th>Un. Medidia</th>
+            <th>Código</th>
+            <th>Descrição</th>
+            <th>Un. Medida</th>
             <th>Saldo de Qtd.</th>
             <th>Valor Unitário</th>
             <th style="width: 10%">Alteração</th>
@@ -33,8 +33,8 @@
                     <table class="table table-bordered table-no-margin table-all-center">
                         <thead>
                             <tr>
-                                <th>Código Estruturado</th>
-                                <th>Un. Medidia</th>
+                                <th>Código</th>
+                                <th>Un. Medida</th>
                                 <th>Saldo de Qtd.</th>
                                 <th>Valor Unitário</th>
                                 <th style="width: 10%">Solicitação</th>

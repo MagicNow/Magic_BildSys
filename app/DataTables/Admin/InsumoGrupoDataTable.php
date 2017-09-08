@@ -100,7 +100,7 @@ class InsumoGrupoDataTable extends DataTable
     private function getColumns()
     {
         return [
-            'codigo' => ['name' => 'id', 'data' => 'id'],
+            'código' => ['name' => 'id', 'data' => 'id'],
             'nome' => ['name' => 'nome', 'data' => 'nome'],
             'active' => ['name' => 'active', 'data' => 'active', 'title' => 'Disponível'],
             'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
