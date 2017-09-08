@@ -442,7 +442,7 @@
                             <thead>
                             <tr>
                                 <th width="15%">Item</th>
-                                <th width="25%">Descriação</th>
+                                <th width="25%">Descrição</th>
                                 <th width="20%">Validação</th>
                                 <th width="25%">Obs</th>
                             </tr>
