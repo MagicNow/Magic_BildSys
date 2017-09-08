@@ -336,7 +336,7 @@
                                     ">
                                 {{ $item->insumo->codigo }}</span>
                             </td>
-                            <td class="text-left">
+                            <td class="text-center">
                                 {{ $item->insumo->nome }}
                             </td>
                             <td class="text-center">
