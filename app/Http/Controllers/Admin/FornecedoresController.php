@@ -56,7 +56,10 @@ class FornecedoresController extends AppBaseController
         if(request('modal')=='1'){
             $view = 'admin.fornecedores.create-modal';
         }
-        return view($view);
+
+        $servicos = Cnae::pluck('nome', 'id')->toArray();
+        
+        return view($view, compact('servicos'));
     }
 
     /**
