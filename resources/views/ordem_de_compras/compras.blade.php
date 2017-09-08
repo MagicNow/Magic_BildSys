@@ -48,7 +48,7 @@
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <label for="planejamento_id">Grupo de Insumo</label>
+                                <label for="insumo_grupo_id">Grupo de Insumo</label>
                                 <div class="form-group">
                                   {!!
                                     Form::select(
@@ -65,7 +65,7 @@
                                 </div>
                             </div>	
 							<div class="col-md-4">
-                                <label for="planejamento_id">Carteiras</label>
+                                <label for="carteira_id">Carteiras</label>
                                 <div class="form-group">
                                   {!!
                                     Form::select(
@@ -128,12 +128,8 @@
                                 <h3>Lembretes</h3>
                                 @include('ordem_de_compras.lembretes-home-table')
                             </div>
-
-
                         </div>
-
                     </div>
-
                 </div>
 
                 <div class="row">
@@ -274,9 +270,10 @@
             }else{
                 $('#filtro_grupo').val('').trigger( "change" );
             }
+            console.log($('#filtro_grupo').val());
             atualizaCalendario();
         }
-		
+
 		function atualizaCalendarioPorCarteira(carteira) {
             carteira_id = carteira;
             if(carteira){
@@ -284,6 +281,7 @@
             }else{
                 $('#filtro_carteira').val('').trigger( "change" );
             }
+            console.log($('#filtro_carteira').val());
             atualizaCalendario();
         }
 

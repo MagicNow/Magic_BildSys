@@ -228,8 +228,7 @@ class OrdemDeCompraController extends AppBaseController
 
         $atividades = [];
 		
-		$carteiras = Carteira::get()
-            ->pluck('nome', 'id')
+		$carteiras = Carteira::pluck('nome', 'id')
             ->prepend('', '')
             ->toArray();
 

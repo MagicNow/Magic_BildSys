@@ -256,6 +256,8 @@ class LembretesHomeDataTable extends DataTable
                 ->join('planejamentos', 'planejamentos.id', '=', 'planejamento_compras.planejamento_id')
                 ->join('obras', 'obras.id', '=', 'planejamentos.obra_id')
                 ->join('obra_users', 'obra_users.obra_id', '=', 'obras.id')
+                ->leftJoin('carteira_insumos', 'carteira_insumos.insumo_id', '=', 'insumos.id')
+                ->leftJoin('carteiras', 'carteiras.id', '=', 'carteira_insumos.carteira_id')
                 ->whereNull('planejamentos.deleted_at')
                 ->whereNull('planejamento_compras.deleted_at')
                 ->where('lembretes.lembrete_tipo_id', 1)
@@ -355,6 +357,7 @@ class LembretesHomeDataTable extends DataTable
                         )
                     ) DAY)
                 ),CURDATE()) as dias"),
+                    'carteiras.nome as carteira'
                 ]);
 
             if ($this->request()->get('from ') || $this->request()->get('to')) {
@@ -459,11 +462,14 @@ class LembretesHomeDataTable extends DataTable
             if ($this->request()->get('insumo_grupo_id')) {
                 $query->where('insumos.insumo_grupo_id', $this->request()->get('insumo_grupo_id'));
             }
+            if ($this->request()->get('carteira_id')) {
+                $query->where('carteiras.id', $this->request()->get('carteira_id'));
+            }
 
             // Busca se existe algum item a  ser comprado desta tarefa
             $query->whereRaw(PlanejamentoCompraRepository::existeItemParaComprarComInsumoGrupo());
 
-            $query->groupBy(['id', 'obra', 'dias', 'tarefa', 'url', 'inicio']);
+            $query->groupBy(['id', 'obra', 'dias', 'tarefa', 'url', 'inicio', 'carteira']);
         } else {
 
             $query = DB::table(
@@ -646,7 +652,8 @@ class LembretesHomeDataTable extends DataTable
                 )
             );
         }
-
+//        echo $query->toSql();
+//        die();
         return $this->applyScopes($query);
     }
 
@@ -661,7 +668,7 @@ class LembretesHomeDataTable extends DataTable
             ->columns($this->getColumns())
             ->ajax('')
             ->parameters([
-                'responsive' => 'true',
+//                'responsive' => 'true',
                 'initComplete' => 'function () {
                     max = this.api().columns().count();
                     this.api().columns().every(function (col) {
@@ -709,6 +716,17 @@ class LembretesHomeDataTable extends DataTable
                             .on(\'change\', function () {
                                 column.search($(this).val(), false, false, true).draw();
                             });
+                        }else if(col==4){
+                            var column = this;
+                            var input = document.createElement("input");
+                            $(input).attr(\'id\',\'filtro_carteira\');
+                            $(input).attr(\'placeholder\',\'Filtrar Carteira...\');
+                            $(input).addClass(\'form-control\');
+                            $(input).css(\'width\',\'100%\');
+                            $(input).appendTo($(column.footer()).empty())
+                            .on(\'change\', function () {
+                                column.search($(this).val(), false, false, true).draw();
+                            });
                         }else if((col+1)<max){
                             var column = this;
                             var input = document.createElement("input");
@@ -749,6 +767,7 @@ class LembretesHomeDataTable extends DataTable
         ];
 
         $columns['Grupo De Insumo'] = ['name' => 'grupo', 'data' => 'grupo'];
+        $columns['Carteira'] = ['name' => 'carteiras.nome', 'data' => 'carteira'];
 
         $columns['action'] = [
             'title'      => 'Ações',
