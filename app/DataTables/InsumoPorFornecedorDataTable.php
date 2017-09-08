@@ -29,6 +29,8 @@ class InsumoPorFornecedorDataTable extends DataTable
 
         return $this->datatables
             ->collection($this->query())
+            ->editColumn('insumo', '<div class="text-left">{{$insumo}}</div>')
+            ->editColumn('unidade', '<div class="text-center">{{$unidade}}</div>')
             ->make(true);
     }
 
@@ -42,6 +44,7 @@ class InsumoPorFornecedorDataTable extends DataTable
         $collection = $this->quadro->itens->map(function($item) {
             return [
                 'insumo' => $item->insumo->nome,
+                'unidade' => $item->insumo->unidade_sigla,
                 'qntd do QC' => '',
                 'insumo_id' => $item->insumo->id,
                 'qc_item_id' => $item->id,
@@ -53,6 +56,7 @@ class InsumoPorFornecedorDataTable extends DataTable
 
         $collection->push([
                 'insumo'  => 'FRETE',
+                'unidade'  => '',
                 'qntd do QC'  => '',
                 'insumo_id' => '',
                 'qc_item_id' => '',
@@ -61,14 +65,27 @@ class InsumoPorFornecedorDataTable extends DataTable
                 'Valor total previsto' => '',
             ]);
 
+        $collection->push([
+            'insumo'  => 'TOTAL',
+            'unidade'  => '',
+            'qntd do QC'  => '',
+            'insumo_id' => '',
+            'qc_item_id' => '',
+            'valor_unitario_calculo' => '',
+            'valor unitário do orçamento' => '',
+            'Valor total previsto' => '',
+        ]);
 //        dd($collection);
 
         return $collection->map(function($insumo) {
             $this->qcFornecedores->each(function($qcFornecedor) use (&$insumo) {
+                if($insumo['insumo'] != 'TOTAL'){
+
                  $item_fornecedor = $qcFornecedor->itens
                     ->where('qc_item_id', $insumo['qc_item_id'])
                     ->first();
 
+                    $valor_unitario = $item_fornecedor ? float_to_money($item_fornecedor->valor_unitario) : '<span style="color:red">DECLINED</span>';
                     $valor = $item_fornecedor ? float_to_money($item_fornecedor->valor_total) : '<span style="color:red">DECLINED</span>';
                     $qtd_comprada = $item_fornecedor ? $item_fornecedor->qtd : 0;
                     
@@ -82,7 +99,7 @@ class InsumoPorFornecedorDataTable extends DataTable
                         if(!$qcFornecedor->desistencia_motivo_id || !$qcFornecedor->desistencia_texto) {
                             $insumo[str_replace('.',
                                 '*dot*',
-                                $qcFornecedor->fornecedor->nome . '||' . $qcFornecedor->id)] = $valor;
+                                $qcFornecedor->fornecedor->nome . '||' . $qcFornecedor->id)] = $valor_unitario . ' | '.$valor;
                             if($insumo['insumo'] === 'FRETE') {
                                 $insumo[str_replace('.',
                                     '*dot*',
@@ -107,7 +124,15 @@ class InsumoPorFornecedorDataTable extends DataTable
                         $insumo['Valor total previsto'] = '';
                         $insumo['valor unitário do orçamento'] = '';
                     }
-
+                }else{
+                    $insumo['qntd do QC'] = '';
+                    $insumo['Valor total previsto'] = '';
+                    $insumo['valor unitário do orçamento'] = '';
+                    $insumo[str_replace('.',
+                        '*dot*',
+                        $qcFornecedor->fornecedor->nome . '||' . $qcFornecedor->id)] = float_to_money( $qcFornecedor->itens->sum('valor_total')+
+                            doubleval($qcFornecedor->valor_frete) );
+                }
             });
 //            dd($insumo);
             return $insumo;
@@ -124,7 +149,7 @@ class InsumoPorFornecedorDataTable extends DataTable
         );
 
         return array_reduce($x, function($columns, $column) {
-            $excluded = ['insumo', 'valor unitário do orçamento', 'qntd do QC', 'Valor total previsto', 'frete'];
+            $excluded = ['insumo', 'unidade', 'valor unitário do orçamento', 'qntd do QC', 'Valor total previsto', 'frete'];
             if(!in_array($column, $excluded)) {
                 list($fornecedor, $id) = explode('||', $column);
 
@@ -140,7 +165,7 @@ class InsumoPorFornecedorDataTable extends DataTable
                 'name'  => $fornecedor,
                 'title' => str_replace('*dot*', '.', $title)
             ];
-
+            $columns['unidade'] = ['width'=>'5%'];
             return $columns;
         }, []);
     }
@@ -170,7 +195,7 @@ class InsumoPorFornecedorDataTable extends DataTable
                                 column.search($(this).val(), false, false, true).draw();
                             });
                     });
-                }' ,
+                }',
                 'dom' => 'Bfrtip',
                 'scrollX' => false,
                 'language'=> [

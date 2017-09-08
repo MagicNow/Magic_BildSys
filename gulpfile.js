@@ -223,6 +223,7 @@ elixir(function (mix) {
         'notifications.js',
         'get-insumo.js',
         'modernizr.js',
+        'tableHeadFixer.js',
     ], 'public/js/admin.js');
 
     mix.scripts([
