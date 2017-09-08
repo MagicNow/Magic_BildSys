@@ -199,7 +199,12 @@ class RolesAndPermissions extends Seeder
             'contratos.reapropriar' => 'Reapropriar item do contrato',
             'contratos.previsao_de_memoria_de_calculo' => 'Previsão de memória de cálculo',
             'contratos.solicitar_entrega' => 'Solicitar entrega do Contrato',
-
+			
+			'lpu.list'        => 'Listagem de Lpu',
+            'lpu.show'        => 'Visualização de Lpu',
+            'lpu.edit'        => 'Editar Lpu',			
+            'lpu.reajustar'   => 'Reajustar item do Lpu',
+            
             'configuracaoEstaticas.list'   => 'Listagem de Configuração padrão',
             'configuracaoEstaticas.edit'   => 'Edição de Configuração padrão',
             'configuracaoEstaticas.show'   => 'Visualizar Configuração padrão',

@@ -6,6 +6,7 @@ use App\Console\Commands\CapturaNfeGeradas;
 use App\Console\Commands\CapturaCTeGerados;
 use App\Console\Commands\ManifestaNfeGeradas;
 use App\Repositories\ImportacaoRepository;
+use App\Repositories\LpuGerarRepository;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Illuminate\Support\Facades\Log;
@@ -48,6 +49,15 @@ class Kernel extends ConsoleKernel
             ->twiceDaily(10, 19)
             ->name('importacao:repository')
             ->withoutOverlapping();
+		
+		/*$schedule->call(function () {
+                Log::info('Inicio de execucao gerar Lpu');
+                $lpuGerar = LpuGerarRepository::calcular();
+                Log::info('Executado script de gerar Lpu', $lpuGerar);
+            })
+			->monthlyOn(date('t'), time);            
+            ->name('lpu:repository');
+            ->withoutOverlapping();*/
 
         $schedule->command('captura:nfe')
             ->everyThirtyMinutes()
@@ -65,6 +75,15 @@ class Kernel extends ConsoleKernel
             ->daily()
             ->sendOutputTo(storage_path('nfe/manifesta-nfe.log'))
             ->name('manifesta:nfe')
+            ->withoutOverlapping();
+		
+		$schedule->call(function () {
+                Log::info('Inicio de execucao importação de Insumos');
+                $importaInsumo = ImportacaoRepository::insumos();
+                Log::info('Executado script de importação de Insumos', $importaInsumo);
+            })
+            ->twiceDaily(10, 19)
+            ->name('importacao:repository')
             ->withoutOverlapping();
     }
 

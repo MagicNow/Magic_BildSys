@@ -1080,7 +1080,17 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         )->middleware('needsPermission:contratos.previsao_de_memoria_de_calculo');
     });
 
-    # Configuracao Estatica
+    #LPU	 
+    $router->group(['prefix' => 'lpu','middleware' => 'needsPermission:lpu.list'], function($router) {
+        $router->get('',['as' => 'lpu.index', 'uses' => 'LpuController@index']);        
+        $router->get('/{lpu}',['as' => 'lpu.show', 'uses' => 'LpuController@show'])
+			->middleware('needsPermission:lpu.show');
+        $router->get('/{lpu}/editar',['as' => 'lpu.edit', 'uses' => 'LpuController@edit']);
+        $router->patch('/{lpu}/update',['as' => 'lpu.update', 'uses' => 'LpuController@update']);
+		$router->delete('lpu/{lpu}', ['as' => 'lpu.destroy', 'uses' => 'LpuController@destroy']);
+    });
+	
+	# Configuracao Estatica
     $router->group(['middleware' => 'needsPermission:configuracaoEstaticas.list'], function () use ($router) {
         $router->get('configuracaoEstaticas', ['as' => 'configuracaoEstaticas.index', 'uses' => 'ConfiguracaoEstaticaController@index']);
         $router->post('configuracaoEstaticas', ['as' => 'configuracaoEstaticas.store', 'uses' => 'ConfiguracaoEstaticaController@store']);
@@ -1150,6 +1160,11 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->get('regionais/{regionals}', ['as' => 'regionals.show', 'uses' => 'RegionalController@show']);
         $router->get('regionais/{regionals}/edit', ['as' => 'regionals.edit', 'uses' => 'RegionalController@edit'])
             ->middleware('needsPermission:regionals.edit');
+    });
+	
+	$router->get('/testeLpu', function () {
+        $lpu = \App\Repositories\LpuGerarRepository::calcular();
+		dd($lpu);		
     });
 
     $router->get('/teste', function () {
