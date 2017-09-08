@@ -283,19 +283,19 @@
                 <div class="col-md-12 table-responsive margem-topo">
                     <table class="table table-bordered table-striped">
                         <thead>
-                        <tr>
-                            <th class="text-center">Código do insumo</th>
-                            <th class="text-center">Descrição do insumo</th>
-                            <th class="text-center">Un. de medida</th>
-                            <th class="text-center">Qtd.</th>
-                            <th class="text-center">Valor unitário</th>
-                            <th class="text-center">Valor total</th>
-                            <th class="text-center">Qtd. do insumo</th>
-                            <th class="text-center">Valor do insumo</th>
-                            <th class="text-center">Serviço</th>
-                            <th class="text-center">Acaba a obra</th>
-                            <th class="text-center">Ações</th>
-                        </tr>
+							<tr>
+								<th class="text-center">Código do insumo</th>
+								<th class="text-center">Descrição do insumo</th>
+								<th class="text-center">Un. de medida</th>
+								<th class="text-center">Qtd.</th>
+								<th class="text-center">Valor unitário</th>
+								<th class="text-center">Valor total</th>
+								<th class="text-center">Qtd. do insumo</th>
+								<th class="text-center">Valor do insumo</th>
+								<th class="text-center">Serviço</th>
+								<th class="text-center">Acaba a obra</th>
+								<th class="text-center">Ações</th>
+							</tr>
                         </thead>
                         <tbody>
 

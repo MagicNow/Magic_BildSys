@@ -124,6 +124,103 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
         $router->get('planejamentoOrcamentos/sem-planejamento/view/{obra}', ['as' => 'admin.planejamentoOrcamentos.semplanejamentoview', 'uses' => 'Admin\PlanejamentoOrcamentoController@semPlanejamentoView']);
 
     });
+	
+	#importação de planilhas de cronograma fisico
+    $router->group(['middleware' => 'needsPermission:cronogramaFisicos.import'], function () use ($router) {
+        $router->get('cronogramaFisico/', ['as' => 'admin.cronogramaFisicos.indexImport', 'uses' => 'Admin\CronogramaFisicoController@indexImport']);
+        $router->post('cronogramaFisico/importar', ['as' => 'admin.cronogramaFisicos.importar', 'uses' => 'Admin\CronogramaFisicoController@import']);
+        $router->get('cronogramaFisico/importar/checkIn', ['as' => 'admin.cronogramaFisicos.checkIn', 'uses' => 'Admin\CronogramaFisicoController@checkIn']);
+        $router->post('cronogramaFisico/importar/save', ['as' => 'admin.cronogramaFisicos.save', 'uses' => 'Admin\CronogramaFisicoController@save']);
+        $router->get('cronogramaFisico/importar/selecionaCampos', 'Admin\CronogramaFisicoController@selecionaCampos');
+    });
+
+    # Cronograma Fisico
+    $router->group(['prefix' => 'cronogramaFisicos'], function () use ($router) {
+		
+        $router->group(['middleware' => 'needsPermission:cronogramaFisicos.list'], function () use ($router) {			
+			$router->get('relSemanal', ['as' => 'admin.cronograma_fisicos.relSemanal', 'uses' => 'Admin\CronogramaFisicoController@relSemanal']);
+			$router->get('relMensal', ['as' => 'admin.cronograma_fisicos.relMensal', 'uses' => 'Admin\CronogramaFisicoController@relMensal']);
+            $router->get('atividade', ['as' => 'admin.cronograma_fisicos.index', 'uses' => 'Admin\CronogramaFisicoController@index']);
+            $router->post('atividade', ['as' => 'admin.cronograma_fisicos.store', 'uses' => 'Admin\CronogramaFisicoController@store']);
+            $router->get('atividade/create', ['as' => 'admin.cronograma_fisicos.create', 'uses' => 'Admin\CronogramaFisicoController@create']);
+            $router->put('atividade/{cronograma_fisicos}', ['as' => 'admin.cronograma_fisicos.update', 'uses' => 'Admin\CronogramaFisicoController@update']);
+            $router->patch('atividade/{cronograma_fisicos}', ['as' => 'admin.cronograma_fisicos.update', 'uses' => 'Admin\CronogramaFisicoController@update']);
+            $router->delete('atividade/{cronograma_fisicos}', ['as' => 'admin.cronograma_fisicos.destroy', 'uses' => 'Admin\CronogramaFisicoController@destroy']);
+            $router->get('atividade/{cronograma_fisicos}', ['as' => 'admin.cronograma_fisicos.show', 'uses' => 'Admin\CronogramaFisicoController@show']);
+            $router->get('atividade/{cronograma_fisicos}/edit', ['as' => 'admin.cronograma_fisicos.edit', 'uses' => 'Admin\CronogramaFisicoController@edit']);
+        });
+
+    });
+	
+	#importação de planilhas de levantamentos
+    $router->group(['middleware' => 'needsPermission:levantamentos.import'], function () use ($router) {
+        $router->get('levantamento/', ['as' => 'admin.levantamentos.indexImport', 'uses' => 'Admin\LevantamentoController@indexImport']);
+        $router->post('levantamento/importar', ['as' => 'admin.levantamentos.importar', 'uses' => 'Admin\LevantamentoController@import']);
+        $router->get('levantamento/importar/checkIn', ['as' => 'admin.levantamentos.checkIn', 'uses' => 'Admin\LevantamentoController@checkIn']);
+        $router->post('levantamento/importar/save', ['as' => 'admin.levantamentos.save', 'uses' => 'Admin\LevantamentoController@save']);
+        $router->get('levantamento/importar/selecionaCampos', 'Admin\LevantamentoController@selecionaCampos');
+    });
+
+    # Levantamentos
+    $router->group(['prefix' => 'levantamentos'], function () use ($router) {
+		
+        $router->group(['middleware' => 'needsPermission:levantamentos.list'], function () use ($router) {						
+            $router->get('atividade', ['as' => 'admin.levantamentos.index', 'uses' => 'Admin\LevantamentoController@index']);
+            $router->post('atividade', ['as' => 'admin.levantamentos.store', 'uses' => 'Admin\LevantamentoController@store']);
+            $router->get('atividade/create', ['as' => 'admin.levantamentos.create', 'uses' => 'Admin\LevantamentoController@create']);
+            $router->put('atividade/{levantamentos}', ['as' => 'admin.levantamentos.update', 'uses' => 'Admin\LevantamentoController@update']);
+            $router->patch('atividade/{levantamentos}', ['as' => 'admin.levantamentos.update', 'uses' => 'Admin\LevantamentoController@update']);
+            $router->delete('atividade/{levantamentos}', ['as' => 'admin.levantamentos.destroy', 'uses' => 'Admin\LevantamentoController@destroy']);
+            $router->get('atividade/{levantamentos}', ['as' => 'admin.levantamentos.show', 'uses' => 'Admin\LevantamentoController@show']);
+            $router->get('atividade/{levantamentos}/edit', ['as' => 'admin.levantamentos.edit', 'uses' => 'Admin\LevantamentoController@edit']);
+        });
+
+    });
+	
+	# Tipos de Levantamentos
+    $router->group(['middleware' => 'needsPermission:tipoLevantamentos.list'], function () use ($router) {
+        $router->get('tipoLevantamentos', ['as' => 'admin.tipo_levantamentos.index', 'uses' => 'Admin\TipoLevantamentoController@index']);
+        $router->post('tipoLevantamentos', ['as' => 'admin.tipo_levantamentos.store', 'uses' => 'Admin\TipoLevantamentoController@store']);
+        $router->get('tipoLevantamentos/create', ['as' => 'admin.tipo_levantamentos.create', 'uses' => 'Admin\TipoLevantamentoController@create'])
+			->middleware("needsPermission:tipoLevantamentos.create");
+        $router->put('tipoLevantamentos/{tipoLevantamentos}', ['as' => 'admin.tipo_levantamentos.update', 'uses' => 'Admin\TipoLevantamentoController@update']);
+        $router->patch('tipoLevantamentos/{tipoLevantamentos}', ['as' => 'admin.tipo_levantamentos.update', 'uses' => 'Admin\TipoLevantamentoController@update']);
+        $router->delete('tipoLevantamentos/{tipoLevantamentos}', ['as' => 'admin.tipo_levantamentos.destroy', 'uses' => 'Admin\TipoLevantamentoController@destroy'])
+			->middleware("needsPermission:tipoLevantamentos.delete");
+        $router->get('tipoLevantamentos/{tipoLevantamentos}', ['as' => 'admin.tipo_levantamentos.show', 'uses' => 'Admin\TipoLevantamentoController@show']);
+        $router->get('tipoLevantamentos/{tipoLevantamentos}/edit', ['as' => 'admin.tipo_levantamentos.edit', 'uses' => 'Admin\TipoLevantamentoController@edit'])
+			->middleware("needsPermission:tipoLevantamentos.edit");
+    });    
+	
+	# Estruturas
+    $router->group(['middleware' => 'needsPermission:estruturas.list'], function () use ($router) {        
+        $router->get('estruturas', ['as' => 'admin.estruturas.index', 'uses' => 'Admin\EstruturaController@index']);
+        $router->post('estruturas', ['as' => 'admin.estruturas.store', 'uses' => 'Admin\EstruturaController@store']);
+        $router->get('estruturas/create', ['as' => 'admin.estruturas.create', 'uses' => 'Admin\EstruturaController@create'])
+            ->middleware("needsPermission:estruturas.create");;
+        $router->put('estruturas/{estruturas}', ['as' => 'admin.estruturas.update', 'uses' => 'Admin\EstruturaController@update']);
+        $router->patch('estruturas/{estruturas}', ['as' => 'admin.estruturas.update', 'uses' => 'Admin\EstruturaController@update']);
+        $router->delete('estruturas/{estruturas}', ['as' => 'admin.estruturas.destroy', 'uses' => 'Admin\EstruturaController@destroy'])
+            ->middleware("needsPermission:estruturas.delete");;
+        $router->get('estruturas/{estruturas}', ['as' => 'admin.estruturas.show', 'uses' => 'Admin\EstruturaController@show']);
+        $router->get('estruturas/{estruturas}/edit', ['as' => 'admin.estruturas.edit', 'uses' => 'Admin\EstruturaController@edit'])
+            ->middleware("needsPermission:estruturas.edit");        
+    });
+	
+	# Mascara Insumos
+    $router->group(['middleware' => 'needsPermission:mascaraInsumos.list'], function () use ($router) {        
+        $router->get('mascara_insumos', ['as' => 'admin.mascara_insumos.index', 'uses' => 'Admin\MascaraInsumoController@index']);
+        $router->post('mascara_insumos', ['as' => 'admin.mascara_insumos.store', 'uses' => 'Admin\MascaraInsumoController@store']);
+        $router->get('mascara_insumos/create', ['as' => 'admin.mascara_insumos.create', 'uses' => 'Admin\MascaraInsumoController@create'])
+            ->middleware("needsPermission:mascaraInsumos.create");;
+        $router->put('mascara_insumos/{mascara_insumos}', ['as' => 'admin.mascara_insumos.update', 'uses' => 'Admin\MascaraInsumoController@update']);
+        $router->patch('mascara_insumos/{mascara_insumos}', ['as' => 'admin.mascara_insumos.update', 'uses' => 'Admin\MascaraInsumoController@update']);
+        $router->delete('mascara_insumos/{mascara_insumos}', ['as' => 'admin.mascara_insumos.destroy', 'uses' => 'Admin\MascaraInsumoController@destroy'])
+            ->middleware("needsPermission:mascaraInsumos.delete");;
+        $router->get('mascara_insumos/{mascara_insumos}', ['as' => 'admin.mascara_insumos.show', 'uses' => 'Admin\MascaraInsumoController@show']);
+        $router->get('mascara_insumos/{mascara_insumos}/edit', ['as' => 'admin.mascara_insumos.edit', 'uses' => 'Admin\MascaraInsumoController@edit'])
+            ->middleware("needsPermission:mascaraInsumos.edit");        
+    });
 
     # Lembretes
     $router->group(['middleware' => 'needsPermission:lembretes.list'], function () use ($router) {
@@ -140,9 +237,7 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
         $router->get('lembretes/{lembretes}/edit', ['as' => 'admin.lembretes.edit', 'uses' => 'Admin\LembreteController@edit'])
             ->middleware("needsPermission:lembretes.edit");
         $router->get('lembretes/filtro/busca', ['as' => 'admin.lembretes.busca', 'uses' => 'Admin\LembreteController@busca']);
-    });
-
-    
+    });    
 
     # Template de importação de planilha
     $router->group(['middleware' => 'needsPermission:template_planilhas.list'], function () use ($router) {
@@ -384,7 +479,8 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
         $router->get('motivos-declinar-proposta/{desistenciaMotivos}', ['as'=> 'admin.desistenciaMotivos.show', 'uses' => 'Admin\DesistenciaMotivoController@show']);
         $router->get('motivos-declinar-proposta/{desistenciaMotivos}/edit', ['as'=> 'admin.desistenciaMotivos.edit', 'uses' => 'Admin\DesistenciaMotivoController@edit'])
             ->middleware('needsPermission:desistenciaMotivos.edit');
-    });
+    });	
+	
 });
 
 ##### SITE #####
@@ -592,8 +688,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             ->middleware('needsPermission:boletim-medicao.edit');
 
     });
-    // 
-
+    
     // Perfil
     $router->get('/perfil', 'PerfilController@index');
     $router->post('/perfil', 'PerfilController@save');

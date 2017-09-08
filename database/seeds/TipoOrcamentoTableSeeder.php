@@ -18,6 +18,14 @@ class TipoOrcamentoTableSeeder extends Seeder
             [
                 'id' => 1,
                 'nome' => 'Orçamento inicial'
+            ],
+			[
+                'id' => 2,
+                'nome' => 'Pré Orçamento'
+            ],
+			[
+                'id' => 3,
+                'nome' => 'CLO'
             ]
         ];
 
