@@ -8,20 +8,27 @@
                     <button type="button" class="btn btn-link" onclick="history.go(-1);">
                         <i class="fa fa-arrow-left" aria-hidden="true"></i>
                     </button>
-                    Avaliar Quadro de Concorrência
+                    @if($quadro->qc_status_id == 7)
+                    Avaliar
+                    @else
+                    Histórico do
+                    @endif
+                    Quadro de Concorrência
                     <small>
                         Rodada {{ $rodadaSelecionada }}
                     </small>
                 </h1>
-                <button class="btn btn-success btn-lg pull-right btn-flat"
-                        data-toggle="modal"
-                        data-target="#modal-finalizar">
-                    <i class="fa fa-trophy" aria-hidden="true"></i>
-                    Informar vencedor
-                    ou
-                    <i class="fa fa-refresh" aria-hidden="true"></i>
-                    Gerar nova rodada
-                </button>
+                @if($quadro->qc_status_id == 7)
+                    <button class="btn btn-success btn-lg pull-right btn-flat"
+                            data-toggle="modal"
+                            data-target="#modal-finalizar">
+                        <i class="fa fa-trophy" aria-hidden="true"></i>
+                        Informar vencedor
+                        ou
+                        <i class="fa fa-refresh" aria-hidden="true"></i>
+                        Gerar nova rodada
+                    </button>
+                @endif
             </section>
         </div>
     </div>
@@ -226,6 +233,78 @@
                 </div>
             </div>
         @endif
+
+        {{--Demais condições--}}
+        @if(count($qcFornecedores))
+            <div class="box box-muted" id="box_demais_condicoes">
+                <div class="box-header with-border">
+                    <i class="fa fa-list-ul"></i>
+                    Demais condições
+                    <button type="button" class="btn btn-default btn-xs pull-right"
+                            onclick="expandeEncolhe('box_demais_condicoes');">
+                        <i class="iconeExpandeEncolhe fa fa-minus"></i>
+                    </button>
+                </div>
+                <div class="box-body">
+                    <table class="table table-striped table-condensed table-bordered table-hover">
+                        <thead>
+                        <tr>
+                            <th>Detalhes</th>
+                            @php
+                            $porcentagem_material = '';
+                            $porcentagem_servico = '';
+                            $porcentagem_faturamento_direto = '';
+                            $nf_material = '';
+                            $nf_servico = '';
+                            $nf_locacao = '';
+                            @endphp
+                            @foreach($qcFornecedores as $qcFornecedor)
+                                <th>
+                                    {{ $qcFornecedor->fornecedor->nome }}
+                                </th>
+
+                                @php
+                                    $porcentagem_material .= '<td>'.$qcFornecedor->porcentagem_material.' <span>%</span></td>';
+                                    $porcentagem_servico .= '<td>'.$qcFornecedor->porcentagem_servico.' <span>%</span></td>';
+                                    $porcentagem_faturamento_direto .= '<td>'.$qcFornecedor->porcentagem_faturamento_direto.' <span>%</span></td>';
+                                    $nf_material .= '<td>'.($qcFornecedor->nf_material ? '<span style="color:green">SIM</span>' : '<span style="color:red">NÃO</span>').'</td>';
+                                    $nf_servico .= '<td>'.($qcFornecedor->nf_servico   ? '<span style="color:green">SIM</span>' : '<span style="color:red">NÃO</span>').'</td>';
+                                    $nf_locacao .= '<td>'.($qcFornecedor->nf_locacao   ? '<span style="color:green">SIM</span>' : '<span style="color:red">NÃO</span>').'</td>';
+                                @endphp
+                            @endforeach
+                        </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="text-left">% Material</td>
+                                {!! $porcentagem_material !!}
+                            </tr>
+                            <tr>
+                                <td class="text-left">% Serviço</td>
+                                {!! $porcentagem_servico !!}
+                            </tr>
+                            <tr>
+                                <td class="text-left">% Faturamento Direto</td>
+                                {!! $porcentagem_faturamento_direto !!}
+                            </tr>
+                            <tr>
+                                <td class="text-left">NF Material</td>
+                                {!! $nf_material !!}
+                            </tr>
+                            <tr>
+                                <td class="text-left">NF Serviço</td>
+                                {!! $nf_servico !!}
+                            </tr>
+                            <tr>
+                                <td class="text-left">NF Locação</td>
+                                {!! $nf_locacao !!}
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        @endif
+
         {{-- Gráficos --}}
         <div class="row">
             <div class="col-md-12">
@@ -242,22 +321,24 @@
                                 </button>
                             </div>
                             <div class="box-body">
-                                <canvas id="chart-total-fornecedor"
-                                        data-labels="{{
-                                            $qcFornecedores
-                                              ->pluck('fornecedor')
-                                              ->flatten()
-                                              ->pluck('nome')
-                                              ->implode('||')
-                                            }}"
-                                        data-values="{{
-                                          $qcFornecedores
-                                            ->map(function($qcFornecedor) {
-                                              return $qcFornecedor->itens->sum('valor_total') + $qcFornecedor->getOriginal('valor_frete');
-                                            })
-                                            ->implode('||')
-                                          }}">
-                                </canvas>
+                                <div style="position: relative; height: 480px">
+                                    <canvas id="chart-total-fornecedor"
+                                            data-labels="{{
+                                                $qcFornecedores
+                                                  ->pluck('fornecedor')
+                                                  ->flatten()
+                                                  ->pluck('nome')
+                                                  ->implode('||')
+                                                }}"
+                                            data-values="{{
+                                              $qcFornecedores
+                                                ->map(function($qcFornecedor) {
+                                                  return $qcFornecedor->itens->sum('valor_total') + $qcFornecedor->getOriginal('valor_frete');
+                                                })
+                                                ->implode('||')
+                                              }}">
+                                    </canvas>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -297,9 +378,11 @@
                                         <canvas id="UgCanvas" width="40" height="12" style="border:1px solid red; background-color: red;"></canvas>
                                     </div>
                                 </div>
-                                <canvas id="chart-insumo-fornecedor"
-                                        data-data='{{ json_encode($ofertas) }}'>
-                                </canvas>
+                                <div style="position: relative; max-height: 420px">
+                                    <canvas id="chart-insumo-fornecedor"
+                                            data-data='{{ json_encode($ofertas) }}'>
+                                    </canvas>
+                                </div>
                             </div>
                         </div>
                     </div>
