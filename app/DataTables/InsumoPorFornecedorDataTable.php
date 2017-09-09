@@ -158,9 +158,10 @@ class InsumoPorFornecedorDataTable extends DataTable
 
             $excluded = ['insumo', 'unidade', 'valor unitário do orçamento', 'qntd do QC', 'Valor total previsto', 'frete', 'Un&period; De Medida', 'código'];
             if(!in_array($column, $excluded)) {
-                list($fornecedor, $id) = explode('||', $column);
 
-                $title = $fornecedor;
+                $titulos = explode('||', $column);
+                $fornecedor = $titulos[0];
+                $title = $titulos[0];
             } else {
                 $title = $column;
             }
