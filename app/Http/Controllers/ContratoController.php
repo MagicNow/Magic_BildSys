@@ -173,7 +173,7 @@ class ContratoController extends AppBaseController
                     WorkflowTipo::CONTRATO,
                     $contrato->obra_id,
                     $alcada->id,
-                    [$alcada->id]
+                    [$contrato->id]
                 );
 
                 // Data do início da  Alçada
