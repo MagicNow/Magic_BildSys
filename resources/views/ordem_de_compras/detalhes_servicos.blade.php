@@ -46,12 +46,27 @@
         <div class="row">
             <div class="col-md-2 form-group">
                 {!! Form::label('codigo', 'Código do serviço') !!}
-                <p class="form-control input-lg highlight text-center">{!! $servico->codigo !!}</p>
+                @php
+                    $tooltip = $servico->grupo->grupo->grupo->grupo->codigo . ' - ' . $servico->grupo->grupo->grupo->grupo->nome . '<br>' .
+                               $servico->grupo->grupo->grupo->codigo . ' - ' . $servico->grupo->grupo->grupo->nome . '<br>' .
+                               $servico->grupo->grupo->codigo . ' - ' . $servico->grupo->grupo->nome . '<br>' .
+                               $servico->grupo->codigo . ' - ' . $servico->grupo->nome . '<br>' .
+                               $servico->codigo . ' - ' . $servico->nome . '<br>';
+                @endphp
+                <p class="form-control input-lg highlight text-center"
+                   data-toggle="tooltip" data-placement="top" data-html="true"
+                   title="{{$tooltip}}">
+                    {!! $servico->codigo !!}
+                </p>
             </div>
 
             <div class="col-md-10 form-group">
                 {!! Form::label('servico', 'Serviço') !!}
-                <p class="form-control input-lg">{!! $servico->nome !!}</p>
+                <p class="form-control input-lg"
+                   data-toggle="tooltip" data-placement="top" data-html="true"
+                   title="{{$tooltip}}">
+                    {!! $servico->nome !!}
+                </p>
             </div>
         </div>
         <hr>

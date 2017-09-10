@@ -284,8 +284,8 @@
                     <table class="table table-bordered table-striped">
                         <thead>
                         <tr>
-                            <th class="text-center">Código do insumo</th>
-                            <th class="text-center">Descrição do insumo</th>
+                            <th class="text-center">Código</th>
+                            <th class="text-center">Descrição</th>
                             <th class="text-center">Un. de medida</th>
                             <th class="text-center">Qtd.</th>
                             <th class="text-center">Valor unitário</th>
@@ -422,12 +422,12 @@
                                         @if($workflowAprovacao['podeAprovar'])
                                             @if($workflowAprovacao['iraAprovar'])
                                                 <div class="btn-group" role="group" id="blocoItemAprovaReprova{{ $item->id }}" aria-label="...">
-                                                    <button type="button" onclick="workflowAprovaReprova({{ $item->id }},'OrdemDeCompraItem',1,'blocoItemAprovaReprova{{ $item->id }}','Insumo {{ $item->insumo->codigo }}',0, '', '');"
+                                                    <button type="button" onclick="workflowAprovaReprova({{ $item->id }},'OrdemDeCompraItem',1,'blocoItemAprovaReprova{{ $item->id }}','Insumo {{ $item->insumo->codigo }}',0, '', '', true);"
                                                             class="btn btn-success btn-sm btn-flat"
                                                             title="Aprovar este item">
                                                         <i class="fa fa-check" aria-hidden="true"></i>
                                                     </button>
-                                                    <button type="button" onclick="workflowAprovaReprova({{ $item->id }},'OrdemDeCompraItem',0, 'blocoItemAprovaReprova{{ $item->id }}','Insumo {{ $item->insumo->codigo }}',0, '', '');"
+                                                    <button type="button" onclick="workflowAprovaReprova({{ $item->id }},'OrdemDeCompraItem',0, 'blocoItemAprovaReprova{{ $item->id }}','Insumo {{ $item->insumo->codigo }}',0, '', '', true);"
                                                             class="btn btn-danger btn-sm btn-flat"
                                                             title="Reprovar este item">
                                                         <i class="fa fa-times" aria-hidden="true"></i>

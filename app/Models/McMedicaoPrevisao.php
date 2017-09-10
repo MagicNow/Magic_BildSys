@@ -112,4 +112,16 @@ class McMedicaoPrevisao extends Model
     {
         return $this->belongsTo(Unidade::class);
     }
+
+    public function setDataCompetenciaAttribute($value){
+        if(strlen($value)){
+            if(strpos($value,'/')){
+                $this->attributes["data_competencia"] = Carbon::createFromFormat('d/m/Y', $value)->format('Y-m-d');
+            }else{
+                $this->attributes["data_competencia"] = $value;
+            }
+        }else{
+            $this->attributes["data_competencia"] = null;
+        }
+    }
 }

@@ -15,6 +15,7 @@ use App\Models\MemoriaCalculo;
 use App\Models\NomeclaturaMapa;
 use App\Models\Obra;
 use App\Models\ObraTorre;
+use App\Models\Orcamento;
 use App\Models\Planejamento;
 use App\Models\WorkflowAprovacao;
 use App\Notifications\WorkflowNotification;
@@ -172,7 +173,7 @@ class ContratoController extends AppBaseController
                     WorkflowTipo::CONTRATO,
                     $contrato->obra_id,
                     $alcada->id,
-                    [$alcada->id]
+                    [$contrato->id]
                 );
 
                 // Data do início da  Alçada
@@ -314,7 +315,18 @@ class ContratoController extends AppBaseController
     ) {
         $item = $contratoItemRepository->find($id);
 
-        $contratoItemReapropriacaoRepository->reapropriar($item, $request->all());
+        $input = $request->all();
+
+        $orcamento = Orcamento::find($input['orcamento_id']);
+
+        $input['codigo_insumo'] = $orcamento->codigo_insumo;
+        $input['grupo_id'] = $orcamento->grupo_id;
+        $input['subgrupo1_id'] = $orcamento->subgrupo1_id;
+        $input['subgrupo2_id'] = $orcamento->subgrupo2_id;
+        $input['subgrupo3_id'] = $orcamento->subgrupo3_id;
+        $input['servico_id'] = $orcamento->servico_id;
+        
+        $contratoItemReapropriacaoRepository->reapropriar($item, $input);
 
         return response()->json([
             'success' => true
@@ -337,6 +349,11 @@ class ContratoController extends AppBaseController
     {
 
         return response()->download(storage_path('/app/public/') . str_replace('storage/', '', ContratoRepository::geraImpressao($id)));
+    }
+    public function imprimirContratoCompleto($id)
+    {
+        $arquivo = ContratoRepository::geraImpressaoCompleta($id);
+        return response()->download(storage_path('/app/public/') . str_replace('storage/', '', $arquivo['arquivo']));
     }
 
     public function edit($id)
@@ -791,6 +808,8 @@ class ContratoController extends AppBaseController
         $contrato_id
     ) {
         $input = $request->all();
+
+        $input['solicitacao'] = json_decode($input['solicitacao']);
         $input['contrato_id'] = $contrato_id;
         $solicitacao = $repository->create($input);
 
@@ -802,5 +821,30 @@ class ContratoController extends AppBaseController
         return response()->json([
             'success' => true
         ]);
+    }
+
+    /**
+     * Busca os insumos que estão no orçamento, de acordo com os parâmetros recebidos.
+     *
+     * @param
+     *      $insumos_id(array com os ids dos insumos),
+     *      $obra_id
+     *
+     * @return object
+     */
+    public static function orcamentosReapropriacoes($insumos_id, $obra_id)
+    {
+        $orcamentos = Orcamento::select(
+            'orcamentos.id as id',
+            DB::raw('CONCAT(servicos.codigo, " ", servicos.nome) as nome')
+        )
+            ->join('servicos', 'servicos.id', '=', 'orcamentos.servico_id')
+            ->whereIn('insumo_id', $insumos_id)
+            ->where('obra_id', $obra_id)
+            ->where('ativo', 1)
+            ->pluck('nome', 'id')
+            ->prepend('', '');
+
+        return $orcamentos;
     }
 }

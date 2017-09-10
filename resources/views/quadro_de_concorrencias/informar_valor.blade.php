@@ -83,13 +83,14 @@
             <table class="table table-responsive table-striped table-align-middle table-condensed">
                 <thead>
                 <tr>
-                    <th>Obra - Cidade</th>
-                    <th>Insumo</th>
-                    <th>Observações ao fornecedor:</th>
-                    <th>Un. de Medida</th>
-                    <th>Quantidade</th>
-                    <th>Valor Unitário</th>
-                    <th>Valor Total</th>
+                    <th class="text-center">Obra - Cidade</th>
+                    <th class="text-center">Código</th>
+                    <th class="text-center">Descrição</th>
+                    <th class="text-center">Un. de Medida</th>
+                    <th class="text-center">Observações ao fornecedor:</th>
+                    <th class="text-center">Quantidade</th>
+                    <th class="text-center">Valor Unitário</th>
+                    <th class="text-center">Valor Total</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -100,7 +101,9 @@
                                 {{ $obra->nome }} - {{ $obra->cidade->nome }}{{ !$loop->last ? ',' : '' }}
                             @endforeach
                         </td>
+                        <td>{{ $item->insumo->codigo }}</td>
                         <td>{{ $item->insumo->nome }}</td>
+                        <td>{{ $item->insumo->unidade_sigla }}</td>
                         <td>
                             {!!
                               Form::textarea(
@@ -117,8 +120,6 @@
                               )
                             !!}
                         </td>
-
-                        <td>{{ $item->insumo->unidade_sigla }}</td>
                         <td class="js-calc-amount">
                             {{ number_format($item->qtd,2,',','.') }}
                             {!! Form::hidden("itens[{$item->id}][qtd]", $item->qtd) !!}
@@ -155,8 +156,9 @@
     @endphp
 
     <div class="row">
+
         {{--Frete--}}
-        <div class="col-md-3">
+        <div class="col-md-4">
             <div class="box box-info">
                 <div class="box-header with-border">
                     Frete
@@ -231,134 +233,143 @@
                 </div>
             </div>
 
-            @if($quadro->hasServico())
-                <div class="row">
-                    <div class="col-md-12">
+        </div>
 
-                        <div class="box box-primary">
-                            <div class="box-header with-border">
-                                Porcentagens
-                            </div>
-                            <div class="box-body">
-                                <div class="form-group">
-                                    <div class="row">
-                                        <label class="col-md-6">
-                                            Mão de Obra
-                                        </label>
-                                        <div class="col-md-6">
-                                            <div class="input-group">
-                                                <input type="text"
-                                                       class="form-control percent js-percent"
-                                                       value="{{ old('porcentagem_servico') }}"
-                                                       name="porcentagem_servico">
-                                                <span class="input-group-addon">%</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="row">
-                                        <label class="col-md-6">
-                                            Material da Contratada
-                                        </label>
-                                        <div class="col-md-6">
-                                            <div class="input-group">
-                                                <input type="text"
-                                                       class="form-control percent js-percent"
-                                                       value="{{ old('porcentagem_material') }}"
-                                                       name="porcentagem_material">
-                                                <span class="input-group-addon">%</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="row">
-                                        <label class="col-md-6">
-                                            Faturamento Direto
-                                        </label>
-                                        <div class="col-md-6">
-                                            <div class="input-group">
-                                                <input type="text"
-                                                       class="form-control percent js-percent"
-                                                       value="{{ old('porcentagem_faturamento_direto') }}"
-                                                       name="porcentagem_faturamento_direto">
-                                                <span class="input-group-addon">%</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="row">
-                                        <label class="col-md-6">
-                                            Locação
-                                        </label>
-                                        <div class="col-md-6">
-                                            <div class="input-group">
-                                                <input type="text"
-                                                       class="form-control percent js-percent"
-                                                       value="{{ old('porcentagem_locacao') }}"
-                                                       name="porcentagem_locacao">
-                                                <span class="input-group-addon">%</span>
-                                            </div>
-                                        </div>
+        @if($quadro->hasServico())
+
+            <div class="col-md-4">
+
+                <div class="box box-primary">
+                    <div class="box-header with-border">
+                        Porcentagens
+                    </div>
+                    <div class="box-body">
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-md-6">
+                                    Mão de Obra
+                                </label>
+                                <div class="col-md-6">
+                                    <div class="input-group">
+                                        <input type="text"
+                                               class="form-control percent js-percent"
+                                               value="{{ old('porcentagem_servico') }}"
+                                               name="porcentagem_servico">
+                                        <span class="input-group-addon">%</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="box box-warning">
-                            <div class="box-header with-border">
-                                Tipo da Nota Fiscal
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-md-6">
+                                    Material da Contratada
+                                </label>
+                                <div class="col-md-6">
+                                    <div class="input-group">
+                                        <input type="text"
+                                               class="form-control percent js-percent"
+                                               value="{{ old('porcentagem_material') }}"
+                                               name="porcentagem_material">
+                                        <span class="input-group-addon">%</span>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="box-body">
-                                <div class="form-group">
-                                    <div class="checkbox">
-                                        <label>
-                                            {!!
-                                              Form::checkbox(
-                                                "nf_material",
-                                                '1'
-                                              )
-                                            !!}
-                                            Material
-                                        </label>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-md-6">
+                                    Faturamento Direto
+                                </label>
+                                <div class="col-md-6">
+                                    <div class="input-group">
+                                        <input type="text"
+                                               class="form-control percent js-percent"
+                                               value="{{ old('porcentagem_faturamento_direto') }}"
+                                               name="porcentagem_faturamento_direto">
+                                        <span class="input-group-addon">%</span>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <div class="checkbox">
-                                        <label>
-                                            {!!
-                                              Form::checkbox(
-                                                "nf_servico",
-                                                '1',
-                                                old('nf_servico',true)
-                                              )
-                                            !!}
-                                            Serviço
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="checkbox">
-                                        <label>
-                                            {!!
-                                              Form::checkbox(
-                                                "nf_locacao",
-                                                '1'
-                                              )
-                                            !!}
-                                            Fatura de Locação
-                                        </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-md-6">
+                                    Locação
+                                </label>
+                                <div class="col-md-6">
+                                    <div class="input-group">
+                                        <input type="text"
+                                               class="form-control percent js-percent"
+                                               value="{{ old('porcentagem_locacao') }}"
+                                               name="porcentagem_locacao">
+                                        <span class="input-group-addon">%</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            @endif
-        </div>
+            </div>
+
+            <div class="col-md-4">
+
+                <div class="box box-warning">
+                    <div class="box-header with-border">
+                        Tipo da Nota Fiscal
+                    </div>
+                    <div class="box-body">
+                        <div class="form-group">
+                            <div class="checkbox">
+                                <label>
+                                    {!!
+                                      Form::checkbox(
+                                        "nf_material",
+                                        '1'
+                                      )
+                                    !!}
+                                    Material
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="checkbox">
+                                <label>
+                                    {!!
+                                      Form::checkbox(
+                                        "nf_servico",
+                                        '1'
+                                      )
+                                    !!}
+                                    Serviço
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="checkbox">
+                                <label>
+                                    {!!
+                                      Form::checkbox(
+                                        "nf_locacao",
+                                        '1'
+                                      )
+                                    !!}
+                                    Fatura de Locação
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        @endif
+    </div>
+
+
+    <div class="row">
+
         {{--Campos extras Template contrato--}}
-        <div class="col-md-9">
+        <div class="col-md-12">
             @if(count($campos_extras))
                 <div class="box box-primary">
                     <div class="box-header with-border">
@@ -416,102 +427,103 @@
                 </div>
             @endif
         </div>
-    </div>
-    {{--Equalização técnica--}}
-    <div class="box box-danger box-equalizacao-tecnica">
-        <div class="box-header with-border">Equalização Técnica</div>
-        <div class="box-body">
-            @if($equalizacoes->isEmpty())
-                <p>Sem equalizações técnicas no Quadro de Concorrência</p>
-            @else
-                <table class="table table-responsive table-striped table-align-middle table-condensed">
-                    <thead>
-                    <tr>
-                        <th width="10%">Detalhes</th>
-                        <th>Item</th>
-                        <th width="20%">Validação</th>
-                        <th width="25%">Obs</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @foreach($equalizacoes as $key =>  $equalizacao)
-                        <tr>
-                            <td>
-                                <button type="button"
-                                        class="btn btn-default btn-flat btn-xs js-sweetalert"
-                                        data-title="{{ $equalizacao->nome }}"
-                                        data-text="{{ $equalizacao->descricao }}">
-                                    <i class="fa fa-info-circle"></i> detalhes
-                                </button>
-                            </td>
-                            <td class="text-left">{{ $equalizacao->nome }}</td>
-                            <td>
-                                {!! Form::hidden("equalizacoes[{$equalizacao->id}-{$equalizacao->getTable()}][checkable_type]", $equalizacao->getTable()) !!}
-                                {!! Form::hidden("equalizacoes[{$equalizacao->id}-{$equalizacao->getTable()}][checkable_id]", $equalizacao->id) !!}
-                                @if($equalizacao->obrigatorio)
-                                    <div class="checkbox">
-                                        <label>
+
+
+        {{--Equalização técnica--}}
+
+        <div class="col-md-12">
+
+            <div class="box box-danger box-equalizacao-tecnica">
+                <div class="box-header with-border">Equalização Técnica</div>
+                <div class="box-body">
+                    @if($equalizacoes->isEmpty())
+                        <p>Sem equalizações técnicas no Quadro de Concorrência</p>
+                    @else
+                        <table class="table table-responsive table-striped table-align-middle table-condensed">
+                            <thead>
+                            <tr>
+                                <th width="15%">Item</th>
+                                <th width="25%">Descrição</th>
+                                <th width="20%">Validação</th>
+                                <th width="25%">Obs</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($equalizacoes as $key =>  $equalizacao)
+                                <tr>
+                                    <td class="text-left">{{ $equalizacao->nome }}</td>
+                                    <td>{{ $equalizacao->descricao }}</td>
+
+                                    <td>
+                                        {!! Form::hidden("equalizacoes[{$equalizacao->id}-{$equalizacao->getTable()}][checkable_type]", $equalizacao->getTable()) !!}
+                                        {!! Form::hidden("equalizacoes[{$equalizacao->id}-{$equalizacao->getTable()}][checkable_id]", $equalizacao->id) !!}
+                                        @if($equalizacao->obrigatorio)
+                                            <div class="checkbox">
+                                                <label>
+                                                    {!!
+                                                      Form::checkbox(
+                                                        "equalizacoes[{$equalizacao->id}-{$equalizacao->getTable()}][checked]",
+                                                        '1'
+                                                      )
+                                                    !!}
+                                                    Estou ciente
+                                                </label>
+                                            </div>
+                                        @else
+                                            <label class="radio-inline">
+                                                {!!
+                                                  Form::radio(
+                                                    "equalizacoes[{$equalizacao->id}-{$equalizacao->getTable()}][checked]",
+                                                    '1'
+                                                  )
+                                                !!}
+                                                Sim
+                                            </label>
+                                            <label class="radio-inline">
+                                                {!!
+                                                  Form::radio(
+                                                    "equalizacoes[{$equalizacao->id}-{$equalizacao->getTable()}][checked]",
+                                                    '0'
+                                                  )
+                                                !!}
+                                                Não
+                                            </label>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if(!$equalizacao->obrigatorio)
                                             {!!
-                                              Form::checkbox(
-                                                "equalizacoes[{$equalizacao->id}-{$equalizacao->getTable()}][checked]",
-                                                '1'
+                                              Form::textarea(
+                                                "equalizacoes[{$equalizacao->id}-{$equalizacao->getTable()}][obs]",
+                                                old("equalizacoes[{$equalizacao->id}-{$equalizacao->getTable()}][obs]"),
+                                                [
+                                                  'placeholder' => 'Suas Considerações ou Observações',
+                                                  'class' => 'form-control',
+                                                  'rows' => 2,
+                                                  'cols' => 25
+                                                ]
                                               )
                                             !!}
-                                            Estou ciente
-                                        </label>
-                                    </div>
-                                @else
-                                    <label class="radio-inline">
-                                        {!!
-                                          Form::radio(
-                                            "equalizacoes[{$equalizacao->id}-{$equalizacao->getTable()}][checked]",
-                                            '1'
-                                          )
-                                        !!}
-                                        Sim
-                                    </label>
-                                    <label class="radio-inline">
-                                        {!!
-                                          Form::radio(
-                                            "equalizacoes[{$equalizacao->id}-{$equalizacao->getTable()}][checked]",
-                                            '0'
-                                          )
-                                        !!}
-                                        Não
-                                    </label>
-                                @endif
-                            </td>
-                            <td>
-                                @if(!$equalizacao->obrigatorio)
-                                    {!!
-                                      Form::textarea(
-                                        "equalizacoes[{$equalizacao->id}-{$equalizacao->getTable()}][obs]",
-                                        old("equalizacoes[{$equalizacao->id}-{$equalizacao->getTable()}][obs]"),
-                                        [
-                                          'placeholder' => 'Suas Considerações ou Observações',
-                                          'class' => 'form-control',
-                                          'rows' => 2,
-                                          'cols' => 25
-                                        ]
-                                      )
-                                    !!}
-                                @else
-                                    <span class="text-muted"></span>
-                                @endif
-                            </td>
-                        </tr>
-                    @endforeach
-                    </tbody>
-                </table>
-            @endif
-        </div>
-        @if($anexos->isNotEmpty())
-            <div class="box-footer text-center">
-                <a href="#modal-anexos" data-toggle="modal" class="btn btn-primary btn-flat">
-                    <i class="fa fa-paperclip"></i> Exibir todos os Anexos de Equalização Técnica
-                </a>
+                                        @else
+                                            <span class="text-muted"></span>
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+                    @endif
+                </div>
+                @if($anexos->isNotEmpty())
+                    <div class="box-footer text-center">
+                        <a href="#modal-anexos" data-toggle="modal" class="btn btn-primary btn-flat">
+                            <i class="fa fa-paperclip"></i> Exibir todos os Anexos de Equalização Técnica
+                        </a>
+                    </div>
+                @endif
             </div>
-        @endif
+        </div>
+
     </div>
 
     <div class="row">

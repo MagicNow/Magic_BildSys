@@ -1,3 +1,13 @@
+<style>
+    .nav-tabs-custom > .nav-tabs > li.active > a, .nav-tabs-custom > .nav-tabs > li.active:hover > a {
+        color: #f98d00 !important;
+    }
+
+    .nav-tabs-custom > .nav-tabs > li.active {
+        border-top-color: #f98d00 !important;
+    }
+</style>
+
 <hr>
 <div class="row total-header">
     <div class="col-sm-3 text-right borda-direita">
@@ -40,8 +50,8 @@
             <a href="#oc"
                 data-toggle="tab"
                 class="js-tooltip"
-                title="Insumos que foram originados de uma ordem de Compra">
-                Originados da O.C.
+                title="Insumos que foram originados na O.C" style="color: #a94442;">
+                Originado na O.C
             </a>
         </li>
         @if($itens->contrato_itens->isNotEmpty())
@@ -49,8 +59,8 @@
                 <a href="#contrato"
                     class="js-tooltip"
                     title="Insumos que foram adicionados ao gerar o contrato"
-                    data-toggle="tab">
-                    Originados do Contrato
+                    data-toggle="tab" style="color: #a94442;">
+                    Originado no Contrato
                 </a>
             </li>
         @endif
@@ -60,8 +70,8 @@
             <table class="table table-bordered table-no-margin">
                 <thead>
                     <tr>
-                        <th class="text-center">Código do insumo</th>
-                        <th class="text-center">Descrição do insumo</th>
+                        <th class="text-center">Código</th>
+                        <th class="text-center">Descrição</th>
                         <th class="text-center">Un. de medida</th>
                         <th class="text-center">Qtd.</th>
                         <th class="text-center">Valor Unitário</th>
@@ -108,7 +118,7 @@
                                     ">
                                     {{ $item->insumo->codigo }}</span>
                             </td>
-                            <td class="text-center">{{ $item->insumo->nome }}</td>
+                            <td class="text-left">{{ $item->insumo->nome }}</td>
                             <td class="text-center">{{ $item->insumo->unidade_sigla }}</td>
                             <td class="text-center">{{ float_to_money($item->qtd, '') }}</td>
                             <td class="text-center">{{ float_to_money($item->contratoItem->valor_unitario) }} </td>
@@ -296,7 +306,7 @@
                             <th>Descrição do Insumo</th>
                             <th>Valor</th>
                             <th>%</th>
-                            <th>Serviço</th>
+                            <th>Apropriação</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -324,7 +334,7 @@
                                         <table class="table table-bordered table-condensed table-all-center">
                                             <thead>
                                                 <tr>
-                                                    <th>Código Estruturado</th>
+                                                    <th>Serviço</th>
                                                     <th>Insumo</th>
                                                     <th>Valor Apropriado</th>
                                                 </tr>

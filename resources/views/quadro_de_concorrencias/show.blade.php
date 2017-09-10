@@ -110,10 +110,14 @@
                         </a>
                     @endif
                 @endshield
+            @elseif($quadroDeConcorrencia->qc_status_id>7 && $quadroDeConcorrencia->temOfertas())
+                <a href="{{ route('quadroDeConcorrencia.avaliar', $quadroDeConcorrencia->id) }}" class="btn btn-lg btn-primary btn-flat" title="Avaliar Quadro de Concorrência">
+                    <i class="glyphicon glyphicon-ok"></i> Histórico de propostas
+                </a>
             @endif
         </h1>
     </section>
-    @if($oc_status != 'Em Aberto')
+    @if($oc_status != 'Em Elaboração')
         <div class="content" style="    padding-bottom: 0px;    margin-bottom: 0px;    min-height: 0px;">
             @include('quadro_de_concorrencias.timeline')
         </div>

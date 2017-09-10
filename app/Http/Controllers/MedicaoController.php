@@ -22,6 +22,7 @@ use App\Models\WorkflowReprovacaoMotivo;
 use App\Models\WorkflowTipo;
 use App\Repositories\Admin\ObraRepository;
 use App\Repositories\MedicaoRepository;
+use Carbon\Carbon;
 use Flash;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
@@ -266,6 +267,31 @@ class MedicaoController extends AppBaseController
             $input['descontos'] = money_to_float($input['descontos']);
         }
         $input['user_id'] = auth()->id();
+
+        $periodo_inicio = $request->periodo_inicio;
+        // Trata se o navegador não suporta date do HTML5
+        if(strpos($periodo_inicio,'/')){
+            $periodo_inicio = Carbon::createFromFormat('d/m/Y', $periodo_inicio)->format('Y-m-d');
+        }
+
+        $periodo_termino = $request->periodo_termino;
+        // Trata se o navegador não suporta date do HTML5
+        if(strpos($periodo_termino,'/')){
+            $periodo_termino = Carbon::createFromFormat('d/m/Y', $periodo_termino)->format('Y-m-d');
+        }
+        $periodoInicio = Carbon::createFromFormat('Y-m-d', $periodo_inicio);
+        $periodoTermino = Carbon::createFromFormat('Y-m-d', $periodo_termino);
+        $hoje = Carbon::now();
+
+        if($periodoTermino->lte($periodoInicio)){
+            flash('Periodo término menor que o Período de Início','error');
+            return back()->withInput();
+        }
+        if($periodoTermino->gt($hoje)){
+            flash('Periodo término maior que a data atual','error');
+            return back()->withInput();
+        }
+
         $medicaoServico = MedicaoServico::create($input);
 
         if($medicaoServico){

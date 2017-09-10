@@ -136,8 +136,37 @@
                                     @endforeach
                                 </div>
                             @endif
+
+                            @php
+                                $insumo_catalogo = \App\Repositories\OrdemDeCompraRepository::existeNoCatalogo($item->insumo_id, $item->obra_id);
+                                $pedido_minimo_invalido = false;
+                                $multiplo_invalido = false;
+
+                                if($insumo_catalogo) {
+                                    if(floatval($item->qtd) < $insumo_catalogo->pedido_minimo) {
+                                        $pedido_minimo_invalido = true;
+                                    }
+
+
+                                    if(floatval($item->qtd) % $insumo_catalogo->pedido_multiplo_de) {
+                                        $multiplo_invalido = true;
+                                    }
+                                }
+                            @endphp
+
+                            @if($pedido_minimo_invalido)
+                                <div class="alert alert-warning" role="alert">
+                                    Este insumo está no catálogo com o pedido mínimo de {{float_to_money($insumo_catalogo->pedido_minimo, '')}}, com vigência até {{$insumo_catalogo->periodo_termino}}
+                                </div>
+                            @endif
+
+                            @if($multiplo_invalido)
+                                <div class="alert alert-warning" role="alert">
+                                    Este insumo está no catálogo com o múltiplo de {{float_to_money($insumo_catalogo->pedido_multiplo_de, '')}}, com vigência até {{$insumo_catalogo->periodo_termino}}
+                                </div>
+                            @endif
                             <div class="row">
-                                <span class="col-md-2 col-sm-2 col-xs-12 text-center borda-direita" data-toggle="tooltip" data-placement="top" data-html="true"
+                                <span class="col-md-3 col-sm-3 col-xs-12 text-center borda-direita" data-toggle="tooltip" data-placement="top" data-html="true"
                                       title="
                                         {{$item->grupo->codigo.' - '.$item->grupo->nome}}<br/>
                                         {{$item->subgrupo1->codigo.' - '.$item->subgrupo1->nome}}<br/>
@@ -202,7 +231,7 @@
                                     </button>
                                     {!! Form::close() !!}
                                 </span>
-                                <span class="col-md-1 col-sm-1 col-xs-1 text-center">
+                                <span>
                                     <button type="button" class="btn btn-flat btn-link"
                                             style="font-size: 18px; margin-top: -7px" onclick="showHideExtra({{ $item->id }})">
                                         <i class="icone-expandir fa fa-caret-right" aria-hidden="true"></i>

@@ -30,15 +30,32 @@ class DetalhesServicosDataTable extends DataTable
             ->editColumn('valor_realizado', function($obj){
                 return '<small class="pull-left">R$</small>'.number_format( floatval($obj->valor_realizado), 2, ',','.');
             })
+            ->editColumn('origem', function($obj){
+                if($this->request()->get('oc_id')) {
+                    $ordem_de_compra_ultima_aprovacao = OrdemDeCompra::find($this->request()->get('oc_id'))->dataUltimoPeriodoAprovacao();
+                } else {
+                    $ordem_de_compra_ultima_aprovacao = null;
+                }
+
+                $origem = OrdemDeCompraRepository::origemComprometidoAGastar($obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, $obj->insumo_id, $this->obra_id, null, $ordem_de_compra_ultima_aprovacao);
+
+                return $origem;
+            })
             ->editColumn('valor_comprometido_a_gastar', function($obj){
                 if($this->request()->get('oc_id')) {
                     $ordem_de_compra_ultima_aprovacao = OrdemDeCompra::find($this->request()->get('oc_id'))->dataUltimoPeriodoAprovacao();
                 } else {
                     $ordem_de_compra_ultima_aprovacao = null;
                 }
+                $origem = OrdemDeCompraRepository::origemComprometidoAGastar($obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, $obj->insumo_id, $this->obra_id, null, $ordem_de_compra_ultima_aprovacao);
                 $valor_comprometido_a_gastar = OrdemDeCompraRepository::valorComprometidoAGastarItem($obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, $obj->insumo_id, $this->obra_id, null, $ordem_de_compra_ultima_aprovacao);
 
-                return '<small class="pull-left">R$</small>'.number_format( floatval($valor_comprometido_a_gastar), 2, ',','.');
+
+                if($valor_comprometido_a_gastar > 0) {
+                    return '<span data-toggle="tooltip" data-placement="top" data-html="true" title="'.$origem.'"> <small class="pull-left">R$</small>'.number_format($valor_comprometido_a_gastar, 2, ',','.').'</span>';
+                } else {
+                    return '<small class="pull-left">R$</small>'.number_format($valor_comprometido_a_gastar, 2, ',','.');
+                }
             })
             ->editColumn('saldo_orcamento', function($obj){
                 if($this->request()->get('oc_id')) {
@@ -85,7 +102,14 @@ class DetalhesServicosDataTable extends DataTable
                     $obj->descricao <button type=\"button\" class=\"btn btn-info btn-flat btn-xs\"> <i class=\"fa fa-exchange\"></i> </button>
                     </strong>";
                 } else {
-                    return $obj->descricao;
+                    return '<span data-toggle="tooltip" data-placement="top" data-html="true"
+                                title="'.
+                                    $obj->tooltip_grupo . ' <br> ' .
+                                    $obj->tooltip_subgrupo1 . ' <br> ' .
+                                    $obj->tooltip_subgrupo2 . ' <br> ' .
+                                    $obj->tooltip_subgrupo3 . ' <br> ' .
+                                    $obj->tooltip_servico
+                                .'">'.$obj->descricao.'</span>';
                 }
             })
             ->filterColumn('descricao',function($query, $keyword){
@@ -120,6 +144,7 @@ class DetalhesServicosDataTable extends DataTable
             'orcamentos.subgrupo3_id',
             'orcamentos.servico_id',
             'orcamentos.insumo_id',
+            'insumos.codigo',
             DB::raw("CONCAT(insumos_sub.codigo,' - ' ,insumos_sub.nome) as substitui"),
             DB::raw('
                     (SELECT 
@@ -154,8 +179,39 @@ class DetalhesServicosDataTable extends DataTable
                     AND ordem_de_compra_itens.obra_id ='. $this->obra_id .' ) as valor_oc'),
 
             DB::raw('0
-                    as saldo_disponivel')
+                    as saldo_disponivel'),
+            DB::raw('(SELECT
+                    CONCAT(codigo, \' - \', nome)
+                    FROM
+                    grupos
+                    WHERE
+                    orcamentos.grupo_id = grupos.id) AS tooltip_grupo'),
+            DB::raw('(SELECT
+                    CONCAT(codigo, \' - \', nome)
+                    FROM
+                    grupos
+                    WHERE
+                    orcamentos.subgrupo1_id = grupos.id) AS tooltip_subgrupo1'),
+            DB::raw('(SELECT
+                    CONCAT(codigo, \' - \', nome)
+                    FROM
+                    grupos
+                    WHERE
+                    orcamentos.subgrupo2_id = grupos.id) AS tooltip_subgrupo2'),
+            DB::raw('(SELECT
+                    CONCAT(codigo, \' - \', nome)
+                    FROM
+                    grupos
+                    WHERE
+                    orcamentos.subgrupo3_id = grupos.id) AS tooltip_subgrupo3'),
+            DB::raw('(SELECT
+                    CONCAT(codigo, \' - \', nome)
+                    FROM
+                    servicos
+                    WHERE
+                    orcamentos.servico_id = servicos.id) AS tooltip_servico')
         ])
+            ->join('insumos',  'insumos.id', 'orcamentos.insumo_id')
             ->leftJoin(DB::raw('orcamentos orcamentos_sub'),  'orcamentos_sub.id', 'orcamentos.orcamento_que_substitui')
             ->leftJoin(DB::raw('insumos insumos_sub'), 'insumos_sub.id', 'orcamentos_sub.insumo_id')
             ->where('orcamentos.servico_id','=', DB::raw($this->servico_id))
@@ -185,7 +241,6 @@ class DetalhesServicosDataTable extends DataTable
             ->columns($this->getColumns())
             ->ajax('')
             ->parameters([
-                'responsive'=> 'true',
                 'initComplete' => 'function () {
                     recalcularAnaliseServico();
                     max = this.api().columns().count();
@@ -234,8 +289,9 @@ class DetalhesServicosDataTable extends DataTable
     private function getColumns()
     {
         return [
-            'Descrição_do_insumo' => ['name' => 'descricao', 'data' => 'descricao'],
-            'Und_de_medida' => ['name' => 'unidade_sigla', 'data' => 'unidade_sigla'],
+            'código' => ['name' => 'codigo', 'data' => 'codigo'],
+            'Descrição' => ['name' => 'descricao', 'data' => 'descricao'],
+            'Un&period;_de_medida' => ['name' => 'unidade_sigla', 'data' => 'unidade_sigla'],
             'Valor_previsto_no_orçamento' => ['name' => 'orcamentos.preco_total', 'data' => 'valor_previsto', 'searchable' => false],
             'Valor_comprometido_realizado' => ['name' => 'valor_realizado', 'data' => 'valor_realizado', 'searchable' => false],
             'Valor_comprometido_à_gastar' => ['name' => 'valor_comprometido_a_gastar', 'data' => 'valor_comprometido_a_gastar', 'searchable' => false, 'orderable' => false],

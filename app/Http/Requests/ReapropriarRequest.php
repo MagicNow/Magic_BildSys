@@ -26,11 +26,11 @@ class ReapropriarRequest extends FormRequest
     {
         return [
             'qtd'          => 'required',
-            'grupo_id'     => 'required',
-            'subgrupo1_id' => 'required',
-            'subgrupo2_id' => 'required',
-            'subgrupo3_id' => 'required',
-            'servico_id'   => 'required',
+//            'grupo_id'     => 'required',
+//            'subgrupo1_id' => 'required',
+//            'subgrupo2_id' => 'required',
+//            'subgrupo3_id' => 'required',
+//            'servico_id'   => 'required',
         ];
     }
 
@@ -38,7 +38,7 @@ class ReapropriarRequest extends FormRequest
     {
         return [
             'qtd.required' => 'A quantidade para reapropriação é obrigatória',
-            '*.required' => 'Por favor, selecione todos os grupos da reaproriação',
+//            '*.required' => 'Por favor, selecione todos os grupos da reaproriação',
         ];
     }
 }

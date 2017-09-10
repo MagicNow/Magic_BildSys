@@ -93,9 +93,3 @@
     {{ $contrato->status->nome }}
 </small>
 
-@if($contrato->contrato_status_id == 5 && $contrato->hasServico() )
-    <a href="{{ Storage::url($contrato->arquivo) }}" download="contrato_{{ $contrato->id }}.pdf" target="_blank"
-        class="btn btn-lg btn-flat btn-success pull-right" title="Imprimir Contrato assinado pelo fornecedor">
-        <i class="fa fa-print"></i>
-    </a>
-@endif

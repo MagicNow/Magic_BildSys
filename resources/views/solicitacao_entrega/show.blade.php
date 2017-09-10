@@ -55,6 +55,15 @@
                 </span>
             </p>
         </div>
+
+        @if($entrega->anexo)
+            <div class="col-md-4 form-group">
+                <label>Anexo</label>
+                <p class="form-control input-lg">
+                    <a href="{!! Storage::url($entrega->anexo) !!}" download="">Baixar anexo</a>
+                </p>
+            </div>
+        @endif
     </div>
 
     <div class="panel panel-default panel-normal-table">
@@ -80,6 +89,7 @@
         </div>
     </div>
 </div>
+
 <div class="hidden">
     {!! Form::select('motivo', $motivos, null, ['id' => 'motivo']) !!}
 </div>

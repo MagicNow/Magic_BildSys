@@ -7,7 +7,7 @@ use App\Http\Requests\Admin;
 use App\Http\Requests\Admin\CreateCarteiraRequest;
 use App\Http\Requests\Admin\UpdateCarteiraRequest;
 use App\Models\CarteiraUser;
-use App\Models\User;
+use App\Models\TipoEqualizacaoTecnica;
 use App\Repositories\Admin\CarteiraRepository;
 use App\Repositories\CodeRepository;
 use Flash;
@@ -23,9 +23,12 @@ class CarteiraController extends AppBaseController
     /** @var  CarteiraRepository */
     private $carteiraRepository;
 
-    public function __construct(CarteiraRepository $carteiraRepo)
+    private $userRepository;
+
+    public function __construct(CarteiraRepository $carteiraRepo, UserRepository $userRepository)
     {
         $this->carteiraRepository = $carteiraRepo;
+        $this->userRepository = $userRepository;
     }
 
     /**
@@ -49,7 +52,11 @@ class CarteiraController extends AppBaseController
         $relacionadoUsers = [];    
 		$relacionadoTipoEqualizacaoTecnicas = [];
 
-        return view('admin.carteiras.create', compact('relacionadoUsers'), compact('relacionadoTipoEqualizacaoTecnicas'));
+        $equalizacoesTecnicas = TipoEqualizacaoTecnica::pluck('nome', 'id')->all();
+
+        $usuarios = $this->userRepository->getUsersByType(2)->pluck('name', 'id')->toArray(); // suprimentos
+
+        return view('admin.carteiras.create', compact('relacionadoUsers'), compact('relacionadoTipoEqualizacaoTecnicas', 'equalizacoesTecnicas', 'usuarios'));
     }
 
     /**
@@ -129,8 +136,13 @@ class CarteiraController extends AppBaseController
 		$relacionadoTipoEqualizacaoTecnicas = $tipoEqualizacaoTecnicaRepository->tiposEqualizacaoTecnicasDaCarteira($id);
         $carteiraTipoEqualizacaoTecnicas = $relacionadoTipoEqualizacaoTecnicas->pluck('id')->all();
         $relacionadoTipoEqualizacaoTecnicas = $relacionadoTipoEqualizacaoTecnicas->pluck('nome', 'id')->all();
+
+        $equalizacoesTecnicas = TipoEqualizacaoTecnica::pluck('nome', 'id')->all();
+
+        $usuarios = $this->userRepository->getUsersByType(2)->pluck('name', 'id')->toArray(); // suprimentos
+
         
-        return view('admin.carteiras.edit', compact('carteira', 'relacionadoUsers', 'carteiraUsers' ,'relacionadoTipoEqualizacaoTecnicas', 'carteiraTipoEqualizacaoTecnicas'));
+        return view('admin.carteiras.edit', compact('carteira', 'relacionadoUsers', 'carteiraUsers' ,'relacionadoTipoEqualizacaoTecnicas', 'carteiraTipoEqualizacaoTecnicas', 'equalizacoesTecnicas', 'usuarios'));
     }
 
     /**

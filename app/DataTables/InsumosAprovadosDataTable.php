@@ -468,9 +468,9 @@ class InsumosAprovadosDataTable extends DataTable
     protected function getColumns()
     {
         return [
-            'Codigo' => ['name' => 'insumos.codigo', 'data' => 'codigo'],
+            'Código' => ['name' => 'insumos.codigo', 'data' => 'codigo'],
             'Descrição' => ['name' => 'insumos.nome', 'data' => 'insumo_nome'],
-            'Unidade_de_medida' => ['name' => 'unidade_sigla', 'data' => 'unidade_sigla'],
+            'Un&period;_de_medida' => ['name' => 'unidade_sigla', 'data' => 'unidade_sigla'],
             'obra' => ['name' => 'obras.nome', 'data' => 'obra'],
             'OC' => ['name' => 'ordem_de_compra_itens.ordem_de_compra_id', 'data' => 'ordem_de_compra_id'],
 //            'Codigo' => ['name' => 'ordem_de_compra_itens.codigo_insumo', 'data' => 'codigo_insumo'],

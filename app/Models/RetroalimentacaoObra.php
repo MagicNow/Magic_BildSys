@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -26,8 +27,9 @@ class RetroalimentacaoObra extends Model
     public $fillable = [
         'obra_id',
         'user_id',
+        'user_id_responsavel',
         'origem',
-        'categoria',
+        'categoria_id',
         'situacao_atual',
         'situacao_proposta',
         'acao',
@@ -35,7 +37,7 @@ class RetroalimentacaoObra extends Model
         'data_conclusao',
         'aceite',
         'resultado_obtido',
-        'status'
+        'status_id'
     ];
 
     /**
@@ -47,8 +49,9 @@ class RetroalimentacaoObra extends Model
         'id' => 'integer',
         'obra_id' => 'integer',
         'user_id' => 'integer',
+        'user_id_responsavel' => 'integer',
         'origem' => 'string',
-        'categoria' => 'string',
+        'categoria_id' => 'integer',
         'situacao_atual' => 'string',
         'situacao_proposta' => 'string',
         'acao' => 'string',
@@ -56,7 +59,7 @@ class RetroalimentacaoObra extends Model
         'data_conclusao' => 'date',
         'aceite' => 'integer',
         'resultado_obtido' => 'string',
-        'status' => 'string'
+        'status_id' => 'integer'
     ];
 
     /**
@@ -82,5 +85,45 @@ class RetroalimentacaoObra extends Model
     public function user()
     {
         return $this->belongsTo(\App\Models\User::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function categoria()
+    {
+        return $this->belongsTo(\App\Models\RetroalimentacaoObraCategoria::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function status()
+    {
+        return $this->belongsTo(\App\Models\RetroalimentacaoObraStatus::class);
+    }
+
+    public function setDataPrevistaAttribute($value){
+        if(strlen($value)){
+            if(strpos($value,'/')){
+                $this->attributes["data_prevista"] = Carbon::createFromFormat('d/m/Y', $value)->format('Y-m-d');
+            }else{
+                $this->attributes["data_prevista"] = $value;
+            }
+        }else{
+            $this->attributes["data_prevista"] = null;
+        }
+    }
+    
+    public function setDataConclusaoAttribute($value){
+        if(strlen($value)){
+            if(strpos($value,'/')){
+                $this->attributes["data_conclusao"] = Carbon::createFromFormat('d/m/Y', $value)->format('Y-m-d');
+            }else{
+                $this->attributes["data_conclusao"] = $value;
+            }
+        }else{
+            $this->attributes["data_conclusao"] = null;
+        }
     }
 }

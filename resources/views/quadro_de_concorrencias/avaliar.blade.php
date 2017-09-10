@@ -1,6 +1,11 @@
 @extends('layouts.front')
 
 @section('content')
+    <style type="text/css">
+        /*.table-nowrap>tr>td{*/
+            /*white-space: nowrap;*/
+        /*}*/
+    </style>
     <div class="row">
         <div class="col-sm-12">
             <section class="content-header">
@@ -8,20 +13,27 @@
                     <button type="button" class="btn btn-link" onclick="history.go(-1);">
                         <i class="fa fa-arrow-left" aria-hidden="true"></i>
                     </button>
-                    Avaliar Quadro de Concorrência
+                    @if($quadro->qc_status_id == 7)
+                    Avaliar
+                    @else
+                    Histórico do
+                    @endif
+                    Quadro de Concorrência
                     <small>
                         Rodada {{ $rodadaSelecionada }}
                     </small>
                 </h1>
-                <button class="btn btn-success btn-lg pull-right btn-flat"
-                        data-toggle="modal"
-                        data-target="#modal-finalizar">
-                    <i class="fa fa-trophy" aria-hidden="true"></i>
-                    Informar vencedor
-                    ou
-                    <i class="fa fa-refresh" aria-hidden="true"></i>
-                    Gerar nova rodada
-                </button>
+                @if($quadro->qc_status_id == 7)
+                    <button class="btn btn-success btn-lg pull-right btn-flat"
+                            data-toggle="modal"
+                            data-target="#modal-finalizar">
+                        <i class="fa fa-trophy" aria-hidden="true"></i>
+                        Informar vencedor
+                        ou
+                        <i class="fa fa-refresh" aria-hidden="true"></i>
+                        Gerar nova rodada
+                    </button>
+                @endif
             </section>
         </div>
     </div>
@@ -63,13 +75,74 @@
                     <i class="iconeExpandeEncolhe fa fa-minus"></i>
                 </button>
             </div>
-            <div class="box-body">
-                {!!
-                  $dataTable->table([
-                    'width' => '100%',
-                    'class' => 'table table-striped table-hover'
-                  ], true)
-                !!}
+            <div class="box-body text-right">
+
+                    <div class="table-responsive">
+                        <table id="fixTable" class="table table-bordered table-striped table-condensed table-nowrap">
+                            <thead>
+                            <tr>
+                                <th nowrap class="text-left">Insumo</th>
+                                <th nowrap class="text-center">Unidade</th>
+                                <th nowrap class="text-right">Quant.</th>
+                                <th nowrap colspan="2"  class="text-center">Orçamento</th>
+                                @foreach($qcFornecedores as $qcFornecedor)
+                                    <th colspan="2" nowrap class="text-center">
+                                        {{ $qcFornecedor->fornecedor->nome }}
+                                    </th>
+                                @endforeach
+                            </tr>
+
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th nowrap class="text-right">Vlr. Unitário</th>
+                                <th nowrap class="text-right">Vlr. Total</th>
+                                @foreach($qcFornecedores as $qcFornecedor)
+                                    <th nowrap class="text-right">Vlr. Unitário</th>
+                                    <th nowrap class="text-right">Vlr. Total</th>
+                                @endforeach
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <?php
+                                    $vl_total_orcamento = 0;
+                            ?>
+                            @foreach($itens as $item)
+                                @if($item['insumo']!='TOTAL')
+                                    <tr>
+                                        <td nowrap class="text-left">{{ $item['insumo'] }}</td>
+                                        <td nowrap class="text-center">{{ $item['unidade'] }}</td>
+                                        <td nowrap class="text-right">{{ $item['qntd do QC'] }}</td>
+                                        <td nowrap class="text-right">{{ $item['valor unitário do orçamento'] }}</td>
+                                        <td nowrap class="text-right">{{ $item['Valor total previsto'] }}</td>
+                                        <?php $vl_total_orcamento += doubleval($item['vl_total_orcamento']); ?>
+                                        @foreach($qcFornecedores as $qcFornecedor)
+                                            <td nowrap class="text-right">{{ isset($item[$qcFornecedor->id])? $item[$qcFornecedor->id]['unitario'] : '' }}</td>
+                                            <td nowrap class="text-right">{{ isset($item[$qcFornecedor->id])? $item[$qcFornecedor->id]['total']: '' }}</td>
+                                        @endforeach
+                                    </tr>
+                                @else
+                                    <tr class="warning">
+                                        <td colspan="4" class="text-left">TOTAL</td>
+                                        <td class="text-right">{{ float_to_money($vl_total_orcamento) }}</td>
+                                        @foreach($qcFornecedores as $qcFornecedor)
+                                            <td nowrap colspan="2" class="text-right">{{ isset($item[$qcFornecedor->id])? $item[$qcFornecedor->id] : '' }}</td>
+                                        @endforeach
+                                    </tr>
+                                @endif
+                            @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+
+                {{--{!!--}}
+                  {{--$dataTable->table([--}}
+                    {{--'width' => '100%',--}}
+                    {{--'class' => 'table table-striped table-hover',--}}
+                    {{--'style' => 'text-align: right;'--}}
+                  {{--], true)--}}
+                {{--!!}--}}
             </div>
         </div>
 
@@ -112,14 +185,15 @@
                                     }
                                 @endphp
                                 @foreach($qcFornecedores as $qcFornecedor)
-                                    <td class="{{ $classe_campo }}">
-                                        @php
-                                            $campo_extra_fornecedor = null;
-                                            if(strlen($qcFornecedor->campos_extras_contrato)){
-                                                $campos_extras_contrato = json_decode($qcFornecedor->campos_extras_contrato);
-                                                $campo_extra_fornecedor = isset($campos_extras_contrato->$v_tag)?$campos_extras_contrato->$v_tag:'';
-                                            }
-                                        @endphp
+                                @php
+                                    $campo_extra_fornecedor = null;
+                                    if(strlen($qcFornecedor->campos_extras_contrato)){
+                                        $campos_extras_contrato = json_decode($qcFornecedor->campos_extras_contrato);
+                                        $campo_extra_fornecedor = isset($campos_extras_contrato->$v_tag)?$campos_extras_contrato->$v_tag:'';
+                                    }
+                                @endphp
+                                    <td class="{{ $campo_extra_fornecedor? $classe_campo : 'text-center' }}">
+
                                         @if($campo_extra_fornecedor)
                                             {{ $campo_extra_fornecedor }}
                                             @else
@@ -226,6 +300,78 @@
                 </div>
             </div>
         @endif
+
+        {{--Demais condições--}}
+        @if(count($qcFornecedores))
+            <div class="box box-muted" id="box_demais_condicoes">
+                <div class="box-header with-border">
+                    <i class="fa fa-list-ul"></i>
+                    Demais condições
+                    <button type="button" class="btn btn-default btn-xs pull-right"
+                            onclick="expandeEncolhe('box_demais_condicoes');">
+                        <i class="iconeExpandeEncolhe fa fa-minus"></i>
+                    </button>
+                </div>
+                <div class="box-body">
+                    <table class="table table-striped table-condensed table-bordered table-hover">
+                        <thead>
+                        <tr>
+                            <th>Detalhes</th>
+                            @php
+                            $porcentagem_material = '';
+                            $porcentagem_servico = '';
+                            $porcentagem_faturamento_direto = '';
+                            $nf_material = '';
+                            $nf_servico = '';
+                            $nf_locacao = '';
+                            @endphp
+                            @foreach($qcFornecedores as $qcFornecedor)
+                                <th>
+                                    {{ $qcFornecedor->fornecedor->nome }}
+                                </th>
+
+                                @php
+                                    $porcentagem_material .= '<td>'.$qcFornecedor->porcentagem_material.' <span>%</span></td>';
+                                    $porcentagem_servico .= '<td>'.$qcFornecedor->porcentagem_servico.' <span>%</span></td>';
+                                    $porcentagem_faturamento_direto .= '<td>'.$qcFornecedor->porcentagem_faturamento_direto.' <span>%</span></td>';
+                                    $nf_material .= '<td>'.($qcFornecedor->nf_material ? '<span style="color:green">SIM</span>' : '<span style="color:red">NÃO</span>').'</td>';
+                                    $nf_servico .= '<td>'.($qcFornecedor->nf_servico   ? '<span style="color:green">SIM</span>' : '<span style="color:red">NÃO</span>').'</td>';
+                                    $nf_locacao .= '<td>'.($qcFornecedor->nf_locacao   ? '<span style="color:green">SIM</span>' : '<span style="color:red">NÃO</span>').'</td>';
+                                @endphp
+                            @endforeach
+                        </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="text-left">% Material</td>
+                                {!! $porcentagem_material !!}
+                            </tr>
+                            <tr>
+                                <td class="text-left">% Serviço</td>
+                                {!! $porcentagem_servico !!}
+                            </tr>
+                            <tr>
+                                <td class="text-left">% Faturamento Direto</td>
+                                {!! $porcentagem_faturamento_direto !!}
+                            </tr>
+                            <tr>
+                                <td class="text-left">NF Material</td>
+                                {!! $nf_material !!}
+                            </tr>
+                            <tr>
+                                <td class="text-left">NF Serviço</td>
+                                {!! $nf_servico !!}
+                            </tr>
+                            <tr>
+                                <td class="text-left">NF Locação</td>
+                                {!! $nf_locacao !!}
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        @endif
+
         {{-- Gráficos --}}
         <div class="row">
             <div class="col-md-12">
@@ -242,22 +388,24 @@
                                 </button>
                             </div>
                             <div class="box-body">
-                                <canvas id="chart-total-fornecedor"
-                                        data-labels="{{
-                                            $qcFornecedores
-                                              ->pluck('fornecedor')
-                                              ->flatten()
-                                              ->pluck('nome')
-                                              ->implode('||')
-                                            }}"
-                                        data-values="{{
-                                          $qcFornecedores
-                                            ->map(function($qcFornecedor) {
-                                              return $qcFornecedor->itens->sum('valor_total');
-                                            })
-                                            ->implode('||')
-                                          }}">
-                                </canvas>
+                                <div style="position: relative; height: 480px">
+                                    <canvas id="chart-total-fornecedor"
+                                            data-labels="{{
+                                                $qcFornecedores
+                                                  ->pluck('fornecedor')
+                                                  ->flatten()
+                                                  ->pluck('nome')
+                                                  ->implode('||')
+                                                }}"
+                                            data-values="{{
+                                              $qcFornecedores
+                                                ->map(function($qcFornecedor) {
+                                                  return $qcFornecedor->itens->sum('valor_total') + $qcFornecedor->getOriginal('valor_frete');
+                                                })
+                                                ->implode('||')
+                                              }}">
+                                    </canvas>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -279,7 +427,7 @@
                                         {!!
                                       Form::select(
                                         'insumo',
-                                        $quadro->itens->pluck('insumo')->flatten()->pluck('nome', 'id')->toArray(),
+                                        $quadro->itens->pluck('insumo')->flatten()->pluck('nome', 'id')->toArray()+ [4131=>'SER FRETE'],
                                         null,
                                         ['class' => 'select2 form-control', 'id' => 'insumo']
                                       )
@@ -297,9 +445,11 @@
                                         <canvas id="UgCanvas" width="40" height="12" style="border:1px solid red; background-color: red;"></canvas>
                                     </div>
                                 </div>
-                                <canvas id="chart-insumo-fornecedor"
-                                        data-data='{{ json_encode($ofertas) }}'>
-                                </canvas>
+                                <div style="position: relative; max-height: 420px">
+                                    <canvas id="chart-insumo-fornecedor"
+                                            data-data='{{ json_encode($ofertas) }}'>
+                                    </canvas>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -390,7 +540,6 @@
                                             {{ $qcFornecedor->fornecedor->nome }}
                                         </label>
                                     </div>
-
                                     <?php
                                     $qcFornecedorCount = $qcFornecedor->id;
                                     ?>
@@ -422,7 +571,9 @@
                             <table class="table table-striped table-align-middle">
                                 <thead>
                                 <tr>
-                                    <th>Insumos</th>
+                                    <th>Código</th>
+                                    <th>Descrição</th>
+                                    <th>Un. de medida</th>
                                     <th>Qtd</th>
                                     @foreach($qcFornecedores as $qcFornecedor)
                                         <th>
@@ -449,10 +600,17 @@
                                 <tbody>
                                 @foreach($quadro->itens as $item)
                                     <tr class="js-insumo-row">
-                                        <td class="text-left">{{ $item->insumo->nome }}</td>
+                                        <td class="text-left">
+                                            {{ $item->insumo->codigo }}
+                                        </td>
+                                        <td class="text-left">
+                                            {{ $item->insumo->nome }}
+                                        </td>
+                                        <td class="text-left">
+                                            {{ $item->insumo->unidade_sigla }}
+                                        </td>
                                         <td>
                                             {{ float_to_money($item->qtd, '') }}
-                                            {{ $item->insumo->unidade_sigla }}
                                         </td>
                                         @foreach($qcFornecedores as $qcFornecedor)
                                             @php
@@ -537,7 +695,7 @@
     <script type="text/javascript">
         window.urlEqualizacao = "/quadro-de-concorrencia/{{ $quadro->id }}/equalizacao-tecnica/";
 
-        var qtdFornecedores = parseInt({!! $qcFornecedorCount !!});
+        var qtdFornecedores = parseInt({!! (isset($qcFornecedorCount) ? $qcFornecedorCount : 0) !!});
         $(function () {
             $('#fornecedor').select2({
                 allowClear: true,
@@ -630,6 +788,9 @@
             });
 
             $('.icheck_destroy').iCheck('destroy');
+
+            $("#fixTable").tableHeadFixer({'left' : 3, 'head' : true});
+
         });
 
         function expandeEncolhe(qual) {

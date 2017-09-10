@@ -1,3 +1,4 @@
+@if(!isset($impressao))
 <div class="modal fade" id="modal-historico-{{ $item->id }}" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -16,7 +17,11 @@
                 </h4>
             </div>
             <div class="modal-body">
+@endif
                 @if($item->modificacoes->where('contrato_status_id', 2)->isNotEmpty())
+                    @if(isset($impressao))
+                        <h5 style="padding: 0px; margin: 0px;">Históricos de Alterações</h5>
+                    @endif
                     <table class="table table-striped table-condensed">
                         <thead>
                             <tr>
@@ -27,7 +32,7 @@
                             </tr>
                             <tr>
                                 {{--<th>id</th>--}}
-                                <th>Movimentação</th>
+                                <th>Alteração</th>
                                 <th>Qtd.</th>
                                 <th>Valor Unitário</th>
                                 <th>Qtd.</th>
@@ -60,7 +65,11 @@
                                         {{ float_to_money($modificacao['valor_unitario_atual'], '') }}
                                     </td>
                                     <td>
-                                        {{ float_to_money($modificacao['qtd_atual'] -  $modificacao['qtd_anterior'], '') }}
+                                        @if($modificacao->tipo_modificacao == \App\Models\ContratoItemModificacao::REAJUSTE_VALOR)
+                                            {{ float_to_money($modificacao['valor_unitario_atual'] - $modificacao['valor_unitario_anterior']) }}
+                                        @else
+                                            {{ float_to_money($modificacao['qtd_atual'] -  $modificacao['qtd_anterior'], '') }}
+                                        @endif
                                     </td>
                                     <td>
                                         @if($modificacao->anexo)
@@ -78,9 +87,13 @@
                         </tbody>
                     </table>
                 @else
+                    @if(!isset($impressao))
                     Item sem modificações
+                    @endif
                 @endif
+@if(!isset($impressao))
             </div>
         </div>
     </div>
 </div>
+@endif

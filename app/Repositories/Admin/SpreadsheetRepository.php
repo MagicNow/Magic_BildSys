@@ -13,10 +13,11 @@ use App\Models\Insumo;
 use App\Models\InsumoServico;
 use App\Models\Orcamento;
 use App\Models\Planejamento;
+use App\Models\CronogramaFisico;
+use App\Models\Levantamento;
 use App\Models\Planilha;
 use App\Models\Servico;
 use App\Models\TemplatePlanilha;
-use App\Models\TipoOrcamento;
 use App\Models\User;
 use App\Notifications\PlanilhaProcessamento;
 use Box\Spout\Common\Type;
@@ -79,7 +80,24 @@ class SpreadsheetRepository
                         $reader->setEndOfLineCharacter("\r");
                         $reader->setEncoding('UTF-8');
                     }
+                }elseif ($tipo == 'cronogramaFisico'){
+                    $reader = ReaderFactory::create(Type::XLSX);
+                    if(strtolower($spreadsheet['file']->getClientOriginalExtension())=='csv'){
+                        $reader = ReaderFactory::create(Type::CSV);
+                        $reader->setFieldDelimiter(';');
+                        $reader->setEndOfLineCharacter("\r");
+                        $reader->setEncoding('UTF-8');
+                    }
+                }elseif ($tipo == 'levantamento'){
+                    $reader = ReaderFactory::create(Type::XLSX);
+                    if(strtolower($spreadsheet['file']->getClientOriginalExtension())=='csv'){
+                        $reader = ReaderFactory::create(Type::CSV);
+                        $reader->setFieldDelimiter(';');
+                        $reader->setEndOfLineCharacter("\r");
+                        $reader->setEncoding('UTF-8');
+                    }
                 }
+				
                 $reader->open(str_replace('public','storage/app/',public_path()).$destinationPath);
 
                 $folha = 0;
@@ -96,14 +114,21 @@ class SpreadsheetRepository
                                 if($tipo == 'orcamento') {
                                     # Pegando as colunas que foi informado no MODEL orçamento variável = $relation
                                     $columns = Orcamento::$relation;
-
-
-
                                     # Retornando para o controller o $cabeçalho da planilha e $colunas do banco de dados.
                                     return ['cabecalho' => $cabecalho, 'colunas' => $columns, 'planilha_id'=> $planilha->id];
                                 }elseif($tipo == 'planejamento') {
                                     # Pegando as colunas que foi informado no MODEL orçamento variável = $relation
                                     $columns = Planejamento::$relation;
+                                    # Retornando para o controller o $cabeçalho da planilha e $colunas do banco de dados.
+                                    return ['cabecalho' => $cabecalho, 'colunas' => $columns, 'planilha_id'=> $planilha->id];
+                                }elseif($tipo == 'cronogramaFisico') {
+                                    # Pegando as colunas que foi informado no MODEL orçamento variável = $relation
+                                    $columns = CronogramaFisico::$relation;
+                                    # Retornando para o controller o $cabeçalho da planilha e $colunas do banco de dados.
+                                    return ['cabecalho' => $cabecalho, 'colunas' => $columns, 'planilha_id'=> $planilha->id];
+                                }elseif($tipo == 'levantamento') {
+                                    # Pegando as colunas que foi informado no MODEL orçamento variável = $relation
+                                    $columns = Levantamento::$relation;
                                     # Retornando para o controller o $cabeçalho da planilha e $colunas do banco de dados.
                                     return ['cabecalho' => $cabecalho, 'colunas' => $columns, 'planilha_id'=> $planilha->id];
                                 }
@@ -138,7 +163,11 @@ class SpreadsheetRepository
                 SpreadsheetRepository::orcamento($planilha);
             } elseif ($planilha->modulo == 'planejamento'){
                 SpreadsheetRepository::planejamento($planilha);
-            }
+            } elseif ($planilha->modulo == 'cronogramaFisico'){
+				SpreadsheetRepository::cronogramaFisico($planilha);
+			} elseif ($planilha->modulo == 'levantamento'){
+				SpreadsheetRepository::levantamento($planilha);
+			}
         }
 
     }
@@ -290,6 +319,19 @@ class SpreadsheetRepository
                                             'grupo_id' => $grupoPai->id
                                         ]);
                                     }
+                                }elseif(count($codigo_quebrado) == 1){
+                                    $grupo = Grupo::where('codigo', $final['codigo_insumo'])->first();
+                                    if(!$grupo){
+                                        $erro = 1;
+                                        $mensagens_erro[] = 'A ordem do template está incorreta<br>O
+                                            código completo encontrado foi '.'
+                                            "<span class="text-danger"> '.$final['codigo_insumo'].' </span>"';
+                                    }
+                                }else{
+                                    $erro = 1;
+                                    $mensagens_erro[] = 'A ordem do template está incorreta<br>O
+                                            código completo encontrado foi '.'
+                                            "<span class="text-danger"> '.$final['codigo_insumo'].' </span>"';
                                 }
                             } # se for serviço
                             elseif (count($codigo_quebrado) == 5) {
@@ -298,7 +340,7 @@ class SpreadsheetRepository
                                     if($servico->nome != $final['descricao']){
                                         $erro = 1;
                                         $mensagens_erro[] = 'Já existe o grupo '.'
-                                            <span style="color:orange">'.$servico->codigo.' - '.$servico->nome.'</span>
+                                            <span style="color:orange">'.$servico->codigo.' - '.$servico->nome.'</span> <br>
                                             e você tentou inserir '.'
                                             "<span style="color:red">'.$final['codigo_insumo'].' - '.$final['descricao'].'</span>"';
                                     }
@@ -446,7 +488,17 @@ class SpreadsheetRepository
 
         $user = User::find($final['user_id']);
         if($user){
-            $user->notify(new PlanilhaProcessamento(['success'=>!count($mensagens_erro),'error'=>array_unique($mensagens_erro)]));
+            if(count($mensagens_erro)){
+                $erros_txt = implode('<br>', $mensagens_erro);
+            }
+            $user->notify(new PlanilhaProcessamento([
+                'message'=>!count($mensagens_erro)?
+                    'Planilha '.$planilha->id.'Importada com sucesso'
+                    :
+                    'Ocorreram erros ao importar a planilha '.$planilha->id.':<br>'.
+                    $erros_txt
+                ,
+                'link'=>'#']));
         }
     }
 
@@ -588,7 +640,321 @@ class SpreadsheetRepository
 
         $user = User::find($final['user_id']);
         if($user){
-            $user->notify(new PlanilhaProcessamento(['success'=>!count($mensagens_erro),'error'=>array_unique($mensagens_erro)]));
+            if(count($mensagens_erro)){
+                $erros_txt = implode('<br>', $mensagens_erro);
+            }
+            
+            $user->notify(new PlanilhaProcessamento([
+                'message'=>!count($mensagens_erro)?
+                    'Planilha '.$planilha->id.'Importada com sucesso'
+                    :
+                    'Ocorreram erros ao importar a planilha '.$planilha->id.':<br>'.
+                    $erros_txt
+                ,
+                'link'=>'#']));
         }
     }
+	
+	public static function cronogramaFisico($planilha){
+		
+        $line = 1;
+        if(strtolower(substr($planilha->arquivo,-3,3)) =='csv'){
+            $reader = ReaderFactory::create(Type::CSV);
+            $reader->setFieldDelimiter(';');
+            $reader->setEndOfLineCharacter("\r");
+            $reader->setEncoding('UTF-8');
+        }else{
+            $reader = ReaderFactory::create(Type::XLSX);
+        }
+
+        $reader->setShouldFormatDates(true);
+        $reader->open(str_replace('public','storage/app/',public_path()).$planilha->arquivo);
+
+        $folha = 0;
+        $erro = 0;
+        $mensagens_erro = [];
+        $final = [];
+        \DB::beginTransaction();
+
+        foreach ($reader->getSheetIterator() as $sheet) {
+            if ($folha === 0) {
+                $linha = 0;
+                foreach ($sheet->getRowIterator() as $row) {
+                    $linha++;
+                    if ($linha > 1) {
+                        $line++;
+
+                        $colunas = json_decode($planilha->colunas_json);
+//                        dd($colunas);
+                        foreach ($colunas as $chave => $value) {
+                            if($value) {
+                                if($row[$chave]) {
+                                    switch (CronogramaFisico::$relation[$value]) {
+                                        case 'string' :
+                                            if (is_string($row[$chave])) {
+                                                $final[$value] = $row[$chave];
+                                            } else {
+                                                if ($row[$chave]) {
+                                                    $final[$value] = (string)($row[$chave]);
+                                                } else {
+                                                    $erro = 1;
+                                                    $mensagens_erro[] = 'O campo ' . $value . ' não é do tipo STRING';;
+                                                }
+                                            }
+                                            break;
+
+                                        case 'decimal' :
+                                            if (is_float($row[$chave])) {
+                                                $final[$value] = str_replace(",",".",$row[$chave]);
+                                            } else {
+                                                if ($row[$chave]) {
+                                                    $final[$value] =  floatval(str_replace(",", ".", str_replace(".", "", $row[$chave])));
+                                                } else {
+                                                    $erro = 1;
+                                                    $mensagens_erro[] = 'O campo ' . $value . ' não é do tipo DECIMAL';
+                                                }
+                                            }
+                                            break;
+
+                                        case 'integer' :
+                                            if (is_int($row[$chave])) {
+                                                $final[$value] = $row[$chave];
+                                            } else {
+                                                if ($row[$chave]) {
+                                                    $final[$value] = (int)($row[$chave]);
+                                                } else {
+                                                    $erro = 1;
+                                                    $mensagens_erro[] = 'O campo ' . $value . ' não é do tipo INTEGER';
+//                                                $mensagens_erro[] = 'LINHA:'.$line.' - O campo '.$value.' não é do tipo INTEGER';
+                                                }
+                                            }
+                                            break;
+                                        case 'date' :
+                                            $data_array = explode('/',$row[$chave]);
+                                            if(count($data_array)==3){
+                                                if($data_array[0] > 12){
+                                                    $final[$value] = $data_array[2].'-'.$data_array[1].'-'.$data_array[0];
+                                                } else {
+                                                    $final[$value] = $data_array[2] . '-' . $data_array[0] . '-' . $data_array[1];
+                                                }
+                                            }else{
+                                                $erro = 1;
+                                                $mensagens_erro[] = 'O campo ' . $value . ' não é do tipo DATE';
+                                            }
+                                            break;
+                                        default:
+                                            $final[$value] = $row[$chave];
+                                            break;
+                                    }
+                                }
+                            }
+                            $parametros = json_decode($planilha->parametros_json);
+                            foreach ($parametros as $indice => $valor) {
+                                $final[$indice] = $valor;
+                            }
+
+                        }						
+
+                        # save data table budget
+                        if($erro == 0) {							
+                            CronogramaFisico::updateOrCreate(
+                              [								
+								#restritos
+                                  'obra_id' => $final['obra_id'],
+								  'resumo' => $final['resumo'],                                  
+								  'torre' => $final['torre'],
+								  'pavimento' => $final['pavimento'],								  
+								  'tarefa' => $final['tarefa'],
+								  'template_id' => $final['template_id']
+                              ],
+                              [
+								#variaveis
+                                  'user_id' => $final['user_id'], 								  
+								  'custo' => $final['custo'],
+								  'critica' => $final['critica'],
+								  'concluida' => $final['concluida']*100,
+                                  'data_inicio' => $final['data_inicio'],
+                                  'data_termino' => $final['data_termino'],
+                                  'data_upload' => date('Y-m-d')
+                              ]
+                            );
+                            //CronogramaFisico::create($final);
+                        }else{
+                            // estourar loop
+                            $erro = 1;
+                            break;
+                        }
+                    }
+                }
+            }
+            $folha++;
+        }
+
+        # finish transaction
+        if($erro == 0) {
+            \DB::commit();
+        }else{
+            \DB::rollBack();
+        }
+        # close reader
+        $reader->close();
+
+        $user = User::find($final['user_id']);
+        if($user){
+            $user->notify(new PlanilhaProcessamento(['success'=>!count($mensagens_erro),'error'=>array_unique($mensagens_erro)]));
+        }
+	}
+	
+	public static function levantamento($planilha){
+		
+        $line = 1;
+        if(strtolower(substr($planilha->arquivo,-3,3)) =='csv'){
+            $reader = ReaderFactory::create(Type::CSV);
+            $reader->setFieldDelimiter(';');
+            $reader->setEndOfLineCharacter("\r");
+            $reader->setEncoding('UTF-8');
+        }else{
+            $reader = ReaderFactory::create(Type::XLSX);
+        }
+
+        $reader->setShouldFormatDates(true);
+        $reader->open(str_replace('public','storage/app/',public_path()).$planilha->arquivo);
+
+        $folha = 0;
+        $erro = 0;
+        $mensagens_erro = [];
+        $final = [];
+        \DB::beginTransaction();
+
+        foreach ($reader->getSheetIterator() as $sheet) {
+            if ($folha === 0) {
+                $linha = 0;
+                foreach ($sheet->getRowIterator() as $row) {
+                    $linha++;
+                    if ($linha > 1) {
+                        $line++;
+
+                        $colunas = json_decode($planilha->colunas_json);
+//                        dd($colunas);
+                        foreach ($colunas as $chave => $value) {
+                            if($value) {
+                                if($row[$chave]) {
+                                    switch (Levantamento::$relation[$value]) {
+                                        case 'string' :
+                                            if (is_string($row[$chave])) {
+                                                $final[$value] = $row[$chave];
+                                            } else {
+                                                if ($row[$chave]) {
+                                                    $final[$value] = (string)($row[$chave]);
+                                                } else {
+                                                    $erro = 1;
+                                                    $mensagens_erro[] = 'O campo ' . $value . ' não é do tipo STRING';;
+                                                }
+                                            }
+                                            break;
+
+                                        case 'decimal' :
+                                            if (is_float($row[$chave])) {
+                                                $final[$value] = str_replace(",",".",$row[$chave]);
+                                            } else {
+                                                if ($row[$chave]) {
+                                                    $final[$value] =  floatval(str_replace(",", ".", str_replace(".", "", $row[$chave])));
+                                                } else {
+                                                    $erro = 1;
+                                                    $mensagens_erro[] = 'O campo ' . $value . ' não é do tipo DECIMAL';
+                                                }
+                                            }
+                                            break;
+
+                                        case 'integer' :
+                                            if (is_int($row[$chave])) {
+                                                $final[$value] = $row[$chave];
+                                            } else {
+                                                if ($row[$chave]) {
+                                                    $final[$value] = (int)($row[$chave]);
+                                                } else {
+                                                    $erro = 1;
+                                                    $mensagens_erro[] = 'O campo ' . $value . ' não é do tipo INTEGER';
+//                                                $mensagens_erro[] = 'LINHA:'.$line.' - O campo '.$value.' não é do tipo INTEGER';
+                                                }
+                                            }
+                                            break;
+                                        case 'date' :
+                                            $data_array = explode('/',$row[$chave]);
+                                            if(count($data_array)==3){
+                                                if($data_array[0] > 12){
+                                                    $final[$value] = $data_array[2].'-'.$data_array[1].'-'.$data_array[0];
+                                                } else {
+                                                    $final[$value] = $data_array[2] . '-' . $data_array[0] . '-' . $data_array[1];
+                                                }
+                                            }else{
+                                                $erro = 1;
+                                                $mensagens_erro[] = 'O campo ' . $value . ' não é do tipo DATE';
+                                            }
+                                            break;
+                                        default:
+                                            $final[$value] = $row[$chave];
+                                            break;
+                                    }
+                                }
+                            }
+                            $parametros = json_decode($planilha->parametros_json);
+                            foreach ($parametros as $indice => $valor) {
+                                $final[$indice] = $valor;
+                            }
+
+                        }		
+
+                        # save data table budget
+                        if($erro == 0) {							
+                            Levantamento::updateOrCreate(
+                              [								
+								#restritos
+                                  'obra_id' => $final['obra_id'],
+								  'apropriacao' => $final['apropriacao'],                                  
+								  'insumo' => $final['insumo'],
+								  'torre' => $final['torre'],								  
+								  'andar' => $final['andar'],
+								  'pavimento' => $final['pavimento'],
+								  'trecho' => $final['trecho'],
+								  'apartamento' => $final['apartamento'],
+								  'comodo' => $final['comodo'],
+								  'parede' => $final['parede'],
+								  'trecho_parede' => $final['trecho_parede'],
+								  'personalizavel' => $final['personalizavel']								  								  							 
+                              ],
+                              [
+								#variaveis
+                                  'user_id' => $final['user_id'], 								  								  
+								  'quantidade' => $final['quantidade'],
+								  'perda' => $final['perda'],
+                                  'data_upload' => date('Y-m-d')
+                              ]
+                            );
+                            //CronogramaFisico::create($final);
+                        }else{
+                            // estourar loop
+                            $erro = 1;
+                            break;
+                        }
+                    }
+                }
+            }
+            $folha++;
+        }
+
+        # finish transaction
+        if($erro == 0) {
+            \DB::commit();
+        }else{
+            \DB::rollBack();
+        }
+        # close reader
+        $reader->close();
+
+        $user = User::find($final['user_id']);
+        if($user){
+            $user->notify(new PlanilhaProcessamento(['success'=>!count($mensagens_erro),'error'=>array_unique($mensagens_erro)]));
+        }
+	}
 }

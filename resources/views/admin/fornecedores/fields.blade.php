@@ -180,6 +180,15 @@
   </div>
 </div>
 
+<div class="col-md-12">
+    <h3>Serviços prestados pelo fornecedor:</h3>
+</div>
+<div class="form-group col-md-12">
+    {!! Form::label('servicos', 'Serviços:') !!}
+    {!! Form::select('servicos[]', $servicos, (!isset($fornecedores)? null : $servicos_fornecedor),
+    ['class' => 'form-control select2', 'required'=>'required', 'multiple'=>'multiple']) !!}
+</div>
+
 <!-- Submit Field -->
 <div class="form-group col-sm-12">
     {!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save') ), ['class' => 'btn btn-success btn-flat btn-lg pull-right', 'type'=>'submit']) !!}
@@ -289,7 +298,6 @@
                     $('.overlay').remove();
                 });
             }
-
         }
     </script>
 @endsection
