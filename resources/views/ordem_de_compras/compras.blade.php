@@ -284,9 +284,14 @@
                 queryString +='exibir_por_tarefa=' + exibir_por_tarefa;
             }
 
-            calendar.setOptions({events_source: '{{ url('lembretes') }}' + queryString});
+            if(queryString ) {
+                if(!calendar) {
+                    renderCalendar();
+                }
 
-            calendar.view();
+                calendar.setOptions({events_source: '{{ url('lembretes') }}' + queryString});
+                calendar.view();
+            }
 
             history.pushState("", document.title, location.pathname+queryString);
             window.LaravelDataTables["dataTableBuilder"].draw();
@@ -295,55 +300,7 @@
         }
 
         $(function () {
-            var calendarOptions = {
-              language: 'pt-BR',
-              view: 'month',
-              tmpl_path: 'tmpls/',
-              tmpl_cache: false,
-              day: 'now',
-              onAfterEventsLoad: function (events) {
-                if (!events) {
-                  return;
-                }
-                var list = $('#eventlist');
-                list.html('');
-              },
-              onAfterViewLoad: function (view) {
-                $('.page-header h3').text(this.getTitle());
-                $('.btn-group button').removeClass('active');
-                $('button[data-calendar-view="' + view + '"]').addClass('active');
-              },
-              classes: {
-                months: {
-                  general: 'label'
-                }
-              },
-              weekbox: false,
-              events_source: '/lembretes'
-            };
-
-            var $exibirPorTarefa = $('#exibir_por_tarefa');
-
-            calendar = $('#calendar').calendar(calendarOptions);
-
-            $exibirPorTarefa.on('change ifToggled', function(event) {
-              var isChecked = $exibirPorTarefa.prop('checked');
-              var date = calendar.options.position.start.toISOString().split('T')[0];
-
-              calendar = $('#calendar').calendar(Object.assign(calendarOptions, {
-                events_source: '/lembretes?exibir_por_tarefa=' + (+isChecked),
-                day: date
-              }));
-
-              LaravelDataTables.dataTableBuilder.ajax.url(
-                location.pathname + '?exibir_por_tarefa=' + (+isChecked)
-              );
-              LaravelDataTables.dataTableBuilder.draw();
-              LaravelDataTables.dataTableBuilder.one('draw.dt', function() {
-                LaravelDataTables.dataTableBuilder.column('grupo:name').visible(!isChecked);
-              });
-
-            });
+            history.pushState("", document.title, location.pathname);
 
             $('.btn-group button[data-calendar-nav]').each(function () {
                 var $this = $(this);
@@ -375,5 +332,57 @@
                 });
             });
         });
+
+        function renderCalendar() {
+            var calendarOptions = {
+                language: 'pt-BR',
+                view: 'month',
+                tmpl_path: 'tmpls/',
+                tmpl_cache: false,
+                day: 'now',
+                onAfterEventsLoad: function (events) {
+                    if (!events) {
+                        return;
+                    }
+                    var list = $('#eventlist');
+                    list.html('');
+                },
+                onAfterViewLoad: function (view) {
+                    $('.page-header h3').text(this.getTitle());
+                    $('.btn-group button').removeClass('active');
+                    $('button[data-calendar-view="' + view + '"]').addClass('active');
+                },
+                classes: {
+                    months: {
+                        general: 'label'
+                    }
+                },
+                weekbox: false,
+                events_source: '/lembretes'
+            };
+
+            var $exibirPorTarefa = $('#exibir_por_tarefa');
+
+            calendar = $('#calendar').calendar(calendarOptions);
+
+            $exibirPorTarefa.on('change ifToggled', function(event) {
+                var isChecked = $exibirPorTarefa.prop('checked');
+                var date = calendar.options.position.start.toISOString().split('T')[0];
+
+                calendar = $('#calendar').calendar(Object.assign(calendarOptions, {
+                    events_source: '/lembretes?exibir_por_tarefa=' + (+isChecked),
+                    day: date
+                }));
+
+                LaravelDataTables.dataTableBuilder.ajax.url(
+                        location.pathname + '?exibir_por_tarefa=' + (+isChecked)
+                );
+                LaravelDataTables.dataTableBuilder.draw();
+                LaravelDataTables.dataTableBuilder.one('draw.dt', function() {
+                    LaravelDataTables.dataTableBuilder.column('grupo:name').visible(!isChecked);
+                });
+
+            });
+        }
     </script>
 @stop
