@@ -23,7 +23,7 @@ class AlterCatalogoContratrosTable extends Migration
         });
 
         Schema::table('ordem_de_compra_itens', function (Blueprint $table) {
-            $table->dropForeign('ordem_de_compra_itens_sugestao_contrato_id_foreign');
+//            $table->dropForeign('ordem_de_compra_itens_sugestao_contrato_id_foreign');
             $table->dropColumn('sugestao_contrato_id');
         });
 

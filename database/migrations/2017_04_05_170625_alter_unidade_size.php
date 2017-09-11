@@ -49,10 +49,7 @@ class AlterUnidadeSize extends Migration
      */
     public function down()
     {
-        Schema::table('unidades', function (Blueprint $table){
-            $table->string('sigla',5)->change();
-        });
-
+        
         Schema::table('insumos', function (Blueprint $table){
             $table->string('unidades_sigla',5);
             $table->dropForeign(['unidade_sigla']);
@@ -63,6 +60,11 @@ class AlterUnidadeSize extends Migration
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
         });
+        
+        Schema::table('unidades', function (Blueprint $table){
+            $table->string('sigla',5)->change();
+        });
+
         Schema::table('ordem_de_compra_itens', function (Blueprint $table){
             $table->string('unidades_sigla',5)->change();
 
