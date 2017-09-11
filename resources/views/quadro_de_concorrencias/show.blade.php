@@ -110,6 +110,10 @@
                         </a>
                     @endif
                 @endshield
+            @elseif($quadroDeConcorrencia->qc_status_id>7 && $quadroDeConcorrencia->temOfertas())
+                <a href="{{ route('quadroDeConcorrencia.avaliar', $quadroDeConcorrencia->id) }}" class="btn btn-lg btn-primary btn-flat" title="Avaliar Quadro de Concorrência">
+                    <i class="glyphicon glyphicon-ok"></i> Histórico de propostas
+                </a>
             @endif
         </h1>
     </section>

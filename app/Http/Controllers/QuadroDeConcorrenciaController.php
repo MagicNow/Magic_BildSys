@@ -383,7 +383,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
             return redirect(route('quadroDeConcorrencias.index'));
         }
 
-        if ($quadro->qc_status_id != 7) {
+        if ($quadro->qc_status_id < 7 ) {
             Flash::error('Quadro De Concorrencia deve estar EM CONCORRÊNCIA para ser avaliado!');
 
             return redirect(route('quadroDeConcorrencias.index'));
@@ -435,6 +435,100 @@ class QuadroDeConcorrenciaController extends AppBaseController
             ->collapse()
             ->all();
 
+        $collection = $quadro->itens->map(function($item) {
+            return [
+                'insumo' => $item->insumo->nome,
+                'unidade' => $item->insumo->unidade_sigla,
+                'qntd do QC' => '',
+                'insumo_id' => $item->insumo->id,
+                'qc_item_id' => $item->id,
+                'valor_unitario_calculo' => $item->ordemDeCompraItens->sortBy('valor_unitario')->first() ? $item->ordemDeCompraItens->sortBy('valor_unitario')->first()->valor_unitario : 'R$ 0,00',
+                'valor unitário do orçamento' => $item->ordemDeCompraItens->sortBy('valor_unitario')->first() ? float_to_money(floatval($item->ordemDeCompraItens->sortBy('valor_unitario')->first()->valor_unitario)) : 'R$ 0,00',
+                'Valor total previsto' => '',
+                'vl_total_orcamento' => 0
+            ];
+        });
+
+        $collection->push([
+            'insumo'  => 'FRETE',
+            'unidade'  => '',
+            'qntd do QC'  => '',
+            'insumo_id' => '',
+            'qc_item_id' => '',
+            'valor_unitario_calculo' => '',
+            'valor unitário do orçamento' => '',
+            'Valor total previsto' => '',
+            'vl_total_orcamento' => 0
+        ]);
+
+        $collection->push([
+            'insumo'  => 'TOTAL',
+            'unidade'  => '',
+            'qntd do QC'  => '',
+            'insumo_id' => '',
+            'qc_item_id' => '',
+            'valor_unitario_calculo' => '',
+            'valor unitário do orçamento' => '',
+            'Valor total previsto' => '',
+            'vl_total_orcamento' => 0
+        ]);
+
+        $itens = $collection->map(function($insumo) use ($quadro) {
+            $quadro->qcFornecedores->each(function($qcFornecedor) use (&$insumo) {
+                if($insumo['insumo'] != 'TOTAL'){
+
+                    $item_fornecedor = $qcFornecedor->itens
+                        ->where('qc_item_id', $insumo['qc_item_id'])
+                        ->first();
+
+                    $valor_unitario = $item_fornecedor ? float_to_money($item_fornecedor->valor_unitario) : '<span style="color:red">DECLINED</span>';
+                    $valor = $item_fornecedor ? float_to_money($item_fornecedor->valor_total) : '<span style="color:red">DECLINED</span>';
+                    $qtd_comprada = $item_fornecedor ? $item_fornecedor->qtd : 0;
+
+                    $insumoValorUnitario = $insumo['valor_unitario_calculo'];
+                    if(!$insumoValorUnitario){
+                        $insumoValorUnitario = 0;
+                    }
+                    $valor_frete = $qcFornecedor->valor_frete ? $qcFornecedor->valor_frete : 0;
+                    $valor_comprado_oi = doubleval($insumo['valor_unitario_calculo']) * $qtd_comprada;
+                    if($qcFornecedor->fornecedor) {
+                        if(!$qcFornecedor->desistencia_motivo_id || !$qcFornecedor->desistencia_texto) {
+                            $insumo[$qcFornecedor->id]['unitario'] = $valor_unitario ;
+                            $insumo[$qcFornecedor->id]['total'] = $valor;
+                            if($insumo['insumo'] === 'FRETE') {
+                                $insumo[$qcFornecedor->id]['unitario'] = '';
+                                $insumo[$qcFornecedor->id]['total'] = 'R$ '. $valor_frete;
+                            }
+                        }else{
+                            if($insumo['insumo'] != 'FRETE') {
+                                $insumo[$qcFornecedor->id]['unitario'] = '<span style="color:red">DECLINED</span>';
+                                $insumo[$qcFornecedor->id]['total'] = '<span style="color:red">DECLINED</span>';
+                            } else {
+                                $insumo[$qcFornecedor->id] = null;
+                            }
+                        }
+                    }
+                    $insumo['qntd do QC'] =  number_format($qtd_comprada, 2, ',', '.');
+                    $insumo['Valor total previsto'] = float_to_money($valor_comprado_oi);
+                    $insumo['vl_total_orcamento'] = $valor_comprado_oi;
+                    if($insumo['insumo'] === 'FRETE') {
+                        $insumo['qntd do QC'] = '';
+                        $insumo['Valor total previsto'] = '';
+                        $insumo['valor unitário do orçamento'] = '';
+                    }
+                }else{
+                    $insumo['qntd do QC'] = '';
+                    $insumo['Valor total previsto'] = '';
+                    $insumo['valor unitário do orçamento'] = '';
+                    $insumo[$qcFornecedor->id] = float_to_money( $qcFornecedor->itens->sum('valor_total')+
+                        doubleval($qcFornecedor->valor_frete) );
+                }
+            });
+//            dd($insumo);
+            return $insumo;
+        });
+
+
         $fretes = $quadro->itens->reduce(function ($fretes, $item) use ($qcFornecedores) {
             $fretes[] = $qcFornecedores
                 ->filter(function ($qcFornecedor) use ($item) {
@@ -464,7 +558,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
             ->setQcFornecedores($qcFornecedores)
             ->render(
                 'quadro_de_concorrencias.avaliar',
-                compact('qcFornecedores', 'quadro', 'ofertas', 'rodadaSelecionada', 'equalizacoes', 'campos_extras')
+                compact('qcFornecedores', 'quadro', 'ofertas', 'rodadaSelecionada', 'equalizacoes', 'campos_extras', 'itens')
             );
     }
 

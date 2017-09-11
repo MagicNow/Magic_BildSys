@@ -19,13 +19,20 @@ class LembretesHomeDataTable extends DataTable
      */
     public function ajax()
     {
-        if (!$this->request()->exibir_por_tarefa) {
-            return $this->datatables
-                ->eloquent($this->query())
-                ->editColumn('action', 'ordem_de_compras.lembretes_home_datatables_actions')
-                ->filterColumn('inicio', function ($query, $keyword) {
-                    if (strrpos($keyword, '-') === false) {
-                        $query->whereRaw("DATE_FORMAT(DATE_SUB(planejamentos.data, INTERVAL (
+        // Se veio algum filtro, caso contrário não retorna nenhum dado
+        if (
+            $this->request()->get('obra_id') ||
+            $this->request()->get('planejamento_id') ||
+            $this->request()->get('insumo_grupo_id') ||
+            $this->request()->get('carteira_id')
+        ) {
+            if (!$this->request()->exibir_por_tarefa) {
+                return $this->datatables
+                    ->eloquent($this->query())
+                    ->editColumn('action', 'ordem_de_compras.lembretes_home_datatables_actions')
+                    ->filterColumn('inicio', function ($query, $keyword) {
+                        if (strrpos($keyword, '-') === false) {
+                            $query->whereRaw("DATE_FORMAT(DATE_SUB(planejamentos.data, INTERVAL (
                         IFNULL(
                             (
                                 SELECT
@@ -65,16 +72,16 @@ class LembretesHomeDataTable extends DataTable
                             0
                         )
                     ) DAY),'%d/%m/%Y') like ?", ["%$keyword%"]);
-                    } else {
-                        $range = explode('-', $keyword);
-                        $inicio_array = explode('/', trim($range[0]));
-                        $fim_array = explode('/', trim($range[1]));
+                        } else {
+                            $range = explode('-', $keyword);
+                            $inicio_array = explode('/', trim($range[0]));
+                            $fim_array = explode('/', trim($range[1]));
 
-                        if (count($inicio_array) == 3 && count($fim_array) == 3) {
-                            $inicio = $inicio_array[2] . '-' . $inicio_array[1] . '-' . $inicio_array[0];
-                            $fim = $fim_array[2] . '-' . $fim_array[1] . '-' . $fim_array[0];
+                            if (count($inicio_array) == 3 && count($fim_array) == 3) {
+                                $inicio = $inicio_array[2] . '-' . $inicio_array[1] . '-' . $inicio_array[0];
+                                $fim = $fim_array[2] . '-' . $fim_array[1] . '-' . $fim_array[0];
 
-                            $query->whereRaw("DATE(DATE_SUB(planejamentos.data, INTERVAL (
+                                $query->whereRaw("DATE(DATE_SUB(planejamentos.data, INTERVAL (
                         IFNULL(
                             (
                                 SELECT
@@ -115,21 +122,20 @@ class LembretesHomeDataTable extends DataTable
                         )
                     ) DAY)
                     ) BETWEEN ? AND ?", [$inicio, $fim]);
+                            }
                         }
-                    }
-                })
-                ->editColumn('inicio', function ($obj) {
-                    if ($obj->dias < 0) {
-                        $alerta = "danger";
-                    } elseif ($obj->dias > 30) {
-                        $alerta = "success";
-                    } else {
-                        $alerta = "warning";
-                    }
-                    return '<span class="text-' . $alerta . '"> ' . $obj->inicio . '</span>';
-                })
-                
-				->orderColumn('inicio', 'DATE_FORMAT(DATE_SUB(planejamentos.data, INTERVAL (
+                    })
+                    ->editColumn('inicio', function ($obj) {
+                        if ($obj->dias < 0) {
+                            $alerta = "danger";
+                        } elseif ($obj->dias > 30) {
+                            $alerta = "success";
+                        } else {
+                            $alerta = "warning";
+                        }
+                        return '<span class="text-' . $alerta . '"> ' . $obj->inicio . '</span>';
+                    })
+                    ->orderColumn('inicio', 'DATE_FORMAT(DATE_SUB(planejamentos.data, INTERVAL (
                         IFNULL(
                             (
                                 SELECT
@@ -169,62 +175,64 @@ class LembretesHomeDataTable extends DataTable
                             0
                         )
                     ) DAY), "%y%m%d") $1')
-                ->filterColumn('grupo', function ($query, $keyword) {
-                    $query->whereRaw("insumo_grupos.nome LIKE ?", ['%' . $keyword . '%']);
-                })
-				->filterColumn('carteira', function ($query, $keyword) {
-                    $query->whereRaw("carteiras.nome LIKE ?", ['%' . $keyword . '%']);
-                })
-                ->make(true);
+                    ->filterColumn('grupo', function ($query, $keyword) {
+                        $query->whereRaw("insumo_grupos.nome LIKE ?", ['%' . $keyword . '%']);
+                    })
+                    ->filterColumn('carteira', function ($query, $keyword) {
+                        $query->whereRaw("carteiras.nome LIKE ?", ['%' . $keyword . '%']);
+                    })
+                    ->make(true);
+            } else {
+                return $this->datatables
+                    ->of($this->query())
+                    ->editColumn('action', 'ordem_de_compras.lembretes_home_datatables_actions')
+                    ->filterColumn('inicio', function ($query, $keyword) {
+                        if (strrpos($keyword, '-') === false) {
+                            $query->whereRaw("inicio like ?", ["%$keyword%"]);
+                        } else {
+                            $range = explode('-', $keyword);
+                            $inicio = $range[0];
+                            $fim = $range[1];
+
+                            $query->whereRaw("inicio BETWEEN ? AND ?", [$inicio, $fim]);
+                        }
+                    })
+                    ->editColumn('inicio', function ($obj) {
+                        if ($obj->dias < 0) {
+                            $alerta = "danger";
+                        } elseif ($obj->dias > 30) {
+                            $alerta = "success";
+                        } else {
+                            $alerta = "warning";
+                        }
+                        return '<span class="text-' . $alerta . '"> ' . $obj->inicio . '</span>';
+                    })
+                    ->orderColumn('inicio', 'STR_TO_DATE(inicio, \'%d/%m/%Y\')')
+                    ->filterColumn('grupo', function ($query, $keyword) {
+                        $query->whereRaw("insumo_grupos.nome LIKE ?", ['%' . $keyword . '%']);
+                    })
+                    ->filterColumn('planejamentos.tarefa', function ($query, $keyword) {
+                        if (!$this->request()->exibir_por_tarefa) {
+                            $query->whereRaw("planejamentos.tarefa LIKE ?", ['%' . $keyword . '%']);
+                        } else {
+                            $query->whereRaw("xpto.tarefa LIKE ?", ['%' . $keyword . '%']);
+                        }
+                    })
+                    ->orderColumn('planejamentos.tarefa',
+                        $this->request()->exibir_por_tarefa ? 'xpto.tarefa' : 'planejamentos.tarefa')
+                    ->filterColumn('obras.nome', function ($query, $keyword) {
+                        if (!$this->request()->exibir_por_tarefa) {
+                            $query->whereRaw("obras.nome LIKE ?", ['%' . $keyword . '%']);
+                        } else {
+                            $query->whereRaw("xpto.obra LIKE ?", ['%' . $keyword . '%']);
+                        }
+                    })
+                    ->orderColumn('obras.nome',
+                        $this->request()->exibir_por_tarefa ? 'xpto.obra' : 'obras.nome')
+                    ->make(true);
+            }
         } else {
-            return $this->datatables
-                ->of($this->query())
-                ->editColumn('action', 'ordem_de_compras.lembretes_home_datatables_actions')
-                ->filterColumn('inicio', function ($query, $keyword) {
-                    if (strrpos($keyword, '-') === false) {
-                        $query->whereRaw("inicio like ?", ["%$keyword%"]);
-                    } else {
-                        $range = explode('-', $keyword);
-                        $inicio = $range[0];
-                        $fim = $range[1];
-
-                        $query->whereRaw("inicio BETWEEN ? AND ?", [$inicio, $fim]);
-                    }
-                })
-                ->editColumn('inicio', function ($obj) {
-                    if ($obj->dias < 0) {
-                        $alerta = "danger";
-                    } elseif ($obj->dias > 30) {
-                        $alerta = "success";
-                    } else {
-                        $alerta = "warning";
-                    }
-                    return '<span class="text-' . $alerta . '"> ' . $obj->inicio . '</span>';
-                })
-                ->orderColumn('inicio', 'STR_TO_DATE(inicio, \'%d/%m/%Y\')')
-                ->filterColumn('grupo', function ($query, $keyword) {
-                    $query->whereRaw("insumo_grupos.nome LIKE ?", ['%' . $keyword . '%']);
-                })
-                ->filterColumn('planejamentos.tarefa', function ($query, $keyword) {
-                    if (!$this->request()->exibir_por_tarefa) {
-                        $query->whereRaw("planejamentos.tarefa LIKE ?", ['%' . $keyword . '%']);
-                    } else {
-                        $query->whereRaw("xpto.tarefa LIKE ?", ['%' . $keyword . '%']);
-                    }
-                })
-                ->orderColumn('planejamentos.tarefa',
-                    $this->request()->exibir_por_tarefa ? 'xpto.tarefa' : 'planejamentos.tarefa')
-
-                ->filterColumn('obras.nome', function ($query, $keyword) {
-                    if (!$this->request()->exibir_por_tarefa) {
-                        $query->whereRaw("obras.nome LIKE ?", ['%' . $keyword . '%']);
-                    } else {
-                        $query->whereRaw("xpto.obra LIKE ?", ['%' . $keyword . '%']);
-                    }
-                })
-                ->orderColumn('obras.nome',
-                    $this->request()->exibir_por_tarefa ? 'xpto.obra' : 'obras.nome')
-                ->make(true);
+            return ['data' => [], 'recordsFiltered' => 0, 'recordsTotal' => 0];
         }
     }
 
@@ -235,11 +243,17 @@ class LembretesHomeDataTable extends DataTable
      */
     public function query()
     {
-        if ($this->request()->exibir_por_tarefa) {
-            $url = 'CONCAT(\'/compras/obrasInsumos?planejamento_id=\',planejamentos.id,\'&obra_id=\',obras.id) as url';
-        } else {
-            $url = 'CONCAT(\'/compras/obrasInsumos?planejamento_id=\',planejamentos.id,\'&insumo_grupos_id=\',insumo_grupos.id,\'&obra_id=\',obras.id) as url';
-        }
+        if (
+            $this->request()->get('obra_id') ||
+            $this->request()->get('planejamento_id') ||
+            $this->request()->get('insumo_grupo_id') ||
+            $this->request()->get('carteira_id')
+        ) {
+            if ($this->request()->exibir_por_tarefa) {
+                $url = 'CONCAT(\'/compras/obrasInsumos?planejamento_id=\',planejamentos.id,\'&obra_id=\',obras.id) as url';
+            } else {
+                $url = 'CONCAT(\'/compras/obrasInsumos?planejamento_id=\',planejamentos.id,\'&insumo_grupos_id=\',insumo_grupos.id,\'&obra_id=\',obras.id) as url';
+            }
 
         if ($this->request()->exibir_por_tarefa) {
             $url_dispensar = 'CONCAT(\'/compras/obrasInsumos/dispensar?planejamento_id=\',planejamentos.id,\'&obra_id=\',obras.id) as url_dispensar';
@@ -312,7 +326,7 @@ class LembretesHomeDataTable extends DataTable
                             0
                         )
                     ) DAY),'%d/%m/%Y') as inicio"),
-                    DB::raw("DATEDIFF(
+                        DB::raw("DATEDIFF(
                     (
                     DATE_SUB(planejamentos.data, INTERVAL (
                         IFNULL(
@@ -360,10 +374,10 @@ class LembretesHomeDataTable extends DataTable
                     'carteiras.nome as carteira'
                 ]);
 
-            if ($this->request()->get('from ') || $this->request()->get('to')) {
-                if ($this->request()->get('from')) {
-                    $from = date('Y-m-d', $this->request()->get('from ') / 1000);
-                    $query->where(DB::raw('DATE_SUB(planejamentos.data, INTERVAL (
+                if ($this->request()->get('from ') || $this->request()->get('to')) {
+                    if ($this->request()->get('from')) {
+                        $from = date('Y-m-d', $this->request()->get('from ') / 1000);
+                        $query->where(DB::raw('DATE_SUB(planejamentos.data, INTERVAL (
                                             IFNULL(
                                                 (
                                                     SELECT
@@ -405,10 +419,10 @@ class LembretesHomeDataTable extends DataTable
                                                 0
                                             )
                                         ) DAY)'), '>=', $from);
-                }
-                if ($this->request()->get('to')) {
-                    $to = date('Y-m-d', $this->request()->get('to ') / 1000);
-                    $query->where(DB::raw('DATE_SUB(planejamentos.data, INTERVAL (
+                    }
+                    if ($this->request()->get('to')) {
+                        $to = date('Y-m-d', $this->request()->get('to ') / 1000);
+                        $query->where(DB::raw('DATE_SUB(planejamentos.data, INTERVAL (
                                 IFNULL(
                                     (
                                         SELECT
@@ -450,30 +464,30 @@ class LembretesHomeDataTable extends DataTable
                                     0
                                 )
                             ) DAY)'), '<=', $to);
+                    }
                 }
-            }
 
-            if ($this->request()->get('obra_id')) {
-                $query->where('planejamentos.obra_id', $this->request()->get('obra_id'));
-            }
-            if ($this->request()->get('planejamento_id')) {
-                $query->where('planejamentos.id', $this->request()->get('planejamento_id'));
-            }
-            if ($this->request()->get('insumo_grupo_id')) {
-                $query->where('insumos.insumo_grupo_id', $this->request()->get('insumo_grupo_id'));
-            }
-            if ($this->request()->get('carteira_id')) {
-                $query->where('carteiras.id', $this->request()->get('carteira_id'));
-            }
+                if ($this->request()->get('obra_id') && $this->request()->get('obra_id') != 'todas') {
+                    $query->where('planejamentos.obra_id', $this->request()->get('obra_id'));
+                }
+                if ($this->request()->get('planejamento_id')) {
+                    $query->where('planejamentos.id', $this->request()->get('planejamento_id'));
+                }
+                if ($this->request()->get('insumo_grupo_id')) {
+                    $query->where('insumos.insumo_grupo_id', $this->request()->get('insumo_grupo_id'));
+                }
+                if ($this->request()->get('carteira_id')) {
+                    $query->where('carteiras.id', $this->request()->get('carteira_id'));
+                }
 
-            // Busca se existe algum item a  ser comprado desta tarefa
-            $query->whereRaw(PlanejamentoCompraRepository::existeItemParaComprarComInsumoGrupo());
+                // Busca se existe algum item a  ser comprado desta tarefa
+                $query->whereRaw(PlanejamentoCompraRepository::existeItemParaComprarComInsumoGrupo());
 
             $query->groupBy(['id', 'obra', 'dias', 'tarefa', 'url', 'inicio', 'carteira']);
         } else {
 
-            $query = DB::table(
-                DB::raw('(SELECT tarefa, id, obra, url, url_dispensar, inicio, dias, grupo
+                $query = DB::table(
+                    DB::raw('(SELECT tarefa, id, obra, url, url_dispensar, inicio, dias, grupo
                          FROM
                              (SELECT tarefa, id, obra, url, url_dispensar, inicio, dias, grupo
                              FROM
@@ -482,8 +496,8 @@ class LembretesHomeDataTable extends DataTable
                                         planejamentos.id,
                                         obras.nome AS obra,
                                         planejamentos.tarefa,
-                                        '.$url.',
-                                        '.$url_dispensar.',
+                                        ' . $url . ',
+                                        ' . $url_dispensar . ',
                                         insumo_grupos.nome as grupo,
                                         DATE_FORMAT(
                                             DATE_SUB(
@@ -588,7 +602,7 @@ class LembretesHomeDataTable extends DataTable
                                     WHERE planejamentos.deleted_at IS NULL
                                     AND lembretes.lembrete_tipo_id = 1
                                     AND planejamento_compras.dispensado = 0
-                                    AND obra_users.user_id = '.Auth::user()->id.'
+                                    AND obra_users.user_id = ' . Auth::user()->id . '
                                     AND (
                                         SELECT
                                             1
@@ -643,21 +657,20 @@ class LembretesHomeDataTable extends DataTable
                                             LIMIT 1
                                     ) IS NOT NULL
                                     AND lembretes.deleted_at IS NULL
-                                    ' . ($this->request()->get('obra_id') ? ' AND planejamentos.obra_id = ' . $this->request()->get('obra_id') : '') . '
+                                    ' . ($this->request()->get('obra_id') && $this->request()->get('obra_id') == 'todas' ? ' AND planejamentos.obra_id = ' . $this->request()->get('obra_id') : '') . '
                                     ' . ($this->request()->get('planejamento_id') ? ' AND planejamentos.id = ' . $this->request()->get('planejamento_id') : '') . '
                                     ' . ($this->request()->get('insumo_grupo_id') ? ' AND insumos.insumo_grupo_id = ' . $this->request()->get('insumo_grupo_id') : '') . '
                                     ) as queryInterna
                                     ORDER BY
-                                    STR_TO_DATE(inicio,\'%d/%m/%Y\') ASC
-                                ) as xpto_ordenado
-                             ) as xpto_agrupado GROUP BY tarefa
-                         ) as xpto'
-                )
-            );
+                                    STR_TO_DATE(inicio,\'%d/%m/%Y\') ASC) as xpto_ordenado) as xpto_agrupado GROUP BY tarefa) as xpto'
+                    )
+                );
+            }
+
+            return $this->applyScopes($query);
+        } else {
+            return [];
         }
-//        echo $query->toSql();
-//        die();
-        return $this->applyScopes($query);
     }
 
     /**

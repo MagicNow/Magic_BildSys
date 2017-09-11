@@ -32,6 +32,9 @@
             <a href="{{ url('/quadro-de-concorrencia/'. $id.'/gerar-contrato') }}" class="btn btn-xs btn-success" title="Gerar/Imprimir contrato(s)">
                 <i class="fa fa-file-text-o"></i>
             </a>
+            <a href="{{ route('quadroDeConcorrencia.avaliar', $id) }}" class="btn btn-xs btn-primary" title="Exibir Histórico de Propostas">
+                <i class="glyphicon glyphicon-ok"></i>
+            </a>
         @endif
     @endshield
 

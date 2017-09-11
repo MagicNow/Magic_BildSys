@@ -103,7 +103,9 @@ class MedicaoServicoDataTable extends DataTable
                 'medicao_servicos.id',
                 'contratos.id as contrato_id',
                 'fornecedores.nome as fornecedor',
-                DB::raw("CONCAT(insumos.codigo, ' - ',insumos.nome) as insumo"),
+                'insumos.codigo',
+                DB::raw('insumos.nome as insumo'),
+                'insumos.unidade_sigla',
                 DB::raw("CONCAT(servicos.codigo,' - ', servicos.nome) as apropriacao"),
                 'medicao_servicos.periodo_inicio',
                 'medicao_servicos.periodo_termino',
@@ -207,6 +209,7 @@ class MedicaoServicoDataTable extends DataTable
             ->columns($this->getColumns())
             ->ajax('')
             ->parameters([
+                'responsive' => 'true',
                 'initComplete' => 'function () {
                     max = this.api().columns().count();
                     this.api().columns().every(function (col) {
@@ -274,7 +277,9 @@ class MedicaoServicoDataTable extends DataTable
                 'obra' => ['name' => 'obras.nome', 'data' => 'nome', 'width'=>'5%'],
                 'contrato' => ['name' => 'contratos.id', 'data' => 'contrato_id', 'width'=>'5%'],
                 'fornecedor' => ['name' => 'fornecedores.nome', 'data' => 'fornecedor'],
+                'código' => ['name' => 'codigo', 'data' => 'codigo'],
                 'insumo' => ['name' => 'insumo', 'data' => 'insumo'],
+                'Un&period; De Medida' => ['name' => 'unidade_sigla', 'data' => 'unidade_sigla'],
                 'apropriação' => ['name' => 'apropriacao', 'data' => 'apropriacao'],
                 'data_medição' => ['name' => 'created_at', 'data' => 'created_at'],
                 'usuário' => ['name' => 'users.name', 'data' => 'name'],
@@ -289,7 +294,9 @@ class MedicaoServicoDataTable extends DataTable
                 'obra' => ['name' => 'obras.nome', 'data' => 'nome', 'width'=>'5%'],
                 'contrato' => ['name' => 'contratos.id', 'data' => 'contrato_id', 'width'=>'5%'],
                 'fornecedor' => ['name' => 'fornecedores.nome', 'data' => 'fornecedor'],
+                'código' => ['name' => 'codigo', 'data' => 'codigo'],
                 'insumo' => ['name' => 'insumo', 'data' => 'insumo'],
+                'Un&period; De Medida' => ['name' => 'unidade_sigla', 'data' => 'unidade_sigla'],
                 'apropriação' => ['name' => 'apropriacao', 'data' => 'apropriacao'],
                 'data_medição' => ['name' => 'created_at', 'data' => 'created_at'],
                 'período_início' => ['name' => 'periodo_inicio', 'data' => 'periodo_inicio'],

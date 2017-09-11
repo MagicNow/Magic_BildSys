@@ -34,6 +34,7 @@ class AlterContratoItemReapropriacoesNewColumns extends Migration
     {
         Schema::table('contrato_item_reapropriacoes', function($table) {
             $table->unsignedInteger('ordem_de_compra_item_id')->change();
+            $table->dropForeign('contrato_item_reapropriacao_id_foreign');
             $table->dropColumn('contrato_item_reapropriacao_id');
         });
     }

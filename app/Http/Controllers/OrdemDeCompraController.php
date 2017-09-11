@@ -218,6 +218,7 @@ class OrdemDeCompraController extends AppBaseController
             ->findByUser($request->user()->id)
             ->pluck('nome', 'id')
             ->prepend('', '')
+            ->prepend('TODAS', 'todas')
             ->toArray();
 
         $grupos = $insumoGrupoRepository
@@ -1175,7 +1176,8 @@ class OrdemDeCompraController extends AppBaseController
             'ordem_de_compras.id',
             'obras.nome',
             'users.name'
-        ])            ->join('obras', 'obras.id', 'ordem_de_compras.obra_id')
+        ])
+		->join('obras', 'obras.id', 'ordem_de_compras.obra_id')
         ->join('users', 'users.id', '=', 'ordem_de_compras.user_id')
         ->where('oc_status_id', 4)->orderBy('id', 'desc')
         ->take(5);
@@ -1198,7 +1200,8 @@ class OrdemDeCompraController extends AppBaseController
             'ordem_de_compras.id',
             'obras.nome',
             'users.name'
-        ])            ->join('obras', 'obras.id', 'ordem_de_compras.obra_id')
+        ])
+		->join('obras', 'obras.id', 'ordem_de_compras.obra_id')
         ->join('users', 'users.id', '=', 'ordem_de_compras.user_id')
         ->where('oc_status_id', 5)->orderBy('id', 'desc')
         ->take(5);
@@ -1221,7 +1224,8 @@ class OrdemDeCompraController extends AppBaseController
             'ordem_de_compras.id',
             'obras.nome',
             'users.name'
-        ])            ->join('obras', 'obras.id', 'ordem_de_compras.obra_id')
+        ])
+		->join('obras', 'obras.id', 'ordem_de_compras.obra_id')
         ->join('users', 'users.id', '=', 'ordem_de_compras.user_id')
         ->where('oc_status_id', 3)->orderBy('id', 'desc')
         ->take(5);

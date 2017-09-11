@@ -111,9 +111,9 @@ class InsumoDataTable extends DataTable
     private function getColumns()
     {
         return [
-            'nome' => ['name' => 'nome', 'data' => 'nome'],
-            'unidade' => ['name' => 'unidade_sigla', 'data' => 'unidade_sigla'],
-            'codigo' => ['name' => 'codigo', 'data' => 'codigo'],
+            'código' => ['name' => 'codigo', 'data' => 'codigo'],
+            'Descrição' => ['name' => 'nome', 'data' => 'nome'],
+            'Un&period; De Medida' => ['name' => 'unidade_sigla', 'data' => 'unidade_sigla'],
             'grupo' => ['name' => 'insumo_grupos.nome', 'data' => 'grupo'],
             'active' => [
                 'name' => 'active',
