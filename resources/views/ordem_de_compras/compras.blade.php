@@ -104,7 +104,7 @@
                                     <button class="btn btn-warning" data-calendar-view="year">Ano</button>
                                     <button class="btn btn-warning active" data-calendar-view="month">Mês</button>
                                     <button class="btn btn-warning" data-calendar-view="week">Semana</button>
-                                    <button class="btn btn-warning" data-calendar-view="day">Dia</button>
+                                    {{--<button class="btn btn-warning" data-calendar-view="day">Dia</button>--}}
                                 </div>
                             </div>
 
