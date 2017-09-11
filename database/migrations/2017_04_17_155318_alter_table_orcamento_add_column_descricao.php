@@ -26,7 +26,7 @@ class AlterTableOrcamentoAddColumnDescricao extends Migration
     public function down()
     {
         Schema::table('orcamentos', function (Blueprint $table) {
-            $table->string('descricao');
+            $table->dropColumn('descricao');
         });
     }
 }

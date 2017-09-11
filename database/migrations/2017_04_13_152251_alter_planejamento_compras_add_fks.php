@@ -71,13 +71,23 @@ class AlterPlanejamentoComprasAddFks extends Migration
         \Illuminate\Support\Facades\DB::table('planejamento_compras')->delete();
         Schema::table('planejamento_compras', function (Blueprint $table){
             $table->dropForeign([
-                'grupo_id',
-                'subgrupo1_id',
-                'subgrupo2_id',
-                'subgrupo3_id',
-                'servico_id',
-                'trocado_de',
-            ]);
+                'grupo_id'
+                ]);
+            $table->dropForeign([
+                'subgrupo1_id'
+                ]);
+            $table->dropForeign([
+                'subgrupo2_id'
+                ]);
+            $table->dropForeign([
+                'subgrupo3_id'
+                ]);
+            $table->dropForeign([
+                'servico_id'
+                ]);
+            $table->dropForeign([
+                'trocado_de'
+                ]);
 
             $table->dropColumn([
                 'grupo_id',

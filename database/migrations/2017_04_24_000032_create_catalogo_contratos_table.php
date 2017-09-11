@@ -28,8 +28,6 @@ class CreateCatalogoContratosTable extends Migration
             $table->decimal('qtd_maxima', 19, 2)->nullable();
             $table->timestamps();
 
-
-
             $table->foreign('fornecedor_id')
                 ->references('id')->on('fornecedores')
                 ->onDelete('cascade')
@@ -44,6 +42,9 @@ class CreateCatalogoContratosTable extends Migration
      */
      public function down()
      {
+         Schema::table('ordem_de_compra_itens', function (Blueprint $table){
+             $table->dropForeign('ordem_de_compra_itens_sugestao_contrato_id_foreign');
+         });
        Schema::dropIfExists('catalogo_contratos');
      }
 }

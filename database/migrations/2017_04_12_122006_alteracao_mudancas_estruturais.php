@@ -63,6 +63,10 @@ class AlteracaoMudancasEstruturais extends Migration
 
 
             $table->unsignedInteger('planejamento_id');
+            
+            $table->dropForeign(['insumo_grupo_id']);
+            
+            $table->dropColumn('insumo_grupo_id');
 
             $table->foreign('planejamento_id')
                 ->references('id')->on('planejamentos')
