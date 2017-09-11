@@ -648,7 +648,10 @@ class LembretesHomeDataTable extends DataTable
                                     ' . ($this->request()->get('insumo_grupo_id') ? ' AND insumos.insumo_grupo_id = ' . $this->request()->get('insumo_grupo_id') : '') . '
                                     ) as queryInterna
                                     ORDER BY
-                                    STR_TO_DATE(inicio,\'%d/%m/%Y\') ASC) as xpto_ordenado) as xpto_agrupado GROUP BY tarefa) as xpto'
+                                    STR_TO_DATE(inicio,\'%d/%m/%Y\') ASC
+                                ) as xpto_ordenado
+                             ) as xpto_agrupado GROUP BY tarefa
+                         ) as xpto'
                 )
             );
         }

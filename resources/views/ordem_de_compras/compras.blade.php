@@ -82,8 +82,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                          <div class="checkbox">
+                        <div class="col-md-12 checkbox">
+                          <div class="col-md-6">
                             <label for="exibir_por_tarefa">
                               <input type="checkbox"
                                 value="1"
@@ -92,6 +92,15 @@
                               Exibir por tarefa
                             </label>
                           </div>
+                            <div class="col-md-6">
+                                <label for="exibir_por_carteira">
+                                    <input type="checkbox"
+                                           value="1"
+                                           name="exibir_por_carteira"
+                                           id="exibir_por_carteira">
+                                    Exibir por carteira
+                                </label>
+                            </div>
                         </div>
                         <div class="page-header">
                             <div class="pull-right form-inline">
@@ -153,6 +162,7 @@
         var insumo_grupo_id = null;
 		var carteira_id = null;
         var exibir_por_tarefa = null;
+        var exibir_por_carteira = null;
 
         function escolheObra(obra_id) {
             planejamento_id = null;
@@ -221,6 +231,17 @@
                 queryString +='exibir_por_tarefa=' + exibir_por_tarefa;
             }
 
+            var $exibirPorCarteira = $('#exibir_por_carteira');
+            exibir_por_carteira = $exibirPorCarteira.prop('checked');
+            if(exibir_por_carteira > 0){
+                if(queryString.length>0){
+                    queryString +='&';
+                }else{
+                    queryString +='?';
+                }
+                queryString +='exibir_por_carteira=' + exibir_por_carteira;
+            }
+
             calendar.setOptions({events_source: '{{ url('lembretes') }}' + queryString});
 
             calendar.view();
@@ -270,7 +291,6 @@
             }else{
                 $('#filtro_grupo').val('').trigger( "change" );
             }
-            console.log($('#filtro_grupo').val());
             atualizaCalendario();
         }
 
@@ -281,7 +301,6 @@
             }else{
                 $('#filtro_carteira').val('').trigger( "change" );
             }
-            console.log($('#filtro_carteira').val());
             atualizaCalendario();
         }
 
@@ -334,7 +353,6 @@
               LaravelDataTables.dataTableBuilder.one('draw.dt', function() {
                 LaravelDataTables.dataTableBuilder.column('grupo:name').visible(!isChecked);
               });
-
             });
 
             $('.btn-group button[data-calendar-nav]').each(function () {
