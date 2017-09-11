@@ -333,7 +333,7 @@
               calendar = $('#calendar').calendar(Object.assign(calendarOptions, {
                 events_source: '/lembretes?exibir_por_tarefa=' + (+isChecked),
                 day: date
-              }))
+              }));
 
               LaravelDataTables.dataTableBuilder.ajax.url(
                 location.pathname + '?exibir_por_tarefa=' + (+isChecked)
