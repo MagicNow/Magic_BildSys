@@ -28,6 +28,7 @@ class AddUserIdResponsavelRetroalimentacaoObrasTable extends Migration
     public function down()
     {
         Schema::table('retroalimentacao_obras', function(Blueprint $table){
+            $table->dropForeign(['user_id_responsavel']);
             $table->dropColumn('user_id_responsavel');
         });
     }

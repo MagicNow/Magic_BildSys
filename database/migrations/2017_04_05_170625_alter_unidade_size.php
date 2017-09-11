@@ -49,35 +49,52 @@ class AlterUnidadeSize extends Migration
      */
     public function down()
     {
-        
-        Schema::table('insumos', function (Blueprint $table){
-            $table->string('unidades_sigla',5);
+        Schema::table('orcamentos', function (Blueprint $table) {
             $table->dropForeign(['unidade_sigla']);
-            $table->dropColumn(['unidade_sigla']);
-
-            $table->foreign('unidades_sigla')
-                ->references('sigla')->on('unidades')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
+            $table->dropColumn('unidade_sigla');
         });
         
+        Schema::table('ordem_de_compra_itens', function (Blueprint $table) {
+            $table->dropForeign(['unidade_sigla']);
+            $table->dropColumn(['unidade_sigla']);
+        });
+        Schema::table('insumos', function (Blueprint $table) {
+            $table->dropForeign(['unidade_sigla']);
+            $table->dropColumn('unidade_sigla');
+        });
         Schema::table('unidades', function (Blueprint $table){
             $table->string('sigla',5)->change();
         });
-
-        Schema::table('ordem_de_compra_itens', function (Blueprint $table){
-            $table->string('unidades_sigla',5)->change();
-
-            $table->dropForeign(['unidade_sigla']);
-            $table->dropColumn(['unidade_sigla']);
+        Schema::table('insumos', function (Blueprint $table){
+            $table->string('unidades_sigla',5);
 
             $table->foreign('unidades_sigla')
                 ->references('sigla')->on('unidades')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
         });
+
+        
         Schema::table('orcamentos', function (Blueprint $table){
-            $table->string('unidade_sigla',5)->change();
+            $table->string('unidade_sigla',5);
         });
+        Schema::table('orcamentos', function (Blueprint $table){
+            $table->foreign('unidade_sigla')
+                ->references('sigla')->on('unidades')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+        });
+        
+
+
+        Schema::table('ordem_de_compra_itens', function (Blueprint $table){
+            $table->string('unidades_sigla',5);
+
+            $table->foreign('unidades_sigla')
+                ->references('sigla')->on('unidades')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+        });
+        
     }
 }

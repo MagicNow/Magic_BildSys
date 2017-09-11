@@ -32,10 +32,6 @@ class CreatePlanilhasTable extends Migration
      */
     public function down()
     {
-        Schema::table('planilhas', function (Blueprint $table) {
-            $table->dropForeign(['planilhas_user_id_foreign']);
-        });
-
         Schema::drop('planilhas');
     }
 }

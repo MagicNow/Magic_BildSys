@@ -25,23 +25,14 @@ class RemoveCatalogoContratoObraLogsTable extends Migration
      */
     public function down()
     {
+        Schema::disableForeignKeyConstraints();
         Schema::create('catalogo_contrato_obra_logs', function (Blueprint $table){
             $table->increments('id');
             $table->unsignedInteger('catalogo_contrato_obra_id');
             $table->unsignedInteger('catalogo_contrato_status_id');
-
-            $table->foreign('catalogo_contrato_obra_id')
-                ->references('id')->on('catalogo_contrato_obra')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
-
-            $table->foreign('catalogo_contrato_status_id')
-                ->references('id')->on('catalogo_contrato_status')
-                ->onDelete('restrict')
-                ->onUpdate('cascade');
-
             $table->timestamps();
 
         });
+        Schema::enableForeignKeyConstraints();
     }
 }

@@ -15,7 +15,7 @@ class AlterTableCronogramaFisicosAddColunas extends Migration
         Schema::table('cronograma_fisicos', function (Blueprint $table) {
             $table->dropColumn('template_id');
         });
-
+        
         Schema::table('cronograma_fisicos', function (Blueprint $table) {
             
 			$table->date('data_upload');			
@@ -37,10 +37,10 @@ class AlterTableCronogramaFisicosAddColunas extends Migration
     public function down()
     {
         Schema::table('cronograma_fisicos', function (Blueprint $table) {
+            $table->dropForeign(['template_id']);
             $table->dropColumn('data_upload');
-			$table->dropColumn('template_id');
+            $table->dropColumn('template_id');
         });
-
         Schema::table('cronograma_fisicos', function (Blueprint $table) {
             $table->string('template_id');
         });
