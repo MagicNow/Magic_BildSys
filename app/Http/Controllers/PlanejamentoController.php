@@ -481,8 +481,7 @@ class PlanejamentoController extends AppBaseController
     }
     public function getListaDePlanejamentosByObra(Request $request)
     {
-        $planejamentos = Planejamento::where('obra_id', $request->obra_id)
-            ->join('planejamento_compras','planejamento_compras.planejamento_id', 'planejamentos.id')
+        $planejamentos = Planejamento::join('planejamento_compras','planejamento_compras.planejamento_id', 'planejamentos.id')
             ->select([
                 'planejamentos.id',
                 'planejamentos.tarefa'
@@ -490,6 +489,9 @@ class PlanejamentoController extends AppBaseController
             ->where('planejamentos.resumo','Sim')
             ->groupBy('planejamentos.id','planejamentos.tarefa');
 
+        if($request->obra_id != 'todas') {
+            $planejamentos = $planejamentos->where('obra_id', $request->obra_id);
+        }
         return $planejamentos->get();
     }
 }

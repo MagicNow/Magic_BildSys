@@ -218,6 +218,7 @@ class OrdemDeCompraController extends AppBaseController
             ->findByUser($request->user()->id)
             ->pluck('nome', 'id')
             ->prepend('', '')
+            ->prepend('TODAS', 'todas')
             ->toArray();
 
         $grupos = $insumoGrupoRepository

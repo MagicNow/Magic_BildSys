@@ -241,8 +241,24 @@
         function atualizaCalendario() {
             startLoading();
 
+            @if(\Illuminate\Support\Facades\Input::get('obra_id'))
+                obra = {{\Illuminate\Support\Facades\Input::get('obra_id')}}
+            @endif
+
+            @if(\Illuminate\Support\Facades\Input::get('planejamento_id'))
+                planejamento_id = {{\Illuminate\Support\Facades\Input::get('planejamento_id')}}
+            @endif
+
+            @if(\Illuminate\Support\Facades\Input::get('insumo_grupo_id'))
+                insumo_grupo_id = {{\Illuminate\Support\Facades\Input::get('insumo_grupo_id')}}
+            @endif
+
+            @if(\Illuminate\Support\Facades\Input::get('carteira_id'))
+                carteira_id = {{\Illuminate\Support\Facades\Input::get('carteira_id')}}
+            @endif
+
             var queryString = '';
-            if(parseInt(obra) > 0){
+            if(parseInt(obra) > 0 || obra == 'todas'){
                 queryString ='?obra_id=' + obra;
             }
 
@@ -300,7 +316,11 @@
         }
 
         $(function () {
-            history.pushState("", document.title, location.pathname);
+            @if(\Illuminate\Support\Facades\Input::get('obra_id'))
+                escolheObra({{\Illuminate\Support\Facades\Input::get('obra_id')}});
+            @else
+                atualizaCalendario();
+            @endif
 
             $('.btn-group button[data-calendar-nav]').each(function () {
                 var $this = $(this);
@@ -334,6 +354,8 @@
         });
 
         function renderCalendar() {
+            startLoading();
+
             var calendarOptions = {
                 language: 'pt-BR',
                 view: 'month',
@@ -383,6 +405,8 @@
                 });
 
             });
+
+            stopLoading();
         }
     </script>
 @stop

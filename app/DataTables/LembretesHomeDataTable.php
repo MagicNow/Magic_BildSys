@@ -464,7 +464,7 @@ class LembretesHomeDataTable extends DataTable
                     }
                 }
 
-                if ($this->request()->get('obra_id')) {
+                if ($this->request()->get('obra_id') && $this->request()->get('obra_id') != 'todas') {
                     $query->where('planejamentos.obra_id', $this->request()->get('obra_id'));
                 }
                 if ($this->request()->get('planejamento_id')) {
@@ -651,7 +651,7 @@ class LembretesHomeDataTable extends DataTable
                                             LIMIT 1
                                     ) IS NOT NULL
                                     AND lembretes.deleted_at IS NULL
-                                    ' . ($this->request()->get('obra_id') ? ' AND planejamentos.obra_id = ' . $this->request()->get('obra_id') : '') . '
+                                    ' . ($this->request()->get('obra_id') && $this->request()->get('obra_id') == 'todas' ? ' AND planejamentos.obra_id = ' . $this->request()->get('obra_id') : '') . '
                                     ' . ($this->request()->get('planejamento_id') ? ' AND planejamentos.id = ' . $this->request()->get('planejamento_id') : '') . '
                                     ' . ($this->request()->get('insumo_grupo_id') ? ' AND insumos.insumo_grupo_id = ' . $this->request()->get('insumo_grupo_id') : '') . '
                                     ) as queryInterna
