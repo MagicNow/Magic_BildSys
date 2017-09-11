@@ -13,6 +13,7 @@ class CreateOrdemDeCompraItensTable extends Migration
      */
     public function up()
     {
+        Schema::dropIfExists('ordem_de_compra_itens');
         Schema::create('ordem_de_compra_itens', function (Blueprint $table) {
             
             $table->increments('id');
@@ -90,11 +91,6 @@ class CreateOrdemDeCompraItensTable extends Migration
             $table->foreign('unidades_sigla')
                 ->references('sigla')->on('unidades')
                 ->onDelete('restrict')
-                ->onUpdate('cascade');
-
-            $table->foreign('sugestao_contrato_id')
-                ->references('id')->on('contratos')
-                ->onDelete('cascade')
                 ->onUpdate('cascade');
         });
     }

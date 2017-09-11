@@ -26,7 +26,8 @@ class AlterTablePlanilhaAddColumnModulo extends Migration
     public function down()
     {
         Schema::table('planilhas', function (Blueprint $table) {
-            $table->renameColumn('modulo', 'status');
+            $table->dropColumn('modulo');
+            $table->string('status')->nullable();
         });
     }
 }
