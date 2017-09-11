@@ -13,7 +13,7 @@
             <div class="box-body">
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="form-group">
+                        <div class="form-group js-datatable-filter-form">
                           <label for="select_obra">Obra</label>
                           {!!
                             Form::select(
@@ -30,7 +30,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-4">
-                                <div class="form-group">
+                                <div class="form-group js-datatable-filter-form">
                                   <label for="planejamento_id">Tarefa</label>
                                   {!!
                                     Form::select(
@@ -49,7 +49,7 @@
                             </div>
                             <div class="col-md-4">
                                 <label for="planejamento_id">Grupo de Insumo</label>
-                                <div class="form-group">
+                                <div class="form-group js-datatable-filter-form">
                                   {!!
                                     Form::select(
                                       'insumo_grupo_id',
@@ -66,7 +66,7 @@
                             </div>	
 							<div class="col-md-4">
                                 <label for="planejamento_id">Carteiras</label>
-                                <div class="form-group">
+                                <div class="form-group js-datatable-filter-form">
                                   {!!
                                     Form::select(
                                       'carteira_id',
@@ -82,7 +82,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group js-datatable-filter-form">
                           <div class="checkbox">
                             <label for="exibir_por_tarefa">
                               <input type="checkbox"
@@ -163,9 +163,9 @@
 
             obra = obra_id;
 
-            $('#filtro_obra')
-              .val($('#select_obra option:selected').text())
-              .trigger( "change" );
+//            $('#filtro_obra')
+//              .val($('#select_obra option:selected').text())
+//              .trigger( "change" );
 
             if(obra_id){
                 $('#planejamento_id').attr('disabled',false);
@@ -181,62 +181,13 @@
             atualizaCalendario();
         }
 
-        function atualizaCalendario() {
-            var queryString = '';
-            if(parseInt(obra) > 0){
-                queryString ='?obra_id=' + obra;
-            }
-
-            if(parseInt(planejamento_id) > 0){
-                if(queryString.length>0){
-                    queryString +='&';
-                }else{
-                    queryString +='?';
-                }
-                queryString +='planejamento_id=' + planejamento_id;
-            }
-
-            if(parseInt(insumo_grupo_id) > 0){
-                if(queryString.length>0){
-                    queryString +='&';
-                }else{
-                    queryString +='?';
-                }
-                queryString +='insumo_grupo_id=' + insumo_grupo_id;
-            }
-			
-			if(parseInt(carteira_id) > 0){
-                if(queryString.length>0){
-                    queryString +='&';
-                }else{
-                    queryString +='?';
-                }
-                queryString +='carteira_id=' + carteira_id;
-            }
-
-            var $exibirPorTarefa = $('#exibir_por_tarefa');
-            exibir_por_tarefa = $exibirPorTarefa.prop('checked');
-            if(exibir_por_tarefa > 0){
-                if(queryString.length>0){
-                    queryString +='&';
-                }else{
-                    queryString +='?';
-                }
-                queryString +='exibir_por_tarefa=' + exibir_por_tarefa;
-            }
-
-            calendar.setOptions({events_source: '{{ url('lembretes') }}' + queryString});
-
-            calendar.view();
-        }
-
         function atualizaCalendarioPorTarefa(tarefa) {
             planejamento_id = tarefa;
-            if(tarefa){
-                $('#filtro_tarefa').val($('#planejamento_id option:selected').text()).trigger( "change" );
-            }else{
-                $('#filtro_tarefa').val('').trigger( "change" );
-            }
+//            if(tarefa){
+//                $('#filtro_tarefa').val($('#planejamento_id option:selected').text()).trigger( "change" );
+//            }else{
+//                $('#filtro_tarefa').val('').trigger( "change" );
+//            }
             atualizaCalendario();
         }
 
@@ -269,26 +220,81 @@
 
         function atualizaCalendarioPorInsumoGrupo(insumo_grupo) {
             insumo_grupo_id = insumo_grupo;
-            if(insumo_grupo){
-                $('#filtro_grupo').val($('#insumo_grupo_id option:selected').text()).trigger( "change" );
-            }else{
-                $('#filtro_grupo').val('').trigger( "change" );
-            }
+//            if(insumo_grupo){
+//                $('#filtro_grupo').val($('#insumo_grupo_id option:selected').text()).trigger( "change" );
+//            }else{
+//                $('#filtro_grupo').val('').trigger( "change" );
+//            }
             atualizaCalendario();
         }
 		
 		function atualizaCalendarioPorCarteira(carteira) {
             carteira_id = carteira;
-            if(carteira){
-                $('#filtro_carteira').val($('#carteira_id option:selected').text()).trigger( "change" );
-            }else{
-                $('#filtro_carteira').val('').trigger( "change" );
-            }
+//            if(carteira){
+//                $('#filtro_carteira').val($('#carteira_id option:selected').text()).trigger( "change" );
+//            }else{
+//                $('#filtro_carteira').val('').trigger( "change" );
+//            }
             atualizaCalendario();
         }
 
-        $(function () {
+        function atualizaCalendario() {
+            startLoading();
 
+            var queryString = '';
+            if(parseInt(obra) > 0){
+                queryString ='?obra_id=' + obra;
+            }
+
+            if(parseInt(planejamento_id) > 0){
+                if(queryString.length>0){
+                    queryString +='&';
+                }else{
+                    queryString +='?';
+                }
+                queryString +='planejamento_id=' + planejamento_id;
+            }
+
+            if(parseInt(insumo_grupo_id) > 0){
+                if(queryString.length>0){
+                    queryString +='&';
+                }else{
+                    queryString +='?';
+                }
+                queryString +='insumo_grupo_id=' + insumo_grupo_id;
+            }
+
+            if(parseInt(carteira_id) > 0){
+                if(queryString.length>0){
+                    queryString +='&';
+                }else{
+                    queryString +='?';
+                }
+                queryString +='carteira_id=' + carteira_id;
+            }
+
+            var $exibirPorTarefa = $('#exibir_por_tarefa');
+            exibir_por_tarefa = $exibirPorTarefa.prop('checked');
+            if(exibir_por_tarefa > 0){
+                if(queryString.length>0){
+                    queryString +='&';
+                }else{
+                    queryString +='?';
+                }
+                queryString +='exibir_por_tarefa=' + exibir_por_tarefa;
+            }
+
+            calendar.setOptions({events_source: '{{ url('lembretes') }}' + queryString});
+
+            calendar.view();
+
+            history.pushState("", document.title, location.pathname+queryString);
+            window.LaravelDataTables["dataTableBuilder"].draw();
+
+            stopLoading();
+        }
+
+        $(function () {
             var calendarOptions = {
               language: 'pt-BR',
               view: 'month',
@@ -350,6 +356,22 @@
                 var $this = $(this);
                 $this.click(function () {
                     calendar.view($this.data('calendar-view'));
+                });
+            });
+
+            $('#dataTableBuilder').on('preXhr.dt', function ( e, settings, data ) {
+                $('.js-datatable-filter-form :input').each(function () {
+                    if($(this).attr('type')=='checkbox'){
+                        if(data[$(this).prop('name')]==undefined){
+                            data[$(this).prop('name')] = [];
+                        }
+                        if($(this).is(':checked')){
+                            data[$(this).prop('name')].push($(this).val());
+                        }
+
+                    }else{
+                        data[$(this).prop('name')] = $(this).val();
+                    }
                 });
             });
         });
