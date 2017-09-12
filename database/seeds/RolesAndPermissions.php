@@ -157,8 +157,8 @@ class RolesAndPermissions extends Seeder
             'regionals.list' => 'Listagem de regionais',
             'regionals.create' => 'Criação de regional',
             'regionals.edit'   => 'Edição de regional',
-            'regionals.delete'   => 'Remoção de regional',
-			
+            'regionals.delete'   => 'Remoção de regional',			         
+
 			'cronogramaFisicos.list' => 'Listagem de cronograma físicos',
             'cronogramaFisicos.create' => 'Criação de cronograma físicos',
             'cronogramaFisicos.edit'   => 'Edição de cronograma físicos',
@@ -189,6 +189,7 @@ class RolesAndPermissions extends Seeder
             'estruturas.delete'   => 'Remoção de estruturas',
 
             ################# SITE ###################
+			
             'compras_lembretes.list' => 'Listagem de compras e lembretes',
 
             'compras.geral' => 'Acesso aos módulos de compras',
@@ -233,6 +234,11 @@ class RolesAndPermissions extends Seeder
             'lpu.show'        => 'Visualização de Lpu',
             'lpu.edit'        => 'Editar Lpu',			
             'lpu.reajustar'   => 'Reajustar item do Lpu',
+			
+			'mascara_padrao.list'   => 'Listagem de Mascara Padrão',
+            'mascara_padrao.create'   => 'Criação de Mascara Padrão',			
+            'mascara_padrao.edit'   => 'Edição de Mascara Padrão',
+			'mascara_padrao.delete'   => 'Remoção de Mascara Padrão', 
             
             'configuracaoEstaticas.list'   => 'Listagem de Configuração padrão',
             'configuracaoEstaticas.edit'   => 'Edição de Configuração padrão',
