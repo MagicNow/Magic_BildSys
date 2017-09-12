@@ -171,7 +171,7 @@
         <li class="{{ Request::is('admin/planejamentos/planejamentoOrcamentos*') ? 'active' : '' }}">
             <a href="{!! route('admin.planejamentoOrcamentos.index') !!}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
-                <span>Tarefa/Orcamentos</span>
+                <span>Tarefa/Orçamentos</span>
             </a>
         </li>
         @shield('cronograma_por_obras.list')
