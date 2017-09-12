@@ -206,6 +206,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
         $quadroDeConcorrencia = $this->quadroDeConcorrenciaRepository->findWithoutFail($id);
 
         $arrayCarteirasEqualizacaoes = [];
+        $arrayCarteiras = [];
 
         if (empty($quadroDeConcorrencia)) {
             Flash::error('Quadro De Concorrencia ' . trans('common.not-found'));
@@ -224,13 +225,16 @@ class QuadroDeConcorrenciaController extends AppBaseController
 
                 $existe = array_search($carteira->tipoEqualizacaoTecnicas[0]->id,$arrayCarteirasEqualizacaoes);
 
-                if (!$existe)
-                    array_push($arrayCarteirasEqualizacaoes, $carteira->tipoEqualizacaoTecnicas[0]->id);
+                if (!$existe) {
 
+                    array_push($arrayCarteirasEqualizacaoes, $carteira->tipoEqualizacaoTecnicas[0]->id);
+                    array_push($arrayCarteiras, $carteira->nome);
+                }
             }
         }
 
-        return $qcItensDataTable->qc($quadroDeConcorrencia->id)->render('quadro_de_concorrencias.edit', compact('quadroDeConcorrencia','arrayCarteirasEqualizacaoes'));
+
+        return $qcItensDataTable->qc($quadroDeConcorrencia->id)->render('quadro_de_concorrencias.edit', compact('quadroDeConcorrencia','arrayCarteirasEqualizacaoes', 'arrayCarteiras'));
     }
 
     /**
