@@ -297,22 +297,7 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
         $router->get('carteiraInsumos/delete-bloco/view/delete/{id}', 'Admin\CarteiraInsumoController@buscaGrupoInsumo');
 		$router->get('carteiraInsumos/sem-carteira/view', ['as' => 'admin.carteiraInsumos.semcarteiraview', 'uses' => 'Admin\CarteiraInsumoController@semCarteiraView'])
             ->middleware("needsPermission:carteiraInsumos.semCarteiraView");
-	});
-
-  # Mascara Padrao
-    $router->group(['middleware' => 'needsPermission:mascaraPadrao.list'], function () use ($router) {
-        $router->get('mascaraPadrao', ['as' => 'admin.mascara_padrao.index', 'uses' => 'Admin\MascaraPadraoController@index']);
-        $router->post('mascaraPadrao', ['as' => 'admin.mascara_padrao.store', 'uses' => 'Admin\MascaraPadraoController@store']);
-        $router->get('mascaraPadrao/create', ['as' => 'admin.mascara_padrao.create', 'uses' => 'Admin\MascaraPadraoController@create'])
-            ->middleware("needsPermission:mascaraPadrao.create");
-        $router->put('mascaraPadrao/{mascaraPadrao}', ['as' => 'admin.mascara_padrao.update', 'uses' => 'Admin\MascaraPadraoller@update']);
-        $router->patch('mascaraPadrao/{mascaraPadrao}', ['as' => 'admin.mascara_padrao.update', 'uses' => 'Admin\MascaraPadraoController@update']);
-        $router->delete('mascaraPadrao/{mascaraPadrao}', ['as' => 'admin.mascara_padrao.destroy', 'uses' => 'Admin\MascaraPadraoController@destroy'])
-            ->middleware("needsPermission:mascaraPadrao.delete");
-		$router->get('mascaraPadrao/{mascaraPadrao}', ['as' => 'admin.mascara_padrao.show', 'uses' => 'Admin\MascaraPadraoController@show']);
-        $router->get('mascaraPadrao/{mascaraPadrao}/edit', ['as' => 'admin.mascara_padrao.edit', 'uses' => 'Admin\MascaraPadraoController@edit'])
-            ->middleware("needsPermission:mascaraPadrao.edit");	
-	});
+	});  
 
     # Manage users
     $router->group(['middleware' => 'needsPermission:users.list'], function () use ($router) {
@@ -973,7 +958,6 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     # Template de Contrato
     $router->get('/contrato-template/{contratoTemplates}/campos', 'Admin\ContratoTemplateController@camposExtras');
 
-
     # Catálogo de Acordos
     $router->group(['middleware' => 'needsPermission:catalogo_acordos.list'], function () use ($router) {
         $router->get('catalogo-acordos', ['as' => 'catalogo_contratos.index', 'uses' => 'CatalogoContratoController@index']);
@@ -1198,6 +1182,28 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->get('/{lpu}/editar',['as' => 'lpu.edit', 'uses' => 'LpuController@edit']);
         $router->patch('/{lpu}/update',['as' => 'lpu.update', 'uses' => 'LpuController@update']);
 		$router->delete('lpu/{lpu}', ['as' => 'lpu.destroy', 'uses' => 'LpuController@destroy']);
+    });
+	
+	# Mascara Padrao    
+    $router->group(['middleware' => 'needsPermission:mascara_padrao.list'], function () use ($router) {
+        $router->get('mascara-padrao', ['as' => 'mascara_padrao.index', 'uses' => 'MascaraPadraoController@index']);
+        $router->post('mascara-padrao', ['as' => 'mascara_padrao.store', 'uses' => 'MascaraPadraoController@store']);
+        $router->get('mascara-padrao/create', ['as' => 'mascara_padrao.create', 'uses' => 'MascaraPadraoController@create'])
+            ->middleware("needsPermission:mascara_padrao.create");
+        $router->put('mascara-padrao/{insumos}', ['as' => 'mascara_padrao.update', 'uses' => 'MascaraPadraoController@update']);
+        $router->patch('mascara-padrao/{insumos}', ['as' => 'mascara_padrao.update', 'uses' => 'MascaraPadraoController@update']);
+        $router->delete('mascara-padrao/{insumos}', ['as' => 'mascara_padrao.destroy', 'uses' => 'MascaraPadraoController@destroy'])
+            ->middleware("needsPermission:mascara_padrao.delete");
+        $router->get('mascara-padrao/{insumos}', ['as' => 'mascara_padrao.show', 'uses' => 'MascaraPadraoController@show']);
+        $router->get('mascara-padrao/{insumos}/edit', ['as' => 'mascara_padrao.edit', 'uses' => 'MascaraPadraoController@edit'])
+            ->middleware("needsPermission:mascara_padrao.edit");
+        $router->get('mascara-padrao/buscar/busca_fornecedores', ['as' => 'mascara_padrao.busca_fornecedores', 'uses' => 'MascaraPadraoController@buscaFornecedor']);
+        $router->get('mascara-padrao-insumo/delete', 'MascaraPadraoController@deleteInsumo');
+        $router->get('mascara-padrao/{insumos}/removeRegional/{remover}', ['as' => 'mascara_padrao.removeRegional', 'uses' => 'MascaraPadraoController@removeRegional'])
+            ->middleware("needsPermission:mascara_padrao.edit");
+        $router->get('mascara-padrao/{insumos}/imprimir-minuta', ['as' => 'mascara_padrao.removeObra', 'uses' => 'MascaraPadraoController@imprimirMinuta']);
+        $router->get('mascara-padrao/acao/ativar-desativar', 'MascaraPadraoController@ativarDesativar')
+            ->middleware("needsPermission:mascara_padrao.edit");
     });
 	
 	# Configuracao Estatica

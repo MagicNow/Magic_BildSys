@@ -38,15 +38,7 @@
               <i class="fa fa-angle-left pull-right"></i>
             </span>
     </a>
-    <ul class="treeview-menu">
-        @shield('orcamentos.list')
-        <li class="{{ Request::is('admin/orcamentos*') ? 'active' : '' }}">
-            <a href="{!! route('admin.orcamentos.index') !!}">
-                <i class="fa fa-caret-right" aria-hidden="true"></i>
-                <span>Máscara Padrão</span>
-            </a>
-        </li>
-        @endshield
+    <ul class="treeview-menu">        
         @shield('orcamentos.list')
         <li class="{{ Request::is('admin/orcamento') ? 'active' : '' }}">
             <a href="{!! route('admin.orcamentos.index') !!}">
@@ -260,15 +252,7 @@
                 <span>Motivos declinar proposta</span>
             </a>
         </li>
-        @endshield
-		@shield('mascaraPadrao.list')
-        <li class="{{ Request::is('mascaraPadrao*') ? 'active' : '' }}">
-            <a href="{!! route('admin.mascara_padrao.index') !!}">
-                <i class="fa fa-caret-right" aria-hidden="true"></i>
-                <span>Máscara Padrão</span>
-            </a>
-        </li>
-        @endshield
+        @endshield		
     </ul>
 </li>
 
