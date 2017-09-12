@@ -14492,14 +14492,14 @@ if (typeof jQuery === 'undefined') {
 }(jQuery, document, window));
 
 /**
- * Super simple wysiwyg editor v0.8.8
+ * Super simple wysiwyg editor v0.8.7
  * http://summernote.org/
  *
  * summernote.js
  * Copyright 2013- Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license./
  *
- * Date: 2017-09-09T11:03Z
+ * Date: 2017-08-15T06:23Z
  */
 (function (factory) {
   /* global define */
@@ -14558,32 +14558,18 @@ if (typeof jQuery === 'undefined') {
   var isEdge = /Edge\/\d+/.test(userAgent);
 
   var hasCodeMirror = !!window.CodeMirror;
-  if (!hasCodeMirror && isSupportAmd) {
-    // Webpack
-    if (typeof __webpack_require__ === 'function') { // jshint ignore:line
+  if (!hasCodeMirror && isSupportAmd && typeof require !== 'undefined') {
+    if (typeof require.resolve !== 'undefined') {
       try {
         // If CodeMirror can't be resolved, `require.resolve` will throw an
         // exception and `hasCodeMirror` won't be set to `true`.
         require.resolve('codemirror');
         hasCodeMirror = true;
       } catch (e) {
-        // do nothing
+        // Do nothing.
       }
-    } else if (typeof require !== 'undefined') {
-      // Browserify
-      if (typeof require.resolve !== 'undefined') {
-        try {
-          // If CodeMirror can't be resolved, `require.resolve` will throw an
-          // exception and `hasCodeMirror` won't be set to `true`.
-          require.resolve('codemirror');
-          hasCodeMirror = true;
-        } catch (e) {
-          // do nothing
-        }
-      // Almond/Require
-      } else if (typeof require.specified !== 'undefined') {
-        hasCodeMirror = require.specified('codemirror');
-      }
+    } else if (typeof eval('require').specified !== 'undefined') {
+      hasCodeMirror = eval('require').specified('codemirror');
     }
   }
 
@@ -16435,10 +16421,6 @@ if (typeof jQuery === 'undefined') {
     $node.html(markup);
   });
 
-  var dropdownButtonContents = function (contents, options) {
-    return contents + ' ' + icon(options.icons.caret, 'span');
-  };
-
   var dropdownCheck = renderer.create('<div class="dropdown-menu note-check">', function ($node, options) {
     var markup = $.isArray(options.items) ? options.items.map(function (item) {
       var value = (typeof item === 'string') ? item : (item.value || '');
@@ -16515,16 +16497,6 @@ if (typeof jQuery === 'undefined') {
     }
   });
 
-  var checkbox = renderer.create('<div class="checkbox"></div>', function ($node, options) {
-      $node.html([
-          ' <label' + (options.id ? ' for="' + options.id + '"' : '') + '>',
-          ' <input type="checkbox"' + (options.id ? ' id="' + options.id + '"' : ''),
-          (options.checked ? ' checked' : '') + '/>',
-          (options.text ? options.text : ''),
-          '</label>'
-      ].join(''));
-  });
-
   var icon = function (iconClassName, tagName) {
     tagName = tagName || 'i';
     return '<' + tagName + ' class="' + iconClassName + '"/>';
@@ -16541,12 +16513,10 @@ if (typeof jQuery === 'undefined') {
     airEditable: airEditable,
     buttonGroup: buttonGroup,
     dropdown: dropdown,
-    dropdownButtonContents: dropdownButtonContents,
     dropdownCheck: dropdownCheck,
     palette: palette,
     dialog: dialog,
     popover: popover,
-    checkbox: checkbox,
     icon: icon,
     options: {},
 
@@ -18920,7 +18890,7 @@ if (typeof jQuery === 'undefined') {
       var changeEventName = agent.isMSIE ? 'DOMCharacterDataModified DOMSubtreeModified DOMNodeInserted' : 'input';
       $editable.on(changeEventName, func.debounce(function () {
         context.triggerEvent('change', $editable.html());
-      }, 100));
+      }, 250));
 
       $editor.on('focusin', function (event) {
         context.triggerEvent('focusin', event);
@@ -19096,7 +19066,7 @@ if (typeof jQuery === 'undefined') {
     var commands = ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript',
                     'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull',
                     'formatBlock', 'removeFormat',
-                    'backColor', 'fontName'];
+                    'backColor', 'foreColor', 'fontName'];
 
     for (var idx = 0, len = commands.length; idx < len; idx ++) {
       this[commands[idx]] = (function (sCmd) {
@@ -19515,16 +19485,6 @@ if (typeof jQuery === 'undefined') {
 
       if (foreColor) { document.execCommand('foreColor', false, foreColor); }
       if (backColor) { document.execCommand('backColor', false, backColor); }
-    });
-
-    /**
-     * Set foreground color
-     *
-     * @param {String} colorCode foreground color code
-     */
-    this.foreColor = this.wrapCommand(function (colorInfo) {
-      document.execCommand('styleWithCSS', false, true);
-      document.execCommand('foreColor', false, colorInfo);
     });
 
     /**
@@ -20341,8 +20301,6 @@ if (typeof jQuery === 'undefined') {
       this.$placeholder.on('click', function () {
         context.invoke('focus');
       }).text(options.placeholder).prependTo($editingArea);
-
-      this.update();
     };
 
     this.destroy = function () {
@@ -20409,7 +20367,7 @@ if (typeof jQuery === 'undefined') {
         return ui.buttonGroup([
           ui.button({
             className: 'dropdown-toggle',
-            contents: ui.dropdownButtonContents(ui.icon(options.icons.magic), options),
+            contents: ui.icon(options.icons.magic) + ' ' + ui.icon(options.icons.caret, 'span'),
             tooltip: lang.style.style,
             data: {
               toggle: 'dropdown'
@@ -20502,7 +20460,7 @@ if (typeof jQuery === 'undefined') {
         return ui.buttonGroup([
           ui.button({
             className: 'dropdown-toggle',
-            contents: ui.dropdownButtonContents('<span class="note-current-fontname"/>', options),
+            contents: '<span class="note-current-fontname"/> ' + ui.icon(options.icons.caret, 'span'),
             tooltip: lang.font.name,
             data: {
               toggle: 'dropdown'
@@ -20524,7 +20482,7 @@ if (typeof jQuery === 'undefined') {
         return ui.buttonGroup([
           ui.button({
             className: 'dropdown-toggle',
-            contents: ui.dropdownButtonContents('<span class="note-current-fontsize"/>', options),
+            contents: '<span class="note-current-fontsize"/>' + ui.icon(options.icons.caret, 'span'),
             tooltip: lang.font.size,
             data: {
               toggle: 'dropdown'
@@ -20534,7 +20492,7 @@ if (typeof jQuery === 'undefined') {
             className: 'dropdown-fontsize',
             checkClassName: options.icons.menuCheck,
             items: options.fontSizes,
-            click: context.createInvokeHandlerAndUpdateState('editor.fontSize')
+            click: context.createInvokeHandler('editor.fontSize')
           })
         ]).render();
       });
@@ -20562,7 +20520,7 @@ if (typeof jQuery === 'undefined') {
             }),
             ui.button({
               className: 'dropdown-toggle',
-              contents: ui.dropdownButtonContents('', options),
+              contents: ui.icon(options.icons.caret, 'span'),
               tooltip: lang.color.more,
               data: {
                 toggle: 'dropdown'
@@ -20570,24 +20528,26 @@ if (typeof jQuery === 'undefined') {
             }),
             ui.dropdown({
               items: [
-                '<div class="note-palette">',
+                '<li>',
+                '<div class="btn-group">',
                 '  <div class="note-palette-title">' + lang.color.background + '</div>',
                 '  <div>',
-                '    <button type="button" class="note-color-reset btn btn-light" data-event="backColor" data-value="inherit">',
+                '    <button type="button" class="note-color-reset btn btn-default" data-event="backColor" data-value="inherit">',
                 lang.color.transparent,
                 '    </button>',
                 '  </div>',
                 '  <div class="note-holder" data-event="backColor"/>',
                 '</div>',
-                '<div class="note-palette">',
+                '<div class="btn-group">',
                 '  <div class="note-palette-title">' + lang.color.foreground + '</div>',
                 '  <div>',
-                '    <button type="button" class="note-color-reset btn btn-light" data-event="removeFormat" data-value="foreColor">',
+                '    <button type="button" class="note-color-reset btn btn-default" data-event="removeFormat" data-value="foreColor">',
                 lang.color.resetToDefault,
                 '    </button>',
                 '  </div>',
                 '  <div class="note-holder" data-event="foreColor"/>',
-                '</div>'
+                '</div>',
+                '</li>'
               ].join(''),
               callback: function ($dropdown) {
                 $dropdown.find('.note-holder').each(function () {
@@ -20682,7 +20642,7 @@ if (typeof jQuery === 'undefined') {
         return ui.buttonGroup([
           ui.button({
             className: 'dropdown-toggle',
-            contents: ui.dropdownButtonContents(ui.icon(options.icons.alignLeft), options),
+            contents: ui.icon(options.icons.alignLeft) + ' ' + ui.icon(options.icons.caret, 'span'),
             tooltip: lang.paragraph.paragraph,
             data: {
               toggle: 'dropdown'
@@ -20705,7 +20665,7 @@ if (typeof jQuery === 'undefined') {
         return ui.buttonGroup([
           ui.button({
             className: 'dropdown-toggle',
-            contents: ui.dropdownButtonContents(ui.icon(options.icons.textHeight), options),
+            contents: ui.icon(options.icons.textHeight) + ' ' + ui.icon(options.icons.caret, 'span'),
             tooltip: lang.font.height,
             data: {
               toggle: 'dropdown'
@@ -20724,7 +20684,7 @@ if (typeof jQuery === 'undefined') {
         return ui.buttonGroup([
           ui.button({
             className: 'dropdown-toggle',
-            contents: ui.dropdownButtonContents(ui.icon(options.icons.table), options),
+            contents: ui.icon(options.icons.table) + ' ' + ui.icon(options.icons.caret, 'span'),
             tooltip: lang.table.table,
             data: {
               toggle: 'dropdown'
@@ -20997,14 +20957,9 @@ if (typeof jQuery === 'undefined') {
       }
     };
 
-    /**
-     * @param {jQuery} [$container]
-     */
-    this.updateCurrentStyle = function ($container) {
-      var $cont = $container || $toolbar;
-      
+    this.updateCurrentStyle = function () {
       var styleInfo = context.invoke('editor.currentStyle');
-      this.updateBtnStates($cont, {
+      this.updateBtnStates({
         '.note-btn-bold': function () {
           return styleInfo['font-bold'] === 'bold';
         },
@@ -21033,29 +20988,27 @@ if (typeof jQuery === 'undefined') {
         });
         var fontName = list.find(fontNames, self.isFontInstalled);
 
-        $cont.find('.dropdown-fontname a').each(function () {
-          var $item = $(this);
+        $toolbar.find('.dropdown-fontname li a').each(function () {
           // always compare string to avoid creating another func.
-          var isChecked = ($item.data('value') + '') === (fontName + '');
-          $item.toggleClass('checked', isChecked);
+          var isChecked = ($(this).data('value') + '') === (fontName + '');
+          this.className = isChecked ? 'checked' : '';
         });
-        $cont.find('.note-current-fontname').text(fontName);
+        $toolbar.find('.note-current-fontname').text(fontName);
       }
 
       if (styleInfo['font-size']) {
         var fontSize = styleInfo['font-size'];
-        $cont.find('.dropdown-fontsize a').each(function () {
-          var $item = $(this);
+        $toolbar.find('.dropdown-fontsize li a').each(function () {
           // always compare with string to avoid creating another func.
-          var isChecked = ($item.data('value') + '') === (fontSize + '');
-          $item.toggleClass('checked', isChecked);
+          var isChecked = ($(this).data('value') + '') === (fontSize + '');
+          this.className = isChecked ? 'checked' : '';
         });
-        $cont.find('.note-current-fontsize').text(fontSize);
+        $toolbar.find('.note-current-fontsize').text(fontSize);
       }
 
       if (styleInfo['line-height']) {
         var lineHeight = styleInfo['line-height'];
-        $cont.find('.dropdown-line-height li a').each(function () {
+        $toolbar.find('.dropdown-line-height li a').each(function () {
           // always compare with string to avoid creating another func.
           var isChecked = ($(this).data('value') + '') === (lineHeight + '');
           this.className = isChecked ? 'checked' : '';
@@ -21063,9 +21016,9 @@ if (typeof jQuery === 'undefined') {
       }
     };
 
-    this.updateBtnStates = function ($container, infos) {
+    this.updateBtnStates = function (infos) {
       $.each(infos, function (selector, pred) {
-        ui.toggleBtnActive($container.find(selector), pred());
+        ui.toggleBtnActive($toolbar.find(selector), pred());
       });
     };
 
@@ -21116,7 +21069,6 @@ if (typeof jQuery === 'undefined') {
     var ui = $.summernote.ui;
 
     var $note = context.layoutInfo.note;
-    var $editor = context.layoutInfo.editor;
     var $toolbar = context.layoutInfo.toolbar;
     var options = context.options;
 
@@ -21137,8 +21089,6 @@ if (typeof jQuery === 'undefined') {
         $toolbar.appendTo(options.toolbarContainer);
       }
 
-      this.changeContainer(false);
-
       $note.on('summernote.keyup summernote.mouseup summernote.change', function () {
         context.invoke('buttons.updateCurrentStyle');
       });
@@ -21150,20 +21100,8 @@ if (typeof jQuery === 'undefined') {
       $toolbar.children().remove();
     };
 
-    this.changeContainer = function (isFullscreen) {
-      if (isFullscreen) {
-        $toolbar.prependTo($editor);
-      } else {
-        if (options.toolbarContainer) {
-          $toolbar.appendTo(options.toolbarContainer);
-        }
-      }
-    };
-
     this.updateFullscreen = function (isFullscreen) {
       ui.toggleBtnActive($toolbar.find('.btn-fullscreen'), isFullscreen);
-
-      this.changeContainer(isFullscreen);
     };
 
     this.updateCodeview = function (isCodeview) {
@@ -21203,22 +21141,22 @@ if (typeof jQuery === 'undefined') {
     this.initialize = function () {
       var $container = options.dialogsInBody ? $(document.body) : $editor;
 
-      var body = '<div class="form-group note-form-group">' +
-                   '<label class="note-form-label">' + lang.link.textToDisplay + '</label>' +
-                   '<input class="note-link-text form-control '+
-                   ' note-form-control  note-input" type="text" />' +
+      var body = '<div class="form-group">' +
+                   '<label>' + lang.link.textToDisplay + '</label>' +
+                   '<input class="note-link-text form-control" type="text" />' +
                  '</div>' +
-                 '<div class="form-group note-form-group">' +
-                   '<label class="note-form-label">' + lang.link.url + '</label>' +
-                   '<input class="note-link-url form-control note-form-control ' +
-                   'note-input" type="text" value="http://" />' +
+                 '<div class="form-group">' +
+                   '<label>' + lang.link.url + '</label>' +
+                   '<input class="note-link-url form-control" type="text" value="http://" />' +
                  '</div>' +
-      (!options.disableLinkTarget ?
-          $('<div/>').append(ui.checkbox({ id: 'sn-checkbox-open-in-new-window', text: lang.link.openInNewWindow, checked: true }).render())
-              .html()
-          : '');
-      var footer = '<button href="#" class="btn btn-primary note-btn note-btn-primary ' +
-      'note-link-btn disabled" disabled>' + lang.link.insert + '</button>';
+                 (!options.disableLinkTarget ?
+                   '<div class="checkbox">' +
+                     '<label for="sn-checkbox-open-in-new-window">' +
+                       '<input type="checkbox" id="sn-checkbox-open-in-new-window" checked />' + lang.link.openInNewWindow +
+                     '</label>' +
+                   '</div>' : ''
+                 );
+      var footer = '<button href="#" class="btn btn-primary note-link-btn disabled" disabled>' + lang.link.insert + '</button>';
 
       this.$dialog = ui.dialog({
         className: 'link-dialog',
@@ -21314,7 +21252,7 @@ if (typeof jQuery === 'undefined') {
               text: $linkText.val(),
               isNewWindow: $openInNewWindow.is(':checked')
             });
-            ui.hideDialog(self.$dialog);
+            self.$dialog.modal('hide');
           });
         });
 
@@ -21373,11 +21311,11 @@ if (typeof jQuery === 'undefined') {
       this.$popover = ui.popover({
         className: 'note-link-popover',
         callback: function ($node) {
-          var $content = $node.find('.popover-content,.note-popover-content');
+          var $content = $node.find('.popover-content');
           $content.prepend('<span><a target="_blank"></a>&nbsp;</span>');
         }
       }).render().appendTo('body');
-      var $content = this.$popover.find('.popover-content,.note-popover-content');
+      var $content = this.$popover.find('.popover-content');
 
       context.invoke('buttons.build', $content, options.popover.link);
     };
@@ -21434,19 +21372,16 @@ if (typeof jQuery === 'undefined') {
         imageLimitation = '<small>' + lang.image.maximumFileSize + ' : ' + readableSize + '</small>';
       }
 
-      var body = '<div class="form-group note-form-group note-group-select-from-files">' +
-                   '<label class="note-form-label">' + lang.image.selectFromFiles + '</label>' +
-                   '<input class="note-image-input form-control note-form-control note-input" '+
-                   ' type="file" name="files" accept="image/*" multiple="multiple" />' +
+      var body = '<div class="form-group note-group-select-from-files">' +
+                   '<label>' + lang.image.selectFromFiles + '</label>' +
+                   '<input class="note-image-input form-control" type="file" name="files" accept="image/*" multiple="multiple" />' +
                    imageLimitation +
-                 '</div>' + 
+                 '</div>' +
                  '<div class="form-group note-group-image-url" style="overflow:auto;">' +
-                   '<label class="note-form-label">' + lang.image.url + '</label>' +
-                   '<input class="note-image-url form-control note-form-control note-input ' +
-                   ' col-md-12" type="text" />' +
+                   '<label>' + lang.image.url + '</label>' +
+                   '<input class="note-image-url form-control col-md-12" type="text" />' +
                  '</div>';
-      var footer = '<button href="#" class="btn btn-primary note-btn note-btn-primary ' +
-      'note-image-btn disabled" disabled>' + lang.image.insert + '</button>';
+      var footer = '<button href="#" class="btn btn-primary note-image-btn disabled" disabled>' + lang.image.insert + '</button>';
 
       this.$dialog = ui.dialog({
         title: lang.image.insert,
@@ -21565,7 +21500,7 @@ if (typeof jQuery === 'undefined') {
       this.$popover = ui.popover({
         className: 'note-image-popover'
       }).render().appendTo('body');
-      var $content = this.$popover.find('.popover-content,.note-popover-content');
+      var $content = this.$popover.find('.popover-content');
 
       context.invoke('buttons.build', $content, options.popover.image);
     };
@@ -21620,7 +21555,7 @@ if (typeof jQuery === 'undefined') {
       this.$popover = ui.popover({
         className: 'note-table-popover'
       }).render().appendTo('body');
-      var $content = this.$popover.find('.popover-content,.note-popover-content');
+      var $content = this.$popover.find('.popover-content');
 
       context.invoke('buttons.build', $content, options.popover.table);
 
@@ -21671,13 +21606,11 @@ if (typeof jQuery === 'undefined') {
     this.initialize = function () {
       var $container = options.dialogsInBody ? $(document.body) : $editor;
 
-      var body = '<div class="form-group note-form-group row-fluid">' +
-          '<label class="note-form-label">' + lang.video.url + ' <small class="text-muted">' + lang.video.providers + '</small></label>' +
-          '<input class="note-video-url form-control  note-form-control note-input span12" ' + 
-          ' type="text" />' +
+      var body = '<div class="form-group row-fluid">' +
+          '<label>' + lang.video.url + ' <small class="text-muted">' + lang.video.providers + '</small></label>' +
+          '<input class="note-video-url form-control span12" type="text" />' +
           '</div>';
-      var footer = '<button href="#" class="btn btn-primary note-btn note-btn-primary ' + 
-      ' note-video-btn disabled" disabled>' + lang.video.insert + '</button>';
+      var footer = '<button href="#" class="btn btn-primary note-video-btn disabled" disabled>' + lang.video.insert + '</button>';
 
       this.$dialog = ui.dialog({
         title: lang.video.insert,
@@ -21879,7 +21812,7 @@ if (typeof jQuery === 'undefined') {
 
       var body = [
         '<p class="text-center">',
-        '<a href="http://summernote.org/" target="_blank">Summernote 0.8.8</a> · ',
+        '<a href="http://summernote.org/" target="_blank">Summernote 0.8.7</a> · ',
         '<a href="https://github.com/summernote/summernote" target="_blank">Project</a> · ',
         '<a href="https://github.com/summernote/summernote/issues" target="_blank">Issues</a>',
         '</p>'
@@ -21891,7 +21824,7 @@ if (typeof jQuery === 'undefined') {
         body: this.createShortCutList(),
         footer: body,
         callback: function ($node) {
-          $node.find('.modal-body,.note-modal-body').css({
+          $node.find('.modal-body').css({
             'max-height': 300,
             'overflow': 'scroll'
           });
@@ -21983,7 +21916,6 @@ if (typeof jQuery === 'undefined') {
             left: Math.max(bnd.left + bnd.width / 2, 0) - AIR_MODE_POPOVER_X_OFFSET,
             top: bnd.top + bnd.height
           });
-          context.invoke('buttons.updateCurrentStyle', this.$popover);
         }
       } else {
         this.hide();
@@ -22032,7 +21964,7 @@ if (typeof jQuery === 'undefined') {
 
       this.$popover.hide();
 
-      this.$content = this.$popover.find('.popover-content,.note-popover-content');
+      this.$content = this.$popover.find('.popover-content');
 
       this.$content.on('click', '.note-hint-item', function () {
         self.$content.find('.active').removeClass('active');
@@ -22227,7 +22159,7 @@ if (typeof jQuery === 'undefined') {
 
 
   $.summernote = $.extend($.summernote, {
-    version: '0.8.8',
+    version: '0.8.7',
     ui: ui,
     dom: dom,
 
@@ -22455,7 +22387,7 @@ if (typeof jQuery === 'undefined') {
         'link': 'note-icon-link',
         'unlink': 'note-icon-chain-broken',
         'magic': 'note-icon-magic',
-        'menuCheck': 'note-icon-menu-check',
+        'menuCheck': 'note-icon-check',
         'minus': 'note-icon-minus',
         'orderedlist': 'note-icon-orderedlist',
         'pencil': 'note-icon-pencil',
@@ -29936,6 +29868,18 @@ S2.define('jquery.select2',[
 /*! Select2 4.0.3 | https://github.com/select2/select2/blob/master/LICENSE.md */
 
 (function(){if(jQuery&&jQuery.fn&&jQuery.fn.select2&&jQuery.fn.select2.amd)var e=jQuery.fn.select2.amd;return e.define("select2/i18n/pt-BR",[],function(){return{errorLoading:function(){return"Os resultados não puderam ser carregados."},inputTooLong:function(e){var t=e.input.length-e.maximum,n="Apague "+t+" caracter";return t!=1&&(n+="es"),n},inputTooShort:function(e){var t=e.minimum-e.input.length,n="Digite "+t+" ou mais caracteres";return n},loadingMore:function(){return"Carregando mais resultados…"},maximumSelected:function(e){var t="Você só pode selecionar "+e.maximum+" ite";return e.maximum==1?t+="m":t+="ns",t},noResults:function(){return"Nenhum resultado encontrado"},searching:function(){return"Buscando…"}}}),{define:e.define,require:e.require}})();
+define(['ModernizrProto'], function(ModernizrProto) {
+  // Fake some of Object.create so we can force non test results to be non "own" properties.
+  var Modernizr = function() {};
+  Modernizr.prototype = ModernizrProto;
+
+  // Leak modernizr globally when you `require` it rather than force it here.
+  // Overwrite name so constructor name is nicer :D
+  Modernizr = new Modernizr();
+
+  return Modernizr;
+});
+
 /*!
  * Datepicker for Bootstrap v1.6.1 (https://github.com/eternicode/bootstrap-datepicker)
  *
