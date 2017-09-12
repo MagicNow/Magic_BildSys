@@ -385,7 +385,7 @@
                                 @if($item->servico)
                                     <i class="fa fa-circle {{ (money_to_float($item->valor_servico) - $valor_comprometido_a_gastar_servico - money_to_float($item->valor_servico_oc)) < 0 ? 'red': 'green'  }}" aria-hidden="true"></i>
                                     <a href="/ordens-de-compra/detalhes-servicos/{{$ordemDeCompra->obra_id}}/{{$item->servico->id}}?oc_id={{$ordemDeCompra->id}}" style="cursor:pointer;" data-toggle="tooltip" data-placement="top" title="Análise">
-                                        <i class="fa fa-info-circle" style="color: #f39c12; font-size: 20px;"></i>
+                                        <i class="fa fa-info-circle text-info" style="font-size: 20px;"></i>
                                     </a>
                                 @else
                                     <i class="fa fa-circle {{ (money_to_float($item->valor_servico) - $valor_comprometido_a_gastar_servico - money_to_float($item->valor_servico_oc)) < 0 ? 'red': 'green'  }}" aria-hidden="true"></i>
