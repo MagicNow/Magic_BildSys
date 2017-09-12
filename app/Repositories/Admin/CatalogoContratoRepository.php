@@ -48,6 +48,8 @@ class CatalogoContratoRepository extends BaseRepository
             return null;
         }
 
+        $nomeArquivo = 'catalogo-' .$catalogoContrato->id.'-'.str_slug($catalogoContrato->fornecedor->nome);
+
         // Busca o nome das regionais que fazem parte do contrato
         $regionais = \App\Models\Regional::whereIn('id',$catalogoContrato->regionais()->pluck('regional_id','regional_id')->toArray())->pluck('nome','id')->toArray();
 
@@ -160,7 +162,7 @@ class CatalogoContratoRepository extends BaseRepository
         if(is_file(base_path().'/storage/app/public/contratos/acordo_'.$catalogoContrato->id.'.pdf')){
             unlink(base_path().'/storage/app/public/contratos/acordo_'.$catalogoContrato->id.'.pdf');
         }
-        PDF::loadHTML(utf8_decode($arquivoFinal))->setPaper('a4')->setOrientation('portrait')->save( base_path().'/storage/app/public/contratos/acordo_'.$catalogoContrato->id.'.pdf');
-        return 'contratos/acordo_'.$catalogoContrato->id.'.pdf';
+        PDF::loadHTML(utf8_decode($arquivoFinal))->setPaper('a4')->setOrientation('portrait')->save( base_path().'/storage/app/public/contratos/'.$nomeArquivo.'.pdf');
+        return 'contratos/'.$nomeArquivo.'.pdf';
     }
 }

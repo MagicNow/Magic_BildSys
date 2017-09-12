@@ -119,8 +119,15 @@
                                         ->where('created_at', '>=', $item->updated_at)
                                         ->orderBy('id', 'DESC')
                                         ->get();
+
+                                $insumo_aprovado = $item->aprovacoes()
+                                        ->where('aprovado', 1)
+                                        ->where('created_at', '>=', $item->updated_at)
+                                        ->orderBy('id', 'DESC')
+                                        ->first();
                             }else{
                                 $motivos_reprovacao = [];
+                                $insumo_aprovado = null;
                             }
                             ?>
                             @if(count($motivos_reprovacao))
@@ -134,6 +141,17 @@
                                         @endif
                                         Justificativa: <span style="font-weight:bold;">{{$motivo_reprovacao->justificativa}}</span>
                                     @endforeach
+                                </div>
+                            @endif
+
+                            @if($insumo_aprovado)
+                                <div class="alert alert-success" role="alert" id="alert_{{ $item->id }}">
+                                    @if($insumo_aprovado->user)
+                                        Usuário: <span style="font-weight:bold;">{{$insumo_aprovado->user->name}}</span>
+                                    @endif
+                                    @if($insumo_aprovado->created_at)
+                                        Aprovado em: <span style="font-weight:bold;">{{$insumo_aprovado->created_at->format('d/m/Y H:i')}}</span>
+                                    @endif
                                 </div>
                             @endif
 

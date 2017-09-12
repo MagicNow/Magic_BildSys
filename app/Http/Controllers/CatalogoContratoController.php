@@ -553,7 +553,8 @@ class CatalogoContratoController extends AppBaseController
     }
 
     public function imprimirMinuta($id){
-        return response()->file(storage_path('/app/public/') . str_replace('storage/', '', CatalogoContratoRepository::geraImpressao($id)));
+
+        return response()->download(storage_path('/app/public/') . str_replace('storage/', '', CatalogoContratoRepository::geraImpressao($id)));
     }
 
     public function ativarDesativar(Request $request)
