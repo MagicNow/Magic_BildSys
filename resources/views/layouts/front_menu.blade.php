@@ -241,6 +241,15 @@
                 <span>L.P.U.</span> </a>
         </li>
         @endshield
+		
+		@shield('mascara_padrao.list')
+        <li class="{{ Request::is('mascara_padrao*') ? 'active' : '' }}">
+            <a href="{!! route('mascara_padrao.index') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Máscara Padrão</span>
+            </a>
+        </li>
+        @endshield
 
     </ul>
 </li>
