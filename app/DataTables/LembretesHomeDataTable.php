@@ -248,7 +248,8 @@ class LembretesHomeDataTable extends DataTable
             $this->request()->get('planejamento_id') ||
             $this->request()->get('insumo_grupo_id') ||
             $this->request()->get('carteira_id')
-        ) {
+        )
+        {
             if ($this->request()->exibir_por_tarefa) {
                 $url = 'CONCAT(\'/compras/obrasInsumos?planejamento_id=\',planejamentos.id,\'&obra_id=\',obras.id) as url';
             } else {
@@ -265,7 +266,6 @@ class LembretesHomeDataTable extends DataTable
         if (!$this->request()->exibir_por_tarefa) {
             $query = Lembrete::join('insumo_grupos', 'insumo_grupos.id', '=', 'lembretes.insumo_grupo_id')
                 ->join('insumos', 'insumos.insumo_grupo_id', '=', 'insumo_grupos.id')
-				//->join('carteira_insumos', 'carteira_insumos.insumos_id', '=', 'insumos.id')
                 ->join('planejamento_compras', 'planejamento_compras.insumo_id', '=', 'insumos.id')
                 ->join('planejamentos', 'planejamentos.id', '=', 'planejamento_compras.planejamento_id')
                 ->join('obras', 'obras.id', '=', 'planejamentos.obra_id')
@@ -487,11 +487,11 @@ class LembretesHomeDataTable extends DataTable
         } else {
 
                 $query = DB::table(
-                    DB::raw('(SELECT tarefa, id, obra, url, url_dispensar, inicio, dias, grupo
+                    DB::raw('(SELECT tarefa, id, obra, url, url_dispensar, inicio, dias, grupo, carteira
                          FROM
-                             (SELECT tarefa, id, obra, url, url_dispensar, inicio, dias, grupo
+                             (SELECT tarefa, id, obra, url, url_dispensar, inicio, dias, grupo, carteira
                              FROM
-                                (SELECT tarefa, id, obra, url, url_dispensar, inicio, dias, grupo
+                                (SELECT tarefa, id, obra, url, url_dispensar, inicio, dias, grupo, carteira
                                 FROM (SELECT
                                         planejamentos.id,
                                         obras.nome AS obra,
@@ -591,7 +591,8 @@ class LembretesHomeDataTable extends DataTable
                                                 0
                                             )
                                             ) DAY)
-                                        ),CURDATE()) as dias
+                                        ),CURDATE()) as dias,
+                                        carteiras.nome as carteira
                                     FROM lembretes
                                     INNER JOIN insumo_grupos ON insumo_grupos.id = lembretes.insumo_grupo_id
                                     INNER JOIN insumos ON insumos.insumo_grupo_id = insumo_grupos.id
@@ -599,6 +600,8 @@ class LembretesHomeDataTable extends DataTable
                                     INNER JOIN planejamentos ON planejamentos.id = planejamento_compras.planejamento_id
                                     INNER JOIN obras ON obras.id = planejamentos.obra_id
                                     INNER JOIN obra_users ON obra_users.obra_id = obras.id
+                                    LEFT JOIN carteira_insumos ON carteira_insumos.insumo_id = insumos.id
+                                    LEFT JOIN carteiras ON carteiras.id = carteira_insumos.carteira_id
                                     WHERE planejamentos.deleted_at IS NULL
                                     AND lembretes.lembrete_tipo_id = 1
                                     AND planejamento_compras.dispensado = 0
@@ -657,7 +660,7 @@ class LembretesHomeDataTable extends DataTable
                                             LIMIT 1
                                     ) IS NOT NULL
                                     AND lembretes.deleted_at IS NULL
-                                    ' . ($this->request()->get('obra_id') && $this->request()->get('obra_id') == 'todas' ? ' AND planejamentos.obra_id = ' . $this->request()->get('obra_id') : '') . '
+                                    ' . ($this->request()->get('obra_id') || $this->request()->get('obra_id') != 'todas' ? ' AND planejamentos.obra_id = ' . $this->request()->get('obra_id') : '') . '
                                     ' . ($this->request()->get('planejamento_id') ? ' AND planejamentos.id = ' . $this->request()->get('planejamento_id') : '') . '
                                     ' . ($this->request()->get('insumo_grupo_id') ? ' AND insumos.insumo_grupo_id = ' . $this->request()->get('insumo_grupo_id') : '') . '
                                     ) as queryInterna
@@ -665,6 +668,8 @@ class LembretesHomeDataTable extends DataTable
                                     STR_TO_DATE(inicio,\'%d/%m/%Y\') ASC) as xpto_ordenado) as xpto_agrupado GROUP BY tarefa) as xpto'
                     )
                 );
+                print_r($query->toSql());
+                die();
             }
 
             return $this->applyScopes($query);

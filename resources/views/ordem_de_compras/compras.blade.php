@@ -82,7 +82,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-12 checkbox js-datatable-filter-form">
+                        <div class="col-md-12 checkbox js-datatable-filter-form" style="margin-top: 0px !important;">
                           <div class="col-md-6">
                             <label for="exibir_por_tarefa">
                               <input type="checkbox"
