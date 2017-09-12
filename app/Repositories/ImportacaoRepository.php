@@ -154,6 +154,21 @@ class ImportacaoRepository
             ->first();
         try {
             if ($fornecedores_mega) {
+
+                // Ajuste para pegar apenas a primeira ocorrência do e-mail, pois existem casos que o fornecedor tem mais de um e-mail no mesmo campo
+                $email = trim(utf8_encode($fornecedores_mega->agn_st_email));
+                if(strpos($email,',') !== FALSE){
+                    $arrayEmail = explode(',', $email);
+                    $email = trim($arrayEmail[0]);
+                    if(strpos($email,'@') === FALSE){
+                        if(isset($arrayEmail[1])){
+                            $email = trim($arrayEmail[1]);
+                        }
+                    }
+                }
+                if(strpos($email,'@') === FALSE){
+                    $email = null;
+                }
                 $cidade = Cidade::where('nome', 'LIKE', '%' . $fornecedores_mega->agn_st_municipio . '%')
                     ->first();
 
@@ -171,7 +186,7 @@ class ImportacaoRepository
                     'estado' => trim(utf8_encode($fornecedores_mega->uf_st_sigla)),
                     'situacao_cnpj' => trim(utf8_encode($fornecedores_mega->agn_ch_statuscgc)),
                     'inscricao_estadual' => trim($fornecedores_mega->agn_st_inscrestadual),
-                    'email' => trim(utf8_encode($fornecedores_mega->agn_st_email)),
+                    'email' => $email,
                     'site' => trim(utf8_encode($fornecedores_mega->agn_st_url)),
                     'telefone' => null,
                     'cep' => trim(str_replace('.','',$fornecedores_mega->agn_st_cep)),

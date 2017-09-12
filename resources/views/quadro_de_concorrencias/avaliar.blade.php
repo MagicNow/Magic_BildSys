@@ -228,7 +228,7 @@
                     <table class="table table-striped table-condensed table-bordered table-hover">
                         <thead>
                         <tr>
-                            <th>Requerimento</th>
+                            <th>Item</th>
                             @foreach($qcFornecedores as $qcFornecedor)
                                 <th>
                                     {{ $qcFornecedor->fornecedor->nome }}
@@ -246,7 +246,7 @@
                                                 class="btn btn-default btn-flat btn-xs js-sweetalert"
                                                 data-title="{{ $equalizacao->nome }}"
                                                 data-text="{{ $equalizacao->descricao }}">
-                                            <i class="fa fa-info-circle"></i> detalhes
+                                            <i class="fa fa-info-circle text-primary"></i> detalhes
                                         </button>
 
                                         @if($equalizacao->obrigatorio)
@@ -659,7 +659,7 @@
                                 @endforeach
                                 @if($quadro->hasMaterial())
                                     <tr>
-                                        <td colspan="2" class="text-right"><strong>Frete</strong></td>
+                                        <td colspan="4" class="text-right"><strong>Frete</strong></td>
                                         @foreach($qcFornecedores as $qcFornecedor)
                                             <td class="text-center">
                                                 {{ $qcFornecedor->tipo_frete }}
