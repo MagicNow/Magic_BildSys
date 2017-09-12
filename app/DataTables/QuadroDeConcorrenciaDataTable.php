@@ -33,6 +33,12 @@ class QuadroDeConcorrenciaDataTable extends DataTable
             ->editColumn('situacao', function($obj){
                 return '<i class="fa fa-circle" aria-hidden="true" style="color:'.$obj->situacao_cor.'"></i> '.$obj->situacao;
             })
+            ->editColumn('obras', function($obj){
+                return "<textarea class='form-control' disabled 
+                                        style='cursor: auto;background-color: transparent;resize: vertical;'>".
+                            $obj->obras
+                ."</textarea>";
+            })
             ->filterColumn('quadro_de_concorrencias.created_at', function ($query, $keyword) {
                 $query->whereRaw("DATE_FORMAT(quadro_de_concorrencias.created_at,'%d/%m/%Y') like ?", ["%$keyword%"]);
             })
@@ -67,6 +73,32 @@ class QuadroDeConcorrenciaDataTable extends DataTable
             })
             ->filterColumn('users.name', function($query, $keyword){
                 $query->whereRaw("IFNULL(users.name,'catalogo') LIKE ?",['%'.$keyword.'%']);
+            })
+
+            ->filterColumn('obras', function($query, $keyword){
+                $query->whereRaw('(
+                    SELECT 
+                        GROUP_CONCAT(nome SEPARATOR ", ")
+                    FROM
+                        obras
+                    WHERE
+                        id IN (SELECT 
+                                obra_id
+                            FROM
+                                ordem_de_compra_itens
+                            WHERE
+                                id IN (SELECT 
+                                        ordem_de_compra_item_id
+                                    FROM
+                                        oc_item_qc_item
+                                    WHERE
+                                        qc_item_id IN (SELECT 
+                                                id
+                                            FROM
+                                                qc_itens
+                                            WHERE
+                                                qc_itens.quadro_de_concorrencia_id = quadro_de_concorrencias.id)))
+                ) LIKE ?', ['%'.$keyword.'%']);
             })
             ->make(true);
     }
@@ -127,7 +159,30 @@ class QuadroDeConcorrenciaDataTable extends DataTable
                         and
                            `qc_fornecedor`.`rodada` = `quadro_de_concorrencias`.`rodada_atual`
                    ) as tem_ofertas
-               ')
+               '),
+                DB::raw('(
+                    SELECT 
+                        GROUP_CONCAT(nome SEPARATOR ", ")
+                    FROM
+                        obras
+                    WHERE
+                        id IN (SELECT 
+                                obra_id
+                            FROM
+                                ordem_de_compra_itens
+                            WHERE
+                                id IN (SELECT 
+                                        ordem_de_compra_item_id
+                                    FROM
+                                        oc_item_qc_item
+                                    WHERE
+                                        qc_item_id IN (SELECT 
+                                                id
+                                            FROM
+                                                qc_itens
+                                            WHERE
+                                                qc_itens.quadro_de_concorrencia_id = quadro_de_concorrencias.id)))
+                ) as obras')
            ])
             ->leftJoin('users','users.id','quadro_de_concorrencias.user_id')
             ->join('qc_status','qc_status.id','quadro_de_concorrencias.qc_status_id')
@@ -209,6 +264,7 @@ class QuadroDeConcorrenciaDataTable extends DataTable
     {
         $columns = [
             'Q&period;C&period;' => ['name' => 'quadro_de_concorrencias.id', 'data' => 'id', 'width'=>'10%'],
+            'Obra(s)' => ['name' => 'obras', 'data' => 'obras', 'width'=>'20%'],
             'Status' => ['name' => 'qc_status.nome', 'data' => 'situacao', 'width'=>'20%'],
             'atualizado' => ['name' => 'quadro_de_concorrencias.updated_at', 'data' => 'updated_at', 'width'=>'12%'],
             'rodada' => ['name' => 'rodada_atual', 'data' => 'rodada_atual', 'width'=>'5%'],
