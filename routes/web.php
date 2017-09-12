@@ -1271,19 +1271,9 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         //            ->first();
         //        dd($grupos_mega);
         //        $servicos = \App\Repositories\ImportacaoRepository::fornecedor_servicos(446);
-//        $insumos = \App\Repositories\ImportacaoRepository::insumos();
-//        dd($insumos);
-        $contratoTemplate = \App\Models\ContratoTemplate::find(1);
-        if($contratoTemplate){
-            if($contratoTemplate->campos_extras){
-                $campos_extras_template = json_decode($contratoTemplate->campos_extras);
-                foreach ($campos_extras_template as $campo){
-                    var_dump($campo);
-                }
-                dd($campos_extras_template);
-
-            }
-        }
+        $insumos = \App\Repositories\ImportacaoRepository::insumos();
+        dd($insumos);
+        
     });
 });
 
