@@ -31,6 +31,143 @@
     </ul>
 </li>
 
+<li class="treeview {{ Request::is('admin/orcamento*') ? 'active' : '' }}">
+    <a href="#">
+        <i class="fa fa-balance-scale"></i> <span>Pré-Orçamento</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+    </a>
+    <ul class="treeview-menu">
+        @shield('orcamentos.list')
+        <li class="{{ Request::is('admin/orcamentos*') ? 'active' : '' }}">
+            <a href="{!! route('admin.orcamentos.index') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Máscara Padrão</span>
+            </a>
+        </li>
+        @endshield
+        @shield('orcamentos.list')
+        <li class="{{ Request::is('admin/orcamento') ? 'active' : '' }}">
+            <a href="{!! route('admin.orcamentos.index') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Pré Orçamento</span>
+            </a>
+        </li>
+        @endshield
+		@shield('orcamentos.list')
+        <li class="{{ Request::is('admin/orcamento') ? 'active' : '' }}">
+            <a href="{!! route('admin.orcamentos.index') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Índices</span>
+            </a>
+        </li>
+        @endshield
+		@shield('orcamentos.list')
+        <li class="{{ Request::is('admin/orcamento') ? 'active' : '' }}">
+            <a href="{!! route('admin.orcamentos.index') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Exportar Insumos/Estrutura</span>
+            </a>
+        </li>
+        @endshield
+    </ul>
+</li>
+
+<li class="treeview {{ Request::is('admin/levantamentos*') ? 'active' : '' }}">
+    <a href="#">
+        <i class="fa fa-pencil fa-fw"></i> <span>Levantamentos</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+    </a>
+    <ul class="treeview-menu">		
+        @shield('levantamentos.list')
+        <li class="{{ Request::is('admin/levantamentos*') ? 'active' : '' }}">
+            <a href="{!! route('admin.levantamentos.index') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Levantamentos</span>
+            </a>
+        </li>
+        @endshield
+		@shield('tipoLevantamentos.list')
+        <li class="{{ Request::is('admin/tipo_levantamentos*') ? 'active' : '' }}">
+            <a href="{!! route('admin.tipo_levantamentos.index') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Tipos Levantamentos</span>
+            </a>
+        </li>
+        @endshield
+		@shield('mascaraInsumos.list')
+        <li class="{{ Request::is('admin/mascaraInsumos*') ? 'active' : '' }}">
+            <a href="{!! route('admin.mascara_insumos.index') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Mascara Insumo</span>
+            </a>
+        </li>
+        @endshield
+		@shield('levantamentos.list')
+        <li class="{{ Request::is('admin/estruturas*') ? 'active' : '' }}">
+            <a href="{!! route('admin.estruturas.index') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Mascara Estrutura</span>
+            </a>
+        </li>
+        @endshield
+        @shield('levantamentos.import')
+        <li class="{{ Request::is('admin/levantamentos*') ? 'active' : '' }}">
+            <a href="{!! route('admin.levantamentos.indexImport') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Importação</span>
+            </a>
+        </li>
+        @endshield
+    </ul>
+</li>
+
+<li class="treeview {{ Request::is('admin/cronogramaFisicos*') ? 'active' : '' }}">
+    <a href="#">
+        <i class="fa fa-book fa-fw"></i> <span>Planejamento Físicos</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+    </a>
+    <ul class="treeview-menu">
+		@shield('cronogramaFisicos.dashboard')
+        <li class="{{ Request::is('admin/cronogramaFisicos*') ? 'active' : '' }}">
+            <a href="{!! route('admin.cronograma_fisicos.relSemanal') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Acompanhamento Semanal</span>
+            </a>
+        </li>
+        @endshield
+		@shield('cronogramaFisicos.dashboard')
+        <li class="{{ Request::is('admin/cronogramaFisicos*') ? 'active' : '' }}">
+            <a href="{!! route('admin.cronograma_fisicos.relMensal') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Acompanhamento Mensal</span>
+            </a>
+        </li>
+        @endshield
+        @shield('cronogramaFisicos.list')
+        <li class="{{ Request::is('admin/cronogramaFisicos*') ? 'active' : '' }}">
+            <a href="{!! route('admin.cronograma_fisicos.index') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Cronograma Físicos</span>
+            </a>
+        </li>
+        @endshield		
+        @shield('cronogramaFisicos.import')
+        <li class="{{ Request::is('admin/cronogramaFisicos*') ? 'active' : '' }}">
+            <a href="{!! route('admin.cronogramaFisicos.indexImport') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Importação</span>
+            </a>
+        </li>
+        @endshield
+    </ul>
+</li>
+
 <li class="treeview {{ Request::is('admin/planejamento*') ? 'active' : '' }}">
     <a href="#">
         <i class="fa fa-calendar"></i> <span>Cronograma de Obras</span>
@@ -71,11 +208,12 @@
         @endshield
     </ul>
 </li>
+
 {{-- **** SUPRIMENTOS  **** --}}
 <li class="treeview {{ Request::is('admin/lembretes*') ||
                         Request::is('admin/compradorInsumos*') ||
                         Request::is('admin/contratoTemplates*') ||
-                        Request::is('desistenciaMotivos*')
+                        Request::is('desistenciaMotivos*') 
                         ? 'active' : '' }}">
     <a href="#">
         <i class="fa fa-diamond"></i> <span>Suprimentos</span>

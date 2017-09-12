@@ -43,6 +43,6 @@ class CreateCatalogoContratoInsumosTable extends Migration
      */
      public function down()
      {
-       Schema::dropIfExists('catalogo_contrato_insumos');
+         Schema::dropIfExists('catalogo_contrato_insumos');
      }
 }

@@ -69,7 +69,7 @@ class CreateCatalogoContratoObra extends Migration
      */
     public function down()
     {
-        Schema::drop('catalogo_contrato_obra_log');
-        Schema::drop('catalogo_contrato_obra');
+        Schema::dropIfExists('catalogo_contrato_obra_logs');
+        Schema::dropIfExists('catalogo_contrato_obra');
     }
 }

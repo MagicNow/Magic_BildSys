@@ -158,6 +158,35 @@ class RolesAndPermissions extends Seeder
             'regionals.create' => 'Criação de regional',
             'regionals.edit'   => 'Edição de regional',
             'regionals.delete'   => 'Remoção de regional',
+			
+			'cronogramaFisicos.list' => 'Listagem de cronograma físicos',
+            'cronogramaFisicos.create' => 'Criação de cronograma físicos',
+            'cronogramaFisicos.edit'   => 'Edição de cronograma físicos',
+            'cronogramaFisicos.delete'   => 'Remoção de cronograma físicos',
+			
+            'cronogramaFisicos.import' => 'Importar orçamentos',
+			'cronogramaFisicos.dashboard' => 'Dashboard do Cronograma Físico',
+			
+			'levantamentos.list' => 'Listagem de levantamento',
+            'levantamentos.create' => 'Criação de levantamento',
+            'levantamentos.edit'   => 'Edição de levantamento',
+            'levantamentos.delete'   => 'Remoção de levantamento',			
+            'levantamentos.import' => 'Importar levantamentos',			
+			
+			'tipoLevantamentos.list' => 'Listagem de tipos de levantamento',
+            'tipoLevantamentos.create' => 'Criação de tipos de levantamento',
+            'tipoLevantamentos.edit'   => 'Edição de tipos de levantamento',
+            'tipoLevantamentos.delete'   => 'Remoção de tipos de levantamento',
+			
+			'mascaraInsumos.list' => 'Listagem de Mascara de Insumos',
+            'mascaraInsumos.create' => 'Criação de Mascara de Insumos',
+            'mascaraInsumos.edit'   => 'Edição de Mascara de Insumos',
+            'mascaraInsumos.delete'   => 'Remoção de Mascara de Insumos',
+			
+			'estruturas.list' => 'Listagem de estruturas',
+            'estruturas.create' => 'Criação de estruturas',
+            'estruturas.edit'   => 'Edição de estruturas',
+            'estruturas.delete'   => 'Remoção de estruturas',
 
             ################# SITE ###################
             'compras_lembretes.list' => 'Listagem de compras e lembretes',
@@ -199,7 +228,12 @@ class RolesAndPermissions extends Seeder
             'contratos.reapropriar' => 'Reapropriar item do contrato',
             'contratos.previsao_de_memoria_de_calculo' => 'Previsão de memória de cálculo',
             'contratos.solicitar_entrega' => 'Solicitar entrega do Contrato',
-
+			
+			'lpu.list'        => 'Listagem de Lpu',
+            'lpu.show'        => 'Visualização de Lpu',
+            'lpu.edit'        => 'Editar Lpu',			
+            'lpu.reajustar'   => 'Reajustar item do Lpu',
+            
             'configuracaoEstaticas.list'   => 'Listagem de Configuração padrão',
             'configuracaoEstaticas.edit'   => 'Edição de Configuração padrão',
             'configuracaoEstaticas.show'   => 'Visualizar Configuração padrão',

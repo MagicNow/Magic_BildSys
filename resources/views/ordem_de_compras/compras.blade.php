@@ -13,7 +13,7 @@
             <div class="box-body">
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="form-group">
+                        <div class="form-group js-datatable-filter-form">
                           <label for="select_obra">Obra</label>
                           {!!
                             Form::select(
@@ -30,7 +30,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-4">
-                                <div class="form-group">
+                                <div class="form-group js-datatable-filter-form">
                                   <label for="planejamento_id">Tarefa</label>
                                   {!!
                                     Form::select(
@@ -49,7 +49,7 @@
                             </div>
                             <div class="col-md-4">
                                 <label for="planejamento_id">Grupo de Insumo</label>
-                                <div class="form-group">
+                                <div class="form-group js-datatable-filter-form">
                                   {!!
                                     Form::select(
                                       'insumo_grupo_id',
@@ -66,7 +66,7 @@
                             </div>	
 							<div class="col-md-4">
                                 <label for="planejamento_id">Carteiras</label>
-                                <div class="form-group">
+                                <div class="form-group js-datatable-filter-form">
                                   {!!
                                     Form::select(
                                       'carteira_id',
@@ -82,7 +82,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group js-datatable-filter-form">
                           <div class="checkbox">
                             <label for="exibir_por_tarefa">
                               <input type="checkbox"
@@ -104,7 +104,7 @@
                                     <button class="btn btn-warning" data-calendar-view="year">Ano</button>
                                     <button class="btn btn-warning active" data-calendar-view="month">Mês</button>
                                     <button class="btn btn-warning" data-calendar-view="week">Semana</button>
-                                    <button class="btn btn-warning" data-calendar-view="day">Dia</button>
+                                    {{--<button class="btn btn-warning" data-calendar-view="day">Dia</button>--}}
                                 </div>
                             </div>
 
@@ -163,9 +163,9 @@
 
             obra = obra_id;
 
-            $('#filtro_obra')
-              .val($('#select_obra option:selected').text())
-              .trigger( "change" );
+//            $('#filtro_obra')
+//              .val($('#select_obra option:selected').text())
+//              .trigger( "change" );
 
             if(obra_id){
                 $('#planejamento_id').attr('disabled',false);
@@ -181,62 +181,13 @@
             atualizaCalendario();
         }
 
-        function atualizaCalendario() {
-            var queryString = '';
-            if(parseInt(obra) > 0){
-                queryString ='?obra_id=' + obra;
-            }
-
-            if(parseInt(planejamento_id) > 0){
-                if(queryString.length>0){
-                    queryString +='&';
-                }else{
-                    queryString +='?';
-                }
-                queryString +='planejamento_id=' + planejamento_id;
-            }
-
-            if(parseInt(insumo_grupo_id) > 0){
-                if(queryString.length>0){
-                    queryString +='&';
-                }else{
-                    queryString +='?';
-                }
-                queryString +='insumo_grupo_id=' + insumo_grupo_id;
-            }
-			
-			if(parseInt(carteira_id) > 0){
-                if(queryString.length>0){
-                    queryString +='&';
-                }else{
-                    queryString +='?';
-                }
-                queryString +='carteira_id=' + carteira_id;
-            }
-
-            var $exibirPorTarefa = $('#exibir_por_tarefa');
-            exibir_por_tarefa = $exibirPorTarefa.prop('checked');
-            if(exibir_por_tarefa > 0){
-                if(queryString.length>0){
-                    queryString +='&';
-                }else{
-                    queryString +='?';
-                }
-                queryString +='exibir_por_tarefa=' + exibir_por_tarefa;
-            }
-
-            calendar.setOptions({events_source: '{{ url('lembretes') }}' + queryString});
-
-            calendar.view();
-        }
-
         function atualizaCalendarioPorTarefa(tarefa) {
             planejamento_id = tarefa;
-            if(tarefa){
-                $('#filtro_tarefa').val($('#planejamento_id option:selected').text()).trigger( "change" );
-            }else{
-                $('#filtro_tarefa').val('').trigger( "change" );
-            }
+//            if(tarefa){
+//                $('#filtro_tarefa').val($('#planejamento_id option:selected').text()).trigger( "change" );
+//            }else{
+//                $('#filtro_tarefa').val('').trigger( "change" );
+//            }
             atualizaCalendario();
         }
 
@@ -269,75 +220,107 @@
 
         function atualizaCalendarioPorInsumoGrupo(insumo_grupo) {
             insumo_grupo_id = insumo_grupo;
-            if(insumo_grupo){
-                $('#filtro_grupo').val($('#insumo_grupo_id option:selected').text()).trigger( "change" );
-            }else{
-                $('#filtro_grupo').val('').trigger( "change" );
-            }
+//            if(insumo_grupo){
+//                $('#filtro_grupo').val($('#insumo_grupo_id option:selected').text()).trigger( "change" );
+//            }else{
+//                $('#filtro_grupo').val('').trigger( "change" );
+//            }
             atualizaCalendario();
         }
 		
 		function atualizaCalendarioPorCarteira(carteira) {
             carteira_id = carteira;
-            if(carteira){
-                $('#filtro_carteira').val($('#carteira_id option:selected').text()).trigger( "change" );
-            }else{
-                $('#filtro_carteira').val('').trigger( "change" );
-            }
+//            if(carteira){
+//                $('#filtro_carteira').val($('#carteira_id option:selected').text()).trigger( "change" );
+//            }else{
+//                $('#filtro_carteira').val('').trigger( "change" );
+//            }
             atualizaCalendario();
         }
 
-        $(function () {
+        function atualizaCalendario() {
+            startLoading();
 
-            var calendarOptions = {
-              language: 'pt-BR',
-              view: 'month',
-              tmpl_path: 'tmpls/',
-              tmpl_cache: false,
-              day: 'now',
-              onAfterEventsLoad: function (events) {
-                if (!events) {
-                  return;
+            @if(\Illuminate\Support\Facades\Input::get('obra_id'))
+                obra = {{\Illuminate\Support\Facades\Input::get('obra_id')}}
+            @endif
+
+            @if(\Illuminate\Support\Facades\Input::get('planejamento_id'))
+                planejamento_id = {{\Illuminate\Support\Facades\Input::get('planejamento_id')}}
+            @endif
+
+            @if(\Illuminate\Support\Facades\Input::get('insumo_grupo_id'))
+                insumo_grupo_id = {{\Illuminate\Support\Facades\Input::get('insumo_grupo_id')}}
+            @endif
+
+            @if(\Illuminate\Support\Facades\Input::get('carteira_id'))
+                carteira_id = {{\Illuminate\Support\Facades\Input::get('carteira_id')}}
+            @endif
+
+            var queryString = '';
+            if(parseInt(obra) > 0 || obra == 'todas'){
+                queryString ='?obra_id=' + obra;
+            }
+
+            if(parseInt(planejamento_id) > 0){
+                if(queryString.length>0){
+                    queryString +='&';
+                }else{
+                    queryString +='?';
                 }
-                var list = $('#eventlist');
-                list.html('');
-              },
-              onAfterViewLoad: function (view) {
-                $('.page-header h3').text(this.getTitle());
-                $('.btn-group button').removeClass('active');
-                $('button[data-calendar-view="' + view + '"]').addClass('active');
-              },
-              classes: {
-                months: {
-                  general: 'label'
+                queryString +='planejamento_id=' + planejamento_id;
+            }
+
+            if(parseInt(insumo_grupo_id) > 0){
+                if(queryString.length>0){
+                    queryString +='&';
+                }else{
+                    queryString +='?';
                 }
-              },
-              weekbox: false,
-              events_source: '/lembretes'
-            };
+                queryString +='insumo_grupo_id=' + insumo_grupo_id;
+            }
+
+            if(parseInt(carteira_id) > 0){
+                if(queryString.length>0){
+                    queryString +='&';
+                }else{
+                    queryString +='?';
+                }
+                queryString +='carteira_id=' + carteira_id;
+            }
 
             var $exibirPorTarefa = $('#exibir_por_tarefa');
+            exibir_por_tarefa = $exibirPorTarefa.prop('checked');
+            if(exibir_por_tarefa > 0){
+                if(queryString.length>0){
+                    queryString +='&';
+                }else{
+                    queryString +='?';
+                }
+                queryString +='exibir_por_tarefa=' + exibir_por_tarefa;
+            }
 
-            calendar = $('#calendar').calendar(calendarOptions);
+            if(queryString ) {
+                if(!calendar) {
+                    renderCalendar();
+                }
 
-            $exibirPorTarefa.on('change ifToggled', function(event) {
-              var isChecked = $exibirPorTarefa.prop('checked');
-              var date = calendar.options.position.start.toISOString().split('T')[0];
+                calendar.setOptions({events_source: '{{ url('lembretes') }}' + queryString});
+                calendar.view();
+            }
 
-              calendar = $('#calendar').calendar(Object.assign(calendarOptions, {
-                events_source: '/lembretes?exibir_por_tarefa=' + (+isChecked),
-                day: date
-              }))
+            history.pushState("", document.title, location.pathname+queryString);
+            window.LaravelDataTables["dataTableBuilder"].draw();
 
-              LaravelDataTables.dataTableBuilder.ajax.url(
-                location.pathname + '?exibir_por_tarefa=' + (+isChecked)
-              );
-              LaravelDataTables.dataTableBuilder.draw();
-              LaravelDataTables.dataTableBuilder.one('draw.dt', function() {
-                LaravelDataTables.dataTableBuilder.column('grupo:name').visible(!isChecked);
-              });
+            stopLoading();
+        }
 
-            });
+        $(function () {
+            @if(\Illuminate\Support\Facades\Input::get('obra_id'))
+                escolheObra({{\Illuminate\Support\Facades\Input::get('obra_id')}});
+            @else
+                atualizaCalendario();
+            @endif
 
             $('.btn-group button[data-calendar-nav]').each(function () {
                 var $this = $(this);
@@ -352,6 +335,78 @@
                     calendar.view($this.data('calendar-view'));
                 });
             });
+
+            $('#dataTableBuilder').on('preXhr.dt', function ( e, settings, data ) {
+                $('.js-datatable-filter-form :input').each(function () {
+                    if($(this).attr('type')=='checkbox'){
+                        if(data[$(this).prop('name')]==undefined){
+                            data[$(this).prop('name')] = [];
+                        }
+                        if($(this).is(':checked')){
+                            data[$(this).prop('name')].push($(this).val());
+                        }
+
+                    }else{
+                        data[$(this).prop('name')] = $(this).val();
+                    }
+                });
+            });
         });
+
+        function renderCalendar() {
+            startLoading();
+
+            var calendarOptions = {
+                language: 'pt-BR',
+                view: 'month',
+                tmpl_path: 'tmpls/',
+                tmpl_cache: false,
+                day: 'now',
+                onAfterEventsLoad: function (events) {
+                    if (!events) {
+                        return;
+                    }
+                    var list = $('#eventlist');
+                    list.html('');
+                },
+                onAfterViewLoad: function (view) {
+                    $('.page-header h3').text(this.getTitle());
+                    $('.btn-group button').removeClass('active');
+                    $('button[data-calendar-view="' + view + '"]').addClass('active');
+                },
+                classes: {
+                    months: {
+                        general: 'label'
+                    }
+                },
+                weekbox: false,
+                events_source: '/lembretes'
+            };
+
+            var $exibirPorTarefa = $('#exibir_por_tarefa');
+
+            calendar = $('#calendar').calendar(calendarOptions);
+
+            $exibirPorTarefa.on('change ifToggled', function(event) {
+                var isChecked = $exibirPorTarefa.prop('checked');
+                var date = calendar.options.position.start.toISOString().split('T')[0];
+
+                calendar = $('#calendar').calendar(Object.assign(calendarOptions, {
+                    events_source: '/lembretes?exibir_por_tarefa=' + (+isChecked),
+                    day: date
+                }));
+
+                LaravelDataTables.dataTableBuilder.ajax.url(
+                        location.pathname + '?exibir_por_tarefa=' + (+isChecked)
+                );
+                LaravelDataTables.dataTableBuilder.draw();
+                LaravelDataTables.dataTableBuilder.one('draw.dt', function() {
+                    LaravelDataTables.dataTableBuilder.column('grupo:name').visible(!isChecked);
+                });
+
+            });
+
+            stopLoading();
+        }
     </script>
 @stop

@@ -5,9 +5,9 @@
 <table class="table table-bordered table-no-margin table-all-center">
     <thead>
         <tr>
-            <th>Código Estruturado</th>
-            <th>Descrição do Insumo</th>
-            <th>Un. Medidia</th>
+            <th>Código</th>
+            <th>Descrição</th>
+            <th>Un. Medida</th>
             <th>Qtd. Solicitada</th>
             <th>Valor Unitário</th>
             <th>Valor Total</th>

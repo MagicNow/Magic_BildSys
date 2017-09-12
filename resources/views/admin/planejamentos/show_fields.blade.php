@@ -101,7 +101,7 @@
 
         <!-- Data Field -->
         <div class="form-group col-md-6">
-            {!! Form::label('data', 'Data Início:') !!}
+            {!! Form::label('data', 'Data InÃ­cio:') !!}
             <p class="form-control">{!! $planejamento->data ? with(new\Carbon\Carbon($planejamento->data))->format('d/m/Y') : '' !!}</p>
         </div>
 
@@ -143,7 +143,7 @@
                                         <table class="table table-hover">
                                             <tbody>
                                                 <h4>
-                                                    Serviço:
+                                                    ServiÃ§o:
                                                     <span data-toggle="tooltip" data-placement="top" data-html="true" title="
                                                         {{$item->grupo->codigo.' - '.$item->grupo->nome}}<br/>
                                                         {{$item->subgrupo1->codigo.' - '.$item->subgrupo1->nome}}<br/>
@@ -203,7 +203,7 @@
                   showCancelButton: true,
                   confirmButtonColor: "#DD6B55",
                   confirmButtonText: "Sim, remover!",
-                  cancelButtonText: "Não",
+                  cancelButtonText: "NÃ£o",
                   closeOnConfirm: false
             },
             function(){
@@ -219,11 +219,10 @@
                     }
                 }).fail(function (retorno) {
                     stopLoading();
-                    error = 'Não foi possível remover o item';
+                    error = 'NÃ£o foi possÃ­vel remover o item';
                     swal("Oops" + error, "error");
                 });
             });
         }
     </script>
 @endsection
-

@@ -526,7 +526,7 @@
         }
 
         function alteraValorUnitario(valor, insumo_id, grupo_id, subgrupo1_id, subgrupo2_id, subgrupo3_id, servico_id) {
-            if(moneyToFloat(valor) > 0) {
+            if(moneyToFloat(valor) >= 0) {
                 $.ajax({
                     url: '/ordens-de-compra/carrinho/alterar-valor-unitario/' + insumo_id,
                     data: {

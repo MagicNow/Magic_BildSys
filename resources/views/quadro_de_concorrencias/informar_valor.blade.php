@@ -46,7 +46,7 @@
     @endif
 
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-12">
             @if(auth()->user()->fornecedor)
                 {!! Form::hidden('fornecedor_id', auth()->user()->fornecedor->id) !!}
                 <h3>{{ auth()->user()->fornecedor->nome }}</h3>
@@ -63,33 +63,21 @@
                 </div>
             @endif
         </div>
-        <div class="col-md-3">
-            <a href="#modal-fornecedor"
-               data-toggle="modal"
-               class="btn btn-link btn-block">
-                <i class="fa fa-info"></i> Obrigações do Fornecedor
-            </a>
-        </div>
-        <div class="col-md-3">
-            <a href="#modal-bild"
-               data-toggle="modal"
-               class="btn btn-link btn-block">
-                <i class="fa fa-info"></i> Obrigações BILD
-            </a>
-        </div>
+
     </div>
     <div class="box box-solid">
         <div class="box-body table-responsive">
             <table class="table table-responsive table-striped table-align-middle table-condensed">
                 <thead>
                 <tr>
-                    <th>Obra - Cidade</th>
-                    <th>Insumo</th>
-                    <th>Observações ao fornecedor:</th>
-                    <th>Un. de Medida</th>
-                    <th>Quantidade</th>
-                    <th>Valor Unitário</th>
-                    <th>Valor Total</th>
+                    <th class="text-center">Obra - Cidade</th>
+                    <th class="text-center">Código</th>
+                    <th class="text-center">Descrição</th>
+                    <th class="text-center">Un. de Medida</th>
+                    <th class="text-center">Observações ao fornecedor:</th>
+                    <th class="text-center">Quantidade</th>
+                    <th class="text-center">Valor Unitário</th>
+                    <th class="text-center">Valor Total</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -100,7 +88,9 @@
                                 {{ $obra->nome }} - {{ $obra->cidade->nome }}{{ !$loop->last ? ',' : '' }}
                             @endforeach
                         </td>
+                        <td>{{ $item->insumo->codigo }}</td>
                         <td>{{ $item->insumo->nome }}</td>
+                        <td>{{ $item->insumo->unidade_sigla }}</td>
                         <td>
                             {!!
                               Form::textarea(
@@ -117,8 +107,6 @@
                               )
                             !!}
                         </td>
-
-                        <td>{{ $item->insumo->unidade_sigla }}</td>
                         <td class="js-calc-amount">
                             {{ number_format($item->qtd,2,',','.') }}
                             {!! Form::hidden("itens[{$item->id}][qtd]", $item->qtd) !!}
@@ -442,7 +430,7 @@
                             <thead>
                             <tr>
                                 <th width="15%">Item</th>
-                                <th width="25%">Descriação</th>
+                                <th width="25%">Descrição</th>
                                 <th width="20%">Validação</th>
                                 <th width="25%">Obs</th>
                             </tr>
@@ -523,6 +511,36 @@
             </div>
         </div>
 
+
+
+        {{--Obrigações da BILD--}}
+
+        <div class="col-md-12">
+
+            <div class="box box-primary">
+                <div class="box-header with-border">Obrigações da BILD</div>
+                <div class="box-body">
+                    {{ $quadro->obrigacoes_bild }}
+                </div>
+
+            </div>
+        </div>
+
+
+        {{--Obrigações do Forncedor--}}
+
+        <div class="col-md-12">
+
+            <div class="box box-primary">
+                <div class="box-header with-border">Obrigações do Forncedor</div>
+                <div class="box-body">
+                    {{ $quadro->obrigacoes_fornecedor }}
+                </div>
+
+            </div>
+        </div>
+
+
     </div>
 
     <div class="row">
@@ -565,34 +583,7 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="modal-fornecedor" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                                aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title"> Obrigações do Fornecedor </h4>
-                </div>
-                <div class="modal-body">
-                    {{ $quadro->obrigacoes_fornecedor }}
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade" id="modal-bild" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                                aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title"> Obrigações Bild </h4>
-                </div>
-                <div class="modal-body">
-                    {{ $quadro->obrigacoes_bild }}
-                </div>
-            </div>
-        </div>
-    </div>
+
     {!!
       Form::select(
         'desistencia_motivo_id',

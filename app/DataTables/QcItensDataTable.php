@@ -188,13 +188,13 @@ class QcItensDataTable extends DataTable
     protected function getColumns()
     {
         $columns = [
-            'Nº Do Insumo' => ['name' => 'insumos.codigo', 'data' => 'codigo'],
-            'Descrição Do Insumo' => ['name' => 'insumos.nome', 'data' => 'nome'],
+            'Código' => ['name' => 'insumos.codigo', 'data' => 'codigo'],
+            'Descrição' => ['name' => 'insumos.nome', 'data' => 'nome'],
+            'Un&period; De Medida' => ['name' => 'insumos.unidade_sigla', 'data' => 'unidade_sigla'],
             'qtd' => ['name' => 'qc_itens.qtd', 'data' => 'qtd'],
             'Itens Agrupados' => ['name' => 'oci_qtd', 'data' => 'oci_qtd'],
             'Obra(s)' => ['name' => 'obras', 'data' => 'obras'],
             'detalhamento De Insumo' => ['name' => 'obs', 'data' => 'obs','searchable' => false, 'orderable' => false],
-            'Un. De Medida' => ['name' => 'insumos.unidade_sigla', 'data' => 'unidade_sigla'],
             'action' => ['name' => 'Ações', 'title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'30px'],
         ];
         if($this->show){

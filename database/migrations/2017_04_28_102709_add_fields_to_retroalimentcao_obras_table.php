@@ -13,9 +13,11 @@ class AddFieldsToRetroalimentcaoObrasTable extends Migration
      */
     public function up()
     {
-        Schema::table('retroalimentacao_obras', function (Blueprint $table){
+        Schema::table('retroalimentacao_obras', function (Blueprint $table) {
             //Cadastro
-            $table->dropColumn(['nome','descricao']);
+            $table->dropColumn(['nome', 'descricao']);
+        });
+        Schema::table('retroalimentacao_obras', function (Blueprint $table) {
             $table->string('origem')->nullable();
             $table->string('categoria')->nullable();
             $table->text('situacao_atual')->nullable();
@@ -53,6 +55,8 @@ class AddFieldsToRetroalimentcaoObrasTable extends Migration
                 'resultado_obtido',
                 'aceite'
             ]);
+        });
+        Schema::table('retroalimentacao_obras', function (Blueprint $table) {
             $table->string('nome');
             $table->text('descricao')->nullable();
         });

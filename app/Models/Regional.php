@@ -45,6 +45,14 @@ class Regional extends Model
     public static $rules = [
         
     ];
+	
+	/**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function lpu()
+    {
+        return $this->hasMany(Lpu::class);
+    }
 
     
 }

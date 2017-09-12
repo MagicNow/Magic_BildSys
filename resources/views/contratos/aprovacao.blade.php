@@ -82,8 +82,8 @@
 
 @if($contrato->contrato_status_id == 4 )
     <a href="{{ route('contratos.imprimirContrato', $contrato->id) }}" target="_blank"
-        class="btn btn-lg btn-flat btn-success" title="Imprimir Contrato para enviar ao Fornecedor">
-        <i class="fa fa-print"></i>
+        class="btn btn-lg btn-flat btn-warning" title="Baixar Minuta para ser Assinada pelo Fornecedor">
+        <i class="fa fa-download"></i>
     </a>
 @endif
 <small class="label label-default pull-right margin10">

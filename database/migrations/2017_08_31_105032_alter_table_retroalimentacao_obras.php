@@ -36,9 +36,6 @@ class AlterTableRetroalimentacaoObras extends Migration
     {
         Schema::table('retroalimentacao_obras', function (Blueprint $table) {
 
-            $table->dropColumn('categoria');
-            $table->dropColumn('status');
-
             $table->string('categoria')->nullable();
             $table->string('status')->nullable();
         });

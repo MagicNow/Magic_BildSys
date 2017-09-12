@@ -226,14 +226,6 @@ EOFSQL;
                 $join->on('ordem_de_compra_itens.subgrupo3_id', 'contrato_item_apropriacoes.subgrupo3_id');
                 $join->on('ordem_de_compra_itens.servico_id', 'contrato_item_apropriacoes.servico_id');
                 $join->on('ordem_de_compra_itens.obra_id', DB::raw($contrato->obra_id));
-                $join->on('ordem_de_compra_itens.id', DB::raw('(
-                    SELECT
-                        oc_item_qc_item.ordem_de_compra_item_id
-                    FROM
-                        oc_item_qc_item WHERE
-                        oc_item_qc_item.qc_item_id = contrato_itens.qc_item_id
-                    )')
-                );
             })
             ->leftJoin('orcamentos', function ($join) use ($contrato) {
                 $join->on('orcamentos.insumo_id', 'contrato_item_apropriacoes.insumo_id');
@@ -247,7 +239,14 @@ EOFSQL;
             })
             ->leftJoin(DB::raw('orcamentos orcamentos_sub'),  'orcamentos_sub.id', 'orcamentos.orcamento_que_substitui')
             ->leftJoin(DB::raw('insumos insumos_sub'), 'insumos_sub.id', 'orcamentos_sub.insumo_id')
-            ->whereIn('contrato_item_id', ContratoItem::where('contrato_id', $contrato->id)->pluck('id', 'id'));
+            ->whereIn('contrato_item_id', ContratoItem::where('contrato_id', $contrato->id)->pluck('id', 'id'))
+            ->whereRaw('ordem_de_compra_itens.id IN (
+                    SELECT
+                        oc_item_qc_item.ordem_de_compra_item_id
+                    FROM
+                        oc_item_qc_item WHERE
+                        oc_item_qc_item.qc_item_id = contrato_itens.qc_item_id
+                    )');
 
             $contrato_itens_apropriacoes = $itens->get();
             $contrato_itens_get = $itens->groupBy('contrato_itens.id')->get();

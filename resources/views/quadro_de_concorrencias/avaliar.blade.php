@@ -1,6 +1,11 @@
 @extends('layouts.front')
 
 @section('content')
+    <style type="text/css">
+        /*.table-nowrap>tr>td{*/
+            /*white-space: nowrap;*/
+        /*}*/
+    </style>
     <div class="row">
         <div class="col-sm-12">
             <section class="content-header">
@@ -70,13 +75,74 @@
                     <i class="iconeExpandeEncolhe fa fa-minus"></i>
                 </button>
             </div>
-            <div class="box-body">
-                {!!
-                  $dataTable->table([
-                    'width' => '100%',
-                    'class' => 'table table-striped table-hover'
-                  ], true)
-                !!}
+            <div class="box-body text-right">
+
+                    <div class="table-responsive">
+                        <table id="fixTable" class="table table-bordered table-striped table-condensed table-nowrap">
+                            <thead>
+                            <tr>
+                                <th nowrap class="text-left">Insumo</th>
+                                <th nowrap class="text-center">Unidade</th>
+                                <th nowrap class="text-right">Quant.</th>
+                                <th nowrap colspan="2"  class="text-center">Orçamento</th>
+                                @foreach($qcFornecedores as $qcFornecedor)
+                                    <th colspan="2" nowrap class="text-center">
+                                        {{ $qcFornecedor->fornecedor->nome }}
+                                    </th>
+                                @endforeach
+                            </tr>
+
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th nowrap class="text-right">Vlr. Unitário</th>
+                                <th nowrap class="text-right">Vlr. Total</th>
+                                @foreach($qcFornecedores as $qcFornecedor)
+                                    <th nowrap class="text-right">Vlr. Unitário</th>
+                                    <th nowrap class="text-right">Vlr. Total</th>
+                                @endforeach
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <?php
+                                    $vl_total_orcamento = 0;
+                            ?>
+                            @foreach($itens as $item)
+                                @if($item['insumo']!='TOTAL')
+                                    <tr>
+                                        <td nowrap class="text-left">{{ $item['insumo'] }}</td>
+                                        <td nowrap class="text-center">{{ $item['unidade'] }}</td>
+                                        <td nowrap class="text-right">{{ $item['qntd do QC'] }}</td>
+                                        <td nowrap class="text-right">{{ $item['valor unitário do orçamento'] }}</td>
+                                        <td nowrap class="text-right">{{ $item['Valor total previsto'] }}</td>
+                                        <?php $vl_total_orcamento += doubleval($item['vl_total_orcamento']); ?>
+                                        @foreach($qcFornecedores as $qcFornecedor)
+                                            <td nowrap class="text-right">{{ isset($item[$qcFornecedor->id])? $item[$qcFornecedor->id]['unitario'] : '' }}</td>
+                                            <td nowrap class="text-right">{{ isset($item[$qcFornecedor->id])? $item[$qcFornecedor->id]['total']: '' }}</td>
+                                        @endforeach
+                                    </tr>
+                                @else
+                                    <tr class="warning">
+                                        <td colspan="4" class="text-left">TOTAL</td>
+                                        <td class="text-right">{{ float_to_money($vl_total_orcamento) }}</td>
+                                        @foreach($qcFornecedores as $qcFornecedor)
+                                            <td nowrap colspan="2" class="text-right">{{ isset($item[$qcFornecedor->id])? $item[$qcFornecedor->id] : '' }}</td>
+                                        @endforeach
+                                    </tr>
+                                @endif
+                            @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+
+                {{--{!!--}}
+                  {{--$dataTable->table([--}}
+                    {{--'width' => '100%',--}}
+                    {{--'class' => 'table table-striped table-hover',--}}
+                    {{--'style' => 'text-align: right;'--}}
+                  {{--], true)--}}
+                {{--!!}--}}
             </div>
         </div>
 
@@ -119,14 +185,15 @@
                                     }
                                 @endphp
                                 @foreach($qcFornecedores as $qcFornecedor)
-                                    <td class="{{ $classe_campo }}">
-                                        @php
-                                            $campo_extra_fornecedor = null;
-                                            if(strlen($qcFornecedor->campos_extras_contrato)){
-                                                $campos_extras_contrato = json_decode($qcFornecedor->campos_extras_contrato);
-                                                $campo_extra_fornecedor = isset($campos_extras_contrato->$v_tag)?$campos_extras_contrato->$v_tag:'';
-                                            }
-                                        @endphp
+                                @php
+                                    $campo_extra_fornecedor = null;
+                                    if(strlen($qcFornecedor->campos_extras_contrato)){
+                                        $campos_extras_contrato = json_decode($qcFornecedor->campos_extras_contrato);
+                                        $campo_extra_fornecedor = isset($campos_extras_contrato->$v_tag)?$campos_extras_contrato->$v_tag:'';
+                                    }
+                                @endphp
+                                    <td class="{{ $campo_extra_fornecedor? $classe_campo : 'text-center' }}">
+
                                         @if($campo_extra_fornecedor)
                                             {{ $campo_extra_fornecedor }}
                                             @else
@@ -161,7 +228,7 @@
                     <table class="table table-striped table-condensed table-bordered table-hover">
                         <thead>
                         <tr>
-                            <th>Requerimento</th>
+                            <th>Item</th>
                             @foreach($qcFornecedores as $qcFornecedor)
                                 <th>
                                     {{ $qcFornecedor->fornecedor->nome }}
@@ -179,7 +246,7 @@
                                                 class="btn btn-default btn-flat btn-xs js-sweetalert"
                                                 data-title="{{ $equalizacao->nome }}"
                                                 data-text="{{ $equalizacao->descricao }}">
-                                            <i class="fa fa-info-circle"></i> detalhes
+                                            <i class="fa fa-info-circle text-primary"></i> detalhes
                                         </button>
 
                                         @if($equalizacao->obrigatorio)
@@ -504,7 +571,9 @@
                             <table class="table table-striped table-align-middle">
                                 <thead>
                                 <tr>
-                                    <th>Insumos</th>
+                                    <th>Código</th>
+                                    <th>Descrição</th>
+                                    <th>Un. de medida</th>
                                     <th>Qtd</th>
                                     @foreach($qcFornecedores as $qcFornecedor)
                                         <th>
@@ -531,10 +600,17 @@
                                 <tbody>
                                 @foreach($quadro->itens as $item)
                                     <tr class="js-insumo-row">
-                                        <td class="text-left">{{ $item->insumo->nome }}</td>
+                                        <td class="text-left">
+                                            {{ $item->insumo->codigo }}
+                                        </td>
+                                        <td class="text-left">
+                                            {{ $item->insumo->nome }}
+                                        </td>
+                                        <td class="text-left">
+                                            {{ $item->insumo->unidade_sigla }}
+                                        </td>
                                         <td>
                                             {{ float_to_money($item->qtd, '') }}
-                                            {{ $item->insumo->unidade_sigla }}
                                         </td>
                                         @foreach($qcFornecedores as $qcFornecedor)
                                             @php
@@ -712,6 +788,9 @@
             });
 
             $('.icheck_destroy').iCheck('destroy');
+
+            $("#fixTable").tableHeadFixer({'left' : 3, 'head' : true});
+
         });
 
         function expandeEncolhe(qual) {

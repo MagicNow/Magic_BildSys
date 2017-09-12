@@ -119,8 +119,15 @@
                                         ->where('created_at', '>=', $item->updated_at)
                                         ->orderBy('id', 'DESC')
                                         ->get();
+
+                                $insumo_aprovado = $item->aprovacoes()
+                                        ->where('aprovado', 1)
+                                        ->where('created_at', '>=', $item->updated_at)
+                                        ->orderBy('id', 'DESC')
+                                        ->first();
                             }else{
                                 $motivos_reprovacao = [];
+                                $insumo_aprovado = null;
                             }
                             ?>
                             @if(count($motivos_reprovacao))
@@ -134,6 +141,17 @@
                                         @endif
                                         Justificativa: <span style="font-weight:bold;">{{$motivo_reprovacao->justificativa}}</span>
                                     @endforeach
+                                </div>
+                            @endif
+
+                            @if($insumo_aprovado)
+                                <div class="alert alert-success" role="alert" id="alert_{{ $item->id }}">
+                                    @if($insumo_aprovado->user)
+                                        Usuário: <span style="font-weight:bold;">{{$insumo_aprovado->user->name}}</span>
+                                    @endif
+                                    @if($insumo_aprovado->created_at)
+                                        Aprovado em: <span style="font-weight:bold;">{{$insumo_aprovado->created_at->format('d/m/Y H:i')}}</span>
+                                    @endif
                                 </div>
                             @endif
 
@@ -166,7 +184,7 @@
                                 </div>
                             @endif
                             <div class="row">
-                                <span class="col-md-2 col-sm-2 col-xs-12 text-center borda-direita" data-toggle="tooltip" data-placement="top" data-html="true"
+                                <span class="col-md-3 col-sm-3 col-xs-12 text-center borda-direita" data-toggle="tooltip" data-placement="top" data-html="true"
                                       title="
                                         {{$item->grupo->codigo.' - '.$item->grupo->nome}}<br/>
                                         {{$item->subgrupo1->codigo.' - '.$item->subgrupo1->nome}}<br/>
@@ -231,7 +249,7 @@
                                     </button>
                                     {!! Form::close() !!}
                                 </span>
-                                <span class="col-md-1 col-sm-1 col-xs-1 text-center">
+                                <span>
                                     <button type="button" class="btn btn-flat btn-link"
                                             style="font-size: 18px; margin-top: -7px" onclick="showHideExtra({{ $item->id }})">
                                         <i class="icone-expandir fa fa-caret-right" aria-hidden="true"></i>

@@ -531,8 +531,8 @@ class ComprasDataTable extends DataTable
     {
         return [
             'código' => ['name' => 'codigo', 'data' => 'codigo'],
-            'insumos' => ['name' => 'nome', 'data' => 'nome'],
-            'un De Medida' => ['name' => 'unidade_sigla', 'data' => 'unidade_sigla'],
+            'descrição' => ['name' => 'nome', 'data' => 'nome'],
+            'un&period; De Medida' => ['name' => 'unidade_sigla', 'data' => 'unidade_sigla'],
             'Qtd_de_orçamento' => ['name' => 'orcamentos.qtd_total', 'data' => 'qtd_total'],
             'saldo_de_qtd' => ['name' => 'orcamentos.qtd_total', 'data' => 'saldo'],
             'quantidade Compra' => ['name' => 'quantidade_compra', 'data' => 'quantidade_compra', 'searchable' => false, 'width'=>'8%'],

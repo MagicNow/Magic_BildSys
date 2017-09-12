@@ -34,8 +34,9 @@ class AlterOrcamentosTroca extends Migration
      */
     public function down()
     {
-        Schema::table('orcamentos', function() {
+        Schema::table('orcamentos', function(Blueprint $table) {
             $table->dropColumn('trocado');
+            $table->dropForeign('orcamentos_orcamento_que_substitui_foreign');
             $table->dropColumn('orcamento_que_substitui');
         });
     }
