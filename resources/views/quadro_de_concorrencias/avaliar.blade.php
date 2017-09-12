@@ -659,7 +659,7 @@
                                 @endforeach
                                 @if($quadro->hasMaterial())
                                     <tr>
-                                        <td colspan="2" class="text-right"><strong>Frete</strong></td>
+                                        <td colspan="4" class="text-right"><strong>Frete</strong></td>
                                         @foreach($qcFornecedores as $qcFornecedor)
                                             <td class="text-center">
                                                 {{ $qcFornecedor->tipo_frete }}
