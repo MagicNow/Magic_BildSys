@@ -5,7 +5,7 @@
 </div>
 
 <div class="form-group col-sm-6">
-    {!! Form::label('carteiraUsers', 'Usuários nesta carteira:') !!}
+    {!! Form::label('carteiraUsers', 'Comprador para esta carteira:') !!}
     {!! Form::select('carteiraUsers[]', $usuarios , (!isset($carteira )? null : $carteiraUsers), ['class' => 'form-control', 'id'=>"carteiraUsers", 'multiple'=>"multiple"]) !!}
 </div>
 
