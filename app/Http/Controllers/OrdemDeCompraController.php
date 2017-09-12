@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\DataTables\DetalhesServicosDataTable;
 use App\Models\CompradorInsumo;
+use App\Models\ContratoItem;
 use App\Models\OrdemDeCompraItemLog;
 use App\Models\PadraoEmpreendimento;
 use App\Models\Regional;
@@ -1090,8 +1091,18 @@ class OrdemDeCompraController extends AppBaseController
 
         $ordemDeCompraItem = OrdemDeCompraItem::find($id);
 
+
+        if ($request->coluna == 'sugestao_contrato_id') {
+
+            $r = ContratoItem::where('contrato_id',$request->conteudo)->where('insumo_id', $ordemDeCompraItem->insumo_id)->get();
+
+            if (count($r) > 0)
+                return response()->json(['message'=>'O contrato que deseja vincular já possui este insumo, faça um reajuste!'], 404);
+
+        }
+
         if (!$ordemDeCompraItem) {
-            return response('Item não encontrado', 404)->json(['message'=>'Item não encontrado']);
+            return response()->json(['message'=>'Item não encontrado'], 404);
         }
 
         $salvo = $ordemDeCompraItem->update([
@@ -1105,7 +1116,7 @@ class OrdemDeCompraController extends AppBaseController
     {
         $ordemDeCompraItem = OrdemDeCompraItem::find($id);
         if (!$ordemDeCompraItem) {
-            return response('Item não encontrado', 404)->json(['message'=>'Item não encontrado']);
+            return response()->json(['message'=>'Item não encontrado'], 404);
         }
         $salvos = 0;
         if (!$request->anexos) {
