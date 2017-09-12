@@ -4,12 +4,6 @@
     {!! Form::text('nome', null, ['class' => 'form-control', 'required']) !!}
 </div>
 
-<!-- Obra Id Field -->
-<div class="form-group col-sm-4">
-    {!! Form::label('obra_id', 'Obra:') !!}
-    {!! Form::select('obra_id',[''=>'Escolha...']+$obras, null, ['class' => 'form-control']) !!}
-</div>
-
 <!-- Tipo Orçamento Id Field -->
 <div class="form-group col-sm-3">
     {!! Form::label('orcamento_tipo_id', 'Tipo Orçamento:') !!}
