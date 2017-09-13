@@ -649,16 +649,6 @@ class QuadroDeConcorrenciaController extends AppBaseController
                 'qc_status_id' => QcStatus::CONCORRENCIA_FINALIZADA
             ]);
 
-            //Envia email de agradecimento a todos os fornecedores que estavam participando do QC
-
-            $forncedoresQC = $qcFornecedorRepository->with('fornecedor')->buscarPorQuadroNaRodada($id);
-
-            foreach ($forncedoresQC as $fornecedor ) {
-
-                $this->quadroDeConcorrenciaRepository->notifyFornecedorParticipacaoQC($fornecedor->fornecedor);
-            }
-
-
             if ($request->valor_frete) {
                 foreach ($request->valor_frete as $qcFornecedorId => $valor) {
                     $valor = !is_null($valor)?money_to_float($valor):0;
@@ -683,6 +673,15 @@ class QuadroDeConcorrenciaController extends AppBaseController
         }
 
         DB::commit();
+
+        //Envia email de agradecimento a todos os fornecedores que estavam participando do QC
+
+        $forncedoresQC = $qcFornecedorRepository->with('fornecedor')->buscarPorQuadroNaRodada($id);
+
+        foreach ($forncedoresQC as $fornecedor ) {
+
+            $this->quadroDeConcorrenciaRepository->notifyFornecedorParticipacaoQC($fornecedor->fornecedor);
+        }
 
         Flash::success(
             'Quadro de Concorrência #' . $quadro->id . ' foi finalizado com sucesso.'

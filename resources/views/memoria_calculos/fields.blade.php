@@ -1,3 +1,8 @@
+<?php
+$countTrechos = 0;
+$countPavimentos = 0;
+$indexBloco = 0;
+?>
 <style type="text/css">
     .fa-th-large {
         cursor: ns-resize;
@@ -48,8 +53,6 @@
         <ul class="list-group" id="blocos">
             @if(isset($memoriaCalculo))
                 <?php
-                $countTrechos = 0;
-                $countPavimentos = 0;
                 if ($memoriaCalculo->modo == 'T') {
                     $nomeEstrutura = 'Estrutura';
                     $nomePavimento = 'Pavimento';
@@ -87,7 +90,7 @@
                                             class="fa fa-plus"></i> {{ $nomePavimento }}
                                 </button>
                                 @if($bloco['editavel'])
-                                    <button type="button" onclick="removeBloco({{ $indexBloco }})" data-toggle="tooltip" title="Remover {{ $nomePavimento }}"
+                                    <button type="button" onclick="removeBloco({{ $indexBloco }})" data-toggle="tooltip" title="Remover {{ $nomeEstrutura }}"
                                             class="btn btn-flat btn-xs btn-danger">
                                         <i class="fa fa-times"></i>
                                     </button>
@@ -135,7 +138,7 @@
                                                     @if($pavimento['editavel'])
                                                         <button type="button"
                                                                 onclick="removeLinha({{ $indexBloco }},{{ $indexPavimento }})"
-                                                                data-toggle="tooltip" title="Remover {{ $nomeTrecho }}"
+                                                                data-toggle="tooltip" title="Remover {{ $nomePavimento }}"
                                                                 class="btn btn-flat btn-xs btn-danger">
                                                             <i class="fa fa-times"></i>
                                                         </button>
@@ -232,9 +235,9 @@
         var nomeEstrutura = '';
         var nomePavimento = '';
         var nomeTrecho = '';
-        var blocos = 0;
-        var pavimentosCount = 0;
-        var trechosCount = 0;
+        var blocos = {{ $indexBloco + 1 }};
+        var pavimentosCount = {{ $countPavimentos + 1 }};
+        var trechosCount = {{ $countTrechos + 1 }};
         var bloco_aberto = true;
         var pavimento_aberto = true;
         $(function () {
@@ -255,10 +258,6 @@
             });
 
             @if(isset($memoriaCalculo))
-                blocos = {{ $indexBloco + 1 }};
-                pavimentosCount = {{ $countPavimentos + 1 }};
-                trechosCount = {{ $countTrechos + 1 }};
-
                 sortable('.pavBlocos', {handle: 'b'});
 
                 sortable('.pavBlocos')[0].addEventListener('sortstop', function (e) {
@@ -549,7 +548,7 @@
             trechosCount++;
 
             trechoHTML = '' +
-                    '<li class="list-group-item trechoClass' + bloco + '_' + pavimento + '" trecho="' + trechosCount + '" id="blocoTrecho_' + trechosCount + '">' +
+                    '<li class="list-group-item trechoClass' + bloco + '_' + pavimento + '" trecho="' + trechosCount + '" id="blocoTrecho_' + bloco + '_' + pavimento + '_' + trechosCount + '">' +
                     '<div class="input-group">' +
                     '<span class="input-group-addon" id="trecho' + trechosCount + '">' + nomeTrecho + '</span>' +
                     '<select class="form-control select2" required="required" onchange="atualizaVisual()"  ' +
