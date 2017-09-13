@@ -660,7 +660,7 @@ class LembretesHomeDataTable extends DataTable
                                             LIMIT 1
                                     ) IS NOT NULL
                                     AND lembretes.deleted_at IS NULL
-                                    ' . ($this->request()->get('obra_id') || $this->request()->get('obra_id') != 'todas' ? ' AND planejamentos.obra_id = ' . $this->request()->get('obra_id') : '') . '
+                                    ' . ($this->request()->get('obra_id') && $this->request()->get('obra_id') != 'todas' ? ' AND planejamentos.obra_id = ' . $this->request()->get('obra_id') : '') . '
                                     ' . ($this->request()->get('planejamento_id') ? ' AND planejamentos.id = ' . $this->request()->get('planejamento_id') : '') . '
                                     ' . ($this->request()->get('insumo_grupo_id') ? ' AND insumos.insumo_grupo_id = ' . $this->request()->get('insumo_grupo_id') : '') . '
                                     GROUP BY id, obra, tarefa, url, url_dispensar, grupo, inicio, dias, carteira
@@ -849,7 +849,7 @@ class LembretesHomeDataTable extends DataTable
                                             LIMIT 1
                                     ) IS NOT NULL
                                     AND lembretes.deleted_at IS NULL
-                                    ' . ($this->request()->get('obra_id') || $this->request()->get('obra_id') != 'todas' ? ' AND planejamentos.obra_id = ' . $this->request()->get('obra_id') : '') . '
+                                    ' . ($this->request()->get('obra_id') && $this->request()->get('obra_id') != 'todas' ? ' AND planejamentos.obra_id = ' . $this->request()->get('obra_id') : '') . '
                                     ' . ($this->request()->get('planejamento_id') ? ' AND planejamentos.id = ' . $this->request()->get('planejamento_id') : '') . '
                                     ' . ($this->request()->get('insumo_grupo_id') ? ' AND insumos.insumo_grupo_id = ' . $this->request()->get('insumo_grupo_id') : '') . '
                                     GROUP BY id, obra, tarefa, url, url_dispensar, grupo, inicio, dias, carteira
