@@ -18,6 +18,31 @@ class CatalogoContratoDataTable extends DataTable
         return $this->datatables
             ->eloquent($this->query())
             ->editColumn('action', 'catalogo_contratos.datatables_actions')
+            ->editColumn('insumos_catalogo',function($obj){
+                return '<span class="label label-default" title="'.$obj->insumos_catalogo.'" data-toggle="tooltip" data-html="true" >
+                            <i class="fa fa-info"></i>
+                            Ver insumos
+                            </span>';
+            })
+            ->filterColumn('insumos_catalogo', function ($query, $keyword) {
+                $query->whereRaw("EXISTS (
+                                        SELECT 1 
+                                        FROM catalogo_contrato_insumos 
+                                        JOIN insumos ON insumos.id = catalogo_contrato_insumos.insumo_id
+                                         WHERE insumos.nome LIKE ? 
+                                         AND catalogo_contrato_id = catalogo_contratos.id
+                                        )", ["%$keyword%"]);
+            })
+            ->filterColumn('regionais', function ($query, $keyword) {
+                $query->whereRaw("EXISTS (
+                                        SELECT 1 
+                                        FROM
+                                        catalogo_contrato_regional
+                                        JOIN regionais ON regionais.id = catalogo_contrato_regional.regional_id
+                                         WHERE regionais.nome LIKE ? 
+                                         AND catalogo_contrato_id = catalogo_contratos.id
+                                        )", ["%$keyword%"]);
+            })
             ->make(true);
     }
 
@@ -32,13 +57,22 @@ class CatalogoContratoDataTable extends DataTable
             'catalogo_contratos.id',
             'fornecedores.nome as fornecedor',
             'catalogo_contrato_status.nome as status',
-            DB::raw('(
+            DB::raw("(
                 SELECT 
-                    COUNT(Distinct insumo_id)
+                    GROUP_CONCAT(DISTINCT insumos.nome ORDER BY insumos.nome ASC SEPARATOR '<br>')
                 FROM
                     catalogo_contrato_insumos
+                    JOIN insumos ON insumos.id = catalogo_contrato_insumos.insumo_id
                 WHERE catalogo_contrato_id = catalogo_contratos.id
-            ) as insumos')
+            ) AS insumos_catalogo"),
+            DB::raw("(
+                SELECT 
+                    GROUP_CONCAT(DISTINCT regionais.nome ORDER BY regionais.nome ASC SEPARATOR '<br>')
+                FROM
+                    catalogo_contrato_regional
+                    JOIN regionais ON regionais.id = catalogo_contrato_regional.regional_id
+                WHERE catalogo_contrato_id = catalogo_contratos.id
+            ) AS regionais")
         ])
         ->join('fornecedores','catalogo_contratos.fornecedor_id','fornecedores.id')
         ->join('catalogo_contrato_status','catalogo_contratos.catalogo_contrato_status_id','catalogo_contrato_status.id');
@@ -108,7 +142,8 @@ class CatalogoContratoDataTable extends DataTable
     {
         return [
             'fornecedor' => ['name' => 'fornecedores.nome', 'data' => 'fornecedor'],
-            'qtd_insumos' => ['name' => 'insumos', 'data' => 'insumos', 'searchable' => false],
+            'insumos' => ['name' => 'insumos_catalogo', 'data' => 'insumos_catalogo'],
+            'regionais' => ['name' => 'regionais', 'data' => 'regionais'],
             'situação' => ['name' => 'catalogo_contrato_status.nome', 'data' => 'status'],
             'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'11%']
         ];

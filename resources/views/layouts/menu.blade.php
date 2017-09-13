@@ -38,15 +38,7 @@
               <i class="fa fa-angle-left pull-right"></i>
             </span>
     </a>
-    <ul class="treeview-menu">
-        @shield('orcamentos.list')
-        <li class="{{ Request::is('admin/orcamentos*') ? 'active' : '' }}">
-            <a href="{!! route('admin.orcamentos.index') !!}">
-                <i class="fa fa-caret-right" aria-hidden="true"></i>
-                <span>Máscara Padrão</span>
-            </a>
-        </li>
-        @endshield
+    <ul class="treeview-menu">        
         @shield('orcamentos.list')
         <li class="{{ Request::is('admin/orcamento') ? 'active' : '' }}">
             <a href="{!! route('admin.orcamentos.index') !!}">
@@ -179,7 +171,7 @@
         <li class="{{ Request::is('admin/planejamentos/planejamentoOrcamentos*') ? 'active' : '' }}">
             <a href="{!! route('admin.planejamentoOrcamentos.index') !!}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
-                <span>Tarefa/Orcamentos</span>
+                <span>Tarefa/Orçamentos</span>
             </a>
         </li>
         @shield('cronograma_por_obras.list')
@@ -260,7 +252,7 @@
                 <span>Motivos declinar proposta</span>
             </a>
         </li>
-        @endshield
+        @endshield		
     </ul>
 </li>
 

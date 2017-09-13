@@ -92,9 +92,10 @@ var Carrinho = {
     var button = event.currentTarget;
     var insumo = button.dataset.insumo;
     this.item = button.dataset.item;
+    var obra = button.dataset.obra;
 
     $.colorbox({
-      href: '/ordens-de-compra/carrinho/indicar-contrato?insumo=' + insumo,
+      href: '/ordens-de-compra/carrinho/indicar-contrato?insumo='+ insumo+'&obra_id='+obra,
       iframe: true,
       width: '90%',
       height: '90%',

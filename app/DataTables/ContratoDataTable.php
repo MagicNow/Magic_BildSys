@@ -223,15 +223,31 @@ class ContratoDataTable extends DataTable
      */
     protected function getColumns()
     {
-        return [
-            'id'                => ['name' => 'id', 'data' => 'id', 'title' => 'N° do Contrato'],
-            'created_at'        => ['name' => 'created_at', 'data' => 'created_at', 'title' => 'Data'],
-            'fornecedor'        => ['name' => 'fornecedores.nome', 'data' => 'fornecedor'],
-            'obra'              => ['name' => 'obras.nome', 'data' => 'obra'],
-            'valor_total_atual' => ['name' => 'valor_total_atual', 'data' => 'valor_total_atual', 'title' => 'Saldo'],
-            'status'            => ['name' => 'status.nome', 'data' => 'status'],
-            'action' => ['name'=>'Ações', 'title' => 'visualizar', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'15%', 'class' => 'all']
-        ];
+        $request = $this->request();
+
+       if (!$request->obra_id) {
+
+           return [
+               'id' => ['name' => 'id', 'data' => 'id', 'title' => 'N° do Contrato'],
+               'created_at' => ['name' => 'created_at', 'data' => 'created_at', 'title' => 'Data'],
+               'fornecedor' => ['name' => 'fornecedores.nome', 'data' => 'fornecedor'],
+               'obra' => ['name' => 'obras.nome', 'data' => 'obra'],
+               'valor_total_atual' => ['name' => 'valor_total_atual', 'data' => 'valor_total_atual', 'title' => 'Saldo'],
+               'status' => ['name' => 'status.nome', 'data' => 'status'],
+               'action' => ['name' => 'Ações', 'title' => 'visualizar', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width' => '15%', 'class' => 'all']
+           ];
+
+       } else {
+
+           return [
+               'id' => ['name' => 'id', 'data' => 'id', 'title' => 'N° do Contrato'],
+               'created_at' => ['name' => 'created_at', 'data' => 'created_at', 'title' => 'Data'],
+               'fornecedor' => ['name' => 'fornecedores.nome', 'data' => 'fornecedor'],
+               'valor_total_atual' => ['name' => 'valor_total_atual', 'data' => 'valor_total_atual', 'title' => 'Saldo'],
+               'status' => ['name' => 'status.nome', 'data' => 'status'],
+               'action' => ['name' => 'Ações', 'title' => 'visualizar', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width' => '15%', 'class' => 'all']
+           ];
+       }
     }
 
     /**
