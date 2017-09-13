@@ -7,7 +7,7 @@
        @include('adminlte-templates::common.errors')
        <div class="box box-primary">
            <div class="box-body">
-               <div class="row">
+               <div class="row" id="nota_fiscal">
                    {!! Form::model($notafiscal, ['route' => ['notafiscals.update', $notafiscal->id], 'method' => 'patch', 'files' => true]) !!}
 
                         @include('notafiscals.fields')

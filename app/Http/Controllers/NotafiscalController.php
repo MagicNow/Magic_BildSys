@@ -122,25 +122,39 @@ class NotafiscalController extends AppBaseController
         $cnpj = $notafiscal->cnpj;
         $fornecedor = Fornecedor::where(\DB::raw("replace(replace(replace(fornecedores.cnpj,'-',''),'.',''),'/','')"), $cnpj)->first();
         $contratos = [];
-        if ($fornecedor) {
-            $contratos = $fornecedor->contratos;
-        }
+        $contrato = Contrato::where('id', request('contrato'))->where('fornecedor_id', $fornecedor->id)->first();
+        //$solicitacoes_de_entrega = [];
 
-        $solicitacoes_de_entrega = [];
+        $itemsSolicitacoes = [];
+        if ($contrato) {
+            $entregas = $contrato->entregas;
+            if (count($entregas) > 0) {
+                //$solicitacoes_de_entrega[$contrato->id] = [];
+                foreach($entregas as $entrega) {
+                    //$solicitacoes_de_entrega[$contrato->id][$entrega->id] = $entrega->id;
 
-        if ($contratos) {
-            foreach ($contratos as $contrato) {
-                $solicitacoes_de_entrega[$contrato->id] = [];
-                if ($entregas = $contrato->entregas) {
-                    $solicitacoes_de_entrega[$contrato->id] = $entregas;
+                    $items = $entrega->itens;
+                    foreach ($items as $item)
+                    {
+                        $itemsSolicitacoes[$item->id] = sprintf('%s - Qtd: %s %s - Vl. Unit.: %s - Vl. Tot.: %s',
+                                $item->insumo->nome,
+                                float_to_money($item->qtd, ''),
+                                $item->unidade_sigla,
+                                float_to_money($item->valor_unitario),
+                                float_to_money($item->valor_total)
+                        );
+                    }
                 }
             }
         }
 
+        $contratos = Contrato::where('id', request('contrato'))->pluck('id', 'id')->toArray();
+
         return view('notafiscals.edit', compact('notafiscal',
                                                 'fornecedor',
                                                 'contratos',
-                                                'solicitacoes_de_entrega'));
+                                                //'solicitacoes_de_entrega',
+                                                'itemsSolicitacoes'));
     }
 
     /**

@@ -16,7 +16,6 @@ class NotafiscalDataTable extends DataTable
     {
         return $this->datatables
             ->eloquent($this->query())
-            ->addColumn('action', 'notafiscals.datatables_actions')
             ->filterColumn('cnpj', function ($query, $keyword) {
                 $keyword = str_replace(['-', '.', '/'], '', $keyword);
                 $query->whereRaw("cnpj like ?", ["%$keyword%"]);
@@ -33,6 +32,7 @@ class NotafiscalDataTable extends DataTable
             ->editColumn('data_saida', function ($obj){
                 return sprintf('<div title="">%s</div>', $obj->data_saida ? $obj->data_saida->format("d/m/Y H:i") : "");
             })
+            ->addColumn('action', 'notafiscals.datatables_actions')
             ->make(true);
     }
 
@@ -57,7 +57,7 @@ class NotafiscalDataTable extends DataTable
     {
         return $this->builder()
             ->columns($this->getColumns())
-            ->addAction(['width' => '10%'])
+            //->addAction(['width' => '10%'])
             ->ajax('')
             ->parameters([
                 'initComplete' => 'function () {
@@ -119,6 +119,15 @@ class NotafiscalDataTable extends DataTable
             'cnpj' => ['name' => 'cnpj', 'data' => 'cnpj'],
             'chave' => ['name' => 'chave', 'data' => 'chave'],
             //'cnpj_destinatario' => ['name' => 'cnpj_destinatario', 'data' => 'cnpj_destinatario']
+            'action' => [
+                'title' => 'Ações',
+                'printable' => false,
+                'exportable' => false,
+                'searchable' => false,
+                'orderable' => false,
+                'width'=>'10%'
+            ]
+
         ];
     }
 

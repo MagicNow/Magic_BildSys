@@ -56,16 +56,19 @@
                                 @foreach(auth()->user()->notifications()->whereRaw("data LIKE '%\"task\":1,\"done\":0%'")->get() as $notification)
                                 <li>
                                     @php
-                                        $hoje = \Carbon\Carbon::create();
-                                        $data_maxima = $notification->created_at->addDays($workflow_prazos[$notification->data['workflow_tipo_id']]);
-                                        $dias_restantes = $hoje->diffInDays($data_maxima, false);
-                                        $classe = 'success';
-                                        $percentualPrazo = (($dias_restantes * 100) / $workflow_prazos[$notification->data['workflow_tipo_id']]);
-                                        if($percentualPrazo < 50 && $percentualPrazo > 10){
-                                            $classe = 'warning';
-                                        }elseif ($percentualPrazo < 10){
-                                            $classe = 'danger';
-                                        }
+                                    $prazoWorkflow = isset($workflow_prazos[$notification->data['workflow_tipo_id']]) ?
+                                    $workflow_prazos[$notification->data['workflow_tipo_id']] : 1;
+
+                                    $hoje = \Carbon\Carbon::create();
+                                    $data_maxima = $notification->created_at->addDays($prazoWorkflow);
+                                    $dias_restantes = $hoje->diffInDays($data_maxima, false);
+                                    $classe = 'success';
+                                    $percentualPrazo = (($dias_restantes * 100) / $prazoWorkflow);
+                                    if ($percentualPrazo < 50 && $percentualPrazo > 10) {
+                                        $classe = 'warning';
+                                    } elseif ($percentualPrazo < 10){
+                                        $classe = 'danger';
+                                    }
                                     @endphp
                                     <span class="text">{{ $notification->data['message'] }}</span>
 

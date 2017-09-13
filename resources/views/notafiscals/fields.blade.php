@@ -11,7 +11,11 @@
                     <!-- Contrato Id Field -->
                     <div class="form-group col-sm-12">
                         {!! Form::label('contrato_id', 'Contrato:') !!}
-                        {!! Form::select('contrato_id',[''=>'Escolha...'] + (isset($contrato) ? $contrato : []), null, ['class' => 'form-control select2']) !!}
+                        {!! Form::select('contrato_id',[
+                        ''=>'Escolha...'
+                        ] + (isset($contratos) ? $contratos : []),
+                        request('contrato', isset($notafiscal) AND $notafiscal->contrato_id ?
+                        $notafiscal->contrato_id : null), ['class' => 'form-control select2']) !!}
                     </div>
 
                     <!-- Codigo Field -->
@@ -233,45 +237,64 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <?php
-                            $qtdItens = 0;
-                            ?>
-                            @if(isset($notafiscal))
-                                @foreach($notafiscal->items as $item)
-                                    <?php
-                                    $qtdItens = $item->id;
-                                    ?>
-                                    <tr id="item_{{$qtdItens}}">
+                                <tr v-for="item in itemsNf" :id="'item-' + item.id" >
                                         <!-- idioma Id Field -->
                                         <td width="30%">
-                                            {!! Form::text('notaFiscalItens['.$qtdItens.'][nome_produto]', $item->nome_produto, ['class' => 'form-control']) !!}
+                                            {!! Form::text('items[nome_produto][]', null, [
+                                            'class' => 'form-control',
+                                            ':value' => 'item.nome_produto'
+                                            ]) !!}
                                         </td>
                                         <td>
-                                            {!! Form::text('notaFiscalItens['.$qtdItens.'][ncm]', $item->ncm, ['class' => 'form-control text-right']) !!}
+                                            {!! Form::text('items[ncm][]', null, [
+                                            'class' => 'form-control text-right',
+                                            ':value' => 'item.ncm'
+                                            ]) !!}
                                         </td>
                                         <td>
-                                            {!! Form::text('notaFiscalItens['.$qtdItens.'][codigo_produto]', $item->codigo_produto, ['class' => 'form-control text-right']) !!}
+                                            {!! Form::text('items[codigo_produto][]', null, [
+                                            'class' => 'form-control text-right',
+                                            ':value' => 'item.codigo_produto'
+                                            ]) !!}
                                         </td>
                                         <td>
-                                            {!! Form::text('notaFiscalItens['.$qtdItens.'][qtd]', $item->qtd, ['class' => 'form-control text-right']) !!}
+                                            {!! Form::text('items[qtd][]', null, [
+                                            'class' => 'form-control text-right',
+                                            ':value' => 'item.qtd'
+                                            ]) !!}
                                         </td>
                                         <td>
-                                            {!! Form::text('notaFiscalItens['.$qtdItens.'][unidade]', $item->unidade, ['class' => 'form-control text-right']) !!}
+                                            {!! Form::text('items[unidade][]', null, [
+                                            'class' => 'form-control text-right',
+                                            ':value' => 'item.unidade'
+                                            ]) !!}
                                         </td>
                                         <td>
-                                            {!! Form::text('notaFiscalItens['.$qtdItens.'][valor_unitario]', $item->valor_unitario, ['class' => 'form-control text-right']) !!}
+                                            {!! Form::text('items[valor_unitario][]', null, [
+                                            'class' => 'form-control text-right',
+                                            ':value' => 'item.valor_unitario'
+                                            ]) !!}
                                         </td>
                                         <td>
-                                            {!! Form::text('notaFiscalItens['.$qtdItens.'][valor_total]', $item->valor_total, ['class' => 'form-control text-right']) !!}
-                                            {!! Form::hidden('notaFiscalItens['.$qtdItens.'][id]',$item->id) !!}
-                                            {!! Form::hidden('notaFiscalItens['.$qtdItens.'][tipo_equalizacao_tecnica_id]',$item->tipo_equalizacao_tecnica_id) !!}
+                                            {!! Form::text('items[valor_total][]', null, [
+                                                'class' => 'form-control text-right',
+                                                ':value' => 'item.valor_total'
+                                            ]) !!}
+                                            {!! Form::hidden('items[id][]', null, [
+                                            ':value' => 'item.id'
+                                            ]) !!}
                                         </td>
                                         <td>
-                                            <a class="btn btn-success">Vincular</a>
+                                            <a v-show="item.item_id == null" class="btn btn-success" v-on:click="openModal(item)">
+                                                Vincular
+                                            </a>
+
+                                            <a v-show="item.item_id != null" class="btn btn-danger" v-on:click="desvincular(item)">
+                                                Desvincular
+                                            </a>
                                         </td>
                                     </tr>
-                                @endforeach
-                            @endif
+
                             </tbody>
                         </table>
                     </div>
@@ -287,33 +310,33 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h4 class="panel-title">
-                        FATURA DA NOTA FISCAL
+                        Faturas da Nota Fiscal
                     </h4>
                 </div>
                 <div class="panel-body">
 
-                    @foreach($notafiscal->faturas as $fatura)
-
-                        <div class="col-md-4 box-rounded-bordered" id="fatura-{{ $fatura->id }}">
+                        <div class="col-md-4 box-rounded-bordered" v-for="fatura in faturasNf" :id="'fatura-' + fatura.id" >
                             <div class="form-group col-sm-12">
-                                {!! Form::hidden(sprintf('faturas[%s]["id"]', $fatura->id), $fatura->id, ['class' => 'form-control text-right']) !!}
+                                {!! Form::hidden(('faturas["id"][]'), null, ['class' => 'form-control text-right', ':value' => 'fatura.id']) !!}
 
                                 {!! Form::label('numero', 'Numero') !!}
-                                {!! Form::text(sprintf('faturas[%s]["numero"]', $fatura->id), $fatura->numero, ['class' => 'form-control text-right']) !!}
+                                {!! Form::text(('faturas["numero"][]'), null, ['class' => 'form-control text-right', ':value' => 'fatura.numero']) !!}
                             </div>
 
                             <div class="form-group col-sm-12">
                                 {!! Form::label('numero', 'Numero') !!}
-                                {!! Form::date(sprintf('faturas[%s]["vencimento"]', $fatura->id), $fatura->vencimento, ['class' => 'form-control text-right']) !!}
+                                {!! Form::date(('faturas["vencimento"][]'), null, [
+                                'class' => 'form-control text-right',
+                                'v-model' => "fatura.vencimento",
+                                ':value' => 'fatura.vencimento'
+                                ]) !!}
                             </div>
 
                             <div class="form-group col-sm-12">
                                 {!! Form::label('valor', 'Valor') !!}
-                                {!! Form::text(sprintf('faturas[%s]["valor"]', $fatura->id), $fatura->valor, ['class' => 'form-control text-right']) !!}
+                                {!! Form::text(('faturas["valor"][]'), null, ['class' => 'form-control text-right', ':value' => 'fatura.valor']) !!}
                             </div>
                         </div>
-
-                    @endforeach
 
                 </div>
             </div>
@@ -323,10 +346,8 @@
 
 <!-- Submit Field -->
 <div class="form-group col-sm-12" style="margin-top: 20px;">
-    {!! Form::button( '<i class="fa fa-remove"></i> Rejeitar', ['class' => 'btn btn-danger pull-right', 'type'=>'submit']) !!}
-
-    {!! Form::button( '<i class="fa fa-save"></i> Aceite', ['class' => 'btn btn-success pull-right', 'type'=>'submit']) !!}
-
+    {!! Form::button( '<i class="fa fa-remove"></i> Rejeitar', ['class' => 'btn btn-danger pull-right',  'type'=>'submit']) !!}
+    {!! Form::button( '<i class="fa fa-save"></i> Aceite',     ['class' => 'btn btn-success pull-right', 'type'=>'submit']) !!}
 
     <a href="{!! route('notafiscals.index') !!}" class="btn btn-default">
         <i class="fa fa-times"></i>
@@ -334,58 +355,44 @@
     </a>
 </div>
 
+<div class="modal fade" id="conciliacao-modal" tabindex="-1" role="dialog" aria-labelledby="conciliacaoFormLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="conciliacaoFormLabel">Conciliar Itens <div id="item_desc"></div> </h4>
+            </div>
+            <div class="modal-body">
+
+                <div class="clearfix"></div>
+                <div class="alert alert-danger hidden" id="permission-form-errors"></div>
+
+                {{ Form::open(['method' => 'post', 'id' => 'conciliacao-form', 'role' => 'form']) }}
+
+                <div class="form-group clearfix">
+                    <div class="col-md-12">
+                        {{ Form::select('items', ['' => 'Selecione'] + $itemsSolicitacoes, null, [
+                            'class' => 'form-control select2',
+                            ':id' => '"item-selecionado-" + itemSelecionado.item_id',
+                            ':model' => 'itemSelecionado.item_id',
+                            ':value' => 'itemSelecionado.item_id'
+                        ]) }}
+                    </div>
+                </div>
+
+                <div class="clearfix" ></div>
+
+                <input type="hidden" v-model="itemSelecionado"/>
+
+                {{ Form::button('Adicionar Vinculo', ['class' => 'btn btn-primary', 'id' => 'permission-save-button']) }}
+                <button type="button" data-dismiss="modal" class="btn btn-default">Cancelar</button>
+                {{ Form::close() }}
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 @section('scripts')
-    <script type="text/javascript">
-        var qtditens = {{ isset($notafiscal)? $qtdItens:'0' }};
-
-        function addItens() {
-            qtditens++;
-            $('#itens').append(
-                    '<div id="item_' + qtditens + '" class="panel panel-default">' +
-                    '<div class="panel-heading" role="tab" id="heading_' + qtditens + '">' +
-                    '<h4 class="panel-title">' +
-                    '<a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse_' + qtditens + '" aria-expanded="false" aria-controls="collapse_' + qtditens + '">' +
-                    "Item: " + qtditens + '<span type="button" onclick="remExtra(' + qtditens + ',\'item_\')" class="btn btn-danger btn-xs pull-right" title="Remover"><i class="fa fa-times"></i></span>' +
-                    '</a>' +
-                    '</h4>' +
-                    '</div>' +
-                    '<div id="collapse_' + qtditens + '" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading_' + qtditens + '">' +
-                    '<div class="panel-body">' +
-                    "Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS." +
-                    '</div>' +
-                    '</div>' +
-                    '</div>'
-//                    '<div id="item_'+qtditens+'">' +
-//                    '<div class="form-group col-sm-11">'+
-//                    '<label for="itens['+qtditens+'][nome]">Nome:</label>'+
-//                    '<input class="form-control" name="itens[' + qtditens + '][nome]" type="text" id="itens['+qtditens+'][nome]" required="required" />'+
-//                    '</div>'+
-//                    '<div class="form-group col-sm-1"><button type="button" onclick="remExtra('+qtditens+',\'item_\')" class="btn btn-danger" style="margin-top: 24px" title="Remover"><i class="fa fa-times"></i></button> </div>'+
-//                    '</div>'
-            );
-        }
-
-        function readURL(input) {
-            startLoading();
-            if (input.files && input.files[0]) {
-                var view = new FileReader();
-                view.onload = function (e) {
-//                    window.open(e.target.result);
-                    $('#arquivoNfe')
-                            .attr('src', e.target.result)
-                            .width(620)
-                            .height(700);
-                };
-                view.readAsDataURL(input.files[0]);
-            }
-            stopLoading();
-            $('#arquivo_nfe').val($('#arquivoNfe').val());
-        }
-
-        function remExtra(qual, nome) {
-            $('#' + nome + '' + qual).remove();
-        }
-    </script>
     <style>
         .box-rounded-bordered {
             border: 1px solid #ccc;
@@ -393,4 +400,41 @@
             border-radius: 10px;
         }
     </style>
+    <script>
+        var $faturasNf = {!! json_encode($notafiscal->faturas)  !!};
+        var $itemsNf = {!! json_encode($notafiscal->items)  !!};
+        var $itemsSolicitacoes = {!! json_encode($itemsSolicitacoes)  !!};
+
+        const app = new Vue({
+            el: '#nota_fiscal',
+            data: {
+                itemSelecionado: {},
+                itemsNf: $itemsNf,
+                faturasNf: $faturasNf
+            },
+            computed: {
+                itemSelecionadoId: function() {
+                    console.log(itemSelecionado.item_id);
+                }
+            },
+            methods: {
+                desvincular: function (item) {
+                    this.itemSelecionado = item;
+
+                },
+                openModal: function (item) {
+                    this.itemSelecionado = item;
+                    $('#conciliacao-modal').modal('show');
+                },
+                updateItem: function () {
+                    console.log(this.itemSelecionado);
+                }
+
+            },
+            created: function() {
+                console.log('created');
+
+            }
+        });
+    </script>
 @stop
