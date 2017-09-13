@@ -491,7 +491,14 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
 
     public function notifyFornecedorParticipacaoQC(Fornecedor $fornecedor)
     {
-        Mail::to($fornecedor->email)->send(new AgradeceParticipacaoQC($fornecedor));
+        try{
+            if($fornecedor->email&& strpos($fornecedor->email,'@')!==FALSE){
+                Mail::to($fornecedor->email)->queue(new AgradeceParticipacaoQC($fornecedor));
+            }
+        }catch (\Exception $e) {
+            logger()->error((string) $e);
+            return true;
+        }
     }
 
     /**
