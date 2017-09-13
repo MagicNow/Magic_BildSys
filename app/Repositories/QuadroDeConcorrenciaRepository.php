@@ -495,7 +495,7 @@ class QuadroDeConcorrenciaRepository extends BaseRepository
             if($fornecedor->email&& strpos($fornecedor->email,'@')!==FALSE){
                 Mail::to($fornecedor->email)->queue(new AgradeceParticipacaoQC($fornecedor));
             }
-        }catch (Exception $e) {
+        }catch (\Exception $e) {
             logger()->error((string) $e);
             return true;
         }
