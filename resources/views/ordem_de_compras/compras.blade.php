@@ -419,6 +419,28 @@
                 LaravelDataTables.dataTableBuilder.draw();
                 LaravelDataTables.dataTableBuilder.one('draw.dt', function() {
                     LaravelDataTables.dataTableBuilder.column('grupo:name').visible(!isChecked);
+                    LaravelDataTables.dataTableBuilder.column('carteiras.nome:name').visible(!isChecked);
+                });
+
+            });
+
+            var $exibirPorCarteira = $('#exibir_por_carteira');
+            $exibirPorCarteira.on('change ifToggled', function(event) {
+                var isChecked = $exibirPorCarteira.prop('checked');
+                var date = calendar.options.position.start.toISOString().split('T')[0];
+
+                calendar = $('#calendar').calendar(Object.assign(calendarOptions, {
+                    events_source: '/lembretes?exibir_por_carteira=' + (+isChecked),
+                    day: date
+                }));
+
+                LaravelDataTables.dataTableBuilder.ajax.url(
+                        location.pathname + '?exibir_por_carteira=' + (+isChecked)
+                );
+                LaravelDataTables.dataTableBuilder.draw();
+                LaravelDataTables.dataTableBuilder.one('draw.dt', function() {
+                    LaravelDataTables.dataTableBuilder.column('planejamentos.tarefa:name').visible(!isChecked);
+                    LaravelDataTables.dataTableBuilder.column('grupo:name').visible(!isChecked);
                 });
 
             });
