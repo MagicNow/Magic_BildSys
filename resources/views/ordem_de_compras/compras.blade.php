@@ -48,7 +48,7 @@
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <label for="planejamento_id">Grupo de Insumo</label>
+                                <label for="insumo_grupo_id">Grupo de Insumo</label>
                                 <div class="form-group js-datatable-filter-form">
                                   {!!
                                     Form::select(
@@ -65,7 +65,7 @@
                                 </div>
                             </div>	
 							<div class="col-md-4">
-                                <label for="planejamento_id">Carteiras</label>
+                                <label for="carteira_id">Carteiras</label>
                                 <div class="form-group js-datatable-filter-form">
                                   {!!
                                     Form::select(
@@ -82,8 +82,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group js-datatable-filter-form">
-                          <div class="checkbox">
+                        <div class="col-md-12 checkbox js-datatable-filter-form" style="margin-top: 0px !important;">
+                          <div class="col-md-6">
                             <label for="exibir_por_tarefa">
                               <input type="checkbox"
                                 value="1"
@@ -92,6 +92,15 @@
                               Exibir por tarefa
                             </label>
                           </div>
+                            <div class="col-md-6">
+                                <label for="exibir_por_carteira">
+                                    <input type="checkbox"
+                                           value="1"
+                                           name="exibir_por_carteira"
+                                           id="exibir_por_carteira">
+                                    Exibir por carteira
+                                </label>
+                            </div>
                         </div>
                         <div class="page-header">
                             <div class="pull-right form-inline">
@@ -128,12 +137,8 @@
                                 <h3>Lembretes</h3>
                                 @include('ordem_de_compras.lembretes-home-table')
                             </div>
-
-
                         </div>
-
                     </div>
-
                 </div>
 
                 <div class="row">
@@ -157,6 +162,7 @@
         var insumo_grupo_id = null;
 		var carteira_id = null;
         var exibir_por_tarefa = null;
+        var exibir_por_carteira = null;
 
         function escolheObra(obra_id) {
             planejamento_id = null;
@@ -227,7 +233,7 @@
 //            }
             atualizaCalendario();
         }
-		
+
 		function atualizaCalendarioPorCarteira(carteira) {
             carteira_id = carteira;
 //            if(carteira){
@@ -298,6 +304,17 @@
                     queryString +='?';
                 }
                 queryString +='exibir_por_tarefa=' + exibir_por_tarefa;
+            }
+
+            var $exibirPorCarteira = $('#exibir_por_carteira');
+            exibir_por_carteira = $exibirPorCarteira.prop('checked');
+            if(exibir_por_carteira > 0){
+                if(queryString.length>0){
+                    queryString +='&';
+                }else{
+                    queryString +='?';
+                }
+                queryString +='exibir_por_carteira=' + exibir_por_carteira;
             }
 
             if(queryString ) {
@@ -401,6 +418,28 @@
                 );
                 LaravelDataTables.dataTableBuilder.draw();
                 LaravelDataTables.dataTableBuilder.one('draw.dt', function() {
+                    LaravelDataTables.dataTableBuilder.column('grupo:name').visible(!isChecked);
+                    LaravelDataTables.dataTableBuilder.column('carteiras.nome:name').visible(!isChecked);
+                });
+
+            });
+
+            var $exibirPorCarteira = $('#exibir_por_carteira');
+            $exibirPorCarteira.on('change ifToggled', function(event) {
+                var isChecked = $exibirPorCarteira.prop('checked');
+                var date = calendar.options.position.start.toISOString().split('T')[0];
+
+                calendar = $('#calendar').calendar(Object.assign(calendarOptions, {
+                    events_source: '/lembretes?exibir_por_carteira=' + (+isChecked),
+                    day: date
+                }));
+
+                LaravelDataTables.dataTableBuilder.ajax.url(
+                        location.pathname + '?exibir_por_carteira=' + (+isChecked)
+                );
+                LaravelDataTables.dataTableBuilder.draw();
+                LaravelDataTables.dataTableBuilder.one('draw.dt', function() {
+                    LaravelDataTables.dataTableBuilder.column('planejamentos.tarefa:name').visible(!isChecked);
                     LaravelDataTables.dataTableBuilder.column('grupo:name').visible(!isChecked);
                 });
 
