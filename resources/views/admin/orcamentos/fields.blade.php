@@ -118,15 +118,15 @@
     {!! Form::text('referencia_preco', null, ['class' => 'form-control']) !!}
 </div>
 
-<!-- Porcentagem Orcamento Field -->
+<!-- Porcentagem Orçamento Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('porcentagem_orcamento', 'Porcentagem Orcamento:') !!}
+    {!! Form::label('porcentagem_orcamento', 'Porcentagem Orçamento:') !!}
     {!! Form::number('porcentagem_orcamento', null, ['class' => 'form-control']) !!}
 </div>
 
-<!-- Orcamento Tipo Id Field -->
+<!-- Orçamento Tipo Id Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('orcamento_tipo_id', 'Orcamento Tipo Id:') !!}
+    {!! Form::label('orcamento_tipo_id', 'Orçamento Tipo Id:') !!}
     {!! Form::number('orcamento_tipo_id', null, ['class' => 'form-control']) !!}
 </div>
 

@@ -51,8 +51,8 @@ class TipoLevantamento extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
-    public function mascaraInsumos()
+    public function MascaraPadraoInsumos()
     {
-        return $this->hasMany(MascaraInsumo::class);
+        return $this->hasMany(MascaraPadraoInsumo::class);
     }
 }

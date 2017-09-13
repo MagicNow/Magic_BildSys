@@ -88,6 +88,7 @@ class OrdemDeCompraRepository extends BaseRepository
         $ordemDeCompra = OrdemDeCompra::find($ordem_de_compra_id);
 
         $realizado = 0;
+        $valor_comprometido_a_gastar = 0;
 
         if($ordemDeCompra) {
             if(count($ordemDeCompra->itens())) {
@@ -97,10 +98,14 @@ class OrdemDeCompraRepository extends BaseRepository
 //                    ->whereIn('ordem_de_compra_itens.insumo_id', $ordemDeCompra->itens()->pluck('insumo_id', 'insumo_id')->toArray())
 //                    ->sum('ordem_de_compra_itens.valor_total');
                 $realizado = $ordemDeCompra->itens()->sum('valor_total');
+
+                foreach($ordemDeCompra->itens()->get() as $item) {
+                    $valor_comprometido_a_gastar += OrdemDeCompraRepository::valorComprometidoAGastarItem($item->grupo_id, $item->subgrupo1_id, $item->subgrupo2_id, $item->subgrupo3_id, $item->servico_id, $item->insumo_id, $item->obra_id, $item->id, $item->ordemDeCompra->dataUltimoPeriodoAprovacao());
+                }
             }
         }
 
-        $saldoDisponivel = doubleval($orcamentoInicial) - doubleval($realizado);
+        $saldoDisponivel = doubleval($orcamentoInicial) - $valor_comprometido_a_gastar - doubleval($realizado);
 
         if($ordemDeCompra->saldo_disponivel_temp !== $saldoDisponivel){
             $ordemDeCompra->saldo_disponivel_temp = $saldoDisponivel;

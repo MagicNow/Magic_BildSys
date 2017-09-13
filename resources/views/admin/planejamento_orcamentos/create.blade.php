@@ -3,7 +3,7 @@
 @section('content')
     <section class="content-header">
         <h1 class="pull-left">
-            Planejamento Orcamento
+            Planejamento Orçamento
         </h1>
 
         <h1 class="pull-right">
