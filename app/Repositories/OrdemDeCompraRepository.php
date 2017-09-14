@@ -274,7 +274,7 @@ class OrdemDeCompraRepository extends BaseRepository
         return $origem;
     }
     
-    public static function calculosDetalhesServicos($obra_id, $servico_id , $oc_id)
+    public static function calculosDetalhesServicos($obra_id, $servico_id , $oc_id = null)
     {
         // Se alterar, modificar tbm DetalhesServicosDataTable::query
         if($oc_id) {
