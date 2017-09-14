@@ -578,6 +578,7 @@ $(function() {
     $('.eqt_' + tipo_eqt_id).remove();
   });
 
+    var workflowTipo = $('#linhaDoTempo');
 
     $('#fornecedor_temp').on('select2:select', function(e) {
         addFornecedorTemp();
