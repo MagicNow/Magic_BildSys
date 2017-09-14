@@ -128,7 +128,7 @@ class NotafiscalController extends AppBaseController
      ->where('fornecedor_id', $fornecedor->id)
      ->first();
 
-        $itemsSolicitacoes = [];
+        $itensSolicitacoes = [];
         if ($contrato) {
             $entregas = $contrato->entregas;
             if (count($entregas) > 0) {
@@ -136,10 +136,10 @@ class NotafiscalController extends AppBaseController
                 foreach($entregas as $entrega) {
                     //$solicitacoes_de_entrega[$contrato->id][$entrega->id] = $entrega->id;
 
-                    $items = $entrega->itens;
-                    foreach ($items as $item)
+                    $itens = $entrega->itens;
+                    foreach ($itens as $item)
                     {
-                        $itemsSolicitacoes[$item->id] = sprintf('%s - Qtd: %s %s - Vl. Unit.: %s - Vl. Tot.: %s',
+                        $itensSolicitacoes[$item->id] = sprintf('%s - Qtd: %s %s - Vl. Unit.: %s - Vl. Tot.: %s',
                                 $item->insumo->nome,
                                 float_to_money($item->qtd, ''),
                                 $item->unidade_sigla,
@@ -158,8 +158,7 @@ class NotafiscalController extends AppBaseController
         return view('notafiscals.edit', compact('notafiscal',
                                                 'fornecedor',
                                                 'contratos',
-                                                //'solicitacoes_de_entrega',
-                                                'itemsSolicitacoes'));
+                                                'itensSolicitacoes'));
     }
 
     /**
@@ -189,7 +188,7 @@ class NotafiscalController extends AppBaseController
 
         $faturasRequest = $request->get('faturas');
 
-        $itensRequest = $request->get('items');
+        $itensRequest = $request->get('itens');
 
         $faturas = [];
         $itens   = [];
@@ -225,7 +224,7 @@ class NotafiscalController extends AppBaseController
 
         foreach ($itens as $item) {
             if ($item['id'] > 0) {
-                $itemNf = $notafiscal->items()->where('id', $item['id'] )->first();
+                $itemNf = $notafiscal->itens()->where('id', $item['id'] )->first();
                 $itemNf->solicitacao_entrega_itens_id = $item['solicitacao_entrega_itens_id'];
                 $itemNf->save();
             }

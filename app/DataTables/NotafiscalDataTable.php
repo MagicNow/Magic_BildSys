@@ -23,6 +23,13 @@ class NotafiscalDataTable extends DataTable
             ->editColumn('chave', function ($obj){
                 return sprintf('<div title="%s">%s</div>', $obj->chave, substr($obj->chave,0,10) . '...');
             })
+            ->editColumn('status', function ($obj){
+                if (!empty($obj->status)) {
+                    return sprintf('<label class="label label-%s">%s</label>', ($obj->status == 'Aceita' ? 'success' : 'error'), $obj->status);
+                } else {
+                    return '';
+                }
+            })
             ->editColumn('cnpj', function ($obj){
                 return $obj->cnpj ? mask($obj->cnpj, '##.###.###/####-##') : '';
             })
@@ -95,6 +102,10 @@ class NotafiscalDataTable extends DataTable
                          ],
                     ],
                     'colvis'
+                ],
+                'order' => [
+                    1, // here is the column number
+                    'desc'
                 ]
             ]);
     }
@@ -108,6 +119,7 @@ class NotafiscalDataTable extends DataTable
     {
         return [
             'contrato' => ['name' => 'contrato_id', 'data' => 'contrato_id'],
+            'status' => ['name' => 'status', 'data' => 'status'],
             //'solicitacao_entrega_id' => ['name' => 'solicitacao_entrega_id', 'data' => 'solicitacao_entrega_id'],
             //'nsu' => ['name' => 'nsu', 'data' => 'nsu'],
             'numero' => ['name' => 'codigo', 'data' => 'codigo'],
@@ -140,4 +152,5 @@ class NotafiscalDataTable extends DataTable
     {
         return 'notafiscals';
     }
+
 }

@@ -165,7 +165,7 @@ class Notafiscal extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
-    public function items()
+    public function itens()
     {
         return $this->hasMany(\App\Models\NotaFiscalItem::class, 'nota_fiscal_id');
     }

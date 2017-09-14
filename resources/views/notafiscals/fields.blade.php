@@ -1,4 +1,10 @@
+<?php
+$mostrarAcoes = true;
+?>
 @if(!empty($notafiscal->status))
+    <?php
+    $mostrarAcoes = false;
+    ?>
     <div class="col-md-12">
         <span style="font-size:16px" class="pull-right">
         Status: {!! $notafiscal->status == 'Aceita' ? '<span class="label label-success">Aceita</span>' :  '<span class="label label-error">Rejeitada</span>' !!}
@@ -250,65 +256,66 @@
                                 <th></th>
                             </tr>
                             </thead>
-                            <tbody v-for="(item, $index) in itemsNf">
+                            <tbody v-for="(item, $index) in itensNf">
 
                             <tr :id="'item-' + item.id">
                                 <!-- idioma Id Field -->
                                 <td width="30%">
-                                    {!! Form::text('items[nome_produto][]', null, [
+                                    {!! Form::text('itens[nome_produto][]', null, [
                                     'class' => 'form-control',
                                     ':value' => 'item.nome_produto',
                                         'readonly'
                                     ]) !!}
                                 </td>
                                 <td>
-                                    {!! Form::text('items[ncm][]', null, [
+                                    {!! Form::text('itens[ncm][]', null, [
                                     'class' => 'form-control text-right',
                                     ':value' => 'item.ncm',
                                         'readonly'
                                     ]) !!}
                                 </td>
                                 <td>
-                                    {!! Form::text('items[codigo_produto][]', null, [
+                                    {!! Form::text('itens[codigo_produto][]', null, [
                                     'class' => 'form-control text-right',
                                     ':value' => 'item.codigo_produto',
                                         'readonly'
                                     ]) !!}
                                 </td>
                                 <td>
-                                    {!! Form::text('items[qtd][]', null, [
+                                    {!! Form::text('itens[qtd][]', null, [
                                     'class' => 'form-control text-right',
                                     ':value' => 'item.qtd',
                                         'readonly'
                                     ]) !!}
                                 </td>
                                 <td>
-                                    {!! Form::text('items[unidade][]', null, [
+                                    {!! Form::text('itens[unidade][]', null, [
                                     'class' => 'form-control text-right',
                                     ':value' => 'item.unidade',
                                         'readonly'
                                     ]) !!}
                                 </td>
                                 <td>
-                                    {!! Form::text('items[valor_unitario][]', null, [
+                                    {!! Form::text('itens[valor_unitario][]', null, [
                                     'class' => 'form-control text-right',
                                     ':value' => 'item.valor_unitario',
                                         'readonly'
                                     ]) !!}
                                 </td>
                                 <td>
-                                    {!! Form::text('items[valor_total][]', null, [
+                                    {!! Form::text('itens[valor_total][]', null, [
                                         'class' => 'form-control text-right',
                                         ':value' => 'item.valor_total',
                                         'readonly'
                                     ]) !!}
 
-                                    {!! Form::hidden('items[id][]', null, [':value' => 'item.id']) !!}
+                                    {!! Form::hidden('itens[id][]', null, [':value' => 'item.id']) !!}
 
-                                    {!! Form::hidden('items[solicitacao_entrega_itens_id][]', null,
+                                    {!! Form::hidden('itens[solicitacao_entrega_itens_id][]', null,
                                         [':value' => 'item.solicitacao_entrega_itens_id']) !!}
                                 </td>
                                 <td>
+                                    @if($mostrarAcoes)
                                     <a v-show="item.solicitacao_entrega_itens_id == null" class="btn btn-success"
                                        v-on:click="openModal($index)">
                                         Vincular
@@ -318,6 +325,7 @@
                                        v-on:click="desvincular($index)">
                                         Desvincular
                                     </a>
+                                    @endif
                                 </td>
                             </tr>
 
@@ -353,13 +361,14 @@
                 <div class="panel-heading">
                     <div class="panel-title">
                         Faturas da Nota Fiscal
-
+                        @if($mostrarAcoes)
                         <button type="button"
                                 v-on:click="adicionarFatura"
                                 class="btn btn-sm btn-primary pull-right">
                             Adicionar Fatura
                         </button>
                         <br/>
+                        @endif
                     </div>
                 </div>
                 <div class="panel-body">
@@ -367,11 +376,13 @@
                     <div class="col-md-3 box-rounded-bordered"
                          v-for="(fatura, $index) in faturasNf"
                          :id="'fatura-' + fatura.id">
+                        @if($mostrarAcoes)
                         <button type="button"
                                 v-on:click="removerFatura($index)"
                                 class="btn btn-sm btn-danger pull-right">
                             <i class="fa fa-remove"></i>
                         </button>
+                        @endif
 
                         <div class="form-group col-sm-12">
                             {!! Form::hidden(('faturas[id][]'), null, ['class' => 'form-control text-right', ':value' => 'fatura.id']) !!}
@@ -403,7 +414,7 @@
 
 <!-- Submit Field -->
 <div class="form-group col-sm-12" style="margin-top: 20px;">
-    @if(empty($notafiscal->status))
+    @if($mostrarAcoes)
     {!! Form::button( '<i class="fa fa-remove"></i> Rejeitar', [
     'class' => 'btn btn-danger pull-right',
         'type'=>'submit',
@@ -439,7 +450,7 @@
                         aria-hidden="true">&times;</button>
                 <h4 class="modal-title"
                     id="conciliacaoFormLabel">
-                    Conciliar Item: @{{ itemsNf[index].nome_produto }}
+                    Conciliar Item: @{{ itensNf[index].nome_produto }}
                 </h4>
             </div>
             <div class="modal-body">
@@ -450,11 +461,11 @@
                 <div class="form-group clearfix">
                     <div class="col-md-12">
                         <select
-                                :id='"itemSelecionado"'
-                                v-model="itemsNf[index].solicitacao_entrega_item_id"
+                                :id='"itenselecionado"'
+                                v-model="itensNf[index].solicitacao_entrega_item_id"
                                 class="form-control select2">
                             <option
-                                    v-for="($value, $key) in itemsSolicitacoes"
+                                    v-for="($value, $key) in itensSolicitacoes"
                                     v-bind:value="$key">
                                 @{{ $value }}
                             </option>
@@ -495,26 +506,26 @@
                 ?>
 
         var $faturasNf = {!! json_encode($faturas)  !!};
-        var $itemsNf = {!! json_encode($notafiscal->items()->with('solicitacaoEntregaItem', 'solicitacaoEntregaItem.insumo')->get())  !!};
-        var $itemsSolicitacoes = {!! json_encode($itemsSolicitacoes)  !!};
+        var $itensNf = {!! json_encode($notafiscal->itens()->with('solicitacaoEntregaItem', 'solicitacaoEntregaItem.insumo')->get())  !!};
+        var $itensSolicitacoes = {!! json_encode($itensSolicitacoes)  !!};
 
         const app = new Vue({
             el: '#nota_fiscal',
             data: {
                 index: 0,
-                itemsNf: $itemsNf,
+                itensNf: $itensNf,
                 faturasNf: $faturasNf,
-                itemsSolicitacoes: $itemsSolicitacoes
+                itensSolicitacoes: $itensSolicitacoes
             },
             watch: {},
             methods: {
                 desvincular: function ($index) {
 
-                    this.itemsNf[$index].solicitacao_entrega_itens_text = null;
-                    this.itemsNf[$index].solicitacao_entrega_itens_id = null;
-                    this.itemsNf[$index].solicitacao_entrega_item = null;
+                    this.itensNf[$index].solicitacao_entrega_itens_text = null;
+                    this.itensNf[$index].solicitacao_entrega_itens_id = null;
+                    this.itensNf[$index].solicitacao_entrega_item = null;
 
-                    console.log(this.itemsNf[$index])
+                    console.log(this.itensNf[$index])
 
                 },
                 openModal: function ($index) {
@@ -522,11 +533,11 @@
                     $('#conciliacao-modal').modal('show');
                 },
                 updateVinculo: function () {
-                    $itemSelecionadoVal = $('#itemSelecionado').val();
-                    $itemSelecionadoText = $('#itemSelecionado option:selected').text();
-                    this.itemsNf[this.index].solicitacao_entrega_itens_text = $itemSelecionadoText;
-                    this.itemsNf[this.index].solicitacao_entrega_itens_id = $itemSelecionadoVal;
-                    $('#itemSelecionado').val('').trigger('change');
+                    $itenselecionadoVal = $('#itenselecionado').val();
+                    $itenselecionadoText = $('#itenselecionado option:selected').text();
+                    this.itensNf[this.index].solicitacao_entrega_itens_text = $itenselecionadoText;
+                    this.itensNf[this.index].solicitacao_entrega_itens_id = $itenselecionadoVal;
+                    $('#itenselecionado').val('').trigger('change');
                     $('#conciliacao-modal').modal('hide');
                 },
                 adicionarFatura: function () {
