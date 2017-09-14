@@ -1,3 +1,15 @@
+@if(!empty($notafiscal->status))
+    <div class="col-md-12">
+        <span style="font-size:16px" class="pull-right">
+        Status: {!! $notafiscal->status == 'Aceita' ? '<span class="label label-success">Aceita</span>' :  '<span class="label label-error">Rejeitada</span>' !!}
+        - Data: <span class="label label-default">{!! $notafiscal->status_data->format("d/m/Y H:i:s") !!}</span>
+        - Usuário: <span class="label label-default">{!! $notafiscal->statusUser ? $notafiscal->statusUser->name : "" !!}</span>
+        </span>
+    </div>
+    <br/>
+    <br/>
+@endif
+
 <div class="col-md-6">
     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
         <div class="panel panel-default">
@@ -7,6 +19,9 @@
                 </h4>
             </div>
             <div>
+                <?php
+                $contrato_id = request('contrato', $notafiscal ? $notafiscal->contrato_id : null);
+                ?>
                 <div class="panel-body">
                     <!-- Contrato Id Field -->
                     <div class="form-group col-sm-12">
@@ -14,8 +29,7 @@
                         {!! Form::select('contrato_id',[
                         ''=>'Escolha...'
                         ] + (isset($contratos) ? $contratos : []),
-                        request('contrato', isset($notafiscal) AND $notafiscal->contrato_id ?
-                        $notafiscal->contrato_id : null), ['class' => 'form-control select2']) !!}
+                        $contrato_id, ['class' => 'form-control select2']) !!}
                     </div>
 
                     <!-- Codigo Field -->
@@ -178,7 +192,7 @@
     </div>
 </div>
 <div class="col-sm-6" style="min-height: 700px !important;clear:right;">
-    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true" style="margin-top:10px;">
+    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true" >
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h4 class="panel-title">
@@ -236,64 +250,92 @@
                                 <th></th>
                             </tr>
                             </thead>
-                            <tbody>
-                                <tr v-for="item in itemsNf" :id="'item-' + item.id" >
-                                        <!-- idioma Id Field -->
-                                        <td width="30%">
-                                            {!! Form::text('items[nome_produto][]', null, [
-                                            'class' => 'form-control',
-                                            ':value' => 'item.nome_produto'
-                                            ]) !!}
-                                        </td>
-                                        <td>
-                                            {!! Form::text('items[ncm][]', null, [
-                                            'class' => 'form-control text-right',
-                                            ':value' => 'item.ncm'
-                                            ]) !!}
-                                        </td>
-                                        <td>
-                                            {!! Form::text('items[codigo_produto][]', null, [
-                                            'class' => 'form-control text-right',
-                                            ':value' => 'item.codigo_produto'
-                                            ]) !!}
-                                        </td>
-                                        <td>
-                                            {!! Form::text('items[qtd][]', null, [
-                                            'class' => 'form-control text-right',
-                                            ':value' => 'item.qtd'
-                                            ]) !!}
-                                        </td>
-                                        <td>
-                                            {!! Form::text('items[unidade][]', null, [
-                                            'class' => 'form-control text-right',
-                                            ':value' => 'item.unidade'
-                                            ]) !!}
-                                        </td>
-                                        <td>
-                                            {!! Form::text('items[valor_unitario][]', null, [
-                                            'class' => 'form-control text-right',
-                                            ':value' => 'item.valor_unitario'
-                                            ]) !!}
-                                        </td>
-                                        <td>
-                                            {!! Form::text('items[valor_total][]', null, [
-                                                'class' => 'form-control text-right',
-                                                ':value' => 'item.valor_total'
-                                            ]) !!}
-                                            {!! Form::hidden('items[id][]', null, [
-                                            ':value' => 'item.id'
-                                            ]) !!}
-                                        </td>
-                                        <td>
-                                            <a v-show="item.item_id == null" class="btn btn-success" v-on:click="openModal(item)">
-                                                Vincular
-                                            </a>
+                            <tbody v-for="(item, $index) in itemsNf">
 
-                                            <a v-show="item.item_id != null" class="btn btn-danger" v-on:click="desvincular(item)">
-                                                Desvincular
-                                            </a>
-                                        </td>
-                                    </tr>
+                            <tr :id="'item-' + item.id">
+                                <!-- idioma Id Field -->
+                                <td width="30%">
+                                    {!! Form::text('items[nome_produto][]', null, [
+                                    'class' => 'form-control',
+                                    ':value' => 'item.nome_produto',
+                                        'readonly'
+                                    ]) !!}
+                                </td>
+                                <td>
+                                    {!! Form::text('items[ncm][]', null, [
+                                    'class' => 'form-control text-right',
+                                    ':value' => 'item.ncm',
+                                        'readonly'
+                                    ]) !!}
+                                </td>
+                                <td>
+                                    {!! Form::text('items[codigo_produto][]', null, [
+                                    'class' => 'form-control text-right',
+                                    ':value' => 'item.codigo_produto',
+                                        'readonly'
+                                    ]) !!}
+                                </td>
+                                <td>
+                                    {!! Form::text('items[qtd][]', null, [
+                                    'class' => 'form-control text-right',
+                                    ':value' => 'item.qtd',
+                                        'readonly'
+                                    ]) !!}
+                                </td>
+                                <td>
+                                    {!! Form::text('items[unidade][]', null, [
+                                    'class' => 'form-control text-right',
+                                    ':value' => 'item.unidade',
+                                        'readonly'
+                                    ]) !!}
+                                </td>
+                                <td>
+                                    {!! Form::text('items[valor_unitario][]', null, [
+                                    'class' => 'form-control text-right',
+                                    ':value' => 'item.valor_unitario',
+                                        'readonly'
+                                    ]) !!}
+                                </td>
+                                <td>
+                                    {!! Form::text('items[valor_total][]', null, [
+                                        'class' => 'form-control text-right',
+                                        ':value' => 'item.valor_total',
+                                        'readonly'
+                                    ]) !!}
+
+                                    {!! Form::hidden('items[id][]', null, [':value' => 'item.id']) !!}
+
+                                    {!! Form::hidden('items[solicitacao_entrega_itens_id][]', null,
+                                        [':value' => 'item.solicitacao_entrega_itens_id']) !!}
+                                </td>
+                                <td>
+                                    <a v-show="item.solicitacao_entrega_itens_id == null" class="btn btn-success"
+                                       v-on:click="openModal($index)">
+                                        Vincular
+                                    </a>
+
+                                    <a v-show="item.solicitacao_entrega_itens_id != null" class="btn btn-danger"
+                                       v-on:click="desvincular($index)">
+                                        Desvincular
+                                    </a>
+                                </td>
+                            </tr>
+
+                            <tr v-show="item.solicitacao_entrega_itens_id > 0">
+                                <td colspan="8" style="background-color: rgb(170, 235, 255);text-align: left;">
+                                    <div v-if="item.solicitacao_entrega_item != null"
+                                         v-show="item.solicitacao_entrega_item.id > 0">
+                                        Vinculado à: @{{ item.solicitacao_entrega_item.insumo.nome }}
+                                        -
+                                        Qtd: @{{ item.solicitacao_entrega_item.qtd }} @{{ item.solicitacao_entrega_item.unidade_sigla}}
+                                        - Vl. Unit.: @{{ item.solicitacao_entrega_item.valor_unitario }}
+                                        - Vl. Tot.: @{{ item.solicitacao_entrega_item.valor_total }}
+                                    </div>
+                                    <div v-show="item.solicitacao_entrega_itens_text != null">
+                                        Vinculado à: @{{ item.solicitacao_entrega_itens_text }}
+                                    </div>
+                                <td>
+                            </tr>
 
                             </tbody>
                         </table>
@@ -309,35 +351,50 @@
         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true" style="margin-top:10px;">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h4 class="panel-title">
+                    <div class="panel-title">
                         Faturas da Nota Fiscal
-                    </h4>
+
+                        <button type="button"
+                                v-on:click="adicionarFatura"
+                                class="btn btn-sm btn-primary pull-right">
+                            Adicionar Fatura
+                        </button>
+                        <br/>
+                    </div>
                 </div>
                 <div class="panel-body">
 
-                        <div class="col-md-4 box-rounded-bordered" v-for="fatura in faturasNf" :id="'fatura-' + fatura.id" >
-                            <div class="form-group col-sm-12">
-                                {!! Form::hidden(('faturas["id"][]'), null, ['class' => 'form-control text-right', ':value' => 'fatura.id']) !!}
+                    <div class="col-md-3 box-rounded-bordered"
+                         v-for="(fatura, $index) in faturasNf"
+                         :id="'fatura-' + fatura.id">
+                        <button type="button"
+                                v-on:click="removerFatura($index)"
+                                class="btn btn-sm btn-danger pull-right">
+                            <i class="fa fa-remove"></i>
+                        </button>
 
-                                {!! Form::label('numero', 'Numero') !!}
-                                {!! Form::text(('faturas["numero"][]'), null, ['class' => 'form-control text-right', ':value' => 'fatura.numero']) !!}
-                            </div>
+                        <div class="form-group col-sm-12">
+                            {!! Form::hidden(('faturas[id][]'), null, ['class' => 'form-control text-right', ':value' => 'fatura.id']) !!}
 
-                            <div class="form-group col-sm-12">
-                                {!! Form::label('numero', 'Numero') !!}
-                                {!! Form::date(('faturas["vencimento"][]'), null, [
+                            {!! Form::label('numero', 'Numero') !!}
+                            {!! Form::text(('faturas[numero][]'), null, ['class' => 'form-control text-right', ':value' => 'fatura.numero']) !!}
+                        </div>
+
+                        <div class="form-group col-sm-12">
+                            {!! Form::label('numero', 'Numero') !!}
+                            {!! Form::date(('faturas[vencimento][]'), null, [
                                 'class' => 'form-control text-right',
                                 'v-model' => "fatura.vencimento",
                                 ':value' => 'fatura.vencimento'
-                                ]) !!}
-                            </div>
-
-                            <div class="form-group col-sm-12">
-                                {!! Form::label('valor', 'Valor') !!}
-                                {!! Form::text(('faturas["valor"][]'), null, ['class' => 'form-control text-right', ':value' => 'fatura.valor']) !!}
-                            </div>
+                            ]) !!}
                         </div>
 
+                        <div class="form-group col-sm-12">
+                            {!! Form::label('valor', 'Valor') !!}
+                            {!! Form::text(('faturas[valor][]'), null, ['class' => 'form-control text-right', ':value' => 'fatura.valor']) !!}
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </div>
@@ -346,8 +403,20 @@
 
 <!-- Submit Field -->
 <div class="form-group col-sm-12" style="margin-top: 20px;">
-    {!! Form::button( '<i class="fa fa-remove"></i> Rejeitar', ['class' => 'btn btn-danger pull-right',  'type'=>'submit']) !!}
-    {!! Form::button( '<i class="fa fa-save"></i> Aceite',     ['class' => 'btn btn-success pull-right', 'type'=>'submit']) !!}
+    @if(empty($notafiscal->status))
+    {!! Form::button( '<i class="fa fa-remove"></i> Rejeitar', [
+    'class' => 'btn btn-danger pull-right',
+        'type'=>'submit',
+        'value' => 'Rejeitar',
+        'name' => 'acao',
+    ]) !!}
+    {!! Form::button( '<i class="fa fa-save"></i> Aceite',
+    ['class' => 'btn btn-success pull-right',
+        'type'=>'submit',
+        'value' => 'Aceitar',
+        'name' => 'acao'
+    ]) !!}
+    @endif
 
     <a href="{!! route('notafiscals.index') !!}" class="btn btn-default">
         <i class="fa fa-times"></i>
@@ -355,37 +424,52 @@
     </a>
 </div>
 
-<div class="modal fade" id="conciliacao-modal" tabindex="-1" role="dialog" aria-labelledby="conciliacaoFormLabel" aria-hidden="true">
+<div class="modal fade"
+     id="conciliacao-modal"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="conciliacaoFormLabel"
+     aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="conciliacaoFormLabel">Conciliar Itens <div id="item_desc"></div> </h4>
+                <button type="button"
+                        class="close"
+                        data-dismiss="modal"
+                        aria-hidden="true">&times;</button>
+                <h4 class="modal-title"
+                    id="conciliacaoFormLabel">
+                    Conciliar Item: @{{ itemsNf[index].nome_produto }}
+                </h4>
             </div>
             <div class="modal-body">
 
                 <div class="clearfix"></div>
-                <div class="alert alert-danger hidden" id="permission-form-errors"></div>
-
                 {{ Form::open(['method' => 'post', 'id' => 'conciliacao-form', 'role' => 'form']) }}
 
                 <div class="form-group clearfix">
                     <div class="col-md-12">
-                        {{ Form::select('items', ['' => 'Selecione'] + $itemsSolicitacoes, null, [
-                            'class' => 'form-control select2',
-                            ':id' => '"item-selecionado-" + itemSelecionado.item_id',
-                            ':model' => 'itemSelecionado.item_id',
-                            ':value' => 'itemSelecionado.item_id'
-                        ]) }}
+                        <select
+                                :id='"itemSelecionado"'
+                                v-model="itemsNf[index].solicitacao_entrega_item_id"
+                                class="form-control select2">
+                            <option
+                                    v-for="($value, $key) in itemsSolicitacoes"
+                                    v-bind:value="$key">
+                                @{{ $value }}
+                            </option>
+                        </select>
                     </div>
                 </div>
 
-                <div class="clearfix" ></div>
+                <div class="clearfix"></div>
 
-                <input type="hidden" v-model="itemSelecionado"/>
-
-                {{ Form::button('Adicionar Vinculo', ['class' => 'btn btn-primary', 'id' => 'permission-save-button']) }}
-                <button type="button" data-dismiss="modal" class="btn btn-default">Cancelar</button>
+                <button type="button" v-on:click="updateVinculo" class="btn btn-sm btn-primary">
+                    Vincular
+                </button>
+                <button type="button" data-dismiss="modal" class="btn btn-sm btn-default">
+                    Cancelar
+                </button>
                 {{ Form::close() }}
             </div>
         </div><!-- /.modal-content -->
@@ -395,45 +479,64 @@
 @section('scripts')
     <style>
         .box-rounded-bordered {
-            border: 1px solid #ccc;
-            padding: 5px;
-            border-radius: 10px;
+            border: 1px dashed #ccc;
+            border-radius: 3px;
         }
     </style>
     <script>
-        var $faturasNf = {!! json_encode($notafiscal->faturas)  !!};
-        var $itemsNf = {!! json_encode($notafiscal->items)  !!};
+                <?php
+                $faturas = [];
+                foreach ($notafiscal->faturas as $fatura) {
+                    $faturaItem = $fatura->toArray();
+                    unset($faturaItem['vencimento']);
+                    $faturaItem['vencimento'] = $fatura->vencimento ? $fatura->vencimento->format("Y-m-d") : null;
+                    $faturas[] = $faturaItem;
+                }
+                ?>
+
+        var $faturasNf = {!! json_encode($faturas)  !!};
+        var $itemsNf = {!! json_encode($notafiscal->items()->with('solicitacaoEntregaItem', 'solicitacaoEntregaItem.insumo')->get())  !!};
         var $itemsSolicitacoes = {!! json_encode($itemsSolicitacoes)  !!};
 
         const app = new Vue({
             el: '#nota_fiscal',
             data: {
-                itemSelecionado: {},
+                index: 0,
                 itemsNf: $itemsNf,
-                faturasNf: $faturasNf
+                faturasNf: $faturasNf,
+                itemsSolicitacoes: $itemsSolicitacoes
             },
-            computed: {
-                itemSelecionadoId: function() {
-                    console.log(itemSelecionado.item_id);
-                }
-            },
+            watch: {},
             methods: {
-                desvincular: function (item) {
-                    this.itemSelecionado = item;
+                desvincular: function ($index) {
+
+                    this.itemsNf[$index].solicitacao_entrega_itens_text = null;
+                    this.itemsNf[$index].solicitacao_entrega_itens_id = null;
+                    this.itemsNf[$index].solicitacao_entrega_item = null;
+
+                    console.log(this.itemsNf[$index])
 
                 },
-                openModal: function (item) {
-                    this.itemSelecionado = item;
+                openModal: function ($index) {
+                    this.index = $index;
                     $('#conciliacao-modal').modal('show');
                 },
-                updateItem: function () {
-                    console.log(this.itemSelecionado);
+                updateVinculo: function () {
+                    $itemSelecionadoVal = $('#itemSelecionado').val();
+                    $itemSelecionadoText = $('#itemSelecionado option:selected').text();
+                    this.itemsNf[this.index].solicitacao_entrega_itens_text = $itemSelecionadoText;
+                    this.itemsNf[this.index].solicitacao_entrega_itens_id = $itemSelecionadoVal;
+                    $('#itemSelecionado').val('').trigger('change');
+                    $('#conciliacao-modal').modal('hide');
+                },
+                adicionarFatura: function () {
+                    this.faturasNf.push({});
+                },
+                removerFatura: function ($index) {
+                    this.faturasNf.splice($index, 1);
                 }
-
             },
-            created: function() {
-                console.log('created');
-
+            created: function () {
             }
         });
     </script>

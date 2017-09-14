@@ -10,6 +10,7 @@ use App\Models\Contrato;
 use App\Models\Cte;
 use App\Models\Fornecedor;
 use App\Models\Notafiscal;
+use App\Models\NotaFiscalFatura;
 use App\Models\NotaFiscalItem;
 use App\Repositories\ConsultaCteRepository;
 use App\Repositories\ConsultaNfeRepository;
@@ -122,8 +123,10 @@ class NotafiscalController extends AppBaseController
         $cnpj = $notafiscal->cnpj;
         $fornecedor = Fornecedor::where(\DB::raw("replace(replace(replace(fornecedores.cnpj,'-',''),'.',''),'/','')"), $cnpj)->first();
         $contratos = [];
-        $contrato = Contrato::where('id', request('contrato'))->where('fornecedor_id', $fornecedor->id)->first();
-        //$solicitacoes_de_entrega = [];
+
+        $contrato = Contrato::where('id', request('contrato', $notafiscal->contrato_id))
+     ->where('fornecedor_id', $fornecedor->id)
+     ->first();
 
         $itemsSolicitacoes = [];
         if ($contrato) {
@@ -148,7 +151,9 @@ class NotafiscalController extends AppBaseController
             }
         }
 
-        $contratos = Contrato::where('id', request('contrato'))->pluck('id', 'id')->toArray();
+        $contratos = Contrato::where('id', request('contrato', $notafiscal->contrato_id))
+            ->pluck('id', 'id')
+            ->toArray();
 
         return view('notafiscals.edit', compact('notafiscal',
                                                 'fornecedor',
@@ -167,19 +172,104 @@ class NotafiscalController extends AppBaseController
      */
     public function update($id, UpdateNotafiscalRequest $request)
     {
+        $acao = $request->get('acao');
+
         $notafiscal = $this->notafiscalRepository->findWithoutFail($id);
 
-        if (empty($notafiscal)) {
-            Flash::error('Notafiscal ' . trans('common.not-found'));
+        if ($acao == 'Rejeitar') {
+            Flash::error('Nota fiscal rejeitada ' . trans('common.successfully') . '.');
 
-            return redirect(route('notafiscals.index'));
+            $notafiscal->status = 'Rejeitada';
+            $notafiscal->status_data = date('Y-m-d H:i:s');
+            $notafiscal->status_user_id = auth()->user()->id;
+            $notafiscal->save();
+
+            return redirect(route('notafiscals.edit', [$id]));
         }
 
-        $notafiscal = $this->notafiscalRepository->update($request->all(), $id);
+        $faturasRequest = $request->get('faturas');
 
-        Flash::success('Notafiscal ' . trans('common.updated') . ' ' . trans('common.successfully') . '.');
+        $itensRequest = $request->get('items');
 
-        return redirect(route('notafiscals.index'));
+        $faturas = [];
+        $itens   = [];
+
+        foreach ($faturasRequest['id'] as $key => $value) {
+            $faturas[] = [
+                'id' => $value,
+                'vencimento' => $faturasRequest['vencimento'][$key] ,
+                'numero'     => $faturasRequest['numero'][$key] ,
+                'valor'      => $faturasRequest['valor'][$key] ,
+            ];
+        }
+
+        foreach ($itensRequest['id'] as $key => $value) {
+            $itens[] = [
+                'id' => $value,
+                'solicitacao_entrega_itens_id'=> $itensRequest['solicitacao_entrega_itens_id'][$key] ,
+                "nome_produto" => $itensRequest['nome_produto'][$key] ,
+                "ncm" => $itensRequest['ncm'][$key] ,
+                "codigo_produto" => $itensRequest['codigo_produto'][$key] ,
+                "qtd" => $itensRequest['qtd'][$key] ,
+                "unidade" => $itensRequest['unidade'][$key] ,
+                "valor_unitario" => $itensRequest['valor_unitario'][$key] ,
+                "valor_total" => $itensRequest['valor_total'][$key] ,
+            ];
+        }
+
+        $notafiscal->status = 'Aceita';
+        $notafiscal->status_data = date('Y-m-d H:i:s');
+        $notafiscal->status_user_id = auth()->user()->id;
+        $notafiscal->contrato_id = $request->get('contrato_id');
+        $notafiscal->save();
+
+        foreach ($itens as $item) {
+            if ($item['id'] > 0) {
+                $itemNf = $notafiscal->items()->where('id', $item['id'] )->first();
+                $itemNf->solicitacao_entrega_itens_id = $item['solicitacao_entrega_itens_id'];
+                $itemNf->save();
+            }
+        }
+
+        $faturasIds = array_column($faturas, 'id');
+        foreach ($faturasIds as $k => $value)
+        {
+            if (empty($value)) {
+                unset($faturasIds[$k]);
+            }
+        }
+
+        foreach ($faturas as $fatura) {
+
+            $notafiscal->faturas()
+                ->whereNotIn('id', $faturasIds)
+                ->delete();
+
+            if ($fatura['id'] > 0) {
+
+                $faturaNf = $notafiscal->faturas()->where('id', $fatura['id'] )->first();
+
+                if (!$faturaNf) {
+                    Log::info(sprintf('Fatura não encontrada %s', print_r($fatura, true)));
+                }
+
+                $faturaNf->vencimento = $fatura['vencimento'];
+                $faturaNf->valor      = $fatura['valor'];
+                $faturaNf->numero     = $fatura['numero'];
+                $faturaNf->save();
+
+            } else {
+
+                $faturaNf = $notafiscal->faturas()->save(
+                    new NotaFiscalFatura($fatura)
+                );
+
+            }
+        }
+
+        Flash::success('Nota fiscal ' . trans('common.updated') . ' ' . trans('common.successfully') . '.');
+
+        return redirect(route('notafiscals.edit', [$id]));
     }
 
     /**

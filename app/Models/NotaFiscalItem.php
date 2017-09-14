@@ -36,6 +36,7 @@ class NotaFiscalItem extends Model
         'valor_cofins',
         'aliquota_pis',
         'valor_pis',
+        'solicitacao_entrega_itens_id',
     ];
 
     /**
@@ -50,7 +51,8 @@ class NotaFiscalItem extends Model
         'codigo_produto' => 'string',
         'nome_produto' => 'string',
         'ean' => 'string',
-        'unidade' => 'string'
+        'unidade' => 'string',
+        'solicitacao_entrega_itens_id' => 'integer',
     ];
 
     /**
@@ -68,5 +70,13 @@ class NotaFiscalItem extends Model
     public function notaFiscal()
     {
         return $this->belongsTo(\App\Models\NotaFiscal::class, 'nota_fiscal_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function solicitacaoEntregaItem()
+    {
+        return $this->belongsTo(\App\Models\SolicitacaoEntregaItem::class, 'solicitacao_entrega_itens_id');
     }
 }

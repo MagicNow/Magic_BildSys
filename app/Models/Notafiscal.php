@@ -102,6 +102,9 @@ class Notafiscal extends Model
         'manifesto',
         'manifesto_status',
         'retorno_manifesto_motivo',
+        'status',
+        'status_data',
+        'status_user_id',
     ];
 
     /**
@@ -129,6 +132,9 @@ class Notafiscal extends Model
         'data_emissao' => 'datetime',
         'data_saida' => 'datetime',
         'retorno_manifesto_motivo' => 'string',
+        'status'=> 'string',
+        'status_data'=> 'datetime',
+        'status_user_id'=> 'integer',
     ];
 
     /**
@@ -172,4 +178,11 @@ class Notafiscal extends Model
         return $this->hasMany(\App\Models\NotaFiscalFatura::class, 'nota_fiscal_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function statusUser()
+    {
+        return $this->belongsTo(\App\Models\User::class, 'status_user_id');
+    }
 }
