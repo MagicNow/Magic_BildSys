@@ -187,21 +187,15 @@
                         });
 
                     } else {
-                        $('.detalhes_servicos_itens').each(function (index2, value) {
-                            valor_previsto += parseFloat($(value).attr('valor_previsto'));
-                            valor_comprometido_a_gastar += parseFloat($(value).attr('valor_comprometido_a_gastar'));
-                            saldo_orcamento += parseFloat($(value).attr('saldo_orcamento'));
-                            valor_oc += parseFloat($(value).attr('valor_oc'));
-                            saldo_disponivel += parseFloat($(value).attr('saldo_disponivel'));
+                        @php
+                            $calculos = \App\Repositories\OrdemDeCompraRepository::calculosDetalhesServicos(Request::segment(3), Request::segment(4), \Illuminate\Support\Facades\Input::get('oc_id'));
+                        @endphp
 
-                            if(index2+1 === $('.detalhes_servicos_itens').length) {
-                                $('#valor_previsto').text(floatToMoney(valor_previsto, ''));
-                                $('#valor_comprometido_a_gastar').text(floatToMoney(valor_comprometido_a_gastar, ''));
-                                $('#saldo_orcamento').text(floatToMoney(saldo_orcamento, ''));
-                                $('#valor_oc').text(floatToMoney(valor_oc, ''));
-                                $('#saldo_disponivel').text(floatToMoney(saldo_disponivel, ''));
-                            }
-                        });
+                        $('#valor_previsto').text('{{float_to_money($calculos['valor_previsto'], '')}}');
+                        $('#valor_comprometido_a_gastar').text('{{float_to_money($calculos['valor_comprometido_a_gastar'], '')}}');
+                        $('#saldo_orcamento').text('{{float_to_money($calculos['saldo_orcamento'], '')}}');
+                        $('#valor_oc').text('{{float_to_money($calculos['valor_oc'], '')}}');
+                        $('#saldo_disponivel').text('{{float_to_money($calculos['saldo_disponivel'], '')}}');
                     }
                 }
             });

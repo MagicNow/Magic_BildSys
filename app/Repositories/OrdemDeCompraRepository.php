@@ -6,9 +6,13 @@ use App\Models\CatalogoContrato;
 use App\Models\Contrato;
 use App\Models\ContratoItemApropriacao;
 use App\Models\Obra;
+use App\Models\Orcamento;
 use App\Models\OrdemDeCompra;
 use App\Models\OrdemDeCompraItem;
+use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 use InfyOm\Generator\Common\BaseRepository;
 
 class OrdemDeCompraRepository extends BaseRepository
@@ -268,5 +272,141 @@ class OrdemDeCompraRepository extends BaseRepository
         }
 
         return $origem;
+    }
+    
+    public static function calculosDetalhesServicos($obra_id, $servico_id , $oc_id)
+    {
+        // Se alterar, modificar tbm DetalhesServicosDataTable::query
+        if($oc_id) {
+            $ordem_de_compra_ultima_aprovacao = OrdemDeCompra::find($oc_id)->dataUltimoPeriodoAprovacao();
+        }
+
+        $orcamentos = Orcamento::select([
+            DB::raw("CONCAT(SUBSTRING_INDEX(orcamentos.codigo_insumo, '.', -1),' - ' ,orcamentos.descricao) as descricao"),
+            'orcamentos.unidade_sigla',
+            DB::raw("
+                IF (orcamentos.insumo_incluido = 1, 0, orcamentos.preco_total) as valor_previsto
+            "),
+            'orcamentos.id',
+            'orcamentos.insumo_incluido',
+            'orcamentos.grupo_id',
+            'orcamentos.subgrupo1_id',
+            'orcamentos.subgrupo2_id',
+            'orcamentos.subgrupo3_id',
+            'orcamentos.servico_id',
+            'orcamentos.insumo_id',
+            'insumos.codigo',
+            DB::raw("CONCAT(insumos_sub.codigo,' - ' ,insumos_sub.nome) as substitui"),
+            DB::raw('
+                    (SELECT 
+                        SUM(ordem_de_compra_itens.valor_total) 
+                    FROM ordem_de_compra_itens
+                    JOIN ordem_de_compras
+                        ON ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id
+                    WHERE ordem_de_compra_itens.insumo_id = orcamentos.insumo_id
+                    AND ordem_de_compra_itens.grupo_id = orcamentos.grupo_id
+                    AND ordem_de_compra_itens.subgrupo1_id = orcamentos.subgrupo1_id
+                    AND ordem_de_compra_itens.subgrupo2_id = orcamentos.subgrupo2_id
+                    AND ordem_de_compra_itens.subgrupo3_id = orcamentos.subgrupo3_id
+                    AND ordem_de_compra_itens.servico_id = orcamentos.servico_id
+                    AND (
+                            ordem_de_compras.oc_status_id = 2
+                            OR
+                            ordem_de_compras.oc_status_id = 3                            
+                            OR
+                            ordem_de_compras.oc_status_id = 5
+                        )
+                    AND ordem_de_compra_itens.deleted_at IS NULL
+                    '.($oc_id ? "AND ordem_de_compras.id = '".$oc_id."'" : 'AND NOT EXISTS(
+                        SELECT 1 
+                        FROM contrato_itens CI
+                        JOIN contrato_item_apropriacoes CIT ON CIT.contrato_item_id = CI.id
+                        JOIN oc_item_qc_item OCQC ON OCQC.qc_item_id = CI.qc_item_id
+                        WHERE CI.id = CIT.contrato_item_id
+                        AND OCQC.ordem_de_compra_item_id = ordem_de_compra_itens.id
+                    )').'
+                    AND ordem_de_compra_itens.servico_id = '.$servico_id.'
+                    '.(isset($ordem_de_compra_ultima_aprovacao) ? "AND ordem_de_compras.created_at <='".$ordem_de_compra_ultima_aprovacao."'" : '').'
+                    AND ordem_de_compra_itens.obra_id ='. $obra_id .' ) as valor_oc'),
+
+            DB::raw('0
+                    as saldo_disponivel'),
+            DB::raw('(SELECT
+                    CONCAT(codigo, \' - \', nome)
+                    FROM
+                    grupos
+                    WHERE
+                    orcamentos.grupo_id = grupos.id) AS tooltip_grupo'),
+            DB::raw('(SELECT
+                    CONCAT(codigo, \' - \', nome)
+                    FROM
+                    grupos
+                    WHERE
+                    orcamentos.subgrupo1_id = grupos.id) AS tooltip_subgrupo1'),
+            DB::raw('(SELECT
+                    CONCAT(codigo, \' - \', nome)
+                    FROM
+                    grupos
+                    WHERE
+                    orcamentos.subgrupo2_id = grupos.id) AS tooltip_subgrupo2'),
+            DB::raw('(SELECT
+                    CONCAT(codigo, \' - \', nome)
+                    FROM
+                    grupos
+                    WHERE
+                    orcamentos.subgrupo3_id = grupos.id) AS tooltip_subgrupo3'),
+            DB::raw('(SELECT
+                    CONCAT(codigo, \' - \', nome)
+                    FROM
+                    servicos
+                    WHERE
+                    orcamentos.servico_id = servicos.id) AS tooltip_servico')
+        ])
+            ->join('insumos',  'insumos.id', 'orcamentos.insumo_id')
+            ->leftJoin(DB::raw('orcamentos orcamentos_sub'),  'orcamentos_sub.id', 'orcamentos.orcamento_que_substitui')
+            ->leftJoin(DB::raw('insumos insumos_sub'), 'insumos_sub.id', 'orcamentos_sub.insumo_id')
+            ->where('orcamentos.servico_id','=', DB::raw($servico_id))
+            ->where('orcamentos.obra_id','=', DB::raw($obra_id));
+
+        $orcamentos = $orcamentos->groupBy('orcamentos.insumo_id');
+        $orcamentos = $orcamentos->get();
+
+
+        $valor_previsto = 0;
+        $valor_realizado = 0;
+        $valor_comprometido_a_gastar = 0;
+        $saldo_orcamento = 0;
+        $valor_oc = 0;
+
+        foreach($orcamentos as $orcamento) {
+            //valor_previsto
+            $valor_previsto += $orcamento->valor_previsto;
+            
+            //valor_comprometido_a_gastar
+            if($oc_id) {
+                $ordem_de_compra_ultima_aprovacao = OrdemDeCompra::find($oc_id)->dataUltimoPeriodoAprovacao();
+            } else {
+                $ordem_de_compra_ultima_aprovacao = null;
+            }
+            $valor_comprometido_a_gastar += OrdemDeCompraRepository::valorComprometidoAGastarItem($orcamento->grupo_id, $orcamento->subgrupo1_id, $orcamento->subgrupo2_id, $orcamento->subgrupo3_id, $orcamento->servico_id, $orcamento->insumo_id, $obra_id, null, $ordem_de_compra_ultima_aprovacao);
+
+            //valor_oc
+            $valor_oc += $orcamento->valor_oc;
+        }
+
+        //saldo_orcamento
+        $saldo_orcamento += $valor_previsto - $valor_realizado - $valor_comprometido_a_gastar;
+
+        //saldo_disponivel
+        $saldo_disponivel = $saldo_orcamento - $valor_oc;
+        
+        return [
+                'valor_previsto' => $valor_previsto,
+                'valor_realizado' => $valor_realizado,
+                'valor_comprometido_a_gastar' => $valor_comprometido_a_gastar,
+                'saldo_orcamento' => $saldo_orcamento,
+                'valor_oc' => $valor_oc,
+                'saldo_disponivel' => $saldo_disponivel
+        ];
     }
 }

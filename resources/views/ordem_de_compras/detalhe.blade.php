@@ -362,8 +362,6 @@
                                         $saldo_valor_orcamento -= $valor_comprometido_a_gastar_item;
 
                                         $status_qtd = $saldo_qtd_orcamento - money_to_float($item->qtd);
-
-                                        $valor_comprometido_a_gastar_servico = \App\Repositories\OrdemDeCompraRepository::valorComprometidoAGastarItem($item->grupo_id, $item->subgrupo1_id, $item->subgrupo2_id, $item->subgrupo3_id, $item->servico_id, $item->insumo_id, $item->obra_id, null, $item->ordemDeCompra->dataUltimoPeriodoAprovacao());
                                 @endphp
 
                                 @if($status_qtd > 0)
@@ -383,7 +381,10 @@
                             </td>
                             <td class="text-center">
                                 @if($item->servico)
-                                    <i class="fa fa-circle {{ (money_to_float($item->valor_servico) - $valor_comprometido_a_gastar_servico - money_to_float($item->valor_servico_oc)) < 0 ? 'red': 'green'  }}" aria-hidden="true"></i>
+                                    @php
+                                        $calculos_servico = \App\Repositories\OrdemDeCompraRepository::calculosDetalhesServicos($ordemDeCompra->obra_id, $item->servico->id, $ordemDeCompra->id);
+                                    @endphp
+                                    <i class="fa fa-circle {{ $calculos_servico['saldo_disponivel'] < 0 ? 'red': 'green'  }}" aria-hidden="true"></i>
                                     <a href="/ordens-de-compra/detalhes-servicos/{{$ordemDeCompra->obra_id}}/{{$item->servico->id}}?oc_id={{$ordemDeCompra->id}}" style="cursor:pointer;" data-toggle="tooltip" data-placement="top" title="Análise">
                                         <i class="fa fa-info-circle text-info" style="font-size: 20px;"></i>
                                     </a>
