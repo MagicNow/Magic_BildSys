@@ -572,12 +572,45 @@ $(function() {
         swal('Erro ao buscar Tipo de Equalização Técnica', '', "error");
       });
   });
+
   $('.tiposEqT input').on('ifUnchecked', function(event) {
     var tipo_eqt_id = event.target.value;
     $('.eqt_' + tipo_eqt_id).remove();
   });
 
-  var workflowTipo = $('#linhaDoTempo');
+
+    $('#fornecedor_temp').on('select2:select', function(e) {
+        addFornecedorTemp();
+    });
+
+    function checkEqualizacaoTecnica() {
+
+        qcEqualizacao = [];
+        tiposEqT = []
+
+        $(".qcEqualizacao").each(function( index ) {
+
+            qcEqualizacao.push( parseInt( $(this).val() ) );
+        });
+
+        $(".tiposEqT input").each(function( index ) {
+
+            tiposEqT.push( parseInt( $(this).val() ) );
+        });
+
+        for (let value of tiposEqT) {
+
+            if (qcEqualizacao.indexOf(value) !== -1) {
+
+                $('#filter_tipoEqualizacaoTecnica_'+value).iCheck('check');
+            }
+        }
+    }
+
+    setTimeout(checkEqualizacaoTecnica, 3000);
+
+
+    var workflowTipo = $('#linhaDoTempo');
 
   workflowTipo.tooltip({
     title: 'Clique para ver detalhes',
