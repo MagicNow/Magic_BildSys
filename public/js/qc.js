@@ -572,7 +572,7 @@ $(function() {
         swal('Erro ao buscar Tipo de Equalização Técnica', '', "error");
       });
   });
-  
+
   $('.tiposEqT input').on('ifUnchecked', function(event) {
     var tipo_eqt_id = event.target.value;
     $('.eqt_' + tipo_eqt_id).remove();
