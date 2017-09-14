@@ -1,11 +1,9 @@
 <?php
 
-
-namespace App\DataTables;
+namespace App\DataTables\Admin;
 
 use App\Models\MascaraPadrao;
 use Form;
-use Illuminate\Support\Facades\DB;
 use Yajra\Datatables\Services\DataTable;
 
 class MascaraPadraoDataTable extends DataTable
@@ -18,7 +16,13 @@ class MascaraPadraoDataTable extends DataTable
     {
         return $this->datatables
             ->eloquent($this->query())
-            ->editColumn('action', 'mascara_padrao.datatables_actions')
+            ->editColumn('action', 'admin.mascara_padrao.datatables_actions')
+            ->editColumn('created_at', function($obj){
+                return $obj->created_at ? with(new\Carbon\Carbon($obj->created_at))->format('d/m/Y H:i') : '';
+            })
+            ->filterColumn('created_at', function ($query, $keyword) {
+                $query->whereRaw("DATE_FORMAT(mascara_padrao.created_at,'%d/%m/%Y') like ?", ["%$keyword%"]);
+            })
             ->make(true);
     }
 
@@ -29,23 +33,9 @@ class MascaraPadraoDataTable extends DataTable
      */
     public function query()
     {
-        $mascaraPadrao = MascaraPadrao::select([
-            'mascara_padrao.id',
-			'mascara_padrao.nome',
-            'obras.nome as obra',
-			'orcamento_tipos.nome as tipo',            
-            /*DB::raw('(
-                SELECT 
-                    COUNT(Distinct insumo_id)
-                FROM
-                    catalogo_contrato_insumos
-                WHERE catalogo_contrato_id = catalogo_contratos.id
-            ) as insumos')*/
-        ])
-        ->join('obras','mascara_padrao.obra_id','obras.id')
-		->join('orcamento_tipos','mascara_padrao.orcamento_tipo_id','orcamento_tipos.id');    
+        $mascara_padrao = MascaraPadrao::query();
 
-        return $this->applyScopes($mascaraPadrao);
+        return $this->applyScopes($mascara_padrao);
     }
 
     /**
@@ -61,11 +51,10 @@ class MascaraPadraoDataTable extends DataTable
             ->ajax('')
             ->parameters([
                 'responsive' => 'true',
-
                  'initComplete' => 'function () {
                     max = this.api().columns().count();
                     this.api().columns().every(function (col) {
-                        if((col+1)<(max-1)){
+                        if((col+1)<max){
                             var column = this;
                             var input = document.createElement("input");
                             $(input).attr(\'placeholder\',\'Filtrar...\');
@@ -88,13 +77,13 @@ class MascaraPadraoDataTable extends DataTable
                     'reset',
                     'reload',
                     [
-                        'extend'  => 'collection',
-                        'text'    => '<i class="fa fa-download"></i> Export',
-                        'buttons' => [
-                            'csv',
-                            'excel',
-                            'pdf',
-                        ],
+                         'extend'  => 'collection',
+                         'text'    => '<i class="fa fa-download"></i> Export',
+                         'buttons' => [
+                             'csv',
+                             'excel',
+                             'pdf',
+                         ],
                     ],
                     'colvis'
                 ]
@@ -109,10 +98,9 @@ class MascaraPadraoDataTable extends DataTable
     private function getColumns()
     {
         return [
-            'nome' => ['name' => 'nome', 'data' => 'nome', 'searchable' => false],
-			'obra' => ['name' => 'obras.nome', 'data' => 'obra'],            
-			'tipo' => ['name' => 'tipo', 'data' => 'tipo', 'searchable' => false],            
-            'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'11%']
+            'nome' => ['name' => 'nome', 'data' => 'nome'],
+            'cadastradaEm' => ['name' => 'created_at', 'data' => 'created_at'],
+            'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }
 
@@ -123,6 +111,6 @@ class MascaraPadraoDataTable extends DataTable
      */
     protected function filename()
     {
-        return 'catalogoContratos';
+        return 'mascara_padrao';
     }
 }

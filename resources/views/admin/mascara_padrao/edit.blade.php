@@ -1,9 +1,9 @@
-@extends('layouts.app')
+@extends('layouts.front')
 
 @section('content')
     <section class="content-header">
         <h1>
-            Mascara Insumos
+            Máscara Padrão
         </h1>
    </section>
    <div class="content">
@@ -11,9 +11,9 @@
        <div class="box box-primary">
            <div class="box-body">
                <div class="row">
-                   {!! Form::model($mascaraInsumo, ['route' => ['admin.mascara_insumos.update', $mascaraInsumo->id], 'method' => 'patch', 'files' => true]) !!}
+                   {!! Form::model($mascaraPadrao, ['route' => ['admin.mascara_padrao.update', $mascaraPadrao->id], 'method' => 'patch', 'files' => true]) !!}
 
-                        @include('admin.mascara_insumos.fields')
+                        @include('admin.mascara_padrao.fields')
 
                    {!! Form::close() !!}
                </div>

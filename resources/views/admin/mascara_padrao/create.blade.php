@@ -1,9 +1,9 @@
-@extends('layouts.app')
+@extends('layouts.front')
 
 @section('content')
     <section class="content-header">
         <h1>
-            Mascara Insumos
+            Carteira
         </h1>
     </section>
     <div class="content">
@@ -12,9 +12,9 @@
 
             <div class="box-body">
                 <div class="row">
-                    {!! Form::open(['route' => 'admin.mascara_insumos.store', 'files' => true]) !!}
+                    {!! Form::open(['route' => 'admin.carteiras.store', 'files' => true]) !!}
 
-                        @include('admin.mascara_insumos.fields')
+                        @include('admin.carteiras.fields')
 
                     {!! Form::close() !!}
                 </div>

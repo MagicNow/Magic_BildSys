@@ -7,21 +7,25 @@ use Eloquent as Model;
 /**
  * Class MascaraPadrao
  * @package App\Models
- * @version May 2, 2017, 6:01 pm BRT
+ * @version April 25, 2017, 2:16 pm BRT
  */
 class MascaraPadrao extends Model
 {
-
     public $table = 'mascara_padrao';
-    
+
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
-    public $fillable = [        
-		'nome',
-		'obra_id',
-		'orcamento_tipo_id',
-		'user_id'
+
+    protected $dates = ['deleted_at'];
+
+
+    public $fillable = [
+        'nome',
+    ];
+
+    public static $campos = [
+        'nome',        
     ];
 
     /**
@@ -31,8 +35,7 @@ class MascaraPadrao extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'obra_id' => 'integer',
-        'orcamento_tipo_id' => 'integer',
+        'nome' => 'string',        
     ];
 
     /**
@@ -41,30 +44,9 @@ class MascaraPadrao extends Model
      * @var array
      */
     public static $rules = [
-        /*'fornecedor_cod' => 'required',
-        'contratoInsumos.*.insumo_id'=>'required',
-        'contratoInsumos.*.valor_unitario'=>'required|min:0.01',
-        'contratoInsumos.*.pedido_minimo'=>'required|min:0.01',
-        'contratoInsumos.*.pedido_multiplo_de'=>'required|min:0.01',
-        'contratoInsumos.*.periodo_inicio'=>'required',
-        'contratoInsumos.*.periodo_termino'=>'required',
-        'regional' => 'required'*/
+        'nome' => 'required'
     ];
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     **/
-    public function obra()
-    {
-        return $this->belongsTo(\App\Models\Obra::class);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     **/
-    public function mascaraPadraoInsumo()
-    {
-        return $this->hasMany(\App\Models\MascaraPadraoInsumo::class, 'mascara_padrao_id');
-    }
-    
+	    
+	
+	
 }

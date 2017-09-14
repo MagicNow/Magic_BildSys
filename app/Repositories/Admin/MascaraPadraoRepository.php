@@ -2,17 +2,16 @@
 
 namespace App\Repositories\Admin;
 
-use App\Models\CarteiraTipoEqualizacaoTecnica;
+use App\Models\MascaraPadrao;
 use InfyOm\Generator\Common\BaseRepository;
 
-class CarteiraTipoEqualizacaoTecnicaRepository extends BaseRepository
+class MascaraPadraoRepository extends BaseRepository
 {
     /**
      * @var array
      */
     protected $fieldSearchable = [
-        'carteira_id',
-        'tipo_equalizacao_tecnica_id'
+        'nome'
     ];
 
     /**
@@ -20,7 +19,7 @@ class CarteiraTipoEqualizacaoTecnicaRepository extends BaseRepository
      **/
     public function model()
     {
-        return CarteiraTipoEqualizacaoTecnica::class;
+        return MascaraPadrao::class;
     }
-
+	
 }

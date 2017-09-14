@@ -1,9 +1,9 @@
-{!! Form::open(['route' => ['admin.mascara_insumos.destroy', $id], 'id'=>'formDelete'.$id, 'method' => 'delete']) !!}
+{!! Form::open(['route' => ['admin.mascara_padrao.destroy', $id], 'id'=>'formDelete'.$id, 'method' => 'delete']) !!}
 <div class='btn-group'>
-    <a href="{{ route('admin.mascara_insumos.show', $id) }}" title="{{ ucfirst( trans('common.show') )}}" class='btn btn-default btn-xs'>
+    <a href="{{ route('admin.mascara_padrao.show', $id) }}" title="{{ ucfirst( trans('common.show') )}}" class='btn btn-default btn-xs'>
         <i class="glyphicon glyphicon-eye-open"></i>
     </a>
-    <a href="{{ route('admin.mascara_insumos.edit', $id) }}" title="{{ ucfirst( trans('common.edit') )}}" class='btn btn-warning btn-xs'>
+    <a href="{{ route('admin.mascara_padrao.edit', $id) }}" title="{{ ucfirst( trans('common.edit') )}}" class='btn btn-warning btn-xs'>
         <i class="glyphicon glyphicon-edit"></i>
     </a>
     {!! Form::button('<i class="glyphicon glyphicon-trash"></i>', [
