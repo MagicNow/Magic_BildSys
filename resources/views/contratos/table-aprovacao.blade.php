@@ -37,7 +37,7 @@
         <h5>SALDO DE ORÇAMENTO</h5>
         <h4>
             <small class="pull-left">R$</small>
-            {{ number_format($orcamentoInicial,2,',','.') }}
+            <span id="saldo_de_orcamento_total"></span>
             {{--- TO DO = Saldo: Previsto - Realizado - A gastar--}}
             {{--{{ number_format($saldo,2,',','.') }}--}}
         </h4>
@@ -85,6 +85,7 @@
                 </thead>
                 <tbody>
                     @php $valor_comprometido_a_gastar_total = 0; @endphp
+                    @php $saldo_de_orcamento_total = 0; @endphp
 
                     @foreach($itens->oc_itens as $item)
                         @php $valor_comprometido_a_gastar = 0; @endphp
@@ -116,6 +117,7 @@
                             $item->qtd += $qtd_comprometida_a_gastar_item;
 
                             $valor_comprometido_a_gastar_total += $valor_comprometido_a_gastar;
+                            $saldo_de_orcamento_total += $item->preco_inicial - doubleval($item->valor_realizado) - $valor_comprometido_a_gastar
                         @endphp
                         <tr>
                             <td class="text-center">
@@ -379,6 +381,7 @@
     <script>
         $(function(){
             $('#valor_comprometido_a_gastar_total').text('{{float_to_money($valor_comprometido_a_gastar_total)}}');
+            $('#saldo_de_orcamento_total').text('{{float_to_money($saldo_de_orcamento_total)}}');
         })
     </script>
 @endsection
