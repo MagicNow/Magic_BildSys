@@ -8,6 +8,7 @@ use App\Models\OrdemDeCompraItem;
 use App\Repositories\OrdemDeCompraRepository;
 use Form;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 use Yajra\Datatables\Services\DataTable;
 
 class DetalhesServicosDataTable extends DataTable
@@ -21,7 +22,8 @@ class DetalhesServicosDataTable extends DataTable
     {
 //      ATENÇÃO
 //      Se alterar o html tem que alterar o arquivo detalhes_servicos_datatables_actions.blade.php
-
+//      Se alterar o php tem que alterar o OrdemDeCompraRepository::calculosDetalhesServicos()
+        
         return $this->datatables
             ->eloquent($this->query())
             ->editColumn('valor_previsto', function($obj){
@@ -126,6 +128,7 @@ class DetalhesServicosDataTable extends DataTable
      */
     public function query()
     {
+        // Se alterar, modificar tbm OrdemDeCompraRepository::calculosDetalhesServicos
         if($this->request()->get('oc_id')) {
             $ordem_de_compra_ultima_aprovacao = OrdemDeCompra::find($this->request()->get('oc_id'))->dataUltimoPeriodoAprovacao();
         }
@@ -226,7 +229,7 @@ class DetalhesServicosDataTable extends DataTable
         }
 
         $orcamentos = $orcamentos->groupBy('orcamentos.insumo_id');
-
+        
         return $this->applyScopes($orcamentos);
     }
 
