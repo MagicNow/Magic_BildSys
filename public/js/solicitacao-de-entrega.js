@@ -468,8 +468,11 @@ var ModalSelecionarInsumo = {
     var btnSolicitarInsumo = $('#solicitar-insumo');
 
     btnSolicitarInsumo.on('click', function(event) {
-      colorbox({
-        href: '/solicitar-insumo?is_modal=1&bind_form=0'
+      $.colorbox({
+        href: '/solicitar-insumo?is_modal=1&bind_form=0',
+        iframe:true , 
+        width:"90%", 
+        height:"90%"
       })
         .then(function(iframe) {
           iframe.element.addEventListener('load', function(e) {

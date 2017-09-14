@@ -20108,3 +20108,13 @@ input:checked + .slider:before {
 }
 
 /*FIM CHECKBOX TOOGLE*/
+
+.select2-drop-mask {
+  z-index: 10000;
+}
+.select2-drop {
+  z-index: 10001;
+}
+.select2-search {
+  z-index: 10002;
+}

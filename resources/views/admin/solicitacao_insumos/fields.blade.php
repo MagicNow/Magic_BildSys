@@ -19,7 +19,7 @@
 <!-- Insumo Grupo Id Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('insumo_grupo_id', 'Grupo:') !!}
-    {!! Form::select('insumo_grupo_id',[], @isset($solicitacaoInsumo) ? $solicitacaoInsumo->insumo_grupo_id : null, ['class' => 'form-control']) !!}
+    {!! Form::select('insumo_grupo_id',[], @isset($solicitacaoInsumo) ? $solicitacaoInsumo->insumo_grupo_id : null, ['class' => 'form-control select2']) !!}
 </div>
 
 @section('scripts')
