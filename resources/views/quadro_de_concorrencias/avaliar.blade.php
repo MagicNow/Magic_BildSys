@@ -161,7 +161,7 @@
                     <table class="table table-striped table-condensed table-bordered table-hover">
                         <thead>
                         <tr>
-                            <th>Condição</th>
+                            <th width="20%">Condição</th>
                             @foreach($qcFornecedores as $qcFornecedor)
                                 <th>
                                     {{ $qcFornecedor->fornecedor->nome }}
@@ -228,7 +228,7 @@
                     <table class="table table-striped table-condensed table-bordered table-hover">
                         <thead>
                         <tr>
-                            <th>Item</th>
+                            <th width="20%">Item</th>
                             @foreach($qcFornecedores as $qcFornecedor)
                                 <th>
                                     {{ $qcFornecedor->fornecedor->nome }}
@@ -316,7 +316,7 @@
                     <table class="table table-striped table-condensed table-bordered table-hover">
                         <thead>
                         <tr>
-                            <th>Detalhes</th>
+                            <th width="20%">Detalhes</th>
                             @php
                             $porcentagem_material = '';
                             $porcentagem_servico = '';
