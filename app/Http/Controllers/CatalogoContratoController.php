@@ -20,6 +20,7 @@ use App\Models\MegaFornecedor;
 use App\Repositories\Admin\CatalogoContratoRepository;
 use App\Repositories\CodeRepository;
 use App\Repositories\ImportacaoRepository;
+use Carbon\Carbon;
 use Flash;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
@@ -390,6 +391,25 @@ class CatalogoContratoController extends AppBaseController
                     $logCatInsumo->periodo_termino = $contrato_insumo->periodo_termino;
                     $logCatInsumo->save();
 
+                    // Busca outros valores deste insumo onde o período início é menor que este e o término é maior que o este início
+                    $dataTerminoAnterior = $contrato_insumo->periodo_inicio->subDay();
+                    $dataInicioPosterior = $contrato_insumo->periodo_termino->addDay();
+
+                    // Atualiza data de término de todos que terminam após a data de início deste
+                    CatalogoContratoInsumo::where('insumo_id', $contrato_insumo->insumo_id)
+                        ->where('catalogo_contrato_id',$contrato_insumo->catalogo_contrato_id)
+                        ->where('periodo_inicio','<',$contrato_insumo->periodo_inicio)
+                        ->where('periodo_termino','>',$contrato_insumo->periodo_inicio)
+                        ->update(['periodo_termino'=>$dataTerminoAnterior->format('Y-m-d')]);
+
+                    // Atualiza data de Início de todos que iniciam após a data de término deste
+                    CatalogoContratoInsumo::where('insumo_id', $contrato_insumo->insumo_id)
+                        ->where('catalogo_contrato_id',$contrato_insumo->catalogo_contrato_id)
+                        ->where('periodo_inicio','>',$contrato_insumo->periodo_inicio)
+                        ->where('periodo_termino','>',$contrato_insumo->periodo_inicio)
+                        ->where('periodo_inicio','<=',$contrato_insumo->periodo_termino)
+                        ->update(['periodo_inicio'=>$dataInicioPosterior->format('Y-m-d')]);
+
                     $alteraStatusParaValidacao = true;
                 }
             }
@@ -467,6 +487,7 @@ class CatalogoContratoController extends AppBaseController
                     $acao = 'Arquivo enviado e Acordo ativado!';
                 }
 
+                CatalogoContratoRepository::atualizaContratosExistentes();
 
                 Flash::success($acao);
             }else{

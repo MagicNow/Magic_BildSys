@@ -3,10 +3,15 @@
 namespace App\Repositories\Admin;
 
 use App\Models\CatalogoContrato;
+use App\Models\CatalogoContratoInsumo;
 use App\Models\ConfiguracaoEstatica;
+use App\Models\ContratoItem;
+use App\Models\ContratoStatus;
 use App\Models\ContratoTemplate;
 use App\Models\Fornecedor;
 use App\Models\Obra;
+use App\Repositories\ContratoItemModificacaoRepository;
+use Illuminate\Support\Facades\DB;
 use InfyOm\Generator\Common\BaseRepository;
 use PDF;
 
@@ -164,5 +169,74 @@ class CatalogoContratoRepository extends BaseRepository
         }
         PDF::loadHTML(utf8_decode($arquivoFinal))->setPaper('a4')->setOrientation('portrait')->save( base_path().'/storage/app/public/contratos/'.$nomeArquivo.'.pdf');
         return 'contratos/'.$nomeArquivo.'.pdf';
+    }
+
+    /**
+     * Atualiza os contratos existentes
+     * Busca nos catálogos que tenham alguma modificação de valor ocorrendo hoje e atualiza os contratos ativos com
+     * saldo disponível
+     * @return bool
+     */
+    public static function atualizaContratosExistentes(){
+        // Busca itens que tem modificação de preço no dia atual
+        $itensModificados = CatalogoContratoInsumo::where('periodo_inicio', date('Y-m-d'))
+            ->whereHas('catalogo', function($query){
+                $query->where('catalogo_contrato_status_id',3);
+            })
+            ->get();
+        if(!$itensModificados->count()) {
+            return true;
+        }
+        $atualizacoes = [];
+        foreach ($itensModificados as $itemModificado) {
+            $atualizacoes['CatalogoContratoInsumo: '.$itemModificado->id] = self::buscaContratoItens($itemModificado);
+        }
+        
+        return $atualizacoes;
+    }
+
+    /**
+     * @param CatalogoContratoInsumo $catalogoContratoInsumo
+     * @return bool
+     */
+    private static function buscaContratoItens(CatalogoContratoInsumo $catalogoContratoInsumo){
+        // Busca se existem contratos com os estes itens
+        $contratoItens = ContratoItem::select(['contrato_itens.*'])
+            ->where('insumo_id',$catalogoContratoInsumo->insumo_id)
+            ->join('contratos','contratos.id','contrato_itens.contrato_id')
+            ->where('contratos.fornecedor_id',$catalogoContratoInsumo->catalogo->fornecedor_id)
+            ->where('contratos.contrato_status_id',ContratoStatus::ATIVO)
+            // e que ainda tem saldo disponível (não foi solicitado tudo ainda)
+            ->whereRaw('contrato_itens.qtd > (SELECT SUM(solicitacao_entrega_itens.qtd) 
+                                                    FROM solicitacao_entrega_itens 
+                                                    WHERE solicitacao_entrega_itens.contrato_item_id = contrato_itens.id)')
+            ->where('valor_unitario','!=', money_to_float($catalogoContratoInsumo->valor_unitario))
+            // Verifica se não foi já criado uma modificação pra este reajuste
+            ->whereRaw("NOT EXISTS(SELECT 1 
+                                    FROM contrato_item_modificacoes 
+                                    WHERE contrato_item_modificacoes.contrato_item_id = contrato_itens.id
+                                    AND tipo_modificacao = 'Reajuste de valor unitário'
+                                    AND DATE(created_at) >= DATE('".$catalogoContratoInsumo->periodo_inicio."')
+                                    AND contrato_item_modificacoes.valor_unitario_atual = "
+                                        .money_to_float($catalogoContratoInsumo->valor_unitario).
+                                    ")")
+            ->get();
+        if(!$contratoItens->count()) {
+            return false;
+        }
+        $modificacoesCriadas = 0;
+        // Gera um reajuste de valor nos que o valor está diferente do novo preço
+        foreach ($contratoItens as $contratoItem) {
+            $contratoItemModificacaoRepository = app(ContratoItemModificacaoRepository::class);
+            $modificacao = $contratoItemModificacaoRepository->reajustar($contratoItem->id, [
+                'valor_unitario'=>$catalogoContratoInsumo->valor_unitario,
+                'observacao'=>'Atualização automática por catálogo '.$catalogoContratoInsumo->catalogo_contrato_id
+            ],[]);
+            if($modificacao){
+                $modificacoesCriadas++;
+            }
+        }
+        return $modificacoesCriadas;
+
     }
 }
