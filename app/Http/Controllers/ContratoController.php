@@ -589,6 +589,7 @@ class ContratoController extends AppBaseController
                     ) as nome'),
             'id'
         ])
+            ->where('obra_id', $contrato->obra_id)
             ->pluck('nome', 'id')
             ->prepend('', '')
             ->toArray();
