@@ -39,6 +39,15 @@
             </a>
         </li>
         @endshield
+		
+		@shield('tarefa_padrao.list')
+        <li class="{{ Request::is('tarefa_padrao*') ? 'active' : '' }}">
+            <a href="{!! route('admin.tarefa_padrao.index') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Tarefa Padrão</span>
+            </a>
+        </li>
+        @endshield
 
         @shield('grupos_insumos.list')
         <li class="{{ Request::is('insumoGrupos*') ? 'active' : '' }}">

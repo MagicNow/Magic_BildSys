@@ -5,7 +5,7 @@ namespace App\Http\Requests\Admin;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Models\TarefaPadrao;
 
-class CreateTarefaPadraoRequest extends FormRequest
+class UpdateTarefaPadraoRequest extends FormRequest
 {
 
     /**

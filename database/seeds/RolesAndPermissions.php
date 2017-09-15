@@ -240,6 +240,11 @@ class RolesAndPermissions extends Seeder
             'mascara_padrao.edit'   => 'Edição de Mascara Padrão',
 			'mascara_padrao.delete'   => 'Remoção de Mascara Padrão', 
             
+			'tarefa_padrao.list'   => 'Listagem de Mascara Padrão',
+            'tarefa_padrao.create'   => 'Criação de Mascara Padrão',			
+            'tarefa_padrao.edit'   => 'Edição de Mascara Padrão',
+			'tarefa_padrao.delete'   => 'Remoção de Mascara Padrão', 
+			
             'configuracaoEstaticas.list'   => 'Listagem de Configuração padrão',
             'configuracaoEstaticas.edit'   => 'Edição de Configuração padrão',
             'configuracaoEstaticas.show'   => 'Visualizar Configuração padrão',
