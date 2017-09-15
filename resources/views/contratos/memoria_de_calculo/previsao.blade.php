@@ -80,6 +80,13 @@
         </div>
         @if(count($previsoes))
             @php $previsao = $previsoes->first(); @endphp
+
+            <div class="form-group col-md-6">
+                {!! Form::label('obra_torre_id', 'Torres:') !!}
+                <p class="form-control">{{$previsao->obraTorre->nome}}</p>
+                <input type="hidden" name="obra_torre_id" value="{{$previsao->obraTorre->id}}">
+            </div>
+        
             <div class="form-group col-md-6">
                 {!! Form::label('memoria_de_calculo', 'Memória de cálculo:') !!}
                 @php
@@ -96,13 +103,11 @@
                 <p class="form-control">{{$previsao->memoriaCalculoBloco->memoriaCalculo->nome . ' - ' . $modo}}</p>
                 <input type="hidden" name="memoria_de_calculo" value="{{$previsao->memoriaCalculoBloco->memoriaCalculo->id}}">
             </div>
-
+        @else
             <div class="form-group col-md-6">
                 {!! Form::label('obra_torre_id', 'Torres:') !!}
-                <p class="form-control">{{$previsao->obraTorre->nome}}</p>
-                <input type="hidden" name="obra_torre_id" value="{{$previsao->obraTorre->id}}">
+                {!! Form::select('obra_torre_id', $obra_torres, null, ['class' => 'form-control select2', 'required' => 'required']) !!}
             </div>
-        @else
             <div class="form-group col-md-6">
                 {!! Form::label('memoria_de_calculo', 'Memória de cálculo:') !!}
                 <a href="/memoriaCalculos/create"
@@ -116,12 +121,6 @@
                 {!! Form::select('memoria_de_calculo', $memoria_de_calculo, \Illuminate\Support\Facades\Input::get('memoria_de_calculo') ? : null,
                  ['class' => 'form-control select2', 'required' => 'required', 'onchange' => 'buscarMemoriaDeCalculo(this.value);']) !!}
             </div>
-            @if(isset($memoriaCalculo))
-                <div class="form-group col-md-6">
-                    {!! Form::label('obra_torre_id', 'Torres:') !!}
-                    {!! Form::select('obra_torre_id', $obra_torres, null, ['class' => 'form-control select2', 'required' => 'required']) !!}
-                </div>
-            @endif
         @endif
 
         @if(isset($memoriaCalculo))
