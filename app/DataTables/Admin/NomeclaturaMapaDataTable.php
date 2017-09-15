@@ -19,26 +19,69 @@ class NomeclaturaMapaDataTable extends DataTable
             ->addColumn('action', 'admin.nomeclatura_mapas.datatables_actions')
             ->editColumn('tipo', function($obj){
                 if($obj->tipo==1){
-                    return 'Estrutura';
+                    if(!$obj->apenas_cartela && !$obj->apenas_unidade){
+                        return 'Estrutura';
+                    }
+                    return 'Bloco';
                 }
                 if($obj->tipo==2){
-                    return 'Pavimento';
+                    if(!$obj->apenas_cartela && !$obj->apenas_unidade){
+                        return 'Pavimento';
+                    }
+                    return 'Linha';
+
                 }
                 if($obj->tipo==3){
-                    return 'Trecho';
+                    if(!$obj->apenas_cartela && !$obj->apenas_unidade){
+                        return 'Trecho';
+                    }
+                    return 'Coluna';
                 }
             })
             ->filterColumn('tipo', function($query, $keyword){
                 if(strlen($keyword)){
                     $letra = strtolower( substr($keyword,0,1) );
-                    if($letra =='e'){
+                    if($letra =='e'||$letra =='b'){
                         $tipo = 1;
+                        if($letra =='b'){
+                            $query->where(function ($subquery){
+                                $subquery->where('apenas_unidade',1);
+                                $subquery->orWhere('apenas_cartela',1);
+                            });
+                        }else{
+                            $query->where(function ($subquery){
+                                $subquery->where('apenas_unidade',0);
+                                $subquery->where('apenas_cartela',0);
+                            });
+                        }
                     }
-                    if($letra =='p'){
+                    if($letra =='p'||$letra =='l'){
                         $tipo = 2;
+                        if($letra =='l'){
+                            $query->where(function ($subquery){
+                                $subquery->where('apenas_unidade',1);
+                                $subquery->orWhere('apenas_cartela',1);
+                            });
+                        }else{
+                            $query->where(function ($subquery){
+                                $subquery->where('apenas_unidade',0);
+                                $subquery->where('apenas_cartela',0);
+                            });
+                        }
                     }
-                    if($letra =='t'){
+                    if($letra =='t'||$letra =='c'){
                         $tipo = 3;
+                        if($letra =='c'){
+                            $query->where(function ($subquery){
+                                $subquery->where('apenas_unidade',1);
+                                $subquery->orWhere('apenas_cartela',1);
+                            });
+                        }else{
+                            $query->where(function ($subquery){
+                                $subquery->where('apenas_unidade',0);
+                                $subquery->where('apenas_cartela',0);
+                            });
+                        }
                     }
                     $query->where('tipo',$tipo);
                 }
