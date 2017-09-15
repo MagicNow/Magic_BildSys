@@ -142,7 +142,6 @@ class OrdemDeCompraRepository extends BaseRepository
                 FROM contrato_itens CI
                 JOIN oc_item_qc_item OCQC ON OCQC.qc_item_id = CI.qc_item_id
                 WHERE CI.id = contrato_item_apropriacoes.contrato_item_id
-                AND CI.data_dispensa IS NULL
                 AND OCQC.ordem_de_compra_item_id = '.$item_id.'
             )');
         }
@@ -206,7 +205,6 @@ class OrdemDeCompraRepository extends BaseRepository
                 FROM contrato_itens CI
                 JOIN oc_item_qc_item OCQC ON OCQC.qc_item_id = CI.qc_item_id
                 WHERE CI.id = contrato_item_apropriacoes.contrato_item_id
-                AND CI.data_dispensa IS NULL 
                 AND OCQC.ordem_de_compra_item_id = '.$item_id.'
             )');
         }
@@ -273,7 +271,6 @@ class OrdemDeCompraRepository extends BaseRepository
                 FROM contrato_itens CI
                 JOIN oc_item_qc_item OCQC ON OCQC.qc_item_id = CI.qc_item_id
                 WHERE CI.id = contrato_item_apropriacoes.contrato_item_id
-                AND CI.data_dispensa IS NULL 
                 AND OCQC.ordem_de_compra_item_id = '.$item_id.'
             )');
         }
