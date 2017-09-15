@@ -134,7 +134,7 @@
                                                 </tbody>
                                             </table>
                                         @else
-                                            <p>Apropriação sem modificações</p>
+                                            <p>Apropriação sem alteração</p>
                                         @endif
                                     @endif
                                 </td>

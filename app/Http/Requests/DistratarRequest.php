@@ -32,7 +32,7 @@ class DistratarRequest extends FormRequest
     public function messages()
     {
         return [
-            'distrato.*.required' => 'Não foi encontrado nenhuma modificação',
+            'distrato.*.required' => 'Não foi encontrado nenhuma alteração',
         ];
     }
 }

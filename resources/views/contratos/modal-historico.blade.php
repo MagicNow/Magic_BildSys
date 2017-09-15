@@ -88,7 +88,7 @@
                     </table>
                 @else
                     @if(!isset($impressao))
-                    Item sem modificações
+                    Item sem alteração
                     @endif
                 @endif
 @if(!isset($impressao))

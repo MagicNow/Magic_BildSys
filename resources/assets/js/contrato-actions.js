@@ -345,7 +345,7 @@ var Reajuste = (function() {
     var valorChanged = parseFloat(this.valor.dataset.oldValue) !== moneyToFloat(this.valor.value);
 
     if (!adicionaisChanged && !valorChanged) {
-      swal('', 'Não foram encontratas modificações no contrato', 'warning');
+      swal('', 'Não foi encontrado alteração no contrato', 'warning');
 
       return false;
     }
@@ -547,7 +547,7 @@ var Distrato = (function() {
     });
 
     if (!hasChanged) {
-      swal('', 'Nenhuma modificação encontrada', 'warning');
+      swal('', 'Nenhuma alteração encontrada', 'warning');
 
       return false;
     }
