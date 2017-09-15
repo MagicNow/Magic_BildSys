@@ -142,6 +142,7 @@ class OrdemDeCompraRepository extends BaseRepository
                 FROM contrato_itens CI
                 JOIN oc_item_qc_item OCQC ON OCQC.qc_item_id = CI.qc_item_id
                 WHERE CI.id = contrato_item_apropriacoes.contrato_item_id
+                AND CI.data_dispensa IS NULL
                 AND OCQC.ordem_de_compra_item_id = '.$item_id.'
             )');
         }
@@ -205,6 +206,7 @@ class OrdemDeCompraRepository extends BaseRepository
                 FROM contrato_itens CI
                 JOIN oc_item_qc_item OCQC ON OCQC.qc_item_id = CI.qc_item_id
                 WHERE CI.id = contrato_item_apropriacoes.contrato_item_id
+                AND CI.data_dispensa IS NULL 
                 AND OCQC.ordem_de_compra_item_id = '.$item_id.'
             )');
         }
@@ -271,6 +273,7 @@ class OrdemDeCompraRepository extends BaseRepository
                 FROM contrato_itens CI
                 JOIN oc_item_qc_item OCQC ON OCQC.qc_item_id = CI.qc_item_id
                 WHERE CI.id = contrato_item_apropriacoes.contrato_item_id
+                AND CI.data_dispensa IS NULL 
                 AND OCQC.ordem_de_compra_item_id = '.$item_id.'
             )');
         }
@@ -354,6 +357,7 @@ class OrdemDeCompraRepository extends BaseRepository
                             ordem_de_compras.oc_status_id = 5
                         )
                     AND ordem_de_compra_itens.deleted_at IS NULL
+                    AND ordem_de_compra_itens.data_dispensa IS NULL 
                     '.($oc_id ? "AND ordem_de_compras.id = '".$oc_id."'" : 'AND NOT EXISTS(
                         SELECT 1 
                         FROM contrato_itens CI
@@ -413,7 +417,8 @@ class OrdemDeCompraRepository extends BaseRepository
                             OR
                             ordem_de_compras.oc_status_id = 5
                         )
-                    AND ordem_de_compra_itens.deleted_at IS NULL
+                    AND ordem_de_compra_itens.deleted_at IS NULL 
+                    AND ordem_de_compra_itens.data_dispensa IS NULL 
                     '.($oc_id ? "AND ordem_de_compras.id = '".$oc_id."'" : 'AND NOT EXISTS(
                         SELECT 1 
                         FROM contrato_itens CI
