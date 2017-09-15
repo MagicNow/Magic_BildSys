@@ -22,7 +22,7 @@ class DetalhesServicosDataTable extends DataTable
     {
 //      ATENÇÃO
 //      Se alterar o html tem que alterar o arquivo detalhes_servicos_datatables_actions.blade.php
-//      Se alterar o php tem que alterar o OrdemDeCompraRepository::calculosDetalhesServicos()
+//      Se alterar o php tem que alterar o OrdemDeCompraRepository::calculosDetalhesServicos() e OrdemDeCompraRepository::origemValorOc()
         
         return $this->datatables
             ->eloquent($this->query())
@@ -32,16 +32,16 @@ class DetalhesServicosDataTable extends DataTable
             ->editColumn('valor_realizado', function($obj){
                 return '<small class="pull-left">R$</small>'.number_format( floatval($obj->valor_realizado), 2, ',','.');
             })
-            ->editColumn('origem', function($obj){
+            ->editColumn('origem_comprometido_a_gastar', function($obj){
                 if($this->request()->get('oc_id')) {
                     $ordem_de_compra_ultima_aprovacao = OrdemDeCompra::find($this->request()->get('oc_id'))->dataUltimoPeriodoAprovacao();
                 } else {
                     $ordem_de_compra_ultima_aprovacao = null;
                 }
 
-                $origem = OrdemDeCompraRepository::origemComprometidoAGastar($obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, $obj->insumo_id, $this->obra_id, null, $ordem_de_compra_ultima_aprovacao);
+                $origem_comprometido_a_gastar = OrdemDeCompraRepository::origemComprometidoAGastar($obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, $obj->insumo_id, $this->obra_id, null, $ordem_de_compra_ultima_aprovacao);
 
-                return $origem;
+                return $origem_comprometido_a_gastar;
             })
             ->editColumn('valor_comprometido_a_gastar', function($obj){
                 if($this->request()->get('oc_id')) {
@@ -49,12 +49,12 @@ class DetalhesServicosDataTable extends DataTable
                 } else {
                     $ordem_de_compra_ultima_aprovacao = null;
                 }
-                $origem = OrdemDeCompraRepository::origemComprometidoAGastar($obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, $obj->insumo_id, $this->obra_id, null, $ordem_de_compra_ultima_aprovacao);
+                $origem_comprometido_a_gastar = OrdemDeCompraRepository::origemComprometidoAGastar($obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, $obj->insumo_id, $this->obra_id, null, $ordem_de_compra_ultima_aprovacao);
                 $valor_comprometido_a_gastar = OrdemDeCompraRepository::valorComprometidoAGastarItem($obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, $obj->insumo_id, $this->obra_id, null, $ordem_de_compra_ultima_aprovacao);
 
 
                 if($valor_comprometido_a_gastar > 0) {
-                    return '<span data-toggle="tooltip" data-placement="top" data-html="true" title="'.$origem.'"> <small class="pull-left">R$</small>'.number_format($valor_comprometido_a_gastar, 2, ',','.').'</span>';
+                    return '<span data-toggle="tooltip" data-placement="top" data-html="true" title="'.$origem_comprometido_a_gastar.'"> <small class="pull-left">R$</small>'.number_format($valor_comprometido_a_gastar, 2, ',','.').'</span>';
                 } else {
                     return '<small class="pull-left">R$</small>'.number_format($valor_comprometido_a_gastar, 2, ',','.');
                 }
@@ -69,8 +69,31 @@ class DetalhesServicosDataTable extends DataTable
                 
                 return '<small class="pull-left">R$</small>'.number_format( floatval($obj->valor_previsto) - floatval($obj->valor_realizado) - $valor_comprometido_a_gastar, 2, ',','.');
             })
+            ->editColumn('origem_oc', function($obj){
+                if($this->request()->get('oc_id')) {
+                    $ordem_de_compra_ultima_aprovacao = OrdemDeCompra::find($this->request()->get('oc_id'))->dataUltimoPeriodoAprovacao();
+                } else {
+                    $ordem_de_compra_ultima_aprovacao = null;
+                }
+
+                $origem_oc = OrdemDeCompraRepository::origemValorOc($obj->insumo_id, $obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, $this->obra_id, $this->servico_id, $ordem_de_compra_ultima_aprovacao, $this->request()->get('oc_id'));
+
+                return $origem_oc;
+            })
             ->editColumn('valor_oc', function($obj){
-                return '<small class="pull-left">R$</small>'.number_format( floatval($obj->valor_oc), 2, ',','.');
+                if($this->request()->get('oc_id')) {
+                    $ordem_de_compra_ultima_aprovacao = OrdemDeCompra::find($this->request()->get('oc_id'))->dataUltimoPeriodoAprovacao();
+                } else {
+                    $ordem_de_compra_ultima_aprovacao = null;
+                }
+
+                $origem_oc = OrdemDeCompraRepository::origemValorOc($obj->insumo_id, $obj->grupo_id, $obj->subgrupo1_id, $obj->subgrupo2_id, $obj->subgrupo3_id, $obj->servico_id, $this->obra_id, $this->servico_id, $ordem_de_compra_ultima_aprovacao, $this->request()->get('oc_id'));
+
+                if($obj->valor_oc > 0) {
+                    return '<span data-toggle="tooltip" data-placement="top" data-html="true" title="'.$origem_oc.'"><small class="pull-left">R$</small>'.number_format( floatval($obj->valor_oc), 2, ',','.').'</span>';
+                } else {
+                    return '<small class="pull-left">R$</small>'.number_format( floatval($obj->valor_oc), 2, ',','.');
+                }
             })
             ->editColumn('saldo_disponivel', function($obj){
                 if($obj->insumo_incluido || $obj->substitui){

@@ -250,28 +250,125 @@ class OrdemDeCompraRepository extends BaseRepository
 
     public static function origemComprometidoAGastar($grupo_id, $subgrupo1_id, $subgrupo2_id, $subgrupo3_id, $servico_id, $insumo_id, $obra_id, $item_id = null, $ordem_de_compra_ultima_aprovacao = null)
     {
-        $origem = OrdemDeCompraItem::select(
-                DB::raw('(
-                        GROUP_CONCAT(
-                            CONCAT("O.C.", ordem_de_compra_id, " - ", FORMAT(qtd, 2, "de_DE"), " ", unidade_sigla) SEPARATOR "*"
-                        )
-                ) as oc_origem')
-            )
-            ->where('grupo_id', $grupo_id)
-            ->where('subgrupo1_id', $subgrupo1_id)
-            ->where('subgrupo2_id', $subgrupo2_id)
-            ->where('subgrupo3_id', $subgrupo3_id)
-            ->where('servico_id', $servico_id)
-            ->where('insumo_id', $insumo_id)
-            ->where('obra_id', $obra_id)
-            ->first();
+        $valores_comprometido_a_gastar = ContratoItemApropriacao::select([
+            'contrato_item_apropriacoes.id',
+            'contratos.id as contrato_id',
+            DB::raw('(contrato_item_apropriacoes.qtd * contrato_itens.valor_unitario) as valor_comprometido_a_gastar')
+        ])
+            ->join('contrato_itens', 'contrato_itens.id' ,'=', 'contrato_item_apropriacoes.contrato_item_id')
+            ->join('contratos', 'contratos.id' ,'=', 'contrato_itens.contrato_id')
+            ->where('contrato_item_apropriacoes.grupo_id', $grupo_id)
+            ->where('contrato_item_apropriacoes.subgrupo1_id', $subgrupo1_id)
+            ->where('contrato_item_apropriacoes.subgrupo2_id', $subgrupo2_id)
+            ->where('contrato_item_apropriacoes.subgrupo3_id', $subgrupo3_id)
+            ->where('contrato_item_apropriacoes.servico_id', $servico_id)
+            ->where('contrato_item_apropriacoes.insumo_id', $insumo_id)
+            ->where('contratos.obra_id', $obra_id);
 
-        if($origem) {
-            $origem = $origem->oc_origem;
-            $origem = str_replace('*', '<br>' , $origem);
+        if($item_id){
+            $valores_comprometido_a_gastar = $valores_comprometido_a_gastar->whereRaw('NOT EXISTS(
+                SELECT 1 
+                FROM contrato_itens CI
+                JOIN oc_item_qc_item OCQC ON OCQC.qc_item_id = CI.qc_item_id
+                WHERE CI.id = contrato_item_apropriacoes.contrato_item_id
+                AND OCQC.ordem_de_compra_item_id = '.$item_id.'
+            )');
         }
 
-        return $origem;
+        if($ordem_de_compra_ultima_aprovacao) {
+            $valores_comprometido_a_gastar = $valores_comprometido_a_gastar->where('contrato_item_apropriacoes.created_at', '<', $ordem_de_compra_ultima_aprovacao);
+        }
+
+        $valores_comprometido_a_gastar = $valores_comprometido_a_gastar->get();
+
+        $origem_comprometido_a_gastar = '';
+
+        if(count($valores_comprometido_a_gastar)){
+            foreach ($valores_comprometido_a_gastar as $valor) {
+                if($valor->valor_comprometido_a_gastar > 0) {
+                    $origem_comprometido_a_gastar .= '<b>Contrato ' . $valor->contrato_id . ' - </b>' . float_to_money($valor->valor_comprometido_a_gastar) . '<br>';
+                }
+
+                //Valor das apropriações
+                $contrato = Contrato::find($valor->contrato_id);
+
+                $itens = ContratoItemApropriacaoRepository::forContratoApproval($contrato);
+
+                if($itens->contrato_itens->isNotEmpty()) {
+                    foreach ($itens->contrato_itens as $c_item) {
+                       $contrato_item_apropriacoes = $c_item->apropriacoes
+                           ->where('grupo_id', $grupo_id)
+                           ->where('subgrupo1_id', $subgrupo1_id)
+                           ->where('subgrupo2_id', $subgrupo2_id)
+                           ->where('subgrupo3_id', $subgrupo3_id)
+                           ->where('servico_id', $servico_id);
+
+                        if(count($contrato_item_apropriacoes)) {
+                            foreach ($contrato_item_apropriacoes as $apropriacao) {
+                                if($apropriacao->contratoItem) {
+                                    if($apropriacao->qtd > 0) {
+                                        $origem_comprometido_a_gastar .= '<b>Apropriação do contrato ' . $apropriacao->contratoItem->contrato_id . ' - </b>' . float_to_money($apropriacao->qtd) . '<br>';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                //Valor das apropriações
+            }
+        }
+
+        return $origem_comprometido_a_gastar;
+    }
+
+    public static function origemValorOc(
+        $orcamento_insumo_id,
+        $orcamento_grupo_id,
+        $orcamento_subgrupo1_id,
+        $orcamento_subgrupo2_id,
+        $orcamento_subgrupo3_id,
+        $orcamento_servico_id,
+        $obra_id,
+        $servico_id,
+        $ordem_de_compra_ultima_aprovacao,
+        $oc_id)
+    {
+        $query = '(SELECT 
+                        GROUP_CONCAT(
+                            CONCAT("<b>O.C.",ordem_de_compras.id, " - </b>", FORMAT(ordem_de_compra_itens.valor_total, 2, "de_DE"), " ", unidade_sigla) SEPARATOR "<br>"
+                        ) as oc_origem
+                    FROM ordem_de_compra_itens
+                    JOIN ordem_de_compras
+                        ON ordem_de_compra_itens.ordem_de_compra_id = ordem_de_compras.id
+                    WHERE ordem_de_compra_itens.insumo_id = '.$orcamento_insumo_id.'
+                    AND ordem_de_compra_itens.grupo_id = '.$orcamento_grupo_id.'
+                    AND ordem_de_compra_itens.subgrupo1_id = '.$orcamento_subgrupo1_id.'
+                    AND ordem_de_compra_itens.subgrupo2_id = '.$orcamento_subgrupo2_id.'
+                    AND ordem_de_compra_itens.subgrupo3_id = '.$orcamento_subgrupo3_id.'
+                    AND ordem_de_compra_itens.servico_id = '.$orcamento_servico_id.'
+                    AND (
+                            ordem_de_compras.oc_status_id = 2
+                            OR
+                            ordem_de_compras.oc_status_id = 3                            
+                            OR
+                            ordem_de_compras.oc_status_id = 5
+                        )
+                    AND ordem_de_compra_itens.deleted_at IS NULL
+                    '.($oc_id ? "AND ordem_de_compras.id = '".$oc_id."'" : 'AND NOT EXISTS(
+                        SELECT 1 
+                        FROM contrato_itens CI
+                        JOIN contrato_item_apropriacoes CIT ON CIT.contrato_item_id = CI.id
+                        JOIN oc_item_qc_item OCQC ON OCQC.qc_item_id = CI.qc_item_id
+                        WHERE CI.id = CIT.contrato_item_id
+                        AND OCQC.ordem_de_compra_item_id = ordem_de_compra_itens.id
+                    )').'
+                    AND ordem_de_compra_itens.servico_id = '.$servico_id.'
+                    '.(isset($ordem_de_compra_ultima_aprovacao) ? "AND ordem_de_compras.created_at <='".$ordem_de_compra_ultima_aprovacao."'" : '').'
+                    AND ordem_de_compra_itens.obra_id ='. $obra_id .')';
+
+        $origem_oc = DB::select($query);
+
+        return $origem_oc[0]->oc_origem;
     }
     
     public static function calculosDetalhesServicos($obra_id, $servico_id , $oc_id = null)
