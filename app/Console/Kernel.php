@@ -5,6 +5,7 @@ namespace App\Console;
 use App\Console\Commands\CapturaNfeGeradas;
 use App\Console\Commands\CapturaCTeGerados;
 use App\Console\Commands\ManifestaNfeGeradas;
+use App\Repositories\Admin\CatalogoContratoRepository;
 use App\Repositories\ImportacaoRepository;
 use App\Repositories\LpuGerarRepository;
 use Illuminate\Console\Scheduling\Schedule;
@@ -84,6 +85,15 @@ class Kernel extends ConsoleKernel
             })
             ->twiceDaily(10, 19)
             ->name('importacao:repository')
+            ->withoutOverlapping();
+
+        $schedule->call(function () {
+            Log::info('Inicio de execucao Atualização de Contratos com os valores dos acordos');
+            $atualizaContratosExistentes = CatalogoContratoRepository::atualizaContratosExistentes();
+            Log::info('Executado script de Atualização de Contratos com os valores dos acordos', $atualizaContratosExistentes);
+        })
+            ->name('CatalogoContratoRepository:atualizaContratosExistentes')
+            ->dailyAt('00:01')
             ->withoutOverlapping();
     }
 
