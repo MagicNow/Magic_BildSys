@@ -6,12 +6,12 @@ use App\DataTables\Admin\MascaraPadraoDataTable;
 use App\Http\Requests\Admin;
 use App\Http\Requests\Admin\CreateMascaraPadraoRequest;
 use App\Http\Requests\Admin\UpdateMascaraPadraoRequest;
+use App\Http\Controllers\AppBaseController;
 use App\Models\TipoOrcamento;
 use App\Repositories\Admin\MascaraPadraoRepository;
 use App\Repositories\CodeRepository;
-use Flash;
-use App\Http\Controllers\AppBaseController;
 use Illuminate\Support\Facades\Storage;
+use Flash;
 use Response;
 use DB;
 
@@ -19,8 +19,6 @@ class MascaraPadraoController extends AppBaseController
 {
     /** @var  MascaraPadraoRepository */
     private $mascaraPadraoRepository;
-
-    private $userRepository;
 
     public function __construct(MascaraPadraoRepository $mascaraPadraoRepo)
     {
@@ -45,10 +43,10 @@ class MascaraPadraoController extends AppBaseController
      */
     public function create()
     {
-		$relacionadoTipoOrcamentos = [];
-        $orcamentos = TipoOrcamento::pluck('nome', 'id')->all();
 
-        return view('admin.mascara_padrao.create', compact('relacionadoTipoOrcamentos', 'orcamentos'));
+        $tipoOrcamentos = TipoOrcamento::pluck('nome', 'id')->all();
+
+        return view('admin.mascara_padrao.create', compact('relacionadoTipoOrcamentos', 'tipoOrcamentos'));
     }
 
     /**
@@ -60,24 +58,9 @@ class MascaraPadraoController extends AppBaseController
      */
     public function store(CreateMascaraPadraoRequest $request)
     {
-        $input = $request->except('logo');
+        $input = $request->all();
 
-        foreach ($input as $item => $value){
-            if($value == ''){
-                $input[$item] = null;
-            }
-        }
-
-        $mascaraPadrao = $this->mascaraPadraoRepository->create($input);
-
-        if($request->logo) {
-            $destinationPath = CodeRepository::saveFile($request->logo, 'mascara_padrao/' . $mascaraPadrao->id);
-
-            $mascaraPadrao->logo = Storage::url($destinationPath);
-            $mascaraPadrao->save();
-        }
-
-        $mascaraPadrao->save();
+        $mascaraPadrao = $this->solicitacaoInsumoRepository->create($input);
 
         Flash::success(' Máscara Padrão '.trans('common.saved').' '.trans('common.successfully').'.');
 
@@ -121,9 +104,9 @@ class MascaraPadraoController extends AppBaseController
             return redirect(route('admin.mascara_padrao.index'));
         }    
 
-        $tipo_orcamentos = TipoOrcamento::pluck('nome', 'id')->prepend('', '')->all();
+        $tipoOrcamentos = TipoOrcamento::pluck('nome', 'id')->prepend('', '')->all();
         
-        return view('admin.mascara_padrao.edit', compact('mascaraPadrao', 'tipo_orcamentos'));
+        return view('admin.mascara_padrao.edit', compact('mascaraPadrao', 'tipoOrcamentos'));
     }
 
     /**
@@ -139,15 +122,14 @@ class MascaraPadraoController extends AppBaseController
         $mascaraPadrao = $this->mascaraPadraoRepository->findWithoutFail($id);
 
         if (empty($mascaraPadrao)) {
-            Flash::error(' Máscara Padrão '.trans('common.not-found'));
+            Flash::error('Máscara Padrão '.trans('common.not-found'));
 
             return redirect(route('admin.mascara_padrao.index'));
         }
-       
 
-        $mascaraPadrao->update();
+        $mascaraPadrao = $this->mascaraPadraoRepository->update($request->all(), $id);
 
-        Flash::success(' Máscara Padrão '.trans('common.updated').' '.trans('common.successfully').'.');
+        Flash::success('Máscara Padrão '.trans('common.updated').' '.trans('common.successfully').'.');
 
         return redirect(route('admin.mascara_padrao.index'));
     }

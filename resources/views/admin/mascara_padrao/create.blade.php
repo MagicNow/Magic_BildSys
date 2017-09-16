@@ -3,7 +3,7 @@
 @section('content')
     <section class="content-header">
         <h1>
-            Carteira
+            Máscara Padrão
         </h1>
     </section>
     <div class="content">
@@ -12,9 +12,9 @@
 
             <div class="box-body">
                 <div class="row">
-                    {!! Form::open(['route' => 'admin.carteiras.store', 'files' => true]) !!}
+                    {!! Form::open(['route' => 'admin.mascara_padrao.store', 'files' => true]) !!}
 
-                        @include('admin.carteiras.fields')
+                        @include('admin.mascara_padrao.fields')
 
                     {!! Form::close() !!}
                 </div>

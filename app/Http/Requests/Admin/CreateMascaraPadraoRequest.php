@@ -3,9 +3,9 @@
 namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Models\TarefaPadrao;
+use App\Models\MascaraPadrao;
 
-class CreateTarefaPadraoRequest extends FormRequest
+class CreateMascaraPadraoRequest extends FormRequest
 {
 
     /**
@@ -25,6 +25,6 @@ class CreateTarefaPadraoRequest extends FormRequest
      */
     public function rules()
     {
-        return TarefaPadrao::$rules;
+        return MascaraPadrao::$rules;
     }
 }
