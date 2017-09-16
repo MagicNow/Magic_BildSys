@@ -21,13 +21,11 @@ class MascaraPadrao extends Model
 
 
     public $fillable = [
-        'nome',		 
-		'orcamento_tipo_id',
+        'nome'
     ];
 
     public static $campos = [
-        'nome',
-		'orcamento_tipo_id',
+        'nome'
     ];
 
     /**
@@ -37,8 +35,7 @@ class MascaraPadrao extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'nome' => 'string',
-		'orcamento_tipo_id' => 'integer'
+        'nome' => 'string'
     ];
 
     /**
@@ -47,16 +44,7 @@ class MascaraPadrao extends Model
      * @var array
      */
     public static $rules = [
-        'nome' => 'required',
-		'orcamento_tipo_id' => 'integer'
+        'nome' => 'required'
     ];
-	
-	/**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     **/
-    public function tipoOrcamentos()
-    {
-        return $this->belongsTo(\App\Models\TipoOrcamento::class);
-    }
 	
 }

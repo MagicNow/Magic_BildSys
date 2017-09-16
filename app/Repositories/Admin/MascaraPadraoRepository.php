@@ -11,7 +11,8 @@ class MascaraPadraoRepository extends BaseRepository
      * @var array
      */
     protected $fieldSearchable = [
-        'nome'
+        'nome',
+		'orcamento_tipo_id'
     ];
 
     /**

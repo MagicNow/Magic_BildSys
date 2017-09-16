@@ -5,13 +5,19 @@
 </div>
 
 <!-- resumo Field -->
-<div class="form-group col-sm-3">
+<div class="form-group col-sm-2">
     {!! Form::label('resumo', 'Resumo:') !!}
-    {!! Form::text('resumo', null, ['class' => 'form-control', 'required']) !!}
+    {!! Form::select('resumo' , array('0' => 'Não', '1' => 'Sim'),  null, ['class' => 'form-control']) !!}
+</div>
+
+<!-- critica Field -->
+<div class="form-group col-sm-2">
+    {!! Form::label('critica', 'Crítica:') !!}
+	{!! Form::select('critica' , array('0' => 'Não', '1' => 'Sim'),  null, ['class' => 'form-control']) !!}    
 </div>
 
 <!-- torre Field -->
-<div class="form-group col-sm-3">
+<div class="form-group col-sm-2">
     {!! Form::label('torre', 'Torre:') !!}
     {!! Form::text('torre', null, ['class' => 'form-control', 'required']) !!}
 </div>
@@ -20,12 +26,6 @@
 <div class="form-group col-sm-3">
     {!! Form::label('pavimento', 'Pavimento:') !!}
     {!! Form::text('pavimento', null, ['class' => 'form-control', 'required']) !!}
-</div>
-
-<!-- critica Field -->
-<div class="form-group col-sm-3">
-    {!! Form::label('critica', 'Critica:') !!}
-    {!! Form::text('critica', null, ['class' => 'form-control', 'required']) !!}
 </div>
 
 <!-- Submit Field -->

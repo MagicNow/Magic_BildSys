@@ -13,12 +13,22 @@ class RemoveMascaraPadraoInsumosTable extends Migration
      */
     public function up()
     {
-        Schema::table('mascara_padrao_insumos', function (Blueprint $table){
+        
+		Schema::table('mascara_padrao', function (Blueprint $table){
+
+            \Illuminate\Support\Facades\DB::table('mascara_padrao')->delete();			
+            
+			$table->dropForeign(['obra_id']);  
+			$table->dropForeign(['user_id']);  
+			$table->dropColumn(['obra_id']);
+			$table->dropColumn(['user_id']);
+			
+		 });
+		
+		Schema::table('mascara_padrao_insumos', function (Blueprint $table){
 
             \Illuminate\Support\Facades\DB::table('mascara_padrao_insumos')->delete();			
-            
-			$table->dropForeign(['obra_id']);            
-			
+            			
             $table->dropColumn(['terreo_externo_solo']);
 			$table->dropColumn(['terreo_externo_estrutura']);
 			$table->dropColumn(['terreo_interno']);

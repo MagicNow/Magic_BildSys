@@ -46,7 +46,7 @@ class MascaraPadraoController extends AppBaseController
 
         $tipoOrcamentos = TipoOrcamento::pluck('nome', 'id')->all();
 
-        return view('admin.mascara_padrao.create', compact('relacionadoTipoOrcamentos', 'tipoOrcamentos'));
+        return view('admin.mascara_padrao.create', compact('tipoOrcamentos'));
     }
 
     /**
@@ -60,7 +60,7 @@ class MascaraPadraoController extends AppBaseController
     {
         $input = $request->all();
 
-        $mascaraPadrao = $this->solicitacaoInsumoRepository->create($input);
+        $mascaraPadrao = $this->mascaraPadraoRepository->create($input);
 
         Flash::success(' Máscara Padrão '.trans('common.saved').' '.trans('common.successfully').'.');
 
@@ -85,6 +85,7 @@ class MascaraPadraoController extends AppBaseController
         }
 
         return view('admin.mascara_padrao.show')->with('mascaraPadrao', $mascaraPadrao);
+		
     }
 
     /**
@@ -96,17 +97,19 @@ class MascaraPadraoController extends AppBaseController
      */
     public function edit($id)
     {
-        $mascaraPadrao = $this->mascaraPadraoRepository->findWithoutFail($id);
+		
+		$mascaraPadrao = $this->mascaraPadraoRepository->findWithoutFail($id);
+
+        $tipoOrcamentos = TipoOrcamento::pluck('nome', 'id')->toArray();
 
         if (empty($mascaraPadrao)) {
             Flash::error(' Máscara Padrão '.trans('common.not-found'));
 
-            return redirect(route('admin.mascara_padrao.index'));
-        }    
+            return redirect(route('admin.solicitacaoInsumos.index'));
+        }
 
-        $tipoOrcamentos = TipoOrcamento::pluck('nome', 'id')->prepend('', '')->all();
-        
-        return view('admin.mascara_padrao.edit', compact('mascaraPadrao', 'tipoOrcamentos'));
+        return view('admin.mascara_padrao.edit', compact('tipoOrcamentos'))->with('mascaraPadrao', $mascaraPadrao);
+		
     }
 
     /**
