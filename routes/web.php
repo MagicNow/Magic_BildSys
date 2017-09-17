@@ -56,7 +56,7 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
     $router->get('/home', 'Admin\HomeController@index');
     $router->get('/', 'Admin\HomeController@index');
 
-    #importação de planilhas de orçamentos
+    # Importação de Planilhas de Orçamentos
     $router->group(['middleware' => 'needsPermission:orcamentos.import'], function () use ($router) {
         $router->get('orcamento/', ['as' => 'admin.orcamentos.indexImport', 'uses' => 'Admin\OrcamentoController@indexImport']);
         $router->post('orcamento/importar', ['as' => 'admin.orcamentos.importar', 'uses' => 'Admin\OrcamentoController@import']);
@@ -77,7 +77,7 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
         $router->get('orcamentos/{orcamentos}/edit', ['as' => 'admin.orcamentos.edit', 'uses' => 'Admin\OrcamentoController@edit']);
     });
 
-    #importação de planilhas de planejamentos
+    # Importação de Planilhas de Planejamentos
     $router->group(['middleware' => 'needsPermission:planejamento.import'], function () use ($router) {
         $router->get('planejamento/', ['as' => 'admin.planejamentos.indexImport', 'uses' => 'Admin\PlanejamentoController@indexImport']);
         $router->post('planejamento/importar', ['as' => 'admin.planejamentos.importar', 'uses' => 'Admin\PlanejamentoController@import']);
@@ -126,7 +126,7 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
 
     });
 	
-	#importação de planilhas de cronograma fisico
+	# Importação de Planilhas de cronograma Físico
     $router->group(['middleware' => 'needsPermission:cronogramaFisicos.import'], function () use ($router) {
         $router->get('cronogramaFisico/', ['as' => 'admin.cronogramaFisicos.indexImport', 'uses' => 'Admin\CronogramaFisicoController@indexImport']);
         $router->post('cronogramaFisico/importar', ['as' => 'admin.cronogramaFisicos.importar', 'uses' => 'Admin\CronogramaFisicoController@import']);
@@ -135,7 +135,7 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
         $router->get('cronogramaFisico/importar/selecionaCampos', 'Admin\CronogramaFisicoController@selecionaCampos');
     });
 
-    # Cronograma Fisico
+    # Cronograma Físico
     $router->group(['prefix' => 'cronogramaFisicos'], function () use ($router) {
 		
         $router->group(['middleware' => 'needsPermission:cronogramaFisicos.list'], function () use ($router) {			
@@ -153,7 +153,7 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
 
     });
 	
-	#importação de planilhas de levantamentos
+	# Importação de Planilhas de Levantamentos
     $router->group(['middleware' => 'needsPermission:levantamentos.import'], function () use ($router) {
         $router->get('levantamento/', ['as' => 'admin.levantamentos.indexImport', 'uses' => 'Admin\LevantamentoController@indexImport']);
         $router->post('levantamento/importar', ['as' => 'admin.levantamentos.importar', 'uses' => 'Admin\LevantamentoController@import']);
@@ -163,8 +163,7 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
     });
 
     # Levantamentos
-    $router->group(['prefix' => 'levantamentos'], function () use ($router) {
-		
+    $router->group(['prefix' => 'levantamentos'], function () use ($router) {		
         $router->group(['middleware' => 'needsPermission:levantamentos.list'], function () use ($router) {						
             $router->get('atividade', ['as' => 'admin.levantamentos.index', 'uses' => 'Admin\LevantamentoController@index']);
             $router->post('atividade', ['as' => 'admin.levantamentos.store', 'uses' => 'Admin\LevantamentoController@store']);
@@ -175,7 +174,6 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
             $router->get('atividade/{levantamentos}', ['as' => 'admin.levantamentos.show', 'uses' => 'Admin\LevantamentoController@show']);
             $router->get('atividade/{levantamentos}/edit', ['as' => 'admin.levantamentos.edit', 'uses' => 'Admin\LevantamentoController@edit']);
         });
-
     });
 	
 	# Tipos de Levantamentos
@@ -256,7 +254,7 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
     $router->get('planejamentoCronogramas', ['as' => 'admin.planejamentoCronogramas.index', 'uses' => 'Admin\PlanejamentoCronogramaController@index'])
         ->middleware("needsPermission:cronograma_por_obras.list");
 
-    # Comprador de insumos
+    # Comprador de Insumos
     $router->group(['middleware' => 'needsPermission:compradorInsumos.list'], function () use ($router) {
         $router->get('compradorInsumos', ['as' => 'admin.compradorInsumos.index', 'uses' => 'Admin\CompradorInsumoController@index']);
         $router->post('compradorInsumos', ['as' => 'admin.compradorInsumos.store', 'uses' => 'Admin\CompradorInsumoController@store']);
@@ -298,9 +296,11 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
         $router->get('mascara_padrao_insumos/delete-bloco/view/delete/{id}', 'Admin\MascaraPadraoInsumoController@buscaGrupoInsumo');
 		$router->get('mascara_padrao_insumos/sem-insumo/view', ['as' => 'admin.mascara_padrao_insumos.seminsumoview', 'uses' => 'Admin\MascaraPadraoInsumoController@semInsumoView'])
             ->middleware("needsPermission:mascara_padrao_insumos.semInsumoView");
+		//$router->get('mascara_padrao_insumos/grupos/{id}', 'MascaraPadraoInsumoController@getGrupos');
+        //$router->get('mascara_padrao_insumos/servicos/{id}', 'MascaraPadraoInsumoController@getServicos');
     });
 
-	# Carteira de insumos
+	# Carteira de Insumos
     $router->group(['middleware' => 'needsPermission:carteiraInsumos.list'], function () use ($router) {
         $router->get('carteiraInsumos', ['as' => 'admin.carteiraInsumos.index', 'uses' => 'Admin\CarteiraInsumoController@index']);
         $router->post('carteiraInsumos', ['as' => 'admin.carteiraInsumos.store', 'uses' => 'Admin\CarteiraInsumoController@store']);
@@ -544,7 +544,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->get('carteiras/buscacep/{cep}', 'Admin\CarteiraController@buscaPorCep');
     });
 	
-	# Máscara Padrao
+	# Máscara Padrão
     $router->group(['middleware' => 'needsPermission:mascara_padrao.list'], function () use ($router) {        
         $router->get('mascara_padrao', ['as' => 'admin.mascara_padrao.index', 'uses' => 'Admin\MascaraPadraoController@index']);
         $router->post('mascara_padrao', ['as' => 'admin.mascara_padrao.store', 'uses' => 'Admin\MascaraPadraoController@store']);
@@ -559,7 +559,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             ->middleware("needsPermission:mascara_padrao.edit");        
     });
 	
-	# Tarefa Padrao
+	# Tarefa Padrão
     $router->group(['middleware' => 'needsPermission:tarefa_padrao.list'], function () use ($router) {        
         $router->get('tarefa_padrao', ['as' => 'admin.tarefa_padrao.index', 'uses' => 'Admin\TarefaPadraoController@index']);
         $router->post('tarefa_padrao', ['as' => 'admin.tarefa_padrao.store', 'uses' => 'Admin\TarefaPadraoController@store']);
@@ -1323,8 +1323,8 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         //            ->first();
         //        dd($grupos_mega);
         //        $servicos = \App\Repositories\ImportacaoRepository::fornecedor_servicos(446);
-//        $insumos = \App\Repositories\ImportacaoRepository::insumos();
-//        dd($insumos);
+		//        $insumos = \App\Repositories\ImportacaoRepository::insumos();
+		//        dd($insumos);
         $contratoTemplate = \App\Models\ContratoTemplate::find(1);
         if($contratoTemplate){
             if($contratoTemplate->campos_extras){

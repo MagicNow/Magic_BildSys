@@ -1829,7 +1829,8 @@ class OrdemDeCompraController extends AppBaseController
 
         return $grupo;
     }
-    public function getServicos($id, Request $request)
+    
+	public function getServicos($id, Request $request)
     {
         $servico = Servico::select([
             'servicos.id',

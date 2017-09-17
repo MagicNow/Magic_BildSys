@@ -1,19 +1,19 @@
 <!-- Máscara Padrão Field -->
 <div class="form-group col-sm-3">
 	{!! Form::label('mascara_padrao_id', 'Máscara Padrão:') !!}
-	{!! Form::select('mascara_padrao_id', [''=>'-']+$mascaraPadrao, null, ['class' => 'form-control select2', 'id'=>'mascara_padrao_id', 'required'=>'required']) !!}
+	{!! Form::select('mascara_padrao_id', [''=>'-']+$mascaraPadrao, null, ['class' => 'form-control select2', 'id'=>'mascara_padrao_id', 'required'=>'required' , 'disabled' => true ]) !!}
 </div>
 
 <!-- Insumo Field -->
 <div class="form-group col-sm-3">
 	{!! Form::label('insumo_id', 'Insumos:') !!}
-	{!! Form::select('insumo_id', [''=>'-']+$insumos, null, ['class' => 'form-control select2', 'id'=>'insumo_id', 'required'=>'required']) !!}
+	{!! Form::select('insumo_id', [''=>'-']+$insumos, null, ['class' => 'form-control select2', 'id'=>'insumo_id', 'required'=>'required' , 'disabled' => true ]) !!}
 </div>
 
 <!-- Código Estruturado Field -->
 <div class="form-group col-sm-3">
 	{!! Form::label('codigo_insumo', 'Código Estruturado:') !!}
-	{!! Form::text('codigo_insumo', null, ['class' => 'form-control']) !!}
+	{!! Form::text('codigo_insumo', null, ['class' => 'form-control' , 'readonly' => true]) !!}
 </div>
 
 <!-- Coeficiente Field -->

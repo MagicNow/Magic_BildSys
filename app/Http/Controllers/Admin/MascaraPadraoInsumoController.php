@@ -8,6 +8,8 @@ use App\Http\Requests\Admin;
 use App\Http\Requests\Admin\CreateMascaraPadraoInsumoRequest;
 use App\Http\Requests\Admin\UpdateMascaraPadraoInsumoRequest;
 use App\Models\MascaraPadraoInsumo;
+use App\Models\Grupo;
+use App\Models\Servico;
 use App\Models\Insumo;
 use App\Models\InsumoGrupo;
 use App\Models\MascaraPadrao;
@@ -16,6 +18,7 @@ use Flash;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use Response;
+use Illuminate\Support\Facades\DB;
 
 class MascaraPadraoInsumoController extends AppBaseController
 {
@@ -47,9 +50,23 @@ class MascaraPadraoInsumoController extends AppBaseController
     {
         $grupoInsumos = InsumoGrupo::where('active', true)->pluck('nome', 'id')->toArray();
 		
+		$grupos = Grupo::orderBy("codigo")
+            //->select(DB::raw('concat(codigo, " - ", nome) as nome_grupo'), 'id')
+			->select(DB::raw('codigo'), 'id')
+			->where('grupos.grupo_id', '<>', null)
+            ->get()
+            ->pluck('nome_grupo', 'id');
+		
+		$servicos = Servico::orderBy("codigo")
+            //->select(DB::raw('concat(codigo, " - ", nome) as nome_servico'), 'id')
+			->select(DB::raw('codigo'), 'id')
+			->where('servicos.grupo_id', '<>', null)
+            ->get()
+            ->pluck('nome_servico', 'id');
+		
 		$mascaraPadrao = MascaraPadrao::pluck('nome', 'id')->toArray();
-        
-        return view('admin.mascara_padrao_insumos.create', compact('grupoInsumos', 'mascaraPadrao'));
+        		
+        return view('admin.mascara_padrao_insumos.create', compact('grupoInsumos', 'mascaraPadrao', 'grupos', 'servicos'));
     }
 
     /**
@@ -63,9 +80,9 @@ class MascaraPadraoInsumoController extends AppBaseController
     {
         if (isset($request->insumo_id)) {
             foreach ($request->insumo_id as $insumo_id) {
-				
+								
 				$insumo = Insumo::where('id', $request->insumo_id)->first();
-				$codigo_estruturado = "01.01.01.01.001.".$insumo->codigo;
+				$codigo_estruturado = "01".$request->subgrupo1_id.".".$request->subgrupo2_id.".".$request->subgrupo3_id.".".$request->servico_id.".".$insumo->codigo;
 				
                 MascaraPadraoInsumo::firstOrCreate([
                     'mascara_padrao_id' => $request->mascara_padrao_id,
@@ -255,4 +272,70 @@ class MascaraPadraoInsumoController extends AppBaseController
 
         return $insumos;
     }
+	
+	public function getGrupos($id, Request $request)
+    {
+        $grupo = Grupo::select([
+            'grupos.id',
+            DB::raw("CONCAT(grupos.codigo, ' ', grupos.nome) as nome")
+        ])
+        //->join('orcamentos', 'orcamentos.'.$request->campo_join, '=', 'grupos.id')
+        ->where('grupos.grupo_id', $id)
+        ->orderBy('grupos.nome', 'ASC');
+
+        /*if($request->obra_id == 'todas') {
+            $obras = Obra::orderBy('nome', 'ASC')
+                ->whereHas('users', function($query){
+                    $query->where('user_id', auth()->id());
+                })
+                ->whereHas('contratos')
+                ->pluck('id', 'id')
+                ->toArray();
+
+            $grupo = $grupo->whereIn('orcamentos.obra_id', $obras);
+        } else {
+            $grupo = $grupo->where('orcamentos.obra_id', $request->obra_id);
+        }*/
+
+        $grupo = $grupo->pluck('grupos.nome','grupos.id')
+            ->toArray();
+
+        return $grupo;
+    }
+    
+	public function getServicos($id, Request $request)
+    {
+        $servico = Servico::select([
+            'servicos.id',
+            DB::raw("CONCAT(servicos.codigo, ' ', servicos.nome) as nome")
+        ])
+        //->join('orcamentos', 'orcamentos.servico_id', '=', 'servicos.id')
+        ->where('servicos.grupo_id', $id)
+        ->orderBy('servicos.nome', 'ASC');
+
+        /*if($request->obra_id == 'todas') {
+            $obras = Obra::orderBy('nome', 'ASC')
+                ->whereHas('users', function($query){
+                    $query->where('user_id', auth()->id());
+                })
+                ->whereHas('contratos')
+                ->pluck('id', 'id')
+                ->toArray();
+            
+            $servico = $servico->whereIn('orcamentos.obra_id', $obras);
+        } else {
+            $servico = $servico->where('orcamentos.obra_id', $request->obra_id);
+        }*/
+        
+        if($request->insumo_id) {
+            $servico = $servico->whereHas('insumos', function($query) use ($request) {
+                $query->where('insumos.id', $request->insumo_id);
+            });
+        }
+
+        $servico = $servico->pluck('nome', 'id')->toArray();
+
+        return $servico;
+    }
+
 }
