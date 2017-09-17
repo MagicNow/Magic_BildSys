@@ -22,11 +22,17 @@ class LpuDataTable extends DataTable
             ->eloquent($this->query())			
             ->editColumn('created_at', function ($lpu) {
                 return $lpu->created_at
-                    ? $lpu->created_at->format('d/m/Y')
+                    ? $lpu->created_at->format('m/Y')
                     : '';
             })
             ->editColumn('valor_sugerido', function ($lpu) {
-                return float_to_money($lpu->valor_sugerido_atual);
+                return float_to_money($lpu->valor_sugerido);
+            })
+			->editColumn('valor_contrato', function ($lpu) {
+                return float_to_money($lpu->valor_contrato);
+            })
+			->editColumn('valor_catalogo', function ($lpu) {
+                return float_to_money($lpu->valor_catalogo);
             })
             ->editColumn('action', 'lpu.datatables_actions')
 			->make(true);
@@ -42,14 +48,15 @@ class LpuDataTable extends DataTable
         $query->select([
             'lpu.id',
             'lpu.created_at',
-			'lpu.valor_sugerido_atual',
+			'lpu.valor_sugerido',
 			'lpu.valor_contrato',
 			'lpu.valor_catalogo',
             'insumos.codigo',
 			'insumos.unidade_sigla',
 			'insumos.nome as descricao'
         ])
-        ->join('insumos', 'insumos.id', 'lpu.insumo_id')        
+        ->join('insumos', 'insumos.id', 'lpu.insumo_id')
+		->join('insumo_grupos', 'insumo_grupos.id', 'insumos.insumo_grupo_id')        
         ->groupBy('lpu.id');
 
         $request = $this->request();
@@ -57,22 +64,10 @@ class LpuDataTable extends DataTable
 		if($request->regional_id) {
             $query->where('lpu.regional_id', $request->regional_id);
         }
-
-        if($request->subgrupo1_id) {
-            $query->where('insumos.insumo_grupo_id', $request->subgrupo1_id);
+		
+		if($request->insumo_grupo_id) {
+            $query->where('insumo_grupos.id', $request->insumo_grupo_id);
         }
-
-        if($request->subgrupo2_id) {
-            $query->where('insumos.insumo_grupo_id',  $request->subgrupo2_id);
-        }
-
-        if($request->subgrupo3_id) {
-            $query->where('insumos.insumo_grupo_id',  $request->subgrupo3_id);
-        }
-
-        /*if($request->servico_id) {
-            $query->where('insumos.insumo_grupo_id',  $request->servico_id);
-        }*/
 
         if(!is_null($request->days)) {
             $query->whereDate(
@@ -170,10 +165,10 @@ class LpuDataTable extends DataTable
             'codigo' => ['name' => 'codigo', 'data' => 'codigo', 'title' => 'Código Insumo'],            
             'descricao' => ['name' => 'descricao', 'data' => 'descricao', 'title' => 'Descrição'],
 			'unidade_sigla' => ['name' => 'unidade_sigla', 'data' => 'unidade_sigla', 'title' => 'UN Medida'],
-			'valor_sugerido' => ['name' => 'valor_sugerido', 'data' => 'valor_sugerido_atual', 'title' => 'Valor Sugerido'],
+			'valor_sugerido' => ['name' => 'valor_sugerido', 'data' => 'valor_sugerido', 'title' => 'Valor Sugerido'],
 			'valor_contrato' => ['name' => 'valor_unitario', 'data' => 'valor_contrato', 'title' => 'Valor Contrato'],
 			'valor_catalogo' => ['name' => 'valor_unitario', 'data' => 'valor_catalogo', 'title' => 'Valor Catálogo'],
-			'created_at'        => ['name' => 'created_at', 'data' => 'created_at', 'title' => 'Data'],
+			'created_at'        => ['name' => 'created_at', 'data' => 'created_at', 'title' => 'Mês Ref.'],
 			'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
 		];
     }
