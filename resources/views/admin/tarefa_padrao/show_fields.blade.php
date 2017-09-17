@@ -7,13 +7,13 @@
 <!-- Resumo Field -->
 <div class="form-group col-md-3">
     {!! Form::label('resumo', 'Resumo:') !!}
-    <p class="form-control">{!! $tarefaPadrao->resumo !!}</p>
+	<p class="form-control">{!! $tarefaPadrao->resumo ? 'Sim' : 'Não'!!}</p>
 </div>
 
 <!-- Crítica Field -->
 <div class="form-group col-md-3">
     {!! Form::label('nome', 'Crítica:') !!}
-    <p class="form-control">{!! $tarefaPadrao->critica !!}</p>
+    <p class="form-control">{!! $tarefaPadrao->critica ? 'Sim' : 'Não'!!}</p>
 </div>
 
 <!-- Torre Field -->

@@ -3,6 +3,7 @@
 namespace App\DataTables\Admin;
 
 use App\Models\TarefaPadrao;
+use DB;
 use Form;
 use Yajra\Datatables\Services\DataTable;
 
@@ -32,8 +33,17 @@ class TarefaPadraoDataTable extends DataTable
      * @return \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder
      */
     public function query()
-    {
-        $tarefa_padrao = TarefaPadrao::query();
+    {        
+			
+		$tarefa_padrao = TarefaPadrao::query()->select([
+                'tarefa_padrao.id',
+                'tarefa_padrao.nome',
+                DB::raw("(IF(resumo=1,'Sim','Não')) as resumo"),
+				DB::raw("(IF(critica=1,'Sim','Não')) as critica"),
+               'tarefa_padrao.torre',
+               'tarefa_padrao.pavimento',
+			   'tarefa_padrao.created_at',
+            ]);
 
         return $this->applyScopes($tarefa_padrao);
     }
@@ -100,9 +110,9 @@ class TarefaPadraoDataTable extends DataTable
         return [
             'nome' => ['name' => 'nome', 'data' => 'nome'],
 			'resumo' => ['name' => 'resumo', 'data' => 'resumo'],
+			'critica' => ['name' => 'critica', 'data' => 'critica'],			
 			'torre' => ['name' => 'torre', 'data' => 'torre'],
-			'pavimento' => ['name' => 'pavimento', 'data' => 'pavimento'],
-			'critica' => ['name' => 'critica', 'data' => 'critica'],
+			'pavimento' => ['name' => 'pavimento', 'data' => 'pavimento'],			
             'cadastradaEm' => ['name' => 'created_at', 'data' => 'created_at'],
             'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];

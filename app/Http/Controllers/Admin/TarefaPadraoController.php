@@ -6,7 +6,6 @@ use App\DataTables\Admin\TarefaPadraoDataTable;
 use App\Http\Requests\Admin;
 use App\Http\Requests\Admin\CreateTarefaPadraoRequest;
 use App\Http\Requests\Admin\UpdateTarefaPadraoRequest;
-use App\Models\TipoOrcamento;
 use App\Repositories\Admin\TarefaPadraoRepository;
 use App\Repositories\CodeRepository;
 use Flash;
@@ -55,24 +54,9 @@ class TarefaPadraoController extends AppBaseController
      */
     public function store(CreateTarefaPadraoRequest $request)
     {
-        $input = $request->except('logo');
-
-        foreach ($input as $item => $value){
-            if($value == ''){
-                $input[$item] = null;
-            }
-        }
+        $input = $request->all();
 
         $tarefaPadrao = $this->tarefaPadraoRepository->create($input);
-
-        if($request->logo) {
-            $destinationPath = CodeRepository::saveFile($request->logo, 'tarefa_padrao/' . $tarefaPadrao->id);
-
-            $tarefaPadrao->logo = Storage::url($destinationPath);
-            $tarefaPadrao->save();
-        }
-
-        $tarefaPadrao->save();
 
         Flash::success(' Tarefa Padrão '.trans('common.saved').' '.trans('common.successfully').'.');
 
@@ -115,10 +99,8 @@ class TarefaPadraoController extends AppBaseController
 
             return redirect(route('admin.tarefa_padrao.index'));
         }    
-
-        $tipo_orcamentos = TipoOrcamento::pluck('nome', 'id')->prepend('', '')->all();
         
-        return view('admin.tarefa_padrao.edit', compact('tarefaPadrao', 'tipo_orcamentos'));
+        return view('admin.tarefa_padrao.edit', compact('tarefaPadrao'));
     }
 
     /**
@@ -137,12 +119,11 @@ class TarefaPadraoController extends AppBaseController
             Flash::error(' Tarefa Padrão '.trans('common.not-found'));
 
             return redirect(route('admin.tarefa_padrao.index'));
-        }
-       
+        }       
 
-        $tarefaPadrao->update();
+        $tarefaPadrao = $this->tarefaPadraoRepository->update($request->all(), $id);
 
-        Flash::success(' Tarefa Padrão '.trans('common.updated').' '.trans('common.successfully').'.');
+        Flash::success('Tarefa Padrão '.trans('common.updated').' '.trans('common.successfully').'.');
 
         return redirect(route('admin.tarefa_padrao.index'));
     }

@@ -22,6 +22,10 @@ class TarefaPadrao extends Model
 
     public $fillable = [
         'nome',
+		'resumo',
+		'critica',
+		'torre',
+		'pavimento',
     ];
 
     public static $campos = [

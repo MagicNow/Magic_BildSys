@@ -7,7 +7,6 @@ use App\Http\Requests\Admin;
 use App\Http\Requests\Admin\CreateMascaraPadraoRequest;
 use App\Http\Requests\Admin\UpdateMascaraPadraoRequest;
 use App\Http\Controllers\AppBaseController;
-use App\Models\TipoOrcamento;
 use App\Repositories\Admin\MascaraPadraoRepository;
 use App\Repositories\CodeRepository;
 use Illuminate\Support\Facades\Storage;
@@ -42,11 +41,8 @@ class MascaraPadraoController extends AppBaseController
      * @return Response
      */
     public function create()
-    {
-
-        $tipoOrcamentos = TipoOrcamento::pluck('nome', 'id')->all();
-
-        return view('admin.mascara_padrao.create', compact('tipoOrcamentos'));
+    {        
+		return view('admin.mascara_padrao.create');
     }
 
     /**
@@ -100,15 +96,13 @@ class MascaraPadraoController extends AppBaseController
 		
 		$mascaraPadrao = $this->mascaraPadraoRepository->findWithoutFail($id);
 
-        $tipoOrcamentos = TipoOrcamento::pluck('nome', 'id')->toArray();
-
         if (empty($mascaraPadrao)) {
             Flash::error(' Máscara Padrão '.trans('common.not-found'));
 
             return redirect(route('admin.solicitacaoInsumos.index'));
         }
 
-        return view('admin.mascara_padrao.edit', compact('tipoOrcamentos'))->with('mascaraPadrao', $mascaraPadrao);
+        return view('admin.mascara_padrao.edit', compact('mascaraPadrao'));
 		
     }
 

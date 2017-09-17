@@ -123,6 +123,13 @@ class RolesAndPermissions extends Seeder
             'compradorInsumos.deleteBlocoView'   => 'Remoção em bloco de comprador/insumos',
 			'compradorInsumos.semInsumoView'   => 'Insumos que não tem comprador associado',
 			
+			'mascara_padrao_insumos.list'   => 'Listagem de Máscara Padrão/Insumos',
+            'mascara_padrao_insumos.create'   => 'Criação de Máscara Padrão/Insumos',
+			'mascara_padrao_insumos.edit'   => 'Edição de Máscara Padrão/Insumos',
+            'mascara_padrao_insumos.delete'   => 'Remoção de Máscara Padrão/Insumos',
+            'mascara_padrao_insumos.deleteBlocoView'   => 'Remoção em bloco de Máscara Padrão/Insumos',
+			'mascara_padrao_insumos.semInsumoView'   => 'Insumos que não tem Máscara Padrão associada',
+			
 			'carteiraInsumos.list'   => 'Listagem de carteira/insumos',
             'carteiraInsumos.create'   => 'Criação de carteira/insumos',			
             'carteiraInsumos.delete'   => 'Remoção de carteira/insumos',
