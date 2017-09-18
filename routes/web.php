@@ -1332,6 +1332,10 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $lpu = \App\Repositories\LpuGerarRepository::calcular();
 		dd($lpu);		
     });
+	
+	$router->get('/testeInsumos', function () {
+		$insumos = \App\Repositories\ImportacaoRepository::insumos();
+	});
 
     $router->get('/teste', function () {
         //        $grupos_mega = \App\Models\MegaInsumoGrupo::select([
