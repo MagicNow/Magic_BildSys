@@ -18,20 +18,30 @@ class MascaraPadraoInsumo extends Model
 
     public $fillable = [        
 		'mascara_padrao_id',
-		'codigo_insumo',
+		'codigo_estruturado',
 		'insumo_id',
 		'tipos_levantamento_id',
 		'coeficiente',
-		'indireto'
+		'indireto',		
+		'grupo_id',
+		'subgrupo1_id',
+        'subgrupo2_id',
+        'subgrupo3_id',
+		'servico_id'
     ];
 	
 	public $campos = [        
 		'mascara_padrao_id',
-		'codigo_insumo',
+		'codigo_estruturado',
 		'insumo_id',
 		'tipos_levantamento_id',
 		'coeficiente',
-		'indireto'
+		'indireto',
+		'grupo_id',
+		'subgrupo1_id',
+        'subgrupo2_id',
+        'subgrupo3_id',
+		'servico_id'        
     ];
 
     /**
@@ -90,12 +100,5 @@ class MascaraPadraoInsumo extends Model
     {
         return $this->belongsTo(MascaraPadrao::class);
     }
-	
-	/**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     **/
-    public function tipoLevantamentos()
-    {
-        return $this->belongsTo(TipoLevantamento::class);
-    }
+
 }

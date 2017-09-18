@@ -46,7 +46,15 @@
                 <span>Máscara Padrão/Insumos</span>
             </a>
         </li>
-        @endshield		
+        @endshield	
+		@shield('tarefa_mascaras.list')
+        <li class="{{ Request::is('admin/tarefa_mascaras') ? 'active' : '' }}">
+            <a href="{!! route('admin.tarefa_mascaras.index') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Tarefa Padrão/Máscaras P.</span>
+            </a>
+        </li>
+        @endshield
         @shield('orcamentos.list')
         <li class="{{ Request::is('admin/orcamento') ? 'active' : '' }}">
             <a href="{!! route('admin.orcamentos.index') !!}">

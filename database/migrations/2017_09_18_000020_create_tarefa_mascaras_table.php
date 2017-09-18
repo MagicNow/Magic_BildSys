@@ -3,37 +3,25 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AlterMascaraPadraoTable extends Migration
+class CreateTarefaMascarasTable extends Migration
 {
     /**
      * Run the migrations.
-     * @table orcamentos
+     * @table planejamento_compras
      *
      * @return void
      */
     public function up()
     {
-		
-		Schema::dropIfExists('mascara_padrao_insumos');		
-		Schema::dropIfExists('mascara_padrao');
-		
-        Schema::create('mascara_padrao', function (Blueprint $table) {
+        Schema::create('tarefa_mascaras', function (Blueprint $table) {
             
             $table->increments('id');
-			$table->string('nome', 50);				
-			$table->timestamps();
-            $table->softDeletes();	
-        });
-		
-        Schema::create('mascara_padrao_insumos', function (Blueprint $table) {
+			$table->unsignedInteger('obra_id');
+			$table->unsignedInteger('mascara_padrao_id');
+            $table->unsignedInteger('tarefa_padrao_id'); 
+			$table->unsignedInteger('insumo_id');			
+            $table->string('codigo_insumo', 45)->nullable();
             
-            $table->increments('id');			            
-            $table->unsignedInteger('mascara_padrao_id');  
-			$table->string('codigo_estruturado', 45);
-			$table->unsignedInteger('insumo_id');			          
-            $table->decimal('coeficiente', 19, 6)->nullable();
-            $table->decimal('indireto', 19, 2)->nullable(); 
-			
             $table->unsignedInteger('grupo_id');
 			$table->unsignedInteger('subgrupo1_id');
             $table->unsignedInteger('subgrupo2_id');
@@ -41,10 +29,20 @@ class AlterMascaraPadraoTable extends Migration
 			$table->unsignedInteger('servico_id');
 			
 			$table->timestamps();
-            $table->softDeletes();			
+            $table->softDeletes();
+
+			$table->foreign('obra_id')
+                ->references('id')->on('obras')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
 			
             $table->foreign('mascara_padrao_id')
                 ->references('id')->on('mascara_padrao')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+				
+			$table->foreign('tarefa_padrao_id')
+                ->references('id')->on('tarefa_padrao')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
 				
@@ -86,8 +84,7 @@ class AlterMascaraPadraoTable extends Migration
      * @return void
      */
      public function down()
-     {       
-	   Schema::dropIfExists('mascara_padrao_insumos');
-	   Schema::dropIfExists('mascara_padrao');
+     {
+       Schema::dropIfExists('tarefa_mascaras');
      }
 }

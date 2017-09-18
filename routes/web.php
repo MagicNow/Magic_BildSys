@@ -299,7 +299,26 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
 		//$router->get('mascara_padrao_insumos/grupos/{id}', 'MascaraPadraoInsumoController@getGrupos');
         //$router->get('mascara_padrao_insumos/servicos/{id}', 'MascaraPadraoInsumoController@getServicos');
     });
-
+	
+	# Tarefa Padrão / Máscara Padrão
+    $router->group(['middleware' => 'needsPermission:tarefa_mascaras.list'], function () use ($router) {
+		$router->get('tarefa_mascaras', ['as' => 'admin.tarefa_mascaras.index', 'uses' => 'Admin\TarefaMascarasController@index']);
+		$router->post('tarefa_mascaras', ['as' => 'admin.tarefa_mascaras.store', 'uses' => 'Admin\TarefaMascarasController@store']);
+		$router->get('tarefa_mascaras/create', ['as' => 'admin.tarefa_mascaras.create', 'uses' => 'Admin\TarefaMascarasController@create']);
+		$router->put('tarefa_mascaras/{tarefaMascaras}', ['as' => 'admin.tarefa_mascaras.update', 'uses' => 'Admin\TarefaMascarasController@update']);
+		$router->patch('tarefa_mascaras/{tarefaMascaras}', ['as' => 'admin.tarefa_mascaras.update', 'uses' => 'Admin\TarefaMascarasController@update']);
+		$router->delete('tarefa_mascaras/{tarefaMascaras}', ['as' => 'admin.tarefa_mascaras.destroy', 'uses' => 'Admin\TarefaMascarasController@destroy']);
+		$router->get('tarefa_mascaras/{tarefaMascaras}', ['as' => 'admin.tarefa_mascaras.show', 'uses' => 'Admin\TarefaMascarasController@show']);
+		$router->get('tarefa_mascaras/{tarefaMascaras}/edit', ['as' => 'admin.tarefa_mascaras.edit', 'uses' => 'Admin\TarefaMascarasController@edit']);
+		$router->get('tarefa_mascaras/orcamentos/relacionados', 'Admin\TarefaMascarasController@GrupoRelacionados');
+		$router->get('tarefa_mascaras/planejamento/{id}', 'Admin\TarefaMascarasController@getPlanejamentos');
+		$router->get('tarefa_mascaras/orcamento/{id}', 'Admin\TarefaMascarasController@getOrcamentos');
+		$router->get('tarefa_mascaras/planejamento/orcamento/insumo_grupos', 'Admin\TarefaMascarasController@getGrupoInsumos');
+		$router->get('tarefa_mascaras/planejamento/orcamento/insumo/insumo_grupos', 'Admin\TarefaMascarasController@getGrupoInsumoRelacionados');
+		$router->get('tarefa_mascaras/orcamentos/desvincular', 'Admin\TarefaMascarasController@desvincular');
+		$router->get('tarefa_mascaras/sem-planejamento/view/{obra}', ['as' => 'admin.tarefa_mascaras.semplanejamentoview', 'uses' => 'Admin\TarefaMascarasController@semPlanejamentoView']);
+	});
+	
 	# Carteira de Insumos
     $router->group(['middleware' => 'needsPermission:carteiraInsumos.list'], function () use ($router) {
         $router->get('carteiraInsumos', ['as' => 'admin.carteiraInsumos.index', 'uses' => 'Admin\CarteiraInsumoController@index']);

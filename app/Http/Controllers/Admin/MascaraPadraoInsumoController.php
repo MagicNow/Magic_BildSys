@@ -86,8 +86,13 @@ class MascaraPadraoInsumoController extends AppBaseController
 				
                 MascaraPadraoInsumo::firstOrCreate([
                     'mascara_padrao_id' => $request->mascara_padrao_id,
-					'codigo_insumo' => $codigo_estruturado,					
+					'codigo_estruturado' => $codigo_estruturado,					
                     'insumo_id' => $insumo_id,
+					'grupo_id' => 17,					
+					'subgrupo1_id' => 18,
+					'subgrupo2_id' => 40, 
+					'subgrupo3_id' => 43,
+					'servico_id' => 1,					
 					'coeficiente' => $request->coeficiente
                 ]);
             }

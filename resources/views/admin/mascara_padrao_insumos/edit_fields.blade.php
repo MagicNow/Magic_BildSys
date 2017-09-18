@@ -12,8 +12,8 @@
 
 <!-- Código Estruturado Field -->
 <div class="form-group col-sm-3">
-	{!! Form::label('codigo_insumo', 'Código Estruturado:') !!}
-	{!! Form::text('codigo_insumo', null, ['class' => 'form-control' , 'readonly' => true]) !!}
+	{!! Form::label('codigo_estruturado', 'Código Estruturado:') !!}
+	{!! Form::text('codigo_estruturado', null, ['class' => 'form-control' , 'readonly' => true]) !!}
 </div>
 
 <!-- Coeficiente Field -->
