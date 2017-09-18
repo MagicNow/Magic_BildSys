@@ -5,13 +5,13 @@ namespace App\Models;
 use Eloquent as Model;
 
 /**
- * Class MascaraPadrao
+ * Class TarefaPadrao
  * @package App\Models
  * @version April 25, 2017, 2:16 pm BRT
  */
-class MascaraPadrao extends Model
+class TarefaPadrao extends Model
 {
-    public $table = 'mascara_padrao';
+    public $table = 'tarefa_padrao';
 
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
@@ -21,11 +21,15 @@ class MascaraPadrao extends Model
 
 
     public $fillable = [
-        'nome'
+        'tarefa',
+		'resumo',
+		'critica',
+		'torre',
+		'pavimento',
     ];
 
     public static $campos = [
-        'nome'
+        'tarefa',        
     ];
 
     /**
@@ -35,7 +39,7 @@ class MascaraPadrao extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'nome' => 'string'
+        'tarefa' => 'string',        
     ];
 
     /**
@@ -44,7 +48,9 @@ class MascaraPadrao extends Model
      * @var array
      */
     public static $rules = [
-        'nome' => 'required'
+        'tarefa' => 'required'
     ];
+	    
+	
 	
 }

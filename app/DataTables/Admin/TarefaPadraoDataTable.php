@@ -2,11 +2,12 @@
 
 namespace App\DataTables\Admin;
 
-use App\Models\CompradorInsumo;
+use App\Models\TarefaPadrao;
+use DB;
 use Form;
 use Yajra\Datatables\Services\DataTable;
 
-class SemCompradorInsumoDataTable extends DataTable
+class TarefaPadraoDataTable extends DataTable
 {
 
     /**
@@ -16,7 +17,13 @@ class SemCompradorInsumoDataTable extends DataTable
     {
         return $this->datatables
             ->eloquent($this->query())
-            ->addColumn('action', 'admin.comprador_insumos.datatables_actions')
+            ->editColumn('action', 'admin.tarefa_padrao.datatables_actions')
+            ->editColumn('created_at', function($obj){
+                return $obj->created_at ? with(new\Carbon\Carbon($obj->created_at))->format('d/m/Y H:i') : '';
+            })
+            ->filterColumn('created_at', function ($query, $keyword) {
+                $query->whereRaw("DATE_FORMAT(tarefa_padrao.created_at,'%d/%m/%Y') like ?", ["%$keyword%"]);
+            })
             ->make(true);
     }
 
@@ -26,20 +33,19 @@ class SemCompradorInsumoDataTable extends DataTable
      * @return \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder
      */
     public function query()
-    {		
-		
-        $compradorInsumos = CompradorInsumo::query()
-            ->select([
-				'comprador_insumos.id',
-                'insumos.nome',
-                'insumo_grupos.nome as nome_grupo_insumo'
-            ])		
-        ->join('insumos','insumos.id','<>','comprador_insumos.insumo_id')
-        ->join('insumo_grupos','insumo_grupos.id','=','insumos.insumo_grupo_id')		
-        ->join('users','users.id','=','comprador_insumos.user_id')
-		->groupBy('insumos.id');
+    {        
+			
+		$tarefa_padrao = TarefaPadrao::query()->select([
+                'tarefa_padrao.id',
+                'tarefa_padrao.nome',
+                DB::raw("(IF(resumo=1,'Sim','Não')) as resumo"),
+				DB::raw("(IF(critica=1,'Sim','Não')) as critica"),
+               'tarefa_padrao.torre',
+               'tarefa_padrao.pavimento',
+			   'tarefa_padrao.created_at',
+            ]);
 
-        return $this->applyScopes($compradorInsumos);
+        return $this->applyScopes($tarefa_padrao);
     }
 
     /**
@@ -51,28 +57,17 @@ class SemCompradorInsumoDataTable extends DataTable
     {
         return $this->builder()
             ->columns($this->getColumns())
+            // ->addAction(['width' => '10%'])
             ->ajax('')
             ->parameters([
                 'responsive' => 'true',
                  'initComplete' => 'function () {
                     max = this.api().columns().count();
                     this.api().columns().every(function (col) {
-                        if(col==0){
+                        if((col+1)<max){
                             var column = this;
                             var input = document.createElement("input");
-                            $(input).attr(\'title\',\'Para uma faixa utilize hífen(-), ex:01/01/2018-31/01/2018\');
-                            $(input).attr(\'placeholder\',\'Filtrar Insumos...\');
-                            $(input).addClass(\'form-control\');
-                            $(input).css(\'width\',\'100%\');
-                            $(input).appendTo($(column.footer()).empty())
-                            .on(\'change\', function () {
-                                column.search($(this).val(), false, false, true).draw();
-                            });
-                        }else if(col==1){
-                            var column = this;
-                            var input = document.createElement("input");
-                            $(input).attr(\'id\',\'filtro_obra\');
-                            $(input).attr(\'placeholder\',\'Filtrar Grupo de Insumos...\');
+                            $(input).attr(\'placeholder\',\'Filtrar...\');
                             $(input).addClass(\'form-control\');
                             $(input).css(\'width\',\'100%\');
                             $(input).appendTo($(column.footer()).empty())
@@ -104,7 +99,7 @@ class SemCompradorInsumoDataTable extends DataTable
                 ]
             ]);
     }
-
+	
     /**
      * Get columns.
      *
@@ -112,10 +107,14 @@ class SemCompradorInsumoDataTable extends DataTable
      */
     private function getColumns()
     {
-        return [            
-            'Insumos' => ['name' => 'insumos.nome', 'data' => 'nome'],
-			'Grupo_de_insumos' => ['name' => 'insumo_grupos.nome', 'data' => 'nome_grupo_insumo']
-			/*'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']*/
+        return [
+            'nome' => ['name' => 'nome', 'data' => 'nome'],
+			'resumo' => ['name' => 'resumo', 'data' => 'resumo'],
+			'critica' => ['name' => 'critica', 'data' => 'critica'],			
+			'torre' => ['name' => 'torre', 'data' => 'torre'],
+			'pavimento' => ['name' => 'pavimento', 'data' => 'pavimento'],			
+            'cadastradaEm' => ['name' => 'created_at', 'data' => 'created_at'],
+            'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }
 
@@ -126,6 +125,6 @@ class SemCompradorInsumoDataTable extends DataTable
      */
     protected function filename()
     {
-        return 'semCompradorInsumos';
+        return 'mascara_padrao';
     }
 }

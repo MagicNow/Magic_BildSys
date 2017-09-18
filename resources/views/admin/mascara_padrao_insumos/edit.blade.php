@@ -1,9 +1,9 @@
-@extends('layouts.front')
+@extends('layouts.app')
 
 @section('content')
     <section class="content-header">
         <h1><button type="button" class="btn btn-link" onclick="history.go(-1);"><i class="fa fa-arrow-left" aria-hidden="true"></i></button>
-            Carteira
+            Máscara Padrão / Insumos
         </h1>
    </section>
    <div class="content">
@@ -11,9 +11,9 @@
        <div class="box box-primary">
            <div class="box-body">
                <div class="row">
-                   {!! Form::model($carteira, ['route' => ['admin.carteiras.update', $carteira->id], 'method' => 'patch', 'files' => true]) !!}
+                   {!! Form::model($mascaraPadraoInsumo, ['route' => ['admin.mascara_padrao_insumos.update', $mascaraPadraoInsumo->id], 'method' => 'patch']) !!}
 
-                        @include('admin.carteiras.fields')
+                        @include('admin.mascara_padrao_insumos.edit_fields')
 
                    {!! Form::close() !!}
                </div>

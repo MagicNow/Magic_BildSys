@@ -123,6 +123,20 @@ class RolesAndPermissions extends Seeder
             'compradorInsumos.deleteBlocoView'   => 'Remoção em bloco de comprador/insumos',
 			'compradorInsumos.semInsumoView'   => 'Insumos que não tem comprador associado',
 			
+			'mascara_padrao_insumos.list'   => 'Listagem de Máscara Padrão/Insumos',
+            'mascara_padrao_insumos.create'   => 'Criação de Máscara Padrão/Insumos',
+			'mascara_padrao_insumos.edit'   => 'Edição de Máscara Padrão/Insumos',
+            'mascara_padrao_insumos.delete'   => 'Remoção de Máscara Padrão/Insumos',
+            'mascara_padrao_insumos.deleteBlocoView'   => 'Remoção em bloco de Máscara Padrão/Insumos',
+			'mascara_padrao_insumos.semInsumoView'   => 'Insumos que não tem Máscara Padrão associada',
+			
+			'tarefa_mascaras.list'   => 'Listagem de Tarefa/Máscaras Padrão',
+            /*'tarefa_mascaras.create'   => 'Criação de Tarefa/Máscaras Padrão',
+			'tarefa_mascaras.edit'   => 'Edição de Tarefa/Máscaras Padrão',
+            'tarefa_mascaras.delete'   => 'Remoção de Tarefa/Máscaras Padrão',
+            'tarefa_mascaras.deleteBlocoView'   => 'Remoção em bloco de Tarefa/Máscaras Padrão',
+			'tarefa_mascaras.semInsumoView'   => 'Insumos que não tem Tarefa/Máscaras Padrão',*/
+			
 			'carteiraInsumos.list'   => 'Listagem de carteira/insumos',
             'carteiraInsumos.create'   => 'Criação de carteira/insumos',			
             'carteiraInsumos.delete'   => 'Remoção de carteira/insumos',
@@ -240,6 +254,11 @@ class RolesAndPermissions extends Seeder
             'mascara_padrao.edit'   => 'Edição de Mascara Padrão',
 			'mascara_padrao.delete'   => 'Remoção de Mascara Padrão', 
             
+			'tarefa_padrao.list'   => 'Listagem de Mascara Padrão',
+            'tarefa_padrao.create'   => 'Criação de Mascara Padrão',			
+            'tarefa_padrao.edit'   => 'Edição de Mascara Padrão',
+			'tarefa_padrao.delete'   => 'Remoção de Mascara Padrão', 
+			
             'configuracaoEstaticas.list'   => 'Listagem de Configuração padrão',
             'configuracaoEstaticas.edit'   => 'Edição de Configuração padrão',
             'configuracaoEstaticas.show'   => 'Visualizar Configuração padrão',

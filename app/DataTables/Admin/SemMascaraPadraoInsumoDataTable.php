@@ -2,11 +2,11 @@
 
 namespace App\DataTables\Admin;
 
-use App\Models\CompradorInsumo;
+use App\Models\MascaraPadraoInsumo;
 use Form;
 use Yajra\Datatables\Services\DataTable;
 
-class SemCompradorInsumoDataTable extends DataTable
+class SemMascaraPadraoInsumoDataTable extends DataTable
 {
 
     /**
@@ -28,18 +28,18 @@ class SemCompradorInsumoDataTable extends DataTable
     public function query()
     {		
 		
-        $compradorInsumos = CompradorInsumo::query()
+        $mascaraPadraoInsumos = MascaraPadraoInsumo::query()
             ->select([
-				'comprador_insumos.id',
+				'mascara_padrao_insumos.id',
                 'insumos.nome',
                 'insumo_grupos.nome as nome_grupo_insumo'
             ])		
-        ->join('insumos','insumos.id','<>','comprador_insumos.insumo_id')
+        ->join('insumos','insumos.id','<>','mascara_padrao_insumos.insumo_id')
         ->join('insumo_grupos','insumo_grupos.id','=','insumos.insumo_grupo_id')		
-        ->join('users','users.id','=','comprador_insumos.user_id')
+        ->join('mascara_padrao','mascara_padrao.id','=','mascara_padrao_insumos.mascara_padrao_id')
 		->groupBy('insumos.id');
 
-        return $this->applyScopes($compradorInsumos);
+        return $this->applyScopes($mascaraPadraoInsumos);
     }
 
     /**
@@ -126,6 +126,6 @@ class SemCompradorInsumoDataTable extends DataTable
      */
     protected function filename()
     {
-        return 'semCompradorInsumos';
+        return 'semMascaraPadraoInsumos';
     }
 }

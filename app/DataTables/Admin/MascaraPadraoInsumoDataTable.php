@@ -2,11 +2,11 @@
 
 namespace App\DataTables\Admin;
 
-use App\Models\CompradorInsumo;
+use App\Models\MascaraPadraoInsumo;
 use Form;
 use Yajra\Datatables\Services\DataTable;
 
-class SemCompradorInsumoDataTable extends DataTable
+class MascaraPadraoInsumoDataTable extends DataTable
 {
 
     /**
@@ -16,7 +16,7 @@ class SemCompradorInsumoDataTable extends DataTable
     {
         return $this->datatables
             ->eloquent($this->query())
-            ->addColumn('action', 'admin.comprador_insumos.datatables_actions')
+            ->addColumn('action', 'admin.mascara_padrao_insumos.datatables_actions')
             ->make(true);
     }
 
@@ -26,20 +26,21 @@ class SemCompradorInsumoDataTable extends DataTable
      * @return \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder
      */
     public function query()
-    {		
-		
-        $compradorInsumos = CompradorInsumo::query()
+    {
+        $mascaraPadraoInsumos = MascaraPadraoInsumo::query()
             ->select([
-				'comprador_insumos.id',
+                'mascara_padrao_insumos.id',				
+                'mascara_padrao.nome as name',
                 'insumos.nome',
+				'mascara_padrao_insumos.codigo_estruturado',
+				'mascara_padrao_insumos.coeficiente',
                 'insumo_grupos.nome as nome_grupo_insumo'
-            ])		
-        ->join('insumos','insumos.id','<>','comprador_insumos.insumo_id')
-        ->join('insumo_grupos','insumo_grupos.id','=','insumos.insumo_grupo_id')		
-        ->join('users','users.id','=','comprador_insumos.user_id')
-		->groupBy('insumos.id');
+            ])
+        ->join('mascara_padrao','mascara_padrao.id','=','mascara_padrao_insumos.mascara_padrao_id')
+        ->join('insumos','insumos.id','=','mascara_padrao_insumos.insumo_id')
+        ->join('insumo_grupos','insumo_grupos.id','insumos.insumo_grupo_id');
 
-        return $this->applyScopes($compradorInsumos);
+        return $this->applyScopes($mascaraPadraoInsumos);
     }
 
     /**
@@ -57,22 +58,10 @@ class SemCompradorInsumoDataTable extends DataTable
                  'initComplete' => 'function () {
                     max = this.api().columns().count();
                     this.api().columns().every(function (col) {
-                        if(col==0){
+                        if((col+1)<max){
                             var column = this;
                             var input = document.createElement("input");
-                            $(input).attr(\'title\',\'Para uma faixa utilize hífen(-), ex:01/01/2018-31/01/2018\');
-                            $(input).attr(\'placeholder\',\'Filtrar Insumos...\');
-                            $(input).addClass(\'form-control\');
-                            $(input).css(\'width\',\'100%\');
-                            $(input).appendTo($(column.footer()).empty())
-                            .on(\'change\', function () {
-                                column.search($(this).val(), false, false, true).draw();
-                            });
-                        }else if(col==1){
-                            var column = this;
-                            var input = document.createElement("input");
-                            $(input).attr(\'id\',\'filtro_obra\');
-                            $(input).attr(\'placeholder\',\'Filtrar Grupo de Insumos...\');
+                            $(input).attr(\'placeholder\',\'Filtrar...\');
                             $(input).addClass(\'form-control\');
                             $(input).css(\'width\',\'100%\');
                             $(input).appendTo($(column.footer()).empty())
@@ -112,10 +101,13 @@ class SemCompradorInsumoDataTable extends DataTable
      */
     private function getColumns()
     {
-        return [            
+        return [
+            'Máscara Padrão' => ['name' => 'mascara_padrao.nome', 'data' => 'name'],
+            'Grupo_de_insumos' => ['name' => 'insumo_grupos.nome', 'data' => 'nome_grupo_insumo'],
             'Insumos' => ['name' => 'insumos.nome', 'data' => 'nome'],
-			'Grupo_de_insumos' => ['name' => 'insumo_grupos.nome', 'data' => 'nome_grupo_insumo']
-			/*'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']*/
+			'Código Estruturado' => ['name' => 'mascara_padrao.codigo_estruturado', 'data' => 'codigo_estruturado'],
+			'Coeficiente' => ['name' => 'mascara_padrao.coeficiente', 'data' => 'coeficiente'],
+            'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }
 
@@ -126,6 +118,6 @@ class SemCompradorInsumoDataTable extends DataTable
      */
     protected function filename()
     {
-        return 'semCompradorInsumos';
+        return 'mascaraPadraoInsumos';
     }
 }

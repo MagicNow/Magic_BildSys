@@ -7,33 +7,41 @@ use Eloquent as Model;
 /**
  * Class MascaraPadraoInsumo
  * @package App\Models
- * @version May 2, 2017, 6:02 pm BRT
+ * @version May 11, 2017, 8:46 pm BRT
  */
 class MascaraPadraoInsumo extends Model
 {
-
     public $table = 'mascara_padrao_insumos';
-    public $timestamps = true;
+    
+    const CREATED_AT = 'created_at';
+    const UPDATED_AT = 'updated_at';
 
-    public $fillable = [
-        'insumo_id',
+    public $fillable = [        
+		'mascara_padrao_id',
+		'codigo_estruturado',
+		'insumo_id',
+		'tipos_levantamento_id',
+		'coeficiente',
+		'indireto',		
+		'grupo_id',
+		'subgrupo1_id',
+        'subgrupo2_id',
+        'subgrupo3_id',
+		'servico_id'
+    ];
+	
+	public $campos = [        
+		'mascara_padrao_id',
+		'codigo_estruturado',
+		'insumo_id',
 		'tipos_levantamento_id',
 		'coeficiente',
 		'indireto',
-		'terreo_externo_solo',
-		'terreo_externo_estrutura',
-		'terreo_interno',
-		'primeiro_pavimento',
-		'segundo_ao_penultimo',
-		'cobertura_ultimo_piso',
-		'atico',
-		'reservatorio',
-		'qtd_total',
-		'preco_unitario',
-		'preco_total',
-		'referencia_preco',
-		'obs',
-		'porcentagem_orcamento'
+		'grupo_id',
+		'subgrupo1_id',
+        'subgrupo2_id',
+        'subgrupo3_id',
+		'servico_id'        
     ];
 
     /**
@@ -42,24 +50,10 @@ class MascaraPadraoInsumo extends Model
      * @var array
      */
     protected $casts = [
+        'id' => 'integer',
+        'mascara_padrao_id' => 'integer',
         'insumo_id' => 'integer',
-		'tipos_levantamento_id' => 'integer',
-		'coeficiente' => 'float',
-		'indireto' => 'float',
-		'terreo_externo_solo' => 'float',
-		'terreo_externo_estrutura' => 'float',
-		'terreo_interno' => 'float',
-		'primeiro_pavimento' => 'float',
-		'segundo_ao_penultimo' => 'float',
-		'cobertura_ultimo_piso' => 'float',
-        'atico' => 'float',
-        'reservatorio' => 'float',
-        'qtd_total' => 'integer',
-        'preco_unitario' => 'float',
-        'preco_total' => 'float',
-		'referencia_preco' => 'float',
-		'obs' => 'text',
-		'porcentagem_orcamento' => 'float'
+		'coeficiente' => 'decimal'
     ];
 
     /**
@@ -70,21 +64,25 @@ class MascaraPadraoInsumo extends Model
     public static $rules = [
         
     ];
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     **/
-    public function mascaraPadrao()
-    {
-        return $this->belongsTo(MascaraPadrao::class, 'mascara_padrao_id');
-    }
 	
-	/**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     **/
-    public function tipoLevantamentos()
+	public function getCoeficienteAttribute($value)
     {
-        return $this->belongsTo(TipoLevantamentos::class, 'tipos_levantamento_id');
+        if (strlen($value) == 4) {
+            $value = '0'.$value;
+        }
+
+        return number_format($value, 2, ',', '.');
+    }
+
+    public function setCoeficienteAttribute($value)
+    {
+        $pontos = [","];
+        $value = str_replace('.', '', $value);
+        $result = str_replace($pontos, ".", $value);
+        if ($result == '') {
+            $result = null;
+        }
+        $this->attributes['coeficiente'] = $result;
     }
 
     /**
@@ -98,8 +96,9 @@ class MascaraPadraoInsumo extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function user()
+    public function mascaraPadrao()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(MascaraPadrao::class);
     }
+
 }
