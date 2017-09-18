@@ -1,8 +1,8 @@
 
 <!-- Valor Sugerido Anterior Field -->
 <div class="form-group col-sm-3">
-    {!! Form::label('valor_sugerido_anterior', 'Valor Atual:') !!}    
-	{!! Form::text('valor_sugerido_anterior', null, ['class' => 'form-control money', 'required']) !!}	
+    {!! Form::label('valor_sugerido', 'Valor Atual:') !!}    
+	{!! Form::text('valor_sugerido', null, ['class' => 'form-control money', 'disabled']) !!}	
 </div>
 
 <!-- Valor Sugerido Field -->

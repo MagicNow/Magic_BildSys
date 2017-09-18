@@ -26,7 +26,7 @@ class LpuDataTable extends DataTable
                     : '';
             })
             ->editColumn('valor_sugerido', function ($lpu) {
-                return float_to_money($lpu->valor_sugerido);
+                return $lpu->valor_sugerido;
             })
 			->editColumn('valor_contrato', function ($lpu) {
                 return float_to_money($lpu->valor_contrato);

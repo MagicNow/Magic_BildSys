@@ -21,8 +21,7 @@ class AlterLpuTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('insumo_id');
 			$table->string('codigo_insumo',100);
-			$table->unsignedInteger('regional_id');            
-			$table->decimal('valor_sugerido_anterior', 19, 2);
+			$table->unsignedInteger('regional_id');            			
 			$table->decimal('valor_sugerido', 19, 2);
 			$table->decimal('valor_contrato', 19, 2);
 			$table->decimal('valor_catalogo', 19, 2);

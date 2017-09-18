@@ -21,7 +21,8 @@ class DatabaseSeeder extends Seeder
         $this->call(CidadesTableSeeder::class);
         $this->call(ContratoStatusTableSeeder::class);
         $this->call(ConfiguracaoEstaticaTableSeeder::class);
-        $this->call(SeStatusTableSeeder::class);
+        $this->call(LpuStatusTableSeeder::class);
+		$this->call(SeStatusTableSeeder::class);
         $this->call(TemplateEmailTableSeeder::class);
 		$this->call(TemplatePlanilhasTableSeeder::class);
         Schema::enableForeignKeyConstraints();
