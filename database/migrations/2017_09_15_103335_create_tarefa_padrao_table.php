@@ -13,10 +13,11 @@ class CreateTarefaPadraoTable extends Migration
      */
     public function up()
     {
+		Schema::dropIfExists('tarefa_padrao');
         Schema::create('tarefa_padrao', function (Blueprint $table) {
             
             $table->increments('id');
-			$table->string('nome', 255);			
+			$table->string('tarefa', 255);			
 			$table->string('resumo')->nullable();
 			$table->string('torre')->nullable();
 			$table->string('pavimento')->nullable();

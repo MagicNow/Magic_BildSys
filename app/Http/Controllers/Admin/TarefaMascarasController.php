@@ -8,8 +8,12 @@ use App\Http\Requests\Admin;
 use App\Models\Carteira;
 use App\Models\InsumoGrupo;
 use App\Models\Obra;
+use App\Models\MascaraPadrao;
+use App\Models\MascaraPadraoInsumo;
+use App\Models\TarefaMascara;
 use App\Models\Orcamento;
 use App\Models\Planejamento;
+use App\Models\TarefaPadrao;
 use App\Models\PlanejamentoCompra;
 use Flash;
 use App\Http\Controllers\AppBaseController;
@@ -29,10 +33,10 @@ class TarefaMascarasController extends AppBaseController
     public function index()
     {
         $obras = Obra::pluck('nome','id')->toArray();
-		//$tarefaPadrao = Obra::pluck('nome','id')->toArray();		
-		$planejamentos = Planejamento::pluck('tarefa','id')->toArray();        
+		$mascaraPadrao = MascaraPadrao::pluck('nome','id')->toArray();		
+		$tarefaPadrao = TarefaPadrao::pluck('tarefa','id')->toArray();        
 		
-        return view('admin.tarefa_mascaras.index', compact('planejamentos','obras'));
+        return view('admin.tarefa_mascaras.index', compact('tarefaPadrao','obras','mascaraPadrao'));
     }
 
     /**
@@ -56,40 +60,40 @@ class TarefaMascarasController extends AppBaseController
     {
         $insumosOrcados = collect([]);
         if($request->grupo_id) {
-            $insumosOrcados = Orcamento::where('grupo_id', $request->grupo_id)
-                ->where('obra_id', $request->obra_id)
-                ->where('ativo', 1)
+            $insumosOrcados = MascaraPadraoInsumo::where('grupo_id', $request->grupo_id)
+                //->where('obra_id', $request->obra_id)
+                //->where('ativo', 1)
                 ->get();
         }elseif($request->subgrupo1_id && !$request->grupo_id){
-            $insumosOrcados = Orcamento::whereIn('subgrupo1_id', $request->subgrupo1_id)
-                ->where('obra_id', $request->obra_id)
-                ->where('ativo', 1)
+            $insumosOrcados = MascaraPadraoInsumo::whereIn('subgrupo1_id', $request->subgrupo1_id)
+                //->where('obra_id', $request->obra_id)
+                //->where('ativo', 1)
                 ->get();
         }elseif($request->subgrupo2_id && !$request->subgrupo1_id && !$request->grupo_id){
-            $insumosOrcados = Orcamento::whereIn('subgrupo2_id', $request->subgrupo2_id)
-                ->where('obra_id', $request->obra_id)
-                ->where('ativo', 1)
+            $insumosOrcados = MascaraPadraoInsumo::whereIn('subgrupo2_id', $request->subgrupo2_id)
+                //->where('obra_id', $request->obra_id)
+                //->where('ativo', 1)
                 ->get();
         }elseif($request->subgrupo3_id && !$request->subgrupo2_id && !$request->subgrupo1_id && !$request->grupo_id){
-            $insumosOrcados = Orcamento::whereIn('subgrupo3_id', $request->subgrupo3_id)
-                ->where('obra_id', $request->obra_id)
-                ->where('ativo', 1)
+            $insumosOrcados = MascaraPadraoInsumo::whereIn('subgrupo3_id', $request->subgrupo3_id)
+                //->where('obra_id', $request->obra_id)
+                //->where('ativo', 1)
                 ->get();
         }elseif($request->servico_id && !$request->subgrupo3_id && !$request->subgrupo2_id && !$request->subgrupo1_id && !$request->grupo_id){
-            $insumosOrcados = Orcamento::whereIn('servico_id', $request->servico_id)
-                ->where('obra_id', $request->obra_id)
-                ->where('ativo', 1)
+            $insumosOrcados = MascaraPadraoInsumo::whereIn('servico_id', $request->servico_id)
+                //->where('obra_id', $request->obra_id)
+                //->where('ativo', 1)
                 ->get();
         }elseif($request->insumo_id && !$request->servico_id && !$request->subgrupo3_id && !$request->subgrupo2_id && !$request->subgrupo1_id && !$request->grupo_id){
-            $insumosOrcados = Orcamento::whereIn('insumo_id', $request->insumo_id)
-                ->where('obra_id', $request->obra_id)
-                ->where('ativo', 1)
+            $insumosOrcados = MascaraPadraoInsumo::whereIn('insumo_id', $request->insumo_id)
+                //->where('obra_id', $request->obra_id)
+                //->where('ativo', 1)
                 ->get();
         }
 
         if(count($insumosOrcados)) {
             foreach ($insumosOrcados as $insumosOrcado) {
-                $cadastrado = PlanejamentoCompra::where('grupo_id',$insumosOrcado->grupo_id)
+                $cadastrado = TarefaMascara::where('grupo_id',$insumosOrcado->grupo_id)
                     ->where('subgrupo1_id',$insumosOrcado->subgrupo1_id)
                     ->where('subgrupo2_id',$insumosOrcado->subgrupo2_id)
                     ->where('subgrupo3_id',$insumosOrcado->subgrupo3_id)
@@ -99,23 +103,25 @@ class TarefaMascarasController extends AppBaseController
                 if($cadastrado){
                     $cadastrado->delete();
                 }
-                $planejamentoCompra = new PlanejamentoCompra();
-                $planejamentoCompra->planejamento_id = $request->planejamento_id;
-                $planejamentoCompra->insumo_id = $insumosOrcado->insumo_id;
-                $planejamentoCompra->codigo_estruturado = $insumosOrcado->codigo_insumo;
-                $planejamentoCompra->grupo_id = $insumosOrcado->grupo_id;
-                $planejamentoCompra->subgrupo1_id = $insumosOrcado->subgrupo1_id;
-                $planejamentoCompra->subgrupo2_id = $insumosOrcado->subgrupo2_id;
-                $planejamentoCompra->subgrupo3_id = $insumosOrcado->subgrupo3_id;
-                $planejamentoCompra->servico_id = $insumosOrcado->servico_id;
-                $planejamentoCompra->save();
+                $tarefaMascaras = new TarefaMascara();
+                $tarefaMascaras->obra_id = $request->obra_id;
+				$tarefaMascaras->mascara_padrao_id = $request->mascara_padrao_id;
+				$tarefaMascaras->tarefa_padrao_id = $request->tarefa_padrao_id;
+                $tarefaMascaras->insumo_id = $insumosOrcado->insumo_id;
+                $tarefaMascaras->codigo_estruturado = $insumosOrcado->codigo_estruturado;
+                $tarefaMascaras->grupo_id = $insumosOrcado->grupo_id;
+                $tarefaMascaras->subgrupo1_id = $insumosOrcado->subgrupo1_id;
+                $tarefaMascaras->subgrupo2_id = $insumosOrcado->subgrupo2_id;
+                $tarefaMascaras->subgrupo3_id = $insumosOrcado->subgrupo3_id;
+                $tarefaMascaras->servico_id = $insumosOrcado->servico_id;
+                $tarefaMascaras->save();
             }
 
-            Flash::success('Planejamento inserido em orçamentos!');
-            return redirect('admin/planejamentos/planejamentoOrcamentos?obra_id='.$request->obra_id);
+            Flash::success('Tarefa inserido em máscara padrao insumos!');
+            return redirect('admin/tarefa_mascaras?obra_id='.$request->obra_id);
         }
-        Flash::error('Não foram encontrados insumos em orçamentos com os filtros passados!');
-        return redirect('/admin/planejamentos/planejamentoOrcamentos?obra_id='.$request->obra_id);
+        Flash::error('Não foram encontrados insumos em máscara padrao com os filtros passados!');
+        return redirect('/admin/tarefa_mascaras?obra_id='.$request->obra_id);
     }
 
     /**
@@ -153,9 +159,9 @@ class TarefaMascarasController extends AppBaseController
     public function update($id, Request $request)
     {
 
-        Flash::success('Planejamento Orcamento '.trans('common.updated').' '.trans('common.successfully').'.');
+        Flash::success(' Tarefa Padrão/Máscara Padrão'.trans('common.updated').' '.trans('common.successfully').'.');
 
-        return redirect(route('admin.planejamentoOrcamentos.index'));
+        return redirect(route('admin.tarefa_mascaras.index'));
     }
 
     public function GrupoRelacionados(Request $request){
@@ -359,16 +365,26 @@ class TarefaMascarasController extends AppBaseController
         }
         return $retorno;
     }
-
-    public function getPlanejamentos($id){
-        $planejamentos = Planejamento::where('obra_id', $id)
+	
+    
+	public function getTarefas($id){
+		
+        /*$planejamentos = Planejamento::where('obra_id', $id)
             ->where('resumo', 'Sim')
             ->select([
                 DB::raw("CONCAT(tarefa,' - ',DATE_FORMAT( data, '%d/%m/%Y')) as tarefa"),
                 'id'
             ])
             ->pluck('tarefa','id')->toArray();
-        return $planejamentos;
+        return $planejamentos;*/
+		
+		$tarefaPadrao = TarefaPadrao::where('resumo', 1)
+            ->select([
+                DB::raw("CONCAT(tarefa,' - ', 'data') as tarefa"),
+                'id'
+            ])
+            ->pluck('tarefa','id')->toArray();
+        return $tarefaPadrao;
     }
 
     public function getGrupoInsumos(){
@@ -378,7 +394,8 @@ class TarefaMascarasController extends AppBaseController
     }
 
     public function getGrupoInsumoRelacionados(Request $request){
-        $insumos = Orcamento::select([
+        
+		/*$insumos = Orcamento::select([
             'orcamentos.obra_id',
             'orcamentos.codigo_insumo',
             'insumos.codigo',
@@ -403,6 +420,33 @@ class TarefaMascarasController extends AppBaseController
             ->join('insumos','insumos.id','=','orcamentos.insumo_id')
             ->where('insumos.insumo_grupo_id', $request->id)
             ->where('orcamentos.obra_id', $request->obra_id)
+            ->get();*/
+			
+		$insumos = MascaraPadraoInsumo::select([
+            'mascara_padrao_insumos.mascara_padrao_id',
+            'mascara_padrao_insumos.codigo_estruturado as codigo_insumo',
+            'insumos.codigo',
+            'insumos.nome',
+            'insumos.insumo_grupo_id',
+            'insumos.id',
+            //DB::raw("(SELECT CONCAT( TRIM(tarefa_padrao.nome),' - ',DATE_FORMAT( tarefa_padrao.data, '%d/%m/%Y')) as tarefa
+			DB::raw("(SELECT CONCAT( TRIM(tarefa_padrao.tarefa),' - ',' data') as tarefa
+			                    	FROM tarefa_mascaras
+			                    	JOIN tarefa_padrao ON tarefa_padrao.id = tarefa_mascaras.tarefa_padrao_id
+			                    	WHERE tarefa_mascaras.deleted_at IS NULL
+			                    	AND mascara_padrao_insumos.insumo_id = tarefa_mascaras.insumo_id			                    	
+			                    	AND mascara_padrao_insumos.grupo_id = tarefa_mascaras.grupo_id
+			                    	AND mascara_padrao_insumos.subgrupo1_id = tarefa_mascaras.subgrupo1_id
+			                    	AND mascara_padrao_insumos.subgrupo2_id = tarefa_mascaras.subgrupo2_id
+			                    	AND mascara_padrao_insumos.subgrupo3_id = tarefa_mascaras.subgrupo3_id
+			                    	AND mascara_padrao_insumos.servico_id = tarefa_mascaras.servico_id
+			                    	LIMIT 1
+	                    ) as tarefa"
+            )
+        ])
+            ->join('insumos','insumos.id','=','mascara_padrao_insumos.insumo_id')
+            ->where('insumos.insumo_grupo_id', $request->id)
+            ->where('mascara_padrao_insumos.mascara_padrao_id', $request->mascara_padrao_id)
             ->get();
 
         return $insumos;

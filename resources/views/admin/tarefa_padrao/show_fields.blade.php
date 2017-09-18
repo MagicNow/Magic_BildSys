@@ -1,7 +1,7 @@
 <!-- Nome Field -->
 <div class="form-group col-md-6">
-    {!! Form::label('nome', 'Nome:') !!}
-    <p class="form-control">{!! $tarefaPadrao->nome !!}</p>
+    {!! Form::label('tarefa', 'Tarefa:') !!}
+    <p class="form-control">{!! $tarefaPadrao->tarefa !!}</p>
 </div>
 
 <!-- Resumo Field -->

@@ -45,16 +45,23 @@
         <div class="col-md-12">
             <div class="caption">
                 <div class="card-description">
-                    <!-- Obras Field -->
+                    
+					<!-- Obras Field -->
                     <div class="form-group col-sm-12">
                         {!! Form::label('obra_id', 'Obras:') !!}
                         {!! Form::select('obra_id', [''=>'-']+$obras, Request::get('obra_id'), ['class' => 'form-control', 'id'=>'obra_id', 'required'=>'required','onchange'=>'selectPlanejamento(this.value), orcamento(this.value), selectGrupoInsumo();']) !!}
                     </div>
-
-                    <!-- Planejamentos de insumo Field -->
+					
+					<!-- Máscara Padrao Field -->
                     <div class="form-group col-sm-12">
-                        {!! Form::label('planejamento_id', 'Tarefa:') !!}
-                        {!! Form::select('planejamento_id', [''=>'-'], null, ['class' => 'form-control select2', 'id'=>'planejamento_id', 'required'=>'required']) !!}
+                        {!! Form::label('mascara_padrao_id', 'Máscara Padrao:') !!}
+                        {!! Form::select('mascara_padrao_id', [''=>'-']+$mascaraPadrao, null, ['class' => 'form-control select2', 'id'=>'mascara_padrao_id', 'required'=>'required']) !!}
+                    </div>
+					
+					<!-- Tarefa Padrão Field -->
+                    <div class="form-group col-sm-12">
+                        {!! Form::label('tarefa_padrao_id', 'Tarefa:') !!}
+                        {!! Form::select('tarefa_padrao_id', [''=>'-']+$tarefaPadrao, null, ['class' => 'form-control select2', 'id'=>'tarefa_padrao_id', 'required'=>'required']) !!}
                     </div>
 
                     <!-- Grupo de insumos Field -->
@@ -75,33 +82,37 @@
 
 @section('scripts')
     <script type="text/javascript">
-        function selectPlanejamento(id){
-            var rota = "{{url('/admin/planejamentos/planejamentoOrcamentos/planejamento')}}/";
+        
+		function selectPlanejamento(id){
+            var rota = "{{url('/admin/tarefa_mascaras/tarefa')}}/";
             if(id){
 
-                $("#js-btn-semPlanejamento").removeClass('hide');
-                $("#js-btn-semPlanejamento").attr("href", "{{url('/admin/planejamentos/planejamentoOrcamentos/sem-planejamento/view')}}/"+id)
+                $("#js-btn-semTarefa").removeClass('hide');
+                $("#js-btn-semTarefa").attr("href", "{{url('/admin/tarefa_mascaras/sem-tarefa/view')}}/"+id)
 
                 $('.box.box-primary').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
                 $.ajax({
                     url: rota + id
                 }).done(function(retorno) {
+					
+					//console.log(retorno);
+					
                     options = '<option value="">Selecione</option>';
-                    $('#planejamento_id').html(options);
+                    $('#tarefa_padrao_id').html(options);
                     $.each(retorno,function(index, value){
                         options += '<option value="'+index+'">'+value+'</option>';
                     });
-                    $('#planejamento_id').html(options);
+                    $('#tarefa_padrao_id').html(options);
                     $('.overlay').remove();
-                    $('#planejamento_id').attr('disabled',false);
-                    $('#planejamento_id').trigger('change');
+                    $('#tarefa_padrao_id').attr('disabled',false);
+                    $('#tarefa_padrao_id').trigger('change');
                 }).fail(function() {
                     $('.overlay').remove();
                 });
 
             } else {
 
-                $("#js-btn-semPlanejamento").addClass('hide');
+                $("#js-btn-semTarefa").addClass('hide');
             }
         }
 
@@ -134,7 +145,7 @@
         }
 
         function orcamento(id){
-            var rota = "{{url('/admin/planejamentos/planejamentoOrcamentos/orcamento')}}/";
+			var rota = "{{url('/admin/tarefa_mascaras/mascara')}}/";
             if(id){
                 $('.box.box-primary').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
                 $.ajax({
@@ -142,7 +153,7 @@
                 }).done(function(retorno) {
                     list = '';
                     if(retorno) {
-                        list = '<h3>Orçamento</h3>' +
+                        list = '<h3>Máscara Padrão</h3>' +
                                 '<ul>' +
                                 '<li>' +
                                 '<div class="row">' +
@@ -183,6 +194,7 @@
         }
 
         function listInsumosRelacionados(obj_id, obra_id, tipo, campo){
+			
             if(campo == 'grupo_id') {
                 if($('#obj_' + obj_id).attr('expandido')=='1'){
                     $('#obj_' + obj_id).attr('expandido','0');
@@ -210,8 +222,8 @@
             }
 
             $('.box.box-primary').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
-            if(obj_id && planejamento_id){
-                $.ajax("{{ url('/admin/planejamentos/planejamentoOrcamentos/orcamentos/relacionados') }}", {
+            if(obj_id && tarefa_padrao_id){
+                $.ajax("{{ url('/admin/tarefa_mascaras/mascaras/relacionados') }}", {
                             data: {
                                 'id' : obj_id,
                                 'obra' : obra_id,
@@ -305,13 +317,13 @@
         }
 
         function grupoInsumos(id){
-            var obra_id = $('#obra_id').val();
+            var mascara_padrao_id = $('#mascara_padrao_id').val();
             if(id){
                 $('.box.box-primary').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
-                $.ajax("{{ url('/admin/planejamentos/planejamentoOrcamentos/planejamento/orcamento/insumo/insumo_grupos') }}", {
+                $.ajax("{{ url('/admin/tarefa_mascaras/tarefa/mascara/insumo/insumo_grupos') }}", {
                             data: {
                                 'id' : id,
-                                'obra_id' : obra_id
+                                'mascara_padrao_id' : mascara_padrao_id
                             },
                             type: "GET"
                         }
@@ -343,7 +355,8 @@
                             $("input").iCheck('update');
                         });
                     }else{
-                        list = 'O grupo não tem insumos orçados';
+                        //list = 'O grupo não tem insumos orçados';
+						list = 'O grupo não tem insumos vinculados a máscara padrão selecionada.';
                         $('#grupo_insumos').html('<ul style="list-style: none">' +list+ '</ul>');
                     }
                     $('input').iCheck({

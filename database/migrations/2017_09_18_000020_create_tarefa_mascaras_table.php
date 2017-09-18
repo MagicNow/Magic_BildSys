@@ -20,7 +20,7 @@ class CreateTarefaMascarasTable extends Migration
 			$table->unsignedInteger('mascara_padrao_id');
             $table->unsignedInteger('tarefa_padrao_id'); 
 			$table->unsignedInteger('insumo_id');			
-            $table->string('codigo_insumo', 45)->nullable();
+            $table->string('codigo_estruturado', 45)->nullable();
             
             $table->unsignedInteger('grupo_id');
 			$table->unsignedInteger('subgrupo1_id');

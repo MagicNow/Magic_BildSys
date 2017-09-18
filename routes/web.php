@@ -310,13 +310,13 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
 		$router->delete('tarefa_mascaras/{tarefaMascaras}', ['as' => 'admin.tarefa_mascaras.destroy', 'uses' => 'Admin\TarefaMascarasController@destroy']);
 		$router->get('tarefa_mascaras/{tarefaMascaras}', ['as' => 'admin.tarefa_mascaras.show', 'uses' => 'Admin\TarefaMascarasController@show']);
 		$router->get('tarefa_mascaras/{tarefaMascaras}/edit', ['as' => 'admin.tarefa_mascaras.edit', 'uses' => 'Admin\TarefaMascarasController@edit']);
-		$router->get('tarefa_mascaras/orcamentos/relacionados', 'Admin\TarefaMascarasController@GrupoRelacionados');
-		$router->get('tarefa_mascaras/planejamento/{id}', 'Admin\TarefaMascarasController@getPlanejamentos');
-		$router->get('tarefa_mascaras/orcamento/{id}', 'Admin\TarefaMascarasController@getOrcamentos');
-		$router->get('tarefa_mascaras/planejamento/orcamento/insumo_grupos', 'Admin\TarefaMascarasController@getGrupoInsumos');
-		$router->get('tarefa_mascaras/planejamento/orcamento/insumo/insumo_grupos', 'Admin\TarefaMascarasController@getGrupoInsumoRelacionados');
-		$router->get('tarefa_mascaras/orcamentos/desvincular', 'Admin\TarefaMascarasController@desvincular');
-		$router->get('tarefa_mascaras/sem-planejamento/view/{obra}', ['as' => 'admin.tarefa_mascaras.semplanejamentoview', 'uses' => 'Admin\TarefaMascarasController@semPlanejamentoView']);
+		$router->get('tarefa_mascaras/mascaras/relacionados', 'Admin\TarefaMascarasController@GrupoRelacionados');
+		$router->get('tarefa_mascaras/tarefa/{id}', 'Admin\TarefaMascarasController@getTarefas');
+		$router->get('tarefa_mascaras/mascara/{id}', 'Admin\TarefaMascarasController@getOrcamentos');
+		$router->get('tarefa_mascaras/tarefa/mascara/insumo_grupos', 'Admin\TarefaMascarasController@getGrupoInsumos');
+		$router->get('tarefa_mascaras/tarefa/mascara/insumo/insumo_grupos', 'Admin\TarefaMascarasController@getGrupoInsumoRelacionados');
+		$router->get('tarefa_mascaras/mascaras/desvincular', 'Admin\TarefaMascarasController@desvincular');
+		$router->get('tarefa_mascaras/sem-tarefa/view/{obra}', ['as' => 'admin.tarefa_mascaras.semplanejamentoview', 'uses' => 'Admin\TarefaMascarasController@semPlanejamentoView']);
 	});
 	
 	# Carteira de Insumos

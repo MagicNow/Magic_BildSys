@@ -21,7 +21,7 @@ class TarefaPadrao extends Model
 
 
     public $fillable = [
-        'nome',
+        'tarefa',
 		'resumo',
 		'critica',
 		'torre',
@@ -29,7 +29,7 @@ class TarefaPadrao extends Model
     ];
 
     public static $campos = [
-        'nome',        
+        'tarefa',        
     ];
 
     /**
@@ -39,7 +39,7 @@ class TarefaPadrao extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'nome' => 'string',        
+        'tarefa' => 'string',        
     ];
 
     /**
@@ -48,7 +48,7 @@ class TarefaPadrao extends Model
      * @var array
      */
     public static $rules = [
-        'nome' => 'required'
+        'tarefa' => 'required'
     ];
 	    
 	
