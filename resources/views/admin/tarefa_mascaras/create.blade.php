@@ -8,7 +8,7 @@
 
         <h1 class="pull-right">
             <a class="btn btn-warning pull-right hide" id="js-btn-semPlanejamento" style="margin-top: -10px;margin-bottom: 5px; margin-right: 10px;" href="">
-                Ver insumos sem planejamento de compra associado
+                Ver Máscaras sem Tarefas associadas
             </a>
         </h1>
     </section>
