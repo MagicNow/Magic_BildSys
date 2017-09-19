@@ -525,7 +525,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
                     $insumo['Valor total previsto'] = '';
                     $insumo['valor unitário do orçamento'] = '';
                     $insumo[$qcFornecedor->id] = float_to_money( $qcFornecedor->itens->sum('valor_total')+
-                        doubleval($qcFornecedor->valor_frete) );
+                        doubleval( $qcFornecedor->getOriginal('valor_frete') ) );
                 }
             });
 //            dd($insumo);

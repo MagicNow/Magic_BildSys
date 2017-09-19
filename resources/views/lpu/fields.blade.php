@@ -1,16 +1,20 @@
 
 <!-- Valor Sugerido Anterior Field -->
-<div class="form-group col-sm-2">
-    {!! Form::label('valor_sugerido_anterior', 'Valor Sugerido Anterior:') !!}    
-	<p class="form-control input-lg text-center">
-		<small class="pull-left">R$</small>{{ float_to_money($lpu->valor_sugerido_anterior, '') }}	
-	</p>	
+<div class="form-group col-sm-3">
+    {!! Form::label('valor_sugerido', 'Valor Atual:') !!}    
+	{!! Form::text('valor_sugerido', null, ['class' => 'form-control money', 'disabled']) !!}	
 </div>
 
 <!-- Valor Sugerido Field -->
 <div class="form-group col-sm-3">
-    {!! Form::label('valor_sugerido_atual', 'Sugerir Valor:') !!}
-    {!! Form::text('valor_sugerido_atual', null, ['class' => 'form-control', 'required']) !!}
+    {!! Form::label('valor_sugerido', 'Sugerir Valor:') !!}
+    {!! Form::text('valor_sugerido', null, ['class' => 'form-control money', 'required']) !!}
+</div>
+
+<!-- Observação Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('observacao', 'Observação da Alteração:') !!}
+    {!! Form::textarea('observacao', null, ['class' => 'form-control', 'id'=>'obs', 'rows'=>4]) !!}
 </div>
 
 <!-- Submit Field -->

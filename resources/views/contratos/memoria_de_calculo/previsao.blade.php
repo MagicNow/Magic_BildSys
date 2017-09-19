@@ -78,31 +78,36 @@
                 <input type="hidden" id="qtd_a_distribuir" value="{{ $contrato_item_apropriacao->qtd }}">
             </div>
         </div>
-        @if(count($previsoes))
-            @php $previsao = $previsoes->first(); @endphp
-            <div class="form-group col-md-6">
-                {!! Form::label('memoria_de_calculo', 'Memória de cálculo:') !!}
-                @php
-                    $modo = $previsao->memoriaCalculoBloco->memoriaCalculo->modo;
+        {{--@if(count($previsoes))--}}
+            {{--@php $previsao = $previsoes->first(); @endphp--}}
 
-                    if($modo == 'C') {
-                        $modo = 'Cartela';
-                    } else if($modo == 'U') {
-                        $modo = 'Unidade';
-                    } else {
-                        $modo = 'Torre';
-                    }
-                @endphp
-                <p class="form-control">{{$previsao->memoriaCalculoBloco->memoriaCalculo->nome . ' - ' . $modo}}</p>
-                <input type="hidden" name="memoria_de_calculo" value="{{$previsao->memoriaCalculoBloco->memoriaCalculo->id}}">
-            </div>
+            {{--<div class="form-group col-md-6">--}}
+                {{--{!! Form::label('obra_torre_id', 'Torres:') !!}--}}
+                {{--<p class="form-control">{{$previsao->obraTorre->nome}}</p>--}}
+                {{--<input type="hidden" name="obra_torre_id" value="{{$previsao->obraTorre->id}}">--}}
+            {{--</div>--}}
 
+            {{--<div class="form-group col-md-6">--}}
+                {{--{!! Form::label('memoria_de_calculo', 'Memória de cálculo:') !!}--}}
+                {{--@php--}}
+                    {{--$modo = $previsao->memoriaCalculoBloco->memoriaCalculo->modo;--}}
+
+                    {{--if($modo == 'C') {--}}
+                        {{--$modo = 'Cartela';--}}
+                    {{--} else if($modo == 'U') {--}}
+                        {{--$modo = 'Unidade';--}}
+                    {{--} else {--}}
+                        {{--$modo = 'Torre';--}}
+                    {{--}--}}
+                {{--@endphp--}}
+                {{--<p class="form-control">{{$previsao->memoriaCalculoBloco->memoriaCalculo->nome . ' - ' . $modo}}</p>--}}
+                {{--<input type="hidden" name="memoria_de_calculo" value="{{$previsao->memoriaCalculoBloco->memoriaCalculo->id}}">--}}
+            {{--</div>--}}
+        {{--@else--}}
             <div class="form-group col-md-6">
-                {!! Form::label('obra_torre_id', 'Torres:') !!}
-                <p class="form-control">{{$previsao->obraTorre->nome}}</p>
-                <input type="hidden" name="obra_torre_id" value="{{$previsao->obraTorre->id}}">
+                {!! Form::label('torre_id', 'Torre:') !!}
+                {!! Form::select('torre_id', $obra_torres, $torre_id ? : null, ['class' => 'form-control select2', 'required' => 'required', 'onchange' => 'selecionaTorre(this.value)']) !!}
             </div>
-        @else
             <div class="form-group col-md-6">
                 {!! Form::label('memoria_de_calculo', 'Memória de cálculo:') !!}
                 <a href="/memoriaCalculos/create"
@@ -113,16 +118,10 @@
                    style="margin-top: -10px;">
                     <i class="fa fa-plus fa-fw" aria-hidden="true"></i>
                 </a>
-                {!! Form::select('memoria_de_calculo', $memoria_de_calculo, \Illuminate\Support\Facades\Input::get('memoria_de_calculo') ? : null,
+                {!! Form::select('memoria_de_calculo', $memoria_de_calculo, $memoria_de_calculo_id ? : null,
                  ['class' => 'form-control select2', 'required' => 'required', 'onchange' => 'buscarMemoriaDeCalculo(this.value);']) !!}
             </div>
-            @if(isset($memoriaCalculo))
-                <div class="form-group col-md-6">
-                    {!! Form::label('obra_torre_id', 'Torres:') !!}
-                    {!! Form::select('obra_torre_id', $obra_torres, null, ['class' => 'form-control select2', 'required' => 'required']) !!}
-                </div>
-            @endif
-        @endif
+        {{--@endif--}}
 
         @if(isset($memoriaCalculo))
             {{--Monta a estrutura de blocos igual a de ediçao--}}
@@ -314,6 +313,8 @@
                 <table class="table table-striped table-no-margin">
                     <thead>
                     <tr>
+                        <th>Torre</th>
+                        <th>Memória de cálculo</th>
                         <th>Estrutura - Pavimento - Trecho</th>
                         <th>Tarefa</th>
                         <th style="width: 10%;">Data</th>
@@ -326,11 +327,30 @@
 
                     @if(count($previsoes))
                         @foreach($previsoes as $item)
-                            @php $count = $item->id; @endphp
+                            @php
+                                $count = $item->id;
+
+                                $modo = $item->memoriaCalculoBloco->memoriaCalculo->modo;
+
+                                if($modo == 'C') {
+                                    $modo = 'Cartela';
+                                } else if($modo == 'U') {
+                                    $modo = 'Unidade';
+                                } else {
+                                    $modo = 'Torre';
+                                }
+                            @endphp
                             <tr id="linha_{{$item->id}}" memoria_calculo_bloco_id="{{$item->memoria_calculo_bloco_id}}"
                                 class="estrutura preenchido" estrutura="{{$item->memoriaCalculoBloco->estruturaObj->id}}">
                                 <input type="hidden" name="itens[{{$item->id}}][memoria_calculo_bloco_id]" value="{{$item->memoria_calculo_bloco_id}}">
                                 <input type="hidden" name="itens[{{$item->id}}][id]" value="{{$item->id}}">
+                                <input type="hidden" name="itens[{{$item->id}}][obra_torre_id]" value="{{$item->obra_torre_id}}">
+                                <td>
+                                    {{$item->obraTorre->nome}}
+                                </td>
+                                <td>
+                                    {{$item->memoriaCalculoBloco->memoriaCalculo->nome . ' - ' . $modo}}
+                                </td>
                                 <td>
                                     {{$item->memoriaCalculoBloco->estruturaObj->nome}}
                                     -
@@ -405,6 +425,38 @@
     }
 
     $(function() {
+        @php
+            $array_session_blocos = Session::get('previsao-de-memoria-de-calculo-'.$contrato->id.'-'.$contrato_item_apropriacao->id);
+        @endphp
+
+        @if(count($array_session_blocos))
+            @foreach($array_session_blocos as $array_session)
+                adicionarNaTabela(
+                    '{{$array_session['memoria_calculo_bloco_id']}}',
+                    '{{$array_session['estrutura']}}',
+                    '{{$array_session['pavimento']}}',
+                    '{{$array_session['trecho']}}',
+                    '{{$array_session['estrutura_id']}}',
+                    1,
+                    '{{$array_session['torre']}}',
+                    '{{$array_session['memoria_calculo']}}'
+                );
+
+                $('#data_{{$array_session['memoria_calculo_bloco_id']}}').val('{{$array_session['data']}}');
+                $('#quantidade_{{$array_session['memoria_calculo_bloco_id']}}').val('{{$array_session['quantidade']}}');
+                $('#planejamento_id_{{$array_session['memoria_calculo_bloco_id']}}').val('{{$array_session['planejamento_id']}}').trigger('change');
+
+                if('{{$array_session['quantidade']}}') {
+                    calcularPorcentagem('{{$array_session['quantidade']}}', '{{$array_session['memoria_calculo_bloco_id']}}');
+                }
+
+                array_blocos_previstos.push({{$array_session['memoria_calculo_bloco_id']}});
+        
+                setTimeout(function () {
+                    $('#td_bloco_{{$array_session['memoria_calculo_bloco_id']}}').attr('style','border: 2px solid #f98d00 !important;');
+                }, 1000);
+            @endforeach
+        @endif
 
         $('#formPrevisao').submit(function (evento) {
             evento.preventDefault();
@@ -416,6 +468,7 @@
                        ' que no campo à distribuir fique exatamente 0(zero)','error');
                return false;
             }else{
+               forgetSessionMemoriaDeCalculo(0, 0);
                this.submit();
                return true;
             }
@@ -436,7 +489,7 @@
 
                 setTimeout(function () {
                     $('#td_bloco_{{$item->memoria_calculo_bloco_id}}').attr('style','border: 2px solid #f98d00 !important;');
-                }, 100);
+                }, 1000);
             @endforeach
         @endif
 
@@ -480,7 +533,7 @@
     }
 
     // Função para adicionar linha na tabela
-    function adicionarNaTabela(memoria_calculo_bloco_id, estrutura, pavimento, trecho, estrutura_id) {
+    function adicionarNaTabela(memoria_calculo_bloco_id, estrutura, pavimento, trecho, estrutura_id, sessao, torre, memoria_calculo) {
         count ++;
 
         if($.inArray(memoria_calculo_bloco_id, array_blocos_previstos) !== -1) {
@@ -488,15 +541,39 @@
                 .animate({
                 backgroundColor: 'tranparent'
                 }, 'slow');
-        } else
-        {
+        } else {
             @foreach($planejamentos as $id => $nome)
                     options_planejamento += '<option value="{{$id}}">{{$nome}}</option>';
             @endforeach
 
+            if(!sessao) {
+                torre = $("#torre_id option:selected").text();
+                memoria_calculo = $("#memoria_de_calculo option:selected").text();
+
+                if(!torre) {
+                    swal('Selecione uma torre.','', 'info');
+                    return false;
+                }
+                if(!memoria_calculo) {
+                    swal('Selecione uma memória de cálculo. ','', 'info');
+                    return false;
+                }
+
+                putSessionMemoriaDeCalculo(memoria_calculo_bloco_id, estrutura, pavimento, trecho, estrutura_id, torre, memoria_calculo);
+            }
+
+            obra_torre_id = $('select[name="torre_id"] > option:contains("'+torre+'")').val();
+
             $('#tbody_previsoes').append('\
                 <tr id="linha_'+count+'"  class="estrutura nao-preenchido" estrutura="'+estrutura_id+'" memoria_calculo_bloco_id='+memoria_calculo_bloco_id+'>\
                     <input type="hidden" name="itens['+count+'][memoria_calculo_bloco_id]" value="'+memoria_calculo_bloco_id+'">\
+                    <input type="hidden" name="itens['+count+'][obra_torre_id]" value="'+obra_torre_id+'">\
+                    <td>\
+                        '+torre+'\
+                    </td>\
+                    <td>\
+                        '+memoria_calculo+'\
+                    </td>\
                     <td>\
                         '+estrutura+' - \
                         '+pavimento+' - \
@@ -504,23 +581,23 @@
                     </td>\
                     <td>\
                         <select class="form-control select2_add" name="itens['+count+
-                            '][planejamento_id]" id="planejamento_id_'+memoria_calculo_bloco_id+'" required>\
+                            '][planejamento_id]" id="planejamento_id_'+memoria_calculo_bloco_id+'" required onchange="putSessionMemoriaDeCalculo('+memoria_calculo_bloco_id+','+"'"+estrutura+"'"+','+"'"+pavimento+"'"+','+"'"+trecho+"'"+','+estrutura_id+','+"'"+torre+"'"+','+"'"+memoria_calculo+"'"+');">\
                         ' + options_planejamento + '\
                         </select>\
                     </td>\
                     <td>\
                     <input type="date" class="form-control" name="itens['+count+'][data_competencia]" id="data_'+memoria_calculo_bloco_id+
-                        '" required onkeyup="verificarPreenchido('+count+','+memoria_calculo_bloco_id+');"' +
-                    ' onfocus="cancelarEdicao();"  onchange="verificarPreenchido('+count+','+memoria_calculo_bloco_id+');">\
+                        '" required onkeyup="verificarPreenchido('+count+','+memoria_calculo_bloco_id+');putSessionMemoriaDeCalculo('+memoria_calculo_bloco_id+','+"'"+estrutura+"'"+','+"'"+pavimento+"'"+','+"'"+trecho+"'"+','+estrutura_id+','+"'"+torre+"'"+','+"'"+memoria_calculo+"'"+');"' +
+                    ' onfocus="cancelarEdicao();"  onchange="verificarPreenchido('+count+','+memoria_calculo_bloco_id+');putSessionMemoriaDeCalculo('+memoria_calculo_bloco_id+','+"'"+estrutura+"'"+','+"'"+pavimento+"'"+','+"'"+trecho+"'"+','+estrutura_id+','+"'"+torre+"'"+','+"'"+memoria_calculo+"'"+');">\
                     </td>\
                     <td>\
                         <input type="text" class="form-control money calc_quantidade" name="itens['+count+'][qtd]" id="quantidade_'+memoria_calculo_bloco_id+
-                        '" onkeyup="calcularPorcentagem(this.value, '+memoria_calculo_bloco_id+');verificarPreenchido('+count+','+memoria_calculo_bloco_id+');" \
+                        '" onkeyup="calcularPorcentagem(this.value, '+memoria_calculo_bloco_id+');verificarPreenchido('+count+','+memoria_calculo_bloco_id+');putSessionMemoriaDeCalculo('+memoria_calculo_bloco_id+','+"'"+estrutura+"'"+','+"'"+pavimento+"'"+','+"'"+trecho+"'"+','+estrutura_id+','+"'"+torre+"'"+','+"'"+memoria_calculo+"'"+');" \
                           onfocus="cancelarEdicao();" required>\
                     </td>\
                     <td>\
                         <input type="text" class="form-control money calc_porcentagem" id="porcentagem_'+memoria_calculo_bloco_id+
-                        '" onkeyup="calcularQuantidade(this.value, '+memoria_calculo_bloco_id+');verificarPreenchido('+count+','+memoria_calculo_bloco_id+');" \
+                        '" onkeyup="calcularQuantidade(this.value, '+memoria_calculo_bloco_id+');verificarPreenchido('+count+','+memoria_calculo_bloco_id+');putSessionMemoriaDeCalculo('+memoria_calculo_bloco_id+','+"'"+estrutura+"'"+','+"'"+pavimento+"'"+','+"'"+trecho+"'"+','+estrutura_id+','+"'"+torre+"'"+','+"'"+memoria_calculo+"'"+');" \
                         onfocus="cancelarEdicao();">\
                     </td>\
                     <td>\
@@ -561,6 +638,8 @@
         quantidadeDistribuida(function(){
             quantidade_distribuida = 0;
         });
+
+        forgetSessionMemoriaDeCalculo(bloco_id, 1);
     }
 
     // Função para excluir a linha do banco e da tabela
@@ -627,7 +706,6 @@
     // Calcula a quantidade distribuida
     function quantidadeDistribuida(callback) {
         $('.calc_quantidade').each(function(index, objeto) {
-            console.log('calc_quantidade.each',index, objeto.value, moneyToFloat(objeto.value) );
             quantidade_distribuida += moneyToFloat(objeto.value);
         });
 
@@ -702,8 +780,11 @@
 
     function buscarMemoriaDeCalculo(memoria_de_calculo_id) {
         startLoading();
-        history.pushState("", document.title, location.pathname+'?memoria_de_calculo='+memoria_de_calculo_id);
+
+        history.pushState("", document.title, location.pathname+'?memoria_de_calculo='+memoria_de_calculo_id+'&torre='+$('#torre_id').val());
         location.reload();
+
+        stopLoading();
     }
 
     function atualizaVisual() {
@@ -813,7 +894,7 @@
                             previsao_trecho =  "'"+trechoPav.nome+ "'";
                             previsao_estrutura_id = item.objId;
 
-                            trechosTD += '<td onclick="adicionarNaTabela('+previsao_bloco_id+','+previsao_estrutura+','+previsao_pavimento+','+previsao_trecho+','+previsao_estrutura_id+')" id="td_bloco_'+previsao_bloco_id+'" style="cursor:pointer;">&nbsp;' + trechoPav.nome + '&nbsp;</td>';
+                            trechosTD += '<td onclick="adicionarNaTabela('+previsao_bloco_id+','+previsao_estrutura+','+previsao_pavimento+','+previsao_trecho+','+previsao_estrutura_id+', 0)" id="td_bloco_'+previsao_bloco_id+'" style="cursor:pointer;">&nbsp;' + trechoPav.nome + '&nbsp;</td>';
                         });
                         trechosDestePavimento = '<table class="table-bordered" style="width: ' + larguraPav + '%; margin:0px auto;min-height: 31px;"><tr> ' + trechosTD + ' </tr></table>';
                     }
@@ -879,6 +960,74 @@
                     $('#btn_adicionar_bloco').attr('disabled', false);
                     atualizaVisual();
                 });
+    }
+
+    /*
+    * Ao trocar a torre, se houver algum item previsto na tabela, já carrega a MC e não deixa limpar o campo de escolha do mesmo.
+    * Se o item for removido, deixa limpar o campo de MC.
+    * Se não houver item previsto limpa o campo de MC.
+    */
+    function selecionaTorre(value) {
+        startLoading();
+
+        var condicao = 0;
+        var memoria_calculo_torre = '';
+
+        @if(count($array_session_blocos))
+            @foreach($array_session_blocos as $array_session)
+                if('{{$array_session['torre']}}' == $("#torre_id option[value='"+value+"']").text()) {
+                    condicao = 1;
+
+                    memoria_calculo_torre = $('select[name="memoria_de_calculo"] > option:contains("{{$array_session['memoria_calculo']}}")').val();
+                }
+            @endforeach
+        @endif
+
+        if(condicao) {
+            // Carrega a MC que já foi medida para a torre.
+            history.pushState("", document.title, location.pathname+'?memoria_de_calculo='+memoria_calculo_torre+'&torre='+value);
+            location.reload();
+        } else {
+            // Limpa o campo de MC.
+            history.pushState("", document.title, location.pathname+'?memoria_de_calculo='+'&torre='+value);
+            location.reload();
+        }
+
+        stopLoading();
+    }
+
+    function putSessionMemoriaDeCalculo(memoria_calculo_bloco_id, estrutura, pavimento, trecho, estrutura_id, torre, memoria_calculo) {
+        $.ajax({
+            url : "{{ route('memoriaCalculos.putSessionMemoriaDeCalculo') }}",
+            type : 'POST',
+            data : {
+                contrato_id : '{{$contrato->id}}',
+                contrato_item_apropriacao_id : '{{$contrato_item_apropriacao->id}}',
+                memoria_calculo_bloco_id : memoria_calculo_bloco_id,
+                estrutura : estrutura,
+                pavimento : pavimento,
+                trecho : trecho,
+                estrutura_id : estrutura_id,
+                data : $('#data_'+memoria_calculo_bloco_id).val(),
+                quantidade : $('#quantidade_'+memoria_calculo_bloco_id).val(),
+                planejamento_id : $('#planejamento_id_'+memoria_calculo_bloco_id).val(),
+                torre : torre,
+                memoria_calculo : memoria_calculo
+            }
+        });
+    }
+
+    function forgetSessionMemoriaDeCalculo(memoria_calculo_bloco_id, manter_itens_na_sessao) {
+        $.ajax({
+            url : "{{ route('memoriaCalculos.forgetSessionMemoriaDeCalculo') }}",
+            type : 'POST',
+            data : {
+                contrato_id : '{{$contrato->id}}',
+                contrato_item_apropriacao_id : '{{$contrato_item_apropriacao->id}}',
+                memoria_calculo_bloco_id : memoria_calculo_bloco_id,
+                manter_itens_na_sessao : manter_itens_na_sessao
+            }
+        });
     }
 
     function recarregarMascara() {

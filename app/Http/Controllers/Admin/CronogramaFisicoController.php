@@ -314,6 +314,7 @@ class CronogramaFisicoController extends AppBaseController
         }
 		
 		//Filtros	//julho-2017	
+		//$fromDate=$request->ano_id."-07-01";
 		$fromDate="2017-07-01";
 		$fridays = CronogramaFisicoRepository::getFridaysBydate($fromDate);		
 		$last_day= end($fridays);			
@@ -333,7 +334,8 @@ class CronogramaFisicoController extends AppBaseController
         ])
 		->join('obras','obras.id','cronograma_fisicos.obra_id')
 		->join('template_planilhas','template_planilhas.id','cronograma_fisicos.template_id')		
-		->whereDate('cronograma_fisicos.data_inicio','>=',Carbon::createFromFormat('Y-m-d', '2017-03-01')->toDateString())
+		->whereDate('cronograma_fisicos.data_inicio','>=',Carbon::createFromFormat('Y-m-d', '2017-09-01')->toDateString())
+		->where('cronograma_fisicos.obra_id', $request->obra_id)
         ->orderBy('id', 'desc')
 		->take(7)
 		->get();	

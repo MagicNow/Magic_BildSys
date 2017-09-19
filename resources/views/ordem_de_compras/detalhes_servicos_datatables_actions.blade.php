@@ -4,7 +4,8 @@
                             '<span style="color: #7ed321">',
                             '<span style="color: #eb0000">',
                             '</span>',
-                            '<span data-toggle="tooltip" data-placement="top" data-html="true" title="'.$origem.'"> '
+                            '<span data-toggle="tooltip" data-placement="top" data-html="true" title="'.$origem_comprometido_a_gastar.'"> ',
+                            '<span data-toggle="tooltip" data-placement="top" data-html="true" title="'.$origem_oc.'"> '
                           ];
     @endphp
     <input type="checkbox" class="detalhes_servicos_itens"

@@ -37,7 +37,7 @@
         <h5>SALDO DE ORÇAMENTO</h5>
         <h4>
             <small class="pull-left">R$</small>
-            {{ number_format($orcamentoInicial,2,',','.') }}
+            <span id="saldo_de_orcamento_total"></span>
             {{--- TO DO = Saldo: Previsto - Realizado - A gastar--}}
             {{--{{ number_format($saldo,2,',','.') }}--}}
         </h4>
@@ -85,9 +85,12 @@
                 </thead>
                 <tbody>
                     @php $valor_comprometido_a_gastar_total = 0; @endphp
+                    @php $saldo_de_orcamento_total = 0; @endphp
 
                     @foreach($itens->oc_itens as $item)
                         @php $valor_comprometido_a_gastar = 0; @endphp
+                        @php $qtd_comprometida_a_gastar_item = 0; @endphp
+                        @php $valor_comprometido_a_gastar_item = 0; @endphp
 
                         @if($itens->contrato_itens->isNotEmpty())
                             @foreach($itens->contrato_itens as $c_item)
@@ -104,7 +107,17 @@
                         @endif
                         @php
                             $valor_comprometido_a_gastar += $item->contratoItem->valor_unitario * $item->qtd;
+
+                            if($item->ordemDeCompraItem) {
+                                $qtd_comprometida_a_gastar_item = money_to_float(\App\Repositories\OrdemDeCompraRepository::qtdComprometidaAGastarItem($item->ordemDeCompraItem->grupo_id, $item->ordemDeCompraItem->subgrupo1_id, $item->ordemDeCompraItem->subgrupo2_id, $item->ordemDeCompraItem->subgrupo3_id, $item->ordemDeCompraItem->servico_id, $item->ordemDeCompraItem->insumo_id, $item->ordemDeCompraItem->obra_id, $item->ordemDeCompraItem->id, $item->ordemDeCompraItem->ordemDeCompra->dataUltimoPeriodoAprovacao()));
+                                $valor_comprometido_a_gastar_item = \App\Repositories\OrdemDeCompraRepository::valorComprometidoAGastarItem($item->ordemDeCompraItem->grupo_id, $item->ordemDeCompraItem->subgrupo1_id, $item->ordemDeCompraItem->subgrupo2_id, $item->ordemDeCompraItem->subgrupo3_id, $item->ordemDeCompraItem->servico_id, $item->ordemDeCompraItem->insumo_id, $item->ordemDeCompraItem->obra_id, $item->ordemDeCompraItem->id, $item->ordemDeCompraItem->ordemDeCompra->dataUltimoPeriodoAprovacao());
+                            }
+
+                            $valor_comprometido_a_gastar += $valor_comprometido_a_gastar_item;
+                            $item->qtd += $qtd_comprometida_a_gastar_item;
+
                             $valor_comprometido_a_gastar_total += $valor_comprometido_a_gastar;
+                            $saldo_de_orcamento_total += $item->preco_inicial - doubleval($item->valor_realizado) - $valor_comprometido_a_gastar
                         @endphp
                         <tr>
                             <td class="text-center">
@@ -140,9 +153,12 @@
                             </td>
                             <td class="text-center">
                                 @if($item->servico)
-                                    <a href="/ordens-de-compra/detalhes-servicos/{{$contrato->obra_id}}/{{$item->servico->id}}" style="cursor:pointer;">
-                                        <i class="fa fa-circle {{ (money_to_float($item->valor_servico) - money_to_float($item->valor_realizado)) - money_to_float($item->valor_servico) < 0 ? 'red': 'green'  }}"></i>
-                                        <button class="btn btn-warning btn-sm btn-flat">Análise</button>
+                                    @php
+                                        $calculos_servico = \App\Repositories\OrdemDeCompraRepository::calculosDetalhesServicos($contrato->obra_id, $item->servico->id);
+                                    @endphp
+                                    <i class="fa fa-circle {{ $calculos_servico['saldo_disponivel'] < 0 ? 'red': 'green'  }}" aria-hidden="true"></i>
+                                    <a href="/ordens-de-compra/detalhes-servicos/{{$contrato->obra_id}}/{{$item->servico->id}}" style="cursor:pointer;" data-toggle="tooltip" data-placement="top" title="Análise">
+                                        <i class="fa fa-info-circle text-info" style="font-size: 20px;"></i>
                                     </a>
                                 @else
                                     <i class="fa fa-circle {{ (money_to_float($item->valor_servico) - money_to_float($item->valor_realizado)) - money_to_float($item->valor_servico) < 0 ? 'red': 'green'  }}"></i>
@@ -365,6 +381,7 @@
     <script>
         $(function(){
             $('#valor_comprometido_a_gastar_total').text('{{float_to_money($valor_comprometido_a_gastar_total)}}');
+            $('#saldo_de_orcamento_total').text('{{float_to_money($saldo_de_orcamento_total)}}');
         })
     </script>
 @endsection

@@ -8,7 +8,7 @@
         @if($tem_pendencias)
             <a href="{{ route('contratos.show', $id) }}"
                 data-toggle="tooltip"
-                title="Contém modificações pendentes">
+                title="Contém alteração pendente">
                 <i class="fa fa-exclamation-triangle" style="font-size: 25px;color: #f39c12;"></i>
             </a>
         @else

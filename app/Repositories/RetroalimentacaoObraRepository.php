@@ -66,14 +66,14 @@ class RetroalimentacaoObraRepository extends BaseRepository
             foreach($rHistorico as $historico) {
 
                 Notification::send($historico->userDestino,
-                    new UserCommonNotification("A retroalimentação da qual você faz parte teve uma modificação",
+                    new UserCommonNotification("A retroalimentação da qual você faz parte teve uma alteração",
                         route('retroalimentacaoObras.edit', $id)
                     )
                 );
             }
 
             Notification::send($r->user,
-                new UserCommonNotification("A retroalimentação que você criou teve uma modificação",
+                new UserCommonNotification("A retroalimentação que você criou teve uma alteração",
                     route('retroalimentacaoObras.edit', $id)
                 )
             );

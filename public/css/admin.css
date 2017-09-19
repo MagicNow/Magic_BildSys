@@ -15700,7 +15700,10 @@ div.dataTables_scrollBody > table > tbody > tr:first-child > td {
   border-top: none;
 }
 
-div.dataTables_scrollFoot > table {
+div.dataTables_scrollFoot > .dataTables_scrollFootInner {
+  box-sizing: content-box;
+}
+div.dataTables_scrollFoot > .dataTables_scrollFootInner > table {
   margin-top: 0 !important;
   border-top: none;
 }
@@ -20108,3 +20111,13 @@ input:checked + .slider:before {
 }
 
 /*FIM CHECKBOX TOOGLE*/
+
+.select2-drop-mask {
+  z-index: 10000;
+}
+.select2-drop {
+  z-index: 10001;
+}
+.select2-search {
+  z-index: 10002;
+}
