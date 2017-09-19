@@ -78,35 +78,35 @@
                 <input type="hidden" id="qtd_a_distribuir" value="{{ $contrato_item_apropriacao->qtd }}">
             </div>
         </div>
-        @if(count($previsoes))
-            @php $previsao = $previsoes->first(); @endphp
+        {{--@if(count($previsoes))--}}
+            {{--@php $previsao = $previsoes->first(); @endphp--}}
 
-            <div class="form-group col-md-6">
-                {!! Form::label('obra_torre_id', 'Torres:') !!}
-                <p class="form-control">{{$previsao->obraTorre->nome}}</p>
-                <input type="hidden" name="obra_torre_id" value="{{$previsao->obraTorre->id}}">
-            </div>
+            {{--<div class="form-group col-md-6">--}}
+                {{--{!! Form::label('obra_torre_id', 'Torres:') !!}--}}
+                {{--<p class="form-control">{{$previsao->obraTorre->nome}}</p>--}}
+                {{--<input type="hidden" name="obra_torre_id" value="{{$previsao->obraTorre->id}}">--}}
+            {{--</div>--}}
 
-            <div class="form-group col-md-6">
-                {!! Form::label('memoria_de_calculo', 'Memória de cálculo:') !!}
-                @php
-                    $modo = $previsao->memoriaCalculoBloco->memoriaCalculo->modo;
+            {{--<div class="form-group col-md-6">--}}
+                {{--{!! Form::label('memoria_de_calculo', 'Memória de cálculo:') !!}--}}
+                {{--@php--}}
+                    {{--$modo = $previsao->memoriaCalculoBloco->memoriaCalculo->modo;--}}
 
-                    if($modo == 'C') {
-                        $modo = 'Cartela';
-                    } else if($modo == 'U') {
-                        $modo = 'Unidade';
-                    } else {
-                        $modo = 'Torre';
-                    }
-                @endphp
-                <p class="form-control">{{$previsao->memoriaCalculoBloco->memoriaCalculo->nome . ' - ' . $modo}}</p>
-                <input type="hidden" name="memoria_de_calculo" value="{{$previsao->memoriaCalculoBloco->memoriaCalculo->id}}">
-            </div>
-        @else
+                    {{--if($modo == 'C') {--}}
+                        {{--$modo = 'Cartela';--}}
+                    {{--} else if($modo == 'U') {--}}
+                        {{--$modo = 'Unidade';--}}
+                    {{--} else {--}}
+                        {{--$modo = 'Torre';--}}
+                    {{--}--}}
+                {{--@endphp--}}
+                {{--<p class="form-control">{{$previsao->memoriaCalculoBloco->memoriaCalculo->nome . ' - ' . $modo}}</p>--}}
+                {{--<input type="hidden" name="memoria_de_calculo" value="{{$previsao->memoriaCalculoBloco->memoriaCalculo->id}}">--}}
+            {{--</div>--}}
+        {{--@else--}}
             <div class="form-group col-md-6">
-                {!! Form::label('obra_torre_id', 'Torres:') !!}
-                {!! Form::select('obra_torre_id', $obra_torres, \Illuminate\Support\Facades\Input::get('torre') ? : null, ['class' => 'form-control select2', 'required' => 'required', 'onchange' => 'selecionaTorre(this.value)']) !!}
+                {!! Form::label('torre_id', 'Torre:') !!}
+                {!! Form::select('torre_id', $obra_torres, $torre_id ? : null, ['class' => 'form-control select2', 'required' => 'required', 'onchange' => 'selecionaTorre(this.value)']) !!}
             </div>
             <div class="form-group col-md-6">
                 {!! Form::label('memoria_de_calculo', 'Memória de cálculo:') !!}
@@ -118,10 +118,10 @@
                    style="margin-top: -10px;">
                     <i class="fa fa-plus fa-fw" aria-hidden="true"></i>
                 </a>
-                {!! Form::select('memoria_de_calculo', $memoria_de_calculo, \Illuminate\Support\Facades\Input::get('memoria_de_calculo') ? : null,
+                {!! Form::select('memoria_de_calculo', $memoria_de_calculo, $memoria_de_calculo_id ? : null,
                  ['class' => 'form-control select2', 'required' => 'required', 'onchange' => 'buscarMemoriaDeCalculo(this.value);']) !!}
             </div>
-        @endif
+        {{--@endif--}}
 
         @if(isset($memoriaCalculo))
             {{--Monta a estrutura de blocos igual a de ediçao--}}
@@ -327,11 +327,30 @@
 
                     @if(count($previsoes))
                         @foreach($previsoes as $item)
-                            @php $count = $item->id; @endphp
+                            @php
+                                $count = $item->id;
+
+                                $modo = $item->memoriaCalculoBloco->memoriaCalculo->modo;
+
+                                if($modo == 'C') {
+                                    $modo = 'Cartela';
+                                } else if($modo == 'U') {
+                                    $modo = 'Unidade';
+                                } else {
+                                    $modo = 'Torre';
+                                }
+                            @endphp
                             <tr id="linha_{{$item->id}}" memoria_calculo_bloco_id="{{$item->memoria_calculo_bloco_id}}"
                                 class="estrutura preenchido" estrutura="{{$item->memoriaCalculoBloco->estruturaObj->id}}">
                                 <input type="hidden" name="itens[{{$item->id}}][memoria_calculo_bloco_id]" value="{{$item->memoria_calculo_bloco_id}}">
                                 <input type="hidden" name="itens[{{$item->id}}][id]" value="{{$item->id}}">
+                                <input type="hidden" name="itens[{{$item->id}}][obra_torre_id]" value="{{$item->obra_torre_id}}">
+                                <td>
+                                    {{$item->obraTorre->nome}}
+                                </td>
+                                <td>
+                                    {{$item->memoriaCalculoBloco->memoriaCalculo->nome . ' - ' . $modo}}
+                                </td>
                                 <td>
                                     {{$item->memoriaCalculoBloco->estruturaObj->nome}}
                                     -
@@ -449,6 +468,7 @@
                        ' que no campo à distribuir fique exatamente 0(zero)','error');
                return false;
             }else{
+               forgetSessionMemoriaDeCalculo(0, 0);
                this.submit();
                return true;
             }
@@ -527,15 +547,27 @@
             @endforeach
 
             if(!sessao) {
-                torre = $("#obra_torre_id option:selected").text();
+                torre = $("#torre_id option:selected").text();
                 memoria_calculo = $("#memoria_de_calculo option:selected").text();
+
+                if(!torre) {
+                    swal('Selecione uma torre.','', 'info');
+                    return false;
+                }
+                if(!memoria_calculo) {
+                    swal('Selecione uma memória de cálculo. ','', 'info');
+                    return false;
+                }
 
                 putSessionMemoriaDeCalculo(memoria_calculo_bloco_id, estrutura, pavimento, trecho, estrutura_id, torre, memoria_calculo);
             }
 
+            obra_torre_id = $('select[name="torre_id"] > option:contains("'+torre+'")').val();
+
             $('#tbody_previsoes').append('\
                 <tr id="linha_'+count+'"  class="estrutura nao-preenchido" estrutura="'+estrutura_id+'" memoria_calculo_bloco_id='+memoria_calculo_bloco_id+'>\
                     <input type="hidden" name="itens['+count+'][memoria_calculo_bloco_id]" value="'+memoria_calculo_bloco_id+'">\
+                    <input type="hidden" name="itens['+count+'][obra_torre_id]" value="'+obra_torre_id+'">\
                     <td>\
                         '+torre+'\
                     </td>\
@@ -607,7 +639,7 @@
             quantidade_distribuida = 0;
         });
 
-        forgetSessionMemoriaDeCalculo(bloco_id);
+        forgetSessionMemoriaDeCalculo(bloco_id, 1);
     }
 
     // Função para excluir a linha do banco e da tabela
@@ -749,7 +781,7 @@
     function buscarMemoriaDeCalculo(memoria_de_calculo_id) {
         startLoading();
 
-        history.pushState("", document.title, location.pathname+'?memoria_de_calculo='+memoria_de_calculo_id+'&torre='+$('#obra_torre_id').val());
+        history.pushState("", document.title, location.pathname+'?memoria_de_calculo='+memoria_de_calculo_id+'&torre='+$('#torre_id').val());
         location.reload();
 
         stopLoading();
@@ -943,7 +975,7 @@
 
         @if(count($array_session_blocos))
             @foreach($array_session_blocos as $array_session)
-                if('{{$array_session['torre']}}' == $("#obra_torre_id option[value='"+value+"']").text()) {
+                if('{{$array_session['torre']}}' == $("#torre_id option[value='"+value+"']").text()) {
                     condicao = 1;
 
                     memoria_calculo_torre = $('select[name="memoria_de_calculo"] > option:contains("{{$array_session['memoria_calculo']}}")').val();
@@ -985,14 +1017,15 @@
         });
     }
 
-    function forgetSessionMemoriaDeCalculo(memoria_calculo_bloco_id) {
+    function forgetSessionMemoriaDeCalculo(memoria_calculo_bloco_id, manter_itens_na_sessao) {
         $.ajax({
             url : "{{ route('memoriaCalculos.forgetSessionMemoriaDeCalculo') }}",
             type : 'POST',
             data : {
                 contrato_id : '{{$contrato->id}}',
                 contrato_item_apropriacao_id : '{{$contrato_item_apropriacao->id}}',
-                memoria_calculo_bloco_id : memoria_calculo_bloco_id
+                memoria_calculo_bloco_id : memoria_calculo_bloco_id,
+                manter_itens_na_sessao : manter_itens_na_sessao
             }
         });
     }

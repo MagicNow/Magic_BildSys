@@ -223,19 +223,23 @@ class MemoriaCalculoController extends AppBaseController
         // Pega o array da sessão com os itens previsto na MC
         $array_session = Session::get('previsao-de-memoria-de-calculo-'.$request->contrato_id.'-'.$request->contrato_item_apropriacao_id) ? : [];
 
-        // Remove o item do array
-        unset($array_session[$request->memoria_calculo_bloco_id]);
+        if($request->memoria_calculo_bloco_id) {
+            // Remove o item do array
+            unset($array_session[$request->memoria_calculo_bloco_id]);   
+        }
 
         // Remove o array da sessão 
         Session::forget(
             'previsao-de-memoria-de-calculo-'.$request->contrato_id.'-'.$request->contrato_item_apropriacao_id
         );
 
-        // Coloca na sessão o array sem o item removido
-        Session::put(
-            'previsao-de-memoria-de-calculo-'.$request->contrato_id.'-'.$request->contrato_item_apropriacao_id,
-            $array_session
-        );
+        if($request->manter_itens_na_sessao){
+            // Coloca na sessão o array sem o item removido
+            Session::put(
+                'previsao-de-memoria-de-calculo-'.$request->contrato_id.'-'.$request->contrato_item_apropriacao_id,
+                $array_session
+            );   
+        }
 
         return response()->json(true);
     }
