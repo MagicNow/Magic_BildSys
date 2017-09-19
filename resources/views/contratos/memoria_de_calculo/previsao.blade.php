@@ -938,14 +938,25 @@
     function selecionaTorre(value) {
         startLoading();
 
-        if(0) {
-        // Carrega a MC e não deixa limpar o campo de escolha do mesmo.
-            history.pushState("", document.title, location.pathname+'?memoria_de_calculo='+$('#memoria_de_calculo').val()+'&torre='+value);
+        var condicao = 0;
+        var memoria_calculo_torre = '';
+
+        @if(count($array_session_blocos))
+            @foreach($array_session_blocos as $array_session)
+                if('{{$array_session['torre']}}' == $("#obra_torre_id option[value='"+value+"']").text()) {
+                    condicao = 1;
+
+                    memoria_calculo_torre = $('select[name="memoria_de_calculo"] > option:contains("{{$array_session['memoria_calculo']}}")').val();
+                }
+            @endforeach
+        @endif
+
+        if(condicao) {
+            // Carrega a MC que já foi medida para a torre.
+            history.pushState("", document.title, location.pathname+'?memoria_de_calculo='+memoria_calculo_torre+'&torre='+value);
             location.reload();
-        } else if(0) {
-        // Libera para limpar o campo de MC.
         } else {
-        // Limpa o campo de MC.
+            // Limpa o campo de MC.
             history.pushState("", document.title, location.pathname+'?memoria_de_calculo='+'&torre='+value);
             location.reload();
         }
