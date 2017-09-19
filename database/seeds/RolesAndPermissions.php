@@ -278,6 +278,8 @@ class RolesAndPermissions extends Seeder
             'boletim-medicao.edit'   => 'Edição de Boletim de Medição',
             'boletim-medicao.delete'   => 'Remoção de Boletim de Medição',
 
+            'carteirassla.list' => 'Lista de Carteiras e SLA de cada obra',
+            'carteirassla.create' => 'Criação de QC',
         ];
 
         $permissionAccess = [];

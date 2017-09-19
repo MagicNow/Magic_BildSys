@@ -1255,7 +1255,13 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->patch('/{lpu}/update',['as' => 'lpu.update', 'uses' => 'LpuController@update']);
 		$router->delete('lpu/{lpu}', ['as' => 'lpu.destroy', 'uses' => 'LpuController@destroy']);
     });	
-	
+
+    # DocBild  
+    $router->group(['middleware' => 'needsPermission:carteirassla.list'], function () use ($router) {
+        $router->get('carteiras-sla', ['as' => 'carteiras_sla.index', 'uses' => 'CarteirasSlaController@index']);
+        $router->get('carteiras-sla/create', ['as' => 'carteiras_sla.create', 'uses' => 'CarteirasSlaController@create']);
+    });
+
 	# Configuracao Estatica
     $router->group(['middleware' => 'needsPermission:configuracaoEstaticas.list'], function () use ($router) {
         $router->get('configuracaoEstaticas', ['as' => 'configuracaoEstaticas.index', 'uses' => 'ConfiguracaoEstaticaController@index']);

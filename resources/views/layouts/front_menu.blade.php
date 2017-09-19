@@ -101,6 +101,15 @@
             </a>
         </li>
         @endshield
+
+        @shield('carteirassla.list')
+        <li class="{{ Request::is('carteiras_sla*') ? 'active' : '' }}">
+            <a href="{{ route('carteiras_sla.index') }}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>QC</span>
+            </a>
+        </li>
+        @endshield
     </ul>
 </li>
 
