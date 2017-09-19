@@ -12,7 +12,7 @@
 
 <!-- Obra Início Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('obra_inicio', 'Obra Inínio:') !!}
+    {!! Form::label('obra_inicio', 'Obra início:') !!}
     {!! Form::date('obra_inicio', null, ['class' => 'form-control']) !!}
 </div>
 

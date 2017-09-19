@@ -1,8 +1,8 @@
-@extends('layouts.app')
+@extends('layouts.front')
 
 @section('content')
     <section class="content-header">
-        <h1>Lista de Carteiras e SLA de cada obra</h1>
+        <h1>Lista de CARTEIRAS e SLA de cada obra</h1>
     </section>
     <div class="content">
         @include('adminlte-templates::common.errors')
