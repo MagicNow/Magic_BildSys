@@ -1260,6 +1260,9 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->group(['middleware' => 'needsPermission:carteirassla.list'], function () use ($router) {
         $router->get('carteiras-sla', ['as' => 'carteiras_sla.index', 'uses' => 'CarteirasSlaController@index']);
         $router->get('carteiras-sla/create', ['as' => 'carteiras_sla.create', 'uses' => 'CarteirasSlaController@create']);
+        $router->post('carteiras-sla', ['as' => 'carteiras_sla.store', 'uses' => 'CarteirasSlaController@store']);
+        $router->get('carteiras-sla/buscar/busca_carteiras', ['as' => 'carteiras_sla.busca_carteiras', 'uses' => 'CarteirasSlaController@buscaCarteira']);
+        $router->get('carteiras-sla/buscar/busca_obras', ['as' => 'carteiras_sla.busca_obras', 'uses' => 'CarteirasSlaController@buscaObra']);
     });
 
 	# Configuracao Estatica

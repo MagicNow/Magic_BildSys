@@ -7,6 +7,7 @@ use App\DataTables\CarteirasSlaItemDataTable;
 use Illuminate\Http\Request;
 
 use App\Repositories\CarteirasSlaRepository;
+use App\Http\Requests\CreateCarteirasSlaRequest;
 
 class CarteirasSlaController extends AppBaseController
 {
@@ -37,6 +38,24 @@ class CarteirasSlaController extends AppBaseController
      */
     public function create()
     {
-        return view('carterias_sla.create');
+        return view('carteiras_sla.create');
+    }
+
+    /**
+     * Store a newly created CarteirasSla in storage.
+     *
+     * @param CreateCarteirasSlaRequest $request
+     *
+     * @return Response
+     */
+    public function store(CreateCarteirasSlaRequest $request)
+    {
+        $input = $request->all();
+
+        $medicaoServico = $this->carteirasSlaRepository->create($input);
+
+        Flash::success('QC '.trans('common.saved').' '.trans('common.successfully').'.');
+
+        return redirect(route('carteiras_sla.index'));
     }
 }
