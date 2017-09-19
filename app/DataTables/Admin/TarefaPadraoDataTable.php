@@ -37,7 +37,7 @@ class TarefaPadraoDataTable extends DataTable
 			
 		$tarefa_padrao = TarefaPadrao::query()->select([
                 'tarefa_padrao.id',
-                'tarefa_padrao.nome',
+                'tarefa_padrao.tarefa',
                 DB::raw("(IF(resumo=1,'Sim','Não')) as resumo"),
 				DB::raw("(IF(critica=1,'Sim','Não')) as critica"),
                'tarefa_padrao.torre',
@@ -108,7 +108,7 @@ class TarefaPadraoDataTable extends DataTable
     private function getColumns()
     {
         return [
-            'nome' => ['name' => 'nome', 'data' => 'nome'],
+            'tarefa' => ['name' => 'Tarefa', 'data' => 'tarefa'],
 			'resumo' => ['name' => 'resumo', 'data' => 'resumo'],
 			'critica' => ['name' => 'critica', 'data' => 'critica'],			
 			'torre' => ['name' => 'torre', 'data' => 'torre'],
