@@ -13,6 +13,9 @@ class RemoveMascaraPadraoInsumosTable extends Migration
      */
     public function up()
     {
+		
+		Schema::dropIfExists('mascara_padrao_insumos');
+	   Schema::dropIfExists('mascara_padrao');
         
 		Schema::table('mascara_padrao', function (Blueprint $table){
 
@@ -60,6 +63,7 @@ class RemoveMascaraPadraoInsumosTable extends Migration
      */
     public function down()
     {
-        
+       Schema::dropIfExists('mascara_padrao_insumos');
+	   Schema::dropIfExists('mascara_padrao');
     }
 }
