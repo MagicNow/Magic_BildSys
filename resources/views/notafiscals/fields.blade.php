@@ -256,7 +256,7 @@ $mostrarAcoes = true;
                                 <th></th>
                             </tr>
                             </thead>
-                            <tbody v-for="(item, $index) in itensNf">
+                            <tbody v-for="(item, $index) in itensNf" v-cloak>
 
                             <tr :id="'item-' + item.id">
                                 <!-- idioma Id Field -->
@@ -316,12 +316,14 @@ $mostrarAcoes = true;
                                 </td>
                                 <td>
                                     @if($mostrarAcoes)
-                                    <a v-show="item.solicitacao_entrega_itens_id == null" class="btn btn-success"
+                                    <a v-show="item.solicitacao_entrega_itens.length == 0"
+                                       class="btn btn-success"
                                        v-on:click="openModal($index)">
                                         Vincular
                                     </a>
 
-                                    <a v-show="item.solicitacao_entrega_itens_id != null" class="btn btn-danger"
+                                    <a v-show="item.solicitacao_entrega_itens.length > 0"
+                                       class="btn btn-danger"
                                        v-on:click="desvincular($index)">
                                         Desvincular
                                     </a>
@@ -329,22 +331,30 @@ $mostrarAcoes = true;
                                 </td>
                             </tr>
 
-                            <tr v-show="item.solicitacao_entrega_itens_id > 0">
-                                <td colspan="8" style="background-color: rgb(170, 235, 255);text-align: left;">
-                                    <div v-if="item.solicitacao_entrega_item != null"
-                                         v-show="item.solicitacao_entrega_item.id > 0">
-                                        Vinculado à: @{{ item.solicitacao_entrega_item.insumo.nome }}
-                                        -
-                                        Qtd: @{{ item.solicitacao_entrega_item.qtd }} @{{ item.solicitacao_entrega_item.unidade_sigla}}
-                                        - Vl. Unit.: @{{ item.solicitacao_entrega_item.valor_unitario }}
-                                        - Vl. Tot.: @{{ item.solicitacao_entrega_item.valor_total }}
-                                    </div>
-                                    <div v-show="item.solicitacao_entrega_itens_text != null">
-                                        Vinculado à: @{{ item.solicitacao_entrega_itens_text }}
-                                    </div>
-                                <td>
-                            </tr>
+                            <tr v-if="itensNf[index].solicitacao_entrega_itens.length > 0"
+                                v-for="itemAdd in itensNf[index].solicitacao_entrega_itens"
+                                style="background-color: rgb(170, 235, 255);">
 
+                                <td width="30%"
+                                    style="text-align: left;" >
+                                    @{{  (itemAdd.insumo) ? itemAdd.insumo.nome : itemAdd.nome  }}
+                                    <input type="hidden" :name="'vinculos[' + item.id + '][' + (itemAdd.id)  + ']'" :value="itemAdd.id" />
+                                </td>
+                                <td ></td>
+                                <td ></td>
+                                <td style="text-align: right;">
+                                    @{{  itemAdd.qtd  }}
+                                </td>
+                                <td style="text-align: right;">
+                                    @{{  (itemAdd.insumo) ? itemAdd.insumo.unidade_sigla : itemAdd.unidade_sigla  }}
+                                </td>
+                                <td style="text-align: right;">
+                                    @{{  itemAdd.valor_unitario  }}
+                                </td>
+                                <td style="text-align: right;">
+                                    @{{  itemAdd.valor_total  }}
+                                </td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>
@@ -361,28 +371,15 @@ $mostrarAcoes = true;
                 <div class="panel-heading">
                     <div class="panel-title">
                         Faturas da Nota Fiscal
-                        @if($mostrarAcoes)
-                        <button type="button"
-                                v-on:click="adicionarFatura"
-                                class="btn btn-sm btn-primary pull-right">
-                            Adicionar Fatura
-                        </button>
-                        <br/>
-                        @endif
                     </div>
                 </div>
                 <div class="panel-body">
 
                     <div class="col-md-3 box-rounded-bordered"
                          v-for="(fatura, $index) in faturasNf"
-                         :id="'fatura-' + fatura.id">
-                        @if($mostrarAcoes)
-                        <button type="button"
-                                v-on:click="removerFatura($index)"
-                                class="btn btn-sm btn-danger pull-right">
-                            <i class="fa fa-remove"></i>
-                        </button>
-                        @endif
+                         :id="'fatura-' + fatura.id"
+                         v-cloak>
+
 
                         <div class="form-group col-sm-12">
                             {!! Form::hidden(('faturas[id][]'), null, ['class' => 'form-control text-right', ':value' => 'fatura.id']) !!}
@@ -459,27 +456,62 @@ $mostrarAcoes = true;
                 {{ Form::open(['method' => 'post', 'id' => 'conciliacao-form', 'role' => 'form']) }}
 
                 <div class="form-group clearfix">
-                    <div class="col-md-12">
-                        <select
-                                :id='"itenselecionado"'
-                                v-model="itensNf[index].solicitacao_entrega_item_id"
-                                class="form-control select2">
-                            <option
-                                    v-for="($value, $key) in itensSolicitacoes"
-                                    v-bind:value="$key">
-                                @{{ $value }}
+                    <table class="table">
+                        <tr>
+                            <th >Produto</th>
+                            <th >Quantidade</th>
+                            <th >Unidade</th>
+                            <th >Valor</th>
+                            <th >Total</th>
+                            <th ></th>
+                        </tr>
+                        <tr v-for="(itemAdd, $index) in itensNf[index].solicitacao_entrega_itens">
+                            <th >@{{ itemAdd.nome }}</th>
+                            <th >@{{ itemAdd.qtd }}</th>
+                            <th >@{{ itemAdd.unidade_sigla }}</th>
+                            <th >@{{ itemAdd.valor_unitario }}</th>
+                            <th >@{{ itemAdd.valor_total }}</th>
+                            <th >
+                                <button type="button"
+                                         v-on:click="removeItem($index)"
+                                         class="btn btn-sm btn-danger">
+                                        <i class="fa fa-remove"></i>
+                                </button>
+                            </th>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="form-group clearfix">
+                    <div class="col-md-10">
+                        <select :id='"itenselecionado"'
+                                v-model="itemSelecionado"
+                                class="form-control">
+                            <option v-bind:value="''">Selecione</option>
+                            <option v-bind:value="$obj"
+                                    v-for="$obj in itensSolicitacoes">
+                                @{{ $obj.nome }}
+                                - Qtd.: @{{ $obj.qtd }} @{{ $obj.unidade }}
+                                - Vl. Unit.: @{{ $obj.valor_unitario }}
+                                - Vl. Total.: @{{ $obj.valor_total }}
                             </option>
                         </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button"
+                                v-on:click="addItem(index)"
+                                class="btn btn-sm btn-primary">
+                            Adicionar
+                        </button>
                     </div>
                 </div>
 
                 <div class="clearfix"></div>
 
-                <button type="button" v-on:click="updateVinculo" class="btn btn-sm btn-primary">
-                    Vincular
-                </button>
-                <button type="button" data-dismiss="modal" class="btn btn-sm btn-default">
-                    Cancelar
+                <button type="button"
+                        v-on:click="updateVinculo"
+                        class="btn btn-sm btn-primary">
+                    Concluir
                 </button>
                 {{ Form::close() }}
             </div>
@@ -495,18 +527,18 @@ $mostrarAcoes = true;
         }
     </style>
     <script>
-                <?php
-                $faturas = [];
-                foreach ($notafiscal->faturas as $fatura) {
-                    $faturaItem = $fatura->toArray();
-                    unset($faturaItem['vencimento']);
-                    $faturaItem['vencimento'] = $fatura->vencimento ? $fatura->vencimento->format("Y-m-d") : null;
-                    $faturas[] = $faturaItem;
-                }
-                ?>
+        <?php
+        $faturas = [];
+        foreach ($notafiscal->faturas as $fatura) {
+            $faturaItem = $fatura->toArray();
+            unset($faturaItem['vencimento']);
+            $faturaItem['vencimento'] = $fatura->vencimento ? $fatura->vencimento->format("Y-m-d") : null;
+            $faturas[] = $faturaItem;
+        }
+        ?>
 
         var $faturasNf = {!! json_encode($faturas)  !!};
-        var $itensNf = {!! json_encode($notafiscal->itens()->with('solicitacaoEntregaItem', 'solicitacaoEntregaItem.insumo')->get())  !!};
+        var $itensNf = {!! json_encode($notafiscal->itens()->with('solicitacaoEntregaItens', 'solicitacaoEntregaItens.insumo')->get())  !!};
         var $itensSolicitacoes = {!! json_encode($itensSolicitacoes)  !!};
 
         const app = new Vue({
@@ -515,29 +547,20 @@ $mostrarAcoes = true;
                 index: 0,
                 itensNf: $itensNf,
                 faturasNf: $faturasNf,
-                itensSolicitacoes: $itensSolicitacoes
+                itensSolicitacoes: $itensSolicitacoes,
+                itemSelecionado: null
             },
             watch: {},
             methods: {
                 desvincular: function ($index) {
-
-                    this.itensNf[$index].solicitacao_entrega_itens_text = null;
-                    this.itensNf[$index].solicitacao_entrega_itens_id = null;
-                    this.itensNf[$index].solicitacao_entrega_item = null;
-
-                    console.log(this.itensNf[$index])
-
+                    this.itensNf[$index].solicitacao_entrega_itens = [];
                 },
                 openModal: function ($index) {
                     this.index = $index;
                     $('#conciliacao-modal').modal('show');
                 },
                 updateVinculo: function () {
-                    $itenselecionadoVal = $('#itenselecionado').val();
-                    $itenselecionadoText = $('#itenselecionado option:selected').text();
-                    this.itensNf[this.index].solicitacao_entrega_itens_text = $itenselecionadoText;
-                    this.itensNf[this.index].solicitacao_entrega_itens_id = $itenselecionadoVal;
-                    $('#itenselecionado').val('').trigger('change');
+
                     $('#conciliacao-modal').modal('hide');
                 },
                 adicionarFatura: function () {
@@ -545,9 +568,41 @@ $mostrarAcoes = true;
                 },
                 removerFatura: function ($index) {
                     this.faturasNf.splice($index, 1);
+                },
+                addItem: function ($index) {
+
+                    $obj = this.itemSelecionado;
+
+                    if ($obj == null || $obj == "") {
+                        return;
+                    }
+
+                    console.log($obj);
+
+                    $ids = this.itensNf[this.index].solicitacao_entrega_itens.filter(function(item){
+                        return item.id == $obj.id;
+                    });
+
+                    if ($ids.length > 0) {
+                        return;
+                    }
+
+                    this.itensNf[this.index].solicitacao_entrega_itens.push($obj);
+                    $('#itenselecionado').val('').trigger('change');
+                },
+                removeItem: function($index) {
+                    this.itensNf[this.index].solicitacao_entrega_itens.splice($index, 1);
                 }
             },
             created: function () {
+            },
+            filters: {
+                currencyFormatted: function(value) {
+                    return Number(value).toLocaleString('pt-BR', {
+                        style: 'currency',
+                        currency: 'BRL'
+                    });
+                }
             }
         });
     </script>

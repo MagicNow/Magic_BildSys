@@ -52,7 +52,6 @@ class NotaFiscalItem extends Model
         'nome_produto' => 'string',
         'ean' => 'string',
         'unidade' => 'string',
-        'solicitacao_entrega_itens_id' => 'integer',
     ];
 
     /**
@@ -75,8 +74,12 @@ class NotaFiscalItem extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function solicitacaoEntregaItem()
+    public function solicitacaoEntregaItens()
     {
-        return $this->belongsTo(\App\Models\SolicitacaoEntregaItem::class, 'solicitacao_entrega_itens_id');
+        return $this->belongsToMany(\App\Models\SolicitacaoEntregaItem::class,
+            'nf_se_item',
+            'nota_fiscal_item_id',
+            'solicitacao_entrega_item_id'
+        );
     }
 }

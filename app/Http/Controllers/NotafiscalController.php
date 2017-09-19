@@ -125,8 +125,8 @@ class NotafiscalController extends AppBaseController
         $contratos = [];
 
         $contrato = Contrato::where('id', request('contrato', $notafiscal->contrato_id))
-     ->where('fornecedor_id', $fornecedor->id)
-     ->first();
+                            ->where('fornecedor_id', $fornecedor->id)
+                            ->first();
 
         $itensSolicitacoes = [];
         if ($contrato) {
@@ -139,13 +139,14 @@ class NotafiscalController extends AppBaseController
                     $itens = $entrega->itens;
                     foreach ($itens as $item)
                     {
-                        $itensSolicitacoes[$item->id] = sprintf('%s - Qtd: %s %s - Vl. Unit.: %s - Vl. Tot.: %s',
-                                $item->insumo->nome,
-                                float_to_money($item->qtd, ''),
-                                $item->unidade_sigla,
-                                float_to_money($item->valor_unitario),
-                                float_to_money($item->valor_total)
-                        );
+                        $itensSolicitacoes[$item->id] = [
+                            'id' => $item->id,
+                            'nome' => $item->insumo->nome,
+                            'qtd' => ($item->qtd),
+                            'unidade_sigla' => $item->insumo->unidade_sigla,
+                            'valor_unitario' => ($item->valor_unitario),
+                            'valor_total' => ($item->valor_total)
+                        ];
                     }
                 }
             }
@@ -186,35 +187,7 @@ class NotafiscalController extends AppBaseController
             return redirect(route('notafiscals.edit', [$id]));
         }
 
-        $faturasRequest = $request->get('faturas');
-
-        $itensRequest = $request->get('itens');
-
-        $faturas = [];
-        $itens   = [];
-
-        foreach ($faturasRequest['id'] as $key => $value) {
-            $faturas[] = [
-                'id' => $value,
-                'vencimento' => $faturasRequest['vencimento'][$key] ,
-                'numero'     => $faturasRequest['numero'][$key] ,
-                'valor'      => $faturasRequest['valor'][$key] ,
-            ];
-        }
-
-        foreach ($itensRequest['id'] as $key => $value) {
-            $itens[] = [
-                'id' => $value,
-                'solicitacao_entrega_itens_id'=> $itensRequest['solicitacao_entrega_itens_id'][$key] ,
-                "nome_produto" => $itensRequest['nome_produto'][$key] ,
-                "ncm" => $itensRequest['ncm'][$key] ,
-                "codigo_produto" => $itensRequest['codigo_produto'][$key] ,
-                "qtd" => $itensRequest['qtd'][$key] ,
-                "unidade" => $itensRequest['unidade'][$key] ,
-                "valor_unitario" => $itensRequest['valor_unitario'][$key] ,
-                "valor_total" => $itensRequest['valor_total'][$key] ,
-            ];
-        }
+        $vinculosRequest = $request->get('vinculos');
 
         $notafiscal->status = 'Aceita';
         $notafiscal->status_data = date('Y-m-d H:i:s');
@@ -222,48 +195,9 @@ class NotafiscalController extends AppBaseController
         $notafiscal->contrato_id = $request->get('contrato_id');
         $notafiscal->save();
 
-        foreach ($itens as $item) {
-            if ($item['id'] > 0) {
-                $itemNf = $notafiscal->itens()->where('id', $item['id'] )->first();
-                $itemNf->solicitacao_entrega_itens_id = $item['solicitacao_entrega_itens_id'];
-                $itemNf->save();
-            }
-        }
-
-        $faturasIds = array_column($faturas, 'id');
-        foreach ($faturasIds as $k => $value)
-        {
-            if (empty($value)) {
-                unset($faturasIds[$k]);
-            }
-        }
-
-        foreach ($faturas as $fatura) {
-
-            $notafiscal->faturas()
-                ->whereNotIn('id', $faturasIds)
-                ->delete();
-
-            if ($fatura['id'] > 0) {
-
-                $faturaNf = $notafiscal->faturas()->where('id', $fatura['id'] )->first();
-
-                if (!$faturaNf) {
-                    Log::info(sprintf('Fatura não encontrada %s', print_r($fatura, true)));
-                }
-
-                $faturaNf->vencimento = $fatura['vencimento'];
-                $faturaNf->valor      = $fatura['valor'];
-                $faturaNf->numero     = $fatura['numero'];
-                $faturaNf->save();
-
-            } else {
-
-                $faturaNf = $notafiscal->faturas()->save(
-                    new NotaFiscalFatura($fatura)
-                );
-
-            }
+        foreach ($vinculosRequest as $item_id => $solicitacoes_ids) {
+            $itemNf = $notafiscal->itens()->where('id', $item_id)->first();
+            $itemNf->solicitacaoEntregaItens()->attach($solicitacoes_ids);
         }
 
         Flash::success('Nota fiscal ' . trans('common.updated') . ' ' . trans('common.successfully') . '.');
@@ -400,7 +334,21 @@ class NotafiscalController extends AppBaseController
 
     public function integraMega($id)
     {
-        $notafiscal = Notafiscal::find($id);
+        $notafiscal = Notafiscal::with(
+            [
+                "itens",
+                "itens.solicitacaoEntregaItens",
+                "itens.solicitacaoEntregaItens.insumo"
+            ])
+            ->where('id', $id)
+            ->first();
+
+
+
+        return $notafiscal;
+
+
+
         $mega = new MegaXmlRepository();
 
         $data = [
