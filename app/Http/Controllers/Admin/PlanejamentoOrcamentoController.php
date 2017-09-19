@@ -177,7 +177,8 @@ class PlanejamentoOrcamentoController extends AppBaseController
             #grupos
             $retorno = Orcamento::select([
                 'orcamentos.' . $request->tipo.' as id',
-                'orcamentos.obra_id', 'grupos.codigo',
+                'orcamentos.obra_id',
+                'grupos.codigo',
                 'grupos.nome',
                 DB::raw("'".$request->tipo."'  as atual"),DB::raw("'".$proximo."'  as proximo"),
                 DB::raw("(
@@ -191,7 +192,7 @@ class PlanejamentoOrcamentoController extends AppBaseController
                                         orcamentos
                                     WHERE
                                         ".$request->tipo." = GRU.id
-                                    AND obra_id = 4
+                                    AND obra_id = ".$request->obra."
                                 ) =(
                                     SELECT
                                         (
@@ -203,7 +204,7 @@ class PlanejamentoOrcamentoController extends AppBaseController
                                             WHERE
                                                 planejamento_compras.deleted_at IS NULL
                                             AND ".$request->tipo." = G.id
-                                            AND planejamentos.obra_id = 4
+                                            AND planejamentos.obra_id = ".$request->obra."
                                             GROUP BY
                                                 planejamento_compras.planejamento_id
                                         LIMIT 1
@@ -226,7 +227,7 @@ class PlanejamentoOrcamentoController extends AppBaseController
                                     WHERE
                                         planejamento_compras.deleted_at IS NULL
                                     AND ".$request->tipo." = GRU.id
-                                    AND planejamentos.obra_id = 4
+                                    AND planejamentos.obra_id = ".$request->obra."
                                     LIMIT 1
                                 ) ,
                                 NULL
@@ -248,7 +249,8 @@ class PlanejamentoOrcamentoController extends AppBaseController
             #serviços
             $retorno = Orcamento::select([
                 'orcamentos.' . $request->tipo.' as id',
-                'orcamentos.obra_id', 'servicos.codigo',
+                'orcamentos.obra_id',
+                'servicos.codigo',
                 'servicos.nome',
                 DB::raw("'".$request->tipo."'  as atual"),
                 DB::raw("'".$proximo."'  as proximo"),
@@ -278,6 +280,7 @@ class PlanejamentoOrcamentoController extends AppBaseController
 						AND planejamentos.obra_id = ".$request->obra."
 						GROUP BY
 							planejamento_compras.planejamento_id
+						LIMIT 1
 					) qtd
 				FROM
 					servicos S
@@ -355,7 +358,18 @@ class PlanejamentoOrcamentoController extends AppBaseController
                     'orcamentos.servico_id')
                 ->get();
         }
+
+        if($request->nao_relacionado) {
+            $retornoFinal = collect();
+            $retorno->map(function ($item, $key) use ($retornoFinal) {
+                if (!$item->tarefa) {
+                    $retornoFinal->push($item);
+                }
+            });
+            return $retornoFinal;
+        }
         return $retorno;
+
     }
 
     public function getPlanejamentos($id){
