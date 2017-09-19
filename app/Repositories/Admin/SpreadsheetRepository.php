@@ -921,7 +921,9 @@ class SpreadsheetRepository
 								  'comodo' => $final['comodo'],
 								  'parede' => $final['parede'],
 								  'trecho_parede' => $final['trecho_parede'],
-								  'personalizavel' => $final['personalizavel']								  								  							 
+								  'personalizavel' => $final['personalizavel'],
+								  'planta' => $final['planta'],								  
+								  'planta_opcao' => $final['planta_opcao'],
                               ],
                               [
 								#variaveis

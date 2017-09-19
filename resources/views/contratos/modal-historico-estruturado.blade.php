@@ -53,7 +53,7 @@
                                         data-target="#historico-apropriacao-{{ $apropriacao->id }}"
                                             data-toggle="tooltip"
                                             data-placement="top"
-                                            title="Histórico Apropriação">
+                                            title="Histórico de Alteração">
                                         <i class="fa fa-history fa-fw"></i>
                                     </button>
 
@@ -134,7 +134,7 @@
                                                 </tbody>
                                             </table>
                                         @else
-                                            <p>Apropriação sem modificações</p>
+                                            <p>Apropriação sem alteração</p>
                                         @endif
                                     @endif
                                 </td>

@@ -19,16 +19,11 @@ class Lpu extends Model
     public $fillable = [
         'insumo_id',
 		'codigo_insumo',
-		'regional_id',
-		'grupo_id',
-		'subgrupo1_id',
-		'subgrupo2_id',
-		'subgrupo3_id',
-		'servico_id',
-		'valor_sugerido_anterior',
-		'valor_sugerido_atual',
+		'regional_id',				
+		'valor_sugerido',
 		'valor_contrato',
 		'valor_catalogo',
+		'observacao',
     ];
 
     /**
@@ -40,16 +35,10 @@ class Lpu extends Model
         'id'             => 'integer',
         'insumo_id'      => 'integer',
         'codigo_insumo' => 'string',
-        'regional_id' => 'integer',
-        'grupo_id' => 'integer',
-        'subgrupo1_id' => 'integer',
-        'subgrupo2_id' => 'integer',
-        'subgrupo3_id' => 'integer',
-        'servico_id' => 'integer',
-        'valor_sugerido_anterior' => 'float',
-		'valor_sugerido_atual' => 'float',
-        'valor_contrato' => 'float',
-        'valor_catalogo' => 'float'
+        'regional_id' => 'integer',                
+		'valor_sugerido' => 'decimal',
+        'valor_contrato' => 'decimal',
+        'valor_catalogo' => 'decimal'
     ];
 
     /**
@@ -61,5 +50,24 @@ class Lpu extends Model
 
     ];
 	
+	public function getValorSugeridoAttribute($value)
+    {
+        if (strlen($value) == 4) {
+            $value = '0'.$value;
+        }
+
+        return number_format($value, 2, ',', '.');
+    }
+	
+	public function setValorSugeridoAttribute($value)
+    {
+        $pontos = [","];
+        $value = str_replace('.', '', $value);
+        $result = str_replace($pontos, ".", $value);
+        if ($result == '') {
+            $result = null;
+        }
+        $this->attributes['valor_sugerido'] = $result;
+    }
 	
 }

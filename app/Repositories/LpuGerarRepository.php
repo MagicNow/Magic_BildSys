@@ -50,26 +50,16 @@ class LpuGerarRepository
         foreach ($insumos as $insumo) {
             try {
 				
-				/*print_r($insumos);
-				die;*/
-				                
                 $lpu = Lpu::updateOrCreate([                
                     'insumo_id' => $insumo->insumo_id,
 					'codigo_insumo'   => $insumo->codigo_insumo,
-					'regional_id'   => $insumo->regional_id,
-					'grupo_id'   => "1",
-					'subgrupo1_id'   => "1",
-					'subgrupo2_id'   => "1",
-					'subgrupo3_id'   => "1",
-					'servico_id'   => "1",
-					'valor_sugerido_anterior'   => $insumo->valor_sugerido,
-					'valor_sugerido_atual'   => $insumo->valor_sugerido,
+					'regional_id'   => $insumo->regional_id,					
+					'valor_sugerido'   => $insumo->valor_sugerido,
 					'valor_contrato'   => $insumo->valor_contrato,
 					'valor_catalogo'   => $insumo->valor_catalogo,									
                 ]);	  
 
-				$lpu->valor_sugerido_anterior = $insumo->valor_sugerido;
-                $lpu->valor_sugerido_atual = $insumo->valor_sugerido;
+                $lpu->valor_sugerido = $insumo->valor_sugerido;
                 $lpu->valor_contrato  =  $insumo->valor_contrato;
                 $lpu->valor_catalogo  =  $insumo->valor_catalogo;
 

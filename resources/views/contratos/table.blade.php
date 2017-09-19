@@ -71,14 +71,14 @@
                                 data-toggle="modal"
                                 data-target="#modal-historico-estruturado-{{ $item->id }}">
                                 <i data-toggle="tooltip"
-                                    title="Apropriações"
+                                    title="Apropriação"
                                     class="fa fa-fw fa-building"></i>
                             </button>
                             <button class="btn btn-flat btn-xs btn-default"
                                 data-toggle="modal"
                                 data-target="#modal-historico-{{ $item->id }}">
                                 <i data-toggle="tooltip"
-                                    title="Histórico"
+                                    title="Histórico de Alteração"
                                     class="fa fa-fw fa-history"></i>
                             </button>
                         </td>
