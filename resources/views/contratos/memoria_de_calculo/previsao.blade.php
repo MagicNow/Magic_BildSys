@@ -418,7 +418,9 @@
                     '{{$array_session['pavimento']}}',
                     '{{$array_session['trecho']}}',
                     '{{$array_session['estrutura_id']}}',
-                    1
+                    1,
+                    '{{$array_session['torre']}}',
+                    '{{$array_session['memoria_calculo']}}'
                 );
 
                 $('#data_{{$array_session['memoria_calculo_bloco_id']}}').val('{{$array_session['data']}}');
@@ -511,7 +513,7 @@
     }
 
     // Função para adicionar linha na tabela
-    function adicionarNaTabela(memoria_calculo_bloco_id, estrutura, pavimento, trecho, estrutura_id, sessao) {
+    function adicionarNaTabela(memoria_calculo_bloco_id, estrutura, pavimento, trecho, estrutura_id, sessao, torre, memoria_calculo) {
         count ++;
 
         if($.inArray(memoria_calculo_bloco_id, array_blocos_previstos) !== -1) {
@@ -525,17 +527,20 @@
             @endforeach
 
             if(!sessao) {
-                putSessionMemoriaDeCalculo(memoria_calculo_bloco_id, estrutura, pavimento, trecho, estrutura_id);
+                torre = $("#obra_torre_id option:selected").text();
+                memoria_calculo = $("#memoria_de_calculo option:selected").text();
+
+                putSessionMemoriaDeCalculo(memoria_calculo_bloco_id, estrutura, pavimento, trecho, estrutura_id, torre, memoria_calculo);
             }
 
             $('#tbody_previsoes').append('\
                 <tr id="linha_'+count+'"  class="estrutura nao-preenchido" estrutura="'+estrutura_id+'" memoria_calculo_bloco_id='+memoria_calculo_bloco_id+'>\
                     <input type="hidden" name="itens['+count+'][memoria_calculo_bloco_id]" value="'+memoria_calculo_bloco_id+'">\
                     <td>\
-                        '+$("#obra_torre_id option:selected").text()+'\
+                        '+torre+'\
                     </td>\
                     <td>\
-                        '+$("#memoria_de_calculo option:selected").text()+'\
+                        '+memoria_calculo+'\
                     </td>\
                     <td>\
                         '+estrutura+' - \
@@ -544,23 +549,23 @@
                     </td>\
                     <td>\
                         <select class="form-control select2_add" name="itens['+count+
-                            '][planejamento_id]" id="planejamento_id_'+memoria_calculo_bloco_id+'" required onchange="putSessionMemoriaDeCalculo('+memoria_calculo_bloco_id+','+"'"+estrutura+"'"+','+"'"+pavimento+"'"+','+"'"+trecho+"'"+','+estrutura_id+');">\
+                            '][planejamento_id]" id="planejamento_id_'+memoria_calculo_bloco_id+'" required onchange="putSessionMemoriaDeCalculo('+memoria_calculo_bloco_id+','+"'"+estrutura+"'"+','+"'"+pavimento+"'"+','+"'"+trecho+"'"+','+estrutura_id+','+"'"+torre+"'"+','+"'"+memoria_calculo+"'"+');">\
                         ' + options_planejamento + '\
                         </select>\
                     </td>\
                     <td>\
                     <input type="date" class="form-control" name="itens['+count+'][data_competencia]" id="data_'+memoria_calculo_bloco_id+
-                        '" required onkeyup="verificarPreenchido('+count+','+memoria_calculo_bloco_id+');putSessionMemoriaDeCalculo('+memoria_calculo_bloco_id+','+"'"+estrutura+"'"+','+"'"+pavimento+"'"+','+"'"+trecho+"'"+','+estrutura_id+');"' +
-                    ' onfocus="cancelarEdicao();"  onchange="verificarPreenchido('+count+','+memoria_calculo_bloco_id+');putSessionMemoriaDeCalculo('+memoria_calculo_bloco_id+','+"'"+estrutura+"'"+','+"'"+pavimento+"'"+','+"'"+trecho+"'"+','+estrutura_id+');">\
+                        '" required onkeyup="verificarPreenchido('+count+','+memoria_calculo_bloco_id+');putSessionMemoriaDeCalculo('+memoria_calculo_bloco_id+','+"'"+estrutura+"'"+','+"'"+pavimento+"'"+','+"'"+trecho+"'"+','+estrutura_id+','+"'"+torre+"'"+','+"'"+memoria_calculo+"'"+');"' +
+                    ' onfocus="cancelarEdicao();"  onchange="verificarPreenchido('+count+','+memoria_calculo_bloco_id+');putSessionMemoriaDeCalculo('+memoria_calculo_bloco_id+','+"'"+estrutura+"'"+','+"'"+pavimento+"'"+','+"'"+trecho+"'"+','+estrutura_id+','+"'"+torre+"'"+','+"'"+memoria_calculo+"'"+');">\
                     </td>\
                     <td>\
                         <input type="text" class="form-control money calc_quantidade" name="itens['+count+'][qtd]" id="quantidade_'+memoria_calculo_bloco_id+
-                        '" onkeyup="calcularPorcentagem(this.value, '+memoria_calculo_bloco_id+');verificarPreenchido('+count+','+memoria_calculo_bloco_id+');putSessionMemoriaDeCalculo('+memoria_calculo_bloco_id+','+"'"+estrutura+"'"+','+"'"+pavimento+"'"+','+"'"+trecho+"'"+','+estrutura_id+');" \
+                        '" onkeyup="calcularPorcentagem(this.value, '+memoria_calculo_bloco_id+');verificarPreenchido('+count+','+memoria_calculo_bloco_id+');putSessionMemoriaDeCalculo('+memoria_calculo_bloco_id+','+"'"+estrutura+"'"+','+"'"+pavimento+"'"+','+"'"+trecho+"'"+','+estrutura_id+','+"'"+torre+"'"+','+"'"+memoria_calculo+"'"+');" \
                           onfocus="cancelarEdicao();" required>\
                     </td>\
                     <td>\
                         <input type="text" class="form-control money calc_porcentagem" id="porcentagem_'+memoria_calculo_bloco_id+
-                        '" onkeyup="calcularQuantidade(this.value, '+memoria_calculo_bloco_id+');verificarPreenchido('+count+','+memoria_calculo_bloco_id+');putSessionMemoriaDeCalculo('+memoria_calculo_bloco_id+','+"'"+estrutura+"'"+','+"'"+pavimento+"'"+','+"'"+trecho+"'"+','+estrutura_id+');" \
+                        '" onkeyup="calcularQuantidade(this.value, '+memoria_calculo_bloco_id+');verificarPreenchido('+count+','+memoria_calculo_bloco_id+');putSessionMemoriaDeCalculo('+memoria_calculo_bloco_id+','+"'"+estrutura+"'"+','+"'"+pavimento+"'"+','+"'"+trecho+"'"+','+estrutura_id+','+"'"+torre+"'"+','+"'"+memoria_calculo+"'"+');" \
                         onfocus="cancelarEdicao();">\
                     </td>\
                     <td>\
@@ -948,7 +953,7 @@
         stopLoading();
     }
 
-    function putSessionMemoriaDeCalculo(memoria_calculo_bloco_id, estrutura, pavimento, trecho, estrutura_id) {
+    function putSessionMemoriaDeCalculo(memoria_calculo_bloco_id, estrutura, pavimento, trecho, estrutura_id, torre, memoria_calculo) {
         $.ajax({
             url : "{{ route('memoriaCalculos.putSessionMemoriaDeCalculo') }}",
             type : 'POST',
@@ -962,7 +967,9 @@
                 estrutura_id : estrutura_id,
                 data : $('#data_'+memoria_calculo_bloco_id).val(),
                 quantidade : $('#quantidade_'+memoria_calculo_bloco_id).val(),
-                planejamento_id : $('#planejamento_id_'+memoria_calculo_bloco_id).val()
+                planejamento_id : $('#planejamento_id_'+memoria_calculo_bloco_id).val(),
+                torre : torre,
+                memoria_calculo : memoria_calculo
             }
         });
     }

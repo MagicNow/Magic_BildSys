@@ -207,7 +207,9 @@ class MemoriaCalculoController extends AppBaseController
                         'estrutura_id' => $request->estrutura_id,
                         'data' => $request->data,
                         'quantidade' => $request->quantidade,
-                        'planejamento_id' => $request->planejamento_id
+                        'planejamento_id' => $request->planejamento_id,
+                        'torre' => $request->torre,
+                        'memoria_calculo' => $request->memoria_calculo
                     ]
                 ]
             )
