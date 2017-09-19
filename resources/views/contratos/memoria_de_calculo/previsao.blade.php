@@ -86,7 +86,7 @@
                 <p class="form-control">{{$previsao->obraTorre->nome}}</p>
                 <input type="hidden" name="obra_torre_id" value="{{$previsao->obraTorre->id}}">
             </div>
-        
+
             <div class="form-group col-md-6">
                 {!! Form::label('memoria_de_calculo', 'Memória de cálculo:') !!}
                 @php
@@ -106,7 +106,7 @@
         @else
             <div class="form-group col-md-6">
                 {!! Form::label('obra_torre_id', 'Torres:') !!}
-                {!! Form::select('obra_torre_id', $obra_torres, null, ['class' => 'form-control select2', 'required' => 'required']) !!}
+                {!! Form::select('obra_torre_id', $obra_torres, \Illuminate\Support\Facades\Input::get('torre') ? : null, ['class' => 'form-control select2', 'required' => 'required', 'onchange' => 'selecionaTorre(this.value)']) !!}
             </div>
             <div class="form-group col-md-6">
                 {!! Form::label('memoria_de_calculo', 'Memória de cálculo:') !!}
@@ -313,6 +313,8 @@
                 <table class="table table-striped table-no-margin">
                     <thead>
                     <tr>
+                        <th>Torre</th>
+                        <th>Memória de cálculo</th>
                         <th>Estrutura - Pavimento - Trecho</th>
                         <th>Tarefa</th>
                         <th style="width: 10%;">Data</th>
@@ -404,6 +406,30 @@
     }
 
     $(function() {
+        @php
+            $array_session_blocos = Session::get('previsao-de-memoria-de-calculo-'.$contrato->id.'-'.$contrato_item_apropriacao->id);
+        @endphp
+
+        @if(count($array_session_blocos))
+            @foreach($array_session_blocos as $array_session)
+                adicionarNaTabela(
+                    '{{$array_session['memoria_calculo_bloco_id']}}',
+                    '{{$array_session['estrutura']}}',
+                    '{{$array_session['pavimento']}}',
+                    '{{$array_session['trecho']}}',
+                    '{{$array_session['estrutura_id']}}',
+                    1
+                );
+
+                $('#data_{{$array_session['memoria_calculo_bloco_id']}}').val('{{$array_session['data']}}');
+                $('#quantidade_{{$array_session['memoria_calculo_bloco_id']}}').val('{{$array_session['quantidade']}}');
+                $('#planejamento_id_{{$array_session['memoria_calculo_bloco_id']}}').val('{{$array_session['planejamento_id']}}').trigger('change');
+
+                if('{{$array_session['quantidade']}}') {
+                    calcularPorcentagem('{{$array_session['quantidade']}}', '{{$array_session['memoria_calculo_bloco_id']}}');
+                }
+            @endforeach
+        @endif
 
         $('#formPrevisao').submit(function (evento) {
             evento.preventDefault();
@@ -479,7 +505,7 @@
     }
 
     // Função para adicionar linha na tabela
-    function adicionarNaTabela(memoria_calculo_bloco_id, estrutura, pavimento, trecho, estrutura_id) {
+    function adicionarNaTabela(memoria_calculo_bloco_id, estrutura, pavimento, trecho, estrutura_id, sessao) {
         count ++;
 
         if($.inArray(memoria_calculo_bloco_id, array_blocos_previstos) !== -1) {
@@ -493,9 +519,19 @@
                     options_planejamento += '<option value="{{$id}}">{{$nome}}</option>';
             @endforeach
 
+            if(!sessao) {
+                putSessionMemoriaDeCalculo(memoria_calculo_bloco_id, estrutura, pavimento, trecho, estrutura_id);
+            }
+
             $('#tbody_previsoes').append('\
                 <tr id="linha_'+count+'"  class="estrutura nao-preenchido" estrutura="'+estrutura_id+'" memoria_calculo_bloco_id='+memoria_calculo_bloco_id+'>\
                     <input type="hidden" name="itens['+count+'][memoria_calculo_bloco_id]" value="'+memoria_calculo_bloco_id+'">\
+                    <td>\
+                        '+$("#obra_torre_id option:selected").text()+'\
+                    </td>\
+                    <td>\
+                        '+$("#memoria_de_calculo option:selected").text()+'\
+                    </td>\
                     <td>\
                         '+estrutura+' - \
                         '+pavimento+' - \
@@ -503,23 +539,23 @@
                     </td>\
                     <td>\
                         <select class="form-control select2_add" name="itens['+count+
-                            '][planejamento_id]" id="planejamento_id_'+memoria_calculo_bloco_id+'" required>\
+                            '][planejamento_id]" id="planejamento_id_'+memoria_calculo_bloco_id+'" required onchange="putSessionMemoriaDeCalculo('+memoria_calculo_bloco_id+','+"'"+estrutura+"'"+','+"'"+pavimento+"'"+','+"'"+trecho+"'"+','+estrutura_id+');">\
                         ' + options_planejamento + '\
                         </select>\
                     </td>\
                     <td>\
                     <input type="date" class="form-control" name="itens['+count+'][data_competencia]" id="data_'+memoria_calculo_bloco_id+
-                        '" required onkeyup="verificarPreenchido('+count+','+memoria_calculo_bloco_id+');"' +
-                    ' onfocus="cancelarEdicao();"  onchange="verificarPreenchido('+count+','+memoria_calculo_bloco_id+');">\
+                        '" required onkeyup="verificarPreenchido('+count+','+memoria_calculo_bloco_id+');putSessionMemoriaDeCalculo('+memoria_calculo_bloco_id+','+"'"+estrutura+"'"+','+"'"+pavimento+"'"+','+"'"+trecho+"'"+','+estrutura_id+');"' +
+                    ' onfocus="cancelarEdicao();"  onchange="verificarPreenchido('+count+','+memoria_calculo_bloco_id+');putSessionMemoriaDeCalculo('+memoria_calculo_bloco_id+','+"'"+estrutura+"'"+','+"'"+pavimento+"'"+','+"'"+trecho+"'"+','+estrutura_id+');">\
                     </td>\
                     <td>\
                         <input type="text" class="form-control money calc_quantidade" name="itens['+count+'][qtd]" id="quantidade_'+memoria_calculo_bloco_id+
-                        '" onkeyup="calcularPorcentagem(this.value, '+memoria_calculo_bloco_id+');verificarPreenchido('+count+','+memoria_calculo_bloco_id+');" \
+                        '" onkeyup="calcularPorcentagem(this.value, '+memoria_calculo_bloco_id+');verificarPreenchido('+count+','+memoria_calculo_bloco_id+');putSessionMemoriaDeCalculo('+memoria_calculo_bloco_id+','+"'"+estrutura+"'"+','+"'"+pavimento+"'"+','+"'"+trecho+"'"+','+estrutura_id+');" \
                           onfocus="cancelarEdicao();" required>\
                     </td>\
                     <td>\
                         <input type="text" class="form-control money calc_porcentagem" id="porcentagem_'+memoria_calculo_bloco_id+
-                        '" onkeyup="calcularQuantidade(this.value, '+memoria_calculo_bloco_id+');verificarPreenchido('+count+','+memoria_calculo_bloco_id+');" \
+                        '" onkeyup="calcularQuantidade(this.value, '+memoria_calculo_bloco_id+');verificarPreenchido('+count+','+memoria_calculo_bloco_id+');putSessionMemoriaDeCalculo('+memoria_calculo_bloco_id+','+"'"+estrutura+"'"+','+"'"+pavimento+"'"+','+"'"+trecho+"'"+','+estrutura_id+');" \
                         onfocus="cancelarEdicao();">\
                     </td>\
                     <td>\
@@ -560,6 +596,8 @@
         quantidadeDistribuida(function(){
             quantidade_distribuida = 0;
         });
+
+        console.log('removi');
     }
 
     // Função para excluir a linha do banco e da tabela
@@ -626,7 +664,6 @@
     // Calcula a quantidade distribuida
     function quantidadeDistribuida(callback) {
         $('.calc_quantidade').each(function(index, objeto) {
-            console.log('calc_quantidade.each',index, objeto.value, moneyToFloat(objeto.value) );
             quantidade_distribuida += moneyToFloat(objeto.value);
         });
 
@@ -701,8 +738,11 @@
 
     function buscarMemoriaDeCalculo(memoria_de_calculo_id) {
         startLoading();
-        history.pushState("", document.title, location.pathname+'?memoria_de_calculo='+memoria_de_calculo_id);
+
+        history.pushState("", document.title, location.pathname+'?memoria_de_calculo='+memoria_de_calculo_id+'&torre='+$('#obra_torre_id').val());
         location.reload();
+
+        stopLoading();
     }
 
     function atualizaVisual() {
@@ -812,7 +852,7 @@
                             previsao_trecho =  "'"+trechoPav.nome+ "'";
                             previsao_estrutura_id = item.objId;
 
-                            trechosTD += '<td onclick="adicionarNaTabela('+previsao_bloco_id+','+previsao_estrutura+','+previsao_pavimento+','+previsao_trecho+','+previsao_estrutura_id+')" id="td_bloco_'+previsao_bloco_id+'" style="cursor:pointer;">&nbsp;' + trechoPav.nome + '&nbsp;</td>';
+                            trechosTD += '<td onclick="adicionarNaTabela('+previsao_bloco_id+','+previsao_estrutura+','+previsao_pavimento+','+previsao_trecho+','+previsao_estrutura_id+', 0)" id="td_bloco_'+previsao_bloco_id+'" style="cursor:pointer;">&nbsp;' + trechoPav.nome + '&nbsp;</td>';
                         });
                         trechosDestePavimento = '<table class="table-bordered" style="width: ' + larguraPav + '%; margin:0px auto;min-height: 31px;"><tr> ' + trechosTD + ' </tr></table>';
                     }
@@ -878,6 +918,48 @@
                     $('#btn_adicionar_bloco').attr('disabled', false);
                     atualizaVisual();
                 });
+    }
+
+    /*
+    * Ao trocar a torre, se houver algum item previsto na tabela, já carrega a MC e não deixa limpar o campo de escolha do mesmo.
+    * Se o item for removido, deixa limpar o campo de MC.
+    * Se não houver item previsto limpa o campo de MC.
+    */
+    function selecionaTorre(value) {
+        startLoading();
+
+        if(0) {
+        // Carrega a MC e não deixa limpar o campo de escolha do mesmo.
+            history.pushState("", document.title, location.pathname+'?memoria_de_calculo='+$('#memoria_de_calculo').val()+'&torre='+value);
+            location.reload();
+        } else if(0) {
+        // Libera para limpar o campo de MC.
+        } else {
+        // Limpa o campo de MC.
+            history.pushState("", document.title, location.pathname+'?memoria_de_calculo='+'&torre='+value);
+            location.reload();
+        }
+
+        stopLoading();
+    }
+
+    function putSessionMemoriaDeCalculo(memoria_calculo_bloco_id, estrutura, pavimento, trecho, estrutura_id) {
+        $.ajax({
+            url : "{{ route('memoriaCalculos.putSessionMemoriaDeCalculo') }}",
+            type : 'POST',
+            data : {
+                contrato_id : '{{$contrato->id}}',
+                contrato_item_apropriacao_id : '{{$contrato_item_apropriacao->id}}',
+                memoria_calculo_bloco_id : memoria_calculo_bloco_id,
+                estrutura : estrutura,
+                pavimento : pavimento,
+                trecho : trecho,
+                estrutura_id : estrutura_id,
+                data : $('#data_'+memoria_calculo_bloco_id).val(),
+                quantidade : $('#quantidade_'+memoria_calculo_bloco_id).val(),
+                planejamento_id : $('#planejamento_id_'+memoria_calculo_bloco_id).val()
+            }
+        });
     }
 
     function recarregarMascara() {

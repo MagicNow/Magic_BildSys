@@ -610,6 +610,9 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             ->middleware('needsPermission:memoriaCalculos.edit');
         $router->get('/{memoriaCalculo}/clone', ['as'=> 'memoriaCalculos.clone', 'uses' => 'MemoriaCalculoController@clonar'])
             ->middleware('needsPermission:memoriaCalculos.create');
+        
+        $router->post('/putSessionMemoriaDeCalculo', ['as'=> 'memoriaCalculos.putSessionMemoriaDeCalculo', 'uses' => 'MemoriaCalculoController@putSessionMemoriaDeCalculo'])
+            ->middleware('needsPermission:memoriaCalculos.create');
 
     });
     // Medição

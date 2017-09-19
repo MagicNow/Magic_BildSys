@@ -10,6 +10,8 @@ use App\Repositories\Admin\ObraRepository;
 use App\Repositories\MemoriaCalculoRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 use Response;
 
 class MemoriaCalculoController extends AppBaseController
@@ -185,5 +187,32 @@ class MemoriaCalculoController extends AppBaseController
         Flash::success('Memoria Calculo '.trans('common.deleted').' '.trans('common.successfully').'.');
 
         return redirect(route('memoriaCalculos.index'));
+    }
+
+    public function putSessionMemoriaDeCalculo(Request $request)
+    {
+        $array_session = Session::get('previsao-de-memoria-de-calculo-'.$request->contrato_id.'-'.$request->contrato_item_apropriacao_id) ? : [];
+
+        Session::put(
+            'previsao-de-memoria-de-calculo-'.$request->contrato_id.'-'.$request->contrato_item_apropriacao_id,
+            array_replace(
+                $array_session, [$request->memoria_calculo_bloco_id =>
+                    [
+                        'contrato_id' => $request->contrato_id,
+                        'contrato_item_apropriacao_id' => $request->contrato_item_apropriacao_id,
+                        'memoria_calculo_bloco_id' => $request->memoria_calculo_bloco_id,
+                        'estrutura' => $request->estrutura,
+                        'pavimento' => $request->pavimento,
+                        'trecho' => $request->trecho,
+                        'estrutura_id' => $request->estrutura_id,
+                        'data' => $request->data,
+                        'quantidade' => $request->quantidade,
+                        'planejamento_id' => $request->planejamento_id
+                    ]
+                ]
+            )
+        );
+        
+        return response()->json(true);
     }
 }
