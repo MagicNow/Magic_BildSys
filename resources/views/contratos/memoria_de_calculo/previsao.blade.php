@@ -428,6 +428,12 @@
                 if('{{$array_session['quantidade']}}') {
                     calcularPorcentagem('{{$array_session['quantidade']}}', '{{$array_session['memoria_calculo_bloco_id']}}');
                 }
+
+                array_blocos_previstos.push({{$array_session['memoria_calculo_bloco_id']}});
+        
+                setTimeout(function () {
+                    $('#td_bloco_{{$array_session['memoria_calculo_bloco_id']}}').attr('style','border: 2px solid #f98d00 !important;');
+                }, 1000);
             @endforeach
         @endif
 
@@ -461,7 +467,7 @@
 
                 setTimeout(function () {
                     $('#td_bloco_{{$item->memoria_calculo_bloco_id}}').attr('style','border: 2px solid #f98d00 !important;');
-                }, 100);
+                }, 1000);
             @endforeach
         @endif
 
@@ -513,8 +519,7 @@
                 .animate({
                 backgroundColor: 'tranparent'
                 }, 'slow');
-        } else
-        {
+        } else {
             @foreach($planejamentos as $id => $nome)
                     options_planejamento += '<option value="{{$id}}">{{$nome}}</option>';
             @endforeach
