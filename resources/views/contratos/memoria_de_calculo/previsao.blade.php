@@ -597,7 +597,7 @@
             quantidade_distribuida = 0;
         });
 
-        console.log('removi');
+        forgetSessionMemoriaDeCalculo(bloco_id);
     }
 
     // Função para excluir a linha do banco e da tabela
@@ -958,6 +958,18 @@
                 data : $('#data_'+memoria_calculo_bloco_id).val(),
                 quantidade : $('#quantidade_'+memoria_calculo_bloco_id).val(),
                 planejamento_id : $('#planejamento_id_'+memoria_calculo_bloco_id).val()
+            }
+        });
+    }
+
+    function forgetSessionMemoriaDeCalculo(memoria_calculo_bloco_id) {
+        $.ajax({
+            url : "{{ route('memoriaCalculos.forgetSessionMemoriaDeCalculo') }}",
+            type : 'POST',
+            data : {
+                contrato_id : '{{$contrato->id}}',
+                contrato_item_apropriacao_id : '{{$contrato_item_apropriacao->id}}',
+                memoria_calculo_bloco_id : memoria_calculo_bloco_id
             }
         });
     }

@@ -613,6 +613,9 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         
         $router->post('/putSessionMemoriaDeCalculo', ['as'=> 'memoriaCalculos.putSessionMemoriaDeCalculo', 'uses' => 'MemoriaCalculoController@putSessionMemoriaDeCalculo'])
             ->middleware('needsPermission:memoriaCalculos.create');
+        
+        $router->post('/forgetSessionMemoriaDeCalculo', ['as'=> 'memoriaCalculos.forgetSessionMemoriaDeCalculo', 'uses' => 'MemoriaCalculoController@forgetSessionMemoriaDeCalculo'])
+            ->middleware('needsPermission:memoriaCalculos.create');
 
     });
     // Medição
