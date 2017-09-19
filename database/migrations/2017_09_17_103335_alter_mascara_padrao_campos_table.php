@@ -15,7 +15,7 @@ class AlterMascaraPadraoCamposTable extends Migration
     {
 		
 		Schema::dropIfExists('mascara_padrao_insumos');		
-		Schema::dropIfExists('mascara_padrao');
+		/*Schema::dropIfExists('mascara_padrao');
 		
         Schema::create('mascara_padrao', function (Blueprint $table) {
             
@@ -23,7 +23,7 @@ class AlterMascaraPadraoCamposTable extends Migration
 			$table->string('nome', 50);				
 			$table->timestamps();
             $table->softDeletes();	
-        });
+        });*/
 		
         Schema::create('mascara_padrao_insumos', function (Blueprint $table) {
             
@@ -88,6 +88,6 @@ class AlterMascaraPadraoCamposTable extends Migration
      public function down()
      {       
 	   Schema::dropIfExists('mascara_padrao_insumos');
-	   Schema::dropIfExists('mascara_padrao');
+	   //Schema::dropIfExists('mascara_padrao');
      }
 }
