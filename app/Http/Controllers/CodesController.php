@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\AppBaseController;
 use App\Models\Cidade;
+use App\Models\TipoOrcamento;
 use Illuminate\Http\Request;
 use Flash;
 
@@ -39,6 +40,15 @@ class CodesController extends AppBaseController
         ])
             ->where('nome','like', '%'.$request->q.'%');
         return $cidades->paginate();
+    }
+	
+	public function buscaTipoOrcamento(Request $request){
+        $tipo_orcamentos = TipoOrcamento::select([
+            'id',
+            'nome'
+        ])
+            ->where('nome','like', '%'.$request->q.'%');
+        return $tipo_orcamentos->paginate();
     }
 }
 

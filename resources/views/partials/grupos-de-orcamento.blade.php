@@ -36,6 +36,7 @@
 	
 	<!-- Grupos de insumo Field -->
 	{!! Form::hidden('grupo_id',\App\Models\Grupo::where('codigo', '01')->whereNull('grupo_id')->first()->id,['id'=>'grupo_id', 'class'=>'js-grupos-orc']) !!}
+	
 	<!-- SubGrupos1 de insumo Field -->
 	<div class="form-group col-sm-12 {{ collect(request()->segments())->last()=='contratos'?' col-20 ': 'col-md-3' }}">
 		{!! Form::label('subgrupo1_id', 'SubGrupo-1:') !!}

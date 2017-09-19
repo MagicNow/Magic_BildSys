@@ -78,7 +78,7 @@
                                 data-toggle="modal"
                                 data-target="#modal-historico-{{ $item->id }}">
                                 <i data-toggle="tooltip"
-                                    title="Histórico"
+                                    title="Histórico de Alteração"
                                     class="fa fa-fw fa-history"></i>
                             </button>
                         </td>

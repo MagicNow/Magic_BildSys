@@ -31,14 +31,30 @@
     </ul>
 </li>
 
-<li class="treeview {{ Request::is('admin/orcamento*') ? 'active' : '' }}">
+<li class="treeview {{ Request::is('admin/orcamento*') || Request::is('admin/mascara_padrao_insumos*')  ? 'active' : '' }}">
     <a href="#">
         <i class="fa fa-balance-scale"></i> <span>Pré-Orçamento</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
     </a>
-    <ul class="treeview-menu">        
+    <ul class="treeview-menu"> 
+		@shield('mascara_padrao_insumos.list')
+        <li class="{{ Request::is('admin/mascara_padrao_insumos') ? 'active' : '' }}">
+            <a href="{!! route('admin.mascara_padrao_insumos.index') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Máscara Padrão/Insumos</span>
+            </a>
+        </li>
+        @endshield	
+		@shield('tarefa_mascaras.list')
+        <li class="{{ Request::is('admin/tarefa_mascaras') ? 'active' : '' }}">
+            <a href="{!! route('admin.tarefa_mascaras.index') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Tarefa Padrão/Máscaras P.</span>
+            </a>
+        </li>
+        @endshield
         @shield('orcamentos.list')
         <li class="{{ Request::is('admin/orcamento') ? 'active' : '' }}">
             <a href="{!! route('admin.orcamentos.index') !!}">
@@ -90,14 +106,7 @@
             </a>
         </li>
         @endshield
-		@shield('mascaraInsumos.list')
-        <li class="{{ Request::is('admin/mascaraInsumos*') ? 'active' : '' }}">
-            <a href="{!! route('admin.mascara_insumos.index') !!}">
-                <i class="fa fa-caret-right" aria-hidden="true"></i>
-                <span>Mascara Insumo</span>
-            </a>
-        </li>
-        @endshield
+		
 		@shield('levantamentos.list')
         <li class="{{ Request::is('admin/estruturas*') ? 'active' : '' }}">
             <a href="{!! route('admin.estruturas.index') !!}">
@@ -202,11 +211,7 @@
 </li>
 
 {{-- **** SUPRIMENTOS  **** --}}
-<li class="treeview {{ Request::is('admin/lembretes*') ||
-                        Request::is('admin/compradorInsumos*') ||
-                        Request::is('admin/contratoTemplates*') ||
-                        Request::is('desistenciaMotivos*') 
-                        ? 'active' : '' }}">
+<li class="treeview {{ Request::is('admin/lembretes*') || Request::is('admin/compradorInsumos*') || Request::is('admin/contratoTemplates*') || Request::is('desistenciaMotivos*')  ? 'active' : '' }}">
     <a href="#">
         <i class="fa fa-diamond"></i> <span>Suprimentos</span>
             <span class="pull-right-container">

@@ -81,10 +81,10 @@
                         <table id="fixTable" class="table table-bordered table-striped table-condensed table-nowrap">
                             <thead>
                             <tr>
-                                <th nowrap class="text-left">Insumo</th>
-                                <th nowrap class="text-center">Unidade</th>
-                                <th nowrap class="text-right">Quant.</th>
-                                <th nowrap colspan="2"  class="text-center">Orçamento</th>
+                                <th nowrap class="text-left"></th>
+                                <th nowrap class="text-center"></th>
+                                <th nowrap class="text-right"></th>
+                                <th nowrap colspan="2"  class="text-center"></th>
                                 @foreach($qcFornecedores as $qcFornecedor)
                                     <th colspan="2" nowrap class="text-center">
                                         {{ $qcFornecedor->fornecedor->nome }}
@@ -93,10 +93,10 @@
                             </tr>
 
                             <tr>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th nowrap class="text-right">Vlr. Unitário</th>
+                                <th>Insumo</th>
+                                <th>Un. de medida</th>
+                                <th>QTD. Q.C.</th>
+                                <th nowrap class="text-right">Vlr. Unitário Orçamento</th>
                                 <th nowrap class="text-right">Vlr. Total</th>
                                 @foreach($qcFornecedores as $qcFornecedor)
                                     <th nowrap class="text-right">Vlr. Unitário</th>
@@ -161,7 +161,7 @@
                     <table class="table table-striped table-condensed table-bordered table-hover">
                         <thead>
                         <tr>
-                            <th>Condição</th>
+                            <th width="20%">Condição</th>
                             @foreach($qcFornecedores as $qcFornecedor)
                                 <th>
                                     {{ $qcFornecedor->fornecedor->nome }}
@@ -228,7 +228,7 @@
                     <table class="table table-striped table-condensed table-bordered table-hover">
                         <thead>
                         <tr>
-                            <th>Item</th>
+                            <th width="20%">Item</th>
                             @foreach($qcFornecedores as $qcFornecedor)
                                 <th>
                                     {{ $qcFornecedor->fornecedor->nome }}
@@ -316,7 +316,7 @@
                     <table class="table table-striped table-condensed table-bordered table-hover">
                         <thead>
                         <tr>
-                            <th>Detalhes</th>
+                            <th width="20%">Detalhes</th>
                             @php
                             $porcentagem_material = '';
                             $porcentagem_servico = '';
