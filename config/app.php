@@ -190,6 +190,8 @@ return [
         Cagartner\CorreiosConsulta\ServiceProvider::class,
         Barryvdh\Snappy\ServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
+
+        SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class
     ],
 
     /*
@@ -244,7 +246,8 @@ return [
         'Correios'    => Cagartner\CorreiosConsulta\Facade::class,
         'PDF' => Barryvdh\Snappy\Facades\SnappyPdf::class,
         'SnappyImage' => Barryvdh\Snappy\Facades\SnappyImage::class,
-        'Image' => Intervention\Image\Facades\Image::class
+        'Image' => Intervention\Image\Facades\Image::class,
+        'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class
     ],
 
 ];
