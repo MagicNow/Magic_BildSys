@@ -31,6 +31,7 @@ class AlterMascaraPadraoTable extends Migration
      */
     public function down()
     {
-        
+        Schema::dropIfExists('mascara_padrao_insumos');
+	   Schema::dropIfExists('mascara_padrao');
     }
 }

@@ -40,11 +40,21 @@ class SemPlanejamentoInsumoDataTable extends DataTable
             ->whereNotExists(function ($query) {
             $query->select(DB::raw(1))
                 ->from('planejamento_compras')
-                ->whereRaw('planejamento_compras.insumo_id = insumos.id');
+                ->join('planejamentos', 'planejamentos.id', '=', 'planejamento_compras.planejamento_id')
+                ->where('orcamentos.insumo_id', '=', 'planejamento_compras.insumo_id')
+                ->where('planejamentos.obra_id', '=', 'orcamentos.obra_id')
+                ->where('orcamentos.grupo_id', '=', 'planejamento_compras.grupo_id')
+                ->where('orcamentos.subgrupo1_id', '=', 'planejamento_compras.subgrupo1_id')
+                ->where('orcamentos.subgrupo2_id', '=', 'planejamento_compras.subgrupo2_id')
+                ->where('orcamentos.subgrupo3_id', '=', 'planejamento_compras.subgrupo3_id')
+                ->where('orcamentos.servico_id', '=', 'planejamento_compras.servico_id')
+                ->whereNull('planejamento_compras.deleted_at');
         });
 
         $insumos->where('orcamentos.obra_id',intval($this->request()->get('obra')));
 
+//        echo $insumos->toSql();
+//        die();
         return $this->applyScopes($insumos);
 
     }

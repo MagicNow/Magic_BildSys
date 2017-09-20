@@ -529,6 +529,8 @@ class ContratoController extends AppBaseController
         $contrato_item_apropriacao = ContratoItemApropriacao::find($contrato_item_apropriacao_id);
         $filtro_estruturas = [];
         $planejamentos = [];
+        $memoria_de_calculo_id = null;
+        $torre_id = null;
 
         if (empty($contrato)) {
             Flash::error('Contrato ' . trans('common.not-found'));
@@ -599,10 +601,25 @@ class ContratoController extends AppBaseController
             ->where('contrato_item_id', $contrato_item_apropriacao->contrato_item_id)
             ->get();
 
-        if(count($previsoes)) {
-            $memoria_de_calculo_id = $previsoes->first()->memoriaCalculoBloco->memoriaCalculo->id;
-        }else{
+        if($request->memoria_de_calculo) {
             $memoria_de_calculo_id = $request->memoria_de_calculo;
+        }else{
+            if($previsoes->first()) {
+                if($previsoes->first()->memoriaCalculoBloco) {
+                    if($previsoes->first()->memoriaCalculoBloco->memoriaCalculo) {
+                        $memoria_de_calculo_id = $previsoes->first()->memoriaCalculoBloco->memoriaCalculo->id;
+                    }
+                }
+            }
+        }
+
+
+        if($request->torre) {
+            $torre_id = $request->torre;
+        }else{
+            if($previsoes->first()) {
+                $torre_id = $previsoes->first()->obra_torre_id;
+            }
         }
 
         if($memoria_de_calculo_id) {
@@ -732,7 +749,9 @@ class ContratoController extends AppBaseController
                 'filtro_estruturas',
                 'blocos',
                 'memoriaCalculo',
-                'planejamentos'
+                'planejamentos',
+                'memoria_de_calculo_id',
+                'torre_id'
             )
         );
     }
@@ -751,7 +770,6 @@ class ContratoController extends AppBaseController
                     $previsao->unidade_sigla = $request->unidade_sigla;
                     $previsao->contrato_item_apropriacao_id = $request->contrato_item_apropriacao_id;
                     $previsao->contrato_item_id = $request->contrato_item_id;
-                    $previsao->obra_torre_id = $request->obra_torre_id;
                     $previsao->user_id = Auth::id();
                     $previsao->save();
                 }

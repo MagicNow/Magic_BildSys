@@ -2,10 +2,10 @@
 
 namespace App\Repositories;
 
-use App\Models\CarteirasSla;
+use App\Models\Qc;
 use InfyOm\Generator\Common\BaseRepository;
 
-class CarteirasSlaRepository extends BaseRepository
+class QcRepository extends BaseRepository
 {
     /**
      * @var array
@@ -19,7 +19,7 @@ class CarteirasSlaRepository extends BaseRepository
      **/
     public function model()
     {
-        return CarteirasSla::class;
+        return Qc::class;
     }
 	
 }

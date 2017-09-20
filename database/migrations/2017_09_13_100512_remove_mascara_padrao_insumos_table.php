@@ -13,43 +13,35 @@ class RemoveMascaraPadraoInsumosTable extends Migration
      */
     public function up()
     {
-        
-		Schema::table('mascara_padrao', function (Blueprint $table){
+        Schema::dropIfExists('mascara_padrao_insumos');
+        Schema::dropIfExists('mascara_padrao');
 
-            \Illuminate\Support\Facades\DB::table('mascara_padrao')->delete();			
-            
-			$table->dropForeign(['obra_id']);  
-			$table->dropForeign(['user_id']);  
-			$table->dropColumn(['obra_id']);
-			$table->dropColumn(['user_id']);
-			
-		 });
-		
-		Schema::table('mascara_padrao_insumos', function (Blueprint $table){
 
-            \Illuminate\Support\Facades\DB::table('mascara_padrao_insumos')->delete();			
-            			
-            $table->dropColumn(['terreo_externo_solo']);
-			$table->dropColumn(['terreo_externo_estrutura']);
-			$table->dropColumn(['terreo_interno']);
-			$table->dropColumn(['primeiro_pavimento']);
-			$table->dropColumn(['segundo_ao_penultimo']);
-			$table->dropColumn(['cobertura_ultimo_piso']);
-			$table->dropColumn(['atico']);
-			$table->dropColumn(['reservatorio']);
-			$table->dropColumn(['qtd_total']);
-			$table->dropColumn(['preco_unitario']);
-			$table->dropColumn(['preco_total']);
-			$table->dropColumn(['referencia_preco']);
-			$table->dropColumn(['obs']);
-			$table->dropColumn(['porcentagem_orcamento']);
-			
-			/*$table->unsignedInteger('mascara_padrao_insumos')->nullable();
-            $table->foreign('mascara_padrao_insumos')
-				->references('id')->on('insumo_grupos')
-				->onUpdate('cascade')
-				->onDelete('set Null');*/
-			
+        Schema::create('mascara_padrao', function (Blueprint $table) {
+
+            $table->increments('id');
+            $table->string('nome', 50);
+            $table->unsignedInteger('obra_id');
+            $table->unsignedInteger('orcamento_tipo_id');
+            $table->unsignedInteger('user_id');
+
+            $table->foreign('obra_id')
+                ->references('id')->on('obras')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+
+            $table->foreign('orcamento_tipo_id')
+                ->references('id')->on('orcamento_tipos')
+                ->onDelete('restrict')
+                ->onUpdate('cascade');
+
+            $table->foreign('user_id')
+                ->references('id')->on('users')
+                ->onDelete('restrict')
+                ->onUpdate('cascade');
+
+
+            $table->timestamps();
         });
     }
 
@@ -60,6 +52,7 @@ class RemoveMascaraPadraoInsumosTable extends Migration
      */
     public function down()
     {
-        
+        Schema::dropIfExists('mascara_padrao_insumos');
+        Schema::dropIfExists('mascara_padrao');
     }
 }

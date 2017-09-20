@@ -280,6 +280,9 @@ class RolesAndPermissions extends Seeder
 
             'carteirassla.list' => 'Lista de Carteiras e SLA de cada obra',
             'carteirassla.create' => 'Criação de QC',
+
+            'qc.list' => 'Lista de QC',
+            'qc.create' => 'Criação de QC',
         ];
 
         $permissionAccess = [];

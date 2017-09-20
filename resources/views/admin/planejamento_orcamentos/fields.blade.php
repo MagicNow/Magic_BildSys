@@ -75,12 +75,13 @@
 
 @section('scripts')
     <script type="text/javascript">
+        var nao_relacionado = 0;
         function selectPlanejamento(id){
             var rota = "{{url('/admin/planejamentos/planejamentoOrcamentos/planejamento')}}/";
             if(id){
 
-                $("#js-btn-semPlanejamento").removeClass('hide');
-                $("#js-btn-semPlanejamento").attr("href", "{{url('/admin/planejamentos/planejamentoOrcamentos/sem-planejamento/view')}}/"+id)
+                $("#nao_relacionados").removeClass('hide');
+                {{--$("#nao_relacionados").attr("href", "{{url('/admin/planejamentos/planejamentoOrcamentos/sem-planejamento/view')}}/"+id)--}}
 
                 $('.box.box-primary').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
                 $.ajax({
@@ -101,7 +102,7 @@
 
             } else {
 
-                $("#js-btn-semPlanejamento").addClass('hide');
+                $("#nao_relacionados").addClass('hide');
             }
         }
 
@@ -148,7 +149,7 @@
                                 '<div class="row">' +
                                 '<div class="col-md-12">' +
                                 '<input type="checkbox" id="insumo_' + retorno.grupo_id + '" name="grupo_id" value="' + retorno.grupo_id + '">' +
-                                '<button type="button" class="btn btn-link text-left" ' +
+                                '<button type="button" id="item_id_'+retorno.grupo_id+'" class="btn btn-link text-left" ' +
                                 'onclick="listInsumosRelacionados(' + retorno.grupo_id + ','+ retorno.obra_id +',\'subgrupo1_id\', \'grupo_id\')">' + retorno.codigo + ' - ' + retorno.nome +
                                 '</button>' +
                                 '<span>'+ ((retorno.tarefa) ? ' - '+ retorno.tarefa : '' ) +'</span>'+
@@ -182,7 +183,7 @@
             }
         }
 
-        function listInsumosRelacionados(obj_id, obra_id, tipo, campo){
+        function listInsumosRelacionados(obj_id, obra_id, tipo, campo, relacionado){
             if(campo == 'grupo_id') {
                 if($('#obj_' + obj_id).attr('expandido')=='1'){
                     $('#obj_' + obj_id).attr('expandido','0');
@@ -216,7 +217,8 @@
                                 'id' : obj_id,
                                 'obra' : obra_id,
                                 'campo': campo,
-                                'tipo' : tipo
+                                'tipo' : tipo,
+                                'nao_relacionado' : relacionado
                             },
                             type: "GET"
                         }
@@ -228,13 +230,13 @@
                                     '<div class="col-md-12">' +
                                     '<input type="checkbox" id="insumo_'+ value.id +'" name="'+value.atual+'[]" value="'+ value.id +'"> ' +
                                     '<button type="button" class="btn btn-link text-left" ' +
-                                    'onclick="listInsumosRelacionados('+value.id+','+value.obra_id+',\''+ value.proximo+'\',\''+value.atual+'\')">'+value.codigo+' - '+value.nome+
+                                    'onclick="listInsumosRelacionados('+value.id+','+value.obra_id+',\''+ value.proximo+'\',\''+value.atual+'\', '+nao_relacionado+')">'+value.codigo+' - '+value.nome+
                                     '</button>'+
                                     ( value.tarefa ? ' <span id="vinc_'+value.atual+'_'+ value.id +'"><span class="label label-info"><i class="fa fa-link"></i> TAREFA: ' + value.tarefa +'</span> &nbsp;' +
                                     '<button type="button" class="btn btn-danger btn-xs btn-flat" title="Desvincular" onclick="desvincular(\''+value.atual+'\','+value.id+','+value.obra_id+')">' +
                                     '<i class="fa fa-chain-broken"></i> </button> </span>': '' ) +
                                     '<button type="button" class="btn btn-link pull-right" ' +
-                                    'onclick="listInsumosRelacionados('+value.id+','+value.obra_id+',\''+ value.proximo+'\',\''+value.atual+'\')">'+
+                                    'onclick="listInsumosRelacionados('+value.id+','+value.obra_id+',\''+ value.proximo+'\',\''+value.atual+'\', '+nao_relacionado+')">'+
                                     ' <i class="fa fa-plus-square pull-right" id="ico_'+value.atual+'_'+value.id+'" aria-hidden="true"></i>' +
                                     '</button>'+
                                     '</div>' +
@@ -360,6 +362,18 @@
                 $('#carrinho').css('display','');
                 $('#grupo_insumos').css('display','none');
             }
+        }
+
+        function naoRelacionados(valor){
+            startLoading();
+            nao_relacionado = valor;
+            if(valor){
+                $('#nao_relacionados').attr('onclick', 'naoRelacionados(0)').text('Ver todas as estruturas do orçamento');
+            }else{
+                $('#nao_relacionados').attr('onclick', 'naoRelacionados(1)').text('Ver insumos não relacionados');
+            }
+            $('#item_id_{{\App\Models\Grupo::where('codigo', '01')->whereNull('grupo_id')->first()->id}}').click();
+            stopLoading();
         }
     </script>
 @stop

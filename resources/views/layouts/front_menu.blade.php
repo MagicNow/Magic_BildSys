@@ -102,9 +102,9 @@
         </li>
         @endshield
 
-        @shield('carteirassla.list')
-        <li class="{{ Request::is('carteiras_sla*') ? 'active' : '' }}">
-            <a href="{{ route('carteiras_sla.index') }}">
+        @shield('qc.list')
+        <li class="{{ Request::is('qc*') ? 'active' : '' }}">
+            <a href="{{ route('qc.index') }}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
                 <span>QC</span>
             </a>
