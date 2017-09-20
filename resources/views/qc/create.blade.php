@@ -2,7 +2,7 @@
 
 @section('content')
     <section class="content-header">
-        <h1>Lista de CARTEIRAS e SLA de cada obra</h1>
+        <h1>Criar QC</h1>
     </section>
     <div class="content">
         @include('adminlte-templates::common.errors')
@@ -10,9 +10,9 @@
 
             <div class="box-body">
                 <div class="row">
-                    {!! Form::open(['route' => 'carteiras_sla.store']) !!}
+                    {!! Form::open(['route' => 'qc.store']) !!}
 
-                        @include('carteiras_sla.fields')
+                        @include('qc.fields')
 
                     {!! Form::close() !!}
                 </div>

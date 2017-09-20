@@ -34,6 +34,8 @@ $router->get('/buscar/insumo-grupos', 'BuscarController@getInsumoGrupos')
     ->name('buscar.insumo-grupos');
 $router->get('/buscar/insumos', 'BuscarController@getInsumos')
     ->name('buscar.insumos');
+$router->get('/buscar/carteiras', 'BuscarController@getCarteiras')
+    ->name('buscar.carteiras');
 $router->get('/buscar/fornecedores', 'BuscarController@getFornecedores')
     ->name('buscar.fornecedores');
 $router->get('/buscar/tipo-equalizacao-tecnicas', 'BuscarController@getTipoEqualizacaoTecnicas')
@@ -1263,12 +1265,11 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     });	
 
     # DocBild  
-    $router->group(['middleware' => 'needsPermission:carteirassla.list'], function () use ($router) {
-        $router->get('carteiras-sla', ['as' => 'carteiras_sla.index', 'uses' => 'CarteirasSlaController@index']);
-        $router->get('carteiras-sla/create', ['as' => 'carteiras_sla.create', 'uses' => 'CarteirasSlaController@create']);
-        $router->post('carteiras-sla', ['as' => 'carteiras_sla.store', 'uses' => 'CarteirasSlaController@store']);
-        $router->get('carteiras-sla/buscar/busca_carteiras', ['as' => 'carteiras_sla.busca_carteiras', 'uses' => 'CarteirasSlaController@buscaCarteira']);
-        $router->get('carteiras-sla/buscar/busca_obras', ['as' => 'carteiras_sla.busca_obras', 'uses' => 'CarteirasSlaController@buscaObra']);
+    $router->group(['middleware' => 'needsPermission:qc.list'], function () use ($router) {
+        $router->get('qc', ['as' => 'qc.index', 'uses' => 'QcController@index']);
+        $router->get('qc/create', ['as' => 'qc.create', 'uses' => 'QcController@create']);
+        $router->post('qc', ['as' => 'qc.store', 'uses' => 'QcController@store']);
+        $router->get('qc/buscar/busca_carteiras', ['as' => 'qc.busca_carteiras', 'uses' => 'QcController@buscaCarteira']);
     });
 
 	# Configuracao Estatica

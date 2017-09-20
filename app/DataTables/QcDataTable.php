@@ -2,13 +2,12 @@
 
 namespace App\DataTables;
 
-use App\Models\CarteirasSla;
+use App\Models\Qc;
 use Yajra\Datatables\Services\DataTable;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
-class CarteirasSlaDataTable extends DataTable
+class QcDataTable extends DataTable
 {
 
     /**
@@ -20,12 +19,12 @@ class CarteirasSlaDataTable extends DataTable
     {
         return $this->datatables
             ->eloquent($this->query())			
-            ->editColumn('created_at', function ($carteiras_sla) {
-                return $carteiras_sla->created_at
-                    ? $carteiras_sla->created_at->format('d/m/Y')
+            ->editColumn('created_at', function ($qc) {
+                return $qc->created_at
+                    ? $qc->created_at->format('d/m/Y')
                     : '';
             })
-            ->editColumn('action', 'carteiras_sla.datatables_actions')
+            ->editColumn('action', 'qc.datatables_actions')
 			->make(true);
     }
 
@@ -34,26 +33,28 @@ class CarteirasSlaDataTable extends DataTable
      */
     public function query()
     {
-        $query = CarteirasSla::query();
+        $query = Qc::query();
 
         $query->select([
-            'carteiras_sla.id',
-            'carteiras_sla.created_at',
-			'carteiras_sla.obra_inicio',
-			'carteiras_sla.obra_subir_qc',
-			'carteiras_sla.obra_aprovar_qc',
-            'carteiras_sla.obra_finalizar_qc',
-            'carteiras_sla.inicio_atividade',
+            'qc.id',
+            DB::raw('obras.nome AS obra_nome'),
+            DB::raw('carteiras.nome AS carteira_nome'),
+            'qc.created_at',
+			'tipologia',
+			'descricao',
+			'valor_pre_orcamento',
+            'valor_orcamento_inicial',
+            'status',
         ])
-        ->join('carteiras', 'carteiras.id', 'carteiras_sla.carteira_id')
-        ->join('obras', 'obras.id', 'carteiras_sla.obra_id')
-        ->groupBy('carteiras_sla.id');
+        ->join('carteiras', 'carteiras.id', 'carteira_id')
+        ->join('obras', 'obras.id', 'obra_id')
+        ->groupBy('qc.id');
 
         $request = $this->request();
 
         if(!is_null($request->days)) {
             $query->whereDate(
-                'carteiras_sla.created_at',
+                'qc.created_at',
                 '>=',
                 Carbon::now()->subDays($request->days)->toDateString()
             );
@@ -62,7 +63,7 @@ class CarteirasSlaDataTable extends DataTable
         if($request->data_start) {
             if(strpos($request->data_start, '/')){
                 $query->whereDate(
-                    'carteiras_sla.created_at',
+                    'qc.created_at',
                     '>=',
                     Carbon::createFromFormat('d/m/Y', $request->data_start)->toDateString()
                 );
@@ -71,7 +72,7 @@ class CarteirasSlaDataTable extends DataTable
 
         if($request->data_end) {
             $query->whereDate(
-                'carteiras_sla.created_at',
+                'qc.created_at',
                 '<=',
                 Carbon::createFromFormat('d/m/Y', $request->data_end)->toDateString()
             );
@@ -144,27 +145,16 @@ class CarteirasSlaDataTable extends DataTable
     protected function getColumns()
     {
         return [
-            'obra' => ['name' => 'obra', 'data' => 'obras.nome', 'title' => 'Obra'],            
-            'carteira' => ['name' => 'carteira', 'data' => 'carteira', 'title' => 'Carteira'],
-			'obra_inicio' => ['name' => 'obra_inicio', 'data' => 'obra_inicio', 'title' => 'Data início'],
-			'obra_subir_qc' => ['name' => 'obra_subir_qc', 'data' => 'obra_subir_qc', 'title' => 'Data subir QC'],
-			'obra_aprovar_qc' => ['name' => 'obra_aprovar_qc', 'data' => 'obra_aprovar_qc', 'title' => 'Data aprovar QC'],
-			'obra_finalizar_qc' => ['name' => 'obra_finalizar_qc', 'data' => 'obra_finalizar_qc', 'title' => 'Data finalizar QC'],
-            'inicio_atividade' => ['name' => 'inicio_atividade', 'data' => 'inicio_atividade', 'title' => 'Data inicio atividades'],
-			'created_at'        => ['name' => 'created_at', 'data' => 'created_at', 'title' => 'Data'],
-			'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
+            'id' => ['name' => 'id', 'data' => 'id', 'title' => 'ID'],
+            'tipologia' => ['name' => 'tipologia', 'data' => 'tipologia', 'title' => 'Tipologia'],
+            'status' => ['name' => 'status', 'data' => 'status', 'title' => 'Status'],
+            'carteira_id' => ['name' => 'carteira_id', 'data' => 'carteira_nome', 'title' => 'Carteira'],
+            'descricao' => ['name' => 'descricao', 'data' => 'descricao', 'title' => 'Descrição do serviço'],
+            'obra' => ['name' => 'obra_id', 'data' => 'obra_nome', 'title' => 'Obra'],
+            'valor_pre_orcamento' => ['name' => 'valor_pre_orcamento', 'data' => 'valor_pre_orcamento', 'title' => 'Valor Pré-Orçamento'],
+            'valor_orcamento_inicial' => ['name' => 'valor_orcamento_inicial', 'data' => 'valor_orcamento_inicial', 'title' => 'Valor Orçamento Inicial'],
+			'created_at' => ['name' => 'created_at', 'data' => 'created_at', 'title' => 'Data'],
+			'action' => ['name' => 'Ações', 'title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'15%', 'class' => 'all']
 		];
     }
-
-    /**
-     * Get filename for export
-     *
-     * @return string
-     */
-    protected function filename()
-    {
-        return 'lpu_' . time();
-    }
-
-
 }
