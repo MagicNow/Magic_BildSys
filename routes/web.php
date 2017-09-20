@@ -1267,9 +1267,14 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     # DocBild  
     $router->group(['middleware' => 'needsPermission:qc.list'], function () use ($router) {
         $router->get('qc', ['as' => 'qc.index', 'uses' => 'QcController@index']);
+        $router->get('/{qc}',['as' => 'qc.show', 'uses' => 'QcController@show'])
+            ->middleware('needsPermission:qc.show');
+        $router->get('/{qc}/editar',['as' => 'qc.edit', 'uses' => 'QcController@edit']);
+        $router->patch('/{qc}/update',['as' => 'qc.update', 'uses' => 'QcController@update']);
         $router->get('qc/create', ['as' => 'qc.create', 'uses' => 'QcController@create']);
         $router->post('qc', ['as' => 'qc.store', 'uses' => 'QcController@store']);
         $router->get('qc/buscar/busca_carteiras', ['as' => 'qc.busca_carteiras', 'uses' => 'QcController@buscaCarteira']);
+        $router->delete('qc/{qc}', ['as' => 'qc.destroy', 'uses' => 'QcController@destroy']);
     });
 
 	# Configuracao Estatica

@@ -9,6 +9,7 @@ use Laracasts\Flash\Flash;
 use App\Repositories\QcRepository;
 use App\Http\Requests\CreateQcRequest;
 use App\Models\Obra;
+use App\Models\Carteira;
 
 class QcController extends AppBaseController
 {
@@ -40,7 +41,9 @@ class QcController extends AppBaseController
     public function create()
     {
         $obras = Obra::pluck('nome','id')->toArray();
-        return view('qc.create', compact('obras'));
+        $carteiras = Carteira::pluck('nome','id')->toArray();
+
+        return view('qc.create', compact('obras', 'carteiras'));
     }
 
     /**
@@ -54,9 +57,100 @@ class QcController extends AppBaseController
     {
         $input = $request->all();
 
-        $medicaoServico = $this->qcRepository->create($input);
+        $qc = $this->qcRepository->create($input);
 
         Flash::success('QC '.trans('common.saved').' '.trans('common.successfully').'.');
+
+        return redirect(route('qc.index'));
+    }
+
+    /**
+     * Display the specified Qc.
+     *
+     * @param  int $id
+     *
+     * @return Response
+     */
+    public function show($id)
+    {
+        $qc = $this->qcRepository->findWithoutFail($id);
+
+        if (empty($qc)) {
+            Flash::error('Qc '.trans('common.not-found'));
+
+            return redirect(route('qc.index'));
+        }
+
+        return view('qc.show')->with('qc', $qc);
+    }
+
+    /**
+     * Show the form for editing the specified Qc.
+     *
+     * @param  int $id
+     *
+     * @return Response
+     */
+    public function edit($id)
+    {
+        $qc = $this->qcRepository->findWithoutFail($id);
+        $obras = Obra::pluck('nome','id')->toArray();
+        $carteiras = Carteira::pluck('nome','id')->toArray();
+
+        if (empty($qc)) {
+            Flash::error('Qc '.trans('common.not-found'));
+
+            return redirect(route('qc.index'));
+        }
+
+        return view('qc.edit', compact('qc', 'obras', 'carteiras'));
+    }
+
+    /**
+     * Update the specified Grupo in storage.
+     *
+     * @param  int              $id
+     * @param UpdateGrupoRequest $request
+     *
+     * @return Response
+     */
+    public function update($id, CreateQcRequest $request)
+    {
+        $grupo = $this->qcRepository->findWithoutFail($id);
+
+        if (empty($grupo)) {
+            Flash::error('Qc '.trans('common.not-found'));
+
+            return redirect(route('qc.index'));
+        }
+
+        $grupo = $this->qcRepository->update($request->all(), $id);
+
+        Flash::success('Grupo '.trans('common.updated').' '.trans('common.successfully').'.');
+
+        return redirect(route('qc.index'));
+    }
+
+    /**
+     * Remove the specified Qc from storage.
+     *
+     * @param  int $id
+     *
+     * @return Response
+     */
+    public function destroy($id)
+    {
+        $qc = $this->qcRepository->findWithoutFail($id);
+
+        if (empty($qc)) {
+            Flash::error('Regional '.trans('common.not-found'));
+
+            return redirect(route('regionals.index'));
+        }
+
+        $this->qcRepository->delete($id);
+
+        Flash::success('Regional '.trans('common.deleted').' '.trans('common.successfully').'.');
 
         return redirect(route('qc.index'));
     }

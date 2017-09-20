@@ -52,4 +52,20 @@ class Qc extends Model
         'valor_pre_orcamento' => 'required',
         'valor_orcamento_inicial' => 'required'
     ];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function obra()
+    {
+        return $this->belongsTo(\App\Models\Obra::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function carteira()
+    {
+        return $this->belongsTo(\App\Models\Carteira::class);
+    }
 }

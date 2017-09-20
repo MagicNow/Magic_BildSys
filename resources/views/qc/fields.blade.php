@@ -17,7 +17,7 @@
 <!-- Carteira ID Field -->
 <div class="form-group col-sm-6">
 	{!! Form::label('carteira_id', 'Carteira:') !!}
-	{!! Form::select('carteira_id',[], @isset($qc) ? $qc->carteira_id : NULL, ['class' => 'form-control select2']) !!}
+	{!! Form::select('carteira_id', $carteiras, @isset($qc) ? $qc->carteira_id : NULL, ['class' => 'form-control select2']) !!}
 </div>
 
 <!-- Descrição Field -->
