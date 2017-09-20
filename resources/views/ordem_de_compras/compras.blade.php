@@ -211,6 +211,7 @@
                         $('#planejamento_id').html(options_tarefas);
                         $('#planejamento_id').trigger('change.select2');
 
+                        atualizaCalendario();
                     })
                     .fail(function (retorno) {
                         erros = '';
@@ -406,12 +407,12 @@
 
             $exibirPorTarefa.on('change ifToggled', function(event) {
                 var isChecked = $exibirPorTarefa.prop('checked');
-                var date = calendar.options.position.start.toISOString().split('T')[0];
+//                var date = calendar.options.position.start.toISOString().split('T')[0];
 
-                calendar = $('#calendar').calendar(Object.assign(calendarOptions, {
-                    events_source: '/lembretes?exibir_por_tarefa=' + (+isChecked),
-                    day: date
-                }));
+//                calendar = $('#calendar').calendar(Object.assign(calendarOptions, {
+//                    events_source: '/lembretes?exibir_por_tarefa=' + (+isChecked),
+//                    day: date
+//                }));
 
                 LaravelDataTables.dataTableBuilder.ajax.url(
                         location.pathname + '?exibir_por_tarefa=' + (+isChecked)
@@ -422,17 +423,18 @@
                     LaravelDataTables.dataTableBuilder.column('carteiras.nome:name').visible(!isChecked);
                 });
 
+                atualizaCalendario();
             });
 
             var $exibirPorCarteira = $('#exibir_por_carteira');
             $exibirPorCarteira.on('change ifToggled', function(event) {
                 var isChecked = $exibirPorCarteira.prop('checked');
-                var date = calendar.options.position.start.toISOString().split('T')[0];
+//                var date = calendar.options.position.start.toISOString().split('T')[0];
 
-                calendar = $('#calendar').calendar(Object.assign(calendarOptions, {
-                    events_source: '/lembretes?exibir_por_carteira=' + (+isChecked),
-                    day: date
-                }));
+//                calendar = $('#calendar').calendar(Object.assign(calendarOptions, {
+//                    events_source: '/lembretes?exibir_por_carteira=' + (+isChecked),
+//                    day: date
+//                }));
 
                 LaravelDataTables.dataTableBuilder.ajax.url(
                         location.pathname + '?exibir_por_carteira=' + (+isChecked)
@@ -443,6 +445,7 @@
                     LaravelDataTables.dataTableBuilder.column('grupo:name').visible(!isChecked);
                 });
 
+                atualizaCalendario();
             });
 
             stopLoading();
