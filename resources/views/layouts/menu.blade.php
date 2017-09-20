@@ -327,4 +327,21 @@
     </ul>
 </li>
 
-
+<li class="treeview {{ Request::is('admin/tipologia*') ? 'active' : '' }}">
+    <a href="#">
+        <i class="fa fa-building"></i> <span>Tipologia</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+    </a>
+    <ul class="treeview-menu">
+        @shield('tipologia.list')
+        <li class="{{ Request::is('admin/tipologia*') ? 'active' : '' }}">
+            <a href="{!! route('admin.tipologia.index') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Tipologias</span>
+            </a>
+        </li>
+        @endshield
+    </ul>
+</li>

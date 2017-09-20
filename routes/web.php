@@ -79,6 +79,18 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
         $router->get('orcamentos/{orcamentos}/edit', ['as' => 'admin.orcamentos.edit', 'uses' => 'Admin\OrcamentoController@edit']);
     });
 
+    # Tipologia
+    $router->group(['middleware' => 'needsPermission:tipologia.list'], function () use ($router) {
+        $router->get('tipologia', ['as' => 'admin.tipologia.index', 'uses' => 'Admin\TipologiaController@index']);
+        $router->post('tipologia', ['as' => 'admin.tipologia.store', 'uses' => 'Admin\TipologiaController@store']);
+        $router->get('tipologia/create', ['as' => 'admin.tipologia.create', 'uses' => 'Admin\TipologiaController@create']);
+        $router->put('tipologia/{tipologia}', ['as' => 'admin.tipologia.update', 'uses' => 'Admin\TipologiaController@update']);
+        $router->patch('tipologia/{tipologia}', ['as' => 'admin.tipologia.update', 'uses' => 'Admin\TipologiaController@update']);
+        $router->delete('tipologia/{tipologia}', ['as' => 'admin.tipologia.destroy', 'uses' => 'Admin\TipologiaController@destroy']);
+        $router->get('tipologia/{tipologia}', ['as' => 'admin.tipologia.show', 'uses' => 'Admin\TipologiaController@show']);
+        $router->get('tipologia/{tipologia}/edit', ['as' => 'admin.tipologia.edit', 'uses' => 'Admin\TipologiaController@edit']);
+    });
+
     # Importação de Planilhas de Planejamentos
     $router->group(['middleware' => 'needsPermission:planejamento.import'], function () use ($router) {
         $router->get('planejamento/', ['as' => 'admin.planejamentos.indexImport', 'uses' => 'Admin\PlanejamentoController@indexImport']);

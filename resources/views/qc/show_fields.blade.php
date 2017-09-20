@@ -40,6 +40,12 @@
     <p class="form-control">{!! $qc->valor_orcamento_inicial !!}</p>
 </div>
 
+<!-- Valor da Gerencial Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('valor_gerencial', 'Valor da Gerencial:') !!}
+    <p class="form-control">{!! $qc->valor_gerencial !!}</p>
+</div>
+
 <!-- Created At Field -->
 <div class="form-group col-md-6">
     {!! Form::label('created_at', 'Created At:') !!}
