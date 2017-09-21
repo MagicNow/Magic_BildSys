@@ -126,6 +126,6 @@ class SemCompradorInsumoDataTable extends DataTable
      */
     protected function filename()
     {
-        return 'semCarteiraInsumos';
+        return 'semCompradorInsumos';
     }
 }

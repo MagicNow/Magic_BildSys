@@ -201,7 +201,6 @@ class ComprasDataTable extends DataTable
                 DB::raw("CONCAT(insumos_sub.codigo,' - ' ,insumos_sub.nome) as substitui"),
                 'orcamentos.id as orcamento_id',
                 'insumos.unidade_sigla',
-                'insumos.codigo',
                 'insumos.insumo_grupo_id',
                 'orcamentos.obra_id',
                 'orcamentos.grupo_id',
@@ -476,6 +475,12 @@ class ComprasDataTable extends DataTable
 		if($this->request()->get('carteira_id')){
             if(count($this->request()->get('carteira_id')) && $this->request()->get('carteira_id')[0] != "") {
                 $insumo_query->where('carteiras.id', $this->request()->get('carteira_id'));
+            }
+        }
+
+		if($this->request()->get('exibir_por_carteira')){
+            if(count($this->request()->get('exibir_por_carteira')) && $this->request()->get('exibir_por_carteira')[0] != "") {
+                $insumo_query->groupBy('carteiras.nome');
             }
         }
 

@@ -62,6 +62,12 @@ class TemplatePlanilhasTableSeeder extends Seeder
                 'nome' => 'Orçamento/CLO/BD',
 				'modulo' => 'Cronograma Fisicos',
 				'colunas' => '["custo","resumo","torre","pavimento","tarefa","critica","data_inicio","data_termino","concluida"]'
+            ],			
+			[
+                'id' => 9,
+                'nome' => 'Levantamentos',
+				'modulo' => 'Levantamentos',
+				'colunas' => '["apropriacao","insumo","torre","andar","pavimento","trecho","apartamento","comodo","parede","trecho_parede","personalizavel","quantidade","perda","planta","planta_opcao"]'
             ]
         ];
 

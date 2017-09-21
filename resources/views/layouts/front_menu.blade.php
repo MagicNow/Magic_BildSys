@@ -30,6 +30,24 @@
             </a>
         </li>
         @endshield
+		
+		@shield('mascara_padrao.list')
+        <li class="{{ Request::is('mascara_padrao*') ? 'active' : '' }}">
+            <a href="{!! route('admin.mascara_padrao.index') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Máscara Padrão</span>
+            </a>
+        </li>
+        @endshield
+		
+		@shield('tarefa_padrao.list')
+        <li class="{{ Request::is('tarefa_padrao*') ? 'active' : '' }}">
+            <a href="{!! route('admin.tarefa_padrao.index') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Tarefa Padrão</span>
+            </a>
+        </li>
+        @endshield
 
         @shield('grupos_insumos.list')
         <li class="{{ Request::is('insumoGrupos*') ? 'active' : '' }}">
@@ -83,6 +101,24 @@
             </a>
         </li>
         @endshield
+
+        @shield('qc.list')
+        <li class="{{ Request::is('qc*') ? 'active' : '' }}">
+            <a href="{{ route('qc.index') }}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>QC</span>
+            </a>
+        </li>
+        @endshield
+
+
+        <li class="{{ Request::is('pagamentoCondicaos*') ? 'active' : '' }}">
+            <a href="{!! route('pagamentoCondicaos.index') !!}"><i class="fa fa-caret-right"></i><span>Condições de Pagamento</span></a>
+        </li>
+
+        <li class="{{ Request::is('documentoTipos*') ? 'active' : '' }}">
+            <a href="{!! route('documentoTipos.index') !!}"><i class="fa fa-caret-right"></i><span> Tipos de Documentos Fiscais</span></a>
+        </li>
     </ul>
 </li>
 
@@ -148,6 +184,10 @@
             </a>
         </li>
         @endshield
+
+        <li class="{{ Request::is('pagamentos*') ? 'active' : '' }}">
+            <a href="{!! route('pagamentos.index') !!}"><i class="fa fa-caret-right"></i><span>Pagamentos</span></a>
+        </li>
 
         <li class="{{ Request::is('medicoes*') ? 'active' : '' }}">
             <a href="{!! route('medicoes.index') !!}">
@@ -240,16 +280,7 @@
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
                 <span>L.P.U.</span> </a>
         </li>
-        @endshield
-		
-		@shield('mascara_padrao.list')
-        <li class="{{ Request::is('mascara_padrao*') ? 'active' : '' }}">
-            <a href="{!! route('mascara_padrao.index') !!}">
-                <i class="fa fa-caret-right" aria-hidden="true"></i>
-                <span>Máscara Padrão</span>
-            </a>
-        </li>
-        @endshield
+        @endshield		
 
     </ul>
 </li>

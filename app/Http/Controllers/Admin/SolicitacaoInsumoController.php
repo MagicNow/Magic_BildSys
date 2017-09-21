@@ -39,7 +39,7 @@ class SolicitacaoInsumoController extends AppBaseController
      */
     public function create()
     {
-        $insumo_grupos = [];
+        $insumo_grupos = InsumoGrupo::pluck('nome', 'id')->toArray();
         return view('admin.solicitacao_insumos.create', compact('insumo_grupos'));
     }
 
