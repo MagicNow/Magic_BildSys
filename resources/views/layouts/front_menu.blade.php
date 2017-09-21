@@ -110,6 +110,15 @@
             </a>
         </li>
         @endshield
+
+
+        <li class="{{ Request::is('pagamentoCondicaos*') ? 'active' : '' }}">
+            <a href="{!! route('pagamentoCondicaos.index') !!}"><i class="fa fa-caret-right"></i><span>Condições de Pagamento</span></a>
+        </li>
+
+        <li class="{{ Request::is('documentoTipos*') ? 'active' : '' }}">
+            <a href="{!! route('documentoTipos.index') !!}"><i class="fa fa-caret-right"></i><span> Tipos de Documentos Fiscais</span></a>
+        </li>
     </ul>
 </li>
 
@@ -175,6 +184,10 @@
             </a>
         </li>
         @endshield
+
+        <li class="{{ Request::is('pagamentos*') ? 'active' : '' }}">
+            <a href="{!! route('pagamentos.index') !!}"><i class="fa fa-caret-right"></i><span>Pagamentos</span></a>
+        </li>
 
         <li class="{{ Request::is('medicoes*') ? 'active' : '' }}">
             <a href="{!! route('medicoes.index') !!}">

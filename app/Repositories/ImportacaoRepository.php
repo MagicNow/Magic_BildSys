@@ -3,16 +3,20 @@
 namespace App\Repositories;
 
 use App\Models\Cidade;
+use App\Models\DocumentoTipo;
 use App\Models\Fornecedor;
 use App\Models\Cnae;
 use App\Models\FornecedorServico;
 use App\Models\Insumo;
 use App\Models\InsumoGrupo;
 use App\Models\MegaCnae;
+use App\Models\MegaCondicaoPagamento;
 use App\Models\MegaFornecedor;
 use App\Models\MegaFornecedorServico;
 use App\Models\MegaInsumo;
 use App\Models\MegaInsumoGrupo;
+use App\Models\MegaTipoDocumentoFiscal;
+use App\Models\PagamentoCondicao;
 use App\Models\Unidade;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -317,5 +321,64 @@ class ImportacaoRepository
         }
 
         return $todos_tems;
+    }
+
+    /**
+     * Importa Condições de Pagamento do Mega
+     * @return array
+     */
+    public static function pagamentoCondicoes(){
+        $registros = MegaCondicaoPagamento::select([
+            'cond_st_codigo',
+            'cond_st_nome',
+        ])
+            ->get();
+
+        foreach ($registros as $itemMega) {
+            try {
+                $importado = PagamentoCondicao::firstOrCreate([
+                    'codigo'     => $itemMega->cond_st_codigo,
+                ]);
+
+                $importado->update([
+                    'nome'   => $itemMega->cond_st_nome
+                ]);
+            } catch (\Exception $e) {
+                Log::error('Erro ao importar Condição de pagamento '. $itemMega->cond_st_codigo. ': '.$e->getMessage());
+            }
+        }
+
+        return ['total-mega' => $registros->count(), 'total-sys' => PagamentoCondicao::count()];
+
+    }
+
+    /**
+     * Importa Tipos de Documento do Mega
+     * @return array
+     */
+    public static function documentoTipos(){
+        $registros = MegaTipoDocumentoFiscal::select([
+            'tdf_in_codigo',
+            'tdf_st_descricao',
+        ])
+            ->get();
+
+        foreach ($registros as $itemMega) {
+            try {
+                $importado = DocumentoTipo::firstOrCreate([
+                    'codigo_mega'     => $itemMega->tdf_in_codigo,
+                ]);
+
+                $importado->update([
+                    'nome'   => $itemMega->tdf_st_descricao,
+                    'sigla'  => $itemMega->tdf_st_sigla
+                ]);
+            } catch (\Exception $e) {
+                Log::error('Erro ao importar Tipo de Documento Fiscal '. $itemMega->tdf_in_codigo. ': '.$e->getMessage());
+            }
+        }
+
+        return ['total-mega' => $registros->count(), 'total-sys' => DocumentoTipo::count()];
+
     }
 }

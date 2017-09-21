@@ -74,7 +74,7 @@ class QcFornecedorRepository extends BaseRepository
             ->get();
     }
 
-    public function queOfertaramNoQuadroNaRodada($quadro_id, $rodada = null)
+    public function  queOfertaramNoQuadroNaRodada($quadro_id, $rodada = null)
     {
         return $this->model
             ->select('qc_fornecedor.*')
