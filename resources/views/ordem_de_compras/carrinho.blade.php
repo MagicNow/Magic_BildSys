@@ -161,12 +161,11 @@
                                 $multiplo_invalido = false;
 
                                 if($insumo_catalogo) {
-                                    if(floatval($item->qtd) < $insumo_catalogo->pedido_minimo) {
+                                    if(money_to_float($item->qtd) < money_to_float($insumo_catalogo->pedido_minimo)) {
                                         $pedido_minimo_invalido = true;
                                     }
 
-
-                                    if(floatval($item->qtd) % $insumo_catalogo->pedido_multiplo_de) {
+                                    if(fmod(money_to_float($item->qtd), money_to_float($insumo_catalogo->pedido_multiplo_de))) {
                                         $multiplo_invalido = true;
                                     }
                                 }
