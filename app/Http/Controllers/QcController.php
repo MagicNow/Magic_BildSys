@@ -10,6 +10,7 @@ use App\Repositories\QcRepository;
 use App\Http\Requests\CreateQcRequest;
 use App\Models\Obra;
 use App\Models\Carteira;
+use App\Models\Topologia;
 
 class QcController extends AppBaseController
 {
@@ -42,8 +43,9 @@ class QcController extends AppBaseController
     {
         $obras = Obra::pluck('nome','id')->toArray();
         $carteiras = Carteira::pluck('nome','id')->toArray();
+        $topologias = Topologia::pluck('nome','id')->toArray();
 
-        return view('qc.create', compact('obras', 'carteiras'));
+        return view('qc.create', compact('obras', 'carteiras', 'topologias'));
     }
 
     /**
@@ -96,6 +98,7 @@ class QcController extends AppBaseController
         $qc = $this->qcRepository->findWithoutFail($id);
         $obras = Obra::pluck('nome','id')->toArray();
         $carteiras = Carteira::pluck('nome','id')->toArray();
+        $topologias = Topologia::pluck('nome','id')->toArray();
 
         if (empty($qc)) {
             Flash::error('Qc '.trans('common.not-found'));
@@ -103,7 +106,7 @@ class QcController extends AppBaseController
             return redirect(route('qc.index'));
         }
 
-        return view('qc.edit', compact('qc', 'obras', 'carteiras'));
+        return view('qc.edit', compact('qc', 'obras', 'carteiras', 'topologias'));
     }
 
     /**
@@ -116,15 +119,15 @@ class QcController extends AppBaseController
      */
     public function update($id, CreateQcRequest $request)
     {
-        $grupo = $this->qcRepository->findWithoutFail($id);
+        $qc = $this->qcRepository->findWithoutFail($id);
 
-        if (empty($grupo)) {
+        if (empty($qc)) {
             Flash::error('Qc '.trans('common.not-found'));
 
             return redirect(route('qc.index'));
         }
 
-        $grupo = $this->qcRepository->update($request->all(), $id);
+        $qc = $this->qcRepository->update($request->all(), $id);
 
         Flash::success('Grupo '.trans('common.updated').' '.trans('common.successfully').'.');
 

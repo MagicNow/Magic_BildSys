@@ -4,10 +4,10 @@
     <p class="form-control">{!! $qc->id !!}</p>
 </div>
 
-<!-- Tipologia Field -->
+<!-- Topologia Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('tipologia', 'Tipologia:') !!}
-    <p class="form-control">{!! $qc->tipologia !!}</p>
+    {!! Form::label('topologia_id', 'Topologia:') !!}
+    <p class="form-control">{!! $qc->topologia->nome !!}</p>
 </div>
 
 <!-- Carteira Field -->
@@ -58,3 +58,13 @@
     <p class="form-control">{!! $qc->updated_at !!}</p>
 </div>
 
+<div class="form-group col-sm-6">
+    <div class="checkbox">
+        <label>
+            {!! Form::checkbox('carteira_comprada', '1', false, ['class' => 'form-control', 'id' => 'carteira_comprada', 'readonly' => 'true', 'disabled' => 'disabled']) !!}
+            Carteira Comprada
+        </label>
+    </div>
+</div>
+
+<div class="row"></div>

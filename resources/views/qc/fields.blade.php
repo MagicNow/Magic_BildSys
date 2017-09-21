@@ -10,14 +10,14 @@
 
 <!-- Tipologia Field -->
 <div class="form-group col-sm-6">
-	{!! Form::label('tipologia', 'Tipologia:') !!}
-	{!! Form::select('tipologia', ['' => 'Escolha...', 'Budget' => 'Budget', 'Aditivo' => 'Aditivo', 'Bild Design' => 'Bild Design', 'Getec' => 'Getec'], @isset($qc) ? $qc->tipologia : NULL, ['class' => 'form-control select2']) !!}
+	{!! Form::label('tipologia', 'Topologia:') !!}
+	{!! Form::select('topologia_id',[''=>'Escolha...']+$topologias, NULL, ['class' => 'form-control', 'required'=>'required']) !!}
 </div>
 
 <!-- Carteira ID Field -->
 <div class="form-group col-sm-6">
 	{!! Form::label('carteira_id', 'Carteira:') !!}
-	{!! Form::select('carteira_id', $carteiras, @isset($qc) ? $qc->carteira_id : NULL, ['class' => 'form-control select2']) !!}
+	{!! Form::select('carteira_id', [''=>'Escolha...']+$carteiras, @isset($qc) ? $qc->carteira_id : NULL, ['class' => 'form-control select2']) !!}
 </div>
 
 <!-- Descrição Field -->
@@ -36,6 +36,21 @@
 <div class="form-group col-sm-6">
 	{!! Form::label('valor_orcamento_inicial', 'Valor Orçamento Inicial :') !!}
 	{!! Form::text('valor_orcamento_inicial', NULL, ['class' => 'form-control']) !!}
+</div>
+
+<!-- Valor da Gerencial Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('valor_gerencial', 'Valor da Gerencial:') !!}
+    {!! Form::text('valor_gerencial', NULL, ['class' => 'form-control']) !!}
+</div>
+
+<div class="form-group col-sm-6">
+	<div class="checkbox">
+		<label>
+			{!! Form::checkbox('carteira_comprada', '1', false, ['class' => 'form-control', 'id' => 'carteira_comprada']) !!}
+			Carteira Comprada
+		</label>
+	</div>
 </div>
 
 <!-- Submit Field -->

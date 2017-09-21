@@ -15,11 +15,13 @@ class Qc extends Model
 
     public $fillable = [
         'obra_id',
-        'tipologia',
+        'topologia_id',
         'carteira_id',
         'descricao',
         'valor_pre_orcamento',
         'valor_orcamento_inicial',
+        'valor_gerencial',
+        'carteira_comprada',
         'status'
     ];
 
@@ -31,11 +33,12 @@ class Qc extends Model
     protected $casts = [
         'id' => 'integer',
         'obra_id' => 'integer',
-        'tipologia' => 'string',
+        'topologia_id' => 'integer',
         'carteira_id' => 'integer',
         'descricao' => 'string',
         'valor_pre_orcamento' => 'float',
         'valor_orcamento_inicial' => 'float',
+        'carteira_comprada' => 'integer',
         'status' => 'string'
     ];
 
@@ -46,11 +49,12 @@ class Qc extends Model
      */
     public static $rules = [
         'obra_id' => 'required|integer',
-        'tipologia' => 'required|in:Budget,Aditivo,Bild Design,Getec',
+        'topologia_id' => 'required|integer',
         'carteira_id' => 'required|integer',
         'descricao' => 'required',
         'valor_pre_orcamento' => 'required',
-        'valor_orcamento_inicial' => 'required'
+        'valor_orcamento_inicial' => 'required',
+        'valor_gerencial' => 'required',
     ];
 
     /**
@@ -67,5 +71,13 @@ class Qc extends Model
     public function carteira()
     {
         return $this->belongsTo(\App\Models\Carteira::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function topologia()
+    {
+        return $this->belongsTo(\App\Models\Topologia::class);
     }
 }
