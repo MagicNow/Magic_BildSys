@@ -4,9 +4,9 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
-use App\Models\CarteirasSla;
+use App\Models\Qc;
 
-class CreateCarteirasSlaRequest extends FormRequest
+class CreateQcRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,7 +25,7 @@ class CreateCarteirasSlaRequest extends FormRequest
      */
     public function rules()
     {
-        return CarteirasSla::$rules;
+        return Qc::$rules;
     }
 
     public function messages()

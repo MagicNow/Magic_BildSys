@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Carteira;
 use App\Models\Insumo;
 use App\Models\InsumoGrupo;
 use Illuminate\Http\Request;
@@ -59,6 +60,19 @@ class BuscarController extends AppBaseController
         ->paginate();
 
         return $fornecedores;
+    }
+
+    public function getCarteiras(Request $request)
+    {
+        $carteiras = Carteira::select([
+            'id',
+            'nome'
+        ])
+        ->where('nome', 'like', '%'.$request->q.'%')
+        ->whereNotIn('id', $request->ignore ?: [])
+        ->paginate();
+
+        return $carteiras;
     }
 	
 	public function getTipoEqualizacaoTecnicas(Request $request)

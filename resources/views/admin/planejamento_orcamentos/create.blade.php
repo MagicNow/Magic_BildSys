@@ -6,10 +6,15 @@
             Planejamento Orçamento
         </h1>
 
+        {{--<h1 class="pull-right">--}}
+            {{--<a class="btn btn-warning pull-right hide" id="js-btn-semPlanejamento" style="margin-top: -10px;margin-bottom: 5px; margin-right: 10px;" href="">--}}
+                {{--Ver insumos sem planejamento de compra associado--}}
+            {{--</a>--}}
+        {{--</h1>--}}
         <h1 class="pull-right">
-            <a class="btn btn-warning pull-right hide" id="js-btn-semPlanejamento" style="margin-top: -10px;margin-bottom: 5px; margin-right: 10px;" href="">
-                Ver insumos sem planejamento de compra associado
-            </a>
+            <button type="button" class="btn btn-warning pull-right hide" id="nao_relacionados" style="margin-top: -10px;margin-bottom: 5px; margin-right: 10px;" onclick="naoRelacionados(1)">
+                Ver insumos não relacionados
+            </button>
         </h1>
     </section>
 
