@@ -14,53 +14,56 @@ class MegaXmlRepository
         $domtree->formatOutput = true;
         /* create the root element of the xml tree */
         $xmlRoot = $domtree->createElement("Recebimento");
+
         //"I/U/D"
         $xmlRoot->setAttribute("OPERACAO", $dataGeral['OPERACAO']);
         $xmlRoot = $domtree->appendChild($xmlRoot);
 
-        //Campo inserido manualmente no cadastro de obra do sys
-        //"Código da Filial"
+        //Campo inserido manualmente no cadastro de obra do sys "Código da Filial"
         $node = $domtree->createElement("FIL_IN_CODIGO", $dataGeral['FIL_IN_CODIGO']);
         $xmlRoot->appendChild($node);
-        //891 (Fernanda irá Criar mais dois códigos)
-        //"Código da Ação"
+
+        //891 (Fernanda irá Criar mais dois códigos) "Código da Ação"
         $node = $domtree->createElement("ACAO_IN_CODIGO", $dataGeral['ACAO_IN_CODIGO']);
         $xmlRoot->appendChild($node);
-        //(buscar de tabela do Mega (será enviada consulta por email))
-        //"Tipo Documento Financeiro"
+
+        //(buscar de tabela do Mega (será enviada consulta por email)) "Tipo Documento Financeiro"
         $node = $domtree->createElement("CPAG_TPD_ST_CODIGO", $dataGeral['CPAG_TPD_ST_CODIGO']);
         $xmlRoot->appendChild($node);
-        //Código Fornecedor dentro do SYS
-        //"Código do Agente."
+
+        //Código Fornecedor dentro do SYS "Código do Agente."
         $node = $domtree->createElement("AGN_IN_CODIGO", $dataGeral['AGN_IN_CODIGO']);
         $xmlRoot->appendChild($node);
-        //apenas texto "COD"
-        //"Identificador Agente"
+
+        //apenas texto "COD" "Identificador Agente"
         $node = $domtree->createElement("AGN_TAU_ST_CODIGO", $dataGeral['AGN_TAU_ST_CODIGO']);
         $xmlRoot->appendChild($node);
-        //número SEFAZ
-        //"Nr.Nota Fiscal"
+
+        //número SEFAZ "Nr.Nota Fiscal"
         $node = $domtree->createElement("RCB_ST_NOTA", $dataGeral['RCB_ST_NOTA']);
         $xmlRoot->appendChild($node);
-        //SEFAZ
-        //"Informe o Código da série/subsérie de documento contábil/fiscal"
+
+        //SEFAZ "Informe o Código da série/subsérie de documento contábil/fiscal"
         $node = $domtree->createElement("SER_ST_CODIGO", $dataGeral['SER_ST_CODIGO']);
         $xmlRoot->appendChild($node);
-        //Será enviado por e-mail
-        //"Tipo Documento"
+
+        //Será enviado por e-mail "Tipo Documento"
         $node = $domtree->createElement("TDF_ST_SIGLA", $dataGeral['TDF_ST_SIGLA']);
         $xmlRoot->appendChild($node);
-        //Data emissão NF
-        //"Data do documento fiscal"
+
+        //Data emissão NF "Data do documento fiscal"
         $node = $domtree->createElement("RCB_DT_DOCUMENTO", $dataGeral['RCB_DT_DOCUMENTO']);
         $xmlRoot->appendChild($node);
-        //Data entrada
-        //"Data do Movimento"
+
+        //Data entrada "Data do Movimento"
         $node = $domtree->createElement("RCB_DT_MOVIMENTO", $dataGeral['RCB_DT_MOVIMENTO']);
         $xmlRoot->appendChild($node);
-        //CIF / FOB
+
+        //CIF = frete e o seguro são pagos pelo fornecedor
+        //FOB = o comprador assume todos os riscos e custos
         $node = $domtree->createElement("TPR_ST_TIPOPRECO", $dataGeral['TPR_ST_TIPOPRECO']);// "Informe o Tipo de Preço"
         $xmlRoot->appendChild($node);
+
         //Buscar na tabela do Mega e salvar no contrato, também na entrada da NF pode-se escolher a forma de pagamento.
         $node = $domtree->createElement("COND_ST_CODIGO", $dataGeral['COND_ST_CODIGO']);// "Código da condição de pagamento."
         $xmlRoot->appendChild($node);

@@ -234,7 +234,11 @@ $mostrarAcoes = true;
 </div>
 <div class="col-sm-12">
     <div class="col-md-12">
-        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true" style="margin-top:10px;">
+        <div class="panel-group"
+             id="accordion"
+             role="tablist"
+             aria-multiselectable="true"
+             style="margin-top:10px;">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h4 class="panel-title">
@@ -243,7 +247,7 @@ $mostrarAcoes = true;
                 </div>
                 <div>
                     <div class="panel-body">
-                        <table id="itens" class="table table-striped table-hover dataTable dtr-inline">
+                        <table v-if="itensNf.length > 0" id="itens" class="table table-striped table-hover dataTable dtr-inline">
                             <thead>
                             <tr>
                                 <th>Nome</th>
@@ -256,7 +260,9 @@ $mostrarAcoes = true;
                                 <th></th>
                             </tr>
                             </thead>
-                            <tbody v-for="(item, $index) in itensNf" v-cloak>
+                            <tbody  v-if="itensNf.length > 0"
+                                    v-for="(item, $index) in itensNf"
+                                    v-cloak>
 
                             <tr :id="'item-' + item.id">
                                 <!-- idioma Id Field -->
@@ -310,19 +316,20 @@ $mostrarAcoes = true;
                                     ]) !!}
 
                                     {!! Form::hidden('itens[id][]', null, [':value' => 'item.id']) !!}
-
-                                    {!! Form::hidden('itens[solicitacao_entrega_itens_id][]', null,
-                                        [':value' => 'item.solicitacao_entrega_itens_id']) !!}
                                 </td>
                                 <td>
                                     @if($mostrarAcoes)
-                                    <a v-show="item.solicitacao_entrega_itens.length == 0"
+                                    <a v-if="typeof item !==  'undefined'
+                                             && typeof item.solicitacao_entrega_itens !==  'undefined'
+                                             && item.solicitacao_entrega_itens.length == 0"
                                        class="btn btn-success"
                                        v-on:click="openModal($index)">
                                         Vincular
                                     </a>
 
-                                    <a v-show="item.solicitacao_entrega_itens.length > 0"
+                                    <a v-if="typeof item !==  'undefined'
+                                             && typeof item.solicitacao_entrega_itens !==  'undefined'
+                                             && item.solicitacao_entrega_itens.length > 0"
                                        class="btn btn-danger"
                                        v-on:click="desvincular($index)">
                                         Desvincular
@@ -331,7 +338,10 @@ $mostrarAcoes = true;
                                 </td>
                             </tr>
 
-                            <tr v-if="itensNf[index].solicitacao_entrega_itens.length > 0"
+                            <tr v-if="itensNf.length > 0
+                                      && typeof itensNf[index] !== 'undefined'
+                                      && typeof itensNf[index].solicitacao_entrega_itens !==  'undefined'
+                                      && itensNf[index].solicitacao_entrega_itens.length > 0"
                                 v-for="itemAdd in itensNf[index].solicitacao_entrega_itens"
                                 style="background-color: rgb(170, 235, 255);">
 
@@ -437,6 +447,7 @@ $mostrarAcoes = true;
      tabindex="-1"
      role="dialog"
      aria-labelledby="conciliacaoFormLabel"
+     v-if="itensNf.length > 0"
      aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -446,12 +457,12 @@ $mostrarAcoes = true;
                         data-dismiss="modal"
                         aria-hidden="true">&times;</button>
                 <h4 class="modal-title"
-                    id="conciliacaoFormLabel">
+                    id="conciliacaoFormLabel"
+                    v-if="typeof itensNf[index] !==  'undefined'">
                     Conciliar Item: @{{ itensNf[index].nome_produto }}
                 </h4>
             </div>
             <div class="modal-body">
-
                 <div class="clearfix"></div>
                 {{ Form::open(['method' => 'post', 'id' => 'conciliacao-form', 'role' => 'form']) }}
 
@@ -465,7 +476,10 @@ $mostrarAcoes = true;
                             <th >Total</th>
                             <th ></th>
                         </tr>
-                        <tr v-for="(itemAdd, $index) in itensNf[index].solicitacao_entrega_itens">
+                        <tr v-if="typeof itensNf[index] !== 'undefined'
+                                  && typeof itensNf[index].solicitacao_entrega_itens !==  'undefined'
+                                  && itensNf[index].solicitacao_entrega_itens.length > 0"
+                            v-for="(itemAdd, $index) in itensNf[index].solicitacao_entrega_itens">
                             <th >@{{ itemAdd.nome }}</th>
                             <th >@{{ itemAdd.qtd }}</th>
                             <th >@{{ itemAdd.unidade_sigla }}</th>
@@ -484,7 +498,8 @@ $mostrarAcoes = true;
 
                 <div class="form-group clearfix">
                     <div class="col-md-10">
-                        <select :id='"itenselecionado"'
+                        <select v-if="itensSolicitacoes.length > 0"
+                                :id='"itenselecionado"'
                                 v-model="itemSelecionado"
                                 class="form-control">
                             <option v-bind:value="''">Selecione</option>
@@ -543,12 +558,14 @@ $mostrarAcoes = true;
 
         const app = new Vue({
             el: '#nota_fiscal',
-            data: {
-                index: 0,
-                itensNf: $itensNf,
-                faturasNf: $faturasNf,
-                itensSolicitacoes: $itensSolicitacoes,
-                itemSelecionado: null
+            data: function() {
+                return {
+                    index: 0,
+                    itensNf: [],
+                    faturasNf: [],
+                    itensSolicitacoes: [],
+                    itemSelecionado: {}
+                }
             },
             watch: {},
             methods: {
@@ -594,7 +611,10 @@ $mostrarAcoes = true;
                     this.itensNf[this.index].solicitacao_entrega_itens.splice($index, 1);
                 }
             },
-            created: function () {
+            mounted: function () {
+                this.itensNf = $itensNf;
+                this.faturasNf = $faturasNf;
+                this.itensSolicitacoes = $itensSolicitacoes;
             },
             filters: {
                 currencyFormatted: function(value) {

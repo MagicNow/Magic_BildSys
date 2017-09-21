@@ -8,6 +8,7 @@ use App\Http\Requests\CreateNotafiscalRequest;
 use App\Http\Requests\UpdateNotafiscalRequest;
 use App\Models\Contrato;
 use App\Models\Cte;
+use App\Models\DocumentoTipo;
 use App\Models\Fornecedor;
 use App\Models\Notafiscal;
 use App\Models\NotaFiscalFatura;
@@ -112,7 +113,9 @@ class NotafiscalController extends AppBaseController
      */
     public function edit($id)
     {
-        $notafiscal = $this->notafiscalRepository->findWithoutFail($id);
+        $notafiscal = $this->notafiscalRepository
+            ->with('itens')
+            ->findWithoutFail($id);
 
         if (empty($notafiscal)) {
             Flash::error('Notafiscal ' . trans('common.not-found'));
@@ -124,9 +127,13 @@ class NotafiscalController extends AppBaseController
         $fornecedor = Fornecedor::where(\DB::raw("replace(replace(replace(fornecedores.cnpj,'-',''),'.',''),'/','')"), $cnpj)->first();
         $contratos = [];
 
-        $contrato = Contrato::where('id', request('contrato', $notafiscal->contrato_id))
-                            ->where('fornecedor_id', $fornecedor->id)
-                            ->first();
+        try {
+            $contrato = Contrato::where('id', request('contrato', $notafiscal->contrato_id))
+                ->where('fornecedor_id', $fornecedor->id)
+                ->first();
+        } catch (\Exception $e) {
+            $contrato = null;
+        }
 
         $itensSolicitacoes = [];
         if ($contrato) {
@@ -229,6 +236,16 @@ class NotafiscalController extends AppBaseController
         return redirect(route('notafiscals.index'));
     }
 
+    public function reprocessaNfe($id)
+    {
+        $notafiscal = $this->notafiscalRepository->findWithoutFail($id);
+
+        return $this->consultaRepository->reprocessaXML(
+            $notafiscal->xml,
+            $notafiscal->nsu,
+            $notafiscal->schema
+        );
+    }
 
     public function pescadorNfe()
     {
@@ -349,16 +366,16 @@ class NotafiscalController extends AppBaseController
 
         $data = [
             'OPERACAO' => 'I',
-            'FIL_IN_CODIGO' => NULL,//Codigo Filial
+            'FIL_IN_CODIGO' => $notafiscal->contrato->obra->filial_id,//Codigo Filial
             'ACAO_IN_CODIGO' => 891, //Codigo da Ação
             'CPAG_TPD_ST_CODIGO' => 'NF MAT',
             'AGN_IN_CODIGO' => $notafiscal->contrato->fornecedor->codigo_mega,
-            'AGN_TAU_ST_CODIGO' => NULL,
-            'RCB_ST_NOTA' => NULL,
-            'SER_ST_CODIGO' => NULL,
-            'TDF_ST_SIGLA' => NULL,
-            'RCB_DT_DOCUMENTO' => NULL,
-            'RCB_DT_MOVIMENTO' => NULL,
+            'AGN_TAU_ST_CODIGO' => 'COD',
+            'RCB_ST_NOTA' => $notafiscal->codigo,
+            'SER_ST_CODIGO' => $notafiscal->serie,
+            'TDF_ST_SIGLA' => 'NF',
+            'RCB_DT_DOCUMENTO' => $notafiscal->data_emissao->format("d/m/Y"),
+            'RCB_DT_MOVIMENTO' => $notafiscal->status_data->format("d/m/Y"),
             'TPR_ST_TIPOPRECO' => NULL,
             'COND_ST_CODIGO' => NULL,
             'CCF_IN_REDUZIDO' => NULL,
