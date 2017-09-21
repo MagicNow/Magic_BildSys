@@ -345,4 +345,7 @@
         </li>
         @endshield
     </ul>
+</li><li class="{{ Request::is('documentoFinanceiroTipos*') ? 'active' : '' }}">
+    <a href="{!! route('documentoFinanceiroTipos.index') !!}"><i class="fa fa-edit"></i><span>DocumentoFinanceiroTipos</span></a>
 </li>
+

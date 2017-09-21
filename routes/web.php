@@ -1277,16 +1277,16 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     });	
 
     # DocBild  
-    $router->group(['middleware' => 'needsPermission:qc.list'], function () use ($router) {
-        $router->get('qc', ['as' => 'qc.index', 'uses' => 'QcController@index']);
+    $router->group(['prefix'=>'qc','middleware' => 'needsPermission:qc.list'], function () use ($router) {
+        $router->get('', ['as' => 'qc.index', 'uses' => 'QcController@index']);
         $router->get('/{qc}',['as' => 'qc.show', 'uses' => 'QcController@show'])
             ->middleware('needsPermission:qc.show');
         $router->get('/{qc}/editar',['as' => 'qc.edit', 'uses' => 'QcController@edit']);
         $router->patch('/{qc}/update',['as' => 'qc.update', 'uses' => 'QcController@update']);
-        $router->get('qc/create', ['as' => 'qc.create', 'uses' => 'QcController@create']);
-        $router->post('qc', ['as' => 'qc.store', 'uses' => 'QcController@store']);
-        $router->get('qc/buscar/busca_carteiras', ['as' => 'qc.busca_carteiras', 'uses' => 'QcController@buscaCarteira']);
-        $router->delete('qc/{qc}', ['as' => 'qc.destroy', 'uses' => 'QcController@destroy']);
+        $router->get('/create', ['as' => 'qc.create', 'uses' => 'QcController@create']);
+        $router->post('', ['as' => 'qc.store', 'uses' => 'QcController@store']);
+        $router->get('/buscar/busca_carteiras', ['as' => 'qc.busca_carteiras', 'uses' => 'QcController@buscaCarteira']);
+        $router->delete('/{qc}', ['as' => 'qc.destroy', 'uses' => 'QcController@destroy']);
     });
 
 	# Configuracao Estatica
@@ -1370,24 +1370,27 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
 		$insumos = \App\Repositories\ImportacaoRepository::insumos();
 	});
 
-    $router->get('/teste', function () {
-        //        $grupos_mega = \App\Models\MegaInsumoGrupo::select([
-        //            'GRU_IDE_ST_CODIGO',
-        //            'GRU_IN_CODIGO',
-        //            'GRU_ST_NOME',])
-        //            ->where('gru_ide_st_codigo' , '07')
-        //            ->first();
-        //        dd($grupos_mega);
-        //        $servicos = \App\Repositories\ImportacaoRepository::fornecedor_servicos(446);
+
+});
+
+$router->get('/teste', function () {
+    //        $grupos_mega = \App\Models\MegaInsumoGrupo::select([
+    //            'GRU_IDE_ST_CODIGO',
+    //            'GRU_IN_CODIGO',
+    //            'GRU_ST_NOME',])
+    //            ->where('gru_ide_st_codigo' , '07')
+    //            ->first();
+    //        dd($grupos_mega);
+    //        $servicos = \App\Repositories\ImportacaoRepository::fornecedor_servicos(446);
 //        $insumos = \App\Repositories\ImportacaoRepository::insumos();
 //        dd($insumos);
 //        dd(\App\Models\MegaCondicaoPagamento::select(['cond_st_codigo','cond_st_nome'])->get()->toArray());
 //        var_dump(\App\Models\MegaTipoDocumentoFiscal::select(['tdf_in_codigo','tdf_st_sigla','tdf_st_descricao'])->get()->toArray());
 //        dd();
-        dd(\App\Repositories\ImportacaoRepository::pagamentoCondicoes(),\App\Repositories\ImportacaoRepository::documentoTipos());
-    });
+    dd(\App\Repositories\ImportacaoRepository::pagamentoCondicoes(),
+        \App\Repositories\ImportacaoRepository::documentoTipos(),
+        \App\Repositories\ImportacaoRepository::documentoFinanceiroTipos());
 });
-
 #Image Controller
 $router->get('imagem', 'ImageController@index');
 
@@ -1397,3 +1400,5 @@ Route::resource('pagamentoCondicaos', 'PagamentoCondicaoController');
 Route::resource('documentoTipos', 'DocumentoTipoController');
 
 Route::resource('pagamentos', 'PagamentoController');
+
+Route::resource('documentoFinanceiroTipos', 'DocumentoFinanceiroTipoController');
