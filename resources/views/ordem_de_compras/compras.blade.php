@@ -346,7 +346,7 @@
             @endif
 
             @if(\Illuminate\Support\Facades\Input::get('obra_id'))
-                escolheObra({{\Illuminate\Support\Facades\Input::get('obra_id')}});
+                escolheObra('{{\Illuminate\Support\Facades\Input::get('obra_id')}}');
             @else
                 atualizaCalendario();
             @endif
