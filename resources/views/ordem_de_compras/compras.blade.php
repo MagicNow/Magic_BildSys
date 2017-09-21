@@ -173,7 +173,7 @@
 //              .val($('#select_obra option:selected').text())
 //              .trigger( "change" );
 
-            if(obra_id){
+            if(obra_id && obra_id != 'todas'){
                 $('#planejamento_id').attr('disabled',false);
                 $('#btn-comprar-calendario').attr("href", "compras/obrasInsumos/?obra_id="+obra_id);
                 $('#btn-comprar-calendario').css('pointer-events','auto');
@@ -183,6 +183,7 @@
                 $('#btn-comprar-calendario').css('pointer-events','none');
                 $('#planejamento_id').attr('disabled',true);
             }
+
             carregaPlanejamentos(obra_id);
             atualizaCalendario();
         }
@@ -253,7 +254,11 @@
             startLoading();
 
             @if(\Illuminate\Support\Facades\Input::get('obra_id'))
-                obra = '{{\Illuminate\Support\Facades\Input::get('obra_id')}}';
+                if('{{\Illuminate\Support\Facades\Input::get('obra_id')}}' != $('#select_obra').val()) {
+                    obra = $('#select_obra').val();
+                } else {
+                    obra = '{{\Illuminate\Support\Facades\Input::get('obra_id')}}';
+                }
             @endif
 
             @if(\Illuminate\Support\Facades\Input::get('planejamento_id'))
@@ -345,11 +350,11 @@
                 $('#exibir_por_tarefa').iCheck('check');
             @endif
 
-            @if(\Illuminate\Support\Facades\Input::get('obra_id'))
-                escolheObra('{{\Illuminate\Support\Facades\Input::get('obra_id')}}');
-            @else
+            if($('#select_obra').val()) {
+                escolheObra($('#select_obra').val());
+            } else {
                 atualizaCalendario();
-            @endif
+            }
 
             $('.btn-group button[data-calendar-nav]').each(function () {
                 var $this = $(this);
