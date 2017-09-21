@@ -1297,7 +1297,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
 //        dd(\App\Models\MegaCondicaoPagamento::select(['cond_st_codigo','cond_st_nome'])->get()->toArray());
 //        var_dump(\App\Models\MegaTipoDocumentoFiscal::select(['tdf_in_codigo','tdf_st_sigla','tdf_st_descricao'])->get()->toArray());
 //        dd();
-        dd(\App\Repositories\ImportacaoRepository::pagamentoCondicoes());
+        dd(\App\Repositories\ImportacaoRepository::pagamentoCondicoes(),\App\Repositories\ImportacaoRepository::documentoTipos());
     });
 });
 
