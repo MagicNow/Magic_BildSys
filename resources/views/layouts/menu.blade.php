@@ -323,3 +323,15 @@
 </li>
 
 
+<li class="{{ Request::is('pagamentoCondicaos*') ? 'active' : '' }}">
+    <a href="{!! route('pagamentoCondicaos.index') !!}"><i class="fa fa-edit"></i><span>PagamentoCondicaos</span></a>
+</li>
+
+<li class="{{ Request::is('documentoTipos*') ? 'active' : '' }}">
+    <a href="{!! route('documentoTipos.index') !!}"><i class="fa fa-edit"></i><span>DocumentoTipos</span></a>
+</li>
+
+<li class="{{ Request::is('pagamentos*') ? 'active' : '' }}">
+    <a href="{!! route('pagamentos.index') !!}"><i class="fa fa-edit"></i><span>Pagamentos</span></a>
+</li>
+

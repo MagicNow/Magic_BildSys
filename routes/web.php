@@ -1295,10 +1295,18 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
 //        $insumos = \App\Repositories\ImportacaoRepository::insumos();
 //        dd($insumos);
 //        dd(\App\Models\MegaCondicaoPagamento::select(['cond_st_codigo','cond_st_nome'])->get()->toArray());
-        var_dump(\App\Models\MegaTipoDocumentoFiscal::select(['tdf_in_codigo','tdf_st_sigla','tdf_st_descricao'])->get()->toArray());
-        dd();
+//        var_dump(\App\Models\MegaTipoDocumentoFiscal::select(['tdf_in_codigo','tdf_st_sigla','tdf_st_descricao'])->get()->toArray());
+//        dd();
+        dd(\App\Repositories\ImportacaoRepository::pagamentoCondicoes());
     });
 });
 
 #Image Controller
 $router->get('imagem', 'ImageController@index');
+
+
+Route::resource('pagamentoCondicaos', 'PagamentoCondicaoController');
+
+Route::resource('documentoTipos', 'DocumentoTipoController');
+
+Route::resource('pagamentos', 'PagamentoController');
