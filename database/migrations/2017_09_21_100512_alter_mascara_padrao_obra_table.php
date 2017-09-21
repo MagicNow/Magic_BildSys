@@ -18,8 +18,14 @@ class AlterMascaraPadraoObraTable extends Migration
 
             \Illuminate\Support\Facades\DB::table('mascara_padrao')->delete();			
             
-			$table->dropForeign(['obra_id']);  
-			$table->dropColumn(['obra_id']);
+			if (Schema::hasColumn('mascara_padrao', 'obra_id'))
+			{
+				Schema::table('mascara_padrao', function (Blueprint $table)
+				{
+					$table->dropForeign(['obra_id']);  
+					$table->dropColumn(['obra_id']);
+				});
+			}
 			
 		 });
     }
