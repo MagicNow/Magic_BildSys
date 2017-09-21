@@ -88,11 +88,11 @@ class MascaraPadraoInsumoController extends AppBaseController
                     'mascara_padrao_id' => $request->mascara_padrao_id,
 					'codigo_estruturado' => $codigo_estruturado,					
                     'insumo_id' => $insumo_id,
-					'grupo_id' => 17,					
-					'subgrupo1_id' => 18,
-					'subgrupo2_id' => 40, 
-					'subgrupo3_id' => 43,
-					'servico_id' => 1,					
+					'grupo_id' => 600,					
+					'subgrupo1_id' => 600,
+					'subgrupo2_id' => 600, 
+					'subgrupo3_id' => 600,
+					'servico_id' => 1197,					
 					'coeficiente' => $request->coeficiente
                 ]);
             }

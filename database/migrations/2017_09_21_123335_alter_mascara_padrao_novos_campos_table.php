@@ -15,6 +15,7 @@ class AlterMascaraPadraoNovosCamposTable extends Migration
     {
 		
 		Schema::dropIfExists('mascara_padrao_insumos');		
+		
 		/*Schema::dropIfExists('mascara_padrao');
 		
         Schema::create('mascara_padrao', function (Blueprint $table) {
