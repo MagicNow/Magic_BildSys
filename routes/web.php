@@ -34,6 +34,8 @@ $router->get('/buscar/insumo-grupos', 'BuscarController@getInsumoGrupos')
     ->name('buscar.insumo-grupos');
 $router->get('/buscar/insumos', 'BuscarController@getInsumos')
     ->name('buscar.insumos');
+$router->get('/buscar/carteiras', 'BuscarController@getCarteiras')
+    ->name('buscar.carteiras');
 $router->get('/buscar/fornecedores', 'BuscarController@getFornecedores')
     ->name('buscar.fornecedores');
 $router->get('/buscar/tipo-equalizacao-tecnicas', 'BuscarController@getTipoEqualizacaoTecnicas')
@@ -75,6 +77,18 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
         $router->delete('orcamentos/{orcamentos}', ['as' => 'admin.orcamentos.destroy', 'uses' => 'Admin\OrcamentoController@destroy']);
         $router->get('orcamentos/{orcamentos}', ['as' => 'admin.orcamentos.show', 'uses' => 'Admin\OrcamentoController@show']);
         $router->get('orcamentos/{orcamentos}/edit', ['as' => 'admin.orcamentos.edit', 'uses' => 'Admin\OrcamentoController@edit']);
+    });
+
+    # Topologia
+    $router->group(['middleware' => 'needsPermission:topologia.list'], function () use ($router) {
+        $router->get('topologia', ['as' => 'admin.topologia.index', 'uses' => 'Admin\TopologiaController@index']);
+        $router->post('topologia', ['as' => 'admin.topologia.store', 'uses' => 'Admin\TopologiaController@store']);
+        $router->get('topologia/create', ['as' => 'admin.topologia.create', 'uses' => 'Admin\TopologiaController@create']);
+        $router->put('topologia/{topologia}', ['as' => 'admin.topologia.update', 'uses' => 'Admin\TopologiaController@update']);
+        $router->patch('topologia/{topologia}', ['as' => 'admin.topologia.update', 'uses' => 'Admin\TopologiaController@update']);
+        $router->delete('topologia/{topologia}', ['as' => 'admin.topologia.destroy', 'uses' => 'Admin\TopologiaController@destroy']);
+        $router->get('topologia/{topologia}', ['as' => 'admin.topologia.show', 'uses' => 'Admin\TopologiaController@show']);
+        $router->get('topologia/{topologia}/edit', ['as' => 'admin.topologia.edit', 'uses' => 'Admin\TopologiaController@edit']);
     });
 
     # Importação de Planilhas de Planejamentos
@@ -1263,12 +1277,16 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     });	
 
     # DocBild  
-    $router->group(['middleware' => 'needsPermission:carteirassla.list'], function () use ($router) {
-        $router->get('carteiras-sla', ['as' => 'carteiras_sla.index', 'uses' => 'CarteirasSlaController@index']);
-        $router->get('carteiras-sla/create', ['as' => 'carteiras_sla.create', 'uses' => 'CarteirasSlaController@create']);
-        $router->post('carteiras-sla', ['as' => 'carteiras_sla.store', 'uses' => 'CarteirasSlaController@store']);
-        $router->get('carteiras-sla/buscar/busca_carteiras', ['as' => 'carteiras_sla.busca_carteiras', 'uses' => 'CarteirasSlaController@buscaCarteira']);
-        $router->get('carteiras-sla/buscar/busca_obras', ['as' => 'carteiras_sla.busca_obras', 'uses' => 'CarteirasSlaController@buscaObra']);
+    $router->group(['middleware' => 'needsPermission:qc.list'], function () use ($router) {
+        $router->get('qc', ['as' => 'qc.index', 'uses' => 'QcController@index']);
+        $router->get('/{qc}',['as' => 'qc.show', 'uses' => 'QcController@show'])
+            ->middleware('needsPermission:qc.show');
+        $router->get('/{qc}/editar',['as' => 'qc.edit', 'uses' => 'QcController@edit']);
+        $router->patch('/{qc}/update',['as' => 'qc.update', 'uses' => 'QcController@update']);
+        $router->get('qc/create', ['as' => 'qc.create', 'uses' => 'QcController@create']);
+        $router->post('qc', ['as' => 'qc.store', 'uses' => 'QcController@store']);
+        $router->get('qc/buscar/busca_carteiras', ['as' => 'qc.busca_carteiras', 'uses' => 'QcController@buscaCarteira']);
+        $router->delete('qc/{qc}', ['as' => 'qc.destroy', 'uses' => 'QcController@destroy']);
     });
 
 	# Configuracao Estatica

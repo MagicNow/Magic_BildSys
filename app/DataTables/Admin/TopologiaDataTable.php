@@ -1,12 +1,12 @@
 <?php
 
-namespace App\DataTables;
+namespace App\DataTables\Admin;
 
-use App\Models\QuadroDeConcorrenciaItem;
+use App\Models\Topologia;
 use Form;
 use Yajra\Datatables\Services\DataTable;
 
-class CarteirasSlaItemDataTable extends DataTable
+class TopologiaDataTable extends DataTable
 {
 
     /**
@@ -16,7 +16,13 @@ class CarteirasSlaItemDataTable extends DataTable
     {
         return $this->datatables
             ->eloquent($this->query())
-            ->addColumn('action', 'quadro_de_concorrencia_items.datatables_actions')
+            ->editColumn('action', 'admin.topologia.datatables_actions')
+            ->editColumn('created_at', function($obj){
+                return $obj->created_at ? with(new\Carbon\Carbon($obj->created_at))->format('d/m/Y H:i') : '';
+            })
+            ->filterColumn('created_at', function ($query, $keyword) {
+                $query->whereRaw("DATE_FORMAT(topologia.created_at,'%d/%m/%Y') like ?", ["%$keyword%"]);
+            })
             ->make(true);
     }
 
@@ -27,9 +33,9 @@ class CarteirasSlaItemDataTable extends DataTable
      */
     public function query()
     {
-        $quadroDeConcorrenciaItems = QuadroDeConcorrenciaItem::query();
+        $topologia = Topologia::query();
 
-        return $this->applyScopes($quadroDeConcorrenciaItems);
+        return $this->applyScopes($topologia);
     }
 
     /**
@@ -41,11 +47,10 @@ class CarteirasSlaItemDataTable extends DataTable
     {
         return $this->builder()
             ->columns($this->getColumns())
-            ->addAction(['width' => '10%'])
             ->ajax('')
             ->parameters([
-                'responsive'=> 'true',
-                'initComplete' => 'function () {
+                'responsive' => 'true',
+                 'initComplete' => 'function () {
                     max = this.api().columns().count();
                     this.api().columns().every(function (col) {
                         if((col+1)<max){
@@ -61,7 +66,7 @@ class CarteirasSlaItemDataTable extends DataTable
                         }
                     });
                 }' ,
-                'dom' => 'Bfrtip',
+                'dom' => 'Bfrltip',
                 'scrollX' => false,
                 'language'=> [
                     "url"=> "/vendor/datatables/Portuguese-Brasil.json"
@@ -92,9 +97,9 @@ class CarteirasSlaItemDataTable extends DataTable
     private function getColumns()
     {
         return [
-            'quadro_de_concorrencia_id' => ['name' => 'quadro_de_concorrencia_id', 'data' => 'quadro_de_concorrencia_id'],
-            'qtd' => ['name' => 'qtd', 'data' => 'qtd'],
-            'insumos_id' => ['name' => 'insumos_id', 'data' => 'insumos_id']
+            'nome' => ['name' => 'nome', 'data' => 'nome'],
+            'cadastradaEm' => ['name' => 'created_at', 'data' => 'created_at'],
+            'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }
 
@@ -105,6 +110,6 @@ class CarteirasSlaItemDataTable extends DataTable
      */
     protected function filename()
     {
-        return 'quadroDeConcorrenciaItems';
+        return 'topologias';
     }
 }

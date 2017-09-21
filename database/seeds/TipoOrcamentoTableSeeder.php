@@ -12,7 +12,7 @@ class TipoOrcamentoTableSeeder extends Seeder
 
     public function run()
     {
-        \Illuminate\Support\Facades\DB::table('orcamento_tipos')->delete();
+        /*\Illuminate\Support\Facades\DB::table('orcamento_tipos')->delete();
 
         $items = [
             [
@@ -26,11 +26,11 @@ class TipoOrcamentoTableSeeder extends Seeder
 			[
                 'id' => 3,
                 'nome' => 'CLO'
-            ]
+            ],
         ];
 
         foreach ($items as $item) {
             \App\Models\TipoOrcamento::create($item);
-        }
+        }*/
     }
 }

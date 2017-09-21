@@ -278,8 +278,17 @@ class RolesAndPermissions extends Seeder
             'boletim-medicao.edit'   => 'Edição de Boletim de Medição',
             'boletim-medicao.delete'   => 'Remoção de Boletim de Medição',
 
-            'carteirassla.list' => 'Lista de Carteiras e SLA de cada obra',
-            'carteirassla.create' => 'Criação de QC',
+            // 'carteirassla.list' => 'Lista de Carteiras e SLA de cada obra',
+            // 'carteirassla.create' => 'Criação de QC',
+
+            'qc.list' => 'Lista de QC',
+            'qc.create' => 'Criação de QC',
+            'qc.show' => 'Visualização de QC',
+
+            'topologia.list' => 'Listagem de topologias',
+            'topologia.create' => 'Criação de topologia',
+            'topologia.edit'   => 'Edição de topologia',
+            'topologia.delete'   => 'Remoção de topologia',
         ];
 
         $permissionAccess = [];

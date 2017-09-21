@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCarteirasSlaTable extends Migration
+class CreateQcTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,15 @@ class CreateCarteirasSlaTable extends Migration
      */
     public function up()
     {
-        Schema::create('carteiras_sla', function (Blueprint $table) {
+        Schema::create('qc', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('obra_id');
+            $table->string('tipologia',50);
             $table->unsignedInteger('carteira_id');
-            $table->date('obra_inicio')->nullable();
-            $table->date('obra_subir_qc')->nullable();
-            $table->date('obra_aprovar_qc')->nullable();
-            $table->date('obra_finalizar_qc')->nullable();
-            $table->date('inicio_atividade')->nullable();
+            $table->text('descricao')->nullable();
+            $table->float('valor_pre_orcamento', 12, 2);
+            $table->float('valor_orcamento_inicial', 12, 2);
+            $table->string('status', 50)->default('Em aprovação');
             $table->timestamps();
             $table->softDeletes();
 
@@ -44,6 +44,6 @@ class CreateCarteirasSlaTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('carteiras_sla');
+        Schema::dropIfExists('qc');
     }
 }

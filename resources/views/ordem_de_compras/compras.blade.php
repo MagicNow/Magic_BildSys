@@ -211,6 +211,11 @@
                         $('#planejamento_id').html(options_tarefas);
                         $('#planejamento_id').trigger('change.select2');
 
+                        @if(\Illuminate\Support\Facades\Input::get('planejamento_id'))
+                            $('#planejamento_id').val('{{\Illuminate\Support\Facades\Input::get('planejamento_id')}}').trigger('change.select2');
+                        @endif
+
+                        atualizaCalendario();
                     })
                     .fail(function (retorno) {
                         erros = '';
@@ -248,19 +253,19 @@
             startLoading();
 
             @if(\Illuminate\Support\Facades\Input::get('obra_id'))
-                obra = {{\Illuminate\Support\Facades\Input::get('obra_id')}}
+                obra = '{{\Illuminate\Support\Facades\Input::get('obra_id')}}';
             @endif
 
             @if(\Illuminate\Support\Facades\Input::get('planejamento_id'))
-                planejamento_id = {{\Illuminate\Support\Facades\Input::get('planejamento_id')}}
+                planejamento_id = '{{\Illuminate\Support\Facades\Input::get('planejamento_id')}}';
             @endif
 
             @if(\Illuminate\Support\Facades\Input::get('insumo_grupo_id'))
-                insumo_grupo_id = {{\Illuminate\Support\Facades\Input::get('insumo_grupo_id')}}
+                insumo_grupo_id = '{{\Illuminate\Support\Facades\Input::get('insumo_grupo_id')}}';
             @endif
 
             @if(\Illuminate\Support\Facades\Input::get('carteira_id'))
-                carteira_id = {{\Illuminate\Support\Facades\Input::get('carteira_id')}}
+                carteira_id = '{{\Illuminate\Support\Facades\Input::get('carteira_id')}}';
             @endif
 
             var queryString = '';
@@ -308,6 +313,7 @@
 
             var $exibirPorCarteira = $('#exibir_por_carteira');
             exibir_por_carteira = $exibirPorCarteira.prop('checked');
+
             if(exibir_por_carteira > 0){
                 if(queryString.length>0){
                     queryString +='&';
@@ -333,8 +339,14 @@
         }
 
         $(function () {
+            @if(\Illuminate\Support\Facades\Input::get('exibir_por_carteira'))
+                $('#exibir_por_carteira').iCheck('check');
+            @elseif(\Illuminate\Support\Facades\Input::get('exibir_por_tarefa'))
+                $('#exibir_por_tarefa').iCheck('check');
+            @endif
+
             @if(\Illuminate\Support\Facades\Input::get('obra_id'))
-                escolheObra({{\Illuminate\Support\Facades\Input::get('obra_id')}});
+                escolheObra('{{\Illuminate\Support\Facades\Input::get('obra_id')}}');
             @else
                 atualizaCalendario();
             @endif
@@ -406,12 +418,16 @@
 
             $exibirPorTarefa.on('change ifToggled', function(event) {
                 var isChecked = $exibirPorTarefa.prop('checked');
-                var date = calendar.options.position.start.toISOString().split('T')[0];
 
-                calendar = $('#calendar').calendar(Object.assign(calendarOptions, {
-                    events_source: '/lembretes?exibir_por_tarefa=' + (+isChecked),
-                    day: date
-                }));
+                if(isChecked > 0){
+                    $('#exibir_por_carteira').iCheck('uncheck');
+                }
+//                var date = calendar.options.position.start.toISOString().split('T')[0];
+
+//                calendar = $('#calendar').calendar(Object.assign(calendarOptions, {
+//                    events_source: '/lembretes?exibir_por_tarefa=' + (+isChecked),
+//                    day: date
+//                }));
 
                 LaravelDataTables.dataTableBuilder.ajax.url(
                         location.pathname + '?exibir_por_tarefa=' + (+isChecked)
@@ -422,17 +438,22 @@
                     LaravelDataTables.dataTableBuilder.column('carteiras.nome:name').visible(!isChecked);
                 });
 
+                atualizaCalendario();
             });
 
             var $exibirPorCarteira = $('#exibir_por_carteira');
             $exibirPorCarteira.on('change ifToggled', function(event) {
                 var isChecked = $exibirPorCarteira.prop('checked');
-                var date = calendar.options.position.start.toISOString().split('T')[0];
 
-                calendar = $('#calendar').calendar(Object.assign(calendarOptions, {
-                    events_source: '/lembretes?exibir_por_carteira=' + (+isChecked),
-                    day: date
-                }));
+                if(isChecked > 0){
+                    $('#exibir_por_tarefa').iCheck('uncheck');
+                }
+//                var date = calendar.options.position.start.toISOString().split('T')[0];
+
+//                calendar = $('#calendar').calendar(Object.assign(calendarOptions, {
+//                    events_source: '/lembretes?exibir_por_carteira=' + (+isChecked),
+//                    day: date
+//                }));
 
                 LaravelDataTables.dataTableBuilder.ajax.url(
                         location.pathname + '?exibir_por_carteira=' + (+isChecked)
@@ -443,6 +464,7 @@
                     LaravelDataTables.dataTableBuilder.column('grupo:name').visible(!isChecked);
                 });
 
+                atualizaCalendario();
             });
 
             stopLoading();

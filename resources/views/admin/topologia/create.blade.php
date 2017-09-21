@@ -1,8 +1,10 @@
-@extends('layouts.front')
+@extends('layouts.app')
 
 @section('content')
     <section class="content-header">
-        <h1>Lista de CARTEIRAS e SLA de cada obra</h1>
+        <h1>
+            Topologia
+        </h1>
     </section>
     <div class="content">
         @include('adminlte-templates::common.errors')
@@ -10,9 +12,9 @@
 
             <div class="box-body">
                 <div class="row">
-                    {!! Form::open(['route' => 'carteiras_sla.store']) !!}
+                    {!! Form::open(['route' => 'admin.topologia.store', 'files' => true]) !!}
 
-                        @include('carteiras_sla.fields')
+                        @include('admin.topologia.fields')
 
                     {!! Form::close() !!}
                 </div>
@@ -20,3 +22,6 @@
         </div>
     </div>
 @endsection
+
+
+
