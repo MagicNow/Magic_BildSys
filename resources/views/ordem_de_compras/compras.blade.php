@@ -211,6 +211,10 @@
                         $('#planejamento_id').html(options_tarefas);
                         $('#planejamento_id').trigger('change.select2');
 
+                        @if(\Illuminate\Support\Facades\Input::get('planejamento_id'))
+                            $('#planejamento_id').val('{{\Illuminate\Support\Facades\Input::get('planejamento_id')}}').trigger('change.select2');
+                        @endif
+
                         atualizaCalendario();
                     })
                     .fail(function (retorno) {
@@ -249,19 +253,19 @@
             startLoading();
 
             @if(\Illuminate\Support\Facades\Input::get('obra_id'))
-                obra = {{\Illuminate\Support\Facades\Input::get('obra_id')}}
+                obra = '{{\Illuminate\Support\Facades\Input::get('obra_id')}}';
             @endif
 
             @if(\Illuminate\Support\Facades\Input::get('planejamento_id'))
-                planejamento_id = {{\Illuminate\Support\Facades\Input::get('planejamento_id')}}
+                planejamento_id = '{{\Illuminate\Support\Facades\Input::get('planejamento_id')}}';
             @endif
 
             @if(\Illuminate\Support\Facades\Input::get('insumo_grupo_id'))
-                insumo_grupo_id = {{\Illuminate\Support\Facades\Input::get('insumo_grupo_id')}}
+                insumo_grupo_id = '{{\Illuminate\Support\Facades\Input::get('insumo_grupo_id')}}';
             @endif
 
             @if(\Illuminate\Support\Facades\Input::get('carteira_id'))
-                carteira_id = {{\Illuminate\Support\Facades\Input::get('carteira_id')}}
+                carteira_id = '{{\Illuminate\Support\Facades\Input::get('carteira_id')}}';
             @endif
 
             var queryString = '';
@@ -309,6 +313,7 @@
 
             var $exibirPorCarteira = $('#exibir_por_carteira');
             exibir_por_carteira = $exibirPorCarteira.prop('checked');
+
             if(exibir_por_carteira > 0){
                 if(queryString.length>0){
                     queryString +='&';
@@ -334,6 +339,12 @@
         }
 
         $(function () {
+            @if(\Illuminate\Support\Facades\Input::get('exibir_por_carteira'))
+                $('#exibir_por_carteira').iCheck('check');
+            @elseif(\Illuminate\Support\Facades\Input::get('exibir_por_tarefa'))
+                $('#exibir_por_tarefa').iCheck('check');
+            @endif
+
             @if(\Illuminate\Support\Facades\Input::get('obra_id'))
                 escolheObra({{\Illuminate\Support\Facades\Input::get('obra_id')}});
             @else
