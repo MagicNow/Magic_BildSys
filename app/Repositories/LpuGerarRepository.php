@@ -53,10 +53,7 @@ class LpuGerarRepository
                 $lpu = Lpu::updateOrCreate([                
                     'insumo_id' => $insumo->insumo_id,
 					'codigo_insumo'   => $insumo->codigo_insumo,
-					'regional_id'   => $insumo->regional_id,					
-					'valor_sugerido'   => $insumo->valor_sugerido,
-					'valor_contrato'   => $insumo->valor_contrato,
-					'valor_catalogo'   => $insumo->valor_catalogo,									
+					'regional_id'   => $insumo->regional_id,								
                 ]);	  
 
                 $lpu->valor_sugerido = $insumo->valor_sugerido;

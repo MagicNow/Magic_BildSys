@@ -5,12 +5,15 @@ namespace App\Repositories;
 use App\Models\CatalogoContrato;
 use App\Models\Contrato;
 use App\Models\ContratoItemApropriacao;
+use App\Models\Lembrete;
 use App\Models\Obra;
 use App\Models\Orcamento;
 use App\Models\OrdemDeCompra;
 use App\Models\OrdemDeCompraItem;
+use App\Repositories\Admin\PlanejamentoCompraRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use InfyOm\Generator\Common\BaseRepository;
@@ -507,5 +510,834 @@ class OrdemDeCompraRepository extends BaseRepository
                 'valor_oc' => $valor_oc,
                 'saldo_disponivel' => $saldo_disponivel
         ];
+    }
+    
+    public static function queryCalendarioLembretes(
+        $obra_id,
+        $planejamento_id,
+        $insumo_grupo_id,
+        $carteira_id,
+        $exibir_por_tarefa,
+        $exibir_por_carteira,
+        $from,
+        $to
+    )
+    {
+        if ($obra_id || $planejamento_id || $insumo_grupo_id || $carteira_id){
+            if ($exibir_por_tarefa || $exibir_por_carteira) {
+                $url = 'CONCAT(\'/compras/obrasInsumos?planejamento_id=\',planejamentos.id,\'&obra_id=\',obras.id) as url';
+                $url_dispensar = 'CONCAT(\'/compras/obrasInsumos/dispensar?planejamento_id=\',planejamentos.id,\'&obra_id=\',obras.id) as url_dispensar';
+                $title = 'CONCAT(obras.nome,\' - \',planejamentos.tarefa) title';
+            } else {
+                $url = 'CONCAT(\'/compras/obrasInsumos?planejamento_id=\',planejamentos.id,\'&insumo_grupos_id=\',insumo_grupos.id,\'&obra_id=\',obras.id) as url';
+                $url_dispensar = 'CONCAT(\'/compras/obrasInsumos/dispensar?planejamento_id=\',planejamentos.id,\'&insumo_grupos_id=\',insumo_grupos.id,\'&obra_id=\',obras.id) as url_dispensar';
+                $title = 'CONCAT(obras.nome,\' - \',planejamentos.tarefa,\' - \', lembretes.nome) title';
+
+            }
+
+            //Atualizacao, sem exibir tarefas marcada
+            if (!$exibir_por_tarefa && !$exibir_por_carteira) {
+                $query = Lembrete::join('insumo_grupos', 'insumo_grupos.id', '=', 'lembretes.insumo_grupo_id')
+                    ->join('insumos', 'insumos.insumo_grupo_id', '=', 'insumo_grupos.id')
+                    ->join('planejamento_compras', 'planejamento_compras.insumo_id', '=', 'insumos.id')
+                    ->join('planejamentos', 'planejamentos.id', '=', 'planejamento_compras.planejamento_id')
+                    ->join('obras', 'obras.id', '=', 'planejamentos.obra_id')
+                    ->join('obra_users', 'obra_users.obra_id', '=', 'obras.id')
+                    ->leftJoin('carteira_insumos', 'carteira_insumos.insumo_id', '=', 'insumos.id')
+                    ->leftJoin('carteiras', 'carteiras.id', '=', 'carteira_insumos.carteira_id')
+                    ->whereNull('planejamentos.deleted_at')
+                    ->whereNull('planejamento_compras.deleted_at')
+                    ->where('lembretes.lembrete_tipo_id', 1)
+                    ->where('planejamento_compras.dispensado', 0)
+                    ->where('obra_users.user_id', Auth::user()->id)
+                    ->select([
+                        'lembretes.id',
+                        'obras.nome as obra',
+                        'planejamentos.tarefa',
+                        DB::raw("GROUP_CONCAT(DISTINCT insumo_grupos.nome ORDER BY insumo_grupos.nome ASC SEPARATOR ', ') grupo"),
+                        DB::raw($url),
+                        DB::raw($url_dispensar),
+                        DB::raw($title),
+                        DB::raw("'event-info' as class"),
+                        
+                        /* inicio */
+                        DB::raw("DATE_FORMAT(DATE_SUB(planejamentos.data, INTERVAL (
+                            IFNULL(
+                                (
+                                    SELECT
+                                        SUM(L.dias_prazo_minimo) prazo
+                                    FROM
+                                        lembretes L
+                                    JOIN insumo_grupos IG ON IG.id = L.insumo_grupo_id
+                                    WHERE
+                                        EXISTS(
+                                            SELECT
+                                                1
+                                            FROM
+                                                insumos I
+                                            WHERE
+                                                I.id = insumos.id
+                                            AND I.insumo_grupo_id = IG.id
+                                        )
+                                    AND L.deleted_at IS NULL
+                                ) ,
+                                0
+                            ) + IFNULL(
+                                (
+                                    SELECT
+                                        SUM(dias_prazo) prazo
+                                    FROM
+                                        workflow_alcadas
+                                    WHERE
+                                        EXISTS(
+                                            SELECT
+                                                1
+                                            FROM
+                                                workflow_usuarios
+                                            WHERE
+                                                workflow_alcada_id = workflow_alcadas.id
+                                        )
+                                    AND workflow_alcadas.workflow_tipo_id <= 2
+								    AND workflow_alcadas.deleted_at IS NULL
+                                ) ,
+                                0
+                            )
+                        ) DAY),'%d/%m/%Y') as inicio"),
+                        /* inicio */
+                        
+                        /* start */
+                        DB::raw("UNIX_TIMESTAMP(DATE_SUB(planejamentos.data, INTERVAL (
+                            IFNULL(
+                                (
+                                    SELECT
+                                        SUM(L.dias_prazo_minimo) prazo
+                                    FROM
+                                        lembretes L
+                                    JOIN insumo_grupos IG ON IG.id = L.insumo_grupo_id
+                                    WHERE
+                                        EXISTS (
+                                            SELECT
+                                                1
+                                            FROM
+                                                insumos I
+                                            WHERE
+                                                I.id = insumos.id
+                                            AND I.insumo_grupo_id = IG.id
+                                        )
+                                    AND L.deleted_at IS NULL
+                                ),
+                                0
+                            ) + IFNULL(
+                                (
+                                    SELECT
+                                        SUM(dias_prazo) prazo
+                                    FROM
+                                        workflow_alcadas
+                                    WHERE
+                                        EXISTS (
+                                            SELECT
+                                                1
+                                            FROM
+                                                workflow_usuarios
+                                            WHERE
+                                                workflow_alcada_id = workflow_alcadas.id
+                                        )
+                                    AND workflow_alcadas.workflow_tipo_id <= 2
+                                    AND workflow_alcadas.deleted_at IS NULL
+                                ),
+                                0
+                            )
+                        ) DAY))*1000 as start"),
+                        /* start */
+
+                        /* end */
+                        DB::raw("UNIX_TIMESTAMP(DATE_SUB(planejamentos.data, INTERVAL (
+                            IFNULL(
+                                (
+                                    SELECT
+                                        SUM(L.dias_prazo_minimo) prazo
+                                    FROM
+                                        lembretes L
+                                    JOIN insumo_grupos IG ON IG.id = L.insumo_grupo_id
+                                    WHERE
+                                        EXISTS (
+                                            SELECT
+                                                1
+                                            FROM
+                                                insumos I
+                                            WHERE
+                                                I.id = insumos.id
+                                            AND I.insumo_grupo_id = IG.id
+                                        )
+                                    AND L.deleted_at IS NULL
+                                ),
+                                0
+                            ) + IFNULL(
+                                (
+                                    SELECT
+                                        SUM(dias_prazo) prazo
+                                    FROM
+                                        workflow_alcadas
+                                    WHERE
+                                        EXISTS (
+                                            SELECT
+                                                1
+                                            FROM
+                                                workflow_usuarios
+                                            WHERE
+                                                workflow_alcada_id = workflow_alcadas.id
+                                        )
+                                    AND workflow_alcadas.workflow_tipo_id <= 2
+                                    AND workflow_alcadas.deleted_at IS NULL
+                                ),
+                                0
+                            )
+                        ) DAY))*1000 as end"),
+                        /* end */
+                        
+                        /* dias */
+                        DB::raw("DATEDIFF(
+                            (
+                            DATE_SUB(planejamentos.data, INTERVAL (
+                                IFNULL(
+                                    (
+                                        SELECT
+                                            SUM(L.dias_prazo_minimo) prazo
+                                        FROM
+                                            lembretes L
+                                        JOIN insumo_grupos IG ON IG.id = L.insumo_grupo_id
+                                        WHERE
+                                            EXISTS(
+                                                SELECT
+                                                    1
+                                                FROM
+                                                    insumos I
+                                                WHERE
+                                                    I.id = insumos.id
+                                                AND I.insumo_grupo_id = IG.id
+                                            )
+                                        AND L.deleted_at IS NULL
+                                    ) ,
+                                    0
+                                ) + IFNULL(
+                                    (
+                                        SELECT
+                                            SUM(dias_prazo) prazo
+                                        FROM
+                                            workflow_alcadas
+                                        WHERE
+                                            EXISTS(
+                                                SELECT
+                                                    1
+                                                FROM
+                                                    workflow_usuarios
+                                                WHERE
+                                                    workflow_alcada_id = workflow_alcadas.id
+                                            )
+                                        AND workflow_alcadas.workflow_tipo_id <= 2
+                                        AND workflow_alcadas.deleted_at IS NULL
+                                    ) ,
+                                    0
+                                )
+                            ) DAY)
+                        ),CURDATE()) as dias"),
+                        /* dias */
+                        
+                        'carteiras.nome as carteira'
+                    ]);
+
+                if ($from || $to) {
+                    if ($from) {
+                        $from = date('Y-m-d', $from / 1000);
+                        $query->where(DB::raw('DATE_SUB(planejamentos.data, INTERVAL (
+                                            IFNULL(
+                                                (
+                                                    SELECT
+                                                        SUM(L.dias_prazo_minimo) prazo
+                                                    FROM
+                                                        lembretes L
+                                                    JOIN insumo_grupos IG ON IG.id = L.insumo_grupo_id
+                                                    WHERE
+                                                        EXISTS(
+                                                            SELECT
+                                                                1
+                                                            FROM
+                                                                insumos I
+                                                            WHERE
+                                                                I.id = insumos.id
+                                                            AND I.insumo_grupo_id = IG.id
+                                                        )
+                                                    AND L.deleted_at IS NULL
+                                                ) ,
+                                                0
+                                            ) + IFNULL(
+                                                (
+                                                    SELECT
+                                                        SUM(dias_prazo) prazo
+                                                    FROM
+                                                        workflow_alcadas
+                                                    WHERE
+                                                        EXISTS(
+                                                            SELECT
+                                                                1
+                                                            FROM
+                                                                workflow_usuarios
+                                                            WHERE
+                                                                workflow_alcada_id = workflow_alcadas.id
+                                                        )
+                                                    AND workflow_alcadas.workflow_tipo_id <= 2
+								                    AND workflow_alcadas.deleted_at IS NULL
+                                                ) ,
+                                                0
+                                            )
+                                        ) DAY)'), '>=', $from);
+                    }
+                    if ($to) {
+                        $to = date('Y-m-d', $to / 1000);
+                        $query->where(DB::raw('DATE_SUB(planejamentos.data, INTERVAL (
+                                IFNULL(
+                                    (
+                                        SELECT
+                                            SUM(L.dias_prazo_minimo) prazo
+                                        FROM
+                                            lembretes L
+                                        JOIN insumo_grupos IG ON IG.id = L.insumo_grupo_id
+                                        WHERE
+                                            EXISTS(
+                                                SELECT
+                                                    1
+                                                FROM
+                                                    insumos I
+                                                WHERE
+                                                    I.id = insumos.id
+                                                AND I.insumo_grupo_id = IG.id
+                                            )
+                                        AND L.deleted_at IS NULL
+                                    ) ,
+                                    0
+                                ) + IFNULL(
+                                    (
+                                        SELECT
+                                            SUM(dias_prazo) prazo
+                                        FROM
+                                            workflow_alcadas
+                                        WHERE
+                                            EXISTS(
+                                                SELECT
+                                                    1
+                                                FROM
+                                                    workflow_usuarios
+                                                WHERE
+                                                    workflow_alcada_id = workflow_alcadas.id
+                                            )
+                                        AND workflow_alcadas.workflow_tipo_id <= 2
+								        AND workflow_alcadas.deleted_at IS NULL
+                                    ) ,
+                                    0
+                                )
+                            ) DAY)'), '<=', $to);
+                    }
+                }
+
+                if ($obra_id && $obra_id != 'todas') {
+                    $query->where('planejamentos.obra_id', $obra_id);
+                }
+                if ($planejamento_id) {
+                    $query->where('planejamentos.id', $planejamento_id);
+                }
+                if ($insumo_grupo_id) {
+                    $query->where('insumos.insumo_grupo_id', $insumo_grupo_id);
+                }
+                if ($carteira_id) {
+                    $query->where('carteiras.id', $carteira_id);
+                }
+                // Busca se existe algum item a  ser comprado desta tarefa
+                $query->whereRaw(PlanejamentoCompraRepository::existeItemParaComprarComInsumoGrupo());
+                $query->groupBy(['id', 'obra', 'dias', 'tarefa', 'url', 'inicio', 'carteira', 'start', 'end', 'class', 'title']);
+
+            }
+            elseif($exibir_por_tarefa) {
+                $query = DB::table(
+                    DB::raw('(SELECT tarefa, id, obra, url, url_dispensar, inicio, start, dias, grupo, carteira, title, class
+                         FROM
+                             (SELECT tarefa, id, obra, url, url_dispensar, inicio, start, dias, grupo, carteira, title, class
+                             FROM
+                                (SELECT tarefa, id, obra, url, url_dispensar, inicio, start, dias, grupo, carteira, title, class
+                                FROM (SELECT
+                                        planejamentos.id,
+                                        obras.nome AS obra,
+                                        planejamentos.tarefa,
+                                        ' . $url . ',
+                                        ' . $url_dispensar . ',
+                                        ' . $title . ',
+                                        \'event-info\' AS class,
+                                        insumo_grupos.nome as grupo,
+                                        DATE_FORMAT(
+                                            DATE_SUB(
+                                                planejamentos.data,
+                                                INTERVAL (
+                                                    IFNULL(
+                                                        (
+                                                            SELECT
+                                                                SUM(L.dias_prazo_minimo) prazo
+                                                            FROM
+                                                                lembretes L
+                                                            JOIN insumo_grupos IG ON IG.id = L.insumo_grupo_id
+                                                            WHERE
+                                                                EXISTS (
+                                                                    SELECT
+                                                                        1
+                                                                    FROM
+                                                                        insumos I
+                                                                    WHERE
+                                                                        I.id = insumos.id
+                                                                    AND I.insumo_grupo_id = IG.id
+                                                                )
+                                                            AND L.deleted_at IS NULL
+                                                        ),
+                                                        0
+                                                    ) + IFNULL(
+                                                        (
+                                                            SELECT
+                                                                SUM(dias_prazo) prazo
+                                                            FROM
+                                                                workflow_alcadas
+                                                            WHERE
+                                                                EXISTS (
+                                                                    SELECT
+                                                                        1
+                                                                    FROM
+                                                                        workflow_usuarios
+                                                                    WHERE
+                                                                        workflow_alcada_id = workflow_alcadas.id
+                                                                )
+                                                            AND workflow_alcadas.workflow_tipo_id <= 2
+                                                            AND workflow_alcadas.deleted_at IS NULL
+                                                        ),
+                                                        0
+                                                    )
+                                                ) DAY
+                                            ),
+                                            \'%d/%m/%Y\'
+                                        ) AS inicio,
+                                        UNIX_TIMESTAMP(
+                                            DATE_SUB(
+                                                planejamentos.data,
+                                                INTERVAL (
+                                                    IFNULL(
+                                                        (
+                                                            SELECT
+                                                                SUM(L.dias_prazo_minimo) prazo
+                                                            FROM
+                                                                lembretes L
+                                                            JOIN insumo_grupos IG ON IG.id = L.insumo_grupo_id
+                                                            WHERE
+                                                                EXISTS (
+                                                                    SELECT
+                                                                        1
+                                                                    FROM
+                                                                        insumos I
+                                                                    WHERE
+                                                                        I.id = insumos.id
+                                                                    AND I.insumo_grupo_id = IG.id
+                                                                )
+                                                            AND L.deleted_at IS NULL
+                                                        ),
+                                                        0
+                                                    ) + IFNULL(
+                                                        (
+                                                            SELECT
+                                                                SUM(dias_prazo) prazo
+                                                            FROM
+                                                                workflow_alcadas
+                                                            WHERE
+                                                                EXISTS (
+                                                                    SELECT
+                                                                        1
+                                                                    FROM
+                                                                        workflow_usuarios
+                                                                    WHERE
+                                                                        workflow_alcada_id = workflow_alcadas.id
+                                                                )
+                                                            AND workflow_alcadas.workflow_tipo_id <= 2
+                                                            AND workflow_alcadas.deleted_at IS NULL
+                                                        ),
+                                                        0
+                                                    )
+                                                ) DAY
+                                            )
+                                        ) * 1000 AS start,
+                                        DATEDIFF(
+                                        (
+                                        DATE_SUB(planejamentos.data, INTERVAL (
+                                        IFNULL(
+                                            (
+                                                SELECT
+                                                    SUM(L.dias_prazo_minimo) prazo
+                                                FROM
+                                                    lembretes L
+                                                JOIN insumo_grupos IG ON IG.id = L.insumo_grupo_id
+                                                WHERE
+                                                    EXISTS(
+                                                        SELECT
+                                                            1
+                                                        FROM
+                                                            insumos I
+                                                        WHERE
+                                                            I.id = insumos.id
+                                                        AND I.insumo_grupo_id = IG.id
+                                                    )
+                                                AND L.deleted_at IS NULL
+                                            ) ,
+                                            0
+                                            ) + IFNULL(
+                                                (
+                                                    SELECT
+                                                        SUM(dias_prazo) prazo
+                                                    FROM
+                                                        workflow_alcadas
+                                                    WHERE
+                                                        EXISTS(
+                                                            SELECT
+                                                                1
+                                                            FROM
+                                                                workflow_usuarios
+                                                            WHERE
+                                                                workflow_alcada_id = workflow_alcadas.id
+                                                        )
+                                                    AND workflow_alcadas.workflow_tipo_id <= 2
+                                                    AND workflow_alcadas.deleted_at IS NULL
+                                                ) ,
+                                                0
+                                            )
+                                            ) DAY)
+                                        ),CURDATE()) as dias,
+                                        carteiras.nome as carteira
+                                    FROM lembretes
+                                    INNER JOIN insumo_grupos ON insumo_grupos.id = lembretes.insumo_grupo_id
+                                    INNER JOIN insumos ON insumos.insumo_grupo_id = insumo_grupos.id
+                                    INNER JOIN planejamento_compras ON planejamento_compras.insumo_id = insumos.id
+                                    INNER JOIN planejamentos ON planejamentos.id = planejamento_compras.planejamento_id
+                                    INNER JOIN obras ON obras.id = planejamentos.obra_id
+                                    INNER JOIN obra_users ON obra_users.obra_id = obras.id
+                                    LEFT JOIN carteira_insumos ON carteira_insumos.insumo_id = insumos.id
+                                    LEFT JOIN carteiras ON carteiras.id = carteira_insumos.carteira_id
+                                    WHERE planejamentos.deleted_at IS NULL
+                                    AND lembretes.lembrete_tipo_id = 1
+                                    AND planejamento_compras.dispensado = 0
+                                    AND obra_users.user_id = ' . Auth::user()->id . '
+                                    AND (
+                                        SELECT
+                                            1
+                                        FROM
+                                            planejamento_compras plc
+                                        JOIN planejamentos P ON P.id = plc.planejamento_id
+                                        JOIN orcamentos orc ON orc.insumo_id = plc.insumo_id
+                                        AND orc.grupo_id = plc.grupo_id
+                                        AND orc.subgrupo1_id = plc.subgrupo1_id
+                                        AND orc.subgrupo2_id = plc.subgrupo2_id
+                                        AND orc.subgrupo3_id = plc.subgrupo3_id
+                                        AND orc.servico_id = plc.servico_id
+                                        AND orc.ativo = 1
+                                        AND orc.obra_id = P.obra_id
+                                        WHERE
+                                            (
+                                                IFNULL((
+                                                    SELECT
+                                                        SUM(oci.qtd)
+                                                    FROM ordem_de_compra_itens oci
+                                                    JOIN ordem_de_compras ocs ON ocs.id = oci.ordem_de_compra_id
+                                                    WHERE
+                                                        oci.insumo_id = plc.insumo_id
+                                                    AND oci.grupo_id = plc.grupo_id
+                                                    AND oci.subgrupo1_id = plc.subgrupo1_id
+                                                    AND oci.subgrupo2_id = plc.subgrupo2_id
+                                                    AND oci.subgrupo3_id = plc.subgrupo3_id
+                                                    AND oci.servico_id = plc.servico_id
+                                                    AND oci.obra_id = P.obra_id
+                                                    AND ocs.oc_status_id NOT IN(1 , 4 , 6)
+                                                ),0) < orc.qtd_total
+                                                AND
+                                                IFNULL((
+                                                    SELECT
+                                                        SUM(oci.total)
+                                                    FROM ordem_de_compra_itens oci
+                                                    JOIN ordem_de_compras ocs ON ocs.id = oci.ordem_de_compra_id
+                                                    AND ocs.oc_status_id NOT IN(1 , 4 , 6)
+                                                    WHERE
+                                                        oci.insumo_id = plc.insumo_id
+                                                    AND oci.grupo_id = plc.grupo_id
+                                                    AND oci.subgrupo1_id = plc.subgrupo1_id
+                                                    AND oci.subgrupo2_id = plc.subgrupo2_id
+                                                    AND oci.subgrupo3_id = plc.subgrupo3_id
+                                                    AND oci.servico_id = plc.servico_id
+                                                    AND oci.obra_id = P.obra_id
+                                                ),0) = 0
+                                            )
+                                            AND P.id = planejamentos.id
+                                            AND plc.deleted_at IS NULL
+                                            AND orc.qtd_total > 0
+                                            LIMIT 1
+                                    ) IS NOT NULL
+                                    AND lembretes.deleted_at IS NULL
+                                    ' . ($obra_id && $obra_id != 'todas' ? ' AND planejamentos.obra_id = ' . $obra_id : '') . '
+                                    ' . ($planejamento_id ? ' AND planejamentos.id = ' . $planejamento_id : '') . '
+                                    ' . ($insumo_grupo_id ? ' AND insumos.insumo_grupo_id = ' . $insumo_grupo_id : '') . '
+                                    GROUP BY id, obra, tarefa, url, url_dispensar, grupo, inicio, dias, carteira
+                                    ) as queryInterna
+                                    ORDER BY
+                                    STR_TO_DATE(inicio,\'%d/%m/%Y\') ASC
+                                ) as xpto_ordenado
+                             ) as xpto_agrupado
+                             GROUP BY tarefa
+                         ) as xpto'
+                    )
+                );
+            }
+            elseif($exibir_por_carteira){
+                $query = DB::table(
+                    DB::raw('(SELECT tarefa, id, obra, url, url_dispensar, inicio, start, dias, grupo, carteira, title, class
+                         FROM
+                             (SELECT tarefa, id, obra, url, url_dispensar, inicio, start, dias, grupo, carteira, title, class
+                             FROM
+                                (SELECT tarefa, id, obra, url, url_dispensar, inicio, start, dias, grupo, carteira, title, class
+                                FROM (SELECT
+                                        planejamentos.id,
+                                        obras.nome AS obra,
+                                        planejamentos.tarefa,
+                                        ' . $url . ',
+                                        ' . $url_dispensar . ',
+                                        ' . $title . ',
+                                        \'event-info\' AS class,
+                                        insumo_grupos.nome as grupo,
+                                        DATE_FORMAT(
+                                            DATE_SUB(
+                                                planejamentos.data,
+                                                INTERVAL (
+                                                    IFNULL(
+                                                        (
+                                                            SELECT
+                                                                SUM(L.dias_prazo_minimo) prazo
+                                                            FROM
+                                                                lembretes L
+                                                            JOIN insumo_grupos IG ON IG.id = L.insumo_grupo_id
+                                                            WHERE
+                                                                EXISTS (
+                                                                    SELECT
+                                                                        1
+                                                                    FROM
+                                                                        insumos I
+                                                                    WHERE
+                                                                        I.id = insumos.id
+                                                                    AND I.insumo_grupo_id = IG.id
+                                                                )
+                                                            AND L.deleted_at IS NULL
+                                                        ),
+                                                        0
+                                                    ) + IFNULL(
+                                                        (
+                                                            SELECT
+                                                                SUM(dias_prazo) prazo
+                                                            FROM
+                                                                workflow_alcadas
+                                                            WHERE
+                                                                EXISTS (
+                                                                    SELECT
+                                                                        1
+                                                                    FROM
+                                                                        workflow_usuarios
+                                                                    WHERE
+                                                                        workflow_alcada_id = workflow_alcadas.id
+                                                                )
+                                                            AND workflow_alcadas.workflow_tipo_id <= 2
+                                                            AND workflow_alcadas.deleted_at IS NULL
+                                                        ),
+                                                        0
+                                                    )
+                                                ) DAY
+                                            ),
+                                            \'%d/%m/%Y\'
+                                        ) AS inicio,
+                                        UNIX_TIMESTAMP(
+                                            DATE_SUB(
+                                                planejamentos.data,
+                                                INTERVAL (
+                                                    IFNULL(
+                                                        (
+                                                            SELECT
+                                                                SUM(L.dias_prazo_minimo) prazo
+                                                            FROM
+                                                                lembretes L
+                                                            JOIN insumo_grupos IG ON IG.id = L.insumo_grupo_id
+                                                            WHERE
+                                                                EXISTS (
+                                                                    SELECT
+                                                                        1
+                                                                    FROM
+                                                                        insumos I
+                                                                    WHERE
+                                                                        I.id = insumos.id
+                                                                    AND I.insumo_grupo_id = IG.id
+                                                                )
+                                                            AND L.deleted_at IS NULL
+                                                        ),
+                                                        0
+                                                    ) + IFNULL(
+                                                        (
+                                                            SELECT
+                                                                SUM(dias_prazo) prazo
+                                                            FROM
+                                                                workflow_alcadas
+                                                            WHERE
+                                                                EXISTS (
+                                                                    SELECT
+                                                                        1
+                                                                    FROM
+                                                                        workflow_usuarios
+                                                                    WHERE
+                                                                        workflow_alcada_id = workflow_alcadas.id
+                                                                )
+                                                            AND workflow_alcadas.workflow_tipo_id <= 2
+                                                            AND workflow_alcadas.deleted_at IS NULL
+                                                        ),
+                                                        0
+                                                    )
+                                                ) DAY
+                                            )
+                                        ) * 1000 AS start,
+                                        DATEDIFF(
+                                        (
+                                        DATE_SUB(planejamentos.data, INTERVAL (
+                                        IFNULL(
+                                            (
+                                                SELECT
+                                                    SUM(L.dias_prazo_minimo) prazo
+                                                FROM
+                                                    lembretes L
+                                                JOIN insumo_grupos IG ON IG.id = L.insumo_grupo_id
+                                                WHERE
+                                                    EXISTS(
+                                                        SELECT
+                                                            1
+                                                        FROM
+                                                            insumos I
+                                                        WHERE
+                                                            I.id = insumos.id
+                                                        AND I.insumo_grupo_id = IG.id
+                                                    )
+                                                AND L.deleted_at IS NULL
+                                            ) ,
+                                            0
+                                            ) + IFNULL(
+                                                (
+                                                    SELECT
+                                                        SUM(dias_prazo) prazo
+                                                    FROM
+                                                        workflow_alcadas
+                                                    WHERE
+                                                        EXISTS(
+                                                            SELECT
+                                                                1
+                                                            FROM
+                                                                workflow_usuarios
+                                                            WHERE
+                                                                workflow_alcada_id = workflow_alcadas.id
+                                                        )
+                                                    AND workflow_alcadas.workflow_tipo_id <= 2
+                                                    AND workflow_alcadas.deleted_at IS NULL
+                                                ) ,
+                                                0
+                                            )
+                                            ) DAY)
+                                        ),CURDATE()) as dias,
+                                        carteiras.nome as carteira
+                                    FROM lembretes
+                                    INNER JOIN insumo_grupos ON insumo_grupos.id = lembretes.insumo_grupo_id
+                                    INNER JOIN insumos ON insumos.insumo_grupo_id = insumo_grupos.id
+                                    INNER JOIN planejamento_compras ON planejamento_compras.insumo_id = insumos.id
+                                    INNER JOIN planejamentos ON planejamentos.id = planejamento_compras.planejamento_id
+                                    INNER JOIN obras ON obras.id = planejamentos.obra_id
+                                    INNER JOIN obra_users ON obra_users.obra_id = obras.id
+                                    LEFT JOIN carteira_insumos ON carteira_insumos.insumo_id = insumos.id
+                                    LEFT JOIN carteiras ON carteiras.id = carteira_insumos.carteira_id
+                                    WHERE planejamentos.deleted_at IS NULL
+                                    AND lembretes.lembrete_tipo_id = 1
+                                    AND planejamento_compras.dispensado = 0
+                                    AND obra_users.user_id = ' . Auth::user()->id . '
+                                    AND (
+                                        SELECT
+                                            1
+                                        FROM
+                                            planejamento_compras plc
+                                        JOIN planejamentos P ON P.id = plc.planejamento_id
+                                        JOIN orcamentos orc ON orc.insumo_id = plc.insumo_id
+                                        AND orc.grupo_id = plc.grupo_id
+                                        AND orc.subgrupo1_id = plc.subgrupo1_id
+                                        AND orc.subgrupo2_id = plc.subgrupo2_id
+                                        AND orc.subgrupo3_id = plc.subgrupo3_id
+                                        AND orc.servico_id = plc.servico_id
+                                        AND orc.ativo = 1
+                                        AND orc.obra_id = P.obra_id
+                                        WHERE
+                                            (
+                                                IFNULL((
+                                                    SELECT
+                                                        SUM(oci.qtd)
+                                                    FROM ordem_de_compra_itens oci
+                                                    JOIN ordem_de_compras ocs ON ocs.id = oci.ordem_de_compra_id
+                                                    WHERE
+                                                        oci.insumo_id = plc.insumo_id
+                                                    AND oci.grupo_id = plc.grupo_id
+                                                    AND oci.subgrupo1_id = plc.subgrupo1_id
+                                                    AND oci.subgrupo2_id = plc.subgrupo2_id
+                                                    AND oci.subgrupo3_id = plc.subgrupo3_id
+                                                    AND oci.servico_id = plc.servico_id
+                                                    AND oci.obra_id = P.obra_id
+                                                    AND ocs.oc_status_id NOT IN(1 , 4 , 6)
+                                                ),0) < orc.qtd_total
+                                                AND
+                                                IFNULL((
+                                                    SELECT
+                                                        SUM(oci.total)
+                                                    FROM ordem_de_compra_itens oci
+                                                    JOIN ordem_de_compras ocs ON ocs.id = oci.ordem_de_compra_id
+                                                    AND ocs.oc_status_id NOT IN(1 , 4 , 6)
+                                                    WHERE
+                                                        oci.insumo_id = plc.insumo_id
+                                                    AND oci.grupo_id = plc.grupo_id
+                                                    AND oci.subgrupo1_id = plc.subgrupo1_id
+                                                    AND oci.subgrupo2_id = plc.subgrupo2_id
+                                                    AND oci.subgrupo3_id = plc.subgrupo3_id
+                                                    AND oci.servico_id = plc.servico_id
+                                                    AND oci.obra_id = P.obra_id
+                                                ),0) = 0
+                                            )
+                                            AND P.id = planejamentos.id
+                                            AND plc.deleted_at IS NULL
+                                            AND orc.qtd_total > 0
+                                            LIMIT 1
+                                    ) IS NOT NULL
+                                    AND lembretes.deleted_at IS NULL
+                                    ' . ($obra_id && $obra_id != 'todas' ? ' AND planejamentos.obra_id = ' . $obra_id : '') . '
+                                    ' . ($planejamento_id ? ' AND planejamentos.id = ' . $planejamento_id : '') . '
+                                    ' . ($insumo_grupo_id ? ' AND insumos.insumo_grupo_id = ' . $insumo_grupo_id : '') . '
+                                    GROUP BY id, obra, tarefa, url, url_dispensar, grupo, inicio, dias, carteira
+                                    ) as queryInterna
+                                    ORDER BY
+                                    STR_TO_DATE(inicio,\'%d/%m/%Y\') ASC
+                                ) as xpto_ordenado
+                             ) as xpto_agrupado
+                             GROUP BY carteira
+                         ) as xpto'
+                    )
+                );
+            } else {
+                $query = collect();
+            }
+            
+            return $query;
+        } else {
+            return collect();
+        }
     }
 }

@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Repositories;
+namespace App\Repositories\Admin;
 
-use App\Models\CarteirasSla;
+use App\Models\Topologia;
 use InfyOm\Generator\Common\BaseRepository;
 
-class CarteirasSlaRepository extends BaseRepository
+class TopologiaRepository extends BaseRepository
 {
     /**
      * @var array
@@ -19,7 +19,6 @@ class CarteirasSlaRepository extends BaseRepository
      **/
     public function model()
     {
-        return CarteirasSla::class;
+        return Topologia::class;
     }
-	
 }
