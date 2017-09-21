@@ -82,7 +82,7 @@ class MascaraPadraoInsumoController extends AppBaseController
             foreach ($request->insumo_id as $insumo_id) {
 								
 				$insumo = Insumo::where('id', $request->insumo_id)->first();
-				$codigo_estruturado = "01".$request->subgrupo1_id.".".$request->subgrupo2_id.".".$request->subgrupo3_id.".".$request->servico_id.".".$insumo->codigo;
+				$codigo_estruturado = "01.".$request->subgrupo1_id.".".$request->subgrupo2_id.".".$request->subgrupo3_id.".".$request->servico_id.".".$insumo->codigo;
 				
                 MascaraPadraoInsumo::firstOrCreate([
                     'mascara_padrao_id' => $request->mascara_padrao_id,
