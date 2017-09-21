@@ -29,9 +29,9 @@ class MegaTipoDocumentoFinanceiro extends Eloquent
     }
 
     public function getRetemIrrfAttribute($value){
-        return intval(strtoupper(trim(utf8_encode($value)))=='S');
+        return trim(utf8_encode($value));
     }
     public function getRetemImpostosAttribute($value){
-        return intval(strtoupper(trim(utf8_encode($value)))=='S');
+        return trim(utf8_encode($value));
     }
 }

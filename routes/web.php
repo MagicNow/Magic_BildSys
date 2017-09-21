@@ -1371,6 +1371,36 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
 		$insumos = \App\Repositories\ImportacaoRepository::insumos();
 	});
 
+    # condicoes-de-pagamento
+    $router->group([
+            'prefix'=>'condicoes-de-pagamento',
+            // 'middleware' => 'needsPermission:insumos.list'
+        ], function () use ($router) {
+        $router->get('', ['as' => 'pagamentoCondicaos.index', 'uses' => 'PagamentoCondicaoController@index']);
+        $router->get('/{id}', ['as' => 'pagamentoCondicaos.show', 'uses' => 'PagamentoCondicaoController@show']);
+        //->middleware("needsPermission:insumos.view");
+    });
+
+    # tipos-de-documentos-fiscais
+    $router->group([
+            'prefix'=>'tipos-de-documentos-fiscais',
+            // 'middleware' => 'needsPermission:insumos.list'
+        ], function () use ($router) {
+        $router->get('', ['as' => 'documentoTipos.index', 'uses' => 'DocumentoTipoController@index']);
+        $router->get('/{id}', ['as' => 'documentoTipos.show', 'uses' => 'DocumentoTipoController@show']);
+        //->middleware("needsPermission:insumos.view");
+    });
+
+    # tipos-de-documentos-financeiros
+    $router->group([
+            'prefix'=>'tipos-de-documentos-financeiros',
+            // 'middleware' => 'needsPermission:insumos.list'
+        ], function () use ($router) {
+        $router->get('', ['as' => 'documentoFinanceiroTipos.index', 'uses' => 'DocumentoFinanceiroTipoController@index']);
+        $router->get('/{id}', ['as' => 'documentoFinanceiroTipos.show', 'uses' => 'DocumentoFinanceiroTipoController@show']);
+        //->middleware("needsPermission:insumos.view");
+    });
+
 
 });
 
@@ -1395,11 +1425,4 @@ $router->get('/teste', function () {
 #Image Controller
 $router->get('imagem', 'ImageController@index');
 
-
-Route::resource('pagamentoCondicaos', 'PagamentoCondicaoController');
-
-Route::resource('documentoTipos', 'DocumentoTipoController');
-
 Route::resource('pagamentos', 'PagamentoController');
-
-Route::resource('documentoFinanceiroTipos', 'DocumentoFinanceiroTipoController');

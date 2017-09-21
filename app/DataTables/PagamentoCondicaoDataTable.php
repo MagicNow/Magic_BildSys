@@ -16,7 +16,7 @@ class PagamentoCondicaoDataTable extends DataTable
     {
         return $this->datatables
             ->eloquent($this->query())
-            ->addColumn('action', 'pagamento_condicaos.datatables_actions')
+            ->editColumn('action', 'pagamento_condicaos.datatables_actions')
             ->make(true);
     }
 
@@ -41,7 +41,6 @@ class PagamentoCondicaoDataTable extends DataTable
     {
         return $this->builder()
             ->columns($this->getColumns())
-            ->addAction(['width' => '10%'])
             ->ajax('')
             ->parameters([
                 'initComplete' => 'function () {
@@ -60,7 +59,7 @@ class PagamentoCondicaoDataTable extends DataTable
                         }
                     });
                 }' ,
-                'dom' => 'Bfrtip',
+                'dom' => 'Bfrltip',
                 'scrollX' => false,
                 'language'=> [
                     "url"=> "/vendor/datatables/Portuguese-Brasil.json"
@@ -91,8 +90,9 @@ class PagamentoCondicaoDataTable extends DataTable
     private function getColumns()
     {
         return [
+            'codigo' => ['name' => 'codigo', 'data' => 'codigo', 'width'=>'10%'],
             'nome' => ['name' => 'nome', 'data' => 'nome'],
-            'codigo' => ['name' => 'codigo', 'data' => 'codigo']
+            'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }
 

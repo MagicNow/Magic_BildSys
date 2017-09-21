@@ -41,7 +41,6 @@ class PagamentoDataTable extends DataTable
     {
         return $this->builder()
             ->columns($this->getColumns())
-            ->addAction(['width' => '10%'])
             ->ajax('')
             ->parameters([
                 'initComplete' => 'function () {
@@ -60,7 +59,7 @@ class PagamentoDataTable extends DataTable
                         }
                     });
                 }' ,
-                'dom' => 'Bfrtip',
+                'dom' => 'Bfrltip',
                 'scrollX' => false,
                 'language'=> [
                     "url"=> "/vendor/datatables/Portuguese-Brasil.json"
@@ -101,7 +100,8 @@ class PagamentoDataTable extends DataTable
             'documento_tipo_id' => ['name' => 'documento_tipo_id', 'data' => 'documento_tipo_id'],
             'notas_fiscal_id' => ['name' => 'notas_fiscal_id', 'data' => 'notas_fiscal_id'],
             'enviado_integracao' => ['name' => 'enviado_integracao', 'data' => 'enviado_integracao'],
-            'integrado' => ['name' => 'integrado', 'data' => 'integrado']
+            'integrado' => ['name' => 'integrado', 'data' => 'integrado'],
+            'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }
 

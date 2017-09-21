@@ -16,7 +16,23 @@ class DocumentoFinanceiroTipoDataTable extends DataTable
     {
         return $this->datatables
             ->eloquent($this->query())
-            ->addColumn('action', 'documento_financeiro_tipos.datatables_actions')
+            ->editColumn('action', 'documento_financeiro_tipos.datatables_actions')
+            ->editColumn('retem_irrf', '{!! $retem_irrf?\'<i class="fa fa-check text-success"></i>\':\'<i class="fa fa-times text-danger"></i>\' !!}')
+            ->editColumn('retem_impostos', '{!! $retem_impostos?\'<i class="fa fa-check text-success"></i>\':\'<i class="fa fa-times text-danger"></i>\' !!}')
+            ->filterColumn('retem_irrf', function($query, $key){
+                if(strtolower(substr($key,0,1))=='s'){
+                    $query->where('retem_irrf',1);
+                }else{
+                    $query->where('retem_irrf',0);
+                }
+            })
+            ->filterColumn('retem_impostos', function($query, $key){
+                if(strtolower(substr($key,0,1))=='s'){
+                    $query->where('retem_impostos',1);
+                }else{
+                    $query->where('retem_impostos',0);
+                }
+            })
             ->make(true);
     }
 
@@ -41,7 +57,6 @@ class DocumentoFinanceiroTipoDataTable extends DataTable
     {
         return $this->builder()
             ->columns($this->getColumns())
-            ->addAction(['width' => '10%'])
             ->ajax('')
             ->parameters([
                 'initComplete' => 'function () {
@@ -60,7 +75,7 @@ class DocumentoFinanceiroTipoDataTable extends DataTable
                         }
                     });
                 }' ,
-                'dom' => 'Bfrtip',
+                'dom' => 'Bfrltip',
                 'scrollX' => false,
                 'language'=> [
                     "url"=> "/vendor/datatables/Portuguese-Brasil.json"
@@ -91,10 +106,11 @@ class DocumentoFinanceiroTipoDataTable extends DataTable
     private function getColumns()
     {
         return [
+            'codigo' => ['name' => 'codigo_mega', 'data' => 'codigo_mega', 'width'=>'10%'],
             'nome' => ['name' => 'nome', 'data' => 'nome'],
-            'codigo' => ['name' => 'codigo', 'data' => 'codigo'],
-            'retem_irrf' => ['name' => 'retem_irrf', 'data' => 'retem_irrf'],
-            'retem_impostos' => ['name' => 'retem_impostos', 'data' => 'retem_impostos']
+            'retem_irrf' => ['name' => 'retem_irrf', 'data' => 'retem_irrf', 'width'=>'10%'],
+            'retem_impostos' => ['name' => 'retem_impostos', 'data' => 'retem_impostos', 'width'=>'10%'],
+            'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }
 

@@ -91,6 +91,10 @@ class Kernel extends ConsoleKernel
                 $importaDocumentoFiscal = ImportacaoRepository::documentoTipos();
                 Log::info('Executado script de importação de Tipos de Documentos Fiscais', $importaDocumentoFiscal);
 
+                Log::info('Inicio de execucao importação de Tipos de Documentos Financeiros');
+                $importaDocumentoFinanceiros = ImportacaoRepository::documentoFinanceiroTipos();
+                Log::info('Executado script de importação de Tipos de Documentos Financeiros', $importaDocumentoFinanceiros);
+
             })
             ->twiceDaily(10, 19)
             ->name('importacao:repository')
