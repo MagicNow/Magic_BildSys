@@ -407,6 +407,10 @@
 
             $exibirPorTarefa.on('change ifToggled', function(event) {
                 var isChecked = $exibirPorTarefa.prop('checked');
+
+                if(isChecked > 0){
+                    $('#exibir_por_carteira').iCheck('uncheck');
+                }
 //                var date = calendar.options.position.start.toISOString().split('T')[0];
 
 //                calendar = $('#calendar').calendar(Object.assign(calendarOptions, {
@@ -429,6 +433,10 @@
             var $exibirPorCarteira = $('#exibir_por_carteira');
             $exibirPorCarteira.on('change ifToggled', function(event) {
                 var isChecked = $exibirPorCarteira.prop('checked');
+
+                if(isChecked > 0){
+                    $('#exibir_por_tarefa').iCheck('uncheck');
+                }
 //                var date = calendar.options.position.start.toISOString().split('T')[0];
 
 //                calendar = $('#calendar').calendar(Object.assign(calendarOptions, {
