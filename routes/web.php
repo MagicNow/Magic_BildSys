@@ -1274,19 +1274,19 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->get('/{lpu}/editar',['as' => 'lpu.edit', 'uses' => 'LpuController@edit']);
         $router->patch('/{lpu}/update',['as' => 'lpu.update', 'uses' => 'LpuController@update']);
 		$router->delete('lpu/{lpu}', ['as' => 'lpu.destroy', 'uses' => 'LpuController@destroy']);
-    });	
+    });
 
     # DocBild  
-    $router->group(['middleware' => 'needsPermission:qc.list'], function () use ($router) {
-        $router->get('qc', ['as' => 'qc.index', 'uses' => 'QcController@index']);
+    $router->group(['prefix'=>'qc','middleware' => 'needsPermission:qc.list'], function () use ($router) {
+        $router->get('', ['as' => 'qc.index', 'uses' => 'QcController@index']);
         $router->get('/{qc}',['as' => 'qc.show', 'uses' => 'QcController@show'])
             ->middleware('needsPermission:qc.show');
         $router->get('/{qc}/editar',['as' => 'qc.edit', 'uses' => 'QcController@edit']);
         $router->patch('/{qc}/update',['as' => 'qc.update', 'uses' => 'QcController@update']);
-        $router->get('qc/create', ['as' => 'qc.create', 'uses' => 'QcController@create']);
-        $router->post('qc', ['as' => 'qc.store', 'uses' => 'QcController@store']);
-        $router->get('qc/buscar/busca_carteiras', ['as' => 'qc.busca_carteiras', 'uses' => 'QcController@buscaCarteira']);
-        $router->delete('qc/{qc}', ['as' => 'qc.destroy', 'uses' => 'QcController@destroy']);
+        $router->get('/create', ['as' => 'qc.create', 'uses' => 'QcController@create']);
+        $router->post('', ['as' => 'qc.store', 'uses' => 'QcController@store']);
+        $router->get('/buscar/busca_carteiras', ['as' => 'qc.busca_carteiras', 'uses' => 'QcController@buscaCarteira']);
+        $router->delete('/{qc}', ['as' => 'qc.destroy', 'uses' => 'QcController@destroy']);
     });
 
 	# Configuracao Estatica

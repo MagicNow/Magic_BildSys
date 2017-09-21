@@ -278,7 +278,7 @@
         <li class="{{ Request::is('lpu*') ? 'active' : '' }}">
             <a href="{!! route('lpu.index') !!}" title="LPU">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
-                <span>L.P.U.</span> </a>
+                <span>Lista de Preço Unitário</span> </a>
         </li>
         @endshield		
 
