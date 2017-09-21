@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Cidade;
+use App\Models\DocumentoFinanceiroTipo;
 use App\Models\DocumentoTipo;
 use App\Models\Fornecedor;
 use App\Models\Cnae;
@@ -15,6 +16,7 @@ use App\Models\MegaFornecedor;
 use App\Models\MegaFornecedorServico;
 use App\Models\MegaInsumo;
 use App\Models\MegaInsumoGrupo;
+use App\Models\MegaTipoDocumentoFinanceiro;
 use App\Models\MegaTipoDocumentoFiscal;
 use App\Models\PagamentoCondicao;
 use App\Models\Unidade;
@@ -379,6 +381,39 @@ class ImportacaoRepository
         }
 
         return ['total-mega' => $registros->count(), 'total-sys' => DocumentoTipo::count()];
+
+    }
+    /**
+     * Importa Tipos de Documento Financeiro do Mega
+     * @return array
+     */
+    public static function documentoFinanceiroTipos(){
+        $registros = MegaTipoDocumentoFinanceiro::select([
+            'tpd_st_codigo',
+            'tpd_st_descricao',
+            'tpd_bo_retemirrf',
+            'tpd_bo_retemimpostos',
+        ])
+            ->get();
+
+        foreach ($registros as $itemMega) {
+            try {
+                $importado = DocumentoFinanceiroTipo::firstOrCreate([
+                    'codigo_mega'     => $itemMega->tpd_st_codigo,
+                ]);
+
+                $importado->update([
+                    'nome'   => $itemMega->tdf_st_descricao,
+                    'sigla'  => $itemMega->tdf_st_sigla,
+                    'retem_irrf'=> $itemMega->tpd_bo_retemirrf,
+                    'retem_impostos'=> $itemMega->tpd_bo_retemimpostos,
+                ]);
+            } catch (\Exception $e) {
+                Log::error('Erro ao importar Tipo de Documento Financeiro '. $itemMega->tdf_in_codigo. ': '.$e->getMessage());
+            }
+        }
+
+        return ['total-mega' => $registros->count(), 'total-sys' => DocumentoFinanceiroTipo::count()];
 
     }
 }

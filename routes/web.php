@@ -1371,24 +1371,27 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
 		$insumos = \App\Repositories\ImportacaoRepository::insumos();
 	});
 
-    $router->get('/teste', function () {
-        //        $grupos_mega = \App\Models\MegaInsumoGrupo::select([
-        //            'GRU_IDE_ST_CODIGO',
-        //            'GRU_IN_CODIGO',
-        //            'GRU_ST_NOME',])
-        //            ->where('gru_ide_st_codigo' , '07')
-        //            ->first();
-        //        dd($grupos_mega);
-        //        $servicos = \App\Repositories\ImportacaoRepository::fornecedor_servicos(446);
+
+});
+
+$router->get('/teste', function () {
+    //        $grupos_mega = \App\Models\MegaInsumoGrupo::select([
+    //            'GRU_IDE_ST_CODIGO',
+    //            'GRU_IN_CODIGO',
+    //            'GRU_ST_NOME',])
+    //            ->where('gru_ide_st_codigo' , '07')
+    //            ->first();
+    //        dd($grupos_mega);
+    //        $servicos = \App\Repositories\ImportacaoRepository::fornecedor_servicos(446);
 //        $insumos = \App\Repositories\ImportacaoRepository::insumos();
 //        dd($insumos);
 //        dd(\App\Models\MegaCondicaoPagamento::select(['cond_st_codigo','cond_st_nome'])->get()->toArray());
 //        var_dump(\App\Models\MegaTipoDocumentoFiscal::select(['tdf_in_codigo','tdf_st_sigla','tdf_st_descricao'])->get()->toArray());
 //        dd();
-        dd(\App\Repositories\ImportacaoRepository::pagamentoCondicoes(),\App\Repositories\ImportacaoRepository::documentoTipos());
-    });
+    dd(\App\Repositories\ImportacaoRepository::pagamentoCondicoes(),
+        \App\Repositories\ImportacaoRepository::documentoTipos(),
+        \App\Repositories\ImportacaoRepository::documentoFinanceiroTipos());
 });
-
 #Image Controller
 $router->get('imagem', 'ImageController@index');
 
@@ -1398,3 +1401,5 @@ Route::resource('pagamentoCondicaos', 'PagamentoCondicaoController');
 Route::resource('documentoTipos', 'DocumentoTipoController');
 
 Route::resource('pagamentos', 'PagamentoController');
+
+Route::resource('documentoFinanceiroTipos', 'DocumentoFinanceiroTipoController');
