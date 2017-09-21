@@ -362,9 +362,9 @@ class ImportacaoRepository
         $registros = MegaTipoDocumentoFiscal::select([
             'tdf_in_codigo',
             'tdf_st_descricao',
+            'tdf_st_sigla'
         ])
             ->get();
-
         foreach ($registros as $itemMega) {
             try {
                 $importado = DocumentoTipo::firstOrCreate([
@@ -383,6 +383,7 @@ class ImportacaoRepository
         return ['total-mega' => $registros->count(), 'total-sys' => DocumentoTipo::count()];
 
     }
+
     /**
      * Importa Tipos de Documento Financeiro do Mega
      * @return array
@@ -403,10 +404,9 @@ class ImportacaoRepository
                 ]);
 
                 $importado->update([
-                    'nome'   => $itemMega->tdf_st_descricao,
-                    'sigla'  => $itemMega->tdf_st_sigla,
-                    'retem_irrf'=> $itemMega->tpd_bo_retemirrf,
-                    'retem_impostos'=> $itemMega->tpd_bo_retemimpostos,
+                    'nome'   => $itemMega->tpd_st_descricao,
+                    'retem_irrf'=> ($itemMega->tpd_bo_retemirrf=='S'?1:0),
+                    'retem_impostos'=> ($itemMega->tpd_bo_retemimpostos=='S'?1:0),
                 ]);
             } catch (\Exception $e) {
                 Log::error('Erro ao importar Tipo de Documento Financeiro '. $itemMega->tdf_in_codigo. ': '.$e->getMessage());

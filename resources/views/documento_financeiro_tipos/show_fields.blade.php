@@ -1,9 +1,3 @@
-<!-- Id Field -->
-<div class="form-group col-md-6">
-    {!! Form::label('id', 'Id:') !!}
-    <p class="form-control">{!! $documentoFinanceiroTipo->id !!}</p>
-</div>
-
 <!-- Nome Field -->
 <div class="form-group col-md-6">
     {!! Form::label('nome', 'Nome:') !!}
@@ -19,24 +13,30 @@
 <!-- Retem Irrf Field -->
 <div class="form-group col-md-6">
     {!! Form::label('retem_irrf', 'Retem Irrf:') !!}
-    <p class="form-control">{!! $documentoFinanceiroTipo->retem_irrf !!}</p>
+    <p class="form-control">
+        {!! $documentoFinanceiroTipo->retem_irrf?'<span class="text-success"><i class="fa fa-check"></i> SIM</span>':
+        '<span class="text-danger"><i class="fa fa-times text-danger"></i> NÃO</span>' !!}
+    </p>
 </div>
 
 <!-- Retem Impostos Field -->
 <div class="form-group col-md-6">
     {!! Form::label('retem_impostos', 'Retem Impostos:') !!}
-    <p class="form-control">{!! $documentoFinanceiroTipo->retem_impostos !!}</p>
+    <p class="form-control">
+        {!! $documentoFinanceiroTipo->retem_impostos?'<span class="text-success"><i class="fa fa-check"></i> SIM</span>':
+            '<span class="text-danger"><i class="fa fa-times text-danger"></i> NÃO</span>' !!}
+    </p>
 </div>
 
 <!-- Created At Field -->
 <div class="form-group col-md-6">
-    {!! Form::label('created_at', 'Created At:') !!}
-    <p class="form-control">{!! $documentoFinanceiroTipo->created_at !!}</p>
+    {!! Form::label('created_at', 'Criado em:') !!}
+    <p class="form-control">{!! $documentoFinanceiroTipo->created_at->format('d/m/Y H:i') !!}</p>
 </div>
 
 <!-- Updated At Field -->
 <div class="form-group col-md-6">
-    {!! Form::label('updated_at', 'Updated At:') !!}
-    <p class="form-control">{!! $documentoFinanceiroTipo->updated_at !!}</p>
+    {!! Form::label('updated_at', 'Atualizado em:') !!}
+    <p class="form-control">{!! $documentoFinanceiroTipo->updated_at->format('d/m/Y H:i') !!}</p>
 </div>
 

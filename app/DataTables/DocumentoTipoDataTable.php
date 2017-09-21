@@ -41,7 +41,6 @@ class DocumentoTipoDataTable extends DataTable
     {
         return $this->builder()
             ->columns($this->getColumns())
-            ->addAction(['width' => '10%'])
             ->ajax('')
             ->parameters([
                 'initComplete' => 'function () {
@@ -60,7 +59,7 @@ class DocumentoTipoDataTable extends DataTable
                         }
                     });
                 }' ,
-                'dom' => 'Bfrtip',
+                'dom' => 'Bfrltip',
                 'scrollX' => false,
                 'language'=> [
                     "url"=> "/vendor/datatables/Portuguese-Brasil.json"
@@ -91,8 +90,10 @@ class DocumentoTipoDataTable extends DataTable
     private function getColumns()
     {
         return [
+            'codigo_mega' => ['name' => 'codigo_mega', 'data' => 'codigo_mega','width'=>'10%'],
+            'sigla' => ['name' => 'sigla', 'data' => 'sigla'],
             'nome' => ['name' => 'nome', 'data' => 'nome'],
-            'codigo_mega' => ['name' => 'codigo_mega', 'data' => 'codigo_mega']
+            'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }
 
