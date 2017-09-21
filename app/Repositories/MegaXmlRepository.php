@@ -67,9 +67,11 @@ class MegaXmlRepository
         //Buscar na tabela do Mega e salvar no contrato, também na entrada da NF pode-se escolher a forma de pagamento.
         $node = $domtree->createElement("COND_ST_CODIGO", $dataGeral['COND_ST_CODIGO']);// "Código da condição de pagamento."
         $xmlRoot->appendChild($node);
+
         //Criar campo Código centro de Custo na Obra (atual é 480) * REQUERIDO
         $node = $domtree->createElement("CCF_IN_REDUZIDO", $dataGeral['CCF_IN_REDUZIDO']);// "C. Custo Padrao"
         $xmlRoot->appendChild($node);
+
         //Criar campo no cadastro da obra (Código Projeto Padrão) * REQUERIDO
         $node = $domtree->createElement("PROJ_IN_REDUZIDO", $dataGeral['PROJ_IN_REDUZIDO']);// "Proj. Padrão"
         $xmlRoot->appendChild($node);
@@ -151,6 +153,7 @@ class MegaXmlRepository
 
         $node = $domtree->createElement("RCB_RE_TOTALCSLL", $dataGeral['RCB_RE_TOTALCSLL']);// "Valor CSLLporte"
         $xmlRoot->appendChild($node);
+
         //DEFAULT "RO" - TIPO DE TRANSPORTE
         $node = $domtree->createElement("RCB_CH_TIPOTRANS", $dataGeral['RCB_CH_TIPOTRANS']);// "RCB_CH_TIPOTRANS"
         $xmlRoot->appendChild($node);
@@ -169,9 +172,11 @@ class MegaXmlRepository
 
         $node = $domtree->createElement("RCB_RE_OUTRASDESPIMP", $dataGeral['RCB_RE_OUTRASDESPIMP']);// "Outras Desp de Importação"
         $xmlRoot->appendChild($node);
+
         //Verificar com Fernanda/Lucas
         $node = $domtree->createElement("DRF_ST_CODIGOIR", $dataGeral['DRF_ST_CODIGOIR']);// "Código IR"
         $xmlRoot->appendChild($node);
+
         //Verificar com Fernanda/Lucas
         $node = $domtree->createElement("RCB_BO_CALCULARVALORES", $dataGeral['RCB_BO_CALCULARVALORES']);// "Identifica se Calculamos ou não os valores de Totais, Tributos (S/N)"
         $xmlRoot->appendChild($node);
@@ -203,18 +208,23 @@ class MegaXmlRepository
             //NUMERO SEQUENCIAL POR NF (1,2,3,4,5....)
             $node = $domtree->createElement("RCI_IN_SEQUENCIA", $data['ITENS_RCI_IN_SEQUENCIA']);// "Numero da Sequencia dos Itens da Nota"
             $itensNode->appendChild($node);
+
             //TXT "COD"	COD
             $node = $domtree->createElement("PRO_ST_ALTERNATIVO", $data['ITENS_PRO_ST_ALTERNATIVO']);// "Cód.Alternativo"
             $itensNode->appendChild($node);
+
             //Código do insumo do SYS	*
             $node = $domtree->createElement("PRO_IN_CODIGO", $data['ITENS_PRO_IN_CODIGO']);// "Cód.Item"
             $itensNode->appendChild($node);
+
             //Qtd da NF
             $node = $domtree->createElement("RCI_RE_QTDEACONVERTER", $data['ITENS_RCI_RE_QTDEACONVERTER']);// "Qtde.Recebimento"
             $itensNode->appendChild($node);
+
             //Unidade recebida	SUGIRO TESTAR SEM A TAG NO INÍCIO
             $node = $domtree->createElement("UNI_ST_UNIDADEFMT", $data['ITENS_UNI_ST_UNIDADEFMT']);// "Unid. Receb."
             $itensNode->appendChild($node);
+
             //valor total do produto (sem frete/IPI)
             $node = $domtree->createElement("RCI_RE_VLMERCADORIA", $data['ITENS_RCI_RE_VLMERCADORIA']);// "Vl. Mercadoria"
             $itensNode->appendChild($node);
@@ -260,9 +270,11 @@ class MegaXmlRepository
 
             $node = $domtree->createElement("RCB_ST_NOTA", $data['ITENS_RCB_ST_NOTA']);// "Nr. Nota Fiscal"
             $itensNode->appendChild($node);
+
             //Unidade no Mega (ex. KG,M2,M3, etc) Unidade do cadastro de insumo do SYS	*
             $node = $domtree->createElement("UNI_ST_UNIDADE", $data['ITENS_UNI_ST_UNIDADE']);// "Unidade"
             $itensNode->appendChild($node);
+
             //Testar passando nulo
             $node = $domtree->createElement("FMT_ST_CODIGO", $data['ITENS_FMT_ST_CODIGO']);// "Cód. Conversor unidades"
             $itensNode->appendChild($node);

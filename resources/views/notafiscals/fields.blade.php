@@ -498,7 +498,7 @@ $mostrarAcoes = true;
 
                 <div class="form-group clearfix">
                     <div class="col-md-10">
-                        <select v-if="itensSolicitacoes.length > 0"
+                        <select
                                 :id='"itenselecionado"'
                                 v-model="itemSelecionado"
                                 class="form-control">
