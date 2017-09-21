@@ -40,8 +40,8 @@
 
 <!-- Valor da Gerencial Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('valor_gerencial', 'Valor da Gerencial:') !!}
-    {!! Form::text('valor_gerencial', NULL, ['class' => 'form-control']) !!}
+	{!! Form::label('valor_gerencial', 'Valor da Gerencial:') !!}
+	{!! Form::text('valor_gerencial', NULL, ['class' => 'form-control']) !!}
 </div>
 
 <div class="form-group col-sm-6">
@@ -50,6 +50,18 @@
 			{!! Form::checkbox('carteira_comprada', '1', false, ['class' => 'form-control', 'id' => 'carteira_comprada']) !!}
 			Carteira Comprada
 		</label>
+	</div>
+</div>
+
+<div class="form-group col-sm-12">
+	{{-- {!! Form::button( '<i class="fa fa-paperclip"></i> '. ucfirst( trans('common.attach') ), ['class' => 'btn btn-warning btn-flat', 'type'=>'button', 'style' => 'margin-right:10px']) !!} --}}
+
+	<h5 style="color:#000000">Anexo:</h5>
+	<div class="row">
+		<div class="col-sm-6 {{ $errors->has('file') ? 'has-error' : '' }}">
+			{!! Form::file('file[]', array('id' => 'file', 'class' => 'form-control', 'multiple' => true)) !!}
+			<span class="help-block">{{ $errors->first('file', ':message') }}</span>
+		</div>
 	</div>
 </div>
 

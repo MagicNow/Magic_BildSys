@@ -42,6 +42,7 @@ return [
     'email' => 'e-mail',
     'sign-in' => 'acessar',
     'confirm' => 'confirmar',
+    'attach' => 'anexar',
     'send'=>'enviar',
     'deactivate'=>'inativar',
     'activate'=>'ativar',

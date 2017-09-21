@@ -1279,11 +1279,11 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     # DocBild  
     $router->group(['prefix'=>'qc','middleware' => 'needsPermission:qc.list'], function () use ($router) {
         $router->get('', ['as' => 'qc.index', 'uses' => 'QcController@index']);
+        $router->get('/create', ['as' => 'qc.create', 'uses' => 'QcController@create']);
         $router->get('/{qc}',['as' => 'qc.show', 'uses' => 'QcController@show'])
             ->middleware('needsPermission:qc.show');
         $router->get('/{qc}/editar',['as' => 'qc.edit', 'uses' => 'QcController@edit']);
         $router->patch('/{qc}/update',['as' => 'qc.update', 'uses' => 'QcController@update']);
-        $router->get('/create', ['as' => 'qc.create', 'uses' => 'QcController@create']);
         $router->post('', ['as' => 'qc.store', 'uses' => 'QcController@store']);
         $router->get('/buscar/busca_carteiras', ['as' => 'qc.busca_carteiras', 'uses' => 'QcController@buscaCarteira']);
         $router->delete('/{qc}', ['as' => 'qc.destroy', 'uses' => 'QcController@destroy']);
