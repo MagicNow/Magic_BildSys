@@ -16,19 +16,19 @@
         }
         
 		.element-body1{
-            height: 200px;
+            height: 230px;
             padding: 5px;
             background-color: white;
         }
 		
 		.element-body-tarefaCriticas{
-            height: 250px;
+            height: 300px;
             padding: 5px;
             background-color: white;
         }
 		
 		.element-body2{
-            height: 120px;
+            height: 200px;
             padding: 5px;
             background-color: white;
         }
@@ -55,22 +55,23 @@
 		<div class="box box-muted">
 			<div class="box-body">
 				<div class="row">
-					<div class="col-sm-3">
-						<h4>Obra</h4>						
-						{!! 
-							Form::select(
-								'obra_id', $obras, null, ['class' => 'form-control select2', 'onchange' => 'selecionaObra(this.value)']) 
-						!!}
+					<div class="form-group col-md-3">
+						{!! Form::label('obra_id', 'Obra:') !!}
+						{!! Form::select('obra_id', $obras, null, ['class' => 'form-control select2', 'required' => 'required', 'onchange' => 'atualizaDados()']) !!}
 					</div>
-					<div class="col-sm-3">
-						<h4>Data</h4>
-						@include('partials.filter-date')
-					</div>
-					<div class="col-sm-2">
-						<h4>Semana</h4>
+					<div class="form-group col-md-2">
+						{!! Form::label('mes_id', 'Mês:') !!}
 						{!!
 						  Form::select(
-							'semana_id',$fridays,null,['class' => 'form-control select2 js-filter']
+							'mes_id',["julho-17","agosto-17","setembro-17"], $mes_id ? : null,['class' => 'form-control select2 js-filter', 'onchange' => 'atualizaDados()']
+							) 						  
+						!!}
+					</div>
+					<div class="form-group col-md-2">
+						{!! Form::label('semana_id', 'Semana:') !!}
+						{!!
+						  Form::select(
+							'semana_id',["1","2","3","4","5"], $semana_id ? : null,['class' => 'form-control select2 js-filter', 'onchange' => 'atualizaDados()']
 						  )
 						!!}
 					</div>
@@ -106,20 +107,20 @@
 																		
 									<tr>
 										<td class="text-center"></td>	
-										@foreach($tabelaPercPrevistoRealizadosSemanas as $tabelaSemana)										
-											<td class="text-center">{{ Carbon\Carbon::parse($tabelaSemana)->format('d/m/Y') }}</td>									
+										@foreach($tabPercPrevistoRealizadosSemanas as $tabSemana)										
+											<td class="text-center">{{ Carbon\Carbon::parse($tabSemana)->format('d/m/Y') }}</td>									
 										@endforeach
 									</tr>																															
 									
-									@foreach($tabelaPercPrevistoRealizados as $tabelaPercPrevistoRealizado)	
+									@foreach($tabPercPrevistoRealizados as $tabPercPrevistoRealizado)	
 									<tr>
-										<td class="text-center">{{ $tabelaPercPrevistoRealizado->tipo}}</td>
-										<td class="text-center">{{ $tabelaPercPrevistoRealizado->concluida }}</td>
-										<td class="text-center">{{ $tabelaPercPrevistoRealizado->concluida }}</td>
-										<td class="text-center">{{ $tabelaPercPrevistoRealizado->concluida }}</td>
-										<td class="text-center">{{ $tabelaPercPrevistoRealizado->concluida }}</td>
-										<td class="text-center">{{ $tabelaPercPrevistoRealizado->concluida }}</td>
-										<td class="text-center">{{ $tabelaPercPrevistoRealizado->concluida }}</td>																			
+										<td class="text-center">{{ $tabPercPrevistoRealizado->tipo}}</td>
+										<td class="text-center">{{ $tabPercPrevistoRealizado->concluida }}</td>
+										<td class="text-center">{{ $tabPercPrevistoRealizado->concluida }}</td>
+										<td class="text-center">{{ $tabPercPrevistoRealizado->concluida }}</td>
+										<td class="text-center">{{ $tabPercPrevistoRealizado->concluida }}</td>
+										<td class="text-center">{{ $tabPercPrevistoRealizado->concluida }}</td>
+										<td class="text-center">{{ $tabPercPrevistoRealizado->concluida }}</td>																			
 									</tr>
 									@endforeach
 								</tbody>
@@ -220,20 +221,27 @@
 							<table class="table table-bordered table-striped">
 								<thead class="element-tabela-head">
 									<tr>
-										@foreach($tabelaTarefasCriticasTitulos as $tabelaTarefasCriticasTitulo)										
-											<td class="text-center">{{ $tabelaTarefasCriticasTitulo }}</td>									
+										@foreach($tabTarefasCriticasTitulos as $tabTarefasCriticasTitulo)										
+											<td class="text-center">{{ $tabTarefasCriticasTitulo }}</td>									
 										@endforeach										
 									</tr>
 								</thead>
 								<tbody>																																																				
 									
-									@foreach($tabelaTarefasCriticasDados as $tabelaTarefasCriticasDado)										
+									@foreach($tabTarefasCriticasDados as $tabTarefasCriticasDado)
+									
+									<?php
+										$tabTarefasPrevisto = $tabTarefasCriticasDado->previsto_acumulado."%";	
+										$tabTarefasRealizado = $tabTarefasCriticasDado->realizado_acumulado."%";	
+										$tabTarefasDesvio = $tabTarefasCriticasDado->previsto_acumulado - $tabTarefasCriticasDado->realizado_acumulado."%";	
+									?>
+									
 									<tr>
-										<td class="text-center">{{ $tabelaTarefasCriticasDado->local }}</td>
-										<td class="text-center">{{ $tabelaTarefasCriticasDado->tarefa }}</td>
-										<td class="text-center">{{ $tabelaTarefasCriticasDado->previsto_acumulado}}</td>
-										<td class="text-center">{{ $tabelaTarefasCriticasDado->realizado_acumulado}}</td>
-										<td class="text-center">{{ $tabelaTarefasCriticasDado->previsto_acumulado - $tabelaTarefasCriticasDado->realizado_acumulado}}</td>										
+										<td class="text-center">{{ $tabTarefasCriticasDado->local }}</td>
+										<td class="text-center">{{ $tabTarefasCriticasDado->tarefa }}</td>
+										<td class="text-center">{{ $tabTarefasPrevisto }}</td>
+										<td class="text-center">{{ $tabTarefasRealizado }}</td>
+										<td class="text-center">{{ $tabTarefasDesvio }}</td>										
 									</tr>
 									@endforeach
 									
@@ -268,17 +276,21 @@
 	@parent
     <script>		
 		
-		function selecionaObra(value) {
+		function atualizaDados() {
 			
 			startLoading();			
 			
+			valor_obra = $('[name=obra_id]').val();
+			valor_mes = $('[name=mes_id] option:selected').val();			
+			valor_semana = $('[name=semana_id]').val();
+			
 			// Carrega a MC que já foi medida para a torre.
-			history.pushState("", document.title, location.pathname+'?obra_id='+value);
+			history.pushState("", document.title, location.pathname+'?obra_id='+valor_obra+'&mes_id='+valor_mes+'&semana_id='+valor_semana);
 			location.reload();
 			
 
 			stopLoading();
-		}
+		}		
 	
 		const app = new Vue({
             el: '#app',
@@ -393,25 +405,26 @@
                     data: [100],
                     backgroundColor: 'blue',
                     hoverBackgroundColor: 'blue'
-                }]
+                }]				
+				,
 				
-				,				
 				//Grafico BAR - Tarefas Críticas
                 datasetsTarefasCriticas:
 				[{
 					label: 'Previsto Acumulado',						
 					backgroundColor: 'maroon',
 					borderColor: 'maroon',
-					data: [90.91, 88.24, 0.00, 0.00]
+					data: JSON.parse("{{ json_encode($grafDataPrevTarefasCriticas)}}")
 				},
 				{
 					label: 'Realizado Acumulado',
 					backgroundColor: 'DarkOrange',
 					borderColor: 'DarkOrange',
-					data: [95.00, 0.00, 0.00, 0.00]
+					data: JSON.parse("{{ json_encode($grafDataReaTarefasCriticas)}}")
 				}],				
-                labelsTarefasCriticas : ["Gabarito", "Rebaixamento Do Lençol", "Tub. 98 tub. - 4 por dia", "Blocos de Fund."],
-				//mylabelPrevistoXRealizado : '%',
+                //mylabelPrevistoXRealizado : '%',
+				labelsTarefasCriticas : <?php echo json_encode($grafLabelsTarefasCriticas);?>,
+				//labelsTarefasCriticas : ["Tarefa 1","Tarefa 2","Tarefa 3","Tarefa 4","Tarefa 5"],								
                 mybooleanTarefasCriticas : false,                
                 myoptionTarefasCriticas: {
                     onClick: function (event, legendItem) {

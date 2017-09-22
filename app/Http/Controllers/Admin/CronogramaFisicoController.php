@@ -308,52 +308,66 @@ class CronogramaFisicoController extends AppBaseController
 	//Acompanhamento Semanal
 	public function relSemanal(Request $request)
     {		
-		
-		/*if(!is_null($request->days)) {
-            $query->whereDate(
-                'contratos.created_at',
-                '>=',
-                Carbon::now()->subDays($request->days)->toDateString()
-            );
-        }*/
-		
-		//Filtros
-		$dayMonth =  new Carbon('first day of this month');
-		$endMonth =  new Carbon('last day of this month');
-		
-        if($request->data_start) {            
-            $fromDate = Carbon::createFromFormat('d-m-Y', $request->data_start)->toDateString();                            
-        }else{
-			$fromDate = $dayMonth->toDateString();    
-		}
 
-        if($request->data_end) {
-            $endDate = Carbon::createFromFormat('d-m-Y', $request->data_end)->toDateString();
-        }else{			
-			$endDate = $endMonth->toDateString();   
-		}
-
-		if($request->semana_id) {            
-            $semanaDate = $request->semana_id;
-        }else{
-			$semanaDate = "2017-09-01";
-		}
+		$obra_id = null;
+		$mes_id = null;
+		$semana_id = null;
+		
+		//Filtros Obra, Mês e Semana de Referências
 		
 		if($request->obra_id) {            
-            $obraId = $request->obra_id;
-        }else{
-			$obraId = 0;
-		}
+            $obra_id = $request->obra_id;        
+		}else{
+			$obra_id = 0;
+		}		
 		
-		$fridays = CronogramaFisicoRepository::getFridaysBydate($fromDate);		
-		$last_day= end($fridays);			
+		if($request->mes_id) {
+            
+			$mes_id = $request->mes_id;	
 
+			switch ($mes_id) {
+				case 0:
+					$inicioMes = "2017-07-01";
+					$fimMes = "2017-07-01";					
+					break;
+				case 1:
+					$inicioMes = "2017-08-01";
+					$fimMes = "2017-08-30";
+					break;
+				case 2:
+					$inicioMes = "2017-09-01";
+					$fimMes = "2017-09-30";
+					break;
+			}
+		}else{
+			//Pega o valor do Mês Anterior ao Atual
+			$inicioMes = "2017-08-01";
+			$fimMes = "2017-08-30";
+		}
+			
+		if($request->semana_id) {
+			$semana_id = $request->semana_id;			
+		}else{
+			$semana_id = 1;			
+		}		
+		
+		// Data de Inicio
+		$inicioData = $inicioMes;		
+		
+		// Todas as Sextas do Mês de Referencia
+		$sextasArray = CronogramaFisicoRepository::getFridaysBydate($inicioData);		
+		$ultimaSexta= end($sextasArray);
+		
+		//Data da Sexta feira da Semana de Referência
+		$semanaSexta = $sextasArray[$semana_id-1];
+		
+		//Carregar Dados
         $obras = Obra::pluck('nome','id')->toArray();        
 
 		//Tabela Percentual Previsto e Acumulado		
-		$tabelaPercPrevistoRealizadosSemanas = $fridays;
+		$tabPercPrevistoRealizadosSemanas = $sextasArray;
 		
-		$tabelaPercPrevistoRealizados = CronogramaFisico::select([
+		$tabPercPrevistoRealizados = CronogramaFisico::select([
 			'cronograma_fisicos.id',                
 			'template_planilhas.nome as tipo',				                												
 				DB::raw("(CONCAT(cronograma_fisicos.concluida,'%')
@@ -363,30 +377,40 @@ class CronogramaFisicoController extends AppBaseController
         ])
 		->join('obras','obras.id','cronograma_fisicos.obra_id')
 		->join('template_planilhas','template_planilhas.id','cronograma_fisicos.template_id')		
-		->whereDate('cronograma_fisicos.data_inicio','>=',Carbon::createFromFormat('Y-m-d', $semanaDate)->toDateString())
-		->where('cronograma_fisicos.obra_id', $obraId)
+		->whereDate('cronograma_fisicos.data_inicio','>=',Carbon::createFromFormat('Y-m-d', $semanaSexta)->toDateString())
+		->where('cronograma_fisicos.obra_id', $obra_id)
         ->orderBy('id', 'desc')
 		->take(7)
-		->get();	
+		->get();
 
-		//Tabela Tarefas Criticas
-		$tabelaTarefasCriticasTitulos = ["LOCAL","Tarefas Críticas","Previsto Ac.","Realizado Ac.","Desvio"];
+		$custoTotal = $tabTarefasCriticasCustoTotal[0]->custo;
+		$planoDiretorAcu = 1;
+		$planoTrabalhoAcu = 1;
 		
-		$tabelaTarefasCriticasDados= CronogramaFisico::select([
+		foreach ($tabPercPrevistoRealizados as $tmp) {			
+			
+			//array_push($grafLabelsTarefasCriticas, $tmp['tarefa']);							
+		}
+		
+		//Tabela Tarefas Criticas
+		$tabTarefasCriticasTitulos = ["LOCAL","Tarefas Críticas","Previsto Ac.","Realizado Ac.","Desvio"];
+		
+		$tabTarefasCriticasDados= CronogramaFisico::select([
 			'cronograma_fisicos.id',
+			'cronograma_fisicos.custo',
 			'cronograma_fisicos.torre as local',
 			'cronograma_fisicos.tarefa',
 			DB::raw("(SELECT (case when count(distinct CF.id) = 1 then 'Sim' else 'Não' end) as tarefa_mes
 						FROM cronograma_fisicos CF
 						WHERE CF.id = cronograma_fisicos.id
-						AND (CF.data_inicio >= '$fromDate' AND CF.data_inicio < '$last_day')
-						AND (CF.data_termino>= '$fromDate' AND CF.data_termino< '$last_day')
+						AND (CF.data_inicio >= '$inicioData' AND CF.data_inicio < '$ultimaSexta')
+						AND (CF.data_termino>= '$inicioData' AND CF.data_termino< '$ultimaSexta')
 					 ) as tarefa_mes"
 			),
 			DB::raw("(SELECT   
 						CASE    
-							WHEN (CF.data_inicio >= '$fridays[0]') THEN '0%' 
-							WHEN (CF.data_termino <= '$fridays[0]') THEN '100%' 								
+							WHEN (CF.data_inicio >= '$sextasArray[0]') THEN 0 
+							WHEN (CF.data_termino <= '$sextasArray[0]') THEN 100
 						END AS semana1
 						FROM cronograma_fisicos CF
 						WHERE CF.id = cronograma_fisicos.id 
@@ -394,7 +418,7 @@ class CronogramaFisicoController extends AppBaseController
 			),
 			DB::raw("(SELECT   
 						CASE    
-							WHEN (1) THEN '0%' 								
+							WHEN (1) THEN 0 								
 						END AS semana1
 						FROM cronograma_fisicos CF
 						WHERE CF.id = cronograma_fisicos.id 
@@ -404,14 +428,51 @@ class CronogramaFisicoController extends AppBaseController
         ])
 		->join('obras','obras.id','cronograma_fisicos.obra_id')
 		->join('template_planilhas','template_planilhas.id','cronograma_fisicos.template_id')				
-		->where('cronograma_fisicos.resumo','=','Não')
-		//->where filtro obra, ano, mes e semana
-		->where('cronograma_fisicos.obra_id', $obraId)
-		->whereDate('cronograma_fisicos.data_inicio','>=',Carbon::createFromFormat('Y-m-d', $fromDate)->toDateString())
+		->where('cronograma_fisicos.resumo','=','Não')		
+		->where('cronograma_fisicos.obra_id', $obra_id)
+		->whereDate('cronograma_fisicos.data_inicio','>=',Carbon::createFromFormat('Y-m-d', $inicioData)->toDateString())
         ->orderBy('id', 'desc')		
 		->get();
-               
-        return view('admin.cronograma_fisicos.relSemanal', compact('obras','fridays', 'tabelaPercPrevistoRealizadosSemanas',  'tabelaPercPrevistoRealizados', 'tabelaTarefasCriticasTitulos', 'tabelaTarefasCriticasDados'));
+		
+		$tabTarefasCriticasCustoTotal= CronogramaFisico::select([
+			'cronograma_fisicos.id',
+			'cronograma_fisicos.custo',
+			'cronograma_fisicos.torre as local',
+			'cronograma_fisicos.tarefa',			
+        ])
+		->join('obras','obras.id','cronograma_fisicos.obra_id')
+		->join('template_planilhas','template_planilhas.id','cronograma_fisicos.template_id')				
+		->where('cronograma_fisicos.tarefa', 'like', '%Cronograma%')
+		->where('cronograma_fisicos.resumo','=','Sim')		
+		->where('cronograma_fisicos.obra_id', $obra_id)
+		//->whereDate('cronograma_fisicos.data_inicio','>=',Carbon::createFromFormat('Y-m-d', $inicioData)->toDateString())
+        //->orderBy('id', 'desc')		
+		->get();	
+		
+		
+		//Gráfico Tarefas Críticas		
+		$grafLabelsTarefasCriticas = [];
+		$grafDataPrevTarefasCriticas = [];
+		$grafDataReaTarefasCriticas= [];	
+		
+		foreach ($tabTarefasCriticasDados as $tmp) {			
+			array_push($grafLabelsTarefasCriticas, $tmp['tarefa']);							
+		}		
+		
+		foreach ($tabTarefasCriticasDados as $tmp) {			
+			array_push($grafDataPrevTarefasCriticas, $tmp['previsto_acumulado']);							
+		}		
+		
+		foreach ($tabTarefasCriticasDados as $tmp) {			
+			array_push($grafDataReaTarefasCriticas, $tmp['previsto_realizado']);							
+		}			
+				               
+        return view('admin.cronograma_fisicos.relSemanal', 
+			compact('obra_id', 'mes_id', 'semana_id', 'obras',
+				'tabPercPrevistoRealizadosSemanas',  'tabPercPrevistoRealizados', 
+				'tabTarefasCriticasTitulos', 'tabTarefasCriticasDados',			
+				'grafLabelsTarefasCriticas', 'grafDataPrevTarefasCriticas', 'grafDataReaTarefasCriticas'
+			));
     }
 
 	public function relMensal(Request $request)
