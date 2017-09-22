@@ -6,9 +6,12 @@ use App\DataTables\PagamentoDataTable;
 use App\Http\Requests;
 use App\Http\Requests\CreatePagamentoRequest;
 use App\Http\Requests\UpdatePagamentoRequest;
+use App\Models\DocumentoTipo;
+use App\Models\PagamentoCondicao;
 use App\Repositories\PagamentoRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
+use Illuminate\Support\Facades\DB;
 use Response;
 
 class PagamentoController extends AppBaseController
@@ -39,7 +42,16 @@ class PagamentoController extends AppBaseController
      */
     public function create()
     {
-        return view('pagamentos.create');
+        $pagamentoCondicoes = PagamentoCondicao::select([
+            DB::raw("CONCAT(nome,' - ',codigo) as nome"),
+            'id'
+        ])->pluck('nome','id')->toArray();
+
+        $documentoTipos = DocumentoTipo::select([
+            DB::raw("CONCAT(nome,' - ',sigla) as nome"),
+            'id'
+        ])->pluck('nome','id')->toArray();
+        return view('pagamentos.create', compact('pagamentoCondicoes','documentoTipos'));
     }
 
     /**
