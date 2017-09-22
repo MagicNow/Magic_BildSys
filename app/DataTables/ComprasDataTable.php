@@ -143,8 +143,9 @@ class ComprasDataTable extends DataTable
                 if($obj->insumo_incluido || $obj->orcamento_que_substitui) {
                     if($insumo_catalogo) {
                         $preco_unitario = float_to_money($obj->preco_unitario). '<button type="button" title="
-                        <b>Origem:</b> Catálogo de acordos <br>
-                        <b>Pedido mínimo:</b> '.float_to_money($insumo_catalogo->pedido_minimo, '').
+                        <b>Origem:</b> Catálogo de acordos <br>'.
+                        '<b>Valor unitário:</b> '.float_to_money($insumo_catalogo->valor_unitario).'<br>'.
+                        '<b>Pedido mínimo:</b> '.float_to_money($insumo_catalogo->pedido_minimo, '').
                         '<br> <b>Pedido múltiplo de:</b> '.float_to_money($insumo_catalogo->pedido_multiplo_de, '').'
                         " data-toggle="tooltip" data-placement="top" data-html="true" class="btn btn-primary btn-sm" style="border-radius: 15px !important;width: 20px;height: 20px;padding: 0px;margin-left: 5px;">
                                                 <i class="fa fa-info-circle" aria-hidden="true"></i>
@@ -167,8 +168,9 @@ class ComprasDataTable extends DataTable
                 }else{
                     if($insumo_catalogo) {
                         $preco_unitario = float_to_money($obj->preco_unitario). '<button type="button" title="
-                        <b>Origem:</b> Catálogo de acordos <br>
-                        <b>Pedido mínimo:</b> '.float_to_money($insumo_catalogo->pedido_minimo, '').
+                        <b>Origem:</b> Catálogo de acordos <br>'.
+                        '<b>Valor unitário:</b> '.float_to_money($insumo_catalogo->valor_unitario).'<br>'.
+                        '<b>Pedido mínimo:</b> '.float_to_money($insumo_catalogo->pedido_minimo, '').
                         '<br> <b>Pedido múltiplo de:</b> '.float_to_money($insumo_catalogo->pedido_multiplo_de, '').'
                         " data-toggle="tooltip" data-placement="top" data-html="true" class="btn btn-primary btn-sm" style="border-radius: 15px !important;width: 20px;height: 20px;padding: 0px;margin-left: 5px;">
                                                 <i class="fa fa-info-circle" aria-hidden="true"></i>
