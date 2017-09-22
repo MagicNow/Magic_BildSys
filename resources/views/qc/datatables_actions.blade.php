@@ -27,5 +27,10 @@
             'title' => ucfirst(trans('common.delete'))
         ]) !!}
     @endshield
+    @shield('qc.anexos.list')
+    <a href="{{ route('qc.anexos', $id) }}" title="{{ ucfirst( trans('common.attachments') )}}" class='btn btn-warning btn-xs'>
+        <i class="glyphicon glyphicon-paperclip"></i>
+    </a>
+    @endshield
 </div>
 {!! Form::close() !!}

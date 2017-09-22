@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\DataTables\QcDataTable;
+use App\DataTables\QcAnexosDataTable;
 use Illuminate\Http\Request;
 
 use Laracasts\Flash\Flash;
@@ -30,7 +31,7 @@ class QcController extends AppBaseController
 	 * @param QcDataTable $qcDataTable
 	 * @return Response
 	 */
-	public function index( QcDataTable $qcDataTable) {
+	public function index(QcDataTable $qcDataTable) {
 		return $qcDataTable->render(
 			'qc.index'
 		);
@@ -160,15 +161,40 @@ class QcController extends AppBaseController
 		$qc = $this->qcRepository->findWithoutFail($id);
 
 		if (empty($qc)) {
-			Flash::error('Regional '.trans('common.not-found'));
+			Flash::error('Qc '.trans('common.not-found'));
 
-			return redirect(route('regionals.index'));
+			return redirect(route('qc.index'));
 		}
 
 		$this->qcRepository->delete($id);
 
-		Flash::success('Regional '.trans('common.deleted').' '.trans('common.successfully').'.');
+		Flash::success('Qc '.trans('common.deleted').' '.trans('common.successfully').'.');
 
 		return redirect(route('qc.index'));
+	}
+
+	/**
+	 * Display the specified attachments to Qc.
+	 *
+	 * @param  int $id
+	 * @param QcAnexosDataTable $qcAnexosDataTable
+	 *
+	 * @return Response
+	 */
+	public function anexos(QcAnexosDataTable $qcAnexosDataTable, $id)
+	{
+		$qc = $this->qcRepository->findWithoutFail($id);
+
+		if (empty($qc)) {
+			Flash::error('Qc '.trans('common.not-found'));
+
+			return redirect(route('qc.index'));
+		}
+
+		return $qcAnexosDataTable
+			->with(['id' => $id])
+			->render(
+				'qc_anexos.index'
+			);
 	}
 }

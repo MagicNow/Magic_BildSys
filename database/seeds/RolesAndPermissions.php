@@ -289,6 +289,8 @@ class RolesAndPermissions extends Seeder
             'topologia.create' => 'Criação de topologia',
             'topologia.edit'   => 'Edição de topologia',
             'topologia.delete'   => 'Remoção de topologia',
+
+            'qc.anexos.list' => 'Listagem de anexos do Q.C.',
         ];
 
         $permissionAccess = [];
