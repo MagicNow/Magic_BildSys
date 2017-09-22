@@ -147,7 +147,7 @@ class ComprasDataTable extends DataTable
                         '<b>Valor unitário:</b> '.float_to_money($insumo_catalogo->valor_unitario).'<br>'.
                         '<b>Pedido mínimo:</b> '.float_to_money($insumo_catalogo->pedido_minimo, '').
                         '<br> <b>Pedido múltiplo de:</b> '.float_to_money($insumo_catalogo->pedido_multiplo_de, '').'
-                        " data-toggle="tooltip" data-placement="top" data-html="true" class="btn btn-primary btn-sm" style="border-radius: 15px !important;width: 20px;height: 20px;padding: 0px;margin-left: 5px;">
+                        " data-toggle="tooltip" data-placement="top" data-html="true" class="btn btn-primary btn-sm" style="border-radius: 9px !important;width: 20px;height: 20px;padding: 0px;margin-left: 5px;">
                                                 <i class="fa fa-info-circle" aria-hidden="true"></i>
                                              </button>';
 
@@ -172,7 +172,7 @@ class ComprasDataTable extends DataTable
                         '<b>Valor unitário:</b> '.float_to_money($insumo_catalogo->valor_unitario).'<br>'.
                         '<b>Pedido mínimo:</b> '.float_to_money($insumo_catalogo->pedido_minimo, '').
                         '<br> <b>Pedido múltiplo de:</b> '.float_to_money($insumo_catalogo->pedido_multiplo_de, '').'
-                        " data-toggle="tooltip" data-placement="top" data-html="true" class="btn btn-primary btn-sm" style="border-radius: 15px !important;width: 20px;height: 20px;padding: 0px;margin-left: 5px;">
+                        " data-toggle="tooltip" data-placement="top" data-html="true" class="btn btn-primary btn-sm" style="border-radius: 9px !important;width: 20px;height: 20px;padding: 0px;margin-left: 5px;">
                                                 <i class="fa fa-info-circle" aria-hidden="true"></i>
                                              </button>';
                     } else {
