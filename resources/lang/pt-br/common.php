@@ -43,6 +43,8 @@ return [
     'sign-in' => 'acessar',
     'confirm' => 'confirmar',
     'attach' => 'anexar',
+    'attachments' => 'anexos',
+    'download' => 'baixar',
     'send'=>'enviar',
     'deactivate'=>'inativar',
     'activate'=>'ativar',
