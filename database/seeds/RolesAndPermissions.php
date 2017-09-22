@@ -201,6 +201,16 @@ class RolesAndPermissions extends Seeder
             'estruturas.create' => 'Criação de estruturas',
             'estruturas.edit'   => 'Edição de estruturas',
             'estruturas.delete'   => 'Remoção de estruturas',
+			
+			'mascara_padrao.list'   => 'Listagem de Mascara Padrão',
+            'mascara_padrao.create'   => 'Criação de Mascara Padrão',			
+            'mascara_padrao.edit'   => 'Edição de Mascara Padrão',
+			'mascara_padrao.delete'   => 'Remoção de Mascara Padrão', 
+            
+			'tarefa_padrao.list'   => 'Listagem de Mascara Padrão',
+            'tarefa_padrao.create'   => 'Criação de Mascara Padrão',			
+            'tarefa_padrao.edit'   => 'Edição de Mascara Padrão',
+			'tarefa_padrao.delete'   => 'Remoção de Mascara Padrão', 
 
             ################# SITE ###################
 			
@@ -247,17 +257,7 @@ class RolesAndPermissions extends Seeder
 			'lpu.list'        => 'Listagem de Lpu',
             'lpu.show'        => 'Visualização de Lpu',
             'lpu.edit'        => 'Editar Lpu',			
-            'lpu.reajustar'   => 'Reajustar item do Lpu',
-			
-			'mascara_padrao.list'   => 'Listagem de Mascara Padrão',
-            'mascara_padrao.create'   => 'Criação de Mascara Padrão',			
-            'mascara_padrao.edit'   => 'Edição de Mascara Padrão',
-			'mascara_padrao.delete'   => 'Remoção de Mascara Padrão', 
-            
-			'tarefa_padrao.list'   => 'Listagem de Mascara Padrão',
-            'tarefa_padrao.create'   => 'Criação de Mascara Padrão',			
-            'tarefa_padrao.edit'   => 'Edição de Mascara Padrão',
-			'tarefa_padrao.delete'   => 'Remoção de Mascara Padrão', 
+            'lpu.reajustar'   => 'Reajustar item do Lpu',			
 			
             'configuracaoEstaticas.list'   => 'Listagem de Configuração padrão',
             'configuracaoEstaticas.edit'   => 'Edição de Configuração padrão',

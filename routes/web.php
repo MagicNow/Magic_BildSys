@@ -203,7 +203,37 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
         $router->get('tipoLevantamentos/{tipoLevantamentos}', ['as' => 'admin.tipo_levantamentos.show', 'uses' => 'Admin\TipoLevantamentoController@show']);
         $router->get('tipoLevantamentos/{tipoLevantamentos}/edit', ['as' => 'admin.tipo_levantamentos.edit', 'uses' => 'Admin\TipoLevantamentoController@edit'])
 			->middleware("needsPermission:tipoLevantamentos.edit");
-    });    
+    }); 
+
+	# Máscara Padrão
+    $router->group(['middleware' => 'needsPermission:mascara_padrao.list'], function () use ($router) {        
+        $router->get('mascara_padrao', ['as' => 'admin.mascara_padrao.index', 'uses' => 'Admin\MascaraPadraoController@index']);
+        $router->post('mascara_padrao', ['as' => 'admin.mascara_padrao.store', 'uses' => 'Admin\MascaraPadraoController@store']);
+        $router->get('mascara_padrao/create', ['as' => 'admin.mascara_padrao.create', 'uses' => 'Admin\MascaraPadraoController@create'])
+            ->middleware("needsPermission:mascara_padrao.create");;
+        $router->put('mascara_padrao/{mascara_padrao}', ['as' => 'admin.mascara_padrao.update', 'uses' => 'Admin\MascaraPadraoController@update']);
+        $router->patch('mascara_padrao/{mascara_padrao}', ['as' => 'admin.mascara_padrao.update', 'uses' => 'Admin\MascaraPadraoController@update']);
+        $router->delete('mascara_padrao/{mascara_padrao}', ['as' => 'admin.mascara_padrao.destroy', 'uses' => 'Admin\MascaraPadraoController@destroy'])
+            ->middleware("needsPermission:mascara_padrao.delete");;
+        $router->get('mascara_padrao/{mascara_padrao}', ['as' => 'admin.mascara_padrao.show', 'uses' => 'Admin\MascaraPadraoController@show']);
+        $router->get('mascara_padrao/{mascara_padrao}/edit', ['as' => 'admin.mascara_padrao.edit', 'uses' => 'Admin\MascaraPadraoController@edit'])
+            ->middleware("needsPermission:mascara_padrao.edit");        
+    });
+	
+	# Tarefa Padrão
+    $router->group(['middleware' => 'needsPermission:tarefa_padrao.list'], function () use ($router) {        
+        $router->get('tarefa_padrao', ['as' => 'admin.tarefa_padrao.index', 'uses' => 'Admin\TarefaPadraoController@index']);
+        $router->post('tarefa_padrao', ['as' => 'admin.tarefa_padrao.store', 'uses' => 'Admin\TarefaPadraoController@store']);
+        $router->get('tarefa_padrao/create', ['as' => 'admin.tarefa_padrao.create', 'uses' => 'Admin\TarefaPadraoController@create'])
+            ->middleware("needsPermission:tarefa_padrao.create");;
+        $router->put('tarefa_padrao/{tarefa_padrao}', ['as' => 'admin.tarefa_padrao.update', 'uses' => 'Admin\TarefaPadraoController@update']);
+        $router->patch('tarefa_padrao/{tarefa_padrao}', ['as' => 'admin.tarefa_padrao.update', 'uses' => 'Admin\TarefaPadraoController@update']);
+        $router->delete('tarefa_padrao/{tarefa_padrao}', ['as' => 'admin.tarefa_padrao.destroy', 'uses' => 'Admin\TarefaPadraoController@destroy'])
+            ->middleware("needsPermission:tarefa_padrao.delete");;
+        $router->get('tarefa_padrao/{tarefa_padrao}', ['as' => 'admin.tarefa_padrao.show', 'uses' => 'Admin\TarefaPadraoController@show']);
+        $router->get('tarefa_padrao/{tarefa_padrao}/edit', ['as' => 'admin.tarefa_padrao.edit', 'uses' => 'Admin\TarefaPadraoController@edit'])
+            ->middleware("needsPermission:tarefa_padrao.edit");        
+    });
 	
 	# Estruturas
     $router->group(['middleware' => 'needsPermission:estruturas.list'], function () use ($router) {        
@@ -577,37 +607,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->get('carteiras/buscacep/{cep}', 'Admin\CarteiraController@buscaPorCep');
     });
 	
-	# Máscara Padrão
-    $router->group(['middleware' => 'needsPermission:mascara_padrao.list'], function () use ($router) {        
-        $router->get('mascara_padrao', ['as' => 'admin.mascara_padrao.index', 'uses' => 'Admin\MascaraPadraoController@index']);
-        $router->post('mascara_padrao', ['as' => 'admin.mascara_padrao.store', 'uses' => 'Admin\MascaraPadraoController@store']);
-        $router->get('mascara_padrao/create', ['as' => 'admin.mascara_padrao.create', 'uses' => 'Admin\MascaraPadraoController@create'])
-            ->middleware("needsPermission:mascara_padrao.create");;
-        $router->put('mascara_padrao/{mascara_padrao}', ['as' => 'admin.mascara_padrao.update', 'uses' => 'Admin\MascaraPadraoController@update']);
-        $router->patch('mascara_padrao/{mascara_padrao}', ['as' => 'admin.mascara_padrao.update', 'uses' => 'Admin\MascaraPadraoController@update']);
-        $router->delete('mascara_padrao/{mascara_padrao}', ['as' => 'admin.mascara_padrao.destroy', 'uses' => 'Admin\MascaraPadraoController@destroy'])
-            ->middleware("needsPermission:mascara_padrao.delete");;
-        $router->get('mascara_padrao/{mascara_padrao}', ['as' => 'admin.mascara_padrao.show', 'uses' => 'Admin\MascaraPadraoController@show']);
-        $router->get('mascara_padrao/{mascara_padrao}/edit', ['as' => 'admin.mascara_padrao.edit', 'uses' => 'Admin\MascaraPadraoController@edit'])
-            ->middleware("needsPermission:mascara_padrao.edit");        
-    });
-	
-	# Tarefa Padrão
-    $router->group(['middleware' => 'needsPermission:tarefa_padrao.list'], function () use ($router) {        
-        $router->get('tarefa_padrao', ['as' => 'admin.tarefa_padrao.index', 'uses' => 'Admin\TarefaPadraoController@index']);
-        $router->post('tarefa_padrao', ['as' => 'admin.tarefa_padrao.store', 'uses' => 'Admin\TarefaPadraoController@store']);
-        $router->get('tarefa_padrao/create', ['as' => 'admin.tarefa_padrao.create', 'uses' => 'Admin\TarefaPadraoController@create'])
-            ->middleware("needsPermission:tarefa_padrao.create");;
-        $router->put('tarefa_padrao/{tarefa_padrao}', ['as' => 'admin.tarefa_padrao.update', 'uses' => 'Admin\TarefaPadraoController@update']);
-        $router->patch('tarefa_padrao/{tarefa_padrao}', ['as' => 'admin.tarefa_padrao.update', 'uses' => 'Admin\TarefaPadraoController@update']);
-        $router->delete('tarefa_padrao/{tarefa_padrao}', ['as' => 'admin.tarefa_padrao.destroy', 'uses' => 'Admin\TarefaPadraoController@destroy'])
-            ->middleware("needsPermission:tarefa_padrao.delete");;
-        $router->get('tarefa_padrao/{tarefa_padrao}', ['as' => 'admin.tarefa_padrao.show', 'uses' => 'Admin\TarefaPadraoController@show']);
-        $router->get('tarefa_padrao/{tarefa_padrao}/edit', ['as' => 'admin.tarefa_padrao.edit', 'uses' => 'Admin\TarefaPadraoController@edit'])
-            ->middleware("needsPermission:tarefa_padrao.edit");        
-    });
-
-    # Solicitação de Insumos
+	# Solicitação de Insumos
     $router->get('solicitacaoInsumos/create', ['as' => 'admin.solicitacaoInsumos.create', 'uses' => 'Admin\SolicitacaoInsumoController@create'])
         ->middleware("needsPermission:solicitacaoInsumos.create");
     $router->group(['middleware' => 'needsPermission:solicitacaoInsumos.list'], function () use ($router) {

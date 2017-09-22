@@ -308,14 +308,43 @@ class CronogramaFisicoController extends AppBaseController
 	//Acompanhamento Semanal
 	public function relSemanal(Request $request)
     {		
-		$id = null;
-        if($request->id){
-            $id = $request->id;
-        }
 		
-		//Filtros	//julho-2017	
-		//$fromDate=$request->ano_id."-07-01";
-		$fromDate="2017-07-01";
+		/*if(!is_null($request->days)) {
+            $query->whereDate(
+                'contratos.created_at',
+                '>=',
+                Carbon::now()->subDays($request->days)->toDateString()
+            );
+        }*/
+		
+		//Filtros
+		$dayMonth =  new Carbon('first day of this month');
+		$endMonth =  new Carbon('last day of this month');
+		
+        if($request->data_start) {            
+            $fromDate = Carbon::createFromFormat('d-m-Y', $request->data_start)->toDateString();                            
+        }else{
+			$fromDate = $dayMonth->toDateString();    
+		}
+
+        if($request->data_end) {
+            $endDate = Carbon::createFromFormat('d-m-Y', $request->data_end)->toDateString();
+        }else{			
+			$endDate = $endMonth->toDateString();   
+		}
+
+		if($request->semana_id) {            
+            $semanaDate = $request->semana_id;
+        }else{
+			$semanaDate = "2017-09-01";
+		}
+		
+		if($request->obra_id) {            
+            $obraId = $request->obra_id;
+        }else{
+			$obraId = 0;
+		}
+		
 		$fridays = CronogramaFisicoRepository::getFridaysBydate($fromDate);		
 		$last_day= end($fridays);			
 
@@ -334,8 +363,8 @@ class CronogramaFisicoController extends AppBaseController
         ])
 		->join('obras','obras.id','cronograma_fisicos.obra_id')
 		->join('template_planilhas','template_planilhas.id','cronograma_fisicos.template_id')		
-		->whereDate('cronograma_fisicos.data_inicio','>=',Carbon::createFromFormat('Y-m-d', '2017-09-01')->toDateString())
-		->where('cronograma_fisicos.obra_id', $request->obra_id)
+		->whereDate('cronograma_fisicos.data_inicio','>=',Carbon::createFromFormat('Y-m-d', $semanaDate)->toDateString())
+		->where('cronograma_fisicos.obra_id', $obraId)
         ->orderBy('id', 'desc')
 		->take(7)
 		->get();	
@@ -365,8 +394,7 @@ class CronogramaFisicoController extends AppBaseController
 			),
 			DB::raw("(SELECT   
 						CASE    
-							WHEN (CF.data_inicio >= '$fridays[0]') THEN '0%' 
-							WHEN (CF.data_termino <= '$fridays[0]') THEN '100%' 								
+							WHEN (1) THEN '0%' 								
 						END AS semana1
 						FROM cronograma_fisicos CF
 						WHERE CF.id = cronograma_fisicos.id 
@@ -378,11 +406,12 @@ class CronogramaFisicoController extends AppBaseController
 		->join('template_planilhas','template_planilhas.id','cronograma_fisicos.template_id')				
 		->where('cronograma_fisicos.resumo','=','Não')
 		//->where filtro obra, ano, mes e semana
-		//->whereDate('cronograma_fisicos.data_inicio','>=',Carbon::createFromFormat('Y-m-d', '2017-03-01')->toDateString())
+		->where('cronograma_fisicos.obra_id', $obraId)
+		->whereDate('cronograma_fisicos.data_inicio','>=',Carbon::createFromFormat('Y-m-d', $fromDate)->toDateString())
         ->orderBy('id', 'desc')		
 		->get();
                
-        return view('admin.cronograma_fisicos.relSemanal', compact('obras','tabelaPercPrevistoRealizados', 'tabelaPercPrevistoRealizadosSemanas', 'tabelaTarefasCriticasTitulos', 'tabelaTarefasCriticasDados'));
+        return view('admin.cronograma_fisicos.relSemanal', compact('obras','fridays', 'tabelaPercPrevistoRealizadosSemanas',  'tabelaPercPrevistoRealizados', 'tabelaTarefasCriticasTitulos', 'tabelaTarefasCriticasDados'));
     }
 
 	public function relMensal(Request $request)
