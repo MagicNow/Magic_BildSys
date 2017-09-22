@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AlterMascaraPadraoNocosCamposTable extends Migration
+class AlterMascaraPadraoNovosCamposTable extends Migration
 {
     /**
      * Run the migrations.
