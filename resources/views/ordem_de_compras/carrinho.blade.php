@@ -157,31 +157,19 @@
 
                             @php
                                 $insumo_catalogo = \App\Repositories\OrdemDeCompraRepository::existeNoCatalogo($item->insumo_id, $item->obra_id);
-                                $pedido_minimo_invalido = false;
-                                $multiplo_invalido = false;
+                                $botao = '';
 
                                 if($insumo_catalogo) {
-                                    if(money_to_float($item->qtd) < money_to_float($insumo_catalogo->pedido_minimo)) {
-                                        $pedido_minimo_invalido = true;
-                                    }
-
-                                    if(fmod(money_to_float($item->qtd), money_to_float($insumo_catalogo->pedido_multiplo_de))) {
-                                        $multiplo_invalido = true;
-                                    }
+                                    $botao = '<button type="button" title="
+                                                <b>Origem:</b> Catálogo '.$insumo_catalogo->id.'<br>'.
+                                                '<b>Valor unitário:</b> '.float_to_money($insumo_catalogo->valor_unitario).'<br>'.
+                                                '<b>Pedido mínimo:</b> '.float_to_money($insumo_catalogo->pedido_minimo, '').
+                                                '<br> <b>Pedido múltiplo de:</b> '.float_to_money($insumo_catalogo->pedido_multiplo_de, '').'
+                                                    " data-toggle="tooltip" data-placement="top" data-html="true" class="btn btn-primary btn-sm" style="border-radius: 9px !important;width: 20px;height: 20px;padding: 0px;margin-left: 5px;">
+                                                <i class="fa fa-info-circle" aria-hidden="true"></i>
+                                            </button>';
                                 }
                             @endphp
-
-                            @if($pedido_minimo_invalido)
-                                <div class="alert alert-warning" role="alert">
-                                    Este insumo está no catálogo com o pedido mínimo de {{float_to_money($insumo_catalogo->pedido_minimo, '')}}, com vigência até {{$insumo_catalogo->periodo_termino}}
-                                </div>
-                            @endif
-
-                            @if($multiplo_invalido)
-                                <div class="alert alert-warning" role="alert">
-                                    Este insumo está no catálogo com o múltiplo de {{float_to_money($insumo_catalogo->pedido_multiplo_de, '')}}, com vigência até {{$insumo_catalogo->periodo_termino}}
-                                </div>
-                            @endif
                             <div class="row">
                                 <span class="col-md-3 col-sm-3 col-xs-12 text-center borda-direita" data-toggle="tooltip" data-placement="top" data-html="true"
                                       title="
@@ -203,7 +191,10 @@
                                 </span>
                                 <span class="col-md-2 col-sm-2 col-xs-12 text-center borda-direita" align="center" style="width: 11.5%;">
                                     <strong>Preço unitário:</strong>
-                                    <p class="form-control money" style="border-color:#ffffff;background-color:#ffffff;text-align:center;">{{ float_to_money($item->valor_unitario) }}</p>
+                                    <p class="form-control money" style="border-color:#ffffff;background-color:#ffffff;text-align:center;">
+                                        {{ float_to_money($item->valor_unitario) }}
+                                        {!! $botao !!}
+                                    </p>
                                 </span>
                                 <span class="col-md-2 col-sm-2 col-xs-12 text-center borda-direita" align="center" style="width: 11.5%;">
                                     <strong>Total:</strong>
@@ -508,8 +499,6 @@
         }
 
         $(function () {
-
-
             $(".formAnexos").submit(function (ev) {
                 var formData = new FormData(this);
                 ev.preventDefault();
