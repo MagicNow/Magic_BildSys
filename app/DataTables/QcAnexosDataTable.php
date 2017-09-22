@@ -24,12 +24,15 @@ class QcAnexosDataTable extends DataTable
 		if (empty($qc)) return;
 
 		$collect = [];
-		$files = File::allFiles(storage_path('app/public/qc/' . $qc->id));
+		$path = storage_path('app/public/qc/' . $qc->id);
+		$files = File::allFiles($path);
 		foreach ($files as $file)
 		{
+			$filename = basename($file);
 			$collect[] = [
 				'id' => $qc->id,
-				'nome' => basename($file),
+				'nome' => $filename,
+				'mime' => mime_content_type($path . '/' . $filename),
 				'action' => 'qc_anexos.datatables_actions'
 			];
 		}
@@ -86,7 +89,7 @@ class QcAnexosDataTable extends DataTable
 				],
 				// Ordena para que inicialmente carregue os mais novos
 				'order' => [
-					0,
+					1,
 					'desc'
 				],
 				'buttons' => [
@@ -106,6 +109,7 @@ class QcAnexosDataTable extends DataTable
 	{
 		return [
 			'nome' => ['name' => 'nome', 'data' => 'nome', 'title' => 'Nome'],
+			'mimetype' => ['name' => 'mimetype', 'data' => 'mime', 'title' => 'Tipo'],
 			'action' => ['name' => 'Ações', 'title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'15%', 'class' => 'all']
 		];
 	}
