@@ -40,7 +40,7 @@
 		
     </style>
 
-    <div class="container">
+    <div class="content">
         <section class="content-header">
             <div class="modal-header">
                 <div class="col-md-12">
@@ -56,34 +56,21 @@
 			<div class="box-body">
 				<div class="row">
 					<div class="col-sm-3">
-						<h4>Obra</h4>
-						{!!
-						  Form::select(
-							'obra_id',$obras,null,['class' => 'form-control select2 js-filter']
-						  )
+						<h4>Obra</h4>						
+						{!! 
+							Form::select(
+								'obra_id', $obras, null, ['class' => 'form-control select2', 'onchange' => 'selecionaObra(this.value)']) 
 						!!}
 					</div>
-					<div class="col-sm-2">
-						<h4>Ano</h4>
-						{!!
-						  Form::select(
-							'ano_id',["2017","2018","2019","2020"],null,['class' => 'form-control select2 js-filter']
-						  )
-						!!}
-					</div>
-					<div class="col-sm-2">
-						<h4>Mês</h4>
-						{!!
-						  Form::select(
-							'mes_id',["Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"],null,['class' => 'form-control select2 js-filter']
-						  )
-						!!}
+					<div class="col-sm-3">
+						<h4>Data</h4>
+						@include('partials.filter-date')
 					</div>
 					<div class="col-sm-2">
 						<h4>Semana</h4>
 						{!!
 						  Form::select(
-							'semana_id',["Semana 1","Semana 2","Semana 3","Semana 4","Semana 5"],null,['class' => 'form-control select2 js-filter']
+							'semana_id',$fridays,null,['class' => 'form-control select2 js-filter']
 						  )
 						!!}
 					</div>
@@ -278,7 +265,20 @@
     </div>
 @endsection
 @section('scripts')
-    <script>
+	@parent
+    <script>		
+		
+		function selecionaObra(value) {
+			
+			startLoading();			
+			
+			// Carrega a MC que já foi medida para a torre.
+			history.pushState("", document.title, location.pathname+'?obra_id='+value);
+			location.reload();
+			
+
+			stopLoading();
+		}
 	
 		const app = new Vue({
             el: '#app',

@@ -46,7 +46,7 @@
 		}
     </style>
 
-    <div class="container">
+    <div class="content">
         <section class="content-header">
             <div class="modal-header">
                 <div class="col-md-12">
@@ -85,6 +85,10 @@
 							'mes_id',["Julho","Agosto"],null,['class' => 'form-control select2 js-filter']
 						  )
 						!!}
+					</div>
+					<div class="col-sm-3">
+						<h4>Data</h4>
+						@include('partials.filter-date')
 					</div>
 				</div>
 			</div>
