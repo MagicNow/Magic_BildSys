@@ -383,9 +383,9 @@ class CronogramaFisicoController extends AppBaseController
 		->take(7)
 		->get();
 
-		$custoTotal = $tabTarefasCriticasCustoTotal[0]->custo;
+		/*$custoTotal = $tabTarefasCriticasCustoTotal[0]->custo;
 		$planoDiretorAcu = 1;
-		$planoTrabalhoAcu = 1;
+		$planoTrabalhoAcu = 1;*/
 		
 		foreach ($tabPercPrevistoRealizados as $tmp) {			
 			
