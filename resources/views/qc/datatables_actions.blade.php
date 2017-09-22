@@ -28,9 +28,22 @@
         ]) !!}
     @endshield
     @shield('qc.anexos.list')
-    <a href="{{ route('qc.anexos', $id) }}" title="{{ ucfirst( trans('common.attachments') )}}" class='btn btn-warning btn-xs'>
-        <i class="glyphicon glyphicon-paperclip"></i>
-    </a>
+        @php
+        # Check if exists folder and files in folder
+        $dir = storage_path('app/public/qc/' . $id);
+        if (file_exists($dir) && $handle = opendir($dir)) {
+            while (($file = readdir($handle)) !== false){
+                if (!in_array($file, array('.', '..')) && !is_dir($dir.$file)) {
+                    @endphp
+                    <a href="{{ route('qc.anexos', $id) }}" title="{{ ucfirst( trans('common.attachments') )}}" class='btn btn-warning btn-xs'>
+                        <i class="glyphicon glyphicon-paperclip"></i>
+                    </a>
+                    @php
+                    break;
+                }
+            }
+        }
+        @endphp
     @endshield
 </div>
 {!! Form::close() !!}
