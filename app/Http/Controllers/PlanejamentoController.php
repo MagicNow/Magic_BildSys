@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Lembrete;
 use App\Models\Planejamento;
+use App\Repositories\OrdemDeCompraRepository;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -460,9 +461,26 @@ class PlanejamentoController extends AppBaseController
         }
 //        echo $lembretes->toSql();
 
+        $query = OrdemDeCompraRepository::queryCalendarioLembretes(
+            $request->get('obra_id'),
+            $request->get('planejamento_id'),
+            $request->get('insumo_grupo_id'),
+            $request->get('carteira_id'),
+            $request->exibir_por_tarefa,
+            $request->exibir_por_carteira,
+//            $request->get('from'),
+//            $request->get('to')
+            null,
+            null
+        );
+
+        if(count($query)) {
+            $query = $query->get();
+        }
+
         return response()->json([
             'success' => true,
-            'result' => $lembretes->get()
+            'result' => $query
         ]);
     }
 

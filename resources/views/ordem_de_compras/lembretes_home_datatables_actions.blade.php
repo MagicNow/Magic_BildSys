@@ -10,7 +10,12 @@ if ($dias < 0) {
     $alerta = "warning";
     $icone = '<i class="fa fa-exclamation" aria-hidden="true"></i>';
 }
+
+if(\Illuminate\Support\Facades\Input::get('exibir_por_carteira')) {
+    $url .= '&exibir_por_carteira=true';
+}
 ?>
+
 <div class="btn-group">
     <a href="{{ $url }}" class="btn btn-sm btn-flat btn-{{ $alerta }}" style="margin-top: 5px;" title="Visualizar" data-toggle="tooltip" data-placement="top" >
         {{--{!! $icone !!}--}}

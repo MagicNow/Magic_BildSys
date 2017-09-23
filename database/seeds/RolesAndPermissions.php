@@ -201,6 +201,16 @@ class RolesAndPermissions extends Seeder
             'estruturas.create' => 'Criação de estruturas',
             'estruturas.edit'   => 'Edição de estruturas',
             'estruturas.delete'   => 'Remoção de estruturas',
+			
+			'mascara_padrao.list'   => 'Listagem de Mascara Padrão',
+            'mascara_padrao.create'   => 'Criação de Mascara Padrão',			
+            'mascara_padrao.edit'   => 'Edição de Mascara Padrão',
+			'mascara_padrao.delete'   => 'Remoção de Mascara Padrão', 
+            
+			'tarefa_padrao.list'   => 'Listagem de Mascara Padrão',
+            'tarefa_padrao.create'   => 'Criação de Mascara Padrão',			
+            'tarefa_padrao.edit'   => 'Edição de Mascara Padrão',
+			'tarefa_padrao.delete'   => 'Remoção de Mascara Padrão', 
 
             ################# SITE ###################
 			
@@ -247,17 +257,7 @@ class RolesAndPermissions extends Seeder
 			'lpu.list'        => 'Listagem de Lpu',
             'lpu.show'        => 'Visualização de Lpu',
             'lpu.edit'        => 'Editar Lpu',			
-            'lpu.reajustar'   => 'Reajustar item do Lpu',
-			
-			'mascara_padrao.list'   => 'Listagem de Mascara Padrão',
-            'mascara_padrao.create'   => 'Criação de Mascara Padrão',			
-            'mascara_padrao.edit'   => 'Edição de Mascara Padrão',
-			'mascara_padrao.delete'   => 'Remoção de Mascara Padrão', 
-            
-			'tarefa_padrao.list'   => 'Listagem de Mascara Padrão',
-            'tarefa_padrao.create'   => 'Criação de Mascara Padrão',			
-            'tarefa_padrao.edit'   => 'Edição de Mascara Padrão',
-			'tarefa_padrao.delete'   => 'Remoção de Mascara Padrão', 
+            'lpu.reajustar'   => 'Reajustar item do Lpu',			
 			
             'configuracaoEstaticas.list'   => 'Listagem de Configuração padrão',
             'configuracaoEstaticas.edit'   => 'Edição de Configuração padrão',
@@ -278,11 +278,19 @@ class RolesAndPermissions extends Seeder
             'boletim-medicao.edit'   => 'Edição de Boletim de Medição',
             'boletim-medicao.delete'   => 'Remoção de Boletim de Medição',
 
-            'carteirassla.list' => 'Lista de Carteiras e SLA de cada obra',
-            'carteirassla.create' => 'Criação de QC',
+            // 'carteirassla.list' => 'Lista de Carteiras e SLA de cada obra',
+            // 'carteirassla.create' => 'Criação de QC',
 
             'qc.list' => 'Lista de QC',
             'qc.create' => 'Criação de QC',
+            'qc.show' => 'Visualização de QC',
+
+            'topologia.list' => 'Listagem de topologias',
+            'topologia.create' => 'Criação de topologia',
+            'topologia.edit'   => 'Edição de topologia',
+            'topologia.delete'   => 'Remoção de topologia',
+
+            'qc.anexos.list' => 'Listagem de anexos do Q.C.',
         ];
 
         $permissionAccess = [];
