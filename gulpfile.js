@@ -48,7 +48,8 @@ var paths = {
     'slugify': vendors + '/slug/',
     'slim_scroll': vendors + '/jquery-slimscroll/',
     'querystring': vendors + '/querystring/',
-    'html5sortable': vendors + '/html5sortable/dist/'
+    'html5sortable': vendors + '/html5sortable/dist/',
+    'stacktable': vendors + '/stacktable.js/'
 };
 
 elixir.config.sourcemaps = false;
@@ -166,6 +167,7 @@ elixir(function (mix) {
         paths.sweetalert + 'sweetalert.css',
         paths.icheck + '/skins/square/green.css',
         paths.bootstrap_calendar + '/css/calendar.css',
+        paths.stacktable + 'stacktable.css',
         '../js/datatables/css/buttons.dataTables.min.css',
         'orange.css',
         'admin.css',
@@ -200,6 +202,7 @@ elixir(function (mix) {
         paths.slim_scroll + 'jquery.slimscroll.js',
         paths.querystring + 'querystring.min.js',
         paths.html5sortable + 'html.sortable.js',
+        paths.stacktable + 'stacktable.js',
         // paths.vue + 'vue.js',
         // paths.vue_resource + 'vue-resource.js',
         'select2-helper.js',

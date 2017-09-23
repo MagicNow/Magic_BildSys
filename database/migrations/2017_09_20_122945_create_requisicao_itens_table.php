@@ -21,6 +21,7 @@ class CreateRequisicaoItensTable extends Migration
 
             $table->unsignedInteger('estoque_id');
 
+            $table->string('unidade',10);
             $table->float('qtde', 8, 2)->nullable();
 
             $table->string('torre',50);
@@ -28,8 +29,6 @@ class CreateRequisicaoItensTable extends Migration
             $table->string('trecho',50);
             $table->string('andar',50);
             $table->string('apartamento',50);
-            $table->string('parede',50);
-            $table->string('trecho_parede',50);
 
             $table->timestamps();
             $table->softDeletes();
@@ -42,7 +41,7 @@ class CreateRequisicaoItensTable extends Migration
 
             $table->foreign('estoque_id')
                 ->references('id')->on('estoque')
-                ->onDelete('cascade')
+                ->onDelete('restrict')
                 ->onUpdate('cascade');
 
         });

@@ -24,7 +24,7 @@ class CreateRequisicaoTable extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreign('users_id')
+            $table->foreign('user_id')
                 ->references('id')->on('users')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');

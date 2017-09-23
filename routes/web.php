@@ -664,6 +664,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             ->middleware("needsPermission:obras.view");
         $router->get('obras/{obras}/edit', ['as' => 'admin.obras.edit', 'uses' => 'Admin\ObraController@edit'])
             ->middleware("needsPermission:obras.edit");
+        $router->get('obras/torre/{obras}', ['as' => 'admin.obras.torre', 'uses' => 'Admin\ObraController@obrasTorre']);
     });
 
     // Memória de Cálculo
@@ -1381,7 +1382,12 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         }
 
     });
+
+
 });
 
 #Image Controller
 $router->get('imagem', 'ImageController@index');
+
+
+Route::resource('requisicao', 'RequisicaoController');

@@ -11,6 +11,7 @@ use App\Models\ObraUser;
 use App\Models\PadraoEmpreendimento;
 use App\Models\Regional;
 use App\Models\User;
+use App\Models\ObraTorre;
 use App\Repositories\Admin\ObraRepository;
 use App\Repositories\CodeRepository;
 use Flash;
@@ -223,5 +224,19 @@ class ObraController extends AppBaseController
         Flash::success('Obra '.trans('common.deleted').' '.trans('common.successfully').'.');
 
         return redirect(route('admin.obras.index'));
+    }
+
+    public function obrasTorre($id) {
+
+        $r = ObraTorre::where('obra_id', $id)->get();
+
+        if ($r) {
+
+            return response()->json(['torres' => $r, 'success' => true]);
+
+        } else {
+
+            return response()->json(['success' => false]);
+        }
     }
 }

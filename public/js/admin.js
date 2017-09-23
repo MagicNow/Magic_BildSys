@@ -30774,14 +30774,14 @@ function _init() {
   }
 })(window.jQuery || window.Zepto);
 
-/*! DataTables 1.10.16
+/*! DataTables 1.10.15
  * ©2008-2017 SpryMedia Ltd - datatables.net/license
  */
 
 /**
  * @summary     DataTables
  * @description Paginate, search and order HTML tables
- * @version     1.10.16
+ * @version     1.10.15
  * @file        jquery.dataTables.js
  * @author      SpryMedia Ltd
  * @contact     www.datatables.net
@@ -31799,7 +31799,8 @@ function _init() {
 				[ "iCookieDuration", "iStateDuration" ], // backwards compat
 				[ "oSearch", "oPreviousSearch" ],
 				[ "aoSearchCols", "aoPreSearchCols" ],
-				[ "iDisplayLength", "_iDisplayLength" ]
+				[ "iDisplayLength", "_iDisplayLength" ],
+				[ "bJQueryUI", "bJUI" ]
 			] );
 			_fnMap( oSettings.oScroll, oInit, [
 				[ "sScrollX", "sX" ],
@@ -31829,7 +31830,31 @@ function _init() {
 			
 			var oClasses = oSettings.oClasses;
 			
-			$.extend( oClasses, DataTable.ext.classes, oInit.oClasses );
+			// @todo Remove in 1.11
+			if ( oInit.bJQueryUI )
+			{
+				/* Use the JUI classes object for display. You could clone the oStdClasses object if
+				 * you want to have multiple tables with multiple independent classes
+				 */
+				$.extend( oClasses, DataTable.ext.oJUIClasses, oInit.oClasses );
+			
+				if ( oInit.sDom === defaults.sDom && defaults.sDom === "lfrtip" )
+				{
+					/* Set the DOM to use a layout suitable for jQuery UI's theming */
+					oSettings.sDom = '<"H"lfr>t<"F"ip>';
+				}
+			
+				if ( ! oSettings.renderer ) {
+					oSettings.renderer = 'jqueryui';
+				}
+				else if ( $.isPlainObject( oSettings.renderer ) && ! oSettings.renderer.header ) {
+					oSettings.renderer.header = 'jqueryui';
+				}
+			}
+			else
+			{
+				$.extend( oClasses, DataTable.ext.classes, oInit.oClasses );
+			}
 			$this.addClass( oClasses.sTable );
 			
 			
@@ -32807,9 +32832,6 @@ function _init() {
 			if ( oOptions.className && ! oOptions.sClass )
 			{
 				oOptions.sClass = oOptions.className;
-			}
-			if ( oOptions.sClass ) {
-				th.addClass( oOptions.sClass );
 			}
 	
 			$.extend( oCol, oOptions );
@@ -35585,12 +35607,7 @@ function _init() {
 		} );
 	
 		for ( var i=0, ien=lengths.length ; i<ien ; i++ ) {
-			select[0][ i ] = new Option(
-				typeof language[i] === 'number' ?
-					settings.fnFormatNumber( language[i] ) :
-					language[i],
-				lengths[i]
-			);
+			select[0][ i ] = new Option( language[i], lengths[i] );
 		}
 	
 		var div = $('<div><label/></div>').addClass( classes.sLength );
@@ -38812,11 +38829,6 @@ function _init() {
 			_fnDeleteIndex( settings.aiDisplay, row );
 			_fnDeleteIndex( that[ thatIdx ], row, false ); // maintain local indexes
 	
-			// For server-side processing tables - subtract the deleted row from the count
-			if ( settings._iRecordsDisplay > 0 ) {
-				settings._iRecordsDisplay--;
-			}
-	
 			// Check for an 'overflow' they case for displaying the table
 			_fnLengthOverflow( settings );
 	
@@ -40091,6 +40103,15 @@ function _init() {
 				classes.sSortableAsc+' '+classes.sSortableDesc+' '+classes.sSortableNone
 			);
 	
+			if ( settings.bJUI ) {
+				$('th span.'+classes.sSortIcon+ ', td span.'+classes.sSortIcon, thead).detach();
+				$('th, td', thead).each( function () {
+					var wrapper = $('div.'+classes.sSortJUIWrapper, this);
+					$(this).append( wrapper.contents() );
+					wrapper.detach();
+				} );
+			}
+	
 			// Add the TR elements back into the table in their original order
 			jqTbody.children().detach();
 			jqTbody.append( rows );
@@ -40189,7 +40210,7 @@ function _init() {
 	 *  @type string
 	 *  @default Version number
 	 */
-	DataTable.version = "1.10.16";
+	DataTable.version = "1.10.15";
 
 	/**
 	 * Private data store, containing all of the settings objects that are
@@ -41116,6 +41137,26 @@ function _init() {
 		 *    } );
 		 */
 		"bInfo": true,
+	
+	
+		/**
+		 * Enable jQuery UI ThemeRoller support (required as ThemeRoller requires some
+		 * slightly different and additional mark-up from what DataTables has
+		 * traditionally used).
+		 *  @type boolean
+		 *  @default false
+		 *
+		 *  @dtopt Features
+		 *  @name DataTable.defaults.jQueryUI
+		 *
+		 *  @example
+		 *    $(document).ready( function() {
+		 *      $('#example').dataTable( {
+		 *        "jQueryUI": true
+		 *      } );
+		 *    } );
+		 */
+		"bJQueryUI": false,
 	
 	
 		/**
@@ -44399,6 +44440,14 @@ function _init() {
 		"_iRecordsDisplay": 0,
 	
 		/**
+		 * Flag to indicate if jQuery UI marking and classes should be used.
+		 * Note that this parameter will be set by the initialisation routine. To
+		 * set a default use {@link DataTable.defaults}.
+		 *  @type boolean
+		 */
+		"bJUI": null,
+	
+		/**
 		 * The classes to use for the table
 		 *  @type object
 		 *  @default {}
@@ -45173,6 +45222,59 @@ function _init() {
 		"sJUIHeader": "",
 		"sJUIFooter": ""
 	} );
+	
+	
+	(function() {
+	
+	// Reused strings for better compression. Closure compiler appears to have a
+	// weird edge case where it is trying to expand strings rather than use the
+	// variable version. This results in about 200 bytes being added, for very
+	// little preference benefit since it this run on script load only.
+	var _empty = '';
+	_empty = '';
+	
+	var _stateDefault = _empty + 'ui-state-default';
+	var _sortIcon     = _empty + 'css_right ui-icon ui-icon-';
+	var _headerFooter = _empty + 'fg-toolbar ui-toolbar ui-widget-header ui-helper-clearfix';
+	
+	$.extend( DataTable.ext.oJUIClasses, DataTable.ext.classes, {
+		/* Full numbers paging buttons */
+		"sPageButton":         "fg-button ui-button "+_stateDefault,
+		"sPageButtonActive":   "ui-state-disabled",
+		"sPageButtonDisabled": "ui-state-disabled",
+	
+		/* Features */
+		"sPaging": "dataTables_paginate fg-buttonset ui-buttonset fg-buttonset-multi "+
+			"ui-buttonset-multi paging_", /* Note that the type is postfixed */
+	
+		/* Sorting */
+		"sSortAsc":            _stateDefault+" sorting_asc",
+		"sSortDesc":           _stateDefault+" sorting_desc",
+		"sSortable":           _stateDefault+" sorting",
+		"sSortableAsc":        _stateDefault+" sorting_asc_disabled",
+		"sSortableDesc":       _stateDefault+" sorting_desc_disabled",
+		"sSortableNone":       _stateDefault+" sorting_disabled",
+		"sSortJUIAsc":         _sortIcon+"triangle-1-n",
+		"sSortJUIDesc":        _sortIcon+"triangle-1-s",
+		"sSortJUI":            _sortIcon+"carat-2-n-s",
+		"sSortJUIAscAllowed":  _sortIcon+"carat-1-n",
+		"sSortJUIDescAllowed": _sortIcon+"carat-1-s",
+		"sSortJUIWrapper":     "DataTables_sort_wrapper",
+		"sSortIcon":           "DataTables_sort_icon",
+	
+		/* Scrolling */
+		"sScrollHead": "dataTables_scrollHead "+_stateDefault,
+		"sScrollFoot": "dataTables_scrollFoot "+_stateDefault,
+	
+		/* Misc */
+		"sHeaderTH":  _stateDefault,
+		"sFooterTH":  _stateDefault,
+		"sJUIHeader": _headerFooter+" ui-corner-tl ui-corner-tr",
+		"sJUIFooter": _headerFooter+" ui-corner-bl ui-corner-br"
+	} );
+	
+	}());
+	
 	
 	
 	var extPagination = DataTable.ext.pager;
@@ -65951,6 +66053,217 @@ if (typeof define !== 'undefined' && define.amd) { // AMD
 
 /** 'querystring' nodejs module minified for AMD, CommonJS & `window.querystring`. browserify v3.46.1 **/
 !function(e){if("object"==typeof exports)module.exports=e();else if("function"==typeof define&&define.amd)define(e);else{var r;"undefined"!=typeof window?r=window:"undefined"!=typeof global?r=global:"undefined"!=typeof self&&(r=self),r.querystring=e()}}(function(){return function e(r,n,t){function o(i,f){if(!n[i]){if(!r[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);throw new Error("Cannot find module '"+i+"'")}var a=n[i]={exports:{}};r[i][0].call(a.exports,function(e){var n=r[i][1][e];return o(n?n:e)},a,a.exports,e,r,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}({1:[function(e,r){"use strict";function n(e,r){return Object.prototype.hasOwnProperty.call(e,r)}r.exports=function(e,r,o,u){r=r||"&",o=o||"=";var i={};if("string"!=typeof e||0===e.length)return i;var f=/\+/g;e=e.split(r);var c=1e3;u&&"number"==typeof u.maxKeys&&(c=u.maxKeys);var a=e.length;c>0&&a>c&&(a=c);for(var s=0;a>s;++s){var p,d,l,y,v=e[s].replace(f,"%20"),m=v.indexOf(o);m>=0?(p=v.substr(0,m),d=v.substr(m+1)):(p=v,d=""),l=decodeURIComponent(p),y=decodeURIComponent(d),n(i,l)?t(i[l])?i[l].push(y):i[l]=[i[l],y]:i[l]=y}return i};var t=Array.isArray||function(e){return"[object Array]"===Object.prototype.toString.call(e)}},{}],2:[function(e,r){"use strict";function n(e,r){if(e.map)return e.map(r);for(var n=[],t=0;t<e.length;t++)n.push(r(e[t],t));return n}var t=function(e){switch(typeof e){case"string":return e;case"boolean":return e?"true":"false";case"number":return isFinite(e)?e:"";default:return""}};r.exports=function(e,r,i,f){return r=r||"&",i=i||"=",null===e&&(e=void 0),"object"==typeof e?n(u(e),function(n){var u=encodeURIComponent(t(n))+i;return o(e[n])?e[n].map(function(e){return u+encodeURIComponent(t(e))}).join(r):u+encodeURIComponent(t(e[n]))}).join(r):f?encodeURIComponent(t(f))+i+encodeURIComponent(t(e)):""};var o=Array.isArray||function(e){return"[object Array]"===Object.prototype.toString.call(e)},u=Object.keys||function(e){var r=[];for(var n in e)Object.prototype.hasOwnProperty.call(e,n)&&r.push(n);return r}},{}],3:[function(e,r,n){"use strict";n.decode=n.parse=e("./decode"),n.encode=n.stringify=e("./encode")},{"./decode":1,"./encode":2}],4:[function(e,r){r.exports=e("querystring")},{querystring:3}]},{},[4])(4)});
+/**
+ * stacktable.js
+ * Author & copyright (c) 2012: John Polacek
+ * CardTable by: Justin McNally (2015)
+ * Dual MIT & GPL license
+ *
+ * Page: http://johnpolacek.github.com/stacktable.js
+ * Repo: https://github.com/johnpolacek/stacktable.js/
+ *
+ * jQuery plugin for stacking tables on small screens
+ * Requires jQuery version 1.7 or above
+ *
+ */
+;(function($) {
+  $.fn.cardtable = function(options) {
+    var $tables = this,
+        defaults = {headIndex:0},
+        settings = $.extend({}, defaults, options),
+        headIndex;
+
+    // checking the "headIndex" option presence... or defaults it to 0
+    if(options && options.headIndex)
+      headIndex = options.headIndex;
+    else
+      headIndex = 0;
+
+    return $tables.each(function() {
+      var $table = $(this);
+      if ($table.hasClass('stacktable')) {
+        return;
+      }
+      var table_css = $(this).prop('class');
+      var $stacktable = $('<div></div>');
+      if (typeof settings.myClass !== 'undefined') $stacktable.addClass(settings.myClass);
+      var markup = '';
+      var $caption, $topRow, headMarkup, bodyMarkup, tr_class;
+
+      $table.addClass('stacktable large-only');
+
+      $caption = $table.find(">caption").clone();
+      $topRow = $table.find('>thead>tr,>tbody>tr,>tfoot>tr,>tr').eq(0);
+
+      // avoid duplication when paginating
+      $table.siblings().filter('.small-only').remove();
+
+      // using rowIndex and cellIndex in order to reduce ambiguity
+      $table.find('>tbody>tr').each(function() {
+
+        // declaring headMarkup and bodyMarkup, to be used for separately head and body of single records
+        headMarkup = '';
+        bodyMarkup = '';
+        tr_class = $(this).prop('class');
+        // for the first row, "headIndex" cell is the head of the table
+        // for the other rows, put the "headIndex" cell as the head for that row
+        // then iterate through the key/values
+        $(this).find('>td,>th').each(function(cellIndex) {
+          if ($(this).html() !== ''){
+            bodyMarkup += '<tr class="' + tr_class +'">';
+            if ($topRow.find('>td,>th').eq(cellIndex).html()){
+              bodyMarkup += '<td class="st-key">'+$topRow.find('>td,>th').eq(cellIndex).html()+'</td>';
+            } else {
+              bodyMarkup += '<td class="st-key"></td>';
+            }
+            bodyMarkup += '<td class="st-val '+$(this).prop('class')  +'">'+$(this).html()+'</td>';
+            bodyMarkup += '</tr>';
+          }
+        });
+
+        markup += '<table class=" '+ table_css +' stacktable small-only"><tbody>' + headMarkup + bodyMarkup + '</tbody></table>';
+      });
+
+      $table.find('>tfoot>tr>td').each(function(rowIndex,value) {
+        if ($.trim($(value).text()) !== '') {
+          markup += '<table class="'+ table_css + ' stacktable small-only"><tbody><tr><td>' + $(value).html() + '</td></tr></tbody></table>';
+        }
+      });
+
+      $stacktable.prepend($caption);
+      $stacktable.append($(markup));
+      $table.before($stacktable);
+    });
+  };
+
+  $.fn.stacktable = function(options) {
+    var $tables = this,
+        defaults = {headIndex:0,displayHeader:true},
+        settings = $.extend({}, defaults, options),
+        headIndex;
+
+    // checking the "headIndex" option presence... or defaults it to 0
+    if(options && options.headIndex)
+      headIndex = options.headIndex;
+    else
+      headIndex = 0;
+
+    return $tables.each(function() {
+      var table_css = $(this).prop('class');
+      var $stacktable = $('<table class="'+ table_css +' stacktable small-only"><tbody></tbody></table>');
+      if (typeof settings.myClass !== 'undefined') $stacktable.addClass(settings.myClass);
+      var markup = '';
+      var $table, $caption, $topRow, headMarkup, bodyMarkup, tr_class, displayHeader;
+
+      $table = $(this);
+      $table.addClass('stacktable large-only');
+      $caption = $table.find(">caption").clone();
+      $topRow = $table.find('>thead>tr,>tbody>tr,>tfoot>tr').eq(0);
+
+      displayHeader = $table.data('display-header') === undefined ? settings.displayHeader : $table.data('display-header');
+
+      // using rowIndex and cellIndex in order to reduce ambiguity
+      $table.find('>tbody>tr, >thead>tr').each(function(rowIndex) {
+
+        // declaring headMarkup and bodyMarkup, to be used for separately head and body of single records
+        headMarkup = '';
+        bodyMarkup = '';
+        tr_class = $(this).prop('class');
+
+        // for the first row, "headIndex" cell is the head of the table
+        if (rowIndex === 0) {
+          // the main heading goes into the markup variable
+          if (displayHeader) {
+            markup += '<tr class=" '+tr_class +' "><th class="st-head-row st-head-row-main" colspan="2">'+$(this).find('>th,>td').eq(headIndex).html()+'</th></tr>';
+          }
+        } else {
+          // for the other rows, put the "headIndex" cell as the head for that row
+          // then iterate through the key/values
+          $(this).find('>td,>th').each(function(cellIndex) {
+            if (cellIndex === headIndex) {
+              headMarkup = '<tr class="'+ tr_class+'"><th class="st-head-row" colspan="2">'+$(this).html()+'</th></tr>';
+            } else {
+              if ($(this).html() !== ''){
+                bodyMarkup += '<tr class="' + tr_class +'">';
+                if ($topRow.find('>td,>th').eq(cellIndex).html()){
+                  bodyMarkup += '<td class="st-key">'+$topRow.find('>td,>th').eq(cellIndex).html()+'</td>';
+                } else {
+                  bodyMarkup += '<td class="st-key"></td>';
+                }
+                bodyMarkup += '<td class="st-val '+$(this).prop('class')  +'">'+$(this).html()+'</td>';
+                bodyMarkup += '</tr>';
+              }
+            }
+          });
+
+          markup += headMarkup + bodyMarkup;
+        }
+      });
+
+      $stacktable.prepend($caption);
+      $stacktable.append($(markup));
+      $table.before($stacktable);
+    });
+  };
+
+ $.fn.stackcolumns = function(options) {
+    var $tables = this,
+        defaults = {},
+        settings = $.extend({}, defaults, options);
+
+    return $tables.each(function() {
+      var $table = $(this);
+      var $caption = $table.find(">caption").clone();
+      var num_cols = $table.find('>thead>tr,>tbody>tr,>tfoot>tr').eq(0).find('>td,>th').length; //first table <tr> must not contain colspans, or add sum(colspan-1) here.
+      if(num_cols<3) //stackcolumns has no effect on tables with less than 3 columns
+        return;
+
+      var $stackcolumns = $('<table class="stacktable small-only"></table>');
+      if (typeof settings.myClass !== 'undefined') $stackcolumns.addClass(settings.myClass);
+      $table.addClass('stacktable large-only');
+      var tb = $('<tbody></tbody>');
+      var col_i = 1; //col index starts at 0 -> start copy at second column.
+
+      while (col_i < num_cols) {
+        $table.find('>thead>tr,>tbody>tr,>tfoot>tr').each(function(index) {
+          var tem = $('<tr></tr>'); // todo opt. copy styles of $this; todo check if parent is thead or tfoot to handle accordingly
+          if(index === 0) tem.addClass("st-head-row st-head-row-main");
+          var first = $(this).find('>td,>th').eq(0).clone().addClass("st-key");
+          var target = col_i;
+          // if colspan apply, recompute target for second cell.
+          if ($(this).find("*[colspan]").length) {
+            var i =0;
+            $(this).find('>td,>th').each(function() {
+                var cs = $(this).attr("colspan");
+                if (cs) {
+                  cs = parseInt(cs, 10);
+                  target -= cs-1;
+                  if ((i+cs) > (col_i)) //out of current bounds
+                    target += i + cs - col_i -1;
+                  i += cs;
+                } else {
+                  i++;
+                }
+
+                if (i > col_i)
+                  return false; //target is set; break.
+            });
+          }
+          var second = $(this).find('>td,>th').eq(target).clone().addClass("st-val").removeAttr("colspan");
+          tem.append(first, second);
+          tb.append(tem);
+        });
+        ++col_i;
+      }
+
+      $stackcolumns.append($(tb));
+      $stackcolumns.prepend($caption);
+      $table.before($stackcolumns);
+    });
+  };
+
+}(jQuery));
+
 function select2(selector, options) {
   options = Object.assign({
     allowClear: true,
