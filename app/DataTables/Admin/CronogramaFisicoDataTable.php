@@ -142,7 +142,13 @@ class CronogramaFisicoDataTable extends DataTable
             if(count($this->request()->get('obra')) && $this->request()->get('obra') != ""){
                 $cronograma_fisicos->where('cronograma_fisicos.obra_id',$this->request()->get('obra'));
             }
-        }        
+        }   
+
+		if($this->request()->get('template')){
+            if(count($this->request()->get('template')) && $this->request()->get('template') != ""){
+                $cronograma_fisicos->where('cronograma_fisicos.template_id',$this->request()->get('template'));
+            }
+        }
 
         return $this->applyScopes($cronograma_fisicos);
     }

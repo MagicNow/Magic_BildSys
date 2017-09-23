@@ -306,9 +306,9 @@ class CronogramaFisicoController extends AppBaseController
     }
 	
 	//Acompanhamento Semanal
-	public function relSemanal(Request $request)
-    {		
-
+	public function relSemanal(Request $request, CronogramaFisicoDataTable $cronogramaFisicoDataTable)
+    {	
+		
 		$obra_id = null;
 		$mes_id = null;
 		$semana_id = null;
@@ -388,7 +388,6 @@ class CronogramaFisicoController extends AppBaseController
 		$planoTrabalhoAcu = 1;*/
 		
 		foreach ($tabPercPrevistoRealizados as $tmp) {			
-			
 			//array_push($grafLabelsTarefasCriticas, $tmp['tarefa']);							
 		}
 		
@@ -459,6 +458,8 @@ class CronogramaFisicoController extends AppBaseController
 			array_push($grafLabelsTarefasCriticas, $tmp['tarefa']);							
 		}		
 		
+		//print_r($grafLabelsTarefasCriticas);die;
+		
 		foreach ($tabTarefasCriticasDados as $tmp) {			
 			array_push($grafDataPrevTarefasCriticas, $tmp['previsto_acumulado']);							
 		}		
@@ -466,13 +467,15 @@ class CronogramaFisicoController extends AppBaseController
 		foreach ($tabTarefasCriticasDados as $tmp) {			
 			array_push($grafDataReaTarefasCriticas, $tmp['previsto_realizado']);							
 		}			
-				               
-        return view('admin.cronograma_fisicos.relSemanal', 
-			compact('obra_id', 'mes_id', 'semana_id', 'obras',
-				'tabPercPrevistoRealizadosSemanas',  'tabPercPrevistoRealizados', 
-				'tabTarefasCriticasTitulos', 'tabTarefasCriticasDados',			
-				'grafLabelsTarefasCriticas', 'grafDataPrevTarefasCriticas', 'grafDataReaTarefasCriticas'
-			));
+		
+        return 
+			$cronogramaFisicoDataTable->render('admin.cronograma_fisicos.relSemanal', 
+				compact('obra_id', 'mes_id', 'semana_id', 'obras',
+					'tabPercPrevistoRealizadosSemanas',  'tabPercPrevistoRealizados', 
+					'tabTarefasCriticasTitulos', 'tabTarefasCriticasDados',			
+					'grafLabelsTarefasCriticas', 'grafDataPrevTarefasCriticas', 'grafDataReaTarefasCriticas'
+				)
+			);
     }
 
 	public function relMensal(Request $request)

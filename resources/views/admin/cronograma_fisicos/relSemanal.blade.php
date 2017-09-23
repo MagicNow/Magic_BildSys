@@ -24,7 +24,7 @@
 		.element-body-tarefaCriticas{
             height: 300px;
             padding: 5px;
-            background-color: white;
+            background-color: white;			
         }
 		
 		.element-body2{
@@ -81,7 +81,8 @@
 		
         <div class="box-body" id="app">
             <div class="row">
-                <div class="col-xs-12">                    
+			
+                <div class="col-xs-12">               
                     
 					<div class="row">
 						<div class="col-md-12 margem-topo"><tile title-color="head-grey" title="Percentual Previsto x Percentual Realizado" type="created"></tile></div>
@@ -249,7 +250,7 @@
 							</table>
                         </div> 
 						
-						<div class="col-md-4">							
+						<div class="col-md-5">							
                             <div class="element-grafico margem-topo">
                                 <div class="element-head">Tarefas Críticas</div>
                                 <div class="element-body-tarefaCriticas">
@@ -260,16 +261,30 @@
 									<chartjs-bar :labels="labelsTarefasCriticas" 
 												 :datasets="datasetsTarefasCriticas"                                                                                                
                                                  :option="myoptionTarefasCriticas"
-                                                 :height="200">
+                                                 :height="100">
 									</chartjs-bar>
                                 </div>
                             </div>
                         </div>
 					</div>
 					
-                </div>
+					<div class="row">
+						<div class="col-md-12 margem-topo"><tile title-color="head-grey" title="Coleta Semanal" type="created"></tile></div>
+					</div>
+					
+					<div class="content">   
+
+						<div class="box box-primary">
+							<div class="box-body">
+									@include('admin.cronograma_fisicos.table')
+							</div>
+						</div>
+					</div>
+					
+				</div>
             </div>
         </div>
+				
     </div>
 @endsection
 @section('scripts')
