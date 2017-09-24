@@ -13,7 +13,7 @@ use App\Http\Requests\CreateQcRequest;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Obra;
 use App\Models\Carteira;
-use App\Models\Topologia;
+use App\Models\Tipologia;
 
 class QcController extends AppBaseController
 {
@@ -46,9 +46,9 @@ class QcController extends AppBaseController
 	{
 		$obras = Obra::pluck('nome','id')->toArray();
 		$carteiras = Carteira::pluck('nome','id')->toArray();
-		$topologias = Topologia::pluck('nome','id')->toArray();
+		$tipologias = Tipologia::pluck('nome','id')->toArray();
 
-		return view('qc.create', compact('obras', 'carteiras', 'topologias'));
+		return view('qc.create', compact('obras', 'carteiras', 'tipologias'));
 	}
 
 	/**
@@ -60,6 +60,7 @@ class QcController extends AppBaseController
 	 */
 	public function store(CreateQcRequest $request)
 	{
+		dd($request);
 		$input = $request->except('file');
 		$qc = $this->qcRepository->create($input);
 
@@ -106,7 +107,7 @@ class QcController extends AppBaseController
 		$qc = $this->qcRepository->findWithoutFail($id);
 		$obras = Obra::pluck('nome','id')->toArray();
 		$carteiras = Carteira::pluck('nome','id')->toArray();
-		$topologias = Topologia::pluck('nome','id')->toArray();
+		$tipologias = Tipologia::pluck('nome','id')->toArray();
 
 		if (empty($qc)) {
 			Flash::error('Qc '.trans('common.not-found'));
@@ -114,7 +115,7 @@ class QcController extends AppBaseController
 			return redirect(route('qc.index'));
 		}
 
-		return view('qc.edit', compact('qc', 'obras', 'carteiras', 'topologias'));
+		return view('qc.edit', compact('qc', 'obras', 'carteiras', 'tipologias'));
 	}
 
 	/**

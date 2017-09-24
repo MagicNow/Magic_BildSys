@@ -285,10 +285,10 @@ class RolesAndPermissions extends Seeder
             'qc.create' => 'Criação de QC',
             'qc.show' => 'Visualização de QC',
 
-            'topologia.list' => 'Listagem de topologias',
-            'topologia.create' => 'Criação de topologia',
-            'topologia.edit'   => 'Edição de topologia',
-            'topologia.delete'   => 'Remoção de topologia',
+            'tipologia.list' => 'Listagem de tipologias',
+            'tipologia.create' => 'Criação de tipologia',
+            'tipologia.edit'   => 'Edição de tipologia',
+            'tipologia.delete'   => 'Remoção de tipologia',
 
             'qc.anexos.list' => 'Listagem de anexos do Q.C.',
         ];
