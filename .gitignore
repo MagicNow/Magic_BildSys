@@ -37,3 +37,4 @@ storage/nfe/producao/temporarias/201708/-retDownnfe.xml
 bildsys.sql
 *.sublime-project
 *.sublime-workspace
+*.map
