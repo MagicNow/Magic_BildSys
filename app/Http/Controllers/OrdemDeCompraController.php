@@ -704,11 +704,24 @@ class OrdemDeCompraController extends AppBaseController
         }
 
         $insumo_catalogo = OrdemDeCompraRepository::existeNoCatalogo($request->id, $request->obra_id);
+        $pedido_minimo_invalido = false;
+        $multiplo_invalido = false;
+
+        $preco_unitario = floatval($orcamento_ativo->getOriginal('preco_unitario'));
 
         if($insumo_catalogo) {
-            $preco_unitario = $insumo_catalogo->valor_unitario;
-        } else {
-            $preco_unitario = floatval($orcamento_ativo->getOriginal('preco_unitario'));
+            if(money_to_float($request->quantidade_compra) < money_to_float($insumo_catalogo->pedido_minimo)) {
+                $pedido_minimo_invalido = true;
+            }
+
+
+            if(fmod(money_to_float($request->quantidade_compra), money_to_float($insumo_catalogo->pedido_multiplo_de))) {
+                $multiplo_invalido = true;
+            }
+
+            if(!$pedido_minimo_invalido && !$multiplo_invalido) {
+                $preco_unitario = $insumo_catalogo->valor_unitario;
+            }
         }
 
         $ordem_item = OrdemDeCompraItem::firstOrNew([
@@ -1773,14 +1786,6 @@ class OrdemDeCompraController extends AppBaseController
             ->where('ativo', 1)
             ->first();
 
-        $insumo_catalogo = OrdemDeCompraRepository::existeNoCatalogo($request['id'], $request['obra_id']);
-
-        if($insumo_catalogo) {
-            $preco_unitario = $insumo_catalogo->valor_unitario;
-        } else {
-            $preco_unitario = floatval($orcamento_ativo->getOriginal('preco_unitario'));
-        }
-
         $insumo = Insumo::find($orcamento_ativo->insumo_id);
         if ($insumo->insumo_grupo_id != 1570) {
             $ordem_item = OrdemDeCompraItem::firstOrNew([
@@ -1804,6 +1809,26 @@ class OrdemDeCompraController extends AppBaseController
             } else {
                 $ordem_item->qtd = $request['saldo'];
             }
+
+            $insumo_catalogo = OrdemDeCompraRepository::existeNoCatalogo($request->id, $request->obra_id);
+            $pedido_minimo_invalido = false;
+            $multiplo_invalido = false;
+            $preco_unitario = floatval($orcamento_ativo->getOriginal('preco_unitario'));
+
+            if($insumo_catalogo) {
+                if(money_to_float($ordem_item->qtd) < money_to_float($insumo_catalogo->pedido_minimo)) {
+                    $pedido_minimo_invalido = true;
+                }
+
+                if(fmod(money_to_float($ordem_item->qtd), money_to_float($insumo_catalogo->pedido_multiplo_de))) {
+                    $multiplo_invalido = true;
+                }
+
+                if(!$pedido_minimo_invalido && !$multiplo_invalido) {
+                    $preco_unitario = $insumo_catalogo->valor_unitario;
+                }
+            }
+
             $ordem_item->total = 1;
             $ordem_item->valor_unitario = $preco_unitario;
             $ordem_item->valor_total = $preco_unitario * money_to_float($ordem_item->qtd);

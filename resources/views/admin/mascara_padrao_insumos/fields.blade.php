@@ -44,7 +44,7 @@
 					<!-- Coeficiente Field -->
 					<div class="form-group col-sm-3">
 						{!! Form::label('coeficiente', 'Coeficiente Padrão:') !!}
-						{!! Form::text('coeficiente', null, ['class' => 'form-control', 'required']) !!}
+						{!! Form::text('coeficiente', null, ['class' => 'form-control money', 'required']) !!}
 					</div>
 
                     <div id="insumos" class="col-md-12"></div>					
