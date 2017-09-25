@@ -66,5 +66,29 @@
         </label>
     </div>
 </div>
-
-<div class="row"></div>
+@if (isset($attachments) && !empty($attachments))
+    <fieldset class="col-sm-12 table-responsive">
+        <legend>Anexos</legend>
+        @foreach ($attachments as $key => $attachment)
+            <h5 style="color: #000; font-size: 16px;">{{ $key }}</h5>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <td class="col-sm-1">ID</td>
+                        <td class="col-sm-10">Descrição</td>
+                        <td class="col-sm-1">Ações</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($attachment as $item)
+                        <tr>
+                            <td>{{ $item->id }}</td>
+                            <td>{{ $item->descricao }}</td>
+                            <td><a href="{{ url(str_replace('public', 'storage', $item->arquivo)) }}" target="_blank" title="Download" class="btn"><i class="fa fa-paperclip" aria-hidden="true"></i></td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        @endforeach
+    </fieldset>
+@endif
