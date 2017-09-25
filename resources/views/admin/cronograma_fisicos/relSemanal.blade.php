@@ -127,17 +127,12 @@
 										@endforeach
 									</tr>																															
 									
-									@foreach($tabPercentualPrevReal['data'] as $tabPercPrevistoRealizado)	
 									<tr>
-										<td class="text-center">{{ $tabPercPrevistoRealizado->tipo}}</td>
-										<td class="text-center">{{ $tabPercPrevistoRealizado->concluida }}</td>
-										<td class="text-center">{{ $tabPercPrevistoRealizado->concluida }}</td>
-										<td class="text-center">{{ $tabPercPrevistoRealizado->concluida }}</td>
-										<td class="text-center">{{ $tabPercPrevistoRealizado->concluida }}</td>
-										<td class="text-center">{{ $tabPercPrevistoRealizado->concluida }}</td>
-										<td class="text-center">{{ $tabPercPrevistoRealizado->concluida }}</td>																			
+										<td>Plano Diretor Acumulado</td>
+										@foreach($tabPercentualPrevReal['data']['planoDiretorAcumulado'] as $planoDiretorAcumulado)										
+											<td class="text-center">{{ $planoDiretorAcumulado}}</td>																											
+										@endforeach
 									</tr>
-									@endforeach
 								</tbody>
 							</table>
                         </div> 
@@ -261,18 +256,19 @@
                         </div>
 					</div>
 					
-					<div class="row">
+					<?php /*<div class="row">
 						<div class="col-md-12 margem-topo"><tile title-color="head-grey" title="Coleta Semanal" type="created"></tile></div>
-					</div>
+					</div> 
+					
 					
 					<div class="content">   
 
 						<div class="box box-primary">
 							<div class="box-body">
-									<?php /*@include('admin.cronograma_fisicos.table')*/ ?>
+									@include('admin.cronograma_fisicos.table')
 							</div>
 						</div>
-					</div>
+					</div>*/ ?>
 					
 				</div>
             </div>
