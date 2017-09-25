@@ -1160,6 +1160,10 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             '/{contratos}/imprimir-contrato',
             ['as' => 'contratos.imprimirContratoCompleto', 'uses' => 'ContratoController@imprimirContratoCompleto']
         );
+        $router->get(
+            '/{contratos}/imprimir-espelho-contrato',
+            ['as' => 'contratos.imprimirEspelhoContrato', 'uses' => 'ContratoController@imprimirEspelhoContrato']
+        );
         $router->post(
             '/{contratos}/envia-contrato',
             ['as' => 'contratos.enviaContrato', 'uses' => 'ContratoController@validaEnvioContrato']
