@@ -53,7 +53,7 @@ class CronogramaFisicoRepository extends BaseRepository
 		//$fromDate = Carbon::parse($fromDate); //Transform string to Carbon
 		//$toDate = Carbon::parse($toDate); //Transform string to Carbon
 		
-		$months = [];
+		$months = [""];
 
 		for($date = $fromDate; $date->lte($toDate); $date->addMonth()) {
 			$months[] = $date->format('m/Y');
@@ -62,17 +62,37 @@ class CronogramaFisicoRepository extends BaseRepository
 		return $months;
 	}
 	
-	public static function getDiasUteis($fromDate, $toDate){
+	public static function getPorcentagem($inicioTarefa, $fimTarefa, $inicioSemana, $fimSemana){
+				
+		$diasUteisTarefa = 0;	
+		$diasUteisSemana = 0;
+		$valorPrevisto = 0;
 		
-		$diasUteis = 0;
-		
-		for($date = $fromDate; $date->lte($toDate); $date->addDay()) {
-			 if($date->isWeekday()){
-				$diasUteis++;
-			 }
+		if($inicioTarefa > $fimSemana){
+			$valorPrevisto = 0;
+		}elseif($fimSemana > $fimTarefa){
+			$valorPrevisto = 100;
+		}else{
+			
+			//Calcular os dias uteis do periodo da tarefa
+			for($date = $inicioTarefa; $date->lte($fimTarefa); $date->addDay()) {
+				 if($date->isWeekday()){
+					$diasUteisTarefa++;
+				 }
+			}	
+			
+			//Calcular os dias uteis do periodo da semana de referencia
+			for($date = $inicioSemana; $date->lte($fimSemana); $date->addDay()) {
+				 if($date->isWeekday()){
+					$diasUteisSemana++;
+				 }
+			}
+			
+			$valorPrevisto = $diasUteisSemana/ $diasUteisTarefa;
 		}		
 		
-		return $diasUteis;
+		return $valorPrevisto;		
+			
 	}
 	
 	/*public static function getIntervalBydate($fromDate){
