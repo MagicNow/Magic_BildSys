@@ -48,13 +48,13 @@
 
 <!-- Created At Field -->
 <div class="form-group col-md-6">
-    {!! Form::label('created_at', 'Created At:') !!}
+    {!! Form::label('created_at', 'Criado em:') !!}
     <p class="form-control">{!! $qc->created_at !!}</p>
 </div>
 
 <!-- Updated At Field -->
 <div class="form-group col-md-6">
-    {!! Form::label('updated_at', 'Updated At:') !!}
+    {!! Form::label('updated_at', 'Alterado em:') !!}
     <p class="form-control">{!! $qc->updated_at !!}</p>
 </div>
 
@@ -74,16 +74,14 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <td class="col-sm-1">ID</td>
-                        <td class="col-sm-10">Descrição</td>
-                        <td class="col-sm-1">Ações</td>
+                        <td class="col-sm-10 text-left"><strong>Descrição</strong></td>
+                        <td class="col-sm-1"><strong>Ações</strong></td>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($attachment as $item)
                         <tr>
-                            <td>{{ $item->id }}</td>
-                            <td>{{ $item->descricao }}</td>
+                            <td class="text-left">{{ $item->descricao }}</td>
                             <td><a href="{{ url(str_replace('public', 'storage', $item->arquivo)) }}" target="_blank" title="Download" class="btn"><i class="fa fa-paperclip" aria-hidden="true"></i></td>
                         </tr>
                     @endforeach
