@@ -756,7 +756,17 @@ class SpreadsheetRepository
                         }						
 
                         # save data table budget
-                        if($erro == 0) {							
+                        if($erro == 0) {
+							
+							//Se a variavel nao existe coloca vazio
+							if(empty($final['torre'])){
+								$final['torre'] = "";
+							}
+							
+							if(empty($final['pavimento'])){
+								$final['pavimento'] = "";
+							}
+							
                             CronogramaFisico::updateOrCreate(
                               [								
 								#restritos
