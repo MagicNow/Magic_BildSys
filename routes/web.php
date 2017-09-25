@@ -1141,6 +1141,12 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     ->middleware('needsPermission:contratos.solicitar_entrega')
     ->name('solicitacao-entrega.vincular-nota');
 
+    $router->get(
+        '/solicitacoes-de-entrega/imprimir/{solicitacao_entrega}',
+        'SolicitacaoEntregaController@imprimirSolicitacaoEntrega'
+    )
+    ->name('solicitacao-entrega.imprimirSolicitacaoEntrega');
+
     $router->group(['prefix' => 'contratos','middleware' => 'needsPermission:contratos.list'], function($router) {
         $router->get(
             '',

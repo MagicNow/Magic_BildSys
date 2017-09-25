@@ -167,4 +167,10 @@ class SolicitacaoEntregaController extends AppBaseController
 
         return view('solicitacao_entrega.vincular_nota', compact('entrega'));
     }
+
+    public function imprimirSolicitacaoEntrega($id)
+    {
+        $arquivo = SolicitacaoEntregaRepository::geraImpressaoSolicitacaoEntrega($id);
+        return response()->download(storage_path('/app/public/') . str_replace('storage/', '', $arquivo['arquivo']));
+    }
 }
