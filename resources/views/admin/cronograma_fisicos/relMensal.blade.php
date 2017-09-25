@@ -22,24 +22,36 @@
             font-weight: bold;
         }
 		
-        .element-body1{
-            height: 180px;
+        .element-mensal{
+            height: 220px;
             padding: 15px;
             background-color: white;
         }
 		
-		.element-body2{
-            height: 120px;
+		.element-acumulada{
+            height: 220px;
+            padding: 15px;
+            background-color: white;
+        }
+		
+		.element-desvio-pdp{
+            height: 180px;
             padding: 5px;
             background-color: white;
         }
 		
-		.element-body3{
+		.element-desvio-trabalho{
             height: 180px;
-            padding: 15px;
+            padding: 5px;
             background-color: white;
         }
 		
+		.element-desvio-prazo{
+            height: 300px;
+            padding: 5px;
+            background-color: white;
+        }
+				
 		.table> thead> tr> th, .table> thead> tr> td{
 			background-color:orange;
 			color:white;
@@ -173,7 +185,7 @@
 						<div class="col-md-3 margem-topo">							
                             <div class="element-grafico">
                                 <div class="element-head">%Mensal</div>
-                                <div class="element-body1">
+                                <div class="element-mensal">
                                     @php
 										//$json_dataPrevistoXRealizado = json_encode([$previstoXRealizado]);                        
 										//$json_labelsPrevistoXRealizado = json_encode(['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4', 'Semana 5', 'Mês']);
@@ -192,7 +204,7 @@
 						<div class="col-md-3 margem-topo">							
                             <div class="element-grafico">
                                 <div class="element-head">%Acumulada</div>
-                                <div class="element-body1">
+                                <div class="element-acumulada">
                                     @php
 										//$json_dataPrevistoXRealizado = json_encode([$pDPxPTrabalhoxRealAc]);                        
 										//$json_labelsPrevistoXRealizado = json_encode(['Semana 1']);
@@ -211,7 +223,7 @@
 						<div class="col-md-3 margem-topo">							
                             <div class="element-grafico">
                                 <div class="element-head">DESVIO PDP</div>
-                                <div class="element-body2">
+                                <div class="element-desvio-pdp">
                                     @php
 										//$json_dataPrevistoXRealizado = json_encode([$pDPxPTrabalhoxRealAc]);                        
 										//$json_labelsPrevistoXRealizado = json_encode(['Semana 1']);
@@ -230,7 +242,7 @@
 						<div class="col-md-3 margem-topo">							
                             <div class="element-grafico">
                                 <div class="element-head">DESVIO TRABALHO</div>
-                                <div class="element-body2">
+                                <div class="element-desvio-trabalho">
                                     @php
 										//$json_dataPrevistoXRealizado = json_encode([$pDPxPTrabalhoxRealAc]);                        
 										//$json_labelsPrevistoXRealizado = json_encode(['Semana 1']);
@@ -255,7 +267,7 @@
 						<div class="col-md-7 margem-topo">							
                             <div class="element-grafico">
                                 <div class="element-head">Desvio de Prazo</div>
-                                <div class="element-body3">
+                                <div class="element-desvio-prazo">
                                     @php
 										//$json_dataPrevistoXRealizado = json_encode([$previstoXRealizado]);                        
 										//$json_labelsPrevistoXRealizado = json_encode(['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4', 'Semana 5', 'Mês']);

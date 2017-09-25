@@ -13,22 +13,34 @@
             background-color: #474747;
             font-family: Raleway;
             font-weight: bold;
-        }
-        
-		.element-body1{
+        }		
+		
+        .element-previsto-realizado-sem{
             height: 230px;
             padding: 5px;
             background-color: white;
         }
 		
-		.element-body-tarefaCriticas{
-            height: 300px;
+		.element-pdp-ptrab-realac{
+            height: 230px;
+            padding: 5px;
+            background-color: white;
+        }
+		
+		.element-desvio-pdp{
+            height: 180px;
             padding: 5px;
             background-color: white;			
         }
 		
-		.element-body2{
-            height: 200px;
+		.element-desvio-ptrab{
+            height: 180px;
+            padding: 5px;
+            background-color: white;
+        }
+		
+		.element-tarefas-criticas{
+            height: 300px;
             padding: 5px;
             background-color: white;
         }
@@ -57,13 +69,13 @@
 				<div class="row">
 					<div class="form-group col-md-3">
 						{!! Form::label('obra_id', 'Obra:') !!}
-						{!! Form::select('obra_id', $obras, null, ['class' => 'form-control select2', 'required' => 'required', 'onchange' => 'atualizaDados()']) !!}
+						{!! Form::select('obra_id', [null=>'Selecione a Obra'] + $obras, $obraId ? : null, ['class' => 'form-control select2', 'onchange' => 'atualizaDados()']) !!}
 					</div>
 					<div class="form-group col-md-2">
 						{!! Form::label('mes_id', 'Mês:') !!}
 						{!!
 						  Form::select(
-							'mes_id',["julho-17","agosto-17","setembro-17"], $mes_id ? : null,['class' => 'form-control select2 js-filter', 'onchange' => 'atualizaDados()']
+							'mes_id', [null=>'Selecione o Mês de Ref.'] + $meses, $mesId ? : null,['class' => 'form-control select2 js-filter', 'onchange' => 'atualizaDados()']
 							) 						  
 						!!}
 					</div>
@@ -71,7 +83,7 @@
 						{!! Form::label('semana_id', 'Semana:') !!}
 						{!!
 						  Form::select(
-							'semana_id',["1","2","3","4","5"], $semana_id ? : null,['class' => 'form-control select2 js-filter', 'onchange' => 'atualizaDados()']
+							'semana_id', [null=>'Selecione a Semana de Ref.'] + $semanas, $semanaId ? : null,['class' => 'form-control select2 js-filter', 'onchange' => 'atualizaDados()']
 						  )
 						!!}
 					</div>
@@ -79,6 +91,8 @@
 			</div>
 		</div>
 		
+		
+		@if($showDados)
         <div class="box-body" id="app">
             <div class="row">
 			
@@ -108,12 +122,12 @@
 																		
 									<tr>
 										<td class="text-center"></td>	
-										@foreach($tabPercPrevistoRealizadosSemanas as $tabSemana)										
+										@foreach($tabPercentualPrevReal['labels'] as $tabSemana)										
 											<td class="text-center">{{ Carbon\Carbon::parse($tabSemana)->format('d/m/Y') }}</td>									
 										@endforeach
 									</tr>																															
 									
-									@foreach($tabPercPrevistoRealizados as $tabPercPrevistoRealizado)	
+									@foreach($tabPercentualPrevReal['data'] as $tabPercPrevistoRealizado)	
 									<tr>
 										<td class="text-center">{{ $tabPercPrevistoRealizado->tipo}}</td>
 										<td class="text-center">{{ $tabPercPrevistoRealizado->concluida }}</td>
@@ -131,11 +145,7 @@
 						<div class="col-md-3 margem-topo">							
                             <div class="element-grafico">
                                 <div class="element-head">Previsto X Realizado Semanal</div>
-                                <div class="element-body1">
-                                    @php
-										//$json_dataPrevistoXRealizado = json_encode([$previstoXRealizado]);                        
-										//$json_labelsPrevistoXRealizado = json_encode(['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4', 'Semana 5', 'Mês']);
-									@endphp
+                                <div class="element-previsto-realizado-sem">                                   
 									<chartjs-bar 
                                                  :labels="labelsPrevistoXRealizado" 
 												 :datasets="datasetsPrevistoXRealizado"                                                                                                
@@ -149,17 +159,13 @@
 						<div class="col-md-2 margem-topo">							
                             <div class="element-grafico">
                                 <div class="element-head">PDP x P.Trab. x Real Ac.</div>
-                                <div class="element-body1">
-                                    @php
-										//$json_dataPrevistoXRealizado = json_encode([$pDPxPTrabalhoxRealAc]);                        
-										//$json_labelsPrevistoXRealizado = json_encode(['Semana 1']);
-									@endphp
+                                <div class="element-pdp-ptrab-realac">                                    
 									<chartjs-bar 
                                                  :labels="labelsPDPxPTrabalhoxRealAc" 
 												 :datasets="datasetsPDPxPTrabalhoxRealAc"
                                                  :beginzero="mybooleanPDPxPTrabalhoxRealAc"                                                 
                                                  :option="myoptionPDPxPTrabalhoxRealAc"
-                                                 :height="220">
+                                                 :height="320">
 									</chartjs-bar>
                                 </div>
                             </div>
@@ -172,17 +178,13 @@
 						<div class="col-md-3 margem-topo">							
                             <div class="element-grafico">
                                 <div class="element-head">DESVIO PDP</div>
-                                <div class="element-body2">
-                                    @php
-										//$json_dataPrevistoXRealizado = json_encode([$pDPxPTrabalhoxRealAc]);                        
-										//$json_labelsPrevistoXRealizado = json_encode(['Semana 1']);
-									@endphp
+                                <div class="element-desvio-pdp">                                   
 									<chartjs-pie 
 										:labels="labelsDesvioPDP" 
 										:datasets="datasetsDesvioPDP" 
 										:scalesdisplay="false" 
 										:option="myoptionDesvioPDP" 
-										:height="120">
+										:height="150">
 									</chartjs-pie>
                                 </div>
                             </div>
@@ -191,17 +193,13 @@
 						<div class="col-md-3 margem-topo">							
                             <div class="element-grafico">
                                 <div class="element-head">DESVIO P. TRABALHO</div>
-                                <div class="element-body2">
-                                    @php
-										//$json_dataPrevistoXRealizado = json_encode([$pDPxPTrabalhoxRealAc]);                        
-										//$json_labelsPrevistoXRealizado = json_encode(['Semana 1']);
-									@endphp
+                                <div class="element-desvio-ptrab">                                    
 									<chartjs-pie 
 										:labels="labelsDesvioPTrabalho" 
 										:datasets="datasetsDesvioPTrabalho" 
 										:scalesdisplay="false" 
 										:option="myoptionDesvioPTrabalho" 
-										:height="120">
+										:height="150">
 									</chartjs-pie>
                                 </div>
                             </div>
@@ -222,27 +220,26 @@
 							<table class="table table-bordered table-striped">
 								<thead class="element-tabela-head">
 									<tr>
-										@foreach($tabTarefasCriticasTitulos as $tabTarefasCriticasTitulo)										
+										@foreach($tabTarefasCriticas['labels'] as $tabTarefasCriticasTitulo)										
 											<td class="text-center">{{ $tabTarefasCriticasTitulo }}</td>									
 										@endforeach										
 									</tr>
 								</thead>
 								<tbody>																																																				
 									
-									@foreach($tabTarefasCriticasDados as $tabTarefasCriticasDado)
+									@foreach($tabTarefasCriticas['data'] as $tabTarefasCriticasDado)
 									
 									<?php
-										$tabTarefasPrevisto = $tabTarefasCriticasDado->previsto_acumulado."%";	
-										$tabTarefasRealizado = $tabTarefasCriticasDado->realizado_acumulado."%";	
-										$tabTarefasDesvio = $tabTarefasCriticasDado->previsto_acumulado - $tabTarefasCriticasDado->realizado_acumulado."%";	
+										$tabTarefasPrevisto = $tabTarefasCriticasDado['previsto'];	
+										$tabTarefasRealizado = $tabTarefasCriticasDado['realizado'];
+										$tabTarefasDesvio = $tabTarefasRealizado - $tabTarefasPrevisto;
 									?>
-									
 									<tr>
-										<td class="text-center">{{ $tabTarefasCriticasDado->local }}</td>
-										<td class="text-center">{{ $tabTarefasCriticasDado->tarefa }}</td>
-										<td class="text-center">{{ $tabTarefasPrevisto }}</td>
-										<td class="text-center">{{ $tabTarefasRealizado }}</td>
-										<td class="text-center">{{ $tabTarefasDesvio }}</td>										
+										<td class="text-center">{{ $tabTarefasCriticasDado['local'] }}</td>
+										<td class="text-center">{{ $tabTarefasCriticasDado['tarefa'] }}</td>
+										<td class="text-center">{{ $tabTarefasPrevisto.'%' }}</td>
+										<td class="text-center">{{ $tabTarefasRealizado.'%' }}</td>
+										<td class="text-center">{{ $tabTarefasPrevisto.'%' }}</td>										
 									</tr>
 									@endforeach
 									
@@ -253,15 +250,11 @@
 						<div class="col-md-5">							
                             <div class="element-grafico margem-topo">
                                 <div class="element-head">Tarefas Críticas</div>
-                                <div class="element-body-tarefaCriticas">
-                                    @php
-										//$json_dataPrevistoXRealizado = json_encode([$previstoXRealizado]);                        
-										//$json_labelsPrevistoXRealizado = json_encode(['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4', 'Semana 5', 'Mês']);
-									@endphp
+                                <div class="element-tarefas-criticas">                                    
 									<chartjs-bar :labels="labelsTarefasCriticas" 
 												 :datasets="datasetsTarefasCriticas"                                                                                                
                                                  :option="myoptionTarefasCriticas"
-                                                 :height="100">
+                                                 :height="150">
 									</chartjs-bar>
                                 </div>
                             </div>
@@ -276,7 +269,7 @@
 
 						<div class="box box-primary">
 							<div class="box-body">
-									@include('admin.cronograma_fisicos.table')
+									<?php /*@include('admin.cronograma_fisicos.table')*/ ?>
 							</div>
 						</div>
 					</div>
@@ -284,7 +277,9 @@
 				</div>
             </div>
         </div>
-				
+		
+		@endif
+		
     </div>
 @endsection
 @section('scripts')
@@ -305,13 +300,14 @@
 			
 
 			stopLoading();
-		}		
+		}
+		
 	
 		const app = new Vue({
             el: '#app',
             data:{
 				
-				//Grafico BAR - Previsto x Realizado
+				//Grafico BAR - Previsto x Realizado Semanal
                 datasetsPrevistoXRealizado:
 				[{
 					label: 'Previsto',						
@@ -348,9 +344,8 @@
                     legend: {
                         display: false
                     }
-                }
+                },
 				
-				,				
 				//Grafico BAR - PDP x P.Trabalho x Real Acumulado
                 datasetsPDPxPTrabalhoxRealAc:
 				[{
@@ -392,9 +387,8 @@
                     legend: {
                         display: false
                     }
-                }
+                },
 				
-				,				
 				//Grafico PIE - DESVIO PDP
 				labelsDesvioPDP: ["DESVIO PDP"],
                 myoptionDesvioPDP: {
@@ -406,9 +400,8 @@
                     data: [100],
                     backgroundColor: 'DarkOrange',
                     hoverBackgroundColor: 'DarkOrange'
-                }]
+                }],
 				
-				,				
 				//Grafico PIE - DESVIO P. TRABALHO
 				labelsDesvioPTrabalho: ["DESVIO P. TRABALHO"],
                 myoptionDesvioPTrabalho: {
@@ -420,8 +413,7 @@
                     data: [100],
                     backgroundColor: 'blue',
                     hoverBackgroundColor: 'blue'
-                }]				
-				,
+                }],
 				
 				//Grafico BAR - Tarefas Críticas
                 datasetsTarefasCriticas:
@@ -429,17 +421,15 @@
 					label: 'Previsto Acumulado',						
 					backgroundColor: 'maroon',
 					borderColor: 'maroon',
-					data: JSON.parse("{{ json_encode($grafDataPrevTarefasCriticas)}}")
+					data: JSON.parse("{{ json_encode($grafTarefasCriticas['data']['previstoAcum'])}}")
 				},
 				{
 					label: 'Realizado Acumulado',
 					backgroundColor: 'DarkOrange',
 					borderColor: 'DarkOrange',
-					data: JSON.parse("{{ json_encode($grafDataReaTarefasCriticas)}}")
-				}],				
-                //mylabelPrevistoXRealizado : '%',
-				labelsTarefasCriticas : <?php echo json_encode($grafLabelsTarefasCriticas);?>,
-				//labelsTarefasCriticas : ["Tarefa 1","Tarefa 2","Tarefa 3","Tarefa 4","Tarefa 5"],								
+					data: JSON.parse("{{ json_encode($grafTarefasCriticas['data']['realizadoAcum'])}}")
+				}],				                
+				labelsTarefasCriticas : <?php echo json_encode($grafTarefasCriticas['labels']);?>,										
                 mybooleanTarefasCriticas : false,                
                 myoptionTarefasCriticas: {
                     onClick: function (event, legendItem) {
@@ -452,14 +442,15 @@
                             ticks: {
                                 // Create scientific notation labels
                                 beginAtZero:true,
-                                fixedStepSize: 25
+                                fixedStepSize: 20
                             }
                         }]
                     },
                     legend: {
-                        display: false
+                        display: true
                     }
                 }
+				//Fim dos Gráficos
 								
             }
         });
