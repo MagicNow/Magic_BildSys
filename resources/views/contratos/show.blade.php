@@ -15,16 +15,21 @@
             @endif
             @include('contratos.aprovacao')
 
-                @if($contrato->contrato_status_id == 5 && $contrato->hasServico() )
-                    <a href="{{ Storage::url($contrato->arquivo) }}" download="minuta_{{ $contrato->id }}.pdf" target="_blank"
-                       class="btn btn-lg btn-flat btn-info pull-right" title="Baixar Minuta Assinada assinada pelo fornecedor">
-                        <i class="fa fa-download"></i>
-                    </a>
-                @endif
-                <a href="{{ route('contratos.imprimirContratoCompleto', $contrato->id) }}" download="contrato_{{ $contrato->id }}.pdf" target="_blank"
-                   class="btn btn-lg btn-flat btn-success pull-right" title="Baixar Contrato completo">
-                    <i class="fa fa-print"></i>
+            @if($contrato->contrato_status_id == 5 && $contrato->hasServico() )
+                <a href="{{ Storage::url($contrato->arquivo) }}" download="minuta_{{ $contrato->id }}.pdf" target="_blank"
+                   class="btn btn-lg btn-flat btn-info pull-right" title="Baixar minuta assinada assinada pelo fornecedor">
+                    <i class="fa fa-download"></i>
                 </a>
+            @endif
+            <a href="{{ route('contratos.imprimirEspelhoContrato', $contrato->id) }}" download="espelho_contrato_{{ $contrato->id }}.pdf" target="_blank"
+               class="btn btn-lg btn-flat btn-warning pull-right" title="Baixar espelho do contrato">
+                <i class="fa fa-files-o"></i>
+            </a>
+            <a href="{{ route('contratos.imprimirContratoCompleto', $contrato->id) }}" download="contrato_{{ $contrato->id }}.pdf" target="_blank"
+               class="btn btn-lg btn-flat btn-success pull-right" title="Baixar contrato completo">
+                <i class="fa fa-print"></i>
+            </a>
+
             @if($contrato->pode_solicitar_entrega)
                 <button class="btn btn-flat btn-primary btn-lg"
                     data-toggle="modal"
