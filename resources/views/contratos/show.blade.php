@@ -35,27 +35,28 @@
         </h1>
     </section>
 	<div class="content">
-
-		@if($contrato->contrato_status_id == 4 || (is_null($contrato->arquivo) && $contrato->contrato_status_id == 5)  )
-            {!! Form::open(['url'=>'/contratos/'.$contrato->id.'/envia-contrato', 'files'=> true ]) !!}
-            <div class="box box-warning">
-                <div class="box-header with-border">
-                    Enviar contrato assinado
-                </div>
-                <div class="box-body">
-                    <div class="col-md-10">
-                        {!! Form::file('arquivo',['class'=>'form-control']) !!}
+		@if($contrato->hasServico())
+            @if($contrato->contrato_status_id == 4 || (is_null($contrato->arquivo) && $contrato->contrato_status_id == 5))
+                {!! Form::open(['url'=>'/contratos/'.$contrato->id.'/envia-contrato', 'files'=> true ]) !!}
+                <div class="box box-warning">
+                    <div class="box-header with-border">
+                        Enviar contrato assinado
                     </div>
-                    <div class="col-md-2">
-                        <button type="submit" class="btn btn-flat btn-success btn-block">
-                            <i class="fa fa-upload"></i>
-                            Enviar
-                            {{ $contrato->contrato_status_id == 4? ' e Liberar':'' }}
-                        </button>
+                    <div class="box-body">
+                        <div class="col-md-10">
+                            {!! Form::file('arquivo',['class'=>'form-control']) !!}
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-flat btn-success btn-block">
+                                <i class="fa fa-upload"></i>
+                                Enviar
+                                {{ $contrato->contrato_status_id == 4? ' e Liberar':'' }}
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
-            {!! Form::close() !!}
+                {!! Form::close() !!}
+            @endif
 		@endif
         <section>
             <h6>Dados Informativos</h6>
