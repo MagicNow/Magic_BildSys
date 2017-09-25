@@ -17,6 +17,18 @@ class PagamentoDataTable extends DataTable
         return $this->datatables
             ->eloquent($this->query())
             ->addColumn('action', 'pagamentos.datatables_actions')
+            ->editColumn('data_emissao', function($obj){
+                return $obj->data_emissao->format('d/m/Y');
+            })
+            ->editColumn('enviado_integracao', function($obj){
+                return '<i class="fa fa-'.($obj->enviado_integracao?'check text-success':'times text-danger').'"></i>';
+            })
+            ->editColumn('integrado', function($obj){
+                return '<i class="fa fa-'.($obj->integrado?'check text-success':'times text-danger').'"></i>';
+            })
+            ->editColumn('valor', function($obj){
+                return '<div class="text-right">'.float_to_money($obj->valor).'</div>';
+            })
             ->make(true);
     }
 
@@ -27,7 +39,26 @@ class PagamentoDataTable extends DataTable
      */
     public function query()
     {
-        $pagamentos = Pagamento::query();
+        $pagamentos = Pagamento::query()
+            ->select([
+                'pagamentos.id',
+                'pagamentos.contrato_id',
+                'pagamentos.numero_documento',
+                'pagamentos.data_emissao',
+                'pagamentos.valor',
+                'pagamentos.notas_fiscal_id',
+                'pagamentos.enviado_integracao',
+                'pagamentos.integrado',
+                'obras.nome as obra',
+                'fornecedores.nome as fornecedor',
+                'pagamento_condicoes.codigo',
+                'documento_tipos.sigla',
+            ])
+            ->join('obras','obras.id','pagamentos.obra_id')
+            ->join('fornecedores','fornecedores.id','pagamentos.fornecedor_id')
+            ->join('pagamento_condicoes','pagamento_condicoes.id','pagamentos.pagamento_condicao_id')
+            ->join('documento_tipos','documento_tipos.id','pagamentos.documento_tipo_id')
+        ;
 
         return $this->applyScopes($pagamentos);
     }
@@ -90,17 +121,17 @@ class PagamentoDataTable extends DataTable
     private function getColumns()
     {
         return [
-            'contrato_id' => ['name' => 'contrato_id', 'data' => 'contrato_id'],
-            'obra_id' => ['name' => 'obra_id', 'data' => 'obra_id'],
-            'numero_documento' => ['name' => 'numero_documento', 'data' => 'numero_documento'],
-            'fornecedor_id' => ['name' => 'fornecedor_id', 'data' => 'fornecedor_id'],
-            'data_emissao' => ['name' => 'data_emissao', 'data' => 'data_emissao'],
+            'contrato' => ['name' => 'contrato_id', 'data' => 'contrato_id'],
+            'obra' => ['name' => 'obras.nome', 'data' => 'obra'],
+            'número_documento' => ['name' => 'numero_documento', 'data' => 'numero_documento'],
+            'fornecedor' => ['name' => 'fornecedores.nome', 'data' => 'fornecedor'],
+            'data_emissão' => ['name' => 'data_emissao', 'data' => 'data_emissao'],
             'valor' => ['name' => 'valor', 'data' => 'valor'],
-            'pagamento_condicao_id' => ['name' => 'pagamento_condicao_id', 'data' => 'pagamento_condicao_id'],
-            'documento_tipo_id' => ['name' => 'documento_tipo_id', 'data' => 'documento_tipo_id'],
-            'notas_fiscal_id' => ['name' => 'notas_fiscal_id', 'data' => 'notas_fiscal_id'],
-            'enviado_integracao' => ['name' => 'enviado_integracao', 'data' => 'enviado_integracao'],
-            'integrado' => ['name' => 'integrado', 'data' => 'integrado'],
+            'condiçõesDePagamento' => ['name' => 'pagamento_condicoes.codigo', 'data' => 'codigo'],
+            'TipoDeDocumento' => ['name' => 'documento_tipos.sigla', 'data' => 'sigla'],
+            'notas_fiscal' => ['name' => 'notas_fiscal_id', 'data' => 'notas_fiscal_id'],
+            'enviado_mega' => ['name' => 'enviado_integracao', 'data' => 'enviado_integracao'],
+            'integrado_mega' => ['name' => 'integrado', 'data' => 'integrado'],
             'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }

@@ -163,7 +163,26 @@ class FornecedoresController extends AppBaseController
             return redirect(route('admin.fornecedores.index'));
         }
 
-        return view('admin.fornecedores.edit', compact('servicos_fornecedor', 'servicos'))->with('fornecedores', $fornecedores);
+        $associados = [];
+
+        $fornecedores_associados_ids = $fornecedores->fornecedores_associados_ids();
+
+        if(count($fornecedores_associados_ids)){
+            $associados = Fornecedor::whereIn('id',$fornecedores_associados_ids)
+                ->select([
+                    DB::raw("CONCAT(nome,' - ',cnpj) as nome"),
+                    'id'
+                ])
+                ->pluck('nome','id')
+                ->toArray();
+        }
+
+        return view('admin.fornecedores.edit', compact('fornecedores',
+            'servicos_fornecedor',
+            'servicos',
+            'associados',
+            'fornecedores_associados_ids'
+        ));
     }
 
     /**
@@ -216,7 +235,27 @@ class FornecedoresController extends AppBaseController
             return redirect(route('admin.fornecedores.index'));
         }
 
+        # Previne de duplicar os relacionamentos de fornecedores associados
 
+        $fornecedores_associados_ids2 = $fornecedores->fornecedores_associados_com_este()
+            ->select('fornecedores_associados.fornecedor_id')
+            ->pluck('fornecedor_id', 'fornecedor_id')
+            ->toArray();
+
+        if(!isset($input['fornecedores_associados'])){
+            $input['fornecedores_associados'] = [];
+        }
+        if(count($fornecedores_associados_ids2) || count($request->fornecedores_associados)){
+            foreach ($fornecedores_associados_ids2 as $ja_relacionado){
+                $posicao = array_search($ja_relacionado,$input['fornecedores_associados']);
+                if($posicao!==false){
+                    unset($input['fornecedores_associados'][$posicao]);
+                }else{
+                    $fornecedoresRelacionado = Fornecedor::find($ja_relacionado);
+                    $fornecedoresRelacionado->fornecedores_associados()->detach($fornecedores->id);
+                }
+            }
+        }
 
         $fornecedores = $this->fornecedoresRepository->update($request->all(), $id);
 

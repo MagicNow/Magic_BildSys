@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Models\Contrato;
 use App\Models\Pagamento;
 use InfyOm\Generator\Common\BaseRepository;
 
@@ -30,5 +31,23 @@ class PagamentoRepository extends BaseRepository
     public function model()
     {
         return Pagamento::class;
+    }
+
+    public function create(array $attributes)
+    {
+        $attributes['valor'] = money_to_float($attributes['valor']);
+        $contrato = Contrato::find($attributes['contrato_id']);
+        $attributes['obra_id'] = $contrato->id;
+        $model = parent::create($attributes);
+
+        return $model;
+    }
+
+    public function update(array $attributes, $id)
+    {
+        $attributes['valor'] = money_to_float($attributes['valor']);
+        $model = parent::update($attributes, $id);
+
+        return $model;
     }
 }

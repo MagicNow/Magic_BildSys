@@ -1,9 +1,4 @@
-<!-- Contrato Id Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('contrato_id', 'Contrato:') !!}
-    {!! Form::number('contrato_id', null, ['class' => 'form-control', 'required']) !!}
-</div>
-
+{!! Form::hidden('contrato_id', $contrato->id) !!}
 <!-- Numero Documento Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('numero_documento', 'Numero Documento:') !!}
@@ -19,7 +14,7 @@
 <!-- Data Emissao Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('data_emissao', 'Data Emissão:') !!}
-    {!! Form::date('data_emissao', null, ['class' => 'form-control','required']) !!}
+    {!! Form::date('data_emissao', (!isset($pagamento)?null:$pagamento->data_emissao->format('Y-m-d')), ['class' => 'form-control','required']) !!}
 </div>
 
 <!-- Valor Field -->

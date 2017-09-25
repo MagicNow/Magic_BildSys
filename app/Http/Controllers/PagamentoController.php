@@ -6,6 +6,7 @@ use App\DataTables\PagamentoDataTable;
 use App\Http\Requests;
 use App\Http\Requests\CreatePagamentoRequest;
 use App\Http\Requests\UpdatePagamentoRequest;
+use App\Models\Contrato;
 use App\Models\DocumentoTipo;
 use App\Models\PagamentoCondicao;
 use App\Repositories\PagamentoRepository;
@@ -42,6 +43,12 @@ class PagamentoController extends AppBaseController
      */
     public function create()
     {
+        $contrato = Contrato::find( request()->get('contrato_id') );
+        if (!$contrato) {
+            Flash::error('Contrato '.trans('common.not-found'));
+            return redirect(route('contrato.index'));
+        }
+
         $pagamentoCondicoes = PagamentoCondicao::select([
             DB::raw("CONCAT(nome,' - ',codigo) as nome"),
             'id'
@@ -51,7 +58,7 @@ class PagamentoController extends AppBaseController
             DB::raw("CONCAT(nome,' - ',sigla) as nome"),
             'id'
         ])->pluck('nome','id')->toArray();
-        return view('pagamentos.create', compact('pagamentoCondicoes','documentoTipos'));
+        return view('pagamentos.create', compact('pagamentoCondicoes','documentoTipos','contrato'));
     }
 
     /**
@@ -109,7 +116,19 @@ class PagamentoController extends AppBaseController
             return redirect(route('pagamentos.index'));
         }
 
-        return view('pagamentos.edit')->with('pagamento', $pagamento);
+        $contrato = $pagamento->contrato;
+
+        $pagamentoCondicoes = PagamentoCondicao::select([
+            DB::raw("CONCAT(nome,' - ',codigo) as nome"),
+            'id'
+        ])->pluck('nome','id')->toArray();
+
+        $documentoTipos = DocumentoTipo::select([
+            DB::raw("CONCAT(nome,' - ',sigla) as nome"),
+            'id'
+        ])->pluck('nome','id')->toArray();
+
+        return view('pagamentos.edit', compact('pagamento','pagamentoCondicoes','documentoTipos','contrato'));
     }
 
     /**

@@ -908,3 +908,11 @@ input:checked + .slider:before {
 .select2-search {
   z-index: 10002;
 }
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice{
+  background-color: #f98d00;
+  border: 1px solid #cc7403;
+}
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+  color: #000;
+}
