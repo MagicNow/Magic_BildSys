@@ -5,6 +5,10 @@
     <h1 class="content-header-title">
         Solicitação de Entrega #{{ $entrega->id }}
         @include('solicitacao_entrega.actions')
+        <a href="{{ route('solicitacao-entrega.imprimirSolicitacaoEntrega', $entrega->id) }}" download="solicitacao-entrega_{{ $entrega->id }}.pdf" target="_blank"
+           class="btn btn-lg btn-flat btn-success pull-right" title="Baixar Solicitação de entrega">
+            <i class="fa fa-print"></i>
+        </a>
     </h1>
 </div>
 

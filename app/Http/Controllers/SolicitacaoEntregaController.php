@@ -107,7 +107,7 @@ class SolicitacaoEntregaController extends AppBaseController
         $motivos = $workflowReprovacaoMotivoRepository
             ->porTipoForSelect(WorkflowTipo::SOLICITACAO_ENTREGA)
             ->toArray();
-
+//        dd($entrega);
         return view('solicitacao_entrega.show', compact(
             'entrega',
             'aprovado',
@@ -166,5 +166,11 @@ class SolicitacaoEntregaController extends AppBaseController
         $entrega = $this->solicitacaoEntregaRepository->find($id);
 
         return view('solicitacao_entrega.vincular_nota', compact('entrega'));
+    }
+
+    public function imprimirSolicitacaoEntrega($id)
+    {
+        $arquivo = SolicitacaoEntregaRepository::geraImpressaoSolicitacaoEntrega($id);
+        return response()->download(storage_path('/app/public/') . str_replace('storage/', '', $arquivo['arquivo']));
     }
 }
