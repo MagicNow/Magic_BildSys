@@ -24,6 +24,7 @@ class Contrato extends Model
         'contrato_status_id',
         'obra_id',
         'quadro_de_concorrencia_id',
+        'pagamento_condicao_id',
         'fornecedor_id',
         'valor_total_inicial',
         'valor_total_atual',
@@ -63,6 +64,7 @@ class Contrato extends Model
         'contrato_status_id' => 'integer',
         'obra_id' => 'integer',
         'quadro_de_concorrencia_id' => 'integer',
+        'pagamento_condicao_id' => 'integer',
         'fornecedor_id' => 'integer',
         'contrato_template_id' => 'integer',
         'arquivo' => 'string'

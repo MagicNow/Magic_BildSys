@@ -7,6 +7,7 @@ use App\Models\Fornecedor;
 use App\Models\FornecedorServico;
 use App\Models\Insumo;
 use App\Models\OrdemDeCompraItem;
+use App\Models\PagamentoCondicao;
 use App\Models\QuadroDeConcorrencia;
 use App\Models\WorkflowAlcada;
 use App\Models\WorkflowAprovacao;
@@ -770,13 +771,19 @@ class QuadroDeConcorrenciaController extends AppBaseController
             ->prepend('Selecione um motivo...', '')
             ->toArray();
 
+        $condicoes_pagamento = PagamentoCondicao::select([
+            DB::raw("CONCAT(nome,' - ',codigo) as nome"),
+            'id'
+        ])->pluck('nome','id')->toArray();
+
         return view('quadro_de_concorrencias.informar_valor')
             ->with(compact(
                 'anexos',
                 'equalizacoes',
                 'quadro',
                 'fornecedores',
-                'motivos'
+                'motivos',
+                'condicoes_pagamento'
             ));
     }
 
@@ -871,6 +878,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
                 }
 
                 $qcFornecedor->update([
+                    'pagamento_condicao_id' => $request->pagamento_condicao_id,
                     'nf_material' => $request->nf_material,
                     'nf_servico' => $request->nf_servico,
                     'nf_locacao' => $request->nf_locacao,

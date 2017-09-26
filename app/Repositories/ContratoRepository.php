@@ -400,6 +400,7 @@ class ContratoRepository extends BaseRepository
                 $contratoArray['contrato_status_id'] = ContratoStatus::EM_APROVACAO;
                 $contratoArray['fornecedor_id'] = $qcFornecedor->fornecedor_id;
                 $contratoArray['quadro_de_concorrencia_id'] = $qcFornecedor->quadro_de_concorrencia_id;
+                $contratoArray['pagamento_condicao_id'] = $qcFornecedor->pagamento_condicao_id;
                 $contratoArray['valor_total_atual'] = $contratoArray['valor_total_inicial'];
 
                 // Verifica se irá criar um novo contrato ou aditivar / reajustar um existente
