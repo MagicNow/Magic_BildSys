@@ -82,6 +82,19 @@ class Kernel extends ConsoleKernel
                 Log::info('Inicio de execucao importação de Insumos');
                 $importaInsumo = ImportacaoRepository::insumos();
                 Log::info('Executado script de importação de Insumos', $importaInsumo);
+
+                Log::info('Inicio de execucao importação Condições de Pagamento');
+                $importa = ImportacaoRepository::pagamentoCondicoes();
+                Log::info('Executado script de importação de Condições de Pagamento', $importa);
+
+                Log::info('Inicio de execucao importação de Tipos de Documentos Fiscais');
+                $importaDocumentoFiscal = ImportacaoRepository::documentoTipos();
+                Log::info('Executado script de importação de Tipos de Documentos Fiscais', $importaDocumentoFiscal);
+
+                Log::info('Inicio de execucao importação de Tipos de Documentos Financeiros');
+                $importaDocumentoFinanceiros = ImportacaoRepository::documentoFinanceiroTipos();
+                Log::info('Executado script de importação de Tipos de Documentos Financeiros', $importaDocumentoFinanceiros);
+
             })
             ->twiceDaily(10, 19)
             ->name('importacao:repository')

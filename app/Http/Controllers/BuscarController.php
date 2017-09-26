@@ -53,9 +53,13 @@ class BuscarController extends AppBaseController
     {
         $fornecedores = Fornecedor::select([
             'id',
-            'nome'
+            'nome',
+            'cnpj'
         ])
-        ->where('nome', 'like', '%'.$request->q.'%')
+            ->where(function ($subquery) use ($request){
+                $subquery->where('nome', 'like', '%'.$request->q.'%');
+                $subquery->orWhere('cnpj', 'like', '%'.$request->q.'%');
+            })
         ->whereNotIn('id', $request->ignore ?: [])
         ->paginate();
 
