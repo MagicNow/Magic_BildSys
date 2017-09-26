@@ -773,7 +773,7 @@ class ContratoRepository extends BaseRepository
         return Contrato::class;
     }
 
-    public static function geraImpressaoCompleta($id)
+    public static function geraImpressaoCompleta($id, $espelho = null)
     {
         $contrato = Contrato::with('fornecedor')->find($id);
         if (!$contrato) {
@@ -782,6 +782,10 @@ class ContratoRepository extends BaseRepository
 
         if (is_file(base_path().'/storage/app/public/contratos/contrato_completo_'.$contrato->id.'.pdf')) {
             unlink(base_path().'/storage/app/public/contratos/contrato_completo_'.$contrato->id.'.pdf');
+        }
+
+        if (is_file(base_path().'/storage/app/public/contratos/espelho_contrato_'.$contrato->id.'.pdf')) {
+            unlink(base_path().'/storage/app/public/contratos/espelho_contrato_'.$contrato->id.'.pdf');
         }
 
         $isEmAprovacao = $contrato->em_aprovacao;
@@ -796,8 +800,16 @@ class ContratoRepository extends BaseRepository
         $impressao = 1;
         
 //        return view('contratos.pdf',compact('contrato', 'itens','impressao'));
-        
-        PDF::loadView('contratos.pdf',compact('contrato', 'itens','impressao'))
+
+        if(!$espelho) {
+            $path = base_path().'/storage/app/public/contratos/contrato_completo_'.$contrato->id.'.pdf';
+            $path_name = 'contrato_completo_';
+        } else {
+            $path = base_path().'/storage/app/public/contratos/espelho_contrato_'.$contrato->id.'.pdf';
+            $path_name = 'espelho_contrato_';
+        }
+
+        PDF::loadView('contratos.pdf',compact('contrato', 'itens','impressao', 'espelho'))
             ->setPaper('a4')->setOrientation('landscape')
             ->setOption('margin-top', 1)
             ->setOption('margin-bottom', 1)
@@ -806,10 +818,10 @@ class ContratoRepository extends BaseRepository
 //            ->setOption('disable-smart-shrinking',true)
 //            ->setOption('dpi',36)
 //            ->setOption('viewport-size','1280x1024')
-            ->save(base_path().'/storage/app/public/contratos/contrato_completo_'.$contrato->id.'.pdf');
+            ->save($path);
 
         return [
-            'arquivo'=>'contratos/contrato_completo_'.$contrato->id.'.pdf'
+            'arquivo'=>'contratos/'.$path_name.$contrato->id.'.pdf'
         ];
     }
 }

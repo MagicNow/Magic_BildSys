@@ -234,6 +234,7 @@ class OrdemDeCompraRepository extends BaseRepository
         $obra = Obra::find($obra_id);
 
         $insumo_catalogo = CatalogoContrato::select(
+            'catalogo_contratos.id',
             'valor_unitario',
             'pedido_minimo',
             'pedido_multiplo_de',

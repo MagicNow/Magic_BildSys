@@ -78,7 +78,8 @@
                 <input type="hidden" id="qtd_a_distribuir" value="{{ $contrato_item_apropriacao->qtd }}">
             </div>
         </div>
-        {{--@if(count($previsoes))--}}
+        
+		{{--@if(count($previsoes))--}}
             {{--@php $previsao = $previsoes->first(); @endphp--}}
 
             {{--<div class="form-group col-md-6">--}}
