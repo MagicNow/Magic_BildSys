@@ -1400,6 +1400,24 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         //->middleware("needsPermission:insumos.view");
     });
 
+    // Pagamentos
+    $router->group(['prefix'=>'pagamentos', 'middleware' => 'needsPermission:pagamentos.list'], function () use ($router) {
+        $router->get('', ['as'=> 'pagamentos.index', 'uses' => 'PagamentoController@index']);
+        $router->post('', ['as'=> 'pagamentos.store', 'uses' => 'PagamentoController@store'])
+            ->middleware('needsPermission:pagamentos.create');
+        $router->get('/create', ['as'=> 'pagamentos.create', 'uses' => 'PagamentoController@create'])
+            ->middleware('needsPermission:pagamentos.create');
+        $router->put('/{pagamentos}', ['as'=> 'pagamentos.update', 'uses' => 'PagamentoController@update'])
+            ->middleware('needsPermission:pagamentos.edit');
+        $router->patch('/{pagamentos}', ['as'=> 'pagamentos.update', 'uses' => 'PagamentoController@update'])
+            ->middleware('needsPermission:pagamentos.edit');
+        $router->delete('/{pagamentos}', ['as'=> 'pagamentos.destroy', 'uses' => 'PagamentoController@destroy'])
+            ->middleware('needsPermission:pagamentos.delete');
+        $router->get('/{pagamentos}', ['as'=> 'pagamentos.show', 'uses' => 'PagamentoController@show']);
+        $router->get('/{pagamentos}/edit', ['as'=> 'pagamentos.edit', 'uses' => 'PagamentoController@edit'])
+            ->middleware('needsPermission:pagamentos.edit');
+    });
+
 
 });
 
@@ -1423,5 +1441,3 @@ $router->get('/teste', function () {
 });
 #Image Controller
 $router->get('imagem', 'ImageController@index');
-
-Route::resource('pagamentos', 'PagamentoController');

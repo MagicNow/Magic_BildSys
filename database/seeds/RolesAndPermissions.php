@@ -289,6 +289,11 @@ class RolesAndPermissions extends Seeder
             'topologia.create' => 'Criação de topologia',
             'topologia.edit'   => 'Edição de topologia',
             'topologia.delete'   => 'Remoção de topologia',
+
+            'pagamentos.list' => 'Listagem de pagamentos',
+            'pagamentos.create' => 'Criação de pagamento',
+            'pagamentos.edit'   => 'Edição de pagamento',
+            'pagamentos.delete'   => 'Remoção de pagamento',
         ];
 
         $permissionAccess = [];

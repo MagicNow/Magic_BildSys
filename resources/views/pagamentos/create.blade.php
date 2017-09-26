@@ -6,7 +6,7 @@
             <button type="button" class="btn btn-link" onclick="history.go(-1);">
                 <i class="fa fa-arrow-left" aria-hidden="true"></i>
             </button>
-            Pagamento
+            Contrato {{ $contrato->id }} - Adicionar Pagamento
         </h1>
     </section>
     <div class="content">

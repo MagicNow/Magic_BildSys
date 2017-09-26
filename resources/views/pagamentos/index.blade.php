@@ -7,9 +7,7 @@
                 <i class="fa fa-arrow-left" aria-hidden="true"></i>
             </button>
             Pagamentos
-            <a class="btn btn-primary btn-lg pull-right" style="margin-top: -10px;margin-bottom: 5px" href="{!! route('pagamentos.create') !!}">
-                {{ ucfirst( trans('common.new') )}}
-            </a>
+
         </h1>
     </section>
     <div class="content">

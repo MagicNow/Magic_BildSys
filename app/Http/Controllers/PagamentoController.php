@@ -8,6 +8,7 @@ use App\Http\Requests\CreatePagamentoRequest;
 use App\Http\Requests\UpdatePagamentoRequest;
 use App\Models\Contrato;
 use App\Models\DocumentoTipo;
+use App\Models\Fornecedor;
 use App\Models\PagamentoCondicao;
 use App\Repositories\PagamentoRepository;
 use Flash;
@@ -46,7 +47,7 @@ class PagamentoController extends AppBaseController
         $contrato = Contrato::find( request()->get('contrato_id') );
         if (!$contrato) {
             Flash::error('Contrato '.trans('common.not-found'));
-            return redirect(route('contrato.index'));
+            return redirect(route('contratos.index'));
         }
 
         $pagamentoCondicoes = PagamentoCondicao::select([
@@ -58,7 +59,19 @@ class PagamentoController extends AppBaseController
             DB::raw("CONCAT(nome,' - ',sigla) as nome"),
             'id'
         ])->pluck('nome','id')->toArray();
-        return view('pagamentos.create', compact('pagamentoCondicoes','documentoTipos','contrato'));
+
+        $fornecedores_ids = $contrato->fornecedor->fornecedores_associados_ids();
+        $fornecedores_ids[$contrato->fornecedor_id] = $contrato->fornecedor_id;
+
+        $fornecedores = Fornecedor::select([
+            DB::raw("CONCAT(nome,' - ',cnpj) nome"),
+            'id'
+        ])
+            ->whereIn('id',$fornecedores_ids)
+            ->pluck('nome','id')
+            ->toArray();
+
+        return view('pagamentos.create', compact('pagamentoCondicoes','documentoTipos','contrato','fornecedores'));
     }
 
     /**
@@ -128,7 +141,18 @@ class PagamentoController extends AppBaseController
             'id'
         ])->pluck('nome','id')->toArray();
 
-        return view('pagamentos.edit', compact('pagamento','pagamentoCondicoes','documentoTipos','contrato'));
+        $fornecedores_ids = $contrato->fornecedor->fornecedores_associados_ids();
+        $fornecedores_ids[$contrato->fornecedor_id] = $contrato->fornecedor_id;
+
+        $fornecedores = Fornecedor::select([
+            DB::raw("CONCAT(nome,' - ',cnpj) nome"),
+            'id'
+        ])
+            ->whereIn('id',$fornecedores_ids)
+            ->pluck('nome','id')
+            ->toArray();
+
+        return view('pagamentos.edit', compact('pagamento','pagamentoCondicoes','documentoTipos','contrato','fornecedores'));
     }
 
     /**
