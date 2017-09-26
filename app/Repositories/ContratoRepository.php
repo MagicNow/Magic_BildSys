@@ -812,11 +812,13 @@ class ContratoRepository extends BaseRepository
             ->setPaper('a4')
             ->setOrientation('landscape')
             ->setOption('margin-top', 33)
-            ->setOption('margin-bottom', 33)
-            ->setOption('margin-left', 5)
-            ->setOption('margin-right', 5)
+            ->setOption('margin-bottom', 13)
+            ->setOption('margin-left', 8)
+            ->setOption('margin-right', 8)
             ->setOption('header-html', View::make('layouts.printable_header')->render())
-            ->setOption('footer-html', View::make('layouts.printable_footer')->render())
+            ->setOption('footer-left', 'Fornecedor: '.$contrato->fornecedor->nome.' - Contrato: '.$contrato->id)
+            ->setOption('footer-center', 'Pagina [page] de [toPage]')
+            ->setOption('footer-right', date('d/m/Y H:i'))
             ->save($path);
 
         return [
