@@ -27,12 +27,18 @@
 
 <div class="form-group col-sm-6">
     {!! Form::label('andar', 'Andar:') !!}
-    {!! Form::select('andar', ['Selecione um Andar'], null, ['class' => 'form-control select2']) !!}
+    {!! Form::select('andar', ['Selecione um Pavimento'], null, ['class' => 'form-control select2']) !!}
+</div>
+
+<div class="form-group col-sm-12 text-center">
+    <button type="button" class="btn btn-primary hide" id="js-btn-buscar-insumos">
+        Buscar Insumos
+    </button>
 </div>
 
 <div class="form-group col-sm-12">
 
-<table id="responsive-example-table" class="table table-striped table-responsive">
+<table id="insumos-table" class="table table-striped table-responsive hide">
     <tbody>
         <tr align="left">
             <th width="30%">Insumo</th>
@@ -49,10 +55,12 @@
             <td>1000</td>
             <td>800</td>
             <td>300</td>
-            <td><input type="text" class="form-control"></td>
-            <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+            <td><input type="number" class="form-control" min="0" step=".01"></td>
+            <td>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
                     Detalhar
-                </button></td>
+                </button>
+            </td>
         </tr>
         <tr>
             <td>Tijolo</td>
@@ -60,8 +68,12 @@
             <td>50.000</td>
             <td>45.000</td>
             <td>30.000</td>
-            <td><input type="text" class="form-control"></td>
-            <td>a</td>
+            <td><input type="number" class="form-control" min="0" step=".01"></td>
+            <td>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+                    Detalhar
+                </button>
+            </td>
         </tr>
         <tr>
             <td>Cimento</td>
@@ -69,35 +81,12 @@
             <td>1000</td>
             <td>800</td>
             <td>300</td>
-            <td><input type="text" class="form-control"></td>
-            <td>a</td>
-        </tr>
-        <tr>
-            <td>Tijolo</td>
-            <td>UN</td>
-            <td>50.000</td>
-            <td>45.000</td>
-            <td>30.000</td>
-            <td><input type="text" class="form-control"></td>
-            <td>a</td>
-        </tr>
-        <tr>
-            <td>Cimento</td>
-            <td>SC</td>
-            <td>1000</td>
-            <td>800</td>
-            <td>300</td>
-            <td><input type="text" class="form-control"></td>
-            <td>a</td>
-        </tr>
-        <tr>
-            <td>Tijolo</td>
-            <td>UN</td>
-            <td>50.000</td>
-            <td>45.000</td>
-            <td>30.000</td>
-            <td><input type="text" class="form-control"></td>
-            <td>a</td>
+            <td><input type="number" class="form-control" min="0" step=".01"></td>
+            <td>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+                    Detalhar
+                </button>
+            </td>
         </tr>
     </tbody>
 </table>
@@ -127,19 +116,19 @@
                             <td>21</td>
                             <td>Cozinha</td>
                             <td>1</td>
-                            <td><input type="text" class="form-control"></td>
+                            <td><input type="number" class="form-control" min="0" step=".01"></td>
                         </tr>
                         <tr>
                             <td>21</td>
                             <td>Banheiro</td>
                             <td>1</td>
-                            <td><input type="text" class="form-control"></td>
+                            <td><input type="number" class="form-control" min="0" step=".01"></td>
                         </tr>
                         <tr>
                             <td>21</td>
                             <td>Suíte</td>
                             <td>1</td>
-                            <td><input type="text" class="form-control"></td>
+                            <td><input type="number" class="form-control" min="0" step=".01"></td>
                         </tr>
                     </tbody>
                 </table>
@@ -157,6 +146,6 @@
 
 <!-- Submit Field -->
 <div class="form-group col-sm-12">
-    {!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save') ), ['class' => 'btn btn-success pull-right', 'type'=>'submit']) !!}
+    {!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save') ), ['class' => 'btn btn-success pull-right hide', 'type'=>'submit', 'id' => 'btn-create-requisicao']) !!}
     <a href="{!! route('requisicao.index') !!}" class="btn btn-default"><i class="fa fa-times"></i>  {{ ucfirst( trans('common.cancel') )}}</a>
 </div>

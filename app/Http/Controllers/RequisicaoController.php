@@ -6,11 +6,14 @@ use App\DataTables\RequisicaoDataTable;
 use App\Http\Requests;
 use App\Http\Requests\CreateRequisicaoRequest;
 use App\Http\Requests\UpdateRequisicaoRequest;
+use App\Models\Levantamento;
 use App\Models\Obra;
 use App\Repositories\RequisicaoRepository;
 use App\Repositories\Admin\ObraRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 use Response;
 
 class RequisicaoController extends AppBaseController
@@ -154,5 +157,95 @@ class RequisicaoController extends AppBaseController
         Flash::success('Requisicao '.trans('common.deleted').' '.trans('common.successfully').'.');
 
         return redirect(route('requisicao.index'));
+    }
+
+
+
+
+
+
+    public function getPavimentosByObraAndTorre($obra,$torre) {
+
+        $r = DB::table('levantamentos')
+            ->distinct()
+            ->where('obra_id',$obra)
+            ->where('torre',$torre)
+            ->orderBy('pavimento')
+            ->get(['pavimento']);
+
+        if ($r) {
+
+            return response()->json(['pavimentos' => $r, 'success' => true]);
+
+        } else {
+
+            return response()->json(['success' => false]);
+        }
+    }
+
+    public function getTrechoByObraTorrePavimento($obra,$torre,$pavimento) {
+
+        $r = DB::table('levantamentos')
+            ->distinct()
+            ->where('obra_id',$obra)
+            ->where('torre',$torre)
+            ->where('pavimento',$pavimento)
+            ->orderBy('trecho')
+            ->get(['trecho']);
+
+        if ($r) {
+
+            return response()->json(['trechos' => $r, 'success' => true]);
+
+        } else {
+
+            return response()->json(['success' => false]);
+        }
+    }
+
+    public function getAndarByObraTorrePavimento($obra,$torre,$pavimento) {
+
+        $r = DB::table('levantamentos')
+            ->distinct()
+            ->where('obra_id',$obra)
+            ->where('torre',$torre)
+            ->where('pavimento',$pavimento)
+            ->orderBy('andar')
+            ->get(['andar']);
+
+        if ($r) {
+
+            return response()->json(['andares' => $r, 'success' => true]);
+
+        } else {
+
+            return response()->json(['success' => false]);
+        }
+    }
+
+
+    public function getInsumos(Request $request) {
+
+        $r = DB::table('levantamentos as l');
+
+        $r->select(DB::raw('i.nome insumo, sum(l.quantidade) previsto, e.qtde estoque,IF(comodo <> " ","true","false") as comodo'));
+        $r->leftJoin('insumos as i','i.id', '=', 'l.insumo');
+        $r->leftJoin('estoque as e','e.insumo_id', '=', 'l.insumo');
+        $r->where('l.obra_id',$request->query('obra'));
+        $r->where('l.torre',$request->query('torre'));
+        $r->where('l.pavimento',$request->query('pavimento'));
+
+        if($request->query('andar'))
+            $r->where('l.andar',$request->query('andar'));
+
+        if($request->query('trecho'))
+            $r->where('l.trecho',$request->query('trecho'));
+
+        $r->groupBy('l.insumo');
+        $r->orderBy('l.insumo');
+
+        $a = $r->get();
+
+        return response()->json($a);
     }
 }
