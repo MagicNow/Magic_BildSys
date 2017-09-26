@@ -90,8 +90,8 @@
         </li>
         @endshield
 		@shield('orcamentos.list')
-        <li class="{{ Request::is('admin/orcamento') ? 'active' : '' }}">
-            <a href="{!! route('admin.orcamentos.index') !!}">
+        <li class="{{ Request::is('admin/estruturas') ? 'active' : '' }}">
+            <a href="{!! route('admin.estruturas.index') !!}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
                 <span>Exportar Insumos/Estrutura</span>
             </a>
@@ -121,15 +121,6 @@
             <a href="{!! route('admin.tipo_levantamentos.index') !!}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
                 <span>Tipos Levantamentos</span>
-            </a>
-        </li>
-        @endshield
-		
-		@shield('levantamentos.list')
-        <li class="{{ Request::is('admin/estruturas*') ? 'active' : '' }}">
-            <a href="{!! route('admin.estruturas.index') !!}">
-                <i class="fa fa-caret-right" aria-hidden="true"></i>
-                <span>Mascara Estrutura</span>
             </a>
         </li>
         @endshield
