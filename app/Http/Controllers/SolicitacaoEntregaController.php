@@ -107,7 +107,7 @@ class SolicitacaoEntregaController extends AppBaseController
         $motivos = $workflowReprovacaoMotivoRepository
             ->porTipoForSelect(WorkflowTipo::SOLICITACAO_ENTREGA)
             ->toArray();
-
+//        dd($entrega);
         return view('solicitacao_entrega.show', compact(
             'entrega',
             'aprovado',
