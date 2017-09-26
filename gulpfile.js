@@ -51,7 +51,7 @@ var paths = {
     'html5sortable': vendors + '/html5sortable/dist/'
 };
 
-elixir.config.sourcemaps = false;
+elixir.config.sourcemaps = true;
 
 elixir(function (mix) {
 
@@ -261,6 +261,10 @@ elixir(function (mix) {
     mix.scripts([
         'solicitacao-de-entrega.js',
     ], 'public/js/solicitacao-de-entrega.js');
+
+    mix.scripts([
+        'quadro-de-concorrencia-actions.js',
+    ], 'public/js/qc-actions.js');
     
 });
 

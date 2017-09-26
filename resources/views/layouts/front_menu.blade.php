@@ -88,7 +88,7 @@
         <li class="{{ Request::is('qc*') ? 'active' : '' }}">
             <a href="{{ route('qc.index') }}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
-                <span>QC</span>
+                <span>Q.C.</span>
             </a>
         </li>
         @endshield
