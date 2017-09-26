@@ -5,27 +5,23 @@ namespace App\Models;
 use Eloquent as Model;
 
 /**
- * Class Topologia
+ * Class QcAnexos
  * @package App\Models
- * @version April 25, 2017, 2:16 pm BRT
+ * @version Sep 24, 2017, 22:18 pm BRT
  */
-class Topologia extends Model
+class QcAnexo extends Model
 {
-	public $table = 'topologias';
+	public $table = 'qc_anexos';
 
 	const CREATED_AT = 'created_at';
 	const UPDATED_AT = 'updated_at';
 
 
-	protected $dates = ['deleted_at'];
-
-
 	public $fillable = [
-		'nome',
-	];
-
-	public static $campos = [
-		'nome',        
+		'qc_id',
+		'arquivo',
+		'tipo',
+		'descricao'
 	];
 
 	/**
@@ -35,7 +31,10 @@ class Topologia extends Model
 	 */
 	protected $casts = [
 		'id' => 'integer',
-		'nome' => 'string',        
+		'arquivo' => 'string',
+		'tipo' => 'string',
+		'descricao' => 'string',
+		'qc_id' => 'integer'
 	];
 
 	/**
@@ -44,6 +43,14 @@ class Topologia extends Model
 	 * @var array
 	 */
 	public static $rules = [
-		'nome' => 'required'
+
 	];
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 **/
+	public function qc()
+	{
+		return $this->belongsTo(Qc::class);
+	}
 }

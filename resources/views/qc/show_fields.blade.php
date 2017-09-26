@@ -4,10 +4,10 @@
     <p class="form-control">{!! $qc->id !!}</p>
 </div>
 
-<!-- Topologia Field -->
+<!-- Tipologia Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('topologia_id', 'Topologia:') !!}
-    <p class="form-control">{!! $qc->topologia->nome !!}</p>
+    {!! Form::label('tipologia_id', 'Tipologia:') !!}
+    <p class="form-control">{!! $qc->tipologia->nome !!}</p>
 </div>
 
 <!-- Carteira Field -->
@@ -48,23 +48,45 @@
 
 <!-- Created At Field -->
 <div class="form-group col-md-6">
-    {!! Form::label('created_at', 'Created At:') !!}
+    {!! Form::label('created_at', 'Criado em:') !!}
     <p class="form-control">{!! $qc->created_at !!}</p>
 </div>
 
 <!-- Updated At Field -->
 <div class="form-group col-md-6">
-    {!! Form::label('updated_at', 'Updated At:') !!}
+    {!! Form::label('updated_at', 'Alterado em:') !!}
     <p class="form-control">{!! $qc->updated_at !!}</p>
 </div>
 
 <div class="form-group col-sm-6">
     <div class="checkbox">
         <label>
-            {!! Form::checkbox('carteira_comprada', '1', false, ['class' => 'form-control', 'id' => 'carteira_comprada', 'readonly' => 'true', 'disabled' => 'disabled']) !!}
+            {!! Form::checkbox('carteira_comprada', '1', isset($qc) && $qc->carteira_comprada == 1 ? true : false, ['class' => 'form-control', 'id' => 'carteira_comprada', 'readonly' => 'true', 'disabled' => 'disabled']) !!}
             Carteira Comprada
         </label>
     </div>
 </div>
-
-<div class="row"></div>
+@if (isset($attachments) && !empty($attachments))
+    <fieldset class="col-sm-12 table-responsive">
+        <legend>Anexos</legend>
+        @foreach ($attachments as $key => $attachment)
+            <h5 style="color: #000; font-size: 16px;">{{ $key }}</h5>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <td class="col-sm-10 text-left"><strong>Descrição</strong></td>
+                        <td class="col-sm-1"><strong>Ações</strong></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($attachment as $item)
+                        <tr>
+                            <td class="text-left">{{ $item->descricao }}</td>
+                            <td><a href="{{ url(str_replace('public', 'storage', $item->arquivo)) }}" target="_blank" title="Download" class="btn"><i class="fa fa-paperclip" aria-hidden="true"></i></td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        @endforeach
+    </fieldset>
+@endif

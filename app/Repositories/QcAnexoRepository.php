@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Repositories\Admin;
+namespace App\Repositories;
 
-use App\Models\Topologia;
+use App\Models\QcAnexo;
 use InfyOm\Generator\Common\BaseRepository;
 
-class TopologiaRepository extends BaseRepository
+class QcAnexoRepository extends BaseRepository
 {
     /**
      * @var array
@@ -19,6 +19,7 @@ class TopologiaRepository extends BaseRepository
      **/
     public function model()
     {
-        return Topologia::class;
+        return QcAnexo::class;
     }
+	
 }
