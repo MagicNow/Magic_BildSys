@@ -6,6 +6,7 @@ use App\Models\ContratoItemModificacao;
 use App\Models\ContratoItemModificacaoLog;
 use App\Models\ContratoStatusLog;
 use App\Models\ContratoTemplate;
+use Illuminate\Support\Facades\View;
 use PDF;
 use Exception;
 use App\Mail\ContratoServicoFornecedorNaoUsuario;
@@ -798,8 +799,6 @@ class ContratoRepository extends BaseRepository
             : $contratoItemRepository->forContratoDetails($contrato);
 
         $impressao = 1;
-        
-//        return view('contratos.pdf',compact('contrato', 'itens','impressao'));
 
         if(!$espelho) {
             $path = base_path().'/storage/app/public/contratos/contrato_completo_'.$contrato->id.'.pdf';
@@ -810,14 +809,14 @@ class ContratoRepository extends BaseRepository
         }
 
         PDF::loadView('contratos.pdf',compact('contrato', 'itens','impressao', 'espelho'))
-            ->setPaper('a4')->setOrientation('landscape')
-            ->setOption('margin-top', 1)
-            ->setOption('margin-bottom', 1)
-            ->setOption('margin-left', 1)
-            ->setOption('margin-right', 1)
-//            ->setOption('disable-smart-shrinking',true)
-//            ->setOption('dpi',36)
-//            ->setOption('viewport-size','1280x1024')
+            ->setPaper('a4')
+            ->setOrientation('landscape')
+            ->setOption('margin-top', 33)
+            ->setOption('margin-bottom', 33)
+            ->setOption('margin-left', 5)
+            ->setOption('margin-right', 5)
+            ->setOption('header-html', View::make('layouts.printable_header')->render())
+            ->setOption('footer-html', View::make('layouts.printable_footer')->render())
             ->save($path);
 
         return [
