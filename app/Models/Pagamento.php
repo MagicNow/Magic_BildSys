@@ -118,7 +118,7 @@ class Pagamento extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
-    public function pagamentoParcelas()
+    public function parcelas()
     {
         return $this->hasMany(PagamentoParcela::class);
     }
