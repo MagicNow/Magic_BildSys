@@ -144,7 +144,7 @@
     </ul>
 </li>
 
-<li class="treeview {{ Request::is('admin/cronogramaFisicos*') ? 'active' : '' }}">
+<li class="treeview {{ Request::is('admin/cronogramaFisicos*') || Request::is('admin/medicao_fisicas*') ? 'active' : '' }}">
     <a href="#">
         <i class="fa fa-book fa-fw"></i> <span>Planejamento Físicos</span>
             <span class="pull-right-container">
@@ -181,6 +181,14 @@
             <a href="{!! route('admin.cronogramaFisicos.indexImport') !!}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
                 <span>Importação</span>
+            </a>
+        </li>
+        @endshield
+		@shield('medicao_fisicas.list')
+        <li class="{{ Request::is('admin/medicao_fisicas*') ? 'active' : '' }}">
+            <a href="{!! route('admin.medicao_fisicas.index') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Medição Física</span>
             </a>
         </li>
         @endshield

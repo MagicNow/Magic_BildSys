@@ -181,6 +181,11 @@ class RolesAndPermissions extends Seeder
             'cronogramaFisicos.import' => 'Importar orçamentos',
 			'cronogramaFisicos.dashboard' => 'Dashboard do Cronograma Físico',
 			
+			'medicao_fisicas.list'        => 'Listagem de Medição Físicas',
+            'medicao_fisicas.show'        => 'Visualização de Medição Físicas',
+            'medicao_fisicas.edit'        => 'Editar Medição Físicas',			
+            'medicao_fisicas.reajustar'   => 'Reajustar item do Medição Físicas',
+			
 			'levantamentos.list' => 'Listagem de levantamento',
             'levantamentos.create' => 'Criação de levantamento',
             'levantamentos.edit'   => 'Edição de levantamento',
