@@ -345,7 +345,7 @@ class CronogramaFisicoController extends AppBaseController
 							'obras.id',
 							'obras.data_inicio'							
 						])											
-						->where('obras.id', $obraId)
+						->where('obras.id', $obraId)						
                         ->orderBy('obras.id', 'ASC')                        
                         ->first()
 						->data_inicio;	

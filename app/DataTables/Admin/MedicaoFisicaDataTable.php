@@ -166,7 +166,7 @@ class MedicaoFisicaDataTable extends DataTable
 			'Tarefa' => ['name' => 'tarefa', 'data' => 'tarefa', 'title' => 'Tarefa'],
 			'periodo_inicio' => ['name' => 'periodo_inicio', 'data' => 'periodo_inicio', 'title' => 'Data Início'],			
 			'periodo_termino' => ['name' => 'periodo_termino', 'data' => 'periodo_termino', 'title' => 'Data Termino'],
-			'valor_medido' => ['name' => 'valor_medido', 'data' => 'valor_medido', 'title' => 'Valor Medido'],
+			'valor_medido' => ['name' => 'valor_medido', 'data' => 'valor_medido', 'title' => 'Valor Total Medido'],
 			'created_at'        => ['name' => 'created_at', 'data' => 'created_at', 'title' => 'Medido em'],
 			'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
 		];

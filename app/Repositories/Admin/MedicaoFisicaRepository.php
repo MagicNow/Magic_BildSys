@@ -67,16 +67,20 @@ class MedicaoFisicaRepository extends BaseRepository
 
         DB::beginTransaction();
         try {
-            
-            $medicaoFisica->update([                
-                'valor_medido' => $request['valor_medido'],
-            ]);
-            MedicaoFisicaLog::create([
+			
+			MedicaoFisicaLog::create([
                 'medicao_fisica_id' => $medicaoFisica->id,
 				'valor_medido_anterior' => $medicaoFisica['valor_medido'],
 				'valor_medido_atual' => $request['valor_medido'],
                 'user_id' => auth()->id(),                
             ]);
+            
+            $medicaoFisica->update([                
+                'valor_medido' => $request['valor_medido'],
+				'periodo_inicio' => $request['periodo_inicio'],
+				'periodo_termino' => $request['periodo_termino'],
+            ]);
+            
         } catch (Exception $e) {
             DB::rollback();
             throw $e;

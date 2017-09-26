@@ -1,26 +1,26 @@
 
-<!-- Valor Sugerido Anterior Field -->
+<!-- Valor Medido Anterior Field -->
 <div class="form-group col-sm-2">
-    {!! Form::label('valor_sugerido', 'Medição Total:') !!}    
-	{!! Form::text('valor_sugerido', null, ['class' => 'form-control money', 'disabled']) !!}	
+    {!! Form::label('valor_medido', 'Quantidade Medida:') !!}    
+	{!! Form::text('valor_medido', null, ['class' => 'form-control money', 'disabled']) !!}	
 </div>
 
-<!-- Valor Sugerido Field -->
+<!-- Valor Medido Field -->
 <div class="form-group col-sm-2">
-    {!! Form::label('valor_sugerido', 'Valor da Medição:') !!}
-    {!! Form::text('valor_sugerido', null, ['class' => 'form-control money', 'required']) !!}
+    {!! Form::label('valor_medido', 'Valor da Medição:') !!}
+    {!! Form::text('valor_medido', null, ['class' => 'form-control money', 'required' , 'maxlength'=>'100']) !!}
 </div>
 
 <!-- Período Inicio Field -->
-<div class="form-group col-sm-6">
+<div class="form-group col-sm-3">
     {!! Form::label('periodo_inicio', 'Data início:') !!}
-    {!! Form::date('periodo_inicio', null, ['class' => 'form-control']) !!}
+    {!! Form::date('periodo_inicio', null, ['class' => 'form-control' , 'required']) !!}
 </div>
 
 <!-- Período Fim Field -->
-<div class="form-group col-sm-6">
+<div class="form-group col-sm-3">
     {!! Form::label('periodo_termino', 'Data Fim:') !!}
-    {!! Form::date('periodo_termino', null, ['class' => 'form-control']) !!}
+    {!! Form::date('periodo_termino', null, ['class' => 'form-control' , 'required']) !!}
 </div>
 
 <!-- Observação Field -->

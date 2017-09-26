@@ -14,10 +14,11 @@ use Illuminate\Support\Facades\Storage;
 use Response;
 use Illuminate\Support\Facades\App;
 use Illuminate\Http\Request;
-use App\Http\Requests\AtualizarValorRequest;
-use App\Http\Requests\UpdateMedicaoFisicaRequest;
+use App\Http\Requests\Admin\CreateMedicaoFisicaRequest;
+use App\Http\Requests\Admin\UpdateMedicaoFisicaRequest;
 use App\Repositories\Admin\MedicaoFisicaRepository;
 use App\Models\Obra;
+use App\Models\CronogramaFisico;
 
 class MedicaoFisicaController extends AppBaseController
 {
@@ -46,7 +47,23 @@ class MedicaoFisicaController extends AppBaseController
 
     public function show(){
         
-    }    
+    }
+	
+	/**
+     * Show the form for creating a new Carteira.
+     *
+     * @return Response
+     */
+    public function create()
+    {
+		
+		$obras = Obra::join('cronograma_fisicos', 'cronograma_fisicos.obra_id', '=', 'obras.id')                        
+                        ->orderBy('obras.nome', 'ASC')
+                        ->pluck('obras.nome', 'obras.id')
+                        ->toArray();
+
+        return view('admin.medicao_fisicas.create', compact('obras'));
+    }
 
     public function edit($id)
     {
@@ -60,6 +77,24 @@ class MedicaoFisicaController extends AppBaseController
      
         return view('admin.medicao_fisicas.edit', compact('medicaoFisica'));
     }
+	
+	/**
+     * Store a newly created Medicao Fisica in storage.
+     *
+     * @param CreateInsumoRequest $request
+     *
+     * @return Response
+     */
+    public function store(CreateMedicaoFisicaRequest $request)
+    {
+        $input = $request->all();
+
+        $medicaoFisica = $this->medicaoFisicaRepository->create($input);
+
+        Flash::success(' Medição Física '.trans('common.saved').' '.trans('common.successfully').'.');
+
+        return redirect(route('admin.medicao_fisicas.index'));
+    }
 
     public function update($id, UpdateMedicaoFisicaRequest $request)
     {
@@ -67,7 +102,7 @@ class MedicaoFisicaController extends AppBaseController
 		$medicaoFisica = $this->medicaoFisicaRepository->findWithoutFail($id);
 
         if (empty($medicaoFisica)) {
-            Flash::error(' Medição Física'.trans('common.not-found'));
+            Flash::error(' Medição Física '.trans('common.not-found'));
 
             return redirect(route('admin.medicao_fisicas.index'));
         }
@@ -76,8 +111,27 @@ class MedicaoFisicaController extends AppBaseController
 
         Flash::success('Medição Física '.trans('common.updated').' '.trans('common.successfully').'.');
 
-        return redirect(route('admin.medicao_fisicas.index'));
-		
-        
+        return redirect(route('admin.medicao_fisicas.index'));        
     }
+	
+	
+	
+	public function tarefasPorObra(){		
+		 
+        $this->validate(request(), ['obra'=>'required|min:1']);
+        $obraId = request()->get('obra');
+        
+		$tarefas = CronogramaFisico::select([
+			'cronograma_fisicos.id',
+			'cronograma_fisicos.tarefa'							
+		])	
+		->join('obras','obras.id','=','cronograma_fisicos.obra_id')
+		->where('obras.id', $obraId)
+		->where('cronograma_fisicos.resumo', 'Não')
+		->groupBy('cronograma_fisicos.tarefa')
+		->orderBy('cronograma_fisicos.id', 'ASC');				
+
+        return $tarefas->paginate();
+    }
+	
 }
