@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Models\Pagamento;
 use DOMDocument;
 
 class MegaXmlRepository
@@ -595,6 +596,131 @@ class MegaXmlRepository
             $node = $domtree->createElement("MOV_RE_VALORMOE", $data['PARCELAS_MOV_RE_VALORMOE']);// "Valor Parcela"
             $parcelasNode->appendChild($node);
 
+        }
+
+        /* get the xml printed */
+        return $domtree->saveXML();
+    }
+
+    public function montaXMLPagamento(Pagamento $pagamento)
+    {
+        /* create a dom document with encoding utf8 */
+        $domtree = new DOMDocument('1.0', 'UTF-8');
+        $domtree->formatOutput = true;
+        /* create the root element of the xml tree */
+        $xmlRoot = $domtree->createElement("Fatura");
+
+        //"I/U/D"
+        $xmlRoot->setAttribute("OPERACAO", 'I');
+        $xmlRoot = $domtree->appendChild($xmlRoot);
+
+        //Código Fornecedor dentro do SYS "Código do Agente."
+        $node = $domtree->createElement("AGN_ST_CODIGO", $pagamento->fornecedor->codigo_mega);
+        $xmlRoot->appendChild($node);
+
+        //apenas texto "COD" "Identificador Agente"
+        $node = $domtree->createElement("AGN_ST_TIPOCODIGO", 'COD');
+        $xmlRoot->appendChild($node);
+
+
+        //TPD_ST_CODIGO Código do tipo de documento.
+        // O tipo de documento é um cadastro do Mega, para definições de tipos de documentos e suas respectivas
+        // configurações utilizadas no módulo financeiro.
+        $node = $domtree->createElement("TPD_ST_CODIGO", $pagamento->documentoTipo->codigo_mega);
+        $xmlRoot->appendChild($node);
+
+        // FAT_IN_NUMERO - Número do documento principal.
+        $node = $domtree->createElement("FAT_IN_NUMERO", $pagamento->numero_documento);
+        $xmlRoot->appendChild($node);
+
+        // FIL_IN_CODIGO - Código da Filial
+        $node = $domtree->createElement("FIL_IN_CODIGO", $pagamento->obra->filial_id);
+        $xmlRoot->appendChild($node);
+
+        // FAT_DT_EMISSAO = Data de Emissão da fatura
+        $node = $domtree->createElement("FAT_DT_EMISSAO", $pagamento->data_emissao->format('d/m/Y'));
+        $xmlRoot->appendChild($node);
+
+        // FPA_DT_ENTRADA - Data de Entrada da Fatura - Não obrigatória
+        $node = $domtree->createElement("FPA_DT_ENTRADA", $pagamento->created_at->format('d/m/Y'));
+        $xmlRoot->appendChild($node);
+
+        // FAT_RE_VALOR - Valor da Fatura
+        $node = $domtree->createElement("FAT_RE_VALOR", $pagamento->valor);// "C. Custo Padrao"
+        $xmlRoot->appendChild($node);
+
+        // ACAO_IN_CODIGO * REQUERIDO
+        $node = $domtree->createElement("ACAO_IN_CODIGO", '891');
+        $xmlRoot->appendChild($node);
+
+        // COND_ST_CODIGO - Código da Condição de Pagamento
+        $node = $domtree->createElement("COND_ST_CODIGO", $pagamento->pagamentoCondicao->codigo);
+        $xmlRoot->appendChild($node);
+
+        if($pagamento->parcelas){
+            $countParcela = 0;
+            foreach ($pagamento->parcelas as $parcela) {
+                $countParcela++;
+                $nodeItens = $domtree->createElement("Parcela");
+                $nodeItens->setAttribute("OPERACAO", 'I');
+                $itensNode = $xmlRoot->appendChild($nodeItens);
+
+                // MOV_ST_PARCELA - NUMERO SEQUENCIAL POR NF (1,2,3,4,5....)
+                $node = $domtree->createElement("MOV_ST_PARCELA", $countParcela);// "Numero da Sequencia dos Itens da Nota"
+                $itensNode->appendChild($node);
+
+                // MOV_DT_VENCTO - data_vencimento
+                $node = $domtree->createElement("MOV_DT_VENCTO", $parcela->data_vencimento->format('d/m/Y'));
+                $itensNode->appendChild($node);
+
+                //    numero_documento
+                if($parcela->numero_documento){
+                    $node = $domtree->createElement("MOV_ST_DOCUMENTO", $parcela->numero_documento);
+                    $itensNode->appendChild($node);
+                }
+
+                //    percentual_juro_mora
+                if($parcela->percentual_juro_mora > 0){
+                    $node = $domtree->createElement("MOV_RE_PERCJUROSEFET", $parcela->percentual_juro_mora);
+                    $itensNode->appendChild($node);
+                }
+
+                //    valor_juro_mora
+                if($parcela->valor_juro_mora > 0){
+                    $node = $domtree->createElement("MOV_RE_VRMORAEFET", $parcela->valor_juro_mora);
+                    $itensNode->appendChild($node);
+                }
+
+                //    percentual_multa
+                if($parcela->percentual_multa > 0){
+                    $node = $domtree->createElement("MOV_RE_PERCMULTAEFET", $parcela->percentual_multa);
+                    $itensNode->appendChild($node);
+                }
+
+                //    valor_multa
+                if($parcela->valor_multa > 0){
+                    $node = $domtree->createElement("MOV_RE_VRMULTAEFET", $parcela->valor_multa);
+                    $itensNode->appendChild($node);
+                }
+
+                //    data_base_multa
+                if($parcela->data_base_multa){
+                    $node = $domtree->createElement("MOV_DT_DTBASEMULTA", $parcela->data_base_multa);
+                    $itensNode->appendChild($node);
+                }
+
+                //    percentual_desconto
+                if($parcela->percentual_desconto > 0){
+                    $node = $domtree->createElement("MOV_RE_PERCDESCEFET", $parcela->percentual_desconto);
+                    $itensNode->appendChild($node);
+                }
+
+                //    valor_desconto
+                if($parcela->valor_desconto > 0){
+                    $node = $domtree->createElement("MOV_RE_VRDESCCONDEFET", $parcela->valor_desconto);
+                    $itensNode->appendChild($node);
+                }
+            }
         }
 
         /* get the xml printed */

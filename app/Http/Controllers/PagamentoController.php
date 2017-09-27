@@ -10,6 +10,7 @@ use App\Models\Contrato;
 use App\Models\DocumentoTipo;
 use App\Models\Fornecedor;
 use App\Models\PagamentoCondicao;
+use App\Repositories\MegaXmlRepository;
 use App\Repositories\PagamentoRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
@@ -215,14 +216,8 @@ class PagamentoController extends AppBaseController
             return redirect(route('pagamentos.index'));
         }
 
-        $xmlstr = <<<XML
-<?xml version='1.0'?>
-<Fatura></Fatura>
-XML;
-        $xml = new SimpleXMLElement($xmlstr);
-        $fatura = $xml->children('Fatura');
-//        $fatura = $xml->addChild('Fatura');
-        $fatura->addAttribute('OPERACAO','I');
-        dd($pagamento, $xml->asXML());
+        $megaXML = new MegaXmlRepository();
+        $xml = $megaXML->montaXMLPagamento($pagamento);
+        dd($xml);
     }
 }
