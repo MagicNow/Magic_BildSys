@@ -56,7 +56,8 @@ class PagamentoParcela extends Model
      * @var array
      */
     public static $rules = [
-        
+        'data_vencimento' => 'required',
+        'valor' => 'required',
     ];
 
     /**
@@ -64,6 +65,6 @@ class PagamentoParcela extends Model
      **/
     public function pagamento()
     {
-        return $this->belongsTo(\App\Models\Pagamento::class);
+        return $this->belongsTo(Pagamento::class);
     }
 }

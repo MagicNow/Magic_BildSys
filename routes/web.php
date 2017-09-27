@@ -1422,6 +1422,8 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->get('/{pagamentos}', ['as'=> 'pagamentos.show', 'uses' => 'PagamentoController@show']);
         $router->get('/{pagamentos}/edit', ['as'=> 'pagamentos.edit', 'uses' => 'PagamentoController@edit'])
             ->middleware('needsPermission:pagamentos.edit');
+        $router->get('/{pagamentos}/integrar', ['as'=> 'pagamentos.integrar', 'uses' => 'PagamentoController@integrar'])
+            ->middleware('needsPermission:pagamentos.edit');
     });
 
 

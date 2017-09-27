@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\DataTables\ContratoDataTable;
+use App\DataTables\PagamentoDataTable;
+use App\DataTables\Scopes\PagamentoDataTableScope;
 use App\Http\Requests;
 use App\Http\Requests\CreateContratoRequest;
 use App\Http\Requests\EditarItemRequest;
@@ -111,7 +113,8 @@ class ContratoController extends AppBaseController
         WorkflowReprovacaoMotivoRepository $workflowReprovacaoMotivoRepository,
         ContratoItemApropriacaoRepository $apropriacaoRepository,
         ContratoItemRepository $contratoItemRepository,
-        FornecedoresRepository $fornecedorRepository
+        FornecedoresRepository $fornecedorRepository,
+        PagamentoDataTable $pagamentoDataTable
     ) {
         $contrato = $this->contratoRepository->findWithoutFail($id);
 
@@ -238,7 +241,7 @@ class ContratoController extends AppBaseController
         
         $qtd_itens = 1;
 
-        return view('contratos.show', compact(
+        return $pagamentoDataTable->addScope(new PagamentoDataTableScope($id))->render('contratos.show', compact(
             'isEmAprovacao',
             'contrato',
             'orcamentoInicial',

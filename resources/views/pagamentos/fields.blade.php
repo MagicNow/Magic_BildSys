@@ -56,8 +56,8 @@
 </div>
 
 <div class="form-group col-sm-12">
-    <h4>
-        Parcelas
+        <h4>
+            Parcelas
         <button type="button" onclick="adicionaParcela();" class="btn btn-flat btn-primary pull-right btn-xs">
             <i class="fa fa-plus"></i>
             Adicionar parcela
@@ -153,7 +153,7 @@
     var parcelaNum = {{ $qtdParcelas }};
     function adicionaParcela() {
         parcelaNum ++;
-        var parcelaHTML = '<li class="list-group-item" id="parcela'+parcelaNum+'">\n' +
+        var parcelaHTML = '<li id="parcela'+parcelaNum+'">\n' +
             '            <div class="row">\n' +
             '                <div class="col-xs-3">\n' +
             '                    <label>Valor</label>\n' +

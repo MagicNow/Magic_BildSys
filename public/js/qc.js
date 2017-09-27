@@ -948,3 +948,5 @@ function validaFornecedor(codigo_mega_fornecedor, codigo_temp_fornecedor, quadro
     });
 }
 
+
+//# sourceMappingURL=qc.js.map

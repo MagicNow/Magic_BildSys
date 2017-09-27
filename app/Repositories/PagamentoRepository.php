@@ -59,6 +59,9 @@ class PagamentoRepository extends BaseRepository
                 if(strlen(trim($parcela['valor_multa']))){
                     $parcela['valor_multa'] = money_to_float($parcela['valor_multa']);
                 }
+                if(substr(trim($parcela['data_base_multa']),0,10) == '0000-00-00'){
+                    $parcela['data_base_multa'] = null;
+                }
             }
         }
         $model = parent::create($attributes);
@@ -89,6 +92,9 @@ class PagamentoRepository extends BaseRepository
                 }
                 if(strlen(trim($parcela['valor_multa']))){
                     $parcela['valor_multa'] = money_to_float($parcela['valor_multa']);
+                }
+                if(substr(trim($parcela['data_base_multa']),0,10) == '0000-00-00'){
+                    $parcela['data_base_multa'] = null;
                 }
             }
         }
