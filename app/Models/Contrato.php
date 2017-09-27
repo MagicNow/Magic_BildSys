@@ -120,6 +120,14 @@ class Contrato extends Model
     }
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function pagamentoCondicao()
+    {
+        return $this->belongsTo(PagamentoCondicao::class);
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
     public function itens()

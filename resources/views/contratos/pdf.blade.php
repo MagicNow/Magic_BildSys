@@ -54,11 +54,12 @@
 
                 <div class="col-xs-3 form-group">
                     @if(!$contrato->quadroDeConcorrencia->user_id)
-                        <p class="form-control input-lg highlight" style="height: 120px;border-color: #000000;">
-                            <b>CONDIÇÕES DE PAGAMENTO:</b><br>
-                            COLOCAR CONDIÇÕES DE
-                            PAGAMENTO. (Minuta)
-                        </p>
+                        @if($contrato->pagamentoCondicao)
+                            <p class="form-control input-lg highlight" style="height: 120px;border-color: #000000;">
+                                <b>CONDIÇÕES DE PAGAMENTO:</b><br>
+                                {{$contrato->pagamentoCondicao->nome.' - '.$contrato->pagamentoCondicao->codigo}}
+                            </p>
+                        @endif
                     @endif
                 </div>
 

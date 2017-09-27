@@ -64,6 +64,12 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @php
+                        if(isset($itens->contrato_itens)) {
+                            $itens = $itens->contrato_itens;
+                        }
+                    @endphp
+
                     @foreach($itens as $item)
                         <tr>
                             @if(!isset($impressao))
@@ -129,9 +135,16 @@
                 </tr>
                 </thead>
                 <tbody>
+                @php
+                    if(isset($itens->contrato_itens)) {
+                        $itens = $itens->contrato_itens;
+                    }
+                @endphp
+
                 @foreach($itens as $item)
                     @php
                         $obrigacoes_fornecedor = null;
+
                         if($item->qcItem) {
                             if($item->qcItem->quadroDeConcorrencia) {
                                 $obrigacoes_fornecedor = $item->qcItem->quadroDeConcorrencia->obrigacoes_fornecedor;
