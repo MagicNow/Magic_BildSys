@@ -22,6 +22,8 @@ class Qc extends Model
 		'valor_orcamento_inicial',
 		'valor_gerencial',
 		'carteira_comprada',
+		'user_id',
+		'observacao',
 		'status'
 	];
 
@@ -39,6 +41,7 @@ class Qc extends Model
 		'valor_pre_orcamento' => 'float',
 		'valor_orcamento_inicial' => 'float',
 		'carteira_comprada' => 'integer',
+		'observacao' => 'string',
 		'status' => 'string'
 	];
 
@@ -51,6 +54,7 @@ class Qc extends Model
 		'obra_id' => 'required|integer',
 		'tipologia_id' => 'required|integer',
 		'carteira_id' => 'required|integer',
+		'user_id' => 'integer',
 		'descricao' => 'required',
 		'valor_pre_orcamento' => 'required',
 		'valor_orcamento_inicial' => 'required',
@@ -87,5 +91,13 @@ class Qc extends Model
 	public function anexos()
 	{
 		return $this->hasMany(QcAnexo::class, 'qc_id');
+	}
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 **/
+	public function comprador()
+	{
+		return $this->belongsTo(\App\Models\User::class);
 	}
 }

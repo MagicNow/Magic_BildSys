@@ -290,6 +290,9 @@ class RolesAndPermissions extends Seeder
             'tipologia.create' => 'Criação de tipologia',
             'tipologia.edit'   => 'Edição de tipologia',
             'tipologia.delete'   => 'Remoção de tipologia',
+
+            'lista_qc.list' => 'Lista de QC Suprimentos',
+            'lista_qc.edit' => 'Edição de Lista de QC Suprimentos',
         ];
 
         $permissionAccess = [];

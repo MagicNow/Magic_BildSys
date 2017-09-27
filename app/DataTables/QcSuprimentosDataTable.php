@@ -7,7 +7,7 @@ use Yajra\Datatables\Services\DataTable;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
-class QcDataTable extends DataTable
+class QcSuprimentosDataTable extends DataTable
 {
 
     /**
@@ -49,7 +49,7 @@ class QcDataTable extends DataTable
         ->join('carteiras', 'carteiras.id', 'carteira_id')
         ->join('obras', 'obras.id', 'obra_id')
         ->join('tipologias', 'tipologias.id', 'tipologia_id')
-        ->where('status', 'Em aprovação')
+        ->whereIn('status', [ 'Aprovado', 'Reprovado', 'Em negociação' ])
         ->groupBy('qc.id');
 
         $request = $this->request();
@@ -148,11 +148,11 @@ class QcDataTable extends DataTable
     {
         return [
             'id' => ['name' => 'id', 'data' => 'id', 'title' => 'ID'],
+            'obra' => ['name' => 'obra_id', 'data' => 'obra_nome', 'title' => 'Obra'],
+            'carteira_id' => ['name' => 'carteira_id', 'data' => 'carteira_nome', 'title' => 'Carteira'],
             'tipologia_id' => ['name' => 'tipologia_id', 'data' => 'tipologia_nome', 'title' => 'Tipologia'],
             'status' => ['name' => 'status', 'data' => 'status', 'title' => 'Status'],
-            'carteira_id' => ['name' => 'carteira_id', 'data' => 'carteira_nome', 'title' => 'Carteira'],
             'descricao' => ['name' => 'descricao', 'data' => 'descricao', 'title' => 'Descrição do serviço'],
-            'obra' => ['name' => 'obra_id', 'data' => 'obra_nome', 'title' => 'Obra'],
             'valor_pre_orcamento' => ['name' => 'valor_pre_orcamento', 'data' => 'valor_pre_orcamento', 'title' => 'Valor Pré-Orçamento'],
             'valor_orcamento_inicial' => ['name' => 'valor_orcamento_inicial', 'data' => 'valor_orcamento_inicial', 'title' => 'Valor Orçamento Inicial'],
 			'created_at' => ['name' => 'created_at', 'data' => 'created_at', 'title' => 'Data'],

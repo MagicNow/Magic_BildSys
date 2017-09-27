@@ -237,7 +237,7 @@
 
         @shield('lista_qc.list')
         <li class="{{ Request::is('lista-qc*') ? 'active' : '' }}">
-            <a href="{!! route('lista-qc.index') !!}" title="Quadro De Concorrência">
+            <a href="{!! route('listaQc.index') !!}" title="Quadro De Concorrência">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
                 <span>Lista de Q.C.</span> </a>
         </li>

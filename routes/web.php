@@ -1088,9 +1088,6 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('tipos-equalizacoes-tecnicas/itens/{id}', 'TipoEqualizacaoTecnicaController@buscaItens');
     $router->get('tipos-equalizacoes-tecnicas/anexos/{id}', 'TipoEqualizacaoTecnicaController@buscaAnexos');
 
-    $router->group(['middleware' => 'needsPermission:lista_qc.list'], function () use ($router) {
-    });
-
     # Outros
     $router->get('filter-json-ordem-compra', 'OrdemDeCompraController@filterJsonOrdemCompra');
 
@@ -1304,6 +1301,10 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->get('/aprovar/{qc}',['as' => 'qc.aprovar.edit', 'uses' => 'QcController@aprovar'])
             ->middleware('needsPermission:qc-aprovar.show');
             $router->patch('/aprovar/{qc}/update',['as' => 'qc.aprovar.update', 'uses' => 'QcController@aprovarUpdate']);
+    });
+
+    $router->group(['middleware' => 'needsPermission:lista_qc.list'], function () use ($router) {
+        $router->get('', ['as' => 'listaQc.index', 'uses' => 'QcSuprimentosController@index']);
     });
 
 	# Configuracao Estatica
