@@ -13,7 +13,7 @@
 <!-- Valor Medido Field -->
 <div class="form-group col-sm-2">
     {!! Form::label('valor_medido', 'Valor da Medição:') !!}
-    {!! Form::number('valor_medido', null, ['class' => 'form-control money', 'required' , 'maxlength' => '12']) !!}
+    {!! Form::text('valor_medido', null, ['class' => 'form-control money', 'required' , 'maxlength' => '12']) !!}
 </div>
 
 <!-- Período Inicio Field -->
@@ -90,7 +90,26 @@
                 var v_obra = $(evt.target).val();
                 obra_id = v_obra;
                 buscaTarefas();
-            });			
+            });
+		
+						
+			$("#valor_medido").on('change', function (evt) {
+				
+				valorMedido = parseInt($(this).val());
+				
+				console.log(valorMedido);
+				
+				if (valorMedido > 100){
+					swal({
+						title: 'Ops!',
+						text: 'O limite é 100%',
+						type: 'error',
+					  });
+					$(this).val('100');
+				  }
+			  }); 			
+					  
+					
 
         });
     </script>

@@ -8,7 +8,7 @@
 <!-- Valor Medido Field -->
 <div class="form-group col-sm-2">
     {!! Form::label('valor_medido', 'Valor da Medição:') !!}
-    {!! Form::text('valor_medido', null, ['class' => 'form-control money', 'required' , 'maxlength'=>'100']) !!}
+    {!! Form::text('valor_medido', null, ['class' => 'form-control money', 'required']) !!}
 </div>
 
 <!-- Período Inicio Field -->
@@ -34,3 +34,29 @@
     {!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save') ), ['class' => 'btn btn-success pull-right flat', 'type'=>'submit']) !!}
     <a href="{!! route('admin.medicao_fisicas.index') !!}" class="btn btn-danger flat"><i class="fa fa-times"></i>  {{ ucfirst( trans('common.cancel') )}}</a>
 </div>
+
+
+@section('scripts')
+    <script type="text/javascript">
+               
+        $(function () { 	
+						
+			$("#valor_medido1").on('change', function (evt) {
+				
+				valorMedido = parseInt($(this).val());
+								
+				if (valorMedido > 100){
+					swal({
+						title: 'Ops!',
+						text: 'O limite é 100%',
+						type: 'error',
+					  });
+					$(this).val('100');
+				  }
+			  }); 			
+					  
+					
+
+        });
+    </script>
+@stop

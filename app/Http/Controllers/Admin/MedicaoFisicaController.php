@@ -114,6 +114,30 @@ class MedicaoFisicaController extends AppBaseController
         return redirect(route('admin.medicao_fisicas.index'));        
     }
 	
+	/**
+     * Remove the specified Carteira from storage.
+     *
+     * @param  int $id
+     *
+     * @return Response
+     */
+    public function destroy($id)
+    {
+        $medicaoFisica = $this->medicaoFisicaRepository->findWithoutFail($id);
+
+        if (empty($medicaoFisica)) {
+            Flash::error('Medição Física '.trans('common.not-found'));
+
+            return redirect(route('admin.medicao_fisicas.index'));
+        }
+
+        $this->medicaoFisicaRepository->delete($id);
+
+        Flash::success('Medição Física '.trans('common.deleted').' '.trans('common.successfully').'.');
+
+        return redirect(route('admin.medicao_fisicas.index'));
+    }
+	
 	
 	
 	public function tarefasPorObra(){		
