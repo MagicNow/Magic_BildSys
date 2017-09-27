@@ -66,7 +66,19 @@
                 <div class="col-xs-3 form-group">
                     <p class="form-control input-lg highlight" style="height: 120px;border-color: #000000;">
                         <b>TOTAL GERAL DO CONTRATO:</b><br>
-                        SOMATÓRIA DO CONTRATO
+                        @php
+                            if(isset($itens->contrato_itens)) {
+                                $itens = $itens->contrato_itens;
+                            }
+
+                            $valor_total_contrato = 0;
+                        @endphp
+                        @foreach($itens as $item)
+                            @php
+                                $valor_total_contrato += $item->valor_total
+                            @endphp
+                        @endforeach
+                        {{float_to_money($valor_total_contrato)}}
                     </p>
                 </div>
             </div>
