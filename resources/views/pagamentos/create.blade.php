@@ -1,9 +1,12 @@
-@extends('layouts.app')
+@extends('layouts.front')
 
 @section('content')
     <section class="content-header">
         <h1>
-            Pagamento
+            <button type="button" class="btn btn-link" onclick="history.go(-1);">
+                <i class="fa fa-arrow-left" aria-hidden="true"></i>
+            </button>
+            Contrato {{ $contrato->id }} - Adicionar Pagamento
         </h1>
     </section>
     <div class="content">

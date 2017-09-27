@@ -100,25 +100,54 @@ class ComprasDataTable extends DataTable
             })
             ->editColumn('valor_total', function($obj){
                 $insumo_catalogo = OrdemDeCompraRepository::existeNoCatalogo($obj->id, $obj->obra_id);
+                $pedido_minimo_invalido = false;
+                $multiplo_invalido = false;
 
                 if($insumo_catalogo) {
-                    $preco_unitario = $insumo_catalogo->valor_unitario;
-                } else {
-                    $preco_unitario = $obj->getOriginal('preco_unitario');
+                    if(money_to_float($obj->quantidade_compra) < money_to_float($insumo_catalogo->pedido_minimo)) {
+                        $pedido_minimo_invalido = true;
+                    }
+
+
+                    if(fmod(money_to_float($obj->quantidade_compra), money_to_float($insumo_catalogo->pedido_multiplo_de))) {
+                        $multiplo_invalido = true;
+                    }
+
+                    if(!$pedido_minimo_invalido && !$multiplo_invalido) {
+                        $obj->preco_unitario = $insumo_catalogo->valor_unitario;
+                    }
                 }
 
-                return $obj->quantidade_compra ? "R$ ".number_format($preco_unitario * money_to_float($obj->quantidade_compra), 2,',','.') : 'R$ 0,00';
+                return $obj->quantidade_compra ? "R$ ".number_format($obj->preco_unitario * money_to_float($obj->quantidade_compra), 2,',','.') : 'R$ 0,00';
             })
             ->editColumn('preco_unitario', function($obj){
-                if($obj->insumo_incluido || $obj->orcamento_que_substitui) {
-                    $insumo_catalogo = OrdemDeCompraRepository::existeNoCatalogo($obj->id, $obj->obra_id);
+                $insumo_catalogo = OrdemDeCompraRepository::existeNoCatalogo($obj->id, $obj->obra_id);
+                $pedido_minimo_invalido = false;
+                $multiplo_invalido = false;
 
+                if($insumo_catalogo) {
+                    if(money_to_float($obj->quantidade_compra) < money_to_float($insumo_catalogo->pedido_minimo)) {
+                        $pedido_minimo_invalido = true;
+                    }
+
+
+                    if(fmod(money_to_float($obj->quantidade_compra), money_to_float($insumo_catalogo->pedido_multiplo_de))) {
+                        $multiplo_invalido = true;
+                    }
+
+                    if(!$pedido_minimo_invalido && !$multiplo_invalido) {
+                        $obj->preco_unitario = $insumo_catalogo->valor_unitario;
+                    }
+                }
+
+                if($obj->insumo_incluido || $obj->orcamento_que_substitui) {
                     if($insumo_catalogo) {
-                        $preco_unitario = float_to_money($insumo_catalogo->valor_unitario). '<button type="button" title="
-                        <b>Origem:</b> Catálogo de acordos <br>
-                        <b>Pedido mínimo:</b> '.float_to_money($insumo_catalogo->pedido_minimo, '').
+                        $preco_unitario = float_to_money($obj->preco_unitario). '<button type="button" title="
+                        <b>Origem:</b> Catálogo '.$insumo_catalogo->id.'<br>'.
+                        '<b>Valor unitário:</b> '.float_to_money($insumo_catalogo->valor_unitario).'<br>'.
+                        '<b>Pedido mínimo:</b> '.float_to_money($insumo_catalogo->pedido_minimo, '').
                         '<br> <b>Pedido múltiplo de:</b> '.float_to_money($insumo_catalogo->pedido_multiplo_de, '').'
-                        " data-toggle="tooltip" data-placement="top" data-html="true" class="btn btn-primary btn-sm" style="border-radius: 15px !important;width: 20px;height: 20px;padding: 0px;margin-left: 5px;">
+                        " data-toggle="tooltip" data-placement="top" data-html="true" class="btn btn-primary btn-sm" style="border-radius: 9px !important;width: 20px;height: 20px;padding: 0px;margin-left: 5px;">
                                                 <i class="fa fa-info-circle" aria-hidden="true"></i>
                                              </button>';
 
@@ -137,14 +166,13 @@ class ComprasDataTable extends DataTable
                             </div>";
                     }
                 }else{
-                    $insumo_catalogo = OrdemDeCompraRepository::existeNoCatalogo($obj->id, $obj->obra_id);
-
                     if($insumo_catalogo) {
-                        $preco_unitario = float_to_money($insumo_catalogo->valor_unitario). '<button type="button" title="
-                        <b>Origem:</b> Catálogo de acordos <br>
-                        <b>Pedido mínimo:</b> '.float_to_money($insumo_catalogo->pedido_minimo, '').
+                        $preco_unitario = float_to_money($obj->preco_unitario). '<button type="button" title="
+                        <b>Origem:</b> Catálogo '.$insumo_catalogo->id.'<br>'.
+                        '<b>Valor unitário:</b> '.float_to_money($insumo_catalogo->valor_unitario).'<br>'.
+                        '<b>Pedido mínimo:</b> '.float_to_money($insumo_catalogo->pedido_minimo, '').
                         '<br> <b>Pedido múltiplo de:</b> '.float_to_money($insumo_catalogo->pedido_multiplo_de, '').'
-                        " data-toggle="tooltip" data-placement="top" data-html="true" class="btn btn-primary btn-sm" style="border-radius: 15px !important;width: 20px;height: 20px;padding: 0px;margin-left: 5px;">
+                        " data-toggle="tooltip" data-placement="top" data-html="true" class="btn btn-primary btn-sm" style="border-radius: 9px !important;width: 20px;height: 20px;padding: 0px;margin-left: 5px;">
                                                 <i class="fa fa-info-circle" aria-hidden="true"></i>
                                              </button>';
                     } else {

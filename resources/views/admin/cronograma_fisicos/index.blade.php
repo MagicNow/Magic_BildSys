@@ -25,15 +25,19 @@
 							@endforeach
 
 						</select>
-					</div>					
-					<div class="col-sm-3">
-						<h4>Tipo</h4>
-						{!!
-						  Form::select(
-							'template_id',$templates,null,['class' => 'form-control select2 js-filter']
-						  )
-						!!}
+					</div>	
+					
+					<div class="js-datatable-filter-form pull-left form-group col-sm-3">
+						<h4>Tipo de Planejamento</h4>
+						<select name="template" id="template" class="select2">
+							<option value="">-- Selecione o Planejamento --</option>
+							@foreach($templates as $k => $v)
+								<option value="{{ $k }}">{{ $v }}</option>
+							@endforeach
+
+						</select>
 					</div>
+					
 					<div class="col-sm-2">
 						<h4>Ano</h4>
 						{!!
@@ -68,6 +72,10 @@
         $(function () {
 
             $('#obra').on('change', function (event) {
+                window.LaravelDataTables["dataTableBuilder"].draw();
+            });
+			
+			$('#template').on('change', function (event) {
                 window.LaravelDataTables["dataTableBuilder"].draw();
             });
 

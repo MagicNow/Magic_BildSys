@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -59,7 +60,11 @@ class Pagamento extends Model
      * @var array
      */
     public static $rules = [
-        
+        'contrato_id' => 'required',
+        'fornecedor_id' => 'required',
+        'pagamento_condicao_id' => 'required',
+        'documento_tipo_id' => 'required',
+        'data_emissao' => 'required',
     ];
 
     /**
@@ -67,7 +72,7 @@ class Pagamento extends Model
      **/
     public function contrato()
     {
-        return $this->belongsTo(\App\Models\Contrato::class);
+        return $this->belongsTo(Contrato::class);
     }
 
     /**
@@ -75,23 +80,23 @@ class Pagamento extends Model
      **/
     public function documentoTipo()
     {
-        return $this->belongsTo(\App\Models\DocumentoTipo::class);
+        return $this->belongsTo(DocumentoTipo::class);
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function fornecedore()
+    public function fornecedor()
     {
-        return $this->belongsTo(\App\Models\Fornecedore::class);
+        return $this->belongsTo(Fornecedor::class);
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function notasFiscai()
+    public function notasFiscal()
     {
-        return $this->belongsTo(\App\Models\NotasFiscai::class);
+        return $this->belongsTo(Notafiscal::class);
     }
 
     /**
@@ -99,22 +104,26 @@ class Pagamento extends Model
      **/
     public function obra()
     {
-        return $this->belongsTo(\App\Models\Obra::class);
+        return $this->belongsTo(Obra::class);
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function pagamentoCondico()
+    public function pagamentoCondicao()
     {
-        return $this->belongsTo(\App\Models\PagamentoCondico::class);
+        return $this->belongsTo(PagamentoCondicao::class);
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
-    public function pagamentoParcelas()
+    public function parcelas()
     {
-        return $this->hasMany(\App\Models\PagamentoParcela::class);
+        return $this->hasMany(PagamentoParcela::class);
+    }
+
+    public function setNotasFiscalIdAttribute($value){
+        $this->attributes['notas_fiscal_id'] = intval($value) ? $value : null;
     }
 }

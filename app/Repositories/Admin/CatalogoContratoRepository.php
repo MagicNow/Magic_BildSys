@@ -164,8 +164,8 @@ class CatalogoContratoRepository extends BaseRepository
 
             $arquivoFinal .= '<div style="page-break-before: always;"> </div>'. $templateRenderizado;
         //}
-        if(is_file(base_path().'/storage/app/public/contratos/acordo_'.$catalogoContrato->id.'.pdf')){
-            unlink(base_path().'/storage/app/public/contratos/acordo_'.$catalogoContrato->id.'.pdf');
+        if(is_file(base_path().'/storage/app/public/contratos/'.$nomeArquivo.'.pdf')){
+            unlink(base_path().'/storage/app/public/contratos/'.$nomeArquivo.'.pdf');
         }
         PDF::loadHTML(utf8_decode($arquivoFinal))->setPaper('a4')->setOrientation('portrait')->save( base_path().'/storage/app/public/contratos/'.$nomeArquivo.'.pdf');
         return 'contratos/'.$nomeArquivo.'.pdf';

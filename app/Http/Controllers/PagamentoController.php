@@ -6,10 +6,16 @@ use App\DataTables\PagamentoDataTable;
 use App\Http\Requests;
 use App\Http\Requests\CreatePagamentoRequest;
 use App\Http\Requests\UpdatePagamentoRequest;
+use App\Models\Contrato;
+use App\Models\DocumentoTipo;
+use App\Models\Fornecedor;
+use App\Models\PagamentoCondicao;
 use App\Repositories\PagamentoRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
+use Illuminate\Support\Facades\DB;
 use Response;
+use SimpleXMLElement;
 
 class PagamentoController extends AppBaseController
 {
@@ -39,7 +45,34 @@ class PagamentoController extends AppBaseController
      */
     public function create()
     {
-        return view('pagamentos.create');
+        $contrato = Contrato::find(request()->get('contrato_id'));
+        if (!$contrato) {
+            Flash::error('Contrato ' . trans('common.not-found'));
+            return redirect(route('contratos.index'));
+        }
+
+        $pagamentoCondicoes = PagamentoCondicao::select([
+            DB::raw("CONCAT(nome,' - ',codigo) as nome"),
+            'id'
+        ])->pluck('nome', 'id')->toArray();
+
+        $documentoTipos = DocumentoTipo::select([
+            DB::raw("CONCAT(nome,' - ',sigla) as nome"),
+            'id'
+        ])->pluck('nome', 'id')->toArray();
+
+        $fornecedores_ids = $contrato->fornecedor->fornecedores_associados_ids();
+        $fornecedores_ids[$contrato->fornecedor_id] = $contrato->fornecedor_id;
+
+        $fornecedores = Fornecedor::select([
+            DB::raw("CONCAT(nome,' - ',cnpj) nome"),
+            'id'
+        ])
+            ->whereIn('id', $fornecedores_ids)
+            ->pluck('nome', 'id')
+            ->toArray();
+
+        return view('pagamentos.create', compact('pagamentoCondicoes', 'documentoTipos', 'contrato', 'fornecedores'));
     }
 
     /**
@@ -55,7 +88,7 @@ class PagamentoController extends AppBaseController
 
         $pagamento = $this->pagamentoRepository->create($input);
 
-        Flash::success('Pagamento '.trans('common.saved').' '.trans('common.successfully').'.');
+        Flash::success('Pagamento ' . trans('common.saved') . ' ' . trans('common.successfully') . '.');
 
         return redirect(route('pagamentos.index'));
     }
@@ -72,7 +105,7 @@ class PagamentoController extends AppBaseController
         $pagamento = $this->pagamentoRepository->findWithoutFail($id);
 
         if (empty($pagamento)) {
-            Flash::error('Pagamento '.trans('common.not-found'));
+            Flash::error('Pagamento ' . trans('common.not-found'));
 
             return redirect(route('pagamentos.index'));
         }
@@ -92,18 +125,41 @@ class PagamentoController extends AppBaseController
         $pagamento = $this->pagamentoRepository->findWithoutFail($id);
 
         if (empty($pagamento)) {
-            Flash::error('Pagamento '.trans('common.not-found'));
+            Flash::error('Pagamento ' . trans('common.not-found'));
 
             return redirect(route('pagamentos.index'));
         }
 
-        return view('pagamentos.edit')->with('pagamento', $pagamento);
+        $contrato = $pagamento->contrato;
+
+        $pagamentoCondicoes = PagamentoCondicao::select([
+            DB::raw("CONCAT(nome,' - ',codigo) as nome"),
+            'id'
+        ])->pluck('nome', 'id')->toArray();
+
+        $documentoTipos = DocumentoTipo::select([
+            DB::raw("CONCAT(nome,' - ',sigla) as nome"),
+            'id'
+        ])->pluck('nome', 'id')->toArray();
+
+        $fornecedores_ids = $contrato->fornecedor->fornecedores_associados_ids();
+        $fornecedores_ids[$contrato->fornecedor_id] = $contrato->fornecedor_id;
+
+        $fornecedores = Fornecedor::select([
+            DB::raw("CONCAT(nome,' - ',cnpj) nome"),
+            'id'
+        ])
+            ->whereIn('id', $fornecedores_ids)
+            ->pluck('nome', 'id')
+            ->toArray();
+
+        return view('pagamentos.edit', compact('pagamento', 'pagamentoCondicoes', 'documentoTipos', 'contrato', 'fornecedores'));
     }
 
     /**
      * Update the specified Pagamento in storage.
      *
-     * @param  int              $id
+     * @param  int $id
      * @param UpdatePagamentoRequest $request
      *
      * @return Response
@@ -113,14 +169,14 @@ class PagamentoController extends AppBaseController
         $pagamento = $this->pagamentoRepository->findWithoutFail($id);
 
         if (empty($pagamento)) {
-            Flash::error('Pagamento '.trans('common.not-found'));
+            Flash::error('Pagamento ' . trans('common.not-found'));
 
             return redirect(route('pagamentos.index'));
         }
 
         $pagamento = $this->pagamentoRepository->update($request->all(), $id);
 
-        Flash::success('Pagamento '.trans('common.updated').' '.trans('common.successfully').'.');
+        Flash::success('Pagamento ' . trans('common.updated') . ' ' . trans('common.successfully') . '.');
 
         return redirect(route('pagamentos.index'));
     }
@@ -137,15 +193,36 @@ class PagamentoController extends AppBaseController
         $pagamento = $this->pagamentoRepository->findWithoutFail($id);
 
         if (empty($pagamento)) {
-            Flash::error('Pagamento '.trans('common.not-found'));
+            Flash::error('Pagamento ' . trans('common.not-found'));
 
             return redirect(route('pagamentos.index'));
         }
 
         $this->pagamentoRepository->delete($id);
 
-        Flash::success('Pagamento '.trans('common.deleted').' '.trans('common.successfully').'.');
+        Flash::success('Pagamento ' . trans('common.deleted') . ' ' . trans('common.successfully') . '.');
 
         return redirect(route('pagamentos.index'));
+    }
+
+    public function integrar($id)
+    {
+        $pagamento = $this->pagamentoRepository->findWithoutFail($id);
+
+        if (empty($pagamento)) {
+            Flash::error('Pagamento ' . trans('common.not-found'));
+
+            return redirect(route('pagamentos.index'));
+        }
+
+        $xmlstr = <<<XML
+<?xml version='1.0'?>
+<Fatura></Fatura>
+XML;
+        $xml = new SimpleXMLElement($xmlstr);
+        $fatura = $xml->children('Fatura');
+//        $fatura = $xml->addChild('Fatura');
+        $fatura->addAttribute('OPERACAO','I');
+        dd($pagamento, $xml->asXML());
     }
 }

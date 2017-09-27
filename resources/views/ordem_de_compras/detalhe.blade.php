@@ -306,6 +306,23 @@
                         {{--@else--}}
                             @php $saldo_valor_orcamento = $item->substitui ? $item->valor_previsto_orcamento_pai-money_to_float($item->valor_realizado) : $item->preco_inicial-money_to_float($item->valor_realizado); @endphp
                         {{--@endif--}}
+
+                        @php
+                            $insumo_catalogo = \App\Repositories\OrdemDeCompraRepository::existeNoCatalogo($item->insumo_id, $item->obra_id);
+                            $botao = '';
+
+                            if($insumo_catalogo) {
+                                $botao = '<button type="button" title="
+                                            <b>Origem:</b> Catálogo '.$insumo_catalogo->id.'<br>'.
+                                            '<b>Valor unitário:</b> '.float_to_money($insumo_catalogo->valor_unitario).'<br>'.
+                                            '<b>Pedido mínimo:</b> '.float_to_money($insumo_catalogo->pedido_minimo, '').
+                                            '<br> <b>Pedido múltiplo de:</b> '.float_to_money($insumo_catalogo->pedido_multiplo_de, '').'
+                                                " data-toggle="tooltip" data-placement="top" data-html="true" class="btn btn-primary btn-sm" style="border-radius: 9px !important;width: 20px;height: 20px;padding: 0px;margin-left: 5px;">
+                                            <i class="fa fa-info-circle" aria-hidden="true"></i>
+                                        </button>';
+                            }
+                        @endphp
+
                         <tr
                         @if($item->data_dispensa)
                             class="danger"
@@ -347,6 +364,7 @@
                             </td>
                             <td class="text-center">
                                 {{ float_to_money($item->valor_unitario) }}
+                                {!! $botao !!}
                             </td>
                             <td class="text-center">
                                 {{ float_to_money(money_to_float($item->valor_total)) }}

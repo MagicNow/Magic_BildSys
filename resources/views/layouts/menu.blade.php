@@ -31,14 +31,32 @@
     </ul>
 </li>
 
-<li class="treeview {{ Request::is('admin/orcamento*') || Request::is('admin/mascara_padrao_insumos*')  ? 'active' : '' }}">
+<li class="treeview {{ Request::is('admin/orcamento*') || Request::is('admin/mascara_padrao*') || Request::is('admin/tarefa_padrao*') || Request::is('admin/mascara_padrao_insumos*')  ? 'active' : '' }}">
     <a href="#">
         <i class="fa fa-balance-scale"></i> <span>Pré-Orçamento</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
     </a>
-    <ul class="treeview-menu"> 
+    <ul class="treeview-menu">
+		@shield('mascara_padrao.list')
+        <li class="{{ Request::is('admin/mascara_padrao*') ? 'active' : '' }}">
+            <a href="{!! route('admin.mascara_padrao.index') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Máscara Padrão</span>
+            </a>
+        </li>
+        @endshield
+		
+		@shield('tarefa_padrao.list')
+        <li class="{{ Request::is('admin/tarefa_padrao*') ? 'active' : '' }}">
+            <a href="{!! route('admin.tarefa_padrao.index') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Tarefa Padrão</span>
+            </a>
+        </li>
+        @endshield
+		
 		@shield('mascara_padrao_insumos.list')
         <li class="{{ Request::is('admin/mascara_padrao_insumos') ? 'active' : '' }}">
             <a href="{!! route('admin.mascara_padrao_insumos.index') !!}">
@@ -327,25 +345,22 @@
     </ul>
 </li>
 
-
-<li class="treeview {{ Request::is('admin/topologia*') ? 'active' : '' }}">
+<li class="treeview {{ Request::is('admin/tipologia*') ? 'active' : '' }}">
     <a href="#">
-        <i class="fa fa-building"></i> <span>Topologia</span>
+        <i class="fa fa-building"></i> <span>Tipologia</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
     </a>
     <ul class="treeview-menu">
-        @shield('topologia.list')
-        <li class="{{ Request::is('admin/topologia*') ? 'active' : '' }}">
-            <a href="{!! route('admin.topologia.index') !!}">
+        @shield('tipologia.list')
+        <li class="{{ Request::is('admin/tipologia*') ? 'active' : '' }}">
+            <a href="{!! route('admin.tipologia.index') !!}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
-                <span>Topologias</span>
+                <span>Tipologias</span>
             </a>
         </li>
         @endshield
     </ul>
-</li><li class="{{ Request::is('documentoFinanceiroTipos*') ? 'active' : '' }}">
-    <a href="{!! route('documentoFinanceiroTipos.index') !!}"><i class="fa fa-edit"></i><span>DocumentoFinanceiroTipos</span></a>
 </li>
 
