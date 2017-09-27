@@ -202,4 +202,27 @@ class QcController extends AppBaseController
 
 		return redirect(route('qc.index'));
 	}
+
+	/**
+	 * Approve and disapprove Q.C.
+	 *
+	 * @param  int $id
+	 *
+	 * @return Response
+	 */
+	public function aprovar ($id) {
+		$qc = $this->qcRepository->findWithoutFail($id);
+
+		if (empty($qc)) {
+			Flash::error('Qc '.trans('common.not-found'));
+
+			return redirect(route('qc.index'));
+		}
+
+		return view('qc_aprovar.edit', compact('qc'));
+	}
+
+	public function aprovarUpdate () {
+		
+	}
 }
