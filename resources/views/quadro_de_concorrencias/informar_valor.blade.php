@@ -37,7 +37,7 @@
     @if($errors->count())
         <div class="alert alert-danger">
             <p>Por favor, corrija os seguintes problemas para enviar o formulário</p>
-            <ul>
+            <ul>http://bild.dev/quadro-de-concorrencia/92/avaliar#
                 @foreach ($errors->unique() as $error)
                     <li>{{ $error }}</li>
                 @endforeach
@@ -540,6 +540,14 @@
             </div>
         </div>
 
+        <!-- Pagamento Condicao Id Field -->
+        <div class="form-group col-sm-12">
+            {!! Form::label('pagamento_condicao_id', 'Condição de Pagamento:') !!}
+            {!! Form::select('pagamento_condicao_id',[''=>'Selecione...'] + $condicoes_pagamento ,null, [
+                'class' => 'form-control select2',
+                'required' => 'required'
+            ]) !!}
+        </div>
 
     </div>
 
