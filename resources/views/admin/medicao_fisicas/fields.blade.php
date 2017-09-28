@@ -41,7 +41,7 @@
                
         $(function () { 	
 						
-			$("#valor_medido1").on('change', function (evt) {
+			$("#valor_medido").on('change', function (evt) {
 				
 				valorMedido = parseInt($(this).val());
 								

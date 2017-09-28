@@ -13,7 +13,7 @@
 <!-- Valor Medido Field -->
 <div class="form-group col-sm-2">
     {!! Form::label('valor_medido', 'Valor da Medição:') !!}
-    {!! Form::text('valor_medido', null, ['class' => 'form-control money', 'required' , 'maxlength' => '12']) !!}
+    {!! Form::text('valor_medido', null, ['class' => 'form-control moneyToFloat', 'required' , 'maxlength' => '12']) !!}
 </div>
 
 <!-- Período Inicio Field -->
@@ -97,7 +97,7 @@
 				
 				valorMedido = parseInt($(this).val());
 				
-				console.log(valorMedido);
+				//console.log(valorMedido);
 				
 				if (valorMedido > 100){
 					swal({
