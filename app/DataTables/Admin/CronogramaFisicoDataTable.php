@@ -7,6 +7,7 @@ use Form;
 use Yajra\Datatables\Services\DataTable;
 use Illuminate\Support\Facades\DB;
 use App\Repositories\Admin\CronogramaFisicoRepository;
+use Carbon\Carbon;
 
 class CronogramaFisicoDataTable extends DataTable
 {
@@ -49,7 +50,13 @@ class CronogramaFisicoDataTable extends DataTable
     {		
 		
 		//mostra a semana do mes anterior
-		$fromDate="2017-07-01";
+		if($this->request()->get('mes_id')){
+            $mesId = $this->request()->get('mes_id');
+			$fromDate = Carbon::createFromFormat("d/m/Y", "01/".$mesId)->startOfMonth();
+        }else{
+			$fromDate = Carbon::today();
+		}
+		
 		$fridays = CronogramaFisicoRepository::getFridaysBydate($fromDate);		
 		$last_day= end($fridays);	
 		

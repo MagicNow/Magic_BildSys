@@ -39,18 +39,10 @@
 					</div>
 					
 					<div class="col-sm-2">
-						<h4>Ano</h4>
+						<h4>Mês Referência</h4>
 						{!!
 						  Form::select(
-							'ano_id',["2017","2018","2019","2020"],null,['class' => 'form-control select2 js-filter']
-						  )
-						!!}
-					</div>
-					<div class="col-sm-2">
-						<h4>Mês</h4>
-						{!!
-						  Form::select(
-							'mes_id',["Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"],null,['class' => 'form-control select2 js-filter']
+							'mes_id',["07/2017","08/2017","09/2017"],null,['class' => 'form-control select2 js-filter']
 						  )
 						!!}
 					</div>
