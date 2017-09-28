@@ -3,16 +3,32 @@
 @section('content')
     <section class="content-header">
         <h1>
-            Conciliação de Pagamentos da Nota fiscal: {{ $nota->codigo }}<br/>
-            Fornecedor: {{ $nota->contrato->fornecedor->nome }}<br/>
-            Contrato: {{ $nota->contrato_id }}<br/>
+            Conciliação de Pagamentos da Nota fiscal
         </h1>
     </section>
     <div class="content">
         @include('adminlte-templates::common.errors')
         <div class="box box-primary">
-
             <div class="box-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h3>
+                            <div style="width: 150px;float:left;">Nota N.o: </div>
+                            <label class="label label-info">{{ $nota->codigo }}</label>
+                        </h3>
+                        <h3>
+                            <div style="width: 150px;float:left;">Fornecedor: </div>
+                            <label class="label label-info">{{ $nota->contrato->fornecedor->nome }} [Cnpj: {{ $nota->contrato->fornecedor->cnpj }}]</label>
+                        </h3>
+                        <h3>
+                            <div style="width: 150px;float:left;">Contrato: </div>
+                            <a href="{{ url(route("contratos.show",[$contrato->id])) }}">
+                                <label class="label label-info">{{ $nota->contrato_id }}</label>
+                            </a>
+                        </h3>
+                    </div>
+                </div>
+
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="pull-right">
