@@ -24,7 +24,7 @@ class QcSuprimentosDataTable extends DataTable
                     ? $qc->created_at->format('d/m/Y')
                     : '';
             })
-            ->editColumn('action', 'qc.datatables_actions')
+            ->editColumn('action', 'qc_suprimentos.datatables_actions')
 			->make(true);
     }
 
