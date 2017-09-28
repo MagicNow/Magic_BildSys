@@ -74,8 +74,8 @@
         </li>
         @endshield
         @shield('orcamentos.list')
-        <li class="{{ Request::is('admin/orcamento') ? 'active' : '' }}">
-            <a href="{!! route('admin.orcamentos.index') !!}">
+        <li class="{{ Request::is('admin/pre_orcamento') ? 'active' : '' }}">
+            <a href="{!! route('admin.pre_orcamentos.index') !!}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
                 <span>Pré Orçamento</span>
             </a>

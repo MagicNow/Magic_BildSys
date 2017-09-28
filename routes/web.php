@@ -78,6 +78,18 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
         $router->get('orcamentos/{orcamentos}', ['as' => 'admin.orcamentos.show', 'uses' => 'Admin\OrcamentoController@show']);
         $router->get('orcamentos/{orcamentos}/edit', ['as' => 'admin.orcamentos.edit', 'uses' => 'Admin\OrcamentoController@edit']);
     });
+	
+	# Pré Orçamentos
+    $router->group(['middleware' => 'needsPermission:pre_orcamentos.list'], function () use ($router) {
+        $router->get('pre_orcamentos', ['as' => 'admin.pre_orcamentos.index', 'uses' => 'Admin\PreOrcamentoController@index']);
+        $router->post('pre_orcamentos', ['as' => 'admin.pre_orcamentos.store', 'uses' => 'Admin\PreOrcamentoController@store']);
+        $router->get('pre_orcamentos/create', ['as' => 'admin.pre_orcamentos.create', 'uses' => 'Admin\PreOrcamentoController@create']);
+        $router->put('pre_orcamentos/{pre_orcamentos}', ['as' => 'admin.pre_orcamentos.update', 'uses' => 'Admin\PreOrcamentoController@update']);
+        $router->patch('pre_orcamentos/{pre_orcamentos}', ['as' => 'admin.pre_orcamentos.update', 'uses' => 'Admin\PreOrcamentoController@update']);
+        $router->delete('pre_orcamentos/{pre_orcamentos}', ['as' => 'admin.pre_orcamentos.destroy', 'uses' => 'Admin\PreOrcamentoController@destroy']);
+        $router->get('pre_orcamentos/{pre_orcamentos}', ['as' => 'admin.pre_orcamentos.show', 'uses' => 'Admin\PreOrcamentoController@show']);
+        $router->get('pre_orcamentos/{pre_orcamentos}/edit', ['as' => 'admin.pre_orcamentos.edit', 'uses' => 'Admin\PreOrcamentoController@edit']);
+    });
 
     # Topologia
     $router->group(['middleware' => 'needsPermission:topologia.list'], function () use ($router) {
