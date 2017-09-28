@@ -1,7 +1,7 @@
 <!-- Mascara Padrao Id Field -->
 <div class="form-group col-sm-12">
     {!! Form::label('mascara_padrao_id', 'Mascara Padrao Id:') !!}
-    {!! Form::select('mascara_padrao_id',[''=>'Escolha...']+$mascaras, null, ['class' => 'form-control select2']) !!}
+    {!! Form::select('mascara_padrao_id',[''=>'Escolha...']+$mascaras, null, ['class' => 'form-control select2', 'required'=>true]) !!}
 </div>
 
 <div class="form-group col-sm-12">
@@ -12,7 +12,7 @@
         </div>
     </div>
     <div class="col-md-4">
-        {!! Form::hidden('estrutura[0][id]', $grupo->id, ['id'=>'select_grupo_0_select']) !!}
+        {!! Form::hidden('estrutura[0][id]', $grupo->id, ['id'=>'select_grupo_0_select', 'class'=>'estrutura_0']) !!}
         <button type="button" class="btn btn-primary" onclick="addSubItem('select_grupo_0', 0, 'estrutura[0][itens]')">Add SubGrupo-1</button>
     </div>
     <ul id="select_grupo_0_ul">
@@ -30,8 +30,20 @@
 @section('scripts')
     <script type="text/javascript">
         var blocos = 0;
+        var bloco_aberto = true;
+
+        $( "form" ).submit(function( event ) {
+            if(bloco_aberto){
+                event.preventDefault();
+                swal('Existe um bloco em aberto','', 'error');
+                $('.overlay').remove();
+
+            }
+        });
+
         function addSubItem(id_atual, nivel, nome){
             var buttonAdd = '';
+            bloco_aberto = true;
             blocos++;
             var rota = "{{url('/admin/mascaraPadraoEstruturas/grupos')}}/";
             nivel++;
@@ -43,6 +55,10 @@
             }
             if(nivel < 4){
                 buttonAdd = '<button type="button" class="btn btn-primary" onclick="addSubItem(\'subgrupo'+nivel+'_'+blocos+'\', '+nivel+',\''+nome+'['+blocos+'][itens]'+'\')">'+labelBotao+'</button>';
+            }
+            if(nivel == 4){
+                labelBotao = 'Add Insumos';
+                buttonAdd = '<button type="button" class="btn btn-warning" onclick="addInsumo()">'+labelBotao+'</button>';
             }
 
             console.log(nivel);
@@ -64,7 +80,7 @@
                         '<li style="list-style-type: none" bloco="'+blocos+'" id="subgrupo'+nivel+'_'+blocos+'">' +
                         '<div class="input-group">' +
                         '<span class="input-group-addon"></span>' +
-                        '<select class="form-control select2" name="'+nome+'['+blocos+'][id]" id="subgrupo'+nivel+'_'+blocos+'_select">' +
+                        '<select class="form-control select2 estrutura_'+nivel+'" onchange="percorreBloco()" name="'+nome+'['+blocos+'][id]" id="subgrupo'+nivel+'_'+blocos+'_select">' +
                         options +
                         '</select>' +
                         '</div>' +
@@ -85,6 +101,64 @@
                     $('.overlay').remove();
                 });
             }
+        }
+
+        function percorreBloco() {
+            bloco_aberto = false;
+            if(!$('.estrutura_0').length){
+                bloco_aberto = true;
+                return;
+            }
+            $('.estrutura_0').each(function (idx) {
+                if(!$(this).val()){
+                    bloco_aberto = true;
+                    return false;
+                }
+                if(!$('.estrutura_1').length){
+                    bloco_aberto = true;
+                    return;
+                }
+                $('.estrutura_1').each(function (idx) {
+                    if(!$(this).val()){
+                        bloco_aberto = true;
+                        return false;
+                    }
+                    if(!$('.estrutura_2').length){
+                        bloco_aberto = true;
+                        return;
+                    }
+                    $('.estrutura_2').each(function (idx) {
+                        if(!$(this).val()){
+                            bloco_aberto = true;
+                            return false;
+                        }
+                        if(!$('.estrutura_3').length){
+                            bloco_aberto = true;
+                            return;
+                        }
+                        $('.estrutura_3').each(function (idx) {
+                            if(!$(this).val()) {
+                                bloco_aberto = true;
+                                return false;
+                            }
+                            if(!$('.estrutura_4').length){
+                                bloco_aberto = true;
+                                return;
+                            }
+                            $('.estrutura_4').each(function (idx) {
+                                if(!$(this).val()) {
+                                    bloco_aberto = true;
+                                    return false;
+                                }
+                            });
+                        });
+                    });
+                });
+            });
+        }
+
+        function addInsumo(){
+            // Função que vai relacionar a estrutura com o insumo.
         }
     </script>
 @stop

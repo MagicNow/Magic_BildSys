@@ -27,7 +27,24 @@ class MascaraPadraoEstruturaDataTable extends DataTable
      */
     public function query()
     {
-        $mascaraPadraoEstruturas = MascaraPadraoEstrutura::query();
+        $mascaraPadraoEstruturas = MascaraPadraoEstrutura::query()
+            ->select([
+                'mascara_padrao_estruturas.id',
+                'mascara_padrao.nome as nm_mascara_padrao',
+                'mascara_padrao_estruturas.codigo',
+                'grupos.nome as grupo',
+                'subgrupo1.nome as subgrupo1',
+                'subgrupo2.nome as subgrupo2',
+                'subgrupo3.nome as subgrupo3',
+                'servicos.nome as servico'
+
+            ])
+            ->join('mascara_padrao', 'mascara_padrao.id', 'mascara_padrao_estruturas.mascara_padrao_id')
+            ->join('grupos', 'grupos.id', 'mascara_padrao_estruturas.grupo_id')
+            ->join('grupos as subgrupo1', 'subgrupo1.id', 'mascara_padrao_estruturas.subgrupo1_id')
+            ->join('grupos as subgrupo2', 'subgrupo2.id', 'mascara_padrao_estruturas.subgrupo2_id')
+            ->join('grupos as subgrupo3', 'subgrupo3.id', 'mascara_padrao_estruturas.subgrupo3_id')
+            ->join('servicos', 'servicos.id', 'mascara_padrao_estruturas.servico_id');
 
         return $this->applyScopes($mascaraPadraoEstruturas);
     }
@@ -91,10 +108,13 @@ class MascaraPadraoEstruturaDataTable extends DataTable
     private function getColumns()
     {
         return [
-            'máscaraPadrão' => ['name' => 'mascara_padrao_id', 'data' => 'mascara_padrao_id'],
+            'máscaraPadrão' => ['name' => 'mascara_padrao.nome', 'data' => 'nm_mascara_padrao'],
             'códigoEstruturado' => ['name' => 'codigo', 'data' => 'codigo'],
-            'coeficiente' => ['name' => 'coeficiente', 'data' => 'coeficiente'],
-            'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
+            'grupo' => ['name' => 'grupos.nome', 'data' => 'grupo'],
+            'subgrupo1' => ['name' => 'subgrupo1.nome', 'data' => 'subgrupo1'],
+            'subgrupo2' => ['name' => 'subgrupo2.nome', 'data' => 'subgrupo2'],
+            'subgrupo3' => ['name' => 'subgrupo3.nome', 'data' => 'subgrupo3'],
+            'serviço' => ['name' => 'servicos.nome', 'data' => 'servico']
         ];
     }
 

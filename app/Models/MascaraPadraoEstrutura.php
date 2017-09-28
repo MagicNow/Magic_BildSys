@@ -13,9 +13,8 @@ use Eloquent as Model;
 class MascaraPadraoEstrutura extends Model
 {
     public $table = 'mascara_padrao_estruturas';
-    
-    const CREATED_AT = 'created_at';
-    const UPDATED_AT = 'updated_at';
+
+    public $timestamps = false;
 
     public $fillable = [
         'codigo',
@@ -51,7 +50,7 @@ class MascaraPadraoEstrutura extends Model
      * @var array
      */
     public static $rules = [
-        
+        'mascara_padrao_id' => 'required'
     ];
 
     /**

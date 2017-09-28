@@ -3,7 +3,7 @@
 @section('content')
     <section class="content-header">
         <h1>
-            Mascara Padrao Estrutura
+            Máscara Padrão Estrutura
         </h1>
     </section>
     <div class="content">

@@ -59,9 +59,7 @@ class MascaraPadraoEstruturaController extends AppBaseController
      */
     public function store(CreateMascaraPadraoEstruturaRequest $request)
     {
-        dd($request->all());
         $input = $request->all();
-
         $mascaraPadraoEstrutura = $this->mascaraPadraoEstruturaRepository->create($input);
 
         Flash::success('Mascara Padrao Estrutura '.trans('common.saved').' '.trans('common.successfully').'.');
