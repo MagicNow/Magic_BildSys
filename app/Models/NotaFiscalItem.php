@@ -28,6 +28,8 @@ class NotaFiscalItem extends Model
         'valor_total',
         'unidade',
         'base_calculo_icms',
+        'base_calculo_pis',
+        'base_calculo_cofins',
         'aliquota_icms',
         'valor_icms',
         'valor_ipi',
@@ -37,6 +39,18 @@ class NotaFiscalItem extends Model
         'aliquota_pis',
         'valor_pis',
         'solicitacao_entrega_itens_id',
+        'base_calculo_icms_uf_dest',
+        'aliquota_fcp_icms_uf_dest',
+        'aliquota_icms_uf_dest',
+        'aliquota_icms_uf_interna',
+        'aliquota_icms_uf_interna_part',
+        'valor_fcp_icms_uf_dest',
+        'valor_icms_uf_dest',
+        'valor_icms_uf_remetente',
+        'situacao_tributacao_ipi',
+        'situacao_tributacao_pis',
+        'situacao_tributacao_cofins',
+        'codigo_enquadramento_ipi',
     ];
 
     /**
@@ -60,7 +74,7 @@ class NotaFiscalItem extends Model
      * @var array
      */
     public static $rules = [
-        
+
     ];
 
     /**

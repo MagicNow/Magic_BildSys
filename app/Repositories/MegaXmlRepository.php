@@ -491,7 +491,7 @@ class MegaXmlRepository
             $node = $domtree->createElement("ENI_ST_CODIGO", $data['ITENS_ENI_ST_CODIGO']);// "Cód.Enquadramento IPI"
             $itensNode->appendChild($node);
 
-
+            /*
             $nodeLotes = $domtree->createElement("LotesVinculados");
             $nodeLotes->setAttribute("OPERACAO", $data['LOTES_OPERACAO']);
             $nodeLotes = $itensNode->appendChild($nodeLotes);
@@ -595,6 +595,7 @@ class MegaXmlRepository
 
             $node = $domtree->createElement("MOV_RE_VALORMOE", $data['PARCELAS_MOV_RE_VALORMOE']);// "Valor Parcela"
             $parcelasNode->appendChild($node);
+            */
 
         }
 

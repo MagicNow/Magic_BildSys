@@ -60,6 +60,7 @@ class Notafiscal extends Model
         'destinatario_bairro',
         'destinatario_cep',
         'destinatario_cidade',
+        'destinatario_cidade_codigo',
         'destinatario_uf',
         'destinatario_fone_fax',
         'destinatario_inscricao_estadual',
@@ -143,7 +144,7 @@ class Notafiscal extends Model
      * @var array
      */
     public static $rules = [
-        
+
     ];
 
     /**

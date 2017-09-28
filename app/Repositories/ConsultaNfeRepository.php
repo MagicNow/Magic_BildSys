@@ -93,10 +93,8 @@ class ConsultaNfeRepository
             $fantasia = isset($arrayNota['NFe']['infNFe']['emit']['xFant']) ? $arrayNota['NFe']['infNFe']['emit']['xFant'] : null;
 
             $notaData = [
-                'contrato_id' => null,
                 'nsu' => $NSU,
                 'schema' => $schema,
-                'solicitacao_entrega_id' => null,
                 'xml' => $xml,
                 'codigo' => $arrayNota['NFe']['infNFe']['ide']['nNF'],
                 'versao' => $arrayNota['NFe']['infNFe']["@attributes"]['versao'],
@@ -130,6 +128,7 @@ class ConsultaNfeRepository
             $notaData["destinatario_bairro"] = $arrayNota['NFe']['infNFe']['dest']['enderDest']['xBairro'];
             $notaData["destinatario_cep"] = $arrayNota['NFe']['infNFe']['dest']['enderDest']['CEP'];
             $notaData["destinatario_cidade"] = $arrayNota['NFe']['infNFe']['dest']['enderDest']['xMun'];
+            $notaData["destinatario_cidade_codigo"] = $arrayNota['NFe']['infNFe']['dest']['enderDest']['cMun'];
             $notaData["destinatario_uf"] = $arrayNota['NFe']['infNFe']['dest']['enderDest']['UF'];
             $notaData["destinatario_fone_fax"] = isset($arrayNota['NFe']['infNFe']['dest']['enderDest']['fone']) ? $arrayNota['NFe']['infNFe']['dest']['enderDest']['fone'] : '';
             $notaData["destinatario_inscricao_estadual"] = isset($arrayNota['NFe']['infNFe']['dest']['IE']) ? $arrayNota['NFe']['infNFe']['dest']['IE'] : '';
@@ -236,12 +235,21 @@ class ConsultaNfeRepository
                                 'base_calculo_icms' => isset($detalhe['imposto']['ICMS']['ICMS00']['vBC']) ? $detalhe['imposto']['ICMS']['ICMS00']['vBC'] : 0,
                                 'aliquota_icms' => isset($detalhe['imposto']['ICMS']['ICMS00']['pICMS']) ? $detalhe['imposto']['ICMS']['ICMS00']['pICMS'] : 0,
                                 'valor_icms' => isset($detalhe['imposto']['ICMS']['ICMS00']['vICMS']) ? $detalhe['imposto']['ICMS']['ICMS00']['vICMS'] : 0,
+
                                 'valor_ipi' => '',
                                 'aliquota_ipi' => '',
+                                'situacao_tributacao_ipi' => isset($detalhe['imposto']['IPI']['IPINT']['CST']) ? $detalhe['imposto']['IPI']['IPINT']['CST'] : NULL,
+                                'codigo_enquadramento_ipi' => isset($detalhe['imposto']['IPI']['cEnq']) ? $detalhe['imposto']['IPI']['cEnq'] : NULL,
+
                                 'aliquota_cofins' => isset($detalhe['imposto']['COFINS']['COFINSAliq']['pCOFINS']) ? $detalhe['imposto']['COFINS']['COFINSAliq']['pCOFINS'] : 0,
                                 'valor_cofins' => isset($detalhe['imposto']['COFINS']['COFINSAliq']['vCOFINS']) ? $detalhe['imposto']['COFINS']['COFINSAliq']['vCOFINS'] : 0,
+                                'base_calculo_cofins' => isset($detalhe['imposto']['COFINS']['COFINSAliq']['vBC']) ? $detalhe['imposto']['COFINS']['COFINSAliq']['vBC'] : 0,
+                                'situacao_tributacao_cofins' => isset($detalhe['imposto']['COFINS']['COFINSAliq']['CST']) ? $detalhe['imposto']['COFINS']['COFINSAliq']['CST'] : NULL,
+
                                 'aliquota_pis' => isset($detalhe['imposto']['PIS']['PISAliq']['pPIS']) ? $detalhe['imposto']['PIS']['PISAliq']['pPIS'] : 0,
                                 'valor_pis' => isset($detalhe['imposto']['PIS']['PISAliq']['vPIS']) ? $detalhe['imposto']['PIS']['PISAliq']['vPIS'] : 0,
+                                'base_calculo_pis' => isset($detalhe['imposto']['PIS']['PISAliq']['vBC']) ? $detalhe['imposto']['PIS']['PISAliq']['vBC'] : 0,
+                                'situacao_tributacao_pis' => isset($detalhe['imposto']['PIS']['PISAliq']['CST']) ? $detalhe['imposto']['PIS']['PISAliq']['CST'] : NULL,
                             ];
 
                             if (isset($detalhe['imposto']['ICMSUFDest'])) {
@@ -404,21 +412,12 @@ class ConsultaNfeRepository
                     if (!$nfObjRes) {
 
                         $notaData = [
-                            'contrato_id' => null,
                             'nsu' => $NSU,
                             'schema' => $doc['schema'],
-                            'solicitacao_entrega_id' => null,
                             'xml' => $doc['dados'],
-                            'codigo' => '',
-                            'versao' => '',
-                            'natureza_operacao' => null,
                             'data_emissao' => isset($arrayNota['dhEmi']) ? str_replace('T', ' ', substr($arrayNota['dhEmi'], 0, 19)) : null,
-                            'data_saida' => null,
                             'cnpj' => $arrayNota['CNPJ'],
                             'razao_social' => $arrayNota['xNome'],
-                            'fantasia' => null,
-                            'cnpj_destinatario' => null,
-                            'arquivo_nfe' => null,
                             'chave' => str_replace('NFe', '', $arrayNota['chNFe'])
                         ];
 
