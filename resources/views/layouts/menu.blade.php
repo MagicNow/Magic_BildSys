@@ -47,7 +47,7 @@
             </a>
         </li>
         @endshield
-		
+
 		@shield('tarefa_padrao.list')
         <li class="{{ Request::is('admin/tarefa_padrao*') ? 'active' : '' }}">
             <a href="{!! route('admin.tarefa_padrao.index') !!}">
@@ -56,7 +56,7 @@
             </a>
         </li>
         @endshield
-		
+
 		@shield('mascara_padrao_insumos.list')
         <li class="{{ Request::is('admin/mascara_padrao_insumos') ? 'active' : '' }}">
             <a href="{!! route('admin.mascara_padrao_insumos.index') !!}">
@@ -345,19 +345,19 @@
     </ul>
 </li>
 
-<li class="treeview {{ Request::is('admin/tipologia*') ? 'active' : '' }}">
+<li class="treeview {{ Request::is('admin/topologia*') ? 'active' : '' }}">
     <a href="#">
-        <i class="fa fa-building"></i> <span>Tipologia</span>
+        <i class="fa fa-building"></i> <span>Topologia</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
     </a>
     <ul class="treeview-menu">
-        @shield('tipologia.list')
-        <li class="{{ Request::is('admin/tipologia*') ? 'active' : '' }}">
-            <a href="{!! route('admin.tipologia.index') !!}">
+        @shield('topologia.list')
+        <li class="{{ Request::is('admin/topologia*') ? 'active' : '' }}">
+            <a href="{!! route('admin.topologia.index') !!}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
-                <span>Tipologias</span>
+                <span>Topologias</span>
             </a>
         </li>
         @endshield

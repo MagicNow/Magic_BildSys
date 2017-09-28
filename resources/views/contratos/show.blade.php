@@ -37,6 +37,13 @@
                     Solicitações de Entrega
                 </button>
             @endif
+
+            @if($contrato->isStatus(\App\Models\ContratoStatus::ATIVO))
+                    <a class="btn btn-flat bg-olive btn-lg"
+                       href="{!! route('pagamentos.create').'?contrato_id='.$contrato->id !!}">
+                        <i class="fa fa-usd"></i> Incluir Pagamento
+                    </a>
+            @endif
         </h1>
     </section>
 	<div class="content">
@@ -127,7 +134,8 @@
         @if($isEmAprovacao)
             @include('contratos.table-aprovacao')
         @else
-            @include('contratos.table')
+            @php $espelho = null; @endphp
+            @include('contratos.table', compact('espelho'))
             @if($pendencias->isNotEmpty())
                 @include('contratos.box-pendencias')
             @endif

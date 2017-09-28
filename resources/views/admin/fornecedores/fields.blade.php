@@ -180,13 +180,21 @@
   </div>
 </div>
 
+
+<div class="form-group col-sm-12">
+    <label for="fornecedores_associados"  data-toggle="tooltip"
+           title="Utilizado para receber notas fiscais e pagamentos de outros fornecedores pelo mesmo contrato">Fornecedores Associados
+        <i class="fa fa-info-circle"></i> :</label>
+    {!! Form::select('fornecedores_associados[]', $associados ,(!isset($fornecedores)? null: $fornecedores_associados_ids), ['class' => 'form-control', 'id'=>"fornecedores_associados", 'multiple'=>"multiple"]) !!}
+</div>
+
 <div class="col-md-12">
     <h3>Serviços prestados pelo fornecedor:</h3>
 </div>
 <div class="form-group col-md-12">
     {!! Form::label('servicos', 'Serviços:') !!}
     {!! Form::select('servicos[]', $servicos, (!isset($fornecedores)? null : $servicos_fornecedor),
-    ['class' => 'form-control select2', 'required'=>'required', 'multiple'=>'multiple']) !!}
+    ['class' => 'form-control select2', 'multiple'=>'multiple']) !!}
 </div>
 
 <!-- Submit Field -->
@@ -197,6 +205,70 @@
 
 @section('scripts')
     <script type="text/javascript">
+
+        function formatResultNomeId(obj) {
+            if (obj.loading) return obj.text;
+
+            var markup = "<div class='select2-result-obj clearfix'>" +
+                "   <div class='select2-result-obj__meta'>" +
+                "       <div class='select2-result-obj__title'>" + obj.nome +' - CNPJ: '+ obj.cnpj + "</div>" +
+                "   </div>" +
+                "</div>";
+
+            return markup;
+        }
+
+        function formatResultSelectionNomeId(obj) {
+            if (obj.nome) {
+                return obj.nome + ' - CNPJ: '+ obj.cnpj;
+            }
+            return obj.text;
+        }
+
+        $(function () {
+            $('#fornecedores_associados').select2({
+                allowClear: true,
+                placeholder: "Fornecedores Associados",
+                language: "pt-BR",
+                ajax: {
+                    url: "/buscar/fornecedores",
+                    dataType: 'json',
+                    delay: 250,
+
+                    data: function(params) {
+                        return {
+                            q: params.term, // search term
+                            page: params.page,
+                            ignore: {{ isset($fornecedores)?'['.$fornecedores->id.']':'null' }}
+                        };
+                    },
+
+                    processResults: function(result, params) {
+                        // parse the results into the format expected by Select2
+                        // since we are using custom formatting functions we do not need to
+                        // alter the remote JSON data, except to indicate that infinite
+                        // scrolling can be used
+                        params.page = params.page || 1;
+
+                        return {
+                            results: result.data,
+                            pagination: {
+                                more: (params.page * result.per_page) < result.total
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                escapeMarkup: function(markup) {
+                    return markup;
+                }, // let our custom formatter work
+                minimumInputLength: 1,
+                templateResult: formatResultNomeId, // omitted for brevity, see the source of this page
+                templateSelection: formatResultSelectionNomeId // omitted for brevity, see the source of this page
+
+            });
+        });
+
         //CEP
         function buscacep(valor){
             if(valor.length==9){

@@ -293,6 +293,11 @@ class RolesAndPermissions extends Seeder
 
             'lista_qc.list' => 'Lista de QC Suprimentos',
             'lista_qc.edit' => 'Edição de Lista de QC Suprimentos',
+
+            'pagamentos.list' => 'Listagem de pagamentos',
+            'pagamentos.create' => 'Criação de pagamento',
+            'pagamentos.edit'   => 'Edição de pagamento',
+            'pagamentos.delete'   => 'Remoção de pagamento',
         ];
 
         $permissionAccess = [];
