@@ -35,11 +35,10 @@ class CronogramaFisicoRepository extends BaseRepository
 		$endDate = Carbon::parse($lastday);		
 
 		for ($date = $startDate; $date->lte($endDate); $date->addWeek()) {
-			$fridays[] = $date->format('Y-m-d');
+			$fridays[] = $date->format('d/m/Y');
 		}
 		
-		$endDate= $endDate->format('Y-m-d');
-		
+		$endDate= $endDate->format('d/m/Y');		
 		
 		if(end($fridays) != $endDate){
 			$fridays[] = $endDate;

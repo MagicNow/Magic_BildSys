@@ -90,8 +90,8 @@
         </li>
         @endshield
 		@shield('orcamentos.list')
-        <li class="{{ Request::is('admin/orcamento') ? 'active' : '' }}">
-            <a href="{!! route('admin.orcamentos.index') !!}">
+        <li class="{{ Request::is('admin/estruturas') ? 'active' : '' }}">
+            <a href="{!! route('admin.estruturas.index') !!}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
                 <span>Exportar Insumos/Estrutura</span>
             </a>
@@ -124,15 +124,6 @@
             </a>
         </li>
         @endshield
-		
-		@shield('levantamentos.list')
-        <li class="{{ Request::is('admin/estruturas*') ? 'active' : '' }}">
-            <a href="{!! route('admin.estruturas.index') !!}">
-                <i class="fa fa-caret-right" aria-hidden="true"></i>
-                <span>Mascara Estrutura</span>
-            </a>
-        </li>
-        @endshield
         @shield('levantamentos.import')
         <li class="{{ Request::is('admin/levantamentos*') ? 'active' : '' }}">
             <a href="{!! route('admin.levantamentos.indexImport') !!}">
@@ -144,7 +135,7 @@
     </ul>
 </li>
 
-<li class="treeview {{ Request::is('admin/cronogramaFisicos*') ? 'active' : '' }}">
+<li class="treeview {{ Request::is('admin/cronogramaFisicos*') || Request::is('admin/medicao_fisicas*') ? 'active' : '' }}">
     <a href="#">
         <i class="fa fa-book fa-fw"></i> <span>Planejamento Físicos</span>
             <span class="pull-right-container">
@@ -181,6 +172,14 @@
             <a href="{!! route('admin.cronogramaFisicos.indexImport') !!}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
                 <span>Importação</span>
+            </a>
+        </li>
+        @endshield
+		@shield('medicao_fisicas.list')
+        <li class="{{ Request::is('admin/medicao_fisicas*') ? 'active' : '' }}">
+            <a href="{!! route('admin.medicao_fisicas.index') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Medição Física</span>
             </a>
         </li>
         @endshield
