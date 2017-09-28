@@ -44,7 +44,7 @@ class CreatePreOrcamentosTable extends Migration
             $table->unsignedInteger('subgrupo2_id');
             $table->unsignedInteger('subgrupo3_id');
             $table->unsignedInteger('user_id');
-
+			$table->timestamps();
 
             $table->foreign('user_id')
                 ->references('id')->on('users')

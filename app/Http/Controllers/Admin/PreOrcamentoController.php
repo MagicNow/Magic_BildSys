@@ -15,7 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Response;
 
-class PrePreOrcamentoController extends AppBaseController
+class PreOrcamentoController extends AppBaseController
 {
     /** @var  PreOrcamentoRepository */
     private $preOrcamentoRepository;
