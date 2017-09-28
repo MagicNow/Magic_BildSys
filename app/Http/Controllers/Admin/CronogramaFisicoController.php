@@ -46,13 +46,15 @@ class CronogramaFisicoController extends AppBaseController
         }
 				
 		$obras = Obra::pluck('nome','id')->toArray();
+		$meses = ["07/2017", "08/2017", "09/2017"];
+		
 		/*$tipos = ["", "", "", "", ""];
-		$ano = ["", "", "", "", ""];
-		$mes = [];*/
+		$ano = ["", "", "", "", ""];*/
+		
 		
         $templates = TemplatePlanilha::where('modulo', 'Cronograma Fisicos')->pluck('nome','id')->toArray();
 		
-        return $cronogramaFisicoDataTable->porObra($id)->render('admin.cronograma_fisicos.index', compact('obras','templates','id'));
+        return $cronogramaFisicoDataTable->porObra($id)->render('admin.cronograma_fisicos.index', compact('obras', 'meses', 'templates','id'));
     }
 
     /**

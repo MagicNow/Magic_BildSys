@@ -47,19 +47,20 @@ class CronogramaFisicoDataTable extends DataTable
      * @return \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder
      */
     public function query()
-    {		
+    {			
 		
 		//mostra a semana do mes anterior
-		if($this->request()->get('mes_id')){
-            $mesId = $this->request()->get('mes_id');
-			$fromDate = Carbon::createFromFormat("d/m/Y", "01/".$mesId)->startOfMonth();
+		if($this->request()->get('mes')){
+			$meses = ["07/2017","08/2017","09/2017"];
+			$mesId = $this->request()->get('mes');
+			$fromDate = Carbon::createFromFormat("d/m/Y", "01/".$meses[$mesId-1])->startOfMonth();
         }else{
-			$fromDate = Carbon::today();
+			$fromDate = Carbon::today()->startOfMonth();
 		}
 		
 		$fridays = CronogramaFisicoRepository::getFridaysBydate($fromDate);		
 		$last_day= end($fridays);	
-		
+				
         $cronograma_fisicos = CronogramaFisico::query()
             ->select([
                 'cronograma_fisicos.id',
