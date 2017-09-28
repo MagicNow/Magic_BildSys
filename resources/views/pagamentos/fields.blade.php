@@ -132,7 +132,7 @@
                         </div>
                         <div class="col-xs-2">
                             <label>Data Base Multa</label>
-                            {!! Form::date('parcelas['.$qtdParcelas.'][data_base_multa]', $parcela->data_base_multa->format('Y-m-d'),
+                            {!! Form::date('parcelas['.$qtdParcelas.'][data_base_multa]', $parcela->data_base_multa ? $parcela->data_base_multa->format('Y-m-d') : null,
                             ['class' => 'form-control','placeholder'=>'Data Base Multa']) !!}
                         </div>
                     </div>
