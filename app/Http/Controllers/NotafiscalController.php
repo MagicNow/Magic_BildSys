@@ -589,7 +589,7 @@ class NotafiscalController extends AppBaseController
         // -- Numero da Tarefa (para Entrada de Nota = (701 - Insumos / 705 - Recebimentos / 306 - Faturas a Pagar)
         // -- XML desenvolvimento pela Mazzatech
 
-        $porta = 306;
+        $porta = 705; // Porta de integração de Notas fiscais
 
         try {
             $sql = "BEGIN

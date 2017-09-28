@@ -705,7 +705,7 @@ class MegaXmlRepository
 
                 //    data_base_multa
                 if($parcela->data_base_multa){
-                    $node = $domtree->createElement("MOV_DT_DTBASEMULTA", $parcela->data_base_multa);
+                    $node = $domtree->createElement("MOV_DT_DTBASEMULTA", $parcela->data_base_multa->format('d/m/Y'));
                     $itensNode->appendChild($node);
                 }
 

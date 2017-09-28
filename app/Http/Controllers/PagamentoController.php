@@ -218,6 +218,29 @@ class PagamentoController extends AppBaseController
 
         $megaXML = new MegaXmlRepository();
         $xml = $megaXML->montaXMLPagamento($pagamento);
-        dd($xml);
+
+        $porta = 306; // Porta de integração de Pagamento.
+
+        try {
+            $sql = "BEGIN
+                    MGCLI.pck_bld_app.F_Int_Integrador(:porta, :xml);
+                    END;";
+
+            $pdo = DB::connection('oracle')
+                ->getPdo();
+            $stmt = $pdo->prepare($sql);
+
+            $stmt->bindParam(':porta', $porta);
+            $stmt->bindParam(':xml', $xml);
+
+            $result = [];
+            $result = $stmt->execute();
+
+            dump($result, $xml);
+
+        } catch (\Exception $e) {
+            dump($e);
+        }
+        dd('Executado');
     }
 }
