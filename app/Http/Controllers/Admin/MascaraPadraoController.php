@@ -7,8 +7,11 @@ use App\Http\Requests\Admin;
 use App\Http\Requests\Admin\CreateMascaraPadraoRequest;
 use App\Http\Requests\Admin\UpdateMascaraPadraoRequest;
 use App\Http\Controllers\AppBaseController;
+use App\Models\Grupo;
+use App\Models\Servico;
 use App\Repositories\Admin\MascaraPadraoRepository;
 use App\Repositories\CodeRepository;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Flash;
 use Response;
@@ -60,7 +63,11 @@ class MascaraPadraoController extends AppBaseController
 
         Flash::success(' Máscara Padrão '.trans('common.saved').' '.trans('common.successfully').'.');
 
-        return redirect(route('admin.mascara_padrao.index'));
+        if ($request->get('save') != 'SAVE-CONTINUE') {
+            return redirect(route('admin.mascara_padrao.index'));
+        } else {
+            return redirect(route('admin.mascara_padrao.edit', [$mascaraPadrao->id]));
+        }
     }
 
     /**
@@ -152,5 +159,36 @@ class MascaraPadraoController extends AppBaseController
         Flash::success(' Máscara Padrão '.trans('common.deleted').' '.trans('common.successfully').'.');
 
         return redirect(route('admin.mascara_padrao.index'));
+    }
+
+    public function getGrupos($id)
+    {
+        $grupo = Grupo::select([
+            'grupos.id',
+            DB::raw("CONCAT(grupos.codigo, ' ', grupos.nome) as nome")
+        ])
+            ->where('grupos.grupo_id', $id)
+            ->orderBy('grupos.nome', 'ASC');
+
+
+        $grupo = $grupo->pluck('grupos.nome','grupos.id')
+            ->toArray();
+
+        dd($grupo);
+        return $grupo;
+    }
+
+    public function getServicos($id)
+    {
+        $servico = Servico::select([
+            'servicos.id',
+            DB::raw("CONCAT(servicos.codigo, ' ', servicos.nome) as nome")
+        ])
+            ->where('servicos.grupo_id', $id)
+            ->orderBy('servicos.nome', 'ASC');
+
+        $servico = $servico->pluck('nome', 'id')->toArray();
+
+        return $servico;
     }
 }

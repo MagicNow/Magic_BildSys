@@ -28,7 +28,7 @@ class AlterMascaraPadraoNovosCamposTable extends Migration
 		
         Schema::create('mascara_padrao_insumos', function (Blueprint $table) {
             
-            $table->increments('id');			            
+            $table->increments('id');
             $table->unsignedInteger('mascara_padrao_id');  
 			$table->string('codigo_estruturado', 45);
 			$table->unsignedInteger('insumo_id');			          

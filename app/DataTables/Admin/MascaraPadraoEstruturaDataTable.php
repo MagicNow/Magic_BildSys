@@ -2,11 +2,11 @@
 
 namespace App\DataTables\Admin;
 
-use App\Models\MascaraPadrao;
+use App\Models\MascaraPadraoEstrutura;
 use Form;
 use Yajra\Datatables\Services\DataTable;
 
-class MascaraPadraoDataTable extends DataTable
+class MascaraPadraoEstruturaDataTable extends DataTable
 {
 
     /**
@@ -16,13 +16,7 @@ class MascaraPadraoDataTable extends DataTable
     {
         return $this->datatables
             ->eloquent($this->query())
-            ->editColumn('action', 'admin.mascara_padrao.datatables_actions')
-            ->editColumn('created_at', function($obj){
-                return $obj->created_at ? with(new\Carbon\Carbon($obj->created_at))->format('d/m/Y H:i') : '';
-            })
-            ->filterColumn('created_at', function ($query, $keyword) {
-                $query->whereRaw("DATE_FORMAT(mascara_padrao.created_at,'%d/%m/%Y') like ?", ["%$keyword%"]);
-            })
+            ->addColumn('action', 'admin.mascara_padrao_estruturas.datatables_actions')
             ->make(true);
     }
 
@@ -33,9 +27,9 @@ class MascaraPadraoDataTable extends DataTable
      */
     public function query()
     {
-        $mascara_padrao = MascaraPadrao::query();
+        $mascaraPadraoEstruturas = MascaraPadraoEstrutura::query();
 
-        return $this->applyScopes($mascara_padrao);
+        return $this->applyScopes($mascaraPadraoEstruturas);
     }
 
     /**
@@ -47,11 +41,10 @@ class MascaraPadraoDataTable extends DataTable
     {
         return $this->builder()
             ->columns($this->getColumns())
-            // ->addAction(['width' => '10%'])
+            ->addAction(['width' => '10%'])
             ->ajax('')
             ->parameters([
-                'responsive' => 'true',
-                 'initComplete' => 'function () {
+                'initComplete' => 'function () {
                     max = this.api().columns().count();
                     this.api().columns().every(function (col) {
                         if((col+1)<max){
@@ -67,7 +60,7 @@ class MascaraPadraoDataTable extends DataTable
                         }
                     });
                 }' ,
-                'dom' => 'Bfrltip',
+                'dom' => 'Bfrtip',
                 'scrollX' => false,
                 'language'=> [
                     "url"=> "/vendor/datatables/Portuguese-Brasil.json"
@@ -98,9 +91,9 @@ class MascaraPadraoDataTable extends DataTable
     private function getColumns()
     {
         return [
-            'nome' => ['name' => 'nome', 'data' => 'nome'],
-            'descrição' => ['name' => 'descricao', 'data' => 'descricao'],
-            'cadastradaEm' => ['name' => 'created_at', 'data' => 'created_at'],
+            'máscaraPadrão' => ['name' => 'mascara_padrao_id', 'data' => 'mascara_padrao_id'],
+            'códigoEstruturado' => ['name' => 'codigo', 'data' => 'codigo'],
+            'coeficiente' => ['name' => 'coeficiente', 'data' => 'coeficiente'],
             'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }
@@ -112,6 +105,6 @@ class MascaraPadraoDataTable extends DataTable
      */
     protected function filename()
     {
-        return 'mascara_padrao';
+        return 'mascaraPadraoEstruturas';
     }
 }

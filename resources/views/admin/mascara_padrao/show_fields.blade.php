@@ -15,3 +15,9 @@
     {!! Form::label('updated_at', 'Atualizado em:') !!}
     <p class="form-control">{!! $mascaraPadrao->updated_at->format('d/m/Y')  !!}</p>
 </div>
+
+<!-- Descrição Field -->
+<div class="form-group col-md-12">
+    {!! Form::label('descricao', 'Descrição:') !!}
+    <textarea class="form-control" rows="5">{!! $mascaraPadrao->descricao !!}</textarea>
+</div>
