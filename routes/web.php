@@ -1328,6 +1328,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     $router->get('notasfiscais/{notafiscal}', ['as' => 'notafiscals.show', 'uses' => 'NotafiscalController@show']);
     $router->get('notasfiscais/{notafiscal}/edit', ['as' => 'notafiscals.edit', 'uses' => 'NotafiscalController@edit']);
     $router->get('notasfiscais/conciliacao/filtro', ['as' => 'notafiscals.filtro', 'uses' => 'NotafiscalController@filtraFornecedorContratos']);
+    $router->get('notasfiscais/pagamentos/filtro/{contrato_id}/{nfe_id}', ['as' => 'notafiscals.pagamentos.filtro', 'uses' => 'NotafiscalController@filtrarPagamentos']);
 
     $router->get('capturaNfe', 'NotafiscalController@pescadorNfe');
     $router->get('capturaCte', 'NotafiscalController@buscaCTe');
