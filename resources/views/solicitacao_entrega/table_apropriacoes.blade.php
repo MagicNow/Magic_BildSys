@@ -28,7 +28,8 @@
                         {{ $item->apropriacao->subgrupo3->codigo .' - '. $item->apropriacao->subgrupo3->nome }}<br/>
                         {{ $item->apropriacao->servico->codigo   .' - '. $item->apropriacao->servico->nome }}
                     ">
-                    {{ $item->apropriacao->codigoEstruturado() }}
+                    {{--{{ $item->apropriacao->codigoEstruturado() }}--}}
+                    {{ $item->apropriacao->servico->nome }}
                 </td>
                 <td>{{ $item->solicitacaoEntregaItem->insumo->nome }}</td>
                 <td>{{ $item->solicitacaoEntregaItem->insumo->unidade_sigla }}</td>

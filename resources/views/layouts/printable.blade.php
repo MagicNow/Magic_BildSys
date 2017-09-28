@@ -294,36 +294,8 @@
         </style>
     </head>
     <body>
-        <div class="col-sm-12" style="padding-top: 30px;">
-
-            <div class="col-sm-10" style="width: 88.333333%;">
-                <div class="col-sm-2" style="width: 9%;">
-                    <span class="logo-lg">
-                        <img src="{{ asset('img/bild_10_anos.jpg') }}">
-                    </span>
-                </div>
-
-                <div class="col-sm-10">
-                    <div class="text-left" style="padding-top: 11px;">
-                        Razão Social: BILD DESENVOLVIMENTO IMOBILIARIO<br>
-                        CNPJ: 08.964.23/0001-50<br>
-                        Inscrição Estadual: 582.884.524.111<br>
-                        Inscrição Municipal: 12635301 –<br>
-                        Endereço: Av. Professor João Fiúsa, 2340 – Jd. Canadá – Ribeirão Preto<br>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-sm-1">
-                <span class="logo-lg">
-                    <img src="{{ asset('img/logo_bild.png') }}">
-                </span>
-            </div>
-
-            <div class="content" style="padding-left: 30px; padding-right: 30px;">
-                @yield('content')
-            </div>
-
+        <div class="content" style="padding-left: 30px; padding-right: 30px;">
+            @yield('content')
         </div>
     </body>
 </html>

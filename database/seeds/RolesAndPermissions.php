@@ -95,7 +95,7 @@ class RolesAndPermissions extends Seeder
             'obras.create' => 'Criação de obras',
             'obras.edit'   => 'Edição de obras',
             'obras.view'   => 'Visualização de obras',
-			
+
 			'carteiras.list' => 'Listagem de carteiras',
             'carteiras.create' => 'Criação de carteiras',
             'carteiras.edit'   => 'Edição de carteiras',
@@ -122,23 +122,23 @@ class RolesAndPermissions extends Seeder
             'compradorInsumos.delete'   => 'Remoção de comprador/insumos',
             'compradorInsumos.deleteBlocoView'   => 'Remoção em bloco de comprador/insumos',
 			'compradorInsumos.semInsumoView'   => 'Insumos que não tem comprador associado',
-			
+
 			'mascara_padrao_insumos.list'   => 'Listagem de Máscara Padrão/Insumos',
             'mascara_padrao_insumos.create'   => 'Criação de Máscara Padrão/Insumos',
 			'mascara_padrao_insumos.edit'   => 'Edição de Máscara Padrão/Insumos',
             'mascara_padrao_insumos.delete'   => 'Remoção de Máscara Padrão/Insumos',
             'mascara_padrao_insumos.deleteBlocoView'   => 'Remoção em bloco de Máscara Padrão/Insumos',
 			'mascara_padrao_insumos.semInsumoView'   => 'Insumos que não tem Máscara Padrão associada',
-			
+
 			'tarefa_mascaras.list'   => 'Listagem de Tarefa/Máscaras Padrão',
             /*'tarefa_mascaras.create'   => 'Criação de Tarefa/Máscaras Padrão',
 			'tarefa_mascaras.edit'   => 'Edição de Tarefa/Máscaras Padrão',
             'tarefa_mascaras.delete'   => 'Remoção de Tarefa/Máscaras Padrão',
             'tarefa_mascaras.deleteBlocoView'   => 'Remoção em bloco de Tarefa/Máscaras Padrão',
 			'tarefa_mascaras.semInsumoView'   => 'Insumos que não tem Tarefa/Máscaras Padrão',*/
-			
+
 			'carteiraInsumos.list'   => 'Listagem de carteira/insumos',
-            'carteiraInsumos.create'   => 'Criação de carteira/insumos',			
+            'carteiraInsumos.create'   => 'Criação de carteira/insumos',
             'carteiraInsumos.delete'   => 'Remoção de carteira/insumos',
             'carteiraInsumos.deleteBlocoView'   => 'Remoção em bloco de carteira/insumos',
 			'carteiraInsumos.semCarteiraView'   => 'Insumos que não tem carteira associada',
@@ -171,49 +171,49 @@ class RolesAndPermissions extends Seeder
             'regionals.list' => 'Listagem de regionais',
             'regionals.create' => 'Criação de regional',
             'regionals.edit'   => 'Edição de regional',
-            'regionals.delete'   => 'Remoção de regional',			         
+            'regionals.delete'   => 'Remoção de regional',
 
 			'cronogramaFisicos.list' => 'Listagem de cronograma físicos',
             'cronogramaFisicos.create' => 'Criação de cronograma físicos',
             'cronogramaFisicos.edit'   => 'Edição de cronograma físicos',
             'cronogramaFisicos.delete'   => 'Remoção de cronograma físicos',
-			
+
             'cronogramaFisicos.import' => 'Importar orçamentos',
 			'cronogramaFisicos.dashboard' => 'Dashboard do Cronograma Físico',
-			
+
 			'levantamentos.list' => 'Listagem de levantamento',
             'levantamentos.create' => 'Criação de levantamento',
             'levantamentos.edit'   => 'Edição de levantamento',
-            'levantamentos.delete'   => 'Remoção de levantamento',			
-            'levantamentos.import' => 'Importar levantamentos',			
-			
+            'levantamentos.delete'   => 'Remoção de levantamento',
+            'levantamentos.import' => 'Importar levantamentos',
+
 			'tipoLevantamentos.list' => 'Listagem de tipos de levantamento',
             'tipoLevantamentos.create' => 'Criação de tipos de levantamento',
             'tipoLevantamentos.edit'   => 'Edição de tipos de levantamento',
             'tipoLevantamentos.delete'   => 'Remoção de tipos de levantamento',
-			
+
 			'mascaraInsumos.list' => 'Listagem de Mascara de Insumos',
             'mascaraInsumos.create' => 'Criação de Mascara de Insumos',
             'mascaraInsumos.edit'   => 'Edição de Mascara de Insumos',
             'mascaraInsumos.delete'   => 'Remoção de Mascara de Insumos',
-			
+
 			'estruturas.list' => 'Listagem de estruturas',
             'estruturas.create' => 'Criação de estruturas',
             'estruturas.edit'   => 'Edição de estruturas',
             'estruturas.delete'   => 'Remoção de estruturas',
-			
+
 			'mascara_padrao.list'   => 'Listagem de Mascara Padrão',
-            'mascara_padrao.create'   => 'Criação de Mascara Padrão',			
+            'mascara_padrao.create'   => 'Criação de Mascara Padrão',
             'mascara_padrao.edit'   => 'Edição de Mascara Padrão',
-			'mascara_padrao.delete'   => 'Remoção de Mascara Padrão', 
-            
+			'mascara_padrao.delete'   => 'Remoção de Mascara Padrão',
+
 			'tarefa_padrao.list'   => 'Listagem de Mascara Padrão',
-            'tarefa_padrao.create'   => 'Criação de Mascara Padrão',			
+            'tarefa_padrao.create'   => 'Criação de Mascara Padrão',
             'tarefa_padrao.edit'   => 'Edição de Mascara Padrão',
-			'tarefa_padrao.delete'   => 'Remoção de Mascara Padrão', 
+			'tarefa_padrao.delete'   => 'Remoção de Mascara Padrão',
 
             ################# SITE ###################
-			
+
             'compras_lembretes.list' => 'Listagem de compras e lembretes',
 
             'compras.geral' => 'Acesso aos módulos de compras',
@@ -253,12 +253,12 @@ class RolesAndPermissions extends Seeder
             'contratos.reapropriar' => 'Reapropriar item do contrato',
             'contratos.previsao_de_memoria_de_calculo' => 'Previsão de memória de cálculo',
             'contratos.solicitar_entrega' => 'Solicitar entrega do Contrato',
-			
+
 			'lpu.list'        => 'Listagem de Lpu',
             'lpu.show'        => 'Visualização de Lpu',
-            'lpu.edit'        => 'Editar Lpu',			
-            'lpu.reajustar'   => 'Reajustar item do Lpu',			
-			
+            'lpu.edit'        => 'Editar Lpu',
+            'lpu.reajustar'   => 'Reajustar item do Lpu',
+
             'configuracaoEstaticas.list'   => 'Listagem de Configuração padrão',
             'configuracaoEstaticas.edit'   => 'Edição de Configuração padrão',
             'configuracaoEstaticas.show'   => 'Visualizar Configuração padrão',
@@ -285,15 +285,15 @@ class RolesAndPermissions extends Seeder
             'qc.create' => 'Criação de QC',
             'qc.show' => 'Visualização de QC',
 
+            'topologia.list' => 'Listagem de topologias',
+            'topologia.create' => 'Criação de topologia',
+            'topologia.edit'   => 'Edição de topologia',
+            'topologia.delete'   => 'Remoção de topologia',
+
             'pagamentos.list' => 'Listagem de pagamentos',
             'pagamentos.create' => 'Criação de pagamento',
             'pagamentos.edit'   => 'Edição de pagamento',
             'pagamentos.delete'   => 'Remoção de pagamento',
-
-            'tipologia.list' => 'Listagem de tipologias',
-            'tipologia.create' => 'Criação de tipologia',
-            'tipologia.edit'   => 'Edição de tipologia',
-            'tipologia.delete'   => 'Remoção de tipologia',
         ];
 
         $permissionAccess = [];

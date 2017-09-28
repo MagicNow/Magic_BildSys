@@ -459,14 +459,32 @@ class NotafiscalController extends AppBaseController
                 'ITENS_RCI_RE_VLICMS' => $item->valor_icms,
                 'ITENS_RCB_ST_NOTA' => $notafiscal->codigo,
                 'ITENS_UNI_ST_UNIDADE' => $insumos[0]->unidade_sigla,
+                //Torna-se obrigatório quando a Unidade de Medida utilizada no Recebimento for diferente da Unidade de Medida Padrão.
                 'ITENS_FMT_ST_CODIGO' => NULL,
-                'ITENS_APL_IN_CODIGO' => NULL,
-                'ITENS_TPC_ST_CLASSE' => NULL,
-                'ITENS_CFOP_IN_CODIGO' => NULL,
-                'ITENS_COS_IN_CODIGO' => NULL,
-                'ITENS_UF_LOC_ST_SIGLA' => NULL,
-                'ITENS_MUN_LOC_IN_CODIGO' => NULL,
+                //121 para serviço,
+                //101 para material,
+                //111 Energia Elétrica,
+                //992 Serviço de Comunicação
+                //993 Frete
+                'ITENS_APL_IN_CODIGO' => 101,
+                // 150 para material p/ construção,
+                // 151 serviços técnicos,
+                // 174 gastos com canteiro de obra,
+                // 152 Mão de Obra para levantamento da obra
+                'ITENS_TPC_ST_CLASSE' => 150,
+                // Código de Aplicação ->
+                // CFOP  = 121 -> 1933
+                // 101 -> 1949
+                // 111 -> 1253
+                // 992 -> 1353
+                // 993 -> 1303
+                'ITENS_CFOP_IN_CODIGO' => $item->cfop,
+                'ITENS_COS_IN_CODIGO' => NULL,//Verificar Campo
+                'ITENS_UF_LOC_ST_SIGLA' => $notafiscal->destinatario_uf,
+                'ITENS_MUN_LOC_IN_CODIGO' => $notafiscal->destinatario_cidade_codigo,
+                // "Almoxarifado do Item"
                 'ITENS_ALM_IN_CODIGO' => NULL,
+                // "Localização do Item"
                 'ITENS_LOC_IN_CODIGO' => NULL,
                 'ITENS_RCI_RE_VALORPVV' => NULL,
                 'ITENS_RCI_RE_VLICMRETIDO' => NULL,
@@ -477,11 +495,11 @@ class NotafiscalController extends AppBaseController
                 'ITENS_RCI_RE_ICMSRECUPERA' => NULL,
                 'ITENS_RCI_RE_VLISENICM' => NULL,
                 'ITENS_RCI_RE_VLOUTRICM' => NULL,
-                'ITENS_RCI_RE_VLBASEICM' => NULL,
+                'ITENS_RCI_RE_VLBASEICM' => $item->base_calculo_icms,
                 'ITENS_RCI_RE_VALDIFICMS' => NULL,
-                'ITENS_RCI_RE_BASEISS' => NULL,
-                'ITENS_RCI_RE_PERISS' => NULL,
-                'ITENS_RCI_RE_VLISS' => NULL,
+                'ITENS_RCI_RE_BASEISS' => 0.00,
+                'ITENS_RCI_RE_PERISS' => 0.00,
+                'ITENS_RCI_RE_VLISS' => 0.00,
                 'ITENS_RCI_RE_BASEINSS' => NULL,
                 'ITENS_RCI_RE_PERINSS' => NULL,
                 'ITENS_RCI_RE_VLINSS' => NULL,
@@ -490,7 +508,7 @@ class NotafiscalController extends AppBaseController
                 'ITENS_RCI_RE_VLIRRF' => NULL,
                 'ITENS_RCI_RE_BASESUBTRIB' => NULL,
                 'ITENS_RCI_RE_PERDIFICMS' => NULL,
-                'ITENS_RCI_ST_NCM_EXTENSO' => NULL,
+                'ITENS_RCI_ST_NCM_EXTENSO' => $item->ncm,
                 'ITENS_RCI_CH_STICMS_A' => NULL,
                 'ITENS_RCI_CH_STICMS_B' => NULL,
                 'ITENS_RCI_RE_VLDESPNAOTRIB' => NULL,
@@ -498,17 +516,18 @@ class NotafiscalController extends AppBaseController
                 'ITENS_RCI_RE_VLICMRETIDOANT' => NULL,
                 'ITENS_RCI_RE_BASESUBTRIBANT' => NULL,
                 'ITENS_RCI_RE_VLPISRETIDO' => NULL,
+                // "Valor PIS Recuperado"
                 'ITENS_RCI_RE_VLPISRECUPERA' => NULL,
-                'ITENS_RCI_RE_PERCPIS' => NULL,
-                'ITENS_RCI_RE_VLPIS' => NULL,
-                'ITENS_RCI_RE_VLBASEPIS' => NULL,
+                'ITENS_RCI_RE_PERCPIS' => $item->aliquota_pis,
+                'ITENS_RCI_RE_VLPIS' => $item->valor_pis,
+                'ITENS_RCI_RE_VLBASEPIS' => $item->base_calculo_pis,
                 'ITENS_RCI_RE_VLCOFINSRETIDO' => NULL,
                 'ITENS_RCI_RE_VLCOFINSRECUPERA' => NULL,
-                'ITENS_RCI_RE_PERCCOFINS' => NULL,
-                'ITENS_RCI_RE_VLCOFINS' => NULL,
-                'ITENS_RCI_RE_VLBASECOFINS' => NULL,
-                'ITENS_RCI_RE_PERCSLL' => NULL,
-                'ITENS_RCI_RE_VLBASECSLL' => NULL,
+                'ITENS_RCI_RE_PERCCOFINS' => $item->aliquota_cofins,
+                'ITENS_RCI_RE_VLCOFINS' => $item->valor_cofins,
+                'ITENS_RCI_RE_VLBASECOFINS' => $item->base_calculo_cofins,
+                'ITENS_RCI_RE_PERCSLL' => 0,
+                'ITENS_RCI_RE_VLBASECSLL' => 0,
                 'ITENS_RCI_RE_VLCSLL' => NULL,
                 'ITENS_NAT_ST_CODIGO' => NULL,
                 'ITENS_RCI_RE_VLICMSDIFERIDO' => NULL,
@@ -518,23 +537,27 @@ class NotafiscalController extends AppBaseController
                 'ITENS_RCI_BO_GENERICO' => NULL,
                 'ITENS_COMPL_ST_DESCRICAO' => NULL,
                 'ITENS_COSM_IN_CODIGO' => NULL,
-                'ITENS_NCM_IN_CODIGO' => NULL,
+                'ITENS_NCM_IN_CODIGO' => $item->ncm,
                 'ITENS_RCO_ST_COMPLEMENTO' => NULL,
-                'ITENS_RCI_BO_CALCULARVALORES' => NULL,
+                'ITENS_RCI_BO_CALCULARVALORES' => 'N',
                 'ITENS_RCI_RE_ICMSSTRECUPERA' => NULL,
                 'ITENS_RCI_RE_BASEFUNRURAL' => NULL,
                 'ITENS_RCI_RE_ALIQFUNRURAL' => NULL,
                 'ITENS_RCI_RE_VALORFUNRURAL' => NULL,
                 'ITENS_STS_ST_CSOSN' => NULL,
-                'ITENS_RCI_ST_STIPI' => NULL,
-                'ITENS_STP_ST_CSTPIS' => NULL,
-                'ITENS_STC_ST_CSTCOFINS' => NULL,
+                //"Situação Tributária do IPI"
+                'ITENS_RCI_ST_STIPI' => $item->situacao_tributacao_ipi,
+                 //"Código da Situação Tributária do PIS"
+                'ITENS_STP_ST_CSTPIS' => $item->situacao_tributacao_pis,
+                 //"Código da Situação Tributária do COFINS"
+                'ITENS_STC_ST_CSTCOFINS' => $item->situacao_tributacao_cofins,
                 'ITENS_RCI_RE_VLBASESESTSENAT' => NULL,
                 'ITENS_RCI_RE_PERCSESTSENAT' => NULL,
                 'ITENS_RCI_RE_VLSESTSENAT' => NULL,
                 'ITENS_RCI_CH_DEFIPI' => NULL,
                 'ITENS_RCI_RE_PAUTAIPI' => NULL,
-                'ITENS_ENI_ST_CODIGO' => NULL,
+                // "Cód.Enquadramento IPI"
+                'ITENS_ENI_ST_CODIGO' => $item->codigo_enquadramento_ipi,
 
                 //'LotesVinculados' => NULL,
                 'LOTES_OPERACAO' => 'I',
@@ -603,8 +626,8 @@ class NotafiscalController extends AppBaseController
             $stmt->bindParam(':porta', $porta);
             $stmt->bindParam(':xml', $xml);
 
-            $result = [];
-            //$result = $stmt->execute();
+            //$result = [];
+            $result = $stmt->execute();
 
             dump($result, $xml);
 
