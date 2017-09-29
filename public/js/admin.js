@@ -66743,3 +66743,4 @@ function getInsumo(id) {
         return pos;
     }
 })(jQuery);
+//# sourceMappingURL=admin.js.map
