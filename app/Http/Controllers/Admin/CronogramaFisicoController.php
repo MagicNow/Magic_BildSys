@@ -46,13 +46,15 @@ class CronogramaFisicoController extends AppBaseController
         }
 				
 		$obras = Obra::pluck('nome','id')->toArray();
+		$meses = ["07/2017", "08/2017", "09/2017"];
+		
 		/*$tipos = ["", "", "", "", ""];
-		$ano = ["", "", "", "", ""];
-		$mes = [];*/
+		$ano = ["", "", "", "", ""];*/
+		
 		
         $templates = TemplatePlanilha::where('modulo', 'Cronograma Fisicos')->pluck('nome','id')->toArray();
 		
-        return $cronogramaFisicoDataTable->porObra($id)->render('admin.cronograma_fisicos.index', compact('obras','templates','id'));
+        return $cronogramaFisicoDataTable->porObra($id)->render('admin.cronograma_fisicos.index', compact('obras', 'meses', 'templates','id'));
     }
 
     /**
@@ -440,7 +442,7 @@ class CronogramaFisicoController extends AppBaseController
     }	
 	
 	// Dados calculados em todos os meses
-	public function percentualPorMes($obraId, $meses, $tipoPlanejamento){	
+	public function percentualPorMes($obraId, $meses, $tipoPlanejamento){
 		
 		//Remover o primeiro item do select
 		unset($meses[0]);
@@ -507,11 +509,6 @@ class CronogramaFisicoController extends AppBaseController
 		return $planoAcumuladoMes;
 		
 	}	
-	
-	// Dados vindo do Mediçao Fisicas
-	public function planoTrabalhoAcumulado($planoTrabalho){
-		
-	}
 		
 	// Dados vindo do Mediçao Fisicas
 	public function realizadoSemanal($planoTendenciaReal){
@@ -545,37 +542,42 @@ class CronogramaFisicoController extends AppBaseController
 						WHERE CF.id = cronograma_fisicos.id 
 					 ) as peso"
 			),
-			'cronograma_fisicos.concluida',				
+			/*'cronograma_fisicos.concluida',				
 			DB::raw("(SELECT (case when count(distinct CF.id) = 1 then 'Sim' else 'Não' end) as tarefa_mes
 						FROM cronograma_fisicos CF
 						WHERE CF.id = cronograma_fisicos.id						
 						AND (CF.data_termino >= '$inicioMes')						
 						AND (CF.data_inicio <= '$fimMes')
 					 ) as tarefa_mes"
-			),               
+			),*/					
+			/*DB::raw("(SELECT MF.valor_medido as valor_realizado
+						FROM medicao_fisicas MF
+						WHERE MF.tarefa = cronograma_fisicos.tarefa						
+						AND MF.obra_id = cronograma_fisicos.obra_id						
+					 ) as valor_realizado"
+			),*/
 			'cronograma_fisicos.created_at'					
 		])
 		->join('obras','obras.id','cronograma_fisicos.obra_id')
 		->join('template_planilhas','template_planilhas.id','cronograma_fisicos.template_id')
 		->where('cronograma_fisicos.obra_id', $obraId)
-		->where('cronograma_fisicos.resumo','Não')				
+		->where('cronograma_fisicos.resumo','Não')
+		->where('cronograma_fisicos.data_termino','>=',$inicioMes)
+		->where('cronograma_fisicos.data_inicio','<=',$fimMes)		
 		->where('template_planilhas.nome',$tipoPlanejamento)		
-		->orderBy('cronograma_fisicos.data_inicio', 'desc')		
+		->orderBy('cronograma_fisicos.data_inicio', 'desc')
+		->groupBy('cronograma_fisicos.tarefa')		
 		->get()
 		->toArray();
 		
-		//dd(DB::getQueryLog());
-
-		//dump($tabColetaSemanal);
-
 		//Filtrar por Tarefa do Mês				
 		foreach ($tabColetaSemanal as $keyT => $tarefa) {				
 			
-			if($tarefa['tarefa_mes']!='Sim'){
+			//if($tarefa['tarefa_mes']!='Sim'){
 				
-				unset($tabColetaSemanal[$keyT]);
+				//unset($tabColetaSemanal[$keyT]);
 			
-			}else{
+			//}else{
 				
 				foreach($sextasArray as $sexta){								
 					
@@ -584,20 +586,22 @@ class CronogramaFisicoController extends AppBaseController
 					$fimTarefa = Carbon::parse($tarefa['data_termino']);					
 					
 					$inicioSemana = Carbon::createFromFormat("d/m/Y", $sexta)->subDays(6);									
-					$fimSemana = Carbon::createFromFormat("d/m/Y", $sexta);											
+					$fimSemana = Carbon::createFromFormat("d/m/Y", $sexta);						
 
-					$valorPrevisto = CronogramaFisicoRepository::getPorcentagem($inicioTarefa, $fimTarefa, $inicioSemana, $fimSemana);
-					$valorMedicaoFisica = 0;
-										
+					$valorPrevisto = CronogramaFisicoRepository::getPrevistoPorcentagem($inicioTarefa, $fimTarefa, $inicioSemana, $fimSemana);										
+					$valorMedicaoFisica = CronogramaFisicoRepository::getRealizadoPorcentagem($inicioSemana, $fimSemana, $obraId, $tarefa['tarefa']);																				
+									
 					$tabColetaSemanal[$keyT]["percentual-".$sexta] =  round($valorPrevisto,4);
 					$tabColetaSemanal[$keyT]["realizado-".$sexta] =  $valorMedicaoFisica; //Mediçao Fisicas
 					//Mes
 					//Farol
 										
 				}				
-			}	
+			//}	
 		}
-				
+		
+		//dump($tabColetaSemanal);die;
+		
 		return $tabColetaSemanal;
 	}
 			
@@ -663,8 +667,7 @@ class CronogramaFisicoController extends AppBaseController
 		
 		return $previstoSemanal;
 	}
-	
-	
+		
 	//Acompanhamento Mensal
 	public function relMensal(Request $request)
     {	

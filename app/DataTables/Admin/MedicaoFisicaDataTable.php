@@ -31,11 +31,11 @@ class MedicaoFisicaDataTable extends DataTable
                     : '';
             })
             ->editColumn('valor_medido', function ($medicaoFisica) {
-                return $medicaoFisica->valor_medido;
+                return $medicaoFisica->valor_medido."%";
             })
 			->editColumn('created_at', function ($medicaoFisica) {
                 return $medicaoFisica->created_at
-                    ? $medicaoFisica->created_at->format('d/m/Y h:i:s')
+                    ? $medicaoFisica->created_at->format('d/m/Y h:i')
                     : '';
             })            
             ->editColumn('action', 'admin.medicao_fisicas.datatables_actions')
