@@ -43,6 +43,12 @@ $(function () {
 		templateSelection: formatResultSelection // omitted for brevity, see the source of this page
 	});
 
+	$('.currency').on('blur', function () {
+		$('.currency').formatCurrency({
+			symbol: 'R$',
+		});
+	});
+
 	$attachments.find('input[type="file"]').on('change', checkAttachmentTypeExists);
 	$attachments.find('select').on('change', checkAttachmentTypeExists);
 

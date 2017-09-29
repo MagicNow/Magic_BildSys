@@ -3,6 +3,7 @@
 namespace App\Repositories\Admin;
 
 use App\Models\CronogramaFisico;
+use App\Models\MedicaoFisica;
 use Illuminate\Support\Facades\DB;
 use InfyOm\Generator\Common\BaseRepository;
 use Carbon\Carbon;
@@ -35,11 +36,10 @@ class CronogramaFisicoRepository extends BaseRepository
 		$endDate = Carbon::parse($lastday);		
 
 		for ($date = $startDate; $date->lte($endDate); $date->addWeek()) {
-			$fridays[] = $date->format('Y-m-d');
+			$fridays[] = $date->format('d/m/Y');
 		}
 		
-		$endDate= $endDate->format('Y-m-d');
-		
+		$endDate= $endDate->format('d/m/Y');		
 		
 		if(end($fridays) != $endDate){
 			$fridays[] = $endDate;
@@ -62,7 +62,7 @@ class CronogramaFisicoRepository extends BaseRepository
 		return $months;
 	}
 	
-	public static function getPorcentagem($inicioTarefa, $fimTarefa, $inicioSemana, $fimSemana){
+	public static function getPrevistoPorcentagem($inicioTarefa, $fimTarefa, $inicioSemana, $fimSemana){
 				
 		$diasUteisTarefa = 0;	
 		$diasUteisSemana = 0;
@@ -92,6 +92,31 @@ class CronogramaFisicoRepository extends BaseRepository
 		}		
 		
 		return $valorPrevisto;		
+			
+	}
+	
+	public static function getRealizadoPorcentagem($inicioSemana, $fimSemana, $obraId, $tarefa){
+					
+		/*$tabColetaSemanal = MedicaoFisica::select([
+			'cronograma_fisicos.id',
+			'cronograma_fisicos.tarefa',
+			'cronograma_fisicos.data_inicio',
+			'cronograma_fisicos.data_termino'
+		])
+		->join('obras','obras.id','cronograma_fisicos.obra_id')
+		->join('medicao_fisicas','obras.id','cronograma_fisicos.obra_id')
+		->join('template_planilhas','template_planilhas.id','cronograma_fisicos.template_id')
+		->where('cronograma_fisicos.obra_id', $obraId)
+		->where('cronograma_fisicos.resumo','Não')
+		->where('cronograma_fisicos.data_termino','>=',$inicioMes)
+		->where('cronograma_fisicos.data_inicio','<=',$fimMes)		
+		->where('template_planilhas.nome',$tipoPlanejamento)		
+		->orderBy('cronograma_fisicos.data_inicio', 'desc')
+		->groupBy('cronograma_fisicos.tarefa')		
+		->get()
+		->toArray();		
+		
+		return $valorRealizado;	*/	
 			
 	}
 	

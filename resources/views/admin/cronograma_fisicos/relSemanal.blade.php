@@ -2,6 +2,7 @@
 
 @section('content')
     <style>
+
         .element-grafico{
             width: 100%;
             border: solid 1px #dddddd;
@@ -123,21 +124,59 @@
 									<tr>
 										<td class="text-center"></td>	
 										@foreach($tabPercentualPrevReal['labels'] as $tabSemana)										
-											<td class="text-center">{{ Carbon\Carbon::parse($tabSemana)->format('d/m/Y') }}</td>									
+											<td class="text-center">{{ $tabSemana}}</td>									
 										@endforeach
 									</tr>																															
 									
-									@foreach($tabPercentualPrevReal['data'] as $tabPercPrevistoRealizado)	
 									<tr>
-										<td class="text-center">{{ $tabPercPrevistoRealizado->tipo}}</td>
-										<td class="text-center">{{ $tabPercPrevistoRealizado->concluida }}</td>
-										<td class="text-center">{{ $tabPercPrevistoRealizado->concluida }}</td>
-										<td class="text-center">{{ $tabPercPrevistoRealizado->concluida }}</td>
-										<td class="text-center">{{ $tabPercPrevistoRealizado->concluida }}</td>
-										<td class="text-center">{{ $tabPercPrevistoRealizado->concluida }}</td>
-										<td class="text-center">{{ $tabPercPrevistoRealizado->concluida }}</td>																			
+										<td>Plano Diretor Acumulado</td>
+										@foreach($tabPercentualPrevReal['data']['planoDiretorAcumulado'] as $planoDiretorAcumulado)										
+											<td class="text-center">{{ $planoDiretorAcumulado}}</td>																											
+										@endforeach
 									</tr>
-									@endforeach
+									
+									<tr>
+										<td>Plano Trabalho Acumulado</td>
+										@foreach($tabPercentualPrevReal['data']['planoTrabalhoAcumulado'] as $planoTrabalhoAcumulado)										
+											<td class="text-center">{{ $planoTrabalhoAcumulado}}</td>																											
+										@endforeach
+									</tr>
+									
+									<tr>
+										<td>Previsto Mês Acumulado</td>
+										@foreach($tabPercentualPrevReal['data']['planoPrevistoAcumulado'] as $planoPrevistoAcumulado)										
+											<td class="text-center">{{ $planoPrevistoAcumulado}}</td>																											
+										@endforeach
+									</tr>
+									
+									<tr>
+										<td>Realizado Mês Acumulado</td>
+										@foreach($tabPercentualPrevReal['data']['planoPrevistoAcumulado'] as $planoPrevistoAcumulado)										
+											<td class="text-center">{{ $planoPrevistoAcumulado}}</td>																											
+										@endforeach
+									</tr>
+									
+									<tr>
+										<td>Previsto Semanal</td>
+										@foreach($tabPercentualPrevReal['data']['previstoSemanal'] as $previstoSemanal)										
+											<td class="text-center">{{ $previstoSemanal}}</td>																											
+										@endforeach
+									</tr>
+									
+									<tr>
+										<td>Realizado Semanal</td>
+										@foreach($tabPercentualPrevReal['data']['previstoSemanal'] as $previstoSemanal)										
+											<td class="text-center">{{ $previstoSemanal}}</td>																											
+										@endforeach
+									</tr>
+									
+									<tr>
+										<td class="orange">Desvio Semanal</td>
+										@foreach($tabPercentualPrevReal['data']['previstoSemanal'] as $previstoSemanal)										
+											<td class="text-center">{{ $previstoSemanal}}</td>																											
+										@endforeach
+									</tr>
+									
 								</tbody>
 							</table>
                         </div> 
@@ -239,7 +278,7 @@
 										<td class="text-center">{{ $tabTarefasCriticasDado['tarefa'] }}</td>
 										<td class="text-center">{{ $tabTarefasPrevisto.'%' }}</td>
 										<td class="text-center">{{ $tabTarefasRealizado.'%' }}</td>
-										<td class="text-center">{{ $tabTarefasPrevisto.'%' }}</td>										
+										<td class="text-center">{{ $tabTarefasDesvio.'%' }}</td>	
 									</tr>
 									@endforeach
 									
@@ -261,18 +300,19 @@
                         </div>
 					</div>
 					
-					<div class="row">
+					<?php /*<div class="row">
 						<div class="col-md-12 margem-topo"><tile title-color="head-grey" title="Coleta Semanal" type="created"></tile></div>
-					</div>
+					</div> 
+					
 					
 					<div class="content">   
 
 						<div class="box box-primary">
 							<div class="box-body">
-									<?php /*@include('admin.cronograma_fisicos.table')*/ ?>
+									@include('admin.cronograma_fisicos.table')
 							</div>
 						</div>
-					</div>
+					</div>*/ ?>
 					
 				</div>
             </div>

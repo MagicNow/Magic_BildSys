@@ -68,7 +68,7 @@ class CronogramaFisico extends Model
 		'critica' => 'string',
         'data_inicio' => 'date',
         'data_termino' => 'date',
-		'concluida' => 'string'
+		'concluida' => 'decimal'
 
     ];
 

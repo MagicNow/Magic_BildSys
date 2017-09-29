@@ -54,6 +54,7 @@ return [
     'are-you-sure-activate'=>'você tem certeza que irá ativar este registro',
     'this-user-will-not-be-do-the-login'=>'este usuário não poderá efetuar o login com status inativo',
 	'suggest' => 'sugerir',
+	'measure' => 'medir',
     'approve' => 'Aprovar',
     'repprove' => 'Reprovar'
 ];

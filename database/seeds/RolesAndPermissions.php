@@ -181,6 +181,11 @@ class RolesAndPermissions extends Seeder
             'cronogramaFisicos.import' => 'Importar orçamentos',
 			'cronogramaFisicos.dashboard' => 'Dashboard do Cronograma Físico',
 			
+			'medicao_fisicas.list'        => 'Listagem de Medição Físicas',
+            'medicao_fisicas.show'        => 'Visualização de Medição Físicas',
+            'medicao_fisicas.edit'        => 'Editar Medição Físicas',			
+            'medicao_fisicas.reajustar'   => 'Reajustar item do Medição Físicas',
+			
 			'levantamentos.list' => 'Listagem de levantamento',
             'levantamentos.create' => 'Criação de levantamento',
             'levantamentos.edit'   => 'Edição de levantamento',
@@ -290,6 +295,9 @@ class RolesAndPermissions extends Seeder
             'tipologia.create' => 'Criação de tipologia',
             'tipologia.edit'   => 'Edição de tipologia',
             'tipologia.delete'   => 'Remoção de tipologia',
+
+            'lista_qc.list' => 'Lista de QC Suprimentos',
+            'lista_qc.edit' => 'Edição de Lista de QC Suprimentos',
 
             'pagamentos.list' => 'Listagem de pagamentos',
             'pagamentos.create' => 'Criação de pagamento',
