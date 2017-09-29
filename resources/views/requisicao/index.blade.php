@@ -7,6 +7,10 @@
            <a class="btn btn-primary pull-right" style="margin-top: -10px;margin-bottom: 5px" href="{!! route('requisicao.create') !!}">
             {{ ucfirst( trans('common.new') )}}
            </a>
+
+            <a class="btn btn-success" style="margin-top: -10px;margin-bottom: 5px" href="/requisicao/ler-qr-cod">
+                <i class="fa fa-qrcode" aria-hidden="true"></i> Ler QR Code
+            </a>
         </h1>
     </section>
     <div class="content">

@@ -52,7 +52,7 @@
         }
 
         var i = !1;
-        window.iOS ? a.webcam = document.querySelector("img") : a.webcam = document.querySelector("video"), a.setCanvas(), a.decoder = new Worker("/qrcodelib/decoder.min.js"), window.iOS ? e() : a.webcam.addEventListener("play", function (t) {
+        window.iOS ? a.webcam = document.querySelector("img") : a.webcam = document.querySelector("video"), a.setCanvas(), a.decoder = new Worker("/qrcode/qrcodereader/decoder.min.js"), window.iOS ? e() : a.webcam.addEventListener("play", function (t) {
             i || (e(), i = !0)
         }, !1), window.iOS || navigator.mediaDevices.enumerateDevices().then(function (e) {
             var n = e.filter(function (e) {
@@ -141,7 +141,12 @@
         function o() {
             window.iOS || (m.style.display = "block"), i.default.scan(function (e) {
                 r = e, y.value = e, y.select(), m.style.display = "none", (0, d.default)(e) && (v.style.display = "inline-block"), u.classList.remove("app__dialog--hide"), p.classList.remove("app__dialog--hide")
-                console.log(e);
+
+                // Verifica se foi criado um nome para a função dinâmica
+                if(typeof nome_funcao_executar !== 'undefined'){
+                    //Chama a função dinâmica e passa como parâmetro o que foi lido
+                    window[nome_funcao_executar](e);
+                }
             })
         }
 
