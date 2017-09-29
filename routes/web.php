@@ -13,10 +13,6 @@
 
 Auth::routes();
 
-$router->get('/qrcode', function () {
-    return View('qrcode.qrcode');
-});
-
 // Notifications
 $router->get('/notifications', 'NotificationController@index');
 $router->post('/notifications/{id}/mark-as-read', 'NotificationController@markAsRead');

@@ -141,7 +141,7 @@
         function o() {
             window.iOS || (m.style.display = "block"), i.default.scan(function (e) {
                 r = e, y.value = e, y.select(), m.style.display = "none", (0, d.default)(e) && (v.style.display = "inline-block"), u.classList.remove("app__dialog--hide"), p.classList.remove("app__dialog--hide")
-                console.log(y.value);
+                console.log(e);
             })
         }
 
