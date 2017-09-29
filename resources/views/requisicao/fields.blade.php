@@ -36,10 +36,12 @@
     </button>
 </div>
 
+<div id="hidden-fields"></div>
+
 <div class="form-group col-sm-12">
 
 <table id="insumos-table" class="table table-striped table-responsive hide">
-    <tbody>
+    <thead>
         <tr align="left">
             <th width="30%">Insumo</th>
             <th width="12%">Un de Medida</th>
@@ -49,45 +51,10 @@
             <th width="18%">Qtde</th>
             <th>Detalhes</th>
         </tr>
-        <tr>
-            <td>Cimento</td>
-            <td>SC</td>
-            <td>1000</td>
-            <td>800</td>
-            <td>300</td>
-            <td><input type="number" class="form-control" min="0" step=".01"></td>
-            <td>
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
-                    Detalhar
-                </button>
-            </td>
-        </tr>
-        <tr>
-            <td>Tijolo</td>
-            <td>UN</td>
-            <td>50.000</td>
-            <td>45.000</td>
-            <td>30.000</td>
-            <td><input type="number" class="form-control" min="0" step=".01"></td>
-            <td>
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
-                    Detalhar
-                </button>
-            </td>
-        </tr>
-        <tr>
-            <td>Cimento</td>
-            <td>SC</td>
-            <td>1000</td>
-            <td>800</td>
-            <td>300</td>
-            <td><input type="number" class="form-control" min="0" step=".01"></td>
-            <td>
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
-                    Detalhar
-                </button>
-            </td>
-        </tr>
+    </thead>
+
+    <tbody id="body-insumos-table">
+
     </tbody>
 </table>
 
@@ -95,7 +62,7 @@
 
 
 <!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade" id="modal-insumos-comodo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -104,32 +71,18 @@
             </div>
             <div class="modal-body">
 
-                <table id="responsive-example-tablee" class="table table-striped table-responsive">
-                    <tbody>
+                <table id="insumos-comodo-table" class="table table-striped table-responsive">
+                    <thead>
                         <tr align="left">
                             <th width="30%">Apartamento</th>
                             <th width="12%">Cômodo</th>
                             <th width="12%">Disponível</th>
                             <th width="18%">Qtde</th>
                         </tr>
-                        <tr>
-                            <td>21</td>
-                            <td>Cozinha</td>
-                            <td>1</td>
-                            <td><input type="number" class="form-control" min="0" step=".01"></td>
-                        </tr>
-                        <tr>
-                            <td>21</td>
-                            <td>Banheiro</td>
-                            <td>1</td>
-                            <td><input type="number" class="form-control" min="0" step=".01"></td>
-                        </tr>
-                        <tr>
-                            <td>21</td>
-                            <td>Suíte</td>
-                            <td>1</td>
-                            <td><input type="number" class="form-control" min="0" step=".01"></td>
-                        </tr>
+                    </thead>
+
+                    <tbody id="body-insumos-comodo-table">
+
                     </tbody>
                 </table>
 
