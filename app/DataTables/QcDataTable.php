@@ -49,6 +49,7 @@ class QcDataTable extends DataTable
         ->join('carteiras', 'carteiras.id', 'carteira_id')
         ->join('obras', 'obras.id', 'obra_id')
         ->join('tipologias', 'tipologias.id', 'tipologia_id')
+        ->where('status', 'Em aprovação')
         ->groupBy('qc.id');
 
         $request = $this->request();

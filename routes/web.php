@@ -79,16 +79,16 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
         $router->get('orcamentos/{orcamentos}/edit', ['as' => 'admin.orcamentos.edit', 'uses' => 'Admin\OrcamentoController@edit']);
     });
 
-    # Topologia
-    $router->group(['middleware' => 'needsPermission:topologia.list'], function () use ($router) {
-        $router->get('topologia', ['as' => 'admin.topologia.index', 'uses' => 'Admin\TopologiaController@index']);
-        $router->post('topologia', ['as' => 'admin.topologia.store', 'uses' => 'Admin\TopologiaController@store']);
-        $router->get('topologia/create', ['as' => 'admin.topologia.create', 'uses' => 'Admin\TopologiaController@create']);
-        $router->put('topologia/{topologia}', ['as' => 'admin.topologia.update', 'uses' => 'Admin\TopologiaController@update']);
-        $router->patch('topologia/{topologia}', ['as' => 'admin.topologia.update', 'uses' => 'Admin\TopologiaController@update']);
-        $router->delete('topologia/{topologia}', ['as' => 'admin.topologia.destroy', 'uses' => 'Admin\TopologiaController@destroy']);
-        $router->get('topologia/{topologia}', ['as' => 'admin.topologia.show', 'uses' => 'Admin\TopologiaController@show']);
-        $router->get('topologia/{topologia}/edit', ['as' => 'admin.topologia.edit', 'uses' => 'Admin\TopologiaController@edit']);
+    # Tipologia
+    $router->group(['middleware' => 'needsPermission:tipologia.list'], function () use ($router) {
+        $router->get('tipologia', ['as' => 'admin.tipologia.index', 'uses' => 'Admin\TipologiaController@index']);
+        $router->post('tipologia', ['as' => 'admin.tipologia.store', 'uses' => 'Admin\TipologiaController@store']);
+        $router->get('tipologia/create', ['as' => 'admin.tipologia.create', 'uses' => 'Admin\TipologiaController@create']);
+        $router->put('tipologia/{tipologia}', ['as' => 'admin.tipologia.update', 'uses' => 'Admin\TipologiaController@update']);
+        $router->patch('tipologia/{tipologia}', ['as' => 'admin.tipologia.update', 'uses' => 'Admin\TipologiaController@update']);
+        $router->delete('tipologia/{tipologia}', ['as' => 'admin.tipologia.destroy', 'uses' => 'Admin\TipologiaController@destroy']);
+        $router->get('tipologia/{tipologia}', ['as' => 'admin.tipologia.show', 'uses' => 'Admin\TipologiaController@show']);
+        $router->get('tipologia/{tipologia}/edit', ['as' => 'admin.tipologia.edit', 'uses' => 'Admin\TipologiaController@edit']);
     });
 
     # Importação de Planilhas de Planejamentos
@@ -1310,8 +1310,10 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->post('', ['as' => 'qc.store', 'uses' => 'QcController@store']);
         $router->get('/buscar/busca_carteiras', ['as' => 'qc.busca_carteiras', 'uses' => 'QcController@buscaCarteira']);
         $router->delete('/{qc}', ['as' => 'qc.destroy', 'uses' => 'QcController@destroy']);
-        $router->get('/anexos/{qc}',['as' => 'qc.anexos', 'uses' => 'QcController@anexos'])
-            ->middleware('needsPermission:qc.anexos.list');
+
+        $router->get('/aprovar/{qc}',['as' => 'qc.aprovar.edit', 'uses' => 'QcController@aprovar'])
+            ->middleware('needsPermission:qc-aprovar.show');
+            $router->patch('/aprovar/{qc}/update',['as' => 'qc.aprovar.update', 'uses' => 'QcController@aprovarUpdate']);
     });
 
 	# Configuracao Estatica

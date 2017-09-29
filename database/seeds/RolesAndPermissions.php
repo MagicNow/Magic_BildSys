@@ -283,17 +283,18 @@ class RolesAndPermissions extends Seeder
             'boletim-medicao.edit'   => 'Edição de Boletim de Medição',
             'boletim-medicao.delete'   => 'Remoção de Boletim de Medição',
 
-            // 'carteirassla.list' => 'Lista de Carteiras e SLA de cada obra',
-            // 'carteirassla.create' => 'Criação de QC',
-
             'qc.list' => 'Lista de QC',
             'qc.create' => 'Criação de QC',
+            'qc.edit' => 'Edição de QC',
             'qc.show' => 'Visualização de QC',
+            'qc.delete' => 'Exclusão de QC',
 
-            'topologia.list' => 'Listagem de topologias',
-            'topologia.create' => 'Criação de topologia',
-            'topologia.edit'   => 'Edição de topologia',
-            'topologia.delete'   => 'Remoção de topologia',
+            'qc-aprovar.show' => 'Visualização formulário de aprovação / reprovação QC',
+
+            'tipologia.list' => 'Listagem de tipologias',
+            'tipologia.create' => 'Criação de tipologia',
+            'tipologia.edit'   => 'Edição de tipologia',
+            'tipologia.delete'   => 'Remoção de tipologia',
 
             'pagamentos.list' => 'Listagem de pagamentos',
             'pagamentos.create' => 'Criação de pagamento',
