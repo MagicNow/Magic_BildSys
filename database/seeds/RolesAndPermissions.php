@@ -296,6 +296,9 @@ class RolesAndPermissions extends Seeder
             'tipologia.edit'   => 'Edição de tipologia',
             'tipologia.delete'   => 'Remoção de tipologia',
 
+            'lista_qc.list' => 'Lista de QC Suprimentos',
+            'lista_qc.edit' => 'Edição de Lista de QC Suprimentos',
+
             'pagamentos.list' => 'Listagem de pagamentos',
             'pagamentos.create' => 'Criação de pagamento',
             'pagamentos.edit'   => 'Edição de pagamento',

@@ -64,6 +64,7 @@ elixir(function (mix) {
     mix.copy('resources/vendor/summernote/dist/font/**', 'public/css/font');
     mix.copy('resources/assets/fonts/**', 'public/css/font');
     mix.copy('resources/vendor/ionicons/fonts/**', 'public/fonts');
+    mix.copy('resources/assets/js/libs/**', 'public/js/libs');
 
     // Copy images straight to public
     mix.copy('resources/vendor/jquery-colorbox/example3/images/**', 'public/css/images');

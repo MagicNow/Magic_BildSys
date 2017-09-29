@@ -1316,6 +1316,10 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             $router->patch('/aprovar/{qc}/update',['as' => 'qc.aprovar.update', 'uses' => 'QcController@aprovarUpdate']);
     });
 
+    $router->group(['middleware' => 'needsPermission:lista_qc.list'], function () use ($router) {
+        $router->get('', ['as' => 'listaQc.index', 'uses' => 'QcSuprimentosController@index']);
+    });
+
 	# Configuracao Estatica
     $router->group(['middleware' => 'needsPermission:configuracaoEstaticas.list'], function () use ($router) {
         $router->get('configuracaoEstaticas', ['as' => 'configuracaoEstaticas.index', 'uses' => 'ConfiguracaoEstaticaController@index']);
