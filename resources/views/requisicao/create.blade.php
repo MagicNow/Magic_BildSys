@@ -302,6 +302,7 @@
                     //$('#insumos-comodo-table').stacktable();
                     tabelaMobile('insumos-comodo-table');
                     $('#modal-insumos-comodo').modal();
+                    $('#insumo-comodo-modal').val(insumo_id);
                     carregaValoresComodos(insumo_id);
                 })
 
@@ -316,6 +317,21 @@
         $(document).on('focusout', '.js-input-qtde-comodo', function(){
 
             validaQtdeInsumoComodo($(this));
+
+        })
+
+        $('#modal-insumos-comodo').on('hidden.bs.modal', function (e) {
+
+            var insumo = $('#insumo-comodo-modal').val();
+            var total = 0;
+
+            $('input[name="hidden['+insumo+'][]"]').map(function () {
+
+                total = total + parseFloat($(this).val());
+
+            },total)
+
+            $('#'+insumo).val(total);
 
         })
 
@@ -336,9 +352,13 @@
             var estoque = parseFloat($('#estoque-'+insumo.attr('id')).text());
             var qtde = insumo.val();
 
-            if (qtde > disponivel || qtde > estoque) {
+            if (qtde > disponivel || qtde > estoque || qtde == 0) {
 
                 insumo.val('');
+
+            } else {
+
+                $('#btn-create-requisicao').removeClass('hide');
             }
         }
 
@@ -426,21 +446,97 @@
 
         function carregaValoresComodos(insumo) {
 
-            var total = 0;
-
             $('input[name="hidden['+insumo+'][]"]').each(function(index) {
-
-                //console.log($(this).attr('data-levantamento'));
 
                 $('#insumo-'+$(this).attr('data-levantamento')).val($(this).val());
 
-                total = total + $(this).val();
-
             });
+        }
 
-            $('#'+insumo).val(total);
+        $(document).on('click','#btn-create-requisicao', function (e){
+
+            e.preventDefault();
+
+
+            var data = {
+                obra_id: $('#obra_id').val(),
+                local: $('#local').val(),
+                torre: $('#torre').val(),
+                pavimento: $('#pavimento').val(),
+                andar: $('#andar').val(),
+                trecho: $('#trecho').val(),
+                insumos: criaJsonInsumos(),
+                comodos: criaJsonComodo()
+            }
+
+            console.log(JSON.stringify(data));
+
+            $.ajax({
+
+                url: '/requisicao/store/',
+                dataType: 'html',
+                cache: false,
+                type: 'POST',
+                processData: false,
+                data: data
+
+            }).done(function (response) {
+
+                
+            })
+
+        })
+
+
+        function criaJsonComodo() {
+
+            var jsonString = [];
+
+            $('.js-input-qtde').map(function (i) {
+
+                var insumo = $(this);
+                var comodo = $('input[name="hidden['+insumo.attr("id")+'][]"]');
+
+                if (comodo.length > 0) {
+
+                    for (i = 0; i < comodo.length; i++) {
+
+                        jsonString.push(
+                            {
+                                "estoque_id": insumo.data('estoque'),
+                                "apartamento": $(comodo[i]).data('apartamento'),
+                                "comodo": $(comodo[i]).data('banheiro'),
+                                "qtde": $(comodo[i]).val()
+                            }
+                        );
+                    }
+                }
+
+            })
+
+            return JSON.stringify(jsonString);
+        }
+
+        function criaJsonInsumos() {
+
+            var jsonString = [];
+
+            $('.js-input-qtde').map(function (i) {
+
+                insumo = $(this);
+
+                if ($('input[name="hidden['+insumo.attr("id")+'][]"]').length == 0) {
+
+                    jsonString.push({"estoque_id": $(this).data('estoque'), "qtde": $(this).val()});
+                }
+
+            })
+
+            return JSON.stringify(jsonString);
+
         }
 
     })
     </script>
 @endsection
+

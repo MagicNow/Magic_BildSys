@@ -71,6 +71,8 @@
             </div>
             <div class="modal-body">
 
+                <input type="hidden" id="insumo-comodo-modal" value="">
+
                 <table id="insumos-comodo-table" class="table table-striped table-responsive">
                     <thead>
                         <tr align="left">
