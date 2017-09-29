@@ -316,6 +316,9 @@ class CronogramaFisicoController extends AppBaseController
 		$semanas = ["","1","2","3","4","5"];
 		
 		$tabColetaSemanal = [];
+		$tabColetaSemanal['labels'] = [];
+		$tabColetaSemanal['data'] = [];
+		
 		$tabPercentualPrevReal = [];
 		
 		$tabTarefasCriticas = [];
@@ -382,10 +385,15 @@ class CronogramaFisicoController extends AppBaseController
 		if(($request->obra_id)&&($request->mes_id)&&($request->semana_id)){
 			
 			$showDados = true;
+			$sextasArray = CronogramaFisicoRepository::getFridaysByDate($inicioMes);
 			
 			/***** Tabela Coleta Semanal - Dados, pega da Tendencia Real ****/
-			$tabColetaSemanal = $this->tabColetaSemanal($obraId, $inicioMes, $fimMes, "Tendência Real");
-						
+			$tabColetaSemanal['data'] = $this->tabColetaSemanal($obraId, $inicioMes, $fimMes, "Tendência Real");			
+			$tabColetaSemanal['labels1'] = $sextasArray;	; //Label Horizontal
+			$tabColetaSemanal['labels2'] = ["Local", "Pavimento", "Tarefas", "Início Real" , "Término Real" , "Crítica" , "Peso Total" , "Real Acum. Mês Anterior" , "Previsto" , "Realizado" , "Previsto" , "Realizado" , "Previsto" , "Realizado" , "Previsto" , "Realizado" , "Previsto" , "Realizado" , "Previsto" , "Realizado" , "Farol" , "Plano de Ação"];			
+			
+			dump($tabColetaSemanal['data']);
+
 			/***** Tabela Percentual Previsto e Acumulado ****/	
 			$tabPercentualPrevReal['labels'] = CronogramaFisicoRepository::getFridaysByDate($inicioMes);	; //Label Horizontal				
 
@@ -397,17 +405,13 @@ class CronogramaFisicoController extends AppBaseController
 			$tabPercentualPrevReal['data']['planoDiretorAcumulado'] = $this->getPlanoAcumuladoMes($planoDiretorAcumulado, $mesRef);
 			$tabPercentualPrevReal['data']['planoTrabalhoAcumulado'] = $this->getPlanoAcumuladoMes($planoTrabalhoAcumulado, $mesRef);
 			$tabPercentualPrevReal['data']['planoPrevistoAcumulado'] = $this->getPlanoAcumuladoMes($planoPrevistoAcumulado, $mesRef);
-			$tabPercentualPrevReal['data']['previstoSemanal'] = $this->previstoSemanal($tabColetaSemanal, $inicioMes, $semanaId);
-
-			/*dump($planoDiretorAcumulado);
-			dump($planoTrabalhoAcumulado);
-			dump($planoPrevistoAcumulado);
-			die;*/
+			$tabPercentualPrevReal['data']['previstoSemanal'] = $this->previstoSemanal($tabColetaSemanal['data'], $inicioMes, $semanaId);
+			$tabPercentualPrevReal['data']['realizadoSemanal'] = $this->realizadoSemanal($tabColetaSemanal['data'], $inicioMes, $semanaId);
 			
 			/***** Tabela Tarefas Críticas ****/
 			$tabTarefasCriticas = [];
 			$tabTarefasCriticas['labels'] = ["LOCAL","Tarefas Críticas","Previsto Ac.","Realizado Ac.","Desvio"]; //Label 		
-			$tabTarefasCriticas['data'] = $this->tabTarefasCriticas($tabColetaSemanal, $inicioMes, $semanaId); //Dados
+			$tabTarefasCriticas['data'] = $this->tabTarefasCriticas($tabColetaSemanal['data'], $inicioMes, $semanaId); //Dados
 									
 			/***** Gráfico Tarefas Críticas	 ****/	
 			$grafTarefasCriticas = [];
@@ -436,7 +440,8 @@ class CronogramaFisicoController extends AppBaseController
 					'showDados',
 					'obraId', 'mesId', 'semanaId', 'obras', 'meses', 'semanas',
 					'tabPercentualPrevReal', 
-					'tabTarefasCriticas', 'grafTarefasCriticas'
+					'tabTarefasCriticas', 'grafTarefasCriticas',
+					'tabColetaSemanal'
 				)
 			);
     }	
@@ -509,17 +514,10 @@ class CronogramaFisicoController extends AppBaseController
 		return $planoAcumuladoMes;
 		
 	}	
-		
-	// Dados vindo do Mediçao Fisicas
-	public function realizadoSemanal($planoTendenciaReal){
-		
-	}
 	
 	// Retornar Valor % por Tipo de Planejamento, Obra, Mês e Semana
 	public function tabColetaSemanal($obraId, $inicioMes, $fimMes, $tipoPlanejamento){	
-		
-		//DB::enableQueryLog();
-		
+				
 		// Todas as Sextas do Mês de Referencia
 		$sextasArray = CronogramaFisicoRepository::getFridaysByDate($inicioMes);		
 		$ultimaSexta= end($sextasArray);
@@ -542,8 +540,8 @@ class CronogramaFisicoController extends AppBaseController
 						WHERE CF.id = cronograma_fisicos.id 
 					 ) as peso"
 			),
-			/*'cronograma_fisicos.concluida',				
-			DB::raw("(SELECT (case when count(distinct CF.id) = 1 then 'Sim' else 'Não' end) as tarefa_mes
+			'cronograma_fisicos.concluida',							
+			/*DB::raw("(SELECT (case when count(distinct CF.id) = 1 then 'Sim' else 'Não' end) as tarefa_mes
 						FROM cronograma_fisicos CF
 						WHERE CF.id = cronograma_fisicos.id						
 						AND (CF.data_termino >= '$inicioMes')						
@@ -562,9 +560,9 @@ class CronogramaFisicoController extends AppBaseController
 		->join('template_planilhas','template_planilhas.id','cronograma_fisicos.template_id')
 		->where('cronograma_fisicos.obra_id', $obraId)
 		->where('cronograma_fisicos.resumo','Não')
-		->where('cronograma_fisicos.data_termino','>=',$inicioMes)
-		->where('cronograma_fisicos.data_inicio','<=',$fimMes)		
-		->where('template_planilhas.nome',$tipoPlanejamento)		
+		->where('cronograma_fisicos.data_termino','>=', $inicioMes)
+		->where('cronograma_fisicos.data_inicio','<=', $fimMes)		
+		->where('template_planilhas.nome', $tipoPlanejamento)		
 		->orderBy('cronograma_fisicos.data_inicio', 'desc')
 		->groupBy('cronograma_fisicos.tarefa')		
 		->get()
@@ -599,11 +597,75 @@ class CronogramaFisicoController extends AppBaseController
 				}				
 			//}	
 		}
-		
-		//dump($tabColetaSemanal);die;
+				
 		
 		return $tabColetaSemanal;
 	}
+	
+	// Retornar dados do valor Previsto por Semana	
+	public function previstoSemanal($tabColetaSemanal, $inicioMes){
+		
+		//previsto semanal = (previsto da semana - concluida da tarefa) * peso tarefa
+				
+		$previstoSemanal = [];
+		$acumuladoMes = 0;
+		
+		// Todas as Sextas do Mês de Referencia
+		$sextasArray = CronogramaFisicoRepository::getFridaysByDate($inicioMes);		
+		
+		foreach ($sextasArray as $sexta) {
+			
+			$acumuladoSemanal = 0;
+				
+			//Filtrar por Critica				
+			foreach ($tabColetaSemanal as $key => $tarefa) {
+				
+				$acumuladoSemanal = $acumuladoSemanal + (($tarefa["percentual-".$sexta] - $tarefa["concluida"])/100)*$tarefa["peso"];								
+					
+			}
+			
+			$previstoSemanal[$sexta] = round($acumuladoSemanal,4);
+			$acumuladoMes = $acumuladoMes + round($acumuladoSemanal,4);
+		}		
+		
+		$previstoSemanal["mes"] = $acumuladoMes; 
+				
+		
+		return $previstoSemanal;
+	}
+			
+	// Dados vindo do Mediçao Fisicas
+	public function realizadoSemanal($tabColetaSemanal, $inicioMes){			
+		
+		//$acumuladoSemanal = $acumuladoSemanal + (($tarefa["realizado-".$sexta] - $tarefa["concluida"])/100)*$tarefa["peso"];										
+						
+		$previstoSemanal = [];
+		$acumuladoMes = 0;
+		
+		// Todas as Sextas do Mês de Referencia
+		$sextasArray = CronogramaFisicoRepository::getFridaysByDate($inicioMes);		
+		
+		foreach ($sextasArray as $sexta) {
+			
+			$acumuladoSemanal = 0;
+				
+			//Filtrar por Critica				
+			foreach ($tabColetaSemanal as $key => $tarefa) {
+				
+				$acumuladoSemanal = $acumuladoSemanal + (($tarefa["realizado-".$sexta] - $tarefa["concluida"])/100)*$tarefa["peso"];								
+					
+			}
+			
+			$previstoSemanal[$sexta] = round($acumuladoSemanal,4);
+			$acumuladoMes = $acumuladoMes + round($acumuladoSemanal,4);
+		}		
+		
+		$previstoSemanal["mes"] = $acumuladoMes; 
+				
+		
+		return $previstoSemanal;	
+	}
+	
 			
 	// Tabela Tarefas Criticas - Dados
 	public function tabTarefasCriticas($tabColetaSemanal, $inicioMes, $semanaId){
@@ -638,36 +700,7 @@ class CronogramaFisicoController extends AppBaseController
 		return $tabTarefasCriticas;
 	}
 	
-	// Retornar dados do valor Previsto por Semana	
-	public function previstoSemanal($tabColetaSemanal, $inicioMes){
-				
-		$previstoSemanal = [];
-		$acumuladoMes = 0;
-		
-		// Todas as Sextas do Mês de Referencia
-		$sextasArray = CronogramaFisicoRepository::getFridaysByDate($inicioMes);		
-		
-		foreach ($sextasArray as $sexta) {
-			
-			$acumuladoSemanal = 0;
-				
-			//Filtrar por Critica				
-			foreach ($tabColetaSemanal as $key => $tarefa) {
-				
-				$acumuladoSemanal = $acumuladoSemanal + ($tarefa["percentual-".$sexta]/100)*$tarefa["peso"];								
-					
-			}
-			
-			$previstoSemanal[$sexta] = round($acumuladoSemanal,4);
-			$acumuladoMes = $acumuladoMes + round($acumuladoSemanal,4);
-		}		
-		
-		$previstoSemanal["mes"] = $acumuladoMes; 
-				
-		
-		return $previstoSemanal;
-	}
-		
+	
 	//Acompanhamento Mensal
 	public function relMensal(Request $request)
     {	

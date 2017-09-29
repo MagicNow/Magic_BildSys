@@ -300,19 +300,47 @@
                         </div>
 					</div>
 					
-					<?php /*<div class="row">
+					<div class="row">
 						<div class="col-md-12 margem-topo"><tile title-color="head-grey" title="Coleta Semanal" type="created"></tile></div>
-					</div> 
+					</div>
 					
+					<div class="row">
+						<div class="col-md-12 table-responsive margem-topo">
+							<table class="table table-bordered table-striped">
+								<thead >
+									<tr>
+										@foreach($tabColetaSemanal['labels2'] as $tabColetaSemanalTitle)										
+											<th class="text-center">{{ $tabColetaSemanalTitle}}</th>									
+										@endforeach										
+									</tr>
+								</thead>
+								<tbody>
+									@foreach($tabColetaSemanal['data'] as $tabColetaData)										
+									<tr>										
+										<td class="text-center">{{ $tabColetaData['torre']}}</td>
+										<td class="text-center">{{ $tabColetaData['pavimento']}}</td>
+										<td class="text-center">{{ $tabColetaData['tarefa']}}</td>
+										<td class="text-center">{{ with(new\Carbon\Carbon($tabColetaData['data_inicio']))->format('d/m/Y')}}</td>
+										<td class="text-center">{{ with(new\Carbon\Carbon($tabColetaData['data_termino']))->format('d/m/Y')}}</td>
+										<td class="text-center">{{ $tabColetaData['critica']}}</td>
+										<td class="text-center">{{ $tabColetaData['peso'].'%'}}</td>
+										<td class="text-center">{{ $tabColetaData['concluida'].'%'}}</td>
+										
+										<?php foreach ($tabColetaSemanal['labels1'] as $coletaSemana) {	?>
+												<td class="text-center"><?php echo $tabColetaData['percentual-'.$coletaSemana]."%"; ?></td>
+												<td class="text-center"><?php echo $tabColetaData['realizado-'.$coletaSemana]."%"; ?></td>
+										<?php } ?>
+									</tr>
+									@endforeach
+								</tbody>
+							</table>
+                        </div>
+					</div>
 					
-					<div class="content">   
-
-						<div class="box box-primary">
-							<div class="box-body">
-									@include('admin.cronograma_fisicos.table')
-							</div>
-						</div>
-					</div>*/ ?>
+					<div class="row">
+						<div class="col-md-12 margem-topo"><tile title-color="head-grey" title="Tarefas não previstas do mês" type="created"></tile></div>
+					</div>					
+										
 					
 				</div>
             </div>

@@ -117,6 +117,8 @@ class CronogramaFisicoRepository extends BaseRepository
 		->toArray();		
 		
 		return $valorRealizado;	*/	
+		
+		return 0.00;
 			
 	}
 	
