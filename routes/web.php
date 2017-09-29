@@ -676,6 +676,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             ->middleware("needsPermission:obras.view");
         $router->get('obras/{obras}/edit', ['as' => 'admin.obras.edit', 'uses' => 'Admin\ObraController@edit'])
             ->middleware("needsPermission:obras.edit");
+        $router->get('obras/torre/{obras}', ['as' => 'admin.obras.torre', 'uses' => 'Admin\ObraController@obrasTorre']);
     });
 
     // Memória de Cálculo
@@ -1362,55 +1363,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->get('regionais/{regionals}/edit', ['as' => 'regionals.edit', 'uses' => 'RegionalController@edit'])
             ->middleware('needsPermission:regionals.edit');
     });
-
-    # condicoes-de-pagamento
-    $router->group([
-        'prefix'=>'condicoes-de-pagamento',
-        // 'middleware' => 'needsPermission:insumos.list'
-    ], function () use ($router) {
-        $router->get('', ['as' => 'pagamentoCondicaos.index', 'uses' => 'PagamentoCondicaoController@index']);
-        $router->get('/{id}', ['as' => 'pagamentoCondicaos.show', 'uses' => 'PagamentoCondicaoController@show']);
-        //->middleware("needsPermission:insumos.view");
-    });
-
-    # tipos-de-documentos-fiscais
-    $router->group([
-        'prefix'=>'tipos-de-documentos-fiscais',
-        // 'middleware' => 'needsPermission:insumos.list'
-    ], function () use ($router) {
-        $router->get('', ['as' => 'documentoTipos.index', 'uses' => 'DocumentoTipoController@index']);
-        $router->get('/{id}', ['as' => 'documentoTipos.show', 'uses' => 'DocumentoTipoController@show']);
-        //->middleware("needsPermission:insumos.view");
-    });
-
-    # tipos-de-documentos-financeiros
-    $router->group([
-        'prefix'=>'tipos-de-documentos-financeiros',
-        // 'middleware' => 'needsPermission:insumos.list'
-    ], function () use ($router) {
-        $router->get('', ['as' => 'documentoFinanceiroTipos.index', 'uses' => 'DocumentoFinanceiroTipoController@index']);
-        $router->get('/{id}', ['as' => 'documentoFinanceiroTipos.show', 'uses' => 'DocumentoFinanceiroTipoController@show']);
-        //->middleware("needsPermission:insumos.view");
-    });
-
-    // Pagamentos
-    $router->group(['prefix'=>'pagamentos', 'middleware' => 'needsPermission:pagamentos.list'], function () use ($router) {
-        $router->get('', ['as'=> 'pagamentos.index', 'uses' => 'PagamentoController@index']);
-        $router->post('', ['as'=> 'pagamentos.store', 'uses' => 'PagamentoController@store'])
-            ->middleware('needsPermission:pagamentos.create');
-        $router->get('/create', ['as'=> 'pagamentos.create', 'uses' => 'PagamentoController@create'])
-            ->middleware('needsPermission:pagamentos.create');
-        $router->put('/{pagamentos}', ['as'=> 'pagamentos.update', 'uses' => 'PagamentoController@update'])
-            ->middleware('needsPermission:pagamentos.edit');
-        $router->patch('/{pagamentos}', ['as'=> 'pagamentos.update', 'uses' => 'PagamentoController@update'])
-            ->middleware('needsPermission:pagamentos.edit');
-        $router->delete('/{pagamentos}', ['as'=> 'pagamentos.destroy', 'uses' => 'PagamentoController@destroy'])
-            ->middleware('needsPermission:pagamentos.delete');
-        $router->get('/{pagamentos}', ['as'=> 'pagamentos.show', 'uses' => 'PagamentoController@show']);
-        $router->get('/{pagamentos}/edit', ['as'=> 'pagamentos.edit', 'uses' => 'PagamentoController@edit'])
-            ->middleware('needsPermission:pagamentos.edit');
-    });
-
+	
 	$router->get('/testeLpu', function () {
         $lpu = \App\Repositories\LpuGerarRepository::calcular();
 		dd($lpu);		
@@ -1420,26 +1373,38 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
 		$insumos = \App\Repositories\ImportacaoRepository::insumos();
 	});
 
+    $router->get('/teste', function () {
+        //        $grupos_mega = \App\Models\MegaInsumoGrupo::select([
+        //            'GRU_IDE_ST_CODIGO',
+        //            'GRU_IN_CODIGO',
+        //            'GRU_ST_NOME',])
+        //            ->where('gru_ide_st_codigo' , '07')
+        //            ->first();
+        //        dd($grupos_mega);
+        //        $servicos = \App\Repositories\ImportacaoRepository::fornecedor_servicos(446);
+        
+		$insumos = \App\Repositories\ImportacaoRepository::insumos();
+        dd($insumos);        
+		
+		//        $insumos = \App\Repositories\ImportacaoRepository::insumos();
+		//        dd($insumos);
+        $contratoTemplate = \App\Models\ContratoTemplate::find(1);
+        if($contratoTemplate){
+            if($contratoTemplate->campos_extras){
+                $campos_extras_template = json_decode($contratoTemplate->campos_extras);
+                foreach ($campos_extras_template as $campo){
+                    var_dump($campo);
+                }
+                dd($campos_extras_template);
+
+            }
+        }
+
+    });
+
+
 });
 
-$router->get('/teste', function () {
-    //        $grupos_mega = \App\Models\MegaInsumoGrupo::select([
-    //            'GRU_IDE_ST_CODIGO',
-    //            'GRU_IN_CODIGO',
-    //            'GRU_ST_NOME',])
-    //            ->where('gru_ide_st_codigo' , '07')
-    //            ->first();
-    //        dd($grupos_mega);
-    //        $servicos = \App\Repositories\ImportacaoRepository::fornecedor_servicos(446);
-//        $insumos = \App\Repositories\ImportacaoRepository::insumos();
-//        dd($insumos);
-//        dd(\App\Models\MegaCondicaoPagamento::select(['cond_st_codigo','cond_st_nome'])->get()->toArray());
-//        var_dump(\App\Models\MegaTipoDocumentoFiscal::select(['tdf_in_codigo','tdf_st_sigla','tdf_st_descricao'])->get()->toArray());
-//        dd();
-    dd(\App\Repositories\ImportacaoRepository::pagamentoCondicoes(),
-        \App\Repositories\ImportacaoRepository::documentoTipos(),
-        \App\Repositories\ImportacaoRepository::documentoFinanceiroTipos());
-});
 #Image Controller
 $router->get('imagem', 'ImageController@index');
 

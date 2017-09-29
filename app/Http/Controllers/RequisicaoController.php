@@ -63,6 +63,8 @@ class RequisicaoController extends AppBaseController
     {
         $input = $request->all();
 
+        dd($input);
+
         $requisicao = $this->requisicaoRepository->create($input);
 
         Flash::success('Requisicao '.trans('common.saved').' '.trans('common.successfully').'.');
@@ -228,7 +230,7 @@ class RequisicaoController extends AppBaseController
 
         $r = DB::table('levantamentos as l');
 
-        $r->select(DB::raw('i.nome insumo, i.id insumo_id, i.unidade_sigla , sum(l.quantidade) previsto, e.qtde estoque,IF(comodo <> " ","true","false") as comodo'));
+        $r->select(DB::raw('i.nome insumo, i.id insumo_id, i.unidade_sigla , sum(l.quantidade) previsto, e.qtde estoque, e.id estoque_id ,IF(comodo <> " ","true","false") as comodo'));
         $r->leftJoin('insumos as i','i.id', '=', 'l.insumo');
         $r->leftJoin('estoque as e','e.insumo_id', '=', 'l.insumo');
         $r->where('l.obra_id',$request->query('obra'));
@@ -260,7 +262,7 @@ class RequisicaoController extends AppBaseController
            $html .= '<td id="previsto-'.$insumo->insumo_id.'">'.$insumo->previsto.'</td>';
            $html .= '<td id="disponivel-'.$insumo->insumo_id.'">'.$qtde_disponivel.'</td>';
            $html .= '<td id="estoque-'.$insumo->insumo_id.'">'.$insumo->estoque.'</td>';
-           $html .= '<td><input type="number" min="0" step=".01" class="form-control js-input-qtde" name="'.$insumo->insumo_id.'" id="'.$insumo->insumo_id.'"></td>';
+           $html .= '<td><input type="number" min="0" step=".01" class="form-control js-input-qtde" name="'.$insumo->insumo_id.'" id="'.$insumo->insumo_id.'" data-estoque="'.$insumo->estoque_id.'"></td>';
 
            if ($insumo->comodo == 'true')
 
