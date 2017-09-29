@@ -125,28 +125,4 @@ class CodeRepository
             return $e->getMessage();
         }
     }
-
-    // Exemplo de gerador de QR Code
-    public static function gerarQRcode()
-    {
-        try {
-            include(public_path('qrcode/qrcodegenerate/qrlib.php'));
-
-            $qr = 'Local:Torre;' . "\n";
-            $qr .= 'Torre:A;' . "\n";
-            $qr .= 'Pavimento:Tipo;' . "\n";
-            $qr .= 'Trecho:;' . "\n";
-            $qr .= 'Andar:2;' . "\n";
-
-            if (is_file(base_path() . '/storage/app/public/qrcode/QR_code.png')) {
-                unlink(base_path() . '/storage/app/public/qrcode/QR_code.png');
-            }
-
-            \QRcode::png($qr, base_path() . '/storage/app/public/qrcode/QR_code.png');
-
-            return 'Gerou';
-        }catch (\Exception $e) {
-            return $e->getMessage();
-        }
-    }
 }

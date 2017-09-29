@@ -1462,10 +1462,5 @@ $router->get('/teste', function () {
         \App\Repositories\ImportacaoRepository::documentoFinanceiroTipos());
 });
 
-$router->get('/gerarQRcode', function () {
-
-    dd(\App\Repositories\CodeRepository::gerarQRcode());
-});
-
 #Image Controller
 $router->get('imagem', 'ImageController@index');
