@@ -14,7 +14,7 @@ class CreateQcApproveColumns extends Migration
     public function up()
     {
         Schema::table('qc', function (Blueprint $table){
-            $table->unsignedInteger('user_id')->nullable()->after('carteira_comprada');     
+            $table->unsignedInteger('user_id')->nullable()->after('carteira_comprada');
             $table->text('observacao')->nullable()->after('carteira_comprada');     
 
             $table->foreign('user_id')
