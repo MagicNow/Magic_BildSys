@@ -215,7 +215,8 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
     $router->get('mascaraPadraoEstruturas/{mascaraPadraoEstruturas}', ['as'=> 'admin.mascaraPadraoEstruturas.show', 'uses' => 'Admin\MascaraPadraoEstruturaController@show']);
     $router->get('mascaraPadraoEstruturas/{mascaraPadraoEstruturas}/edit', ['as'=> 'admin.mascaraPadraoEstruturas.edit', 'uses' => 'Admin\MascaraPadraoEstruturaController@edit']);
     $router->get('mascaraPadraoEstruturas/grupos/{id}', ['as' => 'admin.mascaraPadraoEstruturas.grupos', 'uses' => 'Admin\MascaraPadraoEstruturaController@getGrupos']);
-    $router->get('mascaraPadraoEstruturas/servicos/{id}', ['as' => 'admin.mascara_padrao.servicos', 'uses' => 'Admin\MascaraPadraoController@getServicos']);
+    $router->get('mascaraPadraoEstruturas/servicos/{id}', ['as' => 'admin.mascaraPadraoEstruturas.servicos', 'uses' => 'Admin\MascaraPadraoEstruturaController@getServicos']);
+    $router->get('mascaraPadraoEstruturas/relacionar/insumos', ['as' => 'admin.mascaraPadraoEstruturas.insumos', 'uses' => 'Admin\MascaraPadraoEstruturaController@getInsumos']);
 
 	# Estruturas
     $router->group(['middleware' => 'needsPermission:estruturas.list'], function () use ($router) {        

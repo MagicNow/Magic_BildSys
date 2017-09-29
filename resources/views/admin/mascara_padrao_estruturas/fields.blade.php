@@ -30,6 +30,7 @@
 @section('scripts')
     <script type="text/javascript">
         var blocos = 0;
+        var insumos = 0;
         var bloco_aberto = true;
 
         $( "form" ).submit(function( event ) {
@@ -58,7 +59,7 @@
             }
             if(nivel == 4){
                 labelBotao = 'Add Insumos';
-                buttonAdd = '<button type="button" class="btn btn-warning" onclick="addInsumo()">'+labelBotao+'</button>';
+                buttonAdd = '<button type="button" class="btn btn-warning" onclick="addInsumo(\'subgrupo'+nivel+'_'+blocos+'\', '+nivel+',\''+nome+'['+blocos+'][insumos]'+'\')">'+labelBotao+'</button>';
             }
 
             console.log(nivel);
@@ -103,11 +104,47 @@
             }
         }
 
+        // Função que vai relacionar a estrutura com o insumo.
+        function addInsumo(id_atual, nivel, nome){
+            insumos++;
+            console.log(id_atual, nivel, nome);
+            $('.box.box-primary').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
+            $.ajax('{{route('admin.mascaraPadraoEstruturas.insumos')}}')
+            .done(function(retorno){
+                options = '<option value="">Selecione</option>';
+                $.each(retorno,function(index, value){
+                    options += '<option value="'+index+'">'+value+'</option>';
+                });
+
+                selectHTML = '' +
+                    '<div class="col-md-12" style="padding: 5px;">' +
+                    '<div class="col-md-8">' +
+                    '<li style="list-style-type: none" id="insumo'+nivel+'_'+insumos+'">' +
+                    '<div class="input-group">' +
+                    '<span class="input-group-addon"></span>' +
+                    '<select class="form-control select2" name="'+nome+'['+insumos+']" id="insumo'+nivel+'_'+insumos+'_select">' +
+                    options +
+                    '</select>' +
+                    '</div>' +
+                    '</li>' +
+                    '</div>' +
+                    '<ul id="subgrupo'+nivel+'_'+insumos+'_ul">'+
+                    '</ul>'+
+                    '</div>';
+
+                $('#'+id_atual+'_ul').append(selectHTML);
+                $('.overlay').remove();
+            })
+            .fail(function (retorno) {
+                $('.overlay').remove();
+            });
+        }
+
         function percorreBloco() {
             bloco_aberto = false;
             if(!$('.estrutura_0').length){
                 bloco_aberto = true;
-                return;
+                return false;
             }
             $('.estrutura_0').each(function (idx) {
                 if(!$(this).val()){
@@ -116,7 +153,7 @@
                 }
                 if(!$('.estrutura_1').length){
                     bloco_aberto = true;
-                    return;
+                    return false;
                 }
                 $('.estrutura_1').each(function (idx) {
                     if(!$(this).val()){
@@ -125,7 +162,7 @@
                     }
                     if(!$('.estrutura_2').length){
                         bloco_aberto = true;
-                        return;
+                        return false;
                     }
                     $('.estrutura_2').each(function (idx) {
                         if(!$(this).val()){
@@ -134,7 +171,7 @@
                         }
                         if(!$('.estrutura_3').length){
                             bloco_aberto = true;
-                            return;
+                            return false;
                         }
                         $('.estrutura_3').each(function (idx) {
                             if(!$(this).val()) {
@@ -143,7 +180,7 @@
                             }
                             if(!$('.estrutura_4').length){
                                 bloco_aberto = true;
-                                return;
+                                return false;
                             }
                             $('.estrutura_4').each(function (idx) {
                                 if(!$(this).val()) {
@@ -155,10 +192,6 @@
                     });
                 });
             });
-        }
-
-        function addInsumo(){
-            // Função que vai relacionar a estrutura com o insumo.
         }
     </script>
 @stop

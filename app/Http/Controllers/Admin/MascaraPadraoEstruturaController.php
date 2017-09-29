@@ -7,7 +7,9 @@ use App\Http\Requests\Admin;
 use App\Http\Requests\Admin\CreateMascaraPadraoEstruturaRequest;
 use App\Http\Requests\Admin\UpdateMascaraPadraoEstruturaRequest;
 use App\Models\Grupo;
+use App\Models\Insumo;
 use App\Models\MascaraPadrao;
+use App\Models\Servico;
 use App\Repositories\Admin\MascaraPadraoEstruturaRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
@@ -60,6 +62,7 @@ class MascaraPadraoEstruturaController extends AppBaseController
     public function store(CreateMascaraPadraoEstruturaRequest $request)
     {
         $input = $request->all();
+//        dd($input);
         $mascaraPadraoEstrutura = $this->mascaraPadraoEstruturaRepository->create($input);
 
         Flash::success('Mascara Padrao Estrutura '.trans('common.saved').' '.trans('common.successfully').'.');
@@ -158,7 +161,7 @@ class MascaraPadraoEstruturaController extends AppBaseController
 
     public function getGrupos($id)
     {
-        $grupo = Grupo::select([
+        $grupos = Grupo::select([
             'grupos.id',
             DB::raw("CONCAT(grupos.codigo, ' ', grupos.nome) as nome")
         ])
@@ -166,23 +169,36 @@ class MascaraPadraoEstruturaController extends AppBaseController
             ->orderBy('grupos.nome', 'ASC');
 
 
-        $grupo = $grupo->pluck('grupos.nome','grupos.id')
+        $grupos = $grupos->pluck('grupos.nome','grupos.id')
             ->toArray();
 
-        return $grupo;
+        return $grupos;
     }
 
     public function getServicos($id)
     {
-        $servico = Servico::select([
+        $servicos = Servico::select([
             'servicos.id',
             DB::raw("CONCAT(servicos.codigo, ' ', servicos.nome) as nome")
         ])
             ->where('servicos.grupo_id', $id)
             ->orderBy('servicos.nome', 'ASC');
 
-        $servico = $servico->pluck('nome', 'id')->toArray();
+        $servicos = $servicos->pluck('nome', 'id')->toArray();
 
-        return $servico;
+        return $servicos;
+    }
+
+    public function getInsumos()
+    {
+        $insumos = Insumo::select([
+            'insumos.id',
+            'insumos.nome'
+        ])
+            ->orderBy('insumos.nome', 'ASC');
+
+        $insumos = $insumos->pluck('nome', 'id')->toArray();
+
+        return $insumos;
     }
 }
