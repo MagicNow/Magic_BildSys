@@ -1,14 +1,20 @@
+<?php  
+	$valor_medido_total = $medicaoFisica['attributes']['valor_medido'] ;
+	$valor_medido = $medicaoFisica['attributes']['valor_medido'] ;
+?>
 
-<!-- Valor Medido Anterior Field -->
+<!-- Valor Medido Total Field -->
 <div class="form-group col-sm-2">
-    {!! Form::label('valor_medido', 'Quantidade Medida:') !!}    
-	{!! Form::text('valor_medido', null, ['class' => 'form-control money', 'disabled']) !!}	
+    {!! Form::label('valor_medido_total', 'Valor Total já Medido:') !!}
+    <div class="form-control orange">
+        {{ $valor_medido_total.'%' }}
+    </div>
 </div>
 
 <!-- Valor Medido Field -->
 <div class="form-group col-sm-2">
-    {!! Form::label('valor_medido', 'Valor da Medição:') !!}
-    {!! Form::text('valor_medido', null, ['class' => 'form-control money', 'required']) !!}
+    {!! Form::label('valor_medido', 'Nova Medição:') !!}
+    {!! Form::text('valor_medido', null, ['class' => 'form-control moneyToFloat', 'required']) !!}
 </div>
 
 <!-- Período Inicio Field -->
@@ -43,15 +49,15 @@
 						
 			$("#valor_medido").on('change', function (evt) {
 				
-				valorMedido = parseInt($(this).val());
+				valorMedido = parseFloat($(this).val());
 								
-				if (valorMedido > 100){
+				if (valorMedido >= 100.00){
 					swal({
 						title: 'Ops!',
 						text: 'O limite é 100%',
 						type: 'error',
 					  });
-					$(this).val('100');
+					$(this).val('100,00');
 				  }
 			  }); 			
 					  

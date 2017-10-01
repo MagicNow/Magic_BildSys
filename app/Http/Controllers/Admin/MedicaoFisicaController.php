@@ -68,7 +68,7 @@ class MedicaoFisicaController extends AppBaseController
     public function edit($id)
     {
         $medicaoFisica = $this->medicaoFisicaRepository->findWithoutFail($id);
-
+		
         if (empty($medicaoFisica)) {
             Flash::error(' Medição Física'.trans('common.not-found'));
 

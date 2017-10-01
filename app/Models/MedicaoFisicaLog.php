@@ -6,16 +6,18 @@ use Eloquent as Model;
 
 class MedicaoFisicaLog extends Model
 {
-    public $table = 'medicao_fisica_log';
+    public $table = 'medicao_fisica_logs';
 
     const CREATED_AT = 'created_at';
     const UPDATED_AT = null;
 
     public $fillable = [
         'medicao_fisica_id',
+		'user_id',
+		'periodo_inicio',
+		'periodo_termino',
 		'valor_medido_anterior',
-		'valor_medido_atual',
-        'user_id'
+		'valor_medido_atual'       
     ];
 
     /**
@@ -26,9 +28,11 @@ class MedicaoFisicaLog extends Model
     protected $casts = [
         'id'                    => 'integer',
         'medicao_fisica_id'		=> 'integer',
-        'valor_medido_anterior' => 'integer',
-		'valor_medido_atual' 	=> 'integer',
-        'user_id'               => 'integer'
+        'user_id'               => 'integer',
+		'periodo_inicio' 		=> 'date',
+		'periodo_termino'		=> 'date',
+		'valor_medido_anterior' => 'integer',
+		'valor_medido_atual' 	=> 'integer'        
     ];
 	
 	public function getValorMedidoAnteriorAttribute($value)

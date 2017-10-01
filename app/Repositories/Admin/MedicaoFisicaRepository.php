@@ -26,29 +26,28 @@ class MedicaoFisicaRepository extends BaseRepository
         return MedicaoFisica::class;
     }
 	
-	/*public function create(array $request)
+	public function create(array $request)
     {
-        $lpu = collect($request['lpu']);        
 
         DB::beginTransaction();
         try {
             
-            $lpu = parent::create([
-                'contrato_id'   => $request['contrato_id'],
-                'user_id'       => auth()->id(),
-                'se_status_id'  => SeStatus::EM_APROVACAO,
-                'valor_total'   => 0,
-                'fornecedor_id' => $fornecedor_id,
-                'anexo'         => $nome_anexo
+            $medicaoFisica = parent::create([
+                'obra_id' => $request['obra_id'],
+				'tarefa' => $request['tarefa'],
+				'periodo_inicio' => $request['periodo_inicio'],
+				'periodo_termino' => $request['periodo_termino'],
+				'valor_medido' => $request['valor_medido'],
             ]);
 
-            LpuStatusLog::create([
-                'se_status_id'           => 1,
-                'user_id'                => auth()->id(),
-                'solicitacao_entrega_id' => $lpu->id,
+            MedicaoFisicaLog::create([
+                'medicao_fisica_id' => $medicaoFisica->id,
+				'periodo_inicio' => $request['periodo_inicio'],
+				'periodo_termino' => $request['periodo_termino'],
+				'valor_medido_anterior' => $medicaoFisica['valor_medido'],
+				'valor_medido_atual' => $request['valor_medido'],
+                'user_id' => auth()->id(), 
             ]);           
-
-            $lpu->updateTotal();
 			
         } catch (Exception $e) {
             DB::rollback();
@@ -57,8 +56,8 @@ class MedicaoFisicaRepository extends BaseRepository
 
         DB::commit();
 
-        return $lpu;
-    }*/
+        return $medicaoFisica;
+    }
 
 
     public function update(array $request, $id)
@@ -70,13 +69,15 @@ class MedicaoFisicaRepository extends BaseRepository
 			
 			MedicaoFisicaLog::create([
                 'medicao_fisica_id' => $medicaoFisica->id,
-				'valor_medido_anterior' => $medicaoFisica['valor_medido'],
-				'valor_medido_atual' => $request['valor_medido'],
+				'periodo_inicio' => $request['periodo_inicio'],
+				'periodo_termino' => $request['periodo_termino'],
+				'valor_medido_anterior' => floatval($medicaoFisica['valor_medido']),
+				'valor_medido_atual' => floatval($request['valor_medido']),
                 'user_id' => auth()->id(),                
             ]);
             
             $medicaoFisica->update([                
-                'valor_medido' => $request['valor_medido'],
+                'valor_medido' => floatval($request['valor_medido']),
 				'periodo_inicio' => $request['periodo_inicio'],
 				'periodo_termino' => $request['periodo_termino'],
             ]);

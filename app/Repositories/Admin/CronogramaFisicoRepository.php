@@ -53,7 +53,7 @@ class CronogramaFisicoRepository extends BaseRepository
 		//$fromDate = Carbon::parse($fromDate); //Transform string to Carbon
 		//$toDate = Carbon::parse($toDate); //Transform string to Carbon
 		
-		$months = [""];
+		$months = [];
 
 		for($date = $fromDate; $date->lte($toDate); $date->addMonth()) {
 			$months[] = $date->format('m/Y');

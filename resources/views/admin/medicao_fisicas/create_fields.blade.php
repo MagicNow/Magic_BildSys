@@ -42,14 +42,19 @@
 
 @section('scripts')
     <script type="text/javascript">
-        var obra_id = null;
+        
+		var obra_id = null;
         var tarefa_id = null;
         
         function buscaTarefas() {
-            if (!obra_id) {
+			
+			startLoading();	
+            
+			if (!obra_id) {
                 $('#tarefa_id').html('');
                 $('#tarefa_id').trigger('change.select2');
             }
+			
             $.ajax('/admin/medicao_fisicas/tarefas-por-obra', {
                 data: {
                     obra: obra_id
@@ -57,7 +62,7 @@
             })
                     .done(function (retorno) {
 						
-						console.log(retorno.data);
+						//console.log(retorno.data);
 						
                         var options_tarefas = '<option value="" selected>-</option>';
 												
@@ -81,7 +86,9 @@
                         });
                         swal("Oops", erros, "error");
                     });
-        }
+        
+			stopLoading();
+		}
        
         $(function () {
 			
@@ -95,17 +102,17 @@
 						
 			$("#valor_medido").on('change', function (evt) {
 				
-				valorMedido = parseInt($(this).val());
+				valorMedido = parseFloat($(this).val());
 				
 				//console.log(valorMedido);
 				
-				if (valorMedido > 100){
+				if (valorMedido >= 100.00){
 					swal({
 						title: 'Ops!',
 						text: 'O limite é 100%',
 						type: 'error',
 					  });
-					$(this).val('100');
+					$(this).val('100,00');
 				  }
 			  }); 			
 					  
