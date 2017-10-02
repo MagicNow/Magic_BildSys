@@ -614,6 +614,10 @@ class MegaXmlRepository
         $xmlRoot->setAttribute("OPERACAO", 'I');
         $xmlRoot = $domtree->appendChild($xmlRoot);
 
+        // Origem do movimento = P para contas a pagar, R para contas a receber
+        $node = $domtree->createElement("MOV_CH_ORIGEM", 'P');
+        $xmlRoot->appendChild($node);
+
         //Código Fornecedor dentro do SYS "Código do Agente."
         $node = $domtree->createElement("AGN_ST_CODIGO", $pagamento->fornecedor->codigo_mega);
         $xmlRoot->appendChild($node);
