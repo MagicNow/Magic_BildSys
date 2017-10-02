@@ -1,14 +1,12 @@
 <?php  
-	$valor_medido_total = $medicaoFisica['attributes']['valor_medido'] ;
-	$valor_medido = $medicaoFisica['attributes']['valor_medido'] ;
+	$valor_medido_total = $medicaoFisica['attributes']['valor_medido_total'] ;
+	$valor_medido = $medicaoFisica['attributes']['valor_medido_total'] ;
 ?>
 
 <!-- Valor Medido Total Field -->
 <div class="form-group col-sm-2">
     {!! Form::label('valor_medido_total', 'Valor Total já Medido:') !!}
-    <div class="form-control orange">
-        {{ $valor_medido_total.'%' }}
-    </div>
+    {!! Form::text('valor_medido_total', $valor_medido_total.'%', ['class' => 'form-control moneyToFloat orange', 'required', 'readonly']) !!}
 </div>
 
 <!-- Valor Medido Field -->
@@ -48,20 +46,50 @@
         $(function () { 	
 						
 			$("#valor_medido").on('change', function (evt) {
-				
+
 				valorMedido = parseFloat($(this).val());
-								
+				valorMedidoTotal = parseFloat($("#valor_medido_total").val());
+				valorMedidoDiff = 100 - valorMedido - valorMedidoTotal;
+
 				if (valorMedido >= 100.00){
 					swal({
 						title: 'Ops!',
 						text: 'O limite é 100%',
 						type: 'error',
-					  });
+					});
 					$(this).val('100,00');
-				  }
-			  }); 			
-					  
+				}
+
+				if (valorMedidoDiff < 0.00){
+					swal({
+						title: 'Ops!',
+						text: 'Essa tarefa já tem medição de 100%',
+						type: 'error',
+					});
+					$(this).val('');
+				}
+
+			}); 
+			
+			$("#periodo_inicio , #periodo_termino").on('change', function (evt) {
+												
+				var dateObj1 = new Date($('#periodo_inicio').val());
+				var dateObj2 = new Date($('#periodo_termino').val());
+
+				if(dateObj1.getTime() > dateObj2.getTime()){
+					swal({
+						title: 'Ops!',
+						text: 'Período Inválido, a data de término tem que ser maior que a data de ínicio',
+						type: 'error',
+					});
 					
+					$('#periodo_inicio').val("");
+					$('#periodo_termino').val("");					
+				}  
+				
+			});
+		  
+			
 
         });
     </script>

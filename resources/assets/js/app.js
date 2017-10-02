@@ -24,7 +24,9 @@ Vue.component('generic-paginator',require('./components/generic-paginator.vue'))
 import Tabela from './components/tabela.vue'
 import Tile from './components/tile.vue'
 import TileGrafico from './components/tile-grafico.vue'
+import TilePlanejamento from './components/tile-planejamento.vue'
 
 Vue.component('tabela', Tabela);
 Vue.component('tile', Tile);
 Vue.component('tile-grafico', TileGrafico);
+Vue.component('tile-planejamento', TilePlanejamento);

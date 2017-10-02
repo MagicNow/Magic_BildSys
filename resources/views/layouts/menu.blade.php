@@ -163,7 +163,7 @@
         <li class="{{ Request::is('admin/cronogramaFisicos*') ? 'active' : '' }}">
             <a href="{!! route('admin.cronograma_fisicos.index') !!}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
-                <span>Cronograma Físicos</span>
+                <span>Planejamentos Físicos</span>
             </a>
         </li>
         @endshield		

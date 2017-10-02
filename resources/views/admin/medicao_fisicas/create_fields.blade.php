@@ -11,25 +11,25 @@
 </div>
 
 <!-- Valor Medido Field -->
-<div class="form-group col-sm-2">
-    {!! Form::label('valor_medido', 'Valor da Medição:') !!}
-    {!! Form::text('valor_medido', null, ['class' => 'form-control moneyToFloat', 'required' , 'maxlength' => '12']) !!}
+<div class="form-group col-sm-4">
+    {!! Form::label('valor_medido_total', 'Valor da Medição:') !!}
+    {!! Form::text('valor_medido_total', null, ['class' => 'form-control moneyToFloat', 'required']) !!}
 </div>
 
 <!-- Período Inicio Field -->
-<div class="form-group col-sm-3">
-    {!! Form::label('periodo_inicio', 'Data início:') !!}
+<div class="form-group col-sm-4">
+    {!! Form::label('periodo_inicio', 'Período início:') !!}
     {!! Form::date('periodo_inicio', null, ['class' => 'form-control' , 'required']) !!}
 </div>
 
 <!-- Período Fim Field -->
-<div class="form-group col-sm-3">
-    {!! Form::label('periodo_termino', 'Data Fim:') !!}
+<div class="form-group col-sm-4">
+    {!! Form::label('periodo_termino', 'Período Fim:') !!}
     {!! Form::date('periodo_termino', null, ['class' => 'form-control' , 'required']) !!}
 </div>
 
 <!-- Observação Field -->
-<div class="form-group col-sm-6">
+<div class="form-group col-sm-12">
     {!! Form::label('observacao', 'Observação da Medição:') !!}
     {!! Form::textarea('observacao', null, ['class' => 'form-control', 'id'=>'obs', 'rows'=>4]) !!}
 </div>
@@ -57,17 +57,17 @@
 			
             $.ajax('/admin/medicao_fisicas/tarefas-por-obra', {
                 data: {
-                    obra: obra_id
+                    obra_id: obra_id
                 }
             })
                     .done(function (retorno) {
 						
-						//console.log(retorno.data);
+						console.log(retorno);
 						
                         var options_tarefas = '<option value="" selected>-</option>';
 												
-                        if(retorno.data){
-                            $.each(retorno.data, function (index, valor) {
+                        if(retorno){
+                            $.each(retorno, function (index, valor) {
                                 //options_tarefas += '<option value="' + valor.id + '">' + valor.id + ' | '  + valor.tarefa + '</option>';
 								options_tarefas += '<option value="' + valor.tarefa + '">'+ valor.tarefa + '</option>';
                             });
@@ -88,7 +88,7 @@
                     });
         
 			stopLoading();
-		}
+		}		
        
         $(function () {
 			
@@ -100,9 +100,9 @@
             });
 		
 						
-			$("#valor_medido").on('change', function (evt) {
+			$("#valor_medido_total").on('change', function (evt) {
 				
-				valorMedido = parseFloat($(this).val());
+				var valorMedido = parseFloat($(this).val());
 				
 				//console.log(valorMedido);
 				
@@ -111,12 +111,28 @@
 						title: 'Ops!',
 						text: 'O limite é 100%',
 						type: 'error',
-					  });
+					});
 					$(this).val('100,00');
-				  }
-			  }); 			
-					  
+				}
+			}); 
+			  
+			$("#periodo_inicio , #periodo_termino").on('change', function (evt) {
+												
+				var dateObj1 = new Date($('#periodo_inicio').val());
+				var dateObj2 = new Date($('#periodo_termino').val());
+
+				if(dateObj1.getTime() > dateObj2.getTime()){
+					swal({
+						title: 'Ops!',
+						text: 'A data de término tem que ser maior que a data de ínicio',
+						type: 'error',
+					});
 					
+					$('#periodo_inicio').val("");
+					$('#periodo_termino').val("");					
+				}  
+				
+			});	
 
         });
     </script>

@@ -5,7 +5,7 @@
 		<div class="modal-header">
 			<div class="col-md-12">
 				<div class="col-md-9">
-					<h3 class="pull-left title"><a href="#" onclick="history.go(-1);"><i class="fa fa-arrow-left" aria-hidden="true"></i></a> Cronograma Físicos</h3>						
+					<h3 class="pull-left title"><a href="#" onclick="history.go(-1);"><i class="fa fa-arrow-left" aria-hidden="true"></i></a> Planejamentos Físicos</h3>						
 				</div>
 			</div>
 		</div>
@@ -38,16 +38,6 @@
 						</select>
 					</div>
 					
-					<div class="js-datatable-filter-form pull-left form-group col-sm-3">
-						<h4>Mês Referência</h4>
-						<select name="mes" id="mes" class="select2">
-							<option value="">-- Selecione o Mês --</option>
-							@foreach($meses as $i => $j)
-								<option value="{{ $i }}">{{ $j }}</option>
-							@endforeach
-
-						</select>
-					</div>
 				</div>
 			</div>
 		</div>
@@ -67,11 +57,7 @@
 
             $('#obra').on('change', function (event) {
                 window.LaravelDataTables["dataTableBuilder"].draw();
-            });
-			
-			$('#mes').on('change', function (event) {
-                window.LaravelDataTables["dataTableBuilder"].draw();
-            });
+            });			
 			
 			$('#template').on('change', function (event) {
                 window.LaravelDataTables["dataTableBuilder"].draw();

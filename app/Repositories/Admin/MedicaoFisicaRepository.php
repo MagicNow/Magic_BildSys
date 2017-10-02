@@ -35,18 +35,16 @@ class MedicaoFisicaRepository extends BaseRepository
             $medicaoFisica = parent::create([
                 'obra_id' => $request['obra_id'],
 				'tarefa' => $request['tarefa'],
-				'periodo_inicio' => $request['periodo_inicio'],
-				'periodo_termino' => $request['periodo_termino'],
-				'valor_medido' => $request['valor_medido'],
+				'valor_medido_total' => floatval($request['valor_medido_total']),
             ]);
 
             MedicaoFisicaLog::create([
                 'medicao_fisica_id' => $medicaoFisica->id,
+				'user_id' => auth()->id(), 
+				'valor_medido' => $medicaoFisica['valor_medido_total'],
 				'periodo_inicio' => $request['periodo_inicio'],
 				'periodo_termino' => $request['periodo_termino'],
-				'valor_medido_anterior' => $medicaoFisica['valor_medido'],
-				'valor_medido_atual' => $request['valor_medido'],
-                'user_id' => auth()->id(), 
+				'observacao' => $request['observacao'],				
             ]);           
 			
         } catch (Exception $e) {
@@ -69,17 +67,16 @@ class MedicaoFisicaRepository extends BaseRepository
 			
 			MedicaoFisicaLog::create([
                 'medicao_fisica_id' => $medicaoFisica->id,
+				'user_id' => auth()->id(),
+				'valor_medido' => floatval($request['valor_medido']),
 				'periodo_inicio' => $request['periodo_inicio'],
 				'periodo_termino' => $request['periodo_termino'],
-				'valor_medido_anterior' => floatval($medicaoFisica['valor_medido']),
-				'valor_medido_atual' => floatval($request['valor_medido']),
-                'user_id' => auth()->id(),                
-            ]);
-            
+            ]);			
+			
+			$valor_medido_total = floatval($medicaoFisica->valor_medido_total) + floatval($request['valor_medido']);
+			            
             $medicaoFisica->update([                
-                'valor_medido' => floatval($request['valor_medido']),
-				'periodo_inicio' => $request['periodo_inicio'],
-				'periodo_termino' => $request['periodo_termino'],
+                'valor_medido_total' => $valor_medido_total,
             ]);
             
         } catch (Exception $e) {

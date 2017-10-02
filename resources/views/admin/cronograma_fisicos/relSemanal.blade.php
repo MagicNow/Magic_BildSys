@@ -14,34 +14,34 @@
 		background-color: #474747;
 		font-family: Raleway;
 		font-weight: bold;
-	}		
+	}	
+	
 	
 	.element-previsto-realizado-sem{
-		height: 230px;
+		height: 250px;
 		padding: 5px;
 		background-color: white;
 	}
 	
 	.element-pdp-ptrab-realac{
-		height: 230px;
+		height: 250px;
 		padding: 5px;
 		background-color: white;
 	}
 	
 	.element-desvio-pdp{
-		height: 180px;
+		height: 250px;
 		padding: 5px;
 		background-color: white;			
 	}
 	
 	.element-desvio-ptrab{
-		height: 180px;
+		height: 250px;
 		padding: 5px;
 		background-color: white;
 	}
 	
 	.element-tarefas-criticas{
-		height: 300px;
 		padding: 5px;
 		background-color: white;
 	}		
@@ -77,15 +77,15 @@
 				<div class="row">
 					<div class="form-group col-md-3">
 						{!! Form::label('obra_id', 'Obra:') !!}
-						{!! Form::select('obra_id',[''=>'Selecione']+$obras, null, ['class' => 'form-control select2','required'=>'required', 'id'=>'obra_id', 'onchange'=>'showDados()']) !!}
+						{!! Form::select('obra_id',[''=>'Selecione'] + $obras, null, ['class' => 'form-control select2','required'=>'required', 'id'=>'obra_id', 'onchange'=>'showDados()']) !!}
 					</div>
 					<div class="form-group col-md-2">
-						{!! Form::label('mes_id', 'Mês:') !!}
-						{!! Form::select('mes_id', [null=>'Selecione a Mês de Ref.'] + $meses, null, ['class' => 'form-control select2','required'=>'required' , 'id'=>'mes_id' , 'onchange'=>'showDados()']) !!}
+						{!! Form::label('mes_id', 'Mês de Referência:') !!}
+						{!! Form::select('mes_id', [''=>'Selecione a Mês de Ref.'] + $meses, null, ['class' => 'form-control select2','required'=>'required' , 'id'=>'mes_id' , 'onchange'=>'showDados()']) !!}
 					</div>
 					<div class="form-group col-md-2">
-						{!! Form::label('semana_id', 'Semana:') !!}
-						{!! Form::select('semana_id', [null=>'Selecione a Semana de Ref.'] + $semanas, null, ['class' => 'form-control select2','required'=>'required', 'id'=>'semana_id' , 'onchange'=>'showDados()']) !!}					
+						{!! Form::label('semana_id', 'Semana de Referência:') !!}
+						{!! Form::select('semana_id', [''=>'Selecione a Semana de Ref.'] + $semanas, null, ['class' => 'form-control select2','required'=>'required', 'id'=>'semana_id' , 'onchange'=>'showDados()']) !!}					
 					</div>
 				</div>
 			</div>
@@ -120,7 +120,7 @@
 			semana_id = $('#semana_id').val();
 			
 			// Se tiver setados todos os combos cria os gráficos
-			if ((obra_id > 0) && (mes_id > 0) && (semana_id > 0)){
+			if (obra_id !="" && mes_id !=""  &&  semana_id !="") {
 				carregarTabelas(obra_id, mes_id, semana_id);				
 			}
 		}
@@ -240,6 +240,9 @@
 			//Grafico PDP x Trab x Real Acumulado na Semana selecionada
 			GraficoPDPTrabRealAcumSemLabels = data['grafPDPTrabRealAcumSem']['labels'];
 			GraficoPDPTrabRealAcumSem = objectToArray(data['grafPDPTrabRealAcumSem']['data']);
+			GraficoPDPTrabRealAcumSemPDP = [GraficoPDPTrabRealAcumSem[0]];
+			GraficoPDPTrabRealAcumSemTrab = [GraficoPDPTrabRealAcumSem[1]];
+			GraficoPDPTrabRealAcumSemReal = [GraficoPDPTrabRealAcumSem[2]];
 			
 			//Grafico Tarefas Criticas
 			GraficoTarefasCriticasLabels = objectToArray(data['grafTarefasCriticas']['labels']);
@@ -291,21 +294,21 @@
 					label: 'Plano Diretor',						
 					backgroundColor: 'grey',
 					borderColor: 'grey',
-					data: [1.58]
+					data: GraficoPDPTrabRealAcumSemPDP
 				},
 				{
 					label: 'Plano Trabalho',						
 					backgroundColor: 'blue',
 					borderColor: 'blue',
-					data: [1.58]
+					data: GraficoPDPTrabRealAcumSemTrab
 				},
 				{
 					label: 'Realizado',						
 					backgroundColor: 'DarkOrange',
 					borderColor: 'DarkOrange',
-					data: [1.17]
+					data: GraficoPDPTrabRealAcumSemReal
 				}],				
-				labelsPDPxPTrabalhoxRealAc : ["Semana 1"],
+				labelsPDPxPTrabalhoxRealAc : GraficoPDPTrabRealAcumSemLabels,
 				mybooleanPDPxPTrabalhoxRealAc : false,                
 				myoptionPDPxPTrabalhoxRealAc: {
 					onClick: function (event, legendItem) {

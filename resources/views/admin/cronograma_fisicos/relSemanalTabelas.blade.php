@@ -2,13 +2,13 @@
 	<div class="row">	
 		<div class="col-xs-12">               			
 			<div class="row">
-				<div class="col-md-12 margem-topo"><tile title-color="head-grey" title="Percentual Previsto x Percentual Realizado" type="created"></tile></div>
+				<div class="col-md-12 margem-topo"><tile-planejamento title-color="head-grey" title="Percentual Previsto x Percentual Realizado" type="created"></tile-planejamento></div>
 			</div>
 			
 			<div class="clearfix"></div>
 			
-			<div id="precentual-prev-realizado" class="row">                        
-				<div class="col-md-7 table-responsive margem-topo">
+			<div class="row">                        
+				<div class="col-md-12 table-responsive margem-topo">
 					<table class="table table-bordered table-striped">
 						<thead >
 							<tr>
@@ -67,8 +67,8 @@
 							
 							<tr>
 								<td>Realizado Semanal</td>
-								@foreach($tabPercentualPrevReal['data']['previstoSemanal'] as $previstoSemanal)										
-									<td class="text-center">{{ $previstoSemanal.'%'}}</td>																											
+								@foreach($tabPercentualPrevReal['data']['realizadoSemanal'] as $realizadoSemanal)										
+									<td class="text-center">{{ $realizadoSemanal.'%'}}</td>																											
 								@endforeach
 							</tr>
 							
@@ -82,6 +82,9 @@
 						</tbody>
 					</table>
 				</div> 
+			</div>
+			
+			<div class="row">                        
 				
 				<div class="col-md-3 margem-topo">							
 					<div class="element-grafico">
@@ -97,7 +100,7 @@
 					</div>
 				</div>
 				
-				<div class="col-md-2 margem-topo">							
+				<div class="col-md-3 margem-topo">							
 					<div class="element-grafico">
 						<div class="element-head">PDP x P.Trab. x Real Ac.</div>
 						<div class="element-pdp-ptrab-realac">                                    
@@ -106,16 +109,12 @@
 										 :datasets="datasetsPDPxPTrabalhoxRealAc"
 										 :beginzero="mybooleanPDPxPTrabalhoxRealAc"                                                 
 										 :option="myoptionPDPxPTrabalhoxRealAc"
-										 :height="320">
+										 :height="220">
 							</chartjs-bar>
 						</div>
 					</div>
-				</div>												
-			</div>
-			
-			<div class="clearfix"></div>
-			
-			<div class="row">						
+				</div>
+
 				<div class="col-md-3 margem-topo">							
 					<div class="element-grafico">
 						<div class="element-head">DESVIO PDP</div>
@@ -125,7 +124,7 @@
 								:datasets="datasetsDesvioPDP" 
 								:scalesdisplay="false" 
 								:option="myoptionDesvioPDP" 
-								:height="150">
+								:height="220">
 							</chartjs-pie>
 						</div>
 					</div>
@@ -140,17 +139,16 @@
 								:datasets="datasetsDesvioPTrabalho" 
 								:scalesdisplay="false" 
 								:option="myoptionDesvioPTrabalho" 
-								:height="150">
+								:height="220">
 							</chartjs-pie>
 						</div>
 					</div>
-				</div>						
-			</div>
-			
-			<div class="clearfix"></div>
+				</div>				
+				
+			</div>			
 			
 			<div class="row">
-				<div class="col-md-12 margem-topo"><tile title-color="head-grey" title="Tarefas Críticas" type="created"></tile></div>
+				<div class="col-md-12 margem-topo"><tile-planejamento title-color="head-grey" title="Tarefas Críticas" type="created"></tile-planejamento></div>
 			</div>
 			
 			<div class="clearfix"></div>
@@ -159,7 +157,7 @@
 			
 				<div class="col-md-7 table-responsive margem-topo">
 					<table class="table table-bordered table-striped">
-						<thead class="element-tabela-head">
+						<thead class="element-head">
 							<tr>
 								@foreach($tabTarefasCriticas['labels'] as $tabTarefasCriticasTitulo)										
 									<td class="text-center">{{ $tabTarefasCriticasTitulo }}</td>									
@@ -208,7 +206,7 @@
 			</div>
 			
 			<div class="row">
-				<div class="col-md-12 margem-topo"><tile title-color="head-grey" title="Coleta Semanal" type="created"></tile></div>
+				<div class="col-md-12 margem-topo"><tile-planejamento title-color="head-grey" title="Coleta Semanal" type="created"></tile-planejamento></div>
 			</div>
 			
 			<div id="coleta-semanal" class="row">
@@ -259,12 +257,7 @@
 						</tbody>
 					</table>
 				</div>
-			</div>
-			
-			<?php /*<div class="row">
-				<div class="col-md-12 margem-topo"><tile title-color="head-grey" title="Tarefas não previstas do mês" type="created"></tile></div>
-			</div>*/ 
-			?>								
+			</div>								
 			
 		</div>
 	</div>

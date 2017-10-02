@@ -19,19 +19,9 @@ class MedicaoFisicaDataTable extends DataTable
     public function ajax()
     {
         return $this->datatables
-            ->eloquent($this->query())	
-			->editColumn('periodo_inicio', function ($medicaoFisica) {
-                return $medicaoFisica->periodo_inicio
-                    ? $medicaoFisica->periodo_inicio->format('d/m/Y')
-                    : '';
-            })
-			->editColumn('periodo_termino', function ($medicaoFisica) {
-                return $medicaoFisica->periodo_termino
-                    ? $medicaoFisica->periodo_termino->format('d/m/Y')
-                    : '';
-            })
-            ->editColumn('valor_medido', function ($medicaoFisica) {
-                return $medicaoFisica->valor_medido."%";
+            ->eloquent($this->query())				
+            ->editColumn('valor_medido_total', function ($medicaoFisica) {
+                return $medicaoFisica->valor_medido_total."%";
             })
 			->editColumn('created_at', function ($medicaoFisica) {
                 return $medicaoFisica->created_at
@@ -54,10 +44,8 @@ class MedicaoFisicaDataTable extends DataTable
         $query->select([
             'medicao_fisicas.id',            				
             'obras.nome as obra',
-			'medicao_fisicas.tarefa',
-			'medicao_fisicas.periodo_inicio',
-			'medicao_fisicas.periodo_termino',
-			'medicao_fisicas.valor_medido',
+			'medicao_fisicas.tarefa',			
+			'medicao_fisicas.valor_medido_total',
 			'medicao_fisicas.created_at',			
         ])
 		->join('obras', 'obras.id', 'medicao_fisicas.obra_id') 
@@ -163,11 +151,9 @@ class MedicaoFisicaDataTable extends DataTable
     {
         return [            
             'Obra' => ['name' => 'obra', 'data' => 'obra', 'title' => 'Obra'],
-			'Tarefa' => ['name' => 'tarefa', 'data' => 'tarefa', 'title' => 'Tarefa'],
-			'periodo_inicio' => ['name' => 'periodo_inicio', 'data' => 'periodo_inicio', 'title' => 'Data Início'],			
-			'periodo_termino' => ['name' => 'periodo_termino', 'data' => 'periodo_termino', 'title' => 'Data Termino'],
-			'valor_medido' => ['name' => 'valor_medido', 'data' => 'valor_medido', 'title' => 'Valor Total Medido'],
-			'created_at'        => ['name' => 'created_at', 'data' => 'created_at', 'title' => 'Medido em'],
+			'Tarefa' => ['name' => 'tarefa', 'data' => 'tarefa', 'title' => 'Tarefa'],			
+			'valor_medido_total' => ['name' => 'valor_medido_total', 'data' => 'valor_medido_total', 'title' => 'Valor Total Medido'],
+			'created_at'        => ['name' => 'created_at', 'data' => 'created_at', 'title' => 'Última medição'],
 			'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
 		];
     }

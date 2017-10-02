@@ -46,15 +46,10 @@ class CronogramaFisicoController extends AppBaseController
         }
 				
 		$obras = Obra::pluck('nome','id')->toArray();
-		$meses = ["07/2017", "08/2017", "09/2017"];
-		
-		/*$tipos = ["", "", "", "", ""];
-		$ano = ["", "", "", "", ""];*/
-		
-		
+				
         $templates = TemplatePlanilha::where('modulo', 'Cronograma Fisicos')->pluck('nome','id')->toArray();
 		
-        return $cronogramaFisicoDataTable->porObra($id)->render('admin.cronograma_fisicos.index', compact('obras', 'meses', 'templates','id'));
+        return $cronogramaFisicoDataTable->porObra($id)->render('admin.cronograma_fisicos.index', compact('obras', 'templates','id'));
     }
 
     /**
@@ -341,7 +336,7 @@ class CronogramaFisicoController extends AppBaseController
 		$tabTarefasCriticas['data'] = [];		
 		
 		//Filtros Obra, Mês e Semana de Referências		
-		if($request->obra_id) {            
+		if($request->obra_id != "") {            
             
 			$obraId = $request->obra_id;
 			
@@ -357,7 +352,7 @@ class CronogramaFisicoController extends AppBaseController
 			$obraDataInicio = Carbon::parse($obraDataInicio);
 			
 			if(Carbon::now()->subMonth() < Carbon::parse($obraDataInicio)->addMonths(36)){
-				$obraDataFinal = Carbon::now()->subMonth();
+				$obraDataFinal = Carbon::now();
 			}else{
 				$obraDataFinal = Carbon::parse($obraDataInicio)->addMonths(36);
 			}
@@ -367,22 +362,23 @@ class CronogramaFisicoController extends AppBaseController
 			
 		}		
 						
-		if($request->mes_id) {            
+		if($request->mes_id != "") { 
 			
 			$mesId = $request->mes_id;
 			$mesRef = $meses[$mesId];
 			
 			$inicioMes = Carbon::createFromFormat("d/m/Y", "01/".$mesRef)->startOfMonth();
 			$fimMes = Carbon::createFromFormat("d/m/Y", "01/".$mesRef)->endOfMonth();
-			
+						
 		}
 			
-		if($request->semana_id) { 
+		if($request->semana_id != "") { 
+						
 			$semanaId = $request->semana_id;
 		}
 						
 		//Retornar as Regras
-		if(($request->obra_id)&&($request->mes_id)&&($request->semana_id)){
+		if(($request->obra_id != "")&&($request->mes_id != "")&&($request->semana_id != "")){
 					
 			$sextasArray = CronogramaFisicoRepository::getFridaysByDate($inicioMes);
 			
@@ -390,20 +386,20 @@ class CronogramaFisicoController extends AppBaseController
 			$tabColetaSemanal['data'] = $this->tabColetaSemanal($obraId, $inicioMes, $fimMes, "Tendência Real");			
 			$tabColetaSemanal['labels1'] = $sextasArray;	; //Label Horizontal
 			$tabColetaSemanal['labels2'] = ["Local", "Pavimento", "Tarefas", "Início Real" , "Término Real" , "Crítica" , "Peso Total" , "Real Acum. Mês Anterior" , "Previsto" , "Realizado" , "Previsto" , "Realizado" , "Previsto" , "Realizado" , "Previsto" , "Realizado" , "Previsto" , "Realizado" , "Farol"];			
-			
+								
 			/***** Tabela Percentual Previsto e Acumulado ****/	
 			$tabPercentualPrevReal['labels'] = CronogramaFisicoRepository::getFridaysByDate($inicioMes);	; //Label Horizontal				
 
 			/***** Tabela Percentual Previsto x Percentual Realizado - Dados: Vindo da Curva de Andamento (PD, PT, TR, TD e TT) ****/			
 			$planoDiretorAcumulado = $this->planoAcumuladoMeses($this->percentualPorMeses($obraId, $meses, "Plano Diretor"));
 			$planoTrabalhoAcumulado = $this->planoAcumuladoMeses($this->percentualPorMeses($obraId, $meses, "Plano Trabalho"));
-			$planoPrevistoAcumulado = $this->planoAcumuladoMeses($this->percentualPorMeses($obraId, $meses, "Tendência Real"));			
+			$planoPrevistoAcumulado = $this->planoAcumuladoMeses($this->percentualPorMeses($obraId, $meses, "Tendência Real"));	
 			
 			$tabPercentualPrevReal['data']['planoDiretorAcumulado'] = $this->planoAcumuladoMensal($planoDiretorAcumulado, $mesRef);
 			$tabPercentualPrevReal['data']['planoTrabalhoAcumulado'] = $this->planoAcumuladoMensal($planoTrabalhoAcumulado, $mesRef);
 			$tabPercentualPrevReal['data']['planoPrevistoAcumulado'] = $this->planoAcumuladoMensal($planoPrevistoAcumulado, $mesRef);
-			$tabPercentualPrevReal['data']['previstoSemanal'] = $this->previstoSemanal($tabColetaSemanal['data'], $inicioMes, $semanaId);
-			$tabPercentualPrevReal['data']['realizadoSemanal'] = $this->realizadoSemanal($tabColetaSemanal['data'], $inicioMes, $semanaId);
+			$tabPercentualPrevReal['data']['previstoSemanal'] = $this->previstoSemanal($tabColetaSemanal['data'], $inicioMes);
+			$tabPercentualPrevReal['data']['realizadoSemanal'] = $this->realizadoSemanal($tabColetaSemanal['data'], $inicioMes);
 			
 			$grafPercentualPrevReal = [];
 			$grafPercentualPrevReal['labels'] = ["Plano Diretor","Plano Trabalho", "Realizado"];
@@ -443,7 +439,7 @@ class CronogramaFisicoController extends AppBaseController
 		$grafTarefasCriticas['data']['realizadoAcum'] = [];
 		
 		//Filtros Obra, Mês e Semana de Referências		
-		if($request->obra_id) {            
+		if($request->obra_id != "") {            
             
 			$obraId = $request->obra_id;
 			
@@ -469,23 +465,24 @@ class CronogramaFisicoController extends AppBaseController
 			
 		}		
 						
-		if($request->mes_id) {            
+		if($request->mes_id != "") {            
 			
 			$mesId = $request->mes_id;
 			$mesRef = $meses[$mesId];
 			
-			$inicioMes = Carbon::createFromFormat("d/m/Y", "01/".$meses[$mesId+1])->startOfMonth();
-			$fimMes = Carbon::createFromFormat("d/m/Y", "01/".$meses[$mesId])->endOfMonth();	
+			$inicioMes = Carbon::createFromFormat("d/m/Y", "01/".$mesRef)->startOfMonth();
+			$fimMes = Carbon::createFromFormat("d/m/Y", "01/".$mesRef)->endOfMonth();	
 			
 		}
 			
-		if($request->semana_id) { 
+		if($request->semana_id != "") { 
 			$semanaId = $request->semana_id;
+			$semanaText = $semanaId + 1;
 		}
 				
 		
 		//Retornar as Regras
-		if(($request->obra_id)&&($request->mes_id)&&($request->semana_id)){
+		if(($request->obra_id != "")&&($request->mes_id != "")&&($request->semana_id != "")){
 					
 			$sextasArray = CronogramaFisicoRepository::getFridaysByDate($inicioMes);
 			
@@ -494,18 +491,21 @@ class CronogramaFisicoController extends AppBaseController
 			
 			/***** Gráfico Previsto x Realizado na Semana selecionada	 ****/	
 			$grafPrevistoRealizadoSem['labels'] = ["Semana 1", "Semana 2", "Semana 3", "Semana 4", "Semana 5", "Mês"];
-			$grafPrevistoRealizadoSem['data']['previstoSem'] = $this->previstoSemanal($tabColetaSemanal['data'], $inicioMes, $semanaId);
+			$grafPrevistoRealizadoSem['data']['previstoSem'] = $this->previstoSemanal($tabColetaSemanal['data'], $inicioMes);
 			$grafPrevistoRealizadoSem['data']['realizadoSem'] = [-1.58,1.75,1.75,1.75,1.75,2.55];		
 
 			/***** Gráfico PDP x Trab x Real Acumulado na Semana selecionada *****/
-			$grafPDPTrabRealAcumSem['labels'] = ["Semana ".$semanaId];
+			$grafPDPTrabRealAcumSem['labels'] = ["Semana ".$semanaText];
 			
 			$planoDiretorAcumulado = $this->planoAcumuladoMeses($this->percentualPorMeses($obraId, $meses, "Plano Diretor"));
 			$planoDiretorAcumulado = $this->planoAcumuladoMensal($planoDiretorAcumulado, $mesRef);
 			
-			//$grafPDPTrabRealAcumSem['data'] = $planoDiretorAcumulado;
+			$planoTrabalhoAcumulado = $this->planoAcumuladoMeses($this->percentualPorMeses($obraId, $meses, "Plano Trabalho"));
+			$planoTrabalhoAcumulado = $this->planoAcumuladoMensal($planoTrabalhoAcumulado, $mesRef);
 			
-			$grafPDPTrabRealAcumSem['data'] = [];
+			array_push($grafPDPTrabRealAcumSem['data'], $planoDiretorAcumulado[$sextasArray[$semanaId]]);
+			array_push($grafPDPTrabRealAcumSem['data'], $planoTrabalhoAcumulado[$sextasArray[$semanaId]]);
+			array_push($grafPDPTrabRealAcumSem['data'], [1.15]);
 			
 			/***** Gráfico Tarefas Críticas	 ****/	
 			$tabTarefasCriticas['data'] = $this->tabTarefasCriticas($tabColetaSemanal['data'], $inicioMes, $semanaId); //Dados									
@@ -592,6 +592,8 @@ class CronogramaFisicoController extends AppBaseController
 		->get()
 		->toArray();
 		
+		dump($tabColetaSemanal);
+		
 		//Filtrar por Tarefa do Mês				
 		foreach ($tabColetaSemanal as $keyT => $tarefa) {				
 			
@@ -601,6 +603,8 @@ class CronogramaFisicoController extends AppBaseController
 			
 			//}else{
 				
+				echo $tarefa['tarefa'];
+				
 				foreach($sextasArray as $sexta){								
 					
 					//Calcular % da Semana
@@ -608,29 +612,25 @@ class CronogramaFisicoController extends AppBaseController
 					$fimTarefa = Carbon::parse($tarefa['data_termino']);					
 					
 					$inicioSemana = Carbon::createFromFormat("d/m/Y", $sexta)->subDays(6);									
-					$fimSemana = Carbon::createFromFormat("d/m/Y", $sexta);						
+					$fimSemana = Carbon::createFromFormat("d/m/Y", $sexta);	
 
 					$valorPrevisto = CronogramaFisicoRepository::getPrevistoPorcentagem($inicioTarefa, $fimTarefa, $inicioSemana, $fimSemana);										
 					$valorMedicaoFisica = CronogramaFisicoRepository::getRealizadoPorcentagem($inicioSemana, $fimSemana, $obraId, $tarefa['tarefa']);																				
-									
+					
 					$tabColetaSemanal[$keyT]["percentual-".$sexta] =  round($valorPrevisto,2);
-					$tabColetaSemanal[$keyT]["realizado-".$sexta] =  $valorMedicaoFisica; //Mediçao Fisicas
+					$tabColetaSemanal[$keyT]["realizado-".$sexta] =  round($valorMedicaoFisica,2); //Mediçao Fisicas
 					//Mes
 					//Farol
 										
-				}				
+				}	
 			//}	
 		}
-				
 		
 		return $tabColetaSemanal;
 	}
 		
 	// Dados calculados em todos os meses
-	public function percentualPorMeses($obraId, $meses, $tipoPlanejamento){
-		
-		//Remover o primeiro item do select
-		unset($meses[0]);
+	public function percentualPorMeses($obraId, $meses, $tipoPlanejamento){		
 		
 		foreach ($meses as $mes) {
 												
@@ -725,11 +725,9 @@ class CronogramaFisicoController extends AppBaseController
 	}
 			
 	// Dados vindo do Mediçao Fisicas
-	public function realizadoSemanal($tabColetaSemanal, $inicioMes){			
-		
-		//$acumuladoSemanal = $acumuladoSemanal + (($tarefa["realizado-".$sexta] - $tarefa["concluida"])/100)*$tarefa["peso"];										
-						
-		$previstoSemanal = [];
+	public function realizadoSemanal($tabColetaSemanal, $inicioMes){
+								
+		$realizadoSemanal = [];
 		$acumuladoMes = 0;
 		
 		// Todas as Sextas do Mês de Referencia
@@ -746,14 +744,14 @@ class CronogramaFisicoController extends AppBaseController
 					
 			}
 			
-			$previstoSemanal[$sexta] = round($acumuladoSemanal,2);
+			$realizadoSemanal[$sexta] = round($acumuladoSemanal,2);
 			$acumuladoMes = $acumuladoMes + round($acumuladoSemanal,2);
 		}		
 		
-		$previstoSemanal["mes"] = $acumuladoMes; 
+		$realizadoSemanal["mes"] = $acumuladoMes; 
 				
 		
-		return $previstoSemanal;	
+		return $realizadoSemanal;	
 	}
 			
 	// Tabela Tarefas Criticas - Dados
@@ -806,7 +804,7 @@ class CronogramaFisicoController extends AppBaseController
 		$obraDataInicio = Carbon::parse($obraDataInicio);
 		
 		if(Carbon::now()->subMonth() < Carbon::parse($obraDataInicio)->addMonths(36)){
-			$obraDataFinal = Carbon::now()->subMonth();
+			$obraDataFinal = Carbon::now();
 		}else{
 			$obraDataFinal = Carbon::parse($obraDataInicio)->addMonths(36);
 		}
@@ -815,6 +813,19 @@ class CronogramaFisicoController extends AppBaseController
 		
 		return $meses;
     }
+	
+	// Carregar os meses de acordo com a Obra
+	/*public function semanasPorMes(Request $request){	
+		
+		$mesId = $request->mes_id;		
+		$mesRef = $meses[$mesId];
+		
+		$inicioMes = Carbon::createFromFormat("d/m/Y", "01/".$mesRef)->startOfMonth();
+			
+		$sextasArray = CronogramaFisicoRepository::getFridaysByDate($inicioMes);
+		
+		return $semanas;
+    }*/
 		
 	//Acompanhamento Mensal
 	public function relMensal(Request $request)
@@ -826,8 +837,5 @@ class CronogramaFisicoController extends AppBaseController
                
         return view('admin.cronograma_fisicos.relMensal', compact('obras', 'assertividadeMensal'));
     }
-	
-	
-	
-	
+		
 }

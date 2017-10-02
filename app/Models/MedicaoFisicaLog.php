@@ -14,10 +14,10 @@ class MedicaoFisicaLog extends Model
     public $fillable = [
         'medicao_fisica_id',
 		'user_id',
+		'valor_medido',
 		'periodo_inicio',
-		'periodo_termino',
-		'valor_medido_anterior',
-		'valor_medido_atual'       
+		'periodo_termino',		
+		'observacao'
     ];
 
     /**
@@ -29,13 +29,13 @@ class MedicaoFisicaLog extends Model
         'id'                    => 'integer',
         'medicao_fisica_id'		=> 'integer',
         'user_id'               => 'integer',
+		'valor_medido' 			=> 'integer',
 		'periodo_inicio' 		=> 'date',
 		'periodo_termino'		=> 'date',
-		'valor_medido_anterior' => 'integer',
-		'valor_medido_atual' 	=> 'integer'        
+		'observacao'			=> 'text'		      
     ];
 	
-	public function getValorMedidoAnteriorAttribute($value)
+	public function getValorMedidoAttribute($value)
     {
         if (strlen($value) == 4) {
             $value = '0'.$value;
@@ -44,7 +44,7 @@ class MedicaoFisicaLog extends Model
         return number_format($value, 2, ',', '.');
     }
 	
-	public function setValorMedidoAnteriorAttribute($value)
+	public function setValorMedidoAttribute($value)
     {
         $pontos = [","];
         $value = str_replace('.', '', $value);
@@ -52,26 +52,6 @@ class MedicaoFisicaLog extends Model
         if ($result == '') {
             $result = null;
         }
-        $this->attributes['valor_medido_anterior'] = $result;
-    }
-	
-	public function getValorMedidoAtualAttribute($value)
-    {
-        if (strlen($value) == 4) {
-            $value = '0'.$value;
-        }
-
-        return number_format($value, 2, ',', '.');
-    }
-	
-	public function setValorMedidoAtualAttribute($value)
-    {
-        $pontos = [","];
-        $value = str_replace('.', '', $value);
-        $result = str_replace($pontos, ".", $value);
-        if ($result == '') {
-            $result = null;
-        }
-        $this->attributes['valor_medido_atual'] = $result;
+        $this->attributes['valor_medido'] = $result;
     }
 }

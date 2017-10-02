@@ -754,10 +754,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             '/contratos-por-obra',
             'MedicaoController@contratosPorObra'
         );
-        $router->get(
-            '/tarefas-por-obra',
-            'MedicaoController@tarefasPorObra'
-        );
+		
         $router->get(
             '/insumos',
             'MedicaoController@insumos'
