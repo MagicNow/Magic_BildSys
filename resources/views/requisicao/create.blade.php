@@ -270,7 +270,6 @@
                     stopLoading();
 
                     $('#body-insumos-table').html(response);
-                    //$('#insumos-table').stacktable();
                     tabelaMobile('#insumos-table');
 
                 })
@@ -457,7 +456,6 @@
 
             e.preventDefault();
 
-
             var data = {
                 obra_id: $('#obra_id').val(),
                 local: $('#local').val(),
@@ -466,29 +464,38 @@
                 andar: $('#andar').val(),
                 trecho: $('#trecho').val(),
                 insumos: criaJsonInsumos(),
-                comodos: criaJsonComodo()
+                comodos: criaJsonComodos()
             }
 
             console.log(JSON.stringify(data));
 
             $.ajax({
 
-                url: '/requisicao/store/',
-                dataType: 'html',
+                url: '/requisicao',
+                dataType: 'JSON',
                 cache: false,
                 type: 'POST',
-                processData: false,
-                data: data
+                data: data,
+
+                beforeSend: function() {
+                    startLoading();
+                }
 
             }).done(function (response) {
 
-                
+                stopLoading();
+
+                if (response.success) {
+
+                    window.location = '/requisicao';
+                }
+
             })
 
         })
 
 
-        function criaJsonComodo() {
+        function criaJsonComodos() {
 
             var jsonString = [];
 
@@ -505,7 +512,7 @@
                             {
                                 "estoque_id": insumo.data('estoque'),
                                 "apartamento": $(comodo[i]).data('apartamento'),
-                                "comodo": $(comodo[i]).data('banheiro'),
+                                "comodo": $(comodo[i]).data('comodo'),
                                 "qtde": $(comodo[i]).val()
                             }
                         );
