@@ -53,8 +53,8 @@
 							
 							<tr>
 								<td>Realizado Mês Acumulado</td>
-								@foreach($tabPercentualPrevReal['data']['planoPrevistoAcumulado'] as $planoPrevistoAcumulado)										
-									<td class="text-center">{{ $planoPrevistoAcumulado.'%'}}</td>																											
+								@foreach($tabPercentualPrevReal['data']['planoRealizadoAcumulado'] as $planoRealizadoAcumulado)										
+									<td class="text-center">{{ $planoRealizadoAcumulado.'%'}}</td>																											
 								@endforeach
 							</tr>
 							

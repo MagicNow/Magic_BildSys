@@ -111,12 +111,12 @@ class CronogramaFisicoRepository extends BaseRepository
 		->join('medicao_fisica_logs','medicao_fisica_logs.medicao_fisica_id','medicao_fisicas.id')
 		->join('obras','obras.id','medicao_fisicas.obra_id')		
 		->where('medicao_fisicas.obra_id', $obraId)		
-		->where('medicao_fisicas.tarefa', $tarefa)	
-		->where('medicao_fisica_logs.periodo_inicio', '>=', $inicioSemana)
-		->where('medicao_fisica_logs.periodo_termino', '<=', $fimSemana)		
+		->where('medicao_fisicas.tarefa', $tarefa)
+		->where(DB::raw('DATE_FORMAT(medicao_fisica_logs.periodo_inicio, "%Y/%m/%d")'), '>=', $inicioSemana)
+		->where(DB::raw('DATE_FORMAT(medicao_fisica_logs.periodo_termino, "%Y/%m/%d")'), '>=', $fimSemana)		
 		->get()
 		->toArray();
-		
+						
 		if(count($valorMedicaoFisica) > 0){
 			
 			$valorRealizado = 0;	
@@ -131,7 +131,7 @@ class CronogramaFisicoRepository extends BaseRepository
 		}else{
 			$valorRealizado = 0;			
 		} 		
-		
+				
 		return $valorRealizado;
 			
 	}
