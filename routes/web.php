@@ -154,6 +154,19 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
 
     });
 	
+	#Medição Física
+    $router->group(['prefix' => 'medicao_fisicas','middleware' => 'needsPermission:medicao_fisicas.list'], function($router) {
+        $router->get('',['as' => 'admin.medicao_fisicas.index', 'uses' => 'Admin\MedicaoFisicaController@index']);
+		$router->post('medicao_fisicas', ['as' => 'admin.medicao_fisicas.store', 'uses' => 'Admin\MedicaoFisicaController@store']);
+        $router->get('create', ['as' => 'admin.medicao_fisicas.create', 'uses' => 'Admin\MedicaoFisicaController@create']);        
+        $router->get('/tarefas-por-obra','Admin\MedicaoFisicaController@tarefasPorObra');
+		$router->get('/{medicao_fisicas}',['as' => 'admin.medicao_fisicas.show', 'uses' => 'Admin\MedicaoFisicaController@show'])
+			->middleware('needsPermission:medicao_fisicas.show');
+        $router->get('/{medicao_fisicas}/editar',['as' => 'admin.medicao_fisicas.edit', 'uses' => 'Admin\MedicaoFisicaController@edit']);
+        $router->patch('/{medicao_fisicas}/update',['as' => 'admin.medicao_fisicas.update', 'uses' => 'Admin\MedicaoFisicaController@update']);
+		$router->delete('medicao_fisicas/{medicao_fisicas}', ['as' => 'admin.medicao_fisicas.destroy', 'uses' => 'Admin\MedicaoFisicaController@destroy']);		
+    });
+	
 	# Importação de Planilhas de cronograma Físico
     $router->group(['middleware' => 'needsPermission:cronogramaFisicos.import'], function () use ($router) {
         $router->get('cronogramaFisico/', ['as' => 'admin.cronogramaFisicos.indexImport', 'uses' => 'Admin\CronogramaFisicoController@indexImport']);
@@ -164,7 +177,8 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
     });
 
     # Cronograma Físico
-    $router->group(['prefix' => 'cronogramaFisicos'], function () use ($router) {		
+    $router->group(['prefix' => 'cronogramaFisicos'], function () use ($router) {
+		
         $router->group(['middleware' => 'needsPermission:cronogramaFisicos.list'], function () use ($router) {
 			$router->get('meses-por-obra','Admin\CronogramaFisicoController@mesesPorObra');
 			$router->get('semanal-tabelas','Admin\CronogramaFisicoController@carregarTabelas');
@@ -180,6 +194,7 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
             $router->get('atividade/{cronograma_fisicos}', ['as' => 'admin.cronograma_fisicos.show', 'uses' => 'Admin\CronogramaFisicoController@show']);
             $router->get('atividade/{cronograma_fisicos}/edit', ['as' => 'admin.cronograma_fisicos.edit', 'uses' => 'Admin\CronogramaFisicoController@edit']);
         });
+
     });
 
 	# Importação de Planilhas de Levantamentos
