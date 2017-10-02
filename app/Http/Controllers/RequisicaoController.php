@@ -8,6 +8,7 @@ use App\Http\Requests\CreateRequisicaoRequest;
 use App\Http\Requests\UpdateRequisicaoRequest;
 use App\Models\Levantamento;
 use App\Models\Obra;
+use App\Models\Requisicao;
 use App\Repositories\RequisicaoRepository;
 use App\Repositories\Admin\ObraRepository;
 use Flash;
@@ -166,11 +167,6 @@ class RequisicaoController extends AppBaseController
 
         return redirect(route('requisicao.index'));
     }
-
-
-
-
-
 
     public function getPavimentosByObraAndTorre($obra,$torre) {
 
@@ -365,5 +361,10 @@ class RequisicaoController extends AppBaseController
         $total = $r->get()->first();
 
         return $total->qtde_usada;
+    }
+
+    public function processoSaida(Requisicao $requisicao)
+    {
+        return view('requisicao.processo_saida.index', compact('requisicao'));
     }
 }
