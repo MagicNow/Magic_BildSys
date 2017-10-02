@@ -89,11 +89,11 @@ class CronogramaFisicoRepository extends BaseRepository
 			//14/07 - 07/07 : 18/7 - 7/7 
 			
 			//07/07 - 26/07 : 10/07 - 1/7 
-			5
+
 			$valorPrevisto = $diasUteisSemana/ $diasUteisTarefa;
 		}
 
-		echo "Ta- ".$diasUteisTarefa." Sem- ".$diasUteisSemana;
+		//echo "Ta- ".$diasUteisTarefa." Sem- ".$diasUteisSemana;
 		
 		return $valorPrevisto;		
 			

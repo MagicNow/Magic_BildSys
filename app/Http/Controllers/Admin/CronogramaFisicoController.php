@@ -592,7 +592,7 @@ class CronogramaFisicoController extends AppBaseController
 		->get()
 		->toArray();
 		
-		dump($tabColetaSemanal);
+		//dump($tabColetaSemanal);
 		
 		//Filtrar por Tarefa do Mês				
 		foreach ($tabColetaSemanal as $keyT => $tarefa) {				
@@ -603,7 +603,7 @@ class CronogramaFisicoController extends AppBaseController
 			
 			//}else{
 				
-				echo $tarefa['tarefa'];
+				//echo $tarefa['tarefa'];
 				
 				foreach($sextasArray as $sexta){								
 					
