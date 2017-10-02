@@ -90,8 +90,8 @@
 				</div>
 			</div>
 		</div>		
-		
-		<div id="semanal-tabelas">
+				
+		<div class="box-body" id="app">
 		</div>
 		
     </div>
@@ -99,7 +99,7 @@
 @section('scripts')
 	@parent
     <script>
-		
+				
 		// Funcao que retorna Objeto para Array
 		function objectToArray(myObj){
 			var array = $.map(myObj, function(value, index) {
@@ -182,7 +182,7 @@
             })
 			.done(function (data) {
 								
-				$('#semanal-tabelas').html(data);
+				$('#app').html(data);
 
 			})
 			.fail(function (retorno) {
