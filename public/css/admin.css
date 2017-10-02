@@ -20137,7 +20137,6 @@ input:checked + .slider:before {
 }
 
 
-
 @media screen and (max-width: 600px) {
   #insumos-table {width:100%;}
   #insumos-table thead {display: none;}
