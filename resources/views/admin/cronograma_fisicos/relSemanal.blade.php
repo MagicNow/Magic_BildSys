@@ -105,8 +105,8 @@
 				
 			console.log("entrou!");
 			
-			startLoading();
-			
+			//startLoading();
+			setTimeout(function(){  
 			const app = new Vue({
 				el: '#app',
 				data:{
@@ -246,8 +246,8 @@
 				}
 			});
 		
-			stopLoading();
-
+			//stopLoading();
+			}, 3000);
 		}
 						
 		// Funcao que retorna Objeto para Array
