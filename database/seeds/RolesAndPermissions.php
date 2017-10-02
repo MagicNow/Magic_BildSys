@@ -67,6 +67,11 @@ class RolesAndPermissions extends Seeder
 
             'orcamentos.list' => 'Listagem de orçamentos',
             'orcamentos.import' => 'Importar orçamentos',
+			
+			'pre_orcamentos.list' => 'Listagem de Pré Orçamentos',
+            'pre_orcamentos.create' => 'Criação de Pré Orçamentos',
+            'pre_orcamentos.edit'   => 'Edição de Pré Orçamentos',
+            'pre_orcamentos.view'   => 'Visualização de Pré Orçamentos',
 
             'cronograma_por_obras.list' => 'Listagem de cronograma por obras',
 
