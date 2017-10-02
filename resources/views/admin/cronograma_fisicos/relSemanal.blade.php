@@ -413,6 +413,154 @@
                 buscaMeses();				
             });
 			
+			function loadVue(GraficoPrevistoRealizadoLabels, GraficoPrevistoRealizadoPrevistoSem, GraficoPrevistoRealizadoRealizadoSem,GraficoPDPTrabRealAcumSemLabels, GraficoPDPTrabRealAcumSem, GraficoPDPTrabRealAcumSemPDP, GraficoPDPTrabRealAcumSemTrab, GraficoPDPTrabRealAcumSemReal, GraficoTarefasCriticasLabels, GraficoTarefasCriticasPrevistoAcum, GraficoTarefasCriticasRealizadoAcum){
+			
+				startLoading();
+				
+				const app = new Vue({
+					el: '#app',
+					data:{
+						
+						//Grafico BAR - Previsto x Realizado Semanal
+						datasetsPrevistoXRealizado:
+						[{
+							label: 'Previsto',						
+							backgroundColor: 'Maroon',
+							borderColor: 'Maroon',
+							data: GraficoPrevistoRealizadoPrevistoSem
+						},
+						{
+							label: 'Realizado',											
+							backgroundColor: 'DarkOrange',
+							borderColor: 'DarkOrange',
+							data: GraficoPrevistoRealizadoRealizadoSem
+						}],				
+						labelsPrevistoXRealizado : GraficoPrevistoRealizadoLabels,				
+						myoptionPrevistoXRealizado: {
+							onClick: function (event, legendItem) {
+								
+							},
+							responsive:true,
+							maintainAspectRatio:true,
+							scales: {
+								yAxes: [{
+									ticks: {
+										// Create scientific notation labels
+										beginAtZero:true,
+										fixedStepSize: 0.75
+									}
+								}]
+							},
+							legend: {
+								display: false
+							}
+						},
+						
+						//Grafico BAR - PDP x P.Trabalho x Real Acumulado
+						datasetsPDPxPTrabalhoxRealAc:
+						[{
+							label: 'Plano Diretor',						
+							backgroundColor: 'grey',
+							borderColor: 'grey',
+							data: GraficoPDPTrabRealAcumSemPDP
+						},
+						{
+							label: 'Plano Trabalho',						
+							backgroundColor: 'blue',
+							borderColor: 'blue',
+							data: GraficoPDPTrabRealAcumSemTrab
+						},
+						{
+							label: 'Realizado',						
+							backgroundColor: 'DarkOrange',
+							borderColor: 'DarkOrange',
+							data: GraficoPDPTrabRealAcumSemReal
+						}],				
+						labelsPDPxPTrabalhoxRealAc : GraficoPDPTrabRealAcumSemLabels,
+						mybooleanPDPxPTrabalhoxRealAc : false,                
+						myoptionPDPxPTrabalhoxRealAc: {
+							onClick: function (event, legendItem) {
+								
+							},
+							responsive:true,
+							maintainAspectRatio:true,
+							scales: {
+								yAxes: [{
+									ticks: {
+										// Create scientific notation labels
+										beginAtZero:true,
+										fixedStepSize: 0.75
+									}
+								}]
+							},
+							legend: {
+								display: false
+							}
+						},
+						
+						//Grafico PIE - DESVIO PDP
+						labelsDesvioPDP: ["DESVIO PDP"],
+						myoptionDesvioPDP: {},
+						datasetsDesvioPDP:[{
+							data: [100],
+							backgroundColor: 'DarkOrange',
+							hoverBackgroundColor: 'DarkOrange'
+						}],
+						
+						//Grafico PIE - DESVIO P. TRABALHO
+						labelsDesvioPTrabalho: ["DESVIO P. TRABALHO"],
+						myoptionDesvioPTrabalho: {},
+						datasetsDesvioPTrabalho:[{
+							data: [100],
+							backgroundColor: 'blue',
+							hoverBackgroundColor: 'blue'
+						}],
+						
+						//Grafico BAR - Tarefas Críticas
+						datasetsTarefasCriticas:
+						[{
+							label: 'Previsto Acumulado',						
+							backgroundColor: 'maroon',
+							borderColor: 'maroon',
+							data: GraficoTarefasCriticasPrevistoAcum,
+						},
+						{
+							label: 'Realizado Acumulado',
+							backgroundColor: 'DarkOrange',
+							borderColor: 'DarkOrange',
+							data: GraficoTarefasCriticasRealizadoAcum,
+						}],				                
+						labelsTarefasCriticas : GraficoTarefasCriticasLabels,										
+						mybooleanTarefasCriticas : false,                
+						myoptionTarefasCriticas: {
+							onClick: function (event, legendItem) {
+								
+							},
+							responsive:true,
+							maintainAspectRatio:true,
+							scales: {
+								yAxes: [{
+									ticks: {
+										// Create scientific notation labels
+										beginAtZero:true,
+										fixedStepSize: 20
+									}
+								}]
+							},
+							legend: {
+								display: true
+							}
+						}
+						//Fim dos Gráficos
+										
+					}
+				});
+			
+				stopLoading();
+
+			}
+		
+			
 		});
 		       			
     </script>
