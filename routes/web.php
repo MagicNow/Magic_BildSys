@@ -1363,6 +1363,54 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->get('regionais/{regionals}/edit', ['as' => 'regionals.edit', 'uses' => 'RegionalController@edit'])
             ->middleware('needsPermission:regionals.edit');
     });
+
+    # condicoes-de-pagamento
+    $router->group([
+        'prefix'=>'condicoes-de-pagamento',
+        // 'middleware' => 'needsPermission:insumos.list'
+    ], function () use ($router) {
+        $router->get('', ['as' => 'pagamentoCondicaos.index', 'uses' => 'PagamentoCondicaoController@index']);
+        $router->get('/{id}', ['as' => 'pagamentoCondicaos.show', 'uses' => 'PagamentoCondicaoController@show']);
+        //->middleware("needsPermission:insumos.view");
+    });
+
+    # tipos-de-documentos-fiscais
+    $router->group([
+        'prefix'=>'tipos-de-documentos-fiscais',
+        // 'middleware' => 'needsPermission:insumos.list'
+    ], function () use ($router) {
+        $router->get('', ['as' => 'documentoTipos.index', 'uses' => 'DocumentoTipoController@index']);
+        $router->get('/{id}', ['as' => 'documentoTipos.show', 'uses' => 'DocumentoTipoController@show']);
+        //->middleware("needsPermission:insumos.view");
+    });
+
+    # tipos-de-documentos-financeiros
+    $router->group([
+        'prefix'=>'tipos-de-documentos-financeiros',
+        // 'middleware' => 'needsPermission:insumos.list'
+    ], function () use ($router) {
+        $router->get('', ['as' => 'documentoFinanceiroTipos.index', 'uses' => 'DocumentoFinanceiroTipoController@index']);
+        $router->get('/{id}', ['as' => 'documentoFinanceiroTipos.show', 'uses' => 'DocumentoFinanceiroTipoController@show']);
+        //->middleware("needsPermission:insumos.view");
+    });
+
+    // Pagamentos
+    $router->group(['prefix'=>'pagamentos', 'middleware' => 'needsPermission:pagamentos.list'], function () use ($router) {
+        $router->get('', ['as'=> 'pagamentos.index', 'uses' => 'PagamentoController@index']);
+        $router->post('', ['as'=> 'pagamentos.store', 'uses' => 'PagamentoController@store'])
+            ->middleware('needsPermission:pagamentos.create');
+        $router->get('/create', ['as'=> 'pagamentos.create', 'uses' => 'PagamentoController@create'])
+            ->middleware('needsPermission:pagamentos.create');
+        $router->put('/{pagamentos}', ['as'=> 'pagamentos.update', 'uses' => 'PagamentoController@update'])
+            ->middleware('needsPermission:pagamentos.edit');
+        $router->patch('/{pagamentos}', ['as'=> 'pagamentos.update', 'uses' => 'PagamentoController@update'])
+            ->middleware('needsPermission:pagamentos.edit');
+        $router->delete('/{pagamentos}', ['as'=> 'pagamentos.destroy', 'uses' => 'PagamentoController@destroy'])
+            ->middleware('needsPermission:pagamentos.delete');
+        $router->get('/{pagamentos}', ['as'=> 'pagamentos.show', 'uses' => 'PagamentoController@show']);
+        $router->get('/{pagamentos}/edit', ['as'=> 'pagamentos.edit', 'uses' => 'PagamentoController@edit'])
+            ->middleware('needsPermission:pagamentos.edit');
+    });
 	
 	$router->get('/testeLpu', function () {
         $lpu = \App\Repositories\LpuGerarRepository::calcular();

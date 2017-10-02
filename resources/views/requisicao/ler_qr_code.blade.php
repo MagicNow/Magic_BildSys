@@ -21,6 +21,7 @@
     <link rel="manifest" href="/qrcode/qrcodereader//manifest.json">
     <link href="/qrcode/qrcodereader/bundle.css" rel="stylesheet">
 
+    <link rel="stylesheet" href="/css/admin.css">
     <script type="text/javascript" src="/js/admin.js"></script>
 </head>
 <body>
@@ -48,9 +49,23 @@
     var nome_funcao_executar = 'lerQrCodeRequisicao';
 
     function lerQrCodeRequisicao(dados_qr_code) {
-        var dados = dados_qr_code.split('Dados QR Code:')[dados_qr_code.split('Dados QR Code:').length -1];
-        if(dados) {
-            window.location = '{!! route('requisicao.create') !!}' + dados;
+        var existe_parametro = dados_qr_code.indexOf('Dados QR Code: ');
+
+        if (existe_parametro > -1) {
+            var dados = dados_qr_code.split('Dados QR Code: ')[dados_qr_code.split('Dados QR Code:').length -1];
+            if(dados) {
+                window.location = '{!! route('requisicao.create') !!}' + dados;
+            }
+        } else {
+                swal({
+                    title: 'QR Code Inválido',
+                    text: "Não existe parâmetro para leituta do QR Code.",
+                    type: "info",
+                    confirmButtonColor: "#DD6B55",
+                    closeOnConfirm: false
+                }, function () {
+                    location.reload();
+                });
         }
     }
 </script>

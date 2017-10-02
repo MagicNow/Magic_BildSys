@@ -2,11 +2,17 @@
 
 @section('content')
     <section class="content-header">
-        <h1>
+        <h1 class="pull-left">
             Requisições
+        </h1>
+        <h1 class="pull-right">
+            <a class="btn btn-success" style="margin-top: -10px;margin-bottom: 5px" href="/requisicao/ler-qr-cod">
+                <i class="fa fa-qrcode" aria-hidden="true"></i> Ler QR Code
+            </a>
         </h1>
     </section>
     <div class="content">
+        <div class="clearfix"></div>
         @include('adminlte-templates::common.errors')
         <div class="box box-primary">
 
@@ -26,6 +32,10 @@
 @section('scripts')
     <script type="text/javascript">
         $(function () {
+
+            @if(\Illuminate\Support\Facades\Input::get('local'))
+                changeLocal();
+            @endif
 
             $(document).on('change','#local', function(e) {
 
@@ -536,7 +546,54 @@
 
         }
 
-    })
+        function changeLocal() {
+            setTimeout(function() {
+                $('#local').trigger('change');
+
+                @if(\Illuminate\Support\Facades\Input::get('torre'))
+                    changeTorre();
+                @endif
+            }, 500);
+        }
+
+        function changeTorre() {
+            setTimeout(function() {
+                $('#torre').val('{{\Illuminate\Support\Facades\Input::get('torre')}}').trigger('change.select2').trigger('change');
+
+                @if(\Illuminate\Support\Facades\Input::get('pavimento'))
+                    changePavimento();
+                @endif
+            }, 500);
+        }
+
+        function changePavimento() {
+            setTimeout(function() {
+                $('#pavimento').val('{{\Illuminate\Support\Facades\Input::get('pavimento')}}').trigger('change.select2').trigger('change');
+
+                @if(\Illuminate\Support\Facades\Input::get('trecho'))
+                    changeTrecho();
+                @elseif(\Illuminate\Support\Facades\Input::get('andar'))
+                    changeAndar();
+                @endif
+            }, 500);
+        }
+
+        function changeTrecho() {
+            setTimeout(function() {
+                $('#trecho').val('{{\Illuminate\Support\Facades\Input::get('trecho')}}').trigger('change.select2').trigger('change');
+
+                $('#js-btn-buscar-insumos').trigger("click");
+            }, 500);
+        }
+
+        function changeAndar() {
+            setTimeout(function() {
+                $('#andar').val('{{\Illuminate\Support\Facades\Input::get('andar')}}').trigger('change.select2').trigger('change');
+            }, 500);
+
+            $('#js-btn-buscar-insumos').trigger("click");
+        }
+    });
     </script>
 @endsection
 
