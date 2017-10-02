@@ -245,7 +245,8 @@ return [
         'PDF' => Barryvdh\Snappy\Facades\SnappyPdf::class,
         'SnappyImage' => Barryvdh\Snappy\Facades\SnappyImage::class,
         'Image' => Intervention\Image\Facades\Image::class,
-		'Excel' => Maatwebsite\Excel\Facades\Excel::class
+        'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class,
+		'Excel' => Maatwebsite\Excel\Facades\Excel::class,
     ],
 
 ];
