@@ -136,7 +136,8 @@
         @if($isEmAprovacao)
             @include('contratos.table-aprovacao')
         @else
-            @include('contratos.table')
+            @php $espelho = null; @endphp
+            @include('contratos.table', compact('espelho'))
             @if($pendencias->isNotEmpty())
                 @include('contratos.box-pendencias')
             @endif

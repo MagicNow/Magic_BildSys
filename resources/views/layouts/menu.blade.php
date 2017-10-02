@@ -31,7 +31,7 @@
     </ul>
 </li>
 
-<li class="treeview {{ Request::is('admin/orcamento*') || Request::is('admin/mascara_padrao*') || Request::is('admin/tarefa_padrao*') || Request::is('admin/mascara_padrao_insumos*')  ? 'active' : '' }}">
+<li class="treeview {{ Request::is('admin/pre_orcamentos*') || Request::is('admin/mascara_padrao*') || Request::is('admin/tarefa_padrao*') || Request::is('admin/mascara_padrao_insumos*')  ? 'active' : '' }}">
     <a href="#">
         <i class="fa fa-balance-scale"></i> <span>Pré-Orçamento</span>
             <span class="pull-right-container">
@@ -47,7 +47,7 @@
             </a>
         </li>
         @endshield
-		
+
 		@shield('tarefa_padrao.list')
         <li class="{{ Request::is('admin/tarefa_padrao*') ? 'active' : '' }}">
             <a href="{!! route('admin.tarefa_padrao.index') !!}">
@@ -56,7 +56,7 @@
             </a>
         </li>
         @endshield
-		
+
 		@shield('mascara_padrao_insumos.list')
         <li class="{{ Request::is('admin/mascara_padrao_insumos') ? 'active' : '' }}">
             <a href="{!! route('admin.mascara_padrao_insumos.index') !!}">
@@ -73,25 +73,25 @@
             </a>
         </li>
         @endshield
-        @shield('orcamentos.list')
-        <li class="{{ Request::is('admin/orcamento') ? 'active' : '' }}">
-            <a href="{!! route('admin.orcamentos.index') !!}">
+        @shield('pre_orcamentos.list')
+        <li class="{{ Request::is('admin/pre_orcamentos') ? 'active' : '' }}">
+            <a href="{!! route('admin.pre_orcamentos.index') !!}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
                 <span>Pré Orçamento</span>
             </a>
         </li>
         @endshield
-		@shield('orcamentos.list')
-        <li class="{{ Request::is('admin/orcamento') ? 'active' : '' }}">
-            <a href="{!! route('admin.orcamentos.index') !!}">
+		@shield('pre_orcamentos.list')
+        <li class="{{ Request::is('admin/pre_orcamentos') ? 'active' : '' }}">
+            <a href="{!! route('admin.pre_orcamentos.index') !!}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
                 <span>Índices</span>
             </a>
         </li>
         @endshield
-		@shield('orcamentos.list')
-        <li class="{{ Request::is('admin/orcamento') ? 'active' : '' }}">
-            <a href="{!! route('admin.orcamentos.index') !!}">
+		@shield('pre_orcamentos.list')
+        <li class="{{ Request::is('admin/pre_orcamentos') ? 'active' : '' }}">
+            <a href="{!! route('admin.pre_orcamentos.exportar_index') !!}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
                 <span>Exportar Insumos/Estrutura</span>
             </a>
@@ -124,7 +124,7 @@
             </a>
         </li>
         @endshield
-		
+
 		@shield('levantamentos.list')
         <li class="{{ Request::is('admin/estruturas*') ? 'active' : '' }}">
             <a href="{!! route('admin.estruturas.index') !!}">
@@ -172,7 +172,7 @@
         <li class="{{ Request::is('admin/cronogramaFisicos*') ? 'active' : '' }}">
             <a href="{!! route('admin.cronograma_fisicos.index') !!}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
-                <span>Cronograma Físicos</span>
+                <span>Planejamentos Físicos</span>
             </a>
         </li>
         @endshield		
@@ -181,6 +181,14 @@
             <a href="{!! route('admin.cronogramaFisicos.indexImport') !!}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
                 <span>Importação</span>
+            </a>
+        </li>
+        @endshield
+		@shield('medicao_fisicas.list')
+        <li class="{{ Request::is('admin/medicao_fisicas*') ? 'active' : '' }}">
+            <a href="{!! route('admin.medicao_fisicas.index') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Medição Física</span>
             </a>
         </li>
         @endshield
@@ -345,22 +353,25 @@
     </ul>
 </li>
 
-<li class="treeview {{ Request::is('admin/tipologia*') ? 'active' : '' }}">
+<li class="{{ Request::is('requisicao*') ? 'active' : '' }}">
+    <a href="{!! route('requisicao.index') !!}"><i class="fa fa-edit"></i><span>Requisições</span></a>
+</li>
+
+<li class="treeview {{ Request::is('admin/topologia*') ? 'active' : '' }}">
     <a href="#">
-        <i class="fa fa-building"></i> <span>Tipologia</span>
+        <i class="fa fa-building"></i> <span>Topologia</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
     </a>
     <ul class="treeview-menu">
-        @shield('tipologia.list')
-        <li class="{{ Request::is('admin/tipologia*') ? 'active' : '' }}">
-            <a href="{!! route('admin.tipologia.index') !!}">
+        @shield('topologia.list')
+        <li class="{{ Request::is('admin/topologia*') ? 'active' : '' }}">
+            <a href="{!! route('admin.topologia.index') !!}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
-                <span>Tipologias</span>
+                <span>Topologias</span>
             </a>
         </li>
         @endshield
     </ul>
 </li>
-

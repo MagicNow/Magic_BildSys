@@ -33,6 +33,7 @@ class QcFornecedor extends Model
         'tipo_frete',
         'valor_frete',
         'campos_extras_contrato',
+        'pagamento_condicao_id',
     ];
 
     /**
@@ -52,6 +53,7 @@ class QcFornecedor extends Model
         'nf_material'=> 'integer',
         'nf_locacao'=> 'integer',
         'campos_extras_contrato'=> 'string',
+        'pagamento_condicao_id'=> 'integer',
     ];
 
     /**

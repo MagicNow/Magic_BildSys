@@ -9,6 +9,7 @@ use App\Http\Requests;
 use App\Http\Requests\CreateContratoRequest;
 use App\Http\Requests\EditarItemRequest;
 use App\Http\Requests\UpdateContratoRequest;
+use App\Models\Contrato;
 use App\Models\ContratoStatusLog;
 use App\Models\Fornecedor;
 use App\Models\Insumo;
@@ -362,7 +363,31 @@ class ContratoController extends AppBaseController
     public function imprimirEspelhoContrato($id)
     {
         $arquivo = ContratoRepository::geraImpressaoCompleta($id, 1);
-        return response()->download(storage_path('/app/public/') . str_replace('storage/', '', $arquivo['arquivo']));
+
+        $contrato = Contrato::with('fornecedor')->find($id);
+
+        if (is_file(base_path().'/storage/app/public/contratos/espelho.zip')) {
+            unlink(base_path().'/storage/app/public/contratos/espelho.zip');
+        }
+
+        $zip = new \ZipArchive();
+
+        if($zip->open(storage_path('/app/public/') . str_replace('storage/', '', 'contratos/espelho.zip'), \ZipArchive::CREATE) === true){
+
+            $zip->addFile(storage_path('/app/public/') . str_replace('storage/', '', $arquivo['arquivo']) , 'espelho_contrato_'.$id );
+
+            if($contrato->fornecedor) {
+                if($contrato->fornecedor->catalogoContratos) {
+                    foreach($contrato->fornecedor->catalogoContratos as $catalogo) {
+                        $zip->addFile(storage_path('/app/public/') . str_replace('storage/', '', $catalogo->minuta_assinada), 'minuta_assinada_do_catalogo_'.$catalogo->id);
+                    }
+                }
+            }
+
+            $zip->close();
+        }
+
+        return response()->download(storage_path('/app/public/') . str_replace('storage/', '', 'contratos/espelho.zip'));
     }
 
     public function edit($id)

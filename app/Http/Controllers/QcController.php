@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\Obra;
 use App\Models\Carteira;
 use App\Models\Tipologia;
+use App\Models\User;
 
 class QcController extends AppBaseController
 {
@@ -140,10 +141,10 @@ class QcController extends AppBaseController
 	}
 
 	/**
-	 * Update the specified Grupo in storage.
+	 * Update the specified Q.C. in storage.
 	 *
 	 * @param  int              $id
-	 * @param UpdateGrupoRequest $request
+	 * @param UpdateQcRequest $request
 	 *
 	 * @return Response
 	 */
@@ -174,7 +175,7 @@ class QcController extends AppBaseController
 			}
 		}
 
-		Flash::success('Grupo '.trans('common.updated').' '.trans('common.successfully').'.');
+		Flash::success('Q.C. '.trans('common.updated').' '.trans('common.successfully').'.');
 
 		return redirect(route('qc.index'));
 	}
@@ -199,6 +200,43 @@ class QcController extends AppBaseController
 		$this->qcRepository->delete($id);
 
 		Flash::success('Qc '.trans('common.deleted').' '.trans('common.successfully').'.');
+
+		return redirect(route('qc.index'));
+	}
+
+	/**
+	 * Approve and disapprove Q.C.
+	 *
+	 * @param  int $id
+	 *
+	 * @return Response
+	 */
+	public function aprovar ($id) {
+		$qc = $this->qcRepository->findWithoutFail($id);
+		$compradores = User::pluck('name','id')->toArray();
+
+		if (empty($qc)) {
+			Flash::error('Qc '.trans('common.not-found'));
+
+			return redirect(route('qc.index'));
+		}
+
+		return view('qc_aprovar.edit', compact('qc', 'compradores'));
+	}
+
+	public function aprovarUpdate (Request $request, $id) {
+		$input = $request->except('file');
+		$qc = $this->qcRepository->findWithoutFail($id);
+
+		if (empty($qc)) {
+			Flash::error('Qc '.trans('common.not-found'));
+
+			return redirect(route('qc.index'));
+		}
+
+		$qc = $this->qcRepository->update($input, $id);
+
+		Flash::success('Q.C. '.trans('common.updated').' '.trans('common.successfully').'.');
 
 		return redirect(route('qc.index'));
 	}

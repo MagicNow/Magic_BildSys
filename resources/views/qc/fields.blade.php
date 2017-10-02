@@ -29,22 +29,22 @@
 <!-- Valor Pré Orçamento Field -->
 <div class="form-group col-sm-6">
 	{!! Form::label('valor_pre_orcamento', 'Valor Pré Orçamento:') !!}
-	{!! Form::text('valor_pre_orcamento', NULL, ['class' => 'form-control']) !!}
+	{!! Form::text('valor_pre_orcamento', NULL, ['class' => 'form-control currency']) !!}
 </div>
 
 <!-- Valor Orçamento Inicial Field -->
 <div class="form-group col-sm-6">
 	{!! Form::label('valor_orcamento_inicial', 'Valor Orçamento Inicial :') !!}
-	{!! Form::text('valor_orcamento_inicial', NULL, ['class' => 'form-control']) !!}
+	{!! Form::text('valor_orcamento_inicial', NULL, ['class' => 'form-control currency']) !!}
 </div>
 
 <!-- Valor da Gerencial Field -->
 <div class="form-group col-sm-6">
 	{!! Form::label('valor_gerencial', 'Valor da Gerencial:') !!}
-	{!! Form::text('valor_gerencial', NULL, ['class' => 'form-control']) !!}
+	{!! Form::text('valor_gerencial', NULL, ['class' => 'form-control currency']) !!}
 </div>
 
-<div class="form-group col-sm-6">
+<div class="form-group col-sm-6" style="margin-top: 13px;">
 	<div class="checkbox">
 		<label>
 			{!! Form::checkbox('carteira_comprada', '1', isset($qc) && $qc->carteira_comprada == 1 ? true : false, ['class' => 'form-control', 'id' => 'carteira_comprada']) !!}
@@ -94,5 +94,6 @@
 </div>
 
 @section('scripts')
+	<script src="{{ asset('js/libs/jquery.formatCurrency-1.4.0.js') }}"></script>
 	<script src="{{ asset('js/qc-actions.js') }}"></script>
 @stop
