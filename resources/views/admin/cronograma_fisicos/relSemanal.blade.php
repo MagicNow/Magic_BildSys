@@ -414,7 +414,9 @@
             });
 			
 			function loadVue(GraficoPrevistoRealizadoLabels, GraficoPrevistoRealizadoPrevistoSem, GraficoPrevistoRealizadoRealizadoSem,GraficoPDPTrabRealAcumSemLabels, GraficoPDPTrabRealAcumSem, GraficoPDPTrabRealAcumSemPDP, GraficoPDPTrabRealAcumSemTrab, GraficoPDPTrabRealAcumSemReal, GraficoTarefasCriticasLabels, GraficoTarefasCriticasPrevistoAcum, GraficoTarefasCriticasRealizadoAcum){
-			
+				
+				console.log("entrou!");
+				
 				startLoading();
 				
 				const app = new Vue({
