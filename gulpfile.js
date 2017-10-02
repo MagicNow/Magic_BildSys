@@ -3,6 +3,20 @@ var gulp = require('gulp');
 var bower = require('gulp-bower');
 var elixir = require('laravel-elixir');
 var browserSync = require('browser-sync').create();
+var googleWebFonts = require('gulp-google-webfonts');
+
+var googleWebFontsOptions = {
+    fontsDir: 'fonts/',
+    cssDir: 'css/',
+    cssFilename: 'google-web-fonts.css'
+};
+
+gulp.task('fonts', function () {
+    return gulp.src('./fonts.list')
+        .pipe(googleWebFonts(googleWebFontsOptions))
+        .pipe(gulp.dest('public'))
+        ;
+});
 
 gulp.task('bower', function () {
     return bower();
@@ -55,6 +69,8 @@ var paths = {
 elixir.config.sourcemaps = true;
 
 elixir(function (mix) {
+    // run gulp fonts
+    // mix.task('fonts');
 
     // Run bower install
     mix.task('bower');
