@@ -17,8 +17,7 @@ class CreateMedicaoFisicaLogsTable extends Migration
             
             $table->increments('id');
             $table->unsignedInteger('medicao_fisica_id');
-			$table->unsignedInteger('user_id');
-            $table->string('tarefa', 255)->nullable();
+			$table->unsignedInteger('user_id');            
             $table->date('periodo_inicio')->nullable();
             $table->date('periodo_termino')->nullable();
 			$table->decimal('valor_medido_anterior', 19, 2);            

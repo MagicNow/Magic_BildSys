@@ -19,6 +19,7 @@ use App\Http\Requests\Admin\UpdateMedicaoFisicaRequest;
 use App\Repositories\Admin\MedicaoFisicaRepository;
 use App\Models\Obra;
 use App\Models\CronogramaFisico;
+use App\Models\MedicaoFisica;
 
 class MedicaoFisicaController extends AppBaseController
 {
@@ -68,7 +69,7 @@ class MedicaoFisicaController extends AppBaseController
     public function edit($id)
     {
         $medicaoFisica = $this->medicaoFisicaRepository->findWithoutFail($id);
-
+		
         if (empty($medicaoFisica)) {
             Flash::error(' Medição Física'.trans('common.not-found'));
 
@@ -142,9 +143,16 @@ class MedicaoFisicaController extends AppBaseController
 	
 	public function tarefasPorObra(){		
 		 
-        $this->validate(request(), ['obra'=>'required|min:1']);
-        $obraId = request()->get('obra');
-        
+        $this->validate(request(), ['obra_id'=>'required|min:1']);
+        $obraId = request()->get('obra_id');
+		
+		$array_mc_id = MedicaoFisica::select([			
+			'medicao_fisicas.tarefa'							
+		])
+		->join('obras','obras.id','=','medicao_fisicas.obra_id')
+		->where('obras.id', $obraId)
+		->get()->toArray();
+		        
 		$tarefas = CronogramaFisico::select([
 			'cronograma_fisicos.id',
 			'cronograma_fisicos.tarefa'							
@@ -152,10 +160,12 @@ class MedicaoFisicaController extends AppBaseController
 		->join('obras','obras.id','=','cronograma_fisicos.obra_id')
 		->where('obras.id', $obraId)
 		->where('cronograma_fisicos.resumo', 'Não')
+		->whereNotIn('cronograma_fisicos.tarefa', $array_mc_id)
 		->groupBy('cronograma_fisicos.tarefa')
-		->orderBy('cronograma_fisicos.id', 'ASC');				
-
-        return $tarefas->paginate();
+		->orderBy('cronograma_fisicos.id', 'ASC')
+		->get()->toArray();
+								
+        return $tarefas;
     }
 	
 }

@@ -242,13 +242,13 @@ class CronogramaFisicoDataTable extends DataTable
 			'crítica' => ['critica' => 'critica', 'data' => 'critica'],
             'data_início' => ['name' => 'data_inicio', 'data' => 'data_inicio'],
             'data_término' => ['name' => 'data_termino', 'data' => 'data_termino'],
-			'concluida' => ['name' => 'concluida', 'data' => 'concluida'],
+			'concluída' => ['name' => 'concluida', 'data' => 'concluida'],
 			'peso' => ['name' => 'peso', 'data' => 'peso'],			
-			'Semana_1' => ['name' => 'concluida', 'data' => 'semana1'],
-			'Semana_2' => ['name' => 'concluida', 'data' => 'semana2'],
-			'Semana_3' => ['name' => 'concluida', 'data' => 'semana3'],
-			'Semana_4' => ['name' => 'concluida', 'data' => 'semana4'],
-			'Último_Dia' => ['name' => 'concluida', 'data' => 'ultimo_dia'],
+			//'Semana_1' => ['name' => 'concluida', 'data' => 'semana1'],
+			//'Semana_2' => ['name' => 'concluida', 'data' => 'semana2'],
+			//'Semana_3' => ['name' => 'concluida', 'data' => 'semana3'],
+			//'Semana_4' => ['name' => 'concluida', 'data' => 'semana4'],
+			//'Último_Dia' => ['name' => 'concluida', 'data' => 'ultimo_dia'],
             'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }

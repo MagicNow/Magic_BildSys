@@ -18,10 +18,8 @@ class MedicaoFisica extends Model
 
     public $fillable = [
         'obra_id',
-		'tarefa',
-		'periodo_inicio',
-		'periodo_termino',
-		'valor_medido',
+		'tarefa',		
+		'valor_medido_total',
 		'created_at',
     ];
 
@@ -34,9 +32,7 @@ class MedicaoFisica extends Model
         'id'             => 'integer',
         'obra_id'      => 'integer',
         'tarefa' => 'string',
-        'periodo_inicio' => 'date',
-        'periodo_termino' => 'date',
-		'valor_medido' => 'decimal',
+		'valor_medido_total' => 'decimal',
     ];
 
     /**
@@ -48,7 +44,7 @@ class MedicaoFisica extends Model
 
     ];
 	
-	public function getValorMedidoAttribute($value)
+	public function getValorMedidoTotalAttribute($value)
     {
         if (strlen($value) == 4) {
             $value = '0'.$value;
@@ -57,7 +53,7 @@ class MedicaoFisica extends Model
         return number_format($value, 2, ',', '.');
     }
 	
-	public function setValorMedidoAttribute($value)
+	public function setValorMedidoTotalAttribute($value)
     {
         $pontos = [","];
         $value = str_replace('.', '', $value);
@@ -65,7 +61,7 @@ class MedicaoFisica extends Model
         if ($result == '') {
             $result = null;
         }
-        $this->attributes['valor_medido'] = $result;
+        $this->attributes['valor_medido_total'] = $result;
     }
 	
 }
