@@ -15,6 +15,7 @@ use App\Models\Obra;
 use App\Models\Carteira;
 use App\Models\Tipologia;
 use App\Models\User;
+use App\Models\Fornecedor;
 
 class QcSuprimentosController extends AppBaseController
 {
@@ -40,38 +41,6 @@ class QcSuprimentosController extends AppBaseController
     }
 
     /**
-     * Display the specified Qc.
-     *
-     * @param  int $id
-     *
-     * @return Response
-     */
-    public function show($id)
-    {
-        $qc = $this->qcRepository->findWithoutFail($id);
-
-        $attachments = [];
-
-        if (isset($qc->anexos) && !empty($qc->anexos)) {
-            foreach ($qc->anexos as $attachment) {
-                if (!isset($attachments[$attachment->tipo])) {
-                    $attachments[$attachment->tipo] = [];
-                }
-
-                $attachments[$attachment->tipo][] = $attachment;
-            }
-        }
-
-        if (empty($qc)) {
-            Flash::error('Qc '.trans('common.not-found'));
-
-            return redirect(route('qc_suprimentos.index'));
-        }
-
-        return view('qc_suprimentos.show', compact('qc', 'attachments'));
-    }
-
-    /**
      * Show the form for editing the specified Qc.
      *
      * @param  int $id
@@ -84,6 +53,8 @@ class QcSuprimentosController extends AppBaseController
         $obras = Obra::pluck('nome','id')->toArray();
         $carteiras = Carteira::pluck('nome','id')->toArray();
         $tipologias = Tipologia::pluck('nome','id')->toArray();
+        $fornecedores = Fornecedor::pluck('nome','id')->toArray();
+        $comprador = User::pluck('name','id')->toArray();
 
         if (empty($qc)) {
             Flash::error('Qc '.trans('common.not-found'));
@@ -91,7 +62,7 @@ class QcSuprimentosController extends AppBaseController
             return redirect(route('qc_suprimentos.index'));
         }
 
-        return view('qc_suprimentos.edit', compact('qc', 'obras', 'carteiras', 'tipologias'));
+        return view('qc_suprimentos.edit', compact('qc', 'obras', 'carteiras', 'tipologias', 'fornecedores', 'comprador'));
     }
 
     /**
@@ -107,10 +78,13 @@ class QcSuprimentosController extends AppBaseController
         $input = $request->except('file');
         $qc = $this->qcRepository->findWithoutFail($id);
 
+        $input['valor_fechamento'] = $request->valor_fechamento ? preg_replace('/[^0-9\.]/', '', $request->valor_fechamento) : NULL;
+        $input['data_fechamento'] = $request->status == 'Fechado' ? date('Y-m-d H:i:s') : NULL;
+
         if (empty($qc)) {
             Flash::error('Qc '.trans('common.not-found'));
 
-            return redirect(route('qc_suprimentos.index'));
+            return redirect(route('listaQc.index'));
         }
 
         $qc = $this->qcRepository->update($input, $id);
@@ -131,30 +105,6 @@ class QcSuprimentosController extends AppBaseController
 
         Flash::success('Q.C. '.trans('common.updated').' '.trans('common.successfully').'.');
 
-        return redirect(route('qc_suprimentos.index'));
-    }
-
-    /**
-     * Remove the specified Qc from storage.
-     *
-     * @param  int $id
-     *
-     * @return Response
-     */
-    public function destroy($id)
-    {
-        $qc = $this->qcRepository->findWithoutFail($id);
-
-        if (empty($qc)) {
-            Flash::error('Qc '.trans('common.not-found'));
-
-            return redirect(route('qc_suprimentos.index'));
-        }
-
-        $this->qcRepository->delete($id);
-
-        Flash::success('Qc '.trans('common.deleted').' '.trans('common.successfully').'.');
-
-        return redirect(route('qc_suprimentos.index'));
+        return redirect(route('listaQc.index'));
     }
 }

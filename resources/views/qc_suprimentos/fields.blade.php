@@ -1,56 +1,73 @@
+<!-- ID Field -->
+<div class="form-group col-sm-6">
+	{!! Form::label('id', 'ID:') !!}
+	{!! Form::text('id', NULL, ['class' => 'form-control', 'disabled' => 'disabled']) !!}
+</div>
+
 <!-- Obra ID Field -->
-@if(Request::get('obra_id'))
-	{!! Form::hidden('obra_id', Request::get('obra_id')) !!}
-@else
-	<div class="form-group col-sm-6">
-		{!! Form::label('obra_id', 'Obra:') !!}
-		{!! Form::select('obra_id',[''=>'Escolha...']+$obras, NULL, ['class' => 'form-control', 'required'=>'required']) !!}
-	</div>
-@endif
+<div class="form-group col-sm-6">
+	{!! Form::label('obra_id', 'Obra:') !!}
+	{!! Form::select('obra_id',[''=>'Escolha...']+$obras, NULL, ['class' => 'form-control', 'disabled' => 'disabled']) !!}
+</div>
 
 <!-- Tipologia Field -->
 <div class="form-group col-sm-6">
 	{!! Form::label('tipologia', 'Tipologia:') !!}
-	{!! Form::select('tipologia_id',[''=>'Escolha...']+$tipologias, NULL, ['class' => 'form-control', 'required'=>'required']) !!}
+	{!! Form::select('tipologia_id',[''=>'Escolha...']+$tipologias, NULL, ['class' => 'form-control', 'disabled' => 'disabled']) !!}
 </div>
 
 <!-- Carteira ID Field -->
 <div class="form-group col-sm-6">
 	{!! Form::label('carteira_id', 'Carteira:') !!}
-	{!! Form::select('carteira_id', [''=>'Escolha...']+$carteiras, @isset($qc) ? $qc->carteira_id : NULL, ['class' => 'form-control select2']) !!}
+	{!! Form::select('carteira_id', [''=>'Escolha...']+$carteiras, NULL, ['class' => 'form-control', 'disabled' => 'disabled']) !!}
 </div>
 
 <!-- Descrição Field -->
 <div class="form-group col-sm-12">
 	{!! Form::label('descricao', 'Descrição do serviço:') !!}
-	{!! Form::textarea('descricao', NULL, ['class' => 'form-control']) !!}
+	{!! Form::textarea('descricao', NULL, ['class' => 'form-control', 'disabled' => 'disabled', 'rows' => 5]) !!}
 </div>
 
 <!-- Valor Pré Orçamento Field -->
 <div class="form-group col-sm-6">
 	{!! Form::label('valor_pre_orcamento', 'Valor Pré Orçamento:') !!}
-	{!! Form::text('valor_pre_orcamento', NULL, ['class' => 'form-control']) !!}
+	{!! Form::text('valor_pre_orcamento', money_format('%i', $qc->valor_pre_orcamento), ['class' => 'form-control', 'disabled' => 'disabled']) !!}
 </div>
 
 <!-- Valor Orçamento Inicial Field -->
 <div class="form-group col-sm-6">
 	{!! Form::label('valor_orcamento_inicial', 'Valor Orçamento Inicial :') !!}
-	{!! Form::text('valor_orcamento_inicial', NULL, ['class' => 'form-control']) !!}
+	{!! Form::text('valor_orcamento_inicial', money_format('%i', $qc->valor_orcamento_inicial), ['class' => 'form-control', 'disabled' => 'disabled']) !!}
 </div>
 
-<!-- Valor da Gerencial Field -->
+<!-- Status Field -->
 <div class="form-group col-sm-6">
-	{!! Form::label('valor_gerencial', 'Valor da Gerencial:') !!}
-	{!! Form::text('valor_gerencial', NULL, ['class' => 'form-control']) !!}
+	{!! Form::label('status', 'Status:') !!}
+	{!! Form::select('status',[''=>'Escolha...', 'Em andamento' => 'Em andamento', 'Fechado' => 'Fechado'], NULL, ['class' => 'form-control']) !!}
 </div>
 
+<!-- Valor Fechamento Field -->
 <div class="form-group col-sm-6">
-	<div class="checkbox">
-		<label>
-			{!! Form::checkbox('carteira_comprada', '1', isset($qc) && $qc->carteira_comprada == 1 ? true : false, ['class' => 'form-control', 'id' => 'carteira_comprada']) !!}
-			Carteira Comprada
-		</label>
-	</div>
+	{!! Form::label('valor_fechamento', 'Valor Fechamento:') !!}
+	{!! Form::text('valor_fechamento', NULL, ['class' => 'form-control currency']) !!}
+</div>
+
+<!-- Fornecedor ID Field -->
+<div class="form-group col-sm-6">
+	{!! Form::label('fornecedor_id', 'Fornecedor:') !!}
+	{!! Form::select('fornecedor_id', [''=>'Escolha...']+$fornecedores, NULL, ['class' => 'form-control select2']) !!}
+</div>
+
+<!-- Número do contrato Field -->
+<div class="form-group col-sm-6">
+	{!! Form::label('numero_contrato', 'Número do contrato (MEGA):') !!}
+	{!! Form::text('numero_contrato', NULL, ['class' => 'form-control']) !!}
+</div>
+
+<!-- Comprador Field -->
+<div class="form-group col-sm-6">
+	{!! Form::label('comprador_id', 'Comprador:') !!}
+	{!! Form::select('comprador_id',[''=>'Escolha...']+$comprador, NULL, ['class' => 'form-control select2']) !!}
 </div>
 
 <fieldset class="col-sm-12 qc-anexos">
@@ -70,19 +87,16 @@
 		</div>
 	</div>
 	<div class="form-group row qc-anexos-campos">
-		<div class="col-sm-3">
+		<div class="col-sm-4">
 			<div class="{{ $errors->has('anexo_arquivo') ? 'has-error' : '' }}">
 				{!! Form::file('anexo_arquivo[]', array('id' => 'file', 'class' => 'form-control', 'multiple' => true)) !!}
 			</div>
 		</div>
 		<div class="col-sm-3">
-			{!! Form::select('anexo_tipo[]', ['' => 'Escolha...', 'Proposta' => 'Proposta', 'Quadro de concorrência' => 'Quadro de concorrência', 'Email' => 'Email', 'Detalhamento do Projeto' => 'Detalhamento do Projeto'], NULL, ['class' => 'form-control']) !!}
+			{!! Form::select('anexo_tipo[]', ['' => 'Escolha...', 'QC Fechado' => 'QC Fechado'], NULL, ['class' => 'form-control']) !!}
 		</div>
 		<div class="col-sm-5">
 			{!! Form::text('anexo_descricao[]', NULL, ['class' => 'form-control']) !!}
-		</div>
-		<div class="col-md-1 text-center">
-			<button type="button" class="fa fa-plus btn qc-anexos-novo" disabled="disabled"></button>
 		</div>
 	</div>
 </fieldset>
@@ -94,5 +108,6 @@
 </div>
 
 @section('scripts')
+	<script src="{{ asset('js/libs/jquery.formatCurrency-1.4.0.js') }}"></script>
 	<script src="{{ asset('js/qc-actions.js') }}"></script>
 @stop
