@@ -386,18 +386,24 @@ class CronogramaFisicoController extends AppBaseController
 			$tabColetaSemanal['data'] = $this->tabColetaSemanal($obraId, $inicioMes, $fimMes, "Tendência Real");			
 			$tabColetaSemanal['labels1'] = $sextasArray;	; //Label Horizontal
 			$tabColetaSemanal['labels2'] = ["Local", "Pavimento", "Tarefas", "Início Real" , "Término Real" , "Crítica" , "Peso Total" , "Real Acum. Mês Anterior" , "Previsto" , "Realizado" , "Previsto" , "Realizado" , "Previsto" , "Realizado" , "Previsto" , "Realizado" , "Previsto" , "Realizado" , "Farol"];			
-								
+			
+			//dump($tabColetaSemanal['data']);die;
+			
 			/***** Tabela Percentual Previsto e Acumulado ****/	
 			$tabPercentualPrevReal['labels'] = CronogramaFisicoRepository::getFridaysByDate($inicioMes);	; //Label Horizontal				
 
 			/***** Tabela Percentual Previsto x Percentual Realizado - Dados: Vindo da Curva de Andamento (PD, PT, TR, TD e TT) ****/			
-			$planoDiretorAcumulado = $this->planoAcumuladoMeses($this->percentualPorMeses($obraId, $meses, "Plano Diretor"));
-			$planoTrabalhoAcumulado = $this->planoAcumuladoMeses($this->percentualPorMeses($obraId, $meses, "Plano Trabalho"));
-			$planoPrevistoAcumulado = $this->planoAcumuladoMeses($this->percentualPorMeses($obraId, $meses, "Tendência Real"));	
+			$planoDiretorAcumulado = $this->planoAcumuladoMeses($this->percentualPorMeses($obraId, $meses, "Plano Diretor"),"percentual");
+			$planoTrabalhoAcumulado = $this->planoAcumuladoMeses($this->percentualPorMeses($obraId, $meses, "Plano Trabalho"),"percentual");
+			$planoPrevistoAcumulado = $this->planoAcumuladoMeses($this->percentualPorMeses($obraId, $meses, "Tendência Real"),"percentual");	
+			$planoRealizadoAcumulado = $this->planoAcumuladoMeses($this->percentualPorMeses($obraId, $meses, "Tendência Real"),"realizado");
+
+			//dump($this->percentualPorMeses($obraId, $meses, "Tendência Real"),"realizado");die;
 			
-			$tabPercentualPrevReal['data']['planoDiretorAcumulado'] = $this->planoAcumuladoMensal($planoDiretorAcumulado, $mesRef);
+			$tabPercentualPrevReal['data']['planoDiretorAcumulado'] = $this->planoAcumuladoMensal($planoDiretorAcumulado, $mesRef);			
 			$tabPercentualPrevReal['data']['planoTrabalhoAcumulado'] = $this->planoAcumuladoMensal($planoTrabalhoAcumulado, $mesRef);
 			$tabPercentualPrevReal['data']['planoPrevistoAcumulado'] = $this->planoAcumuladoMensal($planoPrevistoAcumulado, $mesRef);
+			$tabPercentualPrevReal['data']['planoRealizadoAcumulado'] = $this->planoAcumuladoMensal($planoRealizadoAcumulado, $mesRef);
 			$tabPercentualPrevReal['data']['previstoSemanal'] = $this->previstoSemanal($tabColetaSemanal['data'], $inicioMes);
 			$tabPercentualPrevReal['data']['realizadoSemanal'] = $this->realizadoSemanal($tabColetaSemanal['data'], $inicioMes);
 			
@@ -492,15 +498,15 @@ class CronogramaFisicoController extends AppBaseController
 			/***** Gráfico Previsto x Realizado na Semana selecionada	 ****/	
 			$grafPrevistoRealizadoSem['labels'] = ["Semana 1", "Semana 2", "Semana 3", "Semana 4", "Semana 5", "Mês"];
 			$grafPrevistoRealizadoSem['data']['previstoSem'] = $this->previstoSemanal($tabColetaSemanal['data'], $inicioMes);
-			$grafPrevistoRealizadoSem['data']['realizadoSem'] = [-1.58,1.75,1.75,1.75,1.75,2.55];		
+			$grafPrevistoRealizadoSem['data']['realizadoSem'] = $this->realizadoSemanal($tabColetaSemanal['data'], $inicioMes);	
 
 			/***** Gráfico PDP x Trab x Real Acumulado na Semana selecionada *****/
 			$grafPDPTrabRealAcumSem['labels'] = ["Semana ".$semanaText];
 			
-			$planoDiretorAcumulado = $this->planoAcumuladoMeses($this->percentualPorMeses($obraId, $meses, "Plano Diretor"));
+			$planoDiretorAcumulado = $this->planoAcumuladoMeses($this->percentualPorMeses($obraId, $meses, "Plano Diretor"),"percentual");
 			$planoDiretorAcumulado = $this->planoAcumuladoMensal($planoDiretorAcumulado, $mesRef);
 			
-			$planoTrabalhoAcumulado = $this->planoAcumuladoMeses($this->percentualPorMeses($obraId, $meses, "Plano Trabalho"));
+			$planoTrabalhoAcumulado = $this->planoAcumuladoMeses($this->percentualPorMeses($obraId, $meses, "Plano Trabalho"),"percentual");
 			$planoTrabalhoAcumulado = $this->planoAcumuladoMensal($planoTrabalhoAcumulado, $mesRef);
 			
 			array_push($grafPDPTrabRealAcumSem['data'], $planoDiretorAcumulado[$sextasArray[$semanaId]]);
@@ -649,7 +655,7 @@ class CronogramaFisicoController extends AppBaseController
 	}
 	
 	// Dados vindo calculados dos plano escolhido
-	public function planoAcumuladoMeses($percentualPorMeses){
+	public function planoAcumuladoMeses($percentualPorMeses, $tipoDados){
 				
 		$planoAcumulado = [];
 		$acumuladoTotal = 0;
@@ -666,7 +672,7 @@ class CronogramaFisicoController extends AppBaseController
 					$acumuladoSemanal = 0;
 					
 					foreach ($dados as $tmp) {
-						$acumuladoSemanal = $acumuladoSemanal + ($tmp["percentual-".$sexta]/100) * $tmp["peso"];						
+						$acumuladoSemanal = $acumuladoSemanal + ($tmp[$tipoDados."-".$sexta]/100) * $tmp["peso"];						
 					}				
 					
 					$acumuladoTotal = $acumuladoTotal  + $acumuladoSemanal;
@@ -706,11 +712,20 @@ class CronogramaFisicoController extends AppBaseController
 		foreach ($sextasArray as $sexta) {
 			
 			$acumuladoSemanal = 0;
-				
+			$valorPrevisto = 0;
+			$valorConcluida = 0;
+			$valorPeso = 0;				
+			
 			//Filtrar por Critica				
 			foreach ($tabColetaSemanal as $key => $tarefa) {
 				
-				$acumuladoSemanal = $acumuladoSemanal + (($tarefa["percentual-".$sexta] - $tarefa["concluida"])/100)*$tarefa["peso"];								
+				if(isset($tarefa["percentual-".$sexta]) && isset($tarefa["concluida"]) && isset($tarefa["peso"]) ){
+					$valorPrevisto = $tarefa["percentual-".$sexta];
+					$valorConcluida = $tarefa["concluida"];
+					$valorPeso = $tarefa['peso'];
+				}
+				
+				$acumuladoSemanal = $acumuladoSemanal + (($valorPrevisto - $valorConcluida)/100)*$valorPeso;									
 					
 			}
 			
@@ -736,11 +751,20 @@ class CronogramaFisicoController extends AppBaseController
 		foreach ($sextasArray as $sexta) {
 			
 			$acumuladoSemanal = 0;
+			$valorRealizado = 0;
+			$valorConcluida = 0;
+			$valorPeso = 0;
 				
 			//Filtrar por Critica				
 			foreach ($tabColetaSemanal as $key => $tarefa) {
 				
-				$acumuladoSemanal = $acumuladoSemanal + (($tarefa["realizado-".$sexta] - $tarefa["concluida"])/100)*$tarefa["peso"];								
+				if(isset($tarefa["realizado-".$sexta]) && isset($tarefa["concluida"]) && isset($tarefa["peso"]) ){
+					$valorRealizado = $tarefa["realizado-".$sexta];
+					$valorConcluida = $tarefa["concluida"];
+					$valorPeso = $tarefa['peso'];
+				}
+				
+				$acumuladoSemanal = $acumuladoSemanal + (($valorRealizado - $valorConcluida)/100)*$valorPeso;								
 					
 			}
 			
@@ -752,8 +776,8 @@ class CronogramaFisicoController extends AppBaseController
 				
 		
 		return $realizadoSemanal;	
-	}
-			
+	}	
+	
 	// Tabela Tarefas Criticas - Dados
 	public function tabTarefasCriticas($tabColetaSemanal, $inicioMes, $semanaId){
 		

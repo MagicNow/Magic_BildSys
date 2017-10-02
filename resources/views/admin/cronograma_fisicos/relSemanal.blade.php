@@ -244,6 +244,10 @@
 			GraficoPDPTrabRealAcumSemTrab = [GraficoPDPTrabRealAcumSem[1]];
 			GraficoPDPTrabRealAcumSemReal = [GraficoPDPTrabRealAcumSem[2]];
 			
+			//Grafico Desvio PDP 
+			
+			//Grafico Desvio P. Trabalho
+			
 			//Grafico Tarefas Criticas
 			GraficoTarefasCriticasLabels = objectToArray(data['grafTarefasCriticas']['labels']);
 			GraficoTarefasCriticasPrevistoAcum = objectToArray(data['grafTarefasCriticas']['data']['previstoAcum']);
@@ -279,7 +283,7 @@
 							ticks: {
 								// Create scientific notation labels
 								beginAtZero:true,
-								fixedStepSize: 0.50
+								fixedStepSize: 0.75
 							}
 						}]
 					},
@@ -321,7 +325,7 @@
 							ticks: {
 								// Create scientific notation labels
 								beginAtZero:true,
-								fixedStepSize: 0.5
+								fixedStepSize: 0.75
 							}
 						}]
 					},
