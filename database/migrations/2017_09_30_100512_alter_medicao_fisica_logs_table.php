@@ -17,9 +17,7 @@ class AlterMedicaoFisicaLogsTable extends Migration
 		Schema::table('medicao_fisica_logs', function (Blueprint $table){
 
             \Illuminate\Support\Facades\DB::table('medicao_fisica_logs')->delete();			
-            
-			$table->date('periodo_inicio')->nullable();
-            $table->date('periodo_termino')->nullable();
+
 			$table->text('observacao')->nullable();
 			
 		 });
@@ -32,7 +30,6 @@ class AlterMedicaoFisicaLogsTable extends Migration
      */
     public function down()
     {
-		Schema::dropIfExists('periodo_inicio');
-		Schema::dropIfExists('periodo_termino');
+		Schema::dropIfExists('observacao');
     }
 }

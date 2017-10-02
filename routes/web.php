@@ -93,16 +93,16 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
         $router->get('pre_orcamentos/{pre_orcamentos}/edit', ['as' => 'admin.pre_orcamentos.edit', 'uses' => 'Admin\PreOrcamentoController@edit']);		
     });
 
-    # Tipologia
-    $router->group(['middleware' => 'needsPermission:tipologia.list'], function () use ($router) {
-        $router->get('tipologia', ['as' => 'admin.tipologia.index', 'uses' => 'Admin\TipologiaController@index']);
-        $router->post('tipologia', ['as' => 'admin.tipologia.store', 'uses' => 'Admin\TipologiaController@store']);
-        $router->get('tipologia/create', ['as' => 'admin.tipologia.create', 'uses' => 'Admin\TipologiaController@create']);
-        $router->put('tipologia/{tipologia}', ['as' => 'admin.tipologia.update', 'uses' => 'Admin\TipologiaController@update']);
-        $router->patch('tipologia/{tipologia}', ['as' => 'admin.tipologia.update', 'uses' => 'Admin\TipologiaController@update']);
-        $router->delete('tipologia/{tipologia}', ['as' => 'admin.tipologia.destroy', 'uses' => 'Admin\TipologiaController@destroy']);
-        $router->get('tipologia/{tipologia}', ['as' => 'admin.tipologia.show', 'uses' => 'Admin\TipologiaController@show']);
-        $router->get('tipologia/{tipologia}/edit', ['as' => 'admin.tipologia.edit', 'uses' => 'Admin\TipologiaController@edit']);
+    # Topologia
+    $router->group(['middleware' => 'needsPermission:topologia.list'], function () use ($router) {
+        $router->get('topologia', ['as' => 'admin.topologia.index', 'uses' => 'Admin\TopologiaController@index']);
+        $router->post('topologia', ['as' => 'admin.topologia.store', 'uses' => 'Admin\TopologiaController@store']);
+        $router->get('topologia/create', ['as' => 'admin.topologia.create', 'uses' => 'Admin\TopologiaController@create']);
+        $router->put('topologia/{topologia}', ['as' => 'admin.topologia.update', 'uses' => 'Admin\TopologiaController@update']);
+        $router->patch('topologia/{topologia}', ['as' => 'admin.topologia.update', 'uses' => 'Admin\TopologiaController@update']);
+        $router->delete('topologia/{topologia}', ['as' => 'admin.topologia.destroy', 'uses' => 'Admin\TopologiaController@destroy']);
+        $router->get('topologia/{topologia}', ['as' => 'admin.topologia.show', 'uses' => 'Admin\TopologiaController@show']);
+        $router->get('topologia/{topologia}/edit', ['as' => 'admin.topologia.edit', 'uses' => 'Admin\TopologiaController@edit']);
     });
 
     # Importação de Planilhas de Planejamentos
@@ -207,8 +207,8 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
     });
 
     # Levantamentos
-    $router->group(['prefix' => 'levantamentos'], function () use ($router) {
-        $router->group(['middleware' => 'needsPermission:levantamentos.list'], function () use ($router) {
+    $router->group(['prefix' => 'levantamentos'], function () use ($router) {		
+        $router->group(['middleware' => 'needsPermission:levantamentos.list'], function () use ($router) {						
             $router->get('atividade', ['as' => 'admin.levantamentos.index', 'uses' => 'Admin\LevantamentoController@index']);
             $router->post('atividade', ['as' => 'admin.levantamentos.store', 'uses' => 'Admin\LevantamentoController@store']);
             $router->get('atividade/create', ['as' => 'admin.levantamentos.create', 'uses' => 'Admin\LevantamentoController@create']);
@@ -235,6 +235,36 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
 			->middleware("needsPermission:tipoLevantamentos.edit");
     });
 
+	# Máscara Padrão
+    $router->group(['middleware' => 'needsPermission:mascara_padrao.list'], function () use ($router) {        
+        $router->get('mascara_padrao', ['as' => 'admin.mascara_padrao.index', 'uses' => 'Admin\MascaraPadraoController@index']);
+        $router->post('mascara_padrao', ['as' => 'admin.mascara_padrao.store', 'uses' => 'Admin\MascaraPadraoController@store']);
+        $router->get('mascara_padrao/create', ['as' => 'admin.mascara_padrao.create', 'uses' => 'Admin\MascaraPadraoController@create'])
+            ->middleware("needsPermission:mascara_padrao.create");;
+        $router->put('mascara_padrao/{mascara_padrao}', ['as' => 'admin.mascara_padrao.update', 'uses' => 'Admin\MascaraPadraoController@update']);
+        $router->patch('mascara_padrao/{mascara_padrao}', ['as' => 'admin.mascara_padrao.update', 'uses' => 'Admin\MascaraPadraoController@update']);
+        $router->delete('mascara_padrao/{mascara_padrao}', ['as' => 'admin.mascara_padrao.destroy', 'uses' => 'Admin\MascaraPadraoController@destroy'])
+            ->middleware("needsPermission:mascara_padrao.delete");;
+        $router->get('mascara_padrao/{mascara_padrao}', ['as' => 'admin.mascara_padrao.show', 'uses' => 'Admin\MascaraPadraoController@show']);
+        $router->get('mascara_padrao/{mascara_padrao}/edit', ['as' => 'admin.mascara_padrao.edit', 'uses' => 'Admin\MascaraPadraoController@edit'])
+            ->middleware("needsPermission:mascara_padrao.edit");        
+    });
+	
+	# Tarefa Padrão
+    $router->group(['middleware' => 'needsPermission:tarefa_padrao.list'], function () use ($router) {        
+        $router->get('tarefa_padrao', ['as' => 'admin.tarefa_padrao.index', 'uses' => 'Admin\TarefaPadraoController@index']);
+        $router->post('tarefa_padrao', ['as' => 'admin.tarefa_padrao.store', 'uses' => 'Admin\TarefaPadraoController@store']);
+        $router->get('tarefa_padrao/create', ['as' => 'admin.tarefa_padrao.create', 'uses' => 'Admin\TarefaPadraoController@create'])
+            ->middleware("needsPermission:tarefa_padrao.create");;
+        $router->put('tarefa_padrao/{tarefa_padrao}', ['as' => 'admin.tarefa_padrao.update', 'uses' => 'Admin\TarefaPadraoController@update']);
+        $router->patch('tarefa_padrao/{tarefa_padrao}', ['as' => 'admin.tarefa_padrao.update', 'uses' => 'Admin\TarefaPadraoController@update']);
+        $router->delete('tarefa_padrao/{tarefa_padrao}', ['as' => 'admin.tarefa_padrao.destroy', 'uses' => 'Admin\TarefaPadraoController@destroy'])
+            ->middleware("needsPermission:tarefa_padrao.delete");;
+        $router->get('tarefa_padrao/{tarefa_padrao}', ['as' => 'admin.tarefa_padrao.show', 'uses' => 'Admin\TarefaPadraoController@show']);
+        $router->get('tarefa_padrao/{tarefa_padrao}/edit', ['as' => 'admin.tarefa_padrao.edit', 'uses' => 'Admin\TarefaPadraoController@edit'])
+            ->middleware("needsPermission:tarefa_padrao.edit");        
+    });
+	
 	# Estruturas
     $router->group(['middleware' => 'needsPermission:estruturas.list'], function () use ($router) {
         $router->get('estruturas', ['as' => 'admin.estruturas.index', 'uses' => 'Admin\EstruturaController@index']);
@@ -362,7 +392,7 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
 		$router->get('tarefa_mascaras/mascaras/desvincular', 'Admin\TarefaMascarasController@desvincular');
 		$router->get('tarefa_mascaras/sem-tarefa/view/{obra}', ['as' => 'admin.tarefa_mascaras.semplanejamentoview', 'uses' => 'Admin\TarefaMascarasController@semPlanejamentoView']);
 	});
-
+	
 	# Carteira de Insumos
     $router->group(['middleware' => 'needsPermission:carteiraInsumos.list'], function () use ($router) {
         $router->get('carteiraInsumos', ['as' => 'admin.carteiraInsumos.index', 'uses' => 'Admin\CarteiraInsumoController@index']);
@@ -383,7 +413,7 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
         $router->get('carteiraInsumos/delete-bloco/view/delete/{id}', 'Admin\CarteiraInsumoController@buscaGrupoInsumo');
 		$router->get('carteiraInsumos/sem-carteira/view', ['as' => 'admin.carteiraInsumos.semcarteiraview', 'uses' => 'Admin\CarteiraInsumoController@semCarteiraView'])
             ->middleware("needsPermission:carteiraInsumos.semCarteiraView");
-	});
+	});  
 
     # Manage users
     $router->group(['middleware' => 'needsPermission:users.list'], function () use ($router) {
@@ -565,8 +595,8 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
         $router->get('motivos-declinar-proposta/{desistenciaMotivos}', ['as'=> 'admin.desistenciaMotivos.show', 'uses' => 'Admin\DesistenciaMotivoController@show']);
         $router->get('motivos-declinar-proposta/{desistenciaMotivos}/edit', ['as'=> 'admin.desistenciaMotivos.edit', 'uses' => 'Admin\DesistenciaMotivoController@edit'])
             ->middleware('needsPermission:desistenciaMotivos.edit');
-    });
-
+    });	
+	
 });
 
 ##### SITE #####
@@ -606,38 +636,8 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             ->middleware("needsPermission:carteiras.edit");
         $router->get('carteiras/buscacep/{cep}', 'Admin\CarteiraController@buscaPorCep');
     });
-
-	# Máscara Padrão
-    $router->group(['middleware' => 'needsPermission:mascara_padrao.list'], function () use ($router) {
-        $router->get('mascara_padrao', ['as' => 'admin.mascara_padrao.index', 'uses' => 'Admin\MascaraPadraoController@index']);
-        $router->post('mascara_padrao', ['as' => 'admin.mascara_padrao.store', 'uses' => 'Admin\MascaraPadraoController@store']);
-        $router->get('mascara_padrao/create', ['as' => 'admin.mascara_padrao.create', 'uses' => 'Admin\MascaraPadraoController@create'])
-            ->middleware("needsPermission:mascara_padrao.create");;
-        $router->put('mascara_padrao/{mascara_padrao}', ['as' => 'admin.mascara_padrao.update', 'uses' => 'Admin\MascaraPadraoController@update']);
-        $router->patch('mascara_padrao/{mascara_padrao}', ['as' => 'admin.mascara_padrao.update', 'uses' => 'Admin\MascaraPadraoController@update']);
-        $router->delete('mascara_padrao/{mascara_padrao}', ['as' => 'admin.mascara_padrao.destroy', 'uses' => 'Admin\MascaraPadraoController@destroy'])
-            ->middleware("needsPermission:mascara_padrao.delete");;
-        $router->get('mascara_padrao/{mascara_padrao}', ['as' => 'admin.mascara_padrao.show', 'uses' => 'Admin\MascaraPadraoController@show']);
-        $router->get('mascara_padrao/{mascara_padrao}/edit', ['as' => 'admin.mascara_padrao.edit', 'uses' => 'Admin\MascaraPadraoController@edit'])
-            ->middleware("needsPermission:mascara_padrao.edit");
-    });
-
-	# Tarefa Padrão
-    $router->group(['middleware' => 'needsPermission:tarefa_padrao.list'], function () use ($router) {
-        $router->get('tarefa_padrao', ['as' => 'admin.tarefa_padrao.index', 'uses' => 'Admin\TarefaPadraoController@index']);
-        $router->post('tarefa_padrao', ['as' => 'admin.tarefa_padrao.store', 'uses' => 'Admin\TarefaPadraoController@store']);
-        $router->get('tarefa_padrao/create', ['as' => 'admin.tarefa_padrao.create', 'uses' => 'Admin\TarefaPadraoController@create'])
-            ->middleware("needsPermission:tarefa_padrao.create");;
-        $router->put('tarefa_padrao/{tarefa_padrao}', ['as' => 'admin.tarefa_padrao.update', 'uses' => 'Admin\TarefaPadraoController@update']);
-        $router->patch('tarefa_padrao/{tarefa_padrao}', ['as' => 'admin.tarefa_padrao.update', 'uses' => 'Admin\TarefaPadraoController@update']);
-        $router->delete('tarefa_padrao/{tarefa_padrao}', ['as' => 'admin.tarefa_padrao.destroy', 'uses' => 'Admin\TarefaPadraoController@destroy'])
-            ->middleware("needsPermission:tarefa_padrao.delete");;
-        $router->get('tarefa_padrao/{tarefa_padrao}', ['as' => 'admin.tarefa_padrao.show', 'uses' => 'Admin\TarefaPadraoController@show']);
-        $router->get('tarefa_padrao/{tarefa_padrao}/edit', ['as' => 'admin.tarefa_padrao.edit', 'uses' => 'Admin\TarefaPadraoController@edit'])
-            ->middleware("needsPermission:tarefa_padrao.edit");
-    });
-
-    # Solicitação de Insumos
+	
+	# Solicitação de Insumos
     $router->get('solicitacaoInsumos/create', ['as' => 'admin.solicitacaoInsumos.create', 'uses' => 'Admin\SolicitacaoInsumoController@create'])
         ->middleware("needsPermission:solicitacaoInsumos.create");
     $router->group(['middleware' => 'needsPermission:solicitacaoInsumos.list'], function () use ($router) {
@@ -727,10 +727,10 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             ->middleware('needsPermission:memoriaCalculos.edit');
         $router->get('/{memoriaCalculo}/clone', ['as'=> 'memoriaCalculos.clone', 'uses' => 'MemoriaCalculoController@clonar'])
             ->middleware('needsPermission:memoriaCalculos.create');
-
+        
         $router->post('/putSessionMemoriaDeCalculo', ['as'=> 'memoriaCalculos.putSessionMemoriaDeCalculo', 'uses' => 'MemoriaCalculoController@putSessionMemoriaDeCalculo'])
             ->middleware('needsPermission:memoriaCalculos.create');
-
+        
         $router->post('/forgetSessionMemoriaDeCalculo', ['as'=> 'memoriaCalculos.forgetSessionMemoriaDeCalculo', 'uses' => 'MemoriaCalculoController@forgetSessionMemoriaDeCalculo'])
             ->middleware('needsPermission:memoriaCalculos.create');
 
@@ -769,7 +769,10 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             '/contratos-por-obra',
             'MedicaoController@contratosPorObra'
         );
-		
+        $router->get(
+            '/tarefas-por-obra',
+            'MedicaoController@tarefasPorObra'
+        );
         $router->get(
             '/insumos',
             'MedicaoController@insumos'
@@ -1326,6 +1329,9 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->get('/buscar/busca_carteiras', ['as' => 'qc.busca_carteiras', 'uses' => 'QcController@buscaCarteira']);
         $router->delete('/{qc}', ['as' => 'qc.destroy', 'uses' => 'QcController@destroy']);
 
+        $router->get('/anexos/{qc}',['as' => 'qc.anexos', 'uses' => 'QcController@anexos'])
+            ->middleware('needsPermission:qc.anexos.list');
+        
         $router->get('/aprovar/{qc}',['as' => 'qc.aprovar.edit', 'uses' => 'QcController@aprovar'])
             ->middleware('needsPermission:qc-aprovar.show');
             $router->patch('/aprovar/{qc}/update',['as' => 'qc.aprovar.update', 'uses' => 'QcController@aprovarUpdate']);
@@ -1450,31 +1456,50 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->get('/{pagamentos}/edit', ['as'=> 'pagamentos.edit', 'uses' => 'PagamentoController@edit'])
             ->middleware('needsPermission:pagamentos.edit');
     });
+	
+	$router->get('/testeLpu', function () {
+        $lpu = \App\Repositories\LpuGerarRepository::calcular();
+		dd($lpu);		
+    });
+	
+	$router->get('/testeInsumos', function () {
+		$insumos = \App\Repositories\ImportacaoRepository::insumos();
+	});
+
+    $router->get('/teste', function () {
+        //        $grupos_mega = \App\Models\MegaInsumoGrupo::select([
+        //            'GRU_IDE_ST_CODIGO',
+        //            'GRU_IN_CODIGO',
+        //            'GRU_ST_NOME',])
+        //            ->where('gru_ide_st_codigo' , '07')
+        //            ->first();
+        //        dd($grupos_mega);
+        //        $servicos = \App\Repositories\ImportacaoRepository::fornecedor_servicos(446);
+        
+		$insumos = \App\Repositories\ImportacaoRepository::insumos();
+        dd($insumos);        
+		
+		//        $insumos = \App\Repositories\ImportacaoRepository::insumos();
+		//        dd($insumos);
+        $contratoTemplate = \App\Models\ContratoTemplate::find(1);
+        if($contratoTemplate){
+            if($contratoTemplate->campos_extras){
+                $campos_extras_template = json_decode($contratoTemplate->campos_extras);
+                foreach ($campos_extras_template as $campo){
+                    var_dump($campo);
+                }
+                dd($campos_extras_template);
+
+            }
+        }
+
+    });
 
 
 });
 
-$router->get('/teste', function () {
-    //        $grupos_mega = \App\Models\MegaInsumoGrupo::select([
-    //            'GRU_IDE_ST_CODIGO',
-    //            'GRU_IN_CODIGO',
-    //            'GRU_ST_NOME',])
-    //            ->where('gru_ide_st_codigo' , '07')
-    //            ->first();
-    //        dd($grupos_mega);
-    //        $servicos = \App\Repositories\ImportacaoRepository::fornecedor_servicos(446);
-//        $insumos = \App\Repositories\ImportacaoRepository::insumos();
-//        dd($insumos);
-//        dd(\App\Models\MegaCondicaoPagamento::select(['cond_st_codigo','cond_st_nome'])->get()->toArray());
-//        var_dump(\App\Models\MegaTipoDocumentoFiscal::select(['tdf_in_codigo','tdf_st_sigla','tdf_st_descricao'])->get()->toArray());
-//        dd();
-    dd(\App\Repositories\ImportacaoRepository::pagamentoCondicoes(),
-        \App\Repositories\ImportacaoRepository::documentoTipos(),
-        \App\Repositories\ImportacaoRepository::documentoFinanceiroTipos());
-});
 #Image Controller
 $router->get('imagem', 'ImageController@index');
-
 
 
 $router->get('requisicao/get-pavimentos-obra/{obra}/torre/{torre}', ['as' => 'requisicao.pavimentosObra', 'uses' => 'RequisicaoController@getPavimentosByObraAndTorre']);
@@ -1485,7 +1510,8 @@ $router->get('requisicao/get-insumos-obra/', ['as' => 'requisicao.insumosObra', 
 $router->get('requisicao/get-insumos-obra-comodo/', ['as' => 'requisicao.insumosObraComodo', 'uses' => 'RequisicaoController@getInsumosByComodo']);
 $router->post('requisicao', ['as' => 'notafiscals.store', 'uses' => 'NotafiscalController@store']);
 
+$router->get('/requisicao/ler-qr-cod', function() {
+    return View('requisicao.ler_qr_code');
+});
 
-Route::resource('requisicao', 'RequisicaoController');;
-
-
+Route::resource('requisicao', 'RequisicaoController');
