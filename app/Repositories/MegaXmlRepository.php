@@ -649,7 +649,10 @@ class MegaXmlRepository
         $node = $domtree->createElement("FAT_RE_VALOR", $pagamento->valor);// "C. Custo Padrao"
         $xmlRoot->appendChild($node);
 
-        // ACAO_IN_CODIGO * REQUERIDO
+        // ACAO_IN_CODIGO - Código de Ação
+        //  150 - adiantamento
+        //  149 - documentos não fiscais (Recibo / Boleto sem NF / Conta de consumo....)
+        //  891 -  usar para o restante
         $node = $domtree->createElement("ACAO_IN_CODIGO", '891');
         $xmlRoot->appendChild($node);
 
