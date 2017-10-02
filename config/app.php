@@ -244,7 +244,8 @@ return [
         'Correios'    => Cagartner\CorreiosConsulta\Facade::class,
         'PDF' => Barryvdh\Snappy\Facades\SnappyPdf::class,
         'SnappyImage' => Barryvdh\Snappy\Facades\SnappyImage::class,
-        'Image' => Intervention\Image\Facades\Image::class
+        'Image' => Intervention\Image\Facades\Image::class,
+		'Excel' => Maatwebsite\Excel\Facades\Excel::class
     ],
 
 ];

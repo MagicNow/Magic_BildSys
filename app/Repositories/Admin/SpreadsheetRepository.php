@@ -681,6 +681,7 @@ class SpreadsheetRepository
                 $linha = 0;
                 foreach ($sheet->getRowIterator() as $row) {
                     $linha++;
+					$final = [];
                     if ($linha > 1) {
                         $line++;
 
@@ -729,6 +730,7 @@ class SpreadsheetRepository
                                                 }
                                             }
                                             break;
+											
                                         case 'date' :
                                             $data_array = explode('/',$row[$chave]);
                                             if(count($data_array)==3){
@@ -765,6 +767,14 @@ class SpreadsheetRepository
 							
 							if(empty($final['pavimento'])){
 								$final['pavimento'] = "";
+							}
+							
+							if(empty($final['custo'])){
+								$final['custo'] = 0;
+							}
+							
+							if(empty($final['concluida'])){
+								$final['concluida'] = 0;
 							}
 							
                             CronogramaFisico::updateOrCreate(

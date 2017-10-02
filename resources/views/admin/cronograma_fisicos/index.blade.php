@@ -38,21 +38,15 @@
 						</select>
 					</div>
 					
-					<div class="col-sm-2">
-						<h4>Ano</h4>
-						{!!
-						  Form::select(
-							'ano_id',["2017","2018","2019","2020"],null,['class' => 'form-control select2 js-filter']
-						  )
-						!!}
-					</div>
-					<div class="col-sm-2">
-						<h4>Mês</h4>
-						{!!
-						  Form::select(
-							'mes_id',["Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"],null,['class' => 'form-control select2 js-filter']
-						  )
-						!!}
+					<div class="js-datatable-filter-form pull-left form-group col-sm-3">
+						<h4>Mês Referência</h4>
+						<select name="mes" id="mes" class="select2">
+							<option value="">-- Selecione o Mês --</option>
+							@foreach($meses as $i => $j)
+								<option value="{{ $i }}">{{ $j }}</option>
+							@endforeach
+
+						</select>
 					</div>
 				</div>
 			</div>
@@ -72,6 +66,10 @@
         $(function () {
 
             $('#obra').on('change', function (event) {
+                window.LaravelDataTables["dataTableBuilder"].draw();
+            });
+			
+			$('#mes').on('change', function (event) {
                 window.LaravelDataTables["dataTableBuilder"].draw();
             });
 			
