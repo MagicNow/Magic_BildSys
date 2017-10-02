@@ -52,7 +52,7 @@ var paths = {
     'stacktable': vendors + '/stacktable.js/'
 };
 
-elixir.config.sourcemaps = false;
+elixir.config.sourcemaps = true;
 
 elixir(function (mix) {
 
@@ -65,6 +65,7 @@ elixir(function (mix) {
     mix.copy('resources/vendor/summernote/dist/font/**', 'public/css/font');
     mix.copy('resources/assets/fonts/**', 'public/css/font');
     mix.copy('resources/vendor/ionicons/fonts/**', 'public/fonts');
+    mix.copy('resources/assets/js/libs/**', 'public/js/libs');
 
     // Copy images straight to public
     mix.copy('resources/vendor/jquery-colorbox/example3/images/**', 'public/css/images');
@@ -264,6 +265,10 @@ elixir(function (mix) {
     mix.scripts([
         'solicitacao-de-entrega.js',
     ], 'public/js/solicitacao-de-entrega.js');
+
+    mix.scripts([
+        'quadro-de-concorrencia-actions.js',
+    ], 'public/js/qc-actions.js');
     
 });
 

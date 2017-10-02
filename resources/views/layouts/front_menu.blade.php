@@ -3,7 +3,10 @@
                        Request::is('insumos*') ||
                        Request::is('insumoGrupos*') ||
                        Request::is('solicitacaoInsumos*') ||
-                       Request::is('fornecedores*')
+                       Request::is('fornecedores*') ||
+                       Request::is('condicoes-de-pagamento*') ||
+                       Request::is('tipos-de-documentos-fiscais*') ||
+                       Request::is('tipos-de-documentos-financeiros*')
                        ? 'active' : '' }}">
     <a href="#">
         <i class="fa fa-pencil-square-o"></i>
@@ -88,10 +91,23 @@
         <li class="{{ Request::is('qc*') ? 'active' : '' }}">
             <a href="{{ route('qc.index') }}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
-                <span>QC</span>
+                <span>Q.C.</span>
             </a>
         </li>
         @endshield
+
+
+        <li class="{{ Request::is('condicoes-de-pagamento*') ? 'active' : '' }}">
+            <a href="{!! route('pagamentoCondicaos.index') !!}"><i class="fa fa-caret-right"></i><span>Condições de Pagamento</span></a>
+        </li>
+
+        <li class="{{ Request::is('tipos-de-documentos-fiscais*') ? 'active' : '' }}">
+            <a href="{!! route('documentoTipos.index') !!}"><i class="fa fa-caret-right"></i><span> Tipos de Doc. Fiscais</span></a>
+        </li>
+
+        <li class="{{ Request::is('tipos-de-documentos-financeiros*') ? 'active' : '' }}">
+            <a href="{!! route('documentoFinanceiroTipos.index') !!}"><i class="fa fa-caret-right"></i><span> Tipos de Doc. Financeiros</span></a>
+        </li>
     </ul>
 </li>
 
@@ -157,6 +173,10 @@
             </a>
         </li>
         @endshield
+
+        <li class="{{ Request::is('pagamentos*') ? 'active' : '' }}">
+            <a href="{!! route('pagamentos.index') !!}"><i class="fa fa-caret-right"></i><span>Pagamentos</span></a>
+        </li>
 
         <li class="{{ Request::is('medicoes*') ? 'active' : '' }}">
             <a href="{!! route('medicoes.index') !!}">
@@ -232,6 +252,14 @@
             <a href="{!! route('tipoEqualizacaoTecnicas.index') !!}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
                 <span>Equalização técnicas</span></a>
+        </li>
+        @endshield
+
+        @shield('lista_qc.list')
+        <li class="{{ Request::is('lista-qc*') ? 'active' : '' }}">
+            <a href="{!! route('listaQc.index') !!}" title="Quadro De Concorrência">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Lista de Q.C.</span> </a>
         </li>
         @endshield
 

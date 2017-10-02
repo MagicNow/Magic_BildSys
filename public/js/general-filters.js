@@ -33,3 +33,5 @@ $(function() {
     table.draw();
   });
 });
+
+//# sourceMappingURL=general-filters.js.map

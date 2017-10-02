@@ -14,12 +14,12 @@
     <a href="{{ route('qc.show', $id) }}" title="{{ ucfirst( trans('common.show') )}}" class='btn btn-default btn-xs'>
         <i class="glyphicon glyphicon-eye-open"></i>
     </a>
-    @shield('catalogo_acordos.edit')
+    {{-- @shield('qc.edit')
     <a href="{{ route('qc.edit', $id) }}" title="{{ ucfirst( trans('common.edit') )}}" class='btn btn-warning btn-xs'>
         <i class="glyphicon glyphicon-edit"></i>
     </a>
-    @endshield
-    @shield('catalogo_acordos.delete')
+    @endshield --}}
+    @shield('qc.delete')
     {!! Form::button('<i class="glyphicon glyphicon-trash"></i>', [
             'type' => 'button',
             'class' => 'btn btn-danger btn-xs',
@@ -27,23 +27,10 @@
             'title' => ucfirst(trans('common.delete'))
         ]) !!}
     @endshield
-    @shield('qc.anexos.list')
-        @php
-        # Check if exists folder and files in folder
-        $dir = storage_path('app/public/qc/' . $id);
-        if (file_exists($dir) && $handle = opendir($dir)) {
-            while (($file = readdir($handle)) !== false){
-                if (!in_array($file, array('.', '..')) && !is_dir($dir.$file)) {
-                    @endphp
-                    <a href="{{ route('qc.anexos', $id) }}" title="{{ ucfirst( trans('common.attachments') )}}" class='btn btn-warning btn-xs'>
-                        <i class="glyphicon glyphicon-paperclip"></i>
-                    </a>
-                    @php
-                    break;
-                }
-            }
-        }
-        @endphp
+    @shield('qc-aprovar.show')
+    <a href="{{ route('qc.aprovar.edit', $id) }}" title="{{ ucfirst( trans('common.approve') . '/' . trans('common.repprove'))}}" class='btn btn-info btn-xs' style="margin: 0 5px;">
+        <i class="glyphicon glyphicon-check"></i>
+    </a>
     @endshield
 </div>
 {!! Form::close() !!}

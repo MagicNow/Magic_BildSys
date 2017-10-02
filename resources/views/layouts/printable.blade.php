@@ -294,17 +294,8 @@
         </style>
     </head>
     <body>
-        <div>
-            <div class="text-left">
-
-                <span class="logo-lg">
-                    <img src="{{ asset('img/logo_bild.png') }}" style="max-height: 50px;">
-                </span>
-            </div>
-
-
+        <div class="content" style="padding-left: 30px; padding-right: 30px;">
             @yield('content')
-
         </div>
     </body>
 </html>

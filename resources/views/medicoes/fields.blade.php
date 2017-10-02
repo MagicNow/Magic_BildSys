@@ -16,6 +16,7 @@
     {!! Form::label('obs', 'Observação da Medição:') !!}
     {!! Form::textarea('obs', null, ['class' => 'form-control', 'id'=>'obs', 'rows'=>4]) !!}
 </div>
+
 <div class="col-md-4 col-md-offset-4">
     <button type="button" class="btn btn-lg btn-primary btn-flat btn-block" onclick="addImagem();" title="Adicionar imagem">
         <i class="fa fa-plus" aria-hidden="true"></i>

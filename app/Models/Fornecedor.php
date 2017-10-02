@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use phpDocumentor\Reflection\Types\Array_;
 
 /**
  * Class Fornecedor
@@ -221,5 +222,29 @@ class Fornecedor extends Model
     public function servicos()
     {
         return $this->belongsToMany(FornecedorServico::class, 'fornecedor_servicos', 'codigo_fornecedor_id', 'codigo_servico_id');
+    }
+
+    public function fornecedores_associados(){
+        return $this->belongsToMany(Fornecedor::class,'fornecedores_associados','fornecedor_id','fornecedor_associado_id')->withTimestamps();
+    }
+    public function fornecedores_associados_com_este(){
+        return $this->belongsToMany(Fornecedor::class,'fornecedores_associados','fornecedor_associado_id','fornecedor_id')->withTimestamps();
+    }
+
+    /**
+     * Busca todos os relacionamentos com fornecedores associados
+     * @return Array_
+     */
+    public function fornecedores_associados_ids(){
+        $fornecedores_associados_ids = $this->fornecedores_associados()
+            ->select('fornecedores_associados.fornecedor_associado_id')
+            ->pluck('fornecedor_associado_id', 'fornecedor_associado_id')
+            ->toArray();
+        $fornecedores_associados_ids2 = $this->fornecedores_associados_com_este()
+            ->select('fornecedores_associados.fornecedor_id')
+            ->pluck('fornecedor_id', 'fornecedor_id')
+            ->toArray();
+        $fornecedores_associados_ids += $fornecedores_associados_ids2;
+        return $fornecedores_associados_ids;
     }
 }

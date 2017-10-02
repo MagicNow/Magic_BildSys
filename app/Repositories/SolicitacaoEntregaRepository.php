@@ -12,6 +12,7 @@ use App\Models\SolicitacaoEntregaItem;
 use InfyOm\Generator\Common\BaseRepository;
 use App\Models\ContratoItem;
 use Illuminate\Support\Arr;
+use PDF;
 
 class SolicitacaoEntregaRepository extends BaseRepository
 {
@@ -178,5 +179,32 @@ class SolicitacaoEntregaRepository extends BaseRepository
         ]);
 
         return $solicitacao;
+    }
+
+    public static function geraImpressaoSolicitacaoEntrega($id)
+    {
+        $entrega = SolicitacaoEntrega::with('itens')->find($id);
+        if (!$entrega) {
+            return null;
+        }
+
+        if (is_file(base_path().'/storage/app/public/solicitacao-entrega/solicitacao_entrega_'.$entrega->id.'.pdf')) {
+            unlink(base_path().'/storage/app/public/solicitacao-entrega/solicitacao_entrega_'.$entrega->id.'.pdf');
+        }
+
+        PDF::loadView('solicitacao_entrega.pdf',compact('entrega', 'itens'))
+            ->setPaper('a4')->setOrientation('landscape')
+            ->setOption('margin-top', 1)
+            ->setOption('margin-bottom', 1)
+            ->setOption('margin-left', 1)
+            ->setOption('margin-right', 1)
+//            ->setOption('disable-smart-shrinking',true)
+//            ->setOption('dpi',36)
+//            ->setOption('viewport-size','1280x1024')
+            ->save(base_path().'/storage/app/public/solicitacao-entrega/solicitacao_entrega_'.$entrega->id.'.pdf');
+
+        return [
+            'arquivo'=>'solicitacao-entrega/solicitacao_entrega_'.$entrega->id.'.pdf'
+        ];
     }
 }

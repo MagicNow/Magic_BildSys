@@ -15,16 +15,21 @@
             @endif
             @include('contratos.aprovacao')
 
-                @if($contrato->contrato_status_id == 5 && $contrato->hasServico() )
-                    <a href="{{ Storage::url($contrato->arquivo) }}" download="minuta_{{ $contrato->id }}.pdf" target="_blank"
-                       class="btn btn-lg btn-flat btn-info pull-right" title="Baixar Minuta Assinada assinada pelo fornecedor">
-                        <i class="fa fa-download"></i>
-                    </a>
-                @endif
-                <a href="{{ route('contratos.imprimirContratoCompleto', $contrato->id) }}" download="contrato_{{ $contrato->id }}.pdf" target="_blank"
-                   class="btn btn-lg btn-flat btn-success pull-right" title="Baixar Contrato completo">
-                    <i class="fa fa-print"></i>
+            @if($contrato->contrato_status_id == 5 && $contrato->hasServico() )
+                <a href="{{ Storage::url($contrato->arquivo) }}" download="minuta_{{ $contrato->id }}.pdf" target="_blank"
+                   class="btn btn-lg btn-flat btn-info pull-right" title="Baixar minuta assinada assinada pelo fornecedor">
+                    <i class="fa fa-download"></i>
                 </a>
+            @endif
+            <a href="{{ route('contratos.imprimirEspelhoContrato', $contrato->id) }}" download="espelho_contrato_{{ $contrato->id }}.pdf" target="_blank"
+               class="btn btn-lg btn-flat btn-warning pull-right" title="Baixar espelho do contrato">
+                <i class="fa fa-files-o"></i>
+            </a>
+            <a href="{{ route('contratos.imprimirContratoCompleto', $contrato->id) }}" download="contrato_{{ $contrato->id }}.pdf" target="_blank"
+               class="btn btn-lg btn-flat btn-success pull-right" title="Baixar contrato completo">
+                <i class="fa fa-print"></i>
+            </a>
+
             @if($contrato->pode_solicitar_entrega)
                 <button class="btn btn-flat btn-primary btn-lg"
                     data-toggle="modal"
@@ -32,30 +37,38 @@
                     Solicitações de Entrega
                 </button>
             @endif
+
+            @if($contrato->isStatus(\App\Models\ContratoStatus::ATIVO))
+                    <a class="btn btn-flat bg-olive btn-lg"
+                       href="{!! route('pagamentos.create').'?contrato_id='.$contrato->id !!}">
+                        <i class="fa fa-usd"></i> Incluir Pagamento
+                    </a>
+            @endif
         </h1>
     </section>
 	<div class="content">
-
-		@if($contrato->contrato_status_id == 4 || (is_null($contrato->arquivo) && $contrato->contrato_status_id == 5)  )
-            {!! Form::open(['url'=>'/contratos/'.$contrato->id.'/envia-contrato', 'files'=> true ]) !!}
-            <div class="box box-warning">
-                <div class="box-header with-border">
-                    Enviar contrato assinado
-                </div>
-                <div class="box-body">
-                    <div class="col-md-10">
-                        {!! Form::file('arquivo',['class'=>'form-control']) !!}
+		@if($contrato->hasServico())
+            @if($contrato->contrato_status_id == 4 || (is_null($contrato->arquivo) && $contrato->contrato_status_id == 5))
+                {!! Form::open(['url'=>'/contratos/'.$contrato->id.'/envia-contrato', 'files'=> true ]) !!}
+                <div class="box box-warning">
+                    <div class="box-header with-border">
+                        Enviar contrato assinado
                     </div>
-                    <div class="col-md-2">
-                        <button type="submit" class="btn btn-flat btn-success btn-block">
-                            <i class="fa fa-upload"></i>
-                            Enviar
-                            {{ $contrato->contrato_status_id == 4? ' e Liberar':'' }}
-                        </button>
+                    <div class="box-body">
+                        <div class="col-md-10">
+                            {!! Form::file('arquivo',['class'=>'form-control']) !!}
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-flat btn-success btn-block">
+                                <i class="fa fa-upload"></i>
+                                Enviar
+                                {{ $contrato->contrato_status_id == 4? ' e Liberar':'' }}
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
-            {!! Form::close() !!}
+                {!! Form::close() !!}
+            @endif
 		@endif
         <section>
             <h6>Dados Informativos</h6>
@@ -121,7 +134,8 @@
         @if($isEmAprovacao)
             @include('contratos.table-aprovacao')
         @else
-            @include('contratos.table')
+            @php $espelho = null; @endphp
+            @include('contratos.table', compact('espelho'))
             @if($pendencias->isNotEmpty())
                 @include('contratos.box-pendencias')
             @endif

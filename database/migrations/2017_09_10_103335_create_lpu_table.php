@@ -13,6 +13,7 @@ class CreateLpuTable extends Migration
      */
     public function up()
     {
+        Schema::dropIfExists('lpu');
         Schema::create('lpu', function (Blueprint $table) {			
 			
             $table->increments('id');

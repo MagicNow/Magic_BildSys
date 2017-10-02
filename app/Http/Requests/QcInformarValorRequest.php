@@ -28,6 +28,7 @@ class QcInformarValorRequest extends FormRequest
             'fornecedor_id'          => 'required|numeric',
             'equalizacoes.*.checked' => 'required_unless:reject,1|numeric',
             'itens.*.valor_unitario' => 'money',
+            'pagamento_condicao_id' => 'required',
         ];
     }
 
@@ -38,6 +39,7 @@ class QcInformarValorRequest extends FormRequest
             'equalizacoes.*.checked.required_unless' => 'Cheque todos os itens de equalização tecnica',
             'itens.*.valor_unitario.required_unless' => 'Adicione o valor de todos os itens',
             'itens.*.valor_unitario.money'           => 'Adiciones valores válidos nos itens',
+            'pagamento_condicao_id.required'         => 'Selecione uma condição de pagamento',
         ];
     }
 }
