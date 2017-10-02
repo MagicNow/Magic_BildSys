@@ -483,22 +483,31 @@
 
             $.ajax({
 
-                url: '/requisicao/store/',
-                dataType: 'html',
+                url: '/requisicao',
+                dataType: 'JSON',
                 cache: false,
                 type: 'POST',
-                processData: false,
-                data: data
+                data: data,
+
+                beforeSend: function() {
+                    startLoading();
+                }
 
             }).done(function (response) {
 
+                stopLoading();
+
+                if (response.success) {
+
+                    window.location = '/requisicao';
+                }
 
             })
 
         })
 
 
-        function criaJsonComodo() {
+        function criaJsonComodos() {
 
             var jsonString = [];
 
@@ -515,7 +524,7 @@
                             {
                                 "estoque_id": insumo.data('estoque'),
                                 "apartamento": $(comodo[i]).data('apartamento'),
-                                "comodo": $(comodo[i]).data('banheiro'),
+                                "comodo": $(comodo[i]).data('comodo'),
                                 "qtde": $(comodo[i]).val()
                             }
                         );

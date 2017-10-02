@@ -63,13 +63,19 @@ class RequisicaoController extends AppBaseController
     {
         $input = $request->all();
 
-        dd($input);
-
         $requisicao = $this->requisicaoRepository->create($input);
 
-        Flash::success('Requisicao '.trans('common.saved').' '.trans('common.successfully').'.');
+        if ($requisicao) {
 
-        return redirect(route('requisicao.index'));
+            Flash::success('Requisicao ' . trans('common.saved') . ' ' . trans('common.successfully') . '.');
+
+            return response()->json(['success' => true]);
+
+        } else {
+
+            return response()->json(['success' => false]);
+        }
+
     }
 
     /**
@@ -86,7 +92,7 @@ class RequisicaoController extends AppBaseController
         if (empty($requisicao)) {
             Flash::error('Requisicao '.trans('common.not-found'));
 
-            return redirect(route('requisicaos.index'));
+            return redirect(route('requisicao.index'));
         }
 
         return view('requisicao.show')->with('requisicao', $requisicao);

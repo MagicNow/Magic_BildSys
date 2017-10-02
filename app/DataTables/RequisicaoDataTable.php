@@ -17,6 +17,12 @@ class RequisicaoDataTable extends DataTable
         return $this->datatables
             ->eloquent($this->query())
             ->addColumn('action', 'requisicao.datatables_actions')
+            ->editColumn('created_at', function($obj){
+                return $obj->created_at ? with(new\Carbon\Carbon($obj->created_at))->format('d/m/Y H:i') : '';
+            })
+            ->filterColumn('created_at', function ($query, $keyword) {
+                $query->whereRaw("DATE_FORMAT(requisicao.created_at,'%d/%m/%Y') like ?", ["%$keyword%"]);
+            })
             ->make(true);
     }
 
@@ -27,7 +33,14 @@ class RequisicaoDataTable extends DataTable
      */
     public function query()
     {
-        $requisicao = Requisicao::query();
+        $requisicao = Requisicao::query()
+            ->select([
+                'requisicao.*',
+                'users.name as usuario',
+                'obras.nome as obra'
+                ])
+            ->join('obras','obras.id','requisicao.obra_id')
+            ->join('users','users.id','requisicao.user_id');
 
         return $this->applyScopes($requisicao);
     }
@@ -41,7 +54,6 @@ class RequisicaoDataTable extends DataTable
     {
         return $this->builder()
             ->columns($this->getColumns())
-            ->addAction(['width' => '10%'])
             ->ajax('')
             ->parameters([
                 'initComplete' => 'function () {
@@ -70,13 +82,13 @@ class RequisicaoDataTable extends DataTable
                     'reset',
                     'reload',
                     [
-                         'extend'  => 'collection',
-                         'text'    => '<i class="fa fa-download"></i> Export',
-                         'buttons' => [
-                             'csv',
-                             'excel',
-                             'pdf',
-                         ],
+                        'extend'  => 'collection',
+                        'text'    => '<i class="fa fa-download"></i> Export',
+                        'buttons' => [
+                            'csv',
+                            'excel',
+                            'pdf',
+                        ],
                     ],
                     'colvis'
                 ]
@@ -91,9 +103,12 @@ class RequisicaoDataTable extends DataTable
     private function getColumns()
     {
         return [
-            'obra_id' => ['name' => 'obra_id', 'data' => 'obra_id'],
-            'user_id' => ['name' => 'user_id', 'data' => 'user_id'],
-            'status' => ['name' => 'status', 'data' => 'status']
+            'Id Requisição' => ['name' => 'id', 'data' => 'id'],
+            'data' => ['name' => 'created_at', 'data' => 'created_at'],
+            'obra' => ['name' => 'obra', 'data' => 'obra'],
+            'solicitante' => ['name' => 'usuário', 'data' => 'usuario'],
+            'status' => ['name' => 'status', 'data' => 'status'],
+            'action' => ['name'=>'Ações', 'title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'15%', 'class' => 'all']
         ];
     }
 
