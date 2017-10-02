@@ -20,10 +20,29 @@ class QcSuprimentosDataTable extends DataTable
         return $this->datatables
             ->eloquent($this->query())			
             ->editColumn('created_at', function ($qc) {
-                return $qc->created_at
-                    ? $qc->created_at->format('d/m/Y')
-                    : '';
+                return $qc->created_at ? $qc->created_at->format('d/m/Y') : '';
             })
+            ->editColumn('data_fechamento', function ($qc) {
+                return $qc->data_fechamento ? $qc->data_fechamento->format('d/m/Y') : '';
+            })
+            ->editColumn('saving', function ($qc) {
+                return $qc->valor_fechamento ? $qc->valor_fechamento - $qc->valor_pre_orcamento : '';
+            })
+            ->editColumn('valor_orcamento_inicial', function ($qc) {
+                return $qc->valor_orcamento_inicial ? 'R$' . money_format('%i', $qc->valor_orcamento_inicial) : '';
+            })
+            ->editColumn('valor_fechamento', function ($qc) {
+                return $qc->valor_fechamento ? 'R$' . money_format('%i', $qc->valor_fechamento) : '';
+            })
+            ->editColumn('valor_pre_orcamento', function ($qc) {
+                return $qc->valor_pre_orcamento ? 'R$' . money_format('%i', $qc->valor_pre_orcamento) : '';
+            })
+
+            // ->editColumn('acompanhamento', function ($qc) {
+            //     return $qc->acompanhamento
+            //         ? $qc->acompanhamento->format('d/m/Y')
+            //         : '';
+            // })
             ->editColumn('action', 'qc_suprimentos.datatables_actions')
 			->make(true);
     }
@@ -40,15 +59,26 @@ class QcSuprimentosDataTable extends DataTable
             DB::raw('obras.nome AS obra_nome'),
             DB::raw('carteiras.nome AS carteira_nome'),
             DB::raw('tipologias.nome AS tipologia_nome'),
-            'qc.created_at',
-			'descricao',
-			'valor_pre_orcamento',
-            'valor_orcamento_inicial',
+            DB::raw('"" AS etapa'),
             'status',
+            DB::raw('"" AS sla'),
+            'descricao',
+            DB::raw('users.name AS comprador_nome'),
+            'data_fechamento',
+            DB::raw('"" AS acompanhamento'),
+            'valor_fechamento',
+            'valor_pre_orcamento',
+            'valor_orcamento_inicial',
+            'numero_contrato',
+            DB::raw('"" AS saving'),
+            DB::raw('fornecedores.nome AS fornecedor_nome'),
+            
         ])
         ->join('carteiras', 'carteiras.id', 'carteira_id')
         ->join('obras', 'obras.id', 'obra_id')
         ->join('tipologias', 'tipologias.id', 'tipologia_id')
+        ->leftJoin('users', 'users.id', 'comprador_id')
+        ->leftJoin('fornecedores', 'fornecedores.id', 'fornecedor_id')
         ->whereIn('status', [ 'Aprovado', 'Reprovado', 'Em negociação' ])
         ->groupBy('qc.id');
 
@@ -112,7 +142,7 @@ class QcSuprimentosDataTable extends DataTable
                     });
                 }' ,
                 'dom' => 'Blfrtip',
-                'scrollX' => false,
+                'scrollX' => true,
                 'language'=> [
                     "url"=> "/vendor/datatables/Portuguese-Brasil.json"
                 ],
@@ -151,11 +181,18 @@ class QcSuprimentosDataTable extends DataTable
             'obra' => ['name' => 'obra_id', 'data' => 'obra_nome', 'title' => 'Obra'],
             'carteira_id' => ['name' => 'carteira_id', 'data' => 'carteira_nome', 'title' => 'Carteira'],
             'tipologia_id' => ['name' => 'tipologia_id', 'data' => 'tipologia_nome', 'title' => 'Tipologia'],
+            'etapa' => ['name' => 'etapa', 'data' => 'etapa', 'title' => 'Etapa'],
             'status' => ['name' => 'status', 'data' => 'status', 'title' => 'Status'],
             'descricao' => ['name' => 'descricao', 'data' => 'descricao', 'title' => 'Descrição do serviço'],
+            'comprador_id' => ['name' => 'comprador_id', 'data' => 'comprador_nome', 'title' => 'Responsável pela negociação (comprador)'],
+            'data_fechamento' => ['name' => 'data_fechamento', 'data' => 'data_fechamento', 'title' => 'Date de Fechamento'],
+            'numero_contrato' => ['name' => 'numero_contrato', 'data' => 'numero_contrato', 'title' => 'Número do Contrato'],
+            'acompanhamento' => ['name' => 'acompanhamento', 'data' => 'acompanhamento', 'title' => 'Acompanhamento'],
+            'valor_fechamento' => ['name' => 'valor_fechamento', 'data' => 'valor_fechamento', 'title' => 'Valor Fechamento'],
             'valor_pre_orcamento' => ['name' => 'valor_pre_orcamento', 'data' => 'valor_pre_orcamento', 'title' => 'Valor Pré-Orçamento'],
             'valor_orcamento_inicial' => ['name' => 'valor_orcamento_inicial', 'data' => 'valor_orcamento_inicial', 'title' => 'Valor Orçamento Inicial'],
-			'created_at' => ['name' => 'created_at', 'data' => 'created_at', 'title' => 'Data'],
+            'saving' => ['name' => 'saving', 'data' => 'saving', 'title' => 'Saving'],
+            'fornecedor_id' => ['name' => 'fornecedor_id', 'data' => 'fornecedor_nome', 'title' => 'Fornecedor'],
 			'action' => ['name' => 'Ações', 'title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'15%', 'class' => 'all']
 		];
     }
