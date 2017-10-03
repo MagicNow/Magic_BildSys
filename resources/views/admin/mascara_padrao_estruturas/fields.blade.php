@@ -1,6 +1,6 @@
 <!-- Mascara Padrao Id Field -->
 <div class="form-group col-sm-12">
-    {!! Form::label('mascara_padrao_id', 'Mascara Padrao Id:') !!}
+    {!! Form::label('mascara_padrao_id', 'Máscara Padrão:') !!}
     {!! Form::select('mascara_padrao_id',[''=>'Escolha...']+$mascaras, null, ['class' => 'form-control select2', 'required'=>true]) !!}
 </div>
 
@@ -22,8 +22,10 @@
 
 
 <!-- Submit Field -->
-<div class="form-group col-sm-12">
+<div class="form-group col-sm-12 btn-toolbar">
     {!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save') ), ['class' => 'btn btn-success pull-right', 'type'=>'submit']) !!}
+    {!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save-continue') ), ['name' => 'save', 'value' => 'save-continue', 'class' => 'btn btn-success pull-right', 'type' => 'submit', 'onclick' => '']) !!}
+
     <a href="{!! route('admin.mascaraPadraoEstruturas.index') !!}" class="btn btn-default"><i class="fa fa-times"></i>  {{ ucfirst( trans('common.cancel') )}}</a>
 </div>
 
@@ -58,8 +60,8 @@
                 buttonAdd = '<button type="button" class="btn btn-primary" onclick="addSubItem(\'subgrupo'+nivel+'_'+blocos+'\', '+nivel+',\''+nome+'['+blocos+'][itens]'+'\')">'+labelBotao+'</button>';
             }
             if(nivel == 4){
-                labelBotao = 'Add Insumos';
-                buttonAdd = '<button type="button" class="btn btn-warning" onclick="addInsumo(\'subgrupo'+nivel+'_'+blocos+'\', '+nivel+',\''+nome+'['+blocos+'][insumos]'+'\')">'+labelBotao+'</button>';
+                labelBotao = 'Insumos';
+                buttonAdd = '<button type="button" class="btn btn-warning" onclick="RedirectAddInsumo(\'subgrupo'+nivel+'_'+blocos+'\', '+nivel+',\''+nome+'['+blocos+']'+'\')">'+labelBotao+'</button>';
             }
 
             console.log(nivel);
@@ -79,12 +81,9 @@
                         '<div class="col-md-12" style="padding: 5px;">' +
                         '<div class="col-md-8">' +
                         '<li style="list-style-type: none" bloco="'+blocos+'" id="subgrupo'+nivel+'_'+blocos+'">' +
-                        '<div class="input-group">' +
-                        '<span class="input-group-addon"></span>' +
                         '<select class="form-control select2 estrutura_'+nivel+'" onchange="percorreBloco()" name="'+nome+'['+blocos+'][id]" id="subgrupo'+nivel+'_'+blocos+'_select">' +
                         options +
                         '</select>' +
-                        '</div>' +
                         '</li>' +
                         '</div>' +
                         '<div class="col-md-1">' +
@@ -104,41 +103,49 @@
             }
         }
 
-        // Função que vai relacionar a estrutura com o insumo.
-        function addInsumo(id_atual, nivel, nome){
-            insumos++;
-            console.log(id_atual, nivel, nome);
-            $('.box.box-primary').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
-            $.ajax('{{route('admin.mascaraPadraoEstruturas.insumos')}}')
-            .done(function(retorno){
-                options = '<option value="">Selecione</option>';
-                $.each(retorno,function(index, value){
-                    options += '<option value="'+index+'">'+value+'</option>';
-                });
-
-                selectHTML = '' +
-                    '<div class="col-md-12" style="padding: 5px;">' +
-                    '<div class="col-md-8">' +
-                    '<li style="list-style-type: none" id="insumo'+nivel+'_'+insumos+'">' +
-                    '<div class="input-group">' +
-                    '<span class="input-group-addon"></span>' +
-                    '<select class="form-control select2" name="'+nome+'['+insumos+']" id="insumo'+nivel+'_'+insumos+'_select">' +
-                    options +
-                    '</select>' +
-                    '</div>' +
-                    '</li>' +
-                    '</div>' +
-                    '<ul id="subgrupo'+nivel+'_'+insumos+'_ul">'+
-                    '</ul>'+
-                    '</div>';
-
-                $('#'+id_atual+'_ul').append(selectHTML);
-                $('.overlay').remove();
-            })
-            .fail(function (retorno) {
-                $('.overlay').remove();
-            });
+        function RedirectAddInsumo(nome){
+            $('form').append([
+                '<input type="hidden" name="'+ nome +'['+blocos+'][id]' +'">',
+                '<input type="hidden" name="save" value="save-continue">',
+                '<input type="hidden" name="btn_insumo" value="1">'
+            ]).submit();
         }
+
+        // Função que vai relacionar a estrutura com o insumo.
+        {{--function addInsumo(id_atual, nivel, nome){--}}
+            {{--insumos++;--}}
+            {{--console.log(id_atual, nivel, nome);--}}
+            {{--$('.box.box-primary').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');--}}
+            {{--$.ajax('{{route('admin.mascaraPadraoEstruturas.insumos')}}')--}}
+            {{--.done(function(retorno){--}}
+                {{--options = '<option value="">Selecione</option>';--}}
+                {{--$.each(retorno,function(index, value){--}}
+                    {{--options += '<option value="'+index+'">'+value+'</option>';--}}
+                {{--});--}}
+
+                {{--selectHTML = '' +--}}
+                    {{--'<div class="col-md-12" style="padding: 5px;">' +--}}
+                    {{--'<div class="col-md-8">' +--}}
+                    {{--'<li style="list-style-type: none" id="insumo'+nivel+'_'+insumos+'">' +--}}
+                    {{--'<div class="input-group">' +--}}
+                    {{--'<span class="input-group-addon"></span>' +--}}
+                    {{--'<select class="form-control select2" name="'+nome+'['+insumos+']" id="insumo'+nivel+'_'+insumos+'_select">' +--}}
+                    {{--options +--}}
+                    {{--'</select>' +--}}
+                    {{--'</div>' +--}}
+                    {{--'</li>' +--}}
+                    {{--'</div>' +--}}
+                    {{--'<ul id="subgrupo'+nivel+'_'+blocos+'_ul">'+--}}
+                    {{--'</ul>'+--}}
+                    {{--'</div>';--}}
+
+                {{--$('#'+id_atual+'_ul').append(selectHTML);--}}
+                {{--$('.overlay').remove();--}}
+            {{--})--}}
+            {{--.fail(function (retorno) {--}}
+                {{--$('.overlay').remove();--}}
+            {{--});--}}
+        {{--}--}}
 
         function percorreBloco() {
             bloco_aberto = false;

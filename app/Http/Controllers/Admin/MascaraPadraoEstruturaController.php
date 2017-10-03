@@ -3,16 +3,19 @@
 namespace App\Http\Controllers\Admin;
 
 use App\DataTables\Admin\MascaraPadraoEstruturaDataTable;
+use App\DataTables\Admin\MascaraPadraoRelacionarInsumoDataTable;
 use App\Http\Requests\Admin;
 use App\Http\Requests\Admin\CreateMascaraPadraoEstruturaRequest;
 use App\Http\Requests\Admin\UpdateMascaraPadraoEstruturaRequest;
 use App\Models\Grupo;
 use App\Models\Insumo;
 use App\Models\MascaraPadrao;
+use App\Models\MascaraPadraoEstrutura;
 use App\Models\Servico;
 use App\Repositories\Admin\MascaraPadraoEstruturaRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Response;
 
@@ -62,12 +65,71 @@ class MascaraPadraoEstruturaController extends AppBaseController
     public function store(CreateMascaraPadraoEstruturaRequest $request)
     {
         $input = $request->all();
-//        dd($input);
         $mascaraPadraoEstrutura = $this->mascaraPadraoEstruturaRepository->create($input);
 
-        Flash::success('Mascara Padrao Estrutura '.trans('common.saved').' '.trans('common.successfully').'.');
+        Flash::success('Máscara Padrão Estrutura '.trans('common.saved').' '.trans('common.successfully').'.');
 
-        return redirect(route('admin.mascaraPadraoEstruturas.index'));
+        if ($request->get('save') != 'save-continue') {
+            return redirect(route('admin.mascaraPadraoEstruturas.index'));
+        } else {
+            # A variável $request->btn_insumo significa que o post veio do botão add insumos na área de criar a mascara padrão
+            if(!$request->btn_insumo) {
+                # Retorna o id da tabela mascara_padrao
+                return redirect(route('admin.mascaraPadraoEstruturas.mascara-padrao-insumos', $request->mascara_padrao_id));
+            }else{
+                # se cair aqui é porque o post veio do botão salvar e continuar
+                # Retorna o id na tabela mascara_padrao_estrutura
+                return redirect(route('admin.mascaraPadraoEstruturas.mascara-padrao-estrutura-insumos', $mascaraPadraoEstrutura->id));
+            }
+        }
+    }
+
+    /**
+     * Se o submit vier do botão INSUMOS que fica na estrutura de máscara padrão, então é executado o método abaixo.
+     * @param MascaraPadraoRelacionarInsumoDataTable $mascaraPadraoRelacionarInsumoDataTable
+     * @param $mascara_padrao_id
+     * @return \Illuminate\Contracts\View\View|\Illuminate\Http\JsonResponse|\Illuminate\View\View
+     */
+    public function mascaraPadraoInsumos(MascaraPadraoRelacionarInsumoDataTable $mascaraPadraoRelacionarInsumoDataTable, $mascara_padrao_id)
+    {
+        $mascaraPadrao = MascaraPadrao::find($mascara_padrao_id);
+        $selectMascaraPadraoEstruturas = MascaraPadraoEstrutura::select([
+            'mascara_padrao_estruturas.id',
+            \DB::raw("CONCAT(mascara_padrao_estruturas.codigo, ' - ', servicos.nome) as estrutura")
+        ])
+            ->join('servicos', 'servicos.id', 'mascara_padrao_estruturas.servico_id')
+            ->where('mascara_padrao_id', $mascaraPadrao->id)
+            ->pluck('estrutura', 'id')
+            ->toArray();
+        return $mascaraPadraoRelacionarInsumoDataTable->render('admin.mascara_padrao_estruturas.insumos',compact('mascaraPadrao','selectMascaraPadraoEstruturas'));
+    }
+
+    /**
+     * Se o submit vier do botão salvar e continuar que fica na estrutura de máscara padrão, então é executado o método abaixo
+     * @param MascaraPadraoRelacionarInsumoDataTable $mascaraPadraoRelacionarInsumoDataTable
+     * @param $mascara_padrao_estrutura_id
+     * @return \Illuminate\Contracts\View\View|\Illuminate\Http\JsonResponse|\Illuminate\View\View
+     */
+    public function MascaraPadraoEstruturaInsumos(MascaraPadraoRelacionarInsumoDataTable $mascaraPadraoRelacionarInsumoDataTable, $mascara_padrao_estrutura_id)
+    {
+        $mascaraPadraoEstrutura = MascaraPadraoEstrutura::select([
+            'mascara_padrao_estruturas.id',
+            'mascara_padrao.nome',
+            'mascara_padrao.id as mascara_padrao_id'
+        ])
+            ->join('mascara_padrao', 'mascara_padrao.id', 'mascara_padrao_estruturas.mascara_padrao_id')
+            ->where('mascara_padrao_estruturas.id', $mascara_padrao_estrutura_id)
+            ->first();
+
+        $selectMascaraPadraoEstruturas = MascaraPadraoEstrutura::select([
+            'mascara_padrao_estruturas.id',
+            \DB::raw("CONCAT(mascara_padrao_estruturas.codigo, ' - ', servicos.nome) as estrutura")
+        ])
+            ->join('servicos', 'servicos.id', 'mascara_padrao_estruturas.servico_id')
+            ->where('mascara_padrao_id', $mascaraPadraoEstrutura->mascara_padrao_id)
+            ->pluck('estrutura', 'id')
+            ->toArray();
+        return $mascaraPadraoRelacionarInsumoDataTable->render('admin.mascara_padrao_estruturas.insumos',compact('mascaraPadraoEstrutura','selectMascaraPadraoEstruturas'));
     }
 
     /**
@@ -99,15 +161,15 @@ class MascaraPadraoEstruturaController extends AppBaseController
      */
     public function edit($id)
     {
-        $mascaraPadraoEstrutura = $this->mascaraPadraoEstruturaRepository->findWithoutFail($id);
+        $mascaraPadrao = MascaraPadrao::find($id);
 
-        if (empty($mascaraPadraoEstrutura)) {
-            Flash::error('Mascara Padrao Estrutura '.trans('common.not-found'));
+        if (empty($mascaraPadrao)) {
+            Flash::error('Mascara Padrao '.trans('common.not-found'));
 
             return redirect(route('admin.mascaraPadraoEstruturas.index'));
         }
 
-        return view('admin.mascara_padrao_estruturas.edit')->with('mascaraPadraoEstrutura', $mascaraPadraoEstrutura);
+        return view('admin.mascara_padrao_estruturas.edit', compact('mascaraPadrao'));
     }
 
     /**
@@ -188,17 +250,17 @@ class MascaraPadraoEstruturaController extends AppBaseController
 
         return $servicos;
     }
-
-    public function getInsumos()
-    {
-        $insumos = Insumo::select([
-            'insumos.id',
-            'insumos.nome'
-        ])
-            ->orderBy('insumos.nome', 'ASC');
-
-        $insumos = $insumos->pluck('nome', 'id')->toArray();
-
-        return $insumos;
-    }
+//
+//    public function getInsumos()
+//    {
+//        $insumos = Insumo::select([
+//            'insumos.id',
+//            'insumos.nome'
+//        ])
+//            ->orderBy('insumos.nome', 'ASC');
+//
+//        $insumos = $insumos->pluck('nome', 'id')->toArray();
+//
+//        return $insumos;
+//    }
 }

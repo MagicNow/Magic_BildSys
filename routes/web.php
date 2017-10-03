@@ -216,7 +216,9 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
     $router->get('mascaraPadraoEstruturas/{mascaraPadraoEstruturas}/edit', ['as'=> 'admin.mascaraPadraoEstruturas.edit', 'uses' => 'Admin\MascaraPadraoEstruturaController@edit']);
     $router->get('mascaraPadraoEstruturas/grupos/{id}', ['as' => 'admin.mascaraPadraoEstruturas.grupos', 'uses' => 'Admin\MascaraPadraoEstruturaController@getGrupos']);
     $router->get('mascaraPadraoEstruturas/servicos/{id}', ['as' => 'admin.mascaraPadraoEstruturas.servicos', 'uses' => 'Admin\MascaraPadraoEstruturaController@getServicos']);
-    $router->get('mascaraPadraoEstruturas/relacionar/insumos', ['as' => 'admin.mascaraPadraoEstruturas.insumos', 'uses' => 'Admin\MascaraPadraoEstruturaController@getInsumos']);
+//    $router->get('mascaraPadraoEstruturas/relacionar/insumos', ['as' => 'admin.mascaraPadraoEstruturas.insumos', 'uses' => 'Admin\MascaraPadraoEstruturaController@getInsumos']);
+    $router->get('mascaraPadraoEstruturas/mascara-padrao/insumos/{id}', ['as' => 'admin.mascaraPadraoEstruturas.mascara-padrao-insumos', 'uses' => 'Admin\MascaraPadraoEstruturaController@mascaraPadraoInsumos']);
+    $router->get('mascaraPadraoEstruturas/mascara-padrao-estrutura/relaciona/insumos/{id}', ['as' => 'admin.mascaraPadraoEstruturas.mascara-padrao-estrutura-insumos', 'uses' => 'Admin\MascaraPadraoEstruturaController@MascaraPadraoEstruturaInsumos']);
 
 	# Estruturas
     $router->group(['middleware' => 'needsPermission:estruturas.list'], function () use ($router) {        
@@ -323,8 +325,6 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
         $router->get('mascara_padrao_insumos/delete-bloco/view/delete/{id}', 'Admin\MascaraPadraoInsumoController@buscaGrupoInsumo');
 		$router->get('mascara_padrao_insumos/sem-insumo/view', ['as' => 'admin.mascara_padrao_insumos.seminsumoview', 'uses' => 'Admin\MascaraPadraoInsumoController@semInsumoView'])
             ->middleware("needsPermission:mascara_padrao_insumos.semInsumoView");
-		//$router->get('mascara_padrao_insumos/grupos/{id}', 'MascaraPadraoInsumoController@getGrupos');
-        //$router->get('mascara_padrao_insumos/servicos/{id}', 'MascaraPadraoInsumoController@getServicos');
     });
 	
 	# Tarefa Padrão / Máscara Padrão

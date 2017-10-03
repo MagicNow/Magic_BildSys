@@ -7,6 +7,7 @@ use App\DataTables\Admin\SemMascaraPadraoInsumoDataTable;
 use App\Http\Requests\Admin;
 use App\Http\Requests\Admin\CreateMascaraPadraoInsumoRequest;
 use App\Http\Requests\Admin\UpdateMascaraPadraoInsumoRequest;
+use App\Models\MascaraPadraoEstrutura;
 use App\Models\MascaraPadraoInsumo;
 use App\Models\Grupo;
 use App\Models\Servico;
@@ -78,34 +79,33 @@ class MascaraPadraoInsumoController extends AppBaseController
      */
     public function store(CreateMascaraPadraoInsumoRequest $request)
     {
-        if (isset($request->insumo_id)) {
-            foreach ($request->insumo_id as $insumo_id) {
-								
-				$insumo = Insumo::where('id', $request->insumo_id)->first();
-				$codigo_estruturado = "01.".$request->subgrupo1_id.".".$request->subgrupo2_id.".".$request->subgrupo3_id.".".$request->servico_id.".".$insumo->codigo;
-				
-                MascaraPadraoInsumo::firstOrCreate([
-                    'mascara_padrao_id' => $request->mascara_padrao_id,
-					'codigo_estruturado' => $codigo_estruturado,					
-                    'insumo_id' => $insumo_id,
-					'grupo_id' => 600,					
-					'subgrupo1_id' => 600,
-					'subgrupo2_id' => 600, 
-					'subgrupo3_id' => 600,
-					'servico_id' => 1197,					
-					'coeficiente' => $request->coeficiente
-                ]);
+        if($request->mascara_padrao_estrutura_id) {
+            $estrutura = MascaraPadraoEstrutura::find($request->mascara_padrao_estrutura_id);
+            if ($request->insumo_id) {
+                foreach ($request->insumo_id as $insumo_id) {
+                    $insumo = Insumo::where('id', $request->insumo_id)->first();
+
+                    MascaraPadraoInsumo::firstOrCreate([
+                        'mascara_padrao_estrutura_id' => $request->mascara_padrao_estrutura_id,
+                        'codigo_estruturado' => $estrutura->codigo . '.' . $insumo->codigo,
+                        'insumo_id' => $insumo_id,
+                        'coeficiente' => $request->coeficiente
+                    ]);
+                }
+            } else {
+                Flash::error('Você esqueceu de escolher os insumos!');
+                return back();
             }
-        } else {
-            Flash::error('Você esqueceu de escolher os insumos!');
-            return redirect(route('admin.mascara_padrao_insumos.index'));
+        }else{
+            Flash::error('Você esqueceu de escolher a máscara padrão!');
+            return back();
         }
 
         Flash::success(
             'Relacionamento '.trans('common.saved').' '.trans('common.successfully').'.'
         );
 
-        return redirect(route('admin.mascara_padrao_insumos.index'));
+        return redirect(route('admin.mascara_padrao.index'));
     }
 
     /**
