@@ -95,14 +95,14 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
 
     # Topologia
     $router->group(['middleware' => 'needsPermission:topologia.list'], function () use ($router) {
-        $router->get('topologia', ['as' => 'admin.topologia.index', 'uses' => 'Admin\TopologiaController@index']);
-        $router->post('topologia', ['as' => 'admin.topologia.store', 'uses' => 'Admin\TopologiaController@store']);
-        $router->get('topologia/create', ['as' => 'admin.topologia.create', 'uses' => 'Admin\TopologiaController@create']);
-        $router->put('topologia/{topologia}', ['as' => 'admin.topologia.update', 'uses' => 'Admin\TopologiaController@update']);
-        $router->patch('topologia/{topologia}', ['as' => 'admin.topologia.update', 'uses' => 'Admin\TopologiaController@update']);
-        $router->delete('topologia/{topologia}', ['as' => 'admin.topologia.destroy', 'uses' => 'Admin\TopologiaController@destroy']);
-        $router->get('topologia/{topologia}', ['as' => 'admin.topologia.show', 'uses' => 'Admin\TopologiaController@show']);
-        $router->get('topologia/{topologia}/edit', ['as' => 'admin.topologia.edit', 'uses' => 'Admin\TopologiaController@edit']);
+        $router->get('topologia', ['as' => 'admin.tipologia.index', 'uses' => 'Admin\TopologiaController@index']);
+        $router->post('topologia', ['as' => 'admin.tipologia.store', 'uses' => 'Admin\TopologiaController@store']);
+        $router->get('topologia/create', ['as' => 'admin.tipologia.create', 'uses' => 'Admin\TopologiaController@create']);
+        $router->put('topologia/{topologia}', ['as' => 'admin.tipologia.update', 'uses' => 'Admin\TopologiaController@update']);
+        $router->patch('topologia/{topologia}', ['as' => 'admin.tipologia.update', 'uses' => 'Admin\TopologiaController@update']);
+        $router->delete('topologia/{topologia}', ['as' => 'admin.tipologia.destroy', 'uses' => 'Admin\TopologiaController@destroy']);
+        $router->get('topologia/{topologia}', ['as' => 'admin.tipologia.show', 'uses' => 'Admin\TopologiaController@show']);
+        $router->get('topologia/{topologia}/edit', ['as' => 'admin.tipologia.edit', 'uses' => 'Admin\TopologiaController@edit']);
     });
 
     # Importação de Planilhas de Planejamentos
@@ -180,8 +180,10 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
     $router->group(['prefix' => 'cronogramaFisicos'], function () use ($router) {
         $router->group(['middleware' => 'needsPermission:cronogramaFisicos.list'], function () use ($router) {
 			$router->get('meses-por-obra','Admin\CronogramaFisicoController@mesesPorObra');
-			$router->get('semanal-tabelas','Admin\CronogramaFisicoController@carregarTabelas');
-			$router->get('semanal-graficos','Admin\CronogramaFisicoController@carregarGraficos');
+			$router->get('semanal-tabelas','Admin\CronogramaFisicoController@semanalCarregarTabelas');
+			$router->get('semanal-graficos','Admin\CronogramaFisicoController@semanalCarregarGraficos');
+			$router->get('mensal-tabelas','Admin\CronogramaFisicoController@mensalCarregarTabelas');
+			$router->get('mensal-graficos','Admin\CronogramaFisicoController@mensalCarregarGraficos');
 			$router->get('relSemanal', ['as' => 'admin.cronograma_fisicos.relSemanal', 'uses' => 'Admin\CronogramaFisicoController@relSemanal']);
 			$router->get('relMensal', ['as' => 'admin.cronograma_fisicos.relMensal', 'uses' => 'Admin\CronogramaFisicoController@relMensal']);
             $router->get('atividade', ['as' => 'admin.cronograma_fisicos.index', 'uses' => 'Admin\CronogramaFisicoController@index']);
