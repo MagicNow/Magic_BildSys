@@ -1261,7 +1261,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             ]
         )->middleware('needsPermission:contratos.edit');
         $router->post(
-            '/reajustar/{con trato_item_id}',
+            '/reajustar/{contrato_item_id}',
             [
                 'as' => 'contratos.reajustar',
                 'uses' => 'ContratoController@reajustar'
