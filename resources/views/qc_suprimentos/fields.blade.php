@@ -31,13 +31,13 @@
 <!-- Valor Pré Orçamento Field -->
 <div class="form-group col-sm-6">
 	{!! Form::label('valor_pre_orcamento', 'Valor Pré Orçamento:') !!}
-	{!! Form::text('valor_pre_orcamento', money_format('%i', $qc->valor_pre_orcamento), ['class' => 'form-control', 'disabled' => 'disabled']) !!}
+	{!! Form::text('valor_pre_orcamento', float_to_money($qc->valor_pre_orcamento), ['class' => 'form-control', 'disabled' => 'disabled']) !!}
 </div>
 
 <!-- Valor Orçamento Inicial Field -->
 <div class="form-group col-sm-6">
 	{!! Form::label('valor_orcamento_inicial', 'Valor Orçamento Inicial :') !!}
-	{!! Form::text('valor_orcamento_inicial', money_format('%i', $qc->valor_orcamento_inicial), ['class' => 'form-control', 'disabled' => 'disabled']) !!}
+	{!! Form::text('valor_orcamento_inicial', float_to_money($qc->valor_orcamento_inicial), ['class' => 'form-control', 'disabled' => 'disabled']) !!}
 </div>
 
 <!-- Status Field -->
@@ -49,7 +49,7 @@
 <!-- Valor Fechamento Field -->
 <div class="form-group col-sm-6">
 	{!! Form::label('valor_fechamento', 'Valor Fechamento:') !!}
-	{!! Form::text('valor_fechamento', NULL, ['class' => 'form-control currency']) !!}
+	{!! Form::text('valor_fechamento', float_to_money($qc->valor_fechamento), ['class' => 'form-control currency']) !!}
 </div>
 
 <!-- Fornecedor ID Field -->
@@ -67,13 +67,13 @@
 <!-- Comprador Field -->
 <div class="form-group col-sm-6">
 	{!! Form::label('comprador_id', 'Comprador:') !!}
-	{!! Form::select('comprador_id',[''=>'Escolha...']+$comprador, NULL, ['class' => 'form-control select2']) !!}
+	{!! Form::select('comprador_id',[''=>'Escolha...']+$comprador, $qc->carteira->users->first()->id, ['class' => 'form-control select2']) !!}
 </div>
 
 <fieldset class="col-sm-12 qc-anexos">
 	<legend>Anexos</legend>
 	<div class="row">
-		<div class="col-sm-3">
+		<div class="col-sm-4">
 			<h5 style="color:#000000">Arquivo:</h5>
 		</div>
 		<div class="col-sm-3">
@@ -81,9 +81,6 @@
 		</div>
 		<div class="col-sm-5">
 			<h5 style="color:#000000">Descrição:</h5>
-		</div>
-		<div class="col-md-1">
-			<h5>&nbsp;</h5>
 		</div>
 	</div>
 	<div class="form-group row qc-anexos-campos">

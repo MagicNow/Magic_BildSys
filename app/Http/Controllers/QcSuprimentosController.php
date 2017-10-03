@@ -78,7 +78,7 @@ class QcSuprimentosController extends AppBaseController
         $input = $request->except('file');
         $qc = $this->qcRepository->findWithoutFail($id);
 
-        $input['valor_fechamento'] = $request->valor_fechamento ? preg_replace('/[^0-9\.]/', '', $request->valor_fechamento) : NULL;
+        $input['valor_fechamento'] = $request->valor_fechamento ? money_to_float($request->valor_fechamento) : NULL;
         $input['data_fechamento'] = $request->status == 'Fechado' ? date('Y-m-d H:i:s') : NULL;
 
         if (empty($qc)) {
