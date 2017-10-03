@@ -1,15 +1,9 @@
 <div class="row">	
 	<div class="col-xs-12">               			
-<<<<<<< HEAD
-		<!--<div class="row">
-			<div class="col-md-12 margem-topo"><tile-planejamento title-color="head-grey" title="Percentual Previsto x Percentual Realizado" type="created"></tile-planejamento></div>
-		</div>-->
-=======
 		
 		<div class="row">
 			<div class="col-md-12 margem-topo"><tile title-color="head-grey" title="Percentual Previsto x Percentual Realizado" type="created"></tile></div>
 		</div>
->>>>>>> feature/BS-530_Planejamento_Fisico
 		
 		<div class="clearfix"></div>
 		
@@ -159,16 +153,10 @@
 			</div>				
 			
 		</div>			
-		
-<<<<<<< HEAD
-		<!--<div class="row">
-			<div class="col-md-12 margem-topo"><tile-planejamento title-color="head-grey" title="Tarefas Críticas" type="created"></tile-planejamento></div>
-		</div>-->
-=======
+
 		<div class="row">
 			<div class="col-md-12 margem-topo"><tile title-color="head-grey" title="Tarefas Críticas" type="created"></tile></div>
 		</div>
->>>>>>> feature/BS-530_Planejamento_Fisico
 		
 		<div class="clearfix"></div>
 		
@@ -223,16 +211,10 @@
 				</div>
 			</div>
 		</div>
-		
-<<<<<<< HEAD
-		<!--<div class="row">
-			<div class="col-md-12 margem-topo"><tile-planejamento title-color="head-grey" title="Coleta Semanal" type="created"></tile-planejamento></div>
-		</div>-->
-=======
+
 		<div class="row">
 			<div class="col-md-12 margem-topo"><tile title-color="head-grey" title="Coleta Semanal" type="created"></tile></div>
 		</div>
->>>>>>> feature/BS-530_Planejamento_Fisico
 		
 		<div id="coleta-semanal" class="row">
 			<div class="col-md-12 table-responsive margem-topo">
