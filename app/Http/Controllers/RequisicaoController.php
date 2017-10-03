@@ -341,8 +341,8 @@ class RequisicaoController extends AppBaseController
         $r->leftJoin('requisicao_itens as ri','ri.requisicao_id', '=', 'r.id');
 
         $r->where('e.obra_id',$request->query('obra'));
-        $r->where('torre',urldecode($request->query('torre')));
-        $r->where('pavimento',$request->query('pavimento'));
+        $r->where('ri.torre',urldecode($request->query('torre')));
+        $r->where('ri.pavimento',$request->query('pavimento'));
         $r->where('e.insumo_id',$insumo->insumo_id);
         $r->where('et.tipo','S');
 
@@ -350,7 +350,7 @@ class RequisicaoController extends AppBaseController
             $r->where('andar',$request->query('andar'));
 
         if ($request->query('trecho'))
-            $r->where('trecho',$request->query('trecho'));
+            $r->where('ri.trecho',$request->query('trecho'));
 
         if ($comodo) {
 
