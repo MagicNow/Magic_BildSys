@@ -47,11 +47,11 @@
             </a>
         </li>
         @endshield
-        <li class="{{ Request::is('mascaraPadraoEstruturas*') ? 'active' : '' }}">
-            <a href="{!! route('admin.mascaraPadraoEstruturas.index') !!}">
-                <i class="fa fa-caret-right" aria-hidden="true"></i>
-                <span>Máscara Padrão Estruturas</span></a>
-        </li>
+        {{--<li class="{{ Request::is('mascaraPadraoEstruturas*') ? 'active' : '' }}">--}}
+            {{--<a href="{!! route('admin.mascaraPadraoEstruturas.index') !!}">--}}
+                {{--<i class="fa fa-caret-right" aria-hidden="true"></i>--}}
+                {{--<span>Máscara Padrão Estruturas</span></a>--}}
+        {{--</li>--}}
 
 		@shield('tarefa_padrao.list')
         <li class="{{ Request::is('admin/tarefa_padrao*') ? 'active' : '' }}">

@@ -45,14 +45,54 @@ class MascaraPadraoEstruturaController extends AppBaseController
      *
      * @return Response
      */
-    public function create()
+    public function create($id)
     {
+        $mascaraPadrao = MascaraPadrao::find($id);
         $mascaras = MascaraPadrao::pluck('nome','id')->toArray();
         $grupo = Grupo::where('codigo', '01')
             ->where('nome', 'OBRA')
             ->whereNull('grupo_id')
             ->first();
-        return view('admin.mascara_padrao_estruturas.create', compact('mascaras','grupo'));
+
+        $mascaraPadraoEstruturas = MascaraPadraoEstrutura::where('mascara_padrao_id', $id)->get();
+
+        $selectSubgrupos1 = $selectSubgrupos2 = $selectSubgrupos3 = $selectServicos = [];
+        foreach($mascaraPadraoEstruturas as $mascaraPadraoEstrutura){
+            $subgrupo1 = Grupo::find($mascaraPadraoEstrutura->subgrupo1_id);
+            $subgrupos1[$subgrupo1->codigo] = $subgrupo1;
+            $selectSubgrupos1 += Grupo::where('grupo_id', $subgrupo1->grupo_id)->pluck('nome', 'id')->toArray();
+
+            $subgrupo2 = Grupo::find($mascaraPadraoEstrutura->subgrupo2_id);
+            $subgrupos2[$subgrupo2->codigo] = $subgrupo2;
+            $selectSubgrupos2 += Grupo::where('grupo_id', $subgrupo2->grupo_id)->pluck('nome', 'id')->toArray();
+
+            $subgrupo3 = Grupo::find($mascaraPadraoEstrutura->subgrupo3_id);
+            $subgrupos3[$subgrupo3->codigo] = $subgrupo3;
+            $selectSubgrupos3 += Grupo::where('grupo_id', $subgrupo3->grupo_id)->pluck('nome', 'id')->toArray();
+
+            $servico = Servico::find($mascaraPadraoEstrutura->servico_id);
+            $servicos[$servico->codigo] = $servico;
+            $selectServicos += Servico::where('grupo_id', $servico->grupo_id)->pluck('nome', 'id')->toArray();
+        }
+
+        return view('admin.mascara_padrao_estruturas.create',
+            compact(
+                'mascaras',
+                'grupo',
+                'mascaraPadrao',
+                'mascaraPadraoEstruturas',
+                'grupos',
+                'subgrupos1',
+                'subgrupos2',
+                'subgrupos3',
+                'servicos',
+                'selectGrupo',
+                'selectSubgrupos1',
+                'selectSubgrupos2',
+                'selectSubgrupos3',
+                'selectServicos'
+
+            ));
     }
 
     /**
@@ -64,6 +104,7 @@ class MascaraPadraoEstruturaController extends AppBaseController
      */
     public function store(CreateMascaraPadraoEstruturaRequest $request)
     {
+        dd($request->all());
         $input = $request->all();
         $mascaraPadraoEstrutura = $this->mascaraPadraoEstruturaRepository->create($input);
 

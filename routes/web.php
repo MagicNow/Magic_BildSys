@@ -206,19 +206,19 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
     });
 
     # Mascara padrão estruturas
-    $router->get('mascaraPadraoEstruturas', ['as'=> 'admin.mascaraPadraoEstruturas.index', 'uses' => 'Admin\MascaraPadraoEstruturaController@index']);
-    $router->post('mascaraPadraoEstruturas', ['as'=> 'admin.mascaraPadraoEstruturas.store', 'uses' => 'Admin\MascaraPadraoEstruturaController@store']);
-    $router->get('mascaraPadraoEstruturas/create', ['as'=> 'admin.mascaraPadraoEstruturas.create', 'uses' => 'Admin\MascaraPadraoEstruturaController@create']);
-    $router->put('mascaraPadraoEstruturas/{mascaraPadraoEstruturas}', ['as'=> 'admin.mascaraPadraoEstruturas.update', 'uses' => 'Admin\MascaraPadraoEstruturaController@update']);
-    $router->patch('mascaraPadraoEstruturas/{mascaraPadraoEstruturas}', ['as'=> 'admin.mascaraPadraoEstruturas.update', 'uses' => 'Admin\MascaraPadraoEstruturaController@update']);
-    $router->delete('mascaraPadraoEstruturas/{mascaraPadraoEstruturas}', ['as'=> 'admin.mascaraPadraoEstruturas.destroy', 'uses' => 'Admin\MascaraPadraoEstruturaController@destroy']);
-    $router->get('mascaraPadraoEstruturas/{mascaraPadraoEstruturas}', ['as'=> 'admin.mascaraPadraoEstruturas.show', 'uses' => 'Admin\MascaraPadraoEstruturaController@show']);
-    $router->get('mascaraPadraoEstruturas/{mascaraPadraoEstruturas}/edit', ['as'=> 'admin.mascaraPadraoEstruturas.edit', 'uses' => 'Admin\MascaraPadraoEstruturaController@edit']);
-    $router->get('mascaraPadraoEstruturas/grupos/{id}', ['as' => 'admin.mascaraPadraoEstruturas.grupos', 'uses' => 'Admin\MascaraPadraoEstruturaController@getGrupos']);
-    $router->get('mascaraPadraoEstruturas/servicos/{id}', ['as' => 'admin.mascaraPadraoEstruturas.servicos', 'uses' => 'Admin\MascaraPadraoEstruturaController@getServicos']);
-//    $router->get('mascaraPadraoEstruturas/relacionar/insumos', ['as' => 'admin.mascaraPadraoEstruturas.insumos', 'uses' => 'Admin\MascaraPadraoEstruturaController@getInsumos']);
-    $router->get('mascaraPadraoEstruturas/mascara-padrao/insumos/{id}', ['as' => 'admin.mascaraPadraoEstruturas.mascara-padrao-insumos', 'uses' => 'Admin\MascaraPadraoEstruturaController@mascaraPadraoInsumos']);
-    $router->get('mascaraPadraoEstruturas/mascara-padrao-estrutura/relaciona/insumos/{id}', ['as' => 'admin.mascaraPadraoEstruturas.mascara-padrao-estrutura-insumos', 'uses' => 'Admin\MascaraPadraoEstruturaController@MascaraPadraoEstruturaInsumos']);
+    $router->get('mascara-padrao-estruturas', ['as'=> 'admin.mascaraPadraoEstruturas.index', 'uses' => 'Admin\MascaraPadraoEstruturaController@index']);
+    $router->post('mascara-padrao-estruturas', ['as'=> 'admin.mascaraPadraoEstruturas.store', 'uses' => 'Admin\MascaraPadraoEstruturaController@store']);
+    $router->get('mascara-padrao-estruturas/{mascaraPadraoEstruturas}/create', ['as'=> 'admin.mascaraPadraoEstruturas.create', 'uses' => 'Admin\MascaraPadraoEstruturaController@create']);
+    $router->put('mascara-padrao-estruturas/{mascaraPadraoEstruturas}', ['as'=> 'admin.mascaraPadraoEstruturas.update', 'uses' => 'Admin\MascaraPadraoEstruturaController@update']);
+    $router->patch('mascara-padrao-estruturas/{mascaraPadraoEstruturas}', ['as'=> 'admin.mascaraPadraoEstruturas.update', 'uses' => 'Admin\MascaraPadraoEstruturaController@update']);
+    $router->delete('mascara-padrao-estruturas/{mascaraPadraoEstruturas}', ['as'=> 'admin.mascaraPadraoEstruturas.destroy', 'uses' => 'Admin\MascaraPadraoEstruturaController@destroy']);
+    $router->get('mascara-padrao-estruturas/{mascaraPadraoEstruturas}', ['as'=> 'admin.mascaraPadraoEstruturas.show', 'uses' => 'Admin\MascaraPadraoEstruturaController@show']);
+    $router->get('mascara-padrao-estruturas/{mascaraPadraoEstruturas}/edit', ['as'=> 'admin.mascaraPadraoEstruturas.edit', 'uses' => 'Admin\MascaraPadraoEstruturaController@edit']);
+    $router->get('mascara-padrao-estruturas/grupos/{id}', ['as' => 'admin.mascaraPadraoEstruturas.grupos', 'uses' => 'Admin\MascaraPadraoEstruturaController@getGrupos']);
+    $router->get('mascara-padrao-estruturas/servicos/{id}', ['as' => 'admin.mascaraPadraoEstruturas.servicos', 'uses' => 'Admin\MascaraPadraoEstruturaController@getServicos']);
+//    $router->get('mascara-padrao-estruturas/relacionar/insumos', ['as' => 'admin.mascaraPadraoEstruturas.insumos', 'uses' => 'Admin\MascaraPadraoEstruturaController@getInsumos']);
+    $router->get('mascara-padrao-estruturas/mascara-padrao/insumos/{id}', ['as' => 'admin.mascaraPadraoEstruturas.mascara-padrao-insumos', 'uses' => 'Admin\MascaraPadraoEstruturaController@mascaraPadraoInsumos']);
+    $router->get('mascara-padrao-estruturas/mascara-padrao-estrutura/relaciona/insumos/{id}', ['as' => 'admin.mascaraPadraoEstruturas.mascara-padrao-estrutura-insumos', 'uses' => 'Admin\MascaraPadraoEstruturaController@MascaraPadraoEstruturaInsumos']);
 
 	# Estruturas
     $router->group(['middleware' => 'needsPermission:estruturas.list'], function () use ($router) {        

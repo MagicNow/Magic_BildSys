@@ -1,22 +1,87 @@
 <!-- Mascara Padrao Id Field -->
 <div class="form-group col-sm-12">
     {!! Form::label('mascara_padrao_id', 'Máscara Padrão:') !!}
-    {!! Form::select('mascara_padrao_id',[''=>'Escolha...']+$mascaras, null, ['class' => 'form-control select2', 'required'=>true]) !!}
+    {!! Form::select('mascara_padrao_id',[''=>'Escolha...']+$mascaras, (isset($mascaraPadrao) ?$mascaraPadrao->id : null), ['class' => 'form-control select2', 'required'=>true]) !!}
 </div>
 
 <div class="form-group col-sm-12">
-    <div class="col-md-8">
-        <div class="input-group">
-            <span class="input-group-addon">{{$grupo->codigo}}</span>
-            <p class="form-control">{{ $grupo->nome }}</p>
+    @if(count($mascaraPadraoEstruturas))
+        <div class="col-md-8">
+            <div class="input-group">
+                <span class="input-group-addon">{{$grupo->codigo}}</span>
+                <p class="form-control" id="grupo_id" value="{{ $grupo->nome }}">{{ $grupo->nome }}</p>
+            </div>
         </div>
-    </div>
-    <div class="col-md-4">
-        {!! Form::hidden('estrutura[0][id]', $grupo->id, ['id'=>'select_grupo_0_select', 'class'=>'estrutura_0']) !!}
-        <button type="button" class="btn btn-primary" onclick="addSubItem('select_grupo_0', 0, 'estrutura[0][itens]')">Add SubGrupo-1</button>
-    </div>
-    <ul id="select_grupo_0_ul">
-    </ul>
+        <ul>
+        @foreach($subgrupos1 as $subgrupo1)
+            @if($subgrupo1->grupo_id == $grupo->id)
+                <li style="list-style-type: none">
+                    <div class="col-md-8" style="padding: 5px;">
+                        <div class="input-group">
+                            <span class="input-group-addon">{{$subgrupo1->codigo}}</span>
+                            {!! Form::select('subgrupo1_id',[''=>'Escolha...']+$selectSubgrupos1, $subgrupo1->id, ['class' => 'form-control select2', 'required'=>true]) !!}
+                        </div>
+                    </div>
+                    <ul>
+                        @foreach($subgrupos2 as $subgrupo2)
+                            @if($subgrupo2->grupo_id == $subgrupo1->id)
+                                <li style="list-style-type: none">
+                                    <div class="col-md-8" style="padding: 5px;">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">{{$subgrupo2->codigo}}</span>
+                                            {!! Form::select('subgrupo2_id',[''=>'Escolha...']+$selectSubgrupos2, $subgrupo2->id, ['class' => 'form-control select2', 'required'=>true]) !!}
+                                        </div>
+                                    </div>
+                                    <ul>
+                                        @foreach($subgrupos3 as $subgrupo3)
+                                            @if($subgrupo3->grupo_id == $subgrupo2->id)
+                                                <li style="list-style-type: none">
+                                                    <div class="col-md-8" style="padding: 5px;">
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon">{{$subgrupo3->codigo}}</span>
+                                                            {!! Form::select('subgrupo3_id',[''=>'Escolha...']+$selectSubgrupos3, $subgrupo3->id, ['class' => 'form-control select2', 'required'=>true]) !!}
+                                                        </div>
+                                                    </div>
+                                                    <ul>
+                                                        @foreach($servicos as $servico)
+                                                            @if($servico->grupo_id == $subgrupo3->id)
+                                                                <li style="list-style-type: none">
+                                                                    <div class="col-md-8" style="padding: 5px;">
+                                                                        <div class="input-group">
+                                                                            <span class="input-group-addon">{{$servico->codigo}}</span>
+                                                                            {!! Form::select('servico_id',[''=>'Escolha...']+$selectServicos, $servico->id, ['class' => 'form-control select2', 'required'=>true]) !!}
+                                                                        </div>
+                                                                    </div>
+                                                                </li>
+                                                            @endif
+                                                        @endforeach
+                                                    </ul>
+                                                </li>
+                                            @endif
+                                        @endforeach
+                                    </ul>
+                                </li>
+                            @endif
+                        @endforeach
+                    </ul>
+                </li>
+            @endif
+        @endforeach
+        </ul>
+    @else
+        <div class="col-md-8">
+            <div class="input-group">
+                <span class="input-group-addon">{{$grupo->codigo}}</span>
+                <p class="form-control">{{ $grupo->nome }}</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            {!! Form::hidden('estrutura[0][id]', $grupo->id, ['id'=>'select_grupo_0_select', 'class'=>'estrutura_0']) !!}
+            <button type="button" class="btn btn-primary" onclick="addSubItem('select_grupo_0', 0, 'estrutura[0][itens]')">Add SubGrupo-1</button>
+        </div>
+        <ul id="select_grupo_0_ul">
+        </ul>
+    @endif
 </div>
 
 
@@ -44,17 +109,31 @@
             }
         });
 
-        function addSubItem(id_atual, nivel, nome){
+        {{--$(function() {--}}
+            {{--@if(count($mascaraPadraoEstruturas))--}}
+                {{--@foreach($mascaraPadraoEstruturas->unique('subgrupo1_id') as $subgrupo1)--}}
+                    {{--addSubItem('select_grupo_0', 0, 'estrutura[0][itens]', {{$subgrupo1->subgrupo1_id}});--}}
+                    {{--@foreach($mascaraPadraoEstruturas->unique('subgrupo2_id') as $subgrupo2)--}}
+                    {{--setTimeout(function(){--}}
+                        {{--addSubItem('subgrupo1_1', 1,'estrutura[0][itens][1][itens]', {{$subgrupo2->subgrupo2_id}});--}}
+                    {{--}, 2000);--}}
+                    {{--@endforeach--}}
+                {{--@endforeach--}}
+
+            {{--@endif--}}
+        {{--});--}}
+
+        function addSubItem(id_atual, nivel, nome, valor_existe = null){
             var buttonAdd = '';
             bloco_aberto = true;
             blocos++;
-            var rota = "{{url('/admin/mascaraPadraoEstruturas/grupos')}}/";
+            var rota = "{{url('/admin/mascara-padrao-estruturas/grupos')}}/";
             nivel++;
             var labelBotao = 'Add SubGrupo-'+(nivel+1);
             if(nivel == 3){
                 labelBotao = 'Add Serviço';
             }else if(nivel>3){
-                rota = "{{url('/admin/mascaraPadraoEstruturas/servicos')}}/";
+                rota = "{{url('/admin/mascara-padrao-estruturas/servicos')}}/";
             }
             if(nivel < 4){
                 buttonAdd = '<button type="button" class="btn btn-primary" onclick="addSubItem(\'subgrupo'+nivel+'_'+blocos+'\', '+nivel+',\''+nome+'['+blocos+'][itens]'+'\')">'+labelBotao+'</button>';
@@ -64,7 +143,7 @@
                 buttonAdd = '<button type="button" class="btn btn-warning" onclick="RedirectAddInsumo(\'subgrupo'+nivel+'_'+blocos+'\', '+nivel+',\''+nome+'['+blocos+']'+'\')">'+labelBotao+'</button>';
             }
 
-            console.log(nivel);
+//            console.log(nivel);
             var id = $('#'+id_atual+'_select').val();
             if(id){
 
@@ -96,6 +175,10 @@
                         '</ul>'+
                         '</div>';
                     $('#'+id_atual+'_ul').append(selectHTML);
+                    console.log(valor_existe);
+                    if(valor_existe) {
+                        $('#subgrupo'+nivel+'_'+blocos+'_select').val(valor_existe);
+                    }
                     $('.overlay').remove();
                 }).fail(function() {
                     $('.overlay').remove();
