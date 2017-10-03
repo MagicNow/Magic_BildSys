@@ -347,7 +347,7 @@ class RequisicaoController extends AppBaseController
         $r->where('et.tipo','S');
 
         if ($request->query('andar'))
-            $r->where('andar',$request->query('andar'));
+            $r->where('ri.andar',$request->query('andar'));
 
         if ($request->query('trecho'))
             $r->where('ri.trecho',$request->query('trecho'));
