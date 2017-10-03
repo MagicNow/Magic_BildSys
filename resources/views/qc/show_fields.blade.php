@@ -31,31 +31,31 @@
 <!-- Valor Pré Orçamento Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('valor_pre_orcamento', 'Valor Pré Orçamento:') !!}
-    <p class="form-control">{!! $qc->valor_pre_orcamento !!}</p>
+    <p class="form-control">{!! float_to_money($qc->valor_pre_orcamento) !!}</p>
 </div>
 
 <!-- Valor Orçamento Inicial Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('valor_orcamento_inicial', 'Valor Orçamento Inicial :') !!}
-    <p class="form-control">{!! $qc->valor_orcamento_inicial !!}</p>
+    <p class="form-control">{!! float_to_money($qc->valor_orcamento_inicial) !!}</p>
 </div>
 
 <!-- Valor da Gerencial Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('valor_gerencial', 'Valor da Gerencial:') !!}
-    <p class="form-control">{!! $qc->valor_gerencial !!}</p>
+    <p class="form-control">{!! float_to_money($qc->valor_gerencial) !!}</p>
 </div>
 
 <!-- Created At Field -->
 <div class="form-group col-md-6">
     {!! Form::label('created_at', 'Criado em:') !!}
-    <p class="form-control">{!! $qc->created_at !!}</p>
+    <p class="form-control">{!! $qc->created_at->format('d/m/Y') !!}</p>
 </div>
 
 <!-- Updated At Field -->
 <div class="form-group col-md-6">
     {!! Form::label('updated_at', 'Alterado em:') !!}
-    <p class="form-control">{!! $qc->updated_at !!}</p>
+    <p class="form-control">{!! $qc->updated_at->format('d/m/Y') !!}</p>
 </div>
 
 <div class="form-group col-sm-6">

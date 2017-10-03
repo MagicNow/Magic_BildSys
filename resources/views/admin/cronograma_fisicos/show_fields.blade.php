@@ -103,7 +103,7 @@
 		<!-- Custo Field -->
         <div class="form-group col-md-6">
             {!! Form::label('custo', 'Custo:') !!}
-            <p class="form-control">{!! $cronogramaFisico->custo !!}</p>
+            <p class="form-control">{!! "R$ ".$cronogramaFisico->custo !!}</p>
         </div>
 		
 		<!-- Torre Field -->
@@ -134,8 +134,8 @@
 		
 		<!-- Concluida Field -->
         <div class="form-group col-md-6">
-            {!! Form::label('conclusao', 'Concluida(%):') !!}
-            <p class="form-control">{!! $cronogramaFisico->concluida !!}</p>
+            {!! Form::label('conclusao', 'Concluída:') !!}
+            <p class="form-control">{!! $cronogramaFisico->concluida."%" !!}</p>
         </div>
         
 		<!-- Data Field -->

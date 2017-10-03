@@ -68,6 +68,11 @@ class RolesAndPermissions extends Seeder
             'orcamentos.list' => 'Listagem de orçamentos',
             'orcamentos.import' => 'Importar orçamentos',
 
+			'pre_orcamentos.list' => 'Listagem de Pré Orçamentos',
+            'pre_orcamentos.create' => 'Criação de Pré Orçamentos',
+            'pre_orcamentos.edit'   => 'Edição de Pré Orçamentos',
+            'pre_orcamentos.view'   => 'Visualização de Pré Orçamentos',
+
             'cronograma_por_obras.list' => 'Listagem de cronograma por obras',
 
             'cronograma_de_obras.list' => 'Listagem de cronograma de obras',
@@ -181,6 +186,12 @@ class RolesAndPermissions extends Seeder
             'cronogramaFisicos.import' => 'Importar orçamentos',
 			'cronogramaFisicos.dashboard' => 'Dashboard do Cronograma Físico',
 
+			'medicao_fisicas.list'        => 'Listagem de Medição Físicas',
+            'medicao_fisicas.show'        => 'Visualização de Medição Físicas',
+            'medicao_fisicas.edit'        => 'Editar Medição Físicas',
+            'medicao_fisicas.reajustar'   => 'Reajustar item do Medição Físicas',
+
+
 			'levantamentos.list' => 'Listagem de levantamento',
             'levantamentos.create' => 'Criação de levantamento',
             'levantamentos.edit'   => 'Edição de levantamento',
@@ -278,17 +289,21 @@ class RolesAndPermissions extends Seeder
             'boletim-medicao.edit'   => 'Edição de Boletim de Medição',
             'boletim-medicao.delete'   => 'Remoção de Boletim de Medição',
 
-            // 'carteirassla.list' => 'Lista de Carteiras e SLA de cada obra',
-            // 'carteirassla.create' => 'Criação de QC',
-
             'qc.list' => 'Lista de QC',
             'qc.create' => 'Criação de QC',
+            'qc.edit' => 'Edição de QC',
             'qc.show' => 'Visualização de QC',
+            'qc.delete' => 'Exclusão de QC',
 
-            'topologia.list' => 'Listagem de topologias',
-            'topologia.create' => 'Criação de topologia',
-            'topologia.edit'   => 'Edição de topologia',
-            'topologia.delete'   => 'Remoção de topologia',
+            'qc-aprovar.show' => 'Visualização formulário de aprovação / reprovação QC',
+
+            'tipologia.list' => 'Listagem de tipologias',
+            'tipologia.create' => 'Criação de tipologia',
+            'tipologia.edit'   => 'Edição de tipologia',
+            'tipologia.delete'   => 'Remoção de tipologia',
+
+            'lista_qc.list' => 'Lista de QC Suprimentos',
+            'lista_qc.edit' => 'Edição de Lista de QC Suprimentos',
 
             'pagamentos.list' => 'Listagem de pagamentos',
             'pagamentos.create' => 'Criação de pagamento',
