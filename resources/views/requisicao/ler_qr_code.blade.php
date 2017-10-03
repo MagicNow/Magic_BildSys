@@ -64,7 +64,7 @@
                     confirmButtonColor: "#DD6B55",
                     closeOnConfirm: false
                 }, function () {
-                    location.reload();
+                    $('.app__dialog-close').click();
                 });
         }
     }

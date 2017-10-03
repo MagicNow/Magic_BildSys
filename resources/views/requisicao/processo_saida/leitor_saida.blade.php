@@ -62,11 +62,11 @@
             <div class="modal-footer">
                 <div class="btn-group btn-group-justified">
                     <a href="/requisicao/processo-saida/{{$requisicao->id}}" class="btn btn-danger">Cancelar</a>
-                    <a href="#" class="btn btn-success" data-dismiss="modal">Confirmar</a>
+                    <a href="#" class="btn btn-success" onclick="salvarLeitura(0);" data-dismiss="modal">Confirmar</a>
                 </div>
 
                 <div class="btn-group btn-group-justified" style="margin-top: 10px;">
-                    <a href="#" class="btn btn-primary" data-dismiss="modal">Confirmar e ler o próximo</a>
+                    <a href="#" class="btn btn-primary" onclick="salvarLeitura(1);" data-dismiss="modal">Confirmar e ler o próximo</a>
                 </div>
             </div>
         </div>
@@ -77,9 +77,39 @@
     var nome_funcao_executar = 'lerInsumo';
 
     function lerInsumo(dados_qr_code) {
-        $('#dados_qr_code').text(dados_qr_code);
+        $('#dados_qr_code').html(dados_qr_code);
         $('#modalDadoQrCode').modal('show');
         $('.app__dialog-close').click();
+    }
+
+    function salvarLeitura(continuar) {
+        var dados_qr_code = $('#dados_qr_code').text();
+        var existe_parametro = dados_qr_code.indexOf('Dados QR Code: ');
+
+        if (existe_parametro > -1) {
+            var dados = dados_qr_code.split('Dados QR Code: ')[dados_qr_code.split('Dados QR Code:').length -1];
+            if(dados) {
+                $.ajax('/requisicao/processo-saida/ler-insumo-saida/salvar-leitura', {
+                    data: {
+                        dados: dados
+                    }
+                })
+                .done(function (retorno) {
+
+                })
+                .fail(function (retorno) {
+
+                });
+            }
+        } else {
+            swal({
+                title: 'QR Code Inválido',
+                text: "Não existe parâmetro para leituta do QR Code.",
+                type: "info",
+                confirmButtonColor: "#DD6B55",
+                closeOnConfirm: false
+            });
+        }
     }
 </script>
 

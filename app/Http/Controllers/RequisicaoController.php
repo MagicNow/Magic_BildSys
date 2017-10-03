@@ -9,6 +9,7 @@ use App\Http\Requests\UpdateRequisicaoRequest;
 use App\Models\Levantamento;
 use App\Models\Obra;
 use App\Models\Requisicao;
+use App\Models\RequisicaoSaidaLeitura;
 use App\Repositories\RequisicaoRepository;
 use App\Repositories\Admin\ObraRepository;
 use Flash;
@@ -371,5 +372,17 @@ class RequisicaoController extends AppBaseController
     public function lerInsumoSaida(Requisicao $requisicao)
     {
         return view('requisicao.processo_saida.leitor_saida', compact('requisicao'));
+    }
+
+    public function salvarLeituraSaida(Request $request)
+    {
+        $dados = json_decode($request->dados);
+        $requisicao = new RequisicaoSaidaLeitura(
+            [
+                'requisicao_item_id'=>$dados->requisicao_item_id,
+                'qtd_lida' => $dados->qtd_lida
+            ]);
+
+        $requisicao->save();
     }
 }
