@@ -26,7 +26,7 @@ class QcSuprimentosDataTable extends DataTable
                 return $qc->data_fechamento ? $qc->data_fechamento->format('d/m/Y') : '';
             })
             ->editColumn('saving', function ($qc) {
-                return $qc->valor_fechamento ? $qc->valor_fechamento - $qc->valor_pre_orcamento : '';
+                return $qc->valor_fechamento ? 'R$' . money_format('%i', $qc->valor_fechamento - $qc->valor_pre_orcamento) : '';
             })
             ->editColumn('valor_orcamento_inicial', function ($qc) {
                 return $qc->valor_orcamento_inicial ? 'R$' . money_format('%i', $qc->valor_orcamento_inicial) : '';
@@ -79,7 +79,7 @@ class QcSuprimentosDataTable extends DataTable
         ->join('tipologias', 'tipologias.id', 'tipologia_id')
         ->leftJoin('users', 'users.id', 'comprador_id')
         ->leftJoin('fornecedores', 'fornecedores.id', 'fornecedor_id')
-        ->whereIn('status', [ 'Aprovado', 'Reprovado', 'Em negociação' ])
+        ->whereIn('status', [ 'Aprovado', 'Reprovado', 'Em negociação', 'Fechado' ])
         ->groupBy('qc.id');
 
         $request = $this->request();

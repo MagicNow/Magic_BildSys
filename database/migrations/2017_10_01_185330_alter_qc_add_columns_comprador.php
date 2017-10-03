@@ -30,6 +30,10 @@ class AlterQcAddColumnsComprador extends Migration
     public function down()
     {
         Schema::table('qc', function (Blueprint $table) {
+            $table->dropColumn('data_fechamento');
+        });
+
+        Schema::table('qc', function (Blueprint $table) {
             $table->date('data_fechamento');
         });
     }

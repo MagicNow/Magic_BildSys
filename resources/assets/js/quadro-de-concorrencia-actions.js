@@ -44,9 +44,7 @@ $(function () {
 	});
 
 	$('.currency').on('blur', function () {
-		$('.currency').formatCurrency({
-			symbol: 'R$',
-		});
+		// $(this).val(floatToMoney($(this).val()));
 	});
 
 	$attachments.find('input[type="file"]').on('change', checkAttachmentTypeExists);

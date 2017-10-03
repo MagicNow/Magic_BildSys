@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Http\Request;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use App\Models\Qc;
@@ -23,9 +24,13 @@ class CreateQcRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(Request $request)
     {
-        return Qc::$rules;
+        if ($request->_method === 'PATCH') {
+            return Qc::$rulesUpdate;
+        } else {
+            return Qc::$rules;
+        }
     }
 
     public function messages()

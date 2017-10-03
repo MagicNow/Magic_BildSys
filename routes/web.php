@@ -1081,6 +1081,13 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     # Template de Contrato
     $router->get('/contrato-template/{contratoTemplates}/campos', 'Admin\ContratoTemplateController@camposExtras');
 
+    # Lista de Q.C. suprimentos
+    $router->group(['prefix' => 'lista-qc'], function () use ($router) {
+        $router->get('/', ['as' => 'listaQc.index', 'uses' => 'QcSuprimentosController@index'])
+                ->middleware('needsPermission:lista_qc.list');
+    });
+
+
     # Catálogo de Acordos
     $router->group(['middleware' => 'needsPermission:catalogo_acordos.list'], function () use ($router) {
         $router->get('catalogo-acordos', ['as' => 'catalogo_contratos.index', 'uses' => 'CatalogoContratoController@index']);
@@ -1252,7 +1259,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             ]
         )->middleware('needsPermission:contratos.edit');
         $router->post(
-            '/reajustar/{contrato_item_id}',
+            '/reajustar/{con trato_item_id}',
             [
                 'as' => 'contratos.reajustar',
                 'uses' => 'ContratoController@reajustar'
@@ -1318,16 +1325,16 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     });
 
     # DocBild
-    $router->group(['prefix'=>'qc','middleware' => 'needsPermission:qc.list'], function () use ($router) {
+    $router->group(['prefix' => 'qc', 'middleware' => 'needsPermission:qc.list'], function () use ($router) {
         $router->get('', ['as' => 'qc.index', 'uses' => 'QcController@index']);
         $router->get('/create', ['as' => 'qc.create', 'uses' => 'QcController@create']);
         $router->get('/{qc}',['as' => 'qc.show', 'uses' => 'QcController@show'])
             ->middleware('needsPermission:qc.show');
-        $router->get('/{qc}/editar',['as' => 'qc.edit', 'uses' => 'QcController@edit']);
-        $router->patch('/{qc}/update',['as' => 'qc.update', 'uses' => 'QcController@update']);
+        $router->get('/{qc}/editar',['as' => 'qc.edit', 'uses' => 'QcSuprimentosController@edit']);
+        $router->patch('/{qc}/update',['as' => 'qc.update', 'uses' => 'QcSuprimentosController@update']);
         $router->post('', ['as' => 'qc.store', 'uses' => 'QcController@store']);
         $router->get('/buscar/busca_carteiras', ['as' => 'qc.busca_carteiras', 'uses' => 'QcController@buscaCarteira']);
-        $router->delete('/{qc}', ['as' => 'qc.destroy', 'uses' => 'QcController@destroy']);
+        // $router->delete('/{qc}', ['as' => 'qc.destroy', 'uses' => 'QcController@destroy']);
 
         $router->get('/anexos/{qc}',['as' => 'qc.anexos', 'uses' => 'QcController@anexos'])
             ->middleware('needsPermission:qc.anexos.list');
