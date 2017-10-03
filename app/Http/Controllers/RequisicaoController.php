@@ -8,6 +8,7 @@ use App\Http\Requests\CreateRequisicaoRequest;
 use App\Http\Requests\UpdateRequisicaoRequest;
 use App\Models\Levantamento;
 use App\Models\Obra;
+use App\Models\Requisicao;
 use App\Repositories\RequisicaoRepository;
 use App\Repositories\Admin\ObraRepository;
 use Flash;
@@ -166,11 +167,6 @@ class RequisicaoController extends AppBaseController
 
         return redirect(route('requisicao.index'));
     }
-
-
-
-
-
 
     public function getPavimentosByObraAndTorre($obra,$torre) {
 
@@ -345,8 +341,8 @@ class RequisicaoController extends AppBaseController
         $r->leftJoin('requisicao_itens as ri','ri.requisicao_id', '=', 'r.id');
 
         $r->where('e.obra_id',$request->query('obra'));
-        $r->where('torre',urldecode($request->query('torre')));
-        $r->where('pavimento',$request->query('pavimento'));
+        $r->where('ri.torre',urldecode($request->query('torre')));
+        $r->where('ri.pavimento',$request->query('pavimento'));
         $r->where('e.insumo_id',$insumo->insumo_id);
         $r->where('et.tipo','S');
 
@@ -354,7 +350,7 @@ class RequisicaoController extends AppBaseController
             $r->where('andar',$request->query('andar'));
 
         if ($request->query('trecho'))
-            $r->where('trecho',$request->query('trecho'));
+            $r->where('ri.trecho',$request->query('trecho'));
 
         if ($comodo) {
 
@@ -365,5 +361,10 @@ class RequisicaoController extends AppBaseController
         $total = $r->get()->first();
 
         return $total->qtde_usada;
+    }
+
+    public function processoSaida(Requisicao $requisicao)
+    {
+        return view('requisicao.processo_saida.index', compact('requisicao'));
     }
 }

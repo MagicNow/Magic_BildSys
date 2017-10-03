@@ -26,7 +26,12 @@ class Requisicao extends Model
     public $fillable = [
         'obra_id',
         'user_id',
-        'status'
+        'status',
+        'local',
+        'torre',
+        'pavimento',
+        'trecho',
+        'andar',
     ];
 
     /**
@@ -38,7 +43,12 @@ class Requisicao extends Model
         'id' => 'integer',
         'obra_id' => 'integer',
         'user_id' => 'integer',
-        'status' => 'string'
+        'status' => 'string',
+        'local' => 'string',
+        'torre' => 'string',
+        'pavimento' => 'string',
+        'trecho' => 'string',
+        'andar' => 'string',
     ];
 
     /**
