@@ -1517,3 +1517,4 @@ Route::resource('requisicao', 'RequisicaoController');
 
 # Processo de Saída
 $router->get('requisicao/processo-saida/{requisicao}', ['as' => 'requisicao.processoSaida', 'uses' => 'RequisicaoController@processoSaida']);
+$router->get('requisicao/processo-saida/{requisicao}/ler-insumo-saida', ['as' => 'requisicao.lerInsumoSaida', 'uses' => 'RequisicaoController@lerInsumoSaida']);

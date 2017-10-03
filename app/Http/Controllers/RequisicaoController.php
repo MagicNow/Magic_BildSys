@@ -367,4 +367,9 @@ class RequisicaoController extends AppBaseController
     {
         return view('requisicao.processo_saida.index', compact('requisicao'));
     }
+
+    public function lerInsumoSaida(Requisicao $requisicao)
+    {
+        return view('requisicao.processo_saida.leitor_saida', compact('requisicao'));
+    }
 }

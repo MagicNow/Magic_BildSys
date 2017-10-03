@@ -22,7 +22,7 @@
 
                     <div class="col-md-4"></div>
                     <div class="btn-group-vertical col-md-4" style="display: block;">
-                        <a href="#" class="btn btn-success" style="margin-bottom: 10px;">
+                        <a href="/requisicao/processo-saida/{{$requisicao->id}}/ler-insumo-saida" class="btn btn-success" style="margin-bottom: 10px;">
                             <i class="fa fa-qrcode" aria-hidden="true"></i>
                             Ler QrCodes Saída
                         </a>
