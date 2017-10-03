@@ -32,10 +32,9 @@
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="pull-right">
-                            <a href="{{ url(route("pagamentos.create")) }}?contrato={{ $contrato->id }}&nota={{ $nota->id }}" class="btn btn-info">
+                            <a href="{{ url(route("pagamentos.create")) }}?contrato_id={{ $contrato->id }}&nota_id={{ $nota->id }}" class="btn btn-info">
                                 <i class="fa fa-plus"></i> Adicionar Pagamento
                             </a>
-
                         </div>
                     </div>
                 </div>

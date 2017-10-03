@@ -106,6 +106,10 @@ class Notafiscal extends Model
         'status',
         'status_data',
         'status_user_id',
+        'enviado_integracao',
+        'integrado',
+        'status_integracao',
+        'codigo_integracao_mega',
     ];
 
     /**
@@ -169,6 +173,16 @@ class Notafiscal extends Model
     public function itens()
     {
         return $this->hasMany(\App\Models\NotaFiscalItem::class, 'nota_fiscal_id');
+    }
+
+    public function pagamentos()
+    {
+        return $this->hasMany(\App\Models\Pagamento::class, 'notas_fiscal_id');
+    }
+
+    public function logs()
+    {
+        return $this->morphMany(LogIntegracao::class, 'loggable');
     }
 
     /**
