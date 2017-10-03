@@ -1,8 +1,15 @@
 <div class="row">	
 	<div class="col-xs-12">               			
+<<<<<<< HEAD
 		<!--<div class="row">
 			<div class="col-md-12 margem-topo"><tile-planejamento title-color="head-grey" title="Percentual Previsto x Percentual Realizado" type="created"></tile-planejamento></div>
 		</div>-->
+=======
+		
+		<div class="row">
+			<div class="col-md-12 margem-topo"><tile title-color="head-grey" title="Percentual Previsto x Percentual Realizado" type="created"></tile></div>
+		</div>
+>>>>>>> feature/BS-530_Planejamento_Fisico
 		
 		<div class="clearfix"></div>
 		
@@ -72,9 +79,16 @@
 						</tr>
 						
 						<tr>
-							<td class="orange">Desvio Semanal</td>
-							@foreach($tabPercentualPrevReal['data']['previstoSemanal'] as $previstoSemanal)										
-								<td class="text-center">{{ $previstoSemanal.'%'}}</td>																											
+							<td class="texto-semana">Desvio Semanal</td>
+							@foreach($tabPercentualPrevReal['data']['desvioSemanal'] as $desvioSemanal)										
+								<?php
+									if($desvioSemanal >= 0){
+										$classDesvioSemanal = "green";
+									}else{
+										$classDesvioSemanal = "red";
+									}
+								?>
+								<td class="text-center {{ $classDesvioSemanal }}">{{ $desvioSemanal.'%'}}</td>																											
 							@endforeach
 						</tr>
 						
@@ -146,9 +160,15 @@
 			
 		</div>			
 		
+<<<<<<< HEAD
 		<!--<div class="row">
 			<div class="col-md-12 margem-topo"><tile-planejamento title-color="head-grey" title="Tarefas Críticas" type="created"></tile-planejamento></div>
 		</div>-->
+=======
+		<div class="row">
+			<div class="col-md-12 margem-topo"><tile title-color="head-grey" title="Tarefas Críticas" type="created"></tile></div>
+		</div>
+>>>>>>> feature/BS-530_Planejamento_Fisico
 		
 		<div class="clearfix"></div>
 		
@@ -172,9 +192,9 @@
 							$tabTarefasRealizado = $tabTarefasCriticasDado['realizado'];
 							$tabTarefasDesvio = $tabTarefasRealizado - $tabTarefasPrevisto;
 							if($tabTarefasDesvio >= 0){
-								$desvio = "green";
+								$colorTarefasDesvio = "green";
 							}else{
-								$desvio = "red";
+								$colorTarefasDesvio = "red";
 							}
 						?>
 						<tr>
@@ -182,7 +202,7 @@
 							<td class="text-center">{{ $tabTarefasCriticasDado['tarefa'] }}</td>
 							<td class="text-center">{{ $tabTarefasPrevisto.'%' }}</td>
 							<td class="text-center">{{ $tabTarefasRealizado.'%' }}</td>										
-							<td class="text-center {{ $desvio}}">{{ $tabTarefasDesvio.'%' }}</td>	
+							<td class="text-center {{ $colorTarefasDesvio}}">{{ $tabTarefasDesvio.'%' }}</td>	
 						</tr>
 						@endforeach
 						
@@ -204,9 +224,15 @@
 			</div>
 		</div>
 		
+<<<<<<< HEAD
 		<!--<div class="row">
 			<div class="col-md-12 margem-topo"><tile-planejamento title-color="head-grey" title="Coleta Semanal" type="created"></tile-planejamento></div>
 		</div>-->
+=======
+		<div class="row">
+			<div class="col-md-12 margem-topo"><tile title-color="head-grey" title="Coleta Semanal" type="created"></tile></div>
+		</div>
+>>>>>>> feature/BS-530_Planejamento_Fisico
 		
 		<div id="coleta-semanal" class="row">
 			<div class="col-md-12 table-responsive margem-topo">
