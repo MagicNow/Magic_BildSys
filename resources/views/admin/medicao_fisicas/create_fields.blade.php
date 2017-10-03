@@ -61,9 +61,7 @@
                 }
             })
                     .done(function (retorno) {
-						
-						console.log(retorno);
-						
+												
                         var options_tarefas = '<option value="" selected>-</option>';
 												
                         if(retorno){

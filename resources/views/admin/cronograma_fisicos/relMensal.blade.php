@@ -1,464 +1,405 @@
 @extends('layouts.app')
 
-@section('content')
-    <style>
-		
-		.element-text{
-            width: 100%;
-            border: solid 1px #dddddd;
-        }
-		
-        .element-grafico{
-            width: 100%;
-            border: solid 1px #dddddd;
-        }
-		
-        .element-head {
-            text-align: center;
-            color: #f5f5f5;
-            padding: 10px 0px 10px 0px;
-            background-color: #474747;
-            font-family: Raleway;
-            font-weight: bold;
-        }
-		
-        .element-mensal{
-            height: 220px;
-            padding: 15px;
-            background-color: white;
-        }
-		
-		.element-acumulada{
-            height: 220px;
-            padding: 15px;
-            background-color: white;
-        }
-		
-		.element-desvio-pdp{
-            height: 180px;
-            padding: 5px;
-            background-color: white;
-        }
-		
-		.element-desvio-trabalho{
-            height: 180px;
-            padding: 5px;
-            background-color: white;
-        }
-		
-		.element-desvio-prazo{
-            height: 300px;
-            padding: 5px;
-            background-color: white;
-        }
-				
-		.table> thead> tr> th, .table> thead> tr> td{
-			background-color:orange;
-			color:white;
-		}
-    </style>
+@section('content')  
+	
+<style>
+	.element-grafico{
+		width: 100%;
+		border: solid 1px #dddddd;
+	}
+	.element-head {
+		text-align: center;
+		color: #f5f5f5;
+		padding: 10px 0px 10px 0px;
+		background-color: #474747;
+		font-family: Raleway;
+		font-weight: bold;
+	}	
+	
+	
+	.element-previsto-realizado-sem{
+		height: 250px;
+		padding: 5px;
+		background-color: white;
+	}
+	
+	.element-pdp-ptrab-realac{
+		height: 250px;
+		padding: 5px;
+		background-color: white;
+	}
+	
+	.element-desvio-pdp{
+		height: 250px;
+		padding: 5px;
+		background-color: white;			
+	}
+	
+	.element-desvio-ptrab{
+		height: 250px;
+		padding: 5px;
+		background-color: white;
+	}
+	
+	.element-tarefas-criticas{
+		padding: 5px;
+		background-color: white;
+	}		
+	
+	.texto-mes{
+		background-color: orange !important;
+		color: white !important; 
+		font-weight: 600;
+		font-size:12px;
+	}
+	
+	#coleta-semanal .fundo-branco{
+		background-color:white;
+		border:none;
+	}
+	
+</style>
 
     <div class="content">
         <section class="content-header">
             <div class="modal-header">
                 <div class="col-md-12">
                     <div class="col-md-9">
-                        <h3 class="pull-left title"><a href="#" onclick="history.go(-1);"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
-						Acompanhamento Mensal</h3>						
+                        <h3 class="pull-left title"><a href="#" onclick="history.go(-1);"><i class="fa fa-arrow-left" aria-hidden="true"></i></a> Acompanhamento Semanal</h3>						
 					</div>
                 </div>
             </div>
         </section>
-        {{--@include('layouts.filters')--}}
 		
 		<div class="box box-muted">
 			<div class="box-body">
 				<div class="row">
-					<div class="col-sm-3">
-						<h4>Obra</h4>
-						{!!
-						  Form::select(
-							'obra_id',$obras,null,['class' => 'form-control select2 js-filter']
-						  )
-						!!}
+					<div class="form-group col-md-4">
+						{!! Form::label('obra_id', 'Obra:') !!}
+						{!! Form::select('obra_id',[''=>'Selecione'] + $obras, null, ['class' => 'form-control select2','required'=>'required', 'id'=>'obra_id', 'onchange'=>'showDados()']) !!}
 					</div>
-					<div class="col-sm-2">
-						<h4>Ano</h4>
-						{!!
-						  Form::select(
-							'ano_id',["2017","2018","2019","2020"],null,['class' => 'form-control select2 js-filter']
-						  )
-						!!}
-					</div>
-					<div class="col-sm-3">
-						<h4>Mês</h4>
-						{!!
-						  Form::select(
-							'mes_id',["Julho","Agosto"],null,['class' => 'form-control select2 js-filter']
-						  )
-						!!}
-					</div>
-					<div class="col-sm-3">
-						<h4>Data</h4>
-						@include('partials.filter-date')
+					<div class="form-group col-md-4">
+						{!! Form::label('mes_id', 'Mês de Referência:') !!}
+						{!! Form::select('mes_id', [''=>'Selecione a Mês de Ref.'] + $meses, null, ['class' => 'form-control select2','required'=>'required' , 'id'=>'mes_id' , 'onchange'=>'showDados()']) !!}
 					</div>
 				</div>
 			</div>
-		</div>
+		</div>		
 		
-        <div class="box-body" id="app">
-            <div class="row">
-                <div class="col-xs-12">                    
-                    
-					<div class="row">
-						<div class="col-md-12 margem-topo"><tile title-color="head-grey" title="Previsto x Realizado" type="created"></tile></div>
-					</div>
-					</br>
-					<div class="row">                        
-						
-						<div class="col-md-6 table-responsive margem-topo">
-							<div class="element-grafico">
-                                <div class="element-head">ASSERTIVIDADE MENSAL</div>
-							</div>
-							<table class="table table-bordered table-striped">
-								<thead></thead>
-								<tbody>																		
-									<tr>
-										<td class="text-center">PDP</td>
-										<td class="text-center">TRABALHO</td>										
-										<td class="text-center">PREVISTO</td>
-										<td class="text-center">REAL</td>
-										<td class="text-center">ASSERTIVIDADE</td>
-									</tr>
-									<tr>
-										<td class="text-center">{{ $assertividadeMensal[0]}}</td>
-										<td class="text-center">{{ $assertividadeMensal[1]}}</td>
-										<td class="text-center">{{ $assertividadeMensal[2]}}</td>										
-										<td class="text-center">{{ $assertividadeMensal[3]}}</td>
-										<td class="text-center">{{ $assertividadeMensal[4]}}</td>
-									</tr>									
-								</tbody>
-							</table>
-                        </div>
-						
-						<div class="col-md-6 table-responsive margem-topo">
-							<table class="table table-bordered table-striped">
-								<thead >
-									<tr>										
-										<th class="text-center">jun-17</th>
-										<th class="text-center"></th>
-										<th class="text-center">jul-17</th>
-										<th class="text-center"></th>
-										<th class="text-center">ago-17</th>
-										<th class="text-center"></th>
-										<th class="text-center">set-17</th>
-										<th class="text-center"></th>
-									</tr>
-								</thead>
-								<tbody>
-																		
-									<tr>
-										<td class="text-center">% Mens.</td>
-										<td class="text-center">% Acum.</td>										
-										<td class="text-center">% Mens.</td>
-										<td class="text-center">% Acum.</td>
-										<td class="text-center">% Mens.</td>
-										<td class="text-center">% Acum.</td>
-										<td class="text-center">% Mens.</td>
-										<td class="text-center">% Acum.</td>
-									</tr>																															
-																		
-									<tr>
-										<td class="text-center">111</td>
-										<td class="text-center">111</td>										
-										<td class="text-center">222</td>
-										<td class="text-center">222</td>
-										<td class="text-center">333</td>										
-										<td class="text-center">333</td>
-										<td class="text-center">444</td>
-										<td class="text-center">444</td>																				
-									</tr>									
-								</tbody>
-							</table>
-                        </div> 
-						
-						<div class="col-md-3 margem-topo">							
-                            <div class="element-grafico">
-                                <div class="element-head">%Mensal</div>
-                                <div class="element-mensal">
-                                    @php
-										//$json_dataPrevistoXRealizado = json_encode([$previstoXRealizado]);                        
-										//$json_labelsPrevistoXRealizado = json_encode(['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4', 'Semana 5', 'Mês']);
-									@endphp
-									<chartjs-bar 
-                                                 :labels="labelsPercMensal" 
-												 :datasets="datasetsPercMensal"
-                                                                                                  
-                                                 :option="myoptionPercMensal"
-                                                 :height="200">
-									</chartjs-bar>
-                                </div>
-                            </div>
-                        </div>
-						
-						<div class="col-md-3 margem-topo">							
-                            <div class="element-grafico">
-                                <div class="element-head">%Acumulada</div>
-                                <div class="element-acumulada">
-                                    @php
-										//$json_dataPrevistoXRealizado = json_encode([$pDPxPTrabalhoxRealAc]);                        
-										//$json_labelsPrevistoXRealizado = json_encode(['Semana 1']);
-									@endphp
-									<chartjs-bar 
-                                                 :labels="labelsPercAcumulada" 
-												 :datasets="datasetsPercAcumulada"
-                                                                                                 
-                                                 :option="myoptionPercAcumulada"
-                                                 :height="200">
-									</chartjs-bar>
-                                </div>
-                            </div>
-                        </div>	
-						
-						<div class="col-md-3 margem-topo">							
-                            <div class="element-grafico">
-                                <div class="element-head">DESVIO PDP</div>
-                                <div class="element-desvio-pdp">
-                                    @php
-										//$json_dataPrevistoXRealizado = json_encode([$pDPxPTrabalhoxRealAc]);                        
-										//$json_labelsPrevistoXRealizado = json_encode(['Semana 1']);
-									@endphp
-									<chartjs-pie 
-										:labels="labelsDesvioPDP" 
-										:datasets="datasetsDesvioPDP" 
-										:scalesdisplay="false" 
-										:option="myoptionDesvioPDP" 
-										:height="120">
-									</chartjs-pie>
-                                </div>
-                            </div>
-                        </div>
-						
-						<div class="col-md-3 margem-topo">							
-                            <div class="element-grafico">
-                                <div class="element-head">DESVIO TRABALHO</div>
-                                <div class="element-desvio-trabalho">
-                                    @php
-										//$json_dataPrevistoXRealizado = json_encode([$pDPxPTrabalhoxRealAc]);                        
-										//$json_labelsPrevistoXRealizado = json_encode(['Semana 1']);
-									@endphp
-									<chartjs-pie 
-										:labels="labelsDesvioPTrabalho" 
-										:datasets="datasetsDesvioPTrabalho" 
-										:scalesdisplay="false" 
-										:option="myoptionDesvioPTrabalho" 
-										:height="120">
-									</chartjs-pie>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-					
-					<div class="row">
-						<div class="col-md-12 margem-topo"><tile title-color="head-grey" title="Desvio De Prazo" type="created"></tile></div>
-					</div>
-					
-					<div class="row">           						
-						<div class="col-md-7 margem-topo">							
-                            <div class="element-grafico">
-                                <div class="element-head">Desvio de Prazo</div>
-                                <div class="element-desvio-prazo">
-                                    @php
-										//$json_dataPrevistoXRealizado = json_encode([$previstoXRealizado]);                        
-										//$json_labelsPrevistoXRealizado = json_encode(['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4', 'Semana 5', 'Mês']);
-									@endphp
-									<chartjs-line 
-											:labels="labelsDesvioPrazo" 
-											:datasets="datasetsDesvioPrazo" 
-											:scalesdisplay="true" 
-											:option="myoptionDesvioPrazo" 
-											:height="120">
-									</chartjs-line>
-                                </div>
-                            </div>
-                        </div>
-						
-						<div class="col-md-5 margem-topo">							
-                            <div class="element-grafico">
-								<div class="element-head">Observações</div>
-								
-								</div>
-                            </div>
-                        </div> 
-						
-					</div>
-					
-                </div>
-            </div>
-        </div>
+		<div class="box-body" id="app"></div>
+		
     </div>
 @endsection
 @section('scripts')
+	@parent
     <script>
-	
-		const app = new Vue({
-            el: '#app',
-            data:{
-				
-				//Grafico BAR - % Mensal
-                datasetsPercMensal:
-				[{
-					label: 'Mensal',						
-					backgroundColor: ['blue','grey', 'DarkOrange', 'red'],
-					borderColor: ['blue','grey', 'DarkOrange', 'red'],
-					data: [0.68, 0.68, 0.97, 0.71]
-				}],				
-                labelsPercMensal : ["PDP", "Trabalho", "Previsto", "Real"],				
-                myoptionPercMensal: {
-                    onClick: function (event, legendItem) {
-						
-					},
-                    responsive:true,
-                    maintainAspectRatio:true,
-                    scales: {
-                        yAxes: [{
-                            ticks: {
-                                // Create scientific notation labels
-                                beginAtZero:true,
-                                fixedStepSize: 0.20
-                            }
-                        }]
-                    },
-                    legend: {
-                        display: false
-                    }
-                }
-				
-				,				
-				//Grafico BAR - % Acumulada
-                datasetsPercAcumulada:
-				[{
-					label: 'Acumulada',						
-					backgroundColor: ['blue','grey', 'red'],
-					borderColor: ['blue','grey', 'red'],
-					data: [1.68, 1.68, 1.97]
-				}],				
-                labelsPercAcumulada : ["PDP", "Trabalho", "Real"],				
-                myoptionPercAcumulada: {
-                    onClick: function (event, legendItem) {
-						
-					},
-                    responsive:true,
-                    maintainAspectRatio:true,
-                    scales: {
-                        yAxes: [{
-                            ticks: {
-                                // Create scientific notation labels
-                                beginAtZero:true,
-                                fixedStepSize: 0.20
-                            }
-                        }]
-                    },
-                    legend: {
-                        display: false
-                    }
-                }
-				
-				,				
-				//Grafico PIE - DESVIO PDP
-				labelsDesvioPDP: ["DESVIO PDP"],
-                myoptionDesvioPDP: {
-                    /*onClick: function (event, legendItem) {
-                        window.location.href = "{{url('ordens-de-compra?status_oc=')}}"+legendItem[0]._index;
-                    }*/
-                },
-                datasetsDesvioPDP:[{
-                    data: [100],
-                    backgroundColor: 'blue',
-                    hoverBackgroundColor: 'blue'
-                }]
-				
-				,				
-				//Grafico PIE - DESVIO P. TRABALHO
-				labelsDesvioPTrabalho: ["DESVIO P. TRABALHO"],
-                myoptionDesvioPTrabalho: {
-                    /*onClick: function (event, legendItem) {
-                        window.location.href = "{{url('ordens-de-compra?status_oc=')}}"+legendItem[0]._index;
-                    }*/
-                },
-                datasetsDesvioPTrabalho:[{
-                    data: [100],
-                    backgroundColor: 'maroon',
-                    hoverBackgroundColor: 'maroon'
-                }]
-				
-				,				
-				//Grafico Line - DesvioPrazo
-                datasetsDesvioPrazo:
-				[{
-					label: 'Data do Cliente',						
-					backgroundColor: 'blue',
-					hoverBackgroundColor: 'blue',
-					data: [111]
-				},
-				{
-					label: 'Plano Diretor',						
-					backgroundColor: 'black',
-					hoverBackgroundColor: 'black',
-					data: ["11111", "30/10/2010","30/10/2010"]
-				},
-				{
-					label: 'Plano Trabalho',						
-					backgroundColor: 'orange',
-					hoverBackgroundColor: 'orange',
-					data: ["11111", "30/10/2010","30/10/2010"]
-				},
-				{
-					label: 'Tendência Diretor',						
-					backgroundColor: 'purple',
-					hoverBackgroundColor: 'purple',
-					data: ["11111", "30/10/2010","30/10/2010"]
-				},
-				{
-					label: 'Tendência Trabalho',						
-					backgroundColor: 'yellow',
-					hoverBackgroundColor: 'yellow',
-					data: ["11111", "30/10/2010","30/10/2010"]
-				},
-				{
-					label: 'Tendência Real',						
-					backgroundColor: 'green',
-					hoverBackgroundColor: 'green',
-					data: ["11111", "30/10/2010","30/10/2010"]
-				},				
-				{
-					label: 'Habite-se',						
-					backgroundColor: 'red',
-					hoverBackgroundColor: 'red',
-					data: ["11111", "30/10/2010","30/10/2010"]
-				}],				
-                labelsDesvioPrazo : ["ABR-17", "MAI-17", "JUN-17"],				
-                myoptionDesvioPrazo: {                    
-                    responsive:true,
-                    maintainAspectRatio:true,
-                    scales: {
-						yAxes: [{
-							type: 'time',
-							time: {
-								displayFormats: {
-									quarter: 'III'
-								}
-							}
-						}]
-					},
-                    legend: {
-                        display: true
-                    }
-                }
-                
-								
+		
+		var obra_id = null;
+        var mes_id = null;
+		
+		// Funcao que retorna Objeto para Array
+		function objectToArray(myObj){
+			var array = $.map(myObj, function(value, index) {
+				return [value];
+			});
+			
+			return array;
+		}				
+		
+		// Mostrar dados
+		function showDados(){			
+			
+			obra_id = $('#obra_id').val();
+			mes_id = $('#mes_id').val();
+			
+			// Se tiver setados todos os combos cria os gráficos
+			if (obra_id !="" && mes_id !="") {
+				carregarTabelas(obra_id, mes_id);				
+			}
+		}
+		
+		//Mostrar meses baseado na Obra escolhida
+		function buscaMeses() {
+			
+			startLoading();	
+            
+			if (!obra_id) {
+                $('#mes_id').html('');
+                $('#mes_id').trigger('change.select2');
             }
-        });
-		        			
+			
+            $.ajax('/admin/cronogramaFisicos/meses-por-obra', {
+                data: {
+                    obra_id: obra_id
+                }
+            })
+			.done(function (retorno) {
+								
+				var options_meses = '<option value="" selected>-</option>';
+										
+				if(retorno){
+					$.each(retorno, function (index, valor) {						
+						options_meses += '<option value="' + index + '">'+ valor + '</option>';
+					});
+				}
+				$('#mes_id').html(options_meses);
+				$('#mes_id').trigger('change.select2');
+
+			})
+			.fail(function (retorno) {
+				erros = '';
+				$.each(retorno.responseJSON, function (index, value) {
+					if (erros.length) {
+						erros += '<br>';
+					}
+					erros += value;
+				});
+				swal("Oops", erros, "error");
+			});
+        
+			stopLoading();
+		}
+		
+		//Carregar Tabelas
+		function carregarTabelas(a, b){
+			
+			//chama a view de graficos			
+			startLoading();	            
+			
+            $.ajax('/admin/cronogramaFisicos/mensal-tabelas', {
+                data: {
+                    obra_id: a,
+					mes_id: b
+                }
+            })
+			.done(function (data) {
+								
+				$('#app').html(data);
+
+			})
+			.fail(function (retorno) {
+				erros = '';
+				$.each(retorno.responseJSON, function (index, value) {
+					if (erros.length) {
+						erros += '<br>';
+					}
+					erros += value;
+				});
+				swal("Oops", erros, "error");
+			});
+			
+			//carregarDadosGraficos(a,b);
+        
+			stopLoading();
+		}
+		
+		//Carregar Dados do Gráfico
+		function carregarDadosGraficos(a, b){
+			
+			$.ajax('/admin/cronogramaFisicos/mensal-graficos', {
+                data: {
+                    obra_id: a,
+					mes_id: b
+                }
+            })
+			.done(function (retorno) {
+								
+				carregarGraficos(retorno);				
+
+			})
+			.fail(function (retorno) {
+				erros = '';
+				$.each(retorno.responseJSON, function (index, value) {
+					if (erros.length) {
+						erros += '<br>';
+					}
+					erros += value;
+				});
+				swal("Oops", erros, "error");
+			});			
+			
+		}
+				
+		//Carregar Gráficos com VUE		
+		function carregarGraficos(data){						
+						
+			//Grafico Previsto x Realizado na Semana selecionada
+			GraficoPrevistoRealizadoLabels = objectToArray(data['grafPrevistoRealizadoSem']['labels']);
+			GraficoPrevistoRealizadoPrevistoSem = objectToArray(data['grafPrevistoRealizadoSem']['data']['previstoSem']);
+			GraficoPrevistoRealizadoRealizadoSem = objectToArray(data['grafPrevistoRealizadoSem']['data']['realizadoSem']);	
+			
+			//Grafico PDP x Trab x Real Acumulado na Semana selecionada
+			GraficoPDPTrabRealAcumSemLabels = data['grafPDPTrabRealAcumSem']['labels'];
+			GraficoPDPTrabRealAcumSem = objectToArray(data['grafPDPTrabRealAcumSem']['data']);
+			GraficoPDPTrabRealAcumSemPDP = [GraficoPDPTrabRealAcumSem[0]];
+			GraficoPDPTrabRealAcumSemTrab = [GraficoPDPTrabRealAcumSem[1]];
+			GraficoPDPTrabRealAcumSemReal = [GraficoPDPTrabRealAcumSem[2]];
+			
+			//Grafico Desvio PDP 
+			GraficoDesvioPDP = [data['graficoDesvioPDP']];
+			
+			//Grafico Desvio P. Trabalho
+			GraficoDesvioPTrab = [data['graficoDesvioPTrab']];
+			
+			//Grafico Tarefas Criticas
+			GraficoTarefasCriticasLabels = objectToArray(data['grafTarefasCriticas']['labels']);
+			GraficoTarefasCriticasPrevistoAcum = objectToArray(data['grafTarefasCriticas']['data']['previstoAcum']);
+			GraficoTarefasCriticasRealizadoAcum = objectToArray(data['grafTarefasCriticas']['data']['realizadoAcum']);
+		
+			setTimeout(function(){
+			
+				const app = new Vue({
+					el: '#app',
+					data:{
+						
+						//Grafico BAR - Previsto x Realizado Semanal
+						datasetsPrevistoXRealizado:
+						[{
+							label: 'Previsto',						
+							backgroundColor: 'Maroon',
+							borderColor: 'Maroon',
+							data: GraficoPrevistoRealizadoPrevistoSem
+						},
+						{
+							label: 'Realizado',											
+							backgroundColor: 'DarkOrange',
+							borderColor: 'DarkOrange',
+							data: GraficoPrevistoRealizadoRealizadoSem
+						}],				
+						labelsPrevistoXRealizado : GraficoPrevistoRealizadoLabels,				
+						myoptionPrevistoXRealizado: {
+							onClick: function (event, legendItem) {
+								
+							},
+							responsive:true,
+							maintainAspectRatio:true,
+							scales: {
+								yAxes: [{
+									ticks: {
+										// Create scientific notation labels
+										beginAtZero:true,
+										fixedStepSize: 0.75
+									}
+								}]
+							},
+							legend: {
+								display: false
+							}
+						},
+						
+						//Grafico BAR - PDP x P.Trabalho x Real Acumulado
+						datasetsPDPxPTrabalhoxRealAc:
+						[{
+							label: 'Plano Diretor',						
+							backgroundColor: 'grey',
+							borderColor: 'grey',
+							data: GraficoPDPTrabRealAcumSemPDP
+						},
+						{
+							label: 'Plano Trabalho',						
+							backgroundColor: 'blue',
+							borderColor: 'blue',
+							data: GraficoPDPTrabRealAcumSemTrab
+						},
+						{
+							label: 'Realizado',						
+							backgroundColor: 'DarkOrange',
+							borderColor: 'DarkOrange',
+							data: GraficoPDPTrabRealAcumSemReal
+						}],				
+						labelsPDPxPTrabalhoxRealAc : GraficoPDPTrabRealAcumSemLabels,
+						mybooleanPDPxPTrabalhoxRealAc : false,                
+						myoptionPDPxPTrabalhoxRealAc: {
+							onClick: function (event, legendItem) {
+								
+							},
+							responsive:true,
+							maintainAspectRatio:true,
+							scales: {
+								yAxes: [{
+									ticks: {
+										// Create scientific notation labels
+										beginAtZero:true,
+										fixedStepSize: 0.75
+									}
+								}]
+							},
+							legend: {
+								display: false
+							}
+						},
+						
+						//Grafico PIE - DESVIO PDP
+						labelsDesvioPDP: ["DESVIO PDP"],
+						myoptionDesvioPDP: {},
+						datasetsDesvioPDP:[{
+							data: GraficoDesvioPDP,
+							backgroundColor: 'DarkOrange',
+							hoverBackgroundColor: 'DarkOrange'
+						}],
+						
+						//Grafico PIE - DESVIO P. TRABALHO
+						labelsDesvioPTrabalho: ["DESVIO P. TRABALHO"],
+						myoptionDesvioPTrabalho: {},
+						datasetsDesvioPTrabalho:[{
+							data: GraficoDesvioPTrab,
+							backgroundColor: 'blue',
+							hoverBackgroundColor: 'blue'
+						}],
+						
+						//Grafico BAR - Tarefas Críticas
+						datasetsTarefasCriticas:
+						[{
+							label: 'Previsto Acumulado',						
+							backgroundColor: 'maroon',
+							borderColor: 'maroon',
+							data: GraficoTarefasCriticasPrevistoAcum,
+						},
+						{
+							label: 'Realizado Acumulado',
+							backgroundColor: 'DarkOrange',
+							borderColor: 'DarkOrange',
+							data: GraficoTarefasCriticasRealizadoAcum,
+						}],				                
+						labelsTarefasCriticas : GraficoTarefasCriticasLabels,										
+						mybooleanTarefasCriticas : false,                
+						myoptionTarefasCriticas: {
+							onClick: function (event, legendItem) {
+								
+							},
+							responsive:true,
+							maintainAspectRatio:true,
+							scales: {
+								yAxes: [{
+									ticks: {
+										// Create scientific notation labels
+										beginAtZero:true,
+										fixedStepSize: 20
+									}
+								}]
+							},
+							legend: {
+								display: true
+							}
+						}
+						//Fim dos Gráficos
+										
+					}
+				});
+			
+			}, 1500);
+		}				
+		
+		$(function () {
+			
+            // Colocar OnChange na Obra buscar por meses
+            $('#obra_id').on('change', function (evt) {
+                var v_obra = $(evt.target).val();
+                obra_id = v_obra;
+                buscaMeses();				
+            });
+			
+		});
+		       			
     </script>
 @endsection

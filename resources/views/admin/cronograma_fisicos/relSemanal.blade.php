@@ -70,20 +70,19 @@
                 </div>
             </div>
         </section>
-        {{--@include('layouts.filters')--}}
 		
 		<div class="box box-muted">
 			<div class="box-body">
 				<div class="row">
-					<div class="form-group col-md-3">
+					<div class="form-group col-md-4">
 						{!! Form::label('obra_id', 'Obra:') !!}
 						{!! Form::select('obra_id',[''=>'Selecione'] + $obras, null, ['class' => 'form-control select2','required'=>'required', 'id'=>'obra_id', 'onchange'=>'showDados()']) !!}
 					</div>
-					<div class="form-group col-md-2">
+					<div class="form-group col-md-4">
 						{!! Form::label('mes_id', 'Mês de Referência:') !!}
 						{!! Form::select('mes_id', [''=>'Selecione a Mês de Ref.'] + $meses, null, ['class' => 'form-control select2','required'=>'required' , 'id'=>'mes_id' , 'onchange'=>'showDados()']) !!}
 					</div>
-					<div class="form-group col-md-2">
+					<div class="form-group col-md-4">
 						{!! Form::label('semana_id', 'Semana de Referência:') !!}
 						{!! Form::select('semana_id', [''=>'Selecione a Semana de Ref.'] + $semanas, null, ['class' => 'form-control select2','required'=>'required', 'id'=>'semana_id' , 'onchange'=>'showDados()']) !!}					
 					</div>
@@ -91,14 +90,17 @@
 			</div>
 		</div>		
 		
-		<div class="box-body" id="app">
-		</div>
+		<div class="box-body" id="app"></div>
 		
     </div>
 @endsection
 @section('scripts')
 	@parent
     <script>
+		
+		var obra_id = null;
+        var mes_id = null;
+		var semana_id = null;		
 		
 		// Funcao que retorna Objeto para Array
 		function objectToArray(myObj){
@@ -109,10 +111,7 @@
 			return array;
 		}				
 		
-		var obra_id = null;
-        var mes_id = null;
-		var semana_id = null;
-		
+		// Mostrar dados
 		function showDados(){			
 			
 			obra_id = $('#obra_id').val();
@@ -245,16 +244,17 @@
 			GraficoPDPTrabRealAcumSemReal = [GraficoPDPTrabRealAcumSem[2]];
 			
 			//Grafico Desvio PDP 
+			GraficoDesvioPDP = [data['graficoDesvioPDP']];
 			
 			//Grafico Desvio P. Trabalho
+			GraficoDesvioPTrab = [data['graficoDesvioPTrab']];
 			
 			//Grafico Tarefas Criticas
 			GraficoTarefasCriticasLabels = objectToArray(data['grafTarefasCriticas']['labels']);
 			GraficoTarefasCriticasPrevistoAcum = objectToArray(data['grafTarefasCriticas']['data']['previstoAcum']);
 			GraficoTarefasCriticasRealizadoAcum = objectToArray(data['grafTarefasCriticas']['data']['realizadoAcum']);
-			
-			
-			setTimeout(function(){ }, 3000);
+		
+			setTimeout(function(){
 			
 				const app = new Vue({
 					el: '#app',
@@ -341,7 +341,7 @@
 						labelsDesvioPDP: ["DESVIO PDP"],
 						myoptionDesvioPDP: {},
 						datasetsDesvioPDP:[{
-							data: [100],
+							data: GraficoDesvioPDP,
 							backgroundColor: 'DarkOrange',
 							hoverBackgroundColor: 'DarkOrange'
 						}],
@@ -350,7 +350,7 @@
 						labelsDesvioPTrabalho: ["DESVIO P. TRABALHO"],
 						myoptionDesvioPTrabalho: {},
 						datasetsDesvioPTrabalho:[{
-							data: [100],
+							data: GraficoDesvioPTrab,
 							backgroundColor: 'blue',
 							hoverBackgroundColor: 'blue'
 						}],
@@ -394,7 +394,9 @@
 										
 					}
 				});
-		}
+			
+			}, 1500);
+		}				
 		
 		$(function () {
 			

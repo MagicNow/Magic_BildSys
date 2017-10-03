@@ -167,8 +167,10 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
 		
         $router->group(['middleware' => 'needsPermission:cronogramaFisicos.list'], function () use ($router) {
 			$router->get('meses-por-obra','Admin\CronogramaFisicoController@mesesPorObra');
-			$router->get('semanal-tabelas','Admin\CronogramaFisicoController@carregarTabelas');
-			$router->get('semanal-graficos','Admin\CronogramaFisicoController@carregarGraficos');
+			$router->get('semanal-tabelas','Admin\CronogramaFisicoController@semanalCarregarTabelas');
+			$router->get('semanal-graficos','Admin\CronogramaFisicoController@semanalCarregarGraficos');
+			$router->get('mensal-tabelas','Admin\CronogramaFisicoController@mensalCarregarTabelas');
+			$router->get('mensal-graficos','Admin\CronogramaFisicoController@mensalCarregarGraficos');
 			$router->get('relSemanal', ['as' => 'admin.cronograma_fisicos.relSemanal', 'uses' => 'Admin\CronogramaFisicoController@relSemanal']);
 			$router->get('relMensal', ['as' => 'admin.cronograma_fisicos.relMensal', 'uses' => 'Admin\CronogramaFisicoController@relMensal']);
             $router->get('atividade', ['as' => 'admin.cronograma_fisicos.index', 'uses' => 'Admin\CronogramaFisicoController@index']);
