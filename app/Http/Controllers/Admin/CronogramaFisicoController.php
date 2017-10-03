@@ -665,6 +665,39 @@ class CronogramaFisicoController extends AppBaseController
 		return $percentualPorMes;
 		
 	}
+
+	// Dados vindo calculados dos plano escolhido e mostrado suas porcentagens
+	public function planoPorMeses($percentualPorMeses, $tipoDados){
+				
+		$planoPorMeses = [];
+		
+		foreach ($percentualPorMeses as $mes => $dados) {			
+			
+			$inicioMes = Carbon::createFromFormat("d/m/Y", "01/".$mes)->startOfMonth();
+			
+			// Todas as Sextas do Mês de Referencia
+			$sextasArray = CronogramaFisicoRepository::getFridaysByDate($inicioMes);
+
+			foreach ($sextasArray as $sexta) {
+					
+					$acumuladoSemanal = 0;
+					
+					foreach ($dados as $tmp) {
+						$acumuladoSemanal = $acumuladoSemanal + ($tmp[$tipoDados."-".$sexta]/100) * $tmp["peso"];						
+					}				
+					
+					$planoPorMeses[$mes][$sexta] = round($acumuladoSemanal,2);
+			}
+			
+			$planoPorMeses[$mes]['mes'] = round($acumuladoSemanal,2);
+			
+									
+		}	
+				
+		return $planoPorMeses;
+		
+		
+	}	
 	
 	// Dados vindo calculados dos plano escolhido
 	public function planoAcumuladoMeses($percentualPorMeses, $tipoDados){
@@ -691,7 +724,7 @@ class CronogramaFisicoController extends AppBaseController
 					$planoAcumulado[$mes][$sexta] = round($acumuladoTotal,2);
 			}
 			
-			$planoAcumulado[$mes]['mes'] = round($acumuladoTotal,2);
+			$planoAcumulado[$mes]['mes-acumulado'] = round($acumuladoTotal,2);
 			
 									
 		}	
@@ -849,19 +882,6 @@ class CronogramaFisicoController extends AppBaseController
 		
 		return $meses;
     }
-	
-	// Carregar os meses de acordo com a Obra
-	/*public function semanasPorMes(Request $request){	
-		
-		$mesId = $request->mes_id;		
-		$mesRef = $meses[$mesId];
-		
-		$inicioMes = Carbon::createFromFormat("d/m/Y", "01/".$mesRef)->startOfMonth();
-			
-		$sextasArray = CronogramaFisicoRepository::getFridaysByDate($inicioMes);
-		
-		return $semanas;
-    }*/
 		
 	//Acompanhamento Mensal
 	public function relMensal(Request $request)
@@ -891,12 +911,13 @@ class CronogramaFisicoController extends AppBaseController
 		
 		$tabPrevistoRealizado = [];		
 		$tabPrevistoRealizado['labels'] = [];
-		$tabPrevistoRealizado['data']['planoDiretorAcumulado'] = [];
-		$tabPrevistoRealizado['data']['planoTrabalhoAcumulado'] = [];
-		$tabPrevistoRealizado['data']['planoRealizadoAcumulado'] = [];
-		$tabPrevistoRealizado['data']['planoPrevistoAcumulado'] = [];
-		$tabPrevistoRealizado['data']['previstoSemanal'] = [];	
-		$tabPrevistoRealizado['data']['realizadoSemanal'] = [];			
+		$tabPrevistoRealizado['data']['pdp'] = [];
+		$tabPrevistoRealizado['data']['trabalho'] = [];
+		$tabPrevistoRealizado['data']['tendencia-real'] = [];
+		$tabPrevistoRealizado['data']['tendencia-trabalho'] = [];
+		$tabPrevistoRealizado['data']['realizado'] = [];
+		
+		$assertividadeMensal = [];
 		
 		//Filtros Obra, Mês	
 		if($request->obra_id != "") {            
@@ -943,23 +964,152 @@ class CronogramaFisicoController extends AppBaseController
 						
 			/***** Tabela Percentual Previsto e Acumulado ****/	
 			$tabPrevistoRealizado['labels'] = array_slice($meses, $mesId, 4);    ; //Label Horizontal
-
-			/***** Tabela Percentual Previsto x Percentual Realizado - Dados: Vindo da Curva de Andamento (PD, PT, TR, TD e TT) ****/			
-			$planoDiretorAcumulado = $this->planoAcumuladoMeses($this->percentualPorMeses($obraId, $meses, "Plano Diretor"),"percentual");
-			$planoTrabalhoAcumulado = $this->planoAcumuladoMeses($this->percentualPorMeses($obraId, $meses, "Plano Trabalho"),"percentual");
-			$planoPrevistoAcumulado = $this->planoAcumuladoMeses($this->percentualPorMeses($obraId, $meses, "Tendência Real"),"percentual");	
-					
-			dump($tabColetaSemanal['data']);
-			dump($this->percentualPorMeses($obraId, $meses, "Plano Diretor"),"percentual");
-			dump($planoDiretorAcumulado);die;
-					
-			$tabPrevistoRealizado['data']['pdp'] = $this->planoAcumuladoMensal($planoDiretorAcumulado, $mesRef);			
-			$tabPrevistoRealizado['data']['trabalho'] = $this->planoAcumuladoMensal($planoTrabalhoAcumulado, $mesRef);
-			$tabPrevistoRealizado['data']['tendencia-real'] = $this->planoAcumuladoMensal($planoPrevistoAcumulado, $mesRef);
-																		
+			$mesesRef = $tabPrevistoRealizado['labels'];
+						
+			/***** Tabela Percentual Previsto x Percentual Realizado - Dados: Vindo da Curva de Andamento (PD, PT, TR, TD e TT) ****/
+			$percentualDiretorMeses = $this->percentualPorMeses($obraId, $meses, "Plano Diretor"); //% de tarefas em mes e sem
+			$percentualTrabalhoMeses = $this->percentualPorMeses($obraId, $meses, "Plano Trabalho"); //% de tarefas em mes e sem
+			$percentualTendeciaRealMeses = $this->percentualPorMeses($obraId, $meses, "Tendência Real"); //% de tarefas em mes e sem
+			$percentualTendeciaTrabalhoMeses = $this->percentualPorMeses($obraId, $meses, "Tendência Trabalho"); //% de tarefas em mes e sem
+								
+			$tabPrevistoRealizado['data']['pdp'] = $this->mensalTabPrevistoRealizado($percentualDiretorMeses, $mesesRef, "percentual");			
+			$tabPrevistoRealizado['data']['trabalho'] = $this->mensalTabPrevistoRealizado($percentualTrabalhoMeses, $mesesRef , "percentual");			
+			$tabPrevistoRealizado['data']['tendencia-real'] = $this->mensalTabPrevistoRealizado($percentualTendeciaRealMeses, $mesesRef , "percentual");			
+			$tabPrevistoRealizado['data']['tendencia-trabalho'] = $this->mensalTabPrevistoRealizado($percentualTendeciaTrabalhoMeses, $mesesRef , "percentual");;																	
+			$tabPrevistoRealizado['data']['realizado'] = $this->mensalTabPrevistoRealizado($percentualTendeciaRealMeses, $mesesRef , "realizado");;																				
+			
+			/**** Assertividade Mensal ***/
+			$assertividadeMes = [];
+			$assertividadeAcu = [];			
+			
+			array_push($assertividadeMes, $tabPrevistoRealizado['data']['pdp'][$mesesRef[0]]['mensal']);
+			array_push($assertividadeMes, $tabPrevistoRealizado['data']['trabalho'][$mesesRef[0]]['mensal']);
+			array_push($assertividadeMes, $tabPrevistoRealizado['data']['tendencia-trabalho'][$mesesRef[0]]['mensal']);
+			array_push($assertividadeMes, $tabPrevistoRealizado['data']['realizado'][$mesesRef[0]]['mensal']);
+			array_push($assertividadeMes, ($assertividadeMes[3]-$assertividadeMes[2])*100);
+			
+			$assertividadeMensal['mensal'] = $assertividadeMes;
+			
+			array_push($assertividadeAcu, $tabPrevistoRealizado['data']['pdp'][$mesesRef[0]]['acumulado']);
+			array_push($assertividadeAcu, $tabPrevistoRealizado['data']['trabalho'][$mesesRef[0]]['acumulado']);
+			array_push($assertividadeAcu, $tabPrevistoRealizado['data']['tendencia-trabalho'][$mesesRef[0]]['acumulado']);
+			array_push($assertividadeAcu, $tabPrevistoRealizado['data']['realizado'][$mesesRef[0]]['acumulado']);
+			array_push($assertividadeAcu, ($assertividadeAcu[3]-$assertividadeAcu[2])*100);
+			
+			$assertividadeMensal['acumulado'] = $assertividadeAcu;
 		}
 		
-		return view('admin.cronograma_fisicos.relMensalTabelas',compact('tabPrevistoRealizado'));
+		return view('admin.cronograma_fisicos.relMensalTabelas',compact('tabPrevistoRealizado', 'assertividadeMensal'));
+		
+	}
+	
+	public function mensalCarregarGraficos(Request $request){		
+		
+		$tabPrevistoRealizado = [];		
+		$tabPrevistoRealizado['data']['pdp'] = [];
+		$tabPrevistoRealizado['data']['trabalho'] = [];
+		$tabPrevistoRealizado['data']['tendencia-real'] = [];
+		$tabPrevistoRealizado['data']['tendencia-trabalho'] = [];
+		$tabPrevistoRealizado['data']['realizado'] = [];
+		
+		$assertividadeMensal = [];
+		
+		//Filtros Obra, Mês	
+		if($request->obra_id != "") {            
+            
+			$obraId = $request->obra_id;
+			
+			$obraDataInicio = Obra::select([
+							'obras.id',
+							'obras.data_inicio'							
+						])											
+						->where('obras.id', $obraId)						
+                        ->orderBy('obras.id', 'ASC')                        
+                        ->first()
+						->data_inicio;	
+								
+			$obraDataInicio = Carbon::parse($obraDataInicio);
+			
+			if(Carbon::now()->subMonth() < Carbon::parse($obraDataInicio)->addMonths(36)){
+				$obraDataFinal = Carbon::now();
+			}else{
+				$obraDataFinal = Carbon::parse($obraDataInicio)->addMonths(36);
+			}
+			
+			$meses = CronogramaFisicoRepository::getIntervalMonthsByDates($obraDataInicio, $obraDataFinal);// ["julho-17","agosto-17","setembro-17"];
+			$mesesObra = CronogramaFisicoRepository::getIntervalMonthsByDates($obraDataInicio, Carbon::parse($obraDataInicio)->addMonths(36)); // Todos os meses da Obra
+			
+		}		
+						
+		if($request->mes_id != "") { 
+			
+			$mesId = $request->mes_id;
+			$mesRef = $meses[$mesId];
+			
+			$inicioMes = Carbon::createFromFormat("d/m/Y", "01/".$mesRef)->startOfMonth();
+			$fimMes = Carbon::createFromFormat("d/m/Y", "01/".$mesRef)->endOfMonth();
+						
+		}
+						
+		//Retornar as Regras
+		if($request->obra_id != "" && $request->mes_id != ""){				
+						
+			$mesesRef = array_slice($meses, $mesId, 4); 
+						
+			/***** Tabela Percentual Previsto x Percentual Realizado - Dados: Vindo da Curva de Andamento (PD, PT, TR, TD e TT) ****/
+			$percentualDiretorMeses = $this->percentualPorMeses($obraId, $meses, "Plano Diretor"); //% de tarefas em mes e sem
+			$percentualTrabalhoMeses = $this->percentualPorMeses($obraId, $meses, "Plano Trabalho"); //% de tarefas em mes e sem
+			$percentualTendeciaRealMeses = $this->percentualPorMeses($obraId, $meses, "Tendência Real"); //% de tarefas em mes e sem
+			$percentualTendeciaTrabalhoMeses = $this->percentualPorMeses($obraId, $meses, "Tendência Trabalho"); //% de tarefas em mes e sem
+								
+			$tabPrevistoRealizado['data']['pdp'] = $this->mensalTabPrevistoRealizado($percentualDiretorMeses, $mesesRef, "percentual");			
+			$tabPrevistoRealizado['data']['trabalho'] = $this->mensalTabPrevistoRealizado($percentualTrabalhoMeses, $mesesRef , "percentual");	
+			$tabPrevistoRealizado['data']['tendencia-real'] = $this->mensalTabPrevistoRealizado($percentualTendeciaRealMeses, $mesesRef , "percentual");	
+			$tabPrevistoRealizado['data']['tendencia-trabalho'] = $this->mensalTabPrevistoRealizado($percentualTendeciaTrabalhoMeses, $mesesRef , "percentual");
+			$tabPrevistoRealizado['data']['realizado'] = $this->mensalTabPrevistoRealizado($percentualTendeciaRealMeses, $mesesRef , "realizado");
+										
+			/**** Assertividade Mensal ***/
+			$assertividadeMes = [];
+			$assertividadeAcu = [];			
+			
+			array_push($assertividadeMes, $tabPrevistoRealizado['data']['pdp'][$mesesRef[0]]['mensal']);
+			array_push($assertividadeMes, $tabPrevistoRealizado['data']['trabalho'][$mesesRef[0]]['mensal']);
+			array_push($assertividadeMes, $tabPrevistoRealizado['data']['tendencia-trabalho'][$mesesRef[0]]['mensal']);
+			array_push($assertividadeMes, $tabPrevistoRealizado['data']['realizado'][$mesesRef[0]]['mensal']);
+			array_push($assertividadeMes, ($assertividadeMes[3]-$assertividadeMes[2])*100);
+			
+			$assertividadeMensal['mensal'] = $assertividadeMes;
+			
+			array_push($assertividadeAcu, $tabPrevistoRealizado['data']['pdp'][$mesesRef[0]]['acumulado']); //0
+			array_push($assertividadeAcu, $tabPrevistoRealizado['data']['trabalho'][$mesesRef[0]]['acumulado']); //1
+			array_push($assertividadeAcu, $tabPrevistoRealizado['data']['tendencia-trabalho'][$mesesRef[0]]['acumulado']);
+			array_push($assertividadeAcu, $tabPrevistoRealizado['data']['realizado'][$mesesRef[0]]['acumulado']);
+			array_push($assertividadeAcu, ($assertividadeAcu[3]-$assertividadeAcu[2])*100);
+			array_push($assertividadeAcu, ($assertividadeAcu[3]-$assertividadeAcu[0]));
+			array_push($assertividadeAcu, ($assertividadeAcu[3]-$assertividadeAcu[1]));
+			
+			$assertividadeMensal['acumulado'] = $assertividadeAcu;
+		}
+		
+		$grafPrevistoRealizado = $assertividadeMensal;
+		
+		return $grafPrevistoRealizado;
+		
+	}
+	
+	public function mensalTabPrevistoRealizado($percentualMeses, $mesesRef, $tipoDados){	
+		
+		$data = [];
+		
+		$planoMeses = $this->planoPorMeses($percentualMeses,$tipoDados); //% em mes e sem
+		$planoAcumuladoMeses = $this->planoAcumuladoMeses($percentualMeses,$tipoDados); //% acum em mes e sem		
+		
+		foreach ($mesesRef as $mes) {
+			$data[$mes]['mensal'] = $planoMeses[$mes]['mes'];		
+			$data[$mes]['acumulado']  = $planoAcumuladoMeses[$mes]['mes-acumulado'];
+		}
+		
+		return $data;
 		
 	}
 }

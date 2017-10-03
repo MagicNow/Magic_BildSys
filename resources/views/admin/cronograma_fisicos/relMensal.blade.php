@@ -53,7 +53,7 @@
 		font-size:12px;
 	}
 	
-	#coleta-semanal .fundo-branco{
+	.fundo-branco{
 		background-color:white;
 		border:none;
 	}
@@ -65,7 +65,7 @@
             <div class="modal-header">
                 <div class="col-md-12">
                     <div class="col-md-9">
-                        <h3 class="pull-left title"><a href="#" onclick="history.go(-1);"><i class="fa fa-arrow-left" aria-hidden="true"></i></a> Acompanhamento Semanal</h3>						
+                        <h3 class="pull-left title"><a href="#" onclick="history.go(-1);"><i class="fa fa-arrow-left" aria-hidden="true"></i></a> Acompanhamento Mensal</h3>						
 					</div>
                 </div>
             </div>
@@ -188,7 +188,7 @@
 				swal("Oops", erros, "error");
 			});
 			
-			//carregarDadosGraficos(a,b);
+			carregarDadosGraficos(a,b);
         
 			stopLoading();
 		}
@@ -223,28 +223,15 @@
 		//Carregar Gráficos com VUE		
 		function carregarGraficos(data){						
 						
-			//Grafico Previsto x Realizado na Semana selecionada
-			GraficoPrevistoRealizadoLabels = objectToArray(data['grafPrevistoRealizadoSem']['labels']);
-			GraficoPrevistoRealizadoPrevistoSem = objectToArray(data['grafPrevistoRealizadoSem']['data']['previstoSem']);
-			GraficoPrevistoRealizadoRealizadoSem = objectToArray(data['grafPrevistoRealizadoSem']['data']['realizadoSem']);	
+			//Grafico Previsto x Realizado no mes selecionada
+			GraficoPrevistoRealizadoMes = objectToArray(data['mensal']);			
+			GraficoPrevistoRealizadoAcu = objectToArray(data['acumulado']);	
 			
-			//Grafico PDP x Trab x Real Acumulado na Semana selecionada
-			GraficoPDPTrabRealAcumSemLabels = data['grafPDPTrabRealAcumSem']['labels'];
-			GraficoPDPTrabRealAcumSem = objectToArray(data['grafPDPTrabRealAcumSem']['data']);
-			GraficoPDPTrabRealAcumSemPDP = [GraficoPDPTrabRealAcumSem[0]];
-			GraficoPDPTrabRealAcumSemTrab = [GraficoPDPTrabRealAcumSem[1]];
-			GraficoPDPTrabRealAcumSemReal = [GraficoPDPTrabRealAcumSem[2]];
+			GraficoPrevistoRealizadoMesLabels = ["PDP","Trabalho","Previsto","Real"];
+			GraficoPrevistoRealizadoAcuLabels = ["PDP","Trabalho","Real"];
 			
-			//Grafico Desvio PDP 
-			GraficoDesvioPDP = [data['graficoDesvioPDP']];
-			
-			//Grafico Desvio P. Trabalho
-			GraficoDesvioPTrab = [data['graficoDesvioPTrab']];
-			
-			//Grafico Tarefas Criticas
-			GraficoTarefasCriticasLabels = objectToArray(data['grafTarefasCriticas']['labels']);
-			GraficoTarefasCriticasPrevistoAcum = objectToArray(data['grafTarefasCriticas']['data']['previstoAcum']);
-			GraficoTarefasCriticasRealizadoAcum = objectToArray(data['grafTarefasCriticas']['data']['realizadoAcum']);
+			//Desvio PDP e Trabalho
+			GraficoDesvio = objectToArray(data['acumulado']);
 		
 			setTimeout(function(){
 			
@@ -252,22 +239,35 @@
 					el: '#app',
 					data:{
 						
-						//Grafico BAR - Previsto x Realizado Semanal
-						datasetsPrevistoXRealizado:
+						//Grafico BAR - Previsto x Realizado % Mensal
+						datasetsPrevistoXRealizadoMes:
 						[{
-							label: 'Previsto',						
-							backgroundColor: 'Maroon',
-							borderColor: 'Maroon',
-							data: GraficoPrevistoRealizadoPrevistoSem
+							label: 'PDP',						
+							backgroundColor: 'Blue',
+							borderColor: 'Blue',
+							data: [GraficoPrevistoRealizadoMes[0]]
 						},
 						{
-							label: 'Realizado',											
+							label: 'Trabalho',											
+							backgroundColor: 'Grey',
+							borderColor: 'Grey',
+							data: [GraficoPrevistoRealizadoMes[1]]
+						},
+						{
+							label: 'Previsto',											
+							backgroundColor: 'Yellow',
+							borderColor: 'Yellow',
+							data: [GraficoPrevistoRealizadoMes[2]]
+						},
+						{
+							label: 'Real',											
 							backgroundColor: 'DarkOrange',
 							borderColor: 'DarkOrange',
-							data: GraficoPrevistoRealizadoRealizadoSem
-						}],				
-						labelsPrevistoXRealizado : GraficoPrevistoRealizadoLabels,				
-						myoptionPrevistoXRealizado: {
+							data: [GraficoPrevistoRealizadoMes[3]]
+						}
+						],				
+						labelsPrevistoXRealizadoMes : GraficoPrevistoRealizadoMesLabels,				
+						myoptionPrevistoXRealizadoMes: {
 							onClick: function (event, legendItem) {
 								
 							},
@@ -287,29 +287,29 @@
 							}
 						},
 						
-						//Grafico BAR - PDP x P.Trabalho x Real Acumulado
-						datasetsPDPxPTrabalhoxRealAc:
+						//Grafico BAR - Previsto x Realizado % Acumulado
+						datasetsPrevistoXRealizadoAcu:
 						[{
-							label: 'Plano Diretor',						
-							backgroundColor: 'grey',
-							borderColor: 'grey',
-							data: GraficoPDPTrabRealAcumSemPDP
+							label: 'PDP',						
+							backgroundColor: 'Blue',
+							borderColor: 'Blue',
+							data: [GraficoPrevistoRealizadoAcu[0]]
 						},
 						{
-							label: 'Plano Trabalho',						
-							backgroundColor: 'blue',
-							borderColor: 'blue',
-							data: GraficoPDPTrabRealAcumSemTrab
+							label: 'Trabalho',						
+							backgroundColor: 'Grey',
+							borderColor: 'Grey',
+							data: [GraficoPrevistoRealizadoAcu[1]]
 						},
 						{
 							label: 'Realizado',						
 							backgroundColor: 'DarkOrange',
 							borderColor: 'DarkOrange',
-							data: GraficoPDPTrabRealAcumSemReal
+							data: [GraficoPrevistoRealizadoAcu[3]]
 						}],				
-						labelsPDPxPTrabalhoxRealAc : GraficoPDPTrabRealAcumSemLabels,
-						mybooleanPDPxPTrabalhoxRealAc : false,                
-						myoptionPDPxPTrabalhoxRealAc: {
+						labelsPrevistoXRealizadoAcu : GraficoPrevistoRealizadoAcuLabels,
+						mybooleanPrevistoXRealizadoAcu : false,                
+						myoptionPrevistoXRealizadoAcu: {
 							onClick: function (event, legendItem) {
 								
 							},
@@ -333,55 +333,20 @@
 						labelsDesvioPDP: ["DESVIO PDP"],
 						myoptionDesvioPDP: {},
 						datasetsDesvioPDP:[{
-							data: GraficoDesvioPDP,
+							data: [GraficoDesvio[5]],
 							backgroundColor: 'DarkOrange',
 							hoverBackgroundColor: 'DarkOrange'
 						}],
 						
 						//Grafico PIE - DESVIO P. TRABALHO
-						labelsDesvioPTrabalho: ["DESVIO P. TRABALHO"],
-						myoptionDesvioPTrabalho: {},
-						datasetsDesvioPTrabalho:[{
-							data: GraficoDesvioPTrab,
+						labelsDesvioTrabalho: ["DESVIO TRABALHO"],
+						myoptionDesvioTrabalho: {},
+						datasetsDesvioTrabalho:[{
+							data: [GraficoDesvio[6]],
 							backgroundColor: 'blue',
 							hoverBackgroundColor: 'blue'
 						}],
 						
-						//Grafico BAR - Tarefas Críticas
-						datasetsTarefasCriticas:
-						[{
-							label: 'Previsto Acumulado',						
-							backgroundColor: 'maroon',
-							borderColor: 'maroon',
-							data: GraficoTarefasCriticasPrevistoAcum,
-						},
-						{
-							label: 'Realizado Acumulado',
-							backgroundColor: 'DarkOrange',
-							borderColor: 'DarkOrange',
-							data: GraficoTarefasCriticasRealizadoAcum,
-						}],				                
-						labelsTarefasCriticas : GraficoTarefasCriticasLabels,										
-						mybooleanTarefasCriticas : false,                
-						myoptionTarefasCriticas: {
-							onClick: function (event, legendItem) {
-								
-							},
-							responsive:true,
-							maintainAspectRatio:true,
-							scales: {
-								yAxes: [{
-									ticks: {
-										// Create scientific notation labels
-										beginAtZero:true,
-										fixedStepSize: 20
-									}
-								}]
-							},
-							legend: {
-								display: true
-							}
-						}
 						//Fim dos Gráficos
 										
 					}
