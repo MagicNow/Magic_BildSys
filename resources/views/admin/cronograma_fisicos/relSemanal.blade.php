@@ -70,35 +70,37 @@
                 </div>
             </div>
         </section>
-        {{--@include('layouts.filters')--}}
 		
 		<div class="box box-muted">
 			<div class="box-body">
 				<div class="row">
-					<div class="form-group col-md-3">
+					<div class="form-group col-md-4">
 						{!! Form::label('obra_id', 'Obra:') !!}
 						{!! Form::select('obra_id',[''=>'Selecione'] + $obras, null, ['class' => 'form-control select2','required'=>'required', 'id'=>'obra_id', 'onchange'=>'showDados()']) !!}
 					</div>
-					<div class="form-group col-md-2">
+					<div class="form-group col-md-4">
 						{!! Form::label('mes_id', 'Mês de Referência:') !!}
 						{!! Form::select('mes_id', [''=>'Selecione a Mês de Ref.'] + $meses, null, ['class' => 'form-control select2','required'=>'required' , 'id'=>'mes_id' , 'onchange'=>'showDados()']) !!}
 					</div>
-					<div class="form-group col-md-2">
+					<div class="form-group col-md-4">
 						{!! Form::label('semana_id', 'Semana de Referência:') !!}
 						{!! Form::select('semana_id', [''=>'Selecione a Semana de Ref.'] + $semanas, null, ['class' => 'form-control select2','required'=>'required', 'id'=>'semana_id' , 'onchange'=>'showDados()']) !!}					
 					</div>
 				</div>
 			</div>
-		</div>		
-		
-		<div id="semanal-tabelas">
 		</div>
+		
+		<div class="box-body" id="app"></div>
 		
     </div>
 @endsection
 @section('scripts')
 	@parent
     <script>
+
+		var obra_id = null;
+        var mes_id = null;
+		var semana_id = null;		
 		
 		// Funcao que retorna Objeto para Array
 		function objectToArray(myObj){
@@ -109,10 +111,7 @@
 			return array;
 		}				
 		
-		var obra_id = null;
-        var mes_id = null;
-		var semana_id = null;
-		
+		// Mostrar dados
 		function showDados(){			
 			
 			obra_id = $('#obra_id').val();
@@ -182,7 +181,7 @@
             })
 			.done(function (data) {
 								
-				$('#semanal-tabelas').html(data);
+				$('#app').html(data);
 
 			})
 			.fail(function (retorno) {
@@ -244,150 +243,160 @@
 			GraficoPDPTrabRealAcumSemTrab = [GraficoPDPTrabRealAcumSem[1]];
 			GraficoPDPTrabRealAcumSemReal = [GraficoPDPTrabRealAcumSem[2]];
 			
+			//Grafico Desvio PDP 
+			GraficoDesvioPDP = [data['graficoDesvioPDP']];
+			
+			//Grafico Desvio P. Trabalho
+			GraficoDesvioPTrab = [data['graficoDesvioPTrab']];
+			
 			//Grafico Tarefas Criticas
 			GraficoTarefasCriticasLabels = objectToArray(data['grafTarefasCriticas']['labels']);
 			GraficoTarefasCriticasPrevistoAcum = objectToArray(data['grafTarefasCriticas']['data']['previstoAcum']);
 			GraficoTarefasCriticasRealizadoAcum = objectToArray(data['grafTarefasCriticas']['data']['realizadoAcum']);
+		
+			setTimeout(function(){
 			
-			const app = new Vue({
-			el: '#app',
-			data:{
-				
-				//Grafico BAR - Previsto x Realizado Semanal
-				datasetsPrevistoXRealizado:
-				[{
-					label: 'Previsto',						
-					backgroundColor: 'Maroon',
-					borderColor: 'Maroon',
-					data: GraficoPrevistoRealizadoPrevistoSem
-				},
-				{
-					label: 'Realizado',											
-					backgroundColor: 'DarkOrange',
-					borderColor: 'DarkOrange',
-					data: GraficoPrevistoRealizadoRealizadoSem
-				}],				
-				labelsPrevistoXRealizado : GraficoPrevistoRealizadoLabels,				
-				myoptionPrevistoXRealizado: {
-					onClick: function (event, legendItem) {
+				const app = new Vue({
+					el: '#app',
+					data:{
 						
-					},
-					responsive:true,
-					maintainAspectRatio:true,
-					scales: {
-						yAxes: [{
-							ticks: {
-								// Create scientific notation labels
-								beginAtZero:true,
-								fixedStepSize: 0.50
-							}
-						}]
-					},
-					legend: {
-						display: false
-					}
-				},
-				
-				//Grafico BAR - PDP x P.Trabalho x Real Acumulado
-				datasetsPDPxPTrabalhoxRealAc:
-				[{
-					label: 'Plano Diretor',						
-					backgroundColor: 'grey',
-					borderColor: 'grey',
-					data: GraficoPDPTrabRealAcumSemPDP
-				},
-				{
-					label: 'Plano Trabalho',						
-					backgroundColor: 'blue',
-					borderColor: 'blue',
-					data: GraficoPDPTrabRealAcumSemTrab
-				},
-				{
-					label: 'Realizado',						
-					backgroundColor: 'DarkOrange',
-					borderColor: 'DarkOrange',
-					data: GraficoPDPTrabRealAcumSemReal
-				}],				
-				labelsPDPxPTrabalhoxRealAc : GraficoPDPTrabRealAcumSemLabels,
-				mybooleanPDPxPTrabalhoxRealAc : false,                
-				myoptionPDPxPTrabalhoxRealAc: {
-					onClick: function (event, legendItem) {
-						
-					},
-					responsive:true,
-					maintainAspectRatio:true,
-					scales: {
-						yAxes: [{
-							ticks: {
-								// Create scientific notation labels
-								beginAtZero:true,
-								fixedStepSize: 0.5
-							}
-						}]
-					},
-					legend: {
-						display: false
-					}
-				},
-				
-				//Grafico PIE - DESVIO PDP
-				labelsDesvioPDP: ["DESVIO PDP"],
-				myoptionDesvioPDP: {},
-				datasetsDesvioPDP:[{
-					data: [100],
-					backgroundColor: 'DarkOrange',
-					hoverBackgroundColor: 'DarkOrange'
-				}],
-				
-				//Grafico PIE - DESVIO P. TRABALHO
-				labelsDesvioPTrabalho: ["DESVIO P. TRABALHO"],
-				myoptionDesvioPTrabalho: {},
-				datasetsDesvioPTrabalho:[{
-					data: [100],
-					backgroundColor: 'blue',
-					hoverBackgroundColor: 'blue'
-				}],
-				
-				//Grafico BAR - Tarefas Críticas
-				datasetsTarefasCriticas:
-				[{
-					label: 'Previsto Acumulado',						
-					backgroundColor: 'maroon',
-					borderColor: 'maroon',
-					data: GraficoTarefasCriticasPrevistoAcum,
-				},
-				{
-					label: 'Realizado Acumulado',
-					backgroundColor: 'DarkOrange',
-					borderColor: 'DarkOrange',
-					data: GraficoTarefasCriticasRealizadoAcum,
-				}],				                
-				labelsTarefasCriticas : GraficoTarefasCriticasLabels,										
-				mybooleanTarefasCriticas : false,                
-				myoptionTarefasCriticas: {
-					onClick: function (event, legendItem) {
-						
-					},
-					responsive:true,
-					maintainAspectRatio:true,
-					scales: {
-						yAxes: [{
-							ticks: {
-								// Create scientific notation labels
-								beginAtZero:true,
-								fixedStepSize: 20
-							}
-						}]
-					},
-					legend: {
-						display: true
-					}
-				}
-				//Fim dos Gráficos
+						//Grafico BAR - Previsto x Realizado Semanal
+						datasetsPrevistoXRealizado:
+						[{
+							label: 'Previsto',						
+							backgroundColor: 'Maroon',
+							borderColor: 'Maroon',
+							data: GraficoPrevistoRealizadoPrevistoSem
+						},
+						{
+							label: 'Realizado',											
+							backgroundColor: 'DarkOrange',
+							borderColor: 'DarkOrange',
+							data: GraficoPrevistoRealizadoRealizadoSem
+						}],				
+						labelsPrevistoXRealizado : GraficoPrevistoRealizadoLabels,				
+						myoptionPrevistoXRealizado: {
+							onClick: function (event, legendItem) {
 								
-			}
-		});
-		}
+							},
+							responsive:true,
+							maintainAspectRatio:true,
+							scales: {
+								yAxes: [{
+									ticks: {
+										// Create scientific notation labels
+										beginAtZero:true,
+										fixedStepSize: 0.75
+									}
+								}]
+							},
+							legend: {
+								display: false
+							}
+						},
+						
+						//Grafico BAR - PDP x P.Trabalho x Real Acumulado
+						datasetsPDPxPTrabalhoxRealAc:
+						[{
+							label: 'Plano Diretor',						
+							backgroundColor: 'grey',
+							borderColor: 'grey',
+							data: GraficoPDPTrabRealAcumSemPDP
+						},
+						{
+							label: 'Plano Trabalho',						
+							backgroundColor: 'blue',
+							borderColor: 'blue',
+							data: GraficoPDPTrabRealAcumSemTrab
+						},
+						{
+							label: 'Realizado',						
+							backgroundColor: 'DarkOrange',
+							borderColor: 'DarkOrange',
+							data: GraficoPDPTrabRealAcumSemReal
+						}],				
+						labelsPDPxPTrabalhoxRealAc : GraficoPDPTrabRealAcumSemLabels,
+						mybooleanPDPxPTrabalhoxRealAc : false,                
+						myoptionPDPxPTrabalhoxRealAc: {
+							onClick: function (event, legendItem) {
+								
+							},
+							responsive:true,
+							maintainAspectRatio:true,
+							scales: {
+								yAxes: [{
+									ticks: {
+										// Create scientific notation labels
+										beginAtZero:true,
+										fixedStepSize: 0.75
+									}
+								}]
+							},
+							legend: {
+								display: false
+							}
+						},
+						
+						//Grafico PIE - DESVIO PDP
+						labelsDesvioPDP: ["DESVIO PDP"],
+						myoptionDesvioPDP: {},
+						datasetsDesvioPDP:[{
+							data: GraficoDesvioPDP,
+							backgroundColor: 'DarkOrange',
+							hoverBackgroundColor: 'DarkOrange'
+						}],
+						
+						//Grafico PIE - DESVIO P. TRABALHO
+						labelsDesvioPTrabalho: ["DESVIO P. TRABALHO"],
+						myoptionDesvioPTrabalho: {},
+						datasetsDesvioPTrabalho:[{
+							data: GraficoDesvioPTrab,
+							backgroundColor: 'blue',
+							hoverBackgroundColor: 'blue'
+						}],
+						
+						//Grafico BAR - Tarefas Críticas
+						datasetsTarefasCriticas:
+						[{
+							label: 'Previsto Acumulado',						
+							backgroundColor: 'maroon',
+							borderColor: 'maroon',
+							data: GraficoTarefasCriticasPrevistoAcum,
+						},
+						{
+							label: 'Realizado Acumulado',
+							backgroundColor: 'DarkOrange',
+							borderColor: 'DarkOrange',
+							data: GraficoTarefasCriticasRealizadoAcum,
+						}],				                
+						labelsTarefasCriticas : GraficoTarefasCriticasLabels,										
+						mybooleanTarefasCriticas : false,                
+						myoptionTarefasCriticas: {
+							onClick: function (event, legendItem) {
+								
+							},
+							responsive:true,
+							maintainAspectRatio:true,
+							scales: {
+								yAxes: [{
+									ticks: {
+										// Create scientific notation labels
+										beginAtZero:true,
+										fixedStepSize: 20
+									}
+								}]
+							},
+							legend: {
+								display: true
+							}
+						}
+						//Fim dos Gráficos
+										
+					}
+				});
+			
+			}, 1500);
+		}				
 		
 		$(function () {
 			
@@ -397,6 +406,7 @@
                 obra_id = v_obra;
                 buscaMeses();				
             });
+			
 			
 		});
 		       			

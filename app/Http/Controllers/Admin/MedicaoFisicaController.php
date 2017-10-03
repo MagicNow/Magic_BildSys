@@ -151,6 +151,7 @@ class MedicaoFisicaController extends AppBaseController
 		])
 		->join('obras','obras.id','=','medicao_fisicas.obra_id')
 		->where('obras.id', $obraId)
+		//->where('medicao_fisicas.valor_medido_total', '=', 100)
 		->get()->toArray();
 		        
 		$tarefas = CronogramaFisico::select([

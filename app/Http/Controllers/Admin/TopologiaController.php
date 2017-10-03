@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Storage;
 use Response;
 use DB;
 
-class TipologiaController extends AppBaseController
+class TopologiaController extends AppBaseController
 {
     /** @var  TipologiaRepository */
     private $tipologiaRepository;    
@@ -57,7 +57,7 @@ class TipologiaController extends AppBaseController
 
         $tipologia = $this->tipologiaRepository->create($input);
 
-        Flash::success(' Tarefa Padrão '.trans('common.saved').' '.trans('common.successfully').'.');
+        Flash::success('Topologia '.trans('common.saved').' '.trans('common.successfully').'.');
 
         return redirect(route('admin.tipologia.index'));
     }
@@ -74,7 +74,7 @@ class TipologiaController extends AppBaseController
         $tipologia = $this->tipologiaRepository->findWithoutFail($id);
 
         if (empty($tipologia)) {
-            Flash::error(' Tarefa Padrão '.trans('common.not-found'));
+            Flash::error('Topologia '.trans('common.not-found'));
 
             return redirect(route('admin.tipologia.index'));
         }
@@ -94,7 +94,7 @@ class TipologiaController extends AppBaseController
         $tipologia = $this->tipologiaRepository->findWithoutFail($id);
 
         if (empty($tipologia)) {
-            Flash::error(' Tarefa Padrão '.trans('common.not-found'));
+            Flash::error('Topologia '.trans('common.not-found'));
 
             return redirect(route('admin.tipologia.index'));
         }    
@@ -115,14 +115,14 @@ class TipologiaController extends AppBaseController
         $tipologia = $this->tipologiaRepository->findWithoutFail($id);
 
         if (empty($tipologia)) {
-            Flash::error(' Tarefa Padrão '.trans('common.not-found'));
+            Flash::error('Topologia '.trans('common.not-found'));
 
             return redirect(route('admin.tipologia.index'));
         }       
 
         $tipologia = $this->tipologiaRepository->update($request->all(), $id);
 
-        Flash::success('Tarefa Padrão '.trans('common.updated').' '.trans('common.successfully').'.');
+        Flash::success('Topologia '.trans('common.updated').' '.trans('common.successfully').'.');
 
         return redirect(route('admin.tipologia.index'));
     }
@@ -139,13 +139,13 @@ class TipologiaController extends AppBaseController
         $tipologia = $this->tipologiaRepository->findWithoutFail($id);
 
         if (empty($tipologia)) {
-            Flash::error(' Tarefa Padrão '.trans('common.not-found'));
+            Flash::error('Topologia '.trans('common.not-found'));
             return redirect(route('admin.tipologia.index'));
         }
 		
         $this->tipologiaRepository->delete($id);
 
-        Flash::success(' Tarefa Padrão '.trans('common.deleted').' '.trans('common.successfully').'.');
+        Flash::success('Topologia '.trans('common.deleted').' '.trans('common.successfully').'.');
 
         return redirect(route('admin.tipologia.index'));
     }
