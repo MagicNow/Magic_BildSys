@@ -1290,7 +1290,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             ]
         )->middleware('needsPermission:contratos.edit');
         $router->post(
-            '/reajustar/{con trato_item_id}',
+            '/reajustar/{contrato_item_id}',
             [
                 'as' => 'contratos.reajustar',
                 'uses' => 'ContratoController@reajustar'
@@ -1550,10 +1550,12 @@ $router->get('requisicao/get-andares-obra/{obra}/torre/{torre}/pavimento/{pavime
 $router->get('requisicao/get-insumos', ['as' => 'requisicao.getInsumos', 'uses' => 'RequisicaoController@getInsumos']);
 $router->get('requisicao/get-insumos-obra/', ['as' => 'requisicao.insumosObra', 'uses' => 'RequisicaoController@getInsumos']);
 $router->get('requisicao/get-insumos-obra-comodo/', ['as' => 'requisicao.insumosObraComodo', 'uses' => 'RequisicaoController@getInsumosByComodo']);
-$router->post('requisicao', ['as' => 'notafiscals.store', 'uses' => 'NotafiscalController@store']);
 
 $router->get('/requisicao/ler-qr-cod', function() {
     return View('requisicao.ler_qr_code');
 });
 
-Route::resource('requisicao', 'RequisicaoController');
+$router->resource('requisicao', 'RequisicaoController');
+
+# Processo de Saída
+$router->get('requisicao/processo-saida/{requisicao}', ['as' => 'requisicao.processoSaida', 'uses' => 'RequisicaoController@processoSaida']);

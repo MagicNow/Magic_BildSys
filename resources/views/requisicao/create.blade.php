@@ -476,7 +476,7 @@
                 andar: $('#andar').val(),
                 trecho: $('#trecho').val(),
                 insumos: criaJsonInsumos(),
-                comodos: criaJsonComodo()
+                comodos: criaJsonComodos()
             }
 
             console.log(JSON.stringify(data));
