@@ -282,7 +282,9 @@
                         .done(function(json) {
                             stopLoading();
                             if(json.cidade){
-                                $('input[name="logradouro"]').val(json.logradouro+', ');
+                                logradouro = json.logradouro;
+
+                                $('input[name="logradouro"]').val(logradouro.trim());
                                 $('input[name="estado"]').val(json.uf);
                                 $('input[name="municipio"]').val(json.cidade);
 //                                $('input[name="cidade_id"]').val(json.cidade);

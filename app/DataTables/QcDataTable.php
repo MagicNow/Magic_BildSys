@@ -20,9 +20,13 @@ class QcDataTable extends DataTable
         return $this->datatables
             ->eloquent($this->query())			
             ->editColumn('created_at', function ($qc) {
-                return $qc->created_at
-                    ? $qc->created_at->format('d/m/Y')
-                    : '';
+                return $qc->created_at ? $qc->created_at->format('d/m/Y') : '';
+            })
+            ->editColumn('valor_pre_orcamento', function ($qc) {
+                return $qc->valor_pre_orcamento ? float_to_money($qc->valor_pre_orcamento) : '';
+            })
+            ->editColumn('valor_orcamento_inicial', function ($qc) {
+                return $qc->valor_orcamento_inicial ? float_to_money($qc->valor_orcamento_inicial) : '';
             })
             ->editColumn('action', 'qc.datatables_actions')
 			->make(true);

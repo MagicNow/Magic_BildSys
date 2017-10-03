@@ -38,3 +38,5 @@ bildsys.sql
 *.sublime-project
 *.sublime-workspace
 *.map
+
+storage/app/public/\.DS_Store
