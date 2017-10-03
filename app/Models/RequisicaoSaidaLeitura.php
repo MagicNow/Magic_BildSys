@@ -11,7 +11,7 @@ use Eloquent as Model;
  */
 class RequisicaoSaidaLeitura extends Model
 {
-    public $table = 'requisicao_itens';
+    public $table = 'requisicao_saida_leitura';
     
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';

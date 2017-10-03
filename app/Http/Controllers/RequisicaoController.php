@@ -9,6 +9,7 @@ use App\Http\Requests\UpdateRequisicaoRequest;
 use App\Models\Levantamento;
 use App\Models\Obra;
 use App\Models\Requisicao;
+use App\Models\RequisicaoItem;
 use App\Models\RequisicaoSaidaLeitura;
 use App\Repositories\RequisicaoRepository;
 use App\Repositories\Admin\ObraRepository;
@@ -377,12 +378,19 @@ class RequisicaoController extends AppBaseController
     public function salvarLeituraSaida(Request $request)
     {
         $dados = json_decode($request->dados);
-        $requisicao = new RequisicaoSaidaLeitura(
-            [
-                'requisicao_item_id'=>$dados->requisicao_item_id,
-                'qtd_lida' => $dados->qtd_lida
-            ]);
+        $requisicao_item = RequisicaoItem::find($dados->requisicao_item_id);
+        $sucesso = false;
+        
+        if($requisicao_item) {
+            $requisicao_saida = new RequisicaoSaidaLeitura(
+                [
+                    'requisicao_item_id' => $dados->requisicao_item_id,
+                    'qtd_lida' => money_to_float($dados->qtd_lida)
+                ]);
 
-        $requisicao->save();
+            $sucesso = $requisicao_saida->save();   
+        }
+        
+        return response()->json(['sucesso' => $sucesso]);
     }
 }

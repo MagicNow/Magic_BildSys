@@ -95,10 +95,19 @@
                     }
                 })
                 .done(function (retorno) {
-
-                })
-                .fail(function (retorno) {
-
+                    if(retorno.sucesso) {
+                        if(!continuar) {
+                            window.location = '/requisicao/processo-saida/{{$requisicao->id}}';
+                        }
+                    } else {
+                        swal({
+                            title: 'QR Code Inválido',
+                            text: "Não existe este item na requisição.",
+                            type: "info",
+                            confirmButtonColor: "#DD6B55",
+                            closeOnConfirm: false
+                        });
+                    }
                 });
             }
         } else {
