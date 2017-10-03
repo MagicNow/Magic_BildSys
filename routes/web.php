@@ -1484,10 +1484,10 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         //            ->first();
         //        dd($grupos_mega);
         //        $servicos = \App\Repositories\ImportacaoRepository::fornecedor_servicos(446);
-        
+
 		$insumos = \App\Repositories\ImportacaoRepository::insumos();
-        dd($insumos);        
-		
+        dd($insumos);
+
 		//        $insumos = \App\Repositories\ImportacaoRepository::insumos();
 		//        dd($insumos);
         $contratoTemplate = \App\Models\ContratoTemplate::find(1);
@@ -1517,10 +1517,12 @@ $router->get('requisicao/get-andares-obra/{obra}/torre/{torre}/pavimento/{pavime
 $router->get('requisicao/get-insumos', ['as' => 'requisicao.getInsumos', 'uses' => 'RequisicaoController@getInsumos']);
 $router->get('requisicao/get-insumos-obra/', ['as' => 'requisicao.insumosObra', 'uses' => 'RequisicaoController@getInsumos']);
 $router->get('requisicao/get-insumos-obra-comodo/', ['as' => 'requisicao.insumosObraComodo', 'uses' => 'RequisicaoController@getInsumosByComodo']);
-$router->post('requisicao', ['as' => 'notafiscals.store', 'uses' => 'NotafiscalController@store']);
 
 $router->get('/requisicao/ler-qr-cod', function() {
     return View('requisicao.ler_qr_code');
 });
 
 Route::resource('requisicao', 'RequisicaoController');
+
+# Processo de Saída
+$router->get('requisicao/processo-saida/{requisicao}', ['as' => 'requisicao.processoSaida', 'uses' => 'RequisicaoController@processoSaida']);

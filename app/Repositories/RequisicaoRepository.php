@@ -31,6 +31,11 @@ class RequisicaoRepository extends BaseRepository
 
             $r = parent::create([
                 'obra_id' => $input['obra_id'],
+                'local' => $input['local'],
+                'torre' => $input['torre'],
+                'pavimento' => $input['pavimento'],
+                'trecho' => $input['trecho'],
+                'andar' => $input['andar'],
                 'user_id' => auth()->id(),
                 'status' => 1
             ]);
