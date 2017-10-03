@@ -205,7 +205,7 @@ class NotafiscalController extends AppBaseController
 
         foreach ($vinculosRequest as $item_id => $solicitacoes_ids) {
             $itemNf = $notafiscal->itens()->where('id', $item_id)->first();
-            $itemNf->solicitacaoEntregaItens()->attach($solicitacoes_ids);
+            $itemNf->solicitacaoEntregaItens()->sync($solicitacoes_ids);
         }
 
         Flash::success('Nota fiscal ' . trans('common.updated') . ' ' . trans('common.successfully') . '.');
@@ -222,7 +222,11 @@ class NotafiscalController extends AppBaseController
             ->whereNull("notas_fiscal_id")
             ->get();
 
-        return view('notafiscals.filtro_pagamentos', compact('contrato', 'nota', 'pagamentos'));
+        return view('notafiscals.filtro_pagamentos', compact(
+            'contrato',
+            'nota',
+            'pagamentos'
+        ));
     }
 
     /**

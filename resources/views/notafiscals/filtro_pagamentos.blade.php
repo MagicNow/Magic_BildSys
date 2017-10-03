@@ -40,6 +40,7 @@
                     </div>
                 </div>
 
+                @if(count($pagamentos) > 0)
                 <div class="row">
                     <div class="col-sm-12">
                         <br/>
@@ -74,7 +75,13 @@
                         </div>
                     </div>
                 </div>
-
+                @else
+                    <div class="row">
+                        <div class="col-sm-12">
+                            Não foram encontrados pagamentos antecipados para esta Nota.
+                        </div>
+                    </div>
+                @endif
 
             </div>
         </div>
