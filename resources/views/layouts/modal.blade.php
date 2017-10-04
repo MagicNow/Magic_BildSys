@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
 </head>
 
-<body class="skin-blue-light sidebar-mini loaded">
+<body class="skin-blue-light sidebar-mini loaded" baseurl="{{ url('/') }}">
 
 @include('flash::message')
 @yield('content')

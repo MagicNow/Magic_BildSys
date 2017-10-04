@@ -11,7 +11,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 
-<body class="skin-yellow sidebar-mini">
+<body class="skin-yellow sidebar-mini" baseurl="{{ url('/') }}">
 @if (!Auth::guest())
     <div class="wrapper">
         <!-- Main Header -->

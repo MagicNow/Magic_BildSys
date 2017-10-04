@@ -15,7 +15,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 
-<body class="skin-yellow sidebar-mini sidebar-collapse">
+<body class="skin-yellow sidebar-mini sidebar-collapse" baseurl="{{ url('/') }}">
 
     <div class="wrapper">
         <!-- Main Header -->
