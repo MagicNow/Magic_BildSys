@@ -1,3 +1,5 @@
+@include('qc.show_fields')
+
 <!-- Observações Field -->
 <div class="form-group col-sm-12">
 	{!! Form::label('observacao', 'Observações:') !!}

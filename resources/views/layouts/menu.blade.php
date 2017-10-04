@@ -357,20 +357,20 @@
     <a href="{!! route('requisicao.index') !!}"><i class="fa fa-edit"></i><span>Requisições</span></a>
 </li>
 
-<li class="treeview {{ Request::is('admin/topologia*') ? 'active' : '' }}">
+<li class="treeview {{ Request::is('admin/tipologia*') ? 'active' : '' }}">
 
     <a href="#">
-        <i class="fa fa-building"></i> <span>Topologia</span>
+        <i class="fa fa-building"></i> <span>Tipologia</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
     </a>
     <ul class="treeview-menu">
-        @shield('topologia.list')
-        <li class="{{ Request::is('admin/topologia*') ? 'active' : '' }}">
-            <a href="{!! route('admin.topologia.index') !!}">
+        @shield('tipologia.list')
+        <li class="{{ Request::is('admin/tipologia*') ? 'active' : '' }}">
+            <a href="{!! route('admin.tipologia.index') !!}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
-                <span>Topologias</span>
+                <span>Tipologias</span>
             </a>
         </li>
         @endshield

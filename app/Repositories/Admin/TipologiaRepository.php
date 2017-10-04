@@ -2,10 +2,10 @@
 
 namespace App\Repositories\Admin;
 
-use App\Models\Topologia;
+use App\Models\Tipologia;
 use InfyOm\Generator\Common\BaseRepository;
 
-class TopologiaRepository extends BaseRepository
+class TipologiaRepository extends BaseRepository
 {
     /**
      * @var array
@@ -19,6 +19,6 @@ class TopologiaRepository extends BaseRepository
      **/
     public function model()
     {
-        return Topologia::class;
+        return Tipologia::class;
     }
 }

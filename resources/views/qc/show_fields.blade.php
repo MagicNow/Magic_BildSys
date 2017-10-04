@@ -4,10 +4,10 @@
     <p class="form-control">{!! $qc->id !!}</p>
 </div>
 
-<!-- Topologia Field -->
+<!-- Tipologia Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('topologia_id', 'Topologia:') !!}
-    <p class="form-control">{!! $qc->topologia->nome !!}</p>
+    {!! Form::label('tipologia_id', 'Tipologia:') !!}
+    <p class="form-control">{!! $qc->tipologia->nome !!}</p>
 </div>
 
 <!-- Carteira Field -->
@@ -46,26 +46,20 @@
     <p class="form-control">{!! float_to_money($qc->valor_gerencial) !!}</p>
 </div>
 
-<!-- Created At Field -->
-<div class="form-group col-md-6">
-    {!! Form::label('created_at', 'Criado em:') !!}
-    <p class="form-control">{!! $qc->created_at->format('d/m/Y') !!}</p>
-</div>
-
-<!-- Updated At Field -->
-<div class="form-group col-md-6">
-    {!! Form::label('updated_at', 'Alterado em:') !!}
-    <p class="form-control">{!! $qc->updated_at->format('d/m/Y') !!}</p>
-</div>
-
-<div class="form-group col-sm-6">
-    <div class="checkbox">
-        <label>
-            {!! Form::checkbox('carteira_comprada', '1', isset($qc) && $qc->carteira_comprada == 1 ? true : false, ['class' => 'form-control', 'id' => 'carteira_comprada', 'readonly' => 'true', 'disabled' => 'disabled']) !!}
-            Carteira Comprada
-        </label>
+@if (!isset($screen) || $screen !== 'approve')
+    <!-- Created At Field -->
+    <div class="form-group col-md-6">
+        {!! Form::label('created_at', 'Criado em:') !!}
+        <p class="form-control">{!! $qc->created_at->format('d/m/Y') !!}</p>
     </div>
-</div>
+
+    <!-- Updated At Field -->
+    <div class="form-group col-md-6">
+        {!! Form::label('updated_at', 'Alterado em:') !!}
+        <p class="form-control">{!! $qc->updated_at->format('d/m/Y') !!}</p>
+    </div>
+@endif
+
 @if (isset($attachments) && !empty($attachments))
     <fieldset class="col-sm-12 table-responsive">
         <legend>Anexos</legend>

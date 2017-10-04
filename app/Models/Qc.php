@@ -15,7 +15,7 @@ class Qc extends Model
 
 	public $fillable = [
 		'obra_id',
-		'topologia_id',
+		'tipologia_id',
 		'carteira_id',
 		'fornecedor_id',
 		'comprador_id',
@@ -40,7 +40,7 @@ class Qc extends Model
 	protected $casts = [
 		'id' => 'integer',
 		'obra_id' => 'integer',
-		'topologia_id' => 'integer',
+		'tipologia_id' => 'integer',
 		'carteira_id' => 'integer',
 		'fornecedor_id' => 'integer',
 		'comprador_id' => 'integer',
@@ -61,7 +61,7 @@ class Qc extends Model
 	 */
 	public static $rules = [
 		'obra_id' => 'required|integer',
-		'topologia_id' => 'required|integer',
+		'tipologia_id' => 'required|integer',
 		'carteira_id' => 'required|integer',
 		'comprador_id' => 'integer',
 		'user_id' => 'integer',
@@ -100,9 +100,9 @@ class Qc extends Model
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
 	 **/
-	public function topologia()
+	public function tipologia()
 	{
-		return $this->belongsTo(\App\Models\Topologia::class);
+		return $this->belongsTo(\App\Models\Tipologia::class);
 	}
 
 	/**

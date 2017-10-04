@@ -1,9 +1,9 @@
-{!! Form::open(['route' => ['admin.topologia.destroy', $id], 'id'=>'formDelete'.$id, 'method' => 'delete']) !!}
+{!! Form::open(['route' => ['admin.tipologia.destroy', $id], 'id'=>'formDelete'.$id, 'method' => 'delete']) !!}
 <div class='btn-group'>
-    <a href="{{ route('admin.topologia.show', $id) }}" title="{{ ucfirst( trans('common.show') )}}" class='btn btn-default btn-xs'>
+    <a href="{{ route('admin.tipologia.show', $id) }}" title="{{ ucfirst( trans('common.show') )}}" class='btn btn-default btn-xs'>
         <i class="glyphicon glyphicon-eye-open"></i>
     </a>
-    <a href="{{ route('admin.topologia.edit', $id) }}" title="{{ ucfirst( trans('common.edit') )}}" class='btn btn-warning btn-xs'>
+    <a href="{{ route('admin.tipologia.edit', $id) }}" title="{{ ucfirst( trans('common.edit') )}}" class='btn btn-warning btn-xs'>
         <i class="glyphicon glyphicon-edit"></i>
     </a>
     {!! Form::button('<i class="glyphicon glyphicon-trash"></i>', [
