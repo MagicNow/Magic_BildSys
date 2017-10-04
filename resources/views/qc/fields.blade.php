@@ -17,31 +17,31 @@
 <!-- Carteira ID Field -->
 <div class="form-group col-sm-6">
 	{!! Form::label('carteira_id', 'Carteira:') !!}
-	{!! Form::select('carteira_id', [''=>'Escolha...']+$carteiras, @isset($qc) ? $qc->carteira_id : NULL, ['class' => 'form-control select2']) !!}
+	{!! Form::select('carteira_id', [''=>'Escolha...']+$carteiras, @isset($qc) ? $qc->carteira_id : NULL, ['class' => 'form-control select2', 'required'=>'required']) !!}
 </div>
 
 <!-- Descrição Field -->
 <div class="form-group col-sm-12">
 	{!! Form::label('descricao', 'Descrição do serviço:') !!}
-	{!! Form::textarea('descricao', NULL, ['class' => 'form-control']) !!}
+	{!! Form::textarea('descricao', NULL, ['class' => 'form-control', 'required'=>'required']) !!}
 </div>
 
 <!-- Valor Pré Orçamento Field -->
 <div class="form-group col-sm-6">
 	{!! Form::label('valor_pre_orcamento', 'Valor Pré Orçamento:') !!}
-	{!! Form::text('valor_pre_orcamento', NULL, ['class' => 'form-control currency']) !!}
+	{!! Form::text('valor_pre_orcamento', NULL, ['class' => 'form-control currency', 'required'=>'required']) !!}
 </div>
 
 <!-- Valor Orçamento Inicial Field -->
 <div class="form-group col-sm-6">
 	{!! Form::label('valor_orcamento_inicial', 'Valor Orçamento Inicial :') !!}
-	{!! Form::text('valor_orcamento_inicial', NULL, ['class' => 'form-control currency']) !!}
+	{!! Form::text('valor_orcamento_inicial', NULL, ['class' => 'form-control currency', 'required'=>'required']) !!}
 </div>
 
 <!-- Valor da Gerencial Field -->
 <div class="form-group col-sm-6">
 	{!! Form::label('valor_gerencial', 'Valor da Gerencial:') !!}
-	{!! Form::text('valor_gerencial', NULL, ['class' => 'form-control currency']) !!}
+	{!! Form::text('valor_gerencial', NULL, ['class' => 'form-control currency', 'required'=>'required']) !!}
 </div>
 
 <div class="form-group col-sm-6" style="margin-top: 13px;">

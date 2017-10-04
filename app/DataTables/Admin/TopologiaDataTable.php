@@ -21,7 +21,7 @@ class TopologiaDataTable extends DataTable
                 return $obj->created_at ? with(new\Carbon\Carbon($obj->created_at))->format('d/m/Y H:i') : '';
             })
             ->filterColumn('created_at', function ($query, $keyword) {
-                $query->whereRaw("DATE_FORMAT(topologia.created_at,'%d/%m/%Y') like ?", ["%$keyword%"]);
+                $query->whereRaw("DATE_FORMAT(topologias.created_at,'%d/%m/%Y') like ?", ["%$keyword%"]);
             })
             ->make(true);
     }

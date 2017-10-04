@@ -99,7 +99,7 @@ class QcController extends AppBaseController
 	public function show($id)
 	{
 		$qc = $this->qcRepository->findWithoutFail($id);
-		$qc->topologia = $qc->topologia()->first();
+		isset($qc) ? $qc->topologia = $qc->topologia()->first() : NULL;
 		$attachments = [];
 
 		if (isset($qc->anexos) && !empty($qc->anexos)) {
