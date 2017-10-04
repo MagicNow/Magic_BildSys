@@ -214,7 +214,7 @@
                     <h4 class="modal-title" id="modalMissaoVisaoValores">Missão, Visão e Valores</h4>
                 </div>
                 <div class="modal-body">
-                    <img src="/img/missao-visao-valores.png" style="margin: auto" class="img-responsive">
+                    <img src="{{ asset('img/missao-visao-valores.png') }}" style="margin: auto" class="img-responsive">
                 </div>
             </div>
         </div>
