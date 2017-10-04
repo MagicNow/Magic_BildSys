@@ -24,7 +24,6 @@ class Qc extends Model
 		'valor_orcamento_inicial',
 		'valor_gerencial',
 		'valor_fechamento',
-		'carteira_comprada',
 		'data_fechamento',
 		'user_id',
 		'observacao',
@@ -48,7 +47,6 @@ class Qc extends Model
 		'valor_pre_orcamento' => 'float',
 		'valor_orcamento_inicial' => 'float',
 		'valor_fechamento' => 'float',
-		'carteira_comprada' => 'integer',
 		'observacao' => 'string',
 		'numero_contrato' => 'string',
 		'status' => 'string'

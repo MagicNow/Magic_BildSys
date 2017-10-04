@@ -44,15 +44,6 @@
 	{!! Form::text('valor_gerencial', NULL, ['class' => 'form-control money', 'required'=>'required']) !!}
 </div>
 
-<div class="form-group col-sm-6" style="margin-top: 13px;">
-	<div class="checkbox">
-		<label>
-			{!! Form::checkbox('carteira_comprada', '1', isset($qc) && $qc->carteira_comprada == 1 ? true : false, ['class' => 'form-control', 'id' => 'carteira_comprada']) !!}
-			Carteira Comprada
-		</label>
-	</div>
-</div>
-
 <fieldset class="col-sm-12 qc-anexos">
 	<legend>Anexos</legend>
 	<div class="row">
