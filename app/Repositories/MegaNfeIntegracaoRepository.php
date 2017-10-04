@@ -36,6 +36,15 @@ class MegaNfeIntegracaoRepository
 
         $mega = new MegaXmlRepository();
 
+        $condSTCodigo = NULL;
+        if ($notafiscal->pagamentos()->count() > 0)
+        {
+            $condSTCodigo = $notafiscal->pagamentos()
+                ->first()
+                ->pagamentoCondicao
+                ->codigo;
+        }
+
         $data = [
             'OPERACAO' => 'I',
             'FIL_IN_CODIGO' => $notafiscal->contrato->obra->filial_id,//Codigo Filial
@@ -49,7 +58,7 @@ class MegaNfeIntegracaoRepository
             'RCB_DT_DOCUMENTO' => $notafiscal->data_emissao->format("d/m/Y"),
             'RCB_DT_MOVIMENTO' => $notafiscal->status_data->format("d/m/Y"),
             'TPR_ST_TIPOPRECO' => $notafiscal->frete_por_conta == 1 ? 'FOB' : 'CIF',
-            'COND_ST_CODIGO' => NULL,///Vai pegar do cadastro de pagamentos
+            'COND_ST_CODIGO' => $condSTCodigo,///Vai pegar do cadastro de pagamentos
             'CCF_IN_REDUZIDO' => $notafiscal->contrato->obra->codigo_centro_de_custo,
             'PROJ_IN_REDUZIDO' => $notafiscal->contrato->obra->codigo_projeto_padrao,
             'RCB_RE_VALDESCGERAL' => $notafiscal->desconto,
@@ -145,7 +154,8 @@ class MegaNfeIntegracaoRepository
                 // 152 Mão de Obra para levantamento da obra
                 'ITENS_TPC_ST_CLASSE' => 150,
                 // Código de Aplicação ->
-                // CFOP  = 121 -> 1933
+                // CFOP
+                // 121 -> 1933
                 // 101 -> 1949
                 // 111 -> 1253
                 // 992 -> 1353
@@ -280,15 +290,16 @@ class MegaNfeIntegracaoRepository
         }
 
         $xml = $mega->montaXMLNotaMaterial($data);
-        // $xml = str_replace('<?xml version="1.0" encoding="UTF-8"? >', '', $xml);
-        // -- Numero da Tarefa (para Entrada de Nota = (701 - Insumos / 705 - Recebimentos / 306 - Faturas a Pagar)
-        // -- XML desenvolvimento pela Mazzatech
 
+        //(701 - Insumos / 705 - Recebimentos / 306 - Faturas a Pagar)
         $porta = 705; // Porta de integração de Notas fiscais
 
         try {
+
+            $idIntegracao = sprintf("nf-%s-%s", $notafiscal->id, date("YmdHis"));
+
             $sql = "BEGIN
-                    MGCLI.pck_bld_app.F_Int_Integrador(:porta, :xml);
+                    MGCLI.pck_bld_app.F_Int_Integrador(:porta, :xml, :idIntegracao);
                     END;";
 
             $pdo = DB::connection('oracle')
@@ -297,14 +308,22 @@ class MegaNfeIntegracaoRepository
 
             $stmt->bindParam(':porta', $porta);
             $stmt->bindParam(':xml', $xml);
+            $stmt->bindParam(':idIntegracao', $idIntegracao);
 
             //$result = [];
             $result = $stmt->execute();
 
-            dump($result, $xml);
+            $notafiscal->enviado_integracao = 1;
+            $notafiscal->integrado = 0;
+            $notafiscal->codigo_integracao_mega = $idIntegracao;
+            $notafiscal->save();
+
+            return $notafiscal;
 
         } catch (\Exception $e) {
-            dump($e);
+
+            dd($e);
+
         }
 
     }

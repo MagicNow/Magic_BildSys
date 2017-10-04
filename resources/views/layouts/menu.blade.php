@@ -358,6 +358,7 @@
 </li>
 
 <li class="treeview {{ Request::is('admin/topologia*') ? 'active' : '' }}">
+
     <a href="#">
         <i class="fa fa-building"></i> <span>Topologia</span>
             <span class="pull-right-container">
@@ -367,11 +368,12 @@
     <ul class="treeview-menu">
         @shield('topologia.list')
         <li class="{{ Request::is('admin/topologia*') ? 'active' : '' }}">
-            <a href="{!! route('admin.tipologia.index') !!}">
+            <a href="{!! route('admin.topologia.index') !!}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
                 <span>Topologias</span>
             </a>
         </li>
         @endshield
     </ul>
+
 </li>

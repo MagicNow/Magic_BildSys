@@ -10,10 +10,10 @@
 	{!! Form::select('obra_id',[''=>'Escolha...']+$obras, NULL, ['class' => 'form-control', 'disabled' => 'disabled']) !!}
 </div>
 
-<!-- Tipologia Field -->
+<!-- Topologia Field -->
 <div class="form-group col-sm-6">
-	{!! Form::label('tipologia', 'Tipologia:') !!}
-	{!! Form::select('tipologia_id',[''=>'Escolha...']+$tipologias, NULL, ['class' => 'form-control', 'disabled' => 'disabled']) !!}
+	{!! Form::label('topologia', 'Topologia:') !!}
+	{!! Form::select('topologia_id',[''=>'Escolha...']+$topologias, NULL, ['class' => 'form-control', 'disabled' => 'disabled']) !!}
 </div>
 
 <!-- Carteira ID Field -->

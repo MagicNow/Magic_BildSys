@@ -9,7 +9,9 @@ use App\Http\Requests\UpdatePagamentoRequest;
 use App\Models\Contrato;
 use App\Models\DocumentoTipo;
 use App\Models\Fornecedor;
+use App\Models\Notafiscal;
 use App\Models\PagamentoCondicao;
+use App\Repositories\MegaNfeIntegracaoRepository;
 use App\Repositories\MegaXmlRepository;
 use App\Repositories\PagamentoRepository;
 use Flash;
@@ -52,6 +54,11 @@ class PagamentoController extends AppBaseController
             return redirect(route('contratos.index'));
         }
 
+        $nota = null;
+        if (request()->get('contrato_id')) {
+            $nota = Notafiscal::find(request()->get('nota_id'));
+        }
+
         $pagamentoCondicoes = PagamentoCondicao::select([
             DB::raw("CONCAT(nome,' - ',codigo) as nome"),
             'id'
@@ -73,7 +80,7 @@ class PagamentoController extends AppBaseController
             ->pluck('nome', 'id')
             ->toArray();
 
-        return view('pagamentos.create', compact('pagamentoCondicoes', 'documentoTipos', 'contrato', 'fornecedores'));
+        return view('pagamentos.create', compact('pagamentoCondicoes', 'documentoTipos', 'contrato', 'fornecedores', 'nota'));
     }
 
     /**
@@ -88,6 +95,10 @@ class PagamentoController extends AppBaseController
         $input = $request->all();
 
         $pagamento = $this->pagamentoRepository->create($input);
+
+        if ($pagamento->notas_fiscal_id > 0) {
+            $this->integraNfe($pagamento);
+        }
 
         Flash::success('Pagamento ' . trans('common.saved') . ' ' . trans('common.successfully') . '.');
 
@@ -154,7 +165,12 @@ class PagamentoController extends AppBaseController
             ->pluck('nome', 'id')
             ->toArray();
 
-        return view('pagamentos.edit', compact('pagamento', 'pagamentoCondicoes', 'documentoTipos', 'contrato', 'fornecedores'));
+        $nota = null;
+        if ($pagamento->notas_fiscal_id > 0 || request()->get("nota_id") > 0) {
+            $nota = Notafiscal::find($pagamento->notas_fiscal_id ?:request()->get("nota_id"));
+        }
+
+        return view('pagamentos.edit', compact('nota', 'pagamento', 'pagamentoCondicoes', 'documentoTipos', 'contrato', 'fornecedores'));
     }
 
     /**
@@ -175,11 +191,34 @@ class PagamentoController extends AppBaseController
             return redirect(route('pagamentos.index'));
         }
 
+        $integra = false;
+
+        if ((empty($pagamento->notas_fiscal_id) || !$pagamento->notas_fiscal_id)
+             AND request()->has('notas_fiscal_id') and request()->get('notas_fiscal_id') > 0
+        ) {
+            $integra = true;
+        }
+
         $pagamento = $this->pagamentoRepository->update($request->all(), $id);
+        $result = null;
+        if ($integra) {
+            $result = $this->integraNfe($pagamento);
+        }
+
+        dd($pagamento, $integra, $result);
 
         Flash::success('Pagamento ' . trans('common.updated') . ' ' . trans('common.successfully') . '.');
 
         return redirect(route('pagamentos.index'));
+    }
+
+    public function integraNfe($pagamento)
+    {
+        $nota = Notafiscal::find($pagamento->notas_fiscal_id);
+        if ($nota AND $nota->integrado == 0 AND empty($nota->status_integracao)) {
+            return MegaNfeIntegracaoRepository::integra($pagamento->notas_fiscal_id);
+        }
+        return null;
     }
 
     /**

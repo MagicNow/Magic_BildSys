@@ -16,7 +16,7 @@ class Pagamento extends Model
     use SoftDeletes;
 
     public $table = 'pagamentos';
-    
+
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
@@ -94,9 +94,9 @@ class Pagamento extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function notasFiscal()
+    public function notaFiscal()
     {
-        return $this->belongsTo(Notafiscal::class);
+        return $this->belongsTo(Notafiscal::class, 'notas_fiscal_id');
     }
 
     /**
@@ -125,5 +125,10 @@ class Pagamento extends Model
 
     public function setNotasFiscalIdAttribute($value){
         $this->attributes['notas_fiscal_id'] = intval($value) ? $value : null;
+    }
+
+    public function logs()
+    {
+        return $this->morphMany(LogIntegracao::class, 'loggable');
     }
 }

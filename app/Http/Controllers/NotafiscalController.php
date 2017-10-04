@@ -368,7 +368,13 @@ class NotafiscalController extends AppBaseController
 
     public function integraMega($id)
     {
-        return MegaNfeIntegracaoRepository::integra($id);
+        try {
+            $nota = MegaNfeIntegracaoRepository::integra($id);
+
+            return sprintf("Integração de Nota fiscal n.o: %s realizada, aguarde a integração.", $nota->codigo);
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
     }
 
 }

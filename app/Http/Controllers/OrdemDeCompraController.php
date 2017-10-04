@@ -1809,8 +1809,8 @@ class OrdemDeCompraController extends AppBaseController
             } else {
                 $ordem_item->qtd = $request['saldo'];
             }
-
-            $insumo_catalogo = OrdemDeCompraRepository::existeNoCatalogo($request->id, $request->obra_id);
+            
+            $insumo_catalogo = OrdemDeCompraRepository::existeNoCatalogo($request->get('id'), $request->get('obra_id'));
             $pedido_minimo_invalido = false;
             $multiplo_invalido = false;
             $preco_unitario = floatval($orcamento_ativo->getOriginal('preco_unitario'));

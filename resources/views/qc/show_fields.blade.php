@@ -4,22 +4,22 @@
     <p class="form-control">{!! $qc->id !!}</p>
 </div>
 
-<!-- Tipologia Field -->
+<!-- Topologia Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('tipologia_id', 'Tipologia:') !!}
-    <p class="form-control">{!! $qc->tipologia->nome !!}</p>
+    {!! Form::label('topologia_id', 'Topologia:') !!}
+    <p class="form-control">{!! $qc->topologia->nome !!}</p>
 </div>
 
 <!-- Carteira Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('carteira_id', 'Carteira:') !!}
-    <p class="form-control">{!! $qc->carteira->nome !!}</p>
+    <p class="form-control">{!! isset($qc->carteira) ? $qc->carteira->nome : NULL !!}</p>
 </div>
 
 <!-- Pbta Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('obra_id', 'Obra:') !!}
-    <p class="form-control">{!! $qc->obra->nome !!}</p>
+    <p class="form-control">{!! isset($qc->obra) ? $qc->obra->nome : NULL !!}</p>
 </div>
 
 <!-- Descrição Field -->

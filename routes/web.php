@@ -95,14 +95,14 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
 
     # Topologia
     $router->group(['middleware' => 'needsPermission:topologia.list'], function () use ($router) {
-        $router->get('topologia', ['as' => 'admin.tipologia.index', 'uses' => 'Admin\TopologiaController@index']);
-        $router->post('topologia', ['as' => 'admin.tipologia.store', 'uses' => 'Admin\TopologiaController@store']);
-        $router->get('topologia/create', ['as' => 'admin.tipologia.create', 'uses' => 'Admin\TopologiaController@create']);
-        $router->put('topologia/{topologia}', ['as' => 'admin.tipologia.update', 'uses' => 'Admin\TopologiaController@update']);
-        $router->patch('topologia/{topologia}', ['as' => 'admin.tipologia.update', 'uses' => 'Admin\TopologiaController@update']);
-        $router->delete('topologia/{topologia}', ['as' => 'admin.tipologia.destroy', 'uses' => 'Admin\TopologiaController@destroy']);
-        $router->get('topologia/{topologia}', ['as' => 'admin.tipologia.show', 'uses' => 'Admin\TopologiaController@show']);
-        $router->get('topologia/{topologia}/edit', ['as' => 'admin.tipologia.edit', 'uses' => 'Admin\TopologiaController@edit']);
+        $router->get('topologia', ['as' => 'admin.topologia.index', 'uses' => 'Admin\TopologiaController@index']);
+        $router->post('topologia', ['as' => 'admin.topologia.store', 'uses' => 'Admin\TopologiaController@store']);
+        $router->get('topologia/create', ['as' => 'admin.topologia.create', 'uses' => 'Admin\TopologiaController@create']);
+        $router->put('topologia/{topologia}', ['as' => 'admin.topologia.update', 'uses' => 'Admin\TopologiaController@update']);
+        $router->patch('topologia/{topologia}', ['as' => 'admin.topologia.update', 'uses' => 'Admin\TopologiaController@update']);
+        $router->delete('topologia/{topologia}', ['as' => 'admin.topologia.destroy', 'uses' => 'Admin\TopologiaController@destroy']);
+        $router->get('topologia/{topologia}', ['as' => 'admin.topologia.show', 'uses' => 'Admin\TopologiaController@show']);
+        $router->get('topologia/{topologia}/edit', ['as' => 'admin.topologia.edit', 'uses' => 'Admin\TopologiaController@edit']);
     });
 
     # Importação de Planilhas de Planejamentos
@@ -1290,7 +1290,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             ]
         )->middleware('needsPermission:contratos.edit');
         $router->post(
-            '/reajustar/{con trato_item_id}',
+            '/reajustar/{contrato_item_id}',
             [
                 'as' => 'contratos.reajustar',
                 'uses' => 'ContratoController@reajustar'
@@ -1550,10 +1550,12 @@ $router->get('requisicao/get-andares-obra/{obra}/torre/{torre}/pavimento/{pavime
 $router->get('requisicao/get-insumos', ['as' => 'requisicao.getInsumos', 'uses' => 'RequisicaoController@getInsumos']);
 $router->get('requisicao/get-insumos-obra/', ['as' => 'requisicao.insumosObra', 'uses' => 'RequisicaoController@getInsumos']);
 $router->get('requisicao/get-insumos-obra-comodo/', ['as' => 'requisicao.insumosObraComodo', 'uses' => 'RequisicaoController@getInsumosByComodo']);
-$router->post('requisicao', ['as' => 'notafiscals.store', 'uses' => 'NotafiscalController@store']);
 
 $router->get('/requisicao/ler-qr-cod', function() {
     return View('requisicao.ler_qr_code');
 });
 
-Route::resource('requisicao', 'RequisicaoController');
+$router->resource('requisicao', 'RequisicaoController');
+
+# Processo de Saída
+$router->get('requisicao/processo-saida/{requisicao}', ['as' => 'requisicao.processoSaida', 'uses' => 'RequisicaoController@processoSaida']);

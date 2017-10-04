@@ -8,7 +8,7 @@ $(function () {
 		language: "pt-BR",
 
 		ajax: {
-			url: "{{ route('buscar.carteiras') }}",
+			url: "/buscar/carteiras",
 			dataType: 'json',
 			delay: 250,
 
