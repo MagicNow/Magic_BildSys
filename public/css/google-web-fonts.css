@@ -2,7 +2,7 @@
 	font-family: 'Raleway';
 	font-style: normal;
 	font-weight: 400;
-	src: url(/fonts/Raleway-normal-400.woff) format('woff');
+	src: url(../fonts/Raleway-normal-400.woff) format('woff');
 	unicode-range: U+0-10FFFF;
 }
 
@@ -10,7 +10,7 @@
 	font-family: 'Raleway';
 	font-style: normal;
 	font-weight: 500;
-	src: url(/fonts/Raleway-normal-500.woff) format('woff');
+	src: url(../fonts/Raleway-normal-500.woff) format('woff');
 	unicode-range: U+0-10FFFF;
 }
 
@@ -18,7 +18,7 @@
 	font-family: 'Raleway';
 	font-style: normal;
 	font-weight: 600;
-	src: url(/fonts/Raleway-normal-600.woff) format('woff');
+	src: url(../fonts/Raleway-normal-600.woff) format('woff');
 	unicode-range: U+0-10FFFF;
 }
 
@@ -26,7 +26,7 @@
 	font-family: 'Raleway';
 	font-style: normal;
 	font-weight: 700;
-	src: url(/fonts/Raleway-normal-700.woff) format('woff');
+	src: url(../fonts/Raleway-normal-700.woff) format('woff');
 	unicode-range: U+0-10FFFF;
 }
 

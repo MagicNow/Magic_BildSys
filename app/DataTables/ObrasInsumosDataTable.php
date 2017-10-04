@@ -63,7 +63,7 @@ class ObrasInsumosDataTable extends DataTable
                 'dom' => 'Bfrtip',
                 'scrollX' => false,
                 'language'=> [
-                    "url"=> "/vendor/datatables/Portuguese-Brasil.json"
+                    "url"=> asset("vendor/datatables/Portuguese-Brasil.json")
                 ],
                 'buttons' => [
                     'print',

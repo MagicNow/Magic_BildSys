@@ -64,11 +64,11 @@ class QcController extends AppBaseController
 	public function store(CreateQcRequest $request)
 	{
 		$input = $request->except('file');
-		$qc = $this->qcRepository->create($input);
 
         $input['valor_pre_orcamento'] = $request->valor_pre_orcamento ? money_to_float($request->valor_pre_orcamento) : NULL;
         $input['valor_orcamento_inicial'] = $request->valor_orcamento_inicial ? money_to_float($request->valor_orcamento_inicial) : NULL;
         $input['valor_gerencial'] = $request->valor_gerencial ? money_to_float($request->valor_gerencial) : NULL;
+		$qc = $this->qcRepository->create($input);
 
 		if($request->anexo_arquivo){
 			foreach($request->anexo_arquivo as $key => $file) {

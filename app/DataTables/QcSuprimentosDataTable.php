@@ -144,7 +144,7 @@ class QcSuprimentosDataTable extends DataTable
                 'dom' => 'Blfrtip',
                 'scrollX' => true,
                 'language'=> [
-                    "url"=> "/vendor/datatables/Portuguese-Brasil.json"
+                    "url"=> asset("vendor/datatables/Portuguese-Brasil.json")
                 ],
                 // Ordena para que inicialmente carregue os mais novos
                 'order' => [
