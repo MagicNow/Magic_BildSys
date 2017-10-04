@@ -237,7 +237,7 @@ class QcController extends AppBaseController
 
 			return redirect(route('qc.index'));
 		}
-
+		$input['user_id'] = empty($input['user_id']) ? NULL : $input['user_id'];
 		$qc = $this->qcRepository->update($input, $id);
 
 		Flash::success('Q.C. '.trans('common.updated').' '.trans('common.successfully').'.');
