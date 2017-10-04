@@ -18,7 +18,7 @@
     window.jwt_token = '{{ auth()->check() ? auth()->user()->jwt_token : '' }}';
     var pessoa_atual_id = null;
 </script>
-<script src="/js/admin.js"></script>
+<script src="{{ asset('js/admin.js') }}"></script>
 
 @yield('scripts')
 @if(request()->get('bind_form', true))

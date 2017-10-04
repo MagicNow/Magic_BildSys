@@ -220,7 +220,7 @@
         </div>
     </div>
     @include('partials.modals-importacao')
-    <script src="/js/admin.js"></script>
+    <script src="{{ asset('js/admin.js') }}"></script>
     <script src="{{ asset('js/app.js') }}" type="text/javascript"></script>
 
     @yield('scripts')
