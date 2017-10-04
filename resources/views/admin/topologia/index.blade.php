@@ -4,7 +4,7 @@
     <section class="content-header">
         <h1 class="pull-left">Topologia</h1>
         <h1 class="pull-right">
-           <a class="btn btn-primary pull-right" style="margin-top: -10px;margin-bottom: 5px" href="{!! route('admin.tipologia.create') !!}">
+           <a class="btn btn-primary pull-right" style="margin-top: -10px;margin-bottom: 5px" href="{!! route('admin.topologia.create') !!}">
             {{ ucfirst( trans('common.new') )}}
            </a>
         </h1>
@@ -14,7 +14,7 @@
         <div class="box box-primary">
             <div class="box-body">
                 @include( 'flash::message' )
-                @include('admin.tipologia.table')
+                @include('admin.topologia.table')
             </div>
         </div>
     </div>

@@ -2,11 +2,11 @@
 
 namespace App\DataTables\Admin;
 
-use App\Models\Tipologia;
+use App\Models\Topologia;
 use Form;
 use Yajra\Datatables\Services\DataTable;
 
-class TipologiaDataTable extends DataTable
+class TopologiaDataTable extends DataTable
 {
 
     /**
@@ -16,12 +16,12 @@ class TipologiaDataTable extends DataTable
     {
         return $this->datatables
             ->eloquent($this->query())
-            ->editColumn('action', 'admin.tipologia.datatables_actions')
+            ->editColumn('action', 'admin.topologia.datatables_actions')
             ->editColumn('created_at', function($obj){
                 return $obj->created_at ? with(new\Carbon\Carbon($obj->created_at))->format('d/m/Y H:i') : '';
             })
             ->filterColumn('created_at', function ($query, $keyword) {
-                $query->whereRaw("DATE_FORMAT(tipologia.created_at,'%d/%m/%Y') like ?", ["%$keyword%"]);
+                $query->whereRaw("DATE_FORMAT(topologias.created_at,'%d/%m/%Y') like ?", ["%$keyword%"]);
             })
             ->make(true);
     }
@@ -33,9 +33,9 @@ class TipologiaDataTable extends DataTable
      */
     public function query()
     {
-        $tipologia = Tipologia::query();
+        $topologia = Topologia::query();
 
-        return $this->applyScopes($tipologia);
+        return $this->applyScopes($topologia);
     }
 
     /**
@@ -110,6 +110,6 @@ class TipologiaDataTable extends DataTable
      */
     protected function filename()
     {
-        return 'tipologias';
+        return 'topologias';
     }
 }

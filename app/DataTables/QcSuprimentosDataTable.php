@@ -58,7 +58,7 @@ class QcSuprimentosDataTable extends DataTable
             'qc.id',
             DB::raw('obras.nome AS obra_nome'),
             DB::raw('carteiras.nome AS carteira_nome'),
-            DB::raw('tipologias.nome AS tipologia_nome'),
+            DB::raw('topologias.nome AS topologia_nome'),
             DB::raw('"" AS etapa'),
             'status',
             DB::raw('"" AS sla'),
@@ -76,7 +76,7 @@ class QcSuprimentosDataTable extends DataTable
         ])
         ->join('carteiras', 'carteiras.id', 'carteira_id')
         ->join('obras', 'obras.id', 'obra_id')
-        ->join('tipologias', 'tipologias.id', 'tipologia_id')
+        ->join('topologias', 'topologias.id', 'topologia_id')
         ->leftJoin('users', 'users.id', 'comprador_id')
         ->leftJoin('fornecedores', 'fornecedores.id', 'fornecedor_id')
         ->whereIn('status', [ 'Aprovado', 'Reprovado', 'Em negociação', 'Fechado' ])
@@ -180,7 +180,7 @@ class QcSuprimentosDataTable extends DataTable
             'id' => ['name' => 'id', 'data' => 'id', 'title' => 'ID'],
             'obra' => ['name' => 'obra_id', 'data' => 'obra_nome', 'title' => 'Obra'],
             'carteira_id' => ['name' => 'carteira_id', 'data' => 'carteira_nome', 'title' => 'Carteira'],
-            'tipologia_id' => ['name' => 'tipologia_id', 'data' => 'tipologia_nome', 'title' => 'Tipologia'],
+            'topologia_id' => ['name' => 'topologia_id', 'data' => 'topologia_nome', 'title' => 'Topologia'],
             'etapa' => ['name' => 'etapa', 'data' => 'etapa', 'title' => 'Etapa'],
             'status' => ['name' => 'status', 'data' => 'status', 'title' => 'Status'],
             'descricao' => ['name' => 'descricao', 'data' => 'descricao', 'title' => 'Descrição do serviço'],

@@ -5,13 +5,13 @@ namespace App\Models;
 use Eloquent as Model;
 
 /**
- * Class Tipologia
+ * Class Topologia
  * @package App\Models
  * @version April 25, 2017, 2:16 pm BRT
  */
-class Tipologia extends Model
+class Topologia extends Model
 {
-	public $table = 'tipologias';
+	public $table = 'topologias';
 
 	const CREATED_AT = 'created_at';
 	const UPDATED_AT = 'updated_at';
