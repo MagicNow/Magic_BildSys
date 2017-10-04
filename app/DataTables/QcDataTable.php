@@ -43,7 +43,7 @@ class QcDataTable extends DataTable
             'qc.id',
             DB::raw('obras.nome AS obra_nome'),
             DB::raw('carteiras.nome AS carteira_nome'),
-            DB::raw('tipologias.nome AS tipologia_nome'),
+            DB::raw('topologias.nome AS topologia_nome'),
             'qc.created_at',
 			'descricao',
 			'valor_pre_orcamento',
@@ -52,7 +52,7 @@ class QcDataTable extends DataTable
         ])
         ->join('carteiras', 'carteiras.id', 'carteira_id')
         ->join('obras', 'obras.id', 'obra_id')
-        ->join('tipologias', 'tipologias.id', 'tipologia_id')
+        ->join('topologias', 'topologias.id', 'topologia_id')
         ->where('status', 'Em aprovação')
         ->groupBy('qc.id');
 
@@ -152,7 +152,7 @@ class QcDataTable extends DataTable
     {
         return [
             'id' => ['name' => 'id', 'data' => 'id', 'title' => 'ID'],
-            'tipologia_id' => ['name' => 'tipologia_id', 'data' => 'tipologia_nome', 'title' => 'Tipologia'],
+            'topologia_id' => ['name' => 'topologia_id', 'data' => 'topologia_nome', 'title' => 'Topologia'],
             'status' => ['name' => 'status', 'data' => 'status', 'title' => 'Status'],
             'carteira_id' => ['name' => 'carteira_id', 'data' => 'carteira_nome', 'title' => 'Carteira'],
             'descricao' => ['name' => 'descricao', 'data' => 'descricao', 'title' => 'Descrição do serviço'],

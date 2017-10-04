@@ -14,7 +14,7 @@ use App\Http\Requests\CreateQcRequest;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Obra;
 use App\Models\Carteira;
-use App\Models\Tipologia;
+use App\Models\Topologia;
 use App\Models\User;
 
 class QcController extends AppBaseController
@@ -49,9 +49,9 @@ class QcController extends AppBaseController
 	{
 		$obras = Obra::pluck('nome','id')->toArray();
 		$carteiras = Carteira::pluck('nome','id')->toArray();
-		$tipologias = Tipologia::pluck('nome','id')->toArray();
+		$topologias = Topologia::pluck('nome','id')->toArray();
 
-		return view('qc.create', compact('obras', 'carteiras', 'tipologias'));
+		return view('qc.create', compact('obras', 'carteiras', 'topologias'));
 	}
 
 	/**
@@ -99,7 +99,7 @@ class QcController extends AppBaseController
 	public function show($id)
 	{
 		$qc = $this->qcRepository->findWithoutFail($id);
-
+		$qc->topologia = $qc->topologia()->first();
 		$attachments = [];
 
 		if (isset($qc->anexos) && !empty($qc->anexos)) {
@@ -133,7 +133,7 @@ class QcController extends AppBaseController
 		$qc = $this->qcRepository->findWithoutFail($id);
 		$obras = Obra::pluck('nome','id')->toArray();
 		$carteiras = Carteira::pluck('nome','id')->toArray();
-		$tipologias = Tipologia::pluck('nome','id')->toArray();
+		$topologias = Topologia::pluck('nome','id')->toArray();
 
 		if (empty($qc)) {
 			Flash::error('Qc '.trans('common.not-found'));
@@ -141,7 +141,7 @@ class QcController extends AppBaseController
 			return redirect(route('qc.index'));
 		}
 
-		return view('qc.edit', compact('qc', 'obras', 'carteiras', 'tipologias'));
+		return view('qc.edit', compact('qc', 'obras', 'carteiras', 'topologias'));
 	}
 
 	/**

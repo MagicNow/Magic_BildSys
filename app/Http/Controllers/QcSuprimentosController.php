@@ -13,7 +13,7 @@ use App\Http\Requests\CreateQcRequest;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Obra;
 use App\Models\Carteira;
-use App\Models\Tipologia;
+use App\Models\Topologia;
 use App\Models\User;
 use App\Models\Fornecedor;
 
@@ -52,7 +52,7 @@ class QcSuprimentosController extends AppBaseController
         $qc = $this->qcRepository->findWithoutFail($id);
         $obras = Obra::pluck('nome','id')->toArray();
         $carteiras = Carteira::pluck('nome','id')->toArray();
-        $tipologias = Tipologia::pluck('nome','id')->toArray();
+        $topologias = Topologia::pluck('nome','id')->toArray();
         $fornecedores = Fornecedor::pluck('nome','id')->toArray();
         $comprador = User::pluck('name','id')->toArray();
 
@@ -62,7 +62,7 @@ class QcSuprimentosController extends AppBaseController
             return redirect(route('qc_suprimentos.index'));
         }
 
-        return view('qc_suprimentos.edit', compact('qc', 'obras', 'carteiras', 'tipologias', 'fornecedores', 'comprador'));
+        return view('qc_suprimentos.edit', compact('qc', 'obras', 'carteiras', 'topologias', 'fornecedores', 'comprador'));
     }
 
     /**

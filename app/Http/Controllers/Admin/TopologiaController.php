@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\DataTables\Admin\TipologiaDataTable;
+use App\DataTables\Admin\TopologiaDataTable;
 use App\Http\Requests\Admin;
-use App\Http\Requests\Admin\CreateTipologiaRequest;
-use App\Http\Requests\Admin\UpdateTipologiaRequest;
-use App\Repositories\Admin\TipologiaRepository;
+use App\Http\Requests\Admin\CreateTopologiaRequest;
+use App\Http\Requests\Admin\UpdateTopologiaRequest;
+use App\Repositories\Admin\TopologiaRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Support\Facades\Storage;
@@ -15,55 +15,55 @@ use DB;
 
 class TopologiaController extends AppBaseController
 {
-    /** @var  TipologiaRepository */
-    private $tipologiaRepository;    
+    /** @var  TopologiaRepository */
+    private $topologiaRepository;    
 
-    public function __construct(TipologiaRepository $tipologiaRepo)
+    public function __construct(TopologiaRepository $topologiaRepo)
     {
-        $this->tipologiaRepository = $tipologiaRepo;        
+        $this->topologiaRepository = $topologiaRepo;        
     }
 
     /**
-     * Display a listing of the Tipologia.
+     * Display a listing of the Topologia.
      *
-     * @param TipologiaDataTable $tipologiaDataTable
+     * @param TopologiaDataTable $topologiaDataTable
      * @return Response
      */
-    public function index(TipologiaDataTable $tipologiaDataTable)
+    public function index(TopologiaDataTable $topologiaDataTable)
     {
-        return $tipologiaDataTable->render('admin.tipologia.index');
+        return $topologiaDataTable->render('admin.topologia.index');
     }
 
     /**
-     * Show the form for creating a new Tipologia.
+     * Show the form for creating a new Topologia.
      *
      * @return Response
      */
     public function create()
     {
-        return view('admin.tipologia.create');
+        return view('admin.topologia.create');
     }
 
     /**
-     * Store a newly created Tipologia in storage.
+     * Store a newly created Topologia in storage.
      *
-     * @param CreateTipologiaRequest $request
+     * @param CreateTopologiaRequest $request
      *
      * @return Response
      */
-    public function store(CreateTipologiaRequest $request)
+    public function store(CreateTopologiaRequest $request)
     {
         $input = $request->all();
 
-        $tipologia = $this->tipologiaRepository->create($input);
+        $topologia = $this->topologiaRepository->create($input);
 
         Flash::success('Topologia '.trans('common.saved').' '.trans('common.successfully').'.');
 
-        return redirect(route('admin.tipologia.index'));
+        return redirect(route('admin.topologia.index'));
     }
 
     /**
-     * Display the specified Tipologia.
+     * Display the specified Topologia.
      *
      * @param  int $id
      *
@@ -71,19 +71,19 @@ class TopologiaController extends AppBaseController
      */
     public function show($id)
     {
-        $tipologia = $this->tipologiaRepository->findWithoutFail($id);
+        $topologia = $this->topologiaRepository->findWithoutFail($id);
 
-        if (empty($tipologia)) {
+        if (empty($topologia)) {
             Flash::error('Topologia '.trans('common.not-found'));
 
-            return redirect(route('admin.tipologia.index'));
+            return redirect(route('admin.topologia.index'));
         }
 
-        return view('admin.tipologia.show')->with('tipologia', $tipologia);
+        return view('admin.topologia.show')->with('topologia', $topologia);
     }
 
     /**
-     * Show the form for editing the specified Tipologia.
+     * Show the form for editing the specified Topologia.
      *
      * @param  int $id
      *
@@ -91,44 +91,44 @@ class TopologiaController extends AppBaseController
      */
     public function edit($id)
     {
-        $tipologia = $this->tipologiaRepository->findWithoutFail($id);
+        $topologia = $this->topologiaRepository->findWithoutFail($id);
 
-        if (empty($tipologia)) {
+        if (empty($topologia)) {
             Flash::error('Topologia '.trans('common.not-found'));
 
-            return redirect(route('admin.tipologia.index'));
+            return redirect(route('admin.topologia.index'));
         }    
         
-        return view('admin.tipologia.edit', compact('tipologia'));
+        return view('admin.topologia.edit', compact('topologia'));
     }
 
     /**
-     * Update the specified Tipologia in storage.
+     * Update the specified Topologia in storage.
      *
      * @param  int              $id
-     * @param UpdateTipologiaRequest $request
+     * @param UpdateTopologiaRequest $request
      *
      * @return Response
      */
-    public function update($id, UpdateTipologiaRequest $request)
+    public function update($id, UpdateTopologiaRequest $request)
     {
-        $tipologia = $this->tipologiaRepository->findWithoutFail($id);
+        $topologia = $this->topologiaRepository->findWithoutFail($id);
 
-        if (empty($tipologia)) {
+        if (empty($topologia)) {
             Flash::error('Topologia '.trans('common.not-found'));
 
-            return redirect(route('admin.tipologia.index'));
+            return redirect(route('admin.topologia.index'));
         }       
 
-        $tipologia = $this->tipologiaRepository->update($request->all(), $id);
+        $topologia = $this->topologiaRepository->update($request->all(), $id);
 
         Flash::success('Topologia '.trans('common.updated').' '.trans('common.successfully').'.');
 
-        return redirect(route('admin.tipologia.index'));
+        return redirect(route('admin.topologia.index'));
     }
 
     /**
-     * Remove the specified Tipologia from storage.
+     * Remove the specified Topologia from storage.
      *
      * @param  int $id
      *
@@ -136,17 +136,17 @@ class TopologiaController extends AppBaseController
      */
     public function destroy($id)
     {
-        $tipologia = $this->tipologiaRepository->findWithoutFail($id);
+        $topologia = $this->topologiaRepository->findWithoutFail($id);
 
-        if (empty($tipologia)) {
+        if (empty($topologia)) {
             Flash::error('Topologia '.trans('common.not-found'));
-            return redirect(route('admin.tipologia.index'));
+            return redirect(route('admin.topologia.index'));
         }
 		
-        $this->tipologiaRepository->delete($id);
+        $this->topologiaRepository->delete($id);
 
         Flash::success('Topologia '.trans('common.deleted').' '.trans('common.successfully').'.');
 
-        return redirect(route('admin.tipologia.index'));
+        return redirect(route('admin.topologia.index'));
     }
 }

@@ -12,9 +12,9 @@
 
             <div class="box-body">
                 <div class="row">
-                    {!! Form::open(['route' => 'admin.tipologia.store', 'files' => true]) !!}
+                    {!! Form::open(['route' => 'admin.topologia.store', 'files' => true]) !!}
 
-                        @include('admin.tipologia.fields')
+                        @include('admin.topologia.fields')
 
                     {!! Form::close() !!}
                 </div>
