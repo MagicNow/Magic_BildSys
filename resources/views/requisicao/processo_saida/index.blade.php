@@ -22,12 +22,12 @@
 
                     <div class="col-md-4"></div>
                     <div class="btn-group-vertical col-md-4" style="display: block;">
-                        <a href="/requisicao/processo-saida/{{$requisicao->id}}/ler-insumo-saida" class="btn btn-success" style="margin-bottom: 10px;">
+                        <a href="{{ route('requisicao.lerInsumoSaida', $requisicao->id) }}" class="btn btn-success" style="margin-bottom: 10px;">
                             <i class="fa fa-qrcode" aria-hidden="true"></i>
                             Ler QrCodes Saída
                         </a>
 
-                        <a href="#" class="btn btn-info" style="margin-bottom: 10px;">
+                        <a href="{{ route('requisicao.listaInconsistencia', $requisicao->id) }}" class="btn btn-info" style="margin-bottom: 10px;">
                             <i class="fa fa-list" aria-hidden="true"></i>
                             Lista de Inconsistências
                         </a>

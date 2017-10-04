@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\ListaInconsistenciaDataTable;
 use App\DataTables\RequisicaoDataTable;
 use App\Http\Requests;
 use App\Http\Requests\CreateRequisicaoRequest;
@@ -392,5 +393,10 @@ class RequisicaoController extends AppBaseController
         }
         
         return response()->json(['sucesso' => $sucesso]);
+    }
+
+    public function listaInconsistencia(Requisicao $requisicao, ListaInconsistenciaDataTable $listaInconsistenciaDataTable)
+    {
+        return $listaInconsistenciaDataTable->render('requisicao.processo_saida.lista_inconsistencia', compact('requisicao'));
     }
 }

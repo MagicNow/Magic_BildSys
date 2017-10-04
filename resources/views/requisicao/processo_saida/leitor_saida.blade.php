@@ -89,7 +89,7 @@
         if (existe_parametro > -1) {
             var dados = dados_qr_code.split('Dados QR Code: ')[dados_qr_code.split('Dados QR Code:').length -1];
             if(dados) {
-                $.ajax('/requisicao/processo-saida/ler-insumo-saida/salvar-leitura', {
+                $.ajax('{{ route('requisicao.salvarLeituraSaida') }}', {
                     data: {
                         dados: dados
                     }
@@ -97,7 +97,7 @@
                 .done(function (retorno) {
                     if(retorno.sucesso) {
                         if(!continuar) {
-                            window.location = '/requisicao/processo-saida/{{$requisicao->id}}';
+                            window.location = '{{ route('requisicao.processoSaida', $requisicao->id) }}';
                         }
                     } else {
                         swal({
