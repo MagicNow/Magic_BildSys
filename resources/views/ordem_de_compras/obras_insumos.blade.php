@@ -13,7 +13,7 @@
             <div class="col-md-12">
                 <div class="col-md-6">
                     <h3 class="pull-left title">
-                        <a href="{{ url('/compras') }}"><i class="fa fa-arrow-left" aria-hidden="true"></i></a> Comprar Insumos
+                        <a href="#" onclick="history.go(-1);"><i class="fa fa-arrow-left" aria-hidden="true"></i></a> Comprar Insumos
                     </h3>
                 </div>
                 <div class="col-md-6 text-right">

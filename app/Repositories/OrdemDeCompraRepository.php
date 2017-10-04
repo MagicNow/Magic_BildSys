@@ -751,7 +751,8 @@ class OrdemDeCompraRepository extends BaseRepository
                         ),CURDATE()) as dias"),
                         /* dias */
                         
-                        'carteiras.nome as carteira'
+                        'carteiras.nome as carteira',
+                        'carteiras.id as carteira_id'
                     ]);
 
                 if ($from || $to) {
@@ -861,16 +862,16 @@ class OrdemDeCompraRepository extends BaseRepository
                 }
                 // Busca se existe algum item a  ser comprado desta tarefa
                 $query->whereRaw(PlanejamentoCompraRepository::existeItemParaComprarComInsumoGrupo());
-                $query->groupBy(['id', 'obra', 'dias', 'tarefa', 'url', 'inicio', 'carteira', 'start', 'end', 'class', 'title']);
+                $query->groupBy(['id', 'obra', 'dias', 'tarefa', 'url', 'inicio', 'carteira', 'carteira_id', 'start', 'end', 'class', 'title']);
 
             }
             elseif($exibir_por_tarefa) {
                 $query = DB::table(
-                    DB::raw('(SELECT tarefa, id, obra, url, url_dispensar, inicio, start, dias, grupo, carteira, title, class
+                    DB::raw('(SELECT tarefa, id, obra, url, url_dispensar, inicio, start, dias, grupo, carteira, carteira_id, title, class
                          FROM
-                             (SELECT tarefa, id, obra, url, url_dispensar, inicio, start, dias, grupo, carteira, title, class
+                             (SELECT tarefa, id, obra, url, url_dispensar, inicio, start, dias, grupo, carteira, carteira_id, title, class
                              FROM
-                                (SELECT tarefa, id, obra, url, url_dispensar, inicio, start, dias, grupo, carteira, title, class
+                                (SELECT tarefa, id, obra, url, url_dispensar, inicio, start, dias, grupo, carteira,carteira_id,  title, class
                                 FROM (SELECT
                                         planejamentos.id,
                                         obras.nome AS obra,
@@ -1020,7 +1021,8 @@ class OrdemDeCompraRepository extends BaseRepository
                                             )
                                             ) DAY)
                                         ),CURDATE()) as dias,
-                                        carteiras.nome as carteira
+                                        carteiras.nome as carteira,
+                                        carteiras.id as carteira_id
                                     FROM lembretes
                                     INNER JOIN insumo_grupos ON insumo_grupos.id = lembretes.insumo_grupo_id
                                     INNER JOIN insumos ON insumos.insumo_grupo_id = insumo_grupos.id
@@ -1091,7 +1093,7 @@ class OrdemDeCompraRepository extends BaseRepository
                                     ' . ($obra_id && $obra_id != 'todas' ? ' AND planejamentos.obra_id = ' . $obra_id : '') . '
                                     ' . ($planejamento_id ? ' AND planejamentos.id = ' . $planejamento_id : '') . '
                                     ' . ($insumo_grupo_id ? ' AND insumos.insumo_grupo_id = ' . $insumo_grupo_id : '') . '
-                                    GROUP BY id, obra, tarefa, url, url_dispensar, grupo, inicio, dias, carteira
+                                    GROUP BY id, obra, tarefa, url, url_dispensar, grupo, inicio, dias, carteira, carteira_id
                                     ) as queryInterna
                                     ORDER BY
                                     STR_TO_DATE(inicio,\'%d/%m/%Y\') ASC
@@ -1104,11 +1106,11 @@ class OrdemDeCompraRepository extends BaseRepository
             }
             elseif($exibir_por_carteira){
                 $query = DB::table(
-                    DB::raw('(SELECT tarefa, id, obra, url, url_dispensar, inicio, start, dias, grupo, carteira, title, class
+                    DB::raw('(SELECT tarefa, id, obra, url, url_dispensar, inicio, start, dias, grupo, carteira, carteira_id, title, class
                          FROM
-                             (SELECT tarefa, id, obra, url, url_dispensar, inicio, start, dias, grupo, carteira, title, class
+                             (SELECT tarefa, id, obra, url, url_dispensar, inicio, start, dias, grupo, carteira, carteira_id, title, class
                              FROM
-                                (SELECT tarefa, id, obra, url, url_dispensar, inicio, start, dias, grupo, carteira, title, class
+                                (SELECT tarefa, id, obra, url, url_dispensar, inicio, start, dias, grupo, carteira, carteira_id, title, class
                                 FROM (SELECT
                                         planejamentos.id,
                                         obras.nome AS obra,
@@ -1258,7 +1260,9 @@ class OrdemDeCompraRepository extends BaseRepository
                                             )
                                             ) DAY)
                                         ),CURDATE()) as dias,
-                                        carteiras.nome as carteira
+                                        carteiras.nome as carteira,
+                                        carteiras.id as carteira_id
+                                        
                                     FROM lembretes
                                     INNER JOIN insumo_grupos ON insumo_grupos.id = lembretes.insumo_grupo_id
                                     INNER JOIN insumos ON insumos.insumo_grupo_id = insumo_grupos.id
@@ -1329,7 +1333,7 @@ class OrdemDeCompraRepository extends BaseRepository
                                     ' . ($obra_id && $obra_id != 'todas' ? ' AND planejamentos.obra_id = ' . $obra_id : '') . '
                                     ' . ($planejamento_id ? ' AND planejamentos.id = ' . $planejamento_id : '') . '
                                     ' . ($insumo_grupo_id ? ' AND insumos.insumo_grupo_id = ' . $insumo_grupo_id : '') . '
-                                    GROUP BY id, obra, tarefa, url, url_dispensar, grupo, inicio, dias, carteira
+                                    GROUP BY id, obra, tarefa, url, url_dispensar, grupo, inicio, dias, carteira, carteira_id
                                     ) as queryInterna
                                     ORDER BY
                                     STR_TO_DATE(inicio,\'%d/%m/%Y\') ASC
