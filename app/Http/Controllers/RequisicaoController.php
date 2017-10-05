@@ -399,4 +399,22 @@ class RequisicaoController extends AppBaseController
     {
         return $listaInconsistenciaDataTable->render('requisicao.processo_saida.lista_inconsistencia', compact('requisicao'));
     }
+
+    public function excluirLeitura(Request $request)
+    {
+        $requisicao = Requisicao::find($request->requisicao_id);
+        
+        if($requisicao) {
+            $requisicao_itens = $requisicao->requisicaoItens->pluck('id', 'id')->toArray();
+
+            if(count($requisicao_itens)) {
+                $leituras = RequisicaoSaidaLeitura::whereIn('requisicao_item_id', $requisicao_itens)->pluck('id', 'id')->toArray();
+                if(count($leituras)) {
+                    RequisicaoSaidaLeitura::destroy($leituras);
+                }
+            }
+        }
+        
+        return response()->json(true);
+    }
 }

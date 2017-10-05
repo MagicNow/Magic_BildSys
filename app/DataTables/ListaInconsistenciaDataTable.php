@@ -17,7 +17,7 @@ class ListaInconsistenciaDataTable extends DataTable
     {
         return $this->datatables
             ->eloquent($this->query())
-//            ->addColumn('action', 'requisicao.datatables_actions')
+            ->addColumn('action', 'requisicao.processo_saida.lista_inconsistencia_datatables_actions')
             ->editColumn('inconsistencia', function($obj) {
                 if($obj->inconsistencia == 'OK') {
                     return '<span style="color: #7ed321">'.$obj->inconsistencia.'</span>';
@@ -105,7 +105,7 @@ class ListaInconsistenciaDataTable extends DataTable
                         }
                     });
                 }' ,
-                'dom' => 'Bfrltip',
+                'dom' => 'tip',
                 'scrollX' => false,
                 'language'=> [
                     "url"=> "/vendor/datatables/Portuguese-Brasil.json"
@@ -143,7 +143,7 @@ class ListaInconsistenciaDataTable extends DataTable
             'Qtd_lida' => ['name' => 'qtd_lida', 'data' => 'qtd_lida'],
             'Número_de_leituras' => ['name' => 'numero_leituras', 'data' => 'numero_leituras'],
             'Inconsistência' => ['name' => 'inconsistencia', 'data' => 'inconsistencia'],
-//            'action' => ['name'=>'Ações', 'title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'15%', 'class' => 'all']
+            'action' => ['name'=>'Ações', 'title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'15%', 'class' => 'all']
         ];
     }
 

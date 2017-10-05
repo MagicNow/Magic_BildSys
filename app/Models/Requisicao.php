@@ -73,6 +73,6 @@ class Requisicao extends Model
      **/
     public function requisicaoItens()
     {
-        return $this->hasMany(\App\Models\RequisicaoIten::class);
+        return $this->hasMany(\App\Models\RequisicaoItem::class);
     }
 }
