@@ -9,6 +9,12 @@
               href="{!! route('notafiscals.filtro') !!}">
                 Conciliar Nota Fiscal
            </a>
+
+            <a class="btn btn-primary pull-right"
+               style="margin-top: -10px;margin-bottom: 5px;margin-right:5px;"
+               href="{!! route('nfe.import') !!}">
+                Importar XML Nota Fiscal
+            </a>
         </h1>
     </section>
     <div class="content">
