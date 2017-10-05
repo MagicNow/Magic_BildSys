@@ -11,8 +11,8 @@ if ($dias < 0) {
     $icone = '<i class="fa fa-exclamation" aria-hidden="true"></i>';
 }
 
-if(\Illuminate\Support\Facades\Input::get('exibir_por_carteira')) {
-    $url .= '&exibir_por_carteira=true';
+if($carteira_id) {
+    $url .= '&carteira_id='.$carteira_id;
 }
 ?>
 

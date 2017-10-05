@@ -160,7 +160,7 @@
         <!-- cnpj Field -->
         <div class="form-group col-sm-6">
             {!! Form::label('cnpj', 'CNPJ:') !!}
-            {!! Form::text('cnpj', null, ['class' => 'form-control cnpj']) !!}
+            {!! Form::text('cnpj', null, ['class' => 'form-control cnpj', 'onkeyup' => 'chamaValidacaoCnpj(this.value)']) !!}
         </div>
 
         <!-- inscricao_estadual Field -->
@@ -408,5 +408,19 @@
                 templateSelection: formatResultSelectionCidade // omitted for brevity, see the source of this page
             });
         });
+
+        function chamaValidacaoCnpj(cnpj) {
+            if(cnpj.length == 18) {
+                if(!validarCNPJ(cnpj)) {
+                    $('#cnpj').val('');
+                    swal({
+                        title: 'CNPJ Inválido',
+                        text: "",
+                        type: "info",
+                        confirmButtonColor: "#DD6B55"
+                    });
+                }
+            }
+        }
     </script>
 @stop
