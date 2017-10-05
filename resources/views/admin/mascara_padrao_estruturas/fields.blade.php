@@ -6,54 +6,86 @@
 
 <div class="form-group col-sm-12">
     @if(count($mascaraPadraoEstruturas))
-        <div class="col-md-8">
+        @php
+            $count = 0;
+        @endphp
+        <div class="col-md-8" style="padding: 5px;">
             <div class="input-group">
                 <span class="input-group-addon">{{$grupo->codigo}}</span>
-                <p class="form-control" id="grupo_id" value="{{ $grupo->nome }}">{{ $grupo->nome }}</p>
+                <p class="form-control">{{ $grupo->nome }}</p>
             </div>
         </div>
-        <ul>
+        <div class="col-md-4">
+            {!! Form::hidden('estrutura[0][id]', $grupo->id, ['id'=>'select_grupo_0_select', 'class'=>'estrutura_0']) !!}
+            <button type="button" class="btn btn-primary" onclick="addSubItem('select_grupo_0', 0, 'estrutura[0][itens]')">Add SubGrupo-1</button>
+        </div>
+        <ul id="select_grupo_0_ul">
         @foreach($subgrupos1 as $subgrupo1)
             @if($subgrupo1->grupo_id == $grupo->id)
-                <li style="list-style-type: none">
+                    @php
+                        $count++;
+                    @endphp
+                <li style="list-style-type: none" id="subgrupo1_{{$count}}">
                     <div class="col-md-8" style="padding: 5px;">
                         <div class="input-group">
                             <span class="input-group-addon">{{$subgrupo1->codigo}}</span>
-                            {!! Form::select('subgrupo1_id',[''=>'Escolha...']+$selectSubgrupos1, $subgrupo1->id, ['class' => 'form-control select2', 'required'=>true]) !!}
+                            {!! Form::select('estrutura[0][itens]['.$count.'][id]',[''=>'Escolha...']+$selectSubgrupos1, $subgrupo1->id, ['id'=>'subgrupo1_'.$count.'_select','class' => 'form-control select2 estrutura_1', 'onchange'=>'percorreBloco()']) !!}
                         </div>
                     </div>
-                    <ul>
+                    <div class="col-md-4">
+                        <button type="button" class="btn btn-primary" onclick="addSubItem('subgrupo1_{{$count}}', 1, 'estrutura[0][itens][{{$count}}][itens]')">Add SubGrupo-2</button>
+                    </div>
+                    <ul id="subgrupo1_{{$count}}_ul">
                         @foreach($subgrupos2 as $subgrupo2)
                             @if($subgrupo2->grupo_id == $subgrupo1->id)
-                                <li style="list-style-type: none">
+                                @php
+                                    $count++;
+                                @endphp
+                                <li style="list-style-type: none" id="subgrupo2_{{$count}}">
                                     <div class="col-md-8" style="padding: 5px;">
                                         <div class="input-group">
                                             <span class="input-group-addon">{{$subgrupo2->codigo}}</span>
-                                            {!! Form::select('subgrupo2_id',[''=>'Escolha...']+$selectSubgrupos2, $subgrupo2->id, ['class' => 'form-control select2', 'required'=>true]) !!}
+                                            {!! Form::select("estrutura[0][itens][1][itens][".$count.'][id]',[''=>'Escolha...']+$selectSubgrupos2, $subgrupo2->id, ['id'=>'subgrupo2_'.$count.'_select', 'class' => 'form-control select2 estrutura_2', 'onchange'=>'percorreBloco()']) !!}
                                         </div>
                                     </div>
-                                    <ul>
+                                    <div class="col-md-4">
+                                        <button type="button" class="btn btn-primary" onclick="addSubItem('subgrupo2_{{$count}}', 2, 'estrutura[0][itens][1][itens][{{$count}}][itens]')">Add SubGrupo-3</button>
+                                    </div>
+                                    <ul id="subgrupo2_{{$count}}_ul">
                                         @foreach($subgrupos3 as $subgrupo3)
                                             @if($subgrupo3->grupo_id == $subgrupo2->id)
-                                                <li style="list-style-type: none">
+                                                @php
+                                                    $count++;
+                                                @endphp
+                                                <li style="list-style-type: none" id="subgrupo3_{{$count}}">
                                                     <div class="col-md-8" style="padding: 5px;">
                                                         <div class="input-group">
                                                             <span class="input-group-addon">{{$subgrupo3->codigo}}</span>
-                                                            {!! Form::select('subgrupo3_id',[''=>'Escolha...']+$selectSubgrupos3, $subgrupo3->id, ['class' => 'form-control select2', 'required'=>true]) !!}
+                                                            {!! Form::select("estrutura[0][itens][1][itens][2][itens][".$count.'][id]',[''=>'Escolha...']+$selectSubgrupos3, $subgrupo3->id, ['id'=>'subgrupo3_'.$count.'_select', 'class' => 'form-control select2 estrutura_3', 'onchange'=>'percorreBloco()']) !!}
                                                         </div>
                                                     </div>
-                                                    <ul>
+                                                    <div class="col-md-4">
+                                                        <button type="button" class="btn btn-primary" onclick="addSubItem('subgrupo3_{{$count}}', 3, 'estrutura[0][itens][1][itens][2][itens][{{$count}}][itens]')">Add Serviço</button>
+                                                    </div>
+                                                    <ul id="subgrupo3_{{$count}}_ul">
                                                         @foreach($servicos as $servico)
-                                                            @if($servico->grupo_id == $subgrupo3->id)
-                                                                <li style="list-style-type: none">
+                                                             @if($servico->grupo_id == $subgrupo3->id)
+                                                                @php
+                                                                    $count++;
+                                                                @endphp
+                                                                <li style="list-style-type: none" id="subgrupo4_{{$count}}">
                                                                     <div class="col-md-8" style="padding: 5px;">
                                                                         <div class="input-group">
                                                                             <span class="input-group-addon">{{$servico->codigo}}</span>
-                                                                            {!! Form::select('servico_id',[''=>'Escolha...']+$selectServicos, $servico->id, ['class' => 'form-control select2', 'required'=>true]) !!}
+                                                                            {!! Form::select("estrutura[0][itens][1][itens][2][itens][3][itens][".$count.'][id]',[''=>'Escolha...']+$selectServicos, $servico->id, ['id'=>'subgrupo4_'.$count.'_select','class' => 'form-control select2 estrutura_4', 'onchange'=>'percorreBloco()']) !!}
                                                                         </div>
                                                                     </div>
+                                                                    <div class="col-md-4">
+                                                                        <button type="button" class="btn btn-warning" onclick="RedirectAddInsumo('subgrupo4_{{$count}}', 4,'estrutura[0][itens][1][itens][2][itens][3][itens][{{$count}}]')">Adicionar Insumos</button>
+                                                                    </div>
                                                                 </li>
-                                                            @endif
+                                                             @endif
+                                                             <ul id="subgrupo4_{{$count}}_ul"></ul>
                                                         @endforeach
                                                     </ul>
                                                 </li>
@@ -97,8 +129,11 @@
 @section('scripts')
     <script type="text/javascript">
         var blocos = 0;
-        var insumos = 0;
         var bloco_aberto = true;
+
+        $(function(){
+            percorreBloco();
+        });
 
         $( "form" ).submit(function( event ) {
             if(bloco_aberto){
@@ -109,21 +144,7 @@
             }
         });
 
-        {{--$(function() {--}}
-            {{--@if(count($mascaraPadraoEstruturas))--}}
-                {{--@foreach($mascaraPadraoEstruturas->unique('subgrupo1_id') as $subgrupo1)--}}
-                    {{--addSubItem('select_grupo_0', 0, 'estrutura[0][itens]', {{$subgrupo1->subgrupo1_id}});--}}
-                    {{--@foreach($mascaraPadraoEstruturas->unique('subgrupo2_id') as $subgrupo2)--}}
-                    {{--setTimeout(function(){--}}
-                        {{--addSubItem('subgrupo1_1', 1,'estrutura[0][itens][1][itens]', {{$subgrupo2->subgrupo2_id}});--}}
-                    {{--}, 2000);--}}
-                    {{--@endforeach--}}
-                {{--@endforeach--}}
-
-            {{--@endif--}}
-        {{--});--}}
-
-        function addSubItem(id_atual, nivel, nome, valor_existe = null){
+        function addSubItem(id_atual, nivel, nome){
             var buttonAdd = '';
             bloco_aberto = true;
             blocos++;
@@ -175,10 +196,6 @@
                         '</ul>'+
                         '</div>';
                     $('#'+id_atual+'_ul').append(selectHTML);
-                    console.log(valor_existe);
-                    if(valor_existe) {
-                        $('#subgrupo'+nivel+'_'+blocos+'_select').val(valor_existe);
-                    }
                     $('.overlay').remove();
                 }).fail(function() {
                     $('.overlay').remove();
@@ -194,43 +211,8 @@
             ]).submit();
         }
 
-        // Função que vai relacionar a estrutura com o insumo.
-        {{--function addInsumo(id_atual, nivel, nome){--}}
-            {{--insumos++;--}}
-            {{--console.log(id_atual, nivel, nome);--}}
-            {{--$('.box.box-primary').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');--}}
-            {{--$.ajax('{{route('admin.mascaraPadraoEstruturas.insumos')}}')--}}
-            {{--.done(function(retorno){--}}
-                {{--options = '<option value="">Selecione</option>';--}}
-                {{--$.each(retorno,function(index, value){--}}
-                    {{--options += '<option value="'+index+'">'+value+'</option>';--}}
-                {{--});--}}
-
-                {{--selectHTML = '' +--}}
-                    {{--'<div class="col-md-12" style="padding: 5px;">' +--}}
-                    {{--'<div class="col-md-8">' +--}}
-                    {{--'<li style="list-style-type: none" id="insumo'+nivel+'_'+insumos+'">' +--}}
-                    {{--'<div class="input-group">' +--}}
-                    {{--'<span class="input-group-addon"></span>' +--}}
-                    {{--'<select class="form-control select2" name="'+nome+'['+insumos+']" id="insumo'+nivel+'_'+insumos+'_select">' +--}}
-                    {{--options +--}}
-                    {{--'</select>' +--}}
-                    {{--'</div>' +--}}
-                    {{--'</li>' +--}}
-                    {{--'</div>' +--}}
-                    {{--'<ul id="subgrupo'+nivel+'_'+blocos+'_ul">'+--}}
-                    {{--'</ul>'+--}}
-                    {{--'</div>';--}}
-
-                {{--$('#'+id_atual+'_ul').append(selectHTML);--}}
-                {{--$('.overlay').remove();--}}
-            {{--})--}}
-            {{--.fail(function (retorno) {--}}
-                {{--$('.overlay').remove();--}}
-            {{--});--}}
-        {{--}--}}
-
         function percorreBloco() {
+            console.log('entrei aqui');
             bloco_aberto = false;
             if(!$('.estrutura_0').length){
                 bloco_aberto = true;

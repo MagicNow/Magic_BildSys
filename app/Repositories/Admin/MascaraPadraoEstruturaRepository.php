@@ -36,8 +36,8 @@ class MascaraPadraoEstruturaRepository extends BaseRepository
 
     public function create(array $attributes)
     {
+        dd($attributes);
         $estrutura['grupos'] = [];
-//        $relacionamento['insumos'] = [];
         foreach ($attributes['estrutura'] as $item){
             $grupo = $item['id'];
             foreach($item['itens'] as $item_subgrupo1){
@@ -51,20 +51,6 @@ class MascaraPadraoEstruturaRepository extends BaseRepository
 
                             #Busca estrutura ex: 01.01.01.01.001
                             $codigo_servico = Servico::find($servico);
-
-//                            if(isset($item_servico['insumos'])){
-//                                foreach($item_servico['insumos'] as $insumo){
-//                                    $codigo_insumo = Insumo::find($insumo);
-//
-//                                    $relacionamento['insumos'][] =
-//                                        [
-//                                            'insumo_id' => $insumo,
-//                                            'codigo_estruturado' => $codigo_servico->codigo.'.'.$codigo_insumo->codigo,
-//                                            'codigo' => $codigo_servico->codigo
-//                                        ];
-//                                }
-//                            }
-
                             $estrutura['grupos'][] =
                                 [
                                     'grupo_id' => $grupo,
@@ -79,8 +65,7 @@ class MascaraPadraoEstruturaRepository extends BaseRepository
                 }
             }
         }
-//        dd($attributes['estrutura']);
-//        dd($estrutura, $relacionamento);
+//        dd($estrutura['grupos']);
         foreach($estrutura['grupos'] as $grupo) {
             $grupo['mascara_padrao_id'] = $attributes['mascara_padrao_id'];
             $model = parent::updateOrCreate(
@@ -96,16 +81,6 @@ class MascaraPadraoEstruturaRepository extends BaseRepository
                     'servico_id'   => $grupo['servico_id']
                 ]
             );
-
-//            #salvando relacionamento de estrutura com insumo
-//            if (isset($relacionamento['insumos'])) {
-//                foreach ($relacionamento['insumos'] as $insumo) {
-//                    if($mascara_padrao_estrutura->codigo == $insumo['codigo']) {
-//                        $insumo['mascara_padrao_estrutura_id'] = $mascara_padrao_estrutura->id;
-//                        MascaraPadraoInsumo::create($insumo);
-//                    }
-//                }
-//            }
         }
         return $model;
     }

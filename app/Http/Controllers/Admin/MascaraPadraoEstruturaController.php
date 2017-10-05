@@ -104,7 +104,7 @@ class MascaraPadraoEstruturaController extends AppBaseController
      */
     public function store(CreateMascaraPadraoEstruturaRequest $request)
     {
-        dd($request->all());
+//        dd($request->all());
         $input = $request->all();
         $mascaraPadraoEstrutura = $this->mascaraPadraoEstruturaRepository->create($input);
 
