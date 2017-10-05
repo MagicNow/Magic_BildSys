@@ -25,6 +25,7 @@
     <script type="text/javascript" src="/js/admin.js"></script>
 </head>
 <body>
+
 <div class="app__layout"><!-- Header -->
     <main class="app__layout-content">
         <video autoplay></video><!-- Dialog  -->
@@ -45,27 +46,78 @@
     <div class="app__help-text">Aponte sua câmera para um QR Code</div>
     <div class="app__select-photos">Select from photos</div>
 </div>
-<script>
-    var nome_funcao_executar = 'lerQrCodeRequisicao';
 
-    function lerQrCodeRequisicao(dados_qr_code) {
+<!-- Modal -->
+<div class="modal fade" id="modalDadoQrCode" tabindex="-1" role="dialog" aria-labelledby="modalDadoQrCodeLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalDadoQrCodeLabel">Leitor QRCode</h5>
+            </div>
+            <div class="modal-body">
+                <span id="dados_qr_code">
+
+                </span>
+            </div>
+            <div class="modal-footer">
+                <div class="btn-group btn-group-justified">
+                    <a href="/requisicao/processo-saida/{{$requisicao->id}}" class="btn btn-danger">Cancelar</a>
+                    <a href="#" class="btn btn-success" onclick="salvarLeitura(0);" data-dismiss="modal">Confirmar</a>
+                </div>
+
+                <div class="btn-group btn-group-justified" style="margin-top: 10px;">
+                    <a href="#" class="btn btn-primary" onclick="salvarLeitura(1);" data-dismiss="modal">Confirmar e ler o próximo</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var nome_funcao_executar = 'lerInsumo';
+
+    function lerInsumo(dados_qr_code) {
+        $('#dados_qr_code').html(dados_qr_code);
+        $('#modalDadoQrCode').modal('show');
+        $('.app__dialog-close').click();
+    }
+
+    function salvarLeitura(continuar) {
+        var dados_qr_code = $('#dados_qr_code').text();
         var existe_parametro = dados_qr_code.indexOf('Dados QR Code: ');
 
         if (existe_parametro > -1) {
             var dados = dados_qr_code.split('Dados QR Code: ')[dados_qr_code.split('Dados QR Code:').length -1];
             if(dados) {
-                window.location = '{!! route('requisicao.create') !!}' + dados;
+                $.ajax('{{ route('requisicao.salvarLeituraSaida') }}', {
+                    data: {
+                        dados: dados
+                    }
+                })
+                .done(function (retorno) {
+                    if(retorno.sucesso) {
+                        if(!continuar) {
+                            window.location = '{{ route('requisicao.processoSaida', $requisicao->id) }}';
+                        }
+                    } else {
+                        swal({
+                            title: 'QR Code Inválido',
+                            text: "Não existe este item na requisição.",
+                            type: "info",
+                            confirmButtonColor: "#DD6B55",
+                            closeOnConfirm: false
+                        });
+                    }
+                });
             }
         } else {
-                swal({
-                    title: 'QR Code Inválido',
-                    text: "Não existe parâmetro para leituta do QR Code.",
-                    type: "info",
-                    confirmButtonColor: "#DD6B55",
-                    closeOnConfirm: false
-                }, function () {
-                    $('.app__dialog-close').click();
-                });
+            swal({
+                title: 'QR Code Inválido',
+                text: "Não existe parâmetro para leituta do QR Code.",
+                type: "info",
+                confirmButtonColor: "#DD6B55",
+                closeOnConfirm: false
+            });
         }
     }
 </script>

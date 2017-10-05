@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\ListaInconsistenciaDataTable;
 use App\DataTables\RequisicaoDataTable;
 use App\Http\Requests;
 use App\Http\Requests\CreateRequisicaoRequest;
@@ -9,6 +10,8 @@ use App\Http\Requests\UpdateRequisicaoRequest;
 use App\Models\Levantamento;
 use App\Models\Obra;
 use App\Models\Requisicao;
+use App\Models\RequisicaoItem;
+use App\Models\RequisicaoSaidaLeitura;
 use App\Repositories\RequisicaoRepository;
 use App\Repositories\Admin\ObraRepository;
 use Flash;
@@ -366,5 +369,52 @@ class RequisicaoController extends AppBaseController
     public function processoSaida(Requisicao $requisicao)
     {
         return view('requisicao.processo_saida.index', compact('requisicao'));
+    }
+
+    public function lerInsumoSaida(Requisicao $requisicao)
+    {
+        return view('requisicao.processo_saida.leitor_saida', compact('requisicao'));
+    }
+
+    public function salvarLeituraSaida(Request $request)
+    {
+        $dados = json_decode($request->dados);
+        $requisicao_item = RequisicaoItem::find($dados->requisicao_item_id);
+        $sucesso = false;
+        
+        if($requisicao_item) {
+            $requisicao_saida = new RequisicaoSaidaLeitura(
+                [
+                    'requisicao_item_id' => $dados->requisicao_item_id,
+                    'qtd_lida' => money_to_float($dados->qtd_lida)
+                ]);
+
+            $sucesso = $requisicao_saida->save();   
+        }
+        
+        return response()->json(['sucesso' => $sucesso]);
+    }
+
+    public function listaInconsistencia(Requisicao $requisicao, ListaInconsistenciaDataTable $listaInconsistenciaDataTable)
+    {
+        return $listaInconsistenciaDataTable->render('requisicao.processo_saida.lista_inconsistencia', compact('requisicao'));
+    }
+
+    public function excluirLeitura(Request $request)
+    {
+        $requisicao = Requisicao::find($request->requisicao_id);
+        
+        if($requisicao) {
+            $requisicao_itens = $requisicao->requisicaoItens->pluck('id', 'id')->toArray();
+
+            if(count($requisicao_itens)) {
+                $leituras = RequisicaoSaidaLeitura::whereIn('requisicao_item_id', $requisicao_itens)->pluck('id', 'id')->toArray();
+                if(count($leituras)) {
+                    RequisicaoSaidaLeitura::destroy($leituras);
+                }
+            }
+        }
+        
+        return response()->json(true);
     }
 }
