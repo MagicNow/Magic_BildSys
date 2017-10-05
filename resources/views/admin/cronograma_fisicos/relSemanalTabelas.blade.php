@@ -1,6 +1,5 @@
 <div class="row">	
 	<div class="col-xs-12">               			
-		
 		<div class="row">
 			<div class="col-md-12 margem-topo"><tile title-color="head-grey" title="Percentual Previsto x Percentual Realizado" type="created"></tile></div>
 		</div>

@@ -1540,8 +1540,12 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         }
 
     });
-
-
+	
+	$router->get('/testeGetUteis', function () {
+		$teste = \App\Repositories\Admin\CronogramaFisicoRepository::getPrevistoPorcentagem("27/06/2017", "06/07/2017", "07/07/2017");
+		dump($teste);
+	});
+	
 });
 
 #Image Controller
