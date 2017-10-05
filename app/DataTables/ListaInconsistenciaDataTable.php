@@ -18,11 +18,12 @@ class ListaInconsistenciaDataTable extends DataTable
         return $this->datatables
             ->eloquent($this->query())
 //            ->addColumn('action', 'requisicao.datatables_actions')
-            ->editColumn('created_at', function($obj){
-                return $obj->created_at ? with(new\Carbon\Carbon($obj->created_at))->format('d/m/Y H:i') : '';
-            })
-            ->filterColumn('created_at', function ($query, $keyword) {
-                $query->whereRaw("DATE_FORMAT(requisicao.created_at,'%d/%m/%Y') like ?", ["%$keyword%"]);
+            ->editColumn('inconsistencia', function($obj) {
+                if($obj->inconsistencia == 'OK') {
+                    return '<span style="color: #7ed321">'.$obj->inconsistencia.'</span>';
+                } else {
+                    return '<span style="color: #eb0000">'.$obj->inconsistencia.'</span>';
+                }
             })
             ->make(true);
     }
@@ -56,7 +57,17 @@ class ListaInconsistenciaDataTable extends DataTable
                         WHERE
                             requisicao_item_id = requisicao_itens.id
                 ) AS numero_leituras'),
-                DB::raw('0 AS inconsistencia'),
+                DB::raw(
+                    'IF(
+                        (SELECT 
+                            FORMAT(SUM(qtd_lida), 2, "de_DE")
+                        FROM
+                            requisicao_saida_leitura
+                        WHERE
+                            requisicao_item_id = requisicao_itens.id)
+                     = 
+                        (format(requisicao_itens.qtde, 2, "de_DE"))
+                    , "OK", "NOK") AS inconsistencia'),
                 ])
             ->join('estoque','estoque.id','requisicao_itens.estoque_id')
             ->join('insumos','insumos.id','estoque.insumo_id')
