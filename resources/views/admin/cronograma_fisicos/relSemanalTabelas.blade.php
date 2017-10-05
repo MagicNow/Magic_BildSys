@@ -1,9 +1,5 @@
 <div class="row">	
 	<div class="col-xs-12">               			
-<<<<<<< HEAD
-		
-=======
->>>>>>> feature/BS-530_Planejamento_Fisico
 		<div class="row">
 			<div class="col-md-12 margem-topo"><tile title-color="head-grey" title="Percentual Previsto x Percentual Realizado" type="created"></tile></div>
 		</div>
@@ -156,11 +152,7 @@
 			</div>				
 			
 		</div>			
-<<<<<<< HEAD
 
-=======
-	
->>>>>>> feature/BS-530_Planejamento_Fisico
 		<div class="row">
 			<div class="col-md-12 margem-topo"><tile title-color="head-grey" title="Tarefas Críticas" type="created"></tile></div>
 		</div>
