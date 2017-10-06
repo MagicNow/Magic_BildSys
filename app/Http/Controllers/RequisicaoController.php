@@ -2,20 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\DataTables\ListaInconsistenciaDataTable;
 use App\DataTables\RequisicaoDataTable;
 use App\Http\Requests;
 use App\Http\Requests\CreateRequisicaoRequest;
 use App\Http\Requests\UpdateRequisicaoRequest;
-use App\Models\Levantamento;
-use App\Models\Obra;
 use App\Models\Requisicao;
 use App\Models\RequisicaoItem;
 use App\Models\RequisicaoSaidaLeitura;
 use App\Repositories\RequisicaoRepository;
 use App\Repositories\Admin\ObraRepository;
 use Flash;
-use App\Http\Controllers\AppBaseController;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Response;
@@ -395,9 +391,69 @@ class RequisicaoController extends AppBaseController
         return response()->json(['sucesso' => $sucesso]);
     }
 
-    public function listaInconsistencia(Requisicao $requisicao, ListaInconsistenciaDataTable $listaInconsistenciaDataTable)
+    public function listaInconsistencia(Requisicao $requisicao)
     {
-        return $listaInconsistenciaDataTable->render('requisicao.processo_saida.lista_inconsistencia', compact('requisicao'));
+        $requisicao_itens = RequisicaoItem::select([
+            'requisicao_itens.id',
+            DB::raw('(
+                    SELECT 
+                        GROUP_CONCAT(grupos.nome, " - ", servicos.nome)
+                    FROM
+                        bild.requisicao_itens
+                            INNER JOIN
+                        estoque ON estoque.id = requisicao_itens.estoque_id
+                            INNER JOIN
+                        estoque_transacao ON estoque_transacao.estoque_id = estoque.id
+                            INNER JOIN
+                        nf_se_item ON nf_se_item.id = estoque_transacao.nf_se_item_id
+                            INNER JOIN
+                        solicitacao_entrega_itens ON solicitacao_entrega_itens.id = nf_se_item.solicitacao_entrega_item_id
+                            INNER JOIN
+                        se_apropriacoes ON se_apropriacoes.solicitacao_entrega_item_id = solicitacao_entrega_itens.id
+                            INNER JOIN
+                        contrato_item_apropriacoes ON contrato_item_apropriacoes.id = se_apropriacoes.contrato_item_apropriacao_id
+                            INNER JOIN
+                        grupos ON grupos.id = contrato_item_apropriacoes.subgrupo3_id
+                            INNER JOIN
+                        servicos ON servicos.id = contrato_item_apropriacoes.servico_id
+                ) as agrupamento'),
+            'insumos.nome AS insumo',
+            'insumos.unidade_sigla AS unidade_medida',
+            DB::raw("format(requisicao_itens.qtde,2,'de_DE') AS qtd_solicitada"),
+            DB::raw('(
+                        SELECT 
+                            FORMAT(SUM(qtd_lida), 2, "de_DE")
+                        FROM
+                            requisicao_saida_leitura
+                        WHERE
+                            requisicao_item_id = requisicao_itens.id
+                ) AS qtd_lida'),
+            DB::raw('(
+                        SELECT 
+                            COUNT(id)
+                        FROM
+                            requisicao_saida_leitura
+                        WHERE
+                            requisicao_item_id = requisicao_itens.id
+                ) AS numero_leituras'),
+            DB::raw(
+                'IF(
+                        (SELECT 
+                            FORMAT(SUM(qtd_lida), 2, "de_DE")
+                        FROM
+                            requisicao_saida_leitura
+                        WHERE
+                            requisicao_item_id = requisicao_itens.id)
+                     = 
+                        (format(requisicao_itens.qtde, 2, "de_DE"))
+                    , "OK", "NOK") AS inconsistencia'),
+        ])
+            ->join('estoque','estoque.id','requisicao_itens.estoque_id')
+            ->join('insumos','insumos.id','estoque.insumo_id')
+            ->where('requisicao_itens.requisicao_id', $requisicao->id)
+            ->get();
+
+        return view('requisicao.processo_saida.lista_inconsistencia', compact('requisicao', 'requisicao_itens'));
     }
 
     public function excluirLeitura(Request $request)
