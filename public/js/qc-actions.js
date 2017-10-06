@@ -1,4 +1,5 @@
 const $attachments = $('.qc-anexos');
+const baseUrl = $('body').attr('baseurl');
 
 $(function () {
 	$('#carteira_id').select2({
@@ -8,7 +9,7 @@ $(function () {
 		language: "pt-BR",
 
 		ajax: {
-			url: "/buscar/carteiras",
+			url: baseUrl + "/buscar/carteiras",
 			dataType: 'json',
 			delay: 250,
 
@@ -41,10 +42,6 @@ $(function () {
 		minimumInputLength: 1,
 		templateResult: formatResult, // omitted for brevity, see the source of this page
 		templateSelection: formatResultSelection // omitted for brevity, see the source of this page
-	});
-
-	$('.currency').on('blur', function () {
-		// $(this).val(floatToMoney($(this).val()));
 	});
 
 	$attachments.find('input[type="file"]').on('change', checkAttachmentTypeExists);

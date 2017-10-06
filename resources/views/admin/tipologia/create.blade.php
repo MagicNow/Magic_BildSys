@@ -3,7 +3,7 @@
 @section('content')
     <section class="content-header">
         <h1>
-            Topologia
+            Tipologia
         </h1>
     </section>
     <div class="content">
@@ -12,9 +12,9 @@
 
             <div class="box-body">
                 <div class="row">
-                    {!! Form::open(['route' => 'admin.topologia.store', 'files' => true]) !!}
+                    {!! Form::open(['route' => 'admin.tipologia.store', 'files' => true]) !!}
 
-                        @include('admin.topologia.fields')
+                        @include('admin.tipologia.fields')
 
                     {!! Form::close() !!}
                 </div>

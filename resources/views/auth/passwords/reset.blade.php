@@ -60,6 +60,6 @@
             </div>
         </div>
 
-        <script src="/js/admin.js"></script>
+        <script src="{{ asset('js/admin.js') }}"></script>
     </body>
 @endsection

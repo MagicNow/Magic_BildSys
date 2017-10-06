@@ -8,10 +8,10 @@
 	</div>
 @endif
 
-<!-- Topologia Field -->
+<!-- Tipologia Field -->
 <div class="form-group col-sm-6">
-	{!! Form::label('topologia', 'Topologia:') !!}
-	{!! Form::select('topologia_id',[''=>'Escolha...']+$topologias, NULL, ['class' => 'form-control', 'required'=>'required']) !!}
+	{!! Form::label('tipologia', 'Tipologia:') !!}
+	{!! Form::select('tipologia_id',[''=>'Escolha...']+$tipologias, NULL, ['class' => 'form-control', 'required'=>'required']) !!}
 </div>
 
 <!-- Carteira ID Field -->
@@ -29,28 +29,19 @@
 <!-- Valor Pré Orçamento Field -->
 <div class="form-group col-sm-6">
 	{!! Form::label('valor_pre_orcamento', 'Valor Pré Orçamento:') !!}
-	{!! Form::text('valor_pre_orcamento', NULL, ['class' => 'form-control currency', 'required'=>'required']) !!}
+	{!! Form::text('valor_pre_orcamento', NULL, ['class' => 'form-control money', 'required'=>'required']) !!}
 </div>
 
 <!-- Valor Orçamento Inicial Field -->
 <div class="form-group col-sm-6">
 	{!! Form::label('valor_orcamento_inicial', 'Valor Orçamento Inicial :') !!}
-	{!! Form::text('valor_orcamento_inicial', NULL, ['class' => 'form-control currency', 'required'=>'required']) !!}
+	{!! Form::text('valor_orcamento_inicial', NULL, ['class' => 'form-control money', 'required'=>'required']) !!}
 </div>
 
 <!-- Valor da Gerencial Field -->
 <div class="form-group col-sm-6">
 	{!! Form::label('valor_gerencial', 'Valor da Gerencial:') !!}
-	{!! Form::text('valor_gerencial', NULL, ['class' => 'form-control currency', 'required'=>'required']) !!}
-</div>
-
-<div class="form-group col-sm-6" style="margin-top: 13px;">
-	<div class="checkbox">
-		<label>
-			{!! Form::checkbox('carteira_comprada', '1', isset($qc) && $qc->carteira_comprada == 1 ? true : false, ['class' => 'form-control', 'id' => 'carteira_comprada']) !!}
-			Carteira Comprada
-		</label>
-	</div>
+	{!! Form::text('valor_gerencial', NULL, ['class' => 'form-control money', 'required'=>'required']) !!}
 </div>
 
 <fieldset class="col-sm-12 qc-anexos">

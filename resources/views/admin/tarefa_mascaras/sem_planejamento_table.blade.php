@@ -2,6 +2,6 @@
 
 @section('scripts')
     @parent
-    <script src="/vendor/datatables/buttons.server-side.js"></script>
+    <script src="{{ asset('vendor/datatables/buttons.server-side.js') }}"></script>
     {!! $dataTable->scripts() !!}
 @endsection

@@ -2,11 +2,11 @@
 
 namespace App\DataTables\Admin;
 
-use App\Models\Topologia;
+use App\Models\Tipologia;
 use Form;
 use Yajra\Datatables\Services\DataTable;
 
-class TopologiaDataTable extends DataTable
+class TipologiaDataTable extends DataTable
 {
 
     /**
@@ -16,12 +16,12 @@ class TopologiaDataTable extends DataTable
     {
         return $this->datatables
             ->eloquent($this->query())
-            ->editColumn('action', 'admin.topologia.datatables_actions')
+            ->editColumn('action', 'admin.tipologia.datatables_actions')
             ->editColumn('created_at', function($obj){
                 return $obj->created_at ? with(new\Carbon\Carbon($obj->created_at))->format('d/m/Y H:i') : '';
             })
             ->filterColumn('created_at', function ($query, $keyword) {
-                $query->whereRaw("DATE_FORMAT(topologias.created_at,'%d/%m/%Y') like ?", ["%$keyword%"]);
+                $query->whereRaw("DATE_FORMAT(tipologias.created_at,'%d/%m/%Y') like ?", ["%$keyword%"]);
             })
             ->make(true);
     }
@@ -33,9 +33,9 @@ class TopologiaDataTable extends DataTable
      */
     public function query()
     {
-        $topologia = Topologia::query();
+        $tipologia = Tipologia::query();
 
-        return $this->applyScopes($topologia);
+        return $this->applyScopes($tipologia);
     }
 
     /**
@@ -69,7 +69,7 @@ class TopologiaDataTable extends DataTable
                 'dom' => 'Bfrltip',
                 'scrollX' => false,
                 'language'=> [
-                    "url"=> "/vendor/datatables/Portuguese-Brasil.json"
+                    "url"=> asset("vendor/datatables/Portuguese-Brasil.json")
                 ],
                 'buttons' => [
                     'print',
@@ -110,6 +110,6 @@ class TopologiaDataTable extends DataTable
      */
     protected function filename()
     {
-        return 'topologias';
+        return 'tipologias';
     }
 }

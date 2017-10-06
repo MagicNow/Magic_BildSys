@@ -297,10 +297,10 @@ class RolesAndPermissions extends Seeder
 
             'qc-aprovar.show' => 'Visualização formulário de aprovação / reprovação QC',
 
-            'topologia.list' => 'Listagem de topologias',
-            'topologia.create' => 'Criação de topologia',
-            'topologia.edit'   => 'Edição de topologia',
-            'topologia.delete'   => 'Remoção de topologia',
+            'tipologia.list' => 'Listagem de tipologias',
+            'tipologia.create' => 'Criação de tipologia',
+            'tipologia.edit'   => 'Edição de tipologia',
+            'tipologia.delete'   => 'Remoção de tipologia',
 
             'lista_qc.list' => 'Lista de QC Suprimentos',
             'lista_qc.edit' => 'Edição de Lista de QC Suprimentos',
