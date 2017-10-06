@@ -6,6 +6,11 @@
     <a href="{{ route('requisicao.edit', $id) }}" title="{{ ucfirst( trans('common.edit') )}}" class='btn btn-warning btn-xs'>
         <i class="glyphicon glyphicon-edit"></i>
     </a>
+
+    <a href="{{ route('requisicao.processoSaida', $id) }}" class='btn btn-primary btn-xs' data-toggle="tooltip" data-placement="top" title="Saída de Insumos">
+        <i class="glyphicon glyphicon-log-out"></i>
+    </a>
+
     {!! Form::button('<i class="glyphicon glyphicon-trash"></i>', [
             'type' => 'button',
             'class' => 'btn btn-danger btn-xs',

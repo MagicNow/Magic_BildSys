@@ -37,8 +37,10 @@ class RequisicaoDataTable extends DataTable
             ->select([
                 'requisicao.*',
                 'users.name as usuario',
-                'obras.nome as obra'
+                'obras.nome as obra',
+                'requisicao_status.nome as status',
                 ])
+            ->join('requisicao_status','requisicao_status.id','requisicao.status_id')
             ->join('obras','obras.id','requisicao.obra_id')
             ->join('users','users.id','requisicao.user_id');
 
@@ -103,12 +105,17 @@ class RequisicaoDataTable extends DataTable
     private function getColumns()
     {
         return [
-            'Id Requisição' => ['name' => 'id', 'data' => 'id'],
+            'Id' => ['name' => 'id', 'data' => 'id'],
             'data' => ['name' => 'created_at', 'data' => 'created_at'],
             'obra' => ['name' => 'obra', 'data' => 'obra'],
+            'local' => ['name' => 'local', 'data' => 'local'],
+            'torre' => ['name' => 'torre', 'data' => 'torre'],
+            'pavimento' => ['name' => 'pavimento', 'data' => 'pavimento'],
+            'trecho' => ['name' => 'trecho', 'data' => 'trecho'],
+            'andar' => ['name' => 'andar', 'data' => 'andar'],
             'solicitante' => ['name' => 'usuário', 'data' => 'usuario'],
             'status' => ['name' => 'status', 'data' => 'status'],
-            'action' => ['name'=>'Ações', 'title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'15%', 'class' => 'all']
+            'action' => ['name'=>'Ações', 'title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%', 'class' => 'all']
         ];
     }
 
