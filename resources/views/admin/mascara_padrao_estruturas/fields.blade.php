@@ -1,7 +1,7 @@
 <!-- Mascara Padrao Id Field -->
 <div class="form-group col-sm-12">
     {!! Form::label('mascara_padrao_id', 'Máscara Padrão:') !!}
-    {!! Form::select('mascara_padrao_id',[''=>'Escolha...']+$mascaras, (isset($mascaraPadrao) ?$mascaraPadrao->id : null), ['class' => 'form-control select2', 'disabled'=>true]) !!}
+    {!! Form::select('mascara_padrao_id',[''=>'Escolha...']+$mascaras, (isset($mascaraPadrao) ?$mascaraPadrao->id : null), ['class' => 'form-control select2', 'required'=> true]) !!}
 </div>
 
 @php
@@ -129,7 +129,7 @@
                                                                             <button type="button"
                                                                                     class="btn btn-warning"
                                                                                     style="width: 145px"
-                                                                                    onclick="RedirectAddInsumo('subgrupo4_{{$count_subgrupo3}}', '')">
+                                                                                    onclick="RedirectAddInsumo()">
                                                                                 <i class="fa fa-floppy-o" aria-hidden="true"></i> Insumos
                                                                             </button>
                                                                         </div>
@@ -339,16 +339,14 @@
             }
         }
 
-        function RedirectAddInsumo(nome, count) {
+        function RedirectAddInsumo() {
             $('form').append([
-                '<input type="hidden" name="' + nome + '[' + (count + 1) + '][id]' + '">',
                 '<input type="hidden" name="save" value="save-continue">',
                 '<input type="hidden" name="btn_insumo" value="1">'
             ]).submit();
         }
 
         function percorreBloco() {
-            console.log('entrei aqui');
             bloco_aberto = false;
             if (!$('.estrutura_0').length) {
                 bloco_aberto = true;
