@@ -384,12 +384,10 @@ class CronogramaFisicoController extends AppBaseController
 			$sextasArray = CronogramaFisicoRepository::getFridaysByDate($inicioMes);
 			
 			/***** Tabela Coleta Semanal - Dados, pega da Tendencia Real ****/
-			$tabColetaSemanal['data'] = $this->tabColetaSemanal($obraId, $inicioMes, $fimMes, "Tendência Real");			
+			$tabColetaSemanal['data'] = $this->tabColetaSemanal($obraId, $inicioMes, $fimMes, "Tendência Real");		
 			$tabColetaSemanal['labels1'] = $sextasArray;	; //Label Horizontal
 			$tabColetaSemanal['labels2'] = ["Local", "Pavimento", "Tarefas", "Início Real" , "Término Real" , "Crítica" , "Peso Total" , "Real Acum. Mês Anterior" , "Previsto" , "Realizado" , "Previsto" , "Realizado" , "Previsto" , "Realizado" , "Previsto" , "Realizado" , "Previsto" , "Realizado" , "Farol"];			
-			
-			//dump($tabColetaSemanal['data']);die;
-			
+						
 			/***** Tabela Percentual Previsto e Acumulado ****/	
 			$tabPercentualPrevReal['labels'] = CronogramaFisicoRepository::getFridaysByDate($inicioMes);	; //Label Horizontal				
 
@@ -609,9 +607,7 @@ class CronogramaFisicoController extends AppBaseController
 		->groupBy('cronograma_fisicos.tarefa')		
 		->get()
 		->toArray();
-		
-		//dump($tabColetaSemanal);
-		
+				
 		//Filtrar por Tarefa do Mês				
 		foreach ($tabColetaSemanal as $keyT => $tarefa) {				
 			
@@ -626,14 +622,23 @@ class CronogramaFisicoController extends AppBaseController
 				foreach($sextasArray as $sexta){								
 					
 					//Calcular % da Semana
-					$inicioTarefa = Carbon::parse($tarefa['data_inicio']);
-					$fimTarefa = Carbon::parse($tarefa['data_termino']);					
+					$inicioTarefa = Carbon::parse($tarefa['data_inicio']);					
+					$inicioTarefa = $inicioTarefa->format('d/m/Y');
+					$fimTarefa = Carbon::parse($tarefa['data_termino']);
+					$fimTarefa = $fimTarefa->format('d/m/Y');
 					
-					$inicioSemana = Carbon::createFromFormat("d/m/Y", $sexta)->subDays(6);									
+					$inicioSemana = Carbon::createFromFormat("d/m/Y", $sexta);				
+					$inicioSemana = $inicioSemana->format('d/m/Y');
+					
+					$inicioRealSemana = Carbon::createFromFormat("d/m/Y", $sexta)->subDays(6);				
+					$inicioRealSemana = $inicioRealSemana->format('d/m/Y');
+					
 					$fimSemana = Carbon::createFromFormat("d/m/Y", $sexta);	
+					$fimSemana = $fimSemana->format('d/m/Y');
+							
 
-					$valorPrevisto = CronogramaFisicoRepository::getPrevistoPorcentagem($inicioTarefa, $fimTarefa, $inicioSemana, $fimSemana);										
-					$valorMedicaoFisica = CronogramaFisicoRepository::getRealizadoPorcentagem($inicioSemana, $fimSemana, $obraId, $tarefa['tarefa']);																				
+					$valorPrevisto = CronogramaFisicoRepository::getPrevistoPorcentagem($inicioTarefa, $fimTarefa, $inicioSemana);	
+					$valorMedicaoFisica = CronogramaFisicoRepository::getRealizadoPorcentagem($inicioRealSemana, $fimSemana, $obraId, $tarefa['tarefa']);																				
 					
 					$tabColetaSemanal[$keyT]["percentual-".$sexta] =  round($valorPrevisto,2);
 					$tabColetaSemanal[$keyT]["realizado-".$sexta] =  round($valorMedicaoFisica,2); //Mediçao Fisicas
@@ -745,7 +750,7 @@ class CronogramaFisicoController extends AppBaseController
 		
 	// Retornar dados do valor Previsto por Semana	
 	public function previstoSemanal($tabColetaSemanal, $inicioMes){
-		
+				
 		//previsto semanal = (previsto da semana - concluida da tarefa) * peso tarefa
 				
 		$previstoSemanal = [];
@@ -753,9 +758,11 @@ class CronogramaFisicoController extends AppBaseController
 		
 		// Todas as Sextas do Mês de Referencia
 		$sextasArray = CronogramaFisicoRepository::getFridaysByDate($inicioMes);		
+		$semanaId = 0;
+		$valorPrevistoAnterior = 0;
 		
 		foreach ($sextasArray as $sexta) {
-			
+						
 			$acumuladoSemanal = 0;
 			$valorPrevisto = 0;
 			$valorConcluida = 0;
@@ -770,17 +777,24 @@ class CronogramaFisicoController extends AppBaseController
 					$valorPeso = $tarefa['peso'];
 				}
 				
+				//Senao for semana 1 pegar o atribuir valor concluida com o valor previsto da semana anterior
+				if($semanaId >0){
+					$valorConcluida = $tarefa["percentual-".$semanaAnterior];
+				}
+				
 				$acumuladoSemanal = $acumuladoSemanal + (($valorPrevisto - $valorConcluida)/100)*$valorPeso;									
 					
 			}
 			
 			$previstoSemanal[$sexta] = round($acumuladoSemanal,2);
 			$acumuladoMes = $acumuladoMes + round($acumuladoSemanal,2);
+			
+			$semanaId = $semanaId + 1 ;
+			$semanaAnterior	= $sexta;
 		}		
 		
 		$previstoSemanal["mes"] = $acumuladoMes; 
-				
-		
+						
 		return $previstoSemanal;
 	}
 			
@@ -809,8 +823,10 @@ class CronogramaFisicoController extends AppBaseController
 					$valorPeso = $tarefa['peso'];
 				}
 				
-				$acumuladoSemanal = $acumuladoSemanal + (($valorRealizado - $valorConcluida)/100)*$valorPeso;								
-					
+				// Se nao teve nada realizado tem que zerar o acumuladado
+				if($valorRealizado > 0){
+					$acumuladoSemanal = $acumuladoSemanal + (($valorRealizado - $valorConcluida)/100)*$valorPeso;								
+				}					
 			}
 			
 			$realizadoSemanal[$sexta] = round($acumuladoSemanal,2);
