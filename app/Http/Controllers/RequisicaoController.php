@@ -9,6 +9,9 @@ use App\Http\Requests\UpdateRequisicaoRequest;
 use App\Models\Levantamento;
 use App\Models\Obra;
 use App\Models\Requisicao;
+use App\Models\RequisicaoItem;
+use App\Models\RequisicaoStatus;
+use App\Repositories\RequisicaoItemRepository;
 use App\Repositories\RequisicaoRepository;
 use App\Repositories\Admin\ObraRepository;
 use Flash;
@@ -21,12 +24,16 @@ class RequisicaoController extends AppBaseController
 {
     /** @var  RequisicaoRepository */
     private $requisicaoRepository;
+    private $requisicaoItemRepository;
     private $obraRepository;
 
     public function __construct(RequisicaoRepository $requisicaoRepo,
-                                ObraRepository $obraRepo)
+                                ObraRepository $obraRepo,
+                                RequisicaoItemRepository $requisicaoItemRepository
+                                )
     {
         $this->requisicaoRepository = $requisicaoRepo;
+        $this->requisicaoItemRepository = $requisicaoItemRepository;
         $this->obraRepository = $obraRepo;
     }
 
@@ -108,7 +115,25 @@ class RequisicaoController extends AppBaseController
      */
     public function edit($id)
     {
-        $requisicao = $this->requisicaoRepository->findWithoutFail($id);
+        $requisicao = $this->requisicaoRepository->getRequisicao($id);
+
+        try {
+            $item = RequisicaoItem::find(1);
+            $item->save([
+                'qtde' => 10
+            ]);
+
+        } catch (Exception $e) {
+
+            DB::rollback();
+            throw $e;
+        }
+
+        $status = DB::table('requisicao_status')->get()->pluck('nome','id');
+
+        $table = $this->requisicaoItemRepository->getRequisicaoItens($id);
+
+        $itens_comodo = $this->requisicaoItemRepository->getInsumosRequisicaoByComodo($id);
 
         if (empty($requisicao)) {
             Flash::error('Requisicao '.trans('common.not-found'));
@@ -116,7 +141,7 @@ class RequisicaoController extends AppBaseController
             return redirect(route('requisicaos.index'));
         }
 
-        return view('requisicao.edit')->with('requisicao', $requisicao);
+        return view('requisicao.edit', compact('requisicao', 'status', 'table', 'itens_comodo'));
     }
 
     /**
@@ -138,6 +163,8 @@ class RequisicaoController extends AppBaseController
         }
 
         $requisicao = $this->requisicaoRepository->update($request->all(), $id);
+
+        dd($requisicao);
 
         Flash::success('Requisicao '.trans('common.updated').' '.trans('common.successfully').'.');
 
@@ -354,8 +381,8 @@ class RequisicaoController extends AppBaseController
 
         if ($comodo) {
 
-            $r->where('apartamento', $insumo->apartamento);
-            $r->where('comodo', $insumo->comodo);
+            $r->where('ri.apartamento', $insumo->apartamento);
+            $r->where('ri.comodo', $insumo->comodo);
         }
 
         $total = $r->get()->first();

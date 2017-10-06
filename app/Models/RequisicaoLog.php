@@ -5,33 +5,19 @@ namespace App\Models;
 use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-/**
- * Class Requisicao
- * @package App\Models
- * @version September 22, 2017, 8:14 am -03
- */
-class Requisicao extends Model
+class RequisicaoLog extends Model
 {
-    use SoftDeletes;
-
-    public $table = 'requisicao';
+    public $table = 'requisicao_log';
     
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
 
-    protected $dates = ['deleted_at'];
-
-
     public $fillable = [
-        'obra_id',
-        'user_id',
-        'status_id',
-        'local',
-        'torre',
-        'pavimento',
-        'trecho',
-        'andar',
+        'requisicao_id',
+        'status_id_anterior',
+        'status_id_novo',
+        'user_id'
     ];
 
     /**
@@ -41,14 +27,10 @@ class Requisicao extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'obra_id' => 'integer',
-        'user_id' => 'integer',
-        'user_id' => 'integer',
-        'local' => 'string',
-        'torre' => 'string',
-        'pavimento' => 'string',
-        'trecho' => 'string',
-        'andar' => 'string',
+        'requisicao_id' => 'integer',
+        'status_id_anterior' => 'integer',
+        'status_id_novo' => 'integer',
+        'user_id' => 'integer'
     ];
 
     /**
@@ -71,8 +53,8 @@ class Requisicao extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
-    public function requisicaoItens()
+    public function requisicao()
     {
-        return $this->hasMany(\App\Models\RequisicaoIten::class);
+        return $this->hasMany(\App\Models\Requisicao::class);
     }
 }
