@@ -1564,3 +1564,4 @@ $router->get('requisicao/processo-saida/{requisicao}/ler-insumo-saida', ['as' =>
 $router->get('requisicao/processo-saida/ler-insumo-saida/salvar-leitura', ['as' => 'requisicao.salvarLeituraSaida', 'uses' => 'RequisicaoController@salvarLeituraSaida']);
 $router->get('requisicao/processo-saida/{requisicao}/lista-de-inconsistencia', ['as' => 'requisicao.listaInconsistencia', 'uses' => 'RequisicaoController@listaInconsistencia']);
 $router->get('requisicao/processo-saida/lista-de-inconsistencia/excluir-leitura', ['as' => 'requisicao.excluirLeitura', 'uses' => 'RequisicaoController@excluirLeitura']);
+$router->get('requisicao/processo-saida/{requisicao}/finalizar_saida', ['as' => 'requisicao.finalizarSaida', 'uses' => 'RequisicaoController@finalizarSaida']);

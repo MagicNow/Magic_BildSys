@@ -27,20 +27,24 @@
                             Ler QrCodes Saída
                         </a>
 
-                        <a href="{{ route('requisicao.listaInconsistencia', $requisicao->id) }}" class="btn btn-info" style="margin-bottom: 10px;">
-                            <i class="fa fa-list" aria-hidden="true"></i>
-                            Lista de Inconsistências
-                        </a>
+                        @if($tem_inconsistencia)
+                            <a href="{{ route('requisicao.listaInconsistencia', $requisicao->id) }}" class="btn btn-info" style="margin-bottom: 10px;">
+                                <i class="fa fa-list" aria-hidden="true"></i>
+                                Lista de Inconsistências
+                            </a>
+                        @endif
 
                         <a onclick="localRequisicaoModal();" class="btn btn-primary" style="margin-bottom: 10px;">
                             <i class="fa fa-location-arrow" aria-hidden="true"></i>
                             Local da Requisição
                         </a>
 
-                        <a href="#" class="btn btn-warning" style="margin-bottom: 10px;">
-                            <i class="fa fa-sign-out" aria-hidden="true"></i>
-                            Finalizar Saída
-                        </a>
+                        @if(!$tem_inconsistencia)
+                            <a href="{{ route('requisicao.finalizarSaida', $requisicao->id) }}" class="btn btn-warning" style="margin-bottom: 10px;">
+                                <i class="fa fa-sign-out" aria-hidden="true"></i>
+                                Finalizar Saída
+                            </a>
+                        @endif
                     </div>
                     <div class="col-md-4"></div>
 

@@ -70,10 +70,16 @@
             </div>
         </div>
 
-        <div class="col-md-12">
-            <a href="{{ route('requisicao.processoSaida', $requisicao->id) }}" class="btn btn-default">
-                <i class="fa fa-arrow-left"></i>  {{ ucfirst( trans('common.back') )}}
-            </a>
+        <div class="row">
+            <div class="form-group col-md-12">
+                <a href="{{ route('requisicao.processoSaida', $requisicao->id) }}" class="btn btn-warning pull-right">
+                    <i class="fa fa-sign-out" aria-hidden="true"></i> Finalizar leitura de saída
+                </a>
+
+                <a href="{{ route('requisicao.lerInsumoSaida', $requisicao->id) }}" class="btn btn-success pull-right">
+                    <i class="fa fa-qrcode" aria-hidden="true"></i> Continuar leitura de saída
+                </a>
+            </div>
         </div>
     </div>
 @endsection

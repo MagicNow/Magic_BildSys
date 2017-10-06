@@ -364,7 +364,17 @@ class RequisicaoController extends AppBaseController
 
     public function processoSaida(Requisicao $requisicao)
     {
-        return view('requisicao.processo_saida.index', compact('requisicao'));
+        $requisicao_itens = self::itensInconsistentes($requisicao);
+        $tem_inconsistencia = false;
+
+        foreach($requisicao_itens as $item) {
+            if($item->inconsistencia != 'OK') {
+                $tem_inconsistencia = true;
+                break;
+            }
+        }
+        
+        return view('requisicao.processo_saida.index', compact('requisicao', 'tem_inconsistencia'));
     }
 
     public function lerInsumoSaida(Requisicao $requisicao)
@@ -392,6 +402,30 @@ class RequisicaoController extends AppBaseController
     }
 
     public function listaInconsistencia(Requisicao $requisicao)
+    {
+        $requisicao_itens = self::itensInconsistentes($requisicao);
+        return view('requisicao.processo_saida.lista_inconsistencia', compact('requisicao', 'requisicao_itens'));
+    }
+
+    public function excluirLeitura(Request $request)
+    {
+        $requisicao = Requisicao::find($request->requisicao_id);
+        
+        if($requisicao) {
+            $requisicao_itens = $requisicao->requisicaoItens->pluck('id', 'id')->toArray();
+
+            if(count($requisicao_itens)) {
+                $leituras = RequisicaoSaidaLeitura::whereIn('requisicao_item_id', $requisicao_itens)->pluck('id', 'id')->toArray();
+                if(count($leituras)) {
+                    RequisicaoSaidaLeitura::destroy($leituras);
+                }
+            }
+        }
+        
+        return response()->json(true);
+    }
+
+    public function itensInconsistentes($requisicao)
     {
         $requisicao_itens = RequisicaoItem::select([
             'requisicao_itens.id',
@@ -453,24 +487,14 @@ class RequisicaoController extends AppBaseController
             ->where('requisicao_itens.requisicao_id', $requisicao->id)
             ->get();
 
-        return view('requisicao.processo_saida.lista_inconsistencia', compact('requisicao', 'requisicao_itens'));
+        return $requisicao_itens;
     }
-
-    public function excluirLeitura(Request $request)
+    
+    public function finalizarSaida(Requisicao $requisicao)
     {
-        $requisicao = Requisicao::find($request->requisicao_id);
-        
-        if($requisicao) {
-            $requisicao_itens = $requisicao->requisicaoItens->pluck('id', 'id')->toArray();
+        $requisicao->status = 'Em trânsito';
+        $requisicao->save();
 
-            if(count($requisicao_itens)) {
-                $leituras = RequisicaoSaidaLeitura::whereIn('requisicao_item_id', $requisicao_itens)->pluck('id', 'id')->toArray();
-                if(count($leituras)) {
-                    RequisicaoSaidaLeitura::destroy($leituras);
-                }
-            }
-        }
-        
-        return response()->json(true);
+        return redirect(route('requisicao.index'));
     }
 }
