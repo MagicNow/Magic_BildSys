@@ -459,7 +459,7 @@ class RequisicaoController extends AppBaseController
                     SELECT 
                         GROUP_CONCAT(grupos.nome, " - ", servicos.nome)
                     FROM
-                        bild.requisicao_itens
+                        requisicao_itens
                             INNER JOIN
                         estoque ON estoque.id = requisicao_itens.estoque_id
                             INNER JOIN
