@@ -48,7 +48,7 @@
                         </div>
                         <div class="col-md-4">
                             <button type="button" class="btn btn-primary" style="margin-left: 40px;width: 145.3px;"
-                                    onclick="addSubItem('subgrupo1_{{$count_subgrupo}}', {{ $count_subgrupo }}, null, null, null , 'estrutura[0][itens][{{$count_subgrupo}}][itens]')">
+                                    onclick="addSubItem('subgrupo1_{{$count_subgrupo}}', {{ $count_subgrupo }}, {{ $count_subgrupo1 }}, null, null , 'estrutura[0][itens][{{$count_subgrupo}}][itens]')">
                                 Add SubGrupo-2
                             </button>
                         </div>
@@ -74,7 +74,7 @@
                                         <div class="col-md-4">
                                             <button type="button" class="btn btn-primary"
                                                     style="margin-left: 27px;width: 145.3px;"
-                                                    onclick="addSubItem('subgrupo2_{{$count_subgrupo1}}', {{ $count_subgrupo }}, {{ $count_subgrupo1 }}, null, null, 'estrutura[0][itens][{{$count_subgrupo}}][itens][{{$count_subgrupo1}}][itens]')">
+                                                    onclick="addSubItem('subgrupo2_{{$count_subgrupo1}}', {{ $count_subgrupo }}, {{ $count_subgrupo1 }}, {{ $count_subgrupo2 }}, null, 'estrutura[0][itens][{{$count_subgrupo}}][itens][{{$count_subgrupo1}}][itens]')">
                                                 Add SubGrupo-3
                                             </button>
                                         </div>
@@ -102,7 +102,7 @@
                                                         <div class="col-md-4">
                                                             <button type="button" class="btn btn-primary"
                                                                     style="margin-left: 13px;width: 145.3px;"
-                                                                    onclick="addSubItem('subgrupo3_{{$count_subgrupo2}}', {{ $count_subgrupo }}, {{ $count_subgrupo1 }},  {{ $count_subgrupo2 }}, null, 'estrutura[0][itens][{{$count_subgrupo}}][itens][{{$count_subgrupo1}}][itens][{{$count_subgrupo2}}][itens]')">
+                                                                    onclick="addSubItem('subgrupo3_{{$count_subgrupo2}}', {{ $count_subgrupo }}, {{ $count_subgrupo1 }},  {{ $count_subgrupo2 }}, {{ $count_subgrupo3 }}, 'estrutura[0][itens][{{$count_subgrupo}}][itens][{{$count_subgrupo1}}][itens][{{$count_subgrupo2}}][itens]')">
                                                                 Add Serviço
                                                             </button>
                                                         </div>
@@ -128,7 +128,7 @@
                                                                         <div class="col-md-4">
                                                                             <button type="button"
                                                                                     class="btn btn-warning"
-                                                                                    onclick="RedirectAddInsumo('subgrupo4_{{$count_subgrupo3}}', {{ $count_subgrupo }}, {{ $count_subgrupo1 }},  {{ $count_subgrupo2 }}, {{ $count_subgrupo3 }}, 'estrutura[0][itens][{{$count_subgrupo}}][itens][{{$count_subgrupo1}}][itens][{{$count_subgrupo2}}][itens][{{$count_subgrupo3}}]')">
+                                                                                    onclick="RedirectAddInsumo('subgrupo4_{{$count_subgrupo3}}', '')">
                                                                                 Adicionar Insumos
                                                                             </button>
                                                                         </div>
@@ -214,7 +214,7 @@
         @endif
 
         function addSubItem(id_atual, nivel1, nivel2, nivel3, nivel4, nome) {
-            debugger;
+//            debugger;
 
             var $length;
             var nivel;
@@ -238,6 +238,7 @@
                 }
                 nivel = 1;
             }
+            console.log('nivel: ', nivel);
 
             var rota = "{{url('/admin/mascara-padrao-estruturas/grupos')}}/";
             if (nivel > 3) {
