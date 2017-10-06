@@ -75,6 +75,7 @@ class QcController extends AppBaseController
 				$destinationPath = CodeRepository::saveFile($file, 'qc/' . $qc->id);
 
 				$attach = $this->qcAnexoRepository->create([
+					'qc_id' => $qc->id,
 					'arquivo' => $destinationPath,
 					'tipo' => $request->anexo_tipo[$key],
 					'descricao' => $request->anexo_descricao[$key],

@@ -31,13 +31,6 @@ class UpdateQcTipologiaColumn extends Migration
      */
     public function down()
     {
-        Schema::table('qc', function (Blueprint $table){
-            $table->dropForeign(['tipologia_id']);
-            $table->foreign('tipologia_id')
-                ->references('id')
-                ->on('tipologias')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
-        });
+
     }
 }
