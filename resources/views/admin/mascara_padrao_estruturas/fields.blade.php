@@ -1,7 +1,7 @@
 <!-- Mascara Padrao Id Field -->
 <div class="form-group col-sm-12">
     {!! Form::label('mascara_padrao_id', 'Máscara Padrão:') !!}
-    {!! Form::select('mascara_padrao_id',[''=>'Escolha...']+$mascaras, (isset($mascaraPadrao) ?$mascaraPadrao->id : null), ['class' => 'form-control select2', 'required'=>true]) !!}
+    {!! Form::select('mascara_padrao_id',[''=>'Escolha...']+$mascaras, (isset($mascaraPadrao) ?$mascaraPadrao->id : null), ['class' => 'form-control select2', 'disabled'=>true]) !!}
 </div>
 
 @php
@@ -11,7 +11,6 @@
     $count_subgrupo3 = 0;
     $count = [];
 @endphp
-
 <div class="form-group col-sm-12">
     @if(count($mascaraPadraoEstruturas))
         <div class="col-md-8" style="padding-bottom: 5px;">
@@ -26,7 +25,8 @@
             {!! Form::hidden('estrutura[0][id]', $grupo->id, ['id'=>'select_grupo_0_select', 'class'=>'estrutura_0']) !!}
             <button type="button" class="btn btn-primary"
                     onclick="addSubItem('select_grupo_0', 0, null, null, null, 'estrutura[0][itens]')"
-                    style="margin-left: 53px;width: 145.3px;">Add SubGrupo-1
+                    style="margin-left: 53px;width: 145.3px;">
+                <i class="fa fa-plus" aria-hidden="true"></i> SubGrupo-1
             </button>
         </div>
         <ul id="select_grupo_0_ul">
@@ -49,7 +49,7 @@
                         <div class="col-md-4">
                             <button type="button" class="btn btn-primary" style="margin-left: 40px;width: 145.3px;"
                                     onclick="addSubItem('subgrupo1_{{$count_subgrupo}}', {{ $count_subgrupo }}, {{ $count_subgrupo1 }}, null, null , 'estrutura[0][itens][{{$count_subgrupo}}][itens]')">
-                                Add SubGrupo-2
+                                <i class="fa fa-plus" aria-hidden="true"></i> SubGrupo-2
                             </button>
                         </div>
                         <ul style="margin: 0px;" id="subgrupo1_{{$count_subgrupo}}_ul">
@@ -75,7 +75,7 @@
                                             <button type="button" class="btn btn-primary"
                                                     style="margin-left: 27px;width: 145.3px;"
                                                     onclick="addSubItem('subgrupo2_{{$count_subgrupo1}}', {{ $count_subgrupo }}, {{ $count_subgrupo1 }}, {{ $count_subgrupo2 }}, null, 'estrutura[0][itens][{{$count_subgrupo}}][itens][{{$count_subgrupo1}}][itens]')">
-                                                Add SubGrupo-3
+                                                <i class="fa fa-plus" aria-hidden="true"></i> SubGrupo-3
                                             </button>
                                         </div>
                                         <ul style="margin: 0px;" id="subgrupo2_{{$count_subgrupo1}}_ul">
@@ -103,7 +103,7 @@
                                                             <button type="button" class="btn btn-primary"
                                                                     style="margin-left: 13px;width: 145.3px;"
                                                                     onclick="addSubItem('subgrupo3_{{$count_subgrupo2}}', {{ $count_subgrupo }}, {{ $count_subgrupo1 }},  {{ $count_subgrupo2 }}, {{ $count_subgrupo3 }}, 'estrutura[0][itens][{{$count_subgrupo}}][itens][{{$count_subgrupo1}}][itens][{{$count_subgrupo2}}][itens]')">
-                                                                Add Serviço
+                                                                <i class="fa fa-plus" aria-hidden="true"></i> Serviço
                                                             </button>
                                                         </div>
                                                         <ul style="margin: 0px;" id="subgrupo3_{{$count_subgrupo2}}_ul">
@@ -128,8 +128,9 @@
                                                                         <div class="col-md-4">
                                                                             <button type="button"
                                                                                     class="btn btn-warning"
+                                                                                    style="width: 145px"
                                                                                     onclick="RedirectAddInsumo('subgrupo4_{{$count_subgrupo3}}', '')">
-                                                                                Adicionar Insumos
+                                                                                <i class="fa fa-floppy-o" aria-hidden="true"></i> Insumos
                                                                             </button>
                                                                         </div>
                                                                     </li>
@@ -161,7 +162,7 @@
             @endforeach
         </ul>
     @else
-        <div class="col-md-8">
+        <div class="col-md-8" style="padding-bottom: 5px;">
             <div class="input-group">
                 <span class="input-group-addon">{{$grupo->codigo}}</span>
                 <p class="form-control">{{ $grupo->nome }}</p>
@@ -169,8 +170,9 @@
         </div>
         <div class="col-md-4">
             {!! Form::hidden('estrutura[0][id]', $grupo->id, ['id'=>'select_grupo_0_select', 'class'=>'estrutura_0']) !!}
-            <button type="button" class="btn btn-primary"
-                    onclick="addSubItem('select_grupo_0', 0, null, null, null, 'estrutura[0][itens]')">Add SubGrupo-1
+            <button type="button" class="btn btn-primary" style="margin-left: 53px; width: 145px;"
+                    onclick="addSubItem('select_grupo_0', 0, null, null, null, 'estrutura[0][itens]')">
+                <i class="fa fa-plus" aria-hidden="true"></i> SubGrupo-1
             </button>
         </div>
         <ul id="select_grupo_0_ul">
@@ -218,7 +220,8 @@
 
             var $length;
             var nivel;
-            var buttonAdd = '';
+            var adicionar = '';
+            var novo = '';
             bloco_aberto = true;
 
             if (nivel1 != null && nivel2 != null && nivel3 != null && nivel4 != null) {
@@ -248,35 +251,43 @@
             var $idGeral = 'subgrupo' + nivel + '_' +nivel1+'_'+nivel2+'_'+nivel3+'_'+nivel4+'_' + $length ;
 
             if (nivel == 1) {
-                buttonAdd = '<button type="button" ' +
+                adicionar = '<button type="button" ' +
                     'class="btn btn-primary" ' +
+                    'style="margin-left: 40px;width: 145.3px;"' +
                     'onclick="addSubItem(\'' + $idGeral + '\',' + nivel1 + ','+$length+' ,null ,null, \'' + nome + '[' + $length + '][itens]' + '\')">' +
-                    'SubGrupo-2' +
+                    '<i class="fa fa-plus" aria-hidden="true"></i> SubGrupo-2' +
                     '</button>';
+                novo = '<button type="button" class="btn btn-primary" style="margin-left: -65px;" onclick="">Novo</button>';
             }
 
             if (nivel == 2) {
-                buttonAdd = '<button type="button" ' +
+                adicionar = '<button type="button" ' +
                     'class="btn btn-primary" ' +
+                    'style="margin-left: 27px;width: 145px;"'+
                     'onclick="addSubItem(\'' + $idGeral + '\', '+nivel1+' ,'+nivel2+','+$length+'  ,null, \'' + nome + '[' + $length + '][itens]' + '\')">' +
-                    'SubGrupo-3' +
+                    '<i class="fa fa-plus" aria-hidden="true"></i> SubGrupo-3' +
                     '</button>';
+                novo = '<button type="button" class="btn btn-primary" style="margin-left: -69px;" onclick="">Novo</button>';
             }
 
             if (nivel == 3) {
-                buttonAdd = '<button type="button" ' +
+                adicionar = '<button type="button" ' +
                     'class="btn btn-primary" ' +
+                    'style="margin-left: 13px;width: 145.3px;"' +
                     'onclick="addSubItem(\'' + $idGeral + '\', '+nivel1+' ,'+nivel2+' , '+nivel3+', '+$length+', \'' + nome + '[' + $length + '][itens]' + '\')">' +
-                    'Serviços' +
+                    '<i class="fa fa-plus" aria-hidden="true"></i> Serviços' +
                     '</button>';
+                novo = '<button type="button" class="btn btn-primary" style="margin-left: -72px;" onclick="">Novo</button>';
             }
 
             if (nivel == 4) {
-                buttonAdd = '<button type="button" ' +
+                adicionar = '<button type="button" ' +
                     'class="btn btn-warning" ' +
+                    'style="width: 145px"' +
                     'onclick="RedirectAddInsumo(\'' + $idGeral +'\',\''+nome+'['+$length+']'+'\')">' +
-                    'Salvar e adicionar insumo' +
+                    '<i class="fa fa-floppy-o" aria-hidden="true"></i> Insumos' +
                     '</button>';
+                novo = '<button type="button" class="btn btn-primary" style="margin-left: -75px;" onclick="">Novo</button>';
             }
 
             var id = $('#' + id_atual + '_select').val();
@@ -291,23 +302,21 @@
                     });
 
                     selectHTML = '' +
-                        '<div class="col-md-12" style="padding-bottom: 5px;">' +
-                        '<div class="col-md-8">' +
-                        '<li style="list-style-type: none" id="subgrupo' + nivel + '_' + $length + '">' +
+                        '<div class="col-md-8" style="padding-bottom: 5px;">' +
+                        '<li style="list-style-type: none; margin: 0px;" id="subgrupo' + nivel + '_' + $length + '">' +
                         '<select class="form-control select2 estrutura_' + nivel + '" onchange="percorreBloco()" name="' + nome + '[' + $length + '][id]" id="subgrupo' + nivel + '_' +nivel1+'_'+nivel2+'_'+nivel3+'_'+nivel4+'_' + $length + '_select">' +
                         options +
                         '</select>' +
                         '</li>' +
                         '</div>' +
-                        '<div class="col-md-1">' +
-                        '<button type="button" class="btn btn-primary" onclick="">Novo</button>' +
-                        '</div>' +
                         '<div class="col-md-3">' +
-                        buttonAdd +
+                        adicionar +
+                        '</div>' +
+                        '<div class="col-md-1">' +
+                        novo +
                         '</div>' +
                         '<ul id="subgrupo' + nivel + '_' +nivel1+'_'+nivel2+'_'+nivel3+'_'+nivel4+'_' + $length + '_ul">' +
-                        '</ul>' +
-                        '</div>';
+                        '</ul>';
                     $('#' + id_atual + '_ul').append(selectHTML);
                     $('.overlay').remove();
 
