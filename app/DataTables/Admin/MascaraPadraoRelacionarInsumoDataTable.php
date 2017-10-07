@@ -2,40 +2,53 @@
 
 namespace App\DataTables\Admin;
 
-use App\Models\MascaraPadrao;
-use Form;
+use App\Models\Insumo;
 use Yajra\Datatables\Services\DataTable;
 
-class MascaraPadraoDataTable extends DataTable
+class MascaraPadraoRelacionarInsumoDataTable extends DataTable
 {
-
     /**
+     * Display ajax response.
+     *
      * @return \Illuminate\Http\JsonResponse
      */
     public function ajax()
     {
         return $this->datatables
             ->eloquent($this->query())
-            ->editColumn('action', 'admin.mascara_padrao.datatables_actions')
-            ->editColumn('created_at', function($obj){
-                return $obj->created_at ? with(new\Carbon\Carbon($obj->created_at))->format('d/m/Y H:i') : '';
+            ->addColumn('action', 'admin.mascara_padrao_estruturas.relacionar_insumos_datatables_actions')
+            ->editColumn('coeficiente', function($obj){
+                return "<input  type='text' class='form-control money' name='coeficiente_$obj->id'>";
             })
-            ->filterColumn('created_at', function ($query, $keyword) {
-                $query->whereRaw("DATE_FORMAT(mascara_padrao.created_at,'%d/%m/%Y') like ?", ["%$keyword%"]);
+            ->editColumn('indireto', function($obj){
+                return "<input type='text' class='form-control money' name='indireto_$obj->id'>";
             })
             ->make(true);
     }
 
     /**
-     * Get the query object to be processed by datatables.
+     * Get the query object to be processed by dataTables.
      *
-     * @return \Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder|\Illuminate\Support\Collection
      */
     public function query()
     {
-        $mascara_padrao = MascaraPadrao::query();
+        $query = Insumo::query()
+            ->select([
+                'id',
+                'nome',
+                'codigo'
+            ])
+            ->whereRaw(
+                'id NOT IN
+                    (SELECT insumo_id
+                        FROM mascara_padrao_insumos
+                    )
+            ')
+            ->where('active', 1)
+            ->orderBy('nome', 'ASC');
 
-        return $this->applyScopes($mascara_padrao);
+        return $this->applyScopes($query);
     }
 
     /**
@@ -47,14 +60,13 @@ class MascaraPadraoDataTable extends DataTable
     {
         return $this->builder()
             ->columns($this->getColumns())
-            // ->addAction(['width' => '10%'])
             ->ajax('')
             ->parameters([
-                'responsive' => 'true',
-                 'initComplete' => 'function () {
+                'responsive'=> 'true',
+                'initComplete' => 'function () {
                     max = this.api().columns().count();
                     this.api().columns().every(function (col) {
-                        if((col+1)<max){
+                        if((col+3)<max){
                             var column = this;
                             var input = document.createElement("input");
                             $(input).attr(\'placeholder\',\'Filtrar...\');
@@ -67,24 +79,16 @@ class MascaraPadraoDataTable extends DataTable
                         }
                     });
                 }' ,
+//                "lengthChange"=> true,
+                "pageLength"=> 25,
                 'dom' => 'Bfrltip',
                 'scrollX' => false,
                 'language'=> [
-                    "url"=> asset("vendor/datatables/Portuguese-Brasil.json")
+                    "url"=> "/vendor/datatables/Portuguese-Brasil.json"
                 ],
                 'buttons' => [
-                    'print',
                     'reset',
                     'reload',
-                    [
-                         'extend'  => 'collection',
-                         'text'    => '<i class="fa fa-download"></i> Export',
-                         'buttons' => [
-                             'csv',
-                             'excel',
-                             'pdf',
-                         ],
-                    ],
                     'colvis'
                 ]
             ]);
@@ -95,13 +99,14 @@ class MascaraPadraoDataTable extends DataTable
      *
      * @return array
      */
-    private function getColumns()
+    protected function getColumns()
     {
         return [
+            'Código' => ['name' => 'codigo', 'data' => 'codigo'],
             'nome' => ['name' => 'nome', 'data' => 'nome'],
-            'descrição' => ['name' => 'descricao', 'data' => 'descricao'],
-            'cadastradaEm' => ['name' => 'created_at', 'data' => 'created_at'],
-            'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
+            'Coeficiente' => ['name' => 'coeficiente', 'data' => 'coeficiente', 'searchable' => false],
+            'Indireto' => ['name' => 'indireto', 'data' => 'indireto', 'searchable' => false],
+            'action' => ['name' => 'Ações', 'title' => 'Salvar', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10px', 'class' => 'all'],
         ];
     }
 
@@ -112,6 +117,6 @@ class MascaraPadraoDataTable extends DataTable
      */
     protected function filename()
     {
-        return 'mascara_padrao';
+        return 'mascarapadraorelacionarinsumodatatables_' . time();
     }
 }

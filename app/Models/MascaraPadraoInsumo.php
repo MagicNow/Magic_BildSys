@@ -17,31 +17,19 @@ class MascaraPadraoInsumo extends Model
     const UPDATED_AT = 'updated_at';
 
     public $fillable = [        
-		'mascara_padrao_id',
+		'mascara_padrao_estrutura_id',
 		'codigo_estruturado',
-		'insumo_id',
-		'tipos_levantamento_id',
-		'coeficiente',
-		'indireto',		
-		'grupo_id',
-		'subgrupo1_id',
-        'subgrupo2_id',
-        'subgrupo3_id',
-		'servico_id'
+        'coeficiente',
+        'indireto',
+        'insumo_id'
     ];
-	
-	public $campos = [        
-		'mascara_padrao_id',
+
+	public $campos = [
+		'mascara_padrao_estrutura_id',
 		'codigo_estruturado',
-		'insumo_id',
-		'tipos_levantamento_id',
 		'coeficiente',
 		'indireto',
-		'grupo_id',
-		'subgrupo1_id',
-        'subgrupo2_id',
-        'subgrupo3_id',
-		'servico_id'        
+        'insumo_id'
     ];
 
     /**
@@ -52,8 +40,7 @@ class MascaraPadraoInsumo extends Model
     protected $casts = [
         'id' => 'integer',
         'mascara_padrao_id' => 'integer',
-        'insumo_id' => 'integer',
-		'coeficiente' => 'decimal'
+        'insumo_id' => 'integer'
     ];
 
     /**
@@ -62,9 +49,9 @@ class MascaraPadraoInsumo extends Model
      * @var array
      */
     public static $rules = [
-        
+
     ];
-	
+
 	public function getCoeficienteAttribute($value)
     {
         if (strlen($value) == 4) {
@@ -96,9 +83,9 @@ class MascaraPadraoInsumo extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function mascaraPadrao()
+    public function mascaraPadraoEstrutura()
     {
-        return $this->belongsTo(MascaraPadrao::class);
+        return $this->belongsTo(MascaraPadraoEstrutura::class);
     }
 
 }

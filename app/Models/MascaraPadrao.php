@@ -16,16 +16,9 @@ class MascaraPadrao extends Model
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
-
-    protected $dates = ['deleted_at'];
-
-
     public $fillable = [
-        'nome'
-    ];
-
-    public static $campos = [
-        'nome'
+        'nome',
+        'descricao'
     ];
 
     /**
@@ -35,7 +28,8 @@ class MascaraPadrao extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'nome' => 'string'
+        'nome' => 'string',
+        'descricao' => 'string'
     ];
 
     /**

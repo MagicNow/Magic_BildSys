@@ -14,6 +14,7 @@ return [
     'edit' => 'editar',
     'update' => 'atualizar',
     'save' => 'salvar',
+    'save-continue' => 'salvar e continuar',
     'saved' => 'salvo',
     'updated' => 'atualizado',
     'successfully' => 'com sucesso',

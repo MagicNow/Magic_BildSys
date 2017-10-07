@@ -48,6 +48,15 @@
         </li>
         @endshield
 
+        @shield('mascara_padrao_insumos.list')
+        <li class="{{ Request::is('admin/mascara_padrao_insumos') ? 'active' : '' }}">
+            <a href="{!! route('admin.mascara_padrao_insumos.index') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Máscara Padrão/Insumos</span>
+            </a>
+        </li>
+        @endshield
+
 		@shield('tarefa_padrao.list')
         <li class="{{ Request::is('admin/tarefa_padrao*') ? 'active' : '' }}">
             <a href="{!! route('admin.tarefa_padrao.index') !!}">
@@ -57,14 +66,6 @@
         </li>
         @endshield
 
-		@shield('mascara_padrao_insumos.list')
-        <li class="{{ Request::is('admin/mascara_padrao_insumos') ? 'active' : '' }}">
-            <a href="{!! route('admin.mascara_padrao_insumos.index') !!}">
-                <i class="fa fa-caret-right" aria-hidden="true"></i>
-                <span>Máscara Padrão/Insumos</span>
-            </a>
-        </li>
-        @endshield	
 		@shield('tarefa_mascaras.list')
         <li class="{{ Request::is('admin/tarefa_mascaras') ? 'active' : '' }}">
             <a href="{!! route('admin.tarefa_mascaras.index') !!}">
