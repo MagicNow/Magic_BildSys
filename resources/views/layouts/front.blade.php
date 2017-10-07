@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <title>{{ env('APP_TITLE') }}</title>
     <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
-
-    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="stylesheet" href="{{ asset('css/google-web-fonts.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
     <link rel="shortcut icon" href="{{ asset('img/favicon.png') }}">
     <link rel="icon" href="{{ asset('img/favicon.png') }}" />
     @yield('styles')
@@ -15,7 +15,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 
-<body class="skin-yellow sidebar-mini sidebar-collapse">
+<body class="skin-yellow sidebar-mini sidebar-collapse" baseurl="{{ url('/') }}">
 
     <div class="wrapper">
         <!-- Main Header -->
@@ -214,13 +214,13 @@
                     <h4 class="modal-title" id="modalMissaoVisaoValores">Missão, Visão e Valores</h4>
                 </div>
                 <div class="modal-body">
-                    <img src="/img/missao-visao-valores.png" style="margin: auto" class="img-responsive">
+                    <img src="{{ asset('img/missao-visao-valores.png') }}" style="margin: auto" class="img-responsive">
                 </div>
             </div>
         </div>
     </div>
     @include('partials.modals-importacao')
-    <script src="/js/admin.js"></script>
+    <script src="{{ asset('js/admin.js') }}"></script>
     <script src="{{ asset('js/app.js') }}" type="text/javascript"></script>
 
     @yield('scripts')

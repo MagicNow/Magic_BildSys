@@ -5,10 +5,10 @@
     <title>{{ env('APP_TITLE') }}</title>
     <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
     <meta name="csrf-token" content="{!! csrf_token() !!}">
-    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
 </head>
 
-<body class="skin-blue-light sidebar-mini loaded">
+<body class="skin-blue-light sidebar-mini loaded" baseurl="{{ url('/') }}">
 
 @include('flash::message')
 @yield('content')
@@ -18,7 +18,7 @@
     window.jwt_token = '{{ auth()->check() ? auth()->user()->jwt_token : '' }}';
     var pessoa_atual_id = null;
 </script>
-<script src="/js/admin.js"></script>
+<script src="{{ asset('js/admin.js') }}"></script>
 
 @yield('scripts')
 @if(request()->get('bind_form', true))

@@ -92,7 +92,7 @@ class LevantamentoDataTable extends DataTable
                 'dom' => 'Bfrltip',
                 'scrollX' => false,
                 'language'=> [
-                    "url"=> "/vendor/datatables/Portuguese-Brasil.json"
+                    "url"=> asset("vendor/datatables/Portuguese-Brasil.json")
                 ],
                 'buttons' => [
                     'print',

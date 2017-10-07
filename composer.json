@@ -44,12 +44,13 @@
         "nfephp-org/nfephp": "dev-master",
         "nfephp-org/sped-cte": "dev-master",
         "intervention/image": "^2.4",
-        "nfephp-org/sped-da": "^0.1.2"
+        "nfephp-org/sped-da": "^0.1.2",
+        "simplesoftwareio/simple-qrcode": "~1"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
         "mockery/mockery": "0.9.*",
-        "phpunit/phpunit": "~5.0",
+        "phpunit/phpunit": "^6.4@dev",
         "symfony/css-selector": "3.1.*",
         "symfony/dom-crawler": "3.1.*"
     },

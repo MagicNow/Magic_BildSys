@@ -257,7 +257,7 @@ class MedicaoServicoDataTable extends DataTable
                     'desc'
                 ],
                 'language'=> [
-                    "url"=> "/vendor/datatables/Portuguese-Brasil.json"
+                    "url"=> asset("vendor/datatables/Portuguese-Brasil.json")
                 ],
                 'buttons' => $buttons
             ]);

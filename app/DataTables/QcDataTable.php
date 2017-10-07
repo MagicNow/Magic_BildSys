@@ -20,9 +20,13 @@ class QcDataTable extends DataTable
         return $this->datatables
             ->eloquent($this->query())			
             ->editColumn('created_at', function ($qc) {
-                return $qc->created_at
-                    ? $qc->created_at->format('d/m/Y')
-                    : '';
+                return $qc->created_at ? $qc->created_at->format('d/m/Y') : '';
+            })
+            ->editColumn('valor_pre_orcamento', function ($qc) {
+                return $qc->valor_pre_orcamento ? float_to_money($qc->valor_pre_orcamento) : '';
+            })
+            ->editColumn('valor_orcamento_inicial', function ($qc) {
+                return $qc->valor_orcamento_inicial ? float_to_money($qc->valor_orcamento_inicial) : '';
             })
             ->editColumn('action', 'qc.datatables_actions')
 			->make(true);
@@ -49,6 +53,7 @@ class QcDataTable extends DataTable
         ->join('carteiras', 'carteiras.id', 'carteira_id')
         ->join('obras', 'obras.id', 'obra_id')
         ->join('tipologias', 'tipologias.id', 'tipologia_id')
+        ->where('status', 'Em aprovação')
         ->groupBy('qc.id');
 
         $request = $this->request();
@@ -113,7 +118,7 @@ class QcDataTable extends DataTable
                 'dom' => 'Blfrtip',
                 'scrollX' => false,
                 'language'=> [
-                    "url"=> "/vendor/datatables/Portuguese-Brasil.json"
+                    "url"=> asset("vendor/datatables/Portuguese-Brasil.json")
                 ],
                 // Ordena para que inicialmente carregue os mais novos
                 'order' => [

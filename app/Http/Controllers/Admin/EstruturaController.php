@@ -8,6 +8,8 @@ use App\Http\Requests\Admin\CreateEstruturaRequest;
 use App\Http\Requests\Admin\UpdateEstruturaRequest;
 use App\Models\EstruturaUser;
 use App\Models\User;
+use App\Models\MascaraPadraoInsumo;
+use App\Models\Levantamento;
 use App\Repositories\Admin\EstruturaRepository;
 use App\Repositories\CodeRepository;
 use Flash;
@@ -15,6 +17,9 @@ use App\Http\Controllers\AppBaseController;
 use Illuminate\Support\Facades\Storage;
 use Response;
 use DB;
+
+use Maatwebsite\Excel\Facades\Excel;
+ 
 
 class EstruturaController extends AppBaseController
 {
@@ -33,8 +38,41 @@ class EstruturaController extends AppBaseController
      * @return Response
      */
     public function index(EstruturaDataTable $estruturaDataTable)
-    {
-        return $estruturaDataTable->render('admin.estruturas.index');
+    {       
+		
+		$insumos = MascaraPadraoInsumo::select([                      			
+            'mascara_padrao_insumos.codigo_estruturado as apropriacao',
+			'insumo_grupos.nome as descricao_apropriacao',
+			'insumos.unidade_sigla',			
+        ])
+		->join('insumos', 'insumos.id', 'mascara_padrao_insumos.insumo_id') 
+		->join('insumo_grupos', 'insumo_grupos.id', 'insumos.insumo_grupo_id') 
+        ->groupBy('mascara_padrao_insumos.id')
+		->get();
+		
+		$estrutura = Levantamento::query()->select([
+				'levantamentos.torre',
+				'levantamentos.andar',
+				'levantamentos.pavimento',
+				'levantamentos.trecho'
+            ])
+        ->join('obras','obras.id','levantamentos.obra_id')
+		->groupBy('levantamentos.id')
+		->get();
+		
+		Excel::create('Exportar-Tipos-Levantamentos', function($excel) use($insumos,$estrutura) {
+			
+			$excel->sheet('Insumos', function($sheet) use($insumos) {
+				$sheet->fromArray($insumos);
+			});
+			
+			$excel->sheet('Estrutura', function($sheet) use($estrutura) {
+				$sheet->fromArray($estrutura);
+			});
+			
+		})->export('xls');
+		
+		//return $estruturaDataTable->render('admin.estruturas.index');
     }
 
     /**

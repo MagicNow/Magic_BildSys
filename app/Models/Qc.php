@@ -11,17 +11,23 @@ class Qc extends Model
 	const CREATED_AT = 'created_at';
 	const UPDATED_AT = 'updated_at';
 
-	protected $dates = ['deleted_at'];
+	protected $dates = ['deleted_at', 'data_fechamento'];
 
 	public $fillable = [
 		'obra_id',
 		'tipologia_id',
 		'carteira_id',
+		'fornecedor_id',
+		'comprador_id',
 		'descricao',
 		'valor_pre_orcamento',
 		'valor_orcamento_inicial',
 		'valor_gerencial',
-		'carteira_comprada',
+		'valor_fechamento',
+		'data_fechamento',
+		'user_id',
+		'observacao',
+		'numero_contrato',
 		'status'
 	];
 
@@ -35,10 +41,14 @@ class Qc extends Model
 		'obra_id' => 'integer',
 		'tipologia_id' => 'integer',
 		'carteira_id' => 'integer',
+		'fornecedor_id' => 'integer',
+		'comprador_id' => 'integer',
 		'descricao' => 'string',
 		'valor_pre_orcamento' => 'float',
 		'valor_orcamento_inicial' => 'float',
-		'carteira_comprada' => 'integer',
+		'valor_fechamento' => 'float',
+		'observacao' => 'string',
+		'numero_contrato' => 'string',
 		'status' => 'string'
 	];
 
@@ -51,10 +61,22 @@ class Qc extends Model
 		'obra_id' => 'required|integer',
 		'tipologia_id' => 'required|integer',
 		'carteira_id' => 'required|integer',
+		'comprador_id' => 'integer',
+		'user_id' => 'integer',
+		'fornecedor_id' => 'integer',
 		'descricao' => 'required',
 		'valor_pre_orcamento' => 'required',
 		'valor_orcamento_inicial' => 'required',
-		'valor_gerencial' => 'required',
+		'valor_gerencial' => 'required'
+	];
+
+	/**
+	 * Validation rules
+	 *
+	 * @var array
+	 */
+	public static $rulesUpdate = [
+
 	];
 
 	/**
@@ -87,5 +109,13 @@ class Qc extends Model
 	public function anexos()
 	{
 		return $this->hasMany(QcAnexo::class, 'qc_id');
+	}
+
+	/**
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 **/
+	public function comprador()
+	{
+		return $this->belongsTo(\App\Models\User::class);
 	}
 }

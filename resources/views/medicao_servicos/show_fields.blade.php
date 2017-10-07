@@ -45,8 +45,6 @@
     <p class="form-control">{!! $medicaoServico->descricao_descontos !!}</p>
 </div>
 
-
-
 <!-- Periodo Inicio Field -->
 <div class="form-group col-md-4">
     {!! Form::label('periodo_inicio', 'Período Início:') !!}

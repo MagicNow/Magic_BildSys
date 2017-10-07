@@ -13,13 +13,13 @@
 <!-- Carteira Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('carteira_id', 'Carteira:') !!}
-    <p class="form-control">{!! $qc->carteira->nome !!}</p>
+    <p class="form-control">{!! isset($qc->carteira) ? $qc->carteira->nome : NULL !!}</p>
 </div>
 
 <!-- Pbta Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('obra_id', 'Obra:') !!}
-    <p class="form-control">{!! $qc->obra->nome !!}</p>
+    <p class="form-control">{!! isset($qc->obra) ? $qc->obra->nome : NULL !!}</p>
 </div>
 
 <!-- Descrição Field -->
@@ -31,41 +31,35 @@
 <!-- Valor Pré Orçamento Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('valor_pre_orcamento', 'Valor Pré Orçamento:') !!}
-    <p class="form-control">{!! $qc->valor_pre_orcamento !!}</p>
+    <p class="form-control">{!! float_to_money($qc->valor_pre_orcamento) !!}</p>
 </div>
 
 <!-- Valor Orçamento Inicial Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('valor_orcamento_inicial', 'Valor Orçamento Inicial :') !!}
-    <p class="form-control">{!! $qc->valor_orcamento_inicial !!}</p>
+    <p class="form-control">{!! float_to_money($qc->valor_orcamento_inicial) !!}</p>
 </div>
 
 <!-- Valor da Gerencial Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('valor_gerencial', 'Valor da Gerencial:') !!}
-    <p class="form-control">{!! $qc->valor_gerencial !!}</p>
+    <p class="form-control">{!! float_to_money($qc->valor_gerencial) !!}</p>
 </div>
 
-<!-- Created At Field -->
-<div class="form-group col-md-6">
-    {!! Form::label('created_at', 'Criado em:') !!}
-    <p class="form-control">{!! $qc->created_at !!}</p>
-</div>
-
-<!-- Updated At Field -->
-<div class="form-group col-md-6">
-    {!! Form::label('updated_at', 'Alterado em:') !!}
-    <p class="form-control">{!! $qc->updated_at !!}</p>
-</div>
-
-<div class="form-group col-sm-6">
-    <div class="checkbox">
-        <label>
-            {!! Form::checkbox('carteira_comprada', '1', isset($qc) && $qc->carteira_comprada == 1 ? true : false, ['class' => 'form-control', 'id' => 'carteira_comprada', 'readonly' => 'true', 'disabled' => 'disabled']) !!}
-            Carteira Comprada
-        </label>
+@if (!isset($screen) || $screen !== 'approve')
+    <!-- Created At Field -->
+    <div class="form-group col-md-6">
+        {!! Form::label('created_at', 'Criado em:') !!}
+        <p class="form-control">{!! $qc->created_at->format('d/m/Y') !!}</p>
     </div>
-</div>
+
+    <!-- Updated At Field -->
+    <div class="form-group col-md-6">
+        {!! Form::label('updated_at', 'Alterado em:') !!}
+        <p class="form-control">{!! $qc->updated_at->format('d/m/Y') !!}</p>
+    </div>
+@endif
+
 @if (isset($attachments) && !empty($attachments))
     <fieldset class="col-sm-12 table-responsive">
         <legend>Anexos</legend>

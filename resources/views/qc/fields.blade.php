@@ -17,40 +17,31 @@
 <!-- Carteira ID Field -->
 <div class="form-group col-sm-6">
 	{!! Form::label('carteira_id', 'Carteira:') !!}
-	{!! Form::select('carteira_id', [''=>'Escolha...']+$carteiras, @isset($qc) ? $qc->carteira_id : NULL, ['class' => 'form-control select2']) !!}
+	{!! Form::select('carteira_id', [''=>'Escolha...']+$carteiras, @isset($qc) ? $qc->carteira_id : NULL, ['class' => 'form-control select2', 'required'=>'required']) !!}
 </div>
 
 <!-- Descrição Field -->
 <div class="form-group col-sm-12">
 	{!! Form::label('descricao', 'Descrição do serviço:') !!}
-	{!! Form::textarea('descricao', NULL, ['class' => 'form-control']) !!}
+	{!! Form::textarea('descricao', NULL, ['class' => 'form-control', 'required'=>'required']) !!}
 </div>
 
 <!-- Valor Pré Orçamento Field -->
 <div class="form-group col-sm-6">
 	{!! Form::label('valor_pre_orcamento', 'Valor Pré Orçamento:') !!}
-	{!! Form::text('valor_pre_orcamento', NULL, ['class' => 'form-control']) !!}
+	{!! Form::text('valor_pre_orcamento', NULL, ['class' => 'form-control money', 'required'=>'required']) !!}
 </div>
 
 <!-- Valor Orçamento Inicial Field -->
 <div class="form-group col-sm-6">
 	{!! Form::label('valor_orcamento_inicial', 'Valor Orçamento Inicial :') !!}
-	{!! Form::text('valor_orcamento_inicial', NULL, ['class' => 'form-control']) !!}
+	{!! Form::text('valor_orcamento_inicial', NULL, ['class' => 'form-control money', 'required'=>'required']) !!}
 </div>
 
 <!-- Valor da Gerencial Field -->
 <div class="form-group col-sm-6">
 	{!! Form::label('valor_gerencial', 'Valor da Gerencial:') !!}
-	{!! Form::text('valor_gerencial', NULL, ['class' => 'form-control']) !!}
-</div>
-
-<div class="form-group col-sm-6">
-	<div class="checkbox">
-		<label>
-			{!! Form::checkbox('carteira_comprada', '1', isset($qc) && $qc->carteira_comprada == 1 ? true : false, ['class' => 'form-control', 'id' => 'carteira_comprada']) !!}
-			Carteira Comprada
-		</label>
-	</div>
+	{!! Form::text('valor_gerencial', NULL, ['class' => 'form-control money', 'required'=>'required']) !!}
 </div>
 
 <fieldset class="col-sm-12 qc-anexos">
@@ -94,5 +85,6 @@
 </div>
 
 @section('scripts')
+	<script src="{{ asset('js/libs/jquery.formatCurrency-1.4.0.js') }}"></script>
 	<script src="{{ asset('js/qc-actions.js') }}"></script>
 @stop

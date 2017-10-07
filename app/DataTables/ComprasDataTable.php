@@ -506,11 +506,11 @@ class ComprasDataTable extends DataTable
             }
         }
 
-		if($this->request()->get('exibir_por_carteira')){
-            if(count($this->request()->get('exibir_por_carteira')) && $this->request()->get('exibir_por_carteira')[0] != "") {
-                $insumo_query->groupBy('carteiras.nome');
-            }
-        }
+//		if($this->request()->get('exibir_por_carteira')){
+//            if(count($this->request()->get('exibir_por_carteira')) && $this->request()->get('exibir_por_carteira')[0] != "") {
+//                $insumo_query->groupBy('carteiras.nome');
+//            }
+//        }
 
         Session::put(['query['.$this->request()->get('random').']' => $insumo_query->toSql(), 'bindings['.$this->request()->get('random').']' => $insumo_query->getBindings()]);
 
@@ -548,7 +548,7 @@ class ComprasDataTable extends DataTable
         'dom' => 'Bfrltip',
         'scrollX' => false,
         'language'=> [
-            "url"=> "/vendor/datatables/Portuguese-Brasil.json"
+            "url"=> asset("vendor/datatables/Portuguese-Brasil.json")
         ],
         'buttons' => [
         ]
