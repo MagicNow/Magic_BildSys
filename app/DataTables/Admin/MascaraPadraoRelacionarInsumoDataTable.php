@@ -17,6 +17,12 @@ class MascaraPadraoRelacionarInsumoDataTable extends DataTable
         return $this->datatables
             ->eloquent($this->query())
             ->addColumn('action', 'admin.mascara_padrao_estruturas.relacionar_insumos_datatables_actions')
+            ->editColumn('coeficiente', function($obj){
+                return "<input  type='text' class='form-control money' name='coeficiente_$obj->id'>";
+            })
+            ->editColumn('indireto', function($obj){
+                return "<input type='text' class='form-control money' name='indireto_$obj->id'>";
+            })
             ->make(true);
     }
 
@@ -33,7 +39,14 @@ class MascaraPadraoRelacionarInsumoDataTable extends DataTable
                 'nome',
                 'codigo'
             ])
-            ->where('active', 1);
+            ->whereRaw(
+                'id NOT IN
+                    (SELECT insumo_id
+                        FROM mascara_padrao_insumos
+                    )
+            ')
+            ->where('active', 1)
+            ->orderBy('nome', 'ASC');
 
         return $this->applyScopes($query);
     }
@@ -53,7 +66,7 @@ class MascaraPadraoRelacionarInsumoDataTable extends DataTable
                 'initComplete' => 'function () {
                     max = this.api().columns().count();
                     this.api().columns().every(function (col) {
-                        if((col+1)<max){
+                        if((col+3)<max){
                             var column = this;
                             var input = document.createElement("input");
                             $(input).attr(\'placeholder\',\'Filtrar...\');
@@ -63,16 +76,6 @@ class MascaraPadraoRelacionarInsumoDataTable extends DataTable
                             .on(\'change\', function () {
                                 column.search($(this).val(), false, false, true).draw();
                             });
-                        }else{
-                            var column = this;
-                            var input = document.createElement("input");
-                            $(input).attr(\'type\',\'checkbox\');
-                            $(input).attr(\'id\',\'checkUncheckAll\');
-                            $(input).appendTo($(column.footer()).empty())
-                            .on(\'change\', function () {
-                                $(\'.item_checks\').prop("checked", $(this).prop("checked"));
-                            });
-                            $(column.footer()).addClass(\'text-center\');
                         }
                     });
                 }' ,
@@ -101,7 +104,9 @@ class MascaraPadraoRelacionarInsumoDataTable extends DataTable
         return [
             'Código' => ['name' => 'codigo', 'data' => 'codigo'],
             'nome' => ['name' => 'nome', 'data' => 'nome'],
-            'action' => ['name' => 'Ações', 'title' => 'Selecionar', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10px', 'class' => 'all'],
+            'Coeficiente' => ['name' => 'coeficiente', 'data' => 'coeficiente', 'searchable' => false],
+            'Indireto' => ['name' => 'indireto', 'data' => 'indireto', 'searchable' => false],
+            'action' => ['name' => 'Ações', 'title' => 'Salvar', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10px', 'class' => 'all'],
         ];
     }
 

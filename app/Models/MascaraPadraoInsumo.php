@@ -40,8 +40,7 @@ class MascaraPadraoInsumo extends Model
     protected $casts = [
         'id' => 'integer',
         'mascara_padrao_id' => 'integer',
-        'insumo_id' => 'integer',
-		'coeficiente' => 'decimal'
+        'insumo_id' => 'integer'
     ];
 
     /**

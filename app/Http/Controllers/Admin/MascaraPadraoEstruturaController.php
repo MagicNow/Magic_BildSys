@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\DataTables\Admin\MascaraPadraoEstruturaDataTable;
+use App\DataTables\Admin\MascaraPadraoInsumoRelacionadosDataTable;
 use App\DataTables\Admin\MascaraPadraoRelacionarInsumoDataTable;
 use App\Http\Requests\Admin;
 use App\Http\Requests\Admin\CreateMascaraPadraoEstruturaRequest;
@@ -104,7 +105,7 @@ class MascaraPadraoEstruturaController extends AppBaseController
      */
     public function store(CreateMascaraPadraoEstruturaRequest $request)
     {
-//        dd($request->all());
+//        dd($request->servico_id);
         $input = $request->all();
         $mascaraPadraoEstrutura = $this->mascaraPadraoEstruturaRepository->create($input);
 
@@ -113,13 +114,13 @@ class MascaraPadraoEstruturaController extends AppBaseController
         if ($request->get('save') != 'save-continue') {
             return redirect(route('admin.mascaraPadraoEstruturas.index'));
         } else {
-            # A variável $request->btn_insumo significa que o post veio do botão add insumos na área de criar a mascara padrão
+            # $request->btn_insumo click é do botão adicionar insumos
             if(!$request->btn_insumo) {
-                # Retorna o id da tabela mascara_padrao
+                # passa como parametro o id da mascara padrão
                 return redirect(route('admin.mascaraPadraoEstruturas.mascara-padrao-insumos', $request->mascara_padrao_id));
             }else{
-                # se cair aqui é porque o post veio do botão salvar e continuar
-                # Retorna o id na tabela mascara_padrao_estrutura
+                # O post está vindo do botão adicionar insumos
+                $mascaraPadraoEstrutura = $mascaraPadraoEstrutura->where('servico_id', $request->servico_id)->first();
                 return redirect(route('admin.mascaraPadraoEstruturas.mascara-padrao-estrutura-insumos', $mascaraPadraoEstrutura->id));
             }
         }
@@ -171,6 +172,14 @@ class MascaraPadraoEstruturaController extends AppBaseController
             ->pluck('estrutura', 'id')
             ->toArray();
         return $mascaraPadraoRelacionarInsumoDataTable->render('admin.mascara_padrao_estruturas.insumos',compact('mascaraPadraoEstrutura','selectMascaraPadraoEstruturas'));
+    }
+
+    /**
+     * Insumos relacionado a mascara padrão selecionada.
+     */
+    public function insumosRelacionados(MascaraPadraoInsumoRelacionadosDataTable $mascaraPadraoInsumoRelacionadosDataTable, $mascara_padrao_id)
+    {
+        return $mascaraPadraoInsumoRelacionadosDataTable->render('admin.mascara_padrao_estruturas.insumos');
     }
 
     /**
@@ -291,17 +300,4 @@ class MascaraPadraoEstruturaController extends AppBaseController
 
         return $servicos;
     }
-//
-//    public function getInsumos()
-//    {
-//        $insumos = Insumo::select([
-//            'insumos.id',
-//            'insumos.nome'
-//        ])
-//            ->orderBy('insumos.nome', 'ASC');
-//
-//        $insumos = $insumos->pluck('nome', 'id')->toArray();
-//
-//        return $insumos;
-//    }
 }

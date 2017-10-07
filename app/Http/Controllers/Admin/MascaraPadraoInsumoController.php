@@ -81,31 +81,25 @@ class MascaraPadraoInsumoController extends AppBaseController
     {
         if($request->mascara_padrao_estrutura_id) {
             $estrutura = MascaraPadraoEstrutura::find($request->mascara_padrao_estrutura_id);
-            if ($request->insumo_id) {
-                foreach ($request->insumo_id as $insumo_id) {
-                    $insumo = Insumo::where('id', $request->insumo_id)->first();
+            $insumo = Insumo::where('id', $request->id)->first();
 
-                    MascaraPadraoInsumo::firstOrCreate([
-                        'mascara_padrao_estrutura_id' => $request->mascara_padrao_estrutura_id,
-                        'codigo_estruturado' => $estrutura->codigo . '.' . $insumo->codigo,
-                        'insumo_id' => $insumo_id,
-                        'coeficiente' => $request->coeficiente
-                    ]);
-                }
-            } else {
-                Flash::error('Você esqueceu de escolher os insumos!');
-                return back();
-            }
+            MascaraPadraoInsumo::updateOrCreate(
+                [
+                    'mascara_padrao_estrutura_id' => $request->mascara_padrao_estrutura_id,
+                    'insumo_id' => $request->id
+                ],
+                [
+                    'mascara_padrao_estrutura_id' => $request->mascara_padrao_estrutura_id,
+                    'codigo_estruturado' => $estrutura->codigo . '.' . $insumo->codigo,
+                    'insumo_id' => $request->id,
+                    'coeficiente' => money_to_float($request->coeficiente),
+                    'indireto' => money_to_float($request->indireto)
+                ]
+            );
+            return response()->json(['success'=>true]);
         }else{
-            Flash::error('Você esqueceu de escolher a máscara padrão!');
-            return back();
+            return response()->json(['error'=>true]);
         }
-
-        Flash::success(
-            'Relacionamento '.trans('common.saved').' '.trans('common.successfully').'.'
-        );
-
-        return redirect(route('admin.mascara_padrao.index'));
     }
 
     /**
@@ -326,7 +320,7 @@ class MascaraPadraoInsumoController extends AppBaseController
                 ->whereHas('contratos')
                 ->pluck('id', 'id')
                 ->toArray();
-            
+
             $servico = $servico->whereIn('orcamentos.obra_id', $obras);
         } else {
             $servico = $servico->where('orcamentos.obra_id', $request->obra_id);

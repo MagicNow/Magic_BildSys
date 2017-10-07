@@ -5,6 +5,11 @@
         <h1>
             Máscara Padrão - {{(isset($mascaraPadrao) ? $mascaraPadrao->nome : $mascaraPadraoEstrutura->nome)}}
         </h1>
+        <h1>
+            <a class="btn btn-primary pull-right" style="margin-top: -30px;" href="{!! route('admin.mascara_padrao_insumos.index') !!}">
+                Insumos relacionados
+            </a>
+        </h1>
     </section>
     <div class="content">
         @include('adminlte-templates::common.errors')
@@ -40,7 +45,37 @@
     </div>
 @endsection
 @section('scripts')
+    @parent
     <script type="text/javascript">
+        function adicionarInsumo(id){
+            if(!$('#mascara_padrao_estrutura_id').val()) {
+                swal('Ops!','Escolha uma estrutura de máscara padrão.', 'info');
+            }
 
+            var coeficiente = $("input[name='coeficiente_"+id+"']").val();
+            var indireto = $("input[name='indireto_"+id+"']").val();
+            var mascara_padrao_estrutura_id = $('#mascara_padrao_estrutura_id').val();
+            var _token = $('meta[name="csrf-token"]').attr('content');
+
+            $.ajax({
+                // rota
+                url: "{{route('admin.mascara_padrao_insumos.store')}}",
+                data: {
+                    // variaveis
+                    'id': id,
+                    'coeficiente': coeficiente,
+                    'indireto': indireto,
+                    'mascara_padrao_estrutura_id': mascara_padrao_estrutura_id,
+                    '_token': _token
+                },
+                type : "POST"
+            }).done(function (retorno){
+                // success
+                window.LaravelDataTables["dataTableBuilder"].draw(false);
+            }).fail(function (){
+                // error
+                swal('Ops...', 'Não foi possível salvar o insumo', 'error');
+            });
+        }
     </script>
 @endsection

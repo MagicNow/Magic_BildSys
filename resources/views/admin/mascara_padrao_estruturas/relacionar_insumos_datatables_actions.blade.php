@@ -1,1 +1,8 @@
-{!! Form::checkbox('insumo_id[]',$id, null,['id'=>'item_'.$id,'class'=>'item_checks']) !!}
+{!! Form::button('<i class="fa fa-floppy-o"></i>',
+    [
+        'type' => 'button',
+        'class' => 'btn btn-success btn-xs',
+        'onclick' => 'adicionarInsumo('.$id.')',
+        'title' => 'Adicionar'
+    ])
+!!}

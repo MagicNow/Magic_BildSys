@@ -1,7 +1,8 @@
 <!-- Mascara Padrao Id Field -->
 <div class="form-group col-sm-12">
     {!! Form::label('mascara_padrao_id', 'Máscara Padrão:') !!}
-    {!! Form::select('mascara_padrao_id',[''=>'Escolha...']+$mascaras, (isset($mascaraPadrao) ?$mascaraPadrao->id : null), ['class' => 'form-control select2', 'required'=> true]) !!}
+    {!! Form::hidden('mascara_padrao_id', (isset($mascaraPadrao) ?$mascaraPadrao->id : null)) !!}
+    {!! Form::select('mascara_padrao_id',[''=>'Escolha...']+$mascaras, (isset($mascaraPadrao) ?$mascaraPadrao->id : null), ['class' => 'form-control select2', 'disabled'=>true, 'required'=> true]) !!}
 </div>
 
 @php
@@ -129,7 +130,7 @@
                                                                             <button type="button"
                                                                                     class="btn btn-warning"
                                                                                     style="width: 145px"
-                                                                                    onclick="RedirectAddInsumo()">
+                                                                                    onclick="RedirectAddInsumo('subgrupo4_{{$count_subgrupo3}}')">
                                                                                 <i class="fa fa-floppy-o" aria-hidden="true"></i> Insumos
                                                                             </button>
                                                                         </div>
@@ -241,7 +242,6 @@
                 }
                 nivel = 1;
             }
-            console.log('nivel: ', nivel);
 
             var rota = "{{url('/admin/mascara-padrao-estruturas/grupos')}}/";
             if (nivel > 3) {
@@ -284,7 +284,7 @@
                 adicionar = '<button type="button" ' +
                     'class="btn btn-warning" ' +
                     'style="width: 145px"' +
-                    'onclick="RedirectAddInsumo(\'' + $idGeral +'\',\''+nome+'['+$length+']'+'\')">' +
+                    'onclick="RedirectAddInsumo(\'' + $idGeral +'\')">' +
                     '<i class="fa fa-floppy-o" aria-hidden="true"></i> Insumos' +
                     '</button>';
                 novo = '<button type="button" class="btn btn-primary" style="margin-left: -75px;" onclick="">Novo</button>';
@@ -339,8 +339,10 @@
             }
         }
 
-        function RedirectAddInsumo() {
+        function RedirectAddInsumo(id_select) {
+            var id = $('#'+id_select+'_select').val();
             $('form').append([
+                '<input type="hidden" name="servico_id" value="'+id+'">',
                 '<input type="hidden" name="save" value="save-continue">',
                 '<input type="hidden" name="btn_insumo" value="1">'
             ]).submit();
