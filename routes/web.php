@@ -1538,14 +1538,22 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             return View('requisicao.ler_qr_code');
         });
 
+        # Processo de saída
         $router->group(['middleware' => 'needsPermission:requisicao.processo_saida'], function () use ($router) {
-            # Processo de Saída
             $router->get('requisicao/processo-saida/{requisicao}', ['as' => 'requisicao.processoSaida', 'uses' => 'RequisicaoController@processoSaida']);
             $router->get('requisicao/processo-saida/{requisicao}/ler-insumo-saida', ['as' => 'requisicao.lerInsumoSaida', 'uses' => 'RequisicaoController@lerInsumoSaida']);
             $router->get('requisicao/processo-saida/ler-insumo-saida/salvar-leitura', ['as' => 'requisicao.salvarLeituraSaida', 'uses' => 'RequisicaoController@salvarLeituraSaida']);
             $router->get('requisicao/processo-saida/{requisicao}/lista-de-inconsistencia', ['as' => 'requisicao.listaInconsistencia', 'uses' => 'RequisicaoController@listaInconsistencia']);
             $router->get('requisicao/processo-saida/lista-de-inconsistencia/excluir-leitura', ['as' => 'requisicao.excluirLeitura', 'uses' => 'RequisicaoController@excluirLeitura']);
             $router->get('requisicao/processo-saida/{requisicao}/finalizar_saida', ['as' => 'requisicao.finalizarSaida', 'uses' => 'RequisicaoController@finalizarSaida']);
+        });
+
+        # Aplicação de estoque
+        $router->group(['middleware' => 'needsPermission:requisicao.aplicacao_estoque'], function () use ($router) {
+            $router->get('requisicao/aplicacao-estoque/local', function() {
+                return View('requisicao.aplicacao_estoque.index');
+            });
+            $router->get('requisicao/aplicacao-estoque/local/salvar-leitura', ['as' => 'requisicao.salvarLeituraAplicacaoLocal', 'uses' => 'RequisicaoController@salvarLeituraAplicacaoLocal']);
         });
     });
 

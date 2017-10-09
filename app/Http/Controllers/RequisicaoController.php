@@ -6,6 +6,7 @@ use App\DataTables\RequisicaoDataTable;
 use App\Http\Requests;
 use App\Http\Requests\CreateRequisicaoRequest;
 use App\Http\Requests\UpdateRequisicaoRequest;
+use App\Models\AplicacaoEstoqueLocal;
 use App\Models\Requisicao;
 use App\Models\RequisicaoItem;
 use App\Repositories\RequisicaoItemRepository;
@@ -522,5 +523,19 @@ class RequisicaoController extends AppBaseController
         $requisicao->save();
 
         return redirect(route('requisicao.index'));
+    }
+
+    public function salvarLeituraAplicacaoLocal(Request $request)
+    {
+        $dados = json_decode($request->dados);
+
+        AplicacaoEstoqueLocal::create([
+            'pavimento' => $dados->pavimento,
+            'andar' => $dados->andar,
+            'apartamento' => $dados->apartamento,
+            'comodo' => $dados->comodo
+        ]);
+
+        return response()->json(['sucesso' => true]);
     }
 }
