@@ -337,4 +337,16 @@ class FornecedoresController extends AppBaseController
             ->where('nome','like', '%'.$request->q.'%')->paginate();
         return $fornecedores;
     }
+
+    public function atualizarMega($id){
+        $fornecedor = $this->fornecedoresRepository->findWithoutFail($id);
+        if (empty($fornecedor)) {
+            return response()->json(['success' => false, 'msg'=>'Fornecedor não encontrado'], 404);
+        }
+        $retorno = ImportacaoRepository::fornecedores($fornecedor->codigo_mega,'AGN_IN_CODIGO');
+        if($retorno) {
+            return response()->json(['success' => true, 'msg'=>'Fornecedor atualizado à partir das informações do MEGA']);
+        }
+        return response()->json(['success' => false, 'msg'=>'Algum erro foi encontrado e não foi possível importar informações MEGA']);
+    }
 }

@@ -1,7 +1,7 @@
 <!-- Cnpj Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('cnpj', 'Cnpj:') !!}
-    {!! Form::text('cnpj', null, ['class' => 'form-control cnpj',
+    {!! Form::text('cnpj', null, ['class' => 'form-control cnpj dadosMega',
         'onblur'=>'validaCnpj(1)',
         'required'=>'required',
         'maxlength'=>'255',
@@ -11,70 +11,73 @@
 <!-- Nome Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('nome', 'Nome:') !!}
-    {!! Form::text('nome', null, ['class' => 'form-control']) !!}
+    {!! Form::text('nome', null, ['class' => 'form-control dadosMega']) !!}
 </div>
 
 <!-- Inscricao Estadual Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('inscricao_estadual', 'Inscricao Estadual:') !!}
-    {!! Form::number('inscricao_estadual', null, ['class' => 'form-control']) !!}
+    {!! Form::number('inscricao_estadual', null, ['class' => 'form-control dadosMega']) !!}
 </div>
 
 <!-- Email Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('email', 'Email:') !!}
-    {!! Form::email('email', null, ['class' => 'form-control']) !!}
+    {!! Form::email('email', null, ['class' => 'form-control dadosMega']) !!}
 </div>
 
 <!-- Site Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('site', 'Site:') !!}
-    {!! Form::text('site', null, ['class' => 'form-control']) !!}
+    {!! Form::text('site', null, ['class' => 'form-control dadosMega']) !!}
 </div>
 
 <!-- Telefone Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('telefone', 'Telefone:') !!}
+    <!-- @TODO adicionar classe dadosMega quando o telefone estiver vindo da importação -->
     {!! Form::text('telefone', null, ['class' => 'form-control telefone']) !!}
 </div>
 
 <!-- Cep Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('cep', 'Cep:') !!}
-    {!! Form::text('cep', null, ['class' => 'form-control cep', 'onkeyup'=>'buscacep(this.value)']) !!}
+    {!! Form::text('cep', null, ['class' => 'form-control cep dadosMega', 'onkeyup'=>'buscacep(this.value)']) !!}
 </div>
 
 
 <!-- Logradouro Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('logradouro', 'Logradouro:') !!}
-    {!! Form::text('logradouro', null, ['class' => 'form-control']) !!}
+    {!! Form::text('logradouro', null, ['class' => 'form-control dadosMega']) !!}
 </div>
 
 <!-- Municipio Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('municipio', 'Municipio:') !!}
-    {!! Form::text('municipio', null, ['class' => 'form-control']) !!}
+    {!! Form::text('municipio', null, ['class' => 'form-control dadosMega']) !!}
 </div>
 
 <!-- Estado Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('estado', 'Estado:') !!}
-    {!! Form::text('estado', null, ['class' => 'form-control']) !!}
+    {!! Form::text('estado', null, ['class' => 'form-control dadosMega']) !!}
 </div>
 
 <!-- Numero Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('numero', 'Numero:') !!}
-    {!! Form::text('numero', null, ['class' => 'form-control']) !!}
+    {!! Form::text('numero', null, ['class' => 'form-control dadosMega']) !!}
 </div>
 
 <!-- Complemento Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('complemento', 'Complemento:') !!}
-    {!! Form::text('complemento', null, ['class' => 'form-control']) !!}
+    {!! Form::text('complemento', null, ['class' => 'form-control dadosMega']) !!}
 </div>
-
+</div>
+<hr>
+<div class="row">
 <!-- Nome sócio ou procurador Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('nome_socio', 'Nome sócio ou procurador:') !!}
@@ -226,6 +229,10 @@
         }
 
         $(function () {
+            @if(isset($fornecedores)&&$fornecedores->codigo_mega)
+                    $('.dadosMega').attr('readonly','readonly');
+                    $('.dadosMega').attr('title','Editável apenas pelo Mega');
+            @endif
             $('#fornecedores_associados').select2({
                 allowClear: true,
                 placeholder: "Fornecedores Associados",
@@ -370,6 +377,43 @@
                         });
                     }
                     $('.overlay').remove();
+                });
+            }
+        }
+
+
+        function sincronizaFornecedor(qual) {
+            if(qual){
+                startLoading();
+                $.ajax({
+                    url: "{{ url('fornecedores/atualizar-mega') }}/"+qual
+                }).done(function(retorno) {
+                    stopLoading();
+                    if(retorno.success){
+                        swal({
+                                    title: retorno.msg,
+                                    text: "",
+                                    type: "success",
+                                    showCancelButton: false,
+                                    confirmButtonText: "Ok",
+                                    showLoaderOnConfirm: true,
+                                    closeOnConfirm: false
+                                },
+                                function(){
+                                    document.location='/fornecedores/'+ qual +'/edit';
+                                });
+
+                    }
+                }).fail(function(retorno) {
+                    stopLoading();
+                    swal({
+                            title: retorno.msg,
+                            text: "",
+                            type: "error",
+                            showCancelButton: false,
+                            confirmButtonText: "Ok",
+                            closeOnConfirm: true
+                    });
                 });
             }
         }

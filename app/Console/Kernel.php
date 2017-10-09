@@ -95,6 +95,10 @@ class Kernel extends ConsoleKernel
                 $importaDocumentoFinanceiros = ImportacaoRepository::documentoFinanceiroTipos();
                 Log::info('Executado script de importação de Tipos de Documentos Financeiros', $importaDocumentoFinanceiros);
 
+                Log::info('Inicio de execucao Atualização de Fornecedores');
+                $fornecedoresAtualiza = ImportacaoRepository::fornecedoresAtualiza();
+                Log::info('Executado script de Atualização de Fornecedores', $fornecedoresAtualiza);
+
             })
             ->twiceDaily(10, 19)
             ->name('importacao:repository')
