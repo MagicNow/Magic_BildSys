@@ -223,6 +223,12 @@ class RolesAndPermissions extends Seeder
             'tarefa_padrao.edit'   => 'Edição de Mascara Padrão',
 			'tarefa_padrao.delete'   => 'Remoção de Mascara Padrão',
 
+            'requisicao.list'   => 'Listagem de requisição',
+            'requisicao.create'   => 'Criação de requisição',
+            'requisicao.edit'   => 'Edição de requisição',
+            'requisicao.delete'   => 'Remoção de requisição',
+            'requisicao.processo_saida'   => 'Processo de saída',
+
             ################# SITE ###################
 
             'compras_lembretes.list' => 'Listagem de compras e lembretes',
