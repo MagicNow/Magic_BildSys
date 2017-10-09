@@ -234,6 +234,24 @@
             {!! Form::label('referencias_comerciais', 'Referências comerciais:') !!}
             {!! Form::textarea('referencias_comerciais', null, ['class' => 'form-control', 'rows' => '5']) !!}
         </div>
+
+        <!-- codigo_centro_de_custo Field -->
+        <div class="form-group col-sm-4">
+            {!! Form::label('codigo_centro_de_custo', 'Código do Centro de Custo:') !!}
+            {!! Form::number('codigo_centro_de_custo', null, ['class' => 'form-control']) !!}
+        </div>
+
+        <!-- codigo_centro_de_custo Field -->
+        <div class="form-group col-sm-4">
+            {!! Form::label('codigo_projeto_padrao', 'Código do Projeto Padrão:') !!}
+            {!! Form::number('codigo_projeto_padrao', null, ['class' => 'form-control']) !!}
+        </div>
+
+        <!-- codigo_centro_de_custo Field -->
+        <div class="form-group col-sm-4">
+            {!! Form::label('filial_id', 'Código da Filial:') !!}
+            {!! Form::number('filial_id', null, ['class' => 'form-control']) !!}
+        </div>
     </div>
 </div>
 

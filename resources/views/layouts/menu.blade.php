@@ -371,7 +371,7 @@
         <li class="{{ Request::is('admin/tipologia*') ? 'active' : '' }}">
             <a href="{!! route('admin.tipologia.index') !!}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
-                <span>Tipologias</span>
+                <span>Topologias</span>
             </a>
         </li>
         @endshield

@@ -54,7 +54,10 @@ class Obra extends Model
         'horario_entrega_na_obra',
         'referencias_bancarias',
         'referencias_comerciais',
-        'logo'
+        'logo',
+        'codigo_centro_de_custo',
+        'codigo_projeto_padrao',
+        'filial_id',
     ];
 
     public static $campos = [
@@ -86,7 +89,10 @@ class Obra extends Model
         'horario_entrega_na_obra',
         'referencias_bancarias',
         'referencias_comerciais',
-        'logo'
+        'logo',
+        'codigo_centro_de_custo',
+        'codigo_projeto_padrao',
+        'filial_id',
     ];
 
     /**
@@ -124,7 +130,10 @@ class Obra extends Model
         'horario_entrega_na_obra' => 'string',
         'referencias_bancarias' => 'string',
         'referencias_comerciais' => 'text',
-        'logo' => 'string'
+        'logo' => 'string',
+        'codigo_centro_de_custo' => 'integer',
+        'codigo_projeto_padrao' => 'integer',
+        'filial_id' => 'integer',
     ];
 
     /**

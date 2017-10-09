@@ -6,9 +6,10 @@ use App\DataTables\RequisicaoDataTable;
 use App\Http\Requests;
 use App\Http\Requests\CreateRequisicaoRequest;
 use App\Http\Requests\UpdateRequisicaoRequest;
-use App\Models\Levantamento;
-use App\Models\Obra;
 use App\Models\Requisicao;
+use App\Models\RequisicaoItem;
+use App\Repositories\RequisicaoItemRepository;
+use App\Models\RequisicaoSaidaLeitura;
 use App\Repositories\RequisicaoRepository;
 use App\Repositories\Admin\ObraRepository;
 use Flash;
@@ -21,12 +22,16 @@ class RequisicaoController extends AppBaseController
 {
     /** @var  RequisicaoRepository */
     private $requisicaoRepository;
+    private $requisicaoItemRepository;
     private $obraRepository;
 
     public function __construct(RequisicaoRepository $requisicaoRepo,
-                                ObraRepository $obraRepo)
+                                ObraRepository $obraRepo,
+                                RequisicaoItemRepository $requisicaoItemRepository
+                                )
     {
         $this->requisicaoRepository = $requisicaoRepo;
+        $this->requisicaoItemRepository = $requisicaoItemRepository;
         $this->obraRepository = $obraRepo;
     }
 
@@ -108,7 +113,25 @@ class RequisicaoController extends AppBaseController
      */
     public function edit($id)
     {
-        $requisicao = $this->requisicaoRepository->findWithoutFail($id);
+        $requisicao = $this->requisicaoRepository->getRequisicao($id);
+
+        try {
+            $item = RequisicaoItem::find(1);
+            $item->save([
+                'qtde' => 10
+            ]);
+
+        } catch (Exception $e) {
+
+            DB::rollback();
+            throw $e;
+        }
+
+        $status = DB::table('requisicao_status')->get()->pluck('nome','id');
+
+        $table = $this->requisicaoItemRepository->getRequisicaoItens($id);
+
+        $itens_comodo = $this->requisicaoItemRepository->getInsumosRequisicaoByComodo($id);
 
         if (empty($requisicao)) {
             Flash::error('Requisicao '.trans('common.not-found'));
@@ -116,7 +139,7 @@ class RequisicaoController extends AppBaseController
             return redirect(route('requisicaos.index'));
         }
 
-        return view('requisicao.edit')->with('requisicao', $requisicao);
+        return view('requisicao.edit', compact('requisicao', 'status', 'table', 'itens_comodo'));
     }
 
     /**
@@ -138,6 +161,8 @@ class RequisicaoController extends AppBaseController
         }
 
         $requisicao = $this->requisicaoRepository->update($request->all(), $id);
+
+        dd($requisicao);
 
         Flash::success('Requisicao '.trans('common.updated').' '.trans('common.successfully').'.');
 
@@ -354,8 +379,8 @@ class RequisicaoController extends AppBaseController
 
         if ($comodo) {
 
-            $r->where('apartamento', $insumo->apartamento);
-            $r->where('comodo', $insumo->comodo);
+            $r->where('ri.apartamento', $insumo->apartamento);
+            $r->where('ri.comodo', $insumo->comodo);
         }
 
         $total = $r->get()->first();
@@ -365,6 +390,137 @@ class RequisicaoController extends AppBaseController
 
     public function processoSaida(Requisicao $requisicao)
     {
-        return view('requisicao.processo_saida.index', compact('requisicao'));
+        $requisicao_itens = self::itensInconsistentes($requisicao);
+        $tem_inconsistencia = false;
+
+        foreach($requisicao_itens as $item) {
+            if($item->inconsistencia != 'OK') {
+                $tem_inconsistencia = true;
+                break;
+            }
+        }
+        
+        return view('requisicao.processo_saida.index', compact('requisicao', 'tem_inconsistencia'));
+    }
+
+    public function lerInsumoSaida(Requisicao $requisicao)
+    {
+        return view('requisicao.processo_saida.leitor_saida', compact('requisicao'));
+    }
+
+    public function salvarLeituraSaida(Request $request)
+    {
+        $dados = json_decode($request->dados);
+        $requisicao_item = RequisicaoItem::find($dados->requisicao_item_id);
+        $sucesso = false;
+        
+        if($requisicao_item) {
+            $requisicao_saida = new RequisicaoSaidaLeitura(
+                [
+                    'requisicao_item_id' => $dados->requisicao_item_id,
+                    'qtd_lida' => money_to_float($dados->qtd_lida)
+                ]);
+
+            $sucesso = $requisicao_saida->save();   
+        }
+        
+        return response()->json(['sucesso' => $sucesso]);
+    }
+
+    public function listaInconsistencia(Requisicao $requisicao)
+    {
+        $requisicao_itens = self::itensInconsistentes($requisicao);
+        return view('requisicao.processo_saida.lista_inconsistencia', compact('requisicao', 'requisicao_itens'));
+    }
+
+    public function excluirLeitura(Request $request)
+    {
+        $requisicao = Requisicao::find($request->requisicao_id);
+        
+        if($requisicao) {
+            $requisicao_itens = $requisicao->requisicaoItens->pluck('id', 'id')->toArray();
+
+            if(count($requisicao_itens)) {
+                $leituras = RequisicaoSaidaLeitura::whereIn('requisicao_item_id', $requisicao_itens)->pluck('id', 'id')->toArray();
+                if(count($leituras)) {
+                    RequisicaoSaidaLeitura::destroy($leituras);
+                }
+            }
+        }
+        
+        return response()->json(true);
+    }
+
+    public function itensInconsistentes($requisicao)
+    {
+        $requisicao_itens = RequisicaoItem::select([
+            'requisicao_itens.id',
+            DB::raw('(
+                    SELECT 
+                        GROUP_CONCAT(grupos.nome, " - ", servicos.nome)
+                    FROM
+                        requisicao_itens
+                            INNER JOIN
+                        estoque ON estoque.id = requisicao_itens.estoque_id
+                            INNER JOIN
+                        estoque_transacao ON estoque_transacao.estoque_id = estoque.id
+                            INNER JOIN
+                        nf_se_item ON nf_se_item.id = estoque_transacao.nf_se_item_id
+                            INNER JOIN
+                        solicitacao_entrega_itens ON solicitacao_entrega_itens.id = nf_se_item.solicitacao_entrega_item_id
+                            INNER JOIN
+                        se_apropriacoes ON se_apropriacoes.solicitacao_entrega_item_id = solicitacao_entrega_itens.id
+                            INNER JOIN
+                        contrato_item_apropriacoes ON contrato_item_apropriacoes.id = se_apropriacoes.contrato_item_apropriacao_id
+                            INNER JOIN
+                        grupos ON grupos.id = contrato_item_apropriacoes.subgrupo3_id
+                            INNER JOIN
+                        servicos ON servicos.id = contrato_item_apropriacoes.servico_id
+                ) as agrupamento'),
+            'insumos.nome AS insumo',
+            'insumos.unidade_sigla AS unidade_medida',
+            DB::raw("format(requisicao_itens.qtde,2,'de_DE') AS qtd_solicitada"),
+            DB::raw('(
+                        SELECT 
+                            FORMAT(SUM(qtd_lida), 2, "de_DE")
+                        FROM
+                            requisicao_saida_leitura
+                        WHERE
+                            requisicao_item_id = requisicao_itens.id
+                ) AS qtd_lida'),
+            DB::raw('(
+                        SELECT 
+                            COUNT(id)
+                        FROM
+                            requisicao_saida_leitura
+                        WHERE
+                            requisicao_item_id = requisicao_itens.id
+                ) AS numero_leituras'),
+            DB::raw(
+                'IF(
+                        (SELECT 
+                            FORMAT(SUM(qtd_lida), 2, "de_DE")
+                        FROM
+                            requisicao_saida_leitura
+                        WHERE
+                            requisicao_item_id = requisicao_itens.id)
+                     = 
+                        (format(requisicao_itens.qtde, 2, "de_DE"))
+                    , "OK", "NOK") AS inconsistencia'),
+        ])
+            ->join('estoque','estoque.id','requisicao_itens.estoque_id')
+            ->join('insumos','insumos.id','estoque.insumo_id')
+            ->where('requisicao_itens.requisicao_id', $requisicao->id)
+            ->get();
+
+        return $requisicao_itens;
+    }
+    
+    public function finalizarSaida(Requisicao $requisicao)
+    {
+        $requisicao->status = 'Em trânsito';
+        $requisicao->save();
+
+        return redirect(route('requisicao.index'));
     }
 }

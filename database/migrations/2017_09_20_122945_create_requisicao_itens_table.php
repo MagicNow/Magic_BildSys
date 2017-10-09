@@ -29,6 +29,7 @@ class CreateRequisicaoItensTable extends Migration
             $table->string('trecho',50);
             $table->string('andar',50);
             $table->string('apartamento',50);
+            $table->string('comodo',50);
 
             $table->timestamps();
             $table->softDeletes();
