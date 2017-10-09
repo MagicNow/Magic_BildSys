@@ -26,7 +26,7 @@ class Requisicao extends Model
     public $fillable = [
         'obra_id',
         'user_id',
-        'status',
+        'status_id',
         'local',
         'torre',
         'pavimento',
@@ -43,7 +43,7 @@ class Requisicao extends Model
         'id' => 'integer',
         'obra_id' => 'integer',
         'user_id' => 'integer',
-        'status' => 'string',
+        'user_id' => 'integer',
         'local' => 'string',
         'torre' => 'string',
         'pavimento' => 'string',
@@ -73,6 +73,6 @@ class Requisicao extends Model
      **/
     public function requisicaoItens()
     {
-        return $this->hasMany(\App\Models\RequisicaoIten::class);
+        return $this->hasMany(\App\Models\RequisicaoItem::class);
     }
 }

@@ -354,9 +354,11 @@
     </ul>
 </li>
 
+@shield('requisicao.list')
 <li class="{{ Request::is('requisicao*') ? 'active' : '' }}">
     <a href="{!! route('requisicao.index') !!}"><i class="fa fa-edit"></i><span>Requisições</span></a>
 </li>
+@endshield
 
 <li class="treeview {{ Request::is('admin/tipologia*') ? 'active' : '' }}">
 

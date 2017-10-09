@@ -39,10 +39,12 @@
             @endif
 
             @if($contrato->isStatus(\App\Models\ContratoStatus::ATIVO))
+                    @shield('pagamentos.create')
                     <a class="btn btn-flat bg-olive btn-lg"
                        href="{!! route('pagamentos.create').'?contrato_id='.$contrato->id !!}">
                         <i class="fa fa-usd"></i> Incluir Pagamento
                     </a>
+                    @endshield
             @endif
         </h1>
     </section>
@@ -147,6 +149,24 @@
 
     </div>
     <div class="content">
+        @if($contrato->pagamentos)
+        <div class="box box-muted">
+            <div class="box-header">
+                <h3 class="box-title">
+                    Pagamentos
+                </h3>
+                @shield('pagamentos.create')
+                <a class="btn btn-flat bg-olive btn-xs pull-right"
+                   href="{!! route('pagamentos.create').'?contrato_id='.$contrato->id !!}">
+                    <i class="fa fa-usd"></i> Incluir Pagamento
+                </a>
+                @endshield
+            </div>
+            <div class="box-body">
+                @include('pagamentos.table')
+            </div>
+        </div>
+        @endif
         <a href="{!! route('contratos.index') !!}" class="btn btn-default btn-flat btn-lg">
             <i class="fa fa-arrow-left"></i> {{ ucfirst( trans('common.back') )}}
         </a>

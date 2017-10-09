@@ -60,6 +60,7 @@ class Notafiscal extends Model
         'destinatario_bairro',
         'destinatario_cep',
         'destinatario_cidade',
+        'destinatario_cidade_codigo',
         'destinatario_uf',
         'destinatario_fone_fax',
         'destinatario_inscricao_estadual',
@@ -102,6 +103,13 @@ class Notafiscal extends Model
         'manifesto',
         'manifesto_status',
         'retorno_manifesto_motivo',
+        'status',
+        'status_data',
+        'status_user_id',
+        'enviado_integracao',
+        'integrado',
+        'status_integracao',
+        'codigo_integracao_mega',
     ];
 
     /**
@@ -129,6 +137,9 @@ class Notafiscal extends Model
         'data_emissao' => 'datetime',
         'data_saida' => 'datetime',
         'retorno_manifesto_motivo' => 'string',
+        'status'=> 'string',
+        'status_data'=> 'datetime',
+        'status_user_id'=> 'integer',
     ];
 
     /**
@@ -137,7 +148,7 @@ class Notafiscal extends Model
      * @var array
      */
     public static $rules = [
-        
+
     ];
 
     /**
@@ -159,9 +170,19 @@ class Notafiscal extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
-    public function items()
+    public function itens()
     {
         return $this->hasMany(\App\Models\NotaFiscalItem::class, 'nota_fiscal_id');
+    }
+
+    public function pagamentos()
+    {
+        return $this->hasMany(\App\Models\Pagamento::class, 'notas_fiscal_id');
+    }
+
+    public function logs()
+    {
+        return $this->morphMany(LogIntegracao::class, 'loggable');
     }
 
     /**
@@ -172,4 +193,11 @@ class Notafiscal extends Model
         return $this->hasMany(\App\Models\NotaFiscalFatura::class, 'nota_fiscal_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function statusUser()
+    {
+        return $this->belongsTo(\App\Models\User::class, 'status_user_id');
+    }
 }

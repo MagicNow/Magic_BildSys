@@ -70,10 +70,33 @@ class PagamentoDataTable extends DataTable
      */
     public function html()
     {
-        return $this->builder()
-            ->columns($this->getColumns())
-            ->ajax('')
-            ->parameters([
+        $params = [
+            'initComplete' => 'function () {
+                    max = this.api().columns().count();
+                    this.api().columns().every(function (col) {
+                        if((col+1)<max){
+                            var column = this;
+                            var input = document.createElement("input");
+                            $(input).attr(\'placeholder\',\'Filtrar...\');
+                            $(input).addClass(\'form-control\');
+                            $(input).css(\'width\',\'100%\');
+                            $(input).appendTo($(column.footer()).empty())
+                            .on(\'change\', function () {
+                                column.search($(this).val(), false, false, true).draw();
+                            });
+                        }
+                    });
+                }' ,
+            'dom' => 'Bfrltip',
+            "pageLength"=> 100,
+            'scrollX' => false,
+            'language'=> [
+                "url"=> "/vendor/datatables/Portuguese-Brasil.json"
+            ],
+            'buttons' => ['print','colvis']
+        ];
+        if(request()->segment(count(request()->segments()))=='pagamentos'){
+            $params = [
                 'initComplete' => 'function () {
                     max = this.api().columns().count();
                     this.api().columns().every(function (col) {
@@ -100,17 +123,22 @@ class PagamentoDataTable extends DataTable
                     'reset',
                     'reload',
                     [
-                         'extend'  => 'collection',
-                         'text'    => '<i class="fa fa-download"></i> Export',
-                         'buttons' => [
-                             'csv',
-                             'excel',
-                             'pdf',
-                         ],
+                        'extend'  => 'collection',
+                        'text'    => '<i class="fa fa-download"></i> Export',
+                        'buttons' => [
+                            'csv',
+                            'excel',
+                            'pdf',
+                        ],
                     ],
                     'colvis'
                 ]
-            ]);
+            ];
+        }
+        return $this->builder()
+            ->columns($this->getColumns())
+            ->ajax('')
+            ->parameters($params);
     }
 
     /**
@@ -120,9 +148,24 @@ class PagamentoDataTable extends DataTable
      */
     private function getColumns()
     {
+        if(request()->segment(count(request()->segments()))=='pagamentos'){
+            return [
+                'contrato' => ['name' => 'contrato_id', 'data' => 'contrato_id'],
+                'obra' => ['name' => 'obras.nome', 'data' => 'obra'],
+                'número_documento' => ['name' => 'numero_documento', 'data' => 'numero_documento'],
+                'fornecedor' => ['name' => 'fornecedores.nome', 'data' => 'fornecedor'],
+                'data_emissão' => ['name' => 'data_emissao', 'data' => 'data_emissao'],
+                'valor' => ['name' => 'valor', 'data' => 'valor'],
+                'condiçõesDePagamento' => ['name' => 'pagamento_condicoes.codigo', 'data' => 'codigo'],
+                'TipoDeDocumento' => ['name' => 'documento_tipos.sigla', 'data' => 'sigla'],
+//                'notas_fiscal' => ['name' => 'notas_fiscal_id', 'data' => 'notas_fiscal_id'],
+                'enviado_mega' => ['name' => 'enviado_integracao', 'data' => 'enviado_integracao'],
+                'integrado_mega' => ['name' => 'integrado', 'data' => 'integrado'],
+                'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
+            ];
+        }
         return [
-            'contrato' => ['name' => 'contrato_id', 'data' => 'contrato_id'],
-            'obra' => ['name' => 'obras.nome', 'data' => 'obra'],
+            'id'=>['name'=>'id','data'=>'id','width'=>'5%'],
             'número_documento' => ['name' => 'numero_documento', 'data' => 'numero_documento'],
             'fornecedor' => ['name' => 'fornecedores.nome', 'data' => 'fornecedor'],
             'data_emissão' => ['name' => 'data_emissao', 'data' => 'data_emissao'],
