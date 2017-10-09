@@ -107,9 +107,6 @@
                                             </button>
                                         </div>
                                         <ul style="margin: 0px;" id="subgrupo2_{{$count_subgrupo1}}_ul">
-                                            @php
-                                                $count_subgrupo2 = 0;
-                                            @endphp
                                             @foreach($subgrupos3 as $subgrupo3)
                                                 @if($subgrupo3->grupo_id == $subgrupo2->id)
                                                     @php
@@ -289,9 +286,9 @@
         @endif
 
         function addSubItem(id_atual, nivel1, nivel2, nivel3, nivel4, nome) {
-//            debugger;
-
-            var $length = 0;
+            debugger;
+            console.log(id_atual, nivel1, nivel2, nivel3, nivel4, nome);
+            var $length;
             var nivel;
             var adicionar = '';
             var novo = '';
