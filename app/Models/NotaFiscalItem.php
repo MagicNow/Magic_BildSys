@@ -28,6 +28,8 @@ class NotaFiscalItem extends Model
         'valor_total',
         'unidade',
         'base_calculo_icms',
+        'base_calculo_pis',
+        'base_calculo_cofins',
         'aliquota_icms',
         'valor_icms',
         'valor_ipi',
@@ -36,6 +38,19 @@ class NotaFiscalItem extends Model
         'valor_cofins',
         'aliquota_pis',
         'valor_pis',
+        'solicitacao_entrega_itens_id',
+        'base_calculo_icms_uf_dest',
+        'aliquota_fcp_icms_uf_dest',
+        'aliquota_icms_uf_dest',
+        'aliquota_icms_uf_interna',
+        'aliquota_icms_uf_interna_part',
+        'valor_fcp_icms_uf_dest',
+        'valor_icms_uf_dest',
+        'valor_icms_uf_remetente',
+        'situacao_tributacao_ipi',
+        'situacao_tributacao_pis',
+        'situacao_tributacao_cofins',
+        'codigo_enquadramento_ipi',
     ];
 
     /**
@@ -50,7 +65,7 @@ class NotaFiscalItem extends Model
         'codigo_produto' => 'string',
         'nome_produto' => 'string',
         'ean' => 'string',
-        'unidade' => 'string'
+        'unidade' => 'string',
     ];
 
     /**
@@ -59,7 +74,7 @@ class NotaFiscalItem extends Model
      * @var array
      */
     public static $rules = [
-        
+
     ];
 
     /**
@@ -68,5 +83,17 @@ class NotaFiscalItem extends Model
     public function notaFiscal()
     {
         return $this->belongsTo(\App\Models\NotaFiscal::class, 'nota_fiscal_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function solicitacaoEntregaItens()
+    {
+        return $this->belongsToMany(\App\Models\SolicitacaoEntregaItem::class,
+            'nf_se_item',
+            'nota_fiscal_item_id',
+            'solicitacao_entrega_item_id'
+        );
     }
 }

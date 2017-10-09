@@ -42,7 +42,7 @@
 <div class="app__overlay">
     <div class="app__overlay-frame"></div><!-- Scanner animation -->
     <div class="custom-scanner"></div>
-    <div class="app__help-text">Point your camera at a QR Code</div>
+    <div class="app__help-text">Aponte sua câmera para um QR Code</div>
     <div class="app__select-photos">Select from photos</div>
 </div>
 <script>
@@ -64,7 +64,7 @@
                     confirmButtonColor: "#DD6B55",
                     closeOnConfirm: false
                 }, function () {
-                    location.reload();
+                    $('.app__dialog-close').click();
                 });
         }
     }

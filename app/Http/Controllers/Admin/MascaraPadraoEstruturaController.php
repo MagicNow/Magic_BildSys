@@ -300,4 +300,58 @@ class MascaraPadraoEstruturaController extends AppBaseController
 
         return $servicos;
     }
+
+    /**
+     * Método para cadastrar novo grupo.
+     * @param Request $request
+     * @return true
+     */
+    public function cadastrarGrupo(Request $request)
+    {
+        $novo_grupo = [];
+
+        /**
+         * "codigo_grupo" => "02"
+         * "nome_grupo" => "CUSTO TOTAL"
+         * "subgrupo_de" => ""
+         * "subgrupo_de_nome" => "subgrupo1_id"
+         *
+         *
+         * "codigo" => "teste"
+         * "nome" => "teste"
+         * "grupo_anterior" => "600"
+         * "grupo_atual" => "subgrupo1_id"
+         */
+
+        if ($request->codigo && $request->nome) {
+            if($request->grupo_anterior) {
+                $grupo = Grupo::find($request->grupo_anterior); // # Busca grupo
+                if ($request->grupo_atual == 'servico_id') {
+                    $novo_grupo = Servico::firstOrCreate(
+                        [
+                            'codigo' => $grupo->codigo . '.' . $request->codigo
+                        ],
+                        [
+                            'codigo' => $grupo->codigo . '.' . $request->codigo,
+                            'nome' => $request->nome,
+                            'grupo_id' => $request->grupo_anterior
+                        ]
+                    );
+                } else {
+                    $novo_grupo = Grupo::firstOrCreate(
+                        [
+                            'codigo' => $grupo->codigo . '.' . $request->codigo
+                        ],
+                        [
+                            'codigo' => $grupo->codigo . '.' . $request->codigo,
+                            'nome' => $request->nome,
+                            'grupo_id' => $request->grupo_anterior
+                        ]
+                    );
+                }
+            }
+        }
+
+        return response()->json(['grupo' => $novo_grupo]);
+    }
 }

@@ -1,3 +1,21 @@
+<?php
+$mostrarAcoes = true;
+?>
+@if(!empty($notafiscal->status))
+    <?php
+    $mostrarAcoes = false;
+    ?>
+    <div class="col-md-12">
+        <span style="font-size:16px" class="pull-right">
+        Status: {!! $notafiscal->status == 'Aceita' ? '<span class="label label-success">Aceita</span>' :  '<span class="label label-error">Rejeitada</span>' !!}
+        - Data: <span class="label label-default">{!! $notafiscal->status_data->format("d/m/Y H:i:s") !!}</span>
+        - Usuário: <span class="label label-default">{!! $notafiscal->statusUser ? $notafiscal->statusUser->name : "" !!}</span>
+        </span>
+    </div>
+    <br/>
+    <br/>
+@endif
+
 <div class="col-md-6">
     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
         <div class="panel panel-default">
@@ -7,16 +25,17 @@
                 </h4>
             </div>
             <div>
+                <?php
+                $contrato_id = request('contrato', $notafiscal ? $notafiscal->contrato_id : null);
+                ?>
                 <div class="panel-body">
                     <!-- Contrato Id Field -->
                     <div class="form-group col-sm-12">
                         {!! Form::label('contrato_id', 'Contrato:') !!}
-                        {!! Form::select('contrato_id',[''=>'Escolha...'] + (isset($contrato) ? $contrato : []), null, ['class' => 'form-control select2']) !!}
-                    </div>
-
-                    <div class="form-group col-sm-12">
-                        {!! Form::label('solicitacao_entrega_id', 'Solicitação de Entrega:') !!}
-                        {!! Form::select('solicitacao_entrega_id',[''=>'Escolha...'] + (isset($solicitacoes) ? $solicitacoes : []), null, ['class' => 'form-control select2']) !!}
+                        {!! Form::select('contrato_id',[
+                        ''=>'Escolha...'
+                        ] + (isset($contratos) ? $contratos : []),
+                        $contrato_id, ['class' => 'form-control select2']) !!}
                     </div>
 
                     <!-- Codigo Field -->
@@ -179,7 +198,7 @@
     </div>
 </div>
 <div class="col-sm-6" style="min-height: 700px !important;clear:right;">
-    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true" style="margin-top:10px;">
+    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true" >
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h4 class="panel-title">
@@ -215,7 +234,11 @@
 </div>
 <div class="col-sm-12">
     <div class="col-md-12">
-        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true" style="margin-top:10px;">
+        <div class="panel-group"
+             id="accordion"
+             role="tablist"
+             aria-multiselectable="true"
+             style="margin-top:10px;">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h4 class="panel-title">
@@ -224,59 +247,124 @@
                 </div>
                 <div>
                     <div class="panel-body">
-                        <table id="itens" class="table table-striped table-hover dataTable dtr-inline">
+                        <table v-if="itensNf.length > 0" id="itens" class="table table-striped table-hover dataTable dtr-inline">
                             <thead>
-                                <tr>
-                                    <th>Nome</th>
-                                    <th>NCM</th>
-                                    <th>Código Prod</th>
-                                    <th>Quantidade</th>
-                                    <th>Unidade</th>
-                                    <th>Valor Unit</th>
-                                    <th>Valor Total</th>
-                                    <th>Item Vínculado</th>
-                                </tr>
+                            <tr>
+                                <th>Nome</th>
+                                <th>NCM</th>
+                                <th>Código Prod</th>
+                                <th>Quantidade</th>
+                                <th>Unidade</th>
+                                <th>Valor Unit</th>
+                                <th>Valor Total</th>
+                                <th></th>
+                            </tr>
                             </thead>
-                            <tbody>
-                            <?php
-                            $qtdItens = 0;
-                            ?>
-                            @if(isset($notafiscal))
-                                @foreach($notafiscal->items as $item)
-                                    <?php
-                                    $qtdItens = $item->id;
-                                    ?>
-                                    <tr id="item_{{$qtdItens}}">
-                                        <!-- idioma Id Field -->
-                                        <td width="30%">
-                                            {!! Form::text('notaFiscalItens['.$qtdItens.'][nome_produto]', $item->nome_produto, ['class' => 'form-control']) !!}
-                                        </td>
-                                        <td>
-                                            {!! Form::text('notaFiscalItens['.$qtdItens.'][ncm]', $item->ncm, ['class' => 'form-control text-right']) !!}
-                                        </td>
-                                        <td >
-                                            {!! Form::text('notaFiscalItens['.$qtdItens.'][codigo_produto]', $item->codigo_produto, ['class' => 'form-control text-right']) !!}
-                                        </td>
-                                        <td >
-                                            {!! Form::text('notaFiscalItens['.$qtdItens.'][qtd]', $item->qtd, ['class' => 'form-control text-right']) !!}
-                                        </td>
-                                        <td >
-                                            {!! Form::text('notaFiscalItens['.$qtdItens.'][unidade]', $item->unidade, ['class' => 'form-control text-right']) !!}
-                                        </td>
-                                        <td >
-                                            {!! Form::text('notaFiscalItens['.$qtdItens.'][valor_unitario]', $item->valor_unitario, ['class' => 'form-control text-right']) !!}
-                                        </td>
-                                        <td >
-                                            {!! Form::text('notaFiscalItens['.$qtdItens.'][valor_total]', $item->valor_total, ['class' => 'form-control text-right']) !!}
-                                            {!! Form::hidden('notaFiscalItens['.$qtdItens.'][id]',$item->id) !!}
-                                            {!! Form::hidden('notaFiscalItens['.$qtdItens.'][tipo_equalizacao_tecnica_id]',$item->tipo_equalizacao_tecnica_id) !!}
-                                        </td>
-                                        <td >
-                                            <a class="btn btn-success">Vincular</a>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            @endif
+                            <tbody  v-if="itensNf.length > 0"
+                                    v-for="(item, $index) in itensNf"
+                                    v-cloak>
+
+                            <tr :id="'item-' + item.id">
+                                <!-- idioma Id Field -->
+                                <td width="30%">
+                                    {!! Form::text('itens[nome_produto][]', null, [
+                                    'class' => 'form-control',
+                                    ':value' => 'item.nome_produto',
+                                        'readonly'
+                                    ]) !!}
+                                </td>
+                                <td>
+                                    {!! Form::text('itens[ncm][]', null, [
+                                    'class' => 'form-control text-right',
+                                    ':value' => 'item.ncm',
+                                        'readonly'
+                                    ]) !!}
+                                </td>
+                                <td>
+                                    {!! Form::text('itens[codigo_produto][]', null, [
+                                    'class' => 'form-control text-right',
+                                    ':value' => 'item.codigo_produto',
+                                        'readonly'
+                                    ]) !!}
+                                </td>
+                                <td>
+                                    {!! Form::text('itens[qtd][]', null, [
+                                    'class' => 'form-control text-right',
+                                    ':value' => 'item.qtd',
+                                        'readonly'
+                                    ]) !!}
+                                </td>
+                                <td>
+                                    {!! Form::text('itens[unidade][]', null, [
+                                    'class' => 'form-control text-right',
+                                    ':value' => 'item.unidade',
+                                        'readonly'
+                                    ]) !!}
+                                </td>
+                                <td>
+                                    {!! Form::text('itens[valor_unitario][]', null, [
+                                    'class' => 'form-control text-right',
+                                    ':value' => 'item.valor_unitario',
+                                        'readonly'
+                                    ]) !!}
+                                </td>
+                                <td>
+                                    {!! Form::text('itens[valor_total][]', null, [
+                                        'class' => 'form-control text-right',
+                                        ':value' => 'item.valor_total',
+                                        'readonly'
+                                    ]) !!}
+
+                                    {!! Form::hidden('itens[id][]', null, [':value' => 'item.id']) !!}
+                                </td>
+                                <td>
+                                    @if($mostrarAcoes)
+                                    <a v-if="typeof item !==  'undefined'
+                                             && typeof item.solicitacao_entrega_itens !==  'undefined'
+                                             && item.solicitacao_entrega_itens.length == 0"
+                                       class="btn btn-success"
+                                       v-on:click="openModal($index)">
+                                        Vincular
+                                    </a>
+
+                                    <a v-if="typeof item !==  'undefined'
+                                             && typeof item.solicitacao_entrega_itens !==  'undefined'
+                                             && item.solicitacao_entrega_itens.length > 0"
+                                       class="btn btn-danger"
+                                       v-on:click="desvincular($index)">
+                                        Desvincular
+                                    </a>
+                                    @endif
+                                </td>
+                            </tr>
+
+                            <tr v-if="itensNf.length > 0
+                                      && typeof itensNf[index] !== 'undefined'
+                                      && typeof itensNf[index].solicitacao_entrega_itens !==  'undefined'
+                                      && itensNf[index].solicitacao_entrega_itens.length > 0"
+                                v-for="itemAdd in itensNf[index].solicitacao_entrega_itens"
+                                style="background-color: rgb(170, 235, 255);">
+
+                                <td width="30%"
+                                    style="text-align: left;" >
+                                    @{{  (itemAdd.insumo) ? itemAdd.insumo.nome : itemAdd.nome  }}
+                                    <input type="hidden" :name="'vinculos[' + item.id + '][' + (itemAdd.id)  + ']'" :value="itemAdd.id" />
+                                </td>
+                                <td ></td>
+                                <td ></td>
+                                <td style="text-align: right;">
+                                    @{{  itemAdd.qtd  }}
+                                </td>
+                                <td style="text-align: right;">
+                                    @{{  (itemAdd.insumo) ? itemAdd.insumo.unidade_sigla : itemAdd.unidade_sigla  }}
+                                </td>
+                                <td style="text-align: right;">
+                                    @{{  itemAdd.valor_unitario  }}
+                                </td>
+                                <td style="text-align: right;">
+                                    @{{  itemAdd.valor_total  }}
+                                </td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>
@@ -286,12 +374,67 @@
     </div>
 </div>
 
+<div class="col-sm-12">
+    <div class="col-md-12">
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true" style="margin-top:10px;">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        Faturas da Nota Fiscal
+                    </div>
+                </div>
+                <div class="panel-body">
+
+                    <div class="col-md-3 box-rounded-bordered"
+                         v-for="(fatura, $index) in faturasNf"
+                         :id="'fatura-' + fatura.id"
+                         v-cloak>
+
+
+                        <div class="form-group col-sm-12">
+                            {!! Form::hidden(('faturas[id][]'), null, ['class' => 'form-control text-right', ':value' => 'fatura.id']) !!}
+
+                            {!! Form::label('numero', 'Numero') !!}
+                            {!! Form::text(('faturas[numero][]'), null, ['class' => 'form-control text-right', ':value' => 'fatura.numero']) !!}
+                        </div>
+
+                        <div class="form-group col-sm-12">
+                            {!! Form::label('numero', 'Numero') !!}
+                            {!! Form::date(('faturas[vencimento][]'), null, [
+                                'class' => 'form-control text-right',
+                                'v-model' => "fatura.vencimento",
+                                ':value' => 'fatura.vencimento'
+                            ]) !!}
+                        </div>
+
+                        <div class="form-group col-sm-12">
+                            {!! Form::label('valor', 'Valor') !!}
+                            {!! Form::text(('faturas[valor][]'), null, ['class' => 'form-control text-right', ':value' => 'fatura.valor']) !!}
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Submit Field -->
 <div class="form-group col-sm-12" style="margin-top: 20px;">
-    {!! Form::button( '<i class="fa fa-remove"></i> Rejeitar', ['class' => 'btn btn-danger pull-right', 'type'=>'submit']) !!}
-
-    {!! Form::button( '<i class="fa fa-save"></i> Aceite', ['class' => 'btn btn-success pull-right', 'type'=>'submit']) !!}
-
+    @if($mostrarAcoes)
+    {!! Form::button( '<i class="fa fa-remove"></i> Rejeitar', [
+    'class' => 'btn btn-danger pull-right',
+        'type'=>'submit',
+        'value' => 'Rejeitar',
+        'name' => 'acao',
+    ]) !!}
+    {!! Form::button( '<i class="fa fa-save"></i> Aceite',
+    ['class' => 'btn btn-success pull-right',
+        'type'=>'submit',
+        'value' => 'Aceitar',
+        'name' => 'acao'
+    ]) !!}
+    @endif
 
     <a href="{!! route('notafiscals.index') !!}" class="btn btn-default">
         <i class="fa fa-times"></i>
@@ -299,56 +442,188 @@
     </a>
 </div>
 
+<div class="modal fade"
+     id="conciliacao-modal"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="conciliacaoFormLabel"
+     v-if="itensNf.length > 0"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button"
+                        class="close"
+                        data-dismiss="modal"
+                        aria-hidden="true">&times;</button>
+                <h4 class="modal-title"
+                    id="conciliacaoFormLabel"
+                    v-if="typeof itensNf[index] !==  'undefined'">
+                    Conciliar Item: @{{ itensNf[index].nome_produto }}
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="clearfix"></div>
+                {{ Form::open(['method' => 'post', 'id' => 'conciliacao-form', 'role' => 'form']) }}
+
+                <div class="form-group clearfix">
+                    <table class="table">
+                        <tr>
+                            <th >Produto</th>
+                            <th >Quantidade</th>
+                            <th >Unidade</th>
+                            <th >Valor</th>
+                            <th >Total</th>
+                            <th ></th>
+                        </tr>
+                        <tr v-if="typeof itensNf[index] !== 'undefined'
+                                  && typeof itensNf[index].solicitacao_entrega_itens !==  'undefined'
+                                  && itensNf[index].solicitacao_entrega_itens.length > 0"
+                            v-for="(itemAdd, $index) in itensNf[index].solicitacao_entrega_itens">
+                            <th >@{{ itemAdd.nome }}</th>
+                            <th >@{{ itemAdd.qtd }}</th>
+                            <th >@{{ itemAdd.unidade_sigla }}</th>
+                            <th >@{{ itemAdd.valor_unitario }}</th>
+                            <th >@{{ itemAdd.valor_total }}</th>
+                            <th >
+                                <button type="button"
+                                         v-on:click="removeItem($index)"
+                                         class="btn btn-sm btn-danger">
+                                        <i class="fa fa-remove"></i>
+                                </button>
+                            </th>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="form-group clearfix">
+                    <div class="col-md-10">
+                        <select
+                                :id='"itenselecionado"'
+                                v-model="itemSelecionado"
+                                class="form-control">
+                            <option v-bind:value="''">Selecione</option>
+                            <option v-bind:value="$obj"
+                                    v-for="$obj in itensSolicitacoes">
+                                @{{ $obj.nome }}
+                                - Qtd.: @{{ $obj.qtd }} @{{ $obj.unidade }}
+                                - Vl. Unit.: @{{ $obj.valor_unitario }}
+                                - Vl. Total.: @{{ $obj.valor_total }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button"
+                                v-on:click="addItem(index)"
+                                class="btn btn-sm btn-primary">
+                            Adicionar
+                        </button>
+                    </div>
+                </div>
+
+                <div class="clearfix"></div>
+
+                <button type="button"
+                        v-on:click="updateVinculo"
+                        class="btn btn-sm btn-primary">
+                    Concluir
+                </button>
+                {{ Form::close() }}
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 @section('scripts')
-    <script type="text/javascript">
-        var qtditens = {{ isset($notafiscal)? $qtdItens:'0' }};
-
-        function addItens() {
-            qtditens++;
-            $('#itens').append(
-                    '<div id="item_' + qtditens + '" class="panel panel-default">' +
-                    '<div class="panel-heading" role="tab" id="heading_' + qtditens + '">' +
-                    '<h4 class="panel-title">' +
-                    '<a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse_' + qtditens + '" aria-expanded="false" aria-controls="collapse_' + qtditens + '">' +
-                    "Item: " + qtditens + '<span type="button" onclick="remExtra(' + qtditens + ',\'item_\')" class="btn btn-danger btn-xs pull-right" title="Remover"><i class="fa fa-times"></i></span>' +
-                    '</a>' +
-                    '</h4>' +
-                    '</div>' +
-                    '<div id="collapse_' + qtditens + '" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading_' + qtditens + '">' +
-                    '<div class="panel-body">' +
-                    "Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS." +
-                    '</div>' +
-                    '</div>' +
-                    '</div>'
-//                    '<div id="item_'+qtditens+'">' +
-//                    '<div class="form-group col-sm-11">'+
-//                    '<label for="itens['+qtditens+'][nome]">Nome:</label>'+
-//                    '<input class="form-control" name="itens[' + qtditens + '][nome]" type="text" id="itens['+qtditens+'][nome]" required="required" />'+
-//                    '</div>'+
-//                    '<div class="form-group col-sm-1"><button type="button" onclick="remExtra('+qtditens+',\'item_\')" class="btn btn-danger" style="margin-top: 24px" title="Remover"><i class="fa fa-times"></i></button> </div>'+
-//                    '</div>'
-            );
+    <style>
+        .box-rounded-bordered {
+            border: 1px dashed #ccc;
+            border-radius: 3px;
         }
+    </style>
+    <script>
+        <?php
+        $faturas = [];
+        foreach ($notafiscal->faturas as $fatura) {
+            $faturaItem = $fatura->toArray();
+            unset($faturaItem['vencimento']);
+            $faturaItem['vencimento'] = $fatura->vencimento ? $fatura->vencimento->format("Y-m-d") : null;
+            $faturas[] = $faturaItem;
+        }
+        ?>
 
-        function readURL(input) {
-            startLoading();
-            if (input.files && input.files[0]) {
-                var view = new FileReader();
-                view.onload = function (e) {
-//                    window.open(e.target.result);
-                    $('#arquivoNfe')
-                            .attr('src', e.target.result)
-                            .width(620)
-                            .height(700);
-                };
-                view.readAsDataURL(input.files[0]);
+        var $faturasNf = {!! json_encode($faturas)  !!};
+        var $itensNf = {!! json_encode($notafiscal->itens()->with('solicitacaoEntregaItens', 'solicitacaoEntregaItens.insumo')->get())  !!};
+        var $itensSolicitacoes = {!! json_encode($itensSolicitacoes)  !!};
+
+        const app = new Vue({
+            el: '#nota_fiscal',
+            data: function() {
+                return {
+                    index: 0,
+                    itensNf: [],
+                    faturasNf: [],
+                    itensSolicitacoes: [],
+                    itemSelecionado: {}
+                }
+            },
+            watch: {},
+            methods: {
+                desvincular: function ($index) {
+                    this.itensNf[$index].solicitacao_entrega_itens = [];
+                },
+                openModal: function ($index) {
+                    this.index = $index;
+                    $('#conciliacao-modal').modal('show');
+                },
+                updateVinculo: function () {
+
+                    $('#conciliacao-modal').modal('hide');
+                },
+                adicionarFatura: function () {
+                    this.faturasNf.push({});
+                },
+                removerFatura: function ($index) {
+                    this.faturasNf.splice($index, 1);
+                },
+                addItem: function ($index) {
+
+                    $obj = this.itemSelecionado;
+
+                    if ($obj == null || $obj == "") {
+                        return;
+                    }
+
+                    console.log($obj);
+
+                    $ids = this.itensNf[this.index].solicitacao_entrega_itens.filter(function(item){
+                        return item.id == $obj.id;
+                    });
+
+                    if ($ids.length > 0) {
+                        return;
+                    }
+
+                    this.itensNf[this.index].solicitacao_entrega_itens.push($obj);
+                    $('#itenselecionado').val('').trigger('change');
+                },
+                removeItem: function($index) {
+                    this.itensNf[this.index].solicitacao_entrega_itens.splice($index, 1);
+                }
+            },
+            mounted: function () {
+                this.itensNf = $itensNf;
+                this.faturasNf = $faturasNf;
+                this.itensSolicitacoes = $itensSolicitacoes;
+            },
+            filters: {
+                currencyFormatted: function(value) {
+                    return Number(value).toLocaleString('pt-BR', {
+                        style: 'currency',
+                        currency: 'BRL'
+                    });
+                }
             }
-            stopLoading();
-            $('#arquivo_nfe').val($('#arquivoNfe').val());
-        }
-
-        function remExtra(qual, nome) {
-            $('#' + nome + '' + qual).remove();
-        }
+        });
     </script>
 @stop

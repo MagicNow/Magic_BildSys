@@ -10,10 +10,10 @@ use Eloquent as Model;
  * @version April 5, 2017, 11:58 am BRT
  */
 class Levantamento extends Model
-{    
+{
 
     public $table = 'levantamentos';
-    
+
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
@@ -21,7 +21,7 @@ class Levantamento extends Model
     protected $dates = ['deleted_at'];
 
 
-    public $fillable = [    
+    public $fillable = [
 		'obra_id',
         'apropriacao',
         'insumo',
@@ -35,7 +35,7 @@ class Levantamento extends Model
 		'trecho_parede',
 		'personalizavel',
 		'quantidade',
-		'perda',         
+		'perda',
         'data_upload'
     ];
 
@@ -46,7 +46,7 @@ class Levantamento extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'obra_id' => 'integer',        
+        'obra_id' => 'integer',
     ];
 
     /**
@@ -55,11 +55,10 @@ class Levantamento extends Model
      * @var array
      */
 	 //["apropriacao","insumo","torre","andar","pavimento","trecho","apartamento","comodo","parede","trecho_parede","personalizavel","quantidade","perda"]
-    public static $relation = [        
+    public static $relation = [
 		'apropriacao' => 'string',
 		'insumo' => 'string',
 		'torre' => 'string',
-		'andar' => 'string',
 		'andar' => 'string',
 		'pavimento' => 'string',
 		'trecho' => 'string',
@@ -78,7 +77,7 @@ class Levantamento extends Model
      * @var array
      */
     public static $rules = [
-        'obra_id' => 'required'        
+        'obra_id' => 'required'
     ];
 
     /**
@@ -96,7 +95,7 @@ class Levantamento extends Model
     {
         return $this->belongsTo(\App\Models\Obra::class);
     }
-	
+
 	/**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
@@ -104,6 +103,6 @@ class Levantamento extends Model
     {
         return $this->belongsTo(\App\Models\TemplatePlanilha::class);
     }
-    
+
 
 }
