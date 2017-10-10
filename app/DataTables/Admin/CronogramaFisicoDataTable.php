@@ -29,15 +29,15 @@ class CronogramaFisicoDataTable extends DataTable
             ->editColumn('data_inicio',function ($obj){
                 return $obj->data_inicio ? with(new\Carbon\Carbon($obj->data_inicio))->format('d/m/Y') : '';
             })
-            ->filterColumn('data_inicio', function ($query, $keyword) {
+            /*->filterColumn('data_inicio', function ($query, $keyword) {
                 $query->whereRaw("DATE_FORMAT(cronograma_fisicos.data_inicio,'%d/%m/%Y') like ?", ["%$keyword%"]);
-            })
+            })*/
             ->editColumn('data_termino',function ($obj){
                 return $obj->data_termino ? with(new\Carbon\Carbon($obj->data_termino))->format('d/m/Y') : '';
             })
-            ->filterColumn('data_termino', function ($query, $keyword) {
+            /*->filterColumn('data_termino', function ($query, $keyword) {
                 $query->whereRaw("DATE_FORMAT(cronograma_fisicos.data_termino,'%d/%m/%Y') like ?", ["%$keyword%"]);
-            })
+            })*/
             ->make(true);
     }
 
@@ -249,7 +249,7 @@ class CronogramaFisicoDataTable extends DataTable
 			//'Semana_3' => ['name' => 'concluida', 'data' => 'semana3'],
 			//'Semana_4' => ['name' => 'concluida', 'data' => 'semana4'],
 			//'Último_Dia' => ['name' => 'concluida', 'data' => 'ultimo_dia'],
-            'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
+            //'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }
 
