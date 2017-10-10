@@ -27,6 +27,8 @@ $router->get('/solicitar-insumo', 'SolicitacaoInsumoController@create')
 $router->post('/solicitar-insumo', 'SolicitacaoInsumoController@store')
     ->name('solicitar_insumo.store');
 
+$router->get('fornecedores/atualizar-mega/{fornecedores}', ['as' => 'fornecedores.atualizar-mega', 'uses' => 'Admin\FornecedoresController@atualizarMega']);
+
 ##### Buscas #####
 $router->get('/admin/catalogo-acordos/buscar/busca_insumos', ['as' => 'catalogo_contratos.busca_insumos', 'uses' => 'BuscarController@getInsumos']);
 
@@ -1568,7 +1570,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         //        dd($grupos_mega);
         //        $servicos = \App\Repositories\ImportacaoRepository::fornecedor_servicos(446);
 
-		$insumos = \App\Repositories\ImportacaoRepository::insumos();
+		$insumos = \App\Repositories\ImportacaoRepository::fornecedoresAtualiza();
         dd($insumos);
 
 		//        $insumos = \App\Repositories\ImportacaoRepository::insumos();

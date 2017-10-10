@@ -128,13 +128,13 @@
 				<div class="element-grafico">
 					<div class="element-head">DESVIO PDP</div>
 					<div class="element-desvio-pdp">                                   
-						<chartjs-pie 
+						<chartjs-bar 
 							:labels="labelsDesvioPDP" 
 							:datasets="datasetsDesvioPDP" 
 							:scalesdisplay="false" 
 							:option="myoptionDesvioPDP" 
 							:height="220">
-						</chartjs-pie>
+						</chartjs-bar>
 					</div>
 				</div>
 			</div>
@@ -143,13 +143,13 @@
 				<div class="element-grafico">
 					<div class="element-head">DESVIO TRABALHO</div>
 					<div class="element-desvio-ptrab">                                    
-						<chartjs-pie 
+						<chartjs-bar 
 							:labels="labelsDesvioTrabalho" 
 							:datasets="datasetsDesvioTrabalho" 
 							:scalesdisplay="false" 
 							:option="myoptionDesvioTrabalho" 
 							:height="220">
-						</chartjs-pie>
+						</chartjs-bar>
 					</div>
 				</div>
 			</div>
