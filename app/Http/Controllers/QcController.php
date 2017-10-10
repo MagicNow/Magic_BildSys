@@ -16,9 +16,17 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\Obra;
 use App\Models\Carteira;
 use App\Models\Tipologia;
+use App\Models\Qc;
 use App\Models\User;
-use App\Repositories\Admin\WorkflowReprovacaoMotivoRepository;
 use Illuminate\Support\Facades\DB;
+use App\Models\WorkflowAlcada;
+use App\Models\WorkflowAprovacao;
+use App\Models\WorkflowTipo;
+use App\Notifications\WorkflowNotification;
+use App\Repositories\WorkflowAprovacaoRepository;
+use App\Repositories\NotificationRepository;
+use App\Models\WorkflowReprovacaoMotivo;
+use App\Models\QcStatus;
 
 class QcController extends AppBaseController
 {
@@ -82,10 +90,8 @@ class QcController extends AppBaseController
      *
      * @return Response
      */
-    public function show(
-        $id,
-        WorkflowReprovacaoMotivoRepository $workflowReprovacaoMotivoRepository
-    ) {
+    public function show($id)
+    {
         $qc = $this->qcRepository->findWithoutFail($id);
 
         if (empty($qc)) {
@@ -94,42 +100,93 @@ class QcController extends AppBaseController
             return redirect(route('qc.index'));
         }
 
-        $attachments = [];
+        NotificationRepository::marcarLido(WorkflowTipo::QC_AVULSO, $qc->id);
 
-        if (isset($qc->anexos) && !empty($qc->anexos)) {
-            foreach ($qc->anexos as $attachment) {
-                if (!isset($attachments[$attachment->tipo])) {
-                    $attachments[$attachment->tipo] = [];
+        $motivos = (new WorkflowReprovacaoMotivo)
+            ->where(function ($query) {
+                $query->where('workflow_tipo_id', 2);
+                $query->orWhereNull('workflow_tipo_id');
+            })
+            ->pluck('nome', 'id')
+            ->toArray();
+
+        $dataUltimoPeriodo = $qc->dataUltimoPeriodoAprovacao();
+
+        if(!$dataUltimoPeriodo) {
+            $dataUltimoPeriodo = $qc->updated_at;
+        }
+
+        $alcadas = WorkflowAlcada::where('workflow_tipo_id', WorkflowTipo::QC_AVULSO)
+            ->orderBy('ordem', 'ASC')
+            ->where('created_at', '<=', $dataUltimoPeriodo)
+            ->get();
+
+        if ($qc->isStatus(QcStatus::EM_APROVACAO)) {
+            $workflowAprovacao = WorkflowAprovacaoRepository::verificaAprovacoes(
+                'Qc',
+                $qc->id,
+                auth()->user()
+            );
+
+            foreach ($alcadas as $alcada) {
+                $avaliado_reprovado[$alcada->id] = WorkflowAprovacaoRepository::verificaTotalJaAprovadoReprovado(
+                    'Qc',
+                    $qc->irmaosIds(),
+                    null,
+                    $qc->id,
+                    $alcada->id);
+
+                $avaliado_reprovado[$alcada->id]['aprovadores'] = WorkflowAprovacaoRepository::verificaQuantidadeUsuariosAprovadores(
+                    WorkflowTipo::find(WorkflowTipo::QC_AVULSO),
+                    $qc->obra_id,
+                    $alcada->id,
+                    [$qc->id=>$qc->id],
+                    'Qc'
+                );
+
+                $avaliado_reprovado[$alcada->id] ['faltam_aprovar'] = WorkflowAprovacaoRepository::verificaUsuariosQueFaltamAprovar(
+                    'Qc',
+                    WorkflowTipo::QC_AVULSO,
+                    $qc->obra_id,
+                    $alcada->id,
+                    [$qc->id]
+                );
+
+                // Data do início da  Alçada
+                if ($alcada->ordem === 1) {
+                    $qc_log = $qc->logs()
+                        ->where('qc_status_id', 4)->first();
+
+                    if ($qc_log) {
+                        $avaliado_reprovado[$alcada->id] ['data_inicio'] = $qc_log->created_at
+                            ->format('d/m/Y H:i');
+                    }
+                } else {
+                    $primeiro_voto = WorkflowAprovacao::where('aprovavel_type', 'App\\Models\\Qc')
+                        ->where('aprovavel_id', $qc->id)
+                        ->where('workflow_alcada_id', $alcada->id)
+                        ->orderBy('id', 'ASC')
+                        ->first();
+                    if ($primeiro_voto) {
+                        $avaliado_reprovado[$alcada->id]['data_inicio'] = $primeiro_voto->created_at->format('d/m/Y H:i');
+                    }
                 }
-
-                $attachments[$attachment->tipo][] = $attachment;
             }
         }
 
-        return view('qc.show', compact('qc', 'attachments'));
-    }
+        $attachments = $qc->anexos->groupBy('tipo');
 
-    /**
-     * Show the form for editing the specified Qc.
-     *
-     * @param  int $id
-     *
-     * @return Response
-     */
-    public function edit($id)
-    {
-        $qc = $this->qcRepository->findWithoutFail($id);
-        $obras = Obra::pluck('nome','id')->toArray();
-        $carteiras = Carteira::pluck('nome','id')->toArray();
-        $tipologias = Tipologia::pluck('nome','id')->toArray();
-
-        if (empty($qc)) {
-            Flash::error('Qc '.trans('common.not-found'));
-
-            return redirect(route('qc.index'));
-        }
-
-        return view('qc.edit', compact('qc', 'obras', 'carteiras', 'tipologias'));
+        return view('qc.show', compact(
+            'qc',
+            'attachments',
+            'motivos',
+            'aprovavelTudo',
+            'workflowAprovacao',
+            'avaliado_reprovado',
+            'qtd_itens',
+            'alcadas_count',
+            'oc_status'
+        ));
     }
 
     /**
@@ -192,45 +249,6 @@ class QcController extends AppBaseController
         $this->qcRepository->delete($id);
 
         Flash::success('Qc '.trans('common.deleted').' '.trans('common.successfully').'.');
-
-        return redirect(route('qc.index'));
-    }
-
-    /**
-     * Approve and disapprove Q.C.
-     *
-     * @param  int $id
-     *
-     * @return Response
-     */
-    public function aprovar ($id) {
-        $qc = $this->qcRepository->findWithoutFail($id);
-        isset($qc) ? $qc->tipologia = $qc->tipologia()->first() : NULL;
-        $compradores = User::pluck('name','id')->toArray();
-        $screen = 'approve';
-
-        if (empty($qc)) {
-            Flash::error('Qc '.trans('common.not-found'));
-
-            return redirect(route('qc.index'));
-        }
-
-        return view('qc_aprovar.edit', compact('qc', 'compradores', 'screen'));
-    }
-
-    public function aprovarUpdate (Request $request, $id) {
-        $input = $request->except('file');
-        $qc = $this->qcRepository->findWithoutFail($id);
-
-        if (empty($qc)) {
-            Flash::error('Qc '.trans('common.not-found'));
-
-            return redirect(route('qc.index'));
-        }
-        $input['user_id'] = empty($input['user_id']) ? NULL : $input['user_id'];
-        $qc = $this->qcRepository->update($input, $id);
-
-        Flash::success('Q.C. '.trans('common.updated').' '.trans('common.successfully').'.');
 
         return redirect(route('qc.index'));
     }

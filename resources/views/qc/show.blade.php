@@ -4,6 +4,7 @@
     <section class="content-header">
         <h1>
             Q.C.
+            @include('qc.aprovacao')
         </h1>
     </section>
     <div class="content">
@@ -18,4 +19,12 @@
             </div>
         </div>
     </div>
+    <div class="hidden">
+        {!! Form::select('motivo', $motivos, null, ['id' => 'motivo']) !!}
+    </div>
 @endsection
+
+@section('scripts')
+    @parent
+    <script> options_motivos = document.getElementById('motivo').innerHTML; </script>
+@append

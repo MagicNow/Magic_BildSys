@@ -141,8 +141,8 @@ class Contrato extends Model
     public function materiais()
     {
         return $this->hasMany(ContratoItem::class)
-            ->whereHas('insumo', function($query) {
-                $query->whereHas('insumoGrupo', function($query) {
+            ->whereHas('insumo', function ($query) {
+                $query->whereHas('insumoGrupo', function ($query) {
                     $query->where('nome', 'like', 'MATERIAL%');
                 });
             });
@@ -171,7 +171,8 @@ class Contrato extends Model
         return [$this->attributes['id'] => $this->attributes['id']];
     }
 
-    public function idPai(){
+    public function idPai()
+    {
         return null;
     }
 
@@ -230,7 +231,7 @@ class Contrato extends Model
                     Flash::success($retorno['messages'][0]);
                 }
             }
-        }elseif ($isAprovado){
+        } elseif ($isAprovado) {
             // Não tem serviço, Muda o status para Ativo
             $this->attributes['contrato_status_id'] = 5;
 
@@ -261,7 +262,7 @@ class Contrato extends Model
             ->pluck('insumo')
             ->pluck('insumoGrupo')
             ->pluck('nome')
-            ->contains(function($nome) {
+            ->contains(function ($nome) {
                 return starts_with($nome, 'MATERIAL');
             });
     }
@@ -275,9 +276,6 @@ class Contrato extends Model
 
     public function updateTotal()
     {
-//        $itens = $this->itens()->whereHas('modificacoes', function ($q) {
-//            $q->where('contrato_status_id', ContratoStatus::APROVADO);
-//        })->get();
         $itens = $this->itens()->get();
 
         $this->update(['valor_total_atual' => $itens->sum('valor_total')]);
@@ -312,16 +310,21 @@ class Contrato extends Model
         return $this->itens->pluck('insumo')->pluck('codigo')->contains(30019);
     }
 
-    public function emAprovacao(){
+    public function emAprovacao()
+    {
         return ($this->contrato_status_id == 1);
     }
 
-    public function dataUltimoPeriodoAprovacao(){
-        $ultimoStatusAprovacao = $this->logs()->where('contrato_status_id',ContratoStatus::EM_APROVACAO)
-            ->orderBy('created_at','DESC')->first();
-        if($ultimoStatusAprovacao){
+    public function dataUltimoPeriodoAprovacao()
+    {
+        $ultimoStatusAprovacao = $this->logs()
+          ->where('contrato_status_id', ContratoStatus::EM_APROVACAO)
+          ->orderBy('created_at', 'DESC')->first();
+
+        if ($ultimoStatusAprovacao) {
             return $ultimoStatusAprovacao->created_at;
         }
+
         return null;
     }
 }
