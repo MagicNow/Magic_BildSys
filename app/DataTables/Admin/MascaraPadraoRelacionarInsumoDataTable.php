@@ -3,6 +3,7 @@
 namespace App\DataTables\Admin;
 
 use App\Models\Insumo;
+use App\Models\TipoLevantamento;
 use Yajra\Datatables\Services\DataTable;
 
 class MascaraPadraoRelacionarInsumoDataTable extends DataTable
@@ -17,12 +18,20 @@ class MascaraPadraoRelacionarInsumoDataTable extends DataTable
         return $this->datatables
             ->eloquent($this->query())
             ->addColumn('action', 'admin.mascara_padrao_estruturas.relacionar_insumos_datatables_actions')
-            ->addColumn('levantamento', 'admin.mascara_padrao_estruturas.select_tipo_levantamento_datatables_actions')
             ->editColumn('coeficiente', function($obj){
                 return "<input  type='text' class='form-control money' name='coeficiente_$obj->id'>";
             })
             ->editColumn('indireto', function($obj){
                 return "<input type='text' class='form-control money' name='indireto_$obj->id'>";
+            })
+            ->editColumn('levantamento', function($obj){
+                $tipos = TipoLevantamento::whereNull('deleted_at')->get();
+
+                $options = '<option value="">Selecione</option>';
+                foreach($tipos as $item){
+                    $options .= '<option value="'.$item->id.'"> '.$item->nome.' </option>';
+                }
+                return '<select class="form-control select2" name="tipo_levantamento_'.$obj->id.'">'.$options.'</select>';
             })
             ->make(true);
     }
@@ -104,12 +113,12 @@ class MascaraPadraoRelacionarInsumoDataTable extends DataTable
     protected function getColumns()
     {
         return [
-            'Código' => ['name' => 'codigo', 'data' => 'codigo'],
-            'nome' => ['name' => 'nome', 'data' => 'nome'],
-            'Coeficiente' => ['name' => 'coeficiente', 'data' => 'coeficiente', 'searchable' => false],
-            'Indireto' => ['name' => 'indireto', 'data' => 'indireto', 'searchable' => false],
-            'levantamento' => ['name' => 'levantamento', 'title' => 'levantamento', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false],
-            'action' => ['name' => 'Ações', 'title' => 'Salvar', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false],
+            'Código' => ['name' => 'codigo', 'data' => 'codigo', 'width'=> '5%'],
+            'nome' => ['name' => 'nome', 'data' => 'nome', 'width'=> '40%'],
+            'Coeficiente' => ['name' => 'coeficiente', 'data' => 'coeficiente', 'searchable' => false, 'width'=> '5%' ],
+            'Indireto' => ['name' => 'indireto', 'data' => 'indireto', 'searchable' => false, 'width'=> '5%'],
+            'levantamento' => ['name' => 'levantamento', 'title' => 'levantamento', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=> '40%'],
+            'action' => ['name' => 'Ações', 'title' => 'Salvar', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=> '5%'],
         ];
     }
 

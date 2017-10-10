@@ -14,6 +14,7 @@ use App\Models\Servico;
 use App\Models\Insumo;
 use App\Models\InsumoGrupo;
 use App\Models\MascaraPadrao;
+use App\Models\TipoLevantamento;
 use App\Repositories\Admin\MascaraPadraoInsumoRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
@@ -90,6 +91,7 @@ class MascaraPadraoInsumoController extends AppBaseController
                 ],
                 [
                     'mascara_padrao_estrutura_id' => $request->mascara_padrao_estrutura_id,
+                    'tipo_levantamento_id' => $request->tipo_levantamento_id,
                     'codigo_estruturado' => $estrutura->codigo . '.' . $insumo->codigo,
                     'insumo_id' => $request->id,
                     'coeficiente' => ($request->coeficiente) ? money_to_float($request->coeficiente) : null,
@@ -336,5 +338,4 @@ class MascaraPadraoInsumoController extends AppBaseController
 
         return $servico;
     }
-
 }
