@@ -230,6 +230,8 @@ class RolesAndPermissions extends Seeder
             'requisicao.processo_saida'   => 'Processo de saída',
             'requisicao.aplicacao_estoque'   => 'Aplicação de estoque',
 
+            'gestao_de_estoque.list'   => 'Gestão de estoque',
+
             ################# SITE ###################
 
             'compras_lembretes.list' => 'Listagem de compras e lembretes',

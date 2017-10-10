@@ -360,6 +360,15 @@
 </li>
 @endshield
 
+@shield('gestao_de_estoque.list')
+<li class="{{ Request::is('gestao-de-estoque*') ? 'active' : '' }}">
+    <a href="{!! route('gestaoEstoque.index') !!}">
+        <i class="fa fa-bar-chart" aria-hidden="true"></i>
+        <span>Gestão de estoque</span>
+    </a>
+</li>
+@endshield
+
 <li class="treeview {{ Request::is('admin/tipologia*') ? 'active' : '' }}">
 
     <a href="#">
