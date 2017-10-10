@@ -270,7 +270,7 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
 
     # Máscara Padrão Insumos
     $router->group(['middleware' => 'needsPermission:mascara_padrao_insumos.list'], function () use ($router) {
-        $router->get('mascara_padrao_insumos', ['as' => 'admin.mascara_padrao_insumos.index', 'uses' => 'Admin\MascaraPadraoInsumoController@index']);
+        $router->get('mascara_padrao_insumos/{id}/index', ['as' => 'admin.mascara_padrao_insumos.index', 'uses' => 'Admin\MascaraPadraoInsumoController@index']);
         $router->post('mascara_padrao_insumos', ['as' => 'admin.mascara_padrao_insumos.store', 'uses' => 'Admin\MascaraPadraoInsumoController@store']);
         $router->get('mascara_padrao_insumos/create', ['as' => 'admin.mascara_padrao_insumos.create', 'uses' => 'Admin\MascaraPadraoInsumoController@create'])
             ->middleware("needsPermission:mascara_padrao_insumos.create");

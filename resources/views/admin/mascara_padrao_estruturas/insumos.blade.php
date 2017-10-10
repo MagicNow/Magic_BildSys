@@ -6,14 +6,14 @@
             Máscara Padrão - {{(isset($mascaraPadrao) ? $mascaraPadrao->nome : $mascaraPadraoEstrutura->nome)}}
         </h1>
         <h1>
-            <a class="btn btn-primary pull-right" style="margin-top: -30px;" href="{!! route('admin.mascara_padrao_insumos.index') !!}">
+            <a class="btn btn-primary pull-right" style="margin-top: -30px;" href="{{url('/admin/mascara_padrao_insumos/'.(isset($mascaraPadrao) ? $mascaraPadrao->id : $mascaraPadraoEstrutura->mascara_padrao_id).'/index')}}">
                 Insumos relacionados
             </a>
         </h1>
     </section>
     <div class="content">
         @include('adminlte-templates::common.errors')
-        {!! Form::open(['route' => 'admin.mascara_padrao_insumos.store', 'files' => true]) !!}
+        {{--{!! Form::open(['route' => 'admin.mascara_padrao_insumos.store', 'files' => true]) !!}--}}
         <div class="box box-primary">
             <div class="box-body">
                 <div class="row" style="padding-left: 20px">
@@ -32,16 +32,16 @@
                 </div>
             </div>
         </div>
-        <div class="row" style="margin-top: 15px">
-            <div class="col-md-12 text-right">
-                <a type="button" href="#"
-                   class="btn btn-default btn-flat btn-lg"><i class="fa fa-times"></i>
-                    Cancelar
-                </a>
-                <button type="submit" class="btn btn-flat btn-lg btn-success">Salvar</button>
-            </div>
-        </div>
-        {!! Form::close() !!}
+        {{--<div class="row" style="margin-top: 15px">--}}
+            {{--<div class="col-md-12 text-right">--}}
+                {{--<a type="button" href="#"--}}
+                   {{--class="btn btn-default btn-flat btn-lg"><i class="fa fa-times"></i>--}}
+                    {{--Cancelar--}}
+                {{--</a>--}}
+                {{--<button type="submit" class="btn btn-flat btn-lg btn-success">Salvar</button>--}}
+            {{--</div>--}}
+        {{--</div>--}}
+        {{--{!! Form::close() !!}--}}
     </div>
 @endsection
 @section('scripts')

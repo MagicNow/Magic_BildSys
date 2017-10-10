@@ -53,6 +53,9 @@ class MascaraPadraoRelacionarInsumoDataTable extends DataTable
                 'id NOT IN
                     (SELECT insumo_id
                         FROM mascara_padrao_insumos
+                        JOIN mascara_padrao_estruturas ON mascara_padrao_estruturas.id = mascara_padrao_insumos.mascara_padrao_estrutura_id
+                        JOIN mascara_padrao ON mascara_padrao.id = mascara_padrao_estruturas.mascara_padrao_id
+                        WHERE mascara_padrao.id = '.$this->request()->segments()[4].'
                     )
             ')
             ->where('active', 1)
@@ -77,7 +80,7 @@ class MascaraPadraoRelacionarInsumoDataTable extends DataTable
                     carregaMoney();
                     max = this.api().columns().count();
                     this.api().columns().every(function (col) {
-                        if((col+3)<max){
+                        if((col+4)<max){
                             var column = this;
                             var input = document.createElement("input");
                             $(input).attr(\'placeholder\',\'Filtrar...\');
