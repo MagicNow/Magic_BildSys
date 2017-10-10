@@ -64,6 +64,7 @@ class MascaraPadraoRelacionarInsumoDataTable extends DataTable
             ->parameters([
                 'responsive'=> 'true',
                 'initComplete' => 'function () {
+                    carregaMoney();
                     max = this.api().columns().count();
                     this.api().columns().every(function (col) {
                         if((col+3)<max){

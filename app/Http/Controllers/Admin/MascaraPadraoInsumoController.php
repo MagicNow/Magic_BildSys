@@ -92,8 +92,8 @@ class MascaraPadraoInsumoController extends AppBaseController
                     'mascara_padrao_estrutura_id' => $request->mascara_padrao_estrutura_id,
                     'codigo_estruturado' => $estrutura->codigo . '.' . $insumo->codigo,
                     'insumo_id' => $request->id,
-                    'coeficiente' => money_to_float($request->coeficiente),
-                    'indireto' => money_to_float($request->indireto)
+                    'coeficiente' => ($request->coeficiente) ? money_to_float($request->coeficiente) : null,
+                    'indireto' => ($request->indireto) ? money_to_float($request->indireto) : null
                 ]
             );
             return response()->json(['success'=>true]);

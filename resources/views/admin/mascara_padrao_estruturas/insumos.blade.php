@@ -47,6 +47,14 @@
 @section('scripts')
     @parent
     <script type="text/javascript">
+        function carregaMoney() {
+            $('.money').maskMoney({
+                allowNegative: true,
+                thousands: '.',
+                decimal: ','
+            })
+        }
+
         function adicionarInsumo(id){
             if(!$('#mascara_padrao_estrutura_id').val()) {
                 swal('Ops!','Escolha uma estrutura de máscara padrão.', 'info');

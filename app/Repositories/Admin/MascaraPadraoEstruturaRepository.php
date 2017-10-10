@@ -36,7 +36,7 @@ class MascaraPadraoEstruturaRepository extends BaseRepository
 
     public function create(array $attributes)
     {
-//        dd($attributes);
+        dd($attributes);
         $estrutura['grupos'] = [];
         foreach ($attributes['estrutura'] as $item){
             $grupo = $item['id'];
