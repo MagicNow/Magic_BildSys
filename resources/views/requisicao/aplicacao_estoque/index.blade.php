@@ -99,7 +99,15 @@
                         dados: dados
                     }
                 }).done(function (retorno) {
+                    swal({
+                        title: 'QR Code lido com sucesso',
+                        text: "",
+                        type: "success",
+                        confirmButtonColor: "#DD6B55",
+                        closeOnConfirm: false
+                    }, function () {
                         window.location = '/requisicao/aplicacao-estoque/insumo/'+retorno.local_aplicacao;
+                    });
                 }).fail(function () {
                     swal({
                         title: 'QR Code Inválido',
