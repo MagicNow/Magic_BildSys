@@ -112,7 +112,7 @@ class MascaraPadraoEstruturaController extends AppBaseController
         Flash::success('Máscara Padrão Estrutura '.trans('common.saved').' '.trans('common.successfully').'.');
 
         if ($request->get('save') != 'save-continue') {
-            return redirect(route('admin.mascaraPadraoEstruturas.index'));
+            return redirect(route('admin.mascara_padrao.index'));
         } else {
             # $request->btn_insumo click é do botão adicionar insumos
             if(!$request->btn_insumo) {
