@@ -10,6 +10,7 @@ use App\Models\AplicacaoEstoqueInsumo;
 use App\Models\AplicacaoEstoqueLocal;
 use App\Models\Requisicao;
 use App\Models\RequisicaoItem;
+use App\Models\RequisicaoStatus;
 use App\Repositories\RequisicaoItemRepository;
 use App\Models\RequisicaoSaidaLeitura;
 use App\Repositories\RequisicaoRepository;
@@ -562,7 +563,7 @@ class RequisicaoController extends AppBaseController
     
     public function finalizarSaida(Requisicao $requisicao)
     {
-        $requisicao->status = 'Em trânsito';
+        $requisicao->status_id = RequisicaoStatus::EM_TRANSITO;
         $requisicao->save();
 
         return redirect(route('requisicao.index'));
