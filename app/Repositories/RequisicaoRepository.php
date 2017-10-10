@@ -6,6 +6,7 @@ use App\Models\Requisicao;
 use App\Models\RequisicaoItem;
 use App\Models\RequisicaoItemLog;
 use App\Models\RequisicaoLog;
+use App\Models\RequisicaoStatus;
 use Illuminate\Support\Facades\DB;
 use InfyOm\Generator\Common\BaseRepository;
 
@@ -149,5 +150,44 @@ class RequisicaoRepository extends BaseRepository
             }
         }
 
+    }
+    
+    public static function verificaAplicacao($requisicao, $insumo_id, $qtd)
+    {
+        $array_status = [];
+        $requisicao_status = RequisicaoStatus::NOVA;
+
+        if(count($requisicao->requisicaoItens)) {
+            foreach($requisicao->requisicaoItens as $item) {
+                if($item->estoque->insumo_id == $insumo_id) {
+                    if($item->qtde == $qtd) {
+                        $item->status_id = RequisicaoStatus::APLICADO_TOTAL;
+                    } else {
+                        $item->status_id = RequisicaoStatus::APLICADO_PARCIAL;
+                    }
+                    $item->save();
+
+                    array_push($array_status, $item->status_id);
+                }
+            }
+        }
+
+        if(count($array_status)) {
+            foreach ($array_status as $status) {
+                if($status == RequisicaoStatus::APLICADO_TOTAL) {
+                    $requisicao_status = RequisicaoStatus::APLICADO_TOTAL;
+                }
+
+                if($status == RequisicaoStatus::APLICADO_PARCIAL) {
+                    $requisicao_status = RequisicaoStatus::APLICADO_PARCIAL;
+                    break;
+                }
+            }
+        }
+
+        if($requisicao_status) {
+            $requisicao->status_id = $requisicao_status;
+            $requisicao->save();
+        }
     }
 }
