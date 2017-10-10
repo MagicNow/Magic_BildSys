@@ -1,0 +1,1 @@
+{!! Form::select('tipo_levantamento_'.$id,[''=>'Escolha...'], null, ['id'=>'tipo_levantamento_id','class' => 'form-control']) !!}

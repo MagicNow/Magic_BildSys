@@ -17,6 +17,7 @@ class MascaraPadraoRelacionarInsumoDataTable extends DataTable
         return $this->datatables
             ->eloquent($this->query())
             ->addColumn('action', 'admin.mascara_padrao_estruturas.relacionar_insumos_datatables_actions')
+            ->addColumn('levantamento', 'admin.mascara_padrao_estruturas.select_tipo_levantamento_datatables_actions')
             ->editColumn('coeficiente', function($obj){
                 return "<input  type='text' class='form-control money' name='coeficiente_$obj->id'>";
             })
@@ -107,7 +108,8 @@ class MascaraPadraoRelacionarInsumoDataTable extends DataTable
             'nome' => ['name' => 'nome', 'data' => 'nome'],
             'Coeficiente' => ['name' => 'coeficiente', 'data' => 'coeficiente', 'searchable' => false],
             'Indireto' => ['name' => 'indireto', 'data' => 'indireto', 'searchable' => false],
-            'action' => ['name' => 'Ações', 'title' => 'Salvar', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10px', 'class' => 'all'],
+            'levantamento' => ['name' => 'levantamento', 'title' => 'levantamento', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false],
+            'action' => ['name' => 'Ações', 'title' => 'Salvar', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false],
         ];
     }
 
