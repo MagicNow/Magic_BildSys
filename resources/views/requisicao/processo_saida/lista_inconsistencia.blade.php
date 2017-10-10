@@ -45,8 +45,8 @@
                     </thead>
 
                     <tbody id="body-insumos-table">
-                        <tr align="left">
-                            @foreach($requisicao_itens as $item)
+                        @foreach($requisicao_itens as $item)
+                            <tr align="left">
                                 <td>{{$item->agrupamento}}</td>
                                 <td>{{$item->insumo}}</td>
                                 <td>{{$item->unidade_medida}}</td>
@@ -63,8 +63,8 @@
                                     </a>
                                 @endif
                                 </td>
-                            @endforeach
-                        </tr>
+                            </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>

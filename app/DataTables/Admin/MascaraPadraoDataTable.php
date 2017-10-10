@@ -70,7 +70,7 @@ class MascaraPadraoDataTable extends DataTable
                 'dom' => 'Bfrltip',
                 'scrollX' => false,
                 'language'=> [
-                    "url"=> "/vendor/datatables/Portuguese-Brasil.json"
+                    "url"=> asset("vendor/datatables/Portuguese-Brasil.json")
                 ],
                 'buttons' => [
                     'print',
@@ -99,6 +99,7 @@ class MascaraPadraoDataTable extends DataTable
     {
         return [
             'nome' => ['name' => 'nome', 'data' => 'nome'],
+            'descrição' => ['name' => 'descricao', 'data' => 'descricao'],
             'cadastradaEm' => ['name' => 'created_at', 'data' => 'created_at'],
             'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];

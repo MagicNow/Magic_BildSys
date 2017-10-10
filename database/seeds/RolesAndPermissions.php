@@ -223,6 +223,12 @@ class RolesAndPermissions extends Seeder
             'tarefa_padrao.edit'   => 'Edição de Mascara Padrão',
 			'tarefa_padrao.delete'   => 'Remoção de Mascara Padrão',
 
+            'requisicao.list'   => 'Listagem de requisição',
+            'requisicao.create'   => 'Criação de requisição',
+            'requisicao.edit'   => 'Edição de requisição',
+            'requisicao.delete'   => 'Remoção de requisição',
+            'requisicao.processo_saida'   => 'Processo de saída',
+
             ################# SITE ###################
 
             'compras_lembretes.list' => 'Listagem de compras e lembretes',
@@ -297,10 +303,10 @@ class RolesAndPermissions extends Seeder
 
             'qc-aprovar.show' => 'Visualização formulário de aprovação / reprovação QC',
 
-            'topologia.list' => 'Listagem de topologias',
-            'topologia.create' => 'Criação de topologia',
-            'topologia.edit'   => 'Edição de topologia',
-            'topologia.delete'   => 'Remoção de topologia',
+            'tipologia.list' => 'Listagem de tipologias',
+            'tipologia.create' => 'Criação de tipologia',
+            'tipologia.edit'   => 'Edição de tipologia',
+            'tipologia.delete'   => 'Remoção de tipologia',
 
             'lista_qc.list' => 'Lista de QC Suprimentos',
             'lista_qc.edit' => 'Edição de Lista de QC Suprimentos',

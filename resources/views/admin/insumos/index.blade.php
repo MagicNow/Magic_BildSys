@@ -21,7 +21,7 @@
 @endsection
 
 @section('scripts')
-    <script src="/vendor/datatables/buttons.server-side.js"></script>
+    <script src="{{ asset('vendor/datatables/buttons.server-side.js') }}"></script>
     {!! $dataTable->scripts() !!}
     <script src="{{ asset('js/insumo-activation.js') }}"></script>
 @endsection

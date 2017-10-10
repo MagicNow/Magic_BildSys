@@ -21,8 +21,8 @@
     <link rel="manifest" href="/qrcode/qrcodereader//manifest.json">
     <link href="/qrcode/qrcodereader/bundle.css" rel="stylesheet">
 
-    <link rel="stylesheet" href="/css/admin.css">
-    <script type="text/javascript" src="/js/admin.js"></script>
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+    <script type="text/javascript" src="{{ asset('js/admin.js') }}"></script>
 </head>
 <body>
 <div class="app__layout"><!-- Header -->

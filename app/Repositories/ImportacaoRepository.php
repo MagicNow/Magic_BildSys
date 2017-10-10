@@ -204,7 +204,7 @@ class ImportacaoRepository
                 return $fornecedor;
             }
         } catch (\Exception $e) {
-            Log::error('Erro ao importar insumo '. $fornecedores_mega->agn_in_codigo. ': '.$e->getMessage());
+            Log::error('Erro ao importar Fornecedor '. $fornecedores_mega->agn_in_codigo. ': '.$e->getMessage());
             return false;
         }
     }
@@ -242,6 +242,83 @@ class ImportacaoRepository
         }
 
         return ['success' => true, 'total-sys' => count($fornecedorServicos) ];
+    }
+
+    public static function fornecedoresAtualiza()
+    {
+        $fornecedoresExistentes = Fornecedor::whereNotNull('codigo_mega')->pluck('codigo_mega','codigo_mega')->toArray();
+        # Importação de Fornecedores do BANCO DE DADOS BILD-SYS - MEGA
+        $fornecedores_mega = MegaFornecedor::select([
+            'AGN_IN_CODIGO',
+            'AGN_ST_FANTASIA',
+            'AGN_ST_NOME',
+            'UF_ST_SIGLA',
+            'AGN_ST_MUNICIPIO',
+            'TPL_ST_SIGLA',
+            'AGN_ST_LOGRADOURO',
+            'AGN_ST_NUMERO',
+            'AGN_ST_BAIRRO',
+            'AGN_ST_CEP',
+            'AGN_ST_COMPLEMENTO',
+            'AGN_ST_CGC',
+            'AGN_CH_STATUSCGC',
+            'AGN_ST_INSCRESTADUAL',
+            'AGN_ST_EMAIL',
+            'AGN_BO_SIMPLES',
+            'AGN_ST_URL'])
+            ->whereIn('AGN_IN_CODIGO',$fornecedoresExistentes)
+            ->get();
+        try {
+            $atualizados = 0;
+            if ($fornecedores_mega->count()) {
+                foreach ($fornecedores_mega as $fornecedor_mega){
+                    // Ajuste para pegar apenas a primeira ocorrência do e-mail, pois existem casos que o fornecedor tem mais de um e-mail no mesmo campo
+                    $email = trim(utf8_encode($fornecedor_mega->agn_st_email));
+                    if(strpos($email,',') !== FALSE){
+                        $arrayEmail = explode(',', $email);
+                        $email = trim($arrayEmail[0]);
+                        if(strpos($email,'@') === FALSE){
+                            if(isset($arrayEmail[1])){
+                                $email = trim($arrayEmail[1]);
+                            }
+                        }
+                    }
+                    if(strpos($email,'@') === FALSE){
+                        $email = null;
+                    }
+                    $cidade = Cidade::where('nome', 'LIKE', '%' . $fornecedor_mega->agn_st_municipio . '%')
+                        ->first();
+
+                    $fornecedor = Fornecedor::firstOrCreate([
+                        'codigo_mega' => trim($fornecedor_mega->agn_in_codigo),
+                    ]);
+                    $fornecedor->update([
+                        'cnpj' => trim($fornecedor_mega->agn_st_cgc),
+                        'nome' => trim(utf8_encode($fornecedor_mega->agn_st_nome)),
+                        'tipo_logradouro' => trim($fornecedor_mega->tpl_st_sigla),
+                        'logradouro' => trim(utf8_encode($fornecedor_mega->agn_st_logradouro)),
+                        'numero' => trim($fornecedor_mega->agn_st_numero),
+                        'complemento' => trim(utf8_encode($fornecedor_mega->agn_st_complemento)),
+                        'municipio' => trim(utf8_encode($fornecedor_mega->agn_st_municipio)),
+                        'estado' => trim(utf8_encode($fornecedor_mega->uf_st_sigla)),
+                        'situacao_cnpj' => trim(utf8_encode($fornecedor_mega->agn_ch_statuscgc)),
+                        'inscricao_estadual' => trim($fornecedor_mega->agn_st_inscrestadual),
+                        'email' => $email,
+                        'site' => trim(utf8_encode($fornecedor_mega->agn_st_url)),
+                        // 'telefone' => null, // @TODO bucar de onde encontra o telefone e colocar na importação
+                        'cep' => trim(str_replace('.','',$fornecedor_mega->agn_st_cep)),
+                        'cidade_id' => isset($cidade) ? $cidade->id : null,
+                        'imposto_simples' => trim(utf8_encode($fornecedor_mega->agn_bo_simples)) === 'S',
+                    ]);
+                    ImportacaoRepository::fornecedor_servicos(trim($fornecedor_mega->agn_in_codigo));
+                    $atualizados ++;
+                }
+            }
+            return ['Fornecedores Mega'=>$fornecedores_mega->count(), 'Atualizados'=>$atualizados];
+        } catch (\Exception $e) {
+            Log::error('Erro ao importar Fornecedor: '.$e->getMessage());
+            return false;
+        }
     }
 
     # Importação de CNAE do BANCO DE DADOS BILD-SYS - MEGA

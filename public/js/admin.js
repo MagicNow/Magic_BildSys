@@ -65213,6 +65213,8 @@ $(function() {
     });
   });
 
+  window.scrollTo(0,0);
+
 });
 
 /**
@@ -66582,6 +66584,7 @@ $(function() {
   NotificationSystem.init();
 });
 
+var BaseUrl = $('body').attr('baseurl');
 var NotificationSystem = {
   init: function() {
     var self = this;
@@ -66629,11 +66632,11 @@ var NotificationSystem = {
     this.$container.html('');
   },
   verifyNotifications: function() {
-    var ajax = $.get('/notifications');
+    var ajax = $.get(BaseUrl + '/notifications');
     ajax.done(this.successCallback.bind(this));
   },
   markAsRead: function(id) {
-    return $.post('/notifications/' + id + '/mark-as-read');
+    return $.post(BaseUrl + '/notifications/' + id + '/mark-as-read');
   },
   successCallback: function(notifications) {
     var self = this;

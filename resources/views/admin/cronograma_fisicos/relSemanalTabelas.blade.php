@@ -1,6 +1,5 @@
 <div class="row">	
 	<div class="col-xs-12">               			
-		
 		<div class="row">
 			<div class="col-md-12 margem-topo"><tile title-color="head-grey" title="Percentual Previsto x Percentual Realizado" type="created"></tile></div>
 		</div>
@@ -126,13 +125,13 @@
 				<div class="element-grafico">
 					<div class="element-head">DESVIO PDP</div>
 					<div class="element-desvio-pdp">                                   
-						<chartjs-pie 
+						<chartjs-bar 
 							:labels="labelsDesvioPDP" 
 							:datasets="datasetsDesvioPDP" 
 							:scalesdisplay="false" 
 							:option="myoptionDesvioPDP" 
 							:height="220">
-						</chartjs-pie>
+						</chartjs-bar>
 					</div>
 				</div>
 			</div>
@@ -141,13 +140,13 @@
 				<div class="element-grafico">
 					<div class="element-head">DESVIO P. TRABALHO</div>
 					<div class="element-desvio-ptrab">                                    
-						<chartjs-pie 
+						<chartjs-bar 
 							:labels="labelsDesvioPTrabalho" 
 							:datasets="datasetsDesvioPTrabalho" 
 							:scalesdisplay="false" 
 							:option="myoptionDesvioPTrabalho" 
 							:height="220">
-						</chartjs-pie>
+						</chartjs-bar>
 					</div>
 				</div>
 			</div>				
@@ -253,12 +252,9 @@
 							<td class="text-center">{{ $tabColetaData['concluida'].'%'}}</td>
 							
 							<?php foreach ($tabColetaSemanal['labels1'] as $coletaSemana) {	?>
-									<td class="text-center"><?php echo $tabColetaData['percentual-'.$coletaSemana]."%"; ?></td>
-									<td class="text-center"><?php echo $tabColetaData['realizado-'.$coletaSemana]."%"; ?></td>
-							<?php } ?>
-							<td class="text-center"></td>
-							<td class="text-center"></td>
-							<td class="text-center"></td>
+									<td class="text-center blue"><?php echo $tabColetaData['percentual-'.$coletaSemana]."%"; ?></td>
+									<td class="text-center blue"><?php echo $tabColetaData['realizado-'.$coletaSemana]."%"; ?></td>
+							<?php } ?>							
 						</tr>
 						@endforeach
 					</tbody>

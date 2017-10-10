@@ -14,7 +14,7 @@ use App\Http\Requests\CreateQcRequest;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Obra;
 use App\Models\Carteira;
-use App\Models\Topologia;
+use App\Models\Tipologia;
 use App\Models\User;
 
 class QcController extends AppBaseController
@@ -49,9 +49,9 @@ class QcController extends AppBaseController
 	{
 		$obras = Obra::pluck('nome','id')->toArray();
 		$carteiras = Carteira::pluck('nome','id')->toArray();
-		$topologias = Topologia::pluck('nome','id')->toArray();
+		$tipologias = Tipologia::pluck('nome','id')->toArray();
 
-		return view('qc.create', compact('obras', 'carteiras', 'topologias'));
+		return view('qc.create', compact('obras', 'carteiras', 'tipologias'));
 	}
 
 	/**
@@ -64,17 +64,18 @@ class QcController extends AppBaseController
 	public function store(CreateQcRequest $request)
 	{
 		$input = $request->except('file');
-		$qc = $this->qcRepository->create($input);
 
         $input['valor_pre_orcamento'] = $request->valor_pre_orcamento ? money_to_float($request->valor_pre_orcamento) : NULL;
         $input['valor_orcamento_inicial'] = $request->valor_orcamento_inicial ? money_to_float($request->valor_orcamento_inicial) : NULL;
         $input['valor_gerencial'] = $request->valor_gerencial ? money_to_float($request->valor_gerencial) : NULL;
+		$qc = $this->qcRepository->create($input);
 
 		if($request->anexo_arquivo){
 			foreach($request->anexo_arquivo as $key => $file) {
 				$destinationPath = CodeRepository::saveFile($file, 'qc/' . $qc->id);
 
 				$attach = $this->qcAnexoRepository->create([
+					'qc_id' => $qc->id,
 					'arquivo' => $destinationPath,
 					'tipo' => $request->anexo_tipo[$key],
 					'descricao' => $request->anexo_descricao[$key],
@@ -99,7 +100,7 @@ class QcController extends AppBaseController
 	public function show($id)
 	{
 		$qc = $this->qcRepository->findWithoutFail($id);
-		isset($qc) ? $qc->topologia = $qc->topologia()->first() : NULL;
+		isset($qc) ? $qc->tipologia = $qc->tipologia()->first() : NULL;
 		$attachments = [];
 
 		if (isset($qc->anexos) && !empty($qc->anexos)) {
@@ -133,7 +134,7 @@ class QcController extends AppBaseController
 		$qc = $this->qcRepository->findWithoutFail($id);
 		$obras = Obra::pluck('nome','id')->toArray();
 		$carteiras = Carteira::pluck('nome','id')->toArray();
-		$topologias = Topologia::pluck('nome','id')->toArray();
+		$tipologias = Tipologia::pluck('nome','id')->toArray();
 
 		if (empty($qc)) {
 			Flash::error('Qc '.trans('common.not-found'));
@@ -141,7 +142,7 @@ class QcController extends AppBaseController
 			return redirect(route('qc.index'));
 		}
 
-		return view('qc.edit', compact('qc', 'obras', 'carteiras', 'topologias'));
+		return view('qc.edit', compact('qc', 'obras', 'carteiras', 'tipologias'));
 	}
 
 	/**
@@ -217,7 +218,9 @@ class QcController extends AppBaseController
 	 */
 	public function aprovar ($id) {
 		$qc = $this->qcRepository->findWithoutFail($id);
+		isset($qc) ? $qc->tipologia = $qc->tipologia()->first() : NULL;
 		$compradores = User::pluck('name','id')->toArray();
+		$screen = 'approve';
 
 		if (empty($qc)) {
 			Flash::error('Qc '.trans('common.not-found'));
@@ -225,7 +228,7 @@ class QcController extends AppBaseController
 			return redirect(route('qc.index'));
 		}
 
-		return view('qc_aprovar.edit', compact('qc', 'compradores'));
+		return view('qc_aprovar.edit', compact('qc', 'compradores', 'screen'));
 	}
 
 	public function aprovarUpdate (Request $request, $id) {
@@ -237,7 +240,7 @@ class QcController extends AppBaseController
 
 			return redirect(route('qc.index'));
 		}
-
+		$input['user_id'] = empty($input['user_id']) ? NULL : $input['user_id'];
 		$qc = $this->qcRepository->update($input, $id);
 
 		Flash::success('Q.C. '.trans('common.updated').' '.trans('common.successfully').'.');

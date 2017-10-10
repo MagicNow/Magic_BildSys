@@ -2,11 +2,11 @@
 
 namespace App\DataTables\Admin;
 
-use App\Models\Topologia;
+use App\Models\MascaraPadraoEstrutura;
 use Form;
 use Yajra\Datatables\Services\DataTable;
 
-class TopologiaDataTable extends DataTable
+class MascaraPadraoEstruturaDataTable extends DataTable
 {
 
     /**
@@ -16,13 +16,7 @@ class TopologiaDataTable extends DataTable
     {
         return $this->datatables
             ->eloquent($this->query())
-            ->editColumn('action', 'admin.topologia.datatables_actions')
-            ->editColumn('created_at', function($obj){
-                return $obj->created_at ? with(new\Carbon\Carbon($obj->created_at))->format('d/m/Y H:i') : '';
-            })
-            ->filterColumn('created_at', function ($query, $keyword) {
-                $query->whereRaw("DATE_FORMAT(topologias.created_at,'%d/%m/%Y') like ?", ["%$keyword%"]);
-            })
+            ->addColumn('action', 'admin.mascara_padrao_estruturas.datatables_actions')
             ->make(true);
     }
 
@@ -33,9 +27,26 @@ class TopologiaDataTable extends DataTable
      */
     public function query()
     {
-        $topologia = Topologia::query();
+        $mascaraPadraoEstruturas = MascaraPadraoEstrutura::query()
+            ->select([
+                'mascara_padrao_estruturas.id',
+                'mascara_padrao.nome as nm_mascara_padrao',
+                'mascara_padrao_estruturas.codigo',
+                'grupos.nome as grupo',
+                'subgrupo1.nome as subgrupo1',
+                'subgrupo2.nome as subgrupo2',
+                'subgrupo3.nome as subgrupo3',
+                'servicos.nome as servico'
 
-        return $this->applyScopes($topologia);
+            ])
+            ->join('mascara_padrao', 'mascara_padrao.id', 'mascara_padrao_estruturas.mascara_padrao_id')
+            ->join('grupos', 'grupos.id', 'mascara_padrao_estruturas.grupo_id')
+            ->join('grupos as subgrupo1', 'subgrupo1.id', 'mascara_padrao_estruturas.subgrupo1_id')
+            ->join('grupos as subgrupo2', 'subgrupo2.id', 'mascara_padrao_estruturas.subgrupo2_id')
+            ->join('grupos as subgrupo3', 'subgrupo3.id', 'mascara_padrao_estruturas.subgrupo3_id')
+            ->join('servicos', 'servicos.id', 'mascara_padrao_estruturas.servico_id');
+
+        return $this->applyScopes($mascaraPadraoEstruturas);
     }
 
     /**
@@ -47,10 +58,10 @@ class TopologiaDataTable extends DataTable
     {
         return $this->builder()
             ->columns($this->getColumns())
+            ->addAction(['width' => '10%'])
             ->ajax('')
             ->parameters([
-                'responsive' => 'true',
-                 'initComplete' => 'function () {
+                'initComplete' => 'function () {
                     max = this.api().columns().count();
                     this.api().columns().every(function (col) {
                         if((col+1)<max){
@@ -66,7 +77,7 @@ class TopologiaDataTable extends DataTable
                         }
                     });
                 }' ,
-                'dom' => 'Bfrltip',
+                'dom' => 'Bfrtip',
                 'scrollX' => false,
                 'language'=> [
                     "url"=> "/vendor/datatables/Portuguese-Brasil.json"
@@ -97,9 +108,13 @@ class TopologiaDataTable extends DataTable
     private function getColumns()
     {
         return [
-            'nome' => ['name' => 'nome', 'data' => 'nome'],
-            'cadastradaEm' => ['name' => 'created_at', 'data' => 'created_at'],
-            'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
+            'máscaraPadrão' => ['name' => 'mascara_padrao.nome', 'data' => 'nm_mascara_padrao'],
+            'códigoEstruturado' => ['name' => 'codigo', 'data' => 'codigo'],
+            'grupo' => ['name' => 'grupos.nome', 'data' => 'grupo'],
+            'subgrupo1' => ['name' => 'subgrupo1.nome', 'data' => 'subgrupo1'],
+            'subgrupo2' => ['name' => 'subgrupo2.nome', 'data' => 'subgrupo2'],
+            'subgrupo3' => ['name' => 'subgrupo3.nome', 'data' => 'subgrupo3'],
+            'serviço' => ['name' => 'servicos.nome', 'data' => 'servico']
         ];
     }
 
@@ -110,6 +125,6 @@ class TopologiaDataTable extends DataTable
      */
     protected function filename()
     {
-        return 'topologias';
+        return 'mascaraPadraoEstruturas';
     }
 }

@@ -130,7 +130,11 @@ class RequisicaoItemRepository extends BaseRepository
 
             $levantamento_id = $this->getInsumoIdByLevantamento($insumo);
 
-            $html .= '<input type="hidden" name="hidden['.$insumo->insumo_id.'][]" value="' . $insumo->qtde . '" data-apartamento="' . $insumo->apartamento . '" data-comodo="' . $insumo->comodo . '" id="' . $insumo->id . '" data-levantamento="' . $levantamento_id->levantamento_id . '">';
+            if($levantamento_id) {
+                $levantamento_id = $levantamento_id->levantamento_id;
+            }
+
+            $html .= '<input type="hidden" name="hidden['.$insumo->insumo_id.'][]" value="' . $insumo->qtde . '" data-apartamento="' . $insumo->apartamento . '" data-comodo="' . $insumo->comodo . '" id="' . $insumo->id . '" data-levantamento="' . $levantamento_id . '">';
         }
 
         return $html;
@@ -215,7 +219,6 @@ class RequisicaoItemRepository extends BaseRepository
 
     private function getTotalPrevistoByInsummo($requisicao,$insumo) {
 
-
         $r = DB::table('levantamentos as l');
 
         $r->select(DB::raw('sum(l.quantidade) previsto'));
@@ -239,7 +242,7 @@ class RequisicaoItemRepository extends BaseRepository
 
         $insumos = $r->first();
 
-        return $insumos->previsto;
+        return $insumos ? $insumos->previsto : null;
     }
 
 
