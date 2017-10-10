@@ -53,6 +53,10 @@
 		font-size:12px;
 	}
 	
+	#coleta-semanal{
+		font-size:12px;
+	}
+	
 	#coleta-semanal .fundo-branco{
 		background-color:white;
 		border:none;
@@ -339,7 +343,11 @@
 						
 						//Grafico PIE - DESVIO PDP
 						labelsDesvioPDP: ["DESVIO PDP"],
-						myoptionDesvioPDP: {},
+						myoptionDesvioPDP: {
+							legend: {
+								display: false
+							}
+						},
 						datasetsDesvioPDP:[{
 							data: GraficoDesvioPDP,
 							backgroundColor: 'DarkOrange',
@@ -348,7 +356,11 @@
 						
 						//Grafico PIE - DESVIO P. TRABALHO
 						labelsDesvioPTrabalho: ["DESVIO P. TRABALHO"],
-						myoptionDesvioPTrabalho: {},
+						myoptionDesvioPTrabalho: {
+							legend: {
+								display: false
+							}
+						},
 						datasetsDesvioPTrabalho:[{
 							data: GraficoDesvioPTrab,
 							backgroundColor: 'blue',

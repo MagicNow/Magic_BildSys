@@ -386,7 +386,7 @@ class CronogramaFisicoController extends AppBaseController
 			/***** Tabela Coleta Semanal - Dados, pega da Tendencia Real ****/
 			$tabColetaSemanal['data'] = $this->tabColetaSemanal($obraId, $inicioMes, $fimMes, "Tendência Real");		
 			$tabColetaSemanal['labels1'] = $sextasArray;	; //Label Horizontal
-			$tabColetaSemanal['labels2'] = ["Local", "Pavimento", "Tarefas", "Início Real" , "Término Real" , "Crítica" , "Peso Total" , "Real Acum. Mês Anterior" , "Previsto" , "Realizado" , "Previsto" , "Realizado" , "Previsto" , "Realizado" , "Previsto" , "Realizado" , "Previsto" , "Realizado" , "Farol"];			
+			$tabColetaSemanal['labels2'] = ["Local", "Pavimento", "Tarefas", "Início Real" , "Término Real" , "Crítica" , "Peso Total" , "Real Acum. Mês Anterior" , "Previsto" , "Realizado" , "Previsto" , "Realizado" , "Previsto" , "Realizado" , "Previsto" , "Realizado" , "Previsto" , "Realizado"];			
 						
 			/***** Tabela Percentual Previsto e Acumulado ****/	
 			$tabPercentualPrevReal['labels'] = CronogramaFisicoRepository::getFridaysByDate($inicioMes);	; //Label Horizontal				
