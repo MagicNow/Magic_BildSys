@@ -99,73 +99,9 @@ class RequisicaoRepository extends BaseRepository
 
         DB::commit();
 
-        $this->updateRequisicaoItem($request);
-
         return $requisicao;
     }
 
-
-    public function updateRequisicaoItem(array $input) {
-
-        DB::beginTransaction();
-
-        try {
-
-            $insumos = json_decode($input['insumos']);
-
-            foreach ($insumos as $insumo) {
-
-                if ($insumo->qtde > 0) {
-
-                    $item = RequisicaoItem::find($insumo->id);
-
-                    RequisicaoItemLog::create([
-                        'requisicao_itens_id' => $item->id,
-                        'qtde_anterior' => $item->qtde,
-                        'qtde_nova' => $insumo->qtde,
-                        'status_id_anterior' => '',
-                        'status_id_novo' => '',
-                        'user_id' => auth()->id(),
-                    ]);
-
-                    $item->save([
-                        'qtde' => $insumo->qtde,
-                    ]);
-                }
-            }
-
-            $comodos = json_decode($input['comodos']);
-
-            foreach ($comodos as $comodo) {
-
-                if ($comodo->qtde > 0) {
-
-                    $item = RequisicaoItem::find($comodo->id);
-
-                    RequisicaoItemLog::create([
-                        'requisicao_itens_id' => $item->id,
-                        'qtde_anterior' => $item->qtde,
-                        'qtde_nova' => $comodo->qtde,
-                        'status_id_anterior' => '',
-                        'status_id_novo' => '',
-                        'user_id' => auth()->id(),
-                    ]);
-
-                    $item->save([
-                        'qtde' => $comodo->qtde,
-                    ]);
-                }
-            }
-
-        } catch (Exception $e) {
-
-            DB::rollback();
-            throw $e;
-        }
-
-        DB::commit();
-
-    }
 
     public function requisicaoItem(array $input, $requisicao_id) {
 

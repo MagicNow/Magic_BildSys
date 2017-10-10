@@ -365,7 +365,8 @@ $(function () {
 
             } else {
 
-                $('input[type=hidden][data-levantamento="'+insumo.data('levantamento')+'"]').remove();
+                $('input[type=hidden][data-levantamento="'+insumo.data('levantamento')+'"]').val(0);
+
             }
         }
     }
@@ -522,7 +523,35 @@ $(function () {
 
 
 
+    $(document).on('click', '.js-btn-impressao-modal', function(e) {
 
+        e.preventDefault();
+
+        $.ajax({
+
+            url: '/requisicao/modal-impressao-qrcode',
+            dataType: 'text',
+            cache: false,
+            type: 'GET',
+            data: 'requisicao_id='+$(this).data('requisicao')+'&estoque_id='+$(this).data('estoque')+'&tem_comodo='+$(this).data('comodo'),
+
+            beforeSend: function() {
+                startLoading();
+            }
+
+        }).done(function (response) {
+
+            stopLoading();
+
+            $('#modal-impressao-qrcode-insumos .modal-body').html(response);
+
+            $('#modal-impressao-qrcode-insumos').modal();
+
+        })
+
+
+
+    })
 
 
     function addHidden(form, name, apartamento, comodo, id_levantamento, value, idItem) {

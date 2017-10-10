@@ -1550,6 +1550,8 @@ $router->get('requisicao/get-andares-obra/{obra}/torre/{torre}/pavimento/{pavime
 $router->get('requisicao/get-insumos', ['as' => 'requisicao.getInsumos', 'uses' => 'RequisicaoController@getInsumos']);
 $router->get('requisicao/get-insumos-obra/', ['as' => 'requisicao.insumosObra', 'uses' => 'RequisicaoController@getInsumos']);
 $router->get('requisicao/get-insumos-obra-comodo/', ['as' => 'requisicao.insumosObraComodo', 'uses' => 'RequisicaoController@getInsumosByComodo']);
+$router->get('requisicao/modal-impressao-qrcode', ['as' => 'requisicao.modalQrCode', 'uses' => 'RequisicaoController@modalQrCode']);
+$router->get('requisicao/impressao-qrcode', ['as' => 'requisicao.impressaoQrCode', 'uses' => 'RequisicaoController@impressaoQrCode']);
 
 $router->get('/requisicao/ler-qr-cod', function() {
     return View('requisicao.ler_qr_code');
