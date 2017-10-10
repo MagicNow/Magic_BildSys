@@ -106,8 +106,7 @@
                             title: 'QR Code Inválido',
                             text: "Não existe este item na requisição.",
                             type: "info",
-                            confirmButtonColor: "#DD6B55",
-                            closeOnConfirm: false
+                            confirmButtonColor: "#DD6B55"
                         });
                     }
                 });
@@ -117,8 +116,7 @@
                 title: 'QR Code Inválido',
                 text: "Não existe parâmetro para leituta do QR Code.",
                 type: "info",
-                confirmButtonColor: "#DD6B55",
-                closeOnConfirm: false
+                confirmButtonColor: "#DD6B55"
             });
         }
     }

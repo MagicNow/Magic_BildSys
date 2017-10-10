@@ -1554,6 +1554,8 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
                 return View('requisicao.aplicacao_estoque.index');
             });
             $router->get('requisicao/aplicacao-estoque/local/salvar-leitura', ['as' => 'requisicao.salvarLeituraAplicacaoLocal', 'uses' => 'RequisicaoController@salvarLeituraAplicacaoLocal']);
+            $router->get('requisicao/aplicacao-estoque/insumo/{local_aplicacao}', ['as' => 'requisicao.aplicacaoEstoqueInsumo', 'uses' => 'RequisicaoController@aplicacaoEstoqueInsumo']);
+            $router->get('requisicao/aplicacao-estoque/local/salvar-insumo', ['as' => 'requisicao.salvarLeituraAplicacaoInsumo', 'uses' => 'RequisicaoController@salvarLeituraAplicacaoInsumo']);
         });
     });
 

@@ -529,13 +529,28 @@ class RequisicaoController extends AppBaseController
     {
         $dados = json_decode($request->dados);
 
-        AplicacaoEstoqueLocal::create([
+        $local_aplicacao = AplicacaoEstoqueLocal::create([
             'pavimento' => $dados->pavimento,
             'andar' => $dados->andar,
             'apartamento' => $dados->apartamento,
             'comodo' => $dados->comodo
         ]);
+        
+        return response()->json(['sucesso' => true, 'local_aplicacao' => $local_aplicacao->id]);
+    }
 
-        return response()->json(['sucesso' => true]);
+    public function aplicacaoEstoqueInsumo(AplicacaoEstoqueLocal $local_aplicacao)
+    {
+        dd();
+        return view('requisicao.aplicacao_estoque.insumos', compact('local_aplicacao'));
+    }
+
+    public function salvarLeituraAplicacaoInsumo(Request $request)
+    {
+        $dados = json_decode($request->dados);
+
+dd(json_decode($request->dados));
+
+        return response()->json(true);
     }
 }

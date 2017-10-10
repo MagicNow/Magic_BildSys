@@ -58,7 +58,7 @@
                     <p style="text-align: center;">
                         <b>
                             Leitor QRCode<br>
-                            Pavimento / Apartamento / Cômodo
+                            Aplicação de Insumos da Requisição
                         </b>
                     </p>
                 </h5>
@@ -70,8 +70,16 @@
             </div>
             <div class="modal-footer">
                 <div class="btn-group btn-group-justified">
-                    <a href="{!! route('requisicao.index') !!}" class="btn btn-danger">Cancelar</a>
-                    <a href="#" class="btn btn-success" onclick="salvarLeitura();" data-dismiss="modal">Confirmar</a>
+                    <a href="/requisicao/aplicacao-estoque/local" class="btn btn-danger">Cancelar</a>
+                    <a href="#" class="btn btn-success" onclick="salvarLeitura();">Confirmar</a>
+                </div>
+
+                <div class="btn-group btn-group-justified" style="margin-top: 10px;">
+                    <a href="#" class="btn btn-primary" onclick="salvarLeitura();" data-dismiss="modal">Confirmar e ler o próximo</a>
+                </div>
+
+                <div class="btn-group btn-group-justified" style="margin-top: 10px;">
+                    <a href="#" class="btn btn-warning" onclick="" data-dismiss="modal">Finalizar leitura da aplicação</a>
                 </div>
             </div>
         </div>
@@ -94,13 +102,11 @@
         if (existe_parametro > -1) {
             var dados = dados_qr_code.split('Dados QR Code: ')[dados_qr_code.split('Dados QR Code:').length -1];
             if(dados) {
-                $.ajax('{{ route('requisicao.salvarLeituraAplicacaoLocal') }}', {
+                $.ajax('{{ route('requisicao.salvarLeituraAplicacaoInsumo') }}', {
                     data: {
                         dados: dados
                     }
-                }).done(function (retorno) {
-                        window.location = '/requisicao/aplicacao-estoque/insumo/'+retorno.local_aplicacao;
-                }).fail(function () {
+                }).fail(function() {
                     swal({
                         title: 'QR Code Inválido',
                         text: "Este QR Code não possuí os dados necessários.",
