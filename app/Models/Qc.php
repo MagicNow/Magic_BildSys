@@ -7,11 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Qc extends Model
 {
 	public $table = 'qc';
-	
+
 	const CREATED_AT = 'created_at';
 	const UPDATED_AT = 'updated_at';
-
-	protected $dates = ['deleted_at', 'data_fechamento'];
 
 	public $fillable = [
 		'obra_id',
@@ -26,9 +24,8 @@ class Qc extends Model
 		'valor_fechamento',
 		'data_fechamento',
 		'user_id',
-		'observacao',
 		'numero_contrato',
-		'status'
+        'qc_status_id'
 	];
 
 	/**
@@ -49,7 +46,9 @@ class Qc extends Model
 		'valor_fechamento' => 'float',
 		'observacao' => 'string',
 		'numero_contrato' => 'string',
-		'status' => 'string'
+		'status' => 'string',
+        'deleted_at' => 'datetime',
+        'data_fechamento' => 'datetime',
 	];
 
 	/**
@@ -78,6 +77,11 @@ class Qc extends Model
 	public static $rulesUpdate = [
 
 	];
+
+	public function status()
+	{
+		return $this->belongsTo(\App\Models\QcStatus::class, 'qc_status_id');
+	}
 
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

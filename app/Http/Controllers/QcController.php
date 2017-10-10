@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use App\DataTables\QcDataTable;
 use App\DataTables\QcAnexosDataTable;
 use Illuminate\Http\Request;
@@ -17,241 +18,220 @@ use App\Models\Carteira;
 use App\Models\Tipologia;
 use App\Models\User;
 use App\Repositories\Admin\WorkflowReprovacaoMotivoRepository;
+use Illuminate\Support\Facades\DB;
 
 class QcController extends AppBaseController
 {
-	/** @var  QcRepository */
-	private $qcRepository;
+    /** @var  QcRepository */
+    private $qcRepository;
 
-	public function __construct(QcRepository $qcRepo, QcAnexoRepository $qcAnexoRepo)
-	{
-		$this->qcRepository = $qcRepo;
-		$this->qcAnexoRepository = $qcAnexoRepo;
-	}
+    public function __construct(QcRepository $qcRepo, QcAnexoRepository $qcAnexoRepo)
+    {
+        $this->qcRepository = $qcRepo;
+        $this->qcAnexoRepository = $qcAnexoRepo;
+    }
 
-	/**
-	 * Display a listing of the Carteiras Sla.
-	 *
-	 * @param QcDataTable $qcDataTable
-	 * @return Response
-	 */
-	public function index(QcDataTable $qcDataTable) {
-		return $qcDataTable->render(
-			'qc.index'
-		);
-	}
+    /**
+     * Display a listing of the Carteiras Sla.
+     *
+     * @param QcDataTable $qcDataTable
+     * @return Response
+     */
+    public function index(QcDataTable $qcDataTable) {
+        return $qcDataTable->render(
+            'qc.index'
+        );
+    }
 
-	/**
-	 * Show the form for creating a new Qc.
-	 *
-	 * @return Response
-	 */
-	public function create()
-	{
+    /**
+     * Show the form for creating a new Qc.
+     *
+     * @return Response
+     */
+    public function create()
+    {
         $obras = Obra::pluck('nome','id')->prepend('Escolha a obra...', '');
         $carteiras = Carteira::pluck('nome','id')
             ->prepend('Escolha a carteira...', '');
         $tipologias = Tipologia::pluck('nome','id')
             ->prepend('Escolha a tipologia...', '');
 
+        return view('qc.create', compact('obras', 'carteiras', 'tipologias'));
+    }
 
+    /**
+     * Store a newly created Qc in storage.
+     *
+     * @param CreateQcRequest $request
+     *
+     * @return Response
+     */
+    public function store(CreateQcRequest $request)
+    {
+        $qc = $this->qcRepository->create($request->all());
 
-		return view('qc.create', compact('obras', 'carteiras', 'tipologias'));
-	}
+        Flash::success('QC '.trans('common.saved').' '.trans('common.successfully').'.');
 
-	/**
-	 * Store a newly created Qc in storage.
-	 *
-	 * @param CreateQcRequest $request
-	 *
-	 * @return Response
-	 */
-	public function store(CreateQcRequest $request)
-	{
-		$input = $request->except('file');
+        return redirect(route('qc.index'));
+    }
 
-        $input['valor_pre_orcamento'] = $request->valor_pre_orcamento ? money_to_float($request->valor_pre_orcamento) : NULL;
-        $input['valor_orcamento_inicial'] = $request->valor_orcamento_inicial ? money_to_float($request->valor_orcamento_inicial) : NULL;
-        $input['valor_gerencial'] = $request->valor_gerencial ? money_to_float($request->valor_gerencial) : NULL;
-		$qc = $this->qcRepository->create($input);
-
-		if($request->anexo_arquivo){
-			foreach($request->anexo_arquivo as $key => $file) {
-				$destinationPath = CodeRepository::saveFile($file, 'qc/' . $qc->id);
-
-				$attach = $this->qcAnexoRepository->create([
-                    'qc_id' => $qc->id,
-					'arquivo' => $destinationPath,
-					'tipo' => $request->anexo_tipo[$key],
-					'descricao' => $request->anexo_descricao[$key],
-				]);
-
-				$qc->anexos()->save($attach);
-			}
-		}
-
-		Flash::success('QC '.trans('common.saved').' '.trans('common.successfully').'.');
-
-		return redirect(route('qc.index'));
-	}
-
-	/**
-	 * Display the specified Qc.
-	 *
-	 * @param  int $id
-	 *
-	 * @return Response
-	 */
+    /**
+     * Display the specified Qc.
+     *
+     * @param  int $id
+     *
+     * @return Response
+     */
     public function show(
         $id,
         WorkflowReprovacaoMotivoRepository $workflowReprovacaoMotivoRepository
     ) {
-		$qc = $this->qcRepository->findWithoutFail($id);
+        $qc = $this->qcRepository->findWithoutFail($id);
 
-		if (empty($qc)) {
-			Flash::error('Qc '.trans('common.not-found'));
+        if (empty($qc)) {
+            Flash::error('Qc '.trans('common.not-found'));
 
-			return redirect(route('qc.index'));
-		}
+            return redirect(route('qc.index'));
+        }
 
-		$attachments = [];
+        $attachments = [];
 
-		if (isset($qc->anexos) && !empty($qc->anexos)) {
-			foreach ($qc->anexos as $attachment) {
-				if (!isset($attachments[$attachment->tipo])) {
-					$attachments[$attachment->tipo] = [];
-				}
+        if (isset($qc->anexos) && !empty($qc->anexos)) {
+            foreach ($qc->anexos as $attachment) {
+                if (!isset($attachments[$attachment->tipo])) {
+                    $attachments[$attachment->tipo] = [];
+                }
 
-				$attachments[$attachment->tipo][] = $attachment;
-			}
-		}
+                $attachments[$attachment->tipo][] = $attachment;
+            }
+        }
 
-		return view('qc.show', compact('qc', 'attachments'));
-	}
+        return view('qc.show', compact('qc', 'attachments'));
+    }
 
-	/**
-	 * Show the form for editing the specified Qc.
-	 *
-	 * @param  int $id
-	 *
-	 * @return Response
-	 */
-	public function edit($id)
-	{
-		$qc = $this->qcRepository->findWithoutFail($id);
-		$obras = Obra::pluck('nome','id')->toArray();
-		$carteiras = Carteira::pluck('nome','id')->toArray();
-		$tipologias = Tipologia::pluck('nome','id')->toArray();
+    /**
+     * Show the form for editing the specified Qc.
+     *
+     * @param  int $id
+     *
+     * @return Response
+     */
+    public function edit($id)
+    {
+        $qc = $this->qcRepository->findWithoutFail($id);
+        $obras = Obra::pluck('nome','id')->toArray();
+        $carteiras = Carteira::pluck('nome','id')->toArray();
+        $tipologias = Tipologia::pluck('nome','id')->toArray();
 
-		if (empty($qc)) {
-			Flash::error('Qc '.trans('common.not-found'));
+        if (empty($qc)) {
+            Flash::error('Qc '.trans('common.not-found'));
 
-			return redirect(route('qc.index'));
-		}
+            return redirect(route('qc.index'));
+        }
 
-		return view('qc.edit', compact('qc', 'obras', 'carteiras', 'tipologias'));
-	}
+        return view('qc.edit', compact('qc', 'obras', 'carteiras', 'tipologias'));
+    }
 
-	/**
-	 * Update the specified Q.C. in storage.
-	 *
-	 * @param  int              $id
-	 * @param UpdateQcRequest $request
-	 *
-	 * @return Response
-	 */
-	public function update($id, CreateQcRequest $request)
-	{
-		$input = $request->except('file');
-		$qc = $this->qcRepository->findWithoutFail($id);
+    /**
+     * Update the specified Q.C. in storage.
+     *
+     * @param  int              $id
+     * @param UpdateQcRequest $request
+     *
+     * @return Response
+     */
+    public function update($id, CreateQcRequest $request)
+    {
+        $input = $request->except('file');
+        $qc = $this->qcRepository->findWithoutFail($id);
 
-		if (empty($qc)) {
-			Flash::error('Qc '.trans('common.not-found'));
+        if (empty($qc)) {
+            Flash::error('Qc '.trans('common.not-found'));
 
-			return redirect(route('qc.index'));
-		}
+            return redirect(route('qc.index'));
+        }
 
-		$qc = $this->qcRepository->update($input, $id);
+        $qc = $this->qcRepository->update($input, $id);
 
-		if($request->anexo_arquivo){
-			foreach($request->anexo_arquivo as $key => $file) {
-				$destinationPath = CodeRepository::saveFile($file, 'qc/' . $qc->id);
+        if($request->anexo_arquivo){
+            foreach($request->anexo_arquivo as $key => $file) {
+                $destinationPath = CodeRepository::saveFile($file, 'qc/' . $qc->id);
 
-				$attach = $this->qcAnexoRepository->create([
-					'arquivo' => $destinationPath,
-					'tipo' => $request->anexo_tipo[$key],
-					'descricao' => $request->anexo_descricao[$key],
-				]);
+                $attach = $this->qcAnexoRepository->create([
+                    'arquivo' => $destinationPath,
+                    'tipo' => $request->anexo_tipo[$key],
+                    'descricao' => $request->anexo_descricao[$key],
+                ]);
 
-				$qc->anexos()->save($attach);
-			}
-		}
+                $qc->anexos()->save($attach);
+            }
+        }
 
-		Flash::success('Q.C. '.trans('common.updated').' '.trans('common.successfully').'.');
+        Flash::success('Q.C. '.trans('common.updated').' '.trans('common.successfully').'.');
 
-		return redirect(route('qc.index'));
-	}
+        return redirect(route('qc.index'));
+    }
 
-	/**
-	 * Remove the specified Qc from storage.
-	 *
-	 * @param  int $id
-	 *
-	 * @return Response
-	 */
-	public function destroy($id)
-	{
-		$qc = $this->qcRepository->findWithoutFail($id);
+    /**
+     * Remove the specified Qc from storage.
+     *
+     * @param  int $id
+     *
+     * @return Response
+     */
+    public function destroy($id)
+    {
+        $qc = $this->qcRepository->findWithoutFail($id);
 
-		if (empty($qc)) {
-			Flash::error('Qc '.trans('common.not-found'));
+        if (empty($qc)) {
+            Flash::error('Qc '.trans('common.not-found'));
 
-			return redirect(route('qc.index'));
-		}
+            return redirect(route('qc.index'));
+        }
 
-		$this->qcRepository->delete($id);
+        $this->qcRepository->delete($id);
 
-		Flash::success('Qc '.trans('common.deleted').' '.trans('common.successfully').'.');
+        Flash::success('Qc '.trans('common.deleted').' '.trans('common.successfully').'.');
 
-		return redirect(route('qc.index'));
-	}
+        return redirect(route('qc.index'));
+    }
 
-	/**
-	 * Approve and disapprove Q.C.
-	 *
-	 * @param  int $id
-	 *
-	 * @return Response
-	 */
-	public function aprovar ($id) {
-		$qc = $this->qcRepository->findWithoutFail($id);
-		isset($qc) ? $qc->tipologia = $qc->tipologia()->first() : NULL;
-		$compradores = User::pluck('name','id')->toArray();
-		$screen = 'approve';
+    /**
+     * Approve and disapprove Q.C.
+     *
+     * @param  int $id
+     *
+     * @return Response
+     */
+    public function aprovar ($id) {
+        $qc = $this->qcRepository->findWithoutFail($id);
+        isset($qc) ? $qc->tipologia = $qc->tipologia()->first() : NULL;
+        $compradores = User::pluck('name','id')->toArray();
+        $screen = 'approve';
 
-		if (empty($qc)) {
-			Flash::error('Qc '.trans('common.not-found'));
+        if (empty($qc)) {
+            Flash::error('Qc '.trans('common.not-found'));
 
-			return redirect(route('qc.index'));
-		}
+            return redirect(route('qc.index'));
+        }
 
-		return view('qc_aprovar.edit', compact('qc', 'compradores', 'screen'));
-	}
+        return view('qc_aprovar.edit', compact('qc', 'compradores', 'screen'));
+    }
 
-	public function aprovarUpdate (Request $request, $id) {
-		$input = $request->except('file');
-		$qc = $this->qcRepository->findWithoutFail($id);
+    public function aprovarUpdate (Request $request, $id) {
+        $input = $request->except('file');
+        $qc = $this->qcRepository->findWithoutFail($id);
 
-		if (empty($qc)) {
-			Flash::error('Qc '.trans('common.not-found'));
+        if (empty($qc)) {
+            Flash::error('Qc '.trans('common.not-found'));
 
-			return redirect(route('qc.index'));
-		}
-		$input['user_id'] = empty($input['user_id']) ? NULL : $input['user_id'];
-		$qc = $this->qcRepository->update($input, $id);
+            return redirect(route('qc.index'));
+        }
+        $input['user_id'] = empty($input['user_id']) ? NULL : $input['user_id'];
+        $qc = $this->qcRepository->update($input, $id);
 
-		Flash::success('Q.C. '.trans('common.updated').' '.trans('common.successfully').'.');
+        Flash::success('Q.C. '.trans('common.updated').' '.trans('common.successfully').'.');
 
-		return redirect(route('qc.index'));
-	}
+        return redirect(route('qc.index'));
+    }
 }

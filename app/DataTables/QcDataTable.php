@@ -18,15 +18,16 @@ class QcDataTable extends DataTable
     public function ajax()
     {
         return $this->datatables
-            ->eloquent($this->query())			
-            ->editColumn('created_at', function ($qc) {
-                return $qc->created_at ? $qc->created_at->format('d/m/Y') : '';
-            })
-            ->editColumn('valor_pre_orcamento', function ($qc) {
-                return $qc->valor_pre_orcamento ? float_to_money($qc->valor_pre_orcamento) : '';
-            })
-            ->editColumn('valor_orcamento_inicial', function ($qc) {
-                return $qc->valor_orcamento_inicial ? float_to_money($qc->valor_orcamento_inicial) : '';
+            ->eloquent($this->query())
+            ->editColumn('created_at', datatables_format_date('created_at'))
+            ->editColumn('valor_pre_orcamento', datatables_float_to_money('valor_pre_orcamento'))
+            ->editColumn('valor_orcamento_inicial', datatables_float_to_money('valor_orcamento_inicial'))
+            ->editColumn('status_nome', function($qc) {
+                if(!$qc->status) {
+                    return 'Sem status';
+                }
+
+                return  '<i class="fa fa-circle" style="color:'. $qc->status->cor . '"></i> ' . $qc->status_nome;
             })
             ->editColumn('action', 'qc.datatables_actions')
 			->make(true);
@@ -40,20 +41,17 @@ class QcDataTable extends DataTable
         $query = Qc::query();
 
         $query->select([
-            'qc.id',
-            DB::raw('obras.nome AS obra_nome'),
-            DB::raw('carteiras.nome AS carteira_nome'),
-            DB::raw('tipologias.nome AS tipologia_nome'),
-            'qc.created_at',
-			'descricao',
-			'valor_pre_orcamento',
-            'valor_orcamento_inicial',
-            'status',
+            'qc.*',
+            'obras.nome as obra_nome',
+            'carteiras.nome as carteira_nome',
+            'tipologias.nome as tipologia_nome',
+            'qc_status.nome as status_nome',
+            'qc_status.cor as status_cor',
         ])
-        ->join('carteiras', 'carteiras.id', 'carteira_id')
-        ->join('obras', 'obras.id', 'obra_id')
-        ->join('tipologias', 'tipologias.id', 'tipologia_id')
-        ->where('status', 'Em aprovação')
+        ->leftJoin('carteiras', 'carteiras.id', 'carteira_id')
+        ->leftJoin('obras', 'obras.id', 'obra_id')
+        ->leftJoin('tipologias', 'tipologias.id', 'tipologia_id')
+        ->leftJoin('qc_status', 'qc_status.id', 'qc.qc_status_id')
         ->groupBy('qc.id');
 
         $request = $this->request();
@@ -82,8 +80,8 @@ class QcDataTable extends DataTable
                 '<=',
                 Carbon::createFromFormat('d/m/Y', $request->data_end)->toDateString()
             );
-        }			
-	
+        }
+
         return $this->applyScopes($query);
     }
 
@@ -151,9 +149,8 @@ class QcDataTable extends DataTable
     protected function getColumns()
     {
         return [
-            'id' => ['name' => 'id', 'data' => 'id', 'title' => 'ID'],
             'tipologia_id' => ['name' => 'tipologia_id', 'data' => 'tipologia_nome', 'title' => 'Tipologia'],
-            'status' => ['name' => 'status', 'data' => 'status', 'title' => 'Status'],
+            'status_nome' => ['name' => 'status_nome', 'data' => 'status_nome', 'title' => 'Status'],
             'carteira_id' => ['name' => 'carteira_id', 'data' => 'carteira_nome', 'title' => 'Carteira'],
             'descricao' => ['name' => 'descricao', 'data' => 'descricao', 'title' => 'Descrição do serviço'],
             'obra' => ['name' => 'obra_id', 'data' => 'obra_nome', 'title' => 'Obra'],
