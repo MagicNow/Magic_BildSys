@@ -17,6 +17,12 @@ class RequisicaoStatus extends Model
 
     protected $dates = ['deleted_at'];
 
+    const NOVA              = 1;
+    const EM_SEPARACAO      = 2;
+    const EM_TRANSITO       = 3;
+    const APLICADO_PARCIAL  = 4;
+    const APLICADO_TOTAL    = 5;
+    const CANCELADA         = 6;
 
     public $fillable = [
         'nome'
