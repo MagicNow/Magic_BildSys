@@ -6,6 +6,7 @@ use App\DataTables\RequisicaoDataTable;
 use App\Http\Requests;
 use App\Http\Requests\CreateRequisicaoRequest;
 use App\Http\Requests\UpdateRequisicaoRequest;
+use App\Models\AplicacaoEstoqueInsumo;
 use App\Models\AplicacaoEstoqueLocal;
 use App\Models\Requisicao;
 use App\Models\RequisicaoItem;
@@ -541,16 +542,50 @@ class RequisicaoController extends AppBaseController
 
     public function aplicacaoEstoqueInsumo(AplicacaoEstoqueLocal $local_aplicacao)
     {
-        dd();
         return view('requisicao.aplicacao_estoque.insumos', compact('local_aplicacao'));
     }
 
     public function salvarLeituraAplicacaoInsumo(Request $request)
     {
         $dados = json_decode($request->dados);
+        $sucesso = false;
+        $erros = '';
 
-dd(json_decode($request->dados));
+        $local_aplicacao = AplicacaoEstoqueLocal::find($dados->aplicacao_estoque_local_id);
 
-        return response()->json(true);
+        if($local_aplicacao) {
+            if($local_aplicacao->pavimento !== $dados->pavimento){
+                $erros .= 'O insumo não pertence a este pavimento.<br>';
+            }
+            if($local_aplicacao->andar !== $dados->andar){
+                $erros .= 'O insumo não pertence a este andar.<br>';
+            }
+            if($local_aplicacao->apartamento !== $dados->apartamento){
+                $erros .= 'O insumo não pertence a este apartamento.<br>';
+            }
+            if($local_aplicacao->comodo !== $dados->comodo){
+                $erros .= 'O insumo não pertence a este cômodo.<br>';
+            }
+        } else {
+            $erros .= 'Não foi encontrado o local para a aplicação deste insumo.<br>';
+        }
+
+        if(!$erros) {
+            AplicacaoEstoqueInsumo::create([
+                'requisicao_id' => $dados->requisicao_id,
+                'aplicacao_estoque_local_id' => $dados->aplicacao_estoque_local_id,
+                'obra_id' => $dados->obra_id,
+                'insumo_id' => $dados->insumo_id,
+                'qtd' => $dados->qtd,
+                'unidade_medida' => $dados->unidade_medida,
+                'pavimento' => $dados->pavimento,
+                'andar' => $dados->andar,
+                'apartamento' => $dados->apartamento,
+                'comodo' => $dados->comodo
+            ]);
+            $sucesso = true;
+        }
+
+        return response()->json(['sucesso' => $sucesso, 'erros' => $erros]);
     }
 }

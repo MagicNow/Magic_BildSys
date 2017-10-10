@@ -106,6 +106,23 @@
                     data: {
                         dados: dados
                     }
+                }).done(function(retorno) {
+                    if(retorno.sucesso) {
+                        swal({
+                            title: 'QR Code lido com sucesso',
+                            text: "",
+                            type: "success",
+                            confirmButtonColor: "#DD6B55"
+                        });
+                    } else {
+                        swal({
+                            title: 'QR Code Inválido',
+                            text: retorno.erros,
+                            type: "info",
+                            html: true,
+                            confirmButtonColor: "#DD6B55"
+                        });
+                    }
                 }).fail(function() {
                     swal({
                         title: 'QR Code Inválido',
