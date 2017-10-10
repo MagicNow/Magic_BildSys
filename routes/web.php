@@ -288,7 +288,6 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
         $router->get('mascara_padrao_insumos/delete-bloco/view/delete/{id}', 'Admin\MascaraPadraoInsumoController@buscaGrupoInsumo');
         $router->get('mascara_padrao_insumos/sem-insumo/view', ['as' => 'admin.mascara_padrao_insumos.seminsumoview', 'uses' => 'Admin\MascaraPadraoInsumoController@semInsumoView'])
             ->middleware("needsPermission:mascara_padrao_insumos.semInsumoView");
-        $router->get('mascara_padrao_insumos/busca/tipos/levantamentos', ['as' => 'admin.mascara_padrao_insumos.tipos-levantamentos', 'uses' => 'Admin\MascaraPadraoInsumoController@tipoLevantamentos']);
     });
 
 	# Tarefa Padrão
