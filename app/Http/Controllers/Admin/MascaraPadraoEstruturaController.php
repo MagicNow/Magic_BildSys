@@ -112,7 +112,7 @@ class MascaraPadraoEstruturaController extends AppBaseController
         Flash::success('Máscara Padrão Estrutura '.trans('common.saved').' '.trans('common.successfully').'.');
 
         if ($request->get('save') != 'save-continue') {
-            return redirect(route('admin.mascaraPadraoEstruturas.index'));
+            return redirect(route('admin.mascara_padrao.index'));
         } else {
             # $request->btn_insumo click é do botão adicionar insumos
             if(!$request->btn_insumo) {
@@ -299,5 +299,45 @@ class MascaraPadraoEstruturaController extends AppBaseController
         $servicos = $servicos->pluck('nome', 'id')->toArray();
 
         return $servicos;
+    }
+
+    /**
+     * Método para cadastrar novo grupo.
+     * @param Request $request
+     * @return true
+     */
+    public function cadastrarGrupo(Request $request)
+    {
+        $novo_grupo = [];
+        if ($request->codigo && $request->nome) {
+            if($request->grupo_anterior) {
+                $grupo = Grupo::find($request->grupo_anterior); // # Busca grupo
+                if ($request->grupo_atual == 'servico_id') {
+                    $novo_grupo = Servico::firstOrCreate(
+                        [
+                            'codigo' => $grupo->codigo . '.' . $request->codigo
+                        ],
+                        [
+                            'codigo' => $grupo->codigo . '.' . $request->codigo,
+                            'nome' => $request->nome,
+                            'grupo_id' => $request->grupo_anterior
+                        ]
+                    );
+                } else {
+                    $novo_grupo = Grupo::firstOrCreate(
+                        [
+                            'codigo' => $grupo->codigo . '.' . $request->codigo
+                        ],
+                        [
+                            'codigo' => $grupo->codigo . '.' . $request->codigo,
+                            'nome' => $request->nome,
+                            'grupo_id' => $request->grupo_anterior
+                        ]
+                    );
+                }
+            }
+        }
+
+        return response()->json(['grupo' => $novo_grupo]);
     }
 }

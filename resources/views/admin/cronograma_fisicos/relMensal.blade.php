@@ -331,7 +331,11 @@
 						
 						//Grafico PIE - DESVIO PDP
 						labelsDesvioPDP: ["DESVIO PDP"],
-						myoptionDesvioPDP: {},
+						myoptionDesvioPDP: {
+							legend: {
+								display: false
+							}
+						},
 						datasetsDesvioPDP:[{
 							data: [GraficoDesvio[5]],
 							backgroundColor: 'DarkOrange',
@@ -340,7 +344,11 @@
 						
 						//Grafico PIE - DESVIO P. TRABALHO
 						labelsDesvioTrabalho: ["DESVIO TRABALHO"],
-						myoptionDesvioTrabalho: {},
+						myoptionDesvioTrabalho: {
+							legend: {
+								display: false
+							}
+						},
 						datasetsDesvioTrabalho:[{
 							data: [GraficoDesvio[6]],
 							backgroundColor: 'blue',

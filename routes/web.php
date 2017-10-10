@@ -27,6 +27,8 @@ $router->get('/solicitar-insumo', 'SolicitacaoInsumoController@create')
 $router->post('/solicitar-insumo', 'SolicitacaoInsumoController@store')
     ->name('solicitar_insumo.store');
 
+$router->get('fornecedores/atualizar-mega/{fornecedores}', ['as' => 'fornecedores.atualizar-mega', 'uses' => 'Admin\FornecedoresController@atualizarMega']);
+
 ##### Buscas #####
 $router->get('/admin/catalogo-acordos/buscar/busca_insumos', ['as' => 'catalogo_contratos.busca_insumos', 'uses' => 'BuscarController@getInsumos']);
 
@@ -262,9 +264,9 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
     $router->get('mascara-padrao-estruturas/{mascaraPadraoEstruturas}/edit', ['as'=> 'admin.mascaraPadraoEstruturas.edit', 'uses' => 'Admin\MascaraPadraoEstruturaController@edit']);
     $router->get('mascara-padrao-estruturas/grupos/{id}', ['as' => 'admin.mascaraPadraoEstruturas.grupos', 'uses' => 'Admin\MascaraPadraoEstruturaController@getGrupos']);
     $router->get('mascara-padrao-estruturas/servicos/{id}', ['as' => 'admin.mascaraPadraoEstruturas.servicos', 'uses' => 'Admin\MascaraPadraoEstruturaController@getServicos']);
-//    $router->get('mascara-padrao-estruturas/relacionar/insumos', ['as' => 'admin.mascaraPadraoEstruturas.insumos', 'uses' => 'Admin\MascaraPadraoEstruturaController@getInsumos']);
     $router->get('mascara-padrao-estruturas/mascara-padrao/insumos/{id}', ['as' => 'admin.mascaraPadraoEstruturas.mascara-padrao-insumos', 'uses' => 'Admin\MascaraPadraoEstruturaController@mascaraPadraoInsumos']);
     $router->get('mascara-padrao-estruturas/mascara-padrao-estrutura/relaciona/insumos/{id}', ['as' => 'admin.mascaraPadraoEstruturas.mascara-padrao-estrutura-insumos', 'uses' => 'Admin\MascaraPadraoEstruturaController@MascaraPadraoEstruturaInsumos']);
+    $router->get('mascara-padrao-estruturas/mascara-padrao-estrutura/novo/grupo-or-servico', ['as' => 'admin.mascaraPadraoEstruturas.novo-grupo', 'uses' => 'Admin\MascaraPadraoEstruturaController@cadastrarGrupo']);
 
 	# Tarefa Padrão
     $router->group(['middleware' => 'needsPermission:tarefa_padrao.list'], function () use ($router) {
@@ -1578,7 +1580,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         //        dd($grupos_mega);
         //        $servicos = \App\Repositories\ImportacaoRepository::fornecedor_servicos(446);
 
-		$insumos = \App\Repositories\ImportacaoRepository::insumos();
+		$insumos = \App\Repositories\ImportacaoRepository::fornecedoresAtualiza();
         dd($insumos);
 
 		//        $insumos = \App\Repositories\ImportacaoRepository::insumos();
@@ -1606,3 +1608,27 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
 
 #Image Controller
 $router->get('imagem', 'ImageController@index');
+
+$router->get('requisicao/get-pavimentos-obra/{obra}/torre/{torre}', ['as' => 'requisicao.pavimentosObra', 'uses' => 'RequisicaoController@getPavimentosByObraAndTorre']);
+$router->get('requisicao/get-trechos-obra/{obra}/torre/{torre}/pavimento/{pavimento}', ['as' => 'requisicao.trechoObra', 'uses' => 'RequisicaoController@getTrechoByObraTorrePavimento']);
+$router->get('requisicao/get-andares-obra/{obra}/torre/{torre}/pavimento/{pavimento}', ['as' => 'requisicao.andarObra', 'uses' => 'RequisicaoController@getAndarByObraTorrePavimento']);
+$router->get('requisicao/get-insumos', ['as' => 'requisicao.getInsumos', 'uses' => 'RequisicaoController@getInsumos']);
+$router->get('requisicao/get-insumos-obra/', ['as' => 'requisicao.insumosObra', 'uses' => 'RequisicaoController@getInsumos']);
+$router->get('requisicao/get-insumos-obra/comodo', ['as' => 'requisicao.insumosObraComodo', 'uses' => 'RequisicaoController@getInsumosByComodo']);
+$router->get('requisicao/modal/impressao-qrcode', ['as' => 'requisicao.modalQrCode', 'uses' => 'RequisicaoController@modalQrCode']);
+$router->get('requisicao/impressao-qrcode', ['as' => 'requisicao.impressaoQrCode', 'uses' => 'RequisicaoController@impressaoQrCode']);
+
+$router->get('/requisicao/ler-qr-cod', function() {
+    return View('requisicao.ler_qr_code');
+});
+
+$router->resource('requisicao', 'RequisicaoController');
+
+# Processo de Saída
+$router->get('requisicao/processo-saida/{requisicao}', ['as' => 'requisicao.processoSaida', 'uses' => 'RequisicaoController@processoSaida']);
+
+$router->get('requisicao/processo-saida/{requisicao}/ler-insumo-saida', ['as' => 'requisicao.lerInsumoSaida', 'uses' => 'RequisicaoController@lerInsumoSaida']);
+$router->get('requisicao/processo-saida/ler-insumo-saida/salvar-leitura', ['as' => 'requisicao.salvarLeituraSaida', 'uses' => 'RequisicaoController@salvarLeituraSaida']);
+$router->get('requisicao/processo-saida/{requisicao}/lista-de-inconsistencia', ['as' => 'requisicao.listaInconsistencia', 'uses' => 'RequisicaoController@listaInconsistencia']);
+$router->get('requisicao/processo-saida/lista-de-inconsistencia/excluir-leitura', ['as' => 'requisicao.excluirLeitura', 'uses' => 'RequisicaoController@excluirLeitura']);
+$router->get('requisicao/processo-saida/{requisicao}/finalizar_saida', ['as' => 'requisicao.finalizarSaida', 'uses' => 'RequisicaoController@finalizarSaida']);
