@@ -42,12 +42,40 @@ class MascaraPadraoEstruturaRepository extends BaseRepository
             $grupo = $item['id'];
             foreach($item['itens'] as $item_subgrupo1){
                 $subgrupo1 = $item_subgrupo1['id'];
+                if(isset($item_subgrupo1['id_anterior'])){
+                    $id_anterior = $item_subgrupo1['id_anterior'];
+                    if($subgrupo1 != $id_anterior){
+                        MascaraPadraoEstrutura::where('subgrupo1_id', $id_anterior)
+                            ->delete();
+                    }
+                }
                 foreach($item_subgrupo1['itens'] as $item_subgrupo2){
                     $subgrupo2 = $item_subgrupo2['id'];
+                    if(isset($item_subgrupo2['id_anterior'])){
+                        $id_anterior = $item_subgrupo2['id_anterior'];
+                        if($subgrupo2 != $id_anterior){
+                            MascaraPadraoEstrutura::where('subgrupo2_id', $id_anterior)
+                                ->delete();
+                        }
+                    }
                     foreach($item_subgrupo2['itens'] as $item_subgrupo3){
                         $subgrupo3 = $item_subgrupo3['id'];
+                        if(isset($item_subgrupo3['id_anterior'])){
+                            $id_anterior = $item_subgrupo3['id_anterior'];
+                            if($subgrupo3 != $id_anterior){
+                                MascaraPadraoEstrutura::where('subgrupo3_id', $id_anterior)
+                                    ->delete();
+                            }
+                        }
                         foreach($item_subgrupo3['itens'] as $item_servico){
                             $servico = $item_servico['id'];
+                            if(isset($item_servico['id_anterior'])){
+                                $id_anterior = $item_servico['id_anterior'];
+                                if($servico != $id_anterior){
+                                    MascaraPadraoEstrutura::where('servico_id', $id_anterior)
+                                        ->delete();
+                                }
+                            }
 
                             #Busca estrutura ex: 01.01.01.01.001
                             $codigo_servico = Servico::find($servico);
@@ -65,7 +93,6 @@ class MascaraPadraoEstruturaRepository extends BaseRepository
                 }
             }
         }
-//        dd($estrutura['grupos']);
         foreach($estrutura['grupos'] as $grupo) {
             $grupo['mascara_padrao_id'] = $attributes['mascara_padrao_id'];
             $model = parent::updateOrCreate(

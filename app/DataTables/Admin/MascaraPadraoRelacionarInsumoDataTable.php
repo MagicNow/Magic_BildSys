@@ -8,6 +8,12 @@ use Yajra\Datatables\Services\DataTable;
 
 class MascaraPadraoRelacionarInsumoDataTable extends DataTable
 {
+    protected $mascara_padrao_id;
+
+    public function mp($id){
+        $this->mascara_padrao_id = $id;
+        return $this;
+    }
     /**
      * Display ajax response.
      *
@@ -55,7 +61,7 @@ class MascaraPadraoRelacionarInsumoDataTable extends DataTable
                         FROM mascara_padrao_insumos
                         JOIN mascara_padrao_estruturas ON mascara_padrao_estruturas.id = mascara_padrao_insumos.mascara_padrao_estrutura_id
                         JOIN mascara_padrao ON mascara_padrao.id = mascara_padrao_estruturas.mascara_padrao_id
-                        WHERE mascara_padrao.id = '.$this->request()->segments()[4].'
+                        WHERE mascara_padrao.id = '.$this->mascara_padrao_id.'
                     )
             ')
             ->where('active', 1)

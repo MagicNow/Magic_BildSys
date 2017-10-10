@@ -105,7 +105,6 @@ class MascaraPadraoEstruturaController extends AppBaseController
      */
     public function store(CreateMascaraPadraoEstruturaRequest $request)
     {
-//        dd($request->servico_id);
         $input = $request->all();
         $mascaraPadraoEstrutura = $this->mascaraPadraoEstruturaRepository->create($input);
 
@@ -120,7 +119,9 @@ class MascaraPadraoEstruturaController extends AppBaseController
                 return redirect(route('admin.mascaraPadraoEstruturas.mascara-padrao-insumos', $request->mascara_padrao_id));
             }else{
                 # O post está vindo do botão adicionar insumos
-                $mascaraPadraoEstrutura = $mascaraPadraoEstrutura->where('servico_id', $request->servico_id)->first();
+                $mascaraPadraoEstrutura = $mascaraPadraoEstrutura->where('servico_id', $request->servico_id)
+                    ->where('mascara_padrao_id', $request->mascara_padrao_id)
+                    ->first();
                 return redirect(route('admin.mascaraPadraoEstruturas.mascara-padrao-estrutura-insumos', $mascaraPadraoEstrutura->id));
             }
         }
@@ -143,7 +144,7 @@ class MascaraPadraoEstruturaController extends AppBaseController
             ->where('mascara_padrao_id', $mascaraPadrao->id)
             ->pluck('estrutura', 'id')
             ->toArray();
-        return $mascaraPadraoRelacionarInsumoDataTable->render('admin.mascara_padrao_estruturas.insumos',compact('mascaraPadrao','selectMascaraPadraoEstruturas'));
+        return $mascaraPadraoRelacionarInsumoDataTable->mp($mascaraPadrao->id)->render('admin.mascara_padrao_estruturas.insumos',compact('mascaraPadrao','selectMascaraPadraoEstruturas'));
     }
 
     /**
@@ -171,80 +172,7 @@ class MascaraPadraoEstruturaController extends AppBaseController
             ->where('mascara_padrao_id', $mascaraPadraoEstrutura->mascara_padrao_id)
             ->pluck('estrutura', 'id')
             ->toArray();
-        return $mascaraPadraoRelacionarInsumoDataTable->render('admin.mascara_padrao_estruturas.insumos',compact('mascaraPadraoEstrutura','selectMascaraPadraoEstruturas'));
-    }
-
-    /**
-     * Insumos relacionado a mascara padrão selecionada.
-     */
-    public function insumosRelacionados(MascaraPadraoInsumoRelacionadosDataTable $mascaraPadraoInsumoRelacionadosDataTable, $mascara_padrao_id)
-    {
-        return $mascaraPadraoInsumoRelacionadosDataTable->render('admin.mascara_padrao_estruturas.insumos');
-    }
-
-    /**
-     * Display the specified MascaraPadraoEstrutura.
-     *
-     * @param  int $id
-     *
-     * @return Response
-     */
-    public function show($id)
-    {
-        $mascaraPadraoEstrutura = $this->mascaraPadraoEstruturaRepository->findWithoutFail($id);
-
-        if (empty($mascaraPadraoEstrutura)) {
-            Flash::error('Mascara Padrao Estrutura '.trans('common.not-found'));
-
-            return redirect(route('admin.mascaraPadraoEstruturas.index'));
-        }
-
-        return view('admin.mascara_padrao_estruturas.show')->with('mascaraPadraoEstrutura', $mascaraPadraoEstrutura);
-    }
-
-    /**
-     * Show the form for editing the specified MascaraPadraoEstrutura.
-     *
-     * @param  int $id
-     *
-     * @return Response
-     */
-    public function edit($id)
-    {
-        $mascaraPadrao = MascaraPadrao::find($id);
-
-        if (empty($mascaraPadrao)) {
-            Flash::error('Mascara Padrao '.trans('common.not-found'));
-
-            return redirect(route('admin.mascaraPadraoEstruturas.index'));
-        }
-
-        return view('admin.mascara_padrao_estruturas.edit', compact('mascaraPadrao'));
-    }
-
-    /**
-     * Update the specified MascaraPadraoEstrutura in storage.
-     *
-     * @param  int              $id
-     * @param UpdateMascaraPadraoEstruturaRequest $request
-     *
-     * @return Response
-     */
-    public function update($id, UpdateMascaraPadraoEstruturaRequest $request)
-    {
-        $mascaraPadraoEstrutura = $this->mascaraPadraoEstruturaRepository->findWithoutFail($id);
-
-        if (empty($mascaraPadraoEstrutura)) {
-            Flash::error('Mascara Padrao Estrutura '.trans('common.not-found'));
-
-            return redirect(route('admin.mascaraPadraoEstruturas.index'));
-        }
-
-        $mascaraPadraoEstrutura = $this->mascaraPadraoEstruturaRepository->update($request->all(), $id);
-
-        Flash::success('Mascara Padrao Estrutura '.trans('common.updated').' '.trans('common.successfully').'.');
-
-        return redirect(route('admin.mascaraPadraoEstruturas.index'));
+        return $mascaraPadraoRelacionarInsumoDataTable->mp($mascaraPadraoEstrutura->mascara_padrao_id)->render('admin.mascara_padrao_estruturas.insumos',compact('mascaraPadraoEstrutura','selectMascaraPadraoEstruturas'));
     }
 
     /**
