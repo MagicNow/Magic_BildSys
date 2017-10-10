@@ -18,6 +18,7 @@ class MascaraPadraoInsumo extends Model
 
     public $fillable = [        
 		'mascara_padrao_estrutura_id',
+        'tipo_levantamento_id',
 		'codigo_estruturado',
         'coeficiente',
         'indireto',
@@ -26,6 +27,7 @@ class MascaraPadraoInsumo extends Model
 
 	public $campos = [
 		'mascara_padrao_estrutura_id',
+		'tipo_levantamento_id',
 		'codigo_estruturado',
 		'coeficiente',
 		'indireto',
@@ -40,6 +42,7 @@ class MascaraPadraoInsumo extends Model
     protected $casts = [
         'id' => 'integer',
         'mascara_padrao_id' => 'integer',
+        'tipo_levantamento_id' => 'integer',
         'insumo_id' => 'integer'
     ];
 

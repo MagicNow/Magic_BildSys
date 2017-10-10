@@ -268,6 +268,28 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
     $router->get('mascara-padrao-estruturas/mascara-padrao-estrutura/relaciona/insumos/{id}', ['as' => 'admin.mascaraPadraoEstruturas.mascara-padrao-estrutura-insumos', 'uses' => 'Admin\MascaraPadraoEstruturaController@MascaraPadraoEstruturaInsumos']);
     $router->get('mascara-padrao-estruturas/mascara-padrao-estrutura/novo/grupo-or-servico', ['as' => 'admin.mascaraPadraoEstruturas.novo-grupo', 'uses' => 'Admin\MascaraPadraoEstruturaController@cadastrarGrupo']);
 
+    # Máscara Padrão Insumos
+    $router->group(['middleware' => 'needsPermission:mascara_padrao_insumos.list'], function () use ($router) {
+        $router->get('mascara_padrao_insumos', ['as' => 'admin.mascara_padrao_insumos.index', 'uses' => 'Admin\MascaraPadraoInsumoController@index']);
+        $router->post('mascara_padrao_insumos', ['as' => 'admin.mascara_padrao_insumos.store', 'uses' => 'Admin\MascaraPadraoInsumoController@store']);
+        $router->get('mascara_padrao_insumos/create', ['as' => 'admin.mascara_padrao_insumos.create', 'uses' => 'Admin\MascaraPadraoInsumoController@create'])
+            ->middleware("needsPermission:mascara_padrao_insumos.create");
+        $router->put('mascara_padrao_insumos/{insumos}', ['as' => 'admin.mascara_padrao_insumos.update', 'uses' => 'Admin\MascaraPadraoInsumoController@update']);
+        $router->patch('mascara_padrao_insumos/{insumos}', ['as' => 'admin.mascara_padrao_insumos.update', 'uses' => 'Admin\MascaraPadraoInsumoController@update']);
+        $router->delete('mascara_padrao_insumos/{insumos}', ['as' => 'admin.mascara_padrao_insumos.destroy', 'uses' => 'Admin\MascaraPadraoInsumoController@destroy'])
+            ->middleware("needsPermission:mascara_padrao_insumos.delete");
+        $router->get('mascara_padrao_insumos/{insumos}', ['as' => 'admin.mascara_padrao_insumos.show', 'uses' => 'Admin\MascaraPadraoInsumoController@show']);
+        $router->get('mascara_padrao_insumos/{insumos}/edit', ['as' => 'admin.mascara_padrao_insumos.edit', 'uses' => 'Admin\MascaraPadraoInsumoController@edit'])
+            ->middleware("needsPermission:mascara_padrao_insumos.edit");
+        $router->get('mascara_padrao_insumos/insumos/{id}', 'Admin\MascaraPadraoInsumoController@getInsumos');
+        $router->get('mascara_padrao_insumos/delete-bloco/view', ['as' => 'admin.mascara_padrao_insumos.deleteblocoview', 'uses' => 'Admin\MascaraPadraoInsumoController@deleteBlocoView'])
+            ->middleware("needsPermission:mascara_padrao_insumos.deleteBlocoView");
+        $router->get('mascara_padrao_insumos/delete-bloco/view/delete', ['as' => 'admin.mascara_padrao_insumos.deletebloco', 'uses' => 'Admin\MascaraPadraoInsumoController@deleteBloco']);
+        $router->get('mascara_padrao_insumos/delete-bloco/view/delete/{id}', 'Admin\MascaraPadraoInsumoController@buscaGrupoInsumo');
+        $router->get('mascara_padrao_insumos/sem-insumo/view', ['as' => 'admin.mascara_padrao_insumos.seminsumoview', 'uses' => 'Admin\MascaraPadraoInsumoController@semInsumoView'])
+            ->middleware("needsPermission:mascara_padrao_insumos.semInsumoView");
+    });
+
 	# Tarefa Padrão
     $router->group(['middleware' => 'needsPermission:tarefa_padrao.list'], function () use ($router) {
         $router->get('tarefa_padrao', ['as' => 'admin.tarefa_padrao.index', 'uses' => 'Admin\TarefaPadraoController@index']);
@@ -297,21 +319,6 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
         $router->get('estruturas/{estruturas}/edit', ['as' => 'admin.estruturas.edit', 'uses' => 'Admin\EstruturaController@edit'])
             ->middleware("needsPermission:estruturas.edit");
     });
-
-	# Mascara Insumos
-    /*$router->group(['middleware' => 'needsPermission:mascaraInsumos.list'], function () use ($router) {
-        $router->get('mascara_insumos', ['as' => 'admin.mascara_insumos.index', 'uses' => 'Admin\MascaraInsumoController@index']);
-        $router->post('mascara_insumos', ['as' => 'admin.mascara_insumos.store', 'uses' => 'Admin\MascaraInsumoController@store']);
-        $router->get('mascara_insumos/create', ['as' => 'admin.mascara_insumos.create', 'uses' => 'Admin\MascaraInsumoController@create'])
-            ->middleware("needsPermission:mascaraInsumos.create");;
-        $router->put('mascara_insumos/{mascara_insumos}', ['as' => 'admin.mascara_insumos.update', 'uses' => 'Admin\MascaraInsumoController@update']);
-        $router->patch('mascara_insumos/{mascara_insumos}', ['as' => 'admin.mascara_insumos.update', 'uses' => 'Admin\MascaraInsumoController@update']);
-        $router->delete('mascara_insumos/{mascara_insumos}', ['as' => 'admin.mascara_insumos.destroy', 'uses' => 'Admin\MascaraInsumoController@destroy'])
-            ->middleware("needsPermission:mascaraInsumos.delete");;
-        $router->get('mascara_insumos/{mascara_insumos}', ['as' => 'admin.mascara_insumos.show', 'uses' => 'Admin\MascaraInsumoController@show']);
-        $router->get('mascara_insumos/{mascara_insumos}/edit', ['as' => 'admin.mascara_insumos.edit', 'uses' => 'Admin\MascaraInsumoController@edit'])
-            ->middleware("needsPermission:mascaraInsumos.edit");
-    });*/
 
     # Lembretes
     $router->group(['middleware' => 'needsPermission:lembretes.list'], function () use ($router) {
@@ -366,28 +373,6 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
         $router->get('compradorInsumos/delete-bloco/view/delete/{id}', 'Admin\CompradorInsumoController@buscaGrupoInsumo');
 		$router->get('compradorInsumos/sem-insumo/view', ['as' => 'admin.compradorInsumos.seminsumoview', 'uses' => 'Admin\CompradorInsumoController@semInsumoView'])
             ->middleware("needsPermission:compradorInsumos.semInsumoView");
-    });
-
-	# Máscara Padrão Insumos
-    $router->group(['middleware' => 'needsPermission:mascara_padrao_insumos.list'], function () use ($router) {
-        $router->get('mascara_padrao_insumos', ['as' => 'admin.mascara_padrao_insumos.index', 'uses' => 'Admin\MascaraPadraoInsumoController@index']);
-        $router->post('mascara_padrao_insumos', ['as' => 'admin.mascara_padrao_insumos.store', 'uses' => 'Admin\MascaraPadraoInsumoController@store']);
-        $router->get('mascara_padrao_insumos/create', ['as' => 'admin.mascara_padrao_insumos.create', 'uses' => 'Admin\MascaraPadraoInsumoController@create'])
-            ->middleware("needsPermission:mascara_padrao_insumos.create");
-        $router->put('mascara_padrao_insumos/{insumos}', ['as' => 'admin.mascara_padrao_insumos.update', 'uses' => 'Admin\MascaraPadraoInsumoController@update']);
-        $router->patch('mascara_padrao_insumos/{insumos}', ['as' => 'admin.mascara_padrao_insumos.update', 'uses' => 'Admin\MascaraPadraoInsumoController@update']);
-        $router->delete('mascara_padrao_insumos/{insumos}', ['as' => 'admin.mascara_padrao_insumos.destroy', 'uses' => 'Admin\MascaraPadraoInsumoController@destroy'])
-            ->middleware("needsPermission:mascara_padrao_insumos.delete");
-        $router->get('mascara_padrao_insumos/{insumos}', ['as' => 'admin.mascara_padrao_insumos.show', 'uses' => 'Admin\MascaraPadraoInsumoController@show']);
-        $router->get('mascara_padrao_insumos/{insumos}/edit', ['as' => 'admin.mascara_padrao_insumos.edit', 'uses' => 'Admin\MascaraPadraoInsumoController@edit'])
-            ->middleware("needsPermission:mascara_padrao_insumos.edit");
-        $router->get('mascara_padrao_insumos/insumos/{id}', 'Admin\MascaraPadraoInsumoController@getInsumos');
-        $router->get('mascara_padrao_insumos/delete-bloco/view', ['as' => 'admin.mascara_padrao_insumos.deleteblocoview', 'uses' => 'Admin\MascaraPadraoInsumoController@deleteBlocoView'])
-            ->middleware("needsPermission:mascara_padrao_insumos.deleteBlocoView");
-        $router->get('mascara_padrao_insumos/delete-bloco/view/delete', ['as' => 'admin.mascara_padrao_insumos.deletebloco', 'uses' => 'Admin\MascaraPadraoInsumoController@deleteBloco']);
-        $router->get('mascara_padrao_insumos/delete-bloco/view/delete/{id}', 'Admin\MascaraPadraoInsumoController@buscaGrupoInsumo');
-		$router->get('mascara_padrao_insumos/sem-insumo/view', ['as' => 'admin.mascara_padrao_insumos.seminsumoview', 'uses' => 'Admin\MascaraPadraoInsumoController@semInsumoView'])
-            ->middleware("needsPermission:mascara_padrao_insumos.semInsumoView");
     });
 
 	# Tarefa Padrão / Máscara Padrão
