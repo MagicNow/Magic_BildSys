@@ -22,60 +22,61 @@ O sistema SYS será um sistema que integrará informações do ERP MEGA, porém 
 
 ----------------------------------------------------
 
-Generators
 
-##Custom Table Name
+## Requisitos
 
-You can also specify your own custom table name by,
+<table>
+  <tr>
+    <td width="25%">Tecnologia</td>
+    <td>Requisito e versão</td>
+  </tr>
+  <tr>
+    <td>Sistema Operacional</td>
+    <td>Ubuntu Server 16.04 LTS</td>
+  </tr>
+  <tr>
+    <td>Servidor Web</td>
+    <td>Nginx 1.10.3</td>
+  </tr>
+  <tr>
+    <td>Banco de Dados (SGBD)</td>
+    <td>MySQL Community 5.7</td>
+  </tr>
+  <tr>
+    <td>Linguagem de Programação</td>
+    <td>PHP 7.1
+Módulos: calendar, Core, ctype, curl, date, dom, exif, fileinfo, filter, ftp, gd, gettext, hash, iconv, imagick, json, libxml, mbstring, mcrypt, mysqli, mysqlnd, oci8, odbc, openssl, pcntl, pcre, PDO, pdo_dblib, pdo_mysql, PDO_ODBC, pdo_sqlite, Phar, posix, readline, Reflection, session, shmop, SimpleXML, soap, sockets, SPL, sqlite3, standard, sysvmsg, sysvsem, sysvshm, tokenizer, wddx, xml, xmlreader, xmlwriter, xsl, Zend OPcache, zip, zlib, Zend OPcache</td>
+  </tr>
+  <tr>
+    <td>Gerenciador de Versões</td>
+    <td>GIT</td>
+  </tr>
+  <tr>
+    <td>Gerenciador de Pacotes</td>
+    <td>Composer</td>
+  </tr>
+</table>
 
+## Instalação
 
-```
-php artisan infyom:scaffold $MODEL_NAME --tableName=custom_table_name
-```
-
-## Generate From Table
-
-```
-php artisan infyom:scaffold $MODEL_NAME --fromTable --tableName=$TABLE_NAME
-```
-
-## Skip File Generation
-
-The Generator also gives the flexibility to choose what you want to generate or what you want to skip. While using generator command, you can specify skip option to skip files which will not be generated.
-
-
-```
-php artisan infyom:api_scaffold Post --skip=routes,migration,model
-```
-You can specify any file from the following list:
-
-migration
-model
-controllers
-api_controller
-scaffold_controller
-scaffold_requests
-routes
-api_routes
-scaffold_routes
-views
-tests
-menu
-dump-autoload
-Custom Primary Key Name
-
-By default, Generator takes the primary key as id field. But is also gives you the flexibility to use your own primary key field name via --primary option.
+Para instalar o sistema basta clonar o projeto dentro do diretório do seu servidor web (Geralmente localizado em /var/www):
 
 
 ```
-php artisan infyom:scaffold $MODEL_NAME --primary=custom_name_id
+git clone https://bitbucket.org/fcmorenotecnologia/bild-sys.git
 ```
 
-## Prefix option
+### Banco de dados
 
-Sometimes, you don't want to directly generate the files into configured folder but in a subfolder of it. Like, admin and that subfolder should be created with namespaces in all generated files. Then you can use --prefix=admin option.
+Crie o banco de dados à ser utilizado no sistema, onde deve ter o charset **UTF8** com o collation **utf8_general_ci**
 
+Após o banco criado, pegue o arquivo .env.example e copie para um novo, .env, o qual possui todas as configurações necessárias.
+
+Troque todas as informações necessárias, como banco, banco do Mega, dados de e-mail (SMTP).
+
+Após alterada todas as informações, rode o comando para criar as tabelas e preencher o banco com os dados iniciais.
 
 ```
-php artisan infyom:scaffold $MODEL_NAME --prefix=admin
+php artisan migrate
+php artisan db:seed
 ```
