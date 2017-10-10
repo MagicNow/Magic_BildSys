@@ -16,6 +16,7 @@ use App\Models\Obra;
 use App\Models\Carteira;
 use App\Models\Tipologia;
 use App\Models\User;
+use App\Repositories\Admin\WorkflowReprovacaoMotivoRepository;
 
 class QcController extends AppBaseController
 {
@@ -47,9 +48,13 @@ class QcController extends AppBaseController
 	 */
 	public function create()
 	{
-		$obras = Obra::pluck('nome','id')->toArray();
-		$carteiras = Carteira::pluck('nome','id')->toArray();
-		$tipologias = Tipologia::pluck('nome','id')->toArray();
+        $obras = Obra::pluck('nome','id')->prepend('Escolha a obra...', '');
+        $carteiras = Carteira::pluck('nome','id')
+            ->prepend('Escolha a carteira...', '');
+        $tipologias = Tipologia::pluck('nome','id')
+            ->prepend('Escolha a tipologia...', '');
+
+
 
 		return view('qc.create', compact('obras', 'carteiras', 'tipologias'));
 	}
@@ -75,6 +80,7 @@ class QcController extends AppBaseController
 				$destinationPath = CodeRepository::saveFile($file, 'qc/' . $qc->id);
 
 				$attach = $this->qcAnexoRepository->create([
+                    'qc_id' => $qc->id,
 					'arquivo' => $destinationPath,
 					'tipo' => $request->anexo_tipo[$key],
 					'descricao' => $request->anexo_descricao[$key],
@@ -96,10 +102,18 @@ class QcController extends AppBaseController
 	 *
 	 * @return Response
 	 */
-	public function show($id)
-	{
+    public function show(
+        $id,
+        WorkflowReprovacaoMotivoRepository $workflowReprovacaoMotivoRepository
+    ) {
 		$qc = $this->qcRepository->findWithoutFail($id);
-		isset($qc) ? $qc->tipologia = $qc->tipologia()->first() : NULL;
+
+		if (empty($qc)) {
+			Flash::error('Qc '.trans('common.not-found'));
+
+			return redirect(route('qc.index'));
+		}
+
 		$attachments = [];
 
 		if (isset($qc->anexos) && !empty($qc->anexos)) {
@@ -110,12 +124,6 @@ class QcController extends AppBaseController
 
 				$attachments[$attachment->tipo][] = $attachment;
 			}
-		}
-
-		if (empty($qc)) {
-			Flash::error('Qc '.trans('common.not-found'));
-
-			return redirect(route('qc.index'));
 		}
 
 		return view('qc.show', compact('qc', 'attachments'));

@@ -43,8 +43,12 @@ class WorkflowTipoTableSeeder extends Seeder {
                     'nome'             => 'Workflow Aprovação de Medição',
                     'dias_prazo'       => 5,
                     'usa_valor_minimo' => 0,
+                ], [
+                    'id'               => 7,
+                    'nome'             => 'Workflow de Q.C. Avulso',
+                    'dias_prazo'       => 3,
+                    'usa_valor_minimo' => 0,
                 ]
-
             ]);
         \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
 

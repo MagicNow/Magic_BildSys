@@ -139,6 +139,7 @@ class ContratoController extends AppBaseController
         if(!$dataUltimoPeriodo){
             $dataUltimoPeriodo = $contrato->updated_at;
         }
+
         $alcadas = WorkflowAlcada::where('workflow_tipo_id', WorkflowTipo::CONTRATO)
             ->orderBy('ordem', 'ASC')
             ->where('created_at', '<=', $dataUltimoPeriodo->format('Y-m-d H:i:s'))
@@ -236,7 +237,7 @@ class ContratoController extends AppBaseController
         $valor_previsto_orcamento = $itens_analise->sum('preco_inicial');
 
         $saldo = 0;
-        
+
         $qtd_itens = 1;
 
         return view('contratos.show', compact(
@@ -326,7 +327,7 @@ class ContratoController extends AppBaseController
         $input['subgrupo2_id'] = $orcamento->subgrupo2_id;
         $input['subgrupo3_id'] = $orcamento->subgrupo3_id;
         $input['servico_id'] = $orcamento->servico_id;
-        
+
         $contratoItemReapropriacaoRepository->reapropriar($item, $input);
 
         return response()->json([
@@ -601,7 +602,7 @@ class ContratoController extends AppBaseController
 
         $memoria_de_calculo = MemoriaCalculo::select([
             DB::raw('CONCAT(
-                        nome, " - ", 
+                        nome, " - ",
                         (
                         CASE
                             modo
