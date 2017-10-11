@@ -37,7 +37,33 @@ class PagamentoRepository extends BaseRepository
     {
         $attributes['valor'] = money_to_float($attributes['valor']);
         $contrato = Contrato::find($attributes['contrato_id']);
-        $attributes['obra_id'] = $contrato->id;
+        $attributes['obra_id'] = $contrato->obra_id;
+        if(isset($attributes['parcelas']) && count($attributes['parcelas'])){
+            foreach($attributes['parcelas'] as &$parcela){
+                $parcela['valor'] = money_to_float($parcela['valor']);
+                if(strlen(trim($parcela['percentual_desconto']))){
+                    $parcela['percentual_desconto'] = money_to_float($parcela['percentual_desconto']);
+                }
+                if(strlen(trim($parcela['valor_desconto']))){
+                    $parcela['valor_desconto'] = money_to_float($parcela['valor_desconto']);
+                }
+                if(strlen(trim($parcela['percentual_juro_mora']))){
+                    $parcela['percentual_juro_mora'] = money_to_float($parcela['percentual_juro_mora']);
+                }
+                if(strlen(trim($parcela['valor_juro_mora']))){
+                    $parcela['valor_juro_mora'] = money_to_float($parcela['valor_juro_mora']);
+                }
+                if(strlen(trim($parcela['percentual_multa']))){
+                    $parcela['percentual_multa'] = money_to_float($parcela['percentual_multa']);
+                }
+                if(strlen(trim($parcela['valor_multa']))){
+                    $parcela['valor_multa'] = money_to_float($parcela['valor_multa']);
+                }
+                if(substr(trim($parcela['data_base_multa']),0,10) == '0000-00-00'){
+                    $parcela['data_base_multa'] = null;
+                }
+            }
+        }
         $model = parent::create($attributes);
 
         return $model;
@@ -46,6 +72,33 @@ class PagamentoRepository extends BaseRepository
     public function update(array $attributes, $id)
     {
         $attributes['valor'] = money_to_float($attributes['valor']);
+        if(isset($attributes['parcelas']) && count($attributes['parcelas'])){
+            foreach($attributes['parcelas'] as &$parcela){
+                $parcela['valor'] = money_to_float($parcela['valor']);
+                if(strlen(trim($parcela['percentual_desconto']))){
+                    $parcela['percentual_desconto'] = money_to_float($parcela['percentual_desconto']);
+                }
+                if(strlen(trim($parcela['valor_desconto']))){
+                    $parcela['valor_desconto'] = money_to_float($parcela['valor_desconto']);
+                }
+                if(strlen(trim($parcela['percentual_juro_mora']))){
+                    $parcela['percentual_juro_mora'] = money_to_float($parcela['percentual_juro_mora']);
+                }
+                if(strlen(trim($parcela['valor_juro_mora']))){
+                    $parcela['valor_juro_mora'] = money_to_float($parcela['valor_juro_mora']);
+                }
+                if(strlen(trim($parcela['percentual_multa']))){
+                    $parcela['percentual_multa'] = money_to_float($parcela['percentual_multa']);
+                }
+                if(strlen(trim($parcela['valor_multa']))){
+                    $parcela['valor_multa'] = money_to_float($parcela['valor_multa']);
+                }
+                if(substr(trim($parcela['data_base_multa']),0,10) == '0000-00-00'){
+                    $parcela['data_base_multa'] = null;
+                }
+            }
+        }
+
         $model = parent::update($attributes, $id);
 
         return $model;

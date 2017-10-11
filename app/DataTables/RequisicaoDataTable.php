@@ -37,8 +37,10 @@ class RequisicaoDataTable extends DataTable
             ->select([
                 'requisicao.*',
                 'users.name as usuario',
-                'obras.nome as obra'
+                'obras.nome as obra',
+                'requisicao_status.nome as status',
                 ])
+            ->join('requisicao_status','requisicao_status.id','requisicao.status_id')
             ->join('obras','obras.id','requisicao.obra_id')
             ->join('users','users.id','requisicao.user_id');
 
@@ -56,6 +58,7 @@ class RequisicaoDataTable extends DataTable
             ->columns($this->getColumns())
             ->ajax('')
             ->parameters([
+                'responsive' => 'true',
                 'initComplete' => 'function () {
                     max = this.api().columns().count();
                     this.api().columns().every(function (col) {
@@ -72,7 +75,7 @@ class RequisicaoDataTable extends DataTable
                         }
                     });
                 }' ,
-                'dom' => 'Bfrtip',
+                'dom' => 'Bfrltip',
                 'scrollX' => false,
                 'language'=> [
                     "url"=> asset("vendor/datatables/Portuguese-Brasil.json")
@@ -105,10 +108,15 @@ class RequisicaoDataTable extends DataTable
         return [
             'Id Requisição' => ['name' => 'id', 'data' => 'id'],
             'data' => ['name' => 'created_at', 'data' => 'created_at'],
-            'obra' => ['name' => 'obra', 'data' => 'obra'],
-            'solicitante' => ['name' => 'usuário', 'data' => 'usuario'],
-            'status' => ['name' => 'status', 'data' => 'status'],
-            'action' => ['name'=>'Ações', 'title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'15%', 'class' => 'all']
+            'solicitante' => ['name' => 'users.name', 'data' => 'usuario'],
+            'status' => ['name' => 'requisicao_status.nome', 'data' => 'status'],
+//            'obra' => ['name' => 'obra', 'data' => 'obra'],
+//            'local' => ['name' => 'local', 'data' => 'local'],
+//            'torre' => ['name' => 'torre', 'data' => 'torre'],
+//            'pavimento' => ['name' => 'pavimento', 'data' => 'pavimento'],
+//            'trecho' => ['name' => 'trecho', 'data' => 'trecho'],
+//            'andar' => ['name' => 'andar', 'data' => 'andar'],
+            'action' => ['name'=>'Ações', 'title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%', 'class' => 'all']
         ];
     }
 

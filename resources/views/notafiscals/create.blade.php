@@ -8,7 +8,7 @@
     </section>
     <div class="content">
         @include('adminlte-templates::common.errors')
-        <div class="box box-primary">
+        <div class="box box-primary" id="nota_fiscal">
 
             <div class="box-body">
                 <div class="row">

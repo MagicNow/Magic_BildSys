@@ -79,7 +79,11 @@ class ObraController extends AppBaseController
             }
         }
 
-        $input['num_torres'] = count($input['torres']);
+        if(isset($input['torres'])) {
+            $input['num_torres'] = count($input['torres']);
+        } else {
+            $input['num_torres'] = 0;
+        }
 
         $obra = $this->obraRepository->create($input);
 

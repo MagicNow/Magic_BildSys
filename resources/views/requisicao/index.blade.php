@@ -5,11 +5,11 @@
         <h1 class="pull-left">Requisições</h1>
         <h1 class="pull-right">
            <a class="btn btn-primary pull-right" style="margin-top: -10px;margin-bottom: 5px" href="{!! route('requisicao.create') !!}">
-            {{ ucfirst( trans('common.new') )}}
+               <i class="fa fa-plus" aria-hidden="true"></i> Criar requisição
            </a>
 
-            <a class="btn btn-success" style="margin-top: -10px;margin-bottom: 5px" href="/requisicao/ler-qr-cod">
-                <i class="fa fa-qrcode" aria-hidden="true"></i> Ler QR Code
+            <a class="btn btn-info" style="margin-top: -10px;margin-bottom: 5px" href="/requisicao/aplicacao-estoque/local">
+                <i class="fa fa-qrcode" aria-hidden="true"></i> Aplicação de estoque
             </a>
         </h1>
     </section>

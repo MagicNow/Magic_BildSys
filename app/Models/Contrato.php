@@ -327,4 +327,8 @@ class Contrato extends Model
 
         return null;
     }
+
+    public function pagamentos(){
+        return $this->hasMany(Pagamento::class);
+    }
 }

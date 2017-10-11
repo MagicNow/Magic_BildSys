@@ -8,6 +8,12 @@ use Yajra\Datatables\Services\DataTable;
 
 class MascaraPadraoInsumoDataTable extends DataTable
 {
+    protected $mascara_padrao_id;
+
+    public function mascaraPadrao($id){
+        $this->mascara_padrao_id = $id;
+        return $this;
+    }
 
     /**
      * @return \Illuminate\Http\JsonResponse
@@ -34,11 +40,16 @@ class MascaraPadraoInsumoDataTable extends DataTable
                 'insumos.nome',
 				'mascara_padrao_insumos.codigo_estruturado',
 				'mascara_padrao_insumos.coeficiente',
+				'mascara_padrao_insumos.indireto',
                 'insumo_grupos.nome as nome_grupo_insumo'
             ])
-        ->join('mascara_padrao','mascara_padrao.id','=','mascara_padrao_insumos.mascara_padrao_id')
+        ->join('mascara_padrao_estruturas','mascara_padrao_estruturas.id','=','mascara_padrao_insumos.mascara_padrao_estrutura_id')
+        ->join('mascara_padrao','mascara_padrao.id','=','mascara_padrao_estruturas.mascara_padrao_id')
         ->join('insumos','insumos.id','=','mascara_padrao_insumos.insumo_id')
         ->join('insumo_grupos','insumo_grupos.id','insumos.insumo_grupo_id');
+        if($this->mascara_padrao_id){
+            $mascaraPadraoInsumos->where('mascara_padrao.id',$this->mascara_padrao_id);
+        }
 
         return $this->applyScopes($mascaraPadraoInsumos);
     }
@@ -107,6 +118,7 @@ class MascaraPadraoInsumoDataTable extends DataTable
             'Insumos' => ['name' => 'insumos.nome', 'data' => 'nome'],
 			'Código Estruturado' => ['name' => 'mascara_padrao.codigo_estruturado', 'data' => 'codigo_estruturado'],
 			'Coeficiente' => ['name' => 'mascara_padrao.coeficiente', 'data' => 'coeficiente'],
+			'Indireto' => ['name' => 'mascara_padrao.indireto', 'data' => 'indireto'],
             'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }

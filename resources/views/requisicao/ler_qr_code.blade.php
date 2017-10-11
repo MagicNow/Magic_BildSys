@@ -2,15 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>QR Code Scanner</title>
+    <title>{{ env('APP_TITLE') }}</title>
+    <link rel="shortcut icon" href="{{ asset('img/favicon.png') }}">
+    <link rel="icon" href="{{ asset('img/favicon.png') }}" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="description" content="QR Code Scanner is the fastest and most user-friendly web application.">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="QR Scanner">
+    <meta name="apple-mobile-web-app-title" content="{{ env('APP_TITLE') }}">
     <meta name="apple-mobile-web-app-status-bar-style" content="#e4e4e4">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="QR Scanner">
+    <meta name="application-name" content="{{ env('APP_TITLE') }}">
     <meta name="msapplication-TileColor" content="#e4e4e4">
     <meta name="msapplication-TileImage" content="/images/touch/mstile-150x150.png">
     <meta name="theme-color" content="#fff">
@@ -42,7 +44,7 @@
 <div class="app__overlay">
     <div class="app__overlay-frame"></div><!-- Scanner animation -->
     <div class="custom-scanner"></div>
-    <div class="app__help-text">Point your camera at a QR Code</div>
+    <div class="app__help-text">Aponte sua câmera para um QR Code</div>
     <div class="app__select-photos">Select from photos</div>
 </div>
 <script>
@@ -64,7 +66,7 @@
                     confirmButtonColor: "#DD6B55",
                     closeOnConfirm: false
                 }, function () {
-                    location.reload();
+                    $('.app__dialog-close').click();
                 });
         }
     }
