@@ -88,7 +88,7 @@ class MascaraPadraoInsumoController extends AppBaseController
         $mascaraPadraoInsumo = $this->mascaraPadraoInsumoRepository->findWithoutFail($id);
 
         if (empty($mascaraPadraoInsumo)) {
-            Flash::error('Máscara Padrão / Insumos'.trans('common.not-found'));
+            Flash::error('Insumos ' .trans('common.not-found'));
 
             return redirect(route('admin.mascara_padrao.index'));
         }
