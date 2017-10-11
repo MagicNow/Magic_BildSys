@@ -14,7 +14,7 @@
                     <thead>
                     <tr align="center">
                         <th colspan="8" style="background-color: white;"></th>
-                        <th colspan="3" style="text-align: center;">Em adamento</th>
+                        <th colspan="3" style="text-align: center;">Em andamento</th>
                         <th colspan="2" style="background-color: white;"></th>
                         <th colspan="4" style="text-align: center;">Perda</th>
                         <th colspan="1" style="background-color: white;"></th>
@@ -60,7 +60,24 @@
                                 <td>{{$item->insumo->codigo}}</td>
                                 <td>{{$item->insumo->nome}}</td>
                                 <td>{{$item->insumo->unidade_sigla}}</td>
-                                <td>{{float_to_money($item->qtdEmEstoque(), '')}}</td>
+                                @if($item->farolQtdEmEstoque()['porcentagem'])
+                                    @if($item->farolQtdEmEstoque()['cor'])
+                                        <td style="background-color:{{$item->farolQtdEmEstoque()['cor']}}">
+                                            <span data-toggle="tooltip"
+                                                  title="Atenção, {{float_to_money($item->farolQtdEmEstoque()['porcentagem'], '')}}%  da quantidade mínima."
+                                            {{$item->farolQtdEmEstoque()['cor'] == '#000000' ? 'style=color:white' : ''}}>
+                                                {{float_to_money($item->qtdEmEstoque(), '')}}
+                                            </span>
+                                        </td>
+                                    @else
+                                        <td>{{float_to_money($item->qtdEmEstoque(), '')}}</td>
+                                    @endif
+                                @else
+                                    <td>
+                                        {{float_to_money($item->qtdEmEstoque(), '')}}
+                                        <i title="Inserir quantidade mínima" data-toggle="tooltip" class="fa fa-info-circle text-info" style="font-size: 20px;"></i>
+                                    </td>
+                                @endif
                                 <td>{{float_to_money($item->qtdPrevista(), '')}}</td>
                                 <td>{{float_to_money($item->qtdAplicada(), '')}}</td>
 

@@ -45,7 +45,32 @@ class Estoque extends Model
     {
         return $this->estoqueTransacao->sum('qtde');
     }
-    
+
+    /**
+     * Define o farol da quantidade que está em estoque
+     **/
+    public function farolQtdEmEstoque()
+    {
+        $qtd_em_estoque = $this->qtdEmEstoque();
+        $insumo_qtd_minima = $this->insumo->qtd_minima;
+        $porcentagem = null;
+        $cor = null;
+
+        if($insumo_qtd_minima) {
+            $porcentagem = ($insumo_qtd_minima / $qtd_em_estoque) * 100;
+
+            if($porcentagem > 150 && $porcentagem <= 200) {
+                $cor = '#ffff00';
+            } elseif($porcentagem > 100 && $porcentagem <= 150) {
+                $cor = '#eb0000';
+            } elseif ($porcentagem <= 100) {
+                $cor = '#000000';
+            }
+        }
+
+        return ['cor' => $cor, 'porcentagem' => $porcentagem];
+    }
+
     /**
      * Calcula a quantidade previsto para insumo que está no estoque.
      **/

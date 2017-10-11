@@ -31,6 +31,7 @@ class Insumo extends Model
         'aliq_inss',
         'aliq_cofins',
         'servico_cnae_id',
+        'qtd_minima',
     ];
 
     /**
