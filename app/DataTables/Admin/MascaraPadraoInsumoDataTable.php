@@ -8,6 +8,12 @@ use Yajra\Datatables\Services\DataTable;
 
 class MascaraPadraoInsumoDataTable extends DataTable
 {
+    protected $mascara_padrao_id;
+
+    public function mascaraPadrao($id){
+        $this->mascara_padrao_id = $id;
+        return $this;
+    }
 
     /**
      * @return \Illuminate\Http\JsonResponse
@@ -41,6 +47,9 @@ class MascaraPadraoInsumoDataTable extends DataTable
         ->join('mascara_padrao','mascara_padrao.id','=','mascara_padrao_estruturas.mascara_padrao_id')
         ->join('insumos','insumos.id','=','mascara_padrao_insumos.insumo_id')
         ->join('insumo_grupos','insumo_grupos.id','insumos.insumo_grupo_id');
+        if($this->mascara_padrao_id){
+            $mascaraPadraoInsumos->where('mascara_padrao.id',$this->mascara_padrao_id);
+        }
 
         return $this->applyScopes($mascaraPadraoInsumos);
     }
