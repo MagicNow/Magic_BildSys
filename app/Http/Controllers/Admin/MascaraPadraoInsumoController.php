@@ -90,13 +90,13 @@ class MascaraPadraoInsumoController extends AppBaseController
         if (empty($mascaraPadraoInsumo)) {
             Flash::error('Máscara Padrão / Insumos'.trans('common.not-found'));
 
-            return redirect(route('admin.mascara_padrao_insumos.index'));
+            return redirect(route('admin.mascara_padrao.index'));
         }
 
         $this->mascaraPadraoInsumoRepository->delete($id);
 
-        Flash::success('Máscara Padrão / Insumos'.trans('common.deleted').' '.trans('common.successfully').'.');
+        Flash::success('Insumos ' .trans('common.deleted').' '.trans('common.successfully').'.');
 
-        return redirect(route('admin.mascara_padrao_insumos.index'));
+        return redirect(route('admin.mascara_padrao.index'));
     }
 }
