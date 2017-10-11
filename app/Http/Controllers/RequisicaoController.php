@@ -10,6 +10,7 @@ use App\Models\AplicacaoEstoqueInsumo;
 use App\Models\AplicacaoEstoqueLocal;
 use App\Models\Requisicao;
 use App\Models\RequisicaoItem;
+use App\Models\RequisicaoStatus;
 use App\Repositories\RequisicaoItemRepository;
 use App\Models\RequisicaoSaidaLeitura;
 use App\Repositories\RequisicaoRepository;
@@ -562,7 +563,7 @@ class RequisicaoController extends AppBaseController
     
     public function finalizarSaida(Requisicao $requisicao)
     {
-        $requisicao->status = 'Em trânsito';
+        $requisicao->status_id = RequisicaoStatus::EM_TRANSITO;
         $requisicao->save();
 
         return redirect(route('requisicao.index'));
@@ -592,6 +593,7 @@ class RequisicaoController extends AppBaseController
         $dados = json_decode($request->dados);
         $sucesso = false;
         $erros = '';
+        $existe_insumo = false;
 
         $local_aplicacao = AplicacaoEstoqueLocal::find($dados->aplicacao_estoque_local_id);
 
@@ -612,6 +614,25 @@ class RequisicaoController extends AppBaseController
             $erros .= 'Não foi encontrado o local para a aplicação deste insumo.<br>';
         }
 
+        $requisicao = Requisicao::find($dados->requisicao_id);
+
+        if(count($requisicao->requisicaoItens)) {
+            foreach($requisicao->requisicaoItens as $item) {
+                if($item->qtde < $dados->qtd) {
+                    $erros .= 'Quantidade do insumo inválida.<br>';
+                }
+
+                if($item->estoque->insumo_id == $dados->insumo_id) {
+                    $existe_insumo = true;
+                    break;
+                }
+            }
+        }
+
+        if(!$existe_insumo) {
+            $erros .= 'Não foi encontrado o insumo na requisição.<br>';
+        }
+
         if (!$erros) {
             AplicacaoEstoqueInsumo::create([
                 'requisicao_id' => $dados->requisicao_id,
@@ -626,6 +647,10 @@ class RequisicaoController extends AppBaseController
                 'comodo' => $dados->comodo
             ]);
             $sucesso = true;
+        }
+
+        if($sucesso) {
+            RequisicaoRepository::verificaAplicacao($requisicao, $dados->insumo_id, $dados->qtd);
         }
 
         return response()->json(['sucesso' => $sucesso, 'erros' => $erros]);

@@ -79,7 +79,7 @@
                 </div>
 
                 <div class="btn-group btn-group-justified" style="margin-top: 10px;">
-                    <a href="#" class="btn btn-warning" onclick="" data-dismiss="modal">Finalizar leitura da aplicação</a>
+                    <a href="/requisicao/aplicacao-estoque/local" class="btn btn-warning">Finalizar leitura da aplicação</a>
                 </div>
             </div>
         </div>

@@ -34,9 +34,9 @@
             <button type="button" class="btn btn-primary"
                     data-toggle="modal"
                     data-target="#cadastrarGrupo"
-                    style="margin-left: -62px; width: 60px;"
+                    style="margin-left: -62px; width: 90px;"
                     onclick="atribuirGrupoId('select_grupo_0_select', 'subgrupo1_id', 'subgrupo1_{{$count_subgrupo}}_select');">
-                Novo
+                Novo SG-1
             </button>
         </div>
         <ul id="select_grupo_0_ul">
@@ -72,9 +72,9 @@
                             <button type="button" class="btn btn-primary"
                                     data-toggle="modal"
                                     data-target="#cadastrarGrupo"
-                                    style="margin-left: -65px; width: 60px;"
+                                    style="margin-left: -65px; width: 90px;"
                                     onclick="atribuirGrupoId('subgrupo1_{{$count_subgrupo}}_select', 'subgrupo2_id', 'subgrupo2_{{$count_subgrupo1}}_select');">
-                                Novo
+                                Novo SG-2
                             </button>
                         </div>
                         <ul style="margin: 0px;" id="subgrupo1_{{$count_subgrupo}}_ul">
@@ -113,9 +113,9 @@
                                             <button type="button" class="btn btn-primary"
                                                     data-toggle="modal"
                                                     data-target="#cadastrarGrupo"
-                                                    style="margin-left: -69px;"
+                                                    style="margin-left: -69px; width: 90px;"
                                                     onclick="atribuirGrupoId('subgrupo2_{{$count_subgrupo1}}_select', 'subgrupo3_id', 'subgrupo3_{{$count_subgrupo2}}_select');">
-                                                Novo
+                                                Novo SG-3
                                             </button>
                                         </div>
                                         <ul style="margin: 0px;" id="subgrupo2_{{$count_subgrupo1}}_ul">
@@ -146,16 +146,16 @@
                                                                     {{ $count_subgrupo2 }},
                                                                     {{ $count_subgrupo3 }},
                                                                             'estrutura[0][itens][{{$count_subgrupo}}][itens][{{$count_subgrupo1}}][itens][{{$count_subgrupo2}}][itens]')">
-                                                                <i class="fa fa-plus" aria-hidden="true"></i> Serviço
+                                                                <i class="fa fa-plus" aria-hidden="true"></i> Serviços
                                                             </button>
                                                         </div>
                                                         <div class="col-md-1">
                                                             <button type="button" class="btn btn-primary"
                                                                     data-toggle="modal"
                                                                     data-target="#cadastrarGrupo"
-                                                                    style="margin-left: -72px;"
+                                                                    style="margin-left: -72px; width: 90px;"
                                                                     onclick="atribuirGrupoId('subgrupo3_{{$count_subgrupo2}}_select', 'servico_id', 'subgrupo4_{{$count_subgrupo3}}_select');">
-                                                                Novo
+                                                                Novo SER
                                                             </button>
                                                         </div>
                                                         <ul style="margin: 0px;" id="subgrupo3_{{$count_subgrupo2}}_ul">
@@ -228,6 +228,15 @@
                 <i class="fa fa-plus" aria-hidden="true"></i> SubGrupo-1
             </button>
         </div>
+        {{--<div class="col-md-1">--}}
+            {{--<button type="button" class="btn btn-primary"--}}
+                    {{--data-toggle="modal"--}}
+                    {{--data-target="#cadastrarGrupo"--}}
+                    {{--style="margin-left: -62px; width: 90px;"--}}
+                    {{--onclick="atribuirGrupoId('select_grupo_0_select', 'subgrupo1_id', 'subgrupo1_0_select');">--}}
+                {{--Novo SG-1--}}
+            {{--</button>--}}
+        {{--</div>--}}
         <ul id="select_grupo_0_ul">
         </ul>
     @endif
@@ -293,15 +302,16 @@
         });
 
         $("form").submit(function (event) {
+            startLoading();
             if (bloco_aberto) {
                 event.preventDefault();
+                stopLoading();
                 swal('Existe um bloco em aberto', '', 'error');
             }
-            $('.overlay').remove();
         });
 
-                @if(isset($count))
-        var count = {!! json_encode($count) !!};
+        @if(isset($count))
+            var count = {!! json_encode($count) !!};
         @endif
 
         function addSubItem(id_atual, nivel1, nivel2, nivel3, nivel4, nome) {
@@ -311,7 +321,7 @@
             var adicionar = '';
             var novo = '';
             bloco_aberto = true;
-            console.log(id_atual, nivel1, nivel2, nivel3, nivel4, nome);
+            console.log(nivel1, nivel2, nivel3, nivel4);
             if (nivel1 != null && nivel2 != null && nivel3 != null && nivel4 != null) {
                 length = count[nivel1][nivel2][nivel3][nivel4].length;
                 nivel = 4;
@@ -353,12 +363,14 @@
                     '<i class="fa fa-plus" aria-hidden="true"></i> SubGrupo-2' +
                     '</button>';
 
-                novo = '<button type="button" ' +
-                    'class="btn btn-primary" ' +
-                    'data-toggle="modal" ' +
-                    'data-target="#cadastrarGrupo" ' +
-                    'style="margin-left: -65px;" ' +
-                    'onclick="">Novo</button>';
+//                novo = '<button type="button" ' +
+//                    'class="btn btn-primary" ' +
+//                    'data-toggle="modal" ' +
+//                    'data-target="#cadastrarGrupo" ' +
+//                    'style="margin-left: -65px; width: 90px;" ' +
+//                    'onclick="atribuirGrupoId(\'subgrupo1_'+nivel1+'_select\',\'subgrupo2_id\', \'subgrupo2_'+length+'_select\')">' +
+//                    'Novo SG-2' +
+//                    '</button>';
             }
 
             if (nivel == 2) {
@@ -369,12 +381,14 @@
                     '<i class="fa fa-plus" aria-hidden="true"></i> SubGrupo-3' +
                     '</button>';
 
-                novo = '<button type="button" ' +
-                    'class="btn btn-primary" ' +
-                    'data-toggle="modal" ' +
-                    'data-target="#cadastrarGrupo" ' +
-                    'style="margin-left: -69px;" ' +
-                    'onclick="">Novo</button>';
+//                novo = '<button type="button" ' +
+//                    'class="btn btn-primary" ' +
+//                    'data-toggle="modal" ' +
+//                    'data-target="#cadastrarGrupo" ' +
+//                    'style="margin-left: -69px; width: 90px;" ' +
+//                    'onclick="atribuirGrupoId(\'subgrupo2_'+nivel2+'_select\',\'subgrupo3_id\', \'subgrupo3_'+length+'_select\')">' +
+//                    'Novo SG-3' +
+//                    '</button>';
             }
 
             if (nivel == 3) {
@@ -385,12 +399,14 @@
                     '<i class="fa fa-plus" aria-hidden="true"></i> Serviços' +
                     '</button>';
 
-                novo = '<button type="button" ' +
-                    'class="btn btn-primary" ' +
-                    'data-toggle="modal" ' +
-                    'data-target="#cadastrarGrupo" ' +
-                    'style="margin-left: -72px;" ' +
-                    'onclick="">Novo</button>';
+//                novo = '<button type="button" ' +
+//                    'class="btn btn-primary" ' +
+//                    'data-toggle="modal" ' +
+//                    'data-target="#cadastrarGrupo" ' +
+//                    'style="margin-left: -72px; width: 90px;" ' +
+//                    'onclick="atribuirGrupoId(\'subgrupo3_'+nivel3+'_select\',\'servico_id\', \'subgrupo4_'+length+'_select\')">' +
+//                    'Novo SER' +
+//                    '</button>';
             }
 
             if (nivel == 4) {
@@ -414,21 +430,21 @@
                     });
 
                     selectHTML = '' +
-                        '<div class="col-md-8" style="padding-bottom: 5px;">' +
                         '<li style="list-style-type: none; margin: 0px;" id="subgrupo' + nivel + '_' + length + '">' +
+                        '<div class="col-md-8" style="padding-bottom: 5px;">' +
                         '<select class="form-control select2 estrutura_' + nivel + '" onchange="percorreBloco()" name="' + nome + '[' + length + '][id]" id="subgrupo' + nivel + '_' +nivel1+'_'+nivel2+'_'+nivel3+'_'+nivel4+'_' + length + '_select">' +
                         options +
                         '</select>' +
-                        '</li>' +
                         '</div>' +
-                        '<div class="col-md-3">' +
+                        '<div class="col-md-4">' +
                         adicionar +
                         '</div>' +
-                        '<div class="col-md-1">' +
-                        novo +
-                        '</div>' +
+//                        '<div class="col-md-1">' +
+//                        novo +
+//                        '</div>' +
                         '<ul id="subgrupo' + nivel + '_' +nivel1+'_'+nivel2+'_'+nivel3+'_'+nivel4+'_' + length + '_ul">' +
-                        '</ul>';
+                        '</ul>' +
+                        '</li>';
                     $('#' + id_atual + '_ul').append(selectHTML);
                     $('.overlay').remove();
 
@@ -488,6 +504,10 @@
                         bloco_aberto = true;
                         return false;
                     }
+//                    console.log('aki', $(this).parent().closest('ul'));
+//                    if($(this).parent().closest('ul').length){
+//                        console.log()
+//                    }
                     if (!$('.estrutura_2').length) {
                         bloco_aberto = true;
                         return false;
@@ -527,7 +547,6 @@
             var nome = $('#nome').val();
             var grupo_anterior = $('#grupo_anterior').val();
             var grupo_atual = $('#grupo_atual').val();
-
             $.ajax({
                 url: '{{route('admin.mascaraPadraoEstruturas.novo-grupo')}}',
                 data: {
@@ -537,8 +556,7 @@
                     'grupo_atual': grupo_atual
                 }
             }).done(function (retorno) {
-                console.log(retorno);
-                if(retorno){
+                if(retorno.grupo){
                     swal("Cadastro realizado com sucesso!", "", "success");
 
                     $('#codigo').val('');
@@ -548,9 +566,9 @@
                     // Atualiza o select para pegar o novo grupo inserido
                     att_select = $('#append_select').val();
                     $('#'+att_select).append('<option value="'+retorno.grupo.id+'">'+ retorno.grupo.nome +'</option>');
-                }else{
-                    swal("O campo código e nome são obrigatórios.", "", "info");
                 }
+            }).fail(function (){
+                swal("O campo código e nome são obrigatórios.", "", "info");
             });
         }
 
@@ -583,6 +601,7 @@
          * @param atual = É o grupo que vai ser cadastrado
          */
         function atribuirGrupoId(anterior, atual, proximo) {
+            console.log(proximo);
             $('#grupo_atual').val(atual);
             $('#append_select').val(proximo);
             console.log('proximo 1', $('#append_select').val());

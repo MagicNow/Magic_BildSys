@@ -14,6 +14,7 @@ use App\Models\Servico;
 use App\Models\Insumo;
 use App\Models\InsumoGrupo;
 use App\Models\MascaraPadrao;
+use App\Models\TipoLevantamento;
 use App\Repositories\Admin\MascaraPadraoInsumoRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
@@ -37,37 +38,9 @@ class MascaraPadraoInsumoController extends AppBaseController
      * @param MascaraPadraoInsumoDataTable $mascaraPadraoInsumoDataTable
      * @return Response
      */
-    public function index(MascaraPadraoInsumoDataTable $mascaraPadraoInsumoDataTable)
+    public function index(MascaraPadraoInsumoDataTable $mascaraPadraoInsumoDataTable, $id)
     {
-        return $mascaraPadraoInsumoDataTable->render('admin.mascara_padrao_insumos.index');
-    }
-
-    /**
-     * Show the form for creating a new MascaraPadraoInsumo.
-     *
-     * @return Response
-     */
-    public function create()
-    {
-        $grupoInsumos = InsumoGrupo::where('active', true)->pluck('nome', 'id')->toArray();
-		
-		$grupos = Grupo::orderBy("codigo")
-            //->select(DB::raw('concat(codigo, " - ", nome) as nome_grupo'), 'id')
-			->select(DB::raw('codigo'), 'id')
-			->where('grupos.grupo_id', '<>', null)
-            ->get()
-            ->pluck('nome_grupo', 'id');
-		
-		$servicos = Servico::orderBy("codigo")
-            //->select(DB::raw('concat(codigo, " - ", nome) as nome_servico'), 'id')
-			->select(DB::raw('codigo'), 'id')
-			->where('servicos.grupo_id', '<>', null)
-            ->get()
-            ->pluck('nome_servico', 'id');
-		
-		$mascaraPadrao = MascaraPadrao::pluck('nome', 'id')->toArray();
-        		
-        return view('admin.mascara_padrao_insumos.create', compact('grupoInsumos', 'mascaraPadrao', 'grupos', 'servicos'));
+        return $mascaraPadraoInsumoDataTable->mascaraPadrao($id)->render('admin.mascara_padrao_insumos.index');
     }
 
     /**
@@ -90,6 +63,7 @@ class MascaraPadraoInsumoController extends AppBaseController
                 ],
                 [
                     'mascara_padrao_estrutura_id' => $request->mascara_padrao_estrutura_id,
+                    'tipo_levantamento_id' => ($request->tipo_levantamento_id) ? $request->tipo_levantamento_id : null,
                     'codigo_estruturado' => $estrutura->codigo . '.' . $insumo->codigo,
                     'insumo_id' => $request->id,
                     'coeficiente' => ($request->coeficiente) ? money_to_float($request->coeficiente) : null,
@@ -100,75 +74,6 @@ class MascaraPadraoInsumoController extends AppBaseController
         }else{
             return response()->json(['error'=>true]);
         }
-    }
-
-    /**
-     * Display the specified MascaraPadraoInsumo.
-     *
-     * @param  int $id
-     *
-     * @return Response
-     */
-    public function show($id)
-    {
-        $mascaraPadraoInsumo = $this->mascaraPadraoInsumoRepository->findWithoutFail($id);
-
-        if (empty($mascaraPadraoInsumo)) {
-            Flash::error('Máscara Padrão / Insumos'.trans('common.not-found'));
-
-            return redirect(route('admin.mascara_padrao_insumos.index'));
-        }
-
-        return view('admin.mascara_padrao_insumos.show')->with('mascaraPadraoInsumo', $mascaraPadraoInsumo);
-    }
-
-    /**
-     * Show the form for editing the specified MascaraPadraoInsumo.
-     *
-     * @param  int $id
-     *
-     * @return Response
-     */
-    public function edit($id)
-    {
-        $mascaraPadraoInsumo = $this->mascaraPadraoInsumoRepository->findWithoutFail($id);
-		
-		$mascaraPadrao = MascaraPadrao::pluck('nome', 'id')->toArray();
-		
-		$insumos = Insumo::where('active', true)->pluck('nome', 'id')->toArray();
-
-        if (empty($mascaraPadraoInsumo)) {
-            Flash::error('Máscara Padrão / Insumos'.trans('common.not-found'));
-
-            return redirect(route('admin.mascara_padrao_insumos.index'));
-        }
-
-        return view('admin.mascara_padrao_insumos.edit', compact('mascaraPadraoInsumo','mascaraPadrao','insumos'));
-    }
-
-    /**
-     * Update the specified MascaraPadraoInsumo in storage.
-     *
-     * @param  int              $id
-     * @param UpdateMascaraPadraoInsumoRequest $request
-     *
-     * @return Response
-     */
-    public function update($id, UpdateMascaraPadraoInsumoRequest $request)
-    {
-        $mascaraPadraoInsumo = $this->mascaraPadraoInsumoRepository->findWithoutFail($id);
-
-        if (empty($mascaraPadraoInsumo)) {
-            Flash::error('Máscara Padrão / Insumos'.trans('common.not-found'));
-
-            return redirect(route('admin.mascara_padrao_insumos.index'));
-        }
-
-        $mascaraPadraoInsumo = $this->mascaraPadraoInsumoRepository->update($request->all(), $id);
-
-        Flash::success('Máscara Padrão / Insumos'.trans('common.updated').' '.trans('common.successfully').'.');
-
-        return redirect(route('admin.mascara_padrao_insumos.index'));
     }
 
     /**
@@ -194,147 +99,4 @@ class MascaraPadraoInsumoController extends AppBaseController
 
         return redirect(route('admin.mascara_padrao_insumos.index'));
     }
-	
-	/**
-     * Display the specified MascaraPadraoInsumo without association with any Insumos
-     *
-     * @return Response
-     */	
-    public function semInsumoView(SemMascaraPadraoInsumoDataTable $semMascaraPadraoInsumoDataTable)
-    {
-		$grupoInsumos = InsumoGrupo::where('active', true)->pluck('nome', 'id')->toArray();
-
-		$insumos = Insumo::where('active', true)->pluck('nome', 'id')->toArray();
-
-        return $semMascaraPadraoInsumoDataTable->render('admin.mascara_padrao_insumos.sem_insumo', compact('grupoInsumos', 'insumos'));   
-    }
-
-    public function deleteBlocoView()
-    {
-        $mascaraPadrao = MascaraPadrao::pluck('nome', 'id')->toArray();
-		
-//        $grupoInsumos = InsumoGrupo::select([
-//            'insumo_grupos.nome',
-//            'insumo_grupos.id'
-//            ])
-//            ->join('insumos','insumos.insumo_grupo_id','=', 'insumo_grupos.id')
-//            ->join('mascara_padrao_insumos','mascara_padrao_insumos.insumo_id','insumos.id')
-//            ->pluck('nome','id')->toArray();
-
-        return view('admin.mascara_padrao_insumos.blocoview', compact('mascaraPadrao'));
-    }
-
-    public function buscaGrupoInsumo($mascara_padrao_id)
-    {
-        $grupoInsumos = InsumoGrupo::select([
-            'insumo_grupos.nome',
-            'insumo_grupos.id'
-        ])
-        ->join('insumos', 'insumos.insumo_grupo_id', '=', 'insumo_grupos.id')
-        ->join('mascara_padrao_insumos', 'mascara_padrao_insumos.insumo_id', 'insumos.id')
-        ->where('mascara_padrao_insumos.mascara_padrao_id', $mascara_padrao_id)
-        ->where('insumos.active', true)
-        ->where('insumo_grupos.active', true)
-        ->pluck('nome', 'id')
-        ->toArray();
-        return $grupoInsumos;
-    }
-
-    public function deleteBloco(Request $request)
-    {
-        $removendo = false;
-        if($request->mascara_padrao_id && $request->grupo_insumo_id) {
-            $removendo = MascaraPadraoInsumo::whereRaw(
-                'insumo_id IN
-                (SELECT id
-                    FROM insumos
-                    WHERE insumo_grupo_id = ' . $request->grupo_insumo_id . ')
-            ')
-                ->where('mascara_padrao_id', $request->mascara_padrao_id)
-                ->delete();
-        }
-
-        return Response()->json(['success' => $removendo]);
-    }
-
-    public function getInsumos($grupo_insumo_id)
-    {
-        $insumos = Insumo::select([
-            'insumos.id',
-            'insumos.nome'
-        ])
-            ->join('insumo_grupos', 'insumo_grupos.id', '=', 'insumos.insumo_grupo_id')
-            ->where('insumos.insumo_grupo_id', $grupo_insumo_id)
-            ->where('insumos.active', true)
-            ->where('insumo_grupos.active', true)
-            ->get();
-
-        return $insumos;
-    }
-	
-	public function getGrupos($id, Request $request)
-    {
-        $grupo = Grupo::select([
-            'grupos.id',
-            DB::raw("CONCAT(grupos.codigo, ' ', grupos.nome) as nome")
-        ])
-        //->join('orcamentos', 'orcamentos.'.$request->campo_join, '=', 'grupos.id')
-        ->where('grupos.grupo_id', $id)
-        ->orderBy('grupos.nome', 'ASC');
-
-        /*if($request->obra_id == 'todas') {
-            $obras = Obra::orderBy('nome', 'ASC')
-                ->whereHas('users', function($query){
-                    $query->where('user_id', auth()->id());
-                })
-                ->whereHas('contratos')
-                ->pluck('id', 'id')
-                ->toArray();
-
-            $grupo = $grupo->whereIn('orcamentos.obra_id', $obras);
-        } else {
-            $grupo = $grupo->where('orcamentos.obra_id', $request->obra_id);
-        }*/
-
-        $grupo = $grupo->pluck('grupos.nome','grupos.id')
-            ->toArray();
-
-        return $grupo;
-    }
-    
-	public function getServicos($id, Request $request)
-    {
-        $servico = Servico::select([
-            'servicos.id',
-            DB::raw("CONCAT(servicos.codigo, ' ', servicos.nome) as nome")
-        ])
-        //->join('orcamentos', 'orcamentos.servico_id', '=', 'servicos.id')
-        ->where('servicos.grupo_id', $id)
-        ->orderBy('servicos.nome', 'ASC');
-
-        /*if($request->obra_id == 'todas') {
-            $obras = Obra::orderBy('nome', 'ASC')
-                ->whereHas('users', function($query){
-                    $query->where('user_id', auth()->id());
-                })
-                ->whereHas('contratos')
-                ->pluck('id', 'id')
-                ->toArray();
-
-            $servico = $servico->whereIn('orcamentos.obra_id', $obras);
-        } else {
-            $servico = $servico->where('orcamentos.obra_id', $request->obra_id);
-        }*/
-        
-        if($request->insumo_id) {
-            $servico = $servico->whereHas('insumos', function($query) use ($request) {
-                $query->where('insumos.id', $request->insumo_id);
-            });
-        }
-
-        $servico = $servico->pluck('nome', 'id')->toArray();
-
-        return $servico;
-    }
-
 }

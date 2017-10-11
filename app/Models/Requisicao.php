@@ -43,7 +43,6 @@ class Requisicao extends Model
         'id' => 'integer',
         'obra_id' => 'integer',
         'user_id' => 'integer',
-        'user_id' => 'integer',
         'local' => 'string',
         'torre' => 'string',
         'pavimento' => 'string',
