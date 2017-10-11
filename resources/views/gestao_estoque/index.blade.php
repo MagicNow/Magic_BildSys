@@ -53,36 +53,38 @@
                     </thead>
 
                     <tbody>
-                        <tr align="left">
-                            <td>Obra</td>
-                            <td>Local</td>
-                            <td>Cód</td>
-                            <td>Insumo</td>
-                            <td>Un de medida</td>
-                            <td>Em estoque</td>
-                            <td>Previsto</td>
-                            <td>Aplicado</td>
+                        @foreach($estoque as $item)
+                            <tr align="left">
+                                <td>{{$item->obra->nome}}</td>
+                                <td></td>
+                                <td>{{$item->insumo->codigo}}</td>
+                                <td>{{$item->insumo->nome}}</td>
+                                <td>{{$item->insumo->unidade_sigla}}</td>
+                                <td>{{float_to_money($item->qtdEmEstoque(), '')}}</td>
+                                <td>{{float_to_money($item->qtdPrevista(), '')}}</td>
+                                <td>{{float_to_money($item->qtdAplicada(), '')}}</td>
 
-                            <td nowrap>Solicitado</td>
-                            <td nowrap>Em preparo</td>
-                            <td nowrap>Em Trânsito</td>
+                                <td nowrap>{{float_to_money($item->qtdRequisitada(), '')}}</td>
+                                <td nowrap>{{float_to_money($item->qtdEmSeparacao(), '')}}</td>
+                                <td nowrap>{{float_to_money($item->qtdEmTransito(), '')}}</td>
 
-                            <td nowrap>Tranferência</td>
-                            <td nowrap>Empréstimo</td>
+                                <td nowrap></td>
+                                <td nowrap></td>
 
-                            <td nowrap>Prevista</td>
-                            <td nowrap>Real / Projeção</td>
-                            <td nowrap>Concluído</td>
-                            <td nowrap>Farol</td>
+                                <td nowrap></td>
+                                <td nowrap></td>
+                                <td nowrap></td>
+                                <td nowrap></td>
 
-                            <td nowrap>Evolução Física</td>
+                                <td nowrap></td>
 
-                            <td nowrap>Contratado</td>
-                            <td nowrap>Realizado</td>
-                            <td nowrap>Saldo</td>
-                            <td nowrap>Projeção de término</td>
-                            <td nowrap>Ajustes</td>
-                        </tr>
+                                <td nowrap>{{float_to_money($item->qtdContratada(), '')}}</td>
+                                <td nowrap>{{float_to_money($item->qtdRealizada(), '')}}</td>
+                                <td nowrap>{{float_to_money( ($item->qtdContratada() - $item->qtdRealizada()), '')}}</td>
+                                <td nowrap></td>
+                                <td nowrap></td>
+                            </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>
