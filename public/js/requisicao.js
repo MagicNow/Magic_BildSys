@@ -553,6 +553,16 @@ $(function () {
 
     })
 
+    $(document).on('click', '.js-btn-impressao-qrcode-insumo', function(e) {
+
+        e.preventDefault();
+
+        var href = $(this).attr('href');
+        var qtde_qrcodes = $('#qtde_qrcodes').val();
+
+        window.open(href+'&qtde_qrcodes='+qtde_qrcodes, '_blank');
+    })
+
 
     function addHidden(form, name, apartamento, comodo, id_levantamento, value, idItem) {
 

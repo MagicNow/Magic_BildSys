@@ -285,6 +285,11 @@ elixir(function (mix) {
     mix.scripts([
         'quadro-de-concorrencia-actions.js',
     ], 'public/js/qc-actions.js');
+
+
+    mix.scripts([
+        'requisicao.js',
+    ], 'public/js/requisicao.js');
     
 });
 

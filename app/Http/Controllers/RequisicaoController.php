@@ -682,11 +682,10 @@ class RequisicaoController extends AppBaseController
 
             $r->orderBy('apartamento', 'comodo');
 
-            $item = $r->get();
+            $item = $r->first();
 
         }
 
-        //dd($item);
-        return response()->view('requisicao.impressao_qrcode',compact('item','all'));
+        return response()->view('requisicao.impressao_qrcode',compact('item','all', 'request'));
     }
 }
