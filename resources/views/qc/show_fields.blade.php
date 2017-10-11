@@ -64,26 +64,25 @@
             <i class="fa fa-paperclip"></i> ANEXOS
         </div>
         <div class="box-body">
-            <ul>
-                @foreach($attachments as $title => $anexos)
-                    <li>
-                        <div class="h4">
-                            {{ $title }}
-                        </div>
-                        @foreach($anexos as $anexo)
-                            <ul>
-                                <li>
-                                    {{ $anexo->descricao }}
-                                    &nbsp;
-                                    <a target="_blank" class="label label-primary" href="{{ $anexo->link }}">
-                                         <i class="fa fa-paperclip"></i> Link
-                                    </a>
-                                </li>
-                            </ul>
-                        @endforeach
-                    </li>
+            @foreach($attachments as $title => $anexos)
+                <div class="h4">
+                    {{ $title }}
+                </div>
+                @foreach($anexos as $anexo)
+                    <ul>
+                        <li>
+                            {{ $anexo->descricao ? $anexo->descricao : 'Anexo ' . $anexo->id }}
+                            <a target="_blank" class="label label-primary" href="{{ $anexo->link }}">
+                                <i class="fa fa-paperclip"></i> Link
+                            </a>
+                            &nbsp;
+                            <a download class="label label-warning" href="{{ $anexo->link }}">
+                                <i class="fa fa-download"></i> Download
+                            </a>
+                        </li>
+                    </ul>
                 @endforeach
-            </ul>
+            @endforeach
         </div>
     </div>
 </div>

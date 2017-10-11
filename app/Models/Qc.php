@@ -193,10 +193,17 @@ class Qc extends Model
 
     public function aprova($isAprovado)
     {
+        $newStatus = $isAprovado
+                ? QcStatus::EM_CONCORRENCIA
+                : QcStatus::REPROVADO;
+
         $this->update([
-            'qc_status_id' => $isAprovado
-                ? QcStatus::APROVADO
-                : QcStatus::REPROVADO
+            'qc_status_id' => $newStatus
+        ]);
+
+        $this->logs()->create([
+            'qc_status_id' => $newStatus,
+            'user_id' => auth()->id(),
         ]);
     }
 

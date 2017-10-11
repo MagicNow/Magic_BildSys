@@ -148,14 +148,14 @@ class QcDataTable extends DataTable
     protected function getColumns()
     {
         return [
-			'created_at' => ['name' => 'created_at', 'data' => 'created_at', 'title' => 'Data'],
+            'id' => ['name' => 'id', 'data' => 'id', 'title' => 'Nro Q.C.'],
+            'obra' => ['name' => 'obra_id', 'data' => 'obra_nome', 'title' => 'Obra'],
+            'carteira_id' => ['name' => 'carteira_id', 'data' => 'carteira_nome', 'title' => 'Carteira'],
             'tipologia_id' => ['name' => 'tipologia_id', 'data' => 'tipologia_nome', 'title' => 'Tipologia'],
             'status_nome' => ['name' => 'status_nome', 'data' => 'status_nome', 'title' => 'Status'],
-            'carteira_id' => ['name' => 'carteira_id', 'data' => 'carteira_nome', 'title' => 'Carteira'],
-            'descricao' => ['name' => 'descricao', 'data' => 'descricao', 'title' => 'Descrição do serviço'],
-            'obra' => ['name' => 'obra_id', 'data' => 'obra_nome', 'title' => 'Obra'],
-            'valor_pre_orcamento' => ['name' => 'valor_pre_orcamento', 'data' => 'valor_pre_orcamento', 'title' => 'Valor Pré-Orçamento'],
+			'created_at' => ['name' => 'created_at', 'data' => 'created_at', 'title' => 'Data'],
             'valor_orcamento_inicial' => ['name' => 'valor_orcamento_inicial', 'data' => 'valor_orcamento_inicial', 'title' => 'Valor Orçamento Inicial'],
+            'valor_pre_orcamento' => ['name' => 'valor_pre_orcamento', 'data' => 'valor_pre_orcamento', 'title' => 'Valor Pré-Orçamento'],
 			'action' => ['name' => 'Ações', 'title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'15%', 'class' => 'all']
 		];
     }

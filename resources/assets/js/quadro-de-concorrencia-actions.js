@@ -38,19 +38,17 @@ function checkAttachmentTypeExists () {
 	const $attachmentsFieldsFile = $attachmentsFields.find('input[type="file"]');
 	const $attachmentsFieldsButton = $attachmentsFields.find('.qc-anexos-novo');
 
-	let qc = 0;
-
-	$attachments.find('select').each(function(i, el) {
-		if (el.value == 'Quadro de concorrência') {
-			qc++;
-		}
-	});
+  let qc = $attachments.find('select')
+    .filter(function(i, el) {
+      return el.value === 'Quadro de concorrência'
+    })
+    .size();
 
 	if ($attachmentsFieldsFile.val() !== '' && $attachmentsFieldsSelect.val() !== '' && qc <= 1) {
 		$attachmentsFieldsButton.removeAttr('disabled');
 	} else {
 		if ($attachmentsFieldsFile.val() !== '' && $attachmentsFieldsSelect.val() !== '' && qc > 1) {
-			alert('Somente é possível anexar um Q.C.');
+      swal('', 'Você só pode anexar um arquivo de Quadro de Concorrência', 'warning');
 			$attachmentsFieldsSelect.prop('selectedIndex', 0);
 		}
 	}
