@@ -107,6 +107,10 @@ class MascaraPadraoEstruturaController extends AppBaseController
     {
         $input = $request->all();
         $mascaraPadraoEstrutura = $this->mascaraPadraoEstruturaRepository->create($input);
+        if(isset($mascaraPadraoEstrutura['error'])){
+            Flash::error('ERRO: '. $mascaraPadraoEstrutura['error']. ' </br> Msg: Tem blocos que não foi inserido até o nível de "serviço"');
+            return back();
+        }
 
         Flash::success('Máscara Padrão Estrutura '.trans('common.saved').' '.trans('common.successfully').'.');
 
@@ -175,30 +179,6 @@ class MascaraPadraoEstruturaController extends AppBaseController
         return $mascaraPadraoRelacionarInsumoDataTable->mp($mascaraPadraoEstrutura->mascara_padrao_id)->render('admin.mascara_padrao_estruturas.insumos',compact('mascaraPadraoEstrutura','selectMascaraPadraoEstruturas'));
     }
 
-    /**
-     * Remove the specified MascaraPadraoEstrutura from storage.
-     *
-     * @param  int $id
-     *
-     * @return Response
-     */
-    public function destroy($id)
-    {
-        $mascaraPadraoEstrutura = $this->mascaraPadraoEstruturaRepository->findWithoutFail($id);
-
-        if (empty($mascaraPadraoEstrutura)) {
-            Flash::error('Mascara Padrao Estrutura '.trans('common.not-found'));
-
-            return redirect(route('admin.mascaraPadraoEstruturas.index'));
-        }
-
-        $this->mascaraPadraoEstruturaRepository->delete($id);
-
-        Flash::success('Mascara Padrao Estrutura '.trans('common.deleted').' '.trans('common.successfully').'.');
-
-        return redirect(route('admin.mascaraPadraoEstruturas.index'));
-    }
-
     public function getGrupos($id)
     {
         $grupos = Grupo::select([
@@ -236,6 +216,7 @@ class MascaraPadraoEstruturaController extends AppBaseController
      */
     public function cadastrarGrupo(Request $request)
     {
+//        dd($request->all());
         $novo_grupo = [];
         if ($request->codigo && $request->nome) {
             if($request->grupo_anterior) {
@@ -265,7 +246,6 @@ class MascaraPadraoEstruturaController extends AppBaseController
                 }
             }
         }
-
         return response()->json(['grupo' => $novo_grupo]);
     }
 }
