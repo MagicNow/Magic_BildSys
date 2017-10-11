@@ -27,7 +27,7 @@ O sistema SYS será um sistema que integrará informações do ERP MEGA, porém 
 
 <table>
   <tr>
-    <td width="25%">Tecnologia</td>
+    <td>Tecnologia</td>
     <td>Requisito e versão</td>
   </tr>
   <tr>
