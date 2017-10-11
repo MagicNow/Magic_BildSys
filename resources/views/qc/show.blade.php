@@ -3,7 +3,10 @@
 @section('content')
     <section class="content-header">
         <h1>
-            Q.C.
+            @if($emAprovacao)
+                Aprovação de
+            @endif
+            Q.C. Alvulso
             @include('qc.aprovacao')
         </h1>
     </section>

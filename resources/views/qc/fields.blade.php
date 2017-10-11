@@ -44,39 +44,38 @@
 	{!! Form::textarea('descricao', NULL, ['class' => 'form-control', 'required'=>'required']) !!}
 </div>
 
-<fieldset class="col-sm-12 qc-anexos">
-	<legend>Anexos</legend>
-	<div class="row">
-		<div class="col-sm-3">
-			<h5>Arquivo:</h5>
-		</div>
-		<div class="col-sm-3">
-			<h5>Tipo:</h5>
-		</div>
-		<div class="col-sm-5">
-			<h5>Descrição:</h5>
-		</div>
-		<div class="col-md-1">
-			<h5>&nbsp;</h5>
-		</div>
+<div class="col-sm-12">
+	<div class="box box-muted">
+        <div class="box-header with-border">
+            <i class="fa fa-paperclip"></i> ANEXOS
+        </div>
+	    <div class="box-body qc-anexos">
+	        <div class="form-group row qc-anexos-campos">
+	        	<div class="col-sm-3">
+	                   {!! Form::label('', 'Arquivo:') !!}
+	                   {!! Form::file('anexo_arquivo[]', array('id' => 'file', 'class' => 'form-control', 'multiple' => true)) !!}
+	        	</div>
+	        	<div class="col-sm-3">
+	                   {!! Form::label('', 'Tipo:') !!}
+	        		{!! Form::select('anexo_tipo[]', ['' => 'Escolha...', 'Proposta' => 'Proposta', 'Quadro de concorrência' => 'Quadro de concorrência', 'Email' => 'Email', 'Detalhamento do Projeto' => 'Detalhamento do Projeto'], NULL, ['class' => 'form-control']) !!}
+	        	</div>
+	        	<div class="col-sm-5">
+                   {!! Form::label('', 'Descrição:') !!}
+	        		{!! Form::text('anexo_descricao[]', NULL, ['class' => 'form-control']) !!}
+	        	</div>
+	        	<div class="col-md-1 text-center">
+                    <label>&nbsp;</label>
+	        		<button
+                        type="button"
+                        class="btn qc-anexos-novo btn-default center-block"
+                        disabled="disabled">
+                        <i class="fa fa-plus"></i>
+                    </button>
+	        	</div>
+	        </div>
+	    </div>
 	</div>
-	<div class="form-group row qc-anexos-campos">
-		<div class="col-sm-3">
-			<div class="{{ $errors->has('anexo_arquivo') ? 'has-error' : '' }}">
-				{!! Form::file('anexo_arquivo[]', array('id' => 'file', 'class' => 'form-control', 'multiple' => true)) !!}
-			</div>
-		</div>
-		<div class="col-sm-3">
-			{!! Form::select('anexo_tipo[]', ['' => 'Escolha...', 'Proposta' => 'Proposta', 'Quadro de concorrência' => 'Quadro de concorrência', 'Email' => 'Email', 'Detalhamento do Projeto' => 'Detalhamento do Projeto'], NULL, ['class' => 'form-control']) !!}
-		</div>
-		<div class="col-sm-5">
-			{!! Form::text('anexo_descricao[]', NULL, ['class' => 'form-control']) !!}
-		</div>
-		<div class="col-md-1 text-center">
-			<button type="button" class="fa fa-plus btn qc-anexos-novo" disabled="disabled"></button>
-		</div>
-	</div>
-</fieldset>
+</div>
 
 <!-- Submit Field -->
 <div class="form-group col-sm-12">

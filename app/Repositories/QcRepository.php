@@ -68,7 +68,7 @@ class QcRepository extends BaseRepository
                 ];
             })
             ->map(function ($anexo) use ($qcAnexoRepository, $qc) {
-                $destinationPath = CodeRepository::saveFile($anexo['file'], 'qc/' . $qc->id);
+                $destinationPath = $anexo['file']->store('qc_anexos/' . date('Y') . '/' . date('m') . '/' . $qc->id, 'public');
 
                 $attach = $qcAnexoRepository->create([
                     'qc_id' => $qc->id,

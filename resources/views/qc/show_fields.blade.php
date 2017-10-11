@@ -58,27 +58,32 @@
     </div>
 @endif
 
-@if (isset($attachments) && !empty($attachments))
-    <fieldset class="col-sm-12 table-responsive">
-        <legend>Anexos</legend>
-        @foreach ($attachments as $key => $attachment)
-            <h5 style="color: #000; font-size: 16px;">{{ $key }}</h5>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <td class="col-sm-10 text-left"><strong>Descrição</strong></td>
-                        <td class="col-sm-1"><strong>Ações</strong></td>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($attachment as $item)
-                        <tr>
-                            <td class="text-left">{{ $item->descricao }}</td>
-                            <td><a href="{{ url(str_replace('public', 'storage', $item->arquivo)) }}" target="_blank" title="Download" class="btn"><i class="fa fa-paperclip" aria-hidden="true"></i></td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        @endforeach
-    </fieldset>
-@endif
+<div class="col-sm-12">
+    <div class="box box-muted">
+        <div class="box-header with-border">
+            <i class="fa fa-paperclip"></i> ANEXOS
+        </div>
+        <div class="box-body">
+            <ul>
+                @foreach($attachments as $title => $anexos)
+                    <li>
+                        <div class="h4">
+                            {{ $title }}
+                        </div>
+                        @foreach($anexos as $anexo)
+                            <ul>
+                                <li>
+                                    {{ $anexo->descricao }}
+                                    &nbsp;
+                                    <a target="_blank" class="label label-primary" href="{{ $anexo->link }}">
+                                         <i class="fa fa-paperclip"></i> Link
+                                    </a>
+                                </li>
+                            </ul>
+                        @endforeach
+                    </li>
+                @endforeach
+            </ul>
+        </div>
+    </div>
+</div>
