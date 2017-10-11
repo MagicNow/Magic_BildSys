@@ -1503,14 +1503,24 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             return View('requisicao.ler_qr_code');
         });
 
+        # Processo de saída
         $router->group(['middleware' => 'needsPermission:requisicao.processo_saida'], function () use ($router) {
-            # Processo de Saída
             $router->get('requisicao/processo-saida/{requisicao}', ['as' => 'requisicao.processoSaida', 'uses' => 'RequisicaoController@processoSaida']);
             $router->get('requisicao/processo-saida/{requisicao}/ler-insumo-saida', ['as' => 'requisicao.lerInsumoSaida', 'uses' => 'RequisicaoController@lerInsumoSaida']);
             $router->get('requisicao/processo-saida/ler-insumo-saida/salvar-leitura', ['as' => 'requisicao.salvarLeituraSaida', 'uses' => 'RequisicaoController@salvarLeituraSaida']);
             $router->get('requisicao/processo-saida/{requisicao}/lista-de-inconsistencia', ['as' => 'requisicao.listaInconsistencia', 'uses' => 'RequisicaoController@listaInconsistencia']);
             $router->get('requisicao/processo-saida/lista-de-inconsistencia/excluir-leitura', ['as' => 'requisicao.excluirLeitura', 'uses' => 'RequisicaoController@excluirLeitura']);
             $router->get('requisicao/processo-saida/{requisicao}/finalizar_saida', ['as' => 'requisicao.finalizarSaida', 'uses' => 'RequisicaoController@finalizarSaida']);
+        });
+
+        # Aplicação de estoque
+        $router->group(['middleware' => 'needsPermission:requisicao.aplicacao_estoque'], function () use ($router) {
+            $router->get('requisicao/aplicacao-estoque/local', function() {
+                return View('requisicao.aplicacao_estoque.index');
+            });
+            $router->get('requisicao/aplicacao-estoque/local/salvar-leitura', ['as' => 'requisicao.salvarLeituraAplicacaoLocal', 'uses' => 'RequisicaoController@salvarLeituraAplicacaoLocal']);
+            $router->get('requisicao/aplicacao-estoque/insumo/{local_aplicacao}', ['as' => 'requisicao.aplicacaoEstoqueInsumo', 'uses' => 'RequisicaoController@aplicacaoEstoqueInsumo']);
+            $router->get('requisicao/aplicacao-estoque/local/salvar-insumo', ['as' => 'requisicao.salvarLeituraAplicacaoInsumo', 'uses' => 'RequisicaoController@salvarLeituraAplicacaoInsumo']);
         });
     });
 
@@ -1561,3 +1571,27 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
 
 #Image Controller
 $router->get('imagem', 'ImageController@index');
+
+$router->get('requisicao/get-pavimentos-obra/{obra}/torre/{torre}', ['as' => 'requisicao.pavimentosObra', 'uses' => 'RequisicaoController@getPavimentosByObraAndTorre']);
+$router->get('requisicao/get-trechos-obra/{obra}/torre/{torre}/pavimento/{pavimento}', ['as' => 'requisicao.trechoObra', 'uses' => 'RequisicaoController@getTrechoByObraTorrePavimento']);
+$router->get('requisicao/get-andares-obra/{obra}/torre/{torre}/pavimento/{pavimento}', ['as' => 'requisicao.andarObra', 'uses' => 'RequisicaoController@getAndarByObraTorrePavimento']);
+$router->get('requisicao/get-insumos', ['as' => 'requisicao.getInsumos', 'uses' => 'RequisicaoController@getInsumos']);
+$router->get('requisicao/get-insumos-obra/', ['as' => 'requisicao.insumosObra', 'uses' => 'RequisicaoController@getInsumos']);
+$router->get('requisicao/get-insumos-obra/comodo', ['as' => 'requisicao.insumosObraComodo', 'uses' => 'RequisicaoController@getInsumosByComodo']);
+$router->get('requisicao/modal/impressao-qrcode', ['as' => 'requisicao.modalQrCode', 'uses' => 'RequisicaoController@modalQrCode']);
+$router->get('requisicao/impressao-qrcode', ['as' => 'requisicao.impressaoQrCode', 'uses' => 'RequisicaoController@impressaoQrCode']);
+
+$router->get('/requisicao/ler-qr-cod', function() {
+    return View('requisicao.ler_qr_code');
+});
+
+$router->resource('requisicao', 'RequisicaoController');
+
+# Processo de Saída
+$router->get('requisicao/processo-saida/{requisicao}', ['as' => 'requisicao.processoSaida', 'uses' => 'RequisicaoController@processoSaida']);
+
+$router->get('requisicao/processo-saida/{requisicao}/ler-insumo-saida', ['as' => 'requisicao.lerInsumoSaida', 'uses' => 'RequisicaoController@lerInsumoSaida']);
+$router->get('requisicao/processo-saida/ler-insumo-saida/salvar-leitura', ['as' => 'requisicao.salvarLeituraSaida', 'uses' => 'RequisicaoController@salvarLeituraSaida']);
+$router->get('requisicao/processo-saida/{requisicao}/lista-de-inconsistencia', ['as' => 'requisicao.listaInconsistencia', 'uses' => 'RequisicaoController@listaInconsistencia']);
+$router->get('requisicao/processo-saida/lista-de-inconsistencia/excluir-leitura', ['as' => 'requisicao.excluirLeitura', 'uses' => 'RequisicaoController@excluirLeitura']);
+$router->get('requisicao/processo-saida/{requisicao}/finalizar_saida', ['as' => 'requisicao.finalizarSaida', 'uses' => 'RequisicaoController@finalizarSaida']);

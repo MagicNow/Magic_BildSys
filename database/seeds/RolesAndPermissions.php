@@ -221,6 +221,7 @@ class RolesAndPermissions extends Seeder
             'requisicao.edit'   => 'Edição de requisição',
             'requisicao.delete'   => 'Remoção de requisição',
             'requisicao.processo_saida'   => 'Processo de saída',
+            'requisicao.aplicacao_estoque'   => 'Aplicação de estoque',
 
             ################# SITE ###################
 

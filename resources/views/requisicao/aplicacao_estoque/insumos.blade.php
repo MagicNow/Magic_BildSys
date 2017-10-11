@@ -54,7 +54,14 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalDadoQrCodeLabel">Leitor QRCode</h5>
+                <h5 class="modal-title" id="modalDadoQrCodeLabel">
+                    <p style="text-align: center;">
+                        <b>
+                            Leitor QRCode<br>
+                            Aplicação de Insumos da Requisição
+                        </b>
+                    </p>
+                </h5>
             </div>
             <div class="modal-body">
                 <span id="dados_qr_code">
@@ -63,12 +70,16 @@
             </div>
             <div class="modal-footer">
                 <div class="btn-group btn-group-justified">
-                    <a href="/requisicao/processo-saida/{{$requisicao->id}}" class="btn btn-danger">Cancelar</a>
-                    <a href="#" class="btn btn-success" onclick="salvarLeitura(0);" data-dismiss="modal">Confirmar</a>
+                    <a href="/requisicao/aplicacao-estoque/local" class="btn btn-danger">Cancelar</a>
+                    <a href="#" class="btn btn-success" onclick="salvarLeitura();">Confirmar</a>
                 </div>
 
                 <div class="btn-group btn-group-justified" style="margin-top: 10px;">
-                    <a href="#" class="btn btn-primary" onclick="salvarLeitura(1);" data-dismiss="modal">Confirmar e ler o próximo</a>
+                    <a href="#" class="btn btn-primary" onclick="salvarLeitura();" data-dismiss="modal">Confirmar e ler o próximo</a>
+                </div>
+
+                <div class="btn-group btn-group-justified" style="margin-top: 10px;">
+                    <a href="/requisicao/aplicacao-estoque/local" class="btn btn-warning">Finalizar leitura da aplicação</a>
                 </div>
             </div>
         </div>
@@ -76,39 +87,49 @@
 </div>
 
 <script>
-    var nome_funcao_executar = 'lerInsumo';
+    var nome_funcao_executar = 'lerLocal';
 
-    function lerInsumo(dados_qr_code) {
+    function lerLocal(dados_qr_code) {
         $('#dados_qr_code').html(dados_qr_code);
         $('#modalDadoQrCode').modal('show');
         $('.app__dialog-close').click();
     }
 
-    function salvarLeitura(continuar) {
+    function salvarLeitura() {
         var dados_qr_code = $('#dados_qr_code').text();
         var existe_parametro = dados_qr_code.indexOf('Dados QR Code: ');
 
         if (existe_parametro > -1) {
             var dados = dados_qr_code.split('Dados QR Code: ')[dados_qr_code.split('Dados QR Code:').length -1];
             if(dados) {
-                $.ajax('{{ route('requisicao.salvarLeituraSaida') }}', {
+                $.ajax('{{ route('requisicao.salvarLeituraAplicacaoInsumo') }}', {
                     data: {
                         dados: dados
                     }
-                })
-                .done(function (retorno) {
+                }).done(function(retorno) {
                     if(retorno.sucesso) {
-                        if(!continuar) {
-                            window.location = '{{ route('requisicao.processoSaida', $requisicao->id) }}';
-                        }
+                        swal({
+                            title: 'QR Code lido com sucesso',
+                            text: "",
+                            type: "success",
+                            confirmButtonColor: "#DD6B55"
+                        });
                     } else {
                         swal({
                             title: 'QR Code Inválido',
-                            text: "Não existe este item na requisição.",
+                            text: retorno.erros,
                             type: "info",
+                            html: true,
                             confirmButtonColor: "#DD6B55"
                         });
                     }
+                }).fail(function() {
+                    swal({
+                        title: 'QR Code Inválido',
+                        text: "Este QR Code não possuí os dados necessários.",
+                        type: "info",
+                        confirmButtonColor: "#DD6B55"
+                    });
                 });
             }
         } else {
