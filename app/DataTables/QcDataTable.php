@@ -118,7 +118,6 @@ class QcDataTable extends DataTable
                 'language'=> [
                     "url"=> asset("vendor/datatables/Portuguese-Brasil.json")
                 ],
-                // Ordena para que inicialmente carregue os mais novos
                 'order' => [
                     0,
                     'desc'
@@ -149,6 +148,7 @@ class QcDataTable extends DataTable
     protected function getColumns()
     {
         return [
+			'created_at' => ['name' => 'created_at', 'data' => 'created_at', 'title' => 'Data'],
             'tipologia_id' => ['name' => 'tipologia_id', 'data' => 'tipologia_nome', 'title' => 'Tipologia'],
             'status_nome' => ['name' => 'status_nome', 'data' => 'status_nome', 'title' => 'Status'],
             'carteira_id' => ['name' => 'carteira_id', 'data' => 'carteira_nome', 'title' => 'Carteira'],
@@ -156,7 +156,6 @@ class QcDataTable extends DataTable
             'obra' => ['name' => 'obra_id', 'data' => 'obra_nome', 'title' => 'Obra'],
             'valor_pre_orcamento' => ['name' => 'valor_pre_orcamento', 'data' => 'valor_pre_orcamento', 'title' => 'Valor Pré-Orçamento'],
             'valor_orcamento_inicial' => ['name' => 'valor_orcamento_inicial', 'data' => 'valor_orcamento_inicial', 'title' => 'Valor Orçamento Inicial'],
-			'created_at' => ['name' => 'created_at', 'data' => 'created_at', 'title' => 'Data'],
 			'action' => ['name' => 'Ações', 'title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'15%', 'class' => 'all']
 		];
     }

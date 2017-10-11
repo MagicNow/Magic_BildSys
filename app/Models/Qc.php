@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\QcStatus;
 
 class Qc extends Model
 {
@@ -34,54 +35,6 @@ class Qc extends Model
             'message' => $message,
             'link'    => route('qc.show', $this->id),
         ];
-    }
-
-    public function irmaosIds()
-    {
-        return [$this->attributes['id'] => $this->attributes['id']];
-    }
-
-    public function idPai()
-    {
-        return null;
-    }
-
-    public function aprovacoes()
-    {
-        return $this->morphMany(WorkflowAprovacao::class, 'aprovavel');
-    }
-
-    public function paiEmAprovacao()
-    {
-        return false;
-    }
-
-    public function confereAprovacaoGeral()
-    {
-        return false;
-    }
-
-    public function qualObra()
-    {
-        return $this->attributes['obra_id'];
-    }
-
-    public function aprova($isAprovado)
-    {
-    }
-
-    public function dataUltimoPeriodoAprovacao()
-    {
-        $ultimoStatusAprovacao = $this->logs()
-          ->where('qc_status_id', QcStatus::EM_APROVACAO)
-          ->orderBy('created_at', 'DESC')
-          ->first();
-
-        if ($ultimoStatusAprovacao) {
-            return $ultimoStatusAprovacao->created_at;
-        }
-
-        return null;
     }
 
 	public $fillable = [
@@ -207,4 +160,58 @@ class Qc extends Model
 
         return in_array($this->qc_status_id, $status);
     }
+
+    public function irmaosIds()
+    {
+        return [$this->attributes['id'] => $this->attributes['id']];
+    }
+
+    public function idPai()
+    {
+        return null;
+    }
+
+    public function aprovacoes()
+    {
+        return $this->morphMany(WorkflowAprovacao::class, 'aprovavel');
+    }
+
+    public function paiEmAprovacao()
+    {
+        return false;
+    }
+
+    public function confereAprovacaoGeral()
+    {
+        return false;
+    }
+
+    public function qualObra()
+    {
+        return $this->attributes['obra_id'];
+    }
+
+    public function aprova($isAprovado)
+    {
+        $this->update([
+            'qc_status_id' => $isAprovado
+                ? QcStatus::APROVADO
+                : QcStatus::REPROVADO
+        ]);
+    }
+
+    public function dataUltimoPeriodoAprovacao()
+    {
+        $ultimoStatusAprovacao = $this->logs()
+          ->where('qc_status_id', QcStatus::EM_APROVACAO)
+          ->orderBy('created_at', 'DESC')
+          ->first();
+
+        if ($ultimoStatusAprovacao) {
+            return $ultimoStatusAprovacao->created_at;
+        }
+
+        return null;
+    }
+
 }

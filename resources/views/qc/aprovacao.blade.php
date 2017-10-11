@@ -39,10 +39,29 @@
                                 <h4 class="modal-title">Observações do Aprovador</h4>
                             </div>
                             <div class="modal-body">
-                                {{--<textarea class="form-control" id="obs-aprovador"
-                                data-set="obs_aprova_qc" rows="15"></textarea>--}}
-                                <textarea class="form-control" id="obs-aprovador"
-                                    data-key="qc_obs_{{ auth()->id() }}_{{ $qc->id }}" rows="15"></textarea>
+                                <textarea
+                                    class="form-control"
+                                    id="obs-aprovador"
+                                    data-key="qc_obs_{{ auth()->id() }}_{{ $qc->id }}"
+                                    rows="15"></textarea>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" onclick="workflowAprovaReprova({{ $qc->id }},
+                                    'Qc',1,'blocoItemAprovaReprova{{ $qc->id }}',
+                                    'Q.C. {{ $qc->id }}',0, '', '', true);"
+                                    class="btn btn-success btn-flat"
+                                    title="Aprovar">
+                                    Aprovar Q.C.
+                                    <i class="fa fa-check" aria-hidden="true"></i>
+                                </button>
+                                <button type="button" onclick="workflowAprovaReprova({{ $qc->id }},
+                                    'Qc',0, 'blocoItemAprovaReprova{{ $qc->id }}',
+                                    'Q.C. {{ $qc->id }}',0, '', '', true);"
+                                    class="btn btn-danger btn-flat"
+                                    title="Reprovar Este item">
+                                    Reprovar Q.C.
+                                    <i class="fa fa-times" aria-hidden="true"></i>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -50,11 +69,15 @@
             @else
                 @if($workflowAprovacao['jaAprovou'])
                     @if($workflowAprovacao['aprovacao'])
-                        <span class="btn-lg btn-flat text-success" title="Aprovado por você">
+                        <span class="btn-lg btn-flat text-success"
+                            title="Aprovado por você"
+                            data-toggle="tooltip">
                             <i class="fa fa-check" aria-hidden="true"></i>
                         </span>
                     @else
-                        <span class="text-danger btn-lg btn-flat" title="Reprovado por você">
+                        <span class="text-danger btn-lg btn-flat"
+                            title="Reprovado por você"
+                            data-toggle="tooltip">
                             <i class="fa fa-times" aria-hidden="true"></i>
                         </span>
                     @endif
@@ -70,7 +93,7 @@
         @endif
     @endif
 
-<small class="label label-default pull-right margin10">
+<small class="label label-white pull-right margin10">
     <i class="fa fa-circle"
         aria-hidden="true"
         style="color:{{ $qc->status->cor }}"></i>
