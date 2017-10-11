@@ -46,9 +46,21 @@ class QcController extends AppBaseController
      * @return Response
      */
     public function index(QcDataTable $qcDataTable) {
-        return $qcDataTable->render(
-            'qc.index'
-        );
+        $obras = Obra::pluck('nome','id')
+            ->prepend('Filtrar por obra...', '');
+        $tipologias = Tipologia::pluck('nome','id')
+            ->prepend('Filtrar por tipologia...', '');
+
+        $status = [
+            '' => 'Filtrar por status...',
+            QcStatus::EM_APROVACAO => 'Em Validação',
+            QcStatus::REPROVADO => 'Reprovado',
+            QcStatus::APROVADO => 'Aprovado',
+            QcStatus::EM_CONCORRENCIA => 'Em Negociação',
+            QcStatus::FINALIZADO => 'Finalizada',
+        ];
+
+        return $qcDataTable->render('qc.index', compact('obras', 'tipologias', 'status'));
     }
 
     /**

@@ -56,30 +56,16 @@ class QcDataTable extends DataTable
 
         $request = $this->request();
 
-        if(!is_null($request->days)) {
-            $query->whereDate(
-                'qc.created_at',
-                '>=',
-                Carbon::now()->subDays($request->days)->toDateString()
-            );
+        if($request->obra_id) {
+            $query->where('obra_id', $request->obra_id);
         }
 
-        if($request->data_start) {
-            if(strpos($request->data_start, '/')){
-                $query->whereDate(
-                    'qc.created_at',
-                    '>=',
-                    Carbon::createFromFormat('d/m/Y', $request->data_start)->toDateString()
-                );
-            }
+        if($request->qc_status_id) {
+            $query->where('qc_status_id', $request->qc_status_id);
         }
 
-        if($request->data_end) {
-            $query->whereDate(
-                'qc.created_at',
-                '<=',
-                Carbon::createFromFormat('d/m/Y', $request->data_end)->toDateString()
-            );
+        if($request->tipologia_id) {
+            $query->where('tipologia_id', $request->tipologia_id);
         }
 
         return $this->applyScopes($query);
