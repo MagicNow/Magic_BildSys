@@ -47,16 +47,31 @@
 @section('scripts')
     @parent
     <script type="text/javascript">
+        function carregaMoney() {
+            console.log('entrei aqui');
+            $('.money').maskMoney({
+                allowNegative: true,
+                thousands: '.',
+                decimal: ','
+            });
+
+            $(".select2").select2({
+                theme: 'bootstrap',
+                placeholder: "-",
+                language: "pt-BR",
+                allowClear: true
+            });
+        }
+
         function adicionarInsumo(id){
             if(!$('#mascara_padrao_estrutura_id').val()) {
                 swal('Ops!','Escolha uma estrutura de máscara padrão.', 'info');
             }
-
             var coeficiente = $("input[name='coeficiente_"+id+"']").val();
             var indireto = $("input[name='indireto_"+id+"']").val();
             var mascara_padrao_estrutura_id = $('#mascara_padrao_estrutura_id').val();
+            var tipo_levantamento_id = $("select[name='tipo_levantamento_"+id+"']").val();
             var _token = $('meta[name="csrf-token"]').attr('content');
-
             $.ajax({
                 // rota
                 url: "{{route('admin.mascara_padrao_insumos.store')}}",
@@ -66,12 +81,17 @@
                     'coeficiente': coeficiente,
                     'indireto': indireto,
                     'mascara_padrao_estrutura_id': mascara_padrao_estrutura_id,
+                    'tipo_levantamento_id': tipo_levantamento_id,
                     '_token': _token
                 },
                 type : "POST"
             }).done(function (retorno){
-                // success
-                window.LaravelDataTables["dataTableBuilder"].draw(false);
+                if(retorno.success) {
+                    window.LaravelDataTables["dataTableBuilder"].draw(false);
+                    $(document).on('draw.dt', function() {
+                        carregaMoney();
+                    });
+                }
             }).fail(function (){
                 // error
                 swal('Ops...', 'Não foi possível salvar o insumo', 'error');

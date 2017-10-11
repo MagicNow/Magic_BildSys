@@ -53,6 +53,7 @@ class RequisicaoItem extends Model
         'andar' => 'string',
         'apartamento' => 'string',
         'comodo' => 'string',
+        'status_id' => 'integer',
 
     ];
 

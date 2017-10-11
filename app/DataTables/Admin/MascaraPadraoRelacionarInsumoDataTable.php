@@ -3,6 +3,7 @@
 namespace App\DataTables\Admin;
 
 use App\Models\Insumo;
+use App\Models\TipoLevantamento;
 use Yajra\Datatables\Services\DataTable;
 
 class MascaraPadraoRelacionarInsumoDataTable extends DataTable
@@ -22,6 +23,15 @@ class MascaraPadraoRelacionarInsumoDataTable extends DataTable
             })
             ->editColumn('indireto', function($obj){
                 return "<input type='text' class='form-control money' name='indireto_$obj->id'>";
+            })
+            ->editColumn('levantamento', function($obj){
+                $tipos = TipoLevantamento::whereNull('deleted_at')->get();
+
+                $options = '<option value="">Selecione</option>';
+                foreach($tipos as $item){
+                    $options .= '<option value="'.$item->id.'"> '.$item->nome.' </option>';
+                }
+                return '<select class="form-control select2" name="tipo_levantamento_'.$obj->id.'">'.$options.'</select>';
             })
             ->make(true);
     }
@@ -64,6 +74,7 @@ class MascaraPadraoRelacionarInsumoDataTable extends DataTable
             ->parameters([
                 'responsive'=> 'true',
                 'initComplete' => 'function () {
+                    carregaMoney();
                     max = this.api().columns().count();
                     this.api().columns().every(function (col) {
                         if((col+3)<max){
@@ -102,11 +113,12 @@ class MascaraPadraoRelacionarInsumoDataTable extends DataTable
     protected function getColumns()
     {
         return [
-            'Código' => ['name' => 'codigo', 'data' => 'codigo'],
-            'nome' => ['name' => 'nome', 'data' => 'nome'],
-            'Coeficiente' => ['name' => 'coeficiente', 'data' => 'coeficiente', 'searchable' => false],
-            'Indireto' => ['name' => 'indireto', 'data' => 'indireto', 'searchable' => false],
-            'action' => ['name' => 'Ações', 'title' => 'Salvar', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10px', 'class' => 'all'],
+            'Código' => ['name' => 'codigo', 'data' => 'codigo', 'width'=> '5%'],
+            'nome' => ['name' => 'nome', 'data' => 'nome', 'width'=> '40%'],
+            'Coeficiente' => ['name' => 'coeficiente', 'data' => 'coeficiente', 'searchable' => false, 'width'=> '5%' ],
+            'Indireto' => ['name' => 'indireto', 'data' => 'indireto', 'searchable' => false, 'width'=> '5%'],
+            'levantamento' => ['name' => 'levantamento', 'title' => 'levantamento', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=> '40%'],
+            'action' => ['name' => 'Ações', 'title' => 'Salvar', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=> '5%'],
         ];
     }
 

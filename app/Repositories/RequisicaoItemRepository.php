@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Requisicao;
 use App\Models\RequisicaoItem;
+use App\Models\RequisicaoItemLog;
 use Illuminate\Support\Facades\DB;
 use InfyOm\Generator\Common\BaseRepository;
 
@@ -41,6 +42,7 @@ class RequisicaoItemRepository extends BaseRepository
             e.qtde estoque, 
             e.id estoque_id ,
             IF(ri.comodo <> " ","true","false") as temComodo,
+            ri.requisicao_id,
             ri.apartamento,
             ri.comodo,
             ri.id'));
@@ -89,8 +91,8 @@ class RequisicaoItemRepository extends BaseRepository
                 $html .= '<td></td>';
             }
 
-            $html .= '<td><button type="button" class="btn btn-primary" data-id="' . $insumo->insumo_id . '" >
-                    Imprimir
+            $html .= '<td><button type="button" class="btn btn-primary js-btn-impressao-modal" data-requisicao="' . $insumo->requisicao_id . '" data-estoque="'.$insumo->estoque_id.'" data-comodo = "'.$insumo->temComodo.'" >
+                    <i class="fa fa-print" aria-hidden="true"></i> Imprimir
                 </button></td>';
 
             $html .= '</tr>';
@@ -241,6 +243,63 @@ class RequisicaoItemRepository extends BaseRepository
         $insumos = $r->first();
 
         return $insumos ? $insumos->previsto : null;
+    }
+
+
+    public function updateRequisicaoItem(array $input) {
+
+         try {
+
+            $insumos = json_decode($input['insumos']);
+
+            foreach ($insumos as $insumo) {
+
+                if ($insumo->qtde > 0) {
+
+                    $item = parent::find($insumo->id);
+
+                    RequisicaoItemLog::create([
+                        'requisicao_itens_id' => $item->id,
+                        'qtde_anterior' => $item->qtde,
+                        'qtde_nova' => $insumo->qtde,
+                        'status_id_anterior' => '',
+                        'status_id_novo' => '',
+                        'user_id' => auth()->id(),
+                    ]);
+
+                    $item->update([
+                        'qtde' => $insumo->qtde,
+                    ]);
+                }
+            }
+
+            $comodos = json_decode($input['comodos']);
+
+            foreach ($comodos as $comodo) {
+
+                if ($comodo->qtde > 0) {
+
+                    $item = parent::find($comodo->id);
+
+                    RequisicaoItemLog::create([
+                        'requisicao_itens_id' => $item->id,
+                        'qtde_anterior' => $item->qtde,
+                        'qtde_nova' => $comodo->qtde,
+                        'status_id_anterior' => '',
+                        'status_id_novo' => '',
+                        'user_id' => auth()->id(),
+                    ]);
+
+                    $item->update([
+                        'qtde' => $comodo->qtde,
+                    ]);
+                }
+            }
+
+        } catch (Exception $e) {
+
+            throw $e;
+        }
     }
 
 }

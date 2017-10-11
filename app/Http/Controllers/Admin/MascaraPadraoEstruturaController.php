@@ -112,7 +112,7 @@ class MascaraPadraoEstruturaController extends AppBaseController
         Flash::success('Máscara Padrão Estrutura '.trans('common.saved').' '.trans('common.successfully').'.');
 
         if ($request->get('save') != 'save-continue') {
-            return redirect(route('admin.mascaraPadraoEstruturas.index'));
+            return redirect(route('admin.mascara_padrao.index'));
         } else {
             # $request->btn_insumo click é do botão adicionar insumos
             if(!$request->btn_insumo) {
@@ -309,20 +309,6 @@ class MascaraPadraoEstruturaController extends AppBaseController
     public function cadastrarGrupo(Request $request)
     {
         $novo_grupo = [];
-
-        /**
-         * "codigo_grupo" => "02"
-         * "nome_grupo" => "CUSTO TOTAL"
-         * "subgrupo_de" => ""
-         * "subgrupo_de_nome" => "subgrupo1_id"
-         *
-         *
-         * "codigo" => "teste"
-         * "nome" => "teste"
-         * "grupo_anterior" => "600"
-         * "grupo_atual" => "subgrupo1_id"
-         */
-
         if ($request->codigo && $request->nome) {
             if($request->grupo_anterior) {
                 $grupo = Grupo::find($request->grupo_anterior); // # Busca grupo

@@ -75,7 +75,7 @@ class RequisicaoDataTable extends DataTable
                         }
                     });
                 }' ,
-                'dom' => 'Bfrtip',
+                'dom' => 'Bfrltip',
                 'scrollX' => false,
                 'language'=> [
                     "url"=> asset("vendor/datatables/Portuguese-Brasil.json")
@@ -106,16 +106,16 @@ class RequisicaoDataTable extends DataTable
     private function getColumns()
     {
         return [
-            'Id' => ['name' => 'id', 'data' => 'id'],
+            'Id Requisição' => ['name' => 'id', 'data' => 'id'],
             'data' => ['name' => 'created_at', 'data' => 'created_at'],
-            'obra' => ['name' => 'obra', 'data' => 'obra'],
-            'local' => ['name' => 'local', 'data' => 'local'],
-            'torre' => ['name' => 'torre', 'data' => 'torre'],
-            'pavimento' => ['name' => 'pavimento', 'data' => 'pavimento'],
-            'trecho' => ['name' => 'trecho', 'data' => 'trecho'],
-            'andar' => ['name' => 'andar', 'data' => 'andar'],
-            'solicitante' => ['name' => 'usuário', 'data' => 'usuario'],
-            'status' => ['name' => 'status', 'data' => 'status'],
+            'solicitante' => ['name' => 'users.name', 'data' => 'usuario'],
+            'status' => ['name' => 'requisicao_status.nome', 'data' => 'status'],
+//            'obra' => ['name' => 'obra', 'data' => 'obra'],
+//            'local' => ['name' => 'local', 'data' => 'local'],
+//            'torre' => ['name' => 'torre', 'data' => 'torre'],
+//            'pavimento' => ['name' => 'pavimento', 'data' => 'pavimento'],
+//            'trecho' => ['name' => 'trecho', 'data' => 'trecho'],
+//            'andar' => ['name' => 'andar', 'data' => 'andar'],
             'action' => ['name'=>'Ações', 'title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%', 'class' => 'all']
         ];
     }
