@@ -89,6 +89,68 @@ label {
 
 .twitter-typeahead .tt-highlight {}
 
+/**********************************************************
+ *     MELHORIAS NO CSSS  *
+ **********************************************************/
+
+.table > caption + thead > tr:first-child > th, .table > colgroup + thead >
+tr:first-child > th, .table > thead:first-child > tr:first-child > th, .table >
+caption + thead > tr:first-child > td, .table > colgroup + thead > tr:first-child > td, .table >
+thead:first-child > tr:first-child > td {
+    border-top: 0;
+    font-size: 12px;
+    font-weight: 600;
+}
+.table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: #f9f9f9;
+    font-size: 12px;
+    font-weight: 500;
+}
+.table-striped > tbody > tr:nth-of-type(even) {
+    font-size: 12px;
+    font-weight: 500;
+}
+
+table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > td:first-child:before, table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > th:first-child:before {
+    top: 50%;
+
+}
+.sidebar-mini.sidebar-collapse .sidebar-menu> li:hover> a> span:not(.pull-right), .sidebar-mini.sidebar-collapse .sidebar-menu> li:hover> .treeview-menu {
+    display: block !important;
+    position: absolute;
+    width: 245px;
+    left: 50px;
+    font-size: 12px;
+
+}
+.table > caption + thead > tr:first-child > th, .table > colgroup + thead > tr:first-child > th, .table > thead:first-child > tr:first-child > th, .table > caption + thead > tr:first-child > td, .table > colgroup + thead > tr:first-child > td, .table > thead:first-child > tr:first-child > td {
+    border-top: 0;
+    font-size: 11px;
+    font-weight: 600;
+}
+.form-control {
+    font-size: 12px;
+}
+.btn-lg, .btn-group-lg > .btn {
+    padding: 10px 16px;
+    font-size: 14px;
+    line-height: 1.3333333;
+    border-radius: 6px;
+}
+.btn{    font-size: 12px;
+         font-weight: 500
+         }
+.skin-yellow .sidebar-menu > li > .treeview-menu {
+
+    margin-top: -3px;
+}
+.content-header > h1 {
+
+    font-size: 20px;
+}
+/**********************************************************
+ *     MELHORIAS NO CSSS  *
+ **********************************************************/
 
 /** Loading **/
 
@@ -198,7 +260,7 @@ a:focus {
 
 body {
   font-family: Raleway;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
   color: #4a4a4a;
   background-color: #f5f5f5;
