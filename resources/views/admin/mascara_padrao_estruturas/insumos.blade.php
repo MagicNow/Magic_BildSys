@@ -47,8 +47,11 @@
 @section('scripts')
     @parent
     <script type="text/javascript">
+        $(document).on('draw.dt', function() {
+            carregaMoney();
+        });
+
         function carregaMoney() {
-            console.log('entrei aqui');
             $('.money').maskMoney({
                 allowNegative: true,
                 thousands: '.',
