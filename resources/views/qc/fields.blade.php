@@ -51,17 +51,17 @@
         </div>
 	    <div class="box-body qc-anexos">
 	        <div class="form-group row qc-anexos-campos">
-	        	<div class="col-sm-3">
-	                   {!! Form::label('', 'Arquivo:') !!}
-	                   {!! Form::file('anexo_arquivo[]', array('id' => 'file', 'class' => 'form-control', 'multiple' => true)) !!}
+	        	<div class="col-sm-5">
+                   {!! Form::label('', 'Descrição:') !!}
+	        		{!! Form::text('anexo_descricao[]', NULL, ['class' => 'form-control']) !!}
 	        	</div>
 	        	<div class="col-sm-3">
 	                   {!! Form::label('', 'Tipo:') !!}
 	        		{!! Form::select('anexo_tipo[]', ['' => 'Escolha...', 'Proposta' => 'Proposta', 'Quadro de concorrência' => 'Quadro de concorrência', 'Email' => 'Email', 'Detalhamento do Projeto' => 'Detalhamento do Projeto'], NULL, ['class' => 'form-control']) !!}
 	        	</div>
-	        	<div class="col-sm-5">
-                   {!! Form::label('', 'Descrição:') !!}
-	        		{!! Form::text('anexo_descricao[]', NULL, ['class' => 'form-control']) !!}
+	        	<div class="col-sm-3">
+	                   {!! Form::label('', 'Arquivo:') !!}
+	                   {!! Form::file('anexo_arquivo[]', array('id' => 'file', 'class' => 'form-control')) !!}
 	        	</div>
 	        	<div class="col-md-1 text-center">
                     <label>&nbsp;</label>

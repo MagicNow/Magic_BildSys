@@ -14,7 +14,8 @@ class AlterQcTable extends Migration
     public function up()
     {
         Schema::table('qc', function (Blueprint $table) {
-            //
+            $table->dropColumn('numero_contrato');
+            $table->string('numero_contrato_mega')->nullable();
         });
     }
 
@@ -26,7 +27,8 @@ class AlterQcTable extends Migration
     public function down()
     {
         Schema::table('qc', function (Blueprint $table) {
-            //
+            $table->string('numero_contrato')->default(0);
+            $table->dropColumn('numero_contrato_mega');
         });
     }
 }

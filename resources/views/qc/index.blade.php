@@ -106,7 +106,7 @@
                             Form::select(
                                 'qc_status_id',
                                 $status,
-                                null,
+                                $defaultStatus,
                                 [
                                     'class' => 'js-filter select2'
                                 ]

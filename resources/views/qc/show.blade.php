@@ -11,7 +11,8 @@
         </h1>
     </section>
     <div class="content">
-        {!! Form::model($qc, ['route' => ['qc.update', $qc->id], 'files' => true]) !!}
+       @include('adminlte-templates::common.errors')
+        {!! Form::open(['route' => ['qc.update', $qc->id], 'files' => true, 'method' => 'patch']) !!}
         <div class="box">
             <div class="box-body">
                 <div class="row">
@@ -24,17 +25,21 @@
                    <i class="fa fa-arrow-left"></i>
                    {{ ucfirst(trans('common.back')) }}
                 </a>
-                @shield('qc.edit')
-                {{--     <button class="btn btn-danger" id="cancelar-qc"> --}}
-                {{--         <i class="fa fa-times"></i> Cancelar Q.C. --}}
-                {{--     </button> --}}
-                {{--     <button class="btn btn-info" id="fechar-qc"> --}}
-                {{--         <i class="fa fa-check-square"></i> Fechar Q.C. --}}
-                {{--     </button> --}}
-                    <button type="submit" class="btn btn-success btn-flat pull-right">
-                        <i class="fa fa-floppy-o"></i> Salvar
-                    </button>
-                @endshield
+                <div class="pull-right">
+                    @if($qc->canClose())
+                        <button class="btn btn-info"
+                            type="button"
+                            id="fechar-qc"
+                            data-id="{{ $qc->id }}">
+                            <i class="fa fa-check-square"></i> Fechar Q.C.
+                        </button>
+                    @endif
+                    @if(isset($workflowAprovacao) && $qc->isEditable($workflowAprovacao))
+                        <button type="submit" class="btn btn-success btn-flat">
+                            <i class="fa fa-floppy-o"></i> Salvar
+                        </button>
+                    @endif
+                </div>
             </div>
         </div>
         {!! Form::close() !!}

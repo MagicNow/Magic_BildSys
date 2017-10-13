@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\QcStatus;
+use Artesaos\Defender\Facades\Defender;
 
 class Qc extends Model
 {
@@ -50,7 +51,7 @@ class Qc extends Model
 		'valor_fechamento',
 		'data_fechamento',
 		'user_id',
-		'numero_contrato',
+		'numero_contrato_mega',
         'qc_status_id'
 	];
 
@@ -71,7 +72,7 @@ class Qc extends Model
 		'valor_orcamento_inicial' => 'float',
 		'valor_fechamento' => 'float',
 		'observacao' => 'string',
-		'numero_contrato' => 'string',
+		'numero_contrato_mega' => 'string',
 		'status' => 'string',
         'deleted_at' => 'datetime',
         'data_fechamento' => 'datetime',
@@ -95,13 +96,14 @@ class Qc extends Model
 		'valor_gerencial' => 'required'
 	];
 
-	/**
-	 * Validation rules
-	 *
-	 * @var array
-	 */
-	public static $rulesUpdate = [
-
+	public static $messages = [
+        'obra_id.required' => 'Selecione a obra',
+        'tipologia_id.required' => 'Selecione a tipologia',
+        'carteira_id.required' => 'Selecione a carteira',
+        'descricao_id.required' => 'Insira a descrição do Q.C.',
+        'valor_pre_orcamento.required' => 'Insira o valor pré orçamento',
+        'valor_gerencial.required' => 'Insira o valor gerencial',
+        'valor_orcamento_inicial.required' => 'Insira o valor do orçamento inicial',
 	];
 
 	public function status()
@@ -202,6 +204,11 @@ class Qc extends Model
         ]);
 
         $this->logs()->create([
+            'qc_status_id' => QcStatus::APROVADO,
+            'user_id' => auth()->id(),
+        ]);
+
+        $this->logs()->create([
             'qc_status_id' => $newStatus,
             'user_id' => auth()->id(),
         ]);
@@ -221,4 +228,30 @@ class Qc extends Model
         return null;
     }
 
+    public function isEditable($workflow)
+    {
+        return Defender::hasPermission('qc.edit')
+            && $workflow['podeAprovar']
+            && $this->qc_status_id === QcStatus::EM_APROVACAO;
+    }
+
+    public function canClose()
+    {
+        return Defender::hasPermission('qc.edit') && $this->qc_status_id === QcStatus::EM_CONCORRENCIA;
+    }
+
+    public function canCancel()
+    {
+        return Defender::hasPermission('qc.edit') && $this->qc_status_id !== QcStatus::CANCELADO;
+    }
+
+    public function canSendQcFechado()
+    {
+        $qcsEnviados = $this->anexos()
+            ->where('tipo', 'Quadro de concorrência')
+            ->count();
+
+        return Defender::hasPermission('qc.edit')
+            && !$qcsEnviados || $qcsEnviados === 1;
+    }
 }

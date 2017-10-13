@@ -12,6 +12,7 @@ use App\Repositories\QcRepository;
 use App\Repositories\QcAnexoRepository;
 use App\Repositories\CodeRepository;
 use App\Http\Requests\CreateQcRequest;
+use App\Http\Requests\UpdateQcRequest;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Obra;
 use App\Models\Carteira;
@@ -60,7 +61,12 @@ class QcController extends AppBaseController
             QcStatus::FINALIZADO => 'Finalizada',
         ];
 
-        return $qcDataTable->render('qc.index', compact('obras', 'tipologias', 'status'));
+        $defaultStatus = QcStatus::EM_APROVACAO;
+
+        return $qcDataTable->render(
+            'qc.index',
+            compact('obras', 'tipologias', 'status', 'defaultStatus')
+        );
     }
 
     /**
@@ -213,7 +219,7 @@ class QcController extends AppBaseController
      *
      * @return Response
      */
-    public function update($id, CreateQcRequest $request)
+    public function update($id, UpdateQcRequest $request)
     {
         $input = $request->except('file');
         $qc = $this->qcRepository->findWithoutFail($id);
@@ -225,20 +231,6 @@ class QcController extends AppBaseController
         }
 
         $qc = $this->qcRepository->update($input, $id);
-
-        if($request->anexo_arquivo) {
-            foreach($request->anexo_arquivo as $key => $file) {
-                $destinationPath = CodeRepository::saveFile($file, 'qc/' . $qc->id);
-
-                $attach = $this->qcAnexoRepository->create([
-                    'arquivo' => $destinationPath,
-                    'tipo' => $request->anexo_tipo[$key],
-                    'descricao' => $request->anexo_descricao[$key],
-                ]);
-
-                $qc->anexos()->save($attach);
-            }
-        }
 
         Flash::success('Q.C. '.trans('common.updated').' '.trans('common.successfully').'.');
 
@@ -285,5 +277,14 @@ class QcController extends AppBaseController
         } else {
             return response()->json(['error' => $acao_executada[1]], 422);
         }
+    }
+
+    public function fechar($id)
+    {
+        $this->qcRepository->fechar($id);
+
+        return response()->json([
+            'success' => true
+        ]);
     }
 }
