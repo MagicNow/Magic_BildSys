@@ -176,7 +176,7 @@ class ComprasDataTable extends DataTable
                                                 <i class="fa fa-info-circle" aria-hidden="true"></i>
                                              </button>';
                     } else {
-                        $preco_unitario = 'R$ ' . $obj->preco_unitario;
+                        $preco_unitario = float_to_money($obj->preco_unitario);
                     }
                     return $preco_unitario;
                 }
