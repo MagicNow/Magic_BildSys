@@ -13,6 +13,7 @@
         body {
             zoom: 75%;
         }
+
         .content-wrapper {
             min-height: 881px !important;
         }
@@ -204,12 +205,8 @@
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
             @include( 'flash::message' )
-            <div style="zoom: 75%;">
-                @yield('content')
-            </div>
+            @yield('content')
         </div>
-
-
 
     </div>
     <!-- Modal -->
