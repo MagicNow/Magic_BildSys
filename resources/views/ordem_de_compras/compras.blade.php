@@ -117,7 +117,7 @@
                                 </div>
                             </div>
 
-                            <h3></h3>
+                            <h3 class="fs20"></h3>
                         </div>
 
                         <div id="calendar"></div>
@@ -134,7 +134,7 @@
                             </div>
 
                             <div class="col-md-12">
-                                <h3>Lembretes</h3>
+                                <h3 class="fs20">Lembretes</h3>
                                 @include('ordem_de_compras.lembretes-home-table')
                             </div>
                         </div>

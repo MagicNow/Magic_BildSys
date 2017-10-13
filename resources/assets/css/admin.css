@@ -21,6 +21,33 @@ label {
  *     typeahead.js v0.11.1 - twitter bootstrap v3.3.5    *
  **********************************************************/
 
+.fs16 {
+  font-size: 16px;
+}
+
+.fs18 {
+  font-size: 18px;
+}
+
+.fs19 {
+  font-size: 19px;
+}
+
+.fs20 {
+  font-size: 20px;
+}
+
+.fs21 {
+  font-size: 21px;
+}
+
+.fs22 {
+  font-size: 22px;
+}
+
+.fs23 {
+  font-size: 23px;
+}
 
 /*root typeahead class*/
 
