@@ -5,6 +5,16 @@
         <h1>
             Gestão de estoque
         </h1>
+
+        <!-- Nome Field -->
+        <div class="form-group col-sm-6">
+            {!! Form::label('visao', 'Visão:') !!}
+            <div class="btn-group">
+                <button onclick="mudaVisao('E');" id="visao_E" class="btn btn-warning" style="width:150px;">Estoque</button>
+                <button onclick="mudaVisao('P');" id="visao_P" class="btn btn-success" style="width:150px;">Perda</button>
+                <button onclick="mudaVisao('C');" id="visao_C" class="btn btn-primary" style="width:150px;">Contrato</button>
+            </div>
+        </div>
     </section>
     <div class="content">
         <div class="clearfix"></div>
@@ -13,56 +23,58 @@
                 <table id="fixTable" class="table table-bordered table-striped table-condensed table-nowrap">
                     <thead>
                     <tr align="center">
-                        <th colspan="8" style="background-color: white;"></th>
-                        <th colspan="3" style="text-align: center;">Em andamento</th>
-                        <th colspan="2" style="background-color: white;"></th>
-                        <th colspan="4" style="text-align: center;">Perda</th>
-                        <th colspan="1" style="background-color: white;"></th>
-                        <th colspan="5" style="text-align: center;">Contrato</th>
+                        <th class="class_visao_E" colspan="1" style="background-color: white;"></th>
+                        <th class="class_visao_P" colspan="1" style="background-color: white;"></th>
+                        <th class="class_visao_E" colspan="6" style="background-color: white;"></th>
+                        <th class="class_visao_P" colspan="3" style="text-align: center;">Em andamento</th>
+                        <th class="class_visao_P" colspan="2" style="background-color: white;"></th>
+                        <th class="class_visao_P" colspan="4" style="text-align: center;">Perda</th>
+                        <th class="class_visao_P" colspan="1" style="background-color: white;"></th>
+                        <th class="class_visao_C" colspan="5" style="text-align: center;">Contrato</th>
                     </tr>
                     <tr align="left">
-                        <th>Obra</th>
-                        <th>Local</th>
-                        <th>Cód</th>
-                        <th>Insumo</th>
-                        <th>Un de medida</th>
-                        <th>Em estoque</th>
-                        <th>Previsto</th>
-                        <th>Aplicado</th>
+                        <th class="class_visao_E">Obra</th>
+                        <th class="class_visao_P">Local</th>
+                        <th class="class_visao_E">Cód</th>
+                        <th class="class_visao_E">Insumo</th>
+                        <th class="class_visao_E">Un de medida</th>
+                        <th class="class_visao_E">Em estoque</th>
+                        <th class="class_visao_P">Previsto</th>
+                        <th class="class_visao_P">Aplicado</th>
 
-                        <th nowrap>Solicitado</th>
-                        <th nowrap>Em preparo</th>
-                        <th nowrap>Em Trânsito</th>
+                        <th class="class_visao_P" nowrap>Solicitado</th>
+                        <th class="class_visao_P" nowrap>Em preparo</th>
+                        <th class="class_visao_P" nowrap>Em Trânsito</th>
 
-                        <th nowrap>Tranferência</th>
-                        <th nowrap>Empréstimo</th>
+                        <th class="class_visao_P" nowrap>Tranferência</th>
+                        <th class="class_visao_P" nowrap>Empréstimo</th>
 
-                        <th nowrap>Prevista</th>
-                        <th nowrap>Real / Projeção</th>
-                        <th nowrap>Concluído</th>
-                        <th nowrap>Farol</th>
+                        <th class="class_visao_P" nowrap>Prevista</th>
+                        <th class="class_visao_P" nowrap>Real / Projeção</th>
+                        <th class="class_visao_P" nowrap>Concluído</th>
+                        <th class="class_visao_P" nowrap>Farol</th>
 
-                        <th nowrap>Evolução Física</th>
+                        <th class="class_visao_P" nowrap>Evolução Física</th>
 
-                        <th nowrap>Contratado</th>
-                        <th nowrap>Realizado</th>
-                        <th nowrap>Saldo</th>
-                        <th nowrap>Projeção de término</th>
-                        <th nowrap>Ajustes</th>
+                        <th class="class_visao_C" nowrap>Contratado</th>
+                        <th class="class_visao_C" nowrap>Realizado</th>
+                        <th class="class_visao_C" nowrap>Saldo</th>
+                        <th class="class_visao_C" nowrap>Projeção de término</th>
+                        <th class="class_visao_C" nowrap>Ajustes</th>
                     </tr>
                     </thead>
 
                     <tbody>
                         @foreach($estoque as $item)
                             <tr align="left">
-                                <td>{{$item->obra->nome}}</td>
-                                <td></td>
-                                <td>{{$item->insumo->codigo}}</td>
-                                <td>{{$item->insumo->nome}}</td>
-                                <td>{{$item->insumo->unidade_sigla}}</td>
+                                <td class="class_visao_E">{{$item->obra->nome}}</td>
+                                <td class="class_visao_P"></td>
+                                <td class="class_visao_E">{{$item->insumo->codigo}}</td>
+                                <td class="class_visao_E">{{$item->insumo->nome}}</td>
+                                <td class="class_visao_E">{{$item->insumo->unidade_sigla}}</td>
                                 @if($item->farolQtdEmEstoque()['porcentagem'])
                                     @if($item->farolQtdEmEstoque()['cor'])
-                                        <td style="background-color:{{$item->farolQtdEmEstoque()['cor']}}">
+                                        <td class="class_visao_E" style="background-color:{{$item->farolQtdEmEstoque()['cor']}}">
                                             <span data-toggle="tooltip"
                                                   title="Atenção, {{float_to_money($item->farolQtdEmEstoque()['porcentagem'], '')}}%  da quantidade mínima."
                                             {{$item->farolQtdEmEstoque()['cor'] == '#000000' ? 'style=color:white' : ''}}>
@@ -70,36 +82,36 @@
                                             </span>
                                         </td>
                                     @else
-                                        <td>{{float_to_money($item->qtdEmEstoque(), '')}}</td>
+                                        <td class="class_visao_E">{{float_to_money($item->qtdEmEstoque(), '')}}</td>
                                     @endif
                                 @else
-                                    <td>
+                                    <td class="class_visao_E">
                                         {{float_to_money($item->qtdEmEstoque(), '')}}
                                         <i title="Inserir quantidade mínima" data-toggle="tooltip" class="fa fa-info-circle text-info" style="font-size: 20px;"></i>
                                     </td>
                                 @endif
-                                <td>{{float_to_money($item->qtdPrevista(), '')}}</td>
-                                <td>{{float_to_money($item->qtdAplicada(), '')}}</td>
+                                <td class="class_visao_P">{{float_to_money($item->qtdPrevista(), '')}}</td>
+                                <td class="class_visao_P">{{float_to_money($item->qtdAplicada(), '')}}</td>
 
-                                <td nowrap>{{float_to_money($item->qtdRequisitada(), '')}}</td>
-                                <td nowrap>{{float_to_money($item->qtdEmSeparacao(), '')}}</td>
-                                <td nowrap>{{float_to_money($item->qtdEmTransito(), '')}}</td>
+                                <td class="class_visao_P" nowrap>{{float_to_money($item->qtdRequisitada(), '')}}</td>
+                                <td class="class_visao_P" nowrap>{{float_to_money($item->qtdEmSeparacao(), '')}}</td>
+                                <td class="class_visao_P" nowrap>{{float_to_money($item->qtdEmTransito(), '')}}</td>
 
-                                <td nowrap></td>
-                                <td nowrap></td>
+                                <td class="class_visao_P" nowrap></td>
+                                <td class="class_visao_P" nowrap></td>
 
-                                <td nowrap></td>
-                                <td nowrap></td>
-                                <td nowrap></td>
-                                <td nowrap></td>
+                                <td class="class_visao_P" nowrap></td>
+                                <td class="class_visao_P" nowrap></td>
+                                <td class="class_visao_P" nowrap></td>
+                                <td class="class_visao_P" nowrap></td>
 
-                                <td nowrap></td>
+                                <td class="class_visao_P" nowrap></td>
 
-                                <td nowrap>{{float_to_money($item->qtdContratada(), '')}}</td>
-                                <td nowrap>{{float_to_money($item->qtdRealizada(), '')}}</td>
-                                <td nowrap>{{float_to_money( ($item->qtdContratada() - $item->qtdRealizada()), '')}}</td>
-                                <td nowrap></td>
-                                <td nowrap></td>
+                                <td class="class_visao_C" nowrap>{{float_to_money($item->qtdContratada(), '')}}</td>
+                                <td class="class_visao_C" nowrap>{{float_to_money($item->qtdRealizada(), '')}}</td>
+                                <td class="class_visao_C" nowrap>{{float_to_money( ($item->qtdContratada() - $item->qtdRealizada()), '')}}</td>
+                                <td class="class_visao_C" nowrap></td>
+                                <td class="class_visao_C" nowrap></td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -114,5 +126,23 @@
         $(function () {
             $("#fixTable").tableHeadFixer({'left' : 8, 'head' : true});
         });
+
+        function mudaVisao($visao) {
+            if($visao == 'E') {
+                $class = 'btn btn-warning';
+            } else if($visao == 'P') {
+                $class = 'btn btn-success';
+            } else {
+                $class = 'btn btn-primary';
+            }
+
+            if($('#visao_'+$visao).attr('class') == 'btn btn-default') {
+                $('#visao_'+$visao).attr('class', $class);
+                $('.class_visao_'+$visao).show();
+            } else {
+                $('#visao_'+$visao).attr('class', 'btn btn-default');
+                $('.class_visao_'+$visao).hide();
+            }
+        }
     </script>
 @endsection
