@@ -254,7 +254,7 @@
     {!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save') ), ['class' => 'btn btn-success pull-right', 'type'=>'submit']) !!}
     {!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save-continue') ), ['name' => 'save', 'value' => 'save-continue', 'class' => 'btn btn-success pull-right', 'type' => 'submit', 'onclick' => '']) !!}
 
-    <a href="{!! route('admin.mascaraPadraoEstruturas.index') !!}" class="btn btn-default"><i
+    <a href="{!! route('admin.mascara_padrao.index') !!}" class="btn btn-default"><i
                 class="fa fa-times"></i> {{ ucfirst( trans('common.cancel') )}}</a>
 </div>
 
