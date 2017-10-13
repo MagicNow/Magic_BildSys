@@ -242,7 +242,11 @@
     <script src="{{ asset('js/app.js') }}" type="text/javascript"></script>
 
     @yield('scripts')
+    @parent
     <script type="text/javascript">
+        $(function () {
+            $('body').css("zoom", "80%");
+        });
         var novoObjeto = null;
         var funcaoPosCreate = null;
         function confirmDelete(frm) {
