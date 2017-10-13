@@ -1,4 +1,12 @@
 @font-face {
+	font-family: 'Abel';
+	font-style: normal;
+	font-weight: 400;
+	src: url(../fonts/Abel-Regular.ttf) format('ttf');
+	unicode-range: U+0-10FFFF;
+}
+
+@font-face {
 	font-family: 'Raleway';
 	font-style: normal;
 	font-weight: 400;
