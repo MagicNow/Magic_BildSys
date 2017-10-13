@@ -125,6 +125,7 @@ class QcController extends AppBaseController
         $dataUltimoPeriodo = $qc->dataUltimoPeriodoAprovacao();
 
         $emAprovacao = $qc->isStatus(QcStatus::EM_APROVACAO);
+        $aprovado = $qc->isStatus(QcStatus::APROVADO);
 
         if(!$dataUltimoPeriodo) {
             $dataUltimoPeriodo = $qc->updated_at;
@@ -225,7 +226,7 @@ class QcController extends AppBaseController
 
         $qc = $this->qcRepository->update($input, $id);
 
-        if($request->anexo_arquivo){
+        if($request->anexo_arquivo) {
             foreach($request->anexo_arquivo as $key => $file) {
                 $destinationPath = CodeRepository::saveFile($file, 'qc/' . $qc->id);
 

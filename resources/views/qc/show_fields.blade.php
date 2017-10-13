@@ -14,6 +14,7 @@
     {!! Form::label('obra_id', 'Obra:') !!}
     <p class="form-control">{!! isset($qc->obra) ? $qc->obra->nome : NULL !!}</p>
 </div>
+
 <!-- Valor Pré Orçamento Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('valor_pre_orcamento', 'Valor Pré Orçamento:') !!}
@@ -32,6 +33,18 @@
     <p class="form-control">{!! float_to_money($qc->valor_gerencial) !!}</p>
 </div>
 
+@shield('qc.edit')
+    <div class="form-group col-sm-6">
+        {!! Form::label('valor_fechamento', 'Valor do Fechamento:') !!}
+        {!! Form::text('valor_fechamento', null, [ 'class' => 'form-control' ]) !!}
+    </div>
+
+    <div class="form-group col-sm-6">
+        {!! Form::label('numero_contrato', 'Número do Contrato (MEGA):') !!}
+        {!! Form::number('numero_contrato', null, [ 'class' => 'form-control' ]) !!}
+    </div>
+@endshield
+
 
 <!-- Descrição Field -->
 <div class="form-group col-sm-12">
@@ -43,20 +56,29 @@
     </div>
 </div>
 
-
-@if (!isset($screen) || $screen !== 'approve')
-    <!-- Created At Field -->
-    <div class="form-group col-md-6">
-        {!! Form::label('created_at', 'Criado em:') !!}
-        <p class="form-control">{!! $qc->created_at->format('d/m/Y') !!}</p>
-    </div>
-
-    <!-- Updated At Field -->
-    <div class="form-group col-md-6">
-        {!! Form::label('updated_at', 'Alterado em:') !!}
-        <p class="form-control">{!! $qc->updated_at->format('d/m/Y') !!}</p>
-    </div>
-@endif
+<div class="col-sm-12">
+	<div class="box box-muted">
+        <div class="box-header with-border">
+            <i class="fa fa-paperclip"></i> ANEXO: Q.C. Fechado
+        </div>
+	    <div class="box-body">
+	        <div class="form-group row qc-anexos-campos">
+	        	<div class="col-sm-4">
+                   {!! Form::label('', 'Descrição:') !!}
+                   {!! Form::text('anexo_descricao[]', 'Q.C. Fechado', ['class' => 'form-control', 'readonly']) !!}
+	        	</div>
+	        	<div class="col-sm-4">
+                   {!! Form::label('', 'Arquivo:') !!}
+                   {!! Form::file('anexo_arquivo[]', array('id' => 'file', 'class' => 'form-control', 'multiple' => true)) !!}
+	        	</div>
+	        	<div class="col-sm-4">
+                   {!! Form::label('', 'Tipo:') !!}
+                   {!! Form::text('anexo_tipo[]', 'Quadro de concorrência', ['class' => 'form-control', 'readonly']) !!}
+	        	</div>
+	        </div>
+	    </div>
+	</div>
+</div>
 
 <div class="col-sm-12">
     <div class="box box-muted">

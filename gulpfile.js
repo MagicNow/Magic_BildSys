@@ -285,7 +285,10 @@ elixir(function (mix) {
     mix.scripts([
         'quadro-de-concorrencia-actions.js',
     ], 'public/js/qc-actions.js');
-    
+
+    mix.scripts([
+        'qc-edit-actions.js',
+    ], 'public/js/qc-edit-actions.js');
 });
 
 gulp.task('browser-sync', function () {

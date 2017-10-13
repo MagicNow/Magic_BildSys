@@ -97,6 +97,6 @@
     <i class="fa fa-circle"
         aria-hidden="true"
         style="color:{{ $qc->status->cor }}"></i>
-    {{ $qc->status->nome }}
+        {{ $qc->status->nome }}
 </small>
 
