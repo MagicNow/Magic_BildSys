@@ -60,7 +60,12 @@ class QcController extends AppBaseController
             QcStatus::FINALIZADO => 'Finalizada',
         ];
 
-        return $qcDataTable->render('qc.index', compact('obras', 'tipologias', 'status'));
+        $defaultStatus = QcStatus::EM_APROVACAO;
+
+        return $qcDataTable->render(
+            'qc.index',
+            compact('obras', 'tipologias', 'status', 'defaultStatus')
+        );
     }
 
     /**
@@ -226,20 +231,6 @@ class QcController extends AppBaseController
 
         $qc = $this->qcRepository->update($input, $id);
 
-        if($request->anexo_arquivo) {
-            foreach($request->anexo_arquivo as $key => $file) {
-                $destinationPath = CodeRepository::saveFile($file, 'qc/' . $qc->id);
-
-                $attach = $this->qcAnexoRepository->create([
-                    'arquivo' => $destinationPath,
-                    'tipo' => $request->anexo_tipo[$key],
-                    'descricao' => $request->anexo_descricao[$key],
-                ]);
-
-                $qc->anexos()->save($attach);
-            }
-        }
-
         Flash::success('Q.C. '.trans('common.updated').' '.trans('common.successfully').'.');
 
         return redirect(route('qc.index'));
@@ -268,4 +259,14 @@ class QcController extends AppBaseController
 
         return redirect(route('qc.index'));
     }
+
+    public function fechar($id)
+    {
+        $this->qcRepository->fechar($id);
+
+        return response()->json([
+            'success' => true
+        ]);
+    }
+
 }

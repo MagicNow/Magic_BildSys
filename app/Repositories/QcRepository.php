@@ -55,12 +55,59 @@ class QcRepository extends BaseRepository
         return $qc;
     }
 
+    public function update(array $attributes, $id)
+    {
+        $qc = $this->find($id);
+
+        $attributes['valor_fechamento'] = money_to_float(
+            $attributes['valor_fechamento']
+        );
+
+        DB::beginTransaction();
+
+        try {
+            $qc->update($attributes, ['timestamps' => false]);
+            $anexos = $this->saveAttachments($attributes, $qc);
+        } catch (Exception $e) {
+            DB::rollback();
+            throw $e;
+        }
+
+        DB::commit();
+
+        return $qc;
+    }
+
+    public function fechar($id)
+    {
+        $qc = $this->find($id);
+
+        DB::beginTransaction();
+        try {
+            $qc->update([ 'qc_status_id' => QcStatus::CONCORRENCIA_FINALIZADA ]);
+
+            QcAvulsoStatusLog::create([
+                'user_id' => auth()->id(),
+                'qc_status_id' => QcStatus::CONCORRENCIA_FINALIZADA,
+                'qc_id' => $qc->id,
+            ]);
+
+        } catch (Exception $e) {
+            DB::rollback();
+            throw $e;
+        }
+
+        DB::commit();
+
+        return $qc;
+    }
+
     public function saveAttachments($attachments, $qc)
     {
         $qcAnexoRepository = app(QcAnexoRepository::class);
 
         return collect(array_get($attachments, 'anexo_arquivo', []))
-            ->map(function($file, $key) use ($attachments) {
+            ->map(function ($file, $key) use ($attachments) {
                 return [
                     'file' => $file,
                     'tipo' => $attachments['anexo_tipo'][$key],
@@ -80,6 +127,6 @@ class QcRepository extends BaseRepository
                 $qc->anexos()->save($attach);
 
                 return $attach;
-        });
+            });
     }
 }
