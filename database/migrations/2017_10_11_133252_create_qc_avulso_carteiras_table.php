@@ -24,6 +24,7 @@ class CreateQcAvulsoCarteirasTable extends Migration
             $table->timestamps();
             $table->softDeletes();
 
+
             $table->foreign('user_id')
                 ->references('id')->on('users')
                 ->onDelete('set null')
@@ -47,6 +48,37 @@ class CreateQcAvulsoCarteirasTable extends Migration
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
         });
+
+        Schema::create('qc_avulso_carteira_planejamento', function (Blueprint $table){
+            $table->unsignedInteger('id');
+            $table->unsignedInteger('qc_avulso_carteira_id');
+            $table->unsignedInteger('planejamento_id');
+            $table->softDeletes();
+            $table->timestamps();
+
+            $table->foreign('qc_avulso_carteira_id')
+                ->references('id')->on('qc_avulso_carteiras')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+
+            $table->foreign('planejamento_id')
+                ->references('id')->on('planejamentos')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+        });
+
+        Schema::create('planejamento_datas', function (Blueprint $table){
+            $table->increments('id');
+            $table->unsignedInteger('planejamento_id');
+            $table->date('data');
+            $table->date('data_fim');
+
+            $table->foreign('planejamento_id')
+                ->references('id')->on('planejamentos')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+        });
+
     }
 
     /**
@@ -57,6 +89,8 @@ class CreateQcAvulsoCarteirasTable extends Migration
     public function down()
     {
         Schema::dropIfExists('qc_avulso_carteira_users');
+        Schema::dropIfExists('qc_avulso_carteira_planejamento');
         Schema::dropIfExists('qc_avulso_carteiras');
+        Schema::dropIfExists('planejamento_datas');
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\DataTables\QcDataTable;
 use App\DataTables\QcAnexosDataTable;
+use App\Models\QcAvulsoCarteira;
 use Illuminate\Http\Request;
 
 use Laracasts\Flash\Flash;
@@ -48,7 +49,7 @@ class QcController extends AppBaseController
 	public function create()
 	{
 		$obras = Obra::pluck('nome','id')->toArray();
-		$carteiras = Carteira::pluck('nome','id')->toArray();
+		$carteiras = QcAvulsoCarteira::pluck('nome','id')->toArray();
 		$tipologias = Tipologia::pluck('nome','id')->toArray();
 
 		return view('qc.create', compact('obras', 'carteiras', 'tipologias'));
@@ -133,7 +134,7 @@ class QcController extends AppBaseController
 	{
 		$qc = $this->qcRepository->findWithoutFail($id);
 		$obras = Obra::pluck('nome','id')->toArray();
-		$carteiras = Carteira::pluck('nome','id')->toArray();
+		$carteiras = QcAvulsoCarteira::pluck('nome','id')->toArray();
 		$tipologias = Tipologia::pluck('nome','id')->toArray();
 
 		if (empty($qc)) {
