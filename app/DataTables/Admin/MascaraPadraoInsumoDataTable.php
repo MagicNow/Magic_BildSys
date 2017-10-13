@@ -116,9 +116,9 @@ class MascaraPadraoInsumoDataTable extends DataTable
             'Máscara Padrão' => ['name' => 'mascara_padrao.nome', 'data' => 'name'],
             'Grupo_de_insumos' => ['name' => 'insumo_grupos.nome', 'data' => 'nome_grupo_insumo'],
             'Insumos' => ['name' => 'insumos.nome', 'data' => 'nome'],
-			'Código Estruturado' => ['name' => 'mascara_padrao.codigo_estruturado', 'data' => 'codigo_estruturado'],
-			'Coeficiente' => ['name' => 'mascara_padrao.coeficiente', 'data' => 'coeficiente'],
-			'Indireto' => ['name' => 'mascara_padrao.indireto', 'data' => 'indireto'],
+            'Código Estruturado' => ['name' => 'mascara_padrao_insumos.codigo_estruturado', 'data' => 'codigo_estruturado'],
+            'Coeficiente' => ['name' => 'mascara_padrao_insumos.coeficiente', 'data' => 'coeficiente'],
+            'Indireto' => ['name' => 'mascara_padrao_insumos.indireto', 'data' => 'indireto'],
             'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }
