@@ -9,11 +9,10 @@
     <link rel="shortcut icon" href="{{ asset('img/favicon.png') }}">
     <link rel="icon" href="{{ asset('img/favicon.png') }}" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
     @yield('styles')
     <style type="text/css">
         body {
-            zoom: 100%; /* Webkit browsers */
+            zoom: 75%; /* Webkit browsers */
         }
     </style>
 </head>
