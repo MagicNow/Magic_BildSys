@@ -11,7 +11,8 @@ class TipoLevantamentosTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('tipo_levantamentos')->truncate();
+        Schema::disableForeignKeyConstraints();
+        DB::table('tipo_levantamentos')->delete();
 
         $items = [
             [
@@ -83,5 +84,6 @@ class TipoLevantamentosTableSeeder extends Seeder
         ];
 
         DB::table('tipo_levantamentos')->insert($items);
+        Schema::enableForeignKeyConstraints();
     }
 }
