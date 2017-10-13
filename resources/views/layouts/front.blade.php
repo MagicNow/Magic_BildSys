@@ -10,7 +10,9 @@
     <link rel="icon" href="{{ asset('img/favicon.png') }}" />
     @yield('styles')
     <style type="text/css">
-
+        body {
+            zoom: 100%; /* Webkit browsers */
+        }
     </style>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
