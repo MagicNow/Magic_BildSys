@@ -199,7 +199,7 @@
         }
 
         function carregaPlanejamentos(obra_id){
-            $.ajax('/planejamentosListaByObra', {
+            $.ajax('{{ url("planejamentosListaByObra") }}', {
                 data: {
                     obra_id: obra_id
                 }
