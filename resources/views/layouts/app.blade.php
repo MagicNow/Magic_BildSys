@@ -9,6 +9,9 @@
     <link rel="shortcut icon" href="{{ asset('img/favicon.png') }}">
     <link rel="icon" href="{{ asset('img/favicon.png') }}" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    @yield('styles')
+    <style type="text/css">
+    </style>
 </head>
 
 <body class="skin-yellow sidebar-mini" baseurl="{{ url('/') }}">
@@ -188,7 +191,9 @@
         @include('layouts.sidebar')
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
-            @yield('content')
+            <div style="zoom: 75%;">
+                @yield('content')
+            </div>
         </div>
 
     </div>

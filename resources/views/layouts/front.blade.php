@@ -10,7 +10,6 @@
     <link rel="icon" href="{{ asset('img/favicon.png') }}" />
     @yield('styles')
     <style type="text/css">
-
     </style>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
@@ -199,7 +198,9 @@
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
             @include( 'flash::message' )
-            @yield('content')
+            <div style="zoom: 75%;">
+                @yield('content')
+            </div>
         </div>
 
 
