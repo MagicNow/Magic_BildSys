@@ -124,8 +124,8 @@ class MascaraPadraoRelacionarInsumoDataTable extends DataTable
         return [
             'Código' => ['name' => 'codigo', 'data' => 'codigo', 'width'=> '5%'],
             'nome' => ['name' => 'nome', 'data' => 'nome', 'width'=> '40%'],
-            'Coeficiente' => ['name' => 'coeficiente', 'data' => 'coeficiente', 'searchable' => false, 'width'=> '5%' ],
-            'Indireto' => ['name' => 'indireto', 'data' => 'indireto', 'searchable' => false, 'width'=> '5%'],
+            'Coeficiente' => ['name' => 'coeficiente', 'data' => 'coeficiente', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=> '5%' ],
+            'Indireto' => ['name' => 'indireto', 'data' => 'indireto', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=> '5%'],
             'levantamento' => ['name' => 'levantamento', 'title' => 'levantamento', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=> '40%'],
             'action' => ['name' => 'Ações', 'title' => 'Salvar', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=> '5%'],
         ];
