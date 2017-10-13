@@ -11,6 +11,9 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @yield('styles')
     <style type="text/css">
+        body {
+            zoom: 75%;
+        }
     </style>
 </head>
 
@@ -191,9 +194,7 @@
         @include('layouts.sidebar')
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
-            <div style="zoom: 75%;">
-                @yield('content')
-            </div>
+            @yield('content')
         </div>
 
     </div>
