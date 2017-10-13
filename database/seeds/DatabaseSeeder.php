@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
 		$this->call(SeStatusTableSeeder::class);
         $this->call(TemplateEmailTableSeeder::class);
 		$this->call(TemplatePlanilhasTableSeeder::class);
+		$this->call(TipoLevantamentosTableSeeder::class);
         Schema::enableForeignKeyConstraints();
     }
 }
