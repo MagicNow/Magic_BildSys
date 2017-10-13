@@ -29,7 +29,9 @@ class QcDataTable extends DataTable
 
                 return  '<i class="fa fa-circle" style="color:'. $qc->status->cor . '"></i> ' . $qc->status_nome;
             })
-            ->editColumn('action', 'qc.datatables_actions')
+            ->editColumn('action', function($qc) {
+                return view('qc.datatables_actions', compact('qc'))->render();
+            })
 			->make(true);
     }
 
