@@ -80,6 +80,36 @@ class QcRepository extends BaseRepository
                 $qc->anexos()->save($attach);
 
                 return $attach;
-        });
+            });
     }
+
+    public function cancelar($id)
+    {
+        $quadroDeConcorrencia = $this->findWithoutFail($id);
+        $acao_executada = false;
+        $mensagens = [];
+
+        DB::beginTransaction();
+
+        try {
+            // Altera o status do Q.C.
+            $quadroDeConcorrencia->qc_status_id = QcStatus::CANCELADO;
+            $quadroDeConcorrencia->save();
+
+            QcAvulsoStatusLog::create([
+                'user_id' => auth()->id(),
+                'qc_status_id' => QcStatus::CANCELADO,
+                'qc_id' => $id,
+            ]);
+
+        } catch(Exception $e) {
+            DB::rollback();
+            return [false, 'Não foi possível realizar a operação!'];
+        }
+
+        DB::commit();
+
+        return [true, $mensagens];
+    }
+
 }

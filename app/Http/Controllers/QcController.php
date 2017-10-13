@@ -268,4 +268,22 @@ class QcController extends AppBaseController
 
         return redirect(route('qc.index'));
     }
+
+    public function cancelar($QCid)
+    {
+        $qc = $this->qcRepository->findWithoutFail($QCid);
+
+        if (empty($qc)) {
+            return response()->json(['error' => 'Quadro De Concorrencia ' . trans('common.not-found')], 404);
+        }
+
+        $acao_executada = $this->qcRepository->cancelar($QCid);
+
+        if ($acao_executada[0]) {
+            $qc = $this->qcRepository->findWithoutFail($QCid);
+            return response()->json(['success' => true,'qc' => $qc,'mensagens' => $acao_executada[1]]);
+        } else {
+            return response()->json(['error' => $acao_executada[1]], 422);
+        }
+    }
 }

@@ -141,6 +141,7 @@
 @endsection
 
 @section('scripts')
+    <script src="{{ asset('js/qc-avulso.js')  }}"></script>
     <script src="{{ asset('js/general-filters.js') }}"></script>
     <script>
         $(function() {
