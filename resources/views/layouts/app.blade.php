@@ -14,6 +14,10 @@
         body {
             zoom: 75%;
         }
+
+        .content-wrapper {
+            min-height: 881px !important;
+        }
     </style>
 </head>
 
