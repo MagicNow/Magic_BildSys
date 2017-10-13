@@ -224,7 +224,11 @@
     <script src="{{ asset('js/app.js') }}" type="text/javascript"></script>
 
     @yield('scripts')
+    @parent
     <script type="text/javascript">
+        $(function () {
+            $('body').css("zoom", "80%");
+        });
         function confirmDelete(frm) {
             var formulary = $('#' + frm);
             swal({
