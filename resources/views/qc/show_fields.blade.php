@@ -46,7 +46,13 @@
 @if(isset($workflowAprovacao) && $qc->isEditable($workflowAprovacao))
     <div class="form-group col-sm-6">
         {!! Form::label('valor_fechamento', 'Valor do Fechamento:') !!}
-        {!! Form::text('valor_fechamento', float_to_money($qc->valor_fechamento, ''), [ 'class' => 'form-control money' ]) !!}
+        {!!
+            Form::text(
+                'valor_fechamento',
+                $qc->valor_fechamento ? float_to_money($qc->valor_fechamento , '') : null,
+                [ 'class' => 'form-control money' ]
+            )
+        !!}
     </div>
     <div class="form-group col-sm-6">
         {!! Form::label('numero_contrato_mega', 'Número do Contrato (MEGA):') !!}

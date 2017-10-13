@@ -12,6 +12,7 @@ use App\Repositories\QcRepository;
 use App\Repositories\QcAnexoRepository;
 use App\Repositories\CodeRepository;
 use App\Http\Requests\CreateQcRequest;
+use App\Http\Requests\UpdateQcRequest;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Obra;
 use App\Models\Carteira;
@@ -218,7 +219,7 @@ class QcController extends AppBaseController
      *
      * @return Response
      */
-    public function update($id, CreateQcRequest $request)
+    public function update($id, UpdateQcRequest $request)
     {
         $input = $request->except('file');
         $qc = $this->qcRepository->findWithoutFail($id);

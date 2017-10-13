@@ -11,7 +11,8 @@
         </h1>
     </section>
     <div class="content">
-        {!! Form::model($qc, ['route' => ['qc.update', $qc->id], 'files' => true, 'method' => 'patch']) !!}
+       @include('adminlte-templates::common.errors')
+        {!! Form::open(['route' => ['qc.update', $qc->id], 'files' => true, 'method' => 'patch']) !!}
         <div class="box">
             <div class="box-body">
                 <div class="row">

@@ -96,13 +96,14 @@ class Qc extends Model
 		'valor_gerencial' => 'required'
 	];
 
-	/**
-	 * Validation rules
-	 *
-	 * @var array
-	 */
-	public static $rulesUpdate = [
-
+	public static $messages = [
+        'obra_id.required' => 'Selecione a obra',
+        'tipologia_id.required' => 'Selecione a tipologia',
+        'carteira_id.required' => 'Selecione a carteira',
+        'descricao_id.required' => 'Insira a descrição do Q.C.',
+        'valor_pre_orcamento.required' => 'Insira o valor pré orçamento',
+        'valor_gerencial.required' => 'Insira o valor gerencial',
+        'valor_orcamento_inicial.required' => 'Insira o valor do orçamento inicial',
 	];
 
 	public function status()
