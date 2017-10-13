@@ -10,13 +10,12 @@
     <link rel="icon" href="{{ asset('img/favicon.png') }}" />
     @yield('styles')
     <style type="text/css">
-
-     body {
-    zoom: 75%;
-}
-.content-wrapper {
-    min-height: 881px !important;
-}
+        body {
+            zoom: 75%;
+        }
+        .content-wrapper {
+            min-height: 881px !important;
+        }
     </style>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
