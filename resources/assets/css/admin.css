@@ -1,6 +1,22 @@
 /* latin-ext
 @import url('https://fonts.googleapis.com/css?family=Raleway:400,500,600,700');
 */
+@import url('https://fonts.googleapis.com/css?family=Abel');
+
+html h1,
+html h2,
+html h3,
+html h4,
+html h5,
+html h6,
+html th,
+html label,
+html input,
+html > *,
+body {
+  font-family: 'Abel', sans-serif;
+}
+
 th,
 label {
   text-transform: uppercase;
@@ -872,6 +888,11 @@ td> .table {
 .form-control .radio-inline {
   text-transform: inherit;
   font-weight: inherit;
+}
+
+.form-free-height {
+  height: auto;
+  word-wrap: break-word;
 }
 
 .label {
