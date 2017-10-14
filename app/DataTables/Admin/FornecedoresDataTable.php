@@ -108,7 +108,7 @@ class FornecedoresDataTable extends DataTable
             'Código' => ['name' => 'id', 'data' => 'id', 'width'=>'6%'],
             'Código Mega' => ['name' => 'codigo_mega', 'data' => 'codigo_mega', 'width'=>'6%'],
             'nome' => ['name' => 'nome', 'data' => 'nome'],
-            'cnpj' => ['name' => 'cnpj', 'data' => 'cnpj'],
+            'cnpj' => ['name' => 'cnpj', 'data' => 'cnpj', 'width'=>'70px'],
 //            'logradouro' => ['name' => 'logradouro', 'data' => 'logradouro'],
 //            'numero' => ['name' => 'numero', 'data' => 'numero'],
 //            'complemento' => ['name' => 'complemento', 'data' => 'complemento'],
