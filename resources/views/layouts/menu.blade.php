@@ -210,6 +210,13 @@
                 <span>Tarefa/Orçamentos</span>
             </a>
         </li>
+
+        <li class="{{ Request::is('admin/planejamentos/planejamentoOrcamentos*') ? 'active' : '' }}">
+            <a href="{!! route('admin.planejamentos.atividade-carteiras') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Tarefa/Carteira Q.C. Avulso</span>
+            </a>
+        </li>
         @shield('cronograma_por_obras.list')
         <li class="{{ Request::is('admin/planejamentoCronogramas*') ? 'active' : '' }}">
             <a href="{!! route('admin.planejamentoCronogramas.index') !!}">

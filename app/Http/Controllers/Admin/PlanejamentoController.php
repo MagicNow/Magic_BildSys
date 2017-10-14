@@ -15,6 +15,7 @@ use App\Models\Obra;
 use App\Models\Orcamento;
 use App\Models\PlanejamentoCompra;
 use App\Models\Planilha;
+use App\Models\QcAvulsoCarteira;
 use App\Models\Servico;
 use App\Models\TemplatePlanilha;
 use App\Models\TipoOrcamento;
@@ -50,6 +51,17 @@ class PlanejamentoController extends AppBaseController
             $id = $request->id;
         }
         return $planejamentoDataTable->porObra($id)->render('admin.planejamentos.index');
+    }
+
+    /**
+     * Display a listing of the Planejamento.
+     *
+     * @param PlanejamentoDataTable $planejamentoDataTable
+     * @return Response
+     */
+    public function atividadeCarteiras(Request $request, PlanejamentoDataTable $planejamentoDataTable)
+    {
+        return $planejamentoDataTable->render('admin.planejamentos.atividades-carteiras');
     }
 
     /**
@@ -122,8 +134,13 @@ class PlanejamentoController extends AppBaseController
             return redirect(route('admin.planejamentos.index'));
         }
 
+        $relacionadoCarteirasAvulsas = $planejamento->planejamentoQcAvulsoCarteira;
+        $planejamentoCarteirasIds = $relacionadoCarteirasAvulsas->pluck('id')->all();
 
-        return view('admin.planejamentos.edit', compact('planejamento','obras'));
+        $qcAvulsoCarteiras = QcAvulsoCarteira::pluck('nome', 'id')->all();
+
+
+        return view('admin.planejamentos.edit', compact('planejamento','obras', 'planejamentoCarteirasIds','qcAvulsoCarteiras'));
     }
 
     /**
@@ -370,5 +387,16 @@ class PlanejamentoController extends AppBaseController
             ->where('servico_id', $id)
             ->get();
         return $insumoServico;
+    }
+
+    public function createTarefaCarteira(){
+        $obras = Obra::pluck('nome','id')->toArray();
+        $qc_avulso_carteiras = QcAvulsoCarteira::pluck('nome','id')->toArray();
+        return view('admin.planejamentos.create_tarefa_carteira', compact('obras','qc_avulso_carteiras'));
+    }
+    public function storeTarefaCarteira(){
+        dd(request()->all());
+        // planejamentoQcAvulsoCarteira
+//        return view('admin.planejamentos.create_tarefa_carteira', compact('obras'));
     }
 }

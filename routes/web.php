@@ -156,6 +156,10 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
         $router->get('planejamentoOrcamentos/orcamentos/desvincular', 'Admin\PlanejamentoOrcamentoController@desvincular');
         $router->get('planejamentoOrcamentos/sem-planejamento/view/{obra}', ['as' => 'admin.planejamentoOrcamentos.semplanejamentoview', 'uses' => 'Admin\PlanejamentoOrcamentoController@semPlanejamentoView']);
 
+
+        $router->get('tarefa-qc-avulso-carteira', ['as' => 'admin.planejamento.create-tarefa_carteiras', 'uses' => 'Admin\PlanejamentoController@createTarefaCarteira']);
+        $router->post('tarefa-qc-avulso-carteira', ['as' => 'admin.planejamentos.storeTarefaCarteira', 'uses' => 'Admin\PlanejamentoController@storeTarefaCarteira']);
+        $router->get('atividade-carteiras', ['as' => 'admin.planejamentos.atividade-carteiras', 'uses' => 'Admin\PlanejamentoController@atividadeCarteiras']);
     });
 
 	#Medição Física
