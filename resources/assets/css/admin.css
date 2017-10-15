@@ -275,7 +275,7 @@ select.input-sm {
    -moz-transform: scale(0.75);
 
 }
-.btn-primary {
+.btn, .btn-lg {
   padding: 5px 15px;
 }
 .btn-group, .btn-group-vertical {
