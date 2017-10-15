@@ -199,6 +199,7 @@ table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > td:first-child:b
     font-weight: 700;
     font-size: 20px;
     line-height: 30px;
+    color: #242424;
 }
 .sidebar-menu .treeview-menu > li > a{font-size: 14px;}
 
@@ -417,7 +418,7 @@ body {
   font-family: 'Abel', sans-serif;
   font-size: 14px;
   font-weight: 500;
-  color: #4a4a4a;
+  color: #606060;
   background-color: #f5f5f5;
 }
 
