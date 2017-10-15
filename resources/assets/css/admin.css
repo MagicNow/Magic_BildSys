@@ -197,7 +197,7 @@ table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > td:first-child:b
   padding-bottom: 0;
   color: #606060;
 }
-.form-control[type="text"] {
+p.form-control {
   overflow: hidden;
 }
 textarea.form-control {
