@@ -44,7 +44,7 @@
     </section>
     <div class="content">
         <div class="clearfix"></div>
-        <div class="box box-warning">
+        <div class="box box-warning quadro">
             <div class="box-body">
                     @include('quadro_de_concorrencias.table')
             </div>
