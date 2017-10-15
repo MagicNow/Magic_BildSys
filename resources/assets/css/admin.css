@@ -278,6 +278,9 @@ select.input-sm {
 .btn, .btn-lg {
   padding: 5px 15px;
 }
+form .btn {
+  padding: 8px;
+}
 .btn-group, .btn-group-vertical {
 
     zoom: 75%;
