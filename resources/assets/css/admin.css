@@ -321,7 +321,7 @@ form .btn {
    -moz-transform: scale(0.75);
 }
 .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
-  line-height: 1.1;
+  line-height: 1.2;
 }
 .table > tbody > tr > td {
   padding: 4px 8px;
@@ -865,7 +865,7 @@ table.dataTable.dtr-inline.collapsed> tbody> tr.parent> th:first-child:before {
 }
 
 .content {
-  padding: 5px;
+  padding: 10px;
 }
 
 .content-header {
