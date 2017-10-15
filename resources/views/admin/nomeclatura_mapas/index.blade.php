@@ -8,7 +8,7 @@
             </button>
             Nomeclatura de Mapas (Memória de cálculo)
 
-           <a class="btn btn-primary pull-right btn-flat btn-lg" style="margin-top: -10px;margin-bottom: 5px" href="{!! route('admin.nomeclaturaMapas.create') !!}">
+           <a class="btn btn-primary pull-right btn-flat btn-lg"  href="{!! route('admin.nomeclaturaMapas.create') !!}">
             {{ ucfirst( trans('common.new') )}}
            </a>
         </h1>

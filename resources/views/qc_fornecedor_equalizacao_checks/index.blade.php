@@ -4,7 +4,7 @@
     <section class="content-header">
         <h1 class="pull-left">Qc Fornecedor Equalizacao Checks</h1>
         <h1 class="pull-right">
-           <a class="btn btn-primary pull-right" style="margin-top: -10px;margin-bottom: 5px" href="{!! route('qcFornecedorEqualizacaoChecks.create') !!}">
+           <a class="btn btn-primary pull-right"  href="{!! route('qcFornecedorEqualizacaoChecks.create') !!}">
             {{ ucfirst( trans('common.new') )}}
            </a>
         </h1>
