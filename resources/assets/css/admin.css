@@ -198,6 +198,7 @@ table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > td:first-child:b
 .content-header > h1 {
     font-weight: 700;
     font-size: 20px;
+    line-height: 30px;
 }
 .sidebar-menu .treeview-menu > li > a{font-size: 14px;}
 
