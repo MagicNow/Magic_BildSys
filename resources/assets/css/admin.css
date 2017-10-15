@@ -164,6 +164,15 @@ table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > td:first-child:b
     font-size: 14px;
 
 }
+.sidebar-mini .sidebar-menu .treeview-menu > li > a{   font-size: 12px;}
+.sidebar-mini .sidebar-menu{   font-size: 12px;}
+.sidebar-mini.sidebar-collapse .treeview-menu > li > a{   font-size: 16px;}
+.sidebar-mini.sidebar-collapse .sidebar-menu {   font-size: 16px;}
+
+.sidebar-mini.sidebar-collapse .sidebar-menu> li:hover> a> span:not(.pull-right), .sidebar-mini.sidebar-collapse .sidebar-menu> li:hover> .treeview-menu {
+    font-size: 16px;
+}
+
 .table> thead> tr> th, .table> tbody> tr> th, .table> tfoot> tr> th, .table> thead> tr> td, .table> tbody> tr> td, .table> tfoot> tr> td {
 
     text-align: left;
@@ -193,7 +202,7 @@ table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > td:first-child:b
          }
 .skin-yellow .sidebar-menu > li > .treeview-menu {
 
-    margin-top: -3px;
+    margin-top: -1px;
 }
 .content-header > h1 {
     font-weight: 700;

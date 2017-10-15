@@ -19357,11 +19357,11 @@ thead:first-child > tr:first-child > td {
 .table-striped > tbody > tr:nth-of-type(odd) {
     background-color: #f9f9f9;
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 600;
 }
 .table-striped > tbody > tr:nth-of-type(even) {
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 600;
 }
 
 table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > td:first-child:before, table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > th:first-child:before {
@@ -19410,6 +19410,7 @@ table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > td:first-child:b
 .content-header > h1 {
     font-weight: 700;
     font-size: 20px;
+    line-height: 30px;
 }
 .sidebar-menu .treeview-menu > li > a{font-size: 14px;}
 
@@ -19486,8 +19487,11 @@ select.input-sm {
    -moz-transform: scale(0.75);
 
 }
-.btn-primary {
+.btn, .btn-lg {
   padding: 5px 15px;
+}
+form .btn {
+  padding: 8px;
 }
 .btn-group, .btn-group-vertical {
 
@@ -19624,8 +19628,8 @@ a:focus {
 body {
   font-family: 'Abel', sans-serif;
   font-size: 14px;
-  font-weight: 400;
-  color: #000;
+  font-weight: 500;
+  color: #4a4a4a;
   background-color: #f5f5f5;
 }
 
