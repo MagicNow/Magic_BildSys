@@ -19390,7 +19390,10 @@ table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > td:first-child:b
     overflow-x: auto;
         height: 26px;
 }
-#calendar{    zoom: 75%;}
+#calendar{    zoom: 75%;
+ -moz-transform: scale(0.75);
+
+}
 .btn-lg, .btn-group-lg > .btn {
     padding: 10px 16px;
     font-size: 14px;
@@ -19434,9 +19437,13 @@ table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > td:first-child:b
 .main-header {
 
     zoom: 75%;
+     -moz-transform: scale(0.75);
+
 }
 .sidebar-mini.sidebar-collapse .main-sidebar {
     zoom: 75%;
+     -moz-transform: scale(0.75);
+
 }
 .sidebar-mini.sidebar-collapse .content-wrapper, .sidebar-mini.sidebar-collapse .right-side, .sidebar-mini.sidebar-collapse .main-footer {
     margin-left: 39px !important;
@@ -19445,12 +19452,17 @@ table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > td:first-child:b
 .box.box-warning {
 
     zoom: 75%;
+     -moz-transform: scale(0.75);
+
 }
 .box.box-warning.quadro {
 
     zoom: 100%;
 }
-.dash{    zoom: 75%;}
+.dash{    zoom: 75%;
+ -moz-transform: scale(0.75);
+
+}
  .content-wrapper {
             min-height: 621px !important;
         }
@@ -19467,14 +19479,20 @@ select.input-sm {
 }
 .pagination{
   zoom:75%;
+   -moz-transform: scale(0.75);
+
 }
 .btn-group, .btn-group-vertical {
 
     zoom: 75%;
+     -moz-transform: scale(0.75);
+
 }
 .fa-remove:before, .fa-close:before, .fa-times:before {
 
     zoom: 75%;
+     -moz-transform: scale(0.75);
+
 }
 @media (max-width: 950px) {
 
