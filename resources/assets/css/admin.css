@@ -189,7 +189,10 @@ table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > td:first-child:b
 .form-control {
     font-size: 12px;
     overflow-x: auto;
-        height: 26px;
+    height: 26px;
+    line-height: 26px;
+    padding-top: 0;
+    padding-bottom: 0;
 }
 #calendar{    zoom: 75%;
  -moz-transform: scale(0.75);
