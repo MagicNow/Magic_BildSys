@@ -189,6 +189,7 @@ table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > td:first-child:b
 .form-control {
   font-family: 'Abel', sans-serif;
   font-size: 12px;
+  font-weight: 600;
   overflow-x: auto;
   height: 26px;
   line-height: 26px;
@@ -301,7 +302,7 @@ select.input-sm {
   padding: 5px 15px;
 }
 form .btn {
-  padding: 8px;
+  padding: 6px;
 }
 .btn-group, .btn-group-vertical {
 
@@ -310,27 +311,26 @@ form .btn {
 
 }
 .table > tfoot > tr > th{
-padding: 4px 1px;
-
+  padding: 4px 1px;
 }
 .fa-remove:before, .fa-close:before, .fa-times:before {
-
-    zoom: 75%;
-     -moz-transform: scale(0.75);
-
+  zoom: 75%;
+   -moz-transform: scale(0.75);
 }
 .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
-
-    line-height: 1;
-
+  line-height: 1.1;
+}
+.table > tbody > tr > td {
+  padding: 4px 8px;
+}
+table.dataTable thead > tr > th {
+    padding-left: 13px;
+    padding-right: 13px;
 }
 @media (max-width: 950px) {
-
-.content-wrapper {
-
-    background-size: contain !important;
-
-}
+  .content-wrapper {
+      background-size: contain !important;
+  }
 }
 
 
