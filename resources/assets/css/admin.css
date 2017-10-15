@@ -144,11 +144,11 @@ thead:first-child > tr:first-child > td {
 
 .table-striped > tbody > tr:nth-of-type(odd) {
     background-color: #f9f9f9;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 600;
 }
 .table-striped > tbody > tr:nth-of-type(even) {
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 600;
 }
 
@@ -164,15 +164,19 @@ table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > td:first-child:b
     font-size: 14px;
 
 }
-.sidebar-mini .sidebar-menu .treeview-menu > li > a{   font-size: 12px;}
-.sidebar-mini .sidebar-menu{   font-size: 12px;}
-.sidebar-mini.sidebar-collapse .treeview-menu > li > a{   font-size: 16px;}
-.sidebar-mini.sidebar-collapse .sidebar-menu {   font-size: 16px;}
+.sidebar-mini .sidebar-menu .treeview-menu > li > a{   font-size: 13px;}
+.sidebar-mini .sidebar-menu{   font-size: 13px;}
+.sidebar-mini.sidebar-collapse .treeview-menu > li > a{   font-size: 17px;}
+.sidebar-mini.sidebar-collapse .sidebar-menu {   font-size: 17px;}
 
 .sidebar-mini.sidebar-collapse .sidebar-menu> li:hover> a> span:not(.pull-right), .sidebar-mini.sidebar-collapse .sidebar-menu> li:hover> .treeview-menu {
-    font-size: 16px;
+    font-size: 17px;
 }
-
+.sidebar-menu .treeview-menu > li > a {
+    padding: 1px 1px 5px 15px;
+    display: block;
+    font-size: 14px;
+}
 .table> thead> tr> th, .table> tbody> tr> th, .table> tfoot> tr> th, .table> thead> tr> td, .table> tbody> tr> td, .table> tfoot> tr> td {
 
     text-align: left;
@@ -289,7 +293,7 @@ select.input-sm {
   padding: 5px 15px;
 }
 form .btn {
-  padding: 6px;
+  padding: 8px;
 }
 .btn-group, .btn-group-vertical {
 
@@ -308,22 +312,17 @@ padding: 4px 1px;
 
 }
 .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
-    line-height: 1.1;
-}
 
-.table > tbody > tr > td {
-  padding: 4px 8px;
-}
+    line-height: 1;
 
-table.dataTable thead > tr > th {
-  padding-left: 13px;
-  padding-right: 13px;
 }
-
 @media (max-width: 950px) {
-  .content-wrapper {
+
+.content-wrapper {
+
     background-size: contain !important;
-  }
+
+}
 }
 
 
