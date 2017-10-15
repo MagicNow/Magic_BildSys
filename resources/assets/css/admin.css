@@ -297,6 +297,9 @@ form .btn {
      -moz-transform: scale(0.75);
 
 }
+tfoot tr th{
+  padding:2px !important;
+}
 .fa-remove:before, .fa-close:before, .fa-times:before {
 
     zoom: 75%;
