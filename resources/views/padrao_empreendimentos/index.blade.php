@@ -2,11 +2,9 @@
 
 @section('content')
     <section class="content-header">
-        <h1 class="pull-left">Padrões de empreendimento</h1>
-        <h1 class="pull-right">
-           <a class="btn btn-primary pull-right"  href="{!! route('padraoEmpreendimentos.create') !!}">
-            {{ ucfirst( trans('common.new') )}}
-           </a>
+        <h1>
+            Padrões de empreendimento
+            <a class="btn btn-primary pull-right"  href="{!! route('padraoEmpreendimentos.create') !!}">{{ ucfirst( trans('common.new') )}}</a>
         </h1>
     </section>
     <div class="content">

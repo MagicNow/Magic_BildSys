@@ -2,15 +2,12 @@
 
 @section('content')
     <section class="content-header">
-        <h1 class="pull-left">Requisições</h1>
-        <h1 class="pull-right">
-           <a class="btn btn-primary pull-right"  href="{!! route('requisicao.create') !!}">
-               <i class="fa fa-plus" aria-hidden="true"></i> Criar requisição
-           </a>
-
-            <a class="btn btn-info"  href="/requisicao/aplicacao-estoque/local">
-                <i class="fa fa-qrcode" aria-hidden="true"></i> Aplicação de estoque
-            </a>
+        <h1>
+            Requisições
+            <div class="pull-right">
+                <a class="btn btn-primary"  href="{!! route('requisicao.create') !!}"><i class="fa fa-plus" aria-hidden="true"></i> Criar requisição</a>
+                <a class="btn btn-info"  href="/requisicao/aplicacao-estoque/local"><i class="fa fa-qrcode" aria-hidden="true"></i> Aplicação de estoque</a>
+            </div>
         </h1>
     </section>
     <div class="content">

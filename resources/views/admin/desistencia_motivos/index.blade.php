@@ -2,9 +2,9 @@
 
 @section('content')
     <section class="content-header">
-        <h1 class="pull-left">Motivos para declinar proposta</h1>
-        <h1 class="pull-right">
-           <a class="btn btn-primary pull-right"  href="{!! route('admin.desistenciaMotivos.create') !!}">
+        <h1>
+            Motivos para declinar proposta
+            <a class="btn btn-primary pull-right"  href="{!! route('admin.desistenciaMotivos.create') !!}">
             {{ ucfirst( trans('common.new') )}}
            </a>
         </h1>

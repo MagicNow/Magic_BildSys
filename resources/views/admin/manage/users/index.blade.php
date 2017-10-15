@@ -6,11 +6,9 @@
             <li ><a href="/admin"><i class="fa fa-dashboard"></i> Dashboard</a></li>
             <li class="active"><a href="/admin/manage"> Controle de Acesso</a></li>
         </ol>
-        <h1 class="pull-left">Usuários</h1>
-        <h1 class="pull-right">
-           <a class="btn btn-primary pull-right"  href="{!! route('users.create') !!}">
-               {{ ucfirst( trans('common.new') )}}
-           </a>
+        <h1>
+            Usuários
+            <a class="btn btn-primary pull-right"  href="{!! route('users.create') !!}">{{ ucfirst( trans('common.new') )}}</a>
         </h1>
     </section>
     <div class="content">
