@@ -200,6 +200,9 @@ table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > td:first-child:b
 .form-control[type="text"] {
   overflow: hidden;
 }
+textarea.form-control {
+  line-height: auto;
+}
 #calendar{    zoom: 75%;
  -moz-transform: scale(0.75);
 
