@@ -8,7 +8,7 @@
                 <i class="fa fa-arrow-left" aria-hidden="true"></i>
             </button>
             Fornecedores
-           <a class="btn btn-primary pull-right btn-lg btn-flat" style="margin-top: -10px;margin-bottom: 5px" href="{!! route('admin.fornecedores.create') !!}">
+           <a class="btn btn-primary pull-right btn-lg btn-flat" href="{!! route('admin.fornecedores.create') !!}">
             {{ ucfirst( trans('common.new') ) }}
            </a>
         </h1>

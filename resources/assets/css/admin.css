@@ -196,7 +196,7 @@ table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > td:first-child:b
     margin-top: -3px;
 }
 .content-header > h1 {
-
+    font-weight: 700;
     font-size: 20px;
 }
 .sidebar-menu .treeview-menu > li > a{font-size: 14px;}
@@ -273,6 +273,9 @@ select.input-sm {
   zoom:75%;
    -moz-transform: scale(0.75);
 
+}
+.btn-primary {
+  padding: 8px 15px;
 }
 .btn-group, .btn-group-vertical {
 
@@ -824,11 +827,11 @@ table.dataTable.dtr-inline.collapsed> tbody> tr.parent> th:first-child:before {
 }
 
 .content {
-  padding-top: 5px;
+  padding: 5px;
 }
 
 .content-header {
-  padding-top: 5px;
+    padding: 5px 5px 0 5px;
 }
 
 .content-header .content-header-title {
