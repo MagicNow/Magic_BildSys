@@ -303,6 +303,11 @@ form .btn {
      -moz-transform: scale(0.75);
 
 }
+.table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
+
+    line-height: 1;
+
+}
 @media (max-width: 950px) {
 
 .content-wrapper {
