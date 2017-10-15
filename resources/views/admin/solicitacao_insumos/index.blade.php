@@ -7,7 +7,7 @@
                 <i class="fa fa-arrow-left" aria-hidden="true"></i>
             </button>
             Solicitações de insumos
-           <a class="btn btn-primary pull-right btn-lg btn-flat" style="margin-top: -10px;margin-bottom: 5px" href="{!! route('admin.solicitacaoInsumos.create') !!}">
+           <a class="btn btn-primary pull-right btn-lg btn-flat" href="{!! route('admin.solicitacaoInsumos.create') !!}">
             {{ ucfirst( trans('common.new') )}}
            </a>
         </h1>

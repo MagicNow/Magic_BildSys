@@ -5,7 +5,7 @@
         <h1 class="pull-left">Pré Orçamentos</h1>
 		<a href="{!! route('admin.pre_orcamentos.create') !!}" class="btn btn-lg btn-flat btn-info pull-right"> <i class="fa fa-refresh"></i>  Gerar Pré-Orçamentos</a>
         <h1 class="pull-right">
-			{{--<a class="btn btn-primary pull-right" style="margin-top: -10px;margin-bottom: 5px" href="{!! route('admin.pre_orcamentos.create') !!}">--}}
+			{{--<a class="btn btn-primary pull-right"  href="{!! route('admin.pre_orcamentos.create') !!}">--}}
 				{{--{{ ucfirst( trans('common.new') )}}--}}
 			{{--</a>--}}
         </h1>

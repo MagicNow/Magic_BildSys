@@ -4,11 +4,11 @@
     <section class="content-header">
         <h1 class="pull-left">Requisições</h1>
         <h1 class="pull-right">
-           <a class="btn btn-primary pull-right" style="margin-top: -10px;margin-bottom: 5px" href="{!! route('requisicao.create') !!}">
+           <a class="btn btn-primary pull-right"  href="{!! route('requisicao.create') !!}">
                <i class="fa fa-plus" aria-hidden="true"></i> Criar requisição
            </a>
 
-            <a class="btn btn-info" style="margin-top: -10px;margin-bottom: 5px" href="/requisicao/aplicacao-estoque/local">
+            <a class="btn btn-info"  href="/requisicao/aplicacao-estoque/local">
                 <i class="fa fa-qrcode" aria-hidden="true"></i> Aplicação de estoque
             </a>
         </h1>
