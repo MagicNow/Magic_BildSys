@@ -1,10 +1,4 @@
-@font-face {
-	font-family: 'Abel';
-	font-style: normal;
-	font-weight: 400;
-	src: url(../fonts/Abel-Regular.ttf) format('ttf');
-	unicode-range: U+0-10FFFF;
-}
+@import url('https://fonts.googleapis.com/css?family=Abel');
 
 @font-face {
 	font-family: 'Raleway';
@@ -37,4 +31,5 @@
 	src: url(../fonts/Raleway-normal-700.woff) format('woff');
 	unicode-range: U+0-10FFFF;
 }
+
 
