@@ -128,7 +128,7 @@ class NotafiscalDataTable extends DataTable
             'natureza_operacao' => ['name' => 'natureza_operacao', 'data' => 'natureza_operacao'],
             'data_emissao' => ['name' => 'data_emissao', 'data' => 'data_emissao'],
             'data_saida' => ['name' => 'data_saida', 'data' => 'data_saida'],
-            'cnpj' => ['name' => 'cnpj', 'data' => 'cnpj', 'width'=>'70px'],
+            'cnpj' => ['name' => 'cnpj', 'data' => 'cnpj', 'width'=>'90px'],
             'chave' => ['name' => 'chave', 'data' => 'chave'],
             //'cnpj_destinatario' => ['name' => 'cnpj_destinatario', 'data' => 'cnpj_destinatario']
             'action' => [
