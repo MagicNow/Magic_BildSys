@@ -144,11 +144,11 @@ thead:first-child > tr:first-child > td {
 
 .table-striped > tbody > tr:nth-of-type(odd) {
     background-color: #f9f9f9;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 600;
 }
 .table-striped > tbody > tr:nth-of-type(even) {
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 600;
 }
 
