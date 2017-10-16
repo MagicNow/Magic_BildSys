@@ -58,8 +58,9 @@ class FornecedoresController extends AppBaseController
         }
 
         $servicos = Cnae::pluck('nome', 'id')->toArray();
+        $associados = [];
         
-        return view($view, compact('servicos'));
+        return view($view, compact('servicos','associados'));
     }
 
     /**

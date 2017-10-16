@@ -37,13 +37,13 @@
 <!-- Status Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('status', 'Status:') !!}
-    <p class="form-control">{!! $retroalimentacaoObra->status->nome !!}</p>
+    <p class="form-control">{!! isset($retroalimentacaoObra->status) ? $retroalimentacaoObra->status->nome : NULL !!}</p>
 </div>
 
 <!-- Categoria Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('categoria', 'Categoria:') !!}
-    <p class="form-control">{!! $retroalimentacaoObra->categoria->nome !!}</p>
+    <p class="form-control">{!! isset($retroalimentacaoObra->categoria) ? $retroalimentacaoObra->categoria->nome : NULL !!}</p>
 </div>
 
 <div class="form-group col-sm-6">
@@ -58,12 +58,12 @@
 <!-- Created At Field -->
 <div class="form-group col-md-6">
     {!! Form::label('created_at', 'Data de inclusão:') !!}
-    <p class="form-control">{!! $retroalimentacaoObra->created_at->format('d/m/Y') !!}</p>
+    <p class="form-control">{!! isset($retroalimentacaoObra->created_at) ? $retroalimentacaoObra->created_at->format('d/m/Y') : NULL !!}</p>
 </div>
 
 <!-- Updated At Field -->
 <div class="form-group col-md-6">
     {!! Form::label('updated_at', 'Atualizado em:') !!}
-    <p class="form-control">{!! $retroalimentacaoObra->updated_at->format('d/m/Y') !!}</p>
+    <p class="form-control">{!! isset($retroalimentacaoObra->updated_at) ? $retroalimentacaoObra->updated_at->format('d/m/Y') : NULL !!}</p>
 </div>
 

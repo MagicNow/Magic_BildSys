@@ -7,7 +7,7 @@
             </button>
             Obras
 
-           <a class="btn btn-primary btn-flat btn-lg pull-right" style="margin-top: -10px;margin-bottom: 5px" href="{!! route('admin.obras.create') !!}">
+           <a class="btn btn-primary btn-flat btn-lg pull-right"  href="{!! route('admin.obras.create') !!}">
             {{ ucfirst( trans('common.new') )}}
            </a>
         </h1>

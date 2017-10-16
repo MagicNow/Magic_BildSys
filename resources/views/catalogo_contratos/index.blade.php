@@ -7,7 +7,7 @@
                 <i class="fa fa-arrow-left" aria-hidden="true"></i>
             </button>
             Catálogo de Acordos
-            <a class="btn btn-primary pull-right btn-flat btn-lg" style="margin-top: -10px;margin-bottom: 5px" href="{!! route('catalogo_contratos.create') !!}">
+            <a class="btn btn-primary pull-right btn-flat btn-lg"  href="{!! route('catalogo_contratos.create') !!}">
                 <i class="fa fa-plus" aria-hidden="true"></i> {{ ucfirst( trans('common.new') )}}
             </a>
         </h1>

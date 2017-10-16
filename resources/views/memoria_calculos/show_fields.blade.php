@@ -417,7 +417,7 @@
             estruturas = '<option value="" selected="selected">Escolha</option>';
             pavimentos = '<option value="" selected="selected">Escolha</option>';
             trechos = '<option value="" selected="selected">Escolha</option>';
-            $.ajax('/nomeclatura-mapas/json?modo=' + valor)
+            $.ajax('{{ url("nomeclatura-mapas/json") }}?modo=' + valor)
                     .fail(function (retorno) {
                         swal({title: 'Erro na solicitação', type: 'error'}, function () {
                             document.location.reload();

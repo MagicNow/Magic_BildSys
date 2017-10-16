@@ -19,7 +19,7 @@
 <!-- Xml Field -->
 <div class="form-group col-md-6">
     {!! Form::label('xml', 'Xml:') !!}
-    <p class="form-control">{!! $notafiscal->xml !!}</p>
+    <p class="form-control form-free-height">{{ $notafiscal->xml }}</p>
 </div>
 
 <!-- Codigo Field -->

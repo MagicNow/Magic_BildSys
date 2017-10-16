@@ -4,7 +4,7 @@
     <section class="content-header">
         <h1>
             Tipo de Levantamentos
-           <a class="btn btn-primary pull-right btn-flat btn-lg" style="margin-top: -10px;margin-bottom: 5px" href="{!! route('admin.tipo_levantamentos.create') !!}">
+           <a class="btn btn-primary pull-right btn-flat btn-lg"  href="{!! route('admin.tipo_levantamentos.create') !!}">
                <i class="fa fa-plus" aria-hidden="true"></i> {{ ucfirst( trans('common.new') )}}
            </a>
         </h1>

@@ -2,7 +2,12 @@
 
 @section('content')
     <section class="content-header">
-        <h1><button type="button" class="btn btn-link" onclick="history.go(-1);"><i class="fa fa-arrow-left" aria-hidden="true"></i></button>Lista de Preço Unitário      </h1>
+        <h1>
+            <button type="button" class="btn btn-link" onclick="history.go(-1);">
+                <i class="fa fa-arrow-left" aria-hidden="true"></i>
+            </button>
+            Lista de Preço Unitário
+        </h1>
    </section>
    <div class="content">
        @include('adminlte-templates::common.errors')

@@ -69,7 +69,7 @@
     .element-border > thead > tr > th{
         padding: 10px 0px 10px 0px;
         color: #f5f5f5;
-        font-family: Raleway;
+        font-family: Abel;
         font-weight: bold;
         text-align: center;
     }

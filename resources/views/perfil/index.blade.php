@@ -3,6 +3,9 @@
 @section('content')
     <div class="content-header">
         <h1 class="content-header-title">
+            <button type="button" class="btn btn-link" onclick="history.go(-1);">
+                <i class="fa fa-arrow-left" aria-hidden="true"></i>
+            </button>
             Perfil
         </h1>
     </div>

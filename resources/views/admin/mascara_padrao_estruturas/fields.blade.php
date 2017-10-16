@@ -14,6 +14,7 @@
 @endphp
 <div class="form-group col-sm-12">
     @if(count($mascaraPadraoEstruturas))
+        @if($grupo)
         <div class="col-md-8" style="padding-bottom: 5px;">
             <div class="col-md-12">
                 <div class="input-group">
@@ -54,7 +55,7 @@
                             <div class="input-group">
                                 <span class="input-group-addon">{{$subgrupo1->codigo}}</span>
                                 {!! Form::hidden('estrutura[0][itens]['.$count_subgrupo.'][id_anterior]', $subgrupo1->id, ['id'=>'subgrupo1_'.$count_subgrupo.'_anterior']) !!}
-                                {!! Form::select('estrutura[0][itens]['.$count_subgrupo.'][id]',[''=>'Escolha...']+$selectSubgrupos1, $subgrupo1->id, ['id'=>'subgrupo1_'.$count_subgrupo.'_select','class' => 'form-control select2 estrutura_1', 'onchange'=>'percorreBloco(); alteraBloco("subgrupo1_'.$count_subgrupo.'");']) !!}
+                                {!! Form::select('estrutura[0][itens]['.$count_subgrupo.'][id]',[''=>'Escolha...']+$selectSubgrupos1, $subgrupo1->id, ['id'=>'subgrupo1_'.$count_subgrupo.'_select','class' => 'form-control select2 estrutura_1', 'onchange'=>'percorreBloco(1); alteraBloco("subgrupo1_'.$count_subgrupo.'");']) !!}
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -93,7 +94,7 @@
                                             <div class="input-group">
                                                 <span class="input-group-addon">{{$subgrupo2->codigo}}</span>
                                                 {!! Form::hidden("estrutura[0][itens][". $count_subgrupo ."][itens][".$count_subgrupo1.'][id_anterior]', $subgrupo2->id, ['id'=>'subgrupo2_'.$count_subgrupo1.'_anterior']) !!}
-                                                {!! Form::select("estrutura[0][itens][". $count_subgrupo ."][itens][".$count_subgrupo1.'][id]',[''=>'Escolha...']+$selectSubgrupos2, $subgrupo2->id, ['id'=>'subgrupo2_'.$count_subgrupo1.'_select', 'class' => 'form-control select2 estrutura_2', 'onchange'=>'percorreBloco(); alteraBloco("subgrupo2_'.$count_subgrupo1.'");']) !!}
+                                                {!! Form::select("estrutura[0][itens][". $count_subgrupo ."][itens][".$count_subgrupo1.'][id]',[''=>'Escolha...']+$selectSubgrupos2, $subgrupo2->id, ['id'=>'subgrupo2_'.$count_subgrupo1.'_select', 'class' => 'form-control select2 estrutura_2', 'onchange'=>'percorreBloco(2); alteraBloco("subgrupo2_'.$count_subgrupo1.'");']) !!}
                                             </div>
 
                                         </div>
@@ -134,7 +135,7 @@
                                                             <div class="input-group">
                                                                 <span class="input-group-addon">{{$subgrupo3->codigo}}</span>
                                                                 {!! Form::hidden("estrutura[0][itens][".$count_subgrupo."][itens][".$count_subgrupo1."][itens][".$count_subgrupo2.'][id_anterior]', $subgrupo3->id, ['id'=>'subgrupo3_'.$count_subgrupo2.'_anterior']) !!}
-                                                                {!! Form::select("estrutura[0][itens][".$count_subgrupo."][itens][".$count_subgrupo1."][itens][".$count_subgrupo2.'][id]',[''=>'Escolha...']+$selectSubgrupos3, $subgrupo3->id, ['id'=>'subgrupo3_'.$count_subgrupo2.'_select', 'class' => 'form-control select2 estrutura_3', 'onchange'=>'percorreBloco(); alteraBloco("subgrupo3_'.$count_subgrupo2.'");']) !!}
+                                                                {!! Form::select("estrutura[0][itens][".$count_subgrupo."][itens][".$count_subgrupo1."][itens][".$count_subgrupo2.'][id]',[''=>'Escolha...']+$selectSubgrupos3, $subgrupo3->id, ['id'=>'subgrupo3_'.$count_subgrupo2.'_select', 'class' => 'form-control select2 estrutura_3', 'onchange'=>'percorreBloco(3); alteraBloco("subgrupo3_'.$count_subgrupo2.'");']) !!}
                                                             </div>
                                                         </div>
                                                         <div class="col-md-3">
@@ -175,7 +176,7 @@
                                                                             <div class="input-group">
                                                                                 <span class="input-group-addon">{{$servico->codigo}}</span>
                                                                                 {!! Form::hidden("estrutura[0][itens][".$count_subgrupo."][itens][".$count_subgrupo1."][itens][".$count_subgrupo2.'][itens]['.$count_subgrupo3.'][id_anterior]', $servico->id, ['id'=>'subgrupo4_'.$count_subgrupo3.'_anterior']) !!}
-                                                                                {!! Form::select("estrutura[0][itens][".$count_subgrupo."][itens][".$count_subgrupo1."][itens][".$count_subgrupo2.'][itens]['.$count_subgrupo3.'][id]',[''=>'Escolha...']+$selectServicos, $servico->id, ['id'=>'subgrupo4_'.$count_subgrupo3.'_select','class' => 'form-control select2 estrutura_4', 'onchange'=>'percorreBloco(); alteraBloco("subgrupo4_'.$count_subgrupo3.'");']) !!}
+                                                                                {!! Form::select("estrutura[0][itens][".$count_subgrupo."][itens][".$count_subgrupo1."][itens][".$count_subgrupo2.'][itens]['.$count_subgrupo3.'][id]',[''=>'Escolha...']+$selectServicos, $servico->id, ['id'=>'subgrupo4_'.$count_subgrupo3.'_select','class' => 'form-control select2 estrutura_4', 'onchange'=>'percorreBloco(4); alteraBloco("subgrupo4_'.$count_subgrupo3.'");']) !!}
                                                                             </div>
                                                                         </div>
                                                                         <div class="col-md-3">
@@ -214,31 +215,37 @@
                 @endif
             @endforeach
         </ul>
-    @else
-        <div class="col-md-8" style="padding-bottom: 5px;">
-            <div class="input-group">
-                <span class="input-group-addon">{{$grupo->codigo}}</span>
-                <p class="form-control">{{ $grupo->nome }}</p>
+        @else
+            <div class="text-center">
+                <span>
+                    O grupo <span style="color: #cd0a0a;">OBRA</span> com código <span style="color: #cd0a0a;">01</span> não foi encontrado!
+                </span>
             </div>
-        </div>
-        <div class="col-md-4">
-            {!! Form::hidden('estrutura[0][id]', $grupo->id, ['id'=>'select_grupo_0_select', 'class'=>'estrutura_0']) !!}
-            <button type="button" class="btn btn-primary" style="margin-left: 53px; width: 145px;"
-                    onclick="addSubItem('select_grupo_0', 0, null, null, null, 'estrutura[0][itens]')">
-                <i class="fa fa-plus" aria-hidden="true"></i> SubGrupo-1
-            </button>
-        </div>
-        {{--<div class="col-md-1">--}}
-            {{--<button type="button" class="btn btn-primary"--}}
-                    {{--data-toggle="modal"--}}
-                    {{--data-target="#cadastrarGrupo"--}}
-                    {{--style="margin-left: -62px; width: 90px;"--}}
-                    {{--onclick="atribuirGrupoId('select_grupo_0_select', 'subgrupo1_id', 'subgrupo1_0_select');">--}}
-                {{--Novo SG-1--}}
-            {{--</button>--}}
-        {{--</div>--}}
-        <ul id="select_grupo_0_ul">
-        </ul>
+        @endif
+    @else
+        @if($grupo)
+            <div class="col-md-8" style="padding-bottom: 5px;">
+                <div class="input-group">
+                    <span class="input-group-addon">{{$grupo->codigo}}</span>
+                    <p class="form-control">{{ $grupo->nome }}</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                {!! Form::hidden('estrutura[0][id]', $grupo->id, ['id'=>'select_grupo_0_select', 'class'=>'estrutura_0']) !!}
+                <button type="button" class="btn btn-primary" style="margin-left: 53px; width: 145px;"
+                        onclick="addSubItem('select_grupo_0', 0, null, null, null, 'estrutura[0][itens]')">
+                    <i class="fa fa-plus" aria-hidden="true"></i> SubGrupo-1
+                </button>
+            </div>
+            <ul id="select_grupo_0_ul">
+            </ul>
+        @else
+            <div class="text-center">
+                <span>
+                    O grupo <span style="color: #cd0a0a;">OBRA</span> com código <span style="color: #cd0a0a;">01</span> não foi encontrado!
+                </span>
+            </div>
+        @endif
     @endif
 </div>
 
@@ -247,7 +254,7 @@
     {!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save') ), ['class' => 'btn btn-success pull-right', 'type'=>'submit']) !!}
     {!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save-continue') ), ['name' => 'save', 'value' => 'save-continue', 'class' => 'btn btn-success pull-right', 'type' => 'submit', 'onclick' => '']) !!}
 
-    <a href="{!! route('admin.mascaraPadraoEstruturas.index') !!}" class="btn btn-default"><i
+    <a href="{!! route('admin.mascara_padrao.index') !!}" class="btn btn-default"><i
                 class="fa fa-times"></i> {{ ucfirst( trans('common.cancel') )}}</a>
 </div>
 
@@ -267,10 +274,6 @@
                                 </span>
                         <input type="number" class="form-control" id="codigo" name="codigo" maxlength="255">
                     </div>
-                    {{--<div class="form-group">--}}
-                    {{--<label for="codigo" class="control-label">Código:</label>--}}
-                    {{--<input type="text" class="form-control" id="codigo" name="codigo" maxlength="255">--}}
-                    {{--</div>--}}
                     <div class="form-group">
                         <label for="nome" class="control-label">Nome:</label>
                         <input type="text" class="form-control" id="nome" name="nome" maxlength="255">
@@ -295,11 +298,7 @@
         }
     </style>
     <script type="text/javascript">
-        var bloco_aberto = true;
-
-        $(function () {
-            percorreBloco();
-        });
+        var bloco_aberto;
 
         $("form").submit(function (event) {
             startLoading();
@@ -319,9 +318,8 @@
             var length;
             var nivel;
             var adicionar = '';
-            var novo = '';
             bloco_aberto = true;
-            console.log(nivel1, nivel2, nivel3, nivel4);
+
             if (nivel1 != null && nivel2 != null && nivel3 != null && nivel4 != null) {
                 length = count[nivel1][nivel2][nivel3][nivel4].length;
                 nivel = 4;
@@ -362,15 +360,6 @@
                     'onclick="addSubItem(\'' + idGeral + '\',' + nivel1 + ','+length+' ,null ,null, \'' + nome + '[' + length + '][itens]' + '\')">' +
                     '<i class="fa fa-plus" aria-hidden="true"></i> SubGrupo-2' +
                     '</button>';
-
-//                novo = '<button type="button" ' +
-//                    'class="btn btn-primary" ' +
-//                    'data-toggle="modal" ' +
-//                    'data-target="#cadastrarGrupo" ' +
-//                    'style="margin-left: -65px; width: 90px;" ' +
-//                    'onclick="atribuirGrupoId(\'subgrupo1_'+nivel1+'_select\',\'subgrupo2_id\', \'subgrupo2_'+length+'_select\')">' +
-//                    'Novo SG-2' +
-//                    '</button>';
             }
 
             if (nivel == 2) {
@@ -380,15 +369,6 @@
                     'onclick="addSubItem(\'' + idGeral + '\', '+nivel1+' ,'+nivel2+','+length+'  ,null, \'' + nome + '[' + length + '][itens]' + '\')">' +
                     '<i class="fa fa-plus" aria-hidden="true"></i> SubGrupo-3' +
                     '</button>';
-
-//                novo = '<button type="button" ' +
-//                    'class="btn btn-primary" ' +
-//                    'data-toggle="modal" ' +
-//                    'data-target="#cadastrarGrupo" ' +
-//                    'style="margin-left: -69px; width: 90px;" ' +
-//                    'onclick="atribuirGrupoId(\'subgrupo2_'+nivel2+'_select\',\'subgrupo3_id\', \'subgrupo3_'+length+'_select\')">' +
-//                    'Novo SG-3' +
-//                    '</button>';
             }
 
             if (nivel == 3) {
@@ -398,15 +378,6 @@
                     'onclick="addSubItem(\'' + idGeral + '\', '+nivel1+' ,'+nivel2+' , '+nivel3+', '+length+', \'' + nome + '[' + length + '][itens]' + '\')">' +
                     '<i class="fa fa-plus" aria-hidden="true"></i> Serviços' +
                     '</button>';
-
-//                novo = '<button type="button" ' +
-//                    'class="btn btn-primary" ' +
-//                    'data-toggle="modal" ' +
-//                    'data-target="#cadastrarGrupo" ' +
-//                    'style="margin-left: -72px; width: 90px;" ' +
-//                    'onclick="atribuirGrupoId(\'subgrupo3_'+nivel3+'_select\',\'servico_id\', \'subgrupo4_'+length+'_select\')">' +
-//                    'Novo SER' +
-//                    '</button>';
             }
 
             if (nivel == 4) {
@@ -432,16 +403,13 @@
                     selectHTML = '' +
                         '<li style="list-style-type: none; margin: 0px;" id="subgrupo' + nivel + '_' + length + '">' +
                         '<div class="col-md-8" style="padding-bottom: 5px;">' +
-                        '<select class="form-control select2 estrutura_' + nivel + '" onchange="percorreBloco()" name="' + nome + '[' + length + '][id]" id="subgrupo' + nivel + '_' +nivel1+'_'+nivel2+'_'+nivel3+'_'+nivel4+'_' + length + '_select">' +
+                        '<select class="form-control select2 estrutura_' + nivel + '" onchange="percorreBloco('+nivel+')" name="' + nome + '[' + length + '][id]" id="subgrupo' + nivel + '_' +nivel1+'_'+nivel2+'_'+nivel3+'_'+nivel4+'_' + length + '_select">' +
                         options +
                         '</select>' +
                         '</div>' +
                         '<div class="col-md-4">' +
                         adicionar +
                         '</div>' +
-//                        '<div class="col-md-1">' +
-//                        novo +
-//                        '</div>' +
                         '<ul id="subgrupo' + nivel + '_' +nivel1+'_'+nivel2+'_'+nivel3+'_'+nivel4+'_' + length + '_ul">' +
                         '</ul>' +
                         '</li>';
@@ -484,62 +452,14 @@
             ]).submit();
         }
 
-        function percorreBloco() {
+        function percorreBloco(nivel){
             bloco_aberto = false;
-            if (!$('.estrutura_0').length) {
-                bloco_aberto = true;
-                return false;
+            if(nivel) {
+                if (nivel < 4) {
+                    bloco_aberto = true;
+                    return false;
+                }
             }
-            $('.estrutura_0').each(function (idx) {
-                if (!$(this).val()) {
-                    bloco_aberto = true;
-                    return false;
-                }
-                if (!$('.estrutura_1').length) {
-                    bloco_aberto = true;
-                    return false;
-                }
-                $('.estrutura_1').each(function (idx) {
-                    if (!$(this).val()) {
-                        bloco_aberto = true;
-                        return false;
-                    }
-//                    console.log('aki', $(this).parent().closest('ul'));
-//                    if($(this).parent().closest('ul').length){
-//                        console.log()
-//                    }
-                    if (!$('.estrutura_2').length) {
-                        bloco_aberto = true;
-                        return false;
-                    }
-                    $('.estrutura_2').each(function (idx) {
-                        if (!$(this).val()) {
-                            bloco_aberto = true;
-                            return false;
-                        }
-                        if (!$('.estrutura_3').length) {
-                            bloco_aberto = true;
-                            return false;
-                        }
-                        $('.estrutura_3').each(function (idx) {
-                            if (!$(this).val()) {
-                                bloco_aberto = true;
-                                return false;
-                            }
-                            if (!$('.estrutura_4').length) {
-                                bloco_aberto = true;
-                                return false;
-                            }
-                            $('.estrutura_4').each(function (idx) {
-                                if (!$(this).val()) {
-                                    bloco_aberto = true;
-                                    return false;
-                                }
-                            });
-                        });
-                    });
-                });
-            });
         }
 
         function cadastrarGrupo() {
@@ -576,7 +496,6 @@
          * Se for alterado o valor do bloco remove a estrutura a baixo
          **/
         function alteraBloco(id){
-            console.log($('#'+id+'_select').val());
             if(id){
                 swal({
                         title: "Ao trocar o grupo selecionado todos que depende deste será removido!",
@@ -596,15 +515,12 @@
         }
 
         /**
-         *
          * @param anterior = Grupo Anterior
          * @param atual = É o grupo que vai ser cadastrado
          */
         function atribuirGrupoId(anterior, atual, proximo) {
-            console.log(proximo);
             $('#grupo_atual').val(atual);
             $('#append_select').val(proximo);
-            console.log('proximo 1', $('#append_select').val());
             if(anterior){
                 var subgrupo = $('#'+anterior).val();
                 if(subgrupo !== undefined){
