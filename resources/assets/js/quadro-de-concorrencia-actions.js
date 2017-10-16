@@ -76,7 +76,7 @@
     }
   }
 
-  function checkAttachmentTypeExists () {
+  function checkAttachmentTypeExists (e) {
     const $self = $(this);
     const $attachmentsFields = $self.parents('.qc-anexos-campos');
     const $attachmentsFieldsSelect = $attachmentsFields.find('select');

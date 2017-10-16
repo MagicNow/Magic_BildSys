@@ -42,10 +42,7 @@ function cancelarQC(qual) {
 
           });
           swal('Erro', alertText, 'error');
-
         });
-
-
   });
 
 }

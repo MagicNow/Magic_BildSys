@@ -151,6 +151,11 @@ class Qc extends Model
 		return $this->belongsTo(\App\Models\User::class);
 	}
 
+	public function fornecedor()
+	{
+		return $this->belongsTo(\App\Models\Fornecedor::class, 'fornecedor_id');
+	}
+
 	public function logs()
 	{
 		return $this->hasMany(\App\Models\QcAvulsoStatusLog::class, 'qc_id');

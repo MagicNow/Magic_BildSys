@@ -20411,6 +20411,7 @@ input:checked + .slider:before {
     display: block;
     text-align:center;
   }
+}
 
 .select2-container--default .select2-selection--multiple .select2-selection__choice{
   background-color: #f98d00;
@@ -20419,5 +20420,16 @@ input:checked + .slider:before {
 .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
   color: #000;
 }
+
+select[readonly],
+input[type="file"][readonly] {
+  pointer-events: none;
+  touch-action: none;
+}
+
+input[type="file"].form-control {
+  overflow: hidden;
+}
+
 
 /*# sourceMappingURL=site.css.map */
