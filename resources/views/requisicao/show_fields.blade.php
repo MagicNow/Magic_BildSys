@@ -1,42 +1,73 @@
-<!-- Id Field -->
-<div class="form-group col-md-6">
-    {!! Form::label('id', 'Id:') !!}
+<div class="form-group col-sm-3">
+    {!! Form::label('requisicao', 'Requisição Nro:') !!}
     <p class="form-control">{!! $requisicao->id !!}</p>
 </div>
 
-<!-- Obra Id Field -->
-<div class="form-group col-md-6">
-    {!! Form::label('obra_id', 'Obra Id:') !!}
-    <p class="form-control">{!! $requisicao->obra_id !!}</p>
+<div class="form-group col-sm-3">
+    {!! Form::label('created_at', 'Data Requisição:') !!}
+    <p class="form-control">{{ with(new\Carbon\Carbon($requisicao->created_at))->format('d/m/Y') }}</p>
 </div>
 
-<!-- User Id Field -->
-<div class="form-group col-md-6">
-    {!! Form::label('user_id', 'User Id:') !!}
-    <p class="form-control">{!! $requisicao->user_id !!}</p>
+<div class="form-group col-sm-3">
+    {!! Form::label('user_id', 'Solicitante:') !!}
+    <p class="form-control">{!! $requisicao->usuario !!}</p>
 </div>
 
-<!-- Status Field -->
-<div class="form-group col-md-6">
-    {!! Form::label('status', 'Status:') !!}
+<div class="form-group col-sm-3">
+    {!! Form::label('status_id', 'Status:') !!}
     <p class="form-control">{!! $requisicao->status !!}</p>
 </div>
 
-<!-- Created At Field -->
-<div class="form-group col-md-6">
-    {!! Form::label('created_at', 'Created At:') !!}
-    <p class="form-control">{!! $requisicao->created_at !!}</p>
+
+<div class="form-group col-sm-4">
+    {!! Form::label('obra', 'Obra:') !!}
+    <p class="form-control">{!! $requisicao->obra !!}</p>
 </div>
 
-<!-- Updated At Field -->
-<div class="form-group col-md-6">
-    {!! Form::label('updated_at', 'Updated At:') !!}
-    <p class="form-control">{!! $requisicao->updated_at !!}</p>
+<div class="form-group col-sm-4">
+    {!! Form::label('local', 'Local:') !!}
+    <p class="form-control">{!! $requisicao->local !!}</p>
 </div>
 
-<!-- Deleted At Field -->
-<div class="form-group col-md-6">
-    {!! Form::label('deleted_at', 'Deleted At:') !!}
-    <p class="form-control">{!! $requisicao->deleted_at !!}</p>
+<div class="form-group col-sm-4">
+    {!! Form::label('torre', 'Torre:') !!}
+    <p class="form-control">{!! $requisicao->torre !!}</p>
 </div>
+
+<div class="form-group col-sm-4">
+    {!! Form::label('pavimento', 'Pavimento:') !!}
+    <p class="form-control">{!! $requisicao->pavimento !!}</p>
+</div>
+
+<div class="form-group col-sm-4">
+    {!! Form::label('trecho', 'Trecho:') !!}
+    <p class="form-control">{!! $requisicao->trecho !!}</p>
+</div>
+
+<div class="form-group col-sm-4">
+    {!! Form::label('andar', 'Andar:') !!}
+    <p class="form-control">{!! $requisicao->andar !!}</p>
+</div>
+
+
+<div class="col-sm-12">
+    <table id="insumos-table" class="table table-striped table-responsive">
+        <thead>
+        <tr align="left">
+            <th width="15%">Insumo</th>
+            <th width="12%">Un de Medida</th>
+            <th width="10%">Previsto</th>
+            <th width="10%">Disponível</th>
+            <th width="10%">Em Estoque</th>
+            <th width="8%">Qtde</th>
+            <th width="12%">Status</th>
+        </tr>
+        </thead>
+
+        <tbody id="body-insumos-table">
+        {!! $table !!}
+        </tbody>
+</table>
+</div>
+
 

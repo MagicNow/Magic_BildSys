@@ -102,6 +102,62 @@ class RequisicaoItemRepository extends BaseRepository
     }
 
 
+    public function getRequisicaoItensShow($id)
+    {
+
+        $r = DB::table('requisicao_itens as ri');
+        $r->select(DB::raw(
+            'i.nome insumo, 
+            i.id insumo_id, 
+            i.unidade_sigla , 
+            sum(ri.qtde) qtde_requisicao ,
+            e.qtde estoque, 
+            e.id estoque_id ,
+            IF(ri.comodo <> " ","true","false") as temComodo,
+            ri.requisicao_id,
+            ri.apartamento,
+            ri.comodo,
+            ri.id'));
+
+        $r->leftJoin('requisicao as r', 'ri.requisicao_id', '=', 'r.id');
+        $r->leftJoin('estoque as e', 'ri.estoque_id', '=', 'e.id');
+        $r->leftJoin('insumos as i', 'e.insumo_id', '=', 'i.id');
+        $r->where('ri.requisicao_id', $id);
+
+        $r->groupBy('ri.estoque_id');
+        $r->orderBy('i.nome');
+
+        $insumos = $r->get();
+
+        $requisicao = Requisicao::where('id', $id)->first();
+
+        $html = '';
+
+        foreach ($insumos as $insumo) {
+
+            $qtde_usada = $this->getTotalUtilizadoByInsumo($requisicao, $insumo);
+
+            $previsto = $this->getTotalPrevistoByInsummo($requisicao, $insumo);
+
+            $qtde_disponivel = $previsto - $qtde_usada;
+
+            $html .= '<tr>';
+            $html .= '<td>' . $insumo->insumo . '</td>';
+            $html .= '<td>' . $insumo->unidade_sigla . '</td>';
+            $html .= '<td>' . $previsto . '</td>';
+            $html .= '<td>' . $qtde_disponivel . '</td>';
+            $html .= '<td>' . $insumo->estoque . '</td>';
+            $html .= '<td>'.$insumo->qtde_requisicao.'</td>';
+            $html .= '<td>status</td>';
+
+
+            $html .= '</tr>';
+        }
+
+        return $html;
+    }
+
+
     public function getInsumosRequisicaoByComodo ($requisicao) {
 
         $r = DB::table('requisicao_itens as ri');

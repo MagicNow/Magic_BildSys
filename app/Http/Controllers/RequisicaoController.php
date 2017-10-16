@@ -97,7 +97,7 @@ class RequisicaoController extends AppBaseController
      */
     public function show($id)
     {
-        $requisicao = $this->requisicaoRepository->findWithoutFail($id);
+        $requisicao = $this->requisicaoRepository->getRequisicao($id);
 
         if (empty($requisicao)) {
             Flash::error('Requisicao '.trans('common.not-found'));
@@ -105,7 +105,9 @@ class RequisicaoController extends AppBaseController
             return redirect(route('requisicao.index'));
         }
 
-        return view('requisicao.show')->with('requisicao', $requisicao);
+        $table = $this->requisicaoItemRepository->getRequisicaoItensShow($id);
+
+        return view('requisicao.show', compact('requisicao', 'table'));
     }
 
     /**
@@ -160,11 +162,11 @@ class RequisicaoController extends AppBaseController
 
             Flash::success('Requisicao ' . trans('common.updated') . ' ' . trans('common.successfully') . '.');
 
-            //return response()->json(['success' => true]);
+            return response()->json(['success' => true]);
 
         } else {
 
-            //return response()->json(['success' => false]);
+            return response()->json(['success' => false]);
         }
     }
 
