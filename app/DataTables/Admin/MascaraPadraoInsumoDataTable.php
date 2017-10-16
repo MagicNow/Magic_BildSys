@@ -23,6 +23,12 @@ class MascaraPadraoInsumoDataTable extends DataTable
         return $this->datatables
             ->eloquent($this->query())
             ->addColumn('action', 'admin.mascara_padrao_insumos.datatables_actions')
+            ->editColumn('coeficiente', function ($obj){
+                return $obj->coeficiente;
+            })
+            ->editColumn('indireto', function ($obj){
+                return $obj->indireto;
+            })
             ->make(true);
     }
 
@@ -41,12 +47,14 @@ class MascaraPadraoInsumoDataTable extends DataTable
 				'mascara_padrao_insumos.codigo_estruturado',
 				'mascara_padrao_insumos.coeficiente',
 				'mascara_padrao_insumos.indireto',
-                'insumo_grupos.nome as nome_grupo_insumo'
+                'insumo_grupos.nome as nome_grupo_insumo',
+                'tipo_levantamentos.nome as nome_tipo_levantamento'
             ])
         ->join('mascara_padrao_estruturas','mascara_padrao_estruturas.id','=','mascara_padrao_insumos.mascara_padrao_estrutura_id')
         ->join('mascara_padrao','mascara_padrao.id','=','mascara_padrao_estruturas.mascara_padrao_id')
         ->join('insumos','insumos.id','=','mascara_padrao_insumos.insumo_id')
-        ->join('insumo_grupos','insumo_grupos.id','insumos.insumo_grupo_id');
+        ->join('insumo_grupos','insumo_grupos.id','insumos.insumo_grupo_id')
+        ->leftJoin('tipo_levantamentos','tipo_levantamentos.id','mascara_padrao_insumos.tipo_levantamento_id');
         if($this->mascara_padrao_id){
             $mascaraPadraoInsumos->where('mascara_padrao.id',$this->mascara_padrao_id);
         }
@@ -119,6 +127,7 @@ class MascaraPadraoInsumoDataTable extends DataTable
             'Código Estruturado' => ['name' => 'mascara_padrao_insumos.codigo_estruturado', 'data' => 'codigo_estruturado'],
             'Coeficiente' => ['name' => 'mascara_padrao_insumos.coeficiente', 'data' => 'coeficiente'],
             'Indireto' => ['name' => 'mascara_padrao_insumos.indireto', 'data' => 'indireto'],
+            'TipoLevantamento' => ['name' => 'tipo_levantamentos.nome', 'data' => 'nome_tipo_levantamento'],
             'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
         ];
     }

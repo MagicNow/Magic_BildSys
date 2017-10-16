@@ -8,30 +8,8 @@
             </a>
             Insumos da Máscara padrão
         </h3>
-
-        {{--<h1 class="pull-left"><button type="button" class="btn btn-link" onclick="history.go(-1);"><i class="fa fa-arrow-left" aria-hidden="true"></i></button>Máscara Padrão / Insumos</h1>--}}
-
-		{{--<h1>--}}
-            {{--<a class="btn btn-danger pull-right" style="margin-top: -10px;margin-bottom: 5px; margin-right: 10px;" href="{!! route('admin.mascara_padrao_insumos.deleteblocoview') !!}">--}}
-                {{--Remover insumos em bloco--}}
-            {{--</a>--}}
-        {{--</h1>--}}
-		{{--<h1>--}}
-           {{--<a class="btn btn-warning pull-right" style="margin-top: -10px;margin-bottom: 5px; margin-right: 10px;" href="{!! route('admin.mascara_padrao_insumos.seminsumoview') !!}">--}}
-            {{--Ver insumos sem Máscara Padrão--}}
-           {{--</a>--}}
-        {{--</h1>--}}
-		{{--<h1>--}}
-           {{--<a class="btn btn-primary pull-right" style="margin-top: -10px;margin-bottom: 5px; margin-right: 10px;" href="{!! route('admin.mascara_padrao_insumos.create') !!}">--}}
-            {{--Cadastrar insumos a Máscara Padrão--}}
-           {{--</a>--}}
-        {{--</h1>--}}
     </section>
     <div class="content">
-        <div class="clearfix"></div>
-
-
-
         <div class="clearfix"></div>
         <div class="box box-primary">
             <div class="box-body">
@@ -39,5 +17,35 @@
             </div>
         </div>
     </div>
+@endsection
+@section('scripts')
+    <script type="text/javascript">
+
+
+        function deleteInsumo(id){
+            swal({
+                title: "{{ ucfirst( trans('common.are-you-sure') ) }}?",
+                text: "{{ ucfirst( trans('common.you-will-not-be-able-to-recover-this-registry') ) }}!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "{{ ucfirst( trans('common.yes') ) }}, {{ ucfirst( trans('common.delete') ) }}!",
+                cancelButtonText: "{{ ucfirst( trans('common.cancel') ) }}",
+                closeOnConfirm: false
+            }, function () {
+                $.ajax({
+                    url : '/admin/mascara_padrao_insumos/' + id,
+                    type :'DELETE',
+                }).done(function (retorno){
+                        if(retorno.success){
+                            swal.close();
+                            window.LaravelDataTables["dataTableBuilder"].draw(false);
+                        }
+                }).fail(function (){
+                    swal('Ops...', 'Não foi possível deletar o insumo', 'error');
+                });
+            });
+        }
+    </script>
 @endsection
 

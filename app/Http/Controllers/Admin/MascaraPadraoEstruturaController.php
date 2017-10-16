@@ -108,8 +108,8 @@ class MascaraPadraoEstruturaController extends AppBaseController
         $input = $request->all();
         $mascaraPadraoEstrutura = $this->mascaraPadraoEstruturaRepository->create($input);
         if(isset($mascaraPadraoEstrutura['error'])){
-            Flash::error('ERRO: '. $mascaraPadraoEstrutura['error']. ' </br> Msg: Tem blocos que não foi inserido até o nível de "serviço"');
-            return back();
+            Flash::error('ERRO: Blocos não inserido até o nível de "serviço"');
+            return back()->withInput();
         }
 
         Flash::success('Máscara Padrão Estrutura '.trans('common.saved').' '.trans('common.successfully').'.');

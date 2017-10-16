@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Eloquent as Model;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Class QcAnexos
@@ -53,4 +54,10 @@ class QcAnexo extends Model
 	{
 		return $this->belongsTo(Qc::class);
 	}
+
+    public function getLinkAttribute()
+    {
+        return Storage::url($this->arquivo);
+    }
+
 }

@@ -4,6 +4,7 @@ namespace App\DataTables\Admin;
 
 use App\Models\Planejamento;
 use Form;
+use Illuminate\Support\Facades\DB;
 use Yajra\Datatables\Services\DataTable;
 
 class PlanejamentoDataTable extends DataTable
@@ -32,6 +33,17 @@ class PlanejamentoDataTable extends DataTable
             ->filterColumn('data_fim', function ($query, $keyword) {
                 $query->whereRaw("DATE_FORMAT(planejamentos.data_fim,'%d/%m/%Y') like ?", ["%$keyword%"]);
             })
+            ->filterColumn('carteiras', function($query, $keyword){
+                $query->whereRaw('(
+                    SELECT 
+                        GROUP_CONCAT(qc_avulso_carteiras.nome SEPARATOR ", ")
+                    FROM
+                        qc_avulso_carteira_planejamento
+                        JOIN qc_avulso_carteiras ON qc_avulso_carteira_planejamento.qc_avulso_carteira_id = qc_avulso_carteiras.id 
+                    WHERE
+                        qc_avulso_carteira_planejamento.planejamento_id = planejamentos.id
+                ) LIKE ?', ['%'.$keyword.'%']);
+            })
             ->editColumn('prazo',function ($obj){
                 return $obj->prazo ? $obj->prazo . ' dias ' : '';
             })
@@ -45,8 +57,8 @@ class PlanejamentoDataTable extends DataTable
      */
     public function query()
     {
-        $planejamentos = Planejamento::query()
-            ->select([
+        if(request()->segment(count(request()->segments()))=='atividade'){
+            $campos = [
                 'planejamentos.id',
                 'obras.nome as obra',
                 'planejamentos.tarefa',
@@ -55,7 +67,30 @@ class PlanejamentoDataTable extends DataTable
                 'planejamentos.data_fim',
                 'planejamentos.resumo',
                 'planejamentos.created_at'
-            ])
+            ];
+        }else{
+            $campos = [
+                'planejamentos.id',
+                'obras.nome as obra',
+                'planejamentos.tarefa',
+                'planejamentos.data',
+                'planejamentos.prazo',
+                'planejamentos.data_fim',
+                'planejamentos.resumo',
+                'planejamentos.created_at',
+                DB::raw('(
+                    SELECT 
+                        GROUP_CONCAT(qc_avulso_carteiras.nome SEPARATOR ", ")
+                    FROM
+                        qc_avulso_carteira_planejamento
+                        JOIN qc_avulso_carteiras ON qc_avulso_carteira_planejamento.qc_avulso_carteira_id = qc_avulso_carteiras.id 
+                    WHERE
+                        qc_avulso_carteira_planejamento.planejamento_id = planejamentos.id
+                ) as carteiras')
+            ];
+        }
+        $planejamentos = Planejamento::query()
+            ->select($campos)
         ->join('obras','obras.id','planejamentos.obra_id');
         if($this->obra){
             $planejamentos->where('planejamentos.obra_id', $this->obra);
@@ -128,15 +163,28 @@ class PlanejamentoDataTable extends DataTable
      */
     private function getColumns()
     {
-        return [
-            'obra' => ['name' => 'obras.nome', 'data' => 'obra'],
-            'tarefa' => ['name' => 'tarefa', 'data' => 'tarefa'],
-            'data_início' => ['name' => 'data', 'data' => 'data'],
-            'prazo' => ['name' => 'prazo', 'data' => 'prazo'],
-            'data_fim' => ['name' => 'data_fim', 'data' => 'data_fim'],
-            'resumo' => ['name' => 'resumo', 'data' => 'resumo'],
-            'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
-        ];
+        if(request()->segment(count(request()->segments()))=='atividade'){
+            return [
+                'obra' => ['name' => 'obras.nome', 'data' => 'obra'],
+                'tarefa' => ['name' => 'tarefa', 'data' => 'tarefa'],
+                'data_início' => ['name' => 'data', 'data' => 'data'],
+                'prazo' => ['name' => 'prazo', 'data' => 'prazo'],
+                'data_fim' => ['name' => 'data_fim', 'data' => 'data_fim'],
+                'resumo' => ['name' => 'resumo', 'data' => 'resumo'],
+                'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
+            ];
+        }else{
+            return [
+                'obra' => ['name' => 'obras.nome', 'data' => 'obra'],
+                'tarefa' => ['name' => 'tarefa', 'data' => 'tarefa'],
+                'data_início' => ['name' => 'data', 'data' => 'data'],
+                'prazo' => ['name' => 'prazo', 'data' => 'prazo'],
+                'data_fim' => ['name' => 'data_fim', 'data' => 'data_fim'],
+                'carteirasQ&period;c&period;Avulso' => ['name' => 'carteiras', 'data' => 'carteiras'],
+                'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
+            ];
+        }
+
     }
 
     /**

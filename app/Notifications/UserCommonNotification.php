@@ -13,8 +13,11 @@ class UserCommonNotification extends Notification
     private $msg;
     private $link;
 
+
     /**
-     * @param Approvable $model
+     * UserCommonNotification constructor.
+     * @param $msg Mensagem
+     * @param $link Link (use # caso não queira direcionar)
      */
     public function __construct($msg, $link)
     {

@@ -1,7 +1,8 @@
 function select2(selector, options) {
+  options = options || {};
   options = Object.assign({
     allowClear: true,
-    placeholder: "Escolha...",
+    placeholder: 'Escolha...',
     language: "pt-BR",
     theme: 'bootstrap',
     ajax: {

@@ -9,6 +9,11 @@ use App\Models\Qc;
 
 class CreateQcRequest extends FormRequest
 {
+    public $dontFlash = [
+        'anexo_descricao',
+        'anexo_tipo',
+        'anexo_arquivo',
+    ];
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -26,15 +31,11 @@ class CreateQcRequest extends FormRequest
      */
     public function rules(Request $request)
     {
-        if ($request->_method === 'PATCH') {
-            return Qc::$rulesUpdate;
-        } else {
-            return Qc::$rules;
-        }
+        return Qc::$rules;
     }
 
     public function messages()
     {
-        return [];
+        return Qc::$messages;
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Carteira;
 use App\Models\Insumo;
 use App\Models\InsumoGrupo;
+use App\Models\QcAvulsoCarteira;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Fornecedor;
@@ -69,6 +70,19 @@ class BuscarController extends AppBaseController
     public function getCarteiras(Request $request)
     {
         $carteiras = Carteira::select([
+            'id',
+            'nome'
+        ])
+        ->where('nome', 'like', '%'.$request->q.'%')
+        ->whereNotIn('id', $request->ignore ?: [])
+        ->paginate();
+
+        return $carteiras;
+    }
+
+    public function getQcAvulsoCarteiras(Request $request)
+    {
+        $carteiras = QcAvulsoCarteira::select([
             'id',
             'nome'
         ])

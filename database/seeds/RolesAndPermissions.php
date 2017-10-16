@@ -25,7 +25,8 @@ class RolesAndPermissions extends Seeder
             'Administrador',
             'Suprimentos',
             'Fornecedor',
-            'Planejamento'
+            'Planejamento',
+            'Coordenador de Suprimentos',
         ];
 
         $roles = [];
@@ -106,6 +107,12 @@ class RolesAndPermissions extends Seeder
             'carteiras.edit'   => 'Edição de carteiras',
             'carteiras.view'   => 'Visualização de carteiras',
 			'carteiras.delete'   => 'Remoção de carteiras',
+
+			'qc_avulso_carteiras.list' => 'Listagem de Carteiras de Q.C. Avulso',
+            'qc_avulso_carteiras.create' => 'Criação de Carteiras de Q.C. Avulso',
+            'qc_avulso_carteiras.edit'   => 'Edição de Carteiras de Q.C. Avulso',
+            'qc_avulso_carteiras.view'   => 'Visualização de Carteiras de Q.C. Avulso',
+			'qc_avulso_carteiras.delete'   => 'Remoção de Carteiras de Q.C. Avulso',
 
             'insumos.list' => 'Listagem de insumos',
             'insumos.view'   => 'Visualização de insumos',
@@ -291,11 +298,11 @@ class RolesAndPermissions extends Seeder
             'boletim-medicao.edit'   => 'Edição de Boletim de Medição',
             'boletim-medicao.delete'   => 'Remoção de Boletim de Medição',
 
-            'qc.list' => 'Lista de QC',
-            'qc.create' => 'Criação de QC',
-            'qc.edit' => 'Edição de QC',
-            'qc.show' => 'Visualização de QC',
-            'qc.delete' => 'Exclusão de QC',
+            'qc.list' => 'Lista de QC Avulso',
+            'qc.create' => 'Criação de QC Avulso',
+            'qc.edit' => 'Edição de QC Avulso',
+            'qc.show' => 'Visualização de QC Avulso',
+            'qc.delete' => 'Exclusão de QC Avulso',
 
             'qc-aprovar.show' => 'Visualização formulário de aprovação / reprovação QC',
 
@@ -368,11 +375,58 @@ class RolesAndPermissions extends Seeder
         $roles[1]->attachPermission(Defender::findPermission('configuracaoEstaticas.list'));
         $roles[1]->attachPermission(Defender::findPermission('configuracaoEstaticas.edit'));
         $roles[1]->attachPermission(Defender::findPermission('configuracaoEstaticas.show'));
+        $roles[1]->attachPermission(Defender::findPermission('qc.list'));
+        $roles[1]->attachPermission(Defender::findPermission('qc.create'));
+        $roles[1]->attachPermission(Defender::findPermission('qc.show'));
 
         // Permissões para Fornecedor
         $roles[2]->attachPermission(Defender::findPermission('quadroDeConcorrencias.informar_valor'));
         $roles[2]->attachPermission(Defender::findPermission('quadroDeConcorrencias.list'));
         $roles[2]->attachPermission(Defender::findPermission('site.dashboard'));
+
+        // Permissões para Coordenador de Suprimentos
+        $roles[4]->attachPermission(Defender::findPermission('site.dashboard'));
+        $roles[4]->attachPermission(Defender::findPermission('retroalimentacao.create'));
+        $roles[4]->attachPermission(Defender::findPermission('quadroDeConcorrencias.list'));
+        $roles[4]->attachPermission(Defender::findPermission('quadroDeConcorrencias.create'));
+        $roles[4]->attachPermission(Defender::findPermission('quadroDeConcorrencias.edit'));
+        $roles[4]->attachPermission(Defender::findPermission('quadroDeConcorrencias.view'));
+        $roles[4]->attachPermission(Defender::findPermission('quadroDeConcorrencias.informar_valor'));
+        $roles[4]->attachPermission(Defender::findPermission('catalogo_acordos.list'));
+        $roles[4]->attachPermission(Defender::findPermission('catalogo_acordos.create'));
+        $roles[4]->attachPermission(Defender::findPermission('catalogo_acordos.edit'));
+        $roles[4]->attachPermission(Defender::findPermission('catalogo_acordos.delete'));
+        $roles[4]->attachPermission(Defender::findPermission('equalizacao_tecnicas.list'));
+        $roles[4]->attachPermission(Defender::findPermission('equalizacao_tecnicas.create'));
+        $roles[4]->attachPermission(Defender::findPermission('equalizacao_tecnicas.edit'));
+        $roles[4]->attachPermission(Defender::findPermission('equalizacao_tecnicas.delete'));
+        $roles[4]->attachPermission(Defender::findPermission('fornecedores.create'));
+        $roles[4]->attachPermission(Defender::findPermission('fornecedores.list'));
+        $roles[4]->attachPermission(Defender::findPermission('compras.geral'));
+        $roles[4]->attachPermission(Defender::findPermission('compras_lembretes.list'));
+        $roles[4]->attachPermission(Defender::findPermission('ordens_de_compra.list'));
+        $roles[4]->attachPermission(Defender::findPermission('ordens_de_compra.detalhes'));
+        $roles[4]->attachPermission(Defender::findPermission('ordens_de_compra.detalhes_servicos'));
+        $roles[4]->attachPermission(Defender::findPermission('dashboard.access'));
+        $roles[4]->attachPermission(Defender::findPermission('lembretes.list'));
+        $roles[4]->attachPermission(Defender::findPermission('lembretes.edit'));
+        $roles[4]->attachPermission(Defender::findPermission('compradorInsumos.list'));
+        $roles[4]->attachPermission(Defender::findPermission('compradorInsumos.create'));
+        $roles[4]->attachPermission(Defender::findPermission('compradorInsumos.semInsumoView'));
+		$roles[4]->attachPermission(Defender::findPermission('obras.list'));
+		$roles[4]->attachPermission(Defender::findPermission('carteiras.list'));
+		$roles[4]->attachPermission(Defender::findPermission('carteiraInsumos.list'));
+        $roles[4]->attachPermission(Defender::findPermission('carteiraInsumos.create'));
+		$roles[4]->attachPermission(Defender::findPermission('carteiraInsumos.semCarteiraView'));
+        $roles[4]->attachPermission(Defender::findPermission('fornecedores.list'));
+        $roles[4]->attachPermission(Defender::findPermission('configuracaoEstaticas.list'));
+        $roles[4]->attachPermission(Defender::findPermission('configuracaoEstaticas.edit'));
+        $roles[4]->attachPermission(Defender::findPermission('configuracaoEstaticas.show'));
+        $roles[4]->attachPermission(Defender::findPermission('qc.list'));
+        $roles[4]->attachPermission(Defender::findPermission('qc.create'));
+        $roles[4]->attachPermission(Defender::findPermission('qc.show'));
+        $roles[4]->attachPermission(Defender::findPermission('qc.delete'));
+        $roles[4]->attachPermission(Defender::findPermission('qc.edit'));
 
         Schema::enableForeignKeyConstraints();
     }

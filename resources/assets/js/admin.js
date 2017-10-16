@@ -65,12 +65,17 @@ $(function() {
     }
   });
 
-  $(".select2").select2({
-    theme: 'bootstrap',
-    placeholder: "-",
-    language: "pt-BR",
-    allowClear: true
-  });
+  $('.select2').each(function(n, el) {
+    var $el = $(el);
+    var placeholder = $el.find('[value=""]').first().text() || $el.prop('placeholder');
+
+    $el.select2({
+      theme: 'bootstrap',
+      placeholder: placeholder || '-',
+      language: "pt-BR",
+      allowClear: true
+    });
+  })
 
   $('[data-toggle="tab"].js-tooltip').tooltip({
     trigger: 'hover',
@@ -126,7 +131,7 @@ $(function() {
           $(obj).val(data_formatada);
         }
       });
-      
+
         $('input[type=date]')
             .attr('type', 'text')
             .attr('readonly','readonly')
