@@ -56,7 +56,7 @@
 	        		{!! Form::text('anexo_descricao[]', NULL, ['class' => 'form-control']) !!}
 	        	</div>
 	        	<div class="col-sm-3">
-	                   {!! Form::label('', 'Tipo:') !!}
+                   {!! Form::label('', 'Tipo:') !!}
 	        		{!! Form::select('anexo_tipo[]', ['' => 'Escolha...', 'Proposta' => 'Proposta', 'Quadro de concorrência' => 'Quadro de concorrência', 'Email' => 'Email', 'Detalhamento do Projeto' => 'Detalhamento do Projeto'], NULL, ['class' => 'form-control']) !!}
 	        	</div>
 	        	<div class="col-sm-3">
@@ -65,12 +65,20 @@
 	        	</div>
 	        	<div class="col-md-1 text-center">
                     <label>&nbsp;</label>
-	        		<button
-                        type="button"
-                        class="btn qc-anexos-novo btn-default center-block"
-                        disabled="disabled">
-                        <i class="fa fa-plus"></i>
-                    </button>
+	        		<div class="center-block">
+	        		    <button
+                             type="button"
+                             class="btn js-qc-anexos-remover btn-warning btn-sm"
+                             disabled="disabled">
+                             <i class="fa fa-minus"></i>
+                         </button>
+	        		    <button
+                             type="button"
+                             class="btn js-qc-anexos-novo btn-default btn-sm"
+                             disabled="disabled">
+                             <i class="fa fa-plus"></i>
+                         </button>
+	        		</div>
 	        	</div>
 	        </div>
 	    </div>
