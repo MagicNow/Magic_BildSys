@@ -74,6 +74,8 @@ class GestaoEstoqueController extends AppBaseController
                         'obra_id' => $contrato->obra_id,
                         'contrato_id' => $contrato->id,
                         'insumo_grupo_id' => $item->insumo->insumo_grupo_id,
+                        'controlado' => $item->insumo->controlado,
+                        'qtd_minima' => $item->insumo->qtd_minima,
                     ];
                 }
             }

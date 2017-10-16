@@ -44,6 +44,7 @@
                         <th>Cod</th>
                         <th>Insumo</th>
                         <th>Un de medida</th>
+                        <th>Qtd mínima</th>
                     </tr>
                     </thead>
 
@@ -55,6 +56,9 @@
                                 <td>{{$item['codigo']}}</td>
                                 <td>{{$item['insumo']}}</td>
                                 <td>{{$item['unidade_medida']}}</td>
+                                <td>
+                                    <input value="{{float_to_money($item['qtd_minima'], '')}}" class="money">
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>
