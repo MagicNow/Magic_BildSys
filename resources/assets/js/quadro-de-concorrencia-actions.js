@@ -67,7 +67,7 @@
     var files = e.currentTarget.files;
 
     if(files.length && (files[0].size / 1024 / 1024) > 20) {
-      swal('', 'O tamanho máximo de upload é 20mb por arquivo!', 'warning');
+      swal('Atenção!', 'O tamanho máximo de upload é 20mb por arquivo!', 'warning');
       $(e.currentTarget)
         .val('')
         .prop('type', 'text')
@@ -92,7 +92,7 @@
     if ($attachmentsFieldsFile.val() !== '' && $attachmentsFieldsSelect.val() !== '' && qc > 1) {
       e.stopPropagation();
 
-      swal('', 'Você só pode anexar um arquivo de Quadro de Concorrência', 'warning');
+      swal('Atenção!', 'Você só pode anexar um arquivo de Quadro de Concorrência', 'warning');
       $attachmentsFieldsSelect.prop('selectedIndex', 0);
       $attachmentsFieldsFile
         .val('')
