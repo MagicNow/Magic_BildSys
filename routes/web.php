@@ -38,6 +38,8 @@ $router->get('/buscar/insumos', 'BuscarController@getInsumos')
     ->name('buscar.insumos');
 $router->get('/buscar/carteiras', 'BuscarController@getCarteiras')
     ->name('buscar.carteiras');
+$router->get('/buscar/qc-avulso-carteiras', 'BuscarController@getQcAvulsoCarteiras')
+    ->name('buscar.qc-avulso-carteiras');
 $router->get('/buscar/fornecedores', 'BuscarController@getFornecedores')
     ->name('buscar.fornecedores');
 $router->get('/buscar/tipo-equalizacao-tecnicas', 'BuscarController@getTipoEqualizacaoTecnicas')
@@ -154,6 +156,10 @@ $router->group(['prefix' => 'admin', 'middleware' => ['auth', 'needsPermission:d
         $router->get('planejamentoOrcamentos/orcamentos/desvincular', 'Admin\PlanejamentoOrcamentoController@desvincular');
         $router->get('planejamentoOrcamentos/sem-planejamento/view/{obra}', ['as' => 'admin.planejamentoOrcamentos.semplanejamentoview', 'uses' => 'Admin\PlanejamentoOrcamentoController@semPlanejamentoView']);
 
+
+        $router->get('tarefa-qc-avulso-carteira', ['as' => 'admin.planejamento.create-tarefa_carteiras', 'uses' => 'Admin\PlanejamentoController@createTarefaCarteira']);
+        $router->post('tarefa-qc-avulso-carteira', ['as' => 'admin.planejamentos.storeTarefaCarteira', 'uses' => 'Admin\PlanejamentoController@storeTarefaCarteira']);
+        $router->get('atividade-carteiras', ['as' => 'admin.planejamentos.atividade-carteiras', 'uses' => 'Admin\PlanejamentoController@atividadeCarteiras']);
     });
 
 	#Medição Física
@@ -614,6 +620,21 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->get('carteiras/{carteiras}/edit', ['as' => 'admin.carteiras.edit', 'uses' => 'Admin\CarteiraController@edit'])
             ->middleware("needsPermission:carteiras.edit");
         $router->get('carteiras/buscacep/{cep}', 'Admin\CarteiraController@buscaPorCep');
+    });
+
+    # QcAvulsoCarteiras
+    $router->group(['middleware' => 'needsPermission:qc_avulso_carteiras.list', 'prefix'=> 'qc-avulso-carteiras'], function () use ($router) {
+        $router->get('', ['as' => 'admin.qc_avulso_carteiras.index', 'uses' => 'Admin\QcAvulsoCarteiraController@index']);
+        $router->post('', ['as' => 'admin.qc_avulso_carteiras.store', 'uses' => 'Admin\QcAvulsoCarteiraController@store']);
+        $router->get('/create', ['as' => 'admin.qc_avulso_carteiras.create', 'uses' => 'Admin\QcAvulsoCarteiraController@create'])
+            ->middleware("needsPermission:qc_avulso_carteiras.create");;
+        $router->put('/{qc_avulso_carteiras}', ['as' => 'admin.qc_avulso_carteiras.update', 'uses' => 'Admin\QcAvulsoCarteiraController@update']);
+        $router->patch('/{qc_avulso_carteiras}', ['as' => 'admin.qc_avulso_carteiras.update', 'uses' => 'Admin\QcAvulsoCarteiraController@update']);
+        $router->delete('/{qc_avulso_carteiras}', ['as' => 'admin.qc_avulso_carteiras.destroy', 'uses' => 'Admin\QcAvulsoCarteiraController@destroy'])
+            ->middleware("needsPermission:qc_avulso_carteiras.delete");;
+        $router->get('/{qc_avulso_carteiras}', ['as' => 'admin.qc_avulso_carteiras.show', 'uses' => 'Admin\QcAvulsoCarteiraController@show']);
+        $router->get('/{qc_avulso_carteiras}/edit', ['as' => 'admin.qc_avulso_carteiras.edit', 'uses' => 'Admin\QcAvulsoCarteiraController@edit'])
+            ->middleware("needsPermission:qc_avulso_carteiras.edit");
     });
 
 	# Máscara Padrão

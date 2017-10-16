@@ -108,6 +108,12 @@ class RolesAndPermissions extends Seeder
             'carteiras.view'   => 'Visualização de carteiras',
 			'carteiras.delete'   => 'Remoção de carteiras',
 
+			'qc_avulso_carteiras.list' => 'Listagem de Carteiras de Q.C. Avulso',
+            'qc_avulso_carteiras.create' => 'Criação de Carteiras de Q.C. Avulso',
+            'qc_avulso_carteiras.edit'   => 'Edição de Carteiras de Q.C. Avulso',
+            'qc_avulso_carteiras.view'   => 'Visualização de Carteiras de Q.C. Avulso',
+			'qc_avulso_carteiras.delete'   => 'Remoção de Carteiras de Q.C. Avulso',
+
             'insumos.list' => 'Listagem de insumos',
             'insumos.view'   => 'Visualização de insumos',
             'insumos.availability'   => 'Alterar disponibilidade de insumos',
