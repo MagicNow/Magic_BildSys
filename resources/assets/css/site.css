@@ -288,17 +288,19 @@ textarea.form-control {
 
     zoom: 100%;
 }
-.dash{    zoom: 75%;
+.dash{
+  zoom: 75%;
  -moz-transform: scale(0.75);
-
 }
- .content-wrapper {
-            min-height: 621px !important;
-        }
-        button.dt-button, div.dt-button, a.dt-button {
 
+.content-wrapper {
+  min-height: 621px !important;
+}
+
+button.dt-button, div.dt-button, a.dt-button {
     padding: 0.2em 0.5em;
 }
+
 div.dataTables_wrapper div.dataTables_length select {
 
     padding: 0;
@@ -1205,4 +1207,3 @@ input[type="file"][readonly] {
 input[type="file"].form-control {
   overflow: hidden;
 }
-

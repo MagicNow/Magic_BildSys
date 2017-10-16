@@ -23,16 +23,9 @@
 
     <div class="container dash" >
         <section class="content-header">
-            <div class="modal-header">
-                <div class="col-md-12">
-                    <div class="col-md-9">
-                        <h3 class="pull-left title">
-                            <a href="#" onclick="history.go(-1);">
-                                <i class="fa fa-arrow-left" aria-hidden="true"></i></a> Dashboard
-                        </h3>
-                    </div>
-                </div>
-            </div>
+            <h1>
+                <a href="#" onclick="history.go(-1);"><i class="fa fa-arrow-left" aria-hidden="true"></i></a> Dashboard
+            </h1>
         </section>
         <div class="box-body" id="app">
             <div class="row">
@@ -41,10 +34,10 @@
                     $json_data = $json_labels = $json_colors = [];
                     $maximo = 0;
                     foreach ($qcs_por_status as $qcs){
-                    $json_data[] = $qcs->qtd;
-                    $maximo += $qcs->qtd;
-                    $json_labels[] = $qcs->nome;
-                    $json_colors[] = $qcs->cor;
+                        $json_data[] = $qcs->qtd;
+                        $maximo += $qcs->qtd;
+                        $json_labels[] = $qcs->nome;
+                        $json_colors[] = $qcs->cor;
                     }
                     $json_data = json_encode($json_data);
                     $json_labels = json_encode($json_labels);
@@ -69,7 +62,7 @@
                         @php
                         $json_data_sla = [];
                         foreach ($qcs_por_sla as $qcs_sla){
-                        $json_data_sla[] = $qcs_sla;
+                            $json_data_sla[] = $qcs_sla;
                         }
                         @endphp
                         <div class="col-md-4">
@@ -89,8 +82,8 @@
                         @php
                         $json_data_usuario = $json_labels_usuario = [];
                         foreach ($qcs_por_usuario as $qcs_usuario){
-                        $json_data_usuario[] = $qcs_usuario->qtd;
-                        $json_labels_usuario[] = $qcs_usuario->name;
+                            $json_data_usuario[] = $qcs_usuario->qtd;
+                            $json_labels_usuario[] = $qcs_usuario->name;
                         }
                         $json_data_usuario = json_encode($json_data_usuario);
                         $json_labels_usuario = json_encode($json_labels_usuario);
@@ -115,8 +108,8 @@
                         @php
                         $json_data_media = $json_labels_media = [];
                         foreach ($qcs_por_media as $qcs_media){
-                        $json_data_media[] = $qcs_media->dias;
-                        $json_labels_media[] = $qcs_media->name;
+                            $json_data_media[] = $qcs_media->dias;
+                            $json_labels_media[] = $qcs_media->name;
                         }
                         $json_data_media = json_encode($json_data_media);
                         $json_labels_media = json_encode($json_labels_media);
@@ -176,7 +169,7 @@
                             ticks: {
                                 // Create scientific notation labels
                                 beginAtZero:false,
-                                stepSize:1,
+                                stepSize:10,
                                 min: 0
 //                                fixedStepSize: 1
                             }
