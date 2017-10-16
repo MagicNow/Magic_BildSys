@@ -9,7 +9,7 @@
            </a>
         </h1>
     </section>
-	
+    @include('flash::message')
     <div class="content">
         <div class="clearfix"></div>
         <div class="box box-primary">
