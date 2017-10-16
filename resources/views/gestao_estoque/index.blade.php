@@ -23,14 +23,14 @@
                 <table id="fixTable" class="table table-bordered table-striped table-condensed table-nowrap">
                     <thead>
                     <tr align="center">
-                        <th class="class_visao_E" colspan="1" style="background-color: white;"></th>
-                        <th class="class_visao_P" colspan="1" style="background-color: white;"></th>
-                        <th class="class_visao_E" colspan="6" style="background-color: white;"></th>
-                        <th class="class_visao_P" colspan="3" style="text-align: center;">Em andamento</th>
-                        <th class="class_visao_P" colspan="2" style="background-color: white;"></th>
-                        <th class="class_visao_P" colspan="4" style="text-align: center;">Perda</th>
-                        <th class="class_visao_P" colspan="1" style="background-color: white;"></th>
-                        <th class="class_visao_C" colspan="5" style="text-align: center;">Contrato</th>
+                        <th id="td_1" class="class_visao_E" colspan="1" style="background-color: white;"></th>
+                        <th id="td_2" class="class_visao_P" colspan="1" style="background-color: white;"></th>
+                        <th id="td_3" class="class_visao_E" colspan="6" style="background-color: white;"></th>
+                        <th id="td_4" class="class_visao_P" colspan="3" style="text-align: center;">Em andamento</th>
+                        <th id="td_5" class="class_visao_P" colspan="2" style="background-color: white;"></th>
+                        <th id="td_6" class="class_visao_P" colspan="4" style="text-align: center;">Perda</th>
+                        <th id="td_7" class="class_visao_P" colspan="1" style="background-color: white;"></th>
+                        <th id="td_8" class="class_visao_C" colspan="5" style="text-align: center;">Contrato</th>
                     </tr>
                     <tr align="left">
                         <th class="class_visao_E">Obra</th>
@@ -139,9 +139,22 @@
             if($('#visao_'+$visao).attr('class') == 'btn btn-default') {
                 $('#visao_'+$visao).attr('class', $class);
                 $('.class_visao_'+$visao).show();
+
+                if($visao == 'E') {
+                    $('#td_2').attr('colspan', '1');
+                } else if($visao == 'P') {
+                    $('#td_3').attr('colspan', '6');
+                }
+
             } else {
                 $('#visao_'+$visao).attr('class', 'btn btn-default');
                 $('.class_visao_'+$visao).hide();
+
+                if($visao == 'E') {
+                    $('#td_2').attr('colspan', '3');
+                } else if($visao == 'P') {
+                    $('#td_3').attr('colspan', '4');
+                }
             }
         }
     </script>
