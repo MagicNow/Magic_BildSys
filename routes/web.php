@@ -1,4 +1,4 @@
-<?php
+  <?php
 
 /*
 |--------------------------------------------------------------------------
@@ -1356,22 +1356,34 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
 
     # DocBild
     $router->group(['prefix'=>'qc','middleware' => 'needsPermission:qc.list'], function () use ($router) {
-        $router->get('', ['as' => 'qc.index', 'uses' => 'QcController@index']);
+        $router->get('/', ['as' => 'qc.index', 'uses' => 'QcController@index']);
+        $router->post('/', ['as' => 'qc.store', 'uses' => 'QcController@store']);
         $router->get('/create', ['as' => 'qc.create', 'uses' => 'QcController@create']);
-        $router->post('', ['as' => 'qc.store', 'uses' => 'QcController@store']);
+        $router->post('/{qc}/fechar',['as' => 'qc.fechar', 'uses' => 'QcController@fechar'])
+            ->middleware('needsPermission:qc.edit');
+
+        $router->patch('/{qc}',['as' => 'qc.update', 'uses' => 'QcController@update'])
+            ->middleware('needsPermission:qc.edit');
+
+        $router->put('/{qc}',['as' => 'qc.update', 'uses' => 'QcController@update'])
+            ->middleware('needsPermission:qc.edit');
+
         $router->get('/{qc}',['as' => 'qc.show', 'uses' => 'QcController@show'])
             ->middleware('needsPermission:qc.show');
-        $router->get('/{qc}/editar',['as' => 'qc.edit', 'uses' => 'QcSuprimentosController@edit']);
-        $router->patch('/{qc}/update',['as' => 'qc.update', 'uses' => 'QcSuprimentosController@update']);
-        $router->post('', ['as' => 'qc.store', 'uses' => 'QcController@store']);
+
+
+
         $router->get('/buscar/busca_carteiras', ['as' => 'qc.busca_carteiras', 'uses' => 'QcController@buscaCarteira']);
-        // $router->delete('/{qc}', ['as' => 'qc.destroy', 'uses' => 'QcController@destroy']);
+
         $router->get('/anexos/{qc}',['as' => 'qc.anexos', 'uses' => 'QcController@anexos'])
             ->middleware('needsPermission:qc.anexos.list');
 
         $router->get('/aprovar/{qc}',['as' => 'qc.aprovar.edit', 'uses' => 'QcController@aprovar'])
             ->middleware('needsPermission:qc-aprovar.show');
             $router->patch('/aprovar/{qc}/update',['as' => 'qc.aprovar.update', 'uses' => 'QcController@aprovarUpdate']);
+
+        $router->get('/{qc}/cancelar', 'QcController@cancelar')
+            ->middleware("needsPermission:qc.edit");
     });
 
 	# Configuracao Estatica

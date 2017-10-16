@@ -7,13 +7,14 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use App\Models\Qc;
 
-class CreateQcRequest extends FormRequest
+class UpdateQcRequest extends FormRequest
 {
     public $dontFlash = [
         'anexo_descricao',
         'anexo_tipo',
         'anexo_arquivo',
     ];
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -31,11 +32,17 @@ class CreateQcRequest extends FormRequest
      */
     public function rules(Request $request)
     {
-        return Qc::$rules;
+        return [
+            'valor_fechamento' => 'required',
+            'numero_contrato_mega' => 'required',
+        ];
     }
 
     public function messages()
     {
-        return Qc::$messages;
+        return [
+            'valor_fechamento.required' => 'Insira o valor de fechamento',
+            'numero_contrato_mega.required' => 'Insira o numero do contrato',
+        ];
     }
 }

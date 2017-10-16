@@ -21,6 +21,7 @@ class WorkflowTipo extends Model
     const ITEM_CONTRATO = 4;
     const SOLICITACAO_ENTREGA = 5;
     const MEDICAO = 6;
+    const QC_AVULSO = 7;
 
     public static function qualTipo($id){
         switch ($id){
