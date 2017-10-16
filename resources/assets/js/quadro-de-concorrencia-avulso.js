@@ -26,8 +26,10 @@ function cancelarQC(qual) {
         type: 'success'
 
       }, function() {
-        window.LaravelDataTables["dataTableBuilder"].draw();
-
+        if (window.LaravelDataTables === undefined)
+           location.reload()
+        else
+           window.LaravelDataTables["dataTableBuilder"].draw();
       });
 
     }).fail(function(jqXHR, textStatus, errorThrown) {
