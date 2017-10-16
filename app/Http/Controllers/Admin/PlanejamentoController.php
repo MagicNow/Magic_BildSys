@@ -113,7 +113,12 @@ class PlanejamentoController extends AppBaseController
             return redirect(route('admin.planejamentos.index'));
         }
 
-        return view('admin.planejamentos.show', compact('planejamento','itens'));
+        $relacionadoCarteirasAvulsas = $planejamento->planejamentoQcAvulsoCarteira;
+        $planejamentoCarteirasIds = $relacionadoCarteirasAvulsas->pluck('id')->all();
+
+        $qcAvulsoCarteiras = QcAvulsoCarteira::pluck('nome', 'id')->all();
+
+        return view('admin.planejamentos.show', compact('planejamento','itens', 'planejamentoCarteirasIds','qcAvulsoCarteiras'));
     }
 
     /**
@@ -165,7 +170,9 @@ class PlanejamentoController extends AppBaseController
         $planejamento = $this->planejamentoRepository->update($input, $id);
 
         Flash::success('Planejamento '.trans('common.updated').' '.trans('common.successfully').'.');
-
+        if($request->has('carteira_avulsa')){
+            return redirect(route('admin.planejamentos.atividade-carteiras'));
+        }
         return redirect(route('admin.planejamentos.index'));
     }
 
