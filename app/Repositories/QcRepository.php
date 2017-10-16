@@ -78,19 +78,26 @@ class QcRepository extends BaseRepository
         return $qc;
     }
 
-    public function fechar($id)
+    public function fechar($id, $attr)
     {
         $qc = $this->find($id);
 
         DB::beginTransaction();
         try {
-            $qc->update([ 'qc_status_id' => QcStatus::CONCORRENCIA_FINALIZADA ]);
+            $qc->update([
+                'qc_status_id' => QcStatus::CONCORRENCIA_FINALIZADA,
+                'fornecedor_id' => $attr['fornecedor_id'],
+                'numero_contrato_mega' => $attr['numero_contrato_mega'],
+                'valor_fechamento' => money_to_float($attr['valor_fechamento']),
+            ]);
 
             QcAvulsoStatusLog::create([
                 'user_id' => auth()->id(),
                 'qc_status_id' => QcStatus::CONCORRENCIA_FINALIZADA,
                 'qc_id' => $qc->id,
             ]);
+
+            $this->saveAttachments($attr, $qc);
 
         } catch (Exception $e) {
             DB::rollback();

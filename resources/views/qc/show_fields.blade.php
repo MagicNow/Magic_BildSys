@@ -156,25 +156,29 @@
             <i class="fa fa-paperclip"></i> ANEXOS
         </div>
         <div class="box-body">
-            @foreach($attachments as $title => $anexos)
-                <div class="h4">
-                    {{ $title }}
-                </div>
-                @foreach($anexos as $anexo)
-                    <ul>
-                        <li>
-                            {{ $anexo->descricao ? $anexo->descricao : 'Anexo ' . $anexo->id }}
-                            <a target="_blank" class="label label-primary" href="{{ $anexo->link }}">
-                                <i class="fa fa-paperclip"></i> Link
-                            </a>
-                            &nbsp;
-                            <a download class="label label-warning" href="{{ $anexo->link }}">
-                                <i class="fa fa-download"></i> Download
-                            </a>
-                        </li>
-                    </ul>
+            @if(count($attachments))
+                @foreach($attachments as $title => $anexos)
+                    <div class="h4">
+                        {{ $title }}
+                    </div>
+                    @foreach($anexos as $anexo)
+                        <ul>
+                            <li>
+                                {{ $anexo->descricao ? $anexo->descricao : 'Anexo ' . $anexo->id }}
+                                <a target="_blank" class="label label-primary" href="{{ $anexo->link }}">
+                                    <i class="fa fa-paperclip"></i> Link
+                                </a>
+                                &nbsp;
+                                <a download class="label label-warning" href="{{ $anexo->link }}">
+                                    <i class="fa fa-download"></i> Download
+                                </a>
+                            </li>
+                        </ul>
+                    @endforeach
                 @endforeach
-            @endforeach
+            @else
+                O Q.C. #{{ $qc->id }} não contém nenhum anexo
+            @endif
         </div>
     </div>
 </div>
