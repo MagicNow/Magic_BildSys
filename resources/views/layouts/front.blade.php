@@ -5,13 +5,11 @@
     <title>{{ env('APP_TITLE') }}</title>
     <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
     <link rel="stylesheet" href="{{ asset('css/google-web-fonts.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/site.css') }}">
     <link rel="shortcut icon" href="{{ asset('img/favicon.png') }}">
     <link rel="icon" href="{{ asset('img/favicon.png') }}" />
     @yield('styles')
-    <style type="text/css">
 
-    </style>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 
@@ -201,8 +199,6 @@
             @include( 'flash::message' )
             @yield('content')
         </div>
-
-
 
     </div>
     <!-- Modal -->

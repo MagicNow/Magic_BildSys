@@ -106,9 +106,9 @@ class FornecedoresDataTable extends DataTable
     {
         return [
             'Código' => ['name' => 'id', 'data' => 'id', 'width'=>'6%'],
-            'Código Mega' => ['name' => 'codigo_mega', 'data' => 'codigo_mega', 'width'=>'6%'],
+            'Código Mega' => ['name' => 'codigo_mega', 'data' => 'codigo_mega', 'width'=>'80px'],
             'nome' => ['name' => 'nome', 'data' => 'nome'],
-            'cnpj' => ['name' => 'cnpj', 'data' => 'cnpj'],
+            'cnpj' => ['name' => 'cnpj', 'data' => 'cnpj', 'width'=>'90px'],
 //            'logradouro' => ['name' => 'logradouro', 'data' => 'logradouro'],
 //            'numero' => ['name' => 'numero', 'data' => 'numero'],
 //            'complemento' => ['name' => 'complemento', 'data' => 'complemento'],
@@ -118,9 +118,9 @@ class FornecedoresDataTable extends DataTable
 //            'inscricao_estadual' => ['name' => 'inscricao_estadual', 'data' => 'inscricao_estadual'],
             'email' => ['name' => 'email', 'data' => 'email'],
             'site' => ['name' => 'site', 'data' => 'site'],
-            'telefone' => ['name' => 'telefone', 'data' => 'telefone'],
+            'telefone' => ['name' => 'telefone', 'data' => 'telefone', 'width'=>'70px'],
             'is_user' => ['name' => 'is_user', 'data' => 'is_user', 'searchable' => false, 'title' => 'Usuário', 'orderable' => false],
-            'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%']
+            'action' => ['title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'60px']
         ];
     }
 

@@ -1545,6 +1545,11 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         });
     });
 
+    //Gestão de estoque
+    $router->group(['prefix'=>'gestao-de-estoque', 'middleware' => 'needsPermission:gestao_de_estoque.list'], function () use ($router) {
+        $router->get('', ['as'=> 'gestaoEstoque.index', 'uses' => 'GestaoEstoqueController@index']);
+    });
+
 	$router->get('/testeLpu', function () {
         $lpu = \App\Repositories\LpuGerarRepository::calcular();
 		dd($lpu);

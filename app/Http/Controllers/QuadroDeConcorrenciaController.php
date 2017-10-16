@@ -180,6 +180,7 @@ class QuadroDeConcorrenciaController extends AppBaseController
 
         $alcadas_count = $alcadas->count();
         $oc_status = $quadroDeConcorrencia->status->nome;
+        $qtd_itens = count($quadroDeConcorrencia->itens);
 
         return $qcItensDataTable->qc($quadroDeConcorrencia->id)
             ->with('show', $show)

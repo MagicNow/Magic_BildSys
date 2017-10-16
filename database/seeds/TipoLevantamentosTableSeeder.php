@@ -11,7 +11,7 @@ class TipoLevantamentosTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('tipo_levantamentos')->truncate();
+        DB::table('tipo_levantamentos')->delete();
 
         $items = [
             [
