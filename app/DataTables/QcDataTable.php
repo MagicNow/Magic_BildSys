@@ -32,7 +32,32 @@ class QcDataTable extends DataTable
             ->editColumn('action', function($qc) {
                 return view('qc.datatables_actions', compact('qc'))->render();
             })
-			->make(true);
+            ->filterColumn('obra_id',function($query, $keyword){
+              return $query->join('obras', 'obras.id', '=', "qc.obra_id")
+                ->where('obras.nome','LIKE','%'.trim($keyword).'%');
+            })
+            ->filterColumn('carteira_id',function($query, $keyword){
+              return $query->join('carteiras', 'carteiras.id', '=', "qc.carteira_id")
+                ->where('carteiras.nome','LIKE','%'.trim($keyword).'%');
+            })
+            ->filterColumn('tipologia_id',function($query, $keyword){
+              return $query->join('tipologias', 'tipologias.id', '=', "qc.tipologia_id")
+                ->where('tipologias.nome','LIKE','%'.trim($keyword).'%');
+            })
+            ->filterColumn('status_nome',function($query, $keyword){
+              return $query->join('qc_status', 'qc_status.id', '=', "qc.qc_status_id")
+                ->where('qc_status.nome','LIKE','%'.trim($keyword).'%');
+            })
+            ->filterColumn('created_at', function ($query, $keyword) {
+              return $query->whereRaw("DATE_FORMAT(qc.created_at,'%d/%m/%Y') like ?", ["%$keyword%"]);
+            })
+            ->filterColumn('valor_orcamento_inicial', function ($query, $keyword) {
+              return $query->where("valor_orcamento_inicial", "Like", '%'.str_replace(',', '.', str_replace('.', '', $keyword).'%'));
+            })
+	          ->filterColumn('valor_pre_orcamento', function ($query, $keyword) {
+              return $query->where("valor_pre_orcamento", "Like", '%'.str_replace(',', '.', str_replace('.', '', $keyword).'%'));
+            })
+            ->make(true);
     }
 
     /**
