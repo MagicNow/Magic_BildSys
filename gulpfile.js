@@ -260,6 +260,10 @@ elixir(function (mix) {
     ], 'public/js/admin.js');
 
     mix.scripts([
+        'quadro-de-concorrencia-avulso.js'
+    ], 'public/js/qc-avulso.js');
+
+    mix.scripts([
         'quadro-de-concorrencia.js',
     ], 'public/js/qc.js');
 
@@ -298,7 +302,16 @@ elixir(function (mix) {
     mix.scripts([
         'quadro-de-concorrencia-actions.js',
     ], 'public/js/qc-actions.js');
+
+    mix.scripts([
+        'requisicao.js',
+    ], 'public/js/requisicao.js');
     
+
+    mix.scripts([
+        'qc-edit-actions.js',
+    ], 'public/js/qc-edit-actions.js');
+
 });
 
 gulp.task('browser-sync', function () {

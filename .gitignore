@@ -40,3 +40,8 @@ bildsys.sql
 *.map
 
 storage/app/public/\.DS_Store
+
+.tern-port
+./**/.tern-port
+
+todo

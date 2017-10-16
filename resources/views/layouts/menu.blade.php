@@ -210,6 +210,13 @@
                 <span>Tarefa/Orçamentos</span>
             </a>
         </li>
+
+        <li class="{{ Request::is('admin/planejamentos/planejamentoOrcamentos*') ? 'active' : '' }}">
+            <a href="{!! route('admin.planejamentos.atividade-carteiras') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Tarefa/Carteira Q.C. Avulso</span>
+            </a>
+        </li>
         @shield('cronograma_por_obras.list')
         <li class="{{ Request::is('admin/planejamentoCronogramas*') ? 'active' : '' }}">
             <a href="{!! route('admin.planejamentoCronogramas.index') !!}">
@@ -354,11 +361,38 @@
     </ul>
 </li>
 
-@shield('requisicao.list')
-<li class="{{ Request::is('requisicao*') ? 'active' : '' }}">
-    <a href="{!! route('requisicao.index') !!}"><i class="fa fa-edit"></i><span>Requisições</span></a>
+<li class="treeview {{ Request::is('requisicao*') || Request::is('gestao-de-estoque*') ? 'active' : '' }}">
+    <a href="#">
+        <i class="fa fa-bar-chart"></i>
+        <span>Estoque</span>
+        <span class="pull-right-container">
+          <i class="fa fa-angle-left pull-right"></i>
+        </span>
+    </a>
+    <ul class="treeview-menu">
+        @shield('requisicao.list')
+        <li class="{{ Request::is('requisicao*') ? 'active' : '' }}">
+            <a href="{!! route('requisicao.index') !!}">
+                <i class="fa fa-caret-right"></i>
+                <span>Requisições</span>
+            </a>
+        </li>
+        @endshield
+
+        @shield('gestao_de_estoque.list')
+        <li class="{{ Request::is('gestao-de-estoque*') ? 'active' : '' }}">
+            <a href="{!! route('gestaoEstoque.index') !!}">
+                <i class="fa fa-caret-right"></i>
+                <span>Gestão de estoque</span>
+            </a>
+        </li>
+        @endshield
+    </ul>
 </li>
-@endshield
+
+
+
+
 
 <li class="treeview {{ Request::is('admin/tipologia*') ? 'active' : '' }}">
 

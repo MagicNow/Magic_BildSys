@@ -1,5 +1,6 @@
 <li class="treeview {{ Request::is('obras*')||
 					   Request::is('carteiras*')||
+					   Request::is('qc-avulso-carteiras*')||
                        Request::is('insumos*') ||
                        Request::is('insumoGrupos*') ||
                        Request::is('solicitacaoInsumos*') ||
@@ -30,6 +31,15 @@
             <a href="{!! route('admin.carteiras.index') !!}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
                 <span>Carteiras</span>
+            </a>
+        </li>
+        @endshield
+
+		@shield('qc_avulso_carteiras.list')
+        <li class="{{ Request::is('qc_avulso_carteiras*') ? 'active' : '' }}">
+            <a href="{!! route('admin.qc_avulso_carteiras.index') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Carteiras de Q.C. Avulso</span>
             </a>
         </li>
         @endshield
@@ -91,7 +101,7 @@
         <li class="{{ Request::is('qc*') ? 'active' : '' }}">
             <a href="{{ route('qc.index') }}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
-                <span>Q.C.</span>
+                <span>Q.C. Avulso</span>
             </a>
         </li>
         @endshield
