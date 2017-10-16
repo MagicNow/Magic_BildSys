@@ -66,7 +66,7 @@
                                     )
                                   !!}
                                 </div>
-                            </div>	
+                            </div>
 							<div class="col-md-4">
                                 <label for="carteira_id">Carteiras</label>
                                 <div class="form-group js-datatable-filter-form">
@@ -104,7 +104,7 @@
                             </div>
                         </div>
                         <div class="page-header">
-                            <div class="text-right form-inline zoom-1">
+                            <div class="text-left form-inline zoom-1">
                                 <div class="btn-group">
                                     <button class="btn btn-primary" data-calendar-nav="prev"><< Anterior</button>
                                     <button class="btn btn-default" data-calendar-nav="today">Hoje</button>

@@ -17,7 +17,7 @@ if($carteira_id) {
 ?>
 
 <div class="btn-group">
-    <a href="{{ $url }}" class="btn btn-sm btn-flat btn-{{ $alerta }}" style="margin-top: 5px;" title="Visualizar" data-toggle="tooltip" data-placement="top" >
+    <a href="{{ url($url) }}" class="btn btn-sm btn-flat btn-{{ $alerta }}" style="margin-top: 5px;" title="Visualizar" data-toggle="tooltip" data-placement="top" >
         {{--{!! $icone !!}--}}
         {{--Visualizar--}}
         {{$dias}} dias <i class="fa fa-eye" aria-hidden="true" style="font-size: 14px;"></i>

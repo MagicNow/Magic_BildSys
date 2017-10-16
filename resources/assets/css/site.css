@@ -342,6 +342,10 @@ table.dataTable thead > tr > th {
     padding-left: 13px;
     padding-right: 13px;
 }
+.col-sm-3 h4{
+      font-weight: 600;
+      font-size: 14px;
+}
 @media (max-width: 950px) {
   .content-wrapper {
       background-size: contain !important;

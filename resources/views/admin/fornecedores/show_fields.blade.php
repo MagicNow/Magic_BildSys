@@ -1,4 +1,5 @@
 <!-- Codigo Mega Field -->
+<div class="for">
 <div class="form-group col-md-6">
     {!! Form::label('codigo_mega', 'Codigo Mega:') !!}
     <p class="form-control">{!! $fornecedores->codigo_mega !!}</p>
@@ -189,3 +190,4 @@
     @endforeach
 @endif
 
+</div>

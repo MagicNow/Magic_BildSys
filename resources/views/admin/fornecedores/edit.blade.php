@@ -16,7 +16,7 @@
    <div class="content">
        @include('adminlte-templates::common.errors')
        <div class="box box-primary">
-           <div class="box-body">
+           <div class="box-body for-edit">
                <div class="row">
                    {!! Form::model($fornecedores, ['route' => ['admin.fornecedores.update', $fornecedores->id], 'method' => 'patch']) !!}
 

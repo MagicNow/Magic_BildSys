@@ -11,7 +11,7 @@
     </section>
     <div class="content">
         <div class="box box-primary">
-            <div class="box-body">
+            <div class="box-body for">
                 <div class="row" style="padding-left: 20px">
                     @include('admin.fornecedores.show_fields')
                     <div class="col-md-12">
