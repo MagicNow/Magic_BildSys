@@ -64,8 +64,7 @@ class MascaraPadraoRelacionarInsumoDataTable extends DataTable
                         WHERE mascara_padrao.id = '.$this->mascara_padrao_id.'
                     )
             ')
-            ->where('active', 1)
-            ->orderBy('nome', 'ASC');
+            ->where('active', 1);
 
         return $this->applyScopes($query);
     }
@@ -126,7 +125,7 @@ class MascaraPadraoRelacionarInsumoDataTable extends DataTable
             'nome' => ['name' => 'nome', 'data' => 'nome', 'width'=> '40%'],
             'Coeficiente' => ['name' => 'coeficiente', 'data' => 'coeficiente', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=> '5%' ],
             'Indireto' => ['name' => 'indireto', 'data' => 'indireto', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=> '5%'],
-            'levantamento' => ['name' => 'levantamento', 'title' => 'levantamento', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=> '40%'],
+            'levantamento' => ['name' => 'levantamento', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=> '40%'],
             'action' => ['name' => 'Ações', 'title' => 'Salvar', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=> '5%'],
         ];
     }

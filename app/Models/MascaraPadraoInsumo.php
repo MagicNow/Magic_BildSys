@@ -75,6 +75,26 @@ class MascaraPadraoInsumo extends Model
         $this->attributes['coeficiente'] = $result;
     }
 
+    public function getIndiretoAttribute($value)
+    {
+        if (strlen($value) == 4) {
+            $value = '0'.$value;
+        }
+
+        return number_format($value, 2, ',', '.');
+    }
+
+    public function setIndiretoAttribute($value)
+    {
+        $pontos = [","];
+        $value = str_replace('.', '', $value);
+        $result = str_replace($pontos, ".", $value);
+        if ($result == '') {
+            $result = null;
+        }
+        $this->attributes['indireto'] = $result;
+    }
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
