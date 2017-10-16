@@ -1,5 +1,254 @@
 $(function () {
 
+    $(document).on('change','#local', function(e) {
+
+        e.preventDefault();
+
+        var obra = $('#obra_id');
+        var local = $('#local');
+        var torre = $('#torre');
+
+        torre.empty();
+
+        if (obra.val() != '' && local.val() == 'torre') {
+
+            $.ajax({
+
+                url: '/obras/torre/'+obra.val(),
+                dataType: 'JSON',
+                cache: false,
+                type: "GET",
+
+                beforeSend: function() {
+                    startLoading();
+                }
+
+            }).done(function (response) {
+
+                stopLoading();
+
+                if (response.success) {
+
+                    torre.append('<option value="">Selecione uma Torre</option>');
+
+                    $.each(response.torres , function(i, val) {
+
+                        torre.append('<option value="'+response.torres[i]['nome']+'">'+response.torres[i]['nome']+'</option>');
+                    });
+                }
+            })
+
+        }
+    })
+
+
+    $(document).on('change','#torre', function(e) {
+
+        e.preventDefault();
+
+        var obra = $('#obra_id');
+        var local = $('#local');
+        var torre = $('#torre');
+        var pavimento = $('#pavimento');
+
+        pavimento.empty();
+
+        if (obra.val() != '' && local.val() == 'torre' && torre.val() != '') {
+
+            $.ajax({
+
+                url: '/requisicao/get-pavimentos-obra/'+obra.val()+'/torre/'+torre.val(),
+                dataType: 'JSON',
+                cache: false,
+                type: "GET",
+
+                beforeSend: function() {
+                    startLoading();
+                }
+
+            }).done(function (response) {
+
+                stopLoading();
+
+                if (response.success) {
+
+                    pavimento.append('<option value="">Selecione um Pavimento</option>');
+
+                    $.each(response.pavimentos , function(i, val) {
+
+                        pavimento.append('<option value="'+response.pavimentos[i]['pavimento']+'">'+response.pavimentos[i]['pavimento']+'</option>');
+                    });
+                }
+            })
+
+        }
+    })
+
+
+    $(document).on('change','#pavimento', function(e) {
+
+        e.preventDefault();
+
+        var obra = $('#obra_id');
+        var local = $('#local');
+        var torre = $('#torre');
+        var pavimento = $('#pavimento');
+        var trecho = $('#trecho');
+
+        trecho.empty();
+
+        if (obra.val() != '' && local.val() == 'torre' && torre.val() != '' && pavimento.val() != '') {
+
+            $.ajax({
+
+                url: '/requisicao/get-trechos-obra/'+obra.val()+'/torre/'+torre.val()+'/pavimento/'+pavimento.val(),
+                dataType: 'JSON',
+                cache: false,
+                type: "GET",
+
+                beforeSend: function() {
+                    startLoading();
+                }
+
+            }).done(function (response) {
+
+                stopLoading();
+
+                if (response.success) {
+
+                    trecho.append('<option value="">Selecione um Trecho</option>');
+
+                    $.each(response.trechos , function(i, val) {
+
+                        trecho.append('<option value="'+response.trechos[i]['trecho']+'">'+response.trechos[i]['trecho']+'</option>');
+                    });
+                }
+            })
+
+        }
+    })
+
+    $(document).on('change','#pavimento', function(e) {
+
+        e.preventDefault();
+
+        var obra = $('#obra_id');
+        var local = $('#local');
+        var torre = $('#torre');
+        var pavimento = $('#pavimento');
+        var andar = $('#andar');
+
+        andar.empty();
+
+        if (obra.val() != '' && local.val() == 'torre' && torre.val() != '' && pavimento.val() != '') {
+
+            $.ajax({
+
+                url: '/requisicao/get-andares-obra/'+obra.val()+'/torre/'+torre.val()+'/pavimento/'+pavimento.val(),
+                dataType: 'JSON',
+                cache: false,
+                type: "GET",
+
+                beforeSend: function() {
+                    startLoading();
+                }
+
+            }).done(function (response) {
+
+                stopLoading();
+
+                if (response.success) {
+
+                    andar.append('<option value="">Selecione um Andar</option>');
+
+                    $.each(response.andares , function(i, val) {
+
+                        andar.append('<option value="'+response.andares[i]['andar']+'">'+response.andares[i]['andar']+'</option>');
+                    });
+                }
+            })
+
+        }
+    })
+
+
+    $(document).on('change','#trecho', function(e) {
+
+        var btnInsumos = $('#js-btn-buscar-insumos');
+        var insumosTable = $('#insumos-table');
+
+        if ($(this).val() != '') {
+
+            enableDisable('#andar', true);
+            btnInsumos.removeClass('hide');
+
+        } else {
+
+            enableDisable('#andar', false);
+            btnInsumos.addClass('hide');
+            insumosTable.addClass('hide');
+        }
+
+    })
+
+    $(document).on('change','#andar', function(e) {
+
+        var btnInsumos = $('#js-btn-buscar-insumos');
+        var insumosTable = $('#insumos-table');
+
+        if ($(this).val() != '') {
+
+            enableDisable('#trecho', true);
+            btnInsumos.removeClass('hide');
+
+        } else {
+
+            enableDisable('#trecho', false);
+            btnInsumos.addClass('hide');
+            insumosTable.addClass('hide');
+        }
+
+    })
+
+
+    $(document).on('click','#js-btn-buscar-insumos', function(e) {
+
+        e.preventDefault();
+
+        var insumosTable = $('#insumos-table');
+
+        insumosTable.removeClass('hide');
+
+        var obra = $('#obra_id');
+        var torre = $('#torre');
+        var pavimento = $('#pavimento');
+        var andar = $('#andar');
+        var trecho = $('#trecho');
+
+        $.ajax({
+
+            url: '/requisicao/obra/get-insumos-obra/',
+            dataType: 'html',
+            cache: false,
+            type: 'GET',
+            processData: false,
+            data: 'obra='+obra.val()+'&torre='+torre.val()+'&pavimento='+pavimento.val()+'&andar=' + andar.val() + '&trecho=' + trecho.val(),
+
+            beforeSend: function() {
+                startLoading();
+            }
+
+        }).done(function (response) {
+
+            stopLoading();
+
+            $('#body-insumos-table').html(response);
+            tabelaMobile('#insumos-table');
+
+        })
+
+    })
+
     $(document).on('click','.js-btn-modal-comodo', function(e) {
 
         e.preventDefault();
@@ -12,7 +261,7 @@ $(function () {
 
         $.ajax({
 
-            url: '/requisicao/get-insumos-obra-comodo/',
+            url: '/requisicao/get-insumos-obra/comodo',
             dataType: 'html',
             cache: false,
             type: 'GET',
@@ -57,6 +306,16 @@ $(function () {
 
     })
 
+    function enableDisable(fieldP,status) {
+
+        var field = $(fieldP);
+
+        field.select2({
+            disabled: status,
+            theme: "bootstrap"
+        })
+    }
+
     function validaQtdeInsumo(insumo) {
 
         var previsto = parseFloat($('#previsto-'+insumo.attr('id')).text());
@@ -88,6 +347,7 @@ $(function () {
         } else {
 
             var name_hidden = 'hidden['+insumo.data('id')+'][]';
+            var id = $('input[type=hidden][data-levantamento="'+insumo.data('levantamento')+'"]').attr('id');
 
             if (qtde > 0) {
 
@@ -99,12 +359,14 @@ $(function () {
                     $('#apartamento-'+insumo.data('levantamento')).text(),
                     $('#comodo-'+insumo.data('levantamento')).text(),
                     insumo.data('levantamento'),
-                    qtde
+                    qtde,
+                    id
                 );
 
             } else {
 
-                $('input[type=hidden][data-levantamento="'+insumo.data('levantamento')+'"]').remove();
+                $('input[type=hidden][data-levantamento="'+insumo.data('levantamento')+'"]').val(0);
+
             }
         }
     }
@@ -119,6 +381,141 @@ $(function () {
     }
 
 
+    $(document).on('click','#btn-create-requisicao', function (e){
+
+        e.preventDefault();
+
+        var data = {
+            obra_id: $('#obra_id').val(),
+            local: $('#local').val(),
+            torre: $('#torre').val(),
+            pavimento: $('#pavimento').val(),
+            andar: $('#andar').val(),
+            trecho: $('#trecho').val(),
+            insumos: criaJsonInsumos(),
+            comodos: criaJsonComodos()
+        }
+
+        console.log(JSON.stringify(data));
+
+        $.ajax({
+
+            url: '/requisicao',
+            dataType: 'JSON',
+            cache: false,
+            type: 'POST',
+            data: data,
+
+            beforeSend: function() {
+                startLoading();
+            }
+
+        }).done(function (response) {
+
+            stopLoading();
+
+            if (response.success) {
+
+                window.location = '/requisicao';
+            }
+
+        })
+
+    })
+
+
+    $(document).on('click','#btn-update-requisicao', function (e){
+
+        e.preventDefault();
+
+        var data = {
+            status_id: $('#status_id').val(),
+            insumos: criaJsonInsumos(),
+            comodos: criaJsonComodos()
+        }
+
+        console.log(JSON.stringify(data));
+
+        $.ajax({
+
+            url: '/requisicao/'+$('#requisicao_id').val(),
+            dataType: 'JSON',
+            cache: false,
+            type: 'PATCH',
+            data: data,
+
+            beforeSend: function() {
+                startLoading();
+            }
+
+        }).done(function (response) {
+
+            stopLoading();
+
+            if (response.success) {
+
+                window.location = '/requisicao';
+            }
+
+        })
+
+    })
+
+
+    function criaJsonComodos() {
+
+        var jsonString = [];
+
+        $('.js-input-qtde').map(function (i) {
+
+            var insumo = $(this);
+            var comodo = $('input[name="hidden['+insumo.attr("id")+'][]"]');
+
+            if (comodo.length > 0) {
+
+                for (i = 0; i < comodo.length; i++) {
+
+                    jsonString.push(
+                        {
+                            "id": $(comodo[i]).attr('id'),
+                            "estoque_id": insumo.data('estoque'),
+                            "apartamento": $(comodo[i]).data('apartamento'),
+                            "comodo": $(comodo[i]).data('comodo'),
+                            "qtde": $(comodo[i]).val()
+                        }
+                    );
+                }
+            }
+
+        })
+
+        return JSON.stringify(jsonString);
+    }
+
+    function criaJsonInsumos() {
+
+        var jsonString = [];
+
+        $('.js-input-qtde').map(function (i) {
+
+            insumo = $(this);
+
+            if ($('input[name="hidden['+insumo.attr("id")+'][]"]').length == 0) {
+
+                jsonString.push(
+                    {
+                        "id": $(this).data('id'),
+                        "estoque_id": $(this).data('estoque'),
+                        "qtde": $(this).val()
+                    }
+                );
+            }
+
+        })
+
+        return JSON.stringify(jsonString);
+
+    }
 
 
 
@@ -126,11 +523,48 @@ $(function () {
 
 
 
+    $(document).on('click', '.js-btn-impressao-modal', function(e) {
+
+        e.preventDefault();
+
+        $.ajax({
+
+            url: '/requisicao/modal/impressao-qrcode',
+            dataType: 'text',
+            cache: false,
+            type: 'GET',
+            data: 'requisicao_id='+$(this).data('requisicao')+'&estoque_id='+$(this).data('estoque')+'&tem_comodo='+$(this).data('comodo'),
+
+            beforeSend: function() {
+                startLoading();
+            }
+
+        }).done(function (response) {
+
+            stopLoading();
+
+            $('#modal-impressao-qrcode-insumos .modal-body').html(response);
+
+            $('#modal-impressao-qrcode-insumos').modal();
+
+        })
 
 
 
+    })
 
-    function addHidden(form, name, apartamento, comodo, id_levantamento, value) {
+    $(document).on('click', '.js-btn-impressao-qrcode-insumo', function(e) {
+
+        e.preventDefault();
+
+        var href = $(this).attr('href');
+        var qtde_qrcodes = $('#qtde_qrcodes').val();
+
+        window.open(href+'&qtde_qrcodes='+qtde_qrcodes, '_blank');
+    })
+
+
+    function addHidden(form, name, apartamento, comodo, id_levantamento, value, idItem) {
 
         var input = document.createElement('input');
         input.type = 'hidden';
@@ -139,6 +573,7 @@ $(function () {
         input.setAttribute("data-apartamento", apartamento);
         input.setAttribute("data-comodo", comodo);
         input.setAttribute("data-levantamento", id_levantamento);
+        input.setAttribute("id", idItem);
         form.appendChild(input);
     }
 

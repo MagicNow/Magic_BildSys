@@ -304,8 +304,14 @@ elixir(function (mix) {
     ], 'public/js/qc-actions.js');
 
     mix.scripts([
+        'requisicao.js',
+    ], 'public/js/requisicao.js');
+    
+
+    mix.scripts([
         'qc-edit-actions.js',
     ], 'public/js/qc-edit-actions.js');
+
 });
 
 gulp.task('browser-sync', function () {
