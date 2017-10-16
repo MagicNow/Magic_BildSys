@@ -11,7 +11,7 @@
                 {!! Form::select('insumo_id', $insumos, null, ['class' => 'form-control select2', 'onchange' => 'filter();']) !!}
             </div>
 
-            <div class="form-group col-sm-6">
+            <div class="form-group col-sm-6" style="margin-top: 24px;">
                 {!! Form::label('visao', 'Visão:') !!}
                 <div class="btn-group">
                     <button onclick="mudaVisao('E');" id="visao_E" class="btn btn-warning" style="width:150px;">Estoque</button>

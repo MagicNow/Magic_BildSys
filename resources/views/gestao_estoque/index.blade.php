@@ -65,6 +65,8 @@
         }
 
         function filter() {
+            startLoading();
+            
             var queryString = '';
             var obra_id = $('#obra_id').val();
             var insumo_id = $('#insumo_id').val();
