@@ -2,27 +2,16 @@
 
 @section('content')
     <section class="content-header">
-        <div class="modal-header">
-            <div class="col-md-12">
-                <div class="col-md-9">
-                    <span class="pull-left title">
-                       <h3>
-                           <button type="button" class="btn btn-link" onclick="history.go(-1);">
-                                <i class="fa fa-arrow-left" aria-hidden="true"></i>
-                           </button>
-                           <span>Ordens de compra</span>
-                       </h3>
-                    </span>
-                </div>
-
-                <div class="col-md-3">
-                    <a href="{{ url('compras') }}" type="button" class="btn btn-success btn-block btn-lg btn-flat" data-dismiss="modal">
-                        <i class="fa fa-shopping-cart"></i>
-                        Calendário de compra
-                    </a>
-                </div>
-            </div>
-        </div>
+        <h1>
+           <button type="button" class="btn btn-link" onclick="history.go(-1);">
+                <i class="fa fa-arrow-left" aria-hidden="true"></i>
+           </button>
+           Ordens de compra
+            <a href="{{ url('compras') }}" type="button" class="btn btn-success btn-lg btn-flat pull-right" data-dismiss="modal">
+                <i class="fa fa-shopping-cart"></i>
+                Calendário de compra
+            </a>
+        </h1>
     </section>
     <div class="content">
         <div class="clearfix"></div>

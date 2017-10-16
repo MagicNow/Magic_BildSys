@@ -22,31 +22,31 @@ label {
  **********************************************************/
 
 .fs16 {
-  font-size: 16px;
+  font-size: 16px !important;
 }
 
 .fs18 {
-  font-size: 18px;
+  font-size: 18px !important;
 }
 
 .fs19 {
-  font-size: 19px;
+  font-size: 19px !important;
 }
 
 .fs20 {
-  font-size: 20px;
+  font-size: 20px !important;
 }
 
 .fs21 {
-  font-size: 21px;
+  font-size: 21px !important;
 }
 
 .fs22 {
-  font-size: 22px;
+  font-size: 22px !important;
 }
 
 .fs23 {
-  font-size: 23px;
+  font-size: 23px !important;
 }
 
 /*root typeahead class*/
@@ -186,6 +186,9 @@ table.dataTable.dtr-inline.collapsed > tbody > tr[role="row"] > td:first-child:b
     font-size: 11px;
     font-weight: 600;
 }
+.form-group {
+  margin-bottom: 8px;
+}
 .form-control {
   font-family: 'Abel', sans-serif;
   font-size: 12px;
@@ -203,9 +206,13 @@ p.form-control {
 textarea.form-control {
   line-height: auto;
 }
-#calendar{    zoom: 75%;
- -moz-transform: scale(0.75);
-
+#calendar{
+  zoom: 75%;
+  -moz-transform: scale(0.75);
+}
+.btn-group .btn {
+  font-size: 16px;
+  font-weight: 700;
 }
 .btn-lg, .btn-group-lg > .btn {
     padding: 10px 16px;
@@ -242,8 +249,11 @@ textarea.form-control {
 
 .tab-content{padding-top: 20px;}
 .select2-container .select2-selection--single .select2-selection__rendered {
-
     margin-top: 0px;
+}
+.select2-container--default .select2-selection--single {
+  padding-top: 0;
+  padding-bottom: 0;
 }
 .select2-container--bootstrap .select2-selection--single {
   height: 24px;
@@ -307,11 +317,13 @@ select.input-sm {
 form .btn {
   padding: 6px;
 }
+.zoom-1 {
+  zoom: 100%;
+  -moz-transform: scale(1);
+}
 .btn-group, .btn-group-vertical {
-
-    zoom: 75%;
-     -moz-transform: scale(0.75);
-
+  zoom: 75%;
+  -moz-transform: scale(0.75);
 }
 .table > tfoot > tr > th{
   padding: 4px 1px;
@@ -735,8 +747,8 @@ h6 {
 
 .with-middle> .input-group-addon.addon-middle {
   line-height: 1;
-  padding-top: 9px;
-  padding-bottom: 9px;
+  padding-top: 0;
+  padding-bottom: 0;
   border-left: 0;
   border-right: 0;
 }
@@ -1048,6 +1060,10 @@ td> .table {
 .form-free-height {
   height: auto;
   word-wrap: break-word;
+}
+
+.radio label, .checkbox label {
+  padding-left: 0;
 }
 
 .label {
