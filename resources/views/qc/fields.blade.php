@@ -68,13 +68,12 @@
 	        		<div class="center-block">
 	        		    <button
                              type="button"
-                             class="btn js-qc-anexos-remover btn-warning btn-sm"
-                             disabled="disabled">
+                             class="btn js-qc-anexos-remover btn-warning hidden">
                              <i class="fa fa-minus"></i>
                          </button>
 	        		    <button
                              type="button"
-                             class="btn js-qc-anexos-novo btn-default btn-sm"
+                             class="btn js-qc-anexos-novo btn-default"
                              disabled="disabled">
                              <i class="fa fa-plus"></i>
                          </button>

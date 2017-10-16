@@ -40,10 +40,7 @@ $(function() {
   });
 
   table.one('init', function() {
-    setTimeout(function() {
-      filter();
-      $('.tooltip').remove();
-    }, 1000);
+    setTimeout(filter, 1000);
   });
 });
 

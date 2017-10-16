@@ -20,8 +20,8 @@
 
   function removeAttachmentRow(e) {
     $(e.currentTarget).parents('.qc-anexos-campos:first').remove();
-    $attachments.find('.js-qc-anexos-remover:last').prop('disabled', true);
-    $attachments.find('.js-qc-anexos-novo:last').show();
+    $attachments.find('.js-qc-anexos-remover:last').addClass('hidden');
+    $attachments.find('.js-qc-anexos-novo:last').removeClass('hidden');
   }
 
   function addAttachmentRow (e) {
@@ -33,10 +33,10 @@
     let $attachmentsFieldsNewButton;
 
     $self
-      .hide()
+      .addClass('hidden')
       .parents('.qc-anexos-campos')
       .find('.js-qc-anexos-remover')
-      .prop('disabled', false);
+      .removeClass('hidden')
 
     $self
       .parents('.qc-anexos-campos')
@@ -55,12 +55,12 @@
 
     $attachmentsFieldsNew
       .find('.js-qc-anexos-novo')
-      .show()
+      .removeClass('hidden')
       .prop('disabled', true);
 
     $attachmentsFieldsNew
       .find('.js-qc-anexos-remover')
-      .prop('disabled', true);
+      .addClass('hidden');
   }
 
   function checkFileSize(e) {
