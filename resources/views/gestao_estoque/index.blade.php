@@ -74,6 +74,7 @@
             var queryString = '';
             var obra_id = $('#obra_id').val();
             var insumo_id = $('#insumo_id').val();
+            var insumo_grupo_id = $('#insumo_grupo_id').val();
 
             if(obra_id){
                 queryString ='?obra_id=' + obra_id;
@@ -86,6 +87,15 @@
                     queryString +='?';
                 }
                 queryString +='insumo_id=' + insumo_id;
+            }
+
+            if(insumo_grupo_id){
+                if(queryString.length>0){
+                    queryString +='&';
+                }else{
+                    queryString +='?';
+                }
+                queryString +='insumo_grupo_id=' + insumo_grupo_id;
             }
 
             history.pushState("", document.title, location.pathname+queryString);
