@@ -304,10 +304,6 @@
         }
     </style>
     <script type="text/javascript">
-        $("#codigo").keyup(function() {
-            $("#codigo").val(this.value.match(/[0-9]*/));
-        });
-
         var bloco_aberto;
 
         $("form").submit(function (event) {
@@ -317,6 +313,10 @@
                 stopLoading();
                 swal('Existe um bloco em aberto', '', 'error');
             }
+        });
+
+        $("#codigo").keyup(function() {
+            $("#codigo").val(this.value.match(/[0-9]*/));
         });
 
         @if(isset($count))

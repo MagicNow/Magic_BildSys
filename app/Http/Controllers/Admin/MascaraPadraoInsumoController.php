@@ -93,10 +93,14 @@ class MascaraPadraoInsumoController extends AppBaseController
             return redirect(route('admin.mascara_padrao.index'));
         }
 
-        $this->mascaraPadraoInsumoRepository->delete($id);
+        $deletado = $this->mascaraPadraoInsumoRepository->delete($id);
 
         Flash::success('Insumos ' .trans('common.deleted').' '.trans('common.successfully').'.');
 
-        return redirect(route('admin.mascara_padrao.index'));
+        if($deletado) {
+            return response()->json(['success' => true]);
+        }else{
+            return response()->json(['success' => false]);
+        }
     }
 }
