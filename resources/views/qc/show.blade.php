@@ -34,9 +34,14 @@
                             <i class="fa fa-check-square"></i> Fechar Q.C.
                         </button>
                     @endif
+                    @if($qc->canCancel())
+                        <button class="btn btn-danger" type="button" onclick="cancelarQC({{ $qc->id }})">
+                          <i class="fa fa-fw fa-times"></i>Cancelar
+                        </button>
+                    @endif
                     @if(isset($workflowAprovacao) && $qc->isEditable($workflowAprovacao))
-                        <button type="submit" class="btn btn-success btn-flat">
-                            <i class="fa fa-floppy-o"></i> Salvar
+                          <button type="submit" class="btn btn-success btn-flat">
+                              <i class="fa fa-floppy-o"></i> Salvar
                         </button>
                     @endif
                 </div>
@@ -54,5 +59,6 @@
     <script>
         options_motivos = document.getElementById('motivo').innerHTML;
     </script>
+    <script src="{{ asset('js/qc-avulso.js') }}"></script>
     <script src="{{ asset('js/qc-edit-actions.js') }}"></script>
 @append

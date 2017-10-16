@@ -228,11 +228,10 @@ class Qc extends Model
         return null;
     }
 
-    public function isEditable($workflow)
+    public function isEditable()
     {
         return Defender::hasPermission('qc.edit')
-            && $workflow['podeAprovar']
-            && $this->qc_status_id === QcStatus::EM_APROVACAO;
+            && $this->qc_status_id === QcStatus::EM_CONCORRENCIA;
     }
 
     public function canClose()
