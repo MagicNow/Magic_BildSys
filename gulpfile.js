@@ -119,17 +119,28 @@ elixir(function (mix) {
     // Merge Site CSSs.
     mix.styles([
         paths.bootstrap + '/css/bootstrap.css',
-        paths.bootstrap + '/css/bootstrap-theme.css',
+        // paths.bootstrap + '/css/bootstrap-theme.css',
         paths.fontawesome + '/css/font-awesome.css',
         // paths.bootswatch + '/bootstrap.css',
+        paths.adminlte + '/css/AdminLTE.css',
+        paths.adminlte + '/css/skins/skin-yellow-light.css',
+        paths.ionicons + '/css/ionicons.css',
         paths.colorbox + '/example3/colorbox.css',
+        paths.dataTables + '/css/dataTables.bootstrap.css',
+        paths.dt_responsive_css,
+        paths.dataTablesBootstrap3Plugin + '/css/datatables-bootstrap3.css',
+        // paths.metisMenu + '/metisMenu.css',
         paths.summernote + '/summernote.css',
-        paths.justifiedGallery + '/css/justifiedGallery.css',
-        paths.select2 + 'css/select2.css',
-        paths.bootstrapdatepicker + 'css/bootstrap-datepicker.css',
+        paths.select2 + '/css/select2.css',
+        paths.select2theme + 'select2-bootstrap.css',
+        paths.jqueryui + '/themes/base/minified/jquery-ui.min.css',
         paths.sweetalert + 'sweetalert.css',
-        paths.fullcalendar + 'fullcalendar.css',
-        'site.css'
+        paths.icheck + '/skins/square/green.css',
+        paths.bootstrap_calendar + '/css/calendar.css',
+        paths.stacktable + 'stacktable.css',
+        '../js/datatables/css/buttons.dataTables.min.css',
+        'orange.css',
+        'site.css',
     ], 'public/css/site.css');
 
     mix.styles([
@@ -189,6 +200,8 @@ elixir(function (mix) {
         'orange.css',
         'admin.css',
     ], 'public/css/admin.css');
+
+
 
     // Merge Admin scripts.
     mix.scripts([
