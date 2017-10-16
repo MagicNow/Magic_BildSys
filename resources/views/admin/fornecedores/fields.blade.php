@@ -188,7 +188,7 @@
     <label for="fornecedores_associados"  data-toggle="tooltip"
            title="Utilizado para receber notas fiscais e pagamentos de outros fornecedores pelo mesmo contrato">Fornecedores Associados
         <i class="fa fa-info-circle"></i> :</label>
-    {!! Form::select('fornecedores_associados[]', $associados ,(!isset($fornecedores)? null: $fornecedores_associados_ids), ['class' => 'form-control', 'id'=>"fornecedores_associados", 'multiple'=>"multiple"]) !!}
+    {!! Form::select('fornecedores_associados[]', isset($associados) ? $associados : [], (!isset($fornecedores)? null: $fornecedores_associados_ids), ['class' => 'form-control', 'id'=>"fornecedores_associados", 'multiple'=>"multiple"]) !!}
 </div>
 
 <div class="col-md-12">

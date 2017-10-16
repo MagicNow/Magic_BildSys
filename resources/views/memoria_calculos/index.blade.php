@@ -8,7 +8,7 @@
             </button>
             Memória de Cálculo
 
-           <a class="btn btn-primary pull-right" style="margin-top: -10px;margin-bottom: 5px" href="{!! route('memoriaCalculos.create') !!}">
+           <a class="btn btn-primary pull-right"  href="{!! route('memoriaCalculos.create') !!}">
             {{ ucfirst( trans('common.new') )}}
            </a>
         </h1>

@@ -3,7 +3,10 @@
 @section('content')
     <section class="content-header">
         <h1>
-           Conciliação de Notas Fiscais
+            <button type="button" class="btn btn-link" onclick="history.go(-1);">
+                <i class="fa fa-arrow-left" aria-hidden="true"></i>
+            </button>
+            Conciliação de Notas Fiscais
         </h1>
     </section>
     <div class="content">

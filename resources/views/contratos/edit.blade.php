@@ -5,6 +5,9 @@
         {!! Form::model($contrato, ['route' => ['contratos.update', $contrato->id], 'method' => 'patch']) !!}
             <section class="content-header" style="margin-bottom: 20px">
                 <h1>
+                    <button type="button" class="btn btn-link" onclick="history.go(-1);">
+                        <i class="fa fa-arrow-left" aria-hidden="true"></i>
+                    </button>
                     Editar contrato #{{$contrato->id}}
                 </h1>
             </section>

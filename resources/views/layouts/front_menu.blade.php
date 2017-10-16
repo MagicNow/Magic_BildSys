@@ -24,7 +24,7 @@
             </a>
         </li>
         @endshield
-		
+
 		@shield('carteiras.list')
         <li class="{{ Request::is('carteiras*') ? 'active' : '' }}">
             <a href="{!! route('admin.carteiras.index') !!}">
@@ -32,7 +32,7 @@
                 <span>Carteiras</span>
             </a>
         </li>
-        @endshield		
+        @endshield
 
         @shield('grupos_insumos.list')
         <li class="{{ Request::is('insumoGrupos*') ? 'active' : '' }}">
@@ -98,7 +98,7 @@
 
 
         <li class="{{ Request::is('condicoes-de-pagamento*') ? 'active' : '' }}">
-            <a href="{!! route('pagamentoCondicaos.index') !!}"><i class="fa fa-caret-right"></i><span>Condições de Pagamento</span></a>
+            <a href="{!! route('pagamentoCondicaos.index') !!}"><i class="fa fa-caret-right"></i><span style="padding-left:3px;">Condições de Pagamento</span></a>
         </li>
 
         <li class="{{ Request::is('tipos-de-documentos-fiscais*') ? 'active' : '' }}">
@@ -175,7 +175,7 @@
         @endshield
 
         <li class="{{ Request::is('pagamentos*') ? 'active' : '' }}">
-            <a href="{!! route('pagamentos.index') !!}"><i class="fa fa-caret-right"></i><span>Pagamentos</span></a>
+            <a href="{!! route('pagamentos.index') !!}"><i class="fa fa-caret-right"></i><span style="padding-left:3px;">Pagamentos</span></a>
         </li>
 
         <li class="{{ Request::is('medicoes*') ? 'active' : '' }}">
@@ -270,14 +270,14 @@
                 <span>Q.C.</span> </a>
         </li>
         @endshield
-		
+
 		@shield('lpu.list')
         <li class="{{ Request::is('lpu*') ? 'active' : '' }}">
             <a href="{!! route('lpu.index') !!}" title="LPU">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
                 <span>Lista de Preço Unitário</span> </a>
         </li>
-        @endshield		
+        @endshield
 
     </ul>
 </li>

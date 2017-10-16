@@ -14,7 +14,7 @@
         <div class="box box-primary">
 
             <div class="box-body">
-                <div class="row">
+                <div class="row" style="margin-left:0px;">
                     {!! Form::open(['route' => 'admin.obras.store', 'files' => true]) !!}
 
                         @include('admin.obras.fields')

@@ -2,11 +2,9 @@
 
 @section('content')
     <section class="content-header">
-        <h1 class="pull-left"> Templates de Contratos</h1>
-        <h1 class="pull-right">
-           <a class="btn btn-primary pull-right" style="margin-top: -10px;margin-bottom: 5px" href="{!! route('admin.contratoTemplates.create') !!}">
-            {{ ucfirst( trans('common.new') )}}
-           </a>
+        <h1>
+            Templates de Contratos
+            <a class="btn btn-primary pull-right"  href="{!! route('admin.contratoTemplates.create') !!}">{{ ucfirst( trans('common.new') )}}</a>
         </h1>
     </section>
     <div class="content">

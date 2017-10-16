@@ -2,11 +2,12 @@
 
 @section('content')
     <section class="content-header">
-        <h1 class="pull-left">medicoes</h1>
-        <h1 class="pull-right">
-           <a class="btn btn-primary pull-right" style="margin-top: -10px;margin-bottom: 5px" href="{!! route('medicoes.create') !!}">
-            {{ ucfirst( trans('common.new') )}}
-           </a>
+        <h1>
+            <button type="button" class="btn btn-link" onclick="history.go(-1);">
+                <i class="fa fa-arrow-left" aria-hidden="true"></i>
+            </button>
+            Medições
+            <a class="btn btn-primary pull-right"  href="{!! route('medicoes.create') !!}">{{ ucfirst( trans('common.new') )}}</a>
         </h1>
     </section>
     <div class="content">
