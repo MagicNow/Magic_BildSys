@@ -279,9 +279,9 @@ class QcController extends AppBaseController
         }
     }
 
-    public function fechar($id)
+    public function fechar($id, Request $request)
     {
-        $this->qcRepository->fechar($id);
+        $this->qcRepository->fechar($id, $request->all());
 
         return response()->json([
             'success' => true

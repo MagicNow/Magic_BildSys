@@ -1,4 +1,9 @@
 (function($) {
+  var inputValorFechamento = $('#valor_fechamento');
+  var inputContrato = $('#numero_contrato_mega');
+  var inputFornecedor = $('#fornecedor_id');
+  var inputQcFile = $('#qc-fechado');
+
   $(function() {
     $('#fechar-qc').on('click', fecharQcClickHandler);
 
@@ -13,11 +18,6 @@
       hasError: false,
       errors: []
     };
-
-    var inputValorFechamento = $('#valor_fechamento');
-    var inputContrato = $('#numero_contrato_mega');
-    var inputFornecedor = $('#fornecedor_id');
-    var inputQcFile = $('#qc-fechado');
 
     if(!inputValorFechamento.val() || inputValorFechamento.val() === '0,00') {
       validation.errors.push('Preencha o valor do fechamento');
@@ -57,6 +57,10 @@
       });
     }
 
+    var data = new FormData(inputValorFechamento.prop('form'));
+
+    data.delete('_method');
+
     swal({
       type: 'warning',
       title: 'Fechar Q.C. Avulso #' + button.dataset.id,
@@ -68,7 +72,14 @@
       showLoaderOnConfirm: true,
       confirmButtonColor: '#7ED32C'
     }, function() {
-      $.post('/qc/' + id + '/fechar')
+      $.ajax({
+        url: '/qc/' + id + '/fechar',
+        method: 'POST',
+        data: data,
+        cache: false,
+        contentType: false,
+        processData: false,
+      })
         .done(function() {
           swal({
             type: 'success',
