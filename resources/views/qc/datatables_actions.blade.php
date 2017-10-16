@@ -1,16 +1,18 @@
-<div class='btn-group'>
-    <a href="{{ route('qc.show', $id) }}" title="{{ ucfirst( trans('common.show') )}}" class='btn btn-default btn-xs'>
-        <i class="glyphicon glyphicon-eye-open"></i>
-    </a>
-    {{-- @shield('qc.edit')
-    <a href="{{ route('qc.edit', $id) }}" title="{{ ucfirst( trans('common.edit') )}}" class='btn btn-warning btn-xs'>
-        <i class="glyphicon glyphicon-edit"></i>
-    </a>
-    @endshield --}}
-    @shield('qc-aprovar.show')
-    <a href="{{ route('qc.aprovar.edit', $id) }}" title="{{ ucfirst( trans('common.approve') . '/' . trans('common.repprove'))}}" class='btn btn-info btn-xs' style="margin: 0 5px;">
-        <i class="glyphicon glyphicon-check"></i>
-    </a>
-    @endshield
-</div>
-{!! Form::close() !!}
+<a href="{{ route('qc.show', $qc->id) }}"
+    title="Abrir Q.C. # {{ $qc->id }}"
+    data-toggle="tooltip"
+    data-container="body"
+    class='btn btn-default'>
+    <i class="glyphicon glyphicon-eye-open"></i>
+</a>
+@if($qc->canCancel())
+    <button
+        type="button"
+        class="btn btn-danger"
+        onclick="cancelarQC({{$qc->id}});"
+        data-toggle="tooltip"
+        data-container="body"
+        title="Cancelar Q.C.">
+        <i class="glyphicon glyphicon-remove"></i>
+    </button>
+@endif

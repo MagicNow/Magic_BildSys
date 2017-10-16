@@ -11,9 +11,12 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @yield('styles')
     <style type="text/css">
-        body {
-            zoom: 75%;
+        @media screen and (min-width: 768px) and (max-width: 1400px){
+            body {
+                zoom: 75%;
+            }
         }
+
 
         .content-wrapper {
             min-height: 881px !important;
