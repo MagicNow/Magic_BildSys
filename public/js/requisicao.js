@@ -227,7 +227,7 @@ $(function () {
 
         $.ajax({
 
-            url: '/requisicao/get-insumos-obra/',
+            url: '/requisicao/obra/get-insumos-obra/',
             dataType: 'html',
             cache: false,
             type: 'GET',
