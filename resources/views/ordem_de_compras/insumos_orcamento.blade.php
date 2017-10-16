@@ -10,7 +10,7 @@
     <div class="content">
         {!! Form::open(['url' => URL::to('/compras/insumos/orcamento/incluir')]) !!}
             <div class="form-group col-sm-6">
-                <a href="/compras/insumos/orcamento/solicitar-insumo/{{$obra_id}}" class="btn btn-info pull-right flat" style="margin-top: -12px;">
+                <a href="{{ url('compras/insumos/orcamento/solicitar-insumo/' . $obra_id) }}" class="btn btn-info pull-right flat" style="margin-top: -12px;">
                     <i class="fa fa-save"></i> Solicitar novo insumo
                 </a>
                 {!! Form::label('insumo_id', 'Insumo:') !!}
@@ -144,7 +144,7 @@
                 },
                 function(isConfirm){
                     if (!isConfirm) {
-                        window.location = "/compras/obrasInsumos?obra_id={{$obra_id}}";
+                        window.location = "{{ url('compras/obrasInsumos?obra_id=' . $obra_id) }}";
                     }
                 });
             @endif
@@ -267,7 +267,7 @@
             var subgrupo_de = $('#subgrupo_de').val();
             var subgrupo_de_nome = $('#subgrupo_de_nome').val();
             $.ajax({
-                url: '/compras/insumos/orcamento/cadastrar/grupo',
+                url: '{{ url("compras/insumos/orcamento/cadastrar/grupo") }}',
                 data: {
                     'codigo_grupo': codigo_grupo,
                     'nome_grupo': nome_grupo,

@@ -21,7 +21,7 @@
         }
     </style>
 
-    <div class="container">
+    <div class="container dash" >
         <section class="content-header">
             <div class="modal-header">
                 <div class="col-md-12">

@@ -51,7 +51,7 @@
                     <h4>Período do Serviço: <span class="label label-default"> {{ with(new\Carbon\Carbon($medicaoServico->periodo_inicio))->format('d/m/Y') }}</span> à <span class="label label-default">{{ with(new\Carbon\Carbon($medicaoServico->periodo_termino))->format('d/m/Y') }}</span></h4>
                 @endif
                 @if($mcMedicaoPrevisao)
-                    <h3>{{ $mcMedicaoPrevisao->memoriaCalculoBloco->estruturaObj->nome }} -
+                    <h4>{{ $mcMedicaoPrevisao->memoriaCalculoBloco->estruturaObj->nome }} -
                         {{ $mcMedicaoPrevisao->memoriaCalculoBloco->pavimentoObj->nome }} -
                         {{ $mcMedicaoPrevisao->memoriaCalculoBloco->trechoObj->nome }}
                         <span class="label label-default">
@@ -64,7 +64,7 @@
                             </span>
                             @endif
                         @endif
-                    </h3>
+                    </h4>
                 @endif
             </div>
         </div>

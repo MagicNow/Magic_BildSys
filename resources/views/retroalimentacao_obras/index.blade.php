@@ -7,7 +7,7 @@
                 <i class="fa fa-arrow-left" aria-hidden="true"></i>
             </button>
             Retroalimentação de Obras
-           <a class="btn btn-primary btn-lg btn-flat pull-right" style="margin-top: -10px;margin-bottom: 5px" href="{!! route('retroalimentacaoObras.create') !!}">
+           <a class="btn btn-primary btn-lg btn-flat pull-right"  href="{!! route('retroalimentacaoObras.create') !!}">
             {{ ucfirst( trans('common.new') )}}
            </a>
         </h1>

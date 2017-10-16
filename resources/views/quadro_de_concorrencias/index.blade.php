@@ -21,30 +21,19 @@
         }
     </style>
     <section class="content-header">
-        <div class="row">
-            <div class="col-sm-6">
-                <div class="col-md-9">
-                    <span class="pull-left title">
-                       <h3>
-                           <button type="button" class="btn btn-link" onclick="history.go(-1);">
-                                <i class="fa fa-arrow-left" aria-hidden="true"></i>
-                           </button>
-                           <span>Quadro de concorrência</span>
-                       </h3>
-                    </span>
-                </div>
-            </div>
-            <div class="col-sm-6 content-header-buttons">
-                <a class="btn btn-primary btn-lg btn-flat"
-                    href="{!! url('/ordens-de-compra/insumos-aprovados') !!}">
-                    <i class="fa fa-plus"></i> Criar novo quadro de concorrência
-                </a>
-            </div>
-        </div>
+        <h1>
+            <button type="button" class="btn btn-link" onclick="history.go(-1);">
+                <i class="fa fa-arrow-left" aria-hidden="true"></i>
+            </button>
+            <span>Quadro de concorrência</span>
+            <a class="btn btn-primary btn-lg btn-flat pull-right" href="{!! url('/ordens-de-compra/insumos-aprovados') !!}">
+                <i class="fa fa-plus"></i> Criar novo quadro de concorrência
+            </a>
+        </h1>
     </section>
     <div class="content">
         <div class="clearfix"></div>
-        <div class="box box-warning">
+        <div class="box box-warning quadro">
             <div class="box-body">
                     @include('quadro_de_concorrencias.table')
             </div>

@@ -9,7 +9,7 @@
   <section class="content-header">    
 	<h1 class="pull-left"><button type="button" class="btn btn-link" onclick="history.go(-1);"><i class="fa fa-arrow-left" aria-hidden="true"></i></button>Medição Física</h1>
 	<h1 class="pull-right">
-	   <a class="btn btn-success pull-right" style="margin-top: -10px;margin-bottom: 5px" href="{!! route('admin.medicao_fisicas.create') !!}">		
+	   <a class="btn btn-success pull-right"  href="{!! route('admin.medicao_fisicas.create') !!}">		
 		<i class="fa fa-plus"></i> Nova Medição
 	   </a>
 	</h1>

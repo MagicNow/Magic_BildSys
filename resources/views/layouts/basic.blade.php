@@ -17,7 +17,7 @@
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
     <style type="text/css">
-        body{
+         body{
             background-image: url("{{ asset('img/backLogin.jpg') }}") !important;
             background-position: right bottom !important;
             background-repeat: no-repeat !important;
@@ -26,6 +26,7 @@
         .login-page, .register-page {
             background: #ddd9d8;
         }
+
     </style>
 </head>
     @yield('body')
