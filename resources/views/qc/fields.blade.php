@@ -1,29 +1,23 @@
 <!-- Obra ID Field -->
-@if(Request::get('obra_id'))
-	{!! Form::hidden('obra_id', Request::get('obra_id')) !!}
+@if(request()->has('obra_id'))
+	{!! Form::hidden('obra_id', request('obra_id')) !!}
 @else
 	<div class="form-group col-sm-6">
 		{!! Form::label('obra_id', 'Obra:') !!}
-		{!! Form::select('obra_id',[''=>'Escolha...']+$obras, NULL, ['class' => 'form-control', 'required'=>'required']) !!}
+        {!! Form::select('obra_id', $obras, NULL, ['class' => 'form-control select2', 'required']) !!}
 	</div>
 @endif
 
 <!-- Tipologia Field -->
 <div class="form-group col-sm-6">
 	{!! Form::label('tipologia', 'Tipologia:') !!}
-	{!! Form::select('tipologia_id',[''=>'Escolha...']+$tipologias, NULL, ['class' => 'form-control', 'required'=>'required']) !!}
+	{!! Form::select('tipologia_id', $tipologias, NULL, ['class' => 'form-control select2', 'required'=>'required']) !!}
 </div>
 
 <!-- Carteira ID Field -->
 <div class="form-group col-sm-6">
 	{!! Form::label('carteira_id', 'Carteira:') !!}
-	{!! Form::select('carteira_id', [''=>'Escolha...']+$carteiras, @isset($qc) ? $qc->carteira_id : NULL, ['class' => 'form-control select2', 'required'=>'required']) !!}
-</div>
-
-<!-- Descrição Field -->
-<div class="form-group col-sm-12">
-	{!! Form::label('descricao', 'Descrição do serviço:') !!}
-	{!! Form::textarea('descricao', NULL, ['class' => 'form-control', 'required'=>'required']) !!}
+	{!! Form::select('carteira_id', $carteiras, NULL, ['class' => 'form-control', 'required'=>'required']) !!}
 </div>
 
 <!-- Valor Pré Orçamento Field -->
@@ -44,39 +38,52 @@
 	{!! Form::text('valor_gerencial', NULL, ['class' => 'form-control money', 'required'=>'required']) !!}
 </div>
 
-<fieldset class="col-sm-12 qc-anexos">
-	<legend>Anexos</legend>
-	<div class="row">
-		<div class="col-sm-3">
-			<h5 style="color:#000000">Arquivo:</h5>
-		</div>
-		<div class="col-sm-3">
-			<h5 style="color:#000000">Tipo:</h5>
-		</div>
-		<div class="col-sm-5">
-			<h5 style="color:#000000">Descrição:</h5>
-		</div>
-		<div class="col-md-1">
-			<h5>&nbsp;</h5>
-		</div>
+<!-- Descrição Field -->
+<div class="form-group col-sm-12">
+	{!! Form::label('descricao', 'Descrição do serviço:') !!}
+	{!! Form::textarea('descricao', NULL, ['class' => 'form-control', 'required'=>'required']) !!}
+</div>
+
+<div class="col-sm-12">
+	<div class="box box-muted">
+        <div class="box-header with-border">
+            <i class="fa fa-paperclip"></i> ANEXOS
+        </div>
+	    <div class="box-body qc-anexos">
+	        <div class="form-group row qc-anexos-campos">
+	        	<div class="col-sm-5">
+                   {!! Form::label('', 'Descrição:') !!}
+	        		{!! Form::text('anexo_descricao[]', NULL, ['class' => 'form-control']) !!}
+	        	</div>
+	        	<div class="col-sm-3">
+                   {!! Form::label('', 'Tipo:') !!}
+	        		{!! Form::select('anexo_tipo[]', ['' => 'Escolha...', 'Proposta' => 'Proposta', 'Quadro de concorrência' => 'Quadro de concorrência', 'Email' => 'Email', 'Detalhamento do Projeto' => 'Detalhamento do Projeto'], NULL, ['class' => 'form-control']) !!}
+	        	</div>
+	        	<div class="col-sm-3">
+	                   {!! Form::label('', 'Arquivo:') !!}
+	                   {!! Form::file('anexo_arquivo[]', array('id' => 'file', 'class' => 'form-control')) !!}
+	        	</div>
+	        	<div class="col-md-1 text-center">
+                    <label>&nbsp;</label>
+	        		<div class="center-block">
+	        		    <button
+                             type="button"
+                             class="btn js-qc-anexos-remover btn-warning btn-sm"
+                             disabled="disabled">
+                             <i class="fa fa-minus"></i>
+                         </button>
+	        		    <button
+                             type="button"
+                             class="btn js-qc-anexos-novo btn-default btn-sm"
+                             disabled="disabled">
+                             <i class="fa fa-plus"></i>
+                         </button>
+	        		</div>
+	        	</div>
+	        </div>
+	    </div>
 	</div>
-	<div class="form-group row qc-anexos-campos">
-		<div class="col-sm-3">
-			<div class="{{ $errors->has('anexo_arquivo') ? 'has-error' : '' }}">
-				{!! Form::file('anexo_arquivo[]', array('id' => 'file', 'class' => 'form-control', 'multiple' => true)) !!}
-			</div>
-		</div>
-		<div class="col-sm-3">
-			{!! Form::select('anexo_tipo[]', ['' => 'Escolha...', 'Proposta' => 'Proposta', 'Quadro de concorrência' => 'Quadro de concorrência', 'Email' => 'Email', 'Detalhamento do Projeto' => 'Detalhamento do Projeto'], NULL, ['class' => 'form-control']) !!}
-		</div>
-		<div class="col-sm-5">
-			{!! Form::text('anexo_descricao[]', NULL, ['class' => 'form-control']) !!}
-		</div>
-		<div class="col-md-1 text-center">
-			<button type="button" class="fa fa-plus btn qc-anexos-novo" disabled="disabled"></button>
-		</div>
-	</div>
-</fieldset>
+</div>
 
 <!-- Submit Field -->
 <div class="form-group col-sm-12">

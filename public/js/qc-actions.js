@@ -1,116 +1,115 @@
-const $attachments = $('.qc-anexos');
-const baseUrl = $('body').attr('baseurl');
+(function($) {
+  const $attachments = $('.qc-anexos');
+  const $attachmentsFields = $attachments.find('.qc-anexos-campos').first().clone();
+  const baseUrl = $('body').attr('baseurl');
+  const MAX_FILE_SIZE_MB = 20;
 
-$(function () {
-	$('#carteira_id').select2({
-		theme:'bootstrap',
-		allowClear: true,
-		placeholder: "Escolha...",
-		language: "pt-BR",
+  $(function () {
+    select2('#carteira_id', {
+      url: baseUrl + "/buscar/carteiras",
+    })
 
-		ajax: {
-			url: baseUrl + "/buscar/carteiras",
-			dataType: 'json',
-			delay: 250,
+    $attachments.find('input[type="file"]').on('change', checkAttachmentTypeExists);
+    $attachments.find('select').on('change', checkAttachmentTypeExists);
 
-			data: function (params) {
-				return {
-					q: params.term, // search term
-					page: params.page
-				};
-			},
+    $attachments.on('click', '.js-qc-anexos-novo', addAttachmentRow);
+    $attachments.on('click', '.js-qc-anexos-remover', removeAttachmentRow);
+    $attachments.on('change', '.form-control', checkAttachmentTypeExists);
+    $attachments.on('change', 'input[type="file"]', checkFileSize);
+  });
 
-			processResults: function (result, params) {
-				// parse the results into the format expected by Select2
-				// since we are using custom formatting functions we do not need to
-				// alter the remote JSON data, except to indicate that infinite
-				// scrolling can be used
-				params.page = params.page || 1;
+  function removeAttachmentRow(e) {
+    $(e.currentTarget).parents('.qc-anexos-campos:first').remove();
+    $attachments.find('.js-qc-anexos-remover:last').prop('disabled', true);
+    $attachments.find('.js-qc-anexos-novo:last').show();
+  }
 
-				return {
-					results: result.data,
-					pagination: {
-						more: (params.page * result.per_page) < result.total
-					}
-				};
-			},
-			cache: true
-		},
-		escapeMarkup: function (markup) {
-			return markup;
-		}, // let our custom formatter work
-		minimumInputLength: 1,
-		templateResult: formatResult, // omitted for brevity, see the source of this page
-		templateSelection: formatResultSelection // omitted for brevity, see the source of this page
-	});
+  function addAttachmentRow (e) {
+    e.preventDefault();
 
-	$attachments.find('input[type="file"]').on('change', checkAttachmentTypeExists);
-	$attachments.find('select').on('change', checkAttachmentTypeExists);
+    const $self = $(this);
 
-	$attachments.on('click', '.qc-anexos-novo', addAttachmentRow);
-});
+    let $attachmentsFieldsNew;
+    let $attachmentsFieldsNewButton;
 
-function formatResultSelection (obj) {
-	if(obj.nome){
-		return obj.nome;
-	}
-	return obj.text;
-}
+    $self
+      .hide()
+      .parents('.qc-anexos-campos')
+      .find('.js-qc-anexos-remover')
+      .prop('disabled', false);
 
-function formatResult (obj) {
-	if (obj.loading) return obj.text;
+    $self
+      .parents('.qc-anexos-campos')
+      .find('.form-control')
+      .addClass('.readonly')
+      .attr('readonly', 'readonly')
+      .attr('tabindex', '-1')
+      .attr('attr-disabled', 'true');
 
-	var markup_insumo =    "<div class='select2-result-obj clearfix'>" +
-			"   <div class='select2-result-obj__meta'>" +
-			"       <div class='select2-result-obj__title'>" + obj.nome + "</div>"+
-			"   </div>"+
-			"</div>";
 
-	return markup_insumo;
-}
+    $attachments.append($attachmentsFields.clone());
 
-function addAttachmentRow (e) {
-	e.preventDefault();
+    $attachmentsFieldsNew = $attachments.find('.qc-anexos-campos:last').last();
+    $attachmentsFieldsNew.find('select').prop('selectedIndex', 0);
+    $attachmentsFieldsNew.find('input').val('');
 
-	const $self = $(this);
-	const $attachmentsFields = $attachments.find('.qc-anexos-campos').first();
-	let $attachmentsFieldsNew;
-	let $attachmentsFieldsNewButton;
+    $attachmentsFieldsNew
+      .find('.js-qc-anexos-novo')
+      .show()
+      .prop('disabled', true);
 
-	$self.hide();
-	$attachments.append($attachmentsFields.clone());
-	$attachmentsFieldsNew = $attachments.find('.qc-anexos-campos').last();
-	$attachmentsFieldsNewButton = $attachmentsFieldsNew.find('.qc-anexos-novo')
+    $attachmentsFieldsNew
+      .find('.js-qc-anexos-remover')
+      .prop('disabled', true);
+  }
 
-	$attachmentsFieldsNew.find('select').prop('selectedIndex', 0);
-	$attachmentsFieldsNew.find('input').val('');
-	$attachmentsFieldsNewButton.show().attr('disabled', 'disabled');
-	$attachmentsFieldsNew.find('input[type="file"]').on('change', checkAttachmentTypeExists);
-	$attachmentsFieldsNew.find('select').on('change', checkAttachmentTypeExists);
-}
+  function checkFileSize(e) {
+    var files = e.currentTarget.files;
 
-function checkAttachmentTypeExists () {
-	const $self = $(this);
-	const $attachmentsFields = $self.parents('.qc-anexos-campos');
-	const $attachmentsFieldsSelect = $attachmentsFields.find('select');
-	const $attachmentsFieldsFile = $attachmentsFields.find('input[type="file"]');
-	const $attachmentsFieldsButton = $attachmentsFields.find('.qc-anexos-novo');
+    if(files.length && (files[0].size / 1024 / 1024) > 20) {
+      swal('Atenção!', 'O tamanho máximo de upload é 20mb por arquivo!', 'warning');
+      $(e.currentTarget)
+        .val('')
+        .prop('type', 'text')
+        .prop('type', 'file')
+        .trigger('change');
+    }
+  }
 
-	let qc = 0;
+  function checkAttachmentTypeExists (e) {
+    const $self = $(this);
+    const $attachmentsFields = $self.parents('.qc-anexos-campos');
+    const $attachmentsFieldsSelect = $attachmentsFields.find('select');
+    const $attachmentsFieldsFile = $attachmentsFields.find('input[type="file"]');
+    const $attachmentsFieldsButton = $attachmentsFields.find('.js-qc-anexos-novo');
 
-	$attachments.find('select').each(function(i, el) {
-		if (el.value == 'Quadro de concorrência') {
-			qc++;
-		}
-	});
+    let qc = $attachments.find('select')
+      .filter(function(i, el) {
+        return el.value === 'Quadro de concorrência'
+      })
+      .size();
 
-	if ($attachmentsFieldsFile.val() !== '' && $attachmentsFieldsSelect.val() !== '' && qc <= 1) {
-		$attachmentsFieldsButton.removeAttr('disabled');
-	} else {
-		if ($attachmentsFieldsFile.val() !== '' && $attachmentsFieldsSelect.val() !== '' && qc > 1) {
-			alert('Somente é possível anexar um Q.C.');
-			$attachmentsFieldsSelect.prop('selectedIndex', 0);
-		}
-	}
-}
+    if ($attachmentsFieldsFile.val() !== '' && $attachmentsFieldsSelect.val() !== '' && qc > 1) {
+      e.stopPropagation();
+
+      swal('Atenção!', 'Você só pode anexar um arquivo de Quadro de Concorrência', 'warning');
+      $attachmentsFieldsSelect.prop('selectedIndex', 0);
+      $attachmentsFieldsFile
+        .val('')
+        .prop('type', 'text')
+        .prop('type', 'file')
+        .trigger('change');
+
+    }
+
+    if ($attachmentsFieldsFile.val() !== '' && $attachmentsFieldsSelect.val() !== '' && qc <= 1) {
+      $attachmentsFieldsButton.prop('disabled', false);
+    }
+
+    if(!$attachmentsFieldsFile.val()) {
+      $attachmentsFieldsButton.prop('disabled', true);
+    }
+  }
+}(jQuery));
+
 //# sourceMappingURL=qc-actions.js.map

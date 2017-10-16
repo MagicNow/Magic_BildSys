@@ -3,6 +3,7 @@
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Arr;
+use Carbon\Carbon;
 
 if (! function_exists('is_money')) {
     /**
@@ -111,7 +112,7 @@ if(! function_exists('to_percentage')) {
      */
     function to_percentage($number)
     {
-      return to_fixed($number, 2, ',') . '%';
+        return to_fixed($number, 2, ',') . '%';
     }
 }
 
@@ -139,5 +140,36 @@ if(! function_exists('mask')) {
             }
         }
         return $maskared;
+    }
+}
+
+
+if (! function_exists('datatables_format_date')) {
+    function datatables_format_date($column, $text = 'Sem data')
+    {
+        return function ($model) use ($column, $text) {
+            if (empty($model->{$column})) {
+                return $text;
+            }
+
+            if ($model->{$column} instanceof Carbon) {
+                return $model->{$column}->format('d/m/Y');
+            }
+
+            return $model->{$column};
+        };
+    }
+}
+
+if (! function_exists('datatables_float_to_money')) {
+    function datatables_float_to_money($column, $text = '0,00')
+    {
+        return function ($model) use ($column, $text) {
+            if (empty($model->{$column})) {
+                return $text;
+            }
+
+            return float_to_money($model->{$column});
+        };
     }
 }
