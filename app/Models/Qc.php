@@ -52,7 +52,8 @@ class Qc extends Model
 		'data_fechamento',
 		'user_id',
 		'numero_contrato_mega',
-        'qc_status_id'
+        'qc_status_id',
+		'carteira_comprada',
 	];
 
 	/**
@@ -93,7 +94,8 @@ class Qc extends Model
 		'descricao' => 'required',
 		'valor_pre_orcamento' => 'required',
 		'valor_orcamento_inicial' => 'required',
-		'valor_gerencial' => 'required'
+		'valor_gerencial' => 'required',
+		'carteira_comprada' => 'bool'
 	];
 
 	public static $messages = [

@@ -15,22 +15,34 @@
     <p class="form-control">{!! isset($qc->obra) ? $qc->obra->nome : NULL !!}</p>
 </div>
 
-<!-- Valor Pré Orçamento Field -->
+<!-- Pbta Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('valor_pre_orcamento', 'Valor Pré Orçamento') !!}
-    <p class="form-control">{!! float_to_money($qc->valor_pre_orcamento) !!}</p>
+    {!! Form::label('carteira_comprada', 'Carteira comprada?') !!}
+    <p class="form-control">
+        {{ $qc->carteira_comprada ? 'Sim' : 'Não' }}
+    </p>
 </div>
 
-<!-- Valor Orçamento Inicial Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('valor_orcamento_inicial', 'Valor Orçamento Inicial ') !!}
-    <p class="form-control">{!! float_to_money($qc->valor_orcamento_inicial) !!}</p>
-</div>
+<div class="col-sm-12">
+    <div class="row">
+        <!-- Valor Pré Orçamento Field -->
+        <div class="form-group col-sm-4">
+            {!! Form::label('valor_pre_orcamento', 'Valor Pré Orçamento') !!}
+            <p class="form-control">{!! float_to_money($qc->valor_pre_orcamento) !!}</p>
+        </div>
 
-<!-- Valor da Gerencial Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('valor_gerencial', 'Valor da Gerencial') !!}
-    <p class="form-control">{!! float_to_money($qc->valor_gerencial) !!}</p>
+        <!-- Valor Orçamento Inicial Field -->
+        <div class="form-group col-sm-4">
+            {!! Form::label('valor_orcamento_inicial', 'Valor Orçamento Inicial ') !!}
+            <p class="form-control">{!! float_to_money($qc->valor_orcamento_inicial) !!}</p>
+        </div>
+
+        <!-- Valor da Gerencial Field -->
+        <div class="form-group col-sm-4">
+            {!! Form::label('valor_gerencial', 'Valor da Gerencial') !!}
+            <p class="form-control">{!! float_to_money($qc->valor_gerencial) !!}</p>
+        </div>
+    </div>
 </div>
 
 <!-- Descrição Field -->

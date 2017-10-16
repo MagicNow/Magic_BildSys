@@ -20,22 +20,43 @@
 	{!! Form::select('carteira_id', $carteiras, NULL, ['class' => 'form-control', 'required'=>'required']) !!}
 </div>
 
-<!-- Valor Pré Orçamento Field -->
+<!-- Carteira ID Field -->
 <div class="form-group col-sm-6">
-	{!! Form::label('valor_pre_orcamento', 'Valor Pré Orçamento:') !!}
-	{!! Form::text('valor_pre_orcamento', NULL, ['class' => 'form-control money', 'required'=>'required']) !!}
+	{!! Form::label('carteira_comprada', 'Carteira comprada?') !!}
+    <p>
+        <label>
+            {!! Form::radio('carteira_comprada', 1, true) !!}
+            Sim
+        </label>
+        &nbsp;
+        &nbsp;
+        <label>
+            {!! Form::radio('carteira_comprada', 0) !!}
+            Não
+        </label>
+    </p>
 </div>
 
-<!-- Valor Orçamento Inicial Field -->
-<div class="form-group col-sm-6">
-	{!! Form::label('valor_orcamento_inicial', 'Valor Orçamento Inicial :') !!}
-	{!! Form::text('valor_orcamento_inicial', NULL, ['class' => 'form-control money', 'required'=>'required']) !!}
-</div>
+<div class="col-sm-12">
+    <div class="row">
+        <!-- Valor Pré Orçamento Field -->
+        <div class="form-group col-sm-4">
+        	{!! Form::label('valor_pre_orcamento', 'Valor Pré Orçamento:') !!}
+        	{!! Form::text('valor_pre_orcamento', NULL, ['class' => 'form-control money', 'required'=>'required']) !!}
+        </div>
 
-<!-- Valor da Gerencial Field -->
-<div class="form-group col-sm-6">
-	{!! Form::label('valor_gerencial', 'Valor da Gerencial:') !!}
-	{!! Form::text('valor_gerencial', NULL, ['class' => 'form-control money', 'required'=>'required']) !!}
+        <!-- Valor Orçamento Inicial Field -->
+        <div class="form-group col-sm-4">
+        	{!! Form::label('valor_orcamento_inicial', 'Valor Orçamento Inicial :') !!}
+        	{!! Form::text('valor_orcamento_inicial', NULL, ['class' => 'form-control money', 'required'=>'required']) !!}
+        </div>
+
+        <!-- Valor da Gerencial Field -->
+        <div class="form-group col-sm-4">
+        	{!! Form::label('valor_gerencial', 'Valor da Gerencial:') !!}
+        	{!! Form::text('valor_gerencial', NULL, ['class' => 'form-control money', 'required'=>'required']) !!}
+        </div>
+    </div>
 </div>
 
 <!-- Descrição Field -->
