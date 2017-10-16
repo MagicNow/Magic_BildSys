@@ -4,7 +4,7 @@
         <i class="fa fa-plus"></i>
     </a>
 
-    <a href="{{ route('admin.mascaraPadraoEstruturas.create', $id) }}" title="visualizar estrutura da máscara padrão" class='btn btn-info btn-xs'>
+    <a href="{{ route('admin.mascaraPadraoEstruturas.create', $id) }}" title="Visualizar estrutura da máscara padrão" class='btn btn-info btn-xs'>
         <i class="glyphicon glyphicon-eye-open"></i>
     </a>
 
