@@ -3,8 +3,11 @@
 @section('content')
     <section class="content-header">
         <h1>
+            <button type="button" class="btn btn-link" onclick="history.go(-1);">
+                <i class="fa fa-arrow-left" aria-hidden="true"></i>
+            </button>
             Equalização Técnicas
-           <a class="btn btn-primary pull-right btn-flat btn-lg" style="margin-top: -10px;margin-bottom: 5px" href="{!! route('tipoEqualizacaoTecnicas.create') !!}">
+           <a class="btn btn-primary pull-right btn-flat btn-lg"  href="{!! route('tipoEqualizacaoTecnicas.create') !!}">
                <i class="fa fa-plus" aria-hidden="true"></i> {{ ucfirst( trans('common.new') )}}
            </a>
         </h1>

@@ -3,6 +3,9 @@
 @section('content')
     <section class="content-header">
         <h1>
+            <button type="button" class="btn btn-link" onclick="history.go(-1);">
+                <i class="fa fa-arrow-left" aria-hidden="true"></i>
+            </button>
             Calendário de Compra
         </h1>
     </section>
@@ -82,17 +85,15 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-12 checkbox js-datatable-filter-form" style="margin-top: 0px !important;">
-                          <div class="col-md-6">
-                            <label for="exibir_por_tarefa">
-                              <input type="checkbox"
-                                value="1"
-                                name="exibir_por_tarefa"
-                                id="exibir_por_tarefa">
-                              Exibir por tarefa
-                            </label>
-                          </div>
-                            <div class="col-md-6">
+                        <div class="row checkbox js-datatable-filter-form">
+                            <div class="col-md-12">
+                                <label for="exibir_por_tarefa">
+                                  <input type="checkbox"
+                                    value="1"
+                                    name="exibir_por_tarefa"
+                                    id="exibir_por_tarefa">
+                                  Exibir por tarefa
+                                </label>&nbsp;&nbsp;
                                 <label for="exibir_por_carteira">
                                     <input type="checkbox"
                                            value="1"
@@ -103,7 +104,7 @@
                             </div>
                         </div>
                         <div class="page-header">
-                            <div class="pull-right form-inline">
+                            <div class="text-right form-inline zoom-1">
                                 <div class="btn-group">
                                     <button class="btn btn-primary" data-calendar-nav="prev"><< Anterior</button>
                                     <button class="btn btn-default" data-calendar-nav="today">Hoje</button>
@@ -117,7 +118,7 @@
                                 </div>
                             </div>
 
-                            <h3></h3>
+                            <h3 class="fs18"></h3>
                         </div>
 
                         <div id="calendar"></div>
@@ -134,7 +135,7 @@
                             </div>
 
                             <div class="col-md-12">
-                                <h3>Lembretes</h3>
+                                <h3 class="fs20">Lembretes</h3>
                                 @include('ordem_de_compras.lembretes-home-table')
                             </div>
                         </div>
@@ -199,7 +200,7 @@
         }
 
         function carregaPlanejamentos(obra_id){
-            $.ajax('/planejamentosListaByObra', {
+            $.ajax('{{ url("planejamentosListaByObra") }}', {
                 data: {
                     obra_id: obra_id
                 }

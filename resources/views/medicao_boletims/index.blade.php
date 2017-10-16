@@ -8,7 +8,7 @@
             </button>
             Boletins de Medição
 
-           <a class="btn btn-primary pull-right" style="margin-top: -10px;margin-bottom: 5px" href="{!! route('boletim-medicao.create') !!}">
+           <a class="btn btn-primary pull-right"  href="{!! route('boletim-medicao.create') !!}">
             {{ ucfirst( trans('common.new') )}}
            </a>
         </h1>

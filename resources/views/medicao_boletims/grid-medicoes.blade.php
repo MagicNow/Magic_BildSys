@@ -26,7 +26,7 @@
             <th>
                 Descontos
             </th>
-            <th width="10%">
+            <th width="12%">
                 Valor Medido - Descontos
             </th>
             <th width="10%">
@@ -117,12 +117,12 @@
             <td colspan="7" class="text-right">
                 Total:
             </td>
-            <td class="text-right" style="font-weight: bold !important; font-size: 16px;" id="somaDescontos">
+            <td class="text-right" style="font-weight: bold !important; font-size: 12px;" id="somaDescontos">
                 @if(isset($medicaoBoletim))
                     {{ float_to_money($somaDescontos) }}
                 @endif
             </td>
-            <td class="text-right" style="font-weight: bold !important; font-size: 16px;" id="somaTotal">
+            <td class="text-right" style="font-weight: bold !important; font-size: 12px;" id="somaTotal">
                 @if(isset($medicaoBoletim))
                     {{ float_to_money($somaTotal-$somaDescontos) }}
                 @endif
