@@ -5,7 +5,7 @@
     </a>
     @if(!$enviado_integracao)
         @shield('pagamentos.edit')
-        <a href="{{ route('pagamentos.integrar', $id) }}" title="Integrar com Mega" class='btn btn-success btn-xs'>
+        <a href="{{ route('pagamentos.integrar', $id) }}" onclick="startLoading();" title="Integrar com Mega" class='btn btn-success btn-xs'>
             <i class="glyphicon glyphicon-upload"></i>
         </a>
         @endshield

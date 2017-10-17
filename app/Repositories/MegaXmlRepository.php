@@ -628,7 +628,7 @@ class MegaXmlRepository
         $xmlRoot->appendChild($node);
 
 
-        //TPD_ST_CODIGO Código do tipo de documento.
+        //TPD_ST_CODIGO Código do tipo de documento Financeiro.
         // O tipo de documento é um cadastro do Mega, para definições de tipos de documentos e suas respectivas
         // configurações utilizadas no módulo financeiro.
         $node = $domtree->createElement("TPD_ST_CODIGO", $pagamento->documentoTipo->codigo_mega);

@@ -20,6 +20,7 @@ use App\Repositories\MegaXmlRepository;
 use App\Repositories\NotafiscalRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Response;
@@ -377,4 +378,18 @@ class NotafiscalController extends AppBaseController
         }
     }
 
+    public function importaNfe()
+    {
+        return view('notafiscals.import');
+    }
+
+    public function postImportaNfe(Request $request)
+    {
+        $xml = file_get_contents($request->file('nota_fiscal'));
+
+        $dataNfe = $this->consultaRepository->extraiData($xml, NULL, NULL);
+        $nfObj = $this->consultaRepository->saveData($dataNfe);
+
+        return redirect(route('notafiscals.edit', [$nfObj->id]));
+    }
 }

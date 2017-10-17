@@ -45,9 +45,9 @@
 
 <!-- Documento Tipo Id Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('documento_tipo_id', 'Tipo de Documento Fiscal:') !!}
-    {!! Form::select('documento_tipo_id', [''=>'Selecione...'] + $documentoTipos ,
-    (isset($pagamento) AND $pagamento != null ? (isset($pagamento) ? $pagamento->documento_tipo_id : 1) : null),
+    {!! Form::label('documento_financeiro_tipo_id', 'Tipo de Documento:') !!}
+    {!! Form::select('documento_financeiro_tipo_id', [''=>'Selecione...'] + $documentoTipos ,
+    ( isset($pagamento) && $pagamento != null ? $pagamento->documento_financeiro_tipo_id : null),
     ['class' => 'form-control select2', 'required']) !!}
 </div>
 
