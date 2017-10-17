@@ -9,6 +9,8 @@ use App\Models\Insumo;
 use App\Models\InsumoGrupo;
 use App\Models\Obra;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Input;
 
 class GestaoEstoqueController extends AppBaseController
 {
@@ -23,7 +25,7 @@ class GestaoEstoqueController extends AppBaseController
                 'insumos.insumo_grupo_id'
             )
             ->join('insumos', 'insumos.id', '=', 'estoque.insumo_id')
-            ->with('obra', 'insumo')->get();
+            ->with('obra', 'insumo');
 
         $obras = Obra::whereIn('id', $estoque->pluck('obra_id', 'obra_id')->toArray())
             ->pluck('nome', 'id')
@@ -52,6 +54,7 @@ class GestaoEstoqueController extends AppBaseController
             $estoque = $estoque->where('insumo_id', $request->insumo_id);
         }
 
+        $estoque = $estoque->paginate(10);
         return view('gestao_estoque.index', compact('estoque', 'obras', 'insumos', 'grupo_insumos'));
     }
 
@@ -64,8 +67,8 @@ class GestaoEstoqueController extends AppBaseController
 
         foreach($contratos as $contrato) {
             foreach($contrato->itens as $item) {
-                if((starts_with($item->insumo->nome, 'MATERIAL'))) {
-                    $itens[$item->id] = [
+                if((starts_with($item->insumo->insumoGrupo->nome, 'MATERIAL'))) {
+                    $itens[$contrato->obra_id.$item->insumo->id] = [
                         'obra' => $contrato->obra->nome,
                         'codigo' => $item->insumo->codigo,
                         'insumo' => $item->insumo->nome,
@@ -80,7 +83,7 @@ class GestaoEstoqueController extends AppBaseController
                 }
             }
         }
-        
+
         $obras = Obra::whereIn('id', $itens->pluck('obra_id', 'obra_id')->toArray())
             ->pluck('nome', 'id')
             ->prepend('', '')
@@ -108,6 +111,25 @@ class GestaoEstoqueController extends AppBaseController
             $itens = $itens->where('insumo_id', $request->insumo_id);
         }
 
+        $itens = $itens->sortByDesc('obra_id');
+
+        $page = Input::get('page', 1); // Get the ?page=1 from the url
+        $perPage = 10; // Number of items per page
+        $offset = ($page * $perPage) - $perPage;
+
+        $itens = new LengthAwarePaginator(
+            array_slice($itens->toArray(), $offset, $perPage, true), // Only grab the items we need
+            count($itens), // Total items
+            $perPage, // Items per page
+            $page, // Current page
+            ['path' => $request->url(), 'query' => $request->query()] // We need this so we can keep all old query parameters from the url
+        );
+
         return view('gestao_estoque.estoque_minimo', compact('obras', 'insumos', 'itens', 'grupo_insumos'));
+    }
+
+    public function estoqueMinimoSalvar(Request $request)
+    {
+
     }
 }

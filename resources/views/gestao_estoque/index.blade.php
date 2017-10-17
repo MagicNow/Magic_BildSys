@@ -27,6 +27,9 @@
                     </tbody>
                 </table>
             </div>
+            <div class="text-center">
+                {{ $estoque->links() }}
+            </div>
         </div>
     </div>
 @endsection

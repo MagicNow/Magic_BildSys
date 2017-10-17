@@ -40,7 +40,6 @@
                     <thead>
                     <tr align="left">
                         <th>Obra</th>
-                        <th>Contrato</th>
                         <th>Cod</th>
                         <th>Insumo</th>
                         <th>Un de medida</th>
@@ -52,17 +51,26 @@
                         @foreach($itens as $item)
                             <tr align="left">
                                 <td>{{$item['obra']}}</td>
-                                <td>{{$item['contrato_id']}}</td>
                                 <td>{{$item['codigo']}}</td>
                                 <td>{{$item['insumo']}}</td>
                                 <td>{{$item['unidade_medida']}}</td>
                                 <td>
-                                    <input value="{{float_to_money($item['qtd_minima'], '')}}" class="money">
+                                    <input onkeyup="salvarQtdMinima(this.value, '{{$item->insumo_id}}', '{{$item->obra_id}}');" value="{{float_to_money($item['qtd_minima'], '')}}" class="money form-control">
                                 </td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
+
+                <div class="text-center">
+                    {{ $itens->links() }}
+                </div>
+
+                <!-- Submit Field -->
+                <div class="form-group">
+                    {!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save') ), ['class' => 'btn btn-success pull-right', 'type'=>'submit']) !!}
+                    <a href="{!! route('gestaoEstoque.index') !!}" class="btn btn-danger"><i class="fa fa-times"></i>  {{ ucfirst( trans('common.cancel') )}}</a>
+                </div>
             </div>
         </div>
     </div>
