@@ -55,7 +55,7 @@
                                 <td>{{$item['insumo']}}</td>
                                 <td>{{$item['unidade_medida']}}</td>
                                 <td>
-                                    <input onkeyup="salvarQtdMinima(this.value, '{{$item->insumo_id}}', '{{$item->obra_id}}');" value="{{float_to_money($item['qtd_minima'], '')}}" class="money form-control">
+                                    <input onchange="salvarQtdMinima(this.value, '{{$item['insumo_id']}}', '{{$item['obra_id']}}');" value="{{float_to_money($item['qtd_minima'], '')}}" class="money form-control">
                                 </td>
                             </tr>
                         @endforeach
@@ -64,12 +64,6 @@
 
                 <div class="text-center">
                     {{ $itens->links() }}
-                </div>
-
-                <!-- Submit Field -->
-                <div class="form-group">
-                    {!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save') ), ['class' => 'btn btn-success pull-right', 'type'=>'submit']) !!}
-                    <a href="{!! route('gestaoEstoque.index') !!}" class="btn btn-danger"><i class="fa fa-times"></i>  {{ ucfirst( trans('common.cancel') )}}</a>
                 </div>
             </div>
         </div>
@@ -110,6 +104,25 @@
 
             history.pushState("", document.title, location.pathname+queryString);
             location.reload();
+        }
+        
+        function salvarQtdMinima(qtd, insumo_id, obra_id) {
+            if(qtd) {
+                $.ajax('{{ route('gestaoEstoque.estoqueMinimoSalvar') }}', {
+                    data: {
+                        qtd: qtd,
+                        insumo_id: insumo_id,
+                        obra_id: obra_id
+                    }
+                }).done(function () {
+                    swal({
+                        title: 'Quantidade mínima salva com sucesso',
+                        text: "",
+                        type: "success",
+                        confirmButtonColor: "#DD6B55"
+                    });
+                });
+            }
         }
     </script>
 @endsection

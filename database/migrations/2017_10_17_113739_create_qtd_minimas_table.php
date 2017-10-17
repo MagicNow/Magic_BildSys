@@ -15,6 +15,7 @@ class CreateQtdMinimasTable extends Migration
     {
         Schema::create('qtd_minimas', function (Blueprint $table) {
             $table->increments('id');
+            $table->decimal('qtd', 19, 2);
             $table->unsignedInteger('obra_id');
             $table->unsignedInteger('insumo_id');
 
@@ -31,6 +32,10 @@ class CreateQtdMinimasTable extends Migration
                 ->onUpdate('cascade');
 
         });
+
+        Schema::table('insumos', function (Blueprint $table) {
+            $table->dropColumn('qtd_minima');
+        });
     }
 
     /**
@@ -41,5 +46,9 @@ class CreateQtdMinimasTable extends Migration
     public function down()
     {
         Schema::dropIfExists('qtd_minimas');
+
+        Schema::table('insumos', function (Blueprint $table) {
+            $table->decimal('qtd_minima', 19, 2)->nullable();
+        });
     }
 }

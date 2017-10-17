@@ -8,6 +8,7 @@ use App\Models\Estoque;
 use App\Models\Insumo;
 use App\Models\InsumoGrupo;
 use App\Models\Obra;
+use App\Models\QtdMinima;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Input;
@@ -68,6 +69,10 @@ class GestaoEstoqueController extends AppBaseController
         foreach($contratos as $contrato) {
             foreach($contrato->itens as $item) {
                 if((starts_with($item->insumo->insumoGrupo->nome, 'MATERIAL'))) {
+                    $qtd_minima = QtdMinima::where('insumo_id', $item->insumo->id)
+                        ->where('obra_id', $contrato->obra_id)
+                        ->first();
+
                     $itens[$contrato->obra_id.$item->insumo->id] = [
                         'obra' => $contrato->obra->nome,
                         'codigo' => $item->insumo->codigo,
@@ -78,7 +83,7 @@ class GestaoEstoqueController extends AppBaseController
                         'contrato_id' => $contrato->id,
                         'insumo_grupo_id' => $item->insumo->insumo_grupo_id,
                         'controlado' => $item->insumo->controlado,
-                        'qtd_minima' => $item->insumo->qtd_minima,
+                        'qtd_minima' => $qtd_minima ? $qtd_minima->qtd : 0,
                     ];
                 }
             }
@@ -130,6 +135,21 @@ class GestaoEstoqueController extends AppBaseController
 
     public function estoqueMinimoSalvar(Request $request)
     {
+        $qtd_minima = QtdMinima::where('insumo_id', $request->insumo_id)
+            ->where('obra_id', $request->obra_id)
+            ->first();
 
+        if($qtd_minima) {
+            $qtd_minima->qtd = money_to_float($request->qtd);
+            $qtd_minima->update();
+        } else {
+            QtdMinima::create([
+                'qtd' => money_to_float($request->qtd),
+                'insumo_id' => money_to_float($request->insumo_id),
+                'obra_id' => money_to_float($request->obra_id),
+            ]);
+        }
+        
+        return response()->json(true);
     }
 }
