@@ -4,20 +4,20 @@
 @else
 	<div class="form-group col-sm-6">
 		{!! Form::label('obra_id', 'Obra:') !!}
-		{!! Form::select('obra_id',[''=>'Escolha...'] + $obras, NULL, ['class' => 'form-control', 'required'=>'required']) !!}
+		{!! Form::select('obra_id', $obras, NULL, ['class' => 'form-control', 'required'=>'required']) !!}
 	</div>
 @endif
 
 <!-- Tipologia Field -->
 <div class="form-group col-sm-6">
 	{!! Form::label('tipologia', 'Tipologia:') !!}
-	{!! Form::select('tipologia_id',[''=>'Escolha...']+$tipologias, NULL, ['class' => 'form-control', 'required'=>'required']) !!}
+	{!! Form::select('tipologia_id', $tipologias, NULL, ['class' => 'form-control', 'required'=>'required']) !!}
 </div>
 
 <!-- Carteira ID Field -->
 <div class="form-group col-sm-6">
 	{!! Form::label('carteira_id', 'Carteira:') !!}
-	{!! Form::select('carteira_id', [''=>'Escolha...']+$carteiras, @isset($qc) ? $qc->carteira_id : NULL, ['class' => 'form-control select2', 'required'=>'required']) !!}
+	{!! Form::select('carteira_id', $carteiras, @isset($qc) ? $qc->carteira_id : NULL, ['class' => 'form-control select2', 'required'=>'required']) !!}
 </div>
 
 <!-- Descrição Field -->
