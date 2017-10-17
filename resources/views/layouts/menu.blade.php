@@ -211,12 +211,6 @@
             </a>
         </li>
 
-        <li class="{{ Request::is('admin/planejamentos/planejamentoOrcamentos*') ? 'active' : '' }}">
-            <a href="{!! route('admin.planejamentos.atividade-carteiras') !!}">
-                <i class="fa fa-caret-right" aria-hidden="true"></i>
-                <span>Tarefa/Carteira Q.C. Avulso</span>
-            </a>
-        </li>
         @shield('cronograma_por_obras.list')
         <li class="{{ Request::is('admin/planejamentoCronogramas*') ? 'active' : '' }}">
             <a href="{!! route('admin.planejamentoCronogramas.index') !!}">
@@ -394,10 +388,10 @@
 
 
 
-<li class="treeview {{ Request::is('admin/tipologia*') ? 'active' : '' }}">
+<li class="treeview {{ Request::is('admin/tipologia*') || Request::is('admin/planejamentos/planejamentoOrcamentos*') ? 'active' : '' }}">
 
     <a href="#">
-        <i class="fa fa-building"></i> <span>Tipologia</span>
+        <i class="fa fa-file-text-o"></i> <span>DocBild</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
@@ -407,10 +401,16 @@
         <li class="{{ Request::is('admin/tipologia*') ? 'active' : '' }}">
             <a href="{!! route('admin.tipologia.index') !!}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
-                <span>Tipologias</span>
+                <span>Tipos de Q.C. Avulso</span>
             </a>
         </li>
         @endshield
+        <li class="{{ Request::is('admin/planejamentos/planejamentoOrcamentos*') ? 'active' : '' }}">
+            <a href="{!! route('admin.planejamentos.atividade-carteiras') !!}">
+                <i class="fa fa-caret-right" aria-hidden="true"></i>
+                <span>Cronograma/Carteira Q.C. Avulso</span>
+            </a>
+        </li>
     </ul>
 
 </li>
