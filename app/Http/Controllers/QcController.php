@@ -139,6 +139,7 @@ class QcController extends AppBaseController
 
         $dataUltimoPeriodo = $qc->dataUltimoPeriodoAprovacao();
 
+
         $emAprovacao = $qc->isStatus(QcStatus::EM_APROVACAO);
         $aprovado = $qc->isStatus(QcStatus::APROVADO);
 
@@ -150,6 +151,8 @@ class QcController extends AppBaseController
             ->orderBy('ordem', 'ASC')
             ->where('created_at', '<=', $dataUltimoPeriodo)
             ->get();
+
+        $alcadas_count = $alcadas->count();
 
         if ($emAprovacao) {
             $workflowAprovacao = WorkflowAprovacaoRepository::verificaAprovacoes(
@@ -217,7 +220,8 @@ class QcController extends AppBaseController
             'alcadas_count',
             'emAprovacao',
             'oc_status',
-            'timeline'
+            'timeline',
+            'alcadas_count'
         ));
     }
 
