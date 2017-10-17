@@ -7,7 +7,7 @@
                 <i class="fa fa-arrow-left" aria-hidden="true"></i>
             </button>
 
-            Memória de Cálculo
+            Memória de cálculo
         </h1>
    </section>
    <div class="content">

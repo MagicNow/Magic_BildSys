@@ -1,6 +1,6 @@
 @shield('users.list')
 <li class="{{ Request::is('users*') ? 'active' : '' }}">
-    <a href="{!! route('manage.index') !!}"><i class="fa fa-users"></i><span>Controle de Acesso</span></a>
+    <a href="{!! route('manage.index') !!}"><i class="fa fa-users"></i><span>Controle de acesso</span></a>
 </li>
 @endshield
 
@@ -33,7 +33,7 @@
 
 <li class="treeview {{ Request::is('admin/pre_orcamentos*') || Request::is('admin/mascara_padrao*') || Request::is('admin/tarefa_padrao*') || Request::is('admin/mascara_padrao_insumos*')  ? 'active' : '' }}">
     <a href="#">
-        <i class="fa fa-balance-scale"></i> <span>Pré-Orçamento</span>
+        <i class="fa fa-balance-scale"></i> <span>Pré orçamento</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
@@ -43,7 +43,7 @@
         <li class="{{ Request::is('admin/mascara_padrao*') ? 'active' : '' }}">
             <a href="{!! route('admin.mascara_padrao.index') !!}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
-                <span>Máscara Padrão</span>
+                <span>Máscara padrão</span>
             </a>
         </li>
         @endshield
@@ -61,7 +61,7 @@
         <li class="{{ Request::is('admin/tarefa_padrao*') ? 'active' : '' }}">
             <a href="{!! route('admin.tarefa_padrao.index') !!}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
-                <span>Tarefa Padrão</span>
+                <span>Tarefa padrão</span>
             </a>
         </li>
         @endshield
@@ -70,7 +70,7 @@
         <li class="{{ Request::is('admin/tarefa_mascaras') ? 'active' : '' }}">
             <a href="{!! route('admin.tarefa_mascaras.index') !!}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
-                <span>Tarefa Padrão/Máscaras P.</span>
+                <span>Tarefa padrão/Máscaras P.</span>
             </a>
         </li>
         @endshield
@@ -78,7 +78,7 @@
         <li class="{{ Request::is('admin/pre_orcamentos') ? 'active' : '' }}">
             <a href="{!! route('admin.pre_orcamentos.index') !!}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
-                <span>Pré Orçamento</span>
+                <span>Pré orçamento</span>
             </a>
         </li>
         @endshield
@@ -94,7 +94,7 @@
         <li class="{{ Request::is('admin/pre_orcamentos') ? 'active' : '' }}">
             <a href="{!! route('admin.pre_orcamentos.exportar_index') !!}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
-                <span>Exportar Insumos/Estrutura</span>
+                <span>Exportar insumos/Estrutura</span>
             </a>
         </li>
         @endshield
@@ -121,7 +121,7 @@
         <li class="{{ Request::is('admin/tipo_levantamentos*') ? 'active' : '' }}">
             <a href="{!! route('admin.tipo_levantamentos.index') !!}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
-                <span>Tipos Levantamentos</span>
+                <span>Tipos levantamentos</span>
             </a>
         </li>
         @endshield
@@ -130,7 +130,7 @@
         <li class="{{ Request::is('admin/estruturas*') ? 'active' : '' }}">
             <a href="{!! route('admin.estruturas.index') !!}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
-                <span>Mascara Estrutura</span>
+                <span>Mascara estrutura</span>
             </a>
         </li>
         @endshield
@@ -147,7 +147,7 @@
 
 <li class="treeview {{ Request::is('admin/cronogramaFisicos*') ? 'active' : '' }}">
     <a href="#">
-        <i class="fa fa-book fa-fw"></i> <span>Planejamento Físicos</span>
+        <i class="fa fa-book fa-fw"></i> <span>Planejamento físicos</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
@@ -157,7 +157,7 @@
         <li class="{{ Request::is('admin/cronogramaFisicos*') ? 'active' : '' }}">
             <a href="{!! route('admin.cronograma_fisicos.relSemanal') !!}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
-                <span>Acompanhamento Semanal</span>
+                <span>Acompanhamento semanal</span>
             </a>
         </li>
         @endshield
@@ -165,7 +165,7 @@
         <li class="{{ Request::is('admin/cronogramaFisicos*') ? 'active' : '' }}">
             <a href="{!! route('admin.cronograma_fisicos.relMensal') !!}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
-                <span>Acompanhamento Mensal</span>
+                <span>Acompanhamento mensal</span>
             </a>
         </li>
         @endshield
@@ -173,7 +173,7 @@
         <li class="{{ Request::is('admin/cronogramaFisicos*') ? 'active' : '' }}">
             <a href="{!! route('admin.cronograma_fisicos.index') !!}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
-                <span>Planejamentos Físicos</span>
+                <span>Planejamentos físicos</span>
             </a>
         </li>
         @endshield		
@@ -189,7 +189,7 @@
         <li class="{{ Request::is('admin/medicao_fisicas*') ? 'active' : '' }}">
             <a href="{!! route('admin.medicao_fisicas.index') !!}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
-                <span>Medição Física</span>
+                <span>Medição física</span>
             </a>
         </li>
         @endshield
@@ -198,7 +198,7 @@
 
 <li class="treeview {{ Request::is('admin/planejamento*') ? 'active' : '' }}">
     <a href="#">
-        <i class="fa fa-calendar"></i> <span>Cronograma de Obras</span>
+        <i class="fa fa-calendar"></i> <span>Cronograma de obras</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
@@ -280,7 +280,7 @@
         <li class="{{ Request::is('admin/contratoTemplates*') ? 'active' : '' }}">
             <a href="{!! route('admin.contratoTemplates.index') !!}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
-                <span>Templates de Minutas</span>
+                <span>Templates de minutas</span>
             </a>
         </li>
         @endshield
@@ -315,7 +315,7 @@
             <a href="{!! route('admin.workflowReprovacaoMotivos.index') !!}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
                 <span>
-                   Motivos de Reprovação
+                   Motivos de reprovação
                 </span>
             </a>
         </li>
@@ -347,14 +347,14 @@
         <li class="{{ Request::is('configuracaoEstaticas*') ? 'active' : '' }}">
             <a href="{!! route('configuracaoEstaticas.index') !!}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
-                <span>Mensagens Inform.</span></a>
+                <span>Mensagens inform.</span></a>
         </li>
         @endshield
 
         <li class="{{ Request::is('templateEmails*') ? 'active' : '' }}">
             <a href="{!! route('templateEmails.index') !!}">
                 <i class="fa fa-caret-right" aria-hidden="true"></i>
-                <span>Template Emails</span>
+                <span>Template emails</span>
             </a>
         </li>
 

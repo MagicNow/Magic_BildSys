@@ -6,7 +6,7 @@
             <button type="button" class="btn btn-link" onclick="history.go(-1);">
                 <i class="fa fa-arrow-left" aria-hidden="true"></i>
             </button>
-            Q.C. (Suprimentos)
+            Q.C. (suprimentos)
         </h1>
    </section>
    <div class="content">

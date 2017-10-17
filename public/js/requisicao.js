@@ -227,7 +227,7 @@ $(function () {
 
         $.ajax({
 
-            url: '/requisicao/get-insumos-obra/',
+            url: '/requisicao/obra/get-insumos-obra/',
             dataType: 'html',
             cache: false,
             type: 'GET',
@@ -551,6 +551,16 @@ $(function () {
 
 
 
+    })
+
+    $(document).on('click', '.js-btn-impressao-qrcode-insumo', function(e) {
+
+        e.preventDefault();
+
+        var href = $(this).attr('href');
+        var qtde_qrcodes = $('#qtde_qrcodes').val();
+
+        window.open(href+'&qtde_qrcodes='+qtde_qrcodes, '_blank');
     })
 
 

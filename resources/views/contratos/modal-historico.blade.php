@@ -7,7 +7,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
                 <h4 class="modal-title">
-                    Histórico de Alteração<br>
+                    Histórico de alteração<br>
                     <small>
                         {{ $item->insumo->codigo .' - '.
                            $item->insumo->nome   .' - '.

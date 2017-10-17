@@ -155,7 +155,13 @@ class ImportacaoRepository
             'AGN_ST_INSCRESTADUAL',
             'AGN_ST_EMAIL',
             'AGN_BO_SIMPLES',
-            'AGN_ST_URL'])
+            'AGN_ST_URL',
+            DB::raw('(SELECT TELS.TEA_ST_TELEFONE
+                      FROM mgglo.glo_tel_agentes TELS 
+                      WHERE TELS.AGN_IN_CODIGO = MGGLO.GLO_AGENTES.AGN_IN_CODIGO 
+                      AND ROWNUM <= 1
+                    ) as TELEFONE')
+            ])
             ->where(DB::raw('trim('.$param_type.')'), trim($param_value))
             ->first();
         try {
@@ -194,7 +200,7 @@ class ImportacaoRepository
                     'inscricao_estadual' => trim($fornecedores_mega->agn_st_inscrestadual),
                     'email' => $email,
                     'site' => trim(utf8_encode($fornecedores_mega->agn_st_url)),
-                    'telefone' => null,
+                    'telefone' => trim(utf8_encode($fornecedores_mega->telefone)),
                     'cep' => trim(str_replace('.','',$fornecedores_mega->agn_st_cep)),
                     'cidade_id' => isset($cidade) ? $cidade->id : null,
                     'imposto_simples' => trim(utf8_encode($fornecedores_mega->agn_bo_simples)) === 'S',
@@ -265,7 +271,13 @@ class ImportacaoRepository
             'AGN_ST_INSCRESTADUAL',
             'AGN_ST_EMAIL',
             'AGN_BO_SIMPLES',
-            'AGN_ST_URL'])
+            'AGN_ST_URL',
+            DB::raw('(SELECT TELS.TEA_ST_TELEFONE
+                      FROM mgglo.glo_tel_agentes TELS 
+                      WHERE TELS.AGN_IN_CODIGO = MGGLO.GLO_AGENTES.AGN_IN_CODIGO 
+                      AND ROWNUM <= 1
+                    ) as TELEFONE')
+            ])
             ->whereIn('AGN_IN_CODIGO',$fornecedoresExistentes)
             ->get();
         try {
@@ -305,7 +317,7 @@ class ImportacaoRepository
                         'inscricao_estadual' => trim($fornecedor_mega->agn_st_inscrestadual),
                         'email' => $email,
                         'site' => trim(utf8_encode($fornecedor_mega->agn_st_url)),
-                        // 'telefone' => null, // @TODO bucar de onde encontra o telefone e colocar na importação
+                        'telefone' => trim(utf8_encode($fornecedor_mega->telefone)),
                         'cep' => trim(str_replace('.','',$fornecedor_mega->agn_st_cep)),
                         'cidade_id' => isset($cidade) ? $cidade->id : null,
                         'imposto_simples' => trim(utf8_encode($fornecedor_mega->agn_bo_simples)) === 'S',

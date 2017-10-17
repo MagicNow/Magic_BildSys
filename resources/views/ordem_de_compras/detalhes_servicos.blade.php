@@ -31,7 +31,7 @@
                             <button type="button" class="btn btn-link" onclick="history.go(-1);">
                              <i class="fa fa-arrow-left" aria-hidden="true"></i>
                             </button>
-                            <span>Ordem de compra - Análise do Orçamento - Nível serviço</span>
+                            <span>Ordem de compra - Análise do orçamento - Nível serviço</span>
                         </h3>
                     </span>
                 </div>
