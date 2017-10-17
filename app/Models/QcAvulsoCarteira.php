@@ -16,9 +16,7 @@ class QcAvulsoCarteira extends Model
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
-
     protected $dates = ['deleted_at'];
-
 
     public $fillable = [
         'nome',
@@ -70,6 +68,11 @@ class QcAvulsoCarteira extends Model
         return $this->belongsToMany(User::class, 'qc_avulso_carteira_users', 'qc_avulso_carteira_id', 'user_id')
             ->withPivot('deleted_at')
             ->withTimestamps();
+    }
+
+    public function qcs()
+    {
+        return $this->hasMany(Qc::class, 'carteira_id');
     }
 
     /**
