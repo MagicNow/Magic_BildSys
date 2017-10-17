@@ -6,7 +6,7 @@
             <a href="#" onclick="history.go(-1);">
                 <i class="fa fa-arrow-left" aria-hidden="true"></i>
             </a>
-            Insumos da Máscara padrão
+            Insumos da máscara padrão
         </h3>
     </section>
     <div class="content">

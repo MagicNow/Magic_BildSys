@@ -3,7 +3,7 @@
 @section('content')
     <section class="content-header">
         <h3>            
-            Exportar Insumos/Estrutura
+            Exportar insumos/Estrutura
         </h3>
     </section>
     <div class="content">
