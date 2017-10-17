@@ -37,8 +37,8 @@ class QcDataTable extends DataTable
                 ->where('obras.nome','LIKE','%'.trim($keyword).'%');
             })
             ->filterColumn('carteira_id',function($query, $keyword){
-              return $query->join('carteiras', 'carteiras.id', '=', "qc.carteira_id")
-                ->where('carteiras.nome','LIKE','%'.trim($keyword).'%');
+              return $query->join('qc_avulso_carteiras', 'qc_avulso_carteiras.id', '=', "qc.carteira_id")
+                ->where('qc_avulso_carteiras.nome','LIKE','%'.trim($keyword).'%');
             })
             ->filterColumn('tipologia_id',function($query, $keyword){
               return $query->join('tipologias', 'tipologias.id', '=', "qc.tipologia_id")
@@ -70,12 +70,12 @@ class QcDataTable extends DataTable
         $query->select([
             'qc.*',
             'obras.nome as obra_nome',
-            'carteiras.nome as carteira_nome',
+            'qc_avulso_carteiras.nome as carteira_nome',
             'tipologias.nome as tipologia_nome',
             'qc_status.nome as status_nome',
             'qc_status.cor as status_cor',
         ])
-        ->leftJoin('carteiras', 'carteiras.id', 'carteira_id')
+        ->leftJoin('qc_avulso_carteiras', 'qc_avulso_carteiras.id', 'carteira_id')
         ->leftJoin('obras', 'obras.id', 'obra_id')
         ->leftJoin('tipologias', 'tipologias.id', 'tipologia_id')
         ->leftJoin('qc_status', 'qc_status.id', 'qc.qc_status_id')
@@ -92,6 +92,10 @@ class QcDataTable extends DataTable
         }
 
         if($request->tipologia_id) {
+            $query->where('tipologia_id', $request->tipologia_id);
+        }
+
+        if($request->carteira_id) {
             $query->where('tipologia_id', $request->tipologia_id);
         }
 

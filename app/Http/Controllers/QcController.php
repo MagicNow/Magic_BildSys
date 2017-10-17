@@ -29,6 +29,7 @@ use App\Repositories\WorkflowAprovacaoRepository;
 use App\Repositories\NotificationRepository;
 use App\Models\WorkflowReprovacaoMotivo;
 use App\Models\QcStatus;
+use App\Repositories\Admin\ObraRepository;
 
 class QcController extends AppBaseController
 {
@@ -47,9 +48,14 @@ class QcController extends AppBaseController
      * @param QcDataTable $qcDataTable
      * @return Response
      */
-    public function index(QcDataTable $qcDataTable) {
-        $obras = Obra::pluck('nome','id')
-            ->prepend('Filtrar por obra...', '');
+    public function index(
+        QcDataTable $qcDataTable,
+        ObraRepository $obraRepo
+    ) {
+        $obras = $obraRepo->findByUser(auth()->id())
+          ->pluck('nome','id')
+          ->prepend('Filtrar por obra...', '');
+
         $tipologias = Tipologia::pluck('nome','id')
             ->prepend('Filtrar por tipologia...', '');
 
@@ -121,6 +127,8 @@ class QcController extends AppBaseController
 
         NotificationRepository::marcarLido(WorkflowTipo::QC_AVULSO, $qc->id);
 
+        $timeline = $this->qcRepository->timeline($id);
+
         $motivos = (new WorkflowReprovacaoMotivo)
             ->where(function ($query) {
                 $query->where('workflow_tipo_id', 2);
@@ -177,11 +185,11 @@ class QcController extends AppBaseController
                 // Data do início da  Alçada
                 if ($alcada->ordem === 1) {
                     $qc_log = $qc->logs()
-                        ->where('qc_status_id', 4)->first();
+                                 ->where('qc_status_id', 4)->first();
 
                     if ($qc_log) {
                         $avaliado_reprovado[$alcada->id] ['data_inicio'] = $qc_log->created_at
-                            ->format('d/m/Y H:i');
+                                                   ->format('d/m/Y H:i');
                     }
                 } else {
                     $primeiro_voto = WorkflowAprovacao::where('aprovavel_type', 'App\\Models\\Qc')
@@ -208,7 +216,8 @@ class QcController extends AppBaseController
             'qtd_itens',
             'alcadas_count',
             'emAprovacao',
-            'oc_status'
+            'oc_status',
+            'timeline'
         ));
     }
 

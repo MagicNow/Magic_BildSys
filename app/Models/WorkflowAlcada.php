@@ -66,7 +66,7 @@ class WorkflowAlcada extends Model
      **/
     public function workflowAprovacoes()
     {
-        return $this->hasMany(WorkflowAprovacoes::class);
+        return $this->hasMany(WorkflowAprovacao::class, 'workflow_alcada_id');
     }
 
     /**

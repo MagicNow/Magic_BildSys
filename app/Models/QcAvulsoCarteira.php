@@ -77,7 +77,7 @@ class QcAvulsoCarteira extends Model
      **/
     public function tarefas()
     {
-        return $this->belongsToMany(Insumo::class, 'qc_avulso_carteira_planejamento', 'qc_avulso_carteira_id', 'planejamento_id')
+        return $this->belongsToMany(Planejamento::class, 'qc_avulso_carteira_planejamento', 'qc_avulso_carteira_id', 'planejamento_id')
             ->withPivot('deleted_at')
             ->withTimestamps();
     }

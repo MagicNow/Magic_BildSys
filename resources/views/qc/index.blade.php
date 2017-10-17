@@ -93,9 +93,15 @@
                         {!!
                             Form::select(
                                 'etapa',
-                                [],
+                                [
+                                    'start' => 'Start',
+                                    'workflow' => 'Workflow',
+                                    'negociacao' => 'Negociação',
+                                    'mobilizacao' => 'Mobilização',
+                                ],
                                 null,
                                 [
+                                    'placeholder' => 'Filtrar por etapa...',
                                     'class' => 'js-filter select2'
                                 ]
                             )
@@ -149,6 +155,10 @@
             select2('.js-filter[name=fornecedor_id]', {
                 url: '/buscar/fornecedores',
                 placeholder: 'Filtrar por fornecedor...'
+            })
+            select2('.js-filter[name=carteira_id]', {
+                url: '/buscar/qc-avulso-carteiras',
+                placeholder: 'Filtrar por carteira...'
             })
         });
     </script>

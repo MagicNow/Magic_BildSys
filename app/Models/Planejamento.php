@@ -15,7 +15,7 @@ class Planejamento extends Model
     use SoftDeletes;
 
     public $table = 'planejamentos';
-    
+
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
@@ -45,7 +45,9 @@ class Planejamento extends Model
         'tarefa' => 'string',
         'prazo' => 'integer',
         'resumo' => 'string',
-        'planejamento_id' => 'integer'
+        'planejamento_id' => 'integer',
+        'data' => 'date',
+        'data_fim' => 'date',
     ];
 
     /**
@@ -59,8 +61,6 @@ class Planejamento extends Model
         'prazo' => 'integer',
         'data' => 'date',
         'data_fim' => 'date',
-
-
     ];
 
     /**
@@ -91,7 +91,7 @@ class Planejamento extends Model
     {
         return $this->belongsTo(\App\Models\Obra::class);
     }
-    
+
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
