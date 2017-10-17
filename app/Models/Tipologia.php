@@ -9,9 +9,9 @@ use Eloquent as Model;
  * @package App\Models
  * @version April 25, 2017, 2:16 pm BRT
  */
-class Topologia extends Model
+class Tipologia extends Model
 {
-	public $table = 'topologias';
+	public $table = 'tipologias';
 
 	const CREATED_AT = 'created_at';
 	const UPDATED_AT = 'updated_at';

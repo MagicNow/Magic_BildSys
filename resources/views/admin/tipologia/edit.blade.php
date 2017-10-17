@@ -3,7 +3,7 @@
 @section('content')
     <section class="content-header">
         <h1>
-            Topologia
+            Tipologia
         </h1>
    </section>
    <div class="content">
@@ -11,9 +11,9 @@
        <div class="box box-primary">
            <div class="box-body">
                <div class="row">
-                   {!! Form::model($topologia, ['route' => ['admin.topologia.update', $topologia->id], 'method' => 'patch', 'files' => true]) !!}
+                   {!! Form::model($tipologia, ['route' => ['admin.tipologia.update', $tipologia->id], 'method' => 'patch', 'files' => true]) !!}
 
-                        @include('admin.topologia.fields')
+                        @include('admin.tipologia.fields')
 
                    {!! Form::close() !!}
                </div>
