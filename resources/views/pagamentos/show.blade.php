@@ -11,10 +11,10 @@
     </section>
     <div class="content">
         <div class="box box-primary">
-            <div class="box-body">
+            <div class="box-body forp">
                 <div class="row" style="padding-left: 20px">
                     @include('pagamentos.show_fields')
-                    <button type="button" onclick="history.go(-1);" class="btn btn-default">
+                    <button type="button" onclick="history.go(-1);" class="btn btn-warning">
                        <i class="fa fa-arrow-left"></i>  {{ ucfirst( trans('common.back') )}}
                     </button>
                 </div>

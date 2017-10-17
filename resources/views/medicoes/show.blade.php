@@ -132,10 +132,10 @@
         </div>
 
         <div class="box box-primary">
-            <div class="box-body">
+            <div class="box-body forp">
                 <div class="row" style="padding-left: 20px">
                     @include('medicoes.show_fields')
-                    <button type="button" onclick="history.go(-1);" class="btn btn-default btn-lg btn-flat"><i class="fa fa-arrow-left"></i>  {{ ucfirst( trans('common.back') )}}</button>
+                    <button type="button" onclick="history.go(-1);" class="btn btn-warning btn-lg btn-flat"><i class="fa fa-arrow-left"></i>  {{ ucfirst( trans('common.back') )}}</button>
                 </div>
             </div>
         </div>

@@ -11,10 +11,11 @@
     </section>
     <div class="content">
         <div class="box box-primary">
-            <div class="box-body">
+            <div class="box-body forp">
                 <div class="row" style="padding-left: 20px">
                     @include('notafiscals.show_fields')
-                    <a href="{!! route('notafiscals.index') !!}" class="btn btn-default">
+                    <div style="clear:both;"></div>
+                    <a href="{!! route('notafiscals.index') !!}" class="btn btn-warning">
                        <i class="fa fa-arrow-left"></i>  {{ ucfirst( trans('common.back') )}}
                     </a>
                 </div>

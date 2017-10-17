@@ -12,7 +12,7 @@
    <div class="content">
        @include('adminlte-templates::common.errors')
        <div class="box box-primary">
-           <div class="box-body">
+           <div class="box-body for-obras-edit">
                <div class="row">
                    {!! Form::model($obra, ['route' => ['admin.obras.update', $obra->id], 'method' => 'patch', 'files' => true]) !!}
 

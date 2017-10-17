@@ -11,7 +11,7 @@
     </section>
     <div class="content">
         <div class="box box-primary">
-            <div class="box-body">
+            <div class="box-body forp">
                 <div class="row" style="padding-left: 20px">
                     @include('regionals.show_fields')
                     <a href="{!! route('regionals.index') !!}" class="btn btn-warning">

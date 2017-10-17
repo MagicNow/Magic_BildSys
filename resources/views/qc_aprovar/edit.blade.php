@@ -12,7 +12,7 @@
    <div class="content">
        @include('adminlte-templates::common.errors')
        <div class="box box-primary">
-           <div class="box-body">
+           <div class="box-body forp">
                <div class="row">
                    {!! Form::model($qc, ['route' => ['qc.aprovar.update', $qc->id], 'method' => 'patch', 'files' => true]) !!}
 

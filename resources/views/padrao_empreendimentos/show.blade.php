@@ -11,7 +11,7 @@
     </section>
     <div class="content">
         <div class="box box-primary">
-            <div class="box-body">
+            <div class="box-body for-padrao">
                 <div class="row" style="padding-left: 20px">
                     @include('padrao_empreendimentos.show_fields')
                     <a href="{!! route('padraoEmpreendimentos.index') !!}" class="btn btn-warning">

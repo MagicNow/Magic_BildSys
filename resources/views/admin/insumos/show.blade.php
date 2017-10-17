@@ -11,7 +11,7 @@
     </section>
     <div class="content">
         <div class="box box-primary">
-            <div class="box-body">
+            <div class="box-body for-insumos">
                 <div class="row" style="padding-left: 20px">
                     @include('admin.insumos.show_fields')
                     <a href="{!! route('admin.insumos.index') !!}" class="btn btn-warning btn-lg btn-flat">

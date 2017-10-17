@@ -31,7 +31,7 @@
        @include('adminlte-templates::common.errors')
        <div class="box box-primary">
            <div class="box-body">
-               <div class="row">
+               <div class="row forp">
                    {!! Form::model($medicaoServico, ['route' => ['medicaoServicos.update', $medicaoServico->id], 'method' => 'patch']) !!}
 
                         @include('medicao_servicos.fields')

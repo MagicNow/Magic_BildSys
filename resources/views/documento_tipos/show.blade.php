@@ -11,10 +11,10 @@
     </section>
     <div class="content">
         <div class="box box-primary">
-            <div class="box-body">
+            <div class="box-body forp">
                 <div class="row" style="padding-left: 20px">
                     @include('documento_tipos.show_fields')
-                    <a href="{!! route('documentoTipos.index') !!}" class="btn btn-default">
+                    <a href="{!! route('documentoTipos.index') !!}" class="btn btn-warning">
                        <i class="fa fa-arrow-left"></i>  {{ ucfirst( trans('common.back') )}}
                     </a>
                 </div>

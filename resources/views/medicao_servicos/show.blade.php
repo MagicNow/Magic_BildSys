@@ -71,15 +71,15 @@
     </section>
     <div class="content">
         <div class="box box-primary">
-            <div class="box-body">
+            <div class="box-body forp">
                 <div class="row" style="padding-left: 20px">
                     @include('medicao_servicos.show_fields')
-
+<div style="clear:both;"></div>
                     @include('medicoes.table')
 
                 </div>
                 <div class="row">
-                    <a href="{!! route('medicoes.index') !!}" class="btn btn-default">
+                    <a href="{!! route('medicoes.index') !!}" class="btn btn-warning">
                         <i class="fa fa-arrow-left"></i>  {{ ucfirst( trans('common.back') )}}
                     </a>
                 </div>

@@ -53,17 +53,18 @@
             {!! Form::button( '<i class="fa fa-check"></i> Salvar e Enviar para Aprovação', [
                                 'class' => 'btn btn-warning btn-lg btn-flat pull-right',
                                 'value'=>'1',
-                                'style'=>'margin-right:10px',
+                                'style'=>'margin-right:10px;margin-top:0px;',
                                 'name'=>'finalizado',
                                 'type'=>'submit']) !!}
             @else
                 <button title="Impossível enviar para aprovação, pois existem itens reprovados!" type="button"
                          class="btn btn-warning btn-lg btn-flat pull-right disabled"
-                        data-toggle="tooltip" data-placement="left" style="margin-right:10px">
+                        data-toggle="tooltip" data-placement="left" style="margin-right:10px;margin-top:0px;">
                     <i class="fa fa-check"></i>  Salvar e Enviar para Aprovação
                 </button>
             @endif
         @endif
     @endif
-    <button type="button" onclick="history.go(-1);" class="btn btn-default btn-lg btn-flat"><i class="fa fa-times"></i>  {{ ucfirst( trans('common.cancel') )}}</button>
+    <button type="button" onclick="history.go(-1);" class="btn btn-danger btn-lg btn-flat"><i class="fa fa-times"></i>  {{ ucfirst( trans('common.cancel') )}}</button>
 </div>
+<div style="clear:both;"></div>

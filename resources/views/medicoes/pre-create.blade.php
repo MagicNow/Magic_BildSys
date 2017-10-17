@@ -2,11 +2,11 @@
 
 @section('content')
     <section class="content-header">
-        <h3>
+        <h1>
             <button type="button" class="btn btn-link" onclick="history.go(-1);">
                 <i class="fa fa-arrow-left" aria-hidden="true"></i>
             </button>
-            Nova Medicão
+            Nova Medição
         </h3>
     </section>
     <div class="content">

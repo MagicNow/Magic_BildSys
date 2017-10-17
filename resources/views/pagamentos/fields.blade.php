@@ -150,7 +150,7 @@
 <!-- Submit Field -->
 <div class="form-group col-sm-12">
     {!! Form::button( '<i class="fa fa-save"></i> '. ucfirst( trans('common.save') ), ['class' => 'btn btn-lg btn-success pull-right', 'type'=>'submit']) !!}
-    <a href="{!! route('pagamentos.index') !!}" class="btn btn-lg btn-default"><i class="fa fa-times"></i>  {{ ucfirst( trans('common.cancel') )}}</a>
+    <a href="{!! route('pagamentos.index') !!}" class="btn btn-lg btn-danger"><i class="fa fa-times"></i>  {{ ucfirst( trans('common.cancel') )}}</a>
 </div>
 
 @section('scripts')
