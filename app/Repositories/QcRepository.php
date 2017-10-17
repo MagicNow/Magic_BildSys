@@ -8,6 +8,9 @@ use App\Models\QcStatus;
 use App\Models\QcAvulsoStatusLog;
 use Illuminate\Support\Facades\DB;
 use InfyOm\Generator\Common\BaseRepository;
+use App\Models\WorkflowAlcada;
+use App\Models\WorkflowTipo;
+use Carbon\Carbon;
 
 class QcRepository extends BaseRepository
 {
@@ -166,4 +169,167 @@ class QcRepository extends BaseRepository
         return [true, $mensagens];
     }
 
+    public function timeline($id)
+    {
+        $timeline = [];
+        $qc = $this->find($id);
+
+        if(!$qc->obra_id) {
+            return false;
+        }
+
+        $tarefa = $qc->carteira->tarefas->where('obra_id', $qc->obra_id)->first();
+
+        $alcadas = with(new WorkflowAlcada)
+            ->where('workflow_tipo_id', WorkflowTipo::QC_AVULSO)
+            ->get();
+
+        $slaWorkflow = $alcadas->sum('dias_prazo');
+
+        $workflowIsFinished = $qc->isStatus(
+            QcStatus::EM_CONCORRENCIA,
+            QcStatus::CONCORRENCIA_FINALIZADA
+        );
+
+        $negociacaoIsFinished = $qc->isStatus(QcStatus::CONCORRENCIA_FINALIZADA);
+
+        $inicio = $tarefa->data
+            ->copy()
+            ->subDays($qc->carteira->sla_start)
+            ->subDays($slaWorkflow)
+            ->subDays($qc->carteira->sla_negociacao)
+            ->subDays($qc->carteira->sla_mobilizacao);
+
+        $timeline['sla_total'] = array_sum([
+            $qc->carteira->sla_start,
+            $slaWorkflow,
+            $qc->carteira->sla_negociacao,
+            $qc->carteira->sla_mobilizacao,
+        ]);
+
+        $timeline['end_date'] = $tarefa->data->copy();
+
+        $startEndDate = $inicio->copy()->addDays($qc->carteira->sla_start);
+
+        $timeline['start'] = [
+            'name' => 'Start',
+            'start_date' => $inicio->copy(),
+            'end_date' => $startEndDate,
+            'is_finished' => true,
+            'is_started' => true,
+            'finished_date' => $qc->created_at->copy(),
+            'finished_by' => $qc->user,
+            'was_finished_late' => $qc->created_at->gt($startEndDate),
+            'is_late' => (new Carbon)->gt($startEndDate),
+        ];
+
+        $workflowEndDate = $timeline['start']['end_date']
+            ->copy()
+            ->addDays($slaWorkflow);
+
+        $timeline['workflow'] = [
+            'name' => 'Workflow',
+            'start_date' => $timeline['start']['end_date']->copy(),
+            'started_date' => $qc->created_at->copy(),
+            'is_started' => true,
+            'is_finished' => false,
+            'end_date' => $workflowEndDate,
+            'is_late' => (new Carbon)->gt($workflowEndDate)
+        ];
+
+        $timeline['negociacao'] = [
+            'name' => 'Negociação',
+            'is_finished' => false,
+            'is_started' => false,
+            'start_date' => $timeline['workflow']['end_date']->copy(),
+            'end_date' => $timeline['workflow']['end_date']
+                ->copy()
+                ->addDays($qc->carteira->sla_negociacao),
+        ];
+
+        if($workflowIsFinished) {
+            $finishEvent = with(new QcAvulsoStatusLog)
+                ->where('qc_id', $id)
+                ->where('qc_status_id', QcStatus::EM_CONCORRENCIA)
+                ->orderBy('created_at', 'desc')
+                ->first();
+
+            $timeline['workflow']['is_finished'] = true;
+            $timeline['workflow']['finished_date'] = $finishEvent->created_at->copy();
+            $timeline['workflow']['finished_by'] = $finishEvent->user;
+            $timeline['workflow']['was_finished_late'] = $finishEvent->created_at->gt($workflowEndDate);
+            $timeline['negociacao']['is_started'] = true;
+            $timeline['negociacao']['started_date'] = $finishEvent->created_at->copy();
+        }
+
+        $timeline['mobilizacao'] = [
+            'name' => 'Mobilização',
+            'is_finished' => false,
+            'is_started' => false,
+            'start_date' => $timeline['negociacao']['end_date']->copy(),
+            'end_date' => $timeline['negociacao']['end_date']
+                ->copy()
+                ->addDays($qc->carteira->sla_mobilizacao),
+        ];
+
+        if($negociacaoIsFinished) {
+            $finishEvent = with(new QcAvulsoStatusLog)
+                ->where('qc_id', $id)
+                ->where('qc_status_id', QcStatus::CONCORRENCIA_FINALIZADA)
+                ->orderBy('created_at', 'desc')
+                ->first();
+
+            $timeline['negociacao']['is_finished'] = true;
+            $timeline['negociacao']['finished_date'] = $finishEvent->created_at->copy();
+            $timeline['negociacao']['finished_by'] = $finishEvent->user;
+            $timeline['negociacao']['was_finished_late'] = $finishEvent->created_at->gt($workflowEndDate);
+            $timeline['mobilizacao']['is_started'] = true;
+            $timeline['mobilizacao']['started_date'] = $finishEvent->created_at->copy();
+        }
+
+        $timeline['workflow']['timeline'] = $alcadas->map(function($alcada) use ($qc, $timeline) {
+            $isReproved = $alcada
+                ->workflowAprovacoes()
+                ->where('created_at', '>=', $qc->updated_at->toDateTimeString())
+                ->where('aprovado', 0)
+                ->exists();
+
+            $isApproved = $alcada
+                ->workflowAprovacoes()
+                ->where('created_at', '>=', $qc->updated_at->toDateTimeString())
+                ->where('aprovado', 1)
+                ->count() === $alcada->users()->count();
+
+            return [
+                'name' => $alcada->nome,
+                'end_date' => $timeline['workflow']['start_date']->addDays($alcada->dias_prazo),
+                'is_finished' => $isReproved || $isApproved,
+                'is_approved' => $isApproved,
+                'approvers' => $alcada->users->map(function($user) use ($alcada, $qc) {
+                    return [
+                        'user' => $user,
+                        'worked' => !!$alcada
+                            ->workflowAprovacoes()
+                            ->where('created_at', '>=', $qc->updated_at->toDateTimeString())
+                            ->where('user_id', $user->id)
+                            ->count(),
+                        'approved' => !!$alcada
+                            ->workflowAprovacoes()
+                            ->where('created_at', '>=', $qc->created_at->toDateTimeString())
+                            ->where('user_id', $user->id)
+                            ->where('aprovado', 1)
+                            ->count(),
+                    ];
+                })->toArray()
+            ];
+        })->toArray();
+
+        $timeline['current'] = collect($timeline)
+            ->filter(function($step) {
+                return is_array($step) && !$step['is_finished'];
+            })
+            ->first()['name'];
+
+        return $timeline;
+    }
 }

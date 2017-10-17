@@ -14,7 +14,8 @@
         </h1>
     </section>
     <div class="content">
-       @include('adminlte-templates::common.errors')
+        @include('adminlte-templates::common.errors')
+        @include('qc.timeline')
         {!! Form::open(['route' => ['qc.update', $qc->id], 'files' => true, 'method' => 'patch']) !!}
         <div class="box">
             <div class="box-body">

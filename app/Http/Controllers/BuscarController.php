@@ -88,11 +88,12 @@ class BuscarController extends AppBaseController
         ])
         ->where('nome', 'like', '%'.$request->q.'%')
         ->whereNotIn('id', $request->ignore ?: [])
+        ->with('tarefas')
         ->paginate();
 
         return $carteiras;
     }
-	
+
 	public function getTipoEqualizacaoTecnicas(Request $request)
     {
         $tipo_equalizacao_tecnicas = TipoEqualizacaoTecnica::select([

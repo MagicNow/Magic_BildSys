@@ -6,8 +6,8 @@
 
   $(function () {
     select2('#carteira_id', {
-      url: baseUrl + "/buscar/carteiras",
-    })
+      url: baseUrl + '/buscar/qc-avulso-carteiras',
+    });
 
     $attachments.find('input[type="file"]').on('change', checkAttachmentTypeExists);
     $attachments.find('select').on('change', checkAttachmentTypeExists);

@@ -126,7 +126,7 @@ class Qc extends Model
 	 **/
 	public function carteira()
 	{
-		return $this->belongsTo(\App\Models\Carteira::class);
+		return $this->belongsTo(QcAvulsoCarteira::class);
 	}
 
 	/**
@@ -148,7 +148,7 @@ class Qc extends Model
 	/**
 	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
 	 **/
-	public function comprador()
+	public function user()
 	{
 		return $this->belongsTo(\App\Models\User::class);
 	}

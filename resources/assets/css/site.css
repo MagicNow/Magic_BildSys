@@ -1202,3 +1202,6 @@ input[type="file"].form-control {
   overflow: hidden;
 }
 
+.no-top-margin {
+  margin-top: 0;
+}
