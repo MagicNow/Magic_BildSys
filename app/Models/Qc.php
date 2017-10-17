@@ -126,7 +126,7 @@ class Qc extends Model
 	 **/
 	public function carteira()
 	{
-		return $this->belongsTo(QcAvulsoCarteira::class);
+		return $this->belongsTo(QcAvulsoCarteira::class)->withTrashed();
 	}
 
 	/**
