@@ -11,13 +11,13 @@
                         @else
                             <a href="{{ url('/compras/obrasInsumos?planejamento_id='.$planejamento->id) }}"><i class="fa fa-arrow-left" aria-hidden="true"></i></a>
                         @endif
-                        Incluir Insumos
+                        Incluir insumos
                     </span>
                 </div>
                 <div class="col-md-6 text-right">
 
                     <button type="button" class="btn btn-default btn-lg btn-flat" data-dismiss="modal">
-                        Inserir insumo no Orçamento
+                        Inserir insumo no orçamento
                     </button>
 
                     <a href="{{ url()->previous()}}" type="button" class="btn btn-success btn-lg btn-flat" data-dismiss="modal">

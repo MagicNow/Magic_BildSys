@@ -116,7 +116,7 @@ class RequisicaoDataTable extends DataTable
 //            'pavimento' => ['name' => 'pavimento', 'data' => 'pavimento'],
 //            'trecho' => ['name' => 'trecho', 'data' => 'trecho'],
 //            'andar' => ['name' => 'andar', 'data' => 'andar'],
-            'action' => ['name'=>'Ações', 'title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'10%', 'class' => 'all']
+            'action' => ['name'=>'Ações', 'title' => 'Ações', 'printable' => false, 'exportable' => false, 'searchable' => false, 'orderable' => false, 'width'=>'15%', 'class' => 'all']
         ];
     }
 

@@ -18,7 +18,7 @@
                     @else
                     Histórico do
                     @endif
-                    Quadro de Concorrência
+                    Quadro de concorrência
                     <small>
                         Rodada {{ $rodadaSelecionada }}
                     </small>

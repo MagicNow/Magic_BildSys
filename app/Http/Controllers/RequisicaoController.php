@@ -95,9 +95,17 @@ class RequisicaoController extends AppBaseController
      *
      * @return Response
      */
-    public function show($id)
+    public function show($id,$update = false)
     {
-        $requisicao = $this->requisicaoRepository->findWithoutFail($id);
+
+        if ($update) {
+
+            $updt['status_id'] = RequisicaoStatus::EM_SEPARACAO;
+
+            $requisicao = $this->requisicaoRepository->update($updt, $id);
+        }
+
+        $requisicao = $this->requisicaoRepository->getRequisicao($id);
 
         if (empty($requisicao)) {
             Flash::error('Requisicao '.trans('common.not-found'));
@@ -105,7 +113,11 @@ class RequisicaoController extends AppBaseController
             return redirect(route('requisicao.index'));
         }
 
-        return view('requisicao.show')->with('requisicao', $requisicao);
+        $table = $this->requisicaoItemRepository->getRequisicaoItensShow($id);
+
+
+
+        return view('requisicao.show', compact('requisicao', 'table'));
     }
 
     /**
@@ -160,11 +172,11 @@ class RequisicaoController extends AppBaseController
 
             Flash::success('Requisicao ' . trans('common.updated') . ' ' . trans('common.successfully') . '.');
 
-            //return response()->json(['success' => true]);
+            return response()->json(['success' => true]);
 
         } else {
 
-            //return response()->json(['success' => false]);
+            return response()->json(['success' => false]);
         }
     }
 
@@ -707,11 +719,10 @@ class RequisicaoController extends AppBaseController
 
             $r->orderBy('apartamento', 'comodo');
 
-            $item = $r->get();
+            $item = $r->first();
 
         }
 
-        //dd($item);
-        return response()->view('requisicao.impressao_qrcode',compact('item','all'));
+        return response()->view('requisicao.impressao_qrcode',compact('item','all', 'request'));
     }
 }

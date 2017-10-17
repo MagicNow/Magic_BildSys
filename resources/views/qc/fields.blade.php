@@ -10,7 +10,7 @@
 
 <!-- Tipologia Field -->
 <div class="form-group col-sm-6">
-	{!! Form::label('tipologia', 'Tipologia:') !!}
+	{!! Form::label('tipologia', 'Tipo de Q.C.:') !!}
 	{!! Form::select('tipologia_id', $tipologias, NULL, ['class' => 'form-control select2', 'required'=>'required']) !!}
 </div>
 
@@ -77,7 +77,7 @@
 	        		{!! Form::text('anexo_descricao[]', NULL, ['class' => 'form-control']) !!}
 	        	</div>
 	        	<div class="col-sm-3">
-                   {!! Form::label('', 'Tipo:') !!}
+                   {!! Form::label('', 'Tipo do Anexo:') !!}
 	        		{!! Form::select('anexo_tipo[]', ['' => 'Escolha...', 'Proposta' => 'Proposta', 'Quadro de concorrência' => 'Quadro de concorrência', 'Email' => 'Email', 'Detalhamento do Projeto' => 'Detalhamento do Projeto'], NULL, ['class' => 'form-control']) !!}
 	        	</div>
 	        	<div class="col-sm-3">

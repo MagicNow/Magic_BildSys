@@ -6,7 +6,7 @@
             <button type="button" class="btn btn-link" onclick="history.go(-1);">
                 <i class="fa fa-arrow-left" aria-hidden="true"></i>
             </button>
-            Boletins de Medição
+            Boletins de medição
 
            <a class="btn btn-primary pull-right"  href="{!! route('boletim-medicao.create') !!}">
             {{ ucfirst( trans('common.new') )}}

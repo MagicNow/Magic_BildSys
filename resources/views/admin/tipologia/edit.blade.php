@@ -3,8 +3,8 @@
 @section('content')
     <section class="content-header">
         <h1>
-            Tipologia
-        </h1>
+            Tipo de Q.C. Avulso
+       </h1>
    </section>
    <div class="content">
        @include('adminlte-templates::common.errors')

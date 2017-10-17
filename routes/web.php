@@ -1521,7 +1521,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
             ->middleware('needsPermission:requisicao.edit');
         $router->delete('requisicao/{requisicao}', ['as' => 'requisicao.destroy', 'uses' => 'RequisicaoController@destroy'])
             ->middleware('needsPermission:requisicao.delete');
-        $router->get('requisicao/{requisicao}', ['as' => 'requisicao.show', 'uses' => 'RequisicaoController@show']);
+        $router->get('requisicao/{requisicao}/update/{update?}', ['as' => 'requisicao.show', 'uses' => 'RequisicaoController@show']);
         $router->get('requisicao/{requisicao}/edit', ['as' => 'requisicao.edit', 'uses' => 'RequisicaoController@edit'])
             ->middleware('needsPermission:requisicao.edit');
 
@@ -1529,7 +1529,7 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
         $router->get('requisicao/get-trechos-obra/{obra}/torre/{torre}/pavimento/{pavimento}', ['as' => 'requisicao.trechoObra', 'uses' => 'RequisicaoController@getTrechoByObraTorrePavimento']);
         $router->get('requisicao/get-andares-obra/{obra}/torre/{torre}/pavimento/{pavimento}', ['as' => 'requisicao.andarObra', 'uses' => 'RequisicaoController@getAndarByObraTorrePavimento']);
         $router->get('requisicao/get-insumos', ['as' => 'requisicao.getInsumos', 'uses' => 'RequisicaoController@getInsumos']);
-        $router->get('requisicao/get-insumos-obra/', ['as' => 'requisicao.insumosObra', 'uses' => 'RequisicaoController@getInsumos']);
+        $router->get('requisicao/obra/get-insumos-obra/', ['as' => 'requisicao.insumosObra', 'uses' => 'RequisicaoController@getInsumos']);
         $router->get('requisicao/get-insumos-obra-comodo/', ['as' => 'requisicao.insumosObraComodo', 'uses' => 'RequisicaoController@getInsumosByComodo']);
 
         $router->get('requisicao/ler-qr-cod', function() {
@@ -1560,6 +1560,10 @@ $router->group(['prefix' => '/', 'middleware' => ['auth']], function () use ($ro
     //Gestão de estoque
     $router->group(['prefix'=>'gestao-de-estoque', 'middleware' => 'needsPermission:gestao_de_estoque.list'], function () use ($router) {
         $router->get('', ['as'=> 'gestaoEstoque.index', 'uses' => 'GestaoEstoqueController@index']);
+        $router->get('/estoque-minimo', ['as'=> 'gestaoEstoque.estoqueMinimo', 'uses' => 'GestaoEstoqueController@estoqueMinimo'])
+            ->middleware('needsPermission:estoqueMinimo.manager');
+        $router->get('/estoque-minimo/salvar', ['as'=> 'gestaoEstoque.estoqueMinimoSalvar', 'uses' => 'GestaoEstoqueController@estoqueMinimoSalvar'])
+            ->middleware('needsPermission:estoqueMinimo.manager');
     });
 
 	$router->get('/testeLpu', function () {
@@ -1617,7 +1621,7 @@ $router->get('requisicao/get-insumos', ['as' => 'requisicao.getInsumos', 'uses' 
 $router->get('requisicao/get-insumos-obra/', ['as' => 'requisicao.insumosObra', 'uses' => 'RequisicaoController@getInsumos']);
 $router->get('requisicao/get-insumos-obra/comodo', ['as' => 'requisicao.insumosObraComodo', 'uses' => 'RequisicaoController@getInsumosByComodo']);
 $router->get('requisicao/modal/impressao-qrcode', ['as' => 'requisicao.modalQrCode', 'uses' => 'RequisicaoController@modalQrCode']);
-$router->get('requisicao/impressao-qrcode', ['as' => 'requisicao.impressaoQrCode', 'uses' => 'RequisicaoController@impressaoQrCode']);
+$router->get('requisicao/impressao/qrcode', ['as' => 'requisicao.impressaoQrCode', 'uses' => 'RequisicaoController@impressaoQrCode']);
 
 $router->get('/requisicao/ler-qr-cod', function() {
     return View('requisicao.ler_qr_code');
@@ -1627,7 +1631,6 @@ $router->resource('requisicao', 'RequisicaoController');
 
 # Processo de Saída
 $router->get('requisicao/processo-saida/{requisicao}', ['as' => 'requisicao.processoSaida', 'uses' => 'RequisicaoController@processoSaida']);
-
 $router->get('requisicao/processo-saida/{requisicao}/ler-insumo-saida', ['as' => 'requisicao.lerInsumoSaida', 'uses' => 'RequisicaoController@lerInsumoSaida']);
 $router->get('requisicao/processo-saida/ler-insumo-saida/salvar-leitura', ['as' => 'requisicao.salvarLeituraSaida', 'uses' => 'RequisicaoController@salvarLeituraSaida']);
 $router->get('requisicao/processo-saida/{requisicao}/lista-de-inconsistencia', ['as' => 'requisicao.listaInconsistencia', 'uses' => 'RequisicaoController@listaInconsistencia']);
