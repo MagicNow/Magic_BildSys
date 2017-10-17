@@ -537,8 +537,8 @@ class OrdemDeCompraRepository extends BaseRepository
                     $title = '';
                 }
             } else {
-                $url = 'CONCAT(\'/compras/obrasInsumos?planejamento_id=\',planejamentos.id,\'&insumo_grupos_id=\',insumo_grupos.id,\'&obra_id=\',obras.id) as url';
-                $url_dispensar = 'CONCAT(\'/compras/obrasInsumos/dispensar?planejamento_id=\',planejamentos.id,\'&insumo_grupos_id=\',insumo_grupos.id,\'&obra_id=\',obras.id) as url_dispensar';
+                $url = 'CONCAT(\' . url("compras/obrasInsumos?planejamento_id=") . \',planejamentos.id,\'&insumo_grupos_id=\',insumo_grupos.id,\'&obra_id=\',obras.id) as url';
+                $url_dispensar = 'CONCAT(\' . url("compras/obrasInsumos/dispensar?planejamento_id=") . \',planejamentos.id,\'&insumo_grupos_id=\',insumo_grupos.id,\'&obra_id=\',obras.id) as url_dispensar';
                 $title = 'CONCAT(obras.nome,\' - \',planejamentos.tarefa,\' - \', lembretes.nome) title';
 
             }
