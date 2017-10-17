@@ -85,7 +85,6 @@ class Qc extends Model
 	 * @var array
 	 */
 	public static $rules = [
-		'obra_id' => 'required|integer',
 		'tipologia_id' => 'required|integer',
 		'carteira_id' => 'required|integer',
 		'comprador_id' => 'integer',
@@ -99,7 +98,6 @@ class Qc extends Model
 	];
 
 	public static $messages = [
-        'obra_id.required' => 'Selecione a obra',
         'tipologia_id.required' => 'Selecione a tipologia',
         'carteira_id.required' => 'Selecione a carteira',
         'descricao_id.required' => 'Insira a descrição do Q.C.',

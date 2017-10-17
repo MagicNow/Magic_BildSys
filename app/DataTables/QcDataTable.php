@@ -40,6 +40,9 @@ class QcDataTable extends DataTable
             ->editColumn('created_at', datatables_format_date('created_at'))
             ->editColumn('valor_pre_orcamento', datatables_float_to_money('valor_pre_orcamento'))
             ->editColumn('valor_orcamento_inicial', datatables_float_to_money('valor_orcamento_inicial'))
+            ->editColumn('obra_id', function($qc) {
+                return $qc->obra_nome ?: 'Sem obra vinculada';
+            })
             ->editColumn('status_nome', function($qc) {
                 if(!$qc->status) {
                     return 'Sem status';

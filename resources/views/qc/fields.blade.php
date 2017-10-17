@@ -1,12 +1,8 @@
 <!-- Obra ID Field -->
-@if(request()->has('obra_id'))
-	{!! Form::hidden('obra_id', request('obra_id')) !!}
-@else
-	<div class="form-group col-sm-6">
-		{!! Form::label('obra_id', 'Obra:') !!}
-        {!! Form::select('obra_id', $obras, NULL, ['class' => 'form-control select2', 'required']) !!}
-	</div>
-@endif
+<div class="form-group col-sm-6">
+    {!! Form::label('obra_id', 'Obra:') !!}
+    {!! Form::select('obra_id', $obras, request('obra_id'), ['class' => 'form-control select2']) !!}
+</div>
 
 <!-- Tipologia Field -->
 <div class="form-group col-sm-6">

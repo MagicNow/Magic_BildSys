@@ -81,11 +81,17 @@ class QcController extends AppBaseController
      *
      * @return Response
      */
-    public function create()
+    public function create(ObraRepository $obraRepo)
     {
-        $obras = Obra::pluck('nome','id')->prepend('Escolha a obra...', '');
+        $obras = $obraRepo->findByUser(auth()->id())->pluck('nome', 'id');
+
+        if($obras->count() > 1) {
+            $obras->prepend('Escolha a obra...', '');
+        }
+
         $carteiras = QcAvulsoCarteira::pluck('nome','id')
             ->prepend('Escolha a carteira...', '');
+
         $tipologias = Tipologia::pluck('nome','id')
             ->prepend('Escolha a tipologia...', '');
 
